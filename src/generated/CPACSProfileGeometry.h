@@ -19,7 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSPointListXYZ.h>
+#include <CCPACSPointListXYZVector.h>
 #include <CCPACSWingProfileCST.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
@@ -40,7 +40,7 @@ namespace generated
     // CPACSRotorAirfoils
     // CPACSWingAirfoils
 
-    // generated from /xsd:schema/xsd:complexType[735]
+    // generated from /xsd:schema/xsd:complexType[746]
     /// @brief profileGeometryType
     /// 
     /// A profile is defined by a profile name, an optional
@@ -101,13 +101,13 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSPointListXYZ>& GetPointList_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSPointListXYZ>& GetPointList_choice1();
+        TIGL_EXPORT virtual const boost::optional<CCPACSPointListXYZVector>& GetPointList_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSPointListXYZVector>& GetPointList_choice1();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSWingProfileCST>& GetCst2D_choice2() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWingProfileCST>& GetCst2D_choice2();
 
-        TIGL_EXPORT virtual CCPACSPointListXYZ& GetPointList_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSPointListXYZVector& GetPointList_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePointList_choice1();
 
         TIGL_EXPORT virtual CCPACSWingProfileCST& GetCst2D_choice2(CreateIfNotExistsTag);
@@ -116,19 +116,19 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<TiglSymmetryAxis>     m_symmetry;
+        boost::optional<TiglSymmetryAxis>         m_symmetry;
 
-        std::string                           m_uID;
+        std::string                               m_uID;
 
         /// Name of profile
-        std::string                           m_name;
+        std::string                               m_name;
 
         /// Description of profile
-        boost::optional<std::string>          m_description;
+        boost::optional<std::string>              m_description;
 
-        boost::optional<CCPACSPointListXYZ>   m_pointList_choice1;
+        boost::optional<CCPACSPointListXYZVector> m_pointList_choice1;
 
-        boost::optional<CCPACSWingProfileCST> m_cst2D_choice2;
+        boost::optional<CCPACSWingProfileCST>     m_cst2D_choice2;
 
     private:
 #ifdef HAVE_CPP11

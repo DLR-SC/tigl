@@ -29,7 +29,7 @@ namespace generated
     // This class is used in:
     // CPACSSparSegment
 
-    // generated from /xsd:schema/xsd:complexType[814]
+    // generated from /xsd:schema/xsd:complexType[826]
     /// @brief sparPositionUIDs of the spar.
     /// 
     /// sparPositionType, a sparPostion defines a location

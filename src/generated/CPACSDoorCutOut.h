@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSDoors
 
-    // generated from /xsd:schema/xsd:complexType[285]
+    // generated from /xsd:schema/xsd:complexType[290]
     /// @brief doorCutOutType
     /// 
     /// CutOut type, containing cut-outs

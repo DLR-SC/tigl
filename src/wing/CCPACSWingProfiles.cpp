@@ -67,12 +67,6 @@ CCPACSWingProfile& CCPACSWingProfiles::AddWingAirfoil() {
     return static_cast<CCPACSWingProfile&>(*m_wingAirfoils.back());
 }
 
-// Returns the total count of wing profiles in this configuration
-int CCPACSWingProfiles::GetProfileCount() const
-{
-    return static_cast<int>(m_wingAirfoils.size());
-}
-
 bool CCPACSWingProfiles::HasProfile(std::string uid) const
 {
     for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_wingAirfoils.begin(); it != m_wingAirfoils.end(); ++it)
@@ -89,16 +83,6 @@ CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
         if ((*it)->GetUID() == uid)
             return static_cast<CCPACSWingProfile&>(**it);
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
-}
-
-// Returns the wing profile for a given index - TODO: depricated function!
-CCPACSWingProfile& CCPACSWingProfiles::GetProfile(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetProfileCount()) {
-        throw CTiglError("Illegal index in CCPACSWingProfile::GetProfile", TIGL_INDEX_ERROR);
-    }
-    return static_cast<CCPACSWingProfile&>(*m_wingAirfoils[index]);
 }
 
 } // end namespace tigl

@@ -42,7 +42,7 @@ namespace generated
     // This class is used in:
     // CPACSFuselage
 
-    // generated from /xsd:schema/xsd:complexType[383]
+    // generated from /xsd:schema/xsd:complexType[389]
     /// @brief fuselageStructureType
     /// 
     /// FuselageStructure type, containing data of the fuselage's

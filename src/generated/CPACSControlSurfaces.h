@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSComponentSegment
 
-    // generated from /xsd:schema/xsd:complexType[192]
+    // generated from /xsd:schema/xsd:complexType[195]
     /// @brief controlSurfacesType
     /// 
     /// Definition of the outer shape, structure and deflection

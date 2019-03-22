@@ -29,7 +29,7 @@ namespace generated
     // This class is used in:
     // CPACSMaterial
 
-    // generated from /xsd:schema/xsd:complexType[297]
+    // generated from /xsd:schema/xsd:complexType[302]
     /// @brief Emissivity map, containing the diffuse emissivity of a material at different spectral lengths.
     /// 
     /// The emissivity of a material can vary with the spectral wave length. 

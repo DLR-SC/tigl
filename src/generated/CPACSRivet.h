@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSRivets
 
-    // generated from /xsd:schema/xsd:complexType[761]
+    // generated from /xsd:schema/xsd:complexType[773]
     /// @brief rivetType
     /// 
     /// Rivet type, containing a rivet

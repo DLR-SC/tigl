@@ -29,7 +29,7 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurveProfileGeometry
 
-    // generated from /xsd:schema/xsd:complexType[708]
+    // generated from /xsd:schema/xsd:complexType[718]
     /// @brief List of 3D points, kept in three relative coordinate
     /// vecors (rX, rY, rZ)
     /// 
@@ -87,5 +87,5 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSPointListRelXYZVector is customized, use type CCPACSPointListRelXYZ directly
+// CPACSPointListRelXYZVector is customized, use type CCPACSPointListRelXYZVector directly
 } // namespace tigl

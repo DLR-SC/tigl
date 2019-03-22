@@ -820,11 +820,19 @@ TiglContinuity getEdgeContinuity(const TopoDS_Edge& edge1, const TopoDS_Edge& ed
     // **********************************************************************************
     TopTools_IndexedMapOfShape edges;
     TopExp::MapShapes(wire, TopAbs_EDGE, edges);
-    if (edges.Extent() != 2) {
+    if (edges.Extent() > 2) {
         throw tigl::CTiglError("checkEdgeContinuity: Unexpected error in connected wire", TIGL_ERROR);
     }
+    // There are either two edges that are touching, or one closed edge with touching endpoints. In the latter
+    // case, edge1 and edge2 are the same object
     TopoDS_Edge newedge1 = TopoDS::Edge(edges(1));
-    TopoDS_Edge newedge2 = TopoDS::Edge(edges(2));
+    TopoDS_Edge newedge2;
+    if ( !edge1.IsEqual(edge2) ) {
+        newedge2 = TopoDS::Edge(edges(2));
+    }
+    else {
+        newedge2 = newedge1;
+    }
 
     TopExp::CommonVertex(newedge1, newedge2, commonVertex);
     if (commonVertex.IsNull()) {
@@ -1414,6 +1422,18 @@ gp_Pnt GetCenterOfMass(const TopoDS_Shape &shape)
 
      // compute center of the shape
      gp_Pnt centerPoint = LProps.CentreOfMass();
+
+     if (LProps.Mass() < 1e-13) {
+         // Fallback using center of boundary box, fixes #551
+         double minx, maxx, miny, maxy, minz, maxz;
+         GetShapeExtension(shape, minx, maxx,
+                           miny, maxy,
+                           minz, maxz);
+
+         return gp_Pnt((maxx+minx)*0.5,
+                       (maxy+miny)*0.5,
+                       (maxz+minz)*0.5);
+     }
 
      return centerPoint;
 }

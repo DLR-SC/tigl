@@ -13,7 +13,7 @@ an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
 either express or implied. See the License for the specific
 language governing permissions and limitations under the License.
 
-Copyright: (c) 2017 Deutsches Zentrum fuer Luft- und Raumfahrt e.V.
+Copyright: (c) 2018 Deutsches Zentrum fuer Luft- und Raumfahrt e.V.
 
 If you have any questions regarding CPACS please feel free to contact:
 
@@ -38,11 +38,11 @@ jonas.jepsen@dlr.de
                             <ddue:definitionTable>
                                 <ddue:definedTerm>Version</ddue:definedTerm>
                                 <ddue:definition>
-                                    <ddue:para>V2.3.1</ddue:para>
+                                    <ddue:para>V3.0</ddue:para>
                                 </ddue:definition>
                                 <ddue:definedTerm>Date</ddue:definedTerm>
                                 <ddue:definition>
-                                    <ddue:para>2016-07-29T16:47:00</ddue:para>
+                                    <ddue:para>2018-07-31T18:47:00</ddue:para>
                                 </ddue:definition>
                             </ddue:definitionTable>
                             <ddue:section>
@@ -56,7 +56,7 @@ jonas.jepsen@dlr.de
                             <ddue:section>
                                 <ddue:title>2. Coordinate Systems</ddue:title>
                                 <ddue:content>
-                                    <ddue:para>Coordinate systems are a regular cause for ambiguous interpretation of data. In CPACS only the CPACS-coordinate system is valid. The following paragraphs outline the determination to known coordinate systems.</ddue:para>
+                                    <ddue:para>Coordinate systems are a regular cause for ambiguous interpretation of data. In CPACS, the reference coordinate system is the CPACS-coordinate system. This coordinate system is used for most of the data. A single exception is made in order to keep aerodynamic data in an aerodynamic coordinate system. The following paragraphs outline the determination to known coordinate systems.</ddue:para>
                                     <ddue:para>The CPACS coordinate system is the coordinate system identified by TIGL, CPACS's geometric library. It is a right-handed coordinate system. If an aircraft is defined in the CPACS coordinate system it will usually follow the directions listed in the table below.</ddue:para>
                                     <ddue:para>Therefore, the CPACS coordinate system can be confused with the body-fixed coordinate system. While often the CPACS coordinate system and the body-fixed coordinate system overlap, this must not always be true. Several definitions for body-fixed coordinate systems exist (x-axis through nose and tail, x-axis perpendicular to nose plane). For non-symmetric aircraft, body-fixed coordinate systems become even more complicated. Hence, analysis tools should stick to the CPACS-Coordinate system. It remains to the designer to model the geometry accordingly.</ddue:para>
                                     <ddue:para>The CPACS coordinate system does not rotate with flow. Hence, aerodynamic calculations do rotate their flow relative to the CPACS-coordinate system. If not stated explicitly different, e.g. for target lift-coefficients, results are returned in the CPACS coordinate system, i.e. the cfx-coefficient is parrallel to the CPACS x-Coordinate, regardless of the way the geometry is defined.</ddue:para>
@@ -137,10 +137,6 @@ jonas.jepsen@dlr.de
                                             <ddue:entry>[K]</ddue:entry>
                                             <ddue:entry>Temperature</ddue:entry>
                                         </ddue:row>
-                                        <ddue:row>
-                                            <ddue:entry>[°]</ddue:entry>
-                                            <ddue:entry>Angle</ddue:entry>
-                                        </ddue:row>
                                     </ddue:table>
                                     <ddue:para>or in derived units, e.g.:</ddue:para>
                                     <ddue:table>
@@ -159,6 +155,14 @@ jonas.jepsen@dlr.de
                                         <ddue:row>
                                             <ddue:entry>[J]</ddue:entry>
                                             <ddue:entry>Energy</ddue:entry>
+                                        </ddue:row>
+                                    </ddue:table>
+                                    <ddue:para>The only non SI unit used throughout CPACS is the angle in degrees [°]. 
+                                    For the sake of an intuitive use the angles are given in degrees rather than in radian [rad].</ddue:para>
+                                    <ddue:table>
+                                        <ddue:row>
+                                            <ddue:entry>[°]</ddue:entry>
+                                            <ddue:entry>Angle</ddue:entry>
                                         </ddue:row>
                                     </ddue:table>
                                 </ddue:content>
@@ -379,6 +383,34 @@ jonas.jepsen@dlr.de
                                     <ddue:para>Temperature offsets are introduced on top of the definitions in the ISA manual (which does not cover such variations). The offset model
                                       is based upon the idea that the pressure at a fixed geopotential altitude is independent from temperature offset (pressure altitude).
                                       The temperature offset changes only the density (following rho = p / Gas Constant / T) (and viscosity, of course)</ddue:para>
+                                </ddue:content>
+                            </ddue:section>
+                            <ddue:section>
+                                <ddue:title>CPACS 3.0</ddue:title>
+                                <ddue:content>
+                                    <ddue:para>Release in Jul 2018</ddue:para>
+                                    <ddue:list class="bullet">
+                                        <ddue:listItem>New component segment definition; this is affecting all structural components of wings</ddue:listItem>
+                                        <ddue:listItem>Renamed angleOfYaw into angleOfSideslip</ddue:listItem>
+                                        <ddue:listItem>Fixes in documentation</ddue:listItem>
+                                        <ddue:listItem>Made all uID attributes required</ddue:listItem>
+                                        <ddue:listItem>Minor fixes in choices and typos</ddue:listItem>
+                                        <ddue:listItem>Added nodes for the geometry of generic system components</ddue:listItem>
+                                        <ddue:listItem>Added performance requirements for aircraft models</ddue:listItem>
+                                        <ddue:listItem>Redefined the whole mission definition including point performances</ddue:listItem>
+                                        <ddue:listItem>Made link to missionUID in trajectory optional</ddue:listItem>
+                                        <ddue:listItem>Added new parameters to enginePerformanceMap</ddue:listItem>
+                                        <ddue:listItem>Relocated mFixedLeadingEdge and mFixedTrailingEdge within the massBReakdown structure</ddue:listItem>
+                                        <ddue:listItem>Changed aeroPerformanceMap to use altitude and standard atmosphere instead of reynolds number</ddue:listItem>
+                                        <ddue:listItem>Added an optional local direction for guide curves and an illustration image</ddue:listItem>
+                                        <ddue:listItem>Announced toolspecifics definitions as deprecated; will be removed from CPACS in next release and should be managed in separate namespace by tool maintainers</ddue:listItem>
+                                        <ddue:listItem>Added an option for aerodynamic performance maps of elastic aircraft</ddue:listItem>
+                                        <ddue:listItem>Enabled the definition of multiple aeroPerformanceMaps</ddue:listItem>
+                                        <ddue:listItem>Enabled the use of spar points for rib placement and rib points for spar placement</ddue:listItem>
+                                        <ddue:listItem>Added explicit stringer definitions for wing cells</ddue:listItem>
+                                        <ddue:listItem>All issues for this release can be found online</ddue:listItem>
+                                        <ddue:listItem>https://github.com/DLR-LY/CPACS/issues</ddue:listItem>
+                                    </ddue:list>
                                 </ddue:content>
                             </ddue:section>
                             <ddue:section>
@@ -2055,12 +2087,42 @@ jonas.jepsen@dlr.de
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element minOccurs="0" name="dcfx" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfy" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfz" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmx" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmy" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmz" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcd" type="stringArrayBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Delta drag coefficient for landing gear
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="dcs" type="stringArrayBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Delta coefficient for landing gear side force (perpendicular to lift and drag)
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="dcl" type="stringArrayBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Delta lift coefficient for landing gear
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="dcmd" type="stringArrayBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Delta moment coefficient around drag axis
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="dcms" type="stringArrayBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Delta moment coefficient around side force axis (perpendicular to lift and drag)
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="dcml" type="stringArrayBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Delta moment coefficient around lift axis
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -2095,10 +2157,10 @@ jonas.jepsen@dlr.de
 			<xsd:appinfo>
 				<sd:schemaDoc>
 					<ddue:summary>
-						<ddue:para>aeroPerformanceMapType</ddue:para>
+						<ddue:para>aeroPerformanceMapRCType</ddue:para>
 					</ddue:summary>
 					<ddue:remarks>
-						<ddue:para>AeroPerformanceMap type, containing a perfomance map
+						<ddue:para>AeroPerformanceMapRC type, containing a perfomance map
 							with aerodynamic data. Array order is: angleOfAttack min-&gt;max
 							then angleOfSideslip then altitude then machNumber</ddue:para>
 					</ddue:remarks>
@@ -2176,12 +2238,12 @@ jonas.jepsen@dlr.de
 					<ddue:remarks>
 						<ddue:para>AeroPerformanceMap type, containing a perfomance map
 							with aerodynamic data of the complete aircraft in the form of
-							nondimensionalized coefficients. The force coefficients (cf?)
+							nondimensionalized coefficients. The force coefficients (c?)
 							are nondimensionalized by dynamic pressure and reference area,
 							the moment coefficients (cm?) by dynamic pressure, reference
-							area and reference length.</ddue:para>
+							area and reference length. </ddue:para>
 						<ddue:para>All coefficients in the aeroPerformanceMap relate to
-							the CPACS coordinate system. See documentation of the
+							the aerodynamic coordinate system which is reached from the CPACS coordinate system by the transformations of angle of attack and angle of yaw. See documentation of the
 							CPACS-Element for further information.</ddue:para>
 					</ddue:remarks>
 				</sd:schemaDoc>
@@ -2215,15 +2277,90 @@ jonas.jepsen@dlr.de
 							<xsd:documentation>Angle of attack</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element minOccurs="0" name="cfx" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="cfy" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="cfz" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="cmx" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="cmy" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="cmz" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="cd" type="stringArrayBaseType">
+						<xsd:annotation>
+							<xsd:documentation>drag coefficient in aerodynamic coordinates</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="cs" type="stringArrayBaseType">
+                        <xsd:annotation>
+							<xsd:documentation>coefficient of the side force vector in aerodynamic coordinates (perpendicular to lift and drag)</xsd:documentation>
+						</xsd:annotation>
+                    </xsd:element>
+					<xsd:element minOccurs="0" name="cl" type="stringArrayBaseType">
+                        <xsd:annotation>
+							<xsd:documentation>lift coefficient in aerodynamic coordinates</xsd:documentation>
+						</xsd:annotation>
+                    </xsd:element>
+					<xsd:element minOccurs="0" name="cmd" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="cms" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="cml" type="stringArrayBaseType"/>
 					<xsd:element minOccurs="0" name="dampingDerivatives" type="dampingDerivativesRatesType"/>
 					<xsd:element minOccurs="0" name="controlSurfaces" type="controlSurfacePerformanceMapsType"/>
 					<xsd:element minOccurs="0" name="landingGears" type="aeroLandingGearsType"/>
+					<xsd:element minOccurs="0" name="elastic" type="aeroPerformanceMapElasticType">
+						<xsd:annotation>
+							<xsd:documentation>Conditions specifying an elastic case. Used for
+							performance maps incorporating elastic deformation</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="aeroPerformanceMapElasticType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>aeroPerformanceMapElasticType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>This node specifies a set of conditions specifying an elastic case</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="weightAndBalanceUID" type="stringUIDBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Reference to a weight and balance case</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="loadFactor" type="pointType">
+						<xsd:annotation>
+							<xsd:documentation>Load factors in CPACS coordinates</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:all>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="aeroPerformanceMapsRCType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>aeroPerformanceMapsRCType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>aeroPerformanceMapsRC type, containing multiple
+							aeroPerformanceMapRC nodes for different cases</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" name="aeroPerformanceMap" type="aeroPerformanceMapRCType"/>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -2238,8 +2375,8 @@ jonas.jepsen@dlr.de
 						<ddue:para>aeroPerformanceMapsType</ddue:para>
 					</ddue:summary>
 					<ddue:remarks>
-						<ddue:para>aeroPerformanceMaps type, containing
-							aeroPerformanceMaps</ddue:para>
+						<ddue:para>aeroPerformanceMaps type, containing multiple
+							aeroPerformanceMaps for different cases</ddue:para>
 					</ddue:remarks>
 				</sd:schemaDoc>
 			</xsd:appinfo>
@@ -2247,7 +2384,7 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-					<xsd:element maxOccurs="unbounded" name="aeroPerformanceMap" type="aeroPerformanceMapRCType"/>
+					<xsd:element maxOccurs="unbounded" name="aeroPerformanceMap" type="aeroPerformanceMapType"/>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -3169,7 +3306,7 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:all>
-					<xsd:element minOccurs="0" name="aeroPerformanceMap" type="aeroPerformanceMapType"/>
+					<xsd:element minOccurs="0" name="aeroPerformanceMaps" type="aeroPerformanceMapsType"/>
 					<xsd:element minOccurs="0" name="aeroelastics" type="aeroelasticsType"/>
 					<xsd:element minOccurs="0" name="dynamicAircraftModel" type="dynamicAircraftModelAnalysisType"/>
                     <xsd:element minOccurs="0" name="flightDynamics" type="flightDynamicsAnalysisType"/>
@@ -3339,7 +3476,7 @@ jonas.jepsen@dlr.de
 								axis system!)</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="aeroPerformanceMaps" type="aeroPerformanceMapsType">
+					<xsd:element name="aeroPerformanceMaps" type="aeroPerformanceMapsRCType">
 						<xsd:annotation>
 							<xsd:documentation>Calculated aerodynamic performance maps of the
 								airfoil</xsd:documentation>
@@ -5069,7 +5206,7 @@ jonas.jepsen@dlr.de
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
 					<xsd:element name="name" type="stringBaseType"/>
-					<xsd:element name="description" type="stringBaseType"/>
+					<xsd:element minOccurs="0" name="description" type="stringBaseType"/>
 					<xsd:element name="structuralUID" type="stringUIDBaseType"/>
 					<xsd:element name="paxCapacity" type="integerBaseType">
 						<xsd:annotation>
@@ -6925,7 +7062,7 @@ jonas.jepsen@dlr.de
 				</sd:schemaDoc>
 			</xsd:appinfo>
 		</xsd:annotation>
-		<xsd:complexContent>
+		<xsd:simpleContent>
 			<xsd:extension base="stringBaseType">
 				<xsd:attribute name="name" type="xsd:string" use="required">
 					<xsd:annotation>
@@ -6934,7 +7071,7 @@ jonas.jepsen@dlr.de
 					</xsd:annotation>
 				</xsd:attribute>
 			</xsd:extension>
-		</xsd:complexContent>
+		</xsd:simpleContent>
 	</xsd:complexType>
 
 	<xsd:complexType name="comradeVariablesType">
@@ -7012,6 +7149,94 @@ jonas.jepsen@dlr.de
 	</xsd:complexType>
 
 
+	<xsd:complexType name="constraintSettingsPointPerformanceType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>constraintSettingsPointPerformanceType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>specific performance settings for the point performance</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element minOccurs="0" name="CAS" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Calibrated airspeed within the segment</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="machNumber" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Mach number within the segment</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="thrustSetting" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Thrust setting for derated engine as fraction of max. Thrust (e.g.: for powered descents, deceleration not at IDLE, manoevres).</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="climbAngle" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Climb angle within the segment</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="rateOfClimb" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Climb angle within the segment</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="rateOfTurn" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Rate of turn within the segment</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="rateOfDescent" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Rate of descent within the segment</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="acceleration" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Rate of velocity within the segment</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="descentAngle" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Descent angle within the segment</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="loadFactor" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Load factor experienced during segment</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="duration" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Duration of the condition. [for pointPerformance constraints]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="angleOfAttack" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Angle of attack [for pointPerformance constraints]</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="deltaTemperatureISA" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Delta in temperature compared to standard ISA conditions</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:all>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
 	<xsd:complexType name="constraintSettingsType">
 
 		<xsd:annotation>
@@ -7029,6 +7254,11 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:all>
+					<xsd:element minOccurs="0" name="CAS" type="doubleConstraintBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Calibrated airspeed within the segment</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element minOccurs="0" name="machNumber" type="doubleConstraintBaseType">
 						<xsd:annotation>
 							<xsd:documentation>Mach number within the segment</xsd:documentation>
@@ -7076,28 +7306,36 @@ jonas.jepsen@dlr.de
 					</xsd:element>
 					<xsd:element minOccurs="0" name="stepClimbSpecificExcessPower" type="doubleConstraintBaseType">
 						<xsd:annotation>
-							<xsd:documentation>Specific excess power within the segment (e.g.: for defining minimum SEP to remain after step climbs have been performed). [For segment constraint settings.]</xsd:documentation>
+							<xsd:documentation>Specific excess power within the segment (e.g.: for defining minimum SEP to remain after step climbs have been performed).</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element minOccurs="0" name="stepClimbAltitudeDifference" type="doubleConstraintBaseType">
 						<xsd:annotation>
-							<xsd:documentation>Altitude difference of each step climb. [For segment constraint settings.]</xsd:documentation>
+							<xsd:documentation>Altitude difference of each step climb.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element minOccurs="0" name="altitude" type="doubleConstraintBaseType">
 						<xsd:annotation>
-							<xsd:documentation>Constant altitude for the segment. [For segment constraint settings.]</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-					<xsd:element minOccurs="0" name="duration" type="doubleConstraintBaseType">
-						<xsd:annotation>
-							<xsd:documentation>Duration of the condition. [for pointPerformance constraints]</xsd:documentation>
+							<xsd:documentation>Constant altitude for the segment.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element minOccurs="0" name="deltaTemperatureISA" type="doubleConstraintBaseType">
 						<xsd:annotation>
 							<xsd:documentation>Delta in temperature compared to standard ISA conditions</xsd:documentation>
 						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="prioritySetting">
+						<xsd:annotation>
+							<xsd:documentation>priority setting indicating which constraint is preferred within the segment</xsd:documentation>
+						</xsd:annotation>
+						<xsd:complexType>
+								<xsd:simpleContent>
+									<xsd:restriction base="stringBaseType">
+										<xsd:enumeration value="velocity"/>
+										<xsd:enumeration value="flightPath"/>
+									</xsd:restriction>
+								</xsd:simpleContent>
+							</xsd:complexType>
 					</xsd:element>
 				</xsd:all>
 			</xsd:extension>
@@ -8098,12 +8336,12 @@ jonas.jepsen@dlr.de
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element minOccurs="0" name="dcfx" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfy" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfz" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmx" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmy" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmz" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcd" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcs" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcl" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmd" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcms" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcml" type="stringArrayBaseType"/>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -8395,12 +8633,12 @@ jonas.jepsen@dlr.de
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element minOccurs="0" name="dcfx" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfy" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfz" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmx" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmy" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmz" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcd" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcs" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcl" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmd" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcms" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcml" type="stringArrayBaseType"/>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -10255,6 +10493,51 @@ jonas.jepsen@dlr.de
 		</xsd:complexContent>
 	</xsd:complexType>
 
+	<xsd:complexType name="curveProfilesType">
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element name="curveProfile" type="profileGeometry2DType" maxOccurs="unbounded"></xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="curvePointType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>curvePointType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>Point on a curve in normalized curve coordinates.
+						The referenceUID must reference a one-dimensional curve such as spars.</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="eta" type="doubleBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Relative position on the referenced line/curve.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="referenceUID" type="stringUIDBaseType">
+						<xsd:annotation>
+							<xsd:documentation>This reference uID determines the reference curve.
+							If it points to a spar, then the eta value is considered to be a spar coordinate
+							between start (eta=0) and end (eta=1) of the spar.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:all>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
 
 	<xsd:complexType name="cutLoadIntegrationPointsType">
 
@@ -10667,111 +10950,111 @@ jonas.jepsen@dlr.de
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>1. &lt;dcfxdpstar&gt; (optional)</ddue:title>
+								<ddue:title>1. &lt;dcddpstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cfx by normalized roll rate</ddue:para>
+									<ddue:para>Change of cd by normalized roll rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>2. &lt;dcfxdqstar&gt; (optional)</ddue:title>
+								<ddue:title>2. &lt;dcddqstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cfx by normalized pitch rate</ddue:para>
+									<ddue:para>Change of cd by normalized pitch rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>3. &lt;dcfxdrstar&gt; (optional)</ddue:title>
+								<ddue:title>3. &lt;dcddrstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cfx by normalized yaw rate</ddue:para>
+									<ddue:para>Change of cd by normalized yaw rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>4. &lt;dcfydpstar&gt; (optional)</ddue:title>
+								<ddue:title>4. &lt;dcsdpstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cfy by normalized roll rate</ddue:para>
+									<ddue:para>Change of cs by normalized roll rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>5. &lt;dcfydqstar&gt; (optional)</ddue:title>
+								<ddue:title>5. &lt;dcsdqstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cfy by normalized pitch rate</ddue:para>
+									<ddue:para>Change of cs by normalized pitch rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>6. &lt;dcfydrstar&gt; (optional)</ddue:title>
+								<ddue:title>6. &lt;dcsdrstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cfy by normalized yaw rate</ddue:para>
+									<ddue:para>Change of cs by normalized yaw rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>7. &lt;dcfzdpstar&gt; (optional)</ddue:title>
+								<ddue:title>7. &lt;dcldpstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cfz by normalized roll rate</ddue:para>
+									<ddue:para>Change of cl by normalized roll rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>8. &lt;dcfzdqstar&gt; (optional)</ddue:title>
+								<ddue:title>8. &lt;dcldqstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cfz by normalized pitch rate</ddue:para>
+									<ddue:para>Change of cl by normalized pitch rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>9. &lt;dcfzdrstar&gt; (optional)</ddue:title>
+								<ddue:title>9. &lt;dcldrstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cfz by normalized yaw rate</ddue:para>
+									<ddue:para>Change of cl by normalized yaw rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>10. &lt;dcmxdpstar&gt; (optional)</ddue:title>
+								<ddue:title>10. &lt;dcmddpstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cmx by normalized roll rate</ddue:para>
+									<ddue:para>Change of cmd by normalized roll rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>11. &lt;dcmxdqstar&gt; (optional)</ddue:title>
+								<ddue:title>11. &lt;dcmddqstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cmx by normalized pitch rate</ddue:para>
+									<ddue:para>Change of cmd by normalized pitch rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>12. &lt;dcmxdrstar&gt; (optional)</ddue:title>
+								<ddue:title>12. &lt;dcmddrstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cmx by normalized yaw rate</ddue:para>
+									<ddue:para>Change of cmd by normalized yaw rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>13. &lt;dcmydpstar&gt; (optional)</ddue:title>
+								<ddue:title>13. &lt;dcmsdpstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cmy by normalized roll rate</ddue:para>
+									<ddue:para>Change of cms by normalized roll rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>14. &lt;dcmydqstar&gt; (optional)</ddue:title>
+								<ddue:title>14. &lt;dcmsdqstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cmy by normalized pitch rate</ddue:para>
+									<ddue:para>Change of cms by normalized pitch rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>15. &lt;dcmydrstar&gt; (optional)</ddue:title>
+								<ddue:title>15. &lt;dcmsdrstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cmy by normalized yaw rate</ddue:para>
+									<ddue:para>Change of cms by normalized yaw rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>16. &lt;dcmzdpstar&gt; (optional)</ddue:title>
+								<ddue:title>16. &lt;dcmldpstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cmz by normalized roll rate</ddue:para>
+									<ddue:para>Change of cml by normalized roll rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>17. &lt;dcmzdqstar&gt; (optional)</ddue:title>
+								<ddue:title>17. &lt;dcmldqstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cmz by normalized pitch rate</ddue:para>
+									<ddue:para>Change of cml by normalized pitch rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 							<ddue:section>
-								<ddue:title>18. &lt;dcmzdrstar&gt; (optional)</ddue:title>
+								<ddue:title>18. &lt;dcmldrstar&gt; (optional)</ddue:title>
 								<ddue:content>
-									<ddue:para>Change of cmz by normalized yaw rate</ddue:para>
+									<ddue:para>Change of cml by normalized yaw rate</ddue:para>
 								</ddue:content>
 							</ddue:section>
 						</ddue:content>
@@ -10782,24 +11065,24 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:all>
-					<xsd:element minOccurs="0" name="dcfxdpstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfxdqstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfxdrstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfydpstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfydqstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfydrstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfzdpstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfzdqstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcfzdrstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmxdpstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmxdqstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmxdrstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmydpstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmydqstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmydrstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmzdpstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmzdqstar" type="stringArrayBaseType"/>
-					<xsd:element minOccurs="0" name="dcmzdrstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcddpstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcddqstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcddrstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcsdpstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcsdqstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcsdrstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcldpstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcldqstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcldrstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmddpstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmddqstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmddrstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmsdpstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmsdqstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmsdrstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmldpstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmldqstar" type="stringArrayBaseType"/>
+					<xsd:element minOccurs="0" name="dcmldrstar" type="stringArrayBaseType"/>
 				</xsd:all>
 				<xsd:attribute name="uID" type="xsd:string" use="required"/>
 			</xsd:extension>
@@ -11492,6 +11775,7 @@ jonas.jepsen@dlr.de
 								should be performed. In this case, DELiS
 								creates only wings and the ansys
 								components for coupling with Trafuma. If
+                    <!--
 								False, also a DELiS fuselage will be
 								created, if given and requested and
 								coupled with the DELiS wings.
@@ -11516,6 +11800,7 @@ jonas.jepsen@dlr.de
 								Optional list of ComponentIDs of the
 								component(wing or fuselage) that should
 								be modeled. If not set all components
+                    -->
 								are modeled.
 							</xsd:documentation>
 						</xsd:annotation>
@@ -11638,7 +11923,6 @@ jonas.jepsen@dlr.de
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <!--
                     <xsd:element maxOccurs="1" minOccurs="0"
                         name="stringerModeling"
                         type="delisBeamModelingBaseType">
@@ -11663,7 +11947,6 @@ jonas.jepsen@dlr.de
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    -->
                     <xsd:element name="createStructureTopology"
                         type="booleanBaseType" maxOccurs="1"
                         minOccurs="0">
@@ -11830,13 +12113,13 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-					<xsd:element name="total" type="stringVectorBaseType"/>
-					<xsd:element name="cO2" type="stringVectorBaseType"/>
-					<xsd:element name="h2O" type="stringVectorBaseType"/>
-					<xsd:element name="o3" type="stringVectorBaseType"/>
-					<xsd:element name="cH4" type="stringVectorBaseType"/>
-					<xsd:element name="cont" type="stringVectorBaseType"/>
-					<xsd:element name="pmo" type="stringVectorBaseType"/>
+					<xsd:element name="total" type="doubleBaseType"/>
+					<xsd:element name="cO2" type="doubleBaseType"/>
+					<xsd:element name="h2O" type="doubleBaseType"/>
+					<xsd:element name="o3" type="doubleBaseType"/>
+					<xsd:element name="cH4" type="doubleBaseType"/>
+					<xsd:element name="cont" type="doubleBaseType"/>
+					<xsd:element name="pmo" type="doubleBaseType"/>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -13259,28 +13542,16 @@ jonas.jepsen@dlr.de
 		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
-				<xsd:sequence>
-					<xsd:element name="inlet" type="engineInletType"/>
-					<xsd:element minOccurs="0" name="bypassStream" type="engineCasingType"/>
-					<xsd:element name="coreStream" type="engineCasingType"/>
-					<xsd:element name="diameterMax" type="pointXYType">
-						<xsd:annotation>
-							<xsd:documentation>
-								Maximal diameter of the nacelle
-								(x=x-position; y=max diameter).
-							</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-					<xsd:element name="endPos" type="pointXType">
-						<xsd:annotation>
-							<xsd:documentation>
-								Most rearward x-position of the engine
-								nacelle.
-							</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-					<xsd:element name="outerShape" type="nacelleOuterShapeType"/>
-				</xsd:sequence>
+                <xsd:all>
+                	<xsd:element name="fanCowl"
+                		type="nacelleCowlType">
+                	</xsd:element>
+                	<xsd:element minOccurs="0" name="coreCowl"
+                		type="nacelleCowlType">
+                	</xsd:element>
+                	<xsd:element minOccurs="0" name="centerCowl" type="nacelleCenterCowlType"></xsd:element>
+                </xsd:all>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -13598,6 +13869,15 @@ jonas.jepsen@dlr.de
 						<xsd:documentation>UID of the engine pylon.</xsd:documentation>
 					</xsd:annotation>
 				</xsd:attribute>
+				<xsd:attribute name="symmetry">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="x-y-plane"/>
+							<xsd:enumeration value="x-z-plane"/>
+							<xsd:enumeration value="y-z-plane"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -13805,6 +14085,48 @@ jonas.jepsen@dlr.de
 							If it points to a segment, then the eta value is considered to be in segment
 							eta coordinate; if it points to a componentSegment,
 							then componentSegment eta coordinate is used.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:all>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+<xsd:complexType name="etaXsiPointType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>etaXsiPointType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>Point described by eta-xsi coordinates.
+						Can be either segment or component segment coordinates.</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="eta" type="doubleBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Relative spanwise position. Eta refers to the segment or componentSegment depending on the referenced uID.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="xsi" type="doubleBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Relative chordwise position. Xsi refers to the segment or componentSegment depending on the referenced uID.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="referenceUID" type="stringUIDBaseType">
+						<xsd:annotation>
+							<xsd:documentation>This reference uID determines the reference coordinate system.
+							If it points to a segment, then the eta-xsi values are considered to be in segment
+							eta-xsi coordinates; if it points to a componentSegment,
+							then componentSegment eta-xsi coordinates are used.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 				</xsd:all>
@@ -14397,13 +14719,26 @@ jonas.jepsen@dlr.de
 						</xsd:element>
 						<xsd:element name="latitude" type="stringVectorBaseType">
 							<xsd:annotation>
-								<xsd:documentation>Vector of waypoint latitute values in [deg]</xsd:documentation>
+								<xsd:documentation>Vector of waypoint latitude values in [deg]</xsd:documentation>
 							</xsd:annotation>
 						</xsd:element>
 						<xsd:element name="longitude" type="stringVectorBaseType">
 							<xsd:annotation>
 								<xsd:documentation>Vector of waypoint longitude values in [deg]</xsd:documentation>
 							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="wayPointType">
+							<xsd:annotation>
+								<xsd:documentation>Indicates the type of the way point.</xsd:documentation>
+							</xsd:annotation>
+							<xsd:complexType>
+								<xsd:simpleContent>
+									<xsd:restriction base="stringBaseType">
+										<xsd:enumeration value="flyOver"/>
+										<xsd:enumeration value="flyBy"/>
+									</xsd:restriction>
+								</xsd:simpleContent>
+							</xsd:complexType>
 						</xsd:element>
 					</xsd:all>
 			</xsd:extension>
@@ -15887,7 +16222,7 @@ jonas.jepsen@dlr.de
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
 					<xsd:element name="name" type="stringBaseType"/>
-					<xsd:element name="description" type="stringBaseType"/>
+					<xsd:element minOccurs="0" name="description" type="stringBaseType"/>
 					<xsd:element name="lowerHeatingValue" type="doubleBaseType"/>
 					<xsd:element name="density" type="doubleBaseType">
 						<xsd:annotation>
@@ -15961,7 +16296,7 @@ jonas.jepsen@dlr.de
 								axis system!)</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="aeroPerformanceMaps" type="aeroPerformanceMapsType">
+					<xsd:element name="aeroPerformanceMaps" type="aeroPerformanceMapsRCType">
 						<xsd:annotation>
 							<xsd:documentation>Calculated aerodynamic performance maps of the
 								fuselage</xsd:documentation>
@@ -17839,7 +18174,7 @@ jonas.jepsen@dlr.de
 				</sd:schemaDoc>
 			</xsd:appinfo>
 		</xsd:annotation>
-		<xsd:complexContent>
+		<xsd:simpleContent>
 			<xsd:extension base="stringBaseType">
 				<xsd:attribute name="mode" type="xsd:string">
 					<xsd:annotation>
@@ -17848,7 +18183,7 @@ jonas.jepsen@dlr.de
 					</xsd:annotation>
 				</xsd:attribute>
 			</xsd:extension>
-		</xsd:complexContent>
+		</xsd:simpleContent>
 	</xsd:complexType>
 
 	<xsd:complexType name="geogenConstraintType">
@@ -18150,7 +18485,7 @@ jonas.jepsen@dlr.de
 				</sd:schemaDoc>
 			</xsd:appinfo>
 		</xsd:annotation>
-		<xsd:complexContent>
+		<xsd:simpleContent>
 			<xsd:extension base="stringBaseType">
 				<xsd:attribute default="1" name="inclusive" type="xsd:boolean">
 					<xsd:annotation>
@@ -18160,7 +18495,7 @@ jonas.jepsen@dlr.de
 					</xsd:annotation>
 				</xsd:attribute>
 			</xsd:extension>
-		</xsd:complexContent>
+		</xsd:simpleContent>
 	</xsd:complexType>
 
 	<xsd:complexType name="geogenParameterType">
@@ -18803,7 +19138,7 @@ jonas.jepsen@dlr.de
 								force and moment coefficients</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="aeroPerformanceMaps" type="aeroPerformanceMapsType">
+					<xsd:element name="aeroPerformanceMaps" type="aeroPerformanceMapsRCType">
 						<xsd:annotation>
 							<xsd:documentation>Calculated aerodynamic performance maps of the
 								full configuration</xsd:documentation>
@@ -18832,6 +19167,7 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
+					<xsd:element name="materialUID" type="stringUIDBaseType"/>
 					<xsd:element name="source" type="stringBaseType"/>
 					<xsd:element name="consistancy" type="booleanBaseType"/>
 					<xsd:element name="beamCrossSection" type="beamCrossSectionType"/>
@@ -19102,7 +19438,12 @@ jonas.jepsen@dlr.de
 						<ddue:content>
 							<ddue:para>A guide curve may be used to alter the shape of the
 								outer geometry and "guide" the loft.
+								The guide curve profiles are defined in the guideCurveProfileGeometryType.
+								Their use on wing and fuselage components is illustrated in the image below.
 							</ddue:para>
+							<ddue:mediaLink>
+								<ddue:image xlink:href="guideCurveIllustration"/>
+							</ddue:mediaLink>
 						</ddue:content>
 					</ddue:remarks>
 				</sd:schemaDoc>
@@ -21535,6 +21876,18 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
+					<xsd:element name="name" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Name of the AeroPerformanceMap.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="description" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Description of the AeroPerformanceMap.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="machNumber" type="stringVectorBaseType">
 						<xsd:annotation>
 							<xsd:documentation>Mach number</xsd:documentation>
@@ -23480,7 +23833,7 @@ jonas.jepsen@dlr.de
 				</sd:schemaDoc>
 			</xsd:appinfo>
 		</xsd:annotation>
-		<xsd:complexContent>
+		<xsd:simpleContent>
 			<xsd:extension base="stringBaseType">
 				<xsd:attribute name="format">
 					<xsd:simpleType>
@@ -23492,7 +23845,7 @@ jonas.jepsen@dlr.de
 					</xsd:simpleType>
 				</xsd:attribute>
 			</xsd:extension>
-		</xsd:complexContent>
+		</xsd:simpleContent>
 	</xsd:complexType>
 
 	<xsd:complexType name="loadAnalysisType">
@@ -28115,7 +28468,7 @@ jonas.jepsen@dlr.de
 							<xsd:documentation>Parameter name</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="description" type="stringBaseType">
+					<xsd:element minOccurs="0" name="description" type="stringBaseType">
 						<xsd:annotation>
 							<xsd:documentation>Parameter description</xsd:documentation>
 						</xsd:annotation>
@@ -28125,11 +28478,11 @@ jonas.jepsen@dlr.de
 							<xsd:annotation>
 								<xsd:documentation>Parameter value</xsd:documentation>
 							</xsd:annotation>
-							<xsd:complexContent>
+							<xsd:simpleContent>
 								<xsd:extension base="doubleBaseType">
 									<xsd:attribute name="enforce" type="xsd:boolean"/>
 								</xsd:extension>
-							</xsd:complexContent>
+							</xsd:simpleContent>
 						</xsd:complexType>
 					</xsd:element>
 				</xsd:all>
@@ -29121,6 +29474,36 @@ jonas.jepsen@dlr.de
 	</xsd:complexType>
 
 
+	<xsd:complexType name="missionPerformanceMapDefinitionType">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Setting default and specific performance maps to be used for a model</ddue:para>
+					</ddue:summary>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="defaultPerformanceMapUID" type="stringUIDBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Default performance map which is used if no other performance map
+							is assigned through the specificPerformanceMap node</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="specificPerformanceMaps" type="specificPerformanceMapsType">
+						<xsd:annotation>
+							<xsd:documentation>List of specific performance maps used on dedicated mission segments</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:all>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
 	<xsd:complexType name="missionSegmentEndConditionType">
 
 		<xsd:annotation>
@@ -29159,7 +29542,17 @@ jonas.jepsen@dlr.de
 									<xsd:documentation>Global coordinate at the end of the segment in geographic coordinates (longitude, latitude, altitude)</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
+							<xsd:element name="runwayUID" type="stringUIDBaseType">
+								<xsd:annotation>
+									<xsd:documentation>destination runway UID</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
 						</xsd:choice>
+						<xsd:element minOccurs="0" name="orientation" type="orientationType">
+							<xsd:annotation>
+								<xsd:documentation>Final orientation in segment</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
 						<xsd:element minOccurs="0" name="range" type="pointConstraintType">
 							<xsd:annotation>
 								<xsd:documentation>Flown distance in the segment (x, y, z)</xsd:documentation>
@@ -29180,6 +29573,11 @@ jonas.jepsen@dlr.de
 								<xsd:documentation>Rate of climb ending the segment</xsd:documentation>
 							</xsd:annotation>
 						</xsd:element>
+						<xsd:element minOccurs="0" name="flightPathAngle" type="doubleConstraintBaseType">
+							<xsd:annotation>
+								<xsd:documentation>Angle of flight path ending the segment</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
 						<xsd:element minOccurs="0" name="massFraction" type="doubleConstraintBaseType">
 							<xsd:annotation>
 								<xsd:documentation>MassFraction ending the segment</xsd:documentation>
@@ -29198,12 +29596,6 @@ jonas.jepsen@dlr.de
 						<xsd:element minOccurs="0" name="fuelConsumed" type="doubleConstraintBaseType">
 							<xsd:annotation>
 								<xsd:documentation>Consumed fuel mass ending the segment</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
-						<xsd:element minOccurs="0" name="storesReleased" type="stringVectorBaseType">
-							<xsd:annotation>
-								<xsd:documentation>uID list of stores released in the segment (mostly comes joined with a new aeroPerformanceMapUID for the new aerodynamic configuration of the aircraft). Links to entries in the weightAndBalance vector such that new state is retrievable.
-</xsd:documentation>
 							</xsd:annotation>
 						</xsd:element>
 					</xsd:sequence>
@@ -29233,12 +29625,6 @@ jonas.jepsen@dlr.de
 							<xsd:element name="endCondition" type="missionSegmentEndConditionType"/>
 							<xsd:element name="flightPath" type="flightPathType"/>
 						</xsd:choice>
-						<xsd:element minOccurs="0" name="variableSegments" type="stringVectorBaseType">
-							<xsd:annotation>
-								<xsd:documentation>Vector of segmentUIDs for segments that are allowed to be varied within a mission optimisation
-								</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
 					</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -29278,11 +29664,10 @@ jonas.jepsen@dlr.de
 							</xsd:complexType>
 						</xsd:element>
 						<xsd:element name="segmentUIDSequence" type="stringVectorBaseType"/>
-						<xsd:element minOccurs="0" name="variableSegments" type="stringVectorBaseType">
+						<xsd:element minOccurs="0" name="variableSegments" type="variableSegmentsType">
 							<xsd:annotation>
 								<xsd:documentation>list of segments that are allowed to be varied within a mission optimisation.
-									<ddue:para>This concept needs to be practically tested. Does it suffice to mention (a list of) segments that are free to change to fit the overall block constraints? What happens if a segment is variable, though it has some constraints? When to define a segment as variable (climb until endPosition z, then endPosition x should be left free. Is the segment then variable? Probably not.). Somehow the 'free' segment should be in between fully defined segments (i.e.: a cruise+descent in between endPosition z == ICA and endPosition z == 0 for landing to define max range. How to define this exactly?)
-</ddue:para>
+									<ddue:para>This concept needs to be practically tested. Does it suffice to mention (a list of) segments that are free to change to fit the overall block constraints? What happens if a segment is variable, though it has some constraints? When to define a segment as variable (climb until endPosition z, then endPosition x should be left free. Is the segment then variable? Probably not.). Somehow the 'free' segment should be in between fully defined segments (i.e.: a cruise+descent in between endPosition z == ICA and endPosition z == 0 for landing to define max range. How to define this exactly?)</ddue:para>
 								</xsd:documentation>
 							</xsd:annotation>
 						</xsd:element>
@@ -29295,8 +29680,6 @@ jonas.jepsen@dlr.de
 								<xsd:simpleContent>
 									<xsd:restriction base="stringBaseType">
 										<xsd:enumeration value="blockFuel"/>
-										<xsd:enumeration value="taxiFuel"/>
-										<xsd:enumeration value="tripFuel"/>
 										<xsd:enumeration value="reserveFuel"/>
 									</xsd:restriction>
 								</xsd:simpleContent>
@@ -29366,33 +29749,25 @@ jonas.jepsen@dlr.de
 										<xsd:enumeration value="descent"/>
 										<xsd:enumeration value="landing"/>
 										<xsd:enumeration value="acceleration"/>
+										<xsd:enumeration value="ground"/>
+										<xsd:enumeration value="range"/>
+										<xsd:enumeration value="duration"/>
+										<xsd:enumeration value="turn"/>
+										<xsd:enumeration value="holding"/>
+										<xsd:enumeration value="storeRelease"/>
+										<xsd:enumeration value="taxi"/>
+										<xsd:enumeration value="other"/>
 									</xsd:restriction>
 								</xsd:simpleContent>
 							</xsd:complexType>
 						</xsd:element>
 						<xsd:choice>
+							<xsd:element minOccurs="0" name="mass" type="doubleBaseType"/>
 							<xsd:element minOccurs="0" name="massFraction" type="massFractionType"/>
 							<xsd:sequence>
-								<xsd:element name="enginePerformanceMapUID" type="stringUIDBaseType">
-									<xsd:annotation>
-										<xsd:documentation>Refers to the enginePerformanceMap to be used within the segment
-										</xsd:documentation>
-									</xsd:annotation>
-								</xsd:element>
-								<xsd:element name="aeroPerformanceMapUID" type="stringUIDBaseType">
-									<xsd:annotation>
-										<xsd:documentation>Refers to the aeroPerformanceMap to be used within the segment
-										</xsd:documentation>
-									</xsd:annotation>
-								</xsd:element>
-								<xsd:element minOccurs="0" name="controlSurfaceUIDs" type="stringVectorBaseType">
-									<xsd:annotation>
-										<xsd:documentation>Indicates which control surface uID's to use for trimming purposes
-										</xsd:documentation>
-									</xsd:annotation>
-								</xsd:element>
 								<xsd:element minOccurs="0" name="endCondition" type="missionSegmentEndConditionType"/>
 								<xsd:element minOccurs="0" name="constraintSettings" type="constraintSettingsType"/>
+								<xsd:element minOccurs="0" name="configuration" type="stringBaseType"/>
 							</xsd:sequence>
 						</xsd:choice>
 					</xsd:sequence>
@@ -29419,7 +29794,7 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-					<xsd:element maxOccurs="unbounded" name="missionSegment" type="missionSegmentType"/>
+					<xsd:element maxOccurs="unbounded" name="segment" type="missionSegmentType"/>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -29717,51 +30092,30 @@ jonas.jepsen@dlr.de
 		</xsd:complexContent>
 	</xsd:complexType>
 
-	<xsd:complexType name="nacelleElementType">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<sd:schemaDoc>
-					<ddue:summary>
-						<ddue:para>nacelleElementType</ddue:para>
-					</ddue:summary>
-					<ddue:remarks>
-						<ddue:para/>
-					</ddue:remarks>
-				</sd:schemaDoc>
-			</xsd:appinfo>
-		</xsd:annotation>
+	<xsd:complexType name="nacelleGuideCurveType">
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
-				<xsd:sequence>
-					<xsd:element name="name" type="stringBaseType"/>
-					<xsd:element minOccurs="0" name="description" type="stringBaseType">
+				<xsd:all>
+					<xsd:element name="name" type="stringBaseType"></xsd:element>
+					<xsd:element name="description" type="stringBaseType"></xsd:element>
+					<xsd:element name="guideCurveProfileUID"
+						type="stringUIDBaseType">
 					</xsd:element>
-					<xsd:element name="profileUID" type="stringUIDBaseType"/>
-					<xsd:element name="transformation" type="transformationPolarType">
+					<xsd:element name="startSectionUID"
+						type="stringUIDBaseType">
 					</xsd:element>
-				</xsd:sequence>
-				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+					<xsd:element name="fromZeta" type="doubleBaseType"></xsd:element>
+					<xsd:element name="toZeta" type="doubleBaseType"></xsd:element>
+				</xsd:all>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
 
-	<xsd:complexType name="nacelleElementsType">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<sd:schemaDoc>
-					<ddue:summary>
-						<ddue:para>nacelleElementsType</ddue:para>
-					</ddue:summary>
-					<ddue:remarks>
-						<ddue:para/>
-					</ddue:remarks>
-				</sd:schemaDoc>
-			</xsd:appinfo>
-		</xsd:annotation>
+	<xsd:complexType name="nacelleGuideCurvesType">
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-					<xsd:element maxOccurs="unbounded" name="element" type="nacelleElementType"/>
+					<xsd:element name="nacelleGuideCurve" type="nacelleGuideCurveType" maxOccurs="unbounded"></xsd:element>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -29775,7 +30129,34 @@ jonas.jepsen@dlr.de
 						<ddue:para>nacelleOuterShapeType</ddue:para>
 					</ddue:summary>
 					<ddue:remarks>
-						<ddue:para/>
+						<ddue:para>The outer shape of the nacelle is defined using rotationally arranged nacelle sections. The transformation in each nacelle section defines the position at which the section is placed. Sections are combined to segments with neighbouring sections ordered by the translations phi angle.</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="transformation" type="transformationType"/>
+					<xsd:element name="sections" type="nacelleSectionsType"/>
+
+
+				</xsd:all>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="nacelleProfilesType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>nacelleProfilesType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>Nacelle profiles type, containing nacelle profile geometries.
+							See profileGeometryType for further documentation</ddue:para>
 					</ddue:remarks>
 				</sd:schemaDoc>
 			</xsd:appinfo>
@@ -29783,9 +30164,7 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-					<xsd:element name="transformation" type="transformationType">
-					</xsd:element>
-					<xsd:element name="sections" type="nacelleSectionsType"/>
+					<xsd:element maxOccurs="unbounded" name="nacelleProfile" type="profileGeometry2DType"/>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -29806,14 +30185,12 @@ jonas.jepsen@dlr.de
 		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
-				<xsd:sequence>
+				<xsd:all>
 					<xsd:element name="name" type="stringBaseType"/>
-					<xsd:element minOccurs="0" name="description" type="stringBaseType">
-					</xsd:element>
-					<xsd:element name="transformation" type="transformationPolarType">
-					</xsd:element>
-					<xsd:element name="elements" type="nacelleElementsType"/>
-				</xsd:sequence>
+					<xsd:element minOccurs="0" name="description" type="stringBaseType"/>
+					<xsd:element name="transformation" type="transformationType"/>
+					<xsd:element name="profileUID" type="stringUIDBaseType"/>
+				</xsd:all>
 				<xsd:attribute name="uID" type="xsd:string" use="required"/>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -30280,7 +30657,8 @@ jonas.jepsen@dlr.de
 				<xsd:sequence>
 					<xsd:element minOccurs="0" name="heading" type="doubleBaseType">
 						<xsd:annotation>
-							<xsd:documentation>Flight heading</xsd:documentation>
+							<xsd:documentation>Flight heading at the start of the mission, in compassAngle with reference to true North
+</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 				</xsd:sequence>
@@ -30419,6 +30797,91 @@ jonas.jepsen@dlr.de
 	</xsd:complexType>
 
 
+	<xsd:complexType name="paradiseToolType">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>paradiseToolType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>ParadiseTool type, containing PARADISE tool data</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="tool" type="toolType">
+						<xsd:annotation>
+							<xsd:documentation>Tool identification</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="aircraftModelUID" type="stringUIDBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Reference to an aircraft model</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="toolMode">
+						<xsd:annotation>
+							<xsd:documentation>Mode of the tool (v)alidation and (c)alculation</xsd:documentation>
+						</xsd:annotation>
+						<xsd:complexType>
+							<xsd:simpleContent>
+								<xsd:restriction base="stringBaseType">
+									<xsd:enumeration value="normal"/>
+									<xsd:enumeration value="animation"/>
+									<xsd:attribute name="externalDataNodePath" type="xsd:string"/>
+								</xsd:restriction>
+							</xsd:simpleContent>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="usecaseFile" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Usecase File</xsd:documentation>
+						</xsd:annotation>
+						<xsd:complexType>
+							<xsd:simpleContent>
+								<xsd:restriction base="stringBaseType">
+									<xsd:enumeration value="maxSPL [dBA]"/>
+									<xsd:enumeration value="EPNL [EPNdB]"/>
+								</xsd:restriction>
+							</xsd:simpleContent>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="modelFile" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Model file</xsd:documentation>
+						</xsd:annotation>
+					<xsd:complexType>
+						<xsd:simpleContent>
+							<xsd:restriction base="stringBaseType">
+								<xsd:enumeration value="maxSPL [dBA]"/>
+								<xsd:enumeration value="EPNL [EPNdB]"/>
+							</xsd:restriction>
+						</xsd:simpleContent>
+					</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="mappingFile" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Mapping file</xsd:documentation>
+						</xsd:annotation>
+						<xsd:complexType>
+							<xsd:simpleContent>
+								<xsd:restriction base="stringBaseType">
+									<xsd:enumeration value="maxSPL [dBA]"/>
+									<xsd:enumeration value="EPNL [EPNdB]"/>
+								</xsd:restriction>
+							</xsd:simpleContent>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:all>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	
 	<xsd:complexType name="paramamSbotToolType">
 
 		<xsd:annotation>
@@ -30789,8 +31252,41 @@ jonas.jepsen@dlr.de
 							<xsd:documentation>Optional list of point performance UID's serving as constraints for the mission</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
+					<xsd:element minOccurs="0" name="performanceMaps" type="performanceMapSelectionType">
+						<xsd:annotation>
+							<xsd:documentation>Selection of performance maps to be used for the evaluation of this model</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 				</xsd:all>
 				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="performanceMapSelectionType">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Selection of performance maps which are being applied for missions</ddue:para>
+					</ddue:summary>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element minOccurs="0" name="engine" type="missionPerformanceMapDefinitionType">
+						<xsd:annotation>
+							<xsd:documentation>Engine performance map selection</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="aerodynamic" type="missionPerformanceMapDefinitionType">
+						<xsd:annotation>
+							<xsd:documentation>Aerodynamic performance map selection</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:all>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -31163,6 +31659,44 @@ jonas.jepsen@dlr.de
 	</xsd:complexType>
 
 
+	<xsd:complexType name="pointListXYVectorType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>List of 2D points, kept in two coordinate vecors (x, y)</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>This set of vectors contains an ordered list of points
+								for x and y coordinates in the form of stringBased Vectors.
+								The x and y vector elements with the same index specify a 2D
+								point. The coordinates of the x vector of [0, 1].</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element name="x" type="stringVectorBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Vector of x coordinates</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="y" type="stringVectorBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Vector of y coordinates</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
 	<xsd:complexType name="pointListXZType">
 
 		<xsd:annotation>
@@ -31267,22 +31801,7 @@ jonas.jepsen@dlr.de
 								</xsd:simpleContent>
 							</xsd:complexType>
 						</xsd:element>
-						<xsd:element minOccurs="0" name="enginePerformanceMapUID" type="stringUIDBaseType">
-							<xsd:annotation>
-								<xsd:documentation>Refers to the enginePerformanceMap to be used within the point performance calculation</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
-						<xsd:element minOccurs="0" name="aeroPerformanceMapUID" type="stringUIDBaseType">
-							<xsd:annotation>
-								<xsd:documentation>Refers to the aeroPerformanceMap to be used within the segment</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
-						<xsd:element minOccurs="0" name="controlSurfaceUIDs" type="stringVectorBaseType">
-							<xsd:annotation>
-								<xsd:documentation>For trimming purposes indicate which control surface uID's to use</xsd:documentation>
-							</xsd:annotation>
-						</xsd:element>
-						<xsd:element minOccurs="0" name="constraintSettings" type="constraintSettingsType"/>
+						<xsd:element minOccurs="0" name="constraintSettings" type="constraintSettingsPointPerformanceType"/>
 					</xsd:sequence>
 				<xsd:attribute name="uID" type="xsd:string" use="required"/>
 			</xsd:extension>
@@ -32075,8 +32594,8 @@ jonas.jepsen@dlr.de
 								data of a structural element, that are based on 2-dimensional
 								profiles.</ddue:para>
 							<ddue:para>The parameter 'structuralProfileUID' refers to the
-								definition of the 2-dimensinal profile. This profile is defined
-								by several points in the x-y-space. Allways two points are
+								definition of the 2-dimensional profile. This profile is defined
+								by several points in the x-y-space. Always two points are
 								combined two one sheet. The properties of each sheet are defined
 								in the 'sheetProperties' section by referencing on the sheetUID
 								and the material properties. The orthotropy direction of
@@ -32113,63 +32632,64 @@ jonas.jepsen@dlr.de
 								element</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element maxOccurs="unbounded" name="sheetProperties" type="materialDefinitionForProfileBasedType"/>
 					<xsd:choice>
 						<xsd:annotation>
-							<xsd:documentation>Choise between general profile element
-								description (using structuralProfile definiton) and standard
-								profiles</xsd:documentation>
+							<xsd:documentation>Choice between global beam properties and sheet properties</xsd:documentation>
 						</xsd:annotation>
 						<xsd:sequence>
-							<xsd:annotation>
-								<xsd:documentation>Definition based aon structuralProfile
-									definition</xsd:documentation>
-							</xsd:annotation>
-							<xsd:element name="structuralProfileUID" type="stringUIDBaseType">
+							<xsd:element maxOccurs="unbounded" name="sheetProperties" type="materialDefinitionForProfileBasedType"/>
+							<xsd:choice>
 								<xsd:annotation>
-									<xsd:documentation>Reference to the structural profile profile
-										uID.</xsd:documentation>
+									<xsd:documentation>Choice between general profile element
+										description (using structuralProfile definition) and standard
+										profiles</xsd:documentation>
 								</xsd:annotation>
-							</xsd:element>
-							<xsd:element maxOccurs="unbounded" minOccurs="0" name="pointProperties" type="materialDefinitionForProfileBasedPointType"/>
-							<xsd:element minOccurs="0" name="referencePointUID" type="stringUIDBaseType">
-								<xsd:annotation>
-									<xsd:documentation>Reference point in structural profile
-										definition for structural element definition
-									</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
+								<xsd:sequence>
+									<xsd:annotation>
+										<xsd:documentation>Definition based on structuralProfile
+											definition</xsd:documentation>
+									</xsd:annotation>
+									<xsd:element name="structuralProfileUID" type="stringUIDBaseType">
+										<xsd:annotation>
+											<xsd:documentation>Reference to the structural profile profile
+												uID.</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element maxOccurs="unbounded" minOccurs="0" name="pointProperties" type="materialDefinitionForProfileBasedPointType"/>
+									<xsd:element minOccurs="0" name="referencePointUID" type="stringUIDBaseType">
+										<xsd:annotation>
+											<xsd:documentation>Reference point in structural profile
+												definition for structural element definition
+											</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+								</xsd:sequence>
+								<xsd:element name="standardProfileType">
+									<xsd:annotation>
+										<xsd:documentation>Standard Profile Type, see picture below for
+											further information.</xsd:documentation>
+									</xsd:annotation>
+									<xsd:complexType>
+										<xsd:simpleContent>
+											<xsd:restriction base="stringBaseType">
+												<xsd:enumeration value="C"/>
+												<xsd:enumeration value="T"/>
+												<xsd:enumeration value="Z"/>
+												<xsd:enumeration value="L"/>
+												<xsd:enumeration value="HAT"/>
+												<xsd:enumeration value="ROD"/>
+												<xsd:enumeration value="TUBE"/>
+												<xsd:enumeration value="BAR"/>
+												<xsd:enumeration value="BOX"/>
+											</xsd:restriction>
+										</xsd:simpleContent>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:choice>
 						</xsd:sequence>
-						<xsd:sequence>
-							<xsd:annotation>
-								<xsd:documentation>Standard Profiles, such as C, Z, ... (see
-									documentation)</xsd:documentation>
-							</xsd:annotation>
-							<xsd:element name="standardProfileType">
-								<xsd:annotation>
-									<xsd:documentation>Standard Profile Type, see picture below for
-										further information.</xsd:documentation>
-								</xsd:annotation>
-								<xsd:complexType>
-									<xsd:simpleContent>
-										<xsd:restriction base="stringBaseType">
-											<xsd:enumeration value="C"/>
-											<xsd:enumeration value="T"/>
-											<xsd:enumeration value="Z"/>
-											<xsd:enumeration value="L"/>
-											<xsd:enumeration value="HAT"/>
-											<xsd:enumeration value="ROD"/>
-											<xsd:enumeration value="TUBE"/>
-											<xsd:enumeration value="BAR"/>
-											<xsd:enumeration value="BOX"/>
-										</xsd:restriction>
-									</xsd:simpleContent>
-								</xsd:complexType>
-							</xsd:element>
-						</xsd:sequence>
+						<xsd:element minOccurs="0" name="globalBeamProperties" type="globalBeamPropertiesType"/>
 					</xsd:choice>
 					<xsd:element minOccurs="0" name="transformation" type="transformation2DType"/>
-					<xsd:element minOccurs="0" name="globalBeamProperties" type="globalBeamPropertiesType"/>
 				</xsd:sequence>
 				<xsd:attribute name="uID" type="xsd:string" use="required"/>
 			</xsd:extension>
@@ -32321,6 +32841,88 @@ jonas.jepsen@dlr.de
 	</xsd:complexType>
 
 
+	<xsd:complexType name="profileGeometry2DType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>profileGeometry2DType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>A profile is defined by a profile name, an optional
+								description and a 2-dimensional pointlist with both
+								coordinates mandatory. All point coordinates are transferred 
+								to the global coordinate system depending on the context they
+								are used in. The points have to be ordered in a mathematical
+								positive sense. The x-coordinates of the profile has to be
+								normalized between 0 and 1. First and last point
+								may, but need not to, be identical. Hence, it is possible to
+								include "open" profiles. However, the trailing edge position of
+								the upper and lower point need to be identical. No crooked
+								trailing edges are possible.</ddue:para>
+							<ddue:para>Example 1: For a conventional nacelle profile, the airfoil
+								coordinates are defined in x and y. The points have to be ordered 
+								from the trailing edge along the lower side to the leading
+								edge and then along the upper side back to the trailing edge.
+								When used for a nacelle the profile axis align
+								with the global axes as follows:
+								+x_profile -> +x_global;
+								+y-profile -> -z_global</ddue:para>
+							<ddue:para>Example 2: For a fuselage, the coordinates are
+								also given in x and z with x as the normalized fuselage height.
+								Starting point of the profile sould be the lowest point
+								(typically in the symmetry plane), then upwards on the positive x-side up to the highest
+								point (again, typically in the symmetry plane). Depending on,
+								whether the fuselage shall be specified with symmetry condition
+								or not, the profile either ends there, or continues on the
+								negative x-side back down to the lowest point.</ddue:para>
+							<ddue:para>Alternatively, it is possible to specify the
+								coordinates of a profile via the CST (class function /shape
+								function transformation technique) notation. Please see the
+								cst2DType for further information.</ddue:para>
+							<ddue:para>A profile can be symmetric. In that case the profile
+								is interpreted as being not closed and will be closed by
+								mirroring it on the symmetry plane.</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element name="name" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Name of profile</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="description" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Description of profile</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:choice>
+						<xsd:element name="pointList" type="pointListXYVectorType"/>
+						<xsd:element name="cst2D" type="cst2DType"/>
+					</xsd:choice>
+				</xsd:sequence>
+				<xsd:attribute name="symmetry">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="x-axis"/>
+							<xsd:enumeration value="y-axis"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
 	<xsd:complexType name="profilesType">
 
 		<xsd:annotation>
@@ -32344,6 +32946,8 @@ jonas.jepsen@dlr.de
 					<xsd:element minOccurs="0" name="guideCurves" type="guideCurveProfilesType"/>
 					<xsd:element minOccurs="0" name="rotorAirfoils" type="rotorAirfoilsType"/>
 					<xsd:element minOccurs="0" name="structuralProfiles" type="structuralProfilesType"/>
+					<xsd:element minOccurs="0" name="nacelleProfiles" type="nacelleProfilesType"/>
+					<xsd:element minOccurs="0" name="curveProfiles" type="curveProfilesType"/>
 				</xsd:all>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -32602,12 +33206,12 @@ jonas.jepsen@dlr.de
 			<xsd:appinfo>
 				<sd:schemaDoc>
 					<ddue:summary>
-						<ddue:para>wingRibsPositioningType</ddue:para>
+						<ddue:para>pylonRibsPositioningType</ddue:para>
 					</ddue:summary>
 					<ddue:remarks>
 						<ddue:content>
-							<ddue:para>Within the ribsPositioing type the position and the
-								orientaion of the ribs of the rib set are defined.</ddue:para>
+							<ddue:para>Within the ribsPositioning type the position and the
+								orientation of the ribs of the rib set are defined.</ddue:para>
 							<ddue:para>The forward and the rear beginning of the rib set is
 								defined using relDepthStart and relDepthEnd. The orientation of
 								the ribs is defined in ribRotaton. The number of ribs of the
@@ -33214,12 +33818,13 @@ jonas.jepsen@dlr.de
 					<xsd:element minOccurs="0" name="ribRotationReference" type="stringBaseType">
 						<xsd:annotation>
 							<xsd:documentation>RotationReference defines the reference for
-								the z-rotation it is either sparUID or„LeadingEdge“ or
-								„TrailingEdge“. If it is not defined the rotation reference is
+								the z-rotation it is either sparUID, „LeadingEdge“, 
+								„TrailingEdge“, "globalX", "globalY" or "globalZ".
+								If it is not defined the rotation reference is
 								the eta-axis (=leading edge, that is projected on the wings
 								y-z-plane). A z-rotation angle of 90 degrees means, that the rib
 								is perpendicular on the ribRotationReference (e.g. spar, leading
-								edge...). The rib itself is allways straight, and the rotation
+								edge...). The rib itself is always straight, and the rotation
 								is defined with respect of the intersection point of the rib
 								with the ribRotationReference.</xsd:documentation>
 						</xsd:annotation>
@@ -35443,29 +36048,11 @@ jonas.jepsen@dlr.de
                 </xsd:annotation>
                 <xsd:complexContent>
                         <xsd:extension base="complexBaseType">
-                                <xsd:sequence>
-                                        <xsd:choice>
-                                                <xsd:element name="eta" type="doubleBaseType">
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>Eta coordinate of the spar definition point.
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                </xsd:element>
-                                                <xsd:element name="elementUID" type="stringUIDBaseType">
-                                                        <xsd:annotation>
-                                                                <xsd:documentation>Link to a section element.
-                                                                </xsd:documentation>
-                                                        </xsd:annotation>
-                                                </xsd:element>
-                                        </xsd:choice>
-                                        <xsd:element name="xsi" type="doubleBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>Xsi coordinate of the spar definition point.
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                </xsd:sequence>
-                                <xsd:attribute name="uID" type="xsd:string"/>
+                <xsd:choice minOccurs="1" maxOccurs="1">
+                    <xsd:element name="sparPositionRib" type="wingRibPointType"/>
+                    <xsd:element name="sparPositionEtaXsi" type="etaXsiPointType"/>
+                </xsd:choice>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
                         </xsd:extension>
                 </xsd:complexContent>
 	</xsd:complexType>
@@ -35526,8 +36113,17 @@ jonas.jepsen@dlr.de
 						<ddue:para>Spar definition points on the wing.</ddue:para>
 					</ddue:summary>
 					<ddue:remarks>
-						<ddue:para>sparPositionsType, containing multiple sparPositions.
-						</ddue:para>
+						<ddue:content>
+							<ddue:para>sparPositionType, a sparPostion defines a location
+								within the componentSegment where a spar in mounted. Eta and xsi
+								are relative to the componentSegment.</ddue:para>
+							<ddue:para>Please find below a picture for an example definition
+								of 3 spars in one wing, by using spar position points and spar
+								segments:</ddue:para>
+							<ddue:mediaLink>
+								<ddue:image width="500" xlink:href="spars1"/>
+							</ddue:mediaLink>
+						</ddue:content>
 					</ddue:remarks>
 				</sd:schemaDoc>
 			</xsd:appinfo>
@@ -35535,7 +36131,7 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-					<xsd:element maxOccurs="unbounded" minOccurs="2" name="sparPosition" type="sparPositionType"/>
+					<xsd:element name="sparPosition" type="sparPositionType" minOccurs="2" maxOccurs="unbounded"/>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -35567,7 +36163,7 @@ jonas.jepsen@dlr.de
                                                         </xsd:documentation>
                                                 </xsd:annotation>
                                         </xsd:element>
-                                        <xsd:element name="description" type="stringBaseType">
+                                        <xsd:element minOccurs="0" name="description" type="stringBaseType">
                                                 <xsd:annotation>
                                                         <xsd:documentation>Description of the spar segment (spar).
                                                         </xsd:documentation>
@@ -35576,7 +36172,7 @@ jonas.jepsen@dlr.de
                                         <xsd:element name="sparPositionUIDs" type="sparPositionUIDsType"/>
                                         <xsd:element name="sparCrossSection" type="sparCrossSectionType"/>
                                 </xsd:all>
-                                <xsd:attribute name="uID" type="xsd:string"/>
+                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
                         </xsd:extension>
                 </xsd:complexContent>
         </xsd:complexType>
@@ -35635,6 +36231,69 @@ jonas.jepsen@dlr.de
 						</xsd:annotation>
 					</xsd:element>
 				</xsd:all>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="specificPerformanceMapType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>specificPerformanceMapType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>Applying a specific performance map to selected mission segments</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="performanceMapUID" type="stringUIDBaseType">
+						<xsd:annotation>
+							<xsd:documentation>UID of performance map to be used for mission segments</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="segmentUIDs" type="stringVectorBaseType">
+						<xsd:annotation>
+							<xsd:documentation>List of all mission segment UIDs to which the performance map is to be applied</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element minOccurs="0" name="pointPerformanceUIDs" type="stringVectorBaseType">
+						<xsd:annotation>
+							<xsd:documentation>List of point performance UIDs to which the  performance map is to be applied</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:all>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+<xsd:complexType name="specificPerformanceMapsType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>specificPerformanceMapsType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>Collection of all assignments of specific performance maps to selected mission segments</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" name="specificPerformanceMap" type="specificPerformanceMapType"/>
+				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -37223,7 +37882,7 @@ jonas.jepsen@dlr.de
 					</ddue:summary>
 					<ddue:remarks>
 						<ddue:para>Toolspecific type, containing specific data for the
-							analysis tools</ddue:para>
+							analysis tools. <ddue:legacyBold>All types defined under this node will be removed from the schema with the next release. Toolspecifics can still be used but should be defined in their own namespaces.</ddue:legacyBold> This way an update of toolspecific types is no longer depending on CPACS releases.</ddue:para>
 					</ddue:remarks>
 				</sd:schemaDoc>
 			</xsd:appinfo>
@@ -37258,6 +37917,7 @@ jonas.jepsen@dlr.de
 					<xsd:element minOccurs="0" name="misSim" type="misSimToolType"/>
 					<xsd:element minOccurs="0" name="modGen" type="modGenToolType"/>
 					<xsd:element minOccurs="0" name="panam" type="panamToolType"/>
+					<xsd:element minOccurs="0" name="paradise" type="paradiseToolType"/>
 					<xsd:element minOccurs="0" name="paramamSbot" type="paramamSbotToolType"/>
 					<xsd:element minOccurs="0" name="fDesignRC" type="fDesignRCToolType"/>
 					<xsd:element minOccurs="0" name="rofuma" type="rofumaToolType"/>
@@ -37981,67 +38641,6 @@ jonas.jepsen@dlr.de
 					<xsd:element minOccurs="0" name="translation" type="pointXYType">
 						<xsd:annotation>
 							<xsd:documentation>translation of profile definition
-							</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-				</xsd:sequence>
-				<xsd:attribute name="uID" type="xsd:string" use="required"/>
-			</xsd:extension>
-		</xsd:complexContent>
-	</xsd:complexType>
-
-
-	<xsd:complexType name="transformationPolarType">
-
-		<xsd:annotation>
-			<xsd:appinfo>
-				<sd:schemaDoc>
-					<ddue:summary>
-						<ddue:para>transformationPolarType</ddue:para>
-					</ddue:summary>
-					<ddue:remarks>
-						<ddue:para>Transformation type, containing a set of
-							transformations. The order of the transformations is scaling
-							-&gt; rotation -&gt; translation, and they are executed in this
-							order. Any of them can be omitted; it will be replaced by its
-							defaults.</ddue:para>
-						<ddue:para>Transformations are always executed relative to the
-							child not the parent. I.e. a scaling does not have an influence
-							on the parent item. For example in the outer geometry of a wing
-							the element scaling does not influence the section. Scaling does
-							also not effect rotation and translation.</ddue:para>
-						<ddue:para>For the polar transformation the translation is
-							executed in polar coordinates, relative to the parent element.
-						</ddue:para>
-					</ddue:remarks>
-				</sd:schemaDoc>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:complexContent>
-			<xsd:extension base="complexBaseType">
-				<xsd:sequence>
-					<xsd:element minOccurs="0" name="scaling" type="pointType">
-						<xsd:annotation>
-							<xsd:documentation>Scaling data default: 1,1,1. Those parameters
-								describe the scaling of the x-, y-, and z-axis.
-							</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-					<xsd:element minOccurs="0" name="rotation" type="pointType">
-						<xsd:annotation>
-							<xsd:documentation>Rotation data default: 0,0,0. The rotation
-								angles are the three Euler angles to describe the orientation of
-								the coordinate system. The order is allways xyz in CPACS.
-								Therefore the first rotation is around the x-axis, the second
-								rotation is around the rotated y-axis (y') and the third
-								rotation is around the two times rotated z-axis (z'').
-							</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-					<xsd:element minOccurs="0" name="translation" type="pointPolarType">
-						<xsd:annotation>
-							<xsd:documentation>Translation data default: 0,0. Please note
-								that this translation is executed in polar coordinates.
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
@@ -39568,6 +40167,70 @@ jonas.jepsen@dlr.de
 	</xsd:complexType>
 
 
+	<xsd:complexType name="variableSegmentType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>variableSegmentType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>Containing the definition of variable segments for a segment block</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="segmentUID" type="stringUIDBaseType">
+						<xsd:annotation>
+							<xsd:documentation>defines uID of the segment having variable conditions</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="variableConditions" type="stringVectorBaseType">
+						<xsd:annotation>
+							<xsd:documentation>defines which condition(s) are variable within the segment (must be one of the defined 
+							endConditions for the segmentBlock)</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:all>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="variableSegmentsType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>variableSegmentsType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>provides a list of segments having variable conditions within the segmentBlock.
+						Example: a segmentBlock containing takeOff, climb, cruise, decent, landing segments has a cruise segment for which the range is variable.
+						The range of this segment is then to be calculated using the range defined for the segmentBlock while concerning the known ranges of all 
+						other segments within the segmentBlock.</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element maxOccurs="unbounded" name="variableSegment" type="variableSegmentType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
 	<xsd:complexType name="vehiclesType">
 
 		<xsd:annotation>
@@ -40220,7 +40883,7 @@ jonas.jepsen@dlr.de
 								system!)</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="aeroPerformanceMaps" type="aeroPerformanceMapsType">
+					<xsd:element name="aeroPerformanceMaps" type="aeroPerformanceMapsRCType">
 						<xsd:annotation>
 							<xsd:documentation>Calculated aerodynamic performance maps of the
 								wing</xsd:documentation>
@@ -40516,6 +41179,189 @@ jonas.jepsen@dlr.de
 				<xsd:sequence>
 					<xsd:element maxOccurs="unbounded" name="element" type="wingElementType"/>
 				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="wingExplicitStringerSetType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Definition of explicit wing stringer sets.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>Within the wingExplicitStringerSetType individual wing stringers sets are
+								defined. The stringer sets are defined by referencing on the
+								stringerStructureUID, where the shape and material settings of
+								each stringer is defined. Explicit stringer sets can be defined by
+								choosing exactly two options from the choice element. Although not restricted by the schema, 
+								using same option twice does not give a valid stringer set definition.</ddue:para>
+								<ddue:mediaLink>
+									<ddue:image xlink:href="wingexplicitstringer"/>
+								</ddue:mediaLink>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element name="stringerStructureUID" type="stringUIDBaseType"/>
+					<xsd:element name="numberOfStringers" type="integerBaseType">
+						<xsd:annotation>
+							<xsd:documentation>The number of stringers</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:choice minOccurs="2" maxOccurs="2">
+						<xsd:sequence>
+							<xsd:element name="xsiInnerBorderStart" type="xsiIsoLineType">
+								<xsd:annotation>
+									<xsd:documentation>Xsi coordinate of the beginning of the stringer set 
+									at the inner border.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="xsiInnerBorderEnd" type="xsiIsoLineType">
+								<xsd:annotation>
+									<xsd:documentation>Xsi coordinate of the end of the stringer set 
+									at the inner border.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:element name="xsiOuterBorderStart" type="xsiIsoLineType">
+								<xsd:annotation>
+									<xsd:documentation>Xsi coordinate of the beginning of the stringer set 
+									at the outer border.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="xsiOuterBorderEnd" type="xsiIsoLineType">
+								<xsd:annotation>
+									<xsd:documentation>Xsi coordinate of the end of the stringer set 
+									at the outer border.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+						<xsd:sequence>
+							<xsd:element name="angle" type="doubleBaseType">
+								<xsd:annotation>
+									<xsd:documentation>The angle between the stringers and 
+									the reference line as given by angleReference.
+									All stringers are be parallel to each other.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="angleReference" type="stringBaseType">
+								<xsd:annotation>
+									<xsd:documentation>If the reference of the stringer angle shall
+										be different from the default implementation then this
+										parameter may be set. Allowed values include: leadingEdge,
+										trailingEdge and globalY. Furthermore, it is possible to
+										provide the UID of a spar.</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="wingExplicitStringerType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Definition of explicit wing stringers.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>Within the wingExplicitStringerType individual wing stringers are
+								defined. The stringer are defined by referencing on the
+								stringerStructureUID, where the shape and material settings of
+								one single stringer is defined. Explicit stringers can be defined by
+								choosing exactly two options from the choice element. Although not restricted by the schema, 
+								using same option twice does not give a valid stringer definition.</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element name="stringerStructureUID" type="stringUIDBaseType"/>
+					<xsd:choice minOccurs="2" maxOccurs="2">
+						<xsd:element name="xsiInnerBorder" type="xsiIsoLineType">
+							<xsd:annotation>
+								<xsd:documentation>Xsi coordinate of the stringer 
+									at the inner border.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="xsiOuterBorder" type="xsiIsoLineType">
+							<xsd:annotation>
+								<xsd:documentation>Xsi coordinate of the stringer 
+									at the outer border.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:sequence>
+							<xsd:element name="angle" type="doubleBaseType">
+								<xsd:annotation>
+									<xsd:documentation>The angle between the stringer and 
+									the reference line as given by angleReference.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="angleReference" type="stringBaseType">
+								<xsd:annotation>
+									<xsd:documentation>If the reference of the stringer angle shall
+										be different from the default implementation then this
+										parameter may be set. Allowed values include: leadingEdge,
+										trailingEdge and globalY. Furthermore, it is possible to
+										provide the UID of a spar.</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+    <xsd:complexType name="wingExplicitStringersType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Explicit wing stringers definition.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>wingExplicitStringersType contains an arbitrary number of explicit stringer definitions.
+						</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="explicitStringer" type="wingExplicitStringerType"/>
+					<xsd:element name="explicitStringerSet" type="wingExplicitStringerSetType"/>
+				</xsd:choice>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -41210,6 +42056,57 @@ jonas.jepsen@dlr.de
         </xsd:complexType>
 
 
+	<xsd:complexType name="wingRibPointType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>wingRibPointType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>The wingRibPointType is used to define reference points on ribs.
+								It can be used for rib set definitions (wingRibsPositioningType) as 
+								well as explicit rib definitions (wingRibExplicitPositioningType).</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="ribDefinitionUID" type="stringUIDBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									The UID of the rib definition. Can be a reference to nodes 
+									of either wingRibsPositioningType or wingRibExplicitPositioningType.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					<xsd:element minOccurs="0" name="ribNumber" type="integerBaseType">
+						<xsd:annotation>
+							<xsd:documentation>
+								For references of type wingRibsPositioningType this node indicates the rib number of the rib set. 
+								If not given it defaults to 1.
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="xsi" type="doubleBaseType">
+						<xsd:annotation>
+							<xsd:documentation>
+								Normalized xsi coordinate of the rib point which is measured along the rib 
+								from the start point [0] towards the end point [1].
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:all>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
 	<xsd:complexType name="wingRibsDefinitionType">
 
                 <xsd:annotation>
@@ -41250,7 +42147,7 @@ jonas.jepsen@dlr.de
                                         </xsd:choice>
                                         <xsd:element name="ribCrossSection" type="wingRibCrossSectionType"/>
                                 </xsd:sequence>
-                                <xsd:attribute name="uID" type="xsd:string"/>
+                                <xsd:attribute name="uID" type="xsd:string" use="required"/>
                         </xsd:extension>
                 </xsd:complexContent>
         </xsd:complexType>
@@ -41954,7 +42851,7 @@ jonas.jepsen@dlr.de
 						<ddue:content>
 							<ddue:para>Spars type, a spar is defined by sparSegments that
 								stretch between multiple sparPositions. The spar definition is
-								very flexibal in CPACS. Spars can start and end at any position
+								very flexible in CPACS. Spars can start and end at any position
 								of the wing, spars can have kinks at any position of the wing
 								and spars can cross each other or merge.</ddue:para>
 							<ddue:para>At first the spar points (-&gt;sparPositions) have to
@@ -41963,7 +42860,10 @@ jonas.jepsen@dlr.de
 								plane.</ddue:para>
 							<ddue:para>Two or more spar points are connected to on spar
 								segment (-&gt;sparSegments). Each spar segment can be seen as
-								one spar. One spar point can be used by more than one spar, if
+								one spar. The spar geometry between two spar points is defined 
+                                as a direct/straight connection in global coordinate system 
+                                and not in eta xsi coordinates of the component segment. 
+                                One spar point can be used by more than one spar, if
 								e.g. two spars are merging. The detailed cross section of the
 								spar is also defined with sparSegments.</ddue:para>
 							<ddue:para>Pleas find below a picture for an example definition
@@ -42638,7 +43538,7 @@ jonas.jepsen@dlr.de
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
 					<xsd:element name="name" type="stringBaseType"/>
-					<xsd:element name="description" type="stringBaseType"/>
+					<xsd:element minOccurs="0" name="description" type="stringBaseType"/>
 					<xsd:element minOccurs="0" name="disciplines" type="zeroDisciplinesType"/>
 				</xsd:sequence>
 			</xsd:extension>
@@ -42771,9 +43671,80 @@ jonas.jepsen@dlr.de
 	</xsd:complexType>
 
 
+	<xsd:complexType name="nacelleCowlType">
+
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>nacelleCowlType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>
+							Describes the cowl geometry for nacelles
+							using sections positioned around the
+							rotational center of the engine.
+						</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+                <xsd:all>
+                	<xsd:element name="sections"
+                		type="nacelleSectionsType">
+                	</xsd:element>
+                	<xsd:element name="guideCurves"
+                		type="nacelleGuideCurvesType">
+                	</xsd:element>
+                	<xsd:element name="rotationCurve" type="rotationCurveType"></xsd:element>
+                </xsd:all>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 
 
+	<xsd:complexType name="rotationCurveType">
+		<xsd:all>
+			<xsd:element name="referenceSectionUID"
+				type="stringUIDBaseType">
+			</xsd:element>
+			<xsd:element name="startZeta" type="doubleBaseType"></xsd:element>
+			<xsd:element name="endZeta" type="doubleBaseType"></xsd:element>
+			<xsd:element name="startZetaBlending"
+				type="doubleBaseType">
+			</xsd:element>
+			<xsd:element name="endZetaBlending" type="doubleBaseType"></xsd:element>
+			<xsd:element name="curveProfileUID" type="stringUIDBaseType"></xsd:element>
+		</xsd:all>
+		<xsd:attribute name="uID" type="xsd:string" use="required"/>
+	</xsd:complexType>
 
-
-
-	</xsd:schema>
+	<xsd:complexType name="nacelleCenterCowlType">
+        <xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>nacelleCenterCowlType</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:para>
+							Describes the curve for defining rotational center of the engine.
+						</ddue:para>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:all>
+					<xsd:element name="xOffset" type="doubleBaseType"></xsd:element>
+					<xsd:element name="curveUID" type="stringUIDBaseType"></xsd:element>
+				</xsd:all>
+				<xsd:attribute name="uID" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

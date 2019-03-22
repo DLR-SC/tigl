@@ -29,7 +29,7 @@ namespace generated
     // This class is used in:
     // CPACSTrackStructure
 
-    // generated from /xsd:schema/xsd:complexType[872]
+    // generated from /xsd:schema/xsd:complexType[886]
     /// @brief trackStrut1Type
     /// 
     /// 

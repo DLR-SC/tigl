@@ -23,6 +23,7 @@
 #include "tigl_internal.h"
 #include <vector>
 #include <math_Vector.hxx>
+#include "tiglMatrix.h"
 
 namespace tigl 
 {
@@ -182,6 +183,22 @@ TIGL_EXPORT math_Matrix cheb_to_monomial(int N);
  * coefficients (control points).
 */
 TIGL_EXPORT math_Matrix monimial_to_bezier(int N);
+
+/**
+* @brief  A function that calculates the polar decomposition of a 3x3 matrix A.
+*
+* PolarDecomposition(A,U,P) calculates the polar decomposition U,P of the input
+* matrix A, such that A = U x P, where U is a unitary matrix and P is a positive
+* semi-definite Hermitian matrix. U can be interpreted as a rotation and P as a
+* spatial scaling, possibly including off-diaogonal shearing terms
+*
+* @param A input matrix
+* @param U unitary matrix U
+* @param P hermitian matrix P
+*/
+TIGL_EXPORT void PolarDecomposition(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& P);
+
+TIGL_EXPORT void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V);
 
 } // namespace tigl
 

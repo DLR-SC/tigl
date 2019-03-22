@@ -21,6 +21,9 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include "CPACSEtaXsiPoint.h"
+#include "CPACSWingRibPoint.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -33,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSSparPositions
 
-    // generated from /xsd:schema/xsd:complexType[813]
+    // generated from /xsd:schema/xsd:complexType[825]
     /// @brief Spar position on the wing
     /// 
     /// sparPositionType, a sparPostion defines a location
@@ -66,33 +69,29 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const double& GetXsi() const;
-        TIGL_EXPORT virtual void SetXsi(const double& value);
+        TIGL_EXPORT virtual const boost::optional<CPACSWingRibPoint>& GetSparPositionRib_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CPACSWingRibPoint>& GetSparPositionRib_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetEta_choice1() const;
-        TIGL_EXPORT virtual void SetEta_choice1(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<CPACSEtaXsiPoint>& GetSparPositionEtaXsi_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEtaXsiPoint>& GetSparPositionEtaXsi_choice2();
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetElementUID_choice2() const;
-        TIGL_EXPORT virtual void SetElementUID_choice2(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual CPACSWingRibPoint& GetSparPositionRib_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSparPositionRib_choice1();
+
+        TIGL_EXPORT virtual CPACSEtaXsiPoint& GetSparPositionEtaXsi_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSparPositionEtaXsi_choice2();
 
     protected:
         CCPACSWingSparPositions* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<std::string> m_uID;
-
-        /// Xsi coordinate of the spar definition point.
-        double                       m_xsi;
-
-        /// Eta coordinate of the spar definition point.
-        boost::optional<double>      m_eta_choice1;
-
-        /// Link to a section element.
-        boost::optional<std::string> m_elementUID_choice2;
+        std::string                        m_uID;
+        boost::optional<CPACSWingRibPoint> m_sparPositionRib_choice1;
+        boost::optional<CPACSEtaXsiPoint>  m_sparPositionEtaXsi_choice2;
 
     private:
 #ifdef HAVE_CPP11

@@ -44,7 +44,7 @@ namespace generated
     // CPACSRotorBlades
     // CPACSWings
 
-    // generated from /xsd:schema/xsd:complexType[962]
+    // generated from /xsd:schema/xsd:complexType[981]
     /// @brief Wing type, containing all a lifting surface (wing, HTP,
     /// VTP, canard...) of an aircraft model.
     /// 

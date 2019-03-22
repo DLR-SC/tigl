@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSWingComponentSegmentStructure
 
-    // generated from /xsd:schema/xsd:complexType[957]
+    // generated from /xsd:schema/xsd:complexType[976]
     /// @brief Shells of the wing.
     /// 
     /// Within the wingShellType the upper and lower skin of a

@@ -76,6 +76,7 @@ public slots:
     QScriptValue fuselageGetSegmentVolume (int fuselageIndex, int segmentIndex);
     QScriptValue getFuselageCount();
     QScriptValue fuselageGetSegmentCount(int fuselageIndex);
+    QScriptValue fuselageGetCenterLineLength(QString fuselageUID);
     QScriptValue wingGetUpperPoint(int wingIndex, int segmentIndex, double eta, double xsi);
     
     // wing stuff

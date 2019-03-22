@@ -76,6 +76,7 @@
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSEnginePylons.h"
 #include "CCPACSEnginePylon.h"
+#include "generated/CPACSRibRotation_ribRotationReference.h"
 %}
 
 %feature("autodoc", "3");
@@ -99,7 +100,7 @@
 %boost_optional(tigl::generated::CPACSWingRibCell)
 %boost_optional(tigl::generated::CPACSCap)
 %boost_optional(tigl::CCPACSWingRibsPositioning)
-%boost_optional(tigl::generated::CPACSWingRibExplicitPositioning)
+%boost_optional(tigl::CCPACSWingRibExplicitPositioning)
 %boost_optional(tigl::generated::CPACSWeb)
 %boost_optional(tigl::generated::CPACSSparCells)
 %boost_optional(tigl::CCPACSGuideCurves)
@@ -122,16 +123,47 @@
 %boost_optional(tigl::CCPACSWingSections)
 %boost_optional(tigl::CCPACSWingSegments)
 %boost_optional(tigl::CCPACSPositionings)
-
+%boost_optional(tigl::CCPACSEnginePylons)
+%boost_optional(tigl::CCPACSWingProfiles)
+%boost_optional(tigl::CCPACSFuselageProfiles)
+%boost_optional(tigl::CCPACSRotorProfiles)
 
 // ---------------- Other ------------------------------//
-%boost_optional(tigl::generated::CPACSEtaIsoLine)
+%boost_optional(tigl::CCPACSEtaIsoLine)
 %boost_optional(tigl::CCPACSMaterialDefinition)
 %include "generated/CPACSXsiIsoLine.h"
 %include "generated/CPACSEtaIsoLine.h"
+%include "CCPACSEtaIsoLine.h"
+%include "CCPACSXsiIsoLine.h"
 
 %include "generated/CPACSMaterialDefinition.h"
 %include "CCPACSMaterialDefinition.h"
+
+// ----------------- Engines ---------------------------//
+%boost_optional(tigl::CCPACSEngines)
+%boost_optional(tigl::generated::CPACSEngineNacelle)
+%boost_optional(tigl::CCPACSNacelleCowl)
+%boost_optional(tigl::CCPACSNacelleCenterCowl)
+%boost_optional(tigl::CCPACSEnginePositions)
+%include "generated/CPACSEnginePositions.h"
+%include "CCPACSEnginePositions.h"
+%include "generated/CPACSNacelleCenterCowl.h"
+%include "CCPACSNacelleCenterCowl.h"
+%include "generated/CPACSNacelleSections.h"
+%include "CCPACSNacelleSections.h"
+%include "generated/CPACSRotationCurve.h"
+%include "CCPACSRotationCurve.h"
+%include "generated/CPACSNacelleGuideCurves.h"
+%include "CCPACSNacelleGuideCurves.h"
+namespace tigl {
+    class CCPACSNacelleCowl;
+}
+%include "generated/CPACSEngineNacelle.h"
+%include "generated/CPACSNacelleCowl.h"
+%include "CCPACSNacelleCowl.h"
+%include "generated/CPACSEngine.h"
+%include "generated/CPACSEngines.h"
+%include "CCPACSEngines.h"
 
 // ---------------- Control surfaces ------------------ //
 %boost_optional(tigl::generated::CPACSControlSurfaceTrackType_trackSubType)
@@ -250,6 +282,7 @@ class CCPACSWingRibsPositioning;
 }
 %include "generated/CPACSRibRotation_ribRotationReference.h"
 %include "generated/CPACSWingRibExplicitPositioning.h"
+%include "CCPACSWingRibExplicitPositioning.h"
 %include "generated/CPACSRibRotation.h"
 %include "CCPACSWingRibRotation.h"
 %include "generated/CPACSRibCrossingBehaviour.h"

@@ -15,12 +15,12 @@
 */
 
 
-#include "CCPACSPointListRelXYZ.h"
+#include "CCPACSPointListRelXYZVector.h"
 
 namespace tigl
 {
 
-void CCPACSPointListRelXYZ::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+void CCPACSPointListRelXYZVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     generated::CPACSPointListRelXYZVector::ReadCPACS(tixiHandle, xpath);
 
@@ -37,11 +37,11 @@ void CCPACSPointListRelXYZ::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     }
 }
 
-void CCPACSPointListRelXYZ::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+void CCPACSPointListRelXYZVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
 {
     // write back to CPACS fields
-    CCPACSPointListRelXYZ* self =
-        const_cast<CCPACSPointListRelXYZ*>(this); // TODO: ugly hack, but WriteCPACS() has to be const, fix this
+    CCPACSPointListRelXYZVector* self =
+        const_cast<CCPACSPointListRelXYZVector*>(this); // TODO: ugly hack, but WriteCPACS() has to be const, fix this
     std::vector<double>& xs = self->GetRX().AsVector();
     std::vector<double>& ys = self->GetRY().AsVector();
     std::vector<double>& zs = self->GetRZ().AsVector();
@@ -57,12 +57,12 @@ void CCPACSPointListRelXYZ::WriteCPACS(const TixiDocumentHandle& tixiHandle, con
     generated::CPACSPointListRelXYZVector::WriteCPACS(tixiHandle, xpath);
 }
 
-const std::vector<CTiglPoint>& CCPACSPointListRelXYZ::AsVector() const
+const std::vector<CTiglPoint>& CCPACSPointListRelXYZVector::AsVector() const
 {
     return m_vec;
 }
 
-std::vector<CTiglPoint>& CCPACSPointListRelXYZ::AsVector()
+std::vector<CTiglPoint>& CCPACSPointListRelXYZVector::AsVector()
 {
     return m_vec;
 }

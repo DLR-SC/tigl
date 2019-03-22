@@ -144,6 +144,8 @@ namespace
         case tigl::None:
             return "";
         }
+
+        throw tigl::CTiglError("Unrecognized FaceNameSettings");
     }
 
     /**

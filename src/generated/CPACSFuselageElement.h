@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSFuselageElements
 
-    // generated from /xsd:schema/xsd:complexType[371]
+    // generated from /xsd:schema/xsd:complexType[377]
     /// @brief fuselageElementType
     /// 
     /// FuselageElement type, containing fuselage element data

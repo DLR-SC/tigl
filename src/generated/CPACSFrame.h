@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSFramesAssembly
 
-    // generated from /xsd:schema/xsd:complexType[361]
+    // generated from /xsd:schema/xsd:complexType[367]
     /// @brief frameType
     /// 
     /// frame type, containing frame definition (V1.5+)

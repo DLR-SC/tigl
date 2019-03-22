@@ -30,7 +30,7 @@ namespace generated
     // This class is used in:
     // CPACSProfileBasedStructuralElement
 
-    // generated from /xsd:schema/xsd:complexType[653]
+    // generated from /xsd:schema/xsd:complexType[659]
     /// @brief materialDefinitionForProfileBasedPointType
     /// 
     /// MaterialDefinitionForProfileBased type, containing a

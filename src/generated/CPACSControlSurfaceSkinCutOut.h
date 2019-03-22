@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceWingCutOut
 
-    // generated from /xsd:schema/xsd:complexType[186]
+    // generated from /xsd:schema/xsd:complexType[189]
     /// @brief Cut out of the parents upper/lower skin due to a
     /// control surface.
     /// 

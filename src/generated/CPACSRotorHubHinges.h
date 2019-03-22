@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSRotorBladeAttachment
 
-    // generated from /xsd:schema/xsd:complexType[769]
+    // generated from /xsd:schema/xsd:complexType[781]
     /// @brief rotorHubHingesType
     /// 
     /// RotorHubHinges type, defining hinges used to attach a
