@@ -123,22 +123,6 @@ void CCPACSFuselageSegments::ReorderSegments()
     }
 }
 
-CTiglFuselageConnection& CCPACSFuselageSegments::GetConnection(const std::string& elementUID) const
-{
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        CTiglFuselageConnection& startConnection = m_segments[i]->GetStartConnection();
-        CTiglFuselageConnection& endConnection   = m_segments[i]->GetEndConnection();
-        if (startConnection.GetSectionElementUID() == elementUID) {
-            return startConnection;
-        }
-        if (endConnection.GetSectionElementUID() == elementUID) {
-            return endConnection;
-        }
-    }
-
-    throw CTiglError("Invalid uid in CCPACSFuselageSegments::GetConnection", TIGL_UID_ERROR);
-}
-
 std::vector<std::string> CCPACSFuselageSegments::GetElementUIDsInOrder() const
 {
     std::vector<std::string> elementUIDs;
@@ -155,20 +139,6 @@ std::vector<std::string> CCPACSFuselageSegments::GetElementUIDsInOrder() const
         }
     }
     return elementUIDs;
-}
-
-std::map<std::string, CTiglFuselageConnection*> CCPACSFuselageSegments::GetConnectionsMap() const
-{
-    std::map<std::string, CTiglFuselageConnection*> connectionsMap;
-
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        CTiglFuselageConnection& startConnection               = m_segments[i]->GetStartConnection();
-        CTiglFuselageConnection& endConnection                 = m_segments[i]->GetEndConnection();
-        connectionsMap[startConnection.GetSectionElementUID()] = &startConnection; // create or replace
-        connectionsMap[endConnection.GetSectionElementUID()]   = &endConnection; // create or replace
-    }
-
-    return connectionsMap;
 }
 
 } // end namespace tigl

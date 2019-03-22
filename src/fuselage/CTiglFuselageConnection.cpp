@@ -30,9 +30,6 @@
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
 #include <iostream>
-#include "tiglcommonfunctions.h"
-#include "GProp_GProps.hxx"
-#include "BRepGProp.hxx"
 
 namespace tigl
 {
@@ -109,22 +106,14 @@ CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile()
     return (config.GetFuselageProfile(profileUID));
 }
 
-const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const
-{
+const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const {
     return const_cast<CTiglFuselageConnection&>(*this).GetProfile();
 }
 
 // Returns the positioning transformation for the referenced section
-CTiglTransformation CTiglFuselageConnection::GetPositioningTransformation() const
+boost::optional<CTiglTransformation> CTiglFuselageConnection::GetPositioningTransformation() const
 {
-    boost::optional<CTiglTransformation> transformation =
-        segment->GetFuselage().GetPositioningTransformation(sectionUID);
-    if (transformation) {
-        return transformation.value();
-    }
-    else {
-        return CTiglTransformation();
-    }
+    return (segment->GetFuselage().GetPositioningTransformation(sectionUID));
 }
 
 // Returns the section matrix referenced by this connection
@@ -160,71 +149,6 @@ CTiglTransformation CTiglFuselageConnection::GetSectionElementTransformation() c
         }  
     }
     return transformation;
-}
-
-CTiglTransformation CTiglFuselageConnection::GetFuselageTransformation() const
-{
-    CCPACSFuselage& fuselage           = segment->GetFuselage();
-    CTiglTransformation transformation = fuselage.GetTransformationMatrix();
-    return transformation;
-}
-
-CTiglTransformation CTiglFuselageConnection::GetTotalTransformation(TiglCoordinateSystem referenceCS) const
-{
-    // Do section element transformation on points
-    tigl::CTiglTransformation totalTransformation = GetSectionElementTransformation();
-
-    // Do section transformations
-    totalTransformation.PreMultiply(GetSectionTransformation());
-
-    // Do positioning transformations
-    totalTransformation.PreMultiply(GetPositioningTransformation());
-
-
-    switch (referenceCS) {
-    case FUSELAGE_COORDINATE_SYSTEM:
-        return totalTransformation;
-    case GLOBAL_COORDINATE_SYSTEM:
-        totalTransformation.PreMultiply(GetFuselageTransformation());
-        return totalTransformation;
-    default:
-        throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetStartWire");
-    }
-}
-
-TopoDS_Wire CTiglFuselageConnection::GetWire(TiglCoordinateSystem referenceCS) const
-{
-    const CCPACSFuselageProfile& profile = GetProfile();
-    TopoDS_Wire wire                     = profile.GetWire(true);
-
-    TopoDS_Shape transformedWire = GetTotalTransformation(referenceCS).Transform(wire);
-
-    // Cast shapes to wires, see OpenCascade documentation
-    if (transformedWire.ShapeType() != TopAbs_WIRE) {
-        throw tigl::CTiglError("Wrong shape type in CCPACSFuselageSegment::transformProfileWire", TIGL_ERROR);
-    }
-
-    return TopoDS::Wire(transformedWire);
-}
-
-CTiglPoint CTiglFuselageConnection::GetOrigin(TiglCoordinateSystem referenceCS) const
-{
-    CTiglPoint origin(0, 0, 0);
-    return GetTotalTransformation() * origin;
-}
-
-CTiglPoint CTiglFuselageConnection::GetCenterOfProfile(TiglCoordinateSystem referenceCS) const
-{
-    TopoDS_Wire wire = GetWire(referenceCS);
-    return CTiglPoint(GetCenterOfMass(wire).XYZ());
-}
-
-double CTiglFuselageConnection::GetCircumferenceOfProfile(TiglCoordinateSystem referenceCS) const
-{
-    TopoDS_Wire wire = GetWire(referenceCS);
-    GProp_GProps System;
-    BRepGProp::LinearProperties(wire,System);
-    return  System.Mass();
 }
 
 } // end namespace tigl
