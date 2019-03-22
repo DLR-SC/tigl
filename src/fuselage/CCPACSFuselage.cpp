@@ -60,7 +60,6 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #include "PathGraph.h"
-#include "CTiglFuselageConnectionHelper.h"
 #include <map>
 #include "CCPACSFuselageSectionElement.h"
 
@@ -608,12 +607,14 @@ TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTr
     trafo.PreMultiply(connection.GetSectionTransformation());
 
     // Do positioning transformations
-    trafo.PreMultiply(connection.GetPositioningTransformation());
+    boost::optional<CTiglTransformation> posTrans = connection.GetPositioningTransformation();
+    if (posTrans) {
+        trafo.PreMultiply(*posTrans);
+    }
 
     trafo.PreMultiply(fuselTransform);
 
     return trafo.Transform(shape);
-
 }
 
 std::string CCPACSFuselage::GetNoiseUID()

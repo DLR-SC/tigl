@@ -98,7 +98,9 @@ namespace
         trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        trafo.PreMultiply(connection.GetPositioningTransformation());
+        boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
+        if (connectionTransform)
+            trafo.PreMultiply(*connectionTransform);
 
         trafo.PreMultiply(fuselTransform);
 
@@ -116,7 +118,9 @@ namespace
         trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        trafo.PreMultiply(connection.GetPositioningTransformation());
+        boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
+        if (connectionTransform)
+            trafo.PreMultiply(*connectionTransform);
 
         trafo.PreMultiply(fuselTransform);
 
@@ -239,6 +243,17 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) 
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetEndWire");
     }
+}
+
+TopoDS_Wire CCPACSFuselageSegment::GetWire(const std::string& elementUID, TiglCoordinateSystem referenceCS) const
+{
+    if (startConnection.GetSectionElementUID() == elementUID) {
+        return GetStartWire(referenceCS);
+    }
+    else if (endConnection.GetSectionElementUID() == elementUID) {
+        return GetEndWire(referenceCS);
+    }
+    throw CTiglError("Invalid uid element passed to CCPACSFuselageSegment::GetWire", TIGL_UID_ERROR);
 }
 
 // get short name for loft
