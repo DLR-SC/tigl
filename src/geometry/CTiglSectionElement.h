@@ -88,11 +88,18 @@ public:
     TIGL_EXPORT virtual void SetCenter(const CTiglPoint& newOrigin,
                                        TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) = 0;
 
+    TIGL_EXPORT virtual void ScaleCircumference(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) = 0;
+
+
 protected:
     // Return the element transformation needed to move a point A to the position B in referenceCS.
     CTiglTransformation
     GetElementTrasformationToTranslatePoint(const CTiglPoint& newP, const CTiglPoint& oldP,
                                             TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
+    CTiglTransformation
+    GetElementTransformationToScaleCircumference(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
 };
 }
 

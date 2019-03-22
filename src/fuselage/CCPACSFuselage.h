@@ -193,8 +193,6 @@ protected:
 
     void SetFaceTraits(PNamedShape loft) const;
 
-    void ScaleCircumferences(std::vector<std::string> uidsToScale, double scaleFactor);
-
 private:
     // Invalidates internal state
     void InvalidateImpl(const boost::optional<std::string>& source) const override;

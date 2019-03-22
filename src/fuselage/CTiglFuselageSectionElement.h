@@ -59,6 +59,8 @@ public:
     TIGL_EXPORT void SetCenter(const CTiglPoint& newOrigin,
                                TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) override;
 
+    TIGL_EXPORT void ScaleCircumference(double scaleFactor,  TiglCoordinateSystem referenceCS  = GLOBAL_COORDINATE_SYSTEM) override;
+
     // Returns the fuselage transformation
     TIGL_EXPORT CTiglTransformation GetFuselageTransformation() const;
 

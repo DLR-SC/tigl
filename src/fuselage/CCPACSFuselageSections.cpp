@@ -54,5 +54,19 @@ CCPACSFuselageSection& CCPACSFuselageSections::GetSection(const std::string& sec
     throw CTiglError("Invalid uid in CCPACSWingSections::GetSection", TIGL_UID_ERROR);
 }
 
+std::map<std::string, CTiglFuselageSectionElement*> CCPACSFuselageSections::GetCTiglElements()
+{
+    std::map<std::string, CTiglFuselageSectionElement*> map;
+
+    for(int s = 0; s <  m_sections.size(); s++ ){
+        for( int e = 1; e <= m_sections[s]->GetSectionElementCount(); e++ ){
+            CCPACSFuselageSectionElement& tempElement = m_sections[s]->GetSectionElement(e);
+            map[tempElement.GetUID()] = tempElement.GetCTiglSectionElement();
+        }
+
+    }
+    return map;
+
+}
 
 } // end namespace tigl
