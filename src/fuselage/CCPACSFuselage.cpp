@@ -642,11 +642,11 @@ double CCPACSFuselage::GetLength()
 
 double CCPACSFuselage::GetLengthBetween(const std::string& startElementUID, const std::string& endElementUID)
 {
-    // get the center of the profile in fuselage coordinate system for the start element
-    CTiglPoint startCenter = m_segments.GetConnection(startElementUID).GetCenterOfProfile();
+    CCPACSFuselageSectionElement& startElement = GetUIDManager().ResolveObject<CCPACSFuselageSectionElement>(startElementUID);
+    CTiglPoint startCenter = startElement.GetCTiglSectionElement()->GetCenter();
 
-    // get the center of the profile in fuselage coordinate system for the end element
-    CTiglPoint endCenter = m_segments.GetConnection(endElementUID).GetCenterOfProfile();
+    CCPACSFuselageSectionElement& endElement = GetUIDManager().ResolveObject<CCPACSFuselageSectionElement>(endElementUID);
+    CTiglPoint endCenter = endElement.GetCTiglSectionElement()->GetCenter();
 
     CTiglPoint delta = endCenter - startCenter;
     return delta.norm2();
@@ -666,19 +666,16 @@ void CCPACSFuselage::SetLengthBetween(const std::string& startElementUID, const 
     // Prepare the required staff
 
     std::vector<std::string> elementUIDs = m_segments.GetElementUIDsInOrder();
-    std::map<std::string, CTiglFuselageConnection*> connectionsMap = m_segments.GetConnectionsMap();
+    std::map<std::string, CTiglFuselageSectionElement*> ctiglElementsMap = m_sections.GetCTiglElements();
 
-    std::map<std::string, CTiglPoint> oldGlobalOrigins;
     std::map<std::string, CTiglPoint> oldCenterPoints;
-    std::map<std::string, CTiglPoint> newGlobalOrigins;
     std::map<std::string, CTiglPoint> newCenterPoints;
 
     std::string tempElementUID = "";
 
     for (int i = 0; i < elementUIDs.size(); i++) {
         tempElementUID = elementUIDs[i];
-        oldCenterPoints[tempElementUID]  = connectionsMap[tempElementUID]->GetCenterOfProfile();
-        oldGlobalOrigins[tempElementUID] = connectionsMap[tempElementUID]->GetOrigin();
+        oldCenterPoints[tempElementUID]  = ctiglElementsMap[tempElementUID]->GetCenter();
     }
 
     // Divide the elements in 3 categories:
@@ -698,24 +695,20 @@ void CCPACSFuselage::SetLengthBetween(const std::string& startElementUID, const 
     // Prepare the transformation to apply
 
     //    BETWEEN ELEMENT SCALING
+
     //
     //              This part follow basically these steps:
     //
-    //              1) Computation of the affine transformations needed to perform the desired effect. The desired effect can be perform as:
-    //                      a) Put the start on the origin
-    //                      b) Rotation to get the end on the X axis
+    //              1)  Computation of the affine transformations needed to perform the desired effect.
+    //                  The desired effect can be perform as:
+    //                      a) Put the start center point on the world origin
+    //                      b) Rotation to get the end center on the X axis
     //                      c) Perform a scaling on X to obtain the desired length value
     //                      d) inverse of of b) to put the fuselage in the right direction
     //                      e) inverse of a) to shift the fuselage to its origin place
     //
     //
-    //              2) Compute the origin of each element and delta between the origin and the center point.
-    //                 This is done to cover the case of profiles that are shifted (origin of element != center point)
-    //
-    //              3) Compute the new center points and the new origin to get the wanted length
-    //
-    //              4) Find the new Transformation that elements should have to have these new origins and save in the memory
-    //
+    //              2) Compute the new center point for each element
 
     CTiglPoint startP = oldCenterPoints[startElementUID];
     CTiglPoint endP   = oldCenterPoints[endElementUID];
@@ -760,40 +753,25 @@ void CCPACSFuselage::SetLengthBetween(const std::string& startElementUID, const 
     CTiglPoint tempDelatOtoP;
     for (int i = 0; i < elementsBetween.size(); i++) {
         newCenterPoints[elementsBetween[i]] = totalTransformation * oldCenterPoints.at(elementsBetween[i]);
-        tempDelatOtoP = oldCenterPoints.at(elementsBetween[i]) - oldGlobalOrigins.at(elementsBetween[i]);
-        // delta between origin and the center point will not change because no scaling or rotation will be changed
-        newGlobalOrigins[elementsBetween[i]] = newCenterPoints.at(elementsBetween[i]) - tempDelatOtoP;
     }
 
-    // Compute the new transformation element of each element to be placed at the wanted orgin
-    CTiglTransformation tempNewTransformationE;
-    for (int i = 0; i < elementsBetween.size(); i++) {
-        tempElementUID             = elementsBetween[i];
-        tempNewTransformationE = CTiglFuselageConnectionHelper::GetTransformToPlaceConnectionOriginByTranslationAt(
-            *(connectionsMap[tempElementUID]), newGlobalOrigins[elementsBetween[i]]);
-        CCPACSFuselageSectionElement& element = GetUIDManager().ResolveObject<CCPACSFuselageSectionElement>(tempElementUID);
-        CCPACSTransformation& storedTransformation = element.GetTransformation();
-        storedTransformation.setTransformationMatrix(tempNewTransformationE);
-    }
 
     // SHIFT THE END OF THE FUSELAGE
 
-    CTiglPoint shiftEndElementG = newGlobalOrigins[endElementUID] - oldGlobalOrigins[endElementUID];
+    CTiglPoint shiftEndElementG = newCenterPoints[endElementUID] - oldCenterPoints[endElementUID];
     for (int i = 0; i < elementsAfter.size(); i++) {
-
-        newGlobalOrigins[elementsAfter[i]] = oldGlobalOrigins[elementsAfter[i]] + shiftEndElementG;
-        tempNewTransformationE = CTiglFuselageConnectionHelper::GetTransformToPlaceConnectionOriginByTranslationAt(
-            *(connectionsMap.at(elementsAfter[i])), newGlobalOrigins[elementsAfter[i]]);
-        CCPACSFuselageSectionElement& element =
-            GetUIDManager().ResolveObject<CCPACSFuselageSectionElement>(elementsAfter[i]);
-        CCPACSTransformation& storedTransformation = element.GetTransformation();
-        storedTransformation.setTransformationMatrix(tempNewTransformationE);
+        newCenterPoints[elementsAfter[i]] = oldCenterPoints[elementsAfter[i]] + shiftEndElementG;
     }
 
-    // UPDATE THE FUSELAGE STRUCTURE
+    // SET THE NEW CENTERS OF EACH ELEMENT
+
+    std::map<std::string, CTiglPoint>::iterator it;
+    for ( it = newCenterPoints.begin(); it != newCenterPoints.end(); it++ )
+    {
+        ctiglElementsMap[it->first]->SetCenter(it->second);  // will call Invalidate();
+    }
 
     // Remark the saving in tixi is not done, it should be perform by the user using "WriteCPACS" function
-    Invalidate(); // to force the rebuild of the loft? yes
 }
 
 double CCPACSFuselage::GetMaximalCircumference()
@@ -805,13 +783,13 @@ double CCPACSFuselage::GetMaximalCircumferenceBetween(const std::string& startEl
                                                       const std::string& endElementUID)
 {
     std::vector<std::string> elementUIDs                           = m_segments.GetElementUIDsInOrder();
-    std::map<std::string, CTiglFuselageConnection*> connectionsMap = m_segments.GetConnectionsMap();
+    std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
     std::vector<std::string> elementsInBetween =
         PathGraph::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
     double maxCircumference = -1;
     double tempCircumference;
     for (int i = 0; i < elementsInBetween.size(); i++) {
-        tempCircumference = connectionsMap[elementsInBetween[i]]->GetCircumferenceOfProfile();
+        tempCircumference = cTiglElementsMap[elementsInBetween[i]]->GetCircumferenceOfProfile();
         if (tempCircumference > maxCircumference) {
             maxCircumference = tempCircumference;
         }
@@ -845,51 +823,10 @@ void CCPACSFuselage::SetMaximalCircumferenceBetween(const std::string& startElem
         throw CTiglError("CCPACSFuselage::GetMaximalCircumferenceBetween: No elements in between was found");
     }
 
-    ScaleCircumferences(elementsBetween, scaleFactor);
-}
-
-void CCPACSFuselage::ScaleCircumferences(std::vector<std::string> elementsToScale, double scaleFactor)
-{
-    /*
-       *  The idea is to bring the element to its center and scale it in world coordinate system.
-       *  So we get:
-       *  FPSE' = Ti*S*T*FPSE
-       *  E' =  Si*Pi*Fi*Ti*S*T*FPSE
-       */
-
-    CTiglTransformation centerToOriginM, scaleM, newE;
-
-    scaleM.SetIdentity();
-    scaleM.AddScaling(scaleFactor, scaleFactor, scaleFactor);
-
-    std::map<std::string, CTiglFuselageConnection*> connections = m_segments.GetConnectionsMap();
-
-    std::string tempUID;
-    CTiglPoint tempCenter;
-    CTiglFuselageConnection* tempConnection = nullptr;
-    for (int i = 0; i < elementsToScale.size(); i++) {
-
-        tempUID        = elementsToScale[i];
-        tempConnection = connections[tempUID];
-        tempCenter     = tempConnection->GetCenterOfProfile();
-
-        centerToOriginM.SetIdentity();
-        centerToOriginM.AddTranslation(-tempCenter.x, -tempCenter.y, -tempCenter.z);
-
-        newE = tempConnection->GetSectionTransformation().Inverted() *
-               tempConnection->GetPositioningTransformation().Inverted() *
-               tempConnection->GetFuselageTransformation().Inverted() *
-               centerToOriginM.Inverted() *
-               scaleM *
-               centerToOriginM *
-               tempConnection->GetTotalTransformation();
-
-        CCPACSFuselageSectionElement& element = GetUIDManager().ResolveObject<CCPACSFuselageSectionElement>(tempUID);
-        CCPACSTransformation& storedTransformation = element.GetTransformation();
-        storedTransformation.setTransformationMatrix(newE);
+    std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
+    for(int i = 0; i < elementsBetween.size(); i++){
+        cTiglElementsMap[elementsBetween[i]]->ScaleCircumference(scaleFactor);
     }
-    // GetConfiguration().WriteCPACS(GetConfiguration().GetUID()); // write in TIXI memory (should not be call there, but in the Modificator manager)
-    Invalidate();
 }
 
 } // end namespace tigl

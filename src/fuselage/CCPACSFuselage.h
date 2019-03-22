@@ -183,8 +183,6 @@ protected:
 
     void SetFaceTraits(PNamedShape loft) const;
 
-    void ScaleCircumferences(std::vector<std::string> uidsToScale, double scaleFactor);
-
 private:
     // get short name for loft
     std::string GetShortShapeName() const;

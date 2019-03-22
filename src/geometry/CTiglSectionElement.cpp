@@ -101,3 +101,52 @@ tigl::CTiglSectionElement::GetElementTrasformationToTranslatePoint(const CTiglPo
 
     return newE;
 }
+
+tigl::CTiglTransformation tigl::CTiglSectionElement::GetElementTransformationToScaleCircumference(double scaleFactor,
+                                                                                                  TiglCoordinateSystem referenceCS) {
+    /*
+      *  The idea is to bring the element to its center and scale it in the appropriate coordinate system.
+      *
+      *  For world coordinate we get:
+      *
+      *  FPSE' = Ti*S*T*FPSE   where T bring the center to world origin and S scale uniformly the profile, i stand for inverse
+      *  E' =  Si*Pi*Fi*Ti*S*T*FPSE
+      *
+      *  For fuselage coordinate we get:
+      *  PSE' =  Ti*S*T*PSE   where T bring the center to fuselage origin and S scale uniformly the profile
+      *  E' =  Si*Pi*Ti*S*T*PSE
+      *
+      */
+
+    CTiglTransformation centerToOriginM, scaleM, newE;
+
+    scaleM.SetIdentity();
+    scaleM.AddScaling(scaleFactor, scaleFactor, scaleFactor);
+
+    CTiglPoint center = GetCenter(referenceCS);
+    centerToOriginM.SetIdentity();
+    centerToOriginM.AddTranslation(-center.x, -center.y, -center.z);
+
+    if (referenceCS == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
+        newE = GetSectionTransformation().Inverted() *
+               GetPositioningTransformation().Inverted() *
+               GetParentTransformation().Inverted() *
+               centerToOriginM.Inverted() *
+               scaleM *
+               centerToOriginM *
+               GetTotalTransformation(referenceCS);
+    }
+    else if (referenceCS == TiglCoordinateSystem::FUSELAGE_COORDINATE_SYSTEM) {
+        newE = GetSectionTransformation().Inverted() *
+               GetPositioningTransformation().Inverted() *
+               centerToOriginM.Inverted() *
+               scaleM *
+               centerToOriginM *
+               GetTotalTransformation(referenceCS);
+
+    }
+
+    return newE;
+
+
+}

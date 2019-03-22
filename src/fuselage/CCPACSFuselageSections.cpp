@@ -20,7 +20,7 @@
 */
 
 #include "CCPACSFuselageSections.h"
-
+#include "CCPACSFuselageSection.h"
 #include "CTiglError.h"
 
 namespace tigl
@@ -40,6 +40,21 @@ CCPACSFuselageSection& CCPACSFuselageSections::GetSection(int index) const
         throw CTiglError("Invalid index in CCPACSFuselageSections::GetSection", TIGL_INDEX_ERROR);
     }
     return *m_sections[index];
+}
+
+std::map<std::string, CTiglFuselageSectionElement*> CCPACSFuselageSections::GetCTiglElements()
+{
+    std::map<std::string, CTiglFuselageSectionElement*> map;
+
+    for(int s = 0; s <  m_sections.size(); s++ ){
+        for( int e = 1; e <= m_sections[s]->GetSectionElementCount(); e++ ){
+            CCPACSFuselageSectionElement& tempElement = m_sections[s]->GetSectionElement(e);
+            map[tempElement.GetUID()] = tempElement.GetCTiglSectionElement();
+        }
+
+    }
+    return map;
+
 }
 
 } // end namespace tigl

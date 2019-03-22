@@ -143,3 +143,19 @@ void tigl::CTiglFuselageSectionElement::SetCenter(const tigl::CTiglPoint& newCen
     storedTransformation.setTransformationMatrix(newE);
     fuselage->Invalidate();
 }
+
+
+void tigl::CTiglFuselageSectionElement::ScaleCircumference(double scaleFactor,  TiglCoordinateSystem referenceCS)
+{
+
+    if( !( referenceCS == GLOBAL_COORDINATE_SYSTEM || referenceCS == FUSELAGE_COORDINATE_SYSTEM) )  {
+        throw tigl::CTiglError("CTiglFuselageSectionElement::ScaleCircumference: Invalid coordinate system");
+    }
+
+    CTiglTransformation newE = GetElementTransformationToScaleCircumference(scaleFactor);
+
+    CCPACSTransformation& storedTransformation = element->GetTransformation();
+    storedTransformation.setTransformationMatrix(newE);
+
+    fuselage->Invalidate();
+}

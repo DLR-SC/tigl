@@ -23,7 +23,7 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselage.h"
-#include "CTiglFuselageConnection.h"
+#include "CTiglFuselageSectionElement.h"
 
 #include <string.h>
 
@@ -90,8 +90,8 @@ protected:
     std::map<std::string, double> GetAllCircumferencesOfFuselage()
     {
         std::map<std::string, double> circumferences;
-        std::map<std::string, tigl::CTiglFuselageConnection*> connections = fuselage->GetSegments().GetConnectionsMap();
-        std::map<std::string, tigl::CTiglFuselageConnection*>::iterator it;
+        std::map<std::string, tigl::CTiglFuselageSectionElement*> connections = fuselage->GetSections().GetCTiglElements();
+        std::map<std::string, tigl::CTiglFuselageSectionElement*>::iterator it;
         for (it = connections.begin(); it != connections.end(); it++) {
             circumferences[it->first] = (it->second)->GetCircumferenceOfProfile();
         }

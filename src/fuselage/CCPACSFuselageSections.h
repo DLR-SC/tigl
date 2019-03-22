@@ -27,6 +27,7 @@
 #include "tixi.h"
 #include <string>
 #include <vector>
+#include "CTiglFuselageSectionElement.h"
 
 namespace tigl
 {
@@ -42,6 +43,9 @@ public:
 
     // Returns the section for a given index
     TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
+
+    //
+    TIGL_EXPORT std::map<std::string, CTiglFuselageSectionElement*> GetCTiglElements();
 };
 
 } // end namespace tigl
