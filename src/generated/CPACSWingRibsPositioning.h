@@ -165,9 +165,8 @@ namespace generated
         /// ribReferenceLine.
         boost::optional<int>              m_numberOfRibs_choice2;
 
-        /// The ribReference is the reference line for the geometrical rib
-        /// placement. It can either
-        /// be a sparUID or "trailingEdge" or "leadingEdge"
+        /// The ribReference is the reference line for the computation of the rib set spacing.
+        /// It can either be a sparUID or "trailingEdge" or "leadingEdge"
         std::string                       m_ribReference;
 
         CPACSRibCrossingBehaviour         m_ribCrossingBehaviour;
