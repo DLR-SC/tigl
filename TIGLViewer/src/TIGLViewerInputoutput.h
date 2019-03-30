@@ -28,7 +28,7 @@
 
 class TIGLViewerWidget;
 
-class QOCC_DECLSPEC TIGLViewerInputOutput : public QObject
+class TIGLViewerInputOutput : public QObject
 {
     Q_OBJECT
 

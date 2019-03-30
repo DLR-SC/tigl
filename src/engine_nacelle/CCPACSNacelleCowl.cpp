@@ -321,7 +321,7 @@ Handle(Geom_Curve) CCPACSNacelleCowl::GetGuideCurve(double zeta) const
     }
 
     return CWireToCurve(wireCache->guideCurves[i].second).curve();
-}   
+}
 
 } //namespace tigl
 
@@ -385,7 +385,7 @@ std::vector<std::pair<double,TopoDS_Wire>> connectNacelleGuideCurves(std::vector
     }
 
     return connectedZetaWires;
-};
+}
 
 Handle(Geom_Curve) GetBoundaryCurveByIndex(TopoDS_Shape& face, int edgeIndex)
 {
@@ -394,6 +394,6 @@ Handle(Geom_Curve) GetBoundaryCurveByIndex(TopoDS_Shape& face, int edgeIndex)
     Standard_Real umin, umax;
 
     return BRep_Tool::Curve(TopoDS::Edge(map(edgeIndex)), umin, umax);
-};
+}
 
 } //anonymous namespace

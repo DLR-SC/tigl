@@ -1,33 +1,33 @@
-include(tiglmacros)
+# Set a default build type if none was specified
+if(NOT DEFINED CMAKE_BUILD_TYPE)
+  message(STATUS "Setting build type to 'Release' as none was specified.")
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
+    "MinSizeRel" "RelWithDebInfo")
+endif()
 
-FILE (GLOB_RECURSE test_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
-SET (test_LIBS gtest tigl3_static)
-SET (test_BIN ${PROJECT_NAME}-unittests)
+cmake_minimum_required(VERSION 3.0)
+project (TiGL-unittests)
 
-# add all tigl directories to include path
-set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
-subdirlist(SUBDIRS ${PROJECT_SOURCE_DIR}/src/)
-foreach(subdir ${SUBDIRS})
-  set(TIGL_INCLUDES ${TIGL_INCLUDES} ${PROJECT_SOURCE_DIR}/src/${subdir})
-endforeach()
-INCLUDE_DIRECTORIES(${TIGL_INCLUDES})
+if (NOT TARGET tigl3_cpp)
+    find_package(tigl3-cpp CONFIG REQUIRED)
+endif()
 
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src ${PROJECT_BINARY_DIR}/src/api ${XML_INCLUDE_DIRS} ${TIXI_INCLUDE_DIRS} ${OpenCASCADE_INCLUDE_DIR})
-# boost
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0)
+if (NOT TARGET gtest)
+    find_package(gtest CONFIG REQUIRED)
+    set(GTEST_LIB GTest::gtest)
+else()
+    set(GTEST_LIB gtest)
+endif()
 
-LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
-ADD_EXECUTABLE(${test_BIN} ${test_SRCS} )
+file (GLOB test_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
 
-TARGET_LINK_LIBRARIES(${test_BIN} ${test_LIBS})
+set (test_BIN ${PROJECT_NAME})
 
-if(GLOG_FOUND)
-  include_directories(${GLOG_INCLUDE_DIR})
-  TARGET_LINK_LIBRARIES(${test_BIN} ${GLOG_LIBRARIES})
-endif(GLOG_FOUND)
 
-# boost
-include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0)
+add_executable(${test_BIN} ${test_SRCS} )
+target_link_libraries(${test_BIN} PUBLIC ${GTEST_LIB} tigl3_static tigl3_cpp)
 
 ADD_CUSTOM_TARGET(check ${test_BIN} --gtest_output=xml DEPENDS ${test_BIN} COMMENT "Executing unit tests..." VERBATIM SOURCES ${test_SRCS})
 
@@ -50,5 +50,3 @@ configure_file (
   "${CMAKE_CURRENT_SOURCE_DIR}/runtests.sh.in"
   "${CMAKE_CURRENT_BINARY_DIR}/runtests.sh"
 )
-
-AddToCheckstyle()
