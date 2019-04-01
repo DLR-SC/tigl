@@ -103,6 +103,7 @@ set(tv_src
   # files for CPACSCreator
   src/ModificatorWidget.cpp
   src/ModificatorElementWidget.cpp
+  src/ModificatorSectionWidget.cpp
   src/ModificatorFuselageWidget.cpp
   src/ModificatorTransformationWidget.cpp
   src/ModificatorWingWidget.cpp
@@ -168,6 +169,7 @@ set(tv_hdr
   src/TIGLViewerException.h
   src/ModificatorWidget.h
   src/ModificatorElementWidget.h
+  src/ModificatorSectionWidget.h
   src/ModificatorFuselageWidget.h
   src/ModificatorTransformationWidget.h
   src/ModificatorWingWidget.h
@@ -203,6 +205,7 @@ set(tv_ui
   src/ModificatorContainerWidget.ui
   src/CPACSTreeWidget.ui
   src/TIGLViewerNewFileDialog.ui
+  src/ModificatorSectionWidget.ui
 )
 
 # compile icons
