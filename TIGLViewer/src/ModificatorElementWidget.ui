@@ -15,10 +15,10 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="CTiglPointWidget" name="origin" native="true"/>
+    <widget class="CTiglPointWidget" name="center" native="true"/>
    </item>
    <item>
-    <widget class="CTiglPointWidget" name="center" native="true"/>
+    <widget class="CTiglPointWidget" name="origin" native="true"/>
    </item>
   </layout>
  </widget>

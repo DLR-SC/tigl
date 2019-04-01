@@ -67,7 +67,7 @@ public:
 protected:
     inline bool configurationIsSet()
     {
-        return (doc != nullptr);
+        return (doc != nullptr && doc->getCpacsHandle() > 0);
     }
 
 private:
