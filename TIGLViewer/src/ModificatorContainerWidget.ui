@@ -27,6 +27,9 @@
     <widget class="ModificatorElementWidget" name="elementModificator" native="true"/>
    </item>
    <item>
+    <widget class="ModificatorSectionWidget" name="sectionModificator" native="true"/>
+   </item>
+   <item>
     <widget class="QWidget" name="applyWidget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
@@ -115,6 +118,12 @@
    <class>ModificatorElementWidget</class>
    <extends>QWidget</extends>
    <header>ModificatorElementWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorSectionWidget</class>
+   <extends>QWidget</extends>
+   <header>ModificatorSectionWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

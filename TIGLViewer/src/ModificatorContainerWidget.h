@@ -67,6 +67,7 @@ public:
     void setWingModificator(tigl::CCPACSWing& wing);
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
     void setElementModificator(tigl::CTiglSectionElement& element);
+    void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
 
     void setNoInterfaceWidget();
 

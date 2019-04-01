@@ -110,6 +110,7 @@ set(tv_src
     # files for CPACSCreator
     ModificatorWidget.cpp
     ModificatorElementWidget.cpp
+    ModificatorSectionWidget.cpp
     ModificatorFuselageWidget.cpp
     ModificatorTransformationWidget.cpp
     ModificatorWingWidget.cpp
@@ -180,6 +181,7 @@ set(tv_hdr_qobj
 	# files for CPACSCreator
 	ModificatorWidget.h
     ModificatorElementWidget.h
+    ModificatorSectionWidget.h
 	ModificatorFuselageWidget.h
 	ModificatorTransformationWidget.h
 	ModificatorWingWidget.h
@@ -212,6 +214,7 @@ set(tv_ui_comp
     src/ModificatorContainerWidget.ui
     src/CPACSTreeWidget.ui
     src/TIGLViewerNewFileDialog.ui
+    src/ModificatorSectionWidget.ui
 )
 
 foreach ( _fname ${tv_src})

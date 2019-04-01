@@ -47,6 +47,7 @@ void ModificatorContainerWidget::hideAllSpecializedWidgets()
     ui->applyWidget->setVisible(visible);
     ui->noInterfaceWidget->setVisible(visible);
     ui->elementModificator->setVisible(visible);
+    ui->sectionModificator->setVisible(visible);
     currentModificator = nullptr;
 }
 
@@ -84,6 +85,15 @@ void ModificatorContainerWidget::setElementModificator(tigl::CTiglSectionElement
     ui->elementModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->elementModificator;
+}
+
+void ModificatorContainerWidget::setSectionModificator(QList<tigl::CTiglSectionElement*> elements)
+{
+    hideAllSpecializedWidgets();
+    ui->sectionModificator->setAssociatedElements(elements);
+    ui->sectionModificator->setVisible(true);
+    ui->applyWidget->setVisible(true);
+    currentModificator = ui->sectionModificator;
 }
 
 void ModificatorContainerWidget::setNoInterfaceWidget()
