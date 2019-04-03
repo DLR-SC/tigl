@@ -1,3 +1,21 @@
+/* 
+* Copyright (C) 2016 German Aerospace Center (DLR/SC)
+*
+* Created: 2019-02-04 Martin Siggel <Martin.Siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include "CTiglProjectPointOnCurveAtAngle.h"
 
 #include "tigl_internal.h"
@@ -83,7 +101,7 @@ namespace
         virtual  Standard_Boolean Values (const math_Vector& X, Standard_Real& F, math_Vector& G)
         {
             double u = X.Value(1);
-            
+
             tigl::ValueWithDerivative result = objFun(m_pointToProject, u, m_curve, m_refNormal, m_angle);
 
             // compute square distance to improve convergence
@@ -203,7 +221,8 @@ void tigl::CTiglProjectPointOnCurveAtAngle::FindPoint(double ustart) const
 
     math_Vector xstart(1,1);
     xstart(1) =  ustart;
-    
+
+    // TODO: how to use bounded optimization?
     math_BFGS optimizer(objFun, xstart);
     
     if (!optimizer.IsDone()) {

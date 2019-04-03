@@ -28,6 +28,33 @@
 #include <Geom_BSplineCurve.hxx>
 
 
+class TestProjectionAtAngleSimple : public ::testing::Test
+{
+protected:
+
+    void SetUp() OVERRIDE
+    {
+        TColStd_Array1OfReal knots(1,2);
+        knots.SetValue(1, 0.);
+        knots.SetValue(2, 1.0);
+        
+        TColStd_Array1OfInteger mults(1,2);
+        mults.SetValue(1, 2);
+        mults.SetValue(2, 2);
+        
+        TColgp_Array1OfPnt cps(1, 2);
+        cps.SetValue(1, gp_Pnt(0., -1., 0.));
+        cps.SetValue(2, gp_Pnt(0., 1., 0.));
+        
+        curve = new Geom_BSplineCurve(cps, knots, mults, 1);
+        pnt = gp_Pnt(1., 0. ,0.);
+    }
+    
+    Handle(Geom_BSplineCurve) curve;
+    gp_Pnt pnt;
+
+};
+
 class TestProjectionAtAngleReference : public ::testing::Test
 {
 protected:
@@ -55,14 +82,28 @@ protected:
         pnt = gp_Pnt(4., 2. ,0);
     }
     
-    void TearDown() OVERRIDE
-    {
-    }
-    
     Handle(Geom_BSplineCurve) curve;
     gp_Pnt pnt;
 
 };
+
+TEST_F(TestProjectionAtAngleSimple, consistency)
+{
+    for (double angle=45.; angle<=135; angle += 5) {
+        double yExpected = 1./tan(Radians(angle));
+        tigl::CTiglProjectPointOnCurveAtAngle proj(pnt, curve, Radians(angle), gp_Dir(0, 0, 1));
+        
+        ASSERT_TRUE(proj.IsDone());
+        EXPECT_EQ(1, proj.NbPoints());
+        EXPECT_NEAR(0, proj.Point(1).Distance(gp_Pnt(0., yExpected, 0.)), 1e-8);
+    }
+}
+
+TEST_F(TestProjectionAtAngleSimple, notPossible)
+{
+    tigl::CTiglProjectPointOnCurveAtAngle proj(pnt, curve, Radians(30), gp_Dir(0, 0, 1));
+    ASSERT_FALSE(proj.IsDone());
+}
 
 TEST_F(TestProjectionAtAngleReference,  degree150)
 {
