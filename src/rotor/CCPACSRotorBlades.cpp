@@ -45,7 +45,7 @@ void CCPACSRotorBlades::Invalidate()
 // Adds a rotor blade to the  rotor blade container
 void CCPACSRotorBlades::AddRotorBlade(CCPACSWing* rotorBlade)
 {
-    m_rotorBlades.push_back(tigl::unique_ptr<CCPACSWing>(rotorBlade));
+    m_rotorBlades.push_back(std::unique_ptr<CCPACSWing>(rotorBlade));
 }
 
 // Returns the total count of rotor blades of a rotor blade attachment

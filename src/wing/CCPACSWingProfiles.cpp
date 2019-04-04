@@ -73,8 +73,8 @@ CCPACSWingProfile& CCPACSWingProfiles::AddWingAirfoil() {
 
 bool CCPACSWingProfiles::HasProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_wingAirfoils.begin(); it != m_wingAirfoils.end(); ++it)
-        if ((*it)->GetUID() == uid)
+    for (const auto& p : m_wingAirfoils)
+        if (p->GetUID() == uid)
             return true;
 
     return false;
@@ -83,9 +83,9 @@ bool CCPACSWingProfiles::HasProfile(std::string uid) const
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_wingAirfoils.begin(); it != m_wingAirfoils.end(); ++it)
-        if ((*it)->GetUID() == uid)
-            return static_cast<CCPACSWingProfile&>(**it);
+    for (auto& p : m_wingAirfoils)
+        if (p->GetUID() == uid)
+            return static_cast<CCPACSWingProfile&>(*p);
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
