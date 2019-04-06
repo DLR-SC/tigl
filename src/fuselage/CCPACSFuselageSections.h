@@ -42,6 +42,9 @@ public:
 
     // Returns the section for a given index
     TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
+
+    // Returns the section for a given uid
+    TIGL_EXPORT CCPACSFuselageSection& GetSection(const std::string& sectionUID);
 };
 
 } // end namespace tigl
