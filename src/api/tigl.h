@@ -322,6 +322,25 @@ typedef const char** TiglStringList;
 */
 typedef enum TiglImportExportFormat TiglImportExportFormat;
 
+/**
+* @brief Options for the behavior of the GetPoint functions.
+*
+*  - asParameterOnSurface> treats eta-xsi-values as parameters on a surface.
+*    This makes sense e.g. for smoothly lofted wings that make heavy use of
+*    guide curves.
+*  - onLinearLoft: eta-xsi-values are coordinates on the chordface for the wing,
+*    respectively centerline and relative circumference parameters on the fuselage.
+*    The resulting point lies on the linear interpolation of the starting and ending
+*    profile of the segment.
+*
+*/
+enum TiglGetPointBehavior {
+    asParameterOnSurface = 0,
+    onLinearLoft,
+    numGetPointBehaviors
+};
+
+typedef enum TiglGetPointBehavior TiglGetPointBehavior;
 
 /**
   \defgroup GeneralFunctions General TIGL handling functions
@@ -1648,6 +1667,30 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
                                                        double* pointYPtr,
                                                        double* pointZPtr);
 
+
+/**
+@brief Sets the behavior of the ::tiglFuselageGetPoint function.
+*
+* This function sets the behavior of the ::tiglFuselageGetPoint function. The options
+* are asParameterOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned. For the second, the inputs are interpreted as eta coordinates
+* along the center line of the fuselage segment, xsi is interpreted as a relative
+* circumference between 0 and 1, and the resulting point lies on the linear loft of
+* the fuselage segment.
+*
+* @param[in]  cpacsHandle   Handle for the CPACS configuration
+* @param[in]  behavior      enum describing the desired behavior of the function.
+*                           Possible values are asParameterOnSurface and onLinearLoft.
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_INDEX_ERROR if fuselageIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  TiglGetPointBehavior behavior);
 
 /**
 * @brief Returns a point on a fuselage surface for a given fuselage and segment index and an angle alpha (degree).

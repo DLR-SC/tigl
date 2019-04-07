@@ -93,6 +93,13 @@ public:
     // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
     TIGL_EXPORT gp_Pnt GetPoint(int segmentIndex, double eta, double zeta);
 
+    // Sets the getPointBehavior to asParameterOnSurface or onLinearLoft
+    TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
+
+    // Gets the getPointBehavior
+    TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
+    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
+
     // Gets the volume of this fuselage
     TIGL_EXPORT double GetVolume();
 
@@ -155,6 +162,8 @@ private:
     double                     myVolume;             /**< Volume of this fuselage              */
 
     friend class CCPACSFuselageSegment;
+
+    TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
 };
 
 TIGL_EXPORT TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTransform, const CTiglFuselageConnection& connection, const TopoDS_Shape& shape);

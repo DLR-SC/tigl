@@ -539,28 +539,72 @@ int CCPACSFuselageSegment::GetEndConnectedSegmentIndex(int n)
 // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
 // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0
 // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
-gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta)
+gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta, TiglGetPointBehavior behavior)
 {
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSFuselageSegment::GetPoint", TIGL_ERROR);
     }
+    if (zeta < 0.0 || zeta > 1.0) {
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSFuselageSegment::GetPoint", TIGL_ERROR);
+    }
 
-    CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-    CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
-
-    gp_Pnt startProfilePoint = startProfile.GetPoint(zeta);
-    gp_Pnt endProfilePoint   = endProfile.GetPoint(zeta);
-    
-    startProfilePoint = transformProfilePoint(GetFuselage().GetTransformationMatrix(), startConnection, startProfilePoint);
-    endProfilePoint   = transformProfilePoint(GetFuselage().GetTransformationMatrix(), endConnection,   endProfilePoint);
-
-    // Get point on fuselage segment in dependence of eta by linear interpolation
-    Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(startProfilePoint, endProfilePoint);
-    Standard_Real firstParam = profileLine->FirstParameter();
-    Standard_Real lastParam  = profileLine->LastParameter();
-    Standard_Real param = (lastParam - firstParam) * eta;
     gp_Pnt profilePoint;
-    profileLine->D0(param, profilePoint);
+    if ( behavior == onLinearLoft ) {
+
+        CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
+        CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
+
+        gp_Pnt startProfilePoint = startProfile.GetPoint(zeta);
+        gp_Pnt endProfilePoint   = endProfile.GetPoint(zeta);
+
+        startProfilePoint = transformProfilePoint(GetFuselage().GetTransformationMatrix(), startConnection, startProfilePoint);
+        endProfilePoint   = transformProfilePoint(GetFuselage().GetTransformationMatrix(), endConnection,   endProfilePoint);
+
+        // Get point on fuselage segment in dependence of eta by linear interpolation
+        Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(startProfilePoint, endProfilePoint);
+        Standard_Real firstParam = profileLine->FirstParameter();
+        Standard_Real lastParam  = profileLine->LastParameter();
+        Standard_Real param = (lastParam - firstParam) * eta;
+        profileLine->D0(param, profilePoint);
+    }
+    else if ( behavior == asParameterOnSurface) {
+        // extract faces of the fuselage segment. By construction, the faces span the entire eta range of the segment,
+        // while the zeta range is split at the guide curves or because of the symmetry.
+
+        TopTools_IndexedMapOfShape faceMap;
+        TopoDS_Shape s = GetFacesByName(GetLoft(), GetUID());
+        TopExp::MapShapes(s, TopAbs_FACE, faceMap);
+
+        // get the index of the first face that belongs to the current segment.
+        int faceIdx = 1;
+
+        assert (faceIdx > 0);
+        assert (faceIdx <= faceMap.Extent() );
+
+        // get the start and end zeta coordinates of the subfaces and the index of the face at zeta.
+        // By construction, we can use the guide curves for this. If there are no guide curves,
+        // there should be only one face spanning the entire zeta range
+        double startZeta = 0.;
+        double endZeta = 1.;
+        if ( GetGuideCurves() ) {
+            int idx = 0;
+            const CCPACSGuideCurves& segmentCurves = *GetGuideCurves();
+            segmentCurves.GetRelativeCircumferenceRange(zeta, startZeta, endZeta, idx);
+            faceIdx += idx;
+        }
+
+        // get uv coordinates and 3d point on the face
+        TopoDS_Face face = TopoDS::Face(faceMap(faceIdx));
+        Handle_Geom_Surface surface = BRep_Tool::Surface(face);
+        double umin, umax, vmin, vmax;
+        surface->Bounds(umin, umax, vmin, vmax);
+        double u = umin + (zeta - startZeta)/(endZeta-startZeta)*(umax - umin);
+        double v = vmin + eta*(vmax - vmin);
+        surface->D0(u, v, profilePoint);
+    }
+    else {
+        throw CTiglError("CCPACSFuselageSegment::GetPoint: Unknown TiglGetPointBehavior passed as argument.", TIGL_INDEX_ERROR);
+    }
 
     return profilePoint;
 }

@@ -88,6 +88,21 @@ CCPACSGuideCurve* CCPACSGuideCurve::GetConnectedCurve() const
     return NULL;
 }
 
+CCPACSGuideCurve const* CCPACSGuideCurve::GetRootCurve() const
+{
+    if ( GetFromGuideCurveUID_choice1() ) {
+        CCPACSGuideCurve& pred = m_uidMgr->ResolveObject<CCPACSGuideCurve>(*GetFromGuideCurveUID_choice1());
+        return pred.GetRootCurve();
+    }
+    else {
+        if( !GetFromRelativeCircumference_choice2() ) {
+            throw CTiglError("CCPACSGuideCurve::GetRootCurve(): Either a fromCircumference of a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
+        } else {
+            return this;
+        }
+    }
+}
+
 void CCPACSGuideCurve::SetGuideCurveBuilder(IGuideCurveBuilder& b)
 {
     m_builder = &b;

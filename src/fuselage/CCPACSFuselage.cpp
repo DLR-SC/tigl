@@ -279,7 +279,25 @@ boost::optional<CTiglTransformation> CCPACSFuselage::GetPositioningTransformatio
 // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
 gp_Pnt CCPACSFuselage::GetPoint(int segmentIndex, double eta, double zeta)
 {
-    return ((CCPACSFuselageSegment &) GetSegment(segmentIndex)).GetPoint(eta, zeta);
+    return ((CCPACSFuselageSegment &) GetSegment(segmentIndex)).GetPoint(eta, zeta, getPointBehavior);
+}
+
+// Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
+void CCPACSFuselage::SetGetPointBehavior(TiglGetPointBehavior behavior)
+{
+    getPointBehavior = behavior;
+}
+
+// Gets the getPointBehavior
+TiglGetPointBehavior const CCPACSFuselage::GetGetPointBehavior() const
+{
+    return getPointBehavior;
+}
+
+// Gets the getPointBehavior
+TiglGetPointBehavior CCPACSFuselage::GetGetPointBehavior()
+{
+    return getPointBehavior;
 }
 
 

@@ -95,6 +95,36 @@ bool CCPACSGuideCurves::GuideCurveExists(std::string uid) const
     return false;
 }
 
+void CCPACSGuideCurves::GetRelativeCircumferenceRange(double relCirc,
+                                                      double& relCircStart,
+                                                      double& relCircEnd,
+                                                      int& idx) const
+{
+    std::vector<double> relCircs;
+    for (int iguide = 1; iguide <=  GetGuideCurveCount(); ++iguide) {
+        const CCPACSGuideCurve* root = GetGuideCurve(iguide).GetRootCurve();
+        relCircs.push_back(*root->GetFromRelativeCircumference_choice2());
+    }
+    if ( relCircs.back() < 1.0 ) {
+        relCircs.push_back(1.0);
+    }
+
+    std::sort(relCircs.begin(), relCircs.end());
+
+    // probably best to assert for performance reasons...
+    assert( relCircs.size() > 0 );
+    assert( relCirc >= relCircs[0] );
+    assert( relCirc <= relCircs.back() );
+
+    for (size_t i = 1; i < relCircs.size(); ++i ) {
+        if (relCircs[i] > relCirc ) {
+            relCircStart = relCircs[i-1];
+            relCircEnd = relCircs[i];
+            idx = i-1;
+            break;
+        }
+    }
+}
 
 } // end namespace tigl
 
