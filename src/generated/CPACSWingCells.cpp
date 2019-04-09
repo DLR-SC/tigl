@@ -63,7 +63,7 @@ namespace generated
     {
         // read element cell
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cell")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/cell", m_cells, 1, 2147483647, reinterpret_cast<CCPACSWingCells*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/cell", m_cells, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSWingCells*>(this), m_uidMgr);
         }
 
     }

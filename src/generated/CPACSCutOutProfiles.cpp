@@ -53,7 +53,7 @@ namespace generated
 
         // read element cutOutProfile
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cutOutProfile")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/cutOutProfile", m_cutOutProfiles, 0, 2147483647);
+            tixi::TixiReadElements(tixiHandle, xpath + "/cutOutProfile", m_cutOutProfiles, 0, tixi::xsdUnbounded);
         }
 
     }

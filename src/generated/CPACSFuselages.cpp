@@ -63,7 +63,7 @@ namespace generated
     {
         // read element fuselage
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselage")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/fuselage", m_fuselages, 1, 2147483647, reinterpret_cast<CCPACSFuselages*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/fuselage", m_fuselages, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSFuselages*>(this), m_uidMgr);
         }
 
     }

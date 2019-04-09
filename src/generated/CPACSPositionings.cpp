@@ -49,7 +49,7 @@ namespace generated
     {
         // read element positioning
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/positioning")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/positioning", m_positionings, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/positioning", m_positionings, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

@@ -66,7 +66,7 @@ namespace generated
 
         // read element plasticityCurvePoint
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/plasticityCurvePoint")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1, 0, 2147483647);
+            tixi::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1, 0, tixi::xsdUnbounded);
         }
 
         // read element initialEquivalentShearStrain

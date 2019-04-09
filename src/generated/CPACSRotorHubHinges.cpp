@@ -63,7 +63,7 @@ namespace generated
     {
         // read element hinge
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/hinge")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/hinge", m_hinges, 1, 2147483647, reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/hinge", m_hinges, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr);
         }
 
     }

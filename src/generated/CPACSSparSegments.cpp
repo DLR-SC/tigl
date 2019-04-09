@@ -63,7 +63,7 @@ namespace generated
     {
         // read element sparSegment
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparSegment")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sparSegment", m_sparSegments, 1, 2147483647, reinterpret_cast<CCPACSWingSparSegments*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sparSegment", m_sparSegments, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSWingSparSegments*>(this), m_uidMgr);
         }
 
     }

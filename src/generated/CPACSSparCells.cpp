@@ -49,7 +49,7 @@ namespace generated
     {
         // read element sparCell
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparCell")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

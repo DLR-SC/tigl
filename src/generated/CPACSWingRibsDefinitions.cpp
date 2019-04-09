@@ -63,7 +63,7 @@ namespace generated
     {
         // read element ribsDefinition
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribsDefinition")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, 1, 2147483647, reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr);
         }
 
     }

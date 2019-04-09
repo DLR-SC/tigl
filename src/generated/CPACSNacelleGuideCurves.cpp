@@ -51,7 +51,7 @@ namespace generated
     {
         // read element nacelleGuideCurve
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacelleGuideCurve")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleGuideCurve", m_nacelleGuideCurves, 1, 2147483647, reinterpret_cast<CCPACSNacelleGuideCurves*>(this));
+            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleGuideCurve", m_nacelleGuideCurves, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSNacelleGuideCurves*>(this));
         }
 
     }

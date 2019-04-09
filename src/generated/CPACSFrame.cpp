@@ -75,7 +75,7 @@ namespace generated
 
         // read element framePosition
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/framePosition")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/framePosition", m_framePositions, 1, 2147483647, reinterpret_cast<CCPACSFrame*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/framePosition", m_framePositions, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSFrame*>(this), m_uidMgr);
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);

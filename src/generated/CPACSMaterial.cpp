@@ -262,7 +262,7 @@ namespace generated
 
         // read element postFailure
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/postFailure")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/postFailure", m_postFailures, 0, 2147483647);
+            tixi::TixiReadElements(tixiHandle, xpath + "/postFailure", m_postFailures, 0, tixi::xsdUnbounded);
         }
 
         // read element thermalConductivity

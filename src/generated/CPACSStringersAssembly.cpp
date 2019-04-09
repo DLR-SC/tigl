@@ -63,7 +63,7 @@ namespace generated
     {
         // read element stringer
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/stringer")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/stringer", m_stringers, 1, 2147483647, reinterpret_cast<CCPACSStringersAssembly*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/stringer", m_stringers, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSStringersAssembly*>(this), m_uidMgr);
         }
 
     }

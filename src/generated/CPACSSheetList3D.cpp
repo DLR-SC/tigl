@@ -49,7 +49,7 @@ namespace generated
     {
         // read element sheet3D
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheet3D")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sheet3D", m_sheet3Ds, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sheet3D", m_sheet3Ds, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

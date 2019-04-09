@@ -50,12 +50,12 @@ namespace generated
     {
         // read element structuralProfile2D
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfile2D")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile2D", m_structuralProfile2Ds, 0, 2147483647, reinterpret_cast<CCPACSStructuralProfiles*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile2D", m_structuralProfile2Ds, 0, tixi::xsdUnbounded, reinterpret_cast<CCPACSStructuralProfiles*>(this), m_uidMgr);
         }
 
         // read element structuralProfile3D
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfile3D")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile3D", m_structuralProfile3Ds, 0, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile3D", m_structuralProfile3Ds, 0, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

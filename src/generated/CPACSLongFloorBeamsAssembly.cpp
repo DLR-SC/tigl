@@ -63,7 +63,7 @@ namespace generated
     {
         // read element longFloorBeam
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/longFloorBeam")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/longFloorBeam", m_longFloorBeams, 1, 2147483647, reinterpret_cast<CCPACSLongFloorBeamsAssembly*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/longFloorBeam", m_longFloorBeams, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSLongFloorBeamsAssembly*>(this), m_uidMgr);
         }
 
     }

@@ -49,7 +49,7 @@ namespace generated
     {
         // read element profileBasedStructuralElement
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/profileBasedStructuralElement")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/profileBasedStructuralElement", m_profileBasedStructuralElements, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/profileBasedStructuralElement", m_profileBasedStructuralElements, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

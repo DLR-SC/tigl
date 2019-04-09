@@ -23,6 +23,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <ctime>
+#include <limits>
 #include <string>
 
 #include "UniquePtr.h"
@@ -49,12 +50,13 @@ namespace tixi
         TixiSaveElement(tixiHandle, xpath, boost::posix_time::to_iso_extended_string(boost::posix_time::from_time_t(value)));
     }
 
+    constexpr auto xsdUnbounded = std::numeric_limits<unsigned int>::max();
 
     template<typename T, typename ReadChildFunc, typename... ChildCtorArgs>
-    void TixiReadElementsInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<T>& children, int minOccurs, int maxOccurs, ReadChildFunc readChild, ChildCtorArgs&&... args)
+    void TixiReadElementsInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<T>& children, unsigned int minOccurs, unsigned int maxOccurs, ReadChildFunc readChild, ChildCtorArgs&&... args)
     {
         // read number of child nodes
-        const int childCount = TixiGetNamedChildrenCount(tixiHandle, xpath);
+        const auto childCount = static_cast<unsigned int>(TixiGetNamedChildrenCount(tixiHandle, xpath));
 
         // validate number of child nodes
         if (childCount < minOccurs) {
@@ -79,7 +81,7 @@ namespace tixi
         }
 
         // read child nodes
-        for (int i = 0; i < childCount; i++) {
+        for (unsigned int i = 0; i < childCount; i++) {
             const std::string childXPath = xpath + "[" + std::to_string(i + 1) + "]";
             try {
                 children.push_back(readChild(childXPath, std::forward<ChildCtorArgs>(args)...));
@@ -94,7 +96,7 @@ namespace tixi
     }
 
     template<typename T>
-    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<T>& children, int minOccurs, int maxOccurs)
+    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<T>& children, unsigned int minOccurs, unsigned int maxOccurs)
     {
         TixiReadElementsInternal(tixiHandle, xpath, children, minOccurs, maxOccurs, [&](const std::string& childXPath) {
             return TixiGetElement<T>(tixiHandle, childXPath);
@@ -102,7 +104,7 @@ namespace tixi
     }
 
     template<typename T, typename... ChildCtorArgs>
-    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<std::unique_ptr<T>>& children, int minOccurs, int maxOccurs, ChildCtorArgs&&... args)
+    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<std::unique_ptr<T>>& children, unsigned int minOccurs, unsigned int maxOccurs, ChildCtorArgs&&... args)
     {
         // TODO(bgruber): enable when support for g++ < 4.9.0 is dropped
         //TixiReadElementsInternal(tixiHandle, xpath, children, minOccurs, maxOccurs, [&](const std::string& childXPath) {

@@ -49,7 +49,7 @@ namespace generated
     {
         // read element wingAirfoil
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

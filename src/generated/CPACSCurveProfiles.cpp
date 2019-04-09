@@ -49,7 +49,7 @@ namespace generated
     {
         // read element curveProfile
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/curveProfile")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/curveProfile", m_curveProfiles, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/curveProfile", m_curveProfiles, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

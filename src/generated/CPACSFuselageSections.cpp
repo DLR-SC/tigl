@@ -63,7 +63,7 @@ namespace generated
     {
         // read element section
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/section")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, 2, 2147483647, reinterpret_cast<CCPACSFuselageSections*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, 2, tixi::xsdUnbounded, reinterpret_cast<CCPACSFuselageSections*>(this), m_uidMgr);
         }
 
     }

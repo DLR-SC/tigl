@@ -63,7 +63,7 @@ namespace generated
     {
         // read element genericGeometryComponent
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponent")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, 1, 2147483647, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
         }
 
     }

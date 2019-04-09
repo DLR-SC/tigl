@@ -49,7 +49,7 @@ namespace generated
     {
         // read element doorSurroundStructure
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/doorSurroundStructure")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/doorSurroundStructure", m_doorSurroundStructures, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/doorSurroundStructure", m_doorSurroundStructures, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

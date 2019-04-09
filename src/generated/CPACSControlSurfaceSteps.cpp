@@ -63,7 +63,7 @@ namespace generated
     {
         // read element step
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/step")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/step", m_steps, 2, 2147483647, reinterpret_cast<CCPACSControlSurfaceSteps*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/step", m_steps, 2, tixi::xsdUnbounded, reinterpret_cast<CCPACSControlSurfaceSteps*>(this), m_uidMgr);
         }
 
     }

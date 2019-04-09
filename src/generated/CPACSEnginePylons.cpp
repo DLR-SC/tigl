@@ -63,7 +63,7 @@ namespace generated
     {
         // read element enginePylon
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/enginePylon")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/enginePylon", m_enginePylons, 1, 2147483647, reinterpret_cast<CCPACSEnginePylons*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/enginePylon", m_enginePylons, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSEnginePylons*>(this), m_uidMgr);
         }
 
     }

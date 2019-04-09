@@ -36,7 +36,7 @@ namespace generated
     {
         // read element sparPositionUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionUID")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs, 2, 2147483647);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs, 2, tixi::xsdUnbounded);
         }
 
     }

@@ -63,7 +63,7 @@ namespace generated
     {
         // read element track
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/track")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/track", m_tracks, 1, 2147483647, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/track", m_tracks, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }

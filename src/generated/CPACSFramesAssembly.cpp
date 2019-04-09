@@ -63,7 +63,7 @@ namespace generated
     {
         // read element frame
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/frame")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/frame", m_frames, 1, 2147483647, reinterpret_cast<CCPACSFramesAssembly*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/frame", m_frames, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSFramesAssembly*>(this), m_uidMgr);
         }
 
     }

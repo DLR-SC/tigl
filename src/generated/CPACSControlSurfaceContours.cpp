@@ -37,7 +37,7 @@ namespace generated
     {
         // read element intermediateAirfoil
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateAirfoil")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/intermediateAirfoil", m_intermediateAirfoils, 1, 2147483647);
+            tixi::TixiReadElements(tixiHandle, xpath + "/intermediateAirfoil", m_intermediateAirfoils, 1, tixi::xsdUnbounded);
         }
 
     }

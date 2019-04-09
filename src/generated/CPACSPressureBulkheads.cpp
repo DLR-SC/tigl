@@ -49,7 +49,7 @@ namespace generated
     {
         // read element pressureBulkhead
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/pressureBulkhead")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/pressureBulkhead", m_pressureBulkheads, 1, 2147483647, reinterpret_cast<CCPACSPressureBulkheads*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/pressureBulkhead", m_pressureBulkheads, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSPressureBulkheads*>(this), m_uidMgr);
         }
 
     }

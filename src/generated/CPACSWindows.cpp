@@ -61,7 +61,7 @@ namespace generated
 
         // read element window
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/window")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/window", m_windows, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/window", m_windows, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);

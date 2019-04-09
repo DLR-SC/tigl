@@ -63,7 +63,7 @@ namespace generated
     {
         // read element rotorBlade
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBlade")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/rotorBlade", m_rotorBlades, 1, 2147483647, reinterpret_cast<CCPACSRotorBlades*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/rotorBlade", m_rotorBlades, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSRotorBlades*>(this), m_uidMgr);
         }
 
     }

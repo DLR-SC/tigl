@@ -63,7 +63,7 @@ namespace generated
     {
         // read element cargoDoor
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cargoDoor")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/cargoDoor", m_cargoDoors, 1, 2147483647, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/cargoDoor", m_cargoDoors, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }

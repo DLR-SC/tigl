@@ -49,7 +49,7 @@ namespace generated
     {
         // read element rivet
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/rivet")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/rivet", m_rivets, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/rivet", m_rivets, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

@@ -63,7 +63,7 @@ namespace generated
     {
         // read element cargoCrossBeam
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cargoCrossBeam")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/cargoCrossBeam", m_cargoCrossBeams, 1, 2147483647, reinterpret_cast<CCPACSCargoCrossBeamsAssembly*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/cargoCrossBeam", m_cargoCrossBeams, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSCargoCrossBeamsAssembly*>(this), m_uidMgr);
         }
 
     }

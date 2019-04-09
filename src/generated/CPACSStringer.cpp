@@ -75,7 +75,7 @@ namespace generated
 
         // read element stringerPosition
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/stringerPosition")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/stringerPosition", m_stringerPositions, 2, 2147483647, reinterpret_cast<CCPACSFuselageStringer*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/stringerPosition", m_stringerPositions, 2, tixi::xsdUnbounded, reinterpret_cast<CCPACSFuselageStringer*>(this), m_uidMgr);
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);

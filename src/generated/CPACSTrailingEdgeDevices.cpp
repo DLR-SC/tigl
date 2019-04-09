@@ -63,7 +63,7 @@ namespace generated
     {
         // read element trailingEdgeDevice
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeDevice")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/trailingEdgeDevice", m_trailingEdgeDevices, 1, 2147483647, reinterpret_cast<CCPACSTrailingEdgeDevices*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/trailingEdgeDevice", m_trailingEdgeDevices, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSTrailingEdgeDevices*>(this), m_uidMgr);
         }
 
     }

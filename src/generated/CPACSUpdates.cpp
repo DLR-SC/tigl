@@ -37,7 +37,7 @@ namespace generated
     {
         // read element update
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/update")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/update", m_updates, 1, 2147483647);
+            tixi::TixiReadElements(tixiHandle, xpath + "/update", m_updates, 1, tixi::xsdUnbounded);
         }
 
     }

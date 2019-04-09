@@ -49,7 +49,7 @@ namespace generated
     {
         // read element material
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/material", m_materials, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/material", m_materials, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
         // read element composites

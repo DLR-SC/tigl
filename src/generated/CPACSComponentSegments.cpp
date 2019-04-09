@@ -63,7 +63,7 @@ namespace generated
     {
         // read element componentSegment
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/componentSegment")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/componentSegment", m_componentSegments, 1, 2147483647, reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/componentSegment", m_componentSegments, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr);
         }
 
     }

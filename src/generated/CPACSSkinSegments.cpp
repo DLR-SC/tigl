@@ -63,7 +63,7 @@ namespace generated
     {
         // read element skinSegment
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skinSegment")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/skinSegment", m_skinSegments, 1, 2147483647, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/skinSegment", m_skinSegments, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }

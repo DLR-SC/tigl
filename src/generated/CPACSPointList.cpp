@@ -49,7 +49,7 @@ namespace generated
     {
         // read element point
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/point")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/point", m_points, 2, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/point", m_points, 2, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

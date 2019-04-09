@@ -49,7 +49,7 @@ namespace generated
     {
         // read element seatModule
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/seatModule")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/seatModule", m_seatModules, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/seatModule", m_seatModules, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

@@ -49,7 +49,7 @@ namespace generated
     {
         // read element nacelleProfile
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacelleProfile")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleProfile", m_nacelleProfiles, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleProfile", m_nacelleProfiles, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

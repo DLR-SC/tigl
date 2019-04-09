@@ -49,7 +49,7 @@ namespace generated
     {
         // read element rotorAirfoil
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoil")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

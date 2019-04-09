@@ -89,7 +89,7 @@ namespace generated
 
         // read element sheetProperties
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetProperties")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sheetProperties", m_sheetProperties_choice2, 0, 2147483647);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sheetProperties", m_sheetProperties_choice2, 0, tixi::xsdUnbounded);
         }
 
         // read element standardProfileType
@@ -107,7 +107,7 @@ namespace generated
 
         // read element pointProperties
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/pointProperties")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/pointProperties", m_pointProperties_choice2_2, 0, 2147483647);
+            tixi::TixiReadElements(tixiHandle, xpath + "/pointProperties", m_pointProperties_choice2_2, 0, tixi::xsdUnbounded);
         }
 
         // read element referencePointUID

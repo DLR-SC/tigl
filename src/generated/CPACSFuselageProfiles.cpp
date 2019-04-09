@@ -49,7 +49,7 @@ namespace generated
     {
         // read element fuselageProfile
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

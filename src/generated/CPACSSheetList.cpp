@@ -63,7 +63,7 @@ namespace generated
     {
         // read element sheet
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheet")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sheet", m_sheets, 1, 2147483647, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sheet", m_sheets, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }

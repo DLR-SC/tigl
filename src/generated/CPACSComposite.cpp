@@ -85,7 +85,7 @@ namespace generated
 
         // read element compositeLayer
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/compositeLayer")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers, 0, 2147483647);
+            tixi::TixiReadElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers, 0, tixi::xsdUnbounded);
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
