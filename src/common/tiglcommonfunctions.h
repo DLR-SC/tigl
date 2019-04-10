@@ -284,18 +284,11 @@ TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedC
 TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts);
 
 template <typename T>
-size_t IndexFromUid(const std::vector<tigl::unique_ptr<T> >& vectorOfPointers, const std::string& uid)
+size_t IndexFromUid(const std::vector<std::unique_ptr<T> >& vectorOfPointers, const std::string& uid)
 {
-    struct is_uid { 
-        is_uid(const std::string& uid) : m_uid(uid){}
-        bool operator()(const tigl::unique_ptr<T>& ptr)
-        { 
-            return ptr->GetUID() == m_uid;
-        }
-        std::string m_uid;
-    }; 
-    
-    typename std::vector<tigl::unique_ptr<T> >::const_iterator found = std::find_if(vectorOfPointers.begin(), vectorOfPointers.end(), is_uid(uid));
+    const auto found = std::find_if(vectorOfPointers.begin(), vectorOfPointers.end(), [&uid](const std::unique_ptr<T>& ptr) {
+        return ptr->GetUID() == uid;
+    });
     return found - vectorOfPointers.begin();
 }
 

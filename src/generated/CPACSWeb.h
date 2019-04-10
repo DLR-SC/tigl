@@ -66,23 +66,14 @@ namespace generated
         double                   m_relPos;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWeb(const CPACSWeb&) = delete;
         CPACSWeb& operator=(const CPACSWeb&) = delete;
 
         CPACSWeb(CPACSWeb&&) = delete;
         CPACSWeb& operator=(CPACSWeb&&) = delete;
-#else
-        CPACSWeb(const CPACSWeb&);
-        CPACSWeb& operator=(const CPACSWeb&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSWeb = generated::CPACSWeb;
-#else
-typedef generated::CPACSWeb CCPACSWeb;
-#endif
 } // namespace tigl

@@ -104,16 +104,11 @@ namespace generated
         std::string                  m_simpleContent;
 
     private:
-#ifdef HAVE_CPP11
         CPACSStringVectorBase(const CPACSStringVectorBase&) = delete;
         CPACSStringVectorBase& operator=(const CPACSStringVectorBase&) = delete;
 
         CPACSStringVectorBase(CPACSStringVectorBase&&) = delete;
         CPACSStringVectorBase& operator=(CPACSStringVectorBase&&) = delete;
-#else
-        CPACSStringVectorBase(const CPACSStringVectorBase&);
-        CPACSStringVectorBase& operator=(const CPACSStringVectorBase&);
-#endif
     };
 } // namespace generated
 

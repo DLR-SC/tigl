@@ -70,9 +70,6 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetGuideCurveProfileUID() const;
         TIGL_EXPORT virtual void SetGuideCurveProfileUID(const std::string& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetRXDirection() const;
-        TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetRXDirection();
-
         TIGL_EXPORT virtual const boost::optional<std::string>& GetFromGuideCurveUID_choice1() const;
         TIGL_EXPORT virtual void SetFromGuideCurveUID_choice1(const boost::optional<std::string>& value);
 
@@ -91,14 +88,17 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetTangent() const;
         TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetTangent();
 
-        TIGL_EXPORT virtual CPACSPointXYZ& GetRXDirection(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveRXDirection();
+        TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetRXDirection() const;
+        TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetRXDirection();
 
         TIGL_EXPORT virtual CPACSPointXYZ& GetTangent_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveTangent_choice2();
 
         TIGL_EXPORT virtual CPACSPointXYZ& GetTangent(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveTangent();
+
+        TIGL_EXPORT virtual CPACSPointXYZ& GetRXDirection(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveRXDirection();
 
     protected:
         CTiglUIDManager* m_uidMgr;
@@ -113,11 +113,6 @@ namespace generated
 
         /// Reference to a guide curve profile
         std::string                                 m_guideCurveProfileUID;
-
-        /// Local direction along which the relative x-coordinates of
-        /// the guide curve points are defined. For the wing the default is
-        /// the wing's local x-axis, for the fuselage its the fuselage's local z-axis.
-        boost::optional<CPACSPointXYZ>              m_rXDirection;
 
         /// Reference to the previous guide curve from
         /// which this guide curve shall start.
@@ -144,17 +139,17 @@ namespace generated
         /// Tangent at last point
         boost::optional<CPACSPointXYZ>              m_tangent;
 
+        /// Local direction along which the relative x-coordinates of
+        /// the guide curve points are defined. For the wing the default is
+        /// the wing's local x-axis, for the fuselage its the fuselage's local z-axis.
+        boost::optional<CPACSPointXYZ>              m_rXDirection;
+
     private:
-#ifdef HAVE_CPP11
         CPACSGuideCurve(const CPACSGuideCurve&) = delete;
         CPACSGuideCurve& operator=(const CPACSGuideCurve&) = delete;
 
         CPACSGuideCurve(CPACSGuideCurve&&) = delete;
         CPACSGuideCurve& operator=(CPACSGuideCurve&&) = delete;
-#else
-        CPACSGuideCurve(const CPACSGuideCurve&);
-        CPACSGuideCurve& operator=(const CPACSGuideCurve&);
-#endif
     };
 } // namespace generated
 

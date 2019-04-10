@@ -54,8 +54,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSEnginePosition> >& GetEngines() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSEnginePosition> >& GetEngines();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSEnginePosition>>& GetEngines() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSEnginePosition>>& GetEngines();
 
         TIGL_EXPORT virtual CCPACSEnginePosition& AddEngine();
         TIGL_EXPORT virtual void RemoveEngine(CCPACSEnginePosition& ref);
@@ -63,19 +63,14 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSEnginePosition> > m_engines;
+        std::vector<std::unique_ptr<CCPACSEnginePosition>> m_engines;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEnginePositions(const CPACSEnginePositions&) = delete;
         CPACSEnginePositions& operator=(const CPACSEnginePositions&) = delete;
 
         CPACSEnginePositions(CPACSEnginePositions&&) = delete;
         CPACSEnginePositions& operator=(CPACSEnginePositions&&) = delete;
-#else
-        CPACSEnginePositions(const CPACSEnginePositions&);
-        CPACSEnginePositions& operator=(const CPACSEnginePositions&);
-#endif
     };
 } // namespace generated
 

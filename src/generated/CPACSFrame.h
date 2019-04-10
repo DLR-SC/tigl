@@ -59,8 +59,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselageStringerFramePosition> >& GetFramePositions() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselageStringerFramePosition> >& GetFramePositions();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>>& GetFramePositions() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>>& GetFramePositions();
 
         TIGL_EXPORT virtual CCPACSFuselageStringerFramePosition& AddFramePosition();
         TIGL_EXPORT virtual void RemoveFramePosition(CCPACSFuselageStringerFramePosition& ref);
@@ -70,20 +70,15 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                                                   m_uID;
-        std::vector<unique_ptr<CCPACSFuselageStringerFramePosition> > m_framePositions;
+        std::string                                                       m_uID;
+        std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>> m_framePositions;
 
     private:
-#ifdef HAVE_CPP11
         CPACSFrame(const CPACSFrame&) = delete;
         CPACSFrame& operator=(const CPACSFrame&) = delete;
 
         CPACSFrame(CPACSFrame&&) = delete;
         CPACSFrame& operator=(CPACSFrame&&) = delete;
-#else
-        CPACSFrame(const CPACSFrame&);
-        CPACSFrame& operator=(const CPACSFrame&);
-#endif
     };
 } // namespace generated
 

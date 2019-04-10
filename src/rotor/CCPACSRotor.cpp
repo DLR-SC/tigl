@@ -104,10 +104,10 @@ TiglRotorType CCPACSRotor::GetDefaultedType() const
         return TIGLROTOR_UNDEFINED;
 
     switch (*m_type) {
-        case fenestron: return TIGLROTOR_FENESTRON;
-        case mainRotor: return TIGLROTOR_MAIN_ROTOR;
-        case propeller: return TIGLROTOR_PROPELLER;
-        case tailRotor: return TIGLROTOR_TAIL_ROTOR;
+        case ECPACSRotor_type::fenestron: return TIGLROTOR_FENESTRON;
+        case ECPACSRotor_type::mainRotor: return TIGLROTOR_MAIN_ROTOR;
+        case ECPACSRotor_type::propeller: return TIGLROTOR_PROPELLER;
+        case ECPACSRotor_type::tailRotor: return TIGLROTOR_TAIL_ROTOR;
         default: throw CTiglError("unknown rotor type");
     }
 }

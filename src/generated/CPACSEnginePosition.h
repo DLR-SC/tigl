@@ -103,16 +103,11 @@ namespace generated
         CCPACSTransformation              m_transformation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEnginePosition(const CPACSEnginePosition&) = delete;
         CPACSEnginePosition& operator=(const CPACSEnginePosition&) = delete;
 
         CPACSEnginePosition(CPACSEnginePosition&&) = delete;
         CPACSEnginePosition& operator=(CPACSEnginePosition&&) = delete;
-#else
-        CPACSEnginePosition(const CPACSEnginePosition&);
-        CPACSEnginePosition& operator=(const CPACSEnginePosition&);
-#endif
     };
 } // namespace generated
 

@@ -49,7 +49,7 @@ namespace generated
     {
         // read element engine
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/engine")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/engine", m_engines, reinterpret_cast<CCPACSEnginePositions*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/engine", m_engines, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSEnginePositions*>(this), m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSEnginePosition> >& CPACSEnginePositions::GetEngines() const
+    const std::vector<std::unique_ptr<CCPACSEnginePosition>>& CPACSEnginePositions::GetEngines() const
     {
         return m_engines;
     }
 
-    std::vector<unique_ptr<CCPACSEnginePosition> >& CPACSEnginePositions::GetEngines()
+    std::vector<std::unique_ptr<CCPACSEnginePosition>>& CPACSEnginePositions::GetEngines()
     {
         return m_engines;
     }

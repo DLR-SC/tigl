@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSDoorAssemblyPosition> >& GetCargoDoors() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSDoorAssemblyPosition> >& GetCargoDoors();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDoorAssemblyPosition>>& GetCargoDoors() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDoorAssemblyPosition>>& GetCargoDoors();
 
         TIGL_EXPORT virtual CCPACSDoorAssemblyPosition& AddCargoDoor();
         TIGL_EXPORT virtual void RemoveCargoDoor(CCPACSDoorAssemblyPosition& ref);
@@ -68,26 +68,17 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSDoorAssemblyPosition> > m_cargoDoors;
+        std::vector<std::unique_ptr<CCPACSDoorAssemblyPosition>> m_cargoDoors;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCargoDoorsAssembly(const CPACSCargoDoorsAssembly&) = delete;
         CPACSCargoDoorsAssembly& operator=(const CPACSCargoDoorsAssembly&) = delete;
 
         CPACSCargoDoorsAssembly(CPACSCargoDoorsAssembly&&) = delete;
         CPACSCargoDoorsAssembly& operator=(CPACSCargoDoorsAssembly&&) = delete;
-#else
-        CPACSCargoDoorsAssembly(const CPACSCargoDoorsAssembly&);
-        CPACSCargoDoorsAssembly& operator=(const CPACSCargoDoorsAssembly&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCargoDoorsAssembly = generated::CPACSCargoDoorsAssembly;
-#else
-typedef generated::CPACSCargoDoorsAssembly CCPACSCargoDoorsAssembly;
-#endif
 } // namespace tigl

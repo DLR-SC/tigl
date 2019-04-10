@@ -48,7 +48,7 @@ template <typename SegmentType>
 class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
 {
 public:
-    TIGL_EXPORT CTiglAbstractSegment(const std::vector<unique_ptr<SegmentType>>& segments, const CTiglAbstractGeometricComponent* parentComponent)
+    TIGL_EXPORT CTiglAbstractSegment(const std::vector<std::unique_ptr<SegmentType>>& segments, const CTiglAbstractGeometricComponent* parentComponent)
         : _segments(segments), _parentComponent(parentComponent), _continuity(::C0) {}
 
     // Returns the segment index of this segment
@@ -79,9 +79,9 @@ public:
     }
 
 protected:
-    const std::vector<unique_ptr<SegmentType>>& _segments;       /**< References the segment collection of the parent container element in the CPACS tree */
+    const std::vector<std::unique_ptr<SegmentType>>& _segments;   /**< References the segment collection of the parent container element in the CPACS tree */
     const CTiglAbstractGeometricComponent*      _parentComponent; /**< References the symmetry of a parent element in the CPACS tree */
-    TiglContinuity                              _continuity;     /**< Continuity of the connection to the next segment */
+    TiglContinuity                              _continuity;      /**< Continuity of the connection to the next segment */
 
 };  // end class CTiglAbstractSegment
 

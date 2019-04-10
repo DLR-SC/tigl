@@ -83,23 +83,14 @@ namespace generated
         boost::optional<CPACSControlSurfaceContours> m_intermediateAirfoils;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceOuterShapeTrailingEdge(const CPACSControlSurfaceOuterShapeTrailingEdge&) = delete;
         CPACSControlSurfaceOuterShapeTrailingEdge& operator=(const CPACSControlSurfaceOuterShapeTrailingEdge&) = delete;
 
         CPACSControlSurfaceOuterShapeTrailingEdge(CPACSControlSurfaceOuterShapeTrailingEdge&&) = delete;
         CPACSControlSurfaceOuterShapeTrailingEdge& operator=(CPACSControlSurfaceOuterShapeTrailingEdge&&) = delete;
-#else
-        CPACSControlSurfaceOuterShapeTrailingEdge(const CPACSControlSurfaceOuterShapeTrailingEdge&);
-        CPACSControlSurfaceOuterShapeTrailingEdge& operator=(const CPACSControlSurfaceOuterShapeTrailingEdge&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfaceOuterShapeTrailingEdge = generated::CPACSControlSurfaceOuterShapeTrailingEdge;
-#else
-typedef generated::CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge;
-#endif
 } // namespace tigl

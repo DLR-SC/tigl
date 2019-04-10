@@ -54,8 +54,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSCutOut> >& GetWindows() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSCutOut> >& GetWindows();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSCutOut>>& GetWindows() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCutOut>>& GetWindows();
 
         TIGL_EXPORT virtual CPACSCutOut& AddWindow();
         TIGL_EXPORT virtual void RemoveWindow(CPACSCutOut& ref);
@@ -63,29 +63,19 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::string                           m_uID;
-        std::vector<unique_ptr<CPACSCutOut> > m_windows;
+        std::string                               m_uID;
+        std::vector<std::unique_ptr<CPACSCutOut>> m_windows;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWindows(const CPACSWindows&) = delete;
         CPACSWindows& operator=(const CPACSWindows&) = delete;
 
         CPACSWindows(CPACSWindows&&) = delete;
         CPACSWindows& operator=(CPACSWindows&&) = delete;
-#else
-        CPACSWindows(const CPACSWindows&);
-        CPACSWindows& operator=(const CPACSWindows&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSWindows = generated::CPACSWindows;
 using CCPACSCutOut = generated::CPACSCutOut;
-#else
-typedef generated::CPACSWindows CCPACSWindows;
-typedef generated::CPACSCutOut CCPACSCutOut;
-#endif
 } // namespace tigl

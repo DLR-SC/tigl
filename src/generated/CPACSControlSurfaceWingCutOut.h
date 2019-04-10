@@ -107,23 +107,14 @@ namespace generated
         boost::optional<CCPACSControlSurfaceSkinCutOutBorder> m_outerBorder;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceWingCutOut(const CPACSControlSurfaceWingCutOut&) = delete;
         CPACSControlSurfaceWingCutOut& operator=(const CPACSControlSurfaceWingCutOut&) = delete;
 
         CPACSControlSurfaceWingCutOut(CPACSControlSurfaceWingCutOut&&) = delete;
         CPACSControlSurfaceWingCutOut& operator=(CPACSControlSurfaceWingCutOut&&) = delete;
-#else
-        CPACSControlSurfaceWingCutOut(const CPACSControlSurfaceWingCutOut&);
-        CPACSControlSurfaceWingCutOut& operator=(const CPACSControlSurfaceWingCutOut&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfaceWingCutOut = generated::CPACSControlSurfaceWingCutOut;
-#else
-typedef generated::CPACSControlSurfaceWingCutOut CCPACSControlSurfaceWingCutOut;
-#endif
 } // namespace tigl

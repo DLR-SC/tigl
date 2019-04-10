@@ -85,7 +85,7 @@ namespace generated
 
         // read element compositeLayer
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/compositeLayer")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers);
+            tixi::TixiReadElements(tixiHandle, xpath + "/compositeLayer", m_compositeLayers, 0, tixi::xsdUnbounded);
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -171,12 +171,12 @@ namespace generated
         m_offset = value;
     }
 
-    const std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayers() const
+    const std::vector<std::unique_ptr<CPACSCompositeLayer>>& CPACSComposite::GetCompositeLayers() const
     {
         return m_compositeLayers;
     }
 
-    std::vector<unique_ptr<CPACSCompositeLayer> >& CPACSComposite::GetCompositeLayers()
+    std::vector<std::unique_ptr<CPACSCompositeLayer>>& CPACSComposite::GetCompositeLayers()
     {
         return m_compositeLayers;
     }

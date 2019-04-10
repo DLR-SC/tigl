@@ -82,25 +82,16 @@ namespace generated
         CCPACSRotationCurve      m_rotationCurve;
 
     private:
-#ifdef HAVE_CPP11
         CPACSNacelleCowl(const CPACSNacelleCowl&) = delete;
         CPACSNacelleCowl& operator=(const CPACSNacelleCowl&) = delete;
 
         CPACSNacelleCowl(CPACSNacelleCowl&&) = delete;
         CPACSNacelleCowl& operator=(CPACSNacelleCowl&&) = delete;
-#else
-        CPACSNacelleCowl(const CPACSNacelleCowl&);
-        CPACSNacelleCowl& operator=(const CPACSNacelleCowl&);
-#endif
     };
 } // namespace generated
 
 // CPACSNacelleCowl is customized, use type CCPACSNacelleCowl directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSEngineNacelle = generated::CPACSEngineNacelle;
-#else
-typedef generated::CPACSEngineNacelle CCPACSEngineNacelle;
-#endif
 } // namespace tigl

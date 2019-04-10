@@ -127,9 +127,9 @@ private:
     // constant blending distance for opening/closing trailing edge
     static const double       c_blendingDistance;
 
-    const std::vector<CTiglPoint>& coordinates;    /**< Coordinates of a wing profile element */
-    unique_ptr<ITiglWireAlgorithm> profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
-    const std::string              profileUID;     /**< Reference to the wing profile */
+    const std::vector<CTiglPoint>&      coordinates;     /**< Coordinates of a wing profile element */
+    std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo; /**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
+    const std::string                   profileUID;      /**< Reference to the wing profile */
 
     Cache<WireCache, CTiglWingProfilePointList> wireCache;
 };

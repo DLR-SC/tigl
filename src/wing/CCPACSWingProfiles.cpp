@@ -58,7 +58,11 @@ void CCPACSWingProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, const
     // we replace generated::CPACSWingAirfoils::ReadCPACS and not call it to allow instantiation of CCPACSWingProfile instead of generated::CPACSProfileGeometry
     // read element wingAirfoil
     if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-        tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, tixi::ChildWithArgsReader1<CCPACSWingProfile, CTiglUIDManager>(m_uidMgr));
+        tixi::TixiReadElementsInternal(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, 1, tixi::xsdUnbounded, [&](const std::string& childXPath) {
+            auto child = tigl::make_unique<CCPACSWingProfile>(m_uidMgr);
+            child->ReadCPACS(tixiHandle, childXPath);
+            return child;
+        });
     }
 }
 
@@ -69,8 +73,8 @@ CCPACSWingProfile& CCPACSWingProfiles::AddWingAirfoil() {
 
 bool CCPACSWingProfiles::HasProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_wingAirfoils.begin(); it != m_wingAirfoils.end(); ++it)
-        if ((*it)->GetUID() == uid)
+    for (const auto& p : m_wingAirfoils)
+        if (p->GetUID() == uid)
             return true;
 
     return false;
@@ -79,9 +83,9 @@ bool CCPACSWingProfiles::HasProfile(std::string uid) const
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_wingAirfoils.begin(); it != m_wingAirfoils.end(); ++it)
-        if ((*it)->GetUID() == uid)
-            return static_cast<CCPACSWingProfile&>(**it);
+    for (auto& p : m_wingAirfoils)
+        if (p->GetUID() == uid)
+            return static_cast<CCPACSWingProfile&>(*p);
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 

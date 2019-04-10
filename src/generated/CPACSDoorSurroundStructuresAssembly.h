@@ -52,8 +52,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSDoorSurroundStructurePosition> >& GetDoorSurroundStructures() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSDoorSurroundStructurePosition> >& GetDoorSurroundStructures();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDoorSurroundStructurePosition>>& GetDoorSurroundStructures() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDoorSurroundStructurePosition>>& GetDoorSurroundStructures();
 
         TIGL_EXPORT virtual CPACSDoorSurroundStructurePosition& AddDoorSurroundStructure();
         TIGL_EXPORT virtual void RemoveDoorSurroundStructure(CPACSDoorSurroundStructurePosition& ref);
@@ -61,28 +61,18 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSDoorSurroundStructurePosition> > m_doorSurroundStructures;
+        std::vector<std::unique_ptr<CPACSDoorSurroundStructurePosition>> m_doorSurroundStructures;
 
     private:
-#ifdef HAVE_CPP11
         CPACSDoorSurroundStructuresAssembly(const CPACSDoorSurroundStructuresAssembly&) = delete;
         CPACSDoorSurroundStructuresAssembly& operator=(const CPACSDoorSurroundStructuresAssembly&) = delete;
 
         CPACSDoorSurroundStructuresAssembly(CPACSDoorSurroundStructuresAssembly&&) = delete;
         CPACSDoorSurroundStructuresAssembly& operator=(CPACSDoorSurroundStructuresAssembly&&) = delete;
-#else
-        CPACSDoorSurroundStructuresAssembly(const CPACSDoorSurroundStructuresAssembly&);
-        CPACSDoorSurroundStructuresAssembly& operator=(const CPACSDoorSurroundStructuresAssembly&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSDoorSurroundStructuresAssembly = generated::CPACSDoorSurroundStructuresAssembly;
 using CCPACSDoorSurroundStructurePosition = generated::CPACSDoorSurroundStructurePosition;
-#else
-typedef generated::CPACSDoorSurroundStructuresAssembly CCPACSDoorSurroundStructuresAssembly;
-typedef generated::CPACSDoorSurroundStructurePosition CCPACSDoorSurroundStructurePosition;
-#endif
 } // namespace tigl

@@ -31,7 +31,7 @@ namespace generated
     // CPACSRotorHub
 
     // generated from /xsd:schema/xsd:complexType[782]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:simpleType
-    enum CPACSRotorHub_type
+    enum class CPACSRotorHub_type
     {
         semiRigid,
         rigid,
@@ -42,20 +42,20 @@ namespace generated
     inline std::string TiglRotorHubTypeToString(const CPACSRotorHub_type& value)
     {
         switch(value) {
-        case semiRigid: return "semiRigid";
-        case rigid: return "rigid";
-        case articulated: return "articulated";
-        case hingeless: return "hingeless";
+        case CPACSRotorHub_type::semiRigid: return "semiRigid";
+        case CPACSRotorHub_type::rigid: return "rigid";
+        case CPACSRotorHub_type::articulated: return "articulated";
+        case CPACSRotorHub_type::hingeless: return "hingeless";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHub_type");
         }
     }
     inline CPACSRotorHub_type stringToTiglRotorHubType(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "semirigid") { return semiRigid; }
-        if (toLower(value) == "rigid") { return rigid; }
-        if (toLower(value) == "articulated") { return articulated; }
-        if (toLower(value) == "hingeless") { return hingeless; }
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "semirigid") { return CPACSRotorHub_type::semiRigid; }
+        if (toLower(value) == "rigid") { return CPACSRotorHub_type::rigid; }
+        if (toLower(value) == "articulated") { return CPACSRotorHub_type::articulated; }
+        if (toLower(value) == "hingeless") { return CPACSRotorHub_type::hingeless; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRotorHub_type");
     }
 } // namespace generated

@@ -75,7 +75,7 @@ namespace generated
 
         // read element framePosition
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/framePosition")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/framePosition", m_framePositions, reinterpret_cast<CCPACSFrame*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/framePosition", m_framePositions, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSFrame*>(this), m_uidMgr);
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -105,12 +105,12 @@ namespace generated
         m_uID = value;
     }
 
-    const std::vector<unique_ptr<CCPACSFuselageStringerFramePosition> >& CPACSFrame::GetFramePositions() const
+    const std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>>& CPACSFrame::GetFramePositions() const
     {
         return m_framePositions;
     }
 
-    std::vector<unique_ptr<CCPACSFuselageStringerFramePosition> >& CPACSFrame::GetFramePositions()
+    std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>>& CPACSFrame::GetFramePositions()
     {
         return m_framePositions;
     }

@@ -108,16 +108,11 @@ namespace generated
         boost::optional<CCPACSGuideCurves> m_guideCurves;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingSegment(const CPACSWingSegment&) = delete;
         CPACSWingSegment& operator=(const CPACSWingSegment&) = delete;
 
         CPACSWingSegment(CPACSWingSegment&&) = delete;
         CPACSWingSegment& operator=(CPACSWingSegment&&) = delete;
-#else
-        CPACSWingSegment(const CPACSWingSegment&);
-        CPACSWingSegment& operator=(const CPACSWingSegment&);
-#endif
     };
 } // namespace generated
 

@@ -76,23 +76,14 @@ namespace generated
         CPACSSheetList3D             m_sheetList3D;
 
     private:
-#ifdef HAVE_CPP11
         CPACSStructuralProfile3D(const CPACSStructuralProfile3D&) = delete;
         CPACSStructuralProfile3D& operator=(const CPACSStructuralProfile3D&) = delete;
 
         CPACSStructuralProfile3D(CPACSStructuralProfile3D&&) = delete;
         CPACSStructuralProfile3D& operator=(CPACSStructuralProfile3D&&) = delete;
-#else
-        CPACSStructuralProfile3D(const CPACSStructuralProfile3D&);
-        CPACSStructuralProfile3D& operator=(const CPACSStructuralProfile3D&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSStructuralProfile3D = generated::CPACSStructuralProfile3D;
-#else
-typedef generated::CPACSStructuralProfile3D CCPACSStructuralProfile3D;
-#endif
 } // namespace tigl

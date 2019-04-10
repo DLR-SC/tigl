@@ -17,76 +17,16 @@
 
 #pragma once
 
-#include <cstddef>
 #include <memory>
-
-#ifndef CPACS_GEN
-#include "tigl_config.h"
-#endif
 
 namespace tigl
 {
-#if defined (HAVE_STDUNIQUE_PTR) && defined (HAVE_CPP11)
     template <typename T>
-    using unique_ptr = std::unique_ptr<T>;
+    using unique_ptr [[deprecated]] = std::unique_ptr<T>;
 
     template<typename T, typename... Args>
-    auto make_unique(Args&&... args) -> unique_ptr<T>
+    auto make_unique(Args&&... args) -> std::unique_ptr<T>
     {
-        return unique_ptr<T>(new T(std::forward<Args>(args)...));
+        return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
     }
-#else
-    template <typename T>
-    class unique_ptr : public std::auto_ptr<T>
-    {
-    public:
-        explicit unique_ptr(T* p = NULL) throw() : std::auto_ptr<T>(p) {}
-
-        // NOTE: const is a hack to allow std::vector<unique_ptr<T>>
-        unique_ptr(const unique_ptr& other) throw() : std::auto_ptr<T>(const_cast<unique_ptr&>(other)) {}
-
-        // NOTE: const is a hack to allow std::vector<unique_ptr<T>>
-        template <typename U>
-        unique_ptr(const unique_ptr<U>& other) throw() : std::auto_ptr<T>(const_cast<unique_ptr<U>&>(other)) {}
-
-        // NOTE: const is a hack to allow std::vector<unique_ptr<T>>
-        unique_ptr& operator=(const unique_ptr& other) throw()
-        {
-            std::auto_ptr<T>::operator=(const_cast<unique_ptr&>(other));
-            return *this;
-        }
-
-        // NOTE: const is a hack to allow std::vector<unique_ptr<T>>
-        template <typename U>
-        unique_ptr& operator=(const unique_ptr<U>& other) throw()
-        {
-            std::auto_ptr<T>::operator=(const_cast<unique_ptr<U>&>(other));
-            return *this;
-        }
-
-        operator bool() const
-        {
-            return std::auto_ptr<T>::get() != NULL;
-        }
-    };
-
-    template <typename T> unique_ptr<T> make_unique() { return unique_ptr<T>(new T()); }
-
-    template <typename T, typename Arg1> unique_ptr<T> make_unique(      Arg1& arg1) { return unique_ptr<T>(new T(arg1)); }
-    template <typename T, typename Arg1> unique_ptr<T> make_unique(const Arg1& arg1) { return unique_ptr<T>(new T(arg1)); }
-
-    template <typename T, typename Arg1, typename Arg2> unique_ptr<T> make_unique(      Arg1& arg1,       Arg2& arg2) { return unique_ptr<T>(new T(arg1, arg2)); }
-    template <typename T, typename Arg1, typename Arg2> unique_ptr<T> make_unique(      Arg1& arg1, const Arg2& arg2) { return unique_ptr<T>(new T(arg1, arg2)); }
-    template <typename T, typename Arg1, typename Arg2> unique_ptr<T> make_unique(const Arg1& arg1,       Arg2& arg2) { return unique_ptr<T>(new T(arg1, arg2)); }
-    template <typename T, typename Arg1, typename Arg2> unique_ptr<T> make_unique(const Arg1& arg1, const Arg2& arg2) { return unique_ptr<T>(new T(arg1, arg2)); }
-
-    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(      Arg1& arg1,       Arg2& arg2, const Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
-    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(      Arg1& arg1,       Arg2& arg2,       Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
-    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(      Arg1& arg1, const Arg2& arg2, const Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
-    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(      Arg1& arg1, const Arg2& arg2,       Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
-    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(const Arg1& arg1,       Arg2& arg2, const Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
-    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(const Arg1& arg1,       Arg2& arg2,       Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
-    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
-    template <typename T, typename Arg1, typename Arg2, typename Arg3> unique_ptr<T> make_unique(const Arg1& arg1, const Arg2& arg2,       Arg3& arg3) { return unique_ptr<T>(new T(arg1, arg2, arg3)); }
-#endif
 }

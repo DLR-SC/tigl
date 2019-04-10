@@ -53,11 +53,11 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSStructuralProfile> >& GetStructuralProfile2Ds() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSStructuralProfile> >& GetStructuralProfile2Ds();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSStructuralProfile>>& GetStructuralProfile2Ds() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSStructuralProfile>>& GetStructuralProfile2Ds();
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSStructuralProfile3D> >& GetStructuralProfile3Ds() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSStructuralProfile3D> >& GetStructuralProfile3Ds();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSStructuralProfile3D>>& GetStructuralProfile3Ds() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSStructuralProfile3D>>& GetStructuralProfile3Ds();
 
         TIGL_EXPORT virtual CPACSStructuralProfile& AddStructuralProfile2D();
         TIGL_EXPORT virtual void RemoveStructuralProfile2D(CPACSStructuralProfile& ref);
@@ -68,31 +68,21 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSStructuralProfile> >   m_structuralProfile2Ds;
-        std::vector<unique_ptr<CPACSStructuralProfile3D> > m_structuralProfile3Ds;
+        std::vector<std::unique_ptr<CPACSStructuralProfile>>   m_structuralProfile2Ds;
+        std::vector<std::unique_ptr<CPACSStructuralProfile3D>> m_structuralProfile3Ds;
 
     private:
-#ifdef HAVE_CPP11
         CPACSStructuralProfiles(const CPACSStructuralProfiles&) = delete;
         CPACSStructuralProfiles& operator=(const CPACSStructuralProfiles&) = delete;
 
         CPACSStructuralProfiles(CPACSStructuralProfiles&&) = delete;
         CPACSStructuralProfiles& operator=(CPACSStructuralProfiles&&) = delete;
-#else
-        CPACSStructuralProfiles(const CPACSStructuralProfiles&);
-        CPACSStructuralProfiles& operator=(const CPACSStructuralProfiles&);
-#endif
     };
 } // namespace generated
 
 // CPACSStructuralProfiles is customized, use type CCPACSStructuralProfiles directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSStructuralProfile = generated::CPACSStructuralProfile;
 using CCPACSStructuralProfile3D = generated::CPACSStructuralProfile3D;
-#else
-typedef generated::CPACSStructuralProfile CCPACSStructuralProfile;
-typedef generated::CPACSStructuralProfile3D CCPACSStructuralProfile3D;
-#endif
 } // namespace tigl

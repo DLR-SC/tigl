@@ -122,16 +122,11 @@ namespace generated
         boost::optional<CCPACSEnginePositions> m_engines;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRotorcraftModel(const CPACSRotorcraftModel&) = delete;
         CPACSRotorcraftModel& operator=(const CPACSRotorcraftModel&) = delete;
 
         CPACSRotorcraftModel(CPACSRotorcraftModel&&) = delete;
         CPACSRotorcraftModel& operator=(CPACSRotorcraftModel&&) = delete;
-#else
-        CPACSRotorcraftModel(const CPACSRotorcraftModel&);
-        CPACSRotorcraftModel& operator=(const CPACSRotorcraftModel&);
-#endif
     };
 } // namespace generated
 

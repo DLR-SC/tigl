@@ -123,23 +123,14 @@ namespace generated
         boost::optional<CCPACSPointXY>      m_orientationAtP2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSheet(const CPACSSheet&) = delete;
         CPACSSheet& operator=(const CPACSSheet&) = delete;
 
         CPACSSheet(CPACSSheet&&) = delete;
         CPACSSheet& operator=(CPACSSheet&&) = delete;
-#else
-        CPACSSheet(const CPACSSheet&);
-        CPACSSheet& operator=(const CPACSSheet&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSheet = generated::CPACSSheet;
-#else
-typedef generated::CPACSSheet CCPACSSheet;
-#endif
 } // namespace tigl

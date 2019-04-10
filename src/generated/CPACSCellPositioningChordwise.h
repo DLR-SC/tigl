@@ -79,16 +79,11 @@ namespace generated
         boost::optional<double>      m_xsi2_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCellPositioningChordwise(const CPACSCellPositioningChordwise&) = delete;
         CPACSCellPositioningChordwise& operator=(const CPACSCellPositioningChordwise&) = delete;
 
         CPACSCellPositioningChordwise(CPACSCellPositioningChordwise&&) = delete;
         CPACSCellPositioningChordwise& operator=(CPACSCellPositioningChordwise&&) = delete;
-#else
-        CPACSCellPositioningChordwise(const CPACSCellPositioningChordwise&);
-        CPACSCellPositioningChordwise& operator=(const CPACSCellPositioningChordwise&);
-#endif
     };
 } // namespace generated
 

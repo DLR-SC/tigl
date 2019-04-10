@@ -31,7 +31,7 @@ namespace generated
     // CPACSRotorHubHinge
 
     // generated from /xsd:schema/xsd:complexType[780]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
-    enum CPACSRotorHubHinge_type
+    enum class CPACSRotorHubHinge_type
     {
         flap,
         pitch,
@@ -41,29 +41,22 @@ namespace generated
     inline std::string CPACSRotorHubHinge_typeToString(const CPACSRotorHubHinge_type& value)
     {
         switch(value) {
-        case flap: return "flap";
-        case pitch: return "pitch";
-        case leadLag: return "leadLag";
+        case CPACSRotorHubHinge_type::flap: return "flap";
+        case CPACSRotorHubHinge_type::pitch: return "pitch";
+        case CPACSRotorHubHinge_type::leadLag: return "leadLag";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHubHinge_type");
         }
     }
     inline CPACSRotorHubHinge_type stringToCPACSRotorHubHinge_type(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "flap") { return flap; }
-        if (toLower(value) == "pitch") { return pitch; }
-        if (toLower(value) == "leadlag") { return leadLag; }
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "flap") { return CPACSRotorHubHinge_type::flap; }
+        if (toLower(value) == "pitch") { return CPACSRotorHubHinge_type::pitch; }
+        if (toLower(value) == "leadlag") { return CPACSRotorHubHinge_type::leadLag; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRotorHubHinge_type");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSRotorHubHinge_type = generated::CPACSRotorHubHinge_type;
-#else
-typedef generated::CPACSRotorHubHinge_type ECPACSRotorHubHinge_type;
-#endif
-using generated::flap;
-using generated::pitch;
-using generated::leadLag;
 } // namespace tigl

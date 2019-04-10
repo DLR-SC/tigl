@@ -32,35 +32,29 @@ namespace generated
     // CPACSStringerFramePosition
 
     // generated from /xsd:schema/xsd:complexType[397]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[12]/xsd:complexType/xsd:simpleContent
-    enum CPACSContinuity
+    enum class CPACSContinuity
     {
-        CPACSContinuity_0,
-        CPACSContinuity_2
+        _0,
+        _2
     };
 
     inline std::string CPACSContinuityToString(const CPACSContinuity& value)
     {
         switch(value) {
-        case CPACSContinuity_0: return "0";
-        case CPACSContinuity_2: return "2";
+        case CPACSContinuity::_0: return "0";
+        case CPACSContinuity::_2: return "2";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSContinuity");
         }
     }
     inline CPACSContinuity stringToCPACSContinuity(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
-        if (toLower(value) == "0") { return CPACSContinuity_0; }
-        if (toLower(value) == "2") { return CPACSContinuity_2; }
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "0") { return CPACSContinuity::_0; }
+        if (toLower(value) == "2") { return CPACSContinuity::_2; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSContinuity");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSContinuity = generated::CPACSContinuity;
-#else
-typedef generated::CPACSContinuity ECPACSContinuity;
-#endif
-using generated::CPACSContinuity_0;
-using generated::CPACSContinuity_2;
 } // namespace tigl

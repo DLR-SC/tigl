@@ -51,7 +51,7 @@ namespace generated
     {
         // read element nacelleGuideCurve
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacelleGuideCurve")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleGuideCurve", m_nacelleGuideCurves, reinterpret_cast<CCPACSNacelleGuideCurves*>(this));
+            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleGuideCurve", m_nacelleGuideCurves, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSNacelleGuideCurves*>(this));
         }
 
     }
@@ -63,12 +63,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurves() const
+    const std::vector<std::unique_ptr<CPACSNacelleGuideCurve>>& CPACSNacelleGuideCurves::GetNacelleGuideCurves() const
     {
         return m_nacelleGuideCurves;
     }
 
-    std::vector<unique_ptr<CPACSNacelleGuideCurve> >& CPACSNacelleGuideCurves::GetNacelleGuideCurves()
+    std::vector<std::unique_ptr<CPACSNacelleGuideCurve>>& CPACSNacelleGuideCurves::GetNacelleGuideCurves()
     {
         return m_nacelleGuideCurves;
     }

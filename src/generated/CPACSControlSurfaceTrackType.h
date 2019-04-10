@@ -134,25 +134,16 @@ namespace generated
         boost::optional<CPACSTrackStructure>                       m_trackStructure;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceTrackType(const CPACSControlSurfaceTrackType&) = delete;
         CPACSControlSurfaceTrackType& operator=(const CPACSControlSurfaceTrackType&) = delete;
 
         CPACSControlSurfaceTrackType(CPACSControlSurfaceTrackType&&) = delete;
         CPACSControlSurfaceTrackType& operator=(CPACSControlSurfaceTrackType&&) = delete;
-#else
-        CPACSControlSurfaceTrackType(const CPACSControlSurfaceTrackType&);
-        CPACSControlSurfaceTrackType& operator=(const CPACSControlSurfaceTrackType&);
-#endif
     };
 } // namespace generated
 
 // CPACSControlSurfaceTrackType is customized, use type CCPACSControlSurfaceTrackType directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfaceTracks = generated::CPACSControlSurfaceTracks;
-#else
-typedef generated::CPACSControlSurfaceTracks CCPACSControlSurfaceTracks;
-#endif
 } // namespace tigl

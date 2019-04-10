@@ -58,16 +58,11 @@ namespace generated
         double           m_multiplier;
 
     private:
-#ifdef HAVE_CPP11
         CPACSFarField(const CPACSFarField&) = delete;
         CPACSFarField& operator=(const CPACSFarField&) = delete;
 
         CPACSFarField(CPACSFarField&&) = delete;
         CPACSFarField& operator=(CPACSFarField&&) = delete;
-#else
-        CPACSFarField(const CPACSFarField&);
-        CPACSFarField& operator=(const CPACSFarField&);
-#endif
     };
 } // namespace generated
 

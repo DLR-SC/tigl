@@ -50,12 +50,12 @@ namespace generated
     {
         // read element structuralProfile2D
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfile2D")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile2D", m_structuralProfile2Ds, reinterpret_cast<CCPACSStructuralProfiles*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile2D", m_structuralProfile2Ds, 0, tixi::xsdUnbounded, reinterpret_cast<CCPACSStructuralProfiles*>(this), m_uidMgr);
         }
 
         // read element structuralProfile3D
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfile3D")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile3D", m_structuralProfile3Ds, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile3D", m_structuralProfile3Ds, 0, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }
@@ -70,22 +70,22 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSStructuralProfile> >& CPACSStructuralProfiles::GetStructuralProfile2Ds() const
+    const std::vector<std::unique_ptr<CPACSStructuralProfile>>& CPACSStructuralProfiles::GetStructuralProfile2Ds() const
     {
         return m_structuralProfile2Ds;
     }
 
-    std::vector<unique_ptr<CPACSStructuralProfile> >& CPACSStructuralProfiles::GetStructuralProfile2Ds()
+    std::vector<std::unique_ptr<CPACSStructuralProfile>>& CPACSStructuralProfiles::GetStructuralProfile2Ds()
     {
         return m_structuralProfile2Ds;
     }
 
-    const std::vector<unique_ptr<CPACSStructuralProfile3D> >& CPACSStructuralProfiles::GetStructuralProfile3Ds() const
+    const std::vector<std::unique_ptr<CPACSStructuralProfile3D>>& CPACSStructuralProfiles::GetStructuralProfile3Ds() const
     {
         return m_structuralProfile3Ds;
     }
 
-    std::vector<unique_ptr<CPACSStructuralProfile3D> >& CPACSStructuralProfiles::GetStructuralProfile3Ds()
+    std::vector<std::unique_ptr<CPACSStructuralProfile3D>>& CPACSStructuralProfiles::GetStructuralProfile3Ds()
     {
         return m_structuralProfile3Ds;
     }

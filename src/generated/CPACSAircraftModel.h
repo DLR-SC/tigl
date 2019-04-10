@@ -117,16 +117,11 @@ namespace generated
         boost::optional<CCPACSExternalObjects> m_genericGeometryComponents;
 
     private:
-#ifdef HAVE_CPP11
         CPACSAircraftModel(const CPACSAircraftModel&) = delete;
         CPACSAircraftModel& operator=(const CPACSAircraftModel&) = delete;
 
         CPACSAircraftModel(CPACSAircraftModel&&) = delete;
         CPACSAircraftModel& operator=(CPACSAircraftModel&&) = delete;
-#else
-        CPACSAircraftModel(const CPACSAircraftModel&);
-        CPACSAircraftModel& operator=(const CPACSAircraftModel&);
-#endif
     };
 } // namespace generated
 

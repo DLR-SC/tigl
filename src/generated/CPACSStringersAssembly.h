@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFuselageStringer> >& GetStringers() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFuselageStringer> >& GetStringers();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselageStringer>>& GetStringers() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselageStringer>>& GetStringers();
 
         TIGL_EXPORT virtual CCPACSFuselageStringer& AddStringer();
         TIGL_EXPORT virtual void RemoveStringer(CCPACSFuselageStringer& ref);
@@ -68,19 +68,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSFuselageStringer> > m_stringers;
+        std::vector<std::unique_ptr<CCPACSFuselageStringer>> m_stringers;
 
     private:
-#ifdef HAVE_CPP11
         CPACSStringersAssembly(const CPACSStringersAssembly&) = delete;
         CPACSStringersAssembly& operator=(const CPACSStringersAssembly&) = delete;
 
         CPACSStringersAssembly(CPACSStringersAssembly&&) = delete;
         CPACSStringersAssembly& operator=(CPACSStringersAssembly&&) = delete;
-#else
-        CPACSStringersAssembly(const CPACSStringersAssembly&);
-        CPACSStringersAssembly& operator=(const CPACSStringersAssembly&);
-#endif
     };
 } // namespace generated
 

@@ -73,16 +73,11 @@ namespace generated
         double      m_y;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPointXY(const CPACSPointXY&) = delete;
         CPACSPointXY& operator=(const CPACSPointXY&) = delete;
 
         CPACSPointXY(CPACSPointXY&&) = delete;
         CPACSPointXY& operator=(CPACSPointXY&&) = delete;
-#else
-        CPACSPointXY(const CPACSPointXY&);
-        CPACSPointXY& operator=(const CPACSPointXY&);
-#endif
     };
 } // namespace generated
 

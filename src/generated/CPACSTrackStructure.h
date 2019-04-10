@@ -131,23 +131,14 @@ namespace generated
         boost::optional<CPACSTrackFairing>        m_fairing;
 
     private:
-#ifdef HAVE_CPP11
         CPACSTrackStructure(const CPACSTrackStructure&) = delete;
         CPACSTrackStructure& operator=(const CPACSTrackStructure&) = delete;
 
         CPACSTrackStructure(CPACSTrackStructure&&) = delete;
         CPACSTrackStructure& operator=(CPACSTrackStructure&&) = delete;
-#else
-        CPACSTrackStructure(const CPACSTrackStructure&);
-        CPACSTrackStructure& operator=(const CPACSTrackStructure&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSTrackStructure = generated::CPACSTrackStructure;
-#else
-typedef generated::CPACSTrackStructure CCPACSTrackStructure;
-#endif
 } // namespace tigl

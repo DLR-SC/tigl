@@ -74,23 +74,14 @@ namespace generated
         double      m_z;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPointXYZ(const CPACSPointXYZ&) = delete;
         CPACSPointXYZ& operator=(const CPACSPointXYZ&) = delete;
 
         CPACSPointXYZ(CPACSPointXYZ&&) = delete;
         CPACSPointXYZ& operator=(CPACSPointXYZ&&) = delete;
-#else
-        CPACSPointXYZ(const CPACSPointXYZ&);
-        CPACSPointXYZ& operator=(const CPACSPointXYZ&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSPointXYZ = generated::CPACSPointXYZ;
-#else
-typedef generated::CPACSPointXYZ CCPACSPointXYZ;
-#endif
 } // namespace tigl

@@ -49,7 +49,7 @@ namespace generated
     {
         // read element positioning
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/positioning")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/positioning", m_positionings, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/positioning", m_positionings, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSPositioning> >& CPACSPositionings::GetPositionings() const
+    const std::vector<std::unique_ptr<CCPACSPositioning>>& CPACSPositionings::GetPositionings() const
     {
         return m_positionings;
     }
 
-    std::vector<unique_ptr<CCPACSPositioning> >& CPACSPositionings::GetPositionings()
+    std::vector<std::unique_ptr<CCPACSPositioning>>& CPACSPositionings::GetPositionings()
     {
         return m_positionings;
     }

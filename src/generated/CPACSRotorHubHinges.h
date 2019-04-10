@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSRotorHinge> >& GetHinges() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSRotorHinge> >& GetHinges();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSRotorHinge>>& GetHinges() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSRotorHinge>>& GetHinges();
 
         TIGL_EXPORT virtual CCPACSRotorHinge& AddHinge();
         TIGL_EXPORT virtual void RemoveHinge(CCPACSRotorHinge& ref);
@@ -69,19 +69,14 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Definition of a flap, lead-lag or pitch hinge.
-        std::vector<unique_ptr<CCPACSRotorHinge> > m_hinges;
+        std::vector<std::unique_ptr<CCPACSRotorHinge>> m_hinges;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRotorHubHinges(const CPACSRotorHubHinges&) = delete;
         CPACSRotorHubHinges& operator=(const CPACSRotorHubHinges&) = delete;
 
         CPACSRotorHubHinges(CPACSRotorHubHinges&&) = delete;
         CPACSRotorHubHinges& operator=(CPACSRotorHubHinges&&) = delete;
-#else
-        CPACSRotorHubHinges(const CPACSRotorHubHinges&);
-        CPACSRotorHubHinges& operator=(const CPACSRotorHubHinges&);
-#endif
     };
 } // namespace generated
 

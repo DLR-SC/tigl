@@ -63,7 +63,7 @@ namespace generated
     {
         // read element cargoDoor
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cargoDoor")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/cargoDoor", m_cargoDoors, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/cargoDoor", m_cargoDoors, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSDoorAssemblyPosition> >& CPACSCargoDoorsAssembly::GetCargoDoors() const
+    const std::vector<std::unique_ptr<CCPACSDoorAssemblyPosition>>& CPACSCargoDoorsAssembly::GetCargoDoors() const
     {
         return m_cargoDoors;
     }
 
-    std::vector<unique_ptr<CCPACSDoorAssemblyPosition> >& CPACSCargoDoorsAssembly::GetCargoDoors()
+    std::vector<std::unique_ptr<CCPACSDoorAssemblyPosition>>& CPACSCargoDoorsAssembly::GetCargoDoors()
     {
         return m_cargoDoors;
     }

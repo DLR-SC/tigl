@@ -100,16 +100,11 @@ namespace generated
         CCPACSPointListRelXYZVector       m_pointList;
 
     private:
-#ifdef HAVE_CPP11
         CPACSGuideCurveProfileGeometry(const CPACSGuideCurveProfileGeometry&) = delete;
         CPACSGuideCurveProfileGeometry& operator=(const CPACSGuideCurveProfileGeometry&) = delete;
 
         CPACSGuideCurveProfileGeometry(CPACSGuideCurveProfileGeometry&&) = delete;
         CPACSGuideCurveProfileGeometry& operator=(CPACSGuideCurveProfileGeometry&&) = delete;
-#else
-        CPACSGuideCurveProfileGeometry(const CPACSGuideCurveProfileGeometry&);
-        CPACSGuideCurveProfileGeometry& operator=(const CPACSGuideCurveProfileGeometry&);
-#endif
     };
 } // namespace generated
 

@@ -97,16 +97,11 @@ namespace generated
         boost::optional<CPACSAlignmentCrossBeam> m_alignment;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCrossBeamAssemblyPosition(const CPACSCrossBeamAssemblyPosition&) = delete;
         CPACSCrossBeamAssemblyPosition& operator=(const CPACSCrossBeamAssemblyPosition&) = delete;
 
         CPACSCrossBeamAssemblyPosition(CPACSCrossBeamAssemblyPosition&&) = delete;
         CPACSCrossBeamAssemblyPosition& operator=(CPACSCrossBeamAssemblyPosition&&) = delete;
-#else
-        CPACSCrossBeamAssemblyPosition(const CPACSCrossBeamAssemblyPosition&);
-        CPACSCrossBeamAssemblyPosition& operator=(const CPACSCrossBeamAssemblyPosition&);
-#endif
     };
 } // namespace generated
 

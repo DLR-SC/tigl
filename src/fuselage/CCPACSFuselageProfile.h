@@ -113,8 +113,7 @@ private:
     bool mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
     Cache<WireCache, CCPACSFuselageProfile> wireCache;   /**< Original and force closed fuselage profile wire */
     Cache<DiameterPointsCache, CCPACSFuselageProfile> diameterPointsCache;
-    unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
-
+    std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
 };
 
 } // end namespace tigl

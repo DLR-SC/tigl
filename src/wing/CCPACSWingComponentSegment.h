@@ -229,9 +229,9 @@ private:
 private:
     typedef CTiglShapeGeomComponentAdaptor<CCPACSWingComponentSegment> ShapeAdaptor;
     CCPACSWing*          wing;           /**< Parent wing                             */
-    unique_ptr<ShapeAdaptor> upperShape; /**< Upper shape of this componentSegment */
-    unique_ptr<ShapeAdaptor> lowerShape; /**< Lower shape of this componentSegment */
-    unique_ptr<CTiglWingChordface> chordFace;
+    std::unique_ptr<ShapeAdaptor> upperShape; /**< Upper shape of this componentSegment */
+    std::unique_ptr<ShapeAdaptor> lowerShape; /**< Lower shape of this componentSegment */
+    std::unique_ptr<CTiglWingChordface> chordFace;
     Cache<SegmentList, CCPACSWingComponentSegment> wingSegments; ///< List of segments belonging to the component segment
     Cache<GeometryCache, CCPACSWingComponentSegment> geomCache;
     Cache<LinesCache, CCPACSWingComponentSegment> linesCache;

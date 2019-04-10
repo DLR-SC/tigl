@@ -268,7 +268,7 @@ private:
     Cache<double, CCPACSWingSegment>            areaCache;
     Cache<double, CCPACSWingSegment> volumeCache;
 
-    unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
+    std::unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
 
 } // end namespace tigl

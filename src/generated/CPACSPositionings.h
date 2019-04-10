@@ -55,8 +55,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSPositioning> >& GetPositionings();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSPositioning>>& GetPositionings() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSPositioning>>& GetPositionings();
 
         TIGL_EXPORT virtual CCPACSPositioning& AddPositioning();
         TIGL_EXPORT virtual void RemovePositioning(CCPACSPositioning& ref);
@@ -64,19 +64,14 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSPositioning> > m_positionings;
+        std::vector<std::unique_ptr<CCPACSPositioning>> m_positionings;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPositionings(const CPACSPositionings&) = delete;
         CPACSPositionings& operator=(const CPACSPositionings&) = delete;
 
         CPACSPositionings(CPACSPositionings&&) = delete;
         CPACSPositionings& operator=(CPACSPositionings&&) = delete;
-#else
-        CPACSPositionings(const CPACSPositionings&);
-        CPACSPositionings& operator=(const CPACSPositionings&);
-#endif
     };
 } // namespace generated
 

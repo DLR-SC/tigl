@@ -127,16 +127,11 @@ namespace generated
         boost::optional<double>      m_damping;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRotorHubHinge(const CPACSRotorHubHinge&) = delete;
         CPACSRotorHubHinge& operator=(const CPACSRotorHubHinge&) = delete;
 
         CPACSRotorHubHinge(CPACSRotorHubHinge&&) = delete;
         CPACSRotorHubHinge& operator=(CPACSRotorHubHinge&&) = delete;
-#else
-        CPACSRotorHubHinge(const CPACSRotorHubHinge&);
-        CPACSRotorHubHinge& operator=(const CPACSRotorHubHinge&);
-#endif
     };
 } // namespace generated
 

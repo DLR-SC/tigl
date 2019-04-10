@@ -77,23 +77,14 @@ namespace generated
         std::string m_cpacsVersion;
 
     private:
-#ifdef HAVE_CPP11
         CPACSUpdate(const CPACSUpdate&) = delete;
         CPACSUpdate& operator=(const CPACSUpdate&) = delete;
 
         CPACSUpdate(CPACSUpdate&&) = delete;
         CPACSUpdate& operator=(CPACSUpdate&&) = delete;
-#else
-        CPACSUpdate(const CPACSUpdate&);
-        CPACSUpdate& operator=(const CPACSUpdate&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSUpdate = generated::CPACSUpdate;
-#else
-typedef generated::CPACSUpdate CCPACSUpdate;
-#endif
 } // namespace tigl

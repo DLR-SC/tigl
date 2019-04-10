@@ -94,8 +94,8 @@ public:
 private:
     void lazyCreateAttachedRotorBlades();
 
-    std::vector<unique_ptr<CTiglAttachedRotorBlade> > attachedRotorBlades;
-    bool                                              invalidated;              /**< Internal state flag  */
+    std::vector<std::unique_ptr<CTiglAttachedRotorBlade>> attachedRotorBlades;
+    bool                                                  invalidated;              /**< Internal state flag  */
 };
 
 } // end namespace tigl

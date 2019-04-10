@@ -86,14 +86,11 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSTransformation2D>& GetTransformation() const;
-        TIGL_EXPORT virtual boost::optional<CPACSTransformation2D>& GetTransformation();
-
         TIGL_EXPORT virtual const boost::optional<CPACSGlobalBeamProperties>& GetGlobalBeamProperties_choice1() const;
         TIGL_EXPORT virtual boost::optional<CPACSGlobalBeamProperties>& GetGlobalBeamProperties_choice1();
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBased> >& GetSheetProperties_choice2() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBased> >& GetSheetProperties_choice2();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>& GetSheetProperties_choice2() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>& GetSheetProperties_choice2();
 
         TIGL_EXPORT virtual const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& GetStandardProfileType_choice2_1() const;
         TIGL_EXPORT virtual void SetStandardProfileType_choice2_1(const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& value);
@@ -101,14 +98,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetStructuralProfileUID_choice2_2() const;
         TIGL_EXPORT virtual void SetStructuralProfileUID_choice2_2(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint> >& GetPointProperties_choice2_2() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint> >& GetPointProperties_choice2_2();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>& GetPointProperties_choice2_2() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>& GetPointProperties_choice2_2();
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetReferencePointUID_choice2_2() const;
         TIGL_EXPORT virtual void SetReferencePointUID_choice2_2(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual CPACSTransformation2D& GetTransformation(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveTransformation();
+        TIGL_EXPORT virtual const boost::optional<CPACSTransformation2D>& GetTransformation() const;
+        TIGL_EXPORT virtual boost::optional<CPACSTransformation2D>& GetTransformation();
 
         TIGL_EXPORT virtual CPACSGlobalBeamProperties& GetGlobalBeamProperties_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveGlobalBeamProperties_choice1();
@@ -119,60 +116,53 @@ namespace generated
         TIGL_EXPORT virtual CPACSMaterialDefinitionForProfileBasedPoint& AddPointProperties_choice2_2();
         TIGL_EXPORT virtual void RemovePointProperties_choice2_2(CPACSMaterialDefinitionForProfileBasedPoint& ref);
 
+        TIGL_EXPORT virtual CPACSTransformation2D& GetTransformation(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveTransformation();
+
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::string                                                             m_uID;
+        std::string                                                               m_uID;
 
         /// Name of the profile based structural element
-        boost::optional<std::string>                                            m_name;
+        boost::optional<std::string>                                              m_name;
 
         /// Description of the profile based structural
         /// element
-        boost::optional<std::string>                                            m_description;
+        boost::optional<std::string>                                              m_description;
 
-        boost::optional<CPACSTransformation2D>                                  m_transformation;
+        boost::optional<CPACSGlobalBeamProperties>                                m_globalBeamProperties_choice1;
 
-        boost::optional<CPACSGlobalBeamProperties>                              m_globalBeamProperties_choice1;
-
-        std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBased> >        m_sheetProperties_choice2;
+        std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>      m_sheetProperties_choice2;
 
         /// Standard Profile Type, see picture below for
         /// further information.
-        boost::optional<CPACSProfileBasedStructuralElement_standardProfileType> m_standardProfileType_choice2_1;
+        boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>   m_standardProfileType_choice2_1;
 
         /// Reference to the structural profile profile
         /// uID.
-        boost::optional<std::string>                                            m_structuralProfileUID_choice2_2;
+        boost::optional<std::string>                                              m_structuralProfileUID_choice2_2;
 
-        std::vector<unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint> >   m_pointProperties_choice2_2;
+        std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>> m_pointProperties_choice2_2;
 
         /// Reference point in structural profile
         /// definition for structural element definition
-        boost::optional<std::string>                                            m_referencePointUID_choice2_2;
+        boost::optional<std::string>                                              m_referencePointUID_choice2_2;
+
+        boost::optional<CPACSTransformation2D>                                    m_transformation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSProfileBasedStructuralElement(const CPACSProfileBasedStructuralElement&) = delete;
         CPACSProfileBasedStructuralElement& operator=(const CPACSProfileBasedStructuralElement&) = delete;
 
         CPACSProfileBasedStructuralElement(CPACSProfileBasedStructuralElement&&) = delete;
         CPACSProfileBasedStructuralElement& operator=(CPACSProfileBasedStructuralElement&&) = delete;
-#else
-        CPACSProfileBasedStructuralElement(const CPACSProfileBasedStructuralElement&);
-        CPACSProfileBasedStructuralElement& operator=(const CPACSProfileBasedStructuralElement&);
-#endif
     };
 } // namespace generated
 
 // CPACSProfileBasedStructuralElement is customized, use type CCPACSProfileBasedStructuralElement directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSMaterialDefinitionForProfileBased = generated::CPACSMaterialDefinitionForProfileBased;
 using CCPACSMaterialDefinitionForProfileBasedPoint = generated::CPACSMaterialDefinitionForProfileBasedPoint;
-#else
-typedef generated::CPACSMaterialDefinitionForProfileBased CCPACSMaterialDefinitionForProfileBased;
-typedef generated::CPACSMaterialDefinitionForProfileBasedPoint CCPACSMaterialDefinitionForProfileBasedPoint;
-#endif
 } // namespace tigl

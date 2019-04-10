@@ -53,23 +53,14 @@ namespace generated
         double      m_rotZ;
 
     private:
-#ifdef HAVE_CPP11
         CPACSOuterCutOutProfile(const CPACSOuterCutOutProfile&) = delete;
         CPACSOuterCutOutProfile& operator=(const CPACSOuterCutOutProfile&) = delete;
 
         CPACSOuterCutOutProfile(CPACSOuterCutOutProfile&&) = delete;
         CPACSOuterCutOutProfile& operator=(CPACSOuterCutOutProfile&&) = delete;
-#else
-        CPACSOuterCutOutProfile(const CPACSOuterCutOutProfile&);
-        CPACSOuterCutOutProfile& operator=(const CPACSOuterCutOutProfile&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSOuterCutOutProfile = generated::CPACSOuterCutOutProfile;
-#else
-typedef generated::CPACSOuterCutOutProfile CCPACSOuterCutOutProfile;
-#endif
 } // namespace tigl

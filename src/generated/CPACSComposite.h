@@ -65,8 +65,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetOffset() const;
         TIGL_EXPORT virtual void SetOffset(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSCompositeLayer> >& GetCompositeLayers();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSCompositeLayer>>& GetCompositeLayers() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCompositeLayer>>& GetCompositeLayers();
 
         TIGL_EXPORT virtual CPACSCompositeLayer& AddCompositeLayer();
         TIGL_EXPORT virtual void RemoveCompositeLayer(CPACSCompositeLayer& ref);
@@ -74,40 +74,30 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::string                                   m_uID;
+        std::string                                       m_uID;
 
         /// Name of composite
-        std::string                                   m_name;
+        std::string                                       m_name;
 
         /// Description of composite
-        boost::optional<std::string>                  m_description;
+        boost::optional<std::string>                      m_description;
 
         /// offset of the laminate. The reference plane of
         /// the laminate is the arithmetic mean of the laminate thickness.
-        boost::optional<double>                       m_offset;
+        boost::optional<double>                           m_offset;
 
-        std::vector<unique_ptr<CPACSCompositeLayer> > m_compositeLayers;
+        std::vector<std::unique_ptr<CPACSCompositeLayer>> m_compositeLayers;
 
     private:
-#ifdef HAVE_CPP11
         CPACSComposite(const CPACSComposite&) = delete;
         CPACSComposite& operator=(const CPACSComposite&) = delete;
 
         CPACSComposite(CPACSComposite&&) = delete;
         CPACSComposite& operator=(CPACSComposite&&) = delete;
-#else
-        CPACSComposite(const CPACSComposite&);
-        CPACSComposite& operator=(const CPACSComposite&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSComposite = generated::CPACSComposite;
 using CCPACSCompositeLayer = generated::CPACSCompositeLayer;
-#else
-typedef generated::CPACSComposite CCPACSComposite;
-typedef generated::CPACSCompositeLayer CCPACSCompositeLayer;
-#endif
 } // namespace tigl

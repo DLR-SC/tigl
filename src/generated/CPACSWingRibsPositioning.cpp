@@ -60,44 +60,6 @@ namespace generated
             LOG(ERROR) << "Required element ribReference is missing at xpath " << xpath;
         }
 
-        // read element ribStart
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribStart")) {
-            m_ribStart = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribStart");
-            if (m_ribStart.empty()) {
-                LOG(WARNING) << "Required element ribStart is empty at xpath " << xpath;
-            }
-        }
-        else {
-            LOG(ERROR) << "Required element ribStart is missing at xpath " << xpath;
-        }
-
-        // read element ribEnd
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribEnd")) {
-            m_ribEnd = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribEnd");
-            if (m_ribEnd.empty()) {
-                LOG(WARNING) << "Required element ribEnd is empty at xpath " << xpath;
-            }
-        }
-        else {
-            LOG(ERROR) << "Required element ribEnd is missing at xpath " << xpath;
-        }
-
-        // read element ribCrossingBehaviour
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribCrossingBehaviour")) {
-            m_ribCrossingBehaviour = stringToCPACSRibCrossingBehaviour(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribCrossingBehaviour"));
-        }
-        else {
-            LOG(ERROR) << "Required element ribCrossingBehaviour is missing at xpath " << xpath;
-        }
-
-        // read element ribRotation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
-            m_ribRotation.ReadCPACS(tixiHandle, xpath + "/ribRotation");
-        }
-        else {
-            LOG(ERROR) << "Required element ribRotation is missing at xpath " << xpath;
-        }
-
         // read element etaStart
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaStart")) {
             m_etaStart_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/etaStart");
@@ -140,6 +102,28 @@ namespace generated
             }
         }
 
+        // read element ribStart
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribStart")) {
+            m_ribStart = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribStart");
+            if (m_ribStart.empty()) {
+                LOG(WARNING) << "Required element ribStart is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required element ribStart is missing at xpath " << xpath;
+        }
+
+        // read element ribEnd
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribEnd")) {
+            m_ribEnd = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribEnd");
+            if (m_ribEnd.empty()) {
+                LOG(WARNING) << "Required element ribEnd is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required element ribEnd is missing at xpath " << xpath;
+        }
+
         // read element spacing
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/spacing")) {
             m_spacing_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/spacing");
@@ -148,6 +132,22 @@ namespace generated
         // read element numberOfRibs
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/numberOfRibs")) {
             m_numberOfRibs_choice2 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/numberOfRibs");
+        }
+
+        // read element ribCrossingBehaviour
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribCrossingBehaviour")) {
+            m_ribCrossingBehaviour = stringToCPACSRibCrossingBehaviour(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribCrossingBehaviour"));
+        }
+        else {
+            LOG(ERROR) << "Required element ribCrossingBehaviour is missing at xpath " << xpath;
+        }
+
+        // read element ribRotation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotation")) {
+            m_ribRotation.ReadCPACS(tixiHandle, xpath + "/ribRotation");
+        }
+        else {
+            LOG(ERROR) << "Required element ribRotation is missing at xpath " << xpath;
         }
 
         if (!ValidateChoices()) {
@@ -160,22 +160,6 @@ namespace generated
         // write element ribReference
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribReference");
         tixi::TixiSaveElement(tixiHandle, xpath + "/ribReference", m_ribReference);
-
-        // write element ribStart
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribStart");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/ribStart", m_ribStart);
-
-        // write element ribEnd
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribEnd");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/ribEnd", m_ribEnd);
-
-        // write element ribCrossingBehaviour
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCrossingBehaviour");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/ribCrossingBehaviour", CPACSRibCrossingBehaviourToString(m_ribCrossingBehaviour));
-
-        // write element ribRotation
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
-        m_ribRotation.WriteCPACS(tixiHandle, xpath + "/ribRotation");
 
         // write element etaStart
         if (m_etaStart_choice1) {
@@ -243,6 +227,14 @@ namespace generated
             }
         }
 
+        // write element ribStart
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribStart");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/ribStart", m_ribStart);
+
+        // write element ribEnd
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribEnd");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/ribEnd", m_ribEnd);
+
         // write element spacing
         if (m_spacing_choice1) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/spacing");
@@ -264,6 +256,14 @@ namespace generated
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/numberOfRibs");
             }
         }
+
+        // write element ribCrossingBehaviour
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCrossingBehaviour");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/ribCrossingBehaviour", CPACSRibCrossingBehaviourToString(m_ribCrossingBehaviour));
+
+        // write element ribRotation
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
+        m_ribRotation.WriteCPACS(tixiHandle, xpath + "/ribRotation");
 
     }
 
@@ -385,46 +385,6 @@ namespace generated
         m_ribReference = value;
     }
 
-    const std::string& CPACSWingRibsPositioning::GetRibStart() const
-    {
-        return m_ribStart;
-    }
-
-    void CPACSWingRibsPositioning::SetRibStart(const std::string& value)
-    {
-        m_ribStart = value;
-    }
-
-    const std::string& CPACSWingRibsPositioning::GetRibEnd() const
-    {
-        return m_ribEnd;
-    }
-
-    void CPACSWingRibsPositioning::SetRibEnd(const std::string& value)
-    {
-        m_ribEnd = value;
-    }
-
-    const CPACSRibCrossingBehaviour& CPACSWingRibsPositioning::GetRibCrossingBehaviour() const
-    {
-        return m_ribCrossingBehaviour;
-    }
-
-    void CPACSWingRibsPositioning::SetRibCrossingBehaviour(const CPACSRibCrossingBehaviour& value)
-    {
-        m_ribCrossingBehaviour = value;
-    }
-
-    const CCPACSWingRibRotation& CPACSWingRibsPositioning::GetRibRotation() const
-    {
-        return m_ribRotation;
-    }
-
-    CCPACSWingRibRotation& CPACSWingRibsPositioning::GetRibRotation()
-    {
-        return m_ribRotation;
-    }
-
     const boost::optional<double>& CPACSWingRibsPositioning::GetEtaStart_choice1() const
     {
         return m_etaStart_choice1;
@@ -485,6 +445,26 @@ namespace generated
         m_sparPositionEndUID_choice3 = value;
     }
 
+    const std::string& CPACSWingRibsPositioning::GetRibStart() const
+    {
+        return m_ribStart;
+    }
+
+    void CPACSWingRibsPositioning::SetRibStart(const std::string& value)
+    {
+        m_ribStart = value;
+    }
+
+    const std::string& CPACSWingRibsPositioning::GetRibEnd() const
+    {
+        return m_ribEnd;
+    }
+
+    void CPACSWingRibsPositioning::SetRibEnd(const std::string& value)
+    {
+        m_ribEnd = value;
+    }
+
     const boost::optional<double>& CPACSWingRibsPositioning::GetSpacing_choice1() const
     {
         return m_spacing_choice1;
@@ -503,6 +483,26 @@ namespace generated
     void CPACSWingRibsPositioning::SetNumberOfRibs_choice2(const boost::optional<int>& value)
     {
         m_numberOfRibs_choice2 = value;
+    }
+
+    const CPACSRibCrossingBehaviour& CPACSWingRibsPositioning::GetRibCrossingBehaviour() const
+    {
+        return m_ribCrossingBehaviour;
+    }
+
+    void CPACSWingRibsPositioning::SetRibCrossingBehaviour(const CPACSRibCrossingBehaviour& value)
+    {
+        m_ribCrossingBehaviour = value;
+    }
+
+    const CCPACSWingRibRotation& CPACSWingRibsPositioning::GetRibRotation() const
+    {
+        return m_ribRotation;
+    }
+
+    CCPACSWingRibRotation& CPACSWingRibsPositioning::GetRibRotation()
+    {
+        return m_ribRotation;
     }
 
 } // namespace generated
