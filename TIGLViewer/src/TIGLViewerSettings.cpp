@@ -18,6 +18,7 @@
 
 #include <TIGLViewerSettings.h>
 #include <QSettings>
+#include <QCoreApplication>
 #include "TIGLViewerSettings.h"
 
 #include <iostream>
@@ -33,7 +34,8 @@ const bool DEFAULT_DEBUG_BOPS = false;
 const bool DEFAULT_ENUM_FACES = false;
 const bool DEFAULT_DRAW_FACE_BOUNDARIES = true;
 const int DEFAULT_NISO_FACES = 0;
-const QString DEFAULT_TEMPLATE_DIR_PATH = "./data/templates";
+
+static QString DEFAULT_TEMPLATE_DIR_PATH = "";
 
 
 TIGLViewerSettings& TIGLViewerSettings::Instance()
@@ -44,6 +46,12 @@ TIGLViewerSettings& TIGLViewerSettings::Instance()
 
 TIGLViewerSettings::TIGLViewerSettings()
 {
+    DEFAULT_TEMPLATE_DIR_PATH = QCoreApplication::applicationDirPath();
+#ifdef __APPLE__
+    DEFAULT_TEMPLATE_DIR_PATH += "/../Resources/templates";
+#else
+    DEFAULT_TEMPLATE_DIR_PATH += "/../share/tigl3/templates";
+#endif
     restoreDefaults();
 }
 
@@ -194,7 +202,7 @@ void TIGLViewerSettings::loadSettings()
     _nVIsosPerFace = settings.value("number_visolines_per_face", 0).toInt();
     _drawFaceBoundaries = settings.value("draw_face_boundaries", true).toBool();
 
-    setTemplateDir(settings.value("template_dir_path", "./data/templates" ).toString());
+    setTemplateDir(settings.value("template_dir_path", DEFAULT_TEMPLATE_DIR_PATH ).toString());
 }
 
 void TIGLViewerSettings::storeSettings()
