@@ -641,6 +641,28 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
                                                         double* pointZPtr);
 
 /**
+@brief Sets the behavior of the ::tiglWingGetUpperPoint and ::tiglWingGetLowerPoint functions.
+*
+* This function sets the behavior of the ::tiglWingGetUpperPoint and ::tiglWingGetLowerPoint functions.
+* The options are asParameterOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned. For the second, the inputs are interpreted as eta-xsi coordinates
+* on the chordface spanned by the leading edge and trailing edge points of the inner and outer elements.
+*
+* @param[in]  cpacsHandle   Handle for the CPACS configuration
+* @param[in]  behavior      enum describing the desired behavior of the function.
+*                           Possible values are asParameterOnSurface and onLinearLoft.
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_INDEX_ERROR if fuselageIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              TiglGetPointBehavior behavior);
+
+/**
 * @brief Returns a point on the wing chord surface for a
 * a given wing and segment index.
 *

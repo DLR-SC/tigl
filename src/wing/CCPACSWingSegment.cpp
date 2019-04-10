@@ -483,13 +483,13 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
 // Gets the upper point in relative wing coordinates for a given eta and xsi
 gp_Pnt CCPACSWingSegment::GetUpperPoint(double eta, double xsi) const
 {
-    return GetPoint(eta, xsi, true);
+    return GetPoint(eta, xsi, true, GLOBAL_COORDINATE_SYSTEM, getPointBehavior);
 }
 
 // Gets the lower point in relative wing coordinates for a given eta and xsi
 gp_Pnt CCPACSWingSegment::GetLowerPoint(double eta, double xsi) const
 {
-    return GetPoint(eta, xsi, false);
+    return GetPoint(eta, xsi, false, GLOBAL_COORDINATE_SYSTEM, getPointBehavior);
 }
 
 // Returns the inner section UID of this segment
@@ -754,10 +754,10 @@ int CCPACSWingSegment::GetOuterConnectedSegmentIndex(int n) const
 // on the upper surface is returned, otherwise from the lower.
 gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
                                    bool fromUpper, TiglCoordinateSystem referenceCS,
-                                   bool onLinearLoft) const
+                                   TiglGetPointBehavior behavior) const
 {
     gp_Pnt profilePoint;
-    if ( onLinearLoft ) {
+    if ( behavior == onLinearLoft ) {
 
         if (eta < 0.0 || eta > 1.0) {
             throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
@@ -799,7 +799,8 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
         Standard_Real param = firstParam + (lastParam - firstParam) * eta;
         profileLine->D0(param, profilePoint);
     }
-    else {
+    else if ( behavior == asParameterOnSurface )
+    {
 
         Handle(Geom_Surface) surface = nullptr;
         if (fromUpper) {
@@ -811,6 +812,9 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
         double u,v;
         etaXsiToUV(fromUpper, eta, xsi, u, v);
         surface->D0(u, v, profilePoint);
+    }
+    else {
+        throw CTiglError("CCPACSWingSegment::GetPoint: Unknown TiglGetPointBehavior passed as argument.", TIGL_INDEX_ERROR);
     }
 
     return profilePoint;
@@ -1101,6 +1105,24 @@ TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem refere
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
         return s;
     return GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix().Inverted().Transform(s);
+}
+
+// Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
+void CCPACSWingSegment::SetGetPointBehavior(TiglGetPointBehavior behavior)
+{
+    getPointBehavior = behavior;
+}
+
+// Gets the getPointBehavior
+TiglGetPointBehavior const CCPACSWingSegment::GetGetPointBehavior() const
+{
+    return getPointBehavior;
+}
+
+// Gets the getPointBehavior
+TiglGetPointBehavior CCPACSWingSegment::GetGetPointBehavior()
+{
+    return getPointBehavior;
 }
 
 } // end namespace tigl

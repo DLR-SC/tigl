@@ -674,6 +674,9 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
 /* Tests on simple geometry__________________________ */
 TEST_F(WingSegmentSimple, getPoint_accuracy)
 {
+    TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, onLinearLoft);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
     double x = 0., y = 0., z = 0.;
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
     EXPECT_NEAR(y, 0.5, 1e-7);
@@ -718,7 +721,7 @@ TEST_F(WingSegmentSimple, getChordPointInternal_accuracy)
 
 /* Tests on simple geometry__________________________ */
 TEST_F(WingSegmentSimple, getPointDirection)
-{
+{    
     // now we have do use the internal interface as we currently have no public api for this
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
@@ -727,7 +730,7 @@ TEST_F(WingSegmentSimple, getPointDirection)
     tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     
     double deviation = 0.;
-    gp_Pnt point    = segment.GetPoint(0.5, 0.5, true);
+    gp_Pnt point    = segment.GetPoint(0.5, 0.5, true, GLOBAL_COORDINATE_SYSTEM, onLinearLoft);
     gp_Pnt pointAng = segment.GetPointDirection(0.5, 0.5, 0., 0., 1., true, deviation);
     ASSERT_NEAR(0.0, point.Distance(pointAng), 1e-7);
     
@@ -754,6 +757,9 @@ TEST_F(WingSegmentSimple, getPointDirection)
 
 TEST_F(WingSegmentSimple, getIsOnTop_success)
 {
+    TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, onLinearLoft);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
     // now we have do use the internal interface as we currently have no public api for this
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
@@ -884,7 +890,7 @@ TEST_F(WingSegmentSimple, getEtaXsi_Performance)
 
 // @todo: test of failures, outliers etc...
 TEST_F(WingSegmentSimple, wingGetEtaXsi)
-{
+{  
     double x = 0., y = 0., z = 0.;
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
 
