@@ -170,7 +170,7 @@ TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {}
 
 void TIGLViewerSettingsDialog::onBrowseTemplateDir()
 {
-    QDir newDir = QFileDialog::getExistingDirectory(this);
+    QDir newDir = QFileDialog::getExistingDirectory(this, "Choose template directory", _settings.templateDir().path());
     templateLineEdit->setText(newDir.absolutePath());
 }
 
