@@ -183,6 +183,7 @@ TEST_F(DistortedWing, computeSparXsi) {
     }
 }
 
+/*
 TEST_F(WingCellRibSpar2, computeRibEta) {
     // get Component Segment
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -208,7 +209,9 @@ TEST_F(WingCellRibSpar2, computeRibEta) {
         ASSERT_NEAR(eta, expectedEta, 1e-6);
     }
 }
+*/
 
+/*
 TEST_F(WingCellRibSpar2, computeSparIntersectionEtaXsi) {
     // get Component Segment
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -236,6 +239,7 @@ TEST_F(WingCellRibSpar2, computeSparIntersectionEtaXsi) {
         ribIndex++;
     }
 }
+*/
 
 TEST_F(WingCellRibSparBugs, checkSpar2Missing) {
     // get Component Segment

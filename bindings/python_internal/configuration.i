@@ -131,10 +131,15 @@
 // ---------------- Other ------------------------------//
 %boost_optional(tigl::CCPACSEtaIsoLine)
 %boost_optional(tigl::CCPACSMaterialDefinition)
+%boost_optional(tigl::generated::CPACSEtaXsiPoint)
+%boost_optional(tigl::generated::CPACSCurvePoint)
+
 %include "generated/CPACSXsiIsoLine.h"
 %include "generated/CPACSEtaIsoLine.h"
 %include "CCPACSEtaIsoLine.h"
 %include "CCPACSXsiIsoLine.h"
+%include "generated/CPACSEtaXsiPoint.h"
+%include "generated/CPACSCurvePoint.h"
 
 %include "generated/CPACSMaterialDefinition.h"
 %include "CCPACSMaterialDefinition.h"

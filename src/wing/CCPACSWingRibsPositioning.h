@@ -28,12 +28,11 @@ class CCPACSWingRibsDefinition;
 class CCPACSWingRibsPositioning : public generated::CPACSWingRibsPositioning
 {
 public:
-    // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
     enum StartEndDefinitionType
     {
         CURVEPOINT_STARTEND,
         ETAXSI_STARTEND,
-        SPARPOSITION_STARTEND
+        SPARPOSITION_STARTEND,
     };
 
     enum RibCountDefinitionType

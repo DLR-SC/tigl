@@ -18,6 +18,7 @@
 #include <cassert>
 #include "CCPACSWingRibsDefinitions.h"
 #include "CPACSWingRibsDefinition.h"
+#include "CCPACSWingRibsPositioning.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"

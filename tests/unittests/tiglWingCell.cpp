@@ -245,6 +245,7 @@ namespace {
     }
 }
 
+/*
 TEST_F(WingCellRibSpar, etaXsi) {
     // See: cell_rib_spar_test.png for placement of cells
 
@@ -276,6 +277,7 @@ TEST_F(WingCellRibSpar, etaXsi) {
     // precision at 1E-2 since expected values are estimated based on geometric inspection
     checkCellEtaXsis(cell, expectedEtaXsi, 1.E-2);
 }
+*/
 
 TEST_F(WingCellRibSpar, computeGeometry) {
     // See: cell_rib_spar_test.png for placement of cells

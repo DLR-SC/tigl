@@ -89,6 +89,9 @@ TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
 TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop);
 
+// calculates the alpha value for a given point on a wire
+TIGL_EXPORT Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire& wire, gp_Pnt p, gp_Dir rotationAxisAroundP, double angle);
+
 enum IntStatus
 {
     BetweenPoints, // The intersection point lies between p1 and p2
