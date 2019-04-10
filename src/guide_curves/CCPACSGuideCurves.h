@@ -51,6 +51,20 @@ public:
 
     // Check if guide curve with a given UID exists
     TIGL_EXPORT bool GuideCurveExists(std::string uid) const;
+
+    // Given relCirc, find the guide curves that sandwich this parameter,
+    // i.e. the guideCurve with the largerst fromRelativeCircumference < relCirc
+    // and the guideCurve with the smallest fromRelativeCircumference > relCirc.
+    // Outputs relCircStart and relCircEnd of the two guide curves.
+    // The output index is the index of the first guide curve in a sorted std::vector,
+    // i.e. index starts at 0 and the order is not necessarily the one from the cpacs
+    // file.
+    //
+    // This function is used e.g. in CCPACSWingSegment->GetPoint.
+    TIGL_EXPORT void GetRelativeCircumferenceRange(double relCirc,
+                                                   double& relCircStart,
+                                                   double& relCircEnd,
+                                                   int& index) const;
 };
 
 } // end namespace tigl
