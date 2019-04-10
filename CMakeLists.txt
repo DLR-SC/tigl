@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required (VERSION 3.1)
 
 # Set a default build type if none was specified
 if(NOT DEFINED CMAKE_BUILD_TYPE)
@@ -145,19 +145,9 @@ if(TIGL_USE_GLOG)
     endif()
 endif(TIGL_USE_GLOG)
 
-# enable C++11 support if available
-# TODO(bgruber): enable when cmake 3.1 is available and remove the flagtests underneath
-#set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-include(CheckCXXCompilerFlag)
-include(CheckCXXSourceCompiles)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif(COMPILER_SUPPORTS_CXX0X)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-endif()
+# enable C++11 support
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # supress deprecation warning of std::tr1 to allow gtest to compile
 if(MSVC)
@@ -165,6 +155,7 @@ if(MSVC)
 endif()
 
 # check features
+include(CheckCXXSourceCompiles)
 set(src_make_unqiue "#include <memory>\nint main(){\n std::make_unique<int>(5)\;\n return 0\;\n}\n")
 CHECK_CXX_SOURCE_COMPILES(${src_make_unqiue} HAVE_STDMAKE_UNIQUE)
 
