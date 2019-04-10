@@ -672,7 +672,7 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
 }
 
 /* Tests on simple geometry__________________________ */
-TEST_F(WingSegmentSimple, getPoint_accuracy)
+TEST_F(WingSegmentSimple, getPoint_accuracy_onLinearLoft)
 {
     TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, onLinearLoft);
     ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
@@ -687,6 +687,24 @@ TEST_F(WingSegmentSimple, getPoint_accuracy)
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 2, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
     EXPECT_NEAR(y, 1.5, 1e-7);
     EXPECT_NEAR(x, 0.625, 1e-7);
+}
+
+/* Tests on simple geometry__________________________ */
+TEST_F(WingSegmentSimple, getPoint_accuracy_asParameterOnSurface)
+{
+    TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, asParameterOnSurface);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    double x = 0., y = 0., z = 0.;
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    // plausibility of results checked with TiGLViewer. The behavior of GetPoint should not change unintentionally
+    EXPECT_NEAR(y, 0.5, 1e-7);
+    EXPECT_NEAR(x, 0.49711325655906319, 1e-7);
+    EXPECT_NEAR(z, 0.053121522829686171, 1e-7);
+
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 2, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    EXPECT_NEAR(y, 1.5, 1e-7);
+    EXPECT_NEAR(x, 0.62283494241929738, 1e-7);
 }
 
 TEST_F(WingSegmentSimple, getChordPointInternal_accuracy)
