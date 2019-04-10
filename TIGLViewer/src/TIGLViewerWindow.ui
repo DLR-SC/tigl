@@ -145,6 +145,8 @@
     <addaction name="setBackgroundAction"/>
     <addaction name="separator"/>
     <addaction name="saveAction"/>
+    <addaction name="saveAsAction"/>
+    <addaction name="exportAction"/>
     <addaction name="saveScreenshotAction"/>
     <addaction name="tiglMenu"/>
     <addaction name="closeAction"/>
@@ -431,19 +433,12 @@
     <string>blubb</string>
    </property>
   </action>
-  <action name="saveAction">
-   <property name="icon">
-    <iconset resource="TIGLViewer.qrc">
-     <normaloff>:/gfx/document-save.png</normaloff>:/gfx/document-save.png</iconset>
-   </property>
+  <action name="exportAction">
    <property name="text">
-    <string>&amp;Save</string>
+    <string>&amp;Export</string>
    </property>
    <property name="toolTip">
-    <string>Save the document to disk</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Export the document to disk&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
   <action name="printAction">
@@ -1457,6 +1452,36 @@
    </property>
    <property name="shortcut">
     <string>Alt+M</string>
+   </property>
+  </action>
+  <action name="saveAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/document-save.png</normaloff>:/gfx/document-save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="toolTip">
+    <string>save the modifications into the current file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="saveAsAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/document-save.png</normaloff>:/gfx/document-save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save as</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the current configuration to the specified file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
  </widget>

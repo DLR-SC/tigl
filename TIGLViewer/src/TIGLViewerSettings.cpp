@@ -18,6 +18,8 @@
 
 #include <TIGLViewerSettings.h>
 #include <QSettings>
+#include <QCoreApplication>
+#include "TIGLViewerSettings.h"
 
 const double DEFAULT_TESSELATION_ACCURACY = 0.000316;
 const double DEFAULT_TRIANGULATION_ACCURACY = 0.00070;
@@ -25,6 +27,8 @@ const QColor DEFAULT_BGCOLOR(169,237,255);
 const bool DEFAULT_DEBUG_BOPS = false;
 const bool DEFAULT_ENUM_FACES = false;
 const int DEFAULT_NISO_FACES = 0;
+
+static QString DEFAULT_TEMPLATE_DIR_PATH = "";
 
 
 TIGLViewerSettings& TIGLViewerSettings::Instance()
@@ -35,6 +39,12 @@ TIGLViewerSettings& TIGLViewerSettings::Instance()
 
 TIGLViewerSettings::TIGLViewerSettings()
 {
+    DEFAULT_TEMPLATE_DIR_PATH = QCoreApplication::applicationDirPath();
+#ifdef __APPLE__
+    DEFAULT_TEMPLATE_DIR_PATH += "/../Resources/templates";
+#else
+    DEFAULT_TEMPLATE_DIR_PATH += "/../share/tigl3/templates";
+#endif
     restoreDefaults();
 }
 
@@ -120,6 +130,8 @@ void TIGLViewerSettings::loadSettings()
     _enumFaces = settings.value("enumerate_faces", false).toBool();
     _nUIsosPerFace = settings.value("number_uisolines_per_face", 0).toInt();
     _nVIsosPerFace = settings.value("number_visolines_per_face", 0).toInt();
+
+    setTemplateDir(settings.value("template_dir_path", DEFAULT_TEMPLATE_DIR_PATH ).toString());
 }
 
 void TIGLViewerSettings::storeSettings()
@@ -129,11 +141,13 @@ void TIGLViewerSettings::storeSettings()
     settings.setValue("tesselation_accuracy"  , tesselationAccuracy());
     settings.setValue("triangulation_accuracy", triangulationAccuracy());
     settings.setValue("background_color", BGColor());
-    
+
     settings.setValue("debug_bops", _debugBOPs);
     settings.setValue("enumerate_faces", _enumFaces);
     settings.setValue("number_uisolines_per_face", _nUIsosPerFace);
     settings.setValue("number_visolines_per_face", _nVIsosPerFace);
+
+    settings.setValue("template_dir_path", _templateDir.absolutePath());
 }
 
 void TIGLViewerSettings::restoreDefaults()
@@ -145,6 +159,25 @@ void TIGLViewerSettings::restoreDefaults()
     _enumFaces = DEFAULT_ENUM_FACES;
     _nUIsosPerFace = DEFAULT_NISO_FACES;
     _nVIsosPerFace = DEFAULT_NISO_FACES;
+    // Possible issue:
+    // restoreDefaults() is called in the constructor
+    // -> the dir will be always create at start up of the application
+    // even if the user has set another dir
+    setTemplateDir(DEFAULT_TEMPLATE_DIR_PATH) ;
 }
 
 TIGLViewerSettings::~TIGLViewerSettings() {}
+
+QDir TIGLViewerSettings::templateDir() const
+{
+    return _templateDir;
+}
+
+void TIGLViewerSettings::setTemplateDir(QString path)
+{
+    _templateDir = QDir(path);
+    // create the directory if not exist
+    if (!_templateDir.exists()) {
+        _templateDir.mkpath(_templateDir.absolutePath());
+    }
+}

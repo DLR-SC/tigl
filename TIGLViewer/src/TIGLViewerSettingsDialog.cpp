@@ -25,6 +25,11 @@
 #include <cmath>
 #include <iostream>
 
+#include <QFileDialog>
+#include <QMessageBox>
+#include "TIGLViewerSettingsDialog.h"
+
+
 #define WORST_TESSELATION 0.01
 #define BEST_TESSELATION 0.00001
 
@@ -48,6 +53,7 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChoserPushed()));
     connect(settingsList, SIGNAL(currentRowChanged(int)), this, SLOT(onSettingsListChanged(int)));
     connect(btnRestoreDefaults, SIGNAL(clicked(bool)), this, SLOT(restoreDefaults()));
+    connect(browseTemplateDirButton, SIGNAL(clicked(bool)), this, SLOT(onBrowseTemplateDir()));
 }
 
 double TIGLViewerSettingsDialog::calcTesselationAccu(int value)
@@ -87,6 +93,8 @@ void TIGLViewerSettingsDialog::onSettingsAccepted()
     _settings.setEnumerateFacesEnabled(enumerateFaceCB->isChecked());
     _settings.setNumberOfUIsolinesPerFace(numUIsoLinesSB->value());
     _settings.setNumberOfVIsolinesPerFace(numVIsoLinesSB->value());
+
+    _settings.setTemplateDir(templateLineEdit->text());
 }
 
 void TIGLViewerSettingsDialog::updateEntries()
@@ -118,6 +126,8 @@ void TIGLViewerSettingsDialog::updateEntries()
     enumerateFaceCB->setChecked(_settings.enumerateFaces());
     numUIsoLinesSB->setValue(_settings.numFaceUIsosForDisplay());
     numVIsoLinesSB->setValue(_settings.numFaceVIsosForDisplay());
+
+    templateLineEdit->setText(_settings.templateDir().absolutePath());
 }
 
 void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val)
@@ -157,3 +167,10 @@ void TIGLViewerSettingsDialog::restoreDefaults()
 }
 
 TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {}
+
+void TIGLViewerSettingsDialog::onBrowseTemplateDir()
+{
+    QDir newDir = QFileDialog::getExistingDirectory(this, "Choose template directory", _settings.templateDir().path());
+    templateLineEdit->setText(newDir.absolutePath());
+}
+

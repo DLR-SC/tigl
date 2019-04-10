@@ -121,6 +121,7 @@ set(tv_src
     ModificatorContainerWidget.cpp
     CPACSTreeWidget.cpp
     CPACSFilterModel.cpp
+    TIGLViewerNewFileDialog.cpp
 )
 	
 # normal header files
@@ -181,6 +182,7 @@ set(tv_hdr_qobj
     ModificatorContainerWidget.h
     CPACSTreeWidget.h
     CPACSFilterModel.h
+    TIGLViewerNewFileDialog.h
 )
 
 set(tv_ui_comp
@@ -200,6 +202,7 @@ set(tv_ui_comp
     src/ModificatorFuselageWidget.ui
     src/ModificatorContainerWidget.ui
     src/CPACSTreeWidget.ui
+    src/TIGLViewerNewFileDialog.ui
 )
 
 foreach ( _fname ${tv_src})
@@ -280,6 +283,17 @@ if(GLOG_FOUND)
   include_directories(${GLOG_INCLUDE_DIR})
   target_link_libraries (${PROGNAME} ${GLOG_LIBRARIES})
 endif(GLOG_FOUND)
+
+
+#--------------------------------------------------------------------------------
+# Now the data stuff below (templates files)
+#--------------------------------------------------------------------------------
+
+if (APPLE)
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION ${PROGNAME}.app/Contents/Resources COMPONENT viewer)
+else()
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION share/tigl3 COMPONENT viewer)
+endif()
 
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
