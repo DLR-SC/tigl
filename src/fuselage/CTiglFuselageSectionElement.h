@@ -53,6 +53,13 @@ public:
 
     TIGL_EXPORT TopoDS_Wire GetWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const override;
 
+    TIGL_EXPORT CTiglPoint GetNormal(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const override;
+
+    TIGL_EXPORT double GetHeight(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const override;
+
+    TIGL_EXPORT double GetWidth(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const override;
+
+
     TIGL_EXPORT void SetOrigin(const CTiglPoint& newOrigin,
                                TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) override;
 

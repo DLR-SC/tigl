@@ -93,7 +93,7 @@ protected:
         std::map<std::string, tigl::CTiglFuselageSectionElement*> connections = fuselage->GetSections().GetCTiglElements();
         std::map<std::string, tigl::CTiglFuselageSectionElement*>::iterator it;
         for (it = connections.begin(); it != connections.end(); it++) {
-            circumferences[it->first] = (it->second)->GetCircumferenceOfProfile();
+            circumferences[it->first] = (it->second)->GetCircumference();
         }
         return circumferences;
     }

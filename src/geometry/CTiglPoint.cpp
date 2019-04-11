@@ -20,6 +20,7 @@
 */
 
 #include "CTiglPoint.h"
+#include "CTiglLogging.h"
 
 namespace tigl 
 {
@@ -194,6 +195,20 @@ bool CTiglPoint::isNear(const CTiglPoint& aPoint, double epsilon) const
     }
     return false;
 
+}
+
+void CTiglPoint::normalize()
+{
+    if (norm2() == 0) {
+        LOG(WARNING)
+            << "CTiglPoint::normalize: The norm is 0, so it's impossible to normalize, 0 length vector is returned."
+            << std::endl;
+        return;
+    }
+    double s = 1.0 / norm2();
+    x        = s * x;
+    y        = s * y;
+    z        = s * z;
 }
 
 } // end namespace tigl
