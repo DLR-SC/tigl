@@ -27,6 +27,9 @@
 #include "tiglcommonfunctions.h"
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
+#include "BRepBndLib.hxx"
+#include "BRepMesh_IncrementalMesh.hxx"
+#include "Bnd_Box.hxx"
 
 tigl::CTiglFuselageSectionElement::CTiglFuselageSectionElement()
     : CTiglSectionElement()
@@ -122,6 +125,28 @@ TopoDS_Wire tigl::CTiglFuselageSectionElement::GetWire(TiglCoordinateSystem refe
     return TopoDS::Wire(transformedWire);
 }
 
+
+tigl::CTiglPoint tigl::CTiglFuselageSectionElement::GetNormal(TiglCoordinateSystem referenceCS) const
+{
+    // We assume that the original profile is in the YZ plan.
+    // -> So the normal of the final section can be computed by the cross product of the transformed basis vector
+    // Remark: do not forget that the CTiglTransformation is augmented, so we need to compute the new Y andZ vector
+    // using the origin
+
+    CTiglPoint yPoint = CTiglPoint(0,1,0);
+    CTiglPoint zPoint = CTiglPoint(0,0,1);
+    CTiglPoint origin = CTiglPoint(0,0,0);
+
+    CTiglTransformation M = GetTotalTransformation(referenceCS);
+    CTiglPoint yVec = (M * yPoint) - (M * origin);
+    CTiglPoint zVec = (M * zPoint) - (M * origin);
+
+    CTiglPoint normal = CTiglPoint::cross_prod(yVec, zVec);
+    normal.normalize();
+    return normal;
+
+}
+
 void tigl::CTiglFuselageSectionElement::SetOrigin(const CTiglPoint& newO, TiglCoordinateSystem referenceCS)
 {
 
@@ -144,11 +169,10 @@ void tigl::CTiglFuselageSectionElement::SetCenter(const tigl::CTiglPoint& newCen
     fuselage->Invalidate();
 }
 
-
-void tigl::CTiglFuselageSectionElement::ScaleCircumference(double scaleFactor,  TiglCoordinateSystem referenceCS)
+void tigl::CTiglFuselageSectionElement::ScaleCircumference(double scaleFactor, TiglCoordinateSystem referenceCS)
 {
 
-    if( !( referenceCS == GLOBAL_COORDINATE_SYSTEM || referenceCS == FUSELAGE_COORDINATE_SYSTEM) )  {
+    if (!(referenceCS == GLOBAL_COORDINATE_SYSTEM || referenceCS == FUSELAGE_COORDINATE_SYSTEM)) {
         throw tigl::CTiglError("CTiglFuselageSectionElement::ScaleCircumference: Invalid coordinate system");
     }
 
@@ -158,4 +182,43 @@ void tigl::CTiglFuselageSectionElement::ScaleCircumference(double scaleFactor,  
     storedTransformation.setTransformationMatrix(newE);
 
     fuselage->Invalidate();
+}
+
+double tigl::CTiglFuselageSectionElement::GetHeight(TiglCoordinateSystem referenceCS) const
+{
+
+    // todo use a cache system
+
+    TopoDS_Wire wire  = GetWire(referenceCS);
+    CTiglPoint normal = GetNormal(referenceCS);
+    // get the rotation to have the wire on the YZ plan
+    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(1, 0, 0));
+    wire                    = TopoDS::Wire(rot.Transform(wire));
+
+    BRepMesh_IncrementalMesh mesh(wire, 0.001); // tessellate the wire to have a more accurate bounding box.
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(wire, boundingBox);
+    CTiglPoint min, max;
+    boundingBox.Get(min.x, min.y, min.z, max.x, max.y, max.z);
+
+    return (max.z - min.z);
+}
+
+double tigl::CTiglFuselageSectionElement::GetWidth(TiglCoordinateSystem referenceCS) const
+{
+
+    // todo use a cache system
+    TopoDS_Wire wire  = GetWire(referenceCS);
+    CTiglPoint normal = GetNormal(referenceCS);
+    // get the rotation to have the wire on the YZ plan
+    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(1, 0, 0));
+    wire                    = TopoDS::Wire(rot.Transform(wire));
+
+    BRepMesh_IncrementalMesh mesh(wire, 0.001); // tessellate the wire to have a more accurate bounding box.
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(wire, boundingBox);
+    CTiglPoint min, max;
+    boundingBox.Get(min.x, min.y, min.z, max.x, max.y, max.z);
+
+    return (max.y - min.y);
 }

@@ -63,8 +63,7 @@ public:
     // Invalidates internal fuselage profile state
     TIGL_EXPORT void Invalidate();
 
-    // Returns the fuselage profile wire. The wire is already transformed by the
-    // fuselage profile element transformation.
+    // Returns the fuselage profile wire. The profile is not transformed.
     TIGL_EXPORT TopoDS_Wire GetWire(bool forceClosed = false) const;
 
     // Gets a point on the fuselage profile wire in dependence of a parameter zeta with
@@ -73,7 +72,14 @@ public:
     TIGL_EXPORT gp_Pnt GetPoint(double zeta) const;
 
     // Returns the "diameter" line as a wire
+    // (The diameter is the line between the start point and the most distant point)
     TIGL_EXPORT TopoDS_Wire GetDiameterWire() const;
+
+    // Returns the width of the profile (y distance).
+    TIGL_EXPORT double GetWidth() const;
+
+    // Returns the height of the profile, (z distance).
+    TIGL_EXPORT double GetHeight() const;
 
 private:
     struct WireCache {
@@ -86,11 +92,15 @@ private:
         gp_Pnt end;
     };
 
-    // Transforms a point by the fuselage profile transformation
+    struct SizeCache {
+        double width;
+        double height;
+    };
+
+    // Transforms a point by the fuselage profile transformation //todo is it working ? where is trh transformation
     gp_Pnt TransformPoint(const gp_Pnt& aPoint) const;
 
-    // Builds the fuselage profile wires. The wires are already transformed by the
-    // fuselage profile transformation.
+    // Builds the fuselage profile wires.
     void BuildWires(WireCache& cache) const;
 
     // Helper function to determine the "diameter" (the wing profile chord line equivalent) 
@@ -105,6 +115,8 @@ private:
     // Point2: Last point in the profile point list
     void BuildDiameterPoints(DiameterPointsCache& cache) const;
 
+    void BuildSize(SizeCache& cache) const;
+
 private:
     // Checks is two point are the same, or nearly the same.
     bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB) const;
@@ -113,6 +125,7 @@ private:
     bool mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
     Cache<WireCache, CCPACSFuselageProfile> wireCache;   /**< Original and force closed fuselage profile wire */
     Cache<DiameterPointsCache, CCPACSFuselageProfile> diameterPointsCache;
+    Cache<SizeCache, CCPACSFuselageProfile> sizeCache;
     unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
 
 };

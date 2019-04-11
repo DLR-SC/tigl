@@ -1809,7 +1809,172 @@
             </segments>
           </fuselage>
 	  
-	  
+          <fuselage uID="SimpleFuselageElementTransformation ">
+            <name>name</name>
+            <description>A simple fuselage where every transformations is contained in the elements</description>
+            <transformation uID="SimpleFuselageElementTransformation _transformation1">
+              <scaling uID="SimpleFuselageElementTransformation _transformation1_scaling1">
+                <x>1.0</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="SimpleFuselageElementTransformation _transformation1_rotation1">
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </rotation>
+              <translation refType="absLocal" uID="SimpleFuselageElementTransformation _transformation1_translation1">
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="Fuselage_ETSection1ID">
+                <name>Fuselage_ETSection1</name>
+                <transformation uID="Fuselage_ETSection1ID_transformation1">
+                  <scaling uID="Fuselage_ETSection1ID_transformation1_scaling1">
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation uID="Fuselage_ETSection1ID_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="Fuselage_ETSection1ID_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="Fuselage_ETSection1IDElement1">
+                    <name>Fuselage_ETSection1</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="Fuselage_ETSection1IDElement1_transformation1">
+                      <scaling uID="Fuselage_ETSection1IDElement1_transformation1_scaling1">
+                        <x>0.1</x>
+                        <y>0.1</y>
+                        <z>0.1</z>
+                      </scaling>
+                      <rotation uID="Fuselage_ETSection1IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="Fuselage_ETSection1IDElement1_transformation1_translation1">
+                        <x>-4</x>
+                        <y>-4</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="Fuselage_ETSection2ID">
+                <name>Fuselage_ETSection2</name>
+                <transformation uID="Fuselage_ETSection2ID_transformation1">
+                  <scaling uID="Fuselage_ETSection2ID_transformation1_scaling1">
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation uID="Fuselage_ETSection2ID_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="Fuselage_ETSection2ID_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="Fuselage_ETSection2IDElement1">
+                    <name>Fuselage_ETSection2</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="Fuselage_ETSection2IDElement1_transformation1">
+                      <scaling uID="Fuselage_ETSection2IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>2</y>
+                        <z>0.4</z>
+                      </scaling>
+                      <rotation uID="Fuselage_ETSection2IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="Fuselage_ETSection2IDElement1_transformation1_translation1">
+			<x>-2</x>
+                        <y>-4</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="Fuselage_ETSection3ID">
+                <name>Fuselage_ETSection3</name>
+                <transformation uID="Fuselage_ETSection3ID_transformation1">
+                  <scaling uID="Fuselage_ETSection3ID_transformation1_scaling1">
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation uID="Fuselage_ETSection3ID_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="Fuselage_ETSection3ID_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="Fuselage_ETSection3IDElement1">
+                    <name>Fuselage_ETSection3</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="Fuselage_ETSection3IDElement1_transformation1">
+                      <scaling uID="Fuselage_ETSection3IDElement1_transformation1_scaling1">
+                        <x>0.1</x>
+                        <y>0.3</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="Fuselage_ETSection3IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="Fuselage_ETSection3IDElement1_transformation1_translation1">
+                        <x>-1</x>
+                        <y>-4</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+            </positionings>
+            <segments>
+              <segment uID="segmentFuselage_ETSegment3ID">
+                <name>Fuselage_ETSegment3</name>
+                <fromElementUID>Fuselage_ETSection2IDElement1</fromElementUID>
+                <toElementUID>Fuselage_ETSection3IDElement1</toElementUID>
+              </segment>
+              <segment uID="segmentFuselage_ETSegment2ID">
+                <name>Fuselage_ETSegment2</name>
+                <fromElementUID>Fuselage_ETSection1IDElement1</fromElementUID>
+                <toElementUID>Fuselage_ETSection2IDElement1</toElementUID>
+              </segment>
+            </segments>
+          </fuselage>
 	  
 	  
 	  
@@ -2108,6 +2273,15 @@
             <x mapType="vector">0.0;0.0;0.0;0.0;0.0</x>
             <y mapType="vector">1.0;2.0;1.0;0.0;1.0</y>
             <z mapType="vector">2.0;1.0;0.0;1.0;2.0</z>
+          </pointList>
+        </fuselageProfile>
+	<fuselageProfile uID="fuselageRectangleProfile">
+          <name>Rectangle</name>
+          <description>Rectangle profile for testing purpose</description>
+          <pointList>
+            <x mapType="vector">0.0;0.0;0.0;0.0;0.0</x>
+            <y mapType="vector">0.0;0.5;0.5;0.0;0.0</y>
+            <z mapType="vector">2.0;2.0;0.0;0.0;2.0</z>
           </pointList>
         </fuselageProfile>
       </fuselageProfiles>

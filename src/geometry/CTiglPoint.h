@@ -101,6 +101,9 @@ public:
     // returns minimum and maximum component
     TIGL_EXPORT void getMinMax(double & min, double & max) const;
 
+    // update the vector such that is norm2 is 1
+    TIGL_EXPORT void normalize();
+
     double x;
     double y;
     double z;

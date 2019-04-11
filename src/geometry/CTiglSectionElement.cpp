@@ -21,8 +21,11 @@
 #include "CTiglSectionElement.h"
 
 #include "tiglcommonfunctions.h"
-#include "GProp_GProps.hxx"
-#include "BRepGProp.hxx"
+#include <GProp_GProps.hxx>
+#include <BRepGProp.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <Geom_Surface.hxx>
+#include <GeomLProp_SLProps.hxx>
 
 tigl::CTiglTransformation tigl::CTiglSectionElement::GetTotalTransformation(TiglCoordinateSystem referenceCS) const
 {
@@ -61,7 +64,7 @@ tigl::CTiglPoint tigl::CTiglSectionElement::GetCenter(TiglCoordinateSystem refer
     return CTiglPoint(GetCenterOfMass(wire).XYZ());
 }
 
-double tigl::CTiglSectionElement::GetCircumferenceOfProfile(TiglCoordinateSystem referenceCS) const
+double tigl::CTiglSectionElement::GetCircumference(TiglCoordinateSystem referenceCS) const
 {
     TopoDS_Wire wire = GetWire(referenceCS);
     GProp_GProps System;
@@ -149,4 +152,13 @@ tigl::CTiglTransformation tigl::CTiglSectionElement::GetElementTransformationToS
     return newE;
 
 
+}
+
+double tigl::CTiglSectionElement::GetArea(TiglCoordinateSystem referenceCS) const
+{
+    TopoDS_Wire wire = GetWire(referenceCS);
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(wire); // is it to slow?
+    GProp_GProps System;
+    BRepGProp::SurfaceProperties(face, System);
+    return System.Mass();
 }

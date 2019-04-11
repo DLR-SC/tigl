@@ -790,7 +790,7 @@ double CCPACSFuselage::GetMaximalCircumferenceBetween(const std::string& startEl
     double maxCircumference = -1;
     double tempCircumference;
     for (int i = 0; i < elementsInBetween.size(); i++) {
-        tempCircumference = cTiglElementsMap[elementsInBetween[i]]->GetCircumferenceOfProfile();
+        tempCircumference = cTiglElementsMap[elementsInBetween[i]]->GetCircumference();
         if (tempCircumference > maxCircumference) {
             maxCircumference = tempCircumference;
         }
@@ -825,7 +825,7 @@ void CCPACSFuselage::SetMaximalCircumferenceBetween(const std::string& startElem
     }
 
     std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
-    for(int i = 0; i < elementsBetween.size(); i++){
+    for (int i = 0; i < elementsBetween.size(); i++) {
         cTiglElementsMap[elementsBetween[i]]->ScaleCircumference(scaleFactor);
     }
 }

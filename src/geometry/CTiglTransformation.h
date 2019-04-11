@@ -125,6 +125,9 @@ public:
     // Getter for matrix values
     TIGL_EXPORT double GetValue(int row, int col) const;
 
+    // Return the transformation that bring the vector A in the same direction as vector B
+    TIGL_EXPORT CTiglTransformation static GetRotationToAlignAToB(tigl::CTiglPoint vectorA, tigl::CTiglPoint vectorB);
+
 private:
     bool IsUniform() const;
 
@@ -135,6 +138,13 @@ TIGL_EXPORT CTiglTransformation operator*(const CTiglTransformation& a, const CT
 
 // multiply the CTiglPoint by the CTiglTransformation matrix (taking care of to augment the CTiglPoint)  and return the result
 TIGL_EXPORT CTiglPoint operator*(const CTiglTransformation& m, const CTiglPoint& p);
+
+// Return the result of the matrix addition of the two transformation matrices
+TIGL_EXPORT CTiglTransformation operator+(const CTiglTransformation& a, const CTiglTransformation& b);
+
+// Return the matrix where each element is scale by s
+TIGL_EXPORT CTiglTransformation operator*(double s, const CTiglTransformation& a);
+
 
 } // end namespace tigl
 

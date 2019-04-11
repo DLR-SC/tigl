@@ -578,6 +578,42 @@ double CTiglTransformation::GetValue(int row, int col) const
     return m_matrix[row][col];
 }
 
+tigl::CTiglTransformation tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint vectorA,
+                                                                            tigl::CTiglPoint vectorB)
+{
+
+    vectorA.normalize();
+    vectorB.normalize();
+
+    if (vectorA.isNear((vectorB * -1))) {
+        return (-1 * CTiglTransformation());
+    }
+
+    CTiglPoint cross = CTiglPoint::cross_prod(vectorA, vectorB);
+    double cos       = CTiglPoint::inner_prod(vectorA, vectorB);
+    double s         = 1.0 / (1.0 + cos);
+
+    CTiglTransformation V;
+    V.SetValue(0, 0, 0);
+    V.SetValue(0, 1, -cross.z);
+    V.SetValue(0, 2, cross.y);
+    V.SetValue(1, 0, cross.z);
+    V.SetValue(1, 1, 0);
+    V.SetValue(1, 2, -cross.x);
+    V.SetValue(2, 0, -cross.y);
+    V.SetValue(2, 1, cross.x);
+    V.SetValue(2, 2, 0);
+    V.SetValue(3, 3, 0);
+
+    CTiglTransformation V2 = V * V;
+
+    CTiglTransformation Rot;
+
+    Rot = ((Rot + V) + (s * V2));
+
+    return Rot;
+}
+
 std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
 {
     for (int i = 0; i < 4; ++i) {
@@ -614,6 +650,28 @@ CTiglPoint operator*(const CTiglTransformation& m, const CTiglPoint& p)
     }
 
     CTiglPoint result(res_matrix[0], res_matrix[1], res_matrix[2]);
+    return result;
+}
+
+CTiglTransformation operator+(const CTiglTransformation& a, const CTiglTransformation& b)
+{
+    CTiglTransformation result;
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            result.SetValue(row, col, a.GetValue(row, col) + b.GetValue(row, col));
+        }
+    }
+    return result;
+}
+
+CTiglTransformation operator*( double s, const CTiglTransformation& a)
+{
+    CTiglTransformation result;
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            result.SetValue(row, col, s * a.GetValue(row, col));
+        }
+    }
     return result;
 }
 

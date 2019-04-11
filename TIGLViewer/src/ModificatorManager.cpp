@@ -98,7 +98,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
         if (typePtr.type == &typeid(tigl::CCPACSFuselageSection)) {
             tigl::CCPACSFuselageSection& fuselageSection = *reinterpret_cast<tigl::CCPACSFuselageSection*>(typePtr.ptr);
-
+            // In fact for the moment multiple element is not supported by Tigl so the number of cTiglElements will allays be one
             QList<tigl::CTiglSectionElement*> cTiglElements;
             for (int i = 1; i <= fuselageSection.GetSectionElementCount(); i++) {
                 cTiglElements.push_back(fuselageSection.GetSectionElement(i).GetCTiglSectionElement());

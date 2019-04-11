@@ -63,6 +63,16 @@ public:
     // Get the wire associate with the profile of this element
     TIGL_EXPORT virtual TopoDS_Wire GetWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0;
 
+
+    TIGL_EXPORT virtual CTiglPoint GetNormal(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0 ;
+
+    // Return the height of the element
+    TIGL_EXPORT virtual double GetHeight(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0;
+
+    // Return the width of the element
+    TIGL_EXPORT virtual double GetWidth(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0;
+
+
     // Return the transformation composed by every transformations apply to this connection.
     TIGL_EXPORT virtual CTiglTransformation
     GetTotalTransformation(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
@@ -75,8 +85,12 @@ public:
     // Return  the center of the profile of this connection in global coordinate or in fuselage coordinate.
     TIGL_EXPORT CTiglPoint GetCenter(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
-    // Return the circumference of the profile
-    TIGL_EXPORT double GetCircumferenceOfProfile(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    // Return the circumference of the profile in the wanted coordinate system
+    TIGL_EXPORT double GetCircumference(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+    // Return the area of the profile in the wanted coordinate system
+    TIGL_EXPORT double GetArea(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
 
     // Set the origin of the element in the wanted coordinate system
     // Remark this function will modify the value contain in the tigl -> the geometry will change
