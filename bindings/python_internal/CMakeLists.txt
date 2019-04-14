@@ -19,7 +19,7 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     find_package(PythonInterp)
     find_package(PythonLibs)
-    find_package(SWIG REQUIRED)
+    find_package(SWIG 3.0.11 REQUIRED)
     find_package(PythonOCC REQUIRED)
     find_package(Doxygen 1.8.0)
 
