@@ -122,7 +122,7 @@ if (TIGL_BINDINGS_INSTALL_CPP)
         tigl_boost_system
         tigl_boost_thread
     
-        EXPORT tigl3-cpp-targets
+        EXPORT tigl3_cpp-targets
              RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
              LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/tigl3
              ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/tigl3

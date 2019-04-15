@@ -217,20 +217,20 @@ install (FILES
 if (TIGL_BINDINGS_INSTALL_CPP)
     
     configure_file(
-        "${PROJECT_SOURCE_DIR}/cmake/tigl-cpp-config.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/tigl3-cpp-config.cmake"
+        "${PROJECT_SOURCE_DIR}/cmake/tigl_cpp-config.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/tigl3_cpp-config.cmake"
         @ONLY
     )
     
     install (TARGETS tigl3_static
-             EXPORT tigl3-cpp-targets
+             EXPORT tigl3_cpp-targets
              RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
              LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
              ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     )
 
-    install(TARGETS tigl3_cpp EXPORT tigl3-cpp-targets COMPONENT cpp_bindings)
-    install (EXPORT tigl3-cpp-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tigl3-cpp)
+    install(TARGETS tigl3_cpp EXPORT tigl3_cpp-targets COMPONENT cpp_bindings)
+    install (EXPORT tigl3_cpp-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tigl3_cpp)
     
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tigl_config.h
         DESTINATION include/tigl3/internal COMPONENT cpp_bindings)
@@ -247,11 +247,11 @@ if (TIGL_BINDINGS_INSTALL_CPP)
     install(FILES api/tigl_internal.h DESTINATION include/tigl3/internal/api)
     
     install (FILES
-      "${CMAKE_CURRENT_BINARY_DIR}/tigl3-cpp-config.cmake"
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tigl3-cpp)
+      "${CMAKE_CURRENT_BINARY_DIR}/tigl3_cpp-config.cmake"
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tigl3_cpp)
     
     write_basic_package_version_file(
-      "${CMAKE_CURRENT_BINARY_DIR}/tigl3-cpp-config-version.cmake"
+      "${CMAKE_CURRENT_BINARY_DIR}/tigl3_cpp-config-version.cmake"
       VERSION ${TIGL_VERSION}
       COMPATIBILITY AnyNewerVersion
     )

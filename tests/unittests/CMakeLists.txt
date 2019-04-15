@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.0)
 project (TiGL-unittests)
 
 if (NOT TARGET tigl3_cpp)
-    find_package(tigl3-cpp CONFIG REQUIRED)
+    find_package(tigl3_cpp CONFIG REQUIRED)
 endif()
 
 if (NOT TARGET gtest)
