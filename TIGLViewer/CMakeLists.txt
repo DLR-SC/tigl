@@ -301,17 +301,11 @@ endif(GLOG_FOUND)
 # Now the data stuff below (templates files)
 #--------------------------------------------------------------------------------
 
-# Copy the templates directory to the executable dir
-# TODO Set the correct data directory for each OS
-add_custom_command(
-        TARGET ${PROGNAME}
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/data/templates
-        "$<TARGET_FILE_DIR:${PROGNAME}>/data/templates"
-        COMMENT "Copy templates data into $<TARGET_FILE_DIR:${PROGNAME}>/data/templates"
-)
-
+if (APPLE)
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION ${PROGNAME}.app/Contents/Resources COMPONENT viewer)
+else()
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION share/tigl3 COMPONENT viewer)
+endif()
 
 #--------------------------------------------------------------------------------
 # Now the installation stuff below

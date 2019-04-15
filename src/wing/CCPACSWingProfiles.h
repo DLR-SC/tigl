@@ -45,16 +45,11 @@ public:
 
     TIGL_EXPORT CCPACSWingProfile& AddWingAirfoil() OVERRIDE;
 
-    // Returns the total count of wing profiles in this configuration
-    TIGL_EXPORT int GetProfileCount() const;
-
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
     // Returns the wing profile for a given index or uid.
     TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid) const;
 
-    // Returns the wing profile for a given index or uid
-    DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetProfile(int index) const;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();

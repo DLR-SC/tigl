@@ -20,7 +20,7 @@
 #include "tigl_config.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
-
+#include "Debugging.h"
 
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglCurvesToSurface.h"
@@ -176,13 +176,8 @@ void CTiglMakeLoft::makeLoftWithGuides()
     
 #ifdef DEBUG
     static int iLoft = 0;
-    std::stringstream sprof;
-    sprof << "profiles" << iLoft << ".brep";
-    BRepTools::Write(cprof, sprof.str().c_str());
-    
-    std::stringstream sguid;
-    sguid << "guides" << iLoft << ".brep";
-    BRepTools::Write(cguid, sguid.str().c_str());
+    tigl::dumpShape(cprof, "debugShapes", "profiles", iLoft);
+    tigl::dumpShape(cguid, "debugShapes", "guides", iLoft);
     iLoft++;
 #endif
     
@@ -290,7 +285,7 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
     _result = CutShellAtUVParameters(faces, uparams, vparams);
 
     // make sure the order is the same as for the COONS Patch algorithm
-    _result = ResortFaces(_result, nEdgesPerProfile, vparams.size()-1);
+    _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
     CloseShape();
 }
 

@@ -96,6 +96,7 @@ CPACSEnginePylons
 
 CPACSEnginePosition
 CPACSNacelleCowl
+CPACSNacelleCenterCowl
 CPACSNacelleSection
 CPACSNacelleSections
 CPACSNacelleGuideCurve

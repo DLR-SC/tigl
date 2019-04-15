@@ -1423,6 +1423,18 @@ gp_Pnt GetCenterOfMass(const TopoDS_Shape &shape)
      // compute center of the shape
      gp_Pnt centerPoint = LProps.CentreOfMass();
 
+     if (LProps.Mass() < 1e-13) {
+         // Fallback using center of boundary box, fixes #551
+         double minx, maxx, miny, maxy, minz, maxz;
+         GetShapeExtension(shape, minx, maxx,
+                           miny, maxy,
+                           minz, maxz);
+
+         return gp_Pnt((maxx+minx)*0.5,
+                       (maxy+miny)*0.5,
+                       (maxz+minz)*0.5);
+     }
+
      return centerPoint;
 }
 

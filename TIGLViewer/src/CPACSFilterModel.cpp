@@ -42,8 +42,9 @@ cpcr::CPACSTreeItem* CPACSFilterModel::getItemFromSelection(const QItemSelection
 
 bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
-    QModelIndex typeIndex = sourceModel()->index(sourceRow, 0, sourceParent);
-    QModelIndex uidIndex  = sourceModel()->index(sourceRow, 1, sourceParent);
+
+    QModelIndex typeIndex = sourceModel()->index(sourceRow, 1, sourceParent);
+    QModelIndex uidIndex  = sourceModel()->index(sourceRow, 2, sourceParent);
 
     // check if we should considerate this tree branch
     if ((expertView == false) && (sourceModel()->data(typeIndex).toString().contains(basicTreeRegExp) == false)) {

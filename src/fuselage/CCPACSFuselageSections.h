@@ -46,6 +46,9 @@ public:
 
     //
     TIGL_EXPORT std::map<std::string, CTiglFuselageSectionElement*> GetCTiglElements();
+
+    // Returns the section for a given uid
+    TIGL_EXPORT CCPACSFuselageSection& GetSection(const std::string& sectionUID);
 };
 
 } // end namespace tigl

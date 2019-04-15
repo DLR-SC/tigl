@@ -37,8 +37,8 @@ public:
       z
     };
 
-    TopoDS_Wire GetCurve() const;
-    TopoDS_Face GetRotationSurface(gp_Pnt origin = {0., 0., 0.},axis dir=x) const;
+    TIGL_EXPORT TopoDS_Wire GetCurve() const;
+    TIGL_EXPORT TopoDS_Face GetRotationSurface(gp_Pnt origin = {0., 0., 0.},axis dir=x) const;
 };
 
 

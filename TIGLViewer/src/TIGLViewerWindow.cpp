@@ -359,6 +359,7 @@ void TIGLViewerWindow::reopenFile()
 {
     if (currentFile.suffix().toLower() == tr("xml")){
         cpacsConfiguration->updateConfiguration();
+        modificatorManager->setCPACSConfiguration(cpacsConfiguration);
     }
     else {
         myScene->getContext()->EraseAll(Standard_False);

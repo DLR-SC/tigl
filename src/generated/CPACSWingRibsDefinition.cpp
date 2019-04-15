@@ -37,7 +37,7 @@ namespace generated
 
     CPACSWingRibsDefinition::~CPACSWingRibsDefinition()
     {
-        if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
     const CCPACSWingRibsDefinitions* CPACSWingRibsDefinition::GetParent() const
@@ -65,9 +65,12 @@ namespace generated
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
             m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-            if (m_uID->empty()) {
-                LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+            if (m_uID.empty()) {
+                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
             }
+        }
+        else {
+            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
         // read element name
@@ -119,7 +122,7 @@ namespace generated
             }
         }
 
-        if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
         }
@@ -128,14 +131,7 @@ namespace generated
     void CPACSWingRibsDefinition::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         // write attribute uID
-        if (m_uID) {
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-        }
-        else {
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-            }
-        }
+        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element name
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
@@ -210,16 +206,16 @@ namespace generated
         ;
     }
 
-    const boost::optional<std::string>& CPACSWingRibsDefinition::GetUID() const
+    const std::string& CPACSWingRibsDefinition::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSWingRibsDefinition::SetUID(const boost::optional<std::string>& value)
+    void CPACSWingRibsDefinition::SetUID(const std::string& value)
     {
         if (m_uidMgr) {
-            if (m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
-            if (value) m_uidMgr->RegisterObject(*value, *this);
+            m_uidMgr->TryUnregisterObject(m_uID);
+            m_uidMgr->RegisterObject(value, *this);
         }
         m_uID = value;
     }

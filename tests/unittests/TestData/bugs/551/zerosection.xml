@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cpacs.googlecode.com/files/CPACS_21_Schema.xsd">
+  <header>
+    <name>ZeroSectionTest</name>
+    <description>For unit testing</description>
+    <creator>Martin Siggel</creator>
+    <timestamp>2019-03-11T16:26:47</timestamp>
+    <version>1.0</version>
+    <cpacsVersion>3.0</cpacsVersion>
+    <updates>
+    </updates>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="Cpacs2Test">
+        <name>Cpacs2Test</name>
+        <reference>
+          <area>1</area>
+          <length>1</length>
+          <point>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+          </point>
+        </reference>
+        <fuselages>
+          <fuselage uID="fuselage">
+            <name>name</name>
+            <description>description</description>
+            <transformation uID="SimpleFuselage_transformation1">
+              <scaling uID="SimpleFuselage_transformation1_scaling1">
+                <x>1.0</x>
+                <y>0.5</y>
+                <z>0.5</z>
+              </scaling>
+              <rotation uID="SimpleFuselage_transformation1_rotation1">
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </rotation>
+              <translation refType="absLocal" uID="SimpleFuselage_transformation1_translation1">
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="D150_Fuselage_1Section1ID">
+                <name>D150_Fuselage_1Section1</name>
+                <transformation uID="D150_Fuselage_1Section1ID_transformation1">
+                  <scaling uID="D150_Fuselage_1Section1ID_transformation1_scaling1">
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation uID="D150_Fuselage_1Section1ID_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="D150_Fuselage_1Section1ID_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="D150_Fuselage_1Section1IDElement1">
+                    <name>D150_Fuselage_1Section1</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="D150_Fuselage_1Section1IDElement1_transformation1">
+                      <scaling uID="D150_Fuselage_1Section1IDElement1_transformation1_scaling1">
+                        <x>1.0</x>
+                        <y>1.0</y>
+                        <z>1.0</z>
+                      </scaling>
+                      <rotation uID="D150_Fuselage_1Section1IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="D150_Fuselage_1Section1IDElement1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="D150_Fuselage_1Section2ID">
+                <name>D150_Fuselage_1Section2</name>
+                <transformation uID="D150_Fuselage_1Section2ID_transformation1">
+                  <scaling uID="D150_Fuselage_1Section2ID_transformation1_scaling1">
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation uID="D150_Fuselage_1Section2ID_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="D150_Fuselage_1Section2ID_transformation1_translation1">
+                    <x>0.5</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="D150_Fuselage_1Section2IDElement1">
+                    <name>D150_Fuselage_1Section2</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="D150_Fuselage_1Section2IDElement1_transformation1">
+                      <scaling uID="D150_Fuselage_1Section2IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </scaling>
+                      <rotation uID="D150_Fuselage_1Section2IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="D150_Fuselage_1Section2IDElement1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="D150_Fuselage_1Positioning1ID">
+                <name>D150_Fuselage_1Positioning1</name>
+                <length>-0.5</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID>D150_Fuselage_1Section1ID</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="segmentD150_Fuselage_1Segment2ID">
+                <name>D150_Fuselage_1Segment2</name>
+                <fromElementUID>D150_Fuselage_1Section1IDElement1</fromElementUID>
+                <toElementUID>D150_Fuselage_1Section2IDElement1</toElementUID>
+              </segment>
+            </segments>
+          </fuselage>
+        </fuselages>
+       </model>
+    </aircraft>
+    <profiles>
+       <fuselageProfiles>
+        <fuselageProfile uID="fuselageCircleProfileuID">
+          <name>Circle</name>
+          <description>Profile build up from set of Points on Circle where may Dimensions are 1..-1</description>
+          <pointList>
+            <x mapType="vector">0.0;0.0;0.0;0.0;0.0</x>
+            <y mapType="vector">0.0;1.0;0.0;-1.0;0.0</y>
+            <z mapType="vector">1.0;0.0;-1.0;0.0;1.0</z>
+          </pointList>
+        </fuselageProfile>
+      </fuselageProfiles>
+    </profiles>
+  </vehicles>
+</cpacs>

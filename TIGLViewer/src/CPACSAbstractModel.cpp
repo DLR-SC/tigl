@@ -40,11 +40,13 @@ QVariant CPACSAbstractModel::headerData(int section, Qt::Orientation orientation
 {
 
     if (isValid() && orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-
-        if (section == 0) {
-            return "type";
+        if (section == 0){
+            return "Type or UID";
         }
         else if (section == 1) {
+            return "Type";
+        }
+        else if (section == 2) {
             return "UID";
         }
         else {
@@ -66,10 +68,16 @@ QVariant CPACSAbstractModel::data(const QModelIndex& index, int role) const
     }
     cpcr::CPACSTreeItem* item = getItem(index);
     QVariant data;
-    if (index.column() == 0) {
-        data = QString(item->getType().c_str());
+    if (index.column() == 0) { // combine uid and type
+        data = QString(item->getUid().c_str());
+        if (data == "") {
+            data = QString(item->getType().c_str());
+        }
     }
     else if (index.column() == 1) {
+        data = QString(item->getType().c_str());
+    }
+    else if (index.column() == 2 ) {
         data = QString(item->getUid().c_str());
     }
     else {
@@ -109,7 +117,7 @@ int CPACSAbstractModel::columnCount(const QModelIndex& idx) const
         return 0;
     }
 
-    return 2; // we have for values in a tree item
+    return 3;
 }
 
 // return the QModelindex from a parent and row and column information

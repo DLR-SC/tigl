@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinitions
 
-    // generated from /xsd:schema/xsd:complexType[962]
+    // generated from /xsd:schema/xsd:complexType[966]
     /// @brief Definition of an rib set.
     /// 
     /// RibDefinitionType, containing the definition for ribs.
@@ -65,8 +65,8 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual const std::string& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const std::string& value);
 
         TIGL_EXPORT virtual const std::string& GetName() const;
         TIGL_EXPORT virtual void SetName(const std::string& value);
@@ -94,7 +94,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<std::string>                      m_uID;
+        std::string                                       m_uID;
 
         /// Name of the rib set.
         std::string                                       m_name;
