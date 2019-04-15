@@ -31,7 +31,7 @@ namespace generated
     // CPACSGuideCurve
 
     // generated from /xsd:schema/xsd:complexType[441]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:choice[1]/xsd:sequence[1]/xsd:element[2]/xsd:complexType/xsd:simpleContent
-    enum class CPACSGuideCurve_continuity
+    enum CPACSGuideCurve_continuity
     {
         C0,
         C1_from_previous,
@@ -43,22 +43,22 @@ namespace generated
     inline std::string CPACSGuideCurve_continuityToString(const CPACSGuideCurve_continuity& value)
     {
         switch(value) {
-        case CPACSGuideCurve_continuity::C0: return "C0";
-        case CPACSGuideCurve_continuity::C1_from_previous: return "C1 from previous";
-        case CPACSGuideCurve_continuity::C2_from_previous: return "C2 from previous";
-        case CPACSGuideCurve_continuity::C1_to_previous: return "C1 to previous";
-        case CPACSGuideCurve_continuity::C2_to_previous: return "C2 to previous";
+        case C0: return "C0";
+        case C1_from_previous: return "C1 from previous";
+        case C2_from_previous: return "C2 from previous";
+        case C1_to_previous: return "C1 to previous";
+        case C2_to_previous: return "C2 to previous";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSGuideCurve_continuity");
         }
     }
     inline CPACSGuideCurve_continuity stringToCPACSGuideCurve_continuity(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "c0") { return CPACSGuideCurve_continuity::C0; }
-        if (toLower(value) == "c1 from previous") { return CPACSGuideCurve_continuity::C1_from_previous; }
-        if (toLower(value) == "c2 from previous") { return CPACSGuideCurve_continuity::C2_from_previous; }
-        if (toLower(value) == "c1 to previous") { return CPACSGuideCurve_continuity::C1_to_previous; }
-        if (toLower(value) == "c2 to previous") { return CPACSGuideCurve_continuity::C2_to_previous; }
+        if (toLower(value) == "c0") { return C0; }
+        if (toLower(value) == "c1 from previous") { return C1_from_previous; }
+        if (toLower(value) == "c2 from previous") { return C2_from_previous; }
+        if (toLower(value) == "c1 to previous") { return C1_to_previous; }
+        if (toLower(value) == "c2 to previous") { return C2_to_previous; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSGuideCurve_continuity");
     }
 } // namespace generated

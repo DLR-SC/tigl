@@ -31,7 +31,7 @@ namespace generated
     // CPACSRotor
 
     // generated from /xsd:schema/xsd:complexType[783]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
-    enum class CPACSRotor_type
+    enum CPACSRotor_type
     {
         mainRotor,
         tailRotor,
@@ -42,20 +42,20 @@ namespace generated
     inline std::string CPACSRotor_typeToString(const CPACSRotor_type& value)
     {
         switch(value) {
-        case CPACSRotor_type::mainRotor: return "mainRotor";
-        case CPACSRotor_type::tailRotor: return "tailRotor";
-        case CPACSRotor_type::fenestron: return "fenestron";
-        case CPACSRotor_type::propeller: return "propeller";
+        case mainRotor: return "mainRotor";
+        case tailRotor: return "tailRotor";
+        case fenestron: return "fenestron";
+        case propeller: return "propeller";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotor_type");
         }
     }
     inline CPACSRotor_type stringToCPACSRotor_type(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "mainrotor") { return CPACSRotor_type::mainRotor; }
-        if (toLower(value) == "tailrotor") { return CPACSRotor_type::tailRotor; }
-        if (toLower(value) == "fenestron") { return CPACSRotor_type::fenestron; }
-        if (toLower(value) == "propeller") { return CPACSRotor_type::propeller; }
+        if (toLower(value) == "mainrotor") { return mainRotor; }
+        if (toLower(value) == "tailrotor") { return tailRotor; }
+        if (toLower(value) == "fenestron") { return fenestron; }
+        if (toLower(value) == "propeller") { return propeller; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRotor_type");
     }
 } // namespace generated

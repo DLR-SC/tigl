@@ -32,25 +32,25 @@ namespace generated
     // CPACSStringerFramePosition
 
     // generated from /xsd:schema/xsd:complexType[397]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[13]/xsd:complexType/xsd:simpleContent
-    enum class CPACSInterpolation
+    enum CPACSInterpolation
     {
-        _0,
+        CPACSInterpolation_0,
         _1
     };
 
     inline std::string CPACSInterpolationToString(const CPACSInterpolation& value)
     {
         switch(value) {
-        case CPACSInterpolation::_0: return "0";
-        case CPACSInterpolation::_1: return "1";
+        case CPACSInterpolation_0: return "0";
+        case _1: return "1";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSInterpolation");
         }
     }
     inline CPACSInterpolation stringToCPACSInterpolation(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "0") { return CPACSInterpolation::_0; }
-        if (toLower(value) == "1") { return CPACSInterpolation::_1; }
+        if (toLower(value) == "0") { return CPACSInterpolation_0; }
+        if (toLower(value) == "1") { return _1; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSInterpolation");
     }
 } // namespace generated

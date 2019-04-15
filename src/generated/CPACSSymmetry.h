@@ -38,7 +38,7 @@ namespace generated
     // CPACSWing
 
     // generated from /xsd:schema/xsd:complexType[314]/xsd:complexContent/xsd:extension/xsd:attribute[2]/xsd:simpleType
-    enum class CPACSSymmetry
+    enum CPACSSymmetry
     {
         x_y_plane,
         x_z_plane,
@@ -48,18 +48,18 @@ namespace generated
     inline std::string TiglSymmetryAxisToString(const CPACSSymmetry& value)
     {
         switch(value) {
-        case CPACSSymmetry::x_y_plane: return "x-y-plane";
-        case CPACSSymmetry::x_z_plane: return "x-z-plane";
-        case CPACSSymmetry::y_z_plane: return "y-z-plane";
+        case x_y_plane: return "x-y-plane";
+        case x_z_plane: return "x-z-plane";
+        case y_z_plane: return "y-z-plane";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSSymmetry");
         }
     }
     inline CPACSSymmetry stringToTiglSymmetryAxis(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "x-y-plane") { return CPACSSymmetry::x_y_plane; }
-        if (toLower(value) == "x-z-plane") { return CPACSSymmetry::x_z_plane; }
-        if (toLower(value) == "y-z-plane") { return CPACSSymmetry::y_z_plane; }
+        if (toLower(value) == "x-y-plane") { return x_y_plane; }
+        if (toLower(value) == "x-z-plane") { return x_z_plane; }
+        if (toLower(value) == "y-z-plane") { return y_z_plane; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSSymmetry");
     }
 } // namespace generated

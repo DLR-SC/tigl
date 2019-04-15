@@ -31,7 +31,7 @@ namespace generated
     // CPACSWingRibsPositioning
 
     // generated from /xsd:schema/xsd:complexType[756]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[4]/xsd:complexType/xsd:simpleContent
-    enum class CPACSRibCrossingBehaviour
+    enum CPACSRibCrossingBehaviour
     {
         cross,
         end
@@ -40,16 +40,16 @@ namespace generated
     inline std::string CPACSRibCrossingBehaviourToString(const CPACSRibCrossingBehaviour& value)
     {
         switch(value) {
-        case CPACSRibCrossingBehaviour::cross: return "cross";
-        case CPACSRibCrossingBehaviour::end: return "end";
+        case cross: return "cross";
+        case end: return "end";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRibCrossingBehaviour");
         }
     }
     inline CPACSRibCrossingBehaviour stringToCPACSRibCrossingBehaviour(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "cross") { return CPACSRibCrossingBehaviour::cross; }
-        if (toLower(value) == "end") { return CPACSRibCrossingBehaviour::end; }
+        if (toLower(value) == "cross") { return cross; }
+        if (toLower(value) == "end") { return end; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRibCrossingBehaviour");
     }
 } // namespace generated

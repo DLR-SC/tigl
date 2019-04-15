@@ -31,7 +31,7 @@ namespace generated
     // CPACSDoorAssemblyPosition
 
     // generated from /xsd:schema/xsd:complexType[289]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:complexType/xsd:simpleContent
-    enum class CPACSDoorAssemblyPosition_doorType
+    enum CPACSDoorAssemblyPosition_doorType
     {
         pax,
         service,
@@ -42,20 +42,20 @@ namespace generated
     inline std::string CPACSDoorAssemblyPosition_doorTypeToString(const CPACSDoorAssemblyPosition_doorType& value)
     {
         switch(value) {
-        case CPACSDoorAssemblyPosition_doorType::pax: return "pax";
-        case CPACSDoorAssemblyPosition_doorType::service: return "service";
-        case CPACSDoorAssemblyPosition_doorType::emergency: return "emergency";
-        case CPACSDoorAssemblyPosition_doorType::cargo: return "cargo";
+        case pax: return "pax";
+        case service: return "service";
+        case emergency: return "emergency";
+        case cargo: return "cargo";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSDoorAssemblyPosition_doorType");
         }
     }
     inline CPACSDoorAssemblyPosition_doorType stringToCPACSDoorAssemblyPosition_doorType(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "pax") { return CPACSDoorAssemblyPosition_doorType::pax; }
-        if (toLower(value) == "service") { return CPACSDoorAssemblyPosition_doorType::service; }
-        if (toLower(value) == "emergency") { return CPACSDoorAssemblyPosition_doorType::emergency; }
-        if (toLower(value) == "cargo") { return CPACSDoorAssemblyPosition_doorType::cargo; }
+        if (toLower(value) == "pax") { return pax; }
+        if (toLower(value) == "service") { return service; }
+        if (toLower(value) == "emergency") { return emergency; }
+        if (toLower(value) == "cargo") { return cargo; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSDoorAssemblyPosition_doorType");
     }
 } // namespace generated

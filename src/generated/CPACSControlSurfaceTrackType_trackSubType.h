@@ -31,7 +31,7 @@ namespace generated
     // CPACSControlSurfaceTrackType
 
     // generated from /xsd:schema/xsd:complexType[192]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[3]/xsd:complexType/xsd:simpleContent
-    enum class CPACSControlSurfaceTrackType_trackSubType
+    enum CPACSControlSurfaceTrackType_trackSubType
     {
         trackSubType1,
         trackSubType2,
@@ -45,26 +45,26 @@ namespace generated
     inline std::string CPACSControlSurfaceTrackType_trackSubTypeToString(const CPACSControlSurfaceTrackType_trackSubType& value)
     {
         switch(value) {
-        case CPACSControlSurfaceTrackType_trackSubType::trackSubType1: return "trackSubType1";
-        case CPACSControlSurfaceTrackType_trackSubType::trackSubType2: return "trackSubType2";
-        case CPACSControlSurfaceTrackType_trackSubType::trackSubType3: return "trackSubType3";
-        case CPACSControlSurfaceTrackType_trackSubType::trackSubType4: return "trackSubType4";
-        case CPACSControlSurfaceTrackType_trackSubType::trackSubType5: return "trackSubType5";
-        case CPACSControlSurfaceTrackType_trackSubType::trackSubType6: return "trackSubType6";
-        case CPACSControlSurfaceTrackType_trackSubType::trackSubType7: return "trackSubType7";
+        case trackSubType1: return "trackSubType1";
+        case trackSubType2: return "trackSubType2";
+        case trackSubType3: return "trackSubType3";
+        case trackSubType4: return "trackSubType4";
+        case trackSubType5: return "trackSubType5";
+        case trackSubType6: return "trackSubType6";
+        case trackSubType7: return "trackSubType7";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackSubType");
         }
     }
     inline CPACSControlSurfaceTrackType_trackSubType stringToCPACSControlSurfaceTrackType_trackSubType(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "tracksubtype1") { return CPACSControlSurfaceTrackType_trackSubType::trackSubType1; }
-        if (toLower(value) == "tracksubtype2") { return CPACSControlSurfaceTrackType_trackSubType::trackSubType2; }
-        if (toLower(value) == "tracksubtype3") { return CPACSControlSurfaceTrackType_trackSubType::trackSubType3; }
-        if (toLower(value) == "tracksubtype4") { return CPACSControlSurfaceTrackType_trackSubType::trackSubType4; }
-        if (toLower(value) == "tracksubtype5") { return CPACSControlSurfaceTrackType_trackSubType::trackSubType5; }
-        if (toLower(value) == "tracksubtype6") { return CPACSControlSurfaceTrackType_trackSubType::trackSubType6; }
-        if (toLower(value) == "tracksubtype7") { return CPACSControlSurfaceTrackType_trackSubType::trackSubType7; }
+        if (toLower(value) == "tracksubtype1") { return trackSubType1; }
+        if (toLower(value) == "tracksubtype2") { return trackSubType2; }
+        if (toLower(value) == "tracksubtype3") { return trackSubType3; }
+        if (toLower(value) == "tracksubtype4") { return trackSubType4; }
+        if (toLower(value) == "tracksubtype5") { return trackSubType5; }
+        if (toLower(value) == "tracksubtype6") { return trackSubType6; }
+        if (toLower(value) == "tracksubtype7") { return trackSubType7; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSControlSurfaceTrackType_trackSubType");
     }
 } // namespace generated

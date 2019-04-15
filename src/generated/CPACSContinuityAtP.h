@@ -31,28 +31,28 @@ namespace generated
     // CPACSSheet
 
     // generated from /xsd:schema/xsd:complexType[813]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:complexType/xsd:simpleContent
-    enum class CPACSContinuityAtP
+    enum CPACSContinuityAtP
     {
         _0,
-        _1,
+        CPACSContinuityAtP_1,
         _2
     };
 
     inline std::string CPACSContinuityAtPToString(const CPACSContinuityAtP& value)
     {
         switch(value) {
-        case CPACSContinuityAtP::_0: return "0";
-        case CPACSContinuityAtP::_1: return "1";
-        case CPACSContinuityAtP::_2: return "2";
+        case _0: return "0";
+        case CPACSContinuityAtP_1: return "1";
+        case _2: return "2";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSContinuityAtP");
         }
     }
     inline CPACSContinuityAtP stringToCPACSContinuityAtP(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "0") { return CPACSContinuityAtP::_0; }
-        if (toLower(value) == "1") { return CPACSContinuityAtP::_1; }
-        if (toLower(value) == "2") { return CPACSContinuityAtP::_2; }
+        if (toLower(value) == "0") { return _0; }
+        if (toLower(value) == "1") { return CPACSContinuityAtP_1; }
+        if (toLower(value) == "2") { return _2; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSContinuityAtP");
     }
 } // namespace generated

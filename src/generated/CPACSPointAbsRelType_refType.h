@@ -31,7 +31,7 @@ namespace generated
     // CPACSPointAbsRel
 
     // generated from /xsd:schema/xsd:complexType[716]/xsd:complexContent/xsd:extension/xsd:attribute[2]/xsd:simpleType
-    enum class CPACSPointAbsRelType_refType
+    enum CPACSPointAbsRelType_refType
     {
         absGlobal,
         absLocal
@@ -40,16 +40,16 @@ namespace generated
     inline std::string ECPACSTranslationTypeToString(const CPACSPointAbsRelType_refType& value)
     {
         switch(value) {
-        case CPACSPointAbsRelType_refType::absGlobal: return "absGlobal";
-        case CPACSPointAbsRelType_refType::absLocal: return "absLocal";
+        case absGlobal: return "absGlobal";
+        case absLocal: return "absLocal";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSPointAbsRelType_refType");
         }
     }
     inline CPACSPointAbsRelType_refType stringToECPACSTranslationType(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "absglobal") { return CPACSPointAbsRelType_refType::absGlobal; }
-        if (toLower(value) == "abslocal") { return CPACSPointAbsRelType_refType::absLocal; }
+        if (toLower(value) == "absglobal") { return absGlobal; }
+        if (toLower(value) == "abslocal") { return absLocal; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSPointAbsRelType_refType");
     }
 } // namespace generated

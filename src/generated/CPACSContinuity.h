@@ -32,25 +32,25 @@ namespace generated
     // CPACSStringerFramePosition
 
     // generated from /xsd:schema/xsd:complexType[397]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[12]/xsd:complexType/xsd:simpleContent
-    enum class CPACSContinuity
+    enum CPACSContinuity
     {
-        _0,
-        _2
+        CPACSContinuity_0,
+        CPACSContinuity_2
     };
 
     inline std::string CPACSContinuityToString(const CPACSContinuity& value)
     {
         switch(value) {
-        case CPACSContinuity::_0: return "0";
-        case CPACSContinuity::_2: return "2";
+        case CPACSContinuity_0: return "0";
+        case CPACSContinuity_2: return "2";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSContinuity");
         }
     }
     inline CPACSContinuity stringToCPACSContinuity(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "0") { return CPACSContinuity::_0; }
-        if (toLower(value) == "2") { return CPACSContinuity::_2; }
+        if (toLower(value) == "0") { return CPACSContinuity_0; }
+        if (toLower(value) == "2") { return CPACSContinuity_2; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSContinuity");
     }
 } // namespace generated

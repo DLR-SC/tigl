@@ -31,7 +31,7 @@ namespace generated
     // CPACSProfileGeometry2D
 
     // generated from /xsd:schema/xsd:complexType[747]/xsd:complexContent/xsd:extension/xsd:attribute[1]/xsd:simpleType
-    enum class CPACSProfileGeometry2DType_symmetry
+    enum CPACSProfileGeometry2DType_symmetry
     {
         x_axis,
         y_axis
@@ -40,16 +40,16 @@ namespace generated
     inline std::string CPACSProfileGeometry2DType_symmetryToString(const CPACSProfileGeometry2DType_symmetry& value)
     {
         switch(value) {
-        case CPACSProfileGeometry2DType_symmetry::x_axis: return "x-axis";
-        case CPACSProfileGeometry2DType_symmetry::y_axis: return "y-axis";
+        case x_axis: return "x-axis";
+        case y_axis: return "y-axis";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSProfileGeometry2DType_symmetry");
         }
     }
     inline CPACSProfileGeometry2DType_symmetry stringToCPACSProfileGeometry2DType_symmetry(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "x-axis") { return CPACSProfileGeometry2DType_symmetry::x_axis; }
-        if (toLower(value) == "y-axis") { return CPACSProfileGeometry2DType_symmetry::y_axis; }
+        if (toLower(value) == "x-axis") { return x_axis; }
+        if (toLower(value) == "y-axis") { return y_axis; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSProfileGeometry2DType_symmetry");
     }
 } // namespace generated

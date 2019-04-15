@@ -31,7 +31,7 @@ namespace generated
     // CPACSRotorHubHinge
 
     // generated from /xsd:schema/xsd:complexType[780]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
-    enum class CPACSRotorHubHinge_type
+    enum CPACSRotorHubHinge_type
     {
         flap,
         pitch,
@@ -41,18 +41,18 @@ namespace generated
     inline std::string CPACSRotorHubHinge_typeToString(const CPACSRotorHubHinge_type& value)
     {
         switch(value) {
-        case CPACSRotorHubHinge_type::flap: return "flap";
-        case CPACSRotorHubHinge_type::pitch: return "pitch";
-        case CPACSRotorHubHinge_type::leadLag: return "leadLag";
+        case flap: return "flap";
+        case pitch: return "pitch";
+        case leadLag: return "leadLag";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSRotorHubHinge_type");
         }
     }
     inline CPACSRotorHubHinge_type stringToCPACSRotorHubHinge_type(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "flap") { return CPACSRotorHubHinge_type::flap; }
-        if (toLower(value) == "pitch") { return CPACSRotorHubHinge_type::pitch; }
-        if (toLower(value) == "leadlag") { return CPACSRotorHubHinge_type::leadLag; }
+        if (toLower(value) == "flap") { return flap; }
+        if (toLower(value) == "pitch") { return pitch; }
+        if (toLower(value) == "leadlag") { return leadLag; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSRotorHubHinge_type");
     }
 } // namespace generated

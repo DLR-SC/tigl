@@ -31,7 +31,7 @@ namespace generated
     // CPACSFarField
 
     // generated from /xsd:schema/xsd:complexType[331]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:complexType/xsd:simpleContent
-    enum class CPACSFarField_type
+    enum CPACSFarField_type
     {
         halfSphere,
         fullSphere,
@@ -42,20 +42,20 @@ namespace generated
     inline std::string TiglFarFieldTypeToString(const CPACSFarField_type& value)
     {
         switch(value) {
-        case CPACSFarField_type::halfSphere: return "halfSphere";
-        case CPACSFarField_type::fullSphere: return "fullSphere";
-        case CPACSFarField_type::halfCube: return "halfCube";
-        case CPACSFarField_type::fullCube: return "fullCube";
+        case halfSphere: return "halfSphere";
+        case fullSphere: return "fullSphere";
+        case halfCube: return "halfCube";
+        case fullCube: return "fullCube";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSFarField_type");
         }
     }
     inline CPACSFarField_type stringToTiglFarFieldType(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "halfsphere") { return CPACSFarField_type::halfSphere; }
-        if (toLower(value) == "fullsphere") { return CPACSFarField_type::fullSphere; }
-        if (toLower(value) == "halfcube") { return CPACSFarField_type::halfCube; }
-        if (toLower(value) == "fullcube") { return CPACSFarField_type::fullCube; }
+        if (toLower(value) == "halfsphere") { return halfSphere; }
+        if (toLower(value) == "fullsphere") { return fullSphere; }
+        if (toLower(value) == "halfcube") { return halfCube; }
+        if (toLower(value) == "fullcube") { return fullCube; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSFarField_type");
     }
 } // namespace generated

@@ -31,7 +31,7 @@ namespace generated
     // CPACSLinkToFile
 
     // generated from /xsd:schema/xsd:complexType[503]/xsd:simpleContent/xsd:extension/xsd:attribute[1]/xsd:simpleType
-    enum class CPACSLinkToFileType_format
+    enum CPACSLinkToFileType_format
     {
         Step,
         Iges,
@@ -41,18 +41,18 @@ namespace generated
     inline std::string CPACSLinkToFileType_formatToString(const CPACSLinkToFileType_format& value)
     {
         switch(value) {
-        case CPACSLinkToFileType_format::Step: return "Step";
-        case CPACSLinkToFileType_format::Iges: return "Iges";
-        case CPACSLinkToFileType_format::Stl: return "Stl";
+        case Step: return "Step";
+        case Iges: return "Iges";
+        case Stl: return "Stl";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSLinkToFileType_format");
         }
     }
     inline CPACSLinkToFileType_format stringToCPACSLinkToFileType_format(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "step") { return CPACSLinkToFileType_format::Step; }
-        if (toLower(value) == "iges") { return CPACSLinkToFileType_format::Iges; }
-        if (toLower(value) == "stl") { return CPACSLinkToFileType_format::Stl; }
+        if (toLower(value) == "step") { return Step; }
+        if (toLower(value) == "iges") { return Iges; }
+        if (toLower(value) == "stl") { return Stl; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSLinkToFileType_format");
     }
 } // namespace generated
