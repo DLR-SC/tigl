@@ -38,6 +38,14 @@ void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement)
     ui->center->setLabel("Center");
     ui->origin->setInternal(element->GetOrigin());
     ui->origin->setLabel("Origin");
+    ui->normal->setInternal(element->GetNormal());
+    ui->normal->setLabel("Normal");
+    internalHeight = element->GetHeight();
+    ui->heightSpinBox->setValue(internalHeight);
+    internalWidth = element->GetWidth();
+    ui->widthSpinBox->setValue(internalWidth);
+    internalArea = element->GetArea();
+    ui->areaSpinBox->setValue(internalArea);
 }
 
 bool ModificatorElementWidget::apply()
