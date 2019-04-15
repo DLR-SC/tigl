@@ -320,7 +320,7 @@ Handle(Geom_Curve) CCPACSNacelleCowl::GetGuideCurve(double zeta) const
         throw CTiglError("Something went wrong: There is no guide curve at endZetaBlending parameter!");
     }
 
-    return CWireToCurve(wireCache->guideCurves[i].second);
+    return CWireToCurve(wireCache->guideCurves[i].second).curve();
 }   
 
 } //namespace tigl
