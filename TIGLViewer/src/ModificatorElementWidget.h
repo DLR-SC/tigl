@@ -51,6 +51,11 @@ public:
 private:
     Ui::ModificatorElementWidget* ui;
     tigl::CTiglSectionElement* element;
+
+    double internalHeight;
+    double internalWidth;
+    double internalArea;
+
 };
 
 #endif // MODIFICATORELEMENTWIDGET_H
