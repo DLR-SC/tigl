@@ -10,15 +10,14 @@ endif()
 cmake_minimum_required(VERSION 3.0)
 project (TiGL-unittests)
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
 if (NOT TARGET tigl3_cpp)
     find_package(tigl3_cpp CONFIG REQUIRED)
 endif()
 
 if (NOT TARGET gtest)
-    find_package(gtest CONFIG REQUIRED)
-    set(GTEST_LIB GTest::gtest)
-else()
-    set(GTEST_LIB gtest)
+    include(AddGoogleTest)
 endif()
 
 file (GLOB test_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
@@ -27,9 +26,9 @@ set (test_BIN ${PROJECT_NAME})
 
 
 add_executable(${test_BIN} ${test_SRCS} )
-target_link_libraries(${test_BIN} PUBLIC ${GTEST_LIB} tigl3_static tigl3_cpp)
+target_link_libraries(${test_BIN} PUBLIC gtest tigl3_static tigl3_cpp)
 
-ADD_CUSTOM_TARGET(check ${test_BIN} --gtest_output=xml DEPENDS ${test_BIN} COMMENT "Executing unit tests..." VERBATIM SOURCES ${test_SRCS})
+ADD_CUSTOM_TARGET(check_tigl ${test_BIN} --gtest_output=xml DEPENDS ${test_BIN} COMMENT "Executing unit tests..." VERBATIM SOURCES ${test_SRCS})
 
 ADD_TEST(
   NAME unittests

@@ -6,19 +6,19 @@ environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       ARCH: x86
+      TYPE: STATIC
       GENERATOR: Ninja
       CONDA_INSTALL_LOCN: C:\\Miniconda35
-      TYPE: STATIC
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       ARCH: amd64
+      TYPE: STATIC
       GENERATOR: Ninja
       CONDA_INSTALL_LOCN: C:\\Miniconda35-x64
-      TYPE: STATIC
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       ARCH: amd64
-      GENERATOR: Ninja
-      CONDA_INSTALL_LOCN: C:\\Miniconda35-x64
       TYPE: DYNAMIC
+      GENERATOR: Ninja
+      CONDA_INSTALL_LOCN: C:\\Miniconda35-x64
 
 matrix:
   fast_finish: true
@@ -91,6 +91,10 @@ install:
   - ps: |
       $BUILD_RELEASE = $($env:appveyor_repo_tag -eq "true")
       $BUILD_NIGHTLY = "ON"
+      if ($env:TYPE -eq "DYNAMIC")
+      {
+          $BUILD_RELEASE = 0
+      }
       if ($BUILD_RELEASE) {
         $BUILD_NIGHTLY = "OFF"
         Write-Output "Release builds enabled."
@@ -104,8 +108,8 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    Write-Output "Running cmake: -G "$env:GENERATOR" -DOCE_STATIC_LIBS=ON -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win .."
-    & cmake -G "$env:GENERATOR"  -DTIGL_BINDINGS_INSTALL_CPP=ON -DOCE_STATIC_LIBS=ON -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win ..
+    Write-Output "Running cmake: -G "$env:GENERATOR" -DOCE_STATIC_LIBS=ON -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win .."
+    & cmake -G "$env:GENERATOR"  -DTIGL_BINDINGS_INSTALL_CPP=ON -DOCE_STATIC_LIBS=ON -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
@@ -118,15 +122,19 @@ after_build:
   - clcache.exe -s
 
 test_script:
-  - cd tests/unittests
+  - cmake --build . --target tigl-java-demo
+  - cd ../tests/unittests
+  - mkdir _build
+  - cd _build
+  - cmake -G %GENERATOR% -DCMAKE_PREFIX_PATH=C:\projects\tigl\_build\install;%CONDA_INSTALL_LOCN%\Library -DCMAKE_BUILD_TYPE=Release ..
+  - cmake --build .
   - TiGL-unittests.exe --gtest_output=xml:test_results.xml
   # Upload test results
   - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\test_results.xml))
-  - cd ..\..
-  - cmake --build . --target tigl-java-demo
 
 
 after_test:
+- cd C:\projects\tigl\_build
 - ps: |
     & cmake --build .  --target doc
     & cpack -G ZIP
