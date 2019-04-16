@@ -147,78 +147,18 @@ tigl::CTiglPoint tigl::CTiglFuselageSectionElement::GetNormal(TiglCoordinateSyst
 
 }
 
-void tigl::CTiglFuselageSectionElement::SetOrigin(const CTiglPoint& newO, TiglCoordinateSystem referenceCS)
+void tigl::CTiglFuselageSectionElement::SetElementTransformation(const tigl::CTiglTransformation& newTransformation)
 {
-
-    CTiglTransformation newE = GetElementTrasformationToTranslatePoint(newO, GetOrigin(referenceCS), referenceCS);
-
     // set the new transformation matrix in the element
     CCPACSTransformation& storedTransformation = element->GetTransformation();
-    storedTransformation.setTransformationMatrix(newE);
+    storedTransformation.setTransformationMatrix(newTransformation);
     fuselage->Invalidate();
 }
 
-void tigl::CTiglFuselageSectionElement::SetCenter(const tigl::CTiglPoint& newCenter, TiglCoordinateSystem referenceCS)
+void tigl::CTiglFuselageSectionElement::SetSectionTransformation(const tigl::CTiglTransformation& newTransformation)
 {
-
-    CTiglTransformation newE = GetElementTrasformationToTranslatePoint(newCenter, GetCenter(referenceCS), referenceCS);
-
     // set the new transformation matrix in the element
-    CCPACSTransformation& storedTransformation = element->GetTransformation();
-    storedTransformation.setTransformationMatrix(newE);
+    CCPACSTransformation& storedTransformation = section->GetTransformation();
+    storedTransformation.setTransformationMatrix(newTransformation);
     fuselage->Invalidate();
-}
-
-void tigl::CTiglFuselageSectionElement::ScaleCircumference(double scaleFactor, TiglCoordinateSystem referenceCS)
-{
-
-    if (!(referenceCS == GLOBAL_COORDINATE_SYSTEM || referenceCS == FUSELAGE_COORDINATE_SYSTEM)) {
-        throw tigl::CTiglError("CTiglFuselageSectionElement::ScaleCircumference: Invalid coordinate system");
-    }
-
-    CTiglTransformation newE = GetElementTransformationToScaleCircumference(scaleFactor);
-
-    CCPACSTransformation& storedTransformation = element->GetTransformation();
-    storedTransformation.setTransformationMatrix(newE);
-
-    fuselage->Invalidate();
-}
-
-double tigl::CTiglFuselageSectionElement::GetHeight(TiglCoordinateSystem referenceCS) const
-{
-
-    // todo use a cache system
-
-    TopoDS_Wire wire  = GetWire(referenceCS);
-    CTiglPoint normal = GetNormal(referenceCS);
-    // get the rotation to have the wire on the YZ plan
-    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(1, 0, 0));
-    wire                    = TopoDS::Wire(rot.Transform(wire));
-
-    BRepMesh_IncrementalMesh mesh(wire, 0.001); // tessellate the wire to have a more accurate bounding box.
-    Bnd_Box boundingBox;
-    BRepBndLib::Add(wire, boundingBox);
-    CTiglPoint min, max;
-    boundingBox.Get(min.x, min.y, min.z, max.x, max.y, max.z);
-
-    return (max.z - min.z);
-}
-
-double tigl::CTiglFuselageSectionElement::GetWidth(TiglCoordinateSystem referenceCS) const
-{
-
-    // todo use a cache system
-    TopoDS_Wire wire  = GetWire(referenceCS);
-    CTiglPoint normal = GetNormal(referenceCS);
-    // get the rotation to have the wire on the YZ plan
-    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(1, 0, 0));
-    wire                    = TopoDS::Wire(rot.Transform(wire));
-
-    BRepMesh_IncrementalMesh mesh(wire, 0.001); // tessellate the wire to have a more accurate bounding box.
-    Bnd_Box boundingBox;
-    BRepBndLib::Add(wire, boundingBox);
-    CTiglPoint min, max;
-    boundingBox.Get(min.x, min.y, min.z, max.x, max.y, max.z);
-
-    return (max.y - min.y);
 }

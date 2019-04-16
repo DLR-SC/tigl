@@ -60,22 +60,17 @@ public:
     // Returns the fuselage or wing transformation
     TIGL_EXPORT virtual CTiglTransformation GetParentTransformation() const = 0;
 
-    // Get the wire associate with the profile of this element
-    TIGL_EXPORT virtual TopoDS_Wire GetWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0;
-
-
-    TIGL_EXPORT virtual CTiglPoint GetNormal(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0 ;
-
-    // Return the height of the element
-    TIGL_EXPORT virtual double GetHeight(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0;
-
-    // Return the width of the element
-    TIGL_EXPORT virtual double GetWidth(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0;
-
 
     // Return the transformation composed by every transformations apply to this connection.
     TIGL_EXPORT virtual CTiglTransformation
     GetTotalTransformation(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+
+    // Get the wire associate with the profile of this element
+    TIGL_EXPORT virtual TopoDS_Wire GetWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0;
+
+
+    TIGL_EXPORT virtual CTiglPoint GetNormal(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0;
 
     // Return the coordinate of the origin of the coordinate system element in global coordinate or in fuselage coordinate.
     // Remark if the profile is not center on the coordinate system of the element, the origin do not correspond to
@@ -92,27 +87,64 @@ public:
     TIGL_EXPORT double GetArea(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
 
+    // Return the height of the wire
+    TIGL_EXPORT virtual double GetHeight(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+    // Return the width of the wire
+    TIGL_EXPORT virtual double GetWidth(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+    // Scale the wire uniformly in world or fuselage/wing coordinates.
+    // Remark that the effect is not always the same as to add a scaling transformation to the element transformation.
+    TIGL_EXPORT virtual void ScaleUniformly(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
+
+    TIGL_EXPORT virtual void ScaleCircumference(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
     // Set the origin of the element in the wanted coordinate system
     // Remark this function will modify the value contain in the tigl -> the geometry will change
     TIGL_EXPORT virtual void SetOrigin(const CTiglPoint& newOrigin,
-                                       TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) = 0;
+                                       TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
     // Set the center of mass of the element in the wanted coordinate system
     // Remark this function will modify the value contain in the tigl -> the geometry will change
     TIGL_EXPORT virtual void SetCenter(const CTiglPoint& newOrigin,
-                                       TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) = 0;
+                                       TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
-    TIGL_EXPORT virtual void ScaleCircumference(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) = 0;
+
+    // Set the height of the wire.
+    // Remark, will also set the width in the same time because a uniform scaling will be performed.
+    TIGL_EXPORT virtual void SetHeight(double newHeight, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
+    // Set the width of the wire.
+    // Remark, will also set the height in the same time because a uniform scaling will be performed.
+    TIGL_EXPORT virtual void SetWidth(double newWidth, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
+    // Set the area of the wire to the wanted value 
+    TIGL_EXPORT virtual void SetArea(double newArea, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM); 
 
 
 protected:
+
+    // Set the underlying CPACSTransformation (fuselage or wing ) with the given CTiglTransformation.
+    // Calling this function will change the geometry of the aircraft.
+    virtual void SetElementTransformation(const CTiglTransformation& newTransformation) = 0;
+
+
+    // Set the underlying section CPACSTransformation with the given CTiglTransformation.
+    // Calling this function will change the geometry of the aircraft.
+    virtual void SetSectionTransformation(const CTiglTransformation& newTransformation) = 0;
+
+
     // Return the element transformation needed to move a point A to the position B in referenceCS.
     CTiglTransformation
     GetElementTrasformationToTranslatePoint(const CTiglPoint& newP, const CTiglPoint& oldP,
                                             TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
+    // Return the element transformation that will scale uniformly the the wire in the world or fuselage coordinate system.
+    // Remark that the effect is not always the same as to add a scaling to the element transformation.
     CTiglTransformation
-    GetElementTransformationToScaleCircumference(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    GetElementTransformationForScaling(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
 
 };
 }

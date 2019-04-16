@@ -625,7 +625,27 @@ std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
     return os;
 }
 
-CTiglTransformation operator*(const CTiglTransformation & a, const CTiglTransformation & b)
+void CTiglTransformation::SetTrivialScalingAndRotation()
+{
+    SetValue(0,0,1);
+    SetValue(0,1,0);
+    SetValue(0,2,0);
+
+    SetValue(1,0,0);
+    SetValue(1,1,1);
+    SetValue(1,2,0);
+
+    SetValue(2,0,0);
+    SetValue(2,1,0);
+    SetValue(2,2,1);
+
+    SetValue(3,0,0);
+    SetValue(3,1,0);
+    SetValue(3,2,0);
+    SetValue(3,3,1);
+}
+
+CTiglTransformation operator*(const CTiglTransformation& a, const CTiglTransformation& b)
 {
     CTiglTransformation result = b;
     result.PreMultiply(a);
