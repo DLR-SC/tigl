@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>454</width>
     <height>300</height>
    </rect>
   </property>
@@ -71,7 +71,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="heightSpinBox"/>
+       <widget class="QDoubleSpinBox" name="heightSpinBox">
+        <property name="maximum">
+         <double>999999999999999993220948674361627976461708441944064.000000000000000</double>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_2">
@@ -84,7 +88,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="widthSpinBox"/>
+       <widget class="QDoubleSpinBox" name="widthSpinBox">
+        <property name="maximum">
+         <double>999999999999999993220948674361627976461708441944064.000000000000000</double>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_3">
@@ -97,7 +105,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="areaSpinBox"/>
+       <widget class="QDoubleSpinBox" name="areaSpinBox">
+        <property name="maximum">
+         <double>999999999999999993220948674361627976461708441944064.000000000000000</double>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
