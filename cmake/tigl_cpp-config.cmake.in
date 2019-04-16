@@ -1,4 +1,4 @@
-# - Config file for the tigl3-cpp package
+# - Config file for the tigl3_cpp package
 
 
 include(CMakeFindDependencyMacro)
@@ -34,6 +34,6 @@ endif()
 
 # Our library dependencies (contains definitions for IMPORTED targets)
 if(NOT TARGET tigl3_cpp)
-  include("${CMAKE_CURRENT_LIST_DIR}/tigl3-cpp-targets.cmake")
+  include("${CMAKE_CURRENT_LIST_DIR}/tigl3_cpp-targets.cmake")
 endif()
 
