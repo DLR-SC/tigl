@@ -55,25 +55,19 @@ public:
 
     TIGL_EXPORT CTiglPoint GetNormal(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const override;
 
-    TIGL_EXPORT double GetHeight(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const override;
-
-    TIGL_EXPORT double GetWidth(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const override;
-
-
-    TIGL_EXPORT void SetOrigin(const CTiglPoint& newOrigin,
-                               TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) override;
-
-    TIGL_EXPORT void SetCenter(const CTiglPoint& newOrigin,
-                               TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) override;
-
-    TIGL_EXPORT void ScaleCircumference(double scaleFactor,  TiglCoordinateSystem referenceCS  = GLOBAL_COORDINATE_SYSTEM) override;
-
     // Returns the fuselage transformation
     TIGL_EXPORT CTiglTransformation GetFuselageTransformation() const;
 
     // Returns the fuselage profile referenced by this element
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile();
     TIGL_EXPORT const CCPACSFuselageProfile& GetProfile() const;
+
+protected:
+
+    void SetElementTransformation(const CTiglTransformation& newTransformation) override;
+
+    void SetSectionTransformation(const CTiglTransformation& newTransformation) override;
+
 
 private:
     CCPACSFuselageSectionElement* element;

@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-
-
 #include "CTiglSectionElement.h"
 
 #include "tiglcommonfunctions.h"
@@ -26,6 +24,9 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomLProp_SLProps.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <Bnd_Box.hxx>
+#include <BRepBndLib.hxx>
 
 tigl::CTiglTransformation tigl::CTiglSectionElement::GetTotalTransformation(TiglCoordinateSystem referenceCS) const
 {
@@ -105,8 +106,9 @@ tigl::CTiglSectionElement::GetElementTrasformationToTranslatePoint(const CTiglPo
     return newE;
 }
 
-tigl::CTiglTransformation tigl::CTiglSectionElement::GetElementTransformationToScaleCircumference(double scaleFactor,
-                                                                                                  TiglCoordinateSystem referenceCS) {
+tigl::CTiglTransformation
+tigl::CTiglSectionElement::GetElementTransformationForScaling(double scaleFactor, TiglCoordinateSystem referenceCS)
+{
     /*
       *  The idea is to bring the element to its center and scale it in the appropriate coordinate system.
       *
@@ -150,8 +152,6 @@ tigl::CTiglTransformation tigl::CTiglSectionElement::GetElementTransformationToS
     }
 
     return newE;
-
-
 }
 
 double tigl::CTiglSectionElement::GetArea(TiglCoordinateSystem referenceCS) const
@@ -161,4 +161,141 @@ double tigl::CTiglSectionElement::GetArea(TiglCoordinateSystem referenceCS) cons
     GProp_GProps System;
     BRepGProp::SurfaceProperties(face, System);
     return System.Mass();
+}
+
+double tigl::CTiglSectionElement::GetHeight(TiglCoordinateSystem referenceCS) const
+{
+
+    // todo use a cache system
+
+    TopoDS_Wire wire  = GetWire(referenceCS);
+    CTiglPoint normal = GetNormal(referenceCS);
+    // get the rotation to have the wire on the YZ plan
+    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(1, 0, 0));
+    wire                    = TopoDS::Wire(rot.Transform(wire));
+
+    BRepMesh_IncrementalMesh mesh(wire, 0.00001); // tessellate the wire to have a more accurate bounding box.
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(wire, boundingBox);
+    CTiglPoint min, max;
+    boundingBox.Get(min.x, min.y, min.z, max.x, max.y, max.z);
+
+    return (max.z - min.z);
+}
+
+double tigl::CTiglSectionElement::GetWidth(TiglCoordinateSystem referenceCS) const
+{
+
+    // todo use a cache system
+    TopoDS_Wire wire  = GetWire(referenceCS);
+    CTiglPoint normal = GetNormal(referenceCS);
+    // get the rotation to have the wire on the YZ plan
+    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(1, 0, 0));
+    wire                    = TopoDS::Wire(rot.Transform(wire));
+
+    BRepMesh_IncrementalMesh mesh(wire, 0.00001); // tessellate the wire to have a more accurate bounding box.
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(wire, boundingBox);
+    CTiglPoint min, max;
+    boundingBox.Get(min.x, min.y, min.z, max.x, max.y, max.z);
+
+    return (max.y - min.y);
+}
+
+void tigl::CTiglSectionElement::SetOrigin(const CTiglPoint& newO, TiglCoordinateSystem referenceCS)
+{
+    CTiglTransformation newE = GetElementTrasformationToTranslatePoint(newO, GetOrigin(referenceCS), referenceCS);
+    SetElementTransformation(newE);
+}
+
+void tigl::CTiglSectionElement::SetCenter(const tigl::CTiglPoint& newCenter, TiglCoordinateSystem referenceCS)
+{
+    CTiglTransformation newE = GetElementTrasformationToTranslatePoint(newCenter, GetCenter(referenceCS), referenceCS);
+    SetElementTransformation(newE);
+}
+
+void tigl::CTiglSectionElement::ScaleCircumference(double scaleFactor, TiglCoordinateSystem referenceCS)
+{
+    ScaleUniformly(scaleFactor, referenceCS);
+}
+
+void tigl::CTiglSectionElement::ScaleUniformly(double scaleFactor, TiglCoordinateSystem referenceCS)
+{
+    CTiglTransformation newE = GetElementTransformationForScaling(scaleFactor, referenceCS);
+    SetElementTransformation(newE);
+}
+
+void tigl::CTiglSectionElement::SetWidth(double newWidth, TiglCoordinateSystem referenceCS)
+{
+    double oldWidth = GetWidth(referenceCS);
+    if (fabs(oldWidth) < 0.0001) {
+        // in this case we first reset the scaling (and rotation) of the element and section transformation
+        // in the hope that a width will then appear ;)
+        CTiglTransformation tempNewE = GetSectionElementTransformation();
+        tempNewE.SetTrivialScalingAndRotation();
+        SetElementTransformation(tempNewE);
+
+        CTiglTransformation tempNewS = GetSectionTransformation();
+        tempNewS.SetTrivialScalingAndRotation();
+        SetSectionTransformation(tempNewS);
+
+        oldWidth = GetWidth(referenceCS);
+        if (fabs(oldWidth) < 0.0001) { // desperate case
+            throw CTiglError("CTiglSectionElement::SetWidth: impossible to set the width. Take a look at the structure "
+                             "of the component.");
+        }
+    }
+
+    double scaleFactor = newWidth / oldWidth;
+    ScaleUniformly(scaleFactor, referenceCS);
+}
+
+void tigl::CTiglSectionElement::SetHeight(double newHeight, TiglCoordinateSystem referenceCS)
+{
+    double oldHeight = GetHeight(referenceCS);
+    if (fabs(oldHeight) < 0.0001) {
+        // in this case we first reset the scaling (and rotation) of the element and section transformation
+        // in the hope that a width will then appear ;)
+        CTiglTransformation tempNewE = GetSectionElementTransformation();
+        tempNewE.SetTrivialScalingAndRotation();
+        SetElementTransformation(tempNewE);
+
+        CTiglTransformation tempNewS = GetSectionTransformation();
+        tempNewS.SetTrivialScalingAndRotation();
+        SetSectionTransformation(tempNewS);
+
+        oldHeight = GetHeight(referenceCS);
+        if (fabs(oldHeight) < 0.0001) { // desperate case
+            throw CTiglError("CTiglSectionElement::SetWidth: impossible to set the width. Take a look at the structure "
+                             "of the component.");
+        }
+    }
+
+    double scaleFactor = newHeight / oldHeight;
+    ScaleUniformly(scaleFactor, referenceCS);
+}
+
+void tigl::CTiglSectionElement::SetArea(double newArea, TiglCoordinateSystem referenceCS)
+{
+    double oldArea = GetArea(referenceCS);
+    if (fabs(oldArea) < 0.0001) {
+        // in this case we first reset the scaling (and rotation) of the element and section transformation
+        // in the hope that a width will then appear ;)
+        CTiglTransformation tempNewE = GetSectionElementTransformation();
+        tempNewE.SetTrivialScalingAndRotation();
+        SetElementTransformation(tempNewE);
+
+        CTiglTransformation tempNewS = GetSectionTransformation();
+        tempNewS.SetTrivialScalingAndRotation();
+        SetSectionTransformation(tempNewS);
+
+        oldArea = GetWidth(referenceCS);
+        if (fabs(oldArea) < 0.0001) { // desperate case
+            throw CTiglError("CTiglSectionElement::SetWidth: impossible to set the width. Take a look at the structure "
+                             "of the component.");
+        }
+    }
+
+    double scaleFactor = sqrt(newArea / oldArea);
+    ScaleUniformly(scaleFactor, referenceCS);
 }
