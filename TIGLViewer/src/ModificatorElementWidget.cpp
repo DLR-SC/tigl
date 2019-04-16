@@ -24,6 +24,68 @@ ModificatorElementWidget::ModificatorElementWidget(QWidget* parent)
     , ui(new Ui::ModificatorElementWidget)
 {
     ui->setupUi(this);
+
+    // connect change alterable
+    connect(ui->widthSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setWidth(double)));
+    connect(ui->heightSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setHeight(double)));
+    connect(ui->areaSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setArea(double)));
+
+}
+
+void ModificatorElementWidget::setWidth(double newWidth)
+{
+    bool block1 = ui->areaSpinBox->blockSignals(true);
+    bool block2 = ui->heightSpinBox->blockSignals(true);
+    bool block3 = ui->widthSpinBox->blockSignals(true);
+
+    if (fabs(internalWidth) > 0.0001) {
+        double scaleFactor = newWidth / internalWidth;
+        ui->areaSpinBox->setValue(scaleFactor * scaleFactor * internalArea);
+        ui->heightSpinBox->setValue(scaleFactor * internalHeight);
+    }
+    lastModifiedDimensionalParameter = "width";
+
+    ui->areaSpinBox->blockSignals(block1);
+    ui->heightSpinBox->blockSignals(block2);
+    ui->widthSpinBox->blockSignals(block3);
+}
+
+void ModificatorElementWidget::setHeight(double newHeight)
+{
+    bool block1 = ui->areaSpinBox->blockSignals(true);
+    bool block2 = ui->heightSpinBox->blockSignals(true);
+    bool block3 = ui->widthSpinBox->blockSignals(true);
+
+    if (fabs(internalHeight) > 0.0001) {
+        double scaleFactor = newHeight / internalHeight;
+        ui->areaSpinBox->setValue(scaleFactor * scaleFactor * internalArea);
+        ui->widthSpinBox->setValue(scaleFactor * internalWidth);
+    }
+
+    lastModifiedDimensionalParameter = "height";
+
+    ui->areaSpinBox->blockSignals(block1);
+    ui->heightSpinBox->blockSignals(block2);
+    ui->widthSpinBox->blockSignals(block3);
+}
+
+void ModificatorElementWidget::setArea(double newArea)
+{
+    bool block1 = ui->areaSpinBox->blockSignals(true);
+    bool block2 = ui->heightSpinBox->blockSignals(true);
+    bool block3 = ui->widthSpinBox->blockSignals(true);
+
+    if (fabs(internalHeight) > 0.0001) {
+        double scaleFactor = sqrt(newArea / internalArea);
+        ui->widthSpinBox->setValue(scaleFactor * internalWidth);
+        ui->heightSpinBox->setValue(scaleFactor * internalHeight);
+    }
+
+    lastModifiedDimensionalParameter = "area";
+
+    ui->areaSpinBox->blockSignals(block1);
+    ui->heightSpinBox->blockSignals(block2);
+    ui->widthSpinBox->blockSignals(block3);
 }
 
 ModificatorElementWidget::~ModificatorElementWidget()
@@ -31,8 +93,15 @@ ModificatorElementWidget::~ModificatorElementWidget()
     delete ui;
 }
 
+
+
 void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement)
 {
+
+    bool block1 = ui->areaSpinBox->blockSignals(true);
+    bool block2 = ui->heightSpinBox->blockSignals(true);
+    bool block3 = ui->widthSpinBox->blockSignals(true);
+
     element = &inElement;
     ui->center->setInternal(element->GetCenter());
     ui->center->setLabel("Center");
@@ -46,6 +115,14 @@ void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement)
     ui->widthSpinBox->setValue(internalWidth);
     internalArea = element->GetArea();
     ui->areaSpinBox->setValue(internalArea);
+
+    lastModifiedDimensionalParameter = "";
+
+    ui->areaSpinBox->blockSignals(block1);
+    ui->heightSpinBox->blockSignals(block2);
+    ui->widthSpinBox->blockSignals(block3);
+
+
 }
 
 bool ModificatorElementWidget::apply()
@@ -62,6 +139,24 @@ bool ModificatorElementWidget::apply()
     if (originHasChanged) {
         ui->origin->setInternalFromGUI();
         element->SetOrigin(ui->origin->getInternalPoint());
+        wasModified = true;
+    }
+
+    if (lastModifiedDimensionalParameter == "width" && (!isApprox(internalWidth, ui->widthSpinBox->value()))) {
+        internalWidth = ui->widthSpinBox->value();
+        element->SetWidth(internalWidth);
+        wasModified = true;
+    }
+
+    if (lastModifiedDimensionalParameter == "height" && (!isApprox(internalHeight, ui->heightSpinBox->value()))) {
+        internalHeight = ui->heightSpinBox->value();
+        element->SetHeight(internalHeight);
+        wasModified = true;
+    }
+
+    if (lastModifiedDimensionalParameter == "area" && (!isApprox(internalArea, ui->areaSpinBox->value()))) {
+        internalArea = ui->areaSpinBox->value();
+        element->SetArea(internalArea);
         wasModified = true;
     }
 

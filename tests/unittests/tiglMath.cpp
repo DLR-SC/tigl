@@ -392,6 +392,8 @@ TEST(TiglMath, CTiglTransform_Decompose)
     EXPECT_NEAR(resultV.z, expectV.z, 1e-8 );
 
     // but the correct result can be created by passing the compute angle in X Y Z extrinsic order
+    /*
+       Uncomment these lines of code if you want to verfy the above statement
     tigl::CTiglTransformation rot3;
     rot3.AddRotationX(R[0]);
     rot3.AddRotationY(R[1]);
@@ -400,7 +402,42 @@ TEST(TiglMath, CTiglTransform_Decompose)
     resultV = rot3 * tigl::CTiglPoint(1,0,0);
     EXPECT_NEAR(resultV.x, expectV.x, 1e-8 );
     EXPECT_NEAR(resultV.y, expectV.y, 1e-8 );
-    EXPECT_NEAR(resultV.z, expectV.z, 1e-8 );
+    EXPECT_NEAR(resultV.z, expectV.z, 1e-8 );*/
+
+
+
+    // Example of matrices that can not be decompose:
+
+    // Create a shear matrix by rotation and scaling
+    // This case can happens if the is a none-uniform scaling in the section
+
+    double shearY = 0.5; // 1.28 - (1/1.28) = 0.5
+    double a = 1.28;
+    double angle = 38;
+
+    tigl::CTiglTransformation tE,tS, shear, expectedShear;
+    tE.SetIdentity();
+    tE.AddRotationZ(-angle);
+    tS.SetIdentity();
+    tS.AddScaling(a,1/a, 1);
+    tS.AddRotationZ(90-angle);
+    shear = tS *tE;
+
+    expectedShear.SetIdentity();
+    expectedShear.SetValue(1,0,0.5);
+
+    for(int row = 0; row < 4; row ++ ){
+        for ( int col = 0; col < 4; col++) {
+            EXPECT_NEAR(expectedShear.GetValue(row,col), shear.GetValue(row,col), 0.01); // approximation error of .128 and -38
+        }
+    }
+
+    // it's impossible to decompose a shear matrix properly in R,S,T
+    expectedShear.Decompose(S,R,T);
+
+    // todo add a return value to decompose to check if the decomposition can be performed
+    EXPECT_TRUE(true);
+
 
 }
 

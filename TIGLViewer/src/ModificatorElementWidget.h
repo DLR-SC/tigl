@@ -38,6 +38,19 @@ class ModificatorElementWidget : public ModificatorWidget
 {
     Q_OBJECT
 
+
+
+private slots:
+
+    // Recompute the height and area based on the new width value
+    void setWidth(double newWidth);
+    // Recompute the widht and area based on the new height value
+    void setHeight(double newHeight);
+    // Recompute the height and width based on the new area value
+    void setArea(double newArea);
+
+
+
 public:
     explicit ModificatorElementWidget(QWidget* parent = nullptr);
     ~ModificatorElementWidget();
@@ -55,6 +68,9 @@ private:
     double internalHeight;
     double internalWidth;
     double internalArea;
+
+    // tell us if a width, height or area was modified at last and gives the modification priority.
+    QString lastModifiedDimensionalParameter;
 
 };
 
