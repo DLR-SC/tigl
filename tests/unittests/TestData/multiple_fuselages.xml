@@ -1857,10 +1857,10 @@
                       <scaling uID="Fuselage_ETSection1IDElement1_transformation1_scaling1">
                         <x>0.1</x>
                         <y>0.1</y>
-                        <z>0.1</z>
+                        <z>0.3</z>
                       </scaling>
                       <rotation uID="Fuselage_ETSection1IDElement1_transformation1_rotation1">
-                        <x>0</x>
+                        <x>40</x>
                         <y>0</y>
                         <z>0</z>
                       </rotation>

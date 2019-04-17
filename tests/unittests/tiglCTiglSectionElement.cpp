@@ -347,6 +347,12 @@ TEST_F(tiglCTiglSectionElement, getProfileHeight_MultipleFuselagesModel)
     cElement = GetCElementOf("D150_Fuselage_CSection3IDElement1");
     height   = cElement->GetHeight();
     EXPECT_NEAR(height, 1, 0.2);
+
+    cElement = GetCElementOf("Fuselage_ETSection1IDElement1");
+    height   = cElement->GetHeight();
+    EXPECT_NEAR(height, 0.6, 0.01);
+
+
 }
 
 TEST_F(tiglCTiglSectionElement, getProfileWidth_MultipleFuselagesModel)
@@ -368,6 +374,10 @@ TEST_F(tiglCTiglSectionElement, getProfileWidth_MultipleFuselagesModel)
     cElement = GetCElementOf("D150_Fuselage_CSection3IDElement1");
     width   = cElement->GetWidth();
     EXPECT_NEAR(width, 1, 0.2);
+
+    cElement = GetCElementOf("Fuselage_ETSection1IDElement1");
+    width   = cElement->GetWidth();
+    EXPECT_NEAR(width, 0.2, 0.01);
 }
 
 TEST_F(tiglCTiglSectionElement, ScaleUniformely_MultipleFuselagesModel)
