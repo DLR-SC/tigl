@@ -585,6 +585,9 @@ tigl::CTiglTransformation tigl::CTiglTransformation::GetRotationToAlignAToB(tigl
     vectorA.normalize();
     vectorB.normalize();
 
+    if (vectorA.isNear((vectorB))) {
+        return CTiglTransformation();
+    }
     if (vectorA.isNear((vectorB * -1))) {
         return (-1 * CTiglTransformation());
     }

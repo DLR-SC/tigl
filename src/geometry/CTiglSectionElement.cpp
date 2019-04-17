@@ -172,7 +172,12 @@ double tigl::CTiglSectionElement::GetHeight(TiglCoordinateSystem referenceCS) co
     CTiglPoint normal = GetNormal(referenceCS);
     // get the rotation to have the wire on the YZ plan
     CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(1, 0, 0));
-    wire                    = TopoDS::Wire(rot.Transform(wire));
+    // make sure that z (of the transformed base element  cs vector) lie on the current z base
+    CTiglTransformation global = GetTotalTransformation(referenceCS);
+    CTiglPoint zP = (rot * global * CTiglPoint(0,0,1)) - (rot * global * CTiglPoint(0,0,0)) ;
+    CTiglTransformation rot2 = CTiglTransformation::GetRotationToAlignAToB(zP, CTiglPoint(0,0,1));
+
+    wire                    = TopoDS::Wire((rot2*rot).Transform(wire));
 
     BRepMesh_IncrementalMesh mesh(wire, 0.00001); // tessellate the wire to have a more accurate bounding box.
     Bnd_Box boundingBox;
@@ -191,7 +196,12 @@ double tigl::CTiglSectionElement::GetWidth(TiglCoordinateSystem referenceCS) con
     CTiglPoint normal = GetNormal(referenceCS);
     // get the rotation to have the wire on the YZ plan
     CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(1, 0, 0));
-    wire                    = TopoDS::Wire(rot.Transform(wire));
+    // make sure that z (of the transformed base element  cs vector) lie on the current z base
+    CTiglTransformation global = GetTotalTransformation(referenceCS);
+    CTiglPoint zP = rot * global * CTiglPoint(0,0,1)  - (rot * global * CTiglPoint(0,0,0)) ;
+    CTiglTransformation rot2 = CTiglTransformation::GetRotationToAlignAToB(zP, CTiglPoint(0,0,1));
+
+    wire                    = TopoDS::Wire((rot2*rot).Transform(wire));
 
     BRepMesh_IncrementalMesh mesh(wire, 0.00001); // tessellate the wire to have a more accurate bounding box.
     Bnd_Box boundingBox;
