@@ -54,7 +54,7 @@ class gp_Pnt;
 class gp_Vec;
 class TIGLViewerContext;
 
-class QOCC_DECLSPEC TIGLViewerWidget : public QWidget
+class TIGLViewerWidget : public QWidget
 {
     Q_OBJECT
 

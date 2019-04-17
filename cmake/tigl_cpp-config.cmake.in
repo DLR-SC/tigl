@@ -1,0 +1,39 @@
+# - Config file for the tigl3_cpp package
+
+
+include(CMakeFindDependencyMacro)
+
+if (NOT tigl3_FOUND)
+    find_package(tigl3
+        REQUIRED
+        PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
+    )
+endif()
+
+
+if (@BOOST_FOUND@)
+  find_package(Boost COMPONENTS filesystem thread atomic chrono date_time REQUIRED)
+endif()
+
+set (OCC_LIBS_REQUIRED "@OCC_LIBS@")
+
+if (@OCE_FOUND@)
+  find_package(OCE @OCE_VERSION@ EXACT COMPONENTS ${OCC_LIBS_REQUIRED} REQUIRED)
+  set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
+endif()
+
+if (@OpenCASCADE_FOUND@)
+  find_package(OpenCASCADE @OCC_VERSION_STRING@ EXACT COMPONENTS ${OCC_LIBS_REQUIRED} REQUIRED)
+endif()
+
+set_target_properties(TKernel PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${OpenCASCADE_INCLUDE_DIR}")
+
+if (@GLOG_FOUND@)
+  find_package(GLOG REQUIRED)
+endif()
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+if(NOT TARGET tigl3_cpp)
+  include("${CMAKE_CURRENT_LIST_DIR}/tigl3_cpp-targets.cmake")
+endif()
+
