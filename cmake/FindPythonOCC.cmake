@@ -1,6 +1,7 @@
 # Look for the interface file
 FIND_PATH(PythonOCC_SOURCE_DIR
     NAMES src/SWIG_files/wrapper/Standard.i
+    PATH_SUFFIXES src/pythonocc-core
 )
 
 INCLUDE(FindPackageHandleStandardArgs)

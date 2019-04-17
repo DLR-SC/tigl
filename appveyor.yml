@@ -59,7 +59,7 @@ install:
       }
       if ($env:TYPE -eq "DYNAMIC")
       {
-          & conda install --yes  tixi3>=3.0.3 oce=0.17.2 freetype=2.6.5 freeimageplus=3.18.0 tbb-devel ninja doxygen swig>=3.0.11 -c dlr-sc -c dlr-sc/label/tigl-dev
+          & conda install --yes  tixi3>=3.0.3 oce=0.17.2 freetype=2.6.5 freeimageplus=3.18.0 tbb-devel ninja doxygen swig>=3.0.11 pythonocc-core=0.17.3 -c dlr-sc -c dlr-sc/label/tigl-dev
       }
   - 
   - ps: |
@@ -113,6 +113,12 @@ build_script:
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
+- ps: |
+    if ($env:TYPE -eq "DYNAMIC")
+    {
+      & cmake -DTIGL_BINDINGS_PYTHON_INTERNAL=ON .
+    }
+- ps: |
     & cmake --build . --target install
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
