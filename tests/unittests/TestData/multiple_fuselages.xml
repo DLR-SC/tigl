@@ -1976,6 +1976,173 @@
             </segments>
           </fuselage>
 	  
+	    
+          <fuselage uID="ZeroScalingFuselage">
+            <name>name</name>
+            <description>A simple fuselage where every transformations is contained in the elements</description>
+            <transformation uID="ZeroScalingFuselage_transformation1">
+              <scaling uID="ZeroScalingFuselage_transformation1_scaling1">
+                <x>1.0</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="ZeroScalingFuselage_transformation1_rotation1">
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </rotation>
+              <translation refType="absLocal" uID="ZeroScalingFuselage_transformation1_translation1">
+                <x>0.0</x>
+                <y>-10.0</y>
+                <z>0.0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="FuselageZeroS_Section1ID">
+                <name>FuselageZeroS_Section1</name>
+                <transformation uID="FuselageZeroS_Section1ID_transformation1">
+                  <scaling uID="FuselageZeroS_Section1ID_transformation1_scaling1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </scaling>
+                  <rotation uID="FuselageZeroS_Section1ID_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="FuselageZeroS_Section1ID_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="FuselageZeroS_Section1IDElement1">
+                    <name>FuselageZeroS_Section1</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="FuselageZeroS_Section1IDElement1_transformation1">
+                      <scaling uID="FuselageZeroS_Section1IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="FuselageZeroS_Section1IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="FuselageZeroS_Section1IDElement1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="FuselageZeroS_Section2ID">
+                <name>FuselageZeroS_Section2</name>
+                <transformation uID="FuselageZeroS_Section2ID_transformation1">
+                  <scaling uID="FuselageZeroS_Section2ID_transformation1_scaling1">
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation uID="FuselageZeroS_Section2ID_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="FuselageZeroS_Section2ID_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="FuselageZeroS_Section2IDElement1">
+                    <name>FuselageZeroS_Section2</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="FuselageZeroS_Section2IDElement1_transformation1">
+                      <scaling uID="FuselageZeroS_Section2IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1.3</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="FuselageZeroS_Section2IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="FuselageZeroS_Section2IDElement1_transformation1_translation1">
+			<x>2</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="FuselageZeroS_Section3ID">
+                <name>FuselageZeroS_Section3</name>
+                <transformation uID="FuselageZeroS_Section3ID_transformation1">
+                  <scaling uID="FuselageZeroS_Section3ID_transformation1_scaling1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </scaling>
+                  <rotation uID="FuselageZeroS_Section3ID_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="FuselageZeroS_Section3ID_transformation1_translation1">
+                    <x>4</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="FuselageZeroS_Section3IDElement1">
+                    <name>FuselageZeroS_Section3</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="FuselageZeroS_Section3IDElement1_transformation1">
+                      <scaling uID="FuselageZeroS_Section3IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="FuselageZeroS_Section3IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="FuselageZeroS_Section3IDElement1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+            </positionings>
+            <segments>
+	      <segment uID="segmentFuselageZeroS_Segment2ID">
+                <name>FuselageZeroS_Segment2</name>
+                <fromElementUID>FuselageZeroS_Section1IDElement1</fromElementUID>
+                <toElementUID>FuselageZeroS_Section2IDElement1</toElementUID>
+              </segment>
+              <segment uID="segmentFuselageZeroS_Segment3ID">
+                <name>FuselageZeroS_Segment3</name>
+                <fromElementUID>FuselageZeroS_Section2IDElement1</fromElementUID>
+                <toElementUID>FuselageZeroS_Section3IDElement1</toElementUID>
+              </segment>
+            </segments>
+          </fuselage>
 	  
 	  
 	  

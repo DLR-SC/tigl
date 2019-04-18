@@ -33,14 +33,14 @@ class ModificatorFuselageWidget : public ModificatorWidget
 
 public slots:
 
-    void setPartialLengthFromComboBoxes();
-    // If a new partial length is set it will recompute the the global length
-    void recomputeTotalLength(double newPartialLength);
+    void recomputeProperties();
 
-    void setRadiusBetweenFromComboBoxes();
-
-    void expendLengthDetails(bool checked);
-    void expendRadiusDetails(bool checked);
+    // Recompute the height and area based on the new width value
+    void setWidth(double newWidth);
+    // Recompute the widht and area based on the new height value
+    void setHeight(double newHeight);
+    // Recompute the height and width based on the new area value
+    void setArea(double newArea);
 
 public:
     explicit ModificatorFuselageWidget(QWidget* parent = nullptr);
@@ -57,13 +57,14 @@ private:
 
     tigl::CCPACSFuselage* fuselage;
 
-    // Internal length parameters
     double internalLength;
-    double internalPartialLength;
 
-    // Internal circumference parameters:
-    double internalRadius;
-    double internalRadiusBetween;
+    // to keep track of which parameter was modified at lasg
+    QString lastModifiedDimensionalParameter;
+
+    double internalWidth;
+    double internalHeight;
+    double internalArea;
 };
 
 #endif // MODIFICATORFUSELAGEWIDGET_H
