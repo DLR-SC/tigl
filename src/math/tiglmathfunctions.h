@@ -129,6 +129,15 @@ TIGL_EXPORT double cstcurve_deriv(const double& N1, const double& N2, const std:
 
 
 /**
+ * Return true if the value of a is similar to b
+ * @param a
+ * @param b
+ * @param epsilon
+ * @return
+ */
+TIGL_EXPORT bool isNear(double a, double b, double epsilon = 0.00001);
+
+/**
  * 1D Function interface accepting one parameter t and returning
  * the function value
  */

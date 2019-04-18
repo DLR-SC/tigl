@@ -139,7 +139,7 @@ public:
     TIGL_EXPORT std::string GetTailUID();
 
     // Return the elements that form the connections in this fuselage
-    TIGL_EXPORT std::vector<std::string> GetConnectionElementUIDs();
+    TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder();
 
     // Gets the total length of this fuselage
     TIGL_EXPORT double GetLength();
@@ -160,6 +160,47 @@ public:
     // Get the biggest section element circumference between two section element of the fuselage
     TIGL_EXPORT double GetMaximalCircumferenceBetween(const std::string& startElementUID,
                                                       const std::string& endElementUID);
+
+    // Return the maximal height of the fuselage
+    // The height is computed in the plane formed by the wire (not in the world CS ZY plane)
+    TIGL_EXPORT double GetMaximalHeight();
+
+    TIGL_EXPORT double GetMaximalHeightBetween(const std::string& startElementUID, const std::string& endElementUID);
+
+    // Return the maximal width of the fuselage
+    // The width is computed in the plane formed by the wire (not in the world CS ZY plane)
+    TIGL_EXPORT double GetMaximalWidth();
+
+    TIGL_EXPORT double GetMaximalWidthBetween(const std::string& startElementUID, const std::string& endElementUID);
+
+    // Return the maximal area of the fuselage
+    // The area is computed in the plane formed by the wire (not in the world CS ZY plane)
+    TIGL_EXPORT double GetMaximalWireArea();
+
+    TIGL_EXPORT double GetMaximalWireAreaBetween(const std::string& startElementUID, const std::string& endElementUID);
+
+
+    // Scale the wires uniformly.
+    // This can be used to set the max height or max area
+    TIGL_EXPORT void ScaleWiresUniformly(double scaleFactor);
+
+    // Scale the wires between start and end uid uniformly (start and end included)
+    TIGL_EXPORT void ScaleWiresUniformlyBetween(double scaleFactor, const std::string& startElementUID, const std::string& endElementUID);
+
+    TIGL_EXPORT void SetMaxHeight(double newMaxHeight);
+
+    TIGL_EXPORT void SetMaxHeightBetween(double newMaxHeight, const std::string& startUID, const std::string& endUID );
+
+
+    TIGL_EXPORT void SetMaxWidth(double newMaxWidth);
+
+    TIGL_EXPORT void SetMaxWidthBetween(double newMaxWidth, const std::string& startUID, const std::string& endUID );
+
+
+    TIGL_EXPORT void SetMaxArea(double newMaxArea);
+
+    TIGL_EXPORT void SetMaxAreaBetween(double newMaxArea, const std::string& startUID, const std::string& endUID );
+
 
     // Set the biggest circumference of the fuselage to the given value,
     // the other circumferences are proportionally scaled
@@ -182,6 +223,18 @@ protected:
     PNamedShape BuildLoft() const OVERRIDE;
 
     void SetFaceTraits(PNamedShape loft) const;
+
+
+    typedef double (CTiglFuselageSectionElement::*pGetProperty)(TiglCoordinateSystem referenceCS) const;
+
+    // functional programing: apply func on each element in between and return the max double
+    double GetMaxBetween(pGetProperty func, const std::string& startElementUID, const std::string& endElementUID);
+
+
+    typedef void (CTiglFuselageSectionElement::*pSetProperty)(double, TiglCoordinateSystem referenceCS);
+
+    // functional programing: apply the "set" func on each element using the value "value" as parameter
+    double ApplyFunctionBetween(pSetProperty func, double value, const std::string& startElementUID, const std::string& endElementUID);
 
 private:
     // get short name for loft

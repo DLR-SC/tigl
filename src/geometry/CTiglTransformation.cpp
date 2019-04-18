@@ -698,4 +698,9 @@ CTiglTransformation operator*( double s, const CTiglTransformation& a)
     return result;
 }
 
+bool CTiglTransformation::HasZeroScaling() const
+{
+    return (isNear(GetValue(0,0),0)|| isNear(GetValue(1,1),0) || isNear(GetValue(2,2),0));
+}
+
 } // end namespace tigl

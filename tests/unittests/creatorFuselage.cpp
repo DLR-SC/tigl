@@ -143,11 +143,11 @@ TEST_F(creatorFuselage, getTailUID_MultipleFuselagesModel)
     ASSERT_EQ("D150_Fuselage_2Section3IDElement1", uid);
 }
 
-TEST_F(creatorFuselage, getConnectionElementUIDs_SimpleModel)
+TEST_F(creatorFuselage, getElementUIDsInOrders_SimpleModel)
 {
     setVariables("TestData/simpletest.cpacs.xml", 1);
 
-    std::vector<std::string> elementUIDs = fuselage->GetConnectionElementUIDs();
+    std::vector<std::string> elementUIDs = fuselage->GetElementUIDsInOrder();
     std::vector<std::string> expectedElementUIDs;
     expectedElementUIDs.push_back("D150_Fuselage_1Section1IDElement1");
     expectedElementUIDs.push_back("D150_Fuselage_1Section2IDElement1");
@@ -160,12 +160,12 @@ TEST_F(creatorFuselage, getConnectionElementUIDs_SimpleModel)
     }
 }
 
-TEST_F(creatorFuselage, getConnectionElementUIDs_MultipleFuselagesModel)
+TEST_F(creatorFuselage, getElementUIDsInOrder_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml", "FuselageUnconventionalOrdering");
 
-    std::vector<std::string> elementUIDs = fuselage->GetConnectionElementUIDs();
+    std::vector<std::string> elementUIDs = fuselage->GetElementUIDsInOrder();
     std::vector<std::string> expectedElementUIDs;
     expectedElementUIDs.push_back("D150_Fuselage_2Section1IDElement1");
     expectedElementUIDs.push_back("D150_Fuselage_2Section2IDElement1");
@@ -226,8 +226,12 @@ TEST_F(creatorFuselage, getLengthBetween_MultipleFuselagesModel)
     r = fuselage->GetLengthBetween("D150_Fuselage_4Section1IDElement1", "D150_Fuselage_4Section3IDElement1");
     EXPECT_DOUBLE_EQ(r, 4);
 
-    // invalid input // TODO error management
-    //EXPECT_THROW(fuselage2.GetLengthBetween("D150_Fuselage_4Section1IDElement1", "D150_Fuselage_4Section3IDElement1fas"), tigl::CTiglError  );
+    // case where the same uid is given
+    r = fuselage->GetLengthBetween("D150_Fuselage_4Section3IDElement1", "D150_Fuselage_4Section3IDElement1");
+    EXPECT_DOUBLE_EQ(r, 0);
+
+    // invalid input
+    EXPECT_THROW(fuselage->GetLengthBetween("D150_Fuselage_4Section1IDElement1", "D150_Fuselage_4Section3IDElement1fas"), tigl::CTiglError  );
 }
 
 TEST_F(creatorFuselage, setLength_SimpleModel)
@@ -268,6 +272,32 @@ TEST_F(creatorFuselage, setLengthBetween_MultipleFuselagesModel)
 }
 
 
+TEST_F(creatorFuselage, setLength_ZeroScalingCase)
+{
+
+    double newLength, length;
+
+    setVariables("TestData/D150_v30.xml", "D150Fuselage1ID");
+
+    newLength = 30;
+    fuselage->SetLength(newLength);
+    length = fuselage->GetLength();
+    EXPECT_NEAR(length, newLength, 0.0001);
+
+    config->WriteCPACS(config->GetUID());
+    ASSERT_EQ(SUCCESS, tixiSaveDocument(tixiHandle, "TestData/Output/D150_v30-out.xml"));
+
+
+    setVariables("TestData/multiple_fuselages.xml", "ZeroScalingFuselage");
+
+    newLength = 30;
+    fuselage->SetLength(newLength);
+    length = fuselage->GetLength();
+    EXPECT_NEAR(length, newLength, 0.0001);
+
+    config->WriteCPACS(config->GetUID());
+    ASSERT_EQ(SUCCESS, tixiSaveDocument(tixiHandle, "TestData/Output/multiple_fuselages-out.xml"));
+}
 
 
 TEST_F(creatorFuselage, getMaximalCircumference_MultipleFuselagesModel) {
@@ -437,4 +467,68 @@ TEST_F(creatorFuselage, SetMaximalCircumferenceBetween_MultipleFuselagesModel) {
 
 }
 
+
+TEST_F(creatorFuselage, getDimensionBetween_MultipleFuselagesModel) {
+
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselageCircumference");
+    double height, width, area ;
+
+    height = fuselage->GetMaximalHeightBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection1IDElement1");
+    EXPECT_NEAR(height, 2, 0.01 );
+    width = fuselage->GetMaximalWidthBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection1IDElement1");
+    EXPECT_NEAR(width, 2, 0.01 );
+    area = fuselage->GetMaximalWireAreaBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection1IDElement1");
+    EXPECT_NEAR(area, 1*M_PI, 0.1 );
+
+    height = fuselage->GetMaximalHeightBetween("D150_Fuselage_CSection2IDElement1", "D150_Fuselage_CSection2IDElement1");
+    EXPECT_NEAR(height, 4, 0.01 );
+    width = fuselage->GetMaximalWidthBetween("D150_Fuselage_CSection2IDElement1", "D150_Fuselage_CSection2IDElement1");
+    EXPECT_NEAR(width, 8, 0.01 );
+    area = fuselage->GetMaximalWireAreaBetween("D150_Fuselage_CSection2IDElement1", "D150_Fuselage_CSection2IDElement1");
+    EXPECT_NEAR(area, 2*4*M_PI, 1 );
+
+    height = fuselage->GetMaximalHeightBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection2IDElement1");
+    EXPECT_NEAR(height, 4, 0.01 );
+    width = fuselage->GetMaximalWidthBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection2IDElement1");
+    EXPECT_NEAR(width, 8, 0.01 );
+    area = fuselage->GetMaximalWireAreaBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection2IDElement1");
+    EXPECT_NEAR(area, 2*4*M_PI, 1 );
+
+    height = fuselage->GetMaximalHeightBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection3IDElement1");
+    EXPECT_NEAR(height, 4, 0.01 );
+    width = fuselage->GetMaximalWidthBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection3IDElement1");
+    EXPECT_NEAR(width, 8, 0.01 );
+    area = fuselage->GetMaximalWireAreaBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection3IDElement1");
+    EXPECT_NEAR(area, 2*4*M_PI, 1 );
+
+}
+
+
+TEST_F(creatorFuselage, setDimensionBetween_MultipleFuselagesModel) {
+
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselageCircumference");
+    double height, width, area, newHeight, newWidth, newArea ;
+
+    newHeight = 3;
+    fuselage->SetMaxHeightBetween(newHeight, "D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection3IDElement1");
+    height = fuselage->GetMaximalHeightBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection3IDElement1");
+    EXPECT_NEAR(height, newHeight, 0.01 );
+
+    newWidth = 0.5;
+    fuselage->SetMaxWidthBetween(newWidth, "D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection1IDElement1");
+    width = fuselage->GetMaximalWidthBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection1IDElement1");
+    EXPECT_NEAR(width, newWidth, 0.01 );
+
+    newArea = 0;
+    fuselage->SetMaxAreaBetween(newArea, "D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection1IDElement1");
+    area = fuselage->GetMaximalWireAreaBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection1IDElement1");
+    EXPECT_NEAR(area, newArea, 0.01 );
+
+    newArea = 10;
+    fuselage->SetMaxAreaBetween(newArea, "D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection1IDElement1");
+    area = fuselage->GetMaximalWireAreaBetween("D150_Fuselage_CSection1IDElement1", "D150_Fuselage_CSection1IDElement1");
+    EXPECT_NEAR(area, newArea, 0.01 );
+
+
+}
 

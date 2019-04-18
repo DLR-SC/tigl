@@ -628,7 +628,7 @@ std::string CCPACSFuselage::GetTailUID()
     return GetSegment(GetSegmentCount()).GetEndSectionElementUID();
 }
 
-std::vector<std::string> CCPACSFuselage::GetConnectionElementUIDs()
+std::vector<std::string> CCPACSFuselage::GetElementUIDsInOrder()
 {
     return m_segments.GetElementUIDsInOrder();
 }
@@ -783,20 +783,7 @@ double CCPACSFuselage::GetMaximalCircumference()
 double CCPACSFuselage::GetMaximalCircumferenceBetween(const std::string& startElementUID,
                                                       const std::string& endElementUID)
 {
-    std::vector<std::string> elementUIDs                           = m_segments.GetElementUIDsInOrder();
-    std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
-    std::vector<std::string> elementsInBetween =
-        PathGraph::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
-    double maxCircumference = -1;
-    double tempCircumference;
-    for (int i = 0; i < elementsInBetween.size(); i++) {
-        tempCircumference = cTiglElementsMap[elementsInBetween[i]]->GetCircumference();
-        if (tempCircumference > maxCircumference) {
-            maxCircumference = tempCircumference;
-        }
-    }
-
-    return maxCircumference;
+    return GetMaxBetween(&CTiglFuselageSectionElement::GetCircumference, startElementUID, endElementUID);
 }
 
 void CCPACSFuselage::SetMaximalCircumference(double newMaximalCircumference)
@@ -827,6 +814,159 @@ void CCPACSFuselage::SetMaximalCircumferenceBetween(const std::string& startElem
     std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
     for (int i = 0; i < elementsBetween.size(); i++) {
         cTiglElementsMap[elementsBetween[i]]->ScaleCircumference(scaleFactor);
+    }
+}
+
+double CCPACSFuselage::GetMaximalHeightBetween(const std::string& startElementUID, const std::string& endElementUID)
+{
+    return GetMaxBetween(&CTiglFuselageSectionElement::GetHeight, startElementUID, endElementUID);
+}
+
+double CCPACSFuselage::GetMaximalHeight()
+{
+    return GetMaximalHeightBetween(GetNoiseUID(), GetTailUID());
+}
+
+double CCPACSFuselage::GetMaximalWidthBetween(const std::string& startElementUID, const std::string& endElementUID)
+{
+    return GetMaxBetween(&CTiglFuselageSectionElement::GetWidth, startElementUID, endElementUID);
+}
+
+double CCPACSFuselage::GetMaximalWidth()
+{
+    return GetMaximalWidthBetween(GetNoiseUID(), GetTailUID());
+}
+
+double CCPACSFuselage::GetMaximalWireAreaBetween(const std::string& startElementUID, const std::string& endElementUID)
+{
+    return GetMaxBetween(&CTiglFuselageSectionElement::GetArea, startElementUID, endElementUID);
+}
+
+double CCPACSFuselage::GetMaximalWireArea()
+{
+    return GetMaximalWireAreaBetween(GetNoiseUID(), GetTailUID());
+}
+
+double CCPACSFuselage::GetMaxBetween(pGetProperty func, const std::string& startElementUID,
+                                     const std::string& endElementUID)
+{
+    std::vector<std::string> elementUIDs                                 = m_segments.GetElementUIDsInOrder();
+    std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
+    std::vector<std::string> elementsInBetween =
+        PathGraph::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
+
+    if (elementsInBetween.size() < 1) {
+        LOG(WARNING) << "CCPACSFuselage::GetMaxBetween: No elements in between was found!";
+    }
+
+    double max = -1;
+    double tempValue;
+    for (int i = 0; i < elementsInBetween.size(); i++) {
+        CTiglFuselageSectionElement temp = (*(cTiglElementsMap[elementsInBetween[i]]));
+        tempValue                        = (temp.*func)(GLOBAL_COORDINATE_SYSTEM);
+        if (tempValue > max) {
+            max = tempValue;
+        }
+    }
+
+    return max;
+}
+
+void CCPACSFuselage::ScaleWiresUniformly(double scaleFactor)
+{
+    ScaleWiresUniformlyBetween(scaleFactor, GetNoiseUID(), GetTailUID());
+}
+
+void CCPACSFuselage::ScaleWiresUniformlyBetween(double scaleFactor, const std::string& startElementUID,
+                                                const std::string& endElementUID)
+{
+    if (scaleFactor < 0) {
+        throw CTiglError(
+            " CCPACSFuselage::ScaleWiresUniformlyBetween: For the moment only positive scale factor are supported.");
+    }
+
+    pSetProperty func = &CTiglFuselageSectionElement::ScaleUniformly;
+    ApplyFunctionBetween(func, scaleFactor, startElementUID, endElementUID);
+}
+
+void CCPACSFuselage::SetMaxHeight(double newMaxHeight)
+{
+    SetMaxHeightBetween(newMaxHeight, GetNoiseUID(), GetTailUID());
+}
+
+void CCPACSFuselage::SetMaxHeightBetween(double newMaxHeight, const std::string& startUID, const std::string& endUID)
+{
+    double oldHeight = GetMaximalHeightBetween(startUID, endUID);
+    if (fabs(oldHeight) < 0.0001) {
+        // in this case we will call setHeight on each element because a scaling is impossible
+        // -> all the height of the element will be the same
+        pSetProperty func = &CTiglFuselageSectionElement::SetHeight;
+        ApplyFunctionBetween(func, newMaxHeight, startUID, endUID);
+    }
+    else {
+        // in this scale we perform a uniform scaling on the wires to keep the shape
+        double scaleFactor = newMaxHeight / oldHeight;
+        ScaleWiresUniformlyBetween(scaleFactor, startUID, endUID);
+    }
+}
+
+void CCPACSFuselage::SetMaxWidth(double newMaxWidth)
+{
+    SetMaxHeightBetween(newMaxWidth, GetNoiseUID(), GetTailUID());
+}
+
+void CCPACSFuselage::SetMaxWidthBetween(double newMaxWidth, const std::string& startUID, const std::string& endUID)
+{
+    double oldMaxWidth = GetMaximalWidthBetween(startUID, endUID);
+    if (fabs(oldMaxWidth) < 0.0001) {
+        // in this case we will call setWidth on each element because a scaling is impossible
+        // -> all the width of the element will be the same
+        pSetProperty func = &CTiglFuselageSectionElement::SetWidth;
+        ApplyFunctionBetween(func, newMaxWidth, startUID, endUID);
+    }
+    else {
+        // in this scale we perform a uniform scaling on the wires to keep the shape
+        double scaleFactor = newMaxWidth / oldMaxWidth;
+        ScaleWiresUniformlyBetween(scaleFactor, startUID, endUID);
+    }
+}
+
+void CCPACSFuselage::SetMaxArea(double newMaxArea)
+{
+    SetMaxAreaBetween(newMaxArea, GetNoiseUID(), GetTailUID());
+}
+
+void CCPACSFuselage::SetMaxAreaBetween(double newMaxArea, const std::string& startUID, const std::string& endUID)
+{
+    double oldArea = GetMaximalWireAreaBetween(startUID, endUID);
+    if (fabs(oldArea) < 0.0001) {
+        // in this case we will call setArea on each element because a scaling is impossible
+        // -> all the area of the element will be the same
+        pSetProperty func = &CTiglFuselageSectionElement::SetArea;
+        ApplyFunctionBetween(func, newMaxArea, startUID, endUID);
+    }
+    else {
+        // in this scale we perform a uniform scaling on the wires to keep the shape
+        double scaleFactor = sqrt(newMaxArea / oldArea);
+        ScaleWiresUniformlyBetween(scaleFactor, startUID, endUID);
+    }
+}
+
+double CCPACSFuselage::ApplyFunctionBetween(pSetProperty func, double value, const std::string& startElementUID,
+                                            const std::string& endElementUID)
+{
+    std::vector<std::string> elementUIDs                                 = m_segments.GetElementUIDsInOrder();
+    std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
+    std::vector<std::string> elementsInBetween =
+        PathGraph::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
+
+    if (elementsInBetween.size() < 1) {
+        LOG(WARNING) << "CCPACSFuselage::GetMaxBetween: No elements in between was found!";
+    }
+
+    for (int i = 0; i < elementsInBetween.size(); i++) {
+        CTiglFuselageSectionElement temp = (*(cTiglElementsMap[elementsInBetween[i]]));
+        (temp.*func)(value, GLOBAL_COORDINATE_SYSTEM);
     }
 }
 

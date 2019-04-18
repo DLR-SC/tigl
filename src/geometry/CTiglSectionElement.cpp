@@ -18,6 +18,7 @@
 
 #include "CTiglSectionElement.h"
 
+#include "tiglmathfunctions.h"
 #include "tiglcommonfunctions.h"
 #include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
@@ -84,9 +85,12 @@ tigl::CTiglSectionElement::GetElementTrasformationToTranslatePoint(const CTiglPo
     // w = T*G*p    Where   T is the translation needed to bring the old point (oldP) to it position (newP)
     //                      G is the old global transformation
     // w = G*Tl*p   Where Tl = augmented( affinePart(G)^-1 * t) where t is the translation vector
-    // w = (F)P*S*E*Tl*0
-    // w = (F)P*S*E'*0
+    // w = (F)P*S*E*Tl*p
+    // w = (F)P*S*E'*p
     // -> So we simply need to compute Tl, then we can obtaint the transformation of the element = E*Tl
+    //
+    // Todo manage the zero scaling case!
+    //
 
     CTiglPoint tLeft = newP - oldP;
 
@@ -299,7 +303,7 @@ void tigl::CTiglSectionElement::SetArea(double newArea, TiglCoordinateSystem ref
         tempNewS.SetTrivialScalingAndRotation();
         SetSectionTransformation(tempNewS);
 
-        oldArea = GetWidth(referenceCS);
+        oldArea = GetArea(referenceCS);
         if (fabs(oldArea) < 0.0001) { // desperate case
             throw CTiglError("CTiglSectionElement::SetWidth: impossible to set the width. Take a look at the structure "
                              "of the component.");

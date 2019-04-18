@@ -133,6 +133,9 @@ public:
     // Return the transformation that bring the vector A in the same direction as vector B
     TIGL_EXPORT CTiglTransformation static GetRotationToAlignAToB(tigl::CTiglPoint vectorA, tigl::CTiglPoint vectorB);
 
+    // Return true if the transformation has a zero scaling
+    TIGL_EXPORT bool HasZeroScaling() const;
+
 private:
     bool IsUniform() const;
 
