@@ -94,16 +94,11 @@ namespace generated
         boost::optional<double>      m_thickness_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSMaterialDefinition(const CPACSMaterialDefinition&) = delete;
         CPACSMaterialDefinition& operator=(const CPACSMaterialDefinition&) = delete;
 
         CPACSMaterialDefinition(CPACSMaterialDefinition&&) = delete;
         CPACSMaterialDefinition& operator=(CPACSMaterialDefinition&&) = delete;
-#else
-        CPACSMaterialDefinition(const CPACSMaterialDefinition&);
-        CPACSMaterialDefinition& operator=(const CPACSMaterialDefinition&);
-#endif
     };
 } // namespace generated
 

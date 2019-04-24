@@ -119,23 +119,14 @@ namespace generated
         double                          m_rotation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSparCrossSection(const CPACSSparCrossSection&) = delete;
         CPACSSparCrossSection& operator=(const CPACSSparCrossSection&) = delete;
 
         CPACSSparCrossSection(CPACSSparCrossSection&&) = delete;
         CPACSSparCrossSection& operator=(CPACSSparCrossSection&&) = delete;
-#else
-        CPACSSparCrossSection(const CPACSSparCrossSection&);
-        CPACSSparCrossSection& operator=(const CPACSSparCrossSection&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSparCrossSection = generated::CPACSSparCrossSection;
-#else
-typedef generated::CPACSSparCrossSection CCPACSSparCrossSection;
-#endif
 } // namespace tigl

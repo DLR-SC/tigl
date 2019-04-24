@@ -49,7 +49,7 @@ namespace generated
     {
         // read element sheet3D
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheet3D")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sheet3D", m_sheet3Ds, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sheet3D", m_sheet3Ds, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSSheet3D> >& CPACSSheetList3D::GetSheet3Ds() const
+    const std::vector<std::unique_ptr<CPACSSheet3D>>& CPACSSheetList3D::GetSheet3Ds() const
     {
         return m_sheet3Ds;
     }
 
-    std::vector<unique_ptr<CPACSSheet3D> >& CPACSSheetList3D::GetSheet3Ds()
+    std::vector<std::unique_ptr<CPACSSheet3D>>& CPACSSheetList3D::GetSheet3Ds()
     {
         return m_sheet3Ds;
     }

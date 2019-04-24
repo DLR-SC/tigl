@@ -77,23 +77,14 @@ namespace generated
         double      m_yMax;
 
     private:
-#ifdef HAVE_CPP11
         CPACSBeamCrossSection(const CPACSBeamCrossSection&) = delete;
         CPACSBeamCrossSection& operator=(const CPACSBeamCrossSection&) = delete;
 
         CPACSBeamCrossSection(CPACSBeamCrossSection&&) = delete;
         CPACSBeamCrossSection& operator=(CPACSBeamCrossSection&&) = delete;
-#else
-        CPACSBeamCrossSection(const CPACSBeamCrossSection&);
-        CPACSBeamCrossSection& operator=(const CPACSBeamCrossSection&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSBeamCrossSection = generated::CPACSBeamCrossSection;
-#else
-typedef generated::CPACSBeamCrossSection CCPACSBeamCrossSection;
-#endif
 } // namespace tigl

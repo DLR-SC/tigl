@@ -54,23 +54,14 @@ namespace generated
         CPACSCutOutControlPoint m_outerBorder;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCutOutControlPoints(const CPACSCutOutControlPoints&) = delete;
         CPACSCutOutControlPoints& operator=(const CPACSCutOutControlPoints&) = delete;
 
         CPACSCutOutControlPoints(CPACSCutOutControlPoints&&) = delete;
         CPACSCutOutControlPoints& operator=(CPACSCutOutControlPoints&&) = delete;
-#else
-        CPACSCutOutControlPoints(const CPACSCutOutControlPoints&);
-        CPACSCutOutControlPoints& operator=(const CPACSCutOutControlPoints&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCutOutControlPoints = generated::CPACSCutOutControlPoints;
-#else
-typedef generated::CPACSCutOutControlPoints CCPACSCutOutControlPoints;
-#endif
 } // namespace tigl

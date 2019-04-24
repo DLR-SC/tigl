@@ -151,25 +151,16 @@ namespace generated
         boost::optional<int>                                m_ySign;
 
     private:
-#ifdef HAVE_CPP11
         CPACSDoorAssemblyPosition(const CPACSDoorAssemblyPosition&) = delete;
         CPACSDoorAssemblyPosition& operator=(const CPACSDoorAssemblyPosition&) = delete;
 
         CPACSDoorAssemblyPosition(CPACSDoorAssemblyPosition&&) = delete;
         CPACSDoorAssemblyPosition& operator=(CPACSDoorAssemblyPosition&&) = delete;
-#else
-        CPACSDoorAssemblyPosition(const CPACSDoorAssemblyPosition&);
-        CPACSDoorAssemblyPosition& operator=(const CPACSDoorAssemblyPosition&);
-#endif
     };
 } // namespace generated
 
 // CPACSDoorAssemblyPosition is customized, use type CCPACSDoorAssemblyPosition directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCargoDoorsAssembly = generated::CPACSCargoDoorsAssembly;
-#else
-typedef generated::CPACSCargoDoorsAssembly CCPACSCargoDoorsAssembly;
-#endif
 } // namespace tigl

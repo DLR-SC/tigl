@@ -92,16 +92,11 @@ namespace generated
         CPACSSparCrossSection        m_sparCrossSection;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSparSegment(const CPACSSparSegment&) = delete;
         CPACSSparSegment& operator=(const CPACSSparSegment&) = delete;
 
         CPACSSparSegment(CPACSSparSegment&&) = delete;
         CPACSSparSegment& operator=(CPACSSparSegment&&) = delete;
-#else
-        CPACSSparSegment(const CPACSSparSegment&);
-        CPACSSparSegment& operator=(const CPACSSparSegment&);
-#endif
     };
 } // namespace generated
 

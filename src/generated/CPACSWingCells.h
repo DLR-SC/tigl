@@ -56,8 +56,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingCell> >& GetCells() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingCell> >& GetCells();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWingCell>>& GetCells() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWingCell>>& GetCells();
 
         TIGL_EXPORT virtual CCPACSWingCell& AddCell();
         TIGL_EXPORT virtual void RemoveCell(CCPACSWingCell& ref);
@@ -67,19 +67,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSWingCell> > m_cells;
+        std::vector<std::unique_ptr<CCPACSWingCell>> m_cells;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingCells(const CPACSWingCells&) = delete;
         CPACSWingCells& operator=(const CPACSWingCells&) = delete;
 
         CPACSWingCells(CPACSWingCells&&) = delete;
         CPACSWingCells& operator=(CPACSWingCells&&) = delete;
-#else
-        CPACSWingCells(const CPACSWingCells&);
-        CPACSWingCells& operator=(const CPACSWingCells&);
-#endif
     };
 } // namespace generated
 

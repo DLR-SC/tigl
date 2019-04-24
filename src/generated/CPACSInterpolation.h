@@ -48,7 +48,7 @@ namespace generated
     }
     inline CPACSInterpolation stringToCPACSInterpolation(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "0") { return CPACSInterpolation_0; }
         if (toLower(value) == "1") { return _1; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSInterpolation");
@@ -56,11 +56,5 @@ namespace generated
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSInterpolation = generated::CPACSInterpolation;
-#else
-typedef generated::CPACSInterpolation ECPACSInterpolation;
-#endif
-using generated::CPACSInterpolation_0;
-using generated::_1;
 } // namespace tigl

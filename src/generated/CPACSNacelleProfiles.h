@@ -51,8 +51,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSNacelleProfile> >& GetNacelleProfiles() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSNacelleProfile> >& GetNacelleProfiles();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSNacelleProfile>>& GetNacelleProfiles() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSNacelleProfile>>& GetNacelleProfiles();
 
         TIGL_EXPORT virtual CCPACSNacelleProfile& AddNacelleProfile();
         TIGL_EXPORT virtual void RemoveNacelleProfile(CCPACSNacelleProfile& ref);
@@ -60,26 +60,17 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSNacelleProfile> > m_nacelleProfiles;
+        std::vector<std::unique_ptr<CCPACSNacelleProfile>> m_nacelleProfiles;
 
     private:
-#ifdef HAVE_CPP11
         CPACSNacelleProfiles(const CPACSNacelleProfiles&) = delete;
         CPACSNacelleProfiles& operator=(const CPACSNacelleProfiles&) = delete;
 
         CPACSNacelleProfiles(CPACSNacelleProfiles&&) = delete;
         CPACSNacelleProfiles& operator=(CPACSNacelleProfiles&&) = delete;
-#else
-        CPACSNacelleProfiles(const CPACSNacelleProfiles&);
-        CPACSNacelleProfiles& operator=(const CPACSNacelleProfiles&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSNacelleProfiles = generated::CPACSNacelleProfiles;
-#else
-typedef generated::CPACSNacelleProfiles CCPACSNacelleProfiles;
-#endif
 } // namespace tigl

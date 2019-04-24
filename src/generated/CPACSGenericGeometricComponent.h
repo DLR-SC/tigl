@@ -110,16 +110,11 @@ namespace generated
         CPACSLinkToFile                   m_linkToFile;
 
     private:
-#ifdef HAVE_CPP11
         CPACSGenericGeometricComponent(const CPACSGenericGeometricComponent&) = delete;
         CPACSGenericGeometricComponent& operator=(const CPACSGenericGeometricComponent&) = delete;
 
         CPACSGenericGeometricComponent(CPACSGenericGeometricComponent&&) = delete;
         CPACSGenericGeometricComponent& operator=(CPACSGenericGeometricComponent&&) = delete;
-#else
-        CPACSGenericGeometricComponent(const CPACSGenericGeometricComponent&);
-        CPACSGenericGeometricComponent& operator=(const CPACSGenericGeometricComponent&);
-#endif
     };
 } // namespace generated
 

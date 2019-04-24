@@ -49,7 +49,7 @@ namespace generated
     {
         // read element door
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/door")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/door", m_doors, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/door", m_doors, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSDoorCutOut> >& CPACSDoors::GetDoors() const
+    const std::vector<std::unique_ptr<CPACSDoorCutOut>>& CPACSDoors::GetDoors() const
     {
         return m_doors;
     }
 
-    std::vector<unique_ptr<CPACSDoorCutOut> >& CPACSDoors::GetDoors()
+    std::vector<std::unique_ptr<CPACSDoorCutOut>>& CPACSDoors::GetDoors()
     {
         return m_doors;
     }

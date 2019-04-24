@@ -88,23 +88,14 @@ namespace generated
         boost::optional<CCPACSPointXY> m_translation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSTransformation2D(const CPACSTransformation2D&) = delete;
         CPACSTransformation2D& operator=(const CPACSTransformation2D&) = delete;
 
         CPACSTransformation2D(CPACSTransformation2D&&) = delete;
         CPACSTransformation2D& operator=(CPACSTransformation2D&&) = delete;
-#else
-        CPACSTransformation2D(const CPACSTransformation2D&);
-        CPACSTransformation2D& operator=(const CPACSTransformation2D&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSTransformation2D = generated::CPACSTransformation2D;
-#else
-typedef generated::CPACSTransformation2D CCPACSTransformation2D;
-#endif
 } // namespace tigl

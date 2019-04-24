@@ -59,23 +59,14 @@ namespace generated
         CCPACSStringVector m_diffuseEmissivity;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEmissivityMap(const CPACSEmissivityMap&) = delete;
         CPACSEmissivityMap& operator=(const CPACSEmissivityMap&) = delete;
 
         CPACSEmissivityMap(CPACSEmissivityMap&&) = delete;
         CPACSEmissivityMap& operator=(CPACSEmissivityMap&&) = delete;
-#else
-        CPACSEmissivityMap(const CPACSEmissivityMap&);
-        CPACSEmissivityMap& operator=(const CPACSEmissivityMap&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSEmissivityMap = generated::CPACSEmissivityMap;
-#else
-typedef generated::CPACSEmissivityMap CCPACSEmissivityMap;
-#endif
 } // namespace tigl

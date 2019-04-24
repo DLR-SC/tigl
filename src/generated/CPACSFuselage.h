@@ -130,16 +130,11 @@ namespace generated
         boost::optional<CCPACSFuselageStructure> m_structure;
 
     private:
-#ifdef HAVE_CPP11
         CPACSFuselage(const CPACSFuselage&) = delete;
         CPACSFuselage& operator=(const CPACSFuselage&) = delete;
 
         CPACSFuselage(CPACSFuselage&&) = delete;
         CPACSFuselage& operator=(CPACSFuselage&&) = delete;
-#else
-        CPACSFuselage(const CPACSFuselage&);
-        CPACSFuselage& operator=(const CPACSFuselage&);
-#endif
     };
 } // namespace generated
 

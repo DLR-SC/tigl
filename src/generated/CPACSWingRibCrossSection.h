@@ -122,16 +122,11 @@ namespace generated
         boost::optional<CPACSCap>         m_lowerCap;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingRibCrossSection(const CPACSWingRibCrossSection&) = delete;
         CPACSWingRibCrossSection& operator=(const CPACSWingRibCrossSection&) = delete;
 
         CPACSWingRibCrossSection(CPACSWingRibCrossSection&&) = delete;
         CPACSWingRibCrossSection& operator=(CPACSWingRibCrossSection&&) = delete;
-#else
-        CPACSWingRibCrossSection(const CPACSWingRibCrossSection&);
-        CPACSWingRibCrossSection& operator=(const CPACSWingRibCrossSection&);
-#endif
     };
 } // namespace generated
 

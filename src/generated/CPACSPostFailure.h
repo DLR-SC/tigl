@@ -85,8 +85,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetPlasticEliminationStrain_choice1() const;
         TIGL_EXPORT virtual void SetPlasticEliminationStrain_choice1(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoints_choice1() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& GetPlasticityCurvePoints_choice1();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSPlasticityCurvePoint>>& GetPlasticityCurvePoints_choice1() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSPlasticityCurvePoint>>& GetPlasticityCurvePoints_choice1();
 
         TIGL_EXPORT virtual const boost::optional<double>& GetInitialEquivalentShearStrain_choice2() const;
         TIGL_EXPORT virtual void SetInitialEquivalentShearStrain_choice2(const boost::optional<double>& value);
@@ -108,50 +108,40 @@ namespace generated
 
     protected:
         /// name of the post failure definition
-        boost::optional<std::string>                        m_name;
+        boost::optional<std::string>                            m_name;
 
         /// description of the post failure definition
-        boost::optional<std::string>                        m_description;
+        boost::optional<std::string>                            m_description;
 
         /// name of material law
-        boost::optional<std::string>                        m_materialLaw;
+        boost::optional<std::string>                            m_materialLaw;
 
         /// plasticEliminationStrain [-] Plastic strain
         /// for element elimination during the non-linear analysis
-        boost::optional<double>                             m_plasticEliminationStrain_choice1;
+        boost::optional<double>                                 m_plasticEliminationStrain_choice1;
 
-        std::vector<unique_ptr<CPACSPlasticityCurvePoint> > m_plasticityCurvePoints_choice1;
+        std::vector<std::unique_ptr<CPACSPlasticityCurvePoint>> m_plasticityCurvePoints_choice1;
 
-        boost::optional<double>                             m_initialEquivalentShearStrain_choice2;
+        boost::optional<double>                                 m_initialEquivalentShearStrain_choice2;
 
-        boost::optional<double>                             m_intermediateEquivalentShearStrain_choice2;
+        boost::optional<double>                                 m_intermediateEquivalentShearStrain_choice2;
 
-        boost::optional<double>                             m_ultimateEquivalentShearStrain_choice2;
+        boost::optional<double>                                 m_ultimateEquivalentShearStrain_choice2;
 
-        boost::optional<double>                             m_intermediateDamage_choice2;
+        boost::optional<double>                                 m_intermediateDamage_choice2;
 
-        boost::optional<double>                             m_ultimateDamage_choice2;
+        boost::optional<double>                                 m_ultimateDamage_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPostFailure(const CPACSPostFailure&) = delete;
         CPACSPostFailure& operator=(const CPACSPostFailure&) = delete;
 
         CPACSPostFailure(CPACSPostFailure&&) = delete;
         CPACSPostFailure& operator=(CPACSPostFailure&&) = delete;
-#else
-        CPACSPostFailure(const CPACSPostFailure&);
-        CPACSPostFailure& operator=(const CPACSPostFailure&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSPostFailure = generated::CPACSPostFailure;
 using CCPACSPlasticityCurvePoint = generated::CPACSPlasticityCurvePoint;
-#else
-typedef generated::CPACSPostFailure CCPACSPostFailure;
-typedef generated::CPACSPlasticityCurvePoint CCPACSPlasticityCurvePoint;
-#endif
 } // namespace tigl

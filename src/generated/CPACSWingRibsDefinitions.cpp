@@ -63,7 +63,7 @@ namespace generated
     {
         // read element ribsDefinition
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribsDefinition")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/ribsDefinition", m_ribsDefinitions, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinitions() const
+    const std::vector<std::unique_ptr<CCPACSWingRibsDefinition>>& CPACSWingRibsDefinitions::GetRibsDefinitions() const
     {
         return m_ribsDefinitions;
     }
 
-    std::vector<unique_ptr<CCPACSWingRibsDefinition> >& CPACSWingRibsDefinitions::GetRibsDefinitions()
+    std::vector<std::unique_ptr<CCPACSWingRibsDefinition>>& CPACSWingRibsDefinitions::GetRibsDefinitions()
     {
         return m_ribsDefinitions;
     }

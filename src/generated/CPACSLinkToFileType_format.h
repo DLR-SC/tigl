@@ -49,7 +49,7 @@ namespace generated
     }
     inline CPACSLinkToFileType_format stringToCPACSLinkToFileType_format(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "step") { return Step; }
         if (toLower(value) == "iges") { return Iges; }
         if (toLower(value) == "stl") { return Stl; }
@@ -58,12 +58,5 @@ namespace generated
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSLinkToFileType_format = generated::CPACSLinkToFileType_format;
-#else
-typedef generated::CPACSLinkToFileType_format ECPACSLinkToFileType_format;
-#endif
-using generated::Step;
-using generated::Iges;
-using generated::Stl;
 } // namespace tigl

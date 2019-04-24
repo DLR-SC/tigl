@@ -52,8 +52,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSProfileGeometry> >& GetFuselageProfiles();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSProfileGeometry>>& GetFuselageProfiles() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSProfileGeometry>>& GetFuselageProfiles();
 
         TIGL_EXPORT virtual CPACSProfileGeometry& AddFuselageProfile();
         TIGL_EXPORT virtual void RemoveFuselageProfile(CPACSProfileGeometry& ref);
@@ -61,28 +61,19 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSProfileGeometry> > m_fuselageProfiles;
+        std::vector<std::unique_ptr<CPACSProfileGeometry>> m_fuselageProfiles;
 
     private:
-#ifdef HAVE_CPP11
         CPACSFuselageProfiles(const CPACSFuselageProfiles&) = delete;
         CPACSFuselageProfiles& operator=(const CPACSFuselageProfiles&) = delete;
 
         CPACSFuselageProfiles(CPACSFuselageProfiles&&) = delete;
         CPACSFuselageProfiles& operator=(CPACSFuselageProfiles&&) = delete;
-#else
-        CPACSFuselageProfiles(const CPACSFuselageProfiles&);
-        CPACSFuselageProfiles& operator=(const CPACSFuselageProfiles&);
-#endif
     };
 } // namespace generated
 
 // CPACSFuselageProfiles is customized, use type CCPACSFuselageProfiles directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
-#else
-typedef generated::CPACSProfileGeometry CCPACSProfileGeometry;
-#endif
 } // namespace tigl

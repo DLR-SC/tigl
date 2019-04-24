@@ -49,7 +49,7 @@ namespace generated
     {
         // read element sparCell
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparCell")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sparCell", m_sparCells, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSSparCell> >& CPACSSparCells::GetSparCells() const
+    const std::vector<std::unique_ptr<CPACSSparCell>>& CPACSSparCells::GetSparCells() const
     {
         return m_sparCells;
     }
 
-    std::vector<unique_ptr<CPACSSparCell> >& CPACSSparCells::GetSparCells()
+    std::vector<std::unique_ptr<CPACSSparCell>>& CPACSSparCells::GetSparCells()
     {
         return m_sparCells;
     }

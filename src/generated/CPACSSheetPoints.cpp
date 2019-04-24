@@ -36,7 +36,7 @@ namespace generated
     {
         // read element sheetPointUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetPointUID")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sheetPointUID", m_sheetPointUIDs);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sheetPointUID", m_sheetPointUIDs, 3, tixi::xsdUnbounded);
         }
 
     }

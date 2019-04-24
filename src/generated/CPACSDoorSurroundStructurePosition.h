@@ -95,23 +95,14 @@ namespace generated
         int                          m_stringersGapSecondary;
 
     private:
-#ifdef HAVE_CPP11
         CPACSDoorSurroundStructurePosition(const CPACSDoorSurroundStructurePosition&) = delete;
         CPACSDoorSurroundStructurePosition& operator=(const CPACSDoorSurroundStructurePosition&) = delete;
 
         CPACSDoorSurroundStructurePosition(CPACSDoorSurroundStructurePosition&&) = delete;
         CPACSDoorSurroundStructurePosition& operator=(CPACSDoorSurroundStructurePosition&&) = delete;
-#else
-        CPACSDoorSurroundStructurePosition(const CPACSDoorSurroundStructurePosition&);
-        CPACSDoorSurroundStructurePosition& operator=(const CPACSDoorSurroundStructurePosition&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSDoorSurroundStructurePosition = generated::CPACSDoorSurroundStructurePosition;
-#else
-typedef generated::CPACSDoorSurroundStructurePosition CCPACSDoorSurroundStructurePosition;
-#endif
 } // namespace tigl

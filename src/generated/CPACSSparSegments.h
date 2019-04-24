@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingSparSegment> >& GetSparSegments() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingSparSegment> >& GetSparSegments();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWingSparSegment>>& GetSparSegments() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWingSparSegment>>& GetSparSegments();
 
         TIGL_EXPORT virtual CCPACSWingSparSegment& AddSparSegment();
         TIGL_EXPORT virtual void RemoveSparSegment(CCPACSWingSparSegment& ref);
@@ -68,19 +68,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSWingSparSegment> > m_sparSegments;
+        std::vector<std::unique_ptr<CCPACSWingSparSegment>> m_sparSegments;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSparSegments(const CPACSSparSegments&) = delete;
         CPACSSparSegments& operator=(const CPACSSparSegments&) = delete;
 
         CPACSSparSegments(CPACSSparSegments&&) = delete;
         CPACSSparSegments& operator=(CPACSSparSegments&&) = delete;
-#else
-        CPACSSparSegments(const CPACSSparSegments&);
-        CPACSSparSegments& operator=(const CPACSSparSegments&);
-#endif
     };
 } // namespace generated
 

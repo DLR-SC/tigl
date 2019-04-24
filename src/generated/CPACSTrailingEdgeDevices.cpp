@@ -63,7 +63,7 @@ namespace generated
     {
         // read element trailingEdgeDevice
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeDevice")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/trailingEdgeDevice", m_trailingEdgeDevices, reinterpret_cast<CCPACSTrailingEdgeDevices*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/trailingEdgeDevice", m_trailingEdgeDevices, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSTrailingEdgeDevices*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSTrailingEdgeDevice> >& CPACSTrailingEdgeDevices::GetTrailingEdgeDevices() const
+    const std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>& CPACSTrailingEdgeDevices::GetTrailingEdgeDevices() const
     {
         return m_trailingEdgeDevices;
     }
 
-    std::vector<unique_ptr<CCPACSTrailingEdgeDevice> >& CPACSTrailingEdgeDevices::GetTrailingEdgeDevices()
+    std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>& CPACSTrailingEdgeDevices::GetTrailingEdgeDevices()
     {
         return m_trailingEdgeDevices;
     }

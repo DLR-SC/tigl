@@ -51,8 +51,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSSheet3D> >& GetSheet3Ds() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSSheet3D> >& GetSheet3Ds();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSheet3D>>& GetSheet3Ds() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSheet3D>>& GetSheet3Ds();
 
         TIGL_EXPORT virtual CPACSSheet3D& AddSheet3D();
         TIGL_EXPORT virtual void RemoveSheet3D(CPACSSheet3D& ref);
@@ -60,28 +60,18 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSSheet3D> > m_sheet3Ds;
+        std::vector<std::unique_ptr<CPACSSheet3D>> m_sheet3Ds;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSheetList3D(const CPACSSheetList3D&) = delete;
         CPACSSheetList3D& operator=(const CPACSSheetList3D&) = delete;
 
         CPACSSheetList3D(CPACSSheetList3D&&) = delete;
         CPACSSheetList3D& operator=(CPACSSheetList3D&&) = delete;
-#else
-        CPACSSheetList3D(const CPACSSheetList3D&);
-        CPACSSheetList3D& operator=(const CPACSSheetList3D&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSheetList3D = generated::CPACSSheetList3D;
 using CCPACSSheet3D = generated::CPACSSheet3D;
-#else
-typedef generated::CPACSSheetList3D CCPACSSheetList3D;
-typedef generated::CPACSSheet3D CCPACSSheet3D;
-#endif
 } // namespace tigl

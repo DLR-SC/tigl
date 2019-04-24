@@ -47,35 +47,25 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSUpdate> >& GetUpdates() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSUpdate> >& GetUpdates();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSUpdate>>& GetUpdates() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSUpdate>>& GetUpdates();
 
         TIGL_EXPORT virtual CPACSUpdate& AddUpdate();
         TIGL_EXPORT virtual void RemoveUpdate(CPACSUpdate& ref);
 
     protected:
-        std::vector<unique_ptr<CPACSUpdate> > m_updates;
+        std::vector<std::unique_ptr<CPACSUpdate>> m_updates;
 
     private:
-#ifdef HAVE_CPP11
         CPACSUpdates(const CPACSUpdates&) = delete;
         CPACSUpdates& operator=(const CPACSUpdates&) = delete;
 
         CPACSUpdates(CPACSUpdates&&) = delete;
         CPACSUpdates& operator=(CPACSUpdates&&) = delete;
-#else
-        CPACSUpdates(const CPACSUpdates&);
-        CPACSUpdates& operator=(const CPACSUpdates&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSUpdates = generated::CPACSUpdates;
 using CCPACSUpdate = generated::CPACSUpdate;
-#else
-typedef generated::CPACSUpdates CCPACSUpdates;
-typedef generated::CPACSUpdate CCPACSUpdate;
-#endif
 } // namespace tigl

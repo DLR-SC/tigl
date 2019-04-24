@@ -88,6 +88,22 @@ namespace generated
             }
         }
 
+        // read element azimuthAngles
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/azimuthAngles")) {
+            m_azimuthAngles_choice1 = boost::in_place();
+            try {
+                m_azimuthAngles_choice1->ReadCPACS(tixiHandle, xpath + "/azimuthAngles");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read azimuthAngles at xpath " << xpath << ": " << e.what();
+                m_azimuthAngles_choice1 = boost::none;
+            }
+        }
+
+        // read element numberOfBlades
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/numberOfBlades")) {
+            m_numberOfBlades_choice2 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/numberOfBlades");
+        }
+
         // read element hinges
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/hinges")) {
             m_hinges = boost::in_place(reinterpret_cast<CCPACSRotorBladeAttachment*>(this), m_uidMgr);
@@ -108,22 +124,6 @@ namespace generated
         }
         else {
             LOG(ERROR) << "Required element rotorBladeUID is missing at xpath " << xpath;
-        }
-
-        // read element azimuthAngles
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/azimuthAngles")) {
-            m_azimuthAngles_choice1 = boost::in_place();
-            try {
-                m_azimuthAngles_choice1->ReadCPACS(tixiHandle, xpath + "/azimuthAngles");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read azimuthAngles at xpath " << xpath << ": " << e.what();
-                m_azimuthAngles_choice1 = boost::none;
-            }
-        }
-
-        // read element numberOfBlades
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/numberOfBlades")) {
-            m_numberOfBlades_choice2 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/numberOfBlades");
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -159,21 +159,6 @@ namespace generated
             }
         }
 
-        // write element hinges
-        if (m_hinges) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/hinges");
-            m_hinges->WriteCPACS(tixiHandle, xpath + "/hinges");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/hinges")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/hinges");
-            }
-        }
-
-        // write element rotorBladeUID
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBladeUID");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/rotorBladeUID", m_rotorBladeUID);
-
         // write element azimuthAngles
         if (m_azimuthAngles_choice1) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/azimuthAngles");
@@ -195,6 +180,21 @@ namespace generated
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/numberOfBlades");
             }
         }
+
+        // write element hinges
+        if (m_hinges) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/hinges");
+            m_hinges->WriteCPACS(tixiHandle, xpath + "/hinges");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/hinges")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/hinges");
+            }
+        }
+
+        // write element rotorBladeUID
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotorBladeUID");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/rotorBladeUID", m_rotorBladeUID);
 
     }
 
@@ -262,26 +262,6 @@ namespace generated
         m_description = value;
     }
 
-    const boost::optional<CCPACSRotorHinges>& CPACSRotorBladeAttachment::GetHinges() const
-    {
-        return m_hinges;
-    }
-
-    boost::optional<CCPACSRotorHinges>& CPACSRotorBladeAttachment::GetHinges()
-    {
-        return m_hinges;
-    }
-
-    const std::string& CPACSRotorBladeAttachment::GetRotorBladeUID() const
-    {
-        return m_rotorBladeUID;
-    }
-
-    void CPACSRotorBladeAttachment::SetRotorBladeUID(const std::string& value)
-    {
-        m_rotorBladeUID = value;
-    }
-
     const boost::optional<CCPACSStringVector>& CPACSRotorBladeAttachment::GetAzimuthAngles_choice1() const
     {
         return m_azimuthAngles_choice1;
@@ -302,16 +282,24 @@ namespace generated
         m_numberOfBlades_choice2 = value;
     }
 
-    CCPACSRotorHinges& CPACSRotorBladeAttachment::GetHinges(CreateIfNotExistsTag)
+    const boost::optional<CCPACSRotorHinges>& CPACSRotorBladeAttachment::GetHinges() const
     {
-        if (!m_hinges)
-            m_hinges = boost::in_place(reinterpret_cast<CCPACSRotorBladeAttachment*>(this), m_uidMgr);
-        return *m_hinges;
+        return m_hinges;
     }
 
-    void CPACSRotorBladeAttachment::RemoveHinges()
+    boost::optional<CCPACSRotorHinges>& CPACSRotorBladeAttachment::GetHinges()
     {
-        m_hinges = boost::none;
+        return m_hinges;
+    }
+
+    const std::string& CPACSRotorBladeAttachment::GetRotorBladeUID() const
+    {
+        return m_rotorBladeUID;
+    }
+
+    void CPACSRotorBladeAttachment::SetRotorBladeUID(const std::string& value)
+    {
+        m_rotorBladeUID = value;
     }
 
     CCPACSStringVector& CPACSRotorBladeAttachment::GetAzimuthAngles_choice1(CreateIfNotExistsTag)
@@ -324,6 +312,18 @@ namespace generated
     void CPACSRotorBladeAttachment::RemoveAzimuthAngles_choice1()
     {
         m_azimuthAngles_choice1 = boost::none;
+    }
+
+    CCPACSRotorHinges& CPACSRotorBladeAttachment::GetHinges(CreateIfNotExistsTag)
+    {
+        if (!m_hinges)
+            m_hinges = boost::in_place(reinterpret_cast<CCPACSRotorBladeAttachment*>(this), m_uidMgr);
+        return *m_hinges;
+    }
+
+    void CPACSRotorBladeAttachment::RemoveHinges()
+    {
+        m_hinges = boost::none;
     }
 
 } // namespace generated

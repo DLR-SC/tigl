@@ -75,25 +75,16 @@ namespace generated
         double m_hingeRelHeight;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceHingePoint(const CPACSControlSurfaceHingePoint&) = delete;
         CPACSControlSurfaceHingePoint& operator=(const CPACSControlSurfaceHingePoint&) = delete;
 
         CPACSControlSurfaceHingePoint(CPACSControlSurfaceHingePoint&&) = delete;
         CPACSControlSurfaceHingePoint& operator=(CPACSControlSurfaceHingePoint&&) = delete;
-#else
-        CPACSControlSurfaceHingePoint(const CPACSControlSurfaceHingePoint&);
-        CPACSControlSurfaceHingePoint& operator=(const CPACSControlSurfaceHingePoint&);
-#endif
     };
 } // namespace generated
 
 // CPACSControlSurfaceHingePoint is customized, use type CCPACSControlSurfaceHingePoint directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfacePath = generated::CPACSControlSurfacePath;
-#else
-typedef generated::CPACSControlSurfacePath CCPACSControlSurfacePath;
-#endif
 } // namespace tigl

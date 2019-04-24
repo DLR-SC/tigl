@@ -51,8 +51,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSSeatModule> >& GetSeatModules() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSSeatModule> >& GetSeatModules();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSeatModule>>& GetSeatModules() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSeatModule>>& GetSeatModules();
 
         TIGL_EXPORT virtual CPACSSeatModule& AddSeatModule();
         TIGL_EXPORT virtual void RemoveSeatModule(CPACSSeatModule& ref);
@@ -60,28 +60,18 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSSeatModule> > m_seatModules;
+        std::vector<std::unique_ptr<CPACSSeatModule>> m_seatModules;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSeatModules(const CPACSSeatModules&) = delete;
         CPACSSeatModules& operator=(const CPACSSeatModules&) = delete;
 
         CPACSSeatModules(CPACSSeatModules&&) = delete;
         CPACSSeatModules& operator=(CPACSSeatModules&&) = delete;
-#else
-        CPACSSeatModules(const CPACSSeatModules&);
-        CPACSSeatModules& operator=(const CPACSSeatModules&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSeatModules = generated::CPACSSeatModules;
 using CCPACSSeatModule = generated::CPACSSeatModule;
-#else
-typedef generated::CPACSSeatModules CCPACSSeatModules;
-typedef generated::CPACSSeatModule CCPACSSeatModule;
-#endif
 } // namespace tigl

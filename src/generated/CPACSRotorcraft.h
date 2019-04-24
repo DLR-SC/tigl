@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSRotorcraftModel> >& GetModels() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSRotorcraftModel> >& GetModels();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSRotorcraftModel>>& GetModels() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSRotorcraftModel>>& GetModels();
 
         TIGL_EXPORT virtual CCPACSRotorcraftModel& AddModel();
         TIGL_EXPORT virtual void RemoveModel(CCPACSRotorcraftModel& ref);
@@ -66,26 +66,17 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSRotorcraftModel> > m_models;
+        std::vector<std::unique_ptr<CCPACSRotorcraftModel>> m_models;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRotorcraft(const CPACSRotorcraft&) = delete;
         CPACSRotorcraft& operator=(const CPACSRotorcraft&) = delete;
 
         CPACSRotorcraft(CPACSRotorcraft&&) = delete;
         CPACSRotorcraft& operator=(CPACSRotorcraft&&) = delete;
-#else
-        CPACSRotorcraft(const CPACSRotorcraft&);
-        CPACSRotorcraft& operator=(const CPACSRotorcraft&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSRotorcraft = generated::CPACSRotorcraft;
-#else
-typedef generated::CPACSRotorcraft CCPACSRotorcraft;
-#endif
 } // namespace tigl

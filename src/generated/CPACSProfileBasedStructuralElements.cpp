@@ -49,7 +49,7 @@ namespace generated
     {
         // read element profileBasedStructuralElement
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/profileBasedStructuralElement")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/profileBasedStructuralElement", m_profileBasedStructuralElements, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/profileBasedStructuralElement", m_profileBasedStructuralElements, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSProfileBasedStructuralElement> >& CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElements() const
+    const std::vector<std::unique_ptr<CCPACSProfileBasedStructuralElement>>& CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElements() const
     {
         return m_profileBasedStructuralElements;
     }
 
-    std::vector<unique_ptr<CCPACSProfileBasedStructuralElement> >& CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElements()
+    std::vector<std::unique_ptr<CCPACSProfileBasedStructuralElement>>& CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElements()
     {
         return m_profileBasedStructuralElements;
     }

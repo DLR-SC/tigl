@@ -99,25 +99,16 @@ namespace generated
         boost::optional<std::string> m_endStringerUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSkinSegment(const CPACSSkinSegment&) = delete;
         CPACSSkinSegment& operator=(const CPACSSkinSegment&) = delete;
 
         CPACSSkinSegment(CPACSSkinSegment&&) = delete;
         CPACSSkinSegment& operator=(CPACSSkinSegment&&) = delete;
-#else
-        CPACSSkinSegment(const CPACSSkinSegment&);
-        CPACSSkinSegment& operator=(const CPACSSkinSegment&);
-#endif
     };
 } // namespace generated
 
 // CPACSSkinSegment is customized, use type CCPACSSkinSegment directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSkinSegments = generated::CPACSSkinSegments;
-#else
-typedef generated::CPACSSkinSegments CCPACSSkinSegments;
-#endif
 } // namespace tigl

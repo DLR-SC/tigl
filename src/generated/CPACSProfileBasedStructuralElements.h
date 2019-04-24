@@ -51,8 +51,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSProfileBasedStructuralElement> >& GetProfileBasedStructuralElements() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSProfileBasedStructuralElement> >& GetProfileBasedStructuralElements();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSProfileBasedStructuralElement>>& GetProfileBasedStructuralElements() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSProfileBasedStructuralElement>>& GetProfileBasedStructuralElements();
 
         TIGL_EXPORT virtual CCPACSProfileBasedStructuralElement& AddProfileBasedStructuralElement();
         TIGL_EXPORT virtual void RemoveProfileBasedStructuralElement(CCPACSProfileBasedStructuralElement& ref);
@@ -60,26 +60,17 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSProfileBasedStructuralElement> > m_profileBasedStructuralElements;
+        std::vector<std::unique_ptr<CCPACSProfileBasedStructuralElement>> m_profileBasedStructuralElements;
 
     private:
-#ifdef HAVE_CPP11
         CPACSProfileBasedStructuralElements(const CPACSProfileBasedStructuralElements&) = delete;
         CPACSProfileBasedStructuralElements& operator=(const CPACSProfileBasedStructuralElements&) = delete;
 
         CPACSProfileBasedStructuralElements(CPACSProfileBasedStructuralElements&&) = delete;
         CPACSProfileBasedStructuralElements& operator=(CPACSProfileBasedStructuralElements&&) = delete;
-#else
-        CPACSProfileBasedStructuralElements(const CPACSProfileBasedStructuralElements&);
-        CPACSProfileBasedStructuralElements& operator=(const CPACSProfileBasedStructuralElements&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSProfileBasedStructuralElements = generated::CPACSProfileBasedStructuralElements;
-#else
-typedef generated::CPACSProfileBasedStructuralElements CCPACSProfileBasedStructuralElements;
-#endif
 } // namespace tigl

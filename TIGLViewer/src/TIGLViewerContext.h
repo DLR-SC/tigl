@@ -41,7 +41,7 @@ class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;
 
-class QOCC_DECLSPEC TIGLViewerContext : public QObject
+class TIGLViewerContext : public QObject
 {
 
     Q_OBJECT

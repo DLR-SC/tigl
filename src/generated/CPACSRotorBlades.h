@@ -72,8 +72,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWing> >& GetRotorBlades() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWing> >& GetRotorBlades();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWing>>& GetRotorBlades() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWing>>& GetRotorBlades();
 
         TIGL_EXPORT virtual CCPACSWing& AddRotorBlade();
         TIGL_EXPORT virtual void RemoveRotorBlade(CCPACSWing& ref);
@@ -89,19 +89,14 @@ namespace generated
         /// rotorType, rotorHubType, rotorHubHingeType) there are some
         /// additional conventions/requirements regarding the definition and
         /// orientation of rotorBlade geometries: see remarks.
-        std::vector<unique_ptr<CCPACSWing> > m_rotorBlades;
+        std::vector<std::unique_ptr<CCPACSWing>> m_rotorBlades;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRotorBlades(const CPACSRotorBlades&) = delete;
         CPACSRotorBlades& operator=(const CPACSRotorBlades&) = delete;
 
         CPACSRotorBlades(CPACSRotorBlades&&) = delete;
         CPACSRotorBlades& operator=(CPACSRotorBlades&&) = delete;
-#else
-        CPACSRotorBlades(const CPACSRotorBlades&);
-        CPACSRotorBlades& operator=(const CPACSRotorBlades&);
-#endif
     };
 } // namespace generated
 

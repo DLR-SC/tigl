@@ -63,7 +63,7 @@ namespace generated
     {
         // read element hinge
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/hinge")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/hinge", m_hinges, reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/hinge", m_hinges, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSRotorHinge> >& CPACSRotorHubHinges::GetHinges() const
+    const std::vector<std::unique_ptr<CCPACSRotorHinge>>& CPACSRotorHubHinges::GetHinges() const
     {
         return m_hinges;
     }
 
-    std::vector<unique_ptr<CCPACSRotorHinge> >& CPACSRotorHubHinges::GetHinges()
+    std::vector<std::unique_ptr<CCPACSRotorHinge>>& CPACSRotorHubHinges::GetHinges()
     {
         return m_hinges;
     }

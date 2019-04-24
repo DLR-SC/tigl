@@ -67,16 +67,11 @@ namespace generated
         CCPACSStringVector m_z;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPointListXYZVector(const CPACSPointListXYZVector&) = delete;
         CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&) = delete;
 
         CPACSPointListXYZVector(CPACSPointListXYZVector&&) = delete;
         CPACSPointListXYZVector& operator=(CPACSPointListXYZVector&&) = delete;
-#else
-        CPACSPointListXYZVector(const CPACSPointListXYZVector&);
-        CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&);
-#endif
     };
 } // namespace generated
 

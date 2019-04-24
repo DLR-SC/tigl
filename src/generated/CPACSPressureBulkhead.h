@@ -146,16 +146,11 @@ namespace generated
         boost::optional<std::string> m_structuralElementRadialUID_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPressureBulkhead(const CPACSPressureBulkhead&) = delete;
         CPACSPressureBulkhead& operator=(const CPACSPressureBulkhead&) = delete;
 
         CPACSPressureBulkhead(CPACSPressureBulkhead&&) = delete;
         CPACSPressureBulkhead& operator=(CPACSPressureBulkhead&&) = delete;
-#else
-        CPACSPressureBulkhead(const CPACSPressureBulkhead&);
-        CPACSPressureBulkhead& operator=(const CPACSPressureBulkhead&);
-#endif
     };
 } // namespace generated
 

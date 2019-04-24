@@ -71,23 +71,14 @@ namespace generated
         CCPACSMaterialDefinition m_material;
 
     private:
-#ifdef HAVE_CPP11
         CPACSTrackActuator(const CPACSTrackActuator&) = delete;
         CPACSTrackActuator& operator=(const CPACSTrackActuator&) = delete;
 
         CPACSTrackActuator(CPACSTrackActuator&&) = delete;
         CPACSTrackActuator& operator=(CPACSTrackActuator&&) = delete;
-#else
-        CPACSTrackActuator(const CPACSTrackActuator&);
-        CPACSTrackActuator& operator=(const CPACSTrackActuator&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSTrackActuator = generated::CPACSTrackActuator;
-#else
-typedef generated::CPACSTrackActuator CCPACSTrackActuator;
-#endif
 } // namespace tigl

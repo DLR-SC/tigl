@@ -78,23 +78,14 @@ namespace generated
         boost::optional<CPACSSkinSegments> m_skinSegments;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSkin(const CPACSSkin&) = delete;
         CPACSSkin& operator=(const CPACSSkin&) = delete;
 
         CPACSSkin(CPACSSkin&&) = delete;
         CPACSSkin& operator=(CPACSSkin&&) = delete;
-#else
-        CPACSSkin(const CPACSSkin&);
-        CPACSSkin& operator=(const CPACSSkin&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSkin = generated::CPACSSkin;
-#else
-typedef generated::CPACSSkin CCPACSSkin;
-#endif
 } // namespace tigl

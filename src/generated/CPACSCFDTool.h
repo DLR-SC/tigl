@@ -59,23 +59,14 @@ namespace generated
         CCPACSFarField m_farField;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCFDTool(const CPACSCFDTool&) = delete;
         CPACSCFDTool& operator=(const CPACSCFDTool&) = delete;
 
         CPACSCFDTool(CPACSCFDTool&&) = delete;
         CPACSCFDTool& operator=(CPACSCFDTool&&) = delete;
-#else
-        CPACSCFDTool(const CPACSCFDTool&);
-        CPACSCFDTool& operator=(const CPACSCFDTool&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCFDTool = generated::CPACSCFDTool;
-#else
-typedef generated::CPACSCFDTool CCPACSCFDTool;
-#endif
 } // namespace tigl

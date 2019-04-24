@@ -1,13 +1,15 @@
+cmake_minimum_required(VERSION 3.0)
+
 # tigl demo cmake project
 # author: Martin Siggel
+project(tigl-demo)
 
-include_directories(${PROJECT_SOURCE_DIR}/src/api ${TIXI_INCLUDE_DIRS})
-
-
-set(demo_LIBS tigl3)
+if (NOT TARGET tigl3)
+    find_package(tigl3 CONFIG REQUIRED)
+endif()
 
 add_executable(c_demo c_demo.c)
-target_link_libraries(c_demo ${demo_LIBS})
+target_link_libraries(c_demo tigl3)
 
 install(FILES 
     c_demo.c

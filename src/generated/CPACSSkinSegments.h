@@ -58,8 +58,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSSkinSegment> >& GetSkinSegments() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSSkinSegment> >& GetSkinSegments();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSSkinSegment>>& GetSkinSegments() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSSkinSegment>>& GetSkinSegments();
 
         TIGL_EXPORT virtual CCPACSSkinSegment& AddSkinSegment();
         TIGL_EXPORT virtual void RemoveSkinSegment(CCPACSSkinSegment& ref);
@@ -69,28 +69,18 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSSkinSegment> > m_skinSegments;
+        std::vector<std::unique_ptr<CCPACSSkinSegment>> m_skinSegments;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSkinSegments(const CPACSSkinSegments&) = delete;
         CPACSSkinSegments& operator=(const CPACSSkinSegments&) = delete;
 
         CPACSSkinSegments(CPACSSkinSegments&&) = delete;
         CPACSSkinSegments& operator=(CPACSSkinSegments&&) = delete;
-#else
-        CPACSSkinSegments(const CPACSSkinSegments&);
-        CPACSSkinSegments& operator=(const CPACSSkinSegments&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSkinSegments = generated::CPACSSkinSegments;
 using CCPACSSkin = generated::CPACSSkin;
-#else
-typedef generated::CPACSSkinSegments CCPACSSkinSegments;
-typedef generated::CPACSSkin CCPACSSkin;
-#endif
 } // namespace tigl

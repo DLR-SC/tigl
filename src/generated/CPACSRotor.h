@@ -153,16 +153,11 @@ namespace generated
         CCPACSRotorHub                    m_rotorHub;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRotor(const CPACSRotor&) = delete;
         CPACSRotor& operator=(const CPACSRotor&) = delete;
 
         CPACSRotor(CPACSRotor&&) = delete;
         CPACSRotor& operator=(CPACSRotor&&) = delete;
-#else
-        CPACSRotor(const CPACSRotor&);
-        CPACSRotor& operator=(const CPACSRotor&);
-#endif
     };
 } // namespace generated
 

@@ -66,23 +66,14 @@ namespace generated
         std::string m_referenceUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEtaXsiPoint(const CPACSEtaXsiPoint&) = delete;
         CPACSEtaXsiPoint& operator=(const CPACSEtaXsiPoint&) = delete;
 
         CPACSEtaXsiPoint(CPACSEtaXsiPoint&&) = delete;
         CPACSEtaXsiPoint& operator=(CPACSEtaXsiPoint&&) = delete;
-#else
-        CPACSEtaXsiPoint(const CPACSEtaXsiPoint&);
-        CPACSEtaXsiPoint& operator=(const CPACSEtaXsiPoint&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSEtaXsiPoint = generated::CPACSEtaXsiPoint;
-#else
-typedef generated::CPACSEtaXsiPoint CCPACSEtaXsiPoint;
-#endif
 } // namespace tigl

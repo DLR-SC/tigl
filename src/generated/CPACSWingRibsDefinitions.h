@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWingRibsDefinition> >& GetRibsDefinitions() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWingRibsDefinition> >& GetRibsDefinitions();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWingRibsDefinition>>& GetRibsDefinitions() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWingRibsDefinition>>& GetRibsDefinitions();
 
         TIGL_EXPORT virtual CCPACSWingRibsDefinition& AddRibsDefinition();
         TIGL_EXPORT virtual void RemoveRibsDefinition(CCPACSWingRibsDefinition& ref);
@@ -68,19 +68,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSWingRibsDefinition> > m_ribsDefinitions;
+        std::vector<std::unique_ptr<CCPACSWingRibsDefinition>> m_ribsDefinitions;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingRibsDefinitions(const CPACSWingRibsDefinitions&) = delete;
         CPACSWingRibsDefinitions& operator=(const CPACSWingRibsDefinitions&) = delete;
 
         CPACSWingRibsDefinitions(CPACSWingRibsDefinitions&&) = delete;
         CPACSWingRibsDefinitions& operator=(CPACSWingRibsDefinitions&&) = delete;
-#else
-        CPACSWingRibsDefinitions(const CPACSWingRibsDefinitions&);
-        CPACSWingRibsDefinitions& operator=(const CPACSWingRibsDefinitions&);
-#endif
     };
 } // namespace generated
 

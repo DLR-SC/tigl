@@ -105,23 +105,14 @@ namespace generated
         boost::optional<CPACSMaterials>          m_materials;
 
     private:
-#ifdef HAVE_CPP11
         CPACSVehicles(const CPACSVehicles&) = delete;
         CPACSVehicles& operator=(const CPACSVehicles&) = delete;
 
         CPACSVehicles(CPACSVehicles&&) = delete;
         CPACSVehicles& operator=(CPACSVehicles&&) = delete;
-#else
-        CPACSVehicles(const CPACSVehicles&);
-        CPACSVehicles& operator=(const CPACSVehicles&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSVehicles = generated::CPACSVehicles;
-#else
-typedef generated::CPACSVehicles CCPACSVehicles;
-#endif
 } // namespace tigl

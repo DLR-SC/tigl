@@ -63,7 +63,7 @@ namespace generated
     {
         // read element rotorBlade
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBlade")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/rotorBlade", m_rotorBlades, reinterpret_cast<CCPACSRotorBlades*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/rotorBlade", m_rotorBlades, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSRotorBlades*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSWing> >& CPACSRotorBlades::GetRotorBlades() const
+    const std::vector<std::unique_ptr<CCPACSWing>>& CPACSRotorBlades::GetRotorBlades() const
     {
         return m_rotorBlades;
     }
 
-    std::vector<unique_ptr<CCPACSWing> >& CPACSRotorBlades::GetRotorBlades()
+    std::vector<std::unique_ptr<CCPACSWing>>& CPACSRotorBlades::GetRotorBlades()
     {
         return m_rotorBlades;
     }

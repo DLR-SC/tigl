@@ -37,7 +37,7 @@ namespace generated
     {
         // read element intermediateAirfoil
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateAirfoil")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/intermediateAirfoil", m_intermediateAirfoils);
+            tixi::TixiReadElements(tixiHandle, xpath + "/intermediateAirfoil", m_intermediateAirfoils, 1, tixi::xsdUnbounded);
         }
 
     }
@@ -49,12 +49,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSControlSurfaceAirfoil> >& CPACSControlSurfaceContours::GetIntermediateAirfoils() const
+    const std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>>& CPACSControlSurfaceContours::GetIntermediateAirfoils() const
     {
         return m_intermediateAirfoils;
     }
 
-    std::vector<unique_ptr<CPACSControlSurfaceAirfoil> >& CPACSControlSurfaceContours::GetIntermediateAirfoils()
+    std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>>& CPACSControlSurfaceContours::GetIntermediateAirfoils()
     {
         return m_intermediateAirfoils;
     }

@@ -57,7 +57,7 @@ namespace generated
     }
     inline CPACSControlSurfaceTrackType_trackType stringToCPACSControlSurfaceTrackType_trackType(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "tracktype1") { return trackType1; }
         if (toLower(value) == "tracktype2") { return trackType2; }
         if (toLower(value) == "tracktype3") { return trackType3; }
@@ -70,16 +70,5 @@ namespace generated
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSControlSurfaceTrackType_trackType = generated::CPACSControlSurfaceTrackType_trackType;
-#else
-typedef generated::CPACSControlSurfaceTrackType_trackType ECPACSControlSurfaceTrackType_trackType;
-#endif
-using generated::trackType1;
-using generated::trackType2;
-using generated::trackType3;
-using generated::trackType4;
-using generated::trackType5;
-using generated::trackType6;
-using generated::trackType7;
 } // namespace tigl

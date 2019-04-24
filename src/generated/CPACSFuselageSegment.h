@@ -105,16 +105,11 @@ namespace generated
         boost::optional<CCPACSGuideCurves> m_guideCurves;
 
     private:
-#ifdef HAVE_CPP11
         CPACSFuselageSegment(const CPACSFuselageSegment&) = delete;
         CPACSFuselageSegment& operator=(const CPACSFuselageSegment&) = delete;
 
         CPACSFuselageSegment(CPACSFuselageSegment&&) = delete;
         CPACSFuselageSegment& operator=(CPACSFuselageSegment&&) = delete;
-#else
-        CPACSFuselageSegment(const CPACSFuselageSegment&);
-        CPACSFuselageSegment& operator=(const CPACSFuselageSegment&);
-#endif
     };
 } // namespace generated
 

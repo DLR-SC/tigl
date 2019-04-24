@@ -192,7 +192,7 @@ private:
                                                     * the fuselage loft at the price of a
                                                     * nonsmooth fuselage                       */
 
-    unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
+    std::unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
 
 } // end namespace tigl

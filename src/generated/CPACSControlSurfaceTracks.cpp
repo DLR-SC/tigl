@@ -63,7 +63,7 @@ namespace generated
     {
         // read element track
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/track")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/track", m_tracks, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/track", m_tracks, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSControlSurfaceTrackType> >& CPACSControlSurfaceTracks::GetTracks() const
+    const std::vector<std::unique_ptr<CCPACSControlSurfaceTrackType>>& CPACSControlSurfaceTracks::GetTracks() const
     {
         return m_tracks;
     }
 
-    std::vector<unique_ptr<CCPACSControlSurfaceTrackType> >& CPACSControlSurfaceTracks::GetTracks()
+    std::vector<std::unique_ptr<CCPACSControlSurfaceTrackType>>& CPACSControlSurfaceTracks::GetTracks()
     {
         return m_tracks;
     }

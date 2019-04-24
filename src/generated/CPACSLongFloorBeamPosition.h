@@ -114,16 +114,11 @@ namespace generated
         boost::optional<CPACSInterpolation>         m_interpolation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSLongFloorBeamPosition(const CPACSLongFloorBeamPosition&) = delete;
         CPACSLongFloorBeamPosition& operator=(const CPACSLongFloorBeamPosition&) = delete;
 
         CPACSLongFloorBeamPosition(CPACSLongFloorBeamPosition&&) = delete;
         CPACSLongFloorBeamPosition& operator=(CPACSLongFloorBeamPosition&&) = delete;
-#else
-        CPACSLongFloorBeamPosition(const CPACSLongFloorBeamPosition&);
-        CPACSLongFloorBeamPosition& operator=(const CPACSLongFloorBeamPosition&);
-#endif
     };
 } // namespace generated
 

@@ -47,35 +47,25 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSControlSurfaceAirfoil> >& GetIntermediateAirfoils() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSControlSurfaceAirfoil> >& GetIntermediateAirfoils();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>>& GetIntermediateAirfoils() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>>& GetIntermediateAirfoils();
 
         TIGL_EXPORT virtual CPACSControlSurfaceAirfoil& AddIntermediateAirfoil();
         TIGL_EXPORT virtual void RemoveIntermediateAirfoil(CPACSControlSurfaceAirfoil& ref);
 
     protected:
-        std::vector<unique_ptr<CPACSControlSurfaceAirfoil> > m_intermediateAirfoils;
+        std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>> m_intermediateAirfoils;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceContours(const CPACSControlSurfaceContours&) = delete;
         CPACSControlSurfaceContours& operator=(const CPACSControlSurfaceContours&) = delete;
 
         CPACSControlSurfaceContours(CPACSControlSurfaceContours&&) = delete;
         CPACSControlSurfaceContours& operator=(CPACSControlSurfaceContours&&) = delete;
-#else
-        CPACSControlSurfaceContours(const CPACSControlSurfaceContours&);
-        CPACSControlSurfaceContours& operator=(const CPACSControlSurfaceContours&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfaceContours = generated::CPACSControlSurfaceContours;
 using CCPACSControlSurfaceAirfoil = generated::CPACSControlSurfaceAirfoil;
-#else
-typedef generated::CPACSControlSurfaceContours CCPACSControlSurfaceContours;
-typedef generated::CPACSControlSurfaceAirfoil CCPACSControlSurfaceAirfoil;
-#endif
 } // namespace tigl

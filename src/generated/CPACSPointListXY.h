@@ -50,8 +50,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSPointXY> >& GetPoints() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSPointXY> >& GetPoints();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSPointXY>>& GetPoints() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSPointXY>>& GetPoints();
 
         TIGL_EXPORT virtual CCPACSPointXY& AddPoint();
         TIGL_EXPORT virtual void RemovePoint(CCPACSPointXY& ref);
@@ -60,19 +60,14 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Data points in x-y-space.
-        std::vector<unique_ptr<CCPACSPointXY> > m_points;
+        std::vector<std::unique_ptr<CCPACSPointXY>> m_points;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPointListXY(const CPACSPointListXY&) = delete;
         CPACSPointListXY& operator=(const CPACSPointListXY&) = delete;
 
         CPACSPointListXY(CPACSPointListXY&&) = delete;
         CPACSPointListXY& operator=(CPACSPointListXY&&) = delete;
-#else
-        CPACSPointListXY(const CPACSPointListXY&);
-        CPACSPointListXY& operator=(const CPACSPointListXY&);
-#endif
     };
 } // namespace generated
 

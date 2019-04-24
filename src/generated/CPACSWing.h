@@ -190,16 +190,11 @@ namespace generated
         boost::optional<CCPACSWingComponentSegments> m_componentSegments;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWing(const CPACSWing&) = delete;
         CPACSWing& operator=(const CPACSWing&) = delete;
 
         CPACSWing(CPACSWing&&) = delete;
         CPACSWing& operator=(CPACSWing&&) = delete;
-#else
-        CPACSWing(const CPACSWing&);
-        CPACSWing& operator=(const CPACSWing&);
-#endif
     };
 } // namespace generated
 

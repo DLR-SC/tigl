@@ -99,23 +99,14 @@ namespace generated
         CCPACSControlSurfaceSteps      m_steps;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfacePath(const CPACSControlSurfacePath&) = delete;
         CPACSControlSurfacePath& operator=(const CPACSControlSurfacePath&) = delete;
 
         CPACSControlSurfacePath(CPACSControlSurfacePath&&) = delete;
         CPACSControlSurfacePath& operator=(CPACSControlSurfacePath&&) = delete;
-#else
-        CPACSControlSurfacePath(const CPACSControlSurfacePath&);
-        CPACSControlSurfacePath& operator=(const CPACSControlSurfacePath&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfacePath = generated::CPACSControlSurfacePath;
-#else
-typedef generated::CPACSControlSurfacePath CCPACSControlSurfacePath;
-#endif
 } // namespace tigl

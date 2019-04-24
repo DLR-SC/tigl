@@ -61,7 +61,7 @@ namespace generated
     }
     inline CPACSProfileBasedStructuralElement_standardProfileType stringToCPACSProfileBasedStructuralElement_standardProfileType(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "c") { return C; }
         if (toLower(value) == "t") { return T; }
         if (toLower(value) == "z") { return Z; }
@@ -76,18 +76,5 @@ namespace generated
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSProfileBasedStructuralElement_standardProfileType = generated::CPACSProfileBasedStructuralElement_standardProfileType;
-#else
-typedef generated::CPACSProfileBasedStructuralElement_standardProfileType ECPACSProfileBasedStructuralElement_standardProfileType;
-#endif
-using generated::C;
-using generated::T;
-using generated::Z;
-using generated::L;
-using generated::HAT;
-using generated::ROD;
-using generated::TUBE;
-using generated::BAR;
-using generated::BOX;
 } // namespace tigl

@@ -56,8 +56,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSFrame> >& GetFrames() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSFrame> >& GetFrames();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFrame>>& GetFrames() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFrame>>& GetFrames();
 
         TIGL_EXPORT virtual CCPACSFrame& AddFrame();
         TIGL_EXPORT virtual void RemoveFrame(CCPACSFrame& ref);
@@ -67,19 +67,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSFrame> > m_frames;
+        std::vector<std::unique_ptr<CCPACSFrame>> m_frames;
 
     private:
-#ifdef HAVE_CPP11
         CPACSFramesAssembly(const CPACSFramesAssembly&) = delete;
         CPACSFramesAssembly& operator=(const CPACSFramesAssembly&) = delete;
 
         CPACSFramesAssembly(CPACSFramesAssembly&&) = delete;
         CPACSFramesAssembly& operator=(CPACSFramesAssembly&&) = delete;
-#else
-        CPACSFramesAssembly(const CPACSFramesAssembly&);
-        CPACSFramesAssembly& operator=(const CPACSFramesAssembly&);
-#endif
     };
 } // namespace generated
 

@@ -110,23 +110,14 @@ namespace generated
         CPACSCap                 m_lowerCap;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingRibCell(const CPACSWingRibCell&) = delete;
         CPACSWingRibCell& operator=(const CPACSWingRibCell&) = delete;
 
         CPACSWingRibCell(CPACSWingRibCell&&) = delete;
         CPACSWingRibCell& operator=(CPACSWingRibCell&&) = delete;
-#else
-        CPACSWingRibCell(const CPACSWingRibCell&);
-        CPACSWingRibCell& operator=(const CPACSWingRibCell&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSWingRibCell = generated::CPACSWingRibCell;
-#else
-typedef generated::CPACSWingRibCell CCPACSWingRibCell;
-#endif
 } // namespace tigl

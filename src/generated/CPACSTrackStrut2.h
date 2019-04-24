@@ -51,23 +51,14 @@ namespace generated
         CCPACSMaterialDefinition m_material;
 
     private:
-#ifdef HAVE_CPP11
         CPACSTrackStrut2(const CPACSTrackStrut2&) = delete;
         CPACSTrackStrut2& operator=(const CPACSTrackStrut2&) = delete;
 
         CPACSTrackStrut2(CPACSTrackStrut2&&) = delete;
         CPACSTrackStrut2& operator=(CPACSTrackStrut2&&) = delete;
-#else
-        CPACSTrackStrut2(const CPACSTrackStrut2&);
-        CPACSTrackStrut2& operator=(const CPACSTrackStrut2&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSTrackStrut2 = generated::CPACSTrackStrut2;
-#else
-typedef generated::CPACSTrackStrut2 CCPACSTrackStrut2;
-#endif
 } // namespace tigl

@@ -47,7 +47,7 @@ namespace generated
     }
     inline CPACSPointAbsRelType_refType stringToECPACSTranslationType(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "absglobal") { return absGlobal; }
         if (toLower(value) == "abslocal") { return absLocal; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSPointAbsRelType_refType");

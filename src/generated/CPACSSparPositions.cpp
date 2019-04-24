@@ -63,7 +63,7 @@ namespace generated
     {
         // read element sparPosition
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPosition")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/sparPosition", m_sparPositions, 2, tixi::xsdUnbounded, reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPositions() const
+    const std::vector<std::unique_ptr<CCPACSWingSparPosition>>& CPACSSparPositions::GetSparPositions() const
     {
         return m_sparPositions;
     }
 
-    std::vector<unique_ptr<CCPACSWingSparPosition> >& CPACSSparPositions::GetSparPositions()
+    std::vector<std::unique_ptr<CCPACSWingSparPosition>>& CPACSSparPositions::GetSparPositions()
     {
         return m_sparPositions;
     }

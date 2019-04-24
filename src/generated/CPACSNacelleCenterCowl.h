@@ -73,25 +73,16 @@ namespace generated
         std::string m_curveUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSNacelleCenterCowl(const CPACSNacelleCenterCowl&) = delete;
         CPACSNacelleCenterCowl& operator=(const CPACSNacelleCenterCowl&) = delete;
 
         CPACSNacelleCenterCowl(CPACSNacelleCenterCowl&&) = delete;
         CPACSNacelleCenterCowl& operator=(CPACSNacelleCenterCowl&&) = delete;
-#else
-        CPACSNacelleCenterCowl(const CPACSNacelleCenterCowl&);
-        CPACSNacelleCenterCowl& operator=(const CPACSNacelleCenterCowl&);
-#endif
     };
 } // namespace generated
 
 // CPACSNacelleCenterCowl is customized, use type CCPACSNacelleCenterCowl directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSEngineNacelle = generated::CPACSEngineNacelle;
-#else
-typedef generated::CPACSEngineNacelle CCPACSEngineNacelle;
-#endif
 } // namespace tigl

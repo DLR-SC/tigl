@@ -101,23 +101,14 @@ namespace generated
         double           m_scalZ;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceAirfoil(const CPACSControlSurfaceAirfoil&) = delete;
         CPACSControlSurfaceAirfoil& operator=(const CPACSControlSurfaceAirfoil&) = delete;
 
         CPACSControlSurfaceAirfoil(CPACSControlSurfaceAirfoil&&) = delete;
         CPACSControlSurfaceAirfoil& operator=(CPACSControlSurfaceAirfoil&&) = delete;
-#else
-        CPACSControlSurfaceAirfoil(const CPACSControlSurfaceAirfoil&);
-        CPACSControlSurfaceAirfoil& operator=(const CPACSControlSurfaceAirfoil&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfaceAirfoil = generated::CPACSControlSurfaceAirfoil;
-#else
-typedef generated::CPACSControlSurfaceAirfoil CCPACSControlSurfaceAirfoil;
-#endif
 } // namespace tigl

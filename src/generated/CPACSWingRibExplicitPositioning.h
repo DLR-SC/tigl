@@ -84,16 +84,11 @@ namespace generated
         double      m_etaEnd;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingRibExplicitPositioning(const CPACSWingRibExplicitPositioning&) = delete;
         CPACSWingRibExplicitPositioning& operator=(const CPACSWingRibExplicitPositioning&) = delete;
 
         CPACSWingRibExplicitPositioning(CPACSWingRibExplicitPositioning&&) = delete;
         CPACSWingRibExplicitPositioning& operator=(CPACSWingRibExplicitPositioning&&) = delete;
-#else
-        CPACSWingRibExplicitPositioning(const CPACSWingRibExplicitPositioning&);
-        CPACSWingRibExplicitPositioning& operator=(const CPACSWingRibExplicitPositioning&);
-#endif
     };
 } // namespace generated
 

@@ -52,8 +52,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSSheetBasedStructuralElement> >& GetSheetBasedStructuralElements() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSSheetBasedStructuralElement> >& GetSheetBasedStructuralElements();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSheetBasedStructuralElement>>& GetSheetBasedStructuralElements() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSheetBasedStructuralElement>>& GetSheetBasedStructuralElements();
 
         TIGL_EXPORT virtual CPACSSheetBasedStructuralElement& AddSheetBasedStructuralElement();
         TIGL_EXPORT virtual void RemoveSheetBasedStructuralElement(CPACSSheetBasedStructuralElement& ref);
@@ -61,28 +61,18 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSSheetBasedStructuralElement> > m_sheetBasedStructuralElements;
+        std::vector<std::unique_ptr<CPACSSheetBasedStructuralElement>> m_sheetBasedStructuralElements;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSheetBasedStructuralElements(const CPACSSheetBasedStructuralElements&) = delete;
         CPACSSheetBasedStructuralElements& operator=(const CPACSSheetBasedStructuralElements&) = delete;
 
         CPACSSheetBasedStructuralElements(CPACSSheetBasedStructuralElements&&) = delete;
         CPACSSheetBasedStructuralElements& operator=(CPACSSheetBasedStructuralElements&&) = delete;
-#else
-        CPACSSheetBasedStructuralElements(const CPACSSheetBasedStructuralElements&);
-        CPACSSheetBasedStructuralElements& operator=(const CPACSSheetBasedStructuralElements&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSheetBasedStructuralElements = generated::CPACSSheetBasedStructuralElements;
 using CCPACSSheetBasedStructuralElement = generated::CPACSSheetBasedStructuralElement;
-#else
-typedef generated::CPACSSheetBasedStructuralElements CCPACSSheetBasedStructuralElements;
-typedef generated::CPACSSheetBasedStructuralElement CCPACSSheetBasedStructuralElement;
-#endif
 } // namespace tigl

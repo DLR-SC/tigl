@@ -79,23 +79,14 @@ namespace generated
         double           m_rotZ;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCutOutProfile(const CPACSCutOutProfile&) = delete;
         CPACSCutOutProfile& operator=(const CPACSCutOutProfile&) = delete;
 
         CPACSCutOutProfile(CPACSCutOutProfile&&) = delete;
         CPACSCutOutProfile& operator=(CPACSCutOutProfile&&) = delete;
-#else
-        CPACSCutOutProfile(const CPACSCutOutProfile&);
-        CPACSCutOutProfile& operator=(const CPACSCutOutProfile&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCutOutProfile = generated::CPACSCutOutProfile;
-#else
-typedef generated::CPACSCutOutProfile CCPACSCutOutProfile;
-#endif
 } // namespace tigl

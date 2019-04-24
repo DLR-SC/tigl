@@ -86,23 +86,14 @@ namespace generated
         boost::optional<CPACSEngineNacelle> m_nacelle;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEngine(const CPACSEngine&) = delete;
         CPACSEngine& operator=(const CPACSEngine&) = delete;
 
         CPACSEngine(CPACSEngine&&) = delete;
         CPACSEngine& operator=(CPACSEngine&&) = delete;
-#else
-        CPACSEngine(const CPACSEngine&);
-        CPACSEngine& operator=(const CPACSEngine&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSEngine = generated::CPACSEngine;
-#else
-typedef generated::CPACSEngine CCPACSEngine;
-#endif
 } // namespace tigl

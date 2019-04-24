@@ -166,11 +166,10 @@ EtaXsi transformEtaXsiToCSOrTed(EtaXsi etaXsi, const std::string& referenceUid, 
         const CCPACSWingSegment& segment = *reinterpret_cast<CCPACSWingSegment*>(tp.ptr);
         const boost::optional<CCPACSWingComponentSegments>& css = segment.GetParent()->GetParent<CCPACSWing>()->GetComponentSegments();
         if (css) {
-            std::vector<unique_ptr<CCPACSWingComponentSegment>>::const_iterator it;
-            for (it = css->GetComponentSegments().begin(); it != css->GetComponentSegments().end(); ++it) {
-                if ((*it)->IsSegmentContained(segment)) {
+            for (const auto& cs : css->GetComponentSegments()) {
+                if (cs->IsSegmentContained(segment)) {
                     EtaXsi r;
-                    (*it)->GetEtaXsiFromSegmentEtaXsi(referenceUid, etaXsi.eta, etaXsi.xsi, r.eta, r.xsi);
+                    cs->GetEtaXsiFromSegmentEtaXsi(referenceUid, etaXsi.eta, etaXsi.xsi, r.eta, r.xsi);
                     return r;
                 }
             }

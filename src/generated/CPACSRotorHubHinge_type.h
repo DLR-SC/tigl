@@ -49,7 +49,7 @@ namespace generated
     }
     inline CPACSRotorHubHinge_type stringToCPACSRotorHubHinge_type(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "flap") { return flap; }
         if (toLower(value) == "pitch") { return pitch; }
         if (toLower(value) == "leadlag") { return leadLag; }
@@ -58,12 +58,5 @@ namespace generated
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSRotorHubHinge_type = generated::CPACSRotorHubHinge_type;
-#else
-typedef generated::CPACSRotorHubHinge_type ECPACSRotorHubHinge_type;
-#endif
-using generated::flap;
-using generated::pitch;
-using generated::leadLag;
 } // namespace tigl

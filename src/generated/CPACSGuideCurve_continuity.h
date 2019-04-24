@@ -53,7 +53,7 @@ namespace generated
     }
     inline CPACSGuideCurve_continuity stringToCPACSGuideCurve_continuity(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "c0") { return C0; }
         if (toLower(value) == "c1 from previous") { return C1_from_previous; }
         if (toLower(value) == "c2 from previous") { return C2_from_previous; }
@@ -64,14 +64,5 @@ namespace generated
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSGuideCurve_continuity = generated::CPACSGuideCurve_continuity;
-#else
-typedef generated::CPACSGuideCurve_continuity ECPACSGuideCurve_continuity;
-#endif
-using generated::C0;
-using generated::C1_from_previous;
-using generated::C2_from_previous;
-using generated::C1_to_previous;
-using generated::C2_to_previous;
 } // namespace tigl

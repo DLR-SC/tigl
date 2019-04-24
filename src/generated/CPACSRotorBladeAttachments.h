@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& GetRotorBladeAttachments() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSRotorBladeAttachment> >& GetRotorBladeAttachments();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSRotorBladeAttachment>>& GetRotorBladeAttachments() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSRotorBladeAttachment>>& GetRotorBladeAttachments();
 
         TIGL_EXPORT virtual CCPACSRotorBladeAttachment& AddRotorBladeAttachment();
         TIGL_EXPORT virtual void RemoveRotorBladeAttachment(CCPACSRotorBladeAttachment& ref);
@@ -68,19 +68,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSRotorBladeAttachment> > m_rotorBladeAttachments;
+        std::vector<std::unique_ptr<CCPACSRotorBladeAttachment>> m_rotorBladeAttachments;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRotorBladeAttachments(const CPACSRotorBladeAttachments&) = delete;
         CPACSRotorBladeAttachments& operator=(const CPACSRotorBladeAttachments&) = delete;
 
         CPACSRotorBladeAttachments(CPACSRotorBladeAttachments&&) = delete;
         CPACSRotorBladeAttachments& operator=(CPACSRotorBladeAttachments&&) = delete;
-#else
-        CPACSRotorBladeAttachments(const CPACSRotorBladeAttachments&);
-        CPACSRotorBladeAttachments& operator=(const CPACSRotorBladeAttachments&);
-#endif
     };
 } // namespace generated
 

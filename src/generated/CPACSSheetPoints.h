@@ -50,23 +50,14 @@ namespace generated
         std::vector<std::string> m_sheetPointUIDs;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSheetPoints(const CPACSSheetPoints&) = delete;
         CPACSSheetPoints& operator=(const CPACSSheetPoints&) = delete;
 
         CPACSSheetPoints(CPACSSheetPoints&&) = delete;
         CPACSSheetPoints& operator=(CPACSSheetPoints&&) = delete;
-#else
-        CPACSSheetPoints(const CPACSSheetPoints&);
-        CPACSSheetPoints& operator=(const CPACSSheetPoints&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSheetPoints = generated::CPACSSheetPoints;
-#else
-typedef generated::CPACSSheetPoints CCPACSSheetPoints;
-#endif
 } // namespace tigl

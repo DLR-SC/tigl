@@ -88,8 +88,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSWing> >& GetWings() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSWing> >& GetWings();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWing>>& GetWings() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWing>>& GetWings();
 
         TIGL_EXPORT virtual CCPACSWing& AddWing();
         TIGL_EXPORT virtual void RemoveWing(CCPACSWing& ref);
@@ -100,19 +100,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSWing> > m_wings;
+        std::vector<std::unique_ptr<CCPACSWing>> m_wings;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWings(const CPACSWings&) = delete;
         CPACSWings& operator=(const CPACSWings&) = delete;
 
         CPACSWings(CPACSWings&&) = delete;
         CPACSWings& operator=(CPACSWings&&) = delete;
-#else
-        CPACSWings(const CPACSWings&);
-        CPACSWings& operator=(const CPACSWings&);
-#endif
     };
 } // namespace generated
 
