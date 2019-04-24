@@ -362,6 +362,42 @@ TEST(TiglMath, CTiglTransform_Decompose)
     EXPECT_NEAR(T[0], 0., 1e-8);
 }
 
+TEST(TiglMath, CTiglTransform_Decompose2)
+{
+    // Simulate the case where a cpacs transformation as a rotation RX:0;RY:30;RZ:20
+    // Remember that cpacs transformation has intrinsic rotation X,Y',Z'' so it corresponding to extrinsic rotation Z,Y,X
+    // This above process is similar at the one used at CCPACSTransformation::updateMatrix
+    tigl::CTiglTransformation rot;
+    rot.AddRotationZ(20);
+    rot.AddRotationY(30);
+    rot.AddRotationX(0);
+
+    // So now, as we can expected rotating the x basis vector (1,0,0) will output (0.81379768134, 0.34202014332 , -0.46984631039);
+    gp_Pnt resultV = rot.Transform(gp_Pnt(1., 0. ,0.));
+    gp_Pnt expectV = gp_Pnt(0.81379768134, 0.34202014332 , -0.46984631039);
+    EXPECT_NEAR(resultV.X(), expectV.X(), 1e-8 );
+    EXPECT_NEAR(resultV.Y(), expectV.Y(), 1e-8 );
+    EXPECT_NEAR(resultV.Z(), expectV.Z(), 1e-8 );
+
+    // but decomposing the rotation seems to output the X,Y,Z extrinsic angle
+    double S[3] = {0., 0., 0.};
+    double R[3] = {0., 0., 0.};
+    double T[3] = {0., 0., 0.};
+    rot.Decompose(S, R, T);
+
+    // so if we put back this value in transformation
+    tigl::CTiglTransformation rot2;
+    rot2.AddRotationZ(R[2]);
+    rot2.AddRotationY(R[1]);
+    rot2.AddRotationX(R[0]);
+
+    // we do not get the expected result
+    resultV = rot2.Transform(gp_Pnt(1., 0., 0.));
+    EXPECT_NEAR(resultV.X(), expectV.X(), 1e-8 );
+    EXPECT_NEAR(resultV.Y(), expectV.Y(), 1e-8 );
+    EXPECT_NEAR(resultV.Z(), expectV.Z(), 1e-8 );
+}
+
 TEST(TiglMath, CTiglTransform_setTransformationMatrix)
 {
     double scale[3] = {2., 4., 8.};
