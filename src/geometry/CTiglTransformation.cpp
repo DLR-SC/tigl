@@ -295,6 +295,15 @@ void CTiglTransformation::AddRotationZ(double degreeZ)
     PreMultiply(trans);
 }
 
+// Adds a rotation in intrinsic x-y'-z'' Euler convention to the matrix
+void CTiglTransformation::AddRotationIntrinsicXYZ(double phi, double theta, double psi)
+{
+    // intrinsic x-y'-z'' corresponds to extrinsic z-y-x, i.e. Rx*Ry*Rz:
+    AddRotationZ(psi);
+    AddRotationY(theta);
+    AddRotationX(phi);
+}
+
 // Adds projection an xy plane by setting the z coordinate to 0
 void CTiglTransformation::AddProjectionOnXYPlane()
 {

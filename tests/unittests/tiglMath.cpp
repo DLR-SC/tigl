@@ -407,9 +407,7 @@ TEST(TiglMath, CTiglTransform_setTransformationMatrix)
     // create CPACS-conform tigl-transformation (i.e. scaling -> euler-xyz-Rotation -> translation)
     tigl::CTiglTransformation tiglTrafo;
     tiglTrafo.AddScaling(scale[0], scale[1], scale[2]);
-    tiglTrafo.AddRotationZ(rot[2]);
-    tiglTrafo.AddRotationY(rot[1]);
-    tiglTrafo.AddRotationX(rot[0]);
+    tiglTrafo.AddRotationIntrinsicXYZ(rot[0], rot[1], rot[2]);
     tiglTrafo.AddTranslation(trans[0], trans[1], trans[2]);
 
     tigl::CCPACSTransformation cpacsTrafo(NULL);
