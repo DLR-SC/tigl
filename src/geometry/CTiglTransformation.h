@@ -82,6 +82,9 @@ public:
     TIGL_EXPORT void AddRotationY(double degreeY);
     TIGL_EXPORT void AddRotationZ(double degreeZ);
 
+    // Adds a rotation in intrinsic x-y'-z'' Euler convention to the matrix
+    TIGL_EXPORT void AddRotationIntrinsicXYZ(double phi, double theta, double psi);
+
     // Adds projection on xy plane by setting the z coordinate to 0
     TIGL_EXPORT void AddProjectionOnXYPlane();
 

@@ -295,6 +295,15 @@ void CTiglTransformation::AddRotationZ(double degreeZ)
     PreMultiply(trans);
 }
 
+// Adds a rotation in intrinsic x-y'-z'' Euler convention to the matrix
+void CTiglTransformation::AddRotationIntrinsicXYZ(double phi, double theta, double psi)
+{
+    // intrinsic x-y'-z'' corresponds to extrinsic z-y-x, i.e. Rx*Ry*Rz:
+    AddRotationZ(psi);
+    AddRotationY(theta);
+    AddRotationX(phi);
+}
+
 // Adds projection an xy plane by setting the z coordinate to 0
 void CTiglTransformation::AddProjectionOnXYPlane()
 {
@@ -538,22 +547,32 @@ void CTiglTransformation::Decompose(double scale[3], double rotation[3], double 
         LOG(WARNING) << "CTiglTransformation::Decompose: The Transformation contains a Shearing, that will be discarded in the decomposition!";
     }
 
-    // calculate extrinsic Euler angles from rotation matrix U
-    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf
-    if( fabs( fabs(U(3,1)) - 1) > 1e-10 ){
-        rotation[1] = -asin(U(3,1));
+    // calculate intrinsic Euler angles from rotation matrix U
+    //
+    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf, where the same argumentation
+    // is used for intrinsic x,y',z'' angles and the rotatation matrix
+    //
+    //                |                        cos(y)*cos(z) |               -        cos(y)*cos(z) |         sin(y) |
+    // U = Rx*Ry*Rz = | cos(x)*sin(z) + sin(x)*sin(y)*cos(z) | cos(x)*cos(z) - sin(x)*sin(y)*sin(z) | -sin(x)*cos(y) |
+    //                | sin(x)*sin(z) - cos(x)*sin(y)*cos(z) | sin(x)*cos(z) + cos(x)*sin(y)*sin*z( |  cos(x)*cos(y) |
+    //
+    // rather than extrinsic angles and the Rotation matrix mentioned in that pdf.
+
+    if( fabs( fabs(U(1, 3)) - 1) > 1e-10 ){
+        rotation[1] = asin(U(1, 3));
         double cosTheta = cos(rotation[1]);
-        rotation[0] = atan2(U(3,2)/cosTheta, U(3,3)/cosTheta);
-        rotation[2] = atan2(U(2,1)/cosTheta, U(1,1)/cosTheta);
+        rotation[0] = -atan2(U(2,3)/cosTheta, U(3,3)/cosTheta);
+        rotation[2] = -atan2(U(1,2)/cosTheta, U(1,1)/cosTheta);
     }
     else {
-        if ( fabs(U(3,1) + 1) > 1e-10 ) {
-            rotation[0] = rotation[2] + atan2(U(1,2), U(1,3));
-            rotation[1] = M_PI/2;
+        rotation[0] = 0;
+        if ( fabs(U(1,3) + 1) > 1e-10 ) {
+            rotation[2] = -rotation[0] - atan2(U(2,1), U(2,2));
+            rotation[1] = -M_PI/2;
         }
         else{
-            rotation[0] = -rotation[2] + atan2(-U(1,2), -U(1,3));
-            rotation[1] = -M_PI/2;
+            rotation[2] = -rotation[0] + atan2(U(2,1), U(2,2));
+            rotation[1] = M_PI/2;
         }
     }
 
