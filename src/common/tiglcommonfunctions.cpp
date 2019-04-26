@@ -274,8 +274,9 @@ Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire &wire, gp_Pnt p, gp_Di
             }
         }
         else {
-            tigl::CTiglProjectPointOnCurveAtAngle proj(p, curve, angle, rotationAxisAroundP);
-            if (proj.NbPoints() > 0 && proj.Point(1).Distance(p) < smallestDist) {
+            Handle(Geom_TrimmedCurve) trimmedCurve = new Geom_TrimmedCurve(curve, firstParam, lastParam);
+            tigl::CTiglProjectPointOnCurveAtAngle proj(p, trimmedCurve, angle, rotationAxisAroundP);
+            if (proj.IsDone() && proj.NbPoints() > 0 && proj.Point(1).Distance(p) < smallestDist) {
                 smallestDist = proj.Point(1).Distance(p);
                 edgeIndex = iwire;
                 alpha = proj.Parameter(1);
