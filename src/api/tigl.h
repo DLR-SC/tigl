@@ -578,6 +578,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConf
 * the point is equal to the trailing edge on the outer section of the given segment. The
 * point is returned in absolute world coordinates.
 *
+* The behavior of this function can be modified using ::tiglWingSetGetPointBehavior. The
+* options are asParametersOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned (default). For the second, the inputs are interpreted as eta-xsi coordinates
+* on the chordface spanned by the leading edge and trailing edge points of the inner and outer elements.
+*
 *
 * @param[in]  cpacsHandle  Handle for the CPACS configuration
 * @param[in]  wingIndex    The index of the wing, starting at 1
@@ -614,6 +620,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
 * the point is equal to the trailing edge on the outer section of the given segment. The
 * point is returned in absolute world coordinates.
 *
+* The behavior of this function can be modified using ::tiglWingSetGetPointBehavior. The
+* options are asParametersOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned (default). For the second, the inputs are interpreted as eta-xsi coordinates
+* on the chordface spanned by the leading edge and trailing edge points of the inner and outer elements.
+*
 *
 * @param[in]  cpacsHandle  Handle for the CPACS configuration
 * @param[in]  wingIndex    The index of the wing, starting at 1
@@ -639,6 +651,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
                                                         double* pointXPtr,
                                                         double* pointYPtr,
                                                         double* pointZPtr);
+
+/**
+@brief Sets the behavior of the ::tiglWingGetUpperPoint and ::tiglWingGetLowerPoint functions.
+*
+* This function sets the behavior of the ::tiglWingGetUpperPoint and ::tiglWingGetLowerPoint functions.
+* The options are asParameterOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned. For the second, the inputs are interpreted as eta-xsi coordinates
+* on the chordface spanned by the leading edge and trailing edge points of the inner and outer elements.
+*
+*
+* @param[in]  cpacsHandle   Handle for the CPACS configuration
+* @param[in]  behavior      enum describing the desired behavior of the function.
+*                           Possible values are asParameterOnSurface and onLinearLoft.
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_INDEX_ERROR if fuselageIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              TiglGetPointBehavior behavior);
 
 /**
 * @brief Returns a point on the wing chord surface for a
@@ -1296,7 +1331,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 
 
 /**
-* @brief Returns x,y,z koordinates for a given eta and xsi on a componentSegment.
+* @brief Returns x,y,z coordinates for a given eta and xsi on a componentSegment.
 *
 *
 * @param[in]  cpacsHandle               Handle for the CPACS configuration
@@ -1640,6 +1675,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCenterLineLength(TiglCPACSConfi
 * segment, for eta = 1.0 it lies on the end profile of the segment. For zeta = 0.0 the point is the
 * identical to the start point of the profile wire, for zeta = 1.0 it is identical to the last profile point.
 * The point is returned in absolute world coordinates.
+*
+* The behavior of this function can be modified using ::tiglFuselageSetGetPointBehavior. The
+* options are asParametersOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned (default). For the second, the inputs are interpreted as eta coordinates
+* along the center line of the fuselage segment, xsi is interpreted as a relative
+* circumference between 0 and 1, and the resulting point lies on the linear loft of
+* the fuselage segment.
 *
 *
 * @param[in]  cpacsHandle   Handle for the CPACS configuration

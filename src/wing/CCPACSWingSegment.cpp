@@ -185,7 +185,7 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
     , CTiglAbstractSegment<CCPACSWingSegment>(parent->GetSegments(), parent->GetParentComponent())
     , innerConnection(this)
     , outerConnection(this)
-    , surfaceCoordCache(*this, &CCPACSWingSegment::MakeChordSurface)
+    , surfaceCache(*this, &CCPACSWingSegment::MakeSurfaces)
     , areaCache(*this, &CCPACSWingSegment::ComputeArea)
     , volumeCache(*this, &CCPACSWingSegment::ComputeVolume)
     , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
@@ -483,13 +483,13 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
 // Gets the upper point in relative wing coordinates for a given eta and xsi
 gp_Pnt CCPACSWingSegment::GetUpperPoint(double eta, double xsi) const
 {
-    return GetPoint(eta, xsi, true);
+    return GetPoint(eta, xsi, true, GLOBAL_COORDINATE_SYSTEM, getPointBehavior);
 }
 
 // Gets the lower point in relative wing coordinates for a given eta and xsi
 gp_Pnt CCPACSWingSegment::GetLowerPoint(double eta, double xsi) const
 {
-    return GetPoint(eta, xsi, false);
+    return GetPoint(eta, xsi, false, GLOBAL_COORDINATE_SYSTEM, getPointBehavior);
 }
 
 // Returns the inner section UID of this segment
@@ -576,7 +576,12 @@ double CCPACSWingSegment::GetSurfaceArea() const
 
 void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const
 {
-    gp_Pnt pnt = GetPoint(eta,xsi, isFromUpper);
+    if (eta < 0.0 || eta > 1.0) {
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::etaXsiToUV", TIGL_ERROR);
+    }
+    if (xsi < 0.0 || xsi > 1.0) {
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingSegment::etaXsiToUV", TIGL_ERROR);
+    }
 
     Handle(Geom_Surface) surf;
     if (isFromUpper) {
@@ -586,23 +591,15 @@ void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, dou
         surf = GetLowerSurface();
     }
 
-    GeomAPI_ProjectPointOnSurf Proj(pnt, surf);
-    if (Proj.NbPoints() > 0) {
-        Proj.LowerDistanceParameters(u,v);
+    double umin, umax, vmin, vmax;
+    surf->Bounds(umin,umax,vmin, vmax);
+    if (isFromUpper) {
+        u = umin*(1-xsi) + umax*xsi;
+        v = vmin*(1-eta) + vmax*eta;
     }
     else {
-        LOG(WARNING) << "Could not project point on wing segment surface in CCPACSWingSegment::etaXsiToUV";
-
-        double umin, umax, vmin, vmax;
-        surf->Bounds(umin,umax,vmin, vmax);
-        if (isFromUpper) {
-            u = umin*(1-xsi) + umax;
-            v = vmin*(1-eta) + vmax;
-        }
-        else {
-            u = umin*xsi + umax*(1-xsi);
-            v = vmin*eta + vmax*(1-eta);
-        }
+        u = umin*xsi + umax*(1-xsi);
+        v = vmin*(1-eta) + vmax*eta;
     }
 }
 
@@ -755,48 +752,70 @@ int CCPACSWingSegment::GetOuterConnectedSegmentIndex(int n) const
 // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
 // edge on the outer wing profile. If fromUpper is true, a point
 // on the upper surface is returned, otherwise from the lower.
-gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, TiglCoordinateSystem referenceCS) const
+gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
+                                   bool fromUpper, TiglCoordinateSystem referenceCS,
+                                   TiglGetPointBehavior behavior) const
 {
-    if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+    gp_Pnt profilePoint;
+    if ( behavior == onLinearLoft ) {
+
+        if (eta < 0.0 || eta > 1.0) {
+            throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+        }
+
+        const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+        const CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+
+        // Compute points on wing profiles for the given xsi
+        gp_Pnt innerProfilePoint;
+        gp_Pnt outerProfilePoint;
+        if (fromUpper == true) {
+            innerProfilePoint = innerProfile.GetUpperPoint(xsi);
+            outerProfilePoint = outerProfile.GetUpperPoint(xsi);
+        }
+        else {
+            innerProfilePoint = innerProfile.GetLowerPoint(xsi);
+            outerProfilePoint = outerProfile.GetLowerPoint(xsi);
+        }
+
+        CTiglTransformation identity;
+        switch (referenceCS) {
+        case WING_COORDINATE_SYSTEM:
+            innerProfilePoint = transformProfilePoint(identity, innerConnection, innerProfilePoint);
+            outerProfilePoint = transformProfilePoint(identity, outerConnection, outerProfilePoint);
+            break;
+        case GLOBAL_COORDINATE_SYSTEM:
+            innerProfilePoint = transformProfilePoint(GetParentTransformation(), innerConnection, innerProfilePoint);
+            outerProfilePoint = transformProfilePoint(GetParentTransformation(), outerConnection, outerProfilePoint);
+            break;
+        default:
+            throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetPoint");
+        }
+
+        // Get point on wing segment in dependence of eta by linear interpolation
+        Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
+        Standard_Real firstParam = profileLine->FirstParameter();
+        Standard_Real lastParam  = profileLine->LastParameter();
+        Standard_Real param = firstParam + (lastParam - firstParam) * eta;
+        profileLine->D0(param, profilePoint);
     }
+    else if ( behavior == asParameterOnSurface )
+    {
 
-    const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-    const CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+        Handle(Geom_Surface) surface = nullptr;
+        if (fromUpper) {
+            surface = GetUpperSurface();
+        } else {
+            surface = GetLowerSurface();
+        }
 
-    // Compute points on wing profiles for the given xsi
-    gp_Pnt innerProfilePoint;
-    gp_Pnt outerProfilePoint;
-    if (fromUpper == true) {
-        innerProfilePoint = innerProfile.GetUpperPoint(xsi);
-        outerProfilePoint = outerProfile.GetUpperPoint(xsi);
+        double u,v;
+        etaXsiToUV(fromUpper, eta, xsi, u, v);
+        surface->D0(u, v, profilePoint);
     }
     else {
-        innerProfilePoint = innerProfile.GetLowerPoint(xsi);
-        outerProfilePoint = outerProfile.GetLowerPoint(xsi);
+        throw CTiglError("CCPACSWingSegment::GetPoint: Unknown TiglGetPointBehavior passed as argument.", TIGL_INDEX_ERROR);
     }
-
-    CTiglTransformation identity;
-    switch (referenceCS) {
-    case WING_COORDINATE_SYSTEM:
-        innerProfilePoint = transformProfilePoint(identity, innerConnection, innerProfilePoint);
-        outerProfilePoint = transformProfilePoint(identity, outerConnection, outerProfilePoint);
-        break;
-    case GLOBAL_COORDINATE_SYSTEM:
-        innerProfilePoint = transformProfilePoint(GetParentTransformation(), innerConnection, innerProfilePoint);
-        outerProfilePoint = transformProfilePoint(GetParentTransformation(), outerConnection, outerProfilePoint);
-        break;
-    default:
-        throw CTiglError("Invalid coordinate system passed to CCPACSWingSegment::GetPoint");
-    }
-
-    // Get point on wing segment in dependence of eta by linear interpolation
-    Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
-    Standard_Real firstParam = profileLine->FirstParameter();
-    Standard_Real lastParam  = profileLine->LastParameter();
-    Standard_Real param = firstParam + (lastParam - firstParam) * eta;
-    gp_Pnt profilePoint;
-    profileLine->D0(param, profilePoint);
 
     return profilePoint;
 }
@@ -914,7 +933,7 @@ bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
 
     // check if point on chord surface
     double tolerance = 0.03;
-    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCoordCache->cordFace);
+    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCache->cordFace);
     if (Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance) {
         return true;
     }
@@ -943,8 +962,14 @@ gp_Pnt CCPACSWingSegment::GetOuterProfilePoint(double xsi) const
     return transformProfilePoint(GetParentTransformation(), outerConnection, untransformed);
 }
 
-void CCPACSWingSegment::MakeChordSurface(SurfaceCoordCache& cache) const
+void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
 {
+    // make upper and lower surface
+    cache.lowerSurface = BRep_Tool::Surface(TopoDS::Face(GetLowerShape()));
+    cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(GetUpperShape()));
+
+    // make cordface
+
     const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
     const CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 
@@ -978,7 +1003,7 @@ void CCPACSWingSegment::ComputeVolume(double& cache) const
 
 const CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
 {
-    return surfaceCoordCache->cordSurface;
+    return surfaceCache->cordSurface;
 }
 
 // Builds upper/lower surfaces as shapes
@@ -1046,13 +1071,13 @@ PNamedShape CCPACSWingSegment::GetLoft(TiglShapeModifier mod) const
 // Returns the lower Surface of this Segment
 Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    return BRep_Tool::Surface(TopoDS::Face(GetLowerShape(referenceCS, mod)));
+    return surfaceCache->lowerSurface;
 }
 
 // Returns the upper Surface of this Segment
 Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    return BRep_Tool::Surface(TopoDS::Face(GetUpperShape(referenceCS, mod)));
+    return surfaceCache->upperSurface;
 }
 
 // Returns the upper wing shape of this Segment
@@ -1080,6 +1105,24 @@ TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem refere
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
         return s;
     return GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix().Inverted().Transform(s);
+}
+
+// Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
+void CCPACSWingSegment::SetGetPointBehavior(TiglGetPointBehavior behavior)
+{
+    getPointBehavior = behavior;
+}
+
+// Gets the getPointBehavior
+TiglGetPointBehavior const CCPACSWingSegment::GetGetPointBehavior() const
+{
+    return getPointBehavior;
+}
+
+// Gets the getPointBehavior
+TiglGetPointBehavior CCPACSWingSegment::GetGetPointBehavior()
+{
+    return getPointBehavior;
 }
 
 } // end namespace tigl

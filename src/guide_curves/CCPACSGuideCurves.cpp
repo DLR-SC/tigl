@@ -111,7 +111,7 @@ void CCPACSGuideCurves::GetRelativeCircumferenceRange(double relCirc,
     assert( relCirc <= relCircs.back() );
 
     for (size_t i = 1; i < relCircs.size(); ++i ) {
-        if (relCircs[i] > relCirc ) {
+        if (relCircs[i] >= relCirc ) {
             relCircStart = relCircs[i-1];
             relCircEnd = relCircs[i];
             idx = i-1;

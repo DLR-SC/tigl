@@ -720,6 +720,41 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              TiglGetPointBehavior behavior)
+{
+    if ( behavior < 0 || behavior >= numGetPointBehaviors ) {
+        LOG(ERROR) << "Cannot determine behavior in tiglWingSetGetPointBehavior\n";
+        return TIGL_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        for(int wingIndex = 1; wingIndex <= config.GetWingCount(); ++wingIndex ) {
+            tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+            for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); ++segmentIndex) {
+                tigl::CCPACSWingSegment& segment = wing.GetSegment(segmentIndex);
+                segment.SetGetPointBehavior(behavior);
+            }
+        }
+
+        return TIGL_SUCCESS;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingSetGetPointBehavior!";
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                         int wingIndex,
                                                         int segmentIndex,
