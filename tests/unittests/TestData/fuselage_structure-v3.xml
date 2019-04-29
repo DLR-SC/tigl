@@ -5,7 +5,7 @@
     <description>Model for testing fuselage structure</description>
     <creator>Bernhard Manfred Gruber</creator>
     <timestamp>2018-05-02T13:05:02</timestamp>
-    <version>1.0</version>
+    <version>1.1.0</version>
     <cpacsVersion>3.0</cpacsVersion>
     <updates>
       <update>
@@ -13,6 +13,13 @@
         <creator>cpacs2to3</creator>
         <timestamp>2018-05-24T16:40:52</timestamp>
         <version>ver1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+      <update>
+        <modification>Added missing UIDs.</modification>
+        <creator>fix_errors.py</creator>
+        <timestamp>2019-04-29T20:48:23</timestamp>
+        <version>1.1.0</version>
         <cpacsVersion>3.0</cpacsVersion>
       </update>
     </updates>
@@ -25,7 +32,7 @@
         <reference>
           <area>1</area>
           <length>1</length>
-          <point>
+          <point uID="FuselageStructureTest_point1">
             <x>0</x>
             <y>0</y>
             <z>0</z>
@@ -816,14 +823,14 @@
         <profileBasedStructuralElement uID="stringerElement1">
           <standardProfileType>T</standardProfileType>
           <globalBeamProperties uID="stringerElement1_properties">
-            <beamCrossSection>
+            <beamCrossSection uID="stringerElement1_properties_beamCrossSection1">
               <area>321</area>
               <yMin>0</yMin>
               <yMax>40</yMax>
               <xMax>0</xMax>
               <xMin>0</xMin>
             </beamCrossSection>
-            <beamStiffness>
+            <beamStiffness uID="stringerElement1_properties_beamStiffness1">
               <EIxx>5.28542e+09</EIxx>
               <EIyy>3.78735e+09</EIyy>
               <EA>2.247e+07</EA>
@@ -832,11 +839,11 @@
               <GIt>0</GIt>
               <It>0</It>
             </beamStiffness>
-            <beamCOG>
+            <beamCOG uID="stringerElement1_properties_beamCOG1">
               <x>0</x>
               <y>0</y>
             </beamCOG>
-            <beamShearCenter>
+            <beamShearCenter uID="stringerElement1_properties_beamShearCenter1">
               <x>0</x>
               <y>0</y>
             </beamShearCenter>

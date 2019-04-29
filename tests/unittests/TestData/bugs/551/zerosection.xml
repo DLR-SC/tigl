@@ -5,10 +5,10 @@
     <description>For unit testing</description>
     <creator>Martin Siggel</creator>
     <timestamp>2019-03-11T16:26:47</timestamp>
-    <version>1.0</version>
+    <version>1.1.0</version>
     <cpacsVersion>3.0</cpacsVersion>
     <updates>
-    </updates>
+    <update><modification>Added missing UIDs.</modification><creator>fix_errors.py</creator><timestamp>2019-04-29T20:48:33</timestamp><version>1.1.0</version><cpacsVersion>3.0</cpacsVersion></update></updates>
   </header>
   <vehicles>
     <aircraft>
@@ -17,7 +17,7 @@
         <reference>
           <area>1</area>
           <length>1</length>
-          <point>
+          <point uID="Cpacs2Test_point1">
             <x>0</x>
             <y>0</y>
             <z>0</z>
@@ -150,10 +150,10 @@
             </segments>
           </fuselage>
         </fuselages>
-       </model>
+      </model>
     </aircraft>
     <profiles>
-       <fuselageProfiles>
+      <fuselageProfiles>
         <fuselageProfile uID="fuselageCircleProfileuID">
           <name>Circle</name>
           <description>Profile build up from set of Points on Circle where may Dimensions are 1..-1</description>
