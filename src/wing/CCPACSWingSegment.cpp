@@ -891,6 +891,17 @@ gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi) const
     return profilePoint.Get_gp_Pnt();
 }
 
+gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi, TiglCoordinateSystem referenceCS) const
+{
+    gp_Pnt pGlobal = GetChordPoint(eta, xsi);
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        return GetParentTransformation().Inverted().Transform(pGlobal);
+    }
+    else {
+        return pGlobal;
+    }
+}
+
 gp_Pnt CCPACSWingSegment::GetChordNormal(double eta, double xsi) const
 {
     CTiglPoint normal; 

@@ -919,7 +919,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi, const std::s
         return GetPoint(eta, xsi, referenceCS);
     }
     else {
-        return GetBelongingSegment(referenceUID).GetChordPoint(eta, xsi);
+        return GetBelongingSegment(referenceUID).GetChordPoint(eta, xsi, referenceCS);
     }
 }
 

@@ -88,6 +88,8 @@ public:
 
     // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi) const;
+    // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
+    TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi, TiglCoordinateSystem referenceCS) const;
 
     // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetChordNormal(double eta, double xsi) const;
