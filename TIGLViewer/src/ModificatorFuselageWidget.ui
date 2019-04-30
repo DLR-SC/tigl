@@ -18,6 +18,9 @@
     <widget class="CTiglPointWidget" name="noiseCenter" native="true"/>
    </item>
    <item>
+    <widget class="CTiglPointWidget" name="rotation" native="true"/>
+   </item>
+   <item>
     <widget class="QWidget" name="widgetBetween" native="true">
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the part of the fuselage to considerate. The proprety below will be computed or applied only in the selected fuselage part. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
