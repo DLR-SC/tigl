@@ -51,7 +51,10 @@ public:
     };
     void setLabel(QString labelText);
 
-    bool hasDiff();
+    /**
+     * @return false if internal point is equal to the spin boxes, and true otherwise.
+     */
+    bool hasChanged();
 
 private:
     Ui::CTiglPointWidget* ui;

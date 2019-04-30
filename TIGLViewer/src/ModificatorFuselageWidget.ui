@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>748</width>
+    <width>799</width>
     <height>218</height>
    </rect>
   </property>
@@ -14,6 +14,9 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="CTiglPointWidget" name="noiseCenter" native="true"/>
+   </item>
    <item>
     <widget class="QWidget" name="widgetBetween" native="true">
      <property name="toolTip">
@@ -304,6 +307,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CTiglPointWidget</class>
+   <extends>QWidget</extends>
+   <header>CTiglPointWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
