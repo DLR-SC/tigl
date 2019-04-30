@@ -623,6 +623,23 @@ std::string CCPACSFuselage::GetNoiseUID()
     return GetSegment(1).GetStartSectionElementUID();
 }
 
+CTiglPoint CCPACSFuselage::GetNoiseCenter()
+{
+    std::string noiseUID                  = GetNoiseUID();
+    CTiglFuselageSectionElement* cElement = m_sections.GetCTiglElements()[noiseUID];
+    return cElement->GetCenter(TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM);
+}
+
+void CCPACSFuselage::SetNoiseCenter(const tigl::CTiglPoint& newCenter)
+{
+    CTiglPoint oldCenter                         = GetNoiseCenter();
+    CTiglPoint delta                             = newCenter - oldCenter;
+    CCPACSTransformation& fuselageTransformation = GetTransformation();
+    CTiglPoint currentTranslation                = fuselageTransformation.getTranslationVector();
+    fuselageTransformation.setTranslation(currentTranslation + delta);
+    Invalidate();
+}
+
 std::string CCPACSFuselage::GetTailUID()
 {
     return GetSegment(GetSegmentCount()).GetEndSectionElementUID();

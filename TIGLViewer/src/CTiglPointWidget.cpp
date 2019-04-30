@@ -57,7 +57,7 @@ void CTiglPointWidget::setInternal(tigl::CTiglPoint newInternalPoint)
     setGUIFromInternal();
 }
 
-bool CTiglPointWidget::hasDiff()
+bool CTiglPointWidget::hasChanged()
 {
     bool noChangeInX = isApprox(ui->spinBoxX->value(), internalPoint.x);
     bool noChangeInY = isApprox(ui->spinBoxY->value(), internalPoint.y);

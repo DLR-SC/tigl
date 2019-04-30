@@ -135,6 +135,12 @@ public:
     // return the element uid that is considered as the noise element
     TIGL_EXPORT std::string GetNoiseUID();
 
+    // Return the center of the noise airfoil, this correspond to the the beginning of the fuselage.
+    TIGL_EXPORT CTiglPoint GetNoiseCenter();
+
+    // Set the position of the noise center.
+    TIGL_EXPORT void SetNoiseCenter(const CTiglPoint& newCenter);
+
     // return the element uid that is considered as the tail element
     TIGL_EXPORT std::string GetTailUID();
 

@@ -127,8 +127,8 @@ void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement)
 
 bool ModificatorElementWidget::apply()
 {
-    bool centerHasChanged = ui->center->hasDiff();
-    bool originHasChanged = ui->origin->hasDiff();
+    bool centerHasChanged = ui->center->hasChanged();
+    bool originHasChanged = ui->origin->hasChanged();
     bool wasModified      = false;
 
     if (centerHasChanged) {
