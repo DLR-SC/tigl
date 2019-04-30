@@ -141,6 +141,9 @@ public:
     // Set the position of the noise center.
     TIGL_EXPORT void SetNoiseCenter(const CTiglPoint& newCenter);
 
+    // Set the rotation of the fuselage transformation (nothing else ;)
+    TIGL_EXPORT void SetRotation(const CTiglPoint& newRotation);
+
     // return the element uid that is considered as the tail element
     TIGL_EXPORT std::string GetTailUID();
 

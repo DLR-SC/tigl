@@ -640,6 +640,13 @@ void CCPACSFuselage::SetNoiseCenter(const tigl::CTiglPoint& newCenter)
     Invalidate();
 }
 
+void CCPACSFuselage::SetRotation(const CTiglPoint& newRot)
+{
+    CCPACSTransformation& transformation = GetTransformation();
+    transformation.setRotation(newRot);
+    Invalidate();
+}
+
 std::string CCPACSFuselage::GetTailUID()
 {
     return GetSegment(GetSegmentCount()).GetEndSectionElementUID();

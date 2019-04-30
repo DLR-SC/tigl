@@ -546,3 +546,46 @@ TEST_F(creatorFuselage, setNoiseCenter_MultipleFuselagesModel)
     resultCenter = fuselage->GetNoiseCenter();
     EXPECT_TRUE(resultCenter.isNear(newCenter, 0.0001));
 }
+
+TEST_F(creatorFuselage, getRotation_MultipleFuselagesModel)
+{
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage");
+    tigl::CTiglPoint rot;
+
+    rot = fuselage->GetRotation();
+    EXPECT_TRUE(rot.isNear(tigl::CTiglPoint(0, 0, 0), 0.0001));
+
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage4");
+    rot = fuselage->GetRotation();
+    EXPECT_TRUE(rot.isNear(tigl::CTiglPoint(0, 0, 40), 0.0001));
+
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage5");
+    rot = fuselage->GetRotation();
+    EXPECT_TRUE(rot.isNear(tigl::CTiglPoint(10, 20, 40), 0.0001));
+
+}
+
+
+TEST_F(creatorFuselage, setRotation_MultipleFuselagesModel)
+{
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage");
+    tigl::CTiglPoint newRot, resRot;
+
+    newRot = tigl::CTiglPoint(0,10,0);
+    fuselage->SetRotation(newRot);
+    resRot = fuselage->GetRotation();
+    EXPECT_TRUE(resRot.isNear(newRot, 0.0001));
+
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage4");
+    newRot = tigl::CTiglPoint(-20,10,80);
+    fuselage->SetRotation(newRot);
+    resRot = fuselage->GetRotation();
+    EXPECT_TRUE(resRot.isNear(newRot, 0.0001));
+
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage5");
+    newRot = tigl::CTiglPoint(0,0,0);
+    fuselage->SetRotation(newRot);
+    resRot = fuselage->GetRotation();
+    EXPECT_TRUE(resRot.isNear(newRot, 0.0001));
+
+}

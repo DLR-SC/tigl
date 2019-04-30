@@ -67,6 +67,8 @@ void ModificatorFuselageWidget::setFuselage(tigl::CCPACSFuselage& newFuselage)
     ui->noiseCenter->setInternal(fuselage->GetNoiseCenter());
     ui->noiseCenter->setLabel("NoiseCenter");
 
+    ui->rotation->setInternal(fuselage->GetRotation());
+    ui->rotation->setLabel("Rotation");
 
     ui->comboBoxE1->blockSignals(block1);
     ui->comboBoxE2->blockSignals(block2);
@@ -82,6 +84,7 @@ bool ModificatorFuselageWidget::apply()
     bool heightHasChanged = (!(isApprox(internalHeight, ui->spinBoxHeight->value())));
 
     bool noiseCenterHasChanged = ui->noiseCenter->hasChanged();
+    bool rotationHasChanged = ui->rotation->hasChanged();
 
     bool wasModified = false;
 
@@ -92,6 +95,13 @@ bool ModificatorFuselageWidget::apply()
         ui->noiseCenter->setInternalFromGUI();
         tigl::CTiglPoint newCenter = ui->noiseCenter->getInternalPoint();
         fuselage->SetNoiseCenter(newCenter);
+        wasModified = true;
+    }
+
+    if(rotationHasChanged) {
+        ui->rotation->setInternalFromGUI();
+        tigl::CTiglPoint newRotation = ui->rotation->getInternalPoint();
+        fuselage->SetRotation(newRotation);
         wasModified = true;
     }
 
