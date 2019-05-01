@@ -19,7 +19,7 @@
 #ifndef MODIFICATORFUSELAGEWIDGET_H
 #define MODIFICATORFUSELAGEWIDGET_H
 
-#include "ModificatorWidget.h"
+#include "modificators/ModificatorWidget.h"
 #include "CCPACSFuselage.h"
 
 namespace Ui

@@ -101,12 +101,12 @@ set(tv_src
   src/TIGLInteractiveShapeManager.cpp
   src/TIGLViewerSelectWingAndFlapStatusDialog.cpp
   # files for CPACSCreator
-  src/ModificatorWidget.cpp
-  src/ModificatorElementWidget.cpp
-  src/ModificatorSectionWidget.cpp
-  src/ModificatorFuselageWidget.cpp
-  src/ModificatorTransformationWidget.cpp
-  src/ModificatorWingWidget.cpp
+  src/modificators/ModificatorWidget.cpp
+  src/modificators/ModificatorElementWidget.cpp
+  src/modificators/ModificatorSectionWidget.cpp
+  src/modificators/ModificatorFuselageWidget.cpp
+  src/modificators/ModificatorTransformationWidget.cpp
+  src/modificators/ModificatorWingWidget.cpp
   src/ModificatorManager.cpp
   src/CPACSAbstractModel.cpp
   src/CPACSTreeItem.cpp
@@ -117,7 +117,7 @@ set(tv_src
   src/CPACSTreeWidget.cpp
   src/CPACSFilterModel.cpp
   src/TIGLViewerNewFileDialog.cpp
-  src/CTiglPointWidget.cpp
+  src/modificators/CTiglPointWidget.cpp
   src/TIGLViewerCommonFunctions.cpp
   src/CPACSFilterModel.cpp
 )
@@ -168,19 +168,19 @@ set(tv_hdr
   src/CPACSTree.h
   src/XPathParser.h
   src/TIGLViewerException.h
-  src/ModificatorWidget.h
-  src/ModificatorElementWidget.h
-  src/ModificatorSectionWidget.h
-  src/ModificatorFuselageWidget.h
-  src/ModificatorTransformationWidget.h
-  src/ModificatorWingWidget.h
+  src/modificators/ModificatorWidget.h
+  src/modificators/ModificatorElementWidget.h
+  src/modificators/ModificatorSectionWidget.h
+  src/modificators/ModificatorFuselageWidget.h
+  src/modificators/ModificatorTransformationWidget.h
+  src/modificators/ModificatorWingWidget.h
   src/ModificatorManager.h
   src/CPACSAbstractModel.h
   src/ModificatorContainerWidget.h
   src/CPACSTreeWidget.h
   src/CPACSFilterModel.h
   src/TIGLViewerNewFileDialog.h
-  src/CTiglPointWidget.h
+  src/modificators/CTiglPointWidget.h
   src/TIGLViewerCommonFunctions.h
   src/CPACSFilterModel.h
 )
@@ -199,15 +199,15 @@ set(tv_ui
   src/TIGLGeometryChoserDialog.ui
   src/TIGLViewerSelectWingAndFlapStatusDialog.ui
   # files for CPACSCreator
-  src/ModificatorTransformationWidget.ui
-  src/ModificatorElementWidget.ui
-  src/CTiglPointWidget.ui
-  src/ModificatorWingWidget.ui
-  src/ModificatorFuselageWidget.ui
+  src/modificators/ModificatorTransformationWidget.ui
+  src/modificators/ModificatorElementWidget.ui
+  src/modificators/CTiglPointWidget.ui
+  src/modificators/ModificatorWingWidget.ui
+  src/modificators/ModificatorFuselageWidget.ui
   src/ModificatorContainerWidget.ui
   src/CPACSTreeWidget.ui
   src/TIGLViewerNewFileDialog.ui
-  src/ModificatorSectionWidget.ui
+  src/modificators/ModificatorSectionWidget.ui
 )
 
 # compile icons

@@ -97,33 +97,33 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ModificatorTransformationWidget</class>
+   <class>ModificatorElementWidget</class>
    <extends>QWidget</extends>
-   <header>ModificatorTransformationWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ModificatorWingWidget</class>
-   <extends>QWidget</extends>
-   <header>ModificatorWingWidget.h</header>
+   <header>modificators/ModificatorElementWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ModificatorFuselageWidget</class>
    <extends>QWidget</extends>
-   <header>ModificatorFuselageWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ModificatorElementWidget</class>
-   <extends>QWidget</extends>
-   <header>ModificatorElementWidget.h</header>
+   <header>modificators/ModificatorFuselageWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ModificatorSectionWidget</class>
    <extends>QWidget</extends>
-   <header>ModificatorSectionWidget.h</header>
+   <header>modificators/ModificatorSectionWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorTransformationWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/ModificatorTransformationWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorWingWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/ModificatorWingWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

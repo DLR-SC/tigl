@@ -20,7 +20,7 @@
 #define MODIFICATORSECTIONWIDGET_H
 
 #include <QWidget>
-#include "ModificatorWidget.h"
+#include "modificators/ModificatorWidget.h"
 #include "ModificatorElementWidget.h"
 #include "CTiglSectionElement.h"
 #include <QList>
