@@ -64,8 +64,8 @@ void ModificatorFuselageWidget::setFuselage(tigl::CCPACSFuselage& newFuselage)
 
     lastModifiedDimensionalParameter = "";
 
-    ui->noiseCenter->setInternal(fuselage->GetNoiseCenter());
-    ui->noiseCenter->setLabel("NoiseCenter");
+    ui->noseCenter->setInternal(fuselage->GetNoseCenter());
+    ui->noseCenter->setLabel("NoseCenter");
 
     ui->rotation->setInternal(fuselage->GetRotation());
     ui->rotation->setLabel("Rotation");
@@ -83,7 +83,7 @@ bool ModificatorFuselageWidget::apply()
     bool widthHasChanged  = (!(isApprox(internalWidth, ui->spinBoxWidth->value())));
     bool heightHasChanged = (!(isApprox(internalHeight, ui->spinBoxHeight->value())));
 
-    bool noiseCenterHasChanged = ui->noiseCenter->hasChanged();
+    bool noiseCenterHasChanged = ui->noseCenter->hasChanged();
     bool rotationHasChanged = ui->rotation->hasChanged();
 
     bool wasModified = false;
@@ -92,9 +92,9 @@ bool ModificatorFuselageWidget::apply()
     QString uid2 = ui->comboBoxE2->currentText();
 
     if(noiseCenterHasChanged) {
-        ui->noiseCenter->setInternalFromGUI();
-        tigl::CTiglPoint newCenter = ui->noiseCenter->getInternalPoint();
-        fuselage->SetNoiseCenter(newCenter);
+        ui->noseCenter->setInternalFromGUI();
+        tigl::CTiglPoint newCenter = ui->noseCenter->getInternalPoint();
+        fuselage->SetNoseCenter(newCenter);
         wasModified = true;
     }
 
