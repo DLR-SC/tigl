@@ -105,7 +105,7 @@ TEST_F(creatorFuselage, getNoiseUID_SimpleModel)
 {
     setVariables("TestData/simpletest.cpacs.xml", 1);
 
-    std::string uid = fuselage->GetNoiseUID();
+    std::string uid = fuselage->GetNoseUID();
     ASSERT_EQ("D150_Fuselage_1Section1IDElement1", uid);
 }
 
@@ -114,13 +114,13 @@ TEST_F(creatorFuselage, getNoiseUID_MultipleFuselagesModel)
 
     setVariables("TestData/multiple_fuselages.xml", "FuselageUnconventionalOrdering");
     // simple reordering ( if the segment a are swap ) is supported : )
-    std::string uid = fuselage->GetNoiseUID();
+    std::string uid = fuselage->GetNoseUID();
     ASSERT_EQ("D150_Fuselage_2Section1IDElement1", uid);
 
     // todo "complex" reordering when FromUID to toUID are also swap is not supported, may not be a priority
     //setVariables("TestData/multiple_fuselages.xml", "FuselageUnconventionalOrderingExtrem");
 
-    //uid = fuselage->GetNoiseUID();
+    //uid = fuselage->GetNoseUID();
     //ASSERT_EQ("D150_Fuselage_2aSection1IDElement1", uid);
 }
 
@@ -532,18 +532,18 @@ TEST_F(creatorFuselage, setDimensionBetween_MultipleFuselagesModel) {
 
 }
 
-TEST_F(creatorFuselage, setNoiseCenter_MultipleFuselagesModel)
+TEST_F(creatorFuselage, setNoseCenter_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage");
     tigl::CTiglPoint oldCenter, newCenter, resultCenter;
 
-    oldCenter = fuselage->GetNoiseCenter();
+    oldCenter = fuselage->GetNoseCenter();
     EXPECT_TRUE(oldCenter.isNear(tigl::CTiglPoint(-0.5, 0, 0), 0.0001));
 
     newCenter = tigl::CTiglPoint(13, 5.5, 2);
-    fuselage->SetNoiseCenter(newCenter);
-    resultCenter = fuselage->GetNoiseCenter();
+    fuselage->SetNoseCenter(newCenter);
+    resultCenter = fuselage->GetNoseCenter();
     EXPECT_TRUE(resultCenter.isNear(newCenter, 0.0001));
 }
 

@@ -617,22 +617,22 @@ TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTr
     return trafo.Transform(shape);
 }
 
-std::string CCPACSFuselage::GetNoiseUID()
+std::string CCPACSFuselage::GetNoseUID()
 {
     // todo check error?
     return GetSegment(1).GetStartSectionElementUID();
 }
 
-CTiglPoint CCPACSFuselage::GetNoiseCenter()
+CTiglPoint CCPACSFuselage::GetNoseCenter()
 {
-    std::string noiseUID                  = GetNoiseUID();
+    std::string noiseUID                  = GetNoseUID();
     CTiglFuselageSectionElement* cElement = m_sections.GetCTiglElements()[noiseUID];
     return cElement->GetCenter(TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM);
 }
 
-void CCPACSFuselage::SetNoiseCenter(const tigl::CTiglPoint& newCenter)
+void CCPACSFuselage::SetNoseCenter(const tigl::CTiglPoint &newCenter)
 {
-    CTiglPoint oldCenter                         = GetNoiseCenter();
+    CTiglPoint oldCenter                         = GetNoseCenter();
     CTiglPoint delta                             = newCenter - oldCenter;
     CCPACSTransformation& fuselageTransformation = GetTransformation();
     CTiglPoint currentTranslation                = fuselageTransformation.getTranslationVector();
@@ -660,7 +660,7 @@ std::vector<std::string> CCPACSFuselage::GetElementUIDsInOrder()
 double CCPACSFuselage::GetLength()
 {
     // todo need to take care of the case where not segment are there?
-    std::string noiseUID = GetNoiseUID();
+    std::string noiseUID = GetNoseUID();
     std::string tailUID  = GetTailUID();
     return GetLengthBetween(noiseUID, tailUID);
 }
@@ -679,7 +679,7 @@ double CCPACSFuselage::GetLengthBetween(const std::string& startElementUID, cons
 
 void CCPACSFuselage::SetLength(double newLength)
 {
-    std::string noise = GetNoiseUID();
+    std::string noise = GetNoseUID();
     std::string tail  = GetTailUID();
     SetLengthBetween(noise, tail, newLength);
 }
@@ -801,7 +801,7 @@ void CCPACSFuselage::SetLengthBetween(const std::string& startElementUID, const 
 
 double CCPACSFuselage::GetMaximalCircumference()
 {
-    return GetMaximalCircumferenceBetween(GetNoiseUID(), GetTailUID());
+    return GetMaximalCircumferenceBetween(GetNoseUID(), GetTailUID());
 }
 
 double CCPACSFuselage::GetMaximalCircumferenceBetween(const std::string& startElementUID,
@@ -812,7 +812,7 @@ double CCPACSFuselage::GetMaximalCircumferenceBetween(const std::string& startEl
 
 void CCPACSFuselage::SetMaximalCircumference(double newMaximalCircumference)
 {
-    SetMaximalCircumferenceBetween(GetNoiseUID(), GetTailUID(), newMaximalCircumference);
+    SetMaximalCircumferenceBetween(GetNoseUID(), GetTailUID(), newMaximalCircumference);
 }
 
 void CCPACSFuselage::SetMaximalCircumferenceBetween(const std::string& startElementUID,
@@ -848,7 +848,7 @@ double CCPACSFuselage::GetMaximalHeightBetween(const std::string& startElementUI
 
 double CCPACSFuselage::GetMaximalHeight()
 {
-    return GetMaximalHeightBetween(GetNoiseUID(), GetTailUID());
+    return GetMaximalHeightBetween(GetNoseUID(), GetTailUID());
 }
 
 double CCPACSFuselage::GetMaximalWidthBetween(const std::string& startElementUID, const std::string& endElementUID)
@@ -858,7 +858,7 @@ double CCPACSFuselage::GetMaximalWidthBetween(const std::string& startElementUID
 
 double CCPACSFuselage::GetMaximalWidth()
 {
-    return GetMaximalWidthBetween(GetNoiseUID(), GetTailUID());
+    return GetMaximalWidthBetween(GetNoseUID(), GetTailUID());
 }
 
 double CCPACSFuselage::GetMaximalWireAreaBetween(const std::string& startElementUID, const std::string& endElementUID)
@@ -868,7 +868,7 @@ double CCPACSFuselage::GetMaximalWireAreaBetween(const std::string& startElement
 
 double CCPACSFuselage::GetMaximalWireArea()
 {
-    return GetMaximalWireAreaBetween(GetNoiseUID(), GetTailUID());
+    return GetMaximalWireAreaBetween(GetNoseUID(), GetTailUID());
 }
 
 double CCPACSFuselage::GetMaxBetween(pGetProperty func, const std::string& startElementUID,
@@ -898,7 +898,7 @@ double CCPACSFuselage::GetMaxBetween(pGetProperty func, const std::string& start
 
 void CCPACSFuselage::ScaleWiresUniformly(double scaleFactor)
 {
-    ScaleWiresUniformlyBetween(scaleFactor, GetNoiseUID(), GetTailUID());
+    ScaleWiresUniformlyBetween(scaleFactor, GetNoseUID(), GetTailUID());
 }
 
 void CCPACSFuselage::ScaleWiresUniformlyBetween(double scaleFactor, const std::string& startElementUID,
@@ -915,7 +915,7 @@ void CCPACSFuselage::ScaleWiresUniformlyBetween(double scaleFactor, const std::s
 
 void CCPACSFuselage::SetMaxHeight(double newMaxHeight)
 {
-    SetMaxHeightBetween(newMaxHeight, GetNoiseUID(), GetTailUID());
+    SetMaxHeightBetween(newMaxHeight, GetNoseUID(), GetTailUID());
 }
 
 void CCPACSFuselage::SetMaxHeightBetween(double newMaxHeight, const std::string& startUID, const std::string& endUID)
@@ -936,7 +936,7 @@ void CCPACSFuselage::SetMaxHeightBetween(double newMaxHeight, const std::string&
 
 void CCPACSFuselage::SetMaxWidth(double newMaxWidth)
 {
-    SetMaxHeightBetween(newMaxWidth, GetNoiseUID(), GetTailUID());
+    SetMaxHeightBetween(newMaxWidth, GetNoseUID(), GetTailUID());
 }
 
 void CCPACSFuselage::SetMaxWidthBetween(double newMaxWidth, const std::string& startUID, const std::string& endUID)
@@ -957,7 +957,7 @@ void CCPACSFuselage::SetMaxWidthBetween(double newMaxWidth, const std::string& s
 
 void CCPACSFuselage::SetMaxArea(double newMaxArea)
 {
-    SetMaxAreaBetween(newMaxArea, GetNoiseUID(), GetTailUID());
+    SetMaxAreaBetween(newMaxArea, GetNoseUID(), GetTailUID());
 }
 
 void CCPACSFuselage::SetMaxAreaBetween(double newMaxArea, const std::string& startUID, const std::string& endUID)

@@ -133,13 +133,13 @@ public:
      */
 
     // return the element uid that is considered as the noise element
-    TIGL_EXPORT std::string GetNoiseUID();
+    TIGL_EXPORT std::string GetNoseUID();
 
     // Return the center of the noise airfoil, this correspond to the the beginning of the fuselage.
-    TIGL_EXPORT CTiglPoint GetNoiseCenter();
+    TIGL_EXPORT CTiglPoint GetNoseCenter();
 
     // Set the position of the noise center.
-    TIGL_EXPORT void SetNoiseCenter(const CTiglPoint& newCenter);
+    TIGL_EXPORT void SetNoseCenter(const CTiglPoint &newCenter);
 
     // Set the rotation of the fuselage transformation (nothing else ;)
     TIGL_EXPORT void SetRotation(const CTiglPoint& newRotation);

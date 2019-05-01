@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="CTiglPointWidget" name="noiseCenter" native="true"/>
+    <widget class="CTiglPointWidget" name="noseCenter" native="true"/>
    </item>
    <item>
     <widget class="CTiglPointWidget" name="rotation" native="true"/>
