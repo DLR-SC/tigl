@@ -21,9 +21,9 @@
 
 #include <QWidget>
 #include <QPushButton>
-#include "ModificatorWingWidget.h"
-#include "ModificatorFuselageWidget.h"
-#include "ModificatorTransformationWidget.h"
+#include "modificators/ModificatorWingWidget.h"
+#include "modificators/ModificatorFuselageWidget.h"
+#include "modificators/ModificatorTransformationWidget.h"
 #include "CPACSFuselages.h"
 #include "CPACSWing.h"
 #include "CPACSTransformation.h"

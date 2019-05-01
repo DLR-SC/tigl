@@ -144,7 +144,7 @@
   <customwidget>
    <class>CTiglPointWidget</class>
    <extends>QWidget</extends>
-   <header>CTiglPointWidget.h</header>
+   <header>modificators/CTiglPointWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
