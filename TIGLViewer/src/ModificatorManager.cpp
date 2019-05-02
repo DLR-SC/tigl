@@ -73,6 +73,10 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CCPACSFuselage& fuselage    = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
         modificatorContainerWidget->setFuselageModificator(fuselage);
     }
+    else if (item->getType() == "fuselages") {
+        tigl::CCPACSFuselages& fuselages = doc->GetConfiguration().GetFuselages();
+        modificatorContainerWidget->setFuselagesModificator(fuselages, getAvailableFuselageProfileUIDs());
+    }
     else if (item->getType() == "wing") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
@@ -125,6 +129,7 @@ void ModificatorManager::createUndoCommand()
         LOG(ERROR) << "ModificatorManager::createUndoCommand: Called but no document is set!";
     }
     emit configurationEdited();
+    updateTree();
 }
 
 void ModificatorManager::updateTree()
@@ -139,4 +144,22 @@ void ModificatorManager::updateTree()
     else {
         treeWidget->clear();
     }
+}
+
+QStringList ModificatorManager::getAvailableFuselageProfileUIDs()
+{
+    QStringList profileUIDs;
+
+    if (!configurationIsSet()) {
+        profileUIDs;
+    }
+
+    boost::optional<tigl::CCPACSFuselageProfiles&> profiles = doc->GetConfiguration().GetFuselageProfiles();
+
+    if (profiles) {
+        for (int i = 1; i <= profiles.value().GetProfileCount(); i++) {
+            profileUIDs.push_back(profiles.value().GetProfile(i).GetUID().c_str());
+        }
+    }
+    return profileUIDs;
 }

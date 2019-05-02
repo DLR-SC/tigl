@@ -118,6 +118,8 @@ set(tv_src
   src/CPACSFilterModel.cpp
   src/TIGLViewerNewFileDialog.cpp
   src/modificators/CTiglPointWidget.cpp
+  src/modificators/ModificatorFuselagesWidget.cpp
+  src/modificators/NewFuselageDialog.cpp
   src/TIGLViewerCommonFunctions.cpp
   src/CPACSFilterModel.cpp
 )
@@ -174,6 +176,8 @@ set(tv_hdr
   src/modificators/ModificatorFuselageWidget.h
   src/modificators/ModificatorTransformationWidget.h
   src/modificators/ModificatorWingWidget.h
+  src/modificators/ModificatorFuselagesWidget.h
+  src/modificators/NewFuselageDialog.h
   src/ModificatorManager.h
   src/CPACSAbstractModel.h
   src/ModificatorContainerWidget.h
@@ -205,6 +209,8 @@ set(tv_ui
   src/modificators/ModificatorWingWidget.ui
   src/modificators/ModificatorFuselageWidget.ui
   src/ModificatorContainerWidget.ui
+  src/modificators/ModificatorFuselagesWidget.ui
+  src/modificators/NewFuselageDialog.ui
   src/CPACSTreeWidget.ui
   src/TIGLViewerNewFileDialog.ui
   src/modificators/ModificatorSectionWidget.ui

@@ -65,6 +65,9 @@ public:
     void setCPACSConfiguration(TIGLViewerDocument* newDoc);
 
 protected:
+
+    QStringList getAvailableFuselageProfileUIDs();  // we be managed by the profiles DB managed in future
+
     inline bool configurationIsSet()
     {
         return (doc != nullptr && doc->getCpacsHandle() > 0);
