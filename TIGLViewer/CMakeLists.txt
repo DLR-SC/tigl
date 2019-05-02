@@ -115,6 +115,8 @@ set(tv_src
 	modificators/ModificatorTransformationWidget.cpp
 	modificators/ModificatorWingWidget.cpp
 	modificators/CTiglPointWidget.cpp
+	modificators/ModificatorFuselagesWidget.cpp
+	modificators/NewFuselageDialog.cpp
 	ModificatorManager.cpp
 	CPACSAbstractModel.cpp
 	CPACSTreeItem.cpp
@@ -185,6 +187,8 @@ set(tv_hdr_qobj
 	modificators/ModificatorFuselageWidget.h
 	modificators/ModificatorTransformationWidget.h
 	modificators/ModificatorWingWidget.h
+	modificators/ModificatorFuselagesWidget.h
+	modificators/NewFuselageDialog.h
 	ModificatorManager.h
 	CPACSAbstractModel.h
 	ModificatorContainerWidget.h
@@ -215,6 +219,8 @@ set(tv_ui_comp
 		src/modificators/ModificatorSectionWidget.ui
 		src/modificators/CTiglPointWidget.ui
 		src/ModificatorContainerWidget.ui
+		src/modificators/ModificatorFuselagesWidget.ui
+		src/modificators/NewFuselageDialog.ui
 		src/CPACSTreeWidget.ui
 		src/TIGLViewerNewFileDialog.ui
 

@@ -31,6 +31,12 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     connect(ui->commitButton, SIGNAL(pressed()), this, SLOT(applyCurrentModifications()));
 
     connect(ui->cancelButton, SIGNAL(pressed()), this, SLOT(applyCurrentCancellation()));
+
+    // For fuselageS, the modificator create a dialog when the click on "add new fuselage" button,
+    // so the mechanism is slightly different as for other modificators.
+    // The dialog perform some modifications without that the apply or cancel button is pressed.
+    // Therefor, fuselageModificator inform us when a undoCommand is required via a signal.
+    connect(ui->fuselagesModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
 }
 
 ModificatorContainerWidget::~ModificatorContainerWidget()
@@ -44,6 +50,7 @@ void ModificatorContainerWidget::hideAllSpecializedWidgets()
     ui->transformationModificator->setVisible(visible);
     ui->wingModificator->setVisible(visible);
     ui->fuselageModificator->setVisible(visible);
+    ui->fuselagesModificator->setVisible(visible);
     ui->applyWidget->setVisible(visible);
     ui->noInterfaceWidget->setVisible(visible);
     ui->elementModificator->setVisible(visible);
@@ -76,6 +83,16 @@ void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fu
     ui->fuselageModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->fuselageModificator;
+}
+
+
+void ModificatorContainerWidget::setFuselagesModificator(tigl::CCPACSFuselages& fuselages, QStringList profilesUID)
+{
+    hideAllSpecializedWidgets();
+    ui->fuselagesModificator->setFuselages(fuselages, profilesUID);
+    ui->fuselagesModificator->setVisible(true);
+    ui->applyWidget->setVisible(false);
+    currentModificator = ui->fuselagesModificator;
 }
 
 void ModificatorContainerWidget::setElementModificator(tigl::CTiglSectionElement& element)
@@ -129,4 +146,9 @@ void ModificatorContainerWidget::applyCurrentCancellation()
                         "current modificator is null"
                      << std::endl;
     }
+}
+
+void ModificatorContainerWidget::forwardUndoCommandRequired()
+{
+    emit undoCommandRequired();
 }
