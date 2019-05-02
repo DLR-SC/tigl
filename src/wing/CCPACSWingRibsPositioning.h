@@ -55,10 +55,10 @@ public:
 
     TIGL_EXPORT void SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value) OVERRIDE;
 
+    /// Reset the cached structural variables. Must be executed after changing the rib refinition
+    TIGL_EXPORT void Invalidate();
 private:
     friend class CCPACSWingRibRotation;
-
-    void invalidateStructure();
 };
 
 } // end namespace tigl

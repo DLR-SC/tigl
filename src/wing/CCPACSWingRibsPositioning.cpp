@@ -65,7 +65,7 @@ void CCPACSWingRibsPositioning::SetNumberOfRibs(int numRibs)
 
     m_spacing_choice1 = boost::none;
 
-    invalidateStructure();
+    Invalidate();
 }
 
 void CCPACSWingRibsPositioning::SetSpacing(double value)
@@ -74,10 +74,10 @@ void CCPACSWingRibsPositioning::SetSpacing(double value)
 
     m_numberOfRibs_choice2 = boost::none;
 
-    invalidateStructure();
+    Invalidate();
 }
 
-void CCPACSWingRibsPositioning::invalidateStructure()
+void CCPACSWingRibsPositioning::Invalidate()
 {
     GetParent()->GetParent()->GetParent()->Invalidate();
 }
@@ -85,7 +85,7 @@ void CCPACSWingRibsPositioning::invalidateStructure()
 void CCPACSWingRibsPositioning::SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value)
 {
     generated::CPACSWingRibsPositioning::SetRibCrossingBehaviour(value);
-    invalidateStructure();
+    Invalidate();
 }
 
 } // end namespace tigl
