@@ -250,6 +250,8 @@ private:
         Handle(Geom_Surface) cordFace;
         Handle(Geom_Surface) upperSurface;
         Handle(Geom_Surface) lowerSurface;
+        Handle(Geom_Surface) upperSurfaceLocal;
+        Handle(Geom_Surface) lowerSurfaceLocal;
     };
 
     // get short name for loft
