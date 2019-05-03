@@ -128,13 +128,11 @@ public:
     // Getter for matrix values
     TIGL_EXPORT double GetValue(int row, int col) const;
 
-    // Set rotation and scaling to trivial values,
-    // the affine part will be the identity,
-    // the translation part will remain unchanged.
-    TIGL_EXPORT void SetTrivialScalingAndRotation();
+    // Return the translation performed by this translation.
+    TIGL_EXPORT CTiglPoint GetTranslation();
 
     // Return the transformation that bring the vector A in the same direction as vector B
-    TIGL_EXPORT CTiglTransformation static GetRotationToAlignAToB(tigl::CTiglPoint vectorA, tigl::CTiglPoint vectorB);
+    TIGL_EXPORT static CTiglTransformation GetRotationToAlignAToB(tigl::CTiglPoint vectorA, tigl::CTiglPoint vectorB);
 
     // Return true if the transformation has a zero scaling
     TIGL_EXPORT bool HasZeroScaling() const;

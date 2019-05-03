@@ -180,7 +180,7 @@ void CTiglPoint::getMinMax(double & min, double & max) const
 
 bool CTiglPoint::operator==(const CTiglPoint& aPoint) const
 {
-    if (x == aPoint.x && y == aPoint.y && z == aPoint.z) {
+    if ( this->isNear(aPoint, 1e-12) ) {
         return true;
     }
     return false;
@@ -201,8 +201,7 @@ void CTiglPoint::normalize()
 {
     if (norm2() == 0) {
         LOG(WARNING)
-            << "CTiglPoint::normalize: The norm is 0, so it's impossible to normalize, 0 length vector is returned."
-            << std::endl;
+            << "CTiglPoint::normalize: The norm is 0, so it's impossible to normalize, 0 length vector is returned.";
         return;
     }
     double s = 1.0 / norm2();

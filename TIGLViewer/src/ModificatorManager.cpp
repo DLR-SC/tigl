@@ -122,7 +122,7 @@ void ModificatorManager::createUndoCommand()
         myUndoStack->push(command);
     }
     else {
-        LOG(ERROR) << "ModificatorManager::createUndoCommand: Called but no document is set!" << std::endl;
+        LOG(ERROR) << "ModificatorManager::createUndoCommand: Called but no document is set!";
     }
     emit configurationEdited();
 }

@@ -16,65 +16,65 @@
  * limitations under the License.
  */
 
-#include "PathGraph.h"
+#include "ListFunctions.h"
 #include <algorithm>
 
-std::vector<std::string> tigl::PathGraph::GetElementsInBetween(const std::vector<std::string>& graph,
-                                                               const std::string& el1, const std::string& el2)
+std::vector<std::string> tigl::ListFunctions::GetElementsInBetween(const std::vector<std::string>& list,
+                                                                   const std::string& el1, const std::string& el2)
 {
 
     std::vector<std::string> elementsBetween; // contain the start and the end
 
-    if (!(PathGraph::Contains(graph, el1) && PathGraph::Contains(graph, el2))) {
+    if (!(ListFunctions::Contains(list, el1) && ListFunctions::Contains(list, el2))) {
         return elementsBetween;
     }
 
     bool afterStart = false;
     bool afterEnd   = false;
 
-    for (int i = 0; i < graph.size(); i++) {
+    for (int i = 0; i < list.size(); i++) {
         // cover the special case where the end and the start are the same
-        if (graph[i] == el1 && graph[i] == el2) {
+        if (list[i] == el1 && list[i] == el2) {
             afterStart = true;
             afterEnd   = true;
-            elementsBetween.push_back(graph[i]);
+            elementsBetween.push_back(list[i]);
         }
         // we allow the start and end to be inverted
-        else if (afterStart == false && (graph[i] == el1 || graph[i] == el2)) {
+        else if (afterStart == false && (list[i] == el1 || list[i] == el2)) {
             afterStart = true;
-            elementsBetween.push_back(graph[i]);
+            elementsBetween.push_back(list[i]);
         }
-        else if (afterStart == true && (graph[i] == el1 || graph[i] == el2)) {
+        else if (afterStart == true && (list[i] == el1 || list[i] == el2)) {
             afterEnd = true;
-            elementsBetween.push_back(graph[i]);
+            elementsBetween.push_back(list[i]);
         }
         else if (afterStart == true && afterEnd == false) {
-            elementsBetween.push_back(graph[i]);
+            elementsBetween.push_back(list[i]);
         }
     }
     return elementsBetween;
 }
 
-std::vector<std::string> tigl::PathGraph::GetElementsAfter(const std::vector<std::string>& graph,
-                                                           const std::string& uid)
+std::vector<std::string> tigl::ListFunctions::GetElementsAfter(const std::vector<std::string>& list,
+                                                               const std::string& el)
 {
     std::vector<std::string> elementsAfter;
 
     bool after = false;
 
     std::vector<std::string>::iterator it;
-    for (int i = 0; i < graph.size(); i++) {
+    for (int i = 0; i < list.size(); i++) {
         if (after) {
-            elementsAfter.push_back(graph[i]);
+            elementsAfter.push_back(list[i]);
         }
-        if (graph[i] == uid) {
+        if (list[i] == el) {
             after = true;
         }
     }
     return elementsAfter;
 }
 
-bool tigl::PathGraph::Contains(const std::vector<std::string>& graph, const std::string& el)
+bool tigl::ListFunctions::Contains(const std::vector<std::string>& graph, const std::string& el)
 {
 
     if (std::find(graph.begin(), graph.end(), el) != graph.end()) {

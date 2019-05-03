@@ -647,26 +647,6 @@ std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
     return os;
 }
 
-void CTiglTransformation::SetTrivialScalingAndRotation()
-{
-    SetValue(0,0,1);
-    SetValue(0,1,0);
-    SetValue(0,2,0);
-
-    SetValue(1,0,0);
-    SetValue(1,1,1);
-    SetValue(1,2,0);
-
-    SetValue(2,0,0);
-    SetValue(2,1,0);
-    SetValue(2,2,1);
-
-    SetValue(3,0,0);
-    SetValue(3,1,0);
-    SetValue(3,2,0);
-    SetValue(3,3,1);
-}
-
 CTiglTransformation operator*(const CTiglTransformation& a, const CTiglTransformation& b)
 {
     CTiglTransformation result = b;
@@ -720,6 +700,16 @@ CTiglTransformation operator*( double s, const CTiglTransformation& a)
 bool CTiglTransformation::HasZeroScaling() const
 {
     return (isNear(GetValue(0,0),0)|| isNear(GetValue(1,1),0) || isNear(GetValue(2,2),0));
+}
+
+CTiglPoint CTiglTransformation::GetTranslation()
+{
+    // translation is last column of transformation
+    CTiglPoint translation;
+    translation.x = GetValue(0,3);
+    translation.y = GetValue(1,3);
+    translation.z = GetValue(2,3);
+    return translation;
 }
 
 } // end namespace tigl

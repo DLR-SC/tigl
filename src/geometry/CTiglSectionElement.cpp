@@ -243,14 +243,18 @@ void tigl::CTiglSectionElement::SetWidth(double newWidth, TiglCoordinateSystem r
 {
     double oldWidth = GetWidth(referenceCS);
     if (fabs(oldWidth) < 0.0001) {
-        // in this case we first reset the scaling (and rotation) of the element and section transformation
-        // in the hope that a width will then appear ;)
-        CTiglTransformation tempNewE = GetSectionElementTransformation();
-        tempNewE.SetTrivialScalingAndRotation();
+        // If height is null -> rotation can be ignore and scaling is near zero
+        // So the important part is the translation
+        // -> we reset the transformation of element and section keeping only the the translation
+        // In the hope that a area will appear and that we can use the algorithm as in the usual case.
+        CTiglPoint ETranslation = GetSectionElementTransformation().GetTranslation();
+        CTiglTransformation tempNewE;
+        tempNewE.AddTranslation(ETranslation.x, ETranslation.y, ETranslation.z);
         SetElementTransformation(tempNewE);
 
-        CTiglTransformation tempNewS = GetSectionTransformation();
-        tempNewS.SetTrivialScalingAndRotation();
+        CTiglPoint STranslation = GetSectionTransformation().GetTranslation();
+        CTiglTransformation tempNewS;
+        tempNewS.AddTranslation(STranslation.x, STranslation.y, STranslation.z);
         SetSectionTransformation(tempNewS);
 
         oldWidth = GetWidth(referenceCS);
@@ -268,14 +272,18 @@ void tigl::CTiglSectionElement::SetHeight(double newHeight, TiglCoordinateSystem
 {
     double oldHeight = GetHeight(referenceCS);
     if (fabs(oldHeight) < 0.0001) {
-        // in this case we first reset the scaling (and rotation) of the element and section transformation
-        // in the hope that a width will then appear ;)
-        CTiglTransformation tempNewE = GetSectionElementTransformation();
-        tempNewE.SetTrivialScalingAndRotation();
+        // If height is null -> rotation can be ignore and scaling is near zero
+        // So the important part is the translation
+        // -> we reset the transformation of element and section keeping only the the translation
+        // In the hope that a area will appear and that we can use the algorithm as in the usual case.
+        CTiglPoint ETranslation = GetSectionElementTransformation().GetTranslation();
+        CTiglTransformation tempNewE;
+        tempNewE.AddTranslation(ETranslation.x, ETranslation.y, ETranslation.z);
         SetElementTransformation(tempNewE);
 
-        CTiglTransformation tempNewS = GetSectionTransformation();
-        tempNewS.SetTrivialScalingAndRotation();
+        CTiglPoint STranslation = GetSectionTransformation().GetTranslation();
+        CTiglTransformation tempNewS;
+        tempNewS.AddTranslation(STranslation.x, STranslation.y, STranslation.z);
         SetSectionTransformation(tempNewS);
 
         oldHeight = GetHeight(referenceCS);
@@ -293,14 +301,18 @@ void tigl::CTiglSectionElement::SetArea(double newArea, TiglCoordinateSystem ref
 {
     double oldArea = GetArea(referenceCS);
     if (fabs(oldArea) < 0.0001) {
-        // in this case we first reset the scaling (and rotation) of the element and section transformation
-        // in the hope that a width will then appear ;)
-        CTiglTransformation tempNewE = GetSectionElementTransformation();
-        tempNewE.SetTrivialScalingAndRotation();
+        // If area is null -> rotation can be ignore and scaling is near zero
+        // So the important part is the translation
+        // -> we reset the transformation of element and section keeping only the the translation
+        // In the hope that a area will appear and that we can use the algorithm as in the usual case.
+        CTiglPoint ETranslation = GetSectionElementTransformation().GetTranslation();
+        CTiglTransformation tempNewE;
+        tempNewE.AddTranslation(ETranslation.x, ETranslation.y, ETranslation.z);
         SetElementTransformation(tempNewE);
 
-        CTiglTransformation tempNewS = GetSectionTransformation();
-        tempNewS.SetTrivialScalingAndRotation();
+        CTiglPoint STranslation = GetSectionTransformation().GetTranslation();
+        CTiglTransformation tempNewS;
+        tempNewS.AddTranslation(STranslation.x, STranslation.y, STranslation.z);
         SetSectionTransformation(tempNewS);
 
         oldArea = GetArea(referenceCS);

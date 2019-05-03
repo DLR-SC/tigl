@@ -59,7 +59,7 @@
 #include <BRepProj_Projection.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
-#include "PathGraph.h"
+#include "ListFunctions.h"
 #include <map>
 #include "CCPACSFuselageSectionElement.h"
 
@@ -709,8 +709,8 @@ void CCPACSFuselage::SetLengthBetween(const std::string& startElementUID, const 
     // 3) Elements after end that need to be shifted has the last between element
 
     std::vector<std::string> elementsBetween =
-        PathGraph::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
-    std::vector<std::string> elementsAfter = PathGraph::GetElementsAfter(elementUIDs, endElementUID);
+        ListFunctions::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
+    std::vector<std::string> elementsAfter = ListFunctions::GetElementsAfter(elementUIDs, endElementUID);
 
     if (elementsBetween.size() < 2) {
         throw CTiglError(
@@ -829,7 +829,7 @@ void CCPACSFuselage::SetMaximalCircumferenceBetween(const std::string& startElem
     double scaleFactor = newMaximalCircumference / oldMaximalCircumference;
 
     std::vector<std::string> elementsBetween =
-        PathGraph::GetElementsInBetween(m_segments.GetElementUIDsInOrder(), startElementUID, endElementUID);
+        ListFunctions::GetElementsInBetween(m_segments.GetElementUIDsInOrder(), startElementUID, endElementUID);
 
     if (elementsBetween.size() < 1) {
         throw CTiglError("CCPACSFuselage::GetMaximalCircumferenceBetween: No elements in between was found");
@@ -877,7 +877,7 @@ double CCPACSFuselage::GetMaxBetween(pGetProperty func, const std::string& start
     std::vector<std::string> elementUIDs                                 = m_segments.GetElementUIDsInOrder();
     std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
     std::vector<std::string> elementsInBetween =
-        PathGraph::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
+        ListFunctions::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
 
     if (elementsInBetween.size() < 1) {
         LOG(WARNING) << "CCPACSFuselage::GetMaxBetween: No elements in between was found!";
@@ -982,7 +982,7 @@ double CCPACSFuselage::ApplyFunctionBetween(pSetProperty func, double value, con
     std::vector<std::string> elementUIDs                                 = m_segments.GetElementUIDsInOrder();
     std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
     std::vector<std::string> elementsInBetween =
-        PathGraph::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
+        ListFunctions::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
 
     if (elementsInBetween.size() < 1) {
         LOG(WARNING) << "CCPACSFuselage::GetMaxBetween: No elements in between was found!";

@@ -2659,8 +2659,7 @@ TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle() const
 void TIGLViewerDocument::updateCpacsConfigurationFromString(const std::string& tixiContent)
 {
     if (m_cpacsHandle < 1) {
-        LOG(ERROR) << " TIGLViewerDocument::updateCpacsConfigurationFromString: No model seems to be open."
-                   << std::endl;
+        LOG(ERROR) << " TIGLViewerDocument::updateCpacsConfigurationFromString: No model seems to be open.";
         return;
     }
 
