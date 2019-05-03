@@ -42,6 +42,7 @@ cpcr::CPACSTreeItem* CPACSFilterModel::getItemFromSelection(const QItemSelection
 
 bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
+
     QModelIndex typeIndex = sourceModel()->index(sourceRow, 1, sourceParent);
     QModelIndex uidIndex  = sourceModel()->index(sourceRow, 2, sourceParent);
 
@@ -58,7 +59,7 @@ bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& source
         // if the row itself match the pattern
         if (sourceModel()->data(typeIndex).toString().contains(searchPattern) ||
             (matchingOnUID && sourceModel()->data(uidIndex).toString().contains(searchPattern))) {
-                return true;
+            return true;
         }
         // check if one of its child match the pattern (recursive call)
         else {
@@ -94,4 +95,16 @@ void CPACSFilterModel::enableMatchOnUID(bool value)
 QModelIndex CPACSFilterModel::getAircraftModelRoot()
 {
     return mapFromSource(cpacsModel->getAircraftModelIndex());
+}
+
+QModelIndex CPACSFilterModel::getIdxForUID(const QString& uid)
+{
+    QModelIndex sourceIdx = cpacsModel->getIdxForUID(uid.toStdString());
+    QModelIndex idx       = mapFromSource(sourceIdx);
+    return idx;
+}
+
+QString CPACSFilterModel::getUidForIdx(QModelIndex idx)
+{
+    return QString(cpacsModel->getUidForIdx(mapToSource(idx)).c_str());
 }

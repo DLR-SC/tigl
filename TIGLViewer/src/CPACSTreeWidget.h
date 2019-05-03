@@ -87,6 +87,10 @@ public:
    */
     void refresh();
 
+    void setSelectedUID(const QString & uid);
+
+    QString getSelectedUID();
+
 private:
 
     void setTreeViewColumnsDisplay();

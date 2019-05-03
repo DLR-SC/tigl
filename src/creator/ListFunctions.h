@@ -25,15 +25,22 @@
 namespace tigl
 {
 
-class PathGraph
+class ListFunctions
 {
 public:
-    static std::vector<std::string> GetElementsInBetween(const std::vector<std::string>& graph, const std::string& el1,
+
+    // Return the elements in between the "el1" and "el2". Elements "el1" and "el2" are contained in the result.
+    // Remark, the input order of "el1" and "el2" as no effect.
+    // If one of the given elements is not present a empty vector is returned.
+    static std::vector<std::string> GetElementsInBetween(const std::vector<std::string>& list, const std::string& el1,
                                                          const std::string& el2);
 
-    static std::vector<std::string> GetElementsAfter(const std::vector<std::string>& graph, const std::string& uid);
 
-    static bool Contains(const std::vector<std::string>& graph, const std::string& el);
+    //Return the elements after the element "el" without the element "el" itself.
+    static std::vector<std::string> GetElementsAfter(const std::vector<std::string>& list, const std::string& el);
+
+    // Return true if the element is contains in the list and false otherwise.
+    static bool Contains(const std::vector<std::string>& list, const std::string& el);
 };
 }
 
