@@ -438,6 +438,33 @@ double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane)
     return refArea;
 }
 
+double CCPACSWing::GetReferenceArea()
+{
+    TiglAxis spanDir = GetMajorDirection();
+    TiglAxis deepDir = GetDeepDirection();
+
+    if (spanDir == TIGL_Y_AXIS && deepDir == TIGL_X_AXIS) {
+        return GetReferenceArea(TIGL_X_Y_PLANE);
+    }
+    else if (spanDir == TIGL_Y_AXIS && deepDir == TIGL_Z_AXIS) {
+        return GetReferenceArea(TIGL_Y_Z_PLANE);
+    }
+    else if (spanDir == TIGL_Z_AXIS && deepDir == TIGL_X_AXIS) {
+        return GetReferenceArea(TIGL_X_Z_PLANE);
+    }
+    else if (spanDir == TIGL_Z_AXIS && deepDir == TIGL_Y_AXIS) {
+        return GetReferenceArea(TIGL_Y_Z_PLANE);
+    }
+    else if (spanDir == TIGL_X_AXIS && deepDir == TIGL_Z_AXIS) {
+        return GetReferenceArea(TIGL_X_Z_PLANE);
+    }
+    else if (spanDir == TIGL_X_AXIS && deepDir == TIGL_Y_AXIS) {
+        return GetReferenceArea(TIGL_X_Y_PLANE);
+    }
+    else {
+       LOG(ERROR) << "CCPACSWing::GetReferenceArea: Unexpected pair of major direction and deep direction.";
+    }
+}
 
 double CCPACSWing::GetWettedArea(TopoDS_Shape parent)
 {
@@ -501,7 +528,7 @@ double CCPACSWing::GetWingspan()
 //     s: half span; A_half: Reference area of wing without symmetrical wing
 double CCPACSWing::GetAspectRatio()
 {
-    return 2.0*(pow_int(GetWingspan(),2)/GetReferenceArea(GetSymmetryAxis()));
+    return 2.0*(pow_int(GetWingspan(),2)/GetReferenceArea());
 }
 
 /**

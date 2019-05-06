@@ -121,6 +121,9 @@ public:
     // of each wing segment by projecting the wing segments into the plane defined by the user
     TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane);
 
+    // Returns the reference area of the wing in the plane normal to the major direction
+    TIGL_EXPORT double GetReferenceArea();
+
     // Returns wetted Area
     TIGL_EXPORT double GetWettedArea(TopoDS_Shape parent);
 
