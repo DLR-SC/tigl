@@ -115,3 +115,38 @@ TEST_F(creatorWing, MultipleWings_GetMajorDirection_GetDeepDirection)
     EXPECT_EQ(wing->GetMajorDirection(), TIGL_Z_AXIS);
     EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
 }
+
+
+
+TEST_F(creatorWing, MultipleWings_GetReferenceArea)
+{
+    // symmetry x-z case
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    EXPECT_NEAR(wing->GetReferenceArea(), 1.75, 0.0001);
+
+    setWing("W2_RX90");
+    EXPECT_NEAR(wing->GetReferenceArea(), 1.75, 0.0001);
+
+    // symmetry x-z case
+    setWing("W3_RX40");
+    EXPECT_NEAR(wing->GetReferenceArea(), 0.40217333, 0.0001);
+
+    // no symmetry case
+    setWing("W4_RX40b");
+    EXPECT_NEAR(wing->GetReferenceArea(), 0.40217333, 0.0001);
+
+    // symmetry x-z
+    // The symmetry prime on the heuristic (So, we get always the correct span)
+    setWing("W5_RX60");
+    EXPECT_NEAR(wing->GetReferenceArea(), 0.2625, 0.0001);
+
+    // no symmetry case
+    setWing("W6_RX60b");
+    EXPECT_NEAR(wing->GetReferenceArea(), 0.454663, 0.0001);
+
+    // strange symmetry case (symmetry y-x plane)
+    // The area is 0  because we project against the XZ plane since the major axis is Y.
+    setWing("W7_SymX");
+    EXPECT_NEAR(wing->GetReferenceArea(),0, 0.0001);
+
+}
