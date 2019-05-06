@@ -108,7 +108,7 @@ public:
 
     // Gets the loft of the whole wing
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge();
-
+        
     // Returns the wing loft with cutted out control surfaces
     TIGL_EXPORT TopoDS_Shape GetLoftWithCutouts();
         
@@ -129,6 +129,9 @@ public:
     TIGL_EXPORT double GetWettedArea(TopoDS_Shape parent);
 
     // Returns the wingspan of the wing
+    // The span is the width of the wing in the major wing direction.
+    // Remark, if the wing is mirrored (with a symmetry axis), the two wings are take into account.
+    // Otherwise, the width of the unique wing is returned.
     TIGL_EXPORT double GetWingspan();
 
     // Returns the aspect ratio of the wing
@@ -180,6 +183,14 @@ public:
     // Gets the getPointBehavior
     TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
     TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
+
+    // Returns the major direction of the wing (correspond to the span direction)
+    // @Details: If a symmetry plan is set, the major direction is normal to the symmetry plan,
+    // otherwise, an heuristic is used to find out the best span axis candidate.
+    TIGL_EXPORT TiglAxis GetMajorDirection() const;
+
+    // Returns the deep direction of the wing
+    TIGL_EXPORT TiglAxis GetDeepDirection() const;
 
 protected:
 

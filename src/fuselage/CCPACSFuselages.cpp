@@ -101,6 +101,7 @@ CCPACSFuselage& CCPACSFuselages::CreateFuselage(const std::string& fuselageUID, 
 
     // check if the profile uid is valid
     try {
+        //TODO (MS): Refactor using uidManager.IsUIDRegistered<CCPACSFuselageProfile>
         uidManager.ResolveObject<CCPACSFuselageProfile>(profileUID);
     }
     catch (const CTiglError& e) {
