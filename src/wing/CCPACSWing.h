@@ -125,6 +125,9 @@ public:
     TIGL_EXPORT double GetWettedArea(TopoDS_Shape parent);
 
     // Returns the wingspan of the wing
+    // The span is the width of the wing in the major wing direction.
+    // Remark, if the wing is mirrored (with a symmetry axis), the two wings are take into account.
+    // Otherwise, the width of the unique wing is returned.
     TIGL_EXPORT double GetWingspan();
 
     // Returns the aspect ratio of the wing
@@ -160,6 +163,14 @@ public:
 
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound GetGuideCurveWires() const;
+
+    // Returns the major direction of the wing (correspond to the span direction)
+    // @Details: If a symmetry plan is set, the major direction is normal to the symmetry plan,
+    // otherwise, an heuristic is used to find out the best span axis candidate.
+    TIGL_EXPORT TiglAxis GetMajorDirection() const;
+
+    // Returns the deep direction of the wing
+    TIGL_EXPORT TiglAxis GetDeepDirection() const;
 
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;

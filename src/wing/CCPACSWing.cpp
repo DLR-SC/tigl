@@ -467,85 +467,32 @@ Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
 double CCPACSWing::GetWingspan()
 {
     Bnd_Box boundingBox;
-    if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-        // As we have no symmetry information
-        // we have to find out the major direction
-        // of the wing.
-        // This is not so trivial, as e.g. the VTP can
-        // be longer in depth than the actual span.
-        // Boxwings have to be treated as well.
-        // Here, we apply a heuristic that finds out
-        // The major depth direction and the major
-        // spanning direction. The depth direction
-        // is then discarded in the span evaluation.
 
-        gp_XYZ cumulatedSpanDirection(0, 0, 0);
-        gp_XYZ cumulatedDepthDirection(0, 0, 0);
-        for (int i = 1; i <= GetSegmentCount(); ++i) {
-            CCPACSWingSegment& segment = m_segments.GetSegment(i);
-            const TopoDS_Shape segmentShape = segment.GetLoft()->Shape();
-            BRepBndLib::Add(segmentShape, boundingBox);
-
-            gp_XYZ dirSpan  = segment.GetChordPoint(1,0).XYZ() - segment.GetChordPoint(0,0).XYZ();
-            gp_XYZ dirDepth = segment.GetChordPoint(0,1).XYZ() - segment.GetChordPoint(0,0).XYZ();
-            dirSpan  = gp_XYZ(fabs(dirSpan.X()), fabs(dirSpan.Y()), fabs(dirSpan.Z()));
-            dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
-            cumulatedSpanDirection += dirSpan;
-            cumulatedDepthDirection += dirDepth;
-        }
-        CCPACSWingSegment& outerSegment = m_segments.GetSegment(GetSegmentCount());
-        gp_XYZ dirDepth = outerSegment.GetChordPoint(1,1).XYZ() - outerSegment.GetChordPoint(1,0).XYZ();
-        dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
-        cumulatedDepthDirection += dirDepth;
-        
-        int depthIndex = maxIndex(cumulatedDepthDirection.X(),
-                                  cumulatedDepthDirection.Y(),
-                                  cumulatedDepthDirection.Z());
-
-        // Get the extension of the wing in all
-        // directions of the world coordinate system 
-        Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
-        boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-        double xw = xmax - xmin;
-        double yw = ymax - ymin;
-        double zw = zmax - zmin;
-
-        // The direction of depth should not be included in the span evaluation
-        switch (depthIndex) {
-        default:
-        case 0:
-            return cumulatedSpanDirection.Y() >= cumulatedSpanDirection.Z() ? yw : zw;
-        case 1:
-            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Z() ? xw : zw;
-        case 2:
-            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Y() ? xw : yw;
-        }
-    }
-    else {
-        for (int i = 1; i <= GetSegmentCount(); ++i) {
-            CCPACSWingSegment& segment = GetSegment(i);
-            TopoDS_Shape segmentShape = segment.GetLoft()->Shape();
-            BRepBndLib::Add(segmentShape, boundingBox);
+    for (int i = 1; i <= GetSegmentCount(); ++i) {
+        CCPACSWingSegment& segment = GetSegment(i);
+        TopoDS_Shape segmentShape  = segment.GetLoft()->Shape();
+        BRepBndLib::Add(segmentShape, boundingBox);
+        if (GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
             TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft()->Shape();
             BRepBndLib::Add(segmentMirroredShape, boundingBox);
         }
+    }
 
-        Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
-        boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+    Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
-        switch (GetSymmetryAxis()){
-        case TIGL_X_Y_PLANE:
-            return zmax-zmin;
-            break;
-        case TIGL_X_Z_PLANE:
-            return ymax-ymin;
-            break;
-        case TIGL_Y_Z_PLANE:
-            return xmax-xmin;
-            break;
-        default:
-            return ymax-ymin;
-        }
+    switch (GetMajorDirection()) {
+    case TIGL_Z_AXIS:
+        return zmax - zmin;
+        break;
+    case TIGL_Y_AXIS:
+        return ymax - ymin;
+        break;
+    case TIGL_X_AXIS:
+        return xmax - xmin;
+        break;
+    default:
+        return ymax - ymin;
     }
 }
 
@@ -807,6 +754,83 @@ void CCPACSWing::BuildGuideCurveWires(TopoDS_Compound& cache) const
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots, sectionParams);
     cache = connector.GetConnectedGuideCurves();
+}
+
+TiglAxis CCPACSWing::GetMajorDirection() const
+{
+    switch (GetSymmetryAxis()) {
+    case TIGL_X_Y_PLANE:
+        return TiglAxis::TIGL_Z_AXIS;
+    case TIGL_X_Z_PLANE:
+        return TiglAxis::TIGL_Y_AXIS;
+    case TIGL_Y_Z_PLANE:
+        return TiglAxis ::TIGL_X_AXIS;
+    default:
+        // heuristic to find the best major axis
+        // first find the deep axis , then chose the major axis between the two left axis
+        gp_XYZ cumulatedSpanDirection(0, 0, 0);
+        gp_XYZ cumulatedDepthDirection(0, 0, 0);
+        for (int i = 1; i <= GetSegmentCount(); ++i) {
+            const CCPACSWingSegment& segment = m_segments.GetSegment(i);
+            gp_XYZ dirSpan                   = segment.GetChordPoint(1, 0).XYZ() - segment.GetChordPoint(0, 0).XYZ();
+            gp_XYZ dirDepth                  = segment.GetChordPoint(0, 1).XYZ() - segment.GetChordPoint(0, 0).XYZ();
+            dirSpan  = gp_XYZ(fabs(dirSpan.X()), fabs(dirSpan.Y()), fabs(dirSpan.Z())); // why we use abs value?
+            dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
+            cumulatedSpanDirection += dirSpan;
+            cumulatedDepthDirection += dirDepth;
+        }
+        const CCPACSWingSegment& outerSegment = m_segments.GetSegment(GetSegmentCount());
+        gp_XYZ dirDepth = outerSegment.GetChordPoint(1, 1).XYZ() - outerSegment.GetChordPoint(1, 0).XYZ();
+        dirDepth        = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
+        cumulatedDepthDirection += dirDepth;
+
+        int depthIndex =
+            maxIndex(cumulatedDepthDirection.X(), cumulatedDepthDirection.Y(), cumulatedDepthDirection.Z());
+
+        switch (depthIndex) {
+        case 0:
+            return cumulatedSpanDirection.Y() >= cumulatedSpanDirection.Z() ? TiglAxis::TIGL_Y_AXIS
+                                                                            : TiglAxis::TIGL_Z_AXIS;
+        case 1:
+            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Z() ? TiglAxis::TIGL_X_AXIS
+                                                                            : TiglAxis::TIGL_Z_AXIS;
+        case 2:
+            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Y() ? TiglAxis::TIGL_X_AXIS
+                                                                            : TiglAxis::TIGL_Y_AXIS;
+        default:
+            return TiglAxis ::TIGL_Y_AXIS;
+        }
+    }
+}
+
+TiglAxis CCPACSWing::GetDeepDirection() const
+{
+
+    gp_XYZ cumulatedDepthDirection(0, 0, 0);
+    for (int i = 1; i <= GetSegmentCount(); ++i) {
+        const CCPACSWingSegment& segment = m_segments.GetSegment(i);
+        gp_XYZ dirDepth                  = segment.GetChordPoint(0, 1).XYZ() - segment.GetChordPoint(0, 0).XYZ();
+        dirDepth                         = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
+        cumulatedDepthDirection += dirDepth;
+    }
+    const CCPACSWingSegment& outerSegment = m_segments.GetSegment(GetSegmentCount());
+    gp_XYZ dirDepth = outerSegment.GetChordPoint(1, 1).XYZ() - outerSegment.GetChordPoint(1, 0).XYZ();
+    dirDepth        = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
+    cumulatedDepthDirection += dirDepth;
+
+    switch (GetMajorDirection()) {
+    case TIGL_Y_AXIS:
+        return cumulatedDepthDirection.X() >= cumulatedDepthDirection.Z() ? TiglAxis::TIGL_X_AXIS
+                                                                          : TiglAxis::TIGL_Z_AXIS;
+    case TIGL_Z_AXIS:
+        return cumulatedDepthDirection.X() >= cumulatedDepthDirection.Y() ? TiglAxis::TIGL_X_AXIS
+                                                                          : TiglAxis::TIGL_Y_AXIS;
+    case TIGL_X_AXIS:
+        return cumulatedDepthDirection.Z() >= cumulatedDepthDirection.Y() ? TiglAxis::TIGL_Z_AXIS
+                                                                          : TiglAxis::TIGL_Y_AXIS;
+    default:
+        return TiglAxis ::TIGL_X_AXIS;
+    }
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire)
