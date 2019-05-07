@@ -47,14 +47,7 @@ void ModificatorWingWidget::init()
     ui->spinBoxSweep->setValue(-1.0);
     ui->spinBoxDihedralChord->setValue(0);
 
-    ui->spinBoxAreaXY->setValue(-1.0);
-    ui->spinBoxAreaXZ->setValue(-1);
-    ui->spinBoxAreaYZ->setValue(-1);
-    ui->spinBoxAreaT->setValue(-1);
-
-    ui->spinBoxAreaXZ->setReadOnly(true);
-    ui->spinBoxAreaYZ->setReadOnly(true);
-    ui->spinBoxAreaT->setReadOnly(true);
+    ui->spinBoxArea->setValue(-1.0);
 
     ui->spinBoxAR->setValue(-1);
 
@@ -71,12 +64,10 @@ void ModificatorWingWidget::init()
     ui->checkBoxIsARConstant->setChecked(true);
 
     // hide the advanced options
-    ui->widgetAreaDetails->hide();
     ui->widgetDihedralDetails->hide();
     ui->widgetSweepDetails->hide();
 
     // connect the extend buttons with their slot
-    connect(ui->btnExpendAreaDetails, SIGNAL(clicked(bool)), this, SLOT(expendAreaDetails(bool)));
     connect(ui->btnExpendDihedralDetails, SIGNAL(clicked(bool)), this, SLOT(expendDihedralDetails(bool)));
     connect(ui->btnExpendSweepDetails, SIGNAL(clicked(bool)), this, SLOT(expendSweepDetails(bool)));
 
@@ -84,12 +75,6 @@ void ModificatorWingWidget::init()
     connect(ui->checkBoxIsAreaConstant, SIGNAL(clicked(bool)), this, SLOT(setAreaConstant(bool)));
     connect(ui->checkBoxIsSpanConstant, SIGNAL(clicked(bool)), this, SLOT(setSpanConstant(bool)));
     connect(ui->checkBoxIsARConstant, SIGNAL(clicked(bool)), this, SLOT(setARConstant(bool)));
-}
-
-// inverse the visibility
-void ModificatorWingWidget::expendAreaDetails(bool checked)
-{
-    ui->widgetAreaDetails->setVisible(!(ui->widgetAreaDetails->isVisible()));
 }
 
 // inverse the visibility
@@ -111,7 +96,7 @@ void ModificatorWingWidget::setAreaConstant(bool checked)
     ui->checkBoxIsSpanConstant->setChecked(false);
     ui->spinBoxSpan->setReadOnly(false);
     ui->checkBoxIsAreaConstant->setChecked(true);
-    ui->spinBoxAreaXY->setReadOnly(true);
+    ui->spinBoxArea->setReadOnly(true);
 }
 
 void ModificatorWingWidget::setSpanConstant(bool checked)
@@ -120,7 +105,7 @@ void ModificatorWingWidget::setSpanConstant(bool checked)
     ui->checkBoxIsARConstant->setChecked(false);
     ui->spinBoxAR->setReadOnly(false);
     ui->checkBoxIsAreaConstant->setChecked(false);
-    ui->spinBoxAreaXY->setReadOnly(false);
+    ui->spinBoxArea->setReadOnly(false);
     ui->checkBoxIsSpanConstant->setChecked(true);
     ui->spinBoxSpan->setReadOnly(true);
 }
@@ -128,7 +113,7 @@ void ModificatorWingWidget::setSpanConstant(bool checked)
 void ModificatorWingWidget::setARConstant(bool checked)
 {
     ui->checkBoxIsAreaConstant->setChecked(false);
-    ui->spinBoxAreaXY->setReadOnly(false);
+    ui->spinBoxArea->setReadOnly(false);
     ui->checkBoxIsSpanConstant->setChecked(false);
     ui->spinBoxSpan->setReadOnly(false);
     ui->checkBoxIsARConstant->setChecked(true);
@@ -142,6 +127,12 @@ void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing)
     // set constant between ar, span and area
     setARConstant(true);
 
+    internalSpan = wing.GetWingHalfSpan();
+    ui->spinBoxSpan->setValue(internalSpan);
+    internalAR = wing.GetAspectRatio();
+    ui->spinBoxAR->setValue(internalAR);
+    internalArea = wing.GetReferenceArea();
+    ui->spinBoxArea->setValue(internalArea);
     // TODO set the internal elements using tiglWing
 }
 
@@ -175,7 +166,7 @@ bool ModificatorWingWidget::apply()
 
     bool aRHasChanged = (!isApprox(internalAR, ui->spinBoxAR->value()));
 
-    bool areaXYHasChanged = (!isApprox(internalAreaXY, ui->spinBoxAreaXY->value()));
+    bool areaXYHasChanged = (!isApprox(internalArea, ui->spinBoxArea->value()));
 
     if (anchorHasChanged) {
         internalAnchorX = ui->spinBoxAnchorX->value();
@@ -207,7 +198,7 @@ bool ModificatorWingWidget::apply()
     }
 
     if (areaXYHasChanged) {
-        internalAreaXY = ui->spinBoxAreaXY->value();
+        internalArea = ui->spinBoxArea->value();
         if (ui->checkBoxIsSpanConstant->isChecked()) {
 
             // todo

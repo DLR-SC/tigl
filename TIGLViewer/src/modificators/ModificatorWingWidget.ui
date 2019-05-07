@@ -447,23 +447,20 @@
    <item>
     <layout class="QHBoxLayout" name="areaLayout">
      <item>
-      <widget class="QPushButton" name="btnExpendAreaDetails">
-       <property name="minimumSize">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
         <size>
-         <width>0</width>
-         <height>0</height>
+         <width>26</width>
+         <height>20</height>
         </size>
        </property>
-       <property name="maximumSize">
-        <size>
-         <width>20</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>+</string>
-       </property>
-      </widget>
+      </spacer>
      </item>
      <item>
       <widget class="QLabel" name="labelArea">
@@ -479,8 +476,11 @@
          <height>16777215</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reference area, the area of the projected wing on the plane formed by the wing major direction and the wing deep direction. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
-        <string>Area</string>
+        <string>Top Area</string>
        </property>
       </widget>
      </item>
@@ -510,20 +510,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="labelXY">
-       <property name="maximumSize">
-        <size>
-         <width>20</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>XY:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDoubleSpinBox" name="spinBoxAreaXY">
+      <widget class="QDoubleSpinBox" name="spinBoxArea">
        <property name="keyboardTracking">
         <bool>true</bool>
        </property>
@@ -536,114 +523,6 @@
        <property name="maximum">
         <double>99999999999999998278261272554585856747747644714015897553975120217811154108416.000000000000000</double>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QWidget" name="widgetAreaDetails" native="true">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_25">
-        <property name="spacing">
-         <number>6</number>
-        </property>
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="labelXZ">
-          <property name="maximumSize">
-           <size>
-            <width>20</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>XZ:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="spinBoxAreaXZ">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="keyboardTracking">
-           <bool>true</bool>
-          </property>
-          <property name="decimals">
-           <number>3</number>
-          </property>
-          <property name="maximum">
-           <double>99999999999999998278261272554585856747747644714015897553975120217811154108416.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelYZ">
-          <property name="maximumSize">
-           <size>
-            <width>20</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>YZ:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="spinBoxAreaYZ">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="keyboardTracking">
-           <bool>true</bool>
-          </property>
-          <property name="decimals">
-           <number>3</number>
-          </property>
-          <property name="maximum">
-           <double>99999999999999998278261272554585856747747644714015897553975120217811154108416.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="labelT">
-          <property name="maximumSize">
-           <size>
-            <width>20</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>T:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="spinBoxAreaT">
-          <property name="keyboardTracking">
-           <bool>true</bool>
-          </property>
-          <property name="decimals">
-           <number>3</number>
-          </property>
-          <property name="maximum">
-           <double>99999999999999998278261272554585856747747644714015897553975120217811154108416.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-       </layout>
       </widget>
      </item>
     </layout>
