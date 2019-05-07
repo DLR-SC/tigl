@@ -32,7 +32,6 @@ class ModificatorWingWidget : public ModificatorWidget
     Q_OBJECT
 
 public slots:
-    void expendAreaDetails(bool checked);
     void expendDihedralDetails(bool checked);
     void expendSweepDetails(bool checked);
 
@@ -74,10 +73,7 @@ private:
     double internalDihedralChord;
 
     // internal area
-    double internalAreaXY;
-    double internalAreaXZ;
-    double internalAreaYZ;
-    double internalAreaT;
+    double internalArea;
 
     // internal span
     double internalSpan;
