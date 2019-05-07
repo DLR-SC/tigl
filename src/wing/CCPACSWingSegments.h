@@ -54,6 +54,12 @@ public:
         return m_parentVariant;
     }
 
+
+    // return the elements uids in order from root to tip
+    // It assume that the element are already order in m_segments !
+    TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder() const;
+
+
 private:
     CTiglRelativelyPositionedComponent* m_parentVariant;
 };

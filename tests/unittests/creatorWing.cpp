@@ -114,6 +114,11 @@ TEST_F(creatorWing, MultipleWings_GetMajorDirection_GetDeepDirection)
     setWing("W7_SymX");
     EXPECT_EQ(wing->GetMajorDirection(), TIGL_Z_AXIS);
     EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
+
+    // strang symmetry case (symmetry y-x plane)
+    setWing("W8_SBW");
+    EXPECT_EQ(wing->GetMajorDirection(), TIGL_Y_AXIS);
+    EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
 }
 
 TEST_F(creatorWing, MultipleWings_GetWingHalfSpan)
@@ -148,6 +153,10 @@ TEST_F(creatorWing, MultipleWings_GetWingHalfSpan)
     // strange symmetry case (symmetry y-x plane)
     setWing("W7_SymX");
     EXPECT_NEAR(wing->GetWingHalfSpan(), 0, 2 * tolerance);
+
+    // simple box wing
+    setWing("W8_SBW");
+    EXPECT_NEAR(wing->GetWingHalfSpan(),0.93969, tolerance);
 }
 
 TEST_F(creatorWing, MultipleWings_GetReferenceArea)
@@ -180,5 +189,34 @@ TEST_F(creatorWing, MultipleWings_GetReferenceArea)
     // The area is 0  because we project against the XZ plane since the major axis is Y.
     setWing("W7_SymX");
     EXPECT_NEAR(wing->GetReferenceArea(),0, 0.0001);
+
+    // simple box wing
+    // Remark, since there is the area is projected two times on the plane (one for the lower wing, once for the upper wing)
+    // the reference are is double // TODO verify that this behavior is not problematic
+    setWing("W8_SBW");
+    EXPECT_NEAR(wing->GetReferenceArea(),2*0.93969, 0.0001);
+}
+
+
+TEST_F(creatorWing, MultipleWings_GetTipAndRootUID)
+{
+    // symmetry x-z case
+    setVariables("TestData/multiple_wings.xml", "W2_RX90");
+    EXPECT_EQ(wing->GetRootUID(), "W2_RX90_Sec1_El1");
+    EXPECT_EQ(wing->GetTipUID(), "W2_RX90_Sec3_El1");
+
+    // symmetry x-z case
+    setWing("W3_RX40");
+    EXPECT_EQ(wing->GetRootUID(), "W3_RX40_Sec1_El1");
+    EXPECT_EQ(wing->GetTipUID(), "W3_RX40_Sec3_El1");
+
+    // no symmetry case
+    setWing("W6_RX60b");
+    EXPECT_EQ(wing->GetRootUID(), "W6_RX60b_Sec1_El1");
+    EXPECT_EQ(wing->GetTipUID(), "W6_RX60b_Sec3_El1");
+
+    setWing("W8_SBW");
+    EXPECT_EQ(wing->GetRootUID(), "W8_SBW_Sec1_El1");
+    EXPECT_EQ(wing->GetTipUID(), "W8_SBW_Sec2_El1");
 
 }

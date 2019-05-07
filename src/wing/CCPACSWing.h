@@ -39,6 +39,8 @@
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
 
+#include "CTiglWingSectionElement.h"
+
 namespace tigl
 {
 class CCPACSConfiguration;
@@ -181,6 +183,12 @@ public:
     // Returns the deep direction of the wing
     TIGL_EXPORT TiglAxis GetDeepDirection() const;
 
+    // Returns the uid of the element that is the most distant of the root in the major wing direction
+    TIGL_EXPORT std::string GetTipUID() const;
+
+    // Returns the uid of the root element (the element that start to build the wing)
+    TIGL_EXPORT std::string GetRootUID() const;
+
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;
 
@@ -199,6 +207,12 @@ protected:
         
     void BuildUpperLowerShells();
 
+    // Init for the tipCElement cache
+    void SetTipCElement(CTiglWingSectionElement& cache) const;
+
+    // Init for the rootCElement cache
+    void SetRootCElement(CTiglWingSectionElement& cache) const;
+
 private:
     // get short name for loft
     std::string GetShortShapeName() const;
@@ -216,6 +230,11 @@ private:
     bool                           rebuildShells;
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
+
+    Cache<CTiglWingSectionElement, CCPACSWing> tipCElement;
+    Cache<CTiglWingSectionElement, CCPACSWing> rootCElement;
+
+
 
     friend class CCPACSWingSegment;
     friend class CCPACSWingComponentSegment;

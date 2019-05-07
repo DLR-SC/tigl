@@ -96,4 +96,22 @@ int CCPACSWingSegments::GetSegmentCount() const
     return static_cast<int>(m_segments.size());
 }
 
+std::vector<std::string> CCPACSWingSegments::GetElementUIDsInOrder() const
+{
+    std::vector<std::string> elementUIDs;
+    std::string tempStartUID;
+    std::string tempEndUID;
+    for (int i = 0; i < m_segments.size(); i++) {
+        tempStartUID = m_segments[i]->GetFromElementUID();
+        tempEndUID   = m_segments[i]->GetToElementUID();
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempStartUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempStartUID);
+        }
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempEndUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempEndUID);
+        }
+    }
+    return elementUIDs;
+}
+
 } // end namespace tigl
