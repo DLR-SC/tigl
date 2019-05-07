@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -115,6 +115,24 @@ void CCPACSWingSegments::InvalidateParent() const
     if (const auto* parent = GetNextUIDParent()) {
         parent->Invalidate();
     }
+}
+
+std::vector<std::string> CCPACSWingSegments::GetElementUIDsInOrder() const
+{
+    std::vector<std::string> elementUIDs;
+    std::string tempStartUID;
+    std::string tempEndUID;
+    for (size_t i = 0; i < m_segments.size(); i++) {
+        tempStartUID = m_segments[i]->GetFromElementUID();
+        tempEndUID   = m_segments[i]->GetToElementUID();
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempStartUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempStartUID);
+        }
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempEndUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempEndUID);
+        }
+    }
+    return elementUIDs;
 }
 
 } // end namespace tigl

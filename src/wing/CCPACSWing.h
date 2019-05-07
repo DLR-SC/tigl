@@ -31,6 +31,7 @@
 #include "CCPACSWingSections.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingComponentSegments.h"
+#include "CTiglWingSectionElement.h"
 #include "CCPACSPositionings.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurve.h"
@@ -201,6 +202,12 @@ public:
     // Returns the deep direction of the wing
     TIGL_EXPORT TiglAxis GetDeepDirection() const;
 
+    // Returns the uid of the element that is the most distant of the root in the major wing direction
+    TIGL_EXPORT std::string GetTipUID() const;
+
+    // Returns the uid of the root element (the element that start to build the wing)
+    TIGL_EXPORT std::string GetRootUID() const;
+
 protected:
 
     struct LocatedGuideCurves
@@ -229,6 +236,12 @@ protected:
     PNamedShape BuildLoft() const override;
         
     void BuildUpperLowerShells();
+
+    // Init for the tipCElement cache
+    void SetTipCElement(CTiglWingSectionElement& cache) const;
+
+    // Init for the rootCElement cache
+    void SetRootCElement(CTiglWingSectionElement& cache) const;
 
 private:
     // Invalidates internal state
@@ -259,6 +272,9 @@ private:
 
 
     TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
+
+    Cache<CTiglWingSectionElement, CCPACSWing> tipCElement;
+    Cache<CTiglWingSectionElement, CCPACSWing> rootCElement;
 
     friend class CCPACSWingSegment;
     friend class CCPACSWingComponentSegment;

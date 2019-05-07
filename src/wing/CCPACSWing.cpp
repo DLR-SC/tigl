@@ -103,6 +103,8 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
     , buildFlaps(false)
+    , tipCElement(*this, &CCPACSWing::SetTipCElement)
+    , rootCElement(*this, &CCPACSWing::SetRootCElement )
 {
     if (parent->IsParent<CCPACSAircraftModel>())
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
@@ -123,6 +125,8 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
     , buildFlaps(false)
+    , tipCElement(*this, &CCPACSWing::SetTipCElement)
+    , rootCElement(*this, &CCPACSWing::SetRootCElement )
 {
     Cleanup();
 }
@@ -145,6 +149,9 @@ void CCPACSWing::InvalidateImpl(const boost::optional<std::string>& source) cons
     guideCurves.clear();
     wingCleanShape.clear();
     wingShapeWithCutouts.clear();
+
+    tipCElement.clear();
+    rootCElement.clear();
 
     // Invalidate segments, since these get their shapes from the wing
     m_segments.Invalidate(GetUID());
@@ -1022,7 +1029,76 @@ TiglAxis CCPACSWing::GetDeepDirection() const
     }
 }
 
-TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire)
+std::string CCPACSWing::GetTipUID() const
+{
+    return tipCElement->GetSectionElementUID();
+}
+
+void CCPACSWing::SetTipCElement(CTiglWingSectionElement& cache) const
+{
+    /* Use the distance in the major wing direction between the root and the center of each element
+     * to determine which element is more suited to be considerate as the tip.
+     */
+
+    if (!rootCElement->IsValid()) {
+        LOG(WARNING) << "CCPACSWing::SetTipCElement: The root element is not set -> impossible to set tip element";
+        cache = CTiglWingSectionElement();
+        return;
+    }
+
+    CTiglPoint rootCenter = rootCElement->GetCenter();
+
+    CTiglUIDManager& uidManager          = GetConfiguration().GetUIDManager();
+    std::vector<std::string> orderedUIDs = m_segments.GetElementUIDsInOrder();
+    CCPACSWingSectionElement* tempE;
+    CTiglPoint delta;
+    TiglAxis majorDir = GetMajorDirection();
+    double maxD       = -1;
+
+    for (int i = 0; i < orderedUIDs.size(); i++) {
+        tempE = &(uidManager.ResolveObject<CCPACSWingSectionElement>(orderedUIDs[i]));
+        CTiglWingSectionElement cElement(tempE);
+        delta = cElement.GetCenter() - rootCenter;
+
+        if (majorDir == TIGL_Y_AXIS && fabs(delta.y) > maxD) {
+            maxD  = delta.y;
+            cache = cElement;
+        }
+        else if (majorDir == TIGL_Z_AXIS && fabs(delta.z) > maxD) {
+            maxD  = delta.z;
+            cache = cElement;
+        }
+        else if (majorDir == TIGL_X_AXIS && fabs(delta.x) > maxD) {
+            maxD  = delta.x;
+            cache = cElement;
+        }
+        else {
+            LOG(ERROR) << "CCPACSWing::SetTipCElement: Unexcpected case!";
+        }
+    }
+}
+
+std::string CCPACSWing::GetRootUID() const
+{
+    return rootCElement->GetSectionElementUID();
+}
+
+void CCPACSWing::SetRootCElement(CTiglWingSectionElement& cache) const
+{
+    if (m_segments.GetSegmentCount() <= 0) {
+        LOG(WARNING) << "CCPACSWing::SetRootCElement:Ghere are no segments in this wing for the moment. -> Impossible "
+                        "to set the root element";
+        cache = CTiglWingSectionElement();
+        return;
+    }
+    std::vector<std::string> orderedUIDs = m_segments.GetElementUIDsInOrder();
+    CTiglUIDManager& uidManager          = GetConfiguration().GetUIDManager();
+    CCPACSWingSectionElement* element    = &(uidManager.ResolveObject<CCPACSWingSectionElement>(orderedUIDs[0]));
+    cache                                = CTiglWingSectionElement(element);
+}
+
+TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,
+                                          const CTiglWingConnection& connection, const TopoDS_Shape& wire)
 {
     TopoDS_Shape transformedWire(wire);
 
