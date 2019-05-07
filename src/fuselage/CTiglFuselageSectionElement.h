@@ -37,11 +37,13 @@ public:
 
     CTiglFuselageSectionElement(CCPACSFuselageSectionElement* element);
 
-    TIGL_EXPORT const std::string& GetSectionUID() const override;
+    TIGL_EXPORT bool IsValid() const override;
 
-    TIGL_EXPORT const std::string& GetSectionElementUID() const override;
+    TIGL_EXPORT std::string GetSectionUID() const override;
 
-    TIGL_EXPORT virtual const std::string& GetProfileUID() const override;
+    TIGL_EXPORT std::string GetSectionElementUID() const override;
+
+    TIGL_EXPORT virtual std::string GetProfileUID() const override;
 
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation() const override;
 

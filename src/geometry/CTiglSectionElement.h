@@ -38,14 +38,17 @@ class CTiglSectionElement
 {
 
 public:
+    // Returns true iff the element was set with a CCPACSSectionElement
+    TIGL_EXPORT virtual bool IsValid() const = 0;
+
     // Returns the section UID
-    TIGL_EXPORT virtual const std::string& GetSectionUID() const = 0;
+    TIGL_EXPORT virtual std::string GetSectionUID() const = 0;
 
     // Returns the section element UID
-    TIGL_EXPORT virtual const std::string& GetSectionElementUID() const = 0;
+    TIGL_EXPORT virtual std::string GetSectionElementUID() const = 0;
 
     // Returns the profile UID
-    TIGL_EXPORT virtual const std::string& GetProfileUID() const = 0;
+    TIGL_EXPORT virtual std::string GetProfileUID() const = 0;
 
     // Returns the positioning transformation
     // If there are no positioning will return a trivial transformation
