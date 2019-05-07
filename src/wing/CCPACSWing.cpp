@@ -55,7 +55,6 @@
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
-
 namespace tigl
 {
 
@@ -523,12 +522,40 @@ double CCPACSWing::GetWingspan()
     }
 }
 
-// Returns the aspect ratio of a wing: AR=b**2/A=((2s)**2)/(2A_half)
+double CCPACSWing::GetWingHalfSpan()
+{
+    Bnd_Box boundingBox;
+
+    for (int i = 1; i <= GetSegmentCount(); ++i) {
+        CCPACSWingSegment& segment = GetSegment(i);
+        TopoDS_Shape segmentShape  = segment.GetLoft()->Shape();
+        BRepBndLib::Add(segmentShape, boundingBox);
+    }
+
+    Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+    switch (GetMajorDirection()) {
+    case TIGL_Z_AXIS:
+        return zmax - zmin;
+        break;
+    case TIGL_Y_AXIS:
+        return ymax - ymin;
+        break;
+    case TIGL_X_AXIS:
+        return xmax - xmin;
+        break;
+    default:
+        return ymax - ymin;
+    }
+}
+
+// Returns the aspect ratio of a wing: AR=b**2/A = ((2s)**2)/(2A_half)
 //     b: full span; A: Reference area of full wing (wing + symmetrical wing)
 //     s: half span; A_half: Reference area of wing without symmetrical wing
 double CCPACSWing::GetAspectRatio()
 {
-    return 2.0*(pow_int(GetWingspan(),2)/GetReferenceArea());
+    return 2.0*pow_int(GetWingHalfSpan(),2)/GetReferenceArea();
 }
 
 /**

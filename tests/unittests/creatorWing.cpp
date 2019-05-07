@@ -116,7 +116,39 @@ TEST_F(creatorWing, MultipleWings_GetMajorDirection_GetDeepDirection)
     EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
 }
 
+TEST_F(creatorWing, MultipleWings_GetWingHalfSpan)
+{
+    // Remark: The span is computed using bounding Box so, the result may no be accurate.
 
+    double tolerance = 0.1;     // 10cm if we use meter metric
+    // symmetry x-z case
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 2, tolerance);
+
+    setWing("W2_RX90");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 2, tolerance);
+
+    // symmetry x-z case
+    setWing("W3_RX40");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 1.532088, tolerance);
+
+    // no symmetry case
+    setWing("W4_RX40b");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 1.532088, tolerance);
+
+    // symmetry x-z
+    // The symmetry prime on the heuristic (So, we get always the correct span)
+    setWing("W5_RX60");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 1, tolerance);
+
+    // no symmetry case
+    setWing("W6_RX60b");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 1.73205, tolerance);
+
+    // strange symmetry case (symmetry y-x plane)
+    setWing("W7_SymX");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 0, 2 * tolerance);
+}
 
 TEST_F(creatorWing, MultipleWings_GetReferenceArea)
 {
