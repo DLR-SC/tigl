@@ -47,19 +47,28 @@ tigl::CTiglFuselageSectionElement::CTiglFuselageSectionElement(tigl::CCPACSFusel
     fuselage = section->GetParent()->GetParent();
 }
 
-const std::string& tigl::CTiglFuselageSectionElement::GetSectionUID() const
+
+bool tigl::CTiglFuselageSectionElement::IsValid() const
 {
-    return section->GetUID();
+    if (element != nullptr && section != nullptr && fuselage != nullptr) {
+        return true;
+    }
+    return false;
 }
 
-const std::string& tigl::CTiglFuselageSectionElement::GetSectionElementUID() const
+std::string tigl::CTiglFuselageSectionElement::GetSectionUID() const
 {
-    return element->GetUID();
+    return section ? section->GetUID() : "";
 }
 
-const std::string& tigl::CTiglFuselageSectionElement::GetProfileUID() const
+std::string tigl::CTiglFuselageSectionElement::GetSectionElementUID() const
 {
-    return element->GetProfileUID();
+    return element ? element->GetUID() : "";
+}
+
+std::string tigl::CTiglFuselageSectionElement::GetProfileUID() const
+{
+    return element ? element->GetProfileUID() : "";
 }
 
 // Returns the fuselage profile referenced by this connection

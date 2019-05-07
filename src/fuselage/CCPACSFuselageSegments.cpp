@@ -129,8 +129,8 @@ std::vector<std::string> CCPACSFuselageSegments::GetElementUIDsInOrder() const
     std::string tempStartUID;
     std::string tempEndUID;
     for (int i = 0; i < m_segments.size(); i++) {
-        tempStartUID = m_segments[i]->GetStartSectionElementUID();
-        tempEndUID   = m_segments[i]->GetEndSectionElementUID();
+        tempStartUID = m_segments[i]->GetFromElementUID();
+        tempEndUID   = m_segments[i]->GetToElementUID();
         if (std::find(elementUIDs.begin(), elementUIDs.end(), tempStartUID) == elementUIDs.end()) {
             elementUIDs.push_back(tempStartUID);
         }
