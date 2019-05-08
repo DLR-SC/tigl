@@ -87,6 +87,10 @@ void CCPACSWingRibsPositioning::SetStartCurvePoint(const CCPACSCurvePoint &curve
     CCPACSCurvePoint& cp = GetStartCurvePoint_choice2(CreateIfNotExists);
     cp.SetEta(curve_point.GetEta());
     cp.SetReferenceUID(curve_point.GetReferenceUID());
+
+    m_startEtaXsiPoint_choice1 = boost::none;
+    m_startSparPositionUID_choice3 = boost::none;
+
     Invalidate();
 }
 
@@ -96,12 +100,20 @@ void CCPACSWingRibsPositioning::SetStartEtaXsiPoint(const CCPACSEtaXsiPoint &eta
     ex.SetEta(etaxsi.GetEta());
     ex.SetXsi(etaxsi.GetXsi());
     ex.SetReferenceUID(etaxsi.GetReferenceUID());
+
+    m_startCurvePoint_choice2 = boost::none;
+    m_startSparPositionUID_choice3 = boost::none;
+
     Invalidate();
 }
 
 void CCPACSWingRibsPositioning::SetStartSparPositionUID(const std::string &sparPosition)
 {
     CPACSWingRibsPositioning::SetStartSparPositionUID_choice3(sparPosition);
+
+    m_startEtaXsiPoint_choice1 = boost::none;
+    m_startCurvePoint_choice2 = boost::none;
+
     Invalidate();
 }
 
@@ -110,6 +122,10 @@ void CCPACSWingRibsPositioning::SetEndCurvePoint(const CCPACSCurvePoint &curve_p
     CCPACSCurvePoint& cp = GetEndCurvePoint_choice2(CreateIfNotExists);
     cp.SetEta(curve_point.GetEta());
     cp.SetReferenceUID(curve_point.GetReferenceUID());
+
+    m_endEtaXsiPoint_choice1 = boost::none;
+    m_endSparPositionUID_choice3 = boost::none;
+
     Invalidate();
 }
 
@@ -119,12 +135,20 @@ void CCPACSWingRibsPositioning::SetEndEtaXsiPoint(const CCPACSEtaXsiPoint &etaxs
     ex.SetEta(etaxsi.GetEta());
     ex.SetXsi(etaxsi.GetXsi());
     ex.SetReferenceUID(etaxsi.GetReferenceUID());
+
+    m_endCurvePoint_choice2 = boost::none;
+    m_endSparPositionUID_choice3 = boost::none;
+
     Invalidate();
 }
 
 void CCPACSWingRibsPositioning::SetEndSparPositionUID(const std::string &sparPosition)
 {
     CPACSWingRibsPositioning::SetEndSparPositionUID_choice3(sparPosition);
+
+    m_endEtaXsiPoint_choice1 = boost::none;
+    m_endCurvePoint_choice2 = boost::none;
+
     Invalidate();
 }
 
