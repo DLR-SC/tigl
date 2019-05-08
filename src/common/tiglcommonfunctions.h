@@ -390,16 +390,16 @@ size_t IndexFromUid(const std::vector<std::unique_ptr<T> >& vectorOfPointers, co
  */
 template <typename ForwardIter, typename Compare>
 size_t FindIndex(ForwardIter begin, ForwardIter end, Compare comp)
-{
+        { 
     const auto it = std::find_if(begin, end, comp);
     if (it != end) {
         return std::distance(begin, it);
-    }
+        }
     else {
         return std::distance(begin, end);
     }
 }
-
+    
 /**
  * @brief Checks, whether an array contains a value or not
  *
@@ -447,5 +447,7 @@ void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, Bin
         }
     }
 }
+
+TIGL_EXPORT tigl::CTiglPoint TiglAxisToCTiglPoint(TiglAxis axis);
 
 #endif // TIGLCOMMONFUNCTIONS_H

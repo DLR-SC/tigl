@@ -275,13 +275,13 @@ Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire &wire, gp_Pnt p, gp_Di
         Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
 
         if (fabs(angle - M_PI / 2.) < 1e-6) {
-            GeomAPI_ProjectPointOnCurve proj(p, curve, firstParam, lastParam);
-            if (proj.NbPoints() > 0 && proj.LowerDistance() < smallestDist) {
-                smallestDist = proj.LowerDistance();
-                edgeIndex = iwire;
-                alpha = proj.LowerDistanceParameter();
-            }
+        GeomAPI_ProjectPointOnCurve proj(p, curve, firstParam, lastParam);
+        if (proj.NbPoints() > 0 && proj.LowerDistance() < smallestDist) {
+            smallestDist = proj.LowerDistance();
+            edgeIndex = iwire;
+            alpha = proj.LowerDistanceParameter();
         }
+    }
         else {
             Handle(Geom_TrimmedCurve) trimmedCurve = new Geom_TrimmedCurve(curve, firstParam, lastParam);
             tigl::CTiglProjectPointOnCurveAtAngle proj(p, trimmedCurve, angle, rotationAxisAroundP);
@@ -1051,20 +1051,20 @@ TopoDS_Face BuildFace(const TopoDS_Wire& wire)
     }
 
     // Fallback solution
-    BRepFill_Filling filler;
-    TopExp_Explorer exp;
-    for (exp.Init(wire, TopAbs_EDGE); exp.More(); exp.Next()) {
-        TopoDS_Edge e = TopoDS::Edge(exp.Current());
-        filler.Add(e, GeomAbs_C0);
-    }
-    filler.Build();
+        BRepFill_Filling filler;
+        TopExp_Explorer exp;
+        for (exp.Init(wire, TopAbs_EDGE); exp.More(); exp.Next()) {
+            TopoDS_Edge e = TopoDS::Edge(exp.Current());
+            filler.Add(e, GeomAbs_C0);
+        }
+        filler.Build();
     if (filler.IsDone()) {
         return filler.Face();
     }
 
     LOG(ERROR) << "Could not build face from wire.";
-    throw tigl::CTiglError("BuildFace: Unable to generate face from Wire!");
-}
+            throw tigl::CTiglError("BuildFace: Unable to generate face from Wire!");
+        }
 
 TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
 {
@@ -1884,4 +1884,19 @@ double NormalizeAngleDeg(double angleDeg)
         angleDeg += 360.;
 
     return angleDeg;
+}
+
+tigl::CTiglPoint TiglAxisToCTiglPoint(TiglAxis axis)
+{
+    switch (axis) {
+    case TIGL_X_AXIS:
+        return tigl::CTiglPoint(1, 0, 0);
+    case TIGL_Y_AXIS:
+        return tigl::CTiglPoint(0, 1, 0);
+    case TIGL_Z_AXIS:
+        return tigl::CTiglPoint(0, 0, 1);
+    default:
+        LOG(WARNING) << "commonfunctions::TiglAxisToCTiglPoint: The given axis is not a standard axis!";
+        return tigl::CTiglPoint(0, 0, 0);
+    }
 }

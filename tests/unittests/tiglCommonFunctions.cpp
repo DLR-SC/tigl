@@ -333,3 +333,10 @@ TEST_P(TestBuildFace, build)
 }
 
 INSTANTIATE_TEST_CASE_P(TiglCommonFunctions, TestBuildFace, ::testing::Range(1, 30, 1));
+
+TEST(TiglCommonFunctions, TiglAxisToCTiglPoint )
+{
+    EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_X_AXIS) == tigl::CTiglPoint(1,0,0));
+    EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_Y_AXIS) == tigl::CTiglPoint(0,1,0));
+    EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_Z_AXIS) == tigl::CTiglPoint(0,0,1));
+}
