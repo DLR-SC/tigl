@@ -2333,6 +2333,1039 @@
           </wing>
 	  
 	  
+ 	  <wing uID="W9_BWSweep" symmetry="x-z-plane">
+            <name>W9_BWSweep</name>
+            <parentUID>SimpleFuselage</parentUID>
+            <description>This wing has been generated to test CATIA2CPACS.</description>
+            <transformation uID="W9_BWSweep_transformation1">
+              <scaling uID="W9_BWSweep_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="W9_BWSweep_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="W9_BWSweep_transformation1_translation1">
+                <x>-10</x>
+                <y>0</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="W9_BWSweep_Sec1">
+                <name>Cpacs2Test - Wing Section 1</name>
+                <description>Cpacs2Test - Wing Section 1</description>
+                <transformation uID="W9_BWSweep_Sec1_transformation1">
+                  <scaling uID="W9_BWSweep_Sec1_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W9_BWSweep_Sec1_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W9_BWSweep_Sec1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W9_BWSweep_Sec1_El1">
+                    <name>Cpacs2Test - Wing Section 1 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 1 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W9_BWSweep_Sec1_El1_transformation1">
+                      <scaling uID="W9_BWSweep_Sec1_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W9_BWSweep_Sec1_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W9_BWSweep_Sec1_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W9_BWSweep_Sec2">
+                <name>Cpacs2Test - Wing Section 2</name>
+                <description>Cpacs2Test - Wing Section 2</description>
+                <transformation uID="W9_BWSweep_Sec2_transformation1">
+                  <scaling uID="W9_BWSweep_Sec2_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W9_BWSweep_Sec2_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W9_BWSweep_Sec2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W9_BWSweep_Sec2_El1">
+                    <name>Cpacs2Test - Wing Section 2 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 2 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W9_BWSweep_Sec2_El1_transformation1">
+                      <scaling uID="W9_BWSweep_Sec2_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W9_BWSweep_Sec2_El1_transformation1_rotation1">
+                        <x>90</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W9_BWSweep_Sec2_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W9_BWSweep_Sec3">
+                <name>Cpacs2Test - Wing Section 3</name>
+                <description>Cpacs2Test - Wing Section 3</description>
+                <transformation uID="W9_BWSweep_Sec3_transformation1">
+                  <scaling uID="W9_BWSweep_Sec3_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W9_BWSweep_Sec3_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W9_BWSweep_Sec3_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W9_BWSweep_Sec3_El1">
+                    <name>Cpacs2Test - Wing Section 3 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 3 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W9_BWSweep_Sec3_El1_transformation1">
+                      <scaling uID="W9_BWSweep_Sec3_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W9_BWSweep_Sec3_El1_transformation1_rotation1">
+                        <x>180</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W9_BWSweep_Sec3_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="W9_BWSweep_positioning1">
+                <name>Cpacs2Test - Wing Section 1 Positioning</name>
+                <description>Cpacs2Test - Wing Section 1 Positioning</description>
+                <length>0</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID>W9_BWSweep_Sec1</toSectionUID>
+              </positioning>
+              <positioning uID="W9_BWSweep_positioning2">
+                <name>Cpacs2Test - Wing Section 2 Positioning</name>
+                <description>Cpacs2Test - Wing Section 2 Positioning</description>
+                <length>1</length>
+                <sweepAngle>43</sweepAngle>
+                <dihedralAngle>20</dihedralAngle>
+                <fromSectionUID>W9_BWSweep_Sec1</fromSectionUID>
+                <toSectionUID>W9_BWSweep_Sec2</toSectionUID>
+              </positioning>
+              <positioning uID="W9_BWSweep_positioning3">
+                <name>Cpacs2Test - Wing Section 3 Positioning</name>
+                <description>Cpacs2Test - Wing Section 3 Positioning</description>
+                <length>1</length>
+                <sweepAngle>43</sweepAngle>
+                <dihedralAngle>160</dihedralAngle>
+                <fromSectionUID>W9_BWSweep_Sec2</fromSectionUID>
+                <toSectionUID>W9_BWSweep_Sec3</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="W9_BWSweep_Seg_1_2">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</description>
+                <fromElementUID>W9_BWSweep_Sec1_El1</fromElementUID>
+                <toElementUID>W9_BWSweep_Sec2_El1</toElementUID>
+              </segment>
+              <segment uID="W9_BWSweep_Seg_2_3">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</description>
+                <fromElementUID>W9_BWSweep_Sec2_El1</fromElementUID>
+                <toElementUID>W9_BWSweep_Sec3_El1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+              <componentSegment uID="W9_BWSweep_CS1">
+                <name>W9_BWSweep_CS1</name>
+                <fromElementUID>W9_BWSweep_Sec1_El1</fromElementUID>
+                <toElementUID>W9_BWSweep_Sec3_El1</toElementUID>
+                <structure>
+                  <upperShell uID="W9_BWSweep_CS1_upperShell1">
+                    <skin>
+                      <material>
+                        <materialUID>MySkinMat</materialUID>
+                        <thickness>0.0</thickness>
+                      </material>
+                    </skin>
+                    <cells>
+                      <cell uID="W9_BWSweep_CS1_CELL1">
+                        <skin>
+                          <material>
+                            <materialUID>MyCellMat</materialUID>
+                            <thickness>0.0</thickness>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <xsi1>0.8</xsi1>
+                          <xsi2>0.8</xsi2>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <xsi1>1.0</xsi1>
+                          <xsi2>1.0</xsi2>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <eta1>
+                            <eta>0</eta>
+                            <referenceUID>W9_BWSweep_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0</eta>
+                            <referenceUID>W9_BWSweep_CS1</referenceUID>
+                          </eta2>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <eta1>
+                            <eta>0.5</eta>
+                            <referenceUID>W9_BWSweep_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.5</eta>
+                            <referenceUID>W9_BWSweep_CS1</referenceUID>
+                          </eta2>
+                        </positioningOuterBorder>
+                      </cell>
+                    </cells>
+                  </upperShell>
+                  <lowerShell uID="W9_BWSweep_CS1_lowerShell1">
+                    <skin>
+                      <material>
+                        <materialUID>MySkinMat</materialUID>
+                      </material>
+                    </skin>
+                  </lowerShell>
+                </structure>
+              </componentSegment>
+            </componentSegments>
+          </wing>
+	  
+	  <wing uID="W10_Reverse">
+            <name>W10_Reverse</name>
+            <parentUID>SimpleFuselage</parentUID>
+            <description>This wing has been generated to test CATIA2CPACS.</description>
+            <transformation uID="W10_Reverse_transformation1">
+              <scaling uID="W10_Reverse_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="W10_Reverse_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="W10_Reverse_transformation1_translation1">
+                <x>0</x>
+                <y>-4</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="W10_Reverse_Sec1">
+                <name>Cpacs2Test - Wing Section 1</name>
+                <description>Cpacs2Test - Wing Section 1</description>
+                <transformation uID="W10_Reverse_Sec1_transformation1">
+                  <scaling uID="W10_Reverse_Sec1_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W10_Reverse_Sec1_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W10_Reverse_Sec1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W10_Reverse_Sec1_El1">
+                    <name>Cpacs2Test - Wing Section 1 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 1 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W10_Reverse_Sec1_El1_transformation1">
+                      <scaling uID="W10_Reverse_Sec1_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W10_Reverse_Sec1_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W10_Reverse_Sec1_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W10_Reverse_Sec2">
+                <name>Cpacs2Test - Wing Section 2</name>
+                <description>Cpacs2Test - Wing Section 2</description>
+                <transformation uID="W10_Reverse_Sec2_transformation1">
+                  <scaling uID="W10_Reverse_Sec2_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W10_Reverse_Sec2_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W10_Reverse_Sec2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W10_Reverse_Sec2_El1">
+                    <name>Cpacs2Test - Wing Section 2 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 2 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W10_Reverse_Sec2_El1_transformation1">
+                      <scaling uID="W10_Reverse_Sec2_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W10_Reverse_Sec2_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W10_Reverse_Sec2_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>-1</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W10_Reverse_Sec3">
+                <name>Cpacs2Test - Wing Section 3</name>
+                <description>Cpacs2Test - Wing Section 3</description>
+                <transformation uID="W10_Reverse_Sec3_transformation1">
+                  <scaling uID="W10_Reverse_Sec3_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W10_Reverse_Sec3_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W10_Reverse_Sec3_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W10_Reverse_Sec3_El1">
+                    <name>Cpacs2Test - Wing Section 3 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 3 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W10_Reverse_Sec3_El1_transformation1">
+                      <scaling uID="W10_Reverse_Sec3_El1_transformation1_scaling1">
+                        <x>0.5</x>
+                        <y>0.5</y>
+                        <z>0.5</z>
+                      </scaling>
+                      <rotation uID="W10_Reverse_Sec3_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W10_Reverse_Sec3_El1_transformation1_translation1">
+                        <x>0.5</x>
+                        <y>-2</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+            </positionings>
+            <segments>
+              <segment uID="W10_Reverse_Seg_1_2">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</description>
+                <fromElementUID>W10_Reverse_Sec1_El1</fromElementUID>
+                <toElementUID>W10_Reverse_Sec2_El1</toElementUID>
+              </segment>
+              <segment uID="W10_Reverse_Seg_2_3">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</description>
+                <fromElementUID>W10_Reverse_Sec2_El1</fromElementUID>
+                <toElementUID>W10_Reverse_Sec3_El1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+              <componentSegment uID="W10_Reverse_CS1">
+                <name>Wing_CS1</name>
+                <fromElementUID>W10_Reverse_Sec1_El1</fromElementUID>
+                <toElementUID>W10_Reverse_Sec3_El1</toElementUID>
+                <structure>
+                  <upperShell uID="W10_Reverse_CS1_upperShell1">
+                    <skin>
+                      <material>
+                        <materialUID>MySkinMat</materialUID>
+                        <thickness>0.0</thickness>
+                      </material>
+                    </skin>
+                    <cells>
+                      <cell uID="W10_Reverse_CS1_CELL1">
+                        <skin>
+                          <material>
+                            <materialUID>MyCellMat</materialUID>
+                            <thickness>0.0</thickness>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <xsi1>0.8</xsi1>
+                          <xsi2>0.8</xsi2>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <xsi1>1.0</xsi1>
+                          <xsi2>1.0</xsi2>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <eta1>
+                            <eta>0</eta>
+                            <referenceUID>W10_Reverse_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0</eta>
+                            <referenceUID>W10_Reverse_CS1</referenceUID>
+                          </eta2>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <eta1>
+                            <eta>0.5</eta>
+                            <referenceUID>W10_Reverse_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.5</eta>
+                            <referenceUID>W10_Reverse_CS1</referenceUID>
+                          </eta2>
+                        </positioningOuterBorder>
+                      </cell>
+                    </cells>
+                  </upperShell>
+                  <lowerShell uID="W10_Reverse_CS1_lowerShell1">
+                    <skin>
+                      <material>
+                        <materialUID>MySkinMat</materialUID>
+                      </material>
+                    </skin>
+                  </lowerShell>
+                </structure>
+              </componentSegment>
+            </componentSegments>
+          </wing>
+	  
+	 <wing uID="W11_NegDih">
+            <name>W11_NegDih</name>
+            <parentUID>SimpleFuselage</parentUID>
+            <description>This wing has been generated to test CATIA2CPACS.</description>
+            <transformation uID="W11_NegDih_transformation1">
+              <scaling uID="W11_NegDih_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="W11_NegDih_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="W11_NegDih_transformation1_translation1">
+                <x>-4</x>
+                <y>4</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="W11_NegDih_Sec1">
+                <name>Cpacs2Test - Wing Section 1</name>
+                <description>Cpacs2Test - Wing Section 1</description>
+                <transformation uID="W11_NegDih_Sec1_transformation1">
+                  <scaling uID="W11_NegDih_Sec1_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W11_NegDih_Sec1_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W11_NegDih_Sec1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W11_NegDih_Sec1_El1">
+                    <name>Cpacs2Test - Wing Section 1 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 1 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W11_NegDih_Sec1_El1_transformation1">
+                      <scaling uID="W11_NegDih_Sec1_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W11_NegDih_Sec1_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W11_NegDih_Sec1_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W11_NegDih_Sec2">
+                <name>Cpacs2Test - Wing Section 2</name>
+                <description>Cpacs2Test - Wing Section 2</description>
+                <transformation uID="W11_NegDih_Sec2_transformation1">
+                  <scaling uID="W11_NegDih_Sec2_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W11_NegDih_Sec2_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W11_NegDih_Sec2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W11_NegDih_Sec2_El1">
+                    <name>Cpacs2Test - Wing Section 2 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 2 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W11_NegDih_Sec2_El1_transformation1">
+                      <scaling uID="W11_NegDih_Sec2_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W11_NegDih_Sec2_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W11_NegDih_Sec2_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W11_NegDih_Sec3">
+                <name>Cpacs2Test - Wing Section 3</name>
+                <description>Cpacs2Test - Wing Section 3</description>
+                <transformation uID="W11_NegDih_Sec3_transformation1">
+                  <scaling uID="W11_NegDih_Sec3_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W11_NegDih_Sec3_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W11_NegDih_Sec3_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W11_NegDih_Sec3_El1">
+                    <name>Cpacs2Test - Wing Section 3 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 3 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W11_NegDih_Sec3_El1_transformation1">
+                      <scaling uID="W11_NegDih_Sec3_El1_transformation1_scaling1">
+                        <x>0.5</x>
+                        <y>0.5</y>
+                        <z>0.5</z>
+                      </scaling>
+                      <rotation uID="W11_NegDih_Sec3_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W11_NegDih_Sec3_El1_transformation1_translation1">
+                        <x>0.5</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="W11_NegDih_positioning1">
+                <name>Cpacs2Test - Wing Section 1 Positioning</name>
+                <description>Cpacs2Test - Wing Section 1 Positioning</description>
+                <length>0</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID>W11_NegDih_Sec1</toSectionUID>
+              </positioning>
+              <positioning uID="W11_NegDih_positioning2">
+                <name>Cpacs2Test - Wing Section 2 Positioning</name>
+                <description>Cpacs2Test - Wing Section 2 Positioning</description>
+                <length>1</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>-20</dihedralAngle>
+                <fromSectionUID>W11_NegDih_Sec1</fromSectionUID>
+                <toSectionUID>W11_NegDih_Sec2</toSectionUID>
+              </positioning>
+              <positioning uID="W11_NegDih_positioning3">
+                <name>Cpacs2Test - Wing Section 3 Positioning</name>
+                <description>Cpacs2Test - Wing Section 3 Positioning</description>
+                <length>1</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>W11_NegDih_Sec2</fromSectionUID>
+                <toSectionUID>W11_NegDih_Sec3</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="W11_NegDih_Seg_1_2">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</description>
+                <fromElementUID>W11_NegDih_Sec1_El1</fromElementUID>
+                <toElementUID>W11_NegDih_Sec2_El1</toElementUID>
+              </segment>
+              <segment uID="W11_NegDih_Seg_2_3">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</description>
+                <fromElementUID>W11_NegDih_Sec2_El1</fromElementUID>
+                <toElementUID>W11_NegDih_Sec3_El1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+              <componentSegment uID="W11_NegDih_CS1">
+                <name>Wing_CS1</name>
+                <fromElementUID>W11_NegDih_Sec1_El1</fromElementUID>
+                <toElementUID>W11_NegDih_Sec3_El1</toElementUID>
+                <structure>
+                  <upperShell uID="W11_NegDih_CS1_upperShell1">
+                    <skin>
+                      <material>
+                        <materialUID>MySkinMat</materialUID>
+                        <thickness>0.0</thickness>
+                      </material>
+                    </skin>
+                    <cells>
+                      <cell uID="W11_NegDih_CS1_CELL1">
+                        <skin>
+                          <material>
+                            <materialUID>MyCellMat</materialUID>
+                            <thickness>0.0</thickness>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <xsi1>0.8</xsi1>
+                          <xsi2>0.8</xsi2>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <xsi1>1.0</xsi1>
+                          <xsi2>1.0</xsi2>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <eta1>
+                            <eta>0</eta>
+                            <referenceUID>W11_NegDih_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0</eta>
+                            <referenceUID>W11_NegDih_CS1</referenceUID>
+                          </eta2>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <eta1>
+                            <eta>0.5</eta>
+                            <referenceUID>W11_NegDih_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.5</eta>
+                            <referenceUID>W11_NegDih_CS1</referenceUID>
+                          </eta2>
+                        </positioningOuterBorder>
+                      </cell>
+                    </cells>
+                  </upperShell>
+                  <lowerShell uID="W11_NegDih_CS1_lowerShell1">
+                    <skin>
+                      <material>
+                        <materialUID>MySkinMat</materialUID>
+                      </material>
+                    </skin>
+                  </lowerShell>
+                </structure>
+              </componentSegment>
+            </componentSegments>
+          </wing>
+	  
+	  	  
+	 <wing uID="W12_NegSwp">
+            <name>W12_NegSwp</name>
+            <parentUID>SimpleFuselage</parentUID>
+            <description>This wing has been generated to test CATIA2CPACS.</description>
+            <transformation uID="W12_NegSwp_transformation1">
+              <scaling uID="W12_NegSwp_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="W12_NegSwp_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="W12_NegSwp_transformation1_translation1">
+                <x>-4</x>
+                <y>-4</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="W12_NegSwp_Sec1">
+                <name>Cpacs2Test - Wing Section 1</name>
+                <description>Cpacs2Test - Wing Section 1</description>
+                <transformation uID="W12_NegSwp_Sec1_transformation1">
+                  <scaling uID="W12_NegSwp_Sec1_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W12_NegSwp_Sec1_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W12_NegSwp_Sec1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W12_NegSwp_Sec1_El1">
+                    <name>Cpacs2Test - Wing Section 1 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 1 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W12_NegSwp_Sec1_El1_transformation1">
+                      <scaling uID="W12_NegSwp_Sec1_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W12_NegSwp_Sec1_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W12_NegSwp_Sec1_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W12_NegSwp_Sec2">
+                <name>Cpacs2Test - Wing Section 2</name>
+                <description>Cpacs2Test - Wing Section 2</description>
+                <transformation uID="W12_NegSwp_Sec2_transformation1">
+                  <scaling uID="W12_NegSwp_Sec2_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W12_NegSwp_Sec2_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W12_NegSwp_Sec2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W12_NegSwp_Sec2_El1">
+                    <name>Cpacs2Test - Wing Section 2 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 2 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W12_NegSwp_Sec2_El1_transformation1">
+                      <scaling uID="W12_NegSwp_Sec2_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W12_NegSwp_Sec2_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W12_NegSwp_Sec2_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W12_NegSwp_Sec3">
+                <name>Cpacs2Test - Wing Section 3</name>
+                <description>Cpacs2Test - Wing Section 3</description>
+                <transformation uID="W12_NegSwp_Sec3_transformation1">
+                  <scaling uID="W12_NegSwp_Sec3_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W12_NegSwp_Sec3_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W12_NegSwp_Sec3_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W12_NegSwp_Sec3_El1">
+                    <name>Cpacs2Test - Wing Section 3 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 3 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W12_NegSwp_Sec3_El1_transformation1">
+                      <scaling uID="W12_NegSwp_Sec3_El1_transformation1_scaling1">
+                        <x>0.5</x>
+                        <y>0.5</y>
+                        <z>0.5</z>
+                      </scaling>
+                      <rotation uID="W12_NegSwp_Sec3_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W12_NegSwp_Sec3_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="W12_NegSwp_positioning1">
+                <name>Cpacs2Test - Wing Section 1 Positioning</name>
+                <description>Cpacs2Test - Wing Section 1 Positioning</description>
+                <length>0</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID>W12_NegSwp_Sec1</toSectionUID>
+              </positioning>
+              <positioning uID="W12_NegSwp_positioning2">
+                <name>Cpacs2Test - Wing Section 2 Positioning</name>
+                <description>Cpacs2Test - Wing Section 2 Positioning</description>
+                <length>1</length>
+                <sweepAngle>-23</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>W12_NegSwp_Sec1</fromSectionUID>
+                <toSectionUID>W12_NegSwp_Sec2</toSectionUID>
+              </positioning>
+              <positioning uID="W12_NegSwp_positioning3">
+                <name>Cpacs2Test - Wing Section 3 Positioning</name>
+                <description>Cpacs2Test - Wing Section 3 Positioning</description>
+                <length>1</length>
+                <sweepAngle>-23</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>W12_NegSwp_Sec2</fromSectionUID>
+                <toSectionUID>W12_NegSwp_Sec3</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="W12_NegSwp_Seg_1_2">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</description>
+                <fromElementUID>W12_NegSwp_Sec1_El1</fromElementUID>
+                <toElementUID>W12_NegSwp_Sec2_El1</toElementUID>
+              </segment>
+              <segment uID="W12_NegSwp_Seg_2_3">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</description>
+                <fromElementUID>W12_NegSwp_Sec2_El1</fromElementUID>
+                <toElementUID>W12_NegSwp_Sec3_El1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+              <componentSegment uID="W12_NegSwp_CS1">
+                <name>Wing_CS1</name>
+                <fromElementUID>W12_NegSwp_Sec1_El1</fromElementUID>
+                <toElementUID>W12_NegSwp_Sec3_El1</toElementUID>
+                <structure>
+                  <upperShell uID="W12_NegSwp_CS1_upperShell1">
+                    <skin>
+                      <material>
+                        <materialUID>MySkinMat</materialUID>
+                        <thickness>0.0</thickness>
+                      </material>
+                    </skin>
+                    <cells>
+                      <cell uID="W12_NegSwp_CS1_CELL1">
+                        <skin>
+                          <material>
+                            <materialUID>MyCellMat</materialUID>
+                            <thickness>0.0</thickness>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <xsi1>0.8</xsi1>
+                          <xsi2>0.8</xsi2>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <xsi1>1.0</xsi1>
+                          <xsi2>1.0</xsi2>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <eta1>
+                            <eta>0</eta>
+                            <referenceUID>W12_NegSwp_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0</eta>
+                            <referenceUID>W12_NegSwp_CS1</referenceUID>
+                          </eta2>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <eta1>
+                            <eta>0.5</eta>
+                            <referenceUID>W12_NegSwp_CS1</referenceUID>
+                          </eta1>
+                          <eta2>
+                            <eta>0.5</eta>
+                            <referenceUID>W12_NegSwp_CS1</referenceUID>
+                          </eta2>
+                        </positioningOuterBorder>
+                      </cell>
+                    </cells>
+                  </upperShell>
+                  <lowerShell uID="W12_NegSwp_CS1_lowerShell1">
+                    <skin>
+                      <material>
+                        <materialUID>MySkinMat</materialUID>
+                      </material>
+                    </skin>
+                  </lowerShell>
+                </structure>
+              </componentSegment>
+            </componentSegments>
+          </wing>
+	    
+	  
+	  
         </wings>
       </model>
     </aircraft>

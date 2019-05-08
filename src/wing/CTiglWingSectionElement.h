@@ -66,6 +66,8 @@ public:
     TIGL_EXPORT CCPACSWingProfile& GetProfile();
     TIGL_EXPORT const CCPACSWingProfile& GetProfile() const;
 
+    TIGL_EXPORT CTiglPoint GetChordPoint(double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
 protected:
 
     void SetElementTransformation(const CTiglTransformation& newTransformation) override;

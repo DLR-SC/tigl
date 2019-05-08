@@ -183,11 +183,19 @@ public:
     // Returns the deep direction of the wing
     TIGL_EXPORT TiglAxis GetDeepDirection() const;
 
+    TIGL_EXPORT TiglAxis GetThirdDirection() const;
+
     // Returns the uid of the element that is the most distant of the root in the major wing direction
     TIGL_EXPORT std::string GetTipUID() const;
 
     // Returns the uid of the root element (the element that start to build the wing)
     TIGL_EXPORT std::string GetRootUID() const;
+
+    TIGL_EXPORT double GetSweep(double chordPercentage = 0.25) const;
+
+    TIGL_EXPORT double GetDihedral(double chordPercentage = 0.25) const;
+
+    // TIGL_EXPORT double  GetRootLEPosition() const;
 
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;

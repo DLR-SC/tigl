@@ -94,7 +94,7 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , rebuildShells(true)
     , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
     , tipCElement(*this, &CCPACSWing::SetTipCElement)
-    , rootCElement(*this, &CCPACSWing::SetRootCElement )
+    , rootCElement(*this, &CCPACSWing::SetRootCElement)
 {
     if (parent->IsParent<CCPACSAircraftModel>())
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
@@ -893,6 +893,14 @@ TiglAxis CCPACSWing::GetDeepDirection() const
     }
 }
 
+TiglAxis CCPACSWing::GetThirdDirection() const
+{
+    std::list<TiglAxis> allAxis = {TIGL_X_AXIS, TIGL_Y_AXIS, TIGL_Z_AXIS};
+    allAxis.remove(GetMajorDirection());
+    allAxis.remove(GetDeepDirection());
+    return allAxis.front();
+}
+
 std::string CCPACSWing::GetTipUID() const
 {
     return tipCElement->GetSectionElementUID();
@@ -959,6 +967,58 @@ void CCPACSWing::SetRootCElement(CTiglWingSectionElement& cache) const
     CTiglUIDManager& uidManager          = GetConfiguration().GetUIDManager();
     CCPACSWingSectionElement* element    = &(uidManager.ResolveObject<CCPACSWingSectionElement>(orderedUIDs[0]));
     cache                                = CTiglWingSectionElement(element);
+}
+
+double CCPACSWing::GetSweep(double chordPercentage) const
+{
+    /*
+     * 1) get the segment between root and tip
+     * 2) project on the plane formed by the majorDir and the deepDir
+     * 3) mirror the vector if they are not in the same direction has the major dir
+     * 3) compute the angle between the projected vector and the major axis as a oriented rotation
+     */
+
+    CTiglPoint rootChord = rootCElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+    CTiglPoint tipChord  = tipCElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+    CTiglPoint rootToTip = tipChord - rootChord;
+
+    TiglAxis majorDir = GetMajorDirection();
+    TiglAxis deepDir  = GetDeepDirection();
+
+    // since all coordinate of the majorDir vector are zero except the one that represent the axis
+    // the dot product is similar to project the vector on the axis
+    double majorProj = CTiglPoint::inner_prod(TiglAxisToCTiglPoint(majorDir), rootToTip);
+    double deepProj  = CTiglPoint::inner_prod(TiglAxisToCTiglPoint(deepDir), rootToTip);
+
+    double angleRad = atan2(deepProj, fabs(majorProj)); // fabs (majorProj) mirror the coordinate if needed
+
+    return Degrees(angleRad);
+}
+
+double CCPACSWing::GetDihedral(double chordPercentage) const
+{
+    /*
+     * 1) get the segment between root and tip
+     * 2) project on the plane formed by the major Dir and the third Dir
+     * 3) mirror the vector if they are not in the same direction has the major dir
+     * 3) compute the angle between the projected vector and the major axis as a oriented rotation
+     */
+
+    CTiglPoint rootChord = rootCElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+    CTiglPoint tipChord  = tipCElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+    CTiglPoint rootToTip = tipChord - rootChord;
+
+    TiglAxis majorDir = GetMajorDirection();
+    TiglAxis thirdDir = GetThirdDirection();
+
+    // since all coordinate of the majorDir vector are zero except the one that represent the axis
+    // the dot product is similar to project the vector on the axis
+    double majorProj = CTiglPoint::inner_prod(TiglAxisToCTiglPoint(majorDir), rootToTip);
+    double thirdProj = CTiglPoint::inner_prod(TiglAxisToCTiglPoint(thirdDir), rootToTip);
+
+    double angleRad = atan2(thirdProj, fabs(majorProj)); // fabs (majorProj) mirror the coordinate if needed
+
+    return Degrees(angleRad);
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,

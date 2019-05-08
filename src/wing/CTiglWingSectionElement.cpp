@@ -175,3 +175,9 @@ bool tigl::CTiglWingSectionElement::IsValid() const
     }
     return false;
 }
+
+tigl::CTiglPoint tigl::CTiglWingSectionElement::GetChordPoint(double xsi, TiglCoordinateSystem referenceCS) const
+{
+    CTiglPoint airfoilChordPoint(GetProfile().GetChordPoint(xsi).XYZ());
+    return GetTotalTransformation(referenceCS) * airfoilChordPoint;
+}
