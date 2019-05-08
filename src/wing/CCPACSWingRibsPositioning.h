@@ -57,6 +57,13 @@ public:
 
     /// Reset the cached structural variables. Must be executed after changing the rib refinition
     TIGL_EXPORT void Invalidate();
+
+    TIGL_EXPORT void SetStartCurvePoint(const CCPACSCurvePoint& value);
+    TIGL_EXPORT void SetStartEtaXsiPoint(const CCPACSEtaXsiPoint& value);
+    TIGL_EXPORT void SetStartSparPositionUID(const std::string& value);
+    TIGL_EXPORT void SetEndCurvePoint(const CCPACSCurvePoint& value);
+    TIGL_EXPORT void SetEndEtaXsiPoint(const CCPACSEtaXsiPoint& value);
+    TIGL_EXPORT void SetEndSparPositionUID(const std::string& value);
 private:
     friend class CCPACSWingRibRotation;
 };
