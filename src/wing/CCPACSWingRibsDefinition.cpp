@@ -250,8 +250,6 @@ void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning(AuxiliaryGeomCache& c
         double currentEta = ribSetDataCache->referenceEtaStart + ribSetDataCache->referenceEtaOffset * i;
 
         // STEP 3: determine sparPositionUID where rib should be placed
-
-
         bool curentlyOnSparPosition = false;
         if (i == 0 && m_ribsPositioning_choice1.value().GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_STARTEND) {
             curentlyOnSparPosition = true;
@@ -263,38 +261,16 @@ void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning(AuxiliaryGeomCache& c
 
         // STEP 4: build the rib cut geometry based on the current eta value
         //         and the element UID (if defined)
-        // TODO: we have to figure out, if a rib was placed in the element
-        std::string elementUID;
-        CutGeometry cutGeom = BuildRibCutGeometry(currentEta, elementUID, curentlyOnSparPosition, cache);
+        CutGeometry cutGeom = BuildRibCutGeometry(currentEta, curentlyOnSparPosition, cache);
         cache.cutGeometries.push_back(cutGeom);
     }
 }
 
-CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeometry(double currentEta, const std::string& elementUID, bool onSparDefined, AuxiliaryGeomCache& cache) const
+CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeometry(double currentEta, bool onSparDefined, AuxiliaryGeomCache& cache) const
 {
     std::string ribStart = m_ribsPositioning_choice1.value().GetRibStart();
     std::string ribEnd = m_ribsPositioning_choice1.value().GetRibEnd();
     const std::string ribReference = m_ribsPositioning_choice1.value().GetRibReference();
-
-    // handle case when rib lies within a section element (elementUID defined)
-    if (!elementUID.empty()) {
-        TopoDS_Face ribFace = GetSectionRibGeometry(elementUID, currentEta, ribStart, ribEnd);
-        // Compute rib start and end point for the cell definition
-        RibMidplanePoints midplanePoints = ComputeRibDefinitionPoints(ribStart, ribEnd, ribFace);
-        cache.midplanePoints.push_back(midplanePoints);
-        return CutGeometry(ribFace, true);
-    }
-
-    // handle case when rib lies within inner or outer section element
-    if (currentEta < Precision::Confusion() || currentEta > 1 - Precision::Confusion()) {
-        if (to_lower(ribReference) == to_lower("leadingEdge") || to_lower(ribReference) == to_lower("trailingEdge") || IsOuterSparPointInSection(ribReference, currentEta, getStructure())) {
-            TopoDS_Face ribFace = GetSectionRibGeometry("", currentEta, ribStart, ribEnd);
-            // Compute rib start and end point for the cell definition
-            RibMidplanePoints midplanePoints = ComputeRibDefinitionPoints(ribStart, ribEnd, ribFace);
-            cache.midplanePoints.push_back(midplanePoints);
-            return CutGeometry(ribFace, true);
-        }
-    }
 
     // otherwise rib cut face must be built
     // STEP 1: compute the reference point for the rib
