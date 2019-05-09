@@ -40,6 +40,7 @@
 #include "CNamedShape.h"
 #include "PNamedShape.h"
 #include "CTiglRelativelyPositionedComponent.h"
+#include "CTiglProjectPointOnCurveAtAngle.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -247,6 +248,11 @@ void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, g
 
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
 {
+    return ProjectPointOnWireAtAngle(wire, p, gp_Dir(1,0,0), M_PI/2.);
+}
+
+Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire &wire, gp_Pnt p, gp_Dir rotationAxisAroundP, double angle)
+{
     double smallestDist = DBL_MAX;
     double alpha  = 0.;
     int edgeIndex = 0;
@@ -259,11 +265,22 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
         TopoDS_Edge edge = wireExplorer.Current();
         Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
 
-        GeomAPI_ProjectPointOnCurve proj(p, curve, firstParam, lastParam);
-        if (proj.NbPoints() > 0 && proj.LowerDistance() < smallestDist) {
-            smallestDist = proj.LowerDistance();
-            edgeIndex = iwire;
-            alpha = proj.LowerDistanceParameter();
+        if (fabs(angle - M_PI / 2.) < 1e-6) {
+            GeomAPI_ProjectPointOnCurve proj(p, curve, firstParam, lastParam);
+            if (proj.NbPoints() > 0 && proj.LowerDistance() < smallestDist) {
+                smallestDist = proj.LowerDistance();
+                edgeIndex = iwire;
+                alpha = proj.LowerDistanceParameter();
+            }
+        }
+        else {
+            Handle(Geom_TrimmedCurve) trimmedCurve = new Geom_TrimmedCurve(curve, firstParam, lastParam);
+            tigl::CTiglProjectPointOnCurveAtAngle proj(p, trimmedCurve, angle, rotationAxisAroundP);
+            if (proj.IsDone() && proj.NbPoints() > 0 && proj.Point(1).Distance(p) < smallestDist) {
+                smallestDist = proj.Point(1).Distance(p);
+                edgeIndex = iwire;
+                alpha = proj.Parameter(1);
+            }
         }
     }
 

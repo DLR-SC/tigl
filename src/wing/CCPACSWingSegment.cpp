@@ -804,9 +804,9 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
 
         Handle(Geom_Surface) surface = nullptr;
         if (fromUpper) {
-            surface = GetUpperSurface();
+            surface = GetUpperSurface(referenceCS);
         } else {
-            surface = GetLowerSurface();
+            surface = GetLowerSurface(referenceCS);
         }
 
         double u,v;
@@ -891,6 +891,17 @@ gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi) const
     return profilePoint.Get_gp_Pnt();
 }
 
+gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi, TiglCoordinateSystem referenceCS) const
+{
+    gp_Pnt pGlobal = GetChordPoint(eta, xsi);
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        return GetParentTransformation().Inverted().Transform(pGlobal);
+    }
+    else {
+        return pGlobal;
+    }
+}
+
 gp_Pnt CCPACSWingSegment::GetChordNormal(double eta, double xsi) const
 {
     CTiglPoint normal; 
@@ -967,6 +978,8 @@ void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
     // make upper and lower surface
     cache.lowerSurface = BRep_Tool::Surface(TopoDS::Face(GetLowerShape()));
     cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(GetUpperShape()));
+    cache.lowerSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetLowerShape(WING_COORDINATE_SYSTEM)));
+    cache.upperSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetUpperShape(WING_COORDINATE_SYSTEM)));
 
     // make cordface
 
@@ -1071,13 +1084,23 @@ PNamedShape CCPACSWingSegment::GetLoft(TiglShapeModifier mod) const
 // Returns the lower Surface of this Segment
 Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    return surfaceCache->lowerSurface;
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        return surfaceCache->lowerSurfaceLocal;
+    }
+    else {
+        return surfaceCache->lowerSurface;
+    }
 }
 
 // Returns the upper Surface of this Segment
 Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface(TiglCoordinateSystem referenceCS, TiglShapeModifier mod) const
 {
-    return surfaceCache->upperSurface;
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        return surfaceCache->upperSurfaceLocal;
+    }
+    else {
+        return surfaceCache->upperSurface;
+    }
 }
 
 // Returns the upper wing shape of this Segment

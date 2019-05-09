@@ -48,6 +48,10 @@ public:
     TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(const std::string& uid);
     TIGL_EXPORT const CCPACSWingSparSegment& GetSparSegment(const std::string& uid) const;
 
+    // Returns the spar position with the passed uid
+    TIGL_EXPORT CCPACSWingSparPosition& GetSparPosition(const std::string& uid);
+    TIGL_EXPORT const CCPACSWingSparPosition& GetSparPosition(const std::string& uid) const;
+
     // Returns number of ribs definitions
     TIGL_EXPORT int GetRibsDefinitionCount() const;
 

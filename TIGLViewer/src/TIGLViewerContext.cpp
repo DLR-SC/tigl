@@ -97,7 +97,6 @@ TIGLViewerContext::TIGLViewerContext(QUndoStack* stack)
 #endif
     myContext->SetIsoNumber(0);
 
-
     // load shader
     initShaders();
 

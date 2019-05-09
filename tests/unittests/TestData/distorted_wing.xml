@@ -257,8 +257,15 @@
                       <name>name</name>
                       <ribsPositioning>
                         <ribReference>leadingEdge</ribReference>
-                        <elementStartUID>Wing_section2_element1</elementStartUID>
-                        <etaEnd>0.9</etaEnd>
+                        <startEtaXsiPoint>
+                          <eta>1.0</eta>
+                          <referenceUID>Wing_segment1</referenceUID>
+                          <xsi>0.0</xsi>
+                        </startEtaXsiPoint>
+                        <endCurvePoint>
+                          <eta>0.9</eta>
+                          <referenceUID>leadingEdge</referenceUID>
+                        </endCurvePoint>
                         <ribStart>Wing_FrontSpar</ribStart>
                         <ribEnd>trailingEdge</ribEnd>
                         <numberOfRibs>4</numberOfRibs>

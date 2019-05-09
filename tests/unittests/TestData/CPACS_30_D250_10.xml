@@ -5,7 +5,7 @@
     <description>D250 - aircraft geometrical model interpreted from internal data</description>
     <creator>Erwin Moerland</creator>
     <timestamp>2011-07-01T12:00:00</timestamp>
-    <version>1.0</version>
+    <version>1.1.0</version>
     <cpacsVersion>3.0</cpacsVersion>
     <updates>
       <update>
@@ -43,6 +43,13 @@
         <version>1.0</version>
         <cpacsVersion>3.0</cpacsVersion>
       </update>
+      <update>
+        <modification>Added missing UIDs. Fixed order of wing profiles.</modification>
+        <creator>fix_errors.py</creator>
+        <timestamp>2019-04-29T20:48:14</timestamp>
+        <version>1.1.0</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
     </updates>
   </header>
   <vehicles>
@@ -53,7 +60,7 @@
         <reference>
           <area>361.63</area>
           <length>7.279</length>
-          <point>
+          <point uID="D250_VAMP_point1">
             <x>0.0</x>
             <y>0.0</y>
             <z>0.0</z>
@@ -2180,8 +2187,14 @@
                       <description>ribs in center wing box</description>
                       <ribsPositioning>
                         <ribReference>frontSpar</ribReference>
-                        <etaStart>0.0</etaStart>
-                        <etaEnd>0.07275</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.0</eta>
+                          <referenceUID>frontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.07275</eta>
+                          <referenceUID>frontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>frontSpar</ribStart>
                         <ribEnd>rearSpar</ribEnd>
                         <ribRotation uID="ribs_CWB_ribRotation1">
@@ -2206,8 +2219,14 @@
                       <description>rib 1-8</description>
                       <ribsPositioning>
                         <ribReference>frontSpar</ribReference>
-                        <etaStart>0.0950</etaStart>
-                        <etaEnd>0.2817</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.0950</eta>
+                          <referenceUID>frontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.2817</eta>
+                          <referenceUID>frontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>frontSpar</ribStart>
                         <ribEnd>rearSpar</ribEnd>
                         <ribRotation uID="ribs_IW_ribRotation1">
@@ -2232,8 +2251,14 @@
                       <description>rib 9</description>
                       <ribsPositioning>
                         <ribReference>midSpar</ribReference>
-                        <etaStart>0.3081</etaStart>
-                        <etaEnd>0.3081</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.3081</eta>
+                          <referenceUID>midSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.3081</eta>
+                          <referenceUID>midSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>frontSpar</ribStart>
                         <ribEnd>midSpar</ribEnd>
                         <ribRotation uID="rib_9_front_ribRotation1">
@@ -2258,8 +2283,14 @@
                       <description>rib 9</description>
                       <ribsPositioning>
                         <ribReference>midSpar</ribReference>
-                        <etaStart>0.3081</etaStart>
-                        <etaEnd>0.3081</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.3081</eta>
+                          <referenceUID>midSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.3081</eta>
+                          <referenceUID>midSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>midSpar</ribStart>
                         <ribEnd>rearSpar</ribEnd>
                         <ribRotation uID="rib_9_rear_ribRotation1">
@@ -2284,8 +2315,14 @@
                       <description>rib 10</description>
                       <ribsPositioning>
                         <ribReference>frontSpar</ribReference>
-                        <etaStart>0.3345</etaStart>
-                        <etaEnd>0.3345</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.3345</eta>
+                          <referenceUID>frontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.3345</eta>
+                          <referenceUID>frontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>frontSpar</ribStart>
                         <ribEnd>rearSpar</ribEnd>
                         <ribRotation uID="rib_10_ribRotation1">
@@ -2310,8 +2347,14 @@
                       <description>rib 11</description>
                       <ribsPositioning>
                         <ribReference>midSpar</ribReference>
-                        <etaStart>0.3345</etaStart>
-                        <etaEnd>0.3345</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.3345</eta>
+                          <referenceUID>midSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.3345</eta>
+                          <referenceUID>midSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>frontSpar</ribStart>
                         <ribEnd>rearSpar</ribEnd>
                         <ribRotation uID="ribs_11_ribRotation1">
@@ -2336,8 +2379,14 @@
                       <description>ribs 12 to 39</description>
                       <ribsPositioning>
                         <ribReference>frontSpar</ribReference>
-                        <etaStart>0.38</etaStart>
-                        <etaEnd>0.9799</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.38</eta>
+                          <referenceUID>frontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.9799</eta>
+                          <referenceUID>frontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>frontSpar</ribStart>
                         <ribEnd>rearSpar</ribEnd>
                         <ribRotation uID="ribs_OW_ribRotation1">
@@ -3251,8 +3300,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>T1Spar1_IF</ribReference>
-                              <etaStart>0.0015</etaStart>
-                              <etaEnd>0.6922</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.0015</eta>
+                                <referenceUID>T1Spar1_IF</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.6922</eta>
+                                <referenceUID>T1Spar1_IF</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="TED1R1_ribRotation1">
@@ -3277,8 +3332,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>T1Spar1_IF</ribReference>
-                              <etaStart>0.7522</etaStart>
-                              <etaEnd>1</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.7522</eta>
+                                <referenceUID>T1Spar1_IF</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>1</eta>
+                                <referenceUID>T1Spar1_IF</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="TED1R2_ribRotation1">
@@ -3382,12 +3443,12 @@
                         <steps>
                           <step>
                             <relDeflection>0.0</relDeflection>
-                            <innerHingeTranslation>
+                            <innerHingeTranslation uID="D250_InnerFlap_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                             </innerHingeTranslation>
-                            <outerHingeTranslation>
+                            <outerHingeTranslation uID="D250_InnerFlap_outerHingeTranslation1">
                               <x>0.0</x>
                               <z>0.0</z>
                             </outerHingeTranslation>
@@ -3395,12 +3456,12 @@
                           </step>
                           <step>
                             <relDeflection>32</relDeflection>
-                            <innerHingeTranslation>
+                            <innerHingeTranslation uID="D250_InnerFlap_innerHingeTranslation2">
                               <x>0.5513</x>
                               <y>0.0</y>
                               <z>0.0465</z>
                             </innerHingeTranslation>
-                            <outerHingeTranslation>
+                            <outerHingeTranslation uID="D250_InnerFlap_outerHingeTranslation2">
                               <x>0.5513</x>
                               <z>0.0465</z>
                             </outerHingeTranslation>
@@ -3706,8 +3767,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>T1Spar1_OF</ribReference>
-                              <etaStart>0</etaStart>
-                              <etaEnd>0.1495</etaEnd>
+                              <startCurvePoint>
+                                <eta>0</eta>
+                                <referenceUID>T1Spar1_OF</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.1495</eta>
+                                <referenceUID>T1Spar1_OF</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="TED2R1_ribRotation1">
@@ -3732,8 +3799,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>T1Spar1_OF</ribReference>
-                              <etaStart>0.1804</etaStart>
-                              <etaEnd>0.4774</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.1804</eta>
+                                <referenceUID>T1Spar1_OF</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.4774</eta>
+                                <referenceUID>T1Spar1_OF</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="TED2R2_ribRotation1">
@@ -3758,8 +3831,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>T1Spar1_OF</ribReference>
-                              <etaStart>0.5074</etaStart>
-                              <etaEnd>0.8175</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.5074</eta>
+                                <referenceUID>T1Spar1_OF</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.8175</eta>
+                                <referenceUID>T1Spar1_OF</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="TED2R3_ribRotation1">
@@ -3784,8 +3863,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>T1Spar1_OF</ribReference>
-                              <etaStart>0.8475</etaStart>
-                              <etaEnd>1</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.8475</eta>
+                                <referenceUID>T1Spar1_OF</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>1</eta>
+                                <referenceUID>T1Spar1_OF</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="TED2R4_ribRotation1">
@@ -3889,12 +3974,12 @@
                         <steps>
                           <step>
                             <relDeflection>0.0</relDeflection>
-                            <innerHingeTranslation>
+                            <innerHingeTranslation uID="D250_OuterFlap_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                             </innerHingeTranslation>
-                            <outerHingeTranslation>
+                            <outerHingeTranslation uID="D250_OuterFlap_outerHingeTranslation1">
                               <x>0.0</x>
                               <z>0.0</z>
                             </outerHingeTranslation>
@@ -3902,12 +3987,12 @@
                           </step>
                           <step>
                             <relDeflection>32</relDeflection>
-                            <innerHingeTranslation>
+                            <innerHingeTranslation uID="D250_OuterFlap_innerHingeTranslation2">
                               <x>0.5513</x>
                               <y>0.0</y>
                               <z>0.0465</z>
                             </innerHingeTranslation>
-                            <outerHingeTranslation>
+                            <outerHingeTranslation uID="D250_OuterFlap_outerHingeTranslation2">
                               <x>0.5513</x>
                               <z>0.0465</z>
                             </outerHingeTranslation>
@@ -4343,8 +4428,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>T1Spar1_IA</ribReference>
-                              <etaStart>0.0853</etaStart>
-                              <etaEnd>0.9848</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.0853</eta>
+                                <referenceUID>T1Spar1_IA</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.9848</eta>
+                                <referenceUID>T1Spar1_IA</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="RIBS_InnerAileron_ribRotation1">
@@ -4448,12 +4539,12 @@
                         <steps>
                           <step>
                             <relDeflection>-25</relDeflection>
-                            <innerHingeTranslation>
+                            <innerHingeTranslation uID="D250_InnerAileron_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                             </innerHingeTranslation>
-                            <outerHingeTranslation>
+                            <outerHingeTranslation uID="D250_InnerAileron_outerHingeTranslation1">
                               <x>0.0</x>
                               <z>0.0</z>
                             </outerHingeTranslation>
@@ -4461,12 +4552,12 @@
                           </step>
                           <step>
                             <relDeflection>0.0</relDeflection>
-                            <innerHingeTranslation>
+                            <innerHingeTranslation uID="D250_InnerAileron_innerHingeTranslation2">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                             </innerHingeTranslation>
-                            <outerHingeTranslation>
+                            <outerHingeTranslation uID="D250_InnerAileron_outerHingeTranslation2">
                               <x>0.0</x>
                               <z>0.0</z>
                             </outerHingeTranslation>
@@ -4474,12 +4565,12 @@
                           </step>
                           <step>
                             <relDeflection>25</relDeflection>
-                            <innerHingeTranslation>
+                            <innerHingeTranslation uID="D250_InnerAileron_innerHingeTranslation3">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                             </innerHingeTranslation>
-                            <outerHingeTranslation>
+                            <outerHingeTranslation uID="D250_InnerAileron_outerHingeTranslation3">
                               <x>0.0</x>
                               <z>0.0</z>
                             </outerHingeTranslation>
@@ -4723,8 +4814,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>T1Spar1_OA</ribReference>
-                              <etaStart>0.0575</etaStart>
-                              <etaEnd>0.92</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.0575</eta>
+                                <referenceUID>T1Spar1_OA</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.92</eta>
+                                <referenceUID>T1Spar1_OA</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="RIBS_OuterAileron_ribRotation1">
@@ -4749,8 +4846,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>T1Spar1_OA</ribReference>
-                              <etaStart>1</etaStart>
-                              <etaEnd>1</etaEnd>
+                              <startCurvePoint>
+                                <eta>1</eta>
+                                <referenceUID>T1Spar1_OA</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>1</eta>
+                                <referenceUID>T1Spar1_OA</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="TipRib_OuterAileron_ribRotation1">
@@ -4854,12 +4957,12 @@
                         <steps>
                           <step>
                             <relDeflection>-25</relDeflection>
-                            <innerHingeTranslation>
+                            <innerHingeTranslation uID="D250_OuterAileron_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                             </innerHingeTranslation>
-                            <outerHingeTranslation>
+                            <outerHingeTranslation uID="D250_OuterAileron_outerHingeTranslation1">
                               <x>0.0</x>
                               <z>0.0</z>
                             </outerHingeTranslation>
@@ -4867,12 +4970,12 @@
                           </step>
                           <step>
                             <relDeflection>0.0</relDeflection>
-                            <innerHingeTranslation>
+                            <innerHingeTranslation uID="D250_OuterAileron_innerHingeTranslation2">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                             </innerHingeTranslation>
-                            <outerHingeTranslation>
+                            <outerHingeTranslation uID="D250_OuterAileron_outerHingeTranslation2">
                               <x>0.0</x>
                               <z>0.0</z>
                             </outerHingeTranslation>
@@ -4880,12 +4983,12 @@
                           </step>
                           <step>
                             <relDeflection>25</relDeflection>
-                            <innerHingeTranslation>
+                            <innerHingeTranslation uID="D250_OuterAileron_innerHingeTranslation3">
                               <x>0.0</x>
                               <y>0.0</y>
                               <z>0.0</z>
                             </innerHingeTranslation>
-                            <outerHingeTranslation>
+                            <outerHingeTranslation uID="D250_OuterAileron_outerHingeTranslation3">
                               <x>0.0</x>
                               <z>0.0</z>
                             </outerHingeTranslation>
@@ -5088,8 +5191,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>leadingEdge</ribReference>
-                              <etaStart>0.0</etaStart>
-                              <etaEnd>1</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.0</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>1</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="SPO1R1_ribRotation1">
@@ -5358,8 +5467,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>leadingEdge</ribReference>
-                              <etaStart>0.165</etaStart>
-                              <etaEnd>0.95</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.165</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.95</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="SPO2R1_ribRotation1">
@@ -5628,8 +5743,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>leadingEdge</ribReference>
-                              <etaStart>0.165</etaStart>
-                              <etaEnd>0.95</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.165</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.95</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="SPO3R1_ribRotation1">
@@ -5898,8 +6019,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>leadingEdge</ribReference>
-                              <etaStart>0.165</etaStart>
-                              <etaEnd>0.95</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.165</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.95</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="SPO4R1_ribRotation1">
@@ -6168,8 +6295,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>leadingEdge</ribReference>
-                              <etaStart>0.165</etaStart>
-                              <etaEnd>0.95</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.165</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.95</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="SPO5R1_ribRotation1">
@@ -6438,8 +6571,14 @@
                             <description>description</description>
                             <ribsPositioning>
                               <ribReference>leadingEdge</ribReference>
-                              <etaStart>0.165</etaStart>
-                              <etaEnd>0.95</etaEnd>
+                              <startCurvePoint>
+                                <eta>0.165</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </startCurvePoint>
+                              <endCurvePoint>
+                                <eta>0.95</eta>
+                                <referenceUID>leadingEdge</referenceUID>
+                              </endCurvePoint>
                               <ribStart>leadingEdge</ribStart>
                               <ribEnd>trailingEdge</ribEnd>
                               <ribRotation uID="SPO6R1_ribRotation1">
@@ -6749,8 +6888,14 @@
                       <name>Rib Winglet 1</name>
                       <ribsPositioning>
                         <ribReference>leadingEdge</ribReference>
-                        <etaStart>0</etaStart>
-                        <etaEnd>0</etaEnd>
+                        <startCurvePoint>
+                          <eta>0</eta>
+                          <referenceUID>leadingEdge</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0</eta>
+                          <referenceUID>leadingEdge</referenceUID>
+                        </endCurvePoint>
                         <ribStart>leadingEdge</ribStart>
                         <ribEnd>trailingEdge</ribEnd>
                         <ribRotation uID="rib_winglet_1_ribRotation1">
@@ -6774,8 +6919,14 @@
                       <name>Rib Winglet 2</name>
                       <ribsPositioning>
                         <ribReference>leadingEdge</ribReference>
-                        <etaStart>0.2</etaStart>
-                        <etaEnd>1</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.2</eta>
+                          <referenceUID>leadingEdge</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>1</eta>
+                          <referenceUID>leadingEdge</referenceUID>
+                        </endCurvePoint>
                         <ribStart>leadingEdge</ribStart>
                         <ribEnd>trailingEdge</ribEnd>
                         <ribRotation uID="rib_winglet_2_6_ribRotation1">
@@ -7156,8 +7307,14 @@
                       <description>description</description>
                       <ribsPositioning>
                         <ribReference>HTP_FrontSpar</ribReference>
-                        <etaStart>0.035</etaStart>
-                        <etaEnd>0.091</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.035</eta>
+                          <referenceUID>HTP_FrontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.091</eta>
+                          <referenceUID>HTP_FrontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>HTP_FrontSpar</ribStart>
                         <ribEnd>HTP_RearSpar</ribEnd>
                         <ribRotation uID="HTP_R1_ribRotation1">
@@ -7182,8 +7339,14 @@
                       <description>description</description>
                       <ribsPositioning>
                         <ribReference>HTP_FrontSpar</ribReference>
-                        <etaStart>0.167</etaStart>
-                        <etaEnd>0.167</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.167</eta>
+                          <referenceUID>HTP_FrontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.167</eta>
+                          <referenceUID>HTP_FrontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>HTP_FrontSpar</ribStart>
                         <ribEnd>HTP_RearSpar</ribEnd>
                         <ribRotation uID="HTP_R2_ribRotation1">
@@ -7208,8 +7371,14 @@
                       <description>description</description>
                       <ribsPositioning>
                         <ribReference>HTP_FrontSpar</ribReference>
-                        <etaStart>0.256</etaStart>
-                        <etaEnd>0.914</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.256</eta>
+                          <referenceUID>HTP_FrontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.914</eta>
+                          <referenceUID>HTP_FrontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>HTP_FrontSpar</ribStart>
                         <ribEnd>HTP_RearSpar</ribEnd>
                         <ribRotation uID="HTP_R3_ribRotation1">
@@ -7234,8 +7403,14 @@
                       <description>description</description>
                       <ribsPositioning>
                         <ribReference>HTP_FrontSpar</ribReference>
-                        <etaStart>0.955</etaStart>
-                        <etaEnd>0.955</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.955</eta>
+                          <referenceUID>HTP_FrontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.955</eta>
+                          <referenceUID>HTP_FrontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>HTP_FrontSpar</ribStart>
                         <ribEnd>HTP_RearSpar</ribEnd>
                         <ribRotation uID="HTP_R4_ribRotation1">
@@ -7625,8 +7800,14 @@
                       <description>description</description>
                       <ribsPositioning>
                         <ribReference>VTP_FrontSpar</ribReference>
-                        <etaStart>0.023</etaStart>
-                        <etaEnd>0.023</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.023</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.023</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>VTP_FrontSpar</ribStart>
                         <ribEnd>VTP_RearSpar</ribEnd>
                         <ribRotation uID="VTP_R1_ribRotation1">
@@ -7651,8 +7832,14 @@
                       <description>description</description>
                       <ribsPositioning>
                         <ribReference>VTP_FrontSpar</ribReference>
-                        <etaStart>0.0694</etaStart>
-                        <etaEnd>0.139</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.0694</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.139</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>VTP_FrontSpar</ribStart>
                         <ribEnd>VTP_RearSpar</ribEnd>
                         <ribRotation uID="VTP_R2_ribRotation1">
@@ -7677,8 +7864,14 @@
                       <description>description</description>
                       <ribsPositioning>
                         <ribReference>VTP_FrontSpar</ribReference>
-                        <etaStart>0.214</etaStart>
-                        <etaEnd>0.422</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.214</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.422</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>VTP_FrontSpar</ribStart>
                         <ribEnd>VTP_RearSpar</ribEnd>
                         <ribRotation uID="VTP_R3_ribRotation1">
@@ -7705,8 +7898,14 @@
 											</description>
                       <ribsPositioning>
                         <ribReference>VTP_FrontSpar</ribReference>
-                        <etaStart>0.457</etaStart>
-                        <etaEnd>0.520</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.457</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.520</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>VTP_FrontSpar</ribStart>
                         <ribEnd>VTP_RearSpar</ribEnd>
                         <ribRotation uID="VTP_R4_ribRotation1">
@@ -7731,8 +7930,14 @@
                       <description>description</description>
                       <ribsPositioning>
                         <ribReference>VTP_FrontSpar</ribReference>
-                        <etaStart>0.555</etaStart>
-                        <etaEnd>0.913</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.555</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.913</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>VTP_FrontSpar</ribStart>
                         <ribEnd>VTP_RearSpar</ribEnd>
                         <ribRotation uID="VTP_R5_ribRotation1">
@@ -7757,8 +7962,14 @@
                       <description>description</description>
                       <ribsPositioning>
                         <ribReference>VTP_FrontSpar</ribReference>
-                        <etaStart>0.965</etaStart>
-                        <etaEnd>0.965</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.965</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.965</eta>
+                          <referenceUID>VTP_FrontSpar</referenceUID>
+                        </endCurvePoint>
                         <ribStart>VTP_FrontSpar</ribStart>
                         <ribEnd>VTP_RearSpar</ribEnd>
                         <ribRotation uID="VTP_R6_ribRotation1">
@@ -8381,45 +8592,45 @@
           <name>D250_profile</name>
           <description>Representative NACA profile for the D250 wing</description>
           <pointList>
-            <x mapType="vector">1;0.95027;0.90052;0.85074;0.80076;0.75063;0.70054;0.65042;0.60028;0.55012;0.49994;0.44975;0.39955;0.34935;0.29917;0.249;0.19885;0.14874;0.09868;0.07369;0.04874;0.02387;0.01153;0.00665;0.00424;0;0.00576;0.00835;0.01347;0.02613;0.05126;0.07631;0.10132;0.15126;0.20115;0.251;0.30083;0.35065;0.40045;0.45025;0.50006;0.54988;0.59972;0.64958;0.69946;0.74937;0.79924;0.84926;0.89948;0.94974;1
-						</x>
+            <x mapType="vector">1
+						;0.94974;0.89948;0.84926;0.79924;0.74937;0.69946;0.64958;0.59972;0.54988;0.50006;0.45025;0.40045;0.35065;0.30083;0.251;0.20115;0.15126;0.10132;0.07631;0.05126;0.02613;0.01347;0.00835;0.00576;0;0.00424;0.00665;0.01153;0.02387;0.04874;0.07369;0.09868;0.14874;0.19885;0.249;0.29917;0.34935;0.39955;0.44975;0.49994;0.55012;0.60028;0.65042;0.70054;0.75063;0.80076;0.85074;0.90052;0.95027;1</x>
             <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
-            <z mapType="vector">0.00021;0.00785;0.01551;0.02301;0.03037;0.03702;0.0431;0.04852;0.05323;0.05714;0.06014;0.06208;0.06274;0.06192;0.05984;0.05656;0.052;0.04592;0.03792;0.03288;0.02685;0.01895;0.01342;0.01044;0.00856;0;-0.00744;-0.00886;-0.011;-0.01473;-0.01963;-0.02316;-0.026;-0.0303;-0.0334;-0.03554;-0.03688;-0.03744;-0.03716;-0.0358;-0.03354;-0.03062;-0.02719;-0.02342;-0.01944;-0.01542;-0.01167;-0.00859;-0.00571;-0.00295;-0.00021
-						</z>
+            <z mapType="vector">-0.00021
+						;-0.00295;-0.00571;-0.00859;-0.01167;-0.01542;-0.01944;-0.02342;-0.02719;-0.03062;-0.03354;-0.0358;-0.03716;-0.03744;-0.03688;-0.03554;-0.0334;-0.0303;-0.026;-0.02316;-0.01963;-0.01473;-0.011;-0.00886;-0.00744;0;0.00856;0.01044;0.01342;0.01895;0.02685;0.03288;0.03792;0.04592;0.052;0.05656;0.05984;0.06192;0.06274;0.06208;0.06014;0.05714;0.05323;0.04852;0.0431;0.03702;0.03037;0.02301;0.01551;0.00785;0.00021</z>
           </pointList>
         </wingAirfoil>
         <wingAirfoil uID="NACA64a210_root">
           <name>D250_profile</name>
           <description>Representative NACA profile for the D250 wing root (corrected lower profile thickness)</description>
           <pointList>
-            <x mapType="vector">1;0.95027;0.90052;0.85074;0.80076;0.75063;0.70054;0.65042;0.60028;0.55012;0.49994;0.44975;0.39955;0.34935;0.29917;0.249;0.19885;0.14874;0.09868;0.07369;0.04874;0.02387;0.01153;0.00665;0.00424;0;0.00576;0.00835;0.01347;0.02613;0.05126;0.07631;0.10132;0.15126;0.20115;0.251;0.30083;0.35065;0.40045;0.45025;0.50006;0.54988;0.59972;0.64958;0.69946;0.74937;0.79924;0.84926;0.89948;0.94974;1
-						</x>
+            <x mapType="vector">1
+						;0.94974;0.89948;0.84926;0.79924;0.74937;0.69946;0.64958;0.59972;0.54988;0.50006;0.45025;0.40045;0.35065;0.30083;0.251;0.20115;0.15126;0.10132;0.07631;0.05126;0.02613;0.01347;0.00835;0.00576;0;0.00424;0.00665;0.01153;0.02387;0.04874;0.07369;0.09868;0.14874;0.19885;0.249;0.29917;0.34935;0.39955;0.44975;0.49994;0.55012;0.60028;0.65042;0.70054;0.75063;0.80076;0.85074;0.90052;0.95027;1</x>
             <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
-            <z mapType="vector">0.00021;0.00785;0.01551;0.02301;0.03037;0.03702;0.0431;0.04852;0.05323;0.05714;0.06014;0.06208;0.06274;0.06192;0.05984;0.05656;0.052;0.04592;0.03792;0.03288;0.02685;0.01895;0.01342;0.01044;0.00856;0;-0.014137706;-0.016778526;-0.020781465;-0.029007797;-0.042961219;-0.051144734;-0.058048667;-0.067108562;-0.073723633;-0.079002495;-0.081376844;-0.081472367;-0.080262554;-0.078490342;-0.073314763;-0.068431444;-0.06238889;-0.056358728;-0.049824983;-0.040745505;-0.030587259;-0.020903832;-0.012488504;-0.006241361;0
-						</z>
+            <z mapType="vector">0
+						;-0.006241361;-0.012488504;-0.020903832;-0.030587259;-0.040745505;-0.049824983;-0.056358728;-0.06238889;-0.068431444;-0.073314763;-0.078490342;-0.080262554;-0.081472367;-0.081376844;-0.079002495;-0.073723633;-0.067108562;-0.058048667;-0.051144734;-0.042961219;-0.029007797;-0.020781465;-0.016778526;-0.014137706;0;0.00856;0.01044;0.01342;0.01895;0.02685;0.03288;0.03792;0.04592;0.052;0.05656;0.05984;0.06192;0.06274;0.06208;0.06014;0.05714;0.05323;0.04852;0.0431;0.03702;0.03037;0.02301;0.01551;0.00785;0.00021</z>
           </pointList>
         </wingAirfoil>
         <wingAirfoil uID="NACA64a210_innerKink">
           <name>D250_profile</name>
           <description>Representative NACA profile for the D250 wing innerKink (corrected lower profile thickness)</description>
           <pointList>
-            <x mapType="vector">1;0.95027;0.90052;0.85074;0.80076;0.75063;0.70054;0.65042;0.60028;0.55012;0.49994;0.44975;0.39955;0.34935;0.29917;0.249;0.19885;0.14874;0.09868;0.07369;0.04874;0.02387;0.01153;0.00665;0.00424;0;0.00576;0.00835;0.01347;0.02613;0.05126;0.07631;0.10132;0.15126;0.20115;0.251;0.30083;0.35065;0.40045;0.45025;0.50006;0.54988;0.59972;0.64958;0.69946;0.74937;0.79924;0.84926;0.89948;0.94974;1
-						</x>
+            <x mapType="vector">1
+						;0.94974;0.89948;0.84926;0.79924;0.74937;0.69946;0.64958;0.59972;0.54988;0.50006;0.45025;0.40045;0.35065;0.30083;0.251;0.20115;0.15126;0.10132;0.07631;0.05126;0.02613;0.01347;0.00835;0.00576;0;0.00424;0.00665;0.01153;0.02387;0.04874;0.07369;0.09868;0.14874;0.19885;0.249;0.29917;0.34935;0.39955;0.44975;0.49994;0.55012;0.60028;0.65042;0.70054;0.75063;0.80076;0.85074;0.90052;0.95027;1</x>
             <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
-            <z mapType="vector">0.00021;0.00785;0.01551;0.02301;0.03037;0.03702;0.0431;0.04852;0.05323;0.05714;0.06014;0.06208;0.06274;0.06192;0.05984;0.05656;0.052;0.04592;0.03792;0.03288;0.02685;0.01895;0.01342;0.01044;0.00856;0;-0.014168942;-0.016473728;-0.020093022;-0.025334805;-0.033127772;-0.037643716;-0.041823273;-0.049071681;-0.053630299;-0.055211634;-0.055217805;-0.054336174;-0.05272677;-0.049406051;-0.045582711;-0.04160869;-0.036110207;-0.029999053;-0.024441268;-0.019493767;-0.014774354;-0.009554588;-0.004511013;-0.002752255;0
-						</z>
+            <z mapType="vector">0
+						;-0.002752255;-0.004511013;-0.009554588;-0.014774354;-0.019493767;-0.024441268;-0.029999053;-0.036110207;-0.04160869;-0.045582711;-0.049406051;-0.05272677;-0.054336174;-0.055217805;-0.055211634;-0.053630299;-0.049071681;-0.041823273;-0.037643716;-0.033127772;-0.025334805;-0.020093022;-0.016473728;-0.014168942;0;0.00856;0.01044;0.01342;0.01895;0.02685;0.03288;0.03792;0.04592;0.052;0.05656;0.05984;0.06192;0.06274;0.06208;0.06014;0.05714;0.05323;0.04852;0.0431;0.03702;0.03037;0.02301;0.01551;0.00785;0.00021</z>
           </pointList>
         </wingAirfoil>
         <wingAirfoil uID="NACA0010">
           <name>D250_HTP_VTP_profile</name>
           <description>Representative NACA profile for the D250 HTP and VTP </description>
           <pointList>
-            <x mapType="vector">1;0.987092;0.960794;0.930401;0.899152;0.867763;0.836337;0.804892;0.773434;0.741967;0.710498;0.679031;0.64757;0.61612;0.584688;0.553279;0.521899;0.490555;0.459255;0.428007;0.396822;0.365713;0.334695;0.303787;0.273017;0.242419;0.212044;0.181965;0.152301;0.123265;0.095299;0.069431;0.047629;0.031504;0.020452;0.012851;0.007495;0.003734;0.001301;0.000135;0.000135;0.001301;0.003734;0.007495;0.012851;0.020452;0.031504;0.047628;0.069431;0.095299;0.123265;0.152301;0.181965;0.212044;0.242419;0.273017;0.303787;0.334695;0.365713;0.396822;0.428007;0.459255;0.490555;0.521899;0.553279;0.584688;0.61612;0.647569;0.67903;0.710498;0.741967;0.773433;0.804892;0.836337;0.867763;0.899152;0.930401;0.960794;0.987092;1
-						</x>
-            <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
-						</y>
-            <z mapType="vector">0.00105;0.002547;0.005526;0.008853;0.012152;0.015347;0.018432;0.021406;0.024272;0.027029;0.029675;0.032207;0.034619;0.036907;0.03906;0.041069;0.042922;0.044605;0.046102;0.047392;0.048456;0.049267;0.049796;0.050011;0.049874;0.049337;0.048348;0.046841;0.044736;0.041937;0.038346;0.033941;0.029013;0.024194;0.019869;0.015991;0.01237;0.008833;0.005273;0.001714;-0.001714;-0.005273;-0.008833;-0.01237;-0.015991;-0.019869;-0.024194;-0.029013;-0.033941;-0.038346;-0.041937;-0.044736;-0.046841;-0.048348;-0.049337;-0.049874;-0.050011;-0.049796;-0.049267;-0.048456;-0.047392;-0.046102;-0.044605;-0.042922;-0.041069;-0.03906;-0.036907;-0.03462;-0.032207;-0.029675;-0.027029;-0.024272;-0.021406;-0.018432;-0.015347;-0.012152;-0.008853;-0.005526;-0.002547;-0.00105
-						</z>
+            <x mapType="vector">1
+						;0.987092;0.960794;0.930401;0.899152;0.867763;0.836337;0.804892;0.773433;0.741967;0.710498;0.67903;0.647569;0.61612;0.584688;0.553279;0.521899;0.490555;0.459255;0.428007;0.396822;0.365713;0.334695;0.303787;0.273017;0.242419;0.212044;0.181965;0.152301;0.123265;0.095299;0.069431;0.047628;0.031504;0.020452;0.012851;0.007495;0.003734;0.001301;0.000135;0.000135;0.001301;0.003734;0.007495;0.012851;0.020452;0.031504;0.047629;0.069431;0.095299;0.123265;0.152301;0.181965;0.212044;0.242419;0.273017;0.303787;0.334695;0.365713;0.396822;0.428007;0.459255;0.490555;0.521899;0.553279;0.584688;0.61612;0.64757;0.679031;0.710498;0.741967;0.773434;0.804892;0.836337;0.867763;0.899152;0.930401;0.960794;0.987092;1</x>
+            <y mapType="vector">0
+						;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
+            <z mapType="vector">-0.00105
+						;-0.002547;-0.005526;-0.008853;-0.012152;-0.015347;-0.018432;-0.021406;-0.024272;-0.027029;-0.029675;-0.032207;-0.03462;-0.036907;-0.03906;-0.041069;-0.042922;-0.044605;-0.046102;-0.047392;-0.048456;-0.049267;-0.049796;-0.050011;-0.049874;-0.049337;-0.048348;-0.046841;-0.044736;-0.041937;-0.038346;-0.033941;-0.029013;-0.024194;-0.019869;-0.015991;-0.01237;-0.008833;-0.005273;-0.001714;0.001714;0.005273;0.008833;0.01237;0.015991;0.019869;0.024194;0.029013;0.033941;0.038346;0.041937;0.044736;0.046841;0.048348;0.049337;0.049874;0.050011;0.049796;0.049267;0.048456;0.047392;0.046102;0.044605;0.042922;0.041069;0.03906;0.036907;0.034619;0.032207;0.029675;0.027029;0.024272;0.021406;0.018432;0.015347;0.012152;0.008853;0.005526;0.002547;0.00105</z>
           </pointList>
         </wingAirfoil>
       </wingAirfoils>

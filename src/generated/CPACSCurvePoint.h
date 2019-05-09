@@ -19,8 +19,6 @@
 
 #include <string>
 #include <tixi.h>
-#include <typeinfo>
-#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -28,20 +26,19 @@ namespace tigl
 namespace generated
 {
     // This class is used in:
-    // CPACSSparPosition
     // CPACSWingRibsPositioning
 
-    // generated from /xsd:schema/xsd:complexType[323]
-    /// @brief etaXsiPointType
+    // generated from /xsd:schema/xsd:complexType[241]
+    /// @brief curvePointType
     /// 
-    /// Point described by eta-xsi coordinates.
-    /// Can be either segment or component segment coordinates.
+    /// Point on a curve in normalized curve coordinates.
+    /// The referenceUID must reference a one-dimensional curve such as spars.
     /// 
-    class CPACSEtaXsiPoint
+    class CPACSCurvePoint
     {
     public:
-        TIGL_EXPORT CPACSEtaXsiPoint();
-        TIGL_EXPORT virtual ~CPACSEtaXsiPoint();
+        TIGL_EXPORT CPACSCurvePoint();
+        TIGL_EXPORT virtual ~CPACSCurvePoint();
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
@@ -49,34 +46,27 @@ namespace generated
         TIGL_EXPORT virtual const double& GetEta() const;
         TIGL_EXPORT virtual void SetEta(const double& value);
 
-        TIGL_EXPORT virtual const double& GetXsi() const;
-        TIGL_EXPORT virtual void SetXsi(const double& value);
-
         TIGL_EXPORT virtual const std::string& GetReferenceUID() const;
         TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
 
     protected:
-        /// Relative spanwise position. Eta refers to the segment or componentSegment depending on the referenced uID.
+        /// Relative position on the referenced line/curve.
         double      m_eta;
 
-        /// Relative chordwise position. Xsi refers to the segment or componentSegment depending on the referenced uID.
-        double      m_xsi;
-
-        /// This reference uID determines the reference coordinate system.
-        /// If it points to a segment, then the eta-xsi values are considered to be in segment
-        /// eta-xsi coordinates; if it points to a componentSegment,
-        /// then componentSegment eta-xsi coordinates are used.
+        /// This reference uID determines the reference curve.
+        /// If it points to a spar, then the eta value is considered to be a spar coordinate
+        /// between start (eta=0) and end (eta=1) of the spar.
         std::string m_referenceUID;
 
     private:
-        CPACSEtaXsiPoint(const CPACSEtaXsiPoint&) = delete;
-        CPACSEtaXsiPoint& operator=(const CPACSEtaXsiPoint&) = delete;
+        CPACSCurvePoint(const CPACSCurvePoint&) = delete;
+        CPACSCurvePoint& operator=(const CPACSCurvePoint&) = delete;
 
-        CPACSEtaXsiPoint(CPACSEtaXsiPoint&&) = delete;
-        CPACSEtaXsiPoint& operator=(CPACSEtaXsiPoint&&) = delete;
+        CPACSCurvePoint(CPACSCurvePoint&&) = delete;
+        CPACSCurvePoint& operator=(CPACSCurvePoint&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSEtaXsiPoint = generated::CPACSEtaXsiPoint;
+using CCPACSCurvePoint = generated::CPACSCurvePoint;
 } // namespace tigl

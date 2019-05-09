@@ -56,7 +56,7 @@ public:
     {
         RIB_EXPLICIT_POSITIONING,
         RIBS_POSITIONING,
-        UNDEFINED_POSITIONING
+        UNDEFINED_POSITIONING,
     };
 
 public:
@@ -163,11 +163,12 @@ private:
     void BuildRibCapsGeometry(RibCapsGeometryCache& cache) const;
 
     // Generates the cut shape for the rib at the passed eta position, or at the passed element or spar position
-    CutGeometry BuildRibCutGeometry(double currentEta, const std::string& elementUID, const std::string& sparPositionUID, AuxiliaryGeomCache& cache) const;
+    CutGeometry BuildRibCutGeometry(double currentEta, bool onSparDefined, AuxiliaryGeomCache& cache) const;
 
     // Returns the wire of the rib reference line (either leadingEdge, 
     // trailingEdge, or spar midplane line)
     TopoDS_Wire GetReferenceLine() const;
+    TopoDS_Wire GetReferenceLine(const std::string& ribReference) const;
 
     // Returns the start eta value on the reference line, either directly
     // defined in positioning or it will be computed based on the section
@@ -179,12 +180,12 @@ private:
     double ComputeReferenceEtaEnd() const;
 
     // Computes the reference-line eta value by intersection of the reference
-    // line with the section element
-    double ComputeSectionElementEta(const std::string& sectionElementUID) const;
-
-    // Computes the reference-line eta value by intersection of the reference
     // line with the midplane point of the spar position
     double ComputeSparPositionEta(const std::string& sparPositionUID) const;
+    double ComputeCurvePositionEtaOnRefLine(const generated::CPACSCurvePoint& curvePoint) const;
+
+    double ComputeEtaOnReferenceLine(const generated::CPACSEtaXsiPoint& etaXsi, bool onSpar) const;
+    double ComputeEtaOnReferenceLine(const gp_Pnt& midplanePoint, bool onSpar) const;
 
     // Returns the number of ribs in case the RibsPositioning is used by
     // computing the values from the ribsPositioning
@@ -202,7 +203,7 @@ private:
                                       const std::string& ribEnd) const;
 
     // Computes the direction vector for the rib
-    gp_Vec GetRibDirection(double currentEta, const gp_Pnt& startPnt, const gp_Vec& upVec) const;
+    gp_Vec GetRibDirection(const gp_Pnt& startPnt, const gp_Vec& upVec) const;
 
     // builds the rib cut face
     TopoDS_Face BuildRibCutFace(const gp_Pnt& startPnt, const gp_Vec& ribDir, const std::string& ribStart,
