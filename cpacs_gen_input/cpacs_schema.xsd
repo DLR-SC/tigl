@@ -42014,40 +42014,70 @@ jonas.jepsen@dlr.de
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
 				<xsd:sequence>
-                                        <xsd:element name="startReference" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                The ribReference is the reference line for the geometrical rib
-                                                                placement. It can either
-                                                                be a sparUID or "trailingEdge" or "leadingEdge"
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="etaStart" type="doubleBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                etaStart defines the start of the rib defined by the startReference and
-                                                                the eta coordinate
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="endReference" type="stringBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                The ribReference is the reference line for the geometrical rib
-                                                                placement. It can either
-                                                                be a sparUID or "trailingEdge" or "leadingEdge"
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
-                                        <xsd:element name="etaEnd" type="doubleBaseType">
-                                                <xsd:annotation>
-                                                        <xsd:documentation>
-                                                                etaEnd defines the end of the rib defined by the endReference and the
-                                                                eta coordinate
-                                                        </xsd:documentation>
-                                                </xsd:annotation>
-                                        </xsd:element>
+					<xsd:choice>
+						<xsd:element name="startEtaXsiPoint" type="etaXsiPointType">
+							<xsd:annotation>
+								<xsd:documentation>
+									startEtaXsiPoint defines the start of the rib defined in eta-xsi coordinates of a reference plane
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="startCurvePoint" type="curvePointType">
+							<xsd:annotation>
+								<xsd:documentation>
+									startCurvePoint defines the start of the rib defined by a point on a reference curve
+									such as a spar, but not an explicit sparPosition
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="startSparPositionUID" type="stringUIDBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									Defines the location of the beginning of the rib using a specific sparPosition.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:choice>
+					<xsd:choice>
+						<xsd:element name="endEtaXsiPoint" type="etaXsiPointType">
+							<xsd:annotation>
+								<xsd:documentation>
+									endEtaXsiPoint defines the end of the rib defined in eta-xsi coordinates of a reference plane
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="endCurvePoint" type="curvePointType">
+							<xsd:annotation>
+								<xsd:documentation>
+									endCurvePoint defines the end of the rib defined by a point on a reference curve
+									such as a spar, but not an explicit sparPosition
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="endSparPositionUID" type="stringUIDBaseType">
+							<xsd:annotation>
+								<xsd:documentation>
+									Defines the location of the end of the rib using a specific sparPosition.
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:choice>
+					<xsd:element name="ribStart" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>
+								RibStart defines the forward beginning of the ribs. It can either be a
+								sparUID or "trailingEdge" or "leadingEdge".
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="ribEnd" type="stringBaseType">
+						<xsd:annotation>
+							<xsd:documentation>
+								RibEnd defines the backward ending of the ribs. It can either be a
+								sparUID or "trailingEdge" or "leadingEdge".
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
