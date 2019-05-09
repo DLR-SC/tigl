@@ -25,10 +25,13 @@ class CCPACSWingRibExplicitPositioning : public generated::CPACSWingRibExplicitP
 public:
     TIGL_EXPORT CCPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent);
 
-    TIGL_EXPORT void SetStartReference(const std::string&);
-    TIGL_EXPORT void SetEndReference(const std::string&);
-    TIGL_EXPORT void SetStartEta(double eta);
-    TIGL_EXPORT void SetEndEta(double eta);
+    TIGL_EXPORT void SetStartCurvePoint(const CCPACSCurvePoint& value);
+    TIGL_EXPORT void SetStartEtaXsiPoint(const CCPACSEtaXsiPoint& value);
+    TIGL_EXPORT void SetStartSparPositionUID(const std::string& value);
+    TIGL_EXPORT void SetEndCurvePoint(const CCPACSCurvePoint& value);
+    TIGL_EXPORT void SetEndEtaXsiPoint(const CCPACSEtaXsiPoint& value);
+    TIGL_EXPORT void SetEndSparPositionUID(const std::string& value);
+
     TIGL_EXPORT void Invalidate();
 };
 }

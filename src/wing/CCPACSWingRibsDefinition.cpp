@@ -266,6 +266,33 @@ void CCPACSWingRibsDefinition::BuildAuxGeomRibsPositioning(AuxiliaryGeomCache& c
     }
 }
 
+gp_Pnt CCPACSWingRibsDefinition::GetRibReferenceMidplanePoint(const boost::optional<CCPACSEtaXsiPoint>& etaXsi,
+                                                              const boost::optional<CCPACSCurvePoint>& curvePoint,
+                                                              const boost::optional<std::string>& sparPosition) const
+{
+    if (etaXsi) {
+        const CTiglWingStructureReference wsr(getStructure());
+        return wsr.GetPoint(etaXsi->GetEta(), etaXsi->GetXsi(), etaXsi->GetReferenceUID(), WING_COORDINATE_SYSTEM);
+    }
+    else if (curvePoint){
+        const TopoDS_Wire refCurve = GetReferenceLine(curvePoint->GetReferenceUID());
+        return WireGetPoint(refCurve, curvePoint->GetEta());
+    }
+    else if(sparPosition) {
+        // get componentSegment required for getting section element face
+        const CCPACSWingSpars& spars = *getStructure().GetSpars();
+
+        // obtain the spar position instance for the referenced UID
+        const CCPACSWingSparPosition& sparPos = spars.GetSparPositions().GetSparPosition(*sparPosition);
+
+        // compute midplane point according to spar definition
+        return GetSparMidplanePoint(sparPos, getStructure());
+    }
+    else {
+        throw CTiglError("Invalid choice of start / end point in rib definition '" + GetUID() + "'.");
+    }
+}
+
 CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeometry(double currentEta, bool onSparDefined, AuxiliaryGeomCache& cache) const
 {
     std::string ribStart = m_ribsPositioning_choice1.value().GetRibStart();
@@ -299,21 +326,36 @@ CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeome
 
 void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning(AuxiliaryGeomCache& cache) const
 {
-    gp_Pnt startPnt, endPnt;
     const CTiglWingStructureReference wsr(getStructure());
+    const CCPACSWingRibExplicitPositioning& explicitRibPosition = m_ribExplicitPositioning_choice2.value();
 
-    // get values from m_ribExplicitPositioning_choice2
-    const std::string startReference = m_ribExplicitPositioning_choice2.value().GetStartReference();
-    const std::string endReference = m_ribExplicitPositioning_choice2.value().GetEndReference();
-    double startEta = m_ribExplicitPositioning_choice2.value().GetEtaStart();
-    double endEta = m_ribExplicitPositioning_choice2.value().GetEtaEnd();
+        // Step 1: get start point of rib on midplane
+    gp_Pnt startPnt = GetRibReferenceMidplanePoint(
+                explicitRibPosition.GetStartEtaXsiPoint_choice1(),
+                explicitRibPosition.GetStartCurvePoint_choice2(),
+                explicitRibPosition.GetStartSparPositionUID_choice3());
 
-    // Step 1: get start point of rib on midplane
-    startPnt = GetReferencePoint(getStructure(), startReference, startEta);
-    endPnt = GetReferencePoint(getStructure(), endReference, endEta);
+    gp_Pnt endPnt = GetRibReferenceMidplanePoint(
+                explicitRibPosition.GetEndEtaXsiPoint_choice1(),
+                explicitRibPosition.GetEndCurvePoint_choice2(),
+                explicitRibPosition.GetEndSparPositionUID_choice3());
 
     // Step 2: Save the Rib start and end point (required for cells)
     cache.midplanePoints.push_back(RibMidplanePoints(startPnt, endPnt));
+
+    std::string startReference = "";
+    double startEta = 0.5;
+    if (explicitRibPosition.GetStartCurvePoint_choice2()) {
+        startReference = explicitRibPosition.GetStartCurvePoint_choice2()->GetReferenceUID();
+        startEta = explicitRibPosition.GetStartCurvePoint_choice2()->GetEta();
+    }
+    
+    std::string endReference = "";
+    double endEta = 0.5;
+    if (explicitRibPosition.GetEndCurvePoint_choice2()) {
+        endReference = explicitRibPosition.GetEndCurvePoint_choice2()->GetReferenceUID();
+        endEta = explicitRibPosition.GetEndCurvePoint_choice2()->GetEta();
+    }
 
     // Step 3: check whether rib lies within section
     //         (use section face as rib geometry)
@@ -328,19 +370,22 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning(AuxiliaryGeomC
         }
     }
 
+    const std::string ribStart = explicitRibPosition.GetRibStart();
+    const std::string ribEnd = explicitRibPosition.GetRibEnd();
+
     // Step 4: compute up vectors in start and end point
     gp_Vec upVecStart(0, 0, 0), upVecEnd(0, 0, 0);
-    if ((to_lower(startReference) == to_lower("leadingEdge") || to_lower(startReference) == to_lower("trailingEdge")) &&
-        (to_lower(endReference) == to_lower("leadingEdge") || to_lower(endReference) == to_lower("trailingEdge"))) {
+    if ((to_lower(ribStart) == to_lower("leadingEdge") || to_lower(ribStart) == to_lower("trailingEdge")) &&
+        (to_lower(ribEnd) == to_lower("leadingEdge") || to_lower(ribEnd) == to_lower("trailingEdge"))) {
         double midplaneEta, dummy;
         wsr.GetEtaXsiLocal(startPnt, midplaneEta, dummy);
         upVecStart = wsr.GetMidplaneNormal(midplaneEta);
         upVecEnd = upVecStart;
     }
     else {
-        // check whether the startReference is a spar
-        if (to_lower(startReference) != to_lower("leadingEdge") && to_lower(startReference) != to_lower("trailingEdge")) {
-            const CCPACSWingSparSegment& spar = getStructure().GetSparSegment(startReference);
+        // check whether the ribStart is a spar
+        if (to_lower(ribStart) != to_lower("leadingEdge") && to_lower(ribStart) != to_lower("trailingEdge")) {
+            const CCPACSWingSparSegment& spar = getStructure().GetSparSegment(ribStart);
             TopoDS_Shape sparShape = spar.GetSparGeometry(WING_COORDINATE_SYSTEM);
             double midplaneEta, dummy;
             wsr.GetEtaXsiLocal(startPnt, midplaneEta, dummy);
@@ -364,9 +409,9 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning(AuxiliaryGeomC
             GetMinMaxPoint(cutLine, gp_Vec(0, 0, 1), minPnt, maxPnt);
             upVecStart = gp_Vec(minPnt, maxPnt);
         }
-        // check whether the endReference is a spar
-        if (to_lower(endReference) != to_lower("leadingEdge") && to_lower(endReference) != to_lower("trailingEdge")) {
-            const CCPACSWingSparSegment& spar = getStructure().GetSparSegment(endReference);
+        // check whether the ribEnd is a spar
+        if (to_lower(ribEnd) != to_lower("leadingEdge") && to_lower(ribEnd) != to_lower("trailingEdge")) {
+            const CCPACSWingSparSegment& spar = getStructure().GetSparSegment(ribEnd);
             TopoDS_Shape sparShape = spar.GetSparGeometry(WING_COORDINATE_SYSTEM);
             double midplaneEta, dummy;
             wsr.GetEtaXsiLocal(endPnt, midplaneEta, dummy);
@@ -412,7 +457,7 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning(AuxiliaryGeomC
     ribDir.Normalize();
 
     // Step 7: build rib cut face (used for cutting with loft/spars)
-    TopoDS_Face ribCutFace = BuildRibCutFace(startPnt, ribDir, startReference, endReference, upVecStart, upVecEnd);
+    TopoDS_Face ribCutFace = BuildRibCutFace(startPnt, ribDir, ribStart, ribEnd, upVecStart, upVecEnd);
 
     // Step 8: add resulting rib cut face to cut geometries
     CutGeometry cutGeom(ribCutFace, false);
@@ -553,50 +598,28 @@ double CCPACSWingRibsDefinition::ComputeReferenceEtaStart() const
 {
     assert(GetRibPositioningType() == RIBS_POSITIONING);
 
-    const CTiglWingStructureReference wsr(getStructure());
-    if (m_ribsPositioning_choice1.value().GetStartDefinitionType() == CCPACSWingRibsPositioning::ETAXSI_STARTEND) {
-        return ComputeEtaOnReferenceLine(m_ribsPositioning_choice1.value().GetStartEtaXsiPoint_choice1().value(), false);
-    }
-    else if (m_ribsPositioning_choice1->GetStartDefinitionType() == CCPACSWingRibsPositioning::CURVEPOINT_STARTEND) {
-        return ComputeCurvePositionEtaOnRefLine(m_ribsPositioning_choice1.value().GetStartCurvePoint_choice2().value());
-    }
-    else if (m_ribsPositioning_choice1.value().GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_STARTEND) {
-        return ComputeSparPositionEta(m_ribsPositioning_choice1.value().GetStartSparPositionUID_choice3().value());
-    }
-    else {
-        throw CTiglError("Unknown StartDefinitionType found for RibsPositioning in CCPACSWingRibsDefinition::GetEtaStart");
-    }
+    bool isOnSpar = m_ribsPositioning_choice1.value().GetStartDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_STARTEND;
+
+    gp_Pnt midplanePoint = GetRibReferenceMidplanePoint(
+                m_ribsPositioning_choice1.value().GetStartEtaXsiPoint_choice1(),
+                m_ribsPositioning_choice1.value().GetStartCurvePoint_choice2(),
+                m_ribsPositioning_choice1.value().GetStartSparPositionUID_choice3());
+
+    return ComputeEtaOnReferenceLine(midplanePoint, isOnSpar);
 }
 
 double CCPACSWingRibsDefinition::ComputeReferenceEtaEnd() const
 {
     assert(GetRibPositioningType() == RIBS_POSITIONING);
 
-    const CTiglWingStructureReference wsr(getStructure());
-    if (m_ribsPositioning_choice1.value().GetEndDefinitionType() == CCPACSWingRibsPositioning::ETAXSI_STARTEND) {
-        return ComputeEtaOnReferenceLine(m_ribsPositioning_choice1.value().GetEndEtaXsiPoint_choice1().value(), false);
-    }
-    else if (m_ribsPositioning_choice1.value().GetEndDefinitionType() == CCPACSWingRibsPositioning::CURVEPOINT_STARTEND) {
-        return ComputeCurvePositionEtaOnRefLine(m_ribsPositioning_choice1.value().GetEndCurvePoint_choice2().value());
-    }
-    else if (m_ribsPositioning_choice1.value().GetEndDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_STARTEND) {
-        return ComputeSparPositionEta(m_ribsPositioning_choice1.value().GetEndSparPositionUID_choice3().value());
-    }
-    else {
-        throw CTiglError("Unknown EndDefinitionType found for RibsPositioning in CCPACSWingRibsDefinition::GetEtaEnd");
-    }
-}
+    bool isOnSpar = m_ribsPositioning_choice1.value().GetEndDefinitionType() == CCPACSWingRibsPositioning::SPARPOSITION_STARTEND;
 
-double CCPACSWingRibsDefinition::ComputeEtaOnReferenceLine(const generated::CPACSEtaXsiPoint& etaXsi, bool onSpar) const
-{
-    // ensure that this is only called when m_ribsPositioning_choice1 is used!!!
-    assert(GetRibPositioningType() == RIBS_POSITIONING);
+    gp_Pnt midplanePoint = GetRibReferenceMidplanePoint(
+                m_ribsPositioning_choice1.value().GetEndEtaXsiPoint_choice1(),
+                m_ribsPositioning_choice1.value().GetEndCurvePoint_choice2(),
+                m_ribsPositioning_choice1.value().GetEndSparPositionUID_choice3());
 
-
-    const CTiglWingStructureReference wsr(getStructure());
-    gp_Pnt midplanePoint = wsr.GetPoint(etaXsi.GetEta(), etaXsi.GetXsi(), etaXsi.GetReferenceUID(), WING_COORDINATE_SYSTEM);
-
-    return ComputeEtaOnReferenceLine(midplanePoint, onSpar);
+    return ComputeEtaOnReferenceLine(midplanePoint, isOnSpar);
 }
 
 double CCPACSWingRibsDefinition::ComputeEtaOnReferenceLine(const gp_Pnt& midplanePoint, bool onSpar) const
@@ -641,33 +664,6 @@ double CCPACSWingRibsDefinition::ComputeEtaOnReferenceLine(const gp_Pnt& midplan
     else {
         return ProjectPointOnWire(referenceLine, pOnRefLine);
     }
-}
-
-
-double CCPACSWingRibsDefinition::ComputeSparPositionEta(const std::string& sparPositionUID) const
-{
-    // ensure that this is only called when m_ribsPositioning_choice1 is used!!!
-    assert(GetRibPositioningType() == RIBS_POSITIONING);
-
-
-    // get componentSegment required for getting section element face
-    const CCPACSWingSpars& spars = *getStructure().GetSpars();
-
-    // obtain the spar position instance for the referenced UID
-    const CCPACSWingSparPosition& sparPos = spars.GetSparPositions().GetSparPosition(sparPositionUID);
-
-    // compute midplane point according to spar definition
-    gp_Pnt midplanePoint = GetSparMidplanePoint(sparPos, getStructure());
-
-    return ComputeEtaOnReferenceLine(midplanePoint, true);
-}
-
-double CCPACSWingRibsDefinition::ComputeCurvePositionEtaOnRefLine(const generated::CPACSCurvePoint& curvePoint) const
-{
-    const TopoDS_Wire refCurve = GetReferenceLine(curvePoint.GetReferenceUID());
-    const gp_Pnt p = WireGetPoint(refCurve, curvePoint.GetEta());
-
-    return ComputeEtaOnReferenceLine(p, false);
 }
 
 int CCPACSWingRibsDefinition::ComputeNumberOfRibs(double etaStart, double etaEnd) const

@@ -179,12 +179,10 @@ private:
     // in positioning or it will be computed based on the section element UID
     double ComputeReferenceEtaEnd() const;
 
-    // Computes the reference-line eta value by intersection of the reference
-    // line with the midplane point of the spar position
-    double ComputeSparPositionEta(const std::string& sparPositionUID) const;
-    double ComputeCurvePositionEtaOnRefLine(const generated::CPACSCurvePoint& curvePoint) const;
+    gp_Pnt GetRibReferenceMidplanePoint(const boost::optional<CCPACSEtaXsiPoint>& etaXsi,
+                                        const boost::optional<CCPACSCurvePoint>& curvePoint,
+                                        const boost::optional<std::string>& sparPosition) const; 
 
-    double ComputeEtaOnReferenceLine(const generated::CPACSEtaXsiPoint& etaXsi, bool onSpar) const;
     double ComputeEtaOnReferenceLine(const gp_Pnt& midplanePoint, bool onSpar) const;
 
     // Returns the number of ribs in case the RibsPositioning is used by
