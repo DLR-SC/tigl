@@ -62,6 +62,10 @@
 #include "ListFunctions.h"
 #include <map>
 #include "CCPACSFuselageSectionElement.h"
+#include "CTiglFuselageHelper.h"
+#include <BRepBndLib.hxx>
+#include <Bnd_Box.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 
 namespace tigl
 {
@@ -69,7 +73,9 @@ namespace tigl
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselage(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , guideCurves(*this, &CCPACSFuselage::BuildGuideCurves) {
+    , guideCurves(*this, &CCPACSFuselage::BuildGuideCurves)
+    , fuselageHelper(*this, &CCPACSFuselage::SetFuselageHelper)
+    {
     Cleanup();
     if (parent->IsParent<CCPACSAircraftModel>())
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
@@ -93,6 +99,7 @@ void CCPACSFuselage::Invalidate()
         m_positionings->Invalidate();
     if (m_structure)
         m_structure->Invalidate();
+    fuselageHelper.clear();
 }
 
 // Cleanup routine
@@ -617,21 +624,22 @@ TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTr
     return trafo.Transform(shape);
 }
 
-std::string CCPACSFuselage::GetNoseUID()
-{
-    // todo check error?
-    return GetSegment(1).GetStartSectionElementUID();
-}
 
 CTiglPoint CCPACSFuselage::GetNoseCenter()
 {
-    std::string noiseUID                  = GetNoseUID();
-    CTiglFuselageSectionElement* cElement = m_sections.GetCTiglElements()[noiseUID];
-    return cElement->GetCenter(TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM);
+    CTiglPoint center;
+    if (! fuselageHelper->HasShape()) {  // fuselage has no element case
+        return center;
+    }
+    std::string noiseUID                  = fuselageHelper->GetNoseUID();
+    CTiglFuselageSectionElement* cElement = fuselageHelper->GetCTiglElementOfFuselage(noiseUID);
+    center = cElement->GetCenter(TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM);
+    return center;
 }
 
 void CCPACSFuselage::SetNoseCenter(const tigl::CTiglPoint &newCenter)
 {
+    // Remark, this method work even if the fuselage has no element, because we set the fuselage transformation
     CTiglPoint oldCenter                         = GetNoseCenter();
     CTiglPoint delta                             = newCenter - oldCenter;
     CCPACSTransformation& fuselageTransformation = GetTransformation();
@@ -647,84 +655,24 @@ void CCPACSFuselage::SetRotation(const CTiglPoint& newRot)
     Invalidate();
 }
 
-std::string CCPACSFuselage::GetTailUID()
-{
-    return GetSegment(GetSegmentCount()).GetEndSectionElementUID();
-}
-
-std::vector<std::string> CCPACSFuselage::GetElementUIDsInOrder()
-{
-    return m_segments.GetElementUIDsInOrder();
-}
-
 double CCPACSFuselage::GetLength()
 {
-    // todo need to take care of the case where not segment are there?
-    std::string noiseUID = GetNoseUID();
-    std::string tailUID  = GetTailUID();
-    return GetLengthBetween(noiseUID, tailUID);
-}
-
-double CCPACSFuselage::GetLengthBetween(const std::string& startElementUID, const std::string& endElementUID)
-{
-    CCPACSFuselageSectionElement& startElement = GetUIDManager().ResolveObject<CCPACSFuselageSectionElement>(startElementUID);
-    CTiglPoint startCenter = startElement.GetCTiglSectionElement()->GetCenter();
-
-    CCPACSFuselageSectionElement& endElement = GetUIDManager().ResolveObject<CCPACSFuselageSectionElement>(endElementUID);
-    CTiglPoint endCenter = endElement.GetCTiglSectionElement()->GetCenter();
-
-    CTiglPoint delta = endCenter - startCenter;
-    return delta.norm2();
+    double length = 0;
+    if (!fuselageHelper->HasShape()) { // fuselage has no element case
+        return length;
+    }
+    CTiglFuselageSectionElement* nose = fuselageHelper->GetCTiglElementOfFuselage(fuselageHelper->GetNoseUID());
+    CTiglFuselageSectionElement* tail = fuselageHelper->GetCTiglElementOfFuselage(fuselageHelper->GetTailUID());
+    length = (tail->GetCenter(GLOBAL_COORDINATE_SYSTEM) - nose->GetCenter(GLOBAL_COORDINATE_SYSTEM)).norm2();
+    return length;
 }
 
 void CCPACSFuselage::SetLength(double newLength)
 {
-    std::string noise = GetNoseUID();
-    std::string tail  = GetTailUID();
-    SetLengthBetween(noise, tail, newLength);
-}
-
-void CCPACSFuselage::SetLengthBetween(const std::string& startElementUID, const std::string& endElementUID,
-                                      double newPartialLength)
-{
-
-    // Prepare the required staff
-
-    std::vector<std::string> elementUIDs = m_segments.GetElementUIDsInOrder();
-    std::map<std::string, CTiglFuselageSectionElement*> ctiglElementsMap = m_sections.GetCTiglElements();
-
-    std::map<std::string, CTiglPoint> oldCenterPoints;
-    std::map<std::string, CTiglPoint> newCenterPoints;
-
-    std::string tempElementUID = "";
-
-    for (int i = 0; i < elementUIDs.size(); i++) {
-        tempElementUID = elementUIDs[i];
-        oldCenterPoints[tempElementUID]  = ctiglElementsMap[tempElementUID]->GetCenter();
-    }
-
-    // Divide the elements in 3 categories:
-    // 1) Elements before start that need not to be modified
-    // 2) Elements between that need to create the partial length
-    // 3) Elements after end that need to be shifted has the last between element
-
-    std::vector<std::string> elementsBetween =
-        ListFunctions::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
-    std::vector<std::string> elementsAfter = ListFunctions::GetElementsAfter(elementUIDs, endElementUID);
-
-    if (elementsBetween.size() < 2) {
-        throw CTiglError(
-            "CCPACSFuselage::SetLengthBetween: At least two elements should be contains between stratUID and endUID");
-    }
-
-    // Prepare the transformation to apply
-
-    //    BETWEEN ELEMENT SCALING
-
     //
-    //              This part follow basically these steps:
+    //              To set the legth, we basicaly follow these steps:
     //
-    //              1)  Computation of the affine transformations needed to perform the desired effect.
+    //              1)  Computation of the transformations needed to perform the desired effect.
     //                  The desired effect can be perform as:
     //                      a) Put the start center point on the world origin
     //                      b) Rotation to get the end center on the X axis
@@ -732,266 +680,207 @@ void CCPACSFuselage::SetLengthBetween(const std::string& startElementUID, const 
     //                      d) inverse of of b) to put the fuselage in the right direction
     //                      e) inverse of a) to shift the fuselage to its origin place
     //
-    //
-    //              2) Compute the new center point for each element
+    //              2) Compute the new center point for each element using the previous transformation
 
-    CTiglPoint startP = oldCenterPoints[startElementUID];
-    CTiglPoint endP   = oldCenterPoints[endElementUID];
+    if (!fuselageHelper->HasShape()) {
+        LOG(WARNING) << "PACSFuselage::SetLength: Impossible to set the length because this fuselage has no segments.";
+        return;
+    }
 
-    // bring StartP to Origin
+    std::vector<std::string> elementUIDS = fuselageHelper->GetElementUIDsInOrder();
+    std::map<std::string, CTiglPoint> oldCenterPoints;
+
+    // Retrieve the current center of each element
+    for (int i = 0; i < elementUIDS.size(); i++) {
+        oldCenterPoints[elementUIDS[i]] = fuselageHelper->GetCTiglElementOfFuselage(elementUIDS[i])->GetCenter();
+    }
+
+    CTiglPoint noseP = oldCenterPoints[fuselageHelper->GetNoseUID()];
+    CTiglPoint tailP = oldCenterPoints[fuselageHelper->GetTailUID()];
+
+    // bring noseP (aka Start) to Origin
     CTiglTransformation startToO;
     startToO.SetIdentity();
-    startToO.AddTranslation(-startP.x, -startP.y, -startP.z);
+    startToO.AddTranslation(-noseP.x, -noseP.y, -noseP.z);
 
-    startP = startToO * startP;
-    endP   = startToO * endP;
+    noseP = startToO * noseP;
+    tailP = startToO * tailP;
 
-    // bring endP on the x axis
+    // bring tailP on the x axis
     // We perform a extrinsic rotation in the order Z -Y -X, so it should be equivalent to the intrinsic cpacs rotation
     // in the order X Y' Z''
     CTiglTransformation rotEndToX4d;
     rotEndToX4d.SetIdentity();
-    double rotGradZ = atan2(endP.y, endP.x);
-    double rotZ     = CTiglTransformation::RadianToDegree(rotGradZ);
+    double rotGradZ = atan2(tailP.y, tailP.x);
+    double rotZ     = Degrees(rotGradZ);
     rotEndToX4d.AddRotationZ(-rotZ);
-    double rotGradY = atan2(endP.z, sqrt((endP.x * endP.x) + (endP.y * endP.y)));
-    double rotY     = CTiglTransformation::RadianToDegree(rotGradY);
+    double rotGradY = atan2(tailP.z, sqrt((tailP.x * tailP.x) + (tailP.y * tailP.y)));
+    double rotY     = Degrees(rotGradY);
     rotEndToX4d.AddRotationY(rotY);
 
-    endP                    = rotEndToX4d * endP;
-    double oldPartialLength = GetLengthBetween(startElementUID, endElementUID);
+    tailP = rotEndToX4d * tailP;
 
     // Compute the needed scaling in x
-    if (oldPartialLength == 0) {
+    double oldLength = GetLength();
+    if (oldLength == 0) {
         // todo cover the case where length is 0
         throw CTiglError("CCPACSFuselage::SetLengthBetween: the old length is 0, impossible to scale the length");
     }
-
-    double xScale = newPartialLength / oldPartialLength;
+    double xScale = newLength / oldLength;
     CTiglTransformation scaleM;
     scaleM.SetIdentity();
     scaleM.AddScaling(xScale, 1.0, 1.0);
 
-    // Compute the new center point and the new origin of each element in Between
+    // Compute the new center point and the new origin of each element and set it
     CTiglTransformation totalTransformation =
         startToO.Inverted() * rotEndToX4d.Inverted() * scaleM * rotEndToX4d * startToO;
-    CTiglPoint tempDelatOtoP;
-    for (int i = 0; i < elementsBetween.size(); i++) {
-        newCenterPoints[elementsBetween[i]] = totalTransformation * oldCenterPoints.at(elementsBetween[i]);
-    }
-
-
-    // SHIFT THE END OF THE FUSELAGE
-
-    CTiglPoint shiftEndElementG = newCenterPoints[endElementUID] - oldCenterPoints[endElementUID];
-    for (int i = 0; i < elementsAfter.size(); i++) {
-        newCenterPoints[elementsAfter[i]] = oldCenterPoints[elementsAfter[i]] + shiftEndElementG;
-    }
-
-    // SET THE NEW CENTERS OF EACH ELEMENT
-
-    std::map<std::string, CTiglPoint>::iterator it;
-    for ( it = newCenterPoints.begin(); it != newCenterPoints.end(); it++ )
-    {
-        ctiglElementsMap[it->first]->SetCenter(it->second);  // will call Invalidate();
+    CTiglPoint newCenter;
+    for (int i = 0; i < elementUIDS.size(); i++) {
+        newCenter = totalTransformation * oldCenterPoints.at(elementUIDS[i]);
+        fuselageHelper->GetCTiglElementOfFuselage(elementUIDS[i])->SetCenter(newCenter);
     }
 
     // Remark the saving in tixi is not done, it should be perform by the user using "WriteCPACS" function
 }
 
-double CCPACSFuselage::GetMaximalCircumference()
-{
-    return GetMaximalCircumferenceBetween(GetNoseUID(), GetTailUID());
-}
-
-double CCPACSFuselage::GetMaximalCircumferenceBetween(const std::string& startElementUID,
-                                                      const std::string& endElementUID)
-{
-    return GetMaxBetween(&CTiglFuselageSectionElement::GetCircumference, startElementUID, endElementUID);
-}
-
-void CCPACSFuselage::SetMaximalCircumference(double newMaximalCircumference)
-{
-    SetMaximalCircumferenceBetween(GetNoseUID(), GetTailUID(), newMaximalCircumference);
-}
-
-void CCPACSFuselage::SetMaximalCircumferenceBetween(const std::string& startElementUID,
-                                                    const std::string& endElementUID, double newMaximalCircumference)
-{
-
-    if (newMaximalCircumference < 0) {
-        throw CTiglError("CCPACSFuselage::SetMaximalCircumferenceBetween: Circumference should be bigger than 0");
-    }
-
-    double oldMaximalCircumference = GetMaximalCircumferenceBetween(startElementUID, endElementUID);
-
-    // todo manage the 0 scale case
-    double scaleFactor = newMaximalCircumference / oldMaximalCircumference;
-
-    std::vector<std::string> elementsBetween =
-        ListFunctions::GetElementsInBetween(m_segments.GetElementUIDsInOrder(), startElementUID, endElementUID);
-
-    if (elementsBetween.size() < 1) {
-        throw CTiglError("CCPACSFuselage::GetMaximalCircumferenceBetween: No elements in between was found");
-    }
-
-    std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
-    for (int i = 0; i < elementsBetween.size(); i++) {
-        cTiglElementsMap[elementsBetween[i]]->ScaleCircumference(scaleFactor);
-    }
-}
-
-double CCPACSFuselage::GetMaximalHeightBetween(const std::string& startElementUID, const std::string& endElementUID)
-{
-    return GetMaxBetween(&CTiglFuselageSectionElement::GetHeight, startElementUID, endElementUID);
-}
-
 double CCPACSFuselage::GetMaximalHeight()
 {
-    return GetMaximalHeightBetween(GetNoseUID(), GetTailUID());
+    // Todo: evaluate the possiblity to use the a cache for this operation in fuselageHelper
+
+    // First compute the rotation to bring the fuselage in the standard direction
+    // We do not invert the fuselage transformation, because we want to keep the the scaling apply by it
+    CTiglTransformation fuselageRot;
+    fuselageRot.AddRotationIntrinsicXYZ(GetRotation().x,GetRotation().y, GetRotation().z) ;
+    CTiglTransformation fuselageRotInv = fuselageRot.Inverted();
+
+    // Then comput the loft in this coordinate system
+    PNamedShape loftCopy = GetLoft()->DeepCopy(); // make a deep copy because we gonna to transform it
+    TopoDS_Shape transformedLoft = fuselageRotInv.Transform(loftCopy->Shape());
+    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.01);   // tessellate the loft to have a more accurate bounding box.
+
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(transformedLoft, boundingBox);
+    Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+    return zmax - zmin;
 }
 
-double CCPACSFuselage::GetMaximalWidthBetween(const std::string& startElementUID, const std::string& endElementUID)
+void CCPACSFuselage::SetMaxHeight(double newHeight)
 {
-    return GetMaxBetween(&CTiglFuselageSectionElement::GetWidth, startElementUID, endElementUID);
+    // Remark the inverse rotation is needed to bring the fuselage in the "intutive" direction
+    // And we need to bring the nose to the origin because otherwise the scaling will change the position of the fuselage
+    // if the fuselage is not on the X axis.
+    // Furthermore is impossible to use scaling of the fuselage, because sometimes the fuselage has already a position
+    // before that the scaling of the fuselage is applied.
+    // So for each transformation of element, E', we get the following equation
+    //
+    // FPSE' = R⁻¹*T⁻¹*S*T*R*FPSE   Where T is the translation from nose to origin
+    //                                and R the inverse transformation of the rotation.
+
+
+    CTiglPoint nose = GetNoseCenter();
+
+    CTiglTransformation RI;     // fuselage rotation
+    RI.AddRotationIntrinsicXYZ(GetRotation().x,GetRotation().y, GetRotation().z) ;
+    CTiglTransformation R = RI.Inverted();
+
+    nose = R*nose;  // nose after rotation apply on it
+    CTiglTransformation T ;
+    T.AddTranslation(- nose.x, -nose.y, -nose.z);
+    CTiglTransformation TI = T.Inverted();
+
+    double currentHeight = GetMaximalHeight();
+    if (currentHeight < 0.00000000001 ){
+        LOG(WARNING) << "CCPACSFuselage::SetMaxHeight: The current height is near 0, we do not support for the moment setting the height if the current height is zero, sorry.";
+        return;
+    }
+    double scalingZ = newHeight / currentHeight;
+    CTiglTransformation S;
+    S.AddScaling(1,1,scalingZ);
+
+    std::vector<std::string> elementUIDs =  fuselageHelper->GetElementUIDsInOrder();
+    CTiglFuselageSectionElement* cElement = nullptr;
+    CTiglTransformation newTotalTransformationForE;
+    for (int i = 0; i < elementUIDs.size(); i++ ) {
+        cElement = fuselageHelper->GetCTiglElementOfFuselage(elementUIDs[i]);
+        newTotalTransformationForE = RI * TI * S * T * R * cElement->GetTotalTransformation();
+        cElement->SetTotalTransformation(newTotalTransformationForE);
+    }
+
+    Invalidate();
+
 }
 
 double CCPACSFuselage::GetMaximalWidth()
 {
-    return GetMaximalWidthBetween(GetNoseUID(), GetTailUID());
+
+    // First compute the rotation to bring the fuselage in the standard direction
+    // We do not invert the fuselage transformation, because we want to keep the the scaling apply by it
+    CTiglTransformation fuselageRot;
+    fuselageRot.AddRotationIntrinsicXYZ(GetRotation().x,GetRotation().y, GetRotation().z) ;
+    CTiglTransformation fuselageRotInv = fuselageRot.Inverted();
+
+    // Then comput the loft in this coordinate system
+    PNamedShape loftCopy = GetLoft()->DeepCopy(); // make a deep copy because we gonna to transform it
+    TopoDS_Shape transformedLoft = fuselageRotInv.Transform(loftCopy->Shape());
+    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.01); // tessellate the loft to have a more accurate bounding box.
+
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(transformedLoft, boundingBox);
+    Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+    return ymax - ymin;
 }
 
-double CCPACSFuselage::GetMaximalWireAreaBetween(const std::string& startElementUID, const std::string& endElementUID)
+void CCPACSFuselage::SetMaxWidth(double newWidth)
 {
-    return GetMaxBetween(&CTiglFuselageSectionElement::GetArea, startElementUID, endElementUID);
-}
 
-double CCPACSFuselage::GetMaximalWireArea()
-{
-    return GetMaximalWireAreaBetween(GetNoseUID(), GetTailUID());
-}
+    // Remark the inverse rotation is needed to bring the fuselage in the "intutive" direction
+    // And we need to bring the nose to the origin because otherwise the scaling will change the position of the fuselage
+    // if the fuselage is not on the X axis.
+    // Furthermore is impossible to use scaling of the fuselage, because sometimes the fuselage has already a position
+    // before that the scaling of the fuselage is applied.
+    // So for each transformation of element, E', we get the following equation
+    //
+    // FPSE' = R⁻¹*T⁻¹*S*T*R*FPSE   Where T is the translation from nose to origin
+    //                                and R the inverse transformation of the rotation.
 
-double CCPACSFuselage::GetMaxBetween(pGetProperty func, const std::string& startElementUID,
-                                     const std::string& endElementUID)
-{
-    std::vector<std::string> elementUIDs                                 = m_segments.GetElementUIDsInOrder();
-    std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
-    std::vector<std::string> elementsInBetween =
-        ListFunctions::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
 
-    if (elementsInBetween.size() < 1) {
-        LOG(WARNING) << "CCPACSFuselage::GetMaxBetween: No elements in between was found!";
+    CTiglPoint nose = GetNoseCenter();
+
+    CTiglTransformation RI;     // fuselage rotation
+    RI.AddRotationIntrinsicXYZ(GetRotation().x,GetRotation().y, GetRotation().z) ;
+    CTiglTransformation R = RI.Inverted();
+
+    nose = R*nose;  // nose after rotation apply on it
+    CTiglTransformation T ;
+    T.AddTranslation(- nose.x, -nose.y, -nose.z);
+    CTiglTransformation TI = T.Inverted();
+
+    double currentWidth = GetMaximalWidth();
+    if (currentWidth < 0.00000000001 ){
+        LOG(WARNING) << "CCPACSFuselage::SetMaxHeight: The current height is near 0, we do not support for the moment setting the height if the current height is zero, sorry.";
+        return;
+    }
+    double scalingY = newWidth / currentWidth;
+    CTiglTransformation S;
+    S.AddScaling(1,scalingY,1);
+
+    std::vector<std::string> elementUIDs =  fuselageHelper->GetElementUIDsInOrder();
+    CTiglFuselageSectionElement* cElement = nullptr;
+    CTiglTransformation newTotalTransformationForE;
+    for (int i = 0; i < elementUIDs.size(); i++ ) {
+        cElement = fuselageHelper->GetCTiglElementOfFuselage(elementUIDs[i]);
+        newTotalTransformationForE = RI * TI * S * T * R * cElement->GetTotalTransformation();
+        cElement->SetTotalTransformation(newTotalTransformationForE);
     }
 
-    double max = -1;
-    double tempValue;
-    for (int i = 0; i < elementsInBetween.size(); i++) {
-        CTiglFuselageSectionElement temp = (*(cTiglElementsMap[elementsInBetween[i]]));
-        tempValue                        = (temp.*func)(GLOBAL_COORDINATE_SYSTEM);
-        if (tempValue > max) {
-            max = tempValue;
-        }
-    }
-
-    return max;
+    Invalidate();
 }
 
-void CCPACSFuselage::ScaleWiresUniformly(double scaleFactor)
+void CCPACSFuselage::SetFuselageHelper(CTiglFuselageHelper& cache) const
 {
-    ScaleWiresUniformlyBetween(scaleFactor, GetNoseUID(), GetTailUID());
-}
-
-void CCPACSFuselage::ScaleWiresUniformlyBetween(double scaleFactor, const std::string& startElementUID,
-                                                const std::string& endElementUID)
-{
-    if (scaleFactor < 0) {
-        throw CTiglError(
-            " CCPACSFuselage::ScaleWiresUniformlyBetween: For the moment only positive scale factor are supported.");
-    }
-
-    pSetProperty func = &CTiglFuselageSectionElement::ScaleUniformly;
-    ApplyFunctionBetween(func, scaleFactor, startElementUID, endElementUID);
-}
-
-void CCPACSFuselage::SetMaxHeight(double newMaxHeight)
-{
-    SetMaxHeightBetween(newMaxHeight, GetNoseUID(), GetTailUID());
-}
-
-void CCPACSFuselage::SetMaxHeightBetween(double newMaxHeight, const std::string& startUID, const std::string& endUID)
-{
-    double oldHeight = GetMaximalHeightBetween(startUID, endUID);
-    if (fabs(oldHeight) < 0.0001) {
-        // in this case we will call setHeight on each element because a scaling is impossible
-        // -> all the height of the element will be the same
-        pSetProperty func = &CTiglFuselageSectionElement::SetHeight;
-        ApplyFunctionBetween(func, newMaxHeight, startUID, endUID);
-    }
-    else {
-        // in this scale we perform a uniform scaling on the wires to keep the shape
-        double scaleFactor = newMaxHeight / oldHeight;
-        ScaleWiresUniformlyBetween(scaleFactor, startUID, endUID);
-    }
-}
-
-void CCPACSFuselage::SetMaxWidth(double newMaxWidth)
-{
-    SetMaxHeightBetween(newMaxWidth, GetNoseUID(), GetTailUID());
-}
-
-void CCPACSFuselage::SetMaxWidthBetween(double newMaxWidth, const std::string& startUID, const std::string& endUID)
-{
-    double oldMaxWidth = GetMaximalWidthBetween(startUID, endUID);
-    if (fabs(oldMaxWidth) < 0.0001) {
-        // in this case we will call setWidth on each element because a scaling is impossible
-        // -> all the width of the element will be the same
-        pSetProperty func = &CTiglFuselageSectionElement::SetWidth;
-        ApplyFunctionBetween(func, newMaxWidth, startUID, endUID);
-    }
-    else {
-        // in this scale we perform a uniform scaling on the wires to keep the shape
-        double scaleFactor = newMaxWidth / oldMaxWidth;
-        ScaleWiresUniformlyBetween(scaleFactor, startUID, endUID);
-    }
-}
-
-void CCPACSFuselage::SetMaxArea(double newMaxArea)
-{
-    SetMaxAreaBetween(newMaxArea, GetNoseUID(), GetTailUID());
-}
-
-void CCPACSFuselage::SetMaxAreaBetween(double newMaxArea, const std::string& startUID, const std::string& endUID)
-{
-    double oldArea = GetMaximalWireAreaBetween(startUID, endUID);
-    if (fabs(oldArea) < 0.0001) {
-        // in this case we will call setArea on each element because a scaling is impossible
-        // -> all the area of the element will be the same
-        pSetProperty func = &CTiglFuselageSectionElement::SetArea;
-        ApplyFunctionBetween(func, newMaxArea, startUID, endUID);
-    }
-    else {
-        // in this scale we perform a uniform scaling on the wires to keep the shape
-        double scaleFactor = sqrt(newMaxArea / oldArea);
-        ScaleWiresUniformlyBetween(scaleFactor, startUID, endUID);
-    }
-}
-
-double CCPACSFuselage::ApplyFunctionBetween(pSetProperty func, double value, const std::string& startElementUID,
-                                            const std::string& endElementUID)
-{
-    std::vector<std::string> elementUIDs                                 = m_segments.GetElementUIDsInOrder();
-    std::map<std::string, CTiglFuselageSectionElement*> cTiglElementsMap = m_sections.GetCTiglElements();
-    std::vector<std::string> elementsInBetween =
-        ListFunctions::GetElementsInBetween(elementUIDs, startElementUID, endElementUID);
-
-    if (elementsInBetween.size() < 1) {
-        LOG(WARNING) << "CCPACSFuselage::GetMaxBetween: No elements in between was found!";
-    }
-
-    for (int i = 0; i < elementsInBetween.size(); i++) {
-        CTiglFuselageSectionElement temp = (*(cTiglElementsMap[elementsInBetween[i]]));
-        (temp.*func)(value, GLOBAL_COORDINATE_SYSTEM);
-    }
+    cache.SetFuselage(const_cast<CCPACSFuselage*>(this));
 }
 
 } // end namespace tigl

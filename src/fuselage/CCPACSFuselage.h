@@ -40,6 +40,7 @@
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 #include <gp_Lin.hxx>
+#include "CTiglFuselageHelper.h"
 
 namespace tigl
 {
@@ -132,9 +133,6 @@ public:
      * Creator functions
      */
 
-    // return the element uid that is considered as the noise element
-    TIGL_EXPORT std::string GetNoseUID();
-
     // Return the center of the noise airfoil, this correspond to the the beginning of the fuselage.
     TIGL_EXPORT CTiglPoint GetNoseCenter();
 
@@ -142,83 +140,29 @@ public:
     TIGL_EXPORT void SetNoseCenter(const CTiglPoint &newCenter);
 
     // Set the rotation of the fuselage transformation (nothing else ;)
+    // Todo evalute the possiblity to rotate around the nose (simple fuselage case)
     TIGL_EXPORT void SetRotation(const CTiglPoint& newRotation);
-
-    // return the element uid that is considered as the tail element
-    TIGL_EXPORT std::string GetTailUID();
-
-    // Return the elements that form the connections in this fuselage
-    TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder();
 
     // Gets the total length of this fuselage
     TIGL_EXPORT double GetLength();
 
-    // Gets the length between the two fuselage elements given as arguments
-    TIGL_EXPORT double GetLengthBetween(const std::string& startElementUID, const std::string& endElementUID);
-
     // Sets the total length of this fuselage. (The noise keeps its position.)
     TIGL_EXPORT void SetLength(double newLength);
 
-    // Sets the total length of this fuselage. (The noise keeps its position.)
-    TIGL_EXPORT void SetLengthBetween(const std::string& startElementUID, const std::string& endElementUID,
-                                      double newPartialLength);
-
-    // Get the biggest section element circumference of the fuselage
-    TIGL_EXPORT double GetMaximalCircumference();
-
-    // Get the biggest section element circumference between two section element of the fuselage
-    TIGL_EXPORT double GetMaximalCircumferenceBetween(const std::string& startElementUID,
-                                                      const std::string& endElementUID);
-
     // Return the maximal height of the fuselage
-    // The height is computed in the plane formed by the wire (not in the world CS ZY plane)
+    // The height is computed by reverting the fuselage rotation and building a bounding box around the fuselage
     TIGL_EXPORT double GetMaximalHeight();
 
-    TIGL_EXPORT double GetMaximalHeightBetween(const std::string& startElementUID, const std::string& endElementUID);
-
-    // Return the maximal width of the fuselage
-    // The width is computed in the plane formed by the wire (not in the world CS ZY plane)
-    TIGL_EXPORT double GetMaximalWidth();
-
-    TIGL_EXPORT double GetMaximalWidthBetween(const std::string& startElementUID, const std::string& endElementUID);
-
-    // Return the maximal area of the fuselage
-    // The area is computed in the plane formed by the wire (not in the world CS ZY plane)
-    TIGL_EXPORT double GetMaximalWireArea();
-
-    TIGL_EXPORT double GetMaximalWireAreaBetween(const std::string& startElementUID, const std::string& endElementUID);
-
-
-    // Scale the wires uniformly.
-    // This can be used to set the max height or max area
-    TIGL_EXPORT void ScaleWiresUniformly(double scaleFactor);
-
-    // Scale the wires between start and end uid uniformly (start and end included)
-    TIGL_EXPORT void ScaleWiresUniformlyBetween(double scaleFactor, const std::string& startElementUID, const std::string& endElementUID);
-
+    // Set the maximal height of the fuselage by
+    // inverting the rotation of the fuselage, bring the nose to the origin and scaling in the Z direction
     TIGL_EXPORT void SetMaxHeight(double newMaxHeight);
 
-    TIGL_EXPORT void SetMaxHeightBetween(double newMaxHeight, const std::string& startUID, const std::string& endUID );
+    // Return the maximal width of the fuselage
+    TIGL_EXPORT double GetMaximalWidth();
 
-
+    // Set the maximal width of the fuselage by inverting the rotation of the fuselage and scaling in the Y direction
     TIGL_EXPORT void SetMaxWidth(double newMaxWidth);
 
-    TIGL_EXPORT void SetMaxWidthBetween(double newMaxWidth, const std::string& startUID, const std::string& endUID );
-
-
-    TIGL_EXPORT void SetMaxArea(double newMaxArea);
-
-    TIGL_EXPORT void SetMaxAreaBetween(double newMaxArea, const std::string& startUID, const std::string& endUID );
-
-
-    // Set the biggest circumference of the fuselage to the given value,
-    // the other circumferences are proportionally scaled
-    TIGL_EXPORT void SetMaximalCircumference(double newMaximalCircumference);
-
-    // Set the biggest circumference of the fuselage between two given section elements to the given value,
-    // the other circumferences are proportionally scaled
-    TIGL_EXPORT void SetMaximalCircumferenceBetween(const std::string& startElementUID,
-                                                    const std::string& endElementUID, double newMaximalCircumference);
 
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;
@@ -233,17 +177,7 @@ protected:
 
     void SetFaceTraits(PNamedShape loft) const;
 
-
-    typedef double (CTiglFuselageSectionElement::*pGetProperty)(TiglCoordinateSystem referenceCS) const;
-
-    // functional programing: apply func on each element in between and return the max double
-    double GetMaxBetween(pGetProperty func, const std::string& startElementUID, const std::string& endElementUID);
-
-
-    typedef void (CTiglFuselageSectionElement::*pSetProperty)(double, TiglCoordinateSystem referenceCS);
-
-    // functional programing: apply the "set" func on each element using the value "value" as parameter
-    double ApplyFunctionBetween(pSetProperty func, double value, const std::string& startElementUID, const std::string& endElementUID);
+    void SetFuselageHelper(CTiglFuselageHelper& cache) const ;
 
 private:
     // get short name for loft
@@ -257,6 +191,8 @@ private:
     Cache<TopoDS_Compound, CCPACSFuselage> guideCurves;
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
+
+    Cache<CTiglFuselageHelper, CCPACSFuselage> fuselageHelper;
 
     friend class CCPACSFuselageSegment;
 };

@@ -564,6 +564,38 @@ TEST(TiglMath, CTiglTransform_getRotationToAlignAToB)
 }
 
 
+TEST(TiglMath, CTiglTransform_isNear)
+{
+    tigl::CTiglTransformation a,b;
+
+    EXPECT_TRUE(a.IsNear(b));
+    EXPECT_TRUE(b.IsNear(a));
+    EXPECT_TRUE(a.IsNear(b,0));
+    EXPECT_TRUE(b.IsNear(a,0));
+
+    a.AddTranslation(12,13,14);
+    EXPECT_FALSE(a.IsNear(b));
+    EXPECT_FALSE(b.IsNear(a));
+    EXPECT_TRUE(a.IsNear(b,100));
+
+    b.AddTranslation(12,13,14);
+    EXPECT_TRUE(a.IsNear(b));
+    EXPECT_TRUE(b.IsNear(a));
+
+    b.AddRotationX(0.1);
+    EXPECT_FALSE(a.IsNear(b));
+    a.AddRotationX(0.1);
+    EXPECT_TRUE(a.IsNear(b));
+
+    a.AddScaling(3,3.3,4);
+    EXPECT_FALSE(a.IsNear(b));
+    b.AddScaling(3,3.3,4);
+    EXPECT_TRUE(a.IsNear(b));
+
+}
+
+
+
 TEST(TiglMath, SVD)
 {
     tigl::tiglMatrix A(1, 3, 1, 3);

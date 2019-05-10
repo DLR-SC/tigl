@@ -28,6 +28,7 @@
 #include "Standard_Version.hxx"
 
 #include "tiglmathfunctions.h"
+#include "tiglcommonfunctions.h"
 
 namespace tigl 
 {
@@ -181,17 +182,6 @@ gp_GTrsf CTiglTransformation::Get_gp_GTrsf() const
     return ocMatrix;
 }
 
-// Converts degree to radian, utility function
-double CTiglTransformation::DegreeToRadian(double degree)
-{
-    return (degree * 1.74532925199433E-02);
-}
-
-// Converts radian to degree, utility function
-double CTiglTransformation::RadianToDegree(double radian)
-{
-    return (radian * 57.2957795130823);
-}
 
 // Adds a translation to this transformation. Translation part
 // is stored in the last column of the transformation matrix.
@@ -231,7 +221,7 @@ void CTiglTransformation::AddScaling(double sx, double sy, double sz)
 
 void CTiglTransformation::AddRotationX(double degreeX)
 {
-    double radianX = DegreeToRadian(degreeX);
+    double radianX = Radians(degreeX);
     double sinVal  = sin(radianX);
     double cosVal  = cos(radianX);
 
@@ -253,7 +243,7 @@ void CTiglTransformation::AddRotationX(double degreeX)
 
 void CTiglTransformation::AddRotationY(double degreeY)
 {
-    double radianY = DegreeToRadian(degreeY);
+    double radianY = Radians(degreeY);
     double sinVal  = sin(radianY);
     double cosVal  = cos(radianY);
 
@@ -275,7 +265,7 @@ void CTiglTransformation::AddRotationY(double degreeY)
 
 void CTiglTransformation::AddRotationZ(double degreeZ)
 {
-    double radianZ = DegreeToRadian(degreeZ);
+    double radianZ = Radians(degreeZ);
     double sinVal  = sin(radianZ);
     double cosVal  = cos(radianZ);
 
@@ -576,9 +566,9 @@ void CTiglTransformation::Decompose(double scale[3], double rotation[3], double 
         }
     }
 
-    rotation[0] = RadianToDegree(rotation[0]);
-    rotation[1] = RadianToDegree(rotation[1]);
-    rotation[2] = RadianToDegree(rotation[2]);
+    rotation[0] = Degrees(rotation[0]);
+    rotation[1] = Degrees(rotation[1]);
+    rotation[2] = Degrees(rotation[2]);
 
     // translation is last column of transformation
     translation[0] = GetValue(0,3);
@@ -700,6 +690,17 @@ CTiglTransformation operator*( double s, const CTiglTransformation& a)
 bool CTiglTransformation::HasZeroScaling() const
 {
     return (isNear(GetValue(0,0),0)|| isNear(GetValue(1,1),0) || isNear(GetValue(2,2),0));
+}
+
+bool CTiglTransformation::IsNear(const tigl::CTiglTransformation &other, double epsilon) const
+{
+    bool result = true;
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            result = result && fabs( GetValue(row, col) - other.GetValue(row, col)) <= epsilon;
+        }
+    }
+    return result;
 }
 
 CTiglPoint CTiglTransformation::GetTranslation()

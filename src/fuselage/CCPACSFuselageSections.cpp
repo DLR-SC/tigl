@@ -42,20 +42,6 @@ CCPACSFuselageSection& CCPACSFuselageSections::GetSection(int index) const
     return *m_sections[index];
 }
 
-std::map<std::string, CTiglFuselageSectionElement*> CCPACSFuselageSections::GetCTiglElements()
-{
-    std::map<std::string, CTiglFuselageSectionElement*> map;
-
-    for(int s = 0; s <  m_sections.size(); s++ ){
-        for( int e = 1; e <= m_sections[s]->GetSectionElementCount(); e++ ){
-            CCPACSFuselageSectionElement& tempElement = m_sections[s]->GetSectionElement(e);
-            map[tempElement.GetUID()] = tempElement.GetCTiglSectionElement();
-        }
-
-    }
-    return map;
-
-}
 
 // Gets a section by uid.
 CCPACSFuselageSection& CCPACSFuselageSections::GetSection(const std::string& sectionUID)

@@ -48,12 +48,6 @@ public:
     
     TIGL_EXPORT CTiglTransformation& operator=(const CTiglTransformation&);
 
-    // Converts degree to radian, utility function
-    TIGL_EXPORT static double DegreeToRadian(double degree);
-
-    // Converts radian to degree, utility function
-    TIGL_EXPORT static double RadianToDegree(double radian);
-
     // Sets matrix to identity matrix
     TIGL_EXPORT void SetIdentity();
 
@@ -136,6 +130,9 @@ public:
 
     // Return true if the transformation has a zero scaling
     TIGL_EXPORT bool HasZeroScaling() const;
+
+    // Compare each value of the transformation matrix and return true if they are all near
+    TIGL_EXPORT bool IsNear(const CTiglTransformation& other, double epsilon = 0.0001) const;
 
 private:
     bool IsUniform() const;
