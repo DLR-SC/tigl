@@ -325,3 +325,30 @@ void tigl::CTiglSectionElement::SetArea(double newArea, TiglCoordinateSystem ref
     double scaleFactor = sqrt(newArea / oldArea);
     ScaleUniformly(scaleFactor, referenceCS);
 }
+
+void tigl::CTiglSectionElement::SetTotalTransformation(const tigl::CTiglTransformation& newTotalTransformation,
+                                                       TiglCoordinateSystem referenceCS)
+{
+
+    // We have
+    // FPSE' = G        where E' is the new element transformation,
+    //                    and G is the given new total transformation
+    //                    and F is the parent transformation
+    // E' = S⁻¹P⁻¹F⁻¹G
+
+    CTiglTransformation newE ;
+
+    if ( referenceCS == GLOBAL_COORDINATE_SYSTEM ) {
+        newE = GetSectionTransformation().Inverted()
+                * GetPositioningTransformation().Inverted()
+                * GetParentTransformation().Inverted()
+                * newTotalTransformation;
+
+    } else if (referenceCS == FUSELAGE_COORDINATE_SYSTEM || referenceCS == WING_COORDINATE_SYSTEM ) {
+        newE = GetSectionTransformation().Inverted()
+                * GetPositioningTransformation().Inverted()
+                *  newTotalTransformation;
+    };
+
+    SetElementTransformation(newE);
+}

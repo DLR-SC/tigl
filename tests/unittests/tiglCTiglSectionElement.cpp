@@ -167,7 +167,7 @@ TEST_F(tiglCTiglSectionElement, setOrigin)
     setVariables("TestData/simpletest.cpacs.xml");
     ctiglElement = GetCElementOf("D150_Fuselage_1Section1IDElement1");
     element      = &(
-        config->GetUIDManager().ResolveObject<tigl::CCPACSFuselageSectionElement>("D150_Fuselage_1Section1IDElement1"));
+            config->GetUIDManager().ResolveObject<tigl::CCPACSFuselageSectionElement>("D150_Fuselage_1Section1IDElement1"));
 
     newOrigin = tigl::CTiglPoint(2, 1.1, 0.13);
     ctiglElement->SetOrigin(newOrigin);
@@ -635,5 +635,44 @@ TEST_F(tiglCTiglSectionElement, SetArea_MultipleFuselagesModel)
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
 
     saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
+}
+
+
+
+TEST_F(tiglCTiglSectionElement, SetTotalTransformation_MultipleFuselagesModel)
+{
+
+    setVariables("TestData/multiple_fuselages.xml");
+
+    tigl::CTiglSectionElement* cElement = nullptr;
+    tigl::CTiglTransformation newTotalTransformation;
+
+    cElement  = GetCElementOf("Fuselage_ETSection1IDElement1");
+    newTotalTransformation = tigl::CTiglTransformation();
+
+    newTotalTransformation.AddScaling(3,4,1);
+    cElement->SetTotalTransformation(newTotalTransformation);
+    EXPECT_TRUE(cElement->GetTotalTransformation().IsNear(newTotalTransformation) ) ;
+
+    newTotalTransformation.AddRotationIntrinsicXYZ(10,30,70);
+    cElement->SetTotalTransformation(newTotalTransformation);
+    EXPECT_TRUE(cElement->GetTotalTransformation().IsNear(newTotalTransformation) ) ;
+
+    newTotalTransformation.AddTranslation(-12,3,4);
+    cElement->SetTotalTransformation(newTotalTransformation);
+    EXPECT_TRUE(cElement->GetTotalTransformation().IsNear(newTotalTransformation) ) ;
+
+
+    // create a undecomposable case (for the moment ;)
+    // shearing from rotation scaling rotation
+    newTotalTransformation.SetIdentity();
+    newTotalTransformation.AddRotationY(45);
+    newTotalTransformation.AddScaling(2,1,1);
+    newTotalTransformation.AddRotationY(-18.43);
+    cElement->SetTotalTransformation(newTotalTransformation);
+    // todo make the following statement to true
+    EXPECT_FALSE(cElement->GetTotalTransformation().IsNear(newTotalTransformation));
+
+
 }
 

@@ -93,6 +93,11 @@ public:
     // Return the width of the wire
     TIGL_EXPORT virtual double GetWidth(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
+    // Set the element transformation such that the total transformation is equal to the given transformation
+    // TODO set element and section transfomation simultaneously to cover all the case !) even the shearing case
+    TIGL_EXPORT void SetTotalTransformation(const CTiglTransformation& newTotalTransformation,
+                                            TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
     // Scale the wire uniformly in world or fuselage/wing coordinates.
     // Remark that the effect is not always the same as to add a scaling transformation to the element transformation.
     TIGL_EXPORT virtual void ScaleUniformly(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);

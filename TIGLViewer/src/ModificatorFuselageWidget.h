@@ -31,17 +31,6 @@ class ModificatorFuselageWidget : public ModificatorWidget
 {
     Q_OBJECT
 
-public slots:
-
-    void recomputeProperties();
-
-    // Recompute the height and area based on the new width value
-    void setWidth(double newWidth);
-    // Recompute the widht and area based on the new height value
-    void setHeight(double newHeight);
-    // Recompute the height and width based on the new area value
-    void setArea(double newArea);
-
 public:
     explicit ModificatorFuselageWidget(QWidget* parent = nullptr);
     ~ModificatorFuselageWidget();
@@ -58,13 +47,9 @@ private:
     tigl::CCPACSFuselage* fuselage;
 
     double internalLength;
-
-    // to keep track of which parameter was modified at lasg
-    QString lastModifiedDimensionalParameter;
-
     double internalWidth;
     double internalHeight;
-    double internalArea;
+
 };
 
 #endif // MODIFICATORFUSELAGEWIDGET_H
