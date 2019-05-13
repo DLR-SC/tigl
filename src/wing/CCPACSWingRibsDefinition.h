@@ -31,6 +31,7 @@
 namespace tigl
 {
 class CCPACSWingCSStructure;
+class CTiglWingStructureReference;
 
 class CCPACSWingRibsDefinition : public generated::CPACSWingRibsDefinition, public CTiglAbstractGeometricComponent
 {
@@ -197,7 +198,7 @@ private:
     // The elementUID value determines which section element should be used.
     // When no elementUID is passed the inner or outer section are used
     // depending on the passed eta value.
-    TopoDS_Face GetSectionRibGeometry(const std::string& elementUID, double eta, const std::string& ribStart,
+    TopoDS_Face GetSectionRibGeometry(const std::string& elementUID, const CCPACSEtaXsiPoint&, const std::string& ribStart,
                                       const std::string& ribEnd) const;
 
     // Computes the direction vector for the rib
@@ -213,6 +214,9 @@ private:
 
     CCPACSWingCSStructure& getStructure();
     const CCPACSWingCSStructure& getStructure() const;
+
+    gp_Vec GetRibUpVector(const CTiglWingStructureReference& wsr, gp_Pnt startPnt, gp_Pnt endPoint, bool front) const;
+    boost::optional<std::string> GetElementUID(const CCPACSEtaXsiPoint& point) const;
 
 private:
     CCPACSWingRibsDefinition(const CCPACSWingRibsDefinition&); // = delete;
