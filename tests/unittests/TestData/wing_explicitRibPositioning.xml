@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.airbusds.com/cpacs/2.3">
+  <header>
+    <name>Descartes Model</name>
+    <version>1.2.0</version>
+    <cpacsVersion>3.0</cpacsVersion>
+    <creator>Descartes</creator>
+    <description>CPACS aircraft model designed using Descartes</description>
+    <timestamp>2019-05-10T10:47:56</timestamp>
+    <updates>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2019-05-10T10:53:33</timestamp>
+        <version>1.1.0</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+      <update>
+        <modification>Added missing UIDs.</modification>
+        <creator>fix_errors.py</creator>
+        <timestamp>2019-05-13T23:15:00</timestamp>
+        <version>1.2.0</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+    </updates>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="model">
+        <name>model</name>
+        <wings>
+          <wing uID="Wing" symmetry="">
+            <name>Wing</name>
+            <transformation uID="Wing_transformation1">
+              <scaling uID="Wing_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="Wing_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation uID="Wing_transformation1_translation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="Wing_section1">
+                <name>Wing_section1</name>
+                <transformation uID="Wing_section1_transformation1">
+                  <scaling uID="Wing_section1_transformation1_scaling1">
+                    <x>0.5</x>
+                    <y>0.5</y>
+                    <z>0.5</z>
+                  </scaling>
+                  <rotation uID="Wing_section1_transformation1_rotation1">
+                    <x>-0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation uID="Wing_section1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="Wing_section1_element1">
+                    <name>Wing_section1_element1</name>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="Wing_section1_element1_transformation1"/>
+                  </element>
+                </elements>
+              </section>
+              <section uID="Wing_section2">
+                <name>Wing_section2</name>
+                <transformation uID="Wing_section2_transformation1">
+                  <scaling uID="Wing_section2_transformation1_scaling1">
+                    <x>0.5</x>
+                    <y>0.5</y>
+                    <z>0.5</z>
+                  </scaling>
+                  <rotation uID="Wing_section2_transformation1_rotation1">
+                    <x>25.852574</x>
+                    <y>7.43547</y>
+                    <z>-13.0643</z>
+                  </rotation>
+                  <translation uID="Wing_section2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0.5</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="Wing_section2_element1">
+                    <name>Wing_section2_element1</name>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="Wing_section2_element1_transformation1"/>
+                  </element>
+                </elements>
+              </section>
+              <section uID="Wing_section3">
+                <name>Wing_section3</name>
+                <transformation uID="Wing_section3_transformation1">
+                  <scaling uID="Wing_section3_transformation1_scaling1">
+                    <x>0.5</x>
+                    <y>0.5</y>
+                    <z>0.5</z>
+                  </scaling>
+                  <rotation uID="Wing_section3_transformation1_rotation1">
+                    <x>-15.852574</x>
+                    <y>-7.43547</y>
+                    <z>13.0643</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="Wing_section3_transformation1_translation1">
+                    <x>0.288675</x>
+                    <y>0.933013</y>
+                    <z>0.25</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="Wing_section3_element1">
+                    <name>Wing_section3_element1</name>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="Wing_section3_element1_transformation1"/>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <segments>
+              <segment uID="Wing_segment1">
+                <name>Wing_segment1</name>
+                <fromElementUID>Wing_section1_element1</fromElementUID>
+                <toElementUID>Wing_section2_element1</toElementUID>
+              </segment>
+              <segment uID="Wing_segment2">
+                <name>Wing_segment2</name>
+                <fromElementUID>Wing_section2_element1</fromElementUID>
+                <toElementUID>Wing_section3_element1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+              <componentSegment uID="WingCS1">
+                <name>WingCS1</name>
+                <fromElementUID>Wing_section1_element1</fromElementUID>
+                <toElementUID>Wing_section3_element1</toElementUID>
+                <structure>
+                  <upperShell uID="WingShell1">
+                    <skin>
+                      <material>
+                        <materialUID>dummyMaterial</materialUID>
+                      </material>
+                    </skin>
+                  </upperShell>
+                  <lowerShell uID="WingShell2">
+                    <skin>
+                      <material>
+                        <materialUID>dummyMaterial</materialUID>
+                      </material>
+                    </skin>
+                  </lowerShell>
+                  <ribsDefinitions>
+                    <ribsDefinition uID="Rib_CPCP_full">
+                      <name>Rib_CPCP_full</name>
+                      <ribExplicitPositioning>
+                        <startCurvePoint>
+                          <eta>0.05</eta>
+                          <referenceUID>leadingEdge</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.05</eta>
+                          <referenceUID>WingSpar1</referenceUID>
+                        </endCurvePoint>
+                        <ribStart>leadingEdge</ribStart>
+                        <ribEnd>trailingEdge</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>dummyMaterial</materialUID>
+                        </material>
+                        <ribRotation uID="Rib_CPCP_full_ribRotation1">
+                          <x>100.0</x>
+                        </ribRotation>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Rib_CPCP_front">
+                      <name>Rib_CPCP_front</name>
+                      <ribExplicitPositioning>
+                        <startCurvePoint>
+                          <eta>0.1</eta>
+                          <referenceUID>WingSpar1</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.1</eta>
+                          <referenceUID>trailingEdge</referenceUID>
+                        </endCurvePoint>
+                        <ribStart>leadingEdge</ribStart>
+                        <ribEnd>WingSpar1</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>dummyMaterial</materialUID>
+                        </material>
+                        <ribRotation uID="Rib_CPCP_front_ribRotation1">
+                          <x>100.0</x>
+                        </ribRotation>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Rib_CPCP_back">
+                      <name>Rib_CPCP_back</name>
+                      <ribExplicitPositioning>
+                        <startCurvePoint>
+                          <eta>0.15</eta>
+                          <referenceUID>leadingEdge</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.15</eta>
+                          <referenceUID>trailingEdge</referenceUID>
+                        </endCurvePoint>
+                        <ribStart>WingSpar1</ribStart>
+                        <ribEnd>trailingEdge</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>dummyMaterial</materialUID>
+                        </material>
+                        <ribRotation uID="Rib_CPCP_back_ribRotation1">
+                          <x>100.0</x>
+                        </ribRotation>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Rib_EXCP_full">
+                      <name>Rib_EXCP_full</name>
+                      <ribExplicitPositioning>
+                        <startEtaXsiPoint>
+                          <eta>0.2</eta>
+                          <referenceUID>WingCS1</referenceUID>
+                          <xsi>0.5</xsi>
+                        </startEtaXsiPoint>
+                        <endCurvePoint>
+                          <eta>0.2</eta>
+                          <referenceUID>WingSpar1</referenceUID>
+                        </endCurvePoint>
+                        <ribStart>leadingEdge</ribStart>
+                        <ribEnd>trailingEdge</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>dummyMaterial</materialUID>
+                        </material>
+                        <ribRotation uID="Rib_EXCP_full_ribRotation1">
+                          <x>100.0</x>
+                        </ribRotation>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Rib_EXEX_full">
+                      <name>Rib_EXEX_full</name>
+                      <ribExplicitPositioning>
+                        <startEtaXsiPoint>
+                          <eta>0.6</eta>
+                          <referenceUID>Wing_segment1</referenceUID>
+                          <xsi>0.2</xsi>
+                        </startEtaXsiPoint>
+                        <endEtaXsiPoint>
+                          <eta>0.3</eta>
+                          <referenceUID>WingCS1</referenceUID>
+                          <xsi>1.0</xsi>
+                        </endEtaXsiPoint>
+                        <ribStart>leadingEdge</ribStart>
+                        <ribEnd>trailingEdge</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>dummyMaterial</materialUID>
+                        </material>
+                        <ribRotation uID="Rib_EXEX_full_ribRotation1">
+                          <x>100.0</x>
+                        </ribRotation>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Rib_EXSP_full">
+                      <name>Rib_EXSP_full</name>
+                      <ribExplicitPositioning>
+                        <startEtaXsiPoint>
+                          <eta>0.55</eta>
+                          <referenceUID>WingCS1</referenceUID>
+                          <xsi>0.0</xsi>
+                        </startEtaXsiPoint>
+                        <endSparPositionUID>WingSpar1Pos2</endSparPositionUID>
+                        <ribStart>leadingEdge</ribStart>
+                        <ribEnd>trailingEdge</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>dummyMaterial</materialUID>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Rib_SPEX_full">
+                      <name>Rib_SPEX_full</name>
+                      <ribExplicitPositioning>
+                        <startSparPositionUID>WingSpar1Pos3</startSparPositionUID>
+                        <endEtaXsiPoint>
+                          <eta>0.8</eta>
+                          <referenceUID>Wing_segment2</referenceUID>
+                          <xsi>1.0</xsi>
+                        </endEtaXsiPoint>
+                        <ribStart>leadingEdge</ribStart>
+                        <ribEnd>trailingEdge</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>dummyMaterial</materialUID>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Rib_Section_EX">
+                      <name>Rib_Section_EX</name>
+                      <ribExplicitPositioning>
+                        <startEtaXsiPoint>
+                          <eta>0.0</eta>
+                          <referenceUID>Wing_segment2</referenceUID>
+                          <xsi>0.0</xsi>
+                        </startEtaXsiPoint>
+                        <endEtaXsiPoint>
+                          <eta>0.0</eta>
+                          <referenceUID>Wing_segment2</referenceUID>
+                          <xsi>1.0</xsi>
+                        </endEtaXsiPoint>
+                        <ribStart>leadingEdge</ribStart>
+                        <ribEnd>trailingEdge</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>dummyMaterial</materialUID>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Rib_Section2_EX">
+                      <name>Rib_Section2_EX</name>
+                      <ribExplicitPositioning>
+                        <startEtaXsiPoint>
+                          <eta>1.0</eta>
+                          <referenceUID>WingCS1</referenceUID>
+                          <xsi>0.0</xsi>
+                        </startEtaXsiPoint>
+                        <endEtaXsiPoint>
+                          <eta>1.0</eta>
+                          <referenceUID>WingCS1</referenceUID>
+                          <xsi>1.0</xsi>
+                        </endEtaXsiPoint>
+                        <ribStart>leadingEdge</ribStart>
+                        <ribEnd>trailingEdge</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>dummyMaterial</materialUID>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                  </ribsDefinitions>
+                  <spars>
+                    <sparPositions>
+                      <sparPosition uID="WingSpar1Pos1">
+                        <sparPositionEtaXsi>
+                          <eta>0</eta>
+                          <xsi>0.25</xsi>
+                          <referenceUID>Wing_segment1</referenceUID>
+                        </sparPositionEtaXsi>
+                      </sparPosition>
+                      <sparPosition uID="WingSpar1Pos2">
+                        <sparPositionEtaXsi>
+                          <eta>0.2</eta>
+                          <xsi>0.25</xsi>
+                          <referenceUID>Wing_segment2</referenceUID>
+                        </sparPositionEtaXsi>
+                      </sparPosition>
+                      <sparPosition uID="WingSpar1Pos3">
+                        <sparPositionEtaXsi>
+                          <eta>1</eta>
+                          <xsi>0.25</xsi>
+                          <referenceUID>Wing_segment2</referenceUID>
+                        </sparPositionEtaXsi>
+                      </sparPosition>
+                    </sparPositions>
+                    <sparSegments>
+                      <sparSegment uID="WingSpar1">
+                        <name>WingSpar1</name>
+                        <description>Definition of wing spar WingSpar1</description>
+                        <sparPositionUIDs>
+                          <sparPositionUID>WingSpar1Pos1</sparPositionUID>
+                          <sparPositionUID>WingSpar1Pos2</sparPositionUID>
+                          <sparPositionUID>WingSpar1Pos3</sparPositionUID>
+                        </sparPositionUIDs>
+                        <sparCrossSection>
+                          <web1>
+                            <material>
+                              <materialUID>dummyMaterial</materialUID>
+                            </material>
+                            <relPos>0.5</relPos>
+                          </web1>
+                          <rotation>90</rotation>
+                        </sparCrossSection>
+                      </sparSegment>
+                    </sparSegments>
+                  </spars>
+                </structure>
+              </componentSegment>
+            </componentSegments>
+          </wing>
+        </wings>
+      </model>
+    </aircraft>
+    <profiles>
+      <wingAirfoils>
+        <wingAirfoil uID="NACA0012">
+          <name>NACA0012</name>
+          <pointList>
+            <x mapType="vector">1;0.955135;0.910361;0.865767;0.821443;0.777479;0.733963;0.690983;0.648625;0.606975;0.566116;0.526131;0.487101;0.449103;0.412215;0.37651;0.342061;0.308937;0.277205;0.246929;0.218169;0.190983;0.165427;0.141551;0.119404;0.0990311;0.0804722;0.0637651;0.0489435;0.0360371;0.0250721;0.0160704;0.00905024;0.00402571;0.00100693;0;0.00100693;0.00402571;0.00905024;0.0160704;0.0250721;0.0360371;0.0489435;0.0637651;0.0804722;0.0990311;0.119404;0.141551;0.165427;0.190983;0.218169;0.246929;0.277205;0.308937;0.342061;0.37651;0.412215;0.449103;0.487101;0.526131;0.566116;0.606975;0.648625;0.690983;0.733963;0.777479;0.821443;0.865767;0.910361;0.955135;1</x>
+            <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
+            <z mapType="vector">-2.1684e-19;-0.00557559;-0.010874;-0.0155467;-0.0198545;-0.0239099;-0.0277128;-0.0312588;-0.0345405;-0.0375472;-0.0402659;-0.0426819;-0.0447799;-0.0465444;-0.0479606;-0.0490153;-0.0496975;-0.049999;-0.0499148;-0.0494435;-0.0485877;-0.0473536;-0.0457513;-0.0437944;-0.0414996;-0.0388862;-0.0359755;-0.0327902;-0.0293537;-0.0256889;-0.021818;-0.0177616;-0.013538;-0.00916246;-0.00464703;0;0.00464703;0.00916246;0.013538;0.0177616;0.021818;0.0256889;0.0293537;0.0327902;0.0359755;0.0388862;0.0414996;0.0437944;0.0457513;0.0473536;0.0485877;0.0494435;0.0499148;0.049999;0.0496975;0.0490153;0.0479606;0.0465444;0.0447799;0.0426819;0.0402659;0.0375472;0.0345405;0.0312588;0.0277128;0.0239099;0.0198545;0.0155467;0.010874;0.00557559;2.1684e-19</z>
+          </pointList>
+        </wingAirfoil>
+      </wingAirfoils>
+    </profiles>
+  </vehicles>
+</cpacs>

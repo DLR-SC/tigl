@@ -29,6 +29,7 @@ namespace generated
 {
     // This class is used in:
     // CPACSSparPosition
+    // CPACSWingRibExplicitPositioning
     // CPACSWingRibsPositioning
 
     // generated from /xsd:schema/xsd:complexType[323]

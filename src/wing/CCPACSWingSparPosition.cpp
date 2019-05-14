@@ -24,6 +24,11 @@
 #include "CPACSWingRibPoint.h"
 #include "CPACSEtaXsiPoint.h"
 #include "CTiglUIDManager.h"
+#include "CCPACSWingRibsDefinition.h"
+#include "tiglcommonfunctions.h"
+
+#include <Bnd_Box.hxx>
+#include <BRepBndLib.hxx>
 
 
 namespace tigl
@@ -147,6 +152,98 @@ std::string WingSparPosGetElementUID(const CCPACSWingSparPosition & pos)
     else {
         throw CTiglError("'" + pos.GetEtaXsiPoint().GetReferenceUID() + "' in not a wing segment or a component segment.");
     }
+}
+
+gp_Vec CCPACSWingSparPosition::GetUpVector(const CCPACSWingCSStructure& structure, gp_Pnt midplanePnt) const
+{
+    const CTiglWingStructureReference wsr(structure);
+
+    if ((isOnSectionElement() || isOnRib()) && wsr.GetType() == CTiglWingStructureReference::ComponentSegmentType) {
+        // get componentSegment required for getting chordline points of sections
+        const CCPACSWingComponentSegment& componentSegment = wsr.GetWingComponentSegment();
+
+        TopoDS_Shape sectionFace;
+        if (isOnSectionElement()) {
+            const std::string sectionElemUID = WingSparPosGetElementUID(*this);
+            sectionFace = componentSegment.GetSectionElementFace(sectionElemUID);
+        }
+        else if(isOnRib()) {
+            const CCPACSWingRibsDefinition& ribs = structure.GetRibsDefinition(GetRibPoint().GetRibDefinitionUID());
+            int ribNumber = WingRibPointGetRibNumber(*GetSparPositionRib_choice1());
+            sectionFace = ribs.GetRibFace(ribNumber, WING_COORDINATE_SYSTEM);
+        }
+        else {
+            // this should actually not happen
+            throw CTiglError("A fatal error as occured");
+        }
+        
+        // compute bounding box of section element face
+        Bnd_Box bbox;
+        BRepBndLib::Add(sectionFace, bbox);
+        double sectionFaceSize = sqrt(bbox.SquareExtent());
+
+        // generate a cut face aligned in the YZ plane
+        const gp_Pnt p1 = midplanePnt.Translated(gp_Vec(0, -sectionFaceSize, -sectionFaceSize));
+        const gp_Pnt p2 = midplanePnt.Translated(gp_Vec(0, -sectionFaceSize, sectionFaceSize));
+        const gp_Pnt p3 = midplanePnt.Translated(gp_Vec(0, sectionFaceSize, -sectionFaceSize));
+        const gp_Pnt p4 = midplanePnt.Translated(gp_Vec(0, sectionFaceSize, sectionFaceSize));
+
+        // build face for cutting with the section face
+        TopoDS_Shape cutFace = BuildFace(p1, p2, p3, p4);
+
+        // cut faces with section face for getting the up vector line
+        TopoDS_Shape cutLine = CutShapes(sectionFace, cutFace);
+
+        // next get the two end points of the resulting cut line
+        TopTools_ListOfShape endVertices;
+        GetEndVertices(cutLine, endVertices);
+        if (endVertices.Extent() != 2) {
+            LOG(ERROR) << "Error computing up vector for section element: incorrect result of intersection!";
+            throw CTiglError("Error computing up vector for section element: incorrect result of intersection!");
+        }
+        const TopoDS_Vertex& vCut1 = TopoDS::Vertex(endVertices.First());
+        const TopoDS_Vertex& vCut2 = TopoDS::Vertex(endVertices.Last());
+        const gp_Pnt pCut1               = BRep_Tool::Pnt(vCut1);
+        const gp_Pnt pCut2               = BRep_Tool::Pnt(vCut2);
+
+        // build the up vector based on the end points, and ensure correct orientation
+        gp_Vec upVec = gp_Vec(pCut1, pCut2).Normalized();
+        if (upVec.Dot(gp_Vec(0, 0, 1)) < 0) {
+            upVec.Reverse();
+        }
+
+        return upVec;
+    }
+    
+    // BUG #149 and #152
+    // because of issues with the spar up vectors in adjacent component
+    // segments the up vector is set to the z direction
+    gp_Vec upVec = gp_Vec(0, 0, 1);
+    /*
+    // determine up-vector based on midplane line of inner spar point
+    double eta = GetEta();
+    gp_Pnt pl = cs.GetMidplanePoint(eta, 0);
+    gp_Pnt pt = cs.GetMidplanePoint(eta, 1);
+    gp_Vec chordLine(pl, pt);
+    // determine default segment, in case of inner/outer eta value
+    // (required for extended eta line)
+    std::string defaultSegmentUID;
+    if (eta < 0.5) {
+        defaultSegmentUID = cs.GetInnerSegmentUID();
+    } else {
+        defaultSegmentUID = cs.GetOuterSegmentUID();
+    }
+    gp_Vec leDir = cs.GetLeadingEdgeDirection(pl, defaultSegmentUID);
+    leDir.SetX(0);
+    leDir.Normalize();
+    double rotation = sparCrossSection->GetRotation() * M_PI / 180.0;
+    // determine up-vector by rotating the chordLine by the defined rotation angle,
+    // invert the result because after the rotation the vector shows downwards
+    upVec = -1 * chordLine.Rotated(gp_Ax1(gp_Pnt(0,0,0), leDir), rotation);
+    upVec.Normalize();
+    */
+    
+    return upVec;
 }
 
 } // end namespace tigl

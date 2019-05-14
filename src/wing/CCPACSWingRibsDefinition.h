@@ -31,6 +31,7 @@
 namespace tigl
 {
 class CCPACSWingCSStructure;
+class CTiglWingStructureReference;
 
 class CCPACSWingRibsDefinition : public generated::CPACSWingRibsDefinition, public CTiglAbstractGeometricComponent
 {
@@ -179,12 +180,10 @@ private:
     // in positioning or it will be computed based on the section element UID
     double ComputeReferenceEtaEnd() const;
 
-    // Computes the reference-line eta value by intersection of the reference
-    // line with the midplane point of the spar position
-    double ComputeSparPositionEta(const std::string& sparPositionUID) const;
-    double ComputeCurvePositionEtaOnRefLine(const generated::CPACSCurvePoint& curvePoint) const;
+    gp_Pnt GetRibReferenceMidplanePoint(const boost::optional<CCPACSEtaXsiPoint>& etaXsi,
+                                        const boost::optional<CCPACSCurvePoint>& curvePoint,
+                                        const boost::optional<std::string>& sparPosition) const; 
 
-    double ComputeEtaOnReferenceLine(const generated::CPACSEtaXsiPoint& etaXsi, bool onSpar) const;
     double ComputeEtaOnReferenceLine(const gp_Pnt& midplanePoint, bool onSpar) const;
 
     // Returns the number of ribs in case the RibsPositioning is used by
@@ -199,7 +198,7 @@ private:
     // The elementUID value determines which section element should be used.
     // When no elementUID is passed the inner or outer section are used
     // depending on the passed eta value.
-    TopoDS_Face GetSectionRibGeometry(const std::string& elementUID, double eta, const std::string& ribStart,
+    TopoDS_Face GetSectionRibGeometry(const std::string& elementUID, const CCPACSEtaXsiPoint&, const std::string& ribStart,
                                       const std::string& ribEnd) const;
 
     // Computes the direction vector for the rib
@@ -215,6 +214,9 @@ private:
 
     CCPACSWingCSStructure& getStructure();
     const CCPACSWingCSStructure& getStructure() const;
+
+    gp_Vec GetRibUpVector(const CTiglWingStructureReference& wsr, gp_Pnt startPnt, gp_Pnt endPoint, bool front) const;
+    boost::optional<std::string> GetElementUID(const CCPACSEtaXsiPoint& point) const;
 
 private:
     CCPACSWingRibsDefinition(const CCPACSWingRibsDefinition&); // = delete;

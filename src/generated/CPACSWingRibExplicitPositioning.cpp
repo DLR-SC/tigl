@@ -27,8 +27,6 @@ namespace tigl
 namespace generated
 {
     CPACSWingRibExplicitPositioning::CPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent)
-        : m_etaStart(0)
-        , m_etaEnd(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -50,104 +48,382 @@ namespace generated
 
     void CPACSWingRibExplicitPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element startReference
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startReference")) {
-            m_startReference = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/startReference");
-            if (m_startReference.empty()) {
-                LOG(WARNING) << "Required element startReference is empty at xpath " << xpath;
+        // read element startEtaXsiPoint
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startEtaXsiPoint")) {
+            m_startEtaXsiPoint_choice1 = boost::in_place();
+            try {
+                m_startEtaXsiPoint_choice1->ReadCPACS(tixiHandle, xpath + "/startEtaXsiPoint");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read startEtaXsiPoint at xpath " << xpath << ": " << e.what();
+                m_startEtaXsiPoint_choice1 = boost::none;
+            }
+        }
+
+        // read element startCurvePoint
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startCurvePoint")) {
+            m_startCurvePoint_choice2 = boost::in_place();
+            try {
+                m_startCurvePoint_choice2->ReadCPACS(tixiHandle, xpath + "/startCurvePoint");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read startCurvePoint at xpath " << xpath << ": " << e.what();
+                m_startCurvePoint_choice2 = boost::none;
+            }
+        }
+
+        // read element startSparPositionUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startSparPositionUID")) {
+            m_startSparPositionUID_choice3 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/startSparPositionUID");
+            if (m_startSparPositionUID_choice3->empty()) {
+                LOG(WARNING) << "Optional element startSparPositionUID is present but empty at xpath " << xpath;
+            }
+        }
+
+        // read element endEtaXsiPoint
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endEtaXsiPoint")) {
+            m_endEtaXsiPoint_choice1 = boost::in_place();
+            try {
+                m_endEtaXsiPoint_choice1->ReadCPACS(tixiHandle, xpath + "/endEtaXsiPoint");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read endEtaXsiPoint at xpath " << xpath << ": " << e.what();
+                m_endEtaXsiPoint_choice1 = boost::none;
+            }
+        }
+
+        // read element endCurvePoint
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endCurvePoint")) {
+            m_endCurvePoint_choice2 = boost::in_place();
+            try {
+                m_endCurvePoint_choice2->ReadCPACS(tixiHandle, xpath + "/endCurvePoint");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read endCurvePoint at xpath " << xpath << ": " << e.what();
+                m_endCurvePoint_choice2 = boost::none;
+            }
+        }
+
+        // read element endSparPositionUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endSparPositionUID")) {
+            m_endSparPositionUID_choice3 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/endSparPositionUID");
+            if (m_endSparPositionUID_choice3->empty()) {
+                LOG(WARNING) << "Optional element endSparPositionUID is present but empty at xpath " << xpath;
+            }
+        }
+
+        // read element ribStart
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribStart")) {
+            m_ribStart = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribStart");
+            if (m_ribStart.empty()) {
+                LOG(WARNING) << "Required element ribStart is empty at xpath " << xpath;
             }
         }
         else {
-            LOG(ERROR) << "Required element startReference is missing at xpath " << xpath;
+            LOG(ERROR) << "Required element ribStart is missing at xpath " << xpath;
         }
 
-        // read element etaStart
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaStart")) {
-            m_etaStart = tixi::TixiGetElement<double>(tixiHandle, xpath + "/etaStart");
-        }
-        else {
-            LOG(ERROR) << "Required element etaStart is missing at xpath " << xpath;
-        }
-
-        // read element endReference
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endReference")) {
-            m_endReference = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/endReference");
-            if (m_endReference.empty()) {
-                LOG(WARNING) << "Required element endReference is empty at xpath " << xpath;
+        // read element ribEnd
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribEnd")) {
+            m_ribEnd = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribEnd");
+            if (m_ribEnd.empty()) {
+                LOG(WARNING) << "Required element ribEnd is empty at xpath " << xpath;
             }
         }
         else {
-            LOG(ERROR) << "Required element endReference is missing at xpath " << xpath;
+            LOG(ERROR) << "Required element ribEnd is missing at xpath " << xpath;
         }
 
-        // read element etaEnd
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaEnd")) {
-            m_etaEnd = tixi::TixiGetElement<double>(tixiHandle, xpath + "/etaEnd");
+        if (!ValidateChoices()) {
+            LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
         }
-        else {
-            LOG(ERROR) << "Required element etaEnd is missing at xpath " << xpath;
-        }
-
     }
 
     void CPACSWingRibExplicitPositioning::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element startReference
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/startReference");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/startReference", m_startReference);
+        // write element startEtaXsiPoint
+        if (m_startEtaXsiPoint_choice1) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/startEtaXsiPoint");
+            m_startEtaXsiPoint_choice1->WriteCPACS(tixiHandle, xpath + "/startEtaXsiPoint");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/startEtaXsiPoint")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/startEtaXsiPoint");
+            }
+        }
 
-        // write element etaStart
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaStart");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/etaStart", m_etaStart);
+        // write element startCurvePoint
+        if (m_startCurvePoint_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/startCurvePoint");
+            m_startCurvePoint_choice2->WriteCPACS(tixiHandle, xpath + "/startCurvePoint");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/startCurvePoint")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/startCurvePoint");
+            }
+        }
 
-        // write element endReference
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/endReference");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/endReference", m_endReference);
+        // write element startSparPositionUID
+        if (m_startSparPositionUID_choice3) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/startSparPositionUID");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/startSparPositionUID", *m_startSparPositionUID_choice3);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/startSparPositionUID")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/startSparPositionUID");
+            }
+        }
 
-        // write element etaEnd
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaEnd");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/etaEnd", m_etaEnd);
+        // write element endEtaXsiPoint
+        if (m_endEtaXsiPoint_choice1) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/endEtaXsiPoint");
+            m_endEtaXsiPoint_choice1->WriteCPACS(tixiHandle, xpath + "/endEtaXsiPoint");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/endEtaXsiPoint")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/endEtaXsiPoint");
+            }
+        }
+
+        // write element endCurvePoint
+        if (m_endCurvePoint_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/endCurvePoint");
+            m_endCurvePoint_choice2->WriteCPACS(tixiHandle, xpath + "/endCurvePoint");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/endCurvePoint")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/endCurvePoint");
+            }
+        }
+
+        // write element endSparPositionUID
+        if (m_endSparPositionUID_choice3) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/endSparPositionUID");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/endSparPositionUID", *m_endSparPositionUID_choice3);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/endSparPositionUID")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/endSparPositionUID");
+            }
+        }
+
+        // write element ribStart
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribStart");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/ribStart", m_ribStart);
+
+        // write element ribEnd
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribEnd");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/ribEnd", m_ribEnd);
 
     }
 
-    const std::string& CPACSWingRibExplicitPositioning::GetStartReference() const
+    bool CPACSWingRibExplicitPositioning::ValidateChoices() const
     {
-        return m_startReference;
+        return
+        (
+            (
+                (
+                    // mandatory elements of this choice must be there
+                    m_startEtaXsiPoint_choice1.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_startCurvePoint_choice2.is_initialized()
+                        ||
+                        m_startSparPositionUID_choice3.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_startCurvePoint_choice2.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_startEtaXsiPoint_choice1.is_initialized()
+                        ||
+                        m_startSparPositionUID_choice3.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_startSparPositionUID_choice3.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_startEtaXsiPoint_choice1.is_initialized()
+                        ||
+                        m_startCurvePoint_choice2.is_initialized()
+                    )
+                )
+                == 1
+            )
+            &&
+            (
+                (
+                    // mandatory elements of this choice must be there
+                    m_endEtaXsiPoint_choice1.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_endCurvePoint_choice2.is_initialized()
+                        ||
+                        m_endSparPositionUID_choice3.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_endCurvePoint_choice2.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_endEtaXsiPoint_choice1.is_initialized()
+                        ||
+                        m_endSparPositionUID_choice3.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_endSparPositionUID_choice3.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_endEtaXsiPoint_choice1.is_initialized()
+                        ||
+                        m_endCurvePoint_choice2.is_initialized()
+                    )
+                )
+                == 1
+            )
+        )
+        ;
     }
 
-    void CPACSWingRibExplicitPositioning::SetStartReference(const std::string& value)
+    const boost::optional<CPACSEtaXsiPoint>& CPACSWingRibExplicitPositioning::GetStartEtaXsiPoint_choice1() const
     {
-        m_startReference = value;
+        return m_startEtaXsiPoint_choice1;
     }
 
-    const double& CPACSWingRibExplicitPositioning::GetEtaStart() const
+    boost::optional<CPACSEtaXsiPoint>& CPACSWingRibExplicitPositioning::GetStartEtaXsiPoint_choice1()
     {
-        return m_etaStart;
+        return m_startEtaXsiPoint_choice1;
     }
 
-    void CPACSWingRibExplicitPositioning::SetEtaStart(const double& value)
+    const boost::optional<CPACSCurvePoint>& CPACSWingRibExplicitPositioning::GetStartCurvePoint_choice2() const
     {
-        m_etaStart = value;
+        return m_startCurvePoint_choice2;
     }
 
-    const std::string& CPACSWingRibExplicitPositioning::GetEndReference() const
+    boost::optional<CPACSCurvePoint>& CPACSWingRibExplicitPositioning::GetStartCurvePoint_choice2()
     {
-        return m_endReference;
+        return m_startCurvePoint_choice2;
     }
 
-    void CPACSWingRibExplicitPositioning::SetEndReference(const std::string& value)
+    const boost::optional<std::string>& CPACSWingRibExplicitPositioning::GetStartSparPositionUID_choice3() const
     {
-        m_endReference = value;
+        return m_startSparPositionUID_choice3;
     }
 
-    const double& CPACSWingRibExplicitPositioning::GetEtaEnd() const
+    void CPACSWingRibExplicitPositioning::SetStartSparPositionUID_choice3(const boost::optional<std::string>& value)
     {
-        return m_etaEnd;
+        m_startSparPositionUID_choice3 = value;
     }
 
-    void CPACSWingRibExplicitPositioning::SetEtaEnd(const double& value)
+    const boost::optional<CPACSEtaXsiPoint>& CPACSWingRibExplicitPositioning::GetEndEtaXsiPoint_choice1() const
     {
-        m_etaEnd = value;
+        return m_endEtaXsiPoint_choice1;
+    }
+
+    boost::optional<CPACSEtaXsiPoint>& CPACSWingRibExplicitPositioning::GetEndEtaXsiPoint_choice1()
+    {
+        return m_endEtaXsiPoint_choice1;
+    }
+
+    const boost::optional<CPACSCurvePoint>& CPACSWingRibExplicitPositioning::GetEndCurvePoint_choice2() const
+    {
+        return m_endCurvePoint_choice2;
+    }
+
+    boost::optional<CPACSCurvePoint>& CPACSWingRibExplicitPositioning::GetEndCurvePoint_choice2()
+    {
+        return m_endCurvePoint_choice2;
+    }
+
+    const boost::optional<std::string>& CPACSWingRibExplicitPositioning::GetEndSparPositionUID_choice3() const
+    {
+        return m_endSparPositionUID_choice3;
+    }
+
+    void CPACSWingRibExplicitPositioning::SetEndSparPositionUID_choice3(const boost::optional<std::string>& value)
+    {
+        m_endSparPositionUID_choice3 = value;
+    }
+
+    const std::string& CPACSWingRibExplicitPositioning::GetRibStart() const
+    {
+        return m_ribStart;
+    }
+
+    void CPACSWingRibExplicitPositioning::SetRibStart(const std::string& value)
+    {
+        m_ribStart = value;
+    }
+
+    const std::string& CPACSWingRibExplicitPositioning::GetRibEnd() const
+    {
+        return m_ribEnd;
+    }
+
+    void CPACSWingRibExplicitPositioning::SetRibEnd(const std::string& value)
+    {
+        m_ribEnd = value;
+    }
+
+    CPACSEtaXsiPoint& CPACSWingRibExplicitPositioning::GetStartEtaXsiPoint_choice1(CreateIfNotExistsTag)
+    {
+        if (!m_startEtaXsiPoint_choice1)
+            m_startEtaXsiPoint_choice1 = boost::in_place();
+        return *m_startEtaXsiPoint_choice1;
+    }
+
+    void CPACSWingRibExplicitPositioning::RemoveStartEtaXsiPoint_choice1()
+    {
+        m_startEtaXsiPoint_choice1 = boost::none;
+    }
+
+    CPACSCurvePoint& CPACSWingRibExplicitPositioning::GetStartCurvePoint_choice2(CreateIfNotExistsTag)
+    {
+        if (!m_startCurvePoint_choice2)
+            m_startCurvePoint_choice2 = boost::in_place();
+        return *m_startCurvePoint_choice2;
+    }
+
+    void CPACSWingRibExplicitPositioning::RemoveStartCurvePoint_choice2()
+    {
+        m_startCurvePoint_choice2 = boost::none;
+    }
+
+    CPACSEtaXsiPoint& CPACSWingRibExplicitPositioning::GetEndEtaXsiPoint_choice1(CreateIfNotExistsTag)
+    {
+        if (!m_endEtaXsiPoint_choice1)
+            m_endEtaXsiPoint_choice1 = boost::in_place();
+        return *m_endEtaXsiPoint_choice1;
+    }
+
+    void CPACSWingRibExplicitPositioning::RemoveEndEtaXsiPoint_choice1()
+    {
+        m_endEtaXsiPoint_choice1 = boost::none;
+    }
+
+    CPACSCurvePoint& CPACSWingRibExplicitPositioning::GetEndCurvePoint_choice2(CreateIfNotExistsTag)
+    {
+        if (!m_endCurvePoint_choice2)
+            m_endCurvePoint_choice2 = boost::in_place();
+        return *m_endCurvePoint_choice2;
+    }
+
+    void CPACSWingRibExplicitPositioning::RemoveEndCurvePoint_choice2()
+    {
+        m_endCurvePoint_choice2 = boost::none;
     }
 
 } // namespace generated

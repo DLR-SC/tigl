@@ -220,6 +220,41 @@
                         </material>
                       </ribCrossSection>
                     </ribsDefinition>
+                    <ribsDefinition uID="Wing_CS_RibDef2">
+                      <name>Wing_CS_RibDef2</name>
+                      <ribExplicitPositioning>
+                        <startSparPositionUID>Wing_CS_spar1_Pos2</startSparPositionUID>
+                        <endSparPositionUID>Wing_CS_spar2_Pos1</endSparPositionUID>
+                        <ribStart>Wing_CS_spar1</ribStart>
+                        <ribEnd>trailingEdge</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>materialUID</materialUID>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Wing_CS_RibDef3">
+                      <name>Wing_CS_RibDef3</name>
+                      <ribExplicitPositioning>
+                        <startEtaXsiPoint>
+                          <eta>0.5</eta>
+                          <xsi>0.0</xsi>
+                          <referenceUID>CS1</referenceUID>
+                        </startEtaXsiPoint>
+                        <endCurvePoint>
+                          <eta>0.5</eta>
+                          <referenceUID>trailingEdge</referenceUID>
+                        </endCurvePoint>
+                        <ribStart>leadingEdge</ribStart>
+                        <ribEnd>Wing_CS_spar2</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>materialUID</materialUID>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
                   </ribsDefinitions>
                   <spars>
                     <sparPositions>
