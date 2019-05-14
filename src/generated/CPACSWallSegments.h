@@ -26,10 +26,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSFuselageWallSegment;
 
 namespace generated
 {
-    class CPACSWallSegment;
+    class CPACSWalls;
 
     // This class is used in:
     // CPACSWalls
@@ -38,8 +39,13 @@ namespace generated
     class CPACSWallSegments
     {
     public:
-        TIGL_EXPORT CPACSWallSegments(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWallSegments(CPACSWalls* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSWallSegments();
+
+        TIGL_EXPORT CPACSWalls* GetParent();
+
+        TIGL_EXPORT const CPACSWalls* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -47,17 +53,19 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSWallSegment>>& GetWallSegments() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSWallSegment>>& GetWallSegments();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>& GetWallSegments() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>& GetWallSegments();
 
-        TIGL_EXPORT virtual CPACSWallSegment& AddWallSegment();
-        TIGL_EXPORT virtual void RemoveWallSegment(CPACSWallSegment& ref);
+        TIGL_EXPORT virtual CCPACSFuselageWallSegment& AddWallSegment();
+        TIGL_EXPORT virtual void RemoveWallSegment(CCPACSFuselageWallSegment& ref);
 
     protected:
+        CPACSWalls* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
         /// Wall segment definition.
-        std::vector<std::unique_ptr<CPACSWallSegment>> m_wallSegments;
+        std::vector<std::unique_ptr<CCPACSFuselageWallSegment>> m_wallSegments;
 
     private:
         CPACSWallSegments(const CPACSWallSegments&) = delete;
@@ -70,5 +78,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSWallSegments = generated::CPACSWallSegments;
-using CCPACSWallSegment = generated::CPACSWallSegment;
+using CCPACSWalls = generated::CPACSWalls;
 } // namespace tigl

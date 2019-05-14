@@ -32,6 +32,8 @@ class CTiglUIDManager;
 
 namespace generated
 {
+    class CPACSWallSegments;
+
     // This class is used in:
     // CPACSWallSegments
 
@@ -39,8 +41,13 @@ namespace generated
     class CPACSWallSegment
     {
     public:
-        TIGL_EXPORT CPACSWallSegment(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWallSegment(CPACSWallSegments* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSWallSegment();
+
+        TIGL_EXPORT CPACSWallSegments* GetParent();
+
+        TIGL_EXPORT const CPACSWallSegments* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -76,6 +83,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveBoundingElementUIDs();
 
     protected:
+        CPACSWallSegments* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<std::string>              m_uID;
@@ -131,6 +140,8 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSWallSegment is customized, use type CCPACSFuselageWallSegment directly
+
 // Aliases in tigl namespace
-using CCPACSWallSegment = generated::CPACSWallSegment;
+using CCPACSWallSegments = generated::CPACSWallSegments;
 } // namespace tigl

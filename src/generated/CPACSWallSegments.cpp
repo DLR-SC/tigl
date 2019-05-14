@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSWallSegment.h"
+#include <cassert>
+#include <CCPACSFuselageWallSegment.h>
+#include "CPACSWalls.h"
 #include "CPACSWallSegments.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -26,13 +28,25 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSWallSegments::CPACSWallSegments(CTiglUIDManager* uidMgr)
+    CPACSWallSegments::CPACSWallSegments(CPACSWalls* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSWallSegments::~CPACSWallSegments()
     {
+    }
+
+    const CPACSWalls* CPACSWallSegments::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSWalls* CPACSWallSegments::GetParent()
+    {
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSWallSegments::GetUIDManager()
@@ -49,7 +63,7 @@ namespace generated
     {
         // read element wallSegment
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/wallSegment")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/wallSegment", m_wallSegments, 1, tixi::xsdUnbounded, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/wallSegment", m_wallSegments, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -61,23 +75,23 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSWallSegment>>& CPACSWallSegments::GetWallSegments() const
+    const std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>& CPACSWallSegments::GetWallSegments() const
     {
         return m_wallSegments;
     }
 
-    std::vector<std::unique_ptr<CPACSWallSegment>>& CPACSWallSegments::GetWallSegments()
+    std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>& CPACSWallSegments::GetWallSegments()
     {
         return m_wallSegments;
     }
 
-    CPACSWallSegment& CPACSWallSegments::AddWallSegment()
+    CCPACSFuselageWallSegment& CPACSWallSegments::AddWallSegment()
     {
-        m_wallSegments.push_back(make_unique<CPACSWallSegment>(m_uidMgr));
+        m_wallSegments.push_back(make_unique<CCPACSFuselageWallSegment>(this, m_uidMgr));
         return *m_wallSegments.back();
     }
 
-    void CPACSWallSegments::RemoveWallSegment(CPACSWallSegment& ref)
+    void CPACSWallSegments::RemoveWallSegment(CCPACSFuselageWallSegment& ref)
     {
         for (std::size_t i = 0; i < m_wallSegments.size(); i++) {
             if (m_wallSegments[i].get() == &ref) {

@@ -39,6 +39,9 @@ CPACSFuselageSegment
 CPACSFuselageSegments
 CPACSFuselageElement
 CPACSFuselageElements
+CPACSWalls
+CPACSWallSegment
+CPACSWallSegments
 
 CPACSRotorBlades
 CPACSRotor

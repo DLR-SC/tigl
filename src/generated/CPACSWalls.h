@@ -26,6 +26,7 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSFuselageStructure;
 
 namespace generated
 {
@@ -36,8 +37,13 @@ namespace generated
     class CPACSWalls
     {
     public:
-        TIGL_EXPORT CPACSWalls(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWalls(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSWalls();
+
+        TIGL_EXPORT CCPACSFuselageStructure* GetParent();
+
+        TIGL_EXPORT const CCPACSFuselageStructure* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -52,6 +58,8 @@ namespace generated
         TIGL_EXPORT virtual CPACSWallSegments& GetWallSegments();
 
     protected:
+        CCPACSFuselageStructure* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
         /// Definition of wall positions to place

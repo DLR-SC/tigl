@@ -139,7 +139,7 @@ namespace generated
 
         // read element walls
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/walls")) {
-            m_walls = boost::in_place(m_uidMgr);
+            m_walls = boost::in_place(reinterpret_cast<CCPACSFuselageStructure*>(this), m_uidMgr);
             try {
                 m_walls->ReadCPACS(tixiHandle, xpath + "/walls");
             } catch(const std::exception& e) {
@@ -441,7 +441,7 @@ namespace generated
     CPACSWalls& CPACSFuselageStructure::GetWalls(CreateIfNotExistsTag)
     {
         if (!m_walls)
-            m_walls = boost::in_place(m_uidMgr);
+            m_walls = boost::in_place(reinterpret_cast<CCPACSFuselageStructure*>(this), m_uidMgr);
         return *m_walls;
     }
 
