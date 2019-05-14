@@ -19,14 +19,33 @@
 #pragma once
 
 #include "generated/CPACSWallSegment.h"
+#include "CTiglAbstractGeometricComponent.h"
 
 namespace tigl
 {
 
-class CCPACSFuselageWallSegment : public generated::CPACSWallSegment
+class CCPACSFuselageWallSegment : public generated::CPACSWallSegment, public CTiglAbstractGeometricComponent
 {
 public:
     TIGL_EXPORT CCPACSFuselageWallSegment(CCPACSWallSegments* parent, CTiglUIDManager* uidMgr);
+
+    std::string GetDefaultedUID() const override
+    {
+        return GetUID().value_or("UnkownWallSegment");
+    }
+
+    TiglGeometricComponentIntent GetComponentIntent() const override
+    {
+        return TIGL_INTENT_INNER_STRUCTURE | TIGL_INTENT_PHYSICAL;
+    }
+
+    TiglGeometricComponentType   GetComponentType() const override
+    {
+        return TIGL_COMPONENT_FUSELAGE_WALL;
+    }
+    
+private:
+    PNamedShape BuildLoft() const override;
 };
 
 } // namespace tigl

@@ -214,6 +214,7 @@ TIGL_COMPONENT_EXTERNAL_OBJECT,  /**< The Component is a long floor beam */
 TIGL_COMPONENT_FARFIELD,         /**< The Component is a far field */
 TIGL_COMPONENT_ENGINE_PYLON,     /**< The Component is a engine pylon */
 TIGL_COMPONENT_ENGINE_NACELLE,   /**< The Component is a engine nacelle */
+TIGL_COMPONENT_FUSELAGE_WALL,    /**< The Component is a fuselage wall */
 TIGL_COMPONENT_OTHER
 };
 

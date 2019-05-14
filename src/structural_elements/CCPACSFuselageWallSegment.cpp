@@ -26,4 +26,10 @@ CCPACSFuselageWallSegment::CCPACSFuselageWallSegment(CCPACSWallSegments* parent,
 {
 }
 
+PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
+{
+    throw CTiglError("Fuselage Wall modeling not yet implemented");
+    return PNamedShape();
+}
+
 } // namespace tigl
