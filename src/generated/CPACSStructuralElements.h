@@ -28,6 +28,7 @@
 #include "CPACSRivets.h"
 #include "CPACSSeatModules.h"
 #include "CPACSSheetBasedStructuralElements.h"
+#include "CPACSStructuralWallElements.h"
 #include "CPACSWindows.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -65,6 +66,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSProfileBasedStructuralElements>& GetProfileBasedStructuralElements() const;
         TIGL_EXPORT virtual boost::optional<CPACSProfileBasedStructuralElements>& GetProfileBasedStructuralElements();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSStructuralWallElements>& GetStructuralWallElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSStructuralWallElements>& GetStructuralWallElements();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSPressureBulkheads>& GetPressureBulkheads() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPressureBulkheads>& GetPressureBulkheads();
 
@@ -89,6 +93,9 @@ namespace generated
         TIGL_EXPORT virtual CPACSProfileBasedStructuralElements& GetProfileBasedStructuralElements(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveProfileBasedStructuralElements();
 
+        TIGL_EXPORT virtual CPACSStructuralWallElements& GetStructuralWallElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveStructuralWallElements();
+
         TIGL_EXPORT virtual CCPACSPressureBulkheads& GetPressureBulkheads(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePressureBulkheads();
 
@@ -112,6 +119,7 @@ namespace generated
 
         boost::optional<CPACSSheetBasedStructuralElements>   m_sheetBasedStructuralElements;
         boost::optional<CPACSProfileBasedStructuralElements> m_profileBasedStructuralElements;
+        boost::optional<CPACSStructuralWallElements>         m_structuralWallElements;
         boost::optional<CCPACSPressureBulkheads>             m_pressureBulkheads;
         boost::optional<CPACSWindows>                        m_windows;
         boost::optional<CCPACSDoors>                         m_doors;

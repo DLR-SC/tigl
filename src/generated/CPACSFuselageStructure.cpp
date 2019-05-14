@@ -137,6 +137,17 @@ namespace generated
             }
         }
 
+        // read element walls
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/walls")) {
+            m_walls = boost::in_place(m_uidMgr);
+            try {
+                m_walls->ReadCPACS(tixiHandle, xpath + "/walls");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read walls at xpath " << xpath << ": " << e.what();
+                m_walls = boost::none;
+            }
+        }
+
         // read element cargoDoors
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cargoDoors")) {
             m_cargoDoors = boost::in_place(reinterpret_cast<CCPACSFuselageStructure*>(this), m_uidMgr);
@@ -229,6 +240,17 @@ namespace generated
             }
         }
 
+        // write element walls
+        if (m_walls) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/walls");
+            m_walls->WriteCPACS(tixiHandle, xpath + "/walls");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/walls")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/walls");
+            }
+        }
+
         // write element cargoDoors
         if (m_cargoDoors) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cargoDoors");
@@ -310,6 +332,16 @@ namespace generated
     boost::optional<CCPACSPressureBulkheadAssembly>& CPACSFuselageStructure::GetPressureBulkheads()
     {
         return m_pressureBulkheads;
+    }
+
+    const boost::optional<CPACSWalls>& CPACSFuselageStructure::GetWalls() const
+    {
+        return m_walls;
+    }
+
+    boost::optional<CPACSWalls>& CPACSFuselageStructure::GetWalls()
+    {
+        return m_walls;
     }
 
     const boost::optional<CPACSCargoDoorsAssembly>& CPACSFuselageStructure::GetCargoDoors() const
@@ -404,6 +436,18 @@ namespace generated
     void CPACSFuselageStructure::RemovePressureBulkheads()
     {
         m_pressureBulkheads = boost::none;
+    }
+
+    CPACSWalls& CPACSFuselageStructure::GetWalls(CreateIfNotExistsTag)
+    {
+        if (!m_walls)
+            m_walls = boost::in_place(m_uidMgr);
+        return *m_walls;
+    }
+
+    void CPACSFuselageStructure::RemoveWalls()
+    {
+        m_walls = boost::none;
     }
 
     CPACSCargoDoorsAssembly& CPACSFuselageStructure::GetCargoDoors(CreateIfNotExistsTag)

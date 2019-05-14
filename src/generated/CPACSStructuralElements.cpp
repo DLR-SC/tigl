@@ -68,6 +68,17 @@ namespace generated
             }
         }
 
+        // read element structuralWallElements
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralWallElements")) {
+            m_structuralWallElements = boost::in_place(m_uidMgr);
+            try {
+                m_structuralWallElements->ReadCPACS(tixiHandle, xpath + "/structuralWallElements");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read structuralWallElements at xpath " << xpath << ": " << e.what();
+                m_structuralWallElements = boost::none;
+            }
+        }
+
         // read element pressureBulkheads
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/pressureBulkheads")) {
             m_pressureBulkheads = boost::in_place(m_uidMgr);
@@ -160,6 +171,17 @@ namespace generated
             }
         }
 
+        // write element structuralWallElements
+        if (m_structuralWallElements) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structuralWallElements");
+            m_structuralWallElements->WriteCPACS(tixiHandle, xpath + "/structuralWallElements");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralWallElements")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/structuralWallElements");
+            }
+        }
+
         // write element pressureBulkheads
         if (m_pressureBulkheads) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/pressureBulkheads");
@@ -248,6 +270,16 @@ namespace generated
         return m_profileBasedStructuralElements;
     }
 
+    const boost::optional<CPACSStructuralWallElements>& CPACSStructuralElements::GetStructuralWallElements() const
+    {
+        return m_structuralWallElements;
+    }
+
+    boost::optional<CPACSStructuralWallElements>& CPACSStructuralElements::GetStructuralWallElements()
+    {
+        return m_structuralWallElements;
+    }
+
     const boost::optional<CCPACSPressureBulkheads>& CPACSStructuralElements::GetPressureBulkheads() const
     {
         return m_pressureBulkheads;
@@ -330,6 +362,18 @@ namespace generated
     void CPACSStructuralElements::RemoveProfileBasedStructuralElements()
     {
         m_profileBasedStructuralElements = boost::none;
+    }
+
+    CPACSStructuralWallElements& CPACSStructuralElements::GetStructuralWallElements(CreateIfNotExistsTag)
+    {
+        if (!m_structuralWallElements)
+            m_structuralWallElements = boost::in_place(m_uidMgr);
+        return *m_structuralWallElements;
+    }
+
+    void CPACSStructuralElements::RemoveStructuralWallElements()
+    {
+        m_structuralWallElements = boost::none;
     }
 
     CCPACSPressureBulkheads& CPACSStructuralElements::GetPressureBulkheads(CreateIfNotExistsTag)
