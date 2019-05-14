@@ -330,16 +330,14 @@ void CCPACSWingSparSegment::BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) co
         double eta, xsi;
         GetEtaXsi(i, eta, xsi);
         if (i == 1 && (eta < 1.E-6 || 1 - eta < 1.E-6)) {
-            gp_Vec sparDir(outerPoint, innerPoint);
-            p1.Translate(bboxSize * sparDir.Normalized());
-            p2.Translate(bboxSize * sparDir.Normalized());
+            p1.Translate(gp_Vec(p3, p1));
+            p2.Translate(gp_Vec(p4, p2));
         }
 
         GetEtaXsi(i + 1, eta, xsi);
         if (i == m_sparPositionUIDs.GetSparPositionUIDCount() - 1 && (eta < 1.E-6 || 1 - eta < 1.E-6)) {
-            gp_Vec sparDir(innerPoint, outerPoint);
-            p3.Translate(bboxSize * sparDir.Normalized());
-            p4.Translate(bboxSize * sparDir.Normalized());
+            p3.Translate(gp_Vec(p1, p3));
+            p4.Translate(gp_Vec(p2, p4));
         }
 
         // STEP 3: build face for cutting with loft
