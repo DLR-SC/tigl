@@ -24,6 +24,8 @@
 #include <gp_Pln.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <Standard_Failure.hxx>
 
 #include <list>
 
@@ -186,5 +188,17 @@ TEST(TiglCommonFunctions, ReplaceAdjacentWith)
     a = {};
     ReplaceAdjacentWithMerged(a, is_adjacent, merged);
     EXPECT_TRUE(ArraysMatch({}, a));
- 
+}
+
+TEST(TiglCommonFunctions, FaceBetweenPoints)
+{
+    gp_Pln plane(gp_Pnt(0., 0., 0.), gp_Dir(0, 1., 0));
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(plane);
+
+    EXPECT_TRUE(IsFaceBetweenPoints(face, gp_Pnt(0, -1, 0), gp_Pnt(0, 1, 0)));
+    EXPECT_FALSE(IsFaceBetweenPoints(face, gp_Pnt(0, -1, 0), gp_Pnt(0, -1, 0)));
+    EXPECT_FALSE(IsFaceBetweenPoints(face, gp_Pnt(0, 1, 0), gp_Pnt(0, 1, 0)));
+    
+    EXPECT_TRUE(IsFaceBetweenPoints(face, gp_Pnt(5, -1, 20), gp_Pnt(3, 1, -20)));
+    EXPECT_FALSE(IsFaceBetweenPoints(face, gp_Pnt(5, -1, 20), gp_Pnt(3, -10, -20)));
 }

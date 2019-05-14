@@ -102,6 +102,7 @@
 #include <ShapeFix_Wire.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <Standard_Version.hxx>
+#include <BRepExtrema_ExtPF.hxx>
 
 #include <ShapeAnalysis_FreeBounds.hxx>
 
@@ -1692,4 +1693,28 @@ Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector)
     }
     
     return array;
+}
+
+bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2)
+{
+    BRepExtrema_ExtPF projector1(BRepBuilderAPI_MakeVertex(p1).Vertex(),
+                                 face,
+                                 Extrema_ExtFlag_MIN);
+
+    gp_Pnt p1Proj;
+    if (projector1.IsDone() && projector1.NbExt() > 0) {
+        p1Proj = projector1.Point(1);
+    }
+
+    // compute the projection of p1
+    BRepExtrema_ExtPF projector2(BRepBuilderAPI_MakeVertex(p2).Vertex(),
+                                 face,
+                                 Extrema_ExtFlag_MIN);
+
+    gp_Pnt p2Proj;
+    if (projector2.IsDone() && projector2.NbExt() > 0) {
+        p2Proj = projector2.Point(1);
+    }
+
+    return gp_Vec(p1Proj, p1).Dot(gp_Vec(p2Proj, p2)) < 0.;
 }
