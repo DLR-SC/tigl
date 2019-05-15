@@ -140,9 +140,9 @@ void CloseGap(gp_Vec& ext_vec, gp_Pnt base_pnt, gp_Vec norm_vec, gp_Vec x_vec, c
 
 PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
 {
-    bool flushConnectionStart = false;
-    bool flushConnectionEnd = false;
-    bool negativeExtrusion = false;
+    bool flushConnectionStart = GetFlushConnectionStart().value_or(false);
+    bool flushConnectionEnd = GetFlushConnectionEnd().value_or(false);
+    bool negativeExtrusion = GetNegativeExtrusion().value_or(false);
     
     const CCPACSFuselage& fuselage = GetFuselage();
     

@@ -228,6 +228,7 @@
 										<wallPositionUID>Wall2Position1</wallPositionUID>
 										<wallPositionUID>Wall2Position2</wallPositionUID>
 									</wallPositionUIDs>
+									<negativeExtrusion>true</negativeExtrusion>
 								</wallSegment>
 							</wallSegments>
 						</walls>
