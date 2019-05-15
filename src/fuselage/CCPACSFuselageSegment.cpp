@@ -378,13 +378,13 @@ void CCPACSFuselageSegment::UpdateSurfaceProperties(SurfacePropertiesCache& cach
 }
 
 // Returns the start section UID of this segment
-const std::string& CCPACSFuselageSegment::GetStartSectionUID()
+const std::string& CCPACSFuselageSegment::GetStartSectionUID() const
 {
     return startConnection.GetSectionUID();
 }
 
 // Returns the end section UID of this segment
-const std::string& CCPACSFuselageSegment::GetEndSectionUID()
+const std::string& CCPACSFuselageSegment::GetEndSectionUID() const
 {
     return endConnection.GetSectionUID();
 }

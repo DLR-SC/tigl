@@ -30,7 +30,7 @@ namespace generated
     CPACSWalls::CPACSWalls(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_wallPositions(m_uidMgr)
-        , m_wallSegments(this, m_uidMgr)
+        , m_wallSegments(reinterpret_cast<CCPACSWalls*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;

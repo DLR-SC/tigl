@@ -17,7 +17,7 @@
 
 #include <cassert>
 #include <CCPACSFuselageWallSegment.h>
-#include "CPACSWalls.h"
+#include "CCPACSWalls.h"
 #include "CPACSWallSegments.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -28,7 +28,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSWallSegments::CPACSWallSegments(CPACSWalls* parent, CTiglUIDManager* uidMgr)
+    CPACSWallSegments::CPACSWallSegments(CCPACSWalls* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -39,12 +39,12 @@ namespace generated
     {
     }
 
-    const CPACSWalls* CPACSWallSegments::GetParent() const
+    const CCPACSWalls* CPACSWallSegments::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSWalls* CPACSWallSegments::GetParent()
+    CCPACSWalls* CPACSWallSegments::GetParent()
     {
         return m_parent;
     }

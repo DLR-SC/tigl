@@ -20,9 +20,20 @@
 
 #include "generated/CPACSWallSegment.h"
 #include "CTiglAbstractGeometricComponent.h"
+#include <TopoDS_Compound.hxx>
+
+class TopoDS_Shape;
 
 namespace tigl
 {
+
+class CCPACSFuselage;
+class CCPACSWalls;
+
+namespace generated
+{
+    class CPACSWallPosition;
+}
 
 class CCPACSFuselageWallSegment : public generated::CPACSWallSegment, public CTiglAbstractGeometricComponent
 {
@@ -43,9 +54,20 @@ public:
     {
         return TIGL_COMPONENT_FUSELAGE_WALL;
     }
+
+    TopoDS_Compound GetCutPlanes() const;
     
 private:
+    const CCPACSFuselage& GetFuselage() const;
+    
     PNamedShape BuildLoft() const override;
+    const CCPACSWalls& GetWalls() const;
+
+    // The x coordinate is determined by an intersection of a line parallel
+    // to the x-axes and a given shape.
+    double GetXCoord(const TopoDS_Shape& shape, double cy, double cz, double bboxSize) const;
+    
+    mutable TopoDS_Compound m_cutPlanes;
 };
 
 } // namespace tigl

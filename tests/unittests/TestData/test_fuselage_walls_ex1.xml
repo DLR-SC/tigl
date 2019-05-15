@@ -215,10 +215,7 @@
 									<phi>-20.</phi>
 									<wallPositionUIDs>
 										<wallPositionUID>Wall1Position1</wallPositionUID>
-										<wallPositionUID>Wall1Position2</wallPositionUID>
-										<wallPositionUID>Wall1Position3</wallPositionUID>
 										<wallPositionUID>Wall1Position4</wallPositionUID>
-										<wallPositionUID>Wall1Position5</wallPositionUID>
 										<wallPositionUID>Wall1Position6</wallPositionUID>
 									</wallPositionUIDs>
 								</wallSegment>

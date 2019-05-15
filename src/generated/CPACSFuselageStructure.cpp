@@ -334,12 +334,12 @@ namespace generated
         return m_pressureBulkheads;
     }
 
-    const boost::optional<CPACSWalls>& CPACSFuselageStructure::GetWalls() const
+    const boost::optional<CCPACSWalls>& CPACSFuselageStructure::GetWalls() const
     {
         return m_walls;
     }
 
-    boost::optional<CPACSWalls>& CPACSFuselageStructure::GetWalls()
+    boost::optional<CCPACSWalls>& CPACSFuselageStructure::GetWalls()
     {
         return m_walls;
     }
@@ -438,7 +438,7 @@ namespace generated
         m_pressureBulkheads = boost::none;
     }
 
-    CPACSWalls& CPACSFuselageStructure::GetWalls(CreateIfNotExistsTag)
+    CCPACSWalls& CPACSFuselageStructure::GetWalls(CreateIfNotExistsTag)
     {
         if (!m_walls)
             m_walls = boost::in_place(reinterpret_cast<CCPACSFuselageStructure*>(this), m_uidMgr);

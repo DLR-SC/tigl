@@ -78,6 +78,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSWalls = generated::CPACSWalls;
+// CPACSWalls is customized, use type CCPACSWalls directly
 } // namespace tigl

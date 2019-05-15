@@ -27,11 +27,10 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CCPACSFuselageWallSegment;
+class CCPACSWalls;
 
 namespace generated
 {
-    class CPACSWalls;
-
     // This class is used in:
     // CPACSWalls
 
@@ -39,13 +38,13 @@ namespace generated
     class CPACSWallSegments
     {
     public:
-        TIGL_EXPORT CPACSWallSegments(CPACSWalls* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWallSegments(CCPACSWalls* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSWallSegments();
 
-        TIGL_EXPORT CPACSWalls* GetParent();
+        TIGL_EXPORT CCPACSWalls* GetParent();
 
-        TIGL_EXPORT const CPACSWalls* GetParent() const;
+        TIGL_EXPORT const CCPACSWalls* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -60,7 +59,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveWallSegment(CCPACSFuselageWallSegment& ref);
 
     protected:
-        CPACSWalls* m_parent;
+        CCPACSWalls* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -78,5 +77,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSWallSegments = generated::CPACSWallSegments;
-using CCPACSWalls = generated::CPACSWalls;
 } // namespace tigl
