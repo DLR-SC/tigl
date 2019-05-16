@@ -87,9 +87,7 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(double eta, double xsi) const;
 
     // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi) const;
-    // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi, TiglCoordinateSystem referenceCS) const;
+    TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetChordNormal(double eta, double xsi) const;
@@ -247,6 +245,7 @@ private:
     struct SurfaceCache
     {
         CTiglPointTranslator cordSurface;
+        CTiglPointTranslator cordSurfaceLocal;
         Handle(Geom_Surface) cordFace;
         Handle(Geom_Surface) upperSurface;
         Handle(Geom_Surface) lowerSurface;
@@ -266,7 +265,7 @@ private:
     void ComputeVolume(double& cache) const;
 
     // Returns the chord surface (and builds it if required)
-    const CTiglPointTranslator& ChordFace() const;
+    const CTiglPointTranslator& ChordFace(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
 
     // converts segment eta xsi coordinates to face uv coordinates

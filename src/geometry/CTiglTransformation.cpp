@@ -67,6 +67,13 @@ CTiglTransformation::CTiglTransformation(const gp_Trsf& trans)
     }
 }
 
+CTiglTransformation::CTiglTransformation(const gp_Vec& t)
+{
+    SetIdentity();
+
+    AddTranslation(t.X(), t.Y(), t.Z());
+}
+
 // Destructor
 CTiglTransformation::~CTiglTransformation()
 {
@@ -434,6 +441,16 @@ gp_Pnt CTiglTransformation::Transform(const gp_Pnt& point) const
     return gp_Pnt(transformed.X(), transformed.Y(), transformed.Z());
 }
 
+
+gp_Vec CTiglTransformation::Transform(const gp_Vec& vec) const
+{
+    gp_Pnt pTip = Transform(gp_Pnt(vec.XYZ()));
+    gp_Pnt pRoot = Transform(gp_Pnt(0., 0., 0));
+
+    return pTip.XYZ() - pRoot.XYZ();
+}
+
+
 bool CTiglTransformation::IsUniform() const
 {
     // The following code is copied from gp_Trsf
@@ -520,7 +537,7 @@ bool CTiglTransformation::IsUniform() const
 
 CTiglTransformation CTiglTransformation::Inverted() const
 {
-    return Get_gp_GTrsf().Inverted();
+    return CTiglTransformation(Get_gp_GTrsf().Inverted());
 }
 
 void CTiglTransformation::Decompose(double scale[3], double rotation[3], double translation[3]) const
