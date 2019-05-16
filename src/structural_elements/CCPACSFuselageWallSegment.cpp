@@ -63,15 +63,14 @@ TopoDS_Compound CCPACSFuselageWallSegment::GetCutPlanes() const
 
 const CCPACSWalls& CCPACSFuselageWallSegment::GetWalls() const
 {
-    CTiglError err("Error in CCPACSFuselageWallSegment::GetWalls. Null pointer returned.", TIGL_NULL_POINTER);
     const CCPACSWallSegments* wallSegments = GetParent();
     if (!wallSegments) {
-        throw err;
+        throw CTiglError("Error in CCPACSFuselageWallSegment::GetWalls. Null pointer returned.", TIGL_NULL_POINTER);
     }
     
     const CCPACSWalls* walls = wallSegments->GetParent();
     if (!walls) {
-        throw err;
+        throw CTiglError("Error in CCPACSFuselageWallSegment::GetWalls. Null pointer returned.", TIGL_NULL_POINTER);
     }
     
     return *walls;
@@ -79,18 +78,16 @@ const CCPACSWalls& CCPACSFuselageWallSegment::GetWalls() const
 
 const CCPACSFuselage &CCPACSFuselageWallSegment::GetFuselage() const
 {
-    CTiglError err("Cannot get fuselage in CCPACSFuselageWallSegment::GetFuselage. Null pointer parent.", TIGL_NULL_POINTER);
-    
     const CCPACSWalls& walls = GetWalls();
     
     const CCPACSFuselageStructure* fuselageStructure = walls.GetParent();
     if (!fuselageStructure) {
-        throw err;
+        throw CTiglError("Cannot get fuselage in CCPACSFuselageWallSegment::GetFuselage. Null pointer parent.", TIGL_NULL_POINTER);
     }
 
     const CCPACSFuselage* fuselage = fuselageStructure->GetParent();
     if (!fuselageStructure) {
-        throw err;
+        throw CTiglError("Cannot get fuselage in CCPACSFuselageWallSegment::GetFuselage. Null pointer parent.", TIGL_NULL_POINTER);
     }
 
     return *fuselage;
