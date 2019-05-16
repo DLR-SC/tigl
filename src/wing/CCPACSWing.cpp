@@ -190,6 +190,14 @@ void CCPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::stri
 
     if (wingXPath.find("rotorBlade") != std::string::npos) {
         isRotorBlade = true;
+
+        // WORKAROUND
+        // The rotor blade is attached implicitly to the rotor and should not have an additional parent
+        // See issue #509
+        if (m_parentUID) {
+            LOG(WARNING) << "Parent of rotor blade '" << GetUID() << "' is removed since it will be parented by a rotor. Consider to remove the parentUID node.";
+            m_parentUID = boost::none;
+        }
     }
 
     ConnectGuideCurveSegments();

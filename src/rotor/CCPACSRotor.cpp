@@ -87,7 +87,7 @@ void CCPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::str
 CTiglTransformation CCPACSRotor::GetTransformationMatrix() const
 {
     const_cast<CCPACSRotor*>(this)->Update();   // create new transformation matrix if scaling, rotation or translation was changed, TODO: hack
-    return m_transformation.getTransformationMatrix();
+    return CTiglRelativelyPositionedComponent::GetTransformationMatrix();
 }
 
 // Get Translation
