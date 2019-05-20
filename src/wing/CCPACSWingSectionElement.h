@@ -25,6 +25,7 @@
 #include "generated/CPACSWingElement.h"
 #include "CCPACSTransformation.h"
 #include "CTiglPoint.h"
+#include "CTiglWingSectionElement.h"
 
 namespace tigl
 {
@@ -56,6 +57,14 @@ public:
 
     // Setter for scaling
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
+
+    // Getter for the CTiglSectionElement
+    TIGL_EXPORT CTiglWingSectionElement* GetCTiglSectionElement() { return &(cTiglElement); };
+
+private:
+
+    CTiglWingSectionElement cTiglElement;
+
 };
 
 } // end namespace tigl

@@ -21,14 +21,14 @@
 #define TIGL_CTIGLWINGSECTIONELEMENT_H
 
 #include "CTiglSectionElement.h"
-#include "CCPACSWingSectionElement.h"
 #include "CCPACSWingProfile.h"
-#include "CCPACSWingSection.h"
 
 namespace tigl
 {
 
 class CCPACSWing;
+class CCPACSWingSectionElement;
+class CCPACSWingSection;
 
 class CTiglWingSectionElement: public CTiglSectionElement {
 

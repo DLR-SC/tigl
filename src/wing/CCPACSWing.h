@@ -40,6 +40,7 @@
 #include "TopoDS_Compound.hxx"
 
 #include "CTiglWingSectionElement.h"
+#include "CTiglWingHelper.h"
 
 namespace tigl
 {
@@ -175,21 +176,7 @@ public:
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound GetGuideCurveWires() const;
 
-    // Returns the major direction of the wing (correspond to the span direction)
-    // @Details: If a symmetry plan is set, the major direction is normal to the symmetry plan,
-    // otherwise, an heuristic is used to find out the best span axis candidate.
-    TIGL_EXPORT TiglAxis GetMajorDirection() const;
-
-    // Returns the deep direction of the wing
-    TIGL_EXPORT TiglAxis GetDeepDirection() const;
-
-    TIGL_EXPORT TiglAxis GetThirdDirection() const;
-
-    // Returns the uid of the element that is the most distant of the root in the major wing direction
-    TIGL_EXPORT std::string GetTipUID() const;
-
-    // Returns the uid of the root element (the element that start to build the wing)
-    TIGL_EXPORT std::string GetRootUID() const;
+    // CREATOR FUNCTIONS
 
     TIGL_EXPORT double GetSweep(double chordPercentage = 0.25) const;
 
@@ -215,11 +202,7 @@ protected:
         
     void BuildUpperLowerShells();
 
-    // Init for the tipCElement cache
-    void SetTipCElement(CTiglWingSectionElement& cache) const;
-
-    // Init for the rootCElement cache
-    void SetRootCElement(CTiglWingSectionElement& cache) const;
+    void SetWingHelper(CTiglWingHelper& cache) const;
 
 private:
     // get short name for loft
@@ -239,8 +222,7 @@ private:
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
 
-    Cache<CTiglWingSectionElement, CCPACSWing> tipCElement;
-    Cache<CTiglWingSectionElement, CCPACSWing> rootCElement;
+    Cache<CTiglWingHelper, CCPACSWing> wingHelper;
 
 
 

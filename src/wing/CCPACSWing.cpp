@@ -93,8 +93,7 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
     , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
-    , tipCElement(*this, &CCPACSWing::SetTipCElement)
-    , rootCElement(*this, &CCPACSWing::SetRootCElement)
+    , wingHelper(*this, &CCPACSWing::SetWingHelper)
 {
     if (parent->IsParent<CCPACSAircraftModel>())
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
@@ -113,8 +112,7 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
     , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
-    , tipCElement(*this, &CCPACSWing::SetTipCElement)
-    , rootCElement(*this, &CCPACSWing::SetRootCElement )
+    , wingHelper(*this, &CCPACSWing::SetWingHelper)
 {
     Cleanup();
 }
@@ -129,8 +127,7 @@ CCPACSWing::~CCPACSWing()
 void CCPACSWing::Invalidate()
 {
     invalidated = true;
-    tipCElement.clear();
-    rootCElement.clear();
+    wingHelper.clear();
     m_segments.Invalidate();
     if (m_positionings)
         m_positionings->Invalidate();
@@ -445,8 +442,8 @@ double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane)
 
 double CCPACSWing::GetReferenceArea()
 {
-    TiglAxis spanDir = GetMajorDirection();
-    TiglAxis deepDir = GetDeepDirection();
+    TiglAxis spanDir = wingHelper->GetMajorDirection();
+    TiglAxis deepDir = wingHelper->GetDeepDirection();
 
     if (spanDir == TIGL_Y_AXIS && deepDir == TIGL_X_AXIS) {
         return GetReferenceArea(TIGL_X_Y_PLANE);
@@ -513,7 +510,7 @@ double CCPACSWing::GetWingspan()
     Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
     boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
-    switch (GetMajorDirection()) {
+    switch (wingHelper->GetMajorDirection()) {
     case TIGL_Z_AXIS:
         return zmax - zmin;
         break;
@@ -541,7 +538,7 @@ double CCPACSWing::GetWingHalfSpan()
     Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
     boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
-    switch (GetMajorDirection()) {
+    switch (wingHelper->GetMajorDirection()) {
     case TIGL_Z_AXIS:
         return zmax - zmin;
         break;
@@ -816,158 +813,6 @@ void CCPACSWing::BuildGuideCurveWires(TopoDS_Compound& cache) const
     cache = connector.GetConnectedGuideCurves();
 }
 
-TiglAxis CCPACSWing::GetMajorDirection() const
-{
-    switch (GetSymmetryAxis()) {
-    case TIGL_X_Y_PLANE:
-        return TiglAxis::TIGL_Z_AXIS;
-    case TIGL_X_Z_PLANE:
-        return TiglAxis::TIGL_Y_AXIS;
-    case TIGL_Y_Z_PLANE:
-        return TiglAxis ::TIGL_X_AXIS;
-    default:
-        // heuristic to find the best major axis
-        // first find the deep axis , then chose the major axis between the two left axis
-        gp_XYZ cumulatedSpanDirection(0, 0, 0);
-        gp_XYZ cumulatedDepthDirection(0, 0, 0);
-        for (int i = 1; i <= GetSegmentCount(); ++i) {
-            const CCPACSWingSegment& segment = m_segments.GetSegment(i);
-            gp_XYZ dirSpan                   = segment.GetChordPoint(1, 0).XYZ() - segment.GetChordPoint(0, 0).XYZ();
-            gp_XYZ dirDepth                  = segment.GetChordPoint(0, 1).XYZ() - segment.GetChordPoint(0, 0).XYZ();
-            dirSpan  = gp_XYZ(fabs(dirSpan.X()), fabs(dirSpan.Y()), fabs(dirSpan.Z())); // why we use abs value?
-            dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
-            cumulatedSpanDirection += dirSpan;
-            cumulatedDepthDirection += dirDepth;
-        }
-        const CCPACSWingSegment& outerSegment = m_segments.GetSegment(GetSegmentCount());
-        gp_XYZ dirDepth = outerSegment.GetChordPoint(1, 1).XYZ() - outerSegment.GetChordPoint(1, 0).XYZ();
-        dirDepth        = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
-        cumulatedDepthDirection += dirDepth;
-
-        int depthIndex =
-            maxIndex(cumulatedDepthDirection.X(), cumulatedDepthDirection.Y(), cumulatedDepthDirection.Z());
-
-        switch (depthIndex) {
-        case 0:
-            return cumulatedSpanDirection.Y() >= cumulatedSpanDirection.Z() ? TiglAxis::TIGL_Y_AXIS
-                                                                            : TiglAxis::TIGL_Z_AXIS;
-        case 1:
-            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Z() ? TiglAxis::TIGL_X_AXIS
-                                                                            : TiglAxis::TIGL_Z_AXIS;
-        case 2:
-            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Y() ? TiglAxis::TIGL_X_AXIS
-                                                                            : TiglAxis::TIGL_Y_AXIS;
-        default:
-            return TiglAxis ::TIGL_Y_AXIS;
-        }
-    }
-}
-
-TiglAxis CCPACSWing::GetDeepDirection() const
-{
-
-    gp_XYZ cumulatedDepthDirection(0, 0, 0);
-    for (int i = 1; i <= GetSegmentCount(); ++i) {
-        const CCPACSWingSegment& segment = m_segments.GetSegment(i);
-        gp_XYZ dirDepth                  = segment.GetChordPoint(0, 1).XYZ() - segment.GetChordPoint(0, 0).XYZ();
-        dirDepth                         = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
-        cumulatedDepthDirection += dirDepth;
-    }
-    const CCPACSWingSegment& outerSegment = m_segments.GetSegment(GetSegmentCount());
-    gp_XYZ dirDepth = outerSegment.GetChordPoint(1, 1).XYZ() - outerSegment.GetChordPoint(1, 0).XYZ();
-    dirDepth        = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
-    cumulatedDepthDirection += dirDepth;
-
-    switch (GetMajorDirection()) {
-    case TIGL_Y_AXIS:
-        return cumulatedDepthDirection.X() >= cumulatedDepthDirection.Z() ? TiglAxis::TIGL_X_AXIS
-                                                                          : TiglAxis::TIGL_Z_AXIS;
-    case TIGL_Z_AXIS:
-        return cumulatedDepthDirection.X() >= cumulatedDepthDirection.Y() ? TiglAxis::TIGL_X_AXIS
-                                                                          : TiglAxis::TIGL_Y_AXIS;
-    case TIGL_X_AXIS:
-        return cumulatedDepthDirection.Z() >= cumulatedDepthDirection.Y() ? TiglAxis::TIGL_Z_AXIS
-                                                                          : TiglAxis::TIGL_Y_AXIS;
-    default:
-        return TiglAxis ::TIGL_X_AXIS;
-    }
-}
-
-TiglAxis CCPACSWing::GetThirdDirection() const
-{
-    std::list<TiglAxis> allAxis = {TIGL_X_AXIS, TIGL_Y_AXIS, TIGL_Z_AXIS};
-    allAxis.remove(GetMajorDirection());
-    allAxis.remove(GetDeepDirection());
-    return allAxis.front();
-}
-
-std::string CCPACSWing::GetTipUID() const
-{
-    return tipCElement->GetSectionElementUID();
-}
-
-void CCPACSWing::SetTipCElement(CTiglWingSectionElement& cache) const
-{
-    /* Use the distance in the major wing direction between the root and the center of each element
-     * to determine which element is more suited to be considerate as the tip.
-     */
-
-    if (!rootCElement->IsValid()) {
-        LOG(WARNING) << "CCPACSWing::SetTipCElement: The root element is not set -> impossible to set tip element";
-        cache = CTiglWingSectionElement();
-        return;
-    }
-
-    CTiglPoint rootCenter = rootCElement->GetCenter();
-
-    CTiglUIDManager& uidManager          = GetConfiguration().GetUIDManager();
-    std::vector<std::string> orderedUIDs = m_segments.GetElementUIDsInOrder();
-    CCPACSWingSectionElement* tempE;
-    CTiglPoint delta;
-    TiglAxis majorDir = GetMajorDirection();
-    double maxD       = -1;
-
-    for (int i = 0; i < orderedUIDs.size(); i++) {
-        tempE = &(uidManager.ResolveObject<CCPACSWingSectionElement>(orderedUIDs[i]));
-        CTiglWingSectionElement cElement(tempE);
-        delta = cElement.GetCenter() - rootCenter;
-
-        if (majorDir == TIGL_Y_AXIS && fabs(delta.y) > maxD) {
-            maxD  = delta.y;
-            cache = cElement;
-        }
-        else if (majorDir == TIGL_Z_AXIS && fabs(delta.z) > maxD) {
-            maxD  = delta.z;
-            cache = cElement;
-        }
-        else if (majorDir == TIGL_X_AXIS && fabs(delta.x) > maxD) {
-            maxD  = delta.x;
-            cache = cElement;
-        }
-        else {
-            LOG(ERROR) << "CCPACSWing::SetTipCElement: Unexcpected case!";
-        }
-    }
-}
-
-std::string CCPACSWing::GetRootUID() const
-{
-    return rootCElement->GetSectionElementUID();
-}
-
-void CCPACSWing::SetRootCElement(CTiglWingSectionElement& cache) const
-{
-    if (m_segments.GetSegmentCount() <= 0) {
-        LOG(WARNING) << "CCPACSWing::SetRootCElement:Ghere are no segments in this wing for the moment. -> Impossible "
-                        "to set the root element";
-        cache = CTiglWingSectionElement();
-        return;
-    }
-    std::vector<std::string> orderedUIDs = m_segments.GetElementUIDsInOrder();
-    CTiglUIDManager& uidManager          = GetConfiguration().GetUIDManager();
-    CCPACSWingSectionElement* element    = &(uidManager.ResolveObject<CCPACSWingSectionElement>(orderedUIDs[0]));
-    cache                                = CTiglWingSectionElement(element);
-}
 
 double CCPACSWing::GetSweep(double chordPercentage) const
 {
@@ -978,12 +823,12 @@ double CCPACSWing::GetSweep(double chordPercentage) const
      * 3) compute the angle between the projected vector and the major axis as a oriented rotation
      */
 
-    CTiglPoint rootChord = rootCElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
-    CTiglPoint tipChord  = tipCElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+    CTiglPoint rootChord = wingHelper->GetCTiglElementOfWing(wingHelper->GetRootUID())->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+    CTiglPoint tipChord  =  wingHelper->GetCTiglElementOfWing(wingHelper->GetTipUID())->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
     CTiglPoint rootToTip = tipChord - rootChord;
 
-    TiglAxis majorDir = GetMajorDirection();
-    TiglAxis deepDir  = GetDeepDirection();
+    TiglAxis majorDir = wingHelper->GetMajorDirection();
+    TiglAxis deepDir  = wingHelper->GetDeepDirection();
 
     // since all coordinate of the majorDir vector are zero except the one that represent the axis
     // the dot product is similar to project the vector on the axis
@@ -1004,12 +849,11 @@ double CCPACSWing::GetDihedral(double chordPercentage) const
      * 3) compute the angle between the projected vector and the major axis as a oriented rotation
      */
 
-    CTiglPoint rootChord = rootCElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
-    CTiglPoint tipChord  = tipCElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+    CTiglPoint rootChord = wingHelper->GetCTiglElementOfWing(wingHelper->GetRootUID())->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+    CTiglPoint tipChord  = wingHelper->GetCTiglElementOfWing(wingHelper->GetTipUID())->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
     CTiglPoint rootToTip = tipChord - rootChord;
-
-    TiglAxis majorDir = GetMajorDirection();
-    TiglAxis thirdDir = GetThirdDirection();
+    TiglAxis majorDir = wingHelper->GetMajorDirection();
+    TiglAxis thirdDir = wingHelper->GetThirdDirection();
 
     // since all coordinate of the majorDir vector are zero except the one that represent the axis
     // the dot product is similar to project the vector on the axis
@@ -1019,6 +863,11 @@ double CCPACSWing::GetDihedral(double chordPercentage) const
     double angleRad = atan2(thirdProj, fabs(majorProj)); // fabs (majorProj) mirror the coordinate if needed
 
     return Degrees(angleRad);
+}
+
+void CCPACSWing::SetWingHelper(CTiglWingHelper& cache) const
+{
+    cache.SetWing(const_cast<CCPACSWing*>(this));
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,
