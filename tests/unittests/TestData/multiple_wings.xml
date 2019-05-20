@@ -3363,6 +3363,40 @@
               </componentSegment>
             </componentSegments>
           </wing>
+	  
+	  
+	  	  	  
+	 <wing uID="W13_EmptyWing">
+            <name>W13_EmptyWing</name>
+            <parentUID>SimpleFuselage</parentUID>
+            <description>This wing has no segments, no sections and no positionings.</description>
+            <transformation uID="W13_EmptyWing_transformation1">
+              <scaling uID="W13_EmptyWing_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="W13_EmptyWing_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="W13_EmptyWing_transformation1_translation1">
+                <x>-4</x>
+                <y>-4</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+            </sections>
+	    <positionings>      
+            </positionings>
+            <segments>
+            </segments>
+            <componentSegments>
+            </componentSegments>
+          </wing>
+	    
 	    
 	  
 	  

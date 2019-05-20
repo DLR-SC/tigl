@@ -78,49 +78,6 @@ protected:
     }
 };
 
-TEST_F(creatorWing, MultipleWings_GetMajorDirection_GetDeepDirection)
-{
-    // symmetry x-z case
-    setVariables("TestData/multiple_wings.xml", "Wing");
-    EXPECT_EQ(wing->GetMajorDirection(), TIGL_Y_AXIS);
-    EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
-
-    setWing("W2_RX90");
-    EXPECT_EQ(wing->GetMajorDirection(), TIGL_Z_AXIS);
-    EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
-
-    // symmetry x-z case
-    setWing("W3_RX40");
-    EXPECT_EQ(wing->GetMajorDirection(), TIGL_Y_AXIS);
-    EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
-
-    // no symmetry case
-    setWing("W4_RX40b");
-    EXPECT_EQ(wing->GetMajorDirection(), TIGL_Y_AXIS);
-    EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
-
-    // symmetry x-z
-    // The symmetry prime on the heuristic (So, we get always the correct span)
-    setWing("W5_RX60");
-    EXPECT_EQ(wing->GetMajorDirection(), TIGL_Y_AXIS);
-    EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
-
-    // no symmetry case
-    setWing("W6_RX60b");
-    EXPECT_EQ(wing->GetMajorDirection(), TIGL_Z_AXIS);
-    EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
-
-    // strang symmetry case (symmetry y-x plane)
-    setWing("W7_SymX");
-    EXPECT_EQ(wing->GetMajorDirection(), TIGL_Z_AXIS);
-    EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
-
-    // strang symmetry case (symmetry y-x plane)
-    setWing("W8_SBW");
-    EXPECT_EQ(wing->GetMajorDirection(), TIGL_Y_AXIS);
-    EXPECT_EQ(wing->GetDeepDirection(), TIGL_X_AXIS);
-}
-
 TEST_F(creatorWing, MultipleWings_GetWingHalfSpan)
 {
     // Remark: The span is computed using bounding Box so, the result may no be accurate.
@@ -195,30 +152,6 @@ TEST_F(creatorWing, MultipleWings_GetReferenceArea)
     // the reference are is double // TODO verify that this behavior is not problematic
     setWing("W8_SBW");
     EXPECT_NEAR(wing->GetReferenceArea(),2*0.93969, 0.0001);
-}
-
-
-TEST_F(creatorWing, MultipleWings_GetTipAndRootUID)
-{
-    // symmetry x-z case
-    setVariables("TestData/multiple_wings.xml", "W2_RX90");
-    EXPECT_EQ(wing->GetRootUID(), "W2_RX90_Sec1_El1");
-    EXPECT_EQ(wing->GetTipUID(), "W2_RX90_Sec3_El1");
-
-    // symmetry x-z case
-    setWing("W3_RX40");
-    EXPECT_EQ(wing->GetRootUID(), "W3_RX40_Sec1_El1");
-    EXPECT_EQ(wing->GetTipUID(), "W3_RX40_Sec3_El1");
-
-    // no symmetry case
-    setWing("W6_RX60b");
-    EXPECT_EQ(wing->GetRootUID(), "W6_RX60b_Sec1_El1");
-    EXPECT_EQ(wing->GetTipUID(), "W6_RX60b_Sec3_El1");
-
-    setWing("W8_SBW");
-    EXPECT_EQ(wing->GetRootUID(), "W8_SBW_Sec1_El1");
-    EXPECT_EQ(wing->GetTipUID(), "W8_SBW_Sec2_El1");
-
 }
 
 TEST_F(creatorWing, MultipleWings_GetSweep)

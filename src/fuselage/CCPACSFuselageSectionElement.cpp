@@ -33,6 +33,7 @@ namespace tigl
 CCPACSFuselageSectionElement::CCPACSFuselageSectionElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageElement(parent, uidMgr) {
 
+    // Remark, if we one day, we implement cache in CTiglFuselageElement, we need to invalidate this cTiglElement
     ctilgElement = CTiglFuselageSectionElement(this);
 }
 

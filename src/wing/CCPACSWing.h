@@ -32,6 +32,7 @@
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingComponentSegments.h"
 #include "CTiglWingSectionElement.h"
+#include "CTiglWingHelper.h"
 #include "CCPACSPositionings.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurve.h"
@@ -199,17 +200,7 @@ public:
     // otherwise, an heuristic is used to find out the best span axis candidate.
     TIGL_EXPORT TiglAxis GetMajorDirection() const;
 
-    // Returns the deep direction of the wing
-    TIGL_EXPORT TiglAxis GetDeepDirection() const;
-
-    TIGL_EXPORT TiglAxis GetThirdDirection() const;
-
-    // Returns the uid of the element that is the most distant of the root in the major wing direction
-    TIGL_EXPORT std::string GetTipUID() const;
-
-    // Returns the uid of the root element (the element that start to build the wing)
-    TIGL_EXPORT std::string GetRootUID() const;
-
+    // CREATOR FUNCTIONS
     TIGL_EXPORT double GetSweep(double chordPercentage = 0.25) const;
 
     TIGL_EXPORT double GetDihedral(double chordPercentage = 0.25) const;
@@ -245,11 +236,7 @@ protected:
         
     void BuildUpperLowerShells();
 
-    // Init for the tipCElement cache
-    void SetTipCElement(CTiglWingSectionElement& cache) const;
-
-    // Init for the rootCElement cache
-    void SetRootCElement(CTiglWingSectionElement& cache) const;
+    void SetWingHelper(CTiglWingHelper& cache) const;
 
 private:
     // Invalidates internal state
@@ -281,8 +268,7 @@ private:
 
     TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
 
-    Cache<CTiglWingSectionElement, CCPACSWing> tipCElement;
-    Cache<CTiglWingSectionElement, CCPACSWing> rootCElement;
+    Cache<CTiglWingHelper, CCPACSWing> wingHelper;
 
     friend class CCPACSWingSegment;
     friend class CCPACSWingComponentSegment;
