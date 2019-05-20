@@ -21,7 +21,6 @@
 
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
-
 #include "CTiglError.h"
 
 namespace tigl
@@ -42,6 +41,7 @@ CCPACSFuselageSection& CCPACSFuselageSections::GetSection(int index) const
     }
     return *m_sections[index];
 }
+
 
 // Gets a section by uid.
 CCPACSFuselageSection& CCPACSFuselageSections::GetSection(const std::string& sectionUID)

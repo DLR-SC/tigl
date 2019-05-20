@@ -28,6 +28,7 @@
 #include "Standard_Version.hxx"
 
 #include "tiglmathfunctions.h"
+#include "tiglcommonfunctions.h"
 
 namespace tigl 
 {
@@ -181,17 +182,6 @@ gp_GTrsf CTiglTransformation::Get_gp_GTrsf() const
     return ocMatrix;
 }
 
-// Converts degree to radian, utility function
-double CTiglTransformation::DegreeToRadian(double degree)
-{
-    return (degree * 1.74532925199433E-02);
-}
-
-// Converts radian to degree, utility function
-double CTiglTransformation::RadianToDegree(double radian)
-{
-    return (radian * 57.2957795130823);
-}
 
 // Adds a translation to this transformation. Translation part
 // is stored in the last column of the transformation matrix.
@@ -231,7 +221,7 @@ void CTiglTransformation::AddScaling(double sx, double sy, double sz)
 
 void CTiglTransformation::AddRotationX(double degreeX)
 {
-    double radianX = DegreeToRadian(degreeX);
+    double radianX = Radians(degreeX);
     double sinVal  = sin(radianX);
     double cosVal  = cos(radianX);
 
@@ -253,7 +243,7 @@ void CTiglTransformation::AddRotationX(double degreeX)
 
 void CTiglTransformation::AddRotationY(double degreeY)
 {
-    double radianY = DegreeToRadian(degreeY);
+    double radianY = Radians(degreeY);
     double sinVal  = sin(radianY);
     double cosVal  = cos(radianY);
 
@@ -275,7 +265,7 @@ void CTiglTransformation::AddRotationY(double degreeY)
 
 void CTiglTransformation::AddRotationZ(double degreeZ)
 {
-    double radianZ = DegreeToRadian(degreeZ);
+    double radianZ = Radians(degreeZ);
     double sinVal  = sin(radianZ);
     double cosVal  = cos(radianZ);
 
@@ -293,6 +283,15 @@ void CTiglTransformation::AddRotationZ(double degreeZ)
     trans.SetValue(1, 1, cosVal);
 
     PreMultiply(trans);
+}
+
+// Adds a rotation in intrinsic x-y'-z'' Euler convention to the matrix
+void CTiglTransformation::AddRotationIntrinsicXYZ(double phi, double theta, double psi)
+{
+    // intrinsic x-y'-z'' corresponds to extrinsic z-y-x, i.e. Rx*Ry*Rz:
+    AddRotationZ(psi);
+    AddRotationY(theta);
+    AddRotationX(phi);
 }
 
 // Adds projection an xy plane by setting the z coordinate to 0
@@ -538,28 +537,38 @@ void CTiglTransformation::Decompose(double scale[3], double rotation[3], double 
         LOG(WARNING) << "CTiglTransformation::Decompose: The Transformation contains a Shearing, that will be discarded in the decomposition!";
     }
 
-    // calculate extrinsic Euler angles from rotation matrix U
-    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf
-    if( fabs( fabs(U(3,1)) - 1) > 1e-10 ){
-        rotation[1] = -asin(U(3,1));
+    // calculate intrinsic Euler angles from rotation matrix U
+    //
+    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf, where the same argumentation
+    // is used for intrinsic x,y',z'' angles and the rotatation matrix
+    //
+    //                |                        cos(y)*cos(z) |               -        cos(y)*cos(z) |         sin(y) |
+    // U = Rx*Ry*Rz = | cos(x)*sin(z) + sin(x)*sin(y)*cos(z) | cos(x)*cos(z) - sin(x)*sin(y)*sin(z) | -sin(x)*cos(y) |
+    //                | sin(x)*sin(z) - cos(x)*sin(y)*cos(z) | sin(x)*cos(z) + cos(x)*sin(y)*sin*z( |  cos(x)*cos(y) |
+    //
+    // rather than extrinsic angles and the Rotation matrix mentioned in that pdf.
+
+    if( fabs( fabs(U(1, 3)) - 1) > 1e-10 ){
+        rotation[1] = asin(U(1, 3));
         double cosTheta = cos(rotation[1]);
-        rotation[0] = atan2(U(3,2)/cosTheta, U(3,3)/cosTheta);
-        rotation[2] = atan2(U(2,1)/cosTheta, U(1,1)/cosTheta);
+        rotation[0] = -atan2(U(2,3)/cosTheta, U(3,3)/cosTheta);
+        rotation[2] = -atan2(U(1,2)/cosTheta, U(1,1)/cosTheta);
     }
     else {
-        if ( fabs(U(3,1) + 1) > 1e-10 ) {
-            rotation[0] = rotation[2] + atan2(U(1,2), U(1,3));
-            rotation[1] = M_PI/2;
+        rotation[0] = 0;
+        if ( fabs(U(1,3) + 1) > 1e-10 ) {
+            rotation[2] = -rotation[0] - atan2(U(2,1), U(2,2));
+            rotation[1] = -M_PI/2;
         }
         else{
-            rotation[0] = -rotation[2] + atan2(-U(1,2), -U(1,3));
-            rotation[1] = -M_PI/2;
+            rotation[2] = -rotation[0] + atan2(U(2,1), U(2,2));
+            rotation[1] = M_PI/2;
         }
     }
 
-    rotation[0] = RadianToDegree(rotation[0]);
-    rotation[1] = RadianToDegree(rotation[1]);
-    rotation[2] = RadianToDegree(rotation[2]);
+    rotation[0] = Degrees(rotation[0]);
+    rotation[1] = Degrees(rotation[1]);
+    rotation[2] = Degrees(rotation[2]);
 
     // translation is last column of transformation
     translation[0] = GetValue(0,3);
@@ -578,6 +587,45 @@ double CTiglTransformation::GetValue(int row, int col) const
     return m_matrix[row][col];
 }
 
+tigl::CTiglTransformation tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint vectorA,
+                                                                            tigl::CTiglPoint vectorB)
+{
+
+    vectorA.normalize();
+    vectorB.normalize();
+
+    if (vectorA.isNear((vectorB))) {
+        return CTiglTransformation();
+    }
+    if (vectorA.isNear((vectorB * -1))) {
+        return (-1 * CTiglTransformation());
+    }
+
+    CTiglPoint cross = CTiglPoint::cross_prod(vectorA, vectorB);
+    double cos       = CTiglPoint::inner_prod(vectorA, vectorB);
+    double s         = 1.0 / (1.0 + cos);
+
+    CTiglTransformation V;
+    V.SetValue(0, 0, 0);
+    V.SetValue(0, 1, -cross.z);
+    V.SetValue(0, 2, cross.y);
+    V.SetValue(1, 0, cross.z);
+    V.SetValue(1, 1, 0);
+    V.SetValue(1, 2, -cross.x);
+    V.SetValue(2, 0, -cross.y);
+    V.SetValue(2, 1, cross.x);
+    V.SetValue(2, 2, 0);
+    V.SetValue(3, 3, 0);
+
+    CTiglTransformation V2 = V * V;
+
+    CTiglTransformation Rot;
+
+    Rot = ((Rot + V) + (s * V2));
+
+    return Rot;
+}
+
 std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
 {
     for (int i = 0; i < 4; ++i) {
@@ -589,11 +637,80 @@ std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
     return os;
 }
 
-CTiglTransformation operator*(const CTiglTransformation & a, const CTiglTransformation & b)
+CTiglTransformation operator*(const CTiglTransformation& a, const CTiglTransformation& b)
 {
     CTiglTransformation result = b;
     result.PreMultiply(a);
     return result;
+}
+
+CTiglPoint operator*(const CTiglTransformation& m, const CTiglPoint& p)
+{
+
+    double augmented_pnt[4] = {p.x, p.y, p.z, 1.0};
+    double res_matrix[4]    = {
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    };
+
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            res_matrix[row] += (m.GetValue(row, col) * augmented_pnt[col]);
+        }
+    }
+
+    CTiglPoint result(res_matrix[0], res_matrix[1], res_matrix[2]);
+    return result;
+}
+
+CTiglTransformation operator+(const CTiglTransformation& a, const CTiglTransformation& b)
+{
+    CTiglTransformation result;
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            result.SetValue(row, col, a.GetValue(row, col) + b.GetValue(row, col));
+        }
+    }
+    return result;
+}
+
+CTiglTransformation operator*( double s, const CTiglTransformation& a)
+{
+    CTiglTransformation result;
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            result.SetValue(row, col, s * a.GetValue(row, col));
+        }
+    }
+    return result;
+}
+
+bool CTiglTransformation::HasZeroScaling() const
+{
+    return (isNear(GetValue(0,0),0)|| isNear(GetValue(1,1),0) || isNear(GetValue(2,2),0));
+}
+
+bool CTiglTransformation::IsNear(const tigl::CTiglTransformation &other, double epsilon) const
+{
+    bool result = true;
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            result = result && fabs( GetValue(row, col) - other.GetValue(row, col)) <= epsilon;
+        }
+    }
+    return result;
+}
+
+CTiglPoint CTiglTransformation::GetTranslation()
+{
+    // translation is last column of transformation
+    CTiglPoint translation;
+    translation.x = GetValue(0,3);
+    translation.y = GetValue(1,3);
+    translation.z = GetValue(2,3);
+    return translation;
 }
 
 } // end namespace tigl

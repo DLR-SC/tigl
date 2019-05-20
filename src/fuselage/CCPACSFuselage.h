@@ -40,6 +40,7 @@
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 #include <gp_Lin.hxx>
+#include "CTiglFuselageHelper.h"
 
 namespace tigl
 {
@@ -128,6 +129,41 @@ public:
     TIGL_EXPORT TopoDS_Wire projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin) const;
     TIGL_EXPORT TopoDS_Wire projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction) const;
 
+    /*
+     * Creator functions
+     */
+
+    // Return the center of the noise airfoil, this correspond to the the beginning of the fuselage.
+    TIGL_EXPORT CTiglPoint GetNoseCenter();
+
+    // Set the position of the noise center.
+    TIGL_EXPORT void SetNoseCenter(const CTiglPoint &newCenter);
+
+    // Set the rotation of the fuselage transformation (nothing else ;)
+    // Todo evalute the possiblity to rotate around the nose (simple fuselage case)
+    TIGL_EXPORT void SetRotation(const CTiglPoint& newRotation);
+
+    // Gets the total length of this fuselage
+    TIGL_EXPORT double GetLength();
+
+    // Sets the total length of this fuselage. (The noise keeps its position.)
+    TIGL_EXPORT void SetLength(double newLength);
+
+    // Return the maximal height of the fuselage
+    // The height is computed by reverting the fuselage rotation and building a bounding box around the fuselage
+    TIGL_EXPORT double GetMaximalHeight();
+
+    // Set the maximal height of the fuselage by
+    // inverting the rotation of the fuselage, bring the nose to the origin and scaling in the Z direction
+    TIGL_EXPORT void SetMaxHeight(double newMaxHeight);
+
+    // Return the maximal width of the fuselage
+    TIGL_EXPORT double GetMaximalWidth();
+
+    // Set the maximal width of the fuselage by inverting the rotation of the fuselage and scaling in the Y direction
+    TIGL_EXPORT void SetMaxWidth(double newMaxWidth);
+
+
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;
 
@@ -141,6 +177,8 @@ protected:
 
     void SetFaceTraits(PNamedShape loft) const;
 
+    void SetFuselageHelper(CTiglFuselageHelper& cache) const ;
+
 private:
     // get short name for loft
     std::string GetShortShapeName() const;
@@ -153,6 +191,8 @@ private:
     Cache<TopoDS_Compound, CCPACSFuselage> guideCurves;
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
+
+    Cache<CTiglFuselageHelper, CCPACSFuselage> fuselageHelper;
 
     friend class CCPACSFuselageSegment;
 };

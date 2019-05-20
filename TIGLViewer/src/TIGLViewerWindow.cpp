@@ -124,7 +124,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     setAcceptDrops(true);
 
     // creator init
-    modificatorManager = new ModificatorManager(treeWidget, modificatorContainerWidget) ;
+    modificatorManager = new ModificatorManager(treeWidget, modificatorContainerWidget, undoStack) ;
 
     connectSignals();
     createMenus();
@@ -262,6 +262,7 @@ void TIGLViewerWindow::closeConfiguration()
         QFile(currentFile.absoluteFilePath()).remove();
     }
     setCurrentFile("");
+    undoStack->clear(); // when the document is closed, we remove all undo
 }
 
 void TIGLViewerWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
@@ -311,7 +312,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             delete cpacsConfiguration;
             cpacsConfiguration = config;
 
-            modificatorManager->setCPACSConfiguration(&(cpacsConfiguration->GetConfiguration()));
+            modificatorManager->setCPACSConfiguration(cpacsConfiguration);
 
             connectConfiguration();
             updateMenus();
@@ -358,7 +359,7 @@ void TIGLViewerWindow::reopenFile()
 {
     if (currentFile.suffix().toLower() == tr("xml")){
         cpacsConfiguration->updateConfiguration();
-        modificatorManager->setCPACSConfiguration(&(cpacsConfiguration->GetConfiguration()));
+        modificatorManager->setCPACSConfiguration(cpacsConfiguration);
     }
     else {
         myScene->getContext()->EraseAll(Standard_False);
@@ -854,7 +855,7 @@ void TIGLViewerWindow::connectSignals()
     // Addition for creator
 
     // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
-    // connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
+    connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
     // creator view
     connect(showModificatorAction, SIGNAL(toggled(bool)), editorDockWidget, SLOT(setVisible(bool)));
     connect(editorDockWidget, SIGNAL(visibilityChanged(bool)), showModificatorAction, SLOT(setChecked(bool)));
@@ -1059,6 +1060,11 @@ void TIGLViewerWindow::drawVector()
     getScene()->displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
 }
 
+
+void TIGLViewerWindow::updateScene() {
+    myScene->deleteAllObjects();
+    cpacsConfiguration->drawConfiguration();
+}
 
 /// This function is copied from QtCoreLib (>5.1)
 /// and is not available in qt4

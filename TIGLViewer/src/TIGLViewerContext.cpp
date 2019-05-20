@@ -369,8 +369,12 @@ void TIGLViewerContext::displayShape(const PNamedShape& pshape, bool updateViewe
     }
 #endif
 
-    QUndoCommand* command = new TiGLViewer::DrawObjects(myContext, shape, pshape->Name(), updateViewer);
-    myUndoStack->push(command);
+    // todo discuss of the meaning of undo draw and its consequences
+    //QUndoCommand* command = new TiGLViewer::DrawObjects(myContext, shape, pshape->Name(), updateViewer);
+    //myUndoStack->push(command);
+    myContext->Display(shape, Standard_False);
+    myContext->UpdateCurrentViewer();
+
 
     if (settings.enumerateFaces()) {
         TopTools_IndexedMapOfShape shapeMap;

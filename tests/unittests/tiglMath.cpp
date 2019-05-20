@@ -360,6 +360,76 @@ TEST(TiglMath, CTiglTransform_Decompose)
     EXPECT_NEAR(T[0], 0., 1e-8);
     EXPECT_NEAR(T[0], 0., 1e-8);
     EXPECT_NEAR(T[0], 0., 1e-8);
+
+    // Example of matrices that can not be decompose:
+
+    // Create a shear matrix by rotation and scaling
+    // This case can happens if the is a none-uniform scaling in the section
+
+    double shearY = 0.5; // 1.28 - (1/1.28) = 0.5
+    double a = 1.28;
+    double angle = 38;
+
+    tigl::CTiglTransformation tE,tS, shear, expectedShear;
+    tE.SetIdentity();
+    tE.AddRotationZ(-angle);
+    tS.SetIdentity();
+    tS.AddScaling(a,1/a, 1);
+    tS.AddRotationZ(90-angle);
+    shear = tS *tE;
+
+    expectedShear.SetIdentity();
+    expectedShear.SetValue(1,0,0.5);
+
+    for(int row = 0; row < 4; row ++ ){
+        for ( int col = 0; col < 4; col++) {
+            EXPECT_NEAR(expectedShear.GetValue(row,col), shear.GetValue(row,col), 0.01); // approximation error of .128 and -38
+        }
+    }
+
+    // it's impossible to decompose a shear matrix properly in R,S,T
+    expectedShear.Decompose(S,R,T);
+
+    // todo add a return value to decompose to check if the decomposition can be performed
+    EXPECT_TRUE(true);
+
+
+}
+
+TEST(TiglMath, CTiglTransform_Decompose2)
+{
+    // Simulate the case where a cpacs transformation as a rotation RX:0;RY:30;RZ:20
+    // Remember that cpacs transformation has intrinsic rotation X,Y',Z'' so it corresponding to extrinsic rotation Z,Y,X
+    // This above process is similar at the one used at CCPACSTransformation::updateMatrix
+    tigl::CTiglTransformation rot;
+    rot.AddRotationZ(20);
+    rot.AddRotationY(30);
+    rot.AddRotationX(0);
+
+    // So now, as we can expected rotating the x basis vector (1,0,0) will output (0.81379768134, 0.34202014332 , -0.46984631039);
+    gp_Pnt resultV = rot.Transform(gp_Pnt(1., 0. ,0.));
+    gp_Pnt expectV = gp_Pnt(0.81379768134, 0.34202014332 , -0.46984631039);
+    EXPECT_NEAR(resultV.X(), expectV.X(), 1e-8 );
+    EXPECT_NEAR(resultV.Y(), expectV.Y(), 1e-8 );
+    EXPECT_NEAR(resultV.Z(), expectV.Z(), 1e-8 );
+
+    // decomposing the rotation should output the X,Y,Z extrinsic angle
+    double S[3] = {0., 0., 0.};
+    double R[3] = {0., 0., 0.};
+    double T[3] = {0., 0., 0.};
+    rot.Decompose(S, R, T);
+
+    // so if we put back this value in transformation
+    tigl::CTiglTransformation rot2;
+    rot2.AddRotationZ(R[2]);
+    rot2.AddRotationY(R[1]);
+    rot2.AddRotationX(R[0]);
+
+    // we get the expected result
+    resultV = rot2.Transform(gp_Pnt(1., 0., 0.));
+    EXPECT_NEAR(resultV.X(), expectV.X(), 1e-8 );
+    EXPECT_NEAR(resultV.Y(), expectV.Y(), 1e-8 );
+    EXPECT_NEAR(resultV.Z(), expectV.Z(), 1e-8 );
 }
 
 TEST(TiglMath, CTiglTransform_setTransformationMatrix)
@@ -371,9 +441,7 @@ TEST(TiglMath, CTiglTransform_setTransformationMatrix)
     // create CPACS-conform tigl-transformation (i.e. scaling -> euler-xyz-Rotation -> translation)
     tigl::CTiglTransformation tiglTrafo;
     tiglTrafo.AddScaling(scale[0], scale[1], scale[2]);
-    tiglTrafo.AddRotationX(rot[0]);
-    tiglTrafo.AddRotationY(rot[1]);
-    tiglTrafo.AddRotationZ(rot[2]);
+    tiglTrafo.AddRotationIntrinsicXYZ(rot[0], rot[1], rot[2]);
     tiglTrafo.AddTranslation(trans[0], trans[1], trans[2]);
 
     tigl::CCPACSTransformation cpacsTrafo(NULL);
@@ -391,6 +459,142 @@ TEST(TiglMath, CTiglTransform_setTransformationMatrix)
     EXPECT_NEAR(*cpacsTrafo.GetTranslation()->GetY(), trans[1], 1e-8);
     EXPECT_NEAR(*cpacsTrafo.GetTranslation()->GetZ(), trans[2], 1e-8);
 }
+
+
+TEST(TiglMath, CTiglTransform_getRotationToAlignAToB)
+{
+
+    tigl::CTiglTransformation yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint(0, 1,0),tigl::CTiglPoint(1, 0,0));
+
+    double scale[3] = { -1 , -1 , -1 };
+    double rot[3]   = { -1 , -1 , -1};
+    double trans[3] = { -1 , -1 , -1};
+    yToZ.Decompose(scale, rot, trans);
+
+    EXPECT_NEAR(rot[0], 0, 0.01);
+    EXPECT_NEAR(rot[1], 0, 0.01);
+    EXPECT_NEAR(rot[2], -90, 0.01);
+
+    EXPECT_NEAR(scale[0], 1, 0.01);
+    EXPECT_NEAR(scale[1], 1, 0.01);
+    EXPECT_NEAR(scale[2], 1, 0.01);
+
+    EXPECT_NEAR(trans[0], 0, 0.01);
+    EXPECT_NEAR(trans[1], 0, 0.01);
+    EXPECT_NEAR(trans[2], 0, 0.01);
+
+
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint(0.5,0.5,0), tigl::CTiglPoint(1, 0 ,0));
+    yToZ.Decompose(scale, rot, trans);
+
+    EXPECT_NEAR(rot[0], 0, 0.01);
+    EXPECT_NEAR(rot[1], 0, 0.01);
+    EXPECT_NEAR(rot[2], -45, 0.01);
+
+    EXPECT_NEAR(scale[0], 1, 0.01);
+    EXPECT_NEAR(scale[1], 1, 0.01);
+    EXPECT_NEAR(scale[2], 1, 0.01);
+
+    EXPECT_NEAR(trans[0], 0, 0.01);
+    EXPECT_NEAR(trans[1], 0, 0.01);
+    EXPECT_NEAR(trans[2], 0, 0.01);
+
+
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint(1, 0 ,0), tigl::CTiglPoint(0.5,0.5,0));
+    yToZ.Decompose(scale, rot, trans);
+
+    EXPECT_NEAR(rot[0], 0, 0.01);
+    EXPECT_NEAR(rot[1], 0, 0.01);
+    EXPECT_NEAR(rot[2], 45, 0.01);
+
+    EXPECT_NEAR(scale[0], 1, 0.01);
+    EXPECT_NEAR(scale[1], 1, 0.01);
+    EXPECT_NEAR(scale[2], 1, 0.01);
+
+    EXPECT_NEAR(trans[0], 0, 0.01);
+    EXPECT_NEAR(trans[1], 0, 0.01);
+    EXPECT_NEAR(trans[2], 0, 0.01);
+
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint(-0.5,-0.5,0),  tigl::CTiglPoint(1, 0 ,0) );
+    yToZ.Decompose(scale, rot, trans);
+
+    EXPECT_NEAR(rot[0], 0, 0.01);
+    EXPECT_NEAR(rot[1], 0, 0.01);
+    EXPECT_NEAR(rot[2], 135, 0.01);
+
+    EXPECT_NEAR(scale[0], 1, 0.01);
+    EXPECT_NEAR(scale[1], 1, 0.01);
+    EXPECT_NEAR(scale[2], 1, 0.01);
+
+    EXPECT_NEAR(trans[0], 0, 0.01);
+    EXPECT_NEAR(trans[1], 0, 0.01);
+    EXPECT_NEAR(trans[2], 0, 0.01);
+
+
+    tigl::CTiglPoint b =  tigl::CTiglPoint(0.81379768134, 0.34202014332 , -0.46984631039); // Ry:30, rz:20
+    tigl::CTiglPoint a = tigl::CTiglPoint(1,0,0);
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(a, b);
+
+    tigl::CTiglPoint result = yToZ * a;
+    EXPECT_NEAR(result.x, b.x, 0.01 );
+    EXPECT_NEAR(result.y, b.y, 0.01 );
+    EXPECT_NEAR(result.z, b.z, 0.01 );
+
+
+    // Special case where the vector are identical
+    b =  tigl::CTiglPoint(1,0,0); // Ry:30, rz:20
+    a = tigl::CTiglPoint(1,0,0);
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(a, b);
+
+    result = yToZ * a;
+    EXPECT_NEAR(result.x, b.x, 0.01 );
+    EXPECT_NEAR(result.y, b.y, 0.01 );
+    EXPECT_NEAR(result.z, b.z, 0.01 );
+
+
+    b =  tigl::CTiglPoint(-1,0,0); // Ry:30, rz:20
+    a = tigl::CTiglPoint(1,0,0);
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(a, b);
+
+    result = yToZ * a;
+    EXPECT_NEAR(result.x, b.x, 0.01 );
+    EXPECT_NEAR(result.y, b.y, 0.01 );
+    EXPECT_NEAR(result.z, b.z, 0.01 );
+
+}
+
+
+TEST(TiglMath, CTiglTransform_isNear)
+{
+    tigl::CTiglTransformation a,b;
+
+    EXPECT_TRUE(a.IsNear(b));
+    EXPECT_TRUE(b.IsNear(a));
+    EXPECT_TRUE(a.IsNear(b,0));
+    EXPECT_TRUE(b.IsNear(a,0));
+
+    a.AddTranslation(12,13,14);
+    EXPECT_FALSE(a.IsNear(b));
+    EXPECT_FALSE(b.IsNear(a));
+    EXPECT_TRUE(a.IsNear(b,100));
+
+    b.AddTranslation(12,13,14);
+    EXPECT_TRUE(a.IsNear(b));
+    EXPECT_TRUE(b.IsNear(a));
+
+    b.AddRotationX(0.1);
+    EXPECT_FALSE(a.IsNear(b));
+    a.AddRotationX(0.1);
+    EXPECT_TRUE(a.IsNear(b));
+
+    a.AddScaling(3,3.3,4);
+    EXPECT_FALSE(a.IsNear(b));
+    b.AddScaling(3,3.3,4);
+    EXPECT_TRUE(a.IsNear(b));
+
+}
+
+
 
 TEST(TiglMath, SVD)
 {

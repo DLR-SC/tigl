@@ -385,4 +385,9 @@ void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V)
     S(3,3) = Sv(3);
 }
 
+bool isNear(double a, double b, double epsilon)
+{
+    return (fabs(a - b) <= epsilon);
+}
+
 } // namespace tigl

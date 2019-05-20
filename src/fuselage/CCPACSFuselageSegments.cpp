@@ -123,4 +123,22 @@ void CCPACSFuselageSegments::ReorderSegments()
     }
 }
 
+std::vector<std::string> CCPACSFuselageSegments::GetElementUIDsInOrder() const
+{
+    std::vector<std::string> elementUIDs;
+    std::string tempStartUID;
+    std::string tempEndUID;
+    for (int i = 0; i < m_segments.size(); i++) {
+        tempStartUID = m_segments[i]->GetStartSectionElementUID();
+        tempEndUID   = m_segments[i]->GetEndSectionElementUID();
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempStartUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempStartUID);
+        }
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempEndUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempEndUID);
+        }
+    }
+    return elementUIDs;
+}
+
 } // end namespace tigl

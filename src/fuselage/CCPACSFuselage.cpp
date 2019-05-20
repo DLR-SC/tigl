@@ -59,6 +59,13 @@
 #include <BRepProj_Projection.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
+#include "ListFunctions.h"
+#include <map>
+#include "CCPACSFuselageSectionElement.h"
+#include "CTiglFuselageHelper.h"
+#include <BRepBndLib.hxx>
+#include <Bnd_Box.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 
 namespace tigl
 {
@@ -66,7 +73,9 @@ namespace tigl
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselage(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , guideCurves(*this, &CCPACSFuselage::BuildGuideCurves) {
+    , guideCurves(*this, &CCPACSFuselage::BuildGuideCurves)
+    , fuselageHelper(*this, &CCPACSFuselage::SetFuselageHelper)
+    {
     Cleanup();
     if (parent->IsParent<CCPACSAircraftModel>())
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
@@ -90,6 +99,7 @@ void CCPACSFuselage::Invalidate()
         m_positionings->Invalidate();
     if (m_structure)
         m_structure->Invalidate();
+    fuselageHelper.clear();
 }
 
 // Cleanup routine
@@ -612,7 +622,265 @@ TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTr
     trafo.PreMultiply(fuselTransform);
 
     return trafo.Transform(shape);
+}
 
+
+CTiglPoint CCPACSFuselage::GetNoseCenter()
+{
+    CTiglPoint center;
+    if (! fuselageHelper->HasShape()) {  // fuselage has no element case
+        return center;
+    }
+    std::string noiseUID                  = fuselageHelper->GetNoseUID();
+    CTiglFuselageSectionElement* cElement = fuselageHelper->GetCTiglElementOfFuselage(noiseUID);
+    center = cElement->GetCenter(TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM);
+    return center;
+}
+
+void CCPACSFuselage::SetNoseCenter(const tigl::CTiglPoint &newCenter)
+{
+    // Remark, this method work even if the fuselage has no element, because we set the fuselage transformation
+    CTiglPoint oldCenter                         = GetNoseCenter();
+    CTiglPoint delta                             = newCenter - oldCenter;
+    CCPACSTransformation& fuselageTransformation = GetTransformation();
+    CTiglPoint currentTranslation                = fuselageTransformation.getTranslationVector();
+    fuselageTransformation.setTranslation(currentTranslation + delta);
+    Invalidate();
+}
+
+void CCPACSFuselage::SetRotation(const CTiglPoint& newRot)
+{
+    CCPACSTransformation& transformation = GetTransformation();
+    transformation.setRotation(newRot);
+    Invalidate();
+}
+
+double CCPACSFuselage::GetLength()
+{
+    double length = 0;
+    if (!fuselageHelper->HasShape()) { // fuselage has no element case
+        return length;
+    }
+    CTiglFuselageSectionElement* nose = fuselageHelper->GetCTiglElementOfFuselage(fuselageHelper->GetNoseUID());
+    CTiglFuselageSectionElement* tail = fuselageHelper->GetCTiglElementOfFuselage(fuselageHelper->GetTailUID());
+    length = (tail->GetCenter(GLOBAL_COORDINATE_SYSTEM) - nose->GetCenter(GLOBAL_COORDINATE_SYSTEM)).norm2();
+    return length;
+}
+
+void CCPACSFuselage::SetLength(double newLength)
+{
+    //
+    //              To set the legth, we basicaly follow these steps:
+    //
+    //              1)  Computation of the transformations needed to perform the desired effect.
+    //                  The desired effect can be perform as:
+    //                      a) Put the start center point on the world origin
+    //                      b) Rotation to get the end center on the X axis
+    //                      c) Perform a scaling on X to obtain the desired length value
+    //                      d) inverse of of b) to put the fuselage in the right direction
+    //                      e) inverse of a) to shift the fuselage to its origin place
+    //
+    //              2) Compute the new center point for each element using the previous transformation
+
+    if (!fuselageHelper->HasShape()) {
+        LOG(WARNING) << "PACSFuselage::SetLength: Impossible to set the length because this fuselage has no segments.";
+        return;
+    }
+
+    std::vector<std::string> elementUIDS = fuselageHelper->GetElementUIDsInOrder();
+    std::map<std::string, CTiglPoint> oldCenterPoints;
+
+    // Retrieve the current center of each element
+    for (int i = 0; i < elementUIDS.size(); i++) {
+        oldCenterPoints[elementUIDS[i]] = fuselageHelper->GetCTiglElementOfFuselage(elementUIDS[i])->GetCenter();
+    }
+
+    CTiglPoint noseP = oldCenterPoints[fuselageHelper->GetNoseUID()];
+    CTiglPoint tailP = oldCenterPoints[fuselageHelper->GetTailUID()];
+
+    // bring noseP (aka Start) to Origin
+    CTiglTransformation startToO;
+    startToO.SetIdentity();
+    startToO.AddTranslation(-noseP.x, -noseP.y, -noseP.z);
+
+    noseP = startToO * noseP;
+    tailP = startToO * tailP;
+
+    // bring tailP on the x axis
+    // We perform a extrinsic rotation in the order Z -Y -X, so it should be equivalent to the intrinsic cpacs rotation
+    // in the order X Y' Z''
+    CTiglTransformation rotEndToX4d;
+    rotEndToX4d.SetIdentity();
+    double rotGradZ = atan2(tailP.y, tailP.x);
+    double rotZ     = Degrees(rotGradZ);
+    rotEndToX4d.AddRotationZ(-rotZ);
+    double rotGradY = atan2(tailP.z, sqrt((tailP.x * tailP.x) + (tailP.y * tailP.y)));
+    double rotY     = Degrees(rotGradY);
+    rotEndToX4d.AddRotationY(rotY);
+
+    tailP = rotEndToX4d * tailP;
+
+    // Compute the needed scaling in x
+    double oldLength = GetLength();
+    if (oldLength == 0) {
+        // todo cover the case where length is 0
+        throw CTiglError("CCPACSFuselage::SetLengthBetween: the old length is 0, impossible to scale the length");
+    }
+    double xScale = newLength / oldLength;
+    CTiglTransformation scaleM;
+    scaleM.SetIdentity();
+    scaleM.AddScaling(xScale, 1.0, 1.0);
+
+    // Compute the new center point and the new origin of each element and set it
+    CTiglTransformation totalTransformation =
+        startToO.Inverted() * rotEndToX4d.Inverted() * scaleM * rotEndToX4d * startToO;
+    CTiglPoint newCenter;
+    for (int i = 0; i < elementUIDS.size(); i++) {
+        newCenter = totalTransformation * oldCenterPoints.at(elementUIDS[i]);
+        fuselageHelper->GetCTiglElementOfFuselage(elementUIDS[i])->SetCenter(newCenter);
+    }
+
+    // Remark the saving in tixi is not done, it should be perform by the user using "WriteCPACS" function
+}
+
+double CCPACSFuselage::GetMaximalHeight()
+{
+    // Todo: evaluate the possiblity to use the a cache for this operation in fuselageHelper
+
+    // First compute the rotation to bring the fuselage in the standard direction
+    // We do not invert the fuselage transformation, because we want to keep the the scaling apply by it
+    CTiglTransformation fuselageRot;
+    fuselageRot.AddRotationIntrinsicXYZ(GetRotation().x,GetRotation().y, GetRotation().z) ;
+    CTiglTransformation fuselageRotInv = fuselageRot.Inverted();
+
+    // Then comput the loft in this coordinate system
+    PNamedShape loftCopy = GetLoft()->DeepCopy(); // make a deep copy because we gonna to transform it
+    TopoDS_Shape transformedLoft = fuselageRotInv.Transform(loftCopy->Shape());
+    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.01);   // tessellate the loft to have a more accurate bounding box.
+
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(transformedLoft, boundingBox);
+    Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+    return zmax - zmin;
+}
+
+void CCPACSFuselage::SetMaxHeight(double newHeight)
+{
+    // Remark the inverse rotation is needed to bring the fuselage in the "intutive" direction
+    // And we need to bring the nose to the origin because otherwise the scaling will change the position of the fuselage
+    // if the fuselage is not on the X axis.
+    // Furthermore is impossible to use scaling of the fuselage, because sometimes the fuselage has already a position
+    // before that the scaling of the fuselage is applied.
+    // So for each transformation of element, E', we get the following equation
+    //
+    // FPSE' = R⁻¹*T⁻¹*S*T*R*FPSE   Where T is the translation from nose to origin
+    //                                and R the inverse transformation of the rotation.
+
+
+    CTiglPoint nose = GetNoseCenter();
+
+    CTiglTransformation RI;     // fuselage rotation
+    RI.AddRotationIntrinsicXYZ(GetRotation().x,GetRotation().y, GetRotation().z) ;
+    CTiglTransformation R = RI.Inverted();
+
+    nose = R*nose;  // nose after rotation apply on it
+    CTiglTransformation T ;
+    T.AddTranslation(- nose.x, -nose.y, -nose.z);
+    CTiglTransformation TI = T.Inverted();
+
+    double currentHeight = GetMaximalHeight();
+    if (currentHeight < 0.00000000001 ){
+        LOG(WARNING) << "CCPACSFuselage::SetMaxHeight: The current height is near 0, we do not support for the moment setting the height if the current height is zero, sorry.";
+        return;
+    }
+    double scalingZ = newHeight / currentHeight;
+    CTiglTransformation S;
+    S.AddScaling(1,1,scalingZ);
+
+    std::vector<std::string> elementUIDs =  fuselageHelper->GetElementUIDsInOrder();
+    CTiglFuselageSectionElement* cElement = nullptr;
+    CTiglTransformation newTotalTransformationForE;
+    for (int i = 0; i < elementUIDs.size(); i++ ) {
+        cElement = fuselageHelper->GetCTiglElementOfFuselage(elementUIDs[i]);
+        newTotalTransformationForE = RI * TI * S * T * R * cElement->GetTotalTransformation();
+        cElement->SetTotalTransformation(newTotalTransformationForE);
+    }
+
+    Invalidate();
+
+}
+
+double CCPACSFuselage::GetMaximalWidth()
+{
+
+    // First compute the rotation to bring the fuselage in the standard direction
+    // We do not invert the fuselage transformation, because we want to keep the the scaling apply by it
+    CTiglTransformation fuselageRot;
+    fuselageRot.AddRotationIntrinsicXYZ(GetRotation().x,GetRotation().y, GetRotation().z) ;
+    CTiglTransformation fuselageRotInv = fuselageRot.Inverted();
+
+    // Then comput the loft in this coordinate system
+    PNamedShape loftCopy = GetLoft()->DeepCopy(); // make a deep copy because we gonna to transform it
+    TopoDS_Shape transformedLoft = fuselageRotInv.Transform(loftCopy->Shape());
+    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.01); // tessellate the loft to have a more accurate bounding box.
+
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(transformedLoft, boundingBox);
+    Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+    return ymax - ymin;
+}
+
+void CCPACSFuselage::SetMaxWidth(double newWidth)
+{
+
+    // Remark the inverse rotation is needed to bring the fuselage in the "intutive" direction
+    // And we need to bring the nose to the origin because otherwise the scaling will change the position of the fuselage
+    // if the fuselage is not on the X axis.
+    // Furthermore is impossible to use scaling of the fuselage, because sometimes the fuselage has already a position
+    // before that the scaling of the fuselage is applied.
+    // So for each transformation of element, E', we get the following equation
+    //
+    // FPSE' = R⁻¹*T⁻¹*S*T*R*FPSE   Where T is the translation from nose to origin
+    //                                and R the inverse transformation of the rotation.
+
+
+    CTiglPoint nose = GetNoseCenter();
+
+    CTiglTransformation RI;     // fuselage rotation
+    RI.AddRotationIntrinsicXYZ(GetRotation().x,GetRotation().y, GetRotation().z) ;
+    CTiglTransformation R = RI.Inverted();
+
+    nose = R*nose;  // nose after rotation apply on it
+    CTiglTransformation T ;
+    T.AddTranslation(- nose.x, -nose.y, -nose.z);
+    CTiglTransformation TI = T.Inverted();
+
+    double currentWidth = GetMaximalWidth();
+    if (currentWidth < 0.00000000001 ){
+        LOG(WARNING) << "CCPACSFuselage::SetMaxHeight: The current height is near 0, we do not support for the moment setting the height if the current height is zero, sorry.";
+        return;
+    }
+    double scalingY = newWidth / currentWidth;
+    CTiglTransformation S;
+    S.AddScaling(1,scalingY,1);
+
+    std::vector<std::string> elementUIDs =  fuselageHelper->GetElementUIDsInOrder();
+    CTiglFuselageSectionElement* cElement = nullptr;
+    CTiglTransformation newTotalTransformationForE;
+    for (int i = 0; i < elementUIDs.size(); i++ ) {
+        cElement = fuselageHelper->GetCTiglElementOfFuselage(elementUIDs[i]);
+        newTotalTransformationForE = RI * TI * S * T * R * cElement->GetTotalTransformation();
+        cElement->SetTotalTransformation(newTotalTransformationForE);
+    }
+
+    Invalidate();
+}
+
+void CCPACSFuselage::SetFuselageHelper(CTiglFuselageHelper& cache) const
+{
+    cache.SetFuselage(const_cast<CCPACSFuselage*>(this));
 }
 
 } // end namespace tigl

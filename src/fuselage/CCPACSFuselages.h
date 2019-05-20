@@ -59,6 +59,11 @@ public:
 
     // Returns the fuselage index for a given UID.
     TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;
+
+    // Create a new fuselage with the given parameters.
+    // Remark, all children UIDs and transformations are set.
+    TIGL_EXPORT CCPACSFuselage& CreateFuselage(const std::string& fuselageUID, int numberOfSection,
+                                               const std::string& profileUID);
 };
 
 } // end namespace tigl

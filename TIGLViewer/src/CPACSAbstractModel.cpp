@@ -117,7 +117,7 @@ int CPACSAbstractModel::columnCount(const QModelIndex& idx) const
         return 0;
     }
 
-    return 3; // we have for values in a tree item
+    return 3;
 }
 
 // return the QModelindex from a parent and row and column information

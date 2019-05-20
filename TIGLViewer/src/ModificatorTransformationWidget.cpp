@@ -35,7 +35,7 @@ ModificatorTransformationWidget::~ModificatorTransformationWidget()
     delete ui;
 }
 
-void ModificatorTransformationWidget::apply()
+bool ModificatorTransformationWidget::apply()
 {
     // todo check if there are relevent changes
     // setInternalFromSpinBoxes();
@@ -43,6 +43,8 @@ void ModificatorTransformationWidget::apply()
     // Not done yet because we first need to have  a working
     // setSpinBoxesFromInternal
     // tiglTransformation->setTransformationMatrix(transformation);
+
+    return false;
 }
 
 void ModificatorTransformationWidget::reset()

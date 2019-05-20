@@ -27,6 +27,7 @@
 #include "CPACSFuselages.h"
 #include "CPACSWing.h"
 #include "CPACSTransformation.h"
+#include "CTiglSectionElement.h"
 
 namespace Ui
 {
@@ -52,7 +53,7 @@ class ModificatorContainerWidget : public QWidget
     Q_OBJECT
 
 signals:
-    void configurationEdited();
+    void undoCommandRequired();
 
 public slots:
     void applyCurrentModifications();
@@ -65,9 +66,12 @@ public:
     void setTransformationModificator(tigl::CCPACSTransformation& transformation);
     void setWingModificator(tigl::CCPACSWing& wing);
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
+    void setElementModificator(tigl::CTiglSectionElement& element);
+    void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
+
     void setNoInterfaceWidget();
 
-    void hideAllSecializedWidgets();
+    void hideAllSpecializedWidgets();
 
 private:
     Ui::ModificatorContainerWidget* ui;

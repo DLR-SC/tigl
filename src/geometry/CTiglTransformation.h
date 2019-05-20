@@ -48,12 +48,6 @@ public:
     
     TIGL_EXPORT CTiglTransformation& operator=(const CTiglTransformation&);
 
-    // Converts degree to radian, utility function
-    TIGL_EXPORT static double DegreeToRadian(double degree);
-
-    // Converts radian to degree, utility function
-    TIGL_EXPORT static double RadianToDegree(double radian);
-
     // Sets matrix to identity matrix
     TIGL_EXPORT void SetIdentity();
 
@@ -81,6 +75,9 @@ public:
     TIGL_EXPORT void AddRotationX(double degreeX);
     TIGL_EXPORT void AddRotationY(double degreeY);
     TIGL_EXPORT void AddRotationZ(double degreeZ);
+
+    // Adds a rotation in intrinsic x-y'-z'' Euler convention to the matrix
+    TIGL_EXPORT void AddRotationIntrinsicXYZ(double phi, double theta, double psi);
 
     // Adds projection on xy plane by setting the z coordinate to 0
     TIGL_EXPORT void AddProjectionOnXYPlane();
@@ -125,6 +122,18 @@ public:
     // Getter for matrix values
     TIGL_EXPORT double GetValue(int row, int col) const;
 
+    // Return the translation performed by this translation.
+    TIGL_EXPORT CTiglPoint GetTranslation();
+
+    // Return the transformation that bring the vector A in the same direction as vector B
+    TIGL_EXPORT static CTiglTransformation GetRotationToAlignAToB(tigl::CTiglPoint vectorA, tigl::CTiglPoint vectorB);
+
+    // Return true if the transformation has a zero scaling
+    TIGL_EXPORT bool HasZeroScaling() const;
+
+    // Compare each value of the transformation matrix and return true if they are all near
+    TIGL_EXPORT bool IsNear(const CTiglTransformation& other, double epsilon = 0.0001) const;
+
 private:
     bool IsUniform() const;
 
@@ -132,6 +141,16 @@ private:
 };
 
 TIGL_EXPORT CTiglTransformation operator*(const CTiglTransformation& a, const CTiglTransformation& b);
+
+// multiply the CTiglPoint by the CTiglTransformation matrix (taking care of to augment the CTiglPoint)  and return the result
+TIGL_EXPORT CTiglPoint operator*(const CTiglTransformation& m, const CTiglPoint& p);
+
+// Return the result of the matrix addition of the two transformation matrices
+TIGL_EXPORT CTiglTransformation operator+(const CTiglTransformation& a, const CTiglTransformation& b);
+
+// Return the matrix where each element is scale by s
+TIGL_EXPORT CTiglTransformation operator*(double s, const CTiglTransformation& a);
+
 
 } // end namespace tigl
 

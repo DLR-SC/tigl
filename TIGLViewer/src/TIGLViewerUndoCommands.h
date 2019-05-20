@@ -10,6 +10,8 @@
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_InteractiveContext.hxx>
 
+#include "TIGLViewerDocument.h"
+
 namespace TiGLViewer
 {
 
@@ -107,5 +109,34 @@ private:
 };
 
 
+// todo optimize the saving function to store a diff.
+/**
+ * Command to write the content of TIGLViewerDocument in tixiMemory
+ * and save the old state and new state of the tixiMemory in a string.
+ * So we are able to reload the configuration state and performe the undo and redo operation.
+ */
+class ModifyTiglObject : public QUndoCommand
+{
+public:
+    ModifyTiglObject(TIGLViewerDocument& doc);
+    // QUndoCommand interface
+
+public:
+    void redo() OVERRIDE;
+    void undo() OVERRIDE;
+    int id() const OVERRIDE
+    {
+        return 1003;
+    }
+
+private:
+    void initialize();
+
+private:
+    std::string oldConfig;
+    std::string newConfig;
+    bool isInitialized;
+    TIGLViewerDocument& tiglViewerDoc; // can be invalid after some time, but will not be used anymore ;)
+};
 }
 #endif // TIGLVIEWERUNDOCOMMANDS_H

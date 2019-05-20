@@ -30,13 +30,13 @@ CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
     ui->treeView->setModel(filterModel);
     selectionModel = ui->treeView->selectionModel();
 
+
     // set the search to search also in uid
     filterModel->enableMatchOnUID(true);
 
     setTreeViewColumnsDisplay();
     setExpertView();
-
-
+    
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this,
             SLOT(onSelectionChanged(const QItemSelection&, const QItemSelection&)));
 
@@ -141,4 +141,16 @@ void CPACSTreeWidget::refresh()
     filterModel->resetInternalTree(&tree);
     setTreeViewColumnsDisplay();
     setExpertView();
+}
+
+void CPACSTreeWidget::setSelectedUID(const QString& uid)
+{
+    QModelIndex idxToSelect = filterModel->getIdxForUID(uid);
+    selectionModel->setCurrentIndex(idxToSelect, QItemSelectionModel::Select);
+}
+
+QString CPACSTreeWidget::getSelectedUID()
+{
+    QModelIndex currentIdx = selectionModel->currentIndex();
+    return filterModel->getUidForIdx(currentIdx);
 }

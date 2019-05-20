@@ -89,8 +89,6 @@ void CCPACSTransformation::setScaling(const CTiglPoint& scale)
 
 void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& matrix)
 {
-    *_transformationMatrix.writeAccess() = matrix;
-
     // decompose matrix into scaling, rotation and translation
     double scale[3];
     double rotation[3];
@@ -119,6 +117,8 @@ void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& ma
     m_rotation->SetX(rotation[0]);
     m_rotation->SetY(rotation[1]);
     m_rotation->SetZ(rotation[2]);
+
+    _transformationMatrix.clear();
 }
 
 void CCPACSTransformation::updateMatrix(CTiglTransformation& cache) const
@@ -173,6 +173,20 @@ CTiglTransformation CCPACSTransformation::getTransformationMatrix() const
 void CCPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath)
 {
     generated::CPACSTransformation::ReadCPACS(tixiHandle, transformationXPath);
+}
+
+void CCPACSTransformation::Init(const std::string& baseUID)
+{
+    if (GetUIDManager().IsUIDRegistered(baseUID)) {
+        throw CTiglError(" CCPACSTransformation::Init: Impossible to initialize this transformation with the uid \"" +
+                         baseUID + "\". This uid is already present in the file. Choose another uid.");
+    }
+
+    SetUID(baseUID);
+    setTransformationMatrix(CTiglTransformation());
+    GetTranslation(CreateIfNotExists).SetUID(GetUIDManager().MakeUIDUnique(baseUID + "Transl"));
+    GetRotation(CreateIfNotExists).SetUID(GetUIDManager().MakeUIDUnique(baseUID + "Rot"));
+    GetScaling(CreateIfNotExists).SetUID(GetUIDManager().MakeUIDUnique(baseUID + "Scal"));
 }
 
 } // namespace tigl

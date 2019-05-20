@@ -11,4 +11,4 @@ examples/python_internal/.idea/
 /cmake-build-release
 *.txt.user
 filefilter.txt
-
+.directory

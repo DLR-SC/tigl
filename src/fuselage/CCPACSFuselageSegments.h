@@ -46,6 +46,10 @@ public:
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
 
+    // return the elements uids in order from noise to tail
+    // It assume that the element are already order in m_segments !
+    TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder() const;
+
     // CPACSFuselageSegments interface
 public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) OVERRIDE;

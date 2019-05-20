@@ -2656,4 +2656,47 @@ TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle() const
     return this->m_cpacsHandle;
 }
 
+void TIGLViewerDocument::updateCpacsConfigurationFromString(const std::string& tixiContent)
+{
+    if (m_cpacsHandle < 1) {
+        LOG(ERROR) << " TIGLViewerDocument::updateCpacsConfigurationFromString: No model seems to be open.";
+        return;
+    }
 
+    START_COMMAND();
+
+    std::string modelUID = GetConfiguration().GetUID();
+    tiglCloseCPACSConfiguration(m_cpacsHandle);
+    m_cpacsHandle = -1;
+    app->getScene()->deleteAllObjects();
+
+    QStringList configurations;
+    app->getScene()->getContext()->SetDisplayMode(AIS_Shaded, Standard_False);
+    TixiDocumentHandle tixiHandle = -1;
+
+    ReturnCode tixiRet = tixiImportFromString(tixiContent.c_str(), &tixiHandle);
+    if (tixiRet != SUCCESS) {
+        displayError(QString("TIGLViewerDocument::updateCpacsConfigurationFromString: Error in function "
+                             "<u>tixiOpenDocument</u> when importing the string Error code: %1")
+                         .arg(tixiRet),
+                     "TIXI Error");
+        return;
+    }
+
+    TiglReturnCode tiglRet = TIGL_UNINITIALIZED;
+    tiglRet                = tiglOpenCPACSConfiguration(tixiHandle, modelUID.c_str(), &m_cpacsHandle);
+
+    if (tiglRet != TIGL_SUCCESS) {
+        tixiCloseDocument(tixiHandle);
+        m_cpacsHandle = -1;
+        displayError(
+            QString(
+                "TIGLViewerDocument::updateCpacsConfigurationFromString: <u>tiglOpenCPACSConfiguration</u> returned %1")
+                .arg(tiglGetErrorString(tiglRet)),
+            "Error while reading in CPACS configuration");
+        return;
+    }
+
+    drawConfiguration();
+    emit documentUpdated(m_cpacsHandle);
+}

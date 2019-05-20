@@ -26,10 +26,11 @@ ModificatorWidget::ModificatorWidget(QWidget* parent)
     precision = 3; // by default the precision is 10^-3
 }
 
-void ModificatorWidget::apply()
+bool ModificatorWidget::apply()
 {
     LOG(WARNING) << "ModificatorWidget: apply function should be overwrite in "
                     "children classes";
+    return false;
 }
 
 void ModificatorWidget::reset()

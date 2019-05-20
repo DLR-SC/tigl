@@ -49,6 +49,11 @@ public:
     TIGL_EXPORT CTiglPoint getScaling() const;
     TIGL_EXPORT ECPACSTranslationType getTranslationType() const;
     TIGL_EXPORT CTiglTransformation getTransformationMatrix() const;
+
+    // Helper function to set or reset a CCPACSTransformation.
+    // This function will generate and set all the children uid based on the given uid
+    // and set the transformation to the identity.
+    TIGL_EXPORT void Init(const std::string& UID);
     
     /**
     * Reads in the transformation from a cpacs path
