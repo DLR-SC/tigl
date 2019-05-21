@@ -883,23 +883,12 @@ CTiglTransformation CCPACSWingSegment::GetParentTransformation() const
     return GetParent()->GetParentComponent()->GetTransformationMatrix();
 }
 
-gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi) const
-{
-    CTiglPoint profilePoint; 
-    ChordFace().translate(eta,xsi, &profilePoint);
-
-    return profilePoint.Get_gp_Pnt();
-}
-
 gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi, TiglCoordinateSystem referenceCS) const
 {
-    gp_Pnt pGlobal = GetChordPoint(eta, xsi);
-    if (referenceCS == WING_COORDINATE_SYSTEM) {
-        return GetParentTransformation().Inverted().Transform(pGlobal);
-    }
-    else {
-        return pGlobal;
-    }
+    CTiglPoint profilePoint; 
+    ChordFace(referenceCS).translate(eta,xsi, &profilePoint);
+
+    return profilePoint.Get_gp_Pnt();
 }
 
 gp_Pnt CCPACSWingSegment::GetChordNormal(double eta, double xsi) const
@@ -993,16 +982,25 @@ void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
     gp_Pnt outer_tep = outerProfile.GetChordPoint(1.);
 
     // Do section element transformation on points
-    inner_lep = transformProfilePoint(GetParentTransformation(), innerConnection, inner_lep);
-    inner_tep = transformProfilePoint(GetParentTransformation(), innerConnection, inner_tep);
-    outer_lep = transformProfilePoint(GetParentTransformation(), outerConnection, outer_lep);
-    outer_tep = transformProfilePoint(GetParentTransformation(), outerConnection, outer_tep);
+    gp_Pnt inner_lep_gl = transformProfilePoint(GetParentTransformation(), innerConnection, inner_lep);
+    gp_Pnt inner_tep_gl = transformProfilePoint(GetParentTransformation(), innerConnection, inner_tep);
+    gp_Pnt outer_lep_gl = transformProfilePoint(GetParentTransformation(), outerConnection, outer_lep);
+    gp_Pnt outer_tep_gl = transformProfilePoint(GetParentTransformation(), outerConnection, outer_tep);
 
-    cache.cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
+    cache.cordSurface.setQuadriangle(inner_lep_gl.XYZ(), outer_lep_gl.XYZ(), inner_tep_gl.XYZ(), outer_tep_gl.XYZ());
 
-    Handle(Geom_TrimmedCurve) innerEdge = GC_MakeSegment(inner_lep, inner_tep).Value();
-    Handle(Geom_TrimmedCurve) outerEdge = GC_MakeSegment(outer_lep, outer_tep).Value();
+    Handle(Geom_TrimmedCurve) innerEdge = GC_MakeSegment(inner_lep_gl , inner_tep_gl ).Value();
+    Handle(Geom_TrimmedCurve) outerEdge = GC_MakeSegment(outer_lep_gl , outer_tep_gl ).Value();
     cache.cordFace = GeomFill::Surface(innerEdge, outerEdge);
+
+    // Do section element transformation on points
+    CTiglTransformation identity;
+    gp_Pnt inner_lep_loc = transformProfilePoint(identity, innerConnection, inner_lep);
+    gp_Pnt inner_tep_loc = transformProfilePoint(identity, innerConnection, inner_tep);
+    gp_Pnt outer_lep_loc = transformProfilePoint(identity, outerConnection, outer_lep);
+    gp_Pnt outer_tep_loc = transformProfilePoint(identity, outerConnection, outer_tep);
+
+    cache.cordSurfaceLocal.setQuadriangle(inner_lep_loc.XYZ(), outer_lep_loc.XYZ(), inner_tep_loc.XYZ(), outer_tep_loc.XYZ());
 }
 
 
@@ -1014,9 +1012,14 @@ void CCPACSWingSegment::ComputeVolume(double& cache) const
     cache = gprops.Mass();
 }
 
-const CTiglPointTranslator& CCPACSWingSegment::ChordFace() const
+const CTiglPointTranslator& CCPACSWingSegment::ChordFace(TiglCoordinateSystem referenceCS) const
 {
-    return surfaceCache->cordSurface;
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        return surfaceCache->cordSurfaceLocal;
+    }
+    else {
+        return surfaceCache->cordSurface;
+    }
 }
 
 // Builds upper/lower surfaces as shapes
