@@ -51,14 +51,13 @@ void tigl::CTiglWingHelper::SetWing(CCPACSWing* associatedWing)
     }
 }
 
-
 std::map<std::string, tigl::CTiglWingSectionElement*> tigl::CTiglWingHelper::BuildCTiglElementsMap()
 {
 
-
     std::map<std::string, CTiglWingSectionElement*> map;
-    if(! wing) {
-        LOG(WARNING) << "CTiglWingHelper::BuildCTiglElementsMap: Associate wing is not set -> impossible to build the map, call SetWing first. ";
+    if (!wing) {
+        LOG(WARNING) << "CTiglWingHelper::BuildCTiglElementsMap: Associate wing is not set -> impossible to build the "
+                        "map, call SetWing first. ";
     }
 
     for (int s = 0; s < wing->GetSections().GetSectionCount(); s++) {
@@ -120,11 +119,11 @@ void tigl::CTiglWingHelper::SetTipUid(std::string& cache) const
     }
 }
 
-
 TiglAxis tigl::CTiglWingHelper::GetMajorDirection() const
 {
-    if( ! HasShape() ){
-        LOG(WARNING) << "CTiglWingHelper::GetMajorDirection: This wing has no shape -> impossible to determine the direction properly. The default direction will be returned";
+    if (!HasShape()) {
+        LOG(WARNING) << "CTiglWingHelper::GetMajorDirection: This wing has no shape -> impossible to determine the "
+                        "direction properly. The default direction will be returned";
         return TIGL_Y_AXIS;
     }
 
@@ -185,8 +184,9 @@ TiglAxis tigl::CTiglWingHelper::GetMajorDirection() const
 
 TiglAxis tigl::CTiglWingHelper::GetDeepDirection() const
 {
-    if( ! HasShape() ){
-        LOG(WARNING) << "CTiglWingHelper::GetDeepDirection: This wing has no shape -> impossible to determine the direction properly. The default direction will be returned";
+    if (!HasShape()) {
+        LOG(WARNING) << "CTiglWingHelper::GetDeepDirection: This wing has no shape -> impossible to determine the "
+                        "direction properly. The default direction will be returned";
         return TIGL_X_AXIS;
     }
 
@@ -219,8 +219,9 @@ TiglAxis tigl::CTiglWingHelper::GetDeepDirection() const
 
 TiglAxis tigl::CTiglWingHelper::GetThirdDirection() const
 {
-    if( ! HasShape() ){
-        LOG(WARNING) << "CTiglWingHelper::GetThirdDirection: This wing has no shape -> impossible to determine the direction properly. The default direction will be returned";
+    if (!HasShape()) {
+        LOG(WARNING) << "CTiglWingHelper::GetThirdDirection: This wing has no shape -> impossible to determine the "
+                        "direction properly. The default direction will be returned";
         return TIGL_Z_AXIS;
     }
 
@@ -245,7 +246,6 @@ std::string tigl::CTiglWingHelper::GetRootUID() const
         return "";
     }
 }
-
 
 tigl::CTiglWingSectionElement* tigl::CTiglWingHelper::GetCTiglElementOfWing(std::string elementUID) const
 {

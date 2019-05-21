@@ -114,6 +114,11 @@ TEST_F(creatorWing, MultipleWings_GetWingHalfSpan)
     // simple box wing
     setWing("W8_SBW");
     EXPECT_NEAR(wing->GetWingHalfSpan(),0.93969, tolerance);
+    
+    // empty wing
+    setWing("W13_EmptyWing");
+    EXPECT_NEAR(wing->GetWingHalfSpan(),0, tolerance);
+
 }
 
 TEST_F(creatorWing, MultipleWings_GetReferenceArea)
@@ -152,6 +157,11 @@ TEST_F(creatorWing, MultipleWings_GetReferenceArea)
     // the reference are is double // TODO verify that this behavior is not problematic
     setWing("W8_SBW");
     EXPECT_NEAR(wing->GetReferenceArea(),2*0.93969, 0.0001);
+    
+    // empty wing
+    setWing("W13_EmptyWing");
+    EXPECT_NEAR(wing->GetReferenceArea(), 0, 0.0001);
+
 }
 
 TEST_F(creatorWing, MultipleWings_GetSweep)
@@ -195,6 +205,11 @@ TEST_F(creatorWing, MultipleWings_GetSweep)
 
     setWing("W12_NegSwp");
     EXPECT_NEAR(wing->GetSweep(0), -23, 0.0001);
+
+    // empty wing
+    setWing("W13_EmptyWing");
+    EXPECT_NEAR(wing->GetSweep(0), 0, 0.0001);
+
 
 }
 
@@ -245,5 +260,11 @@ TEST_F(creatorWing, MultipleWings_GetDihedral)
 
     setWing("W12_NegSwp");
     EXPECT_NEAR(wing->GetDihedral(0.5), 0, 0.0001);
+
+
+    // empty wing
+    setWing("W13_EmptyWing");
+    EXPECT_NEAR(wing->GetDihedral(0.5), 0, 0.0001);
+
 
 }
