@@ -54,6 +54,7 @@
 #include "CTiglMakeLoft.h"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include "CTiglLogging.h"
 
 namespace tigl
 {
@@ -495,6 +496,11 @@ Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
 
 double CCPACSWing::GetWingspan()
 {
+    if (!wingHelper->HasShape()) {
+        LOG(WARNING) << "The wing seems empty.";
+        return 0;
+    }
+
     Bnd_Box boundingBox;
 
     for (int i = 1; i <= GetSegmentCount(); ++i) {
@@ -527,6 +533,11 @@ double CCPACSWing::GetWingspan()
 
 double CCPACSWing::GetWingHalfSpan()
 {
+    if (!wingHelper->HasShape()) {
+        LOG(WARNING) << "The wing seems empty.";
+        return 0;
+    }
+
     Bnd_Box boundingBox;
 
     for (int i = 1; i <= GetSegmentCount(); ++i) {
@@ -541,13 +552,10 @@ double CCPACSWing::GetWingHalfSpan()
     switch (wingHelper->GetMajorDirection()) {
     case TIGL_Z_AXIS:
         return zmax - zmin;
-        break;
     case TIGL_Y_AXIS:
         return ymax - ymin;
-        break;
     case TIGL_X_AXIS:
         return xmax - xmin;
-        break;
     default:
         return ymax - ymin;
     }
@@ -558,6 +566,10 @@ double CCPACSWing::GetWingHalfSpan()
 //     s: half span; A_half: Reference area of wing without symmetrical wing
 double CCPACSWing::GetAspectRatio()
 {
+    if ( isNear(GetReferenceArea(),0) ) {
+        LOG(WARNING) << "Wing area is close to zero, thus the AR is not computed and 0 is returned.";
+        return 0;
+    }
     return 2.0*pow_int(GetWingHalfSpan(),2)/GetReferenceArea();
 }
 
@@ -816,6 +828,11 @@ void CCPACSWing::BuildGuideCurveWires(TopoDS_Compound& cache) const
 
 double CCPACSWing::GetSweep(double chordPercentage) const
 {
+
+    if (!wingHelper->HasShape()) {
+        LOG(WARNING) << "The wing seems empty.";
+        return 0;
+    }
     /*
      * 1) get the segment between root and tip
      * 2) project on the plane formed by the majorDir and the deepDir
@@ -842,6 +859,12 @@ double CCPACSWing::GetSweep(double chordPercentage) const
 
 double CCPACSWing::GetDihedral(double chordPercentage) const
 {
+
+    if (!wingHelper->HasShape()) {
+        LOG(WARNING) << "The wing seems empty.";
+        return 0;
+    }
+
     /*
      * 1) get the segment between root and tip
      * 2) project on the plane formed by the major Dir and the third Dir
