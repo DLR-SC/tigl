@@ -60,10 +60,7 @@ private:
 
     tigl::CCPACSWing* tiglWing;
 
-    // internal anchor
-    double internalAnchorX;
-    double internalAnchorY;
-    double internalAnchorZ;
+    // internal root LE is a CTiglPointWidget
 
     // internal symmetry
     QString internalSymmetry;
