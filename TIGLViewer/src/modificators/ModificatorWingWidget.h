@@ -32,8 +32,13 @@ class ModificatorWingWidget : public ModificatorWidget
     Q_OBJECT
 
 public slots:
-    void expendDihedralDetails(bool checked);
-    void expendSweepDetails(bool checked);
+
+    // update the sweep according the displayed chord value,
+    // used to keep display sweep value consitant with the displayed chord value
+    // Remark the the double parameter is just to match the signature of the "valueChanged" signal of the chord spinbox.
+    void updateSweepAccordingChordValue(double dummy = 0);
+    void updateDihedralAccordingChordValue(double dummy = 0);
+
 
     void setAreaConstant(bool checked);
     void setSpanConstant(bool checked);
@@ -66,7 +71,6 @@ private:
     // internal sweep
     double internalSweep;
     double internalSweepChord;
-    QString internalMethod;
 
     // internal dihedral
     double internalDihedral;

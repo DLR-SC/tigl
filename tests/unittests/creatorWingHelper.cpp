@@ -160,12 +160,20 @@ TEST_F(creatorWingHelper, MultipleWings_GetWingDirections)
     EXPECT_EQ(wingHelper.GetDeepDirection(), TIGL_X_AXIS);
     EXPECT_EQ(wingHelper.GetThirdDirection(), TIGL_Z_AXIS);
 
+    // case of 45 angle -> most common chose primee
+    setWingHelper("W14_ChaDih");
+    EXPECT_EQ(wingHelper.GetMajorDirection(), TIGL_Y_AXIS);
+    EXPECT_EQ(wingHelper.GetDeepDirection(), TIGL_X_AXIS);
+    EXPECT_EQ(wingHelper.GetThirdDirection(), TIGL_Z_AXIS);
+
     // case when the wing is not set
     // In this case we expect to have warning and the default direction
     wingHelper.SetWing(nullptr);
     EXPECT_EQ(wingHelper.GetMajorDirection(), TIGL_Y_AXIS);
     EXPECT_EQ(wingHelper.GetDeepDirection(), TIGL_X_AXIS);
     EXPECT_EQ(wingHelper.GetThirdDirection(), TIGL_Z_AXIS);
+
+
 }
 
 TEST_F(creatorWingHelper, MultipleWings_GetTipAndRootUID)
