@@ -893,6 +893,17 @@ void CCPACSWing::SetWingHelper(CTiglWingHelper& cache) const
     cache.SetWing(const_cast<CCPACSWing*>(this));
 }
 
+CTiglPoint CCPACSWing::GetRootLEPosition() const
+{
+    if (!wingHelper->HasShape()) {
+        LOG(WARNING) << "The wing seems empty.";
+        return CTiglPoint(0, 0, 0);
+    }
+
+    CTiglWingSectionElement* root = wingHelper->GetCTiglElementOfWing(wingHelper->GetRootUID());
+    return root->GetChordPoint(0, GLOBAL_COORDINATE_SYSTEM);
+}
+
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,
                                           const CTiglWingConnection& connection, const TopoDS_Shape& wire)
 {

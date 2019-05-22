@@ -210,6 +210,9 @@ TEST_F(creatorWing, MultipleWings_GetSweep)
     setWing("W13_EmptyWing");
     EXPECT_NEAR(wing->GetSweep(0), 0, 0.0001);
 
+    setWing("W15_ShiAir");
+    EXPECT_NEAR(wing->GetSweep(0.5), 26.57, 0.01);
+
 
 }
 
@@ -271,6 +274,36 @@ TEST_F(creatorWing, MultipleWings_GetDihedral)
     EXPECT_NEAR(wing->GetDihedral(0), 45, 0.0001);
     EXPECT_NEAR(wing->GetDihedral(1), 36.87, 0.01);
 
+    setWing("W15_ShiAir");
+    EXPECT_NEAR(wing->GetDihedral(0), 26.57, 0.01);
+
+
+}
+
+
+TEST_F(creatorWing, MultipleWings_GetRootLEPosition)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(0,0,0));
+
+    setWing("W7_SymX");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(0,4,0));
+
+    setWing("W3_RX40");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(10,0,0));
+
+    setWing("W10_Reverse");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(0,-4,0));
+
+    setWing("W13_EmptyWing");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(0,0,0));
+
+    setWing("W14_ChaDih");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(-10,8,0));
+
+    // case of shifted airfoils
+    setWing("W15_ShiAir");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(-9,-10,0));
 
 
 }
