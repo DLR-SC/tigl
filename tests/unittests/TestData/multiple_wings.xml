@@ -3397,6 +3397,183 @@
             </componentSegments>
           </wing>
 	    
+	 <wing uID="W14_ChaDih">
+            <name>W14_ChaDih</name>
+            <parentUID>SimpleFuselage</parentUID>
+            <description>This wing has dihedral that change depending the chord value used to compute the dihedral. Furthermore it use only element trandformation to create the shape.</description>
+            <transformation uID="W14_ChaDih_transformation1">
+              <scaling uID="W14_ChaDih_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="W14_ChaDih_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="W14_ChaDih_transformation1_translation1">
+                <x>-10</x>
+                <y>8</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="W14_ChaDih_Sec1">
+                <name>Cpacs2Test - Wing Section 1</name>
+                <description>Cpacs2Test - Wing Section 1</description>
+                <transformation uID="W14_ChaDih_Sec1_transformation1">
+                  <scaling uID="W14_ChaDih_Sec1_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W14_ChaDih_Sec1_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W14_ChaDih_Sec1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W14_ChaDih_Sec1_El1">
+                    <name>Cpacs2Test - Wing Section 1 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 1 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W14_ChaDih_Sec1_El1_transformation1">
+                      <scaling uID="W14_ChaDih_Sec1_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W14_ChaDih_Sec1_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W14_ChaDih_Sec1_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W14_ChaDih_Sec2">
+                <name>Cpacs2Test - Wing Section 2</name>
+                <description>Cpacs2Test - Wing Section 2</description>
+                <transformation uID="W14_ChaDih_Sec2_transformation1">
+                  <scaling uID="W14_ChaDih_Sec2_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W14_ChaDih_Sec2_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W14_ChaDih_Sec2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W14_ChaDih_Sec2_El1">
+                    <name>Cpacs2Test - Wing Section 2 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 2 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W14_ChaDih_Sec2_El1_transformation1">
+                      <scaling uID="W14_ChaDih_Sec2_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W14_ChaDih_Sec2_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W14_ChaDih_Sec2_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W14_ChaDih_Sec3">
+                <name>Cpacs2Test - Wing Section 3</name>
+                <description>Cpacs2Test - Wing Section 3</description>
+                <transformation uID="W14_ChaDih_Sec3_transformation1">
+                  <scaling uID="W14_ChaDih_Sec3_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W14_ChaDih_Sec3_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W14_ChaDih_Sec3_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W14_ChaDih_Sec3_El1">
+                    <name>Cpacs2Test - Wing Section 3 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 3 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W14_ChaDih_Sec3_El1_transformation1">
+                      <scaling uID="W14_ChaDih_Sec3_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+			<z>1</z>
+                      </scaling>
+                      <rotation uID="W14_ChaDih_Sec3_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>30</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W14_ChaDih_Sec3_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>2</y>
+                        <z>2</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+            </positionings>
+            <segments>
+              <segment uID="W14_ChaDih_Seg_1_2">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</description>
+                <fromElementUID>W14_ChaDih_Sec1_El1</fromElementUID>
+                <toElementUID>W14_ChaDih_Sec2_El1</toElementUID>
+              </segment>
+              <segment uID="W14_ChaDih_Seg_2_3">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</description>
+                <fromElementUID>W14_ChaDih_Sec2_El1</fromElementUID>
+                <toElementUID>W14_ChaDih_Sec3_El1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+            </componentSegments>
+          </wing>
 	    
 	  
 	  

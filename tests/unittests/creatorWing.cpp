@@ -266,5 +266,11 @@ TEST_F(creatorWing, MultipleWings_GetDihedral)
     setWing("W13_EmptyWing");
     EXPECT_NEAR(wing->GetDihedral(0.5), 0, 0.0001);
 
+    // wing with a dihedral that change depending the input chord value
+    setWing("W14_ChaDih");
+    EXPECT_NEAR(wing->GetDihedral(0), 45, 0.0001);
+    EXPECT_NEAR(wing->GetDihedral(1), 36.87, 0.01);
+
+
 
 }

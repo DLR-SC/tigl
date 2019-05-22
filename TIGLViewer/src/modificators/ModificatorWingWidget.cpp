@@ -39,19 +39,10 @@ void ModificatorWingWidget::init()
     // set the initials values of the display interface (will be overwritten
     // when the wingItem is set)
     ui->spinBoxSweep->setValue(-1.0);
-    ui->spinBoxSweepChord->setValue(0);
-    ui->comboBoxSweepMethod->addItem("Translation");
-    ui->comboBoxSweepMethod->addItem("Shearing");
-    ui->comboBoxSweepMethod->setCurrentIndex(0);
-
     ui->spinBoxSweep->setValue(-1.0);
-    ui->spinBoxDihedralChord->setValue(0);
-
     ui->spinBoxArea->setValue(-1.0);
-
-    ui->spinBoxAR->setValue(-1);
-
-    ui->spinBoxSpan->setValue(-1);
+    ui->spinBoxAR->setValue(-1.0);
+    ui->spinBoxSpan->setValue(-1.0);
 
     ui->comboBoxSymmetry->addItem("x-y-plane");
     ui->comboBoxSymmetry->addItem("x-z-plane");
@@ -59,34 +50,30 @@ void ModificatorWingWidget::init()
     ui->comboBoxSymmetry->addItem("no-symmetry");
 
     // alterable span area ar
-    ui->checkBoxIsAreaConstant->setChecked(false);
-    ui->checkBoxIsSpanConstant->setChecked(false);
-    ui->checkBoxIsARConstant->setChecked(true);
-
-    // hide the advanced options
-    ui->widgetDihedralDetails->hide();
-    ui->widgetSweepDetails->hide();
-
-    // connect the extend buttons with their slot
-    connect(ui->btnExpendDihedralDetails, SIGNAL(clicked(bool)), this, SLOT(expendDihedralDetails(bool)));
-    connect(ui->btnExpendSweepDetails, SIGNAL(clicked(bool)), this, SLOT(expendSweepDetails(bool)));
+    setARConstant(true);
 
     // connect change alterable
     connect(ui->checkBoxIsAreaConstant, SIGNAL(clicked(bool)), this, SLOT(setAreaConstant(bool)));
     connect(ui->checkBoxIsSpanConstant, SIGNAL(clicked(bool)), this, SLOT(setSpanConstant(bool)));
     connect(ui->checkBoxIsARConstant, SIGNAL(clicked(bool)), this, SLOT(setARConstant(bool)));
+
+    connect(ui->spinBoxSweepChord, SIGNAL(valueChanged(double)), this, SLOT(updateSweepAccordingChordValue(double)) );
+    connect(ui->spinBoxDihedralChord, SIGNAL(valueChanged(double)), this, SLOT(updateDihedralAccordingChordValue(double)) );
 }
 
-// inverse the visibility
-void ModificatorWingWidget::expendDihedralDetails(bool checked)
+
+void ModificatorWingWidget::updateSweepAccordingChordValue(double)
 {
-    ui->widgetDihedralDetails->setVisible(!(ui->widgetDihedralDetails->isVisible()));
+    internalSweepChord = ui->spinBoxSweepChord->value();
+    internalSweep = tiglWing->GetSweep(internalSweepChord);
+    ui->spinBoxSweep->setValue(internalSweep);
 }
 
-// inverse the visibility
-void ModificatorWingWidget::expendSweepDetails(bool checked)
+void ModificatorWingWidget::updateDihedralAccordingChordValue(double)
 {
-    ui->widgetSweepDetails->setVisible(!(ui->widgetSweepDetails->isVisible()));
+    internalDihedralChord = ui->spinBoxDihedralChord->value();
+    internalDihedral = tiglWing->GetDihedral(internalDihedralChord);
+    ui->spinBoxDihedral->setValue(internalDihedral);
 }
 
 void ModificatorWingWidget::setAreaConstant(bool checked)
@@ -133,7 +120,13 @@ void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing)
     ui->spinBoxAR->setValue(internalAR);
     internalArea = wing.GetReferenceArea();
     ui->spinBoxArea->setValue(internalArea);
-    // TODO set the internal elements using tiglWing
+
+    ui->spinBoxSweepChord->setValue(0.25);
+    updateSweepAccordingChordValue();   // call it explicitly because if the value of the chord is similar has before
+                                        // the signal "valueChanged" will not rise up and sweep value will not be updated
+    ui->spinBoxDihedralChord->setValue(0.25);
+    updateDihedralAccordingChordValue();
+
 }
 
 void ModificatorWingWidget::reset()
@@ -156,8 +149,7 @@ bool ModificatorWingWidget::apply()
     bool symmetryHasChanged = (internalSymmetry != ui->comboBoxSymmetry->currentText());
 
     bool sweepHasChanged = ((!isApprox(internalSweep, ui->spinBoxSweep->value())) ||
-                            (!isApprox(internalSweepChord, ui->spinBoxSweepChord->value())) ||
-                            internalMethod != ui->comboBoxSweepMethod->currentText());
+                            (!isApprox(internalSweepChord, ui->spinBoxSweepChord->value())) );
 
     bool dihedralHasChanged = ((!isApprox(internalDihedral, ui->spinBoxDihedral->value())) ||
                                (!isApprox(internalDihedralChord, ui->spinBoxDihedralChord->value())));
@@ -182,9 +174,8 @@ bool ModificatorWingWidget::apply()
         // todo
     }
 
-    if (sweepHasChanged) { // TODO do not change if the change is to small
+    if (sweepHasChanged) {
         internalSweep      = ui->spinBoxSweep->value();
-        internalMethod     = ui->comboBoxSweepMethod->currentText();
         internalSweepChord = ui->spinBoxSweepChord->value();
 
         // todo
