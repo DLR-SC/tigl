@@ -1053,8 +1053,6 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
         app->getScene()->displayShape(wing.GetLoft(), true);
 
         for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-
             for (double eta = 0.0; eta <= 1.0; eta += 0.1) {
                 for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1) {
                     double x, y, z;

@@ -63,6 +63,8 @@ public:
 
     // Checks, whether the trailing edge is blunt or not
     virtual bool HasBluntTE() const = 0;
+
+    virtual ~ITiglWingProfileAlgo(){}
 };
 
 } // end namespace tigl

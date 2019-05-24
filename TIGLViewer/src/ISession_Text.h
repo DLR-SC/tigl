@@ -95,9 +95,6 @@ Standard_Real           MySlant      ;
 Standard_Integer        MyColorIndex ;
 Standard_Integer        MyFontIndex  ;
 Quantity_Factor         MyScale      ;
-Standard_Real           MyWidth      ;
-Standard_Real           MyHeight     ;
-
 
 };
 

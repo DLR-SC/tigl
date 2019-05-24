@@ -458,7 +458,7 @@ TEST_F(WingComponentSegmentSimple, GetSegmentEtaXsi)
     tigl::CCPACSWingComponentSegment& csegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
 
     std::string segmentUID;
-    double sEta, sXsi;
+    double sEta= -1., sXsi= -1.;
     ASSERT_NO_THROW(csegment.GetSegmentEtaXsi(0., 0., segmentUID, sEta, sXsi));
 
     EXPECT_NEAR(0., sEta, 1e-10);

@@ -111,7 +111,6 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry(TopoDS_Shape& cache) 
         cache = BRepBuilderAPI_MakeFace(TopoDS::Wire(wireMap(1)));
     }
     else if (frame.GetFramePositions().size() >= 2) {
-        CCPACSFuselage& fuselage = *m_parent->GetParent()->GetParent();
 
         std::vector<gp_Pnt> refPoints;
         for (size_t i = 0; i < frame.GetFramePositions().size(); i++) {

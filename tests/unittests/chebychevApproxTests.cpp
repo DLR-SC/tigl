@@ -46,8 +46,8 @@ namespace
     {
     public:
         MathFuncAdapter(MathFunc func, void* obj)
-            : _func(func)
-            , _p(obj)
+            : _p(obj)
+            , _func(func)
         {
         }
 

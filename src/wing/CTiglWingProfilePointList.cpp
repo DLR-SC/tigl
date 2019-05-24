@@ -85,17 +85,17 @@ const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 
 // Constructor
 CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZVector& cpacsPointList)
-    : profileUID(profile.GetUID())
-    , coordinates(cpacsPointList.AsVector())
+    : coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
+    , profileUID(profile.GetUID())
     , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
 {
 }
 
 CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointList)
-    : profileUID(profile.GetUID())
-    , coordinates(cpacsPointList.AsVector())
+    : coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
+    , profileUID(profile.GetUID())
     , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
 {
 }

@@ -142,8 +142,8 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTi
     : generated::CPACSFuselageSegment(parent, uidMgr)
     , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParent())
     , fuselage(parent->GetParent())
-    , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
     , surfacePropertiesCache(*this, &CCPACSFuselageSegment::UpdateSurfaceProperties)
+    , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
 {
     Cleanup();
 }

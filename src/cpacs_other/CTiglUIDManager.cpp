@@ -31,7 +31,8 @@ namespace tigl
 
 // Constructor
 CTiglUIDManager::CTiglUIDManager()
-    : invalidated(true), rootComponent(NULL) {}
+    : rootComponent(NULL), invalidated(true)
+{}
 
 bool CTiglUIDManager::IsUIDRegistered(const std::string & uid) const
 {

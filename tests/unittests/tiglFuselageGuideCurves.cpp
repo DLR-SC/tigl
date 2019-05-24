@@ -145,7 +145,6 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfiles)
 TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointAlgoOnCircle)
 {
     double radius1=1.0;
-    double distance=1.0;
     gp_Pnt location1(radius1, 0.0,  0.0);
     gp_Ax2 circlePosition1(location1, gp::DY(), gp::DX());
     Handle(Geom_Circle) circle1 = new Geom_Circle(circlePosition1, radius1);

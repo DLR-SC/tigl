@@ -745,8 +745,6 @@ TEST(TiglBSplineAlgorithms, testFlipSurface)
     //now test it
     for (int u_idx = 0; u_idx < 101; ++u_idx) {
         for (int v_idx = 0; v_idx < 101; ++v_idx) {
-            double u_value = u_idx / 100.;
-            double v_value = v_idx / 100.;
 
             gp_Pnt point = surface->Value(u_idx, v_idx);
             gp_Pnt same_point = flippedSurface->Value(v_idx, u_idx);

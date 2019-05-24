@@ -47,17 +47,6 @@ void clampBSpline(Handle(Geom_BSplineCurve)& curve)
     curve = GeomConvert::CurveToBSplineCurve(c);
 }
 
-Handle(TColStd_HArray1OfReal) toArray(const std::vector<double>& vector)
-{
-    Handle(TColStd_HArray1OfReal) array = new TColStd_HArray1OfReal(1, static_cast<int>(vector.size()));
-    int ipos = 1;
-    for (std::vector<double>::const_iterator it = vector.begin(); it != vector.end(); ++it, ipos++) {
-        array->SetValue(ipos, *it);
-    }
-
-    return array;
-}
-
 }
 
 namespace tigl {

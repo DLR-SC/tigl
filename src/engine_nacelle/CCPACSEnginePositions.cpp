@@ -34,7 +34,7 @@ TIGL_EXPORT size_t CCPACSEnginePositions::GetEnginePositionCount() const
 TIGL_EXPORT CCPACSEnginePosition& CCPACSEnginePositions::GetEnginePosition(size_t index) const
 {
     index--;
-    if (index < 0 || index >= GetEnginePositionCount()) {
+    if (index >= GetEnginePositionCount()) {
         throw CTiglError("Invalid index in CCPACSEnginePositions::GetEnginePosition", TIGL_INDEX_ERROR);
     }
     return *m_engines[index];

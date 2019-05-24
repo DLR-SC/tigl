@@ -18,11 +18,6 @@ PNamedShape CTiglEnginePylonBuilder::BuildShape()
         throw CTiglError("No pylon geometry defined for pylon \"" + m_pylon.GetDefaultedUID() + "\".");
     }
 
-    const CCPACSWingProfile& innerProfile = segments->GetSegment(1).GetInnerConnection().GetProfile();
-
-    // we assume, that all profiles of one wing are either blunt or not
-    // this is checked during cpacs loading of each wing segment
-    bool hasBluntTE = innerProfile.HasBluntTE();
 
     CTiglMakeLoft lofter;
     lofter.setMakeSolid(true);

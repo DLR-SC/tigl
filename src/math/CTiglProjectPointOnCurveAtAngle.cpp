@@ -244,7 +244,7 @@ void tigl::CTiglProjectPointOnCurveAtAngle::AddSolution(double value, double tol
     }
 
     auto parm_it = std::find_if(resultParameter.begin(), resultParameter.end(), [&](double v) {
-        return std::abs(v-value) < tol;
+        return fabs(v-value) < tol;
     });
     
     if (parm_it == resultParameter.end()) {
