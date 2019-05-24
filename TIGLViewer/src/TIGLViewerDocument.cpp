@@ -422,10 +422,7 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
     if (config.GetWingProfiles()) {
-        std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetWingProfiles()->GetWingAirfoils();
-        for (int i = 0; i < airfoils.size(); i++) {
-            tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
-
+        for (const auto& profile : config.GetWingProfiles()->GetWingAirfoils()) {
             std::string profileUID = profile->GetUID();
             wingProfiles << profileUID.c_str();
         }
@@ -565,9 +562,7 @@ QString TIGLViewerDocument::dlgGetRotorProfileSelection()
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
     if (config.GetRotorProfiles()) {
-        std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetRotorProfiles()->GetRotorAirfoils();
-        for (int i = 0; i < airfoils.size(); i++) {
-            tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
+        for (const auto& profile : config.GetRotorProfiles()->GetRotorAirfoils()) {
             wingProfiles << profile->GetUID().c_str();
         }
     }

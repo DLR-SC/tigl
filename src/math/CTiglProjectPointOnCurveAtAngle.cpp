@@ -187,7 +187,7 @@ int tigl::CTiglProjectPointOnCurveAtAngle::NbPoints() const
 {
     Compute();
 
-    return resultParameter.size();
+    return static_cast<int>(resultParameter.size());
 }
 
 void CTiglProjectPointOnCurveAtAngle::CTiglProjectPointOnCurveAtAngle::Compute() const
