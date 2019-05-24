@@ -367,7 +367,6 @@ std::vector<double> CTiglBSplineAlgorithms::knotsFromCurveParameters(std::vector
         nCP += degree - 1;
     }
     size_t nInnerKnots = nCP - degree + 1;
-    size_t nknots = nInnerKnots + 2*degree;
 
     std::vector<double> innerKnots(nInnerKnots);
     innerKnots.front() = params.front();

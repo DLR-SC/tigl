@@ -365,11 +365,7 @@ void CCPACSWingSparSegment::BuildGeometry(GeometryCache& cache) const
     // build compound for spar geometry
     BRepBuilderAPI_Sewing sewing;
 
-    // get bounding box of loft
     TopoDS_Shape loft = wsr.GetLoft()->Shape();
-    Bnd_Box bbox;
-    BRepBndLib::Add(loft, bbox);
-    double bboxSize = sqrt(bbox.SquareExtent());
 
     // iterate over all spar cut faces
     TopoDS_Shape sparCutGeometry = GetSparCutGeometry(WING_COORDINATE_SYSTEM);

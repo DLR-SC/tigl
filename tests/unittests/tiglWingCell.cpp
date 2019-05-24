@@ -297,7 +297,6 @@ TEST_F(WingCellRibSpar, computeGeometry) {
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
-    tigl::CCPACSWingCSStructure& structure = *componentSegment.GetStructure();
 
     tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(1);
     TopoDS_Shape cellGeom = cell.GetSkinGeometry();

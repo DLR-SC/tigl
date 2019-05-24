@@ -91,26 +91,6 @@ namespace tigl
 
 namespace
 {
-    bool inBetween(const gp_Pnt& p, const gp_Pnt& p1, const gp_Pnt& p2) // TODO: move to utils?
-    {
-        gp_Vec b(p1, p2);
-        gp_Vec v1(p, p1);
-        gp_Vec v2(p, p2);
-
-        double res = (b*v1)*(b*v2);
-        return res <= 0.;
-    }
-
-    double GetNearestValidParameter(double p) // TODO: this is clamp(p, 0, 1), aka. saturate(p), rename?
-    {
-        if (p < 0.) {
-            return 0.;
-        }
-        else if ( p > 1.) {
-            return 1.;
-        }
-        return p;
-    }
 
     // Set the face traits
     void SetFaceTraits (PNamedShape loft, unsigned int nSegments) 
@@ -158,12 +138,12 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
     : generated::CPACSComponentSegment(parent, uidMgr)
     , CTiglAbstractSegment<CCPACSWingComponentSegment>(parent->GetComponentSegments(), parent->GetParent())
     , wing(parent->GetParent())
-    , wingSegments(*this, &CCPACSWingComponentSegment::BuildWingSegments)
-    , geomCache(*this, &CCPACSWingComponentSegment::BuildGeometry)
-    , linesCache(*this, &CCPACSWingComponentSegment::BuildLines)
     , upperShape(tigl::make_unique<ShapeAdaptor>(this, &CCPACSWingComponentSegment::GetUpperShape, m_uidMgr))
     , lowerShape(tigl::make_unique<ShapeAdaptor>(this, &CCPACSWingComponentSegment::GetLowerShape, m_uidMgr))
     , chordFace(make_unique<CTiglWingChordface>(*this, uidMgr))
+    , wingSegments(*this, &CCPACSWingComponentSegment::BuildWingSegments)
+    , geomCache(*this, &CCPACSWingComponentSegment::BuildGeometry)
+    , linesCache(*this, &CCPACSWingComponentSegment::BuildLines)
 {
     assert(wing != NULL);
     Cleanup();
@@ -1048,8 +1028,8 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
             gp_Pnt pointProjected = (*segit)->GetChordPoint(eta, xsi);
 
             // Get nearest point on this segment
-            double nextEta = GetNearestValidParameter(eta);
-            double nextXsi = GetNearestValidParameter(xsi);
+            double nextEta = Clamp(eta, 0., 1.);
+            double nextXsi = Clamp(xsi, 0., 1.);
             gp_Pnt currentPoint = (*segit)->GetChordPoint(nextEta, nextXsi);
 
             double currentDist = currentPoint.Distance(pointProjected);

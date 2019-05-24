@@ -146,7 +146,6 @@ TEST_F(TiglWing, tiglWingGetProfileName_invalidElement)
 */
 TEST_F(TiglWing, tiglWingGetProfileName_nullPointerArgument)
 {
-    char* namePtr = 0;
     ASSERT_TRUE(tiglWingGetProfileName(tiglHandle, 1, 1, 1, 0) == TIGL_NULL_POINTER);
 }
 
@@ -236,7 +235,6 @@ TEST_F(TiglWing, tiglWingGetIndex_nullPtr)
 
 TEST_F(TiglWing, tiglWingGetIndex_indexNullPtr)
 {
-    int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetIndex(tiglHandle, "D150_VAMP_SL1" , NULL) == TIGL_NULL_POINTER);
 }
 

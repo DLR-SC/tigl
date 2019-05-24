@@ -90,10 +90,10 @@ namespace
 CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWing(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
+    , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
-    , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
 {
     if (parent->IsParent<CCPACSAircraftModel>())
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
@@ -108,10 +108,10 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWing(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , configuration(&parent->GetConfiguration())
+    , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
-    , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
 {
     Cleanup();
 }

@@ -30,8 +30,8 @@ namespace tigl
 
 // Constructor
 CCPACSACSystems::CCPACSACSystems(CCPACSConfiguration* config)
-    : configuration(config)
-    , genericSystems(config)
+    : genericSystems(config)
+    , configuration(config)
 {
 }
 

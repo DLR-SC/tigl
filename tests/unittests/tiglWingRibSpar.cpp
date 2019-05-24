@@ -243,7 +243,6 @@ TEST_F(WingCellRibSparBugs, checkSpar2Missing) {
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
-    const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure()->GetSparSegment(1);
 
     EXPECT_EQ(1, componentSegment.GetStructure()->GetSparSegmentCount());
     EXPECT_STREQ("Wing_CS_spar1", componentSegment.GetStructure()->GetSparSegment(1).GetDefaultedUID().c_str());

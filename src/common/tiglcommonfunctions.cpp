@@ -1288,9 +1288,14 @@ TopoDS_Shape CutShapes(const TopoDS_Shape& shape1, const TopoDS_Shape& shape2)
 
 TopoDS_Shape SplitShape(const TopoDS_Shape& src, const TopoDS_Shape& tool)
 {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
     double fuzzyValue = Precision::Confusion();
+#endif
 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
     const int c_tries = 3;
+#endif
+
     for (int i = 0;; i++) {
         GEOMAlgo_Splitter splitter;
         splitter.AddArgument(src);

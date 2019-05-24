@@ -107,8 +107,11 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   endif()
 endif()
 
+# workaround for xcode. We must give each target a source file, not just a list of object files
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "// DUMMY FILE")
+
 # tigl dll/so library
-add_library(tigl3 SHARED $<TARGET_OBJECTS:tigl3_objects>)
+add_library(tigl3 SHARED $<TARGET_OBJECTS:tigl3_objects> ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
 target_compile_definitions(tigl3
     PRIVATE $<TARGET_PROPERTY:Boost::disable_autolinking,INTERFACE_COMPILE_DEFINITIONS>
 )
@@ -140,7 +143,7 @@ install (FILES api/tigl.h ${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h
          COMPONENT headers)
 
 # static lib for tiglviewer 
-add_library(tigl3_static $<TARGET_OBJECTS:tigl3_objects>)
+add_library(tigl3_static $<TARGET_OBJECTS:tigl3_objects> ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
 # this does no actual linking but keeps track of the dependencies
 target_link_libraries (tigl3_static
      PRIVATE ${VLD_LIBRARIES}

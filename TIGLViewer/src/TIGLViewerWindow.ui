@@ -195,6 +195,7 @@
      <addaction name="drawFuselageGuideCurvesAction"/>
      <addaction name="drawFuselageTriangulationAction"/>
      <addaction name="drawFuselageSamplePointsAction"/>
+     <addaction name="drawFuselageSamplePointsAngleAction"/>
      <addaction name="drawFusedFuselageAction"/>
     </widget>
     <widget class="QMenu" name="menuRotorcraft">

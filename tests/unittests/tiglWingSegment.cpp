@@ -837,7 +837,6 @@ TEST_F(WingSegmentSimple, getIsOnTop_success)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
     
     double eta_start = 0.5, xsi_start = 0.5;
@@ -859,7 +858,6 @@ TEST_F(WingSegmentSimple, getIsOnTop_performance)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
     
     double eta_start = 0.5, xsi_start = 0.5;

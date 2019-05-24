@@ -40,6 +40,8 @@ public:
     /// should return the supported file type, e.g. "step"
     virtual std::string SupportedFileType() const  = 0;
 
+    virtual ~ITiglCADImporter() {}
+
 };
 
 typedef CSharedPtr<ITiglCADImporter> PTiglCADImporter;

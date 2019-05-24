@@ -97,7 +97,6 @@ TEST_F(TiglFuselage, tiglFuselageGetIndex_nullPtr)
 
 TEST_F(TiglFuselage, tiglFuselageGetIndex_indexNullPtr)
 {
-    int fuselageIndex = 0;
     ASSERT_TRUE(tiglFuselageGetIndex(tiglHandle, "D150_VAMP_FL1" , NULL) == TIGL_NULL_POINTER);
 }
 

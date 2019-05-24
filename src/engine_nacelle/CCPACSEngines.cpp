@@ -33,7 +33,7 @@ TIGL_EXPORT size_t CCPACSEngines::GetEngineCount() const
 TIGL_EXPORT CCPACSEngine& CCPACSEngines::GetEngine(size_t index) const
 {
     index--;
-    if (index < 0 || index >= GetEngineCount()) {
+    if (index >= GetEngineCount()) {
         throw CTiglError("Invalid index in CCPACSEngines::GetEngine", TIGL_INDEX_ERROR);
     }
     return *m_engines[index];

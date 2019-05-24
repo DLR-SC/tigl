@@ -422,10 +422,7 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
     if (config.GetWingProfiles()) {
-        std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetWingProfiles()->GetWingAirfoils();
-        for (int i = 0; i < airfoils.size(); i++) {
-            tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
-
+        for (const auto& profile : config.GetWingProfiles()->GetWingAirfoils()) {
             std::string profileUID = profile->GetUID();
             wingProfiles << profileUID.c_str();
         }
@@ -565,9 +562,7 @@ QString TIGLViewerDocument::dlgGetRotorProfileSelection()
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
     if (config.GetRotorProfiles()) {
-        std::vector<tigl::unique_ptr<tigl::generated::CPACSProfileGeometry> >& airfoils = config.GetRotorProfiles()->GetRotorAirfoils();
-        for (int i = 0; i < airfoils.size(); i++) {
-            tigl::generated::CPACSProfileGeometry* profile = airfoils.at(i).get();
+        for (const auto& profile : config.GetRotorProfiles()->GetRotorAirfoils()) {
             wingProfiles << profile->GetUID().c_str();
         }
     }
@@ -1053,8 +1048,6 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
         app->getScene()->displayShape(wing.GetLoft(), true);
 
         for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-
             for (double eta = 0.0; eta <= 1.0; eta += 0.1) {
                 for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1) {
                     double x, y, z;

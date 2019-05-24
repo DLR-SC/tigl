@@ -43,10 +43,10 @@ public:
     TIGL_EXPORT void Invalidate();
 
     // Read CPACS fuselage elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Write CPACS fuselage elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const;
+    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
     // Returns the total count of fuselages in a configuration
     TIGL_EXPORT int GetFuselageCount() const;

@@ -46,8 +46,8 @@ CTiglAttachedRotorBlade::CTiglAttachedRotorBlade(CCPACSRotorBladeAttachment* par
     , parent(parent)
     , rotorBlade(&rotorBlade)
     , rotorBladeIndex(index)
-    , rebuildRotorDisk(true)
     , invalidated(true)
+    , rebuildRotorDisk(true)
     , transformation(NULL)
 {
     Update();

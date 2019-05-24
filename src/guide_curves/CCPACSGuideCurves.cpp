@@ -114,7 +114,7 @@ void CCPACSGuideCurves::GetRelativeCircumferenceRange(double relCirc,
         if (relCircs[i] >= relCirc ) {
             relCircStart = relCircs[i-1];
             relCircEnd = relCircs[i];
-            idx = i-1;
+            idx = static_cast<int>(i-1);
             break;
         }
     }
