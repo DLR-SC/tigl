@@ -147,7 +147,7 @@ bool ModificatorWingWidget::apply()
 
     bool rootLEHasChanged = ui->rootLE->hasChanged();
 
-    bool symmetryHasChanged = false;
+    bool symmetryHasChanged = ui->symmetry->hasChanged();
 
     bool sweepHasChanged = ((!isApprox(internalSweep, ui->spinBoxSweep->value())) ||
                             (!isApprox(internalSweepChord, ui->spinBoxSweepChord->value())) );
@@ -171,8 +171,9 @@ bool ModificatorWingWidget::apply()
     }
 
     if (symmetryHasChanged) {
-
-        // todo
+        ui->symmetry->setInternalFromGUI();
+        tiglWing->SetSymmetryAxis(ui->symmetry->getInternalSymmetry());
+        wasModified = true; 
     }
 
     if (sweepHasChanged) {
