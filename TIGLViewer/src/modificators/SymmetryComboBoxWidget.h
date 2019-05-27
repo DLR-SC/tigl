@@ -43,7 +43,14 @@ public:
 
     void setInternal(TiglSymmetryAxis symmetryAxis);
 
+    TiglSymmetryAxis getInternalSymmetry();
+
+    bool hasChanged();
+
 private:
+    QString TiglSymmetryAxisToQString(TiglSymmetryAxis symmetryAxis);
+    TiglSymmetryAxis QStringToTiglAxis(QString symmetry);
+
     Ui::SymmetryComboBoxWidget* ui;
 
     TiglSymmetryAxis internalSymmetry;

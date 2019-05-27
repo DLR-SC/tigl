@@ -19,6 +19,8 @@
 
 #include "SymmetryComboBoxWidget.h"
 #include "ui_SymmetryComboBoxWidget.h"
+#include "CTiglError.h"
+#include "CTiglLogging.h"
 
 SymmetryComboBoxWidget::SymmetryComboBoxWidget(QWidget* parent)
     : QWidget(parent)
@@ -34,6 +36,42 @@ SymmetryComboBoxWidget::SymmetryComboBoxWidget(QWidget* parent)
     setInternal(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
 }
 
+QString SymmetryComboBoxWidget::TiglSymmetryAxisToQString(TiglSymmetryAxis symmetryAxis)
+{
+    switch (symmetryAxis) {
+    case TiglSymmetryAxis::TIGL_X_Y_PLANE:
+        return QString("x-y-plane");
+    case TiglSymmetryAxis::TIGL_X_Z_PLANE:
+        return QString("x-z-plane");
+    case TiglSymmetryAxis::TIGL_Y_Z_PLANE:
+        return QString("y-z-plane");
+    case TiglSymmetryAxis::TIGL_NO_SYMMETRY:
+        return QString("no-symmetry");
+    default:
+        throw tigl::CTiglError("Unexpect symmetry axis, if a new symmetry enum was added, please update this class.");
+    }
+}
+
+TiglSymmetryAxis SymmetryComboBoxWidget::QStringToTiglAxis(QString symmetry)
+{
+    if (symmetry == "x-y-plane") {
+        return TiglSymmetryAxis::TIGL_X_Y_PLANE;
+    }
+    else if (symmetry == "x-z-plane") {
+        return TiglSymmetryAxis::TIGL_X_Z_PLANE;
+    }
+    else if (symmetry == "y-z-plane") {
+        return TiglSymmetryAxis::TIGL_Y_Z_PLANE;
+    }
+    else if (symmetry == "no-symmetry") {
+        return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+    }
+    else {
+        LOG(ERROR) << "SymmetryComboBoxWidget::QStringToTiglAxis: Unexpect symmetry axis given as input.";
+        return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+    }
+}
+
 SymmetryComboBoxWidget::~SymmetryComboBoxWidget()
 {
     delete ui;
@@ -47,38 +85,25 @@ void SymmetryComboBoxWidget::setInternal(TiglSymmetryAxis symmetryAxis)
 
 void SymmetryComboBoxWidget::setGUIFromInternal()
 {
-    switch (internalSymmetry) {
-    case TiglSymmetryAxis::TIGL_X_Y_PLANE:
-        ui->comboBox->setCurrentText("x-y-plane");
-        break;
-    case TiglSymmetryAxis::TIGL_X_Z_PLANE:
-        ui->comboBox->setCurrentText("x-z-plane");
-        break;
-    case TiglSymmetryAxis::TIGL_Y_Z_PLANE:
-        ui->comboBox->setCurrentText("y-z-plane");
-        break;
-    case TiglSymmetryAxis::TIGL_NO_SYMMETRY:
-        ui->comboBox->setCurrentText("no-symmetry");
-        break;
-    }
+    ui->comboBox->setCurrentText(TiglSymmetryAxisToQString(internalSymmetry));
 }
 
 void SymmetryComboBoxWidget::setInternalFromGUI()
 {
-    QString currentText = ui->comboBox->currentText();
-    if (currentText == "x-y-plane") {
-        internalSymmetry = TiglSymmetryAxis::TIGL_X_Y_PLANE;
-    }
-    else if (currentText == "x-z-plane") {
-        internalSymmetry = TiglSymmetryAxis::TIGL_X_Z_PLANE;
-    }
-    else if (currentText == "y-z-plane") {
-        internalSymmetry = TiglSymmetryAxis::TIGL_Y_Z_PLANE;
-    }
-    else if (currentText == "no-symmetry") {
-        internalSymmetry = TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+    internalSymmetry = QStringToTiglAxis(ui->comboBox->currentText());
+}
+
+bool SymmetryComboBoxWidget::hasChanged()
+{
+    if (internalSymmetry == QStringToTiglAxis(ui->comboBox->currentText())) {
+        return false;
     }
     else {
-        internalSymmetry = TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+        return true;
     }
+}
+
+TiglSymmetryAxis SymmetryComboBoxWidget::getInternalSymmetry()
+{
+    return internalSymmetry;
 }

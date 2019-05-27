@@ -141,6 +141,32 @@ TEST_F(creatorWing, MultipleWings_GetWingHalfSpan)
 
 }
 
+TEST_F(creatorWing, MultipleWings_GetWingfSpanAndSetSymmetry)
+{
+
+    // Remark: using setSymmetry does not invalidate the wing,
+    // but, at the moment,  all the functions use directly getSymmetry to perform their operation,
+    // so this should not create trouble as long we do not cache some result that use the symmetry
+    // This test make sure that we remain so.
+
+    double tolerance = 0.1;
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    EXPECT_NEAR(wing->GetWingspan(), 4, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 2, tolerance);
+    EXPECT_EQ(wing->GetSymmetryAxis(), TiglSymmetryAxis::TIGL_X_Z_PLANE);
+
+    wing->SetSymmetryAxis(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
+    EXPECT_NEAR(wing->GetWingspan(), 2, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 2, tolerance);
+    EXPECT_EQ(wing->GetSymmetryAxis(), TiglSymmetryAxis::TIGL_NO_SYMMETRY);
+
+    wing->SetSymmetryAxis(TiglSymmetryAxis::TIGL_X_Z_PLANE);
+    EXPECT_NEAR(wing->GetWingspan(), 4, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 2, tolerance);
+    EXPECT_EQ(wing->GetSymmetryAxis(), TiglSymmetryAxis::TIGL_X_Z_PLANE);
+
+}
+
 TEST_F(creatorWing, MultipleWings_GetReferenceArea)
 {
     // symmetry x-z case
