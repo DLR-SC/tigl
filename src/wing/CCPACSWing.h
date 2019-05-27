@@ -182,9 +182,12 @@ public:
 
     TIGL_EXPORT double GetDihedral(double chordPercentage = 0.25) const;
 
-    // Return the root leading position in world coordinate system
+    // Return the root leading edge position in world coordinate system
     // We use this position has the wing position.
     TIGL_EXPORT CTiglPoint GetRootLEPosition() const;
+
+    // Set the root leading edge position in world coordinate system
+    TIGL_EXPORT void SetRootLEPosition(CTiglPoint newRootPosition);
 
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;

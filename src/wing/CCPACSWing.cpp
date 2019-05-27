@@ -128,12 +128,14 @@ CCPACSWing::~CCPACSWing()
 void CCPACSWing::Invalidate()
 {
     invalidated = true;
-    wingHelper.clear();
+    loft.clear();
+    guideCurves.clear();
     m_segments.Invalidate();
     if (m_positionings)
         m_positionings->Invalidate();
     if (m_componentSegments)
         m_componentSegments->Invalidate();
+    wingHelper.clear();
 }
 
 // Cleanup routine
@@ -902,6 +904,16 @@ CTiglPoint CCPACSWing::GetRootLEPosition() const
 
     CTiglWingSectionElement* root = wingHelper->GetCTiglElementOfWing(wingHelper->GetRootUID());
     return root->GetChordPoint(0, GLOBAL_COORDINATE_SYSTEM);
+}
+
+void CCPACSWing::SetRootLEPosition(tigl::CTiglPoint newRootPosition)
+{
+    CTiglPoint oldPosition               = GetRootLEPosition();
+    CTiglPoint delta                     = newRootPosition - oldPosition;
+    CCPACSTransformation& transformation = GetTransformation();
+    CTiglPoint currentTranslation        = transformation.getTranslationVector();
+    transformation.setTranslation(currentTranslation + delta);
+    Invalidate();
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,
