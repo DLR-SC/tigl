@@ -19,6 +19,8 @@
 
 #include "test.h"
 #include "tigl.h"
+#include <tixi.h>
+#include <tixicpp.h>
 #include "CPACSWing.h"
 #include "CPACSWings.h"
 #include "CCPACSConfiguration.h"
@@ -70,6 +72,24 @@ protected:
         manager = nullptr;
         config  = nullptr;
         wing    = nullptr;
+    }
+
+    // Save the result in a new file (For visual check purpose)
+    void saveInOutputFile()
+    {
+        // write the change in tixi memory
+        config->WriteCPACS(config->GetUID());
+        std::string newConfig = tixi::TixiExportDocumentAsString(tixiHandle);
+
+        // Import-export to flat the xml // todo inform tixi developers about this "bug
+        TixiDocumentHandle tixiHandle2 = tixi::TixiImportFromString(newConfig);
+        newConfig                      = tixi::TixiExportDocumentAsString(tixiHandle2);
+
+        std::ofstream myfile;
+        myfile.open("TestData/Output/creatorWing-out.xml", std::ios::trunc);
+        myfile << newConfig;
+        myfile.close();
+        tixiCloseDocument(tixiHandle2);
     }
 
     void TearDown()
@@ -305,5 +325,45 @@ TEST_F(creatorWing, MultipleWings_GetRootLEPosition)
     setWing("W15_ShiAir");
     EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(-9,-10,0));
 
+}
 
+TEST_F(creatorWing, MultipleWings_SetRootLEPosition)
+{
+    tigl::CTiglPoint newRootPosition;
+
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    newRootPosition = tigl::CTiglPoint(3, 4, 5);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+    newRootPosition = tigl::CTiglPoint(-1, 0, 0);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+
+    setWing("W3_RX40");
+    newRootPosition = tigl::CTiglPoint(3.5, -10, 55);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+    newRootPosition = tigl::CTiglPoint(-1, -4, 11);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+
+    setWing("W13_EmptyWing");
+    newRootPosition = tigl::CTiglPoint(3, 4, 5);
+    wing->SetRootLEPosition(newRootPosition); // just check if no excpetion is throw
+    // In the case of a empty wing, the GetRootLEPosition always return (0,0,0)
+
+    setWing("W15_ShiAir");
+    newRootPosition = tigl::CTiglPoint(3, 4, 5);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+    newRootPosition = tigl::CTiglPoint(-1, 0, 0);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+
+    setWing("W9_BWSweep");
+    newRootPosition = tigl::CTiglPoint(13, 4.4, 5);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+
+    saveInOutputFile();
 }

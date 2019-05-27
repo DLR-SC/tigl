@@ -148,14 +148,15 @@ void CCPACSWing::InvalidateImpl(const boost::optional<std::string>& source) cons
     guideCurves.clear();
     wingCleanShape.clear();
     wingShapeWithCutouts.clear();
-    wingHelper.clear();
 
     // Invalidate segments, since these get their shapes from the wing
     m_segments.Invalidate(GetUID());
     // Invalidate component segments, since these use the wing loft geometry
     if (m_componentSegments) {
         m_componentSegments->Invalidate(GetUID());
-    }
+
+    wingHelper.clear();
+}
 }
 
 // Cleanup routine
@@ -175,7 +176,7 @@ void CCPACSWing::Cleanup()
 // Update internal wing data
 void CCPACSWing::Update()
 {
-}
+    }
 
 // Read CPACS wing element
 void CCPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath)
@@ -192,7 +193,7 @@ void CCPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::stri
         if (m_parentUID) {
             LOG(WARNING) << "Parent of rotor blade '" << GetUID() << "' is removed since it will be parented by a rotor. Consider to remove the parentUID node.";
             m_parentUID = boost::none;
-        }
+    }
     }
 
     Update();
@@ -352,7 +353,7 @@ PNamedShape CCPACSWing::BuildLoft() const
         return GroupedFlapsAndWingShapes();
     } else {
         return *wingCleanShape;
-    }
+}
 }
 
 TopoDS_Shape CCPACSWing::GetLoftWithCutouts()
@@ -951,7 +952,7 @@ void CCPACSWing::BuildGuideCurveWires(LocatedGuideCurves& cache) const
     auto rootIt = roots.begin();
     for (TopoDS_Iterator anIter(wires); anIter.More(); anIter.Next(), rootIt++) {
         cache.curves.push_back({TopoDS::Wire(anIter.Value()), rootIt->first});
-    }
+}
 
     // sort according to from location parameter
     using LocCurve = LocatedGuideCurves::LocatedGuideCurve;
@@ -1037,6 +1038,16 @@ CTiglPoint CCPACSWing::GetRootLEPosition() const
 
     CTiglWingSectionElement* root = wingHelper->GetCTiglElementOfWing(wingHelper->GetRootUID());
     return root->GetChordPoint(0, GLOBAL_COORDINATE_SYSTEM);
+}
+
+void CCPACSWing::SetRootLEPosition(tigl::CTiglPoint newRootPosition)
+{
+    CTiglPoint oldPosition               = GetRootLEPosition();
+    CTiglPoint delta                     = newRootPosition - oldPosition;
+    CCPACSTransformation& transformation = GetTransformation();
+    CTiglPoint currentTranslation        = transformation.getTranslationVector();
+    transformation.setTranslation(currentTranslation + delta);
+    Invalidate();
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,
