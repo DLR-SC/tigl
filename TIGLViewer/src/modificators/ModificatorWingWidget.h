@@ -62,8 +62,9 @@ private:
 
     // internal root LE is a CTiglPointWidget
 
-    // internal symmetry
-    QString internalSymmetry;
+    // internal rotation is a CTiglPointWidget
+
+    // internal symmetry is a SymmetryComboBoxWidget
 
     // internal sweep
     double internalSweep;

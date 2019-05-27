@@ -117,6 +117,7 @@ set(tv_src
 	modificators/CTiglPointWidget.cpp
 	modificators/ModificatorFuselagesWidget.cpp
 	modificators/NewFuselageDialog.cpp
+	modificators/SymmetryComboBoxWidget.cpp
 	ModificatorManager.cpp
 	CPACSAbstractModel.cpp
 	CPACSTreeItem.cpp
@@ -189,6 +190,7 @@ set(tv_hdr_qobj
 	modificators/ModificatorWingWidget.h
 	modificators/ModificatorFuselagesWidget.h
 	modificators/NewFuselageDialog.h
+	modificators/SymmetryComboBoxWidget.h
 	ModificatorManager.h
 	CPACSAbstractModel.h
 	ModificatorContainerWidget.h
@@ -223,6 +225,7 @@ set(tv_ui_comp
 		src/modificators/NewFuselageDialog.ui
 		src/CPACSTreeWidget.ui
 		src/TIGLViewerNewFileDialog.ui
+		src/modificators/SymmetryComboBoxWidget.ui
 
 		)
 

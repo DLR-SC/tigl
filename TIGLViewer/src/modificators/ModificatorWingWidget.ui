@@ -22,36 +22,10 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="symmetryLayout">
-     <item>
-      <widget class="QLabel" name="labelSymmetry">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Symmetry</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBoxSymmetry"/>
-     </item>
-    </layout>
+    <widget class="CTiglPointWidget" name="rotation" native="true"/>
+   </item>
+   <item>
+    <widget class="SymmetryComboBoxWidget" name="symmetry" native="true"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="sweepLayout">
@@ -490,6 +464,12 @@
    <class>CTiglPointWidget</class>
    <extends>QWidget</extends>
    <header>modificators/CTiglPointWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SymmetryComboBoxWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/SymmetryComboBoxWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
