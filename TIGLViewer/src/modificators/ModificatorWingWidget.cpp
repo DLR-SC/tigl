@@ -112,11 +112,11 @@ void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing)
     // set constant between ar, span and area
     setARConstant(true);
 
-    internalSpan = wing.GetWingHalfSpan();
+    internalSpan = tiglWing->GetWingHalfSpan();
     ui->spinBoxSpan->setValue(internalSpan);
-    internalAR = wing.GetAspectRatio();
+    internalAR = tiglWing->GetAspectRatio();
     ui->spinBoxAR->setValue(internalAR);
-    internalArea = wing.GetReferenceArea();
+    internalArea = tiglWing->GetReferenceArea();
     ui->spinBoxArea->setValue(internalArea);
 
     ui->spinBoxSweepChord->setValue(0.25);
@@ -125,11 +125,11 @@ void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing)
     ui->spinBoxDihedralChord->setValue(0.25);
     updateDihedralAccordingChordValue();
 
-    ui->rootLE->setInternal(wing.GetRootLEPosition());
+    ui->rootLE->setInternal(tiglWing->GetRootLEPosition());
 
-    ui->rotation->setInternal(wing.GetRotation());
+    ui->rotation->setInternal(tiglWing->GetRotation());
 
-    ui->symmetry->setInternal(wing.GetSymmetryAxis()) ;
+    ui->symmetry->setInternal(tiglWing->GetSymmetryAxis()) ;
 }
 
 void ModificatorWingWidget::reset()
@@ -145,7 +145,7 @@ void ModificatorWingWidget::reset()
 bool ModificatorWingWidget::apply()
 {
 
-    bool anchorHasChanged = false;
+    bool rootLEHasChanged = ui->rootLE->hasChanged();
 
     bool symmetryHasChanged = false;
 
@@ -161,10 +161,13 @@ bool ModificatorWingWidget::apply()
 
     bool areaXYHasChanged = (!isApprox(internalArea, ui->spinBoxArea->value()));
 
-    if (anchorHasChanged) {
+    bool wasModified = false;
 
-
-        // todo
+    if (rootLEHasChanged) {
+        ui->rootLE->setInternalFromGUI();
+        tigl::CTiglPoint newRootLE = ui->rootLE->getInternalPoint();
+        tiglWing->SetRootLEPosition(newRootLE);
+        wasModified = true;
     }
 
     if (symmetryHasChanged) {
@@ -234,5 +237,9 @@ bool ModificatorWingWidget::apply()
         }
     }
 
-    return false;
+    if (wasModified) {
+        reset();
+    }
+
+    return wasModified;
 }
