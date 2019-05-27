@@ -44,12 +44,8 @@ void ModificatorWingWidget::init()
     ui->spinBoxAR->setValue(-1.0);
     ui->spinBoxSpan->setValue(-1.0);
 
-    ui->comboBoxSymmetry->addItem("x-y-plane");
-    ui->comboBoxSymmetry->addItem("x-z-plane");
-    ui->comboBoxSymmetry->addItem("y-z-plane");
-    ui->comboBoxSymmetry->addItem("no-symmetry");
-
     ui->rootLE->setLabel(QString("Root LE"));
+    ui->rotation->setLabel(QString("Rotation"));
 
     // alterable span area ar
     setARConstant(true);
@@ -131,6 +127,9 @@ void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing)
 
     ui->rootLE->setInternal(wing.GetRootLEPosition());
 
+    ui->rotation->setInternal(wing.GetRotation());
+
+    ui->symmetry->setInternal(wing.GetSymmetryAxis()) ;
 }
 
 void ModificatorWingWidget::reset()
@@ -148,7 +147,7 @@ bool ModificatorWingWidget::apply()
 
     bool anchorHasChanged = false;
 
-    bool symmetryHasChanged = (internalSymmetry != ui->comboBoxSymmetry->currentText());
+    bool symmetryHasChanged = false;
 
     bool sweepHasChanged = ((!isApprox(internalSweep, ui->spinBoxSweep->value())) ||
                             (!isApprox(internalSweepChord, ui->spinBoxSweepChord->value())) );
@@ -169,7 +168,6 @@ bool ModificatorWingWidget::apply()
     }
 
     if (symmetryHasChanged) {
-        internalSymmetry = ui->comboBoxSymmetry->currentText();
 
         // todo
     }
