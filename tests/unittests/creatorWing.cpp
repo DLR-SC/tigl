@@ -393,3 +393,25 @@ TEST_F(creatorWing, MultipleWings_SetRootLEPosition)
 
     saveInOutputFile();
 }
+
+
+
+
+TEST_F(creatorWing, MultipleWings_SetRotation)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    tigl::CTiglPoint newRot, resRot;
+
+    newRot = tigl::CTiglPoint(0,10,0);
+    wing->SetRotation(newRot);
+    resRot = wing->GetRotation();
+    EXPECT_TRUE(resRot.isNear(newRot, 0.0001));
+
+    setWing("W9_BWSweep");
+    newRot = tigl::CTiglPoint(-20,10,80);
+    wing->SetRotation(newRot);
+    resRot = wing->GetRotation();
+    EXPECT_TRUE(resRot.isNear(newRot, 0.0001));
+
+    saveInOutputFile();
+}

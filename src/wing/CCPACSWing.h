@@ -189,6 +189,9 @@ public:
     // Set the root leading edge position in world coordinate system
     TIGL_EXPORT void SetRootLEPosition(CTiglPoint newRootPosition);
 
+    // Set the rotation of the wing transformation and invalidate the wing
+    TIGL_EXPORT void SetRotation(CTiglPoint newRot);
+
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;
 

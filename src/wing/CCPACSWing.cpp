@@ -916,6 +916,13 @@ void CCPACSWing::SetRootLEPosition(tigl::CTiglPoint newRootPosition)
     Invalidate();
 }
 
+void CCPACSWing::SetRotation(CTiglPoint newRot)
+{
+    CCPACSTransformation& transformation = GetTransformation();
+    transformation.setRotation(newRot);
+    Invalidate();
+}
+
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,
                                           const CTiglWingConnection& connection, const TopoDS_Shape& wire)
 {
