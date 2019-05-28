@@ -96,6 +96,7 @@ class IGuideCurveBuilder
 {
 public:
     virtual std::vector<gp_Pnt> BuildGuideCurvePnts(const CCPACSGuideCurve*) const = 0;
+    virtual ~IGuideCurveBuilder();
 };
 
 } // end namespace tigl

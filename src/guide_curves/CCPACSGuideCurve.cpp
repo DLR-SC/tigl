@@ -116,4 +116,8 @@ void CCPACSGuideCurve::BuildCurve(TopoDS_Edge& cache) const
     }
 }
 
+IGuideCurveBuilder::~IGuideCurveBuilder()
+{
+}
+
 } // end namespace tigl
