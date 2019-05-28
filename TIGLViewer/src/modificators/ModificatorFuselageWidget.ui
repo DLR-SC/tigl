@@ -18,7 +18,11 @@
     <widget class="CTiglPointWidget" name="noseCenter" native="true"/>
    </item>
    <item>
-    <widget class="CTiglPointWidget" name="rotation" native="true"/>
+    <widget class="CTiglPointWidget" name="rotation" native="true">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the rotation of the fuselage transformation. &lt;br/&gt;No other transformations are modified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
    <item>
     <layout class="QVBoxLayout" name="layoutDimension">
