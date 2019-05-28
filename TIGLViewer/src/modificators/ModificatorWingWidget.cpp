@@ -147,6 +147,8 @@ bool ModificatorWingWidget::apply()
 
     bool rootLEHasChanged = ui->rootLE->hasChanged();
 
+    bool rotationHasChanged = ui->rotation->hasChanged();
+
     bool symmetryHasChanged = ui->symmetry->hasChanged();
 
     bool sweepHasChanged = ((!isApprox(internalSweep, ui->spinBoxSweep->value())) ||
@@ -167,6 +169,13 @@ bool ModificatorWingWidget::apply()
         ui->rootLE->setInternalFromGUI();
         tigl::CTiglPoint newRootLE = ui->rootLE->getInternalPoint();
         tiglWing->SetRootLEPosition(newRootLE);
+        wasModified = true;
+    }
+
+    if (rotationHasChanged) {
+        ui->rotation->setInternalFromGUI();
+        tigl::CTiglPoint newRot = ui->rotation->getInternalPoint();
+        tiglWing->SetRotation(newRot);
         wasModified = true;
     }
 

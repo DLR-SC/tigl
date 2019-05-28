@@ -17,15 +17,27 @@
    <item>
     <layout class="QHBoxLayout" name="anchorLayout">
      <item>
-      <widget class="CTiglPointWidget" name="rootLE" native="true"/>
+      <widget class="CTiglPointWidget" name="rootLE" native="true">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Intuitively, this is the wing position. &lt;/p&gt;&lt;p&gt;More precisely, get/set the leading edge point of the root section wing in the world coordinate.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="CTiglPointWidget" name="rotation" native="true"/>
+    <widget class="CTiglPointWidget" name="rotation" native="true">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the rotation of the wing transformation. &lt;br/&gt;No other transformations are modified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
    <item>
-    <widget class="SymmetryComboBoxWidget" name="symmetry" native="true"/>
+    <widget class="SymmetryComboBoxWidget" name="symmetry" native="true">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Get/set the symmetry of the wing.  &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="sweepLayout">
