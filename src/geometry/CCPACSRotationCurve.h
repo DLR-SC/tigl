@@ -43,7 +43,7 @@ public:
     TIGL_EXPORT TopoDS_Face GetRotationSurface(gp_Pnt origin = {0., 0., 0.},axis dir=x) const;
 
 private:
-    TopoDS_Wire CutCurveAtZetas(const TopoDS_Wire wire) const;
+    void CutCurveAtZetas(TopoDS_Edge& edge) const;
 };
 
 

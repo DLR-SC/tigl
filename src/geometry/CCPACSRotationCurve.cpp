@@ -44,8 +44,7 @@ TopoDS_Wire CCPACSRotationCurve::GetCurve() const
 
     // apply transform of reference section
     CCPACSNacelleSection& section = m_uidMgr->ResolveObject<CCPACSNacelleSection>(GetReferenceSectionUID());
-    TopoDS_Wire wire = CutCurveAtZetas(profile.GetWire());
-    TopoDS_Shape transformedShape(wire);
+    TopoDS_Shape transformedShape(profile.GetWire());
 
     CTiglTransformation trafo = section.GetTransformationMatrix();
     transformedShape = trafo.Transform(transformedShape);
@@ -60,10 +59,8 @@ TopoDS_Face CCPACSRotationCurve::GetRotationSurface(gp_Pnt origin, axis dir) con
     else if ( dir == y ) { axis_vec = gp_Vec(0., 1., 0.); }
     else                 { axis_vec = gp_Vec(0., 0., 1.); }
 
-    gp_Ax1 ax = gp_Ax1(origin, axis_vec);
-
+    // get rotation curve as wire
     TopoDS_Wire wire = GetCurve();
-
     TopTools_IndexedMapOfShape map;
     TopExp::MapShapes(wire, TopAbs_EDGE, map);
     if ( map.Extent() ==0 || map.Extent() > 1 ) {
@@ -71,15 +68,30 @@ TopoDS_Face CCPACSRotationCurve::GetRotationSurface(gp_Pnt origin, axis dir) con
     }
     TopoDS_Edge edge = TopoDS::Edge(map(1));
 
+    // make sure that normal points from surface towards the axis. This is the case if the rotation curve
+    // is parametrized in reverse direction wrt to the rotation axis
+    Standard_Real umin, umax;
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
+    gp_Pnt p1, p2;
+    curve->D0(umin, p1);
+    curve->D0(umax, p2);
+    gp_Vec line( p2.X() - p1.X(), p2.Y() - p1.Y(), p2.Z() - p1.Z() );
+    double dotprod = axis_vec.Dot(line);
+    if (dotprod > 0) {
+        curve->Reverse();
+    }
+    edge = BRepBuilderAPI_MakeEdge(curve);
+    CutCurveAtZetas(edge);
+
 #ifdef DEBUG
     dumpShape(edge, "debugShapes", "rotationalcurve");
 #endif
 
-
+    gp_Ax1 ax = gp_Ax1(origin, axis_vec);
     return TopoDS::Face(BRepPrimAPI_MakeRevol(edge, ax));
 }
 
-TopoDS_Wire CCPACSRotationCurve::CutCurveAtZetas(const TopoDS_Wire wire) const
+void CCPACSRotationCurve::CutCurveAtZetas(TopoDS_Edge& edge) const
 {
 
     double zeta1 = GetStartZeta();
@@ -88,13 +100,6 @@ TopoDS_Wire CCPACSRotationCurve::CutCurveAtZetas(const TopoDS_Wire wire) const
     if ( zeta1 > 0 || zeta2 > 0 || zeta1 < -1 || zeta2 < -1 ) {
         throw CTiglError("CCPACSRotationCurve: StartZetaBlending and EndZetaBlending must be between 0 and -1.");
     }
-
-    TopTools_IndexedMapOfShape map;
-    TopExp::MapShapes(wire, TopAbs_EDGE, map);
-    if ( map.Extent() ==0 || map.Extent() > 1 ) {
-        CTiglError("CCPACSRotationCurve::CutCurveAtZetaBlending: Rotation Curve is currently only supported for a single edge.\n", TIGL_ERROR);
-    }
-    TopoDS_Edge edge = TopoDS::Edge(map(1));
 
     double umin, umax;
     double par1 = -1;
@@ -132,11 +137,8 @@ TopoDS_Wire CCPACSRotationCurve::CutCurveAtZetas(const TopoDS_Wire wire) const
         par2 = umax;
     }
 
-    // return trimmed curve
     curve = new Geom_TrimmedCurve(curve, par1,  par2);
-    BRepBuilderAPI_MakeWire wireBuilder;
-    wireBuilder.Add(BRepBuilderAPI_MakeEdge(curve));
-    return wireBuilder.Wire();
+    edge = BRepBuilderAPI_MakeEdge(curve);
 }
 
 }
