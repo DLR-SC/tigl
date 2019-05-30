@@ -85,12 +85,12 @@ TopoDS_Wire CCPACSNacelleProfile::GetWire(TiglShapeModifier mod) const
         wire = closedWireBuilder.Wire();
     }
     else if ( algoType == Simple ) {
-        // TODO
         if ( !GetPointList_choice1() ) {
             throw CTiglError("CCPACSNacelleProfile::GetWire() uses point list algorithm type \"Simple\", but the CPACSProfileGeometry2D type is not defined using a list of points (Maybe CST type?)");
         }
         const std::vector<CTiglPoint>& tiglpoints = GetPointList_choice1()->AsVector();
         ITiglWireAlgorithm::CPointContainer points;
+
         for ( size_t i = 0; i<tiglpoints.size(); ++i) {
             points.push_back(gp_Pnt(tiglpoints[i].x, tiglpoints[i].y, tiglpoints[i].z) );
         }

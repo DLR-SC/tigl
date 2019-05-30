@@ -23,7 +23,9 @@
 #include "TopoDS_Wire.hxx"
 
 namespace tigl {
-
+/*
+ * This class is used for the rotationally symmetric inner surface of an engine nacelle
+ */
 class CCPACSRotationCurve : public generated::CPACSRotationCurve
 {
 public:
@@ -39,6 +41,9 @@ public:
 
     TIGL_EXPORT TopoDS_Wire GetCurve() const;
     TIGL_EXPORT TopoDS_Face GetRotationSurface(gp_Pnt origin = {0., 0., 0.},axis dir=x) const;
+
+private:
+    TopoDS_Wire CutCurveAtZetas(const TopoDS_Wire wire) const;
 };
 
 

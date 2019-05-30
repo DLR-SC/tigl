@@ -340,7 +340,7 @@ void RemoveBlendingPart(TopoDS_Edge const lowerEdge,
 
     double umin, umax;
     double par1 = -1.;
-    double par2 = -1.;
+    double par2 = 0.;
     Handle_Geom_Curve curve = BRep_Tool::Curve(lowerEdge, umin, umax);
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
