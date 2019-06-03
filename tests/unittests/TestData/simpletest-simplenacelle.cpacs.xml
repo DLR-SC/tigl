@@ -34,6 +34,8 @@
             <xOffset>0.0</xOffset>
           </centerCowl>
           <fanCowl uID="SimpleNacelle_fanCowl">
+		    <guideCurves>
+			</guideCurves>
             <sections>
               <section uID="fanCowl_section_1">
                 <description>First Section containing the profile curve in flow direction of the nacelle</description>
@@ -61,8 +63,8 @@
             <rotationCurve uID="fanCowl_rotationCurve">
               <referenceSectionUID>fanCowl_section_1</referenceSectionUID>
               <curveProfileUID>fanCowlRotationCurve</curveProfileUID>
-              <startZeta>-0.3</startZeta>
-              <endZeta>-0.6</endZeta>
+              <startZeta>-0.6</startZeta>
+              <endZeta>-0.3</endZeta>
               <startZetaBlending>-0.7</startZetaBlending>
               <endZetaBlending>-0.2</endZetaBlending>
             </rotationCurve>
@@ -676,7 +678,7 @@
           <description>rotational symmetric part of fan cowl</description>
           <pointList>
             <x mapType="vector">
-				0.6;0.3</x>
+				0;1</x>
             <y mapType="vector">
 				-0.06;-0.06;</y>
           </pointList>

@@ -339,7 +339,8 @@ void RemoveBlendingPart(TopoDS_Edge const lowerEdge,
     }
 
     double umin, umax;
-    double par1, par2;
+    double par1 = -1.;
+    double par2 = 0.;
     Handle_Geom_Curve curve = BRep_Tool::Curve(lowerEdge, umin, umax);
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
@@ -350,9 +351,15 @@ void RemoveBlendingPart(TopoDS_Edge const lowerEdge,
     if (algo1.IsDone()) {
         par1 = algo1.Parameter();
     }
+    else {
+        throw tigl::CTiglError("RemoveBlendingPart: Unable to cut lower profile for CCPACSNacelleCowl", TIGL_ERROR);
+    }
     GCPnts_AbscissaPoint algo2(adaptorCurve, len*(zeta2 + 1.), umin);
     if (algo2.IsDone()) {
         par2 = algo2.Parameter();
+    }
+    else {
+        throw tigl::CTiglError("RemoveBlendingPart: Unable to cut lower profile for CCPACSNacelleCowl", TIGL_ERROR);
     }
     curve = new Geom_TrimmedCurve(curve, umin,  par1);
     edge1 = BRepBuilderAPI_MakeEdge(curve);
