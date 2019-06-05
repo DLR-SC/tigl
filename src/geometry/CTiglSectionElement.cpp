@@ -32,7 +32,7 @@
 tigl::CTiglTransformation tigl::CTiglSectionElement::GetTotalTransformation(TiglCoordinateSystem referenceCS) const
 {
     // Do section element transformation on points
-    tigl::CTiglTransformation totalTransformation = GetSectionElementTransformation();
+    tigl::CTiglTransformation totalTransformation = GetElementTransformation();
 
     // Do section transformations
     totalTransformation.PreMultiply(GetSectionTransformation());
@@ -105,7 +105,7 @@ tigl::CTiglSectionElement::GetElementTrasformationToTranslatePoint(const CTiglPo
     CTiglTransformation Tl;
     Tl.AddTranslation(tRight.x, tRight.y, tRight.z);
 
-    CTiglTransformation newE = GetSectionElementTransformation() * Tl;
+    CTiglTransformation newE = GetElementTransformation() * Tl;
 
     return newE;
 }
@@ -247,7 +247,7 @@ void tigl::CTiglSectionElement::SetWidth(double newWidth, TiglCoordinateSystem r
         // So the important part is the translation
         // -> we reset the transformation of element and section keeping only the the translation
         // In the hope that a area will appear and that we can use the algorithm as in the usual case.
-        CTiglPoint ETranslation = GetSectionElementTransformation().GetTranslation();
+        CTiglPoint ETranslation = GetElementTransformation().GetTranslation();
         CTiglTransformation tempNewE;
         tempNewE.AddTranslation(ETranslation.x, ETranslation.y, ETranslation.z);
         SetElementTransformation(tempNewE);
@@ -276,7 +276,7 @@ void tigl::CTiglSectionElement::SetHeight(double newHeight, TiglCoordinateSystem
         // So the important part is the translation
         // -> we reset the transformation of element and section keeping only the the translation
         // In the hope that a area will appear and that we can use the algorithm as in the usual case.
-        CTiglPoint ETranslation = GetSectionElementTransformation().GetTranslation();
+        CTiglPoint ETranslation = GetElementTransformation().GetTranslation();
         CTiglTransformation tempNewE;
         tempNewE.AddTranslation(ETranslation.x, ETranslation.y, ETranslation.z);
         SetElementTransformation(tempNewE);
@@ -305,7 +305,7 @@ void tigl::CTiglSectionElement::SetArea(double newArea, TiglCoordinateSystem ref
         // So the important part is the translation
         // -> we reset the transformation of element and section keeping only the the translation
         // In the hope that a area will appear and that we can use the algorithm as in the usual case.
-        CTiglPoint ETranslation = GetSectionElementTransformation().GetTranslation();
+        CTiglPoint ETranslation = GetElementTransformation().GetTranslation();
         CTiglTransformation tempNewE;
         tempNewE.AddTranslation(ETranslation.x, ETranslation.y, ETranslation.z);
         SetElementTransformation(tempNewE);
@@ -331,24 +331,65 @@ void tigl::CTiglSectionElement::SetTotalTransformation(const tigl::CTiglTransfor
 {
 
     // We have
-    // FPSE' = G        where E' is the new element transformation,
+    // FPS'E' = G        where E' is the new element transformation,
     //                    and G is the given new total transformation
     //                    and F is the parent transformation
-    // E' = S⁻¹P⁻¹F⁻¹G
+    // S'E' = P⁻¹F⁻¹G
 
-    CTiglTransformation newE ;
+    CTiglTransformation newSE ;
 
     if ( referenceCS == GLOBAL_COORDINATE_SYSTEM ) {
-        newE = GetSectionTransformation().Inverted()
-                * GetPositioningTransformation().Inverted()
+        newSE =  GetPositioningTransformation().Inverted()
                 * GetParentTransformation().Inverted()
                 * newTotalTransformation;
 
     } else if (referenceCS == FUSELAGE_COORDINATE_SYSTEM || referenceCS == WING_COORDINATE_SYSTEM ) {
-        newE = GetSectionTransformation().Inverted()
-                * GetPositioningTransformation().Inverted()
+        newSE =  GetPositioningTransformation().Inverted()
                 *  newTotalTransformation;
     };
 
-    SetElementTransformation(newE);
+    SetElementAndSectionTransformation(newSE);
 }
+
+void tigl::CTiglSectionElement::SetElementAndSectionTransformation(const tigl::CTiglTransformation &newTransformation)
+{
+
+    CTiglPoint scal1, rot1, scal2, rot2, trans;
+
+    newTransformation.DecomposeTRSRS(scal1,rot1,scal2,rot2,trans);
+
+    // set the new transformation matrix in the element
+    CCPACSTransformation& storedElementTransformation = GetElementCCPACSTransformation();
+
+    storedElementTransformation.setScaling(scal1);
+    storedElementTransformation.setRotation(rot1);
+    storedElementTransformation.setTranslation(CTiglPoint(0,0,0));
+
+    CCPACSTransformation& storedSectionTransformation = GetSectionCCPACSTransformation();
+    storedSectionTransformation.setScaling(scal2);
+    storedSectionTransformation.setRotation(rot2);
+    storedSectionTransformation.setTranslation(trans);
+
+    InvalidateParent();
+
+}
+
+void tigl::CTiglSectionElement::SetElementTransformation(const tigl::CTiglTransformation &newTransformation)
+{
+    // set the new transformation matrix in the element
+    CCPACSTransformation& storedTransformation = GetElementCCPACSTransformation();
+    storedTransformation.setTransformationMatrix(newTransformation);
+
+    InvalidateParent();
+}
+
+void tigl::CTiglSectionElement::SetSectionTransformation(const tigl::CTiglTransformation &newTransformation)
+{
+    // set the new transformation matrix in the element
+    CCPACSTransformation& storedTransformation = GetSectionCCPACSTransformation();
+    storedTransformation.setTransformationMatrix(newTransformation);
+
+    InvalidateParent();
+
+}
+

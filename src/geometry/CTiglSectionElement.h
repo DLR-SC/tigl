@@ -21,6 +21,7 @@
 
 #include "tigl_internal.h"
 #include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 
 #include <string>
 #include <boost/optional.hpp>
@@ -58,7 +59,7 @@ public:
     TIGL_EXPORT virtual CTiglTransformation GetSectionTransformation() const = 0;
 
     // Returns the element transformation
-    TIGL_EXPORT virtual CTiglTransformation GetSectionElementTransformation() const = 0;
+    TIGL_EXPORT virtual CTiglTransformation GetElementTransformation() const = 0;
 
     // Returns the fuselage or wing transformation
     TIGL_EXPORT virtual CTiglTransformation GetParentTransformation() const = 0;
@@ -96,8 +97,7 @@ public:
     // Return the width of the wire
     TIGL_EXPORT virtual double GetWidth(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
-    // Set the element transformation such that the total transformation is equal to the given transformation
-    // TODO set element and section transfomation simultaneously to cover all the case !) even the shearing case
+    // Set the element and section transformation such that the total transformation is equal to the given transformation
     TIGL_EXPORT void SetTotalTransformation(const CTiglTransformation& newTotalTransformation,
                                             TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
@@ -128,19 +128,42 @@ public:
     TIGL_EXPORT virtual void SetWidth(double newWidth, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
     // Set the area of the wire to the wanted value 
-    TIGL_EXPORT virtual void SetArea(double newArea, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM); 
+    TIGL_EXPORT virtual void SetArea(double newArea, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
+
+    // Set the underlying CPACSTransformation of the section and the element
+    // such that the multiplication of the both transformation give the input transformation!
+    // Remark, the strength of this method is that we are sure that the decomposition in CCPACSTransformations are exact!!
+    // We use the "DecomposeTRSRS" of the CTiglTransformation class and we set a part of the decomposition in the
+    // section element CCPACSTransformation and another part in section CCPACSTransformation,
+    // thus the limitation of decomposing the matrix in translation, rotation and scaling is hacked.
+    // Remark, to apply this function we need to be sure that a section exist for each element,
+    // for the moment we assume it. But, in a near future, we can force this by creating a new section when is needed.
+    void SetElementAndSectionTransformation(const CTiglTransformation &newTransformation);
 
 
 protected:
 
+    // Retrieve the stored "CCPACSTransformation" of the element transformation;
+    virtual CCPACSTransformation& GetElementCCPACSTransformation() = 0;
+
+    // Retrieve the stored "CCPACSTransformation" of the section transformation;
+    virtual CCPACSTransformation& GetSectionCCPACSTransformation() = 0;
+
+    // Invalidate the fuselage or the wing
+    virtual void InvalidateParent() = 0;
+
+
     // Set the underlying CPACSTransformation (fuselage or wing ) with the given CTiglTransformation.
     // Calling this function will change the geometry of the aircraft.
-    virtual void SetElementTransformation(const CTiglTransformation& newTransformation) = 0;
+    void SetElementTransformation(const CTiglTransformation& newTransformation);
 
 
     // Set the underlying section CPACSTransformation with the given CTiglTransformation.
     // Calling this function will change the geometry of the aircraft.
-    virtual void SetSectionTransformation(const CTiglTransformation& newTransformation) = 0;
+    void SetSectionTransformation(const CTiglTransformation& newTransformation);
+
+
 
 
     // Return the element transformation needed to move a point A to the position B in referenceCS.

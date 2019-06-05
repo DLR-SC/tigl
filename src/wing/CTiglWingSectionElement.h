@@ -30,7 +30,8 @@ class CCPACSWing;
 class CCPACSWingSectionElement;
 class CCPACSWingSection;
 
-class CTiglWingSectionElement: public CTiglSectionElement {
+class CTiglWingSectionElement: public CTiglSectionElement
+{
 
 public:
     CTiglWingSectionElement();
@@ -51,7 +52,7 @@ public:
 
     TIGL_EXPORT CTiglTransformation GetSectionTransformation() const override;
 
-    TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const override;
+    TIGL_EXPORT CTiglTransformation GetElementTransformation() const override;
 
     TIGL_EXPORT CTiglTransformation GetParentTransformation() const override;
 
@@ -70,10 +71,11 @@ public:
 
 protected:
 
-    void SetElementTransformation(const CTiglTransformation& newTransformation) override;
+    CCPACSTransformation& GetElementCCPACSTransformation() override;
 
-    void SetSectionTransformation(const CTiglTransformation& newTransformation) override;
+    CCPACSTransformation& GetSectionCCPACSTransformation() override;
 
+    void InvalidateParent() override;
 
 private:
     CCPACSWingSectionElement* element;
