@@ -663,16 +663,76 @@ TEST_F(tiglCTiglSectionElement, SetTotalTransformation_MultipleFuselagesModel)
     EXPECT_TRUE(cElement->GetTotalTransformation().IsNear(newTotalTransformation) ) ;
 
 
-    // create a undecomposable case (for the moment ;)
     // shearing from rotation scaling rotation
     newTotalTransformation.SetIdentity();
     newTotalTransformation.AddRotationY(45);
     newTotalTransformation.AddScaling(2,1,1);
     newTotalTransformation.AddRotationY(-18.43);
     cElement->SetTotalTransformation(newTotalTransformation);
-    // todo make the following statement to true
-    EXPECT_FALSE(cElement->GetTotalTransformation().IsNear(newTotalTransformation));
+    EXPECT_TRUE(cElement->GetTotalTransformation().IsNear(newTotalTransformation));
 
 
 }
 
+TEST_F(tiglCTiglSectionElement, SetSectionElementTransformation_MultipleFuselagesModel)
+{
+    setVariables("TestData/multiple_fuselages.xml");
+
+    tigl::CTiglSectionElement* cElement = nullptr;
+    tigl::CTiglTransformation newSectionElementTransformation, res, resE, resS, I;
+    I.SetIdentity();
+
+    double tolerance = 0.0001; // tolerance on the pairwise diff of the result matrix and the input matrix
+
+    cElement = GetCElementOf("D150_Fuselage_1Section1IDElement1");
+
+    // identity matrix case
+
+    newSectionElementTransformation.SetIdentity();
+    cElement->SetElementAndSectionTransformation(newSectionElementTransformation);
+    resE = cElement->GetElementTransformation();
+    resS = cElement->GetSectionTransformation();
+    res  = resS * resE;
+    EXPECT_TRUE(res.IsNear(newSectionElementTransformation, tolerance));
+    EXPECT_TRUE(resE.IsNear(I, tolerance)); // we want also that E and S matrix equal I
+    EXPECT_TRUE(resS.IsNear(I, tolerance));
+
+    // simple matrix case
+
+    newSectionElementTransformation.SetIdentity();
+    newSectionElementTransformation.AddRotationIntrinsicXYZ(20, 30, 40);
+    cElement->SetElementAndSectionTransformation(newSectionElementTransformation);
+    resE = cElement->GetElementTransformation();
+    resS = cElement->GetSectionTransformation();
+    res  = resS * resE;
+    EXPECT_TRUE(res.IsNear(newSectionElementTransformation, tolerance));
+    EXPECT_TRUE(
+        resE.IsNear(I, tolerance)); // we want also that E equal I because a proper polar decomposition should be done
+
+    // simple matrix case2
+
+    newSectionElementTransformation.SetIdentity();
+    newSectionElementTransformation.AddScaling(1, 2, 3);
+    newSectionElementTransformation.AddRotationIntrinsicXYZ(10, 40, 60);
+    newSectionElementTransformation.AddTranslation(30, -10, -8);
+    cElement->SetElementAndSectionTransformation(newSectionElementTransformation);
+    resE = cElement->GetElementTransformation();
+    resS = cElement->GetSectionTransformation();
+    res  = resS * resE;
+    EXPECT_TRUE(res.IsNear(newSectionElementTransformation, tolerance));
+    // we want also that E equal I because a proper polar decomposition should be done
+    EXPECT_TRUE(resE.IsNear(I, tolerance));
+
+    // shearing matrix case
+
+    newSectionElementTransformation.SetIdentity();
+    newSectionElementTransformation.SetValue(0, 1, 0.5);
+    cElement->SetElementAndSectionTransformation(newSectionElementTransformation);
+    resE = cElement->GetElementTransformation();
+    resS = cElement->GetSectionTransformation();
+    res  = resS * resE;
+
+    EXPECT_TRUE(res.IsNear(newSectionElementTransformation, tolerance));
+
+    saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
+}

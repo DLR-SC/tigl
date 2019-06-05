@@ -103,7 +103,7 @@ tigl::CTiglTransformation tigl::CTiglFuselageSectionElement::GetSectionTransform
 }
 
 // Returns the section element matrix referenced by this connection
-tigl::CTiglTransformation tigl::CTiglFuselageSectionElement::GetSectionElementTransformation() const
+tigl::CTiglTransformation tigl::CTiglFuselageSectionElement::GetElementTransformation() const
 {
     return element->GetTransformation().getTransformationMatrix();
 }
@@ -142,9 +142,9 @@ tigl::CTiglPoint tigl::CTiglFuselageSectionElement::GetNormal(TiglCoordinateSyst
     // Remark: do not forget that the CTiglTransformation is augmented, so we need to compute the new Y andZ vector
     // using the origin
 
-    CTiglPoint yPoint = CTiglPoint(0,1,0);
-    CTiglPoint zPoint = CTiglPoint(0,0,1);
-    CTiglPoint origin = CTiglPoint(0,0,0);
+    CTiglPoint yPoint = CTiglPoint(0, 1, 0);
+    CTiglPoint zPoint = CTiglPoint(0, 0, 1);
+    CTiglPoint origin = CTiglPoint(0, 0, 0);
 
     CTiglTransformation M = GetTotalTransformation(referenceCS);
     CTiglPoint yVec = (M * yPoint) - (M * origin);
@@ -153,21 +153,19 @@ tigl::CTiglPoint tigl::CTiglFuselageSectionElement::GetNormal(TiglCoordinateSyst
     CTiglPoint normal = CTiglPoint::cross_prod(yVec, zVec);
     normal.normalize();
     return normal;
-
 }
 
-void tigl::CTiglFuselageSectionElement::SetElementTransformation(const tigl::CTiglTransformation& newTransformation)
+tigl::CCPACSTransformation& tigl::CTiglFuselageSectionElement::GetElementCCPACSTransformation()
 {
-    // set the new transformation matrix in the element
-    CCPACSTransformation& storedTransformation = element->GetTransformation();
-    storedTransformation.setTransformationMatrix(newTransformation);
-    fuselage->Invalidate();
+    return element->GetTransformation();
 }
 
-void tigl::CTiglFuselageSectionElement::SetSectionTransformation(const tigl::CTiglTransformation& newTransformation)
+tigl::CCPACSTransformation& tigl::CTiglFuselageSectionElement::GetSectionCCPACSTransformation()
 {
-    // set the new transformation matrix in the element
-    CCPACSTransformation& storedTransformation = section->GetTransformation();
-    storedTransformation.setTransformationMatrix(newTransformation);
+    return section->GetTransformation();
+}
+
+void tigl::CTiglFuselageSectionElement::InvalidateParent()
+{
     fuselage->Invalidate();
 }

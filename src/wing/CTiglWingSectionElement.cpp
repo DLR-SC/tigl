@@ -99,7 +99,7 @@ tigl::CTiglTransformation tigl::CTiglWingSectionElement::GetSectionTransformatio
 }
 
 // Returns the section element matrix referenced by this connection
-tigl::CTiglTransformation tigl::CTiglWingSectionElement::GetSectionElementTransformation() const
+tigl::CTiglTransformation tigl::CTiglWingSectionElement::GetElementTransformation() const
 {
     return element->GetTransformation().getTransformationMatrix();
 }
@@ -152,22 +152,6 @@ tigl::CTiglPoint tigl::CTiglWingSectionElement::GetNormal(TiglCoordinateSystem r
 
 }
 
-void tigl::CTiglWingSectionElement::SetElementTransformation(const tigl::CTiglTransformation& newTransformation)
-{
-    // set the new transformation matrix in the element
-    CCPACSTransformation& storedTransformation = element->GetTransformation();
-    storedTransformation.setTransformationMatrix(newTransformation);
-    wing->Invalidate();
-}
-
-void tigl::CTiglWingSectionElement::SetSectionTransformation(const tigl::CTiglTransformation& newTransformation)
-{
-    // set the new transformation matrix in the element
-    CCPACSTransformation& storedTransformation = section->GetTransformation();
-    storedTransformation.setTransformationMatrix(newTransformation);
-    wing->Invalidate();
-}
-
 bool tigl::CTiglWingSectionElement::IsValid() const
 {
     if (element != nullptr && section != nullptr && wing != nullptr) {
@@ -180,4 +164,19 @@ tigl::CTiglPoint tigl::CTiglWingSectionElement::GetChordPoint(double xsi, TiglCo
 {
     CTiglPoint airfoilChordPoint(GetProfile().GetChordPoint(xsi).XYZ());
     return GetTotalTransformation(referenceCS) * airfoilChordPoint;
+}
+
+void tigl::CTiglWingSectionElement::InvalidateParent()
+{
+    wing->Invalidate();
+}
+
+tigl::CCPACSTransformation& tigl::CTiglWingSectionElement::GetElementCCPACSTransformation()
+{
+    return element->GetTransformation();
+}
+
+tigl::CCPACSTransformation& tigl::CTiglWingSectionElement::GetSectionCCPACSTransformation()
+{
+    return section->GetTransformation();
 }
