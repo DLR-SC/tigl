@@ -432,6 +432,171 @@ TEST(TiglMath, CTiglTransform_Decompose2)
     EXPECT_NEAR(resultV.Z(), expectV.Z(), 1e-8 );
 }
 
+TEST(TiglMath, CTiglTransform_Decompose3) {
+
+    double S[3] = {0., 0., 0.};
+    double R[3] = {0., 0., 0.};
+    double T[3] = {0., 0., 0.};
+
+    tigl::CTiglTransformation rot, rotP;
+    rot.AddRotationZ(142);
+    rot.AddRotationY(0);
+    rot.AddRotationX(-180);
+
+    rot.Decompose(S, R, T);
+
+    rotP.AddRotationZ(R[2]);
+    rotP.AddRotationY(R[1]);
+    rotP.AddRotationX(R[0]);
+
+    EXPECT_TRUE(rot.IsNear(rotP));
+
+
+    rot.SetIdentity();
+    rot.AddScaling(1.28,0.78,1);
+    rot.AddRotationZ(-128);
+    rot.AddRotationY(0);
+    rot.AddRotationX(-180);
+
+    rot.Decompose(S, R, T);
+    rotP.SetIdentity();
+    rotP.AddScaling(S[0], S[1],S[2]);
+    rotP.AddRotationZ(R[2]);
+    rotP.AddRotationY(R[1]);
+    rotP.AddRotationX(R[0]);
+
+    EXPECT_TRUE(rot.IsNear(rotP));
+}
+
+TEST(TiglMath, CTiglTransform_DecomposeTRSRS)
+{
+
+    tigl::CTiglTransformation initial, res;
+
+    // Shear matrix test
+    initial.SetIdentity();
+    initial.SetValue(1, 0, 0.5);
+
+    tigl::CTiglPoint trans, rot2, diag2, rot1, diag1;
+
+
+    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+
+    res.SetIdentity();
+    res.AddScaling(diag1.x, diag1.y, diag1.z);
+    res.AddRotationIntrinsicXYZ(rot1.x, rot1.y, rot1.z);
+    res.AddScaling(diag2.x, diag2.y, diag2.z);
+    res.AddRotationIntrinsicXYZ(rot2.x, rot2.y, rot2.z);
+    res.AddTranslation(trans.x, trans.y, trans.z);
+
+    EXPECT_TRUE(initial.IsNear(res));
+
+    // Identity
+
+    initial.SetIdentity();
+
+    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+
+    res.SetIdentity();
+    res.AddScaling(diag1.x, diag1.y, diag1.z);
+    res.AddRotationIntrinsicXYZ(rot1.x, rot1.y, rot1.z);
+    res.AddScaling(diag2.x, diag2.y, diag2.z);
+    res.AddRotationIntrinsicXYZ(rot2.x, rot2.y, rot2.z);
+    res.AddTranslation(trans.x, trans.y, trans.z);
+
+    EXPECT_TRUE(initial.IsNear(res));
+
+    // Pseudo random
+
+    initial.SetIdentity();
+    initial.AddScaling(3.4, 23, 0.9);
+    initial.AddRotationIntrinsicXYZ(3.4, 23, 0.9);
+    initial.AddTranslation(3.3, -2, 4);
+
+    initial.AddScaling(23, 0.5, 0.9);
+    initial.AddRotationIntrinsicXYZ(23, 55, 77);
+    initial.AddTranslation(12, -90, 12);
+
+    initial.AddScaling(23, 0.5, 0.9);
+    initial.AddRotationIntrinsicXYZ(-3, -9, -7);
+    initial.AddTranslation(7, -9, 12);
+
+    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+
+    res.SetIdentity();
+    res.AddScaling(diag1.x, diag1.y, diag1.z);
+    res.AddRotationIntrinsicXYZ(rot1.x, rot1.y, rot1.z);
+    res.AddScaling(diag2.x, diag2.y, diag2.z);
+    res.AddRotationIntrinsicXYZ(rot2.x, rot2.y, rot2.z);
+    res.AddTranslation(trans.x, trans.y, trans.z);
+
+    EXPECT_TRUE(initial.IsNear(res));
+
+    // Pseudo random case
+
+    initial.SetIdentity();
+    initial.AddScaling(3.21, 2, 9);
+    initial.AddRotationIntrinsicXYZ(123.4, 223, 321);
+    initial.AddTranslation(31, -1, 1);
+
+    initial.AddScaling(23, 0.5, 0.9);
+    initial.AddRotationIntrinsicXYZ(23, 55, 77);
+
+    initial.AddScaling(11, 30.5, 18);
+    initial.AddRotationIntrinsicXYZ(23, 55, 77);
+    initial.AddTranslation(12, -90, 12);
+    initial.AddTranslation(13, -3, 12);
+
+    initial.AddScaling(-12, -12, -32);
+    initial.AddRotationIntrinsicXYZ(-321, -922, -722);
+    initial.AddTranslation(7, -9, 2);
+
+    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+
+    res.SetIdentity();
+    res.AddScaling(diag1.x, diag1.y, diag1.z);
+    res.AddRotationIntrinsicXYZ(rot1.x, rot1.y, rot1.z);
+    res.AddScaling(diag2.x, diag2.y, diag2.z);
+    res.AddRotationIntrinsicXYZ(rot2.x, rot2.y, rot2.z);
+    res.AddTranslation(trans.x, trans.y, trans.z);
+
+    EXPECT_TRUE(initial.IsNear(res));
+
+    // 0 scaling case
+
+    initial.SetIdentity();
+    initial.AddScaling(0, 2, 9);
+
+    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+
+    res.SetIdentity();
+    res.AddScaling(diag1.x, diag1.y, diag1.z);
+    res.AddRotationIntrinsicXYZ(rot1.x, rot1.y, rot1.z);
+    res.AddScaling(diag2.x, diag2.y, diag2.z);
+    res.AddRotationIntrinsicXYZ(rot2.x, rot2.y, rot2.z);
+    res.AddTranslation(trans.x, trans.y, trans.z);
+
+    EXPECT_TRUE(initial.IsNear(res));
+
+    //    Fail due the scaling
+    //
+    //    initial.SetIdentity();
+    //    initial.AddScaling(0,2,9);
+    //    initial.AddRotationIntrinsicXYZ(30,50,70);
+    //
+    //    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+    //
+    //    res.SetIdentity();
+    //    res.AddScaling(diag1.x,diag1.y,diag1.z);
+    //    res.AddRotationIntrinsicXYZ(rot1.x,rot1.y,rot1.z);
+    //    res.AddScaling(diag2.x,diag2.y,diag2.z);
+    //    res.AddRotationIntrinsicXYZ(rot2.x,rot2.y,rot2.z);
+    //    res.AddTranslation(trans.x,trans.y,trans.z);
+    //
+    //
+    //    EXPECT_TRUE( initial.IsNear(res));
+}
+
 TEST(TiglMath, CTiglTransform_setTransformationMatrix)
 {
     double scale[3] = {2., 4., 8.};
@@ -637,6 +802,187 @@ TEST(TiglMath, SVD)
     EXPECT_NEAR(USVt(3,1), A(3,1), 1e-8);
     EXPECT_NEAR(USVt(3,2), A(3,2), 1e-8);
     EXPECT_NEAR(USVt(3,3), A(3,3), 1e-8);
+
+
+}
+
+TEST(TiglMath, DiagonalizeMatrixByJacobi)
+{
+
+    tigl::tiglMatrix I(1, 3, 1, 3);
+    I(1, 1) = 1.;
+    I(1, 2) = 0.;
+    I(1, 3) = 0.;
+    I(2, 1) = 0.;
+    I(2, 2) = 1.;
+    I(2, 3) = 0.;
+    I(3, 1) = 0.;
+    I(3, 2) = 0.;
+    I(3, 3) = 1.;
+
+    tigl::tiglMatrix M(1, 3, 1, 3);
+    tigl::tiglMatrix D(1, 3, 1, 3);
+    tigl::tiglMatrix expectedD(1, 3, 1, 3);
+    tigl::tiglMatrix V(1, 3, 1, 3);
+    tigl::tiglMatrix check(1, 3, 1, 3);
+
+    double tolerance = 0.001;
+
+    // trivial test
+    // todo: The V vector is not the identity, why?
+    M = I;
+    tigl::DiagonalizeMatrixByJacobi(M, D, V);
+
+    expectedD = I;
+    check     = V * D * V.Transposed();
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            EXPECT_NEAR(D(r, c), expectedD(r, c), tolerance);
+            EXPECT_NEAR(check(r, c), M(r, c), tolerance);
+        }
+    }
+
+    // none trivial test 1
+
+    M(1, 1) = 1.;
+    M(1, 2) = 2.;
+    M(1, 3) = 3.;
+    M(2, 1) = 2.;
+    M(2, 2) = 1.;
+    M(2, 3) = 2.;
+    M(3, 1) = 3.;
+    M(3, 2) = 2.;
+    M(3, 3) = 1.;
+
+    tigl::DiagonalizeMatrixByJacobi(M, D, V);
+
+    expectedD(1, 1) = 5.702;
+    expectedD(1, 2) = 0.;
+    expectedD(1, 3) = 0.;
+    expectedD(2, 1) = 0.;
+    expectedD(2, 2) = -0.702;
+    expectedD(2, 3) = 0.;
+    expectedD(3, 1) = 0.;
+    expectedD(3, 2) = 0.;
+    expectedD(3, 3) = -2.;
+
+    check = V * D * V.Transposed();
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            EXPECT_NEAR(D(r, c), expectedD(r, c), tolerance);
+            EXPECT_NEAR(check(r, c), M(r, c), tolerance);
+        }
+    }
+
+    // none trivial test 2
+
+    M(1, 1) = 4.3;
+    M(1, 2) = 1.;
+    M(1, 3) = 3.3;
+    M(2, 1) = 1.;
+    M(2, 2) = -8.;
+    M(2, 3) = 9.;
+    M(3, 1) = 3.3;
+    M(3, 2) = 9.;
+    M(3, 3) = 3.;
+
+    tigl::DiagonalizeMatrixByJacobi(M, D, V);
+
+    expectedD(1, 1) = 10.034;
+    expectedD(1, 2) = 0.;
+    expectedD(1, 3) = 0.;
+    expectedD(2, 1) = 0.;
+    expectedD(2, 2) = 2.347;
+    expectedD(2, 3) = 0.;
+    expectedD(3, 1) = 0.;
+    expectedD(3, 2) = 0.;
+    expectedD(3, 3) = -13.08;
+
+    check = V * D * V.Transposed();
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            EXPECT_NEAR(D(r, c), expectedD(r, c), tolerance);
+            EXPECT_NEAR(check(r, c), M(r, c), tolerance);
+        }
+    }
+}
+
+TEST(TiglMath, RotMatrixToIntrinsicXYZVector)
+{
+
+    tigl::tiglMatrix rM(1, 3, 1, 3);
+    tigl::CTiglPoint rV(1, 3);
+    tigl::CTiglPoint inputRV(1, 3);
+    tigl::CTiglTransformation rT;
+
+    double tolerance = 0.001;
+
+    // trivial test
+
+    inputRV.x = 0;
+    inputRV.y = 0;
+    inputRV.z = 0;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+
+    EXPECT_NEAR(rV.x, inputRV.x, tolerance);
+    EXPECT_NEAR(rV.y, inputRV.y, tolerance);
+    EXPECT_NEAR(rV.z, inputRV.z, tolerance);
+
+
+    //  normal case test
+
+    inputRV.x = 20;
+    inputRV.y = 40;
+    inputRV.z = 30;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+    EXPECT_NEAR(rV.x, inputRV.x, tolerance);
+    EXPECT_NEAR(rV.y, inputRV.y, tolerance);
+    EXPECT_NEAR(rV.z, inputRV.z, tolerance);
+
+
+
+    // negative rotation case
+
+    inputRV.x = -20;
+    inputRV.y = -40;
+    inputRV.z = 30;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+    EXPECT_NEAR(rV.x, inputRV.x, tolerance);
+    EXPECT_NEAR(rV.y, inputRV.y, tolerance);
+    EXPECT_NEAR(rV.z, inputRV.z, tolerance);
 
 
 }

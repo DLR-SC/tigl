@@ -577,6 +577,116 @@ void CTiglTransformation::Decompose(double scale[3], double rotation[3], double 
 
 }
 
+bool CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint& scaling2,
+                                         CTiglPoint& rotation2, CTiglPoint& translation) const
+{
+
+    // The theory behind this decomposition can be found at:
+    // http://research.cs.wisc.edu/graphics/Courses/838-s2002/Papers/polar-decomp.pdf
+
+    // Basically we do:
+    // M = T*U*P            where UP is the polar decompostion
+    // M = T*U*V*D*Vt       we decompose P using a Jacobi decomposition
+    // M = T*U*V*N*D*VT*N   we force U*V and VT to be proper rotation  using the fact that an improper rotation U
+    //                      can be factorized in U = QN, where Q is a proper rotation and N =+/-I
+    // M = T*R2*N*D*R1*N
+    // M = T*R2*S2*R1*S1    we store N in the scaling matrices
+
+    tiglMatrix A(1, 3, 1, 3);
+    tiglMatrix P(1, 3, 1, 3);
+    tiglMatrix U(1, 3, 1, 3);
+
+    tiglMatrix D2(1, 3, 1, 3);
+    tiglMatrix V(1, 3, 1, 3);
+
+    tiglMatrix R2(1, 3, 1, 3);
+    tiglMatrix R1(1, 3, 1, 3);
+    tiglMatrix D1(1, 3, 1, 3);
+
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            A(i + 1, j + 1) = GetValue(i, j);
+        }
+    }
+    PolarDecomposition(A, U, P);
+
+    // check if P is a proper diagonal (P is symmetric so we can check only the upper part)
+    double aveAbsOffDiag = (fabs(P(1, 2)) + fabs(P(1, 3)) + fabs(P(2, 3))) / 3;
+
+    // If S is all ready a proper scaling  we do no decompose P
+    if (aveAbsOffDiag < Precision::Confusion()) {
+        if (U.Determinant() < 0) {
+            R2 = U * -1;
+            D2 = P * -1;
+        } else {
+            R2 = U;
+            D2 = P;
+        }
+        R1.Init(0);
+        R1(1, 1) = 1.0;
+        R1(2, 2) = 1.0;
+        R1(3, 3) = 1.0;
+        D1.Init(0);
+        D1(1, 1) = 1.0;
+        D1(2, 2) = 1.0;
+        D1(3, 3) = 1.0;
+    }
+    else { // Otherwise we use decompose P using the Jacobi method
+
+        DiagonalizeMatrixByJacobi(P, D2, V);
+        R2 = U * V;
+        if (R2.Determinant() < 0) {
+            R2 = R2 * -1;
+            D2 = D2 * -1;
+        }
+
+        R1 = V.Transposed();
+
+        D1.Init(0.0);
+        D1(1, 1) = 1.0;
+        D1(2, 2) = 1.0;
+        D1(3, 3) = 1.0;
+
+        if (R1.Determinant() < 0) {
+            R1 = R1 * -1;
+            D1 = D1 * -1;
+        }
+    }
+
+    // tiglMatrix check(1, 3, 1, 3); // use to perfom a check
+    //    check = R2 * D2 * R1 * D1;
+    //    std::cout << "affine part" << std::endl;
+    //    for (int r = 1; r < 4; r++) {
+    //        for (int c = 1; c < 4; c++) {
+    //            if (!isNear(check(r, c), A(r, c))) {
+    //                std::cout << "DiagonalizeMatrixByJacobi: was not performed correctly diff = " << A(r, c) - check(r, c) << std::endl;
+    //            };
+    //            std::cout << check(r, c) << "   ";
+    //        }
+    //        std::cout << std::endl;
+    //    }
+
+
+    // Set the return values;
+
+    // translation is last column of transformation
+    translation.x = GetValue(0, 3);
+    translation.y = GetValue(1, 3);
+    translation.z = GetValue(2, 3);
+
+    rotation2 = RotMatrixToIntrinsicXYZVector(R2);
+
+    scaling2.x = D2(1, 1);
+    scaling2.y = D2(2, 2);
+    scaling2.z = D2(3, 3);
+
+    rotation1 = RotMatrixToIntrinsicXYZVector(R1);
+
+    scaling1.x = D1(1, 1);
+    scaling1.y = D1(2, 2);
+    scaling1.z = D1(3, 3);
+}
+
 // Getter for matrix values
 double CTiglTransformation::GetValue(int row, int col) const
 {

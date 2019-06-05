@@ -28,6 +28,7 @@
 #include "gp_GTrsf.hxx"
 #include "gp_Pnt.hxx"
 #include "TopoDS.hxx"
+#include "tiglMatrix.h"
 
 namespace tigl
 {
@@ -111,7 +112,16 @@ public:
     // Decompose the Transformation into the three operations
     // scale first, rotate second (extr. Euler as defined in CPACS),
     // translate third
+    // Remark, the decomposition can be not exactly equivalent to the original matrix
     TIGL_EXPORT void Decompose(double scale[3], double rotation[3], double translation[3]) const;
+
+    // Decompose the Transformation into the five operations
+    // scale1 first, rotate1 second (extr. Euler as defined in CPACS),
+    // scale2 third, rotate2 fourth, translation fifth
+    // Remark, the decomposition is always exact, this means that the original matrix is founded if we apply this
+    // operations on an identity matrix in the correct order. The only exception may be when 0 scaling occurs.
+    TIGL_EXPORT bool DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint&  scaling2,
+                                    CTiglPoint&  rotation2, CTiglPoint&  translation) const;
 
     // Default copy constructor and assignment operator are correct
     // since memberwise copy is enough for this class.

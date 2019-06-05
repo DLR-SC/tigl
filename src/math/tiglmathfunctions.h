@@ -209,6 +209,43 @@ TIGL_EXPORT void PolarDecomposition(tiglMatrix const& A, tiglMatrix& U, tiglMatr
 
 TIGL_EXPORT void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V);
 
+/**
+ * @brief Return true if the matrix is a proper rotation.
+ *
+ * Check if the the matrix is orthogonal and if its determinant is 1.
+ *
+ * @param R, the 3x3 matrix to check
+ * @return true or false
+ */
+TIGL_EXPORT bool IsProperRotationMatrix(tiglMatrix& R);
+
+/**
+ * @brief Diagonalize the given matrix using the jacobi method.
+ *
+ * The input matrix, M, is decomposed into V,an improper rotation, and D, a diagonal matrix.
+ * We have M = V*D*V.Transposed
+ * The value of the diagonal D is the eigenvalues of M and the columns of V are the the normalized eigenvectors
+ *
+ * @remark This method works only for real symmetric matrix.
+ *
+ * @param S: the 3X3 matrix to decompose
+ * @param D: the 3x3 diagonal result matrix
+ * @param V: the 3X3 improper rotation result matrix
+ */
+TIGL_EXPORT void DiagonalizeMatrixByJacobi(tiglMatrix S, tiglMatrix &D, tiglMatrix &V);
+
+
+/**
+ * @brief Return the intrinsic x y' z'' rotation vector of the rotation matrix.
+ *
+ * @remark If the matrix is not a rotation matrix a waring is log, but no error is rise.
+ *
+ * @param R: the 3x3 rotation matrix
+ * @return vector that contains x, y',z'' in degrees
+ */
+TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R );
+
+
 } // namespace tigl
 
 #endif // TIGLMATHFUNCTIONS_H
