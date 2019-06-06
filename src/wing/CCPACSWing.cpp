@@ -923,6 +923,71 @@ void CCPACSWing::SetRotation(CTiglPoint newRot)
     Invalidate();
 }
 
+void CCPACSWing::SetSweep(double newAngle, double chordPercentage)
+{
+    // The idea is:
+    // 1) Compute the new chord point of the tip such that the wing has the wanted origin
+    // 2) Find out the shearing that bring the chord point to the wanted spot
+    // 3) For all chord point:
+    //      a) apply that shearing
+    //      b) find out the new origin that bring the chord point to new spot
+    //      c) set the origin
+    //
+    // Remark: * To perform the shearing, we first want that the root chord point is on the origin to not move the root.
+    //         * The origin is moved with translation instead on applying directly the shearing on the transformation,
+    //           because we do not want to modify the shape of each section by the shearing.
+
+    CTiglPoint rootChord = wingHelper->GetCTiglElementOfWing(wingHelper->GetRootUID())
+                               ->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+    CTiglPoint tipChord = wingHelper->GetCTiglElementOfWing(wingHelper->GetTipUID())
+                              ->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+    ;
+
+    // compute the value fot the translation operation
+
+    CTiglTransformation translation;
+    translation.AddTranslation(-rootChord.x, -rootChord.y, -rootChord.z);
+    CTiglTransformation translationI;
+    translationI = translation.Inverted();
+
+    // Compute the value for the shear operation
+
+    CTiglPoint majorDir = TiglAxisToCTiglPoint(wingHelper->GetMajorDirection());
+    CTiglPoint deepDir  = TiglAxisToCTiglPoint(wingHelper->GetDeepDirection());
+    // since all coordinate of the majorDir vector are zero except the one that represent the axis
+    // the dot product is similar to project the vector on the axis
+    double majorProj =
+        CTiglPoint::inner_prod(majorDir, translation * tipChord); //mirrored if the wing  is in the other direction
+    double deepProj = CTiglPoint::inner_prod(deepDir, translation * tipChord);
+    // computed the need deepProj to have the wanted sweep angle
+    double neededDeepProj = tan(Radians(newAngle)) * fabs(majorProj);
+
+    double lambda = (neededDeepProj - deepProj) / majorProj;
+    int lambdaRow = maxIndex(deepDir.x, deepDir.y, deepDir.z);
+    int lambdaCol = maxIndex(majorDir.x, majorDir.y, majorDir.z);
+
+    CTiglTransformation shear;
+    shear.SetValue(lambdaRow, lambdaCol, lambda);
+
+    std::vector<std::string> orderedUIDs = m_segments.GetElementUIDsInOrder();
+
+    CTiglPoint oldOrigin, oldChordPoint, newOrigin, newChordPoint, originToChordPoint;
+    CTiglWingSectionElement* cElement;
+    for (int e = 1; e < orderedUIDs.size(); e++) { // start 1 -> the root section should not change
+        cElement                = wingHelper->GetCTiglElementOfWing(orderedUIDs.at(e));
+        oldChordPoint = cElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
+        oldOrigin = cElement->GetOrigin(GLOBAL_COORDINATE_SYSTEM);
+        originToChordPoint = oldChordPoint - oldOrigin;
+        newChordPoint = translationI * shear * translation * oldChordPoint;
+        newOrigin = newChordPoint - originToChordPoint;
+        cElement->SetOrigin(newOrigin);
+    }
+}
+
+void CCPACSWing::SetDihedral()
+{
+}
+
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,
                                           const CTiglWingConnection& connection, const TopoDS_Shape& wire)
 {

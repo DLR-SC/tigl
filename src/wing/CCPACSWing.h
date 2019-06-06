@@ -192,6 +192,15 @@ public:
     // Set the rotation of the wing transformation and invalidate the wing
     TIGL_EXPORT void SetRotation(CTiglPoint newRot);
 
+    // Set the sweep of the wing
+    TIGL_EXPORT void SetSweep(double sweepAngle, double chordPercentage = 0.25);
+
+    TIGL_EXPORT void SetDihedral();
+
+
+
+
+
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;
 
