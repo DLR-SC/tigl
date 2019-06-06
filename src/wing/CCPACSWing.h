@@ -195,7 +195,8 @@ public:
     // Set the sweep of the wing
     TIGL_EXPORT void SetSweep(double sweepAngle, double chordPercentage = 0.25);
 
-    TIGL_EXPORT void SetDihedral();
+    // Set the dihedral of the wing
+    TIGL_EXPORT void SetDihedral(double dihedralAngle, double chordPercentage = 0.25);
 
 
 

@@ -553,6 +553,94 @@ TEST_F(creatorWing, MultipleWings_SetSweep)
 
 
 
+    // invalid input
+
+    setWing("Wing");
+    newSweep = 100; // bigger than 89
+    chordPercent = 0.25;
+    EXPECT_THROW( wing->SetSweep(newSweep, chordPercent ), tigl::CTiglError );
+
+    setWing("Wing");
+    newSweep = 20;
+    chordPercent = -1 ; // not between 0 and 1
+    EXPECT_THROW( wing->SetSweep(newSweep, chordPercent ), tigl::CTiglError );
+
     saveInOutputFile();
 
+}
+
+TEST_F(creatorWing, MultipleWings_SetDihedral)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+
+    double newDihedral, resDihedral, chordPercent;
+    double oldSweep; // for checking purpose, sweep should not move when dihedral is changed
+    tigl::CTiglPoint oldRootLE; // for checking purpose
+    double tolerance = 0.0001;
+
+    setWing("Wing");
+    newDihedral  = -30;
+    chordPercent = 0.25;
+    oldSweep     = wing->GetSweep(chordPercent);
+    oldRootLE    = wing->GetRootLEPosition();
+    wing->SetDihedral(newDihedral, chordPercent);
+    resDihedral = wing->GetDihedral(chordPercent);
+    EXPECT_NEAR(resDihedral, newDihedral, tolerance);
+    EXPECT_NEAR(oldSweep, wing->GetSweep(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+
+    setWing("W2_RX90");
+    newDihedral  = 40;
+    chordPercent = 0;
+    oldSweep     = wing->GetSweep(chordPercent);
+    oldRootLE    = wing->GetRootLEPosition();
+    wing->SetDihedral(newDihedral, chordPercent);
+    resDihedral = wing->GetDihedral(chordPercent);
+    EXPECT_NEAR(resDihedral, newDihedral, tolerance);
+    EXPECT_NEAR(oldSweep, wing->GetSweep(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+
+    setWing("W10_Reverse");
+    newDihedral  = 20;
+    chordPercent = 1;
+    oldSweep     = wing->GetSweep(chordPercent);
+    oldRootLE    = wing->GetRootLEPosition();
+    wing->SetDihedral(newDihedral, chordPercent);
+    resDihedral = wing->GetDihedral(chordPercent);
+    EXPECT_NEAR(resDihedral, newDihedral, tolerance);
+    EXPECT_NEAR(oldSweep, wing->GetSweep(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+
+    setWing("W14_ChaDih");
+    newDihedral  = 30;
+    chordPercent = 0.25;
+    oldSweep     = wing->GetSweep(chordPercent);
+    oldRootLE    = wing->GetRootLEPosition();
+    wing->SetDihedral(newDihedral, chordPercent);
+    resDihedral = wing->GetDihedral(chordPercent);
+    EXPECT_NEAR(resDihedral, newDihedral, tolerance);
+    EXPECT_NEAR(oldSweep, wing->GetSweep(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+
+    setWing("W15_ShiAir");
+    newDihedral  = 30;
+    chordPercent = 0.25;
+    oldSweep     = wing->GetSweep(chordPercent);
+    oldRootLE    = wing->GetRootLEPosition();
+    wing->SetDihedral(newDihedral, chordPercent);
+    resDihedral = wing->GetDihedral(chordPercent);
+    EXPECT_NEAR(resDihedral, newDihedral, tolerance);
+    EXPECT_NEAR(oldSweep, wing->GetSweep(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    saveInOutputFile();
 }
