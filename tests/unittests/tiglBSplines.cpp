@@ -251,7 +251,7 @@ protected:
         : pnts(1, 101)
     {}
 
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         // load in the airfoil point example
         std::string line;
@@ -275,7 +275,7 @@ protected:
         ASSERT_EQ(parms.size(), pnts.Length());
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
     }
 

@@ -40,7 +40,7 @@ public:
       m_old_buf = stream.rdbuf();
       stream.rdbuf(this);
     }
-    ~QDebugStream() OVERRIDE
+    ~QDebugStream() override
     {
         // output anything that is left
         if (!m_string.empty()) {
@@ -55,7 +55,7 @@ public:
     }
 
 protected:
-    int_type overflow(int_type v) OVERRIDE
+    int_type overflow(int_type v) override
     {
         mutex.lock();      
         if (v == '\n') {
@@ -70,7 +70,7 @@ protected:
         return v;
     }
 
-    std::streamsize xsputn(const char *p, std::streamsize n) OVERRIDE 
+    std::streamsize xsputn(const char *p, std::streamsize n) override 
     {
         mutex.lock();
       

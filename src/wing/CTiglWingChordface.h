@@ -49,14 +49,14 @@ public:
 
     TIGL_EXPORT virtual void Reset();
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
     {
         return TIGL_COMPONENT_OTHER;
     }
 
-     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE
+     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override
      {
          return TIGL_INTENT_LOGICAL;
      }
@@ -69,7 +69,7 @@ public:
     TIGL_EXPORT const Handle(Geom_BSplineSurface) GetSurface() const;
 
 protected:
-    PNamedShape BuildLoft() const OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
 private:
     struct ChordSurfaceCache {

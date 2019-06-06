@@ -53,7 +53,7 @@ public:
     TIGL_EXPORT void SetNumberOfRibs(int);
     TIGL_EXPORT void SetSpacing(double);
 
-    TIGL_EXPORT void SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value) OVERRIDE;
+    TIGL_EXPORT void SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value) override;
 
     /// Reset the cached structural variables. Must be executed after changing the rib refinition
     TIGL_EXPORT void Invalidate();

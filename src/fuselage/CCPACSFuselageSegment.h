@@ -48,18 +48,18 @@ public:
     TIGL_EXPORT CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT ~CCPACSFuselageSegment() OVERRIDE;
+    TIGL_EXPORT ~CCPACSFuselageSegment() override;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) override;
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    TIGL_EXPORT void SetFromElementUID(const std::string& value) OVERRIDE;
-    TIGL_EXPORT void SetToElementUID(const std::string& value) OVERRIDE;
+    TIGL_EXPORT void SetFromElementUID(const std::string& value) override;
+    TIGL_EXPORT void SetToElementUID(const std::string& value) override;
 
     // Returns the fuselage this segment belongs to
     TIGL_EXPORT CCPACSFuselage& GetFuselage() const;
@@ -157,8 +157,8 @@ public:
     // Returns the outer profile points as read from TIXI. The points are already transformed.
     TIGL_EXPORT std::vector<CTiglPoint> GetRawEndProfilePoints();
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_FUSELSEGMENT; }
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE { return  TIGL_INTENT_LOGICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override { return TIGL_COMPONENT_FUSELSEGMENT; }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override { return  TIGL_INTENT_LOGICAL; }
 
     // Returns the number of faces in the loft. This depends on the number of guide curves as well as if the fuselage has a symmetry plane.
     TIGL_EXPORT int GetNumberOfLoftFaces() const;
@@ -173,7 +173,7 @@ private:
     void Cleanup();
 
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft() const OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
     void SetFaceTraits(PNamedShape loft) const;
 

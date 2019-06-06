@@ -34,9 +34,9 @@ public:
     TIGL_EXPORT CTiglStepReader();
     
     /// reads in a step file
-    TIGL_EXPORT ListPNamedShape Read(const std::string stepFileName) OVERRIDE;
+    TIGL_EXPORT ListPNamedShape Read(const std::string stepFileName) override;
 
-    TIGL_EXPORT std::string SupportedFileType() const OVERRIDE;
+    TIGL_EXPORT std::string SupportedFileType() const override;
     
     TIGL_EXPORT ~CTiglStepReader();
 };

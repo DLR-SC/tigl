@@ -31,14 +31,14 @@ class CTiglLogSplitter : public ITiglLogger
 {
 public:
     TIGL_EXPORT CTiglLogSplitter();
-    TIGL_EXPORT ~CTiglLogSplitter() OVERRIDE;
+    TIGL_EXPORT ~CTiglLogSplitter() override;
 
     // Adds a logger to the splitter
     TIGL_EXPORT void AddLogger(PTiglLogger);
 
     // override from ITiglLogger
-    TIGL_EXPORT void LogMessage(TiglLogLevel, const char * message) OVERRIDE;
-    TIGL_EXPORT void SetVerbosity(TiglLogLevel) OVERRIDE;
+    TIGL_EXPORT void LogMessage(TiglLogLevel, const char * message) override;
+    TIGL_EXPORT void SetVerbosity(TiglLogLevel) override;
 
 private:
     std::vector<PTiglLogger> _loggers;

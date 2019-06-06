@@ -33,7 +33,7 @@ class TestArcLengthReparameterization : public ::testing::Test
 {
 protected:
 
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         int degree = 2;
 
@@ -57,7 +57,7 @@ protected:
         curve = new Geom_BSplineCurve(cpoints, knots, mults, degree);
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
     }
 

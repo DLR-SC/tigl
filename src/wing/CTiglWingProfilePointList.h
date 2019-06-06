@@ -57,32 +57,32 @@ public:
     TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZVector& cpacsPointlist);
     TIGL_EXPORT CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointlist);
 
-    TIGL_EXPORT void Invalidate() OVERRIDE;
+    TIGL_EXPORT void Invalidate() override;
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE;
+    TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const override;
 
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get the upper and lower wing profile combined into one edge
-    TIGL_EXPORT const TopoDS_Edge& GetUpperLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get trailing edge if existing in definition
-    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get leading edge point();
-    TIGL_EXPORT const gp_Pnt& GetLEPoint() const OVERRIDE;
+    TIGL_EXPORT const gp_Pnt& GetLEPoint() const override;
 
     // get trailing edge point();
-    TIGL_EXPORT const gp_Pnt& GetTEPoint() const OVERRIDE;
+    TIGL_EXPORT const gp_Pnt& GetTEPoint() const override;
 
     // Checks, whether the trailing edge is blunt or
     // not by comparing first and last point.
-    TIGL_EXPORT bool HasBluntTE() const OVERRIDE;
+    TIGL_EXPORT bool HasBluntTE() const override;
 
 protected:
     struct WireCache {

@@ -64,12 +64,12 @@ public:
     }
 
     // Returns the unique id of this component or an empty string if the component does not have a uid
-    std::string GetDefaultedUID() const OVERRIDE
+    std::string GetDefaultedUID() const override
     {
         return m_uid;
     }
 
-    PNamedShape GetLoft() const OVERRIDE
+    PNamedShape GetLoft() const override
     {
         if (m_parent) {
             return (m_parent->*m_getShapeFunc)();
@@ -78,12 +78,12 @@ public:
         return PNamedShape();
     }
 
-    TiglGeometricComponentType GetComponentType() const OVERRIDE
+    TiglGeometricComponentType GetComponentType() const override
     {
         return TIGL_COMPONENT_OTHER;
     }
 
-    TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE
+    TiglGeometricComponentIntent GetComponentIntent() const override
     {
         return TIGL_INTENT_PHYSICAL;
     }

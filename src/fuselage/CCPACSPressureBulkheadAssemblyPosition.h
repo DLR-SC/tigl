@@ -30,13 +30,13 @@ class CCPACSPressureBulkheadAssemblyPosition : public generated::CPACSPressureBu
 public:
     TIGL_EXPORT CCPACSPressureBulkheadAssemblyPosition(CCPACSPressureBulkheadAssembly* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT virtual void SetFrameUID(const std::string& value) OVERRIDE;
-    TIGL_EXPORT virtual void SetPressureBulkheadElementUID(const std::string& value) OVERRIDE;
+    TIGL_EXPORT virtual void SetFrameUID(const std::string& value) override;
+    TIGL_EXPORT virtual void SetPressureBulkheadElementUID(const std::string& value) override;
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
-    TIGL_EXPORT PNamedShape GetLoft() const OVERRIDE;
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    TIGL_EXPORT PNamedShape GetLoft() const override;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
     TIGL_EXPORT void Invalidate();
 

@@ -48,12 +48,12 @@ public:
                              const Standard_Integer         aFontIndex  = 1   ,
                              const Quantity_Factor          aScale      = 0.1   );
 
-    ~ISession_Text() OVERRIDE;
+    ~ISession_Text() override;
 
 #if OCC_VERSION_HEX >= 0x060900
     inline   Standard_Integer        NbPossibleSelection() const;
 #else
-    inline   Standard_Integer        NbPossibleSelection() const OVERRIDE;
+    inline   Standard_Integer        NbPossibleSelection() const override;
 #endif
     inline   TCollection_AsciiString GetText() const;
     inline   void                    SetText(const TCollection_AsciiString& atext) ;
@@ -77,11 +77,11 @@ private:
 
     void Compute          (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
                            const Handle(Prs3d_Presentation)& aPresentation,
-                           const Standard_Integer aMode) OVERRIDE;
+                           const Standard_Integer aMode) override;
     void Compute          (const Handle(Prs3d_Projector)& aProjector,
-                           const Handle(Prs3d_Presentation)& aPresentation) OVERRIDE;
+                           const Handle(Prs3d_Presentation)& aPresentation) override;
     void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
-                           const Standard_Integer unMode) OVERRIDE;
+                           const Standard_Integer unMode) override;
 
 
  // Fields PRIVATE

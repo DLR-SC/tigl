@@ -55,6 +55,10 @@ if (TIGL_CONCAT_GENERATED_FILES)
     )
     list(APPEND TIGL_SRC "${PROJECT_BINARY_DIR}/src/src_generated.cpp")
 
+    if (MSVC)
+         SET_SOURCE_FILES_PROPERTIES( "${PROJECT_BINARY_DIR}/src/src_generated.cpp" PROPERTIES COMPILE_FLAGS "/bigobj" )
+    endif(MSVC)
+
 else(TIGL_CONCAT_GENERATED_FILES)
     list(REMOVE_ITEM SUBDIRS generated)
 endif(TIGL_CONCAT_GENERATED_FILES)

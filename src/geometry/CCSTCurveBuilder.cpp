@@ -36,7 +36,7 @@ namespace
 
         /// we reparameterize the cst curve to achieve correct leading and trailing edge
         /// interpolation
-        double valueX(double t) OVERRIDE
+        double valueX(double t) override
         {
 
             /// determine x parameterization depending on N1 and N2
@@ -62,7 +62,7 @@ namespace
             }
         }
 
-        double valueY(double t) OVERRIDE
+        double valueY(double t) override
         {
             double x = valueX(t);
 
@@ -70,7 +70,7 @@ namespace
             return tigl::cstcurve(builder->N1(), builder->N2(), builder->B(), builder->T(), x);
         }
 
-        double valueZ(double /*t*/) OVERRIDE
+        double valueZ(double /*t*/) override
         {
             return 0;
         }

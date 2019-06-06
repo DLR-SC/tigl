@@ -33,7 +33,7 @@ class FuseDialog : public QDialog
     
 public:
     explicit FuseDialog(QWidget *parent = 0);
-    ~FuseDialog() OVERRIDE;
+    ~FuseDialog() override;
 
     bool UseSymmetries() const;
     bool TrimWithFarField() const;

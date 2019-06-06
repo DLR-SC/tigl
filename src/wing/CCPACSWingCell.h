@@ -45,7 +45,7 @@ class CCPACSWingCell : public generated::CPACSWingCell, public ITiglGeometricCom
 {
 public:
     TIGL_EXPORT CCPACSWingCell(CCPACSWingCells* parentCells, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT ~CCPACSWingCell() OVERRIDE;
+    TIGL_EXPORT ~CCPACSWingCell() override;
 
     TIGL_EXPORT void Invalidate();
 
@@ -57,7 +57,7 @@ public:
     // TODO: missing support for spar cell borders
     TIGL_EXPORT bool IsConvex() const;
 
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& cellXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& cellXPath) override;
 
     // get corner coordinates of cell
     TIGL_EXPORT EtaXsi GetLeadingEdgeInnerPoint() const;
@@ -85,10 +85,10 @@ public:
     TIGL_EXPORT bool IsPartOfCell(TopoDS_Face);
     TIGL_EXPORT bool IsPartOfCell(TopoDS_Edge);
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
-    TIGL_EXPORT PNamedShape GetLoft() const OVERRIDE;
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    TIGL_EXPORT PNamedShape GetLoft() const override;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
 private:
     struct EtaXsiCache

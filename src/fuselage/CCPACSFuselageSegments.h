@@ -48,7 +48,7 @@ public:
 
     // CPACSFuselageSegments interface
 public:
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
 
 private:
     void ReorderSegments();

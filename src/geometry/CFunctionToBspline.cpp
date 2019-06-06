@@ -77,11 +77,11 @@ public:
     {
     }
 
-    ~FuncAdaptor() OVERRIDE
+    ~FuncAdaptor() override
     {
     }
 
-    double value(double t) OVERRIDE
+    double value(double t) override
     {
         switch (_dir) {
         case X:

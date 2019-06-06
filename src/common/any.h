@@ -123,17 +123,17 @@ namespace disable_adl
             {
             }
 
-            any_concept* clone() const OVERRIDE
+            any_concept* clone() const override
             {
                 return new any_conceptImpl(value);
             }
 
-            const std::type_info& type() const OVERRIDE
+            const std::type_info& type() const override
             {
                 return typeid(value);
             }
 
-            void from_string(const std::string& s) OVERRIDE
+            void from_string(const std::string& s) override
             {
                 tigl::from_string(s, value);
             }

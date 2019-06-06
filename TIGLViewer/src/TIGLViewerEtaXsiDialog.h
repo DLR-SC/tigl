@@ -33,7 +33,7 @@ class EtaXsiDialog : public QDialog
     
 public:
     explicit EtaXsiDialog(QWidget *parent = 0);
-    ~EtaXsiDialog() OVERRIDE;
+    ~EtaXsiDialog() override;
     
     static int getEtaXsi(QWidget * parent, double& eta, double& xsi);
     

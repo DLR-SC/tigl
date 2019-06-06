@@ -40,7 +40,7 @@ class TIGLViewerShapeIntersectionDialog : public QDialog
 
 public:
     explicit TIGLViewerShapeIntersectionDialog(tigl::CTiglUIDManager&, QWidget *parent = 0);
-    ~TIGLViewerShapeIntersectionDialog() OVERRIDE;
+    ~TIGLViewerShapeIntersectionDialog() override;
 
     // Returns 0 if shape/shape intersection is selected
     // Returns 1 if shape/plane intersection is selected

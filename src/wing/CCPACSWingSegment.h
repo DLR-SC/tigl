@@ -58,18 +58,18 @@ public:
     TIGL_EXPORT CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT ~CCPACSWingSegment() OVERRIDE;
+    TIGL_EXPORT ~CCPACSWingSegment() override;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) override;
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    TIGL_EXPORT void SetFromElementUID(const std::string& value) OVERRIDE;
-    TIGL_EXPORT void SetToElementUID(const std::string& value) OVERRIDE;
+    TIGL_EXPORT void SetFromElementUID(const std::string& value) override;
+    TIGL_EXPORT void SetToElementUID(const std::string& value) override;
 
     TIGL_EXPORT TopoDS_Shape GetInnerClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM,
                                              TiglShapeModifier mod            = UNMODIFIED_SHAPE) const;
@@ -167,7 +167,7 @@ public:
     TIGL_EXPORT bool GetIsOnTop(gp_Pnt pnt) const;
 
     // return if pnt lies on the loft or on the segment chord face
-    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt) OVERRIDE;
+    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt) override;
 
     // Returns the reference area of the quadrilateral portion of the wing segment
     // by projecting the wing segment into the plane defined by the user
@@ -212,12 +212,12 @@ public:
     // starting at a point on the chord face with the given direction dir.
     TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation) const;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
     {
         return TIGL_COMPONENT_WINGSEGMENT;
     }
 
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override
     {
         return TIGL_INTENT_LOGICAL;
     }
@@ -239,7 +239,7 @@ protected:
     void Update();
 
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft() const OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
 private:
     struct SurfaceCache

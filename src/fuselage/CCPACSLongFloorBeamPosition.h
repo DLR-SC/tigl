@@ -31,7 +31,7 @@ class CCPACSLongFloorBeamPosition : public generated::CPACSLongFloorBeamPosition
 public:
     TIGL_EXPORT CCPACSLongFloorBeamPosition(CCPACSLongFloorBeam* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void SetPositionY(const double& value) OVERRIDE;
+    TIGL_EXPORT void SetPositionY(const double& value) override;
 
     TIGL_EXPORT void Invalidate();
 
