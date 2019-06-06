@@ -39,7 +39,7 @@ void ModificatorWingWidget::init()
     // set the initials values of the display interface (will be overwritten
     // when the wingItem is set)
     ui->spinBoxSweep->setValue(-1.0);
-    ui->spinBoxSweep->setValue(-1.0);
+    ui->spinBoxDihedral->setValue(-1.0);
     ui->spinBoxArea->setValue(-1.0);
     ui->spinBoxAR->setValue(-1.0);
     ui->spinBoxSpan->setValue(-1.0);
@@ -188,15 +188,15 @@ bool ModificatorWingWidget::apply()
     if (sweepHasChanged) {
         internalSweep      = ui->spinBoxSweep->value();
         internalSweepChord = ui->spinBoxSweepChord->value();
-
-        // todo
+        tiglWing->SetSweep(internalSweep, internalDihedralChord);
+        wasModified = true;
     }
 
     if (dihedralHasChanged) {
         internalDihedral      = ui->spinBoxDihedral->value();
         internalDihedralChord = ui->spinBoxDihedralChord->value();
-
-        // todo
+        tiglWing->SetDihedral(internalDihedral, internalDihedralChord);
+        wasModified = true;
     }
 
     if (areaXYHasChanged) {
