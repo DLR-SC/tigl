@@ -38,9 +38,9 @@ public:
     };
     TIGLViewerLogHistory();
 
-    ~TIGLViewerLogHistory() OVERRIDE {}
-    void LogMessage(TiglLogLevel, const char * message) OVERRIDE;
-    void SetVerbosity(TiglLogLevel) OVERRIDE;
+    ~TIGLViewerLogHistory() override {}
+    void LogMessage(TiglLogLevel, const char * message) override;
+    void SetVerbosity(TiglLogLevel) override;
 
     QString GetAllMessages() const;
     const HistoryLogEntry& GetMessage(unsigned int) const;

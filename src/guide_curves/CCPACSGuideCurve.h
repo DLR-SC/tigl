@@ -62,7 +62,7 @@ public:
     TIGL_EXPORT CCPACSGuideCurve(CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT ~CCPACSGuideCurve(void) OVERRIDE;
+    TIGL_EXPORT ~CCPACSGuideCurve(void) override;
 
     TIGL_EXPORT FromDefinition GetFromDefinition() const;
 

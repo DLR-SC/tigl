@@ -33,9 +33,9 @@ class TIGLViewerLogRedirection : public QObject, public tigl::ITiglLogger
 public:
     TIGLViewerLogRedirection();
 
-    ~TIGLViewerLogRedirection() OVERRIDE {}
-    void LogMessage(TiglLogLevel, const char * message) OVERRIDE;
-    void SetVerbosity(TiglLogLevel) OVERRIDE;
+    ~TIGLViewerLogRedirection() override {}
+    void LogMessage(TiglLogLevel, const char * message) override;
+    void SetVerbosity(TiglLogLevel) override;
 
 private:
     TiglLogLevel verbosity;

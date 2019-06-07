@@ -32,7 +32,7 @@ class TestProjectionAtAngleSimple : public ::testing::Test
 {
 protected:
 
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         TColStd_Array1OfReal knots(1,2);
         knots.SetValue(1, 0.);
@@ -59,7 +59,7 @@ class TestProjectionAtAngleReference : public ::testing::Test
 {
 protected:
 
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         TColStd_Array1OfReal knots(1,3);
         knots.SetValue(1, 0.);

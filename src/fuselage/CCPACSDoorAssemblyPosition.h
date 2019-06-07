@@ -27,10 +27,10 @@ class CCPACSDoorAssemblyPosition : public generated::CPACSDoorAssemblyPosition, 
 public:
     TIGL_EXPORT CCPACSDoorAssemblyPosition(CCPACSCargoDoorsAssembly* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
-    TIGL_EXPORT PNamedShape GetLoft() const OVERRIDE;
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    TIGL_EXPORT PNamedShape GetLoft() const override;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 };
 
 } // namespace tigl

@@ -62,7 +62,7 @@ public:
         throw CTiglError("Invalid parent?"); // cannot happen, this is always part of the container of its parent class
     }
 
-    TiglSymmetryAxis GetSymmetryAxis() const OVERRIDE
+    TiglSymmetryAxis GetSymmetryAxis() const override
     {
         if (_parentComponent) {
             return _parentComponent->GetSymmetryAxis();

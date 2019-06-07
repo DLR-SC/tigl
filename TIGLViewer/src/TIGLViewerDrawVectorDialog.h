@@ -39,7 +39,7 @@ public:
     tigl::CTiglPoint getPoint() const;
     tigl::CTiglPoint getDirection() const;
     
-    ~TIGLViewerDrawVectorDialog() OVERRIDE;
+    ~TIGLViewerDrawVectorDialog() override;
     
 private:
     Ui::TIGLViewerDrawVectorDialog *ui;

@@ -33,7 +33,7 @@ class TIGLSliderDialog : public QDialog
 
 public:
     explicit TIGLSliderDialog(QWidget *parent = 0);
-    ~TIGLSliderDialog() OVERRIDE;
+    ~TIGLSliderDialog() override;
 
     void setIntValue(int value);
     void setIntRange(int min, int max);
@@ -42,7 +42,7 @@ signals:
     void intValueChanged(int);
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *event) OVERRIDE;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     Ui::TIGLSliderDialog *ui;

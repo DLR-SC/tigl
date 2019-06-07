@@ -32,7 +32,7 @@ namespace external_object_private
 class TiglExternalComponent : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/external_component.xml";
         ReturnCode tixiRet;
@@ -42,7 +42,7 @@ protected:
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
     }
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tixiHandle = -1;

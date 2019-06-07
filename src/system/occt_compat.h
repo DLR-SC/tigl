@@ -24,7 +24,7 @@
 
 #if OCC_VERSION_HEX < 0x070000
   #define DEFINE_STANDARD_RTTI_OVERRIDE(C1) \
-     Standard_EXPORT const Handle(Standard_Type)& DynamicType() const OVERRIDE;
+     Standard_EXPORT const Handle(Standard_Type)& DynamicType() const override;
   #define DEFINE_STANDARD_RTTIEXT(C1,C2) DEFINE_STANDARD_RTTI_OVERRIDE(C1)
   #define DEFINE_STANDARD_RTTI_INLINE(C1,C2) DEFINE_STANDARD_RTTI_OVERRIDE(C1)
 #endif

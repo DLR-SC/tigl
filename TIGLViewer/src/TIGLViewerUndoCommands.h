@@ -57,7 +57,7 @@ public:
         return true;
     }
 
-    int id() const OVERRIDE {return 1002;}
+    int id() const override {return 1002;}
 
     private:
         Handle(AIS_InteractiveContext) myContext;
@@ -77,9 +77,9 @@ public:
 
     // QUndoCommand interface
 public:
-    void redo() OVERRIDE;
-    void undo() OVERRIDE;
-    int id() const OVERRIDE {return 1000;}
+    void redo() override;
+    void undo() override;
+    int id() const override {return 1000;}
 
 private:
     Handle(AIS_InteractiveContext) myContext;
@@ -95,9 +95,9 @@ public:
 
     // QUndoCommand interface
 public:
-    void redo() OVERRIDE;
-    void undo() OVERRIDE;
-    int id() const OVERRIDE {return 1001;}
+    void redo() override;
+    void undo() override;
+    int id() const override {return 1001;}
 
 private:
     Handle(AIS_InteractiveContext) myContext;

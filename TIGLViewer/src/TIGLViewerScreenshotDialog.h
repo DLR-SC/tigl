@@ -42,7 +42,7 @@ public:
     
     bool getWhiteBGEnabled() const;
 
-    ~TIGLViewerScreenshotDialog() OVERRIDE;
+    ~TIGLViewerScreenshotDialog() override;
     
 private:
     Ui::TiglViewerScreenshotDialog *ui;

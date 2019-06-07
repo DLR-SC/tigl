@@ -30,10 +30,10 @@ class CCPACSEnginePylon : public generated::CPACSEnginePylon, public CTiglRelati
 public:
     TIGL_EXPORT CCPACSEnginePylon(CCPACSEnginePylons* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_ENGINE_PYLON; }
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE { return TIGL_INTENT_PHYSICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override { return TIGL_COMPONENT_ENGINE_PYLON; }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override { return TIGL_INTENT_PHYSICAL; }
 
     TIGL_EXPORT void Invalidate();
 
@@ -42,7 +42,7 @@ public:
     TIGL_EXPORT bool HasLoft() const;
 
 protected:
-    virtual PNamedShape BuildLoft() const OVERRIDE;
+    virtual PNamedShape BuildLoft() const override;
 };
 
 } // end namespace tigl

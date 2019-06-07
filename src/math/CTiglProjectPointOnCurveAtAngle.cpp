@@ -81,18 +81,18 @@ namespace
             , m_pointToProject(p)
         {}
         
-        virtual Standard_Integer NbVariables()  const OVERRIDE
+        virtual Standard_Integer NbVariables()  const override
         {
             return 1;
         }
 
-        Standard_Boolean Value (const math_Vector& X, Standard_Real& F) OVERRIDE
+        Standard_Boolean Value (const math_Vector& X, Standard_Real& F) override
         {
             math_Vector G(1, 1);
             return Values(X, F, G);
         }
 
-        Standard_Boolean Gradient (const math_Vector& X, math_Vector& G) OVERRIDE
+        Standard_Boolean Gradient (const math_Vector& X, math_Vector& G) override
         {
             Standard_Real F = 0.;
             return Values(X, F, G);

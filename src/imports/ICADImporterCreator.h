@@ -36,7 +36,7 @@ template <class T>
 class ICADImporterCreatorImpl : public ICADImporterCreator
 {
 public:
-   PTiglCADImporter create() const OVERRIDE
+   PTiglCADImporter create() const override
    {
        return PTiglCADImporter(new T);
    }

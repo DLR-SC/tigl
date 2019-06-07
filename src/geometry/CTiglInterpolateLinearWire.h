@@ -37,25 +37,25 @@ public:
     TIGL_EXPORT CTiglInterpolateLinearWire();
 
     // Destructor
-    TIGL_EXPORT ~CTiglInterpolateLinearWire() OVERRIDE;
+    TIGL_EXPORT ~CTiglInterpolateLinearWire() override;
 
     // Builds the wire from the given points
-    TIGL_EXPORT TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const OVERRIDE;
+    TIGL_EXPORT TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const override;
 
     // Returns the algorithm code identifier for an algorithm
-    TIGL_EXPORT TiglAlgorithmCode GetAlgorithmCode() const OVERRIDE;
+    TIGL_EXPORT TiglAlgorithmCode GetAlgorithmCode() const override;
 
     // Returns the point on the wire with the smallest x value
-    TIGL_EXPORT gp_Pnt GetPointWithMinX(const CPointContainer& points) const OVERRIDE;
+    TIGL_EXPORT gp_Pnt GetPointWithMinX(const CPointContainer& points) const override;
 
     // Returns the point on the wire with the biggest x value
-    TIGL_EXPORT gp_Pnt GetPointWithMaxX(const CPointContainer& points) const OVERRIDE;
+    TIGL_EXPORT gp_Pnt GetPointWithMaxX(const CPointContainer& points) const override;
 
     // Returns the point on the wire with the smallest y value
-    TIGL_EXPORT gp_Pnt GetPointWithMinY(const CPointContainer& points) const OVERRIDE;
+    TIGL_EXPORT gp_Pnt GetPointWithMinY(const CPointContainer& points) const override;
 
     // Returns the point on the wire with the biggest y value
-    TIGL_EXPORT gp_Pnt GetPointWithMaxY(const CPointContainer& points) const OVERRIDE;
+    TIGL_EXPORT gp_Pnt GetPointWithMaxY(const CPointContainer& points) const override;
 
 private:
     // Copy constructor

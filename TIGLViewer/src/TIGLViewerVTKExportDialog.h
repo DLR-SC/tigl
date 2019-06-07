@@ -39,7 +39,7 @@ public:
     void setNormalsEnabled(bool enabled);
     bool normalsEnabled() const;
 
-    ~TIGLViewerVTKExportDialog() OVERRIDE;
+    ~TIGLViewerVTKExportDialog() override;
 
 private slots:
     void onOkayPressed() const;

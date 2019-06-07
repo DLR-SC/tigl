@@ -61,10 +61,10 @@ public slots:
     void scrollDown();
 
 protected:
-    void keyPressEvent(QKeyEvent *) OVERRIDE;
-    void mousePressEvent(QMouseEvent *) OVERRIDE;
-    void mouseReleaseEvent(QMouseEvent *) OVERRIDE;
-    void contextMenuEvent(QContextMenuEvent *) OVERRIDE;
+    void keyPressEvent(QKeyEvent *) override;
+    void mousePressEvent(QMouseEvent *) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
+    void contextMenuEvent(QContextMenuEvent *) override;
 
 private:
     QString _prompt;

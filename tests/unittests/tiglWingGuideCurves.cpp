@@ -59,7 +59,7 @@ typedef class CSharedPtr<tigl::CTiglPoint> PCTiglPoint;
 class WingGuideCurve : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/simple_test_guide_curves.xml";
         ReturnCode tixiRet;
@@ -83,7 +83,7 @@ protected:
         gamma=std::vector<double>(tempz, tempz + sizeof(tempz) / sizeof(tempz[0]) );
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);

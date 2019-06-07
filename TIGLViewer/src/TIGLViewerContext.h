@@ -49,7 +49,7 @@ class TIGLViewerContext : public QObject
 public:
 
     TIGLViewerContext(QUndoStack*);
-    ~TIGLViewerContext() OVERRIDE;
+    ~TIGLViewerContext() override;
 
     Handle(V3d_Viewer)&              getViewer();
     Handle(AIS_InteractiveContext)&  getContext();
