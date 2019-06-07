@@ -57,7 +57,7 @@
       <item>
        <widget class="QPushButton" name="commitButton">
         <property name="text">
-         <string>Commit</string>
+         <string>OK</string>
         </property>
        </widget>
       </item>
