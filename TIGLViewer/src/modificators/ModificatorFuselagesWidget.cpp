@@ -19,6 +19,7 @@
 #include "ModificatorFuselagesWidget.h"
 #include "ui_ModificatorFuselagesWidget.h"
 #include "modificators/NewFuselageDialog.h"
+#include "TIGLViewerErrorDialog.h"
 
 ModificatorFuselagesWidget::ModificatorFuselagesWidget(QWidget* parent)
     : ModificatorWidget(parent)
@@ -43,14 +44,23 @@ void ModificatorFuselagesWidget::setFuselages(tigl::CCPACSFuselages& fuselages, 
 
 void ModificatorFuselagesWidget::execNewFuselageDialog()
 {
-    // TODO Manage error cases (invalid inputs)
-
     NewFuselageDialog fuselageDialog(profilesUID, this);
     if (fuselages != nullptr && fuselageDialog.exec() == QDialog::Accepted) {
         int nbSection       = fuselageDialog.getNbSection();
         QString uid         = fuselageDialog.getUID();
         QString profilesUID = fuselageDialog.getProfileUID();
-        fuselages->CreateFuselage(uid.toStdString(), nbSection, profilesUID.toStdString());
+        try {
+            fuselages->CreateFuselage(uid.toStdString(), nbSection, profilesUID.toStdString());
+        }
+        catch (const tigl::CTiglError& err) {
+            TIGLViewerErrorDialog errDialog(this);
+            errDialog.setMessage(
+                QString("<b>%1</b><br /><br />%2").arg("Fail to create the fuselage ").arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+            return;
+        }
         emit undoCommandRequired();
     }
 }
