@@ -3,16 +3,26 @@ Version 3.0.0
 -/01/2018
 
     - General Changes:
-       - CPACS 3 compatibility, including the new component-segment coordinate-system math.
-           - Note: As CPACS 3 is not officially released yet, the development version of CPACS as of December 18th, 2017 is used.
-           - Note: The wing structure is not yet adapted to CPACS 3 but uses the 2.3 definition.
+       - CPACS 3 compatibility, including the new component-segment coordinate-system definition.
+         The new cpacs definition of the wing structure allows more precise modelling of ribs and spars.
        - Guide curve support for wings and fuselages for high-fidelity surface modeling according to the CPACS 3 defintion.
+       - New modeling of nacelles.
+       - New modeling of pylons.
+       - New modeling of fuselage structure elements like doors, beams, frames and pressure bulkheads.
        - Automated creation of CPACS reading and writing routines. This allows much
          better vality checks of the CPACS document.
+       - The "GetPoint" function of wings / fuselages operate now on the actual wing/fuselage shape (e.g. in case of guide curves). Before, these function operated
+         on the linear loft, which is different from the actual shape. To be backwards compatible, ``::tiglWingGetUpperPoint``, ``::tiglWingGetLowerPoint``, and ``::tiglFuselageGetPoint``  still use the linear loft by default.
+         If the actual smooth surface is desired, the new function ``::tiglWingSetGetPointBehavior`` and ``::tiglFuselageSetGetPointBehavior`` must be used to enable smooth lofts.
+         __Note: Using the actual smooth wing shape, ``::tiglWingGetUpperPoint`` and ``::tiglWingGetLowerPoint`` do not use the wing chord surface anymore as a reference coordinate system, but relies on the wing surface parametrization.__
+         __This change was required, since there would be no other way to retrieve points around the leading edge, that is on front of the trapezoidal chord surface.__
+         
        - Improved speed of ``::tiglFuselageGetPoint`` function. Also, the paramter xsi is now interpreted as the relative
          curve parameter instead of the relative circumference.
+       - Improved robustness of fuselage loft computation.
        - The TIGL library was renamed to tigl3. The TIGLViewer was renamed to tiglviewer-3.
        - The windows builds are now using the Visual C++ 2015 Toolchain.
+       - TiGL now requires a C++ 11 capable compiler. Minimum required compilers are gcc 4.8 or Visual C++ 2015.
 
 
     - New API functions:
@@ -27,7 +37,8 @@ Version 3.0.0
       - ``::tiglFuselageGetCenterLineLength`` computes the length of the centerline of the fuselage.
       - ``::tiglCheckPointInside`` checks, whether a point lies inside some object (defined by its uid).
       - ``::tiglExportFuselageBREPByUID`` and ``::tiglExportWingBREPByUID``
-	  - ``::tiglSetExportOptions`` sets exports-specific options
+      - ``::tiglSetExportOptions`` sets exports-specific options
+      - ``::tiglFuselageSetGetPointBehavior`` and  ``::tiglWingSetGetPointBehavior`` to adjust, whether the get point functions should return linear loft values or points on the actual shape.
   
     - Changed API:
       - Removed deprectated intersection functions. These include
@@ -40,18 +51,54 @@ Version 3.0.0
       - TiGL Viewer: Fixed missing fonts on macOS
 
     - Language bindings:
+      - New python bindings allow to access the whole C++ API of TiGL. This bindings can be installed via conda.    
       - Python: the tiglwrapper.py module was renamed to tigl3wrapper.py. The Tigl object is renamed to Tigl3.
       - Java: the tigl package moved from de.dlr.sc.tigl to de.dlr.sc.tigl3
 
     - TiGL Viewer:
-       - New design
-       - Custom OpenGL shaders. If problems with the 3D rendering occur, please file a bug.
        - Display of reflection lines to inspect surface quality.
        - Display of textured surfaces.
        - Angle of perspective can be adjusted using the scripting API with ``setCameraPosition`` and ``setLookAtPosition``.
          This allows e.g. to create videos of the geometry.
        - Option to display face names.
        - Number of U and V iso-lines can be adjusted independently.
+       - New design
+
+Version 2.2.3
+--------------
+28/06/2018
+
+    - New API functions:
+        - Backport API function ``tiglCheckPointInside`` that checks wether a point lies inside a given geometric object
+        - New API function ``tiglGetGuideCurvePoints`` to obtain the guide curve points on the fuselage/wing for a given guide curve.
+
+
+Version 2.2.2
+--------------
+11/04/2018
+
+    - General changes:
+        - Modelling of control surfaces as trailing and leading edge devices
+        - The wing is now written a one entity instead of several segments in the file exports 
+    
+    - New API functions:
+        - ``tiglControlSurfaceGetDeflection`` to query the deflection of the given control surface device
+        - ``tiglControlSurfaceSetDeflection`` to set the deflection of the given control surface device
+        - ``tiglGetControlSurfaceCount`` to get the number of control surface devices
+        - ``tiglGetControlSurfaceType`` to query the type of the control surface device (leading + trailing edge device)
+        - ``tiglGetControlSurfaceUID`` to query the UID of the control surface device
+        - ``tiglControlSurfaceGetMinimumDeflection`` and ``tiglControlSurfaceGetMaximumDeflection`` to
+          get the minimum and maximum deflection of the control surface device
+
+    - Fixes:
+        - Fixed bug JAVA bindings getProfileSplines (issue #357)
+        
+    - TiGLViewer:
+        - The control surface devices can be extended and retracted from inside the GUI
+        - Added functions to set camera positions. The following functions where added:
+          - setLookAtPosition(x, y, z)
+          - setCameraPosition(elevationAngle, azimuthAngle)
+They can be used from the console to e.g. create movies. 
 
 
 Version 2.2.1

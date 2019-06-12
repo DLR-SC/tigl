@@ -11,6 +11,8 @@ The developed library uses the Open Source software OpenCASCADE to represent the
 B-spline surfaces in order to compute surface points and also to export the geometry in the IGES/STEP/STL/VTK format. 
 The library provides external interfaces for C/C++, Python, MATLAB and FORTRAN. 
 
+For more information and examples, go to the TiGL website https://dlr-sc.github.io/tigl/.
+
 @section sec1 What is TiGL
 
 In order to perform the modeling of wings and fuselages as well as the computation of surface points effectively, a
@@ -54,6 +56,7 @@ Furthermore, the TiGL Viewer can be used to validate and test the implemented
 functions of the geometry library, for example the calculation of points on the
 surface or other functions to check data that belong to the geometry structure.
 
-@page tigl_usage Usage
+@page tigl_installation Installation
+@page tigl_usage Basic usage
 @page tigl_examples Examples
 @page tiglviewer TiGL Viewer
