@@ -1,11 +1,12 @@
-Version 3.0.0
--------------
--/01/2018
+Version 3.0.0-rc2
+-----------------
+12/06/2019
 
     - General Changes:
        - CPACS 3 compatibility, including the new component-segment coordinate-system definition.
          The new cpacs definition of the wing structure allows more precise modelling of ribs and spars.
        - Guide curve support for wings and fuselages for high-fidelity surface modeling according to the CPACS 3 defintion.
+       - __Note: TiGL 3 does not yet contain the control surface device modeling. This will be included into TiGL 3.1.__
        - New modeling of nacelles.
        - New modeling of pylons.
        - New modeling of fuselage structure elements like doors, beams, frames and pressure bulkheads.
