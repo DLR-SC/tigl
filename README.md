@@ -6,7 +6,7 @@
  | **Cite us:** | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1117860.svg)](https://doi.org/10.5281/zenodo.1117860) |
 
  - Binary Downloads:  https://github.com/DLR-SC/tigl/wiki/Downloads
- - API Documentation: http://tigl.sourceforge.net/Doc/index.html
+ - API Documentation: https://dlr-sc.github.io/tigl/doc/3.0.0-rc2/
  - Issue Tracker:     https://github.com/DLR-SC/tigl/issues
  - Wiki:              https://github.com/DLR-SC/tigl/wiki
 
