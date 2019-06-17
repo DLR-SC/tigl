@@ -19,7 +19,8 @@
 #ifndef MODIFICATORELEMENTWIDGET_H
 #define MODIFICATORELEMENTWIDGET_H
 
-#include "ModificatorWidget.h"
+#include "modificators/ModificatorWidget.h"
+#include "modificators/CTiglPointWidget.h"
 #include "CCPACSFuselageSectionElement.h"
 #include "CTiglSectionElement.h"
 

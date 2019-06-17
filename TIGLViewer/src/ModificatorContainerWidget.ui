@@ -27,6 +27,9 @@
     <widget class="ModificatorElementWidget" name="elementModificator" native="true"/>
    </item>
    <item>
+    <widget class="ModificatorFuselagesWidget" name="fuselagesModificator" native="true"/>
+   </item>
+   <item>
     <widget class="ModificatorSectionWidget" name="sectionModificator" native="true"/>
    </item>
    <item>
@@ -54,7 +57,7 @@
       <item>
        <widget class="QPushButton" name="commitButton">
         <property name="text">
-         <string>Commit</string>
+         <string>OK</string>
         </property>
        </widget>
       </item>
@@ -97,33 +100,39 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ModificatorTransformationWidget</class>
+   <class>ModificatorElementWidget</class>
    <extends>QWidget</extends>
-   <header>ModificatorTransformationWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ModificatorWingWidget</class>
-   <extends>QWidget</extends>
-   <header>ModificatorWingWidget.h</header>
+   <header>modificators/ModificatorElementWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ModificatorFuselageWidget</class>
    <extends>QWidget</extends>
-   <header>ModificatorFuselageWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ModificatorElementWidget</class>
-   <extends>QWidget</extends>
-   <header>ModificatorElementWidget.h</header>
+   <header>modificators/ModificatorFuselageWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>ModificatorSectionWidget</class>
    <extends>QWidget</extends>
-   <header>ModificatorSectionWidget.h</header>
+   <header>modificators/ModificatorSectionWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorTransformationWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/ModificatorTransformationWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorWingWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/ModificatorWingWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorFuselagesWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/ModificatorFuselagesWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

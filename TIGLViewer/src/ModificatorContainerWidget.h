@@ -21,10 +21,10 @@
 
 #include <QWidget>
 #include <QPushButton>
-#include "ModificatorWingWidget.h"
-#include "ModificatorFuselageWidget.h"
-#include "ModificatorTransformationWidget.h"
-#include "CPACSFuselages.h"
+#include "modificators/ModificatorWingWidget.h"
+#include "modificators/ModificatorFuselageWidget.h"
+#include "modificators/ModificatorTransformationWidget.h"
+#include "CCPACSFuselages.h"
 #include "CPACSWing.h"
 #include "CPACSTransformation.h"
 #include "CTiglSectionElement.h"
@@ -59,6 +59,10 @@ public slots:
     void applyCurrentModifications();
     void applyCurrentCancellation();
 
+    // Some modificator ask the creation of a undo action (especially in the case of dialog interfaces)
+    // So this slot allow us to forward the request.
+    void forwardUndoCommandRequired();
+
 public:
     explicit ModificatorContainerWidget(QWidget* parent = nullptr);
     ~ModificatorContainerWidget();
@@ -66,6 +70,7 @@ public:
     void setTransformationModificator(tigl::CCPACSTransformation& transformation);
     void setWingModificator(tigl::CCPACSWing& wing);
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
+    void setFuselagesModificator(tigl::CCPACSFuselages& fuselages, QStringList profilesUID);
     void setElementModificator(tigl::CTiglSectionElement& element);
     void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
 

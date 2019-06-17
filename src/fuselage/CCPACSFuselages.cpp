@@ -100,10 +100,10 @@ CCPACSFuselage& CCPACSFuselages::CreateFuselage(const std::string& fuselageUID, 
     CTiglUIDManager& uidManager = GetUIDManager();
 
     // check if the fuselage uid is valid
-    // We only make this check for the fuselage uid the other will be create and be unique by construction
+    // We only make this check for the fuselage uid the other uid will be create and be unique by construction
     bool uidIsAlreadyPresent = uidManager.IsUIDRegistered(fuselageUID);
     if (uidIsAlreadyPresent) {
-        throw CTiglError("CCPACSFuselages::CreateFuselage: Impossible to create a fuselage with the uid \"" +
+        throw CTiglError("Impossible to create a fuselage with the uid \"" +
                          fuselageUID + "\". This uid is already present in the file. Choose another uid.");
     }
 
@@ -112,7 +112,7 @@ CCPACSFuselage& CCPACSFuselages::CreateFuselage(const std::string& fuselageUID, 
         uidManager.ResolveObject<CCPACSFuselageProfile>(profileUID);
     }
     catch (const CTiglError& e) {
-        throw CTiglError("CCPACSFuselages::CreateFuselage: Impossible to create the fuselage with the profile uid \"" +
+        throw CTiglError("Impossible to create the fuselage with the profile uid \"" +
                          profileUID +
                          "\". This uid seems not to be present or to not reference a profile. Make sure to use a "
                          "fuselage profile UID present in the file.");

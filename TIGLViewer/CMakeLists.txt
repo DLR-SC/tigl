@@ -108,24 +108,26 @@ set(tv_src
     TIGLGeometryChoserDialog.cpp
     TIGLViewerUndoCommands.cpp
     # files for CPACSCreator
-    ModificatorWidget.cpp
-    ModificatorElementWidget.cpp
-    ModificatorSectionWidget.cpp
-    ModificatorFuselageWidget.cpp
-    ModificatorTransformationWidget.cpp
-    ModificatorWingWidget.cpp
-    ModificatorManager.cpp
-    CPACSAbstractModel.cpp
-    CPACSTreeItem.cpp
-    CPACSTree.cpp
-    XPathParser.cpp
-    TIGLViewerException.cpp
-    ModificatorContainerWidget.cpp
-    CPACSTreeWidget.cpp
-    CPACSFilterModel.cpp
-    TIGLViewerNewFileDialog.cpp
-    CTiglPointWidget.cpp
-    TIGLViewerCommonFunctions.cpp
+	modificators/ModificatorWidget.cpp
+	modificators/ModificatorElementWidget.cpp
+	modificators/ModificatorSectionWidget.cpp
+	modificators/ModificatorFuselageWidget.cpp
+	modificators/ModificatorTransformationWidget.cpp
+	modificators/ModificatorWingWidget.cpp
+	modificators/CTiglPointWidget.cpp
+	modificators/ModificatorFuselagesWidget.cpp
+	modificators/NewFuselageDialog.cpp
+	ModificatorManager.cpp
+	CPACSAbstractModel.cpp
+	CPACSTreeItem.cpp
+	CPACSTree.cpp
+	XPathParser.cpp
+	TIGLViewerException.cpp
+	ModificatorContainerWidget.cpp
+	CPACSTreeWidget.cpp
+	CPACSFilterModel.cpp
+	TIGLViewerNewFileDialog.cpp
+	TIGLViewerCommonFunctions.cpp
 )
 	
 # normal header files
@@ -145,12 +147,11 @@ set(tv_hdr
     TIGLQAspectWindow.h
     TIGLViewerUndoCommands.h
     # files for CPACSCreator
-    CPACSTreeItem.h
-    CPACSTree.h
-    XPathParser.h
-    TIGLViewerException.h
-    TIGLViewerCommonFunctions.h
-
+	CPACSTreeItem.h
+	CPACSTree.h
+	XPathParser.h
+	TIGLViewerException.h
+	TIGLViewerCommonFunctions.h
 )
 
 # qobject header files that have to be moced
@@ -179,20 +180,24 @@ set(tv_hdr_qobj
 	TIGLViewerApp.h
 	TIGLGeometryChoserDialog.h
 	# files for CPACSCreator
-	ModificatorWidget.h
-    ModificatorElementWidget.h
-    ModificatorSectionWidget.h
-	ModificatorFuselageWidget.h
-	ModificatorTransformationWidget.h
-	ModificatorWingWidget.h
+	modificators/ModificatorWidget.h
+	modificators/CTiglPointWidget.h
+	modificators/ModificatorElementWidget.h
+	modificators/ModificatorSectionWidget.h
+	modificators/ModificatorFuselageWidget.h
+	modificators/ModificatorTransformationWidget.h
+	modificators/ModificatorWingWidget.h
+	modificators/ModificatorFuselagesWidget.h
+	modificators/NewFuselageDialog.h
 	ModificatorManager.h
 	CPACSAbstractModel.h
-    ModificatorContainerWidget.h
-    CPACSTreeWidget.h
-    CPACSFilterModel.h
-    TIGLViewerNewFileDialog.h
-    CTiglPointWidget.h
+	ModificatorContainerWidget.h
+	CPACSTreeWidget.h
+	CPACSFilterModel.h
+	TIGLViewerNewFileDialog.h
 )
+
+
 
 set(tv_ui_comp
 	src/TIGLViewerWindow.ui
@@ -206,16 +211,20 @@ set(tv_ui_comp
 	src/TIGLViewerVTKExportDialog.ui
 	src/TIGLSliderDialog.ui
 	src/TIGLGeometryChoserDialog.ui
-    src/ModificatorTransformationWidget.ui
-    src/ModificatorElementWidget.ui
-    src/CTiglPointWidget.ui
-    src/ModificatorWingWidget.ui
-    src/ModificatorFuselageWidget.ui
-    src/ModificatorContainerWidget.ui
-    src/CPACSTreeWidget.ui
-    src/TIGLViewerNewFileDialog.ui
-    src/ModificatorSectionWidget.ui
-)
+   		src/modificators/ModificatorTransformationWidget.ui
+		src/modificators/ModificatorTransformationWidget.ui
+		src/modificators/ModificatorElementWidget.ui
+		src/modificators/ModificatorWingWidget.ui
+		src/modificators/ModificatorFuselageWidget.ui
+		src/modificators/ModificatorSectionWidget.ui
+		src/modificators/CTiglPointWidget.ui
+		src/ModificatorContainerWidget.ui
+		src/modificators/ModificatorFuselagesWidget.ui
+		src/modificators/NewFuselageDialog.ui
+		src/CPACSTreeWidget.ui
+		src/TIGLViewerNewFileDialog.ui
+
+		)
 
 foreach ( _fname ${tv_src})
    set(tv_src_comp ${tv_src_comp} src/${_fname})
