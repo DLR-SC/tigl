@@ -88,11 +88,23 @@ protected:
         else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
             tigl::CCPACSWingSectionElement& wingElement =
                 *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+            cElement = wingElement.GetCTiglSectionElement();
         }
         return cElement;
     }
 
 
+    tigl::CTiglWingSectionElement* GetWingCElementOf(std::string elementUid)
+    {
+
+        tigl::CTiglUIDManager::TypedPtr typePtr = config->GetUIDManager().ResolveObject(elementUid);
+        if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
+            tigl::CCPACSWingSectionElement& wingElement =
+                    *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+            return wingElement.GetCTiglSectionElement();
+        }
+        return nullptr;
+    }
     void saveCurrentConfig(std::string outFilename)
     {
         // Save the result in a new file (For visual check purpose)
@@ -735,4 +747,34 @@ TEST_F(tiglCTiglSectionElement, SetSectionElementTransformation_MultipleFuselage
     EXPECT_TRUE(res.IsNear(newSectionElementTransformation, tolerance));
 
     saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
+}
+
+
+
+
+TEST_F(tiglCTiglSectionElement, Wing_GetChord_MultipleWingsModel)
+{
+    setVariables("TestData/multiple_wings.xml");
+    tigl::CTiglPoint chordP;
+    tigl::CTiglPoint wingPosition(-15,-10,0);
+
+    tigl::CTiglWingSectionElement* cElement = nullptr;
+
+
+    // The chord is define as the segement that goes from the leading edge to the trailing edge
+    // (even if the airfoil is curved)
+    cElement = GetWingCElementOf("W16_CurAir_Sec1_El1");
+    // leading edge of the first element
+    chordP = cElement->GetChordPoint(0);
+    EXPECT_EQ(chordP, wingPosition +  tigl::CTiglPoint(0,0,0));
+    // trailing edge of the first element
+    chordP = cElement->GetChordPoint(1);
+    EXPECT_EQ(chordP, wingPosition + tigl::CTiglPoint(1,0,0));
+    // middle point
+    chordP = cElement->GetChordPoint(0.5);
+    EXPECT_EQ(chordP, wingPosition + tigl::CTiglPoint(0.5,0,0));
+
+
+
+
 }
