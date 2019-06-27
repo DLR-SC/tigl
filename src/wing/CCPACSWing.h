@@ -198,7 +198,13 @@ public:
     // Set the dihedral of the wing
     TIGL_EXPORT void SetDihedral(double dihedralAngle, double chordPercentage = 0.25);
 
-
+    /**
+     * Set the wing reference area while keeping the aspect ratio constant.
+     * The area is set scaling the wing uniformly.
+     * @remark The span will change.
+     * @param newArea
+     */
+    TIGL_EXPORT void SetAreaKeepAR(double newArea);
 
 
 

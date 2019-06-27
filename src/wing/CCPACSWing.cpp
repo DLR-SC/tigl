@@ -1052,6 +1052,21 @@ void CCPACSWing::SetDihedral(double newDihedral, double chordPercentage)
     }
 }
 
+void CCPACSWing::SetAreaKeepAR(double newArea)
+{
+    // newA = scaleF² * oldA
+    // scaleF = sqrt(newA/oldA)
+
+    if ( newArea <= 0 ) {
+        throw  CTiglError("Invalid input! The given area must be higher than 0.");
+    }
+
+    double oldA = GetReferenceArea();
+    double scaleF = sqrt(newArea/oldA);
+    wingHelper->Scale(scaleF);
+
+}
+
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,
                                           const CTiglWingConnection& connection, const TopoDS_Shape& wire)
 {
