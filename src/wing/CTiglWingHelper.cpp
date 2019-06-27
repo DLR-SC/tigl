@@ -260,3 +260,26 @@ tigl::CTiglWingSectionElement* tigl::CTiglWingHelper::GetCTiglElementOfWing(std:
         return nullptr;
     }
 }
+
+void tigl::CTiglWingHelper::Scale(double scaleF) const
+{
+
+    // We do not want to change the root leading edge position while scaling,
+    // so we first translate the root leading position to the origin,
+    // the we scale it and finally we translate the wing back to its initial position
+
+    CTiglPoint lEPosition = wing->GetRootLEPosition();
+    CTiglTransformation translationToOrigin, translationToOriginI;
+    translationToOrigin.AddTranslation(-lEPosition.x, -lEPosition.y, -lEPosition.z);
+    translationToOriginI = translationToOrigin.Inverted();
+    CTiglTransformation scaling;
+    scaling.AddScaling(scaleF, scaleF, scaleF);
+
+    for (int i = 0 ; i < elementUIDs.size(); i++) {
+        CTiglWingSectionElement* cElement = GetCTiglElementOfWing(elementUIDs[i]);
+        CTiglTransformation global = cElement->GetTotalTransformation();
+        CTiglTransformation newGlobal;
+        newGlobal = translationToOriginI * scaling * translationToOrigin * global;
+        cElement->SetTotalTransformation(newGlobal);
+    }
+}

@@ -62,6 +62,13 @@ public:
     // Returns the uid of the root element (the element that start to build the wing)
     std::string GetRootUID() const;
 
+    /**
+     * Scale the wing uniformly.
+     * The root leading point stay at the same position.
+     * @param scaleF the scale factor
+     */
+    void Scale(double scaleF) const;
+
 protected:
     // Init for the tipCElement cache
     void SetTipUid(std::string& cache) const;

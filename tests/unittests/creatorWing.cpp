@@ -644,3 +644,52 @@ TEST_F(creatorWing, MultipleWings_SetDihedral)
 
     saveInOutputFile();
 }
+
+
+TEST_F(creatorWing, MultipleWings_SetAreaKeepAR)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newArea, oldAR;
+    double tolerance = 0.1;
+
+    newArea = 10;
+    oldAR = wing->GetAspectRatio();
+    wing->SetAreaKeepAR(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+    setWing("W2_RX90");
+    newArea = 1;
+    oldAR = wing->GetAspectRatio();
+    wing->SetAreaKeepAR(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+
+    setWing("W15_ShiAir");
+    newArea = 5;
+    oldAR = wing->GetAspectRatio();
+    wing->SetAreaKeepAR(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+
+    setWing("W6_RX60b");
+    newArea = 13;
+    oldAR = wing->GetAspectRatio();
+    wing->SetAreaKeepAR(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+
+    // special cases:
+    setWing("Wing");
+    newArea = 0;
+    oldAR = wing->GetAspectRatio();
+    EXPECT_THROW(wing->SetAreaKeepAR(newArea), tigl::CTiglError);
+
+
+
+    saveInOutputFile();
+
+}
