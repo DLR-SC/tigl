@@ -1052,6 +1052,31 @@ void CCPACSWing::SetDihedral(double newDihedral, double chordPercentage)
     }
 }
 
+void CCPACSWing::Scale(double scaleF)
+{
+
+    // We do not want to change the root leading edge position while scaling,
+    // so we first translate the root leading position to the origin,
+    // the we scale it and finally we translate the wing back to its initial position
+
+    CTiglPoint lEPosition = GetRootLEPosition();
+    CTiglTransformation translationToOrigin, translationToOriginI;
+    translationToOrigin.AddTranslation(-lEPosition.x, -lEPosition.y, -lEPosition.z);
+    translationToOriginI = translationToOrigin.Inverted();
+    CTiglTransformation scaling;
+    scaling.AddScaling(scaleF, scaleF, scaleF);
+
+    std::vector<std::string> orderedUIDs = m_segments.GetElementUIDsInOrder();
+
+    for (int i = 0; i < orderedUIDs.size(); i++) {
+        CTiglWingSectionElement* cElement = wingHelper->GetCTiglElementOfWing(orderedUIDs.at(i));
+        CTiglTransformation global        = cElement->GetTotalTransformation();
+        CTiglTransformation newGlobal;
+        newGlobal = translationToOriginI * scaling * translationToOrigin * global;
+        cElement->SetTotalTransformation(newGlobal);
+    }
+}
+
 void CCPACSWing::SetAreaKeepAR(double newArea)
 {
     // newA = scaleF² * oldA
@@ -1063,7 +1088,7 @@ void CCPACSWing::SetAreaKeepAR(double newArea)
 
     double oldA = GetReferenceArea();
     double scaleF = sqrt(newArea/oldA);
-    wingHelper->Scale(scaleF);
+    Scale(scaleF);
 
 }
 

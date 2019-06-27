@@ -198,6 +198,15 @@ public:
     // Set the dihedral of the wing
     TIGL_EXPORT void SetDihedral(double dihedralAngle, double chordPercentage = 0.25);
 
+
+    /**
+     * Scale the wing uniformly.
+     * The root leading point stay at the same position.
+     * @param scaleF the scale factor
+     */
+    TIGL_EXPORT void Scale(double scaleF);
+
+
     /**
      * Set the wing reference area while keeping the aspect ratio constant.
      * The area is set scaling the wing uniformly.

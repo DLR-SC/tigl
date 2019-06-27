@@ -646,6 +646,46 @@ TEST_F(creatorWing, MultipleWings_SetDihedral)
 }
 
 
+
+TEST_F(creatorWing, MultipleWings_Scale)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double scaleF, oldSpan;
+    tigl::CTiglPoint oldRootLE;
+    double tolerance = 0.1;
+
+    scaleF = 10;
+    oldSpan = wing->GetWingHalfSpan();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->Scale(scaleF);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan*scaleF ,  tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W14_ChaDih");
+
+    scaleF = 0.7;
+    oldSpan = wing->GetWingHalfSpan();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->Scale(scaleF);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan*scaleF ,  tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W10_Reverse");
+
+    scaleF = 3;
+    oldSpan = wing->GetWingHalfSpan();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->Scale(scaleF);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan*scaleF ,  tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    saveInOutputFile();
+
+}
+
 TEST_F(creatorWing, MultipleWings_SetAreaKeepAR)
 {
     setVariables("TestData/multiple_wings.xml", "Wing");

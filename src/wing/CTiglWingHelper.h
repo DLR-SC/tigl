@@ -44,7 +44,7 @@ public:
     // This mean that a list the fuselage is composed by a valid segment and thus is composed by two elements
     bool HasShape() const;
 
-    CTiglWingSectionElement* GetCTiglElementOfWing(std::string elementUID) const;
+    CTiglWingSectionElement* GetCTiglElementOfWing(const std::string& elementUID) const;
 
     // Returns the major direction of the wing (correspond to the span direction)
     // @Details: If a symmetry plan is set, the major direction is normal to the symmetry plan,
@@ -61,13 +61,6 @@ public:
 
     // Returns the uid of the root element (the element that start to build the wing)
     std::string GetRootUID() const;
-
-    /**
-     * Scale the wing uniformly.
-     * The root leading point stay at the same position.
-     * @param scaleF the scale factor
-     */
-    void Scale(double scaleF) const;
 
 protected:
     // Init for the tipCElement cache
