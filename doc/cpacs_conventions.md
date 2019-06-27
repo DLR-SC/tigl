@@ -23,12 +23,3 @@ Element Transformation
     R: minor rotation (only in case of improper polar decomposition)
     S: minor scaling (only in case of improper polar decomposition)
 
-
-
-## Parameters
-
-### Wing Sweep at x% 
-**Description:**
-Angle between the Major axis and the projected segment that start from the x% chord point of the root section 
-and end at x% chord point of the tip section.      
-**Set procedure:**
