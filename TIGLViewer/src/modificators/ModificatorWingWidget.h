@@ -40,10 +40,6 @@ public slots:
     void updateDihedralAccordingChordValue(double dummy = 0);
 
 
-    void setAreaConstant(bool checked);
-    void setSpanConstant(bool checked);
-    void setARConstant(bool checked);
-
 public:
     explicit ModificatorWingWidget(QWidget* parent = nullptr);
     ~ModificatorWingWidget();

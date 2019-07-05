@@ -296,31 +296,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBoxIsAreaConstant">
-       <property name="minimumSize">
-        <size>
-         <width>60</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>60</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>Const</string>
-       </property>
-       <property name="tristate">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QDoubleSpinBox" name="spinBoxArea">
        <property name="keyboardTracking">
         <bool>true</bool>
@@ -366,31 +341,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBoxIsSpanConstant">
-       <property name="minimumSize">
-        <size>
-         <width>60</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>60</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>Const</string>
-       </property>
-       <property name="tristate">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QDoubleSpinBox" name="spinBoxSpan">
        <property name="decimals">
         <number>3</number>
@@ -426,31 +376,6 @@
        </property>
        <property name="text">
         <string>AR</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="checkBoxIsARConstant">
-       <property name="minimumSize">
-        <size>
-         <width>60</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>60</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>Const</string>
-       </property>
-       <property name="tristate">
-        <bool>false</bool>
        </property>
       </widget>
      </item>
