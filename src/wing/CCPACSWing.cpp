@@ -383,10 +383,12 @@ void CCPACSWing::BuildUpperLowerShells()
 // Get the positioning transformation for a given section-uid
 CTiglTransformation CCPACSWing::GetPositioningTransformation(std::string sectionUID)
 {
-    if (m_positionings)
+    if (m_positionings) {
         return m_positionings->GetPositioningTransformation(sectionUID);
-    else
+    }
+    else {
         return CTiglTransformation(); // return identity if no positioning transformation is given
+    }
 }
 
 // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
@@ -1090,6 +1092,19 @@ void CCPACSWing::SetAreaKeepAR(double newArea)
     double scaleF = sqrt(newArea/oldA);
     Scale(scaleF);
 
+}
+
+
+void CCPACSWing::SetHalfSpanKeepAR(double newHalfSpan)
+{
+
+    if ( newHalfSpan <= 0 ) {
+        throw  CTiglError("Invalid input! The given span must be higher than 0.");
+    }
+
+    double oldSpan = GetWingHalfSpan();
+    double scaleF = newHalfSpan/oldSpan;
+    Scale(scaleF);
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,

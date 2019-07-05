@@ -216,6 +216,15 @@ public:
     TIGL_EXPORT void SetAreaKeepAR(double newArea);
 
 
+    /**
+     * Set the wing half span while keeping the aspect ratio constant.
+     * The span is set scaling the wing uniformly.
+     * @remark The area will change.
+     * @param newArea
+     */
+    TIGL_EXPORT void SetHalfSpanKeepAR(double newHalfSpan);
+
+
 
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;
