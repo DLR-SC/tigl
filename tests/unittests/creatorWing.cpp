@@ -733,3 +733,42 @@ TEST_F(creatorWing, MultipleWings_SetAreaKeepAR)
     saveInOutputFile();
 
 }
+
+
+TEST_F(creatorWing, MultipleWings_SetHalfSpanKeepAR)
+{
+
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newHalfSpan;
+    double oldAR;
+    double tolerance = 0.1;
+
+
+    newHalfSpan = 1;
+    oldAR = wing->GetAspectRatio();
+    wing->SetHalfSpanKeepAR(newHalfSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newHalfSpan, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+    setWing("W6_RX60b");
+    newHalfSpan = 10;
+    oldAR = wing->GetAspectRatio();
+    wing->SetHalfSpanKeepAR(newHalfSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newHalfSpan, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+    setWing("W2_RX90");
+    newHalfSpan = 23;
+    oldAR = wing->GetAspectRatio();
+    wing->SetHalfSpanKeepAR(newHalfSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newHalfSpan, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+    setWing("Wing");
+    newHalfSpan = -23;
+    EXPECT_THROW( wing->SetHalfSpanKeepAR(newHalfSpan), tigl::CTiglError);
+
+
+    saveInOutputFile();
+
+}
