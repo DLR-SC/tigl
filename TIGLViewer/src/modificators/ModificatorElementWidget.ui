@@ -18,9 +18,6 @@
     <widget class="CTiglPointWidget" name="center" native="true"/>
    </item>
    <item>
-    <widget class="CTiglPointWidget" name="origin" native="true"/>
-   </item>
-   <item>
     <widget class="CTiglPointWidget" name="normal" native="true"/>
    </item>
    <item>
@@ -39,28 +36,6 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="dimensionLabel">
-        <property name="minimumSize">
-         <size>
-          <width>80</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>80</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Dimension:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Height</string>
@@ -72,6 +47,9 @@
       </item>
       <item>
        <widget class="QDoubleSpinBox" name="heightSpinBox">
+        <property name="decimals">
+         <number>3</number>
+        </property>
         <property name="maximum">
          <double>999999999999999993220948674361627976461708441944064.000000000000000</double>
         </property>
@@ -89,6 +67,9 @@
       </item>
       <item>
        <widget class="QDoubleSpinBox" name="widthSpinBox">
+        <property name="decimals">
+         <number>3</number>
+        </property>
         <property name="maximum">
          <double>999999999999999993220948674361627976461708441944064.000000000000000</double>
         </property>
@@ -106,6 +87,9 @@
       </item>
       <item>
        <widget class="QDoubleSpinBox" name="areaSpinBox">
+        <property name="decimals">
+         <number>3</number>
+        </property>
         <property name="maximum">
          <double>999999999999999993220948674361627976461708441944064.000000000000000</double>
         </property>
