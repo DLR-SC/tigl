@@ -442,8 +442,16 @@ TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R)
     //
     //                |                        cos(y)*cos(z) |               -        cos(y)*cos(z) |         sin(y) |
     // U = Rx*Ry*Rz = | cos(x)*sin(z) + sin(x)*sin(y)*cos(z) | cos(x)*cos(z) - sin(x)*sin(y)*sin(z) | -sin(x)*cos(y) |
-    //                | sin(x)*sin(z) - cos(x)*sin(y)*cos(z) | sin(x)*cos(z) + cos(x)*sin(y)*sin*z( |  cos(x)*cos(y) |
+    //                | sin(x)*sin(z) - cos(x)*sin(y)*cos(z) | sin(x)*cos(z) + cos(x)*sin(y)*sin(z) |  cos(x)*cos(y) |
     //
+
+    // cas sin(y) = +/- 1
+    //                |                        -            |          -                           |         sin(y) |
+    // U = 0*Ry*Rz =  |                 sin(z)              |                cos(z)                | -              |
+    //                |
+    //
+
+
     // rather than extrinsic angles and the Rotation matrix mentioned in that pdf.
 
     if (!IsProperRotationMatrix(R)) {
@@ -461,12 +469,12 @@ TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R)
     }
     else {
         rotation.x = 0;
-        if (fabs(R(1, 3) + 1) > 1e-10) {
-            rotation.z = -rotation.x - atan2(R(2, 1), R(2, 2));
+        if ( R(1, 3)  < 0 )  {  // r(1,3) == -1
+            rotation.z = atan2(R(2, 1), R(2, 2));
             rotation.y = -M_PI / 2;
         }
-        else {
-            rotation.z = -rotation.x + atan2(R(2, 1), R(2, 2));
+        else {      // r(1,3) == 1
+            rotation.z = atan2(R(2, 1), R(2, 2));
             rotation.y = M_PI / 2;
         }
     }

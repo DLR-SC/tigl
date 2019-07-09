@@ -653,20 +653,6 @@ bool CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotat
         }
     }
 
-    // tiglMatrix check(1, 3, 1, 3); // use to perfom a check
-    //    check = R2 * D2 * R1 * D1;
-    //    std::cout << "affine part" << std::endl;
-    //    for (int r = 1; r < 4; r++) {
-    //        for (int c = 1; c < 4; c++) {
-    //            if (!isNear(check(r, c), A(r, c))) {
-    //                std::cout << "DiagonalizeMatrixByJacobi: was not performed correctly diff = " << A(r, c) - check(r, c) << std::endl;
-    //            };
-    //            std::cout << check(r, c) << "   ";
-    //        }
-    //        std::cout << std::endl;
-    //    }
-
-
     // Set the return values;
 
     // translation is last column of transformation
@@ -685,6 +671,19 @@ bool CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotat
     scaling1.x = D1(1, 1);
     scaling1.y = D1(2, 2);
     scaling1.z = D1(3, 3);
+
+//
+//    CTiglTransformation verify;
+//    verify.AddScaling(scaling1.x,scaling1.y,scaling1.z);
+//    verify.AddRotationIntrinsicXYZ(rotation1.x,rotation1.y,rotation1.z);
+//    verify.AddScaling(scaling2.x,scaling2.y,scaling2.z);
+//    verify.AddRotationIntrinsicXYZ(rotation2.x,rotation2.y,rotation2.z);
+//    verify.AddTranslation(translation.x,translation.y,translation.z);
+//    if( !this->IsNear(verify, 0.001)) {
+//        throw CTiglError("DecomposeTRSRS is not equivalent to the original transformation! ");
+//    }
+
+
 }
 
 // Getter for matrix values

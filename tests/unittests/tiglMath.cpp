@@ -916,7 +916,7 @@ TEST(TiglMath, RotMatrixToIntrinsicXYZVector)
     tigl::tiglMatrix rM(1, 3, 1, 3);
     tigl::CTiglPoint rV(1, 3);
     tigl::CTiglPoint inputRV(1, 3);
-    tigl::CTiglTransformation rT;
+    tigl::CTiglTransformation rT, rEquivalent;
 
     double tolerance = 0.001;
 
@@ -984,5 +984,63 @@ TEST(TiglMath, RotMatrixToIntrinsicXYZVector)
     EXPECT_NEAR(rV.y, inputRV.y, tolerance);
     EXPECT_NEAR(rV.z, inputRV.z, tolerance);
 
+
+    // case when RY = 90
+    inputRV.x = 0;
+    inputRV.y = 90;
+    inputRV.z = 30;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+    EXPECT_NEAR(rV.x, inputRV.x, tolerance);
+    EXPECT_NEAR(rV.y, inputRV.y, tolerance);
+    EXPECT_NEAR(rV.z, inputRV.z, tolerance);
+
+    // case when RY = -90
+    inputRV.x = 0;
+    inputRV.y = -90;
+    inputRV.z = 30;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+    EXPECT_NEAR(rV.x, inputRV.x, tolerance);
+    EXPECT_NEAR(rV.y, inputRV.y, tolerance);
+    EXPECT_NEAR(rV.z, inputRV.z, tolerance);
+
+
+    // case when RY = -90 with RX -> deadlock ->transformation of equivalent input
+    inputRV.x = 10;
+    inputRV.y = -90;
+    inputRV.z = 30;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+    rEquivalent.SetIdentity();
+    rEquivalent.AddRotationIntrinsicXYZ(rV.x, rV.y, rV.z);
+    EXPECT_TRUE(rEquivalent.IsNear(rT, 0.001));
 
 }
