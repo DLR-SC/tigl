@@ -153,6 +153,13 @@ protected:
     // Invalidate the fuselage or the wing
     virtual void InvalidateParent() = 0;
 
+    /**
+     * Bring the plane formed by the element in the XZ world plane
+     * such that the Z base vector of the element coordinate system lie in the same direction as the world Z base vector.
+     */
+    CTiglTransformation GetPlaneRotation(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+
 
     // Set the underlying CPACSTransformation (fuselage or wing ) with the given CTiglTransformation.
     // Calling this function will change the geometry of the aircraft.
@@ -164,6 +171,12 @@ protected:
     void SetSectionTransformation(const CTiglTransformation& newTransformation);
 
 
+    /**
+     * If element or section transformation contains near zero scaling,
+     * we set this scaling to 1.
+     * Used to set the width or set the height when there is a zero scaling.
+     */
+    void SetElementAndSectionScalingToNoneZero();
 
 
     // Return the element transformation needed to move a point A to the position B in referenceCS.

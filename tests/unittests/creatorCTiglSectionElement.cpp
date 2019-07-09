@@ -31,7 +31,7 @@
 
 #include <string.h>
 
-class tiglCTiglSectionElement : public ::testing::Test
+class creatorCTiglSectionElement : public ::testing::Test
 {
 
 protected:
@@ -123,7 +123,7 @@ protected:
     }
 };
 
-TEST_F(tiglCTiglSectionElement, getOrigin)
+TEST_F(creatorCTiglSectionElement, getOrigin)
 {
 
     tigl::CTiglSectionElement* ctiglElement = nullptr;
@@ -138,7 +138,7 @@ TEST_F(tiglCTiglSectionElement, getOrigin)
     EXPECT_TRUE(tigl::CTiglPoint(0.5, 0, 0).isNear(ctiglElement->GetOrigin(FUSELAGE_COORDINATE_SYSTEM)));
 }
 
-TEST_F(tiglCTiglSectionElement, getCenter)
+TEST_F(creatorCTiglSectionElement, getCenter)
 {
 
     tigl::CTiglSectionElement* ctiglElement = nullptr;
@@ -153,7 +153,7 @@ TEST_F(tiglCTiglSectionElement, getCenter)
     EXPECT_TRUE(tigl::CTiglPoint(0.5, 1, 0).isNear(ctiglElement->GetCenter(FUSELAGE_COORDINATE_SYSTEM)));
 }
 
-TEST_F(tiglCTiglSectionElement, getCircumference)
+TEST_F(creatorCTiglSectionElement, getCircumference)
 {
 
     tigl::CTiglSectionElement* ctiglElement = nullptr;
@@ -169,7 +169,7 @@ TEST_F(tiglCTiglSectionElement, getCircumference)
     EXPECT_NEAR(M_PI * 2, ctiglElement->GetCircumference(FUSELAGE_COORDINATE_SYSTEM), 0.1);
 }
 
-TEST_F(tiglCTiglSectionElement, setOrigin)
+TEST_F(creatorCTiglSectionElement, setOrigin)
 {
 
     tigl::CTiglSectionElement* ctiglElement = nullptr;
@@ -221,7 +221,7 @@ TEST_F(tiglCTiglSectionElement, setOrigin)
     saveCurrentConfig("TestData/Output/simpletest-shifftedProfiles-out.xml");
 }
 
-TEST_F(tiglCTiglSectionElement, setCenter)
+TEST_F(creatorCTiglSectionElement, setCenter)
 {
 
     tigl::CTiglSectionElement* ctiglElement = nullptr;
@@ -259,7 +259,7 @@ TEST_F(tiglCTiglSectionElement, setCenter)
     saveCurrentConfig("TestData/Output/simpletest-shifftedProfiles-out.xml");
 }
 
-TEST_F(tiglCTiglSectionElement, getProfileArea_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, getProfileArea_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml");
@@ -280,7 +280,7 @@ TEST_F(tiglCTiglSectionElement, getProfileArea_MultipleFuselagesModel)
     EXPECT_NEAR(area, 0.8, 0.5);
 }
 
-TEST_F(tiglCTiglSectionElement, getNormal_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, getNormal_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml");
@@ -340,7 +340,7 @@ TEST_F(tiglCTiglSectionElement, getNormal_MultipleFuselagesModel)
     EXPECT_TRUE(n.isNear(expectedN));
 }
 
-TEST_F(tiglCTiglSectionElement, getProfileHeight_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, getProfileHeight_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml");
@@ -367,7 +367,7 @@ TEST_F(tiglCTiglSectionElement, getProfileHeight_MultipleFuselagesModel)
 
 }
 
-TEST_F(tiglCTiglSectionElement, getProfileWidth_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, getProfileWidth_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml");
@@ -392,7 +392,7 @@ TEST_F(tiglCTiglSectionElement, getProfileWidth_MultipleFuselagesModel)
     EXPECT_NEAR(width, 0.2, 0.01);
 }
 
-TEST_F(tiglCTiglSectionElement, ScaleUniformely_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, ScaleUniformely_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml");
@@ -498,35 +498,60 @@ TEST_F(tiglCTiglSectionElement, ScaleUniformely_MultipleFuselagesModel)
     saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
 }
 
-TEST_F(tiglCTiglSectionElement, SetWidth_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, SetWidth_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml");
 
     tigl::CTiglSectionElement* cElement = nullptr;
     double newWidth;
-    tigl::CTiglPoint center;
+    tigl::CTiglPoint center, normal;
 
     cElement = GetCElementOf("D150_Fuselage_CSection1IDElement1");
     newWidth = 3;
     center   = cElement->GetCenter();
+    normal   = cElement->GetNormal();
     cElement->SetWidth(newWidth);
     EXPECT_NEAR(newWidth, cElement->GetWidth(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(), 0.01));
+
 
     cElement = GetCElementOf("D150_Fuselage_CSection2IDElement1");
-    newWidth = 0.1;
+    newWidth = 1;
     center   = cElement->GetCenter();
+    normal   = cElement->GetNormal();
     cElement->SetWidth(newWidth);
     EXPECT_NEAR(newWidth, cElement->GetWidth(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(), 0.01));
+
 
     cElement = GetCElementOf("D150_Fuselage_CSection3IDElement1");
     newWidth = 3;
     center   = cElement->GetCenter();
+    normal   = cElement->GetNormal();
     cElement->SetWidth(newWidth);
     EXPECT_NEAR(newWidth, cElement->GetWidth(), 0.01);
-    EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    // center can change slightly, because the center is computed as the mass center
+    // and setting the width can change the shape
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.05));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(), 0.01));
+
+
+
+    cElement = GetCElementOf("FuselageShearingSection_1Section1IDElement1");
+    newWidth = 1.5;
+    center   = cElement->GetCenter();
+    normal   = cElement->GetNormal();
+    cElement->SetWidth(newWidth);
+    EXPECT_NEAR(newWidth, cElement->GetWidth(), 0.01);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.05));
+    tigl::CTiglPoint newNormal = cElement->GetNormal();
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(), 0.01));
+
+
+    saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
 
     // the scaling by 0 case
     cElement = GetCElementOf("Fuselage_ETSection1IDElement1");
@@ -535,6 +560,7 @@ TEST_F(tiglCTiglSectionElement, SetWidth_MultipleFuselagesModel)
     cElement->SetWidth(newWidth);
     EXPECT_NEAR(newWidth, cElement->GetWidth(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    // we do not check the normal for this case, because the normal is not define clearly when there is a 0 scaling
 
     // rescale the 0 case
     cElement = GetCElementOf("Fuselage_ETSection1IDElement1");
@@ -543,49 +569,78 @@ TEST_F(tiglCTiglSectionElement, SetWidth_MultipleFuselagesModel)
     cElement->SetWidth(newWidth);
     EXPECT_NEAR(newWidth, cElement->GetWidth(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    // we do not check the normal for this case, because the normal is not define clearly when there is a 0 scaling
+
+
+    cElement    = GetCElementOf("D150_Fuselage_3Section2IDElement1");
+    newWidth = 0;
+    center   = cElement->GetCenter();
+    cElement->SetWidth(newWidth);
+    EXPECT_NEAR(newWidth , cElement->GetWidth(), 0.01);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    newWidth = 1;   // Rescaling it
+    center   = cElement->GetCenter();
+    cElement->SetWidth(newWidth);
+    EXPECT_NEAR(newWidth , cElement->GetWidth(), 0.01);
+    tigl::CTiglPoint newCenter = cElement->GetCenter();
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+
 
 
     // case in a other CS (scaling of 0.5 in Y,Z direction)
     cElement    = GetCElementOf("D150_Fuselage_1Section1IDElement1");
     newWidth = 3;
     center   = cElement->GetCenter();
+    normal   = cElement->GetNormal();
     cElement->SetWidth(newWidth, FUSELAGE_COORDINATE_SYSTEM);
     EXPECT_NEAR(newWidth * 0.5, cElement->GetWidth(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(), 0.01));
+
+
 
 
     saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
 }
 
-TEST_F(tiglCTiglSectionElement, SetHeight_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, SetHeight_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml");
 
     tigl::CTiglSectionElement* cElement = nullptr;
     double newHeight;
-    tigl::CTiglPoint center;
+    tigl::CTiglPoint center, normal;
 
     cElement  = GetCElementOf("D150_Fuselage_CSection1IDElement1");
     newHeight = 3;
     center    = cElement->GetCenter();
+    normal    = cElement->GetNormal();
     cElement->SetHeight(newHeight);
     EXPECT_NEAR(newHeight, cElement->GetHeight(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(), 0.01));
+
 
     cElement  = GetCElementOf("D150_Fuselage_CSection2IDElement1");
     newHeight = 0.1;
     center    = cElement->GetCenter();
+    normal    = cElement->GetNormal();
     cElement->SetHeight(newHeight);
     EXPECT_NEAR(newHeight, cElement->GetHeight(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(), 0.01));
 
     cElement  = GetCElementOf("D150_Fuselage_CSection3IDElement1");
     newHeight = 3.12;
     center    = cElement->GetCenter();
+    normal    = cElement->GetNormal();
     cElement->SetHeight(newHeight);
     EXPECT_NEAR(newHeight, cElement->GetHeight(), 0.01);
-    EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    // center can change slightly, because the center is computed as the mass center
+    // and setting the width can change the shape
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.2));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(), 0.01));
 
     // the scaling by 0 case
     cElement  = GetCElementOf("Fuselage_ETSection1IDElement1");
@@ -595,28 +650,33 @@ TEST_F(tiglCTiglSectionElement, SetHeight_MultipleFuselagesModel)
     EXPECT_NEAR(newHeight, cElement->GetHeight(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
 
+    saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
     // rescale the 0 case
     cElement  = GetCElementOf("Fuselage_ETSection1IDElement1");
     newHeight = 7;
     center    = cElement->GetCenter();
     cElement->SetHeight(newHeight);
     EXPECT_NEAR(newHeight, cElement->GetHeight(), 0.01);
+    tigl::CTiglPoint newCenter = cElement->GetCenter();
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
 
+    saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
 
     // case in a other CS (scaling of 0.5 in Y,Z direction)
     cElement    = GetCElementOf("D150_Fuselage_1Section1IDElement1");
     newHeight = 7;
     center    = cElement->GetCenter();
+    normal    = cElement->GetNormal();
     cElement->SetHeight(newHeight, FUSELAGE_COORDINATE_SYSTEM);
     EXPECT_NEAR(newHeight * 0.5, cElement->GetHeight(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(), 0.01));
 
     saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
 }
 
 
-TEST_F(tiglCTiglSectionElement, SetArea_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, SetArea_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml");
@@ -639,6 +699,22 @@ TEST_F(tiglCTiglSectionElement, SetArea_MultipleFuselagesModel)
     EXPECT_NEAR(newArea, cElement->GetArea(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
 
+
+    cElement  = GetCElementOf("Fuselage_ETSection1IDElement1");
+    newArea = 0;
+    center    = cElement->GetCenter();
+    cElement->SetArea(newArea);
+    EXPECT_NEAR(newArea, cElement->GetArea(), 0.01);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+
+    newArea = 7;
+    center    = cElement->GetCenter();
+    cElement->SetArea(newArea);
+    EXPECT_NEAR(newArea, cElement->GetArea(), 0.01);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
+
+
+
     cElement    = GetCElementOf("D150_Fuselage_1Section1IDElement1");
     newArea = 7;
     center    = cElement->GetCenter();
@@ -651,13 +727,13 @@ TEST_F(tiglCTiglSectionElement, SetArea_MultipleFuselagesModel)
 
 
 
-TEST_F(tiglCTiglSectionElement, SetTotalTransformation_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, SetTotalTransformation_MultipleFuselagesModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml");
 
     tigl::CTiglSectionElement* cElement = nullptr;
-    tigl::CTiglTransformation newTotalTransformation;
+    tigl::CTiglTransformation newTotalTransformation, temp;
 
     cElement  = GetCElementOf("Fuselage_ETSection1IDElement1");
     newTotalTransformation = tigl::CTiglTransformation();
@@ -683,10 +759,32 @@ TEST_F(tiglCTiglSectionElement, SetTotalTransformation_MultipleFuselagesModel)
     cElement->SetTotalTransformation(newTotalTransformation);
     EXPECT_TRUE(cElement->GetTotalTransformation().IsNear(newTotalTransformation));
 
+    saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
+
+    // shearing test
+    cElement =  GetCElementOf("D150_Fuselage_1Section1IDElement1");
+    temp.SetIdentity();
+    temp.SetValue(0, 1, 0.5);
+    newTotalTransformation = cElement->GetTotalTransformation();
+    newTotalTransformation = temp * newTotalTransformation ;
+
+    cElement->SetTotalTransformation(newTotalTransformation);
+
+    saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
+    newTotalTransformation = cElement->GetTotalTransformation();
+    newTotalTransformation.AddRotationZ(-20);
+
+    cElement->SetTotalTransformation(newTotalTransformation);
+
+    saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
+
+    EXPECT_TRUE(true);
+
+
 
 }
 
-TEST_F(tiglCTiglSectionElement, SetSectionElementTransformation_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, SetSectionElementTransformation_MultipleFuselagesModel)
 {
     setVariables("TestData/multiple_fuselages.xml");
 
@@ -746,13 +844,13 @@ TEST_F(tiglCTiglSectionElement, SetSectionElementTransformation_MultipleFuselage
 
     EXPECT_TRUE(res.IsNear(newSectionElementTransformation, tolerance));
 
+
+
     saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
 }
 
 
-
-
-TEST_F(tiglCTiglSectionElement, Wing_GetChord_MultipleWingsModel)
+TEST_F(creatorCTiglSectionElement, Wing_GetChord_MultipleWingsModel)
 {
     setVariables("TestData/multiple_wings.xml");
     tigl::CTiglPoint chordP;
@@ -774,7 +872,8 @@ TEST_F(tiglCTiglSectionElement, Wing_GetChord_MultipleWingsModel)
     chordP = cElement->GetChordPoint(0.5);
     EXPECT_EQ(chordP, wingPosition + tigl::CTiglPoint(0.5,0,0));
 
-
-
-
 }
+
+
+
+

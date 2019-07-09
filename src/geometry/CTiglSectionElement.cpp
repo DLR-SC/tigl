@@ -173,15 +173,9 @@ double tigl::CTiglSectionElement::GetHeight(TiglCoordinateSystem referenceCS) co
     // todo use a cache system
 
     TopoDS_Wire wire  = GetWire(referenceCS);
-    CTiglPoint normal = GetNormal(referenceCS);
-    // get the rotation to have the wire on the YZ plan
-    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(1, 0, 0));
-    // make sure that z (of the transformed base element  cs vector) lie on the current z base
-    CTiglTransformation global = GetTotalTransformation(referenceCS);
-    CTiglPoint zP = (rot * global * CTiglPoint(0,0,1)) - (rot * global * CTiglPoint(0,0,0)) ;
-    CTiglTransformation rot2 = CTiglTransformation::GetRotationToAlignAToB(zP, CTiglPoint(0,0,1));
+    CTiglTransformation rot = GetPlaneRotation(referenceCS);
 
-    wire                    = TopoDS::Wire((rot2*rot).Transform(wire));
+    wire                    = TopoDS::Wire(rot.Transform(wire));
 
     BRepMesh_IncrementalMesh mesh(wire, 0.00001); // tessellate the wire to have a more accurate bounding box.
     Bnd_Box boundingBox;
@@ -197,15 +191,9 @@ double tigl::CTiglSectionElement::GetWidth(TiglCoordinateSystem referenceCS) con
 
     // todo use a cache system
     TopoDS_Wire wire  = GetWire(referenceCS);
-    CTiglPoint normal = GetNormal(referenceCS);
-    // get the rotation to have the wire on the YZ plan
-    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(1, 0, 0));
-    // make sure that z (of the transformed base element  cs vector) lie on the current z base
-    CTiglTransformation global = GetTotalTransformation(referenceCS);
-    CTiglPoint zP = rot * global * CTiglPoint(0,0,1)  - (rot * global * CTiglPoint(0,0,0)) ;
-    CTiglTransformation rot2 = CTiglTransformation::GetRotationToAlignAToB(zP, CTiglPoint(0,0,1));
+    CTiglTransformation rot = GetPlaneRotation(referenceCS);
 
-    wire                    = TopoDS::Wire((rot2*rot).Transform(wire));
+    wire                    = TopoDS::Wire(rot.Transform(wire));
 
     BRepMesh_IncrementalMesh mesh(wire, 0.00001); // tessellate the wire to have a more accurate bounding box.
     Bnd_Box boundingBox;
@@ -213,7 +201,7 @@ double tigl::CTiglSectionElement::GetWidth(TiglCoordinateSystem referenceCS) con
     CTiglPoint min, max;
     boundingBox.Get(min.x, min.y, min.z, max.x, max.y, max.z);
 
-    return (max.y - min.y);
+    return (max.x - min.x);
 }
 
 void tigl::CTiglSectionElement::SetOrigin(const CTiglPoint& newO, TiglCoordinateSystem referenceCS)
@@ -241,84 +229,107 @@ void tigl::CTiglSectionElement::ScaleUniformly(double scaleFactor, TiglCoordinat
 
 void tigl::CTiglSectionElement::SetWidth(double newWidth, TiglCoordinateSystem referenceCS)
 {
+    // if we want to set the width to 0
+    // we set directly the scaling in the CCPACSTransformation to not loose other information
+    if (isNear(newWidth, 0, 0.0001)) {
+        CCPACSTransformation& storedElementTransformation = GetElementCCPACSTransformation();
+        CTiglPoint elementScaling = storedElementTransformation.getScaling();
+        elementScaling.x = 0;
+        elementScaling.y = 0;
+        storedElementTransformation.setScaling(elementScaling);
+        InvalidateParent();
+        return;
+
+    }
+
     double oldWidth = GetWidth(referenceCS);
-    if (fabs(oldWidth) < 0.0001) {
-        // If height is null -> rotation can be ignore and scaling is near zero
-        // So the important part is the translation
-        // -> we reset the transformation of element and section keeping only the the translation
-        // In the hope that a area will appear and that we can use the algorithm as in the usual case.
-        CTiglPoint ETranslation = GetElementTransformation().GetTranslation();
-        CTiglTransformation tempNewE;
-        tempNewE.AddTranslation(ETranslation.x, ETranslation.y, ETranslation.z);
-        SetElementTransformation(tempNewE);
 
-        CTiglPoint STranslation = GetSectionTransformation().GetTranslation();
-        CTiglTransformation tempNewS;
-        tempNewS.AddTranslation(STranslation.x, STranslation.y, STranslation.z);
-        SetSectionTransformation(tempNewS);
-
+    // if the current height is zero -> we can not scale it, so we first "reset" the value to a valid state
+    if (isNear(oldWidth, 0, 0.0001)) {
+        SetElementAndSectionScalingToNoneZero();
         oldWidth = GetWidth(referenceCS);
-        if (fabs(oldWidth) < 0.0001) { // desperate case
-            throw CTiglError("CTiglSectionElement::SetWidth: impossible to set the width. Take a look at the structure "
-                             "of the component.");
+        if (isNear(oldWidth, 0, 0.0001)) { // desperate case
+            throw CTiglError("Impossible to set the scaling to obtain a none zero width!");
         }
     }
 
     double scaleFactor = newWidth / oldWidth;
-    ScaleUniformly(scaleFactor, referenceCS);
+
+    CTiglTransformation scaleX, centerToOrigin;
+    scaleX.AddScaling(scaleFactor, 1, 1);
+    CTiglPoint center = GetCenter(referenceCS);
+    centerToOrigin.AddTranslation(-center.x, -center.y, -center.z);
+
+    CTiglTransformation newGlobal = centerToOrigin.Inverted()
+                                    * GetPlaneRotation(referenceCS).Inverted()
+                                    * scaleX
+                                    * GetPlaneRotation(referenceCS)
+                                    * centerToOrigin
+                                    * GetTotalTransformation(referenceCS);
+
+    SetTotalTransformation(newGlobal, referenceCS);
 }
 
 void tigl::CTiglSectionElement::SetHeight(double newHeight, TiglCoordinateSystem referenceCS)
 {
+    // if we want to set the height to 0
+    // we set directly the scaling in the CCPACSTransformation to not loose other information
+    if (isNear(newHeight, 0, 0.0001)) {
+        CCPACSTransformation& storedElementTransformation = GetElementCCPACSTransformation();
+        CTiglPoint elementScaling                         = storedElementTransformation.getScaling();
+        elementScaling.z                                  = 0;
+        storedElementTransformation.setScaling(elementScaling);
+        InvalidateParent();
+        return;
+    }
+
     double oldHeight = GetHeight(referenceCS);
-    if (fabs(oldHeight) < 0.0001) {
-        // If height is null -> rotation can be ignore and scaling is near zero
-        // So the important part is the translation
-        // -> we reset the transformation of element and section keeping only the the translation
-        // In the hope that a area will appear and that we can use the algorithm as in the usual case.
-        CTiglPoint ETranslation = GetElementTransformation().GetTranslation();
-        CTiglTransformation tempNewE;
-        tempNewE.AddTranslation(ETranslation.x, ETranslation.y, ETranslation.z);
-        SetElementTransformation(tempNewE);
-
-        CTiglPoint STranslation = GetSectionTransformation().GetTranslation();
-        CTiglTransformation tempNewS;
-        tempNewS.AddTranslation(STranslation.x, STranslation.y, STranslation.z);
-        SetSectionTransformation(tempNewS);
-
+    CTiglPoint centerPre = GetCenter(referenceCS);
+    // if the current height is zero -> we can not scale it, so we first "reset" the value to a valid state
+    if (isNear(oldHeight, 0, 0.0001)) {
+        SetElementAndSectionScalingToNoneZero();
         oldHeight = GetHeight(referenceCS);
-        if (fabs(oldHeight) < 0.0001) { // desperate case
-            throw CTiglError("CTiglSectionElement::SetWidth: impossible to set the width. Take a look at the structure "
-                             "of the component.");
+        if (isNear(oldHeight, 0, 0.0001) ) { // desperate case
+            throw CTiglError("Impossible to set the scaling to obtain a none zero height!");
         }
     }
 
     double scaleFactor = newHeight / oldHeight;
-    ScaleUniformly(scaleFactor, referenceCS);
+    CTiglTransformation scaleZ, centerToOrigin;
+    scaleZ.AddScaling(1, 1, scaleFactor);
+    CTiglPoint center = GetCenter(referenceCS);
+    centerToOrigin.AddTranslation(-center.x, -center.y, -center.z);
+
+    CTiglTransformation newGlobal = centerToOrigin.Inverted()
+                                    * GetPlaneRotation(referenceCS).Inverted()
+                                    * scaleZ
+                                    * GetPlaneRotation(referenceCS)
+                                    * centerToOrigin
+                                    * GetTotalTransformation(referenceCS);
+
+    SetTotalTransformation(newGlobal, referenceCS);
 }
 
 void tigl::CTiglSectionElement::SetArea(double newArea, TiglCoordinateSystem referenceCS)
 {
+    // if we want to set the area to 0
+    // we set directly the scaling in the CCPACSTransformation to not loose other information
+    if (isNear(newArea, 0, 0.0001)) {
+        CCPACSTransformation& storedElementTransformation = GetElementCCPACSTransformation();
+        storedElementTransformation.setScaling(CTiglPoint(0, 0, 0));
+        InvalidateParent();
+        return;
+    }
+
+    // standard case (we scale uniformly to obtain the wanted area)
     double oldArea = GetArea(referenceCS);
-    if (fabs(oldArea) < 0.0001) {
-        // If area is null -> rotation can be ignore and scaling is near zero
-        // So the important part is the translation
-        // -> we reset the transformation of element and section keeping only the the translation
-        // In the hope that a area will appear and that we can use the algorithm as in the usual case.
-        CTiglPoint ETranslation = GetElementTransformation().GetTranslation();
-        CTiglTransformation tempNewE;
-        tempNewE.AddTranslation(ETranslation.x, ETranslation.y, ETranslation.z);
-        SetElementTransformation(tempNewE);
 
-        CTiglPoint STranslation = GetSectionTransformation().GetTranslation();
-        CTiglTransformation tempNewS;
-        tempNewS.AddTranslation(STranslation.x, STranslation.y, STranslation.z);
-        SetSectionTransformation(tempNewS);
-
+    // if the area is 0 we first "reset" the 0 scaling value to trivial value
+    if (isNear(oldArea, 0, 0.0001)) {
+        SetElementAndSectionScalingToNoneZero();
         oldArea = GetArea(referenceCS);
-        if (fabs(oldArea) < 0.0001) { // desperate case
-            throw CTiglError("CTiglSectionElement::SetWidth: impossible to set the width. Take a look at the structure "
-                             "of the component.");
+        if (isNear(oldArea, 0, 0.0001)) { // desperate case
+            throw CTiglError("Impossible to set the scaling to obtain a none zero area!");
         }
     }
 
@@ -390,6 +401,51 @@ void tigl::CTiglSectionElement::SetSectionTransformation(const tigl::CTiglTransf
     storedTransformation.setTransformationMatrix(newTransformation);
 
     InvalidateParent();
+
+}
+
+void tigl::CTiglSectionElement::SetElementAndSectionScalingToNoneZero()
+{
+    double tolerance = 0.001;
+    CCPACSTransformation& storedElementTransformation = GetElementCCPACSTransformation();
+    CTiglPoint elementScaling = storedElementTransformation.getScaling();
+    if ( isNear(elementScaling.x, 0, tolerance) )  {
+        elementScaling.x = 1;
+    }
+    if ( isNear(elementScaling.y, 0, tolerance) )  {
+        elementScaling.y = 1;
+    }
+    if ( isNear(elementScaling.z, 0, tolerance) )  {
+        elementScaling.z = 1;
+    }
+    storedElementTransformation.setScaling(elementScaling);
+
+    CCPACSTransformation& storedSectionTransformation = GetSectionCCPACSTransformation();
+    CTiglPoint sectionScaling = storedSectionTransformation.getScaling();
+    if ( isNear(sectionScaling.x, 0, tolerance) )  {
+        sectionScaling.x = 1;
+    }
+    if ( isNear(sectionScaling.y, 0, tolerance) )  {
+        sectionScaling.y = 1;
+    }
+    if ( isNear(sectionScaling.z, 0, tolerance) )  {
+        sectionScaling.z = 1;
+    }
+    storedSectionTransformation.setScaling(sectionScaling);
+
+    InvalidateParent();
+}
+
+tigl::CTiglTransformation tigl::CTiglSectionElement::GetPlaneRotation(TiglCoordinateSystem referenceCS) const
+{
+    CTiglPoint normal = GetNormal(referenceCS);
+    // get the rotation to have the wire on the YZ plan
+    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(0, 1, 0));
+    // make sure that z (of the transformed base element  cs vector) lie on the current z base
+    CTiglTransformation global = GetTotalTransformation(referenceCS);
+    CTiglPoint zP = (rot * global * CTiglPoint(0,0,1)) - (rot * global * CTiglPoint(0,0,0)) ;
+    CTiglTransformation rot2 = CTiglTransformation::GetRotationToAlignAToB(zP, CTiglPoint(0,0,1));
+    return rot2*rot;
 
 }
 
