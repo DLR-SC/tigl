@@ -3,7 +3,6 @@
 |--|--|
 | **Build-Status:** | [![Build Status](https://travis-ci.org/DLR-SC/tigl.svg?branch=master)](https://travis-ci.org/DLR-SC/tigl) [![Build status](https://ci.appveyor.com/api/projects/status/twbrx01mbb043uj5/branch/master?svg=true)](https://ci.appveyor.com/project/rainman110/tigl/branch/master) |
 | **Installation:** | [![Anaconda-Server Badge](https://anaconda.org/dlr-sc/tigl/badges/installer/conda.svg)](https://conda.anaconda.org/dlr-sc) |
- | **Cite us:** | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3244634.svg)](https://doi.org/10.5281/zenodo.3244634) |
 
  - Binary Downloads:  https://github.com/DLR-SC/tigl/wiki/Downloads
  - API Documentation: https://dlr-sc.github.io/tigl/doc/3.0.0-rc2/
@@ -13,6 +12,14 @@
 # News
 
 Please head over to our TiGL website: https://dlr-sc.github.io/tigl/#news
+
+# Cite us
+
+TiGL is available as Open Source and we encourage anyone to make use of it. If you are applying TiGL in a scientific environment and publish any related work, please cite the following artice:
+
+Siggel, M., Kleinert, J., Stollenwerk, T. et al.:  *TiGL: An Open Source Computational Geometry Library for Parametric Aircraft Design*, Math.Comput.Sci. (2019). https://doi.org/10.1007/s11786-019-00401-y
+
+A free copy of the paper is offered here: https://rdcu.be/bIGUH 
 
 # About TiGL
 
