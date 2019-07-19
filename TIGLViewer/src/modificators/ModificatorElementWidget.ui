@@ -18,9 +18,6 @@
     <widget class="CTiglPointWidget" name="center" native="true"/>
    </item>
    <item>
-    <widget class="CTiglPointWidget" name="normal" native="true"/>
-   </item>
-   <item>
     <widget class="QWidget" name="dimensionWidget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="leftMargin">
@@ -36,12 +33,24 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="heightLabel">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>Height</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
@@ -55,48 +64,125 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Width</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QDoubleSpinBox" name="widthSpinBox">
-        <property name="decimals">
-         <number>3</number>
-        </property>
-        <property name="maximum">
-         <double>999999999999999993220948674361627976461708441944064.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Area</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QDoubleSpinBox" name="areaSpinBox">
-        <property name="decimals">
-         <number>3</number>
-        </property>
-        <property name="maximum">
-         <double>999999999999999993220948674361627976461708441944064.000000000000000</double>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="widthLabel">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Width</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="widthSpinBox">
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="maximum">
+        <double>999999999999999993220948674361627976461708441944064.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="areaLabel">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Area</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="areaSpinBox">
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="maximum">
+        <double>999999999999999993220948674361627976461708441944064.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="CTiglPointWidget" name="normal" native="true"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="rotNLabel">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Normal Rot</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="rotAroundNSpinBox">
+       <property name="suffix">
+        <string/>
+       </property>
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="minimum">
+        <double>-360.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>5.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

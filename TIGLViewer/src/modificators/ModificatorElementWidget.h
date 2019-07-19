@@ -57,6 +57,7 @@ private:
     Ui::ModificatorElementWidget* ui;
     tigl::CTiglSectionElement* element;
 
+    double internalRotAroundN;
     double internalHeight;
     double internalWidth;
     double internalArea;

@@ -131,6 +131,42 @@ public:
     TIGL_EXPORT virtual void SetArea(double newArea, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
 
+    /**
+     *
+     * The normal angle is defined as the angle that bring the unit vector z of the profile form
+     * its conventional direction to its current direction. The angle is always counter-clockwise around the normal
+     * direction.
+     * The conventional direction is the the vector that line on the profile plane and end on the intersection
+     * of the line l, define by (x,0,1).  So the z vector is on the XZ plane.
+     * If there is no intersection with the line l, with set the end of the vector by the intersection of the line l2,
+     * defined by (1,0,z)
+     *
+     * @param referenceCS
+     * @return
+     */
+    TIGL_EXPORT double GetRotationAroundNormal(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+
+    /**
+     * Set the normal of the profile.
+     * @param referenceCS
+     * @return
+     */
+    TIGL_EXPORT void SetNormal(CTiglPoint newNormal, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
+
+    /**
+     * Set the rotation around the normal.
+     *
+     * @see GetRotationAroundNormal to have a more precise definition of the angle.
+     * @param angle
+     * @param referenceCS
+     * @return
+     */
+    TIGL_EXPORT void SetRotationAroundNormal(double angle, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
+
+
     // Set the underlying CPACSTransformation of the section and the element
     // such that the multiplication of the both transformation give the input transformation!
     // Remark, the strength of this method is that we are sure that the decomposition in CCPACSTransformations are exact!!
@@ -152,14 +188,6 @@ protected:
 
     // Invalidate the fuselage or the wing
     virtual void InvalidateParent() = 0;
-
-    /**
-     * Bring the plane formed by the element in the XZ world plane
-     * such that the Z base vector of the element coordinate system lie in the same direction as the world Z base vector.
-     */
-    CTiglTransformation GetPlaneRotation(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
-
-
 
     // Set the underlying CPACSTransformation (fuselage or wing ) with the given CTiglTransformation.
     // Calling this function will change the geometry of the aircraft.
@@ -189,6 +217,32 @@ protected:
     CTiglTransformation
     GetElementTransformationForScaling(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
+
+    /**
+     * Get the rotation that move the profile to the XZ plane and the unit vector Z of the profile to (0,0,1).
+     *
+     * @param referenceCS
+     * @return a CTiglTransformation that hold the rotation
+     */
+    TIGL_EXPORT CTiglTransformation GetRotationToXZPlane(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+    /**
+     * Return conventional direction for the unit vector Z of the profile.
+     * The conventional direction is the the vector that line on the profile plane and end on the intersection
+     * of the line l, define by (x,0,1).  So the z vector is on the XZ plane.
+     * If there is no intersection with the line l, with set the end of the vector by the intersection of the line l2,
+     * defined by (1,0,z)
+     * @param referenceCS
+     * @return
+     */
+    CTiglPoint GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+    /**
+     * Return the direction of the profile z unit vector in the referenceCS coordinate;
+     * @param referenceCS
+     * @return
+     */
+    CTiglPoint GetCurrentUnitZDirectionOfProfile(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
 };
 }

@@ -875,5 +875,215 @@ TEST_F(creatorCTiglSectionElement, Wing_GetChord_MultipleWingsModel)
 }
 
 
+TEST_F(creatorCTiglSectionElement, GetRotationAroundNormal_MultipleFuselagesModel)
+{
+    setVariables("TestData/multiple_fuselages.xml");
+    tigl::CTiglSectionElement* cElement = nullptr;
+    double tolerance = 0.0001;
+    double angle = 0;
+    double expectedAngle = 0;
+    tigl::CTiglPoint normal, center;
+    TiglCoordinateSystem refCS = TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM;
+
+    cElement = GetCElementOf("D150_Fuselage_1Section3IDElement1");
+    expectedAngle = 0;
+    normal = cElement->GetNormal(refCS);
+    center = cElement->GetCenter(refCS);
+    angle = cElement->GetRotationAroundNormal(refCS);
+    EXPECT_NEAR(angle, expectedAngle, tolerance );
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
 
 
+    cElement = GetCElementOf("Fuselage_ETSection1IDElement1");
+    expectedAngle = 40;
+    normal = cElement->GetNormal(refCS);
+    center = cElement->GetCenter(refCS);
+    angle = cElement->GetRotationAroundNormal(refCS);
+    EXPECT_NEAR(angle, expectedAngle, tolerance );
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
+
+
+    cElement = GetCElementOf("D150_Fuselage_5Section1IDElement1");
+    refCS = TiglCoordinateSystem::FUSELAGE_COORDINATE_SYSTEM;
+    expectedAngle = 0;
+    normal = cElement->GetNormal(refCS);
+    center = cElement->GetCenter(refCS);
+    angle = cElement->GetRotationAroundNormal(refCS);
+    EXPECT_NEAR(angle, expectedAngle, tolerance );
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
+
+    refCS = TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM;
+    cElement = GetCElementOf("FuselageShearingSection_1Section1IDElement1");
+    expectedAngle = 0;
+    normal = cElement->GetNormal(refCS);
+    center = cElement->GetCenter(refCS);
+    angle = cElement->GetRotationAroundNormal(refCS);
+    EXPECT_NEAR(angle, expectedAngle, tolerance );
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
+
+}
+
+
+
+TEST_F(creatorCTiglSectionElement, SetNormal_MultipleFuselagesModel)
+{
+    setVariables("TestData/multiple_fuselages.xml");
+    tigl::CTiglSectionElement* cElement = nullptr;
+    double tolerance = 0.0001;
+    double angleN = 0;
+    tigl::CTiglPoint newNormal, center;
+    TiglCoordinateSystem refCS = TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM;
+
+
+    cElement = GetCElementOf("D150_Fuselage_1Section3IDElement1");
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(1,0,0);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(-1,0,0);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,1,0);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,-1,0);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,0,1);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,0,-1);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,1,-1);
+    newNormal.normalize();
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0.5,1,0);
+    newNormal.normalize();
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    cElement = GetCElementOf("FuselageShearingSection_1Section1IDElement1");
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,0,-1);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,1,-1);
+    newNormal.normalize();
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0.5,1,0);
+    newNormal.normalize();
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+}
+
+
+
+TEST_F(creatorCTiglSectionElement, SetRotationAroundNoraml_MultipleFuselagesModel)
+{
+    setVariables("TestData/multiple_fuselages.xml");
+    tigl::CTiglSectionElement *cElement = nullptr;
+    double tolerance = 0.0001;
+    double newAngle;
+    tigl::CTiglPoint normal, center;
+    TiglCoordinateSystem refCS = TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM;
+
+
+    cElement = GetCElementOf("FuselageShearingSection_1Section1IDElement1");
+
+    newAngle = 20;
+    center = cElement->GetCenter(refCS);
+    normal = cElement->GetNormal(refCS);
+    cElement->SetRotationAroundNormal(newAngle);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
+    EXPECT_NEAR(newAngle, cElement->GetRotationAroundNormal(refCS), tolerance);
+
+    newAngle = -20;
+    center = cElement->GetCenter(refCS);
+    normal = cElement->GetNormal(refCS);
+    cElement->SetRotationAroundNormal(newAngle);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
+    EXPECT_NEAR(newAngle + 360, cElement->GetRotationAroundNormal(refCS), tolerance);
+
+
+    newAngle = 180;
+    center = cElement->GetCenter(refCS);
+    normal = cElement->GetNormal(refCS);
+    cElement->SetRotationAroundNormal(newAngle);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
+    EXPECT_NEAR(newAngle, cElement->GetRotationAroundNormal(refCS), tolerance);
+
+
+    refCS = TiglCoordinateSystem::FUSELAGE_COORDINATE_SYSTEM;
+    newAngle = 45;
+    cElement = GetCElementOf("D150_Fuselage_5Section1IDElement1");
+    center = cElement->GetCenter(refCS);
+    normal = cElement->GetNormal(refCS);
+    cElement->SetRotationAroundNormal(newAngle, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
+    EXPECT_NEAR(newAngle, cElement->GetRotationAroundNormal(refCS), tolerance);
+
+    saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
+}

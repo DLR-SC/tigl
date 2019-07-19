@@ -44,6 +44,10 @@ void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement)
     ui->center->setLabel("Center");
     ui->normal->setInternal(element->GetNormal());
     ui->normal->setLabel("Normal");
+
+    internalRotAroundN = element->GetRotationAroundNormal();
+    ui->rotAroundNSpinBox->setValue(internalRotAroundN);
+
     internalHeight = element->GetHeight();
     ui->heightSpinBox->setValue(internalHeight);
     internalWidth = element->GetWidth();
@@ -59,7 +63,8 @@ bool ModificatorElementWidget::apply()
     bool heightHasChanged = (!isApprox(internalHeight, ui->heightSpinBox->value()) );
     bool widthHasChanged = (!isApprox(internalWidth, ui->widthSpinBox->value()));
     bool areaHasChanged = (!isApprox(internalArea, ui->areaSpinBox->value()));
-
+    bool normalHasChanged = ui->normal->hasChanged();
+    bool rotAroundNHasChanged = (!isApprox(internalRotAroundN , ui->rotAroundNSpinBox->value()));
     bool wasModified      = false;
 
     if (centerHasChanged) {
@@ -85,6 +90,19 @@ bool ModificatorElementWidget::apply()
         element->SetArea(internalArea);
         wasModified = true;
     }
+
+    if (normalHasChanged) {
+        ui->normal->setInternalFromGUI();
+        element->SetNormal(ui->normal->getInternalPoint());
+        wasModified = true;
+    }
+
+    if (rotAroundNHasChanged ){
+        internalRotAroundN = ui->rotAroundNSpinBox->value();
+        element->SetRotationAroundNormal(internalRotAroundN);
+        wasModified = true;
+    }
+
 
     if (wasModified) {
         // we reset to be sure that each internal values is correctly set
