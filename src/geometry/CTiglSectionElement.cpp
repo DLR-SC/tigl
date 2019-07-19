@@ -173,9 +173,9 @@ double tigl::CTiglSectionElement::GetHeight(TiglCoordinateSystem referenceCS) co
     // todo use a cache system
 
     TopoDS_Wire wire  = GetWire(referenceCS);
-    CTiglTransformation rot = GetPlaneRotation(referenceCS);
+    CTiglTransformation toXZPlane = GetRotationToXZPlane(referenceCS);
 
-    wire                    = TopoDS::Wire(rot.Transform(wire));
+    wire                    = TopoDS::Wire(toXZPlane.Transform(wire));
 
     BRepMesh_IncrementalMesh mesh(wire, 0.00001); // tessellate the wire to have a more accurate bounding box.
     Bnd_Box boundingBox;
@@ -191,9 +191,9 @@ double tigl::CTiglSectionElement::GetWidth(TiglCoordinateSystem referenceCS) con
 
     // todo use a cache system
     TopoDS_Wire wire  = GetWire(referenceCS);
-    CTiglTransformation rot = GetPlaneRotation(referenceCS);
+    CTiglTransformation toXZPlane = GetRotationToXZPlane(referenceCS);
 
-    wire                    = TopoDS::Wire(rot.Transform(wire));
+    wire                    = TopoDS::Wire(toXZPlane.Transform(wire));
 
     BRepMesh_IncrementalMesh mesh(wire, 0.00001); // tessellate the wire to have a more accurate bounding box.
     Bnd_Box boundingBox;
@@ -259,11 +259,12 @@ void tigl::CTiglSectionElement::SetWidth(double newWidth, TiglCoordinateSystem r
     scaleX.AddScaling(scaleFactor, 1, 1);
     CTiglPoint center = GetCenter(referenceCS);
     centerToOrigin.AddTranslation(-center.x, -center.y, -center.z);
+    CTiglTransformation toXZPlane = GetRotationToXZPlane(referenceCS);
 
     CTiglTransformation newGlobal = centerToOrigin.Inverted()
-                                    * GetPlaneRotation(referenceCS).Inverted()
+                                    * toXZPlane.Inverted()
                                     * scaleX
-                                    * GetPlaneRotation(referenceCS)
+                                    * toXZPlane
                                     * centerToOrigin
                                     * GetTotalTransformation(referenceCS);
 
@@ -299,11 +300,12 @@ void tigl::CTiglSectionElement::SetHeight(double newHeight, TiglCoordinateSystem
     scaleZ.AddScaling(1, 1, scaleFactor);
     CTiglPoint center = GetCenter(referenceCS);
     centerToOrigin.AddTranslation(-center.x, -center.y, -center.z);
+    CTiglTransformation toXZPlane = GetRotationToXZPlane(referenceCS);
 
     CTiglTransformation newGlobal = centerToOrigin.Inverted()
-                                    * GetPlaneRotation(referenceCS).Inverted()
+                                    * toXZPlane.Inverted()
                                     * scaleZ
-                                    * GetPlaneRotation(referenceCS)
+                                    * toXZPlane
                                     * centerToOrigin
                                     * GetTotalTransformation(referenceCS);
 
@@ -436,16 +438,108 @@ void tigl::CTiglSectionElement::SetElementAndSectionScalingToNoneZero()
     InvalidateParent();
 }
 
-tigl::CTiglTransformation tigl::CTiglSectionElement::GetPlaneRotation(TiglCoordinateSystem referenceCS) const
+
+tigl::CTiglTransformation tigl::CTiglSectionElement::GetRotationToXZPlane(TiglCoordinateSystem referenceCS) const
 {
     CTiglPoint normal = GetNormal(referenceCS);
     // get the rotation to have the wire on the YZ plan
+    // todo: manage wing airfoil
     CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(0, 1, 0));
-    // make sure that z (of the transformed base element  cs vector) lie on the current z base
+
     CTiglTransformation global = GetTotalTransformation(referenceCS);
+
     CTiglPoint zP = (rot * global * CTiglPoint(0,0,1)) - (rot * global * CTiglPoint(0,0,0)) ;
     CTiglTransformation rot2 = CTiglTransformation::GetRotationToAlignAToB(zP, CTiglPoint(0,0,1));
     return rot2*rot;
+}
+
+
+void tigl::CTiglSectionElement::SetNormal(CTiglPoint newNormal, TiglCoordinateSystem referenceCS)
+{
+
+    newNormal.normalize();
+
+    CTiglPoint normal = GetNormal(referenceCS);
+    CTiglPoint center = GetCenter(referenceCS);
+    CTiglTransformation toOrigin;
+    toOrigin.AddTranslation(-center.x, -center.y, -center.z);
+    CTiglTransformation global = GetTotalTransformation(referenceCS);
+
+    double oldAngle = GetRotationAroundNormal(referenceCS);
+
+    CTiglTransformation setN = CTiglTransformation::GetRotationToAlignAToB( normal ,newNormal);
+    SetTotalTransformation( toOrigin.Inverted() * setN * toOrigin * global, referenceCS);
+
+    // Call Set rotation around normal to reset the angle to its initial position
+    SetRotationAroundNormal(oldAngle, referenceCS);
 
 }
+
+void tigl::CTiglSectionElement::SetRotationAroundNormal(double angle, TiglCoordinateSystem referenceCS)
+{
+
+    double currentAngle = GetRotationAroundNormal(referenceCS);
+
+    CTiglPoint normal = GetNormal(referenceCS);
+
+    CTiglTransformation setAngle =  CTiglTransformation::GetRotationFromAxisRotation(normal, angle - currentAngle);
+
+    CTiglPoint center = GetCenter(referenceCS);
+    CTiglTransformation toOrigin;
+    toOrigin.AddTranslation(-center.x, -center.y, -center.z);
+
+    CTiglTransformation global = GetTotalTransformation(referenceCS);
+    SetTotalTransformation(  toOrigin.Inverted() * setAngle * toOrigin * global, referenceCS );
+
+}
+
+double tigl::CTiglSectionElement::GetRotationAroundNormal(TiglCoordinateSystem referenceCS) const
+{
+
+    CTiglPoint stdUZDir = GetStdDirForProfileUnitZ(referenceCS);
+    CTiglPoint currentUZDir = GetCurrentUnitZDirectionOfProfile(referenceCS);
+
+    // to determine the sens of the rotation  (we always rotate conter-clockwise around the normal)
+    CTiglPoint normal = GetNormal(referenceCS);
+    CTiglPoint crossProduct = CTiglPoint::cross_prod(currentUZDir, normal);
+    double tripleProduct = CTiglPoint::inner_prod(stdUZDir, crossProduct) ;
+
+    double angle = Degrees(acos( CTiglPoint::inner_prod(stdUZDir, currentUZDir)) );
+
+    if (tripleProduct < 0 && (!isNear(angle, 0)) ) {
+        angle = 360 - angle;
+    }
+
+    return angle;
+}
+
+tigl::CTiglPoint tigl::CTiglSectionElement::GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS) const
+{
+
+    CTiglPoint normal = GetNormal(referenceCS);
+    CTiglPoint stdUZDir;
+    if (isNear(normal.x, 0) && isNear(normal.z,0)) {
+        // in this case the profile is on the XZ plane -> we put the unit z parallel to z
+        stdUZDir = CTiglPoint(0,0,1);
+    }
+    else if (isNear(normal.x, 0)) {
+        // in this case we can not put uZ on the line defined by (x,0,1)
+        stdUZDir = CTiglPoint(1,0,0);
+    }
+    else {
+        stdUZDir = CTiglPoint( -normal.z/normal.x,0,1);
+    }
+    stdUZDir.normalize();
+    return stdUZDir;
+}
+
+
+tigl::CTiglPoint tigl::CTiglSectionElement::GetCurrentUnitZDirectionOfProfile(TiglCoordinateSystem referenceCS) const
+{
+    CTiglTransformation global = GetTotalTransformation(referenceCS);
+    CTiglPoint uZ = (global * CTiglPoint(0,0,1)) - (global * CTiglPoint(0,0,0)) ;
+    uZ.normalize();
+    return uZ;
+}
+
 

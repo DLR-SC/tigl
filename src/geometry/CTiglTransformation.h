@@ -135,8 +135,12 @@ public:
     // Return the translation performed by this translation.
     TIGL_EXPORT CTiglPoint GetTranslation();
 
-    // Return the transformation that bring the vector A in the same direction as vector B
+    // Return a transformation that bring the vector A in the same direction as vector B
     TIGL_EXPORT static CTiglTransformation GetRotationToAlignAToB(tigl::CTiglPoint vectorA, tigl::CTiglPoint vectorB);
+
+
+    // Return a transformation that only contains a axial rotation defined by the two parameters.
+    TIGL_EXPORT static CTiglTransformation GetRotationFromAxisRotation( tigl::CTiglPoint axis, double angle );
 
     // Return true if the transformation has a zero scaling
     TIGL_EXPORT bool HasZeroScaling() const;

@@ -703,11 +703,14 @@ tigl::CTiglTransformation tigl::CTiglTransformation::GetRotationToAlignAToB(tigl
     vectorA.normalize();
     vectorB.normalize();
 
+    CTiglTransformation Rot;
+
     if (vectorA.isNear((vectorB))) {
-        return CTiglTransformation();
+        return Rot;
     }
     if (vectorA.isNear((vectorB * -1))) {
-        return (-1 * CTiglTransformation());
+            CTiglPoint ortho = FindOrthogonalVectorToDirection(vectorA);
+            return CTiglTransformation::GetRotationFromAxisRotation(ortho,180);
     }
 
     CTiglPoint cross = CTiglPoint::cross_prod(vectorA, vectorB);
@@ -715,6 +718,7 @@ tigl::CTiglTransformation tigl::CTiglTransformation::GetRotationToAlignAToB(tigl
     double s         = 1.0 / (1.0 + cos);
 
     CTiglTransformation V;
+    V.SetIdentity();
     V.SetValue(0, 0, 0);
     V.SetValue(0, 1, -cross.z);
     V.SetValue(0, 2, cross.y);
@@ -728,12 +732,34 @@ tigl::CTiglTransformation tigl::CTiglTransformation::GetRotationToAlignAToB(tigl
 
     CTiglTransformation V2 = V * V;
 
-    CTiglTransformation Rot;
-
     Rot = ((Rot + V) + (s * V2));
 
     return Rot;
 }
+
+
+tigl::CTiglTransformation tigl::CTiglTransformation::GetRotationFromAxisRotation( tigl::CTiglPoint a, double angle )
+{
+
+    CTiglTransformation R;
+    a.normalize();
+    double c = cos(Radians(angle));
+    double s = sin(Radians(angle));
+    R.SetValue(0, 0, c + (pow(a.x,2)*(1-c)) );
+    R.SetValue(0, 1, a.x * a.y * (1-c) - (a.z * s) );
+    R.SetValue(0, 2, a.x * a.z * (1-c) + (a.y * s));
+
+    R.SetValue(1, 0, a.y * a.x *(1-c) + (a.z *s ));
+    R.SetValue(1, 1, c + (pow(a.y,2) * (1-c) )) ;
+    R.SetValue(1, 2, a.y * a.z*(1-c) - (a.x *s));
+
+    R.SetValue(2, 0, a.z*a.x*(1-c) - (a.y * s));
+    R.SetValue(2, 1, a.z*a.y*(1-c) + (a.x*s));
+    R.SetValue(2, 2, c + (pow(a.z,2)*(1-c)));
+
+    return R;
+}
+
 
 std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
 {

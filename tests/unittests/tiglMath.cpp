@@ -729,6 +729,52 @@ TEST(TiglMath, CTiglTransform_getRotationToAlignAToB)
 }
 
 
+
+TEST(TiglMath, CTiglTransform_GetRotationFromAxisRotation)
+{
+
+    tigl::CTiglTransformation res;
+    tigl::CTiglTransformation expectedR;
+    tigl::CTiglPoint axis;
+    double angle;
+
+    expectedR.SetValue(0,0,0);
+    expectedR.SetValue(0,1,0);
+    expectedR.SetValue(0,2,1);
+    expectedR.SetValue(1,0,0);
+    expectedR.SetValue(1,1,1);
+    expectedR.SetValue(1,2,0);
+    expectedR.SetValue(2,0,-1);
+    expectedR.SetValue(2,1,0);
+    expectedR.SetValue(2,2,0);
+
+    axis = tigl::CTiglPoint(0,-1,0);
+    angle = -90;
+    res = tigl::CTiglTransformation::GetRotationFromAxisRotation(axis, angle);
+    EXPECT_TRUE(res.IsNear(expectedR));
+
+
+    expectedR.SetValue(0,0, 0.9698463);
+    expectedR.SetValue(0,1,-0.0301537);
+    expectedR.SetValue(0,2,-0.2418448);
+
+    expectedR.SetValue(1,0,-0.0301537);
+    expectedR.SetValue(1,1,0.9698463);
+    expectedR.SetValue(1,2,-0.2418448);
+
+    expectedR.SetValue(2,0, 0.2418448);
+    expectedR.SetValue(2,1, 0.2418448);
+    expectedR.SetValue(2,2,0.9396926 );
+
+    axis = tigl::CTiglPoint(1,-1,0);
+    angle = 20;
+    res = tigl::CTiglTransformation::GetRotationFromAxisRotation(axis, angle);
+    EXPECT_TRUE(res.IsNear(expectedR));
+
+}
+
+
+
 TEST(TiglMath, CTiglTransform_isNear)
 {
     tigl::CTiglTransformation a,b;
@@ -1044,3 +1090,66 @@ TEST(TiglMath, RotMatrixToIntrinsicXYZVector)
     EXPECT_TRUE(rEquivalent.IsNear(rT, 0.001));
 
 }
+
+
+TEST(TiglMath, FindVectorPerpendicularToDirection)
+{
+    tigl::CTiglPoint i , res;
+    double check  ;
+
+    i = tigl::CTiglPoint(0,-1,0);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(0, 0,-1);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(-1,0,0);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(1,0,0);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(0,1,0);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(0,0,1);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(12,3,-45);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(0.2,1,0.2);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(45,45,45);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+}
+

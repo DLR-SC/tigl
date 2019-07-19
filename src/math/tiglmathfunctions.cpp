@@ -432,7 +432,7 @@ void DiagonalizeMatrixByJacobi(tiglMatrix S, tiglMatrix &D, tiglMatrix &V)
     tiglMatrix res(1, 3, 1, 3, 0);
 }
 
-TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R)
+CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R)
 {
 
     // calculate intrinsic Euler angles from rotation matrix R
@@ -484,6 +484,23 @@ TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R)
     rotation.z = Degrees(rotation.z);
 
     return rotation;
+}
+
+
+
+CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint d)
+{
+    d.normalize();
+    if (fabs(d.z) >= fabs(d.x) && fabs(d.z) >= fabs(d.y)) {
+        return CTiglPoint(1,1,-(d.x + d.y)/d.z );
+    }
+    else if (fabs(d.y) >= fabs(d.x) && fabs(d.y) >= fabs(d.z)) {
+        return CTiglPoint(1, -(d.x + d.z)/d.y ,1);
+    }
+    else {
+        return CTiglPoint( -(d.y +d.z)/d.x ,1,1) ;
+    }
+
 }
 
 } // namespace tigl

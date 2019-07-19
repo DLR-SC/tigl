@@ -245,6 +245,12 @@ TIGL_EXPORT void DiagonalizeMatrixByJacobi(tiglMatrix S, tiglMatrix &D, tiglMatr
  */
 TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R );
 
+/**
+ * Return a vector orthogonal to the direction
+ * @param direction
+ * @return
+ */
+TIGL_EXPORT CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint direction);
 
 } // namespace tigl
 
