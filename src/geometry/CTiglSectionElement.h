@@ -135,11 +135,14 @@ public:
      *
      * The normal angle is defined as the angle that bring the unit vector z of the profile form
      * its conventional direction to its current direction. The angle is always counter-clockwise around the normal
-     * direction.
-     * The conventional direction is the the vector that line on the profile plane and end on the intersection
-     * of the line l, define by (x,0,1).  So the z vector is on the XZ plane.
-     * If there is no intersection with the line l, with set the end of the vector by the intersection of the line l2,
-     * defined by (1,0,z)
+     * direction and the normal is taken at the center of the section. 
+     * The conventional direction depends of of the profile type.
+     * If the profile type is fuselage, the standard direction is the the vector that line on the profile plane
+     * and end on the intersection of the line l, define by (x,0,1). If there is no intersection with the line l,
+     * we set the end of the vector by the intersection of the line l2, defined by (1,0,z)
+     * If the profile type is wing, the standard direction is the the vector that line on the profile plane
+     * and end on the intersection of the line l, define by (0,y,1). If there is no intersection with the line l,
+     * we set the end of the vector by the intersection of the line l2, defined by (0,1,z)
      *
      * @param referenceCS
      * @return
@@ -157,7 +160,7 @@ public:
 
     /**
      * Set the rotation around the normal.
-     *
+     * @remark The normal is always computed on the center of the section.
      * @see GetRotationAroundNormal to have a more precise definition of the angle.
      * @param angle
      * @param referenceCS
@@ -228,14 +231,18 @@ protected:
 
     /**
      * Return conventional direction for the unit vector Z of the profile.
-     * The conventional direction is the the vector that line on the profile plane and end on the intersection
-     * of the line l, define by (x,0,1).  So the z vector is on the XZ plane.
-     * If there is no intersection with the line l, with set the end of the vector by the intersection of the line l2,
-     * defined by (1,0,z)
+     * The conventional direction depends of of the profile type.
+     * If the profile type is fuselage, the standard direction is the the vector that line on the profile plane
+     * and end on the intersection of the line l, define by (x,0,1). If there is no intersection with the line l,
+     * we set the end of the vector by the intersection of the line l2, defined by (1,0,z)
+     * If the profile type is wing, the standard direction is the the vector that line on the profile plane
+     * and end on the intersection of the line l, define by (0,y,1). If there is no intersection with the line l,
+     * we set the end of the vector by the intersection of the line l2, defined by (0,1,z)
+     *
      * @param referenceCS
      * @return
      */
-    CTiglPoint GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    virtual CTiglPoint GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0;
 
     /**
      * Return the direction of the profile z unit vector in the referenceCS coordinate;

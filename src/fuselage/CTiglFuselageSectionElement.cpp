@@ -23,6 +23,7 @@
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSConfiguration.h"
+#include "tiglmathfunctions.h"
 
 #include "tiglcommonfunctions.h"
 #include "GProp_GProps.hxx"
@@ -168,4 +169,23 @@ tigl::CCPACSTransformation& tigl::CTiglFuselageSectionElement::GetSectionCCPACST
 void tigl::CTiglFuselageSectionElement::InvalidateParent()
 {
     fuselage->Invalidate();
+}
+
+tigl::CTiglPoint tigl::CTiglFuselageSectionElement::GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS)  const
+{
+    CTiglPoint normal = GetNormal(referenceCS);
+    CTiglPoint stdUZDir;
+    if (isNear(normal.x, 0) && isNear(normal.z,0)) {
+        // in this case the profile is on the XZ plane -> we put the unit z parallel to z
+        stdUZDir = CTiglPoint(0,0,1);
+    }
+    else if (isNear(normal.x, 0)) {
+        // in this case we can not put uZ on the line defined by (x,0,1)
+        stdUZDir = CTiglPoint(1,0,0);
+    }
+    else {
+        stdUZDir = CTiglPoint( -normal.z/normal.x,0,1);
+    }
+    stdUZDir.normalize();
+    return stdUZDir;
 }
