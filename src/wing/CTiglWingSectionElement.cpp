@@ -24,6 +24,7 @@
 #include "CCPACSWingSections.h"
 #include "CCPACSWing.h"
 #include "CCPACSConfiguration.h"
+#include "tiglmathfunctions.h"
 
 #include "tiglcommonfunctions.h"
 #include "GProp_GProps.hxx"
@@ -179,4 +180,23 @@ tigl::CCPACSTransformation& tigl::CTiglWingSectionElement::GetElementCCPACSTrans
 tigl::CCPACSTransformation& tigl::CTiglWingSectionElement::GetSectionCCPACSTransformation()
 {
     return section->GetTransformation();
+}
+
+tigl::CTiglPoint tigl::CTiglWingSectionElement::GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS) const
+{
+    CTiglPoint normal = GetNormal(referenceCS);
+    CTiglPoint stdUZDir;
+    if (isNear(normal.y, 0) && isNear(normal.z,0)) {
+        // in this case the profile is on the YZ plane -> we put the unit z parallel to z
+        stdUZDir = CTiglPoint(0,0,1);
+    }
+    else if (isNear(normal.y, 0)) {
+        // in this case we can not put uZ on the line defined by (x,0,1)
+        stdUZDir = CTiglPoint(0,1,0);
+    }
+    else {
+        stdUZDir = CTiglPoint( 0,-normal.z/normal.y,1);
+    }
+    stdUZDir.normalize();
+    return stdUZDir;
 }

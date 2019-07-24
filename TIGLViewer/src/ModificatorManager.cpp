@@ -87,31 +87,40 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         // the we can retrieve the CTiglElement interface that manage the both case.
         tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
         tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
+        tigl::CTiglSectionElement* sectionElement = nullptr;
         if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
             tigl::CCPACSFuselageSectionElement& fuselageElement =
                 *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
-            modificatorContainerWidget->setElementModificator(*(fuselageElement.GetCTiglSectionElement()));
+                sectionElement = fuselageElement.GetCTiglSectionElement();
         }
         else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
             tigl::CCPACSWingSectionElement& wingElement =
                 *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+            sectionElement = wingElement.GetCTiglSectionElement();
         }
+
+        modificatorContainerWidget->setElementModificator(*(sectionElement));
     }
     else if (item->getType() == "section") {
         tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
         tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
+        QList<tigl::CTiglSectionElement*> cTiglElements;
         if (typePtr.type == &typeid(tigl::CCPACSFuselageSection)) {
             tigl::CCPACSFuselageSection& fuselageSection = *reinterpret_cast<tigl::CCPACSFuselageSection*>(typePtr.ptr);
             // In fact for the moment multiple element is not supported by Tigl so the number of cTiglElements will allays be one
-            QList<tigl::CTiglSectionElement*> cTiglElements;
             for (int i = 1; i <= fuselageSection.GetSectionElementCount(); i++) {
                 cTiglElements.push_back(fuselageSection.GetSectionElement(i).GetCTiglSectionElement());
             }
-            modificatorContainerWidget->setSectionModificator(cTiglElements);
+
         }
         else if (typePtr.type == &typeid(tigl::CCPACSWingSection)) {
-            tigl::CCPACSWingSection& wingElement = *reinterpret_cast<tigl::CCPACSWingSection*>(typePtr.ptr);
+            tigl::CCPACSWingSection& wingSection = *reinterpret_cast<tigl::CCPACSWingSection*>(typePtr.ptr);
+            for (int i = 1; i <= wingSection.GetSectionElementCount(); i++) {
+                cTiglElements.push_back(wingSection.GetSectionElement(i).GetCTiglSectionElement());
+            }
         }
+
+        modificatorContainerWidget->setSectionModificator(cTiglElements);
     }
     else {
         modificatorContainerWidget->setNoInterfaceWidget();

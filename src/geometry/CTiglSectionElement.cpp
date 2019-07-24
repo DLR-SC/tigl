@@ -170,8 +170,6 @@ double tigl::CTiglSectionElement::GetArea(TiglCoordinateSystem referenceCS) cons
 double tigl::CTiglSectionElement::GetHeight(TiglCoordinateSystem referenceCS) const
 {
 
-    // todo use a cache system
-
     TopoDS_Wire wire  = GetWire(referenceCS);
     CTiglTransformation toXZPlane = GetRotationToXZPlane(referenceCS);
 
@@ -189,7 +187,6 @@ double tigl::CTiglSectionElement::GetHeight(TiglCoordinateSystem referenceCS) co
 double tigl::CTiglSectionElement::GetWidth(TiglCoordinateSystem referenceCS) const
 {
 
-    // todo use a cache system
     TopoDS_Wire wire  = GetWire(referenceCS);
     CTiglTransformation toXZPlane = GetRotationToXZPlane(referenceCS);
 
@@ -442,15 +439,27 @@ void tigl::CTiglSectionElement::SetElementAndSectionScalingToNoneZero()
 tigl::CTiglTransformation tigl::CTiglSectionElement::GetRotationToXZPlane(TiglCoordinateSystem referenceCS) const
 {
     CTiglPoint normal = GetNormal(referenceCS);
-    // get the rotation to have the wire on the YZ plan
-    // todo: manage wing airfoil
-    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, CTiglPoint(0, 1, 0));
+    // get the rotation to have the wire on the XZ plan
+    CTiglPoint uY(0,1,0);
+    CTiglPoint uZ(0,0,1);
+    CTiglPoint o(0,0,0);
 
+    CTiglTransformation rot = CTiglTransformation::GetRotationToAlignAToB(normal, uY);
     CTiglTransformation global = GetTotalTransformation(referenceCS);
 
-    CTiglPoint zP = (rot * global * CTiglPoint(0,0,1)) - (rot * global * CTiglPoint(0,0,0)) ;
-    CTiglTransformation rot2 = CTiglTransformation::GetRotationToAlignAToB(zP, CTiglPoint(0,0,1));
-    return rot2*rot;
+    CTiglPoint zP = (rot * global * uZ) - (rot * global * o) ;
+    zP.normalize();
+
+    // determine the axis rotation angle to bring zP on (0,0,1)
+    CTiglPoint crossProduct = CTiglPoint::cross_prod(zP, uZ);
+    double tripleProduct = CTiglPoint::inner_prod(uZ, crossProduct) ;
+    double angle = Degrees(acos( CTiglPoint::inner_prod(uZ, zP)) );
+    if (tripleProduct < 0 && (!isNear(angle, 0)) ) {
+        angle = 360 - angle;
+    }
+    CTiglTransformation setZP = CTiglTransformation::GetRotationFromAxisRotation(uY,-angle);
+
+    return setZP*rot;
 }
 
 
@@ -504,33 +513,23 @@ double tigl::CTiglSectionElement::GetRotationAroundNormal(TiglCoordinateSystem r
     CTiglPoint crossProduct = CTiglPoint::cross_prod(currentUZDir, normal);
     double tripleProduct = CTiglPoint::inner_prod(stdUZDir, crossProduct) ;
 
-    double angle = Degrees(acos( CTiglPoint::inner_prod(stdUZDir, currentUZDir)) );
+    double innerProduct  = CTiglPoint::inner_prod(stdUZDir, currentUZDir);
+    // perform somme check to be sure that the value is between 1 and  -1
+    // some approximation error can be introduced by the inner product
+    if ( innerProduct > 1 ) {
+        innerProduct = 1.0;
+    }
+    else if (innerProduct < -1 ) {
+        innerProduct = -1.0;
+    }
+
+    double angle = Degrees(acos(innerProduct));
 
     if (tripleProduct < 0 && (!isNear(angle, 0)) ) {
         angle = 360 - angle;
     }
 
     return angle;
-}
-
-tigl::CTiglPoint tigl::CTiglSectionElement::GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS) const
-{
-
-    CTiglPoint normal = GetNormal(referenceCS);
-    CTiglPoint stdUZDir;
-    if (isNear(normal.x, 0) && isNear(normal.z,0)) {
-        // in this case the profile is on the XZ plane -> we put the unit z parallel to z
-        stdUZDir = CTiglPoint(0,0,1);
-    }
-    else if (isNear(normal.x, 0)) {
-        // in this case we can not put uZ on the line defined by (x,0,1)
-        stdUZDir = CTiglPoint(1,0,0);
-    }
-    else {
-        stdUZDir = CTiglPoint( -normal.z/normal.x,0,1);
-    }
-    stdUZDir.normalize();
-    return stdUZDir;
 }
 
 

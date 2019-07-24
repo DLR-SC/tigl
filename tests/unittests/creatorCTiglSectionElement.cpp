@@ -877,6 +877,9 @@ TEST_F(creatorCTiglSectionElement, Wing_GetChord_MultipleWingsModel)
 
 TEST_F(creatorCTiglSectionElement, GetRotationAroundNormal_MultipleFuselagesModel)
 {
+
+    // TEST THE ROTATION AROUND THE NORMAL FOR THE FUSELAGE PROFILES.
+
     setVariables("TestData/multiple_fuselages.xml");
     tigl::CTiglSectionElement* cElement = nullptr;
     double tolerance = 0.0001;
@@ -929,8 +932,53 @@ TEST_F(creatorCTiglSectionElement, GetRotationAroundNormal_MultipleFuselagesMode
 
 
 
+
+
+TEST_F(creatorCTiglSectionElement, GetRotationAroundNormal_MultipleWingsModel)
+{
+
+    // TEST THE ROTATION AROUND THE NORMAL FOR THE WING PROFILES
+
+    setVariables("TestData/multiple_wings.xml");
+    tigl::CTiglSectionElement* cElement = nullptr;
+    double tolerance = 0.0001;
+    double angle = 0;
+    double expectedAngle = 0;
+    TiglCoordinateSystem refCS = TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM;
+
+    cElement = GetCElementOf("Cpacs2Test_Wing_Sec2_El1");
+    expectedAngle = 0;
+    angle = cElement->GetRotationAroundNormal(refCS);
+    EXPECT_NEAR(angle, expectedAngle, tolerance );
+
+    cElement = GetCElementOf("W5_RX60_Sec1_El1");
+    expectedAngle = 0;
+    angle = cElement->GetRotationAroundNormal(refCS);
+    EXPECT_NEAR(angle, expectedAngle, tolerance );
+
+    cElement = GetCElementOf("W17_RotSec_Sec1_El1");
+    expectedAngle = 360 - 30;
+    angle = cElement->GetRotationAroundNormal(refCS);
+    EXPECT_NEAR(angle, expectedAngle, tolerance );
+
+    refCS = TiglCoordinateSystem::WING_COORDINATE_SYSTEM;
+    cElement = GetCElementOf("W17_RotSec_Sec1_El1");
+    expectedAngle = 360 - 20;
+    angle = cElement->GetRotationAroundNormal(refCS);
+    EXPECT_NEAR(angle, expectedAngle, tolerance );
+
+    cElement = GetCElementOf("W17_RotSec_Sec2_El1");
+    expectedAngle = 360 - 20;
+    angle = cElement->GetRotationAroundNormal(refCS);
+    EXPECT_NEAR(angle, expectedAngle, tolerance );
+}
+
+
 TEST_F(creatorCTiglSectionElement, SetNormal_MultipleFuselagesModel)
 {
+
+    // TEST TO SET NORMAL FOR THE FUSELAGE SECTION ELEMENT
+
     setVariables("TestData/multiple_fuselages.xml");
     tigl::CTiglSectionElement* cElement = nullptr;
     double tolerance = 0.0001;
@@ -1035,6 +1083,103 @@ TEST_F(creatorCTiglSectionElement, SetNormal_MultipleFuselagesModel)
     EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
 }
 
+
+
+
+TEST_F(creatorCTiglSectionElement, SetNormal_MultipleWingsModel) {
+
+
+    // TEST TO SET NORMAL FOR THE FUSELAGE SECTION ELEMENT
+
+    setVariables("TestData/multiple_wings.xml");
+    tigl::CTiglSectionElement *cElement = nullptr;
+    double tolerance = 0.0001;
+    double angleN = 0;
+    tigl::CTiglPoint newNormal, center;
+    TiglCoordinateSystem refCS = TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM;
+
+
+    cElement = GetCElementOf("W5_RX60_Sec1_El1");
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(1, 0, 0);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance);
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(-1, 0, 0);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance);
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0, 1, 0);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance);
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,-1,0);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,0,1);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+
+    saveCurrentConfig("TestData/Output/multiple_wings-out.xml");
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,0,-1);
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+
+    saveCurrentConfig("TestData/Output/multiple_wings-out.xml");
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0,1,-1);
+    newNormal.normalize();
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+
+    saveCurrentConfig("TestData/Output/multiple_wings-out.xml");
+
+    center = cElement->GetCenter(refCS);
+    angleN = cElement->GetRotationAroundNormal(refCS);
+    newNormal = tigl::CTiglPoint(0.5,1,0);
+    newNormal.normalize();
+    cElement->SetNormal(newNormal, refCS);
+    EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
+    EXPECT_NEAR(angleN, cElement->GetRotationAroundNormal(refCS), tolerance );
+    EXPECT_TRUE(newNormal.isNear(cElement->GetNormal(refCS)));
+
+    saveCurrentConfig("TestData/Output/multiple_wings-out.xml");
+
+
+}
 
 
 TEST_F(creatorCTiglSectionElement, SetRotationAroundNoraml_MultipleFuselagesModel)

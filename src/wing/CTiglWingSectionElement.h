@@ -75,6 +75,19 @@ protected:
 
     CCPACSTransformation& GetSectionCCPACSTransformation() override;
 
+    /**
+     * Return the conventional direction for the unit vector z of the profile.
+     *
+     * This direction is used to determine the rotation around the normal and is defined as:
+     * the the vector that line on the profile plane end on the intersection of the line l, define by (0,y,1).
+     * If there is no intersection with the line l,we set the end of the vector by the intersection of the line l2,
+     * defined by (0,1,z)
+     *
+     * @param referenceCS
+     * @return
+     */
+    CTiglPoint GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS) const override;
+
     void InvalidateParent() override;
 
 private:

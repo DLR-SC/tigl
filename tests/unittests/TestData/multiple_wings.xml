@@ -3933,6 +3933,183 @@
             </componentSegments>
           </wing>
 	  
+	  <wing uID="W17_RotSec"> 
+	    <name>W17_RotSec</name>
+            <parentUID>SimpleFuselage</parentUID>
+	    <description> We simply add some rotations to the element and section to test the rotation around function</description>
+            <transformation uID="W17_RotSec_transformation1">
+              <scaling uID="W17_RotSec_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="W17_RotSec_transformation1_rotation1">
+                <x>0</x>
+                <y>10</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="W17_RotSec_transformation1_translation1">
+                <x>-20</x>
+                <y>-10</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="W17_RotSec_Sec1">
+                <name>Cpacs2Test - Wing Section 1</name>
+                <description>Cpacs2Test - Wing Section 1</description>
+                <transformation uID="W17_RotSec_Sec1_transformation1">
+                  <scaling uID="W17_RotSec_Sec1_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W17_RotSec_Sec1_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W17_RotSec_Sec1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W17_RotSec_Sec1_El1">
+                    <name>Cpacs2Test - Wing Section 1 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 1 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W17_RotSec_Sec1_El1_transformation1">
+                      <scaling uID="W17_RotSec_Sec1_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W17_RotSec_Sec1_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>20</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W17_RotSec_Sec1_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W17_RotSec_Sec2">
+                <name>Cpacs2Test - Wing Section 2</name>
+                <description>Cpacs2Test - Wing Section 2</description>
+                <transformation uID="W17_RotSec_Sec2_transformation1">
+                  <scaling uID="W17_RotSec_Sec2_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W17_RotSec_Sec2_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W17_RotSec_Sec2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W17_RotSec_Sec2_El1">
+                    <name>Cpacs2Test - Wing Section 2 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 2 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W17_RotSec_Sec2_El1_transformation1">
+                      <scaling uID="W17_RotSec_Sec2_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W17_RotSec_Sec2_El1_transformation1_rotation1">
+                        <x>30</x>
+                        <y>20</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W17_RotSec_Sec2_El1_transformation1_translation1">
+                        <x>0.5</x>
+                        <y>-1</y>
+                        <z>0.5</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W17_RotSec_Sec3">
+                <name>Cpacs2Test - Wing Section 3</name>
+                <description>Cpacs2Test - Wing Section 3</description>
+                <transformation uID="W17_RotSec_Sec3_transformation1">
+                  <scaling uID="W17_RotSec_Sec3_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W17_RotSec_Sec3_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W17_RotSec_Sec3_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W17_RotSec_Sec3_El1">
+                    <name>Cpacs2Test - Wing Section 3 Main Element</name>
+                    <description>Cpacs2Test - Wing Section 3 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W17_RotSec_Sec3_El1_transformation1">
+                      <scaling uID="W17_RotSec_Sec3_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+			<z>1</z>
+                      </scaling>
+                      <rotation uID="W17_RotSec_Sec3_El1_transformation1_rotation1">
+                        <x>90</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W17_RotSec_Sec3_El1_transformation1_translation1">
+                        <x>1</x>
+                        <y>-2</y>
+                        <z>1</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+            </positionings>
+            <segments>
+              <segment uID="W17_RotSec_Seg_1_2">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 1 Main Element to Cpacs2Test - Wing Section 2 Main Element</description>
+                <fromElementUID>W17_RotSec_Sec1_El1</fromElementUID>
+                <toElementUID>W17_RotSec_Sec2_El1</toElementUID>
+              </segment>
+              <segment uID="W17_RotSec_Seg_2_3">
+                <name>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</name>
+                <description>Fuselage Segment from Cpacs2Test - Wing Section 2 Main Element to Cpacs2Test - Wing Section 3 Main Element</description>
+                <fromElementUID>W17_RotSec_Sec2_El1</fromElementUID>
+                <toElementUID>W17_RotSec_Sec3_El1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+            </componentSegments>
+          </wing>
 	  
         </wings>
       </model>
