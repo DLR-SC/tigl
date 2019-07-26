@@ -34,6 +34,10 @@
 #include "CTiglCurveConnector.h"
 #include "CTiglMakeLoft.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CCPACSFuselageSection.h"
+#include "ListFunctions.h"
+#include "tiglmathfunctions.h"
+
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -882,5 +886,152 @@ void CCPACSFuselage::SetFuselageHelper(CTiglFuselageHelper& cache) const
 {
     cache.SetFuselage(const_cast<CCPACSFuselage*>(this));
 }
+
+
+void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID)
+{
+
+    std::string segmentToSplit = GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetUID();
+    CTiglFuselageSectionElement* startElement = fuselageHelper->GetCTiglElementOfFuselage(startElementUID);
+    CTiglFuselageSectionElement* endElement = fuselageHelper->GetCTiglElementOfFuselage(endElementUID);
+
+    // compute the new parameters for the new element
+    CTiglPoint center = ( startElement->GetCenter() + endElement->GetCenter() ) * 0.5;
+    CTiglPoint normal = ( startElement->GetNormal() + endElement->GetNormal() );
+    if ( isNear( normal.norm2(), 0) ){
+        normal = startElement->GetNormal();
+    }
+    normal.normalize();
+    double angleN = ( startElement->GetRotationAroundNormal() + endElement->GetRotationAroundNormal() ) * 0.5;
+    double area = (startElement->GetArea() + endElement->GetArea() ) * 0.5;
+
+    // create new section and element
+    CTiglUIDManager& uidManager = GetUIDManager();
+    std::string baseUID = uidManager.MakeUIDUnique(startElement->GetSectionUID() + "Bis" );
+    CCPACSFuselageSection& newSection = GetSections().CreateSection(baseUID, startElement->GetProfileUID());
+    CTiglFuselageSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
+
+    // set the new parameters
+    newElement->SetCenter(center);
+    newElement->SetArea(area);
+    newElement->SetNormal(normal);
+    newElement->SetRotationAroundNormal(angleN);
+
+
+    // connect the element with segment and update old segment
+    GetSegments().SplitSegment(segmentToSplit, newElement->GetSectionElementUID() );
+
+
+
+}
+
+void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
+{
+
+    std::vector<std::string>  elementsAfter = ListFunctions::GetElementsAfter(fuselageHelper->GetElementUIDsInOrder(), startElementUID);
+    if ( elementsAfter.size() > 0 ) {
+        // In this case we insert the elemenet between the start element and the next one
+        this->CreateNewConnectedElementBetween(startElementUID, elementsAfter[0] );
+    }
+    else {
+        // in this case we simply need to find the previous element and call the appropriate function
+        std::vector<std::string>  elementsBefore = ListFunctions::GetElementsInBetween(fuselageHelper->GetElementUIDsInOrder(), fuselageHelper->GetNoseUID(),startElementUID);
+        if ( elementsBefore.size() < 2) {
+            throw  CTiglError("Impossible to add a element after if there is no previous element");
+        }
+        std::string  previousElementUID = elementsBefore[elementsBefore.size()-2];
+
+        CTiglFuselageSectionElement* previousElement = fuselageHelper->GetCTiglElementOfFuselage(previousElementUID);
+        CTiglFuselageSectionElement* startElement = fuselageHelper->GetCTiglElementOfFuselage(startElementUID);
+
+        // Compute the parameters for the new section base on the start element and the previous element.
+        // We try to create a continuous fuselage
+        CTiglPoint normal  =  startElement->GetNormal() + (startElement->GetNormal() - previousElement->GetNormal() ) ;
+        CTiglPoint center = startElement->GetCenter() + (startElement->GetCenter() - previousElement->GetCenter() );
+        double angleN = startElement->GetRotationAroundNormal() + (startElement->GetRotationAroundNormal() -previousElement->GetRotationAroundNormal());
+        double area = startElement->GetArea();
+        if (previousElement->GetArea() > 0) {
+            double scaleF = startElement->GetArea() / previousElement->GetArea();
+            area = scaleF * area;
+        }
+        std::string profileUID = startElement->GetProfileUID();
+        std::string sectionUID = startElement->GetSectionUID() + "After";
+
+
+        CCPACSFuselageSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
+        CTiglFuselageSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
+
+        newElement->SetNormal(normal);
+        newElement->SetRotationAroundNormal(angleN);
+        newElement->SetCenter(center);
+        newElement->SetArea(area);
+
+        // Connect the element with the segment
+        CCPACSFuselageSegment&  newSegment = GetSegments().AddSegment();
+        std::string newSegmentUID = GetUIDManager().MakeUIDUnique("SegGenerated");
+
+        newSegment.SetUID(newSegmentUID);
+        newSegment.SetName(newSegmentUID);
+        newSegment.SetFromElementUID(startElementUID);
+        newSegment.SetToElementUID(newElement->GetSectionElementUID());
+
+    }
+
+}
+
+void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID)
+{
+    std::vector<std::string> elementsBefore = ListFunctions::GetElementsInBetween(fuselageHelper->GetElementUIDsInOrder(), fuselageHelper->GetNoseUID(),startElementUID);
+    if ( elementsBefore.size() > 1 ) {
+        this->CreateNewConnectedElementBetween(elementsBefore[elementsBefore.size()-2], startElementUID);
+    }
+    else {
+        std::vector<std::string> elementsAfter  =  ListFunctions::GetElementsAfter(fuselageHelper->GetElementUIDsInOrder(), startElementUID);
+        if (elementsAfter.size() < 1 ) {
+            throw  CTiglError("Impossible to add a element before if there is no previous element");
+        }
+        std::string  previousElementUID = elementsAfter[0];
+
+        CTiglFuselageSectionElement* previousElement = fuselageHelper->GetCTiglElementOfFuselage(previousElementUID);
+        CTiglFuselageSectionElement* startElement = fuselageHelper->GetCTiglElementOfFuselage(startElementUID);
+
+        // Compute the parameters for the new section base on the start element and the previous element.
+        // We try to create a continuous fuselage
+        CTiglPoint normal  =  startElement->GetNormal() + (startElement->GetNormal() - previousElement->GetNormal() ) ;
+        CTiglPoint center = startElement->GetCenter() + (startElement->GetCenter() - previousElement->GetCenter() );
+        double angleN = startElement->GetRotationAroundNormal() + (startElement->GetRotationAroundNormal() -previousElement->GetRotationAroundNormal());
+        double area = startElement->GetArea();
+        if (previousElement->GetArea() > 0) {
+            double scaleF = startElement->GetArea() / previousElement->GetArea();
+            area = scaleF * area;
+        }
+        std::string profileUID = startElement->GetProfileUID();
+        std::string sectionUID = startElement->GetSectionUID() + "Before";
+
+
+        CCPACSFuselageSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
+        CTiglFuselageSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
+
+        newElement->SetNormal(normal);
+        newElement->SetRotationAroundNormal(angleN);
+        newElement->SetCenter(center);
+        newElement->SetArea(area);
+
+        // Connect the element with the segment
+        CCPACSFuselageSegment&  newSegment = GetSegments().AddSegment();
+        std::string newSegmentUID = GetUIDManager().MakeUIDUnique("SegGenerated");
+
+        newSegment.SetUID(newSegmentUID);
+        newSegment.SetName(newSegmentUID);
+        newSegment.SetFromElementUID(newElement->GetSectionElementUID());
+        newSegment.SetToElementUID(startElementUID);
+
+        GetSegments().Invalidate(); // to reorder the segment if needed.
+
+    }
+}
+
+
+
 
 } // end namespace tigl

@@ -18,12 +18,19 @@
 
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
+#include "tixi.h"
+#include "tixicpp.h"
 
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselage.h"
+#include "CTiglSectionElement.h"
 #include "CTiglFuselageSectionElement.h"
+#include "CTiglWingSectionElement.h"
+#include "CCPACSFuselageSectionElement.h"
+#include "CCPACSWingSectionElement.h"
+
 
 #include <string.h>
 
@@ -85,6 +92,43 @@ protected:
     void TearDown()
     {
         unsetVariables();
+    }
+
+
+    // Save the result in a new file (For visual check purpose)
+    void saveInOutputFile()
+    {
+        // write the change in tixi memory
+        config->WriteCPACS(config->GetUID());
+        std::string newConfig = tixi::TixiExportDocumentAsString(tixiHandle);
+
+        // Import-export to flat the xml // todo inform tixi developers about this "bug
+        TixiDocumentHandle tixiHandle2 = tixi::TixiImportFromString(newConfig);
+        newConfig                      = tixi::TixiExportDocumentAsString(tixiHandle2);
+
+        std::ofstream myfile;
+        myfile.open("TestData/Output/creatorFuselage-out.xml", std::ios::trunc);
+        myfile << newConfig;
+        myfile.close();
+        tixiCloseDocument(tixiHandle2);
+    }
+
+
+    tigl::CTiglSectionElement* GetCElementOf(std::string elementUid)
+    {
+        tigl::CTiglSectionElement* cElement     = nullptr;
+        tigl::CTiglUIDManager::TypedPtr typePtr = config->GetUIDManager().ResolveObject(elementUid);
+        if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
+            tigl::CCPACSFuselageSectionElement& fuselageElement =
+                    *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
+            cElement = fuselageElement.GetCTiglSectionElement();
+        }
+        else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
+            tigl::CCPACSWingSectionElement& wingElement =
+                    *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+            cElement = wingElement.GetCTiglSectionElement();
+        }
+        return cElement;
     }
 };
 
@@ -283,4 +327,205 @@ TEST_F(creatorFuselage, setRotation_MultipleFuselagesModel)
     fuselage->SetRotation(newRot);
     resRot = fuselage->GetRotation();
     EXPECT_TRUE(resRot.isNear(newRot, 0.0001));
+}
+
+
+
+TEST_F(creatorFuselage, createSectionBetween_MultipleFuselageModel)
+{
+
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage");
+    std::vector<std::string>  orderedUIDS;
+    std::vector<std::string>  expectedOrderedUIDS;
+    tigl::CTiglPoint expectedCenter, currentCenter;
+    tigl::CTiglSectionElement * newElement;
+
+    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1","D150_Fuselage_1Section2IDElement1");
+    saveInOutputFile();
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1"); // new element
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(0,0,0);
+    newElement = GetCElementOf("D150_Fuselage_1Section1IDBisElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
+
+
+
+    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section2IDElement1","D150_Fuselage_1Section3IDElement1");
+    saveInOutputFile();
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisElem1"); // new element
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(1,0,0);
+    newElement = GetCElementOf("D150_Fuselage_1Section2IDBisElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
+
+
+    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_1Section1IDElement1");
+    saveInOutputFile();
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(-1,0,0);
+    newElement = GetCElementOf("D150_Fuselage_1Section1IDBeforeElem1");
+    currentCenter = newElement->GetCenter();
+    EXPECT_TRUE(expectedCenter.isNear(currentCenter));
+
+
+
+    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_1Section3IDElement1");
+    saveInOutputFile();
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDAfterElem1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(2,0,0);
+    newElement = GetCElementOf("D150_Fuselage_1Section3IDAfterElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
+
+
+
+    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_1Section2IDElement1");
+    saveInOutputFile();
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisU1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDAfterElem1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(0.75,0,0);
+    newElement = GetCElementOf("D150_Fuselage_1Section2IDBisU1Elem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
+
+
+
+
+    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_1Section2IDElement1");
+    saveInOutputFile();
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisU1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDAfterElem1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(0.25,0,0);
+    newElement = GetCElementOf("D150_Fuselage_1Section1IDBisBisElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
+
+
+
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage5");
+
+
+    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_5Section1IDElement1");
+    saveInOutputFile();
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section2IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section3IDElement1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+
+
+    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_5Section1IDElement1");
+    saveInOutputFile();
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section2IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section3IDElement1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+
+
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselageElementTransformation");
+
+    fuselage->CreateNewConnectedElementAfter("Fuselage_ETSection1IDElement1");
+    saveInOutputFile();
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("Fuselage_ETSection1IDElement1");
+    expectedOrderedUIDS.push_back("Fuselage_ETSection1IDBisElem1");
+    expectedOrderedUIDS.push_back("Fuselage_ETSection2IDElement1");
+    expectedOrderedUIDS.push_back("Fuselage_ETSection3IDElement1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+
+
+    setVariables("TestData/multiple_fuselages.xml", "FuselageShearingSection");
+
+    fuselage->CreateNewConnectedElementAfter("FuselageShearingSection_1Section1IDElement1");
+    saveInOutputFile();
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("FuselageShearingSection_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("FuselageShearingSection_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("FuselageShearingSection_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("FuselageShearingSection_1Section3IDElement1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+
+
 }

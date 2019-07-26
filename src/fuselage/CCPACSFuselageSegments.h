@@ -43,6 +43,9 @@ public:
     // Gets a segment by uid 
     TIGL_EXPORT CCPACSFuselageSegment & GetSegment(const std::string& segmentUID);
 
+    // Get the segment that get form element uid to element uid, if there is no such segment the function raise an error
+    TIGL_EXPORT CCPACSFuselageSegment & GetSegmentFromTo(const std::string &fromElemUID, const std::string toElementUID);
+
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
 
@@ -50,12 +53,29 @@ public:
     // It assume that the element are already order in m_segments !
     TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder() const;
 
+    /**
+     * Split the segment into two segments.
+     * The splitter element will be used as the junction between the two segments.
+     *
+     * @remark Only the segment is split we do not care about the position of the splitter.
+     * @param segmentToSplit: the uid of the segment to split
+     * @param splitterElement: the uid of the element to be used to connect the two segments
+     * @return the new created segment
+     */
+    TIGL_EXPORT CCPACSFuselageSegment& SplitSegment(const std::string& segmentToSplit, const std::string& splitterElement);
+
+
+
     // CPACSFuselageSegments interface
 public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) OVERRIDE;
 
 private:
     void ReorderSegments();
+
+    // check order of segments - each segment must start with the element of the previous segment
+    bool NeedReordering();
+
 };
 
 } // end namespace tigl

@@ -163,6 +163,34 @@ public:
     // Set the maximal width of the fuselage by inverting the rotation of the fuselage and scaling in the Y direction
     TIGL_EXPORT void SetMaxWidth(double newMaxWidth);
 
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "after" the start element.
+     * If there is already a element after the start element, we split the existing segment and insert the new element
+     * between the the two elements.
+     *
+     * @param startElementUID
+     */
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID);
+
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "Before" the start element.
+     * If there is already a element before the start element, we split the existing segment and insert the new element
+     * between the the two elements.
+     *
+     * @param startElementUID
+     */
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID);
+
+    /**
+      *Create a new section, a new element and place the new element between the startElement and the endElement.
+     * @remark The startElement and endElement must be connected by a segment.
+     * @param startElementUID
+     * @param endElementUID
+     */
+    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID);
+
 
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;
