@@ -1809,21 +1809,21 @@
             </segments>
           </fuselage>
 	  
-          <fuselage uID="SimpleFuselageElementTransformation ">
+          <fuselage uID="SimpleFuselageElementTransformation">
             <name>name</name>
             <description>A simple fuselage where every transformations is contained in the elements</description>
-            <transformation uID="SimpleFuselageElementTransformation _transformation1">
-              <scaling uID="SimpleFuselageElementTransformation _transformation1_scaling1">
+            <transformation uID="SimpleFuselageElementTransformation_transformation1">
+              <scaling uID="SimpleFuselageElementTransformation_transformation1_scaling1">
                 <x>1.0</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation uID="SimpleFuselageElementTransformation _transformation1_rotation1">
+              <rotation uID="SimpleFuselageElementTransformation_transformation1_rotation1">
                 <x>0.0</x>
                 <y>0.0</y>
                 <z>0.0</z>
               </rotation>
-              <translation refType="absLocal" uID="SimpleFuselageElementTransformation _transformation1_translation1">
+              <translation refType="absLocal" uID="SimpleFuselageElementTransformation_transformation1_translation1">
                 <x>0.0</x>
                 <y>0.0</y>
                 <z>0.0</z>

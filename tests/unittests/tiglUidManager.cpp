@@ -402,11 +402,11 @@ namespace {
     TEST_F(tiglUidManagerTest, makeUIDUnique)
     {
         EXPECT_EQ("AlreadyUniqueUID", uidMgr->MakeUIDUnique("AlreadyUniqueUID"));
-        EXPECT_EQ("1D150_VAMP_W1_Sec3_Elem1", uidMgr->MakeUIDUnique("D150_VAMP_W1_Sec3_Elem1"));
+        EXPECT_EQ("D150_VAMP_W1_Sec3_Elem1U1", uidMgr->MakeUIDUnique("D150_VAMP_W1_Sec3_Elem1"));
         // create a existing prefixed UID
         uidMgr->ResolveObject<tigl::CCPACSWingSectionElement>("D150_VAMP_W1_Sec2_Elem1")
-            .SetUID("1D150_VAMP_W1_Sec3_Elem1");
-        EXPECT_EQ("2D150_VAMP_W1_Sec3_Elem1", uidMgr->MakeUIDUnique("D150_VAMP_W1_Sec3_Elem1"));
+            .SetUID("D150_VAMP_W1_Sec3_Elem1U1");
+        EXPECT_EQ("D150_VAMP_W1_Sec3_Elem1U2", uidMgr->MakeUIDUnique("D150_VAMP_W1_Sec3_Elem1"));
     }
 
 }

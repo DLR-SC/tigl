@@ -23,6 +23,7 @@
 #include "CCPACSFuselageSection.h"
 
 #include "CTiglError.h"
+#include "CTiglUIDManager.h"
 
 namespace tigl
 {
@@ -54,19 +55,24 @@ CCPACSFuselageSection& CCPACSFuselageSections::GetSection(const std::string& sec
     throw CTiglError("Invalid uid in CCPACSWingSections::GetSection", TIGL_UID_ERROR);
 }
 
-std::map<std::string, CTiglFuselageSectionElement*> CCPACSFuselageSections::GetCTiglElements()
+CCPACSFuselageSection&  CCPACSFuselageSections::CreateSection(const std::string& sectionUID, const std::string& profileUID)
 {
-    std::map<std::string, CTiglFuselageSectionElement*> map;
+    CTiglUIDManager& uidManager = GetUIDManager();
 
-    for(int s = 0; s <  m_sections.size(); s++ ){
-        for( int e = 1; e <= m_sections[s]->GetSectionElementCount(); e++ ){
-            CCPACSFuselageSectionElement& tempElement = m_sections[s]->GetSectionElement(e);
-            map[tempElement.GetUID()] = tempElement.GetCTiglSectionElement();
-        }
+    CCPACSFuselageSection& newSection = AddSection();
+    std::string newSectionUID = uidManager.MakeUIDUnique( sectionUID );
+    newSection.SetUID(newSectionUID);
+    newSection.SetName(newSectionUID);
+    newSection.GetTransformation().Init(uidManager.MakeUIDUnique(newSectionUID + "Tr"));
 
-    }
-    return map;
+    tigl::CCPACSFuselageSectionElement& newElement = newSection.GetElements().AddElement();
+    std::string newElementUID = uidManager.MakeUIDUnique(newSectionUID + "Elem1");
+    newElement.SetUID(newElementUID);
+    newElement.SetName(newElementUID);
+    newElement.GetTransformation().Init(uidManager.MakeUIDUnique(newElementUID + "Tr"));
+    newElement.SetProfileUID(profileUID);
 
+    return newSection;
 }
 
 } // end namespace tigl

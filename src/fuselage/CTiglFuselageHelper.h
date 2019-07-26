@@ -55,6 +55,11 @@ public:
     // return the element uid that is considered as the tail element
     std::string GetTailUID() const;
 
+    /**
+     * Return the uid of the elements connected by some segments.
+     * @remark if a element in the fuselage is not connected, then it will not appears in this list.
+     * @return
+     */
     inline std::vector<std::string> GetElementUIDsInOrder() const
     {
         return elementUIDs;
