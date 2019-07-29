@@ -104,6 +104,10 @@ void tigl::CCPACSFuselageSegments::ReadCPACS(const TixiDocumentHandle &tixiHandl
 
 void CCPACSFuselageSegments::ReorderSegments()
 {
+    if (!NeedReordering()) {
+        return;
+    }
+
     try {
         tigl::follow_sort(GetSegments().begin(), GetSegments().end(), segment_follows);
     } catch (std::invalid_argument) {
@@ -168,13 +172,10 @@ CCPACSFuselageSegment& CCPACSFuselageSegments::SplitSegment(const std::string& s
 
     Invalidate();
 
-    if ( NeedReordering() ){
-        try { // we use a try-catch to not rise two time a exception if the reordering file while reading the cpacs for the first time
-            ReorderSegments();
-        } catch (  const CTiglError& err) {
-            LOG(ERROR) << err.what();
-        }
-
+    try { // we use a try-catch to not rise two time a exception if the reordering file while reading the cpacs for the first time
+        ReorderSegments();
+    } catch (  const CTiglError& err) {
+        LOG(ERROR) << err.what();
     }
 
     return additionalSegment;

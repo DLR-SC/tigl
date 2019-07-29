@@ -22,6 +22,8 @@
 #include "CCPACSWingSections.h"
 #include "CCPACSWingSection.h"
 #include "CTiglError.h"
+#include "CTiglUIDManager.h"
+#include "CCPACSWingSectionElement.h"
 
 namespace tigl
 {
@@ -56,6 +58,26 @@ CCPACSWingSection& CCPACSWingSections::GetSection(const std::string& sectionUID)
         }
     }
     throw CTiglError("Invalid uid in CCPACSWingSections::GetSection", TIGL_UID_ERROR);
+}
+
+CCPACSWingSection& CCPACSWingSections::CreateSection(const std::string& sectionUID, const std::string& profileUID)
+{
+    CTiglUIDManager& uidManager = GetUIDManager();
+
+    CCPACSWingSection& newSection = AddSection();
+    std::string newSectionUID     = uidManager.MakeUIDUnique(sectionUID);
+    newSection.SetUID(newSectionUID);
+    newSection.SetName(newSectionUID);
+    newSection.GetTransformation().Init(uidManager.MakeUIDUnique(newSectionUID + "Tr"));
+
+    CCPACSWingSectionElement& newElement = newSection.GetElements().AddElement();
+    std::string newElementUID            = uidManager.MakeUIDUnique(newSectionUID + "Elem1");
+    newElement.SetUID(newElementUID);
+    newElement.SetName(newElementUID);
+    newElement.GetTransformation().Init(uidManager.MakeUIDUnique(newElementUID + "Tr"));
+    newElement.SetAirfoilUID(profileUID);
+
+    return newSection;
 }
 
 } // end namespace tigl

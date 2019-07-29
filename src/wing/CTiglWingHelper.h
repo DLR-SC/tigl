@@ -62,6 +62,11 @@ public:
     // Returns the uid of the root element (the element that start to build the wing)
     std::string GetRootUID() const;
 
+    inline std::vector<std::string> GetElementUIDsInOrder() const
+    {
+        return elementUIDs;
+    };
+
 protected:
     // Init for the tipCElement cache
     void SetTipUid(std::string& cache) const;

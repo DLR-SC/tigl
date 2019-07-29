@@ -331,7 +331,7 @@ TEST_F(creatorFuselage, setRotation_MultipleFuselagesModel)
 
 
 
-TEST_F(creatorFuselage, createSectionBetween_MultipleFuselageModel)
+TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 {
 
     setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage");

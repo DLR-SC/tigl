@@ -25,6 +25,8 @@
 #include "CPACSWings.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
+#include "CCPACSFuselageSectionElement.h"
+#include "CCPACSWingSectionElement.h"
 
 class creatorWing : public ::testing::Test
 {
@@ -90,6 +92,24 @@ protected:
         myfile << newConfig;
         myfile.close();
         tixiCloseDocument(tixiHandle2);
+    }
+
+
+    tigl::CTiglSectionElement* GetCElementOf(std::string elementUid)
+    {
+        tigl::CTiglSectionElement* cElement     = nullptr;
+        tigl::CTiglUIDManager::TypedPtr typePtr = config->GetUIDManager().ResolveObject(elementUid);
+        if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
+            tigl::CCPACSFuselageSectionElement& fuselageElement =
+                    *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
+            cElement = fuselageElement.GetCTiglSectionElement();
+        }
+        else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
+            tigl::CCPACSWingSectionElement& wingElement =
+                    *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+            cElement = wingElement.GetCTiglSectionElement();
+        }
+        return cElement;
     }
 
     void TearDown()
@@ -770,5 +790,88 @@ TEST_F(creatorWing, MultipleWings_SetHalfSpanKeepAR)
 
 
     saveInOutputFile();
+
+}
+
+
+TEST_F(creatorWing, MultipleWings_CreateSections)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    std::vector<std::string> orderedUIDS;
+    std::vector<std::string> expectedOrderedUIDS;
+    tigl::CTiglPoint expectedCenter, currentCenter;
+    tigl::CTiglSectionElement* newElement;
+
+    wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec2_El1",
+                                               "Cpacs2Test_Wing_Sec3_El1");
+    saveInOutputFile();
+
+    orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1"); // new element
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2BisElem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(0.62, 1.5, 0);
+    newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2BisElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
+
+
+    setWing("W9_BWSweep"); // OK but since the two section have a 180 degree rotation the result is strange
+    wing->CreateNewConnectedElementAfter("W9_BWSweep_Sec1_El1");
+    saveInOutputFile();
+
+    orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("W9_BWSweep_Sec1_El1");
+    expectedOrderedUIDS.push_back("W9_BWSweep_Sec1BisElem1");
+    expectedOrderedUIDS.push_back("W9_BWSweep_Sec2_El1");
+    expectedOrderedUIDS.push_back("W9_BWSweep_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(-9.1, 0.34, 0.125);
+    newElement     = GetCElementOf("W9_BWSweep_Sec1BisElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.2));
+
+
+    setWing("W5_RX60");
+    wing->CreateNewConnectedElementAfter("W5_RX60_Sec3_El1");
+    saveInOutputFile();
+
+    orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("W5_RX60_Sec1_El1");
+    expectedOrderedUIDS.push_back("W5_RX60_Sec2_El1");
+    expectedOrderedUIDS.push_back("W5_RX60_Sec3_El1");
+    expectedOrderedUIDS.push_back("W5_RX60_Sec3AfterElem1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(14.3, 1.5, 2.59);
+    newElement     = GetCElementOf("W5_RX60_Sec3AfterElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.2));
+
+
+    setWing("W6_RX60b");
+    wing->CreateNewConnectedElementAfter("W6_RX60b_Sec3_El1");
+    saveInOutputFile();
+
+    orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("W6_RX60b_Sec1_El1");
+    expectedOrderedUIDS.push_back("W6_RX60b_Sec2_El1");
+    expectedOrderedUIDS.push_back("W6_RX60b_Sec3_El1");
+    expectedOrderedUIDS.push_back("W6_RX60b_Sec3AfterElem1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(16.3, 1.5, 2.59);
+    newElement     = GetCElementOf("W6_RX60b_Sec3AfterElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.2));
+
 
 }
