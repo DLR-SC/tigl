@@ -58,7 +58,7 @@ void CCPACSFuselageSegments::Invalidate()
     }
 
     if ( NeedReordering() ){
-        try { // we use a try-catch to not rise two time a exception if the reordering file while reading the cpacs for the first time
+        try { // we use a try-catch to not rise two time a exception if the reordering occurs during the first cpacs parsing
             ReorderSegments();
         } catch (  const CTiglError& err) {
             LOG(ERROR) << err.what();

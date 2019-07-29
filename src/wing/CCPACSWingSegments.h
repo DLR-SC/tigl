@@ -33,6 +33,9 @@ class CTiglRelativelyPositionedComponent;
 class CCPACSWingSegments : public generated::CPACSWingSegments
 {
 public:
+
+    // TODO: support reordering of the segement
+
     // Constructor
     TIGL_EXPORT CCPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
@@ -45,6 +48,10 @@ public:
     TIGL_EXPORT const CCPACSWingSegment& GetSegment(const int index) const;
     TIGL_EXPORT CCPACSWingSegment& GetSegment(const std::string& segmentUID);
     TIGL_EXPORT const CCPACSWingSegment& GetSegment(const std::string& segmentUID) const;
+
+    // Get the segment that get form element uid to element uid, if there is no such segment the function raise an error
+    TIGL_EXPORT CCPACSWingSegment & GetSegmentFromTo(const std::string &fromElemUID, const std::string toElementUID);
+
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
@@ -60,8 +67,29 @@ public:
     TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder() const;
 
 
+    /**
+        * Split the segment into two segments.
+        * The splitter element will be used as the junction between the two segments.
+        *
+        * @remark Only the segment is split we do not care about the position of the splitter.
+        * @param segmentToSplit: the uid of the segment to split
+        * @param splitterElement: the uid of the element to be used to connect the two segments
+        * @return the new created segment
+        */
+    TIGL_EXPORT CCPACSWingSegment& SplitSegment(const std::string& segmentToSplit, const std::string& splitterElement);
+
+
+
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) OVERRIDE;
+
 private:
     CTiglRelativelyPositionedComponent* m_parentVariant;
+
+    void ReorderSegments();
+
+    // check order of segments - each segment must start with the element of the previous segment
+    bool NeedReordering();
+
 };
 
 } // end namespace tigl
