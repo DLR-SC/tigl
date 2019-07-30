@@ -579,6 +579,7 @@ double CCPACSWing::GetReferenceArea()
     }
     else {
        LOG(ERROR) << "CCPACSWing::GetReferenceArea: Unexpected pair of major direction and deep direction.";
+       return 0.0;
     }
 }
 
@@ -1385,7 +1386,10 @@ void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
 }
 
 
-
+std::vector<std::string> CCPACSWing::GetOrderedConnectedElement()
+{
+    return wingHelper->GetElementUIDsInOrder();
+}
 
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,

@@ -24,6 +24,7 @@
 #include "CTiglSectionElement.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSWingSection.h"
+#include "CreateConnectedElementI.h"
 
 ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
                                        ModificatorContainerWidget* modificatorContainerWidget,
@@ -121,6 +122,26 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         }
 
         modificatorContainerWidget->setSectionModificator(cTiglElements);
+    }
+    else if (item->getType() == "sections" ) {
+        std::string bodyUID = item->getParent()->getUid(); // return the fuselage or wing uid
+        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
+        tigl::CreateConnectedElementI * elementI = nullptr;
+
+        if (typePtr.type == &typeid(tigl::CCPACSWing)) {
+            tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing *>(typePtr.ptr);
+            elementI = dynamic_cast<tigl::CreateConnectedElementI* >(&wing);
+        }
+        else if (typePtr.type == &typeid(tigl::CCPACSFuselage)) {
+            tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage *>(typePtr.ptr);
+            elementI = dynamic_cast<tigl::CreateConnectedElementI* >(&fuselage);
+        }
+        else {
+            LOG(ERROR) << "ModificatorManager:: Unexpected sections type!";
+        }
+
+        modificatorContainerWidget->setSectionsModificator(*elementI);
     }
     else {
         modificatorContainerWidget->setNoInterfaceWidget();

@@ -37,6 +37,8 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     // The dialog perform some modifications without that the apply or cancel button is pressed.
     // Therefor, fuselageModificator inform us when a undoCommand is required via a signal.
     connect(ui->fuselagesModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
+    // same for sectionsModificator
+    connect(ui->sectionsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
 }
 
 ModificatorContainerWidget::~ModificatorContainerWidget()
@@ -55,6 +57,7 @@ void ModificatorContainerWidget::hideAllSpecializedWidgets()
     ui->noInterfaceWidget->setVisible(visible);
     ui->elementModificator->setVisible(visible);
     ui->sectionModificator->setVisible(visible);
+    ui->sectionsModificator->setVisible(visible);
     currentModificator = nullptr;
 }
 
@@ -112,6 +115,16 @@ void ModificatorContainerWidget::setSectionModificator(QList<tigl::CTiglSectionE
     ui->applyWidget->setVisible(true);
     currentModificator = ui->sectionModificator;
 }
+
+
+void ModificatorContainerWidget::setSectionsModificator(tigl::CreateConnectedElementI& element)
+{
+    hideAllSpecializedWidgets();
+    ui->sectionsModificator->setCreateConnectedElementI(element);
+    ui->sectionsModificator->setVisible(true);
+    currentModificator = ui->sectionModificator;
+}
+
 
 void ModificatorContainerWidget::setNoInterfaceWidget()
 {
