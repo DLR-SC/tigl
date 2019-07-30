@@ -35,6 +35,7 @@
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurve.h"
 #include "Cache.h"
+#include "CreateConnectedElementI.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -46,7 +47,7 @@ namespace tigl
 {
 class CCPACSConfiguration;
 
-class CCPACSWing : public generated::CPACSWing, public CTiglRelativelyPositionedComponent
+class CCPACSWing : public generated::CPACSWing, public CTiglRelativelyPositionedComponent, public CreateConnectedElementI
 {
 friend class CTiglWingBuilder;
 
@@ -235,7 +236,7 @@ public:
      *
      * @param startElementUID
      */
-    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID);
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID) override;
 
     /**
      * Create a new section, a new element and connect the element to the "startElement".
@@ -245,7 +246,7 @@ public:
      *
      * @param startElementUID
      */
-    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID);
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID) override;
 
     /**
       *Create a new section, a new element and place the new element between the startElement and the endElement.
@@ -253,7 +254,10 @@ public:
      * @param startElementUID
      * @param endElementUID
      */
-    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID);
+    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID) override;
+
+
+    TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement() override;
 
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;

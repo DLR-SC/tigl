@@ -1261,7 +1261,10 @@ void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
 }
 
 
-
+std::vector<std::string> CCPACSWing::GetOrderedConnectedElement()
+{
+    return wingHelper->GetElementUIDsInOrder();
+}
 
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,

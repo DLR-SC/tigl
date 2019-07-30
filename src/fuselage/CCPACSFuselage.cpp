@@ -674,7 +674,7 @@ double CCPACSFuselage::GetLength()
 void CCPACSFuselage::SetLength(double newLength)
 {
     //
-    //              To set the legth, we basicaly follow these steps:
+    //              To set the length, we basicaly follow these steps:
     //
     //              1)  Computation of the transformations needed to perform the desired effect.
     //                  The desired effect can be perform as:
@@ -1031,6 +1031,10 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
     }
 }
 
+std::vector<std::string> CCPACSFuselage::GetOrderedConnectedElement()
+{
+    return fuselageHelper->GetElementUIDsInOrder();
+}
 
 
 

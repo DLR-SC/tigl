@@ -73,6 +73,7 @@ public:
     void setFuselagesModificator(tigl::CCPACSFuselages& fuselages, QStringList profilesUID);
     void setElementModificator(tigl::CTiglSectionElement& element);
     void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
+    void setSectionsModificator(tigl::CreateConnectedElementI& conntedElementI);
 
     void setNoInterfaceWidget();
 
