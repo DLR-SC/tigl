@@ -155,9 +155,9 @@ void CCPACSWing::InvalidateImpl(const boost::optional<std::string>& source) cons
     // Invalidate component segments, since these use the wing loft geometry
     if (m_componentSegments) {
         m_componentSegments->Invalidate(GetUID());
+    }
 
     wingHelper.clear();
-}
 }
 
 // Cleanup routine
