@@ -97,12 +97,15 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
     , wingHelper(*this, &CCPACSWing::SetWingHelper)
 {
-    if (parent->IsParent<CCPACSAircraftModel>())
+    if (parent->IsParent<CCPACSAircraftModel>()) {
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
-    else if (parent->IsParent<CCPACSRotorcraftModel>())
+    }
+    else if (parent->IsParent<CCPACSRotorcraftModel>()) {
         configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
-    else
+    }
+    else {
         throw CTiglError("Unknown parent");
+    }
 
     Cleanup();
 }
@@ -132,10 +135,12 @@ void CCPACSWing::Invalidate()
     loft.clear();
     guideCurves.clear();
     m_segments.Invalidate();
-    if (m_positionings)
+    if (m_positionings) {
         m_positionings->Invalidate();
-    if (m_componentSegments)
+    }
+    if (m_componentSegments) {
         m_componentSegments->Invalidate();
+    }
     wingHelper.clear();
 }
 
@@ -203,7 +208,8 @@ void CCPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::stri
     Update();
 }
 
-std::string CCPACSWing::GetDefaultedUID() const {
+std::string CCPACSWing::GetDefaultedUID() const
+{
     return generated::CPACSWing::GetUID();
 }
 
@@ -266,10 +272,13 @@ const CCPACSWingSegment& CCPACSWing::GetSegment(std::string uid) const
 // Get componentSegment count
 int CCPACSWing::GetComponentSegmentCount() const
 {
-    if (m_componentSegments)
+    if (m_componentSegments) {
         return m_componentSegments->GetComponentSegmentCount();
-    else
+    }
+    else {
         return 0;
+
+    }
 }
 
 // Returns the segment for a given index
@@ -278,7 +287,8 @@ CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const int index)
     return m_componentSegments->GetComponentSegment(index);
 }
 
-const CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const int index) const {
+const CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const int index) const
+{
     return m_componentSegments->GetComponentSegment(index);
 }
 
