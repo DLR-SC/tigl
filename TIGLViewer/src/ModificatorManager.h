@@ -67,6 +67,7 @@ public:
 protected:
 
     QStringList getAvailableFuselageProfileUIDs();  // we be managed by the profiles DB managed in future
+    QStringList getAvailableWingProfileUIDs();
 
     inline bool configurationIsSet()
     {

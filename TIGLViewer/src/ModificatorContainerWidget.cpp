@@ -39,6 +39,8 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     connect(ui->fuselagesModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
     // same for sectionsModificator
     connect(ui->sectionsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
+    connect(ui->wingsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
+
 }
 
 ModificatorContainerWidget::~ModificatorContainerWidget()
@@ -51,6 +53,7 @@ void ModificatorContainerWidget::hideAllSpecializedWidgets()
     bool visible = false;
     ui->transformationModificator->setVisible(visible);
     ui->wingModificator->setVisible(visible);
+    ui->wingsModificator->setVisible(visible);
     ui->fuselageModificator->setVisible(visible);
     ui->fuselagesModificator->setVisible(visible);
     ui->applyWidget->setVisible(visible);
@@ -77,6 +80,16 @@ void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
     ui->wingModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->wingModificator;
+}
+
+
+void ModificatorContainerWidget::setWingsModificator(tigl::CCPACSWings &wings, QStringList profilesUID)
+{
+    hideAllSpecializedWidgets();
+    ui->wingsModificator->setWings(wings, profilesUID);
+    ui->wingsModificator->setVisible(true);
+    ui->applyWidget->setVisible(false);
+    currentModificator = ui->wingsModificator;
 }
 
 void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fuselage)

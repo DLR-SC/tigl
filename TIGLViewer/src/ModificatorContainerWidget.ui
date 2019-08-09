@@ -33,6 +33,9 @@
     <widget class="ModificatorFuselagesWidget" name="fuselagesModificator" native="true"/>
    </item>
    <item>
+    <widget class="ModificatorWingsWidget" name="wingsModificator" native="true"/>
+   </item>
+   <item>
     <widget class="ModificatorSectionWidget" name="sectionModificator" native="true"/>
    </item>
    <item>
@@ -142,6 +145,12 @@
    <class>ModificatorSectionsWidget</class>
    <extends>QWidget</extends>
    <header>modificators/ModificatorSectionsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorWingsWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/ModificatorWingsWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

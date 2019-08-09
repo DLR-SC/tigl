@@ -16,31 +16,34 @@
  * limitations under the License.
  */
 
-#ifndef NEWFUSELAGEDIALOG_H
-#define NEWFUSELAGEDIALOG_H
+#include "NewWingDialog.h"
+#include "ui_NewWingDialog.h"
 
-#include <QDialog>
-#include <QString>
-
-namespace Ui
+NewWingDialog::NewWingDialog(QStringList profilesUID, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::NewWingDialog)
 {
-class NewFuselageDialog;
+    ui->setupUi(this);
+    ui->airfoilComboBox->addItems(profilesUID);
+    ui->uidLineEdit->setText("generatedWing");
 }
 
-class NewFuselageDialog : public QDialog
+NewWingDialog::~NewWingDialog()
 {
-    Q_OBJECT
+    delete ui;
+}
 
-public:
-    explicit NewFuselageDialog(QStringList profileUIDs, QWidget* parent = nullptr );
-    ~NewFuselageDialog();
+int NewWingDialog::getNbSection() const
+{
+    return ui->nbSectionSpinBox->value();
+}
 
-    int getNbSection() const;
-    QString getUID() const;
-    QString getProfileUID() const;
+QString NewWingDialog::getUID() const
+{
+    return ui->uidLineEdit->text();
+}
 
-private:
-    Ui::NewFuselageDialog* ui;
-};
-
-#endif // NEWFUSELAGEDIALOG_H
+QString NewWingDialog::getProfileUID() const
+{
+    return ui->airfoilComboBox->currentText();
+}

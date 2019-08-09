@@ -109,6 +109,8 @@ set(tv_src
   src/modificators/ModificatorWingWidget.cpp
   src/modificators/SymmetryComboBoxWidget.cpp
   src/modificators/ModificatorSectionsWidget.cpp
+  src/modificators/ModificatorWingsWidget.cpp
+  src/modificators/NewWingDialog.cpp
   src/ModificatorManager.cpp
   src/CPACSAbstractModel.cpp
   src/CPACSTreeItem.cpp
@@ -176,6 +178,8 @@ set(tv_hdr
   src/modificators/ModificatorWidget.h
   src/modificators/ModificatorElementWidget.h
   src/modificators/ModificatorSectionWidget.h
+  src/modificators/ModificatorWingsWidget.h
+  src/modificators/NewWingDialog.h
   src/modificators/ModificatorFuselageWidget.h
   src/modificators/ModificatorTransformationWidget.h
   src/modificators/ModificatorWingWidget.h
@@ -223,6 +227,8 @@ set(tv_ui
   src/CPACSTreeWidget.ui
   src/TIGLViewerNewFileDialog.ui
   src/modificators/ModificatorSectionWidget.ui
+  src/modificators/ModificatorWingsWidget.ui
+  src/modificators/NewWingDialog.ui
 )
 
 # compile icons

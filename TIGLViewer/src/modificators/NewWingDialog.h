@@ -16,31 +16,32 @@
  * limitations under the License.
  */
 
-#ifndef NEWFUSELAGEDIALOG_H
-#define NEWFUSELAGEDIALOG_H
+#ifndef NEWWINGDIALOG_H
+#define NEWWINGDIALOG_H
 
 #include <QDialog>
-#include <QString>
 
 namespace Ui
 {
-class NewFuselageDialog;
+class NewWingDialog;
 }
 
-class NewFuselageDialog : public QDialog
+class NewWingDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit NewFuselageDialog(QStringList profileUIDs, QWidget* parent = nullptr );
-    ~NewFuselageDialog();
+    explicit NewWingDialog(QStringList profileUIDs, QWidget *parent = nullptr);
+    ~NewWingDialog();
+
 
     int getNbSection() const;
     QString getUID() const;
     QString getProfileUID() const;
 
+
 private:
-    Ui::NewFuselageDialog* ui;
+    Ui::NewWingDialog *ui;
 };
 
-#endif // NEWFUSELAGEDIALOG_H
+#endif // NEWWINGDIALOG_H
