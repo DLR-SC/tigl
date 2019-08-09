@@ -120,6 +120,8 @@ set(tv_src
 	modificators/NewConnectedElementDialog.cpp
 	modificators/SymmetryComboBoxWidget.cpp
 	modificators/ModificatorSectionsWidget.cpp
+	modificators/ModificatorWingsWidget.cpp
+	modificators/NewWingDialog.cpp
 	ModificatorManager.cpp
 	CPACSAbstractModel.cpp
 	CPACSTreeItem.cpp
@@ -195,6 +197,8 @@ set(tv_hdr_qobj
 	modificators/NewConnectedElementDialog.h
 	modificators/SymmetryComboBoxWidget.h
 	modificators/ModificatorSectionsWidget.h
+	modificators/ModificatorWingsWidget.h
+	modificators/NewWingDialog.h
 	ModificatorManager.h
 	CPACSAbstractModel.h
 	ModificatorContainerWidget.h
@@ -232,7 +236,8 @@ set(tv_ui_comp
 		src/TIGLViewerNewFileDialog.ui
 		src/modificators/SymmetryComboBoxWidget.ui
 		src/modificators/ModificatorSectionsWidget.ui
-
+		src/modificators/ModificatorWingsWidget.ui
+		src/modificators/NewWingDialog.ui
 
 		)
 

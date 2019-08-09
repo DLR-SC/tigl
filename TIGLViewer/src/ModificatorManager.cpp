@@ -83,6 +83,10 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
         modificatorContainerWidget->setWingModificator(wing);
     }
+    else if (item->getType() == "wings") {
+        tigl::CCPACSWings& wings = doc->GetConfiguration().GetWings();
+        modificatorContainerWidget->setWingsModificator(wings, getAvailableWingProfileUIDs());
+    }
     else if (item->getType() == "element") {
         // we need first to determine if this is a section element or a fuselage element
         // the we can retrieve the CTiglElement interface that manage the both case.
@@ -185,6 +189,25 @@ QStringList ModificatorManager::getAvailableFuselageProfileUIDs()
     }
 
     boost::optional<tigl::CCPACSFuselageProfiles&> profiles = doc->GetConfiguration().GetFuselageProfiles();
+
+    if (profiles) {
+        for (int i = 1; i <= profiles.value().GetProfileCount(); i++) {
+            profileUIDs.push_back(profiles.value().GetProfile(i).GetUID().c_str());
+        }
+    }
+    return profileUIDs;
+}
+
+
+QStringList ModificatorManager::getAvailableWingProfileUIDs()
+{
+    QStringList profileUIDs;
+
+    if (!configurationIsSet()) {
+        profileUIDs;
+    }
+
+    boost::optional<tigl::CCPACSWingProfiles&> profiles = doc->GetConfiguration().GetWingProfiles();
 
     if (profiles) {
         for (int i = 1; i <= profiles.value().GetProfileCount(); i++) {

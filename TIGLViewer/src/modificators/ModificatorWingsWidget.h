@@ -16,31 +16,39 @@
  * limitations under the License.
  */
 
-#ifndef NEWFUSELAGEDIALOG_H
-#define NEWFUSELAGEDIALOG_H
+#ifndef MODIFICATORWINGSWIDGET_H
+#define MODIFICATORWINGSWIDGET_H
 
-#include <QDialog>
-#include <QString>
+#include <QWidget>
+#include "CCPACSWings.h"
+#include "ModificatorWidget.h"
 
 namespace Ui
 {
-class NewFuselageDialog;
+class ModificatorWingsWidget;
 }
 
-class NewFuselageDialog : public QDialog
+class ModificatorWingsWidget : public ModificatorWidget
 {
     Q_OBJECT
 
-public:
-    explicit NewFuselageDialog(QStringList profileUIDs, QWidget* parent = nullptr );
-    ~NewFuselageDialog();
+signals:
+    void undoCommandRequired();
 
-    int getNbSection() const;
-    QString getUID() const;
-    QString getProfileUID() const;
+public slots:
+
+    void execNewWingDialog();
+
+public:
+    explicit ModificatorWingsWidget(QWidget *parent = nullptr);
+    ~ModificatorWingsWidget();
+
+    void setWings(tigl::CCPACSWings& wings, QStringList profilesUID);
 
 private:
-    Ui::NewFuselageDialog* ui;
+    Ui::ModificatorWingsWidget *ui;
+    tigl::CCPACSWings* wings;
+    QStringList profilesUID;
 };
 
-#endif // NEWFUSELAGEDIALOG_H
+#endif // MODIFICATORWINGSWIDGET_H

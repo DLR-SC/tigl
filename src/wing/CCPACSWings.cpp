@@ -25,6 +25,10 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSAircraftModel.h"
 
+#include "CCPACSWingSection.h"
+#include "CCPACSWingSectionElement.h"
+#include "CCPACSWingSegment.h"
+
 namespace tigl
 {
 
@@ -96,6 +100,75 @@ bool CCPACSWings::HasWing(const std::string & uid) const
         if (m_wings[i]->GetUID() == uid)
             return true;
     return false;
+}
+
+CCPACSWing& CCPACSWings::CreateWing(const std::string& wingUID, int numberOfSection, const std::string& airfoilUID)
+{
+
+    CTiglUIDManager& uidManager = GetUIDManager();
+
+    // check if the wing uid is valid
+    bool uidIsAlreadyPresent = uidManager.IsUIDRegistered(wingUID);
+    if (uidIsAlreadyPresent) {
+        throw CTiglError("Impossible to create a wing with the uid \"" + wingUID +
+                         "\". This uid is already present in the file. Choose another uid.");
+    }
+
+    // check if the profile uid is valid
+    try {
+        uidManager.ResolveObject<CCPACSWingProfile>(airfoilUID);
+    }
+    catch (const CTiglError& e) {
+        throw CTiglError("Impossible to create the wing with the profile uid \"" +
+                          wingUID +
+                         "\". This uid seems not to be present or to not reference a profile. Make sure to use a "
+                         "wing profile UID  (aka airfoil) is present in the file.");
+    }
+
+    CCPACSWing& wing = AddWing();
+    wing.SetUID(wingUID);
+    wing.SetName(wingUID);
+    wing.GetTransformation().Init(uidManager.MakeUIDUnique(wingUID + "Transformation"));
+    boost::optional<std::string> description("Wing generated from the function CCPACSWings::CreateWing");
+    wing.SetDescription(description);
+
+    // Create section and element
+    std::string tempSectionUID;
+    std::string tempElementUID;
+    CTiglTransformation tempElementTransformation;
+    tempElementTransformation.SetIdentity();
+    for (int i = 1; i <= numberOfSection; i++) {
+
+        CCPACSWingSection& section = wing.GetSections().AddSection();
+        tempSectionUID                   = uidManager.MakeUIDUnique(wingUID + "Sec" + std::to_string(i));
+        section.SetUID(tempSectionUID);
+        section.SetName(tempSectionUID);
+        section.GetTransformation().Init(uidManager.MakeUIDUnique(tempSectionUID + "Tr"));
+
+        CCPACSWingSectionElement& element = section.GetElements().AddElement();
+        tempElementUID                          = uidManager.MakeUIDUnique(tempSectionUID + "Elem1");
+        element.SetUID(tempElementUID);
+        element.SetName(tempElementUID);
+        element.GetTransformation().Init(uidManager.MakeUIDUnique(tempElementUID + "Tr"));
+        element.GetTransformation().setTransformationMatrix(tempElementTransformation);
+        element.SetAirfoilUID(airfoilUID);
+
+        // increment the position of the element
+        tempElementTransformation.AddTranslation(0, 1, 0);
+    }
+
+    // Create segment
+    for (int i = 1; i < wing.GetSections().GetSectionCount(); i++) {
+        CCPACSWingSectionElement& fromElement = wing.GetSection(i).GetSectionElement(1);
+        CCPACSWingSectionElement& toElement   = wing.GetSection(i + 1).GetSectionElement(1);
+        CCPACSWingSegment& segment            = wing.GetSegments().AddSegment();
+        std::string segmentUID                    = uidManager.MakeUIDUnique(wingUID + "Seg" + std::to_string(i));
+        segment.SetUID(segmentUID);
+        segment.SetName(segmentUID);
+        segment.SetFromElementUID(fromElement.GetUID());
+        segment.SetToElementUID(toElement.GetUID());
+    }
+    return wing;
 }
 
 } // end namespace tigl

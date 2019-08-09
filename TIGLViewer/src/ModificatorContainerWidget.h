@@ -26,6 +26,7 @@
 #include "modificators/ModificatorTransformationWidget.h"
 #include "CCPACSFuselages.h"
 #include "CPACSWing.h"
+#include "CCPACSWings.h"
 #include "CPACSTransformation.h"
 #include "CTiglSectionElement.h"
 
@@ -69,6 +70,7 @@ public:
 
     void setTransformationModificator(tigl::CCPACSTransformation& transformation);
     void setWingModificator(tigl::CCPACSWing& wing);
+    void setWingsModificator(tigl::CCPACSWings& wings, QStringList profilesUID);
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
     void setFuselagesModificator(tigl::CCPACSFuselages& fuselages, QStringList profilesUID);
     void setElementModificator(tigl::CTiglSectionElement& element);
