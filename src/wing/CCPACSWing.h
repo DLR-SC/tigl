@@ -257,6 +257,15 @@ public:
     TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID) override;
 
 
+    /**
+     * Delete the connected element.
+     * This mean that the section containing the element is delete and the segment associated with this element
+     * are either deleted or updated.
+     * @param ElementUID
+     */
+    TIGL_EXPORT void DeleteConnectedElement(std::string ElementUID) override;
+
+
     TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement() override;
 
 protected:
