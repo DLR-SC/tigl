@@ -36,6 +36,7 @@ signals:
 
 public slots:
     void execNewConnectedElementDialog();
+    void execDeleteConnectedElementDialog();
 
 public:
     explicit ModificatorSectionsWidget(QWidget* parent = nullptr);
