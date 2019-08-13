@@ -20,6 +20,7 @@
 #include "ui_ModificatorFuselagesWidget.h"
 #include "modificators/NewFuselageDialog.h"
 #include "TIGLViewerErrorDialog.h"
+#include "DeleteDialog.h"
 
 ModificatorFuselagesWidget::ModificatorFuselagesWidget(QWidget* parent)
     : ModificatorWidget(parent)
@@ -29,6 +30,7 @@ ModificatorFuselagesWidget::ModificatorFuselagesWidget(QWidget* parent)
     fuselages = nullptr;
 
     connect(ui->addNewFuselageBtn, SIGNAL(pressed()), this, SLOT(execNewFuselageDialog()));
+    connect(ui->deleteFuselageBtn, SIGNAL(pressed()), this, SLOT(execDeleteFuselageDialog()));
 }
 
 ModificatorFuselagesWidget::~ModificatorFuselagesWidget()
@@ -56,6 +58,38 @@ void ModificatorFuselagesWidget::execNewFuselageDialog()
             TIGLViewerErrorDialog errDialog(this);
             errDialog.setMessage(
                 QString("<b>%1</b><br /><br />%2").arg("Fail to create the fuselage ").arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+            return;
+        }
+        emit undoCommandRequired();
+    }
+}
+
+
+void ModificatorFuselagesWidget::execDeleteFuselageDialog()
+{
+    if (fuselages == nullptr) {
+        LOG(ERROR) << "ModificatorFuselagesWidget::execDeleteFuselageDialog fuselages is not set!";
+        return;
+    }
+
+    QStringList wingUIDs;
+    for (int i = 1; i <= fuselages->GetFuselageCount(); i++) {
+        wingUIDs.push_back(fuselages->GetFuselage(i).GetUID().c_str());
+    }
+
+    DeleteDialog deleteDialog(wingUIDs);
+    if (deleteDialog.exec() == QDialog::Accepted) {
+        QString uid = deleteDialog.getUIDToDelete();
+        try {
+            tigl::CCPACSFuselage& fuselage = fuselages->GetFuselage(uid.toStdString());
+            fuselages->RemoveFuselage(fuselage);
+        }
+        catch (const tigl::CTiglError& err) {
+            TIGLViewerErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the fuselage ").arg(err.what()));
             errDialog.setWindowTitle("Error");
             errDialog.setDetailsText(err.what());
             errDialog.exec();

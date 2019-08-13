@@ -39,6 +39,7 @@ signals:
 public slots:
 
     void execNewFuselageDialog();
+    void execDeleteFuselageDialog();
 
 public:
     explicit ModificatorFuselagesWidget(QWidget* parent = nullptr);
