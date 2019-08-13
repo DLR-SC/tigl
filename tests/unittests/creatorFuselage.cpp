@@ -529,3 +529,56 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 
 
 }
+
+
+TEST_F(creatorFuselage, deleteSection_multipleFuselgaesModel)
+{
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage");
+    std::vector<std::string>  orderedUIDS;
+    std::vector<std::string>  expectedOrderedUIDS;
+    int segmentsCount;
+
+
+    segmentsCount = fuselage->GetSegmentCount();
+    fuselage->DeleteConnectedElement("D150_Fuselage_1Section2IDElement1");
+    EXPECT_EQ(segmentsCount-1, fuselage->GetSegmentCount());
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    saveInOutputFile();
+
+
+    setVariables("TestData/multiple_fuselages.xml", "FuselageShearingSection");
+
+    segmentsCount = fuselage->GetSegmentCount();
+    fuselage->DeleteConnectedElement("FuselageShearingSection_1Section1IDElement1");
+    EXPECT_EQ(segmentsCount-1, fuselage->GetSegmentCount());
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("FuselageShearingSection_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("FuselageShearingSection_1Section3IDElement1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    saveInOutputFile();
+
+
+    setVariables("TestData/multiple_fuselages.xml", "FuselageShearingSection");
+
+    segmentsCount = fuselage->GetSegmentCount();
+    fuselage->DeleteConnectedElement("FuselageShearingSection_1Section3IDElement1");
+    EXPECT_EQ(segmentsCount-1, fuselage->GetSegmentCount());
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("FuselageShearingSection_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("FuselageShearingSection_1Section2IDElement1");
+    for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    saveInOutputFile();
+
+}
