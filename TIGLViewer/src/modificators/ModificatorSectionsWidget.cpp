@@ -23,6 +23,7 @@
 #include "CTiglLogging.h"
 #include "CTiglError.h"
 #include "TIGLViewerErrorDialog.h"
+#include "DeleteDialog.h"
 
 ModificatorSectionsWidget::ModificatorSectionsWidget(QWidget* parent)
     : QWidget(parent)
@@ -31,6 +32,7 @@ ModificatorSectionsWidget::ModificatorSectionsWidget(QWidget* parent)
     ui->setupUi(this);
     createConnectedElementI = nullptr;
     connect(ui->addConnectedElementBtn, SIGNAL(pressed()), this, SLOT(execNewConnectedElementDialog()));
+    connect(ui->deleteConnectedElementBtn, SIGNAL(pressed()), this, SLOT(execDeleteConnectedElementDialog()));
 }
 
 ModificatorSectionsWidget::~ModificatorSectionsWidget()
@@ -79,4 +81,38 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
         }
         emit undoCommandRequired();
     }
+}
+
+
+void ModificatorSectionsWidget::execDeleteConnectedElementDialog()
+{
+
+    if (createConnectedElementI == nullptr) {
+        LOG(ERROR) << "ModificatorWingsWidget::execDeleteWingDialog: wings is not set!";
+        return;
+    }
+
+    std::vector<std::string> elementUIDs = createConnectedElementI->GetOrderedConnectedElement();
+    QStringList elementUIDsQList;
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        elementUIDsQList.push_back(elementUIDs.at(i).c_str());
+    }
+
+    DeleteDialog deleteDialog(elementUIDsQList);
+    if (deleteDialog.exec() == QDialog::Accepted) {
+        QString uid = deleteDialog.getUIDToDelete();
+        try {
+            createConnectedElementI->DeleteConnectedElement(uid.toStdString());
+        }
+        catch (const tigl::CTiglError& err) {
+            TIGLViewerErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the section (aka connected element)").arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+            return;
+        }
+        emit undoCommandRequired();
+    }
+
 }
