@@ -122,6 +122,7 @@ set(tv_src
 	modificators/ModificatorSectionsWidget.cpp
 	modificators/ModificatorWingsWidget.cpp
 	modificators/NewWingDialog.cpp
+	modificators/DeleteDialog.cpp
 	ModificatorManager.cpp
 	CPACSAbstractModel.cpp
 	CPACSTreeItem.cpp
@@ -199,6 +200,7 @@ set(tv_hdr_qobj
 	modificators/ModificatorSectionsWidget.h
 	modificators/ModificatorWingsWidget.h
 	modificators/NewWingDialog.h
+	modificators/DeleteDialog.h
 	ModificatorManager.h
 	CPACSAbstractModel.h
 	ModificatorContainerWidget.h
@@ -238,7 +240,7 @@ set(tv_ui_comp
 		src/modificators/ModificatorSectionsWidget.ui
 		src/modificators/ModificatorWingsWidget.ui
 		src/modificators/NewWingDialog.ui
-
+		src/modificators/DeleteDialog.ui
 		)
 
 foreach ( _fname ${tv_src})

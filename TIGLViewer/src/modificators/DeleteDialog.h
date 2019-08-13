@@ -16,40 +16,27 @@
  * limitations under the License.
  */
 
-#ifndef MODIFICATORWINGSWIDGET_H
-#define MODIFICATORWINGSWIDGET_H
+#ifndef DELETEDIALOG_H
+#define DELETEDIALOG_H
 
-#include <QWidget>
-#include "CCPACSWings.h"
-#include "ModificatorWidget.h"
+#include <QDialog>
 
 namespace Ui
 {
-class ModificatorWingsWidget;
+class DeleteDialog;
 }
 
-class ModificatorWingsWidget : public ModificatorWidget
+class DeleteDialog : public QDialog
 {
     Q_OBJECT
 
-signals:
-    void undoCommandRequired();
-
-public slots:
-
-    void execNewWingDialog();
-    void execDeleteWingDialog();
-
 public:
-    explicit ModificatorWingsWidget(QWidget *parent = nullptr);
-    ~ModificatorWingsWidget();
+    explicit DeleteDialog(QStringList wingUIDs, QWidget *parent = nullptr);
+    ~DeleteDialog();
 
-    void setWings(tigl::CCPACSWings& wings, QStringList profileUIDs);
-
+    QString getUIDToDelete();
 private:
-    Ui::ModificatorWingsWidget *ui;
-    tigl::CCPACSWings* wings;
-    QStringList profileUIDs;
+    Ui::DeleteDialog *ui;
 };
 
-#endif // MODIFICATORWINGSWIDGET_H
+#endif // DELETEDIALOG_H
