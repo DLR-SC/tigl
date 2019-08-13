@@ -193,6 +193,8 @@ public:
     TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID) override;
 
 
+    TIGL_EXPORT void DeleteConnectedElement(std::string elementUID) override;
+
     TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement() override;
 
 protected:

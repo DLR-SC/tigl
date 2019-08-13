@@ -1037,5 +1037,43 @@ std::vector<std::string> CCPACSFuselage::GetOrderedConnectedElement()
 }
 
 
+void CCPACSFuselage::DeleteConnectedElement(std::string elementUID)
+{
+    std::vector<std::string> orderedUIDs = GetOrderedConnectedElement();
+    if (!ListFunctions::Contains(orderedUIDs, elementUID)) {
+        throw CTiglError("Invalid uid, the given element is not a connected element ");
+    }
+    // section to delete
+    CCPACSFuselageSection& sec = GetSections().GetSection(fuselageHelper->GetCTiglElementOfFuselage(elementUID)->GetSectionUID());
+
+    std::vector<std::string> previouss = ListFunctions::GetElementsBefore(orderedUIDs, elementUID);
+    std::vector<std::string> nexts = ListFunctions::GetElementsAfter(orderedUIDs, elementUID);
+
+    if (previouss.size() > 0 && nexts.size() == 0) { // section is the last one
+        std::string previous = previouss[previouss.size() - 1 ];
+        CCPACSFuselageSegment& seg = GetSegments().GetSegmentFromTo(previous, elementUID);
+        GetSegments().RemoveSegment(seg);
+        GetSections().RemoveSection(sec);
+    }
+    else if (previouss.size() == 0 && nexts.size() > 0) { // section is the first one
+        std::string next =  nexts.at(0);
+        CCPACSFuselageSegment& seg = GetSegments().GetSegmentFromTo(elementUID, next);
+        GetSegments().RemoveSegment(seg);
+        GetSections().RemoveSection(sec);
+    }
+    else if (previouss.size() > 0 && nexts.size() > 0) { // section is in between two other section
+       std::string previous = previouss[previouss.size() - 1 ];
+       std::string next =  nexts.at(0);
+       CCPACSFuselageSegment& seg1 = GetSegments().GetSegmentFromTo(previous, elementUID);
+       CCPACSFuselageSegment& seg2 = GetSegments().GetSegmentFromTo(elementUID, next);
+       GetSegments().RemoveSegment(seg2);
+       seg1.SetToElementUID(next);
+       GetSections().RemoveSection(sec);
+    } else {
+       throw CTiglError("Unexpected case: fuselage structure seems unusual.");
+    }
+    Invalidate();
+}
+
 
 } // end namespace tigl
