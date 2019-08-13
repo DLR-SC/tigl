@@ -20,6 +20,8 @@
 #include "ui_ModificatorWingsWidget.h"
 #include "TIGLViewerErrorDialog.h"
 #include "NewWingDialog.h"
+#include "DeleteDialog.h"
+#include "CCPACSWing.h"
 
 ModificatorWingsWidget::ModificatorWingsWidget(QWidget* parent)
     : ModificatorWidget(parent)
@@ -29,6 +31,7 @@ ModificatorWingsWidget::ModificatorWingsWidget(QWidget* parent)
     wings = nullptr;
 
     connect(ui->addNewWingBtn, SIGNAL(pressed()), this, SLOT(execNewWingDialog()));
+    connect(ui->deleteWingBtn, SIGNAL(pressed()), this, SLOT(execDeleteWingDialog()));
 }
 
 ModificatorWingsWidget::~ModificatorWingsWidget()
@@ -36,15 +39,15 @@ ModificatorWingsWidget::~ModificatorWingsWidget()
     delete ui;
 }
 
-void ModificatorWingsWidget::setWings(tigl::CCPACSWings& wings, QStringList profilesUID)
+void ModificatorWingsWidget::setWings(tigl::CCPACSWings& wings, QStringList profileUIDs)
 {
-    this->wings       = &wings;
-    this->profilesUID = profilesUID;
+    this->wings = &wings;
+    this->profileUIDs = profileUIDs;
 }
 
 void ModificatorWingsWidget::execNewWingDialog()
 {
-    NewWingDialog wingDialog(profilesUID, this);
+    NewWingDialog wingDialog(profileUIDs, this);
     if (wings != nullptr && wingDialog.exec() == QDialog::Accepted) {
         int nbSection       = wingDialog.getNbSection();
         QString uid         = wingDialog.getUID();
@@ -55,6 +58,37 @@ void ModificatorWingsWidget::execNewWingDialog()
         catch (const tigl::CTiglError& err) {
             TIGLViewerErrorDialog errDialog(this);
             errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+            return;
+        }
+        emit undoCommandRequired();
+    }
+}
+
+void ModificatorWingsWidget::execDeleteWingDialog()
+{
+    if (wings == nullptr) {
+        LOG(ERROR) << "ModificatorWingsWidget::execDeleteWingDialog: wings is not set!";
+        return;
+    }
+
+    QStringList wingUIDs;
+    for (int i = 1; i <= wings->GetWingCount(); i++) {
+        wingUIDs.push_back(wings->GetWing(i).GetUID().c_str());
+    }
+
+    DeleteDialog deleteDialog(wingUIDs);
+    if (deleteDialog.exec() == QDialog::Accepted) {
+        QString uid = deleteDialog.getUIDToDelete();
+        try {
+            tigl::CCPACSWing& wing = wings->GetWing(uid.toStdString());
+            wings->RemoveWing(wing);
+        }
+        catch (const tigl::CTiglError& err) {
+            TIGLViewerErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the wing ").arg(err.what()));
             errDialog.setWindowTitle("Error");
             errDialog.setDetailsText(err.what());
             errDialog.exec();
