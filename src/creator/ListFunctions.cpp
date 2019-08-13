@@ -74,6 +74,28 @@ std::vector<std::string> tigl::ListFunctions::GetElementsAfter(const std::vector
     return elementsAfter;
 }
 
+
+
+std::vector<std::string> tigl::ListFunctions::GetElementsBefore(const std::vector<std::string> &list,
+                                                                const std::string &el)
+{
+    std::vector<std::string> elementsBefore;
+
+    bool before = true;
+
+    std::vector<std::string>::iterator it;
+    for (int i = 0; i < list.size(); i++) {
+        if (list[i] == el) {
+            before = false;
+        }
+        if (before) {
+            elementsBefore.push_back(list[i]);
+        }
+    }
+    return elementsBefore;
+}
+
+
 bool tigl::ListFunctions::Contains(const std::vector<std::string>& graph, const std::string& el)
 {
 

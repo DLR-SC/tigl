@@ -28,7 +28,7 @@ namespace tigl
 {
 
 /**
-* This class defines the interface (I) of a cpacs object that is capable to create a connected element.
+* This class defines the interface (I) of a cpacs object that is capable to create or delete a connected element.
 * By connected element we mean a element that is correctly connected to another element by a segment.
 * For the moment this interface is implemented by the the wing and fuselage classes.
 *
@@ -72,6 +72,11 @@ public:
      * @return
      */
     TIGL_EXPORT virtual  std::vector<std::string> GetOrderedConnectedElement() = 0;
+
+    /**
+     * Delete the connected element tacking care of removing the section and removing or updating the segments.
+     */
+    TIGL_EXPORT virtual  void DeleteConnectedElement(std::string ElementUID) = 0 ;
 
 };
 }

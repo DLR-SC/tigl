@@ -875,3 +875,62 @@ TEST_F(creatorWing, MultipleWings_CreateSections)
 
 
 }
+
+TEST_F(creatorWing, D250_DeleteSection )
+{
+    setVariables("TestData/CPACS_30_D250_10.xml", "D250_wing");
+    std::vector<std::string> expectedNewUidsOrder;
+    std::vector<std::string> orderedUids;
+    int nbSegements;
+
+    //TODO: check the behavior with the connected component and guide line 
+    
+    nbSegements = wing->GetSegments().GetSegmentCount();
+    wing->DeleteConnectedElement("wing_innerKink_Elem1");
+    EXPECT_EQ(wing->GetSegments().GetSegmentCount(), nbSegements - 1);
+    orderedUids = wing->GetOrderedConnectedElement();
+    expectedNewUidsOrder.clear();
+    expectedNewUidsOrder.push_back("wing_midPlane_Elem1");
+    expectedNewUidsOrder.push_back("wing_root_Elem1");
+    expectedNewUidsOrder.push_back("wing_midKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_outerKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // doble element for this section
+    expectedNewUidsOrder.push_back("wing_winglet_tip_Elem1");
+    for (int i = 0; i < expectedNewUidsOrder.size(); i++) {
+        EXPECT_EQ(expectedNewUidsOrder.at(i), orderedUids.at(i) );
+    }
+    saveInOutputFile();
+
+    nbSegements = wing->GetSegments().GetSegmentCount();
+    wing->DeleteConnectedElement("wing_midPlane_Elem1");
+    EXPECT_EQ(wing->GetSegments().GetSegmentCount(), nbSegements - 1);
+    orderedUids = wing->GetOrderedConnectedElement();
+    expectedNewUidsOrder.clear();
+    expectedNewUidsOrder.push_back("wing_root_Elem1");
+    expectedNewUidsOrder.push_back("wing_midKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_outerKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // doble element for this section
+    expectedNewUidsOrder.push_back("wing_winglet_tip_Elem1");
+    for (int i = 0; i < expectedNewUidsOrder.size(); i++) {
+        EXPECT_EQ(expectedNewUidsOrder.at(i), orderedUids.at(i) );
+    }
+    saveInOutputFile();
+
+    nbSegements = wing->GetSegments().GetSegmentCount();
+    wing->DeleteConnectedElement("wing_winglet_tip_Elem1");
+    EXPECT_EQ(wing->GetSegments().GetSegmentCount(), nbSegements - 1);
+    orderedUids = wing->GetOrderedConnectedElement();
+    expectedNewUidsOrder.clear();
+    expectedNewUidsOrder.push_back("wing_root_Elem1");
+    expectedNewUidsOrder.push_back("wing_midKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_outerKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // doble element for this section
+    for (int i = 0; i < expectedNewUidsOrder.size(); i++) {
+        EXPECT_EQ(expectedNewUidsOrder.at(i), orderedUids.at(i) );
+    }
+    saveInOutputFile();
+
+}

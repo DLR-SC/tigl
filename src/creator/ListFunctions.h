@@ -39,6 +39,10 @@ public:
     //Return the elements after the element "el" without the element "el" itself.
     static std::vector<std::string> GetElementsAfter(const std::vector<std::string>& list, const std::string& el);
 
+
+    //Return the elements before the element "el" without the element "el" itself.
+    static std::vector<std::string> GetElementsBefore(const std::vector<std::string>& list, const std::string& el);
+
     // Return true if the element is contains in the list and false otherwise.
     static bool Contains(const std::vector<std::string>& list, const std::string& el);
 };
