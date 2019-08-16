@@ -54,7 +54,23 @@ public:
     TIGL_EXPORT void Invalidate();
 
     // Returns the positioning matrix for a given section-uid
-    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionIndex);
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionUID);
+
+    /**
+     * Set positioning transformation.
+     * This function will take a section UID and will set the positioning of this section such that
+     * the positioning obtained by this section is equal to the given position.
+     * @Remark, If the section has no postioning associated to it, the function will create a new positioning that has no
+     * from element.
+     * @param sectionUID: The section that will be modified
+     * @param newPosition: The new final position given by positionings for this section.
+     * @param moveDependentPositionings: If true the sections depending of the positioning of sectionUID will also move.
+     * If false, the sections depending of this will stay at the same place, this mean that the function will update
+     * the parameters of the depending positonings.
+     * @remark No verification is performed on the section UID. So, if the section is not present, a dirty useless
+     * positioning will be created.
+     */
+    TIGL_EXPORT void SetPositioningTransformation(const std::string& sectionUID, CTiglPoint newPosition, bool moveDependentPositionings = false);
 
     // Cleanup routine
     TIGL_EXPORT void Cleanup();
