@@ -112,6 +112,7 @@ set(tv_src
   src/modificators/ModificatorWingsWidget.cpp
   src/modificators/NewWingDialog.cpp
   src/modificators/DeleteDialog.cpp
+  src/modificators/ModificatorPositioningWidget.cpp
   src/ModificatorManager.cpp
   src/CPACSAbstractModel.cpp
   src/CPACSTreeItem.cpp
@@ -182,6 +183,7 @@ set(tv_hdr
   src/modificators/ModificatorWingsWidget.h
   src/modificators/NewWingDialog.h
   src/modificators/DeleteDialog.h
+  src/modificators/ModificatorPositioningWidget.h
   src/modificators/ModificatorFuselageWidget.h
   src/modificators/ModificatorTransformationWidget.h
   src/modificators/ModificatorWingWidget.h
@@ -232,6 +234,7 @@ set(tv_ui
   src/modificators/ModificatorWingsWidget.ui
   src/modificators/NewWingDialog.ui
   src/modificators/DeleteDialog.ui
+  src/modificators/ModificatorPositioningWidget.ui
 )
 
 # compile icons

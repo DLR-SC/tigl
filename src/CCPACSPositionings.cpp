@@ -74,7 +74,7 @@ void CCPACSPositionings::SetPositioningTransformation(const std::string& section
 {
     Update();
     bool positioningCreationNeeded = true;
-    for (std::vector<unique_ptr<CCPACSPositioning> >::const_iterator it = m_positionings.begin(); it != m_positionings.end(); ++it) {
+    for (std::vector<std::unique_ptr<CCPACSPositioning> >::const_iterator it = m_positionings.begin(); it != m_positionings.end(); ++it) {
         CCPACSPositioning* p = it->get();
         if (p->GetToSectionUID() == sectionUID) {
             p->SetToPoint(newPosition, moveDependentPositionings);
@@ -88,7 +88,8 @@ void CCPACSPositionings::SetPositioningTransformation(const std::string& section
         newPos.SetToSectionUID(sectionUID);
         newPos.SetToPoint(newPosition, true);
     }
-    Invalidate();
+    // TODO (MS): There is no invalidate function anymore, do we have to add one again???
+    //Invalidate();
 }
 
 

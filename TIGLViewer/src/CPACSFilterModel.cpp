@@ -26,7 +26,7 @@ CPACSFilterModel::CPACSFilterModel(cpcr::CPACSTree* tree, QObject* parent)
 
     basicTreeRegExp.setPatternSyntax(QRegExp::RegExp2);
     basicTreeRegExp.setCaseSensitivity(Qt::CaseInsensitive);
-    basicTreeRegExp.setPattern("^(aircraft|model|wings|wing|sections|section|segments|segment|fuselages|fuselage)$");
+    basicTreeRegExp.setPattern("^(aircraft|model|wings|wing|sections|section|positionings|positioning|fuselages|fuselage)$");
 
     searchPattern.setPatternSyntax(QRegExp::FixedString);
     searchPattern.setCaseSensitivity(Qt::CaseInsensitive);

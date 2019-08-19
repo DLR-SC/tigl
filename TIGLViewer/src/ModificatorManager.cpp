@@ -25,6 +25,7 @@
 #include "CCPACSFuselageSection.h"
 #include "CCPACSWingSection.h"
 #include "CreateConnectedElementI.h"
+#include "CCPACSPositioning.h"
 
 ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
                                        ModificatorContainerWidget* modificatorContainerWidget,
@@ -146,6 +147,27 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         }
 
         modificatorContainerWidget->setSectionsModificator(*elementI);
+    }
+    else if (item->getType() == "positioning" ) {
+        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+        tigl::CCPACSPositioning& positioning    = uidManager.ResolveObject<tigl::CCPACSPositioning>(item->getUid());
+
+        // if fact we need the wing or fuselage parent to be able to invalidate the positionigs.
+        tigl::CCPACSPositionings* positionings;
+        std::string bodyUID = item->getParent()->getParent()->getUid();
+        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
+        if (typePtr.type == &typeid(tigl::CCPACSWing)) {
+            tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing *>(typePtr.ptr);
+            modificatorContainerWidget->setPositioningModificator(wing, positioning);
+        }
+        else if (typePtr.type == &typeid(tigl::CCPACSFuselage)) {
+            tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage *>(typePtr.ptr);
+            modificatorContainerWidget->setPositioningModificator(fuselage, positioning);
+        }
+        else {
+            LOG(ERROR) << "ModificatorManager:: Unable to find expected parent for the uid type!";
+        }
+        
     }
     else {
         modificatorContainerWidget->setNoInterfaceWidget();
