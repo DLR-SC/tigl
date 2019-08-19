@@ -61,6 +61,7 @@ void ModificatorContainerWidget::hideAllSpecializedWidgets()
     ui->elementModificator->setVisible(visible);
     ui->sectionModificator->setVisible(visible);
     ui->sectionsModificator->setVisible(visible);
+    ui->positioningModificator->setVisible(visible);
     currentModificator = nullptr;
 }
 
@@ -136,6 +137,27 @@ void ModificatorContainerWidget::setSectionsModificator(tigl::CreateConnectedEle
     ui->sectionsModificator->setCreateConnectedElementI(element);
     ui->sectionsModificator->setVisible(true);
     currentModificator = ui->sectionModificator;
+}
+
+
+void ModificatorContainerWidget::setPositioningModificator(tigl::CCPACSWing& wing, tigl::CCPACSPositioning &positioning)
+{
+    hideAllSpecializedWidgets();
+    ui->positioningModificator->setPositioning(wing, positioning);
+    ui->positioningModificator->setVisible(true);
+    ui->applyWidget->setVisible(true);
+    currentModificator = ui->positioningModificator;
+}
+
+
+
+void ModificatorContainerWidget::setPositioningModificator(tigl::CCPACSFuselage& fuselage, tigl::CCPACSPositioning &positioning)
+{
+    hideAllSpecializedWidgets();
+    ui->positioningModificator->setPositioning(fuselage, positioning);
+    ui->positioningModificator->setVisible(true);
+    ui->applyWidget->setVisible(true);
+    currentModificator = ui->positioningModificator;
 }
 
 
