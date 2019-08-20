@@ -174,12 +174,9 @@ TEST_F(creatorCTiglSectionElement, setOrigin)
 
     tigl::CTiglSectionElement* ctiglElement = nullptr;
     tigl::CTiglPoint newOrigin;
-    tigl::CCPACSFuselageSectionElement* element = nullptr;
 
     setVariables("TestData/simpletest.cpacs.xml");
     ctiglElement = GetCElementOf("D150_Fuselage_1Section1IDElement1");
-    element      = &(
-            config->GetUIDManager().ResolveObject<tigl::CCPACSFuselageSectionElement>("D150_Fuselage_1Section1IDElement1"));
 
     newOrigin = tigl::CTiglPoint(2, 1.1, 0.13);
     ctiglElement->SetOrigin(newOrigin);
@@ -188,11 +185,6 @@ TEST_F(creatorCTiglSectionElement, setOrigin)
     newOrigin = tigl::CTiglPoint(-3, 1, 2);
     ctiglElement->SetOrigin(newOrigin);
     EXPECT_TRUE(newOrigin.isNear(ctiglElement->GetOrigin()));
-    // check the value of the element transformation
-    // remark that to compute the element translation we must take in account the position and the scaling that affect this transformation
-    tigl::CTiglPoint elementTranslation = element->GetTranslation();
-    ;
-    EXPECT_TRUE(tigl::CTiglPoint(-2.5, 2, 4).isNear(elementTranslation));
 
     newOrigin = tigl::CTiglPoint(-3, 1, 2);
     ctiglElement->SetOrigin(newOrigin, FUSELAGE_COORDINATE_SYSTEM);
@@ -209,14 +201,10 @@ TEST_F(creatorCTiglSectionElement, setOrigin)
 
     setVariables("TestData/simpletest-shifftedProfiles.xml");
     ctiglElement = GetCElementOf("D150_Fuselage_1Section2IDElement1");
-    element      = &(
-        config->GetUIDManager().ResolveObject<tigl::CCPACSFuselageSectionElement>("D150_Fuselage_1Section2IDElement1"));
 
     newOrigin = tigl::CTiglPoint(0, 2, 2);
     ctiglElement->SetOrigin(newOrigin);
     EXPECT_TRUE(newOrigin.isNear(ctiglElement->GetOrigin()));
-    elementTranslation = element->GetTranslation();
-    EXPECT_TRUE(tigl::CTiglPoint(-0.5, 4, 4).isNear(elementTranslation));
 
     saveCurrentConfig("TestData/Output/simpletest-shifftedProfiles-out.xml");
 }
@@ -226,7 +214,6 @@ TEST_F(creatorCTiglSectionElement, setCenter)
 
     tigl::CTiglSectionElement* ctiglElement = nullptr;
     tigl::CTiglPoint newCenter;
-    tigl::CCPACSFuselageSectionElement* element = nullptr;
 
     setVariables("TestData/simpletest.cpacs.xml");
     ctiglElement = GetCElementOf("D150_Fuselage_1Section1IDElement1");
@@ -241,15 +228,11 @@ TEST_F(creatorCTiglSectionElement, setCenter)
 
     setVariables("TestData/simpletest-shifftedProfiles.xml");
     ctiglElement = GetCElementOf("D150_Fuselage_1Section2IDElement1");
-    element      = &(
-        config->GetUIDManager().ResolveObject<tigl::CCPACSFuselageSectionElement>("D150_Fuselage_1Section2IDElement1"));
 
     newCenter = tigl::CTiglPoint(1, 0, 1);
     ctiglElement->SetCenter(newCenter, FUSELAGE_COORDINATE_SYSTEM);
     EXPECT_TRUE(newCenter.isNear(ctiglElement->GetCenter(FUSELAGE_COORDINATE_SYSTEM)));
     EXPECT_TRUE(tigl::CTiglPoint(1, 0, 0.5).isNear(ctiglElement->GetCenter()));
-    tigl::CTiglPoint elementTranslation = element->GetTranslation();
-    EXPECT_TRUE(tigl::CTiglPoint(0.5, -1, 1).isNear(elementTranslation));
 
     newCenter = tigl::CTiglPoint(0.5, 0, 0);
     ctiglElement->SetCenter(newCenter);
@@ -784,12 +767,12 @@ TEST_F(creatorCTiglSectionElement, SetTotalTransformation_MultipleFuselagesModel
 
 }
 
-TEST_F(creatorCTiglSectionElement, SetSectionElementTransformation_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, SetPositioningSectionElementTransformation_MultipleFuselagesModel)
 {
     setVariables("TestData/multiple_fuselages.xml");
 
     tigl::CTiglSectionElement* cElement = nullptr;
-    tigl::CTiglTransformation newSectionElementTransformation, res, resE, resS, I;
+    tigl::CTiglTransformation newPSE, res, resE, resS, resP, I;
     I.SetIdentity();
 
     double tolerance = 0.0001; // tolerance on the pairwise diff of the result matrix and the input matrix
@@ -798,52 +781,57 @@ TEST_F(creatorCTiglSectionElement, SetSectionElementTransformation_MultipleFusel
 
     // identity matrix case
 
-    newSectionElementTransformation.SetIdentity();
-    cElement->SetElementAndSectionTransformation(newSectionElementTransformation);
+    newPSE.SetIdentity();
+    cElement->SetPositioningSectionElementTransformation(newPSE);
     resE = cElement->GetElementTransformation();
     resS = cElement->GetSectionTransformation();
-    res  = resS * resE;
-    EXPECT_TRUE(res.IsNear(newSectionElementTransformation, tolerance));
+    resP = cElement->GetPositioningTransformation();
+    res  = resP * resS * resE;
+    EXPECT_TRUE(res.IsNear(newPSE, tolerance));
     EXPECT_TRUE(resE.IsNear(I, tolerance)); // we want also that E and S matrix equal I
     EXPECT_TRUE(resS.IsNear(I, tolerance));
+    EXPECT_TRUE(resP.IsNear(I, tolerance));
 
     // simple matrix case
 
-    newSectionElementTransformation.SetIdentity();
-    newSectionElementTransformation.AddRotationIntrinsicXYZ(20, 30, 40);
-    cElement->SetElementAndSectionTransformation(newSectionElementTransformation);
+    newPSE.SetIdentity();
+    newPSE.AddRotationIntrinsicXYZ(20, 30, 40);
+    cElement->SetPositioningSectionElementTransformation(newPSE);
     resE = cElement->GetElementTransformation();
     resS = cElement->GetSectionTransformation();
-    res  = resS * resE;
-    EXPECT_TRUE(res.IsNear(newSectionElementTransformation, tolerance));
-    EXPECT_TRUE(
-        resE.IsNear(I, tolerance)); // we want also that E equal I because a proper polar decomposition should be done
+    resP = cElement->GetPositioningTransformation();
+    res  = resP * resS * resE;
+    EXPECT_TRUE(res.IsNear(newPSE, tolerance));
+    EXPECT_TRUE(resE.IsNear(I, tolerance));
+    EXPECT_TRUE(resP.IsNear(I, tolerance));
 
     // simple matrix case2
 
-    newSectionElementTransformation.SetIdentity();
-    newSectionElementTransformation.AddScaling(1, 2, 3);
-    newSectionElementTransformation.AddRotationIntrinsicXYZ(10, 40, 60);
-    newSectionElementTransformation.AddTranslation(30, -10, -8);
-    cElement->SetElementAndSectionTransformation(newSectionElementTransformation);
+    newPSE.SetIdentity();
+    newPSE.AddScaling(1, 2, 3);
+    newPSE.AddRotationIntrinsicXYZ(10, 40, 60);
+    newPSE.AddTranslation(30, -10, -8);
+    cElement->SetPositioningSectionElementTransformation(newPSE);
     resE = cElement->GetElementTransformation();
     resS = cElement->GetSectionTransformation();
-    res  = resS * resE;
-    EXPECT_TRUE(res.IsNear(newSectionElementTransformation, tolerance));
+    resP = cElement->GetPositioningTransformation();
+    res  = resP *resS * resE;
+    EXPECT_TRUE(res.IsNear(newPSE, tolerance));
     // we want also that E equal I because a proper polar decomposition should be done
     EXPECT_TRUE(resE.IsNear(I, tolerance));
+    EXPECT_TRUE(resP.GetTranslation().isNear(tigl::CTiglPoint(30,-10,-8), tolerance));
 
     // shearing matrix case
 
-    newSectionElementTransformation.SetIdentity();
-    newSectionElementTransformation.SetValue(0, 1, 0.5);
-    cElement->SetElementAndSectionTransformation(newSectionElementTransformation);
+    newPSE.SetIdentity();
+    newPSE.SetValue(0, 1, 0.5);
+    cElement->SetPositioningSectionElementTransformation(newPSE);
     resE = cElement->GetElementTransformation();
     resS = cElement->GetSectionTransformation();
-    res  = resS * resE;
-
-    EXPECT_TRUE(res.IsNear(newSectionElementTransformation, tolerance));
-
+    resP = cElement->GetPositioningTransformation();
+    res  = resP *  resS * resE;
+    EXPECT_TRUE(res.IsNear(newPSE, tolerance));
+    EXPECT_TRUE(resP.IsNear(I, tolerance));
 
 
     saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");

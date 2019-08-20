@@ -200,3 +200,8 @@ tigl::CTiglPoint tigl::CTiglWingSectionElement::GetStdDirForProfileUnitZ(TiglCoo
     stdUZDir.normalize();
     return stdUZDir;
 }
+
+tigl::CCPACSPositionings& tigl::CTiglWingSectionElement::GetPositionings()
+{
+    return wing->GetPositionings(CreateIfNotExistsTag());
+}

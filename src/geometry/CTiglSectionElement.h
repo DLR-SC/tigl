@@ -22,6 +22,7 @@
 #include "tigl_internal.h"
 #include "CTiglTransformation.h"
 #include "CCPACSTransformation.h"
+#include "CCPACSPositionings.h"
 
 #include <string>
 #include <boost/optional.hpp>
@@ -54,6 +55,8 @@ public:
     // Returns the positioning transformation
     // If there are no positioning will return a trivial transformation
     TIGL_EXPORT virtual CTiglTransformation GetPositioningTransformation() const = 0;
+
+    TIGL_EXPORT virtual CCPACSPositionings& GetPositionings() = 0;
 
     // Returns the section transformation
     TIGL_EXPORT virtual CTiglTransformation GetSectionTransformation() const = 0;
@@ -170,15 +173,15 @@ public:
 
 
 
-    // Set the underlying CPACSTransformation of the section and the element
-    // such that the multiplication of the both transformation give the input transformation!
+    // Set the underlying CPACSTransformation of the positioning, section  and element
+    // such that the multiplication of the three transformations give the input transformation!
     // Remark, the strength of this method is that we are sure that the decomposition in CCPACSTransformations are exact!!
     // We use the "DecomposeTRSRS" of the CTiglTransformation class and we set a part of the decomposition in the
-    // section element CCPACSTransformation and another part in section CCPACSTransformation,
+    // positioning, another part in the section CCPACSTransformation and another part in element CCPACSTransformation,
     // thus the limitation of decomposing the matrix in translation, rotation and scaling is hacked.
     // Remark, to apply this function we need to be sure that a section exist for each element,
     // for the moment we assume it. But, in a near future, we can force this by creating a new section when is needed.
-    void SetElementAndSectionTransformation(const CTiglTransformation &newTransformation);
+    void SetPositioningSectionElementTransformation(const CTiglTransformation &newTransformation);
 
 
 protected:
@@ -192,34 +195,12 @@ protected:
     // Invalidate the fuselage or the wing
     virtual void InvalidateParent() = 0;
 
-    // Set the underlying CPACSTransformation (fuselage or wing ) with the given CTiglTransformation.
-    // Calling this function will change the geometry of the aircraft.
-    void SetElementTransformation(const CTiglTransformation& newTransformation);
-
-
-    // Set the underlying section CPACSTransformation with the given CTiglTransformation.
-    // Calling this function will change the geometry of the aircraft.
-    void SetSectionTransformation(const CTiglTransformation& newTransformation);
-
-
     /**
      * If element or section transformation contains near zero scaling,
      * we set this scaling to 1.
      * Used to set the width or set the height when there is a zero scaling.
      */
     void SetElementAndSectionScalingToNoneZero();
-
-
-    // Return the element transformation needed to move a point A to the position B in referenceCS.
-    CTiglTransformation
-    GetElementTrasformationToTranslatePoint(const CTiglPoint& newP, const CTiglPoint& oldP,
-                                            TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
-
-    // Return the element transformation that will scale uniformly the the wire in the world or fuselage coordinate system.
-    // Remark that the effect is not always the same as to add a scaling to the element transformation.
-    CTiglTransformation
-    GetElementTransformationForScaling(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
-
 
     /**
      * Get the rotation that move the profile to the XZ plane and the unit vector Z of the profile to (0,0,1).
