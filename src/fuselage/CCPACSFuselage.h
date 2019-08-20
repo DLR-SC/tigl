@@ -228,6 +228,7 @@ private:
     Cache<CTiglFuselageHelper, CCPACSFuselage> fuselageHelper;
 
     friend class CCPACSFuselageSegment;
+    friend class CTiglStandardizer;
 };
 
 TIGL_EXPORT TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTransform, const CTiglFuselageConnection& connection, const TopoDS_Shape& shape);

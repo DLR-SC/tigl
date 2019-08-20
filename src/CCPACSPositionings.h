@@ -72,6 +72,9 @@ public:
      */
     TIGL_EXPORT void SetPositioningTransformation(const std::string& sectionUID, CTiglPoint newPosition, bool moveDependentPositionings = false);
 
+
+    TIGL_EXPORT CCPACSPositioning& CreatePositioning(const std::string& fromUID, const std::string& toUID, const CTiglPoint& delta );
+
     // Cleanup routine
     TIGL_EXPORT void Cleanup();
 

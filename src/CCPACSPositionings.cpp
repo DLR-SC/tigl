@@ -172,4 +172,15 @@ void CCPACSPositionings::ReadCPACS(const TixiDocumentHandle& tixiHandle, const s
     Update();
 }
 
+CCPACSPositioning& CCPACSPositionings::CreatePositioning(const std::string& fromUID, const std::string& toUID,
+                                                         const CTiglPoint& delta)
+{
+    CCPACSPositioning& newPos = AddPositioning();
+    newPos.SetFromSectionUID(fromUID);
+    newPos.SetToSectionUID(toUID);
+    newPos.SetParametersFromVector(delta);
+    newPos.SetUID(GetUIDManager().MakeUIDUnique(toUID + "GenPos")); 
+    return newPos;
+}
+
 } // end namespace tigl
