@@ -47,6 +47,8 @@ public:
 
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation() const override;
 
+    TIGL_EXPORT CCPACSPositionings& GetPositionings() override;
+
     TIGL_EXPORT CTiglTransformation GetSectionTransformation() const override;
 
     TIGL_EXPORT CTiglTransformation GetElementTransformation() const override;

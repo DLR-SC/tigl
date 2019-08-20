@@ -135,6 +135,9 @@ public:
     // Return the translation performed by this translation.
     TIGL_EXPORT CTiglPoint GetTranslation();
 
+    // Set the translation of the transformation.
+    TIGL_EXPORT void SetTranslation(const CTiglPoint& translation);
+
     // Return a transformation that bring the vector A in the same direction as vector B
     TIGL_EXPORT static CTiglTransformation GetRotationToAlignAToB(tigl::CTiglPoint vectorA, tigl::CTiglPoint vectorB);
 

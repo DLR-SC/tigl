@@ -848,4 +848,11 @@ CTiglPoint CTiglTransformation::GetTranslation()
     return translation;
 }
 
+void CTiglTransformation::SetTranslation(const CTiglPoint& translation)
+{
+    SetValue(0,3,translation.x);
+    SetValue(1,3,translation.y);
+    SetValue(2,3,translation.z);
+}
+
 } // end namespace tigl

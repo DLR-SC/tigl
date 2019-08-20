@@ -74,90 +74,6 @@ double tigl::CTiglSectionElement::GetCircumference(TiglCoordinateSystem referenc
     return System.Mass();
 }
 
-tigl::CTiglTransformation
-tigl::CTiglSectionElement::GetElementTrasformationToTranslatePoint(const CTiglPoint& newP, const CTiglPoint& oldP,
-                                                                   TiglCoordinateSystem referenceCS)
-{
-    // We want that:
-    // w = G'p      where   w is the new Point Position
-    //                      G' the new Global transformation that is apply on the point
-    //                      p is the point position in element coordinate system
-    // w = T*G*p    Where   T is the translation needed to bring the old point (oldP) to it position (newP)
-    //                      G is the old global transformation
-    // w = G*Tl*p   Where Tl = augmented( affinePart(G)^-1 * t) where t is the translation vector
-    // w = (F)P*S*E*Tl*p
-    // w = (F)P*S*E'*p
-    // -> So we simply need to compute Tl, then we can obtaint the transformation of the element = E*Tl
-    //
-    // Todo manage the zero scaling case!
-    //
-
-    CTiglPoint tLeft = newP - oldP;
-
-    CTiglTransformation G = GetTotalTransformation(referenceCS);
-    // remove translation of G;
-    G.SetValue(0, 3, 0);
-    G.SetValue(1, 3, 0);
-    G.SetValue(2, 3, 0);
-    G.SetValue(3, 3, 1);
-
-    CTiglPoint tRight = G.Inverted() * tLeft;
-    CTiglTransformation Tl;
-    Tl.AddTranslation(tRight.x, tRight.y, tRight.z);
-
-    CTiglTransformation newE = GetElementTransformation() * Tl;
-
-    return newE;
-}
-
-tigl::CTiglTransformation
-tigl::CTiglSectionElement::GetElementTransformationForScaling(double scaleFactor, TiglCoordinateSystem referenceCS)
-{
-    /*
-      *  The idea is to bring the element to its center and scale it in the appropriate coordinate system.
-      *
-      *  For world coordinate we get:
-      *
-      *  FPSE' = Ti*S*T*FPSE   where T bring the center to world origin and S scale uniformly the profile, i stand for inverse
-      *  E' =  Si*Pi*Fi*Ti*S*T*FPSE
-      *
-      *  For fuselage coordinate we get:
-      *  PSE' =  Ti*S*T*PSE   where T bring the center to fuselage origin and S scale uniformly the profile
-      *  E' =  Si*Pi*Ti*S*T*PSE
-      *
-      */
-
-    CTiglTransformation centerToOriginM, scaleM, newE;
-
-    scaleM.SetIdentity();
-    scaleM.AddScaling(scaleFactor, scaleFactor, scaleFactor);
-
-    CTiglPoint center = GetCenter(referenceCS);
-    centerToOriginM.SetIdentity();
-    centerToOriginM.AddTranslation(-center.x, -center.y, -center.z);
-
-    if (referenceCS == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
-        newE = GetSectionTransformation().Inverted() *
-               GetPositioningTransformation().Inverted() *
-               GetParentTransformation().Inverted() *
-               centerToOriginM.Inverted() *
-               scaleM *
-               centerToOriginM *
-               GetTotalTransformation(referenceCS);
-    }
-    else if (referenceCS == TiglCoordinateSystem::FUSELAGE_COORDINATE_SYSTEM) {
-        newE = GetSectionTransformation().Inverted() *
-               GetPositioningTransformation().Inverted() *
-               centerToOriginM.Inverted() *
-               scaleM *
-               centerToOriginM *
-               GetTotalTransformation(referenceCS);
-
-    }
-
-    return newE;
-}
-
 double tigl::CTiglSectionElement::GetArea(TiglCoordinateSystem referenceCS) const
 {
     TopoDS_Wire wire = GetWire(referenceCS);
@@ -203,14 +119,19 @@ double tigl::CTiglSectionElement::GetWidth(TiglCoordinateSystem referenceCS) con
 
 void tigl::CTiglSectionElement::SetOrigin(const CTiglPoint& newO, TiglCoordinateSystem referenceCS)
 {
-    CTiglTransformation newE = GetElementTrasformationToTranslatePoint(newO, GetOrigin(referenceCS), referenceCS);
-    SetElementTransformation(newE);
+    CTiglTransformation total = GetTotalTransformation(referenceCS);
+    total.SetTranslation(newO);
+    SetTotalTransformation(total,referenceCS);
 }
 
 void tigl::CTiglSectionElement::SetCenter(const tigl::CTiglPoint& newCenter, TiglCoordinateSystem referenceCS)
 {
-    CTiglTransformation newE = GetElementTrasformationToTranslatePoint(newCenter, GetCenter(referenceCS), referenceCS);
-    SetElementTransformation(newE);
+    // The center is the center of the airfoil.
+    CTiglPoint oldCenter = GetCenter(referenceCS);
+    CTiglPoint delta = newCenter - oldCenter;
+    tigl::CTiglTransformation  total = GetTotalTransformation(referenceCS);
+    total.AddTranslation(delta.x, delta.y, delta.z);
+    SetTotalTransformation(total, referenceCS);
 }
 
 void tigl::CTiglSectionElement::ScaleCircumference(double scaleFactor, TiglCoordinateSystem referenceCS)
@@ -220,8 +141,34 @@ void tigl::CTiglSectionElement::ScaleCircumference(double scaleFactor, TiglCoord
 
 void tigl::CTiglSectionElement::ScaleUniformly(double scaleFactor, TiglCoordinateSystem referenceCS)
 {
-    CTiglTransformation newE = GetElementTransformationForScaling(scaleFactor, referenceCS);
-    SetElementTransformation(newE);
+    /*
+  *  The idea is to bring the element to its center and scale it in the appropriate coordinate system.
+  *
+  *  For world coordinate we get:
+  *
+  *  FPSE' = Ti*S*T*FPSE   where T bring the center to world origin and S scale uniformly the profile, i stand for inverse
+  *  E' =  Si*Pi*Fi*Ti*S*T*FPSE
+  *
+  *  For fuselage coordinate we get:
+  *  PSE' =  Ti*S*T*PSE   where T bring the center to fuselage origin and S scale uniformly the profile
+  *  E' =  Si*Pi*Ti*S*T*PSE
+  *
+  */
+
+    CTiglTransformation total = GetTotalTransformation(referenceCS);
+
+    CTiglTransformation centerToOriginM, scaleM, newTotal;
+
+    scaleM.SetIdentity();
+    scaleM.AddScaling(scaleFactor, scaleFactor, scaleFactor);
+
+    CTiglPoint center = GetCenter(referenceCS);
+    centerToOriginM.SetIdentity();
+    centerToOriginM.AddTranslation(-center.x, -center.y, -center.z);
+
+    newTotal = centerToOriginM.Inverted() * scaleM * centerToOriginM * total;
+
+    SetTotalTransformation(newTotal, referenceCS);
 }
 
 void tigl::CTiglSectionElement::SetWidth(double newWidth, TiglCoordinateSystem referenceCS)
@@ -341,27 +288,27 @@ void tigl::CTiglSectionElement::SetTotalTransformation(const tigl::CTiglTransfor
 {
 
     // We have
-    // FPS'E' = G        where E' is the new element transformation,
+    // FP'S'E' = G        where E' is the new element transformation,
+    //                    and S is the new section transforamtion,
+    //                    and P' is the new positioning transforamtion
     //                    and G is the given new total transformation
     //                    and F is the parent transformation
-    // S'E' = P⁻¹F⁻¹G
+    // P'S'E' = F⁻¹G
 
-    CTiglTransformation newSE ;
+    CTiglTransformation newPSE ;
 
     if ( referenceCS == GLOBAL_COORDINATE_SYSTEM ) {
-        newSE =  GetPositioningTransformation().Inverted()
-                * GetParentTransformation().Inverted()
+        newPSE =  GetParentTransformation().Inverted()
                 * newTotalTransformation;
 
     } else if (referenceCS == FUSELAGE_COORDINATE_SYSTEM || referenceCS == WING_COORDINATE_SYSTEM ) {
-        newSE =  GetPositioningTransformation().Inverted()
-                *  newTotalTransformation;
+        newPSE = newTotalTransformation;
     };
 
-    SetElementAndSectionTransformation(newSE);
+    SetPositioningSectionElementTransformation(newPSE);
 }
 
-void tigl::CTiglSectionElement::SetElementAndSectionTransformation(const tigl::CTiglTransformation &newTransformation)
+void tigl::CTiglSectionElement::SetPositioningSectionElementTransformation(const tigl::CTiglTransformation &newTransformation)
 {
 
     CTiglPoint scal1, rot1, scal2, rot2, trans;
@@ -378,26 +325,10 @@ void tigl::CTiglSectionElement::SetElementAndSectionTransformation(const tigl::C
     CCPACSTransformation& storedSectionTransformation = GetSectionCCPACSTransformation();
     storedSectionTransformation.setScaling(scal2);
     storedSectionTransformation.setRotation(rot2);
-    storedSectionTransformation.setTranslation(trans);
 
-    InvalidateParent();
-
-}
-
-void tigl::CTiglSectionElement::SetElementTransformation(const tigl::CTiglTransformation &newTransformation)
-{
-    // set the new transformation matrix in the element
-    CCPACSTransformation& storedTransformation = GetElementCCPACSTransformation();
-    storedTransformation.setTransformationMatrix(newTransformation);
-
-    InvalidateParent();
-}
-
-void tigl::CTiglSectionElement::SetSectionTransformation(const tigl::CTiglTransformation &newTransformation)
-{
-    // set the new transformation matrix in the element
-    CCPACSTransformation& storedTransformation = GetSectionCCPACSTransformation();
-    storedTransformation.setTransformationMatrix(newTransformation);
+    storedSectionTransformation.setTranslation(CTiglPoint(0,0,0));
+    CCPACSPositionings& positionings = GetPositionings();
+    positionings.SetPositioningTransformation(GetSectionUID(), trans, false );
 
     InvalidateParent();
 

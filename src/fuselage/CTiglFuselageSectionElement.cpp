@@ -189,3 +189,8 @@ tigl::CTiglPoint tigl::CTiglFuselageSectionElement::GetStdDirForProfileUnitZ(Tig
     stdUZDir.normalize();
     return stdUZDir;
 }
+
+tigl::CCPACSPositionings& tigl::CTiglFuselageSectionElement::GetPositionings()
+{
+    return fuselage->GetPositionings(CreateIfNotExistsTag());
+}
