@@ -58,7 +58,7 @@ void ModificatorManager::setCPACSConfiguration(TIGLViewerDocument* newDoc)
 
 void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
 {
-
+ // todo try catch on dispatch
     if ((!configurationIsSet()) || (!item->isInitialized())) {
 
         modificatorContainerWidget->hideAllSpecializedWidgets();

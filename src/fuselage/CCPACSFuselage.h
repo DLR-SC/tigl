@@ -241,6 +241,7 @@ private:
     Cache<CTiglFuselageHelper, CCPACSFuselage> fuselageHelper;
 
     friend class CCPACSFuselageSegment;
+    friend class CTiglStandardizer;
 
     TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
 };
