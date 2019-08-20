@@ -6617,8 +6617,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
-        TopoDS_Shape parent = config.GetParentLoft(wingUID);
-        *wettedAreaPtr = wing.GetWettedArea(parent);
+        tigl::CTiglRelativelyPositionedComponent* parent = config.GetUIDManager().GetParentGeometricComponent(wingUID);
+        if (!parent) {
+            *wettedAreaPtr = wing.GetSurfaceArea();
+        }
+        else {
+            TopoDS_Shape parentShape = config.GetParentLoft(wingUID);
+            *wettedAreaPtr = wing.GetWettedArea(parentShape);
+        }
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
