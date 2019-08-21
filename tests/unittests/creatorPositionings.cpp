@@ -142,10 +142,10 @@ TEST_F(creatorPositionings, GetPositioningTransformation)
     // the positioning take only positioning into account also for the from section position
     m = positionings.GetPositioningTransformation("D150_Fuselage_1Section3ID");
     t = m.GetTranslation();
-    EXPECT_TRUE(t.isNear(tigl::CTiglPoint(2.5,1,0)));
+    EXPECT_TRUE(t.isNear(tigl::CTiglPoint(2.5,1,0), 0.0001));
     cElement = GetCElementOf("D150_Fuselage_1Section3IDElement1");
     tE = cElement->GetTotalTransformation().GetTranslation();
-    EXPECT_TRUE(tE.isNear(tigl::CTiglPoint(2.5,0.5,0)));
+    EXPECT_TRUE(tE.isNear(tigl::CTiglPoint(2.5,0.5,0), 0.0001));
 
 }
 

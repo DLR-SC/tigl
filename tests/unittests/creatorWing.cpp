@@ -817,7 +817,7 @@ TEST_F(creatorWing, MultipleWings_CreateSections)
     }
     expectedCenter = tigl::CTiglPoint(0.62, 1.5, 0);
     newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2BisElem1");
-    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.001));
 
 
     setWing("W9_BWSweep"); // OK but since the two section have a 180 degree rotation the result is strange
