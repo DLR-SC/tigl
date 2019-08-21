@@ -503,4 +503,96 @@ CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint d)
 
 }
 
+void RotationRounding(CTiglPoint& rotation, double epsilon)
+{
+    // round up 0
+    Rounding(rotation.x, 0, epsilon);
+    Rounding(rotation.y, 0, epsilon);
+    Rounding(rotation.z, 0, epsilon);
+
+    Rounding(rotation.x, 90, epsilon);
+    Rounding(rotation.y, 90, epsilon);
+    Rounding(rotation.z, 90, epsilon);
+
+    Rounding(rotation.x, -90, epsilon);
+    Rounding(rotation.y, -90, epsilon);
+    Rounding(rotation.z, -90, epsilon);
+
+    Rounding(rotation.x, 180, epsilon);
+    Rounding(rotation.y, 180, epsilon);
+    Rounding(rotation.z, 180, epsilon);
+
+    Rounding(rotation.x, -180, epsilon);
+    Rounding(rotation.y, -180, epsilon);
+    Rounding(rotation.z, -180, epsilon);
+
+    Rounding(rotation.x, 270, epsilon);
+    Rounding(rotation.y, 270, epsilon);
+    Rounding(rotation.z, 270, epsilon);
+
+    Rounding(rotation.x, 360, epsilon);
+    Rounding(rotation.y, 360, epsilon);
+    Rounding(rotation.z, 360, epsilon);
+
+    // change 360 to 0
+    if (rotation.x == 360) {
+        rotation.x = 0;
+    }
+    if (rotation.y == 360) {
+        rotation.y = 0;
+    }
+    if (rotation.z == 360) {
+        rotation.z = 0;
+    }
+
+    Rounding(rotation.x, -360, epsilon);
+    Rounding(rotation.y, -360, epsilon);
+    Rounding(rotation.z, -360, epsilon);
+
+    // change -360 to 0
+    if (rotation.x == -360) {
+        rotation.x = 0;
+    }
+    if (rotation.y == -360) {
+        rotation.y = 0;
+    }
+    if (rotation.z == -360) {
+        rotation.z = 0;
+    }
+
+}
+
+void ScalingRounding(CTiglPoint& scaling,  double epsilon)
+{
+    // round up 0
+    Rounding(scaling.x,0,epsilon);
+    Rounding(scaling.y,0,epsilon);
+    Rounding(scaling.z,0,epsilon);
+
+    Rounding(scaling.x,1,epsilon);
+    Rounding(scaling.y,1,epsilon);
+    Rounding(scaling.z,1,epsilon);
+
+    Rounding(scaling.x,-1,epsilon);
+    Rounding(scaling.y,-1,epsilon);
+    Rounding(scaling.z,-1,epsilon);
+
+}
+
+void TranslationRounding(CTiglPoint& translation, double epsilon)
+{
+    // round up 0
+    Rounding(translation.x, 0, epsilon);
+    Rounding(translation.y, 0, epsilon);
+    Rounding(translation.z, 0, epsilon);
+}
+
+void Rounding(double& number, double roundingValue, double delta) 
+{
+    if ( fabs(number-roundingValue) < delta) {
+        number = roundingValue; 
+    }
+}
+
+
 } // namespace tigl

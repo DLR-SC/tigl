@@ -23,6 +23,7 @@
 #include "tigl_internal.h"
 #include <vector>
 #include <math_Vector.hxx>
+#include <Precision.hxx>
 #include "tiglMatrix.h"
 
 namespace tigl 
@@ -251,6 +252,21 @@ TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R );
  * @return
  */
 TIGL_EXPORT CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint direction);
+
+
+TIGL_EXPORT void RotationRounding(CTiglPoint& rotation, double epsilon = Precision::Confusion());
+
+TIGL_EXPORT void ScalingRounding(CTiglPoint& scaling,  double epsilon = Precision::Confusion());
+
+TIGL_EXPORT void TranslationRounding(CTiglPoint& translation,  double epsilon = Precision::Confusion());
+
+/**
+ * Round up the number "number" up to "roundingValue" iff fabs(number-roundingValue) <= dela
+ * @param number 
+ * @param roundingValue 
+ * @param delta 
+ */
+TIGL_EXPORT void Rounding(double& number, double roundingValue, double delta  = Precision::Confusion());
 
 } // namespace tigl
 

@@ -1153,3 +1153,88 @@ TEST(TiglMath, FindVectorPerpendicularToDirection)
 
 }
 
+TEST(TiglMath, Rounding)
+{
+    double number;
+    double roundingValue;
+    double delta;
+
+    number        = 0.001;
+    roundingValue = 0;
+    delta         = 0.1;
+    tigl::Rounding(number, roundingValue, delta);
+    EXPECT_EQ(number, roundingValue);
+
+    number        = 0.1;
+    roundingValue = 0;
+    delta         = 0.01;
+    tigl::Rounding(number, roundingValue, delta);
+    EXPECT_EQ(number, 0.1);
+
+    number        = 1e-9;
+    roundingValue = 0;
+    tigl::Rounding(number, roundingValue); // Precision::Confusion() is used by default for delta
+    EXPECT_EQ(number, 0);
+
+    number        = 1e-6;
+    roundingValue = 0;
+    tigl::Rounding(number, roundingValue);
+    EXPECT_EQ(number, 1e-6);
+
+    number        = 1.01;
+    roundingValue = 1;
+    delta         = 0.1;
+    tigl::Rounding(number, roundingValue, delta);
+    EXPECT_EQ(number, 1);
+
+    number        = -1.01;
+    roundingValue = -1;
+    delta         = 0.1;
+    tigl::Rounding(number, roundingValue, delta);
+    EXPECT_EQ(number, -1);
+
+    // rotation rounding
+    tigl::CTiglPoint rotation;
+
+    rotation = tigl::CTiglPoint(1e-9, 1e-9, 1e-9);
+    tigl::RotationRounding(rotation);
+    EXPECT_EQ(rotation.x, 0);
+    EXPECT_EQ(rotation.y, 0);
+    EXPECT_EQ(rotation.z, 0);
+
+    rotation = tigl::CTiglPoint(90 - 1e-9, 90 - 1e-9, 90 + 1e-9);
+    tigl::RotationRounding(rotation);
+    EXPECT_EQ(rotation.x, 90);
+    EXPECT_EQ(rotation.y, 90);
+    EXPECT_EQ(rotation.z, 90);
+
+    rotation = tigl::CTiglPoint(360 + 1e-9, 360 - 1e-9, 360 + 1e-9);
+    tigl::RotationRounding(rotation);
+    EXPECT_EQ(rotation.x, 0);
+    EXPECT_EQ(rotation.y, 0);
+    EXPECT_EQ(rotation.z, 0);
+
+    // scaling rounding;
+    tigl::CTiglPoint scaling;
+
+    scaling = tigl::CTiglPoint(1.1, 1.1, 1.1);
+    tigl::ScalingRounding(scaling, 0.2);
+    EXPECT_EQ(scaling.x, 1);
+    EXPECT_EQ(scaling.y, 1);
+    EXPECT_EQ(scaling.z, 1);
+
+    scaling = tigl::CTiglPoint(-1 + 1e-9, 1.1, -1 - +1e-9);
+    tigl::ScalingRounding(scaling);
+    EXPECT_EQ(scaling.x, -1);
+    EXPECT_EQ(scaling.y, 1.1);
+    EXPECT_EQ(scaling.z, -1);
+
+    // translation rounding
+    tigl::CTiglPoint translation;
+
+    translation = tigl::CTiglPoint(-1e-9, 1e-9, 0.2);
+    tigl::ScalingRounding(translation);
+    EXPECT_EQ(translation.x, 0);
+    EXPECT_EQ(translation.y, 0);
+    EXPECT_EQ(translation.z, 0.2);
+}
