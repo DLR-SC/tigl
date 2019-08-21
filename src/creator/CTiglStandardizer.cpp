@@ -62,3 +62,49 @@ void tigl::CTiglStandardizer::StandardizeFuselage(tigl::CCPACSFuselage& fuselage
         cElementTemp->SetCenter(elementsCenters.at(elementsUIDS.at(i)));
     }
 }
+
+
+void tigl::CTiglStandardizer::StandardizeWing(tigl::CCPACSWing& wing)
+{
+    CTiglPoint rootLE                 = wing.GetRootLEPosition();
+    std::vector<std::string> elementsUIDS = wing.GetOrderedConnectedElement();
+    if (elementsUIDS.size() < 2) {
+        CTiglError("CTiglStandardizer: Impossible to standardize a wing with less than 2 valid elements!");
+    }
+
+    std::map<std::string, CTiglPoint> elementsCenters;
+    CTiglWingSectionElement* cElementTemp = nullptr;
+    for (int i = 0; i < elementsUIDS.size(); i++) {
+        cElementTemp                        = wing.wingHelper->GetCTiglElementOfWing(elementsUIDS.at(i));
+        elementsCenters[elementsUIDS.at(i)] = cElementTemp->GetCenter(GLOBAL_COORDINATE_SYSTEM);
+    }
+
+    // Remove all the positioning
+    CCPACSPositionings& positionings                   = wing.GetPositionings(CreateIfNotExistsTag());
+    std::vector<unique_ptr<CCPACSPositioning>>& refPos = positionings.GetPositionings();
+    while (refPos.size() != 0) {
+        positionings.RemovePositioning(*(refPos.front()));
+    }
+
+    // create the std positioning structure
+    std::string fromUID = "";
+    std::string toUID;
+    CTiglPoint dummyDelta(0, 1.11, 0);
+    for (int i = 0; i < elementsUIDS.size(); i++) {
+        toUID = wing.wingHelper->GetCTiglElementOfWing(elementsUIDS.at(i))->GetSectionUID();
+        positionings.CreatePositioning(fromUID, toUID, dummyDelta);
+        fromUID = toUID;
+    }
+
+    // Set the transformation of the fuselage such that the nose center translation is performed by the fuselage transforamtion
+    CCPACSTransformation& wingTransformation = wing.GetTransformation();
+    wingTransformation.setTranslation(rootLE);
+    wing.Invalidate();
+
+    // Reset the center of each section (positioning will be set in SetCenter function)
+    cElementTemp = nullptr;
+    for (int i = 0; i < elementsUIDS.size(); i++) {
+        cElementTemp = wing.wingHelper->GetCTiglElementOfWing(elementsUIDS.at(i));
+        cElementTemp->SetCenter(elementsCenters.at(elementsUIDS.at(i)));
+    }
+}

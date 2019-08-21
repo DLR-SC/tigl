@@ -32,14 +32,26 @@ public:
     /**
      * Standardize the fuselage using the CPACSCreator standard.
      * This mean:
-     *  1) the nose position is set in the fuselage transformation
-     *  2) the translation of section are set using positioning
-     *  3) Each segment has exactly one positioning except for the nose section that has a positioning from
-     *      the fuselage origin with a length of 0.
+     *  1) The fuselage transformation store the nose position.
+     *  2) The translation of sections are set using positionings.
+     *  3) Each positioning correspond to a segment, except for the nose section that has a positioning from
+     *      the fuselage origin (with a length of 0, if the origin of the profile correspond to its center).
      *
      * @param fuselage
      */
     static void StandardizeFuselage(CCPACSFuselage& fuselage);
+
+    /**
+     * Standardize the wing using the CPACSCreator standard.
+     * This mean:
+     *  1) The wing transformation store the root leading point translation.
+     *  2) The translation of sections are set using positionings.
+     *  3) Each positioning correspond to a segment, except for the root section that has a positioning from
+     *      the wing origin (with a length of 0, if the origin of the airfoil correspond to its leading edge).
+     *
+     * @param wing
+     */
+    static void StandardizeWing(CCPACSWing& wing);
 };
 }
 

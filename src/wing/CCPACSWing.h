@@ -356,6 +356,7 @@ private:
 
     friend class CCPACSWingSegment;
     friend class CCPACSWingComponentSegment;
+    friend class CTiglStandardizer;
 };
 
 /// Transforms a shape in profile coordinates to world coordinates
