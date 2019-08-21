@@ -90,33 +90,32 @@ void CCPACSTransformation::setScaling(const CTiglPoint& scale)
 void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& matrix)
 {
     // decompose matrix into scaling, rotation and translation
-    double scale[3];
-    double rotation[3];
-    double translation[3];
-    matrix.Decompose(&scale[0], &rotation[0], &translation[0]);
+
+    CTiglPoint scale, rotation, translation;
+    matrix.Decompose(scale, rotation, translation);
 
 
     if (!m_translation) {
         m_translation = boost::in_place(m_uidMgr);
     }
-    m_translation->SetX(translation[0]);
-    m_translation->SetY(translation[1]);
-    m_translation->SetZ(translation[2]);
+    m_translation->SetX(translation.x);
+    m_translation->SetY(translation.y);
+    m_translation->SetZ(translation.z);
 
 
     if (!m_scaling) {
         m_scaling = boost::in_place(m_uidMgr);
     }
-    m_scaling->SetX(scale[0]);
-    m_scaling->SetY(scale[1]);
-    m_scaling->SetZ(scale[2]);
+    m_scaling->SetX(scale.x);
+    m_scaling->SetY(scale.y);
+    m_scaling->SetZ(scale.z);
 
     if (!m_rotation) {
         m_rotation = boost::in_place(m_uidMgr);
     }
-    m_rotation->SetX(rotation[0]);
-    m_rotation->SetY(rotation[1]);
-    m_rotation->SetZ(rotation[2]);
+    m_rotation->SetX(rotation.x);
+    m_rotation->SetY(rotation.y);
+    m_rotation->SetZ(rotation.z);
 
     _transformationMatrix.clear();
 }

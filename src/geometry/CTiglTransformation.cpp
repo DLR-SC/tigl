@@ -513,7 +513,7 @@ CTiglTransformation CTiglTransformation::Inverted() const
     return Get_gp_GTrsf().Inverted();
 }
 
-void CTiglTransformation::Decompose(double scale[3], double rotation[3], double translation[3]) const
+void CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTiglPoint& translation, bool rounding) const
 {
     // compute polar decomposition of upper 3x3 part
     tiglMatrix A(1, 3, 1, 3);
@@ -527,9 +527,9 @@ void CTiglTransformation::Decompose(double scale[3], double rotation[3], double 
     PolarDecomposition(A, U, P);
 
     // scale is diagonal of P
-    scale[0] = P(1,1);
-    scale[1] = P(2,2);
-    scale[2] = P(3,3);
+    scale.x = P(1,1);
+    scale.y = P(2,2);
+    scale.z = P(3,3);
 
     // check for shearing
     double aveAbsOffDiag = (fabs(P(1,2)) + fabs(P(1,3)) + fabs(P(2,3)))/3;
@@ -549,36 +549,42 @@ void CTiglTransformation::Decompose(double scale[3], double rotation[3], double 
     // rather than extrinsic angles and the Rotation matrix mentioned in that pdf.
 
     if( fabs( fabs(U(1, 3)) - 1) > 1e-10 ){
-        rotation[1] = asin(U(1, 3));
-        double cosTheta = cos(rotation[1]);
-        rotation[0] = -atan2(U(2,3)/cosTheta, U(3,3)/cosTheta);
-        rotation[2] = -atan2(U(1,2)/cosTheta, U(1,1)/cosTheta);
+        rotation.y = asin(U(1, 3));
+        double cosTheta = cos(rotation.y);
+        rotation.x = -atan2(U(2,3)/cosTheta, U(3,3)/cosTheta);
+        rotation.z = -atan2(U(1,2)/cosTheta, U(1,1)/cosTheta);
     }
     else {
-        rotation[0] = 0;
+        rotation.x = 0;
         if ( fabs(U(1,3) + 1) > 1e-10 ) {
-            rotation[2] = -rotation[0] - atan2(U(2,1), U(2,2));
-            rotation[1] = -M_PI/2;
+            rotation.z = -rotation.x - atan2(U(2,1), U(2,2));
+            rotation.y = -M_PI/2;
         }
         else{
-            rotation[2] = -rotation[0] + atan2(U(2,1), U(2,2));
-            rotation[1] = M_PI/2;
+            rotation.z = -rotation.x + atan2(U(2,1), U(2,2));
+            rotation.y = M_PI/2;
         }
     }
 
-    rotation[0] = Degrees(rotation[0]);
-    rotation[1] = Degrees(rotation[1]);
-    rotation[2] = Degrees(rotation[2]);
+    rotation.x = Degrees(rotation.x);
+    rotation.y = Degrees(rotation.y);
+    rotation.z = Degrees(rotation.z);
 
     // translation is last column of transformation
-    translation[0] = GetValue(0,3);
-    translation[1] = GetValue(1,3);
-    translation[2] = GetValue(2,3);
+    translation.x = GetValue(0,3);
+    translation.y= GetValue(1,3);
+    translation.z = GetValue(2,3);
+
+    if (rounding) {
+        RotationRounding(rotation);
+        ScalingRounding(scale);
+        TranslationRounding(translation);
+    }
 
 }
 
 bool CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint& scaling2,
-                                         CTiglPoint& rotation2, CTiglPoint& translation) const
+                                         CTiglPoint& rotation2, CTiglPoint& translation, bool rounding ) const
 {
 
     // The theory behind this decomposition can be found at:
@@ -684,6 +690,13 @@ bool CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotat
 //    }
 
 
+    if (rounding) {
+        tigl::RotationRounding(rotation1);
+        tigl::RotationRounding(rotation2);
+        tigl::ScalingRounding(scaling1);
+        tigl::ScalingRounding(scaling2);
+        tigl::TranslationRounding(translation);
+    }
 }
 
 // Getter for matrix values
