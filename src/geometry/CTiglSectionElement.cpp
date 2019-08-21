@@ -284,7 +284,7 @@ void tigl::CTiglSectionElement::SetArea(double newArea, TiglCoordinateSystem ref
 }
 
 void tigl::CTiglSectionElement::SetTotalTransformation(const tigl::CTiglTransformation& newTotalTransformation,
-                                                       TiglCoordinateSystem referenceCS)
+                                                       TiglCoordinateSystem referenceCS, bool useSimpleDecomposition )
 {
 
     // We have
@@ -305,10 +305,14 @@ void tigl::CTiglSectionElement::SetTotalTransformation(const tigl::CTiglTransfor
         newPSE = newTotalTransformation;
     };
 
-    SetPositioningSectionElementTransformation(newPSE);
+    if ( useSimpleDecomposition ){
+        SetPSETransformationsUseSimpleDecomposition(newPSE);
+    } else {
+        SetPSETransformations(newPSE);
+    }
 }
 
-void tigl::CTiglSectionElement::SetPositioningSectionElementTransformation(const tigl::CTiglTransformation &newTransformation)
+void tigl::CTiglSectionElement::SetPSETransformations(const tigl::CTiglTransformation &newTransformation)
 {
 
     CTiglPoint scal1, rot1, scal2, rot2, trans;
@@ -333,6 +337,49 @@ void tigl::CTiglSectionElement::SetPositioningSectionElementTransformation(const
     InvalidateParent();
 
 }
+
+
+
+void tigl::CTiglSectionElement::SetPSETransformationsUseSimpleDecomposition(
+        const tigl::CTiglTransformation &newTransformation, bool check )
+{
+
+    CTiglPoint scal, rot, trans;
+    newTransformation.Decompose(scal,rot,trans);
+
+
+    if ( check ) {
+        CTiglTransformation checkT;
+        checkT.SetIdentity();
+        checkT.AddScaling(scal.x, scal.y, scal.z);
+        checkT.AddRotationIntrinsicXYZ(rot.x, rot.y, rot.z);
+        checkT.AddTranslation(trans.x,trans.y,trans.z);
+        if (!checkT.IsNear(newTransformation)) {
+            LOG(WARNING) << "CTiglSectionElement::SetPSETransformationsUseSimpleDecomposition: "
+                            "The decomposition was not equal to the original transformation. "
+                            "You may need to us SetPSETransformation.";
+        }
+    }
+
+    // set the new transformation matrix in the element
+    CCPACSTransformation& storedElementTransformation = GetElementCCPACSTransformation();
+
+    storedElementTransformation.setScaling(CTiglPoint(1,1,1));
+    storedElementTransformation.setRotation(CTiglPoint(0,0,0));
+    storedElementTransformation.setTranslation(CTiglPoint(0,0,0));
+
+    CCPACSTransformation& storedSectionTransformation = GetSectionCCPACSTransformation();
+    storedSectionTransformation.setScaling(scal);
+    storedSectionTransformation.setRotation(rot);
+    storedSectionTransformation.setTranslation(CTiglPoint(0,0,0));
+
+    CCPACSPositionings& positionings = GetPositionings();
+    positionings.SetPositioningTransformation(GetSectionUID(), trans, false );
+
+    InvalidateParent();
+
+}
+
 
 void tigl::CTiglSectionElement::SetElementAndSectionScalingToNoneZero()
 {

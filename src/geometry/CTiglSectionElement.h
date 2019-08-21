@@ -101,8 +101,11 @@ public:
     TIGL_EXPORT virtual double GetWidth(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Set the element and section transformation such that the total transformation is equal to the given transformation
+    // If useSimpleDecomposition is set to true, this operation is done using a simple polar decomposition that do not
+    // guaranty that resulting transformation will be equal to the input one.
     TIGL_EXPORT void SetTotalTransformation(const CTiglTransformation& newTotalTransformation,
-                                            TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+                                            TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM, 
+                                            bool useSimpleDecomposition = false);
 
     // Scale the wire uniformly in world or fuselage/wing coordinates.
     // Remark that the effect is not always the same as to add a scaling transformation to the element transformation.
@@ -171,17 +174,28 @@ public:
      */
     TIGL_EXPORT void SetRotationAroundNormal(double angle, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
+    /**
+     * Set the underlying CPACSTransformation of the positioning (P), section (S)  and element (E)
+     * such that the multiplication of the three transformations give the input transformation!
+     * Remark, the strength of this method is that we are sure that the decomposition in CCPACSTransformations are exact!!
+     * We use the "DecomposeTRSRS" of the CTiglTransformation class and we set a part of the decomposition in the
+     * positioning, another part in the section CCPACSTransformation and another part in element CCPACSTransformation,
+     * thus the limitation of decomposing the matrix in translation, rotation and scaling is hacked.
+     * Remark, to apply this function we need to be sure that a section exist for each element,
+     * for the moment we assume it. But, in a near future, we can force this by creating a new section when is needed.
+     * @param newTransformation
+     */
+    void SetPSETransformations(const CTiglTransformation &newTransformation);
 
-
-    // Set the underlying CPACSTransformation of the positioning, section  and element
-    // such that the multiplication of the three transformations give the input transformation!
-    // Remark, the strength of this method is that we are sure that the decomposition in CCPACSTransformations are exact!!
-    // We use the "DecomposeTRSRS" of the CTiglTransformation class and we set a part of the decomposition in the
-    // positioning, another part in the section CCPACSTransformation and another part in element CCPACSTransformation,
-    // thus the limitation of decomposing the matrix in translation, rotation and scaling is hacked.
-    // Remark, to apply this function we need to be sure that a section exist for each element,
-    // for the moment we assume it. But, in a near future, we can force this by creating a new section when is needed.
-    void SetPositioningSectionElementTransformation(const CTiglTransformation &newTransformation);
+     /**
+      * Same principle as SetPSETransformaions but the a simple polar decomposition is used instead of the TRSRS decomposition.
+      * The pro is that the value stored in the CPACSFile is more human readable.
+      * The con is that some times the transformation can not be decomposed equally and some information are loosed.
+      *
+      * @param newTransformation
+      * @param check, if true a warning is logged if the transformation can not be properly decomposed
+      */
+    void SetPSETransformationsUseSimpleDecomposition(const CTiglTransformation &newTransformation, bool check = true);
 
 
 protected:

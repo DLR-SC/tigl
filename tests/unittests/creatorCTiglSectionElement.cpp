@@ -782,7 +782,7 @@ TEST_F(creatorCTiglSectionElement, SetPositioningSectionElementTransformation_Mu
     // identity matrix case
 
     newPSE.SetIdentity();
-    cElement->SetPositioningSectionElementTransformation(newPSE);
+    cElement->SetPSETransformations(newPSE);
     resE = cElement->GetElementTransformation();
     resS = cElement->GetSectionTransformation();
     resP = cElement->GetPositioningTransformation();
@@ -796,7 +796,7 @@ TEST_F(creatorCTiglSectionElement, SetPositioningSectionElementTransformation_Mu
 
     newPSE.SetIdentity();
     newPSE.AddRotationIntrinsicXYZ(20, 30, 40);
-    cElement->SetPositioningSectionElementTransformation(newPSE);
+    cElement->SetPSETransformations(newPSE);
     resE = cElement->GetElementTransformation();
     resS = cElement->GetSectionTransformation();
     resP = cElement->GetPositioningTransformation();
@@ -811,7 +811,7 @@ TEST_F(creatorCTiglSectionElement, SetPositioningSectionElementTransformation_Mu
     newPSE.AddScaling(1, 2, 3);
     newPSE.AddRotationIntrinsicXYZ(10, 40, 60);
     newPSE.AddTranslation(30, -10, -8);
-    cElement->SetPositioningSectionElementTransformation(newPSE);
+    cElement->SetPSETransformations(newPSE);
     resE = cElement->GetElementTransformation();
     resS = cElement->GetSectionTransformation();
     resP = cElement->GetPositioningTransformation();
@@ -825,7 +825,7 @@ TEST_F(creatorCTiglSectionElement, SetPositioningSectionElementTransformation_Mu
 
     newPSE.SetIdentity();
     newPSE.SetValue(0, 1, 0.5);
-    cElement->SetPositioningSectionElementTransformation(newPSE);
+    cElement->SetPSETransformations(newPSE);
     resE = cElement->GetElementTransformation();
     resS = cElement->GetSectionTransformation();
     resP = cElement->GetPositioningTransformation();
@@ -836,6 +836,79 @@ TEST_F(creatorCTiglSectionElement, SetPositioningSectionElementTransformation_Mu
 
     saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
 }
+
+
+TEST_F(creatorCTiglSectionElement, SetPSETransformationUseSimpleDecomposition_MultipleFuselagesModel)
+{
+    setVariables("TestData/multiple_fuselages.xml");
+
+    tigl::CTiglSectionElement* cElement = nullptr;
+    tigl::CTiglTransformation newPSE, res, resE, resS, resP, I;
+    I.SetIdentity();
+
+    double tolerance = 0.0001; // tolerance on the pairwise diff of the result matrix and the input matrix
+
+    cElement = GetCElementOf("D150_Fuselage_1Section1IDElement1");
+
+    // identity matrix case
+
+    newPSE.SetIdentity();
+    cElement->SetPSETransformationsUseSimpleDecomposition(newPSE);
+    resE = cElement->GetElementTransformation();
+    resS = cElement->GetSectionTransformation();
+    resP = cElement->GetPositioningTransformation();
+    res  = resP * resS * resE;
+    EXPECT_TRUE(res.IsNear(newPSE, tolerance));
+    EXPECT_TRUE(resE.IsNear(I, tolerance)); // we want also that E and S matrix equal I
+    EXPECT_TRUE(resS.IsNear(I, tolerance));
+    EXPECT_TRUE(resP.IsNear(I, tolerance));
+
+    // simple matrix case
+
+    newPSE.SetIdentity();
+    newPSE.AddRotationIntrinsicXYZ(20, 30, 40);
+    cElement->SetPSETransformationsUseSimpleDecomposition(newPSE);
+    resE = cElement->GetElementTransformation();
+    resS = cElement->GetSectionTransformation();
+    resP = cElement->GetPositioningTransformation();
+    res  = resP * resS * resE;
+    EXPECT_TRUE(res.IsNear(newPSE, tolerance));
+    EXPECT_TRUE(resE.IsNear(I, tolerance));
+    EXPECT_TRUE(resP.IsNear(I, tolerance));
+
+    // simple matrix case2
+
+    newPSE.SetIdentity();
+    newPSE.AddScaling(1, 2, 3);
+    newPSE.AddRotationIntrinsicXYZ(10, 40, 60);
+    newPSE.AddTranslation(30, -10, -8);
+    cElement->SetPSETransformationsUseSimpleDecomposition(newPSE);
+    resE = cElement->GetElementTransformation();
+    resS = cElement->GetSectionTransformation();
+    resP = cElement->GetPositioningTransformation();
+    res  = resP *resS * resE;
+    EXPECT_TRUE(res.IsNear(newPSE, tolerance));
+    // we want also that E equal I because a proper polar decomposition should be done
+    EXPECT_TRUE(resE.IsNear(I, tolerance));
+    EXPECT_TRUE(resP.GetTranslation().isNear(tigl::CTiglPoint(30,-10,-8), tolerance));
+
+    // shearing matrix case
+
+    newPSE.SetIdentity();
+    newPSE.SetValue(0, 1, 0.5);
+    cElement->SetPSETransformationsUseSimpleDecomposition(newPSE);
+    resE = cElement->GetElementTransformation();
+    resS = cElement->GetSectionTransformation();
+    resP = cElement->GetPositioningTransformation();
+    res  = resP *  resS * resE;
+    // only difference with the SetPositioningSectionElementTransformation_MultipleFuselagesModel test
+    EXPECT_TRUE( ! res.IsNear(newPSE, tolerance));
+    EXPECT_TRUE(resP.IsNear(I, tolerance));
+
+
+    saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
+}
+
 
 
 TEST_F(creatorCTiglSectionElement, Wing_GetChord_MultipleWingsModel)
