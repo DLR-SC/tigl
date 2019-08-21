@@ -18,69 +18,73 @@
 
 #include "CTiglStandardizer.h"
 
-void tigl::CTiglStandardizer::StandardizeFuselage(tigl::CCPACSFuselage& fuselage)
+void tigl::CTiglStandardizer::StandardizeFuselage(tigl::CCPACSFuselage& fuselage, bool useSimpleDecomposition)
 {
-    CTiglPoint noseCenter                 = fuselage.GetNoseCenter();
+
     std::vector<std::string> elementsUIDS = fuselage.GetOrderedConnectedElement();
     if (elementsUIDS.size() < 2) {
         CTiglError("CTiglStandardizer: Impossible to standardize a fuselage with less than 2 valid elements!");
     }
 
-    std::map<std::string, CTiglPoint> elementsCenters;
-    CTiglFuselageSectionElement* cElementTemp = nullptr;
+    // create a order list of cElements;
+    std::vector<CTiglSectionElement*> elements;
     for (int i = 0; i < elementsUIDS.size(); i++) {
-        cElementTemp                        = fuselage.fuselageHelper->GetCTiglElementOfFuselage(elementsUIDS.at(i));
-        elementsCenters[elementsUIDS.at(i)] = cElementTemp->GetCenter(GLOBAL_COORDINATE_SYSTEM);
+        elements.push_back(fuselage.fuselageHelper->GetCTiglElementOfFuselage(elementsUIDS.at(i)));
     }
 
-    // Remove all the positioning
-    CCPACSPositionings& positionings                   = fuselage.GetPositionings(CreateIfNotExistsTag());
-    std::vector<unique_ptr<CCPACSPositioning>>& refPos = positionings.GetPositionings();
-    while (refPos.size() != 0) {
-        positionings.RemovePositioning(*(refPos.front()));
-    }
+    // Get the total transformation of each element
+    std::vector<CTiglTransformation> totalTs = GetTotalTransformations(elements);
 
-    // create the std positioning structure
-    std::string fromUID = "";
-    std::string toUID;
-    CTiglPoint dummyDelta(1.11, 0, 0);
-    for (int i = 0; i < elementsUIDS.size(); i++) {
-        toUID = fuselage.fuselageHelper->GetCTiglElementOfFuselage(elementsUIDS.at(i))->GetSectionUID();
-        positionings.CreatePositioning(fromUID, toUID, dummyDelta);
-        fromUID = toUID;
-    }
-
-    // Set the transformation of the fuselage such that the nose center translation is performed by the fuselage transforamtion
+    // Set the transformation of the fuselage such that the nose center translation is performed by the fuselage transformation
+    CTiglPoint noseCenter                        = fuselage.GetNoseCenter();
     CCPACSTransformation& fuselageTransformation = fuselage.GetTransformation();
     fuselageTransformation.setTranslation(noseCenter);
     fuselage.Invalidate();
 
-    // Reset the center of each section (positioning will be set in SetCenter function)
-    cElementTemp = nullptr;
-    for (int i = 0; i < elementsUIDS.size(); i++) {
-        cElementTemp = fuselage.fuselageHelper->GetCTiglElementOfFuselage(elementsUIDS.at(i));
-        cElementTemp->SetCenter(elementsCenters.at(elementsUIDS.at(i)));
-    }
+    // create the std positioning structure
+    StdandardizePositioningsStructure(fuselage.GetPositionings(CreateIfNotExistsTag()), elements);
+    fuselage.Invalidate();
+
+    // Reset the resulting transformation to a transformation equivalent to its original one.
+    // Remark the ticks is that setting the element will keep the standardization
+    SetTotalTransformations(elements, totalTs, useSimpleDecomposition);
 }
 
-
-void tigl::CTiglStandardizer::StandardizeWing(tigl::CCPACSWing& wing)
+void tigl::CTiglStandardizer::StandardizeWing(tigl::CCPACSWing& wing, bool useSimpleDecomposition)
 {
-    CTiglPoint rootLE                 = wing.GetRootLEPosition();
     std::vector<std::string> elementsUIDS = wing.GetOrderedConnectedElement();
     if (elementsUIDS.size() < 2) {
         CTiglError("CTiglStandardizer: Impossible to standardize a wing with less than 2 valid elements!");
     }
 
-    std::map<std::string, CTiglPoint> elementsCenters;
-    CTiglWingSectionElement* cElementTemp = nullptr;
+    // create a order list of cElements;
+    std::vector<CTiglSectionElement*> elements;
     for (int i = 0; i < elementsUIDS.size(); i++) {
-        cElementTemp                        = wing.wingHelper->GetCTiglElementOfWing(elementsUIDS.at(i));
-        elementsCenters[elementsUIDS.at(i)] = cElementTemp->GetCenter(GLOBAL_COORDINATE_SYSTEM);
+        elements.push_back(wing.wingHelper->GetCTiglElementOfWing(elementsUIDS.at(i)));
     }
 
-    // Remove all the positioning
-    CCPACSPositionings& positionings                   = wing.GetPositionings(CreateIfNotExistsTag());
+    // Get the total transformation of each element
+    std::vector<CTiglTransformation> totalTs = GetTotalTransformations(elements);
+
+    // Set the transformation of the fuselage such that the nose center translation is performed by the fuselage transforamtion
+    CTiglPoint rootLE                        = wing.GetRootLEPosition();
+    CCPACSTransformation& wingTransformation = wing.GetTransformation();
+    wingTransformation.setTranslation(rootLE);
+    wing.Invalidate();
+
+    // create the std positioning structure
+    StdandardizePositioningsStructure(wing.GetPositionings(CreateIfNotExistsTag()), elements);
+    wing.Invalidate();
+
+    // Reset the resulting transformation to a transformation equivalent to its original one.
+    // Remark the ticks is that setting the element will keep the standardization
+    SetTotalTransformations(elements, totalTs, useSimpleDecomposition);
+}
+
+void tigl::CTiglStandardizer::StdandardizePositioningsStructure(CCPACSPositionings& positionings,
+                                                                std::vector<CTiglSectionElement*> elements)
+{
+
     std::vector<unique_ptr<CCPACSPositioning>>& refPos = positionings.GetPositionings();
     while (refPos.size() != 0) {
         positionings.RemovePositioning(*(refPos.front()));
@@ -90,21 +94,30 @@ void tigl::CTiglStandardizer::StandardizeWing(tigl::CCPACSWing& wing)
     std::string fromUID = "";
     std::string toUID;
     CTiglPoint dummyDelta(0, 1.11, 0);
-    for (int i = 0; i < elementsUIDS.size(); i++) {
-        toUID = wing.wingHelper->GetCTiglElementOfWing(elementsUIDS.at(i))->GetSectionUID();
+    for (int i = 0; i < elements.size(); i++) {
+        toUID = elements.at(i)->GetSectionUID();
         positionings.CreatePositioning(fromUID, toUID, dummyDelta);
         fromUID = toUID;
     }
+}
 
-    // Set the transformation of the fuselage such that the nose center translation is performed by the fuselage transforamtion
-    CCPACSTransformation& wingTransformation = wing.GetTransformation();
-    wingTransformation.setTranslation(rootLE);
-    wing.Invalidate();
+void tigl::CTiglStandardizer::SetTotalTransformations(std::vector<tigl::CTiglSectionElement*> elements,
+                                                      std::vector<tigl::CTiglTransformation> totalTs,
+                                                      bool useSimpleDecomposition)
+{
 
-    // Reset the center of each section (positioning will be set in SetCenter function)
-    cElementTemp = nullptr;
-    for (int i = 0; i < elementsUIDS.size(); i++) {
-        cElementTemp = wing.wingHelper->GetCTiglElementOfWing(elementsUIDS.at(i));
-        cElementTemp->SetCenter(elementsCenters.at(elementsUIDS.at(i)));
+    for (int i = 0; i < elements.size(); i++) {
+        elements.at(i)->SetTotalTransformation(totalTs.at(i), GLOBAL_COORDINATE_SYSTEM, useSimpleDecomposition);
     }
+}
+
+std::vector<tigl::CTiglTransformation>
+tigl::CTiglStandardizer::GetTotalTransformations(std::vector<tigl::CTiglSectionElement*> elements)
+{
+
+    std::vector<tigl::CTiglTransformation> totalTs;
+    for (int i = 0; i < elements.size(); i++) {
+        totalTs.push_back(elements.at(i)->GetTotalTransformation(GLOBAL_COORDINATE_SYSTEM));
+    }
+    return totalTs;
 }
