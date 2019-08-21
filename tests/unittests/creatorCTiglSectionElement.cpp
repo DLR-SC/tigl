@@ -305,22 +305,22 @@ TEST_F(creatorCTiglSectionElement, getNormal_MultipleFuselagesModel)
     cElement  = GetCElementOf("D150_Fuselage_3Section1IDElement1");
     n         = cElement->GetNormal();
     expectedN = tigl::CTiglPoint(0.766, 0.642, 0);
-    EXPECT_TRUE(n.isNear(expectedN));
+    EXPECT_TRUE(n.isNear(expectedN, 0.01));
 
     n         = cElement->GetNormal(TiglCoordinateSystem::FUSELAGE_COORDINATE_SYSTEM);
     expectedN = tigl::CTiglPoint(1, 0, 0);
-    EXPECT_TRUE(n.isNear(expectedN));
+    EXPECT_TRUE(n.isNear(expectedN, 0.01));
 
     // simple fuselage 4 !
 
     cElement  = GetCElementOf("D150_Fuselage_4Section1IDElement1");
     n         = cElement->GetNormal();
     expectedN = tigl::CTiglPoint(0.766, 0.642, 0);
-    EXPECT_TRUE(n.isNear(expectedN));
+    EXPECT_TRUE(n.isNear(expectedN, 0.01));
 
     n         = cElement->GetNormal(TiglCoordinateSystem::FUSELAGE_COORDINATE_SYSTEM);
     expectedN = tigl::CTiglPoint(1, 0, 0);
-    EXPECT_TRUE(n.isNear(expectedN));
+    EXPECT_TRUE(n.isNear(expectedN, 0.01));
 }
 
 TEST_F(creatorCTiglSectionElement, getProfileHeight_MultipleFuselagesModel)

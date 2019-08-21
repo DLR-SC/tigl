@@ -28,6 +28,7 @@
 #include "gp_Pnt.hxx"
 #include "gp_XYZ.hxx"
 #include <iostream>
+#include "Precision.hxx"
 
 namespace tigl 
 {
@@ -66,7 +67,7 @@ public:
     TIGL_EXPORT bool operator==(const CTiglPoint& aPoint) const;
 
     // Comparison of two points, return true if the distance between the two point is less than epsilon
-    TIGL_EXPORT bool isNear(const CTiglPoint& aPoint, double epsilon = 0.001) const;
+    TIGL_EXPORT bool isNear(const CTiglPoint& aPoint, double epsilon = Precision::Confusion()) const;
 
     // returns a'*a
     TIGL_EXPORT double norm2Sqr() const;

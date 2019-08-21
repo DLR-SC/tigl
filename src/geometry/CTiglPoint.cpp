@@ -180,7 +180,7 @@ void CTiglPoint::getMinMax(double & min, double & max) const
 
 bool CTiglPoint::operator==(const CTiglPoint& aPoint) const
 {
-    if ( this->isNear(aPoint, 1e-12) ) {
+    if ( this->isNear(aPoint) ) {
         return true;
     }
     return false;
