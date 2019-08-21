@@ -126,7 +126,6 @@ TEST_F(creatorStandardizer, standardizeFuselage)
     for (int i = 0; i < elementUIDs.size(); i++) {
         centers[elementUIDs.at(i)] = GetCElementOf(elementUIDs.at(i))->GetCenter();
     }
-    saveInOutputFile();
 
     tigl::CTiglStandardizer::StandardizeFuselage(fuselage);
 
@@ -149,4 +148,78 @@ TEST_F(creatorStandardizer, standardizeFuselage)
     EXPECT_EQ(posVec.at(1)->GetToSectionUID(), "D150_Fuselage_1Section2ID");
     EXPECT_EQ(*(posVec.at(2)->GetFromSectionUID()), "D150_Fuselage_1Section2ID");
     EXPECT_EQ(posVec.at(2)->GetToSectionUID(), "D150_Fuselage_1Section3ID");
+}
+
+
+TEST_F(creatorStandardizer, standardizeWing)
+{
+
+    setVariables("TestData/multiple_wings.xml");
+
+    saveInOutputFile();
+    tigl::CCPACSWing& wing = config->GetWing("W17_RotSec");
+
+    // save center to verify if they do not move
+    std::vector<std::string> elementUIDs = wing.GetOrderedConnectedElement();
+    std::map<std::string, tigl::CTiglPoint> centers;
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        centers[elementUIDs.at(i)] = GetCElementOf(elementUIDs.at(i))->GetCenter();
+    }
+
+    tigl::CTiglStandardizer::StandardizeWing(wing);
+
+    saveInOutputFile();
+    elementUIDs = wing.GetOrderedConnectedElement();
+    // verify that each element was not moved
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        EXPECT_TRUE((centers.at(elementUIDs.at(i))).isNear(GetCElementOf(elementUIDs.at(i))->GetCenter()));
+    }
+    // verfying that the translation of the wing is stored in the wing transformation and not in positioning or others
+    tigl::CTiglPoint translationWing = wing.GetTranslation(); // todo verify behavior with parent uid
+    EXPECT_TRUE(translationWing.isNear(wing.GetRootLEPosition()));
+    // verfying that positonining has the correct structure:
+    std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec =
+            wing.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
+    EXPECT_EQ(posVec.size(), 3);
+    EXPECT_EQ(*(posVec.at(0)->GetFromSectionUID()), "");
+    EXPECT_EQ(posVec.at(0)->GetToSectionUID(), "W17_RotSec_Sec1");
+    EXPECT_EQ(*(posVec.at(1)->GetFromSectionUID()), "W17_RotSec_Sec1");
+    EXPECT_EQ(posVec.at(1)->GetToSectionUID(), "W17_RotSec_Sec2");
+    EXPECT_EQ(*(posVec.at(2)->GetFromSectionUID()), "W17_RotSec_Sec2");
+    EXPECT_EQ(posVec.at(2)->GetToSectionUID(), "W17_RotSec_Sec3");
+
+
+
+    tigl::CCPACSWing& wing2 = config->GetWing("Wing");
+    centers.clear();
+    elementUIDs.clear();
+
+    // save center to verify if they do not move
+    elementUIDs = wing2.GetOrderedConnectedElement();
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        centers[elementUIDs.at(i)] = GetCElementOf(elementUIDs.at(i))->GetCenter();
+    }
+
+    tigl::CTiglStandardizer::StandardizeWing(wing2);
+
+    saveInOutputFile();
+    elementUIDs = wing2.GetOrderedConnectedElement();
+    // verify that each element was not moved
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        EXPECT_TRUE((centers.at(elementUIDs.at(i))).isNear(GetCElementOf(elementUIDs.at(i))->GetCenter()));
+    }
+    // verfying that the translation of the wing is stored in the wing transformation and not in positioning or others
+    translationWing = wing2.GetTranslation(); // todo verify behavior with parent uid
+    EXPECT_TRUE(translationWing.isNear(wing2.GetRootLEPosition()));
+    // verfying that positonining has the correct structure:
+    std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec2 =
+            wing2.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
+    EXPECT_EQ(posVec2.size(), 3);
+    EXPECT_EQ(*(posVec2.at(0)->GetFromSectionUID()), "");
+    EXPECT_EQ(posVec2.at(0)->GetToSectionUID(), "Cpacs2Test_Wing_Sec1");
+    EXPECT_EQ(*(posVec2.at(1)->GetFromSectionUID()), "Cpacs2Test_Wing_Sec1");
+    EXPECT_EQ(posVec2.at(1)->GetToSectionUID(), "Cpacs2Test_Wing_Sec2");
+    EXPECT_EQ(*(posVec2.at(2)->GetFromSectionUID()), "Cpacs2Test_Wing_Sec2");
+    EXPECT_EQ(posVec2.at(2)->GetToSectionUID(), "Cpacs2Test_Wing_Sec3");
+
 }
