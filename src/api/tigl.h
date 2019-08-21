@@ -4397,7 +4397,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
                                                            double *referenceAreaPtr);
 
 /**
-* @brief Returns the wetted area of the wing.
+* @brief Returns the wetted area of the wing. If the wing has no parent (fuselage), it returns the
+* surface area of the wing.
 *
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
