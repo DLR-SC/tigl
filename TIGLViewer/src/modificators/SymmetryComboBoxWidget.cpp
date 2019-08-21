@@ -85,7 +85,8 @@ void SymmetryComboBoxWidget::setInternal(TiglSymmetryAxis symmetryAxis)
 
 void SymmetryComboBoxWidget::setGUIFromInternal()
 {
-    ui->comboBox->setCurrentText(TiglSymmetryAxisToQString(internalSymmetry));
+    int index = ui->comboBox->findText(TiglSymmetryAxisToQString(internalSymmetry));
+    ui->comboBox->setCurrentIndex(index);
 }
 
 void SymmetryComboBoxWidget::setInternalFromGUI()
