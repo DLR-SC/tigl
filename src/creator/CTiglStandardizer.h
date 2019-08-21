@@ -38,8 +38,11 @@ public:
      *      the fuselage origin (with a length of 0, if the origin of the profile correspond to its center).
      *
      * @param fuselage
+     * @param useSimpleDecomposition, if set to true the standardization use only polar decomposition.
+     * This mean that the cpacs file is more readable but there can be some simplification that change the global
+     * shape of the fuselage.
      */
-    static void StandardizeFuselage(CCPACSFuselage& fuselage);
+    static void StandardizeFuselage(CCPACSFuselage& fuselage, bool useSimpleDecomposition = false);
 
     /**
      * Standardize the wing using the CPACSCreator standard.
@@ -50,8 +53,21 @@ public:
      *      the wing origin (with a length of 0, if the origin of the airfoil correspond to its leading edge).
      *
      * @param wing
+     * @param useSimpleDecomposition, if set to true the standardization use only polar decomposition.
+     * This mean that the cpacs file is more readable but there can be some simplification that change the global
+     * shape of the wing.
      */
-    static void StandardizeWing(CCPACSWing& wing);
+    static void StandardizeWing(CCPACSWing& wing, bool useSimpleDecomposition = false);
+
+
+
+private:
+
+    static void StdandardizePositioningsStructure(CCPACSPositionings& positionings, std::vector<CTiglSectionElement*> elements);
+
+    static void SetTotalTransformations(std::vector<CTiglSectionElement*> elements, std::vector<CTiglTransformation>, bool useSimpleDecomposition = false);
+
+    static std::vector<CTiglTransformation> GetTotalTransformations(std::vector<tigl::CTiglSectionElement *> elements);
 };
 }
 
