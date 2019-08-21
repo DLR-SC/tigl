@@ -17,6 +17,7 @@
  */
 
 #include "CTiglStandardizer.h"
+#include "tiglmathfunctions.h"
 
 void tigl::CTiglStandardizer::StandardizeFuselage(tigl::CCPACSFuselage& fuselage, bool useSimpleDecomposition)
 {
@@ -38,6 +39,7 @@ void tigl::CTiglStandardizer::StandardizeFuselage(tigl::CCPACSFuselage& fuselage
     // Set the transformation of the fuselage such that the nose center translation is performed by the fuselage transformation
     CTiglPoint noseCenter                        = fuselage.GetNoseCenter();
     CCPACSTransformation& fuselageTransformation = fuselage.GetTransformation();
+    TranslationRounding(noseCenter);
     fuselageTransformation.setTranslation(noseCenter);
     fuselage.Invalidate();
 
@@ -69,6 +71,7 @@ void tigl::CTiglStandardizer::StandardizeWing(tigl::CCPACSWing& wing, bool useSi
     // Set the transformation of the fuselage such that the nose center translation is performed by the fuselage transforamtion
     CTiglPoint rootLE                        = wing.GetRootLEPosition();
     CCPACSTransformation& wingTransformation = wing.GetTransformation();
+    TranslationRounding(rootLE);
     wingTransformation.setTranslation(rootLE);
     wing.Invalidate();
 
