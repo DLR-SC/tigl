@@ -310,3 +310,9 @@ TEST_F(WingSimple, wingGetReferenceArea_success)
     ASSERT_NEAR(1.75, ref, 1e-7);
 
 }
+
+TEST_F(WingSimple, wingGetWettedArea_success)
+{
+    double ref = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetWettedArea(tiglSimpleWingHandle, "Wing", &ref));
+}

@@ -403,7 +403,11 @@ int CCPACSConfiguration::GetRotorIndex(const std::string& UID) const
 
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
 {
-    return uidManager.GetParentGeometricComponent(UID)->GetLoft()->Shape();
+    CTiglRelativelyPositionedComponent* parent = uidManager.GetParentGeometricComponent(UID);
+    if (!parent) {
+        throw CTiglError("CCPACSConfiguration::GetParentLoft: Cannot find parent of component with uID " + UID + ".");
+    }
+    return parent->GetLoft()->Shape();
 }
 
 bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
