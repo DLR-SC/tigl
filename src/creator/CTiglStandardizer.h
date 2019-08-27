@@ -22,6 +22,7 @@
 
 #include "CCPACSWing.h"
 #include "CCPACSFuselage.h"
+#include "CCPACSConfiguration.h"
 
 namespace tigl
 {
@@ -58,6 +59,15 @@ public:
      * shape of the wing.
      */
     static void StandardizeWing(CCPACSWing& wing, bool useSimpleDecomposition = false);
+
+
+    /**
+     * Standardize the all the wings and the fuselage of the aircraft.
+     *
+     * @param config
+     * @param useSimpleDecomposition
+     */
+    static void StandardizeAircraft(CCPACSConfiguration& config, bool useSimpleDecomposition  = false);
 
 
 
