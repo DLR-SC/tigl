@@ -116,6 +116,7 @@ CCPACSWing& CCPACSWings::CreateWing(const std::string& wingUID, int numberOfSect
 
     // check if the profile uid is valid
     try {
+        // TODO (MS): Change using IsUIDRegistered<CCPACSWingProfile>
         uidManager.ResolveObject<CCPACSWingProfile>(airfoilUID);
     }
     catch (const CTiglError& e) {

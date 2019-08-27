@@ -26,6 +26,7 @@
 #include "CCPACSWingSection.h"
 #include "CreateConnectedElementI.h"
 #include "CCPACSPositioning.h"
+#include "CTiglStandardizer.h"
 
 ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
                                        ModificatorContainerWidget* modificatorContainerWidget,
@@ -237,4 +238,37 @@ QStringList ModificatorManager::getAvailableWingProfileUIDs()
         }
     }
     return profileUIDs;
+}
+
+void ModificatorManager::standardize(QString uid, bool useSimpleDecomposition)
+{
+    if (!configurationIsSet()) {
+        LOG(ERROR) << "ModificatorManager::standardize: Called but no document is set!";
+    }
+    tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
+    tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(uid.toStdString());
+    if (typePtr.type == &typeid(tigl::CCPACSWing)) {
+        tigl::CCPACSWing& wing = *reinterpret_cast<tigl::CCPACSWing*>(typePtr.ptr);
+        tigl::CTiglStandardizer::StandardizeWing(wing, useSimpleDecomposition);
+    }
+    else if (typePtr.type == &typeid(tigl::CCPACSFuselage)) {
+        tigl::CCPACSFuselage& fuselage = *reinterpret_cast<tigl::CCPACSFuselage*>(typePtr.ptr);
+        tigl::CTiglStandardizer::StandardizeFuselage(fuselage, useSimpleDecomposition);
+    }
+    else {
+        LOG(ERROR) << " ModificatorManager::standardize: uid is not of type fuselage or wing. Only fuselage or wing "
+                      "can be standardize for the moment!";
+    }
+    createUndoCommand();
+}
+
+
+void ModificatorManager::standardize(bool useSimpleDecomposition)
+{
+    if (!configurationIsSet()) {
+        LOG(ERROR) << "ModificatorManager::standardize: Called but no document is set!";
+    }
+    tigl::CTiglStandardizer::StandardizeAircraft(doc->GetConfiguration(), useSimpleDecomposition );
+    createUndoCommand();
+
 }

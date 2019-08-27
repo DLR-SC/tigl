@@ -304,6 +304,7 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="standardizeAction"/>
    </widget>
    <addaction name="fileMenu"/>
    <addaction name="menuEdit"/>
@@ -1489,6 +1490,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="standardizeAction">
+   <property name="text">
+    <string>Standardize</string>
    </property>
   </action>
  </widget>

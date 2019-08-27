@@ -113,6 +113,7 @@ set(tv_src
   src/modificators/NewWingDialog.cpp
   src/modificators/DeleteDialog.cpp
   src/modificators/ModificatorPositioningWidget.cpp
+  src/StandardizeDialog.cpp
   src/ModificatorManager.cpp
   src/CPACSAbstractModel.cpp
   src/CPACSTreeItem.cpp
@@ -198,6 +199,7 @@ set(tv_hdr
   src/CPACSTreeWidget.h
   src/CPACSFilterModel.h
   src/TIGLViewerNewFileDialog.h
+  src/StandardizeDialog.h
   src/modificators/CTiglPointWidget.h
   src/TIGLViewerCommonFunctions.h
   src/CPACSFilterModel.h
