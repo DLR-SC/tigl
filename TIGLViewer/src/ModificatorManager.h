@@ -64,6 +64,13 @@ public:
 
     void setCPACSConfiguration(TIGLViewerDocument* newDoc);
 
+    // standardize the wing or the fuselage given by the uid and call createUndoCommand
+    void standardize(QString uid, bool useSimpleDecomposition);
+
+    // standardize the aircraft uid and call createUndoCommand
+    void standardize(bool useSimpleDecomposition);
+
+
 protected:
 
     QStringList getAvailableFuselageProfileUIDs();  // we be managed by the profiles DB managed in future

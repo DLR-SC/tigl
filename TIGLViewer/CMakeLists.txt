@@ -124,6 +124,7 @@ set(tv_src
 	modificators/NewWingDialog.cpp
 	modificators/DeleteDialog.cpp
 	modificators/ModificatorPositioningWidget.cpp
+	StandardizeDialog.cpp
 	ModificatorManager.cpp
 	CPACSAbstractModel.cpp
 	CPACSTreeItem.cpp
@@ -209,6 +210,7 @@ set(tv_hdr_qobj
 	CPACSTreeWidget.h
 	CPACSFilterModel.h
 	TIGLViewerNewFileDialog.h
+	StandardizeDialog.h
 )
 
 
@@ -225,7 +227,8 @@ set(tv_ui_comp
 	src/TIGLViewerVTKExportDialog.ui
 	src/TIGLSliderDialog.ui
 	src/TIGLGeometryChoserDialog.ui
-   		src/modificators/ModificatorTransformationWidget.ui
+	src/StandardizeDialog.ui
+		src/modificators/ModificatorTransformationWidget.ui
 		src/modificators/ModificatorTransformationWidget.ui
 		src/modificators/ModificatorElementWidget.ui
 		src/modificators/ModificatorWingWidget.ui

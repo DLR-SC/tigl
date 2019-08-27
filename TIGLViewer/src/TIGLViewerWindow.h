@@ -110,6 +110,7 @@ private slots:
     void makeScreenShot();
     void drawPoint();
     void drawVector();
+    void standardizeDialog();
 
 private:
     void connectSignals();

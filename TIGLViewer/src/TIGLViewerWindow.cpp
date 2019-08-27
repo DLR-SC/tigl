@@ -53,6 +53,7 @@
 #include "api/tigl_version.h"
 #include "CCPACSConfigurationManager.h"
 #include "TIGLViewerNewFileDialog.h"
+#include "StandardizeDialog.h"
 #include <tixicpp.h>
 
 #include <cstdlib>
@@ -902,6 +903,8 @@ void TIGLViewerWindow::connectSignals()
     QAction* redoAction = undoStack->createRedoAction(this, tr("Redo"));
     redoAction->setShortcuts(QKeySequence::Redo);
     menuEdit->addAction(redoAction);
+
+    connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
 }
 
 void TIGLViewerWindow::createMenus()
@@ -1088,4 +1091,24 @@ bool TIGLViewerWindow::deleteEnvVar(const char * varName)
     char *envVar = qstrdup(buffer.constData());
     return putenv(envVar) == 0;
 #endif
+}
+
+void TIGLViewerWindow::standardizeDialog()
+{
+    statusBar()->showMessage(tr("Invoked Edit|Standardize"));
+    if (cpacsConfiguration == nullptr || cpacsConfiguration->getCpacsHandle() <= 0) {
+        displayErrorMessage("No components to standardize", "TIGLViewerError");
+        return;
+    }
+
+    tigl::CCPACSConfiguration& config = cpacsConfiguration->GetConfiguration();
+    StandardizeDialog newStdDialog(config, this);
+    if (newStdDialog.exec() == QDialog::Accepted) {
+        if (newStdDialog.isSelectedUIDAFuselage() || newStdDialog.isSelectedUIDAWing()) {
+            modificatorManager->standardize(newStdDialog.getSelectedUID(), newStdDialog.useSimpleDecomposition());
+        }
+        else {
+            modificatorManager->standardize(newStdDialog.useSimpleDecomposition());
+        }
+    }
 }
