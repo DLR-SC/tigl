@@ -124,3 +124,16 @@ tigl::CTiglStandardizer::GetTotalTransformations(std::vector<tigl::CTiglSectionE
     }
     return totalTs;
 }
+
+void tigl::CTiglStandardizer::StandardizeAircraft(CCPACSConfiguration& config, bool useSimpleDecomposition)
+{
+    for (int w = 1; w <= config.GetWingCount(); w++) {
+        CCPACSWing& wing = config.GetWing(w);
+        StandardizeWing(wing, useSimpleDecomposition);
+    }
+
+    for (int f = 1; f <= config.GetFuselageCount(); f++) {
+        CCPACSFuselage& fuselage = config.GetFuselage(f);
+        StandardizeFuselage(fuselage, useSimpleDecomposition);
+    }
+}
