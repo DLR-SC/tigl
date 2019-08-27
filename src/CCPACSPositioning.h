@@ -69,8 +69,9 @@ public:
      * Set the length, sweep and dihedral parameter from the given positioning vector.
      * @remark The fromSectionUID nor the toSectionUID are changed.
      * @param delta
+     * @param rounding, if rounding is set to true angle and length will be rounding near common value as 0 ,90,180,..
      */
-    TIGL_EXPORT void SetParametersFromVector(const CTiglPoint& delta);
+    TIGL_EXPORT void SetParametersFromVector(const CTiglPoint& delta, bool rounding = true );
 
 protected:
     // Build transformation matrix for the positioning

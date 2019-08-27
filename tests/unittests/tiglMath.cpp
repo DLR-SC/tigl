@@ -1147,7 +1147,79 @@ TEST(TiglMath, FindVectorPerpendicularToDirection)
 
 }
 
-TEST(TiglMath, Rounding)
+TEST(TiglMath, DoubleRounding)
+{
+    double inNumber;
+    double expected;
+    double tolerance = 1e-13;
+
+    inNumber = 366.4;
+    expected = 6.4;
+    tigl::AngleRounding(inNumber);
+    EXPECT_NEAR(inNumber, expected, tolerance );
+
+
+    inNumber = -366.4;
+    expected = -6.4;
+    tigl::AngleRounding(inNumber);
+    EXPECT_NEAR(inNumber, expected, tolerance);
+
+    inNumber =  1e-9;
+    expected = 0;
+    tigl::AngleRounding(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+
+    inNumber =  -180 ; ;
+    expected = 180;
+    tigl::AngleRounding(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber =  -90 ; ;
+    expected = -90;
+    tigl::AngleRounding(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber =  -180 - 1e-9; ;
+    expected = 180;
+    tigl::AngleRounding(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber =  90.1; ;
+    expected = 90.1;
+    tigl::AngleRounding(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber =  90.1; ;
+    expected = 90;
+    tigl::AngleRounding(inNumber, 1);
+    EXPECT_EQ(inNumber, expected);
+
+    // LengthRounding
+
+    inNumber = 1e-9;
+    expected = 0;
+    tigl::LengthRounding(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber = -1e-9;
+    expected = 0;
+    tigl::LengthRounding(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber = -1e-9;
+    expected = -1e-9;
+    tigl::LengthRounding(inNumber, 0);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber = 1-1e-9;
+    expected = 1;
+    tigl::LengthRounding(inNumber);
+    EXPECT_EQ(inNumber, expected);
+}
+
+
+TEST(TiglMath, PointRounding)
 {
     double number;
     double roundingValue;
@@ -1232,3 +1304,5 @@ TEST(TiglMath, Rounding)
     EXPECT_EQ(translation.y, 0);
     EXPECT_EQ(translation.z, 0.2);
 }
+
+

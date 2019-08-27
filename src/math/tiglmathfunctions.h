@@ -268,6 +268,25 @@ TIGL_EXPORT void TranslationRounding(CTiglPoint& translation,  double epsilon = 
  */
 TIGL_EXPORT void Rounding(double& number, double roundingValue, double delta  = Precision::Confusion());
 
+/**
+ * Format the number as a degree angle.
+ * This means that the return value is between ]-180,180]
+ * and the number is rounded up near the values 0, 90,180,-90.
+ *
+ * @param number
+ * @param epsilon
+ */
+TIGL_EXPORT void AngleRounding(double& number, double epsilon = Precision::Confusion() );
+
+/**
+ * Format the number for scale or length double value,.
+ * Simply, round up the number near the values: 0, 1, -1.
+ *
+ * @param number
+ * @param epsilon
+ */
+TIGL_EXPORT void LengthRounding(double& number, double epsilon = Precision::Confusion());
+
 } // namespace tigl
 
 #endif // TIGLMATHFUNCTIONS_H

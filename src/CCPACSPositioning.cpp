@@ -27,6 +27,7 @@
 #include "CTiglError.h"
 #include "gp_Pnt.hxx"
 #include "tiglcommonfunctions.h"
+#include "tiglmathfunctions.h"
 
 namespace tigl
 {
@@ -162,13 +163,20 @@ const std::vector<CCPACSPositioning*> CCPACSPositioning::GetDependentPositioning
     return _dependentPositionings;
 }
 
-void CCPACSPositioning::SetParametersFromVector(const CTiglPoint& delta)
+void CCPACSPositioning::SetParametersFromVector(const CTiglPoint& delta,  bool rounding )
 {
     double length = delta.norm2();
-    SetLength(length);
     double dihedral = Degrees(atan2(delta.z,delta.y));
-    SetDihedralAngle(dihedral);
     double sweep = Degrees(atan2(delta.x, sqrt( pow(delta.y,2) + pow(delta.z,2) ))) ;
+
+    if (rounding) {
+        LengthRounding(length);
+        AngleRounding(dihedral);
+        AngleRounding(sweep);
+    }
+
+    SetDihedralAngle(dihedral);
+    SetLength(length);
     SetSweepAngle(sweep);
     Invalidate();
 }

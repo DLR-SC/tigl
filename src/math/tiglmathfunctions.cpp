@@ -505,86 +505,24 @@ CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint d)
 
 void RotationRounding(CTiglPoint& rotation, double epsilon)
 {
-    // round up 0
-    Rounding(rotation.x, 0, epsilon);
-    Rounding(rotation.y, 0, epsilon);
-    Rounding(rotation.z, 0, epsilon);
-
-    Rounding(rotation.x, 90, epsilon);
-    Rounding(rotation.y, 90, epsilon);
-    Rounding(rotation.z, 90, epsilon);
-
-    Rounding(rotation.x, -90, epsilon);
-    Rounding(rotation.y, -90, epsilon);
-    Rounding(rotation.z, -90, epsilon);
-
-    Rounding(rotation.x, 180, epsilon);
-    Rounding(rotation.y, 180, epsilon);
-    Rounding(rotation.z, 180, epsilon);
-
-    Rounding(rotation.x, -180, epsilon);
-    Rounding(rotation.y, -180, epsilon);
-    Rounding(rotation.z, -180, epsilon);
-
-    Rounding(rotation.x, 270, epsilon);
-    Rounding(rotation.y, 270, epsilon);
-    Rounding(rotation.z, 270, epsilon);
-
-    Rounding(rotation.x, 360, epsilon);
-    Rounding(rotation.y, 360, epsilon);
-    Rounding(rotation.z, 360, epsilon);
-
-    // change 360 to 0
-    if (rotation.x == 360) {
-        rotation.x = 0;
-    }
-    if (rotation.y == 360) {
-        rotation.y = 0;
-    }
-    if (rotation.z == 360) {
-        rotation.z = 0;
-    }
-
-    Rounding(rotation.x, -360, epsilon);
-    Rounding(rotation.y, -360, epsilon);
-    Rounding(rotation.z, -360, epsilon);
-
-    // change -360 to 0
-    if (rotation.x == -360) {
-        rotation.x = 0;
-    }
-    if (rotation.y == -360) {
-        rotation.y = 0;
-    }
-    if (rotation.z == -360) {
-        rotation.z = 0;
-    }
-
+    AngleRounding(rotation.x, epsilon);
+    AngleRounding(rotation.y, epsilon);
+    AngleRounding(rotation.z, epsilon);
 }
 
 void ScalingRounding(CTiglPoint& scaling,  double epsilon)
 {
-    // round up 0
-    Rounding(scaling.x,0,epsilon);
-    Rounding(scaling.y,0,epsilon);
-    Rounding(scaling.z,0,epsilon);
-
-    Rounding(scaling.x,1,epsilon);
-    Rounding(scaling.y,1,epsilon);
-    Rounding(scaling.z,1,epsilon);
-
-    Rounding(scaling.x,-1,epsilon);
-    Rounding(scaling.y,-1,epsilon);
-    Rounding(scaling.z,-1,epsilon);
+    LengthRounding(scaling.x,epsilon);
+    LengthRounding(scaling.y,epsilon);
+    LengthRounding(scaling.z,epsilon);
 
 }
 
 void TranslationRounding(CTiglPoint& translation, double epsilon)
 {
-    // round up 0
-    Rounding(translation.x, 0, epsilon);
-    Rounding(translation.y, 0, epsilon);
-    Rounding(translation.z, 0, epsilon);
+    LengthRounding(translation.x,epsilon);
+    LengthRounding(translation.y,epsilon);
+    LengthRounding(translation.z,epsilon);
 }
 
 void Rounding(double& number, double roundingValue, double delta) 
@@ -594,5 +532,39 @@ void Rounding(double& number, double roundingValue, double delta)
     }
 }
 
+void AngleRounding(double& number, double epsilon)
+{
+    number = fmod(number, 360.0);
+
+    // force to be between 0 and 360
+    if ( number < 0 ) {
+        number = number + 360.0;
+    }
+
+    // round up standard values
+    Rounding(number, 0, epsilon);
+    Rounding(number, 90, epsilon);
+    Rounding(number, 180, epsilon);
+    Rounding(number, 270, epsilon);
+    Rounding(number, 360, epsilon);
+
+    // change 360 to 0
+    if (number == 360 ) {
+        number = 0;
+    }
+
+    // force the value between -180 to 180 (more humane readble)
+    if ( number > 180 && number <= 360) {
+        number = number - 360.0;
+    }
+}
+
+void LengthRounding(double& number, double epsilon)
+{
+    Rounding(number,0,epsilon);
+    Rounding(number,1,epsilon);
+    Rounding(number,-1,epsilon);
+
+}
 
 } // namespace tigl
