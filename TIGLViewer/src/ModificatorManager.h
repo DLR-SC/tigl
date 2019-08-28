@@ -24,6 +24,8 @@
 #include "ModificatorContainerWidget.h"
 #include "CPACSTreeWidget.h"
 #include <QUndoStack>
+#include "TIGLViewerContext.h"
+#include "CCPACSPositioning.h"
 
 class TIGLViewerWindow;
 
@@ -43,6 +45,8 @@ class TIGLViewerWindow;
  * "dispatch" function will be called. The dispatch function will look at the
  * new selected element and if the element has a associate ModificatorWidget, it
  * will set this particular ModificatorWidget by a call on the modificatorContainerWidget.
+ * The dispatch function will also call highlighting functions to show in the scene with
+ * element can be currently edited.
  *
  * @author Malo Drougard
  *
@@ -59,14 +63,19 @@ public slots:
     void createUndoCommand();
     void updateTree();
 
+    // Highlighting functions
+    void highlight(std::vector<tigl::CTiglSectionElement*> elements);
+    void highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation);
+    void unHighlight();
+
 public:
-    ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget, QUndoStack* undoStack);
+    ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget,  TIGLViewerContext* scene,  QUndoStack* undoStack);
 
     void setCPACSConfiguration(TIGLViewerDocument* newDoc);
 
+    // standardization functions
     // standardize the wing or the fuselage given by the uid and call createUndoCommand
     void standardize(QString uid, bool useSimpleDecomposition);
-
     // standardize the aircraft uid and call createUndoCommand
     void standardize(bool useSimpleDecomposition);
 
@@ -86,7 +95,9 @@ private:
 
     CPACSTreeWidget* treeWidget;
     ModificatorContainerWidget* modificatorContainerWidget;
+    TIGLViewerContext* scene;
     QUndoStack* myUndoStack;
+    QList<Handle(AIS_InteractiveObject)> highligthteds;
 };
 
 #endif // TIGL_MODIFICATORMANAGER_H
