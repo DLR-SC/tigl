@@ -1309,6 +1309,15 @@ void CCPACSWing::DeleteConnectedElement(std::string elementUID)
 
 }
 
+std::vector<CTiglSectionElement* > CCPACSWing::GetCTiglElements()
+{
+    std::vector<std::string> elements =  wingHelper->GetElementUIDsInOrder();
+    std::vector<tigl::CTiglSectionElement*> cElements;
+    for (int i = 0; i < elements.size(); i++ ) {
+        cElements.push_back(wingHelper->GetCTiglElementOfWing(elements[i]));
+    }
+    return cElements;
+}
 
 
 

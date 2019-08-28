@@ -1076,4 +1076,14 @@ void CCPACSFuselage::DeleteConnectedElement(std::string elementUID)
 }
 
 
+std::vector<tigl::CTiglSectionElement*> CCPACSFuselage::GetCTiglElements()
+{
+    std::vector<std::string> elements =  fuselageHelper->GetElementUIDsInOrder();
+    std::vector<tigl::CTiglSectionElement*> cElements;
+    for (int i = 0; i < elements.size(); i++ ) {
+        cElements.push_back(fuselageHelper->GetCTiglElementOfFuselage(elements[i]));
+    }
+    return cElements;
+}
+
 } // end namespace tigl

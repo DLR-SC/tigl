@@ -125,7 +125,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     setAcceptDrops(true);
 
     // creator init
-    modificatorManager = new ModificatorManager(treeWidget, modificatorContainerWidget, undoStack) ;
+    modificatorManager = new ModificatorManager(treeWidget, modificatorContainerWidget, myScene, undoStack) ;
 
     connectSignals();
     createMenus();

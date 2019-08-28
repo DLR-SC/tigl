@@ -25,6 +25,7 @@
 
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
 #include <V3d_Viewer.hxx>
 #include <QObject>
 #include "TIGLViewer.h"
@@ -81,9 +82,29 @@ public:
 
     void updateViewer();
 
+    // Function used to highlight (HL) shape (used by ModificatorManager)
+
+    // display the shape using highlighting settings and return the AIS_InteractiveObject
+    Handle(AIS_InteractiveObject)   displayShapeHLMode( const TopoDS_Shape &loft,
+                                                        bool updateViewer = Standard_True,
+                                                        Quantity_Color color = Quantity_NOC_Highlight,
+                                                        double transparency = 0.);
+    // create a display a line using highlighting settings and return the AIS_InteractiveObject
+    Handle(AIS_InteractiveObject)   displayLineHLMode(  double Ax,
+                                                        double Ay,
+                                                        double Az,
+                                                        double Bx,
+                                                        double By,
+                                                        double Bz,
+                                                        bool updateViewer = Standard_True,
+                                                        Quantity_Color color = Quantity_NOC_Highlight,
+                                                        double transparency = 0.);
+    // remove the shape referenced by shape of the scene
+    void removeShape( Handle(AIS_InteractiveObject) shape);
+
 public slots:
-    void displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0.);
-    void displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.);
+    void displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0.66);
+    void displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.66);
 
     void drawPoint(double x, double y, double z);
     void drawVector(double x, double y, double z, double dirx, double diry, double dirz);

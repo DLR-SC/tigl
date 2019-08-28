@@ -39,6 +39,8 @@
 #include "AIS_TexturedShape.hxx"
 #include "AIS_InteractiveContext.hxx"
 #include "BRepBuilderAPI_MakeVertex.hxx"
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
 
 #include <OpenGl_GraphicDriver.hxx>
 // Shader related stuff
@@ -576,5 +578,56 @@ void TIGLViewerContext::setObjectsColor(const QColor& color)
     }
 }
 
+Handle(AIS_InteractiveObject) TIGLViewerContext::displayShapeHLMode(const TopoDS_Shape& loft, bool updateViewer,
+                                                                    Quantity_Color color, double transparency)
+{
+    TIGLViewerSettings& settings    = TIGLViewerSettings::Instance();
+    Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(loft);
 
+    myContext->SetMaterial(shape, Graphic3d_NOM_DIAMOND, Standard_False);
+    myContext->SetColor(shape, color, Standard_False);
+    myContext->SetTransparency(shape, transparency, Standard_False);
+    myContext->SetWidth(shape, 3, Standard_False);
+    shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
 
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6, 7, 0)
+    if (!myShader.IsNull()) {
+        shape->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram(myShader);
+    }
+#endif
+
+    myContext->Display(shape, true);
+
+    if (settings.enumerateFaces()) {
+        TopTools_IndexedMapOfShape shapeMap;
+        TopExp::MapShapes(loft, TopAbs_FACE, shapeMap);
+        for (int i = 1; i <= shapeMap.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
+            gp_Pnt p                = GetCentralFacePoint(face);
+            QString s               = QString("%1").arg(i);
+            displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+        }
+    }
+    return shape;
+}
+
+Handle(AIS_InteractiveObject) TIGLViewerContext::displayLineHLMode(double Ax, double Ay, double Az, double Bx,
+                                                                   double By, double Bz, bool updateViewer,
+                                                                   Quantity_Color color, double transparency)
+{
+    gp_Pnt aPoint(Ax, Ay, Az);
+    gp_Pnt bPoint(Bx, By, Bz);
+    // if the distance is two small between the two points, the shape will fail to build so we make sure to have a
+    // valid distance between the two point
+    if (bPoint.Distance(aPoint) < 0.01) {
+        bPoint = gp_Pnt(Ax + 0.1, Ay, Az);
+    }
+    TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge(aPoint, bPoint);
+    TopoDS_Wire wire   = BRepBuilderAPI_MakeWire(aEdge1);
+    return displayShapeHLMode(wire, updateViewer, color, transparency);
+}
+
+void TIGLViewerContext::removeShape(Handle(AIS_InteractiveObject) shape)
+{
+    myContext->Remove(shape, Standard_True);
+}

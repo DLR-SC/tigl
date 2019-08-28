@@ -197,6 +197,8 @@ public:
 
     TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement() override;
 
+    TIGL_EXPORT std::vector<tigl::CTiglSectionElement*> GetCTiglElements() ;
+
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;
 
