@@ -26,6 +26,8 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSectionElement.h"
+#include "CCPACSPositionings.h"
+#include "CCPACSPositioning.h"
 
 #include <iostream>
 #include <fstream>
@@ -102,7 +104,9 @@ TEST_F(creatorFuselages, createFuselage_emptyModel)
     EXPECT_EQ("Fuselage1", fuselages->GetFuselage(1).GetUID());
     EXPECT_EQ("Fuselage1Sec2Tr", fuselages->GetFuselage(1).GetSection(2).GetTransformation().GetUID());
     EXPECT_EQ("Fuselage1Sec3Elem1", fuselages->GetFuselage(1).GetSection(3).GetSectionElement(1).GetUID());
-    EXPECT_EQ(2, fuselages->GetFuselage(1).GetSection(3).GetSectionElement(1).GetTranslation().x);
+    EXPECT_EQ(0, fuselages->GetFuselage(1).GetSection(3).GetSectionElement(1).GetTranslation().x);
+    EXPECT_EQ(2, fuselages->GetFuselage(1).GetPositionings()->GetPositionings().at(2)->GetToPoint().x);
+
 
     // create a valid fuselage with 9 sections
     tigl::CCPACSFuselage& fuselage2 = fuselages->CreateFuselage("Fuselage2", 9, "fuselageCircleProfile1");
@@ -111,7 +115,7 @@ TEST_F(creatorFuselages, createFuselage_emptyModel)
     EXPECT_EQ("Fuselage2Sec9TrTransl",
               fuselages->GetFuselage(2).GetSection(9).GetTransformation().GetTranslation().value().GetUID());
     EXPECT_EQ("Fuselage2Sec3Elem1", fuselages->GetFuselage(2).GetSection(3).GetSectionElement(1).GetUID());
-    EXPECT_EQ(6, fuselages->GetFuselage(2).GetSection(7).GetSectionElement(1).GetTranslation().x);
+    EXPECT_EQ(7, fuselages->GetFuselage(2).GetPositionings()->GetPositionings().at(7)->GetToPoint().x);
 
     // todo:  Now the following function with 13 sections make tiglViewer crash. Why? Seems to be a tiglviewer bug!
     // create a valid fuselage with 13 sections

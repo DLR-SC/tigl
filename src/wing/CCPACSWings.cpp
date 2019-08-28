@@ -29,6 +29,8 @@
 #include "CCPACSWingSectionElement.h"
 #include "CCPACSWingSegment.h"
 
+#include "CTiglStandardizer.h"
+
 namespace tigl
 {
 
@@ -169,6 +171,8 @@ CCPACSWing& CCPACSWings::CreateWing(const std::string& wingUID, int numberOfSect
         segment.SetFromElementUID(fromElement.GetUID());
         segment.SetToElementUID(toElement.GetUID());
     }
+
+    CTiglStandardizer::StandardizeWing(wing);
     return wing;
 }
 
