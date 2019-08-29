@@ -54,7 +54,8 @@ public:
     QString getNewFileName();
 
 private slots:
-    void templateIsSelected(const QModelIndex& index);
+
+    void accept() override;
 
 protected:
     void populate();
