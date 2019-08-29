@@ -33,9 +33,6 @@ TIGLViewerNewFileDialog::TIGLViewerNewFileDialog(QWidget* parent)
     populate();
 
     newCPACSFileName = "";
-
-    connect(ui->templatesListView, SIGNAL(activated(const QModelIndex)), this,
-            SLOT(templateIsSelected(const QModelIndex)));
 }
 
 TIGLViewerNewFileDialog::~TIGLViewerNewFileDialog()
@@ -45,7 +42,6 @@ TIGLViewerNewFileDialog::~TIGLViewerNewFileDialog()
 
 void TIGLViewerNewFileDialog::populate()
 {
-
     // get the settings for this application
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     // retrieve the files in the templates dir
@@ -57,16 +53,17 @@ void TIGLViewerNewFileDialog::populate()
     ui->templatesListView->setModel(&templateListModel);
 }
 
-void TIGLViewerNewFileDialog::templateIsSelected(const QModelIndex& index)
+void TIGLViewerNewFileDialog::accept()
 {
+
+    QModelIndex index        = ui->templatesListView->currentIndex();
+    QString selectedTemplate = index.data(Qt::DisplayRole).toString();
 
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
 
-    // Create the new filename
-    QString selectedTemplate = templateListModel.data(index, 0).toString();
-    QString originalFile     = settings.templateDir().absolutePath() + "/" + selectedTemplate;
-    QString newFilePath      = originalFile + ".temp";
-    int prefix               = 1;
+    QString originalFile = settings.templateDir().absolutePath() + "/" + selectedTemplate;
+    QString newFilePath  = originalFile + ".temp";
+    int prefix           = 1;
     while (QFile::exists(newFilePath)) {
         newFilePath =
             settings.templateDir().absolutePath() + "/" + QString::number(prefix) + "_" + selectedTemplate + ".temp";
@@ -79,7 +76,7 @@ void TIGLViewerNewFileDialog::templateIsSelected(const QModelIndex& index)
         LOG(INFO) << "TIGLViewerNewFileDialog::templateIsSelected: new file " + newFilePath.toStdString() +
                          " created based on the template."
                   << std::endl;
-        accept();
+        QDialog::accept();
     }
     else {
         QString errorMsg = "An error occurs during the creation of the file \"" + newFilePath +
