@@ -28,6 +28,7 @@ ModificatorFuselagesWidget::ModificatorFuselagesWidget(QWidget* parent)
 {
     ui->setupUi(this);
     fuselages = nullptr;
+    profilesDB = nullptr;
 
     connect(ui->addNewFuselageBtn, SIGNAL(pressed()), this, SLOT(execNewFuselageDialog()));
     connect(ui->deleteFuselageBtn, SIGNAL(pressed()), this, SLOT(execDeleteFuselageDialog()));
@@ -38,21 +39,24 @@ ModificatorFuselagesWidget::~ModificatorFuselagesWidget()
     delete ui;
 }
 
-void ModificatorFuselagesWidget::setFuselages(tigl::CCPACSFuselages& fuselages, QStringList profilesUID)
+void ModificatorFuselagesWidget::setFuselages(tigl::CCPACSFuselages& fuselages, ProfilesDBManager* profilesDB)
 {
     this->fuselages = &fuselages;
-    this->profilesUID = profilesUID;
+    this->profilesDB = profilesDB;
 }
 
 void ModificatorFuselagesWidget::execNewFuselageDialog()
 {
-    NewFuselageDialog fuselageDialog(profilesUID, this);
+    NewFuselageDialog fuselageDialog(profilesDB->getAllFuselagesProfiles(), this);
     if (fuselages != nullptr && fuselageDialog.exec() == QDialog::Accepted) {
         int nbSection       = fuselageDialog.getNbSection();
         QString uid         = fuselageDialog.getUID();
-        QString profilesUID = fuselageDialog.getProfileUID();
+        QString profileID = fuselageDialog.getProfileUID();
         try {
-            fuselages->CreateFuselage(uid.toStdString(), nbSection, profilesUID.toStdString());
+            if (!profilesDB->isProfileInConfig(profileID)) {
+                profilesDB->copyProfileFromLocalToConfig(profileID);
+            }
+            fuselages->CreateFuselage(uid.toStdString(), nbSection, profilesDB->removeSuffix(profileID).toStdString());
         }
         catch (const tigl::CTiglError& err) {
             TIGLViewerErrorDialog errDialog(this);

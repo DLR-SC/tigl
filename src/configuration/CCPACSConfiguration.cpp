@@ -227,6 +227,11 @@ boost::optional<CCPACSFuselageProfiles&> CCPACSConfiguration::GetFuselageProfile
         return boost::none;
 }
 
+boost::optional<CCPACSProfiles>& CCPACSConfiguration::GetProfiles()
+{
+    return profiles;
+}
+
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
 {

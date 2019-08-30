@@ -67,6 +67,7 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
     connect(settingsList, SIGNAL(currentRowChanged(int)), this, SLOT(onSettingsListChanged(int)));
     connect(btnRestoreDefaults, SIGNAL(clicked(bool)), this, SLOT(restoreDefaults()));
     connect(browseTemplateDirButton, SIGNAL(clicked(bool)), this, SLOT(onBrowseTemplateDir()));
+    connect(browseProfilesDBButton, SIGNAL(clicked(bool)), this, SLOT(onBrowseProfilesDB()));
 }
 
 void TIGLViewerSettingsDialog::onComboBoxIndexChanged(const QString& index)
@@ -109,7 +110,7 @@ void TIGLViewerSettingsDialog::onSettingsAccepted()
     _settings.setShapeColor(_shapecolor);
     _settings.setShapeSymmetryColor(_shapesymmetrycolor);
     _settings.setDefaultMaterial(_material);
-
+    
     _settings.setDebugBooleanOperationsEnabled(debugBopCB->isChecked());
     _settings.setEnumerateFacesEnabled(enumerateFaceCB->isChecked());
     _settings.setNumberOfUIsolinesPerFace(numUIsoLinesSB->value());
@@ -117,6 +118,7 @@ void TIGLViewerSettingsDialog::onSettingsAccepted()
     _settings.setDrawFaceBoundariesEnabled(cbDrawFaceBoundaries->isChecked());
 
     _settings.setTemplateDir(templateLineEdit->text());
+    _settings.setProfilesDBPath(profilesDBLineEdit->text());
 }
 
 void TIGLViewerSettingsDialog::updateEntries()
@@ -172,6 +174,7 @@ void TIGLViewerSettingsDialog::updateEntries()
     comboBoxShapeMaterial->setCurrentIndex(activeItem);
 
     templateLineEdit->setText(_settings.templateDir().absolutePath());
+    profilesDBLineEdit->setText(_settings.profilesDBPath());
 }
 
 void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val)
@@ -244,4 +247,12 @@ void TIGLViewerSettingsDialog::onBrowseTemplateDir()
 {
     QDir newDir = QFileDialog::getExistingDirectory(this, "Choose template directory", _settings.templateDir().path());
     templateLineEdit->setText(newDir.absolutePath());
+}
+
+void TIGLViewerSettingsDialog::onBrowseProfilesDB()
+{
+    QString newFile =
+        QFileDialog::getOpenFileName(this, "Choose a profile DB file. Remark, the profile DB file need to have the same "
+                                           "structure as a CPACS \"profiles\" section and have .xml suffix.");
+    profilesDBLineEdit->setText(newFile);
 }

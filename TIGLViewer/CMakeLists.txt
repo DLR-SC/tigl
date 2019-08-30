@@ -98,6 +98,7 @@ set(tv_src
   src/TIGLViewerApp.cpp
   src/TIGLGeometryChoserDialog.cpp
   src/TIGLViewerUndoCommands.cpp
+  src/ProfilesDBManager.cpp
   src/TIGLInteractiveShapeManager.cpp
   src/TIGLViewerSelectWingAndFlapStatusDialog.cpp
   # files for CPACSCreator
@@ -148,6 +149,7 @@ set(tv_hdr
   src/TIGLViewerScopedCommand.h
   src/TIGLQAspectWindow.h
   src/TIGLViewerUndoCommands.h
+  src/ProfilesDBManager.h
   src/TIGLDebugStream.h
   src/TIGLViewerContext.h
   src/TIGLViewerDocument.h

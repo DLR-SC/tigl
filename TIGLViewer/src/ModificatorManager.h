@@ -26,6 +26,7 @@
 #include <QUndoStack>
 #include "TIGLViewerContext.h"
 #include "CCPACSPositioning.h"
+#include "ProfilesDBManager.h"
 
 class TIGLViewerWindow;
 
@@ -62,6 +63,8 @@ public slots:
     void dispatch(cpcr::CPACSTreeItem* item);
     void createUndoCommand();
     void updateTree();
+    // function to update the profiles software db if the settings has changed
+    void updateProfilesDB(QString newDBPath);
 
     // Highlighting functions
     void highlight(std::vector<tigl::CTiglSectionElement*> elements);
@@ -82,9 +85,6 @@ public:
 
 protected:
 
-    QStringList getAvailableFuselageProfileUIDs();  // we be managed by the profiles DB managed in future
-    QStringList getAvailableWingProfileUIDs();
-
     inline bool configurationIsSet()
     {
         return (doc != nullptr && doc->getCpacsHandle() > 0);
@@ -98,6 +98,8 @@ private:
     TIGLViewerContext* scene;
     QUndoStack* myUndoStack;
     QList<Handle(AIS_InteractiveObject)> highligthteds;
+    ProfilesDBManager profilesDB;
+
 };
 
 #endif // TIGL_MODIFICATORMANAGER_H

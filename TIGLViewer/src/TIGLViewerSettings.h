@@ -32,7 +32,7 @@ class TIGLViewerSettings : public QObject
 public:
     ~TIGLViewerSettings() override = default;
     static TIGLViewerSettings& Instance();
-
+    
     void loadSettings();
     void storeSettings();
 
@@ -58,13 +58,16 @@ public:
     QDir templateDir() const;
     void setTemplateDir(QString path);
 
+    QString profilesDBPath() const;
+    void setProfilesDBPath(QString path);
+
     // Debugging Tab
     void setDebugBooleanOperationsEnabled(bool);
     void setEnumerateFacesEnabled(bool);
     void setNumberOfUIsolinesPerFace(int);
     void setNumberOfVIsolinesPerFace(int);
     void setDrawFaceBoundariesEnabled(bool);
-
+    
     bool debugBooleanOperations() const;
     bool enumerateFaces() const;
     int  numFaceUIsosForDisplay() const;
@@ -82,14 +85,14 @@ public slots:
 
 private:
     TIGLViewerSettings();
-
+    
     double _tesselationAccuracy;
     double _triangulationAccuracy;
     QColor _bgcolor;
     QColor _shapecolor;
     QColor _shapesymmetrycolor;
     Graphic3d_NameOfMaterial _defaultMaterial;
-
+    
     bool _debugBOPs;
     bool _enumFaces;
     int  _nUIsosPerFace;
@@ -97,6 +100,9 @@ private:
     bool _drawFaceBoundaries;
 
     QDir _templateDir;
+
+    QString _profilesDBPath;
+
 };
 
 Q_DECLARE_METATYPE(TIGLViewerSettings*)

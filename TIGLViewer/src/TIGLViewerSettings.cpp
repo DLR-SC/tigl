@@ -36,7 +36,7 @@ const bool DEFAULT_DRAW_FACE_BOUNDARIES = true;
 const int DEFAULT_NISO_FACES = 0;
 
 static QString DEFAULT_TEMPLATE_DIR_PATH = "";
-
+static QString DEFAULT_PROFILES_FILE_PATH = "./profilesDB.xml";
 
 TIGLViewerSettings& TIGLViewerSettings::Instance()
 {
@@ -203,6 +203,7 @@ void TIGLViewerSettings::loadSettings()
     _drawFaceBoundaries = settings.value("draw_face_boundaries", true).toBool();
 
     setTemplateDir(settings.value("template_dir_path", DEFAULT_TEMPLATE_DIR_PATH ).toString());
+    _profilesDBPath = settings.value("profiles_file_path", DEFAULT_PROFILES_FILE_PATH).toString();
 }
 
 void TIGLViewerSettings::storeSettings()
@@ -223,6 +224,7 @@ void TIGLViewerSettings::storeSettings()
     settings.setValue("draw_face_boundaries", _drawFaceBoundaries);
 
     settings.setValue("template_dir_path", _templateDir.absolutePath());
+    settings.setValue("profiles_file_path", _profilesDBPath);
 }
 
 void TIGLViewerSettings::restoreDefaults()
@@ -244,6 +246,7 @@ void TIGLViewerSettings::restoreDefaults()
     // -> the dir will be always create at start up of the application
     // even if the user has set another dir
     setTemplateDir(DEFAULT_TEMPLATE_DIR_PATH) ;
+    _profilesDBPath = DEFAULT_PROFILES_FILE_PATH;
 }
 
 QDir TIGLViewerSettings::templateDir() const
@@ -258,4 +261,14 @@ void TIGLViewerSettings::setTemplateDir(QString path)
     if (!_templateDir.exists()) {
         _templateDir.mkpath(_templateDir.absolutePath());
     }
+}
+
+QString TIGLViewerSettings::profilesDBPath() const
+{
+    return _profilesDBPath;
+}
+
+void TIGLViewerSettings::setProfilesDBPath(QString path)
+{
+    _profilesDBPath = path;  // not check on the file is performed
 }

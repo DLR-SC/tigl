@@ -29,6 +29,7 @@
 #include "CCPACSWings.h"
 #include "CPACSTransformation.h"
 #include "CTiglSectionElement.h"
+#include "ProfilesDBManager.h"
 
 namespace Ui
 {
@@ -70,9 +71,9 @@ public:
 
     void setTransformationModificator(tigl::CCPACSTransformation& transformation);
     void setWingModificator(tigl::CCPACSWing& wing);
-    void setWingsModificator(tigl::CCPACSWings& wings, QStringList profilesUID);
+    void setWingsModificator(tigl::CCPACSWings& wings, ProfilesDBManager* profileDB);
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
-    void setFuselagesModificator(tigl::CCPACSFuselages& fuselages, QStringList profilesUID);
+    void setFuselagesModificator(tigl::CCPACSFuselages& fuselages, ProfilesDBManager* profileDB);
     void setElementModificator(tigl::CTiglSectionElement& element);
     void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
     void setSectionsModificator(tigl::CreateConnectedElementI& conntedElementI);

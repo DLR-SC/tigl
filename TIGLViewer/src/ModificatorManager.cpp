@@ -54,9 +54,11 @@ void ModificatorManager::setCPACSConfiguration(TIGLViewerDocument* newDoc)
     doc = newDoc;
     updateTree();
     modificatorContainerWidget->setNoInterfaceWidget();
+    profilesDB.cleanConfigProfiles();
     if (configurationIsSet()) {
         // when doc is destroy this connection is also destroy
         connect(doc, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), this, SLOT(updateTree()));
+        profilesDB.setConfigProfiles(doc->GetConfiguration().GetProfiles());
     }
 }
 
@@ -85,7 +87,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
     }
     else if (item->getType() == "fuselages") {
         tigl::CCPACSFuselages& fuselages = doc->GetConfiguration().GetFuselages();
-        modificatorContainerWidget->setFuselagesModificator(fuselages, getAvailableFuselageProfileUIDs());
+        modificatorContainerWidget->setFuselagesModificator(fuselages, &profilesDB);
     }
     else if (item->getType() == "wing") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
@@ -95,7 +97,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
     }
     else if (item->getType() == "wings") {
         tigl::CCPACSWings& wings = doc->GetConfiguration().GetWings();
-        modificatorContainerWidget->setWingsModificator(wings, getAvailableWingProfileUIDs());
+        modificatorContainerWidget->setWingsModificator(wings, &profilesDB);
     }
     else if (item->getType() == "element") {
         // we need first to determine if this is a section element or a fuselage element
@@ -222,43 +224,6 @@ void ModificatorManager::updateTree()
     }
 }
 
-QStringList ModificatorManager::getAvailableFuselageProfileUIDs()
-{
-    QStringList profileUIDs;
-
-    if (!configurationIsSet()) {
-        profileUIDs;
-    }
-
-    boost::optional<tigl::CCPACSFuselageProfiles&> profiles = doc->GetConfiguration().GetFuselageProfiles();
-
-    if (profiles) {
-        for (int i = 1; i <= profiles.value().GetProfileCount(); i++) {
-            profileUIDs.push_back(profiles.value().GetProfile(i).GetUID().c_str());
-        }
-    }
-    return profileUIDs;
-}
-
-
-QStringList ModificatorManager::getAvailableWingProfileUIDs()
-{
-    QStringList profileUIDs;
-
-    if (!configurationIsSet()) {
-        profileUIDs;
-    }
-
-    boost::optional<tigl::CCPACSWingProfiles&> profiles = doc->GetConfiguration().GetWingProfiles();
-
-    if (profiles) {
-        for (int i = 1; i <= profiles.value().GetProfileCount(); i++) {
-            profileUIDs.push_back(profiles.value().GetProfile(i).GetUID().c_str());
-        }
-    }
-    return profileUIDs;
-}
-
 void ModificatorManager::standardize(QString uid, bool useSimpleDecomposition)
 {
     if (!configurationIsSet()) {
@@ -329,4 +294,9 @@ void ModificatorManager::highlight(tigl::CCPACSPositioning &positioning, const t
         LOG(ERROR) << "ModificatorManager::highlight: Error, No highlighting!";
     }
 
+}
+
+void ModificatorManager::updateProfilesDB(QString newDBPath)
+{
+    profilesDB.setLocalProfiles(newDBPath);
 }
