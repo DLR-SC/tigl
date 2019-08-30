@@ -22,6 +22,7 @@
 #include <QWidget>
 #include "CCPACSWings.h"
 #include "ModificatorWidget.h"
+#include "ProfilesDBManager.h"
 
 namespace Ui
 {
@@ -44,12 +45,12 @@ public:
     explicit ModificatorWingsWidget(QWidget *parent = nullptr);
     ~ModificatorWingsWidget();
 
-    void setWings(tigl::CCPACSWings& wings, QStringList profileUIDs);
+    void setWings(tigl::CCPACSWings& wings, ProfilesDBManager* profilesDB);
 
 private:
     Ui::ModificatorWingsWidget *ui;
     tigl::CCPACSWings* wings;
-    QStringList profileUIDs;
+    ProfilesDBManager* profilesDB;
 };
 
 #endif // MODIFICATORWINGSWIDGET_H

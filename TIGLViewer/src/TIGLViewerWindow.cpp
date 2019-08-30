@@ -458,6 +458,7 @@ void TIGLViewerWindow::applySettings()
     else {
         deleteEnvVar("TIGL_DEBUG_BOP");
     }
+    modificatorManager->updateProfilesDB(tiglViewerSettings->profilesDBPath());
 }
 
 void TIGLViewerWindow::changeSettings()

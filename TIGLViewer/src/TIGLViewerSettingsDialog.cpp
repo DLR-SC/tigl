@@ -54,6 +54,7 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
     connect(settingsList, SIGNAL(currentRowChanged(int)), this, SLOT(onSettingsListChanged(int)));
     connect(btnRestoreDefaults, SIGNAL(clicked(bool)), this, SLOT(restoreDefaults()));
     connect(browseTemplateDirButton, SIGNAL(clicked(bool)), this, SLOT(onBrowseTemplateDir()));
+    connect(browseProfilesDBButton, SIGNAL(clicked(bool)), this, SLOT(onBrowseProfilesDB()));
 }
 
 double TIGLViewerSettingsDialog::calcTesselationAccu(int value)
@@ -95,6 +96,7 @@ void TIGLViewerSettingsDialog::onSettingsAccepted()
     _settings.setNumberOfVIsolinesPerFace(numVIsoLinesSB->value());
 
     _settings.setTemplateDir(templateLineEdit->text());
+    _settings.setProfilesDBPath(profilesDBLineEdit->text());
 }
 
 void TIGLViewerSettingsDialog::updateEntries()
@@ -128,6 +130,7 @@ void TIGLViewerSettingsDialog::updateEntries()
     numVIsoLinesSB->setValue(_settings.numFaceVIsosForDisplay());
 
     templateLineEdit->setText(_settings.templateDir().absolutePath());
+    profilesDBLineEdit->setText(_settings.profilesDBPath());
 }
 
 void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val)
@@ -174,3 +177,10 @@ void TIGLViewerSettingsDialog::onBrowseTemplateDir()
     templateLineEdit->setText(newDir.absolutePath());
 }
 
+void TIGLViewerSettingsDialog::onBrowseProfilesDB()
+{
+    QString newFile =
+        QFileDialog::getOpenFileName(this, "Choose a profile DB file. Remark, the profile DB file need to have the same "
+                                           "structure as a CPACS \"profiles\" section and have .xml suffix.");
+    profilesDBLineEdit->setText(newFile);
+}

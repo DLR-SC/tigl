@@ -122,7 +122,7 @@ CCPACSWing& CCPACSWings::CreateWing(const std::string& wingUID, int numberOfSect
     }
     catch (const CTiglError& e) {
         throw CTiglError("Impossible to create the wing with the profile uid \"" +
-                          wingUID +
+                          airfoilUID +
                          "\". This uid seems not to be present or to not reference a profile. Make sure to use a "
                          "wing profile UID  (aka airfoil) is present in the file.");
     }

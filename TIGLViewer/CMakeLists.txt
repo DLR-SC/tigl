@@ -107,6 +107,7 @@ set(tv_src
     TIGLViewerApp.cpp
     TIGLGeometryChoserDialog.cpp
     TIGLViewerUndoCommands.cpp
+	ProfilesDBManager.cpp
     # files for CPACSCreator
 	modificators/ModificatorWidget.cpp
 	modificators/ModificatorElementWidget.cpp
@@ -154,7 +155,8 @@ set(tv_hdr
     TIGLViewerScopedCommand.h
     TIGLQAspectWindow.h
     TIGLViewerUndoCommands.h
-    # files for CPACSCreator
+	ProfilesDBManager.h
+	# files for CPACSCreator
 	CPACSTreeItem.h
 	CPACSTree.h
 	XPathParser.h

@@ -29,6 +29,7 @@ ModificatorWingsWidget::ModificatorWingsWidget(QWidget* parent)
 {
     ui->setupUi(this);
     wings = nullptr;
+    profilesDB = nullptr;
 
     connect(ui->addNewWingBtn, SIGNAL(pressed()), this, SLOT(execNewWingDialog()));
     connect(ui->deleteWingBtn, SIGNAL(pressed()), this, SLOT(execDeleteWingDialog()));
@@ -39,21 +40,25 @@ ModificatorWingsWidget::~ModificatorWingsWidget()
     delete ui;
 }
 
-void ModificatorWingsWidget::setWings(tigl::CCPACSWings& wings, QStringList profileUIDs)
+void ModificatorWingsWidget::setWings(tigl::CCPACSWings& wings, ProfilesDBManager* profilesDB)
 {
     this->wings = &wings;
-    this->profileUIDs = profileUIDs;
+    this->profilesDB = profilesDB;
 }
 
 void ModificatorWingsWidget::execNewWingDialog()
 {
-    NewWingDialog wingDialog(profileUIDs, this);
+
+    NewWingDialog wingDialog(profilesDB->getAllWingProfiles(), this);
     if (wings != nullptr && wingDialog.exec() == QDialog::Accepted) {
         int nbSection       = wingDialog.getNbSection();
         QString uid         = wingDialog.getUID();
-        QString profilesUID = wingDialog.getProfileUID();
+        QString profileID = wingDialog.getProfileUID();
         try {
-            wings->CreateWing(uid.toStdString(), nbSection, profilesUID.toStdString());
+            if ( ! profilesDB->isProfileInConfig(profileID) ) {
+                profilesDB->copyProfileFromLocalToConfig(profileID) ;
+            }
+            wings->CreateWing(uid.toStdString(), nbSection, profilesDB->removeSuffix(profileID).toStdString());
         }
         catch (const tigl::CTiglError& err) {
             TIGLViewerErrorDialog errDialog(this);

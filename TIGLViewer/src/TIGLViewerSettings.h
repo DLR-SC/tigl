@@ -43,6 +43,9 @@ public:
     QDir templateDir() const;
     void setTemplateDir(QString path);
 
+    QString profilesDBPath() const;
+    void setProfilesDBPath(QString path);
+
 
     // Debugging Tab
     void setDebugBooleanOperationsEnabled(bool);
@@ -71,6 +74,9 @@ private:
     int  _nVIsosPerFace;
 
     QDir _templateDir;
+
+    QString _profilesDBPath;
+
 };
 
 #endif /* TIGLVIEWERSETTINGS_H_ */

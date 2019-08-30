@@ -84,10 +84,10 @@ void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
 }
 
 
-void ModificatorContainerWidget::setWingsModificator(tigl::CCPACSWings &wings, QStringList profilesUID)
+void ModificatorContainerWidget::setWingsModificator(tigl::CCPACSWings &wings, ProfilesDBManager* profileDB)
 {
     hideAllSpecializedWidgets();
-    ui->wingsModificator->setWings(wings, profilesUID);
+    ui->wingsModificator->setWings(wings, profileDB);
     ui->wingsModificator->setVisible(true);
     ui->applyWidget->setVisible(false);
     currentModificator = ui->wingsModificator;
@@ -103,10 +103,10 @@ void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fu
 }
 
 
-void ModificatorContainerWidget::setFuselagesModificator(tigl::CCPACSFuselages& fuselages, QStringList profilesUID)
+void ModificatorContainerWidget::setFuselagesModificator(tigl::CCPACSFuselages& fuselages, ProfilesDBManager* profilesDB)
 {
     hideAllSpecializedWidgets();
-    ui->fuselagesModificator->setFuselages(fuselages, profilesUID);
+    ui->fuselagesModificator->setFuselages(fuselages, profilesDB);
     ui->fuselagesModificator->setVisible(true);
     ui->applyWidget->setVisible(false);
     currentModificator = ui->fuselagesModificator;
