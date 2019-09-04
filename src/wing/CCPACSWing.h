@@ -216,6 +216,19 @@ public:
      */
     TIGL_EXPORT void SetAreaKeepAR(double newArea);
 
+     /**
+     * Set the wing reference area while keeping the span constant.
+     * To obtain the wanted area each airfoil is scaled by the same factor.
+     * The leading point of each airfoil stay at the same position.
+     * @remark The aspect ratio will change.
+     * @remark The tip airfoil is also scaled, so it is possible that the the span change slighly if
+     * the tip airfoil is not parallel to the deep axis.
+     * @param newArea
+     */
+    TIGL_EXPORT void SetAreaKeepSpan(double newArea);
+
+
+
 
     /**
      * Set the wing half span while keeping the aspect ratio constant.

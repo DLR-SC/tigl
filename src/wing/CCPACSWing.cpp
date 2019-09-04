@@ -1106,6 +1106,73 @@ void CCPACSWing::SetAreaKeepAR(double newArea)
 }
 
 
+void CCPACSWing::SetAreaKeepSpan(double newArea)
+{
+
+    double v = 0;
+    double w = 0;
+
+    CTiglTransformation projection;
+
+    switch ( wingHelper->GetThirdDirection() ) {
+    case TIGL_Z_AXIS:
+        projection.AddProjectionOnXYPlane();
+        break;
+    case TIGL_Y_AXIS:
+        projection.AddProjectionOnXZPlane();
+        break;
+    case TIGL_X_AXIS:
+        projection.AddProjectionOnYZPlane();
+        break;
+    }
+
+    double vInc, wInc;
+    CTiglPoint a , b, c;
+    for ( int i = 0; i < m_segments.GetSegmentCount(); i++) {
+        CCPACSWingSegment& seg = m_segments.GetSegment( i + 1 );
+        b = CTiglPoint(seg.GetChordPoint(0,1).XYZ()) - CTiglPoint(seg.GetChordPoint(0,0).XYZ());
+        b = projection * b;
+        a = CTiglPoint(seg.GetChordPoint(1,0).XYZ()) - CTiglPoint(seg.GetChordPoint(0,0).XYZ());
+        a = projection * a;
+        c = CTiglPoint(seg.GetChordPoint(1,1).XYZ()) - CTiglPoint(seg.GetChordPoint(1,0).XYZ());
+        c = projection * c;
+        vInc = CTiglPoint::cross_prod(b + c, a).norm2();
+        wInc = CTiglPoint::cross_prod(b , c).norm2();
+        v += vInc;
+        w += wInc;
+    }
+
+    double det = pow(v, 2) - (4 * -2*newArea * w);
+    if ( det < 0) {
+        throw CTiglError("Impossible to find a valid scale factor to set the area.");
+    }
+
+    // we use muller's method to support the case when w = 0
+    double scale =  ( -2*2*newArea ) / ( -v - sqrt(det) )   ; // the second solution is always bigger or negative
+
+
+    if ( scale <  0 ) {
+        throw CTiglError("Impossible to find a valid scale factor to set the area.");
+    }
+
+    std::vector<std::string> uidOrders = m_segments.GetElementUIDsInOrder();
+
+
+
+    for ( int i = 0 ; i < uidOrders.size(); i++ ) {
+        CTiglWingSectionElement* element = wingHelper->GetCTiglElementOfWing( uidOrders.at(i) );
+        // we store the leading edge to be able to reset it after scaling
+        CTiglPoint lEPosition = element->GetChordPoint(0);
+        // scaling is done from the center of the airfoil, so it will change its leading edge postion
+        element->ScaleUniformly(scale);
+        // reset the le position (the center will move)
+        element->SetChordPoint(0, lEPosition);
+    }
+
+}
+
+
+
 void CCPACSWing::SetHalfSpanKeepAR(double newHalfSpan)
 {
 

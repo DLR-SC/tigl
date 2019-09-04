@@ -706,6 +706,60 @@ TEST_F(creatorWing, MultipleWings_Scale)
 
 }
 
+TEST_F(creatorWing, MultipleWings_SetAreaKeepSpan )
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newArea, oldSpan,oldAR;
+    tigl::CTiglPoint oldRootLE;
+    double tolerance = 0.1;
+
+    saveInOutputFile();
+
+    newArea = 10;
+    oldSpan = wing->GetWingHalfSpan();
+    oldAR = wing->GetAspectRatio();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetAreaKeepSpan(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance);
+    EXPECT_FALSE( fabs( oldAR - wing->GetAspectRatio() )  < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+
+    saveInOutputFile();
+
+    setWing("W2_RX90");
+    newArea = 0.5;
+    oldSpan = wing->GetWingHalfSpan();
+    oldAR = wing->GetAspectRatio();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetAreaKeepSpan(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance);
+    EXPECT_FALSE( fabs( oldAR - wing->GetAspectRatio() )  < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+
+    saveInOutputFile();
+
+    setWing("W15_ShiAir");
+    newArea = 5;
+    oldSpan = wing->GetWingHalfSpan();
+    oldAR = wing->GetAspectRatio();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetAreaKeepSpan(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    // we allow un bit more tolerance because the profile is in the span direction and we scale it
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance + 0.5);
+    EXPECT_FALSE( fabs( oldAR - wing->GetAspectRatio() )  < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    EXPECT_THROW(wing->SetAreaKeepSpan(-3),tigl::CTiglError);
+
+}
+
 TEST_F(creatorWing, MultipleWings_SetAreaKeepAR)
 {
     setVariables("TestData/multiple_wings.xml", "Wing");
