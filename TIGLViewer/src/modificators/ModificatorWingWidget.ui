@@ -296,6 +296,19 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="checkBoxIsAreaConstant">
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>const</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QDoubleSpinBox" name="spinBoxArea">
        <property name="keyboardTracking">
         <bool>true</bool>
@@ -304,7 +317,7 @@
         <number>3</number>
        </property>
        <property name="minimum">
-        <double>0.000000000000000</double>
+        <double>0.010000000000000</double>
        </property>
        <property name="maximum">
         <double>99999999999999998278261272554585856747747644714015897553975120217811154108416.000000000000000</double>
@@ -341,9 +354,25 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="checkBoxIsSpanConstant">
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>const</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QDoubleSpinBox" name="spinBoxSpan">
        <property name="decimals">
         <number>3</number>
+       </property>
+       <property name="minimum">
+        <double>0.010000000000000</double>
        </property>
        <property name="maximum">
         <double>99999999999999998278261272554585856747747644714015897553975120217811154108416.000000000000000</double>
@@ -376,6 +405,19 @@
        </property>
        <property name="text">
         <string>AR</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxIsARConstant">
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>const</string>
        </property>
       </widget>
      </item>
