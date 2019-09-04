@@ -246,6 +246,33 @@ public:
     TIGL_EXPORT void SetHalfSpanKeepAR(double newHalfSpan);
 
 
+    /**
+     * Set the wing half span while keeping the area constant.
+     * The span is set by first scaling the wing uniformly,
+     * then resetting the area while keeping the span constant.
+     * @remark The aspect ratio will change.
+     * @param newArea
+     */
+    TIGL_EXPORT void SetHalfSpanKeepArea(double newHalfSpan);
+
+
+    /**
+     * Set the wing aspect ratio (AR) while keeping the span constant.
+     * The area will change so that the AR is reached.
+     * @param newAR
+     */
+    TIGL_EXPORT void SetARKeepSpan(double newAR);
+
+
+
+    /**
+     * Set the wing aspect ratio (AR) while keeping the area constant.
+     * The span will change so that the AR is reached.
+     * @param newAR
+     */
+    TIGL_EXPORT void SetARKeepArea(double newAR);
+
+
 
 
     /**

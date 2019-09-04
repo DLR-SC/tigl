@@ -1207,6 +1207,38 @@ void CCPACSWing::SetHalfSpanKeepAR(double newHalfSpan)
     Scale(scaleF);
 }
 
+
+void CCPACSWing::SetHalfSpanKeepArea(double newHalfSpan)
+{
+
+    double area = GetReferenceArea();
+    SetHalfSpanKeepAR(newHalfSpan);
+    SetAreaKeepSpan(area);
+}
+
+
+
+void CCPACSWing::SetARKeepSpan(double newAR)
+{
+
+    // remember we define:
+    // AR = pow(2*halfSpan,2)/2*A
+    // AR = 2*pow(halfSpan,2)/A
+    // -> A = 2*pow(halfSpan,2)/AR
+    double span = GetWingHalfSpan();
+    double newArea = (2 * pow(span, 2)) / newAR;
+    SetAreaKeepSpan(newArea);
+
+}
+
+
+void CCPACSWing::SetARKeepArea(double newAR)
+{
+    double area = GetReferenceArea();
+    double newSpan = sqrt( newAR * area * 0.5);
+    SetHalfSpanKeepArea(newSpan);
+}
+
 void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID)
 {
 
