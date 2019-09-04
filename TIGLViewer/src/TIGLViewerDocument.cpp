@@ -1215,7 +1215,7 @@ void TIGLViewerDocument::exportMeshedWingSTL()
     if (!fileName.isEmpty()) {
         START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+        double deflection = wing.GetWingSpan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
         TiglReturnCode err = tiglExportMeshedWingSTLByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedWingSTLByUID</u>. Error code: %1").arg(err), "TIGL Error");
@@ -1287,7 +1287,7 @@ void TIGLViewerDocument::exportMeshedWingVTK()
     if (1) {
         START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+        deflection = wing.GetWingSpan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
     }
 
     TIGLViewerVTKExportDialog settings(app);
@@ -1328,7 +1328,7 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
     if (1) {
         START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+        deflection = wing.GetWingSpan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
     }
 
     TIGLViewerVTKExportDialog settings(app);
@@ -1361,7 +1361,7 @@ void TIGLViewerDocument::exportWingCollada()
     if (!fileName.isEmpty()) {
         START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
+        double deflection = wing.GetWingSpan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
 
         TiglReturnCode err = tiglExportWingColladaByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), deflection);
         if (err != TIGL_SUCCESS) {

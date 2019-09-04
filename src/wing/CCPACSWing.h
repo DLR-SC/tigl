@@ -136,11 +136,18 @@ public:
     // Remark, if the wing is mirrored (with a symmetry axis), the two wings are take into account.
     // Otherwise, the width of the unique wing is returned.
     // Remark: The span is computed using bounding Box so, the result may no be accurate.
-    TIGL_EXPORT double GetWingspan();
+    TIGL_EXPORT double GetWingSpan();
 
     // Returns the half span of the wing
     // If the wing is not mirrored, return the whole width.
     // Remark: The span is computed using bounding Box. So, the result may no be accurate.
+
+    /**
+     * Returns the half span of the wing
+     * If the wing is not mirrored, return the whole width.
+     * @remark The span is computed using bounding Box. So, the result may no be exactly correct
+     * @return half span of the wing
+     */
     TIGL_EXPORT double GetWingHalfSpan();
 
     // Returns the aspect ratio of the wing
