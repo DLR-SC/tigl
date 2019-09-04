@@ -49,8 +49,15 @@ void ModificatorWingWidget::init()
     
     ui->rootLE->setLabel(QString("Root LE"));
     ui->rotation->setLabel(QString("Rotation"));
-    
-    
+
+    // alterable span area ar
+    setARConstant(true);
+
+    // connect change alterable
+    connect(ui->checkBoxIsAreaConstant, SIGNAL(clicked(bool)), this, SLOT(setAreaConstant(bool)));
+    connect(ui->checkBoxIsSpanConstant, SIGNAL(clicked(bool)), this, SLOT(setSpanConstant(bool)));
+    connect(ui->checkBoxIsARConstant, SIGNAL(clicked(bool)), this, SLOT(setARConstant(bool)));
+
     connect(ui->spinBoxSweepChord, SIGNAL(valueChanged(double)), this, SLOT(updateSweepAccordingChordValue(double)) );
     connect(ui->spinBoxDihedralChord, SIGNAL(valueChanged(double)), this, SLOT(updateDihedralAccordingChordValue(double)) );
 }
@@ -70,10 +77,42 @@ void ModificatorWingWidget::updateDihedralAccordingChordValue(double)
     ui->spinBoxDihedral->setValue(internalDihedral);
 }
 
+
+void ModificatorWingWidget::setAreaConstant(bool checked)
+{
+    ui->checkBoxIsARConstant->setChecked(false);
+    ui->spinBoxAR->setReadOnly(false);
+    ui->checkBoxIsSpanConstant->setChecked(false);
+    ui->spinBoxSpan->setReadOnly(false);
+    ui->checkBoxIsAreaConstant->setChecked(true);
+    ui->spinBoxArea->setReadOnly(true);
+}
+
+void ModificatorWingWidget::setSpanConstant(bool checked)
+{
+
+    ui->checkBoxIsARConstant->setChecked(false);
+    ui->spinBoxAR->setReadOnly(false);
+    ui->checkBoxIsAreaConstant->setChecked(false);
+    ui->spinBoxArea->setReadOnly(false);
+    ui->checkBoxIsSpanConstant->setChecked(true);
+    ui->spinBoxSpan->setReadOnly(true);
+}
+
+void ModificatorWingWidget::setARConstant(bool checked)
+{
+    ui->checkBoxIsAreaConstant->setChecked(false);
+    ui->spinBoxArea->setReadOnly(false);
+    ui->checkBoxIsSpanConstant->setChecked(false);
+    ui->spinBoxSpan->setReadOnly(false);
+    ui->checkBoxIsARConstant->setChecked(true);
+    ui->spinBoxAR->setReadOnly(true);
+}
+
 void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing)
 {
     tiglWing = &wing;
-
+    
     internalSpan = tiglWing->GetWingHalfSpan();
     ui->spinBoxSpan->setValue(internalSpan);
     internalAR = tiglWing->GetAspectRatio();
@@ -123,6 +162,8 @@ bool ModificatorWingWidget::apply()
 
     bool areaXYHasChanged = (!isApprox(internalArea, ui->spinBoxArea->value()));
 
+    bool arHasChanged = (!isApprox(internalAR, ui->spinBoxAR->value()));
+
     bool wasModified = false;
 
     if (rootLEHasChanged) {
@@ -161,15 +202,52 @@ bool ModificatorWingWidget::apply()
 
     if (areaXYHasChanged) {
         internalArea = ui->spinBoxArea->value();
-        tiglWing->SetAreaKeepAR(internalArea); 
-        wasModified = true; 
+        if (ui->checkBoxIsSpanConstant->isChecked()) {
+            tiglWing->SetAreaKeepSpan(internalArea);
+            wasModified = true;
+        }
+        else if (ui->checkBoxIsARConstant->isChecked()) {
+            tiglWing->SetAreaKeepAR(internalArea);
+            wasModified = true;
+        }
+        else {
+            LOG(ERROR) << "ModificatorWingWidget: set area called, but not correct "
+                          "constant checkbox set";
+        }
     }
 
     if (spanHasChanged) {
         internalSpan = ui->spinBoxSpan->value();
-        tiglWing->SetHalfSpanKeepAR(internalSpan); 
-        wasModified = true; 
+        if (ui->checkBoxIsAreaConstant->isChecked()) {
+            tiglWing->SetHalfSpanKeepArea(internalSpan);
+            wasModified = true;
+        }
+        else if (ui->checkBoxIsARConstant->isChecked()) {
+            tiglWing->SetHalfSpanKeepAR(internalSpan);
+            wasModified = true;
+        }
+        else {
+            LOG(ERROR) << "ModificatorWingWidget: set span called, but not correct "
+                          "constant checkbox set";
+        }
     }
+
+    if (arHasChanged) {
+        internalAR = ui->spinBoxAR->value();
+        if (ui->checkBoxIsAreaConstant->isChecked()) {
+            tiglWing->SetARKeepArea(internalAR);
+            wasModified = true;
+        }
+        else if (ui->checkBoxIsSpanConstant->isChecked()) {
+            tiglWing->SetARKeepSpan(internalAR);
+            wasModified = true;
+        }
+        else {
+            LOG(ERROR) << "ModificatorWingWidget: set AR called, but not correct "
+                          "constant checkbox set";
+        }
+    }
+
 
     if (wasModified) {
         reset();
