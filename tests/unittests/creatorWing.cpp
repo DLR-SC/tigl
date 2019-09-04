@@ -847,6 +847,156 @@ TEST_F(creatorWing, MultipleWings_SetHalfSpanKeepAR)
 
 }
 
+TEST_F(creatorWing, MultipleWings_SetHalfSpanKeepArea)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newSpan, oldArea, oldAR;
+    double tolerance = 0.1;
+    tigl::CTiglPoint oldRootLE;
+
+    saveInOutputFile();
+
+    newSpan = 10;
+    oldAR = wing->GetAspectRatio();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetHalfSpanKeepArea(newSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newSpan, tolerance);
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE( fabs(wing->GetAspectRatio() - oldAR) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W8_SBW");
+    newSpan = 0.5;
+    oldAR = wing->GetAspectRatio();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetHalfSpanKeepArea(newSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newSpan, tolerance);
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE( fabs(wing->GetAspectRatio() - oldAR) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W16_CurAir");
+    newSpan = 13;
+    oldAR = wing->GetAspectRatio();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetHalfSpanKeepArea(newSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newSpan, tolerance);
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE( fabs(wing->GetAspectRatio() - oldAR) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+}
+
+
+TEST_F(creatorWing, MultipleWings_SetARKeepSpan)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newAR, oldArea, oldSpan;
+    double tolerance = 0.01;
+    tigl::CTiglPoint oldRootLE;
+
+    saveInOutputFile();
+
+    newAR = 10;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepSpan(newAR);
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance);
+    EXPECT_FALSE( fabs(wing->GetReferenceArea() - oldArea) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W8_SBW");
+    newAR = 0.5;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepSpan(newAR);
+    // here the aspect ratio is not exactly set to the value because the profiles are scaled and so the span change a bit
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance + 0.1);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance + 0.1);
+    EXPECT_FALSE( fabs(wing->GetReferenceArea() - oldArea) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W16_CurAir");
+    newAR = 6;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepSpan(newAR);
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance);
+    EXPECT_FALSE( fabs(wing->GetReferenceArea() - oldArea) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+}
+
+
+
+TEST_F(creatorWing, MultipleWings_SetARKeepArea) {
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newAR, oldArea, oldSpan;
+    double tolerance = 0.01;
+    tigl::CTiglPoint oldRootLE;
+
+    saveInOutputFile();
+
+    newAR = 10;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepArea(newAR);
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance);
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE(fabs(wing->GetWingHalfSpan() - oldSpan) < tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W8_SBW");
+    newAR = 0.5;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepArea(newAR);
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance+ 0.1 );
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE(fabs(wing->GetWingHalfSpan() - oldSpan) < tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W16_CurAir");
+    newAR = 13;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepArea(newAR);
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance);
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE(fabs(wing->GetWingHalfSpan() - oldSpan) < tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+}
+
 
 TEST_F(creatorWing, MultipleWings_CreateSections)
 {
