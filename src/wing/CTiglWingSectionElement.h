@@ -71,6 +71,9 @@ public:
 
     TIGL_EXPORT CTiglPoint GetChordPoint(double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
+    TIGL_EXPORT void SetChordPoint(double xsi, CTiglPoint newChordPoint,
+                                   TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
 protected:
 
     CCPACSTransformation& GetElementCCPACSTransformation() override;

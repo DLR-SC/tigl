@@ -205,3 +205,13 @@ tigl::CCPACSPositionings& tigl::CTiglWingSectionElement::GetPositionings()
 {
     return wing->GetPositionings(CreateIfNotExistsTag());
 }
+
+void tigl::CTiglWingSectionElement::SetChordPoint(double xsi, tigl::CTiglPoint newChordPoint,
+                                                  TiglCoordinateSystem referenceCS)
+{
+    CTiglPoint oldChordPoint        = GetChordPoint(xsi, referenceCS);
+    CTiglPoint delta                = newChordPoint - oldChordPoint;
+    tigl::CTiglTransformation total = GetTotalTransformation(referenceCS);
+    total.AddTranslation(delta.x, delta.y, delta.z);
+    SetTotalTransformation(total, referenceCS);
+}
