@@ -63,6 +63,8 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 
 namespace tigl
 {
@@ -608,22 +610,40 @@ Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
     return m_segments.GetSegment(index).GetUpperSurface();
 }
 
-double CCPACSWing::GetWingspan()
+double CCPACSWing::GetWingSpan()
 {
     if (!wingHelper->HasShape()) {
         LOG(WARNING) << "The wing seems empty.";
         return 0;
     }
 
-    Bnd_Box boundingBox;
+    // prepare mirror transformation
+    TiglSymmetryAxis sym = GetSymmetryAxis();
+    gp_Trsf mirrorTransform;
+    if (sym != TIGL_NO_SYMMETRY) {
+        gp_Ax2 mirrorPlane;
+        if (sym == TIGL_X_Z_PLANE) {
+            mirrorPlane = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0., 1., 0.));
+        } else if (sym == TIGL_X_Y_PLANE) {
+            mirrorPlane = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0., 0., 1.));
+        } else if (sym == TIGL_Y_Z_PLANE) {
+            mirrorPlane = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(1., 0., 0.));
+        }
+        mirrorTransform.SetMirror(mirrorPlane);
+    }
 
-    for (int i = 1; i <= GetSegmentCount(); ++i) {
-        CCPACSWingSegment& segment = GetSegment(i);
-        TopoDS_Shape segmentShape  = segment.GetLoft()->Shape();
-        BRepBndLib::Add(segmentShape, boundingBox);
-        if (GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-            TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft()->Shape();
-            BRepBndLib::Add(segmentMirroredShape, boundingBox);
+
+    Bnd_Box boundingBox;
+    Standard_Real aDeflection = 0.0001;
+    std::vector<CTiglSectionElement* >  cElements = GetCTiglElements();
+    for ( int i = 0; i < cElements.size(); i++ ) {
+        TopoDS_Wire tipWire = cElements.at(i)->GetWire(GLOBAL_COORDINATE_SYSTEM);
+        BRepMesh_IncrementalMesh Inc(tipWire, aDeflection); // tessellation for accuracy
+        BRepBndLib::Add(tipWire, boundingBox);
+        if (sym != TIGL_NO_SYMMETRY ) {
+            BRepBuilderAPI_Transform myBRepTransformation(tipWire, mirrorTransform);
+            TopoDS_Shape mirroredTipWire = myBRepTransformation.Shape();
+            BRepBndLib::Add(mirroredTipWire, boundingBox);
         }
     }
 
@@ -653,11 +673,13 @@ double CCPACSWing::GetWingHalfSpan()
     }
 
     Bnd_Box boundingBox;
+    Standard_Real aDeflection = 0.0001;
 
-    for (int i = 1; i <= GetSegmentCount(); ++i) {
-        CCPACSWingSegment& segment = GetSegment(i);
-        TopoDS_Shape segmentShape  = segment.GetLoft()->Shape();
-        BRepBndLib::Add(segmentShape, boundingBox);
+    std::vector<CTiglSectionElement* >  cElements = GetCTiglElements();
+    for ( int i = 0; i < cElements.size(); i++ ) {
+      TopoDS_Wire wire = cElements.at(i)->GetWire(GLOBAL_COORDINATE_SYSTEM);
+      BRepMesh_IncrementalMesh Inc(wire, aDeflection); // tessellation for accuracy
+      BRepBndLib::Add(wire, boundingBox);
     }
 
     Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;

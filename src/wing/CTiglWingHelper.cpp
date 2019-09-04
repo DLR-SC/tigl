@@ -251,6 +251,8 @@ tigl::CTiglWingSectionElement* tigl::CTiglWingHelper::GetCTiglElementOfWing(cons
 {
     CTiglWingSectionElement* cElement = nullptr;
 
+    // TODO (MS): Rewrite using contains... The exception block seems awkward
+
     try {
         return cTiglElementsMap.at(elementUID);
     }
