@@ -52,6 +52,15 @@ public:
     // Returns the profile UID
     TIGL_EXPORT virtual std::string GetProfileUID() const = 0;
 
+
+    /**
+     * Set the profile UID used by this element.
+     * @remark Some parameters of this element can change as the center or the width. Especially , if the profile is not
+     * defined in the same way as the old one (Take a look a the creator standard to define profile).
+     * @param newProfileUID
+     */
+    TIGL_EXPORT virtual  void SetProfileUID(const std::string& newProfileUID) = 0;
+
     // Returns the positioning transformation
     // If there are no positioning will return a trivial transformation
     TIGL_EXPORT virtual CTiglTransformation GetPositioningTransformation() const = 0;
