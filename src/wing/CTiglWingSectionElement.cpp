@@ -69,6 +69,16 @@ std::string tigl::CTiglWingSectionElement::GetProfileUID() const
     return element ? element->GetAirfoilUID() : "";
 }
 
+
+void tigl::CTiglWingSectionElement::SetProfileUID(const std::string& newProfileUID)
+{
+    CCPACSConfiguration& config = wing->GetConfiguration();
+    if ( ! config.GetWingProfiles()->HasProfile(newProfileUID) ) {
+        throw CTiglError("CTiglWingSectionElement::SetProfileUID: The given profile seems not to be present in the profile list.");
+    }
+    element->SetAirfoilUID(newProfileUID);
+}
+
 // Returns the Wing profile referenced by this connection
 tigl::CCPACSWingProfile& tigl::CTiglWingSectionElement::GetProfile()
 {

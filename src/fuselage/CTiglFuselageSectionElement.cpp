@@ -72,6 +72,17 @@ std::string tigl::CTiglFuselageSectionElement::GetProfileUID() const
     return element ? element->GetProfileUID() : "";
 }
 
+void tigl::CTiglFuselageSectionElement::SetProfileUID(const std::string& newProfileUID)
+{
+
+    CCPACSConfiguration& config = fuselage->GetConfiguration();
+    if ( ! config.GetFuselageProfiles()->HasProfile(newProfileUID) ) {
+        throw CTiglError("CTiglFuselageSectionElement::SetProfileUID: The given profile seems not to be present in the profile list.");
+    }
+    element->SetProfileUID(newProfileUID); 
+}
+
+
 // Returns the fuselage profile referenced by this connection
 tigl::CCPACSFuselageProfile& tigl::CTiglFuselageSectionElement::GetProfile()
 {

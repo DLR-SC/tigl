@@ -48,6 +48,8 @@ public:
 
     TIGL_EXPORT virtual std::string GetProfileUID() const override;
 
+    TIGL_EXPORT void SetProfileUID(const std::string& newProfileUID) override; 
+
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation() const override;
 
     TIGL_EXPORT CCPACSPositionings& GetPositionings() override;

@@ -1293,3 +1293,37 @@ TEST_F(creatorCTiglSectionElement, SetRotationAroundNoraml_MultipleFuselagesMode
 
     saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
 }
+
+
+TEST_F(creatorCTiglSectionElement, Multiples_SetProfileUID )
+{
+    setVariables("TestData/multiple_wings.xml");
+    tigl::CTiglSectionElement *cElement = nullptr;
+    std::string oldProfileUID, newProfileUID;
+
+    saveCurrentConfig("TestData/Output/creatorCTiglSectionElement-out.xml");
+
+    cElement = GetCElementOf("W5_RX60_Sec1_El1");
+    oldProfileUID = cElement->GetProfileUID();
+    EXPECT_EQ(oldProfileUID, "NACA0006");
+    newProfileUID = "curvedAirfoil";
+    cElement->SetProfileUID(newProfileUID);
+    EXPECT_EQ(cElement->GetProfileUID(), newProfileUID);
+
+    saveCurrentConfig("TestData/Output/creatorCTiglSectionElement-out.xml");
+
+
+    setVariables("TestData/multiple_fuselages.xml");
+
+    saveCurrentConfig("TestData/Output/creatorCTiglSectionElement-out.xml");
+
+    cElement = GetCElementOf("D150_Fuselage_1Section2IDElement1");
+    oldProfileUID = cElement->GetProfileUID();
+    EXPECT_EQ(oldProfileUID, "fuselageCircleProfileuID");
+    newProfileUID = "fuselageTriangleProfileuID";
+    cElement->SetProfileUID(newProfileUID);
+    EXPECT_EQ(cElement->GetProfileUID(), newProfileUID);
+
+    saveCurrentConfig("TestData/Output/creatorCTiglSectionElement-out.xml");
+
+}
