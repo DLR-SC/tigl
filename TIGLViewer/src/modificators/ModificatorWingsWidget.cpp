@@ -55,7 +55,7 @@ void ModificatorWingsWidget::execNewWingDialog()
         QString uid         = wingDialog.getUID();
         QString profileID = wingDialog.getProfileUID();
         try {
-            if ( ! profilesDB->isProfileInConfig(profileID) ) {
+            if ( !profilesDB->hasProfileConfigSuffix(profileID) ) {
                 profilesDB->copyProfileFromLocalToConfig(profileID) ;
             }
             wings->CreateWing(uid.toStdString(), nbSection, profilesDB->removeSuffix(profileID).toStdString());

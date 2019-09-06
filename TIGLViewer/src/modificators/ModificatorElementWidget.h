@@ -23,6 +23,7 @@
 #include "modificators/CTiglPointWidget.h"
 #include "CCPACSFuselageSectionElement.h"
 #include "CTiglSectionElement.h"
+#include "ProfilesDBManager.h"
 
 namespace Ui
 {
@@ -47,7 +48,7 @@ public:
     explicit ModificatorElementWidget(QWidget* parent = nullptr);
     ~ModificatorElementWidget();
 
-    void setElement(tigl::CTiglSectionElement& inElement);
+    void setElement(tigl::CTiglSectionElement& inElement,  ProfilesDBManager* profilesDB);
 
     bool apply() override;
 
@@ -56,11 +57,13 @@ public:
 private:
     Ui::ModificatorElementWidget* ui;
     tigl::CTiglSectionElement* element;
+    ProfilesDBManager* profilesDB;
 
     double internalRotAroundN;
     double internalHeight;
     double internalWidth;
     double internalArea;
+    QString internalProfileUID;
 
     // tell us if a width, height or area was modified at last and gives the modification priority.
     QString lastModifiedDimensionalParameter;

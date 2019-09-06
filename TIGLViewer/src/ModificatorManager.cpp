@@ -38,6 +38,7 @@ ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
     doc          = nullptr;
     this->treeWidget = treeWidget;
     this->modificatorContainerWidget = modificatorContainerWidget;
+    this->modificatorContainerWidget->setProfilesManager( &profilesDB);
     this->myUndoStack = undoStack;
     this->scene = scene;
 
@@ -87,7 +88,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
     }
     else if (item->getType() == "fuselages") {
         tigl::CCPACSFuselages& fuselages = doc->GetConfiguration().GetFuselages();
-        modificatorContainerWidget->setFuselagesModificator(fuselages, &profilesDB);
+        modificatorContainerWidget->setFuselagesModificator(fuselages);
     }
     else if (item->getType() == "wing") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
@@ -97,7 +98,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
     }
     else if (item->getType() == "wings") {
         tigl::CCPACSWings& wings = doc->GetConfiguration().GetWings();
-        modificatorContainerWidget->setWingsModificator(wings, &profilesDB);
+        modificatorContainerWidget->setWingsModificator(wings);
     }
     else if (item->getType() == "element") {
         // we need first to determine if this is a section element or a fuselage element

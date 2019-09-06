@@ -23,6 +23,9 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSFuselageProfiles.h"
 #include "CCPACSFuselageProfile.h"
+#include "CTiglWingSectionElement.h"
+#include "CTiglFuselageSectionElement.h"
+#include "TIGLViewerErrorDialog.h"
 
 
 ProfilesDBManager::ProfilesDBManager()
@@ -42,6 +45,22 @@ QStringList ProfilesDBManager::getAllWingProfiles()
 QStringList ProfilesDBManager::getAllFuselagesProfiles()
 {
     return fuselageProfilesUIDs;
+}
+
+QStringList ProfilesDBManager::getAllAvailableProfilesFor(tigl::CTiglSectionElement* cElement)
+{
+    // a dirty trick to get the type of the element
+    if (typeid(*cElement) == typeid(tigl::CTiglWingSectionElement)) {
+        return getAllWingProfiles();
+    }
+    else if (typeid(*cElement) == typeid(tigl::CTiglFuselageSectionElement)) {
+        return getAllFuselagesProfiles();
+    }
+    else {
+        LOG(WARNING)
+            << "ProfilesDBManager::getAllAvailableProfilesFor: Impossible to determine the type of the given cElement";
+        return QStringList();
+    }
 }
 
 void ProfilesDBManager::setLocalProfiles(QString newDBFile)
@@ -127,25 +146,33 @@ void ProfilesDBManager::updateProfilesLists()
 
 void ProfilesDBManager::copyProfileFromLocalToConfig(QString profileID)
 {
-    if (!isProfileInLocal(profileID)) {
-        LOG(ERROR) << "ProfilesDBManager::copyProfileFromLocalToConfig: profileID " << profileID.toStdString()
-                   << " not found in local DB.";
-        return;
+    if (!hasProfileLocalSuffix(profileID)) {
+        throw tigl::CTiglError(" profileID :" + removeSuffix(profileID).toStdString() + "not found in local DB.");
     }
-
+    // check if the config has already a profile with the same uid
+    tigl::CTiglUIDManager&  uidManager = configProfiles->GetUIDManager();
+    std::string profileUID = removeSuffix(profileID).toStdString();
+    if (uidManager.IsUIDRegistered(profileUID)) {
+        throw tigl::CTiglError("Impossible to copy profile in the configuration. The same uid " + profileUID +
+                               " is already present in the configuration.");
+    }
     if (isAWingProfile(profileID)) {
-        tigl::CCPACSWingProfile& wingProfile = configProfiles->GetWingAirfoils(tigl::CreateIfNotExistsTag()).AddWingAirfoil();
-        std::string xpath = "/profiles/wingAirfoils/wingAirfoil[@uID=\"" + removeSuffix(profileID).toStdString()  +"\"]";
-        wingProfile.ReadCPACS(tixiHandle,xpath);
+        tigl::CCPACSWingProfile& wingProfile =
+            configProfiles->GetWingAirfoils(tigl::CreateIfNotExistsTag()).AddWingAirfoil();
+        std::string xpath =
+            "/profiles/wingAirfoils/wingAirfoil[@uID=\"" + removeSuffix(profileID).toStdString() + "\"]";
+        wingProfile.ReadCPACS(tixiHandle, xpath);
     }
     else if (isAFuselageProfile(profileID)) {
-        tigl::CCPACSFuselageProfile& fuselageProfile = configProfiles->GetFuselageProfiles(tigl::CreateIfNotExistsTag()).AddFuselageProfile();
-        std::string xpath = "/profiles/fuselageProfiles/fuselageProfile[@uID=\"" + removeSuffix(profileID).toStdString()  +"\"]";
-        fuselageProfile.ReadCPACS(tixiHandle,xpath);
+        tigl::CCPACSFuselageProfile& fuselageProfile =
+            configProfiles->GetFuselageProfiles(tigl::CreateIfNotExistsTag()).AddFuselageProfile();
+        std::string xpath =
+            "/profiles/fuselageProfiles/fuselageProfile[@uID=\"" + removeSuffix(profileID).toStdString() + "\"]";
+        fuselageProfile.ReadCPACS(tixiHandle, xpath);
     }
     else {
-        LOG(ERROR) << "ProfilesDBManager::copyProfileFromLocalToConfig: profileID " << profileID.toStdString()
-                   << " seems not to be a wing or a fuselage profile.";
+        throw tigl::CTiglError(" profileID :" + removeSuffix(profileID).toStdString() +
+                               " seems not to be a wing or a fuselage profile.");
     }
     updateProfilesLists();
 }
@@ -153,12 +180,12 @@ void ProfilesDBManager::copyProfileFromLocalToConfig(QString profileID)
 QString ProfilesDBManager::removeSuffix(QString profileID)
 {
 
-    if (isProfileInLocal(profileID)) {
+    if (hasProfileLocalSuffix(profileID)) {
         profileID.remove(profileID.size() - localSuffix.size(), localSuffix.size());
         return profileID;
     }
 
-    if (isProfileInConfig(profileID)) {
+    if (hasProfileConfigSuffix(profileID)) {
         profileID.remove(profileID.size() - configSuffix.size(), configSuffix.size());
         return profileID;
     }
@@ -167,7 +194,7 @@ QString ProfilesDBManager::removeSuffix(QString profileID)
     return profileID;
 }
 
-bool ProfilesDBManager::isProfileInConfig(QString profileID)
+bool ProfilesDBManager::hasProfileConfigSuffix(QString profileID)
 {
 
     QRegExp suffixRegex;
@@ -181,7 +208,7 @@ bool ProfilesDBManager::isProfileInConfig(QString profileID)
     return false;
 }
 
-bool ProfilesDBManager::isProfileInLocal(QString profileID)
+bool ProfilesDBManager::hasProfileLocalSuffix(QString profileID)
 {
 
     QRegExp suffixRegex;

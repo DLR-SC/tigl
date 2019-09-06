@@ -18,6 +18,8 @@
 
 #include "ModificatorElementWidget.h"
 #include "ui_ModificatorElementWidget.h"
+#include "CTiglError.h"
+#include "TIGLViewerErrorDialog.h"
 
 ModificatorElementWidget::ModificatorElementWidget(QWidget* parent)
     : ModificatorWidget(parent)
@@ -35,11 +37,13 @@ ModificatorElementWidget::~ModificatorElementWidget()
 
 
 
-void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement)
+void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement,  ProfilesDBManager* profilesDB)
 {
 
 
     element = &inElement;
+    this->profilesDB = profilesDB;
+
     ui->center->setInternal(element->GetCenter());
     ui->center->setLabel("Center");
     ui->normal->setInternal(element->GetNormal());
@@ -55,6 +59,13 @@ void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement)
     internalArea = element->GetArea();
     ui->areaSpinBox->setValue(internalArea);
 
+    // we add the suffix for the config, so that the profile name has the same format as the ones in the DB
+    ui->profileComboBox->clear();
+    internalProfileUID = element->GetProfileUID().c_str() + profilesDB->getConfigSuffix();
+    ui->profileComboBox->addItems(profilesDB->getAllAvailableProfilesFor(element));
+    int index = ui->profileComboBox->findText(internalProfileUID);
+    ui->profileComboBox->setCurrentIndex(index);
+
 }
 
 bool ModificatorElementWidget::apply()
@@ -65,6 +76,7 @@ bool ModificatorElementWidget::apply()
     bool areaHasChanged = (!isApprox(internalArea, ui->areaSpinBox->value()));
     bool normalHasChanged = ui->normal->hasChanged();
     bool rotAroundNHasChanged = (!isApprox(internalRotAroundN , ui->rotAroundNSpinBox->value()));
+    bool profileHasChanged = ( internalProfileUID != ui->profileComboBox->currentText() );
     bool wasModified      = false;
 
     if (centerHasChanged) {
@@ -97,12 +109,33 @@ bool ModificatorElementWidget::apply()
         wasModified = true;
     }
 
-    if (rotAroundNHasChanged ){
+    if (rotAroundNHasChanged ) {
         internalRotAroundN = ui->rotAroundNSpinBox->value();
         element->SetRotationAroundNormal(internalRotAroundN);
         wasModified = true;
     }
 
+    if (profileHasChanged) {
+        internalProfileUID = ui->profileComboBox->currentText();
+        try {
+            if (!profilesDB->hasProfileConfigSuffix(internalProfileUID)) {
+                profilesDB->copyProfileFromLocalToConfig(internalProfileUID);
+            }
+            element->SetProfileUID(profilesDB->removeSuffix(internalProfileUID).toStdString());
+            wasModified = true;
+            }
+        catch (const tigl::CTiglError& err) {
+            TIGLViewerErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
+                                         .arg("Fail to set the profile")
+                                         .arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+        }
+
+
+    }
 
     if (wasModified) {
         // we reset to be sure that each internal values is correctly set
@@ -113,5 +146,5 @@ bool ModificatorElementWidget::apply()
 
 void ModificatorElementWidget::reset()
 {
-    setElement(*element);
+    setElement(*element, profilesDB);
 }

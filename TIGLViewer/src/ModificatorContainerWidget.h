@@ -69,11 +69,13 @@ public:
     explicit ModificatorContainerWidget(QWidget* parent = nullptr);
     ~ModificatorContainerWidget();
 
+    void setProfilesManager(ProfilesDBManager* profilesDB);
+
     void setTransformationModificator(tigl::CCPACSTransformation& transformation);
     void setWingModificator(tigl::CCPACSWing& wing);
-    void setWingsModificator(tigl::CCPACSWings& wings, ProfilesDBManager* profileDB);
+    void setWingsModificator(tigl::CCPACSWings& wings);
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
-    void setFuselagesModificator(tigl::CCPACSFuselages& fuselages, ProfilesDBManager* profileDB);
+    void setFuselagesModificator(tigl::CCPACSFuselages& fuselages);
     void setElementModificator(tigl::CTiglSectionElement& element);
     void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
     void setSectionsModificator(tigl::CreateConnectedElementI& conntedElementI);
@@ -90,6 +92,9 @@ private:
     Ui::ModificatorContainerWidget* ui;
 
     ModificatorWidget* currentModificator;
+
+    ProfilesDBManager* profilesDB;
+
 };
 
 #endif // MODIFICATORCONTAINERWIDGET_H
