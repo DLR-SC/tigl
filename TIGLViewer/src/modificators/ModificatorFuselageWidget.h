@@ -21,6 +21,7 @@
 
 #include "modificators/ModificatorWidget.h"
 #include "CCPACSFuselage.h"
+#include "ProfilesDBManager.h"
 
 namespace Ui
 {
@@ -35,7 +36,7 @@ public:
     explicit ModificatorFuselageWidget(QWidget* parent = nullptr);
     ~ModificatorFuselageWidget();
 
-    void setFuselage(tigl::CCPACSFuselage& fuselage);
+    void setFuselage(tigl::CCPACSFuselage& fuselage, ProfilesDBManager* profilesDB);
 
     bool apply() override;
 
@@ -45,10 +46,12 @@ private:
     Ui::ModificatorFuselageWidget* ui;
 
     tigl::CCPACSFuselage* fuselage;
+    ProfilesDBManager* profilesDB;
 
     double internalLength;
     double internalWidth;
     double internalHeight;
+    QString internalProfile;
 
 };
 

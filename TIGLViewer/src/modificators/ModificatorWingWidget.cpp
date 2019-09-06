@@ -19,6 +19,7 @@
 #include "ModificatorWingWidget.h"
 #include "ui_ModificatorWingWidget.h"
 #include "CTiglLogging.h"
+#include "TIGLViewerErrorDialog.h"
 
 ModificatorWingWidget::ModificatorWingWidget(QWidget* parent)
     : ModificatorWidget(parent)
@@ -26,6 +27,7 @@ ModificatorWingWidget::ModificatorWingWidget(QWidget* parent)
 {
     ui->setupUi(this);
     tiglWing = nullptr;
+    profilesDB = nullptr;
     this->init();
 }
 
@@ -109,9 +111,10 @@ void ModificatorWingWidget::setARConstant(bool checked)
     ui->spinBoxAR->setReadOnly(true);
 }
 
-void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing)
+void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing, ProfilesDBManager* profilesDB)
 {
     tiglWing = &wing;
+    this->profilesDB = profilesDB;
     
     internalSpan = tiglWing->GetWingHalfSpan();
     ui->spinBoxSpan->setValue(internalSpan);
@@ -131,12 +134,25 @@ void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing)
     ui->rotation->setInternal(tiglWing->GetRotation());
 
     ui->symmetry->setInternal(tiglWing->GetSymmetryAxis()) ;
+
+
+    ui->profileComboBox->clear();
+    std::vector<std::string> profilesList = tiglWing->GetAllUsedAirfoils();
+    if ( profilesList.size() == 1) {
+        internalProfile = profilesList.at(0).c_str()  + profilesDB->getConfigSuffix() ;
+    } else {
+        internalProfile = "<multi-airfoils>";
+        ui->profileComboBox->addItem(internalProfile);
+    }
+    ui->profileComboBox->addItems(profilesDB->getAllWingProfiles());
+    int index = ui->profileComboBox->findText(internalProfile);
+    ui->profileComboBox->setCurrentIndex(index);
 }
 
 void ModificatorWingWidget::reset()
 {
     if (tiglWing != nullptr) {
-        this->setWing(*tiglWing);
+        this->setWing(*tiglWing, profilesDB);
     }
     else {
         LOG(WARNING) << "ModificatorWingWidget: reset call but wing is not set!";
@@ -163,6 +179,9 @@ bool ModificatorWingWidget::apply()
     bool areaXYHasChanged = (!isApprox(internalArea, ui->spinBoxArea->value()));
 
     bool arHasChanged = (!isApprox(internalAR, ui->spinBoxAR->value()));
+
+    bool profileHasChanged = (internalProfile != ui->profileComboBox->currentText());
+
 
     bool wasModified = false;
 
@@ -248,6 +267,26 @@ bool ModificatorWingWidget::apply()
         }
     }
 
+
+    if (profileHasChanged) {
+        internalProfile = ui->profileComboBox->currentText();
+        try {
+            if (!profilesDB->hasProfileConfigSuffix(internalProfile)) {
+                profilesDB->copyProfileFromLocalToConfig(internalProfile);
+            }
+            tiglWing->SetAllAirfoils(profilesDB->removeSuffix(internalProfile).toStdString());
+            wasModified = true;
+        }
+        catch (const tigl::CTiglError &err) {
+            TIGLViewerErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
+                                         .arg("Fail to set the profile")
+                                         .arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+        }
+    }
 
     if (wasModified) {
         reset();

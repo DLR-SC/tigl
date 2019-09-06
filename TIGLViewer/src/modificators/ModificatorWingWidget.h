@@ -21,6 +21,7 @@
 
 #include "ModificatorWidget.h"
 #include "CCPACSWing.h"
+#include "ProfilesDBManager.h"
 
 namespace Ui
 {
@@ -50,14 +51,14 @@ public:
     bool apply() override;
     void reset() override;
 
-    void setWing(tigl::CCPACSWing& wing);
+    void setWing(tigl::CCPACSWing& wing, ProfilesDBManager* profilesDB);
 
 private:
     void init();
 
     Ui::ModificatorWingWidget* ui;
-
     tigl::CCPACSWing* tiglWing;
+    ProfilesDBManager* profilesDB;
 
     // internal root LE is a CTiglPointWidget
 
@@ -81,6 +82,8 @@ private:
 
     // internal AR
     double internalAR;
+
+    QString internalProfile;
 };
 
 #endif // MODIFICATORWINGWIDGET_H
