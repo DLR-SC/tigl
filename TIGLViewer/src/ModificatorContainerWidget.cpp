@@ -83,7 +83,7 @@ void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransf
 void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
 {
     hideAllSpecializedWidgets();
-    ui->wingModificator->setWing(wing);
+    ui->wingModificator->setWing(wing, profilesDB);
     ui->wingModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->wingModificator;
@@ -102,7 +102,7 @@ void ModificatorContainerWidget::setWingsModificator(tigl::CCPACSWings &wings)
 void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fuselage)
 {
     hideAllSpecializedWidgets();
-    ui->fuselageModificator->setFuselage(fuselage);
+    ui->fuselageModificator->setFuselage(fuselage, profilesDB);
     ui->fuselageModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->fuselageModificator;
