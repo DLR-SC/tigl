@@ -1441,6 +1441,31 @@ std::vector<CTiglSectionElement* > CCPACSWing::GetCTiglElements()
 }
 
 
+std::vector<std::string> CCPACSWing::GetAllUsedAirfoils()
+{
+    std::vector<std::string> airfoils;
+    std::vector<CTiglSectionElement*> cElements = GetCTiglElements();
+    std::string uid;
+    for (int i = 0 ; i < cElements.size(); i++) {
+        uid = cElements.at(i)->GetProfileUID();
+        if ( ! ListFunctions::Contains(airfoils, uid) ) {
+            airfoils.push_back(uid);
+        }
+    }
+    return airfoils;
+}
+
+
+
+void CCPACSWing::SetAllAirfoils(const std::string &profileUID)
+{
+    std::vector<CTiglSectionElement*> cElements = GetCTiglElements();
+    for (int i = 0 ; i < cElements.size(); i++) {
+        cElements.at(i)->SetProfileUID(profileUID);
+    }
+}
+
+
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform,
                                           const CTiglWingConnection& connection, const TopoDS_Shape& wire)

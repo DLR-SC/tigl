@@ -1086,4 +1086,28 @@ std::vector<tigl::CTiglSectionElement*> CCPACSFuselage::GetCTiglElements()
     return cElements;
 }
 
+
+std::vector<std::string> CCPACSFuselage::GetAllUsedProfiles()
+{
+    std::vector<std::string> profiles;
+    std::vector<CTiglSectionElement*> cElements = GetCTiglElements();
+    std::string uid;
+    for (int i = 0 ; i < cElements.size(); i++) {
+        uid = cElements.at(i)->GetProfileUID();
+        if ( ! ListFunctions::Contains(profiles, uid) ) {
+            profiles.push_back(uid);
+        }
+    }
+    return profiles;
+}
+
+void CCPACSFuselage::SetAllProfiles(const std::string &profileUID)
+{
+    std::vector<CTiglSectionElement*> cElements = GetCTiglElements();
+    for (int i = 0 ; i < cElements.size(); i++) {
+        cElements.at(i)->SetProfileUID(profileUID);
+    }
+}
+
+
 } // end namespace tigl

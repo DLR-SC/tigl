@@ -199,6 +199,19 @@ public:
 
     TIGL_EXPORT std::vector<tigl::CTiglSectionElement*> GetCTiglElements() ;
 
+    /**
+     *
+     * @return Return all the uid of the profiles used by this fuselage
+     */
+    TIGL_EXPORT std::vector<std::string> GetAllUsedProfiles();
+
+     /**
+      * Set the profile uid of all the section elements of this fuselage.
+      * @param profileUID ; the profile UID to use
+      */
+    TIGL_EXPORT void SetAllProfiles(const std::string& profileUID);
+
+
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;
 

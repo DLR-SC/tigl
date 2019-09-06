@@ -1138,3 +1138,42 @@ TEST_F(creatorWing, D250_DeleteSection )
     saveInOutputFile();
 
 }
+
+TEST_F(creatorWing, D250_GetAllAirfoils)
+{
+    setVariables("TestData/CPACS_30_D250_10.xml", "D250_wing");
+    std::vector<std::string> expectedAirfoils;
+    std::vector<std::string> currentAirfoils;
+
+    expectedAirfoils.clear();
+    expectedAirfoils.push_back("NACA64a210_root");
+    expectedAirfoils.push_back("NACA64a210_innerKink");
+    expectedAirfoils.push_back("NACA64a210");
+    currentAirfoils = wing->GetAllUsedAirfoils();
+    ASSERT_EQ(currentAirfoils.size(), expectedAirfoils.size());
+    for(int i = 0; i < currentAirfoils.size(); i ++ ){
+        EXPECT_EQ(currentAirfoils.at(i), expectedAirfoils.at(i));
+    }
+
+}
+
+
+TEST_F(creatorWing, D250_SetAllAirfoils)
+{
+    setVariables("TestData/CPACS_30_D250_10.xml", "D250_wing");
+    std::vector<std::string> expectedAirfoils;
+    std::vector<std::string> currentAirfoils;
+
+    saveInOutputFile();
+
+    wing->SetAllAirfoils("NACA64a210");
+    expectedAirfoils.push_back("NACA64a210");
+    currentAirfoils = wing->GetAllUsedAirfoils();
+    ASSERT_EQ(currentAirfoils.size(), expectedAirfoils.size());
+    for(int i = 0; i < currentAirfoils.size(); i ++ ){
+        EXPECT_EQ(currentAirfoils.at(i), expectedAirfoils.at(i));
+    }
+
+    saveInOutputFile();
+
+}

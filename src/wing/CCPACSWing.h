@@ -316,6 +316,20 @@ public:
     TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement() override;
 
     TIGL_EXPORT  std::vector<CTiglSectionElement* > GetCTiglElements();
+
+    /**
+     *
+     * @return Return all the uid of the airfoils used by this wing
+     */
+    TIGL_EXPORT std::vector<std::string> GetAllUsedAirfoils();
+
+    /**
+     * Set the airfoil uid of all the section elements of this wing.
+     * @param profileUID ; the airfoil UID to use
+     */
+    TIGL_EXPORT void SetAllAirfoils(const std::string& profileUID);
+
+
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;
 
