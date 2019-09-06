@@ -582,3 +582,41 @@ TEST_F(creatorFuselage, deleteSection_multipleFuselgaesModel)
     saveInOutputFile();
 
 }
+
+
+TEST_F(creatorFuselage, getAllProfiles_multiplesFuselageModel)
+{
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselageCircumference");
+    std::vector<std::string> expectedProfiles;
+    std::vector<std::string> currentProfile;
+
+    expectedProfiles.push_back("fuselageCircleProfileuID");
+    expectedProfiles.push_back("fuselageTriangleProfileuID");
+    currentProfile = fuselage->GetAllUsedProfiles();
+    ASSERT_EQ(currentProfile.size(), expectedProfiles.size());
+    for(int i = 0; i < currentProfile.size(); i ++ ){
+        EXPECT_EQ(currentProfile.at(i), expectedProfiles.at(i));
+    }
+
+}
+
+
+TEST_F(creatorFuselage, setAllProfiles_multiplesFuselageModel)
+{
+
+    setVariables("TestData/multiple_fuselages.xml", "SimpleFuselageCircumference");
+    std::vector<std::string> expectedProfiles;
+    std::vector<std::string> currentProfile;
+
+    saveInOutputFile();
+
+    fuselage->SetAllProfiles("fuselageCircleProfileuID");
+    expectedProfiles.push_back("fuselageCircleProfileuID");
+    currentProfile = fuselage->GetAllUsedProfiles();
+    ASSERT_EQ(currentProfile.size(), expectedProfiles.size());
+    for(int i = 0; i < currentProfile.size(); i ++ ){
+        EXPECT_EQ(currentProfile.at(i), expectedProfiles.at(i));
+    }
+
+    saveInOutputFile();
+}
