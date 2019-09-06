@@ -27,6 +27,7 @@
 #include "CCPACSProfiles.h"
 #include "tixi.h"
 #include "CTiglUIDManager.h"
+#include "CTiglSectionElement.h"
 
 #include "UniquePtr.h"
 
@@ -41,6 +42,7 @@
  */
 class ProfilesDBManager : public QObject
 {
+    // TODO: Refactoring: use singleton pattern for this class
 
 public:
     ProfilesDBManager();
@@ -51,15 +53,21 @@ public:
 
     QStringList getAllFuselagesProfiles();
     QStringList getAllWingProfiles();
+    QStringList getAllAvailableProfilesFor(tigl::CTiglSectionElement* cElement);
 
     void copyProfileFromLocalToConfig(QString profileID);
 
-    bool isProfileInConfig(QString profileID);
-    bool isProfileInLocal(QString profileID);
+    // Check if the profileID is a configuration profile base on its name
+    bool hasProfileConfigSuffix(QString profileID);
+    bool hasProfileLocalSuffix(QString profileID);
     bool isAWingProfile(QString profileID);
     bool isAFuselageProfile(QString profileID);
 
     QString removeSuffix(QString profileID);
+
+    inline QString getLocalSuffix() { return localSuffix; };
+    inline QString getConfigSuffix() { return configSuffix; };
+
 
 protected:
     void updateProfilesLists();

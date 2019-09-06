@@ -32,14 +32,14 @@ ModificatorSectionWidget::~ModificatorSectionWidget()
     delete ui;
 }
 
-void ModificatorSectionWidget::setAssociatedElements(QList<tigl::CTiglSectionElement*> elements)
+void ModificatorSectionWidget::setAssociatedElements(QList<tigl::CTiglSectionElement*> elements, ProfilesDBManager* profilesDB)
 {
 
     deleteElementWidgets();
 
     for (int i = 0; i < elements.size(); i++) {
         ModificatorElementWidget* elementWidget = new ModificatorElementWidget(this);
-        elementWidget->setElement(*(elements[i]));
+        elementWidget->setElement(*(elements[i]), profilesDB);
         ui->modificatorSectionLayout->addWidget(elementWidget);
         elementWidgets.push_back(elementWidget);
     }

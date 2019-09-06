@@ -53,7 +53,7 @@ void ModificatorFuselagesWidget::execNewFuselageDialog()
         QString uid         = fuselageDialog.getUID();
         QString profileID = fuselageDialog.getProfileUID();
         try {
-            if (!profilesDB->isProfileInConfig(profileID)) {
+            if (!profilesDB->hasProfileConfigSuffix(profileID)) {
                 profilesDB->copyProfileFromLocalToConfig(profileID);
             }
             fuselages->CreateFuselage(uid.toStdString(), nbSection, profilesDB->removeSuffix(profileID).toStdString());

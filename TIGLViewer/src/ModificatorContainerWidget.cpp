@@ -48,6 +48,12 @@ ModificatorContainerWidget::~ModificatorContainerWidget()
     delete ui;
 }
 
+void ModificatorContainerWidget::setProfilesManager(ProfilesDBManager* profilesDB)
+{
+    this->profilesDB = profilesDB;
+}
+
+
 void ModificatorContainerWidget::hideAllSpecializedWidgets()
 {
     bool visible = false;
@@ -84,10 +90,10 @@ void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
 }
 
 
-void ModificatorContainerWidget::setWingsModificator(tigl::CCPACSWings &wings, ProfilesDBManager* profileDB)
+void ModificatorContainerWidget::setWingsModificator(tigl::CCPACSWings &wings)
 {
     hideAllSpecializedWidgets();
-    ui->wingsModificator->setWings(wings, profileDB);
+    ui->wingsModificator->setWings(wings, profilesDB);
     ui->wingsModificator->setVisible(true);
     ui->applyWidget->setVisible(false);
     currentModificator = ui->wingsModificator;
@@ -103,7 +109,7 @@ void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fu
 }
 
 
-void ModificatorContainerWidget::setFuselagesModificator(tigl::CCPACSFuselages& fuselages, ProfilesDBManager* profilesDB)
+void ModificatorContainerWidget::setFuselagesModificator(tigl::CCPACSFuselages& fuselages)
 {
     hideAllSpecializedWidgets();
     ui->fuselagesModificator->setFuselages(fuselages, profilesDB);
@@ -115,7 +121,7 @@ void ModificatorContainerWidget::setFuselagesModificator(tigl::CCPACSFuselages& 
 void ModificatorContainerWidget::setElementModificator(tigl::CTiglSectionElement& element)
 {
     hideAllSpecializedWidgets();
-    ui->elementModificator->setElement(element);
+    ui->elementModificator->setElement(element, profilesDB);
     ui->elementModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->elementModificator;
@@ -124,7 +130,7 @@ void ModificatorContainerWidget::setElementModificator(tigl::CTiglSectionElement
 void ModificatorContainerWidget::setSectionModificator(QList<tigl::CTiglSectionElement*> elements)
 {
     hideAllSpecializedWidgets();
-    ui->sectionModificator->setAssociatedElements(elements);
+    ui->sectionModificator->setAssociatedElements(elements, profilesDB);
     ui->sectionModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->sectionModificator;
