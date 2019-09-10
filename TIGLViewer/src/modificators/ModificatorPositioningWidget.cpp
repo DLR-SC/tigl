@@ -62,16 +62,19 @@ void ModificatorPositioningWidget::setPositioning(tigl::CCPACSPositioning& pos)
     QStringList sectionUIDs = getSectionUIDsList();
     ui->comboBoxToUID->clear();
     ui->comboBoxToUID->addItems(sectionUIDs);
-    ui->comboBoxToUID->setCurrentText(positioning->GetToSectionUID().c_str());
+    int index = ui->comboBoxToUID->findText(positioning->GetToSectionUID().c_str());
+    ui->comboBoxToUID->setCurrentIndex(index);
     // for the fromUID, we can get a empty string that means that we need to start from the world origin
     sectionUIDs.push_back("");
     ui->comboBoxFromUID->clear();
     ui->comboBoxFromUID->addItems(sectionUIDs);
     if (boost::optional<std::string> from = positioning->GetFromSectionUID()) {
-        ui->comboBoxFromUID->setCurrentText((*from).c_str());
+        index = ui->comboBoxFromUID->findText((*from).c_str());
+        ui->comboBoxFromUID->setCurrentIndex(index);
     }
     else {
-        ui->comboBoxFromUID->setCurrentText("");
+        index = ui->comboBoxFromUID->findText("");
+        ui->comboBoxFromUID->setCurrentIndex(index);
     }
 }
 
