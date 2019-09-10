@@ -22,7 +22,7 @@
 #include "CCPACSFuselage.h"
 #include "CTiglStandardizer.h"
 #include "QRegExp"
-#include "QRegularExpressionMatch"
+
 
 StandardizeDialog::StandardizeDialog(tigl::CCPACSConfiguration& configuration, QWidget* parent)
     : QDialog(parent)
