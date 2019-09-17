@@ -121,7 +121,7 @@ public:
     // Remark, the decomposition is always exact, this means that the original matrix is founded if we apply this
     // operations on an identity matrix in the correct order. The only exception may be when 0 scaling occurs.
     // If rounding is set to true, the value that are approximately equal to -1,0,1,90,180,270,360 are rounded.
-    TIGL_EXPORT bool DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint&  scaling2,
+    TIGL_EXPORT void DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint&  scaling2,
                                     CTiglPoint&  rotation2, CTiglPoint&  translation, bool rounding = true) const;
 
     // Default copy constructor and assignment operator are correct
