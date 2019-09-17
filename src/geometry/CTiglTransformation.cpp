@@ -634,7 +634,7 @@ void CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTi
 
 }
 
-bool CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint& scaling2,
+void CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint& scaling2,
                                          CTiglPoint& rotation2, CTiglPoint& translation, bool rounding ) const
 {
 
