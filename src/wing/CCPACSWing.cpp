@@ -284,7 +284,7 @@ int CCPACSWing::GetComponentSegmentCount() const
         return m_componentSegments->GetComponentSegmentCount();
     else
         return 0;
-}
+    }
 
 // Returns the segment for a given index
 CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const int index)
