@@ -483,6 +483,7 @@ double CCPACSWing::GetReferenceArea()
     }
     else {
        LOG(ERROR) << "CCPACSWing::GetReferenceArea: Unexpected pair of major direction and deep direction.";
+       return 0;
     }
 }
 
