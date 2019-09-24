@@ -1,6 +1,6 @@
-Version 3.0.0-rc2
------------------
-12/06/2019
+Version 3.0.0
+-------------
+24/09/2019
 
     - General Changes:
        - CPACS 3 compatibility, including the new component-segment coordinate-system definition.
@@ -40,6 +40,7 @@ Version 3.0.0-rc2
       - ``::tiglExportFuselageBREPByUID`` and ``::tiglExportWingBREPByUID``
       - ``::tiglSetExportOptions`` sets exports-specific options
       - ``::tiglFuselageSetGetPointBehavior`` and  ``::tiglWingSetGetPointBehavior`` to adjust, whether the get point functions should return linear loft values or points on the actual shape.
+	  - ``::tiglSetDebugDataDirectory`` specifies the directory of the crashdump data.
   
     - Changed API:
       - Removed deprectated intersection functions. These include
@@ -47,6 +48,7 @@ Version 3.0.0-rc2
        - ``tiglComponentIntersectionPoint``
        - ``tiglComponentIntersectionPoints``
       - Removed function ``tiglExportVTKSetOptions``. This is now replaced by ``::tiglSetExportOptions``
+	  - ``tiglWingGetWettedArea`` now returns surface area of the wing, if the wing has no parent. Previously this caused a crash.
 
     - Fixes:
       - TiGL Viewer: Fixed missing fonts on macOS
