@@ -30,7 +30,6 @@ namespace generated
     CPACSNacelleCowl::CPACSNacelleCowl(CPACSEngineNacelle* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_sections(reinterpret_cast<CCPACSNacelleCowl*>(this), m_uidMgr)
-        , m_guideCurves(reinterpret_cast<CCPACSNacelleCowl*>(this))
         , m_rotationCurve(m_uidMgr)
     {
         //assert(parent != NULL);
@@ -85,10 +84,13 @@ namespace generated
 
         // read element guideCurves
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
-            m_guideCurves.ReadCPACS(tixiHandle, xpath + "/guideCurves");
-        }
-        else {
-            LOG(ERROR) << "Required element guideCurves is missing at xpath " << xpath;
+            m_guideCurves = boost::in_place(reinterpret_cast<CCPACSNacelleCowl*>(this));
+            try {
+                m_guideCurves->ReadCPACS(tixiHandle, xpath + "/guideCurves");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read guideCurves at xpath " << xpath << ": " << e.what();
+                m_guideCurves = boost::none;
+            }
         }
 
         // read element rotationCurve
@@ -112,8 +114,15 @@ namespace generated
         m_sections.WriteCPACS(tixiHandle, xpath + "/sections");
 
         // write element guideCurves
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/guideCurves");
-        m_guideCurves.WriteCPACS(tixiHandle, xpath + "/guideCurves");
+        if (m_guideCurves) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/guideCurves");
+            m_guideCurves->WriteCPACS(tixiHandle, xpath + "/guideCurves");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/guideCurves");
+            }
+        }
 
         // write element rotationCurve
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotationCurve");
@@ -145,12 +154,12 @@ namespace generated
         return m_sections;
     }
 
-    const CCPACSNacelleGuideCurves& CPACSNacelleCowl::GetGuideCurves() const
+    const boost::optional<CCPACSNacelleGuideCurves>& CPACSNacelleCowl::GetGuideCurves() const
     {
         return m_guideCurves;
     }
 
-    CCPACSNacelleGuideCurves& CPACSNacelleCowl::GetGuideCurves()
+    boost::optional<CCPACSNacelleGuideCurves>& CPACSNacelleCowl::GetGuideCurves()
     {
         return m_guideCurves;
     }
@@ -163,6 +172,18 @@ namespace generated
     CCPACSRotationCurve& CPACSNacelleCowl::GetRotationCurve()
     {
         return m_rotationCurve;
+    }
+
+    CCPACSNacelleGuideCurves& CPACSNacelleCowl::GetGuideCurves(CreateIfNotExistsTag)
+    {
+        if (!m_guideCurves)
+            m_guideCurves = boost::in_place(reinterpret_cast<CCPACSNacelleCowl*>(this));
+        return *m_guideCurves;
+    }
+
+    void CPACSNacelleCowl::RemoveGuideCurves()
+    {
+        m_guideCurves = boost::none;
     }
 
 } // namespace generated

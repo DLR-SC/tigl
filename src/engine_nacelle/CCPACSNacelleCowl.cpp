@@ -111,20 +111,22 @@ void CCPACSNacelleCowl::BuildOuterShapeWires(WireCache& cache) const
 
     // get CPACS guide curves
     std::vector<std::pair<double,TopoDS_Wire>> zetaGuides;
-    for(size_t i = 1; i <= m_guideCurves.GetGuideCurveCount(); ++i ) {
-        const CCPACSNacelleGuideCurve& guide = m_guideCurves.GetGuideCurve(i);
+    if ( m_guideCurves ) {
+        for(size_t i = 1; i <= m_guideCurves->GetGuideCurveCount(); ++i ) {
+            const CCPACSNacelleGuideCurve& guide = m_guideCurves->GetGuideCurve(i);
 
-        // check if it is one of the required curves
-        for (int i = 0; i<5; ++i) {
-            if(    fabs(guide.GetFromZeta() - requiredZeta[i]) < Precision::Confusion()
-                && fabs(guide.GetToZeta()   - requiredZeta[i]) < Precision::Confusion() ) {
-                // if the required guide curve is already defined via CPACS, it must not explicitly be built.
-                buildRequiredZeta[i] = false; }
+            // check if it is one of the required curves
+            for (int i = 0; i<5; ++i) {
+                if(    fabs(guide.GetFromZeta() - requiredZeta[i]) < Precision::Confusion()
+                    && fabs(guide.GetToZeta()   - requiredZeta[i]) < Precision::Confusion() ) {
+                    // if the required guide curve is already defined via CPACS, it must not explicitly be built.
+                    buildRequiredZeta[i] = false; }
+            }
+
+            CTiglNacelleGuideCurveBuilder gcbuilder(guide);
+            std::pair<double,TopoDS_Wire> zetaGuidePair(guide.GetFromZeta(), gcbuilder.GetWire());
+            zetaGuides.push_back(zetaGuidePair);
         }
-
-        CTiglNacelleGuideCurveBuilder gcbuilder(guide);
-        std::pair<double,TopoDS_Wire> zetaGuidePair(guide.GetFromZeta(), gcbuilder.GetWire());
-        zetaGuides.push_back(zetaGuidePair);
     }
 
     // explicitly built the guide curves for the required zeta values, that are not defined in CPACS
