@@ -36,9 +36,21 @@ public:
     int hitCount() const;
     void dumpShape(const TopoDS_Shape& shape, const std::string& filename);
 
+    static void setDebugDataDir(const std::string& dir)
+    {
+        m_debugDataDir = dir;
+    }
+    
+    static std::string debugDataDir()
+    {
+        return m_debugDataDir;
+    }
+
 private:
     std::string m_outputDir;
     boost::atomic<int> m_counter;
+
+    static std::string m_debugDataDir;
 };
 
 // creates a trace point at the location of this macro with the specified variable name and output directory
@@ -46,7 +58,7 @@ private:
 #define TRACE_POINT_OUTPUT_DIR(variableName, outputDir) static ::tigl::TracePoint variableName(outputDir); variableName++
 
 // uses the function inside which the macro is expanded as output directory, __FUNCTION__ may not be supported by each compiler
-#define TRACE_POINT(variableName) TRACE_POINT_OUTPUT_DIR(variableName, std::string("CrashInfo/") + __FUNCTION__)
+#define TRACE_POINT(variableName) TRACE_POINT_OUTPUT_DIR(variableName, std::string(tigl::TracePoint::debugDataDir() + "/") + __FUNCTION__)
 
 // allows dumping shapes in case an object of this class is destroyed by an exception
 class DebugScope

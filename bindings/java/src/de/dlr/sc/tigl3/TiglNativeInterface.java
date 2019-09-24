@@ -17,7 +17,7 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2018-04-09.
+* This file is automatically created from tigl.h on 2019-09-24.
 * If you experience any bugs please contact the authors
 */
 
@@ -46,6 +46,7 @@ public class TiglNativeInterface {
     public static native int tiglWingGetComponentSegmentIndex(int cpacsHandle, int wingIndex, String compSegmentUID, IntByReference segmentIndexPtr);
     public static native int tiglWingGetUpperPoint(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
     public static native int tiglWingGetLowerPoint(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
+    public static native int tiglWingSetGetPointBehavior(int cpacsHandle, int behavior);
     public static native int tiglWingGetChordPoint(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
     public static native int tiglWingGetChordNormal(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, DoubleByReference normalXPtr, DoubleByReference normalYPtr, DoubleByReference normalZPtr);
     public static native int tiglWingGetUpperPointAtDirection(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr, DoubleByReference errorDistance);
@@ -82,6 +83,7 @@ public class TiglNativeInterface {
     public static native int tiglFuselageGetCrossSectionArea(int cpacsHandle, String fuselageSegmentUID, double eta, DoubleByReference area);
     public static native int tiglFuselageGetCenterLineLength(int cpacsHandle, String fuselageUID, DoubleByReference length);
     public static native int tiglFuselageGetPoint(int cpacsHandle, int fuselageIndex, int segmentIndex, double eta, double zeta, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
+    public static native int tiglFuselageSetGetPointBehavior(int cpacsHandle, int behavior);
     public static native int tiglFuselageGetPointAngle(int cpacsHandle, int fuselageIndex, int segmentIndex, double eta, double alpha, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
     public static native int tiglFuselageGetPointAngleTranslated(int cpacsHandle, int fuselageIndex, int segmentIndex, double eta, double alpha, double y_cs, double z_cs, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
     public static native int tiglFuselageGetPointOnXPlane(int cpacsHandle, int fuselageIndex, int segmentIndex, double eta, double xpos, int pointIndex, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
@@ -187,7 +189,9 @@ public class TiglNativeInterface {
     public static native int tiglCheckPointInside(int cpacsHandle, double px, double py, double pz, String componentUID, IntByReference isInside);
     public static native int tiglComponentGetHashCode(int cpacsHandle, String componentUID, IntByReference hashCodePtr);
     public static native String tiglGetErrorString(int errorCode);
+    public static native void tiglSetDebugDataDirectory(String directory);
     public static native int tiglConfigurationGetLength(int cpacsHandle, DoubleByReference pLength);
+    public static native int tiglConfigurationGetBoundingBox(int cpacsHandle, DoubleByReference minX, DoubleByReference minY, DoubleByReference minZ, DoubleByReference maxX, DoubleByReference maxY, DoubleByReference maxZ);
     public static native int tiglWingGetSpan(int cpacsHandle, String wingUID, DoubleByReference pSpan);
     public static native int tiglWingGetMAC(int cpacsHandle, String wingUID, DoubleByReference mac_chord, DoubleByReference mac_x, DoubleByReference mac_y, DoubleByReference mac_z);
 };

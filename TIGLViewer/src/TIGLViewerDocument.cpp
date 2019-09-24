@@ -187,6 +187,9 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName
 
     }
 
+    // set the debug data output directory relative to the opened file
+    tiglSetDebugDataDirectory((QFileInfo(fileName).dir().path().toStdString() + "/CrashInfo").c_str());
+
     // Get configuration from user and open with TIGL
     TiglReturnCode tiglRet = TIGL_UNINITIALIZED;
     if (countRotorcrafts + countAircrafts == 0) {
@@ -1113,8 +1116,6 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 void TIGLViewerDocument::exportAsIges()
 {
     QString     fileName;
-    QString        fileType;
-    QFileInfo    fileInfo;
 
     TIGLViewerInputOutput writer;
 
@@ -1136,7 +1137,6 @@ void TIGLViewerDocument::exportFusedAsIges()
 {
     QString     fileName;
     QString        fileType;
-    QFileInfo    fileInfo;
 
     TIGLViewerInputOutput writer;
 
@@ -1156,8 +1156,6 @@ void TIGLViewerDocument::exportFusedAsIges()
 void TIGLViewerDocument::exportAsStep()
 {
     QString     fileName;
-    QString     fileType;
-    QFileInfo   fileInfo;
 
     TIGLViewerInputOutput writer;
 
@@ -1300,8 +1298,6 @@ void TIGLViewerDocument::exportMeshedWingVTK()
 void TIGLViewerDocument::exportMeshedWingVTKsimple()
 {
     QString     fileName;
-    QString        fileType;
-    QFileInfo    fileInfo;
     TIGLViewerInputOutput writer;
 
     QString wingUid = dlgGetWingOrRotorBladeSelection();
