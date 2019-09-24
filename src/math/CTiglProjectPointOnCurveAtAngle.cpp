@@ -30,6 +30,8 @@
 
 #include <algorithm>
 
+#include <Standard_Version.hxx>
+
 
 namespace 
 {
@@ -190,7 +192,7 @@ int tigl::CTiglProjectPointOnCurveAtAngle::NbPoints() const
     return static_cast<int>(resultParameter.size());
 }
 
-void CTiglProjectPointOnCurveAtAngle::CTiglProjectPointOnCurveAtAngle::Compute() const
+void tigl::CTiglProjectPointOnCurveAtAngle::Compute() const
 {
     if (m_hasComputed) {
         return;
@@ -225,7 +227,12 @@ void tigl::CTiglProjectPointOnCurveAtAngle::FindPoint(double ustart) const
     xstart(1) =  ustart;
 
     // TODO: how to use bounded optimization?
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,1)
+    math_BFGS optimizer(objFun.NbVariables());
+    optimizer.Perform(objFun,xstart);
+#else
     math_BFGS optimizer(objFun, xstart);
+#endif
     
     if (!optimizer.IsDone()) {
         return;
