@@ -1290,9 +1290,6 @@ TopoDS_Shape SplitShape(const TopoDS_Shape& src, const TopoDS_Shape& tool)
 {
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
     double fuzzyValue = Precision::Confusion();
-#endif
-
-#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
     const int c_tries = 3;
 #endif
 
