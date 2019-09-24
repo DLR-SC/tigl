@@ -21,6 +21,7 @@
 
 #include "ModificatorWidget.h"
 #include "CCPACSTransformation.h"
+#include "CCPACSConfiguration.h"
 
 namespace Ui
 {
@@ -35,9 +36,8 @@ public:
     explicit ModificatorTransformationWidget(QWidget* parent = nullptr);
     ~ModificatorTransformationWidget();
 
-    void setTransformation(tigl::CCPACSTransformation& transformationItem);
+    void setTransformation(tigl::CCPACSTransformation& transformationItem, tigl::CCPACSConfiguration& config);
     void setSpinBoxesFromInternal();
-    void setInternalFromSpinBoxes();
 
     bool apply() override;
     void reset() override;
@@ -48,6 +48,7 @@ private:
 public:
 private:
     tigl::CCPACSTransformation* tiglTransformation;
+    tigl::CCPACSConfiguration* config;
 };
 
 #endif // MODIFICATORTRANSFORMATIONWIDGET_H

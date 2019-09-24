@@ -18,6 +18,7 @@
 
 #include "ModificatorTransformationWidget.h"
 #include "ui_ModificatorTransformationWidget.h"
+#include "CTiglUIDManager.h"
 #include <iostream>
 
 ModificatorTransformationWidget::ModificatorTransformationWidget(QWidget* parent)
@@ -27,7 +28,10 @@ ModificatorTransformationWidget::ModificatorTransformationWidget(QWidget* parent
     ui->setupUi(this);
 
     tiglTransformation = nullptr;
-    setSpinBoxesFromInternal();
+    config = nullptr;
+    ui->scale->setLabel("Scale");
+    ui->rotation->setLabel("Rotation");
+    ui->translation->setLabel("Translation");
 }
 
 ModificatorTransformationWidget::~ModificatorTransformationWidget()
@@ -37,13 +41,23 @@ ModificatorTransformationWidget::~ModificatorTransformationWidget()
 
 bool ModificatorTransformationWidget::apply()
 {
-    // todo check if there are relevent changes
-    // setInternalFromSpinBoxes();
-    // TODO: save in tigl object
-    // Not done yet because we first need to have  a working
-    // setSpinBoxesFromInternal
-    // tiglTransformation->setTransformationMatrix(transformation);
-
+    if( tiglTransformation && config &&
+            (ui->scale->hasChanged() || ui->rotation->hasChanged() || ui->translation->hasChanged())) {
+        // first we set the internal from the UI
+        ui->scale->setInternalFromGUI();
+        ui->rotation->setInternalFromGUI();
+        ui->translation->setInternalFromGUI();
+        // apply the transformation in cpacs order: scale, rotation euler (XYZ),translation
+        tiglTransformation->reset();
+        tiglTransformation->setScaling(ui->scale->getInternalPoint());
+        tiglTransformation->setRotation(ui->rotation->getInternalPoint());
+        tiglTransformation->setTranslation(ui->translation->getInternalPoint());
+        // used to invalidate all structure because otherwise the internal value of tigl is no update
+        // and we are not sure about which part is to updated
+        // TODO find a way to avoid invalidate the whole configuration
+        config ->Invalidate();
+        return true;
+    }
     return false;
 }
 
@@ -52,9 +66,9 @@ void ModificatorTransformationWidget::reset()
     setSpinBoxesFromInternal();
 }
 
-void ModificatorTransformationWidget::setTransformation(tigl::CCPACSTransformation& newTiglTransformation)
+void ModificatorTransformationWidget::setTransformation(tigl::CCPACSTransformation& newTiglTransformation, tigl::CCPACSConfiguration& config)
 {
-
+    this->config = &config;
     this->tiglTransformation = &newTiglTransformation;
     setSpinBoxesFromInternal();
 }
@@ -66,35 +80,12 @@ void ModificatorTransformationWidget::setSpinBoxesFromInternal()
     }
 
     tigl::CTiglPoint scaling = tiglTransformation->getScaling();
-    ui->spinBoxSX->setValue(scaling.x);
-    ui->spinBoxSY->setValue(scaling.y);
-
-    ui->spinBoxSZ->setValue(scaling.z);
+    ui->scale->setInternal(scaling);
 
     tigl::CTiglPoint rotation = tiglTransformation->getRotation();
-    ui->spinBoxRX->setValue(rotation.x);
-    ui->spinBoxRY->setValue(rotation.y);
-    ui->spinBoxRZ->setValue(rotation.z);
+    ui->rotation->setInternal(rotation);
 
     tigl::CTiglPoint translation = tiglTransformation->getTranslationVector();
-    ui->spinBoxTX->setValue(translation.x);
-    ui->spinBoxTY->setValue(translation.y);
-    ui->spinBoxTZ->setValue(translation.z);
+    ui->translation->setInternal(translation);
 }
 
-void ModificatorTransformationWidget::setInternalFromSpinBoxes()
-{
-    if (tiglTransformation == nullptr) {
-        return;
-    }
-    // apply the transformation in cpacs order: scale, rotation euler (XYZ),
-    // translation
-    // todo verifiy the behavior how to save into tigl and then into the xml
-    tiglTransformation->reset();
-    tiglTransformation->setScaling(
-        tigl::CTiglPoint(ui->spinBoxSX->value(), ui->spinBoxSY->value(), ui->spinBoxSZ->value()));
-    tiglTransformation->setRotation(
-        tigl::CTiglPoint(ui->spinBoxRX->value(), ui->spinBoxRY->value(), ui->spinBoxRZ->value()));
-    tiglTransformation->setTranslation(
-        tigl::CTiglPoint(ui->spinBoxTX->value(), ui->spinBoxTY->value(), ui->spinBoxTZ->value()));
-}

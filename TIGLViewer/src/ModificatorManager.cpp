@@ -78,7 +78,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CCPACSTransformation& transformation =
             uidManager.ResolveObject<tigl::CCPACSTransformation>(item->getUid());
-        modificatorContainerWidget->setTransformationModificator(transformation);
+        modificatorContainerWidget->setTransformationModificator(transformation, doc->GetConfiguration());
     }
     else if (item->getType() == "fuselage") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();

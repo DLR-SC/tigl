@@ -77,6 +77,7 @@ void CCPACSConfiguration::Invalidate()
     if (profiles) {
         profiles->Invalidate();
     }
+    // TODO Invalidate engines?
     aircraftFuser.reset();
     shapeCache.Clear();
 }
