@@ -9,3 +9,4 @@ examples/python_internal/.idea/
 *CrashInfo*
 .idea
 *.txt.user
+venv

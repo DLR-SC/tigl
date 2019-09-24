@@ -71,10 +71,10 @@ void ModificatorContainerWidget::hideAllSpecializedWidgets()
     currentModificator = nullptr;
 }
 
-void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransformation& transformation)
+void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransformation& transformation, tigl::CCPACSConfiguration& config)
 {
     hideAllSpecializedWidgets();
-    ui->transformationModificator->setTransformation(transformation);
+    ui->transformationModificator->setTransformation(transformation, config);
     ui->transformationModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->transformationModificator;

@@ -71,7 +71,7 @@ public:
 
     void setProfilesManager(ProfilesDBManager* profilesDB);
 
-    void setTransformationModificator(tigl::CCPACSTransformation& transformation);
+    void setTransformationModificator(tigl::CCPACSTransformation& transformation, tigl::CCPACSConfiguration& config);
     void setWingModificator(tigl::CCPACSWing& wing);
     void setWingsModificator(tigl::CCPACSWings& wings);
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);

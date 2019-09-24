@@ -28,13 +28,13 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>80</width>
+           <width>120</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>80</width>
+           <width>120</width>
            <height>16777215</height>
           </size>
          </property>
@@ -44,269 +44,41 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>X</string>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Y</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Z</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="scaling">
-       <item>
-        <widget class="QLabel" name="labelScaling">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>80</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>100</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Scaling:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="spinBoxSX">
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="minimum">
-          <double>0.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>10000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="spinBoxSY">
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="minimum">
-          <double>0.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>10000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="spinBoxSZ">
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="minimum">
-          <double>0.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>10000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="CTiglPointWidget" name="scale" native="true"/>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="rotation">
-       <item>
-        <widget class="QLabel" name="labelRotation">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>80</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>100</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Rotation:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="spinBoxRX">
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="minimum">
-          <double>-10000.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>10000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="spinBoxRY">
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="minimum">
-          <double>-10000.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>10000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="spinBoxRZ">
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="minimum">
-          <double>-10000.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>10000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="CTiglPointWidget" name="rotation" native="true"/>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="translation">
-       <item>
-        <widget class="QLabel" name="labelTranslation">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>80</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>80</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>100</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Translation:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="spinBoxTX">
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="minimum">
-          <double>-10000.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>10000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="spinBoxTY">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="minimum">
-          <double>-10000.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>10000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="spinBoxTZ">
-         <property name="decimals">
-          <number>3</number>
-         </property>
-         <property name="minimum">
-          <double>-10000.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>10000.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="CTiglPointWidget" name="translation" native="true"/>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CTiglPointWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/CTiglPointWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
