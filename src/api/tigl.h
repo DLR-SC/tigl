@@ -4696,6 +4696,18 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode errorCode);
 
 
 /**
+ * @brief Set the directory path for debug data
+ * 
+ * These data are written, in case a tigl function has an internal error.
+ * 
+ * By default (directory==NULL), these files are written into the current working directory.
+ * There, the subdirectory CrashInfo is created.
+ * 
+ * @param[in] directory Path of the debugging directory.
+ */
+TIGL_COMMON_EXPORT void tiglSetDebugDataDirectory(const char* directory);
+
+/**
 * @brief Returns the length of the plane
 *
 * The calculation of the airplane lenght is realized as follows:

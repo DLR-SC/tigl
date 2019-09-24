@@ -50,6 +50,7 @@
 #include "CCPACSRotorBladeAttachment.h"
 #include "CTiglAttachedRotorBlade.h"
 #include "CGlobalExporterConfigs.h"
+#include "Debugging.h"
 
 #include "CTiglPoint.h"
 
@@ -6702,6 +6703,17 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode code)
         return "TIGL_UNKNOWN_ERROR";
     }
     return TiglErrorStrings[code];
+}
+
+
+TIGL_COMMON_EXPORT void tiglSetDebugDataDirectory(const char* directory)
+{
+    if (directory == NULL) {
+        tigl::TracePoint::setDebugDataDir("CrashInfo");
+    }
+    else {
+        tigl::TracePoint::setDebugDataDir(directory);
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurationHandle cpacsHandle, double * pLength)
