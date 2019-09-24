@@ -43714,7 +43714,7 @@ jonas.jepsen@dlr.de
                 	<xsd:element name="sections"
                 		type="nacelleSectionsType">
                 	</xsd:element>
-                	<xsd:element name="guideCurves"
+                	<xsd:element minOccurs="0" name="guideCurves"
                 		type="nacelleGuideCurvesType">
                 	</xsd:element>
                 	<xsd:element name="rotationCurve" type="rotationCurveType"></xsd:element>

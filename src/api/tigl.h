@@ -1565,6 +1565,49 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
                                                                         int  segmentIndex,
                                                                         char ** segmentUID);
 
+/**
+* @brief Returns the span of a wing.
+*
+* The calculation of the wing span is realized as follows:
+*
+* * If the wing is mirrored at a symmetry plane (like the main wing), the wing body and its mirrored counterpart are computed
+* and are put into a bounding box. The length of the box in a specific space dimension is returned as the wing span depending
+* on the symmetry plane (y direction for x-z planes, z direction for x-y planes, x direction for y-z symmetry planes).
+*
+* * If no symmetry plane is defined (e.g. for the fins), the largest dimension of the bounding box around the wing
+* is returned.
+*
+*
+* @param[in]  cpacsHandle Handle for the CPACS configuration
+* @param[in]  wingUID     UID of the Wing
+* @param[out] pSpan       Wing span
+*
+* @returns Error code
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
+
+
+/**
+* @brief This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
+*
+* It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
+* The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
+* These values should coinside with the values found with tornado tool.
+*
+* @param[in] cpacsHandle Handle for the CPACS configuration
+* @param[in] wingUID     UID of the Wing
+* @param[out] mac_chord  Mean areadynamic chord length
+* @param[out] mac_x, mac_y, mac_z - Position of the MAC
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NULL_POINTER if wingUID, mac_chord, mac_x, mac_y or mac_z are null pointers
+*   - TIGL_ERROR In case of an unknown error
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
+
+
+
 /*@}*/
 /*****************************************************************************************************/
 
@@ -4734,47 +4777,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfi
                                                                   double* minX, double* minY, double* minZ,
                                                                   double* maxX, double* maxY, double* maxZ);
 
-
-/**
-* @brief Returns the span of a wing. 
-*
-* The calculation of the wing span is realized as follows:
-*
-* * If the wing is mirrored at a symmetry plane (like the main wing), the wing body and its mirrored counterpart are computed
-* and are put into a bounding box. The length of the box in a specific space dimension is returned as the wing span depending
-* on the symmetry plane (y direction for x-z planes, z direction for x-y planes, x direction for y-z symmetry planes).
-*
-* * If no symmetry plane is defined (e.g. for the fins), the largest dimension of the bounding box around the wing
-* is returned.
-*
-*
-* @param[in]  cpacsHandle Handle for the CPACS configuration
-* @param[in]  wingUID     UID of the Wing
-* @param[out] pSpan       Wing span
-*
-* @returns Error code
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
-
-
-/**
-* @brief This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
-* 
-* It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
-* The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
-* These values should coinside with the values found with tornado tool.
-* 
-* @param[in] cpacsHandle Handle for the CPACS configuration
-* @param[in] wingUID     UID of the Wing
-* @param[out] mac_chord  Mean areadynamic chord length
-* @param[out] mac_x, mac_y, mac_z - Position of the MAC
-* 
-* @return
-*   - TIGL_SUCCESS if no error occurred
-*   - TIGL_NULL_POINTER if wingUID, mac_chord, mac_x, mac_y or mac_z are null pointers
-*   - TIGL_ERROR In case of an unknown error
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
 
 
 /*@}*/ // end of doxygen group
