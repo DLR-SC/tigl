@@ -1,3 +1,5 @@
+![Screenshot of the TiGL Viewer](doc/images/tiglviewer-web.jpg)
+
 # TiGL
 
 [![Build Status](https://travis-ci.org/DLR-SC/tigl.svg?branch=master)](https://travis-ci.org/DLR-SC/tigl)
@@ -19,8 +21,6 @@ by NURBS surfaces. The library provides external interfaces for C, C++, Python, 
 
 TiGL is shipped with the Qt based _TiGL Viewer_ for visualizing aircraft
 geometries or viewing CAD files.
-
-![Screenshot of the TiGL Viewer](doc/images/tiglviewer-web.jpg)
 
 
  - Binary Downloads:  https://github.com/DLR-SC/tigl/wiki/Downloads
