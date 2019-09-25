@@ -513,8 +513,10 @@ CTiglTransformation CTiglTransformation::Inverted() const
     return Get_gp_GTrsf().Inverted();
 }
 
-void CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTiglPoint& translation, bool rounding) const
+bool CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTiglPoint& translation, bool rounding) const
 {
+    bool success = true;
+
     // compute polar decomposition of upper 3x3 part
     tiglMatrix A(1, 3, 1, 3);
     tiglMatrix P(1, 3, 1, 3);
@@ -535,6 +537,7 @@ void CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTi
     double aveAbsOffDiag = (fabs(P(1,2)) + fabs(P(1,3)) + fabs(P(2,3)))/3;
     if (aveAbsOffDiag > Precision::Confusion() ) {
         LOG(WARNING) << "CTiglTransformation::Decompose: The Transformation contains a Shearing, that will be discarded in the decomposition!";
+        success = false;
     }
 
     // calculate intrinsic Euler angles from rotation matrix U
@@ -576,11 +579,12 @@ void CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTi
     translation.z = GetValue(2,3);
 
     if (rounding) {
-        RotationRounding(rotation);
-        ScalingRounding(scale);
-        TranslationRounding(translation);
+        rotation = SnapRotation(rotation);
+        scale = SnapUnitInterval(scale);
+        translation = SnapUnitInterval(translation);
     }
 
+    return success;
 }
 
 void CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint& scaling2,
@@ -624,7 +628,8 @@ void CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotat
         if (U.Determinant() < 0) {
             R2 = U * -1;
             D2 = P * -1;
-        } else {
+        }
+        else {
             R2 = U;
             D2 = P;
         }
@@ -678,24 +683,12 @@ void CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotat
     scaling1.y = D1(2, 2);
     scaling1.z = D1(3, 3);
 
-//
-//    CTiglTransformation verify;
-//    verify.AddScaling(scaling1.x,scaling1.y,scaling1.z);
-//    verify.AddRotationIntrinsicXYZ(rotation1.x,rotation1.y,rotation1.z);
-//    verify.AddScaling(scaling2.x,scaling2.y,scaling2.z);
-//    verify.AddRotationIntrinsicXYZ(rotation2.x,rotation2.y,rotation2.z);
-//    verify.AddTranslation(translation.x,translation.y,translation.z);
-//    if( !this->IsNear(verify, 0.001)) {
-//        throw CTiglError("DecomposeTRSRS is not equivalent to the original transformation! ");
-//    }
-
-
     if (rounding) {
-        tigl::RotationRounding(rotation1);
-        tigl::RotationRounding(rotation2);
-        tigl::ScalingRounding(scaling1);
-        tigl::ScalingRounding(scaling2);
-        tigl::TranslationRounding(translation);
+        rotation1 = tigl::SnapRotation(rotation1);
+        rotation2 = tigl::SnapRotation(rotation2);
+        scaling1 = tigl::SnapUnitInterval(scaling1);
+        scaling2 = tigl::SnapUnitInterval(scaling2);
+        translation = tigl::SnapUnitInterval(translation);
     }
 }
 

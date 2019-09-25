@@ -348,7 +348,7 @@ TEST(TiglMath, CTiglTransform_Decompose)
 
     tigl::CTiglPoint S,R,T;
 
-    transformation.Decompose(S, R, T);
+    EXPECT_TRUE(transformation.Decompose(S, R, T));
 
     EXPECT_NEAR(S.x, 1., 1e-8);
     EXPECT_NEAR(S.y, 1., 1e-8);
@@ -365,7 +365,6 @@ TEST(TiglMath, CTiglTransform_Decompose)
     // Create a shear matrix by rotation and scaling
     // This case can happens if the is a none-uniform scaling in the section
 
-    double shearY = 0.5; // 1.28 - (1/1.28) = 0.5
     double a = 1.28;
     double angle = 38;
 
@@ -387,12 +386,7 @@ TEST(TiglMath, CTiglTransform_Decompose)
     }
 
     // it's impossible to decompose a shear matrix properly in R,S,T
-    expectedShear.Decompose(S,R,T);
-
-    // todo add a return value to decompose to check if the decomposition can be performed
-    EXPECT_TRUE(true);
-
-
+    EXPECT_FALSE(expectedShear.Decompose(S,R,T));
 }
 
 TEST(TiglMath, CTiglTransform_Decompose2)
@@ -1155,66 +1149,66 @@ TEST(TiglMath, DoubleRounding)
 
     inNumber = 366.4;
     expected = 6.4;
-    tigl::AngleRounding(inNumber);
+    inNumber = tigl::SnapAngle(inNumber);
     EXPECT_NEAR(inNumber, expected, tolerance );
 
 
     inNumber = -366.4;
     expected = -6.4;
-    tigl::AngleRounding(inNumber);
+    inNumber = tigl::SnapAngle(inNumber);
     EXPECT_NEAR(inNumber, expected, tolerance);
 
     inNumber =  1e-9;
     expected = 0;
-    tigl::AngleRounding(inNumber);
+    inNumber = tigl::SnapAngle(inNumber);
     EXPECT_EQ(inNumber, expected);
 
 
     inNumber =  -180 ; ;
     expected = 180;
-    tigl::AngleRounding(inNumber);
+    inNumber = tigl::SnapAngle(inNumber);
     EXPECT_EQ(inNumber, expected);
 
     inNumber =  -90 ; ;
     expected = -90;
-    tigl::AngleRounding(inNumber);
+    inNumber = tigl::SnapAngle(inNumber);
     EXPECT_EQ(inNumber, expected);
 
     inNumber =  -180 - 1e-9; ;
     expected = 180;
-    tigl::AngleRounding(inNumber);
+    inNumber = tigl::SnapAngle(inNumber);
     EXPECT_EQ(inNumber, expected);
 
     inNumber =  90.1; ;
     expected = 90.1;
-    tigl::AngleRounding(inNumber);
+    inNumber = tigl::SnapAngle(inNumber);
     EXPECT_EQ(inNumber, expected);
 
     inNumber =  90.1; ;
     expected = 90;
-    tigl::AngleRounding(inNumber, 1);
+    inNumber = tigl::SnapAngle(inNumber, 1.);
     EXPECT_EQ(inNumber, expected);
 
     // LengthRounding
 
     inNumber = 1e-9;
     expected = 0;
-    tigl::LengthRounding(inNumber);
+    inNumber = tigl::SnapUnitInterval(inNumber);
     EXPECT_EQ(inNumber, expected);
 
     inNumber = -1e-9;
     expected = 0;
-    tigl::LengthRounding(inNumber);
+    inNumber = tigl::SnapUnitInterval(inNumber);
     EXPECT_EQ(inNumber, expected);
 
     inNumber = -1e-9;
     expected = -1e-9;
-    tigl::LengthRounding(inNumber, 0);
+    inNumber = tigl::SnapUnitInterval(inNumber, 0);
     EXPECT_EQ(inNumber, expected);
 
     inNumber = 1-1e-9;
     expected = 1;
-    tigl::LengthRounding(inNumber);
+    inNumber = tigl::SnapUnitInterval(inNumber);
     EXPECT_EQ(inNumber, expected);
 }
 
@@ -1228,54 +1222,54 @@ TEST(TiglMath, PointRounding)
     number        = 0.001;
     roundingValue = 0;
     delta         = 0.1;
-    tigl::Rounding(number, roundingValue, delta);
+    number = tigl::SnapValue(number, roundingValue, delta);
     EXPECT_EQ(number, roundingValue);
 
     number        = 0.1;
     roundingValue = 0;
     delta         = 0.01;
-    tigl::Rounding(number, roundingValue, delta);
+    number = tigl::SnapValue(number, roundingValue, delta);
     EXPECT_EQ(number, 0.1);
 
     number        = 1e-9;
     roundingValue = 0;
-    tigl::Rounding(number, roundingValue); // Precision::Confusion() is used by default for delta
+    number = tigl::SnapValue(number, roundingValue); // Precision::Confusion() is used by default for delta
     EXPECT_EQ(number, 0);
 
     number        = 1e-6;
     roundingValue = 0;
-    tigl::Rounding(number, roundingValue);
+    number = tigl::SnapValue(number, roundingValue);
     EXPECT_EQ(number, 1e-6);
 
     number        = 1.01;
     roundingValue = 1;
     delta         = 0.1;
-    tigl::Rounding(number, roundingValue, delta);
+    number = tigl::SnapValue(number, roundingValue, delta);
     EXPECT_EQ(number, 1);
 
     number        = -1.01;
     roundingValue = -1;
     delta         = 0.1;
-    tigl::Rounding(number, roundingValue, delta);
+    number = tigl::SnapValue(number, roundingValue, delta);
     EXPECT_EQ(number, -1);
 
     // rotation rounding
     tigl::CTiglPoint rotation;
 
     rotation = tigl::CTiglPoint(1e-9, 1e-9, 1e-9);
-    tigl::RotationRounding(rotation);
+    rotation = tigl::SnapRotation(rotation);
     EXPECT_EQ(rotation.x, 0);
     EXPECT_EQ(rotation.y, 0);
     EXPECT_EQ(rotation.z, 0);
 
     rotation = tigl::CTiglPoint(90 - 1e-9, 90 - 1e-9, 90 + 1e-9);
-    tigl::RotationRounding(rotation);
+    rotation = tigl::SnapRotation(rotation);
     EXPECT_EQ(rotation.x, 90);
     EXPECT_EQ(rotation.y, 90);
     EXPECT_EQ(rotation.z, 90);
 
     rotation = tigl::CTiglPoint(360 + 1e-9, 360 - 1e-9, 360 + 1e-9);
-    tigl::RotationRounding(rotation);
+    rotation = tigl::SnapRotation(rotation);
     EXPECT_EQ(rotation.x, 0);
     EXPECT_EQ(rotation.y, 0);
     EXPECT_EQ(rotation.z, 0);
@@ -1284,13 +1278,13 @@ TEST(TiglMath, PointRounding)
     tigl::CTiglPoint scaling;
 
     scaling = tigl::CTiglPoint(1.1, 1.1, 1.1);
-    tigl::ScalingRounding(scaling, 0.2);
+    scaling = tigl::SnapUnitInterval(scaling, 0.2);
     EXPECT_EQ(scaling.x, 1);
     EXPECT_EQ(scaling.y, 1);
     EXPECT_EQ(scaling.z, 1);
 
     scaling = tigl::CTiglPoint(-1 + 1e-9, 1.1, -1 - +1e-9);
-    tigl::ScalingRounding(scaling);
+    scaling = tigl::SnapUnitInterval(scaling);
     EXPECT_EQ(scaling.x, -1);
     EXPECT_EQ(scaling.y, 1.1);
     EXPECT_EQ(scaling.z, -1);
@@ -1299,10 +1293,8 @@ TEST(TiglMath, PointRounding)
     tigl::CTiglPoint translation;
 
     translation = tigl::CTiglPoint(-1e-9, 1e-9, 0.2);
-    tigl::ScalingRounding(translation);
+    translation = tigl::SnapUnitInterval(translation);
     EXPECT_EQ(translation.x, 0);
     EXPECT_EQ(translation.y, 0);
     EXPECT_EQ(translation.z, 0.2);
 }
-
-

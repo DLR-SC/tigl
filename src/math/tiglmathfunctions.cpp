@@ -35,6 +35,9 @@
 #include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
 
+
+const double EPS = 1e-15;
+
 namespace tigl 
 {
 
@@ -392,7 +395,7 @@ bool isNear(double a, double b, double epsilon)
     return (fabs(a - b) <= epsilon);
 }
 
-bool IsProperRotationMatrix(tiglMatrix& R)
+bool IsRotationMatrix(const tiglMatrix& R)
 {
     tiglMatrix Rt(1, 3, 1, 3);
     Rt = R.Transposed();
@@ -417,12 +420,13 @@ bool IsProperRotationMatrix(tiglMatrix& R)
     return (isNear(det, 1) && identity);
 }
 
-void DiagonalizeMatrixByJacobi(tiglMatrix S, tiglMatrix &D, tiglMatrix &V)
+void DiagonalizeMatrixByJacobi(const tiglMatrix& S, tiglMatrix &D, tiglMatrix &V)
 {
 
     tiglVector d(1, 3);
     Standard_Integer nrot;
-    Jacobi(S, d, V, nrot);
+    tiglMatrix sCopy(S);
+    Jacobi(sCopy, d, V, nrot);
 
     D.Init(0.0);
     D(1, 1) = d(1);
@@ -432,7 +436,7 @@ void DiagonalizeMatrixByJacobi(tiglMatrix S, tiglMatrix &D, tiglMatrix &V)
     tiglMatrix res(1, 3, 1, 3, 0);
 }
 
-CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R)
+CTiglPoint RotMatrixToIntrinsicXYZVector(const tiglMatrix& R)
 {
 
     // calculate intrinsic Euler angles from rotation matrix R
@@ -454,7 +458,7 @@ CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R)
 
     // rather than extrinsic angles and the Rotation matrix mentioned in that pdf.
 
-    if (!IsProperRotationMatrix(R)) {
+    if (!IsRotationMatrix(R)) {
         LOG(ERROR) << "RotMatrixToIntrinsicXYZVector: The given rotation matrix seems not to be a proper rotation "
                       "matrix, the rotation will be computed but the result is probably false.";
     }
@@ -503,67 +507,66 @@ CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint d)
 
 }
 
-void RotationRounding(CTiglPoint& rotation, double epsilon)
+CTiglPoint SnapRotation(CTiglPoint rotation, double epsilon)
 {
-    AngleRounding(rotation.x, epsilon);
-    AngleRounding(rotation.y, epsilon);
-    AngleRounding(rotation.z, epsilon);
+    rotation.x = SnapAngle(rotation.x, epsilon);
+    rotation.y = SnapAngle(rotation.y, epsilon);
+    rotation.z = SnapAngle(rotation.z, epsilon);
+    return rotation;
 }
 
-void ScalingRounding(CTiglPoint& scaling,  double epsilon)
+CTiglPoint SnapUnitInterval(CTiglPoint scaling,  double epsilon)
 {
-    LengthRounding(scaling.x,epsilon);
-    LengthRounding(scaling.y,epsilon);
-    LengthRounding(scaling.z,epsilon);
+    scaling.x = SnapUnitInterval(scaling.x,epsilon);
+    scaling.y = SnapUnitInterval(scaling.y,epsilon);
+    scaling.z = SnapUnitInterval(scaling.z,epsilon);
+    return scaling;
 
 }
 
-void TranslationRounding(CTiglPoint& translation, double epsilon)
-{
-    LengthRounding(translation.x,epsilon);
-    LengthRounding(translation.y,epsilon);
-    LengthRounding(translation.z,epsilon);
-}
-
-void Rounding(double& number, double roundingValue, double delta) 
+double SnapValue(double number, double roundingValue, double delta)
 {
     if ( fabs(number-roundingValue) < delta) {
         number = roundingValue; 
     }
+    return number;
 }
 
-void AngleRounding(double& number, double epsilon)
+double SnapAngle(double degrees, double epsilon)
 {
-    number = fmod(number, 360.0);
+    degrees = fmod(degrees, 360.0);
 
     // force to be between 0 and 360
-    if ( number < 0 ) {
-        number = number + 360.0;
+    if ( degrees < 0 ) {
+        degrees = degrees + 360.0;
     }
 
     // round up standard values
-    Rounding(number, 0, epsilon);
-    Rounding(number, 90, epsilon);
-    Rounding(number, 180, epsilon);
-    Rounding(number, 270, epsilon);
-    Rounding(number, 360, epsilon);
+    degrees = SnapValue(degrees, 0., epsilon);
+    degrees = SnapValue(degrees, 90., epsilon);
+    degrees = SnapValue(degrees, 180., epsilon);
+    degrees = SnapValue(degrees, 270., epsilon);
+    degrees = SnapValue(degrees, 360., epsilon);
 
     // change 360 to 0
-    if (number == 360 ) {
-        number = 0;
+    if (fabs(degrees - 360.) < EPS ) {
+        degrees = 0.;
     }
 
     // force the value between -180 to 180 (more humane readble)
-    if ( number > 180 && number <= 360) {
-        number = number - 360.0;
+    if ( degrees > 180. && degrees <= 360.) {
+        degrees = degrees - 360.0;
     }
+
+    return degrees;
 }
 
-void LengthRounding(double& number, double epsilon)
+double SnapUnitInterval(double number, double epsilon)
 {
-    Rounding(number,0,epsilon);
-    Rounding(number,1,epsilon);
-    Rounding(number,-1,epsilon);
+    number = SnapValue(number,0,epsilon);
+    number = SnapValue(number,1,epsilon);
+    number = SnapValue(number,-1,epsilon);
+    return number;
 
 }
 

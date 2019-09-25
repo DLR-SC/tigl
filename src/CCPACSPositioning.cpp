@@ -118,10 +118,11 @@ void CCPACSPositioning:: SetToPoint(const CTiglPoint& newToPoint, bool moveDepen
 
     // update dependencies because we just want to change the section managed by this positioning
     std::vector<CCPACSPositioning*> dependencies = GetDependentPositionings();
-    for (int i = 0; i < dependencies.size(); i++) {
+    for (size_t i = 0; i < dependencies.size(); i++) {
         if ( moveDependentPositionings ) {
             dependencies.at(i)->Invalidate();
-        } else {
+        }
+        else {
             dependencies.at(i)->SetFromPointKeepingToPoint(newToPoint);
         }
 
@@ -170,9 +171,9 @@ void CCPACSPositioning::SetParametersFromVector(const CTiglPoint& delta,  bool r
     double sweep = Degrees(atan2(delta.x, sqrt( pow(delta.y,2) + pow(delta.z,2) ))) ;
 
     if (rounding) {
-        LengthRounding(length);
-        AngleRounding(dihedral);
-        AngleRounding(sweep);
+        length = SnapUnitInterval(length);
+        dihedral = SnapAngle(dihedral);
+        sweep = SnapAngle(sweep);
     }
 
     SetDihedralAngle(dihedral);

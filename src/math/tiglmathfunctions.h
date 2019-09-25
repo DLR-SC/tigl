@@ -218,22 +218,22 @@ TIGL_EXPORT void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatr
  * @param R, the 3x3 matrix to check
  * @return true or false
  */
-TIGL_EXPORT bool IsProperRotationMatrix(tiglMatrix& R);
+TIGL_EXPORT bool IsRotationMatrix(const tiglMatrix& R);
 
 /**
  * @brief Diagonalize the given matrix using the jacobi method.
  *
- * The input matrix, M, is decomposed into V,an improper rotation, and D, a diagonal matrix.
- * We have M = V*D*V.Transposed
+ * The symmetric input matrix, M, is decomposed into V,an improper rotation, and D, a diagonal matrix.
+ * We have M = V^T*D*V.Transposed
  * The value of the diagonal D is the eigenvalues of M and the columns of V are the the normalized eigenvectors
  *
  * @remark This method works only for real symmetric matrix.
  *
- * @param S: the 3X3 matrix to decompose
+ * @param M: the 3X3 matrix to decompose
  * @param D: the 3x3 diagonal result matrix
  * @param V: the 3X3 improper rotation result matrix
  */
-TIGL_EXPORT void DiagonalizeMatrixByJacobi(tiglMatrix S, tiglMatrix &D, tiglMatrix &V);
+TIGL_EXPORT void DiagonalizeMatrixByJacobi(const tiglMatrix& M, tiglMatrix &D, tiglMatrix &V);
 
 
 /**
@@ -244,7 +244,7 @@ TIGL_EXPORT void DiagonalizeMatrixByJacobi(tiglMatrix S, tiglMatrix &D, tiglMatr
  * @param R: the 3x3 rotation matrix
  * @return vector that contains x, y',z'' in degrees
  */
-TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R );
+TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(const tiglMatrix& R );
 
 /**
  * Return a vector orthogonal to the direction
@@ -254,29 +254,25 @@ TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(tiglMatrix& R );
 TIGL_EXPORT CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint direction);
 
 
-TIGL_EXPORT void RotationRounding(CTiglPoint& rotation, double epsilon = Precision::Confusion());
-
-TIGL_EXPORT void ScalingRounding(CTiglPoint& scaling,  double epsilon = Precision::Confusion());
-
-TIGL_EXPORT void TranslationRounding(CTiglPoint& translation,  double epsilon = Precision::Confusion());
+TIGL_EXPORT CTiglPoint SnapRotation(CTiglPoint rotation, double epsilon = Precision::Confusion());
 
 /**
- * Round up the number "number" up to "roundingValue" iff fabs(number-roundingValue) <= dela
+ * Snaps up the value "number" up to "snapValue" iff fabs(number-snapValue) <= dela
  * @param number 
- * @param roundingValue 
+ * @param snapValue
  * @param delta 
  */
-TIGL_EXPORT void Rounding(double& number, double roundingValue, double delta  = Precision::Confusion());
+TIGL_EXPORT double SnapValue(double number, double snapValue, double delta  = Precision::Confusion());
 
 /**
  * Format the number as a degree angle.
  * This means that the return value is between ]-180,180]
  * and the number is rounded up near the values 0, 90,180,-90.
  *
- * @param number
+ * @param degrees
  * @param epsilon
  */
-TIGL_EXPORT void AngleRounding(double& number, double epsilon = Precision::Confusion() );
+TIGL_EXPORT double SnapAngle(double degrees, double epsilon = Precision::Confusion() );
 
 /**
  * Format the number for scale or length double value,.
@@ -285,7 +281,8 @@ TIGL_EXPORT void AngleRounding(double& number, double epsilon = Precision::Confu
  * @param number
  * @param epsilon
  */
-TIGL_EXPORT void LengthRounding(double& number, double epsilon = Precision::Confusion());
+TIGL_EXPORT double SnapUnitInterval(double number, double epsilon = Precision::Confusion());
+TIGL_EXPORT CTiglPoint SnapUnitInterval(CTiglPoint scaling,  double epsilon = Precision::Confusion());
 
 } // namespace tigl
 

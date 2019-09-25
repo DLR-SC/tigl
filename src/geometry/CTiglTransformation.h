@@ -113,7 +113,7 @@ public:
     // scale first, rotate second (extr. Euler as defined in CPACS),
     // translate third
     // Remark, the decomposition can be not exactly equivalent to the original matrix
-    TIGL_EXPORT void Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTiglPoint& translation, bool rounding = true) const;
+    TIGL_EXPORT bool Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTiglPoint& translation, bool rounding = true) const;
 
     // Decompose the Transformation into the five operations
     // scale1 first, rotate1 second (extr. Euler as defined in CPACS),
