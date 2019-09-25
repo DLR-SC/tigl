@@ -40,13 +40,6 @@ void loadStyle();
 
 int main(int argc, char *argv[])
 {
-    TIGLViewerApp app(argc, argv);
-
-#ifdef __APPLE__
-    app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
-#endif
-
-    app.loadStyle();
 
 #if defined __linux__
     // we need to set us locale as we use "." for decimal point
@@ -55,7 +48,15 @@ int main(int argc, char *argv[])
 #elif defined __APPLE__
     setlocale(LC_NUMERIC, "C");
 #endif
-    
+
+    TIGLViewerApp app(argc, argv);
+
+#ifdef __APPLE__
+    app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
+#endif
+
+    app.loadStyle();
+
     // set shader file location
     QString shaderDir = QCoreApplication::applicationDirPath();
 #ifdef __APPLE__
