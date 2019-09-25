@@ -29,7 +29,7 @@ const bool DEFAULT_ENUM_FACES = false;
 const int DEFAULT_NISO_FACES = 0;
 
 static QString DEFAULT_TEMPLATE_DIR_PATH = "";
-static QString DEFAULT_PROFILES_FILE_PATH = "./profilesDB.xml";
+static QString DEFAULT_PROFILES_FILE_PATH = "";
 
 TIGLViewerSettings& TIGLViewerSettings::Instance()
 {
@@ -40,10 +40,13 @@ TIGLViewerSettings& TIGLViewerSettings::Instance()
 TIGLViewerSettings::TIGLViewerSettings()
 {
     DEFAULT_TEMPLATE_DIR_PATH = QCoreApplication::applicationDirPath();
+    DEFAULT_PROFILES_FILE_PATH = DEFAULT_TEMPLATE_DIR_PATH;
 #ifdef __APPLE__
     DEFAULT_TEMPLATE_DIR_PATH += "/../Resources/templates";
+    DEFAULT_PROFILES_FILE_PATH += "/../Resources/profiles/profilesDB.xml";
 #else
     DEFAULT_TEMPLATE_DIR_PATH += "/../share/tigl3/templates";
+    DEFAULT_PROFILES_FILE_PATH += "/../share/tigl3/profiles/profilesDB.xml";
 #endif
     restoreDefaults();
 }
@@ -165,7 +168,7 @@ void TIGLViewerSettings::restoreDefaults()
     // restoreDefaults() is called in the constructor
     // -> the dir will be always create at start up of the application
     // even if the user has set another dir
-    setTemplateDir(DEFAULT_TEMPLATE_DIR_PATH) ;
+    setTemplateDir(DEFAULT_TEMPLATE_DIR_PATH);
     _profilesDBPath = DEFAULT_PROFILES_FILE_PATH;
 }
 

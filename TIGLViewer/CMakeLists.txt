@@ -338,8 +338,10 @@ endif(GLOG_FOUND)
 
 if (APPLE)
   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION ${PROGNAME}.app/Contents/Resources COMPONENT viewer)
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/profiles DESTINATION ${PROGNAME}.app/Contents/Resources COMPONENT viewer)
 else()
   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION share/tigl3 COMPONENT viewer)
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/profiles DESTINATION share/tigl3 COMPONENT viewer)
 endif()
 
 #--------------------------------------------------------------------------------

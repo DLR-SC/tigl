@@ -174,6 +174,7 @@ TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {}
 void TIGLViewerSettingsDialog::onBrowseTemplateDir()
 {
     QDir newDir = QFileDialog::getExistingDirectory(this, "Choose template directory", _settings.templateDir().path());
+
     templateLineEdit->setText(newDir.absolutePath());
 }
 
@@ -181,6 +182,9 @@ void TIGLViewerSettingsDialog::onBrowseProfilesDB()
 {
     QString newFile =
         QFileDialog::getOpenFileName(this, "Choose a profile DB file. Remark, the profile DB file need to have the same "
-                                           "structure as a CPACS \"profiles\" section and have .xml suffix.");
-    profilesDBLineEdit->setText(newFile);
+                                           "structure as a CPACS \"profiles\" section and have .xml suffix.", _settings.profilesDBPath());
+
+    if (!newFile.isEmpty()) {
+        profilesDBLineEdit->setText(newFile);
+    }
 }
