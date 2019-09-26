@@ -23,6 +23,7 @@
 #include "modificators/ModificatorWidget.h"
 #include "ModificatorElementWidget.h"
 #include "CTiglSectionElement.h"
+#include "ProfilesDBManager.h"
 #include <QList>
 
 namespace Ui
@@ -38,7 +39,7 @@ public:
     explicit ModificatorSectionWidget(QWidget* parent = nullptr);
     ~ModificatorSectionWidget();
 
-    void setAssociatedElements(QList<tigl::CTiglSectionElement*> elements);
+    void setAssociatedElements(QList<tigl::CTiglSectionElement*> elements,  ProfilesDBManager* profilesDB);
 
     bool apply() override;
 

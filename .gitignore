@@ -12,3 +12,4 @@ examples/python_internal/.idea/
 *.txt.user
 filefilter.txt
 .directory
+venv/

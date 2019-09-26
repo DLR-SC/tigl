@@ -26,8 +26,10 @@
 #include "modificators/ModificatorTransformationWidget.h"
 #include "CCPACSFuselages.h"
 #include "CPACSWing.h"
+#include "CCPACSWings.h"
 #include "CPACSTransformation.h"
 #include "CTiglSectionElement.h"
+#include "ProfilesDBManager.h"
 
 namespace Ui
 {
@@ -67,12 +69,20 @@ public:
     explicit ModificatorContainerWidget(QWidget* parent = nullptr);
     ~ModificatorContainerWidget();
 
-    void setTransformationModificator(tigl::CCPACSTransformation& transformation);
+    void setProfilesManager(ProfilesDBManager* profilesDB);
+
+    void setTransformationModificator(tigl::CCPACSTransformation& transformation, tigl::CCPACSConfiguration& config);
     void setWingModificator(tigl::CCPACSWing& wing);
+    void setWingsModificator(tigl::CCPACSWings& wings);
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
-    void setFuselagesModificator(tigl::CCPACSFuselages& fuselages, QStringList profilesUID);
+    void setFuselagesModificator(tigl::CCPACSFuselages& fuselages);
     void setElementModificator(tigl::CTiglSectionElement& element);
     void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
+    void setSectionsModificator(tigl::CreateConnectedElementI& conntedElementI);
+    // for positioning we need two different call for wing and for fuselage, otherwise we manage not to invalidate the
+    // associate wing or fuselage
+    void setPositioningModificator(tigl::CCPACSWing& wing, tigl::CCPACSPositioning& positioning);
+    void setPositioningModificator(tigl::CCPACSFuselage& fuselage, tigl::CCPACSPositioning& positioning);
 
     void setNoInterfaceWidget();
 
@@ -82,6 +92,9 @@ private:
     Ui::ModificatorContainerWidget* ui;
 
     ModificatorWidget* currentModificator;
+
+    ProfilesDBManager* profilesDB;
+
 };
 
 #endif // MODIFICATORCONTAINERWIDGET_H

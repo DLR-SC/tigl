@@ -85,4 +85,20 @@ CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
+
+int CCPACSWingProfiles::GetProfileCount() const
+{
+    return static_cast<int>(m_wingAirfoils.size());
+}
+
+// Returns the fuselage profile for a given uid.
+CCPACSWingProfile& CCPACSWingProfiles::GetProfile(int index) const
+{
+    index--;
+    if (index < 0 || index >= m_wingAirfoils.size()) {
+        throw CTiglError("Invalid index in CCPACSWingProfiles::GetProfile", TIGL_INDEX_ERROR);
+    }
+    return static_cast<CCPACSWingProfile&>(*m_wingAirfoils[index]);
+}
+
 } // end namespace tigl

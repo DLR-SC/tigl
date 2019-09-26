@@ -6674,7 +6674,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
-        *pSpan = wing.GetWingspan();
+        *pSpan = wing.GetWingSpan();
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {

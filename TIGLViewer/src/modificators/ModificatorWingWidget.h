@@ -21,6 +21,7 @@
 
 #include "ModificatorWidget.h"
 #include "CCPACSWing.h"
+#include "ProfilesDBManager.h"
 
 namespace Ui
 {
@@ -32,9 +33,12 @@ class ModificatorWingWidget : public ModificatorWidget
     Q_OBJECT
 
 public slots:
-    void expendAreaDetails(bool checked);
-    void expendDihedralDetails(bool checked);
-    void expendSweepDetails(bool checked);
+
+    // update the sweep according the displayed chord value,
+    // used to keep display sweep value consitant with the displayed chord value
+    // Remark the the double parameter is just to match the signature of the "valueChanged" signal of the chord spinbox.
+    void updateSweepAccordingChordValue(double dummy = 0);
+    void updateDihedralAccordingChordValue(double dummy = 0);
 
     void setAreaConstant(bool checked);
     void setSpanConstant(bool checked);
@@ -47,43 +51,39 @@ public:
     bool apply() override;
     void reset() override;
 
-    void setWing(tigl::CCPACSWing& wing);
+    void setWing(tigl::CCPACSWing& wing, ProfilesDBManager* profilesDB);
 
 private:
     void init();
 
     Ui::ModificatorWingWidget* ui;
-
     tigl::CCPACSWing* tiglWing;
+    ProfilesDBManager* profilesDB;
 
-    // internal anchor
-    double internalAnchorX;
-    double internalAnchorY;
-    double internalAnchorZ;
+    // internal root LE is a CTiglPointWidget
 
-    // internal symmetry
-    QString internalSymmetry;
+    // internal rotation is a CTiglPointWidget
+
+    // internal symmetry is a SymmetryComboBoxWidget
 
     // internal sweep
     double internalSweep;
     double internalSweepChord;
-    QString internalMethod;
 
     // internal dihedral
     double internalDihedral;
     double internalDihedralChord;
 
     // internal area
-    double internalAreaXY;
-    double internalAreaXZ;
-    double internalAreaYZ;
-    double internalAreaT;
+    double internalArea;
 
     // internal span
     double internalSpan;
 
     // internal AR
     double internalAR;
+
+    QString internalProfile;
 };
 
 #endif // MODIFICATORWINGWIDGET_H

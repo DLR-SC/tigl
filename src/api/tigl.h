@@ -148,6 +148,20 @@ typedef enum TiglBoolean TiglBoolean;
 
 /**
  \ingroup Enums
+  Definition of Axis used in TIGL.
+*/
+enum TiglAxis
+{
+    TIGL_NO_AXIS = 0,
+    TIGL_X_AXIS = 1,
+    TIGL_Y_AXIS = 2,
+    TIGL_Z_AXIS = 3
+};
+
+
+
+/**
+ \ingroup Enums
   Definition of Symmetry Axis used in TIGL.
 */
 enum TiglSymmetryAxis

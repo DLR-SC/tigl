@@ -37,6 +37,10 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     // The dialog perform some modifications without that the apply or cancel button is pressed.
     // Therefor, fuselageModificator inform us when a undoCommand is required via a signal.
     connect(ui->fuselagesModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
+    // same for sectionsModificator
+    connect(ui->sectionsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
+    connect(ui->wingsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
+
 }
 
 ModificatorContainerWidget::~ModificatorContainerWidget()
@@ -44,24 +48,33 @@ ModificatorContainerWidget::~ModificatorContainerWidget()
     delete ui;
 }
 
+void ModificatorContainerWidget::setProfilesManager(ProfilesDBManager* profilesDB)
+{
+    this->profilesDB = profilesDB;
+}
+
+
 void ModificatorContainerWidget::hideAllSpecializedWidgets()
 {
     bool visible = false;
     ui->transformationModificator->setVisible(visible);
     ui->wingModificator->setVisible(visible);
+    ui->wingsModificator->setVisible(visible);
     ui->fuselageModificator->setVisible(visible);
     ui->fuselagesModificator->setVisible(visible);
     ui->applyWidget->setVisible(visible);
     ui->noInterfaceWidget->setVisible(visible);
     ui->elementModificator->setVisible(visible);
     ui->sectionModificator->setVisible(visible);
+    ui->sectionsModificator->setVisible(visible);
+    ui->positioningModificator->setVisible(visible);
     currentModificator = nullptr;
 }
 
-void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransformation& transformation)
+void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransformation& transformation, tigl::CCPACSConfiguration& config)
 {
     hideAllSpecializedWidgets();
-    ui->transformationModificator->setTransformation(transformation);
+    ui->transformationModificator->setTransformation(transformation, config);
     ui->transformationModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->transformationModificator;
@@ -70,26 +83,36 @@ void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransf
 void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
 {
     hideAllSpecializedWidgets();
-    ui->wingModificator->setWing(wing);
+    ui->wingModificator->setWing(wing, profilesDB);
     ui->wingModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->wingModificator;
 }
 
+
+void ModificatorContainerWidget::setWingsModificator(tigl::CCPACSWings &wings)
+{
+    hideAllSpecializedWidgets();
+    ui->wingsModificator->setWings(wings, profilesDB);
+    ui->wingsModificator->setVisible(true);
+    ui->applyWidget->setVisible(false);
+    currentModificator = ui->wingsModificator;
+}
+
 void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fuselage)
 {
     hideAllSpecializedWidgets();
-    ui->fuselageModificator->setFuselage(fuselage);
+    ui->fuselageModificator->setFuselage(fuselage, profilesDB);
     ui->fuselageModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->fuselageModificator;
 }
 
 
-void ModificatorContainerWidget::setFuselagesModificator(tigl::CCPACSFuselages& fuselages, QStringList profilesUID)
+void ModificatorContainerWidget::setFuselagesModificator(tigl::CCPACSFuselages& fuselages)
 {
     hideAllSpecializedWidgets();
-    ui->fuselagesModificator->setFuselages(fuselages, profilesUID);
+    ui->fuselagesModificator->setFuselages(fuselages, profilesDB);
     ui->fuselagesModificator->setVisible(true);
     ui->applyWidget->setVisible(false);
     currentModificator = ui->fuselagesModificator;
@@ -98,7 +121,7 @@ void ModificatorContainerWidget::setFuselagesModificator(tigl::CCPACSFuselages& 
 void ModificatorContainerWidget::setElementModificator(tigl::CTiglSectionElement& element)
 {
     hideAllSpecializedWidgets();
-    ui->elementModificator->setElement(element);
+    ui->elementModificator->setElement(element, profilesDB);
     ui->elementModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->elementModificator;
@@ -107,11 +130,42 @@ void ModificatorContainerWidget::setElementModificator(tigl::CTiglSectionElement
 void ModificatorContainerWidget::setSectionModificator(QList<tigl::CTiglSectionElement*> elements)
 {
     hideAllSpecializedWidgets();
-    ui->sectionModificator->setAssociatedElements(elements);
+    ui->sectionModificator->setAssociatedElements(elements, profilesDB);
     ui->sectionModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->sectionModificator;
 }
+
+
+void ModificatorContainerWidget::setSectionsModificator(tigl::CreateConnectedElementI& element)
+{
+    hideAllSpecializedWidgets();
+    ui->sectionsModificator->setCreateConnectedElementI(element);
+    ui->sectionsModificator->setVisible(true);
+    currentModificator = ui->sectionModificator;
+}
+
+
+void ModificatorContainerWidget::setPositioningModificator(tigl::CCPACSWing& wing, tigl::CCPACSPositioning &positioning)
+{
+    hideAllSpecializedWidgets();
+    ui->positioningModificator->setPositioning(wing, positioning);
+    ui->positioningModificator->setVisible(true);
+    ui->applyWidget->setVisible(true);
+    currentModificator = ui->positioningModificator;
+}
+
+
+
+void ModificatorContainerWidget::setPositioningModificator(tigl::CCPACSFuselage& fuselage, tigl::CCPACSPositioning &positioning)
+{
+    hideAllSpecializedWidgets();
+    ui->positioningModificator->setPositioning(fuselage, positioning);
+    ui->positioningModificator->setVisible(true);
+    ui->applyWidget->setVisible(true);
+    currentModificator = ui->positioningModificator;
+}
+
 
 void ModificatorContainerWidget::setNoInterfaceWidget()
 {

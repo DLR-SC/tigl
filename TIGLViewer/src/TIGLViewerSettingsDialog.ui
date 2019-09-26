@@ -610,7 +610,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="templatesPageDisplaySettings">
+     <widget class="QWidget" name="DirectoriesSectings">
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_10">
@@ -673,6 +673,18 @@
         <layout class="QHBoxLayout" name="horizontalLayout_8">
          <item>
           <widget class="QLabel" name="label_14">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
             <string>Template Dir:</string>
            </property>
@@ -687,6 +699,39 @@
          </item>
          <item>
           <widget class="QPushButton" name="browseTemplateDirButton">
+           <property name="text">
+            <string>browse</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <item>
+          <widget class="QLabel" name="label_17">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Profiles DB:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="profilesDBLineEdit"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="browseProfilesDBButton">
            <property name="text">
             <string>browse</string>
            </property>

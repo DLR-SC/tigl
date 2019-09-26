@@ -19,6 +19,7 @@
 #include "ModificatorWingWidget.h"
 #include "ui_ModificatorWingWidget.h"
 #include "CTiglLogging.h"
+#include "TIGLViewerErrorDialog.h"
 
 ModificatorWingWidget::ModificatorWingWidget(QWidget* parent)
     : ModificatorWidget(parent)
@@ -26,6 +27,7 @@ ModificatorWingWidget::ModificatorWingWidget(QWidget* parent)
 {
     ui->setupUi(this);
     tiglWing = nullptr;
+    profilesDB = nullptr;
     this->init();
 }
 
@@ -39,70 +41,44 @@ void ModificatorWingWidget::init()
     // set the initials values of the display interface (will be overwritten
     // when the wingItem is set)
     ui->spinBoxSweep->setValue(-1.0);
-    ui->spinBoxSweepChord->setValue(0);
-    ui->comboBoxSweepMethod->addItem("Translation");
-    ui->comboBoxSweepMethod->addItem("Shearing");
-    ui->comboBoxSweepMethod->setCurrentIndex(0);
+    ui->spinBoxDihedral->setValue(-1.0);
+    ui->spinBoxArea->setValue(-1.0);
+    ui->spinBoxAR->setValue(-1.0);
+    ui->spinBoxSpan->setValue(-1.0);
 
-    ui->spinBoxSweep->setValue(-1.0);
-    ui->spinBoxDihedralChord->setValue(0);
-
-    ui->spinBoxAreaXY->setValue(-1.0);
-    ui->spinBoxAreaXZ->setValue(-1);
-    ui->spinBoxAreaYZ->setValue(-1);
-    ui->spinBoxAreaT->setValue(-1);
-
-    ui->spinBoxAreaXZ->setReadOnly(true);
-    ui->spinBoxAreaYZ->setReadOnly(true);
-    ui->spinBoxAreaT->setReadOnly(true);
-
-    ui->spinBoxAR->setValue(-1);
-
-    ui->spinBoxSpan->setValue(-1);
-
-    ui->comboBoxSymmetry->addItem("x-y-plane");
-    ui->comboBoxSymmetry->addItem("x-z-plane");
-    ui->comboBoxSymmetry->addItem("y-z-plane");
-    ui->comboBoxSymmetry->addItem("no-symmetry");
+    // for the moment changing the AR is not supported
+    ui->spinBoxAR->setReadOnly(true); 
+    
+    ui->rootLE->setLabel(QString("Root LE"));
+    ui->rotation->setLabel(QString("Rotation"));
 
     // alterable span area ar
-    ui->checkBoxIsAreaConstant->setChecked(false);
-    ui->checkBoxIsSpanConstant->setChecked(false);
-    ui->checkBoxIsARConstant->setChecked(true);
-
-    // hide the advanced options
-    ui->widgetAreaDetails->hide();
-    ui->widgetDihedralDetails->hide();
-    ui->widgetSweepDetails->hide();
-
-    // connect the extend buttons with their slot
-    connect(ui->btnExpendAreaDetails, SIGNAL(clicked(bool)), this, SLOT(expendAreaDetails(bool)));
-    connect(ui->btnExpendDihedralDetails, SIGNAL(clicked(bool)), this, SLOT(expendDihedralDetails(bool)));
-    connect(ui->btnExpendSweepDetails, SIGNAL(clicked(bool)), this, SLOT(expendSweepDetails(bool)));
+    setARConstant(true);
 
     // connect change alterable
     connect(ui->checkBoxIsAreaConstant, SIGNAL(clicked(bool)), this, SLOT(setAreaConstant(bool)));
     connect(ui->checkBoxIsSpanConstant, SIGNAL(clicked(bool)), this, SLOT(setSpanConstant(bool)));
     connect(ui->checkBoxIsARConstant, SIGNAL(clicked(bool)), this, SLOT(setARConstant(bool)));
+
+    connect(ui->spinBoxSweepChord, SIGNAL(valueChanged(double)), this, SLOT(updateSweepAccordingChordValue(double)) );
+    connect(ui->spinBoxDihedralChord, SIGNAL(valueChanged(double)), this, SLOT(updateDihedralAccordingChordValue(double)) );
 }
 
-// inverse the visibility
-void ModificatorWingWidget::expendAreaDetails(bool checked)
+
+void ModificatorWingWidget::updateSweepAccordingChordValue(double)
 {
-    ui->widgetAreaDetails->setVisible(!(ui->widgetAreaDetails->isVisible()));
+    internalSweepChord = ui->spinBoxSweepChord->value();
+    internalSweep = tiglWing->GetSweep(internalSweepChord);
+    ui->spinBoxSweep->setValue(internalSweep);
 }
 
-// inverse the visibility
-void ModificatorWingWidget::expendDihedralDetails(bool checked)
+void ModificatorWingWidget::updateDihedralAccordingChordValue(double)
 {
-    ui->widgetDihedralDetails->setVisible(!(ui->widgetDihedralDetails->isVisible()));
+    internalDihedralChord = ui->spinBoxDihedralChord->value();
+    internalDihedral = tiglWing->GetDihedral(internalDihedralChord);
+    ui->spinBoxDihedral->setValue(internalDihedral);
 }
 
-// inverse the visibility
-void ModificatorWingWidget::expendSweepDetails(bool checked)
-{
-    ui->widgetSweepDetails->setVisible(!(ui->widgetSweepDetails->isVisible()));
-}
 
 void ModificatorWingWidget::setAreaConstant(bool checked)
 {
@@ -111,7 +87,7 @@ void ModificatorWingWidget::setAreaConstant(bool checked)
     ui->checkBoxIsSpanConstant->setChecked(false);
     ui->spinBoxSpan->setReadOnly(false);
     ui->checkBoxIsAreaConstant->setChecked(true);
-    ui->spinBoxAreaXY->setReadOnly(true);
+    ui->spinBoxArea->setReadOnly(true);
 }
 
 void ModificatorWingWidget::setSpanConstant(bool checked)
@@ -120,7 +96,7 @@ void ModificatorWingWidget::setSpanConstant(bool checked)
     ui->checkBoxIsARConstant->setChecked(false);
     ui->spinBoxAR->setReadOnly(false);
     ui->checkBoxIsAreaConstant->setChecked(false);
-    ui->spinBoxAreaXY->setReadOnly(false);
+    ui->spinBoxArea->setReadOnly(false);
     ui->checkBoxIsSpanConstant->setChecked(true);
     ui->spinBoxSpan->setReadOnly(true);
 }
@@ -128,27 +104,55 @@ void ModificatorWingWidget::setSpanConstant(bool checked)
 void ModificatorWingWidget::setARConstant(bool checked)
 {
     ui->checkBoxIsAreaConstant->setChecked(false);
-    ui->spinBoxAreaXY->setReadOnly(false);
+    ui->spinBoxArea->setReadOnly(false);
     ui->checkBoxIsSpanConstant->setChecked(false);
     ui->spinBoxSpan->setReadOnly(false);
     ui->checkBoxIsARConstant->setChecked(true);
     ui->spinBoxAR->setReadOnly(true);
 }
 
-void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing)
+void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing, ProfilesDBManager* profilesDB)
 {
     tiglWing = &wing;
+    this->profilesDB = profilesDB;
+    
+    internalSpan = tiglWing->GetWingHalfSpan();
+    ui->spinBoxSpan->setValue(internalSpan);
+    internalAR = tiglWing->GetAspectRatio();
+    ui->spinBoxAR->setValue(internalAR);
+    internalArea = tiglWing->GetReferenceArea();
+    ui->spinBoxArea->setValue(internalArea);
 
-    // set constant between ar, span and area
-    setARConstant(true);
+    ui->spinBoxSweepChord->setValue(0.25);
+    updateSweepAccordingChordValue();   // call it explicitly because if the value of the chord is similar has before
+                                        // the signal "valueChanged" will not rise up and sweep value will not be updated
+    ui->spinBoxDihedralChord->setValue(0.25);
+    updateDihedralAccordingChordValue();
 
-    // TODO set the internal elements using tiglWing
+    ui->rootLE->setInternal(tiglWing->GetRootLEPosition());
+
+    ui->rotation->setInternal(tiglWing->GetRotation());
+
+    ui->symmetry->setInternal(tiglWing->GetSymmetryAxis()) ;
+
+
+    ui->profileComboBox->clear();
+    std::vector<std::string> profilesList = tiglWing->GetAllUsedAirfoils();
+    if ( profilesList.size() == 1) {
+        internalProfile = profilesList.at(0).c_str()  + profilesDB->getConfigSuffix() ;
+    } else {
+        internalProfile = "<multi-airfoils>";
+        ui->profileComboBox->addItem(internalProfile);
+    }
+    ui->profileComboBox->addItems(profilesDB->getAllWingProfiles());
+    int index = ui->profileComboBox->findText(internalProfile);
+    ui->profileComboBox->setCurrentIndex(index);
 }
 
 void ModificatorWingWidget::reset()
 {
     if (tiglWing != nullptr) {
-        this->setWing(*tiglWing);
+        this->setWing(*tiglWing, profilesDB);
     }
     else {
         LOG(WARNING) << "ModificatorWingWidget: reset call but wing is not set!";
@@ -158,63 +162,72 @@ void ModificatorWingWidget::reset()
 bool ModificatorWingWidget::apply()
 {
 
-    bool anchorHasChanged = ((!isApprox(internalAnchorX, ui->spinBoxAnchorX->value())) ||
-                             (!isApprox(internalAnchorY, ui->spinBoxAnchorY->value())) ||
-                             (!isApprox(internalAnchorZ, ui->spinBoxAnchorZ->value())));
+    bool rootLEHasChanged = ui->rootLE->hasChanged();
 
-    bool symmetryHasChanged = (internalSymmetry != ui->comboBoxSymmetry->currentText());
+    bool rotationHasChanged = ui->rotation->hasChanged();
+
+    bool symmetryHasChanged = ui->symmetry->hasChanged();
 
     bool sweepHasChanged = ((!isApprox(internalSweep, ui->spinBoxSweep->value())) ||
-                            (!isApprox(internalSweepChord, ui->spinBoxSweepChord->value())) ||
-                            internalMethod != ui->comboBoxSweepMethod->currentText());
+                            (!isApprox(internalSweepChord, ui->spinBoxSweepChord->value())) );
 
     bool dihedralHasChanged = ((!isApprox(internalDihedral, ui->spinBoxDihedral->value())) ||
                                (!isApprox(internalDihedralChord, ui->spinBoxDihedralChord->value())));
 
     bool spanHasChanged = (!isApprox(internalSpan, ui->spinBoxSpan->value()));
 
-    bool aRHasChanged = (!isApprox(internalAR, ui->spinBoxAR->value()));
+    bool areaXYHasChanged = (!isApprox(internalArea, ui->spinBoxArea->value()));
 
-    bool areaXYHasChanged = (!isApprox(internalAreaXY, ui->spinBoxAreaXY->value()));
+    bool arHasChanged = (!isApprox(internalAR, ui->spinBoxAR->value()));
 
-    if (anchorHasChanged) {
-        internalAnchorX = ui->spinBoxAnchorX->value();
-        internalAnchorY = ui->spinBoxAnchorY->value();
-        internalAnchorZ = ui->spinBoxAnchorZ->value();
+    bool profileHasChanged = (internalProfile != ui->profileComboBox->currentText());
 
-        // todo
+
+    bool wasModified = false;
+
+    if (rootLEHasChanged) {
+        ui->rootLE->setInternalFromGUI();
+        tigl::CTiglPoint newRootLE = ui->rootLE->getInternalPoint();
+        tiglWing->SetRootLEPosition(newRootLE);
+        wasModified = true;
+    }
+
+    if (rotationHasChanged) {
+        ui->rotation->setInternalFromGUI();
+        tigl::CTiglPoint newRot = ui->rotation->getInternalPoint();
+        tiglWing->SetRotation(newRot);
+        wasModified = true;
     }
 
     if (symmetryHasChanged) {
-        internalSymmetry = ui->comboBoxSymmetry->currentText();
-
-        // todo
+        ui->symmetry->setInternalFromGUI();
+        tiglWing->SetSymmetryAxis(ui->symmetry->getInternalSymmetry());
+        wasModified = true; 
     }
 
-    if (sweepHasChanged) { // TODO do not change if the change is to small
+    if (sweepHasChanged) {
         internalSweep      = ui->spinBoxSweep->value();
-        internalMethod     = ui->comboBoxSweepMethod->currentText();
         internalSweepChord = ui->spinBoxSweepChord->value();
-
-        // todo
+        tiglWing->SetSweep(internalSweep, internalDihedralChord);
+        wasModified = true;
     }
 
     if (dihedralHasChanged) {
         internalDihedral      = ui->spinBoxDihedral->value();
         internalDihedralChord = ui->spinBoxDihedralChord->value();
-
-        // todo
+        tiglWing->SetDihedral(internalDihedral, internalDihedralChord);
+        wasModified = true;
     }
 
     if (areaXYHasChanged) {
-        internalAreaXY = ui->spinBoxAreaXY->value();
+        internalArea = ui->spinBoxArea->value();
         if (ui->checkBoxIsSpanConstant->isChecked()) {
-
-            // todo
+            tiglWing->SetAreaKeepSpan(internalArea);
+            wasModified = true;
         }
         else if (ui->checkBoxIsARConstant->isChecked()) {
-
-            // todo
+            tiglWing->SetAreaKeepAR(internalArea);
+            wasModified = true;
         }
         else {
             LOG(ERROR) << "ModificatorWingWidget: set area called, but not correct "
@@ -225,12 +238,12 @@ bool ModificatorWingWidget::apply()
     if (spanHasChanged) {
         internalSpan = ui->spinBoxSpan->value();
         if (ui->checkBoxIsAreaConstant->isChecked()) {
-
-            // todo
+            tiglWing->SetHalfSpanKeepArea(internalSpan);
+            wasModified = true;
         }
         else if (ui->checkBoxIsARConstant->isChecked()) {
-
-            // todo
+            tiglWing->SetHalfSpanKeepAR(internalSpan);
+            wasModified = true;
         }
         else {
             LOG(ERROR) << "ModificatorWingWidget: set span called, but not correct "
@@ -238,15 +251,15 @@ bool ModificatorWingWidget::apply()
         }
     }
 
-    if (aRHasChanged) {
+    if (arHasChanged) {
         internalAR = ui->spinBoxAR->value();
         if (ui->checkBoxIsAreaConstant->isChecked()) {
-
-            // todo
+            tiglWing->SetARKeepArea(internalAR);
+            wasModified = true;
         }
         else if (ui->checkBoxIsSpanConstant->isChecked()) {
-
-            // todo
+            tiglWing->SetARKeepSpan(internalAR);
+            wasModified = true;
         }
         else {
             LOG(ERROR) << "ModificatorWingWidget: set AR called, but not correct "
@@ -254,5 +267,30 @@ bool ModificatorWingWidget::apply()
         }
     }
 
-    return false;
+
+    if (profileHasChanged) {
+        internalProfile = ui->profileComboBox->currentText();
+        try {
+            if (!profilesDB->hasProfileConfigSuffix(internalProfile)) {
+                profilesDB->copyProfileFromLocalToConfig(internalProfile);
+            }
+            tiglWing->SetAllAirfoils(profilesDB->removeSuffix(internalProfile).toStdString());
+            wasModified = true;
+        }
+        catch (const tigl::CTiglError &err) {
+            TIGLViewerErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
+                                         .arg("Fail to set the profile")
+                                         .arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+        }
+    }
+
+    if (wasModified) {
+        reset();
+    }
+
+    return wasModified;
 }

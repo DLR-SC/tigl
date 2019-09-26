@@ -27,7 +27,16 @@
     <widget class="ModificatorElementWidget" name="elementModificator" native="true"/>
    </item>
    <item>
+    <widget class="ModificatorSectionsWidget" name="sectionsModificator" native="true"/>
+   </item>
+   <item>
     <widget class="ModificatorFuselagesWidget" name="fuselagesModificator" native="true"/>
+   </item>
+   <item>
+    <widget class="ModificatorWingsWidget" name="wingsModificator" native="true"/>
+   </item>
+   <item>
+    <widget class="ModificatorPositioningWidget" name="positioningModificator" native="true"/>
    </item>
    <item>
     <widget class="ModificatorSectionWidget" name="sectionModificator" native="true"/>
@@ -133,6 +142,24 @@
    <class>ModificatorFuselagesWidget</class>
    <extends>QWidget</extends>
    <header>modificators/ModificatorFuselagesWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorSectionsWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/ModificatorSectionsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorWingsWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/ModificatorWingsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModificatorPositioningWidget</class>
+   <extends>QWidget</extends>
+   <header>modificators/ModificatorPositioningWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

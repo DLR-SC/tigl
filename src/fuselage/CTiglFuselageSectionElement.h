@@ -37,17 +37,23 @@ public:
 
     CTiglFuselageSectionElement(CCPACSFuselageSectionElement* element);
 
-    TIGL_EXPORT const std::string& GetSectionUID() const override;
+    TIGL_EXPORT bool IsValid() const override;
 
-    TIGL_EXPORT const std::string& GetSectionElementUID() const override;
+    TIGL_EXPORT std::string GetSectionUID() const override;
 
-    TIGL_EXPORT virtual const std::string& GetProfileUID() const override;
+    TIGL_EXPORT std::string GetSectionElementUID() const override;
+
+    TIGL_EXPORT virtual std::string GetProfileUID() const override;
+    
+    TIGL_EXPORT void SetProfileUID(const std::string& newProfileUID) override; 
 
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation() const override;
 
+    TIGL_EXPORT CCPACSPositionings& GetPositionings() override;
+
     TIGL_EXPORT CTiglTransformation GetSectionTransformation() const override;
 
-    TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const override;
+    TIGL_EXPORT CTiglTransformation GetElementTransformation() const override;
 
     TIGL_EXPORT CTiglTransformation GetParentTransformation() const override;
 
@@ -64,9 +70,26 @@ public:
 
 protected:
 
-    void SetElementTransformation(const CTiglTransformation& newTransformation) override;
+    CCPACSTransformation& GetElementCCPACSTransformation() override;
 
-    void SetSectionTransformation(const CTiglTransformation& newTransformation) override;
+    CCPACSTransformation& GetSectionCCPACSTransformation() override;
+
+    void InvalidateParent() override;
+
+    /**
+     * Return the conventional direction for the unit vector z of the profile.
+     *
+     * This direction is used to determine the rotation around the normal and is defined as:
+     * the vector that line on the profile plane and end on the intersection of the line l, define by (x,0,1).
+     * If there is no intersection with the line l, we set the end of the vector by the intersection of the line l2,
+     * defined by (1,0,z)
+     *
+     * @param referenceCS
+     * @return
+     */
+    CTiglPoint GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS) const override;
+
+
 
 
 private:

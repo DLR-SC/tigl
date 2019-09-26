@@ -23,6 +23,7 @@
 #include "ModificatorWidget.h"
 #include "CCPACSFuselages.h"
 #include <QPushButton>
+#include "ProfilesDBManager.h"
 
 namespace Ui
 {
@@ -39,17 +40,18 @@ signals:
 public slots:
 
     void execNewFuselageDialog();
+    void execDeleteFuselageDialog();
 
 public:
     explicit ModificatorFuselagesWidget(QWidget* parent = nullptr);
     ~ModificatorFuselagesWidget();
 
-    void setFuselages(tigl::CCPACSFuselages& fuselages, QStringList profilesUID);
+    void setFuselages(tigl::CCPACSFuselages& fuselages, ProfilesDBManager* profilesUID);
 
 private:
     Ui::ModificatorFuselagesWidget* ui;
     tigl::CCPACSFuselages* fuselages;
-    QStringList profilesUID;
+    ProfilesDBManager* profilesDB;
 };
 
 #endif // MODIFICATORFUSELAGESWIDGET_H

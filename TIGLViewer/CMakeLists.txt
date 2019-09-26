@@ -7,9 +7,9 @@ OPTION(TIGL_VIEWER "Builds the TiGL Viewer program (requires OpenGL and Qt4)" ON
 
 
 if (APPLE)
-   set(PROGNAME "TiGL-Viewer3")
+   set(PROGNAME "CPACS-Creator")
 else(APPLE)
-   set(PROGNAME "tiglviewer-3")
+   set(PROGNAME "cpacscreator")
 endif(APPLE)
 
 
@@ -107,6 +107,7 @@ set(tv_src
     TIGLViewerApp.cpp
     TIGLGeometryChoserDialog.cpp
     TIGLViewerUndoCommands.cpp
+	ProfilesDBManager.cpp
     # files for CPACSCreator
 	modificators/ModificatorWidget.cpp
 	modificators/ModificatorElementWidget.cpp
@@ -117,6 +118,14 @@ set(tv_src
 	modificators/CTiglPointWidget.cpp
 	modificators/ModificatorFuselagesWidget.cpp
 	modificators/NewFuselageDialog.cpp
+	modificators/NewConnectedElementDialog.cpp
+	modificators/SymmetryComboBoxWidget.cpp
+	modificators/ModificatorSectionsWidget.cpp
+	modificators/ModificatorWingsWidget.cpp
+	modificators/NewWingDialog.cpp
+	modificators/DeleteDialog.cpp
+	modificators/ModificatorPositioningWidget.cpp
+	StandardizeDialog.cpp
 	ModificatorManager.cpp
 	CPACSAbstractModel.cpp
 	CPACSTreeItem.cpp
@@ -146,7 +155,8 @@ set(tv_hdr
     TIGLViewerScopedCommand.h
     TIGLQAspectWindow.h
     TIGLViewerUndoCommands.h
-    # files for CPACSCreator
+	ProfilesDBManager.h
+	# files for CPACSCreator
 	CPACSTreeItem.h
 	CPACSTree.h
 	XPathParser.h
@@ -189,12 +199,20 @@ set(tv_hdr_qobj
 	modificators/ModificatorWingWidget.h
 	modificators/ModificatorFuselagesWidget.h
 	modificators/NewFuselageDialog.h
+	modificators/NewConnectedElementDialog.h
+	modificators/SymmetryComboBoxWidget.h
+	modificators/ModificatorSectionsWidget.h
+	modificators/ModificatorWingsWidget.h
+	modificators/NewWingDialog.h
+	modificators/DeleteDialog.h
+	modificators/ModificatorPositioningWidget.h
 	ModificatorManager.h
 	CPACSAbstractModel.h
 	ModificatorContainerWidget.h
 	CPACSTreeWidget.h
 	CPACSFilterModel.h
 	TIGLViewerNewFileDialog.h
+	StandardizeDialog.h
 )
 
 
@@ -211,7 +229,8 @@ set(tv_ui_comp
 	src/TIGLViewerVTKExportDialog.ui
 	src/TIGLSliderDialog.ui
 	src/TIGLGeometryChoserDialog.ui
-   		src/modificators/ModificatorTransformationWidget.ui
+	src/StandardizeDialog.ui
+		src/modificators/ModificatorTransformationWidget.ui
 		src/modificators/ModificatorTransformationWidget.ui
 		src/modificators/ModificatorElementWidget.ui
 		src/modificators/ModificatorWingWidget.ui
@@ -221,8 +240,15 @@ set(tv_ui_comp
 		src/ModificatorContainerWidget.ui
 		src/modificators/ModificatorFuselagesWidget.ui
 		src/modificators/NewFuselageDialog.ui
+		src/modificators/NewConnectedElementDialog.ui
 		src/CPACSTreeWidget.ui
 		src/TIGLViewerNewFileDialog.ui
+		src/modificators/SymmetryComboBoxWidget.ui
+		src/modificators/ModificatorSectionsWidget.ui
+		src/modificators/ModificatorWingsWidget.ui
+		src/modificators/NewWingDialog.ui
+		src/modificators/DeleteDialog.ui
+		src/modificators/ModificatorPositioningWidget.ui
 
 		)
 
@@ -312,8 +338,10 @@ endif(GLOG_FOUND)
 
 if (APPLE)
   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION ${PROGNAME}.app/Contents/Resources COMPONENT viewer)
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/profiles DESTINATION ${PROGNAME}.app/Contents/Resources COMPONENT viewer)
 else()
   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION share/tigl3 COMPONENT viewer)
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/profiles DESTINATION share/tigl3 COMPONENT viewer)
 endif()
 
 #--------------------------------------------------------------------------------

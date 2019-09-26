@@ -1809,21 +1809,21 @@
             </segments>
           </fuselage>
 	  
-          <fuselage uID="SimpleFuselageElementTransformation ">
+          <fuselage uID="SimpleFuselageElementTransformation">
             <name>name</name>
             <description>A simple fuselage where every transformations is contained in the elements</description>
-            <transformation uID="SimpleFuselageElementTransformation _transformation1">
-              <scaling uID="SimpleFuselageElementTransformation _transformation1_scaling1">
+            <transformation uID="SimpleFuselageElementTransformation_transformation1">
+              <scaling uID="SimpleFuselageElementTransformation_transformation1_scaling1">
                 <x>1.0</x>
                 <y>1</y>
                 <z>1</z>
               </scaling>
-              <rotation uID="SimpleFuselageElementTransformation _transformation1_rotation1">
+              <rotation uID="SimpleFuselageElementTransformation_transformation1_rotation1">
                 <x>0.0</x>
                 <y>0.0</y>
                 <z>0.0</z>
               </rotation>
-              <translation refType="absLocal" uID="SimpleFuselageElementTransformation _transformation1_translation1">
+              <translation refType="absLocal" uID="SimpleFuselageElementTransformation_transformation1_translation1">
                 <x>0.0</x>
                 <y>0.0</y>
                 <z>0.0</z>
@@ -2144,6 +2144,196 @@
             </segments>
           </fuselage>
 	  
+	 <fuselage uID="FuselageShearingSection">
+            <name>name</name>
+            <description>description</description>
+            <transformation uID="FuselageShearingSection_transformation1">
+              <scaling uID="FuselageShearingSection_transformation1_scaling1">
+                <x>1</x>
+                <y>0.5</y>
+                <z>0.5</z>
+              </scaling>
+              <rotation uID="FuselageShearingSection_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absLocal" uID="FuselageShearingSection_transformation1_translation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="FuselageShearingSection_1Section1ID">
+                <name>FuselageShearingSection_1Section1</name>
+                <transformation uID="FuselageShearingSection_1Section1ID_transformation1">
+                  <scaling uID="FuselageShearingSection_1Section1ID_transformation1_scaling1">
+                    <x>1.28078</x>
+                    <y>1</y>
+                    <z>0.780776</z>
+                  </scaling>
+                  <rotation uID="FuselageShearingSection_1Section1ID_transformation1_rotation1">
+                    <x>90</x>
+                    <y>37.9819</y>
+                    <z>-0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="FuselageShearingSection_1Section1ID_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="FuselageShearingSection_1Section1IDElement1">
+                    <name>FuselageShearingSection_1Section1</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="FuselageShearingSection_1Section1IDElement1_transformation1">
+                      <scaling uID="FuselageShearingSection_1Section1IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="FuselageShearingSection_1Section1IDElement1_transformation1_rotation1">
+                        <x>-90</x>
+                        <y>0</y>
+                        <z>-52.0181</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="FuselageShearingSection_1Section1IDElement1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="FuselageShearingSection_1Section2ID">
+                <name>FuselageShearingSection_1Section2</name>
+                <transformation uID="FuselageShearingSection_1Section2ID_transformation1">
+                  <scaling uID="FuselageShearingSection_1Section2ID_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="FuselageShearingSection_1Section2ID_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="FuselageShearingSection_1Section2ID_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="FuselageShearingSection_1Section2IDElement1">
+                    <name>FuselageShearingSection_1Section2</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="FuselageShearingSection_1Section2IDElement1_transformation1">
+                      <scaling uID="FuselageShearingSection_1Section2IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="FuselageShearingSection_1Section2IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="FuselageShearingSection_1Section2IDElement1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="FuselageShearingSection_1Section3ID">
+                <name>FuselageShearingSection_1Section3</name>
+                <transformation uID="FuselageShearingSection_1Section3ID_transformation1">
+                  <scaling uID="FuselageShearingSection_1Section3ID_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="FuselageShearingSection_1Section3ID_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="FuselageShearingSection_1Section3ID_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="FuselageShearingSection_1Section3IDElement1">
+                    <name>FuselageShearingSection_1Section3</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="FuselageShearingSection_1Section3IDElement1_transformation1">
+                      <scaling uID="FuselageShearingSection_1Section3IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="FuselageShearingSection_1Section3IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="FuselageShearingSection_1Section3IDElement1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="FuselageShearingSection_1Positioning1ID">
+                <name>FuselageShearingSection_1Positioning1</name>
+                <length>-10</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID>FuselageShearingSection_1Section1ID</toSectionUID>
+              </positioning>
+              <positioning uID="FuselageShearingSection_1Positioning2ID">
+                <name>FuselageShearingSection_1Positioning3</name>
+                <length>2</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>FuselageShearingSection_1Section1ID</fromSectionUID>
+                <toSectionUID>FuselageShearingSection_1Section2ID</toSectionUID>
+              </positioning>
+	      <positioning uID="FuselageShearingSection_1Positioning3ID">
+                <name>FuselageShearingSection_1Positioning3</name>
+                <length>2</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>FuselageShearingSection_1Section2ID</fromSectionUID>
+                <toSectionUID>FuselageShearingSection_1Section3ID</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="segmentFuselageShearingSection_1Segment2ID">
+                <name>FuselageShearingSection_1Segment2</name>
+                <fromElementUID>FuselageShearingSection_1Section1IDElement1</fromElementUID>
+                <toElementUID>FuselageShearingSection_1Section2IDElement1</toElementUID>
+              </segment>
+              <segment uID="segmentFuselageShearingSection_1Segment3ID">
+                <name>FuselageShearingSection_1Segment3</name>
+                <fromElementUID>FuselageShearingSection_1Section2IDElement1</fromElementUID>
+                <toElementUID>FuselageShearingSection_1Section3IDElement1</toElementUID>
+              </segment>
+            </segments>
+          </fuselage>
+	  
 	  
 	  
         </fuselages>
@@ -2429,7 +2619,7 @@
           <description>Profile build up from set of Points on Circle where may Dimensions are 1..-1</description>
           <pointList>
             <x mapType="vector">0.0;0.0;0.0;0.0;0.0</x>
-            <y mapType="vector">0.5;0.0;0.5;1.0;0.5</y>
+            <y mapType="vector">0.5;1.0;0.5;0.0;0.5</y>
             <z mapType="vector">1.0;0.0;0.0;0.0;1.0</z>
           </pointList>
         </fuselageProfile>

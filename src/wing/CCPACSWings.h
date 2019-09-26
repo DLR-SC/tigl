@@ -57,6 +57,16 @@ public:
     TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
 
     TIGL_EXPORT bool HasWing(const std::string& uid) const;
+
+    /**
+     * Create a new wing with sections and segments.
+     *
+     * @param fuselageUID
+     * @param numberOfSection
+     * @param profileUID
+     * @return
+     */
+    TIGL_EXPORT CCPACSWing& CreateWing(const std::string& wingUID, int numberOfSection, const std::string& airfoilUID);
 };
 
 } // end namespace tigl

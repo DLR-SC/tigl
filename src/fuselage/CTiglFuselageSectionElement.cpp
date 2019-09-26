@@ -23,6 +23,7 @@
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSConfiguration.h"
+#include "tiglmathfunctions.h"
 
 #include "tiglcommonfunctions.h"
 #include "GProp_GProps.hxx"
@@ -47,20 +48,40 @@ tigl::CTiglFuselageSectionElement::CTiglFuselageSectionElement(tigl::CCPACSFusel
     fuselage = section->GetParent()->GetParent();
 }
 
-const std::string& tigl::CTiglFuselageSectionElement::GetSectionUID() const
+
+bool tigl::CTiglFuselageSectionElement::IsValid() const
 {
-    return section->GetUID();
+    if (element != nullptr && section != nullptr && fuselage != nullptr) {
+        return true;
+    }
+    return false;
 }
 
-const std::string& tigl::CTiglFuselageSectionElement::GetSectionElementUID() const
+std::string tigl::CTiglFuselageSectionElement::GetSectionUID() const
 {
-    return element->GetUID();
+    return section ? section->GetUID() : "";
 }
 
-const std::string& tigl::CTiglFuselageSectionElement::GetProfileUID() const
+std::string tigl::CTiglFuselageSectionElement::GetSectionElementUID() const
 {
-    return element->GetProfileUID();
+    return element ? element->GetUID() : "";
 }
+
+std::string tigl::CTiglFuselageSectionElement::GetProfileUID() const
+{
+    return element ? element->GetProfileUID() : "";
+}
+
+void tigl::CTiglFuselageSectionElement::SetProfileUID(const std::string& newProfileUID)
+{
+
+    CCPACSConfiguration& config = fuselage->GetConfiguration();
+    if ( ! config.GetFuselageProfiles()->HasProfile(newProfileUID) ) {
+        throw CTiglError("CTiglFuselageSectionElement::SetProfileUID: The given profile seems not to be present in the profile list.");
+    }
+    element->SetProfileUID(newProfileUID); 
+}
+
 
 // Returns the fuselage profile referenced by this connection
 tigl::CCPACSFuselageProfile& tigl::CTiglFuselageSectionElement::GetProfile()
@@ -94,7 +115,7 @@ tigl::CTiglTransformation tigl::CTiglFuselageSectionElement::GetSectionTransform
 }
 
 // Returns the section element matrix referenced by this connection
-tigl::CTiglTransformation tigl::CTiglFuselageSectionElement::GetSectionElementTransformation() const
+tigl::CTiglTransformation tigl::CTiglFuselageSectionElement::GetElementTransformation() const
 {
     return element->GetTransformation().getTransformationMatrix();
 }
@@ -133,9 +154,9 @@ tigl::CTiglPoint tigl::CTiglFuselageSectionElement::GetNormal(TiglCoordinateSyst
     // Remark: do not forget that the CTiglTransformation is augmented, so we need to compute the new Y andZ vector
     // using the origin
 
-    CTiglPoint yPoint = CTiglPoint(0,1,0);
-    CTiglPoint zPoint = CTiglPoint(0,0,1);
-    CTiglPoint origin = CTiglPoint(0,0,0);
+    CTiglPoint yPoint = CTiglPoint(0, 1, 0);
+    CTiglPoint zPoint = CTiglPoint(0, 0, 1);
+    CTiglPoint origin = CTiglPoint(0, 0, 0);
 
     CTiglTransformation M = GetTotalTransformation(referenceCS);
     CTiglPoint yVec = (M * yPoint) - (M * origin);
@@ -144,21 +165,43 @@ tigl::CTiglPoint tigl::CTiglFuselageSectionElement::GetNormal(TiglCoordinateSyst
     CTiglPoint normal = CTiglPoint::cross_prod(yVec, zVec);
     normal.normalize();
     return normal;
-
 }
 
-void tigl::CTiglFuselageSectionElement::SetElementTransformation(const tigl::CTiglTransformation& newTransformation)
+tigl::CCPACSTransformation& tigl::CTiglFuselageSectionElement::GetElementCCPACSTransformation()
 {
-    // set the new transformation matrix in the element
-    CCPACSTransformation& storedTransformation = element->GetTransformation();
-    storedTransformation.setTransformationMatrix(newTransformation);
+    return element->GetTransformation();
+}
+
+tigl::CCPACSTransformation& tigl::CTiglFuselageSectionElement::GetSectionCCPACSTransformation()
+{
+    return section->GetTransformation();
+}
+
+void tigl::CTiglFuselageSectionElement::InvalidateParent()
+{
     fuselage->Invalidate();
 }
 
-void tigl::CTiglFuselageSectionElement::SetSectionTransformation(const tigl::CTiglTransformation& newTransformation)
+tigl::CTiglPoint tigl::CTiglFuselageSectionElement::GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS)  const
 {
-    // set the new transformation matrix in the element
-    CCPACSTransformation& storedTransformation = section->GetTransformation();
-    storedTransformation.setTransformationMatrix(newTransformation);
-    fuselage->Invalidate();
+    CTiglPoint normal = GetNormal(referenceCS);
+    CTiglPoint stdUZDir;
+    if (isNear(normal.x, 0) && isNear(normal.z,0)) {
+        // in this case the profile is on the XZ plane -> we put the unit z parallel to z
+        stdUZDir = CTiglPoint(0,0,1);
+    }
+    else if (isNear(normal.x, 0)) {
+        // in this case we can not put uZ on the line defined by (x,0,1)
+        stdUZDir = CTiglPoint(1,0,0);
+    }
+    else {
+        stdUZDir = CTiglPoint( -normal.z/normal.x,0,1);
+    }
+    stdUZDir.normalize();
+    return stdUZDir;
+}
+
+tigl::CCPACSPositionings& tigl::CTiglFuselageSectionElement::GetPositionings()
+{
+    return fuselage->GetPositionings(CreateIfNotExistsTag());
 }

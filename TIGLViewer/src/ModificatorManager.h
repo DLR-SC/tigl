@@ -24,6 +24,9 @@
 #include "ModificatorContainerWidget.h"
 #include "CPACSTreeWidget.h"
 #include <QUndoStack>
+#include "TIGLViewerContext.h"
+#include "CCPACSPositioning.h"
+#include "ProfilesDBManager.h"
 
 class TIGLViewerWindow;
 
@@ -43,6 +46,8 @@ class TIGLViewerWindow;
  * "dispatch" function will be called. The dispatch function will look at the
  * new selected element and if the element has a associate ModificatorWidget, it
  * will set this particular ModificatorWidget by a call on the modificatorContainerWidget.
+ * The dispatch function will also call highlighting functions to show in the scene with
+ * element can be currently edited.
  *
  * @author Malo Drougard
  *
@@ -58,15 +63,27 @@ public slots:
     void dispatch(cpcr::CPACSTreeItem* item);
     void createUndoCommand();
     void updateTree();
+    // function to update the profiles software db if the settings has changed
+    void updateProfilesDB(QString newDBPath);
+
+    // Highlighting functions
+    void highlight(std::vector<tigl::CTiglSectionElement*> elements);
+    void highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation);
+    void unHighlight();
 
 public:
-    ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget, QUndoStack* undoStack);
+    ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget,  TIGLViewerContext* scene,  QUndoStack* undoStack);
 
     void setCPACSConfiguration(TIGLViewerDocument* newDoc);
 
-protected:
+    // standardization functions
+    // standardize the wing or the fuselage given by the uid and call createUndoCommand
+    void standardize(QString uid, bool useSimpleDecomposition);
+    // standardize the aircraft uid and call createUndoCommand
+    void standardize(bool useSimpleDecomposition);
 
-    QStringList getAvailableFuselageProfileUIDs();  // we be managed by the profiles DB managed in future
+
+protected:
 
     inline bool configurationIsSet()
     {
@@ -78,7 +95,11 @@ private:
 
     CPACSTreeWidget* treeWidget;
     ModificatorContainerWidget* modificatorContainerWidget;
+    TIGLViewerContext* scene;
     QUndoStack* myUndoStack;
+    QList<Handle(AIS_InteractiveObject)> highligthteds;
+    ProfilesDBManager profilesDB;
+
 };
 
 #endif // TIGL_MODIFICATORMANAGER_H

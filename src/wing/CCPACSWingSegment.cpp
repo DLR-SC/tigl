@@ -205,6 +205,7 @@ void CCPACSWingSegment::Invalidate()
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
     areaCache.clear();
     volumeCache.clear();
+    surfaceCoordCache.clear();
 }
 
 // Cleanup routine

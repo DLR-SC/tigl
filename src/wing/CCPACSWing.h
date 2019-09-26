@@ -35,15 +35,19 @@
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurve.h"
 #include "Cache.h"
+#include "CreateConnectedElementI.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
+
+#include "CTiglWingSectionElement.h"
+#include "CTiglWingHelper.h"
 
 namespace tigl
 {
 class CCPACSConfiguration;
 
-class CCPACSWing : public generated::CPACSWing, public CTiglRelativelyPositionedComponent
+class CCPACSWing : public generated::CPACSWing, public CTiglRelativelyPositionedComponent, public CreateConnectedElementI
 {
 friend class CTiglWingBuilder;
 
@@ -121,11 +125,30 @@ public:
     // of each wing segment by projecting the wing segments into the plane defined by the user
     TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane);
 
+    // Returns the reference area of the wing in the plane normal to the major direction
+    TIGL_EXPORT double GetReferenceArea();
+
     // Returns wetted Area
     TIGL_EXPORT double GetWettedArea(TopoDS_Shape parent);
 
     // Returns the wingspan of the wing
-    TIGL_EXPORT double GetWingspan();
+    // The span is the width of the wing in the major wing direction.
+    // Remark, if the wing is mirrored (with a symmetry axis), the two wings are take into account.
+    // Otherwise, the width of the unique wing is returned.
+    // Remark: The span is computed using bounding Box so, the result may no be accurate.
+    TIGL_EXPORT double GetWingSpan();
+
+    // Returns the half span of the wing
+    // If the wing is not mirrored, return the whole width.
+    // Remark: The span is computed using bounding Box. So, the result may no be accurate.
+
+    /**
+     * Returns the half span of the wing
+     * If the wing is not mirrored, return the whole width.
+     * @remark The span is computed using bounding Box. So, the result may no be exactly correct
+     * @return half span of the wing
+     */
+    TIGL_EXPORT double GetWingHalfSpan();
 
     // Returns the aspect ratio of the wing
     TIGL_EXPORT double GetAspectRatio();
@@ -161,6 +184,152 @@ public:
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound GetGuideCurveWires() const;
 
+    // CREATOR FUNCTIONS
+
+    TIGL_EXPORT double GetSweep(double chordPercentage = 0.25) const;
+
+    TIGL_EXPORT double GetDihedral(double chordPercentage = 0.25) const;
+
+    // Return the root leading edge position in world coordinate system
+    // We use this position has the wing position.
+    TIGL_EXPORT CTiglPoint GetRootLEPosition() const;
+
+    // Set the root leading edge position in world coordinate system
+    TIGL_EXPORT void SetRootLEPosition(CTiglPoint newRootPosition);
+
+    // Set the rotation of the wing transformation and invalidate the wing
+    TIGL_EXPORT void SetRotation(CTiglPoint newRot);
+
+    // Set the sweep of the wing
+    TIGL_EXPORT void SetSweep(double sweepAngle, double chordPercentage = 0.25);
+
+    // Set the dihedral of the wing
+    TIGL_EXPORT void SetDihedral(double dihedralAngle, double chordPercentage = 0.25);
+
+
+    /**
+     * Scale the wing uniformly.
+     * The root leading point stay at the same position.
+     * @param scaleF the scale factor
+     */
+    TIGL_EXPORT void Scale(double scaleF);
+
+
+    /**
+     * Set the wing reference area while keeping the aspect ratio constant.
+     * The area is set scaling the wing uniformly.
+     * @remark The span will change.
+     * @param newArea
+     */
+    TIGL_EXPORT void SetAreaKeepAR(double newArea);
+
+     /**
+     * Set the wing reference area while keeping the span constant.
+     * To obtain the wanted area each airfoil is scaled by the same factor.
+     * The leading point of each airfoil stay at the same position.
+     * @remark The aspect ratio will change.
+     * @remark The tip airfoil is also scaled, so it is possible that the the span change slighly if
+     * the tip airfoil is not parallel to the deep axis.
+     * @param newArea
+     */
+    TIGL_EXPORT void SetAreaKeepSpan(double newArea);
+
+
+
+
+    /**
+     * Set the wing half span while keeping the aspect ratio constant.
+     * The span is set scaling the wing uniformly.
+     * @remark The area will change.
+     * @param newArea
+     */
+    TIGL_EXPORT void SetHalfSpanKeepAR(double newHalfSpan);
+
+
+    /**
+     * Set the wing half span while keeping the area constant.
+     * The span is set by first scaling the wing uniformly,
+     * then resetting the area while keeping the span constant.
+     * @remark The aspect ratio will change.
+     * @param newArea
+     */
+    TIGL_EXPORT void SetHalfSpanKeepArea(double newHalfSpan);
+
+
+    /**
+     * Set the wing aspect ratio (AR) while keeping the span constant.
+     * The area will change so that the AR is reached.
+     * @param newAR
+     */
+    TIGL_EXPORT void SetARKeepSpan(double newAR);
+
+
+
+    /**
+     * Set the wing aspect ratio (AR) while keeping the area constant.
+     * The span will change so that the AR is reached.
+     * @param newAR
+     */
+    TIGL_EXPORT void SetARKeepArea(double newAR);
+
+
+
+
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "after" the start element.
+     * If there is already a element after the start element, we split the existing segment and insert the new element
+     * between the the two elements.
+     *
+     * @param startElementUID
+     */
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID) override;
+
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "Before" the start element.
+     * If there is already a element before the start element, we split the existing segment and insert the new element
+     * between the the two elements.
+     *
+     * @param startElementUID
+     */
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID) override;
+
+    /**
+      *Create a new section, a new element and place the new element between the startElement and the endElement.
+     * @remark The startElement and endElement must be connected by a segment.
+     * @param startElementUID
+     * @param endElementUID
+     */
+    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID) override;
+
+
+    /**
+     * Delete the connected element.
+     * This mean that the section containing the element is delete and the segment associated with this element
+     * are either deleted or updated.
+     * @param ElementUID
+     */
+    TIGL_EXPORT void DeleteConnectedElement(std::string ElementUID) override;
+
+
+    TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement() override;
+
+    TIGL_EXPORT  std::vector<CTiglSectionElement* > GetCTiglElements();
+
+    /**
+     *
+     * @return Return all the uid of the airfoils used by this wing
+     */
+    TIGL_EXPORT std::vector<std::string> GetAllUsedAirfoils();
+
+    /**
+     * Set the airfoil uid of all the section elements of this wing.
+     * @param profileUID ; the airfoil UID to use
+     */
+    TIGL_EXPORT void SetAllAirfoils(const std::string& profileUID);
+
+
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;
 
@@ -178,6 +347,8 @@ protected:
     PNamedShape BuildLoft() const OVERRIDE;
         
     void BuildUpperLowerShells();
+
+    void SetWingHelper(CTiglWingHelper& cache) const;
 
 private:
     // get short name for loft
@@ -197,8 +368,13 @@ private:
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
 
+    Cache<CTiglWingHelper, CCPACSWing> wingHelper;
+
+
+
     friend class CCPACSWingSegment;
     friend class CCPACSWingComponentSegment;
+    friend class CTiglStandardizer;
 };
 
 /// Transforms a shape in profile coordinates to world coordinates

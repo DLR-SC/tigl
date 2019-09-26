@@ -35,6 +35,7 @@
 #include "CCPACSGuideCurve.h"
 #include "CTiglFuselageConnection.h"
 #include "Cache.h"
+#include "CreateConnectedElementI.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -47,7 +48,7 @@ namespace tigl
 class CCPACSConfiguration;
 class CCPACSFuselageStringerFramePosition;
 
-class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativelyPositionedComponent
+class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativelyPositionedComponent, public CreateConnectedElementI
 {
 public:
     // Constructor
@@ -163,6 +164,53 @@ public:
     // Set the maximal width of the fuselage by inverting the rotation of the fuselage and scaling in the Y direction
     TIGL_EXPORT void SetMaxWidth(double newMaxWidth);
 
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "after" the start element.
+     * If there is already a element after the start element, we split the existing segment and insert the new element
+     * between the the two elements.
+     *
+     * @param startElementUID
+     */
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID) override;
+
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "Before" the start element.
+     * If there is already a element before the start element, we split the existing segment and insert the new element
+     * between the the two elements.
+     *
+     * @param startElementUID
+     */
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID) override;
+
+    /**
+      *Create a new section, a new element and place the new element between the startElement and the endElement.
+     * @remark The startElement and endElement must be connected by a segment.
+     * @param startElementUID
+     * @param endElementUID
+     */
+    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID) override;
+
+
+    TIGL_EXPORT void DeleteConnectedElement(std::string elementUID) override;
+
+    TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement() override;
+
+    TIGL_EXPORT std::vector<tigl::CTiglSectionElement*> GetCTiglElements() ;
+
+    /**
+     *
+     * @return Return all the uid of the profiles used by this fuselage
+     */
+    TIGL_EXPORT std::vector<std::string> GetAllUsedProfiles();
+
+     /**
+      * Set the profile uid of all the section elements of this fuselage.
+      * @param profileUID ; the profile UID to use
+      */
+    TIGL_EXPORT void SetAllProfiles(const std::string& profileUID);
+
 
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;
@@ -195,6 +243,7 @@ private:
     Cache<CTiglFuselageHelper, CCPACSFuselage> fuselageHelper;
 
     friend class CCPACSFuselageSegment;
+    friend class CTiglStandardizer;
 };
 
 TIGL_EXPORT TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTransform, const CTiglFuselageConnection& connection, const TopoDS_Shape& shape);

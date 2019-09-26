@@ -28,6 +28,7 @@
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSectionElement.h"
 #include "CCPACSFuselageSegment.h"
+#include "CTiglStandardizer.h"
 
 namespace tigl
 {
@@ -111,7 +112,7 @@ CCPACSFuselage& CCPACSFuselages::CreateFuselage(const std::string& fuselageUID, 
     try {
         uidManager.ResolveObject<CCPACSFuselageProfile>(profileUID);
     }
-    catch (const CTiglError& e) {
+    catch (const CTiglError&) {
         throw CTiglError("Impossible to create the fuselage with the profile uid \"" +
                          profileUID +
                          "\". This uid seems not to be present or to not reference a profile. Make sure to use a "
@@ -161,6 +162,8 @@ CCPACSFuselage& CCPACSFuselages::CreateFuselage(const std::string& fuselageUID, 
         segment.SetFromElementUID(fromElement.GetUID());
         segment.SetToElementUID(toElement.GetUID());
     }
+    // so that if we change the standard, creating the fuselage will automatically follow the new standard
+    CTiglStandardizer::StandardizeFuselage(fuselage);
     return fuselage;
 }
 

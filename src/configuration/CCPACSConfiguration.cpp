@@ -77,6 +77,7 @@ void CCPACSConfiguration::Invalidate()
     if (profiles) {
         profiles->Invalidate();
     }
+    // TODO Invalidate engines?
     aircraftFuser.reset();
     shapeCache.Clear();
 }
@@ -231,6 +232,11 @@ boost::optional<CCPACSFuselageProfiles&> CCPACSConfiguration::GetFuselageProfile
         return *profiles->GetFuselageProfiles();
     else
         return boost::none;
+}
+
+boost::optional<CCPACSProfiles>& CCPACSConfiguration::GetProfiles()
+{
+    return profiles;
 }
 
 // Returns the wing profile for a given uid.

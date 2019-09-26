@@ -18,75 +18,17 @@
 
 #include "ModificatorElementWidget.h"
 #include "ui_ModificatorElementWidget.h"
+#include "CTiglError.h"
+#include "TIGLViewerErrorDialog.h"
 
 ModificatorElementWidget::ModificatorElementWidget(QWidget* parent)
     : ModificatorWidget(parent)
     , ui(new Ui::ModificatorElementWidget)
 {
     ui->setupUi(this);
-
-    // connect change alterable
-    connect(ui->widthSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setWidth(double)));
-    connect(ui->heightSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setHeight(double)));
-    connect(ui->areaSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setArea(double)));
-
 }
 
-void ModificatorElementWidget::setWidth(double newWidth)
-{
-    bool block1 = ui->areaSpinBox->blockSignals(true);
-    bool block2 = ui->heightSpinBox->blockSignals(true);
-    bool block3 = ui->widthSpinBox->blockSignals(true);
 
-    if (fabs(internalWidth) > 0.0001) {
-        double scaleFactor = newWidth / internalWidth;
-        ui->areaSpinBox->setValue(scaleFactor * scaleFactor * internalArea);
-        ui->heightSpinBox->setValue(scaleFactor * internalHeight);
-    }
-    lastModifiedDimensionalParameter = "width";
-
-    ui->areaSpinBox->blockSignals(block1);
-    ui->heightSpinBox->blockSignals(block2);
-    ui->widthSpinBox->blockSignals(block3);
-}
-
-void ModificatorElementWidget::setHeight(double newHeight)
-{
-    bool block1 = ui->areaSpinBox->blockSignals(true);
-    bool block2 = ui->heightSpinBox->blockSignals(true);
-    bool block3 = ui->widthSpinBox->blockSignals(true);
-
-    if (fabs(internalHeight) > 0.0001) {
-        double scaleFactor = newHeight / internalHeight;
-        ui->areaSpinBox->setValue(scaleFactor * scaleFactor * internalArea);
-        ui->widthSpinBox->setValue(scaleFactor * internalWidth);
-    }
-
-    lastModifiedDimensionalParameter = "height";
-
-    ui->areaSpinBox->blockSignals(block1);
-    ui->heightSpinBox->blockSignals(block2);
-    ui->widthSpinBox->blockSignals(block3);
-}
-
-void ModificatorElementWidget::setArea(double newArea)
-{
-    bool block1 = ui->areaSpinBox->blockSignals(true);
-    bool block2 = ui->heightSpinBox->blockSignals(true);
-    bool block3 = ui->widthSpinBox->blockSignals(true);
-
-    if (fabs(internalHeight) > 0.0001) {
-        double scaleFactor = sqrt(newArea / internalArea);
-        ui->widthSpinBox->setValue(scaleFactor * internalWidth);
-        ui->heightSpinBox->setValue(scaleFactor * internalHeight);
-    }
-
-    lastModifiedDimensionalParameter = "area";
-
-    ui->areaSpinBox->blockSignals(block1);
-    ui->heightSpinBox->blockSignals(block2);
-    ui->widthSpinBox->blockSignals(block3);
-}
 
 ModificatorElementWidget::~ModificatorElementWidget()
 {
@@ -95,20 +37,21 @@ ModificatorElementWidget::~ModificatorElementWidget()
 
 
 
-void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement)
+void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement,  ProfilesDBManager* profilesDB)
 {
 
-    bool block1 = ui->areaSpinBox->blockSignals(true);
-    bool block2 = ui->heightSpinBox->blockSignals(true);
-    bool block3 = ui->widthSpinBox->blockSignals(true);
 
     element = &inElement;
+    this->profilesDB = profilesDB;
+
     ui->center->setInternal(element->GetCenter());
     ui->center->setLabel("Center");
-    ui->origin->setInternal(element->GetOrigin());
-    ui->origin->setLabel("Origin");
     ui->normal->setInternal(element->GetNormal());
     ui->normal->setLabel("Normal");
+
+    internalRotAroundN = element->GetRotationAroundNormal();
+    ui->rotAroundNSpinBox->setValue(internalRotAroundN);
+
     internalHeight = element->GetHeight();
     ui->heightSpinBox->setValue(internalHeight);
     internalWidth = element->GetWidth();
@@ -116,19 +59,24 @@ void ModificatorElementWidget::setElement(tigl::CTiglSectionElement& inElement)
     internalArea = element->GetArea();
     ui->areaSpinBox->setValue(internalArea);
 
-    lastModifiedDimensionalParameter = "";
-
-    ui->areaSpinBox->blockSignals(block1);
-    ui->heightSpinBox->blockSignals(block2);
-    ui->widthSpinBox->blockSignals(block3);
-
+    // we add the suffix for the config, so that the profile name has the same format as the ones in the DB
+    ui->profileComboBox->clear();
+    internalProfileUID = element->GetProfileUID().c_str() + profilesDB->getConfigSuffix();
+    ui->profileComboBox->addItems(profilesDB->getAllAvailableProfilesFor(element));
+    int index = ui->profileComboBox->findText(internalProfileUID);
+    ui->profileComboBox->setCurrentIndex(index);
 
 }
 
 bool ModificatorElementWidget::apply()
 {
     bool centerHasChanged = ui->center->hasChanged();
-    bool originHasChanged = ui->origin->hasChanged();
+    bool heightHasChanged = (!isApprox(internalHeight, ui->heightSpinBox->value()) );
+    bool widthHasChanged = (!isApprox(internalWidth, ui->widthSpinBox->value()));
+    bool areaHasChanged = (!isApprox(internalArea, ui->areaSpinBox->value()));
+    bool normalHasChanged = ui->normal->hasChanged();
+    bool rotAroundNHasChanged = (!isApprox(internalRotAroundN , ui->rotAroundNSpinBox->value()));
+    bool profileHasChanged = ( internalProfileUID != ui->profileComboBox->currentText() );
     bool wasModified      = false;
 
     if (centerHasChanged) {
@@ -136,28 +84,57 @@ bool ModificatorElementWidget::apply()
         element->SetCenter(ui->center->getInternalPoint());
         wasModified = true;
     }
-    if (originHasChanged) {
-        ui->origin->setInternalFromGUI();
-        element->SetOrigin(ui->origin->getInternalPoint());
-        wasModified = true;
-    }
 
-    if (lastModifiedDimensionalParameter == "width" && (!isApprox(internalWidth, ui->widthSpinBox->value()))) {
-        internalWidth = ui->widthSpinBox->value();
-        element->SetWidth(internalWidth);
-        wasModified = true;
-    }
-
-    if (lastModifiedDimensionalParameter == "height" && (!isApprox(internalHeight, ui->heightSpinBox->value()))) {
+    if (heightHasChanged ) {
         internalHeight = ui->heightSpinBox->value();
         element->SetHeight(internalHeight);
         wasModified = true;
     }
 
-    if (lastModifiedDimensionalParameter == "area" && (!isApprox(internalArea, ui->areaSpinBox->value()))) {
+    if (widthHasChanged ) {
+        internalWidth = ui->widthSpinBox->value();
+        element->SetWidth(internalWidth);
+        wasModified = true;
+    }
+
+    if (areaHasChanged) {
         internalArea = ui->areaSpinBox->value();
         element->SetArea(internalArea);
         wasModified = true;
+    }
+
+    if (normalHasChanged) {
+        ui->normal->setInternalFromGUI();
+        element->SetNormal(ui->normal->getInternalPoint());
+        wasModified = true;
+    }
+
+    if (rotAroundNHasChanged ) {
+        internalRotAroundN = ui->rotAroundNSpinBox->value();
+        element->SetRotationAroundNormal(internalRotAroundN);
+        wasModified = true;
+    }
+
+    if (profileHasChanged) {
+        internalProfileUID = ui->profileComboBox->currentText();
+        try {
+            if (!profilesDB->hasProfileConfigSuffix(internalProfileUID)) {
+                profilesDB->copyProfileFromLocalToConfig(internalProfileUID);
+            }
+            element->SetProfileUID(profilesDB->removeSuffix(internalProfileUID).toStdString());
+            wasModified = true;
+            }
+        catch (const tigl::CTiglError& err) {
+            TIGLViewerErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
+                                         .arg("Fail to set the profile")
+                                         .arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+        }
+
+
     }
 
     if (wasModified) {
@@ -169,5 +146,5 @@ bool ModificatorElementWidget::apply()
 
 void ModificatorElementWidget::reset()
 {
-    setElement(*element);
+    setElement(*element, profilesDB);
 }

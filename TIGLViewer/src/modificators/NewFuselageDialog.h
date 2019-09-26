@@ -32,7 +32,7 @@ class NewFuselageDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewFuselageDialog(QStringList profilesUID, QWidget* parent = nullptr );
+    explicit NewFuselageDialog(QStringList profileUIDs, QWidget* parent = nullptr );
     ~NewFuselageDialog();
 
     int getNbSection() const;

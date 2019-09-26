@@ -154,3 +154,11 @@ TEST(TiglCommonFunctions, LinspaceWithBreaks)
     EXPECT_NEAR(0.90, res[10], 1e-10);
     EXPECT_NEAR(1.00, res[11], 1e-10);
 }
+
+
+TEST(TiglCommonFunctions, TiglAxisToCTiglPoint )
+{
+    EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_X_AXIS) == tigl::CTiglPoint(1,0,0));
+    EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_Y_AXIS) == tigl::CTiglPoint(0,1,0));
+    EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_Z_AXIS) == tigl::CTiglPoint(0,0,1));
+}

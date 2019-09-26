@@ -21,6 +21,8 @@
 
 #include "tigl_internal.h"
 #include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
+#include "CCPACSPositionings.h"
 
 #include <string>
 #include <boost/optional.hpp>
@@ -38,24 +40,38 @@ class CTiglSectionElement
 {
 
 public:
+    // Returns true iff the element was set with a CCPACSSectionElement
+    TIGL_EXPORT virtual bool IsValid() const = 0;
+
     // Returns the section UID
-    TIGL_EXPORT virtual const std::string& GetSectionUID() const = 0;
+    TIGL_EXPORT virtual std::string GetSectionUID() const = 0;
 
     // Returns the section element UID
-    TIGL_EXPORT virtual const std::string& GetSectionElementUID() const = 0;
+    TIGL_EXPORT virtual std::string GetSectionElementUID() const = 0;
 
     // Returns the profile UID
-    TIGL_EXPORT virtual const std::string& GetProfileUID() const = 0;
+    TIGL_EXPORT virtual std::string GetProfileUID() const = 0;
+
+
+    /**
+     * Set the profile UID used by this element.
+     * @remark Some parameters of this element can change as the center or the width. Especially , if the profile is not
+     * defined in the same way as the old one (Take a look a the creator standard to define profile).
+     * @param newProfileUID
+     */
+    TIGL_EXPORT virtual  void SetProfileUID(const std::string& newProfileUID) = 0;
 
     // Returns the positioning transformation
     // If there are no positioning will return a trivial transformation
     TIGL_EXPORT virtual CTiglTransformation GetPositioningTransformation() const = 0;
 
+    TIGL_EXPORT virtual CCPACSPositionings& GetPositionings() = 0;
+
     // Returns the section transformation
     TIGL_EXPORT virtual CTiglTransformation GetSectionTransformation() const = 0;
 
     // Returns the element transformation
-    TIGL_EXPORT virtual CTiglTransformation GetSectionElementTransformation() const = 0;
+    TIGL_EXPORT virtual CTiglTransformation GetElementTransformation() const = 0;
 
     // Returns the fuselage or wing transformation
     TIGL_EXPORT virtual CTiglTransformation GetParentTransformation() const = 0;
@@ -93,10 +109,12 @@ public:
     // Return the width of the wire
     TIGL_EXPORT virtual double GetWidth(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
-    // Set the element transformation such that the total transformation is equal to the given transformation
-    // TODO set element and section transfomation simultaneously to cover all the case !) even the shearing case
+    // Set the element and section transformation such that the total transformation is equal to the given transformation
+    // If useSimpleDecomposition is set to true, this operation is done using a simple polar decomposition that do not
+    // guaranty that resulting transformation will be equal to the input one.
     TIGL_EXPORT void SetTotalTransformation(const CTiglTransformation& newTotalTransformation,
-                                            TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+                                            TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM, 
+                                            bool useSimpleDecomposition = false);
 
     // Scale the wire uniformly in world or fuselage/wing coordinates.
     // Remark that the effect is not always the same as to add a scaling transformation to the element transformation.
@@ -125,31 +143,117 @@ public:
     TIGL_EXPORT virtual void SetWidth(double newWidth, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
     // Set the area of the wire to the wanted value 
-    TIGL_EXPORT virtual void SetArea(double newArea, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM); 
+    TIGL_EXPORT virtual void SetArea(double newArea, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
+
+    /**
+     *
+     * The normal angle is defined as the angle that bring the unit vector z of the profile form
+     * its conventional direction to its current direction. The angle is always counter-clockwise around the normal
+     * direction and the normal is taken at the center of the section. 
+     * The conventional direction depends of of the profile type.
+     * If the profile type is fuselage, the standard direction is the the vector that line on the profile plane
+     * and end on the intersection of the line l, define by (x,0,1). If there is no intersection with the line l,
+     * we set the end of the vector by the intersection of the line l2, defined by (1,0,z)
+     * If the profile type is wing, the standard direction is the the vector that line on the profile plane
+     * and end on the intersection of the line l, define by (0,y,1). If there is no intersection with the line l,
+     * we set the end of the vector by the intersection of the line l2, defined by (0,1,z)
+     *
+     * @param referenceCS
+     * @return
+     */
+    TIGL_EXPORT double GetRotationAroundNormal(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
+
+    /**
+     * Set the normal of the profile.
+     * @param referenceCS
+     * @return
+     */
+    TIGL_EXPORT void SetNormal(CTiglPoint newNormal, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
+
+    /**
+     * Set the rotation around the normal.
+     * @remark The normal is always computed on the center of the section.
+     * @see GetRotationAroundNormal to have a more precise definition of the angle.
+     * @param angle
+     * @param referenceCS
+     * @return
+     */
+    TIGL_EXPORT void SetRotationAroundNormal(double angle, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+
+    /**
+     * Set the underlying CPACSTransformation of the positioning (P), section (S)  and element (E)
+     * such that the multiplication of the three transformations give the input transformation!
+     * Remark, the strength of this method is that we are sure that the decomposition in CCPACSTransformations are exact!!
+     * We use the "DecomposeTRSRS" of the CTiglTransformation class and we set a part of the decomposition in the
+     * positioning, another part in the section CCPACSTransformation and another part in element CCPACSTransformation,
+     * thus the limitation of decomposing the matrix in translation, rotation and scaling is hacked.
+     * Remark, to apply this function we need to be sure that a section exist for each element,
+     * for the moment we assume it. But, in a near future, we can force this by creating a new section when is needed.
+     * @param newTransformation
+     */
+    void SetPSETransformations(const CTiglTransformation &newTransformation);
+
+     /**
+      * Same principle as SetPSETransformaions but the a simple polar decomposition is used instead of the TRSRS decomposition.
+      * The pro is that the value stored in the CPACSFile is more human readable.
+      * The con is that some times the transformation can not be decomposed equally and some information are loosed.
+      *
+      * @param newTransformation
+      * @param check, if true a warning is logged if the transformation can not be properly decomposed
+      */
+    void SetPSETransformationsUseSimpleDecomposition(const CTiglTransformation &newTransformation, bool check = true);
 
 
 protected:
 
-    // Set the underlying CPACSTransformation (fuselage or wing ) with the given CTiglTransformation.
-    // Calling this function will change the geometry of the aircraft.
-    virtual void SetElementTransformation(const CTiglTransformation& newTransformation) = 0;
+    // Retrieve the stored "CCPACSTransformation" of the element transformation;
+    virtual CCPACSTransformation& GetElementCCPACSTransformation() = 0;
 
+    // Retrieve the stored "CCPACSTransformation" of the section transformation;
+    virtual CCPACSTransformation& GetSectionCCPACSTransformation() = 0;
 
-    // Set the underlying section CPACSTransformation with the given CTiglTransformation.
-    // Calling this function will change the geometry of the aircraft.
-    virtual void SetSectionTransformation(const CTiglTransformation& newTransformation) = 0;
+    // Invalidate the fuselage or the wing
+    virtual void InvalidateParent() = 0;
 
+    /**
+     * If element or section transformation contains near zero scaling,
+     * we set this scaling to 1.
+     * Used to set the width or set the height when there is a zero scaling.
+     */
+    void SetElementAndSectionScalingToNoneZero();
 
-    // Return the element transformation needed to move a point A to the position B in referenceCS.
-    CTiglTransformation
-    GetElementTrasformationToTranslatePoint(const CTiglPoint& newP, const CTiglPoint& oldP,
-                                            TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    /**
+     * Get the rotation that move the profile to the XZ plane and the unit vector Z of the profile to (0,0,1).
+     *
+     * @param referenceCS
+     * @return a CTiglTransformation that hold the rotation
+     */
+    TIGL_EXPORT CTiglTransformation GetRotationToXZPlane(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
-    // Return the element transformation that will scale uniformly the the wire in the world or fuselage coordinate system.
-    // Remark that the effect is not always the same as to add a scaling to the element transformation.
-    CTiglTransformation
-    GetElementTransformationForScaling(double scaleFactor, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    /**
+     * Return conventional direction for the unit vector Z of the profile.
+     * The conventional direction depends of of the profile type.
+     * If the profile type is fuselage, the standard direction is the the vector that line on the profile plane
+     * and end on the intersection of the line l, define by (x,0,1). If there is no intersection with the line l,
+     * we set the end of the vector by the intersection of the line l2, defined by (1,0,z)
+     * If the profile type is wing, the standard direction is the the vector that line on the profile plane
+     * and end on the intersection of the line l, define by (0,y,1). If there is no intersection with the line l,
+     * we set the end of the vector by the intersection of the line l2, defined by (0,1,z)
+     *
+     * @param referenceCS
+     * @return
+     */
+    virtual CTiglPoint GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const = 0;
 
+    /**
+     * Return the direction of the profile z unit vector in the referenceCS coordinate;
+     * @param referenceCS
+     * @return
+     */
+    CTiglPoint GetCurrentUnitZDirectionOfProfile(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
 };
 }

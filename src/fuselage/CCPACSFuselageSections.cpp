@@ -22,6 +22,7 @@
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CTiglError.h"
+#include "CTiglUIDManager.h"
 
 namespace tigl
 {
@@ -54,5 +55,25 @@ CCPACSFuselageSection& CCPACSFuselageSections::GetSection(const std::string& sec
     throw CTiglError("Invalid uid in CCPACSWingSections::GetSection", TIGL_UID_ERROR);
 }
 
+CCPACSFuselageSection&  CCPACSFuselageSections::CreateSection(const std::string& sectionUID, const std::string& profileUID)
+{
+    CTiglUIDManager& uidManager = GetUIDManager();
+
+    CCPACSFuselageSection& newSection = AddSection();
+    std::string newSectionUID = uidManager.MakeUIDUnique( sectionUID );
+    newSection.SetUID(newSectionUID);
+    newSection.SetName(newSectionUID);
+    newSection.GetTransformation().Init(uidManager.MakeUIDUnique(newSectionUID + "Tr"));
+
+    tigl::CCPACSFuselageSectionElement& newElement = newSection.GetElements().AddElement();
+    std::string newElementUID = uidManager.MakeUIDUnique(newSectionUID + "Elem1");
+    newElement.SetUID(newElementUID);
+    newElement.SetName(newElementUID);
+    newElement.GetTransformation().Init(uidManager.MakeUIDUnique(newElementUID + "Tr"));
+    newElement.SetProfileUID(profileUID);
+
+    return newSection;
+
+}
 
 } // end namespace tigl

@@ -299,4 +299,8 @@ size_t IndexFromUid(const std::vector<tigl::unique_ptr<T> >& vectorOfPointers, c
     return found - vectorOfPointers.begin();
 }
 
+
+TIGL_EXPORT tigl::CTiglPoint TiglAxisToCTiglPoint(TiglAxis axis);
+
+
 #endif // TIGLCOMMONFUNCTIONS_H

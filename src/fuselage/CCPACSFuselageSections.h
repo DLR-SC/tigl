@@ -46,6 +46,14 @@ public:
     
     // Returns the section for a given uid
     TIGL_EXPORT CCPACSFuselageSection& GetSection(const std::string& sectionUID);
+
+    /**
+     * Create a new section and a new element with the given profile uid.
+     * All uids are derived from the section uid.
+     * @remark This function differs form the the "AddSection" function by the fact that this function take care of
+     * creating an element and try to set all possible  parameters.
+     */
+    TIGL_EXPORT CCPACSFuselageSection& CreateSection(const std::string& sectionUID, const std::string& profileUID);
 };
 
 } // end namespace tigl
