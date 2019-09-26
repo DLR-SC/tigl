@@ -248,7 +248,11 @@ if(WIN32)
   set(tv_icon_rc src/TIGLViewer.rc)
 endif(WIN32)
 
-if(APPLE)
+if (APPLE)
+  OPTION(BUNDLE_APPLE "Create a macOS app bundle" ON)
+endif(APPLE)
+
+if(BUNDLE_APPLE)
    set(TYPE MACOSX_BUNDLE)
 
    set( MACOSX_BUNDLE_SHORT_VERSION_STRING ${TIGL_VERSION} )
@@ -257,7 +261,7 @@ if(APPLE)
 
    # add program icon
    set(MACOSX_BUNDLE_ICON_FILE ${PROGNAME}.icns )
-endif()
+endif(BUNDLE_APPLE)
 
 add_executable(${PROGNAME} ${TYPE}
   ${tv_src} 
@@ -288,9 +292,12 @@ target_link_libraries(${PROGNAME} PRIVATE
 # Now the data stuff below (templates files)
 #--------------------------------------------------------------------------------
 
-if (APPLE)
+if (BUNDLE_APPLE)
   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION ${PROGNAME}.app/Contents/Resources COMPONENT viewer)
   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/profiles DESTINATION ${PROGNAME}.app/Contents/Resources COMPONENT viewer)
+elseif(APPLE AND NOT BUNDLE_APPLE)
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION Resources COMPONENT viewer)
+  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/profiles DESTINATION Resources COMPONENT viewer)
 else()
   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/templates DESTINATION share/tigl3 COMPONENT viewer)
   install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/profiles DESTINATION share/tigl3 COMPONENT viewer)
@@ -311,7 +318,7 @@ INSTALL(TARGETS ${PROGNAME}
 
 set(APPS "bin/${PROGNAME}")
 set(DEPENDS_PATH "lib")
-IF(APPLE)
+IF(BUNDLE_APPLE)
   set(APPS "${PROGNAME}.app")
   set(DEPENDS_PATH "${PROGNAME}.app/Contents/MacOS/")
   
@@ -319,7 +326,7 @@ IF(APPLE)
   INSTALL(FILES ${TKOpenGl_OCCLIB} DESTINATION ${PROGNAME}.app/Contents/MacOS/ COMPONENT viewer)
   # copy icon
   INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/gfx/${PROGNAME}.icns DESTINATION ${PROGNAME}.app/Contents/Resources/ COMPONENT viewer)
-ENDIF(APPLE)
+ENDIF(BUNDLE_APPLE)
 IF(WIN32)
   set(APPS "bin/${PROGNAME}.exe")
   set(DEPENDS_PATH "bin")
@@ -348,7 +355,7 @@ get_dll_path(GLOG_DLL_PATH glog::glog)
 # set directories to look for dependencies
 set(DIRS ${OCC_DLL_PATH} ${TIXI_DLL_PATH} ${GLOG_DLL_PATH})
 
-if (WIN32 OR APPLE)
+if (WIN32 OR BUNDLE_APPLE)
   install(FILES $<TARGET_FILE:tixi3> DESTINATION ${DEPENDS_PATH} COMPONENT viewer)
 
   if (TARGET glog::glog)
@@ -382,11 +389,13 @@ endif()
 # install shader files from opencascade
 if (OpenCASCADE_SHADER_DIRECTORY)
    file(GLOB SHADER_FILES PATH "${OpenCASCADE_SHADER_DIRECTORY}/*")
-   if (APPLE)
+   if (BUNDLE_APPLE)
      install(FILES ${SHADER_FILES} DESTINATION ${PROGNAME}.app/Contents/Resources/ COMPONENT viewer)
+   elseif(APPLE AND NOT BUNDLE_APPLE)
+     install(FILES ${SHADER_FILES} DESTINATION Resources/ COMPONENT viewer)
    else()
      install(FILES ${SHADER_FILES} DESTINATION share/tigl3/shaders COMPONENT viewer)
-   endif(APPLE)
+   endif(BUNDLE_APPLE)
 endif()
 
 else (QT4_FOUND OR Qt5Widgets_FOUND)
