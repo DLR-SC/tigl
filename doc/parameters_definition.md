@@ -1,9 +1,8 @@
-Parameters Definition
-=====================
+@page parameters_def CPACSCreator high level parameters 
 
 Tigl framework use multiple high level parameter to simplify the edition of CPACS files. In this section, we will present in details the definition used by our functions.   
 
-@section sec_wing_param Wing Parameters Definition 
+@section sec_wing_param Wing Parameters Definition
 
 @subsection sec_sweep Sweep angle 
 Let **l** be the vector from the root leading point to the tip leading point. Let **l'** be the projection of **l** on the plane formed by the major axis and the deep axis. 
@@ -109,5 +108,6 @@ If the wing airfoil is described as a set of points, the leading point is the po
 If the wing airfoil is described as function, the leading edge point definition is not so clear for the moment. 
 
 
+@section sec_fuselage_param Fuselage Parameters Definition
 
 
