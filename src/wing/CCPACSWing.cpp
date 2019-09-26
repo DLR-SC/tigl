@@ -538,7 +538,7 @@ double CCPACSWing::GetWingSpan()
     Bnd_Box boundingBox;
     Standard_Real aDeflection = 0.0001;
     std::vector<CTiglSectionElement* >  cElements = GetCTiglElements();
-    for ( int i = 0; i < cElements.size(); i++ ) {
+    for ( size_t i = 0; i < cElements.size(); i++ ) {
         TopoDS_Wire tipWire = cElements.at(i)->GetWire(GLOBAL_COORDINATE_SYSTEM);
         BRepMesh_IncrementalMesh Inc(tipWire, aDeflection); // tessellation for accuracy
         BRepBndLib::Add(tipWire, boundingBox);
@@ -578,7 +578,7 @@ double CCPACSWing::GetWingHalfSpan()
     Standard_Real aDeflection = 0.0001;
 
     std::vector<CTiglSectionElement* >  cElements = GetCTiglElements();
-    for ( int i = 0; i < cElements.size(); i++ ) {
+    for ( size_t i = 0; i < cElements.size(); i++ ) {
       TopoDS_Wire wire = cElements.at(i)->GetWire(GLOBAL_COORDINATE_SYSTEM);
       BRepMesh_IncrementalMesh Inc(wire, aDeflection); // tessellation for accuracy
       BRepBndLib::Add(wire, boundingBox);
@@ -1013,7 +1013,7 @@ void CCPACSWing::SetSweep(double newAngle, double chordPercentage)
 
     CTiglPoint oldOrigin, oldChordPoint, newOrigin, newChordPoint, originToChordPoint;
     CTiglWingSectionElement* cElement;
-    for (int e = 1; e < orderedUIDs.size(); e++) { // start 1 -> the root section should not change
+    for (size_t e = 1; e < orderedUIDs.size(); e++) { // start 1 -> the root section should not change
         cElement                = wingHelper->GetCTiglElementOfWing(orderedUIDs.at(e));
         oldChordPoint = cElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
         oldOrigin = cElement->GetOrigin(GLOBAL_COORDINATE_SYSTEM);
@@ -1077,7 +1077,7 @@ void CCPACSWing::SetDihedral(double newDihedral, double chordPercentage)
 
     CTiglPoint oldOrigin, oldChordPoint, newOrigin, newChordPoint, originToChordPoint;
     CTiglWingSectionElement* cElement;
-    for (int e = 1; e < orderedUIDs.size(); e++) { // start 1 -> the root section should not change
+    for (size_t e = 1; e < orderedUIDs.size(); e++) { // start 1 -> the root section should not change
         cElement           = wingHelper->GetCTiglElementOfWing(orderedUIDs.at(e));
         oldChordPoint      = cElement->GetChordPoint(chordPercentage, GLOBAL_COORDINATE_SYSTEM);
         oldOrigin          = cElement->GetOrigin(GLOBAL_COORDINATE_SYSTEM);
@@ -1104,7 +1104,7 @@ void CCPACSWing::Scale(double scaleF)
 
     std::vector<std::string> orderedUIDs = m_segments.GetElementUIDsInOrder();
 
-    for (int i = 0; i < orderedUIDs.size(); i++) {
+    for (size_t i = 0; i < orderedUIDs.size(); i++) {
         CTiglWingSectionElement* cElement = wingHelper->GetCTiglElementOfWing(orderedUIDs.at(i));
         CTiglTransformation global        = cElement->GetTotalTransformation();
         CTiglTransformation newGlobal;
@@ -1182,7 +1182,7 @@ void CCPACSWing::SetAreaKeepSpan(double newArea)
 
 
 
-    for ( int i = 0 ; i < uidOrders.size(); i++ ) {
+    for ( size_t i = 0 ; i < uidOrders.size(); i++ ) {
         CTiglWingSectionElement* element = wingHelper->GetCTiglElementOfWing( uidOrders.at(i) );
         // we store the leading edge to be able to reset it after scaling
         CTiglPoint lEPosition = element->GetChordPoint(0);
@@ -1435,7 +1435,7 @@ std::vector<CTiglSectionElement* > CCPACSWing::GetCTiglElements()
 {
     std::vector<std::string> elements =  wingHelper->GetElementUIDsInOrder();
     std::vector<tigl::CTiglSectionElement*> cElements;
-    for (int i = 0; i < elements.size(); i++ ) {
+    for (size_t i = 0; i < elements.size(); i++ ) {
         cElements.push_back(wingHelper->GetCTiglElementOfWing(elements[i]));
     }
     return cElements;
@@ -1447,7 +1447,7 @@ std::vector<std::string> CCPACSWing::GetAllUsedAirfoils()
     std::vector<std::string> airfoils;
     std::vector<CTiglSectionElement*> cElements = GetCTiglElements();
     std::string uid;
-    for (int i = 0 ; i < cElements.size(); i++) {
+    for (size_t i = 0 ; i < cElements.size(); i++) {
         uid = cElements.at(i)->GetProfileUID();
         if ( ! ListFunctions::Contains(airfoils, uid) ) {
             airfoils.push_back(uid);
@@ -1461,7 +1461,7 @@ std::vector<std::string> CCPACSWing::GetAllUsedAirfoils()
 void CCPACSWing::SetAllAirfoils(const std::string &profileUID)
 {
     std::vector<CTiglSectionElement*> cElements = GetCTiglElements();
-    for (int i = 0 ; i < cElements.size(); i++) {
+    for (size_t i = 0 ; i < cElements.size(); i++) {
         cElements.at(i)->SetProfileUID(profileUID);
     }
 }

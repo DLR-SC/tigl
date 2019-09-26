@@ -120,7 +120,7 @@ CCPACSWing& CCPACSWings::CreateWing(const std::string& wingUID, int numberOfSect
     try {
         uidManager.ResolveObject<CCPACSWingProfile>(airfoilUID);
     }
-    catch (const CTiglError& e) {
+    catch (const CTiglError&) {
         throw CTiglError("Impossible to create the wing with the profile uid \"" +
                           airfoilUID +
                          "\". This uid seems not to be present or to not reference a profile. Make sure to use a "
@@ -160,7 +160,7 @@ CCPACSWing& CCPACSWings::CreateWing(const std::string& wingUID, int numberOfSect
     }
 
     // Create segment
-    for (int i = 1; i < wing.GetSections().GetSectionCount(); i++) {
+    for (size_t i = 1; i < wing.GetSections().GetSectionCount(); i++) {
         CCPACSWingSectionElement& fromElement = wing.GetSection(i).GetSectionElement(1);
         CCPACSWingSectionElement& toElement   = wing.GetSection(i + 1).GetSectionElement(1);
         CCPACSWingSegment& segment            = wing.GetSegments().AddSegment();

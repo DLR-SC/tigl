@@ -31,10 +31,10 @@ tigl::CTiglWingHelper::CTiglWingHelper()
     wing = nullptr;
 }
 
-tigl::CTiglWingHelper::CTiglWingHelper(tigl::CCPACSWing* associatedFuselage)
+tigl::CTiglWingHelper::CTiglWingHelper(tigl::CCPACSWing* associatedWing)
     : tipUidCache(*this, &tigl::CTiglWingHelper::SetTipUid)
 {
-    SetWing(associatedFuselage);
+    SetWing(associatedWing);
 }
 
 void tigl::CTiglWingHelper::SetWing(CCPACSWing* associatedWing)
@@ -97,7 +97,7 @@ void tigl::CTiglWingHelper::SetTipUid(std::string& cache) const
     TiglAxis majorDir = GetMajorDirection();
     double maxD       = -1;
 
-    for (int i = 0; i < elementUIDs.size(); i++) {
+    for (size_t i = 0; i < elementUIDs.size(); i++) {
 
         delta = cTiglElementsMap.at(elementUIDs[i])->GetCenter() - rootCenter;
 
@@ -249,12 +249,10 @@ std::string tigl::CTiglWingHelper::GetRootUID() const
 
 tigl::CTiglWingSectionElement* tigl::CTiglWingHelper::GetCTiglElementOfWing(const std::string& elementUID) const
 {
-    CTiglWingSectionElement* cElement = nullptr;
-
     try {
         return cTiglElementsMap.at(elementUID);
     }
-    catch (const std::out_of_range& e) {
+    catch (const std::out_of_range&) {
         LOG(ERROR) << "CTiglWingSectionElement::GetCTiglElementOfWing: The given element UID:  " + elementUID +
                           " seems not to be present in this wing.";
         return nullptr;

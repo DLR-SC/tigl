@@ -59,7 +59,8 @@ public:
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
     // Getter for the CTiglSectionElement
-    TIGL_EXPORT CTiglWingSectionElement* GetCTiglSectionElement() { return &(cTiglElement); };
+    TIGL_EXPORT CTiglWingSectionElement* GetCTiglSectionElement() { return &(cTiglElement); }
+    TIGL_EXPORT CTiglWingSectionElement const* GetCTiglSectionElement() const { return &(cTiglElement); }
 
 private:
 

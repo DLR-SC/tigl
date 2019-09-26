@@ -172,7 +172,6 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CTiglTransformation parentTransformation;
 
         // if fact we need the wing or fuselage parent to be able to invalidate the positionigs.
-        tigl::CCPACSPositionings* positionings;
         std::string bodyUID = item->getParent()->getParent()->getUid();
         tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
         if (typePtr.type == &typeid(tigl::CCPACSWing)) {
@@ -269,7 +268,7 @@ void ModificatorManager::unHighlight()
 void ModificatorManager::highlight(std::vector<tigl::CTiglSectionElement*> elements)
 {
     try {
-        for (int i = 0; i < elements.size(); i++) {
+        for (size_t i = 0; i < elements.size(); i++) {
             Handle(AIS_InteractiveObject) shape = scene->displayShapeHLMode(elements[i]->GetWire());
             highligthteds.push_back(shape);
         }
