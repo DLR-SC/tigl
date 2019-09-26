@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required (VERSION 3.4.0)
 
 # Set a default build type if none was specified
 if(NOT DEFINED CMAKE_BUILD_TYPE)
