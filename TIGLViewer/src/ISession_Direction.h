@@ -44,16 +44,16 @@ public:
     ISession_Direction (const gp_Pnt2d& aPnt2d,const gp_Dir2d& aDir2d,Standard_Real aLength=1);
     ISession_Direction (const gp_Pnt2d& aPnt2d,const gp_Vec2d& aVec2d);
 
-    ~ISession_Direction() OVERRIDE;
+    ~ISession_Direction() override;
     DEFINE_STANDARD_RTTIEXT(ISession_Direction,AIS_InteractiveObject)
 
 private:
     void Compute         (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
                           const Handle(Prs3d_Presentation)& aPresentation,
-                          const Standard_Integer aMode) OVERRIDE;
+                          const Standard_Integer aMode) override;
     void Compute         (const Handle(Prs3d_Projector)& aProjector,
-                          const Handle(Prs3d_Presentation)& aPresentation) OVERRIDE;
-    void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) OVERRIDE;
+                          const Handle(Prs3d_Presentation)& aPresentation) override;
+    void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) override;
 
     gp_Pnt myPnt;
     gp_Dir myDir;

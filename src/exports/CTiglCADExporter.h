@@ -178,14 +178,15 @@ typedef CSharedPtr<CTiglCADExporter> PTiglCADExporter;
 class ICADExporterBuilder
 {
 public:
-   virtual PTiglCADExporter create(const ExporterOptions& options = DefaultExporterOption()) const = 0;
+    virtual PTiglCADExporter create(const ExporterOptions& options = DefaultExporterOption()) const = 0;
+    virtual ~ICADExporterBuilder(){}
 };
 
 template <class T>
 class CCADExporterBuilder : public ICADExporterBuilder
 {
 public:
-   PTiglCADExporter create(const ExporterOptions& options = DefaultExporterOption()) const OVERRIDE
+   PTiglCADExporter create(const ExporterOptions& options = DefaultExporterOption()) const override
    {
        return PTiglCADExporter(new T(options));
    }

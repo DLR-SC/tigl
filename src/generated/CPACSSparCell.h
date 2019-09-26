@@ -111,23 +111,14 @@ namespace generated
         double                    m_rotation;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSparCell(const CPACSSparCell&) = delete;
         CPACSSparCell& operator=(const CPACSSparCell&) = delete;
 
         CPACSSparCell(CPACSSparCell&&) = delete;
         CPACSSparCell& operator=(CPACSSparCell&&) = delete;
-#else
-        CPACSSparCell(const CPACSSparCell&);
-        CPACSSparCell& operator=(const CPACSSparCell&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSparCell = generated::CPACSSparCell;
-#else
-typedef generated::CPACSSparCell CCPACSSparCell;
-#endif
 } // namespace tigl

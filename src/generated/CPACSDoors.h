@@ -51,8 +51,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSDoorCutOut> >& GetDoors() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSDoorCutOut> >& GetDoors();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDoorCutOut>>& GetDoors() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDoorCutOut>>& GetDoors();
 
         TIGL_EXPORT virtual CPACSDoorCutOut& AddDoor();
         TIGL_EXPORT virtual void RemoveDoor(CPACSDoorCutOut& ref);
@@ -60,28 +60,19 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSDoorCutOut> > m_doors;
+        std::vector<std::unique_ptr<CPACSDoorCutOut>> m_doors;
 
     private:
-#ifdef HAVE_CPP11
         CPACSDoors(const CPACSDoors&) = delete;
         CPACSDoors& operator=(const CPACSDoors&) = delete;
 
         CPACSDoors(CPACSDoors&&) = delete;
         CPACSDoors& operator=(CPACSDoors&&) = delete;
-#else
-        CPACSDoors(const CPACSDoors&);
-        CPACSDoors& operator=(const CPACSDoors&);
-#endif
     };
 } // namespace generated
 
 // CPACSDoors is customized, use type CCPACSDoors directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSDoorCutOut = generated::CPACSDoorCutOut;
-#else
-typedef generated::CPACSDoorCutOut CCPACSDoorCutOut;
-#endif
 } // namespace tigl

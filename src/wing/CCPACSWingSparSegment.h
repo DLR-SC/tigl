@@ -79,13 +79,13 @@ public:
     TIGL_EXPORT TopoDS_Shape GetSparCapsGeometry(SparCapSide side, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // ---------- INTERFACE OF CTiglAbstractGeometricComponent ------------- //
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const override;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE;
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE;
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
 private:
     struct AuxiliaryGeomCache
@@ -119,7 +119,7 @@ private:
 
     gp_Vec GetUpVector(const std::string& positionUID, gp_Pnt midplanePnt) const;
 
-    PNamedShape BuildLoft() const OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
 private:
     CCPACSWingSparSegment(const CCPACSWingSparSegment&);

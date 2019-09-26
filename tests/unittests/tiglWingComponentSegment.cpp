@@ -57,8 +57,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -68,7 +68,7 @@ protected:
 class WingComponentSegment2 : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/CPACS_30_D250_10.xml";
         ReturnCode tixiRet;
@@ -83,7 +83,7 @@ protected:
         ASSERT_EQ(TIGL_SUCCESS, tiglRet);
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
         ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
@@ -99,7 +99,7 @@ protected:
 class WingComponentSegment3 : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/D150_v30.xml";
         ReturnCode tixiRet;
@@ -114,7 +114,7 @@ protected:
         ASSERT_EQ(TIGL_SUCCESS, tiglRet);
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
         ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
@@ -136,7 +136,7 @@ TiglCPACSConfigurationHandle WingComponentSegment::tiglHandle = 0;
 class WingComponentSegmentSimple : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
@@ -152,7 +152,7 @@ protected:
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
@@ -458,7 +458,7 @@ TEST_F(WingComponentSegmentSimple, GetSegmentEtaXsi)
     tigl::CCPACSWingComponentSegment& csegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
 
     std::string segmentUID;
-    double sEta, sXsi;
+    double sEta= -1., sXsi= -1.;
     ASSERT_NO_THROW(csegment.GetSegmentEtaXsi(0., 0., segmentUID, sEta, sXsi));
 
     EXPECT_NEAR(0., sEta, 1e-10);

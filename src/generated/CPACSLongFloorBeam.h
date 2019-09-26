@@ -60,8 +60,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSLongFloorBeamPosition> >& GetLongFloorBeamPositions() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSLongFloorBeamPosition> >& GetLongFloorBeamPositions();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSLongFloorBeamPosition>>& GetLongFloorBeamPositions() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSLongFloorBeamPosition>>& GetLongFloorBeamPositions();
 
         TIGL_EXPORT virtual CCPACSLongFloorBeamPosition& AddLongFloorBeamPosition();
         TIGL_EXPORT virtual void RemoveLongFloorBeamPosition(CCPACSLongFloorBeamPosition& ref);
@@ -71,20 +71,15 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                                           m_uID;
-        std::vector<unique_ptr<CCPACSLongFloorBeamPosition> > m_longFloorBeamPositions;
+        std::string                                               m_uID;
+        std::vector<std::unique_ptr<CCPACSLongFloorBeamPosition>> m_longFloorBeamPositions;
 
     private:
-#ifdef HAVE_CPP11
         CPACSLongFloorBeam(const CPACSLongFloorBeam&) = delete;
         CPACSLongFloorBeam& operator=(const CPACSLongFloorBeam&) = delete;
 
         CPACSLongFloorBeam(CPACSLongFloorBeam&&) = delete;
         CPACSLongFloorBeam& operator=(CPACSLongFloorBeam&&) = delete;
-#else
-        CPACSLongFloorBeam(const CPACSLongFloorBeam&);
-        CPACSLongFloorBeam& operator=(const CPACSLongFloorBeam&);
-#endif
     };
 } // namespace generated
 

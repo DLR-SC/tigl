@@ -56,8 +56,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -97,7 +97,6 @@ TEST_F(TiglFuselage, tiglFuselageGetIndex_nullPtr)
 
 TEST_F(TiglFuselage, tiglFuselageGetIndex_indexNullPtr)
 {
-    int fuselageIndex = 0;
     ASSERT_TRUE(tiglFuselageGetIndex(tiglHandle, "D150_VAMP_FL1" , NULL) == TIGL_NULL_POINTER);
 }
 

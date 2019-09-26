@@ -88,16 +88,11 @@ namespace generated
         boost::optional<CCPACSWingCells> m_cells;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingShell(const CPACSWingShell&) = delete;
         CPACSWingShell& operator=(const CPACSWingShell&) = delete;
 
         CPACSWingShell(CPACSWingShell&&) = delete;
         CPACSWingShell& operator=(CPACSWingShell&&) = delete;
-#else
-        CPACSWingShell(const CPACSWingShell&);
-        CPACSWingShell& operator=(const CPACSWingShell&);
-#endif
     };
 } // namespace generated
 

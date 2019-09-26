@@ -38,18 +38,19 @@ read_dom () {
 }
 
 function printUsage {
-    echo "usage: get_tigl.sh <distro> <arch> <version>(default=2)"
+    echo "usage: get_tigl.sh <distro> <arch> <version>(default=3)"
     echo
     echo "Valid distributions:"
-    echo "    SLE_12_SP2     Suse Linux Enterprise 12 SP2"
-    echo "    SLE_12_SP3     Suse Linux Enterprise 12 SP3"
-    echo "    openSUSE_13.1  openSUSE 13.1"
-    echo "    ubuntu_14.04   Ubuntu 14.04"
-    echo "    ubuntu_16.04   Ubuntu 16.04"
-    echo "    fedora_20      Fedora 20"
-    echo "    rhel_6         Red Hat Enterprise Linux 6"
-    echo "    rhel_7         Red Hat Enterprise Linux 7"
-    echo "    centos_6       CentOS 6"
+    echo "    SLE_12_SP2          Suse Linux Enterprise 12 SP2"
+    echo "    SLE_12_SP3          Suse Linux Enterprise 12 SP3"
+    echo "    openSUSE_13.1       openSUSE 13.1"
+    echo "    openSUSE_Leap_42.3  openSUSE Leap 42.3"
+    echo "    ubuntu_18.04        Ubuntu 18.04"
+    echo "    ubuntu_16.04        Ubuntu 16.04"
+    echo "    ubuntu_14.04        Ubuntu 14.04"
+    echo "    fedora_rawhide      Fedora Rawhide"
+    echo "    fedora_20           Fedora 30"
+    echo "    rhel_7              Red Hat Enterprise Linux 7"
     echo
     echo "Valid architectures:"
     echo "    x86_64        64 Bit"
@@ -65,13 +66,13 @@ function checkArguments {
     # check number of args
     if [ $# -lt 2 ] || [ $# -gt 3 ]
     then
-	printUsage
+    printUsage
         exit 1
     fi
 
     if [ $# -eq 2 ]
     then
-	tmp_ver="2"
+        tmp_ver="3"
     else
         tmp_ver=$3
     fi
@@ -81,35 +82,35 @@ function checkArguments {
     tmp_arch=$2
     #check arch
     if [[ $tmp_arch != i386 && $tmp_arch != x86_64 ]]; then
-	echo "Error: Unsupported architecture:" $tmp_arch
-	echo
-	printUsage
-	exit 2
+    echo "Error: Unsupported architecture:" $tmp_arch
+    echo
+    printUsage
+    exit 2
     fi
 
     LIBDIR=lib
 
     #check dist
     if [[ $tmp_dist == SLE_12_SP3 ]]; then
-    	DIST=SLE_12_SP3
-    	PACK_TYPE=rpm
-    	if [[  $tmp_arch == i386 ]]; then
-    	    echo "Error: x86 architecture not available on SLED 12"
-    	    exit 1
+        DIST=SLE_12_SP3
+        PACK_TYPE=rpm
+        if [[  $tmp_arch == i386 ]]; then
+            echo "Error: x86 architecture not available on SLED 12"
+            exit 1
             else
                 PACK_ARCH=x86_64
                 LIBDIR=lib64
-    	fi
+        fi
     elif [[ $tmp_dist == SLE_12_SP2 ]]; then
-    	DIST=SLE_12_SP2
-    	PACK_TYPE=rpm
-    	if [[  $tmp_arch == i386 ]]; then
-    	    echo "Error: x86 architecture not available on SLED 12"
-    	    exit 1
+        DIST=SLE_12_SP2
+        PACK_TYPE=rpm
+        if [[  $tmp_arch == i386 ]]; then
+            echo "Error: x86 architecture not available on SLED 12"
+            exit 1
             else
                 PACK_ARCH=x86_64
                 LIBDIR=lib64
-    	fi
+        fi
     elif [[ $tmp_dist == openSUSE_13.1 ]]; then
         DIST=openSUSE_13.1
         PACK_TYPE=rpm
@@ -119,43 +120,46 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
         fi
+    elif [[ $tmp_dist == openSUSE_Leap_42.3 ]]; then
+        DIST=openSUSE_Leap_42.3
+        PACK_TYPE=rpm
+        if [[  $tmp_arch == i386 ]]; then
+            echo "Error: x86 architecture not available on openSUSE Leap 42.3"
+            exit 1
+        else
+            PACK_ARCH=x86_64
+            LIBDIR=lib64
+        fi
     elif [[ $tmp_dist == rhel_7 ]]; then
-	DIST=RHEL_7
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    echo "Error: x86 architecture not available on RHEL 7"
-	    exit 1
+    DIST=RHEL_7
+    PACK_TYPE=rpm
+    if [[  $tmp_arch == i386 ]]; then
+        echo "Error: x86 architecture not available on RHEL 7"
+        exit 1
         else
             PACK_ARCH=x86_64
             LIBDIR=lib64
-	fi
-    elif [[ $tmp_dist == rhel_6 ]]; then
-    	DIST=RedHat_RHEL-6
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i686
+   fi
+   elif [[ $tmp_dist == fedora_30 ]]; then
+        DIST=Fedora_30
+        PACK_TYPE=rpm
+        if [[  $tmp_arch == i386 ]]; then
+            echo "Error: x86 architecture not available on Fedora 30"
+            exit 1
         else
             PACK_ARCH=x86_64
             LIBDIR=lib64
-	fi
-   elif [[ $tmp_dist == centos_6 ]]; then
-    	DIST=CentOS_CentOS-6
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i686
+        fi
+   elif [[ $tmp_dist == fedora_rawhide ]]; then
+        DIST=Fedora_Rawhide
+        PACK_TYPE=rpm
+        if [[  $tmp_arch == i386 ]]; then
+            echo "Error: x86 architecture not available on Fedora Rawhide"
+            exit 1
         else
             PACK_ARCH=x86_64
             LIBDIR=lib64
-	fi
-   elif [[ $tmp_dist == fedora_20 ]]; then
-    	DIST=Fedora_20
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i686
-        else
-            PACK_ARCH=x86_64
-            LIBDIR=lib64
-	fi
+        fi
     elif [[ $tmp_dist == ubuntu_14.04 ]]; then
         DIST=xUbuntu_14.04
         PACK_TYPE=deb
@@ -172,19 +176,28 @@ function checkArguments {
         else
             PACK_ARCH=amd64
         fi
+    elif [[ $tmp_dist == ubuntu_18.04 ]]; then
+        DIST=xUbuntu_18.04
+        PACK_TYPE=deb
+        if [[  $tmp_arch == i386 ]]; then
+            echo "Error: x86 architecture not available on Ubuntu 18.04"
+            exit 1
+        else
+            PACK_ARCH=amd64
+        fi
     else
-	echo "Error: Unsupported distribution:" $1
-	echo
-	printUsage
-	exit 3
+    echo "Error: Unsupported distribution:" $1
+    echo
+    printUsage
+    exit 3
     fi
 
     # check version
     if [[ $tmp_ver -ne "2" ]] && [[ $tmp_ver -ne "3" ]]; then
-  	echo "Error: Unsupported TiGL version:" $tmp_ver
-	echo
-	printUsage
-	exit 4
+      echo "Error: Unsupported TiGL version:" $tmp_ver
+    echo
+    printUsage
+    exit 4
     fi
     ARCH=$tmp_arch
     FDIST=$tmp_dist
@@ -248,45 +261,45 @@ else
 fi
 
 for file in $filelist; do
-	# select required files
-	for whitefile in $whitelist; do
-	    if [[ $file == $whitefile ]]; then
-		bin_file_list+=($file)
+    # select required files
+    for whitefile in $whitelist; do
+        if [[ $file == $whitefile ]]; then
+        bin_file_list+=($file)
 
-		#extract version number
-		if [[ $file == libTIGL2-*.rpm ]]; then
-			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[2]}'`
-		elif [[ $file == libtigl3-*.rpm ]]; then
-			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[3]}'`
-		elif [[ $file == libtigl2_*.deb ]] || [[ $file == libtigl3_*.deb ]]; then
-			VERSION=`echo $file | awk '{split($0,array,"_")} END{print array[2]}' | awk '{split($0,array,"-")} END{print array[1]}'`
-		fi
-	    fi
-	done
+        #extract version number
+        if [[ $file == libTIGL2-*.rpm ]]; then
+            VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[2]}'`
+        elif [[ $file == libtigl3-?-3*.rpm ]]; then
+            VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[3]}'`
+        elif [[ $file == libtigl2_*.deb ]] || [[ $file == libtigl3_*.deb ]]; then
+            VERSION=`echo $file | awk '{split($0,array,"_")} END{print array[2]}' | awk '{split($0,array,"-")} END{print array[1]}'`
+        fi
+        fi
+    done
 done
 
 NAME="$PACKAGE-$VERSION-$FDIST-$ARCH"
 
 #download and extract files
 for file in ${bin_file_list[@]}; do
-	echo -n " - Downloading $prefix$file... "
-	download $prefix$file
-	if [[ $? -ne 0 ]]; then
-	    echo
-	    echo "Error downloading $file"
-	    exit 7
-	fi
-	echo
+    echo -n " - Downloading $prefix$file... "
+    download $prefix$file
+    if [[ $? -ne 0 ]]; then
+        echo
+        echo "Error downloading $file"
+        exit 7
+    fi
+    echo
 
         if [[ $PACK_TYPE == rpm ]]; then
-	    rpm2cpio $file | cpio -idm 2> /dev/null
-	elif [[ $PACK_TYPE == deb ]]; then
-	    ar x $file
-	    tar -xf data.tar.*
-	else
-	    echo "Unknown package type $PACK_TYPE"
-	    exit 5
-	fi
+        rpm2cpio $file | cpio -idm 2> /dev/null
+    elif [[ $PACK_TYPE == deb ]]; then
+        ar x $file
+        tar -xf data.tar.*
+    else
+        echo "Unknown package type $PACK_TYPE"
+        exit 5
+    fi
 done
 
 mv usr/ $NAME

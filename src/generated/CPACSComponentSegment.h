@@ -151,16 +151,11 @@ namespace generated
         boost::optional<CCPACSControlSurfaces> m_controlSurfaces;
 
     private:
-#ifdef HAVE_CPP11
         CPACSComponentSegment(const CPACSComponentSegment&) = delete;
         CPACSComponentSegment& operator=(const CPACSComponentSegment&) = delete;
 
         CPACSComponentSegment(CPACSComponentSegment&&) = delete;
         CPACSComponentSegment& operator=(CPACSComponentSegment&&) = delete;
-#else
-        CPACSComponentSegment(const CPACSComponentSegment&);
-        CPACSComponentSegment& operator=(const CPACSComponentSegment&);
-#endif
     };
 } // namespace generated
 

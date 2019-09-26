@@ -42,7 +42,7 @@ class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;
 
-class QOCC_DECLSPEC TIGLViewerContext : public QObject
+class TIGLViewerContext : public QObject
 {
 
     Q_OBJECT
@@ -50,7 +50,7 @@ class QOCC_DECLSPEC TIGLViewerContext : public QObject
 public:
 
     TIGLViewerContext(QUndoStack*);
-    ~TIGLViewerContext() OVERRIDE;
+    ~TIGLViewerContext() override;
 
     Handle(V3d_Viewer)&              getViewer();
     Handle(AIS_InteractiveContext)&  getContext();

@@ -13,6 +13,8 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 
     configure_file(${PROJECT_SOURCE_DIR}/doc/Doxyfile.in ${PROJECT_BINARY_DIR}/doc/Doxyfile @ONLY)
     configure_file(${PROJECT_SOURCE_DIR}/doc/footer.html ${PROJECT_BINARY_DIR}/doc/footer.html @ONLY)
+	configure_file(${PROJECT_SOURCE_DIR}/doc/header.html ${PROJECT_BINARY_DIR}/doc/header.html @ONLY)
+	configure_file(${PROJECT_SOURCE_DIR}/doc/stylesheet.css ${PROJECT_BINARY_DIR}/doc/stylesheet.css @ONLY)
     add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html
         OUTPUT ${PROJECT_BINARY_DIR}/doc/latex/refman.tex

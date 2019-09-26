@@ -111,16 +111,11 @@ namespace generated
         boost::optional<CPACSCurveProfiles>       m_curveProfiles;
 
     private:
-#ifdef HAVE_CPP11
         CPACSProfiles(const CPACSProfiles&) = delete;
         CPACSProfiles& operator=(const CPACSProfiles&) = delete;
 
         CPACSProfiles(CPACSProfiles&&) = delete;
         CPACSProfiles& operator=(CPACSProfiles&&) = delete;
-#else
-        CPACSProfiles(const CPACSProfiles&);
-        CPACSProfiles& operator=(const CPACSProfiles&);
-#endif
     };
 } // namespace generated
 

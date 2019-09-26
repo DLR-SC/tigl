@@ -39,10 +39,12 @@ class CTiglTransformation
 public:
     // Constructor
     TIGL_EXPORT CTiglTransformation();
-    TIGL_EXPORT CTiglTransformation(const gp_GTrsf& ocMatrix);
+    TIGL_EXPORT explicit CTiglTransformation(const gp_GTrsf& ocMatrix);
 
     // Constructor for transformation based on gp_Trsf
-    TIGL_EXPORT CTiglTransformation(const gp_Trsf& trans);
+    TIGL_EXPORT explicit CTiglTransformation(const gp_Trsf& trans);
+
+    TIGL_EXPORT explicit CTiglTransformation(const gp_Vec& translation);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglTransformation();
@@ -105,6 +107,11 @@ public:
     // Transforms a point with the current transformation matrix and
     // returns the transformed point
     TIGL_EXPORT gp_Pnt Transform(const gp_Pnt& point) const;
+
+    // Transforms a vector with the current transformation matrix and
+    // returns the transformed vector
+    // Note, that the vector transformation does not include the translation part
+    TIGL_EXPORT gp_Vec Transform(const gp_Vec& vec) const;
     
     // Returns the inverted Transformation
     TIGL_EXPORT CTiglTransformation Inverted() const;

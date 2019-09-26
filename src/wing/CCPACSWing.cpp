@@ -93,10 +93,10 @@ namespace
 CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWing(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
+    , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
-    , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
     , wingHelper(*this, &CCPACSWing::SetWingHelper)
 {
     if (parent->IsParent<CCPACSAircraftModel>()) {
@@ -203,6 +203,14 @@ void CCPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::stri
 
     if (wingXPath.find("rotorBlade") != std::string::npos) {
         isRotorBlade = true;
+
+        // WORKAROUND
+        // The rotor blade is attached implicitly to the rotor and should not have an additional parent
+        // See issue #509
+        if (m_parentUID) {
+            LOG(WARNING) << "Parent of rotor blade '" << GetUID() << "' is removed since it will be parented by a rotor. Consider to remove the parentUID node.";
+            m_parentUID = boost::none;
+        }
     }
 
     ConnectGuideCurveSegments();
@@ -417,9 +425,9 @@ gp_Pnt CCPACSWing::GetLowerPoint(int segmentIndex, double eta, double xsi)
 }
 
 // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
-gp_Pnt CCPACSWing::GetChordPoint(int segmentIndex, double eta, double xsi)
+gp_Pnt CCPACSWing::GetChordPoint(int segmentIndex, double eta, double xsi, TiglCoordinateSystem referenceCS)
 {
-    return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetChordPoint(eta, xsi);
+    return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetChordPoint(eta, xsi, referenceCS);
 }
 
 // Returns the volume of this wing

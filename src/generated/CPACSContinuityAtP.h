@@ -49,7 +49,7 @@ namespace generated
     }
     inline CPACSContinuityAtP stringToCPACSContinuityAtP(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "0") { return _0; }
         if (toLower(value) == "1") { return CPACSContinuityAtP_1; }
         if (toLower(value) == "2") { return _2; }
@@ -58,12 +58,5 @@ namespace generated
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSContinuityAtP = generated::CPACSContinuityAtP;
-#else
-typedef generated::CPACSContinuityAtP ECPACSContinuityAtP;
-#endif
-using generated::_0;
-using generated::CPACSContinuityAtP_1;
-using generated::_2;
 } // namespace tigl

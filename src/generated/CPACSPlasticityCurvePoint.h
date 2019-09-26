@@ -56,23 +56,14 @@ namespace generated
         double m_trueStress;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPlasticityCurvePoint(const CPACSPlasticityCurvePoint&) = delete;
         CPACSPlasticityCurvePoint& operator=(const CPACSPlasticityCurvePoint&) = delete;
 
         CPACSPlasticityCurvePoint(CPACSPlasticityCurvePoint&&) = delete;
         CPACSPlasticityCurvePoint& operator=(CPACSPlasticityCurvePoint&&) = delete;
-#else
-        CPACSPlasticityCurvePoint(const CPACSPlasticityCurvePoint&);
-        CPACSPlasticityCurvePoint& operator=(const CPACSPlasticityCurvePoint&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSPlasticityCurvePoint = generated::CPACSPlasticityCurvePoint;
-#else
-typedef generated::CPACSPlasticityCurvePoint CCPACSPlasticityCurvePoint;
-#endif
 } // namespace tigl

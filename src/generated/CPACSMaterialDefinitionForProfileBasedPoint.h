@@ -82,23 +82,14 @@ namespace generated
         boost::optional<double>      m_optionalAux2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSMaterialDefinitionForProfileBasedPoint(const CPACSMaterialDefinitionForProfileBasedPoint&) = delete;
         CPACSMaterialDefinitionForProfileBasedPoint& operator=(const CPACSMaterialDefinitionForProfileBasedPoint&) = delete;
 
         CPACSMaterialDefinitionForProfileBasedPoint(CPACSMaterialDefinitionForProfileBasedPoint&&) = delete;
         CPACSMaterialDefinitionForProfileBasedPoint& operator=(CPACSMaterialDefinitionForProfileBasedPoint&&) = delete;
-#else
-        CPACSMaterialDefinitionForProfileBasedPoint(const CPACSMaterialDefinitionForProfileBasedPoint&);
-        CPACSMaterialDefinitionForProfileBasedPoint& operator=(const CPACSMaterialDefinitionForProfileBasedPoint&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSMaterialDefinitionForProfileBasedPoint = generated::CPACSMaterialDefinitionForProfileBasedPoint;
-#else
-typedef generated::CPACSMaterialDefinitionForProfileBasedPoint CCPACSMaterialDefinitionForProfileBasedPoint;
-#endif
 } // namespace tigl

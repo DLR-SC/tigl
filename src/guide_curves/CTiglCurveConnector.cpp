@@ -169,10 +169,10 @@ void CTiglCurveConnector::CreateInterpolationOrder (guideCurveConnected& connect
         const CCPACSGuideCurve* partRoot = connectedCurve.parts[ipart].localGuides[0];
         if ( partRoot->GetContinuity_choice1() ) {
 
-            bool from =    partRoot->GetContinuity_choice1() == generated::C1_from_previous
-                        || partRoot->GetContinuity_choice1() == generated::C2_from_previous;
-            bool to   =    partRoot->GetContinuity_choice1() == generated::C1_to_previous
-                        || partRoot->GetContinuity_choice1() == generated::C2_to_previous;
+            bool from =    partRoot->GetContinuity_choice1() == ECPACSGuideCurve_continuity::C1_from_previous
+                        || partRoot->GetContinuity_choice1() == ECPACSGuideCurve_continuity::C2_from_previous;
+            bool to   =    partRoot->GetContinuity_choice1() == ECPACSGuideCurve_continuity::C1_to_previous
+                        || partRoot->GetContinuity_choice1() == ECPACSGuideCurve_continuity::C2_to_previous;
             if ( to ) {
                 connectedCurve.parts[ipart].dependency = C2_to_previous;
                 indegrees[ipart-1]++;

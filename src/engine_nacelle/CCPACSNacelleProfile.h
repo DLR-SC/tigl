@@ -58,10 +58,10 @@ public:
     TIGL_EXPORT bool HasBluntTE() const;
 
 protected:
-    void buildPointListAlgo(unique_ptr<CTiglWingProfilePointList>& cache) const;
+    void buildPointListAlgo(std::unique_ptr<CTiglWingProfilePointList>& cache) const;
 
 private:
-    Cache<unique_ptr<CTiglWingProfilePointList>, CCPACSNacelleProfile> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
+    Cache<std::unique_ptr<CTiglWingProfilePointList>, CCPACSNacelleProfile> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
 
     enum pointListAlgoType algoType = Airfoil;
 };

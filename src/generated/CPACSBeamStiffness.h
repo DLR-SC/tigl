@@ -85,23 +85,14 @@ namespace generated
         double      m_It;
 
     private:
-#ifdef HAVE_CPP11
         CPACSBeamStiffness(const CPACSBeamStiffness&) = delete;
         CPACSBeamStiffness& operator=(const CPACSBeamStiffness&) = delete;
 
         CPACSBeamStiffness(CPACSBeamStiffness&&) = delete;
         CPACSBeamStiffness& operator=(CPACSBeamStiffness&&) = delete;
-#else
-        CPACSBeamStiffness(const CPACSBeamStiffness&);
-        CPACSBeamStiffness& operator=(const CPACSBeamStiffness&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSBeamStiffness = generated::CPACSBeamStiffness;
-#else
-typedef generated::CPACSBeamStiffness CCPACSBeamStiffness;
-#endif
 } // namespace tigl

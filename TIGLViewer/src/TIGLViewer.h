@@ -37,16 +37,6 @@
 
 #include "tigl_internal.h"
 
-#ifdef QOCC_STATIC
-#define QOCC_DECLSPEC
-#else
-#ifdef QOCC_MAKEDLL
-#define QOCC_DECLSPEC Q_DECL_EXPORT
-#else
-#define QOCC_DECLSPEC Q_DECL_IMPORT
-#endif
-#endif
-
 #define SIGN(X) ((X) < 0. ? -1 : ((X) > 0. ? 1 : 0.))
 
 #endif // TIGLVIEWER_H

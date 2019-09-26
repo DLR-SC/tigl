@@ -117,29 +117,18 @@ namespace generated
         std::string m_referenceUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEtaIsoLine(const CPACSEtaIsoLine&) = delete;
         CPACSEtaIsoLine& operator=(const CPACSEtaIsoLine&) = delete;
 
         CPACSEtaIsoLine(CPACSEtaIsoLine&&) = delete;
         CPACSEtaIsoLine& operator=(CPACSEtaIsoLine&&) = delete;
-#else
-        CPACSEtaIsoLine(const CPACSEtaIsoLine&);
-        CPACSEtaIsoLine& operator=(const CPACSEtaIsoLine&);
-#endif
     };
 } // namespace generated
 
 // CPACSEtaIsoLine is customized, use type CCPACSEtaIsoLine directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfaceAirfoil = generated::CPACSControlSurfaceAirfoil;
 using CCPACSCutOutProfile = generated::CPACSCutOutProfile;
 using CCPACSSparCell = generated::CPACSSparCell;
-#else
-typedef generated::CPACSControlSurfaceAirfoil CCPACSControlSurfaceAirfoil;
-typedef generated::CPACSCutOutProfile CCPACSCutOutProfile;
-typedef generated::CPACSSparCell CCPACSSparCell;
-#endif
 } // namespace tigl

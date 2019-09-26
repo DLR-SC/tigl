@@ -96,23 +96,14 @@ namespace generated
         boost::optional<std::string> m_reinforcementElementUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCutOut(const CPACSCutOut&) = delete;
         CPACSCutOut& operator=(const CPACSCutOut&) = delete;
 
         CPACSCutOut(CPACSCutOut&&) = delete;
         CPACSCutOut& operator=(CPACSCutOut&&) = delete;
-#else
-        CPACSCutOut(const CPACSCutOut&);
-        CPACSCutOut& operator=(const CPACSCutOut&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCutOut = generated::CPACSCutOut;
-#else
-typedef generated::CPACSCutOut CCPACSCutOut;
-#endif
 } // namespace tigl

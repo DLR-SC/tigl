@@ -37,15 +37,16 @@
 namespace tigl
 {
 CTiglWingConnection::CTiglWingConnection(CCPACSWingSegment* aSegment)
-    : segment(aSegment)
-    , m_resolved(*this, &CTiglWingConnection::resolve)
+    : m_resolved(*this, &CTiglWingConnection::resolve)
+    , segment(aSegment)
 {
 }
 
 // Constructor
 CTiglWingConnection::CTiglWingConnection(const std::string& elementUID, CCPACSWingSegment* aSegment)
-    : elementUID(elementUID), segment(aSegment)
-    , m_resolved(*this, &CTiglWingConnection::resolve)
+    : m_resolved(*this, &CTiglWingConnection::resolve)
+    , elementUID(elementUID)
+    , segment(aSegment)
 {
 }
 

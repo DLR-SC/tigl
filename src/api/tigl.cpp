@@ -50,6 +50,7 @@
 #include "CCPACSRotorBladeAttachment.h"
 #include "CTiglAttachedRotorBlade.h"
 #include "CGlobalExporterConfigs.h"
+#include "Debugging.h"
 
 #include "CTiglPoint.h"
 
@@ -223,7 +224,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
 
     try {
-        tigl::unique_ptr<tigl::CCPACSConfiguration> config(new tigl::CCPACSConfiguration(tixiHandle));
+        std::unique_ptr<tigl::CCPACSConfiguration> config(new tigl::CCPACSConfiguration(tixiHandle));
         // Build CPACS memory structure
         config->ReadCPACS(configurationUID.c_str());
         // Store configuration in handle container
@@ -716,6 +717,41 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetLowerPoint!";
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              TiglGetPointBehavior behavior)
+{
+    if ( behavior < 0 || behavior >= numGetPointBehaviors ) {
+        LOG(ERROR) << "Cannot determine behavior in tiglWingSetGetPointBehavior\n";
+        return TIGL_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        for(int wingIndex = 1; wingIndex <= config.GetWingCount(); ++wingIndex ) {
+            tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+            for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); ++segmentIndex) {
+                tigl::CCPACSWingSegment& segment = wing.GetSegment(segmentIndex);
+                segment.SetGetPointBehavior(behavior);
+            }
+        }
+
+        return TIGL_SUCCESS;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingSetGetPointBehavior!";
         return TIGL_ERROR;
     }
 }
@@ -2611,6 +2647,38 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCenterLineLength(TiglCPACSConfi
     }
 
     return TIGL_SUCCESS;
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  TiglGetPointBehavior behavior)
+{
+    if ( behavior < 0 || behavior >= numGetPointBehaviors ) {
+        LOG(ERROR) << "Cannot determine behavior in tiglFuselageSetGetPointBehavior\n";
+        return TIGL_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        for(int fuselageIndex = 1; fuselageIndex <= config.GetFuselageCount(); ++fuselageIndex ) {
+            tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
+            fuselage.SetGetPointBehavior(behavior);
+        }
+
+        return TIGL_SUCCESS;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageSetGetPointBehavior!";
+        return TIGL_ERROR;
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
@@ -6550,8 +6618,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
-        TopoDS_Shape parent = config.GetParentLoft(wingUID);
-        *wettedAreaPtr = wing.GetWettedArea(parent);
+        tigl::CTiglRelativelyPositionedComponent* parent = config.GetUIDManager().GetParentGeometricComponent(wingUID);
+        if (!parent) {
+            *wettedAreaPtr = wing.GetSurfaceArea();
+        }
+        else {
+            TopoDS_Shape parentShape = config.GetParentLoft(wingUID);
+            *wettedAreaPtr = wing.GetWettedArea(parentShape);
+        }
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -6629,6 +6703,17 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode code)
         return "TIGL_UNKNOWN_ERROR";
     }
     return TiglErrorStrings[code];
+}
+
+
+TIGL_COMMON_EXPORT void tiglSetDebugDataDirectory(const char* directory)
+{
+    if (directory == NULL) {
+        tigl::TracePoint::setDebugDataDir("CrashInfo");
+    }
+    else {
+        tigl::TracePoint::setDebugDataDir(directory);
+    }
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurationHandle cpacsHandle, double * pLength)

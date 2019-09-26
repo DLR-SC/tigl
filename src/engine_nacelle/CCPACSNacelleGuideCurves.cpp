@@ -32,7 +32,7 @@ size_t CCPACSNacelleGuideCurves::GetGuideCurveCount() const
 CCPACSNacelleGuideCurve& CCPACSNacelleGuideCurves::GetGuideCurve(size_t index) const
 {
     index--;
-    if (index < 0 || index >= GetGuideCurveCount()) {
+    if (index >= GetGuideCurveCount()) {
         throw CTiglError("Invalid index in CCPACSNacelleGuideCurves::GetGuideCurve", TIGL_INDEX_ERROR);
     }
     return *m_nacelleGuideCurves[index];

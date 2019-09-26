@@ -25,33 +25,76 @@ CCPACSWingRibExplicitPositioning::CCPACSWingRibExplicitPositioning(CCPACSWingRib
 {
 }
 
-void CCPACSWingRibExplicitPositioning::SetStartReference(const std::string& ref)
+void CCPACSWingRibExplicitPositioning::SetStartCurvePoint(const CCPACSCurvePoint &curve_point)
 {
-    generated::CPACSWingRibExplicitPositioning::SetStartReference(ref);
-    // invalidate whole component segment structure since rib could be referenced anywhere
-    m_parent->GetParent()->Invalidate();
+    CCPACSCurvePoint& cp = GetStartCurvePoint_choice2(CreateIfNotExists);
+    cp.SetEta(curve_point.GetEta());
+    cp.SetReferenceUID(curve_point.GetReferenceUID());
+
+    m_startEtaXsiPoint_choice1 = boost::none;
+    m_startSparPositionUID_choice3 = boost::none;
+
+    Invalidate();
 }
 
-void CCPACSWingRibExplicitPositioning::SetEndReference(const std::string& ref)
+void CCPACSWingRibExplicitPositioning::SetStartEtaXsiPoint(const CCPACSEtaXsiPoint &etaxsi)
 {
-    generated::CPACSWingRibExplicitPositioning::SetEndReference(ref);
-    // invalidate whole component segment structure since rib could be referenced anywhere
-    m_parent->GetParent()->Invalidate();
+    CCPACSEtaXsiPoint& ex = GetStartEtaXsiPoint_choice1(CreateIfNotExists);
+    ex.SetEta(etaxsi.GetEta());
+    ex.SetXsi(etaxsi.GetXsi());
+    ex.SetReferenceUID(etaxsi.GetReferenceUID());
+
+    m_startCurvePoint_choice2 = boost::none;
+    m_startSparPositionUID_choice3 = boost::none;
+
+    Invalidate();
 }
 
-void CCPACSWingRibExplicitPositioning::SetStartEta(double eta)
+void CCPACSWingRibExplicitPositioning::SetStartSparPositionUID(const std::string &sparPosition)
 {
-    generated::CPACSWingRibExplicitPositioning::SetEtaStart(eta);
-    // invalidate whole component segment structure since rib could be referenced anywhere
-    m_parent->GetParent()->Invalidate();
+    CPACSWingRibExplicitPositioning::SetStartSparPositionUID_choice3(sparPosition);
+
+    m_startEtaXsiPoint_choice1 = boost::none;
+    m_startCurvePoint_choice2 = boost::none;
+
+    Invalidate();
 }
 
-void CCPACSWingRibExplicitPositioning::SetEndEta(double eta)
+void CCPACSWingRibExplicitPositioning::SetEndCurvePoint(const CCPACSCurvePoint &curve_point)
 {
-    generated::CPACSWingRibExplicitPositioning::SetEtaEnd(eta);
-    // invalidate whole component segment structure since rib could be referenced anywhere
-    m_parent->GetParent()->Invalidate();
+    CCPACSCurvePoint& cp = GetEndCurvePoint_choice2(CreateIfNotExists);
+    cp.SetEta(curve_point.GetEta());
+    cp.SetReferenceUID(curve_point.GetReferenceUID());
+
+    m_endEtaXsiPoint_choice1 = boost::none;
+    m_endSparPositionUID_choice3 = boost::none;
+
+    Invalidate();
 }
+
+void CCPACSWingRibExplicitPositioning::SetEndEtaXsiPoint(const CCPACSEtaXsiPoint &etaxsi)
+{
+    CCPACSEtaXsiPoint& ex = GetEndEtaXsiPoint_choice1(CreateIfNotExists);
+    ex.SetEta(etaxsi.GetEta());
+    ex.SetXsi(etaxsi.GetXsi());
+    ex.SetReferenceUID(etaxsi.GetReferenceUID());
+
+    m_endCurvePoint_choice2 = boost::none;
+    m_endSparPositionUID_choice3 = boost::none;
+
+    Invalidate();
+}
+
+void CCPACSWingRibExplicitPositioning::SetEndSparPositionUID(const std::string &sparPosition)
+{
+    CPACSWingRibExplicitPositioning::SetEndSparPositionUID_choice3(sparPosition);
+
+    m_endEtaXsiPoint_choice1 = boost::none;
+    m_endCurvePoint_choice2 = boost::none;
+
+    Invalidate();
+}
+
 
 void CCPACSWingRibExplicitPositioning::Invalidate()
 {

@@ -38,7 +38,7 @@ public:
     void setMessage(const QString& msg);
     void setDetailsText(const QString& msg);
     //void setHistoryLog(ITiglLogger*);
-    ~TIGLViewerErrorDialog() OVERRIDE;
+    ~TIGLViewerErrorDialog() override;
 
 private slots:
     void toggleDetails();

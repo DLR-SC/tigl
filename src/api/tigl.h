@@ -336,6 +336,25 @@ typedef const char** TiglStringList;
 */
 typedef enum TiglImportExportFormat TiglImportExportFormat;
 
+/**
+* @brief Options for the behavior of the GetPoint functions.
+*
+*  - asParameterOnSurface> treats eta-xsi-values as parameters on a surface.
+*    This makes sense e.g. for smoothly lofted wings that make heavy use of
+*    guide curves.
+*  - onLinearLoft: eta-xsi-values are coordinates on the chordface for the wing,
+*    respectively centerline and relative circumference parameters on the fuselage.
+*    The resulting point lies on the linear interpolation of the starting and ending
+*    profile of the segment.
+*
+*/
+enum TiglGetPointBehavior {
+    asParameterOnSurface = 0,
+    onLinearLoft,
+    numGetPointBehaviors
+};
+
+typedef enum TiglGetPointBehavior TiglGetPointBehavior;
 
 /**
   \defgroup GeneralFunctions General TIGL handling functions
@@ -573,6 +592,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConf
 * the point is equal to the trailing edge on the outer section of the given segment. The
 * point is returned in absolute world coordinates.
 *
+* The behavior of this function can be modified using ::tiglWingSetGetPointBehavior. The
+* options are asParametersOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned (default). For the second, the inputs are interpreted as eta-xsi coordinates
+* on the chordface spanned by the leading edge and trailing edge points of the inner and outer elements.
+*
 *
 * @param[in]  cpacsHandle  Handle for the CPACS configuration
 * @param[in]  wingIndex    The index of the wing, starting at 1
@@ -609,6 +634,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
 * the point is equal to the trailing edge on the outer section of the given segment. The
 * point is returned in absolute world coordinates.
 *
+* The behavior of this function can be modified using ::tiglWingSetGetPointBehavior. The
+* options are asParametersOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned (default). For the second, the inputs are interpreted as eta-xsi coordinates
+* on the chordface spanned by the leading edge and trailing edge points of the inner and outer elements.
+*
 *
 * @param[in]  cpacsHandle  Handle for the CPACS configuration
 * @param[in]  wingIndex    The index of the wing, starting at 1
@@ -634,6 +665,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
                                                         double* pointXPtr,
                                                         double* pointYPtr,
                                                         double* pointZPtr);
+
+/**
+@brief Sets the behavior of the ::tiglWingGetUpperPoint and ::tiglWingGetLowerPoint functions.
+*
+* This function sets the behavior of the ::tiglWingGetUpperPoint and ::tiglWingGetLowerPoint functions.
+* The options are asParameterOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned. For the second, the inputs are interpreted as eta-xsi coordinates
+* on the chordface spanned by the leading edge and trailing edge points of the inner and outer elements.
+*
+*
+* @param[in]  cpacsHandle   Handle for the CPACS configuration
+* @param[in]  behavior      enum describing the desired behavior of the function.
+*                           Possible values are asParameterOnSurface and onLinearLoft.
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_INDEX_ERROR if fuselageIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              TiglGetPointBehavior behavior);
 
 /**
 * @brief Returns a point on the wing chord surface for a
@@ -1291,7 +1345,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 
 
 /**
-* @brief Returns x,y,z koordinates for a given eta and xsi on a componentSegment.
+* @brief Returns x,y,z coordinates for a given eta and xsi on a componentSegment.
 *
 *
 * @param[in]  cpacsHandle               Handle for the CPACS configuration
@@ -1525,6 +1579,49 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
                                                                         int  segmentIndex,
                                                                         char ** segmentUID);
 
+/**
+* @brief Returns the span of a wing.
+*
+* The calculation of the wing span is realized as follows:
+*
+* * If the wing is mirrored at a symmetry plane (like the main wing), the wing body and its mirrored counterpart are computed
+* and are put into a bounding box. The length of the box in a specific space dimension is returned as the wing span depending
+* on the symmetry plane (y direction for x-z planes, z direction for x-y planes, x direction for y-z symmetry planes).
+*
+* * If no symmetry plane is defined (e.g. for the fins), the largest dimension of the bounding box around the wing
+* is returned.
+*
+*
+* @param[in]  cpacsHandle Handle for the CPACS configuration
+* @param[in]  wingUID     UID of the Wing
+* @param[out] pSpan       Wing span
+*
+* @returns Error code
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
+
+
+/**
+* @brief This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
+*
+* It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
+* The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
+* These values should coinside with the values found with tornado tool.
+*
+* @param[in] cpacsHandle Handle for the CPACS configuration
+* @param[in] wingUID     UID of the Wing
+* @param[out] mac_chord  Mean areadynamic chord length
+* @param[out] mac_x, mac_y, mac_z - Position of the MAC
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NULL_POINTER if wingUID, mac_chord, mac_x, mac_y or mac_z are null pointers
+*   - TIGL_ERROR In case of an unknown error
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
+
+
+
 /*@}*/
 /*****************************************************************************************************/
 
@@ -1636,6 +1733,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCenterLineLength(TiglCPACSConfi
 * identical to the start point of the profile wire, for zeta = 1.0 it is identical to the last profile point.
 * The point is returned in absolute world coordinates.
 *
+* The behavior of this function can be modified using ::tiglFuselageSetGetPointBehavior. The
+* options are asParametersOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned (default). For the second, the inputs are interpreted as eta coordinates
+* along the center line of the fuselage segment, xsi is interpreted as a relative
+* circumference between 0 and 1, and the resulting point lies on the linear loft of
+* the fuselage segment.
+*
 *
 * @param[in]  cpacsHandle   Handle for the CPACS configuration
 * @param[in]  fuselageIndex The index of the fuselage, starting at 1
@@ -1662,6 +1767,30 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
                                                        double* pointYPtr,
                                                        double* pointZPtr);
 
+
+/**
+@brief Sets the behavior of the ::tiglFuselageGetPoint function.
+*
+* This function sets the behavior of the ::tiglFuselageGetPoint function. The options
+* are asParameterOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned. For the second, the inputs are interpreted as eta coordinates
+* along the center line of the fuselage segment, xsi is interpreted as a relative
+* circumference between 0 and 1, and the resulting point lies on the linear loft of
+* the fuselage segment.
+*
+* @param[in]  cpacsHandle   Handle for the CPACS configuration
+* @param[in]  behavior      enum describing the desired behavior of the function.
+*                           Possible values are asParameterOnSurface and onLinearLoft.
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_INDEX_ERROR if fuselageIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  TiglGetPointBehavior behavior);
 
 /**
 * @brief Returns a point on a fuselage surface for a given fuselage and segment index and an angle alpha (degree).
@@ -4325,7 +4454,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
                                                            double *referenceAreaPtr);
 
 /**
-* @brief Returns the wetted area of the wing.
+* @brief Returns the wetted area of the wing. If the wing has no parent (fuselage), it returns the
+* surface area of the wing.
 *
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
@@ -4623,6 +4753,18 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode errorCode);
 
 
 /**
+ * @brief Set the directory path for debug data
+ * 
+ * These data are written, in case a tigl function has an internal error.
+ * 
+ * By default (directory==NULL), these files are written into the current working directory.
+ * There, the subdirectory CrashInfo is created.
+ * 
+ * @param[in] directory Path of the debugging directory.
+ */
+TIGL_COMMON_EXPORT void tiglSetDebugDataDirectory(const char* directory);
+
+/**
 * @brief Returns the length of the plane
 *
 * The calculation of the airplane lenght is realized as follows:
@@ -4661,47 +4803,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfi
                                                                   double* minX, double* minY, double* minZ,
                                                                   double* maxX, double* maxY, double* maxZ);
 
-
-/**
-* @brief Returns the span of a wing. 
-*
-* The calculation of the wing span is realized as follows:
-*
-* * If the wing is mirrored at a symmetry plane (like the main wing), the wing body and its mirrored counterpart are computed
-* and are put into a bounding box. The length of the box in a specific space dimension is returned as the wing span depending
-* on the symmetry plane (y direction for x-z planes, z direction for x-y planes, x direction for y-z symmetry planes).
-*
-* * If no symmetry plane is defined (e.g. for the fins), the largest dimension of the bounding box around the wing
-* is returned.
-*
-*
-* @param[in]  cpacsHandle Handle for the CPACS configuration
-* @param[in]  wingUID     UID of the Wing
-* @param[out] pSpan       Wing span
-*
-* @returns Error code
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
-
-
-/**
-* @brief This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
-* 
-* It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
-* The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
-* These values should coinside with the values found with tornado tool.
-* 
-* @param[in] cpacsHandle Handle for the CPACS configuration
-* @param[in] wingUID     UID of the Wing
-* @param[out] mac_chord  Mean areadynamic chord length
-* @param[out] mac_x, mac_y, mac_z - Position of the MAC
-* 
-* @return
-*   - TIGL_SUCCESS if no error occurred
-*   - TIGL_NULL_POINTER if wingUID, mac_chord, mac_x, mac_y or mac_z are null pointers
-*   - TIGL_ERROR In case of an unknown error
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
 
 
 /*@}*/ // end of doxygen group

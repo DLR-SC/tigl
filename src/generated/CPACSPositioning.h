@@ -137,16 +137,11 @@ namespace generated
         std::string                  m_toSectionUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPositioning(const CPACSPositioning&) = delete;
         CPACSPositioning& operator=(const CPACSPositioning&) = delete;
 
         CPACSPositioning(CPACSPositioning&&) = delete;
         CPACSPositioning& operator=(CPACSPositioning&&) = delete;
-#else
-        CPACSPositioning(const CPACSPositioning&);
-        CPACSPositioning& operator=(const CPACSPositioning&);
-#endif
     };
 } // namespace generated
 

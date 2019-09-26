@@ -58,8 +58,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSControlSurfaceStep> >& GetSteps() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSControlSurfaceStep> >& GetSteps();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSControlSurfaceStep>>& GetSteps() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSControlSurfaceStep>>& GetSteps();
 
         TIGL_EXPORT virtual CCPACSControlSurfaceStep& AddStep();
         TIGL_EXPORT virtual void RemoveStep(CCPACSControlSurfaceStep& ref);
@@ -69,28 +69,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSControlSurfaceStep> > m_steps;
+        std::vector<std::unique_ptr<CCPACSControlSurfaceStep>> m_steps;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceSteps(const CPACSControlSurfaceSteps&) = delete;
         CPACSControlSurfaceSteps& operator=(const CPACSControlSurfaceSteps&) = delete;
 
         CPACSControlSurfaceSteps(CPACSControlSurfaceSteps&&) = delete;
         CPACSControlSurfaceSteps& operator=(CPACSControlSurfaceSteps&&) = delete;
-#else
-        CPACSControlSurfaceSteps(const CPACSControlSurfaceSteps&);
-        CPACSControlSurfaceSteps& operator=(const CPACSControlSurfaceSteps&);
-#endif
     };
 } // namespace generated
 
 // CPACSControlSurfaceSteps is customized, use type CCPACSControlSurfaceSteps directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfacePath = generated::CPACSControlSurfacePath;
-#else
-typedef generated::CPACSControlSurfacePath CCPACSControlSurfacePath;
-#endif
 } // namespace tigl

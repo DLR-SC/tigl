@@ -194,7 +194,7 @@ public:
      * for the moment we assume it. But, in a near future, we can force this by creating a new section when is needed.
      * @param newTransformation
      */
-    void SetPSETransformations(const CTiglTransformation &newTransformation);
+    TIGL_EXPORT void SetPSETransformations(const CTiglTransformation &newTransformation);
 
      /**
       * Same principle as SetPSETransformaions but the a simple polar decomposition is used instead of the TRSRS decomposition.
@@ -204,7 +204,7 @@ public:
       * @param newTransformation
       * @param check, if true a warning is logged if the transformation can not be properly decomposed
       */
-    void SetPSETransformationsUseSimpleDecomposition(const CTiglTransformation &newTransformation, bool check = true);
+    TIGL_EXPORT void SetPSETransformationsUseSimpleDecomposition(const CTiglTransformation &newTransformation, bool check = true);
 
 
 protected:

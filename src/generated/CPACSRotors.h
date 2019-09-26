@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSRotor> >& GetRotors() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSRotor> >& GetRotors();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSRotor>>& GetRotors() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSRotor>>& GetRotors();
 
         TIGL_EXPORT virtual CCPACSRotor& AddRotor();
         TIGL_EXPORT virtual void RemoveRotor(CCPACSRotor& ref);
@@ -68,19 +68,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSRotor> > m_rotors;
+        std::vector<std::unique_ptr<CCPACSRotor>> m_rotors;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRotors(const CPACSRotors&) = delete;
         CPACSRotors& operator=(const CPACSRotors&) = delete;
 
         CPACSRotors(CPACSRotors&&) = delete;
         CPACSRotors& operator=(CPACSRotors&&) = delete;
-#else
-        CPACSRotors(const CPACSRotors&);
-        CPACSRotors& operator=(const CPACSRotors&);
-#endif
     };
 } // namespace generated
 

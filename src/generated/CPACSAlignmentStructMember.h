@@ -85,23 +85,14 @@ namespace generated
         boost::optional<double> m_translationLocZ;
 
     private:
-#ifdef HAVE_CPP11
         CPACSAlignmentStructMember(const CPACSAlignmentStructMember&) = delete;
         CPACSAlignmentStructMember& operator=(const CPACSAlignmentStructMember&) = delete;
 
         CPACSAlignmentStructMember(CPACSAlignmentStructMember&&) = delete;
         CPACSAlignmentStructMember& operator=(CPACSAlignmentStructMember&&) = delete;
-#else
-        CPACSAlignmentStructMember(const CPACSAlignmentStructMember&);
-        CPACSAlignmentStructMember& operator=(const CPACSAlignmentStructMember&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSAlignmentStructMember = generated::CPACSAlignmentStructMember;
-#else
-typedef generated::CPACSAlignmentStructMember CCPACSAlignmentStructMember;
-#endif
 } // namespace tigl

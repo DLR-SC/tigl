@@ -32,7 +32,7 @@
 class EngineNacelleBuilder : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/simpletest-pylon-nacelle.cpacs.xml";
         ReturnCode tixiRet;
@@ -49,7 +49,7 @@ protected:
         uidMgr = &tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
         ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
@@ -65,7 +65,7 @@ protected:
 class EngineNacelleBuilderSimple : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/simpletest-simplenacelle.cpacs.xml";
         ReturnCode tixiRet;
@@ -82,7 +82,7 @@ protected:
         uidMgr = &tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
         ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);

@@ -31,7 +31,8 @@ namespace tigl
 
 // Constructor
 CTiglUIDManager::CTiglUIDManager()
-    : invalidated(true), rootComponent(NULL) {}
+    : rootComponent(NULL), invalidated(true)
+{}
 
 bool CTiglUIDManager::IsUIDRegistered(const std::string & uid) const
 {
@@ -233,7 +234,7 @@ CTiglRelativelyPositionedComponent* CTiglUIDManager::GetParentGeometricComponent
 {
     CTiglRelativelyPositionedComponent& component = GetRelativeComponent(uid);
     const boost::optional<const std::string&> parentUID = component.GetParentUID();
-    return parentUID ? NULL : &GetRelativeComponent(*parentUID);
+    return parentUID? &GetRelativeComponent(*parentUID) : NULL;
 }
 
 // Returns the container with all root components of the geometric topology that have children.

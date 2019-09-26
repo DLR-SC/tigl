@@ -49,10 +49,10 @@ class CCPACSWingProfile : public generated::CPACSProfileGeometry
 public:
     TIGL_EXPORT CCPACSWingProfile(CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT ~CCPACSWingProfile() OVERRIDE;
+    TIGL_EXPORT ~CCPACSWingProfile() override;
 
     // Read CPACS wing profile file
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     // Returns whether the profile is a rotor profile
     TIGL_EXPORT bool IsRotorProfile() const;
@@ -121,7 +121,7 @@ protected:
     // Helper function to determine the chord line between leading and trailing edge in the profile plane
     Handle(Geom2d_TrimmedCurve) GetChordLine() const;
 
-    void buildPointListAlgo(unique_ptr<CTiglWingProfilePointList>& cache) const;
+    void buildPointListAlgo(std::unique_ptr<CTiglWingProfilePointList>& cache) const;
 
 private:
     // Copy constructor
@@ -132,7 +132,7 @@ private:
 
 private:
     bool                                  isRotorProfile; /**< Indicates if this profile is a rotor profile */
-    Cache<unique_ptr<CTiglWingProfilePointList>, CCPACSWingProfile> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
+    Cache<std::unique_ptr<CTiglWingProfilePointList>, CCPACSWingProfile> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
 
 }; // class CCPACSWingProfile
 

@@ -102,23 +102,14 @@ namespace generated
         boost::optional<CCPACSPoint> m_moduleCoG;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSeatModule(const CPACSSeatModule&) = delete;
         CPACSSeatModule& operator=(const CPACSSeatModule&) = delete;
 
         CPACSSeatModule(CPACSSeatModule&&) = delete;
         CPACSSeatModule& operator=(CPACSSeatModule&&) = delete;
-#else
-        CPACSSeatModule(const CPACSSeatModule&);
-        CPACSSeatModule& operator=(const CPACSSeatModule&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSeatModule = generated::CPACSSeatModule;
-#else
-typedef generated::CPACSSeatModule CCPACSSeatModule;
-#endif
 } // namespace tigl

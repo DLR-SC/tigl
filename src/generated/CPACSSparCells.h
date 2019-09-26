@@ -53,8 +53,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSSparCell> >& GetSparCells() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSSparCell> >& GetSparCells();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSparCell>>& GetSparCells() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSparCell>>& GetSparCells();
 
         TIGL_EXPORT virtual CPACSSparCell& AddSparCell();
         TIGL_EXPORT virtual void RemoveSparCell(CPACSSparCell& ref);
@@ -62,28 +62,18 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSSparCell> > m_sparCells;
+        std::vector<std::unique_ptr<CPACSSparCell>> m_sparCells;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSparCells(const CPACSSparCells&) = delete;
         CPACSSparCells& operator=(const CPACSSparCells&) = delete;
 
         CPACSSparCells(CPACSSparCells&&) = delete;
         CPACSSparCells& operator=(CPACSSparCells&&) = delete;
-#else
-        CPACSSparCells(const CPACSSparCells&);
-        CPACSSparCells& operator=(const CPACSSparCells&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSparCells = generated::CPACSSparCells;
 using CCPACSSparCell = generated::CPACSSparCell;
-#else
-typedef generated::CPACSSparCells CCPACSSparCells;
-typedef generated::CPACSSparCell CCPACSSparCell;
-#endif
 } // namespace tigl

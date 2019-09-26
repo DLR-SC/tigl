@@ -51,8 +51,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSRivet> >& GetRivets() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSRivet> >& GetRivets();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSRivet>>& GetRivets() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSRivet>>& GetRivets();
 
         TIGL_EXPORT virtual CPACSRivet& AddRivet();
         TIGL_EXPORT virtual void RemoveRivet(CPACSRivet& ref);
@@ -60,28 +60,18 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSRivet> > m_rivets;
+        std::vector<std::unique_ptr<CPACSRivet>> m_rivets;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRivets(const CPACSRivets&) = delete;
         CPACSRivets& operator=(const CPACSRivets&) = delete;
 
         CPACSRivets(CPACSRivets&&) = delete;
         CPACSRivets& operator=(CPACSRivets&&) = delete;
-#else
-        CPACSRivets(const CPACSRivets&);
-        CPACSRivets& operator=(const CPACSRivets&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSRivets = generated::CPACSRivets;
 using CCPACSRivet = generated::CPACSRivet;
-#else
-typedef generated::CPACSRivets CCPACSRivets;
-typedef generated::CPACSRivet CCPACSRivet;
-#endif
 } // namespace tigl

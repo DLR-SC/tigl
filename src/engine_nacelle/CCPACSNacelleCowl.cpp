@@ -111,20 +111,22 @@ void CCPACSNacelleCowl::BuildOuterShapeWires(WireCache& cache) const
 
     // get CPACS guide curves
     std::vector<std::pair<double,TopoDS_Wire>> zetaGuides;
-    for(size_t i = 1; i <= m_guideCurves.GetGuideCurveCount(); ++i ) {
-        const CCPACSNacelleGuideCurve& guide = m_guideCurves.GetGuideCurve(i);
+    if ( m_guideCurves ) {
+        for(size_t i = 1; i <= m_guideCurves->GetGuideCurveCount(); ++i ) {
+            const CCPACSNacelleGuideCurve& guide = m_guideCurves->GetGuideCurve(i);
 
-        // check if it is one of the required curves
-        for (int i = 0; i<5; ++i) {
-            if(    fabs(guide.GetFromZeta() - requiredZeta[i]) < Precision::Confusion()
-                && fabs(guide.GetToZeta()   - requiredZeta[i]) < Precision::Confusion() ) {
-                // if the required guide curve is already defined via CPACS, it must not explicitly be built.
-                buildRequiredZeta[i] = false; }
+            // check if it is one of the required curves
+            for (int i = 0; i<5; ++i) {
+                if(    fabs(guide.GetFromZeta() - requiredZeta[i]) < Precision::Confusion()
+                    && fabs(guide.GetToZeta()   - requiredZeta[i]) < Precision::Confusion() ) {
+                    // if the required guide curve is already defined via CPACS, it must not explicitly be built.
+                    buildRequiredZeta[i] = false; }
+            }
+
+            CTiglNacelleGuideCurveBuilder gcbuilder(guide);
+            std::pair<double,TopoDS_Wire> zetaGuidePair(guide.GetFromZeta(), gcbuilder.GetWire());
+            zetaGuides.push_back(zetaGuidePair);
         }
-
-        CTiglNacelleGuideCurveBuilder gcbuilder(guide);
-        std::pair<double,TopoDS_Wire> zetaGuidePair(guide.GetFromZeta(), gcbuilder.GetWire());
-        zetaGuides.push_back(zetaGuidePair);
     }
 
     // explicitly built the guide curves for the required zeta values, that are not defined in CPACS
@@ -320,8 +322,8 @@ Handle(Geom_Curve) CCPACSNacelleCowl::GetGuideCurve(double zeta) const
         throw CTiglError("Something went wrong: There is no guide curve at endZetaBlending parameter!");
     }
 
-    return CWireToCurve(wireCache->guideCurves[i].second);
-}   
+    return CWireToCurve(wireCache->guideCurves[i].second).curve();
+}
 
 } //namespace tigl
 
@@ -339,7 +341,8 @@ void RemoveBlendingPart(TopoDS_Edge const lowerEdge,
     }
 
     double umin, umax;
-    double par1, par2;
+    double par1 = -1.;
+    double par2 = 0.;
     Handle_Geom_Curve curve = BRep_Tool::Curve(lowerEdge, umin, umax);
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
@@ -350,9 +353,15 @@ void RemoveBlendingPart(TopoDS_Edge const lowerEdge,
     if (algo1.IsDone()) {
         par1 = algo1.Parameter();
     }
+    else {
+        throw tigl::CTiglError("RemoveBlendingPart: Unable to cut lower profile for CCPACSNacelleCowl", TIGL_ERROR);
+    }
     GCPnts_AbscissaPoint algo2(adaptorCurve, len*(zeta2 + 1.), umin);
     if (algo2.IsDone()) {
         par2 = algo2.Parameter();
+    }
+    else {
+        throw tigl::CTiglError("RemoveBlendingPart: Unable to cut lower profile for CCPACSNacelleCowl", TIGL_ERROR);
     }
     curve = new Geom_TrimmedCurve(curve, umin,  par1);
     edge1 = BRepBuilderAPI_MakeEdge(curve);
@@ -385,7 +394,7 @@ std::vector<std::pair<double,TopoDS_Wire>> connectNacelleGuideCurves(std::vector
     }
 
     return connectedZetaWires;
-};
+}
 
 Handle(Geom_Curve) GetBoundaryCurveByIndex(TopoDS_Shape& face, int edgeIndex)
 {
@@ -394,6 +403,6 @@ Handle(Geom_Curve) GetBoundaryCurveByIndex(TopoDS_Shape& face, int edgeIndex)
     Standard_Real umin, umax;
 
     return BRep_Tool::Curve(TopoDS::Edge(map(edgeIndex)), umin, umax);
-};
+}
 
 } //anonymous namespace

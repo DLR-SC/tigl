@@ -67,23 +67,14 @@ namespace generated
         CCPACSMaterialDefinition m_material;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCap(const CPACSCap&) = delete;
         CPACSCap& operator=(const CPACSCap&) = delete;
 
         CPACSCap(CPACSCap&&) = delete;
         CPACSCap& operator=(CPACSCap&&) = delete;
-#else
-        CPACSCap(const CPACSCap&);
-        CPACSCap& operator=(const CPACSCap&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCap = generated::CPACSCap;
-#else
-typedef generated::CPACSCap CCPACSCap;
-#endif
 } // namespace tigl

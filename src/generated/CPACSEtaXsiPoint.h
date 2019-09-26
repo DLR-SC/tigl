@@ -19,6 +19,8 @@
 
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -27,6 +29,8 @@ namespace generated
 {
     // This class is used in:
     // CPACSSparPosition
+    // CPACSWingRibExplicitPositioning
+    // CPACSWingRibsPositioning
 
     // generated from /xsd:schema/xsd:complexType[323]
     /// @brief etaXsiPointType
@@ -66,23 +70,14 @@ namespace generated
         std::string m_referenceUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEtaXsiPoint(const CPACSEtaXsiPoint&) = delete;
         CPACSEtaXsiPoint& operator=(const CPACSEtaXsiPoint&) = delete;
 
         CPACSEtaXsiPoint(CPACSEtaXsiPoint&&) = delete;
         CPACSEtaXsiPoint& operator=(CPACSEtaXsiPoint&&) = delete;
-#else
-        CPACSEtaXsiPoint(const CPACSEtaXsiPoint&);
-        CPACSEtaXsiPoint& operator=(const CPACSEtaXsiPoint&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSEtaXsiPoint = generated::CPACSEtaXsiPoint;
-#else
-typedef generated::CPACSEtaXsiPoint CCPACSEtaXsiPoint;
-#endif
 } // namespace tigl

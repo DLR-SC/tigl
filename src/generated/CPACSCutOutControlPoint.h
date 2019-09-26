@@ -64,23 +64,14 @@ namespace generated
         double m_xsi;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCutOutControlPoint(const CPACSCutOutControlPoint&) = delete;
         CPACSCutOutControlPoint& operator=(const CPACSCutOutControlPoint&) = delete;
 
         CPACSCutOutControlPoint(CPACSCutOutControlPoint&&) = delete;
         CPACSCutOutControlPoint& operator=(CPACSCutOutControlPoint&&) = delete;
-#else
-        CPACSCutOutControlPoint(const CPACSCutOutControlPoint&);
-        CPACSCutOutControlPoint& operator=(const CPACSCutOutControlPoint&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSCutOutControlPoint = generated::CPACSCutOutControlPoint;
-#else
-typedef generated::CPACSCutOutControlPoint CCPACSCutOutControlPoint;
-#endif
 } // namespace tigl

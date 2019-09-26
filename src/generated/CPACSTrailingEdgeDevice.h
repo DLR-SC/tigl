@@ -143,16 +143,11 @@ namespace generated
         boost::optional<CPACSControlSurfaceTracks>     m_tracks;
 
     private:
-#ifdef HAVE_CPP11
         CPACSTrailingEdgeDevice(const CPACSTrailingEdgeDevice&) = delete;
         CPACSTrailingEdgeDevice& operator=(const CPACSTrailingEdgeDevice&) = delete;
 
         CPACSTrailingEdgeDevice(CPACSTrailingEdgeDevice&&) = delete;
         CPACSTrailingEdgeDevice& operator=(CPACSTrailingEdgeDevice&&) = delete;
-#else
-        CPACSTrailingEdgeDevice(const CPACSTrailingEdgeDevice&);
-        CPACSTrailingEdgeDevice& operator=(const CPACSTrailingEdgeDevice&);
-#endif
     };
 } // namespace generated
 

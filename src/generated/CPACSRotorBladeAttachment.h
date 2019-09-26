@@ -70,23 +70,23 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSRotorHinges>& GetHinges() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSRotorHinges>& GetHinges();
-
-        TIGL_EXPORT virtual const std::string& GetRotorBladeUID() const;
-        TIGL_EXPORT virtual void SetRotorBladeUID(const std::string& value);
-
         TIGL_EXPORT virtual const boost::optional<CCPACSStringVector>& GetAzimuthAngles_choice1() const;
         TIGL_EXPORT virtual boost::optional<CCPACSStringVector>& GetAzimuthAngles_choice1();
 
         TIGL_EXPORT virtual const boost::optional<int>& GetNumberOfBlades_choice2() const;
         TIGL_EXPORT virtual void SetNumberOfBlades_choice2(const boost::optional<int>& value);
 
-        TIGL_EXPORT virtual CCPACSRotorHinges& GetHinges(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveHinges();
+        TIGL_EXPORT virtual const boost::optional<CCPACSRotorHinges>& GetHinges() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSRotorHinges>& GetHinges();
+
+        TIGL_EXPORT virtual const std::string& GetRotorBladeUID() const;
+        TIGL_EXPORT virtual void SetRotorBladeUID(const std::string& value);
 
         TIGL_EXPORT virtual CCPACSStringVector& GetAzimuthAngles_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveAzimuthAngles_choice1();
+
+        TIGL_EXPORT virtual CCPACSRotorHinges& GetHinges(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveHinges();
 
     protected:
         CCPACSRotorBladeAttachments* m_parent;
@@ -100,14 +100,6 @@ namespace generated
 
         /// Description of the blade attachment.
         boost::optional<std::string>        m_description;
-
-        /// Definition of all hinges used to attach the
-        /// rotor blade.
-        boost::optional<CCPACSRotorHinges>  m_hinges;
-
-        /// UID of the rotorBlade which should be attached
-        /// to the rotor hub.
-        std::string                         m_rotorBladeUID;
 
         /// The azimuthAngles element is used to specify
         /// a list of discrete azimuth angles (in deg) at which instances
@@ -127,17 +119,20 @@ namespace generated
         /// i=0..numberOfBlades-1)
         boost::optional<int>                m_numberOfBlades_choice2;
 
+        /// Definition of all hinges used to attach the
+        /// rotor blade.
+        boost::optional<CCPACSRotorHinges>  m_hinges;
+
+        /// UID of the rotorBlade which should be attached
+        /// to the rotor hub.
+        std::string                         m_rotorBladeUID;
+
     private:
-#ifdef HAVE_CPP11
         CPACSRotorBladeAttachment(const CPACSRotorBladeAttachment&) = delete;
         CPACSRotorBladeAttachment& operator=(const CPACSRotorBladeAttachment&) = delete;
 
         CPACSRotorBladeAttachment(CPACSRotorBladeAttachment&&) = delete;
         CPACSRotorBladeAttachment& operator=(CPACSRotorBladeAttachment&&) = delete;
-#else
-        CPACSRotorBladeAttachment(const CPACSRotorBladeAttachment&);
-        CPACSRotorBladeAttachment& operator=(const CPACSRotorBladeAttachment&);
-#endif
     };
 } // namespace generated
 

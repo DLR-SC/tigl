@@ -51,7 +51,7 @@ namespace generated
     }
     inline CPACSFarField_type stringToTiglFarFieldType(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "halfsphere") { return halfSphere; }
         if (toLower(value) == "fullsphere") { return fullSphere; }
         if (toLower(value) == "halfcube") { return halfCube; }

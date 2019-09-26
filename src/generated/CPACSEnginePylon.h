@@ -125,16 +125,11 @@ namespace generated
         boost::optional<CCPACSPositionings> m_positionings;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEnginePylon(const CPACSEnginePylon&) = delete;
         CPACSEnginePylon& operator=(const CPACSEnginePylon&) = delete;
 
         CPACSEnginePylon(CPACSEnginePylon&&) = delete;
         CPACSEnginePylon& operator=(CPACSEnginePylon&&) = delete;
-#else
-        CPACSEnginePylon(const CPACSEnginePylon&);
-        CPACSEnginePylon& operator=(const CPACSEnginePylon&);
-#endif
     };
 } // namespace generated
 

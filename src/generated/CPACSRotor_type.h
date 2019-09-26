@@ -51,7 +51,7 @@ namespace generated
     }
     inline CPACSRotor_type stringToCPACSRotor_type(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "mainrotor") { return mainRotor; }
         if (toLower(value) == "tailrotor") { return tailRotor; }
         if (toLower(value) == "fenestron") { return fenestron; }
@@ -61,13 +61,5 @@ namespace generated
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSRotor_type = generated::CPACSRotor_type;
-#else
-typedef generated::CPACSRotor_type ECPACSRotor_type;
-#endif
-using generated::mainRotor;
-using generated::tailRotor;
-using generated::fenestron;
-using generated::propeller;
 } // namespace tigl

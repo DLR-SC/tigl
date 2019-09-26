@@ -66,7 +66,7 @@ namespace generated
 
         // read element plasticityCurvePoint
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/plasticityCurvePoint")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1);
+            tixi::TixiReadElements(tixiHandle, xpath + "/plasticityCurvePoint", m_plasticityCurvePoints_choice1, 0, tixi::xsdUnbounded);
         }
 
         // read element initialEquivalentShearStrain
@@ -295,12 +295,12 @@ namespace generated
         m_plasticEliminationStrain_choice1 = value;
     }
 
-    const std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoints_choice1() const
+    const std::vector<std::unique_ptr<CPACSPlasticityCurvePoint>>& CPACSPostFailure::GetPlasticityCurvePoints_choice1() const
     {
         return m_plasticityCurvePoints_choice1;
     }
 
-    std::vector<unique_ptr<CPACSPlasticityCurvePoint> >& CPACSPostFailure::GetPlasticityCurvePoints_choice1()
+    std::vector<std::unique_ptr<CPACSPlasticityCurvePoint>>& CPACSPostFailure::GetPlasticityCurvePoints_choice1()
     {
         return m_plasticityCurvePoints_choice1;
     }

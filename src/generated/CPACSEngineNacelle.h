@@ -87,23 +87,14 @@ namespace generated
         boost::optional<CCPACSNacelleCenterCowl> m_centerCowl;
 
     private:
-#ifdef HAVE_CPP11
         CPACSEngineNacelle(const CPACSEngineNacelle&) = delete;
         CPACSEngineNacelle& operator=(const CPACSEngineNacelle&) = delete;
 
         CPACSEngineNacelle(CPACSEngineNacelle&&) = delete;
         CPACSEngineNacelle& operator=(CPACSEngineNacelle&&) = delete;
-#else
-        CPACSEngineNacelle(const CPACSEngineNacelle&);
-        CPACSEngineNacelle& operator=(const CPACSEngineNacelle&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSEngineNacelle = generated::CPACSEngineNacelle;
-#else
-typedef generated::CPACSEngineNacelle CCPACSEngineNacelle;
-#endif
 } // namespace tigl

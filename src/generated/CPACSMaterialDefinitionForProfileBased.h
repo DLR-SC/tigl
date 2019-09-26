@@ -88,23 +88,14 @@ namespace generated
         boost::optional<double>      m_thickness_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSMaterialDefinitionForProfileBased(const CPACSMaterialDefinitionForProfileBased&) = delete;
         CPACSMaterialDefinitionForProfileBased& operator=(const CPACSMaterialDefinitionForProfileBased&) = delete;
 
         CPACSMaterialDefinitionForProfileBased(CPACSMaterialDefinitionForProfileBased&&) = delete;
         CPACSMaterialDefinitionForProfileBased& operator=(CPACSMaterialDefinitionForProfileBased&&) = delete;
-#else
-        CPACSMaterialDefinitionForProfileBased(const CPACSMaterialDefinitionForProfileBased&);
-        CPACSMaterialDefinitionForProfileBased& operator=(const CPACSMaterialDefinitionForProfileBased&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSMaterialDefinitionForProfileBased = generated::CPACSMaterialDefinitionForProfileBased;
-#else
-typedef generated::CPACSMaterialDefinitionForProfileBased CCPACSMaterialDefinitionForProfileBased;
-#endif
 } // namespace tigl

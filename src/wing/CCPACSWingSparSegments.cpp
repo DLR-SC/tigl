@@ -30,8 +30,8 @@ CCPACSWingSparSegments::CCPACSWingSparSegments(CCPACSWingSpars* parent, CTiglUID
 
 void CCPACSWingSparSegments::Invalidate()
 {
-    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::iterator it = m_sparSegments.begin(); it != m_sparSegments.end(); ++it) {
-        (*it)->Invalidate();
+    for (auto& s : m_sparSegments) {
+        s->Invalidate();
     }
 }
 
@@ -52,10 +52,9 @@ CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(int index) const
 
 CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(const std::string& uid) const
 {
-    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::const_iterator it = m_sparSegments.begin(); it != m_sparSegments.end(); ++it) {
-        CCPACSWingSparSegment& sparSegment = **it;
-        if (sparSegment.GetUID() == uid) {
-            return sparSegment;
+    for (auto& s : m_sparSegments) {
+        if (s->GetUID() == uid) {
+            return *s;
         }
     }
     const std::string& referenceUID = CTiglWingStructureReference(*GetParent()->GetParent()).GetUID();

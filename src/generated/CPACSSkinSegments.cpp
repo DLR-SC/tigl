@@ -63,7 +63,7 @@ namespace generated
     {
         // read element skinSegment
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skinSegment")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/skinSegment", m_skinSegments, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/skinSegment", m_skinSegments, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSSkinSegment> >& CPACSSkinSegments::GetSkinSegments() const
+    const std::vector<std::unique_ptr<CCPACSSkinSegment>>& CPACSSkinSegments::GetSkinSegments() const
     {
         return m_skinSegments;
     }
 
-    std::vector<unique_ptr<CCPACSSkinSegment> >& CPACSSkinSegments::GetSkinSegments()
+    std::vector<std::unique_ptr<CCPACSSkinSegment>>& CPACSSkinSegments::GetSkinSegments()
     {
         return m_skinSegments;
     }

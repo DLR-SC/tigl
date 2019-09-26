@@ -17,7 +17,7 @@ env:
 deploy:
   provider: releases
   api_key:
-    secure: sUJ1hPLgEJosx0JGo9A5bGbAfoigXCK4+Bo5OGUkjiHtx4UmQ72fy9EPAFQpGp2b9MGP1fSkGJGWVR7hRvCE682cu3kICncXLIs4/jsrC4CKjNmZ9W9Ua/dgZ1tG6I4/l/Aecf4OgXZTOn6RqqXtQdpiyHz5neDh+Rf4ZxcY+hw=
+    secure: CsT3p7Se4N1qz+DkvjYGTEkP0BrRDcHs/uTY5G0KRTurdcLh9tH+MF3Dc2d+3bKQsAJi1OX0++ngQGTgPZknH9FM0Atkle5YiprX3l2ci2eo6ryJUnVupghyfowvaOfYwvZwN6zVUdzHMW6WWkLyIXG6DYEaQ4HdfY3fzojZoe8=
   file_glob: true
   file: build/*.dmg
   skip_cleanup: true

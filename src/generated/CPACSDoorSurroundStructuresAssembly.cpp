@@ -49,7 +49,7 @@ namespace generated
     {
         // read element doorSurroundStructure
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/doorSurroundStructure")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/doorSurroundStructure", m_doorSurroundStructures, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/doorSurroundStructure", m_doorSurroundStructures, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CPACSDoorSurroundStructurePosition> >& CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructures() const
+    const std::vector<std::unique_ptr<CPACSDoorSurroundStructurePosition>>& CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructures() const
     {
         return m_doorSurroundStructures;
     }
 
-    std::vector<unique_ptr<CPACSDoorSurroundStructurePosition> >& CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructures()
+    std::vector<std::unique_ptr<CPACSDoorSurroundStructurePosition>>& CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructures()
     {
         return m_doorSurroundStructures;
     }

@@ -92,14 +92,6 @@ namespace generated
             }
         }
 
-        // read element ribCrossSection
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribCrossSection")) {
-            m_ribCrossSection.ReadCPACS(tixiHandle, xpath + "/ribCrossSection");
-        }
-        else {
-            LOG(ERROR) << "Required element ribCrossSection is missing at xpath " << xpath;
-        }
-
         // read element ribsPositioning
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribsPositioning")) {
             m_ribsPositioning_choice1 = boost::in_place(reinterpret_cast<CCPACSWingRibsDefinition*>(this));
@@ -120,6 +112,14 @@ namespace generated
                 LOG(ERROR) << "Failed to read ribExplicitPositioning at xpath " << xpath << ": " << e.what();
                 m_ribExplicitPositioning_choice2 = boost::none;
             }
+        }
+
+        // read element ribCrossSection
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribCrossSection")) {
+            m_ribCrossSection.ReadCPACS(tixiHandle, xpath + "/ribCrossSection");
+        }
+        else {
+            LOG(ERROR) << "Required element ribCrossSection is missing at xpath " << xpath;
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -148,10 +148,6 @@ namespace generated
             }
         }
 
-        // write element ribCrossSection
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCrossSection");
-        m_ribCrossSection.WriteCPACS(tixiHandle, xpath + "/ribCrossSection");
-
         // write element ribsPositioning
         if (m_ribsPositioning_choice1) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribsPositioning");
@@ -173,6 +169,10 @@ namespace generated
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/ribExplicitPositioning");
             }
         }
+
+        // write element ribCrossSection
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCrossSection");
+        m_ribCrossSection.WriteCPACS(tixiHandle, xpath + "/ribCrossSection");
 
     }
 
@@ -240,16 +240,6 @@ namespace generated
         m_description = value;
     }
 
-    const CCPACSWingRibCrossSection& CPACSWingRibsDefinition::GetRibCrossSection() const
-    {
-        return m_ribCrossSection;
-    }
-
-    CCPACSWingRibCrossSection& CPACSWingRibsDefinition::GetRibCrossSection()
-    {
-        return m_ribCrossSection;
-    }
-
     const boost::optional<CCPACSWingRibsPositioning>& CPACSWingRibsDefinition::GetRibsPositioning_choice1() const
     {
         return m_ribsPositioning_choice1;
@@ -268,6 +258,16 @@ namespace generated
     boost::optional<CCPACSWingRibExplicitPositioning>& CPACSWingRibsDefinition::GetRibExplicitPositioning_choice2()
     {
         return m_ribExplicitPositioning_choice2;
+    }
+
+    const CCPACSWingRibCrossSection& CPACSWingRibsDefinition::GetRibCrossSection() const
+    {
+        return m_ribCrossSection;
+    }
+
+    CCPACSWingRibCrossSection& CPACSWingRibsDefinition::GetRibCrossSection()
+    {
+        return m_ribCrossSection;
     }
 
     CCPACSWingRibsPositioning& CPACSWingRibsDefinition::GetRibsPositioning_choice1(CreateIfNotExistsTag)

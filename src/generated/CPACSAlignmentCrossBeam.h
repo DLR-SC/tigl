@@ -95,23 +95,14 @@ namespace generated
         boost::optional<double> m_translationLocZ;
 
     private:
-#ifdef HAVE_CPP11
         CPACSAlignmentCrossBeam(const CPACSAlignmentCrossBeam&) = delete;
         CPACSAlignmentCrossBeam& operator=(const CPACSAlignmentCrossBeam&) = delete;
 
         CPACSAlignmentCrossBeam(CPACSAlignmentCrossBeam&&) = delete;
         CPACSAlignmentCrossBeam& operator=(CPACSAlignmentCrossBeam&&) = delete;
-#else
-        CPACSAlignmentCrossBeam(const CPACSAlignmentCrossBeam&);
-        CPACSAlignmentCrossBeam& operator=(const CPACSAlignmentCrossBeam&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSAlignmentCrossBeam = generated::CPACSAlignmentCrossBeam;
-#else
-typedef generated::CPACSAlignmentCrossBeam CCPACSAlignmentCrossBeam;
-#endif
 } // namespace tigl

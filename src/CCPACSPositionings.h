@@ -45,10 +45,10 @@ public:
     TIGL_EXPORT CCPACSPositionings(CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT ~CCPACSPositionings() OVERRIDE;
+    TIGL_EXPORT ~CCPACSPositionings() override;
 
     // Read CPACS positionings element
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath) override;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();

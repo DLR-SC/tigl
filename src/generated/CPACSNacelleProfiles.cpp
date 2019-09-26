@@ -49,7 +49,7 @@ namespace generated
     {
         // read element nacelleProfile
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacelleProfile")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleProfile", m_nacelleProfiles, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/nacelleProfile", m_nacelleProfiles, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSNacelleProfile> >& CPACSNacelleProfiles::GetNacelleProfiles() const
+    const std::vector<std::unique_ptr<CCPACSNacelleProfile>>& CPACSNacelleProfiles::GetNacelleProfiles() const
     {
         return m_nacelleProfiles;
     }
 
-    std::vector<unique_ptr<CCPACSNacelleProfile> >& CPACSNacelleProfiles::GetNacelleProfiles()
+    std::vector<std::unique_ptr<CCPACSNacelleProfile>>& CPACSNacelleProfiles::GetNacelleProfiles()
     {
         return m_nacelleProfiles;
     }

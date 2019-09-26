@@ -51,8 +51,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -135,15 +135,28 @@ TEST_F(TiglFuselageGetPoint, success)
     
     ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 1, 0.0, 0.0, &x, &y, &z) == TIGL_SUCCESS);
     ASSERT_NEAR(-0.5, x, accuracy);
+    ASSERT_NEAR( 0.0, y, accuracy);
+    ASSERT_NEAR( 0.5, z, accuracy);
     
     ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
     ASSERT_NEAR( 0.0, x, accuracy);
+    ASSERT_NEAR( 0.0, y, accuracy);
+    ASSERT_NEAR(-0.5, z, accuracy);
     
     ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 1, 1.0, 1.0, &x, &y, &z) == TIGL_SUCCESS);
     ASSERT_NEAR( 0.5, x, accuracy);
+    ASSERT_NEAR( 0.0, y, accuracy);
+    ASSERT_NEAR( 0.5, z, accuracy);
     
     ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 2, 1.0, 1.0, &x, &y, &z) == TIGL_SUCCESS);
     ASSERT_NEAR( 1.5, x, accuracy);
+    ASSERT_NEAR( 0.0, y, accuracy);
+    ASSERT_NEAR( 0.5, z, accuracy);
+
+    ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 2, 0.5, 0.25, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR( 1.0, x, accuracy);
+    ASSERT_NEAR( 0.5, y, accuracy);
+    ASSERT_NEAR( 0.0, z, accuracy);
 }
 
 /**

@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSCrossBeamAssemblyPosition> >& GetCargoCrossBeams() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSCrossBeamAssemblyPosition> >& GetCargoCrossBeams();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSCrossBeamAssemblyPosition>>& GetCargoCrossBeams() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSCrossBeamAssemblyPosition>>& GetCargoCrossBeams();
 
         TIGL_EXPORT virtual CCPACSCrossBeamAssemblyPosition& AddCargoCrossBeam();
         TIGL_EXPORT virtual void RemoveCargoCrossBeam(CCPACSCrossBeamAssemblyPosition& ref);
@@ -68,19 +68,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSCrossBeamAssemblyPosition> > m_cargoCrossBeams;
+        std::vector<std::unique_ptr<CCPACSCrossBeamAssemblyPosition>> m_cargoCrossBeams;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCargoCrossBeamsAssembly(const CPACSCargoCrossBeamsAssembly&) = delete;
         CPACSCargoCrossBeamsAssembly& operator=(const CPACSCargoCrossBeamsAssembly&) = delete;
 
         CPACSCargoCrossBeamsAssembly(CPACSCargoCrossBeamsAssembly&&) = delete;
         CPACSCargoCrossBeamsAssembly& operator=(CPACSCargoCrossBeamsAssembly&&) = delete;
-#else
-        CPACSCargoCrossBeamsAssembly(const CPACSCargoCrossBeamsAssembly&);
-        CPACSCargoCrossBeamsAssembly& operator=(const CPACSCargoCrossBeamsAssembly&);
-#endif
     };
 } // namespace generated
 

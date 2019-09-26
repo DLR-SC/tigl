@@ -49,7 +49,7 @@ namespace generated
     {
         // read element guideCurveProfile
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurveProfile")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/guideCurveProfile", m_guideCurveProfiles, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/guideCurveProfile", m_guideCurveProfiles, 1, tixi::xsdUnbounded, m_uidMgr);
         }
 
     }
@@ -61,12 +61,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSGuideCurveProfile> >& CPACSGuideCurveProfiles::GetGuideCurveProfiles() const
+    const std::vector<std::unique_ptr<CCPACSGuideCurveProfile>>& CPACSGuideCurveProfiles::GetGuideCurveProfiles() const
     {
         return m_guideCurveProfiles;
     }
 
-    std::vector<unique_ptr<CCPACSGuideCurveProfile> >& CPACSGuideCurveProfiles::GetGuideCurveProfiles()
+    std::vector<std::unique_ptr<CCPACSGuideCurveProfile>>& CPACSGuideCurveProfiles::GetGuideCurveProfiles()
     {
         return m_guideCurveProfiles;
     }

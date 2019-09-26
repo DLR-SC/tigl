@@ -52,8 +52,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -92,8 +92,8 @@ protected:
         tixiSimpleWingHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiSimpleWingHandle;
@@ -146,7 +146,6 @@ TEST_F(TiglWing, tiglWingGetProfileName_invalidElement)
 */
 TEST_F(TiglWing, tiglWingGetProfileName_nullPointerArgument)
 {
-    char* namePtr = 0;
     ASSERT_TRUE(tiglWingGetProfileName(tiglHandle, 1, 1, 1, 0) == TIGL_NULL_POINTER);
 }
 
@@ -236,7 +235,6 @@ TEST_F(TiglWing, tiglWingGetIndex_nullPtr)
 
 TEST_F(TiglWing, tiglWingGetIndex_indexNullPtr)
 {
-    int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetIndex(tiglHandle, "D150_VAMP_SL1" , NULL) == TIGL_NULL_POINTER);
 }
 
@@ -311,4 +309,10 @@ TEST_F(WingSimple, wingGetReferenceArea_success)
     tiglWingGetReferenceArea(tiglSimpleWingHandle, 1, TIGL_X_Y_PLANE, &ref);
     ASSERT_NEAR(1.75, ref, 1e-7);
 
+}
+
+TEST_F(WingSimple, wingGetWettedArea_success)
+{
+    double ref = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetWettedArea(tiglSimpleWingHandle, "Wing", &ref));
 }

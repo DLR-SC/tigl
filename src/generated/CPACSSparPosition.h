@@ -94,16 +94,11 @@ namespace generated
         boost::optional<CPACSEtaXsiPoint>  m_sparPositionEtaXsi_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSparPosition(const CPACSSparPosition&) = delete;
         CPACSSparPosition& operator=(const CPACSSparPosition&) = delete;
 
         CPACSSparPosition(CPACSSparPosition&&) = delete;
         CPACSSparPosition& operator=(CPACSSparPosition&&) = delete;
-#else
-        CPACSSparPosition(const CPACSSparPosition&);
-        CPACSSparPosition& operator=(const CPACSSparPosition&);
-#endif
     };
 } // namespace generated
 

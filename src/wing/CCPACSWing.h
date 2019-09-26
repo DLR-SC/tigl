@@ -57,15 +57,15 @@ public:
     TIGL_EXPORT CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr);
 
     // Virtual destructor
-    TIGL_EXPORT ~CCPACSWing() OVERRIDE;
+    TIGL_EXPORT ~CCPACSWing() override;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
     // Read CPACS wing elements
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath) override;
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     // Returns whether this wing is a rotor blade
     TIGL_EXPORT bool IsRotorBlade() const;
@@ -107,7 +107,7 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
     // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
-    TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi);
+    TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
     // Gets the loft of the whole wing
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge();
@@ -162,12 +162,12 @@ public:
     TIGL_EXPORT int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
     // Returns the Component Type TIGL_COMPONENT_WING.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
     {
         return !IsRotorBlade() ? TIGL_COMPONENT_WING : TIGL_COMPONENT_ROTORBLADE;
     }
 
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE {return TIGL_INTENT_PHYSICAL; }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override {return TIGL_INTENT_PHYSICAL; }
 
     // Returns the lower Surface of a Segment
     TIGL_EXPORT Handle(Geom_Surface) GetLowerSegmentSurface(int index);
@@ -344,7 +344,7 @@ protected:
     // Adds all Segments of this wing to one shape
     PNamedShape BuildFusedSegments(bool splitWingInUpperAndLower) const;
         
-    PNamedShape BuildLoft() const OVERRIDE;
+    PNamedShape BuildLoft() const override;
         
     void BuildUpperLowerShells();
 

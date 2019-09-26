@@ -89,6 +89,9 @@ TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
 TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop);
 
+// calculates the alpha value for a given point on a wire
+TIGL_EXPORT Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire& wire, gp_Pnt p, gp_Dir rotationAxisAroundP, double angle);
+
 enum IntStatus
 {
     BetweenPoints, // The intersection point lies between p1 and p2
@@ -284,18 +287,11 @@ TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedC
 TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts);
 
 template <typename T>
-size_t IndexFromUid(const std::vector<tigl::unique_ptr<T> >& vectorOfPointers, const std::string& uid)
+size_t IndexFromUid(const std::vector<std::unique_ptr<T> >& vectorOfPointers, const std::string& uid)
 {
-    struct is_uid { 
-        is_uid(const std::string& uid) : m_uid(uid){}
-        bool operator()(const tigl::unique_ptr<T>& ptr)
-        { 
-            return ptr->GetUID() == m_uid;
-        }
-        std::string m_uid;
-    }; 
-    
-    typename std::vector<tigl::unique_ptr<T> >::const_iterator found = std::find_if(vectorOfPointers.begin(), vectorOfPointers.end(), is_uid(uid));
+    const auto found = std::find_if(vectorOfPointers.begin(), vectorOfPointers.end(), [&uid](const std::unique_ptr<T>& ptr) {
+        return ptr->GetUID() == uid;
+    });
     return found - vectorOfPointers.begin();
 }
 

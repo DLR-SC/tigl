@@ -30,7 +30,7 @@
 namespace {
     class tiglUidManagerTest : public ::testing::Test {
     protected:
-        void SetUp() OVERRIDE {
+        void SetUp() override {
             tixiHandle = -1;
             ASSERT_TRUE(tixiOpenDocument("TestData/CPACS_30_D150.xml", &tixiHandle) == SUCCESS);
 
@@ -40,7 +40,7 @@ namespace {
             uidMgr = &tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
         }
 
-        void TearDown() OVERRIDE {
+        void TearDown() override {
             ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
             ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
             tiglHandle = -1;

@@ -49,10 +49,10 @@ public:
     TIGL_EXPORT CCPACSFuselageProfile(CTiglUIDManager* uidMgr);
 
     // Destructor
-    TIGL_EXPORT ~CCPACSFuselageProfile() OVERRIDE;
+    TIGL_EXPORT ~CCPACSFuselageProfile() override;
 
     // Read CPACS fuselage profile file
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     // Returns the name of the fuselage profile
     TIGL_EXPORT const int GetNumPoints() const;
@@ -126,8 +126,7 @@ private:
     Cache<WireCache, CCPACSFuselageProfile> wireCache;   /**< Original and force closed fuselage profile wire */
     Cache<DiameterPointsCache, CCPACSFuselageProfile> diameterPointsCache;
     Cache<SizeCache, CCPACSFuselageProfile> sizeCache;
-    unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
-
+    std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
 };
 
 } // end namespace tigl

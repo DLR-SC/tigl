@@ -76,16 +76,11 @@ namespace generated
         std::string m_curveProfileUID;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRotationCurve(const CPACSRotationCurve&) = delete;
         CPACSRotationCurve& operator=(const CPACSRotationCurve&) = delete;
 
         CPACSRotationCurve(CPACSRotationCurve&&) = delete;
         CPACSRotationCurve& operator=(CPACSRotationCurve&&) = delete;
-#else
-        CPACSRotationCurve(const CPACSRotationCurve&);
-        CPACSRotationCurve& operator=(const CPACSRotationCurve&);
-#endif
     };
 } // namespace generated
 

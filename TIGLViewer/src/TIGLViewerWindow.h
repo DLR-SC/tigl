@@ -52,7 +52,7 @@ public:
     enum { MaxRecentFiles = 5 };
 
     TIGLViewerWindow();
-    ~TIGLViewerWindow() OVERRIDE;
+    ~TIGLViewerWindow() override;
 
     
     void setInitialControlFile(QString filename);
@@ -64,8 +64,8 @@ public:
     void displayErrorMessage (const QString aMessage, QString aHeader);
 
 protected:
-     void dropEvent(QDropEvent *ev) OVERRIDE;
-     void dragEnterEvent(QDragEnterEvent *ev) OVERRIDE;
+     void dropEvent(QDropEvent *ev) override;
+     void dragEnterEvent(QDragEnterEvent *ev) override;
 
 signals:
      void windowInitialized();
@@ -119,7 +119,7 @@ private:
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
 
-    void closeEvent(QCloseEvent*) OVERRIDE;
+    void closeEvent(QCloseEvent*) override;
     bool deleteEnvVar(const char* varname);
 
     QAction *recentFileActions[MaxRecentFiles];

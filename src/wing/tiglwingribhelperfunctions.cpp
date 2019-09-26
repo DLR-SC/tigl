@@ -134,7 +134,7 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
 }
 
 gp_Vec GetUpVectorWithoutXRotation(const std::string& ribReference, double currentEta, const gp_Pnt& startPnt, 
-                                   const std::string& sparPositionUID, const CCPACSWingCSStructure& structure)
+                                   bool onSpar, const CCPACSWingCSStructure& structure)
 {
     const CTiglWingStructureReference wsr(structure);
 
@@ -144,7 +144,7 @@ gp_Vec GetUpVectorWithoutXRotation(const std::string& ribReference, double curre
     gp_Vec upVec = wsr.GetMidplaneNormal(midplaneEta);
 
     // Bug #408: special handling in case the rib is defined at the spar position or start or end point of a spar
-    if (!sparPositionUID.empty() || (to_lower(ribReference) != to_lower("leadingEdge") && to_lower(ribReference) != to_lower("trailingEdge") &&
+    if (onSpar || (to_lower(ribReference) != to_lower("leadingEdge") && to_lower(ribReference) != to_lower("trailingEdge") &&
         (currentEta < Precision::Confusion() || currentEta >(1 - Precision::Confusion())))) {
         // TODO: here it is expected that the up vector of the spars is always (0,0,1) !!!
         upVec = gp_Vec(0, 0, 1);

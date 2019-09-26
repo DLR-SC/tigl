@@ -50,8 +50,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSPressureBulkhead> >& GetPressureBulkheads() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSPressureBulkhead> >& GetPressureBulkheads();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSPressureBulkhead>>& GetPressureBulkheads() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSPressureBulkhead>>& GetPressureBulkheads();
 
         TIGL_EXPORT virtual CCPACSPressureBulkhead& AddPressureBulkhead();
         TIGL_EXPORT virtual void RemovePressureBulkhead(CCPACSPressureBulkhead& ref);
@@ -59,19 +59,14 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSPressureBulkhead> > m_pressureBulkheads;
+        std::vector<std::unique_ptr<CCPACSPressureBulkhead>> m_pressureBulkheads;
 
     private:
-#ifdef HAVE_CPP11
         CPACSPressureBulkheads(const CPACSPressureBulkheads&) = delete;
         CPACSPressureBulkheads& operator=(const CPACSPressureBulkheads&) = delete;
 
         CPACSPressureBulkheads(CPACSPressureBulkheads&&) = delete;
         CPACSPressureBulkheads& operator=(CPACSPressureBulkheads&&) = delete;
-#else
-        CPACSPressureBulkheads(const CPACSPressureBulkheads&);
-        CPACSPressureBulkheads& operator=(const CPACSPressureBulkheads&);
-#endif
     };
 } // namespace generated
 

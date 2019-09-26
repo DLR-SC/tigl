@@ -62,15 +62,15 @@ public:
     TIGL_EXPORT CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT ~CCPACSWingComponentSegment() OVERRIDE;
+    TIGL_EXPORT ~CCPACSWingComponentSegment() override;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) override;
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     TIGL_EXPORT CCPACSWing& GetWing() const;
 
@@ -128,8 +128,8 @@ public:
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
     TIGL_EXPORT const CCPACSWingSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation, double maxDeviation = 1.e-2) const;
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_WINGCOMPSEGMENT; }
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE {return TIGL_INTENT_LOGICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override { return TIGL_COMPONENT_WINGCOMPSEGMENT; }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override {return TIGL_INTENT_LOGICAL; }
 
     TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
@@ -207,7 +207,7 @@ private:
     void Update();
 
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft() const OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
     void BuildWingSegments(SegmentList& cache) const;
     void BuildGeometry(GeometryCache& cache) const;
@@ -229,9 +229,9 @@ private:
 private:
     typedef CTiglShapeGeomComponentAdaptor<CCPACSWingComponentSegment> ShapeAdaptor;
     CCPACSWing*          wing;           /**< Parent wing                             */
-    unique_ptr<ShapeAdaptor> upperShape; /**< Upper shape of this componentSegment */
-    unique_ptr<ShapeAdaptor> lowerShape; /**< Lower shape of this componentSegment */
-    unique_ptr<CTiglWingChordface> chordFace;
+    std::unique_ptr<ShapeAdaptor> upperShape; /**< Upper shape of this componentSegment */
+    std::unique_ptr<ShapeAdaptor> lowerShape; /**< Lower shape of this componentSegment */
+    std::unique_ptr<CTiglWingChordface> chordFace;
     Cache<SegmentList, CCPACSWingComponentSegment> wingSegments; ///< List of segments belonging to the component segment
     Cache<GeometryCache, CCPACSWingComponentSegment> geomCache;
     Cache<LinesCache, CCPACSWingComponentSegment> linesCache;

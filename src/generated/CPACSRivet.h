@@ -82,23 +82,14 @@ namespace generated
         double                       m_shearStrength;
 
     private:
-#ifdef HAVE_CPP11
         CPACSRivet(const CPACSRivet&) = delete;
         CPACSRivet& operator=(const CPACSRivet&) = delete;
 
         CPACSRivet(CPACSRivet&&) = delete;
         CPACSRivet& operator=(CPACSRivet&&) = delete;
-#else
-        CPACSRivet(const CPACSRivet&);
-        CPACSRivet& operator=(const CPACSRivet&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSRivet = generated::CPACSRivet;
-#else
-typedef generated::CPACSRivet CCPACSRivet;
-#endif
 } // namespace tigl

@@ -88,24 +88,6 @@ namespace generated
         TIGL_EXPORT virtual const double& GetK12() const;
         TIGL_EXPORT virtual void SetK12(const double& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetMaxStrain() const;
-        TIGL_EXPORT virtual void SetMaxStrain(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetFatigueFactor() const;
-        TIGL_EXPORT virtual void SetFatigueFactor(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailures() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSPostFailure> >& GetPostFailures();
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetThermalConductivity() const;
-        TIGL_EXPORT virtual void SetThermalConductivity(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<CPACSSpecificHeatMap>& GetSpecificHeatMap() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSpecificHeatMap>& GetSpecificHeatMap();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSEmissivityMap>& GetEmissivityMap() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEmissivityMap>& GetEmissivityMap();
-
         TIGL_EXPORT virtual const boost::optional<double>& GetSig11_choice1() const;
         TIGL_EXPORT virtual void SetSig11_choice1(const boost::optional<double>& value);
 
@@ -193,6 +175,24 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetTau23_choice3() const;
         TIGL_EXPORT virtual void SetTau23_choice3(const boost::optional<double>& value);
 
+        TIGL_EXPORT virtual const boost::optional<double>& GetMaxStrain() const;
+        TIGL_EXPORT virtual void SetMaxStrain(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetFatigueFactor() const;
+        TIGL_EXPORT virtual void SetFatigueFactor(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSPostFailure>>& GetPostFailures() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSPostFailure>>& GetPostFailures();
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetThermalConductivity() const;
+        TIGL_EXPORT virtual void SetThermalConductivity(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<CPACSSpecificHeatMap>& GetSpecificHeatMap() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSpecificHeatMap>& GetSpecificHeatMap();
+
+        TIGL_EXPORT virtual const boost::optional<CPACSEmissivityMap>& GetEmissivityMap() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEmissivityMap>& GetEmissivityMap();
+
         TIGL_EXPORT virtual CPACSPostFailure& AddPostFailure();
         TIGL_EXPORT virtual void RemovePostFailure(CPACSPostFailure& ref);
 
@@ -205,154 +205,144 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        std::string                                m_uID;
+        std::string                                    m_uID;
 
         /// Name of material
-        std::string                                m_name;
+        std::string                                    m_name;
 
         /// description of material
-        boost::optional<std::string>               m_description;
+        boost::optional<std::string>                   m_description;
 
         /// Density of material in [kg/m^3]
-        double                                     m_rho;
+        double                                         m_rho;
 
         /// stiffness component in 11-direction in [N/m]
-        double                                     m_k11;
+        double                                         m_k11;
 
         /// stiffness component in 12-direction in [N/m]
-        double                                     m_k12;
-
-        /// Maximum strain of the material. This value is
-        /// intended for layerd material. Thus no orientation is given.
-        boost::optional<double>                    m_maxStrain;
-
-        /// optional knockdown factor for fatiuqe
-        /// (defaults to 1)
-        boost::optional<double>                    m_fatigueFactor;
-
-        std::vector<unique_ptr<CPACSPostFailure> > m_postFailures;
-
-        /// thermal conductivity of the material in [W/(m*K)]
-        boost::optional<double>                    m_thermalConductivity;
-
-        boost::optional<CPACSSpecificHeatMap>      m_specificHeatMap;
-
-        boost::optional<CPACSEmissivityMap>        m_emissivityMap;
+        double                                         m_k12;
 
         /// tensile strength in 11 direction in [N/m^2]
-        boost::optional<double>                    m_sig11_choice1;
+        boost::optional<double>                        m_sig11_choice1;
 
         /// shear strength in 12 direction in [N/m^2]
-        boost::optional<double>                    m_tau12_choice1;
+        boost::optional<double>                        m_tau12_choice1;
 
         /// tensile yield strength in 11 direction in
         /// [N/m^2]
-        boost::optional<double>                    m_sig11yieldT_choice1;
+        boost::optional<double>                        m_sig11yieldT_choice1;
 
         /// compressive yield strength in 11 direction
         /// in [N/m^2]
-        boost::optional<double>                    m_sig11yieldC_choice1;
+        boost::optional<double>                        m_sig11yieldC_choice1;
 
         /// stiffness component in 22-direction
-        boost::optional<double>                    m_k22_choice2;
+        boost::optional<double>                        m_k22_choice2;
 
         /// stiffness component in 23-direction
-        boost::optional<double>                    m_k23_choice2;
+        boost::optional<double>                        m_k23_choice2;
 
         /// stiffness component in 66-direction
-        boost::optional<double>                    m_k66_choice2;
+        boost::optional<double>                        m_k66_choice2;
 
         /// tensile strength in 11 direction in [N/m^2]
-        boost::optional<double>                    m_sig11t_choice2;
+        boost::optional<double>                        m_sig11t_choice2;
 
         /// compressive strength in 11 direction in
         /// [N/m^2]
-        boost::optional<double>                    m_sig11c_choice2;
+        boost::optional<double>                        m_sig11c_choice2;
 
         /// tensile strength in 22 direction in [N/m^2]
-        boost::optional<double>                    m_sig22t_choice2;
+        boost::optional<double>                        m_sig22t_choice2;
 
         /// compressive strength in 22 direction in
         /// [N/m^2]
-        boost::optional<double>                    m_sig22c_choice2;
+        boost::optional<double>                        m_sig22c_choice2;
 
         /// shear strength in 12 direction in [N/m^2]
-        boost::optional<double>                    m_tau12_choice2;
+        boost::optional<double>                        m_tau12_choice2;
 
         /// shear strength in 23 direction in [N/m^2]
-        boost::optional<double>                    m_tau23_choice2;
+        boost::optional<double>                        m_tau23_choice2;
 
         /// stiffness component in 13-direction
-        boost::optional<double>                    m_k13_choice3;
+        boost::optional<double>                        m_k13_choice3;
 
         /// stiffness component in 22-direction
-        boost::optional<double>                    m_k22_choice3;
+        boost::optional<double>                        m_k22_choice3;
 
         /// stiffness component in 23-direction
-        boost::optional<double>                    m_k23_choice3;
+        boost::optional<double>                        m_k23_choice3;
 
         /// stiffness component in 33-direction
-        boost::optional<double>                    m_k33_choice3;
+        boost::optional<double>                        m_k33_choice3;
 
         /// stiffness component in 44-direction
-        boost::optional<double>                    m_k44_choice3;
+        boost::optional<double>                        m_k44_choice3;
 
         /// stiffness component in 55-direction
-        boost::optional<double>                    m_k55_choice3;
+        boost::optional<double>                        m_k55_choice3;
 
         /// stiffness component in 66-direction
-        boost::optional<double>                    m_k66_choice3;
+        boost::optional<double>                        m_k66_choice3;
 
         /// tensile strength in 11 direction in [N/m^2]
-        boost::optional<double>                    m_sig11t_choice3;
+        boost::optional<double>                        m_sig11t_choice3;
 
         /// compressive strength in 11 direction in
         /// [N/m^2]
-        boost::optional<double>                    m_sig11c_choice3;
+        boost::optional<double>                        m_sig11c_choice3;
 
         /// tensile strength in 22 direction in [N/m^2]
-        boost::optional<double>                    m_sig22t_choice3;
+        boost::optional<double>                        m_sig22t_choice3;
 
         /// compressive strength in 22 direction in
         /// [N/m^2]
-        boost::optional<double>                    m_sig22c_choice3;
+        boost::optional<double>                        m_sig22c_choice3;
 
         /// tensile strength in 33 direction in [N/m^2]
-        boost::optional<double>                    m_sig33t_choice3;
+        boost::optional<double>                        m_sig33t_choice3;
 
         /// compressive strength in 33 direction in
         /// [N/m^2]
-        boost::optional<double>                    m_sig33c_choice3;
+        boost::optional<double>                        m_sig33c_choice3;
 
         /// shear strength in 12 direction in [N/m^2]
-        boost::optional<double>                    m_tau12_choice3;
+        boost::optional<double>                        m_tau12_choice3;
 
         /// shear strength in 13 direction in [N/m^2]
-        boost::optional<double>                    m_tau13_choice3;
+        boost::optional<double>                        m_tau13_choice3;
 
         /// shear strength in 23 direction in [N/m^2]
-        boost::optional<double>                    m_tau23_choice3;
+        boost::optional<double>                        m_tau23_choice3;
+
+        /// Maximum strain of the material. This value is
+        /// intended for layerd material. Thus no orientation is given.
+        boost::optional<double>                        m_maxStrain;
+
+        /// optional knockdown factor for fatiuqe
+        /// (defaults to 1)
+        boost::optional<double>                        m_fatigueFactor;
+
+        std::vector<std::unique_ptr<CPACSPostFailure>> m_postFailures;
+
+        /// thermal conductivity of the material in [W/(m*K)]
+        boost::optional<double>                        m_thermalConductivity;
+
+        boost::optional<CPACSSpecificHeatMap>          m_specificHeatMap;
+
+        boost::optional<CPACSEmissivityMap>            m_emissivityMap;
 
     private:
-#ifdef HAVE_CPP11
         CPACSMaterial(const CPACSMaterial&) = delete;
         CPACSMaterial& operator=(const CPACSMaterial&) = delete;
 
         CPACSMaterial(CPACSMaterial&&) = delete;
         CPACSMaterial& operator=(CPACSMaterial&&) = delete;
-#else
-        CPACSMaterial(const CPACSMaterial&);
-        CPACSMaterial& operator=(const CPACSMaterial&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSMaterial = generated::CPACSMaterial;
 using CCPACSPostFailure = generated::CPACSPostFailure;
-#else
-typedef generated::CPACSMaterial CCPACSMaterial;
-typedef generated::CPACSPostFailure CCPACSPostFailure;
-#endif
 } // namespace tigl

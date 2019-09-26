@@ -33,6 +33,8 @@ install(
     COMPONENT interfaces
 )
 
+get_target_property(TIXI_INCLUDE_DIRS tixi3 INTERFACE_INCLUDE_DIRECTORIES)
+
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/tiglmatlab.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common.h
@@ -67,10 +69,9 @@ if(MATLAB_FOUND)
       set(TMAT_SRC ${TMAT_SRC} exports.def)
     endif()
 
-    include_directories(${PROJECT_SOURCE_DIR}/src/api ${MATLAB_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
-
     add_library(tigl_matlab SHARED ${TMAT_SRC})
-    target_link_libraries(tigl_matlab ${MATLAB_mat_LIBRARY} ${MATLAB_mx_LIBRARY} ${MATLAB_mex_LIBRARY} tigl3)
+    target_include_directories(tigl_matlab PRIVATE ${MATLAB_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+    target_link_libraries(tigl_matlab PRIVATE ${MATLAB_mat_LIBRARY} ${MATLAB_mx_LIBRARY} ${MATLAB_mex_LIBRARY} tigl3)
     set_target_properties(tigl_matlab PROPERTIES SUFFIX ${MATLAB_MEX_SUFFIX} PREFIX "")
 
     install(TARGETS tigl_matlab DESTINATION share/tigl3/matlab

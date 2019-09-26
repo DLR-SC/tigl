@@ -17,11 +17,14 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <CCPACSNacelleGuideCurves.h>
 #include <CCPACSNacelleSections.h>
 #include <CCPACSRotationCurve.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -65,42 +68,36 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSNacelleSections& GetSections() const;
         TIGL_EXPORT virtual CCPACSNacelleSections& GetSections();
 
-        TIGL_EXPORT virtual const CCPACSNacelleGuideCurves& GetGuideCurves() const;
-        TIGL_EXPORT virtual CCPACSNacelleGuideCurves& GetGuideCurves();
+        TIGL_EXPORT virtual const boost::optional<CCPACSNacelleGuideCurves>& GetGuideCurves() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSNacelleGuideCurves>& GetGuideCurves();
 
         TIGL_EXPORT virtual const CCPACSRotationCurve& GetRotationCurve() const;
         TIGL_EXPORT virtual CCPACSRotationCurve& GetRotationCurve();
+
+        TIGL_EXPORT virtual CCPACSNacelleGuideCurves& GetGuideCurves(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveGuideCurves();
 
     protected:
         CPACSEngineNacelle* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string              m_uID;
-        CCPACSNacelleSections    m_sections;
-        CCPACSNacelleGuideCurves m_guideCurves;
-        CCPACSRotationCurve      m_rotationCurve;
+        std::string                               m_uID;
+        CCPACSNacelleSections                     m_sections;
+        boost::optional<CCPACSNacelleGuideCurves> m_guideCurves;
+        CCPACSRotationCurve                       m_rotationCurve;
 
     private:
-#ifdef HAVE_CPP11
         CPACSNacelleCowl(const CPACSNacelleCowl&) = delete;
         CPACSNacelleCowl& operator=(const CPACSNacelleCowl&) = delete;
 
         CPACSNacelleCowl(CPACSNacelleCowl&&) = delete;
         CPACSNacelleCowl& operator=(CPACSNacelleCowl&&) = delete;
-#else
-        CPACSNacelleCowl(const CPACSNacelleCowl&);
-        CPACSNacelleCowl& operator=(const CPACSNacelleCowl&);
-#endif
     };
 } // namespace generated
 
 // CPACSNacelleCowl is customized, use type CCPACSNacelleCowl directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSEngineNacelle = generated::CPACSEngineNacelle;
-#else
-typedef generated::CPACSEngineNacelle CCPACSEngineNacelle;
-#endif
 } // namespace tigl

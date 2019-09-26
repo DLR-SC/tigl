@@ -135,6 +135,13 @@ int as_boost_optional_string(PyObject *obj, boost::optional<std::string>& result
   }
   return res;
 }
+
+template<typename T>
+T PyLong_AsEnum(PyObject* ax)
+{
+    return static_cast<T>(PyLong_AsLong(ax));
+}
+
 } // end fragment
 
 // wrap some standard types
@@ -156,3 +163,8 @@ WRAP_BOOST_OPTIONAL_BASIC_TYPE(float, PyFloat_FromDouble, PyFloat_AsDouble)
 %define %boost_optional(TYPE)
 WRAP_BOOST_OPTIONAL_CLASS(TYPE)
 %enddef
+
+%define %boost_optional_enum(TYPE)
+WRAP_BOOST_OPTIONAL_BASIC_TYPE(TYPE, PyLong_FromLong, PyLong_AsEnum<TYPE>)
+%enddef
+

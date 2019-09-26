@@ -29,20 +29,14 @@ namespace tigl
 CCPACSGuideCurves::CCPACSGuideCurves(CTiglUIDManager* uidMgr)
     : generated::CPACSGuideCurves(uidMgr) {}
 
-namespace {
-    struct UidCompare {
-        bool operator()(const unique_ptr<CCPACSGuideCurve>& a, const unique_ptr<CCPACSGuideCurve>& b) {
-            return a->GetUID() < b->GetUID();
-        }
-    };
-}
-
 void CCPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSGuideCurves::ReadCPACS(tixiHandle, xpath);
 
     // sort by uid as some unit tests rely on this (TODO: should we fix the tests?)
     // WARN: this destroys the order of the guide curves as stored in the CPACS file
-    std::sort(m_guideCurves.begin(), m_guideCurves.end(), UidCompare());
+    std::sort(m_guideCurves.begin(), m_guideCurves.end(), [](const std::unique_ptr<CCPACSGuideCurve>& a, const std::unique_ptr<CCPACSGuideCurve>& b) {
+        return a->GetUID() < b->GetUID();
+    });
 }
 
 // Returns the total count of guide curves in this configuration
@@ -95,6 +89,36 @@ bool CCPACSGuideCurves::GuideCurveExists(std::string uid) const
     return false;
 }
 
+void CCPACSGuideCurves::GetRelativeCircumferenceRange(double relCirc,
+                                                      double& relCircStart,
+                                                      double& relCircEnd,
+                                                      int& idx) const
+{
+    std::vector<double> relCircs;
+    for (int iguide = 1; iguide <=  GetGuideCurveCount(); ++iguide) {
+        const CCPACSGuideCurve* root = GetGuideCurve(iguide).GetRootCurve();
+        relCircs.push_back(*root->GetFromRelativeCircumference_choice2());
+    }
+    if ( relCircs.back() < 1.0 ) {
+        relCircs.push_back(1.0);
+    }
+
+    std::sort(relCircs.begin(), relCircs.end());
+
+    // probably best to assert for performance reasons...
+    assert( relCircs.size() > 0 );
+    assert( relCirc >= relCircs[0] );
+    assert( relCirc <= relCircs.back() );
+
+    for (size_t i = 1; i < relCircs.size(); ++i ) {
+        if (relCircs[i] >= relCirc ) {
+            relCircStart = relCircs[i-1];
+            relCircEnd = relCircs[i];
+            idx = static_cast<int>(i-1);
+            break;
+        }
+    }
+}
 
 } // end namespace tigl
 

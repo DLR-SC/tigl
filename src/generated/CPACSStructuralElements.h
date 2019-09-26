@@ -120,23 +120,14 @@ namespace generated
         boost::optional<CPACSRivets>                         m_rivets;
 
     private:
-#ifdef HAVE_CPP11
         CPACSStructuralElements(const CPACSStructuralElements&) = delete;
         CPACSStructuralElements& operator=(const CPACSStructuralElements&) = delete;
 
         CPACSStructuralElements(CPACSStructuralElements&&) = delete;
         CPACSStructuralElements& operator=(CPACSStructuralElements&&) = delete;
-#else
-        CPACSStructuralElements(const CPACSStructuralElements&);
-        CPACSStructuralElements& operator=(const CPACSStructuralElements&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSStructuralElements = generated::CPACSStructuralElements;
-#else
-typedef generated::CPACSStructuralElements CCPACSStructuralElements;
-#endif
 } // namespace tigl

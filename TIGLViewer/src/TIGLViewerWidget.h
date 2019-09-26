@@ -54,7 +54,7 @@ class gp_Pnt;
 class gp_Vec;
 class TIGLViewerContext;
 
-class QOCC_DECLSPEC TIGLViewerWidget : public QWidget
+class TIGLViewerWidget : public QWidget
 {
     Q_OBJECT
 
@@ -92,7 +92,7 @@ public:
 public:
     TIGLViewerWidget(QWidget*);
 
-    ~TIGLViewerWidget() OVERRIDE;
+    ~TIGLViewerWidget() override;
 
     // the scene context must be set before first use
     void setContext(TIGLViewerContext* aContext);
@@ -100,7 +100,7 @@ public:
     Handle_V3d_View                  getView( void )    { return myView; }
 
     //Overrides
-    QPaintEngine*   paintEngine() const OVERRIDE;
+    QPaintEngine*   paintEngine() const override;
     class QToolBar* myToolBar;
 
     void redraw( bool isPainting = false );
@@ -158,16 +158,16 @@ public slots:
 
 protected: // methods
 
-    void paintEvent        ( QPaintEvent* e ) OVERRIDE;
-    void resizeEvent       ( QResizeEvent* e ) OVERRIDE;
-    void mousePressEvent   ( QMouseEvent* e ) OVERRIDE;
-    void mouseReleaseEvent ( QMouseEvent* e ) OVERRIDE;
-    void mouseMoveEvent    ( QMouseEvent* e ) OVERRIDE;
-    void wheelEvent        ( QWheelEvent* e ) OVERRIDE;
-    void keyPressEvent     ( QKeyEvent* e ) OVERRIDE;
+    void paintEvent        ( QPaintEvent* e ) override;
+    void resizeEvent       ( QResizeEvent* e ) override;
+    void mousePressEvent   ( QMouseEvent* e ) override;
+    void mouseReleaseEvent ( QMouseEvent* e ) override;
+    void mouseMoveEvent    ( QMouseEvent* e ) override;
+    void wheelEvent        ( QWheelEvent* e ) override;
+    void keyPressEvent     ( QKeyEvent* e ) override;
 
-    void leaveEvent           ( QEvent * ) OVERRIDE;
-    void contextMenuEvent  (QContextMenuEvent *event) OVERRIDE;
+    void leaveEvent           ( QEvent * ) override;
+    void contextMenuEvent  (QContextMenuEvent *event) override;
 
 private: // members
     void initializeOCC(const Handle(AIS_InteractiveContext)& aContext);

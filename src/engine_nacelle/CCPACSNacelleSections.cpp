@@ -34,7 +34,7 @@ TIGL_EXPORT size_t CCPACSNacelleSections::GetSectionCount() const
 TIGL_EXPORT CCPACSNacelleSection& CCPACSNacelleSections::GetSection(size_t index) const
 {
     index--;
-    if (index < 0 || index >= GetSectionCount()) {
+    if (index >= GetSectionCount()) {
         throw CTiglError("Invalid index in CCPACSNacelleSections::GetSection", TIGL_INDEX_ERROR);
     }
     return *m_sections[index];

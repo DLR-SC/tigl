@@ -60,7 +60,7 @@ public:
     * @param tixiHandle Handle to the xml document
     * @param transformationXPath XPath to the parent object
     */
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) override;
 
 private:
     void updateMatrix(CTiglTransformation& cache) const;

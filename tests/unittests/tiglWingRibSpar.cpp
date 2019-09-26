@@ -58,8 +58,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
     static TixiDocumentHandle           tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
@@ -94,8 +94,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
     static TixiDocumentHandle           tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
@@ -130,8 +130,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
     static TixiDocumentHandle           tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
@@ -170,10 +170,10 @@ TEST_F(DistortedWing, computeSparXsi) {
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
     const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure()->GetSparSegment(1);
 
-    const std::pair<double, double> arr[] = { DP(0, 0.2), DP(0.33, 0.29), DP(0.46953191, 0.2), DP(0.9, 0.33) };
-    std::vector< std::pair<double, double> > expectedEtaXsis (arr, arr + sizeof(arr) / sizeof(arr[0])); 
+ const std::pair<double, double> arr[] = { DP(0, 0.2), DP(0.1, 0.213611), DP(0.324418, 0.3), DP(0.469532, 0.2), DP(0.613062, 0.334944), DP(1, 0.3) };
+ std::vector< std::pair<double, double> > expectedEtaXsis (arr, arr + sizeof(arr) / sizeof(arr[0])); 
     // low precision because expected xsi values are measured from model
-    const double precision = 1E-2;
+    const double precision = 1E-3;
     std::vector< std::pair<double, double> >::const_iterator it;
     for (it = expectedEtaXsis.begin(); it != expectedEtaXsis.end(); ++it) {
         double eta = it->first;
@@ -193,7 +193,7 @@ TEST_F(WingCellRibSpar2, computeRibEta) {
     tigl::CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(1);
     // now we change the rib definition for testing
     // TODO: create a cpacs file which already contains this modified rib definition
-    ribsDefinition.GetRibsPositioning_choice1()->SetEtaEnd(0.8);
+    ribsDefinition.GetRibsPositioning_choice1()->GetEndCurvePoint_choice2()->SetEta(0.8);
     ribsDefinition.GetRibsPositioning_choice1()->GetRibRotation().SetZ(75);
 
     // measured from geometry
@@ -220,7 +220,7 @@ TEST_F(WingCellRibSpar2, computeSparIntersectionEtaXsi) {
     const tigl::CCPACSWingSparSegment& spar = structure.GetSparSegment(1);
     // now we change the rib definition for testing
     // TODO: create a cpacs file which already contains this modified rib definition
-    ribsDefinition.GetRibsPositioning_choice1()->SetEtaEnd(0.8);
+    ribsDefinition.GetRibsPositioning_choice1()->GetEndCurvePoint_choice2()->SetEta(0.8);
     ribsDefinition.GetRibsPositioning_choice1()->GetRibRotation().SetZ(75);
 
     // measured from geometry
@@ -243,7 +243,6 @@ TEST_F(WingCellRibSparBugs, checkSpar2Missing) {
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
-    const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure()->GetSparSegment(1);
 
     EXPECT_EQ(1, componentSegment.GetStructure()->GetSparSegmentCount());
     EXPECT_STREQ("Wing_CS_spar1", componentSegment.GetStructure()->GetSparSegment(1).GetDefaultedUID().c_str());

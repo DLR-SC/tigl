@@ -51,7 +51,7 @@ namespace generated
     }
     inline CPACSDoorAssemblyPosition_doorType stringToCPACSDoorAssemblyPosition_doorType(const std::string& value)
     {
-        struct ToLower { std::string operator()(std::string str) { for (std::size_t i = 0; i < str.length(); i++) { str[i] = std::tolower(str[i]); } return str; } } toLower;
+        auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "pax") { return pax; }
         if (toLower(value) == "service") { return service; }
         if (toLower(value) == "emergency") { return emergency; }
@@ -61,13 +61,5 @@ namespace generated
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using ECPACSDoorAssemblyPosition_doorType = generated::CPACSDoorAssemblyPosition_doorType;
-#else
-typedef generated::CPACSDoorAssemblyPosition_doorType ECPACSDoorAssemblyPosition_doorType;
-#endif
-using generated::pax;
-using generated::service;
-using generated::emergency;
-using generated::cargo;
 } // namespace tigl

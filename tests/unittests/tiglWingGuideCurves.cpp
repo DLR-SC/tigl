@@ -59,7 +59,7 @@ typedef class CSharedPtr<tigl::CTiglPoint> PCTiglPoint;
 class WingGuideCurve : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/simple_test_guide_curves.xml";
         ReturnCode tixiRet;
@@ -83,7 +83,7 @@ protected:
         gamma=std::vector<double>(tempz, tempz + sizeof(tempz) / sizeof(tempz[0]) );
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
@@ -237,7 +237,6 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgoOnProfile
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgoOnCircle)
 {
     double radius1=1.0;
-    double distance=1.0;
     gp_Pnt location1(radius1, 0.0,  0.0);
     gp_Ax2 circlePosition1(location1, gp::DY(), gp::DX());
     Handle(Geom_Circle) circle1 = new Geom_Circle(circlePosition1, radius1);

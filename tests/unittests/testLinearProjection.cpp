@@ -26,7 +26,7 @@ class TestLinearProjection : public ::testing::Test
 {
 protected:
 
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         std::vector<gp_Pnt> points;
         points.push_back(gp_Pnt(0,0,0));
@@ -37,7 +37,7 @@ protected:
         curve = tigl::CPointsToLinearBSpline(points);
     }
     
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
     }
     

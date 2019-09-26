@@ -62,7 +62,7 @@ public:
     TIGL_EXPORT CCPACSGuideCurve(CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT ~CCPACSGuideCurve(void) OVERRIDE;
+    TIGL_EXPORT ~CCPACSGuideCurve(void) override;
 
     TIGL_EXPORT FromDefinition GetFromDefinition() const;
 
@@ -70,6 +70,7 @@ public:
     TIGL_EXPORT TopoDS_Edge GetCurve() const;
 
     TIGL_EXPORT CCPACSGuideCurve* GetConnectedCurve() const;
+    TIGL_EXPORT CCPACSGuideCurve const* GetRootCurve() const;
 
     TIGL_EXPORT void SetGuideCurveBuilder(IGuideCurveBuilder& b);
 protected:
@@ -95,6 +96,7 @@ class IGuideCurveBuilder
 {
 public:
     virtual std::vector<gp_Pnt> BuildGuideCurvePnts(const CCPACSGuideCurve*) const = 0;
+    virtual ~IGuideCurveBuilder();
 };
 
 } // end namespace tigl

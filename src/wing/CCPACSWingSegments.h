@@ -80,7 +80,7 @@ public:
 
 
 
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
 
 private:
     CTiglRelativelyPositionedComponent* m_parentVariant;

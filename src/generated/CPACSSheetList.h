@@ -59,8 +59,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CPACSSheet> >& GetSheets() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CPACSSheet> >& GetSheets();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSheet>>& GetSheets() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSheet>>& GetSheets();
 
         TIGL_EXPORT virtual CPACSSheet& AddSheet();
         TIGL_EXPORT virtual void RemoveSheet(CPACSSheet& ref);
@@ -70,30 +70,20 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CPACSSheet> > m_sheets;
+        std::vector<std::unique_ptr<CPACSSheet>> m_sheets;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSheetList(const CPACSSheetList&) = delete;
         CPACSSheetList& operator=(const CPACSSheetList&) = delete;
 
         CPACSSheetList(CPACSSheetList&&) = delete;
         CPACSSheetList& operator=(CPACSSheetList&&) = delete;
-#else
-        CPACSSheetList(const CPACSSheetList&);
-        CPACSSheetList& operator=(const CPACSSheetList&);
-#endif
     };
 } // namespace generated
 
 // CPACSSheetList is customized, use type CCPACSSheetList directly
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSSheet = generated::CPACSSheet;
 using CCPACSStructuralProfile = generated::CPACSStructuralProfile;
-#else
-typedef generated::CPACSSheet CCPACSSheet;
-typedef generated::CPACSStructuralProfile CCPACSStructuralProfile;
-#endif
 } // namespace tigl

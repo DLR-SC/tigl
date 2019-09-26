@@ -90,16 +90,11 @@ namespace generated
         CCPACSWingSparSegments  m_sparSegments;
 
     private:
-#ifdef HAVE_CPP11
         CPACSWingSpar(const CPACSWingSpar&) = delete;
         CPACSWingSpar& operator=(const CPACSWingSpar&) = delete;
 
         CPACSWingSpar(CPACSWingSpar&&) = delete;
         CPACSWingSpar& operator=(CPACSWingSpar&&) = delete;
-#else
-        CPACSWingSpar(const CPACSWingSpar&);
-        CPACSWingSpar& operator=(const CPACSWingSpar&);
-#endif
     };
 } // namespace generated
 

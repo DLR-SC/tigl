@@ -63,7 +63,7 @@ namespace generated
     {
         // read element stringer
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/stringer")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/stringer", m_stringers, reinterpret_cast<CCPACSStringersAssembly*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/stringer", m_stringers, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSStringersAssembly*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSFuselageStringer> >& CPACSStringersAssembly::GetStringers() const
+    const std::vector<std::unique_ptr<CCPACSFuselageStringer>>& CPACSStringersAssembly::GetStringers() const
     {
         return m_stringers;
     }
 
-    std::vector<unique_ptr<CCPACSFuselageStringer> >& CPACSStringersAssembly::GetStringers()
+    std::vector<std::unique_ptr<CCPACSFuselageStringer>>& CPACSStringersAssembly::GetStringers()
     {
         return m_stringers;
     }

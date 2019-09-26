@@ -17,6 +17,7 @@
 #define CCPACSWINGSPARPOSITION_H
 
 #include "generated/CPACSSparPosition.h"
+#include <gp_Vec.hxx>
 
 namespace tigl
 {
@@ -27,6 +28,8 @@ namespace generated
   class CPACSWingRibPoint;
   class CPACSEtaXsiPoint;
 }
+
+class CCPACSWingCSStructure;
 
 class CCPACSWingSparPosition : public generated::CPACSSparPosition
 {
@@ -45,8 +48,10 @@ public:
     TIGL_EXPORT double GetEta() const;
     TIGL_EXPORT double GetXsi() const;
     
-    TIGL_EXPORT const generated::CPACSWingRibPoint& GetRibPoint() const;
-    TIGL_EXPORT const generated::CPACSEtaXsiPoint &GetEtaXsiPoint() const;
+    TIGL_EXPORT const CCPACSWingRibPoint& GetRibPoint() const;
+    TIGL_EXPORT const CCPACSEtaXsiPoint &GetEtaXsiPoint() const;
+
+    TIGL_EXPORT gp_Vec GetUpVector(const CCPACSWingCSStructure& structure, gp_Pnt midplanePnt) const;
 };
 
 TIGL_EXPORT int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint&);

@@ -64,16 +64,11 @@ namespace generated
         std::vector<std::string> m_sparPositionUIDs;
 
     private:
-#ifdef HAVE_CPP11
         CPACSSparPositionUIDs(const CPACSSparPositionUIDs&) = delete;
         CPACSSparPositionUIDs& operator=(const CPACSSparPositionUIDs&) = delete;
 
         CPACSSparPositionUIDs(CPACSSparPositionUIDs&&) = delete;
         CPACSSparPositionUIDs& operator=(CPACSSparPositionUIDs&&) = delete;
-#else
-        CPACSSparPositionUIDs(const CPACSSparPositionUIDs&);
-        CPACSSparPositionUIDs& operator=(const CPACSSparPositionUIDs&);
-#endif
     };
 } // namespace generated
 

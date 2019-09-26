@@ -57,8 +57,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<unique_ptr<CCPACSControlSurfaceTrackType> >& GetTracks() const;
-        TIGL_EXPORT virtual std::vector<unique_ptr<CCPACSControlSurfaceTrackType> >& GetTracks();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSControlSurfaceTrackType>>& GetTracks() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSControlSurfaceTrackType>>& GetTracks();
 
         TIGL_EXPORT virtual CCPACSControlSurfaceTrackType& AddTrack();
         TIGL_EXPORT virtual void RemoveTrack(CCPACSControlSurfaceTrackType& ref);
@@ -68,26 +68,17 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<unique_ptr<CCPACSControlSurfaceTrackType> > m_tracks;
+        std::vector<std::unique_ptr<CCPACSControlSurfaceTrackType>> m_tracks;
 
     private:
-#ifdef HAVE_CPP11
         CPACSControlSurfaceTracks(const CPACSControlSurfaceTracks&) = delete;
         CPACSControlSurfaceTracks& operator=(const CPACSControlSurfaceTracks&) = delete;
 
         CPACSControlSurfaceTracks(CPACSControlSurfaceTracks&&) = delete;
         CPACSControlSurfaceTracks& operator=(CPACSControlSurfaceTracks&&) = delete;
-#else
-        CPACSControlSurfaceTracks(const CPACSControlSurfaceTracks&);
-        CPACSControlSurfaceTracks& operator=(const CPACSControlSurfaceTracks&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSControlSurfaceTracks = generated::CPACSControlSurfaceTracks;
-#else
-typedef generated::CPACSControlSurfaceTracks CCPACSControlSurfaceTracks;
-#endif
 } // namespace tigl

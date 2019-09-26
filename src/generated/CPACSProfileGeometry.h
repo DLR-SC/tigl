@@ -131,23 +131,14 @@ namespace generated
         boost::optional<CCPACSWingProfileCST>     m_cst2D_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSProfileGeometry(const CPACSProfileGeometry&) = delete;
         CPACSProfileGeometry& operator=(const CPACSProfileGeometry&) = delete;
 
         CPACSProfileGeometry(CPACSProfileGeometry&&) = delete;
         CPACSProfileGeometry& operator=(CPACSProfileGeometry&&) = delete;
-#else
-        CPACSProfileGeometry(const CPACSProfileGeometry&);
-        CPACSProfileGeometry& operator=(const CPACSProfileGeometry&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
-#else
-typedef generated::CPACSProfileGeometry CCPACSProfileGeometry;
-#endif
 } // namespace tigl

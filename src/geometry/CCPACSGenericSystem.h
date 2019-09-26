@@ -48,7 +48,7 @@ public:
     TIGL_EXPORT const std::string& GetUID() const;
     TIGL_EXPORT void SetUID(const std::string& uid);
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     // Read CPACS generic system elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & genericSysXPath);
@@ -60,15 +60,15 @@ public:
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE {return TIGL_COMPONENT_GENERICSYSTEM;}
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const OVERRIDE {return TIGL_INTENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override {return TIGL_COMPONENT_GENERICSYSTEM;}
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override {return TIGL_INTENT_PHYSICAL;}
 
 protected:
     // Cleanup routine
     void Cleanup();
 
     // Build the shape of the system
-    PNamedShape BuildLoft() const OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
 private:
     // get short name for loft

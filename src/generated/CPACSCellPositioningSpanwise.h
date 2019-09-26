@@ -94,16 +94,11 @@ namespace generated
         boost::optional<std::string>      m_ribDefinitionUID_choice2;
 
     private:
-#ifdef HAVE_CPP11
         CPACSCellPositioningSpanwise(const CPACSCellPositioningSpanwise&) = delete;
         CPACSCellPositioningSpanwise& operator=(const CPACSCellPositioningSpanwise&) = delete;
 
         CPACSCellPositioningSpanwise(CPACSCellPositioningSpanwise&&) = delete;
         CPACSCellPositioningSpanwise& operator=(CPACSCellPositioningSpanwise&&) = delete;
-#else
-        CPACSCellPositioningSpanwise(const CPACSCellPositioningSpanwise&);
-        CPACSCellPositioningSpanwise& operator=(const CPACSCellPositioningSpanwise&);
-#endif
     };
 } // namespace generated
 

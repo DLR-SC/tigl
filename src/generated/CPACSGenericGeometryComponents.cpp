@@ -63,7 +63,7 @@ namespace generated
     {
         // read element genericGeometryComponent
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponent")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/genericGeometryComponent", m_genericGeometryComponents, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr);
         }
 
     }
@@ -75,12 +75,12 @@ namespace generated
 
     }
 
-    const std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponents() const
+    const std::vector<std::unique_ptr<CCPACSExternalObject>>& CPACSGenericGeometryComponents::GetGenericGeometryComponents() const
     {
         return m_genericGeometryComponents;
     }
 
-    std::vector<unique_ptr<CCPACSExternalObject> >& CPACSGenericGeometryComponents::GetGenericGeometryComponents()
+    std::vector<std::unique_ptr<CCPACSExternalObject>>& CPACSGenericGeometryComponents::GetGenericGeometryComponents()
     {
         return m_genericGeometryComponents;
     }

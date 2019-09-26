@@ -57,23 +57,14 @@ namespace generated
         boost::optional<CPACSCFDTool> m_cFD;
 
     private:
-#ifdef HAVE_CPP11
         CPACSToolspecific(const CPACSToolspecific&) = delete;
         CPACSToolspecific& operator=(const CPACSToolspecific&) = delete;
 
         CPACSToolspecific(CPACSToolspecific&&) = delete;
         CPACSToolspecific& operator=(CPACSToolspecific&&) = delete;
-#else
-        CPACSToolspecific(const CPACSToolspecific&);
-        CPACSToolspecific& operator=(const CPACSToolspecific&);
-#endif
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-#ifdef HAVE_CPP11
 using CCPACSToolspecific = generated::CPACSToolspecific;
-#else
-typedef generated::CPACSToolspecific CCPACSToolspecific;
-#endif
 } // namespace tigl
