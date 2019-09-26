@@ -71,7 +71,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 {
     setupUi(this);
 
-    setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+    setTiglWindowTitle(QString("CPACS Creator"));
 
     undoStack = new QUndoStack(this);
 
@@ -376,14 +376,13 @@ void TIGLViewerWindow::setCurrentFile(const QString& fileName)
 
     if (currentFile.fileName() != "") {
 
-        setTiglWindowTitle(QString("%2 - TiGL Viewer %1")
-                               .arg(TIGL_MAJOR_VERSION)
+        setTiglWindowTitle(QString("%2 - CPACS Creator")
                                .arg(QDir::toNativeSeparators(currentFile.absoluteFilePath())));
 
         watcher->addPath(currentFile.absoluteFilePath());
         QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
         if (currentFile.suffix().toLower() != "temp") { // to avoid inserting temp files as recent opened files
-            QSettings settings("DLR SC-HPC", "TiGLViewer3");
+            QSettings settings("DLR SC-HPC", "CPACS-Creator");
             QStringList files = settings.value("recentFileList").toStringList();
             files.removeAll(fileName);
             files.prepend(fileName);
@@ -398,13 +397,13 @@ void TIGLViewerWindow::setCurrentFile(const QString& fileName)
         }
     }
     else {
-        setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+        setTiglWindowTitle(QString("CPACS Creator"));
     }
 }
 
 void TIGLViewerWindow::loadSettings()
 {
-    QSettings settings("DLR SC-HPC", "TiGLViewer3");
+    QSettings settings("DLR SC-HPC", "CPACS-Creator");
 
     bool showConsole = settings.value("show_console",QVariant(true)).toBool();
     bool showTree = settings.value("show_tree",QVariant(true)).toBool();
@@ -428,7 +427,7 @@ void TIGLViewerWindow::loadSettings()
 
 void TIGLViewerWindow::saveSettings()
 {
-    QSettings settings("DLR SC-HPC", "TiGLViewer3");
+    QSettings settings("DLR SC-HPC", "CPACS-Creator");
 
     bool showConsole = consoleDockWidget->isVisible();
     settings.setValue("show_console", showConsole);
@@ -655,8 +654,8 @@ void TIGLViewerWindow::about()
     QString tiglVersion(tiglGetVersion());
     QString occtVersion = QString("%1.%2.%3").arg(OCC_VERSION_MAJOR).arg(OCC_VERSION_MINOR).arg(OCC_VERSION_MAINTENANCE);
 
-    text =  "The <b>TiGL Viewer</b> is based on the TiGL library and allows you to view CPACS geometries. ";
-    text += "TiGL Viewer uses the following Open Source libraries:<br/><br/>";
+    text =  "The <b>CPACS Creator</b> is based on the TiGL library and TiGL Viewer and allows you to edit and create CPACS geometries. ";
+    text += "CPACS Creator uses the following Open Source libraries:<br/><br/>";
     
     if (tiglVersion.contains("-r")) {
         QStringList list = tiglVersion.split("-r");
@@ -672,9 +671,9 @@ void TIGLViewerWindow::about()
 
     text += "Visit the TiGL project page at " + makeLink("https://github.com/DLR-SC/tigl", "https://github.com/dlr-sc/tigl")+ "<br/><br/>";
 
-    text += "&copy; 2018 German Aerospace Center (DLR) ";
+    text += "&copy; 2019 German Aerospace Center (DLR) + CFS Engineering";
 
-    QMessageBox::about(this, tr("About TiGL Viewer"), text);
+    QMessageBox::about(this, tr("About CPACS Creator"), text);
 }
 
 void TIGLViewerWindow::aboutQt()
