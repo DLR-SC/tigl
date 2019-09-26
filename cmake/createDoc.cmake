@@ -42,11 +42,12 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
         SET(CPACK_NSIS_DELETE_ICONS_EXTRA ${CPACK_NSIS_DELETE_ICONS_EXTRA} "
           !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
           Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Documentation.lnk\\\"
-        ")            
+        ")
+    
 
-    find_program(LATEX pdflatex)
-
-    if(LATEX)
+    OPTION(TIGL_BUILD_DOC_PDF "Builds the documentation pdf using latex" OFF)
+    if(TIGL_BUILD_DOC_PDF)
+        find_program(LATEX pdflatex REQUIRED)
         # TIGL Reference PDF File
         add_custom_command(
             OUTPUT ${PROJECT_BINARY_DIR}/doc/tiglRef.pdf
