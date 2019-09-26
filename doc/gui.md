@@ -6,8 +6,8 @@ The CPACSCreator is a 3D viewer and editor for CPACS geometries.
 CPACSCreator is based on TiGLViewer.
 Compare to TiGLViewer it add the possibility to edit and create CPACS geometries. 
 
-@image html images/cpacscreator-gui.png "The TiGL Viewer showing a CPACS model"
-@image latex images/cpacscreator-gui.png  "The TiGL Viewer showing a CPACS model" width=8cm
+@image html images/cpacscreator-gui.png "The CPACSCreator showing a CPACS model"
+@image latex images/cpacscreator-gui.png  "The CPACSCreator showing a CPACS model" width=8cm
 
 __Features of CPACSCreator__
 
@@ -31,19 +31,32 @@ or making some debug plots.
   * Create a fuselage 
   * Undo/Redo operation
   
-__Known limitations of CPACSCreator__
+  
+@section widgets Widgets presentation
 
-* Guide curve edition are not supported now.
-  So, if you have wing or fuselage that contains guide curves,
-  be aware that editing the geometry can break the CPACS structure.
-  Prefer to first edit/create the geometry then add the guide curve.
-* Component segments are not fully supported now.
-  Editing a geometry that contains component segments will not break the structure, 
-  but can have unwanted effect on the component.  
-* Multiple elements per section is not supported.
-  This come from the fact that to decompose properly a matrix we need 
-  to have two cpacs transformations of the type scaling * rotation * translation
-  for each section (and not only one as required by the CPACS standard) 
+Here we will briefly present the different widgets that are available in CPACSCreator. Note that each widget can 
+be move around or closed. To close or activate the widgets use the shortcut or go in the display menu (View->Display).
+
+@image html images/creator-gui-explained.png "Main widow and widgets of CPACScreator"
+
+@subsection scene The scene
+The scene display the 3D tigl object. You can chose which object you wnat to draw in Draw menu. 
+Remark that no modification on the object can be performed form the scene. The scene is only a display interface.
+
+@subsection cpcacstree_view The CPACS tree view
+The CPACS tree view show the CPACS tree structure. When you click on a element in the tree, the correct editor 
+widget is activated. By default the tree view widget filter the objects to display only the most import objects. 
+You can see all the object by click on "Expert view" mode on the top of the tree view widget.
+You can also filter the tree by some UID or CPACS type be typing in the line next to the "Expert view" checkbox.
+
+
+@subsection edtior_widget The Editor widget
+The editor widget displayed the parameters that can be modified for the object selected in the tree view. 
+
+
+@subsection console The console
+A page is dedicated to the console please vist @ref gui_console "this page" for mor information
+
 
 
 @section navigation Navigation in the 3D view
