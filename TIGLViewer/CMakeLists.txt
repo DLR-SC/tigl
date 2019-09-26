@@ -7,9 +7,9 @@ OPTION(TIGL_VIEWER "Builds the TiGL Viewer program (requires OpenGL and Qt4)" ON
 
 
 if (APPLE)
-   set(PROGNAME "TiGL-Viewer3")
+   set(PROGNAME "CPACS-Creator")
 else(APPLE)
-   set(PROGNAME "tiglviewer-3")
+   set(PROGNAME "cpacscreator")
 endif(APPLE)
 
 
