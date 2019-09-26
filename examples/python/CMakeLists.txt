@@ -8,3 +8,16 @@ install(FILES
     COMPONENT docu
 )
 
+
+install(FILES
+        create_space_ship.py
+        DESTINATION share/doc/tigl3/examples
+        COMPONENT docu
+        )
+
+
+install(FILES
+        data/empty.cpacs3.xml
+        DESTINATION share/doc/tigl3/examples/data
+        COMPONENT docu
+        )
