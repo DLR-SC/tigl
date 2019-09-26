@@ -1,5 +1,4 @@
-The TiGL Viewer Console {#tiglviewer_console}
-------------------
+@page gui_console The CPACSCreator Console
 
 TiGL Viewer comes with a powerful JavaScript console that allows automatizing small workflows or helps 
 debugging of geometries. To show and hide the console, press __ALT+C__.

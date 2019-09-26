@@ -1,5 +1,6 @@
-Overview{#mainpage}
-==================
+@mainpage CPACSCreator     
+
+@section main_overview Overview 
 
 The TiGL Geometry Library can be used for easy processing of geometric data stored inside CPACS data sets. 
 TiGL offers query functions for the geometry structure. 
@@ -11,9 +12,8 @@ The developed library uses the Open Source software OpenCASCADE to represent the
 B-spline surfaces in order to compute surface points and also to export the geometry in the IGES/STEP/STL/VTK format. 
 The library provides external interfaces for C/C++, Python, MATLAB and FORTRAN. 
 
-For more information and examples, go to the TiGL website https://dlr-sc.github.io/tigl/.
+@section what_is_cpacscreator What is CPACSCreator
 
-@section sec1 What is TiGL
 
 In order to perform the modeling of wings and fuselages as well as the computation of surface points effectively, a
 geometry library was developed in C++. The library provides external interfaces
@@ -47,7 +47,7 @@ only the modeling of simple wings or fuselages but also the description of quite
 structures with branches or flaps is targeted.
 
 
-@section sec2 TiGL Viewer
+@section sec2 CPACSCreator GUI
 
 In order to review the geometry information of the central data set a visualization
 tool, TiGL Viewer, was developed. The TiGL Viewer allows the visualization of the used airfoils and
@@ -56,7 +56,6 @@ Furthermore, the TiGL Viewer can be used to validate and test the implemented
 functions of the geometry library, for example the calculation of points on the
 surface or other functions to check data that belong to the geometry structure.
 
-@page tigl_installation Installation
-@page tigl_usage Basic usage
-@page tigl_examples Examples
-@page tiglviewer TiGL Viewer
+
+@subpage parameters_def 
+

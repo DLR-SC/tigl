@@ -1,5 +1,5 @@
-Basic usage {#tigl_usage}
-===========
+@page lib_usage API usage
+
 
 In order to use the TiGL library in a C program, you have to link against the TiGL as well as the TiXI library. 
 The TiXI (TiXI Xml Interface) is used to read in the XML-based CPACS files. It can be obtained from the project site
