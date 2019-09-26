@@ -1,61 +1,84 @@
-@mainpage CPACSCreator     
+@mainpage CPACSCreator framework     
 
 @section main_overview Overview 
 
-The TiGL Geometry Library can be used for easy processing of geometric data stored inside CPACS data sets. 
-TiGL offers query functions for the geometry structure. 
+The goal of CPACSCreator framework is to facilitate the processing, the editing and the creation of the 
+geometric data stored inside CPACS data sets.    
+
+CPACSCreator offers query functions for the geometry structure. 
 These functions can be used for example to detect how many segments are attached to a certain segment, 
 which indices these segments have, or how many wings and fuselages the current airplane configuration contains. 
 This functionality is necessary because not only the modeling of simple wings or fuselages but also the 
-description of quite complicated structures with branches or flaps is targeted. 
+description of quite complicated structures with branches or flaps is targeted.    
+
+Furthermore, the CPACSCreator offer functions to modify or to create CPACS geometries. 
+These functions can be used for example to modify the wing sweep angle, to modify fuselage length, to create a wing from 
+scratch, or to modify the orientation of a section. These functionalities are necessary to avoid the manual editing of 
+CPACS xml file. The idea was to provide a friendly interface to CPACS geometrical data and to hide the complexity of 
+the CPACS format. To do this a set of high level parameters was define. You can find the exact definition of these 
+parameters here: @subpage parameters_def .  
+ 
+The framework is release under Apache2 license.
 The developed library uses the Open Source software OpenCASCADE to represent the airplane geometry by 
 B-spline surfaces in order to compute surface points and also to export the geometry in the IGES/STEP/STL/VTK format. 
-The library provides external interfaces for C/C++, Python, MATLAB and FORTRAN. 
-
-@section what_is_cpacscreator What is CPACSCreator
-
-In order to perform the modeling of wings and fuselages as well as the computation of surface points effectively, a
-geometry library was developed in C++. The library provides external interfaces
-for C and FORTRAN. Some of the requirements of the library were:
-
- - Ability to read and process the information stored in a CPACS file for
- wings and fuselages,
- - Possibility to extend to engine pods, landing gear and other
- geometrical characteristics, 
- - Ability to build up the three-dimensional airplane geometry for further
- processing,
- - Ability to compute surface points in Cartesian coordinates by using
-   common aircraft parameters,
- - Possibility to be expanded by additional functions such as area or volume
- computations,
- - Possibility to export the airplane geometry in the IGES format.
-
-The developed library uses the Open Source software OpenCASCADE to represent the airplane geometry by B-spline surfaces
-in order to compute surface points and also to export the geometry in the IGES format.
-OpenCASCADE is a development platform written in C++ for CAD, CAM, and CAE
-applications which has been continuously developed for more than ten years. 
-The functionality covers geometrical primitives (for example points,
-vectors, matrix operations), the computation of B-spline surfaces and boolean operations on volume models.
-
-Apart from the already specified requirements above, the geometry library 
-offers query functions for the geometry structure. These functions can be used
-for example to detect how many segments are attached to a certain segment,
-which indices these segments have, or how many wings and fuselages the current
-airplane configuration contains. This functionality is necessary because not
-only the modeling of simple wings or fuselages but also the description of quite complicated
-structures with branches or flaps is targeted.
 
 
-@section sec2 CPACSCreator GUI
+@section diff_tigl_creator CPACSCreator and TiGL Project
 
-In order to review the geometry information of the central data set a visualization
-tool, TiGL Viewer, was developed. The TiGL Viewer allows the visualization of the used airfoils and
-fuselage profiles as well as of the surfaces and the entire airplane model.
-Furthermore, the TiGL Viewer can be used to validate and test the implemented
-functions of the geometry library, for example the calculation of points on the
-surface or other functions to check data that belong to the geometry structure.
+The CPACSCreator is the continuity of the original TiGL project (https://github.com/DLR-SC/tigl). 
+Basically TiGL library was extended with functionalities to edit CPACS geometrical data. 
+Editing features was also added to TiGLViewer and TiGLViewer becomes CPACSCreator.
+The idea is to integrate these new functionalities back into the orignal TiGL project once they are stable enough. 
+To be clear about the nomenclature used in this documentation, we use TiGL to refer to the new TiGL library and original 
+TiGL library to refer to current TiGL3 library. 
+
+@section cpacscreator_structure Framework structure 
+
+CPACSCreator framework can be divided into two main blocks: 
+
+* @ref lib    
+  The TiGL library is a C++ library and is really the core of CPACSCreator framework. This library contains all
+  the logic of the geometrical CPACS data manipulation. The library can be access by other program trough 
+  the TiGL API (limited functionalities) and trough the internal python API (full functionalities) for python program.  
+  
+* @ref gui    
+  The CPACSCreator GUI is a graphical user interface (GUI) to view, edit and create CPACS geometries. 
+  The goal of CPACSCreator GUI is to have a friendly user interface so that aircraft designers can easily view and modify 
+  CPACS geometry. CPACSCreator GUI simply make function calls to the library each time a object is modify and 
+  has convenience feature to edit the file as undo/redo feature and profiles database.
+  
+
+@section functionalities Creator functionalities 
+
+Here we will presented a not exhaustive list of the functionalities added by CPACSCreator in the TiGL project.
+These functionalities are, in general, accessible thought the @ref lib_python or though the @ref gui. 
+
+* Edit wing 
+* Edit fuselage 
+* Edit wing section 
+* Edit fuselage section
+* Add wing section
+* Add fuselage section  
+* Edit positionings
+* Standardization of positionings
+* Create a wing
+* Create a fuselage 
 
 
-@subpage parameters_def 
+@section limitations  Known limitations
+
+* **Multiple elements per section is not supported.**
+  This come from the fact that to decompose properly a matrix we need 
+  to have two cpacs transformations of the type scaling * rotation * translation
+  for each section (and not only one as required by the CPACS standard) 
+* **Guide curve are not supported now.**
+  So, if you have wing or fuselage that contains guide curves,
+  be aware that editing the geometry can break the CPACS structure.
+  Prefer to first edit/create the geometry then add the guide curve.
+* **Pylon are not supported now**
+* **Component segments are not fully supported now.**
+  Editing a geometry that contains component segments will not break the structure, 
+  but can have unwanted effect on the component.  
+
 
 
