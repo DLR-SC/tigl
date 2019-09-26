@@ -105,7 +105,7 @@ CCPACSFuselage& CCPACSFuselages::CreateFuselage(const std::string& fuselageUID, 
         //TODO (MS): Refactor using uidManager.IsUIDRegistered<CCPACSFuselageProfile>
         uidManager.ResolveObject<CCPACSFuselageProfile>(profileUID);
     }
-    catch (const CTiglError& e) {
+    catch (const CTiglError&) {
         throw CTiglError("Impossible to create the fuselage with the profile uid \"" +
                          profileUID +
                          "\". This uid seems not to be present or to not reference a profile. Make sure to use a "

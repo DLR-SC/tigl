@@ -65,7 +65,7 @@ public:
     inline std::vector<std::string> GetElementUIDsInOrder() const
     {
         return elementUIDs;
-    };
+    }
 
 protected:
     // Init for the tipCElement cache

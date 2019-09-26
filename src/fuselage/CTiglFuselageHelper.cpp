@@ -100,7 +100,7 @@ tigl::CTiglFuselageSectionElement* tigl::CTiglFuselageHelper::GetCTiglElementOfF
     try {
         return cTiglElementsMap.at(elementUID);
     }
-    catch (const std::out_of_range& e) {
+    catch (const std::out_of_range&) {
         LOG(ERROR) << "CTiglFuselageHelper::GetCTiglElementOfFuselage: The given element UID:  " + elementUID +
                           " seems not to be present in this fuselage.";
         return nullptr;
