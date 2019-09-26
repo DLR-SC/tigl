@@ -24,6 +24,7 @@
 #include "CommandLineParameters.h"
 #include "TIGLViewerWindow.h"
 #include "tigl_internal.h"
+#include <memory.h>
 
 class TIGLViewerApp : public QApplication
 {
@@ -38,7 +39,7 @@ private:
 
     CommandLineParameters config;
     QStringList args;
-    TIGLViewerWindow mainwindow;
+    std::unique_ptr<TIGLViewerWindow> mainwindow;
 
 signals:
     

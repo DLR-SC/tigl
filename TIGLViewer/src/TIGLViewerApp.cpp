@@ -51,6 +51,17 @@ void showHelp(QString appName)
 TIGLViewerApp::TIGLViewerApp(int& argc, char* argv[])
     : QApplication(argc, argv)
 {
+
+#if defined __linux__
+    // we need to set us locale as we use "." for decimal point
+    qputenv("LC_NUMERIC", "C");
+    setlocale(LC_NUMERIC, "C");
+#elif defined __APPLE__
+    setlocale(LC_NUMERIC, "C");
+#endif
+
+    mainwindow.reset(new TIGLViewerWindow);
+
     for (int iarg = 0; iarg < argc; ++iarg) {
         args.append(argv[iarg]);
     }
@@ -140,17 +151,17 @@ void TIGLViewerApp::onWindowInitalized()
     mainwindow.setSuppressErrorsEnabled(config.suppressErrors);
 
     if (!config.controlFile.isEmpty()){
-        mainwindow.setInitialControlFile(config.controlFile);
+        mainwindow->setInitialControlFile(config.controlFile);
     }
     
     // if a filename is given, open the configuration
     if (!config.initialFilename.isEmpty()) {
-        mainwindow.openFile(config.initialFilename);
+        mainwindow->openFile(config.initialFilename);
     }
     
     // if a script is given
     if (!config.initialScript.isEmpty()) {
-        mainwindow.openScript(config.initialScript);
+        mainwindow->openScript(config.initialScript);
     }
 }
 
@@ -162,11 +173,11 @@ int TIGLViewerApp::run()
         return retval;
     }
 
-    connect(&mainwindow, SIGNAL(windowInitialized()), this, SLOT(onWindowInitalized()));
+    connect(mainwindow.get(), SIGNAL(windowInitialized()), this, SLOT(onWindowInitalized()));
     if (!config.windowTitle.isEmpty()) {
-        mainwindow.setTiglWindowTitle(config.windowTitle, true);
+        mainwindow->setTiglWindowTitle(config.windowTitle, true);
     }
-    mainwindow.show();
+    mainwindow->show();
     
     retval = exec();
     return retval;
