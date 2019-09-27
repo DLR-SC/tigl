@@ -96,10 +96,10 @@ private:
     // Invalidates internal state
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
-    CTiglPoint           _fromPoint;        //< Positioning inner/start point
-    CTiglPoint           _toPoint;          //< Positioning outer/end point
-    CTiglTransformation  _toTransformation; //< Transformation for the outer/end section
-    mutable bool         invalidated;       //< Internal state flag
+    CTiglPoint           _fromPoint;         //< Positioning inner/start point
+    CTiglPoint           _toPoint;           //< Positioning outer/end point
+    CTiglTransformation  _toTransformation;  //< Transformation for the outer/end section
+    mutable bool         invalidated {true}; //< Internal state flag
     std::vector<CCPACSPositioning*> _dependentPositionings;
 };
 }
