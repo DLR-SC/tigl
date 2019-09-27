@@ -19,7 +19,7 @@ for Python packages and allows the distribution of pre-compiled packages.
 
 To install TiGL into a separate environement, enter the following from the conda command prompt
 
-    conda create -n tigl_env python=3.6 tigl3 -c dlr-sc
+    conda create -n tigl_env python=3.6 cpacscreator -c dlr-sc
 
 All TiGL related packages are now found inside the tigl_env environment. To enter this environment, type
 

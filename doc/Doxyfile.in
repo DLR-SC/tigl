@@ -92,10 +92,13 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 INPUT                  = @PROJECT_SOURCE_DIR@/doc/ \
                                  @PROJECT_SOURCE_DIR@/examples/README.md \
-                                 @PROJECT_BINARY_DIR@/doc \
-                                 @PROJECT_SOURCE_DIR@/src/ \
-                                 #@PROJECT_BINARY_DIR@/src/api/ \
-                                 #@PROJECT_SOURCE_DIR@/src/wing/
+                                 @PROJECT_SOURCE_DIR@/src/api \
+                                 @PROJECT_SOURCE_DIR@/src/wing/CCPACSWing.h \
+                                 @PROJECT_SOURCE_DIR@/src/wing/CCPACSWings.h \
+                                 @PROJECT_SOURCE_DIR@/src/fuselage/CCPACSFuselage.h \
+                                 @PROJECT_SOURCE_DIR@/src/fuselage/CCPACSFuselages.h \
+                                 @PROJECT_SOURCE_DIR@/src/configuration/CCPACSConfiguaration.h \
+
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h *.md tigl.h tigl_version.h
 RECURSIVE              = YES
