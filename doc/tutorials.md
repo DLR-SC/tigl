@@ -1,4 +1,5 @@
-@page tuto Tutorials
+Tutorials {#tuto}
+=========
 
 @section tuto_create_from_scratch Create a aircraft from scratch
 

@@ -1,4 +1,5 @@
-@mainpage CPACSCreator framework     
+CPACSCreator{#mainpage}
+==================
 
 @section main_overview Overview 
 
@@ -80,3 +81,7 @@ These functionalities are, in general, accessible thought the @ref lib_python or
 * **Component segments are not fully supported now.**
   Editing a geometry that contains component segments will not break the structure, 
   but can have unwanted effect on the component.  
+
+@page gui CPACSCreator GUI
+@page lib CPACSCreator Library
+@page tigl_installation Installation

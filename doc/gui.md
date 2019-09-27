@@ -1,4 +1,5 @@
-@page gui CPACSCreator GUI 
+CPACSCreator GUI {#gui}
+===========
 
 @section gui_overview Overview
 
@@ -55,7 +56,7 @@ The editor widget displayed the parameters that can be modified for the object s
 
 
 @subsection console The console
-A page is dedicated to the console please vist @ref gui_console "this page" for mor information
+A page is dedicated to the console please visit @subpage gui_console "this page" for mor information
 
 
 
@@ -166,4 +167,3 @@ A simplified version of the TiGL Viewer is also available for mobile devices bas
 @image html images/tiglviewer-android-web.jpg "The TiGL Viewer App for Android"
 @image latex images/tiglviewer-android.png  "The TiGL Viewer App for Android" width=9cm
 
-@subpage gui_console 

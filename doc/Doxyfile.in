@@ -92,6 +92,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 INPUT                  = @PROJECT_SOURCE_DIR@/doc/ \
                                  @PROJECT_SOURCE_DIR@/examples/README.md \
+                                 @PROJECT_BINARY_DIR@/doc \
                                  @PROJECT_SOURCE_DIR@/src/api \
                                  @PROJECT_SOURCE_DIR@/src/wing/CCPACSWing.h \
                                  @PROJECT_SOURCE_DIR@/src/wing/CCPACSWings.h \
