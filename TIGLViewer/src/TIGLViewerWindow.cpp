@@ -917,7 +917,7 @@ void TIGLViewerWindow::createMenus()
 
 void TIGLViewerWindow::updateRecentFileActions()
 {
-    QSettings settings("DLR SC-HPC", "TiGLViewer3");
+    QSettings settings("DLR SC-HPC", "CPACS-Creator");
     QStringList files = settings.value("recentFileList").toStringList();
 
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
