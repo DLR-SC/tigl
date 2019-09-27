@@ -31,13 +31,13 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
     )
     
     install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/html
-            DESTINATION    share/doc/tigl3
+            DESTINATION    share/doc/cpacscreator
             COMPONENT docu
             OPTIONAL)
 
         # create start menu entries
         SET(CPACK_NSIS_CREATE_ICONS_EXTRA ${CPACK_NSIS_CREATE_ICONS_EXTRA} "
-        CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Documentation.lnk\\\" \\\"$INSTDIR\\\\share\\\\doc\\\\tigl3\\\\html\\\\index.html\\\"
+        CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Documentation.lnk\\\" \\\"$INSTDIR\\\\share\\\\doc\\\\cpacscreator\\\\html\\\\index.html\\\"
         ")
         SET(CPACK_NSIS_DELETE_ICONS_EXTRA ${CPACK_NSIS_DELETE_ICONS_EXTRA} "
           !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
@@ -100,14 +100,14 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
         )
         
         install(FILES ${PROJECT_BINARY_DIR}/doc/tiglRef.pdf 
-                DESTINATION    share/doc/tigl3
+                DESTINATION    share/doc/cpacscreator
                 COMPONENT docu
                 OPTIONAL)
                 
             
         # create start menu entries
         SET(CPACK_NSIS_CREATE_ICONS_EXTRA ${CPACK_NSIS_CREATE_ICONS_EXTRA} "
-          CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\TiGL-Reference.lnk\\\" \\\"$INSTDIR\\\\share\\\\doc\\\\tigl3\\\\tiglRef.pdf\\\"
+          CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\TiGL-Reference.lnk\\\" \\\"$INSTDIR\\\\share\\\\doc\\\\cpacscreator\\\\tiglRef.pdf\\\"
         ")
         SET(CPACK_NSIS_DELETE_ICONS_EXTRA ${CPACK_NSIS_DELETE_ICONS_EXTRA} "
           !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP

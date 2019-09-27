@@ -71,6 +71,6 @@ script:
   - TERM=dumb make tigl-java-demo
 
 after_success:
-    - ../ci/travis/deploy.sh
+    # - ../ci/travis/deploy.sh
     - cd ..
 
