@@ -49,9 +49,23 @@ tigl::CTiglWingSectionElement::CTiglWingSectionElement(tigl::CCPACSWingSectionEl
 
 void tigl::CTiglWingSectionElement::SetAssociateElement(tigl::CCPACSWingSectionElement* element)
 {
-    this->element = element;
-    section       = element->GetParent()->GetParent();
-    wing          = section->GetParent()->GetParent<CCPACSWing>();
+    if (!element) {
+        return;
+    }
+
+    // set only if parent is a wing
+    CCPACSWingSection* theSection = element->GetParent()->GetParent();
+
+    if (!theSection) {
+        return;
+    }
+
+    if (theSection->GetParent()->IsParent<CCPACSWing>()) {
+        this->element = element;
+        section       = theSection;
+        wing          = theSection->GetParent()->GetParent<CCPACSWing>();
+    }
+
 }
 
 std::string tigl::CTiglWingSectionElement::GetSectionUID() const
