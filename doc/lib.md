@@ -23,4 +23,4 @@ bit lost by this new way to interact with the library, but you can find a tutori
    
 @subpage lib_usage    
 @subpage lib_shipped_examples           
-@subpage lib_creator_functions          
+    

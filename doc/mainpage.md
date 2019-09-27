@@ -45,8 +45,8 @@ CPACSCreator framework can be divided into two main blocks:
 * @ref gui    
   The CPACSCreator GUI is a graphical user interface (GUI) to view, edit and create CPACS geometries. 
   The goal of CPACSCreator GUI is to have a friendly user interface so that aircraft designers can easily view and modify 
-  CPACS geometry. CPACSCreator GUI simply make function calls to the library each time a object is modify and 
-  has convenience feature to edit the file as undo/redo feature and profiles database.
+  CPACS geometry. CPACSCreator GUI simply make function calls to the library each time an object is modify and 
+  has convenience features to edit the file as undo/redo feature and profiles database.
   
 
 @section functionalities Creator functionalities 
@@ -69,7 +69,7 @@ These functionalities are, in general, accessible thought the @ref lib_python or
 @section limitations  Known limitations
 
 * **Multiple elements per section is not supported.**
-  This come from the fact that to decompose properly a matrix we need 
+  This comes from the fact that to decompose properly a matrix we need 
   to have two cpacs transformations of the type scaling * rotation * translation
   for each section (and not only one as required by the CPACS standard) 
 * **Guide curve are not supported now.**

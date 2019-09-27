@@ -46,7 +46,7 @@ Remark that no modification on the object can be performed form the scene. The s
 @subsection cpcacstree_view The CPACS tree view
 The CPACS tree view show the CPACS tree structure. When you click on a element in the tree, the correct editor 
 widget is activated. By default the tree view widget filter the objects to display only the most import objects. 
-You can see all the object by click on "Expert view" mode on the top of the tree view widget.
+You can see all the CPACS objects by click on "Expert view" mode on the top of the tree view widget.
 You can also filter the tree by some UID or CPACS type be typing in the line next to the "Expert view" checkbox.
 
 
@@ -92,7 +92,9 @@ __Basic actions__
  |:------:|:----------------------------|
  | Ctrl+O | open file                   |
  | Ctrl+S | save file                   |
+ | Ctrl+Shift+S | save file as                  |
  | Ctrl+Q | close program               |
+ | Ctrl+N | create a new file from template    |
 
 __Change view__
 
