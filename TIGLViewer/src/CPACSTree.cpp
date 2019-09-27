@@ -60,7 +60,7 @@ void CPACSTree::build(TixiDocumentHandle handle, std::string rootXPath)
     int rootIndex        = XPathParser::GetLastNodeIndex(rootXPath); // todo what happend if the root is given by uid
     std::string rootUid  = getUid(rootXPath, "");
 
-    m_root = new CPACSTreeItem(this, rootXPath, rootType, rootIndex, rootUid);
+    m_root = std::unique_ptr<CPACSTreeItem>(new CPACSTreeItem(this, rootXPath, rootType, rootIndex, rootUid));
 
     // recursive call to create element
     createChildrenRecursively(*m_root);
@@ -123,7 +123,6 @@ CPACSTree::~CPACSTree()
 void CPACSTree::clean()
 {
     m_isBuild = false;
-    delete m_root;
     m_root = nullptr;
 }
 

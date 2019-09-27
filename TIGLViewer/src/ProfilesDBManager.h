@@ -46,6 +46,7 @@ class ProfilesDBManager : public QObject
 
 public:
     ProfilesDBManager();
+    ~ProfilesDBManager(){ localProfiles.reset(); }
 
     void setConfigProfiles(boost::optional<tigl::CCPACSProfiles>& newConfigProfiles);
     void cleanConfigProfiles();
@@ -73,6 +74,7 @@ protected:
     void updateProfilesLists();
 
 private:
+    tigl::CTiglUIDManager myDBUIDManager;
     tigl::CCPACSProfiles* configProfiles;
     std::unique_ptr<tigl::CCPACSProfiles> localProfiles;
 
@@ -81,7 +83,6 @@ private:
 
     QString softDBFilename; // the file that store the records of the software profiles
     TixiDocumentHandle tixiHandle;
-    tigl::CTiglUIDManager myDBUIDManager;
 
     QString localSuffix  = " (DB)";
     QString configSuffix = " (In File)";

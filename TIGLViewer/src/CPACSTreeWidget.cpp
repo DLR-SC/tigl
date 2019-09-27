@@ -122,7 +122,9 @@ void CPACSTreeWidget::setTreeViewColumnsDisplay()
 
 void CPACSTreeWidget::clear()
 {
-    filterModel->disconnectInternalTree();
+    if (filterModel) {
+        filterModel->disconnectInternalTree();
+    }
     tree.clean();
 }
 

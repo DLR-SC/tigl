@@ -145,6 +145,7 @@ TIGLViewerWindow::~TIGLViewerWindow()
 {
     delete stdoutStream;
     delete errorStream;
+    delete modificatorManager;
 }
 
 void TIGLViewerWindow::dragEnterEvent(QDragEnterEvent * ev)

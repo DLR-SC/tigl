@@ -59,7 +59,7 @@ public:
 
     inline CPACSTreeItem* getRoot() const
     {
-        return m_root;
+        return m_root.get();
     }
 
     /**
@@ -95,7 +95,7 @@ protected:
     // We can start the tree where ever we want
     std::string rootXPath;
 
-    CPACSTreeItem* m_root;
+    std::unique_ptr<CPACSTreeItem> m_root;
 
     bool m_isBuild;
 };
