@@ -99,6 +99,13 @@ Version 3.1.0
    - Added option to draw face boundaries in TiGl Viewer
 
 
+CPACS Creator Version 0.1
+-------------------------
+27/09/2019
+
+    - Initial pre-release of CPACS Creator
+
+
 Version 3.0.0
 -------------
 24/09/2019
