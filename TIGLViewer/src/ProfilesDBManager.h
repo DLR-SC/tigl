@@ -46,6 +46,7 @@ class ProfilesDBManager : public QObject
 
 public:
     ProfilesDBManager();
+    ~ProfilesDBManager(){ localProfiles.reset(); }
 
     void setConfigProfiles(boost::optional<tigl::CCPACSProfiles>& newConfigProfiles);
     void cleanConfigProfiles();
@@ -73,15 +74,15 @@ protected:
     void updateProfilesLists();
 
 private:
+    tigl::CTiglUIDManager myDBUIDManager;
     tigl::CCPACSProfiles* configProfiles;
-    tigl::unique_ptr<tigl::CCPACSProfiles> localProfiles;
+    std::unique_ptr<tigl::CCPACSProfiles> localProfiles;
 
     QStringList wingProfileUIDs; // all wing profiles with suffix
     QStringList fuselageProfilesUIDs; // all fuselages profiles with suffix
 
     QString softDBFilename; // the file that store the records of the software profiles
     TixiDocumentHandle tixiHandle;
-    tigl::CTiglUIDManager myDBUIDManager;
 
     QString localSuffix  = " (DB)";
     QString configSuffix = " (In File)";

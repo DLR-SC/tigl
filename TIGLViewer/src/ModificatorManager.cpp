@@ -212,15 +212,17 @@ void ModificatorManager::createUndoCommand()
 
 void ModificatorManager::updateTree()
 {
-    QString selectedUID = treeWidget->getSelectedUID();
     if (configurationIsSet()) {
         // TODO multiple model in file case
+        QString selectedUID = treeWidget->getSelectedUID();
         std::string rootXPath = "/cpacs/vehicles";
         treeWidget->displayNewTree(doc->GetConfiguration().GetTixiDocumentHandle(), rootXPath);
         treeWidget->setSelectedUID(selectedUID); // to reset the display in a similar state as before the tree update
     }
     else {
-        treeWidget->clear();
+        if( treeWidget ) {
+            treeWidget->clear();
+        }
     }
 }
 
