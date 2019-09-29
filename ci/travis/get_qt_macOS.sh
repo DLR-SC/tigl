@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # download qt
-brew install qt
+#brew install qt
