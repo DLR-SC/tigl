@@ -11,11 +11,13 @@ addons:
   homebrew:
     packages:
     - qt
+    update: true
 
 cache:
   - ccache
   - directories:
     - $HOME/Library/Caches/Homebrew
+    - /usr/local/Homebrew/
 
 env:
   global:
