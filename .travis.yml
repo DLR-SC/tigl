@@ -49,7 +49,6 @@ before_install:
   - '[ "$TRAVIS_OS_NAME" != linux ] || sudo rm /usr/lib/oce-*/OCEConfig.cmake '
   # macOS steps
   - '[ "$TRAVIS_OS_NAME" != osx ] || export MACOSX_DEPLOYMENT_TARGET=10.9'
-  - '[ "$TRAVIS_OS_NAME" != osx ] || ci/travis/get_qt_macOS.sh'
   - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz'
   - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -o doxygen-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-macOS.tar.gz'
   - '[ "$TRAVIS_OS_NAME" != osx ] || /usr/bin/curl -o oce.0.17.2.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/oce.0.17.2-1.macos_static.tar.gz'
