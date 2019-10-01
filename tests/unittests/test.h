@@ -22,3 +22,29 @@
  * Define tests here
  *      
  */
+
+template <typename Array>
+::testing::AssertionResult ArraysMatch(const Array& expected,
+                                       const Array& actual){
+    
+    if (expected.size() != actual.size()) {
+        return ::testing::AssertionFailure() << "Expected size (" << expected.size() << ") != actual size (" << actual.size() <<  ")";
+    }
+    
+    
+    auto it1 = std::begin(expected);
+    auto it2 = std::begin(actual);
+    int idx = 0;
+    while(it1 != std::end(expected) && it2 != std::end(actual)){
+        if (*it1 != *it2){
+            return ::testing::AssertionFailure() << "array[" << idx
+                                                 << "] (" << *it2 << ") != expected[" << idx
+                                                 << "] (" << *it1 << ")";
+        }
+        ++idx;
+        ++it1;
+        ++it2;
+    }
+    
+    return ::testing::AssertionSuccess();
+}

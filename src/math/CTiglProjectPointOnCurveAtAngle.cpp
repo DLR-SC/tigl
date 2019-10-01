@@ -100,7 +100,7 @@ namespace
             return Values(X, F, G);
         }
 
-        virtual  Standard_Boolean Values (const math_Vector& X, Standard_Real& F, math_Vector& G)
+        virtual  Standard_Boolean Values (const math_Vector& X, Standard_Real& F, math_Vector& G) override
         {
             double u = X.Value(1);
 

@@ -886,4 +886,11 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::trimSurface(const Handle(Geo
     return trimmedSurface;
 }
 
+Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::trimCurve(const Handle(Geom_BSplineCurve)& curve, double umin, double umax)
+{
+    Handle(Geom_BSplineCurve) copy = Handle(Geom_BSplineCurve)::DownCast(curve->Copy());
+    copy->Segment(umin, umax);
+    return copy;
+}
+
 } // namespace tigl
