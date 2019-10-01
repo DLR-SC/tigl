@@ -43,7 +43,7 @@ namespace
         double min;
         double max;
         
-        bool operator==(const Intervall& other)
+        bool operator==(const Intervall& other) const
         {
             const double EPS = 1e-15;
             return fabs(min - other.min) < EPS && fabs(max - other.max) < EPS;
@@ -73,7 +73,8 @@ namespace
             return (min.x < max.x + eps) && (min.y < max.y + eps) && (min.z < max.z + eps);
         }
         
-        BoundingBox& Merge(const BoundingBox& other) {
+        BoundingBox& Merge(const BoundingBox& other)
+        {
             assert(range.max == other.range.min);
             range.max = other.range.max;
             high = maxCoords(high, other.high);
@@ -82,7 +83,7 @@ namespace
             return *this;
         }
         
-        bool operator==(const BoundingBox& other)
+        bool operator==(const BoundingBox& other) const
         {
             return range == other.range;
         }
