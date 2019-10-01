@@ -23,6 +23,10 @@
 
 #include <TColgp_Array1OfPnt.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include "tiglcommonfunctions.h"
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+
 
 #include <algorithm>
 #include <BSplCLib.hxx>
@@ -225,16 +229,8 @@ CTiglApproxResult CTiglBSplineApproxInterp::FitCurve(const std::vector<double>& 
     computeKnots(m_ncp, parms,
                  knots, mults);
 
-    TColStd_Array1OfInteger occMults(1, static_cast<Standard_Integer>(mults.size()));
-    TColStd_Array1OfReal occKnots(1, static_cast<Standard_Integer>(knots.size()));
-    for (size_t i = 0; i < knots.size(); ++i) {
-        Standard_Integer idx = static_cast<Standard_Integer>(i + 1);
-        occKnots.SetValue(idx, knots[i]);
-        occMults.SetValue(idx, mults[i]);
-    }
-
     // solve system
-    return solve(parms, occKnots, occMults);
+    return solve(parms, OccFArray(knots)->Array1(), OccIArray(mults)->Array1());
 }
 
 CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<double>& initialParms, int maxIter) const
@@ -258,25 +254,21 @@ CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<do
     computeKnots(m_ncp, parms,
                  knots, mults);
 
-    TColStd_Array1OfInteger occMults(1, static_cast<Standard_Integer>(mults.size()));
-    TColStd_Array1OfReal occKnots(1, static_cast<Standard_Integer>(knots.size()));
-    for (size_t i = 0; i < knots.size(); ++i) {
-        Standard_Integer idx = static_cast<Standard_Integer>(i + 1);
-        occKnots.SetValue(idx, knots[i]);
-        occMults.SetValue(idx, mults[i]);
-    }
+
+    auto occMults = OccIArray(mults);
+    auto occKnots = OccFArray(knots);
 
     int iteration = 0;
 
     // solve system
-    CTiglApproxResult result = solve(parms, occKnots, occMults);
+    CTiglApproxResult result = solve(parms, occKnots->Array1(), occMults->Array1());
     double old_error = result.error * 2.;
 
     while(result.error > 0 && (old_error - result.error) / std::max(result.error, 1e-6) > 1e-3 && iteration < maxIter) {
         old_error = result.error;
 
         optimizeParameters(result.curve, parms);
-        result = solve(parms, occKnots, occMults);
+        result = solve(parms, occKnots->Array1(), occMults->Array1());
 
         iteration++;
     }
