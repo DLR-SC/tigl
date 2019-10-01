@@ -1,46 +1,38 @@
 #include "test.h"
 
 #include <Geom_BSplineCurve.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 
 #include "CTiglIntersectBSplines.h"
+#include "tiglcommonfunctions.h"
 
 TEST(BSplineIntersection, ex1)
 {
-    TColStd_Array1OfReal knots1(1, 5);
-    knots1.SetValue(1, 0.);
-    knots1.SetValue(2, 1.25);
-    knots1.SetValue(3, 2.5);
-    knots1.SetValue(4, 3.75);
-    knots1.SetValue(5, 5.);
+    auto knots = OccFArray({0., 1.25, 2.5, 3.75, 5.});
+    auto mults = OccIArray({3, 1, 1, 1, 3});
 
-    TColStd_Array1OfInteger mults1(1, 5);
-    mults1.SetValue(1, 3);
-    mults1.SetValue(2, 1);
-    mults1.SetValue(3, 1);
-    mults1.SetValue(4, 1);
-    mults1.SetValue(5, 3);
+    auto cp = OccArray({
+        gp_Pnt(0., 0., 0.),
+        gp_Pnt(1., 5., 0.),
+        gp_Pnt(2., 0., 0.),
+        gp_Pnt(3., 5., 0.),
+        gp_Pnt(4., 0., 0.),
+        gp_Pnt(5., 5., 0.)
+    });
 
-    TColgp_Array1OfPnt cp1(1, 6);
-    cp1.SetValue(1, gp_Pnt(0., 0., 0.));
-    cp1.SetValue(2, gp_Pnt(1., 5., 0.));
-    cp1.SetValue(3, gp_Pnt(2., 0., 0.));
-    cp1.SetValue(4, gp_Pnt(3., 5., 0.));
-    cp1.SetValue(5, gp_Pnt(4., 0., 0.));
-    cp1.SetValue(6, gp_Pnt(5., 5., 0.));
+    auto cp2 = OccArray({
+        gp_Pnt(0., 0., 0.),
+        gp_Pnt(10., 1., 0.),
+        gp_Pnt(-1.62, 2., 0.),
+        gp_Pnt(4.78, 3., 0.),
+        gp_Pnt(0., 4., 0.),
+        gp_Pnt(5., 5., 0.)
+    });
 
-    TColgp_Array1OfPnt cp2(1, 6);
-    cp2.SetValue(1, gp_Pnt(0., 0., 0.));
-    cp2.SetValue(2, gp_Pnt(10., 1., 0.));
-    cp2.SetValue(3, gp_Pnt(-1.62, 2., 0.));
-    cp2.SetValue(4, gp_Pnt(4.78, 3., 0.));
-    cp2.SetValue(5, gp_Pnt(0., 4., 0.));
-    cp2.SetValue(6, gp_Pnt(5., 5., 0.));
-
-    Handle(Geom_BSplineCurve) c1 = new Geom_BSplineCurve(cp1, knots1, mults1, 2);
-    Handle(Geom_BSplineCurve) c2 = new Geom_BSplineCurve(cp2, knots1, mults1, 2);
+    Handle(Geom_BSplineCurve) c1 = new Geom_BSplineCurve(cp->Array1(), knots->Array1(), mults->Array1(), 2);
+    Handle(Geom_BSplineCurve) c2 = new Geom_BSplineCurve(cp2->Array1(), knots->Array1(), mults->Array1(), 2);
 
     auto results = tigl::IntersectBSplines(c1, c2, 0.03);
 

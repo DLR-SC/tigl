@@ -91,6 +91,8 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 #include <ShapeAnalysis_FreeBounds.hxx>
 #include <ShapeFix_EdgeConnect.hxx>
 #include <BRep_Tool.hxx>
@@ -1659,7 +1661,7 @@ TopoDS_Shape GetFacesByName(const PNamedShape shape, const std::string &name)
     return c;
 }
 
-TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts)
+Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts)
 {
     Handle(TColgp_HArray1OfPnt) result = new TColgp_HArray1OfPnt(1, static_cast<int>(pnts.size()));
     int idx = 1;
@@ -1667,4 +1669,27 @@ TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts
         result->SetValue(idx, *it);
     }
     return result;
+}
+
+Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector)
+{
+    Handle(TColStd_HArray1OfReal) array = new TColStd_HArray1OfReal(1, static_cast<int>(vector.size()));
+    int ipos = 1;
+    for (const auto& value : vector) {
+        array->SetValue(ipos, value);
+        ipos++;
+    }
+    
+    return array;
+}
+
+Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector)
+{
+    Handle(TColStd_HArray1OfInteger) array = new TColStd_HArray1OfInteger(1, static_cast<int>(vector.size()));
+    int ipos = 1;
+    for (const auto& value : vector) {
+        array->SetValue(ipos++, value);
+    }
+    
+    return array;
 }

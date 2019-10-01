@@ -284,7 +284,10 @@ TIGL_EXPORT std::vector<double> LinspaceWithBreaks(double umin, double umax, siz
 TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
 TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedComponent& component, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
 
+/// Converters between std::vectors and opencascade vectors
 TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts);
+TIGL_EXPORT Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector);
+TIGL_EXPORT Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector);
 
 template <typename T>
 size_t IndexFromUid(const std::vector<std::unique_ptr<T> >& vectorOfPointers, const std::string& uid)
