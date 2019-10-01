@@ -297,15 +297,19 @@ std::vector<tigl::CurveIntersectionResult> IntersectBSplines(const Handle(Geom_B
     std::vector<tigl::CurveIntersectionResult> results;
 
     for (const BoundingBoxPair& boxes : intersectionCandidates) {
-        math_BFGS mimizer(obj, 1e-12);
         math_Vector guess(1, 2);
         guess(1) = 0.5*(boxes.b1.range.min + boxes.b1.range.max);
         guess(2) = 0.5*(boxes.b2.range.min + boxes.b2.range.max);
 
-        mimizer.Perform(obj, guess);
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,1)
+        math_BFGS optimizer(obj.NbVariables(), 1e-12);
+        optimizer.Perform(obj, guess);
+#else
+        math_BFGS optimizer(obj, guess, 1e-12);
+#endif
 
-        double u = Clamp(mimizer.Location().Value(1), curve1->FirstParameter(), curve1->LastParameter());
-        double v = Clamp(mimizer.Location().Value(2), curve2->FirstParameter(), curve2->LastParameter());
+        double u = Clamp(optimizer.Location().Value(1), curve1->FirstParameter(), curve1->LastParameter());
+        double v = Clamp(optimizer.Location().Value(2), curve2->FirstParameter(), curve2->LastParameter());
         CurveIntersectionResult result;
         result.parmOnCurve1 = u;
         result.parmOnCurve2 = v;
