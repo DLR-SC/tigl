@@ -226,11 +226,8 @@ namespace
             m_c1->D1(u, p1, d1);
             m_c2->D1(v, p2, d2);
 
-            F = p1.SquareDistance(p2);
-
             gp_Vec diff = p1.XYZ() - p2.XYZ();
             F = diff.SquareMagnitude();
-
 
             G(1) = 2. * diff.Dot(d1);
             G(2) = -2. * diff.Dot(d2);
