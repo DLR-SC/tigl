@@ -4456,7 +4456,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHandle cpacsHandle, 
-                                                        char* wingUID,
+                                                        const char* wingUID,
                                                         double *wettedAreaPtr);
 
 /*@}*/

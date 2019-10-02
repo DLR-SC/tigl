@@ -269,6 +269,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
 {
     TopLoc_Location location;
     std::vector<unsigned long> indexBuffer;
+    nVertices = 0;
 
     const Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
     if (triangulation.IsNull()) {

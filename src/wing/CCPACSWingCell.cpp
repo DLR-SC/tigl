@@ -413,16 +413,10 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
     const CTiglWingStructureReference wsr(m_parent->GetParent()->GetStructure());
     const gp_Pnt p1 = wsr.GetLeadingEdgePoint(0);
     const gp_Pnt p2 = wsr.GetLeadingEdgePoint(1);
-    const gp_Vec yRefDir = gp_Vec(p1, p2).Normalized();
 
     // create a reference direction without sweep angle
     const gp_Pnt p2stern = gp_Pnt(p1.X(), p2.Y(), p2.Z());
     const gp_Vec yRefDirStern = gp_Vec(p1, p2stern).Normalized();
-
-    double sweepAngle = yRefDir.Angle(yRefDirStern);
-    if (p2.X() < p1.X()) {
-        sweepAngle = -sweepAngle;
-    }
 
     const gp_Pnt tePoint0 = wsr.GetTrailingEdgePoint(0);
 
@@ -611,7 +605,6 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
         }
 
         if (test) {
-            test = false;
             if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
                 test = PointIsInfrontSparGeometry(cutPlaneTE.Axis().Direction(), faceCenter, sparShapeTE);
             }
