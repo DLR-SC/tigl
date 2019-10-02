@@ -34,9 +34,16 @@ TEST(BSplineIntersection, ex1)
     Handle(Geom_BSplineCurve) c1 = new Geom_BSplineCurve(cp->Array1(), knots->Array1(), mults->Array1(), 2);
     Handle(Geom_BSplineCurve) c2 = new Geom_BSplineCurve(cp2->Array1(), knots->Array1(), mults->Array1(), 2);
 
-    auto results = tigl::IntersectBSplines(c1, c2, 0.03);
+    const double tolerance = 0.03;
+    auto results = tigl::IntersectBSplines(c1, c2, tolerance);
 
     EXPECT_EQ(11, results.size());
+
+    for (auto result : results) {
+        gp_Pnt p1 = c1->Value(result.parmOnCurve1);
+        gp_Pnt p2 = c2->Value(result.parmOnCurve2);
+        EXPECT_LE(p1.Distance(p2), tolerance);
+    }
 
     // Values from Python Code / Manually verified
     EXPECT_NEAR(0.0, tigl::CTiglPoint(9.025569161817309e-09, 3.7549883362060295e-09, 0.).distance2(results[0].point), 1e-8);
@@ -50,4 +57,37 @@ TEST(BSplineIntersection, ex1)
     EXPECT_NEAR(0.0, tigl::CTiglPoint(3.3861085187441030, 3.0046010587661650, 0.).distance2(results[8].point), 1e-8);
     EXPECT_NEAR(0.0, tigl::CTiglPoint(3.3346825588859490, 3.1899379238877654, 0.).distance2(results[9].point), 1e-8);
     EXPECT_NEAR(0.0, tigl::CTiglPoint(4.9999999788784610, 4.9999999788908305, 0.).distance2(results[10].point), 1e-8);
+}
+
+TEST(BSplineIntersection, ex2)
+{
+    auto knots = OccFArray({0., 5.});
+    auto mults = OccIArray({2, 2});
+
+    auto cp = OccArray({
+        gp_Pnt(0., 0., 0.),
+        gp_Pnt(0.95, 0., 0.)
+    });
+
+    auto cp2 = OccArray({
+        gp_Pnt(1., 1., 0.),
+        gp_Pnt(1., .05, 0.)
+    });
+
+    Handle(Geom_BSplineCurve) c1 = new Geom_BSplineCurve(cp->Array1(), knots->Array1(), mults->Array1(), 1);
+    Handle(Geom_BSplineCurve) c2 = new Geom_BSplineCurve(cp2->Array1(), knots->Array1(), mults->Array1(), 1);
+
+    const double tolerance = 0.1;
+    auto results = tigl::IntersectBSplines(c1, c2, tolerance);
+
+    EXPECT_EQ(1, results.size());
+
+    for (auto result : results) {
+        gp_Pnt p1 = c1->Value(result.parmOnCurve1);
+        gp_Pnt p2 = c2->Value(result.parmOnCurve2);
+        EXPECT_LE(p1.Distance(p2), tolerance);
+    }
+
+    // Values from Python Code / Manually verified
+    EXPECT_NEAR(0.0, tigl::CTiglPoint(0.975, 0.025, 0.).distance2(results[0].point), 1e-8);
 }

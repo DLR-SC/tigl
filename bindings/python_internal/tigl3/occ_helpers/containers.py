@@ -27,7 +27,7 @@ def int_array(int_list):
     """
     result = TColStd_HArray1OfInteger(1, len(int_list))
     for i, value in enumerate(int_list):
-        result.SetValue(i, value)
+        result.SetValue(i+1, value)
     return result
 
 

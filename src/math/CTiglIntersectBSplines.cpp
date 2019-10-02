@@ -14,6 +14,18 @@
 
 namespace
 {
+    template <typename T>
+    T maxval(const T& v1, const T& v2)
+    {
+        return v1 > v2 ? v1 : v2;
+    }
+
+    template <typename T>
+    T sqr(const T& v)
+    {
+        return v*v;
+    }
+
     tigl::CTiglPoint minCoords(const tigl::CTiglPoint& p1, const tigl::CTiglPoint& p2)
     {
         tigl::CTiglPoint result = p1;
@@ -218,7 +230,6 @@ namespace
 
         virtual  Standard_Boolean Values (const math_Vector& X, Standard_Real& F, math_Vector& G) override
         {
-            //@TODO: check, if intersection point lies outside the curve's range
             double u = X.Value(1);
             double v = X.Value(2);
 
@@ -229,9 +240,20 @@ namespace
 
             gp_Vec diff = p1.XYZ() - p2.XYZ();
             F = diff.SquareMagnitude();
-
             G(1) = 2. * diff.Dot(d1);
             G(2) = -2. * diff.Dot(d2);
+
+            // we add a large penalty, if the variables go outside the valid range
+            double u_penalty = sqr(maxval(0., m_c1->FirstParameter() - u)) + sqr(maxval(0., u - m_c1->LastParameter()));
+            double v_penalty = sqr(maxval(0., m_c2->FirstParameter() - v)) + sqr(maxval(0., v - m_c2->LastParameter()));
+
+            double d_u_penalty = -2. * maxval(0., m_c1->FirstParameter() - u) + 2.*maxval(0., u - m_c1->LastParameter());
+            double d_v_penalty = -2. * maxval(0., m_c2->FirstParameter() - v) + 2.*maxval(0., v - m_c2->LastParameter());
+
+            double fac = 1e7;
+            F += fac*(u_penalty + v_penalty);
+            G(1) += fac*d_u_penalty;
+            G(2) += fac*d_v_penalty;
 
             return true;
         }
