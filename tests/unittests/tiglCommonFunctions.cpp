@@ -127,8 +127,8 @@ TEST(TiglCommonFunctions, tiglCheckPointInside_api)
     // test errors
     EXPECT_EQ(TIGL_UID_ERROR, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", &isInside));
     EXPECT_EQ(TIGL_NOT_FOUND, tiglCheckPointInside(-1, 0., 0., 0., "wrongUID", &isInside));
-    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., NULL, &isInside));
-    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", NULL));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., nullptr, &isInside));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", nullptr));
 
 
 }
@@ -163,7 +163,7 @@ TEST(TiglCommonFunctions, ReplaceAdjacentWith)
         return v1 + 1 == v2;
     };
     
-    auto merged = [](int v1, int v2) {
+    auto merged = [](int /* v1 */, int v2) {
         return v2;
     };
     
@@ -171,7 +171,7 @@ TEST(TiglCommonFunctions, ReplaceAdjacentWith)
     ReplaceAdjacentWithMerged(a, is_adjacent, merged);
     EXPECT_TRUE(ArraysMatch({3, 10}, a));
     
-    a = {1, 2, 5, 6, 7, 9, 11, 23,24};
+    a = {1, 2, 5, 6, 7, 9, 11, 23, 24};
     ReplaceAdjacentWithMerged(a, is_adjacent, merged);
     EXPECT_TRUE(ArraysMatch({2, 7, 9, 11, 24}, a));
     
