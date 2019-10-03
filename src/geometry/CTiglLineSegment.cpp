@@ -1,3 +1,21 @@
+/*
+* Copyright (C) 2019 German Aerospace Center (DLR/SC)
+*
+* Created: 2019-09-30 Martin Siggel <Martin.Siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include "CTiglLineSegment.h"
 
 #include "tiglcommonfunctions.h"
@@ -19,12 +37,14 @@ double CTiglLineSegment::distance(const CTiglLineSegment& other) const
 {
     // Christer Ericson, Real Time Collision Detection
     
-    CTiglPoint r = p - other.p;
-    double a = d.norm2Sqr();
-    double e = other.d.norm2Sqr();
-    double f = CTiglPoint::inner_prod(other.d, r);
+    const CTiglPoint r = p - other.p;
+    const double a = d.norm2Sqr();
+    const double e = other.d.norm2Sqr();
+    const double f = CTiglPoint::inner_prod(other.d, r);
     
     const double EPS = 1e-8;
+
+    // The parameters of the points of minimal distance
     double s = 0., t = 0.;
     
     if (a <= EPS && e <= EPS) {
@@ -42,7 +62,7 @@ double CTiglLineSegment::distance(const CTiglLineSegment& other) const
         }
         else {
             double b = CTiglPoint::inner_prod(d, other.d);
-            float denom = a*e - b*b;
+            double denom = a*e - b*b;
             
             if (denom != 0.) {
                 s = Clamp((b*f - c*e)/ denom, 0., 1.);
@@ -66,8 +86,8 @@ double CTiglLineSegment::distance(const CTiglLineSegment& other) const
         }
     }
     
-    CTiglPoint c1 = value(s);
-    CTiglPoint c2 = other.value(t);
+    const CTiglPoint c1 = value(s);
+    const CTiglPoint c2 = other.value(t);
     return sqrt(c1.distance2(c2));
 }
 

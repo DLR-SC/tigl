@@ -1,3 +1,21 @@
+/*
+* Copyright (C) 2019 German Aerospace Center (DLR/SC)
+*
+* Created: 2019-09-30 Martin Siggel <Martin.Siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include "CTiglIntersectBSplines.h"
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglLineSegment.h"
@@ -110,8 +128,7 @@ namespace
     {
         double len = curve->Pole(1).Distance(curve->Pole(curve->NbPoles()));
         double total = 0.;
-        for (Standard_Integer i = 1; i < curve->NbPoles(); ++i)
-        {
+        for (Standard_Integer i = 1; i < curve->NbPoles(); ++i) {
             gp_Pnt p1 = curve->Pole(i);
             gp_Pnt p2 = curve->Pole(i+1);
             double dist = p1.Distance(p2);
@@ -190,7 +207,7 @@ namespace
             result1.splice(std::begin(result1), result2);
             return result1;
         }
-        else if(c2_curvature <= max_curvature && max_curvature < c1_curvature) {
+        else if (c2_curvature <= max_curvature && max_curvature < c1_curvature) {
             Handle_Geom_BSplineCurve c11 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1->FirstParameter(), curve1MidParm);
             Handle_Geom_BSplineCurve c12 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1MidParm, curve1->LastParameter());
             

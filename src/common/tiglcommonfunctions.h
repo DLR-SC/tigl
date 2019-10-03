@@ -301,7 +301,7 @@ size_t IndexFromUid(const std::vector<std::unique_ptr<T> >& vectorOfPointers, co
 template <class ArrayType, typename BinaryPredicate, typename BinaryMerge>
 void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, BinaryMerge merged)
 {
-    for(auto it = std::begin(list); it != std::end(list);) {
+    for (auto it = std::begin(list); it != std::end(list);) {
         auto nextIt = it;
         
         if (++nextIt == std::end(list)) {
@@ -309,7 +309,7 @@ void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, Bin
         }
         
         if (is_adjacent(*it, *nextIt)) {
-            typename ArrayType::value_type merged_val = merged(*it, *nextIt);
+            const auto merged_val = merged(*it, *nextIt);
             it = list.erase(it, ++nextIt);
             it = list.insert(it, merged_val);
         }
