@@ -234,6 +234,9 @@ public:
 
     /// Trims a bspline surface
     TIGL_EXPORT static Handle(Geom_BSplineSurface) trimSurface(const Handle(Geom_Surface)& surface, double umin, double umax, double vmin, double vmax);
+
+    /// Trims a bspline curve
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) trimCurve(const Handle(Geom_BSplineCurve)& curve, double umin, double umax);
 };
 } // namespace tigl
 

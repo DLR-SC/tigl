@@ -68,6 +68,7 @@
 #include "CTiglInterpolateCurveNetwork.h"
 #include "CTiglPointsToBSplineInterpolation.h"
 #include "CTiglCurvesToSurface.h"
+#include "CTiglIntersectBSplines.h"
 %}
 
 
@@ -80,6 +81,7 @@
 %template(CPointContainer) std::vector<gp_Pnt>;
 %template(BSplineCurveList) std::vector<Handle_Geom_BSplineCurve>;
 %template(CurveList) std::vector<Handle_Geom_Curve>;
+%template(CurveIntersectionResultList) std::vector<tigl::CurveIntersectionResult>;
 
 %boost_optional(tigl::CCPACSPointAbsRel)
 %boost_optional(tigl::CCPACSPoint)
@@ -88,6 +90,7 @@
 %boost_optional(tigl::generated::CPACSPointXYZ)
 %boost_optional(tigl::CCPACSPointListXYZVector)
 
+%include "CTiglIntersectBSplines.h"
 %include "CTiglPointsToBSplineInterpolation.h"
 %include "CTiglInterpolateCurveNetwork.h"
 %include "CTiglCurvesToSurface.h"

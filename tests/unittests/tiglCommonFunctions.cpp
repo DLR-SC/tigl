@@ -25,6 +25,8 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 
+#include <list>
+
 TEST(TiglCommonFunctions, isPathRelative)
 {
     ASSERT_TRUE(IsPathRelative("./test.txt"));
@@ -125,8 +127,8 @@ TEST(TiglCommonFunctions, tiglCheckPointInside_api)
     // test errors
     EXPECT_EQ(TIGL_UID_ERROR, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", &isInside));
     EXPECT_EQ(TIGL_NOT_FOUND, tiglCheckPointInside(-1, 0., 0., 0., "wrongUID", &isInside));
-    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., NULL, &isInside));
-    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", NULL));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., nullptr, &isInside));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", nullptr));
 
 
 }
@@ -153,4 +155,36 @@ TEST(TiglCommonFunctions, LinspaceWithBreaks)
     EXPECT_NEAR(0.80, res[9], 1e-10);
     EXPECT_NEAR(0.90, res[10], 1e-10);
     EXPECT_NEAR(1.00, res[11], 1e-10);
+}
+
+TEST(TiglCommonFunctions, ReplaceAdjacentWith)
+{
+    auto is_adjacent = [](int v1, int v2) {
+        return v1 + 1 == v2;
+    };
+    
+    auto merged = [](int /* v1 */, int v2) {
+        return v2;
+    };
+    
+    std::list<int> a = {1, 2, 3, 10};
+    ReplaceAdjacentWithMerged(a, is_adjacent, merged);
+    EXPECT_TRUE(ArraysMatch({3, 10}, a));
+    
+    a = {1, 2, 5, 6, 7, 9, 11, 23, 24};
+    ReplaceAdjacentWithMerged(a, is_adjacent, merged);
+    EXPECT_TRUE(ArraysMatch({2, 7, 9, 11, 24}, a));
+    
+    a = {5};
+    ReplaceAdjacentWithMerged(a, is_adjacent, merged);
+    EXPECT_TRUE(ArraysMatch({5}, a));
+    
+    a = {5, 6};
+    ReplaceAdjacentWithMerged(a, is_adjacent, merged);
+    EXPECT_TRUE(ArraysMatch({6}, a));
+    
+    a = {};
+    ReplaceAdjacentWithMerged(a, is_adjacent, merged);
+    EXPECT_TRUE(ArraysMatch({}, a));
+ 
 }

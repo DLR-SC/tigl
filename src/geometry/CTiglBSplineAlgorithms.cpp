@@ -311,17 +311,7 @@ namespace
     {
         return array2GetRow<TColgp_Array2OfPnt, TColgp_HArray1OfPnt, Handle_TColgp_HArray1OfPnt>(matrix, rowIndex);
     }
-    
-    Handle(TColStd_HArray1OfReal) toArray(const std::vector<double>& vector)
-    {
-        Handle(TColStd_HArray1OfReal) array = new TColStd_HArray1OfReal(1, static_cast<int>(vector.size()));
-        int ipos = 1;
-        for (std::vector<double>::const_iterator it = vector.begin(); it != vector.end(); ++it, ipos++) {
-            array->SetValue(ipos, *it);
-        }
-
-        return array;
-    }
+    		
 } // namespace
 
 
@@ -612,7 +602,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
         old_parameters_pnts->SetValue(occIdx, gp_Pnt2d(old_parameters[parameter_idx], 0));
     }
 
-    Geom2dAPI_Interpolate interpolationObject(old_parameters_pnts, toArray(new_parameters), false, 1e-15);
+    Geom2dAPI_Interpolate interpolationObject(old_parameters_pnts, OccFArray(new_parameters), false, 1e-15);
     interpolationObject.Perform();
 
     // check that interpolation was successful
@@ -884,6 +874,13 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::trimSurface(const Handle(Geo
             new Geom_RectangularTrimmedSurface(surface, umin, umax, vmin, vmax)
     );
     return trimmedSurface;
+}
+
+Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::trimCurve(const Handle(Geom_BSplineCurve)& curve, double umin, double umax)
+{
+    Handle(Geom_BSplineCurve) copy = Handle(Geom_BSplineCurve)::DownCast(curve->Copy());
+    copy->Segment(umin, umax);
+    return copy;
 }
 
 } // namespace tigl

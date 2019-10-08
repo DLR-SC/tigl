@@ -284,7 +284,10 @@ TIGL_EXPORT std::vector<double> LinspaceWithBreaks(double umin, double umax, siz
 TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
 TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedComponent& component, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
 
+/// Converters between std::vectors and opencascade vectors
 TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts);
+TIGL_EXPORT Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector);
+TIGL_EXPORT Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector);
 
 template <typename T>
 size_t IndexFromUid(const std::vector<std::unique_ptr<T> >& vectorOfPointers, const std::string& uid)
@@ -293,6 +296,27 @@ size_t IndexFromUid(const std::vector<std::unique_ptr<T> >& vectorOfPointers, co
         return ptr->GetUID() == uid;
     });
     return found - vectorOfPointers.begin();
+}
+
+template <class ArrayType, typename BinaryPredicate, typename BinaryMerge>
+void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, BinaryMerge merged)
+{
+    for (auto it = std::begin(list); it != std::end(list);) {
+        auto nextIt = it;
+        
+        if (++nextIt == std::end(list)) {
+            return;
+        }
+        
+        if (is_adjacent(*it, *nextIt)) {
+            const auto merged_val = merged(*it, *nextIt);
+            it = list.erase(it, ++nextIt);
+            it = list.insert(it, merged_val);
+        }
+        else {
+            it = nextIt;
+        }
+    }
 }
 
 #endif // TIGLCOMMONFUNCTIONS_H
