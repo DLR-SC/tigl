@@ -408,6 +408,7 @@ void TIGLViewerWindow::applySettings()
     myOCC->setBackgroundGradient(col.red(), col.green(), col.blue());
     getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceUIsosForDisplay(), AIS_TOI_IsoU);
     getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceVIsosForDisplay(), AIS_TOI_IsoV);
+    getScene()->setFaceBoundariesEnabled(tiglViewerSettings->drawFaceBoundaries());
     getScene()->getContext()->UpdateCurrentViewer();
     if (tiglViewerSettings->debugBooleanOperations()) {
         qputenv("TIGL_DEBUG_BOP", "1");

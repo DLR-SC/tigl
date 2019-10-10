@@ -571,5 +571,11 @@ void TIGLViewerContext::setObjectsColor(const QColor& color)
     }
 }
 
+void TIGLViewerContext::setFaceBoundariesEnabled(bool enabled) {
+    if (myContext && myContext->DefaultDrawer()) {
+        myContext->DefaultDrawer()->SetFaceBoundaryDraw(enabled);
+    }
+}
+
 
 

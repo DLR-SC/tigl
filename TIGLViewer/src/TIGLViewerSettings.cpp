@@ -24,6 +24,7 @@ const double DEFAULT_TRIANGULATION_ACCURACY = 0.00070;
 const QColor DEFAULT_BGCOLOR(169,237,255);
 const bool DEFAULT_DEBUG_BOPS = false;
 const bool DEFAULT_ENUM_FACES = false;
+const bool DEFAULT_DRAW_FACE_BOUNDARIES = true;
 const int DEFAULT_NISO_FACES = 0;
 
 
@@ -88,6 +89,11 @@ void TIGLViewerSettings::setNumberOfVIsolinesPerFace(int nlines)
     _nVIsosPerFace = nlines;
 }
 
+void TIGLViewerSettings::setDrawFaceBoundariesEnabled(bool enabled)
+{
+    _drawFaceBoundaries = enabled;
+}
+
 bool TIGLViewerSettings::debugBooleanOperations() const
 {
     return _debugBOPs;
@@ -108,6 +114,11 @@ int TIGLViewerSettings::numFaceVIsosForDisplay() const
     return _nVIsosPerFace;
 }
 
+bool TIGLViewerSettings::drawFaceBoundaries() const
+{
+    return _drawFaceBoundaries;
+}
+
 void TIGLViewerSettings::loadSettings()
 {
     QSettings settings("DLR SC-HPC", "TiGLViewer3");
@@ -120,6 +131,7 @@ void TIGLViewerSettings::loadSettings()
     _enumFaces = settings.value("enumerate_faces", false).toBool();
     _nUIsosPerFace = settings.value("number_uisolines_per_face", 0).toInt();
     _nVIsosPerFace = settings.value("number_visolines_per_face", 0).toInt();
+    _drawFaceBoundaries = settings.value("draw_face_boundaries", true).toBool();
 }
 
 void TIGLViewerSettings::storeSettings()
@@ -134,6 +146,7 @@ void TIGLViewerSettings::storeSettings()
     settings.setValue("enumerate_faces", _enumFaces);
     settings.setValue("number_uisolines_per_face", _nUIsosPerFace);
     settings.setValue("number_visolines_per_face", _nVIsosPerFace);
+    settings.setValue("draw_face_boundaries", _drawFaceBoundaries);
 }
 
 void TIGLViewerSettings::restoreDefaults()
@@ -145,6 +158,7 @@ void TIGLViewerSettings::restoreDefaults()
     _enumFaces = DEFAULT_ENUM_FACES;
     _nUIsosPerFace = DEFAULT_NISO_FACES;
     _nVIsosPerFace = DEFAULT_NISO_FACES;
+    _drawFaceBoundaries = DEFAULT_DRAW_FACE_BOUNDARIES;
 }
 
 TIGLViewerSettings::~TIGLViewerSettings() {}

@@ -44,11 +44,13 @@ public:
     void setEnumerateFacesEnabled(bool);
     void setNumberOfUIsolinesPerFace(int);
     void setNumberOfVIsolinesPerFace(int);
+    void setDrawFaceBoundariesEnabled(bool);
     
     bool debugBooleanOperations() const;
     bool enumerateFaces() const;
     int  numFaceUIsosForDisplay() const;
     int  numFaceVIsosForDisplay() const;
+    bool drawFaceBoundaries() const;
 
     void restoreDefaults();
 
@@ -64,6 +66,7 @@ private:
     bool _enumFaces;
     int  _nUIsosPerFace;
     int  _nVIsosPerFace;
+    bool _drawFaceBoundaries;
 };
 
 #endif /* TIGLVIEWERSETTINGS_H_ */
