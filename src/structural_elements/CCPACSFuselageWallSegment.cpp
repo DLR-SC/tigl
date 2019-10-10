@@ -174,7 +174,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
         sections[segment.GetEndSectionUID()] = shapes[nshapes-1];
     }
     
-    const generated::CPACSWalls& walls = GetWalls();
+    const auto& walls = GetWalls();
 
  
     // Base points and vectors
@@ -195,7 +195,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
 
     for (auto wallPositionUID : GetWallPositionUIDs().GetWallPositionUIDs()) {
         // TODO: move logic into wall position class
-        const CCPACSWallPosition& p = GetWalls().GetWallPosition(wallPositionUID);
+        const CCPACSWallPosition& p = walls.GetWallPosition(wallPositionUID);
         double x = 0;
         TopoDS_Shape shape;
         double y = p.GetY();
@@ -208,7 +208,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
             x = GetXCoord(shape, y, z, bboxSize);
         }
         else if(p.GetWallSegmentUID_choice2()) {
-            const CCPACSFuselageWallSegment& wall = GetWalls().GetWallSegment(p.GetWallSegmentUID_choice2().value());
+            const CCPACSFuselageWallSegment& wall = walls.GetWallSegment(p.GetWallSegmentUID_choice2().value());
             // TODO: check to self necessary! - self referencing cannot work
             shape = wall.GetLoft()->Shape();
             x = GetXCoord(shape, y, z, bboxSize);
@@ -353,7 +353,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
                 s_expl.Init(shape, TopAbs_EDGE);
                 // check, wheather one of the base points is on the face edges
                 while (s_expl.More()) {
-                    for (int j = 0; j < base_pnts.size(); ++j) {
+                    for (size_t j = 0; j < base_pnts.size(); ++j) {
                         // check, whather pref is on current edge
                         // TODO: replace with proper function
                         gp_Pnt pref = base_pnts[j];
