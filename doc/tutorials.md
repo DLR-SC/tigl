@@ -159,6 +159,8 @@ Remark that the sweep, dihedral and other definitions still make also sense in t
 24 ) :)
 
 
-@section tuto_python Python Scripting     
+@section tuto_python Python Scripting 
 
-Coming soon!
+See the the section @ref lib_intrernal_python_demo
+and take a look to the example file create_space_ship.py that explain quite 
+well the mechanism of the internal python api.

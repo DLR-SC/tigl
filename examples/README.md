@@ -61,7 +61,7 @@ To run this program, call it with a CPACS file, e.g.
 Python-Demo
 -----------
 
-The Python demo is similar to the C demo. In order to make it work, one needs to add 
+The Python wrapper demo is similar to the C demo. In order to make it work, one needs to add 
 
     TIGL_INSTALL_DIR/share/tigl3/python
     TIXI_INSTALL_DIR/share/tixi3/python
@@ -69,6 +69,29 @@ The Python demo is similar to the C demo. In order to make it work, one needs to
 to the PYTHONPATH environment variable. Afterwards, test it with
 
     python python_demo.py simpletest.cpacs.xml
+    
+    
+Internal-Python-Demo {#lib_intrernal_python_demo}
+---------------------
+To run the internal python demo, you need to have the internal python API installed.
+
+The easiest way to install TIGL3 with the internal python api support is to use the
+amazing [conda](http://conda.pydata.org/miniconda.html) package manager. To install, type
+
+     conda create -n cpacscreator_env python=3.6 cpacscreator -c dlr-sc
+     activate cpacscreator_env
+    
+This installs tigl and all dependencies. 
+
+Then, you can run the python examples as usual. For example type:
+
+     python create_space_ship.py
+
+Make sure the script create_space_ship.py is in your python path or go in the example
+directory.      
+     
+This script should generate a cpacs file out.xml that contains a space ship
+in your current directory.
 
 
 MATLAB-Demo

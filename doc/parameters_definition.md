@@ -108,7 +108,3 @@ If the wing airfoil is described as function, the trailing edge point definition
 If the wing airfoil is described as a set of points, the leading point is the point of the airfoil description that is the most distant of the airfoil trailing point.
 If the wing airfoil is described as function, the leading edge point definition is not so clear for the moment. 
 
-
-@section sec_fuselage_param Fuselage Parameters Definition
-Coming soon!
-
