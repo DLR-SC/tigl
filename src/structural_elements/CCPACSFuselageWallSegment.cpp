@@ -45,6 +45,22 @@
 
 #include <algorithm>
 
+namespace {
+
+// The x coordinate is determined by an intersection of a line parallel
+// to the x-axes and a given shape.
+double GetXCoord(const TopoDS_Shape& shape, double cy, double cz, double bboxSize);
+
+// fill gap between extrusion vector and shape by projection of
+// extrusion vector
+//
+// TODO: I have a hunch that this can be replaced by something of the lines of
+//   gp_Vec CalcExtrusionVector(...)
+// and we do not explicitly need to build a vec of ext_vecs...
+void CloseGap(gp_Vec& ext_vec, gp_Pnt base_pnt, gp_Vec norm_vec, gp_Vec x_vec, const TopoDS_Shape& shape);
+
+}
+
 namespace tigl
 {
 
@@ -93,48 +109,6 @@ const CCPACSFuselage &CCPACSFuselageWallSegment::GetFuselage() const
     return *fuselage;
 }
 
-double CCPACSFuselageWallSegment::GetXCoord(const TopoDS_Shape& shape, double cy, double cz, double bboxSize) const
-{
-    gp_Pnt xy_pnt(0.,cy,cz);
-    gp_Lin x_line (xy_pnt, gp_Dir(1.,0.,0.));
-    IntCurvesFace_ShapeIntersector intersector;
-    intersector.Load(shape,1e-5);
-    // ToDo: not sure if I interpret PInf and PSup correctly:
-    intersector.Perform(x_line,-bboxSize, bboxSize);
-    int NbPnt = intersector.NbPnt();
-    if (NbPnt == 1) {
-        gp_Pnt pnt = intersector.Pnt(1);
-        return pnt.Coord(1);
-    }
-    else {
-        throw CTiglError("Number of intersection points in CCPACSFuselageWallSegment::GetXCoord is not 1. Instead it is " + std_to_string(NbPnt));
-    }
-}
-
-// fill gap between extrusion vector and shape by projection of
-// extrusion vector
-void CloseGap(gp_Vec& ext_vec, gp_Pnt base_pnt, gp_Vec norm_vec, gp_Vec x_vec, const TopoDS_Shape& shape)
-{
-    gp_Pln pln1(gp_Ax3(base_pnt,gp_Dir(norm_vec),gp_Dir(x_vec)));
-    Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(shape));
-    GeomLib_IsPlanarSurface surf_check(surf);
-    if (surf_check.IsPlanar()) {
-        gp_Pln pln2 = surf_check.Plan();
-        
-        gp_Dir n1 = pln1.Axis().Direction();
-        gp_Dir n2 = pln2.Axis().Direction();
-        gp_Vec proj_vec = gp_Vec(n1.Crossed(n2));
-        if (proj_vec.Angle(ext_vec) > 0.5*M_PI) {
-            proj_vec.Reverse();
-        }
-        ext_vec = proj_vec;
-    }
-    else {
-        throw CTiglError("Cannot fill gap at non-planar surface");
-    }
-    
-}
-
 PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
 {
     bool flushConnectionStart = GetFlushConnectionStart().value_or(false);
@@ -151,29 +125,6 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
     BRepBndLib::Add(fuselageShape, boundingBox);
     double bboxSize = sqrt(boundingBox.SquareExtent());
     
-    // TODO: query section faces directory from the fuselage
-    // Temporary: reading geometry from CPACS file 
-    // get section shapes by UID: 
-    std::map<std::string, TopoDS_Shape> sections;
-    
-    for (int n = 0; n < fuselage.GetSegmentCount(); ++n) {
-        const CCPACSFuselageSegment& segment = fuselage.GetSegment(n+1);
-        TopoDS_Shape segment_shape = segment.GetLoft()->Shape();
-
-        // I assume that the last face of the segment is the end_section and
-        // the one before is the start_section. Jan wanted to implement a
-        // function for direct access via uID.
-        TopExp_Explorer ex(segment_shape, TopAbs_FACE);
-        std::vector<TopoDS_Shape> shapes;
-        while (ex.More()) {
-            shapes.push_back(ex.Current());
-            ex.Next();
-        }
-        size_t nshapes = shapes.size();
-        sections[segment.GetStartSectionUID()] = shapes[nshapes-2];
-        sections[segment.GetEndSectionUID()] = shapes[nshapes-1];
-    }
-    
     const auto& walls = GetWalls();
 
  
@@ -184,14 +135,14 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
     //   since the first and last vector can be modified later on, each
     //   point is assigned its own vector.
     double phiRad = Radians(GetPhi());
-    std::vector<gp_Vec> ext_vecs;
-    for (size_t i = 0; i < GetWallPositionUIDs().GetWallPositionUIDs().size(); ++i) {
-        ext_vecs.push_back(gp_Vec(0., -sin(phiRad), cos(phiRad)));
-    }
+    size_t nWallPositionUIDs = GetWallPositionUIDs().GetWallPositionUIDs().size();
+    std::vector<gp_Vec> ext_vecs(nWallPositionUIDs, gp_Vec(0., -sin(phiRad), cos(phiRad)));
 
     // list with base points:
     std::vector<gp_Pnt> base_pnts;
     std::vector<TopoDS_Shape> shapes;
+    base_pnts.reserve(nWallPositionUIDs);
+    shapes.reserve(nWallPositionUIDs);
 
     for (auto wallPositionUID : GetWallPositionUIDs().GetWallPositionUIDs()) {
         // TODO: move logic into wall position class
@@ -209,12 +160,14 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
         }
         else if(p.GetWallSegmentUID_choice2()) {
             const CCPACSFuselageWallSegment& wall = walls.GetWallSegment(p.GetWallSegmentUID_choice2().value());
-            // TODO: check to self necessary! - self referencing cannot work
+            if ( wall.GetDefaultedUID() == p.GetWallSegmentUID_choice2().value() ){
+                throw CTiglError("Fuselage wall references itself");
+            }
             shape = wall.GetLoft()->Shape();
             x = GetXCoord(shape, y, z, bboxSize);
         }
         else if (p.GetFuselageSectionUID_choice3()) {
-            shape = sections[p.GetFuselageSectionUID_choice3().value()];
+            shape = fuselage.GetSectionFace(p.GetFuselageSectionUID_choice3().value());
             x = GetXCoord(shape, y, z, bboxSize);
         }
         else {
@@ -406,8 +359,6 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
         for (size_t i = 0; i < n_base_pnts-1; ++i) {
             TopoDS_Face cut_face = cut_faces[i];
             double size = 2.*bboxSize;
-            gp_Pnt p1 = base_pnts[i];
-            gp_Pnt p2 = base_pnts[i+1];
             if (i == 0) {
                 TopoDS_Face cut_cut_face = BRepBuilderAPI_MakeFace(cut_plns[i+1],-size,size,-size,size).Face();
                 TopoDS_Shape result = SplitShape(cut_face, cut_cut_face);
@@ -447,3 +398,52 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
 }
 
 } // namespace tigl
+
+namespace {
+
+// The x coordinate is determined by an intersection of a line parallel
+// to the x-axes and a given shape.
+double GetXCoord(const TopoDS_Shape& shape, double cy, double cz, double bboxSize)
+{
+    gp_Pnt xy_pnt(0.,cy,cz);
+    gp_Lin x_line (xy_pnt, gp_Dir(1.,0.,0.));
+    IntCurvesFace_ShapeIntersector intersector;
+    intersector.Load(shape,1e-5);
+    // ToDo: not sure if I interpret PInf and PSup correctly:
+    intersector.Perform(x_line,-bboxSize, bboxSize);
+    int NbPnt = intersector.NbPnt();
+    if (NbPnt == 1) {
+        gp_Pnt pnt = intersector.Pnt(1);
+        return pnt.Coord(1);
+    }
+    else {
+        throw tigl::CTiglError("Number of intersection points in GetXCoord is not 1. Instead it is " + tigl::std_to_string(NbPnt));
+    }
+}
+
+
+// fill gap between extrusion vector and shape by projection of
+// extrusion vector
+void CloseGap(gp_Vec& ext_vec, gp_Pnt base_pnt, gp_Vec norm_vec, gp_Vec x_vec, const TopoDS_Shape& shape)
+{
+    gp_Pln pln1(gp_Ax3(base_pnt,gp_Dir(norm_vec),gp_Dir(x_vec)));
+    Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(shape));
+    GeomLib_IsPlanarSurface surf_check(surf);
+    if (surf_check.IsPlanar()) {
+        gp_Pln pln2 = surf_check.Plan();
+
+        gp_Dir n1 = pln1.Axis().Direction();
+        gp_Dir n2 = pln2.Axis().Direction();
+        gp_Vec proj_vec = gp_Vec(n1.Crossed(n2));
+        if (proj_vec.Angle(ext_vec) > 0.5*M_PI) {
+            proj_vec.Reverse();
+        }
+        ext_vec = proj_vec;
+    }
+    else {
+        throw tigl::CTiglError("Cannot fill gap at non-planar surface");
+    }
+
+}
+
+}

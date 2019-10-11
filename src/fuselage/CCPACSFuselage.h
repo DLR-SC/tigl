@@ -74,6 +74,9 @@ public:
     // Returns the section for a given index
     TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
 
+    // Returns the face that has a given fuselage section as its boundary
+    TIGL_EXPORT TopoDS_Shape GetSectionFace(const std::string section_uid) const;
+
     // Get segment count
     TIGL_EXPORT int GetSegmentCount() const;
 

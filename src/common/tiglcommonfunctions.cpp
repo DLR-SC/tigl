@@ -78,6 +78,7 @@
 #include <BRepAdaptor_HCompCurve.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include "BRepExtrema_ExtCC.hxx"
 #include <BRepExtrema_DistShapeShape.hxx>
@@ -939,25 +940,20 @@ TopoDS_Face BuildFace(const TopoDS_Wire& wire)
 {
     TopoDS_Face result;
 
-    // try building face using BRepLib_MakeFace, which tries to build a plane
-    // if a plane is not possible, use BRepFill_Filling
-    BRepLib_MakeFace mf(wire, Standard_True);
-    if (mf.IsDone()) {
-        result = mf.Face();
+    BRepBuilderAPI_FindPlane Searcher( wire, Precision::Confusion() );
+    if (Searcher.Found()) {
+        result = BRepBuilderAPI_MakeFace(Searcher.Plane(), wire);
     }
     else {
-        BRepFill_Filling filler;
-        TopExp_Explorer exp;
-        for (exp.Init(wire, TopAbs_EDGE); exp.More(); exp.Next()) {
-            TopoDS_Edge e = TopoDS::Edge(exp.Current());
-            filler.Add(e, GeomAbs_C0);
+        // try to find another surface
+        BRepBuilderAPI_MakeFace MF( wire );
+        if (MF.IsDone()) {
+            result = MF.Face();
         }
-        filler.Build();
-        if (!filler.IsDone()) {
-            LOG(ERROR) << "Unable to generate face from Wire!";
-            throw tigl::CTiglError("BuildFace: Unable to generate face from Wire!");
+        else {
+            LOG(ERROR) << "Could not build face from wire.";
+            throw tigl::CTiglError("Could not build face from wire.");
         }
-        result = filler.Face();
     }
     return result;
 }

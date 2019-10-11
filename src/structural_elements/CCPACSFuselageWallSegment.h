@@ -62,10 +62,6 @@ private:
     
     PNamedShape BuildLoft() const override;
     const CCPACSWalls& GetWalls() const;
-
-    // The x coordinate is determined by an intersection of a line parallel
-    // to the x-axes and a given shape.
-    double GetXCoord(const TopoDS_Shape& shape, double cy, double cz, double bboxSize) const;
     
     mutable TopoDS_Compound m_cutPlanes;
 };
