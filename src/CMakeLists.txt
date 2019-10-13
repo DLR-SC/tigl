@@ -58,6 +58,9 @@ if (TIGL_CONCAT_GENERATED_FILES)
     if (MSVC)
          SET_SOURCE_FILES_PROPERTIES( "${PROJECT_BINARY_DIR}/src/src_generated.cpp" PROPERTIES COMPILE_FLAGS "/bigobj" )
     endif(MSVC)
+    if (MINGW)
+         SET_SOURCE_FILES_PROPERTIES( "${PROJECT_BINARY_DIR}/src/src_generated.cpp" PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj" )
+    endif(MINGW)
 
 else(TIGL_CONCAT_GENERATED_FILES)
     list(REMOVE_ITEM SUBDIRS generated)
@@ -166,10 +169,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
    target_link_libraries (tigl3 PRIVATE rt)
    target_link_libraries (tigl3_static PRIVATE rt)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-if (MSVC)
+if (MSVC OR MINGW)
   target_link_libraries (tigl3 PRIVATE Shlwapi)
   target_link_libraries (tigl3_static PRIVATE Shlwapi)
-endif(MSVC)
+endif(MSVC OR MINGW)
 
 target_include_directories(tigl3_static PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
