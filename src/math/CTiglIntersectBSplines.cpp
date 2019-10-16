@@ -344,7 +344,7 @@ std::vector<tigl::CurveIntersectionResult> IntersectBSplines(const Handle(Geom_B
         guess(2) = 0.5*(boxes.b2.range.min + boxes.b2.range.max);
 
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,1)
-        math_BFGS optimizer(obj.NbVariables(), 1e-12);
+        math_BFGS optimizer(obj.NbVariables(), 1e-8, 50, 1e-8);
         optimizer.Perform(obj, guess);
 #else
         math_BFGS optimizer(obj, guess, 1e-12);
