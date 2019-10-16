@@ -30,6 +30,8 @@
 
 #include <cassert>
 
+#include <Standard_Version.hxx>
+
 namespace
 {
     template <typename T>
