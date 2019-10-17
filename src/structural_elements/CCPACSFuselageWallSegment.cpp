@@ -42,6 +42,7 @@
 #include <TopExp.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
+#include <BRepClass_FaceClassifier.hxx>
 
 #include <algorithm>
 
@@ -266,43 +267,19 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
 
             // Loop over the split faces and check weather one of the
             // base points belongs to the face.
-            //
-            // TODO: You should use
-            // BRepClass_FaceClassifier (!!!) for this test. Since I couldn't find
-            // it in pythonOCC I made a workaround by looping over the edges
-            // and check weather a point is on the edge.
             for (int i = 0; i <faceMap.Extent(); ++i) {
-                bool test = false;
-                TopoDS_Shape shape = faceMap.FindKey(i+1);
-                TopoDS_Face face = TopoDS::Face(shape);
-                TopExp_Explorer s_expl;
-                s_expl.Init(shape, TopAbs_EDGE);
-                // check, wheather one of the base points is on the face edges
-                while (s_expl.More()) {
-                    for (size_t j = 0; j < base_pnts.size(); ++j) {
-                        // check, whather pref is on current edge
-                        // TODO: replace with proper function
-                        gp_Pnt pref = base_pnts[j];
-                        TopoDS_Edge edge = TopoDS::Edge(s_expl.Current());
-                        gp_Pnt p1 = BRep_Tool::Pnt(TopExp::FirstVertex(edge));
-                        gp_Pnt p2 = BRep_Tool::Pnt(TopExp::LastVertex(edge));
-                        double d1 = gp_Vec(pref,p1).Magnitude();
-                        double d2 = gp_Vec(pref,p2).Magnitude();
-                        double dist = d1+d2-gp_Vec(p1,p2).Magnitude();
-                        double eps = 1e-10;
-                        if (dist < eps) {
-                            test = true;
-                        }
+                TopoDS_Face face = TopoDS::Face(faceMap.FindKey(i+1));
+                for (size_t j = 0; j < base_pnts.size(); ++j) {
+                    BRepClass_FaceClassifier faceClassifier;
+                    faceClassifier.Perform(face, base_pnts[j], Precision::Confusion());
+                    const TopAbs_State state = faceClassifier.State();
+                    if (state == TopAbs_IN || state == TopAbs_ON) {
+                        builder.Add(cut_wall,face);
+                        break;
                     }
-                    s_expl.Next();
-                }
-                // if the base points are on the current face, add it to the cut wall
-                if (test) {
-                    builder.Add(cut_wall,face);
                 }
             }
-            // TODO: check this. It seems strange to me
-            // That only the last bounding element writes to wall
+
             wall = cut_wall;
         } // loop over bounding elements
     } // if has bounding elements
