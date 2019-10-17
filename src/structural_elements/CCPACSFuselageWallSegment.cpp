@@ -42,21 +42,8 @@
 #include <TopExp.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
-#include <BRepClass_FaceClassifier.hxx>
 
 #include <algorithm>
-
-namespace {
-
-// fill gap between extrusion vector and shape by projection of
-// extrusion vector
-//
-// TODO: I have a hunch that this can be replaced by something of the lines of
-//   gp_Vec CalcExtrusionVector(...)
-// and we do not explicitly need to build a vec of ext_vecs...
-void CloseGap(gp_Vec& ext_vec, gp_Pnt base_pnt, gp_Vec norm_vec, gp_Vec x_vec, const TopoDS_Shape& shape);
-
-}
 
 namespace tigl
 {
@@ -123,61 +110,11 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
     double bboxSize = sqrt(boundingBox.SquareExtent());
     
     const auto& walls = GetWalls();
-
-    // extrusion vectors:
-    //   The extrusion vectors are equal at each base point. However,
-    //   since the first and last vector can be modified later on, each
-    //   point is assigned its own vector.
-    double phiRad = Radians(GetPhi());
-    size_t nWallPositionUIDs = GetWallPositionUIDs().GetWallPositionUIDs().size();
-    std::vector<gp_Vec> ext_vecs(nWallPositionUIDs, gp_Vec(0., -sin(phiRad), cos(phiRad)));
+    size_t nWallPositions = GetWallPositionUIDs().GetWallPositionUIDs().size();
 
     // list with base points:
     std::vector<gp_Pnt> base_pnts;
-    std::vector<TopoDS_Shape> shapes;
-    base_pnts.reserve(nWallPositionUIDs);
-    shapes.reserve(nWallPositionUIDs);
-
-    // get base point and shape (can be NULL)
-    for (auto wallPositionUID : GetWallPositionUIDs().GetWallPositionUIDs()) {
-        const CCPACSWallPosition& p = walls.GetWallPosition(wallPositionUID);
-
-        base_pnts.push_back(p.GetBasePoint());
-        TopoDS_Shape shape;
-
-        if (p.GetShape()) {
-            shape = *p.GetShape();
-        }
-        shapes.push_back(shape);
-    }
-    size_t n_base_pnts = base_pnts.size();
- 
-    // vectors along the base points and normal vectors of the all segments:
-    std::vector<gp_Vec> x_vecs, norm_vecs;
-    for (size_t i = 0; i < n_base_pnts - 1; ++i) {
-        gp_Vec x_vec = gp_Vec(base_pnts[i], base_pnts[i+1]);
-        x_vecs.push_back(x_vec);
-        norm_vecs.push_back(x_vec.Crossed(ext_vecs[i]));
-        
-    }
-
-    // TODO: Here it is very strange, that the vectors norm_vecs and x_vecs are 1 smaller than the others
-    // This could be a bug
-    if (flushConnectionStart && !shapes.front().IsNull()) {
-        CloseGap(ext_vecs.front(), base_pnts.front(), norm_vecs.front(), x_vecs.front(), shapes.front());
-    }
-    if (flushConnectionEnd && !shapes.back().IsNull()) {
-        CloseGap(ext_vecs.back(), base_pnts.back(), norm_vecs.back(), x_vecs.back(), shapes.back());
-    }
-
-    // lines
-    std::vector<gp_Lin> v_lines;
-    for (size_t i = 0; i < base_pnts.size(); ++i) {
-        v_lines.push_back(gp_Lin(base_pnts[i], gp_Dir(ext_vecs[i])));
-    }
-    size_t n_vlines = v_lines.size();
-
-    // edges 
+    base_pnts.reserve(nWallPositions);
 
     // extrusion in negative direction is realized by setting u_neg to
     // -bboxSize:
@@ -187,49 +124,73 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
         u_neg = -bboxSize;
     }
 
-   // list with vertical (v) edges:
-    std::vector<TopoDS_Edge> v_edges;
-    // list with start and end points of the edges: 
-    std::vector<std::pair<gp_Pnt, gp_Pnt>> edge_pnts;
-    for (auto v_line : v_lines) {
-        BRepBuilderAPI_MakeEdge builder(v_line, u_neg, u_pos);
-        v_edges.push_back(builder.Edge());
-        edge_pnts.push_back(std::make_pair(BRep_Tool::Pnt(builder.Vertex1()), BRep_Tool::Pnt(builder.Vertex2())));
-    }
+    gp_Pnt upper, lower;
+    gp_Vec x_vec;
 
-    // list with horizontal (h) edges connecting the start points (lwr):
-    std::vector<TopoDS_Edge> h_edges_lwr;
-    // the same with the upper (upr) edges: 
-    std::vector<TopoDS_Edge> h_edges_upr;
-    for (size_t i = 0; i < n_vlines - 1; ++i) {
-        TopoDS_Edge edgeLwr = BRepBuilderAPI_MakeEdge(edge_pnts[i].first, edge_pnts[i+1].first).Edge();
-        TopoDS_Edge edgeUpr = BRepBuilderAPI_MakeEdge(edge_pnts[i].second, edge_pnts[i+1].second).Edge();
-        h_edges_lwr.push_back(edgeLwr);
-        h_edges_upr.push_back(edgeUpr);
-    }
-    
-    // Construction of a wire for each wall segment
-    std::vector<TopoDS_Wire> wires;
-    for (size_t i = 0; i < n_vlines -1; ++i) {
-        TopoDS_Wire w = BRepBuilderAPI_MakeWire(v_edges[i], h_edges_lwr[i], v_edges[i+1], h_edges_upr[i]).Wire();
-        wires.push_back(w);
-    }
-
-    // faces
-    std::vector<TopoDS_Face> faces;
-    for (const TopoDS_Wire& wire : wires) {
-        TopoDS_Face face = BRepBuilderAPI_MakeFace(wire, false).Face();
-        faces.push_back(face);
-    }
-    
+    // builder for wall
     TopoDS_Builder builder;
     TopoDS_Compound wall;
     builder.MakeCompound(wall);
-    for (const TopoDS_Face& face : faces) {
-        builder.Add(wall, face);
+
+    size_t count = 0;
+    for (auto wallPositionUID : GetWallPositionUIDs().GetWallPositionUIDs()) {
+        const CCPACSWallPosition& p = walls.GetWallPosition(wallPositionUID);
+
+        // get current base point and x_vec pointing from previous base point to current
+        gp_Pnt base_point = p.GetBasePoint();
+        if ( count > 0 ) {
+            x_vec = gp_Vec(base_pnts.back(), base_point);
+        }
+
+        // extrusion vector
+        double phiRad = Radians(GetPhi());
+        gp_Vec ext_vec(0., -sin(phiRad), cos(phiRad));
+
+        if (count==1) {
+            // make first wall segment larger in negative x-direction
+            upper.Translate(-x_vec*bboxSize);
+            lower.Translate(-x_vec*bboxSize);
+        }
+
+        gp_Pnt upper_new = base_point.Translated(u_pos*ext_vec);
+        gp_Pnt lower_new = base_point.Translated(u_neg*ext_vec);
+        if (count==nWallPositions-1) {
+            // make last wall segment larger in positive x-drection
+            upper_new.Translate(x_vec*bboxSize);
+            lower_new.Translate(x_vec*bboxSize);
+        }
+
+        // create the wall segment from the four corner points
+        if (count > 0 ) {
+            TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(lower, lower_new).Edge();
+            TopoDS_Edge e2 = BRepBuilderAPI_MakeEdge(lower_new, upper_new).Edge();
+            TopoDS_Edge e3 = BRepBuilderAPI_MakeEdge(upper_new, upper).Edge();
+            TopoDS_Edge e4 = BRepBuilderAPI_MakeEdge(upper, lower).Edge();
+            TopoDS_Wire w = BRepBuilderAPI_MakeWire(e1, e2, e3, e4).Wire();
+            TopoDS_Face face = BRepBuilderAPI_MakeFace(w, false).Face();
+            builder.Add(wall, face);
+        }
+
+        base_pnts.push_back(base_point);
+        upper = upper_new;
+        lower = lower_new;
+        ++count;
     }
+
+    m_cutPlanes = wall;
+
+    // trimming of the wall
+
+    //TODO: Cut wall at first shape or x-value, depending on flushConnectionStart/flushConnectionEnd
+    /*
+    if (flushConnectionStart && !shapes.front().IsNull()) {
+        CloseGap(ext_vecs.front(), base_pnts.front(), norm_vecs.front(), x_vecs.front(), shapes.front());
+    }
+    if (flushConnectionEnd && !shapes.back().IsNull()) {
+        CloseGap(ext_vecs.back(), base_pnts.back(), norm_vecs.back(), x_vecs.back(), shapes.back());
+    }
+    */
     
-    // trimming of the wall 
     // the wall will first be cut at the fuselage:
     TopoDS_Compound cut_wall;
     builder.MakeCompound(cut_wall);
@@ -241,6 +202,8 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
     for (int i = 0; i < faceMap.Extent(); ++i) {
         TopoDS_Face face = TopoDS::Face(faceMap.FindKey(i+1));
         gp_Pnt faceCenter = GetCentralFacePoint(face);
+        //TODO: This could be dangerous, maybe we should check if the point
+        // is outside the fuselage rather than the bounding box
         if (!boundingBox.IsOut(faceCenter)) {
             builder.Add(cut_wall, face);
         }
@@ -252,10 +215,8 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
    auto additional = base_pnts;
 
     if (GetBoundingElementUIDs()) {
-        size_t count = 1;
         for (std::string bounding_element_uid : GetBoundingElementUIDs()->GetBoundingElementUIDs()) {
             const CCPACSFuselageWallSegment& bounding_element = GetWalls().GetWallSegment(bounding_element_uid);
-            count += 1;
             // TODO: Check: The order of whoch the walls are evaulated seem to matter here!
             TopoDS_Compound bounding_cutPlane = bounding_element.GetCutPlanes();
             TopoDS_Shape result = SplitShape(wall, bounding_cutPlane);
@@ -268,111 +229,19 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
             // Loop over the split faces and check weather one of the
             // base points belongs to the face.
             for (int i = 0; i <faceMap.Extent(); ++i) {
-                TopoDS_Face face = TopoDS::Face(faceMap.FindKey(i+1));
-                for (size_t j = 0; j < base_pnts.size(); ++j) {
-                    BRepClass_FaceClassifier faceClassifier;
-                    faceClassifier.Perform(face, base_pnts[j], Precision::Confusion());
-                    const TopAbs_State state = faceClassifier.State();
-                    if (state == TopAbs_IN || state == TopAbs_ON) {
+                TopoDS_Face face = TopoDS::Face(faceMap(i+1));
+                for (auto point : base_pnts) {
+                    if ( IsPointInsideFace(face, point) ) {
                         builder.Add(cut_wall,face);
                         break;
                     }
                 }
             }
-
             wall = cut_wall;
         } // loop over bounding elements
     } // if has bounding elements
     
-    TopoDS_Compound cutPlanes;
-    builder.MakeCompound(cutPlanes);
-
-    // cutting faces 
-    //   In addition to the wall geometry cutting faces are build which
-    //   exceed the fuselage.
-    
-    // define cutting planes:
-    std::vector<gp_Pln> cut_plns;
-    for (size_t i = 0; i < n_base_pnts -1; ++i) {
-        gp_Pln plane(gp_Ax3(base_pnts[i], gp_Dir(norm_vecs[i]), gp_Dir(x_vecs[i])));
-        cut_plns.push_back(plane);
-    }
-
-    // deduct cutting faces:
-    std::vector<TopoDS_Face> cut_faces;
-    for (auto pln : cut_plns) {
-        TopoDS_Face face = BRepBuilderAPI_MakeFace(pln,-bboxSize,bboxSize, -bboxSize,bboxSize).Face();
-        cut_faces.push_back(face);
-    }
-    
-    if (n_base_pnts > 2) {
-        for (size_t i = 0; i < n_base_pnts-1; ++i) {
-            TopoDS_Face cut_face = cut_faces[i];
-            double size = 2.*bboxSize;
-            if (i == 0) {
-                TopoDS_Face cut_cut_face = BRepBuilderAPI_MakeFace(cut_plns[i+1],-size,size,-size,size).Face();
-                TopoDS_Shape result = SplitShape(cut_face, cut_cut_face);
-                TopTools_IndexedMapOfShape faceMap;
-                TopExp::MapShapes(result, TopAbs_FACE, faceMap);
-                builder.Add(cutPlanes,faceMap.FindKey(1));
-            }
-            else if (i == n_base_pnts-2) {
-                // TODO: Code duplication from above
-                TopoDS_Face cut_cut_face = BRepBuilderAPI_MakeFace(cut_plns[i-1],-size,size,-size,size).Face();
-                TopoDS_Shape result = SplitShape(cut_face, cut_cut_face);
-                TopTools_IndexedMapOfShape faceMap;
-                TopExp::MapShapes(result, TopAbs_FACE, faceMap);
-                builder.Add(cutPlanes,faceMap.FindKey(2));
-            }
-            else {
-                TopoDS_Face cut_cut_face1 = BRepBuilderAPI_MakeFace(cut_plns[i-1],-size,size,-size,size).Face();
-                TopoDS_Face cut_cut_face2 = BRepBuilderAPI_MakeFace(cut_plns[i+1],-size,size,-size,size).Face();
-                TopoDS_Compound cut_compound;
-                builder.MakeCompound(cut_compound);
-                builder.Add(cut_compound,cut_cut_face1);
-                builder.Add(cut_compound,cut_cut_face2);
-                TopoDS_Shape result = SplitShape(cut_face, cut_compound);
-                TopTools_IndexedMapOfShape faceMap;
-                TopExp::MapShapes(result, TopAbs_FACE, faceMap);
-                builder.Add(cutPlanes,faceMap.FindKey(2));
-            }
-        }
-    }
-    else {
-        builder.Add(cutPlanes,cut_faces[0]);
-    }
-    
-    m_cutPlanes = cutPlanes;
-
     return PNamedShape(new CNamedShape(wall, GetDefaultedUID()));
 }
 
 } // namespace tigl
-
-namespace {
-
-// fill gap between extrusion vector and shape by projection of
-// extrusion vector
-void CloseGap(gp_Vec& ext_vec, gp_Pnt base_pnt, gp_Vec norm_vec, gp_Vec x_vec, const TopoDS_Shape& shape)
-{
-    gp_Pln pln1(gp_Ax3(base_pnt,gp_Dir(norm_vec),gp_Dir(x_vec)));
-    Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(shape));
-    GeomLib_IsPlanarSurface surf_check(surf);
-    if (surf_check.IsPlanar()) {
-        gp_Pln pln2 = surf_check.Plan();
-
-        gp_Dir n1 = pln1.Axis().Direction();
-        gp_Dir n2 = pln2.Axis().Direction();
-        gp_Vec proj_vec = gp_Vec(n1.Crossed(n2));
-        if (proj_vec.Angle(ext_vec) > 0.5*M_PI) {
-            proj_vec.Reverse();
-        }
-        ext_vec = proj_vec;
-    }
-    else {
-        throw tigl::CTiglError("Cannot fill gap at non-planar surface");
-    }
-
-}
-
-}
