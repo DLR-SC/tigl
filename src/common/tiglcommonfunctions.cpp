@@ -104,6 +104,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <Standard_Version.hxx>
 #include <BRepExtrema_ExtPF.hxx>
+#include <BRepClass_FaceClassifier.hxx>
 
 #include <ShapeAnalysis_FreeBounds.hxx>
 
@@ -1555,6 +1556,27 @@ bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
     algo.Perform(point, 1e-3);
 
     return ((algo.State() == TopAbs_IN) != shapeIsReversed ) || (algo.State() == TopAbs_ON);
+}
+
+// Checks, whether a point lies inside a given face
+TIGL_EXPORT bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt& point)
+{
+    //project point onto surface of face
+    TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(point);
+    BRepExtrema_ExtPF proj(v, face);
+    if (proj.IsDone() && proj.NbExt() > 0 && proj.SquareDistance(1)> Precision::SquareConfusion()) {
+        return false;
+    }
+
+    //point is in surface of face. Check if it is inside
+    BRepClass_FaceClassifier faceClassifier;
+    faceClassifier.Perform(face, point, Precision::Confusion());
+    const TopAbs_State state = faceClassifier.State();
+
+    if (state == TopAbs_ON || state == TopAbs_IN) {
+        return true;
+    }
+    return false;
 }
 
 std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks)
