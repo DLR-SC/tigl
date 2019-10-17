@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CPACSWallPosition.h"
+#include <cassert>
+#include <CCPACSWallPosition.h>
+#include "CCPACSWalls.h"
 #include "CPACSWallPositions.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -26,13 +28,25 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSWallPositions::CPACSWallPositions(CTiglUIDManager* uidMgr)
+    CPACSWallPositions::CPACSWallPositions(CCPACSWalls* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSWallPositions::~CPACSWallPositions()
     {
+    }
+
+    const CCPACSWalls* CPACSWallPositions::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSWalls* CPACSWallPositions::GetParent()
+    {
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSWallPositions::GetUIDManager()
@@ -49,7 +63,7 @@ namespace generated
     {
         // read element wallPosition
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/wallPosition")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/wallPosition", m_wallPositions, 2, tixi::xsdUnbounded, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/wallPosition", m_wallPositions, 2, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -61,23 +75,23 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSWallPosition>>& CPACSWallPositions::GetWallPositions() const
+    const std::vector<std::unique_ptr<CCPACSWallPosition>>& CPACSWallPositions::GetWallPositions() const
     {
         return m_wallPositions;
     }
 
-    std::vector<std::unique_ptr<CPACSWallPosition>>& CPACSWallPositions::GetWallPositions()
+    std::vector<std::unique_ptr<CCPACSWallPosition>>& CPACSWallPositions::GetWallPositions()
     {
         return m_wallPositions;
     }
 
-    CPACSWallPosition& CPACSWallPositions::AddWallPosition()
+    CCPACSWallPosition& CPACSWallPositions::AddWallPosition()
     {
-        m_wallPositions.push_back(make_unique<CPACSWallPosition>(m_uidMgr));
+        m_wallPositions.push_back(make_unique<CCPACSWallPosition>(this, m_uidMgr));
         return *m_wallPositions.back();
     }
 
-    void CPACSWallPositions::RemoveWallPosition(CPACSWallPosition& ref)
+    void CPACSWallPositions::RemoveWallPosition(CCPACSWallPosition& ref)
     {
         for (std::size_t i = 0; i < m_wallPositions.size(); i++) {
             if (m_wallPositions[i].get() == &ref) {

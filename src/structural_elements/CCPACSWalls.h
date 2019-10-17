@@ -21,7 +21,7 @@
 
 #include "generated/CPACSWalls.h"
 #include "CCPACSFuselageWallSegment.h"
-#include "generated/CPACSWallPosition.h"
+#include "CCPACSWallPosition.h"
 
 namespace tigl
 {

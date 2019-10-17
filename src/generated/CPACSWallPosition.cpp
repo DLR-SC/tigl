@@ -15,7 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cassert>
 #include "CPACSWallPosition.h"
+#include "CPACSWallPositions.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -25,16 +27,28 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSWallPosition::CPACSWallPosition(CTiglUIDManager* uidMgr)
+    CPACSWallPosition::CPACSWallPosition(CPACSWallPositions* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_y(0)
         , m_z(0)
     {
+        //assert(parent != NULL);
+        m_parent = parent;
     }
 
     CPACSWallPosition::~CPACSWallPosition()
     {
         if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+    }
+
+    const CPACSWallPositions* CPACSWallPosition::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSWallPositions* CPACSWallPosition::GetParent()
+    {
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSWallPosition::GetUIDManager()

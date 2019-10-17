@@ -29,11 +29,7 @@ namespace tigl
 
 class CCPACSFuselage;
 class CCPACSWalls;
-
-namespace generated
-{
-    class CPACSWallPosition;
-}
+class CCPACSWallPosition;
 
 class CCPACSFuselageWallSegment : public generated::CPACSWallSegment, public CTiglAbstractGeometricComponent
 {

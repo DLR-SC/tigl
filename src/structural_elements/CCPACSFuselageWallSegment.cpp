@@ -23,7 +23,7 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSegment.h"
 #include "CNamedShape.h"
-#include "generated/CPACSWallPosition.h"
+#include "CCPACSWallPosition.h"
 #include "CTiglUIDManager.h"
 #include "tiglcommonfunctions.h"
 #include "to_string.h"
@@ -46,10 +46,6 @@
 #include <algorithm>
 
 namespace {
-
-// The x coordinate is determined by an intersection of a line parallel
-// to the x-axes and a given shape.
-double GetXCoord(const TopoDS_Shape& shape, double cy, double cz, double bboxSize);
 
 // fill gap between extrusion vector and shape by projection of
 // extrusion vector
@@ -127,9 +123,6 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
     
     const auto& walls = GetWalls();
 
- 
-    // Base points and vectors
-
     // extrusion vectors:
     //   The extrusion vectors are equal at each base point. However,
     //   since the first and last vector can be modified later on, each
@@ -144,36 +137,16 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
     base_pnts.reserve(nWallPositionUIDs);
     shapes.reserve(nWallPositionUIDs);
 
+    // get base point and shape (can be NULL)
     for (auto wallPositionUID : GetWallPositionUIDs().GetWallPositionUIDs()) {
-        // TODO: move logic into wall position class
         const CCPACSWallPosition& p = walls.GetWallPosition(wallPositionUID);
-        double x = 0;
+
+        base_pnts.push_back(p.GetBasePoint());
         TopoDS_Shape shape;
-        double y = p.GetY();
-        double z = p.GetZ();
-        if (p.GetX_choice4()) {
-            x = p.GetX_choice4().value();
+
+        if (p.GetShape()) {
+            shape = *p.GetShape();
         }
-        else if(p.GetBulkheadUID_choice1()) {
-            shape = GetUIDManager().GetGeometricComponent(p.GetBulkheadUID_choice1().value()).GetLoft()->Shape();
-            x = GetXCoord(shape, y, z, bboxSize);
-        }
-        else if(p.GetWallSegmentUID_choice2()) {
-            const CCPACSFuselageWallSegment& wall = walls.GetWallSegment(p.GetWallSegmentUID_choice2().value());
-            if ( wall.GetDefaultedUID() == p.GetWallSegmentUID_choice2().value() ){
-                throw CTiglError("Fuselage wall references itself");
-            }
-            shape = wall.GetLoft()->Shape();
-            x = GetXCoord(shape, y, z, bboxSize);
-        }
-        else if (p.GetFuselageSectionUID_choice3()) {
-            shape = fuselage.GetSectionFace(p.GetFuselageSectionUID_choice3().value());
-            x = GetXCoord(shape, y, z, bboxSize);
-        }
-        else {
-            throw CTiglError("Cannot determine x coordinate of wall position.");
-        }
-        base_pnts.push_back(gp_Pnt(x,y,z));
         shapes.push_back(shape);
     }
     size_t n_base_pnts = base_pnts.size();
@@ -400,27 +373,6 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
 } // namespace tigl
 
 namespace {
-
-// The x coordinate is determined by an intersection of a line parallel
-// to the x-axes and a given shape.
-double GetXCoord(const TopoDS_Shape& shape, double cy, double cz, double bboxSize)
-{
-    gp_Pnt xy_pnt(0.,cy,cz);
-    gp_Lin x_line (xy_pnt, gp_Dir(1.,0.,0.));
-    IntCurvesFace_ShapeIntersector intersector;
-    intersector.Load(shape,1e-5);
-    // ToDo: not sure if I interpret PInf and PSup correctly:
-    intersector.Perform(x_line,-bboxSize, bboxSize);
-    int NbPnt = intersector.NbPnt();
-    if (NbPnt == 1) {
-        gp_Pnt pnt = intersector.Pnt(1);
-        return pnt.Coord(1);
-    }
-    else {
-        throw tigl::CTiglError("Number of intersection points in GetXCoord is not 1. Instead it is " + tigl::std_to_string(NbPnt));
-    }
-}
-
 
 // fill gap between extrusion vector and shape by projection of
 // extrusion vector

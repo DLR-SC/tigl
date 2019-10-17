@@ -26,11 +26,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSWallPosition;
+class CCPACSWalls;
 
 namespace generated
 {
-    class CPACSWallPosition;
-
     // This class is used in:
     // CPACSWalls
 
@@ -38,8 +38,13 @@ namespace generated
     class CPACSWallPositions
     {
     public:
-        TIGL_EXPORT CPACSWallPositions(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWallPositions(CCPACSWalls* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSWallPositions();
+
+        TIGL_EXPORT CCPACSWalls* GetParent();
+
+        TIGL_EXPORT const CCPACSWalls* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -47,17 +52,19 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSWallPosition>>& GetWallPositions() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSWallPosition>>& GetWallPositions();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWallPosition>>& GetWallPositions() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWallPosition>>& GetWallPositions();
 
-        TIGL_EXPORT virtual CPACSWallPosition& AddWallPosition();
-        TIGL_EXPORT virtual void RemoveWallPosition(CPACSWallPosition& ref);
+        TIGL_EXPORT virtual CCPACSWallPosition& AddWallPosition();
+        TIGL_EXPORT virtual void RemoveWallPosition(CCPACSWallPosition& ref);
 
     protected:
+        CCPACSWalls* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
         /// Wall position definition specifying a point in the fuselage to be connected to a wall segment.
-        std::vector<std::unique_ptr<CPACSWallPosition>> m_wallPositions;
+        std::vector<std::unique_ptr<CCPACSWallPosition>> m_wallPositions;
 
     private:
         CPACSWallPositions(const CPACSWallPositions&) = delete;
@@ -70,5 +77,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSWallPositions = generated::CPACSWallPositions;
-using CCPACSWallPosition = generated::CPACSWallPosition;
 } // namespace tigl

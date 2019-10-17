@@ -29,6 +29,8 @@ class CTiglUIDManager;
 
 namespace generated
 {
+    class CPACSWallPositions;
+
     // This class is used in:
     // CPACSWallPositions
 
@@ -36,8 +38,13 @@ namespace generated
     class CPACSWallPosition
     {
     public:
-        TIGL_EXPORT CPACSWallPosition(CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWallPosition(CPACSWallPositions* parent, CTiglUIDManager* uidMgr);
+
         TIGL_EXPORT virtual ~CPACSWallPosition();
+
+        TIGL_EXPORT CPACSWallPositions* GetParent();
+
+        TIGL_EXPORT const CPACSWallPositions* GetParent() const;
 
         TIGL_EXPORT CTiglUIDManager& GetUIDManager();
         TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
@@ -69,6 +76,8 @@ namespace generated
         TIGL_EXPORT virtual void SetZ(const double& value);
 
     protected:
+        CPACSWallPositions* m_parent;
+
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<std::string> m_uID;
@@ -100,6 +109,8 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSWallPosition is customized, use type CCPACSWallPosition directly
+
 // Aliases in tigl namespace
-using CCPACSWallPosition = generated::CPACSWallPosition;
+using CCPACSWallPositions = generated::CPACSWallPositions;
 } // namespace tigl

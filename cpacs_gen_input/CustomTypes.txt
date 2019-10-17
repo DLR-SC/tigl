@@ -110,6 +110,7 @@ CPACSPointXY                              CCPACSPointXY
 CPACSStringerFramePosition                CCPACSFuselageStringerFramePosition
 CPACSSkinSegment                          CCPACSSkinSegment
 CPACSWallSegment                          CCPACSFuselageWallSegment
+CPACSWallPosition                         CCPACSWallPosition
 CPACSWalls                                CCPACSWalls
 
 // control surfaces
