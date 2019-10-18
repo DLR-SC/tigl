@@ -1559,7 +1559,7 @@ bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
 }
 
 // Checks, whether a point lies inside a given face
-TIGL_EXPORT bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt point)
+bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt point)
 {
     //project point onto surface of face
     TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(point);
@@ -1577,6 +1577,12 @@ TIGL_EXPORT bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt point)
         return true;
     }
     return false;
+}
+
+// Checks whether a point lies above or below a plane (determined by direction of normal)
+bool IsPointAbovePlane(const gp_Pln& pln, gp_Pnt point)
+{
+    return gp_Vec(pln.Location(), point).Dot(gp_Vec(pln.Axis().Direction())) > 0;
 }
 
 std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks)

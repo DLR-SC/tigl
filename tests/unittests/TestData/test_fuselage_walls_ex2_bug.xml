@@ -233,6 +233,7 @@
                                         <boundingElementUID>Wall1</boundingElementUID>
                                         <boundingElementUID>Wall2</boundingElementUID>
                                     </boundingElementUIDs>
+									<flushConnectionStart>true</flushConnectionStart>
 									<negativeExtrusion>true</negativeExtrusion>
 								</wallSegment>
 							</wallSegments>

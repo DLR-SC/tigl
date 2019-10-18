@@ -157,6 +157,9 @@ TIGL_EXPORT bool IsPointInsideShape(const TopoDS_Shape& solid, gp_Pnt point);
 // Checks, whether a point lies inside a given face
 TIGL_EXPORT bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt point);
 
+// Checks whether a point lies above or below a plane (determined by direction of normal)
+TIGL_EXPORT bool IsPointAbovePlane(const gp_Pln& pln, gp_Pnt point);
+
 // Returns the single face contained in the passed shape
 // Throws an exception when number of faces != 1
 TIGL_EXPORT TopoDS_Face GetSingleFace(const TopoDS_Shape& shape);

@@ -227,3 +227,14 @@ TEST(TiglCommonFunctions, IsPointInsideFace)
     EXPECT_FALSE(IsPointInsideFace(face, gp_Pnt(0,0, 1)));
 
 }
+
+TEST(TiglCommonFunctions, IsPointAbovePlane)
+{
+    gp_Pln xy = gp_Pln(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.), gp_Dir(1., 0., 0.)));
+
+    EXPECT_TRUE (IsPointAbovePlane(xy, gp_Pnt(0., 0.,  1.)));
+    EXPECT_TRUE (IsPointAbovePlane(xy, gp_Pnt(1., 1.,  1.)));
+    EXPECT_FALSE(IsPointAbovePlane(xy, gp_Pnt(1., 1., -1.)));
+    EXPECT_FALSE(IsPointAbovePlane(xy, gp_Pnt(0., 0., -1.)));
+    EXPECT_FALSE(IsPointAbovePlane(xy, gp_Pnt(0., 0.,  0.)));
+}

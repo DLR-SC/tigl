@@ -45,6 +45,41 @@
 
 #include <algorithm>
 
+namespace {
+
+// get trimming plane for start and end connection of a wall segment.
+// Makes sure that the normal of the plane always has a positive x-component.
+gp_Pln GetConnectionPlane(tigl::CCPACSWallPosition const& p, bool flushConnection)
+{
+    gp_Pln cutter_pln;
+    if (flushConnection && p.GetShape()) {
+        // trimming plane is the plane of the shape defined at the wall position
+        TopoDS_Shape shape = *p.GetShape();
+        Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(shape));
+        GeomLib_IsPlanarSurface surf_check(surf);
+        if (surf_check.IsPlanar()) {
+            cutter_pln = surf_check.Plan();
+            cutter_pln.SetLocation(p.GetBasePoint());
+            // make sure normal points in positive x-direction
+            gp_Ax1 normal = cutter_pln.Axis();
+            if( normal.Direction().X() < 0 ) {
+                normal.Reverse();
+                cutter_pln.SetAxis(normal);
+            }
+        }
+        else {
+            throw tigl::CTiglError("Cannot fill gap at non-planar surface");
+        }
+    }
+    else {
+        // trimming plane is YZ-plane at the base point
+        cutter_pln = gp_Pln(gp_Ax3(p.GetBasePoint(), gp_Dir(1., 0., 0.), gp_Dir(0., 1., 0.)));
+    }
+    return cutter_pln;
+}
+
+}
+
 namespace tigl
 {
 
@@ -55,9 +90,10 @@ CCPACSFuselageWallSegment::CCPACSFuselageWallSegment(CCPACSWallSegments* parent,
 
 TopoDS_Compound CCPACSFuselageWallSegment::GetCutPlanes() const
 {
-    // TODO: this should be improved
     // Makes sure, that the cut planes are already computed
-    GetLoft();
+    if (m_cutPlanes.IsNull()) {
+        BuildLoft();
+    }
     return m_cutPlanes;
 }
 
@@ -94,22 +130,16 @@ const CCPACSFuselage &CCPACSFuselageWallSegment::GetFuselage() const
 }
 
 PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
-{
-    bool flushConnectionStart = GetFlushConnectionStart().value_or(false);
-    bool flushConnectionEnd = GetFlushConnectionEnd().value_or(false);
-    bool negativeExtrusion = GetNegativeExtrusion().value_or(false);
-    
-    const CCPACSFuselage& fuselage = GetFuselage();
-    
+{    
     // A bounding box is created to use its diagonal as reference for the
     // extrusion length (edge length). This ensures that these always go
     //  beyond the model, but do not reach into infinity.
     Bnd_Box boundingBox;
+    const CCPACSFuselage& fuselage = GetFuselage();
     TopoDS_Shape fuselageShape = fuselage.GetLoft()->Shape();
     BRepBndLib::Add(fuselageShape, boundingBox);
     double bboxSize = sqrt(boundingBox.SquareExtent());
     
-    const auto& walls = GetWalls();
     size_t nWallPositions = GetWallPositionUIDs().GetWallPositionUIDs().size();
 
     // list with base points:
@@ -118,21 +148,23 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
 
     // extrusion in negative direction is realized by setting u_neg to
     // -bboxSize:
+    bool negativeExtrusion = GetNegativeExtrusion().value_or(false);
     double u_pos = bboxSize;
     double u_neg = 0.;
     if (negativeExtrusion) {
         u_neg = -bboxSize;
     }
 
-    gp_Pnt upper, lower;
-    gp_Vec x_vec;
+    gp_Pnt upper, lower;   // upper and lower extrusion points for each base point
+    gp_Vec x_vec;          // vector from one base point to the next
 
-    // builder for wall
+    // build for untrimmed wall
     TopoDS_Builder builder;
     TopoDS_Compound wall;
     builder.MakeCompound(wall);
 
     size_t count = 0;
+    const auto& walls = GetWalls();
     for (auto wallPositionUID : GetWallPositionUIDs().GetWallPositionUIDs()) {
         const CCPACSWallPosition& p = walls.GetWallPosition(wallPositionUID);
 
@@ -177,43 +209,70 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
         ++count;
     }
 
+    // store the untrimmed wall as the cutting tool
+    // (to be used in the construction of walls bound by this)
     m_cutPlanes = wall;
 
     // trimming of the wall
 
-    //TODO: Cut wall at first shape or x-value, depending on flushConnectionStart/flushConnectionEnd
-    /*
-    if (flushConnectionStart && !shapes.front().IsNull()) {
-        CloseGap(ext_vecs.front(), base_pnts.front(), norm_vecs.front(), x_vecs.front(), shapes.front());
-    }
-    if (flushConnectionEnd && !shapes.back().IsNull()) {
-        CloseGap(ext_vecs.back(), base_pnts.back(), norm_vecs.back(), x_vecs.back(), shapes.back());
-    }
-    */
-    
-    // the wall will first be cut at the fuselage:
-    TopoDS_Compound cut_wall;
-    builder.MakeCompound(cut_wall);
-    
-    
-    TopoDS_Shape result = SplitShape(wall, fuselageShape);
-    TopTools_IndexedMapOfShape faceMap;
-    TopExp::MapShapes(result, TopAbs_FACE, faceMap);
-    for (int i = 0; i < faceMap.Extent(); ++i) {
-        TopoDS_Face face = TopoDS::Face(faceMap.FindKey(i+1));
-        gp_Pnt faceCenter = GetCentralFacePoint(face);
-        //TODO: This could be dangerous, maybe we should check if the point
-        // is outside the fuselage rather than the bounding box
-        if (!boundingBox.IsOut(faceCenter)) {
-            builder.Add(cut_wall, face);
+    // Step 1/3: Trim start and end connections
+    {
+        double extents = 2*bboxSize; // make sure the cutting plane does not miss anything
+        bool flushConnection = GetFlushConnectionStart().value_or(false);
+        auto wallPositionUID = GetWallPositionUIDs().GetWallPositionUIDs().front();
+        const CCPACSWallPosition& p_start = walls.GetWallPosition(wallPositionUID);
+        gp_Pln pln_start = GetConnectionPlane(p_start, flushConnection);
+        TopoDS_Face cutter_start = BRepBuilderAPI_MakeFace(pln_start,-extents, extents, -extents, extents).Face();
+
+        flushConnection = GetFlushConnectionEnd().value_or(false);
+        wallPositionUID = GetWallPositionUIDs().GetWallPositionUIDs().back();
+        const CCPACSWallPosition& p_end = walls.GetWallPosition(wallPositionUID);
+        gp_Pln pln_end = GetConnectionPlane(p_end, flushConnection);
+        TopoDS_Face cutter_end = BRepBuilderAPI_MakeFace(pln_end,-extents, extents, -extents, extents).Face();
+
+        TopoDS_Shape result =SplitShape(wall, cutter_end);
+        result = SplitShape(result, cutter_start);
+
+        TopoDS_Compound cut_wall;
+        builder.MakeCompound(cut_wall);
+
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(result, TopAbs_FACE, faceMap);
+        for (int i = 0; i < faceMap.Extent(); ++i) {
+            TopoDS_Face face = TopoDS::Face(faceMap(i+1));
+            gp_Pnt faceCenter = GetCentralFacePoint(face);
+            // if the face Center is to the right of pln_start and to the left of pln_end, keep the face.
+            bool RightOfPlnStart = IsPointAbovePlane(pln_start, faceCenter);
+            bool LeftOfPlnEnd    = !IsPointAbovePlane(pln_end, faceCenter);
+            if (RightOfPlnStart && LeftOfPlnEnd) {
+                builder.Add(cut_wall, face);
+            }
         }
+        wall = cut_wall;
     }
     
-    wall = cut_wall;
+    // Step 2/3: Trim the wall by the fuselage
+    {
+        TopoDS_Compound cut_wall;
+        builder.MakeCompound(cut_wall);
 
-   // cut the wall with bounding elements:
-   auto additional = base_pnts;
+        TopoDS_Shape result = SplitShape(wall, fuselageShape);
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(result, TopAbs_FACE, faceMap);
+        for (int i = 0; i < faceMap.Extent(); ++i) {
+            TopoDS_Face face = TopoDS::Face(faceMap(i+1));
+            gp_Pnt faceCenter = GetCentralFacePoint(face);
+            // TODO: This is fast but could be potentially dangerous.
+            // Maybe we should check if the point is outside the fuselage
+            // shape rather than the bounding box.
+            if (!boundingBox.IsOut(faceCenter)) {
+                builder.Add(cut_wall, face);
+            }
+        }
+        wall = cut_wall;
+    }
 
+    // Step 3/3: Cut the wall with bounding elements:
     if (GetBoundingElementUIDs()) {
         for (std::string bounding_element_uid : GetBoundingElementUIDs()->GetBoundingElementUIDs()) {
             const CCPACSFuselageWallSegment& bounding_element = GetWalls().GetWallSegment(bounding_element_uid);

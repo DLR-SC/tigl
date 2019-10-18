@@ -54,10 +54,10 @@ public:
     TopoDS_Compound GetCutPlanes() const;
     
 private:
-    const CCPACSFuselage& GetFuselage() const;
-    
-    PNamedShape BuildLoft() const override;
     const CCPACSWalls& GetWalls() const;
+    const CCPACSFuselage& GetFuselage() const;
+
+    PNamedShape BuildLoft() const override;
     
     mutable TopoDS_Compound m_cutPlanes;
 };
