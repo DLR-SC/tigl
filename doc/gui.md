@@ -4,8 +4,8 @@ CPACSCreator GUI {#gui}
 @section gui_overview Overview
 
 The CPACSCreator is a 3D viewer and editor for CPACS geometries. 
-CPACSCreator is based on TiGLViewer.
-Compare to TiGLViewer it add the possibility to edit and create CPACS geometries. 
+CPACSCreator is based on TiGL Viewer.
+Compare to TiGL Viewer it add the possibility to edit and create CPACS geometries. 
 
 @image html images/cpacscreator-gui.png "The CPACSCreator showing a CPACS model"
 @image latex images/cpacscreator-gui.png  "The CPACSCreator showing a CPACS model" width=8cm

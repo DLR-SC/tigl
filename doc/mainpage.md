@@ -2,13 +2,13 @@ CPACSCreator{#mainpage}
 ==================
 
 @section pointers Documentation pointers
-The goal of this documentation is to facilitate the understanding of TIGL for all the users. 
+The goal of this documentation is to facilitate the understanding of TiGL for all the users. 
 Depending of your objective you may be interested by different parts.
  Please find bellow some pointers that might help you.
     
-@ref main_overview : An overview of TIGL and CPACSCreator     
-@ref tigl_installation and @ref tuto : to get your hand dirty     
-@ref gui : CPACSCreator GUI (ex-TiGLViewer) documentation     
+@ref main_overview : An overview of TiGL and CPACSCreator     
+@ref tigl_installation , @ref tuto , @ref lib_intrernal_python_demo : To get your hand dirty     
+@ref gui : CPACSCreator GUI (ex-TiGL Viewer) documentation     
 @ref lib : Library and API overview and examples     
 @ref parameters_def : Definition of the height level parameters used by this framework       
 Module, Namespace, Data Structures, Files: API and class documentation generate by doxygen (close to the code source)
@@ -42,7 +42,7 @@ B-spline surfaces in order to compute surface points and also to export the geom
 
 The CPACSCreator is the continuity of the original TiGL project (https://github.com/DLR-SC/tigl). 
 Basically TiGL library was extended with functionalities to edit CPACS geometrical data. 
-Editing features was also added to TiGLViewer and TiGLViewer becomes CPACSCreator.
+Editing features was also added to TiGL Viewer and TiGL Viewer becomes CPACSCreator.
 The idea is to integrate these new functionalities back into the orignal TiGL project once they are stable enough. 
 To be clear about the nomenclature used in this documentation, we use TiGL to refer to the new TiGL library and original 
 TiGL library to refer to current TiGL3 library. 
