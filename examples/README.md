@@ -59,8 +59,16 @@ To run this program, call it with a CPACS file, e.g.
     
 Python-Demo {#lib_intrernal_python_demo}
 ---------------------
-To run the python demo, you need to have the internal python API installed.
-The installation for Python API differ from the installation for the other languages.
+
+Recently, we extended TiGL's Python bindings to access the entire object structure of TiGL. 
+These classes and methods allow more control compared to the high level functions of tigl3wrapper.
+These allow for example:
+
+   - Accessing all geometrical shapes of TiGL
+   - Use, modify or visualize these shapes directly with PythonOCC
+   - Use geometrical algorithms for own projects, such as Gordon's curve network interpolation method
+
+The installation of this new Python API differ from the installation for the other languages.
 The easiest way to install TiGL 3 with the internal python api support is to use the
 amazing [conda](http://conda.pydata.org/miniconda.html) package manager. To install, type
 
@@ -77,10 +85,6 @@ Make sure the script create_space_ship.py is in your python path or go in the ex
 directory. This script should generate a cpacs file out.xml that contains a space ship
 in your current directory.
 
-Remark, this is the new way to access the python API. The old way that 
-use only tigl3wrapper.py is considered as deprecated.
-This new internal API give you access not only to the "standard" C API, but also to the functions 
-and structures of TiGL.  
 
 MATLAB-Demo
 -----------
