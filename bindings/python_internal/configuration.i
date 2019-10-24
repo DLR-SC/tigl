@@ -36,6 +36,7 @@
 #include "CCPACSExternalObject.h"
 #include "CTiglShapeCache.h"
 #include "CTiglError.h"
+#include "CCPACSWallPosition.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglWingConnection.h"
