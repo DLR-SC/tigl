@@ -47,35 +47,39 @@
 
 namespace {
 
-// get trimming plane for start and end connection of a wall segment.
-// Makes sure that the normal of the plane always has a positive x-component.
-gp_Pln GetConnectionPlane(tigl::CCPACSWallPosition const& p, bool flushConnection)
+// create a face out of four points
+TopoDS_Face MakeFace(gp_Pnt const& p1, gp_Pnt const& p2, gp_Pnt const& p3, gp_Pnt const& p4) {
+    TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(p1, p2).Edge();
+    TopoDS_Edge e2 = BRepBuilderAPI_MakeEdge(p2, p3).Edge();
+    TopoDS_Edge e3 = BRepBuilderAPI_MakeEdge(p3, p4).Edge();
+    TopoDS_Edge e4 = BRepBuilderAPI_MakeEdge(p4, p1).Edge();
+    TopoDS_Wire w = BRepBuilderAPI_MakeWire(e1, e2, e3, e4).Wire();
+    return BRepBuilderAPI_MakeFace(w, false).Face();
+}
+
+// Given a CCPACSWallposition with a defined shape, project the point pnt along the direction dir onto the
+// plane, in which the shape lies. The shape must be convertable to a planar TopoDS_Face.
+void FlushPointAlongVec(tigl::CCPACSWallPosition const& p, gp_Vec const dir, double extents, gp_Pnt& pnt)
 {
-    gp_Pln cutter_pln;
-    if (flushConnection && p.GetShape()) {
-        // trimming plane is the plane of the shape defined at the wall position
-        TopoDS_Shape shape = *p.GetShape();
-        Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(shape));
-        GeomLib_IsPlanarSurface surf_check(surf);
-        if (surf_check.IsPlanar()) {
-            cutter_pln = surf_check.Plan();
-            cutter_pln.SetLocation(p.GetBasePoint());
-            // make sure normal points in positive x-direction
-            gp_Ax1 normal = cutter_pln.Axis();
-            if( normal.Direction().X() < 0 ) {
-                normal.Reverse();
-                cutter_pln.SetAxis(normal);
-            }
-        }
-        else {
-            throw tigl::CTiglError("Cannot fill gap at non-planar surface");
-        }
+    if (!p.GetShape()) {
+        throw tigl::CTiglError("Cannot flush point for wall position without shape definition.");
+    }
+    gp_Pln pln;
+    TopoDS_Shape shape = *p.GetShape();
+    Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(*p.GetShape()));
+    GeomLib_IsPlanarSurface surf_check(surf);
+    if (surf_check.IsPlanar()) {
+        pln = surf_check.Plan();
     }
     else {
-        // trimming plane is YZ-plane at the base point
-        cutter_pln = gp_Pln(gp_Ax3(p.GetBasePoint(), gp_Dir(1., 0., 0.), gp_Dir(0., 1., 0.)));
+        throw tigl::CTiglError("Cannot flush point at non-planar surface");
     }
-    return cutter_pln;
+
+    pln.SetLocation(p.GetBasePoint());
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(pln);
+    TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(pnt.Translated( dir*extents),
+                                               pnt.Translated(-dir*extents)).Edge();
+    GetIntersectionPoint(face, edge, pnt);
 }
 
 }
@@ -159,9 +163,10 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
     gp_Vec x_vec;          // vector from one base point to the next
 
     // build for untrimmed wall
-    TopoDS_Builder builder;
+    TopoDS_Builder builder_wall, builder_cutter;
     TopoDS_Compound wall;
-    builder.MakeCompound(wall);
+    builder_wall.MakeCompound(wall);
+    builder_cutter.MakeCompound(m_cutPlanes);
 
     size_t count = 0;
     const auto& walls = GetWalls();
@@ -179,82 +184,60 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
         gp_Vec ext_vec(0., -sin(phiRad), cos(phiRad));
 
         if (count==1) {
-            // make first wall segment larger in negative x-direction
-            upper.Translate(-x_vec*bboxSize);
-            lower.Translate(-x_vec*bboxSize);
+            // flush first position to shape
+            if( p.GetShape() && GetFlushConnectionStart().value_or(false) ) {
+                std::string uid_prev = GetWallPositionUIDs().GetWallPositionUIDs().front();
+                const CCPACSWallPosition& p_prev = walls.GetWallPosition(uid_prev);
+                FlushPointAlongVec(p_prev, x_vec, bboxSize, upper);
+                FlushPointAlongVec(p_prev, x_vec, bboxSize, lower);
+            }
         }
 
         gp_Pnt upper_new = base_point.Translated(u_pos*ext_vec);
         gp_Pnt lower_new = base_point.Translated(u_neg*ext_vec);
+
         if (count==nWallPositions-1) {
-            // make last wall segment larger in positive x-drection
-            upper_new.Translate(x_vec*bboxSize);
-            lower_new.Translate(x_vec*bboxSize);
+            // flush last position to shape
+            if( p.GetShape() && GetFlushConnectionEnd().value_or(false) ) {
+                FlushPointAlongVec(p, x_vec, bboxSize, upper_new);
+                FlushPointAlongVec(p, x_vec, bboxSize, lower_new);
+            }
         }
 
-        // create the wall segment from the four corner points
+        // create the wall segment from the four corner points lower, upper, lower_new, upper_new
         if (count > 0 ) {
-            TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(lower, lower_new).Edge();
-            TopoDS_Edge e2 = BRepBuilderAPI_MakeEdge(lower_new, upper_new).Edge();
-            TopoDS_Edge e3 = BRepBuilderAPI_MakeEdge(upper_new, upper).Edge();
-            TopoDS_Edge e4 = BRepBuilderAPI_MakeEdge(upper, lower).Edge();
-            TopoDS_Wire w = BRepBuilderAPI_MakeWire(e1, e2, e3, e4).Wire();
-            TopoDS_Face face = BRepBuilderAPI_MakeFace(w, false).Face();
-            builder.Add(wall, face);
+            TopoDS_Face face = MakeFace(lower, lower_new, upper_new, upper);
+            builder_wall.Add(wall, face);
+
+            //first and last face are enlarged for the cutting tool
+            gp_Pnt lower_cut = lower;
+            gp_Pnt upper_cut = upper;
+            gp_Pnt lower_new_cut = lower_new;
+            gp_Pnt upper_new_cut = upper_new;
+            if (count==1) {
+                lower_cut = lower.Translated(-bboxSize*x_vec);
+                upper_cut = upper.Translated(-bboxSize*x_vec);
+            }
+            if (count==nWallPositions-1) {
+                lower_new_cut = lower_new.Translated(bboxSize*x_vec);
+                upper_new_cut = upper_new.Translated(bboxSize*x_vec);
+            }
+            face = MakeFace(lower_cut, lower_new_cut, upper_new_cut, upper_cut);
+            builder_cutter.Add(m_cutPlanes, face);
         }
 
+        // store base_pnts and remember current lower and upper point for next position
         base_pnts.push_back(base_point);
         upper = upper_new;
         lower = lower_new;
         ++count;
     }
 
-    // store the untrimmed wall as the cutting tool
-    // (to be used in the construction of walls bound by this)
-    m_cutPlanes = wall;
-
-    // trimming of the wall
-
-    // Step 1/3: Trim start and end connections
-    {
-        double extents = 2*bboxSize; // make sure the cutting plane does not miss anything
-        bool flushConnection = GetFlushConnectionStart().value_or(false);
-        auto wallPositionUID = GetWallPositionUIDs().GetWallPositionUIDs().front();
-        const CCPACSWallPosition& p_start = walls.GetWallPosition(wallPositionUID);
-        gp_Pln pln_start = GetConnectionPlane(p_start, flushConnection);
-        TopoDS_Face cutter_start = BRepBuilderAPI_MakeFace(pln_start,-extents, extents, -extents, extents).Face();
-
-        flushConnection = GetFlushConnectionEnd().value_or(false);
-        wallPositionUID = GetWallPositionUIDs().GetWallPositionUIDs().back();
-        const CCPACSWallPosition& p_end = walls.GetWallPosition(wallPositionUID);
-        gp_Pln pln_end = GetConnectionPlane(p_end, flushConnection);
-        TopoDS_Face cutter_end = BRepBuilderAPI_MakeFace(pln_end,-extents, extents, -extents, extents).Face();
-
-        TopoDS_Shape result =SplitShape(wall, cutter_end);
-        result = SplitShape(result, cutter_start);
-
-        TopoDS_Compound cut_wall;
-        builder.MakeCompound(cut_wall);
-
-        TopTools_IndexedMapOfShape faceMap;
-        TopExp::MapShapes(result, TopAbs_FACE, faceMap);
-        for (int i = 0; i < faceMap.Extent(); ++i) {
-            TopoDS_Face face = TopoDS::Face(faceMap(i+1));
-            gp_Pnt faceCenter = GetCentralFacePoint(face);
-            // if the face Center is to the right of pln_start and to the left of pln_end, keep the face.
-            bool RightOfPlnStart = IsPointAbovePlane(pln_start, faceCenter);
-            bool LeftOfPlnEnd    = !IsPointAbovePlane(pln_end, faceCenter);
-            if (RightOfPlnStart && LeftOfPlnEnd) {
-                builder.Add(cut_wall, face);
-            }
-        }
-        wall = cut_wall;
-    }
-    
-    // Step 2/3: Trim the wall by the fuselage
+    // trim the wall
+    // Step 1/2: Trim the wall by the fuselage
     {
         TopoDS_Compound cut_wall;
-        builder.MakeCompound(cut_wall);
+        builder_wall.MakeCompound(cut_wall);
 
         TopoDS_Shape result = SplitShape(wall, fuselageShape);
         TopTools_IndexedMapOfShape faceMap;
@@ -266,13 +249,13 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
             // Maybe we should check if the point is outside the fuselage
             // shape rather than the bounding box.
             if (!boundingBox.IsOut(faceCenter)) {
-                builder.Add(cut_wall, face);
+                builder_wall.Add(cut_wall, face);
             }
         }
         wall = cut_wall;
     }
 
-    // Step 3/3: Cut the wall with bounding elements:
+    // Step 2/2: Cut the wall with bounding elements:
     if (GetBoundingElementUIDs()) {
         for (std::string bounding_element_uid : GetBoundingElementUIDs()->GetBoundingElementUIDs()) {
             const CCPACSFuselageWallSegment& bounding_element = GetWalls().GetWallSegment(bounding_element_uid);
@@ -281,7 +264,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
             TopoDS_Shape result = SplitShape(wall, bounding_cutPlane);
             
             TopoDS_Compound cut_wall;
-            builder.MakeCompound(cut_wall);
+            builder_wall.MakeCompound(cut_wall);
             TopTools_IndexedMapOfShape faceMap;
             TopExp::MapShapes(result, TopAbs_FACE, faceMap);
 
@@ -291,7 +274,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
                 TopoDS_Face face = TopoDS::Face(faceMap(i+1));
                 for (auto point : base_pnts) {
                     if ( IsPointInsideFace(face, point) ) {
-                        builder.Add(cut_wall,face);
+                        builder_wall.Add(cut_wall,face);
                         break;
                     }
                 }
