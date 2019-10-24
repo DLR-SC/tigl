@@ -42,6 +42,7 @@
 #include <TopExp.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
 
 #include <algorithm>
 
@@ -243,12 +244,14 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(result, TopAbs_FACE, faceMap);
         for (int i = 0; i < faceMap.Extent(); ++i) {
+            // check if face center is on the interior of the fuselage
             TopoDS_Face face = TopoDS::Face(faceMap(i+1));
             gp_Pnt faceCenter = GetCentralFacePoint(face);
-            // TODO: This is fast but could be potentially dangerous.
-            // Maybe we should check if the point is outside the fuselage
-            // shape rather than the bounding box.
-            if (!boundingBox.IsOut(faceCenter)) {
+
+            BRepClass3d_SolidClassifier clas3d(fuselageShape);
+            clas3d.Perform(faceCenter, Precision::Confusion());
+
+            if (clas3d.State() == TopAbs_IN) {
                 builder_wall.Add(cut_wall, face);
             }
         }
