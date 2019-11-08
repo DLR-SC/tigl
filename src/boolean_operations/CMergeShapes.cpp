@@ -107,45 +107,44 @@ void CMergeShapes::Perform()
         TopExp::MapShapes(s1->Shape(), TopAbs_FACE, m1);
         TopExp::MapShapes(s2->Shape(), TopAbs_FACE, m2);
 
-        std::vector<gp_Pnt> pointsOn1, pointsOn2;
+        std::vector<std::pair<TopoDS_Shape, gp_Pnt>> facesOn1, facesOn2;
 
 
         // remove common faces
         for (int iface = 1; iface <= m1.Extent(); ++iface){
             const TopoDS_Face& face = TopoDS::Face(m1(iface));
-            pointsOn1.push_back(GetCentralFacePoint(face));
+            facesOn1.push_back(std::pair<TopoDS_Shape, gp_Pnt>(m1(iface),
+                                                               GetCentralFacePoint(face)));
 
         }
         for (int iface = 1; iface <= m2.Extent(); ++iface){
             const TopoDS_Face& face = TopoDS::Face(m2(iface));
-            pointsOn2.push_back(GetCentralFacePoint(face));
+            facesOn2.push_back(std::pair<TopoDS_Shape, gp_Pnt>(m2(iface),
+                                                               GetCentralFacePoint(face)));
 
         }
-        for (int iface = 0; iface < (int)pointsOn1.size(); ++iface){
-            bool issame = false;
-            gp_Pnt p1 = pointsOn1[iface];
-            for (int jface = 0; jface < (int)pointsOn2.size(); ++jface) {
-                gp_Pnt p2 = pointsOn2[jface];
+
+        std::vector<bool> v1_isSame(m1.Extent(), false);
+        std::vector<bool> v2_isSame(m2.Extent(), false);
+
+        for (size_t iface = 0; iface < facesOn1.size(); ++iface){
+            gp_Pnt p1 = facesOn1[iface].second;
+            for (size_t jface = 0; jface < facesOn2.size(); ++jface) {
+                gp_Pnt p2 = facesOn2[jface].second;
                 if (p1.Distance(p2) < Precision::Confusion()) {
-                    issame = true;
+                    v1_isSame[iface] = true;
+                    v2_isSame[jface] = true;
                 }
-            }
-            if (!issame) {
-                v1.push_back(m1(iface+1));
             }
         }
-
-        for (int iface = 0; iface < (int)pointsOn2.size(); ++iface){
-            bool issame = false;
-            gp_Pnt p2 = pointsOn2[iface];
-            for (int jface = 0; jface < (int)pointsOn1.size(); ++jface) {
-                gp_Pnt p1 = pointsOn1[jface];
-                if (p1.Distance(p2) < Precision::Confusion()) {
-                    issame = true;
-                }
+        for (size_t iface = 0; iface < facesOn1.size(); ++iface) {
+            if (!v1_isSame[iface]) {
+                v1.push_back(facesOn1[iface].first);
             }
-            if (!issame) {
-                v2.push_back(m2(iface+1));
+        }
+        for (size_t iface = 0; iface < facesOn2.size(); ++iface) {
+            if (!v2_isSame[iface]) {
+                v2.push_back(facesOn2[iface].first);
             }
         }
 
