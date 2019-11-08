@@ -117,7 +117,7 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
     }
     // special handling for supporting opened and closed profiles
     if (points.size() < 2) {
-        LOG(ERROR) << "Not enough points defined for Wing Profile" << endl;
+        LOG(ERROR) << "Not enough points defined for Wing Profile";
         throw CTiglError("Not enough points defined for Wing Profile");
     }
     // close profile if not already closed
@@ -144,7 +144,7 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
     // wire with multiple edges. Thus we get problems if we have
     // a linear interpolated wire consting of many edges.
     if (dynamic_cast<const CTiglInterpolateLinearWire*>(&wireBuilder)) {
-        LOG(ERROR) << "Linear Wing Profiles are currently not supported" << endl;
+        LOG(ERROR) << "Linear Wing Profiles are currently not supported";
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
     }
 

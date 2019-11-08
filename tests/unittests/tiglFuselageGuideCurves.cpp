@@ -45,6 +45,8 @@
 #include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
 
+using namespace std;
+
 /******************************************************************************/
 
 class FuselageGuideCurve : public ::testing::Test

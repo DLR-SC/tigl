@@ -74,11 +74,6 @@ CTiglTransformation::CTiglTransformation(const gp_Vec& t)
     AddTranslation(t.X(), t.Y(), t.Z());
 }
 
-// Destructor
-CTiglTransformation::~CTiglTransformation()
-{
-}
-
 CTiglTransformation& CTiglTransformation::operator=(const CTiglTransformation& mat)
 {
     for (unsigned int i = 0; i < 4; ++i) {
@@ -620,7 +615,7 @@ std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
         for (int j = 0; j < 4; ++j) {
             os << t.m_matrix[i][j] << "\t";
         }
-        os << endl;
+        os << std::endl;
     }
     return os;
 }

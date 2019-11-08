@@ -44,9 +44,6 @@ public:
     TIGL_EXPORT explicit CTiglTransformation(const gp_Trsf& trans);
 
     TIGL_EXPORT explicit CTiglTransformation(const gp_Vec& translation);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglTransformation();
     
     TIGL_EXPORT CTiglTransformation& operator=(const CTiglTransformation&);
 
