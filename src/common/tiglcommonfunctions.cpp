@@ -90,6 +90,7 @@
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Geom_Plane.hxx>
 #include <GeomConvert.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColStd_HArray1OfReal.hxx>
