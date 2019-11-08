@@ -131,7 +131,7 @@ void CMergeShapes::Perform()
             gp_Pnt p1 = facesOn1[iface].second;
             for (size_t jface = 0; jface < facesOn2.size(); ++jface) {
                 gp_Pnt p2 = facesOn2[jface].second;
-                if (p1.Distance(p2) < Precision::Confusion()) {
+                if (p1.SquareDistance(p2) < Precision::Confusion()) {
                     v1_isSame[iface] = true;
                     v2_isSame[jface] = true;
                 }
