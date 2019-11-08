@@ -24,6 +24,10 @@
 #include <gp_Pln.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <Standard_Failure.hxx>
 
 #include <list>
 
@@ -186,5 +190,51 @@ TEST(TiglCommonFunctions, ReplaceAdjacentWith)
     a = {};
     ReplaceAdjacentWithMerged(a, is_adjacent, merged);
     EXPECT_TRUE(ArraysMatch({}, a));
- 
+}
+
+TEST(TiglCommonFunctions, FaceBetweenPoints)
+{
+    gp_Pln plane(gp_Pnt(0., 0., 0.), gp_Dir(0, 1., 0));
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(plane);
+
+    EXPECT_TRUE(IsFaceBetweenPoints(face, gp_Pnt(0, -1, 0), gp_Pnt(0, 1, 0)));
+    EXPECT_FALSE(IsFaceBetweenPoints(face, gp_Pnt(0, -1, 0), gp_Pnt(0, -1, 0)));
+    EXPECT_FALSE(IsFaceBetweenPoints(face, gp_Pnt(0, 1, 0), gp_Pnt(0, 1, 0)));
+    
+    EXPECT_TRUE(IsFaceBetweenPoints(face, gp_Pnt(5, -1, 20), gp_Pnt(3, 1, -20)));
+    EXPECT_FALSE(IsFaceBetweenPoints(face, gp_Pnt(5, -1, 20), gp_Pnt(3, -10, -20)));
+}
+
+TEST(TiglCommonFunctions, IsPointInsideFace)
+{
+    TopoDS_Edge left = BRepBuilderAPI_MakeEdge(gp_Pnt(-1,-1,0), gp_Pnt(-1,1,0)).Edge();
+    TopoDS_Edge right = BRepBuilderAPI_MakeEdge(gp_Pnt(1,-1,0), gp_Pnt(1,1,0)).Edge();
+    TopoDS_Edge top = BRepBuilderAPI_MakeEdge(gp_Pnt(-1,1,0), gp_Pnt(1,1,0)).Edge();
+    TopoDS_Edge bottom = BRepBuilderAPI_MakeEdge(gp_Pnt(-1,-1,0), gp_Pnt(1,-1,0)).Edge();
+    TopoDS_Wire wire = BRepBuilderAPI_MakeWire(left, bottom, right, top).Wire();
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(wire, false).Face();
+
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(0,0,0)));
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(-1,-1,0)));
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(-1,1,0)));
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(1,1,0)));
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(1,-1,0)));
+
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(1,0,0)));
+
+    EXPECT_FALSE(IsPointInsideFace(face, gp_Pnt(1,-2,0)));
+    EXPECT_FALSE(IsPointInsideFace(face, gp_Pnt(0,0,-1)));
+    EXPECT_FALSE(IsPointInsideFace(face, gp_Pnt(0,0, 1)));
+
+}
+
+TEST(TiglCommonFunctions, IsPointAbovePlane)
+{
+    gp_Pln xy = gp_Pln(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.), gp_Dir(1., 0., 0.)));
+
+    EXPECT_TRUE (IsPointAbovePlane(xy, gp_Pnt(0., 0.,  1.)));
+    EXPECT_TRUE (IsPointAbovePlane(xy, gp_Pnt(1., 1.,  1.)));
+    EXPECT_FALSE(IsPointAbovePlane(xy, gp_Pnt(1., 1., -1.)));
+    EXPECT_FALSE(IsPointAbovePlane(xy, gp_Pnt(0., 0., -1.)));
+    EXPECT_FALSE(IsPointAbovePlane(xy, gp_Pnt(0., 0.,  0.)));
 }

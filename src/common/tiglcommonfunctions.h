@@ -92,6 +92,9 @@ TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt 
 // calculates the alpha value for a given point on a wire
 TIGL_EXPORT Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire& wire, gp_Pnt p, gp_Dir rotationAxisAroundP, double angle);
 
+// checks, whether a face is in between two points
+TIGL_EXPORT bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2);
+
 enum IntStatus
 {
     BetweenPoints, // The intersection point lies between p1 and p2
@@ -150,6 +153,12 @@ TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Wire& wire1, const TopoDS_Wir
 
 // Checks, whether a points lies inside a given shape, which must be a solid
 TIGL_EXPORT bool IsPointInsideShape(const TopoDS_Shape& solid, gp_Pnt point);
+
+// Checks, whether a point lies inside a given face
+TIGL_EXPORT bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt point);
+
+// Checks whether a point lies above or below a plane (determined by direction of normal)
+TIGL_EXPORT bool IsPointAbovePlane(const gp_Pln& pln, gp_Pnt point);
 
 // Returns the single face contained in the passed shape
 // Throws an exception when number of faces != 1

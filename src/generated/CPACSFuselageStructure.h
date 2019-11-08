@@ -25,6 +25,7 @@
 #include <CCPACSLongFloorBeamsAssembly.h>
 #include <CCPACSPressureBulkheadAssembly.h>
 #include <CCPACSStringersAssembly.h>
+#include <CCPACSWalls.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSCargoDoorsAssembly.h"
@@ -86,6 +87,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSPressureBulkheadAssembly>& GetPressureBulkheads() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPressureBulkheadAssembly>& GetPressureBulkheads();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSWalls>& GetWalls() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSWalls>& GetWalls();
+
         TIGL_EXPORT virtual const boost::optional<CPACSCargoDoorsAssembly>& GetCargoDoors() const;
         TIGL_EXPORT virtual boost::optional<CPACSCargoDoorsAssembly>& GetCargoDoors();
 
@@ -110,6 +114,9 @@ namespace generated
         TIGL_EXPORT virtual CCPACSPressureBulkheadAssembly& GetPressureBulkheads(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePressureBulkheads();
 
+        TIGL_EXPORT virtual CCPACSWalls& GetWalls(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveWalls();
+
         TIGL_EXPORT virtual CPACSCargoDoorsAssembly& GetCargoDoors(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCargoDoors();
 
@@ -125,6 +132,7 @@ namespace generated
         boost::optional<CCPACSCargoCrossBeamStrutsAssembly> m_cargoCrossBeamStruts;
         boost::optional<CCPACSLongFloorBeamsAssembly>       m_longFloorBeams;
         boost::optional<CCPACSPressureBulkheadAssembly>     m_pressureBulkheads;
+        boost::optional<CCPACSWalls>                        m_walls;
         boost::optional<CPACSCargoDoorsAssembly>            m_cargoDoors;
 
     private:

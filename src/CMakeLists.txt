@@ -54,6 +54,9 @@ if (TIGL_CONCAT_GENERATED_FILES)
       ${PROJECT_BINARY_DIR}/cmake/concat_generated.cmake
     )
     list(APPEND TIGL_SRC "${PROJECT_BINARY_DIR}/src/src_generated.cpp")
+    if (MSVC)
+      set_source_files_properties(${PROJECT_BINARY_DIR}/src/src_generated.cpp PROPERTIES COMPILE_FLAGS "/bigobj")
+    endif(MSVC)
 
     if (MSVC)
          SET_SOURCE_FILES_PROPERTIES( "${PROJECT_BINARY_DIR}/src/src_generated.cpp" PROPERTIES COMPILE_FLAGS "/bigobj" )

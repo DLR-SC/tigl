@@ -65,10 +65,10 @@ public:
     TIGL_EXPORT CCPACSFuselage& GetFuselage() const;
 
     // Returns the start section UID of this segment
-    TIGL_EXPORT const std::string& GetStartSectionUID();
+    TIGL_EXPORT const std::string& GetStartSectionUID() const;
 
     // Returns the end section UID of this segment
-    TIGL_EXPORT const std::string& GetEndSectionUID();
+    TIGL_EXPORT const std::string& GetEndSectionUID() const;
 
     // Returns the start section index of this segment
     TIGL_EXPORT int GetStartSectionIndex();

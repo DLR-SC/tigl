@@ -36,6 +36,7 @@
 #include "CCPACSExternalObject.h"
 #include "CTiglShapeCache.h"
 #include "CTiglError.h"
+#include "CCPACSWallPosition.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglWingConnection.h"
@@ -77,6 +78,16 @@
 #include "CCPACSEnginePylons.h"
 #include "CCPACSEnginePylon.h"
 #include "generated/CPACSRibRotation_ribRotationReference.h"
+#include "generated/CPACSLateralCap_placement.h"
+#include "generated/CPACSLateralCap.h"
+#include "generated/CPACSBoundingElementUIDs.h"
+#include "generated/CPACSStructuralWallElement.h"
+#include "generated/CPACSStructuralWallElements.h"
+#include "generated/CPACSWallPositionUIDs.h"
+#include "generated/CPACSWallPosition.h"
+#include "generated/CPACSWallPositions.h"
+#include "generated/CPACSWallSegment.h"
+#include "generated/CPACSWallSegments.h"
 %}
 
 %feature("autodoc", "3");
@@ -143,6 +154,24 @@
 
 %include "generated/CPACSMaterialDefinition.h"
 %include "CCPACSMaterialDefinition.h"
+%include "generated/CPACSCap.h"
+
+// -------------- Fuselage Walls -----------------------//
+%include "generated/CPACSLateralCap_placement.h"
+%boost_optional(tigl::generated::CPACSLateralCap)
+%include "generated/CPACSLateralCap.h"
+
+%boost_optional(tigl::generated::CPACSBoundingElementUIDs)
+%include "generated/CPACSBoundingElementUIDs.h"
+%include "generated/CPACSStructuralWallElement.h"
+%include "generated/CPACSStructuralWallElements.h"
+%include "generated/CPACSWallPositionUIDs.h"
+%include "generated/CPACSWallPosition.h"
+%include "generated/CPACSWallPositions.h"
+%include "generated/CPACSWallSegment.h"
+%include "generated/CPACSWallSegments.h"
+%boost_optional(tigl::generated::CPACSWalls)
+%include "generated/CPACSWalls.h"
 
 // ----------------- Engines ---------------------------//
 %boost_optional(tigl::CCPACSEngines)
@@ -293,7 +322,6 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSRibCrossingBehaviour.h"
 %include "generated/CPACSWingRibsPositioning.h"
 %include "CCPACSWingRibsPositioning.h"
-%include "generated/CPACSCap.h"
 %include "generated/CPACSWingRibCell.h"
 %include "generated/CPACSWingRibCrossSection.h"
 %include "CCPACSWingRibCrossSection.h"

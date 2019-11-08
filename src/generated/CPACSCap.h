@@ -31,6 +31,7 @@ namespace generated
     // This class is used in:
     // CPACSSparCell
     // CPACSSparCrossSection
+    // CPACSStructuralWallElement
     // CPACSWingRibCell
     // CPACSWingRibCrossSection
 

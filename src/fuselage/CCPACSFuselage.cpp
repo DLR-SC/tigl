@@ -150,6 +150,24 @@ int CCPACSFuselage::GetSectionCount() const
     return m_sections.GetSectionCount();
 }
 
+// Returns the face that has a given fuselage section as its boundary
+TopoDS_Shape CCPACSFuselage::GetSectionFace(const std::string section_uid) const
+{
+    // search for the section in all segments
+    for (int n = 0; n < GetSegmentCount(); ++n) {
+        const CCPACSFuselageSegment& segment = GetSegment(n+1);
+
+        if ( section_uid == segment.GetStartSectionUID() ) {
+            return BuildFace( segment.GetStartWire() );
+        }
+        else if ( section_uid == segment.GetEndSectionUID() ) {
+            return BuildFace( segment.GetEndWire() );
+        }
+    }
+    throw CTiglError("GetSectionFace: Could not find a fuselage section for the given UID");
+    return TopoDS_Shape();
+}
+
 // Returns the section for a given index
 CCPACSFuselageSection& CCPACSFuselage::GetSection(int index) const
 {

@@ -5642,7 +5642,7 @@ jonas.jepsen@dlr.de
 		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="complexBaseType">
-				<xsd:all>
+				<xsd:sequence>
 					<xsd:element name="area" type="doubleBaseType">
 						<xsd:annotation>
 							<xsd:documentation>Area of the cap.</xsd:documentation>
@@ -5653,7 +5653,7 @@ jonas.jepsen@dlr.de
 							<xsd:documentation>Material properties.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-				</xsd:all>
+				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -17099,6 +17099,7 @@ jonas.jepsen@dlr.de
                 <xsd:element minOccurs="0" name="floorPanels" type="floorPanelsType"/>
                 <xsd:element minOccurs="0" name="pressureBulkheads" type="pressureBulkheadAssemblyType"/>
                 <xsd:element minOccurs="0" name="windows" type="windowsAssemblyType"/>
+                <xsd:element minOccurs="0" name="walls" type="wallsType"/>
                 <xsd:element minOccurs="0" name="paxDoors" type="paxDoorsAssemblyType"/>
                 <xsd:element minOccurs="0" name="cargoDoors" type="cargoDoorsAssemblyType"/>
                 <xsd:element minOccurs="0" name="intercostals" type="intercostalsAssemblyType"/>
@@ -37054,6 +37055,7 @@ jonas.jepsen@dlr.de
             <xsd:all>
                 <xsd:element minOccurs="0" name="sheetBasedStructuralElements" type="sheetBasedStructuralElementsType"/>
                 <xsd:element minOccurs="0" name="profileBasedStructuralElements" type="profileBasedStructuralElementsType"/>
+                <xsd:element minOccurs="0" name="structuralWallElements" type="structuralWallElementsType"/>
                 <xsd:element minOccurs="0" name="pressureBulkheads" type="pressureBulkheadsType"/>
                 <xsd:element minOccurs="0" name="windows" type="windowsType"/>
                 <xsd:element minOccurs="0" name="doors" type="doorsType"/>
@@ -43766,4 +43768,318 @@ jonas.jepsen@dlr.de
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+
+    <xsd:complexType name="wallsType">
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="wallPositions"
+                        type="wallPositionsType" maxOccurs="1"
+                        minOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Definition of wall positions to place
+                                walls inside fuselage.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="wallSegments"
+                        type="wallSegmentsType" maxOccurs="1"
+                        minOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                List of wall segments.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+                
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="wallPositionsType">
+        <xsd:annotation>
+            <xsd:documentation>Definition of wall positions to place walls inside fuselage.</xsd:documentation></xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="wallPosition"
+                        type="wallPositionType" maxOccurs="unbounded" minOccurs="2">
+                        <xsd:annotation>
+                            <xsd:documentation>Wall position definition specifying a point in the fuselage to be connected to a wall segment.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="wallSegmentsType">
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="wallSegment"
+                        type="wallSegmentType" maxOccurs="unbounded" minOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>Wall segment definition.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="wallPositionType">
+        <xsd:annotation>
+            <xsd:documentation>Definition of a wall position to place walls inside fuselage.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:choice minOccurs="1" maxOccurs="1">
+                <xsd:element name="bulkheadUID" type="stringBaseType">
+                    <xsd:annotation>
+                        <xsd:documentation>uID of a bulkhead determining the x-coordinate of the position with the given y- and z-coordinates.</xsd:documentation></xsd:annotation></xsd:element>
+                <xsd:element name="wallSegmentUID"
+                    type="stringBaseType">
+                    <xsd:annotation>
+                        <xsd:documentation>uID of a wall segment determining the x-coordinate of the position with the given y- and z-coordinates.</xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="fuselageSectionUID"
+                    type="stringBaseType">
+                    <xsd:annotation>
+                        <xsd:documentation>uID of fuselage section determining the x-coordinate of the position with the given y- and z-coordinates.</xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="x" type="doubleBaseType">
+                    <xsd:annotation>
+                        <xsd:documentation>Absolute x-coordinate of wall position in fuselage coordinate system.</xsd:documentation></xsd:annotation></xsd:element>
+            </xsd:choice>
+            <xsd:element name="y" type="doubleBaseType">
+                <xsd:annotation>
+                    <xsd:documentation>Absolute y-coordinate of wall position in fuselage coordinate system.</xsd:documentation></xsd:annotation></xsd:element>
+            <xsd:element name="z" type="doubleBaseType">
+                <xsd:annotation>
+                    <xsd:documentation>Absolute z-coordinate of wall position in fuselage coordinate system.</xsd:documentation>
+                </xsd:annotation></xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="uID" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="wallSegmentType">
+        <xsd:all>
+            <xsd:element name="phi" maxOccurs="1" minOccurs="1"
+                default="0.0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Defines extrusion direction. Rotation angle
+                        around fuselage x-axis of extrusion direction. A
+                        value of 0deg means fuselage z-axis as extrusion
+                        direction. Default: 0.0deg.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:simpleContent>
+                        <xsd:restriction base="doubleBaseType">
+                            <xsd:minInclusive value="0"></xsd:minInclusive>
+                            <xsd:maxInclusive value="360"></xsd:maxInclusive>
+                        </xsd:restriction>
+                    </xsd:simpleContent>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="negativeExtrusion" maxOccurs="1"
+                minOccurs="0" type="booleanBaseType">
+                <xsd:annotation>
+                    <xsd:documentation>By default, the wall is only extruded in positive direction. If negativeExtrusion is selected, the wall is additionaly extruded in negative direction. Default: false.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="flushConnectionStart"
+                type="booleanBaseType" maxOccurs="1" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Rotates the first edge of the wall segment so that it is adjacent with the structural element defined in the first wall position (bulkhead, fuselage section or another plane wall). Default: false.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="flushConnectionEnd"
+                type="booleanBaseType" maxOccurs="1" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Rotates the last edge of the wall segment so that it is adjacent with the structural element defined in the last wall position (bulkhead, fuselage section or another plane wall). Default: false.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="boundingElementUIDs"
+                type="boundingElementUIDsType" maxOccurs="1"
+                minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        A list of uIDs referencing other
+                        structural/geometric elements that shall serve
+                        as a boundary of the wall element. Possible
+                        references are floor, wall or
+                        genericGeometryComponent. A major requirement is
+                        that the referenced element has an intersection
+                        with the wall for at least the distance between
+                        two wall positions. So that a full geometric
+                        face of the wall is bounded by it. Neighbouring
+                        wall faces that are not completely bounded by
+                        the reference element are not affected.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="structuralWallElementUID"
+                type="stringBaseType" maxOccurs="1" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Reference to the structural property definition
+                        of this wall segment.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="wallPositionUIDs"
+                type="wallPositionUIDsType" maxOccurs="1"
+                minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        List of wall position uIDs that are used for
+                        this wall segment. At least two positions must
+                        be defined (for start and end position of wall).
+                        If more than two positions are referenced here,
+                        the wall is constructed out of several planar
+                        faces that connect two consecutive positions
+                        (Note: Order of position uIDs defines
+                        connectivity).
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+        <xsd:attribute name="uID" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="boundingElementUIDsType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A list of uIDs referencing other structural/geometric
+                elements that shall serve as a boundary of the wall
+                element. Possible references are floor, wall or
+                genericGeometryComponent. A major requirement is that
+                the referenced element has an intersection with the wall
+                for at least the distance between two wall positions. So
+                that a full geometric face of the wall is bounded by it.
+                Neighbouring wall faces that are not completely bounded
+                by the reference element are not affected.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="boundingElementUID"
+                        type="stringBaseType" maxOccurs="unbounded" minOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>uID referencing another structural/geometric element that shall serve as a boundary of the wall element. Possible references are floor, wall or genericGeometryComponent.
+                            </xsd:documentation>
+						</xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="structuralWallElementsType">
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="structuralWallElement"
+                        type="structuralWallElementType" maxOccurs="unbounded"
+                        minOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>Structural wall reinforcement definition specifying physical properties of a fuselage wall segment.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="structuralWallElementType">
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="sheetElementUID"
+                        type="stringBaseType" maxOccurs="1"
+                        minOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>Reference to a sheet element definition specifying the physical properties of the wall's shell.</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="longitudinalReinforcements"
+                        type="wingStringerType" maxOccurs="1"
+                        minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>Reinforcements running along the position polygon of the wall positions.</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="lateralReinforcements"
+                        type="wingStringerType" maxOccurs="1"
+                        minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>Reinforcements running in lateral/radial direction in the wall segment plane.</xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="innerLongitudinalCap"
+                        type="capType" maxOccurs="1" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>Reinforcement at inner side of wall. This is either, depending on the extrusion direction flag, the edge of the wall that connects the positions (&quot;positiveDirection&quot;) or the edge of the wall where the wall intersects with the fuselage skin in the opposite direction of the extrusion direction.
+          </xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="outerLongitudinalCap"
+                        type="capType" maxOccurs="1" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>Reinforcement at outer side of wall. The outer side of the wall is defined as the edge of the wall at the intersection of the wall with the fuselage skin running along the main direction of the wall.
+          </xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="lateralCaps"
+                        type="lateralCapType" maxOccurs="1"
+                        minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Lateral caps are the reinforcements of
+                                the wall at the edges lateral to the
+                                main direction of the wall. These caps
+                                can be either defined at start, end,
+                                start and end or at all wall positions
+                                according to the placement flag.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+
+                <xsd:attribute name="uID" type="xsd:string"></xsd:attribute>
+
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="lateralCapType">
+        <xsd:complexContent>
+            <xsd:extension base="capType">
+                <xsd:sequence>
+                    <xsd:element name="placement">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="all"></xsd:enumeration>
+                            <xsd:enumeration value="start"></xsd:enumeration>
+                            <xsd:enumeration value="end"></xsd:enumeration>
+                            <xsd:enumeration value="startEnd"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="wallPositionUIDsType">
+        <xsd:sequence>
+            <xsd:element name="wallPositionUID" type="stringBaseType"
+                maxOccurs="unbounded" minOccurs="2">
+                <xsd:annotation>
+                    <xsd:documentation>Reference to wall position uID.</xsd:documentation></xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
 </xsd:schema>
