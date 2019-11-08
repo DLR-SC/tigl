@@ -48,16 +48,6 @@
 
 namespace {
 
-// create a face out of four points
-TopoDS_Face MakeFace(gp_Pnt const& p1, gp_Pnt const& p2, gp_Pnt const& p3, gp_Pnt const& p4) {
-    TopoDS_Edge e1 = BRepBuilderAPI_MakeEdge(p1, p2).Edge();
-    TopoDS_Edge e2 = BRepBuilderAPI_MakeEdge(p2, p3).Edge();
-    TopoDS_Edge e3 = BRepBuilderAPI_MakeEdge(p3, p4).Edge();
-    TopoDS_Edge e4 = BRepBuilderAPI_MakeEdge(p4, p1).Edge();
-    TopoDS_Wire w = BRepBuilderAPI_MakeWire(e1, e2, e3, e4).Wire();
-    return BRepBuilderAPI_MakeFace(w, false).Face();
-}
-
 // Given a CCPACSWallposition with a defined shape, project the point pnt along the direction dir onto the
 // plane, in which the shape lies. The shape must be convertable to a planar TopoDS_Face.
 void FlushPointAlongVec(tigl::CCPACSWallPosition const& p, gp_Vec const dir, double extents, gp_Pnt& pnt)
@@ -207,7 +197,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
 
         // create the wall segment from the four corner points lower, upper, lower_new, upper_new
         if (count > 0 ) {
-            TopoDS_Face face = MakeFace(lower, lower_new, upper_new, upper);
+            TopoDS_Face face = BuildFace(lower, lower_new, upper, upper_new);
             builder_wall.Add(wall, face);
 
             //first and last face are enlarged for the cutting tool
@@ -223,7 +213,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
                 lower_new_cut = lower_new.Translated(bboxSize*x_vec);
                 upper_new_cut = upper_new.Translated(bboxSize*x_vec);
             }
-            face = MakeFace(lower_cut, lower_new_cut, upper_new_cut, upper_cut);
+            face = BuildFace(lower_cut, lower_new_cut, upper_cut, upper_new_cut);
             builder_cutter.Add(m_cutPlanes, face);
         }
 
