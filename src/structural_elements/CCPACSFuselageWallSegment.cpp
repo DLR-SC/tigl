@@ -252,7 +252,6 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
     if (GetBoundingElementUIDs()) {
         for (std::string bounding_element_uid : GetBoundingElementUIDs()->GetBoundingElementUIDs()) {
             const CCPACSFuselageWallSegment& bounding_element = GetWalls().GetWallSegment(bounding_element_uid);
-            // TODO: Check: The order of whoch the walls are evaulated seem to matter here!
             TopoDS_Compound bounding_cutPlane = bounding_element.GetCutPlanes();
             TopoDS_Shape result = SplitShape(wall, bounding_cutPlane);
             
