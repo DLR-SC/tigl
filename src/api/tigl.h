@@ -4683,6 +4683,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel level);
 
 /**
  * @brief Checks whether a point lies inside the given geometric object.
+ * Note that the symmetry attribute is ignored.
  *
  * This function works only for solid objects!
  *
