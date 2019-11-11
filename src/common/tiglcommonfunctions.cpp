@@ -1538,6 +1538,8 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
 
 bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
 {
+    double tol = 1e-3;
+
     // check if solid
     TopoDS_Solid s;
     try {
@@ -1550,6 +1552,7 @@ bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
     // first, check if the point is in the bounding box
     Bnd_Box boundingBox;
     BRepBndLib::Add(s, boundingBox);
+    boundingBox.Enlarge(tol);
     if ( boundingBox.IsOut(point) ) {
         return false;
     }
@@ -1558,11 +1561,11 @@ bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
     BRepClass3d_SolidClassifier algo(s);
 
     // test whether a point at infinity lies inside. If yes, then the shape is reversed
-    algo.PerformInfinitePoint(1e-3);
+    algo.PerformInfinitePoint(tol);
 
     bool shapeIsReversed = (algo.State() == TopAbs_IN);
 
-    algo.Perform(point, 1e-3);
+    algo.Perform(point, tol);
 
     return ((algo.State() == TopAbs_IN) != shapeIsReversed ) || (algo.State() == TopAbs_ON);
 }
