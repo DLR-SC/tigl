@@ -1547,6 +1547,14 @@ bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
         throw tigl::CTiglError("The shape is not a solid");
     }
 
+    // first, check if the point is in the bounding box
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(s, boundingBox);
+    if ( boundingBox.IsOut(point) ) {
+        return false;
+    }
+
+    // if the point is inside the bounding box, classify the point using BRepClass3d_SolidClassifier
     BRepClass3d_SolidClassifier algo(s);
 
     // test whether a point at infinity lies inside. If yes, then the shape is reversed
