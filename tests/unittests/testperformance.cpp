@@ -161,3 +161,85 @@ TEST_F(TestPerformance, pointTranslator)
 
     ASSERT_TRUE(true);
 }
+
+
+TEST_F(TestPerformance, tiglCheckPointInside)
+{
+    // some points that are exclusively in one component
+    tigl::CTiglPoint pointInFuselage(5., 0., 0.);
+    tigl::CTiglPoint pointInWing(16., 6., -1.);
+    tigl::CTiglPoint pointInVTP(34., 0., 4.);
+    tigl::CTiglPoint pointInSpace(1000., 1000., 1000.);
+
+    TiglBoolean fusePointInside  = TIGL_FALSE;
+    TiglBoolean wingPointInside  = TIGL_FALSE;
+    TiglBoolean vtpPointInside   = TIGL_FALSE;
+    TiglBoolean spacePointInside = TIGL_FALSE;
+
+    int nruns = 50;
+    double n;
+
+    clock_t start, stop;
+    double time_elapsed;
+
+    // test the four points against the wing
+    n = 0.;
+    start = clock();
+    for(int i = 0; i < nruns; ++i){
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInFuselage.x, pointInFuselage.y, pointInFuselage.z, "D150_VAMP_W1", &fusePointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInWing.x    , pointInWing.y    , pointInWing.z    , "D150_VAMP_W1", &wingPointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInVTP.x     , pointInVTP.y     , pointInVTP.z     , "D150_VAMP_W1", &vtpPointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInSpace.x   , pointInSpace.y   , pointInSpace.z   , "D150_VAMP_W1", &spacePointInside));
+        n += 1.;  //dummy to prevent compiler optimization
+    }
+    stop = clock();
+
+    ASSERT_FALSE(fusePointInside);
+    ASSERT_TRUE(wingPointInside);
+    ASSERT_FALSE(vtpPointInside);
+    ASSERT_FALSE(spacePointInside);
+
+    time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns * 1000000.;
+    std::cout << "Time tiglCheckPointInside wing [us]: " << time_elapsed << std::endl;
+
+    // test the four points against the vtp
+    n = 0.;
+    start = clock();
+    for(int i = 0; i < nruns; ++i){
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInFuselage.x, pointInFuselage.y, pointInFuselage.z, "D150_VAMP_SL1", &fusePointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInWing.x    , pointInWing.y    , pointInWing.z    , "D150_VAMP_SL1", &wingPointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInVTP.x     , pointInVTP.y     , pointInVTP.z     , "D150_VAMP_SL1", &vtpPointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInSpace.x   , pointInSpace.y   , pointInSpace.z   , "D150_VAMP_SL1", &spacePointInside));
+        n += 1.;  //dummy to prevent compiler optimization
+    }
+    stop = clock();
+
+    ASSERT_FALSE(fusePointInside);
+    ASSERT_FALSE(wingPointInside);
+    ASSERT_TRUE(vtpPointInside);
+    ASSERT_FALSE(spacePointInside);
+
+    time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns * 1000000.;
+    std::cout << "Time tiglCheckPointInside vtp [us]: " << time_elapsed << std::endl;
+
+
+    // test the four points against the fuselage
+    n = 0.;
+    start = clock();
+    for(int i = 0; i < nruns; ++i){
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInFuselage.x, pointInFuselage.y, pointInFuselage.z, "D150_VAMP_FL1", &fusePointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInWing.x    , pointInWing.y    , pointInWing.z    , "D150_VAMP_FL1", &wingPointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInVTP.x     , pointInVTP.y     , pointInVTP.z     , "D150_VAMP_FL1", &vtpPointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInSpace.x   , pointInSpace.y   , pointInSpace.z   , "D150_VAMP_FL1", &spacePointInside));
+        n += 1.;  //dummy to prevent compiler optimization
+    }
+    stop = clock();
+
+    ASSERT_TRUE(fusePointInside);
+    ASSERT_FALSE(wingPointInside);
+    ASSERT_FALSE(vtpPointInside);
+    ASSERT_FALSE(spacePointInside);
+
+    time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns * 1000000.;
+    std::cout << "Time tiglCheckPointInside fuselage [us]: " << time_elapsed << std::endl;
+}
