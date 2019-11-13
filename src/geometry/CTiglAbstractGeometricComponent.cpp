@@ -36,6 +36,7 @@ namespace tigl
 {
 CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent()
     : loft(*this, &CTiglAbstractGeometricComponent::BuildLoft)
+    , bounding_box(*this, &CTiglAbstractGeometricComponent::CalcBoundingBox)
 {
 }
 
@@ -51,6 +52,11 @@ TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() const
 PNamedShape CTiglAbstractGeometricComponent::GetLoft() const
 {
     return *loft;
+}
+
+Bnd_Box const& CTiglAbstractGeometricComponent::GetBoundingBox() const
+{
+    return *bounding_box;
 }
 
 PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
@@ -143,6 +149,11 @@ bool CTiglAbstractGeometricComponent::GetIsOnMirrored(const gp_Pnt& pnt)
 void CTiglAbstractGeometricComponent::BuildLoft(PNamedShape& cache) const
 {
     cache = BuildLoft();
+}
+
+void CTiglAbstractGeometricComponent::CalcBoundingBox(Bnd_Box& bb) const
+{
+    BRepBndLib::Add(loft->get()->Shape(), bb);
 }
 
 } // end namespace tigl

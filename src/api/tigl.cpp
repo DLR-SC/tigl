@@ -6895,10 +6895,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglCheckPointInside(TiglCPACSConfigurationHan
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
         // get component
-        tigl::ITiglGeometricComponent& component = config.GetUIDManager().GetGeometricComponent(componentUID);
+        tigl::CTiglAbstractGeometricComponent& component = static_cast<tigl::CTiglAbstractGeometricComponent&>(config.GetUIDManager().GetGeometricComponent(componentUID));
 
         const TopoDS_Shape shape = component.GetLoft()->Shape();
-        *isInside = IsPointInsideShape(shape, gp_Pnt(px, py, pz)) ? TIGL_TRUE : TIGL_FALSE;
+        *isInside = IsPointInsideShape(shape, gp_Pnt(px, py, pz), &component.GetBoundingBox()) ? TIGL_TRUE : TIGL_FALSE;
 
         return TIGL_SUCCESS;
     }
