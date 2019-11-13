@@ -41,6 +41,7 @@ CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent()
 }
 
 void CTiglAbstractGeometricComponent::Reset() {
+    bounding_box.clear();
     loft.clear();
 }
 
