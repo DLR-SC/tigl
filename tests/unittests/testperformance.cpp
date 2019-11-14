@@ -166,39 +166,20 @@ TEST_F(TestPerformance, pointTranslator)
 }
 
 
-TEST_F(TestPerformance, tiglCheckPointInside)
+TEST_F(TestPerformance, tiglCheckPointInside_false)
 {
-    const tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
-
-    // pre-build some geometries to warm start performance tests
-    tigl::CTiglAbstractGeometricComponent& wing
-            = static_cast<tigl::CTiglAbstractGeometricComponent&>(config.GetUIDManager().GetGeometricComponent("D150_VAMP_W1"));
-    TopoDS_Shape wing_loft = wing.GetLoft()->Shape();
-    Bnd_Box const& wing_bb = wing.GetBoundingBox();
-
-    tigl::CTiglAbstractGeometricComponent& vtp
-            = static_cast<tigl::CTiglAbstractGeometricComponent&>(config.GetUIDManager().GetGeometricComponent("D150_VAMP_SL1"));
-    TopoDS_Shape vtp_loft = vtp.GetLoft()->Shape();
-    Bnd_Box const& vtp_bb = vtp.GetBoundingBox();
-
-    tigl::CTiglAbstractGeometricComponent& fuselage
-            = static_cast<tigl::CTiglAbstractGeometricComponent&>(config.GetUIDManager().GetGeometricComponent("D150_VAMP_FL1"));
-    TopoDS_Shape fuselage_loft = fuselage.GetLoft()->Shape();
-    Bnd_Box const& fuselage_bb = fuselage.GetBoundingBox();
 
     // define some points that are exclusively in one component
-    tigl::CTiglPoint pointInFuselage(5., 0., 0.);
-    tigl::CTiglPoint pointInWing(16., 6., -1.);
-    tigl::CTiglPoint pointInVTP(34., 0., 4.);
-    tigl::CTiglPoint pointInSpace(1000., 1000., 1000.);
+    tigl::CTiglPoint point(1000., 1000., 1000.);
+    TiglBoolean point_inside = TIGL_FALSE;
 
-    TiglBoolean fusePointInside  = TIGL_FALSE;
-    TiglBoolean wingPointInside  = TIGL_FALSE;
-    TiglBoolean vtpPointInside   = TIGL_FALSE;
-    TiglBoolean spacePointInside = TIGL_FALSE;
+    // pre-build some geometries to warm start performance tests
+    ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_W1" , &point_inside));
+    ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_SL1", &point_inside));
+    ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_FL1", &point_inside));
 
-    int nruns = 50;
+
+    int nruns = 100000;
     double n;
 
     clock_t start, stop;
@@ -208,18 +189,11 @@ TEST_F(TestPerformance, tiglCheckPointInside)
     n = 0.;
     start = clock();
     for(int i = 0; i < nruns; ++i){
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInFuselage.x, pointInFuselage.y, pointInFuselage.z, "D150_VAMP_W1", &fusePointInside));
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInWing.x    , pointInWing.y    , pointInWing.z    , "D150_VAMP_W1", &wingPointInside));
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInVTP.x     , pointInVTP.y     , pointInVTP.z     , "D150_VAMP_W1", &vtpPointInside));
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInSpace.x   , pointInSpace.y   , pointInSpace.z   , "D150_VAMP_W1", &spacePointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_W1", &point_inside));
         n += 1.;  //dummy to prevent compiler optimization
     }
     stop = clock();
-
-    ASSERT_FALSE(fusePointInside);
-    ASSERT_TRUE(wingPointInside);
-    ASSERT_FALSE(vtpPointInside);
-    ASSERT_FALSE(spacePointInside);
+    ASSERT_FALSE(point_inside);
 
     time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns * 1000000.;
     std::cout << "Time tiglCheckPointInside wing [us]: " << time_elapsed << std::endl;
@@ -228,18 +202,11 @@ TEST_F(TestPerformance, tiglCheckPointInside)
     n = 0.;
     start = clock();
     for(int i = 0; i < nruns; ++i){
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInFuselage.x, pointInFuselage.y, pointInFuselage.z, "D150_VAMP_SL1", &fusePointInside));
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInWing.x    , pointInWing.y    , pointInWing.z    , "D150_VAMP_SL1", &wingPointInside));
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInVTP.x     , pointInVTP.y     , pointInVTP.z     , "D150_VAMP_SL1", &vtpPointInside));
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInSpace.x   , pointInSpace.y   , pointInSpace.z   , "D150_VAMP_SL1", &spacePointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_SL1", &point_inside));
         n += 1.;  //dummy to prevent compiler optimization
     }
     stop = clock();
-
-    ASSERT_FALSE(fusePointInside);
-    ASSERT_FALSE(wingPointInside);
-    ASSERT_TRUE(vtpPointInside);
-    ASSERT_FALSE(spacePointInside);
+    ASSERT_FALSE(point_inside);
 
     time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns * 1000000.;
     std::cout << "Time tiglCheckPointInside vtp [us]: " << time_elapsed << std::endl;
@@ -249,18 +216,11 @@ TEST_F(TestPerformance, tiglCheckPointInside)
     n = 0.;
     start = clock();
     for(int i = 0; i < nruns; ++i){
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInFuselage.x, pointInFuselage.y, pointInFuselage.z, "D150_VAMP_FL1", &fusePointInside));
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInWing.x    , pointInWing.y    , pointInWing.z    , "D150_VAMP_FL1", &wingPointInside));
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInVTP.x     , pointInVTP.y     , pointInVTP.z     , "D150_VAMP_FL1", &vtpPointInside));
-        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, pointInSpace.x   , pointInSpace.y   , pointInSpace.z   , "D150_VAMP_FL1", &spacePointInside));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_FL1", &point_inside));
         n += 1.;  //dummy to prevent compiler optimization
     }
     stop = clock();
-
-    ASSERT_TRUE(fusePointInside);
-    ASSERT_FALSE(wingPointInside);
-    ASSERT_FALSE(vtpPointInside);
-    ASSERT_FALSE(spacePointInside);
+    ASSERT_FALSE(point_inside);
 
     time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns * 1000000.;
     std::cout << "Time tiglCheckPointInside fuselage [us]: " << time_elapsed << std::endl;
