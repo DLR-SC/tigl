@@ -22,6 +22,9 @@
 #include "CTiglPoint.h"
 #include "CTiglPointTranslator.h"
 
+#include "CNamedShape.h"
+#include "CCPACSConfigurationManager.h"
+
 #include <string.h>
 #include <ctime>
 
@@ -165,7 +168,20 @@ TEST_F(TestPerformance, pointTranslator)
 
 TEST_F(TestPerformance, tiglCheckPointInside)
 {
-    // some points that are exclusively in one component
+    const tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    // pre-build some geometries to warm start performance tests
+    tigl::ITiglGeometricComponent& wing = config.GetUIDManager().GetGeometricComponent("D150_VAMP_W1");
+    TopoDS_Shape wing_loft = wing.GetLoft()->Shape();
+
+    tigl::ITiglGeometricComponent& vtp = config.GetUIDManager().GetGeometricComponent("D150_VAMP_SL1");
+    TopoDS_Shape vtp_loft = vtp.GetLoft()->Shape();
+
+    tigl::ITiglGeometricComponent& fuselage = config.GetUIDManager().GetGeometricComponent("D150_VAMP_FL1");
+    TopoDS_Shape fuselage_loft = fuselage.GetLoft()->Shape();
+
+    // define some points that are exclusively in one component
     tigl::CTiglPoint pointInFuselage(5., 0., 0.);
     tigl::CTiglPoint pointInWing(16., 6., -1.);
     tigl::CTiglPoint pointInVTP(34., 0., 4.);
