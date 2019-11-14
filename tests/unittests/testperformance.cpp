@@ -178,8 +178,7 @@ TEST_F(TestPerformance, tiglCheckPointInside_false)
     ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_SL1", &point_inside));
     ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_FL1", &point_inside));
 
-
-    int nruns = 1000;
+    int nruns = 100000;
     double n;
 
     clock_t start, stop;

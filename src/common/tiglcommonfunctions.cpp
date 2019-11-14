@@ -1536,7 +1536,7 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
 }
 
 
-bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
+bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point, Bnd_Box const* bounding_box)
 {
     double tol = 1e-3;
 
@@ -1550,11 +1550,14 @@ bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
     }
 
     // first, check if the point is in the bounding box
-    Bnd_Box boundingBox;
-    BRepBndLib::Add(s, boundingBox);
-    boundingBox.Enlarge(tol);
-    if ( boundingBox.IsOut(point) ) {
-        return false;
+    if (bounding_box) {
+        // create a copy of the const bounding box to be able to enlarge by tolerance
+        Bnd_Box bb;
+        bb.Add(*bounding_box);
+        bb.Enlarge(tol);
+        if ( bb.IsOut(point) ) {
+            return false;
+        }
     }
 
     // if the point is inside the bounding box, classify the point using BRepClass3d_SolidClassifier
