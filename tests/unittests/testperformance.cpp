@@ -172,14 +172,20 @@ TEST_F(TestPerformance, tiglCheckPointInside)
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
 
     // pre-build some geometries to warm start performance tests
-    tigl::ITiglGeometricComponent& wing = config.GetUIDManager().GetGeometricComponent("D150_VAMP_W1");
+    tigl::CTiglAbstractGeometricComponent& wing
+            = static_cast<tigl::CTiglAbstractGeometricComponent&>(config.GetUIDManager().GetGeometricComponent("D150_VAMP_W1"));
     TopoDS_Shape wing_loft = wing.GetLoft()->Shape();
+    Bnd_Box const& wing_bb = wing.GetBoundingBox();
 
-    tigl::ITiglGeometricComponent& vtp = config.GetUIDManager().GetGeometricComponent("D150_VAMP_SL1");
+    tigl::CTiglAbstractGeometricComponent& vtp
+            = static_cast<tigl::CTiglAbstractGeometricComponent&>(config.GetUIDManager().GetGeometricComponent("D150_VAMP_SL1"));
     TopoDS_Shape vtp_loft = vtp.GetLoft()->Shape();
+    Bnd_Box const& vtp_bb = vtp.GetBoundingBox();
 
-    tigl::ITiglGeometricComponent& fuselage = config.GetUIDManager().GetGeometricComponent("D150_VAMP_FL1");
+    tigl::CTiglAbstractGeometricComponent& fuselage
+            = static_cast<tigl::CTiglAbstractGeometricComponent&>(config.GetUIDManager().GetGeometricComponent("D150_VAMP_FL1"));
     TopoDS_Shape fuselage_loft = fuselage.GetLoft()->Shape();
+    Bnd_Box const& fuselage_bb = fuselage.GetBoundingBox();
 
     // define some points that are exclusively in one component
     tigl::CTiglPoint pointInFuselage(5., 0., 0.);
