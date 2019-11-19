@@ -151,8 +151,9 @@ TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire
 // Comuptes the intersection points of two wires
 TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, intersectionPointList& intersectionPoints, const double tolerance=Precision::SquareConfusion());
 
-// Checks, whether a points lies inside a given shape, which must be a solid
-TIGL_EXPORT bool IsPointInsideShape(const TopoDS_Shape& solid, gp_Pnt point);
+// Checks, whether a points lies inside a given shape, which must be a solid.
+// An optional bounding box can be passed to include a bounding box test as a prephase
+TIGL_EXPORT bool IsPointInsideShape(const TopoDS_Shape& solid, gp_Pnt point, Bnd_Box const* bounding_box = nullptr);
 
 // Checks, whether a point lies inside a given face
 TIGL_EXPORT bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt point);

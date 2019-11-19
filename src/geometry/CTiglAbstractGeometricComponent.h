@@ -29,6 +29,8 @@
 #include "ITiglGeometricComponent.h"
 #include "Cache.h"
 
+#include "Bnd_Box.hxx"
+
 namespace tigl
 {
 class CCPACSTransformation;
@@ -56,16 +58,21 @@ public:
     // if the loft as no symmetry, false is returned
     TIGL_EXPORT bool GetIsOnMirrored(const gp_Pnt &pnt);
 
+    // returns the bounding box of this component's loft
+    TIGL_EXPORT Bnd_Box const& GetBoundingBox() const;
+
 protected:
     virtual PNamedShape BuildLoft() const = 0;
 
     Cache<PNamedShape, CTiglAbstractGeometricComponent> loft;
+    Cache<Bnd_Box, CTiglAbstractGeometricComponent> bounding_box;
 
 private:
     CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent&);
     void operator=(const CTiglAbstractGeometricComponent&);
 
     void BuildLoft(PNamedShape& cache) const;
+    void CalcBoundingBox(Bnd_Box& bb) const;
 };
 
 } // end namespace tigl
