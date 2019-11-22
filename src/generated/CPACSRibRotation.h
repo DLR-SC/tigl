@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsPositioning
 
-    // generated from /xsd:schema/xsd:complexType[770]
+    // generated from /xsd:schema/xsd:complexType[772]
     /// @brief Definition of the rotation of the ribs.
     /// 
     /// The rotation around z describes the rotation around the

@@ -42,7 +42,7 @@ namespace generated
     // This class is used in:
     // CPACSCpacs
 
-    // generated from /xsd:schema/xsd:complexType[921]
+    // generated from /xsd:schema/xsd:complexType[923]
     /// @brief vehiclesType
     /// 
     /// Vehicles node, containing all the vehicle-specific

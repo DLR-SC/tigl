@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSStringersAssembly
 
-    // generated from /xsd:schema/xsd:complexType[853]
+    // generated from /xsd:schema/xsd:complexType[855]
     /// @brief arbitraryStringerType
     /// 
     /// ArbitraryStringer type, containing stringer definition

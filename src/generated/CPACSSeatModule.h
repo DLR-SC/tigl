@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSSeatModules
 
-    // generated from /xsd:schema/xsd:complexType[802]
+    // generated from /xsd:schema/xsd:complexType[804]
     /// @brief seatModuleType
     /// 
     /// SeatModule type, containing data of a seat module

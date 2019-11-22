@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    // generated from /xsd:schema/xsd:complexType[809]
+    // generated from /xsd:schema/xsd:complexType[811]
     /// @brief sheetBasedStrcuturalElementsType
     /// 
     /// sheetBasedStrcuturalElementsType, containing sheet

@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSSkinSegments
 
-    // generated from /xsd:schema/xsd:complexType[819]
+    // generated from /xsd:schema/xsd:complexType[821]
     /// @brief fuselagePanelType
     /// 
     /// FuselagePanel type, panel of the fuselage between

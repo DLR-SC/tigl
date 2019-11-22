@@ -30,7 +30,7 @@ namespace generated
     // This enum is used in:
     // CPACSProfileBasedStructuralElement
 
-    // generated from /xsd:schema/xsd:complexType[743]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:choice[1]/xsd:sequence[1]/xsd:choice[1]/xsd:element[1]/xsd:complexType/xsd:simpleContent
+    // generated from /xsd:schema/xsd:complexType[745]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:choice[1]/xsd:sequence[1]/xsd:choice[1]/xsd:element[1]/xsd:complexType/xsd:simpleContent
     enum CPACSProfileBasedStructuralElement_standardProfileType
     {
         C,

@@ -38,7 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSWallSegments
 
-    // generated from /xsd:schema/xsd:complexType[1006]
+    // generated from /xsd:schema/xsd:complexType[1008]
     class CPACSWallSegment : public CTiglOptUIDObject
     {
     public:

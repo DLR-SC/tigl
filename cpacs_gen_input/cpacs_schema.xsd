@@ -31657,6 +31657,60 @@ jonas.jepsen@dlr.de
 		</xsd:complexContent>
 	</xsd:complexType>
 
+	<xsd:complexType name="curveParamPointMapType">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>Maps points (actually the index in the point list) to a curve parameter.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>Which parameters are allowed depends on the context.
+							For exampple in a wing profile, values between -1 and 1 are valid.</ddue:para>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+	    <xsd:complexContent>
+			<xsd:extension base="complexBaseType">
+				<xsd:sequence>
+					<xsd:element name="pointIndex" type="stringVectorBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Index of the point that is mapped.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="paramOnCurve" type="stringVectorBaseType">
+						<xsd:annotation>
+							<xsd:documentation>Parameter on curve, that is mapped to the point defined by its index.</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="curvePointListXYZ">
+		<xsd:complexContent>
+		<xsd:extension base="pointListXYZVectorType">
+			<xsd:sequence>
+				<xsd:element name="kinks" maxOccurs="1" minOccurs="0" type="stringVectorBaseType">
+					<xsd:annotation>
+						<xsd:documentation>Curve parameters at which the curve has a kink. To define a kink at a specific point,
+						the parameterMap has to be used that associates a point with a parameter.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="parameterMap" maxOccurs="1" minOccurs="0" type="curveParamPointMapType">
+					<xsd:annotation>
+						<xsd:documentation>Map between point index and curve parameter.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 
 	<xsd:complexType name="pointListXYVectorType">
 
@@ -32820,7 +32874,7 @@ jonas.jepsen@dlr.de
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:choice>
-						<xsd:element name="pointList" type="pointListXYZVectorType"/>
+						<xsd:element name="pointList" type="curvePointListXYZ"/>
 						<xsd:element name="cst2D" type="cst2DType"/>
 					</xsd:choice>
 				</xsd:sequence>

@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurve
 
-    // generated from /xsd:schema/xsd:complexType[731]
+    // generated from /xsd:schema/xsd:complexType[733]
     /// @brief pointXYZType
     /// 
     /// Point type, containing an xyz data triplet.

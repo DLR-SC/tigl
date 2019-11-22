@@ -39,7 +39,6 @@
 #include "Geom_TrimmedCurve.hxx"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
-#include "CCPACSPointListXYZVector.h"
 #include "CCPACSPointListXYVector.h"
 #include "Cache.h"
 
@@ -48,13 +47,14 @@ namespace tigl
 
 class CCPACSWingProfile;
 class CCPACSNacelleProfile;
+class CCPACSCurvePointListXYZ;
 
 class CTiglWingProfilePointList : public ITiglWingProfileAlgo
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZVector& cpacsPointlist);
+    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSCurvePointListXYZ& cpacsPointlist);
     TIGL_EXPORT CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointlist);
 
     TIGL_EXPORT void Invalidate() const override;
@@ -137,4 +137,3 @@ private:
 } // end namespace tigl
 
 #endif // CCPACSWINGPROFILEPOINTLIST_H
-

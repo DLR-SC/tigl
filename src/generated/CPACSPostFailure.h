@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSMaterial
 
-    // generated from /xsd:schema/xsd:complexType[738]
+    // generated from /xsd:schema/xsd:complexType[740]
     /// @brief This type describes the post failure behaviour of the
     /// material.
     /// 

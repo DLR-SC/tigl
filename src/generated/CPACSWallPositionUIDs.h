@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSWallSegment
 
-    // generated from /xsd:schema/xsd:complexType[1011]
+    // generated from /xsd:schema/xsd:complexType[1013]
     class CPACSWallPositionUIDs
     {
     public:

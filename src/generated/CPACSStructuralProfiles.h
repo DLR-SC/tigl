@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    // generated from /xsd:schema/xsd:complexType[859]
+    // generated from /xsd:schema/xsd:complexType[861]
     /// @brief Definition cross sections of structural profiles.
     /// 
     /// Structuralprofiles type, containing cross section

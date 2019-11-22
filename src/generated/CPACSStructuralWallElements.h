@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    // generated from /xsd:schema/xsd:complexType[1008]
+    // generated from /xsd:schema/xsd:complexType[1010]
     class CPACSStructuralWallElements
     {
     public:

@@ -38,7 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralWallElements
 
-    // generated from /xsd:schema/xsd:complexType[1009]
+    // generated from /xsd:schema/xsd:complexType[1011]
     class CPACSStructuralWallElement : public CTiglOptUIDObject
     {
     public:

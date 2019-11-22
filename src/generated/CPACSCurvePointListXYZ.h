@@ -17,9 +17,13 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
+#include <CCPACSCurveParamPointMap.h>
 #include <CCPACSStringVector.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -33,21 +37,13 @@ namespace generated
     // This class is used in:
     // CPACSProfileGeometry
 
-    // generated from /xsd:schema/xsd:complexType[721]
-    /// @brief List of 3D points, kept in three coordinate vecors (x,
-    /// y, z)
-    /// 
-    /// This set of vectors contains an ordered list of points
-    /// for x, y and z coordinates in the form of stringBased Vectors.
-    /// The x, y and z vector elements with the same index specify a 3D
-    /// point.
-    /// 
-    class CPACSPointListXYZVector
+    // generated from /xsd:schema/xsd:complexType[723]
+    class CPACSCurvePointListXYZ
     {
     public:
-        TIGL_EXPORT CPACSPointListXYZVector(CPACSProfileGeometry* parent);
+        TIGL_EXPORT CPACSCurvePointListXYZ(CPACSProfileGeometry* parent);
 
-        TIGL_EXPORT virtual ~CPACSPointListXYZVector();
+        TIGL_EXPORT virtual ~CPACSCurvePointListXYZ();
 
         TIGL_EXPORT CPACSProfileGeometry* GetParent();
 
@@ -68,28 +64,47 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSStringVector& GetZ() const;
         TIGL_EXPORT virtual CCPACSStringVector& GetZ();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSStringVector>& GetKinks() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSStringVector>& GetKinks();
+
+        TIGL_EXPORT virtual const boost::optional<CCPACSCurveParamPointMap>& GetParameterMap() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSCurveParamPointMap>& GetParameterMap();
+
+        TIGL_EXPORT virtual CCPACSStringVector& GetKinks(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveKinks();
+
+        TIGL_EXPORT virtual CCPACSCurveParamPointMap& GetParameterMap(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveParameterMap();
+
     protected:
         CPACSProfileGeometry* m_parent;
 
         /// Vector of x coordinates
-        CCPACSStringVector m_x;
+        CCPACSStringVector                        m_x;
 
         /// Vector of y coordinates
-        CCPACSStringVector m_y;
+        CCPACSStringVector                        m_y;
 
         /// Vector of z coordinates
-        CCPACSStringVector m_z;
+        CCPACSStringVector                        m_z;
+
+        /// Curve parameters at which the curve has a kink. To define a kink at a specific point,
+        /// the parameterMap has to be used that associates a point with a parameter.
+        boost::optional<CCPACSStringVector>       m_kinks;
+
+        /// Map between point index and curve parameter.
+        boost::optional<CCPACSCurveParamPointMap> m_parameterMap;
 
     private:
-        CPACSPointListXYZVector(const CPACSPointListXYZVector&) = delete;
-        CPACSPointListXYZVector& operator=(const CPACSPointListXYZVector&) = delete;
+        CPACSCurvePointListXYZ(const CPACSCurvePointListXYZ&) = delete;
+        CPACSCurvePointListXYZ& operator=(const CPACSCurvePointListXYZ&) = delete;
 
-        CPACSPointListXYZVector(CPACSPointListXYZVector&&) = delete;
-        CPACSPointListXYZVector& operator=(CPACSPointListXYZVector&&) = delete;
+        CPACSCurvePointListXYZ(CPACSCurvePointListXYZ&&) = delete;
+        CPACSCurvePointListXYZ& operator=(CPACSCurvePointListXYZ&&) = delete;
     };
 } // namespace generated
 
-// CPACSPointListXYZVector is customized, use type CCPACSPointListXYZVector directly
+// CPACSCurvePointListXYZ is customized, use type CCPACSCurvePointListXYZ directly
 
 // Aliases in tigl namespace
 using CCPACSProfileGeometry = generated::CPACSProfileGeometry;

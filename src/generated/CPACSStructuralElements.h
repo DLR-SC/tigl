@@ -45,7 +45,7 @@ namespace generated
     // This class is used in:
     // CPACSVehicles
 
-    // generated from /xsd:schema/xsd:complexType[855]
+    // generated from /xsd:schema/xsd:complexType[857]
     /// @brief structuralElementsType
     /// 
     /// structuralElements Type, containing the different structural

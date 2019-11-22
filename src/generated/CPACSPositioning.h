@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSPositionings
 
-    // generated from /xsd:schema/xsd:complexType[736]
+    // generated from /xsd:schema/xsd:complexType[738]
     /// @brief Positioning of the wing section
     /// 
     /// The positionings describe an additional translation of

@@ -39,7 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinition
 
-    // generated from /xsd:schema/xsd:complexType[963]
+    // generated from /xsd:schema/xsd:complexType[965]
     /// @brief wingRibCrossSectionType
     /// 
     /// wingRibCrossSectionType, containing the definition of

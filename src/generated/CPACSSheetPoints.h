@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSSheet3D
 
-    // generated from /xsd:schema/xsd:complexType[812]
+    // generated from /xsd:schema/xsd:complexType[814]
     /// @brief sheetPointsType
     /// 
     /// 

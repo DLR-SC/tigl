@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSWallSegment
 
-    // generated from /xsd:schema/xsd:complexType[1007]
+    // generated from /xsd:schema/xsd:complexType[1009]
     class CPACSBoundingElementUIDs
     {
     public:

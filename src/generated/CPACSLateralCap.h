@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralWallElement
 
-    // generated from /xsd:schema/xsd:complexType[1010]
+    // generated from /xsd:schema/xsd:complexType[1012]
     class CPACSLateralCap
     {
     public:

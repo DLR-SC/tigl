@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSWallPositions
 
-    // generated from /xsd:schema/xsd:complexType[1005]
+    // generated from /xsd:schema/xsd:complexType[1007]
     class CPACSWallPosition : public CTiglOptUIDObject
     {
     public:

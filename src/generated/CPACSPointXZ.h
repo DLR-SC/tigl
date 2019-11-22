@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceStep
 
-    // generated from /xsd:schema/xsd:complexType[732]
+    // generated from /xsd:schema/xsd:complexType[734]
     /// @brief pointXZType
     /// 
     /// Point type, containing an xz data doublet.

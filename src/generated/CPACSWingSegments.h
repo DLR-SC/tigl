@@ -39,7 +39,7 @@ namespace generated
     // CPACSEnginePylon
     // CPACSWing
 
-    // generated from /xsd:schema/xsd:complexType[975]
+    // generated from /xsd:schema/xsd:complexType[977]
     /// @brief Segments of the wing.
     /// 
     /// WingSegments type, containing all the segments of the

@@ -39,7 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSSparCells
 
-    // generated from /xsd:schema/xsd:complexType[822]
+    // generated from /xsd:schema/xsd:complexType[824]
     /// @brief Spar cell of the spar.
     /// 
     /// Within spar cells a special area of the spar is
