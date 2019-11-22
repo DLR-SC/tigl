@@ -19,6 +19,10 @@
 
 
 #include "generated/CPACSControlSurfaceBorderTrailingEdge.h"
+#include <TopoDS_Wire.hxx>
+#include "PNamedShape.h"
+#include "CTiglControlSurfaceBorderCoordinateSystem.h"
+#include "CCPACSWingComponentSegment.h"
 
 namespace tigl
 {
@@ -27,6 +31,14 @@ class CCPACSControlSurfaceBorderTrailingEdge : public generated::CPACSControlSur
 {
 public:
     TIGL_EXPORT CCPACSControlSurfaceBorderTrailingEdge(CCPACSControlSurfaceOuterShapeTrailingEdge* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT TopoDS_Wire GetWire(PNamedShape wingShape, gp_Vec upDir) const;
+
+    TIGL_EXPORT CTiglControlSurfaceBorderCoordinateSystem GetCoordinateSystem(gp_Vec upDir) const;
+
+private:
+
+
 };
 
 } // namespace tigl

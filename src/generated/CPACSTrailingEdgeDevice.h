@@ -19,10 +19,10 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSControlSurfaceOuterShapeTrailingEdge.h>
 #include <CCPACSWingCSStructure.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "CPACSControlSurfacePath.h"
 #include "CPACSControlSurfaceTracks.h"
 #include "CPACSControlSurfaceWingCutOut.h"
@@ -93,8 +93,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetParentUID() const;
         TIGL_EXPORT virtual void SetParentUID(const std::string& value);
 
-        TIGL_EXPORT virtual const CPACSControlSurfaceOuterShapeTrailingEdge& GetOuterShape() const;
-        TIGL_EXPORT virtual CPACSControlSurfaceOuterShapeTrailingEdge& GetOuterShape();
+        TIGL_EXPORT virtual const CCPACSControlSurfaceOuterShapeTrailingEdge& GetOuterShape() const;
+        TIGL_EXPORT virtual CCPACSControlSurfaceOuterShapeTrailingEdge& GetOuterShape();
 
         TIGL_EXPORT virtual const boost::optional<CPACSControlSurfaceWingCutOut>& GetWingCutOut() const;
         TIGL_EXPORT virtual boost::optional<CPACSControlSurfaceWingCutOut>& GetWingCutOut();
@@ -137,7 +137,7 @@ namespace generated
         /// can be created.
         std::string                                    m_parentUID;
 
-        CPACSControlSurfaceOuterShapeTrailingEdge      m_outerShape;
+        CCPACSControlSurfaceOuterShapeTrailingEdge     m_outerShape;
 
         boost::optional<CPACSControlSurfaceWingCutOut> m_wingCutOut;
 

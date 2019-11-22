@@ -297,12 +297,12 @@ namespace generated
         m_parentUID = value;
     }
 
-    const CPACSControlSurfaceOuterShapeTrailingEdge& CPACSTrailingEdgeDevice::GetOuterShape() const
+    const CCPACSControlSurfaceOuterShapeTrailingEdge& CPACSTrailingEdgeDevice::GetOuterShape() const
     {
         return m_outerShape;
     }
 
-    CPACSControlSurfaceOuterShapeTrailingEdge& CPACSTrailingEdgeDevice::GetOuterShape()
+    CCPACSControlSurfaceOuterShapeTrailingEdge& CPACSTrailingEdgeDevice::GetOuterShape()
     {
         return m_outerShape;
     }

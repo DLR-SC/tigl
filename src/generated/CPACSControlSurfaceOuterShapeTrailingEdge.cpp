@@ -30,8 +30,8 @@ namespace generated
 {
     CPACSControlSurfaceOuterShapeTrailingEdge::CPACSControlSurfaceOuterShapeTrailingEdge(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_innerBorder(this, m_uidMgr)
-        , m_outerBorder(this, m_uidMgr)
+        , m_innerBorder(reinterpret_cast<CCPACSControlSurfaceOuterShapeTrailingEdge*>(this), m_uidMgr)
+        , m_outerBorder(reinterpret_cast<CCPACSControlSurfaceOuterShapeTrailingEdge*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -91,7 +91,7 @@ namespace generated
 
         // read element intermediateAirfoils
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/intermediateAirfoils")) {
-            m_intermediateAirfoils = boost::in_place(this, m_uidMgr);
+            m_intermediateAirfoils = boost::in_place(reinterpret_cast<CCPACSControlSurfaceOuterShapeTrailingEdge*>(this), m_uidMgr);
             try {
                 m_intermediateAirfoils->ReadCPACS(tixiHandle, xpath + "/intermediateAirfoils");
             } catch(const std::exception& e) {
@@ -160,7 +160,7 @@ namespace generated
     CPACSControlSurfaceContours& CPACSControlSurfaceOuterShapeTrailingEdge::GetIntermediateAirfoils(CreateIfNotExistsTag)
     {
         if (!m_intermediateAirfoils)
-            m_intermediateAirfoils = boost::in_place(this, m_uidMgr);
+            m_intermediateAirfoils = boost::in_place(reinterpret_cast<CCPACSControlSurfaceOuterShapeTrailingEdge*>(this), m_uidMgr);
         return *m_intermediateAirfoils;
     }
 

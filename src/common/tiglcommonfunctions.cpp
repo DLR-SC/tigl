@@ -318,6 +318,19 @@ Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire &wire, gp_Pnt p, gp_Di
     return normalizedLength;
 }
 
+
+/// Projects the point onto the plane pln
+gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p)
+{
+    gp_Ax1 xAx = pln.XAxis();
+    gp_Ax1 yAx = pln.YAxis();
+
+    double px = (p.XYZ() - xAx.Location().XYZ()) * xAx.Direction().XYZ();
+    double py = (p.XYZ() - yAx.Location().XYZ()) * yAx.Direction().XYZ();
+
+    return gp_Pnt2d(px,py);
+}
+
 gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
 {
     // compute point on face

@@ -127,6 +127,7 @@ CPACSControlSurfaceBorderTrailingEdge     CCPACSControlSurfaceBorderTrailingEdge
 CPACSControlSurfaceSkinCutOutBorder       CCPACSControlSurfaceSkinCutOutBorder
 CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
 CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
+CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
 
 // Pylons
 CPACSEnginePylon                         CCPACSEnginePylon

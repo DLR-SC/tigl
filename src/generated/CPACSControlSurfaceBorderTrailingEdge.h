@@ -33,11 +33,10 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSControlSurfaceOuterShapeTrailingEdge;
 
 namespace generated
 {
-    class CPACSControlSurfaceOuterShapeTrailingEdge;
-
     // This class is used in:
     // CPACSControlSurfaceOuterShapeTrailingEdge
 
@@ -65,13 +64,13 @@ namespace generated
     class CPACSControlSurfaceBorderTrailingEdge
     {
     public:
-        TIGL_EXPORT CPACSControlSurfaceBorderTrailingEdge(CPACSControlSurfaceOuterShapeTrailingEdge* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSControlSurfaceBorderTrailingEdge(CCPACSControlSurfaceOuterShapeTrailingEdge* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSControlSurfaceBorderTrailingEdge();
 
-        TIGL_EXPORT CPACSControlSurfaceOuterShapeTrailingEdge* GetParent();
+        TIGL_EXPORT CCPACSControlSurfaceOuterShapeTrailingEdge* GetParent();
 
-        TIGL_EXPORT const CPACSControlSurfaceOuterShapeTrailingEdge* GetParent() const;
+        TIGL_EXPORT const CCPACSControlSurfaceOuterShapeTrailingEdge* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -113,7 +112,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveAirfoil();
 
     protected:
-        CPACSControlSurfaceOuterShapeTrailingEdge* m_parent;
+        CCPACSControlSurfaceOuterShapeTrailingEdge* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -148,7 +147,4 @@ namespace generated
 } // namespace generated
 
 // CPACSControlSurfaceBorderTrailingEdge is customized, use type CCPACSControlSurfaceBorderTrailingEdge directly
-
-// Aliases in tigl namespace
-using CCPACSControlSurfaceOuterShapeTrailingEdge = generated::CPACSControlSurfaceOuterShapeTrailingEdge;
 } // namespace tigl
