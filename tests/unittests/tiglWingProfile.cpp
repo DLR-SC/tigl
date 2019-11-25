@@ -23,13 +23,12 @@
 
 #include "CCPACSConfigurationManager.h"
 
+#include "CCPACSCurvePointListXYZ.h"
+#include "CCPACSCurveParamPointMap.h"
+
 TEST(WingProfileBugs, getPoint1)
 {
-    TixiDocumentHandle tixiHandle;
-    ASSERT_EQ(SUCCESS, tixiOpenDocument("TestData/WingProfileBug1.xml", &tixiHandle));
-
-    TiglCPACSConfigurationHandle tiglHandle;
-    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+    TiglHandleWrapper tiglHandle("TestData/WingProfileBug1.xml", "");
 
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
@@ -43,11 +42,7 @@ TEST(WingProfileBugs, getPoint1)
 
 TEST(WingProfileBugs, Bug2)
 {
-    TixiDocumentHandle tixiHandle;
-    ASSERT_EQ(SUCCESS, tixiOpenDocument("TestData/WingProfileBug1.xml", &tixiHandle));
-
-    TiglCPACSConfigurationHandle tiglHandle;
-    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+    TiglHandleWrapper tiglHandle("TestData/WingProfileBug1.xml", "");
 
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
@@ -57,4 +52,31 @@ TEST(WingProfileBugs, Bug2)
     ASSERT_NEAR(0.97994, p.X(), 1e-5);
     ASSERT_LE(p.Z(), 1.0);
     ASSERT_NEAR(0.0, p.Y(), 1e-7);
+}
+
+TEST(WingProfileParams, GetKinksVector)
+{
+    TixiHandleWrapper tixiHandle("TestData/wingprofilewithparams.xml");
+    tigl::CCPACSCurvePointListXYZ curve(nullptr);
+
+    EXPECT_TRUE(curve.GetKinksAsVector().empty());
+
+    ASSERT_NO_THROW(curve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/wingAirfoils/wingAirfoil[1]/pointList"));
+
+    EXPECT_FALSE(curve.GetKinksAsVector().empty());
+    EXPECT_TRUE(ArraysMatch({-0.2}, curve.GetKinksAsVector()));
+}
+
+TEST(WingProfileParams, GetParamMap)
+{
+    TixiHandleWrapper tixiHandle("TestData/wingprofilewithparams.xml");
+    tigl::CCPACSCurvePointListXYZ curve(nullptr);
+
+    ASSERT_FALSE (curve.GetParameterMap().is_initialized());
+    ASSERT_NO_THROW(curve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/wingAirfoils/wingAirfoil[1]/pointList"));
+
+    ASSERT_TRUE(curve.GetParameterMap().is_initialized());
+
+    EXPECT_TRUE(ArraysMatch({30}, curve.GetParameterMap()->GetPointIndexAsVector()));
+    EXPECT_TRUE(ArraysMatch({-0.2}, curve.GetParameterMap()->GetParamAsVector()));
 }

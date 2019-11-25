@@ -14,7 +14,7 @@ void CCPACSCurvePointListXYZ::ReadCPACS(const TixiDocumentHandle &tixiHandle, co
 {
     generated::CPACSCurvePointListXYZ::ReadCPACS(tixiHandle, xpath);
 
-    //m_kinksVec.clear();
+    m_kinksVec.clear();
 
     // create cached representation from CPACS fields
     const std::vector<double>& xs = m_x.AsVector();
