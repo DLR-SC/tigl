@@ -1,0 +1,735 @@
+<?xml version="1.0"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cpacs_schema.xsd"><header>
+		<name>iLoads-F6-200</name>
+		<description>This is a DLR-F6 WINGS ONLY configuration</description>
+		<creator>ea6m (DLR)</creator>
+		<timestamp>2015-02-13T16:21:35</timestamp>
+		<version>2</version>
+		<cpacsVersion>3.0</cpacsVersion>
+		<updates>
+			<update>
+				<modification>Cleaned CAD data so that TEs are sharp</modification>
+				<creator>Soner</creator>
+				<timestamp>2018-06-07T14:00:00</timestamp>
+				<version>ver2</version>
+				<cpacsVersion>3.0</cpacsVersion>
+			</update>
+			<update>
+				<modification>Converted to cpacs 3.0 using cpacs2to3</modification>
+				<creator>cpacs2to3</creator>
+				<timestamp>2018-05-17T15:55:53</timestamp>
+				<version>ver1</version>
+				<cpacsVersion>3.0</cpacsVersion>
+			</update>
+                        <update>
+                                <modification>Changed reference values for consistency with original DLR-F6-200</modification>
+                                <creator>Carsten Liersch, DLR-AS-TFZ</creator>
+                                <timestamp>2019-08-08T13:50:00</timestamp>
+                                <version>ver3</version>
+                                <cpacsVersion>3.0</cpacsVersion>
+                        </update>
+		</updates>
+	</header><vehicles><aircraft><model uID="iLoads-F6-200"><name>iLoads-F6-200</name><description>This is a DLR-F6 configuration, scaled to the size of a
+					DLR D150 aircraft for project iLoads
+				</description><wings>
+					<wing uID="Wing" symmetry="x-z-plane">
+						<name>Wing</name>
+						<description>This wing has been generated using CATIA2CPACS.
+						</description>
+						<transformation uID="Wing_transformation1">
+							<scaling uID="Wing_transformation1_scaling1">
+								<x>1</x>
+								<y>1</y>
+								<z>1</z>
+							</scaling>
+							<rotation uID="Wing_transformation1_rotation1">
+								<x>0</x>
+								<y>0</y>
+								<z>0</z>
+							</rotation>
+							<translation refType="absLocal" uID="Wing_transformation1_translation1">
+								<x>0</x>
+								<y>0</y>
+								<z>0</z>
+							</translation>
+						</transformation>
+						<sections>
+							<section uID="iLoads-F6-200_Wing_Sec1">
+								<name>iLoads-F6-200 - Wing Section 1</name>
+								<description>iLoads-F6-200 - Wing Section 1</description>
+								<transformation uID="iLoads-F6-200_Wing_Sec1_transformation1">
+									<scaling uID="iLoads-F6-200_Wing_Sec1_transformation1_scaling1">
+										<x>1</x>
+										<y>1</y>
+										<z>1</z>
+									</scaling>
+									<rotation uID="iLoads-F6-200_Wing_Sec1_transformation1_rotation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</rotation>
+									<translation refType="absLocal" uID="iLoads-F6-200_Wing_Sec1_transformation1_translation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="iLoads-F6-200_Wing_Sec1_El1">
+										<name>iLoads-F6-200 - Wing Section 1 Main Element</name>
+										<description>iLoads-F6-200 - Wing Section 1 Main Element
+										</description>
+										<airfoilUID>iLoads-F6-200_Wing_Sec1_El1_Pro</airfoilUID>
+										<transformation uID="iLoads-F6-200_Wing_Sec1_El1_transformation1">
+											<scaling uID="iLoads-F6-200_Wing_Sec1_El1_transformation1_scaling1">
+												<x>5.9060014577026</x>
+												<y>5.9060014577026</y>
+												<z>5.9060014577026</z>
+											</scaling>
+											<rotation uID="iLoads-F6-200_Wing_Sec1_El1_transformation1_rotation1">
+												<x>0</x>
+												<y>5.6545091919043</y>
+												<z>0</z>
+											</rotation>
+											<translation refType="absLocal" uID="iLoads-F6-200_Wing_Sec1_El1_transformation1_translation1">
+												<x>0</x>
+												<y>0</y>
+												<z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+							<section uID="iLoads-F6-200_Wing_Sec2">
+								<name>iLoads-F6-200 - Wing Section 2</name>
+								<description>iLoads-F6-200 - Wing Section 2</description>
+								<transformation uID="iLoads-F6-200_Wing_Sec2_transformation1">
+									<scaling uID="iLoads-F6-200_Wing_Sec2_transformation1_scaling1">
+										<x>1</x>
+										<y>1</y>
+										<z>1</z>
+									</scaling>
+									<rotation uID="iLoads-F6-200_Wing_Sec2_transformation1_rotation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</rotation>
+									<translation refType="absLocal" uID="iLoads-F6-200_Wing_Sec2_transformation1_translation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="iLoads-F6-200_Wing_Sec2_El1">
+										<name>iLoads-F6-200 - Wing Section 2 Main Element</name>
+										<description>iLoads-F6-200 - Wing Section 2 Main Element
+										</description>
+										<airfoilUID>iLoads-F6-200_Wing_Sec2_El1_Pro</airfoilUID>
+										<transformation uID="iLoads-F6-200_Wing_Sec2_El1_transformation1">
+											<scaling uID="iLoads-F6-200_Wing_Sec2_El1_transformation1_scaling1">
+												<x>5.87387842322227</x>
+												<y>5.87387842322227</y>
+												<z>5.87387842322227</z>
+											</scaling>
+											<rotation uID="iLoads-F6-200_Wing_Sec2_El1_transformation1_rotation1">
+												<x>0</x>
+												<y>5.46074321243695</y>
+												<z>0</z>
+											</rotation>
+											<translation refType="absLocal" uID="iLoads-F6-200_Wing_Sec2_El1_transformation1_translation1">
+												<x>0</x>
+												<y>0</y>
+												<z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+							<section uID="iLoads-F6-200_Wing_Sec3">
+								<name>iLoads-F6-200 - Wing Section 3</name>
+								<description>iLoads-F6-200 - Wing Section 3</description>
+								<transformation uID="iLoads-F6-200_Wing_Sec3_transformation1">
+									<scaling uID="iLoads-F6-200_Wing_Sec3_transformation1_scaling1">
+										<x>1</x>
+										<y>1</y>
+										<z>1</z>
+									</scaling>
+									<rotation uID="iLoads-F6-200_Wing_Sec3_transformation1_rotation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</rotation>
+									<translation refType="absLocal" uID="iLoads-F6-200_Wing_Sec3_transformation1_translation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="iLoads-F6-200_Wing_Sec3_El1">
+										<name>iLoads-F6-200 - Wing Section 3 Main Element</name>
+										<description>iLoads-F6-200 - Wing Section 3 Main Element
+										</description>
+										<airfoilUID>iLoads-F6-200_Wing_Sec3_El1_Pro</airfoilUID>
+										<transformation uID="iLoads-F6-200_Wing_Sec3_El1_transformation1">
+											<scaling uID="iLoads-F6-200_Wing_Sec3_El1_transformation1_scaling1">
+												<x>3.46382641138201</x>
+												<y>3.46382641138201</y>
+												<z>3.46382641138201</z>
+											</scaling>
+											<rotation uID="iLoads-F6-200_Wing_Sec3_El1_transformation1_rotation1">
+												<x>0</x>
+												<y>1.61281765431777</y>
+												<z>0</z>
+											</rotation>
+											<translation refType="absLocal" uID="iLoads-F6-200_Wing_Sec3_El1_transformation1_translation1">
+												<x>0</x>
+												<y>0</y>
+												<z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+							<section uID="iLoads-F6-200_Wing_Sec4">
+								<name>iLoads-F6-200 - Wing Section 4</name>
+								<description>iLoads-F6-200 - Wing Section 4</description>
+								<transformation uID="iLoads-F6-200_Wing_Sec4_transformation1">
+									<scaling uID="iLoads-F6-200_Wing_Sec4_transformation1_scaling1">
+										<x>1</x>
+										<y>1</y>
+										<z>1</z>
+									</scaling>
+									<rotation uID="iLoads-F6-200_Wing_Sec4_transformation1_rotation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</rotation>
+									<translation refType="absLocal" uID="iLoads-F6-200_Wing_Sec4_transformation1_translation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="iLoads-F6-200_Wing_Sec4_El1">
+										<name>iLoads-F6-200 - Wing Section 4 Main Element</name>
+										<description>iLoads-F6-200 - Wing Section 4 Main Element
+										</description>
+										<airfoilUID>iLoads-F6-200_Wing_Sec4_El1_Pro</airfoilUID>
+										<transformation uID="iLoads-F6-200_Wing_Sec4_El1_transformation1">
+											<scaling uID="iLoads-F6-200_Wing_Sec4_El1_transformation1_scaling1">
+												<x>1.76644178283329</x>
+												<y>1.76644178283329</y>
+												<z>1.76644178283329</z>
+											</scaling>
+											<rotation uID="iLoads-F6-200_Wing_Sec4_El1_transformation1_rotation1">
+												<x>0</x>
+												<y>-.408579546803244</y>
+												<z>0</z>
+											</rotation>
+											<translation refType="absLocal" uID="iLoads-F6-200_Wing_Sec4_El1_transformation1_translation1">
+												<x>0</x>
+												<y>0</y>
+												<z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+						</sections>
+						<positionings>
+							<positioning uID="iLoads-F6-200_Wing_Sec1_Positioning">
+								<name>iLoads-F6-200 - Wing Section 1 Positioning</name>
+								<description>iLoads-F6-200 - Wing Section 1 Positioning
+								</description>
+								<length>13.102485859925250805267416</length>
+								<sweepAngle>90</sweepAngle>
+								<dihedralAngle>-90.0</dihedralAngle>
+								<toSectionUID>iLoads-F6-200_Wing_Sec1</toSectionUID>
+							</positioning>
+							<positioning uID="iLoads-F6-200_Wing_Sec2_Positioning">
+								<name>iLoads-F6-200 - Wing Section 2 Positioning</name>
+								<description>iLoads-F6-200 - Wing Section 2 Positioning
+								</description>
+								<length>2.13686549809801</length>
+								<sweepAngle>.805670807767656</sweepAngle>
+								<dihedralAngle>.798946464847064</dihedralAngle>
+								<fromSectionUID>iLoads-F6-200_Wing_Sec1</fromSectionUID>
+								<toSectionUID>iLoads-F6-200_Wing_Sec2</toSectionUID>
+							</positioning>
+							<positioning uID="iLoads-F6-200_Wing_Sec3_Positioning">
+								<name>iLoads-F6-200 - Wing Section 3 Positioning</name>
+								<description>iLoads-F6-200 - Wing Section 3 Positioning
+								</description>
+								<length>5.23673164609985</length>
+								<sweepAngle>27.0970742469231</sweepAngle>
+								<dihedralAngle>4.40124848414128</dihedralAngle>
+								<fromSectionUID>iLoads-F6-200_Wing_Sec2</fromSectionUID>
+								<toSectionUID>iLoads-F6-200_Wing_Sec3</toSectionUID>
+							</positioning>
+							<positioning uID="iLoads-F6-200_Wing_Sec4_Positioning">
+								<name>iLoads-F6-200 - Wing Section 4 Positioning</name>
+								<description>iLoads-F6-200 - Wing Section 4 Positioning
+								</description>
+								<length>11.3897265283288</length>
+								<sweepAngle>27.0656579840979</sweepAngle>
+								<dihedralAngle>5.23437717094096</dihedralAngle>
+								<fromSectionUID>iLoads-F6-200_Wing_Sec3</fromSectionUID>
+								<toSectionUID>iLoads-F6-200_Wing_Sec4</toSectionUID>
+							</positioning>
+						</positionings>
+						<segments>
+							<segment uID="iLoads-F6-200_Wing_Seg_1_2">
+								<name>Segment from iLoads-F6-200 - Wing Section 1 Main Element
+									to iLoads-F6-200 - Wing Section 2 Main Element
+								</name>
+								<description>Segment from iLoads-F6-200 - Wing Section 1 Main
+									Element to iLoads-F6-200 - Wing Section 2 Main Element
+								</description>
+								<fromElementUID>iLoads-F6-200_Wing_Sec1_El1</fromElementUID>
+								<toElementUID>iLoads-F6-200_Wing_Sec2_El1</toElementUID>
+							</segment>
+							<segment uID="iLoads-F6-200_Wing_Seg_2_3">
+								<name>Segment from iLoads-F6-200 - Wing Section 2 Main Element
+									to iLoads-F6-200 - Wing Section 3 Main Element
+								</name>
+								<description>Segment from iLoads-F6-200 - Wing Section 2 Main
+									Element to iLoads-F6-200 - Wing Section 3 Main Element
+								</description>
+								<fromElementUID>iLoads-F6-200_Wing_Sec2_El1</fromElementUID>
+								<toElementUID>iLoads-F6-200_Wing_Sec3_El1</toElementUID>
+							</segment>
+							<segment uID="iLoads-F6-200_Wing_Seg_3_4">
+								<name>Segment from iLoads-F6-200 - Wing Section 3 Main Element
+									to iLoads-F6-200 - Wing Section 4 Main Element
+								</name>
+								<description>Segment from iLoads-F6-200 - Wing Section 3 Main
+									Element to iLoads-F6-200 - Wing Section 4 Main Element
+								</description>
+								<fromElementUID>iLoads-F6-200_Wing_Sec3_El1</fromElementUID>
+								<toElementUID>iLoads-F6-200_Wing_Sec4_El1</toElementUID>
+							</segment>
+						</segments>
+					</wing>
+					<wing uID="HTP" symmetry="x-z-plane">
+						<name>HTP</name>
+						<description>This wing has been generated using CATIA2CPACS.
+						</description>
+						<transformation uID="HTP_transformation1">
+							<scaling uID="HTP_transformation1_scaling1">
+								<x>1</x>
+								<y>1</y>
+								<z>1</z>
+							</scaling>
+							<rotation uID="HTP_transformation1_rotation1">
+								<x>0</x>
+								<y>0</y>
+								<z>0</z>
+							</rotation>
+							<translation refType="absLocal" uID="HTP_transformation1_translation1">
+								<x>0</x>
+								<y>0</y>
+								<z>0</z>
+							</translation>
+						</transformation>
+						<sections>
+							<section uID="iLoads-F6-200_HTP_Sec1">
+								<name>iLoads-F6-200 - HTP Section 1</name>
+								<description>iLoads-F6-200 - HTP Section 1</description>
+								<transformation uID="iLoads-F6-200_HTP_Sec1_transformation1">
+									<scaling uID="iLoads-F6-200_HTP_Sec1_transformation1_scaling1">
+										<x>1</x>
+										<y>1</y>
+										<z>1</z>
+									</scaling>
+									<rotation uID="iLoads-F6-200_HTP_Sec1_transformation1_rotation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</rotation>
+									<translation refType="absLocal" uID="iLoads-F6-200_HTP_Sec1_transformation1_translation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="iLoads-F6-200_HTP_Sec1_El1">
+										<name>iLoads-F6-200 - HTP Section 1 Main Element</name>
+										<description>iLoads-F6-200 - HTP Section 1 Main Element
+										</description>
+										<airfoilUID>iLoads-F6-200_HTP_Sec1_El1_Pro</airfoilUID>
+										<transformation uID="iLoads-F6-200_HTP_Sec1_El1_transformation1">
+											<scaling uID="iLoads-F6-200_HTP_Sec1_El1_transformation1_scaling1">
+												<x>3.86927949402851</x>
+												<y>3.86927949402851</y>
+												<z>3.86927949402851</z>
+											</scaling>
+											<rotation uID="iLoads-F6-200_HTP_Sec1_El1_transformation1_rotation1">
+												<x>0</x>
+												<y>-1.99557818049062</y>
+												<z>0</z>
+											</rotation>
+											<translation refType="absLocal" uID="iLoads-F6-200_HTP_Sec1_El1_transformation1_translation1">
+												<x>0</x>
+												<y>0</y>
+												<z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+							<section uID="iLoads-F6-200_HTP_Sec2">
+								<name>iLoads-F6-200 - HTP Section 2</name>
+								<description>iLoads-F6-200 - HTP Section 2</description>
+								<transformation uID="iLoads-F6-200_HTP_Sec2_transformation1">
+									<scaling uID="iLoads-F6-200_HTP_Sec2_transformation1_scaling1">
+										<x>1</x>
+										<y>1</y>
+										<z>1</z>
+									</scaling>
+									<rotation uID="iLoads-F6-200_HTP_Sec2_transformation1_rotation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</rotation>
+									<translation refType="absLocal" uID="iLoads-F6-200_HTP_Sec2_transformation1_translation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="iLoads-F6-200_HTP_Sec2_El1">
+										<name>iLoads-F6-200 - HTP Section 2 Main Element</name>
+										<description>iLoads-F6-200 - HTP Section 2 Main Element
+										</description>
+										<airfoilUID>iLoads-F6-200_HTP_Sec2_El1_Pro</airfoilUID>
+										<transformation uID="iLoads-F6-200_HTP_Sec2_El1_transformation1">
+											<scaling uID="iLoads-F6-200_HTP_Sec2_El1_transformation1_scaling1">
+												<x>1.3078093950124</x>
+												<y>1.3078093950124</y>
+												<z>1.3078093950124</z>
+											</scaling>
+											<rotation uID="iLoads-F6-200_HTP_Sec2_El1_transformation1_rotation1">
+												<x>0</x>
+												<y>.99948309201852</y>
+												<z>0</z>
+											</rotation>
+											<translation refType="absLocal" uID="iLoads-F6-200_HTP_Sec2_El1_transformation1_translation1">
+												<x>0</x>
+												<y>0</y>
+												<z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+						</sections>
+						<positionings>
+							<positioning uID="iLoads-F6-200_HTP_Sec1_Positioning">
+								<name>iLoads-F6-200 - HTP Section 1 Positioning</name>
+								<description>iLoads-F6-200 - HTP Section 1 Positioning
+								</description>
+								<length>31.7830835425698</length>
+								<sweepAngle>87.8750580124822</sweepAngle>
+								<dihedralAngle>90.0</dihedralAngle>
+								<toSectionUID>iLoads-F6-200_HTP_Sec1</toSectionUID>
+							</positioning>
+							<positioning uID="iLoads-F6-200_HTP_Sec2_Positioning">
+								<name>iLoads-F6-200 - HTP Section 2 Positioning</name>
+								<description>iLoads-F6-200 - HTP Section 2 Positioning
+								</description>
+								<length>7.41268713631987</length>
+								<sweepAngle>31.7878155660989</sweepAngle>
+								<dihedralAngle>5.70828768088922</dihedralAngle>
+								<fromSectionUID>iLoads-F6-200_HTP_Sec1</fromSectionUID>
+								<toSectionUID>iLoads-F6-200_HTP_Sec2</toSectionUID>
+							</positioning>
+						</positionings>
+						<segments>
+							<segment uID="iLoads-F6-200_HTP_Seg_1_2">
+								<name>Segment from iLoads-F6-200 - HTP Section 1 Main Element to
+									iLoads-F6-200 - HTP Section 2 Main Element
+								</name>
+								<description>Segment from iLoads-F6-200 - HTP Section 1 Main
+									Element to iLoads-F6-200 - HTP Section 2 Main Element
+								</description>
+								<fromElementUID>iLoads-F6-200_HTP_Sec1_El1</fromElementUID>
+								<toElementUID>iLoads-F6-200_HTP_Sec2_El1</toElementUID>
+							</segment>
+						</segments>
+					</wing>
+					<wing uID="VTP">
+						<name>VTP</name>
+						<description>This wing has been generated using CATIA2CPACS.
+						</description>
+						<transformation uID="VTP_transformation1">
+							<scaling uID="VTP_transformation1_scaling1">
+								<x>1</x>
+								<y>1</y>
+								<z>1</z>
+							</scaling>
+							<rotation uID="VTP_transformation1_rotation1">
+								<x>90.0</x>
+								<y>0</y>
+								<z>0</z>
+							</rotation>
+							<translation refType="absLocal" uID="VTP_transformation1_translation1">
+								<x>0</x>
+								<y>0</y>
+								<z>0</z>
+							</translation>
+						</transformation>
+						<sections>
+							<section uID="iLoads-F6-200_VTP_Sec1">
+								<name>iLoads-F6-200 - VTP Section 1</name>
+								<description>iLoads-F6-200 - VTP Section 1</description>
+								<transformation uID="iLoads-F6-200_VTP_Sec1_transformation1">
+									<scaling uID="iLoads-F6-200_VTP_Sec1_transformation1_scaling1">
+										<x>1</x>
+										<y>1</y>
+										<z>1</z>
+									</scaling>
+									<rotation uID="iLoads-F6-200_VTP_Sec1_transformation1_rotation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</rotation>
+									<translation refType="absLocal" uID="iLoads-F6-200_VTP_Sec1_transformation1_translation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="iLoads-F6-200_VTP_Sec1_El1">
+										<name>iLoads-F6-200 - VTP Section 1 Main Element</name>
+										<description>iLoads-F6-200 - VTP Section 1 Main Element
+										</description>
+										<airfoilUID>iLoads-F6-200_VTP_Sec1_El1_Pro</airfoilUID>
+										<transformation uID="iLoads-F6-200_VTP_Sec1_El1_transformation1">
+											<scaling uID="iLoads-F6-200_VTP_Sec1_El1_transformation1_scaling1">
+												<x>5.47671656219005</x>
+												<y>5.47671656219005</y>
+												<z>5.47671656219005</z>
+											</scaling>
+											<rotation uID="iLoads-F6-200_VTP_Sec1_El1_transformation1_rotation1">
+												<x>0</x>
+												<y>2.20669285036403E-07</y>
+												<z>0</z>
+											</rotation>
+											<translation refType="absLocal" uID="iLoads-F6-200_VTP_Sec1_El1_transformation1_translation1">
+												<x>0</x>
+												<y>0</y>
+												<z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+							<section uID="iLoads-F6-200_VTP_Sec2">
+								<name>iLoads-F6-200 - VTP Section 2</name>
+								<description>iLoads-F6-200 - VTP Section 2</description>
+								<transformation uID="iLoads-F6-200_VTP_Sec2_transformation1">
+									<scaling uID="iLoads-F6-200_VTP_Sec2_transformation1_scaling1">
+										<x>1</x>
+										<y>1</y>
+										<z>1</z>
+									</scaling>
+									<rotation uID="iLoads-F6-200_VTP_Sec2_transformation1_rotation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</rotation>
+									<translation refType="absLocal" uID="iLoads-F6-200_VTP_Sec2_transformation1_translation1">
+										<x>0</x>
+										<y>0</y>
+										<z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="iLoads-F6-200_VTP_Sec2_El1">
+										<name>iLoads-F6-200 - VTP Section 2 Main Element</name>
+										<description>iLoads-F6-200 - VTP Section 2 Main Element
+										</description>
+										<airfoilUID>iLoads-F6-200_VTP_Sec1_El1_Pro</airfoilUID>
+										<transformation uID="iLoads-F6-200_VTP_Sec2_El1_transformation1">
+											<scaling uID="iLoads-F6-200_VTP_Sec2_El1_transformation1_scaling1">
+												<x>1.93081751789389</x>
+												<y>1.93081751789389</y>
+												<z>1.93081751789389</z>
+											</scaling>
+											<rotation uID="iLoads-F6-200_VTP_Sec2_El1_transformation1_rotation1">
+												<x>0</x>
+												<y>0</y>
+												<z>0</z>
+											</rotation>
+											<translation refType="absLocal" uID="iLoads-F6-200_VTP_Sec2_El1_transformation1_translation1">
+												<x>0</x>
+												<y>0</y>
+												<z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+						</sections>
+						<positionings>
+							<positioning uID="iLoads-F6-200_VTP_Sec1_Positioning">
+								<name>iLoads-F6-200 - VTP Section 1 Positioning</name>
+								<description>iLoads-F6-200 - VTP Section 1 Positioning
+								</description>
+								<length>30.3573044333759</length>
+								<sweepAngle>85.6401258986074</sweepAngle>
+								<dihedralAngle>5.23681015428343E-07</dihedralAngle>
+								<toSectionUID>iLoads-F6-200_VTP_Sec1</toSectionUID>
+							</positioning>
+							<positioning uID="iLoads-F6-200_VTP_Sec2_Positioning">
+								<name>iLoads-F6-200 - VTP Section 2 Positioning</name>
+								<description>iLoads-F6-200 - VTP Section 2 Positioning
+								</description>
+								<length>7.60476726780825</length>
+								<sweepAngle>42.9041368516657</sweepAngle>
+								<dihedralAngle>-2.16956323233894E-07</dihedralAngle>
+								<fromSectionUID>iLoads-F6-200_VTP_Sec1</fromSectionUID>
+								<toSectionUID>iLoads-F6-200_VTP_Sec2</toSectionUID>
+							</positioning>
+						</positionings>
+						<segments>
+							<segment uID="iLoads-F6-200_VTP_Seg_1_2">
+								<name>Segment from iLoads-F6-200 - VTP Section 1 Main Element to
+									iLoads-F6-200 - VTP Section 2 Main Element
+								</name>
+								<description>Segment from iLoads-F6-200 - VTP Section 1 Main
+									Element to iLoads-F6-200 - VTP Section 2 Main Element
+								</description>
+								<fromElementUID>iLoads-F6-200_VTP_Sec1_El1</fromElementUID>
+								<toElementUID>iLoads-F6-200_VTP_Sec2_El1</toElementUID>
+							</segment>
+						</segments>
+					</wing>
+				</wings></model></aircraft><profiles><wingAirfoils>
+				<wingAirfoil uID="iLoads-F6-200_Wing_Sec1_El1_Pro">
+					<name>Profile for iLoads-F6-200 - Wing Section 1 Main Element
+					</name>
+					<description>Profile for iLoads-F6-200 - Wing Section 1 Main
+						Element
+					</description>
+					<pointList>
+						<x mapType="vector">1.0;.989868889855847;.979524490033119;.969180582985652;.958838964210093;.948500097427968;.938164464699623;.92783285771109;.917506679542625;.907187447284566;.896876127171421;.88657345420848;.876279914400725;.865995818127117;.85572139005166;.845456887262149;.835202764064484;.824959058562176;.814725861804737;.804504008585777;.794295073679131;.784101710770519;.773927274595908;.763774320684268;.753643687573057;.743534266460119;.733443103260967;.723365549255454;.713295657732966;.703227195250501;.693157017936113;.683081575665597;.672998113956608;.662905150833534;.652802102041968;.64268897553324;.632566198618838;.622434191619602;.612293127312948;.602142634995624;.59198054799644;.581805700596858;.571617826681455;.561416187485269;.551199655000032;.540967259132332;.530718478470036;.52045349432149;.510173243152105;.499879691049392;.489575291281456;.479262965655969;.468944708535057;.458622442036056;.448297232189631;.437969635737438;.427639749928855;.417307449711769;.406972691062;.396635476013211;.386296342570485;.375955922025465;.365614290613088;.355271306239283;.344927140324857;.334582439782424;.324237953171959;.313893955268179;.303550706099212;.293208115972267;.282866801687461;.272527243778091;.26219019442622;.251856418696067;.241526790872006;.231201900276758;.22088233166223;.210568148512418;.200258422786572;.189953179150452;.179653951698858;.169363097644784;.159083757938902;.148819720564931;.138574686697009;.128352728464543;.118157743860549;.1079955642866;9.78729039566287E-02;8.77991473557305E-02;7.77872893264681E-02;6.78558483414237E-02;5.80310716834519E-02;4.83505771326085E-02;3.88726845717945E-02;2.96946896384725E-02;2.09734962948212E-02;1.29846138559524E-02;.006226063408398;1.54256618718048E-03;0;1.29955085923132E-03;5.13700107551035E-03;1.13294384783969E-02;1.90383578793048E-02;2.76866354554824E-02;.036910531876683;4.64878727324716E-02;5.62880275465941E-02;6.62319456002313E-02;7.62729328210021E-02;8.63818315014731E-02;9.65399595619726E-02;.106735195505171;.116959512591226;.127207685812295;.137470887618111;.147745253158025;.158032809211323;.168331606373171;.178637635977993;.188951646520598;.199271158041431;.209595415515835;.219924110594831;.230257040065144;.240592586847475;.250930586548093;.261270909572789;.27161254142808;.281955298703197;.292299158891843;.302643853833454;.312988984560112;.323334350908139;.333679919840138;.344025540411927;.354371055144334;.364716329401354;.375061255658239;.385405645518774;.395749506873954;.406092620093941;.416434935672364;.426776379859493;.437116882363449;.447456377714358;.457794803632058;.468132092167503;.478468199845013;.488803057947506;.499136602228482;.509468753276416;.519799457670679;.530128637004665;.540456191084473;.550782030902822;.561106096359874;.571428208154569;.581748283350395;.592066204990923;.602381793280329;.612694918759853;.623005426165568;.633313160171144;.643617897308515;.653919334056306;.664217202789687;.674511274538967;.684801373992858;.695087397117206;.705369331324759;.715647277967247;.725921475734215;.736192343627236;.746460032721196;.756724804829556;.766987245038231;.777247370025537;.787504784019703;.797758536937103;.808007383832634;.818249672586929;.828483615110126;.838707114891575;.848918013489413;.859114102400442;.869293558934782;.879456518186355;.889599706276264;.899719451775916;.909813708262441;.919882006335281;.929925379956318;.939946523197334;.949949333472445;.959938403629007;.969917840638293;.979888361877987;.989847858069845;1.0
+						</x>
+						<y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+						</y>
+						<z mapType="vector">0;-1.77644481378746E-03;-1.71937276020966E-03;-1.84485465666518E-03;-2.09720053479367E-03;-2.44561989004105E-03;-2.87878238279403E-03;-3.39935805285141E-03;-4.01836693226282E-03;-4.74379498322587E-03;-5.57430022706331E-03;-6.5059629047884E-03;-7.53367541653429E-03;-8.65197723598944E-03;-9.85589833357245E-03;-1.11418011954185E-02;-1.25078727067491E-02;-1.39500905425492E-02;-1.54650249795431E-02;-1.70545224306561E-02;-1.87253266020068E-02;-2.04883856567625E-02;-2.23573648180139E-02;-2.43399871358543E-02;-2.64335879365403E-02;-.028627383543612;-3.09037542792476E-02;-3.32396908205562E-02;-3.56084752680673E-02;-3.79833126609905E-02;-4.03509104081254E-02;-4.26959395266366E-02;-4.50063414865676E-02;-4.72747914850739E-02;-4.94977917310328E-02;-5.16745955255548E-02;-5.38060292370376E-02;-5.58931537272145E-02;-5.79358340091976E-02;-5.99311238240442E-02;-6.18664815689814E-02;-6.37333479724858E-02;-6.55281368451392E-02;-6.72427348938031E-02;-6.88661688308355E-02;-7.03863443470128E-02;-7.17917491973304E-02;-7.30733974157572E-02;-7.42268240370553E-02;-7.52541705558611E-02;-7.61664404056036E-02;-7.69845138844896E-02;-7.77243250965591E-02;-7.84053982874261E-02;-7.90411605858147E-02;-7.96366019956819E-02;-8.01905535226124E-02;-8.06980062585955E-02;-8.11522571867317E-02;-8.15470093056454E-02;-8.18874941049474E-02;-8.21869355918322E-02;-8.24400531928823E-02;-8.26300332514399E-02;-8.27382055185049E-02;-8.27536277056228E-02;-8.26825334990007E-02;-8.25542453255488E-02;-8.23849173854096E-02;-8.21709225328734E-02;-8.19048739599884E-02;-8.15774586325448E-02;-8.11793891112985E-02;-.0807031286008;-8.01445282518414E-02;-7.95042537220997E-02;-.078783764823238;-7.79893379424511E-02;-7.71393919360924E-02;-7.62354938556997E-02;-7.52662478279662E-02;-7.42122948203048E-02;-7.30511931447481E-02;-7.17621692566872E-02;-.070329835574465;-.068742449041873;-6.69883346806288E-02;-6.50541972933757E-02;-6.29229081289037E-02;-6.05716306321083E-02;-5.79696799390829E-02;-5.50765590200351E-02;-5.18400798942179E-02;-4.81952873670434E-02;-4.40537460286129E-02;-3.92864875759822E-02;-3.37310961421077E-02;-.027172600722265;-1.93640982566531E-02;-1.01794738755039E-02;0;1.02421040412559E-02;1.98066377782587E-02;2.80662351855562E-02;3.49467716638061E-02;4.06119245860024E-02;4.52886482974686E-02;4.91953791505358E-02;5.25065219240982E-02;5.53588814525827E-02;5.78491717959443E-02;6.00482750286852E-02;6.20080138502404E-02;6.37647215021114E-02;6.53437064363259E-02;6.67594930243713E-02;.068062596199203;6.92745226863993E-02;7.03687915649832E-02;7.13515429714275E-02;7.22554667508541E-02;.073063203716254;7.37977476289241E-02;7.44620915576234E-02;7.50517282247981E-02;7.55657395007619E-02;7.60222534562064E-02;7.64188248283485E-02;7.67499607698261E-02;7.70374382352933E-02;7.72809646621427E-02;7.74724185045755E-02;7.76102426419153E-02;7.77120379539484E-02;7.77857052386193E-02;7.78201829471893E-02;7.78120202480401E-02;7.77631660917139E-02;7.76774420058886E-02;7.75569955377404E-02;7.73998406168842E-02;.077206357767217;7.69780800325319E-02;7.67162562447514E-02;7.64220096372362E-02;7.60963383300627E-02;7.57401166946101E-02;7.53540973453931E-02;7.49389140508176E-02;7.44950821389802E-02;7.40230010116537E-02;7.35229553331513E-02;7.29951178207745E-02;7.24395490595491E-02;7.18562021327618E-02;.071244924971881;7.06054609702801E-02;6.99374504309693E-02;6.92404427120123E-02;6.85138820870955E-02;6.77571202022896E-02;6.69694229887516E-02;6.61499643720255E-02;.065297949917424;.064413382392732;6.34944585280793E-02;6.25392522201479E-02;.061546322145246;6.05147731557484E-02;.059444324731034;5.83353883716113E-02;.057189155092917;5.60076941791423E-02;5.47940643918267E-02;5.35524450083827E-02;5.22849664720081E-02;5.09940159713793E-02;4.96846538509949E-02;4.83574549642201E-02;4.70091482352682E-02;4.56333812793692E-02;4.42214501994407E-02;4.27630551514636E-02;.041247058798563;3.96622651646054E-02;3.79981913070216E-02;3.62458577258022E-02;3.43990996638282E-02;3.24637277337949E-02;3.04272999570359E-02;2.82775567568847E-02;2.60110403272337E-02;2.36317162616375E-02;.021149550424055;1.85790140532116E-02;1.59377473787822E-02;1.32451161599521E-02;1.05168918162583E-02;7.75650868733596E-03;4.95628515019508E-03;0
+						</z>
+					</pointList>
+				</wingAirfoil>
+				<wingAirfoil uID="iLoads-F6-200_Wing_Sec2_El1_Pro">
+					<name>Profile for iLoads-F6-200 - Wing Section 2 Main Element
+					</name>
+					<description>Profile for iLoads-F6-200 - Wing Section 2 Main
+						Element
+					</description>
+					<pointList>
+						<x mapType="vector">1.0;.989861491125853;.979542883657605;.969225768522508;.958911208279833;.948599445390816;.938290812582807;.927986061352185;.917691692130234;.907393066032925;.897106802172892;.886828220579646;.876557749746002;.866295683100425;.856042282362346;.845797850158683;.83556280679355;.825337204984007;.815126550893871;.804916034674477;.794722959279191;.784544555663822;.774383695171851;.764241853901923;.75411882526346;.74401280707925;.733920423484084;.723836918451165;.713756469553644;.703674856485932;.693589390772062;.68349755831832;.673397837611108;.663289496006037;.653172360770188;.64304659867474;.632912514109955;.622770375096656;.612620220372376;.602460250339281;.592289243514824;.582107061300863;.571912988286179;.561706132622062;.551485745630681;.541251511920254;.531003732906424;.520743409083878;.510472212280057;.500192410493367;.489906152300471;.479615059677375;.469320644221975;.459023710548449;.448724537793006;.438423076448223;.428119113387096;.41781245720537;.407503216985245;.397192587304208;.386880499531815;.376566700025292;.366251079001378;.355933858817268;.345615575998263;.335296841694377;.324978020852676;.314659276828597;.304340791533164;.294022846695294;.283705826839123;.273390217416035;.263076568970632;.252765426206749;.242458096348885;.232153277533026;.221851494483996;.211552594959101;.20125706396945;.190966027569679;.180681140666626;.170404583736823;.160138850269423;.149886372603171;.139649773900073;.12943206431958;.11923694119843;.10906912129628;9.89349011319342E-02;8.88428866187116E-02;.078805048934038;6.88372117226846E-02;.058965152016599;.049220644194905;3.96608457395463E-02;.030373487365216;2.15071540007971E-02;1.33318147344904E-02;6.35913508684126E-03;1.54321811724974E-03;0;1.34669003562926E-03;5.89910849299215E-03;1.27319171662639E-02;2.09160101550496E-02;2.98796653436681E-02;3.92980316334624E-02;4.89898515143374E-02;5.88530854391907E-02;6.88278889975492E-02;7.88791706178621E-02;.088984692416832;.099130303427435;.109306765708274;.119508051555269;.129727681363113;.139958150706954;.150200421857235;.16045498852752;.170717423879647;.180986950927094;.191263313143196;.201543606880024;.211828498863982;.222117343696303;.2324094429324;.242703419752029;.252999958586204;.26329798243824;.273597027651328;.283897032619966;.294197894812457;.304499306235673;.314800968495213;.325102771748242;.335404493657519;.345706301931023;.356007829424906;.366309035916759;.376609820702174;.38691006239961;.397209605600453;.407508441684432;.417806479693208;.428103658970963;.438399924596495;.448695225819229;.458989514677516;.469282744832095;.479574868690585;.489865840712348;.500155610255928;.510444127340203;.520731332511234;.531017168597584;.541301567739139;.551584457407361;.561865756127852;.57214537990379;.582423235291868;.59269921225308;.602973188858667;.613245040001055;.623514668817888;.633781924123232;.644046666682092;.654308618325469;.664567561196012;.674823312466943;.685075743638695;.695324796324192;.705570465168842;.715812866298203;.726052225818545;.736288841804825;.7465229749987;.756754809458918;.766984890574524;.777213316077375;.787439761095507;.79766353729859;.807883643226577;.818098823855261;.828307607015887;.838508361681689;.848699336588016;.858878839852392;.86904521898525;.879198588264109;.889337062643361;.899457605089424;.909558472202291;.919639266085251;.929700934958758;.939745680701697;.949776769796243;.959798243309862;.969813800115396;.979824425735878;.989828372159752;1.0
+						</x>
+						<y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+						</y>
+						<z mapType="vector">0;-1.65018422524426E-03;-1.67473666703254E-03;-1.85874625249162E-03;-2.15411557020999E-03;-2.53507136955663E-03;-2.99296551366954E-03;-3.53110833364418E-03;-4.15898721475543E-03;-4.88336756636182E-03;-5.70199283698464E-03;-6.61207890765342E-03;-7.60953138911566E-03;-8.69005277645583E-03;-9.84988638798131E-03;-1.10865529626462E-02;-1.23986663725913E-02;-1.37824078860519E-02;-1.52353650690343E-02;-1.67624958833606E-02;-1.83683641267418E-02;-2.00646314882028E-02;-2.18630014085551E-02;-.023765674962619;-2.57660977594695E-02;-2.78508036897988E-02;-3.00006046545434E-02;-3.21917153126614E-02;-3.43968595418157E-02;-3.65966465068582E-02;-3.87787446798403E-02;-4.09311676518824E-02;-4.30462519924675E-02;-4.51197430940613E-02;-4.71498952045136E-02;-4.91365728673244E-02;-5.10803530138574E-02;-5.29816249513151E-02;-5.48396927041352E-02;-5.66432026746151E-02;-5.83834172991019E-02;-6.00569880862198E-02;-6.16565223108393E-02;-6.31722775881731E-02;-6.45938792746649E-02;-6.59120538813818E-02;-6.71203908897128E-02;-.068217127791282;-6.92069493319018E-02;-7.01027877116517E-02;-.070922024214338;-7.16778418305314E-02;-7.23870775754636E-02;-7.30587731243401E-02;-7.36952010340648E-02;-7.42934163367661E-02;-7.48468176701309E-02;-7.53467157939442E-02;-7.57920328259126E-02;-7.62030361482949E-02;-7.65755831153675E-02;-7.68970804400858E-02;-7.71532885442016E-02;-7.73337347610451E-02;-.077437161727636;-7.74770544695232E-02;-7.74772228087698E-02;-7.74391562004047E-02;-7.73567914630197E-02;-7.72231194114066E-02;-7.70310490105011E-02;-7.67742781508726E-02;-7.64481737614005E-02;-7.60506603283939E-02;-7.55827248287797E-02;-7.50453695095065E-02;-7.44529002559453E-02;-7.38121775137797E-02;-7.31193481846874E-02;-7.23629590696947E-02;-7.15270805638882E-02;-7.05944664831198E-02;-6.95497926924096E-02;-6.83821533750107E-02;-.06708270121149;-6.56422533766687E-02;-.064049941511601;-6.22918372326724E-02;-6.03495716876285E-02;-5.81989428181116E-02;-5.58085673964865E-02;-5.31383778902667E-02;-5.01398236925273E-02;-4.67479548950498E-02;-4.28672792257624E-02;-3.83756372476801E-02;-3.31051408952389E-02;-2.68230428736836E-02;-1.92415715837816E-02;-1.01618739745026E-02;0;1.01760760953532E-02;1.93721990487482E-02;2.70524772328611E-02;3.32910231407508E-02;3.83569943558461E-02;4.25237924812493E-02;.0460114526283;4.89824124237709E-02;5.15554117703163E-02;5.38121449549409E-02;5.58125936119118E-02;5.75990297776613E-02;5.92006565818428E-02;6.06357605500227E-02;6.19343961996858E-02;6.31447411425909E-02;6.42505298305762E-02;6.52359004817141E-02;6.61358791960347E-02;6.69509237319939E-02;6.76747541054883E-02;6.83404528161243E-02;6.89309411939489E-02;6.94479681191302E-02;6.98958032870293E-02;7.02978957600071E-02;7.06281570794885E-02;7.09086413094046E-02;7.11486918194042E-02;7.13429393624292E-02;7.14847195495465E-02;7.15795422786847E-02;.071647661820765;7.16841907860433E-02;7.16811545021231E-02;7.16377097227033E-02;7.15568512546895E-02;7.14421119625323E-02;7.12942627186728E-02;7.11112250885142E-02;7.08945305599862E-02;7.06455328357583E-02;7.03654547497263E-02;7.00553988004348E-02;.069716349530449;6.93491755007036E-02;6.89546312944061E-02;6.85333595372719E-02;6.80858930804144E-02;.067612656932754;6.71139706458872E-02;6.65900501673595E-02;6.60410105081621E-02;6.54668673373362E-02;6.48675398982158E-02;6.42428529603301E-02;6.35925393670741E-02;6.29162419517579E-02;6.22135163074978E-02;6.14838337056389E-02;6.07265832712139E-02;5.99410738094671E-02;5.91266492964757E-02;.058283499158469;5.74099513786537E-02;5.65042154931742E-02;.055565002638553;5.45915736898286E-02;5.35837847292329E-02;5.25421341732304E-02;5.14678156061802E-02;5.03627642938073E-02;4.92297140056207E-02;4.80722590691414E-02;4.68930306545962E-02;4.56940109147298E-02;.044480118851016;4.32523566968246E-02;4.20082102917476E-02;.040742323357151;3.94471726237416E-02;3.81137420478627E-02;.036732201453063;3.52925822207861E-02;3.37854567747856E-02;3.22025972673209E-02;3.05376769731348E-02;2.87950661276941E-02;2.69678519494082E-02;2.50438295498386E-02;2.30190532717408E-02;2.08965724461191E-02;1.86851635405714E-02;1.63980717640353E-02;1.40517703480047E-02;1.16647021943026E-02;9.25291980334193E-03;6.82076791924567E-03;4.36129510956807E-03;0
+						</z>
+					</pointList>
+				</wingAirfoil>
+				<wingAirfoil uID="iLoads-F6-200_Wing_Sec3_El1_Pro">
+					<name>Profile for iLoads-F6-200 - Wing Section 3 Main Element
+					</name>
+					<description>Profile for iLoads-F6-200 - Wing Section 3 Main
+						Element
+					</description>
+					<pointList>
+						<x mapType="vector">1.0;.989949107774628;.979824784846145;.969695822368764;.959562002485735;.949423801848413;.939296846344292;.929152001792817;.919004750736451;.908855839432356;.898705580068356;.888554437670045;.878403236284448;.868253209085456;.858106056830065;.847963866183042;.837828995141551;.827703871343124;.817590722508809;.80749124578119;.797406245026006;.78733555194718;.777279306754303;.767235100290806;.757200756512519;.747173977278682;.737152385999595;.727133495898466;.717114679041251;.707094545238506;.69707313753595;.687050099587003;.677024927992154;.666997006044709;.656965723918612;.646930548383767;.636891228832612;.626847239292931;.616799022696512;.606746319711864;.596688736603937;.58662618630026;.576558593160337;.566485897040405;.556408057070962;.546325055095895;.536236898717119;.526143623883668;.516045296959784;.505942023248418;.495833913403997;.485721155662055;.475603930693941;.465482444967378;.455356927869389;.445227634043215;.435094843756351;.424958882685312;.414819999320971;.404678548819586;.394534806453355;.384389062017749;.374241605021597;.364092731146178;.353942747233131;.34379197720618;.333640742310519;.323489426367234;.313338399409124;.303188063457419;.293038846957851;.282891198122338;.272745568517736;.262602384808941;.252462041660145;.242316159778818;.232191500395382;.222061900612043;.211927764792129;.20181591556806;.191700369836784;.181581342357078;.171485201813144;.16138746711156;.1512951577116;.141208653307348;.131131359587808;.121062226408496;.111001809086502;.100951051990368;9.09115072813106E-02;8.08858146212057E-02;7.08780622355795E-02;6.08944012141288E-02;.050944184670772;.041045648961368;3.12380875068507E-02;2.16070243452435E-02;1.23587272194974E-02;4.19100013186313E-03;0;3.23966771453918E-03;1.00003869807166E-02;1.81351151880784E-02;2.70748336511275E-02;3.66039628511356E-02;4.63679517974092E-02;5.62530229230796E-02;6.62137460395008E-02;7.62261709445893E-02;8.62749121970179E-02;9.63478215660534E-02;.106442571411878;.116555272201907;.126682751439057;.136822493567068;.146972507543624;.15713121944448;.167297384758278;.177470016893158;.187648350794571;.197831728576768;.208019675887804;.218211724508856;.228407555579789;.238606802696554;.24880917321455;.2590143720538;.269222127068395;.279432156920183;.289644267370405;.299858171444495;.310073960729221;.320291225311756;.330509886651685;.340729805345399;.350950884606566;.361172996376012;.371396017732683;.381619827924537;.391844328265823;.402069420052559;.412294888393376;.422520893381274;.43274707677806;.442973419718022;.453199821683295;.463426180601787;.473652396258839;.483878357577895;.494103953659759;.504329067460962;.514553574948122;.52477732995827;.535000188309811;.545221987383054;.555442543927555;.565661654123398;.575879089029456;.586094602791771;.596307930272919;.606518927689998;.616727674420986;.626933484142413;.637135830287637;.647334150251654;.657527899961062;.667716575821738;.677899709288304;.688076886982406;.698247776677886;.708412104626432;.718569666731924;.728720324770285;.738864014936289;.749000689847332;.759130406288596;.76925317606353;.779369059986518;.789478135532575;.799580385493857;.809675749670751;.819764120831806;.829845615421721;.839920545224683;.849988685264667;.860049994827046;.87010432212865;.880151450634868;.890191084324789;.900222849379515;.91024626413818;.920260721831981;.930265495064702;.940259718420771;.950242346212927;.960212140935009;.970167647250129;.980107162177128;.990028700870738;1.0
+						</x>
+						<y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+						</y>
+						<z mapType="vector">0;-1.61521277702093E-03;-8.75202450573398E-04;-2.01795246640499E-04;3.94196173430994E-04;9.09884211327391E-04;1.34363853711313E-03;1.70389187244431E-03;1.99432710811561E-03;2.21563111039106E-03;2.36239200187033E-03;2.42169967212475E-03;2.37859605520839E-03;2.21885884945836E-03;1.92975069112354E-03;1.50074954141768E-03;9.24280481512957E-04;1.96440812901741E-04;-6.82289446531987E-04;-1.70635735484272E-03;-2.86446886366384E-03;-4.14057497816551E-03;-5.52654625724808E-03;-6.99738369224174E-03;-8.53409062230755E-03;-1.01194529771609E-02;-1.17373127520354E-02;-1.33718293475244E-02;-1.50067880637286E-02;-1.66336350513094E-02;-.018252622924437;-1.98615460223781E-02;-2.14570703324527E-02;-2.30352218454308E-02;-2.45918672253111E-02;-2.61232074872501E-02;-2.76262554601186E-02;-.029099428955252;-3.05428636320848E-02;-3.19545559283112E-02;-3.33310461008624E-02;-3.46707380515656E-02;-3.59719877591275E-02;-3.72331237722938E-02;-3.84524682823243E-02;-3.96283588891869E-02;-4.07591711811451E-02;-4.18433422437643E-02;-.042879395201506;-4.38659642024342E-02;-4.48018335784557E-02;-4.56859801419169E-02;-4.65174457633475E-02;-4.72953244931877E-02;-4.80188339757071E-02;-4.86873883673657E-02;-4.93006730793707E-02;-4.98587202178318E-02;-.050361749926382;-5.08095671289758E-02;-5.12020555402907E-02;-5.15388367885788E-02;-5.18193038099354E-02;-.052042678670782;-5.22080719586744E-02;-5.23145073837798E-02;-.052360202121344;-5.23443514161329E-02;-5.22660991256893E-02;-5.21241568424714E-02;-5.19171364480123E-02;-5.16438861118548E-02;-5.13038268115668E-02;-5.08972873780136E-02;-5.04255557215572E-02;-4.98869105177599E-02;-4.92855176511901E-02;-4.86216806030808E-02;-4.78951285821686E-02;-4.71070965901551E-02;-4.62555286580875E-02;-4.53421316959883E-02;-4.43735226007972E-02;-4.33451264065134E-02;-4.22527636360879E-02;-4.10946080559751E-02;-3.98709145273385E-02;-3.85817390676508E-02;-3.72262059452163E-02;-3.58009388628933E-02;-3.42986353190677E-02;-3.27066605899977E-02;-3.10056015122733E-02;-2.91686574516902E-02;-2.71587937915191E-02;-2.49101816744261E-02;-2.22943068270009E-02;-1.90939426893608E-02;-1.49284764993915E-02;-8.96493259947183E-03;0;9.53461970352563E-03;1.71735166618891E-02;.023352582722661;2.82958859032264E-02;3.19972666489485E-02;3.50367291756557E-02;3.76516582310035E-02;3.99662636245901E-02;4.20463826482801E-02;4.39438221408679E-02;4.57085519428402E-02;4.73438308499008E-02;4.88642505533915E-02;5.02829723901533E-02;5.16112789326778E-02;.052858718642971;5.40332620035376E-02;5.51414646985495E-02;5.61886359943536E-02;5.71790132811239E-02;5.81159299601471E-02;5.90020025852086E-02;5.98392949228161E-02;6.06295106007274E-02;.061374157085921;6.20747354889806E-02;.062732902856877;6.33503796271171E-02;6.39286681008146E-02;6.44690515396665E-02;.06497260468679;.065440236174332;6.58726663660336E-02;6.62704871960199E-02;6.66341635213182E-02;6.69640576855573E-02;6.72604472249215E-02;6.75235467461168E-02;6.77535283254772E-02;6.79505424320545E-02;6.81147379238975E-02;6.82462812588967E-02;6.83453837608825E-02;6.84122660689741E-02;6.84470585628017E-02;6.84497618549793E-02;6.84202484519538E-02;6.83582634485668E-02;6.82634253578881E-02;6.81352268962771E-02;6.79730358796049E-02;6.77760961581802E-02;6.75435289462031E-02;6.72743334022467E-02;6.69673881405479E-02;6.66214525801746E-02;6.62351683147604E-02;6.58070607558282E-02;6.53355403618935E-02;6.48189043138686E-02;6.42586846920295E-02;6.36573527332134E-02;6.30087991538932E-02;6.23078900609195E-02;6.15506713865946E-02;6.07342654920678E-02;.05985676914911;.058917153111498;5.79151588673712E-02;5.68511935017931E-02;.055726228626034;5.45416956258747E-02;5.32993818616948E-02;5.20013246955928E-02;5.06497140391046E-02;4.92467756450188E-02;4.77946859272998E-02;4.62954542280272E-02;4.47508216262153E-02;4.31621729610321E-02;4.15304247445875E-02;3.98559560057888E-02;3.81408610413223E-02;3.63869394129944E-02;3.45947846654465E-02;3.27646727384854E-02;3.08965813422021E-02;2.89901505287262E-02;2.70446535841812E-02;2.50589644363672E-02;2.30315309482147E-02;2.09603457482576E-02;1.88429122866848E-02;1.66762148600884E-02;1.44566939302842E-02;1.21802148533453E-02;9.84203947413549E-03;7.43679853434711E-03;4.9584652397057E-03;0
+						</z>
+					</pointList>
+				</wingAirfoil>
+				<wingAirfoil uID="iLoads-F6-200_Wing_Sec4_El1_Pro">
+					<name>Profile for iLoads-F6-200 - Wing Section 4 Main Element
+					</name>
+					<description>Profile for iLoads-F6-200 - Wing Section 4 Main
+						Element
+					</description>
+					<pointList>
+						<x mapType="vector">1.0;.989837902629764;.979683757134466;.969581369845443;.959447932290545;.949313500153031;.939145753563687;.929024802619156;.918878219965208;.908733103559814;.898580270749259;.88842992956414;.878279476137861;.868130046288941;.857984020760837;.847842879708739;.83770912992501;.82758510577783;.817472918917543;.807377398032872;.79728994698154;.78722028181315;.777164177274194;.767119621566667;.757084327961751;.747055899476139;.737032056978505;.727010826080879;.716990583929939;.706970699413328;.696949125688523;.686925054161168;.676898233684969;.666868408577066;.656835314597224;.646798679217529;.636758253678371;.626713796738374;.616665073341595;.606611877130709;.596554020863374;.586491344695708;.576423718379578;.566351043929527;.556273257754321;.546190332259873;.536102276881856;.526009138513063;.515911001298545;.50580798578125;.49570024739182;.485587974288749;.475471384568916;.465350722883611;.455226298826378;.445098153176035;.434966384196475;.424831354627362;.414693386755925;.404552814588909;.394409650131101;.384264906695363;.374118393825497;.363970335679989;.353821151333172;.343671156340285;.333520711238936;.323370136173867;.313221708893839;.303070151339679;.292921567278576;.282774346600565;.272629169321962;.262486327253634;.252346253053204;.242209407243855;.232076181660479;.221946946035538;.211822082246965;.201701812549704;.191586320720093;.181475836509669;.171370690228681;.161271303433957;.151178228504765;.141092108573146;.13101363586145;.120943638076489;.110882937443845;.100832351913103;9.07926649939257E-02;8.07650243924151E-02;7.07553696471575E-02;.060770997134644;5.08208040855856E-02;4.09224743162028E-02;3.11155824244383E-02;2.14858490018866E-02;1.22428545749179E-02;4.09286097603318E-03;0;3.36307130033267E-03;1.01636927648118E-02;1.83177975680213E-02;2.72750989457269E-02;3.68130592620448E-02;4.65776157170787E-02;5.64658135536278E-02;6.64296033869973E-02;7.64413553230953E-02;8.64875133975486E-02;9.65617062099178E-02;.106657001278953;.116769529871221;.126896292951526;.137034940968298;.147183634314179;.157340930312842;.167505694069951;.177677026950237;.187854189905063;.19803658826159;.20822369760837;.218415052170586;.228610223832847;.238808776581469;.249010346081942;.259214321572645;.269420683603958;.279629276222411;.28983997540378;.300052649418148;.310267123892786;.320483247082716;.330700852018758;.340919770022543;.351139852151319;.361395246196718;.371582967210925;.381805745560549;.392063336648317;.402253188028179;.412477529445783;.422702516849977;.432927640071283;.443152971627931;.45337831757425;.463603571169395;.473828740129214;.484053702816155;.494278318406283;.504502382254704;.514725890964674;.524948689473561;.535170565257668;.545391441928758;.555610891431966;.565829261994639;.576045815851919;.586260509264221;.596473100908639;.606683738163969;.616891721359521;.627096429122966;.637297591451392;.64749470852383;.657687295288757;.667874891872922;.678057073238557;.688233457461402;.698403712190197;.708567558676677;.718724774236142;.728875192142935;.739018695580157;.749155214819758;.759284727637916;.76940722758815;.779522738225933;.789631286732682;.799732889217999;.809827541155733;.81991518940791;.829995988728899;.840070039448767;.85013733619566;.860197822201211;.870251383790666;.880297837934558;.890336919083342;.90036826510853;.910391402118524;.920405727859076;.930410493347753;.940404782330301;.950387488086102;.960357287052851;.97031260869143;.980251600976624;.990172090886635;1.0
+						</x>
+						<y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+						</y>
+						<z mapType="vector">0;-1.58261042310057E-03;-8.51256022978291E-04;-1.89813110590235E-04;3.998821290776E-04;9.12209187277779E-04;1.34787555977019E-03;1.70512907250556E-03;1.98942102208464E-03;2.20259281946632E-03;2.34550680330184E-03;2.40447206171496E-03;2.3605455428159E-03;2.19769426421251E-03;1.90310616245566E-03;1.46728247675787E-03;8.84221168481662E-04;1.51526683805955E-04;-7.29465796461708E-04;-1.75323670309925E-03;-2.91169964781337E-03;-4.19059016144877E-03;-5.57198091075222E-03;-7.03520166808283E-03;-8.56071642640945E-03;-1.01307681659648E-02;-.011729859448398;-1.33452462057125E-02;-.014967457134488;-1.65904714238516E-02;-1.82037040190138E-02;-1.98013772826763E-02;-2.13817179451529E-02;-2.29428466373197E-02;-.024482797170378;-2.59995350272094E-02;-2.74909710597066E-02;-2.89549825723447E-02;-3.03894319381581E-02;-3.17921817702392E-02;-3.31611147822407E-02;-3.44941512540688E-02;-.035789267304794;-3.70445130612423E-02;-3.82580309601299E-02;-3.94280741757698E-02;-4.05530251654268E-02;-4.16314143188431E-02;-4.26619386935302E-02;-4.36434808134483E-02;-.044575127506142;-4.54561887526084E-02;-4.62862165255381E-02;-4.70650235954234E-02;-4.77926993562709E-02;-.04846753239845;-4.90853842761129E-02;-4.96469967413807E-02;-5.01529669915836E-02;-5.06035555045666E-02;-5.09987361404927E-02;-5.13381843766345E-02;-5.16213982369662E-02;-5.18476710697627E-02;-5.20161439511974E-02;-5.21258515541153E-02;-5.21757568511149E-02;-5.21647901429788E-02;-5.20919064509368E-02;-5.19560276991777E-02;-.051756276026528;-5.14918136937378E-02;-5.11619933725858E-02;-5.07663569045496E-02;-5.03046871062237E-02;-4.97770447888302E-02;-4.91838025100189E-02;-4.85256844754351E-02;-4.78038078428635E-02;-4.70199891715871E-02;-4.61767335756446E-02;-4.52754158437874E-02;-4.43161321864678E-02;-4.32979225263057E-02;-4.22190027162233E-02;-4.10769973779272E-02;-3.98691798352525E-02;-3.85927365600023E-02;-3.72450153650152E-02;-3.58238010081732E-02;-3.43275992988013E-02;-3.27526738293661E-02;-3.10674665089014E-02;-2.92386094932001E-02;-.027232629303104;-2.49851941718931E-02;-2.23697376070421E-02;-.019167147785671;-1.49926401558494E-02;-9.00688529849354E-03;0;9.49619485933128E-03;1.70985175805012E-02;2.32512234793251E-02;2.81610780625625E-02;3.18363774542177E-02;3.48676227909217E-02;3.74694334661591E-02;.039766182501375;4.18445486971778E-02;4.37498681830111E-02;.04550113125522;4.71264576924011E-02;4.86409533061471E-02;5.00572147007376E-02;5.13857806184483E-02;.05263534044432;5.38129565235991E-02;5.49242962778141E-02;5.59738704567439E-02;5.69652738405421E-02;5.79014340520839E-02;5.87848556896621E-02;.059617871372832;6.04028920050763E-02;6.11426555074128E-02;6.18404816088926E-02;6.25002329957862E-02;6.31230542039683E-02;6.37081723441796E-02;6.42552269456269E-02;6.47642498076279E-02;6.52355921012615E-02;6.56698558851391E-02;6.60678206930092E-02;6.64303727155959E-02;6.67584340258061E-02;6.70538226961765E-02;6.73145210654101E-02;6.75439246465917E-02;6.77420572238872E-02;6.79071269604133E-02;.068040586223759;6.81411211186454E-02;6.82088342707612E-02;6.82443325386742E-02;6.82479494208429E-02;.068219763923388;6.81596197978907E-02;6.80671484767617E-02;6.79417918275068E-02;6.77828255408575E-02;.067589377123266;.067360453372378;6.70949628498714E-02;6.67917334037419E-02;6.64495495043016E-02;6.60671373993034E-02;6.56432533390942E-02;.065176643794639;.06466610049429;6.41115253141635E-02;6.35119052473319E-02;6.28626201247583E-02;6.21598480136303E-02;6.14006505163828E-02;.060582888374963;5.97051500033317E-02;5.87666796990693E-02;5.77673055728906E-02;5.67073672807455E-02;5.55876436594721E-02;5.44092802073004E-02;5.31737167351006E-02;5.18826156584652E-02;5.05377899127952E-02;4.91411303635471E-02;4.76945377376895E-02;4.61998484327233E-02;.044658766016146;4.30727914357027E-02;4.14431526278632E-02;3.97707568848599E-02;3.80574742863027E-02;3.63049820699886E-02;3.45140975467295E-02;3.26853398642982E-02;3.08188906866054E-02;.028914556274972;2.69717298742733E-02;2.49893543842156E-02;2.29658853169752E-02;2.08992540744485E-02;1.87868316241409E-02;1.66253927157849E-02;1.44110808657392E-02;1.21393744487374E-02;9.80505438350263E-03;7.40217408805534E-03;4.92403262097709E-03;0
+						</z>
+					</pointList>
+				</wingAirfoil>
+				<wingAirfoil uID="iLoads-F6-200_HTP_Sec1_El1_Pro">
+					<name>Profile for iLoads-F6-200 - HTP Section 1 Main Element</name>
+					<description>Profile for iLoads-F6-200 - HTP Section 1 Main Element
+					</description>
+					<pointList>
+						<x mapType="vector">1.0;.989852863843809;.979701350696755;.969550027950583;.959398842527923;.949247537524867;.939096159162534;.92894472017081;.918793269010668;.908641766356118;.89849027960281;.888338815768615;.878187350538661;.868035831698371;.857884485712212;.847733107154043;.837581777377529;.827430480351483;.817279263582452;.807128106276526;.796976973963984;.786825829128528;.776674619789132;.766523272775095;.756371717776373;.746219868678602;.736067660970545;.725914975701621;.715761916242021;.705608359587613;.695454207494808;.68529946343319;.675144070129032;.664987990275903;.654831209996694;.644673699687801;.634515437607266;.624356391811625;.614196565169899;.604035928244731;.593874470445979;.583712183433075;.573549057296588;.56338506006402;.553220194455283;.543054468981115;.532887824714769;.522720291036064;.512551843449131;.50238246618082;.492212155554476;.48204090595066;.471868714095582;.46169557025598;.451521467031133;.441346416574798;.43117042935617;.420993489320915;.410815603136629;.400636778621339;.390457030708267;.380276386795621;.370094817872093;.359912387732374;.349729097222217;.339544985894965;.329360085200527;.319174432042194;.308988104864105;.298801123671928;.288613609285124;.278425642665579;.268237321141711;.258048810216981;.247860201727941;.23767162041473;.227483329044458;.217295554717961;.207108529983771;.196922590655111;.186738089253647;.176555529487624;.166375446511196;.156198524582549;.14602555848682;.135857579640276;.125695807088388;.115541731261519;.105397263120167;.095264753140248;.085147575839766;7.50505467232228E-02;6.49812621693682E-02;5.49548404795315E-02;4.50017219125704E-02;3.51703381786935E-02;2.55711229052696E-02;1.64762950954156E-02;8.41159899328961E-03;2.35769331398247E-03;0;2.3566834038063E-03;8.36031131146585E-03;.016401484428121;2.54880199391212E-02;3.50804824070357E-02;4.49136352738797E-02;.054872249584009;6.48999099740904E-02;.074969806628511;8.50676062720376E-02;9.51853833862588E-02;.105318596037333;.115463865514871;.125618723835256;.135781333083802;.145950169428885;.156124000413729;.166301836605051;.176482856954315;.186666359982746;.196851803730021;.207038702127071;.217226712469225;.227415461302228;.237604751422076;.247794329459336;.257983932070344;.268173446670339;.278362756115335;.28855172075638;.298740208027532;.308928227191469;.3191154610817;.329302069902591;.33948792898337;.349672996184669;.359857235776351;.370040632136487;.380223107909541;.390404695787993;.400585372556449;.410765121131089;.42094393592687;.431121780530137;.441298697941256;.451474651921335;.461649653892721;.471823700342372;.481996794468325;.492168943977543;.502340134685808;.51251040588021;.522679740003229;.532848163248152;.543015692141864;.553182310432579;.563348041146559;.573512902547866;.583676907200424;.593840075762359;.604002410697673;.614163932275124;.624324649701674;.634484540065512;.644643655600753;.6548020283163;.664959654529661;.675116590764849;.685272859298281;.695428487001373;.705583513641004;.715737980091552;.72589191157624;.736045380774658;.74619843811141;.756351147794015;.766503504633309;.776655688810678;.7868078360431;.796959825881042;.807111940157496;.817263834822343;.827415907295835;.837568043731406;.847720242408711;.857872491730392;.868024792200441;.878177080897558;.888329380655184;.898481704496172;.908634040024263;.918786373010819;.92893869734314;.939091074201108;.949243228829102;.959395380338345;.969547444956959;.979699591168494;.989851979706716;1.0
+						</x>
+						<y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+						</y>
+						<z mapType="vector">0;-1.93813248929312E-03;-2.80659461722307E-03;-3.67811988209348E-03;-4.55051633853638E-03;-5.4219340708185E-03;-6.29237665240329E-03;-7.16214193259547E-03;-8.03154358532149E-03;-8.90092909129084E-03;-9.77031697278405E-03;-1.06396929471029E-02;-1.15091923533214E-02;-1.23789192925198E-02;-1.32489415176333E-02;-.014119373906472;-1.49903330827099E-02;-1.58619719788799E-02;-1.67344033429086E-02;-1.76074903624892E-02;-1.84808677104465E-02;-1.93540991343715E-02;-.020226565869854;-2.10974669144042E-02;-2.19658825432586E-02;-2.28308936109398E-02;-2.36916887910067E-02;-2.45476029500622E-02;-2.53980175536375E-02;-2.62422312153554E-02;-2.70796107975928E-02;-2.79097515160188E-02;-2.87321380789227E-02;-.029546195093717;-3.03513643048321E-02;-3.11471621194277E-02;-3.19331980496359E-02;-3.27091548918675E-02;-.03347471757889;-3.42295250112841E-02;-3.49732165691627E-02;-3.57054371777181E-02;-3.64258282728012E-02;-3.71340224531202E-02;-3.78296353119221E-02;-.038512266211784;-3.91815049332366E-02;-3.98369187725051E-02;-.040477961054965;-4.11040857773676E-02;-4.17148301318593E-02;-4.23097321385508E-02;-4.28882782832894E-02;-4.34498907364455E-02;-4.39939572742728E-02;-4.45199120180313E-02;-4.50272697061793E-02;-4.55152312849167E-02;-.04598304012937;-4.64300301806458E-02;-4.68554741682894E-02;-4.72585156576648E-02;-4.76381989836248E-02;-4.79935556171356E-02;-4.83235286399911E-02;-4.86269716130452E-02;-4.89026587500694E-02;-4.91492724533693E-02;-4.93654024104489E-02;-4.95495616270234E-02;-.049700213303084;-4.98157872074416E-02;-4.98947118801178E-02;-4.99354238874258E-02;-4.99362266077485E-02;-4.98952619422511E-02;-4.98105130378398E-02;-4.96792963189029E-02;-4.94986138824385E-02;-4.92651212233587E-02;-4.89749605440092E-02;-4.86238203990037E-02;-4.82069810062466E-02;-4.77192066578535E-02;-4.71546398903853E-02;-4.65066560526482E-02;-4.57678402607829E-02;-4.49298503334239E-02;-.043982915013147;-4.29155307439539E-02;-4.17116742402817E-02;-4.03494114558562E-02;-3.87957516246224E-02;-3.69871169650865E-02;-3.48131713621654E-02;-3.21438675701305E-02;-2.87409286477676E-02;-2.41710567691889E-02;-1.79806279373512E-02;-9.8289803711865E-03;0;9.83561351952553E-03;1.80251734613403E-02;2.42465346257525E-02;.028834391426503;.032259596050205;3.49247998345363E-02;3.70792231856677E-02;3.88862549423713E-02;4.04424928337483E-02;4.18074855349109E-02;4.30136611449392E-02;4.40837039335474E-02;4.50330338344457E-02;4.58735568290685E-02;4.66146656710502E-02;4.72649515079279E-02;4.78316973625599E-02;4.83213979933527E-02;4.87399614315914E-02;4.90927600317955E-02;4.93845275052912E-02;4.96195936868532E-02;4.98017347698489E-02;4.99341093398418E-02;5.00194250323421E-02;5.00601134875545E-02;5.00584535565778E-02;5.00165978799299E-02;4.99363886046812E-02;4.98194834281955E-02;4.96675218157623E-02;4.94820582113816E-02;4.92645951684733E-02;4.90165808201354E-02;4.87394214321654E-02;4.84344601814237E-02;4.81029558311918E-02;4.77460524212645E-02;4.73647660401488E-02;4.69600850746409E-02;4.65329433607481E-02;4.60841917142946E-02;4.56146180344546E-02;4.51249638825271E-02;4.46159279939961E-02;4.40881774395998E-02;4.35423402618481E-02;4.29790033086175E-02;4.23987021709075E-02;4.18019460917443E-02;4.11893177821239E-02;4.05613779355748E-02;.039918643037958;3.92615840290152E-02;3.85906388603304E-02;3.79062269913411E-02;.037208760527568;.036498666303987;.035776423297889;.035042466632838;.034297094460166;.033540577022669;3.27732346219556E-02;3.19954548037926E-02;3.12076447227946E-02;3.04101551378032E-02;2.96033192665843E-02;2.87876438989824E-02;2.79636277023261E-02;2.71317623130521E-02;2.62925636153146E-02;.025446590368136;2.45944507623717E-02;2.37367926668041E-02;2.28742994331497E-02;2.20076758261535E-02;2.11376549735159E-02;2.02651062379592E-02;.019390935826853;1.85159482512413E-02;1.76407932832833E-02;1.67660125767467E-02;1.58918830075822E-02;1.50185259900857E-02;1.41458921775797E-02;1.32738452544337E-02;1.24021582452306E-02;1.15306811148249E-02;1.06593604663809E-02;9.78818845457932E-03;8.91714464839538E-03;8.04606214819227E-03;7.17490403584184E-03;6.30339006330847E-03;5.43120393879822E-03;4.55801725913139E-03;3.68382584874269E-03;2.81052865981232E-03;1.9401647888936E-03;0
+						</z>
+					</pointList>
+				</wingAirfoil>
+				<wingAirfoil uID="iLoads-F6-200_HTP_Sec2_El1_Pro">
+					<name>Profile for iLoads-F6-200 - HTP Section 2 Main Element</name>
+					<description>Profile for iLoads-F6-200 - HTP Section 2 Main Element
+					</description>
+					<pointList>
+						<x mapType="vector">1.0;.989880424359375;.979814958345522;.969749112279982;.959683367715939;.949617796814543;.939552383806535;.929487113007887;.919421883817163;.909356643531259;.899291522521471;.889225846014657;.879160965576418;.869095756843265;.859030584635487;.848965464591897;.838900409243699;.828835424265584;.818770498586646;.80870587885854;.798640756664669;.788575870689155;.778510722682448;.768445612918651;.758380037838658;.748313999212391;.738247538785687;.728180443835215;.718112549553597;.708043888531046;.69797431692509;.687903827652001;.677832348987809;.667759815677777;.657686164669099;.647611033458013;.637535448771432;.627458286533897;.617379960882588;.607300373232537;.597219267251431;.587137493843649;.577054152078034;.566969640927338;.556883802968435;.546796934343619;.536708200762183;.526619071218764;.516528695243689;.506437143775516;.496344613748385;.486251200885871;.476156923962854;.466061962743359;.455966347389274;.445870238236887;.435773576054892;.425676643482844;.415579284207127;.405481821259282;.395384082661517;.385286229953518;.375188291317951;.365090316285078;.354992301562412;.344894349139554;.33479650607775;.324698721621284;.314601029231871;.304503500793097;.294406081656671;.284308984035741;.274211983638145;.264115209787298;.254018912256355;.243923107325479;.233827919871646;.223732490688275;.213640470434479;.203548873781314;.193459045806081;.183371755572819;.173287070543456;.163205999699409;.153128853990537;.143056555270453;.132989786698694;.122929760582401;.112877704541541;.102835355429474;9.28049841635996E-02;8.27897031144394E-02;.072793673501753;6.28228031957926E-02;5.28859587121915E-02;4.29967564839424E-02;3.31779324015254E-02;2.34736893109497E-02;1.39846757915907E-02;5.09385279203986E-03;0;5.73161210952037E-03;1.46837683985541E-02;2.41855657103403E-02;3.38909338208375E-02;4.37060586444502E-02;5.35896305285005E-02;6.35197900913077E-02;7.34834237692578E-02;8.34720765899619E-02;9.34800154237148E-02;.103502888670658;.113538020283077;.123582579902225;.133635349419547;.143694907212084;.153760031802873;.163830121206183;.173904322778421;.18398196537807;.194062585017273;.204145539760269;.214230615164776;.224317236700179;.234405076475588;.244493785119158;.254583055408029;.264673332777247;.274763779160641;.284854550552569;.29494552143107;.305036714303061;.315127966536686;.325219548869683;.335311132801307;.345402874623386;.355494650415865;.365586515417555;.375678333804712;.385770179945956;.395861917224715;.405953646539179;.416045050336208;.426136266356898;.436227290905626;.446317857211699;.45640809636313;.466499497937099;.476586841183885;.486675267597311;.496762823648821;.506849541798305;.516935243922697;.527019979549939;.537103570571255;.547186019657568;.557267136750879;.567347298340426;.577426056831048;.58750354847607;.597579814689258;.607654576854734;.617728579248163;.627801049941997;.637871936455249;.647942312194036;.658011028155794;.668078871449402;.678145436839727;.688210908013691;.69827539375889;.708338922271415;.718401527678043;.728463500875478;.738524269884565;.748584728029916;.758644551439658;.768704007367663;.778763031699961;.788821840666878;.798880590065442;.808939255914529;.818997947845312;.829056681849291;.839115476774418;.849174361110643;.859233327674979;.869292258906897;.879351289552718;.889410348249284;.899469414999569;.9095284615135;.919587498157987;.929646535628572;.939705634392114;.949764861879101;.959824275258156;.969883858686315;.979943514463295;.990002815166448;1.0
+						</x>
+						<y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+						</y>
+						<z mapType="vector">0;-3.77779595004319E-03;-4.58753515095747E-03;-5.39267497385915E-03;-6.19903591648025E-03;-7.00756673918846E-03;-7.81810710523436E-03;-8.63030177775853E-03;-9.44306845335931E-03;-1.02559674742903E-02;-1.10687861897654E-02;-1.18814764695734E-02;-1.26941289195243E-02;-1.35071510016934E-02;-.014320624781945;-.015134745631341;-.01594968789846;-1.67654507999376E-02;-1.75819705104233E-02;-1.83990638976687E-02;-1.92163561102193E-02;-2.00331037369411E-02;-2.08483071684734E-02;-2.16609671180273E-02;-2.24698582644817E-02;-2.32733705658376E-02;-2.40701800875929E-02;-2.48589621551908E-02;-2.56383537661581E-02;-2.64071187132931E-02;-2.71644326463879E-02;-2.79091211378945E-02;-2.86401601548441E-02;-2.93566895353049E-02;-3.00575122988886E-02;-3.07418879093542E-02;-3.14089612384097E-02;-3.20576159085962E-02;-3.26870520124319E-02;-3.32964952535859E-02;-3.38850508685841E-02;-3.44518253682215E-02;-.034995954271909;-3.55164557496071E-02;-.036012476773201;-3.64830158125646E-02;-3.69270926709925E-02;-3.73439524424909E-02;-3.77329351055993E-02;-3.80934574964076E-02;-.038425326960433;-3.87285174936638E-02;-3.90031858883972E-02;-3.92499997552521E-02;-3.94696211290738E-02;-3.96628121600533E-02;-3.98304396218407E-02;-3.99733284687479E-02;-.040092331306008;-4.01883978691007E-02;-4.02621128607682E-02;-4.03140087959681E-02;-4.03448291417095E-02;-4.03551411548021E-02;-4.03455859803959E-02;-4.03170210053848E-02;-4.02704700550061E-02;-4.02069106414096E-02;-.040127276903358;-4.00321630483422E-02;-3.99218408677698E-02;-3.97959093236389E-02;-3.96530683561486E-02;-3.94912122945052E-02;-3.93074539945122E-02;-.03909820055052;-3.88591135637996E-02;-3.85855287068951E-02;-3.82722983201698E-02;-3.79142817121263E-02;-3.75066520217346E-02;-3.70447681157845E-02;-3.65244135791758E-02;-3.59417889085274E-02;-3.52931737968039E-02;-3.45743866077471E-02;-3.37808410499026E-02;-3.29066407929709E-02;-3.19448815953712E-02;-3.08866259228414E-02;-.029720304684843;-2.84312649836984E-02;-2.70008494733978E-02;-2.54040888842857E-02;-2.36084733241107E-02;-2.15677863297699E-02;-1.92118672735248E-02;-1.64237931592364E-02;-1.29799133042798E-02;-8.23790477811936E-03;0;7.91396146974227E-03;.012532239260835;1.59233078690275E-02;1.86855784402886E-02;2.10303819662385E-02;2.30684763641707E-02;.024866625998984;2.64693764798617E-02;2.79082102258007E-02;2.92067661859166E-02;3.03838986479098E-02;3.14536170524578E-02;3.24274339800177E-02;3.33143079028598E-02;3.41211473167488E-02;3.48535819035766E-02;3.55164415682775E-02;3.61135001130702E-02;3.66484290806716E-02;3.71248803272731E-02;3.75466018638399E-02;3.79178204635224E-02;3.82433073031592E-02;3.85281456039775E-02;3.87772557557807E-02;3.89953139544857E-02;3.91868289925426E-02;3.93555945949348E-02;3.95049037448119E-02;3.96369061672996E-02;.039753070070368;3.98542684294752E-02;3.99403212647492E-02;4.00105968760548E-02;4.00643166490583E-02;4.01005394328147E-02;4.01180531822055E-02;4.01160616208412E-02;4.00938887821252E-02;4.00507760694015E-02;3.99861319861708E-02;3.98993534006615E-02;3.97897767691546E-02;3.96564938598115E-02;3.94986101609856E-02;3.93152991810504E-02;3.91057495234229E-02;3.88691779982532E-02;3.86044891022168E-02;3.83113175848969E-02;3.79893384971684E-02;3.76384711550329E-02;.037258769215831;3.68506538555075E-02;3.64148304812455E-02;3.59522397220805E-02;3.54636509025131E-02;3.49498745073365E-02;3.44120500814451E-02;3.38511570729504E-02;3.32680740066956E-02;3.26635042535141E-02;3.20384959869279E-02;.031393958898772;.030730602936674;3.00495773573809E-02;2.93517098620052E-02;2.86378697790019E-02;.027909119635574;2.71663825321592E-02;2.64106840286228E-02;2.56431620767118E-02;2.48647721241522E-02;2.40767914846805E-02;2.32805540588102E-02;2.24772870040071E-02;2.16685366490605E-02;2.08556305161619E-02;.020039971726555;1.92229330781541E-02;1.84051353577624E-02;1.75876563648461E-02;1.67707269703987E-02;1.59544917902613E-02;1.51391722572291E-02;1.43246679848219E-02;1.35107301037303E-02;1.26974344511208E-02;1.18845394998795E-02;.011071543963796;1.02584877309377E-02;9.44526731767981E-03;8.63212630254751E-03;7.81974995551607E-03;7.00883217926054E-03;6.20016226618123E-03;5.39378337685957E-03;4.5883290675045E-03;3.77840878277973E-03;0
+						</z>
+					</pointList>
+				</wingAirfoil>
+				<wingAirfoil uID="iLoads-F6-200_VTP_Sec1_El1_Pro">
+					<name>Profile for iLoads-F6-200 - VTP Section 1 Main Element</name>
+					<description>Profile for iLoads-F6-200 - VTP Section 1 Main Element
+					</description>
+					<pointList>
+						<x mapType="vector">1.0;.98991954817428;.979841513042975;.969765772677974;.959692441153858;.949621552537913;.939553125188529;.929487145584438;.919423632590386;.909362479161365;.899303674430897;.889247129392932;.879192758047578;.86914047363081;.859090152083396;.849041679463208;.838994922159116;.828949735709054;.818905978486162;.808863478934234;.798822097564917;.78878162738658;.778741950614556;.768702813375308;.758664132491634;.74862561133439;.738587183700943;.72854856041097;.718509622240855;.708470193578804;.698430018438469;.688389056803181;.678346971517403;.668303741119852;.658259125805661;.648212958795994;.638165211191862;.628115575579853;.618064077532008;.608010525567381;.597954791144727;.587896905939168;.577836632790785;.5677740226539;.557709012960269;.547641496494801;.537571584724216;.527499171460226;.517424334392818;.507347157424814;.497267622666685;.487185904122702;.47710207169411;.4670162642468;.456928689647172;.446839493065956;.436748927074381;.426657240879009;.416564705010252;.406471645560167;.396378399102592;.386285316618941;.376192734279124;.366100932774167;.356010219900695;.345920768839783;.335832806942085;.325746516369994;.315661968210139;.30557937356636;.295498712780256;.285420138855644;.275343668711321;.265269311557478;.255197169102906;.245127140859371;.235059357269474;.224993705718779;.214930294758478;.204869058695829;.19481007976357;.18475336428274;.174699003285421;.164647086276301;.154597769751507;.144551264534379;.134507864455761;.12446796600193;.114432097365665;.104401048682204;9.43758864253871E-02;8.43581291475457E-02;.074350040811605;6.43551080914424E-02;5.43784814588785E-02;.044429161555322;.034523451712316;2.46951364103692E-02;.01502983024959;5.84726244164809E-03;0;5.8472655996815E-03;1.50298336822945E-02;2.46951398754819E-02;3.45234551613014E-02;4.44291649722479E-02;5.43784848371969E-02;6.43551114281169E-02;.074350044104361;8.43581323969747E-02;9.43758896303626E-02;.104401051842549;.114432100481255;.124467969072794;.134507867481945;.144551267515977;.154597772688625;.164647089169077;.174699006133976;.184753367087258;.194810082524181;.204869061412744;.21493029743185;.224993708348832;.23505935985639;.245127143403373;.255197171604222;.265269314016321;.275343671127967;.285420141230297;.295498715113238;.305579375857909;.315661970460549;.325746518579563;.335832809111094;.34592077096858;.356010221989585;.366100934823495;.376192736289244;.386285318590199;.39637840103537;.406471647454843;.416564706867205;.426657242698619;.436748928857034;.446839494812035;.456928691357043;.467016265920837;.477102073332674;.487185905726135;.497267624235358;.507347158959048;.517424335892942;.527499172926578;.537571586157082;.547641497894506;.557709014327092;.567774023988106;.577836634092677;.587896907208972;.597954792382702;.608010526773759;.618064078706984;.628115576723673;.638165212304686;.648212959878012;.658259126857042;.668303742140722;.678346972507934;.688389057763467;.698430019368629;.708470194478929;.718509623111006;.728548561251233;.738587184511341;.74862561211497;.7586641332424;.768702814096263;.778741951305681;.788781628047842;.798822098196271;.80886347953561;.818905979057485;.828949736250223;.838994922670022;.849041679943723;.859090152533376;.869140474050095;.879192758435994;.889247129750287;.899303674756987;.909362479455968;.919423632853263;.929487145815311;.939553125387191;.949621552704053;.959692441287179;.969765772778167;.979841513109717;.989919548207225;1.0
+						</x>
+						<y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+						</y>
+						<z mapType="vector">0;-6.63755982290404E-04;-1.21650368492403E-03;-1.81084971912808E-03;-2.44472106470819E-03;-3.11629925021986E-03;-3.82383067485183E-03;-4.56565192713766E-03;-5.33969204230403E-03;-6.14408264952478E-03;-6.97733621038985E-03;-7.83743474325949E-03;-8.72258729960553E-03;-9.63113667274225E-03;-1.05611514641783E-02;-1.15109378629458E-02;-1.24787033951185E-02;-1.34626420168525E-02;-1.44610671770902E-02;-.015472065065301;-1.64941116172778E-02;-1.75250717230158E-02;-1.85637313038246E-02;-1.96075932758509E-02;-2.06558354681145E-02;-2.17056064934965E-02;-2.27562716420082E-02;-2.38050650968212E-02;-2.48508404897151E-02;-2.58918948167218E-02;-.026925725195854;-2.79518871018981E-02;-2.89669921133157E-02;-2.99707048933939E-02;-3.09604560754263E-02;-3.19343319169434E-02;-3.28917582030434E-02;-3.38291564618802E-02;-3.47463695010587E-02;-3.56407779088729E-02;-3.65103068004807E-02;-3.73545874598048E-02;-3.81699141068596E-02;-3.89558733968996E-02;-3.97104646352725E-02;-4.04308403406061E-02;-4.11169158143699E-02;-4.17652141800451E-02;-4.23746884276422E-02;-4.29441429266499E-02;-4.34702099994978E-02;-4.39526180856546E-02;-.044388570673329;-4.47761514754314E-02;-.045114603010805;-4.54006157150227E-02;-4.56333523868803E-02;-4.58108952538643E-02;-4.59307548178411E-02;-4.59923256301465E-02;-4.59947552459736E-02;-4.59372285483785E-02;-4.58212284833564E-02;-4.56503059403956E-02;-4.54240466480355E-02;-4.51470978751121E-02;-4.48203857686689E-02;-4.44455454684723E-02;-4.40264409929107E-02;-.043562699981592;-4.30586429855083E-02;-4.25144592225057E-02;-4.19325886092798E-02;-4.13152186004873E-02;-4.06626966285294E-02;-3.99783202647474E-02;-3.92616762814506E-02;-3.85156775631563E-02;-3.77400408401165E-02;-3.69366769667007E-02;-3.61055319861234E-02;-3.52474284969721E-02;-3.43621680837326E-02;-3.34495737363576E-02;-3.25087801069085E-02;-.031538428889802;-3.05364557625872E-02;-2.94999928371654E-02;-2.84252255821025E-02;-.027306385244784;-.026136012110265;-2.49039096972659E-02;-2.35952873109601E-02;-2.21905725455114E-02;-2.06611718405948E-02;-1.89636273504294E-02;-1.70287210611866E-02;-.014735132006083;-1.18374381157085E-02;-7.69124379926166E-03;0;7.69123811372416E-03;1.18374317682638E-02;1.47351254233073E-02;1.70287143813401E-02;1.89636206364773E-02;2.06611651265665E-02;2.21905658517271E-02;2.35952806504553E-02;2.49039030799309E-02;2.61360055421345E-02;2.73063787302422E-02;.028425219124944;2.94999864396834E-02;3.05364494267161E-02;3.15384226168761E-02;3.25087738980167E-02;3.34495675921649E-02;3.43621620050415E-02;3.52474224838464E-02;3.61055260392137E-02;3.69366710857155E-02;3.77400350255676E-02;3.85156718146276E-02;3.92616705992262E-02;3.99783146485348E-02;4.06626910782473E-02;4.13152131161998E-02;4.19325831903812E-02;4.25144538695943E-02;4.30586376973741E-02;4.35626947588202E-02;4.40264358349741E-02;4.44455403752394E-02;4.48203807404333E-02;4.51470929109154E-02;4.54240417485068E-02;4.56503011048477E-02;4.58212237118569E-02;4.59372238412685E-02;4.59947506026035E-02;4.59923210511458E-02;4.59307503038555E-02;4.58108908054818E-02;4.56333480047031E-02;4.54006114002436E-02;4.51145987638947E-02;.044776147297236;4.43885665646746E-02;.043952614046933;4.34702060318259E-02;4.29441390304555E-02;4.23746846034823E-02;4.17652104288364E-02;.04111691213637;4.04308367366473E-02;3.97104611058448E-02;3.89558699422806E-02;.038169910728027;3.73545841569213E-02;3.65103035741135E-02;3.56407747595572E-02;3.47463664289232E-02;3.38291534677562E-02;3.28917552870671E-02;3.19343290795034E-02;3.09604533169992E-02;2.99707022140487E-02;2.89669895137004E-02;2.79518845820993E-02;2.69257227561905E-02;2.58918924575038E-02;2.48508382110203E-02;2.38050628990946E-02;2.27562695252616E-02;2.17056044580458E-02;2.06558335140482E-02;1.96075914033289E-02;1.85637295129933E-02;1.75250700139384E-02;.016494109990101;1.54720635200371E-02;1.44610657138487E-02;1.34626406356206E-02;1.24787020959482E-02;1.15109366458091E-02;1.05611503290672E-02;9.63113561960807E-03;8.72258632839369E-03;7.83743385388186E-03;6.97733540277261E-03;6.14408192351342E-03;5.33969139777955E-03;4.56565136396524E-03;3.82383019281447E-03;3.11629884912959E-03;2.44472074435374E-03;1.81084947927235E-03;1.21650352530926E-03;6.63755902637472E-04;0
+						</z>
+					</pointList>
+				</wingAirfoil>
+			</wingAirfoils></profiles></vehicles><toolspecific><TAU><tool>
+				<name>TAU</name>
+				<version>1.0.0.0</version>
+			</tool><aircraftModelUID>iLoads-F6-200</aircraftModelUID><referenceValues><area>122</area><lengthCMXCMZ>4.2</lengthCMXCMZ><lengthCMY>4.2</lengthCMY><momentReferencePoint><x>16.2</x><y>0</y><z>0</z></momentReferencePoint></referenceValues><performanceMap><machNumber mapType="vector">0.2</machNumber><reynoldsNumber mapType="vector">18817898</reynoldsNumber><angleOfYaw mapType="vector">0</angleOfYaw><angleOfAttack mapType="vector">0;5;10</angleOfAttack></performanceMap><toolParameters>
+				<archiveMode>2</archiveMode>
+				<parallelComputationMode>16</parallelComputationMode>
+				<gridGenerationOnly>false</gridGenerationOnly>
+				<preProcessing>
+					<gridGenerator>centaur</gridGenerator>
+					<centaur>
+						<numberOfProcessors>16</numberOfProcessors>
+						<maxCurveDiscretizationPoints>201</maxCurveDiscretizationPoints>
+						<gridQuality>2</gridQuality>
+						<autoCADCleaningEnabled>true</autoCADCleaningEnabled>
+                                                <trailingEdgeSourcesEnabled>true</trailingEdgeSourcesEnabled>
+					</centaur>
+				</preProcessing>
+				<processing>
+                    <referenceTemperature>288.15</referenceTemperature>
+					<cflNumber>5</cflNumber>
+				</processing>
+			</toolParameters></TAU></toolspecific></cpacs>
