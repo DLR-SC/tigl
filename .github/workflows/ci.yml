@@ -6,6 +6,12 @@ on:
  push:
  pull_request:
 
+env:
+  CCACHE_DIR: ccache
+  CLCACHE_DIR: clcache
+  CLCACHE_HARDLINK: 1
+  CMAKE_TIGL_ARGS: "-DCMAKE_BUILD_TYPE=Release -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
+ 
 jobs:
 
   build:
@@ -23,61 +29,125 @@ jobs:
         ninja: ['',]
         freeimageplus: ['',]
 
-    runs-on: ${{ matrix.os }}
-
-    env:
-      CCACHE_DIR: $(Pipeline.Workspace)/ccache
-      CLCACHE_DIR: $(Pipeline.Workspace)\clcache
-      CLCACHE_SERVER: 1
-      CLCACHE_HARDLINK: 1
-      CMAKE_TIGL_ARGS: "-DCMAKE_BUILD_TYPE=Release -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
+    runs-on: ${{ matrix.os }}    
 
     steps:
     - uses: actions/checkout@v1
+      with:
+        submodules: recursive
+  
+    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev (ubuntu)
+      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev
+      if: contains(matrix.os, 'ubuntu')
+    
+    - name: Add conda to path (ubuntu, macos)
+      run: |
+        echo "::add-path::$CONDA/bin"
+        export PATH=$CONDA/bin:$PATH
+        conda init bash
+      if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+    - name: Add conda to path (windows)
+      run: |
+        echo "::add-path::$env:CONDA\Scripts"
+        $env:Path += ";$env:CONDA\Scripts"
+        conda init powershell
+      if: contains(matrix.os, 'windows')
+    - name: MacOS Conda Ownership Workaround (macos)
+      run: sudo chown -R $USER $CONDA
+      if: contains(matrix.os, 'macos')
 
     - name: Install dependencies into Miniconda environment
       run: |
         conda update -q conda
-        conda create --yes --name build_env python${{ parameters.python }} pythonocc-core${{ parameters.pythonocc }} tixi3${{ parameters.tixi3 }} doxygen${{ parameters.doxygen }} swig${{ parameters.swig }} qt${{ parameters.qt }} oce${{ parameters.oce }} doxygen${{ parameters.doxygen }} freeimageplus${{ parameters.freeimageplus }} ninja${{ parameters.ninja }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda create --yes --name build_env python${{ matrix.python }} pythonocc-core${{ matrix.pythonocc }} tixi3${{ matrix.tixi3 }} doxygen${{ matrix.doxygen }} swig${{ matrix.swig }} qt${{ matrix.qt }} oce${{ matrix.oce }} doxygen${{ matrix.doxygen }} freeimageplus${{ matrix.freeimageplus }} ninja${{ matrix.ninja }} -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
-        conda list -n build_env
-    
-    - name: Activate conda environment and setup build environment
+        conda list -n build_env    
+
+    - name: Install ccache (ubuntu)
+      run: |
+        sudo apt-get install ccache -y
+        echo "::add-path::/usr/lib/ccache"
+      if: contains(matrix.os, 'ubuntu')
+    - name: Install ccache (macos)
+      run: |
+        brew install zstd libb2
+        brew install --HEAD ccache
+        echo "::add-path::/usr/local/opt/ccache/libexec"
+      if: contains(matrix.os, 'macos')
+    - name: Install clcache (windows)
+      run: |
+        call activate build_env
+        pip install git+https://github.com/frerich/clcache.git
+      shell: cmd
+      if: contains(matrix.os, 'windows')
+      
+    - name: restore ccache (ubuntu, macos)
+      uses: actions/cache@v1
+      with:
+        path: ccache
+        key: ${{ matrix.os }}-ccache-${{ github.sha }}
+        restore-keys: ${{ matrix.os }}-ccache
+      if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+      
+    - name: restore clcache (windows)
+      uses: actions/cache@v1
+      with:
+        path: clcache
+        key: ${{ matrix.os }}-clcache-${{ github.sha }}
+        restore-keys: ${{ matrix.os }}-clcache
+      if: contains(matrix.os, 'windows')
+      
+    - name: Build TiGL (ubuntu, macos)
       run: |
         source activate build_env
-        export CMAKE_PREFIX_PATH=${CONDA_PREFIX}/lib:${CONDA_PREFIX}/include
-      if: contains(matrix.os, 'ubuntu') or contains(matrix.os, 'macos')
-    - name: Activate conda environment and setup build environment
+        echo "::set-env name=CMAKE_PREFIX_PATH::${CONDA_PREFIX}/lib:${CONDA_PREFIX}/include"
+        mkdir build
+        cd build
+        cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install $CMAKE_TIGL_ARGS -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core
+        cmake --build . -j 4 --config Release --target install
+      if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+    - name: Build TiGL (windows)
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         call activate build_env
         set CC=clcache.exe
         set CXX=clcache.exe
         clcache.exe -s
-        powershell.exe -Command "Start-Process clcache-server"
-        set CMAKE_PREFIX_PATH=%CONDA_PREFIX%/lib:%CONDA_PREFIX%/include
-      if: contains(matrix.os, 'windows')
-
-    - name: Install ccache
-      run: |
-        sudo apt-get install ccache -y
-        set PATH=/usr/lib/ccache:$PATH
-      if: contains(matrix.os, 'ubuntu')
-    - name: Install ccache
-      run: |
-        brew install zstd libb2
-        brew install --HEAD ccache
-        set PATH=/usr/local/opt/ccache/libexec:$PATH
-      if: contains(matrix.os, 'macos')
-    - name: Install clcache
-      run: |
-        call activate build_env
-        pip install git+https://github.com/frerich/clcache.git
-      if: contains(matrix.os, 'windows')
-
-    - name: Build TiGL
-      run: |
+        echo "::set-env name=CMAKE_PREFIX_PATH::%CONDA_PREFIX%/lib:%CONDA_PREFIX%/include"
         mkdir build
         cd build
-        cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install $(CMAKE_TIGL_ARGS)
+        cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install %CMAKE_TIGL_ARGS%
         cmake --build . -j 4 --config Release --target install
+      shell: cmd
+      if: contains(matrix.os, 'windows')
+        
+    - name: Run unit tests (ubuntu, macos)
+      run: |
+        source activate build_env
+        cd build
+        cd tests/unittests/
+        ./TiGL-unittests --gtest_output=xml:test_results.xml
+      if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+    - name: Run unit tests (windows)
+      run: |
+        echo "::add-path::build\install\bin"
+        cd build
+        cmake --build . --target tigl-java-demo
+        cd tests\unittests
+        .\TiGL-unittests.exe --gtest_output=xml:test_results.xml
+      if: contains(matrix.os, 'windows')
+      
+    - name: Create package (macos)
+      run: |
+        cd build
+        cmake --build . --target doc
+        cmake --build . --target package
+      if: contains(matrix.os, 'macos')
+    - name: Create package (windows)
+      run: |
+        conda activate build_env
+        cd build
+        cmake --build . --target doc
+        cpack -G ZIP
+      if: contains(matrix.os, 'windows')
+        

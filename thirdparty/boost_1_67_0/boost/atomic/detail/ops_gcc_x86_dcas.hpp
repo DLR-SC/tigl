@@ -405,7 +405,7 @@ struct gcc_dcas_x86_64
 
         // Clang cannot allocate rax:rdx register pairs but it has sync intrinsics
         storage_type value = storage_type();
-        return __sync_val_compare_and_swap(&storage, value, value);
+        return __sync_val_compare_and_swap(const_cast<storage_type volatile*>(&storage), value, value);
 
 #elif defined(BOOST_ATOMIC_DETAIL_X86_NO_ASM_AX_DX_PAIRS)
 
