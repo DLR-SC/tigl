@@ -73,6 +73,7 @@
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
 #include "BRepClass3d_SolidClassifier.hxx"
+#include "BRepExtrema_DistShapeShape.hxx"
 
 #include <Approx_Curve3d.hxx>
 #include <BRepAdaptor_HCompCurve.hxx>
@@ -330,6 +331,29 @@ gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p)
 
     return gp_Pnt2d(px,py);
 }
+
+gp_Pnt ProjectPointOnShape(const TopoDS_Shape &shape, const gp_Pnt &point, const gp_Vec &direction)
+{
+    // Construct line in direction of projection through given point
+    gp_Lin line(point, gp_Dir(direction));
+    TopoDS_Edge dir = BRepBuilderAPI_MakeEdge(line).Edge();
+
+    // Construct Extrema class with line and surface and calculate closest points
+    // (should be one if line goes through surface)
+    BRepExtrema_DistShapeShape extrema_distShapeShape(dir, shape);
+    int nPoints = extrema_distShapeShape.NbSolution();
+
+    // Make sure only one point was found with a distance of "zero"
+    if (nPoints == 0) {
+        throw tigl::CTiglError("Projection of point to shape failed.", TIGL_MATH_ERROR);
+    }
+    else if (nPoints > 1) {
+        LOG(WARNING) << "Projection of point of shape has multiple results. Choosing first.";
+    }
+
+    return extrema_distShapeShape.PointOnShape2(nPoints);
+}
+
 
 gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
 {

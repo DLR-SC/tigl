@@ -180,6 +180,8 @@ public:
 
     TIGL_EXPORT const CTiglWingChordface& GetChordface() const;
 
+    // get short name for the CS
+    TIGL_EXPORT std::string GetShortName() const;
 private:
     struct GeometryCache {
         TopoDS_Shape loftShape;
@@ -214,8 +216,6 @@ private:
     void BuildLines(LinesCache& cache) const; // Method for building wires for eta-, leading edge-, trailing edge-lines
 
 private:
-    // get short name for loft
-    std::string GetShortShapeName() const;
 
     std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 

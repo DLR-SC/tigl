@@ -28,11 +28,10 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSControlSurfaceWingCutOut;
 
 namespace generated
 {
-    class CPACSControlSurfaceWingCutOut;
-
     // This class is used in:
     // CPACSControlSurfaceWingCutOut
 
@@ -53,13 +52,13 @@ namespace generated
     class CPACSControlSurfaceSkinCutOut : public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSControlSurfaceSkinCutOut(CPACSControlSurfaceWingCutOut* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSControlSurfaceSkinCutOut(CCPACSControlSurfaceWingCutOut* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSControlSurfaceSkinCutOut();
 
-        TIGL_EXPORT CPACSControlSurfaceWingCutOut* GetParent();
+        TIGL_EXPORT CCPACSControlSurfaceWingCutOut* GetParent();
 
-        TIGL_EXPORT const CPACSControlSurfaceWingCutOut* GetParent() const;
+        TIGL_EXPORT const CCPACSControlSurfaceWingCutOut* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -82,7 +81,7 @@ namespace generated
         TIGL_EXPORT virtual void SetXsiOuterBorder_choice2(const boost::optional<double>& value);
 
     protected:
-        CPACSControlSurfaceWingCutOut* m_parent;
+        CCPACSControlSurfaceWingCutOut* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -111,7 +110,4 @@ namespace generated
 } // namespace generated
 
 // CPACSControlSurfaceSkinCutOut is customized, use type CCPACSControlSurfaceSkinCutout directly
-
-// Aliases in tigl namespace
-using CCPACSControlSurfaceWingCutOut = generated::CPACSControlSurfaceWingCutOut;
 } // namespace tigl

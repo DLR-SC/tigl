@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+ * Copyright (C) 2020 German Aerospace Center (DLR/SC)
  *
  * Created: 2014-01-28 Mark Geiger <Mark.Geiger@dlr.de>
  *
@@ -23,6 +23,8 @@
 #include "generated/CPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "PNamedShape.h"
 
+#include <string>
+
 #include <gp_Vec.hxx>
 
 namespace tigl
@@ -31,7 +33,7 @@ namespace tigl
 class CCPACSControlSurfaceOuterShapeTrailingEdge : public generated::CPACSControlSurfaceOuterShapeTrailingEdge
 {
 public:
-    CCPACSControlSurfaceOuterShapeTrailingEdge(CCPACSTrailingEdgeDevice* parent);
+    CCPACSControlSurfaceOuterShapeTrailingEdge(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr);
 
     /**
      * Builds and returns the outer flap shape.
@@ -39,7 +41,7 @@ public:
      * @param wingCleanShape Shape of the wing without the flaps, required for modeling
      * @param upDir Up direction of the component segment
      */
-    TIGL_EXPORT PNamedShape GetLoft(PNamedShape wingCleanShape, gp_Vec upDir);
+    TIGL_EXPORT PNamedShape GetLoft(PNamedShape wingCleanShape, gp_Vec upDir) const;
 
     /**
      * Returns the cutout shape, which can be used when no wing cutout is defined in the
@@ -47,15 +49,17 @@ public:
      *
      * The return value can be zero, in case the flap shape is build up from flap profiles
      */
-    TIGL_EXPORT PNamedShape cutoutShape(PNamedShape wingCleanShape, gp_Vec upDir);
+    TIGL_EXPORT PNamedShape CutoutShape(PNamedShape wingCleanShape, gp_Vec upDir) const;
 
-    TIGL_EXPORT void setUID(const std::string& uid);
+    TIGL_EXPORT void SetUID(const std::string& uid);
 
 private:
+    bool NeedsWingIntersection() const;
 
     // helper objects
-    PNamedShape _outerShape;
-    PNamedShape _cutterShape;
+    // TODO: Use cache
+    mutable PNamedShape _outerShape;
+    mutable PNamedShape _cutterShape;
     std::string _uid;
 };
 

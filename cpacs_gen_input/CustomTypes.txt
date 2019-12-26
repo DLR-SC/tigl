@@ -128,6 +128,7 @@ CPACSControlSurfaceSkinCutOutBorder       CCPACSControlSurfaceSkinCutOutBorder
 CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
 CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
 CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
+CPACSControlSurfaceWingCutOut             CCPACSControlSurfaceWingCutOut
 
 // Pylons
 CPACSEnginePylon                         CCPACSEnginePylon
@@ -141,6 +142,6 @@ CPACSNacelleCowl                         CCPACSNacelleCowl
 CPACSNacelleSections                     CCPACSNacelleSections
 CPACSNacelleSection                      CCPACSNacelleSection
 CPACSProfileGeometry2D                   CCPACSNacelleProfile
-CPACSNacelleGuideCurves					         CCPACSNacelleGuideCurves
+CPACSNacelleGuideCurves                  CCPACSNacelleGuideCurves
 CPACSRotationCurve                       CCPACSRotationCurve
 CPACSNacelleCenterCowl                   CCPACSNacelleCenterCowl

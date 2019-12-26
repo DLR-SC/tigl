@@ -162,6 +162,12 @@ public:
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound GetGuideCurveWires() const;
 
+    // Adjust, whether the wing should be modeled with the flaps or not
+    TIGL_EXPORT void SetBuildFlaps(bool enabled);
+
+    // Returns the wing shape without any extended flaps
+    TIGL_EXPORT PNamedShape GetWingCleanShape() const;
+
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;
 
@@ -186,6 +192,9 @@ private:
 
     // get short name for loft
     std::string GetShortShapeName() const;
+    void BuildWingWithCutouts() const;
+    // Adds all Segments of this wing and flaps to one shape
+    PNamedShape GroupedFlapsAndWingShapes() const;
 
 private:
     bool                           isRotorBlade;             /**< Indicates if this wing is a rotor blade */
@@ -194,8 +203,13 @@ private:
     TopoDS_Shape                   upperShape;
     TopoDS_Shape                   lowerShape;
     Cache<TopoDS_Compound, CCPACSWing> guideCurves;
+
+    // TODO: These two should go into a cache
+    mutable PNamedShape            wingShapeWithCutouts;     /**< Wing without flaps / flaps removed */
+    mutable PNamedShape            wingCleanShape;           /**< Clean wing surface without flaps cutout*/
     mutable bool                   rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
     mutable bool                   rebuildShells;
+    bool                           buildFlaps;               /**< Indicates if the wing's loft shall include flaps */
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
 

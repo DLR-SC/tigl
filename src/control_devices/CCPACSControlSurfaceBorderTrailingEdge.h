@@ -36,9 +36,26 @@ public:
 
     TIGL_EXPORT CTiglControlSurfaceBorderCoordinateSystem GetCoordinateSystem(gp_Vec upDir) const;
 
+    enum class ShapeType
+    {
+        SIMPLE   = 0,
+        LE_SHAPE = 1,
+        AIRFOIL  = 2
+    };
+
+    TIGL_EXPORT ShapeType GetShapeType() const;
+
+    // TODO: Rename
+    TIGL_EXPORT double getEtaTE() const;
+    TIGL_EXPORT double getEtaLE() const;
+    TIGL_EXPORT double getXsiLE() const;
+    TIGL_EXPORT double getXsiTE() const;
+
 private:
-
-
+    const CTiglUIDManager& uidMgr() const;
+    TopoDS_Wire GetAirfoilWire(CTiglControlSurfaceBorderCoordinateSystem &coords) const;
 };
+
+TIGL_EXPORT const CCPACSWingComponentSegment& ComponentSegment(const CCPACSControlSurfaceBorderTrailingEdge&);
 
 } // namespace tigl

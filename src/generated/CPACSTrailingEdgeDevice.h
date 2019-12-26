@@ -20,12 +20,12 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSControlSurfaceOuterShapeTrailingEdge.h>
+#include <CCPACSControlSurfaceWingCutOut.h>
 #include <CCPACSWingCSStructure.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSControlSurfacePath.h"
 #include "CPACSControlSurfaceTracks.h"
-#include "CPACSControlSurfaceWingCutOut.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
@@ -96,8 +96,8 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSControlSurfaceOuterShapeTrailingEdge& GetOuterShape() const;
         TIGL_EXPORT virtual CCPACSControlSurfaceOuterShapeTrailingEdge& GetOuterShape();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSControlSurfaceWingCutOut>& GetWingCutOut() const;
-        TIGL_EXPORT virtual boost::optional<CPACSControlSurfaceWingCutOut>& GetWingCutOut();
+        TIGL_EXPORT virtual const boost::optional<CCPACSControlSurfaceWingCutOut>& GetWingCutOut() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSControlSurfaceWingCutOut>& GetWingCutOut();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSWingCSStructure>& GetStructure() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWingCSStructure>& GetStructure();
@@ -108,7 +108,7 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSControlSurfaceTracks>& GetTracks() const;
         TIGL_EXPORT virtual boost::optional<CPACSControlSurfaceTracks>& GetTracks();
 
-        TIGL_EXPORT virtual CPACSControlSurfaceWingCutOut& GetWingCutOut(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSControlSurfaceWingCutOut& GetWingCutOut(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveWingCutOut();
 
         TIGL_EXPORT virtual CCPACSWingCSStructure& GetStructure(CreateIfNotExistsTag);
@@ -122,30 +122,30 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                                    m_uID;
+        std::string                                     m_uID;
 
         /// Name of the trailing edge device.
-        std::string                                    m_name;
+        std::string                                     m_name;
 
         /// Description of the trailing edge device.
-        boost::optional<std::string>                   m_description;
+        boost::optional<std::string>                    m_description;
 
         /// UID of the parent of the TED. The parent can
         /// either be the uID of the componentSegment of the wing, or the
         /// uID of another TED. In the second case this TED is placed within
         /// the other TED (double slotted flap). In this way n-slotted TEDs
         /// can be created.
-        std::string                                    m_parentUID;
+        std::string                                     m_parentUID;
 
-        CCPACSControlSurfaceOuterShapeTrailingEdge     m_outerShape;
+        CCPACSControlSurfaceOuterShapeTrailingEdge      m_outerShape;
 
-        boost::optional<CPACSControlSurfaceWingCutOut> m_wingCutOut;
+        boost::optional<CCPACSControlSurfaceWingCutOut> m_wingCutOut;
 
-        boost::optional<CCPACSWingCSStructure>         m_structure;
+        boost::optional<CCPACSWingCSStructure>          m_structure;
 
-        CPACSControlSurfacePath                        m_path;
+        CPACSControlSurfacePath                         m_path;
 
-        boost::optional<CPACSControlSurfaceTracks>     m_tracks;
+        boost::optional<CPACSControlSurfaceTracks>      m_tracks;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;

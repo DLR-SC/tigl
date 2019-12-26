@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSControlSurfaceWingCutOut.h"
 #include "CPACSControlSurfaceSkinCutOutBorder.h"
-#include "CPACSControlSurfaceWingCutOut.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -28,7 +28,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSControlSurfaceSkinCutOutBorder::CPACSControlSurfaceSkinCutOutBorder(CPACSControlSurfaceWingCutOut* parent, CTiglUIDManager* uidMgr)
+    CPACSControlSurfaceSkinCutOutBorder::CPACSControlSurfaceSkinCutOutBorder(CCPACSControlSurfaceWingCutOut* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -42,12 +42,12 @@ namespace generated
         }
     }
 
-    const CPACSControlSurfaceWingCutOut* CPACSControlSurfaceSkinCutOutBorder::GetParent() const
+    const CCPACSControlSurfaceWingCutOut* CPACSControlSurfaceSkinCutOutBorder::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSControlSurfaceWingCutOut* CPACSControlSurfaceSkinCutOutBorder::GetParent()
+    CCPACSControlSurfaceWingCutOut* CPACSControlSurfaceSkinCutOutBorder::GetParent()
     {
         return m_parent;
     }

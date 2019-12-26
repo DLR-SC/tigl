@@ -307,12 +307,12 @@ namespace generated
         return m_outerShape;
     }
 
-    const boost::optional<CPACSControlSurfaceWingCutOut>& CPACSTrailingEdgeDevice::GetWingCutOut() const
+    const boost::optional<CCPACSControlSurfaceWingCutOut>& CPACSTrailingEdgeDevice::GetWingCutOut() const
     {
         return m_wingCutOut;
     }
 
-    boost::optional<CPACSControlSurfaceWingCutOut>& CPACSTrailingEdgeDevice::GetWingCutOut()
+    boost::optional<CCPACSControlSurfaceWingCutOut>& CPACSTrailingEdgeDevice::GetWingCutOut()
     {
         return m_wingCutOut;
     }
@@ -347,7 +347,7 @@ namespace generated
         return m_tracks;
     }
 
-    CPACSControlSurfaceWingCutOut& CPACSTrailingEdgeDevice::GetWingCutOut(CreateIfNotExistsTag)
+    CCPACSControlSurfaceWingCutOut& CPACSTrailingEdgeDevice::GetWingCutOut(CreateIfNotExistsTag)
     {
         if (!m_wingCutOut)
             m_wingCutOut = boost::in_place(reinterpret_cast<CCPACSTrailingEdgeDevice*>(this), m_uidMgr);

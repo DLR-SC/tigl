@@ -39,6 +39,8 @@
 #include "CNamedShape.h"
 #include "CTiglCurveConnector.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CCPACSControlSurfaces.h"
+#include "CCPACSTrailingEdgeDevice.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -52,6 +54,9 @@
 #include "BRepTools.hxx"
 #include "ShapeFix_Wire.hxx"
 #include "CTiglMakeLoft.h"
+#include "CCutShape.h"
+#include "CFuseShapes.h"
+#include "CGroupShapes.h"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
@@ -85,6 +90,7 @@ namespace
         }
     }
 
+    size_t NumberOfControlSurfaces(const CCPACSWing& wing);
 }
 
 CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
@@ -93,6 +99,7 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
+    , buildFlaps(false)
 {
     if (parent->IsParent<CCPACSAircraftModel>())
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
@@ -110,6 +117,7 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
     , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
+    , buildFlaps(false)
 {
     Cleanup();
 }
@@ -353,7 +361,12 @@ std::string CCPACSWing::GetShortShapeName() const
 // build loft
 PNamedShape CCPACSWing::BuildLoft() const
 {
-    return BuildFusedSegments(true);
+    if (buildFlaps) {
+        return GroupedFlapsAndWingShapes();
+    } else {
+        wingCleanShape = BuildFusedSegments(true);
+        return wingCleanShape;
+    }
 }
 
 // Builds a fused shape of all wing segments
@@ -395,6 +408,103 @@ void CCPACSWing::BuildUpperLowerShells()
     lowerShape = generatorLow.Shape();
 }
 
+
+void CCPACSWing::BuildWingWithCutouts() const
+{
+
+    if (wingShapeWithCutouts) {
+        // nothing to do, because everything is built already.
+        return;
+    }
+
+    if (NumberOfControlSurfaces(*this) == 0) {
+        return;
+    }
+
+    if ( !wingCleanShape ) {
+        // remember old wing loft
+        wingCleanShape = BuildFusedSegments(true);
+    }
+
+    TopoDS_Compound allFlapPrisms;
+    BRep_Builder compoundBuilderFlaps;
+    compoundBuilderFlaps.MakeCompound (allFlapPrisms);
+
+    PNamedShape fusedBoxes;
+    bool first = true;
+    for ( int i = 1; i <= GetComponentSegmentCount(); i++ ) {
+
+       const CCPACSWingComponentSegment &componentSegment = GetComponentSegment(i);
+       if (!componentSegment.GetControlSurfaces().is_initialized()) continue;
+
+       const CCPACSControlSurfaces& controlSurfs = componentSegment.GetControlSurfaces().value();
+       if (!controlSurfs.GetTrailingEdgeDevices().is_initialized()) continue;
+       const CCPACSTrailingEdgeDevices& controlSurfaceDevices = controlSurfs.GetTrailingEdgeDevices().value();
+
+        for ( size_t j = controlSurfaceDevices.GetTrailingEdgeDevices().size(); j > 0 ; j-- ) {
+            CCPACSTrailingEdgeDevice& controlSurfaceDevice = *controlSurfaceDevices.GetTrailingEdgeDevices().at(j);
+
+            PNamedShape controlSurfacePrism = controlSurfaceDevice.GetCutOutShape();
+            if (controlSurfaceDevice.GetType() != SPOILER) {
+                if (!first) {
+                    ListPNamedShape childs;
+                    childs.push_back(controlSurfacePrism);
+                    fusedBoxes = CFuseShapes(fusedBoxes, childs);
+                }
+                else {
+                    first = false;
+                    fusedBoxes = controlSurfacePrism;
+                }
+            }
+
+            // trigger build of the flap
+            controlSurfaceDevice.GetLoft();
+        }
+    }
+
+    CCutShape cutter(wingCleanShape, fusedBoxes);
+    cutter.Perform();
+    wingShapeWithCutouts = cutter.NamedShape();
+    for (int iFace = 0; iFace < static_cast<int>(wingShapeWithCutouts->GetFaceCount()); ++iFace) {
+        CFaceTraits ft = wingShapeWithCutouts->GetFaceTraits(iFace);
+        ft.SetOrigin(wingCleanShape);
+        wingShapeWithCutouts->SetFaceTraits(iFace, ft);
+    }
+}
+
+// Builds a fuse shape of all wing segments with flaps
+PNamedShape CCPACSWing::GroupedFlapsAndWingShapes() const
+{
+    // check whether there are control surfaces
+    if (!GetComponentSegments() || NumberOfControlSurfaces(*this) == 0) {
+        return PNamedShape();
+    }
+
+    BuildWingWithCutouts();
+    ListPNamedShape flapsAndWingShapes;
+
+    for (const auto& componentSegment : GetComponentSegments()->GetComponentSegments()) {
+
+       if (!componentSegment->GetControlSurfaces().is_initialized()) continue;
+
+       const auto& controlSurfs = componentSegment->GetControlSurfaces().value();
+       if (!controlSurfs.GetTrailingEdgeDevices().is_initialized()) continue;
+
+       const auto& controlSurfaceDevices = controlSurfs.GetTrailingEdgeDevices().value();
+       const auto& devices = controlSurfaceDevices.GetTrailingEdgeDevices();
+       for ( size_t j = devices.size(); j > 0 ; j-- ) {
+
+            const auto& controlSurfaceDevice = *devices.at(j);
+            auto deviceShape = controlSurfaceDevice.GetTransformedFlapShape();
+            flapsAndWingShapes.push_back(deviceShape);
+       }
+    }
+
+    flapsAndWingShapes.push_back(wingShapeWithCutouts);
+    auto loft = CGroupShapes(flapsAndWingShapes);
+
+    return loft;
+}
 
 // Get the positioning transformation for a given section-uid
 CTiglTransformation CCPACSWing::GetPositioningTransformation(std::string sectionUID)
@@ -848,6 +958,38 @@ TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransfo
     transformedWire = trafo.Transform(transformedWire);
 
     return transformedWire;
+}
+
+void CCPACSWing::SetBuildFlaps(bool build)
+{
+    buildFlaps = build;
+}
+
+PNamedShape CCPACSWing::GetWingCleanShape() const
+{
+    if (!wingCleanShape) {
+        BuildLoft();
+    }
+
+    return wingCleanShape;
+}
+
+namespace
+{
+
+    size_t NumberOfControlSurfaces(const CCPACSWing& wing)
+    {
+        size_t nControlSurfaces = 0;
+        for ( const auto& componentSegment : wing.GetComponentSegments()->GetComponentSegments() ) {
+           if (!componentSegment->GetControlSurfaces() || !componentSegment->GetControlSurfaces()->GetTrailingEdgeDevices()) {
+               continue;
+           }
+           const CCPACSTrailingEdgeDevices& teds = componentSegment->GetControlSurfaces()->GetTrailingEdgeDevices().value();
+           nControlSurfaces += teds.GetTrailingEdgeDevices().size();
+        }
+        return nControlSurfaces;
+    }
+
 }
 
 } // end namespace tigl

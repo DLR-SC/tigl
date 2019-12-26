@@ -671,7 +671,7 @@ const CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const
 }
 
 // get short name for loft
-std::string CCPACSWingComponentSegment::GetShortShapeName() const
+std::string CCPACSWingComponentSegment::GetShortName() const
 {
     unsigned int windex = 0;
     unsigned int wcsindex = 0;
@@ -698,7 +698,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft() const
 {
     // Set Names
     std::string loftName = m_uID;
-    std::string loftShortName = GetShortShapeName();
+    std::string loftShortName = GetShortName();
     PNamedShape loft (new CNamedShape(geomCache->loftShape, loftName.c_str(), loftShortName));
     SetFaceTraits(loft, static_cast<unsigned int>(wingSegments->size()));
     return loft;

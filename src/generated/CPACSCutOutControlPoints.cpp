@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSControlSurfaceWingCutOut.h"
+#include "CCPACSControlSurfaceWingCutOut.h"
 #include "CPACSCutOutControlPoints.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSCutOutControlPoints::CPACSCutOutControlPoints(CPACSControlSurfaceWingCutOut* parent)
+    CPACSCutOutControlPoints::CPACSCutOutControlPoints(CCPACSControlSurfaceWingCutOut* parent)
         : m_innerBorder(this)
         , m_outerBorder(this)
     {
@@ -39,12 +39,12 @@ namespace generated
     {
     }
 
-    const CPACSControlSurfaceWingCutOut* CPACSCutOutControlPoints::GetParent() const
+    const CCPACSControlSurfaceWingCutOut* CPACSCutOutControlPoints::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSControlSurfaceWingCutOut* CPACSCutOutControlPoints::GetParent()
+    CCPACSControlSurfaceWingCutOut* CPACSCutOutControlPoints::GetParent()
     {
         return m_parent;
     }

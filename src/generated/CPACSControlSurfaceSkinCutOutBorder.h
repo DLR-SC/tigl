@@ -30,11 +30,10 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSControlSurfaceWingCutOut;
 
 namespace generated
 {
-    class CPACSControlSurfaceWingCutOut;
-
     // This class is used in:
     // CPACSControlSurfaceWingCutOut
 
@@ -49,13 +48,13 @@ namespace generated
     class CPACSControlSurfaceSkinCutOutBorder : public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSControlSurfaceSkinCutOutBorder(CPACSControlSurfaceWingCutOut* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSControlSurfaceSkinCutOutBorder(CCPACSControlSurfaceWingCutOut* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSControlSurfaceSkinCutOutBorder();
 
-        TIGL_EXPORT CPACSControlSurfaceWingCutOut* GetParent();
+        TIGL_EXPORT CCPACSControlSurfaceWingCutOut* GetParent();
 
-        TIGL_EXPORT const CPACSControlSurfaceWingCutOut* GetParent() const;
+        TIGL_EXPORT const CCPACSControlSurfaceWingCutOut* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -87,7 +86,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveEtaTE_choice2();
 
     protected:
-        CPACSControlSurfaceWingCutOut* m_parent;
+        CCPACSControlSurfaceWingCutOut* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -119,7 +118,4 @@ namespace generated
 } // namespace generated
 
 // CPACSControlSurfaceSkinCutOutBorder is customized, use type CCPACSControlSurfaceSkinCutOutBorder directly
-
-// Aliases in tigl namespace
-using CCPACSControlSurfaceWingCutOut = generated::CPACSControlSurfaceWingCutOut;
 } // namespace tigl

@@ -30,8 +30,8 @@ namespace generated
 {
     CPACSControlSurfaceWingCutOut::CPACSControlSurfaceWingCutOut(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_upperSkin(this, m_uidMgr)
-        , m_lowerSkin(this, m_uidMgr)
+        , m_upperSkin(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr)
+        , m_lowerSkin(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -91,7 +91,7 @@ namespace generated
 
         // read element cutOutProfileControlPoint
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cutOutProfileControlPoint")) {
-            m_cutOutProfileControlPoint = boost::in_place(this);
+            m_cutOutProfileControlPoint = boost::in_place(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this));
             try {
                 m_cutOutProfileControlPoint->ReadCPACS(tixiHandle, xpath + "/cutOutProfileControlPoint");
             } catch(const std::exception& e) {
@@ -102,7 +102,7 @@ namespace generated
 
         // read element cutOutProfiles
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cutOutProfiles")) {
-            m_cutOutProfiles = boost::in_place(this, m_uidMgr);
+            m_cutOutProfiles = boost::in_place(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr);
             try {
                 m_cutOutProfiles->ReadCPACS(tixiHandle, xpath + "/cutOutProfiles");
             } catch(const std::exception& e) {
@@ -113,7 +113,7 @@ namespace generated
 
         // read element innerBorder
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/innerBorder")) {
-            m_innerBorder = boost::in_place(this, m_uidMgr);
+            m_innerBorder = boost::in_place(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr);
             try {
                 m_innerBorder->ReadCPACS(tixiHandle, xpath + "/innerBorder");
             } catch(const std::exception& e) {
@@ -124,7 +124,7 @@ namespace generated
 
         // read element outerBorder
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/outerBorder")) {
-            m_outerBorder = boost::in_place(this, m_uidMgr);
+            m_outerBorder = boost::in_place(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr);
             try {
                 m_outerBorder->ReadCPACS(tixiHandle, xpath + "/outerBorder");
             } catch(const std::exception& e) {
@@ -256,7 +256,7 @@ namespace generated
     CPACSCutOutControlPoints& CPACSControlSurfaceWingCutOut::GetCutOutProfileControlPoint(CreateIfNotExistsTag)
     {
         if (!m_cutOutProfileControlPoint)
-            m_cutOutProfileControlPoint = boost::in_place(this);
+            m_cutOutProfileControlPoint = boost::in_place(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this));
         return *m_cutOutProfileControlPoint;
     }
 
@@ -268,7 +268,7 @@ namespace generated
     CPACSCutOutProfiles& CPACSControlSurfaceWingCutOut::GetCutOutProfiles(CreateIfNotExistsTag)
     {
         if (!m_cutOutProfiles)
-            m_cutOutProfiles = boost::in_place(this, m_uidMgr);
+            m_cutOutProfiles = boost::in_place(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr);
         return *m_cutOutProfiles;
     }
 
@@ -280,7 +280,7 @@ namespace generated
     CCPACSControlSurfaceSkinCutOutBorder& CPACSControlSurfaceWingCutOut::GetInnerBorder(CreateIfNotExistsTag)
     {
         if (!m_innerBorder)
-            m_innerBorder = boost::in_place(this, m_uidMgr);
+            m_innerBorder = boost::in_place(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr);
         return *m_innerBorder;
     }
 
@@ -292,7 +292,7 @@ namespace generated
     CCPACSControlSurfaceSkinCutOutBorder& CPACSControlSurfaceWingCutOut::GetOuterBorder(CreateIfNotExistsTag)
     {
         if (!m_outerBorder)
-            m_outerBorder = boost::in_place(this, m_uidMgr);
+            m_outerBorder = boost::in_place(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr);
         return *m_outerBorder;
     }
 
