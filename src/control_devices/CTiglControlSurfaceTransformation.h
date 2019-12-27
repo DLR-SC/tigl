@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+ * Copyright (C) 2020 German Aerospace Center (DLR/SC)
  *
  * Created: 2014-01-28 Mark Geiger <Mark.Geiger@dlr.de>
  *
@@ -29,7 +29,11 @@
 namespace tigl
 {
 
-//@todo: small description of the class
+/**
+ * @bried Computes the transformation matrix for the flap movement
+ *
+ * Assumption: The old and new hingepoint positions are already pre-computed
+ */
 class CTiglControlSurfaceTransformation
 {
 public:

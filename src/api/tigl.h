@@ -242,6 +242,14 @@ enum TiglStructureType
 
 typedef enum TiglStructureType TiglStructureType;
 
+enum TiglControlSurfaceType
+{
+    TRAILING_EDGE_DEVICE = 0,
+    LEADING_EDGE_DEVICE = 1,
+    SPOILER = 2
+};
+
+typedef enum TiglControlSurfaceType TiglControlSurfaceType;
 
 enum TiglLoftSide
 {
@@ -1609,6 +1617,141 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
 
 
+/**
+* @brief Returns the number of control surfaces belonging to a component segment.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  componentSegmentUID     UID of the componentSegment
+* @param[out] numControlSurfaces      number of control surfaces of the componentSegment
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the component segment does not exist
+*   - TIGL_NULL_POINTER if either the componentSegmentUID or numControlSurfaces are NULL pointers
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                             const char * componentSegmentUID,
+                                                             int * numControlSurfaces);
+
+/**
+* @brief Returns the UID of a control surface given its index in a component segment.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  componentSegmentUID     UID of the componentSegment
+* @param[in]  controlSurfaceIndex     Index of the control surface, starting at 1
+* @param[out] controlSurfaceUID       UID of the control surface
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the component segment does not exist
+*   - TIGL_NULL_POINTER if either the componentSegmentUID or controlSurfaceUID are NULL pointers
+*   - TIGL_INDEX_ERROR if the control surface index is invalid
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char * componentSegmentUID,
+                                                          int controlSurfaceIndex,
+                                                          char ** controlSurfaceUID);
+
+/**
+* @brief Returns the type of a control surface given its UID.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] controlSurfaceType      Type of the control surface
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if controlSurfaceUID is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char * controlSurfaceUID,
+                                                            TiglControlSurfaceType * controlSurfaceType);
+
+
+/**
+* @brief Returns the minimum value for the deflection of a control device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] minDeflection           Minimum value for the deflection
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if minDeflection is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                         const char * controlSurfaceUID,
+                                                                         double * minDeflection);
+
+/**
+* @brief Returns the maximum value for the deflection of a control device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] maxDeflection           Maximum value for the deflection
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if maxDeflection is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                         const char * controlSurfaceUID,
+                                                                         double * maxDeflection);
+
+/**
+* @brief Returns the current value for the deflection of a control device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] deflection              Value for the deflection
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if deflection is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char * controlSurfaceUID,
+                                                                  double * deflection);
+
+/**
+* @brief Sets the current value for the deflection of a control device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] deflection              Value for the deflection
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char * controlSurfaceUID,
+                                                                  double deflection);
 
 /*@}*/
 /*****************************************************************************************************/

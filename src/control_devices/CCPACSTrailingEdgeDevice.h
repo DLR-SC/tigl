@@ -21,18 +21,11 @@
 
 #include "CTiglAbstractGeometricComponent.h"
 #include "Cache.h"
+#include "tigl.h"
 #include <string>
 
 namespace tigl
 {
-
-enum TiglControlSurfaceType
-{
-    TRAILING_EDGE_DEVICE = 0,
-    LEADING_EDGE_DEVICE = 1,
-    SPOILER = 2
-};
-
 
 class CCPACSTrailingEdgeDevice : public generated::CPACSTrailingEdgeDevice, public CTiglAbstractGeometricComponent
 {
