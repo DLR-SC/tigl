@@ -2443,7 +2443,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurat
         return TIGL_SUCCESS;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.what() << std::endl;
         return ex.getCode();
     }
     catch (std::exception& ex) {
@@ -2489,7 +2489,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfiguratio
         return TIGL_SUCCESS;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.what() << std::endl;
         return ex.getCode();
     }
     catch (std::exception& ex) {
@@ -2523,7 +2523,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
         return TIGL_SUCCESS;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.what() << std::endl;
         return ex.getCode();
     }
     catch (std::exception& ex) {
@@ -2557,7 +2557,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPA
         return TIGL_SUCCESS;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.what() << std::endl;
         return ex.getCode();
     }
     catch (std::exception& ex) {
@@ -2592,7 +2592,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPA
         return TIGL_SUCCESS;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.what() << std::endl;
         return ex.getCode();
     }
     catch (std::exception& ex) {
@@ -2627,7 +2627,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfi
         return TIGL_SUCCESS;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.what() << std::endl;
         return ex.getCode();
     }
     catch (std::exception& ex) {
@@ -2662,7 +2662,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfi
         return TIGL_SUCCESS;
     }
     catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
+        LOG(ERROR) << ex.what() << std::endl;
         return ex.getCode();
     }
     catch (std::exception& ex) {

@@ -26,7 +26,7 @@ namespace tigl
 {
 
 // Constructor
-CTiglError::CTiglError(std::string error, TiglReturnCode errorCode) throw()
+CTiglError::CTiglError(std::string error, TiglReturnCode errorCode) noexcept
     : err(error)
     , code(errorCode)
 {
@@ -34,23 +34,17 @@ CTiglError::CTiglError(std::string error, TiglReturnCode errorCode) throw()
 }
 
 // Destructor
-CTiglError::~CTiglError() throw()
+CTiglError::~CTiglError() noexcept
 {
 }
 
-// Returns the error string as C string (char*)
-const char* CTiglError::getError() const throw() 
-{ 
-    return err.c_str(); 
-}
-
-const char* CTiglError::what() const throw()
+const char* CTiglError::what() const noexcept
 {
    return err.c_str();
 }
 
 // Returns the error code
-TiglReturnCode CTiglError::getCode() const throw() 
+TiglReturnCode CTiglError::getCode() const noexcept
 { 
     return code; 
 }
