@@ -293,6 +293,9 @@ TIGL_EXPORT int Clamp(int val, int min, int max);
 TIGL_EXPORT double Clamp(double val, double min, double max);
 TIGL_EXPORT size_t Clamp(size_t val, size_t min, size_t max);
 
+// linearly interpolate between two values result = x*(1−a)+y*a.
+TIGL_EXPORT double Mix(double x, double y, double a);
+
 // Creates a linear spaces array but with some additional breaking points
 // If the breaking points are very close to a point, the point will be replaced
 // Else, the breaking point will be inserted

@@ -1802,3 +1802,8 @@ bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2)
 
     return gp_Vec(p1Proj, p1).Dot(gp_Vec(p2Proj, p2)) < 0.;
 }
+
+double Mix(double x, double y, double a)
+{
+    return x*(1.-a) +   y*a;
+}

@@ -369,6 +369,14 @@ PNamedShape CCPACSWing::BuildLoft() const
     }
 }
 
+TopoDS_Shape CCPACSWing::GetLoftWithCutouts()
+{
+    if (!wingShapeWithCutouts) {
+        GroupedFlapsAndWingShapes();
+    }
+    return wingShapeWithCutouts->Shape();
+}
+
 // Builds a fused shape of all wing segments
 PNamedShape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower) const
 {

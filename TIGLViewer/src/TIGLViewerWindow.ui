@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -181,6 +181,7 @@
      <addaction name="drawWingTriangulationAction"/>
      <addaction name="drawWingProfilesAction"/>
      <addaction name="drawWingGuideCurvesAction"/>
+     <addaction name="drawWingFlapsAction"/>
      <addaction name="separator"/>
      <addaction name="drawWingSamplePointsAction"/>
      <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
@@ -1416,6 +1417,11 @@
   <action name="blaAction">
    <property name="text">
     <string>Redo</string>
+   </property>
+  </action>
+  <action name="drawWingFlapsAction">
+   <property name="text">
+    <string>Show Wing Flaps</string>
    </property>
   </action>
  </widget>

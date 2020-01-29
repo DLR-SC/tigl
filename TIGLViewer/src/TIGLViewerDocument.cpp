@@ -22,6 +22,7 @@
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerWindow.h"
 #include "TIGLViewerScopedCommand.h"
+#include "TIGLViewerSelectWingAndFlapStatusDialog.h"
 
 // QT Stuff
 #include <qnamespace.h>
@@ -85,6 +86,8 @@
 #include "CTiglAttachedRotorBlade.h"
 #include "TIGLGeometryChoserDialog.h"
 #include "CCPACSEnginePylon.h"
+#include "CCPACSTrailingEdgeDevices.h"
+#include "CCPACSTrailingEdgeDevice.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -110,6 +113,7 @@ double getAbsDeflection (const TopoDS_Shape& theShape, double relDeflection)
 
 TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
     : QObject(parentWidget)
+    , m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this, parentWidget))
 {
     app = parentWidget;
     m_cpacsHandle = -1;
@@ -901,7 +905,83 @@ void TIGLViewerDocument::drawWing()
     }
 }
 
+void TIGLViewerDocument::drawWingFlaps()
+{
+    QStringList wings;
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    for (int i = 1; i <= config.GetWingCount(); i++) {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        std::string name = wing.GetUID();
+        if (name == "") {
+            name = "Unknown Wing";
+        }
+        wings << name.c_str();
+    }
 
+    m_flapsDialog->setWings(wings);
+    m_flapsDialog->show();
+    m_flapsDialog->raise();
+    m_flapsDialog->activateWindow();
+}
+
+
+void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing)
+{
+    try {
+        START_COMMAND();
+
+        app->getScene()->deleteAllObjects();
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
+
+        TopoDS_Shape wingWithoutFlaps = wing.GetLoftWithCutouts();
+        app->getScene()->displayShape(wingWithoutFlaps, true);
+
+        for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
+
+            tigl::CCPACSWingComponentSegment &componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
+            const auto& controlSurfaceDevices = componentSegment.GetControlSurfaces()->GetTrailingEdgeDevices();
+            if (!controlSurfaceDevices) {
+                continue;
+            }
+
+            for (const auto& controlSurfaceDevice : controlSurfaceDevices->GetTrailingEdgeDevices()) {
+                app->getScene()->displayShape(controlSurfaceDevice->GetLoft(), false);
+                updateControlSurfacesInteractiveObjects(selectedWing, controlSurfaceDevice->GetUID());
+            }
+        }
+    }
+    catch (tigl::CTiglError err) {
+        displayError(err.what(), "Error");
+    }
+}
+
+void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string selectedWing, std::string controlUID)
+{
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
+    for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
+
+        tigl::CCPACSWingComponentSegment &componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
+        const auto& controlSurfaceDevices = componentSegment.GetControlSurfaces()->GetTrailingEdgeDevices();
+
+        if (!controlSurfaceDevices) {
+            continue;
+        }
+
+        for (const auto& controlSurfaceDevice : controlSurfaceDevices->GetTrailingEdgeDevices()) {
+
+            if (controlUID == controlSurfaceDevice->GetUID()) {
+               gp_Trsf trsf = controlSurfaceDevice->GetFlapTransform();
+
+               IObjectList flaps = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
+               for (IObjectList::iterator it = flaps.begin(); it != flaps.end(); ++it) {
+                   Handle(AIS_InteractiveObject)& flap = *it;
+                   app->getScene()->getContext()->SetLocation(flap, trsf);
+               }
+            }
+        }
+    }
+    app->getViewer()->update();
+}
 
 void TIGLViewerDocument::drawFuselage()
 {

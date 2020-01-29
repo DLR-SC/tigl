@@ -98,6 +98,8 @@ set(tv_src
   src/TIGLViewerApp.cpp
   src/TIGLGeometryChoserDialog.cpp
   src/TIGLViewerUndoCommands.cpp
+  src/TIGLInteractiveShapeManager.cpp
+  src/TIGLViewerSelectWingAndFlapStatusDialog.cpp
 )
 	
 # header files
@@ -139,6 +141,8 @@ set(tv_hdr
   src/TIGLSliderDialog.h
   src/TIGLViewerApp.h
   src/TIGLGeometryChoserDialog.h
+  src/TIGLInteractiveShapeManager.h
+  src/TIGLViewerSelectWingAndFlapStatusDialog.h
 )
 
 set(tv_ui
@@ -153,6 +157,7 @@ set(tv_ui
   src/TIGLViewerVTKExportDialog.ui
   src/TIGLSliderDialog.ui
   src/TIGLGeometryChoserDialog.ui
+  src/TIGLViewerSelectWingAndFlapStatusDialog.ui
 )
 
 # compile icons
