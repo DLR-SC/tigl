@@ -214,10 +214,6 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
             throw CTiglError("The " + innerOuter +
                              "HingeXsi is not between 0. and 1. in CCPACSTrailingEdgeDevice::buildHingePoints.");
         }
-        if (hingeXsi[i] > border.GetXsiLE().GetXsi()) {
-            LOG(ERROR) << "The " << innerOuter << "HingeXsi is behind the trailing edge device leading edge";
-            throw CTiglError("The " + innerOuter + "HingeXsi is behind the trailing edge device leading edge");
-        }
 
         // create the hinge line point and normal on the Wing component segment mid plane
         gp_Pnt myHingePoint =

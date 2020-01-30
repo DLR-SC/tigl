@@ -450,7 +450,7 @@ void CCPACSWing::BuildWingWithCutouts() const
        const CCPACSTrailingEdgeDevices& controlSurfaceDevices = controlSurfs.GetTrailingEdgeDevices().value();
 
         for ( size_t j = controlSurfaceDevices.GetTrailingEdgeDevices().size(); j > 0 ; j-- ) {
-            CCPACSTrailingEdgeDevice& controlSurfaceDevice = *controlSurfaceDevices.GetTrailingEdgeDevices().at(j);
+            CCPACSTrailingEdgeDevice& controlSurfaceDevice = *controlSurfaceDevices.GetTrailingEdgeDevices().at(j-1);
 
             PNamedShape controlSurfacePrism = controlSurfaceDevice.GetCutOutShape();
             if (controlSurfaceDevice.GetType() != SPOILER) {
@@ -502,7 +502,7 @@ PNamedShape CCPACSWing::GroupedFlapsAndWingShapes() const
        const auto& devices = controlSurfaceDevices.GetTrailingEdgeDevices();
        for ( size_t j = devices.size(); j > 0 ; j-- ) {
 
-            const auto& controlSurfaceDevice = *devices.at(j);
+            const auto& controlSurfaceDevice = *devices.at(j-1);
             auto deviceShape = controlSurfaceDevice.GetTransformedFlapShape();
             flapsAndWingShapes.push_back(deviceShape);
        }
