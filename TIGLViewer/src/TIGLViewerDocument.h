@@ -51,8 +51,7 @@ public:
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration() const;
 
-    void drawWingFlapsForInteractiveUse(std::string selectedWing);
-    void updateControlSurfacesInteractiveObjects(std::string selectedWing, std::string controlUID);
+    void updateControlSurfacesInteractiveObjects(std::string controlUID);
 
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);
@@ -181,6 +180,7 @@ private:
     void drawWingComponentSegment(tigl::CCPACSWingComponentSegment& segment);
     void drawWingComponentSegmentPoint(const std::string& csUID, const double& eta, const double& xsi);
     void drawWingShells(tigl::CCPACSWing& wing);
+    bool drawWingFlaps(tigl::CCPACSWing& wing);
 
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
     

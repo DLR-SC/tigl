@@ -907,79 +907,92 @@ void TIGLViewerDocument::drawWing()
 
 void TIGLViewerDocument::drawWingFlaps()
 {
-    QStringList wings;
-    tigl::CCPACSConfiguration& config = GetConfiguration();
-    for (int i = 1; i <= config.GetWingCount(); i++) {
-        tigl::CCPACSWing& wing = config.GetWing(i);
-        std::string name = wing.GetUID();
-        if (name == "") {
-            name = "Unknown Wing";
-        }
-        wings << name.c_str();
+    QString wingUid = dlgGetWingSelection();
+    if (wingUid == "") {
+        return;
     }
 
-    m_flapsDialog->setWings(wings);
-    m_flapsDialog->show();
-    m_flapsDialog->raise();
-    m_flapsDialog->activateWindow();
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        if (drawWingFlaps(wing)) {
+            m_flapsDialog->setWing(wing.GetUID());
+            m_flapsDialog->show();
+            m_flapsDialog->raise();
+            m_flapsDialog->activateWindow();
+        }
+    }
+    catch (tigl::CTiglError& ex) {
+        displayError(ex.what(), "Error");
+    }
 }
 
-
-void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing)
+bool TIGLViewerDocument::drawWingFlaps(tigl::CCPACSWing& wing)
 {
     try {
         START_COMMAND();
+        if (!wing.GetComponentSegments()) {
+            displayError(QString("The wing %1 does not have any control surfaces.").arg(wing.GetUID().c_str()), "Error");
+            return false;
+        }
+
+
+        size_t n_flaps = 0;
+        for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
+            if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
+                continue;
+            }
+            n_flaps += pcs->GetControlSurfaces()->ControlSurfaceCount();
+        }
+
+        if (n_flaps == 0) {
+            displayError(QString("The wing '%1' does not have any control surfaces.").arg(wing.GetUID().c_str()), "Error");
+            return false;
+        }
 
         app->getScene()->deleteAllObjects();
-        tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
+        app->getScene()->displayShape(wing.GetLoftWithCutouts(), true);
 
-        TopoDS_Shape wingWithoutFlaps = wing.GetLoftWithCutouts();
-        app->getScene()->displayShape(wingWithoutFlaps, true);
-
-        for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
-
-            tigl::CCPACSWingComponentSegment &componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
-            const auto& controlSurfaceDevices = componentSegment.GetControlSurfaces()->GetTrailingEdgeDevices();
-            if (!controlSurfaceDevices) {
+        for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
+            if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
+                continue;
+            }
+            auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices();
+            if (!teds) {
                 continue;
             }
 
-            for (const auto& controlSurfaceDevice : controlSurfaceDevices->GetTrailingEdgeDevices()) {
-                app->getScene()->displayShape(controlSurfaceDevice->GetLoft(), false);
-                updateControlSurfacesInteractiveObjects(selectedWing, controlSurfaceDevice->GetUID());
+            for (auto& ted : teds->GetTrailingEdgeDevices()) {
+                app->getScene()->displayShape(ted->GetLoft(), false);
+                updateControlSurfacesInteractiveObjects(ted->GetUID());
             }
         }
+        app->getScene()->updateViewer();
+
     }
-    catch (tigl::CTiglError err) {
-        displayError(err.what(), "Error");
+    catch (tigl::CTiglError& ex) {
+        displayError(ex.what(), "Error");
     }
+
+    return true;
 }
 
-void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string selectedWing, std::string controlUID)
+
+
+void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string controlUID)
 {
-    tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
-    for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
+    tigl::CTiglUIDManager::TypedPtr obj = GetConfiguration().GetUIDManager().ResolveObject(controlUID);
 
-        tigl::CCPACSWingComponentSegment &componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
-        const auto& controlSurfaceDevices = componentSegment.GetControlSurfaces()->GetTrailingEdgeDevices();
+    if (*obj.type == typeid(tigl::CCPACSTrailingEdgeDevice))
+    {
+        auto* controlSurfaceDevice = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
+        gp_Trsf trsf = controlSurfaceDevice->GetFlapTransform();
 
-        if (!controlSurfaceDevices) {
-            continue;
-        }
-
-        for (const auto& controlSurfaceDevice : controlSurfaceDevices->GetTrailingEdgeDevices()) {
-
-            if (controlUID == controlSurfaceDevice->GetUID()) {
-               gp_Trsf trsf = controlSurfaceDevice->GetFlapTransform();
-
-               IObjectList flaps = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
-               for (IObjectList::iterator it = flaps.begin(); it != flaps.end(); ++it) {
-                   Handle(AIS_InteractiveObject)& flap = *it;
-                   app->getScene()->getContext()->SetLocation(flap, trsf);
-               }
-            }
+        IObjectList flaps = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
+        for (const auto& flap : flaps) {
+            app->getScene()->getContext()->SetLocation(flap, trsf);
         }
     }
+
     app->getViewer()->update();
 }
 
@@ -2724,5 +2737,4 @@ TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle() const
 {
     return this->m_cpacsHandle;
 }
-
 

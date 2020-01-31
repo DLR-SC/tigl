@@ -140,10 +140,13 @@ double CCPACSTrailingEdgeDevice::GetDeflection() const
 void CCPACSTrailingEdgeDevice::SetDeflection(const double deflect)
 {
     // clamp currentDeflection to minimum and maximum values
-    m_currentDeflection = Clamp(deflect, GetMinDeflection(), GetMaxDeflection());
+    double new_deflect = Clamp(deflect, GetMinDeflection(), GetMaxDeflection());
 
-    // make sure the wing gets relofted with flaps
-    Invalidate();
+    if (fabs(new_deflect - m_currentDeflection) > 1e-6) {
+        m_currentDeflection = new_deflect;
+        // make sure the wing gets relofted with flaps
+        Invalidate();
+    }
 }
 
 void CCPACSTrailingEdgeDevice::Invalidate()

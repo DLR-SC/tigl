@@ -62,17 +62,7 @@ TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog
     setFixedSize(size());
     this->setWindowTitle("Choose ControlSurface Deflections");
     _document = document;
-    QPalette Pal(palette());
-    ui->scrollArea->setPalette(Pal);
 
-}
-
-void TIGLViewerSelectWingAndFlapStatusDialog::setWings(QStringList list)
-{
-    bool wasBlocked = ui->comboBoxWings->blockSignals(true);
-    ui->comboBoxWings->clear();
-    ui->comboBoxWings->blockSignals(wasBlocked);
-    ui->comboBoxWings->addItems(list);
 }
 
 TIGLViewerSelectWingAndFlapStatusDialog::~TIGLViewerSelectWingAndFlapStatusDialog()
@@ -81,15 +71,6 @@ TIGLViewerSelectWingAndFlapStatusDialog::~TIGLViewerSelectWingAndFlapStatusDialo
     delete ui;
 }
 
-std::string TIGLViewerSelectWingAndFlapStatusDialog::getSelectedWing()
-{
-    return ui->comboBoxWings->currentText().toStdString();
-}
-
-void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChanged(int /* index */)
-{
-    drawGUI(true);
-}
 
 void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int /* k */)
 {
@@ -101,7 +82,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int /* k */)
     
     SignalsBlocker block(elms.deflectionBox);
     updateWidgets(uid, inputDeflection);
-    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(), uid);
+    _document->updateControlSurfacesInteractiveObjects(uid);
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::spinBox_value_changed(double inputDeflection)
@@ -113,7 +94,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::spinBox_value_changed(double input
 
     SignalsBlocker block(elms.slider);
     updateWidgets(uid, inputDeflection);
-    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(), uid);
+    _document->updateControlSurfacesInteractiveObjects(uid);
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::cleanup()
@@ -142,22 +123,15 @@ QWidget* TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPAC
 {
     QHBoxLayout* hLayout = new QHBoxLayout;
     QWidget* innerWidget = new QWidget;
-    QWidget* innerWidget2 = new QWidget;
     innerWidget->setAutoFillBackground(true);
     innerWidget->setPalette(Pal);
-    innerWidget2->setAutoFillBackground(true);
-    innerWidget2->setPalette(Pal);
+
 
     QString uid = controlSurfaceDevice.GetUID().c_str();
     QLabel* labelUID = new QLabel(uid, this);
-    labelUID->setFixedSize(250,15);
     QSlider* slider = new QSlider(Qt::Horizontal);
-    slider->setFixedSize(90,15);
     slider->setMaximum(1000);
 
-    QLabel* labelValue = new QLabel("0%   ", this);
-    labelValue->setFixedHeight(15);
-    QString def = "Deflection: ";
     QDoubleSpinBox* spinBox = new QDoubleSpinBox();
     spinBox->setDecimals(3);
     spinBox->setFixedWidth(60);
@@ -173,18 +147,12 @@ QWidget* TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPAC
     }
 
     QLabel* labelRotation   = new QLabel(rot, this);
-    QLabel* labelDeflection = new QLabel(def, this);
-    labelValue->setMargin(0);
     labelRotation->setMargin(0);
     labelRotation->setFixedHeight(15);
 
-    labelValue->setFixedWidth(40);
     labelRotation->setFixedWidth(90);
-    labelDeflection->setFixedWidth(90);
-    labelDeflection->setAlignment(Qt::AlignRight);
 
     double savedValue = controlSurfaceDevice.GetDeflection();
-    labelValue->setText("Value: " + QString::number(savedValue) + "%");
 
     double minDeflect = controlSurfaceDevice.GetMinDeflection();
     double maxDeflect = controlSurfaceDevice.GetMaxDeflection();
@@ -199,7 +167,6 @@ QWidget* TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPAC
     
     DeviceWidgets elements;
     elements.slider = slider;
-    elements.valueLabel = labelValue;
     elements.deflectionBox = spinBox;
     elements.rotAngleLabel = labelRotation;
     _guiMap[uid.toStdString()] = elements;
@@ -212,8 +179,6 @@ QWidget* TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPAC
 
     hLayout->addWidget(labelUID);
     hLayout->addWidget(slider);
-    hLayout->addWidget(labelValue);
-    hLayout->addWidget(labelDeflection);
     hLayout->addWidget(spinBox);
     hLayout->addWidget(labelRotation);
 
@@ -223,7 +188,7 @@ QWidget* TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPAC
 }
 
 // @TODO: rewrite using MVC and table layout
-void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
+void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI()
 {
     cleanup();
     
@@ -236,7 +201,11 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
     Pal.setColor(QPalette::Background, Qt::white);
     bool switcher = true;
     
-    std::string wingUID = ui->comboBoxWings->currentText().toStdString();
+    std::string wingUID = m_currentWing;
+
+    if (wingUID.empty())
+        return;
+
     tigl::CCPACSConfiguration& config = _document->GetConfiguration();
     tigl::CCPACSWing &wing = config.GetWing(wingUID);
 
@@ -282,27 +251,25 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             _deviceMap[controlSurfaceDevice->GetUID()] = controlSurfaceDevice.get();
             updateWidgets(controlSurfaceDevice->GetUID(), controlSurfaceDevice->GetDeflection() );
         }
+
         outerWidget->setLayout(vLayout);
         ui->scrollArea->setWidget(outerWidget);
-    }
-    if (redrawModel) {
-        _document->drawWingFlapsForInteractiveUse(getSelectedWing());
     }
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::on_checkTED_stateChanged(int)
 {
-   drawGUI(false);
+   drawGUI();
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::on_checkLED_stateChanged(int)
 {
-    drawGUI(false);
+    drawGUI();
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::on_checkSpoiler_stateChanged(int)
 {
-    drawGUI(false);
+    drawGUI();
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::updateWidgets(std::string controlSurfaceDeviceUID,
@@ -340,7 +307,6 @@ void TIGLViewerSelectWingAndFlapStatusDialog::updateWidgets(std::string controlS
 
     elms.slider->setValue(sliderVal);
     elms.deflectionBox->setValue(inputDeflection);
-    elms.valueLabel->setText(textVal);
     elms.rotAngleLabel->setText(textRot);
 
     device->SetDeflection(inputDeflection);

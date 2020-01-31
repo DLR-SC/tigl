@@ -41,16 +41,17 @@ class TIGLViewerSelectWingAndFlapStatusDialog : public QDialog
 public:
     explicit TIGLViewerSelectWingAndFlapStatusDialog(TIGLViewerDocument* document, QWidget* parent=0);
 
-    void setWings(QStringList);
+    void setWing(std::string wingUID) {
+        m_currentWing = wingUID;
+        drawGUI();
+    }
 
     ~TIGLViewerSelectWingAndFlapStatusDialog();
-    std::string getSelectedWing();
     double getTrailingEdgeFlapValue( std::string uid );
     std::map<std::string,double> getDeflections();
 
 
 private slots:
-    void on_comboBoxWings_currentIndexChanged(int index);
     void slider_value_changed(int k);
     void spinBox_value_changed(double inputDeflection);
     void on_checkTED_stateChanged(int arg1);
@@ -62,7 +63,6 @@ private:
 
     struct DeviceWidgets {
         QSlider* slider;
-        QLabel* valueLabel;
         QDoubleSpinBox* deflectionBox;
         QLabel* rotAngleLabel;
     };
@@ -85,11 +85,12 @@ private:
     };
     std::map< std::string, DeviceWidgets> _guiMap;
     std::map< std::string, tigl::CCPACSTrailingEdgeDevice*> _deviceMap;
+    std::string m_currentWing;
 
     TIGLViewerDocument* _document;
     void updateWidgets(std::string controlSurfaceDeviceUID,
                        double inputDeflection);
-    void drawGUI(bool redrawModel);
+    void drawGUI();
     void cleanup();
 
 
