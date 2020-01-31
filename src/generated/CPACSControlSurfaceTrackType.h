@@ -146,8 +146,7 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSControlSurfaceTrackType is customized, use type CCPACSControlSurfaceTrackType directly
-
 // Aliases in tigl namespace
+using CCPACSControlSurfaceTrackType = generated::CPACSControlSurfaceTrackType;
 using CCPACSControlSurfaceTracks = generated::CPACSControlSurfaceTracks;
 } // namespace tigl

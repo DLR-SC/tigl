@@ -27,11 +27,12 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSControlSurfaceTrackType;
 class CCPACSTrailingEdgeDevice;
 
 namespace generated
 {
+    class CPACSControlSurfaceTrackType;
+
     // This class is used in:
     // CPACSTrailingEdgeDevice
 
@@ -61,18 +62,18 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSControlSurfaceTrackType>>& GetTracks() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSControlSurfaceTrackType>>& GetTracks();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSControlSurfaceTrackType>>& GetTracks() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSControlSurfaceTrackType>>& GetTracks();
 
-        TIGL_EXPORT virtual CCPACSControlSurfaceTrackType& AddTrack();
-        TIGL_EXPORT virtual void RemoveTrack(CCPACSControlSurfaceTrackType& ref);
+        TIGL_EXPORT virtual CPACSControlSurfaceTrackType& AddTrack();
+        TIGL_EXPORT virtual void RemoveTrack(CPACSControlSurfaceTrackType& ref);
 
     protected:
         CCPACSTrailingEdgeDevice* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CCPACSControlSurfaceTrackType>> m_tracks;
+        std::vector<std::unique_ptr<CPACSControlSurfaceTrackType>> m_tracks;
 
     private:
         CPACSControlSurfaceTracks(const CPACSControlSurfaceTracks&) = delete;
@@ -85,4 +86,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSControlSurfaceTracks = generated::CPACSControlSurfaceTracks;
+using CCPACSControlSurfaceTrackType = generated::CPACSControlSurfaceTrackType;
 } // namespace tigl

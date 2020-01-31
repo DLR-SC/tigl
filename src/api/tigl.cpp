@@ -40,7 +40,7 @@
 #include "CCPACSWingSegment.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSControlSurfaces.h"
-#include "CCPACSTrailingEdgeDevices.h"
+#include "generated/CPACSTrailingEdgeDevices.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CTiglExporterFactory.h"
 #include "CTiglLogging.h"

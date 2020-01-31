@@ -18,7 +18,7 @@
 
 #include "CCPACSTrailingEdgeDevice.h"
 #include "generated/CPACSControlSurfacePath.h"
-#include "CCPACSControlSurfaceStep.h"
+#include "generated/CPACSControlSurfaceStep.h"
 #include "CTiglControlSurfaceTransformation.h"
 #include "CTiglFusePlane.h"
 

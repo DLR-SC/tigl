@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSControlSurfaceTrackType.h"
+#include "CPACSControlSurfaceTrackType.h"
 #include "CPACSTrackActuator.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSTrackActuator::CPACSTrackActuator(CCPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr)
+    CPACSTrackActuator::CPACSTrackActuator(CPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_material(this, m_uidMgr)
     {
@@ -43,12 +43,12 @@ namespace generated
         }
     }
 
-    const CCPACSControlSurfaceTrackType* CPACSTrackActuator::GetParent() const
+    const CPACSControlSurfaceTrackType* CPACSTrackActuator::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSControlSurfaceTrackType* CPACSTrackActuator::GetParent()
+    CPACSControlSurfaceTrackType* CPACSTrackActuator::GetParent()
     {
         return m_parent;
     }

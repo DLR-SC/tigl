@@ -29,7 +29,7 @@ namespace generated
 {
     CPACSControlSurfaceTrackType::CPACSControlSurfaceTrackType(CPACSControlSurfaceTracks* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_eta(reinterpret_cast<CCPACSControlSurfaceTrackType*>(this), m_uidMgr)
+        , m_eta(this, m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -112,7 +112,7 @@ namespace generated
 
         // read element actuator
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/actuator")) {
-            m_actuator = boost::in_place(reinterpret_cast<CCPACSControlSurfaceTrackType*>(this), m_uidMgr);
+            m_actuator = boost::in_place(this, m_uidMgr);
             try {
                 m_actuator->ReadCPACS(tixiHandle, xpath + "/actuator");
             } catch(const std::exception& e) {
@@ -123,7 +123,7 @@ namespace generated
 
         // read element trackStructure
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/trackStructure")) {
-            m_trackStructure = boost::in_place(reinterpret_cast<CCPACSControlSurfaceTrackType*>(this), m_uidMgr);
+            m_trackStructure = boost::in_place(this, m_uidMgr);
             try {
                 m_trackStructure->ReadCPACS(tixiHandle, xpath + "/trackStructure");
             } catch(const std::exception& e) {
@@ -256,7 +256,7 @@ namespace generated
     CPACSTrackActuator& CPACSControlSurfaceTrackType::GetActuator(CreateIfNotExistsTag)
     {
         if (!m_actuator)
-            m_actuator = boost::in_place(reinterpret_cast<CCPACSControlSurfaceTrackType*>(this), m_uidMgr);
+            m_actuator = boost::in_place(this, m_uidMgr);
         return *m_actuator;
     }
 
@@ -268,7 +268,7 @@ namespace generated
     CPACSTrackStructure& CPACSControlSurfaceTrackType::GetTrackStructure(CreateIfNotExistsTag)
     {
         if (!m_trackStructure)
-            m_trackStructure = boost::in_place(reinterpret_cast<CCPACSControlSurfaceTrackType*>(this), m_uidMgr);
+            m_trackStructure = boost::in_place(this, m_uidMgr);
         return *m_trackStructure;
     }
 

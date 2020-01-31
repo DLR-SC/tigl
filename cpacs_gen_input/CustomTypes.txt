@@ -118,15 +118,8 @@ CPACSWalls                                CCPACSWalls
 
 // control surfaces
 CPACSControlSurfaces                      CCPACSControlSurfaces
-CPACSControlSurfaceSkinCutOut             CCPACSControlSurfaceSkinCutout
-CPACSControlSurfaceSteps                  CCPACSControlSurfaceSteps
-CPACSControlSurfaceStep                   CCPACSControlSurfaceStep
-CPACSControlSurfaceHingePoint             CCPACSControlSurfaceHingePoint
-CPACSControlSurfaceTrackType              CCPACSControlSurfaceTrackType
 CPACSControlSurfaceBorderTrailingEdge     CCPACSControlSurfaceBorderTrailingEdge
-CPACSControlSurfaceSkinCutOutBorder       CCPACSControlSurfaceSkinCutOutBorder
 CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
-CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
 CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
 CPACSControlSurfaceWingCutOut             CCPACSControlSurfaceWingCutOut
 

@@ -30,10 +30,11 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSControlSurfaceSteps;
 
 namespace generated
 {
+    class CPACSControlSurfaceSteps;
+
     // This class is used in:
     // CPACSControlSurfaceSteps
 
@@ -62,13 +63,13 @@ namespace generated
     class CPACSControlSurfaceStep
     {
     public:
-        TIGL_EXPORT CPACSControlSurfaceStep(CCPACSControlSurfaceSteps* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSControlSurfaceStep(CPACSControlSurfaceSteps* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSControlSurfaceStep();
 
-        TIGL_EXPORT CCPACSControlSurfaceSteps* GetParent();
+        TIGL_EXPORT CPACSControlSurfaceSteps* GetParent();
 
-        TIGL_EXPORT const CCPACSControlSurfaceSteps* GetParent() const;
+        TIGL_EXPORT const CPACSControlSurfaceSteps* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -98,7 +99,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveOuterHingeTranslation();
 
     protected:
-        CCPACSControlSurfaceSteps* m_parent;
+        CPACSControlSurfaceSteps* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -134,5 +135,7 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSControlSurfaceStep is customized, use type CCPACSControlSurfaceStep directly
+// Aliases in tigl namespace
+using CCPACSControlSurfaceStep = generated::CPACSControlSurfaceStep;
+using CCPACSControlSurfaceSteps = generated::CPACSControlSurfaceSteps;
 } // namespace tigl

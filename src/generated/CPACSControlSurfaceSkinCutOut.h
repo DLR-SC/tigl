@@ -109,5 +109,6 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSControlSurfaceSkinCutOut is customized, use type CCPACSControlSurfaceSkinCutout directly
+// Aliases in tigl namespace
+using CCPACSControlSurfaceSkinCutOut = generated::CPACSControlSurfaceSkinCutOut;
 } // namespace tigl

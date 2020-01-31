@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSControlSurfaceSteps.h"
 #include "CPACSControlSurfaceStep.h"
+#include "CPACSControlSurfaceSteps.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -28,7 +28,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSControlSurfaceStep::CPACSControlSurfaceStep(CCPACSControlSurfaceSteps* parent, CTiglUIDManager* uidMgr)
+    CPACSControlSurfaceStep::CPACSControlSurfaceStep(CPACSControlSurfaceSteps* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_relDeflection(0)
     {
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSControlSurfaceSteps* CPACSControlSurfaceStep::GetParent() const
+    const CPACSControlSurfaceSteps* CPACSControlSurfaceStep::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSControlSurfaceSteps* CPACSControlSurfaceStep::GetParent()
+    CPACSControlSurfaceSteps* CPACSControlSurfaceStep::GetParent()
     {
         return m_parent;
     }
@@ -88,7 +88,7 @@ namespace generated
 
         // read element innerHingeTranslation
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/innerHingeTranslation")) {
-            m_innerHingeTranslation = boost::in_place(reinterpret_cast<CCPACSControlSurfaceStep*>(this), m_uidMgr);
+            m_innerHingeTranslation = boost::in_place(this, m_uidMgr);
             try {
                 m_innerHingeTranslation->ReadCPACS(tixiHandle, xpath + "/innerHingeTranslation");
             } catch(const std::exception& e) {
@@ -99,7 +99,7 @@ namespace generated
 
         // read element outerHingeTranslation
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/outerHingeTranslation")) {
-            m_outerHingeTranslation = boost::in_place(reinterpret_cast<CCPACSControlSurfaceStep*>(this), m_uidMgr);
+            m_outerHingeTranslation = boost::in_place(this, m_uidMgr);
             try {
                 m_outerHingeTranslation->ReadCPACS(tixiHandle, xpath + "/outerHingeTranslation");
             } catch(const std::exception& e) {
@@ -201,7 +201,7 @@ namespace generated
     CCPACSPoint& CPACSControlSurfaceStep::GetInnerHingeTranslation(CreateIfNotExistsTag)
     {
         if (!m_innerHingeTranslation)
-            m_innerHingeTranslation = boost::in_place(reinterpret_cast<CCPACSControlSurfaceStep*>(this), m_uidMgr);
+            m_innerHingeTranslation = boost::in_place(this, m_uidMgr);
         return *m_innerHingeTranslation;
     }
 
@@ -213,7 +213,7 @@ namespace generated
     CPACSPointXZ& CPACSControlSurfaceStep::GetOuterHingeTranslation(CreateIfNotExistsTag)
     {
         if (!m_outerHingeTranslation)
-            m_outerHingeTranslation = boost::in_place(reinterpret_cast<CCPACSControlSurfaceStep*>(this), m_uidMgr);
+            m_outerHingeTranslation = boost::in_place(this, m_uidMgr);
         return *m_outerHingeTranslation;
     }
 

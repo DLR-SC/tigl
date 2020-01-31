@@ -33,10 +33,11 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSControlSurfaceTrackType;
 
 namespace generated
 {
+    class CPACSControlSurfaceTrackType;
+
     // This class is used in:
     // CPACSControlSurfaceTrackType
 
@@ -49,13 +50,13 @@ namespace generated
     class CPACSTrackStructure
     {
     public:
-        TIGL_EXPORT CPACSTrackStructure(CCPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSTrackStructure(CPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSTrackStructure();
 
-        TIGL_EXPORT CCPACSControlSurfaceTrackType* GetParent();
+        TIGL_EXPORT CPACSControlSurfaceTrackType* GetParent();
 
-        TIGL_EXPORT const CCPACSControlSurfaceTrackType* GetParent() const;
+        TIGL_EXPORT const CPACSControlSurfaceTrackType* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -133,7 +134,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveFairing();
 
     protected:
-        CCPACSControlSurfaceTrackType* m_parent;
+        CPACSControlSurfaceTrackType* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -160,4 +161,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSTrackStructure = generated::CPACSTrackStructure;
+using CCPACSControlSurfaceTrackType = generated::CPACSControlSurfaceTrackType;
 } // namespace tigl

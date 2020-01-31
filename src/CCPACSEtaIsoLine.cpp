@@ -19,8 +19,8 @@
 #include "CCPACSWingCellPositionSpanwise.h"
 #include "generated/CPACSControlSurfaceAirfoil.h"
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
-#include "CCPACSControlSurfaceSkinCutOutBorder.h"
-#include "CCPACSControlSurfaceTrackType.h"
+#include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
+#include "generated/CPACSControlSurfaceTrackType.h"
 #include "generated/CPACSCutOutProfile.h"
 #include "generated/CPACSSparCell.h"
 

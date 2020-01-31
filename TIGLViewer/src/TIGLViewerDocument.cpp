@@ -86,7 +86,7 @@
 #include "CTiglAttachedRotorBlade.h"
 #include "TIGLGeometryChoserDialog.h"
 #include "CCPACSEnginePylon.h"
-#include "CCPACSTrailingEdgeDevices.h"
+#include "generated/CPACSTrailingEdgeDevices.h"
 #include "CCPACSTrailingEdgeDevice.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))

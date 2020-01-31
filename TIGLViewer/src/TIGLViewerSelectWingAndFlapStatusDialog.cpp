@@ -23,7 +23,7 @@
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWing.h"
-#include "CCPACSControlSurfaceStep.h"
+#include "generated/CPACSControlSurfaceStep.h"
 #include "tiglmathfunctions.h"
 #include "tiglcommonfunctions.h"
 

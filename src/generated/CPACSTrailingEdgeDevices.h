@@ -82,5 +82,6 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSTrailingEdgeDevices is customized, use type CCPACSTrailingEdgeDevices directly
+// Aliases in tigl namespace
+using CCPACSTrailingEdgeDevices = generated::CPACSTrailingEdgeDevices;
 } // namespace tigl
