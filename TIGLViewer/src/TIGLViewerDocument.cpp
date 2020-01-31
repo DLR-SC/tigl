@@ -675,23 +675,11 @@ void TIGLViewerDocument::drawComponentByUID(const QString& uid)
     callbacks[TIGL_COMPONENT_ROTOR] = &TIGLViewerDocument::drawRotorByUID;
     callbacks[TIGL_COMPONENT_CONTROL_SURFACE_DEVICE] = &TIGLViewerDocument::drawWingFlap;
 
-    struct ContainsCallback{
-        ContainsCallback(TiglGeometricComponentType mytype)
-            : m_type(mytype) {}
-
-        bool operator()(const std::pair<TiglGeometricComponentType, Callback>& p) {
-            return p.first == m_type;
-        }
-
-        TiglGeometricComponentType m_type;
-    };
-
-
     try {
         START_COMMAND();
         tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString());
 
-        CallbackMap::const_iterator found = std::find_if(callbacks.begin(), callbacks.end(), ContainsCallback(component.GetComponentType()));
+        auto found = callbacks.find(component.GetComponentType());
         if (found != callbacks.end()) {
             // call the draw function
             (this->*found->second)(uid);
