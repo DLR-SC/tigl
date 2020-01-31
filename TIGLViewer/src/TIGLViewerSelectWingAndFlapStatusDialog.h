@@ -20,6 +20,7 @@
 #define TIGLVIEWERSELECTWINGANDFLAPSTATUSDIALOG_H
 
 #include <QDialog>
+#include <QGridLayout>
 #include <map>
 #include <vector>
 #include "CCPACSConfigurationManager.h"
@@ -66,23 +67,7 @@ private:
         QDoubleSpinBox* deflectionBox;
         QLabel* rotAngleLabel;
     };
-    class SignalsBlocker
-    {
-    public:
-        SignalsBlocker(QObject* ptr):
-        _ptr(ptr)
-        {
-            _b = ptr->blockSignals(true);
-        }
-        ~SignalsBlocker()
-        {
-            _ptr->blockSignals(_b);
-        }
 
-    private:
-        QObject* _ptr;
-        bool _b;
-    };
     std::map< std::string, DeviceWidgets> _guiMap;
     std::map< std::string, tigl::CCPACSTrailingEdgeDevice*> _deviceMap;
     std::string m_currentWing;
@@ -94,7 +79,7 @@ private:
     void cleanup();
 
 
-    QWidget* buildFlapRow(const tigl::CCPACSTrailingEdgeDevice& controlSurfaceDevice, const QPalette& Pal);
+    void buildFlapRow(const tigl::CCPACSTrailingEdgeDevice& controlSurfaceDevice, int rowIdx, class QTableWidget *);
 };
 
 #endif // TIGLVIEWERSELECTWINGANDFLAPSTATUSDIALOG_H

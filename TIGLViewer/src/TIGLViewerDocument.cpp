@@ -936,6 +936,13 @@ bool TIGLViewerDocument::drawWingFlaps(tigl::CCPACSWing& wing)
         }
 
 
+        std::vector<Quantity_NameOfColor> colors =
+            {Quantity_NOC_RED,
+             Quantity_NOC_GREEN,
+             Quantity_NOC_MAGENTA1,
+             Quantity_NOC_AZURE,
+             Quantity_NOC_FIREBRICK};
+
         size_t n_flaps = 0;
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
             if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
@@ -952,6 +959,8 @@ bool TIGLViewerDocument::drawWingFlaps(tigl::CCPACSWing& wing)
         app->getScene()->deleteAllObjects();
         app->getScene()->displayShape(wing.GetLoftWithCutouts(), true);
 
+        size_t iflap = 0;
+
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
             if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
                 continue;
@@ -962,7 +971,7 @@ bool TIGLViewerDocument::drawWingFlaps(tigl::CCPACSWing& wing)
             }
 
             for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                app->getScene()->displayShape(ted->GetLoft(), false);
+                app->getScene()->displayShape(ted->GetLoft(), false, colors[iflap++ % colors.size()]);
                 updateControlSurfacesInteractiveObjects(ted->GetUID());
             }
         }

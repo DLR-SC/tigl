@@ -35,9 +35,30 @@
 #include <QSpacerItem>
 #include <QPushButton>
 #include <QDoubleSpinBox>
+#include <QSpacerItem>
+#include <QTableWidget>
+#include <QHeaderView>
 
 namespace
 {
+
+class SignalsBlocker
+{
+public:
+    SignalsBlocker(QObject* ptr):
+    _ptr(ptr)
+    {
+        _b = ptr->blockSignals(true);
+    }
+    ~SignalsBlocker()
+    {
+        _ptr->blockSignals(_b);
+    }
+
+private:
+    QObject* _ptr;
+    bool _b;
+};
 
 double sliderToRelativeDeflect(const QSlider* slider, const QDoubleSpinBox* spinBox)
 {
@@ -59,7 +80,6 @@ TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog
     ui(new Ui::TIGLViewerSelectWingAndFlapStatusDialog)
 {
     ui->setupUi(this);
-    setFixedSize(size());
     this->setWindowTitle("Choose ControlSurface Deflections");
     _document = document;
 
@@ -119,26 +139,31 @@ double TIGLViewerSelectWingAndFlapStatusDialog::getTrailingEdgeFlapValue( std::s
     }
 }
 
-QWidget* TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPACSTrailingEdgeDevice& controlSurfaceDevice, const QPalette& Pal)
+void TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPACSTrailingEdgeDevice& controlSurfaceDevice, int rowIdx, QTableWidget* gridLayout)
 {
-    QHBoxLayout* hLayout = new QHBoxLayout;
-    QWidget* innerWidget = new QWidget;
-    innerWidget->setAutoFillBackground(true);
-    innerWidget->setPalette(Pal);
-
 
     QString uid = controlSurfaceDevice.GetUID().c_str();
     QLabel* labelUID = new QLabel(uid, this);
+    QString transparentBG = "background-color: rgba(0, 0, 0, 0.0); padding-left: 6px; padding-right: 6px;";
+    labelUID->setStyleSheet(transparentBG);
+
+    gridLayout->setCellWidget(rowIdx, 0, labelUID);
+
     QSlider* slider = new QSlider(Qt::Horizontal);
     slider->setMaximum(1000);
+    slider->setStyleSheet(transparentBG);
+
+    gridLayout->setCellWidget(rowIdx, 1, slider);
 
     QDoubleSpinBox* spinBox = new QDoubleSpinBox();
     spinBox->setDecimals(3);
-    spinBox->setFixedWidth(60);
     spinBox->setSingleStep(0.005);
-    QString rot = "Rotation: ";
+    spinBox->setStyleSheet(transparentBG);
 
-    // @todo: refactor, chained object calls are ugly
+    gridLayout->setCellWidget(rowIdx, 2, spinBox);
+
+    QString rot;
+
     if ( controlSurfaceDevice.GetPath().GetSteps().GetSteps().size() > 0 ) {
         const auto& step = controlSurfaceDevice.GetPath().GetSteps().GetSteps().front();
         if(step) {
@@ -147,10 +172,9 @@ QWidget* TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPAC
     }
 
     QLabel* labelRotation   = new QLabel(rot, this);
-    labelRotation->setMargin(0);
-    labelRotation->setFixedHeight(15);
+    labelRotation->setStyleSheet(transparentBG);
 
-    labelRotation->setFixedWidth(90);
+    gridLayout->setCellWidget(rowIdx, 3, labelRotation);
 
     double savedValue = controlSurfaceDevice.GetDeflection();
 
@@ -176,31 +200,11 @@ QWidget* TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPAC
 
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
     connect(spinBox, SIGNAL(valueChanged(double)), this, SLOT(spinBox_value_changed(double)));
-
-    hLayout->addWidget(labelUID);
-    hLayout->addWidget(slider);
-    hLayout->addWidget(spinBox);
-    hLayout->addWidget(labelRotation);
-
-    innerWidget->setLayout(hLayout);
-    
-    return innerWidget;
 }
 
-// @TODO: rewrite using MVC and table layout
 void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI()
 {
-    cleanup();
-    
-    QWidget* outerWidget = new QWidget;
-    QVBoxLayout* vLayout = new QVBoxLayout;
-    vLayout->setAlignment(Qt::AlignTop);
-    vLayout->setContentsMargins(0,0,0,0);
-    vLayout->setSpacing(0);
-    QPalette Pal(palette());
-    Pal.setColor(QPalette::Background, Qt::white);
-    bool switcher = true;
-    
+    cleanup();    
     std::string wingUID = m_currentWing;
 
     if (wingUID.empty())
@@ -210,22 +214,15 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI()
     tigl::CCPACSWing &wing = config.GetWing(wingUID);
 
     int noDevices = wing.GetComponentSegmentCount();
+    std::vector<tigl::CCPACSTrailingEdgeDevice*> devices;
+
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
         tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
         const auto& controlSurfaces = componentSegment.GetControlSurfaces();
         if (!controlSurfaces || controlSurfaces->ControlSurfaceCount() < 1) {
             noDevices--;
             if (noDevices < 1) {
-                QLabel* error = new QLabel("This wing has no ControlSurfaces", this);
-                error->setMargin(50);
-                QWidget* innerWidgetE = new QWidget;
-                innerWidgetE->setAutoFillBackground(true);
-                innerWidgetE->setPalette(Pal);
-                vLayout->addWidget( error );
-                vLayout->addWidget(innerWidgetE);
-                outerWidget->setLayout(vLayout);
-                ui->scrollArea->setWidget(outerWidget);
-                return;
+                continue;
             }
         }
 
@@ -242,19 +239,32 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI()
                 continue;
             }
 
-            QColor col = switcher ? Qt::white : Qt::lightGray;
-            Pal.setColor(QPalette::Background, col);
-            switcher = switcher ^ 1;
-
-            vLayout->addWidget(buildFlapRow(*controlSurfaceDevice, Pal));
-
-            _deviceMap[controlSurfaceDevice->GetUID()] = controlSurfaceDevice.get();
-            updateWidgets(controlSurfaceDevice->GetUID(), controlSurfaceDevice->GetDeflection() );
+            devices.push_back(controlSurfaceDevice.get());
         }
 
-        outerWidget->setLayout(vLayout);
-        ui->scrollArea->setWidget(outerWidget);
     }
+
+    auto* tableWidget = new QTableWidget(static_cast<int>(devices.size()), 4);
+
+    int rowIdx = 0;
+    for (auto* device : devices) {
+        buildFlapRow(*device, rowIdx++, tableWidget);
+
+        _deviceMap[device->GetUID()] = device;
+        updateWidgets(device->GetUID(), device->GetDeflection() );
+
+
+    }
+
+    // set style
+    tableWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    tableWidget->setAlternatingRowColors(true);
+    tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    tableWidget->setHorizontalHeaderLabels(QStringList({"", "", "Deflection", "Rotation"}));
+    tableWidget->verticalHeader()->hide();
+    tableWidget->setStyleSheet("QHeaderView::section { border: 0px solid black}");
+
+    ui->scrollArea->setWidget(tableWidget);
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::on_checkTED_stateChanged(int)
@@ -278,7 +288,6 @@ void TIGLViewerSelectWingAndFlapStatusDialog::updateWidgets(std::string controlS
     DeviceWidgets& elms = _guiMap.at(controlSurfaceDeviceUID);
 
     QString textVal;
-    QString textRot = "Rotation: ";
 
     std::map< std::string, tigl::CCPACSTrailingEdgeDevice*>::iterator it;
     it = _deviceMap.find(controlSurfaceDeviceUID);
@@ -297,7 +306,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::updateWidgets(std::string controlS
         rotations.push_back(step->GetHingeLineRotation().value_or(0.));
     }
     double rotation = tigl::Interpolate(relDeflections, rotations, inputDeflection);
-    textRot.append(QString::number(rotation));
+    QString textRot = QString::number(rotation);
 
     double factor = ( inputDeflection - device->GetMinDeflection()  ) / ( device->GetMaxDeflection() - device->GetMinDeflection() );
     textVal.append(QString::number(100 * factor));
