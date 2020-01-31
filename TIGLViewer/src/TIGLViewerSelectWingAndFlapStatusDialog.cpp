@@ -102,7 +102,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int /* k */)
     
     SignalsBlocker block(elms.deflectionBox);
     updateWidgets(uid, inputDeflection);
-    _document->updateControlSurfacesInteractiveObjects(uid);
+    _document->updateFlapTransform(uid);
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::spinBox_value_changed(double inputDeflection)
@@ -114,7 +114,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::spinBox_value_changed(double input
 
     SignalsBlocker block(elms.slider);
     updateWidgets(uid, inputDeflection);
-    _document->updateControlSurfacesInteractiveObjects(uid);
+    _document->updateFlapTransform(uid);
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::cleanup()

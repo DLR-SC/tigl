@@ -985,7 +985,7 @@ void TIGLViewerDocument::drawWingFlap(const QString& uid)
         {
             auto* ted = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
             app->getScene()->displayShape(ted->GetLoft(), false, Quantity_NOC_GREEN);
-            updateControlSurfacesInteractiveObjects(ted->GetUID());
+            updateFlapTransform(ted->GetUID());
         }
     }
     catch(const tigl::CTiglError& ex) {
@@ -995,7 +995,7 @@ void TIGLViewerDocument::drawWingFlap(const QString& uid)
 
 
 
-void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string controlUID)
+void TIGLViewerDocument::updateFlapTransform(std::string controlUID)
 {
     tigl::CTiglUIDManager::TypedPtr obj = GetConfiguration().GetUIDManager().ResolveObject(controlUID);
 

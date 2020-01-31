@@ -51,7 +51,7 @@ public:
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration() const;
 
-    void updateControlSurfacesInteractiveObjects(std::string controlUID);
+    void updateFlapTransform(std::string controlUID);
 
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);
