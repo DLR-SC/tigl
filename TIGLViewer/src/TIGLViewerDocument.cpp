@@ -673,6 +673,7 @@ void TIGLViewerDocument::drawComponentByUID(const QString& uid)
     // define some component specific draw commands
     CallbackMap callbacks;
     callbacks[TIGL_COMPONENT_ROTOR] = &TIGLViewerDocument::drawRotorByUID;
+    callbacks[TIGL_COMPONENT_CONTROL_SURFACE_DEVICE] = &TIGLViewerDocument::drawWingFlap;
 
     struct ContainsCallback{
         ContainsCallback(TiglGeometricComponentType mytype)
@@ -914,6 +915,7 @@ void TIGLViewerDocument::drawWingFlaps()
 
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        START_COMMAND();
         if (drawWingFlaps(wing)) {
             m_flapsDialog->setWing(wing.GetUID());
             m_flapsDialog->show();
@@ -929,19 +931,11 @@ void TIGLViewerDocument::drawWingFlaps()
 bool TIGLViewerDocument::drawWingFlaps(tigl::CCPACSWing& wing)
 {
     try {
-        START_COMMAND();
         if (!wing.GetComponentSegments()) {
             displayError(QString("The wing %1 does not have any control surfaces.").arg(wing.GetUID().c_str()), "Error");
             return false;
         }
 
-
-        std::vector<Quantity_NameOfColor> colors =
-            {Quantity_NOC_RED,
-             Quantity_NOC_GREEN,
-             Quantity_NOC_MAGENTA1,
-             Quantity_NOC_AZURE,
-             Quantity_NOC_FIREBRICK};
 
         size_t n_flaps = 0;
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
@@ -959,8 +953,6 @@ bool TIGLViewerDocument::drawWingFlaps(tigl::CCPACSWing& wing)
         app->getScene()->deleteAllObjects();
         app->getScene()->displayShape(wing.GetLoftWithCutouts(), true);
 
-        size_t iflap = 0;
-
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
             if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
                 continue;
@@ -971,8 +963,7 @@ bool TIGLViewerDocument::drawWingFlaps(tigl::CCPACSWing& wing)
             }
 
             for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                app->getScene()->displayShape(ted->GetLoft(), false, colors[iflap++ % colors.size()]);
-                updateControlSurfacesInteractiveObjects(ted->GetUID());
+                drawWingFlap(ted->GetUID().c_str());
             }
         }
         app->getScene()->updateViewer();
@@ -983,6 +974,23 @@ bool TIGLViewerDocument::drawWingFlaps(tigl::CCPACSWing& wing)
     }
 
     return true;
+}
+
+void TIGLViewerDocument::drawWingFlap(const QString& uid)
+{
+    try {
+        tigl::CTiglUIDManager::TypedPtr obj = GetConfiguration().GetUIDManager().ResolveObject(uid.toStdString());
+
+        if (*obj.type == typeid(tigl::CCPACSTrailingEdgeDevice))
+        {
+            auto* ted = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
+            app->getScene()->displayShape(ted->GetLoft(), false, Quantity_NOC_GREEN);
+            updateControlSurfacesInteractiveObjects(ted->GetUID());
+        }
+    }
+    catch(const tigl::CTiglError& ex) {
+        displayError(ex.what(), "Error");
+    }
 }
 
 

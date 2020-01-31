@@ -181,6 +181,7 @@ private:
     void drawWingComponentSegmentPoint(const std::string& csUID, const double& eta, const double& xsi);
     void drawWingShells(tigl::CCPACSWing& wing);
     bool drawWingFlaps(tigl::CCPACSWing& wing);
+    void drawWingFlap(const QString& flapUID);
 
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
     
