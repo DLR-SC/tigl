@@ -186,6 +186,7 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
     , innerConnection(this)
     , outerConnection(this)
     , surfaceCache(*this, &CCPACSWingSegment::MakeSurfaces)
+    , chordSurfaceCache(*this, &CCPACSWingSegment::MakeChordSurfaces)
     , areaCache(*this, &CCPACSWingSegment::ComputeArea)
     , volumeCache(*this, &CCPACSWingSegment::ComputeVolume)
     , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
@@ -928,7 +929,7 @@ bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
 
     // check if point on chord surface
     double tolerance = 0.03;
-    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCache->cordFace);
+    GeomAPI_ProjectPointOnSurf Proj(pnt, chordSurfaceCache->cordFace);
     if (Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance) {
         return true;
     }
@@ -964,7 +965,10 @@ void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
     cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(GetUpperShape()));
     cache.lowerSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetLowerShape(WING_COORDINATE_SYSTEM)));
     cache.upperSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetUpperShape(WING_COORDINATE_SYSTEM)));
+}
 
+void CCPACSWingSegment::MakeChordSurfaces(ChordSurfaceCache& cache) const
+{
     // make cordface
 
     const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
@@ -1010,10 +1014,10 @@ void CCPACSWingSegment::ComputeVolume(double& cache) const
 const CTiglPointTranslator& CCPACSWingSegment::ChordFace(TiglCoordinateSystem referenceCS) const
 {
     if (referenceCS == WING_COORDINATE_SYSTEM) {
-        return surfaceCache->cordSurfaceLocal;
+        return chordSurfaceCache->cordSurfaceLocal;
     }
     else {
-        return surfaceCache->cordSurface;
+        return chordSurfaceCache->cordSurface;
     }
 }
 
