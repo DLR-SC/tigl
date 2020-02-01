@@ -38,6 +38,7 @@
 #include <QSpacerItem>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QtGlobal>
 
 namespace
 {
@@ -259,7 +260,11 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI()
     // set style
     tableWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     tableWidget->setAlternatingRowColors(true);
+#if QT_VERSION >= 0x050000
     tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#else
+    tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#endif
     tableWidget->setHorizontalHeaderLabels(QStringList({"", "", "Deflection", "Rotation"}));
     tableWidget->verticalHeader()->hide();
     tableWidget->setStyleSheet("QHeaderView::section { border: 0px solid black}");
