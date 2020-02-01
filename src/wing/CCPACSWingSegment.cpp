@@ -380,6 +380,21 @@ std::string CCPACSWingSegment::GetShortShapeName () const
     return shortName.str();
 }
 
+PNamedShape GetParentLoft(const CCPACSWingSegment& segment)
+{
+    if (segment.GetParent()->IsParent<CCPACSWing>()) {
+        const CCPACSWing* wing = segment.GetParent()->GetParent<CCPACSWing>();
+        return wing->GetWingCleanShape();
+    }
+    else if (segment.GetParent()->IsParent<CCPACSWing>()) {
+        const CCPACSEnginePylon* pylon = segment.GetParent()->GetParent<CCPACSEnginePylon>();
+        return pylon->GetLoft();
+    }
+    else {
+        throw CTiglError("Invalid parent type");
+    }
+}
+
 // Builds the loft between the two segment sections
 // build loft out of faces (for compatibility with component segmen loft)
 PNamedShape CCPACSWingSegment::BuildLoft() const
@@ -433,8 +448,7 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
     }
     else {
         const CCPACSWingSegments* segments = GetParent();
-        PNamedShape wingLoft = segments->GetParentComponent()->GetLoft();
-
+        PNamedShape wingLoft = GetParentLoft(*this);
 
         TopoDS_Shell loftShell;
         BRep_Builder BB;

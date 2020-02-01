@@ -175,3 +175,10 @@ TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetAndSetDeflection)
     ASSERT_NEAR(0.33, deflect, 1e-10);
 
 }
+
+TEST(TiglControlSurfaceDeviceSimple, setDeflectionAndExport)
+{
+    TiglHandleWrapper handle("TestData/simpletest-flaps.cpacs.xml", "");
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceSetDeflection(handle, "Flap", 1.0));
+    tiglExportConfiguration(handle, "TestData/export/simpletest-flaps.stp", TIGL_TRUE, 0.0);
+}
