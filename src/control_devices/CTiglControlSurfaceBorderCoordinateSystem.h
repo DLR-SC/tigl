@@ -22,6 +22,7 @@
 #include <gp_Vec.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pln.hxx>
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -43,19 +44,19 @@ public:
      * @param te Trailing edge point of the flap border
      * @param upDir Direction, that should be normal to the wing chord surface
      */
-    CTiglControlSurfaceBorderCoordinateSystem(gp_Pnt le, gp_Pnt te, gp_Vec upDir);
+    TIGL_EXPORT CTiglControlSurfaceBorderCoordinateSystem(gp_Pnt le, gp_Pnt te, gp_Vec upDir);
 
-    gp_Vec getNormal() const;
-    gp_Pnt getLe() const;
-    gp_Pnt getTe() const;
-    gp_Vec getXDir() const;
-    gp_Vec getYDir() const;
+    TIGL_EXPORT gp_Vec getNormal() const;
+    TIGL_EXPORT gp_Pnt getLe() const;
+    TIGL_EXPORT gp_Pnt getTe() const;
+    TIGL_EXPORT gp_Vec getXDir() const;
+    TIGL_EXPORT gp_Vec getYDir() const;
 
-    gp_Pln getPlane() const;
+    TIGL_EXPORT gp_Pln getPlane() const;
 
     /// Returns the transformation from border coordinates to global coordinates
     /// Can be used to position an airfoil (in border coordinates) to world coords
-    gp_Trsf globalTransform() const;
+    TIGL_EXPORT gp_Trsf globalTransform() const;
 
 private:
     gp_Pnt _le, _te;
