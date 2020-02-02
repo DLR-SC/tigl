@@ -153,7 +153,6 @@ void CCPACSTrailingEdgeDevice::Invalidate()
 {
     CCPACSWing& wing = Wing();
     wing.SetBuildFlaps(true);
-    wing.Invalidate();
     wing.GetConfiguration().AircraftFusingAlgo()->Invalidate();
 }
 
