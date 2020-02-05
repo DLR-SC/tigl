@@ -1,0 +1,67 @@
+/*
+* Copyright (c) 2020 RISC Software GmbH
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+#pragma once
+
+#include <atomic>
+#include <string>
+
+#include <boost/optional.hpp>
+
+
+namespace tigl
+{
+
+class CTiglUIDObject
+{
+public:
+    // NVI using ReentryGuard
+    void Invalidate(const boost::optional<std::string>& source = boost::none) const;
+
+    virtual boost::optional<std::string> GetObjectUID() const = 0;
+    virtual CTiglUIDObject* GetNextUIDParent() = 0;
+    virtual const CTiglUIDObject* GetNextUIDParent() const = 0;
+
+protected:
+    ~CTiglUIDObject() = default;
+
+private:
+    virtual void InvalidateImpl(const boost::optional<std::string>& source) const {};
+
+    mutable std::atomic<bool> m_isInvalidating{false};
+};
+
+class CTiglReqUIDObject : public virtual CTiglUIDObject
+{
+public:
+    virtual const std::string& GetUID() const = 0;
+
+    boost::optional<std::string> GetObjectUID() const {
+        return GetUID();
+    }
+};
+
+class CTiglOptUIDObject : public virtual CTiglUIDObject
+{
+public:
+    virtual const boost::optional<std::string>& GetUID() const = 0;
+
+    boost::optional<std::string> GetObjectUID() const {
+        return GetUID();
+    }
+};
+
+}
