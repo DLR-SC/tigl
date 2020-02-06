@@ -96,8 +96,8 @@ public:
     TIGL_EXPORT std::string ShortName() const;
 
     TIGL_EXPORT unsigned int GetFaceCount() const;
-    TIGL_EXPORT const CFaceTraits& GetFaceTraits(int iFace) const;
-    TIGL_EXPORT CFaceTraits& FaceTraits(int iFace);
+    TIGL_EXPORT const CFaceTraits& GetFaceTraits(unsigned int iFace) const;
+    TIGL_EXPORT CFaceTraits& FaceTraits(unsigned int iFace);
 
     // setters
     TIGL_EXPORT void SetShape(const TopoDS_Shape&);
