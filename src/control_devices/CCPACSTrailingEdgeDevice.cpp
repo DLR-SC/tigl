@@ -34,8 +34,10 @@ namespace tigl
 
 CCPACSTrailingEdgeDevice::CCPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTrailingEdgeDevice(parent, uidMgr)
-    , m_type(TRAILING_EDGE_DEVICE)
     , m_hingePoints(*this, &CCPACSTrailingEdgeDevice::ComputeHingePoints)
+    , m_cutoutShape(*this, &CCPACSTrailingEdgeDevice::ComputeCutoutShape)
+    , m_flapShape(*this, &CCPACSTrailingEdgeDevice::ComputeFlapShape)
+    , m_type(TRAILING_EDGE_DEVICE)
 {
 }
 
@@ -238,6 +240,29 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
     hingePoints.outer = points[1];
 }
 
+void CCPACSTrailingEdgeDevice::ComputeCutoutShape(PNamedShape& shape) const
+{
+    if (!GetWingCutOut()) {
+        shape = GetOuterShape().CutoutShape(
+                    ComponentSegment(*this).GetWing().GetWingCleanShape(),
+                    GetNormalOfControlSurfaceDevice());
+    }
+    else {
+        shape = GetWingCutOut()->GetLoft(
+                    ComponentSegment(*this).GetWing().GetWingCleanShape(),
+                    GetOuterShape(),
+                    GetNormalOfControlSurfaceDevice());
+    }
+}
+
+void CCPACSTrailingEdgeDevice::ComputeFlapShape(PNamedShape& shape) const
+{
+    shape =  GetOuterShape().GetLoft(
+                Wing().GetWingCleanShape(),
+                GetNormalOfControlSurfaceDevice());
+    shape->SetName(GetUID().c_str());
+}
+
 gp_Vec CCPACSTrailingEdgeDevice::GetNormalOfControlSurfaceDevice() const
 {
     const CCPACSWingComponentSegment& compSeg = ComponentSegment(*this);
@@ -275,26 +300,12 @@ TiglGeometricComponentIntent CCPACSTrailingEdgeDevice::GetComponentIntent() cons
 
 PNamedShape CCPACSTrailingEdgeDevice::GetCutOutShape(void) const
 {
-    if (!GetWingCutOut()) {
-        return GetOuterShape().CutoutShape(
-                    ComponentSegment(*this).GetWing().GetWingCleanShape(),
-                    GetNormalOfControlSurfaceDevice());
-    }
-    else {
-        return GetWingCutOut()->GetLoft(
-                    ComponentSegment(*this).GetWing().GetWingCleanShape(),
-                    GetOuterShape(),
-                    GetNormalOfControlSurfaceDevice());
-    }
+    return *m_cutoutShape;
 }
 
 PNamedShape CCPACSTrailingEdgeDevice::GetFlapShape() const
 {
-    PNamedShape loft =  GetOuterShape().GetLoft(
-                Wing().GetWingCleanShape(),
-                GetNormalOfControlSurfaceDevice());
-    loft->SetName(GetUID().c_str());
-    return loft;
+    return *m_flapShape;
 }
 
 PNamedShape CCPACSTrailingEdgeDevice::GetTransformedFlapShape() const

@@ -65,11 +65,15 @@ private:
     };
 
     Cache<HingePoints, CCPACSTrailingEdgeDevice> m_hingePoints;
+    Cache<PNamedShape, CCPACSTrailingEdgeDevice> m_cutoutShape;
+    Cache<PNamedShape, CCPACSTrailingEdgeDevice> m_flapShape;
     TiglControlSurfaceType m_type;
     double m_currentDeflection;
 
     PNamedShape BuildLoft() const override;
     void ComputeHingePoints(HingePoints&) const;
+    void ComputeCutoutShape(PNamedShape&) const;
+    void ComputeFlapShape(PNamedShape&) const;
     void Invalidate();
 
     const CCPACSWing& Wing() const;

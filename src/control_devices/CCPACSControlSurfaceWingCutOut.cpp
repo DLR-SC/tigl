@@ -38,17 +38,11 @@ CCPACSControlSurfaceWingCutOut::CCPACSControlSurfaceWingCutOut(CCPACSTrailingEdg
 
 PNamedShape CCPACSControlSurfaceWingCutOut::GetLoft(PNamedShape wingCleanShape, const CCPACSControlSurfaceOuterShapeTrailingEdge& outerShape, const gp_Vec &upDir) const
 {
-    // TODO: Strange... we cache _loft independent of the input args of this function
-    // TODO: This needs refactoring
-    if (_loft) {
-        return _loft;
-    }
-
     DLOG(INFO) << "Building " << GetParent()->GetUID() << " wing cutout shape";
 
     // Get Wires definng the Shape of the more complex CutOutShape.
-    TopoDS_Wire innerWire = getCutoutWire(true, wingCleanShape, &outerShape.GetInnerBorder(), upDir);
-    TopoDS_Wire outerWire = getCutoutWire(false, wingCleanShape, &outerShape.GetOuterBorder(), upDir);
+    TopoDS_Wire innerWire = GetCutoutWire(CCPACSControlSurfaceWingCutOut::CutoutPosition::InnerBorder, wingCleanShape, &outerShape.GetInnerBorder(), upDir);
+    TopoDS_Wire outerWire = GetCutoutWire(CCPACSControlSurfaceWingCutOut::CutoutPosition::OuterBorder, wingCleanShape, &outerShape.GetOuterBorder(), upDir);
 
     // TODO: Replace by own lofting
     // make one shape out of the 2 wires and build connections inbetween.
@@ -57,19 +51,19 @@ PNamedShape CCPACSControlSurfaceWingCutOut::GetLoft(PNamedShape wingCleanShape, 
     thrusections.AddWire(innerWire);
     thrusections.Build();
 
-    _loft = PNamedShape(new CNamedShape(thrusections.Shape(), GetParent()->GetUID().c_str()));
+    PNamedShape cutout(new CNamedShape(thrusections.Shape(), GetParent()->GetUID().c_str()));
 
 #ifdef DEBUG
     DEBUG_SCOPE(debug);
     debug.dumpShape(_loft->Shape(), GetParent()->GetUID() + "_cutout");
 #endif
 
-    _loft->SetShortName(GetParent()->GetShortName());
+    cutout->SetShortName(GetParent()->GetShortName());
 
-    return _loft;
+    return cutout;
 }
 
-TopoDS_Wire CCPACSControlSurfaceWingCutOut::getCutoutWire(bool isInnerBorder,
+TopoDS_Wire CCPACSControlSurfaceWingCutOut::GetCutoutWire(CCPACSControlSurfaceWingCutOut::CutoutPosition pos,
                                                           PNamedShape wingCleanShape,
                                                           const CCPACSControlSurfaceBorderTrailingEdge* outerBorder,
                                                           gp_Vec upDir) const
@@ -78,11 +72,11 @@ TopoDS_Wire CCPACSControlSurfaceWingCutOut::getCutoutWire(bool isInnerBorder,
 
     TopoDS_Wire wire;
 
-    CTiglControlSurfaceBorderCoordinateSystem coords(getCutoutCS(isInnerBorder, outerBorder, upDir));
+    CTiglControlSurfaceBorderCoordinateSystem coords(GetCutoutCS(pos == CutoutPosition::InnerBorder, outerBorder, upDir));
     CControlSurfaceBorderBuilder builder(coords, wingCleanShape->Shape());
 
     double xsiUpper, xsiLower;
-    if (isInnerBorder) {
+    if (pos == CutoutPosition::InnerBorder) {
         if (!GetUpperSkin().GetXsiInnerBorder_choice2() || !GetLowerSkin().GetXsiInnerBorder_choice2()) {
             throw CTiglError("Inner Border xsi values must be set for upper and lower skin");
         }
@@ -103,7 +97,7 @@ TopoDS_Wire CCPACSControlSurfaceWingCutOut::getCutoutWire(bool isInnerBorder,
 
     const auto& lePoints = GetCutOutProfileControlPoint();
     if (lePoints) {
-        const tigl::generated::CPACSCutOutControlPoint& lePoint = isInnerBorder? lePoints->GetInnerBorder() : lePoints->GetOuterBorder();
+        const tigl::generated::CPACSCutOutControlPoint& lePoint = pos == CutoutPosition::InnerBorder ? lePoints->GetInnerBorder() : lePoints->GetOuterBorder();
 
         double xsiNose = lePoint.GetXsi();
         // TODO: calculate xsiNose into coordinate system of the border
@@ -118,7 +112,7 @@ TopoDS_Wire CCPACSControlSurfaceWingCutOut::getCutoutWire(bool isInnerBorder,
 }
 
 CTiglControlSurfaceBorderCoordinateSystem
-CCPACSControlSurfaceWingCutOut::getCutoutCS(bool isInnerBorder, const CCPACSControlSurfaceBorderTrailingEdge* outerShapeBorder, const gp_Vec &upDir) const
+CCPACSControlSurfaceWingCutOut::GetCutoutCS(bool isInnerBorder, const CCPACSControlSurfaceBorderTrailingEdge* outerShapeBorder, const gp_Vec &upDir) const
 {
     const auto& cutOutBorder =
             isInnerBorder ? GetInnerBorder() : GetOuterBorder();

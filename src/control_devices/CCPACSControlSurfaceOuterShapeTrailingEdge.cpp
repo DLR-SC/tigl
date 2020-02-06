@@ -37,46 +37,34 @@ CCPACSControlSurfaceOuterShapeTrailingEdge::CCPACSControlSurfaceOuterShapeTraili
 
 PNamedShape CCPACSControlSurfaceOuterShapeTrailingEdge::GetLoft(PNamedShape wingCleanShape, gp_Vec upDir) const
 {
-    // TODO: Strange... we cache outershape independent of the input args of this function
-    // TODO: This needs refactoring
-    if (_outerShape) {
-        return _outerShape;
-    }
-
     DLOG(INFO) << "Building " << _uid << " loft";
     PNamedShape shapeBox = CutoutShape(wingCleanShape, upDir);
     assert(shapeBox);
     if (NeedsWingIntersection()) {
 
         // perform the boolean intersection of the flap box with the wing
-        _outerShape = CBopCommon(wingCleanShape, shapeBox);
+        PNamedShape outerShape = CBopCommon(wingCleanShape, shapeBox);
 
-        for (int iFace = 0; iFace < static_cast<int>(_outerShape->GetFaceCount()); ++iFace) {
-            CFaceTraits ft = _outerShape->GetFaceTraits(iFace);
+        for (int iFace = 0; iFace < static_cast<int>(outerShape->GetFaceCount()); ++iFace) {
+            CFaceTraits ft = outerShape->GetFaceTraits(iFace);
             ft.SetOrigin(shapeBox);
-            _outerShape->SetFaceTraits(iFace, ft);
+            outerShape->SetFaceTraits(iFace, ft);
         }
 
 #ifdef DEBUG
         DEBUG_SCOPE(debug);
-        debug.dumpShape(_outerShape->Shape(), _uid);
+        debug.dumpShape(outerShape->Shape(), _uid);
 #endif
 
-        return _outerShape;
+        return outerShape;
     }
     else {
-        _outerShape = shapeBox;
-        return _outerShape;
+        return shapeBox;
     }
 }
 
 PNamedShape CCPACSControlSurfaceOuterShapeTrailingEdge::CutoutShape(PNamedShape wingShape, gp_Vec upDir) const
 {
-    // TODO: Strange... we cache cuttershape independent of the input args of this function
-    // TODO: This needs refactoring
-    if (_cutterShape) {
-        return _cutterShape;
-    }
 
     DLOG(INFO) << "Building " << _uid << " cutter shape";
 
@@ -91,17 +79,17 @@ PNamedShape CCPACSControlSurfaceOuterShapeTrailingEdge::CutoutShape(PNamedShape 
     thrusections.AddWire(innerWire);
     thrusections.Build();
 
-    _cutterShape = PNamedShape(new CNamedShape(thrusections.Shape(), GetParent()->GetUID().c_str()));
-    _cutterShape->SetShortName(GetParent()->GetShortName().c_str());
+    PNamedShape cutterShape = PNamedShape(new CNamedShape(thrusections.Shape(), GetParent()->GetUID().c_str()));
+    cutterShape->SetShortName(GetParent()->GetShortName().c_str());
 
     assert(_cutterShape);
 
 #ifdef DEBUG
     DEBUG_SCOPE(debug);
-    debug.dumpShape(_cutterShape->Shape(), _uid + "_cutter");
+    debug.dumpShape(cutterShape->Shape(), _uid + "_cutter");
 #endif
 
-    return _cutterShape;
+    return cutterShape;
 }
 
 void CCPACSControlSurfaceOuterShapeTrailingEdge::SetUID(const std::string& uid)

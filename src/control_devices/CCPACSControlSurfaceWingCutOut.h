@@ -45,12 +45,17 @@ public:
                                     const gp_Vec& upDir) const;
 
 private:
-    mutable PNamedShape _loft;
 
-    TopoDS_Wire getCutoutWire(bool isInnerBorder, PNamedShape wingCleanShape,
+    enum class CutoutPosition
+    {
+        InnerBorder,
+        OuterBorder
+    };
+
+    TopoDS_Wire GetCutoutWire(CutoutPosition pos, PNamedShape wingCleanShape,
                               const CCPACSControlSurfaceBorderTrailingEdge *outerBorder, gp_Vec upDir) const;
 
-    CTiglControlSurfaceBorderCoordinateSystem getCutoutCS(bool isInnerBorder,
+    CTiglControlSurfaceBorderCoordinateSystem GetCutoutCS(bool isInnerBorder,
                                                           const CCPACSControlSurfaceBorderTrailingEdge*,
                                                           const gp_Vec& upDir) const;
 };

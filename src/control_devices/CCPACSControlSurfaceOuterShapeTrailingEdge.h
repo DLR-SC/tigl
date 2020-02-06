@@ -56,10 +56,6 @@ public:
 private:
     bool NeedsWingIntersection() const;
 
-    // helper objects
-    // TODO: Use cache
-    mutable PNamedShape _outerShape;
-    mutable PNamedShape _cutterShape;
     std::string _uid;
 };
 
