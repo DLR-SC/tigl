@@ -254,7 +254,10 @@ void CCPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
 
 void CCPACSTransformation::InvalidateParent() const
 {
-    GetNextUIDParent()->Invalidate(GetUID());
+    const CTiglUIDObject* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate(GetUID());
+    }
 }
 
 
