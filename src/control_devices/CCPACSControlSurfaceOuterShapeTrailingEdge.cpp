@@ -82,7 +82,7 @@ PNamedShape CCPACSControlSurfaceOuterShapeTrailingEdge::CutoutShape(PNamedShape 
     PNamedShape cutterShape = PNamedShape(new CNamedShape(thrusections.Shape(), GetParent()->GetUID().c_str()));
     cutterShape->SetShortName(GetParent()->GetShortName().c_str());
 
-    assert(_cutterShape);
+    assert(cutterShape);
 
 #ifdef DEBUG
     DEBUG_SCOPE(debug);

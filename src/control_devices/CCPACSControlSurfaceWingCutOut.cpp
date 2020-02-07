@@ -55,7 +55,7 @@ PNamedShape CCPACSControlSurfaceWingCutOut::GetLoft(PNamedShape wingCleanShape, 
 
 #ifdef DEBUG
     DEBUG_SCOPE(debug);
-    debug.dumpShape(_loft->Shape(), GetParent()->GetUID() + "_cutout");
+    debug.dumpShape(cutout->Shape(), GetParent()->GetUID() + "_cutout");
 #endif
 
     cutout->SetShortName(GetParent()->GetShortName());
