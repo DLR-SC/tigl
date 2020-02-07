@@ -16,21 +16,49 @@
 
 
 #include "CCPACSPoint.h"
+#include "CTiglUIDManager.h"
 
 namespace tigl
 {
-CCPACSPoint::CCPACSPoint(CTiglUIDManager* uidMgr)
-    : generated::CPACSPoint(uidMgr)
+
+CCPACSPoint::CCPACSPoint(CCPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPoint(parent, uidMgr)
 {
 }
 
+CCPACSPoint::CCPACSPoint(CCPACSPointList* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPoint(parent, uidMgr)
+{
+}
+
+CCPACSPoint::CCPACSPoint(CCPACSSeatModule* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPoint(parent, uidMgr)
+{
+}
+
+CCPACSPoint::CCPACSPoint(CCPACSTransformation* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPoint(parent, uidMgr)
+{
+}
+
+
 CCPACSPoint::CCPACSPoint(const CCPACSPoint &p)
-    : generated::CPACSPoint (p.m_uidMgr)
+    : generated::CPACSPoint((CCPACSTransformation*)nullptr, p.m_uidMgr)
 {
     m_x = p.m_x;
     m_y = p.m_y;
     m_z = p.m_z;
     m_uID = p.m_uID;
+}
+
+CCPACSPoint &CCPACSPoint::operator=(const CCPACSPoint & p)
+{
+    // For now, we don't replace the uid, just the values
+    m_x = p.m_x;
+    m_y = p.m_y;
+    m_z = p.m_z;
+    Invalidate();
+    return *this;
 }
 
 CTiglPoint CCPACSPoint::AsPoint() const
@@ -47,15 +75,34 @@ void CCPACSPoint::SetAsPoint(const CTiglPoint& point)
     m_x = point.x;
     m_y = point.y;
     m_z = point.z;
+    Invalidate();
 }
 
-CCPACSPoint &CCPACSPoint::operator=(const CCPACSPoint & p)
+void CCPACSPoint::SetX(const boost::optional<double>& value)
 {
-    // For now, we don't replace the uid, just the values
-    m_x = p.m_x;
-    m_y = p.m_y;
-    m_z = p.m_z;
-    return *this;
+    generated::CPACSPoint::SetX(value);
+    Invalidate();
+}
+
+void CCPACSPoint::SetY(const boost::optional<double>& value)
+{
+    generated::CPACSPoint::SetY(value);
+    Invalidate();
+}
+
+void CCPACSPoint::SetZ(const boost::optional<double>& value)
+{
+    generated::CPACSPoint::SetZ(value);
+    Invalidate();
+}
+
+void CCPACSPoint::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    const CTiglUIDObject* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate(GetUID());
+    }
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 } // namespace tigl

@@ -54,6 +54,8 @@ public:
     TopoDS_Compound GetCutPlanes() const;
     
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     const CCPACSWalls& GetWalls() const;
     const CCPACSFuselage& GetFuselage() const;
 

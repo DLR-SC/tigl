@@ -139,17 +139,17 @@ CCPACSWingCell::~CCPACSWingCell()
 {
 }
 
-void CCPACSWingCell::Invalidate()
+void CCPACSWingCell::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometryCache.clear();
     m_etaXsiCache.clear();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 void CCPACSWingCell::Reset()
 {
     m_uID         = "";
-    m_geometryCache.clear();
-    m_etaXsiCache.clear();
+    Invalidate();
 }
 
 bool CCPACSWingCell::IsConvex() const

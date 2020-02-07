@@ -27,10 +27,10 @@ namespace tigl
 CCPACSWingRibsDefinitions::CCPACSWingRibsDefinitions(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr)
     : generated::CPACSWingRibsDefinitions(structure, uidMgr) {}
 
-void CCPACSWingRibsDefinitions::Invalidate()
+void CCPACSWingRibsDefinitions::Invalidate(const boost::optional<std::string>& source) const
 {
     for (auto& r : m_ribsDefinitions) {
-        r->Invalidate();
+        r->Invalidate(source);
     }
 }
 

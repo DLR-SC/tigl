@@ -25,9 +25,9 @@ CCPACSFramesAssembly::CCPACSFramesAssembly(CCPACSFuselageStructure* parent, CTig
 {
 }
 
-void CCPACSFramesAssembly::Invalidate()
+void CCPACSFramesAssembly::Invalidate(const boost::optional<std::string>& source) const
 {
     for (size_t i = 0; i < m_frames.size(); i++)
-        m_frames[i]->Invalidate();
+        m_frames[i]->Invalidate(source);
 }
 } // namespace tigl

@@ -18,6 +18,7 @@
 
 #include "CCPACSFuselageStructure.h"
 #include "CNamedShape.h"
+#include "CTiglUIDManager.h"
 
 namespace tigl
 {
@@ -25,6 +26,12 @@ CCPACSDoorAssemblyPosition::CCPACSDoorAssemblyPosition(CCPACSCargoDoorsAssembly*
     : generated::CPACSDoorAssemblyPosition(parent, uidMgr)
     , CTiglStringerFrameBorderedObject(*uidMgr, *parent->GetParent()->GetParent(), generated::CPACSDoorAssemblyPosition::m_startFrameUID, generated::CPACSDoorAssemblyPosition::m_endFrameUID, generated::CPACSDoorAssemblyPosition::m_startStringerUID, generated::CPACSDoorAssemblyPosition::m_endStringerUID)
 {
+}
+
+void CCPACSDoorAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    CTiglStringerFrameBorderedObject::InvalidateShapes(source);
+    InvalidateReferencesTo(GetUID(), generated::CPACSDoorAssemblyPosition::m_uidMgr);
 }
 
 std::string CCPACSDoorAssemblyPosition::GetDefaultedUID() const

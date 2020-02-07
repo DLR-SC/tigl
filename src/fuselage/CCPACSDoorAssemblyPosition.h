@@ -31,6 +31,9 @@ public:
     TIGL_EXPORT PNamedShape GetLoft() const override;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
 };
 
 } // namespace tigl

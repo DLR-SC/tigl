@@ -42,6 +42,8 @@ public:
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     /// reads in the CAD file
     PNamedShape BuildLoft() const override;
 

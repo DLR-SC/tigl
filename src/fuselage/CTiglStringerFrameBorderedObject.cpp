@@ -51,7 +51,7 @@ CTiglStringerFrameBorderedObject::CTiglStringerFrameBorderedObject(
 {
 }
 
-void CTiglStringerFrameBorderedObject::Invalidate()
+void CTiglStringerFrameBorderedObject::InvalidateShapes(const boost::optional<std::string>& source) const
 {
     m_borderCache.clear();
     m_geometry.clear();

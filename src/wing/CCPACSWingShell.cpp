@@ -72,11 +72,13 @@ CCPACSWingCSStructure& CCPACSWingShell::GetStructure()
     return *m_parent;
 }
 
-void CCPACSWingShell::Invalidate()
+void CCPACSWingShell::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometryCache.clear();
-    if (m_cells)
+    if (m_cells) {
         m_cells->Invalidate();
+    }
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 void CCPACSWingShell::BuildGeometry(GeometryCache& cache) const

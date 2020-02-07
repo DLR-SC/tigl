@@ -52,11 +52,12 @@ CCPACSFrame::CCPACSFrame(CCPACSFramesAssembly* parent, CTiglUIDManager* uidMgr)
 {
 }
 
-void CCPACSFrame::Invalidate()
+void CCPACSFrame::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geomCache1D.clear();
     m_geomCache3D.clear();
     m_cutGeomCache.clear();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const

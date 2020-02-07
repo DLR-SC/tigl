@@ -18,6 +18,7 @@
 #include <cstdlib>
 
 #include "CCPACSStringVector.h"
+#include "CTiglUIDObject.h"
 
 namespace tigl
 {
@@ -50,6 +51,35 @@ std::string doubleVecToString(const std::vector<double>& v)
     return ss.str();
 }
 
+CCPACSStringVector::CCPACSStringVector(CCPACSWingProfileCST* parent)
+    : generated::CPACSStringVectorBase(parent)
+{}
+
+CCPACSStringVector::CCPACSStringVector(CCPACSEmissivityMap* parent)
+    : generated::CPACSStringVectorBase(parent)
+{}
+
+CCPACSStringVector::CCPACSStringVector(CCPACSPointListRelXYZVector* parent)
+    : generated::CPACSStringVectorBase(parent)
+{}
+
+CCPACSStringVector::CCPACSStringVector(CCPACSPointListXYVector* parent)
+    : generated::CPACSStringVectorBase(parent)
+{}
+
+CCPACSStringVector::CCPACSStringVector(CCPACSPointListXYZVector* parent)
+    : generated::CPACSStringVectorBase(parent)
+{}
+
+CCPACSStringVector::CCPACSStringVector(CCPACSRotorBladeAttachment* parent)
+    : generated::CPACSStringVectorBase(parent)
+{}
+
+CCPACSStringVector::CCPACSStringVector(CCPACSSpecificHeatMap* parent)
+    : generated::CPACSStringVectorBase(parent)
+{}
+
+
 void CCPACSStringVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     generated::CPACSStringVectorBase::ReadCPACS(tixiHandle, xpath);
@@ -68,9 +98,24 @@ const std::vector<double>& CCPACSStringVector::AsVector() const
     return m_vec;
 }
 
-std::vector<double>& CCPACSStringVector::AsVector()
+void CCPACSStringVector::SetValue(int index, double value)
 {
-    return m_vec;
+    m_vec.at(index) = value;
+    InvalidateParent();
+}
+
+void CCPACSStringVector::SetAsVector(const std::vector<double>& vec)
+{
+    m_vec = vec;
+    InvalidateParent();
+}
+
+void CCPACSStringVector::InvalidateParent() const
+{
+    const CTiglUIDObject* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate();
+    }
 }
 
 } // namespace tigl

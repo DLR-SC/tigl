@@ -55,8 +55,6 @@ public:
     TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
     TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
 
-    TIGL_EXPORT void Invalidate();
-
     TIGL_EXPORT TiglLoftSide GetLoftSide() const;
 
 private:
@@ -65,6 +63,8 @@ private:
     struct GeometryCache
     {
     };
+
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
     void BuildGeometry(GeometryCache& cache) const;
 

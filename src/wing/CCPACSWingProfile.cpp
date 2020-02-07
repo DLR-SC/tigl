@@ -55,12 +55,13 @@
 #include "CTiglInterpolateLinearWire.h"
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfile.h"
+#include "CTiglUIDManager.h"
 
 namespace tigl 
 {
     namespace
     {
-        void OrderPoints(std::vector<CTiglPoint>& vec)
+        bool OrderPoints(std::vector<CTiglPoint>& vec)
         {
             // points with maximal/minimal y-component
             std::size_t minZIndex = 0;
@@ -82,13 +83,22 @@ namespace tigl
             if (minZIndex > maxZIndex) {
                 LOG(WARNING) << "The points don't seem to be ordered in a mathematical positive sense.";
                 std::reverse(vec.begin(), vec.end());
+                return true;
             }
+            return false;
         }
     }
 
 // Constructor
-CCPACSWingProfile::CCPACSWingProfile(CTiglUIDManager* uidMgr)
-    : generated::CPACSProfileGeometry(uidMgr)
+CCPACSWingProfile::CCPACSWingProfile(CCPACSWingProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileGeometry(parent, uidMgr)
+    , isRotorProfile(false)
+    , pointListAlgo(*this, &CCPACSWingProfile::buildPointListAlgo)
+{
+}
+
+CCPACSWingProfile::CCPACSWingProfile(CCPACSRotorProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileGeometry(parent, uidMgr)
     , isRotorProfile(false)
     , pointListAlgo(*this, &CCPACSWingProfile::buildPointListAlgo)
 {
@@ -114,7 +124,10 @@ void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
 
     if (m_pointList_choice1) {
-        OrderPoints(m_pointList_choice1->AsVector());
+        std::vector<CTiglPoint> points = m_pointList_choice1->AsVector();
+        if (OrderPoints(points)) {
+            m_pointList_choice1->SetAsVector(points);
+        }
     }
 }
 
@@ -125,9 +138,10 @@ bool CCPACSWingProfile::IsRotorProfile() const
 }
 
 // Invalidates internal wing profile state
-void CCPACSWingProfile::Invalidate()
+void CCPACSWingProfile::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     GetProfileAlgo()->Invalidate();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Returns the wing profile upper wire

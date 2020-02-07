@@ -22,6 +22,9 @@
 #ifndef CCPACSWINGSEGMENTS_H
 #define CCPACSWINGSEGMENTS_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSWingSegments.h"
 #include "tigl_internal.h"
 
@@ -38,7 +41,11 @@ public:
     TIGL_EXPORT CCPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
+
+
+    TIGL_EXPORT CCPACSWingSegment& AddSegment() override;
+    TIGL_EXPORT void RemoveSegment(CCPACSWingSegment& ref) override;
 
     // Gets a segment by index or UID.
     TIGL_EXPORT CCPACSWingSegment& GetSegment(const int index);
@@ -55,6 +62,8 @@ public:
     }
 
 private:
+    void InvalidateParent() const;
+
     CTiglRelativelyPositionedComponent* m_parentVariant;
 };
 

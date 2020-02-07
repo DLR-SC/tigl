@@ -21,8 +21,8 @@
 
 namespace tigl {
 
-CCPACSEngines::CCPACSEngines(CTiglUIDManager* uidMgr)
-    : generated::CPACSEngines(uidMgr)
+CCPACSEngines::CCPACSEngines(CCPACSVehicles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEngines(parent, uidMgr)
 {}
 
 TIGL_EXPORT size_t CCPACSEngines::GetEngineCount() const

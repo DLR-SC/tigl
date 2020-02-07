@@ -163,9 +163,15 @@ void CCPACSFuselageSegment::Cleanup()
     CTiglAbstractGeometricComponent::Reset();
 }
 
-void CCPACSFuselageSegment::Invalidate()
+void CCPACSFuselageSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglAbstractSegment<CCPACSFuselageSegment>::Reset();
+    // forward invalidation to parent fuselage
+    const auto* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate(GetUID());
+    }
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Read CPACS segment elements

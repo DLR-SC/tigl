@@ -39,10 +39,10 @@ CCPACSRotors::CCPACSRotors(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMg
     : generated::CPACSRotors(parent, uidMgr) {}
 
 // Invalidates internal state
-void CCPACSRotors::Invalidate()
+void CCPACSRotors::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 1; i <= GetRotorCount(); i++) {
-        GetRotor(i).Invalidate();
+        GetRotor(i).Invalidate(source);
     }
 }
 

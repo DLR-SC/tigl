@@ -38,7 +38,7 @@ public:
         Rib
     };
 
-    TIGL_EXPORT CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent);
+    TIGL_EXPORT CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT InputType GetInputType() const;
 

@@ -20,8 +20,8 @@
 
 namespace tigl
 {
-CCPACSWingRibExplicitPositioning::CCPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent)
-    : generated::CPACSWingRibExplicitPositioning(parent)
+CCPACSWingRibExplicitPositioning::CCPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingRibExplicitPositioning(parent, uidMgr)
 {
 }
 
@@ -34,7 +34,7 @@ void CCPACSWingRibExplicitPositioning::SetStartCurvePoint(const CCPACSCurvePoint
     m_startEtaXsiPoint_choice1 = boost::none;
     m_startSparPositionUID_choice3 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibExplicitPositioning::SetStartEtaXsiPoint(const CCPACSEtaXsiPoint &etaxsi)
@@ -47,7 +47,7 @@ void CCPACSWingRibExplicitPositioning::SetStartEtaXsiPoint(const CCPACSEtaXsiPoi
     m_startCurvePoint_choice2 = boost::none;
     m_startSparPositionUID_choice3 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibExplicitPositioning::SetStartSparPositionUID(const std::string &sparPosition)
@@ -57,7 +57,7 @@ void CCPACSWingRibExplicitPositioning::SetStartSparPositionUID(const std::string
     m_startEtaXsiPoint_choice1 = boost::none;
     m_startCurvePoint_choice2 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibExplicitPositioning::SetEndCurvePoint(const CCPACSCurvePoint &curve_point)
@@ -69,7 +69,7 @@ void CCPACSWingRibExplicitPositioning::SetEndCurvePoint(const CCPACSCurvePoint &
     m_endEtaXsiPoint_choice1 = boost::none;
     m_endSparPositionUID_choice3 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibExplicitPositioning::SetEndEtaXsiPoint(const CCPACSEtaXsiPoint &etaxsi)
@@ -82,7 +82,7 @@ void CCPACSWingRibExplicitPositioning::SetEndEtaXsiPoint(const CCPACSEtaXsiPoint
     m_endCurvePoint_choice2 = boost::none;
     m_endSparPositionUID_choice3 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibExplicitPositioning::SetEndSparPositionUID(const std::string &sparPosition)
@@ -92,12 +92,24 @@ void CCPACSWingRibExplicitPositioning::SetEndSparPositionUID(const std::string &
     m_endEtaXsiPoint_choice1 = boost::none;
     m_endCurvePoint_choice2 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
-
-void CCPACSWingRibExplicitPositioning::Invalidate()
+void CCPACSWingRibExplicitPositioning::SetRibStart(const std::string& value)
 {
-    m_parent->GetParent()->Invalidate();
+    generated::CPACSWingRibExplicitPositioning::SetRibStart(value);
+    InvalidateParent();
 }
+
+void CCPACSWingRibExplicitPositioning::SetRibEnd(const std::string& value)
+{
+    generated::CPACSWingRibExplicitPositioning::SetRibEnd(value);
+    InvalidateParent();
+}
+
+void CCPACSWingRibExplicitPositioning::InvalidateParent() const
+{
+    m_parent->Invalidate();
+}
+
 }

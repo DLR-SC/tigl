@@ -22,8 +22,8 @@ namespace tigl
 {
 
 CCPACSControlSurfaceBorderTrailingEdge::CCPACSControlSurfaceBorderTrailingEdge(
-    CCPACSControlSurfaceOuterShapeTrailingEdge* parent)
-    : generated::CPACSControlSurfaceBorderTrailingEdge(parent)
+    CCPACSControlSurfaceOuterShapeTrailingEdge* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSControlSurfaceBorderTrailingEdge(parent, uidMgr)
 {
 }
 

@@ -48,7 +48,7 @@ CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::op
     : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis){}
 
 
-void CTiglRelativelyPositionedComponent::Reset()
+void CTiglRelativelyPositionedComponent::Reset() const
 {
     CTiglAbstractGeometricComponent::Reset();
     if (_transformation)

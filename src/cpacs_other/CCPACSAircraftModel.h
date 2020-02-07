@@ -38,7 +38,7 @@ class CCPACSAircraftModel : public generated::CPACSAircraftModel, public CTiglRe
 public:
     // Construct
     TIGL_EXPORT CCPACSAircraftModel(CCPACSConfiguration* config = NULL);
-    TIGL_EXPORT CCPACSAircraftModel(CTiglUIDManager* config);
+    TIGL_EXPORT CCPACSAircraftModel(CCPACSAircraft* parent, CTiglUIDManager* config);
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
@@ -48,7 +48,6 @@ public:
 
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
-    void Invalidate();
 
 protected:
     PNamedShape BuildLoft() const override;

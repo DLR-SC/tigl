@@ -39,9 +39,17 @@ public:
     TIGL_EXPORT boost::optional<TopoDS_Shape>& GetShape();
     TIGL_EXPORT boost::optional<TopoDS_Shape> const& GetShape() const;
 
-    TIGL_EXPORT void Invalidate() const;
+    // overriding setters for invalidation
+    TIGL_EXPORT void SetBulkheadUID_choice1(const boost::optional<std::string>& value) override;
+    TIGL_EXPORT void SetWallSegmentUID_choice2(const boost::optional<std::string>& value) override;
+    TIGL_EXPORT void SetFuselageSectionUID_choice3(const boost::optional<std::string>& value) override;
+    TIGL_EXPORT void SetX_choice4(const boost::optional<double>& value) override;
+    TIGL_EXPORT void SetY(const double& value) override;
+    TIGL_EXPORT void SetZ(const double& value) override;
 
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void  CalcBasePointAndShape() const;
     const CCPACSWalls& GetWalls() const;
     const CCPACSFuselage& GetFuselage() const;

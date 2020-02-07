@@ -38,11 +38,11 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
-    TIGL_EXPORT void Invalidate();
-
     TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void BuildGeometry(TopoDS_Shape& cache) const;
 
 private:

@@ -72,13 +72,14 @@ CCPACSWingRibsDefinition::CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* pa
     Invalidate();
 }
 
-void CCPACSWingRibsDefinition::Invalidate()
+void CCPACSWingRibsDefinition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     ribSetDataCache.clear();
     auxGeomCache.clear();
     ribGeometryCache.clear();
     splittedRibGeomCache.clear();
     ribCapsCache.clear();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 CCPACSWingRibsDefinition::RibPositioningType CCPACSWingRibsDefinition::GetRibPositioningType() const
@@ -327,7 +328,7 @@ CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeome
 
 boost::optional<std::string> CCPACSWingRibsDefinition::GetElementUID(const CCPACSEtaXsiPoint& point) const
 {
-    CCPACSEtaXsiPoint pcopy;
+    CCPACSEtaXsiPoint pcopy((CCPACSWingSparPosition*)nullptr, m_uidMgr);
     pcopy.SetEta(point.GetEta());
     pcopy.SetXsi(point.GetXsi());
     pcopy.SetReferenceUID(point.GetReferenceUID());

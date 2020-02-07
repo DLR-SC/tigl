@@ -86,6 +86,11 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
     }
 }
 
+void CCPACSExternalObject::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    loft.clear();
+}
+
 const std::string& CCPACSExternalObject::GetFilePath() const
 {
     return _filePath;

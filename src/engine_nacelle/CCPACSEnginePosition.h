@@ -32,12 +32,13 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override { return TIGL_COMPONENT_ENGINE_NACELLE; }
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override { return TIGL_INTENT_PHYSICAL; }
 
-    TIGL_EXPORT void Invalidate();
-
     TIGL_EXPORT bool HasLoft() const;
 
 protected:
     virtual PNamedShape BuildLoft() const override;
+
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
 };
 

@@ -70,11 +70,11 @@ TiglGeometricComponentIntent CCPACSCrossBeamStrutAssemblyPosition::GetComponentI
     return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
-
-void CCPACSCrossBeamStrutAssemblyPosition::Invalidate()
+void CCPACSCrossBeamStrutAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry1D.clear();
     m_geometry3D.clear();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 TopoDS_Shape CCPACSCrossBeamStrutAssemblyPosition::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const

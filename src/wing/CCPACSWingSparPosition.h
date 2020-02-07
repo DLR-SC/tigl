@@ -51,7 +51,13 @@ public:
     TIGL_EXPORT const CCPACSWingRibPoint& GetRibPoint() const;
     TIGL_EXPORT const CCPACSEtaXsiPoint &GetEtaXsiPoint() const;
 
+    TIGL_EXPORT void SetRibPoint(const CCPACSWingRibPoint& ribPoint);
+    TIGL_EXPORT void SetEtaXsiPoint(const CCPACSEtaXsiPoint& etaXsiPoint);
+
     TIGL_EXPORT gp_Vec GetUpVector(const CCPACSWingCSStructure& structure, gp_Pnt midplanePnt) const;
+
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 };
 
 TIGL_EXPORT int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint&);

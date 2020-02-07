@@ -118,6 +118,33 @@ const generated::CPACSWingRibPoint& CCPACSWingSparPosition::GetRibPoint() const
     return GetSparPositionRib_choice1().value();
 }
 
+void CCPACSWingSparPosition::SetRibPoint(const CCPACSWingRibPoint& ribPoint)
+{
+    CCPACSWingRibPoint& rp = GetSparPositionRib_choice1(CreateIfNotExists);
+    rp.SetRibDefinitionUID(ribPoint.GetRibDefinitionUID());
+    rp.SetRibNumber(ribPoint.GetRibNumber());
+    rp.SetXsi(ribPoint.GetXsi());
+
+    RemoveSparPositionEtaXsi_choice2();
+    Invalidate();
+}
+
+void CCPACSWingSparPosition::SetEtaXsiPoint(const CCPACSEtaXsiPoint& etaXsiPoint)
+{
+    CCPACSEtaXsiPoint& ep = GetSparPositionEtaXsi_choice2(CreateIfNotExists);
+    ep.SetEta(etaXsiPoint.GetEta());
+    ep.SetReferenceUID(etaXsiPoint.GetReferenceUID());
+    ep.SetXsi(etaXsiPoint.GetXsi());
+
+    RemoveSparPositionRib_choice1();
+    Invalidate();
+}
+
+void CCPACSWingSparPosition::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
+}
+
 int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint& ribPoint)
 {
     return ribPoint.GetRibNumber().value_or(1);

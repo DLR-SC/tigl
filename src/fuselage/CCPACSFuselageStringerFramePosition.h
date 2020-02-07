@@ -68,7 +68,8 @@ private:
         double zmax;
     };
 
-    void Invalidate();
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void UpdateRelativePositioning(RelativePositionCache& cache) const;
 
     Cache<RelativePositionCache, CCPACSFuselageStringerFramePosition> m_relCache;

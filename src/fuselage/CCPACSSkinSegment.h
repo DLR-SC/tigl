@@ -25,5 +25,8 @@ class CCPACSSkinSegment : public generated::CPACSSkinSegment, public CTiglString
 {
 public:
     TIGL_EXPORT CCPACSSkinSegment(CCPACSSkinSegments* parent, CTiglUIDManager* uidMgr);
+
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 };
 } // namespace tigl

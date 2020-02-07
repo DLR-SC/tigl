@@ -30,9 +30,6 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSEnginePylons(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Gets a pylon by index or UID.
     TIGL_EXPORT CCPACSEnginePylon& GetEnginePylon(const int index);
     TIGL_EXPORT const CCPACSEnginePylon& GetEnginePylon(const int index) const;

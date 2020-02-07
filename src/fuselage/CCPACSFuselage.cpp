@@ -81,15 +81,15 @@ CCPACSFuselage::~CCPACSFuselage()
 }
 
 // Invalidates internal state
-void CCPACSFuselage::Invalidate()
+void CCPACSFuselage::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     loft.clear();
     guideCurves.clear();
     m_segments.Invalidate();
-    if (m_positionings)
-        m_positionings->Invalidate();
     if (m_structure)
         m_structure->Invalidate();
+
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Cleanup routine

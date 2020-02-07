@@ -72,11 +72,12 @@ TiglGeometricComponentIntent CCPACSCrossBeamAssemblyPosition::GetComponentIntent
 
 
 
-void CCPACSCrossBeamAssemblyPosition::Invalidate()
+void CCPACSCrossBeamAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry1D.clear();
     m_geometry3D.clear();
     m_cutGeometry.clear();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const

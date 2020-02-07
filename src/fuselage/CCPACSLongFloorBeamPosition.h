@@ -33,12 +33,12 @@ public:
 
     TIGL_EXPORT void SetPositionY(const double& value) override;
 
-    TIGL_EXPORT void Invalidate();
-
     TIGL_EXPORT gp_Pnt GetCrossBeamIntersection(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
     TIGL_EXPORT TopoDS_Face GetCutGeometryForCrossBeam(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void BuildCutGeometryForCrossBeam(TopoDS_Face& cache) const;
 
 private:

@@ -18,6 +18,7 @@
 
 #include "CCPACSEnginePylon.h"
 
+#include "CTiglUIDManager.h"
 #include "CTiglEnginePylonBuilder.h"
 
 namespace tigl
@@ -34,8 +35,10 @@ std::string CCPACSEnginePylon::GetDefaultedUID() const
     return generated::CPACSEnginePylon::GetUID();
 }
 
-void CCPACSEnginePylon::Invalidate()
+void CCPACSEnginePylon::InvalidateImpl(const boost::optional<std::string>& source) const
 {
+    CTiglAbstractGeometricComponent::Reset();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 PNamedShape CCPACSEnginePylon::BuildLoft() const

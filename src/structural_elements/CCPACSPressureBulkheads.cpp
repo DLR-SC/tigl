@@ -18,8 +18,8 @@
 
 namespace tigl
 {
-CCPACSPressureBulkheads::CCPACSPressureBulkheads(CTiglUIDManager* uidMgr)
-    : generated::CPACSPressureBulkheads(uidMgr)
+CCPACSPressureBulkheads::CCPACSPressureBulkheads(CCPACSStructuralElements* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPressureBulkheads(parent, uidMgr)
 {
 }
 

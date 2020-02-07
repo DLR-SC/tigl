@@ -23,21 +23,21 @@ namespace tigl
 class CCPACSEtaIsoLine : public generated::CPACSEtaIsoLine
 {
 public:
-    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSWingCellPositionSpanwise* parent);
-    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceAirfoil* parent);
-    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent);
-    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceSkinCutOutBorder* parent);
-    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceTrackType* parent);
-    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSCutOutProfile* parent);
-    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSSparCell* parent);
+    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSWingCellPositionSpanwise* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceAirfoil* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceSkinCutOutBorder* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSCutOutProfile* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSSparCell* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT virtual void SetEta(const double& value);
-    TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
+    TIGL_EXPORT void SetEta(const double& value) override;
+    TIGL_EXPORT void SetReferenceUID(const std::string& value) override;
 
     //TIGL_EXPORT double ComputeCSOrTEDEta() const;
 
 private:
-    void InvalidateParent();
+    void InvalidateParent() const;
 };
 
 } // namespace tigl

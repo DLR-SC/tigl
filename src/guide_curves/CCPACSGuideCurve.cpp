@@ -33,8 +33,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSGuideCurve::CCPACSGuideCurve(CTiglUIDManager* uidMgr)
-    : generated::CPACSGuideCurve(uidMgr)
+CCPACSGuideCurve::CCPACSGuideCurve(CCPACSGuideCurves* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurve(parent, uidMgr)
     , guideCurveTopo(*this, &CCPACSGuideCurve::BuildCurve)
 {
     Cleanup();
@@ -44,6 +44,12 @@ CCPACSGuideCurve::CCPACSGuideCurve(CTiglUIDManager* uidMgr)
 CCPACSGuideCurve::~CCPACSGuideCurve(void)
 {
     Cleanup();
+}
+
+void CCPACSGuideCurve::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    guideCurveTopo.clear();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 CCPACSGuideCurve::FromDefinition CCPACSGuideCurve::GetFromDefinition() const {

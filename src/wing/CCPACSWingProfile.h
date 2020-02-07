@@ -47,7 +47,8 @@ class CCPACSWingProfile : public generated::CPACSProfileGeometry
 {
 
 public:
-    TIGL_EXPORT CCPACSWingProfile(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingProfile(CCPACSWingProfiles* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingProfile(CCPACSRotorProfiles* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT ~CCPACSWingProfile() override;
 
@@ -56,9 +57,6 @@ public:
 
     // Returns whether the profile is a rotor profile
     TIGL_EXPORT bool IsRotorProfile() const;
-
-    // Invalidates internal wing profile state
-    TIGL_EXPORT void Invalidate();
 
     // Returns the wing profile wire, splitted at the leading edge
     TIGL_EXPORT TopoDS_Wire GetSplitWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
@@ -129,6 +127,9 @@ private:
 
     // Assignment operator
     void operator=(const CCPACSWingProfile& );
+
+    // Invalidates internal wing profile state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
 private:
     bool                                  isRotorProfile; /**< Indicates if this profile is a rotor profile */

@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSStringersAssembly.h"
 
 namespace tigl
@@ -26,7 +29,7 @@ class CCPACSStringersAssembly : public generated::CPACSStringersAssembly
 public:
     TIGL_EXPORT CCPACSStringersAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 
 } // namespace tigl

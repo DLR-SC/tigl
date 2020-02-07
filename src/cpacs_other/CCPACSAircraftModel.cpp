@@ -30,10 +30,10 @@
 namespace tigl
 {
 CCPACSAircraftModel::CCPACSAircraftModel(CCPACSConfiguration* config)
-    : generated::CPACSAircraftModel(config ? &config->GetUIDManager() : NULL), CTiglRelativelyPositionedComponent(static_cast<std::string*>(NULL), NULL), config(config) {}
+    : generated::CPACSAircraftModel(nullptr, config ? &config->GetUIDManager() : NULL), CTiglRelativelyPositionedComponent(static_cast<std::string*>(NULL), NULL), config(config) {}
 
-CCPACSAircraftModel::CCPACSAircraftModel(CTiglUIDManager* uidMgr)
-    : generated::CPACSAircraftModel(uidMgr), CTiglRelativelyPositionedComponent(static_cast<std::string*>(NULL), NULL), config(NULL) {}
+CCPACSAircraftModel::CCPACSAircraftModel(CCPACSAircraft* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSAircraftModel(parent, uidMgr), CTiglRelativelyPositionedComponent(static_cast<std::string*>(NULL), NULL), config(NULL) {}
 
 std::string CCPACSAircraftModel::GetDefaultedUID() const {
     return generated::CPACSAircraftModel::GetUID();
@@ -56,12 +56,6 @@ PNamedShape CCPACSAircraftModel::BuildLoft() const
     return PNamedShape();
 }
 
-void CCPACSAircraftModel::Invalidate() {
-    if (m_wings)
-        m_wings->Invalidate();
-    if (m_fuselages)
-        m_fuselages->Invalidate();
-}
 
 CCPACSConfiguration& CCPACSAircraftModel::GetConfiguration() const {
     return *config;

@@ -42,21 +42,25 @@ public:
     };
 
 public:
-    TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent);
+    TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr);
 
+    // overriding ReadCPACS for handling registration of uid references
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     TIGL_EXPORT StartEndDefinitionType GetStartDefinitionType() const;
 
     TIGL_EXPORT StartEndDefinitionType GetEndDefinitionType() const;
 
+    // overriding setter for handling invalidation correctly
+    TIGL_EXPORT void SetRibStart(const std::string& value) override;
+    TIGL_EXPORT void SetRibEnd(const std::string& value) override;
+
     TIGL_EXPORT RibCountDefinitionType GetRibCountDefinitionType() const;
     TIGL_EXPORT void SetNumberOfRibs(int);
     TIGL_EXPORT void SetSpacing(double);
+    TIGL_EXPORT void SetRibReference(const std::string& value) override;
 
     TIGL_EXPORT void SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value) override;
-
-    /// Reset the cached structural variables. Must be executed after changing the rib refinition
-    TIGL_EXPORT void Invalidate();
 
     TIGL_EXPORT void SetStartCurvePoint(const CCPACSCurvePoint& value);
     TIGL_EXPORT void SetStartEtaXsiPoint(const CCPACSEtaXsiPoint& value);
@@ -65,6 +69,8 @@ public:
     TIGL_EXPORT void SetEndEtaXsiPoint(const CCPACSEtaXsiPoint& value);
     TIGL_EXPORT void SetEndSparPositionUID(const std::string& value);
 private:
+    void InvalidateParent() const;
+
     friend class CCPACSWingRibRotation;
 };
 

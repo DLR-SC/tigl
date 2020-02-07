@@ -65,8 +65,8 @@
 namespace tigl
 {
 // Constructor
-CCPACSFuselageProfile::CCPACSFuselageProfile(CTiglUIDManager* uidMgr)
-    : generated::CPACSProfileGeometry(uidMgr)
+CCPACSFuselageProfile::CCPACSFuselageProfile(CCPACSFuselageProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileGeometry(parent, uidMgr)
     , mirrorSymmetry(false)
     , wireCache(*this, &CCPACSFuselageProfile::BuildWires)
     , diameterPointsCache(*this, &CCPACSFuselageProfile::BuildDiameterPoints)
@@ -102,10 +102,11 @@ bool CCPACSFuselageProfile::GetMirrorSymmetry() const
 }
 
 // Invalidates internal fuselage profile state
-void CCPACSFuselageProfile::Invalidate()
+void CCPACSFuselageProfile::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     wireCache.clear();
     diameterPointsCache.clear();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Returns the fuselage profile wire

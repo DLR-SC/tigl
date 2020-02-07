@@ -190,39 +190,37 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
     , volumeCache(*this, &CCPACSWingSegment::ComputeVolume)
     , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
 {
-    Cleanup();
 }
 
 // Destructor
 CCPACSWingSegment::~CCPACSWingSegment()
 {
-    Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSWingSegment::Invalidate()
+void CCPACSWingSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
+    surfaceCache.clear();
     areaCache.clear();
     volumeCache.clear();
-}
-
-// Cleanup routine
-void CCPACSWingSegment::Cleanup()
-{
-    Invalidate();
-}
-
-// Update internal segment data
-void CCPACSWingSegment::Update()
-{
-    Invalidate();
+    // AIRBUS: added missing invalidation of guide curves
+    if (m_guideCurves) {
+        for (auto& guideCurve : m_guideCurves->GetGuideCurves()) {
+            guideCurve->Invalidate(GetUID());
+        }
+    }
+    // forward invalidation to parent wing/enginePylon
+    const auto* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate(GetUID());
+    }
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Read CPACS segment elements
 void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath)
 {
-    Cleanup();
     generated::CPACSWingSegment::ReadCPACS(tixiHandle, segmentXPath);
 
     // trigger creation of connections
@@ -250,7 +248,7 @@ void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
                          "Mixing different profile types is not allowed.");
     }
 
-    Update();
+    Invalidate();
 }
 
 std::string CCPACSWingSegment::GetDefaultedUID() const {

@@ -49,10 +49,10 @@ CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDM
     : generated::CPACSFuselageSegments(parent, uidMgr) {}
 
 // Invalidates internal state
-void CCPACSFuselageSegments::Invalidate()
+void CCPACSFuselageSegments::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 1; i <= GetSegmentCount(); i++) {
-        GetSegment(i).Invalidate();
+        GetSegment(i).Invalidate(source);
     }
 }
 

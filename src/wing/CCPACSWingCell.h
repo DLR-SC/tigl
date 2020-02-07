@@ -47,8 +47,6 @@ public:
     TIGL_EXPORT CCPACSWingCell(CCPACSWingCells* parentCells, CTiglUIDManager* uidMgr);
     TIGL_EXPORT ~CCPACSWingCell() override;
 
-    TIGL_EXPORT void Invalidate();
-
     // determines if a given eta xsi coordinate is inside this cell
     // TODO: missing support for spar cell borders
     TIGL_EXPORT bool IsInside(double eta, double xsi) const;
@@ -91,6 +89,9 @@ public:
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
 private:
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     struct EtaXsiCache
     {
         EtaXsi innerLeadingEdgePoint;

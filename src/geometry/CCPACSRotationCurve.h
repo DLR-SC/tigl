@@ -29,8 +29,8 @@ namespace tigl {
 class CCPACSRotationCurve : public generated::CPACSRotationCurve
 {
 public:
-    CCPACSRotationCurve(CTiglUIDManager* uidMgr)
-        : generated::CPACSRotationCurve(uidMgr)
+    CCPACSRotationCurve(CCPACSNacelleCowl* parent, CTiglUIDManager* uidMgr)
+        : generated::CPACSRotationCurve(parent, uidMgr)
     {}
 
     enum axis {

@@ -58,9 +58,6 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr);
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const override;
@@ -137,8 +134,9 @@ protected:
     PNamedShape BuildLoft() const override;
 
 private:
-    bool                   invalidated;                 /**< Internal state flag  */
-    bool                   rebuildGeometry;             /**< Indicates if geometry needs to be rebuilt */
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
 };
 
 } // end namespace tigl

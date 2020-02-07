@@ -26,6 +26,9 @@
 #ifndef CCPACSROTORS_H
 #define CCPACSROTORS_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSRotors.h"
 #include "CCPACSRotor.h"
 
@@ -41,7 +44,7 @@ public:
     TIGL_EXPORT CCPACSRotors(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
     // Returns the total count of rotors in a configuration
     TIGL_EXPORT int GetRotorCount() const;

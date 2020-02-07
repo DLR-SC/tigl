@@ -31,14 +31,18 @@ CCPACSWingRibRotation::CCPACSWingRibRotation(CCPACSWingRibsPositioning* parent)
 void CCPACSWingRibRotation::SetRibRotationReference(const boost::optional<std::string>& value)
 {
     generated::CPACSRibRotation::SetRibRotationReference(value);
-    m_parent->Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibRotation::SetZ(const double & value)
 {
     generated::CPACSRibRotation::SetZ(value);
-    // invalidate whole component segment structure since rib may be referenced anywhere
-    m_parent->Invalidate();
+    InvalidateParent();
+}
+
+void CCPACSWingRibRotation::InvalidateParent() const
+{
+    m_parent->InvalidateParent();
 }
 
 } // end namespace tigl

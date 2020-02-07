@@ -60,9 +60,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSWingSegment() override;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) override;
 
@@ -232,12 +229,6 @@ public:
     TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
 
 protected:
-    // Cleanup routine
-    void Cleanup();
-
-    // Update internal segment data
-    void Update();
-
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft() const override;
 
@@ -252,6 +243,9 @@ private:
         Handle(Geom_Surface) upperSurfaceLocal;
         Handle(Geom_Surface) lowerSurfaceLocal;
     };
+
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
     // get short name for loft
     std::string GetShortShapeName () const;

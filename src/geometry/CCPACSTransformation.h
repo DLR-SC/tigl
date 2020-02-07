@@ -32,6 +32,19 @@ namespace tigl
 class CCPACSTransformation : public generated::CPACSTransformation
 {
 public:
+    TIGL_EXPORT CCPACSTransformation(CCPACSEnginePosition* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSFuselageSectionElement* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSFuselageSection* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSRotor* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSRotorHinge* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSWing* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSWingSectionElement* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSWingSection* parent, CTiglUIDManager* uidMgr);
+
     TIGL_EXPORT CCPACSTransformation(CTiglUIDManager* uidMgr);
     
     TIGL_EXPORT void reset();
@@ -58,6 +71,7 @@ public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) override;
 
 private:
+    void InvalidateParent() const;
     void updateMatrix(CTiglTransformation& cache) const;
 
     // caches the transformation created from scaling, rotation and translation

@@ -55,13 +55,12 @@ public:
     // Virtual destructor
     TIGL_EXPORT ~CCPACSWing() override;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath) override;
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
+
+    TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value) override;
 
     // Returns whether this wing is a rotor blade
     TIGL_EXPORT bool IsRotorBlade() const;
@@ -180,6 +179,9 @@ protected:
     void BuildUpperLowerShells();
 
 private:
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     // get short name for loft
     std::string GetShortShapeName() const;
 
@@ -190,10 +192,8 @@ private:
     TopoDS_Shape                   upperShape;
     TopoDS_Shape                   lowerShape;
     Cache<TopoDS_Compound, CCPACSWing> guideCurves;
-    bool                           invalidated;              /**< Internal state flag */
-    bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
-    bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
-    bool                           rebuildShells;
+    mutable bool                   rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
+    mutable bool                   rebuildShells;
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
 

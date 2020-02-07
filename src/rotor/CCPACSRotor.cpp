@@ -43,32 +43,24 @@ namespace tigl
 CCPACSRotor::CCPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSRotor(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , rebuildGeometry(true) {}
+{}
 
 // Invalidates internal state
-void CCPACSRotor::Invalidate()
+void CCPACSRotor::InvalidateImpl(const boost::optional<std::string>& source) const
 {
-    invalidated = true;
+    CTiglRelativelyPositionedComponent::Reset();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Cleanup routine
 void CCPACSRotor::Cleanup()
 {
-    // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
-    Reset();
-
     Invalidate();
 }
 
 // Update internal rotor data
 void CCPACSRotor::Update()
 {
-    if (!invalidated) {
-        return;
-    }
-
-    invalidated = false;
-    rebuildGeometry = true;
 }
 
 std::string CCPACSRotor::GetDefaultedUID() const {
@@ -80,7 +72,6 @@ void CCPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::str
 {
     Cleanup();
     generated::CPACSRotor::ReadCPACS(tixiHandle, rotorXPath);
-    Update();
 }
 
 // Get the Transformation object

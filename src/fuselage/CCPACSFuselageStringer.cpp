@@ -44,11 +44,12 @@ CCPACSFuselageStringer::CCPACSFuselageStringer(CCPACSStringersAssembly* parent, 
 {
 }
 
-void CCPACSFuselageStringer::Invalidate()
+void CCPACSFuselageStringer::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geomCache1D.clear();
     m_geomCache3D.clear();
     m_cutGeomCache.clear();
+    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 TopoDS_Shape CCPACSFuselageStringer::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const

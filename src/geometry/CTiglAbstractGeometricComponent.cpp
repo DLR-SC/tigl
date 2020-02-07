@@ -40,7 +40,7 @@ CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent()
 {
 }
 
-void CTiglAbstractGeometricComponent::Reset() {
+void CTiglAbstractGeometricComponent::Reset() const {
     bounding_box.clear();
     loft.clear();
 }

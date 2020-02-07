@@ -29,14 +29,6 @@ CCPACSEnginePylons::CCPACSEnginePylons(CCPACSAircraftModel* parent, CTiglUIDMana
 {
 }
 
-// Invalidates internal state
-void CCPACSEnginePylons::Invalidate()
-{
-    for (std::size_t i = 0; i < m_enginePylons.size(); i++) {
-        m_enginePylons[i]->Invalidate();
-    }
-}
-
 // Gets a pylon by index. 
 CCPACSEnginePylon& CCPACSEnginePylons::GetEnginePylon(int index)
 {

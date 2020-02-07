@@ -55,9 +55,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSFuselage() override;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& fuselageXPath) override;
 
@@ -152,6 +149,9 @@ protected:
     void SetFaceTraits(PNamedShape loft) const;
 
 private:
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     // get short name for loft
     std::string GetShortShapeName() const;
 
