@@ -1539,15 +1539,12 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
 bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point, Bnd_Box const* bounding_box)
 {
     double tol = 1e-3;
-
     // check if solid
-    TopoDS_Solid s;
-    try {
-        s = TopoDS::Solid(solid);
-    }
-    catch (Standard_Failure) {
+    if (solid.ShapeType() != TopAbs_SOLID) {
         throw tigl::CTiglError("The shape is not a solid");
     }
+
+    TopoDS_Solid s = TopoDS::Solid(solid);
 
     // first, check if the point is in the bounding box
     if (bounding_box) {
