@@ -62,22 +62,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSStringerFramePosition::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSFrame>()) {
-            return GetParent<CCPACSFrame>();
-        }
-        if (IsParent<CCPACSFuselageStringer>()) {
-            return GetParent<CCPACSFuselageStringer>();
+        if (m_parent) {
+            if (IsParent<CCPACSFrame>()) {
+                return GetParent<CCPACSFrame>();
+            }
+            if (IsParent<CCPACSFuselageStringer>()) {
+                return GetParent<CCPACSFuselageStringer>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSStringerFramePosition::GetNextUIDParent()
     {
-        if (IsParent<CCPACSFrame>()) {
-            return GetParent<CCPACSFrame>();
-        }
-        if (IsParent<CCPACSFuselageStringer>()) {
-            return GetParent<CCPACSFuselageStringer>();
+        if (m_parent) {
+            if (IsParent<CCPACSFrame>()) {
+                return GetParent<CCPACSFrame>();
+            }
+            if (IsParent<CCPACSFuselageStringer>()) {
+                return GetParent<CCPACSFuselageStringer>();
+            }
         }
         return nullptr;
     }

@@ -55,22 +55,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSWeb::GetNextUIDParent() const
     {
-        if (IsParent<CPACSSparCell>()) {
-            return GetParent<CPACSSparCell>();
-        }
-        if (IsParent<CPACSSparCrossSection>()) {
-            return GetParent<CPACSSparCrossSection>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CPACSSparCell>()) {
+                return GetParent<CPACSSparCell>();
+            }
+            if (IsParent<CPACSSparCrossSection>()) {
+                return GetParent<CPACSSparCrossSection>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSWeb::GetNextUIDParent()
     {
-        if (IsParent<CPACSSparCell>()) {
-            return GetParent<CPACSSparCell>();
-        }
-        if (IsParent<CPACSSparCrossSection>()) {
-            return GetParent<CPACSSparCrossSection>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CPACSSparCell>()) {
+                return GetParent<CPACSSparCell>();
+            }
+            if (IsParent<CPACSSparCrossSection>()) {
+                return GetParent<CPACSSparCrossSection>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

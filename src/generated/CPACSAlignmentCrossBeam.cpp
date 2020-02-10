@@ -51,22 +51,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSAlignmentCrossBeam::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSCrossBeamAssemblyPosition>()) {
-            return GetParent<CCPACSCrossBeamAssemblyPosition>();
-        }
-        if (IsParent<CCPACSCrossBeamStrutAssemblyPosition>()) {
-            return GetParent<CCPACSCrossBeamStrutAssemblyPosition>();
+        if (m_parent) {
+            if (IsParent<CCPACSCrossBeamAssemblyPosition>()) {
+                return GetParent<CCPACSCrossBeamAssemblyPosition>();
+            }
+            if (IsParent<CCPACSCrossBeamStrutAssemblyPosition>()) {
+                return GetParent<CCPACSCrossBeamStrutAssemblyPosition>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSAlignmentCrossBeam::GetNextUIDParent()
     {
-        if (IsParent<CCPACSCrossBeamAssemblyPosition>()) {
-            return GetParent<CCPACSCrossBeamAssemblyPosition>();
-        }
-        if (IsParent<CCPACSCrossBeamStrutAssemblyPosition>()) {
-            return GetParent<CCPACSCrossBeamStrutAssemblyPosition>();
+        if (m_parent) {
+            if (IsParent<CCPACSCrossBeamAssemblyPosition>()) {
+                return GetParent<CCPACSCrossBeamAssemblyPosition>();
+            }
+            if (IsParent<CCPACSCrossBeamStrutAssemblyPosition>()) {
+                return GetParent<CCPACSCrossBeamStrutAssemblyPosition>();
+            }
         }
         return nullptr;
     }

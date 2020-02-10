@@ -88,52 +88,56 @@ namespace generated
 
     const CTiglUIDObject* CPACSStringVectorBase::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSWingProfileCST>()) {
-            return GetParent<CCPACSWingProfileCST>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSEmissivityMap>()) {
-            return GetParent<CPACSEmissivityMap>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSPointListRelXYZVector>()) {
-            return GetParent<CCPACSPointListRelXYZVector>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSPointListXYVector>()) {
-            return GetParent<CCPACSPointListXYVector>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSPointListXYZVector>()) {
-            return GetParent<CCPACSPointListXYZVector>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSRotorBladeAttachment>()) {
-            return GetParent<CCPACSRotorBladeAttachment>();
-        }
-        if (IsParent<CPACSSpecificHeatMap>()) {
-            return GetParent<CPACSSpecificHeatMap>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CCPACSWingProfileCST>()) {
+                return GetParent<CCPACSWingProfileCST>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSEmissivityMap>()) {
+                return GetParent<CPACSEmissivityMap>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSPointListRelXYZVector>()) {
+                return GetParent<CCPACSPointListRelXYZVector>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSPointListXYVector>()) {
+                return GetParent<CCPACSPointListXYVector>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSPointListXYZVector>()) {
+                return GetParent<CCPACSPointListXYZVector>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSRotorBladeAttachment>()) {
+                return GetParent<CCPACSRotorBladeAttachment>();
+            }
+            if (IsParent<CPACSSpecificHeatMap>()) {
+                return GetParent<CPACSSpecificHeatMap>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSStringVectorBase::GetNextUIDParent()
     {
-        if (IsParent<CCPACSWingProfileCST>()) {
-            return GetParent<CCPACSWingProfileCST>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSEmissivityMap>()) {
-            return GetParent<CPACSEmissivityMap>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSPointListRelXYZVector>()) {
-            return GetParent<CCPACSPointListRelXYZVector>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSPointListXYVector>()) {
-            return GetParent<CCPACSPointListXYVector>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSPointListXYZVector>()) {
-            return GetParent<CCPACSPointListXYZVector>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSRotorBladeAttachment>()) {
-            return GetParent<CCPACSRotorBladeAttachment>();
-        }
-        if (IsParent<CPACSSpecificHeatMap>()) {
-            return GetParent<CPACSSpecificHeatMap>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CCPACSWingProfileCST>()) {
+                return GetParent<CCPACSWingProfileCST>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSEmissivityMap>()) {
+                return GetParent<CPACSEmissivityMap>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSPointListRelXYZVector>()) {
+                return GetParent<CCPACSPointListRelXYZVector>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSPointListXYVector>()) {
+                return GetParent<CCPACSPointListXYVector>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSPointListXYZVector>()) {
+                return GetParent<CCPACSPointListXYZVector>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSRotorBladeAttachment>()) {
+                return GetParent<CCPACSRotorBladeAttachment>();
+            }
+            if (IsParent<CPACSSpecificHeatMap>()) {
+                return GetParent<CPACSSpecificHeatMap>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

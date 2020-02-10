@@ -61,28 +61,32 @@ namespace generated
 
     const CTiglUIDObject* CPACSPositionings::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSEnginePylon>()) {
-            return GetParent<CCPACSEnginePylon>();
-        }
-        if (IsParent<CCPACSFuselage>()) {
-            return GetParent<CCPACSFuselage>();
-        }
-        if (IsParent<CCPACSWing>()) {
-            return GetParent<CCPACSWing>();
+        if (m_parent) {
+            if (IsParent<CCPACSEnginePylon>()) {
+                return GetParent<CCPACSEnginePylon>();
+            }
+            if (IsParent<CCPACSFuselage>()) {
+                return GetParent<CCPACSFuselage>();
+            }
+            if (IsParent<CCPACSWing>()) {
+                return GetParent<CCPACSWing>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSPositionings::GetNextUIDParent()
     {
-        if (IsParent<CCPACSEnginePylon>()) {
-            return GetParent<CCPACSEnginePylon>();
-        }
-        if (IsParent<CCPACSFuselage>()) {
-            return GetParent<CCPACSFuselage>();
-        }
-        if (IsParent<CCPACSWing>()) {
-            return GetParent<CCPACSWing>();
+        if (m_parent) {
+            if (IsParent<CCPACSEnginePylon>()) {
+                return GetParent<CCPACSEnginePylon>();
+            }
+            if (IsParent<CCPACSFuselage>()) {
+                return GetParent<CCPACSFuselage>();
+            }
+            if (IsParent<CCPACSWing>()) {
+                return GetParent<CCPACSWing>();
+            }
         }
         return nullptr;
     }

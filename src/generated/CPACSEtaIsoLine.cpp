@@ -106,52 +106,56 @@ namespace generated
 
     const CTiglUIDObject* CPACSEtaIsoLine::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSWingCellPositionSpanwise>()) {
-            return GetParent<CCPACSWingCellPositionSpanwise>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSControlSurfaceAirfoil>()) {
-            return GetParent<CPACSControlSurfaceAirfoil>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
-            return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSControlSurfaceSkinCutOutBorder>()) {
-            return GetParent<CCPACSControlSurfaceSkinCutOutBorder>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSControlSurfaceTrackType>()) {
-            return GetParent<CCPACSControlSurfaceTrackType>();
-        }
-        if (IsParent<CPACSCutOutProfile>()) {
-            return GetParent<CPACSCutOutProfile>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSSparCell>()) {
-            return GetParent<CPACSSparCell>();
+        if (m_parent) {
+            if (IsParent<CCPACSWingCellPositionSpanwise>()) {
+                return GetParent<CCPACSWingCellPositionSpanwise>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSControlSurfaceAirfoil>()) {
+                return GetParent<CPACSControlSurfaceAirfoil>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceSkinCutOutBorder>()) {
+                return GetParent<CCPACSControlSurfaceSkinCutOutBorder>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceTrackType>()) {
+                return GetParent<CCPACSControlSurfaceTrackType>();
+            }
+            if (IsParent<CPACSCutOutProfile>()) {
+                return GetParent<CPACSCutOutProfile>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSparCell>()) {
+                return GetParent<CPACSSparCell>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSEtaIsoLine::GetNextUIDParent()
     {
-        if (IsParent<CCPACSWingCellPositionSpanwise>()) {
-            return GetParent<CCPACSWingCellPositionSpanwise>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSControlSurfaceAirfoil>()) {
-            return GetParent<CPACSControlSurfaceAirfoil>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
-            return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSControlSurfaceSkinCutOutBorder>()) {
-            return GetParent<CCPACSControlSurfaceSkinCutOutBorder>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSControlSurfaceTrackType>()) {
-            return GetParent<CCPACSControlSurfaceTrackType>();
-        }
-        if (IsParent<CPACSCutOutProfile>()) {
-            return GetParent<CPACSCutOutProfile>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSSparCell>()) {
-            return GetParent<CPACSSparCell>();
+        if (m_parent) {
+            if (IsParent<CCPACSWingCellPositionSpanwise>()) {
+                return GetParent<CCPACSWingCellPositionSpanwise>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSControlSurfaceAirfoil>()) {
+                return GetParent<CPACSControlSurfaceAirfoil>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceSkinCutOutBorder>()) {
+                return GetParent<CCPACSControlSurfaceSkinCutOutBorder>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceTrackType>()) {
+                return GetParent<CCPACSControlSurfaceTrackType>();
+            }
+            if (IsParent<CPACSCutOutProfile>()) {
+                return GetParent<CPACSCutOutProfile>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSparCell>()) {
+                return GetParent<CPACSSparCell>();
+            }
         }
         return nullptr;
     }

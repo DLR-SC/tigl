@@ -52,22 +52,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSGuideCurves::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSFuselageSegment>()) {
-            return GetParent<CCPACSFuselageSegment>();
-        }
-        if (IsParent<CCPACSWingSegment>()) {
-            return GetParent<CCPACSWingSegment>();
+        if (m_parent) {
+            if (IsParent<CCPACSFuselageSegment>()) {
+                return GetParent<CCPACSFuselageSegment>();
+            }
+            if (IsParent<CCPACSWingSegment>()) {
+                return GetParent<CCPACSWingSegment>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSGuideCurves::GetNextUIDParent()
     {
-        if (IsParent<CCPACSFuselageSegment>()) {
-            return GetParent<CCPACSFuselageSegment>();
-        }
-        if (IsParent<CCPACSWingSegment>()) {
-            return GetParent<CCPACSWingSegment>();
+        if (m_parent) {
+            if (IsParent<CCPACSFuselageSegment>()) {
+                return GetParent<CCPACSFuselageSegment>();
+            }
+            if (IsParent<CCPACSWingSegment>()) {
+                return GetParent<CCPACSWingSegment>();
+            }
         }
         return nullptr;
     }

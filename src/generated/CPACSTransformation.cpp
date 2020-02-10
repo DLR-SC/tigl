@@ -141,82 +141,86 @@ namespace generated
 
     const CTiglUIDObject* CPACSTransformation::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSEnginePosition>()) {
-            return GetParent<CCPACSEnginePosition>();
-        }
-        if (IsParent<CCPACSEnginePylon>()) {
-            return GetParent<CCPACSEnginePylon>();
-        }
-        if (IsParent<CCPACSFuselage>()) {
-            return GetParent<CCPACSFuselage>();
-        }
-        if (IsParent<CCPACSFuselageSectionElement>()) {
-            return GetParent<CCPACSFuselageSectionElement>();
-        }
-        if (IsParent<CCPACSFuselageSection>()) {
-            return GetParent<CCPACSFuselageSection>();
-        }
-        if (IsParent<CCPACSExternalObject>()) {
-            return GetParent<CCPACSExternalObject>();
-        }
-        if (IsParent<CCPACSNacelleSection>()) {
-            return GetParent<CCPACSNacelleSection>();
-        }
-        if (IsParent<CCPACSRotor>()) {
-            return GetParent<CCPACSRotor>();
-        }
-        if (IsParent<CCPACSRotorHinge>()) {
-            return GetParent<CCPACSRotorHinge>();
-        }
-        if (IsParent<CCPACSWing>()) {
-            return GetParent<CCPACSWing>();
-        }
-        if (IsParent<CCPACSWingSectionElement>()) {
-            return GetParent<CCPACSWingSectionElement>();
-        }
-        if (IsParent<CCPACSWingSection>()) {
-            return GetParent<CCPACSWingSection>();
+        if (m_parent) {
+            if (IsParent<CCPACSEnginePosition>()) {
+                return GetParent<CCPACSEnginePosition>();
+            }
+            if (IsParent<CCPACSEnginePylon>()) {
+                return GetParent<CCPACSEnginePylon>();
+            }
+            if (IsParent<CCPACSFuselage>()) {
+                return GetParent<CCPACSFuselage>();
+            }
+            if (IsParent<CCPACSFuselageSectionElement>()) {
+                return GetParent<CCPACSFuselageSectionElement>();
+            }
+            if (IsParent<CCPACSFuselageSection>()) {
+                return GetParent<CCPACSFuselageSection>();
+            }
+            if (IsParent<CCPACSExternalObject>()) {
+                return GetParent<CCPACSExternalObject>();
+            }
+            if (IsParent<CCPACSNacelleSection>()) {
+                return GetParent<CCPACSNacelleSection>();
+            }
+            if (IsParent<CCPACSRotor>()) {
+                return GetParent<CCPACSRotor>();
+            }
+            if (IsParent<CCPACSRotorHinge>()) {
+                return GetParent<CCPACSRotorHinge>();
+            }
+            if (IsParent<CCPACSWing>()) {
+                return GetParent<CCPACSWing>();
+            }
+            if (IsParent<CCPACSWingSectionElement>()) {
+                return GetParent<CCPACSWingSectionElement>();
+            }
+            if (IsParent<CCPACSWingSection>()) {
+                return GetParent<CCPACSWingSection>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSTransformation::GetNextUIDParent()
     {
-        if (IsParent<CCPACSEnginePosition>()) {
-            return GetParent<CCPACSEnginePosition>();
-        }
-        if (IsParent<CCPACSEnginePylon>()) {
-            return GetParent<CCPACSEnginePylon>();
-        }
-        if (IsParent<CCPACSFuselage>()) {
-            return GetParent<CCPACSFuselage>();
-        }
-        if (IsParent<CCPACSFuselageSectionElement>()) {
-            return GetParent<CCPACSFuselageSectionElement>();
-        }
-        if (IsParent<CCPACSFuselageSection>()) {
-            return GetParent<CCPACSFuselageSection>();
-        }
-        if (IsParent<CCPACSExternalObject>()) {
-            return GetParent<CCPACSExternalObject>();
-        }
-        if (IsParent<CCPACSNacelleSection>()) {
-            return GetParent<CCPACSNacelleSection>();
-        }
-        if (IsParent<CCPACSRotor>()) {
-            return GetParent<CCPACSRotor>();
-        }
-        if (IsParent<CCPACSRotorHinge>()) {
-            return GetParent<CCPACSRotorHinge>();
-        }
-        if (IsParent<CCPACSWing>()) {
-            return GetParent<CCPACSWing>();
-        }
-        if (IsParent<CCPACSWingSectionElement>()) {
-            return GetParent<CCPACSWingSectionElement>();
-        }
-        if (IsParent<CCPACSWingSection>()) {
-            return GetParent<CCPACSWingSection>();
+        if (m_parent) {
+            if (IsParent<CCPACSEnginePosition>()) {
+                return GetParent<CCPACSEnginePosition>();
+            }
+            if (IsParent<CCPACSEnginePylon>()) {
+                return GetParent<CCPACSEnginePylon>();
+            }
+            if (IsParent<CCPACSFuselage>()) {
+                return GetParent<CCPACSFuselage>();
+            }
+            if (IsParent<CCPACSFuselageSectionElement>()) {
+                return GetParent<CCPACSFuselageSectionElement>();
+            }
+            if (IsParent<CCPACSFuselageSection>()) {
+                return GetParent<CCPACSFuselageSection>();
+            }
+            if (IsParent<CCPACSExternalObject>()) {
+                return GetParent<CCPACSExternalObject>();
+            }
+            if (IsParent<CCPACSNacelleSection>()) {
+                return GetParent<CCPACSNacelleSection>();
+            }
+            if (IsParent<CCPACSRotor>()) {
+                return GetParent<CCPACSRotor>();
+            }
+            if (IsParent<CCPACSRotorHinge>()) {
+                return GetParent<CCPACSRotorHinge>();
+            }
+            if (IsParent<CCPACSWing>()) {
+                return GetParent<CCPACSWing>();
+            }
+            if (IsParent<CCPACSWingSectionElement>()) {
+                return GetParent<CCPACSWingSectionElement>();
+            }
+            if (IsParent<CCPACSWingSection>()) {
+                return GetParent<CCPACSWingSection>();
+            }
         }
         return nullptr;
     }

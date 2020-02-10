@@ -53,22 +53,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSWingSkin::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSWingCell>()) {
-            return GetParent<CCPACSWingCell>();
-        }
-        if (IsParent<CCPACSWingShell>()) {
-            return GetParent<CCPACSWingShell>();
+        if (m_parent) {
+            if (IsParent<CCPACSWingCell>()) {
+                return GetParent<CCPACSWingCell>();
+            }
+            if (IsParent<CCPACSWingShell>()) {
+                return GetParent<CCPACSWingShell>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSWingSkin::GetNextUIDParent()
     {
-        if (IsParent<CCPACSWingCell>()) {
-            return GetParent<CCPACSWingCell>();
-        }
-        if (IsParent<CCPACSWingShell>()) {
-            return GetParent<CCPACSWingShell>();
+        if (m_parent) {
+            if (IsParent<CCPACSWingCell>()) {
+                return GetParent<CCPACSWingCell>();
+            }
+            if (IsParent<CCPACSWingShell>()) {
+                return GetParent<CCPACSWingShell>();
+            }
         }
         return nullptr;
     }

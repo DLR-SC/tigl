@@ -62,22 +62,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSCst2D::GetNextUIDParent() const
     {
-        if (IsParent<CPACSProfileGeometry>()) {
-            return GetParent<CPACSProfileGeometry>();
-        }
-        if (IsParent<CCPACSNacelleProfile>()) {
-            return GetParent<CCPACSNacelleProfile>();
+        if (m_parent) {
+            if (IsParent<CPACSProfileGeometry>()) {
+                return GetParent<CPACSProfileGeometry>();
+            }
+            if (IsParent<CCPACSNacelleProfile>()) {
+                return GetParent<CCPACSNacelleProfile>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSCst2D::GetNextUIDParent()
     {
-        if (IsParent<CPACSProfileGeometry>()) {
-            return GetParent<CPACSProfileGeometry>();
-        }
-        if (IsParent<CCPACSNacelleProfile>()) {
-            return GetParent<CCPACSNacelleProfile>();
+        if (m_parent) {
+            if (IsParent<CPACSProfileGeometry>()) {
+                return GetParent<CPACSProfileGeometry>();
+            }
+            if (IsParent<CCPACSNacelleProfile>()) {
+                return GetParent<CCPACSNacelleProfile>();
+            }
         }
         return nullptr;
     }

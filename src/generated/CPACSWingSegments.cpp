@@ -52,22 +52,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSWingSegments::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSEnginePylon>()) {
-            return GetParent<CCPACSEnginePylon>();
-        }
-        if (IsParent<CCPACSWing>()) {
-            return GetParent<CCPACSWing>();
+        if (m_parent) {
+            if (IsParent<CCPACSEnginePylon>()) {
+                return GetParent<CCPACSEnginePylon>();
+            }
+            if (IsParent<CCPACSWing>()) {
+                return GetParent<CCPACSWing>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSWingSegments::GetNextUIDParent()
     {
-        if (IsParent<CCPACSEnginePylon>()) {
-            return GetParent<CCPACSEnginePylon>();
-        }
-        if (IsParent<CCPACSWing>()) {
-            return GetParent<CCPACSWing>();
+        if (m_parent) {
+            if (IsParent<CCPACSEnginePylon>()) {
+                return GetParent<CCPACSEnginePylon>();
+            }
+            if (IsParent<CCPACSWing>()) {
+                return GetParent<CCPACSWing>();
+            }
         }
         return nullptr;
     }

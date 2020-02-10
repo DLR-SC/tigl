@@ -77,34 +77,38 @@ namespace generated
 
     const CTiglUIDObject* CPACSPointXY::GetNextUIDParent() const
     {
-        if (IsParent<CPACSGlobalBeamProperties>()) {
-            return GetParent<CPACSGlobalBeamProperties>();
-        }
-        if (IsParent<CCPACSPointListXY>()) {
-            return GetParent<CCPACSPointListXY>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSSheet>()) {
-            return GetParent<CPACSSheet>();
-        }
-        if (IsParent<CPACSTransformation2D>()) {
-            return GetParent<CPACSTransformation2D>();
+        if (m_parent) {
+            if (IsParent<CPACSGlobalBeamProperties>()) {
+                return GetParent<CPACSGlobalBeamProperties>();
+            }
+            if (IsParent<CCPACSPointListXY>()) {
+                return GetParent<CCPACSPointListXY>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSheet>()) {
+                return GetParent<CPACSSheet>();
+            }
+            if (IsParent<CPACSTransformation2D>()) {
+                return GetParent<CPACSTransformation2D>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSPointXY::GetNextUIDParent()
     {
-        if (IsParent<CPACSGlobalBeamProperties>()) {
-            return GetParent<CPACSGlobalBeamProperties>();
-        }
-        if (IsParent<CCPACSPointListXY>()) {
-            return GetParent<CCPACSPointListXY>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSSheet>()) {
-            return GetParent<CPACSSheet>();
-        }
-        if (IsParent<CPACSTransformation2D>()) {
-            return GetParent<CPACSTransformation2D>();
+        if (m_parent) {
+            if (IsParent<CPACSGlobalBeamProperties>()) {
+                return GetParent<CPACSGlobalBeamProperties>();
+            }
+            if (IsParent<CCPACSPointListXY>()) {
+                return GetParent<CCPACSPointListXY>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSheet>()) {
+                return GetParent<CPACSSheet>();
+            }
+            if (IsParent<CPACSTransformation2D>()) {
+                return GetParent<CPACSTransformation2D>();
+            }
         }
         return nullptr;
     }

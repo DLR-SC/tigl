@@ -52,22 +52,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSWings::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSAircraftModel>()) {
-            return GetParent<CCPACSAircraftModel>();
-        }
-        if (IsParent<CCPACSRotorcraftModel>()) {
-            return GetParent<CCPACSRotorcraftModel>();
+        if (m_parent) {
+            if (IsParent<CCPACSAircraftModel>()) {
+                return GetParent<CCPACSAircraftModel>();
+            }
+            if (IsParent<CCPACSRotorcraftModel>()) {
+                return GetParent<CCPACSRotorcraftModel>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSWings::GetNextUIDParent()
     {
-        if (IsParent<CCPACSAircraftModel>()) {
-            return GetParent<CCPACSAircraftModel>();
-        }
-        if (IsParent<CCPACSRotorcraftModel>()) {
-            return GetParent<CCPACSRotorcraftModel>();
+        if (m_parent) {
+            if (IsParent<CCPACSAircraftModel>()) {
+                return GetParent<CCPACSAircraftModel>();
+            }
+            if (IsParent<CCPACSRotorcraftModel>()) {
+                return GetParent<CCPACSRotorcraftModel>();
+            }
         }
         return nullptr;
     }

@@ -53,22 +53,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSPointX::GetNextUIDParent() const
     {
-        if (IsParent<CPACSWingRibCell>()) {
-            return GetParent<CPACSWingRibCell>();
-        }
-        if (IsParent<CCPACSWingRibCrossSection>()) {
-            return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CPACSWingRibCell>()) {
+                return GetParent<CPACSWingRibCell>();
+            }
+            if (IsParent<CCPACSWingRibCrossSection>()) {
+                return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSPointX::GetNextUIDParent()
     {
-        if (IsParent<CPACSWingRibCell>()) {
-            return GetParent<CPACSWingRibCell>();
-        }
-        if (IsParent<CCPACSWingRibCrossSection>()) {
-            return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CPACSWingRibCell>()) {
+                return GetParent<CPACSWingRibCell>();
+            }
+            if (IsParent<CCPACSWingRibCrossSection>()) {
+                return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

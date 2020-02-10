@@ -60,28 +60,32 @@ namespace generated
 
     const CTiglUIDObject* CPACSProfileGeometry::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSFuselageProfiles>()) {
-            return GetParent<CCPACSFuselageProfiles>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSRotorProfiles>()) {
-            return GetParent<CCPACSRotorProfiles>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSWingProfiles>()) {
-            return GetParent<CCPACSWingProfiles>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CCPACSFuselageProfiles>()) {
+                return GetParent<CCPACSFuselageProfiles>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSRotorProfiles>()) {
+                return GetParent<CCPACSRotorProfiles>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSWingProfiles>()) {
+                return GetParent<CCPACSWingProfiles>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSProfileGeometry::GetNextUIDParent()
     {
-        if (IsParent<CCPACSFuselageProfiles>()) {
-            return GetParent<CCPACSFuselageProfiles>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSRotorProfiles>()) {
-            return GetParent<CCPACSRotorProfiles>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSWingProfiles>()) {
-            return GetParent<CCPACSWingProfiles>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CCPACSFuselageProfiles>()) {
+                return GetParent<CCPACSFuselageProfiles>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSRotorProfiles>()) {
+                return GetParent<CCPACSRotorProfiles>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSWingProfiles>()) {
+                return GetParent<CCPACSWingProfiles>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

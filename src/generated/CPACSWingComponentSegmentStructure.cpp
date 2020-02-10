@@ -55,22 +55,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSWingComponentSegmentStructure::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSWingComponentSegment>()) {
-            return GetParent<CCPACSWingComponentSegment>();
-        }
-        if (IsParent<CCPACSTrailingEdgeDevice>()) {
-            return GetParent<CCPACSTrailingEdgeDevice>();
+        if (m_parent) {
+            if (IsParent<CCPACSWingComponentSegment>()) {
+                return GetParent<CCPACSWingComponentSegment>();
+            }
+            if (IsParent<CCPACSTrailingEdgeDevice>()) {
+                return GetParent<CCPACSTrailingEdgeDevice>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSWingComponentSegmentStructure::GetNextUIDParent()
     {
-        if (IsParent<CCPACSWingComponentSegment>()) {
-            return GetParent<CCPACSWingComponentSegment>();
-        }
-        if (IsParent<CCPACSTrailingEdgeDevice>()) {
-            return GetParent<CCPACSTrailingEdgeDevice>();
+        if (m_parent) {
+            if (IsParent<CCPACSWingComponentSegment>()) {
+                return GetParent<CCPACSWingComponentSegment>();
+            }
+            if (IsParent<CCPACSTrailingEdgeDevice>()) {
+                return GetParent<CCPACSTrailingEdgeDevice>();
+            }
         }
         return nullptr;
     }

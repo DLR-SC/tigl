@@ -56,22 +56,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSCurvePoint::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSWingRibExplicitPositioning>()) {
-            return GetParent<CCPACSWingRibExplicitPositioning>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSWingRibsPositioning>()) {
-            return GetParent<CCPACSWingRibsPositioning>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CCPACSWingRibExplicitPositioning>()) {
+                return GetParent<CCPACSWingRibExplicitPositioning>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSWingRibsPositioning>()) {
+                return GetParent<CCPACSWingRibsPositioning>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSCurvePoint::GetNextUIDParent()
     {
-        if (IsParent<CCPACSWingRibExplicitPositioning>()) {
-            return GetParent<CCPACSWingRibExplicitPositioning>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSWingRibsPositioning>()) {
-            return GetParent<CCPACSWingRibsPositioning>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CCPACSWingRibExplicitPositioning>()) {
+                return GetParent<CCPACSWingRibExplicitPositioning>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSWingRibsPositioning>()) {
+                return GetParent<CCPACSWingRibsPositioning>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

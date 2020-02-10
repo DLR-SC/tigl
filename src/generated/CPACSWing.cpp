@@ -60,22 +60,26 @@ namespace generated
 
     const CTiglUIDObject* CPACSWing::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSRotorBlades>()) {
-            return GetParent<CCPACSRotorBlades>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSWings>()) {
-            return GetParent<CCPACSWings>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CCPACSRotorBlades>()) {
+                return GetParent<CCPACSRotorBlades>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSWings>()) {
+                return GetParent<CCPACSWings>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSWing::GetNextUIDParent()
     {
-        if (IsParent<CCPACSRotorBlades>()) {
-            return GetParent<CCPACSRotorBlades>()->GetNextUIDParent();
-        }
-        if (IsParent<CCPACSWings>()) {
-            return GetParent<CCPACSWings>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CCPACSRotorBlades>()) {
+                return GetParent<CCPACSRotorBlades>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSWings>()) {
+                return GetParent<CCPACSWings>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

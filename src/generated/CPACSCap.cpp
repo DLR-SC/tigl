@@ -88,46 +88,50 @@ namespace generated
 
     const CTiglUIDObject* CPACSCap::GetNextUIDParent() const
     {
-        if (IsParent<CPACSSparCell>()) {
-            return GetParent<CPACSSparCell>();
-        }
-        if (IsParent<CPACSSparCrossSection>()) {
-            return GetParent<CPACSSparCrossSection>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSStructuralWallElement>()) {
-            if (GetParent<CPACSStructuralWallElement>()->GetUID())
-                return GetParent<CPACSStructuralWallElement>();
-            else
-                return GetParent<CPACSStructuralWallElement>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSWingRibCell>()) {
-            return GetParent<CPACSWingRibCell>();
-        }
-        if (IsParent<CCPACSWingRibCrossSection>()) {
-            return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CPACSSparCell>()) {
+                return GetParent<CPACSSparCell>();
+            }
+            if (IsParent<CPACSSparCrossSection>()) {
+                return GetParent<CPACSSparCrossSection>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSStructuralWallElement>()) {
+                if (GetParent<CPACSStructuralWallElement>()->GetUID())
+                    return GetParent<CPACSStructuralWallElement>();
+                else
+                    return GetParent<CPACSStructuralWallElement>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSWingRibCell>()) {
+                return GetParent<CPACSWingRibCell>();
+            }
+            if (IsParent<CCPACSWingRibCrossSection>()) {
+                return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSCap::GetNextUIDParent()
     {
-        if (IsParent<CPACSSparCell>()) {
-            return GetParent<CPACSSparCell>();
-        }
-        if (IsParent<CPACSSparCrossSection>()) {
-            return GetParent<CPACSSparCrossSection>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSStructuralWallElement>()) {
-            if (GetParent<CPACSStructuralWallElement>()->GetUID())
-                return GetParent<CPACSStructuralWallElement>();
-            else
-                return GetParent<CPACSStructuralWallElement>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSWingRibCell>()) {
-            return GetParent<CPACSWingRibCell>();
-        }
-        if (IsParent<CCPACSWingRibCrossSection>()) {
-            return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CPACSSparCell>()) {
+                return GetParent<CPACSSparCell>();
+            }
+            if (IsParent<CPACSSparCrossSection>()) {
+                return GetParent<CPACSSparCrossSection>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSStructuralWallElement>()) {
+                if (GetParent<CPACSStructuralWallElement>()->GetUID())
+                    return GetParent<CPACSStructuralWallElement>();
+                else
+                    return GetParent<CPACSStructuralWallElement>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSWingRibCell>()) {
+                return GetParent<CPACSWingRibCell>();
+            }
+            if (IsParent<CCPACSWingRibCrossSection>()) {
+                return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

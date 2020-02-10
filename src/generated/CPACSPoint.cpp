@@ -69,34 +69,38 @@ namespace generated
 
     const CTiglUIDObject* CPACSPoint::GetNextUIDParent() const
     {
-        if (IsParent<CCPACSControlSurfaceStep>()) {
-            return GetParent<CCPACSControlSurfaceStep>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSPointList>()) {
-            return GetParent<CPACSPointList>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSSeatModule>()) {
-            return GetParent<CPACSSeatModule>();
-        }
-        if (IsParent<CCPACSTransformation>()) {
-            return GetParent<CCPACSTransformation>();
+        if (m_parent) {
+            if (IsParent<CCPACSControlSurfaceStep>()) {
+                return GetParent<CCPACSControlSurfaceStep>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSPointList>()) {
+                return GetParent<CPACSPointList>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSeatModule>()) {
+                return GetParent<CPACSSeatModule>();
+            }
+            if (IsParent<CCPACSTransformation>()) {
+                return GetParent<CCPACSTransformation>();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSPoint::GetNextUIDParent()
     {
-        if (IsParent<CCPACSControlSurfaceStep>()) {
-            return GetParent<CCPACSControlSurfaceStep>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSPointList>()) {
-            return GetParent<CPACSPointList>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSSeatModule>()) {
-            return GetParent<CPACSSeatModule>();
-        }
-        if (IsParent<CCPACSTransformation>()) {
-            return GetParent<CCPACSTransformation>();
+        if (m_parent) {
+            if (IsParent<CCPACSControlSurfaceStep>()) {
+                return GetParent<CCPACSControlSurfaceStep>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSPointList>()) {
+                return GetParent<CPACSPointList>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSeatModule>()) {
+                return GetParent<CPACSSeatModule>();
+            }
+            if (IsParent<CCPACSTransformation>()) {
+                return GetParent<CCPACSTransformation>();
+            }
         }
         return nullptr;
     }

@@ -154,88 +154,92 @@ namespace generated
 
     const CTiglUIDObject* CPACSMaterialDefinition::GetNextUIDParent() const
     {
-        if (IsParent<CPACSCap>()) {
-            return GetParent<CPACSCap>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSLateralCap>()) {
-            return GetParent<CPACSLateralCap>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSSheetBasedStructuralElement>()) {
-            return GetParent<CPACSSheetBasedStructuralElement>();
-        }
-        if (IsParent<CPACSTrackActuator>()) {
-            return GetParent<CPACSTrackActuator>();
-        }
-        if (IsParent<CPACSTrackCar>()) {
-            return GetParent<CPACSTrackCar>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSTrackFairing>()) {
-            return GetParent<CPACSTrackFairing>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSTrackStructure>()) {
-            return GetParent<CPACSTrackStructure>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSTrackStrut1>()) {
-            return GetParent<CPACSTrackStrut1>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSTrackStrut2>()) {
-            return GetParent<CPACSTrackStrut2>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSWeb>()) {
-            return GetParent<CPACSWeb>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSWingRibCell>()) {
-            return GetParent<CPACSWingRibCell>();
-        }
-        if (IsParent<CCPACSWingRibCrossSection>()) {
-            return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSWingSkin>()) {
-            return GetParent<CPACSWingSkin>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CPACSCap>()) {
+                return GetParent<CPACSCap>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLateralCap>()) {
+                return GetParent<CPACSLateralCap>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSheetBasedStructuralElement>()) {
+                return GetParent<CPACSSheetBasedStructuralElement>();
+            }
+            if (IsParent<CPACSTrackActuator>()) {
+                return GetParent<CPACSTrackActuator>();
+            }
+            if (IsParent<CPACSTrackCar>()) {
+                return GetParent<CPACSTrackCar>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSTrackFairing>()) {
+                return GetParent<CPACSTrackFairing>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSTrackStructure>()) {
+                return GetParent<CPACSTrackStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSTrackStrut1>()) {
+                return GetParent<CPACSTrackStrut1>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSTrackStrut2>()) {
+                return GetParent<CPACSTrackStrut2>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSWeb>()) {
+                return GetParent<CPACSWeb>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSWingRibCell>()) {
+                return GetParent<CPACSWingRibCell>();
+            }
+            if (IsParent<CCPACSWingRibCrossSection>()) {
+                return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSWingSkin>()) {
+                return GetParent<CPACSWingSkin>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDObject* CPACSMaterialDefinition::GetNextUIDParent()
     {
-        if (IsParent<CPACSCap>()) {
-            return GetParent<CPACSCap>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSLateralCap>()) {
-            return GetParent<CPACSLateralCap>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSSheetBasedStructuralElement>()) {
-            return GetParent<CPACSSheetBasedStructuralElement>();
-        }
-        if (IsParent<CPACSTrackActuator>()) {
-            return GetParent<CPACSTrackActuator>();
-        }
-        if (IsParent<CPACSTrackCar>()) {
-            return GetParent<CPACSTrackCar>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSTrackFairing>()) {
-            return GetParent<CPACSTrackFairing>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSTrackStructure>()) {
-            return GetParent<CPACSTrackStructure>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSTrackStrut1>()) {
-            return GetParent<CPACSTrackStrut1>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSTrackStrut2>()) {
-            return GetParent<CPACSTrackStrut2>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSWeb>()) {
-            return GetParent<CPACSWeb>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSWingRibCell>()) {
-            return GetParent<CPACSWingRibCell>();
-        }
-        if (IsParent<CCPACSWingRibCrossSection>()) {
-            return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
-        }
-        if (IsParent<CPACSWingSkin>()) {
-            return GetParent<CPACSWingSkin>()->GetNextUIDParent();
+        if (m_parent) {
+            if (IsParent<CPACSCap>()) {
+                return GetParent<CPACSCap>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLateralCap>()) {
+                return GetParent<CPACSLateralCap>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSheetBasedStructuralElement>()) {
+                return GetParent<CPACSSheetBasedStructuralElement>();
+            }
+            if (IsParent<CPACSTrackActuator>()) {
+                return GetParent<CPACSTrackActuator>();
+            }
+            if (IsParent<CPACSTrackCar>()) {
+                return GetParent<CPACSTrackCar>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSTrackFairing>()) {
+                return GetParent<CPACSTrackFairing>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSTrackStructure>()) {
+                return GetParent<CPACSTrackStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSTrackStrut1>()) {
+                return GetParent<CPACSTrackStrut1>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSTrackStrut2>()) {
+                return GetParent<CPACSTrackStrut2>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSWeb>()) {
+                return GetParent<CPACSWeb>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSWingRibCell>()) {
+                return GetParent<CPACSWingRibCell>();
+            }
+            if (IsParent<CCPACSWingRibCrossSection>()) {
+                return GetParent<CCPACSWingRibCrossSection>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSWingSkin>()) {
+                return GetParent<CPACSWingSkin>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
