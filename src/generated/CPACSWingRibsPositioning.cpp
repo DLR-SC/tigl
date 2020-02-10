@@ -424,22 +424,22 @@ namespace generated
         ;
     }
 
-    const boost::optional<CPACSEtaXsiPoint>& CPACSWingRibsPositioning::GetStartEtaXsiPoint_choice1() const
+    const boost::optional<CCPACSEtaXsiPoint>& CPACSWingRibsPositioning::GetStartEtaXsiPoint_choice1() const
     {
         return m_startEtaXsiPoint_choice1;
     }
 
-    boost::optional<CPACSEtaXsiPoint>& CPACSWingRibsPositioning::GetStartEtaXsiPoint_choice1()
+    boost::optional<CCPACSEtaXsiPoint>& CPACSWingRibsPositioning::GetStartEtaXsiPoint_choice1()
     {
         return m_startEtaXsiPoint_choice1;
     }
 
-    const boost::optional<CPACSCurvePoint>& CPACSWingRibsPositioning::GetStartCurvePoint_choice2() const
+    const boost::optional<CCPACSCurvePoint>& CPACSWingRibsPositioning::GetStartCurvePoint_choice2() const
     {
         return m_startCurvePoint_choice2;
     }
 
-    boost::optional<CPACSCurvePoint>& CPACSWingRibsPositioning::GetStartCurvePoint_choice2()
+    boost::optional<CCPACSCurvePoint>& CPACSWingRibsPositioning::GetStartCurvePoint_choice2()
     {
         return m_startCurvePoint_choice2;
     }
@@ -458,22 +458,22 @@ namespace generated
         m_startSparPositionUID_choice3 = value;
     }
 
-    const boost::optional<CPACSEtaXsiPoint>& CPACSWingRibsPositioning::GetEndEtaXsiPoint_choice1() const
+    const boost::optional<CCPACSEtaXsiPoint>& CPACSWingRibsPositioning::GetEndEtaXsiPoint_choice1() const
     {
         return m_endEtaXsiPoint_choice1;
     }
 
-    boost::optional<CPACSEtaXsiPoint>& CPACSWingRibsPositioning::GetEndEtaXsiPoint_choice1()
+    boost::optional<CCPACSEtaXsiPoint>& CPACSWingRibsPositioning::GetEndEtaXsiPoint_choice1()
     {
         return m_endEtaXsiPoint_choice1;
     }
 
-    const boost::optional<CPACSCurvePoint>& CPACSWingRibsPositioning::GetEndCurvePoint_choice2() const
+    const boost::optional<CCPACSCurvePoint>& CPACSWingRibsPositioning::GetEndCurvePoint_choice2() const
     {
         return m_endCurvePoint_choice2;
     }
 
-    boost::optional<CPACSCurvePoint>& CPACSWingRibsPositioning::GetEndCurvePoint_choice2()
+    boost::optional<CCPACSCurvePoint>& CPACSWingRibsPositioning::GetEndCurvePoint_choice2()
     {
         return m_endCurvePoint_choice2;
     }
@@ -562,7 +562,7 @@ namespace generated
         return m_ribRotation;
     }
 
-    CPACSEtaXsiPoint& CPACSWingRibsPositioning::GetStartEtaXsiPoint_choice1(CreateIfNotExistsTag)
+    CCPACSEtaXsiPoint& CPACSWingRibsPositioning::GetStartEtaXsiPoint_choice1(CreateIfNotExistsTag)
     {
         if (!m_startEtaXsiPoint_choice1)
             m_startEtaXsiPoint_choice1 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this), m_uidMgr);
@@ -574,7 +574,7 @@ namespace generated
         m_startEtaXsiPoint_choice1 = boost::none;
     }
 
-    CPACSCurvePoint& CPACSWingRibsPositioning::GetStartCurvePoint_choice2(CreateIfNotExistsTag)
+    CCPACSCurvePoint& CPACSWingRibsPositioning::GetStartCurvePoint_choice2(CreateIfNotExistsTag)
     {
         if (!m_startCurvePoint_choice2)
             m_startCurvePoint_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this), m_uidMgr);
@@ -586,7 +586,7 @@ namespace generated
         m_startCurvePoint_choice2 = boost::none;
     }
 
-    CPACSEtaXsiPoint& CPACSWingRibsPositioning::GetEndEtaXsiPoint_choice1(CreateIfNotExistsTag)
+    CCPACSEtaXsiPoint& CPACSWingRibsPositioning::GetEndEtaXsiPoint_choice1(CreateIfNotExistsTag)
     {
         if (!m_endEtaXsiPoint_choice1)
             m_endEtaXsiPoint_choice1 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this), m_uidMgr);
@@ -598,7 +598,7 @@ namespace generated
         m_endEtaXsiPoint_choice1 = boost::none;
     }
 
-    CPACSCurvePoint& CPACSWingRibsPositioning::GetEndCurvePoint_choice2(CreateIfNotExistsTag)
+    CCPACSCurvePoint& CPACSWingRibsPositioning::GetEndCurvePoint_choice2(CreateIfNotExistsTag)
     {
         if (!m_endCurvePoint_choice2)
             m_endCurvePoint_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this), m_uidMgr);

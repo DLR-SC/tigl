@@ -19,9 +19,9 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSEtaXsiPoint.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSEtaXsiPoint.h"
 #include "CPACSWingRibPoint.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
@@ -79,13 +79,13 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSWingRibPoint>& GetSparPositionRib_choice1() const;
         TIGL_EXPORT virtual boost::optional<CPACSWingRibPoint>& GetSparPositionRib_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSEtaXsiPoint>& GetSparPositionEtaXsi_choice2() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEtaXsiPoint>& GetSparPositionEtaXsi_choice2();
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaXsiPoint>& GetSparPositionEtaXsi_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaXsiPoint>& GetSparPositionEtaXsi_choice2();
 
         TIGL_EXPORT virtual CPACSWingRibPoint& GetSparPositionRib_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSparPositionRib_choice1();
 
-        TIGL_EXPORT virtual CPACSEtaXsiPoint& GetSparPositionEtaXsi_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSEtaXsiPoint& GetSparPositionEtaXsi_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSparPositionEtaXsi_choice2();
 
     protected:
@@ -95,7 +95,7 @@ namespace generated
 
         std::string                        m_uID;
         boost::optional<CPACSWingRibPoint> m_sparPositionRib_choice1;
-        boost::optional<CPACSEtaXsiPoint>  m_sparPositionEtaXsi_choice2;
+        boost::optional<CCPACSEtaXsiPoint> m_sparPositionEtaXsi_choice2;
 
     private:
         CPACSSparPosition(const CPACSSparPosition&) = delete;

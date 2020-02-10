@@ -19,10 +19,10 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSCurvePoint.h>
+#include <CCPACSEtaXsiPoint.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSCurvePoint.h"
-#include "CPACSEtaXsiPoint.h"
 #include "CreateIfNotExists.h"
 #include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
@@ -66,20 +66,20 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const boost::optional<CPACSEtaXsiPoint>& GetStartEtaXsiPoint_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEtaXsiPoint>& GetStartEtaXsiPoint_choice1();
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaXsiPoint>& GetStartEtaXsiPoint_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaXsiPoint>& GetStartEtaXsiPoint_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSCurvePoint>& GetStartCurvePoint_choice2() const;
-        TIGL_EXPORT virtual boost::optional<CPACSCurvePoint>& GetStartCurvePoint_choice2();
+        TIGL_EXPORT virtual const boost::optional<CCPACSCurvePoint>& GetStartCurvePoint_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSCurvePoint>& GetStartCurvePoint_choice2();
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetStartSparPositionUID_choice3() const;
         TIGL_EXPORT virtual void SetStartSparPositionUID_choice3(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSEtaXsiPoint>& GetEndEtaXsiPoint_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEtaXsiPoint>& GetEndEtaXsiPoint_choice1();
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaXsiPoint>& GetEndEtaXsiPoint_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaXsiPoint>& GetEndEtaXsiPoint_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSCurvePoint>& GetEndCurvePoint_choice2() const;
-        TIGL_EXPORT virtual boost::optional<CPACSCurvePoint>& GetEndCurvePoint_choice2();
+        TIGL_EXPORT virtual const boost::optional<CCPACSCurvePoint>& GetEndCurvePoint_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSCurvePoint>& GetEndCurvePoint_choice2();
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetEndSparPositionUID_choice3() const;
         TIGL_EXPORT virtual void SetEndSparPositionUID_choice3(const boost::optional<std::string>& value);
@@ -90,16 +90,16 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetRibEnd() const;
         TIGL_EXPORT virtual void SetRibEnd(const std::string& value);
 
-        TIGL_EXPORT virtual CPACSEtaXsiPoint& GetStartEtaXsiPoint_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSEtaXsiPoint& GetStartEtaXsiPoint_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStartEtaXsiPoint_choice1();
 
-        TIGL_EXPORT virtual CPACSCurvePoint& GetStartCurvePoint_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSCurvePoint& GetStartCurvePoint_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStartCurvePoint_choice2();
 
-        TIGL_EXPORT virtual CPACSEtaXsiPoint& GetEndEtaXsiPoint_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSEtaXsiPoint& GetEndEtaXsiPoint_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEndEtaXsiPoint_choice1();
 
-        TIGL_EXPORT virtual CPACSCurvePoint& GetEndCurvePoint_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSCurvePoint& GetEndCurvePoint_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEndCurvePoint_choice2();
 
     protected:
@@ -108,32 +108,32 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// startEtaXsiPoint defines the start of the rib defined in eta-xsi coordinates of a reference plane
-        boost::optional<CPACSEtaXsiPoint> m_startEtaXsiPoint_choice1;
+        boost::optional<CCPACSEtaXsiPoint> m_startEtaXsiPoint_choice1;
 
         /// startCurvePoint defines the start of the rib defined by a point on a reference curve
         /// such as a spar, but not an explicit sparPosition
-        boost::optional<CPACSCurvePoint>  m_startCurvePoint_choice2;
+        boost::optional<CCPACSCurvePoint>  m_startCurvePoint_choice2;
 
         /// Defines the location of the beginning of the rib using a specific sparPosition.
-        boost::optional<std::string>      m_startSparPositionUID_choice3;
+        boost::optional<std::string>       m_startSparPositionUID_choice3;
 
         /// endEtaXsiPoint defines the end of the rib defined in eta-xsi coordinates of a reference plane
-        boost::optional<CPACSEtaXsiPoint> m_endEtaXsiPoint_choice1;
+        boost::optional<CCPACSEtaXsiPoint> m_endEtaXsiPoint_choice1;
 
         /// endCurvePoint defines the end of the rib defined by a point on a reference curve
         /// such as a spar, but not an explicit sparPosition
-        boost::optional<CPACSCurvePoint>  m_endCurvePoint_choice2;
+        boost::optional<CCPACSCurvePoint>  m_endCurvePoint_choice2;
 
         /// Defines the location of the end of the rib using a specific sparPosition.
-        boost::optional<std::string>      m_endSparPositionUID_choice3;
+        boost::optional<std::string>       m_endSparPositionUID_choice3;
 
         /// RibStart defines the forward beginning of the ribs. It can either be a
         /// sparUID or "trailingEdge" or "leadingEdge".
-        std::string                       m_ribStart;
+        std::string                        m_ribStart;
 
         /// RibEnd defines the backward ending of the ribs. It can either be a
         /// sparUID or "trailingEdge" or "leadingEdge".
-        std::string                       m_ribEnd;
+        std::string                        m_ribEnd;
 
     private:
         const CTiglUIDObject* GetNextUIDObject() const final;

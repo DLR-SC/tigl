@@ -100,7 +100,7 @@ double CCPACSWingSparPosition::GetXsi() const
     throw CTiglError("Invalid spar position type");
 }
 
-const generated::CPACSEtaXsiPoint &CCPACSWingSparPosition::GetEtaXsiPoint() const
+const CCPACSEtaXsiPoint &CCPACSWingSparPosition::GetEtaXsiPoint() const
 {
     if (!GetSparPositionEtaXsi_choice2()) {
         throw CTiglError("No EtaXsiPoint definied in SparPosition '" + GetUID() + "'");

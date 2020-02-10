@@ -122,6 +122,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSCurvePoint = generated::CPACSCurvePoint;
+// CPACSCurvePoint is customized, use type CCPACSCurvePoint directly
 } // namespace tigl

@@ -132,6 +132,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSEtaXsiPoint = generated::CPACSEtaXsiPoint;
+// CPACSEtaXsiPoint is customized, use type CCPACSEtaXsiPoint directly
 } // namespace tigl

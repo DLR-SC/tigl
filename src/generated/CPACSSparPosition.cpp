@@ -203,12 +203,12 @@ namespace generated
         return m_sparPositionRib_choice1;
     }
 
-    const boost::optional<CPACSEtaXsiPoint>& CPACSSparPosition::GetSparPositionEtaXsi_choice2() const
+    const boost::optional<CCPACSEtaXsiPoint>& CPACSSparPosition::GetSparPositionEtaXsi_choice2() const
     {
         return m_sparPositionEtaXsi_choice2;
     }
 
-    boost::optional<CPACSEtaXsiPoint>& CPACSSparPosition::GetSparPositionEtaXsi_choice2()
+    boost::optional<CCPACSEtaXsiPoint>& CPACSSparPosition::GetSparPositionEtaXsi_choice2()
     {
         return m_sparPositionEtaXsi_choice2;
     }
@@ -225,7 +225,7 @@ namespace generated
         m_sparPositionRib_choice1 = boost::none;
     }
 
-    CPACSEtaXsiPoint& CPACSSparPosition::GetSparPositionEtaXsi_choice2(CreateIfNotExistsTag)
+    CCPACSEtaXsiPoint& CPACSSparPosition::GetSparPositionEtaXsi_choice2(CreateIfNotExistsTag)
     {
         if (!m_sparPositionEtaXsi_choice2)
             m_sparPositionEtaXsi_choice2 = boost::in_place(reinterpret_cast<CCPACSWingSparPosition*>(this), m_uidMgr);
