@@ -247,8 +247,6 @@ void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
                          "All profiles must either have a sharp or a blunt trailing edge. "
                          "Mixing different profile types is not allowed.");
     }
-
-    Invalidate();
 }
 
 std::string CCPACSWingSegment::GetDefaultedUID() const {
