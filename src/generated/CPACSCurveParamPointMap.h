@@ -64,10 +64,10 @@ namespace generated
     protected:
         CCPACSCurvePointListXYZ* m_parent;
 
-        /// Index of the point that is mapped.
+        /// List of indices of points to be mapped. Each index must be in the range 0 ... npoints-1 .
         CCPACSStringVector m_pointIndex;
 
-        /// Parameter on curve, that is mapped to the point defined by its index.
+        /// List of parameters on the curve, that is mapped to the points defined by their index.
         CCPACSStringVector m_paramOnCurve;
 
     private:

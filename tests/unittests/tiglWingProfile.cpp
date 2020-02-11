@@ -64,7 +64,7 @@ TEST(WingProfileParams, GetKinksVector)
     ASSERT_NO_THROW(curve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/wingAirfoils/wingAirfoil[1]/pointList"));
 
     EXPECT_FALSE(curve.GetKinksAsVector().empty());
-    EXPECT_TRUE(ArraysMatch({-0.2}, curve.GetKinksAsVector()));
+    EXPECT_TRUE(ArraysMatch({30}, curve.GetKinksAsVector()));
 }
 
 TEST(WingProfileParams, GetParamMap)

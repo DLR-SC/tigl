@@ -88,8 +88,8 @@ namespace generated
         /// Vector of z coordinates
         CCPACSStringVector                        m_z;
 
-        /// Curve parameters at which the curve has a kink. To define a kink at a specific point,
-        /// the parameterMap has to be used that associates a point with a parameter.
+        /// Points, at which the curve has a kink. This list contains the indices
+        /// of the points at which the curve should contain a kink. Each index is in the range [0, n-1].
         boost::optional<CCPACSStringVector>       m_kinks;
 
         /// Map between point index and curve parameter.

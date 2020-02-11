@@ -31678,12 +31678,12 @@ jonas.jepsen@dlr.de
 				<xsd:sequence>
 					<xsd:element name="pointIndex" type="stringVectorBaseType">
 						<xsd:annotation>
-							<xsd:documentation>Index of the point that is mapped.</xsd:documentation>
+							<xsd:documentation>List of indices of points to be mapped. Each index must be in the range 0 ... npoints-1 .</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="paramOnCurve" type="stringVectorBaseType">
 						<xsd:annotation>
-							<xsd:documentation>Parameter on curve, that is mapped to the point defined by its index.</xsd:documentation>
+							<xsd:documentation>List of parameters on the curve, that is mapped to the points defined by their index.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 				</xsd:sequence>
@@ -31691,14 +31691,14 @@ jonas.jepsen@dlr.de
 		</xsd:complexContent>
 	</xsd:complexType>
 
-	<xsd:complexType name="curvePointListXYZ">
+	<xsd:complexType name="curvePointListXYZType">
 		<xsd:complexContent>
 		<xsd:extension base="pointListXYZVectorType">
 			<xsd:sequence>
 				<xsd:element name="kinks" maxOccurs="1" minOccurs="0" type="stringVectorBaseType">
 					<xsd:annotation>
-						<xsd:documentation>Curve parameters at which the curve has a kink. To define a kink at a specific point,
-						the parameterMap has to be used that associates a point with a parameter.
+						<xsd:documentation>Points, at which the curve has a kink. This list contains the indices
+						of the points at which the curve should contain a kink. Each index is in the range [0, n-1].
 						</xsd:documentation>
 					</xsd:annotation>
 				</xsd:element>
@@ -32874,7 +32874,7 @@ jonas.jepsen@dlr.de
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:choice>
-						<xsd:element name="pointList" type="curvePointListXYZ"/>
+						<xsd:element name="pointList" type="curvePointListXYZType"/>
 						<xsd:element name="cst2D" type="cst2DType"/>
 					</xsd:choice>
 				</xsd:sequence>
