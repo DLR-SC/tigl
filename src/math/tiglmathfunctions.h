@@ -200,6 +200,11 @@ TIGL_EXPORT void PolarDecomposition(tiglMatrix const& A, tiglMatrix& U, tiglMatr
 
 TIGL_EXPORT void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V);
 
+/**
+ * Linear interpolation in of xdata<->ydata array at position x
+ */
+TIGL_EXPORT double Interpolate(const std::vector<double>& xdata, const std::vector<double>& ydata, double x);
+
 } // namespace tigl
 
 #endif // TIGLMATHFUNCTIONS_H
