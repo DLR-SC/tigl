@@ -48,6 +48,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Precision.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 
 #include <cmath>
 #include <stdexcept>
@@ -881,6 +882,172 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::trimCurve(const Handle(Geom_BS
     Handle(Geom_BSplineCurve) copy = Handle(Geom_BSplineCurve)::DownCast(curve->Copy());
     copy->Segment(umin, umax);
     return copy;
+}
+
+Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::concatCurves(std::vector<Handle(Geom_BSplineCurve)> curves,
+                                                               bool parByLength, double tolerance)
+{
+
+    if (curves.size() == 0) {
+        LOG(ERROR) << "Empty curve vector in CTiglBSplineAlgorithms::concatCurves";
+        return nullptr;
+    }
+    else if (curves.size() == 1) {
+        return curves[0];
+    }
+
+    std::vector<double> lengths;
+    double totalLen  = 0;
+    int    maxDegree = 0;
+
+    // get the bsplines of each edge,
+    // compute the lengths of each edge,
+    // determine maximum degree of the curves
+    for (auto curve : curves) {
+
+        if (parByLength) {
+            // find out length of current curve
+            Standard_Real umin = curve->FirstParameter();
+            Standard_Real umax = curve->LastParameter();
+            GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
+            double len = GCPnts_AbscissaPoint::Length(adaptorCurve, umin, umax);
+            lengths.push_back(len);
+            totalLen += len;
+        }
+
+        // find out maximum degree
+        if (curve->Degree() > maxDegree) {
+            maxDegree = curve->Degree();
+        }
+    }
+
+
+    // check connectivities
+    for (unsigned int icurve = 1; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) c1 = curves[icurve-1];
+        Handle(Geom_BSplineCurve) c2 = curves[icurve];
+
+        gp_Pnt p1 = c1->Pole(c1->NbPoles());
+        gp_Pnt p2 = c2->Pole(1);
+
+        if (p1.Distance(p2) > tolerance) {
+            // error
+            LOG(ERROR) << "Curves not connected within tolerance in concatCurves";
+            return nullptr;
+        }
+    }
+
+    // elevate degree of all curves to maxDegree
+    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
+        curve->IncreaseDegree(maxDegree);
+    }
+
+#ifdef DEBUG
+    // check that each curve is at maxDegree
+    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
+        assert(curve->Degree() == maxDegree);
+    }
+#endif
+
+    // shift knots of curves
+    double startPar = 0;
+    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
+        double stopPar = startPar;
+        if (parByLength) {
+            stopPar += lengths[icurve]/totalLen;
+        }
+        else {
+            stopPar += curve->LastParameter() - curve->FirstParameter();
+        }
+        CTiglBSplineAlgorithms::reparametrizeBSpline(*curve, startPar, stopPar);
+        curves[icurve] = curve;
+
+        startPar = stopPar;
+    }
+
+    // count number of knots and control points for the final b-spline
+    int nbknots = 1;
+    int nbcp    = 1;
+    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
+        nbknots += curve->NbKnots() - 1;
+        nbcp    += curve->NbPoles() - 1;
+    }
+
+    // allocate arrays
+    TColgp_Array1OfPnt      cpoints(1, nbcp);
+    TColStd_Array1OfReal    weights(1, nbcp);
+    TColStd_Array1OfReal    knots(1, nbknots);
+    TColStd_Array1OfInteger mults(1, nbknots);
+
+    // concatenate everything
+    int iknotT = 1, imultT = 1, icpT = 1, iweightT = 1;
+    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
+
+        // special handling of the first knot, control point
+        knots.SetValue(iknotT++, curve->Knot(1));
+        if (icurve == 0) {
+            // we just copy the data of the very first point/knot
+            mults.SetValue(imultT++, curve->Multiplicity(1));
+            cpoints.SetValue(icpT++, curve->Pole(1));
+            weights.SetValue(iweightT++, curve->Weight(1));
+        }
+        else {
+            // set multiplicity to maxDegree to allow c0 concatenation
+            mults.SetValue(imultT++, maxDegree);
+
+            // compute midpoint between endpoint of previous
+            // curve and startpoint of current curve
+            Handle(Geom_BSplineCurve) lastCurve = curves[icurve-1];
+            gp_Pnt endPoint   = lastCurve->Pole(lastCurve->NbPoles());
+            gp_Pnt startPoint = curve->Pole(1);
+            gp_Pnt midPoint = (endPoint.XYZ() + startPoint.XYZ())/2.;
+            cpoints.SetValue(icpT++, midPoint);
+
+            // we use the average weight of previous curve and current curve
+            // This is probably wrong and could change the shape of the curve
+            // Instead, one could scale all weights of the curve to match the weight of
+            // the previous curve
+            weights.SetValue(iweightT++, (lastCurve->Weight(lastCurve->NbPoles()) + curve->Weight(1))/2.);
+        }
+
+        // just copy control points, weights, knots and multiplicites
+        for (int iknot = 2; iknot < curve->NbKnots(); ++iknot) {
+            knots.SetValue(iknotT++, curve->Knot(iknot));
+            mults.SetValue(imultT++, curve->Multiplicity(iknot));
+        }
+        for (int icp = 2; icp < curve->NbPoles(); ++icp) {
+            cpoints.SetValue(icpT++, curve->Pole(icp));
+            weights.SetValue(iweightT++, curve->Weight(icp));
+        }
+
+    }
+
+    // special handling of the last point and knot
+    Handle(Geom_BSplineCurve) lastCurve = curves[curves.size()-1];
+    knots.SetValue(iknotT, lastCurve->Knot(lastCurve->NbKnots()));
+    mults.SetValue(imultT,  lastCurve->Multiplicity(lastCurve->NbKnots()));
+    cpoints.SetValue(icpT, lastCurve->Pole(lastCurve->NbPoles()));
+    weights.SetValue(iweightT, lastCurve->Weight(lastCurve->NbPoles()));
+
+#ifdef DEBUG
+    // check that we have the correct number of knots, control points etc...
+    int nkn = 0;
+    for (int ik = knots.Lower(); ik <= knots.Upper(); ++ik) {
+        nkn += mults.Value(ik);
+    }
+
+    // check validity of bspline
+    assert (cpoints.Length() + maxDegree + 1 == nkn);
+#endif
+
+    // build the resulting B-Spline
+    Handle(Geom_BSplineCurve) result = new Geom_BSplineCurve(cpoints, weights, knots, mults, maxDegree, false);
+    return result;
 }
 
 } // namespace tigl

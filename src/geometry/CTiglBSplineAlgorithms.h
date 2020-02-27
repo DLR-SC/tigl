@@ -237,6 +237,11 @@ public:
 
     /// Trims a bspline curve
     TIGL_EXPORT static Handle(Geom_BSplineCurve) trimCurve(const Handle(Geom_BSplineCurve)& curve, double umin, double umax);
+
+    /// Concatenates a list of bspline curves
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) concatCurves(std::vector<Handle(Geom_BSplineCurve)> curves,
+                                                              bool parByLength=true, double tolerance = 1e-6);
+
 };
 } // namespace tigl
 
