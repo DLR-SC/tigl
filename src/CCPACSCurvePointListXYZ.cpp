@@ -1,5 +1,7 @@
 #include "CCPACSCurvePointListXYZ.h"
 
+#include <iterator>
+
 namespace tigl
 {
 

@@ -18,9 +18,11 @@
 
 
 #include "CCPACSCurveParamPointMap.h"
-#include <algorithm>
 #include "to_string.h"
 #include "CTiglLogging.h"
+
+#include <iterator>
+#include <algorithm>
 
 namespace tigl
 {
