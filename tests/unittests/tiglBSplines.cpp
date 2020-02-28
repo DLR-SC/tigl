@@ -38,6 +38,25 @@
 #include "CTiglBSplineFit.h"
 #include "CTiglPointsToBSplineInterpolation.h"
 #include "CTiglInterpolatePointsWithKinks.h"
+#include "tiglcommonfunctions.h"
+
+void StoreResult(const std::string& filename, const Handle(Geom_BSplineCurve)& curve, const TColgp_Array1OfPnt& pt)
+{
+    TopoDS_Compound c;
+    BRep_Builder b;
+    b.MakeCompound(c);
+
+    TopoDS_Shape e = BRepBuilderAPI_MakeEdge(curve);
+    b.Add(c, e);
+
+    for (Standard_Integer i = pt.Lower(); i <= pt.Upper(); ++i) {
+        const gp_Pnt& p = pt.Value(i);
+        TopoDS_Shape v = BRepBuilderAPI_MakeVertex(p);
+        b.Add(c, v);
+    }
+
+    BRepTools::Write(c, filename.c_str());
+}
 
 TEST(BSplines, pointsToLinear)
 {
@@ -109,6 +128,8 @@ TEST(BSplines, symmetricBSpline)
     ASSERT_NEAR(0., p.Distance(gp_Pnt(0,-1,0)), 1e-10);
     ASSERT_NEAR(0., v * gp_Vec(0,1,0), 1e-10);
     ASSERT_NEAR(0., v * gp_Vec(1,0,0), 1e-10);
+
+    StoreResult("TestData/analysis/BSplinesSymmetric.brep", curve, OccArray(points)->Array1());
 }
 
 /// This tests checks, if the bspline
@@ -278,24 +299,6 @@ protected:
 
     void TearDown() override
     {
-    }
-
-    void StoreResult(const std::string& filename, const Handle(Geom_BSplineCurve)& curve, const TColgp_Array1OfPnt& pt)
-    {
-        TopoDS_Compound c;
-        BRep_Builder b;
-        b.MakeCompound(c);
-
-        TopoDS_Shape e = BRepBuilderAPI_MakeEdge(curve);
-        b.Add(c, e);
-
-        for (Standard_Integer i = pt.Lower(); i <= pt.Upper(); ++i) {
-            const gp_Pnt& p = pt.Value(i);
-            TopoDS_Shape v = BRepBuilderAPI_MakeVertex(p);
-            b.Add(c, v);
-        }
-
-        BRepTools::Write(c, filename.c_str());
     }
 
     std::vector<double> parms;

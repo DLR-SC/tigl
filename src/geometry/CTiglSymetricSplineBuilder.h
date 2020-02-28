@@ -51,7 +51,6 @@ public:
     TIGL_EXPORT Handle(Geom_BSplineCurve) GetBSpline() const;
 
 private:
-    Handle(Geom_BSplineCurve) GetBSplineInternal(const CPointContainer& inputPoints) const;
     void checkInputData() const;
 
     const CPointContainer& _points;
