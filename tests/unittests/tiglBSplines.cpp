@@ -37,6 +37,7 @@
 #include <math_Matrix.hxx>
 #include "CTiglBSplineFit.h"
 #include "CTiglPointsToBSplineInterpolation.h"
+#include "CTiglInterpolatePointsWithKinks.h"
 
 TEST(BSplines, pointsToLinear)
 {
@@ -597,6 +598,35 @@ TEST_F(BSplineInterpolation, tipKink2)
     tigl::CTiglApproxResult result = app.FitCurve(parms2);
 
     StoreResult("TestData/analysis/BSplineInterpolation-tipKink2.brep", result.curve, pnt2);
+}
+
+TEST_F(BSplineInterpolation, withKinksShield)
+{
+    Handle(TColgp_HArray1OfPnt) points = new TColgp_HArray1OfPnt(1, 5);
+    points->SetValue(1, gp_Pnt(0., 0., 0.));
+    points->SetValue(2, gp_Pnt(0.5, 0.25, 0.0));
+    points->SetValue(3, gp_Pnt(0., 1.0, 0.));
+    points->SetValue(4, gp_Pnt(-0.5, 0.25, 0));
+    points->SetValue(5, gp_Pnt(0., 0., 0.0));
+
+    tigl::ParamMap params = {
+        {3, 0.8},
+        {1, 0.2},
+    };
+
+    std::vector<unsigned int> kinks = {1, 3};
+    tigl::CTiglInterpolatePointsWithKinks interpolator(points, kinks, params, 0.5);
+    auto curve = interpolator.Curve();
+
+    ASSERT_FALSE(curve.IsNull());
+
+    EXPECT_TRUE(curve->Value(0.2).IsEqual(points->Value(2), 1e-8));
+    EXPECT_TRUE(curve->Value(0.8).IsEqual(points->Value(4), 1e-8));
+
+    auto kinkParams = tigl::CTiglBSplineAlgorithms::getKinkParameters(curve);
+    EXPECT_TRUE(ArraysMatch({0.2, 0.8}, kinkParams));
+
+    StoreResult("TestData/analysis/BSplineInterpolation-withKinksShield.brep", curve, points->Array1());
 }
 
 TEST_F(BSplineInterpolation, interpolationContinous)
