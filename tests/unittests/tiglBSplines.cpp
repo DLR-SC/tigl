@@ -620,13 +620,100 @@ TEST_F(BSplineInterpolation, withKinksShield)
 
     ASSERT_FALSE(curve.IsNull());
 
-    EXPECT_TRUE(curve->Value(0.2).IsEqual(points->Value(2), 1e-8));
-    EXPECT_TRUE(curve->Value(0.8).IsEqual(points->Value(4), 1e-8));
+    const double tol = 1e-8;
+
+    EXPECT_TRUE(curve->Value(0.2).IsEqual(points->Value(2), tol));
+    EXPECT_TRUE(curve->Value(0.8).IsEqual(points->Value(4), tol));
 
     auto kinkParams = tigl::CTiglBSplineAlgorithms::getKinkParameters(curve);
     EXPECT_TRUE(ArraysMatch({0.2, 0.8}, kinkParams));
 
+    auto paramsVec = interpolator.Parameters();
+    EXPECT_TRUE(ArraysMatch({0., 0.2, 0.5, 0.8, 1.0}, paramsVec));
+
+    gp_Pnt p; gp_Vec d_start, d_end;
+    curve->D1(0., p, d_start);
+    curve->D1(1., p, d_end);
+
+    EXPECT_TRUE(d_start.IsParallel(d_end, 1e-6));
+
     StoreResult("TestData/analysis/BSplineInterpolation-withKinksShield.brep", curve, points->Array1());
+}
+
+TEST_F(BSplineInterpolation, withKinksSlit)
+{
+    Handle(TColgp_HArray1OfPnt) points = new TColgp_HArray1OfPnt(1, 5);
+    points->SetValue(1, gp_Pnt(0., 0., 0.));
+    points->SetValue(2, gp_Pnt(0.5, 0.25, 0.0));
+    points->SetValue(3, gp_Pnt(0., 1.0, 0.));
+    points->SetValue(4, gp_Pnt(-0.5, 0.25, 0));
+    points->SetValue(5, gp_Pnt(0., 0., 0.0));
+
+    tigl::ParamMap params = {};
+
+    std::vector<unsigned int> kinks = {0, 2};
+    tigl::CTiglInterpolatePointsWithKinks interpolator(points, kinks, params, 0.5);
+    auto curve = interpolator.Curve();
+
+    ASSERT_FALSE(curve.IsNull());
+
+    const double tol = 1e-8;
+
+    EXPECT_TRUE(curve->Value(0.5).IsEqual(points->Value(3), tol));
+
+    auto kinkParams = tigl::CTiglBSplineAlgorithms::getKinkParameters(curve);
+    EXPECT_TRUE(ArraysMatch({0.5}, kinkParams, InTolerance(tol)));
+
+    auto paramsVec = interpolator.Parameters();
+    EXPECT_NEAR(0.0, paramsVec[0], tol);
+    EXPECT_NEAR(0.5, paramsVec[2], tol);
+    EXPECT_NEAR(1.0, paramsVec[4], tol);
+
+    gp_Pnt p; gp_Vec d_start, d_end;
+    curve->D1(0., p, d_start);
+    curve->D1(1., p, d_end);
+
+    EXPECT_FALSE(d_start.IsParallel(d_end, 1e-6));
+
+    StoreResult("TestData/analysis/BSplineInterpolation-withKinksSlit.brep", curve, points->Array1());
+}
+
+TEST_F(BSplineInterpolation, withKinksSmooth)
+{
+    Handle(TColgp_HArray1OfPnt) points = new TColgp_HArray1OfPnt(1, 5);
+    points->SetValue(1, gp_Pnt(0., 0., 0.));
+    points->SetValue(2, gp_Pnt(0.5, 0.25, 0.0));
+    points->SetValue(3, gp_Pnt(0., 1.0, 0.));
+    points->SetValue(4, gp_Pnt(-0.5, 0.25, 0));
+    points->SetValue(5, gp_Pnt(0., 0., 0.0));
+
+    tigl::ParamMap params = {};
+
+    std::vector<unsigned int> kinks = {};
+    tigl::CTiglInterpolatePointsWithKinks interpolator(points, kinks, params, 0.5);
+    auto curve = interpolator.Curve();
+
+    ASSERT_FALSE(curve.IsNull());
+
+    const double tol = 1e-8;
+
+    EXPECT_TRUE(curve->Value(0.5).IsEqual(points->Value(3), tol));
+
+    auto kinkParams = tigl::CTiglBSplineAlgorithms::getKinkParameters(curve);
+    EXPECT_TRUE(kinkParams.empty());
+
+    auto paramsVec = interpolator.Parameters();
+    EXPECT_NEAR(0.0, paramsVec[0], tol);
+    EXPECT_NEAR(0.5, paramsVec[2], tol);
+    EXPECT_NEAR(1.0, paramsVec[4], tol);
+
+    gp_Pnt p; gp_Vec d_start, d_end;
+    curve->D1(0., p, d_start);
+    curve->D1(1., p, d_end);
+
+    EXPECT_TRUE(d_start.IsParallel(d_end, 1e-6));
+
+    StoreResult("TestData/analysis/BSplineInterpolation-withKinksSmooth.brep", curve, points->Array1());
 }
 
 TEST_F(BSplineInterpolation, interpolationContinous)
