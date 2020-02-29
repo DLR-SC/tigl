@@ -869,6 +869,31 @@ std::vector<double> CTiglBSplineAlgorithms::getKinkParameters(const Handle(Geom_
     return kinks;
 }
 
+CTiglBSplineAlgorithms::SurfaceKinks CTiglBSplineAlgorithms::getKinkParameters(const Handle(Geom_BSplineSurface)& surface)
+{
+    if (surface.IsNull()) {
+        throw CTiglError("Null Pointer curve", TIGL_NULL_POINTER);
+    }
+
+    SurfaceKinks kinks;
+
+    for (int knotIndex = 2; knotIndex < surface->NbUKnots(); ++knotIndex) {
+        if (surface->UMultiplicity(knotIndex) == surface->UDegree()) {
+            double knot = surface->UKnot(knotIndex);
+            kinks.u.push_back(knot);
+        }
+    }
+
+    for (int knotIndex = 2; knotIndex < surface->NbVKnots(); ++knotIndex) {
+        if (surface->VMultiplicity(knotIndex) == surface->VDegree()) {
+            double knot = surface->VKnot(knotIndex);
+            kinks.v.push_back(knot);
+        }
+    }
+
+    return kinks;
+}
+
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::trimSurface(const Handle(Geom_Surface)& surface, double umin, double umax, double vmin, double vmax)
 {
     Handle(Geom_BSplineSurface) trimmedSurface = GeomConvert::SurfaceToBSplineSurface(

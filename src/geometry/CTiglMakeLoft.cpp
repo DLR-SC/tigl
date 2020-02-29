@@ -29,6 +29,7 @@
 #include "to_string.h"
 
 #include "contrib/MakePatches.hxx"
+#include "geometry/CTiglTopoAlgorithms.h"
 
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -53,7 +54,6 @@
 #include <BRep_Tool.hxx>
 
 namespace {
-    TopoDS_Shape CutShellAtUVParameters(TopoDS_Shape const& shape, std::vector<double> uparams, std::vector<double> vparams);
     TopoDS_Shape ResortFaces(TopoDS_Shape const& shape, int nu, int nv, bool umajor2vmajor = true);
 }
 
@@ -282,7 +282,7 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
         BRepBuilderAPI_MakeFace faceMaker(surface, 1e-10);
         builder.Add(faces, faceMaker.Face());
     }
-    _result = CutShellAtUVParameters(faces, uparams, vparams);
+    _result = tigl::CTiglTopoAlgorithms::CutShellAtUVParameters(faces, uparams, vparams);
 
     // make sure the order is the same as for the COONS Patch algorithm
     _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
@@ -303,78 +303,6 @@ void CTiglMakeLoft::CloseShape()
 
 namespace
 {
-
-    TopoDS_Shape CutShellAtUVParameters(TopoDS_Shape const& shape, std::vector<double> uparams, std::vector<double> vparams)
-    {
-
-        bool cutInUDirection = (uparams.size() > 0);
-        bool cutInVDirection = (vparams.size() > 0);
-
-        if ( !cutInUDirection && !cutInVDirection ) {
-            //nothing to do
-            return shape;
-        }
-
-        // sort parameter vectors if they are not sorted
-        if (cutInUDirection && !std::is_sorted(uparams.begin(), uparams.end()) ) {
-            std::sort(uparams.begin(), uparams.end());
-        }
-        if (cutInVDirection && !std::is_sorted(vparams.begin(), vparams.end()) ) {
-            std::sort(vparams.begin(), vparams.end());
-        }
-
-
-
-        TopoDS_Shell cutShape;
-        BRep_Builder builder;
-        builder.MakeShell(cutShape);
-
-        for(TopExp_Explorer faces(shape, TopAbs_FACE); faces.More(); faces.Next()) {
-
-            // trim each face/surface of the compound at the uv paramters in the paramter vectors
-
-            Handle(Geom_Surface) surface = BRep_Tool::Surface(TopoDS::Face(faces.Current()));
-            Standard_Real u1, u2, v1, v2;
-            surface->Bounds(u1, u2, v1, v2);
-
-            if ( !cutInUDirection ) {
-                uparams.clear();
-                uparams.push_back(u1);
-                uparams.push_back(u2);
-            }
-
-            if ( !cutInVDirection ) {
-                vparams.clear();
-                vparams.push_back(v1);
-                vparams.push_back(v2);
-            }
-
-            unsigned uidx = 0;
-            while ( uparams[uidx] < u1 ) {
-                ++uidx;
-            }
-
-            unsigned vidx = 0;
-            while ( vparams[vidx] < v1 ) {
-                ++vidx;
-            }
-
-            unsigned ustart = uidx;
-            while ( vidx+1 < vparams.size() && vparams[vidx+1] <= v2 ) {
-                uidx = ustart;
-                while ( uidx+1 < uparams.size() && uparams[uidx+1] <= u2 ) {
-
-                    Handle(Geom_BSplineSurface) trimmedSurface = tigl::CTiglBSplineAlgorithms::trimSurface(surface, uparams[uidx], uparams[uidx+1], vparams[vidx], vparams[vidx+1]);
-                    BRepBuilderAPI_MakeFace faceMaker(trimmedSurface, 1e-10);
-                    builder.Add(cutShape, faceMaker.Face());
-
-                    ++uidx;
-                }
-                ++vidx;
-            }
-        }
-        return cutShape;
-    }
 
     TopoDS_Shape ResortFaces(TopoDS_Shape const& shape, int nu, int nv, bool umajor2vmajor)
     {

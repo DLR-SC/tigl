@@ -220,6 +220,17 @@ public:
      */
     TIGL_EXPORT static std::vector<double> getKinkParameters(const Handle(Geom_BSplineCurve)& curve);
 
+    struct SurfaceKinks{
+        std::vector<double> u;
+        std::vector<double> v;
+    };
+
+    /**
+     * Returns positions, where the surface has kinks (C1 Discontinuities)
+     */
+    TIGL_EXPORT static SurfaceKinks getKinkParameters(const Handle(Geom_BSplineSurface)& surface);
+
+
     /// Checks, whether the point matrix points is closed in u direction
     TIGL_EXPORT static bool isUDirClosed(const TColgp_Array2OfPnt& points, double tolerance);
 
