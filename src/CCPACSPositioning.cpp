@@ -34,7 +34,7 @@ namespace tigl
 {
 
 CCPACSPositioning::CCPACSPositioning(CCPACSPositionings* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSPositioning(parent, uidMgr) {}
+    : generated::CPACSPositioning(parent, uidMgr), invalidated(true) {}
 
 // Build outer transformation matrix for the positioning
 void CCPACSPositioning::BuildMatrix()
