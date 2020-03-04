@@ -32,6 +32,15 @@
 #include <GeomConvert.hxx>
 
 
+Handle(Geom_BSplineSurface) loadSurface(const std::string& filename)
+{
+    BRep_Builder builder;
+    TopoDS_Shape shape;
+
+    BRepTools::Read(shape, filename.c_str(), builder);
+    return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
+}
+
 namespace tigl
 {
 
@@ -1411,6 +1420,22 @@ TEST(TiglBSplineAlgorithms, knotsFromParamsClosed)
     EXPECT_NEAR(1.0, knots[14], 1e-10);
     EXPECT_NEAR(1.0625, knots[15], 1e-10);
     EXPECT_NEAR(1.125, knots[16], 1e-10);
+}
+
+TEST(TiglBSplineAlgorithms, trimSurfaceBug)
+{
+    auto surface = loadSurface("TestData/bugs/582/surface.brep");
+
+    surface = CTiglBSplineAlgorithms::trimSurface(surface, 0., 1., 0.49999999999999988898, 0.6666666666666666296);
+
+    double u1, u2, v1, v2;
+    surface->Bounds(u1, u2, v1, v2);
+
+    EXPECT_NEAR(0., u1, 1e-10);
+    EXPECT_NEAR(1., u2, 1e-10);
+    EXPECT_NEAR(0.5, v1, 1e-10);
+    EXPECT_NEAR(0.666666666666666666, v2, 1e-10);
+
 }
 
 class GordonSurface: public ::testing::TestWithParam<std::string>
