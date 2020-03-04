@@ -896,9 +896,51 @@ CTiglBSplineAlgorithms::SurfaceKinks CTiglBSplineAlgorithms::getKinkParameters(c
 
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::trimSurface(const Handle(Geom_Surface)& surface, double umin, double umax, double vmin, double vmax)
 {
-    Handle(Geom_BSplineSurface) trimmedSurface = GeomConvert::SurfaceToBSplineSurface(
-            new Geom_RectangularTrimmedSurface(surface, umin, umax, vmin, vmax)
-    );
+
+    Handle(Geom_BSplineSurface) trimmedSurface = GeomConvert::SurfaceToBSplineSurface(surface);
+
+    trimmedSurface->SetUNotPeriodic();
+    trimmedSurface->SetVNotPeriodic();
+
+    // workaround for OCCT bug https://tracker.dev.opencascade.org/view.php?id=31402
+    // We set the trimming parameters to a knot, if they are close to them
+    double parTol = 1e-10;
+    int i1, i2;
+    trimmedSurface->LocateU(umin, parTol, i1, i2);
+    if (i1 == i2) {
+        // v is a knot
+        umin = trimmedSurface->UKnot(i1);
+    }
+    trimmedSurface->LocateU(umax, parTol, i1, i2);
+    if (i1 == i2) {
+        // v is a knot
+        umax = trimmedSurface->UKnot(i1);
+    }
+    trimmedSurface->LocateV(vmin, parTol, i1, i2);
+    if (i1 == i2) {
+        // v is a knot
+        vmin = trimmedSurface->VKnot(i1);
+    }
+    trimmedSurface->LocateV(vmax, parTol, i1, i2);
+    if (i1 == i2) {
+        // v is a knot
+        vmax = trimmedSurface->VKnot(i1);
+    }
+
+    // Perform the trimming
+    trimmedSurface->Segment(umin, umax, vmin, vmax);
+
+#ifdef DEBUG
+    double u1, u2, v1, v2;
+    trimmedSurface->Bounds(u1, u2, v1, v2);
+
+    double tol_check = 1e-12;
+    auto intol = [tol_check](double a, double b) {
+        return fabs(a - b) <= tol_check;
+    };
+
+    assert(intol(u1, umin) && intol(u2, umax) && intol(v1, vmin) && intol(v2, vmax));
+#endif
     return trimmedSurface;
 }
 
