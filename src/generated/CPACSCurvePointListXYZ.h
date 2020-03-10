@@ -38,6 +38,29 @@ namespace generated
     // CPACSProfileGeometry
 
     // generated from /xsd:schema/xsd:complexType[723]
+    /// @brief A curve that interpolates a list of points.
+    /// 
+    /// The curve interpolates the list of points, typically with a b-spline.
+    /// In theory, the interpolation is somewhat ambiguous as it is not defined at which
+    /// curve parameter a point will be interpolated.
+    /// To solve is ambiguity, an optional parameter map can be defined
+    /// that maps point indices with curve parameters.
+    /// Kinks can also be modeled by populating the "kinks" array with the
+    /// indices of points that should be on a kink. As an example, look at the following image:
+    /// @see curve_point_list_xyz
+    /// In this example, the kinks array will be "2;6".
+    /// Optionally, the parameters of the kinks can be set in the parameter map.
+    /// The whole profile looks as follows:
+    /// <pointList>
+    /// <x mapType="vector">...</x>
+    /// <y mapType="vector">...</y>
+    /// <z mapType="vector">...</z>
+    /// <kinks mapType="vector">2;6</kinks>
+    /// <parameterMap>
+    /// <pointIndex mapType="vector">2;4;6</pointIndex>
+    /// <paramOnCurve mapType="vector">0.2;0.5;0.8</paramOnCurve>
+    /// </parameterMap>
+    /// </pointList>
     class CPACSCurvePointListXYZ
     {
     public:

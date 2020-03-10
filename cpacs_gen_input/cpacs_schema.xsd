@@ -31692,23 +31692,65 @@ jonas.jepsen@dlr.de
 	</xsd:complexType>
 
 	<xsd:complexType name="curvePointListXYZType">
-		<xsd:complexContent>
-		<xsd:extension base="pointListXYZVectorType">
-			<xsd:sequence>
-				<xsd:element name="kinks" maxOccurs="1" minOccurs="0" type="stringVectorBaseType">
-					<xsd:annotation>
-						<xsd:documentation>Points, at which the curve has a kink. This list contains the indices
-						of the points at which the curve should contain a kink. Each index is in the range [0, n-1].
-						</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-				<xsd:element name="parameterMap" maxOccurs="1" minOccurs="0" type="curveParamPointMapType">
-					<xsd:annotation>
-						<xsd:documentation>Map between point index and curve parameter.</xsd:documentation>
-					</xsd:annotation>
-				</xsd:element>
-			</xsd:sequence>
-		</xsd:extension>
+		<xsd:annotation>
+			<xsd:appinfo>
+				<sd:schemaDoc>
+					<ddue:summary>
+						<ddue:para>A curve that interpolates a list of points.</ddue:para>
+					</ddue:summary>
+					<ddue:remarks>
+						<ddue:content>
+							<ddue:para>The curve interpolates the list of points, typically with a b-spline.
+                            In theory, the interpolation is somewhat ambiguous as it is not defined at which
+                            curve parameter a point will be interpolated.
+                            </ddue:para>
+                            <ddue:para>To solve is ambiguity, an optional parameter map can be defined
+                            that maps point indices with curve parameters.
+                            </ddue:para>
+                            <ddue:para>Kinks can also be modeled by populating the "kinks" array with the
+                            indices of points that should be on a kink. As an example, look at the following image:
+                            </ddue:para>
+							<ddue:mediaLink>
+								<ddue:image width="300" xlink:href="curve_point_list_xyz"/>
+							</ddue:mediaLink>
+							<ddue:para>In this example, the kinks array will be "2;6".
+                            Optionally, the parameters of the kinks can be set in the parameter map.
+                            The whole profile looks as follows:
+							</ddue:para>
+                            <ddue:code language="XML" title=" ">
+&lt;pointList&gt;
+	&lt;x mapType="vector"&gt;...&lt;/x&gt;
+	&lt;y mapType="vector"&gt;...&lt;/y&gt;
+	&lt;z mapType="vector"&gt;...&lt;/z&gt;
+	&lt;kinks mapType="vector"&gt;2;6&lt;/kinks&gt;
+	&lt;parameterMap&gt;
+		&lt;pointIndex mapType="vector"&gt;2;4;6&lt;/pointIndex&gt;
+		&lt;paramOnCurve mapType="vector"&gt;0.2;0.5;0.8&lt;/paramOnCurve&gt;
+	&lt;/parameterMap&gt;
+&lt;/pointList&gt;
+                        </ddue:code>
+						</ddue:content>
+					</ddue:remarks>
+				</sd:schemaDoc>
+			</xsd:appinfo>
+		</xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pointListXYZVectorType">
+                <xsd:sequence>
+                    <xsd:element name="kinks" maxOccurs="1" minOccurs="0" type="stringVectorBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Points, at which the curve has a kink. This list contains the indices
+                            of the points at which the curve should contain a kink. Each index is in the range [0, n-1].
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="parameterMap" maxOccurs="1" minOccurs="0" type="curveParamPointMapType">
+                        <xsd:annotation>
+                            <xsd:documentation>Map between point index and curve parameter.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
 
