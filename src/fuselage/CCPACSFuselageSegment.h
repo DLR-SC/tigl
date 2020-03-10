@@ -32,6 +32,7 @@
 #include "CCPACSGuideCurve.h"
 #include "CCPACSGuideCurves.h"
 #include "CCPACSTransformation.h"
+#include "CTiglCompoundSurface.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopTools_SequenceOfShape.hxx"
@@ -165,6 +166,9 @@ private:
         double myVolume;      ///< Volume of this segment
         double mySurfaceArea; ///< Surface Area of this segment
     };
+    struct SurfaceCache {
+        CTiglCompoundSurface surface;
+    };
 
     // Invalidates internal state
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
@@ -178,6 +182,7 @@ private:
     void SetFaceTraits(PNamedShape loft) const;
 
     void UpdateSurfaceProperties(SurfacePropertiesCache& cache) const;
+    void BuildSurfaces(SurfaceCache& cache) const;
 
 private:
     // get short name for loft
@@ -187,6 +192,7 @@ private:
     CTiglFuselageConnection endConnection;        /**< End segment connection                  */
     CCPACSFuselage*         fuselage;             /**< Parent fuselage                         */
     Cache<SurfacePropertiesCache, CCPACSFuselageSegment> surfacePropertiesCache;
+    Cache<SurfaceCache, CCPACSFuselageSegment> surfaceCache;
     bool                    loftLinearly = false; /**< Set to true to speed up lofting of the
                                                     * segment. This removes the dependency on
                                                     * the fuselage loft at the price of a

@@ -23,6 +23,12 @@
 #include"testUtils.h"
 #include<fstream>
 #include<iomanip>
+#include <Geom_BSplineCurve.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <BRepTools.hxx>
 
 // save x-y data
 void outputXY(const int & i, const double& x, const double&y, const std::string& filename)
@@ -48,4 +54,22 @@ void outputXYVector(const int& i, const double& x, const double& y, const double
     }
     out << std::setprecision(17) << std::scientific  << x << "\t" << y << "\t" << vx << "\t" << vy << "\t" << std::endl;
     out.close();
+}
+
+void StoreResult(const std::string& filename, const Handle(Geom_BSplineCurve)& curve, const TColgp_Array1OfPnt& pt)
+{
+    TopoDS_Compound c;
+    BRep_Builder b;
+    b.MakeCompound(c);
+
+    TopoDS_Shape e = BRepBuilderAPI_MakeEdge(curve);
+    b.Add(c, e);
+
+    for (Standard_Integer i = pt.Lower(); i <= pt.Upper(); ++i) {
+        const gp_Pnt& p = pt.Value(i);
+        TopoDS_Shape v = BRepBuilderAPI_MakeVertex(p);
+        b.Add(c, v);
+    }
+
+    BRepTools::Write(c, filename.c_str());
 }

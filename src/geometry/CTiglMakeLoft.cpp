@@ -30,6 +30,8 @@
 
 #include "contrib/MakePatches.hxx"
 #include "geometry/CTiglTopoAlgorithms.h"
+#include "geometry/CTiglBSplineAlgorithms.h"
+
 
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -279,13 +281,13 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
             vparams = surfaceSkinner.GetParameters();
         }
 
-        BRepBuilderAPI_MakeFace faceMaker(surface, 1e-10);
-        builder.Add(faces, faceMaker.Face());
+        builder.Add(faces, BRepBuilderAPI_MakeFace(surface, 1e-6).Face());
     }
-    _result = tigl::CTiglTopoAlgorithms::CutShellAtUVParameters(faces, uparams, vparams);
+    _result = tigl::CTiglTopoAlgorithms::CutShellAtUVParameters(faces, {}, vparams);
 
     // make sure the order is the same as for the COONS Patch algorithm
     _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
+    _result = tigl::CTiglTopoAlgorithms::CutShellAtKinks(_result);
     CloseShape();
 }
 

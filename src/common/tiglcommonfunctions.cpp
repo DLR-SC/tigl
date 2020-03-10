@@ -1698,12 +1698,23 @@ TopoDS_Shape GetFacesByName(const PNamedShape shape, const std::string &name)
     return c;
 }
 
+/// Converters between std::vectors and opencascade vectors
 Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts)
 {
     Handle(TColgp_HArray1OfPnt) result = new TColgp_HArray1OfPnt(1, static_cast<int>(pnts.size()));
     int idx = 1;
     for (std::vector<gp_Pnt>::const_iterator it = pnts.begin(); it != pnts.end(); ++it, ++idx) {
         result->SetValue(idx, *it);
+    }
+    return result;
+}
+
+Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<tigl::CTiglPoint>& pnts)
+{
+    Handle(TColgp_HArray1OfPnt) result = new TColgp_HArray1OfPnt(1, static_cast<int>(pnts.size()));
+    int idx = 1;
+    for (std::vector<tigl::CTiglPoint>::const_iterator it = pnts.begin(); it != pnts.end(); ++it, ++idx) {
+        result->SetValue(idx, it->Get_gp_Pnt());
     }
     return result;
 }

@@ -26,7 +26,7 @@
 #include <TopoDS.hxx>
 #include <Geom_Surface.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
-
+#include <GeomConvert.hxx>
 #include <algorithm>
 
 namespace
@@ -45,37 +45,32 @@ namespace
 
         const double tol=1e-6;
 
-        if (uparams.empty()) {
-            uparams = {u1, u2};
-        }
-        else {
-            std::remove_if(std::begin(uparams), std::end(uparams), [u1, u2](double par) {
-               return par < u1 || par > u2;
-            });
+        auto process_params = [tol](std::vector<double>& params, double min, double max) {
+            if (params.empty()) {
+                params = {min, max};
+            }
+            else {
+                params.erase(std::remove_if(std::begin(params), std::end(params), [min, max](double par) {
+                   return par < min || par > max;
+                }), params.end());
 
-            if (fabs(u1 - uparams.front()) < tol) {
-                uparams.front() = u1;
+                if (fabs(min - params.front()) < tol) {
+                    params.front() = min;
+                }
+                else {
+                    params.insert(params.begin(), min);
+                }
+                if (fabs(max - params.back()) < tol) {
+                    params.back() = max;
+                }
+                else {
+                    params.push_back(max);
+                }
             }
-            if (fabs(u2 - uparams.back()) < tol) {
-                uparams.back() = u2;
-            }
-        }
+        };
 
-        if (vparams.empty()) {
-            vparams = {v1, v2};
-        }
-        else {
-            std::remove_if(std::begin(vparams), std::end(vparams), [v1, v2](double par) {
-               return par < v1 || par > v2;
-            });
-
-            if (fabs(v1 - vparams.front()) < tol) {
-                vparams.front() = v1;
-            }
-            if (fabs(v2 - vparams.back()) < tol) {
-                vparams.back() = v2;
-            }
-        }
+        process_params(uparams, u1, u2);
+        process_params(vparams, v1, v2);
 
         BRep_Builder builder;
 
@@ -124,6 +119,21 @@ TopoDS_Shape CTiglTopoAlgorithms::CutShellAtUVParameters(TopoDS_Shape const& sha
     return std::move(cutShape);
 }
 
+TopoDS_Shape CTiglTopoAlgorithms::CutShellAtKinks(TopoDS_Shape const& shape)
+{
+
+    TopoDS_Shell cutShape;
+    BRep_Builder builder;
+    builder.MakeShell(cutShape);
+
+    for (TopExp_Explorer faces(shape, TopAbs_FACE); faces.More(); faces.Next()) {
+        // trim each face/surface of the compound at the uv paramters in the paramter vectors
+        auto surface = BRep_Tool::Surface(TopoDS::Face(faces.Current()));
+        CutSurfaceAtKinks(GeomConvert::SurfaceToBSplineSurface(surface), cutShape);
+    }
+    return std::move(cutShape);
+}
+
 TopoDS_Shell CTiglTopoAlgorithms::CutSurfaceAtUVParameters(Handle(Geom_Surface) surface, std::vector<double> uparams, std::vector<double> vparams)
 {
     if (!surface) {
@@ -137,23 +147,66 @@ TopoDS_Shell CTiglTopoAlgorithms::CutSurfaceAtUVParameters(Handle(Geom_Surface) 
     return shell;
 }
 
-TopoDS_Shell CTiglTopoAlgorithms::CutSurfaceAtKinks(Handle(Geom_BSplineSurface) surface)
+void CTiglTopoAlgorithms::CutSurfaceAtUVParameters(Handle(Geom_Surface) surface, std::vector<double> uparams, std::vector<double> vparams, TopoDS_Shell& shell)
+{
+    if (!surface) {
+        throw CTiglError("Null pointer surface in CTiglTopoAlgorithms::CutSurfaceAtUVParameters", TIGL_NULL_POINTER);
+    }
+
+    CutSurfaceAtUVParametersImpl(surface, uparams, vparams, shell);
+}
+
+
+
+void CTiglTopoAlgorithms::CutSurfaceAtKinks(Handle(Geom_BSplineSurface) surface, TopoDS_Shell& shell)
 {
     if (!surface) {
         throw CTiglError("Null pointer surface in CTiglTopoAlgorithms::CutSurfaceAtKinks", TIGL_NULL_POINTER);
     }
 
     auto kinks = CTiglBSplineAlgorithms::getKinkParameters(surface);
+    return CutSurfaceAtUVParametersImpl(surface, kinks.u, kinks.v, shell);
+}
 
-    // Include surface boundaries
-    double u1, u2, v1, v2;
-    surface->Bounds(u1, u2, v1, v2);
-    kinks.u.insert(kinks.u.begin(), u1);
-    kinks.u.push_back(u2);
-    kinks.v.insert(kinks.v.begin(), v1);
-    kinks.v.push_back(v2);
+TopoDS_Shell CTiglTopoAlgorithms::CutSurfaceAtKinks(Handle(Geom_BSplineSurface) surface)
+{
+    if (!surface) {
+        throw CTiglError("Null pointer surface in CTiglTopoAlgorithms::CutSurfaceAtKinks", TIGL_NULL_POINTER);
+    }
 
-    return CutSurfaceAtUVParameters(surface, kinks.u, kinks.v);
+    BRep_Builder builder;
+    TopoDS_Shell shell;
+    builder.MakeShell(shell);
+
+    CTiglTopoAlgorithms::CutSurfaceAtKinks(surface, shell);
+    return shell;
+}
+
+
+bool CTiglTopoAlgorithms::IsDegenerated(const TopoDS_Wire& wire)
+{
+    bool isDegen = Standard_True;
+
+    TopoDS_Iterator iter(wire);
+    for (; iter.More(); iter.Next())
+    {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(iter.Value());
+        if (!BRep_Tool::Degenerated(anEdge)) {
+            isDegen = Standard_False;
+        }
+    }
+
+    if (!isDegen) {
+        BRepBuilderAPI_MakeFace facemaker(wire);
+        if (!facemaker.IsDone()) {
+            isDegen = true;
+        }
+        else {
+            isDegen = false;
+        }
+    }
+
+    return isDegen;
 }
 
 } // namespace tigl
