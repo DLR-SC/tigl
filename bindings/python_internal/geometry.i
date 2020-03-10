@@ -46,7 +46,6 @@
 #include "CTiglError.h"
 #include "CTiglShapeCache.h"
 #include "CTiglPolyData.h"
-#include "CTiglSymetricSplineBuilder.h"
 #include "CWireToCurve.h"
 #include "ListPNamedShape.h"
 #include "CCPACSPoint.h"
@@ -69,6 +68,7 @@
 #include "CTiglPointsToBSplineInterpolation.h"
 #include "CTiglCurvesToSurface.h"
 #include "CTiglIntersectBSplines.h"
+#include "CTiglInterpolatePointsWithKinks.h"
 %}
 
 
@@ -138,7 +138,7 @@
 %include "CTiglAbstractSegment.h"
 %include "CTiglShapeCache.h"
 %include "CTiglPolyData.h"
-%include "CTiglSymetricSplineBuilder.h"
 %include "CWireToCurve.h"
 %include "ListPNamedShape.h"
+%include "CTiglInterpolatePointsWithKinks.h"
 
