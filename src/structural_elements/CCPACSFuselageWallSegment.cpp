@@ -173,6 +173,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
         // extrusion vector
         double phiRad = Radians(GetPhi());
         gp_Vec ext_vec(0., -sin(phiRad), cos(phiRad));
+        ext_vec = GetFuselage().GetTransformationMatrix().Transform(ext_vec);
 
         if (count==1) {
             // flush first position to shape
