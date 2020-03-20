@@ -6696,6 +6696,50 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetType(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       const char* componentUID,
+                                                       TiglGeometricComponentType* typePtr)
+{
+    if (!componentUID) {
+        LOG(ERROR) << "Null pointer argument for componentUID\n"
+                   << "in function call to tiglComponentGetType.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!typePtr) {
+        LOG(ERROR) << "Null pointer argument for typePtr\n"
+                   << "in function call to tiglComponentGetType.";
+        return TIGL_NULL_POINTER;
+    }
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
+
+        if (uidManager.HasGeometricComponent(componentUID)) {
+            const auto& component = uidManager.GetGeometricComponent(componentUID);
+            *typePtr = component.GetComponentType();
+            return TIGL_SUCCESS;
+        }
+        else {
+            return TIGL_UID_ERROR;
+        }
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglComponentGetType!";
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode code)
 {
     if (code > TIGL_MATH_ERROR || code < 0) {
