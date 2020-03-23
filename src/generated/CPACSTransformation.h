@@ -54,6 +54,7 @@ namespace generated
     // CPACSFuselageElement
     // CPACSFuselageSection
     // CPACSGenericGeometricComponent
+    // CPACSGenericSystem
     // CPACSNacelleSection
     // CPACSRotor
     // CPACSRotorHubHinge

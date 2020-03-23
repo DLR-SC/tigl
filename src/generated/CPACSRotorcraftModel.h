@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSACSystems.h>
 #include <CCPACSEnginePositions.h>
 #include <CCPACSFuselages.h>
 #include <CCPACSRotorBlades.h>
@@ -95,6 +96,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSEnginePositions>& GetEngines() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEnginePositions>& GetEngines();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSACSystems>& GetSystems() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSACSystems>& GetSystems();
+
         TIGL_EXPORT virtual CCPACSFuselages& GetFuselages(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFuselages();
 
@@ -109,6 +113,9 @@ namespace generated
 
         TIGL_EXPORT virtual CCPACSEnginePositions& GetEngines(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEngines();
+
+        TIGL_EXPORT virtual CCPACSACSystems& GetSystems(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSystems();
 
     protected:
         CPACSRotorcraft* m_parent;
@@ -132,6 +139,8 @@ namespace generated
         boost::optional<CCPACSRotorBlades>     m_rotorBlades;
 
         boost::optional<CCPACSEnginePositions> m_engines;
+
+        boost::optional<CCPACSACSystems>       m_systems;
 
     private:
         CPACSRotorcraftModel(const CPACSRotorcraftModel&) = delete;

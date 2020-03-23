@@ -30,6 +30,9 @@ CPACSComponentSegment
 CPACSComponentSegments
 CPACSEtaIsoLine
 CPACSXsiIsoLine
+CPACSSystems
+CPACSGenericSystems
+CPACSGenericSystem
 
 CPACSFuselage
 CPACSFuselages

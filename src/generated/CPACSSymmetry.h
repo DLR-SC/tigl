@@ -32,6 +32,7 @@ namespace generated
     // CPACSEnginePylon
     // CPACSFuselage
     // CPACSGenericGeometricComponent
+    // CPACSGenericSystem
     // CPACSGuideCurveProfileGeometry
     // CPACSProfileGeometry
     // CPACSRotor

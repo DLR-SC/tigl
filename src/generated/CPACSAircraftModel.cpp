@@ -151,6 +151,17 @@ namespace generated
             }
         }
 
+        // read element systems
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/systems")) {
+            m_systems = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            try {
+                m_systems->ReadCPACS(tixiHandle, xpath + "/systems");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read systems at xpath " << xpath << ": " << e.what();
+                m_systems = boost::none;
+            }
+        }
+
         // read element genericGeometryComponents
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponents")) {
             m_genericGeometryComponents = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -226,6 +237,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/enginePylons")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/enginePylons");
+            }
+        }
+
+        // write element systems
+        if (m_systems) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/systems");
+            m_systems->WriteCPACS(tixiHandle, xpath + "/systems");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/systems")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/systems");
             }
         }
 
@@ -320,6 +342,16 @@ namespace generated
         return m_enginePylons;
     }
 
+    const boost::optional<CCPACSACSystems>& CPACSAircraftModel::GetSystems() const
+    {
+        return m_systems;
+    }
+
+    boost::optional<CCPACSACSystems>& CPACSAircraftModel::GetSystems()
+    {
+        return m_systems;
+    }
+
     const boost::optional<CCPACSExternalObjects>& CPACSAircraftModel::GetGenericGeometryComponents() const
     {
         return m_genericGeometryComponents;
@@ -376,6 +408,18 @@ namespace generated
     void CPACSAircraftModel::RemoveEnginePylons()
     {
         m_enginePylons = boost::none;
+    }
+
+    CCPACSACSystems& CPACSAircraftModel::GetSystems(CreateIfNotExistsTag)
+    {
+        if (!m_systems)
+            m_systems = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+        return *m_systems;
+    }
+
+    void CPACSAircraftModel::RemoveSystems()
+    {
+        m_systems = boost::none;
     }
 
     CCPACSExternalObjects& CPACSAircraftModel::GetGenericGeometryComponents(CreateIfNotExistsTag)
