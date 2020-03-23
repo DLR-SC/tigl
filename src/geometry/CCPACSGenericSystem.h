@@ -23,7 +23,6 @@
 #ifndef CCPACSGENERICSYSTEM_H
 #define CCPACSGENERICSYSTEM_H
 
-#include <string>
 #include "generated/CPACSGenericSystem.h"
 #include "CTiglRelativelyPositionedComponent.h"
 
@@ -57,12 +56,6 @@ protected:
 private:
     // get short name for loft
     std::string GetShortShapeName() const;
-
-    // Copy constructor
-    CCPACSGenericSystem(const CCPACSGenericSystem & );
-
-    // Assignment operator
-    void operator=(const CCPACSGenericSystem & );
 };
 
 } // end namespace tigl

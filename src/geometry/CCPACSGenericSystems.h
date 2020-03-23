@@ -51,14 +51,6 @@ public:
 
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
-
-private:
-    // Copy constructor
-    CCPACSGenericSystems(const CCPACSGenericSystems& );
-
-    // Assignment operator
-    void operator=(const CCPACSGenericSystem& );
-
 };
 
 } // end namespace tigl

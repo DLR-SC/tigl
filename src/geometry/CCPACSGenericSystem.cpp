@@ -29,7 +29,6 @@
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
 
-#include <BRepBuilderAPI_GTransform.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
