@@ -214,7 +214,8 @@ public:
     TIGL_EXPORT CCPACSWings& GetWings();
     TIGL_EXPORT const CCPACSWings& GetWings() const;
 
-    TIGL_EXPORT CCPACSACSystems& GetACSystems();
+    TIGL_EXPORT boost::optional<CCPACSACSystems&> GetACSystems();
+    TIGL_EXPORT boost::optional<const CCPACSACSystems&> GetACSystems() const;
 
 private:
     // Copy constructor
@@ -231,7 +232,6 @@ private:
     boost::optional<CCPACSEngines>         engines;              /**< Engines under vehicle node */
     TixiDocumentHandle                     tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                           header;               /**< Configuration header element */
-    CCPACSACSystems                        acSystems;            /**< Configuration aircraft systems element */
     CCPACSFarField                         farField;             /**< Far field configuration for CFD tools */
     PTiglFusePlane                         aircraftFuser;        /**< The aircraft fusing algo */
     CTiglShapeCache                        shapeCache;

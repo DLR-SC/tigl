@@ -24,37 +24,24 @@
 #define CCPACSGENERICSYSTEM_H
 
 #include <string>
-
-#include "tixi.h"
-#include "tigl_internal.h"
+#include "generated/CPACSGenericSystem.h"
 #include "CTiglRelativelyPositionedComponent.h"
-#include "CCPACSTransformation.h"
 
 namespace tigl
 {
 
 class CCPACSConfiguration;
 
-class CCPACSGenericSystem : public CTiglRelativelyPositionedComponent
+class CCPACSGenericSystem : public generated::CPACSGenericSystem, public CTiglRelativelyPositionedComponent
 {
-
 public:
     // Constructor
-    TIGL_EXPORT CCPACSGenericSystem(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSGenericSystem(CCPACSGenericSystems* parent, CTiglUIDManager* uidMgr);
 
     // Virtual destructor
     TIGL_EXPORT virtual ~CCPACSGenericSystem();
 
-    TIGL_EXPORT const std::string& GetUID() const;
-    TIGL_EXPORT void SetUID(const std::string& uid);
-
     TIGL_EXPORT std::string GetDefaultedUID() const override;
-
-    // Read CPACS generic system elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & genericSysXPath);
-
-    // Returns the name of the generic system
-    TIGL_EXPORT const std::string & GetName() const;
 
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
@@ -64,9 +51,6 @@ public:
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override {return TIGL_INTENT_PHYSICAL;}
 
 protected:
-    // Cleanup routine
-    void Cleanup();
-
     // Build the shape of the system
     PNamedShape BuildLoft() const override;
 
@@ -79,14 +63,6 @@ private:
 
     // Assignment operator
     void operator=(const CCPACSGenericSystem & );
-
-private:
-    std::string                    uid;
-    std::string                    name;                     /**< System name         */
-    std::string                    geometricBaseType;        /**< Geometric base type */
-    TiglSymmetryAxis               symmetryAxis;
-    CCPACSTransformation           transformation;
-    CCPACSConfiguration*           configuration;            /**< Parent configuration*/
 };
 
 } // end namespace tigl

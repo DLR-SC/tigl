@@ -55,7 +55,7 @@ namespace tigl
 
 // Constructor
 CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
-    : tixiDocumentHandle(tixiHandle) , acSystems(this), header(nullptr), farField(nullptr)
+    : tixiDocumentHandle(tixiHandle), header(nullptr), farField(nullptr)
 {
 }
 
@@ -123,8 +123,6 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         // TODO(bgruber): why can't we just write "/cpacs/vehicles/aircraft/model[" + configurationUID + "]" ?
         aircraftModel->ReadCPACS(tixiDocumentHandle, path); // reads everything underneath /cpacs/vehicles/aircraft/model
     }
-
-    acSystems.ReadCPACS(tixiDocumentHandle, configurationUID);
 
     // Now do parent <-> child transformations. Child should use the parent coordinate system as root.
     uidManager.SetParentComponents();
@@ -245,9 +243,30 @@ CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
 }
 
 // Returns the aircraft systems object.
-CCPACSACSystems& CCPACSConfiguration::GetACSystems()
+boost::optional<CCPACSACSystems&> CCPACSConfiguration::GetACSystems()
 {
-    return acSystems;
+    if (aircraftModel && aircraftModel->GetSystems()) {
+        return *aircraftModel->GetSystems();
+    }
+    else if (rotorcraftModel && rotorcraftModel->GetSystems()) {
+        return *rotorcraftModel->GetSystems();
+    }
+    else {
+        return boost::none;
+    }
+}
+
+boost::optional<const CCPACSACSystems&> CCPACSConfiguration::GetACSystems() const
+{
+    if (aircraftModel && aircraftModel->GetSystems()) {
+        return *aircraftModel->GetSystems();
+    }
+    else if (rotorcraftModel && rotorcraftModel->GetSystems()) {
+        return *rotorcraftModel->GetSystems();
+    }
+    else {
+        return boost::none;
+    }
 }
 
 // Returns the total count of wings (including rotor blades) in a configuration
@@ -340,18 +359,37 @@ int CCPACSConfiguration::GetWingIndex(const std::string& UID) const
 // Returns the total count of generic systems in a configuration
 int CCPACSConfiguration::GetGenericSystemCount()
 {
-    return acSystems.GetGenericSystems().GetGenericSystemCount();
+    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
+    if (acSystems) {
+        return acSystems->GetGenericSystems().GetGenericSystemCount();
+    }
+    else {
+        return 0;
+    }
 }
 
 // Returns the generic system for a given index.
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(int index)
 {
-    return acSystems.GetGenericSystems().GetGenericSystem(index);
+    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
+    if (acSystems) {
+        return acSystems->GetGenericSystems().GetGenericSystem(index);
+    }
+    else {
+        throw CTiglError("No generic system loaded");
+    }
 }
+
 // Returns the generic system for a given UID.
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID)
 {
-    return acSystems.GetGenericSystems().GetGenericSystem(UID);
+    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
+    if (acSystems) {
+        return acSystems->GetGenericSystems().GetGenericSystem(UID);
+    }
+    else {
+        throw CTiglError("No generic system loaded");
+    }
 }
 
 // Returns the total count of rotors in a configuration
