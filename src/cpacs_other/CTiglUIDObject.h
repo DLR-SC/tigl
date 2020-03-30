@@ -21,6 +21,8 @@
 
 #include <boost/optional.hpp>
 
+#include "tigl_internal.h"
+
 
 namespace tigl
 {
@@ -29,7 +31,7 @@ class CTiglUIDObject
 {
 public:
     // NVI using ReentryGuard
-    void Invalidate(const boost::optional<std::string>& source = boost::none) const;
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
     virtual boost::optional<std::string> GetObjectUID() const = 0;
     virtual CTiglUIDObject* GetNextUIDParent() = 0;
