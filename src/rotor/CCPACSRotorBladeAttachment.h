@@ -35,6 +35,10 @@ namespace tigl
 class CCPACSConfiguration;
 class CCPACSRotor;
 
+#pragma warning( push )
+// disable misleading warning to diamond inheritance
+#pragma warning( disable : 4250 )
+
 class CCPACSRotorBladeAttachment : private generated::CPACSRotorBladeAttachment, public virtual CTiglUIDObject
 {
 
@@ -97,6 +101,8 @@ private:
 
     mutable std::vector<std::unique_ptr<CTiglAttachedRotorBlade>> attachedRotorBlades;
 };
+
+#pragma warning( pop )
 
 } // end namespace tigl
 
