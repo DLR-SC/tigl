@@ -27,6 +27,18 @@
 namespace tigl
 {
 
+/**
+ * @brief Abstract base class of all classes providing an UID
+ *
+ * This class is used by the cpacs code generator as base class for all classes
+ * which provide a UID. It allows to get the UID of an object without explicitly
+ * knowing the current type, to navigate upwards in the CPACS tree (e.g. for
+ * checking if an object is a child of another object), as well as to invalidate
+ * the derived classes in a generic way.
+ * The class is mainly used by the CTiglUIDManager for managing the hierarchy of
+ * objects with a uid as well as for providing a list of all objects referencing
+ * a specific uid.
+ */
 class CTiglUIDObject
 {
 public:
@@ -46,6 +58,9 @@ private:
     mutable std::atomic<bool> m_isInvalidating{false};
 };
 
+/**
+ * @brief Specialization of CTiglUIDObject for classes with required UID
+ */
 class CTiglReqUIDObject : public virtual CTiglUIDObject
 {
 public:
@@ -56,6 +71,9 @@ public:
     }
 };
 
+/**
+ * @brief Specialization of CTiglUIDObject for classes with optional UID
+ */
 class CTiglOptUIDObject : public virtual CTiglUIDObject
 {
 public:
