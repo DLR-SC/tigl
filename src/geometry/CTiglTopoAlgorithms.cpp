@@ -19,6 +19,7 @@
 
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglError.h"
+#include "tiglcommonfunctions.h"
 
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shell.hxx>
@@ -187,6 +188,7 @@ bool CTiglTopoAlgorithms::IsDegenerated(const TopoDS_Wire& wire)
 {
     bool isDegen = Standard_True;
 
+    double length = 0.;
     TopoDS_Iterator iter(wire);
     for (; iter.More(); iter.Next())
     {
@@ -194,6 +196,11 @@ bool CTiglTopoAlgorithms::IsDegenerated(const TopoDS_Wire& wire)
         if (!BRep_Tool::Degenerated(anEdge)) {
             isDegen = Standard_False;
         }
+        length += GetLength(anEdge);
+    }
+
+    if (length < Precision::Confusion()) {
+        isDegen = true;
     }
 
     if (!isDegen) {

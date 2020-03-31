@@ -72,6 +72,9 @@ public:
     */
     TIGL_EXPORT static void CutSurfaceAtKinks(Handle(Geom_BSplineSurface) surface, TopoDS_Shell& shell);
 
+    /**
+     * @brief Checks, whether the wire is degenereated, i.e. infinitesimal small
+     */
     TIGL_EXPORT static bool IsDegenerated(const TopoDS_Wire& wire);
 };
 
