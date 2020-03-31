@@ -104,8 +104,8 @@ namespace generated
         boost::optional<std::string> m_endStringerUID;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSSkinSegment(const CPACSSkinSegment&) = delete;
         CPACSSkinSegment& operator=(const CPACSSkinSegment&) = delete;

@@ -78,8 +78,8 @@ namespace generated
         std::string m_curveUID;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSNacelleCenterCowl(const CPACSNacelleCenterCowl&) = delete;
         CPACSNacelleCenterCowl& operator=(const CPACSNacelleCenterCowl&) = delete;

@@ -84,8 +84,8 @@ namespace generated
         CCPACSMaterialDefinition m_material;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSTrackActuator(const CPACSTrackActuator&) = delete;
         CPACSTrackActuator& operator=(const CPACSTrackActuator&) = delete;

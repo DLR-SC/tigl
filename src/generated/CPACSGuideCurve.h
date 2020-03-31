@@ -158,8 +158,8 @@ namespace generated
         boost::optional<CPACSPointXYZ>              m_rXDirection;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSGuideCurve(const CPACSGuideCurve&) = delete;
         CPACSGuideCurve& operator=(const CPACSGuideCurve&) = delete;

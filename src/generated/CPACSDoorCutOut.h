@@ -98,8 +98,8 @@ namespace generated
         boost::optional<std::string> m_dssDesignUID;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSDoorCutOut(const CPACSDoorCutOut&) = delete;
         CPACSDoorCutOut& operator=(const CPACSDoorCutOut&) = delete;

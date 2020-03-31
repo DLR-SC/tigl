@@ -83,8 +83,8 @@ namespace generated
         boost::optional<CPACSSkinSegments> m_skinSegments;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSSkin(const CPACSSkin&) = delete;
         CPACSSkin& operator=(const CPACSSkin&) = delete;

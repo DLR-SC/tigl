@@ -136,8 +136,8 @@ namespace generated
         std::string                        m_ribEnd;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSWingRibExplicitPositioning(const CPACSWingRibExplicitPositioning&) = delete;
         CPACSWingRibExplicitPositioning& operator=(const CPACSWingRibExplicitPositioning&) = delete;

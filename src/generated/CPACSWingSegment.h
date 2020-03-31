@@ -113,8 +113,8 @@ namespace generated
         boost::optional<CCPACSGuideCurves> m_guideCurves;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSWingSegment(const CPACSWingSegment&) = delete;
         CPACSWingSegment& operator=(const CPACSWingSegment&) = delete;

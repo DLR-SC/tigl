@@ -156,8 +156,8 @@ namespace generated
         boost::optional<int>                                m_ySign;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSDoorAssemblyPosition(const CPACSDoorAssemblyPosition&) = delete;
         CPACSDoorAssemblyPosition& operator=(const CPACSDoorAssemblyPosition&) = delete;

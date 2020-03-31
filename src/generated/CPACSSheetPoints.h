@@ -71,8 +71,8 @@ namespace generated
         std::vector<std::string> m_sheetPointUIDs;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSSheetPoints(const CPACSSheetPoints&) = delete;
         CPACSSheetPoints& operator=(const CPACSSheetPoints&) = delete;

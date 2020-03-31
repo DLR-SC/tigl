@@ -74,8 +74,8 @@ namespace generated
         double      m_rotZ;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSOuterCutOutProfile(const CPACSOuterCutOutProfile&) = delete;
         CPACSOuterCutOutProfile& operator=(const CPACSOuterCutOutProfile&) = delete;

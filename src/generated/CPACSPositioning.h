@@ -150,8 +150,8 @@ namespace generated
         std::string                  m_toSectionUID;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSPositioning(const CPACSPositioning&) = delete;
         CPACSPositioning& operator=(const CPACSPositioning&) = delete;

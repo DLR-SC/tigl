@@ -122,8 +122,8 @@ namespace generated
         double           m_scalZ;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSControlSurfaceAirfoil(const CPACSControlSurfaceAirfoil&) = delete;
         CPACSControlSurfaceAirfoil& operator=(const CPACSControlSurfaceAirfoil&) = delete;

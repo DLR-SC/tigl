@@ -133,8 +133,8 @@ namespace generated
         std::string                         m_rotorBladeUID;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSRotorBladeAttachment(const CPACSRotorBladeAttachment&) = delete;
         CPACSRotorBladeAttachment& operator=(const CPACSRotorBladeAttachment&) = delete;

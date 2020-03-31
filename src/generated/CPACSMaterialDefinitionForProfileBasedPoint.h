@@ -102,8 +102,8 @@ namespace generated
         boost::optional<double>      m_optionalAux2;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSMaterialDefinitionForProfileBasedPoint(const CPACSMaterialDefinitionForProfileBasedPoint&) = delete;
         CPACSMaterialDefinitionForProfileBasedPoint& operator=(const CPACSMaterialDefinitionForProfileBasedPoint&) = delete;

@@ -108,8 +108,8 @@ namespace generated
         CCPACSTransformation              m_transformation;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSEnginePosition(const CPACSEnginePosition&) = delete;
         CPACSEnginePosition& operator=(const CPACSEnginePosition&) = delete;

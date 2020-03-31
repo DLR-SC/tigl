@@ -85,8 +85,8 @@ namespace generated
         double      m_toZeta;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSNacelleGuideCurve(const CPACSNacelleGuideCurve&) = delete;
         CPACSNacelleGuideCurve& operator=(const CPACSNacelleGuideCurve&) = delete;

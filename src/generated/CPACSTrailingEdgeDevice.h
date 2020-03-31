@@ -148,8 +148,8 @@ namespace generated
         boost::optional<CPACSControlSurfaceTracks>     m_tracks;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSTrailingEdgeDevice(const CPACSTrailingEdgeDevice&) = delete;
         CPACSTrailingEdgeDevice& operator=(const CPACSTrailingEdgeDevice&) = delete;

@@ -89,8 +89,8 @@ namespace generated
         std::string m_curveProfileUID;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSRotationCurve(const CPACSRotationCurve&) = delete;
         CPACSRotationCurve& operator=(const CPACSRotationCurve&) = delete;

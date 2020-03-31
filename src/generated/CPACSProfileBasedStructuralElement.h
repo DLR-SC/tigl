@@ -165,8 +165,8 @@ namespace generated
         boost::optional<CPACSTransformation2D>                                    m_transformation;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSProfileBasedStructuralElement(const CPACSProfileBasedStructuralElement&) = delete;
         CPACSProfileBasedStructuralElement& operator=(const CPACSProfileBasedStructuralElement&) = delete;

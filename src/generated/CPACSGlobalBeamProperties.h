@@ -114,8 +114,8 @@ namespace generated
         boost::optional<double>             m_beamSpecificMass;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSGlobalBeamProperties(const CPACSGlobalBeamProperties&) = delete;
         CPACSGlobalBeamProperties& operator=(const CPACSGlobalBeamProperties&) = delete;

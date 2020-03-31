@@ -135,8 +135,8 @@ namespace generated
         boost::optional<CCPACSFuselageStructure> m_structure;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSFuselage(const CPACSFuselage&) = delete;
         CPACSFuselage& operator=(const CPACSFuselage&) = delete;

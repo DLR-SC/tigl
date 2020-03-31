@@ -119,8 +119,8 @@ namespace generated
         boost::optional<CPACSInterpolation>         m_interpolation;
 
     private:
-        const CTiglUIDObject* GetNextUIDObject() const final;
-        void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
         CPACSLongFloorBeamPosition(const CPACSLongFloorBeamPosition&) = delete;
         CPACSLongFloorBeamPosition& operator=(const CPACSLongFloorBeamPosition&) = delete;
