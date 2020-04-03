@@ -4,7 +4,8 @@
 
 namespace tigl
 {
-
+CCPACSEtaXsiPoint::CCPACSEtaXsiPoint()
+: generated::CPACSEtaXsiPoint((CCPACSWingSparPosition*)nullptr, nullptr) {}
 CCPACSEtaXsiPoint::CCPACSEtaXsiPoint(CCPACSWingSparPosition* parent, CTiglUIDManager* uidMgr)
 : generated::CPACSEtaXsiPoint(parent, uidMgr) {}
 CCPACSEtaXsiPoint::CCPACSEtaXsiPoint(CCPACSWingRibExplicitPositioning* parent, CTiglUIDManager* uidMgr)

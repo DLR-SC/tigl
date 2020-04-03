@@ -328,7 +328,7 @@ CCPACSWingRibsDefinition::CutGeometry CCPACSWingRibsDefinition::BuildRibCutGeome
 
 boost::optional<std::string> CCPACSWingRibsDefinition::GetElementUID(const CCPACSEtaXsiPoint& point) const
 {
-    CCPACSEtaXsiPoint pcopy((CCPACSWingSparPosition*)nullptr, m_uidMgr);
+    CCPACSEtaXsiPoint pcopy;
     pcopy.SetEta(point.GetEta());
     pcopy.SetXsi(point.GetXsi());
     pcopy.SetReferenceUID(point.GetReferenceUID());
