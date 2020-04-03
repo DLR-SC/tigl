@@ -24,6 +24,10 @@ class CCPACSWingRibExplicitPositioning : public generated::CPACSWingRibExplicitP
 {
 public:
     TIGL_EXPORT CCPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT virtual ~CCPACSWingRibExplicitPositioning();
+
+    // overriding ReadCPACS for handling registration of uid references
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     TIGL_EXPORT void SetStartCurvePoint(const CCPACSCurvePoint& value);
     TIGL_EXPORT void SetStartEtaXsiPoint(const CCPACSEtaXsiPoint& value);

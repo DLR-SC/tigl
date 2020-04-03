@@ -43,6 +43,7 @@ public:
 
 public:
     TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT virtual ~CCPACSWingRibsPositioning();
 
     // overriding ReadCPACS for handling registration of uid references
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;

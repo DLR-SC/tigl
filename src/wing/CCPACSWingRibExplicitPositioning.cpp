@@ -17,12 +17,42 @@
 
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWingRibsDefinition.h"
+#include "CTiglUIDManager.h"
+#include "stringtools.h"
 
 namespace tigl
 {
+
+namespace {
+    bool isUid(const std::string& s) {
+        return (!s.empty() && to_lower(s) != "leadingedge" && to_lower(s) != "trailingedge");
+    }
+}
+
 CCPACSWingRibExplicitPositioning::CCPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingRibExplicitPositioning(parent, uidMgr)
 {
+}
+
+CCPACSWingRibExplicitPositioning::~CCPACSWingRibExplicitPositioning()
+{
+    if (m_uidMgr) {
+        if (isUid(m_ribStart)) m_uidMgr->TryUnregisterReference(m_ribStart, *this);
+        if (isUid(m_ribEnd))   m_uidMgr->TryUnregisterReference(m_ribEnd,   *this);
+    }
+}
+
+void CCPACSWingRibExplicitPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+{
+    generated::CPACSWingRibExplicitPositioning::ReadCPACS(tixiHandle, xpath);
+    if (m_uidMgr) {
+        if (isUid(m_ribStart)) {
+            m_uidMgr->RegisterReference(m_ribStart, *this);
+        }
+        if (isUid(m_ribEnd)) {
+            m_uidMgr->RegisterReference(m_ribEnd, *this);
+        }
+    }
 }
 
 void CCPACSWingRibExplicitPositioning::SetStartCurvePoint(const CCPACSCurvePoint &curve_point)
@@ -97,12 +127,24 @@ void CCPACSWingRibExplicitPositioning::SetEndSparPositionUID(const std::string &
 
 void CCPACSWingRibExplicitPositioning::SetRibStart(const std::string& value)
 {
+    // handling registration to uid manager
+    if (m_uidMgr) {
+        if (isUid(m_ribStart)) m_uidMgr->TryUnregisterReference(m_ribStart, *this);
+        if (isUid(value)) m_uidMgr->RegisterReference(value, *this);
+    }
+
     generated::CPACSWingRibExplicitPositioning::SetRibStart(value);
     InvalidateParent();
 }
 
 void CCPACSWingRibExplicitPositioning::SetRibEnd(const std::string& value)
 {
+    // handling registration to uid manager
+    if (m_uidMgr) {
+        if (isUid(m_ribEnd)) m_uidMgr->TryUnregisterReference(m_ribEnd, *this);
+        if (isUid(value)) m_uidMgr->RegisterReference(value, *this);
+    }
+
     generated::CPACSWingRibExplicitPositioning::SetRibEnd(value);
     InvalidateParent();
 }

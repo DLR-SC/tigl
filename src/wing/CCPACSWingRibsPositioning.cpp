@@ -34,6 +34,13 @@ namespace {
 CCPACSWingRibsPositioning::CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingRibsPositioning(parent, uidMgr) {}
 
+CCPACSWingRibsPositioning::~CCPACSWingRibsPositioning()
+{
+    if (m_uidMgr) {
+        if (isUid(m_ribStart)) m_uidMgr->TryUnregisterReference(m_ribStart, *this);
+        if (isUid(m_ribEnd))   m_uidMgr->TryUnregisterReference(m_ribEnd,   *this);
+    }
+}
 
 void CCPACSWingRibsPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
