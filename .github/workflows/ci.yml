@@ -28,6 +28,7 @@ jobs:
         oce: ['=0.17.2',]
         ninja: ['',]
         freeimageplus: ['',]
+      fail-fast: false
 
     runs-on: ${{ matrix.os }}    
 
@@ -41,9 +42,9 @@ jobs:
       if: contains(matrix.os, 'ubuntu')
     
     - name: Setup conda
-      uses: s-weigand/setup-conda@v1
+      uses: goanpeca/setup-miniconda@v1
       with:
-        update-conda: true
+        auto-update-conda: true
 
     - name: Install dependencies using Miniconda
       run: |
