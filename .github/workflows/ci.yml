@@ -42,15 +42,17 @@ jobs:
       if: contains(matrix.os, 'ubuntu')
     
     - name: Setup conda
-      uses: goanpeca/setup-miniconda@v1
+      uses: goanpeca/setup-miniconda@v1.0.2
       with:
         auto-update-conda: true
+        auto-activate-base: true
+        activate-environment: ''
 
     - name: Install dependencies using Miniconda
       run: |
         conda install python${{ matrix.python }} pythonocc-core${{ matrix.pythonocc }} tixi3${{ matrix.tixi3 }} doxygen${{ matrix.doxygen }} swig${{ matrix.swig }} qt${{ matrix.qt }} oce${{ matrix.oce }} doxygen${{ matrix.doxygen }} freeimageplus${{ matrix.freeimageplus }} ninja${{ matrix.ninja }} -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
-        conda list    
+        conda list  
 
     - name: Install ccache (ubuntu)
       run: |
