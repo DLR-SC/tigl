@@ -57,12 +57,14 @@ jobs:
         sudo apt-get install ccache -y
         echo "::add-path::/usr/lib/ccache"
       if: contains(matrix.os, 'ubuntu')
+      
     - name: Install ccache (macos)
       run: |
         brew install zstd libb2
         brew install --HEAD ccache
         echo "::add-path::/usr/local/opt/ccache/libexec"
       if: contains(matrix.os, 'macos')
+      
     - name: Install clcache (windows)
       run: |
         call activate build_env
@@ -87,6 +89,7 @@ jobs:
       if: contains(matrix.os, 'windows')
       
     - name: Build TiGL (ubuntu, macos)
+      shell: bash -l {0}
       run: |
         echo "::set-env name=CMAKE_PREFIX_PATH::${CONDA_PREFIX}/lib:${CONDA_PREFIX}/include"
         mkdir build
@@ -94,7 +97,9 @@ jobs:
         cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install $CMAKE_TIGL_ARGS -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core
         cmake --build . -j 4 --config Release --target install
       if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+      
     - name: Build TiGL (windows)
+      shell: cmd /C call {0}
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
         set CC=clcache.exe
@@ -105,7 +110,6 @@ jobs:
         cd build
         cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install %CMAKE_TIGL_ARGS%
         cmake --build . -j 4 --config Release --target install
-      shell: cmd
       if: contains(matrix.os, 'windows')
         
     - name: Run unit tests (ubuntu, macos)
