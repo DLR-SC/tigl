@@ -107,7 +107,7 @@ jobs:
         set CC=clcache.exe
         set CXX=clcache.exe
         clcache.exe -s
-        echo "::set-env name=CMAKE_PREFIX_PATH::%CONDA_PREFIX%/lib:%CONDA_PREFIX%/include"
+        echo "::set-env name=CMAKE_PREFIX_PATH::C:/Miniconda/lib;C:/Miniconda/include"
         mkdir build
         cd build
         cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install %CMAKE_TIGL_ARGS%
