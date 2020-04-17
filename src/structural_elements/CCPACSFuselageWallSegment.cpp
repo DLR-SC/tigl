@@ -122,7 +122,7 @@ const CCPACSFuselage &CCPACSFuselageWallSegment::GetFuselage() const
     }
 
     const CCPACSFuselage* fuselage = fuselageStructure->GetParent();
-    if (!fuselageStructure) {
+    if (!fuselage) {
         throw CTiglError("Cannot get fuselage in CCPACSFuselageWallSegment::GetFuselage. Null pointer parent.", TIGL_NULL_POINTER);
     }
 
