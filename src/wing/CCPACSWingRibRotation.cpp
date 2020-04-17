@@ -42,7 +42,11 @@ void CCPACSWingRibRotation::SetZ(const double & value)
 
 void CCPACSWingRibRotation::InvalidateParent() const
 {
-    m_parent->InvalidateParent();
+    // forward invalidation to parent ribs definition
+    const auto* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate();
+    }
 }
 
 } // end namespace tigl

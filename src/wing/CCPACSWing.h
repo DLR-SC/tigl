@@ -60,6 +60,8 @@ public:
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
+    // Override setters for invalidation
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
     TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value) override;
 
     // Returns whether this wing is a rotor blade

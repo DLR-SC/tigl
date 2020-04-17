@@ -207,6 +207,12 @@ std::string CCPACSWing::GetDefaultedUID() const {
     return generated::CPACSWing::GetUID();
 }
 
+void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
 void CCPACSWing::SetParentUID(const boost::optional<std::string>& value)
 {
     generated::CPACSWing::SetParentUID(value);
