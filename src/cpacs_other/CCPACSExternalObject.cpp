@@ -134,5 +134,29 @@ PNamedShape CCPACSExternalObject::BuildLoft() const
     }
 }
 
+void CCPACSExternalObject::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
+void CCPACSExternalObject::SetTransformation(const CCPACSTransformation& transform)
+{
+    CTiglRelativelyPositionedComponent::SetTransformation(transform);
+    Invalidate();
+}
+
+void CCPACSExternalObject::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
+{
+    generated::CPACSGenericGeometricComponent::SetSymmetry(value);
+    Invalidate();
+}
+
+void CCPACSExternalObject::SetParentUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSGenericGeometricComponent::SetParentUID(value);
+    Invalidate();
+}
+
 } // namespace tigl
 

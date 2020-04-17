@@ -41,6 +41,12 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
+    // Override setters for invalidation
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+    TIGL_EXPORT void SetTransformation(const CCPACSTransformation& transform) override;
+    TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value) override;
+    TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value) override;
+
 private:
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
