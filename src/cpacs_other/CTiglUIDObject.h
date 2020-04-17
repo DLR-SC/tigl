@@ -59,7 +59,7 @@ protected:
 
 private:
     virtual void InvalidateImpl(const boost::optional<std::string>& source) const {};
-    virtual void InvalidateReferences(const boost::optional<std::string>& source) const;
+    TIGL_EXPORT virtual void InvalidateReferences(const boost::optional<std::string>& source) const;
 
     mutable std::atomic<bool> m_isInvalidating{false};
 };
