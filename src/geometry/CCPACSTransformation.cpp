@@ -113,7 +113,6 @@ void CCPACSTransformation::reset()
         m_translation->SetAsPoint(CTiglPoint(0, 0, 0));
         m_translation->SetRefType(boost::optional<ECPACSTranslationType>());
     }
-    _transformationMatrix.clear();
 }
 
 CCPACSTransformation &CCPACSTransformation::operator =(const CCPACSTransformation &trafo)
@@ -130,8 +129,6 @@ CCPACSTransformation &CCPACSTransformation::operator =(const CCPACSTransformatio
 void CCPACSTransformation::setTranslation(const CTiglPoint & translation)
 {
     GetTranslation(CreateIfNotExists).SetAsPoint(translation);
-    _transformationMatrix.clear();
-    InvalidateParent();
 }
 
 void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACSTranslationType type)
@@ -139,8 +136,6 @@ void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACST
     CCPACSPointAbsRel& t = GetTranslation(CreateIfNotExists);
     t.SetAsPoint(translation);
     t.SetRefType(type);
-    _transformationMatrix.clear();
-    InvalidateParent();
 }
 
 void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
@@ -149,8 +144,6 @@ void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
         m_rotation = boost::in_place(this, m_uidMgr);
     }
     m_rotation->SetAsPoint(rotation);
-    _transformationMatrix.clear();
-    InvalidateParent();
 }
 
 void CCPACSTransformation::setScaling(const CTiglPoint& scale)
@@ -159,14 +152,10 @@ void CCPACSTransformation::setScaling(const CTiglPoint& scale)
         m_scaling = boost::in_place(this, m_uidMgr);
     }
     m_scaling->SetAsPoint(scale);
-    _transformationMatrix.clear();
-    InvalidateParent();
 }
 
 void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& matrix)
 {
-    *_transformationMatrix.writeAccess() = matrix;
-
     // decompose matrix into scaling, rotation and translation
     double scale[3];
     double rotation[3];
@@ -195,7 +184,7 @@ void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& ma
     m_rotation->SetX(rotation[0]);
     m_rotation->SetY(rotation[1]);
     m_rotation->SetZ(rotation[2]);
-    InvalidateParent();
+    Invalidate();
 }
 
 void CCPACSTransformation::updateMatrix(CTiglTransformation& cache) const
@@ -252,8 +241,10 @@ void CCPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
     generated::CPACSTransformation::ReadCPACS(tixiHandle, transformationXPath);
 }
 
-void CCPACSTransformation::InvalidateParent() const
+void CCPACSTransformation::InvalidateImpl(const boost::optional<std::string>& source) const
 {
+    _transformationMatrix.clear();
+    // invalidate parent
     const CTiglUIDObject* parent = GetNextUIDParent();
     if (parent) {
         parent->Invalidate(GetUID());

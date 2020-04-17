@@ -71,7 +71,8 @@ public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) override;
 
 private:
-    void InvalidateParent() const;
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void updateMatrix(CTiglTransformation& cache) const;
 
     // caches the transformation created from scaling, rotation and translation
