@@ -32,6 +32,12 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override { return TIGL_COMPONENT_ENGINE_NACELLE; }
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override { return TIGL_INTENT_PHYSICAL; }
 
+    // Override setters for invalidation
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+    TIGL_EXPORT void SetTransformation(const CCPACSTransformation& transform) override;
+    TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value) override;
+    TIGL_EXPORT void SetEngineUID(const std::string& value) override;
+
     TIGL_EXPORT bool HasLoft() const;
 
 protected:

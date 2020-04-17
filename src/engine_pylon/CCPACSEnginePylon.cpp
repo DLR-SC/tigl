@@ -47,6 +47,24 @@ PNamedShape CCPACSEnginePylon::BuildLoft() const
     return builder.BuildShape();
 }
 
+void CCPACSEnginePylon::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
+void CCPACSEnginePylon::SetTransformation(const CCPACSTransformation& transform)
+{
+    CTiglRelativelyPositionedComponent::SetTransformation(transform);
+    Invalidate();
+}
+
+void CCPACSEnginePylon::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
+{
+    generated::CPACSEnginePylon::SetSymmetry(value);
+    Invalidate();
+}
+
 // Get the positioning transformation for a given section-uid
 CTiglTransformation CCPACSEnginePylon::GetPositioningTransformation(std::string sectionUID)
 {
