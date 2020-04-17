@@ -92,6 +92,18 @@ TopoDS_Compound CCPACSFuselageWallSegment::GetCutPlanes() const
     return m_cutPlanes;
 }
 
+void CCPACSFuselageWallSegment::SetPhi(const double& value)
+{
+    CPACSWallSegment::SetPhi(value);
+    Invalidate();
+}
+
+void CCPACSFuselageWallSegment::SetNegativeExtrusion(const boost::optional<bool>& value)
+{
+    CPACSWallSegment::SetNegativeExtrusion(value);
+    Invalidate();
+}
+
 void CCPACSFuselageWallSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     loft.clear();
