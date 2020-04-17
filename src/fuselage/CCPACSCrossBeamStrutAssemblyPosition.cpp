@@ -70,6 +70,30 @@ TiglGeometricComponentIntent CCPACSCrossBeamStrutAssemblyPosition::GetComponentI
     return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
+void CCPACSCrossBeamStrutAssemblyPosition::SetFrameUID(const std::string& value)
+{
+    generated::CPACSCrossBeamStrutAssemblyPosition::SetFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSCrossBeamStrutAssemblyPosition::SetCrossBeamUID(const std::string& value)
+{
+    generated::CPACSCrossBeamStrutAssemblyPosition::SetCrossBeamUID(value);
+    Invalidate();
+}
+
+void CCPACSCrossBeamStrutAssemblyPosition::SetPositionYAtCrossBeam(const double& value)
+{
+    generated::CPACSCrossBeamStrutAssemblyPosition::SetPositionYAtCrossBeam(value);
+    Invalidate();
+}
+
+void CCPACSCrossBeamStrutAssemblyPosition::SetAngleX(const boost::optional<double>& value)
+{
+    generated::CPACSCrossBeamStrutAssemblyPosition::SetAngleX(value);
+    Invalidate();
+}
+
 void CCPACSCrossBeamStrutAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry1D.clear();

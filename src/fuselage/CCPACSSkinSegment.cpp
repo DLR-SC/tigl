@@ -27,6 +27,31 @@ CCPACSSkinSegment::CCPACSSkinSegment(CCPACSSkinSegments* parent, CTiglUIDManager
 {
 }
 
+void CCPACSSkinSegment::SetStartFrameUID(const std::string& value)
+{
+    generated::CPACSSkinSegment::SetStartFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSSkinSegment::SetEndFrameUID(const std::string& value)
+{
+    generated::CPACSSkinSegment::SetEndFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSSkinSegment::SetStartStringerUID(const std::string& value)
+{
+    generated::CPACSSkinSegment::SetStartStringerUID(value);
+    Invalidate();
+}
+
+void CCPACSSkinSegment::SetEndStringerUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSSkinSegment::SetEndStringerUID(value);
+    Invalidate();
+}
+
+
 void CCPACSSkinSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglStringerFrameBorderedObject::InvalidateShapes(source);

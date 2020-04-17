@@ -26,6 +26,11 @@ class CCPACSSkinSegment : public generated::CPACSSkinSegment, public CTiglString
 public:
     TIGL_EXPORT CCPACSSkinSegment(CCPACSSkinSegments* parent, CTiglUIDManager* uidMgr);
 
+    TIGL_EXPORT virtual void SetStartFrameUID(const std::string& value) override;
+    TIGL_EXPORT virtual void SetEndFrameUID(const std::string& value) override;
+    TIGL_EXPORT virtual void SetStartStringerUID(const std::string& value) override;
+    TIGL_EXPORT virtual void SetEndStringerUID(const boost::optional<std::string>& value) override;
+
 private:
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
 };

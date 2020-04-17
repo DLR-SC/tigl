@@ -142,6 +142,24 @@ PNamedShape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs) const
     }
 }
 
+void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
+void CCPACSFuselage::SetTransformation(const CCPACSTransformation& transform)
+{
+    CTiglRelativelyPositionedComponent::SetTransformation(transform);
+    Invalidate();
+}
+
+void CCPACSFuselage::SetParentUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSFuselage::SetParentUID(value);
+    Invalidate();
+}
+
 // Get section count
 int CCPACSFuselage::GetSectionCount() const
 {

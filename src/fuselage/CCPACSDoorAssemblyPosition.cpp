@@ -53,4 +53,28 @@ TiglGeometricComponentIntent CCPACSDoorAssemblyPosition::GetComponentIntent() co
     return TIGL_INTENT_PHYSICAL;
 }
 
+void CCPACSDoorAssemblyPosition::SetStartFrameUID(const std::string& value)
+{
+    generated::CPACSDoorAssemblyPosition::SetStartFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSDoorAssemblyPosition::SetEndFrameUID(const std::string& value)
+{
+    generated::CPACSDoorAssemblyPosition::SetEndFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSDoorAssemblyPosition::SetStartStringerUID(const std::string& value)
+{
+    generated::CPACSDoorAssemblyPosition::SetStartStringerUID(value);
+    Invalidate();
+}
+
+void CCPACSDoorAssemblyPosition::SetEndStringerUID(const std::string& value)
+{
+    generated::CPACSDoorAssemblyPosition::SetEndStringerUID(value);
+    Invalidate();
+}
+
 } // namespace tigl

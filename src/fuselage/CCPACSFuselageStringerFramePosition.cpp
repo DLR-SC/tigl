@@ -70,6 +70,24 @@ void CCPACSFuselageStringerFramePosition::SetReferenceZ(const double& value)
     Invalidate();
 }
 
+void CCPACSFuselageStringerFramePosition::SetReferenceAngle(const double & value)
+{
+    generated::CPACSStringerFramePosition::SetReferenceAngle(value);
+    Invalidate();
+}
+
+void CCPACSFuselageStringerFramePosition::SetContinuity(const boost::optional<ECPACSContinuity>& value)
+{
+    generated::CPACSStringerFramePosition::SetContinuity(value);
+    Invalidate();
+}
+
+void CCPACSFuselageStringerFramePosition::SetInterpolation(const boost::optional<ECPACSInterpolation>& value)
+{
+    generated::CPACSStringerFramePosition::SetInterpolation(value);
+    Invalidate();
+}
+
 double CCPACSFuselageStringerFramePosition::GetPositionXRel() const {
     return m_relCache->positionXRel;
 }
@@ -112,6 +130,11 @@ void CCPACSFuselageStringerFramePosition::SetReferenceZRel(double referenceZRel)
 void CCPACSFuselageStringerFramePosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_relCache.clear();
+    // invalidate parent frame or stringer
+    const CTiglUIDObject* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate(GetUID());
+    }
 }
 
 void CCPACSFuselageStringerFramePosition::GetXBorders(double& xmin, double& xmax)

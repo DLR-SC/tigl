@@ -35,6 +35,11 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
+    TIGL_EXPORT void SetFrameUID(const std::string& value) override;
+    TIGL_EXPORT void SetCrossBeamUID(const std::string& value) override;
+    TIGL_EXPORT void SetPositionYAtCrossBeam(const double& value) override;
+    TIGL_EXPORT void SetAngleX(const boost::optional<double>& value) override;
+
     TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:

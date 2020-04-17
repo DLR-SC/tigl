@@ -35,8 +35,7 @@ CCPACSFuselageSectionElement::CCPACSFuselageSectionElement(CCPACSFuselageSection
 
 void CCPACSFuselageSectionElement::SetProfileUID(const std::string& value) {
     generated::CPACSFuselageElement::SetProfileUID(value);
-    // invalidate fuselage
-    m_parent->GetParent()->GetParent()->GetParent()->Invalidate();
+    Invalidate();
 }
 
 // Gets the section element transformation

@@ -36,14 +36,34 @@ CCPACSLongFloorBeamPosition::CCPACSLongFloorBeamPosition(CCPACSLongFloorBeam* pa
 {
 }
 
-void CCPACSLongFloorBeamPosition::SetPositionY(const double& value) {
+void CCPACSLongFloorBeamPosition::SetCrossBeamUID(const std::string& value)
+{
+    generated::CPACSLongFloorBeamPosition::SetCrossBeamUID(value);
+    Invalidate();
+}
+
+void CCPACSLongFloorBeamPosition::SetPositionY(const double& value)
+{
     generated::CPACSLongFloorBeamPosition::SetPositionY(value);
+    Invalidate();
+}
+
+void CCPACSLongFloorBeamPosition::SetContinuity(const boost::optional<ECPACSContinuity>& value)
+{
+    generated::CPACSLongFloorBeamPosition::SetContinuity(value);
+    Invalidate();
+}
+
+void CCPACSLongFloorBeamPosition::SetInterpolation(const boost::optional<ECPACSInterpolation>& value)
+{
+    generated::CPACSLongFloorBeamPosition::SetInterpolation(value);
     Invalidate();
 }
 
 void CCPACSLongFloorBeamPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_cutGeometryForCrossBeam.clear();
+    // forward invalidation to parent long floor beam
     m_parent->Invalidate();
 }
 

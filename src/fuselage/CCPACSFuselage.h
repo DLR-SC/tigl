@@ -65,6 +65,11 @@ public:
 
     TIGL_EXPORT PNamedShape GetLoft(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
+    // Override setter for invalidation
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+    TIGL_EXPORT void SetTransformation(const CCPACSTransformation& transform) override;
+    TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value) override;
+
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;
 

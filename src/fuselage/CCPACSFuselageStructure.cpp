@@ -40,6 +40,9 @@ void CCPACSFuselageStructure::Invalidate(const boost::optional<std::string>& sou
     if (m_longFloorBeams) {
         m_longFloorBeams->Invalidate(source);
     }
+    if (m_walls) {
+        m_walls->Invalidate(source);
+    }
 }
 
 } // namespace tigl

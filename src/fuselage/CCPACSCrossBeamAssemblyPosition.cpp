@@ -70,7 +70,17 @@ TiglGeometricComponentIntent CCPACSCrossBeamAssemblyPosition::GetComponentIntent
     return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
+void CCPACSCrossBeamAssemblyPosition::SetFrameUID(const std::string& value)
+{
+    generated::CPACSCrossBeamAssemblyPosition::SetFrameUID(value);
+    Invalidate();
+}
 
+void CCPACSCrossBeamAssemblyPosition::SetPositionZ(const double& value)
+{
+    generated::CPACSCrossBeamAssemblyPosition::SetPositionZ(value);
+    Invalidate();
+}
 
 void CCPACSCrossBeamAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
