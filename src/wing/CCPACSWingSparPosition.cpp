@@ -140,11 +140,6 @@ void CCPACSWingSparPosition::SetEtaXsiPoint(const CCPACSEtaXsiPoint& etaXsiPoint
     Invalidate();
 }
 
-void CCPACSWingSparPosition::InvalidateImpl(const boost::optional<std::string>& source) const
-{
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
-}
-
 int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint& ribPoint)
 {
     return ribPoint.GetRibNumber().value_or(1);

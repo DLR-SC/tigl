@@ -27,6 +27,8 @@
 namespace tigl
 {
 
+class CTiglUIDManager;
+
 /**
  * @brief Abstract base class of all classes providing an UID
  *
@@ -49,11 +51,15 @@ public:
     virtual CTiglUIDObject* GetNextUIDParent() = 0;
     virtual const CTiglUIDObject* GetNextUIDParent() const = 0;
 
+    virtual CTiglUIDManager& GetUIDManager() = 0;
+    virtual const CTiglUIDManager& GetUIDManager() const = 0;
+
 protected:
     ~CTiglUIDObject() = default;
 
 private:
     virtual void InvalidateImpl(const boost::optional<std::string>& source) const {};
+    virtual void InvalidateReferences(const boost::optional<std::string>& source) const;
 
     mutable std::atomic<bool> m_isInvalidating{false};
 };

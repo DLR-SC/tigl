@@ -57,7 +57,6 @@ void CCPACSFrame::InvalidateImpl(const boost::optional<std::string>& source) con
     m_geomCache1D.clear();
     m_geomCache3D.clear();
     m_cutGeomCache.clear();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const

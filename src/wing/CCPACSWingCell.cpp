@@ -143,7 +143,6 @@ void CCPACSWingCell::InvalidateImpl(const boost::optional<std::string>& source) 
 {
     m_geometryCache.clear();
     m_etaXsiCache.clear();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 void CCPACSWingCell::Reset()

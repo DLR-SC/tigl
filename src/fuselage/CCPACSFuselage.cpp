@@ -88,8 +88,6 @@ void CCPACSFuselage::InvalidateImpl(const boost::optional<std::string>& source) 
     m_segments.Invalidate();
     if (m_structure)
         m_structure->Invalidate();
-
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Cleanup routine

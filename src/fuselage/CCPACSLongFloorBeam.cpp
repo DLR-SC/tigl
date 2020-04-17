@@ -61,7 +61,6 @@ void CCPACSLongFloorBeam::InvalidateImpl(const boost::optional<std::string>& sou
 {
     m_geometry1D.clear();
     m_geometry3D.clear();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 TopoDS_Shape CCPACSLongFloorBeam::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const

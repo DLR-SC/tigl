@@ -57,9 +57,6 @@ public:
     // Setter for scaling
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
-private:
-    void InvalidateImpl(const boost::optional<std::string>& source) const override;
-
 };
 
 } // end namespace tigl

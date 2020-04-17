@@ -171,7 +171,6 @@ void CCPACSFuselageSegment::InvalidateImpl(const boost::optional<std::string>& s
     if (parent) {
         parent->Invalidate(GetUID());
     }
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Read CPACS segment elements

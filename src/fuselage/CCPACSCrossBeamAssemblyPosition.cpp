@@ -77,7 +77,6 @@ void CCPACSCrossBeamAssemblyPosition::InvalidateImpl(const boost::optional<std::
     m_geometry1D.clear();
     m_geometry3D.clear();
     m_cutGeometry.clear();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 TopoDS_Shape CCPACSCrossBeamAssemblyPosition::GetGeometry(bool just1DElements, TiglCoordinateSystem cs) const

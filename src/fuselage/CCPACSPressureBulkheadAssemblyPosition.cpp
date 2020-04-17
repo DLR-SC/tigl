@@ -83,8 +83,6 @@ TiglGeometricComponentIntent CCPACSPressureBulkheadAssemblyPosition::GetComponen
 void CCPACSPressureBulkheadAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry.clear();
-
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 TopoDS_Shape CCPACSPressureBulkheadAssemblyPosition::GetGeometry(TiglCoordinateSystem cs) const

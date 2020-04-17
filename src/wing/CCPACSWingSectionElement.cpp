@@ -29,11 +29,6 @@ namespace tigl
 CCPACSWingSectionElement::CCPACSWingSectionElement(CCPACSWingSectionElements* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingElement(parent, uidMgr) {}
 
-void CCPACSWingSectionElement::InvalidateImpl(const boost::optional<std::string>& source) const
-{
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
-}
-
 void CCPACSWingSectionElement::SetAirfoilUID(const std::string& value) {
     generated::CPACSWingElement::SetAirfoilUID(value);
     Invalidate();

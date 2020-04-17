@@ -95,9 +95,6 @@ TopoDS_Compound CCPACSFuselageWallSegment::GetCutPlanes() const
 void CCPACSFuselageWallSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     loft.clear();
-    if (GetUID()) {
-        InvalidateReferencesTo(*GetUID(), m_uidMgr);
-    }
 }
 
 const CCPACSWalls& CCPACSFuselageWallSegment::GetWalls() const

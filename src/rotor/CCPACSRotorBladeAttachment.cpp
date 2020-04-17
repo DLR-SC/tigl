@@ -41,7 +41,6 @@ void CCPACSRotorBladeAttachment::InvalidateImpl(const boost::optional<std::strin
     for (unsigned int i = 0; i < attachedRotorBlades.size(); i++) {
         attachedRotorBlades[i]->Invalidate();
     }
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Builds and returns the transformation matrix for an attached rotor blade

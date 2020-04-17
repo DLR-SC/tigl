@@ -171,7 +171,6 @@ void CCPACSWingComponentSegment::InvalidateImpl(const boost::optional<std::strin
     if (m_structure) {
         m_structure->Invalidate(GetUID());
     }
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Cleanup routine

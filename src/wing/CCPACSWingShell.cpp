@@ -78,7 +78,6 @@ void CCPACSWingShell::InvalidateImpl(const boost::optional<std::string>& source)
     if (m_cells) {
         m_cells->Invalidate();
     }
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 void CCPACSWingShell::BuildGeometry(GeometryCache& cache) const

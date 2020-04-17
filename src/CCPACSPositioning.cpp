@@ -96,8 +96,6 @@ void CCPACSPositioning::InvalidateImpl(const boost::optional<std::string>& sourc
             m_uidMgr->ResolveObject<CCPACSFuselageSection>(m_toSectionUID).Invalidate(GetUID());
         }
     }
-
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Read CPACS segment elements

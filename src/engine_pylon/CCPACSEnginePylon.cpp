@@ -38,7 +38,6 @@ std::string CCPACSEnginePylon::GetDefaultedUID() const
 void CCPACSEnginePylon::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglAbstractGeometricComponent::Reset();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 PNamedShape CCPACSEnginePylon::BuildLoft() const

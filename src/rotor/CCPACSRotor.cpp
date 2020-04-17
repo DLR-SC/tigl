@@ -49,7 +49,6 @@ CCPACSRotor::CCPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr)
 void CCPACSRotor::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglRelativelyPositionedComponent::Reset();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Cleanup routine

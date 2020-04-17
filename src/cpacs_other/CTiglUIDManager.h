@@ -194,15 +194,6 @@ private:
     bool                                invalidated;                    ///< Internal state flag
 };
 
-static void InvalidateReferencesTo(const std::string& uid, const CTiglUIDManager* uidMgr)
-{
-    if (uidMgr && !uid.empty() && uidMgr->IsReferenced(uid)) {
-        for (const CTiglUIDObject* obj : uidMgr->GetReferences(uid)) {
-            obj->Invalidate(uid);
-        }
-    }
-}
-
 } // end namespace tigl
 
 #endif // CTIGLUIDMANAGER_H

@@ -31,7 +31,6 @@ CCPACSDoorAssemblyPosition::CCPACSDoorAssemblyPosition(CCPACSCargoDoorsAssembly*
 void CCPACSDoorAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglStringerFrameBorderedObject::InvalidateShapes(source);
-    InvalidateReferencesTo(GetUID(), generated::CPACSDoorAssemblyPosition::m_uidMgr);
 }
 
 std::string CCPACSDoorAssemblyPosition::GetDefaultedUID() const

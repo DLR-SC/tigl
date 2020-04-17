@@ -70,7 +70,6 @@ void CCPACSPointXY::InvalidateImpl(const boost::optional<std::string>& source) c
     if (parent) {
         parent->Invalidate(GetUID());
     }
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 } // namespace tigl

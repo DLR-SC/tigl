@@ -56,8 +56,6 @@ public:
 
     TIGL_EXPORT gp_Vec GetUpVector(const CCPACSWingCSStructure& structure, gp_Pnt midplanePnt) const;
 
-private:
-    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 };
 
 TIGL_EXPORT int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint&);

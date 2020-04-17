@@ -45,7 +45,6 @@ void CCPACSLongFloorBeamPosition::InvalidateImpl(const boost::optional<std::stri
 {
     m_cutGeometryForCrossBeam.clear();
     m_parent->Invalidate();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 gp_Pnt CCPACSLongFloorBeamPosition::GetCrossBeamIntersection(TiglCoordinateSystem cs) const {

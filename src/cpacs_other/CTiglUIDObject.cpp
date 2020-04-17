@@ -16,6 +16,7 @@
 
 #include "CTiglUIDObject.h"
 
+#include "CTiglUIDManager.h"
 #include "ReentryGuard.h"
 
 namespace tigl
@@ -26,6 +27,20 @@ void CTiglUIDObject::Invalidate(const boost::optional<std::string>& source) cons
     const ReentryGuard guard(m_isInvalidating);
     if (guard) {
         InvalidateImpl(source);
+        InvalidateReferences(source);
+    }
+}
+
+void CTiglUIDObject::InvalidateReferences(const boost::optional<std::string>& source) const
+{
+    const CTiglUIDManager& uidMgr = GetUIDManager();
+    if (GetObjectUID()) {
+        const std::string uid = *GetObjectUID();
+        if (!uid.empty() && uidMgr.IsReferenced(uid)) {
+            for (const CTiglUIDObject* obj : uidMgr.GetReferences(uid)) {
+                obj->Invalidate(uid);
+            }
+        }
     }
 }
 

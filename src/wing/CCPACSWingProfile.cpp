@@ -141,7 +141,6 @@ bool CCPACSWingProfile::IsRotorProfile() const
 void CCPACSWingProfile::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     GetProfileAlgo()->Invalidate();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Returns the wing profile upper wire

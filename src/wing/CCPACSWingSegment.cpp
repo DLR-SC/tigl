@@ -215,7 +215,6 @@ void CCPACSWingSegment::InvalidateImpl(const boost::optional<std::string>& sourc
     if (parent) {
         parent->Invalidate(GetUID());
     }
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Read CPACS segment elements

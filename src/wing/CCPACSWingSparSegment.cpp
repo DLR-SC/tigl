@@ -85,7 +85,6 @@ void CCPACSWingSparSegment::InvalidateImpl(const boost::optional<std::string>& s
     geometryCache.clear();
     splittedGeomCache.clear();
     sparCapsCache.clear();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 CCPACSWingSparPosition& CCPACSWingSparSegment::GetSparPosition(std::string uID)

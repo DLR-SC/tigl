@@ -79,7 +79,6 @@ void CCPACSWingRibsDefinition::InvalidateImpl(const boost::optional<std::string>
     ribGeometryCache.clear();
     splittedRibGeomCache.clear();
     ribCapsCache.clear();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 CCPACSWingRibsDefinition::RibPositioningType CCPACSWingRibsDefinition::GetRibPositioningType() const

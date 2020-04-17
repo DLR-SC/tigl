@@ -112,7 +112,6 @@ void CCPACSFuselageStringerFramePosition::SetReferenceZRel(double referenceZRel)
 void CCPACSFuselageStringerFramePosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_relCache.clear();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 void CCPACSFuselageStringerFramePosition::GetXBorders(double& xmin, double& xmax)

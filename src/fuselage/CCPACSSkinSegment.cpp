@@ -30,7 +30,6 @@ CCPACSSkinSegment::CCPACSSkinSegment(CCPACSSkinSegments* parent, CTiglUIDManager
 void CCPACSSkinSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglStringerFrameBorderedObject::InvalidateShapes(source);
-    InvalidateReferencesTo(GetUID(), generated::CPACSSkinSegment::m_uidMgr);
 }
 
 } // namespace tigl

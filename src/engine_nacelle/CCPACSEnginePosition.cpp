@@ -36,7 +36,6 @@ std::string CCPACSEnginePosition::GetDefaultedUID() const
 void CCPACSEnginePosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglAbstractGeometricComponent::Reset();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 PNamedShape CCPACSEnginePosition::BuildLoft() const

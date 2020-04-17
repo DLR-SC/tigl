@@ -106,7 +106,6 @@ void CCPACSFuselageProfile::InvalidateImpl(const boost::optional<std::string>& s
 {
     wireCache.clear();
     diameterPointsCache.clear();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 // Returns the fuselage profile wire

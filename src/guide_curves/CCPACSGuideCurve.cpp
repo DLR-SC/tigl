@@ -49,7 +49,6 @@ CCPACSGuideCurve::~CCPACSGuideCurve(void)
 void CCPACSGuideCurve::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     guideCurveTopo.clear();
-    InvalidateReferencesTo(GetUID(), m_uidMgr);
 }
 
 CCPACSGuideCurve::FromDefinition CCPACSGuideCurve::GetFromDefinition() const {

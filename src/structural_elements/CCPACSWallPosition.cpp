@@ -186,9 +186,6 @@ void CCPACSWallPosition::InvalidateImpl(const boost::optional<std::string>& sour
 {
     isBuilt = false;
     shape   = boost::none;
-    if (GetUID()) {
-        InvalidateReferencesTo(*GetUID(), m_uidMgr);
-    }
 }
 
 const CCPACSWalls& CCPACSWallPosition::GetWalls() const
