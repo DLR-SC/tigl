@@ -199,9 +199,9 @@ TIGL_COMPONENT_WINGSEGMENT,      /**< The Component is a wing segment */
 TIGL_COMPONENT_FUSELSEGMENT,     /**< The Component is a fuselage segment */
 TIGL_COMPONENT_WINGCOMPSEGMENT,  /**< The Component is a wing component segment */
 TIGL_COMPONENT_WINGSHELL,        /**< The Component is a face of the wing (e.g. upper wing surface) */
-TIGL_COMPONENT_WINGRIB,
-TIGL_COMPONENT_WINGSPAR,
-TIGL_COMPONENT_WINGCELL,
+TIGL_COMPONENT_WINGRIB,          /**< The Component is rib (set) of a wing */
+TIGL_COMPONENT_WINGSPAR,         /**< The Component is a spar segment */
+TIGL_COMPONENT_WINGCELL,         /**< The Component is a cell on the wing */
 TIGL_COMPONENT_GENERICSYSTEM,    /**< The Component is a generic system */
 TIGL_COMPONENT_ROTOR,            /**< The Component is a rotor */
 TIGL_COMPONENT_ROTORBLADE,       /**< The Component is a rotor blade */
@@ -4728,6 +4728,22 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
                                                            const char* componentUID,
                                                            int* hashCodePtr);
 
+/**
+* @brief Returns the type of a geometric component
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  componentUID    The uid of the component for which the hash should be computed
+* @param[out] typePtr         A pointer to a TiglGeometricComponentType to store the result
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the uid is invalid or not a known geometric component
+*   - TIGL_NULL_POINTER if componentUID or typePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetType(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       const char* componentUID,
+                                                       TiglGeometricComponentType* typePtr);
 
 /**
 * @brief Translates an error code into a string
