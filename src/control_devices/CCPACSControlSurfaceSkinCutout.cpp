@@ -22,8 +22,8 @@
 namespace tigl
 {
 
-CCPACSControlSurfaceSkinCutout::CCPACSControlSurfaceSkinCutout(CCPACSControlSurfaceWingCutOut* parent)
-    : generated::CPACSControlSurfaceSkinCutOut(parent)
+CCPACSControlSurfaceSkinCutout::CCPACSControlSurfaceSkinCutout(CCPACSControlSurfaceWingCutOut* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSControlSurfaceSkinCutOut(parent, uidMgr)
 {
 }
 

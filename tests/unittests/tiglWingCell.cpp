@@ -269,9 +269,6 @@ TEST_F(WingCellRibSpar, etaXsi) {
     ribEndPoint.SetXsi(0.0);
     ribEndPoint.SetReferenceUID(componentSegment.GetUID());
 
-    // we must invalidate structure since we changed it
-    structure.GetRibsDefinition(1).GetRibsPositioning_choice1()->Invalidate();
-
     const std::pair<double, double> arr2[] = { DP(0.2, 0.3), DP(0.8, 0.48), DP(0.2, 0.8), DP(0.8, 1.0) };
     expectedEtaXsi = std::vector< std::pair<double, double> > (arr2, arr2 + sizeof(arr2) / sizeof(arr2[0]));
     checkCellEtaXsis(cell, expectedEtaXsi);

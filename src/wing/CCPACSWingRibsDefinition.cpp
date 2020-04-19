@@ -72,7 +72,7 @@ CCPACSWingRibsDefinition::CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* pa
     Invalidate();
 }
 
-void CCPACSWingRibsDefinition::Invalidate()
+void CCPACSWingRibsDefinition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     ribSetDataCache.clear();
     auxGeomCache.clear();

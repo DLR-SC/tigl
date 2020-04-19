@@ -138,17 +138,17 @@ const CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const s
 }
 
 
-void CCPACSWingCSStructure::Invalidate()
+void CCPACSWingCSStructure::Invalidate(const boost::optional<std::string>& source) const
 {
     // forward invalidation
     if (m_spars) {
-        m_spars->Invalidate();
+        m_spars->Invalidate(source);
     }
     if (m_ribsDefinitions) {
-        m_ribsDefinitions->Invalidate();
+        m_ribsDefinitions->Invalidate(source);
     }
-    m_upperShell.Invalidate();
-    m_lowerShell.Invalidate();
+    m_upperShell.Invalidate(source);
+    m_lowerShell.Invalidate(source);
 }
 
 } // namespace tigl

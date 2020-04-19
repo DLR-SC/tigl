@@ -29,10 +29,10 @@ namespace tigl
 {
 
 // Invalidates internal state
-void CCPACSWings::Invalidate()
+void CCPACSWings::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 1; i <= GetWingCount(); i++) {
-        GetWing(i).Invalidate();
+        GetWing(i).Invalidate(source);
     }
 }
 

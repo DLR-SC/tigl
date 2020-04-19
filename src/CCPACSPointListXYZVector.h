@@ -27,11 +27,13 @@ namespace tigl
 class CCPACSPointListXYZVector : public generated::CPACSPointListXYZVector
 {
 public:
+    TIGL_EXPORT CCPACSPointListXYZVector(CCPACSProfileGeometry* parent);
+
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
-    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const override;
 
     TIGL_EXPORT const std::vector<CTiglPoint>& AsVector() const;
-    TIGL_EXPORT std::vector<CTiglPoint>& AsVector();
+    TIGL_EXPORT void SetValue(int index, const CTiglPoint& point);
+    TIGL_EXPORT void SetAsVector(const std::vector<CTiglPoint>& points);
 
 private:
     // cache

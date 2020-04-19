@@ -20,8 +20,8 @@
 
 namespace tigl {
 
-CCPACSNacelleGuideCurves::CCPACSNacelleGuideCurves(CCPACSNacelleCowl* parent)
-   : generated::CPACSNacelleGuideCurves (parent)
+CCPACSNacelleGuideCurves::CCPACSNacelleGuideCurves(CCPACSNacelleCowl* parent, CTiglUIDManager* uidMgr)
+   : generated::CPACSNacelleGuideCurves (parent, uidMgr)
 {}
 
 size_t CCPACSNacelleGuideCurves::GetGuideCurveCount() const

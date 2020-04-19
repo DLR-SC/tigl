@@ -17,10 +17,12 @@
 #include "CTiglUIDManager.h"
 #include "tigletaxsifunctions.h"
 
+#include "CCPACSControlSurfaceBorderTrailingEdge.h"
+
 namespace tigl
 {
-CCPACSXsiIsoLine::CCPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent)
-    : generated::CPACSXsiIsoLine(parent)
+CCPACSXsiIsoLine::CCPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSXsiIsoLine(parent, uidMgr)
 {
 }
 
@@ -40,9 +42,12 @@ void CCPACSXsiIsoLine::SetReferenceUID(const std::string& value)
 //    return transformEtaXsiToCSOrTed({ 0, m_xsi}, m_referenceUID, std::declval<CTiglUIDManager>()).xsi; // TODO
 //}
 
-void CCPACSXsiIsoLine::InvalidateParent()
+void CCPACSXsiIsoLine::InvalidateParent() const
 {
-    //if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->Invalidate();
+    const CTiglUIDObject* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate();
+    }
 }
 
 } // namespace tigl

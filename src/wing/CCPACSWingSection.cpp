@@ -27,6 +27,12 @@ namespace tigl
 CCPACSWingSection::CCPACSWingSection(CCPACSWingSections* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSection(parent, uidMgr) {}
 
+void CCPACSWingSection::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    // forward invalidation to section elements, these are the objects which are referenced
+    m_elements.Invalidate(GetUID());
+}
+
 // Get profile count for this section
 int CCPACSWingSection::GetSectionElementCount() const
 {

@@ -29,6 +29,8 @@
 #include "CCPACSStringVector.h"
 #include "generated/CPACSUpdates.h"
 #include "generated/CPACSHeader.h"
+#include "CTiglUIDObject.h"
+#include "ITiglUIDRefObject.h"
 %}
 
 %feature("autodoc", "3");
@@ -39,6 +41,8 @@
 %boost_optional(tigl::generated::CPACSUpdates)
 %boost_optional(tigl::CCPACSStringVector)
 
+%include "ITiglUIDRefObject.h"
+%include "CTiglUIDObject.h"
 %include "CreateIfNotExists.h"
 %include "CTiglMemoryPool.h"
 %include "generated/CPACSStringVectorBase.h"

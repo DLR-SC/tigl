@@ -156,19 +156,21 @@ CCPACSWingComponentSegment::~CCPACSWingComponentSegment()
 }
 
 // Invalidates internal state
-void CCPACSWingComponentSegment::Invalidate()
+void CCPACSWingComponentSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     // call parent class instead of directly setting invalidated flag
     CTiglAbstractSegment<CCPACSWingComponentSegment>::Reset();
     wingSegments.clear();
-    if (m_structure) {
-        m_structure->Invalidate();
-    }
     geomCache.clear();
     linesCache.clear();
+
+    // TODO: replace by caches
     chordFace->Reset();
     upperShape->Reset();
     lowerShape->Reset();
+    if (m_structure) {
+        m_structure->Invalidate(GetUID());
+    }
 }
 
 // Cleanup routine

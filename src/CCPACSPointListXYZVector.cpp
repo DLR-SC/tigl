@@ -18,9 +18,14 @@
 
 #include "CTiglLogging.h"
 #include "CTiglError.h"
+#include "CTiglUIDObject.h"
 
 namespace tigl
 {
+
+CCPACSPointListXYZVector::CCPACSPointListXYZVector(CCPACSProfileGeometry* parent)
+: generated::CPACSPointListXYZVector(parent) {}
+
 
 void CCPACSPointListXYZVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
@@ -39,34 +44,33 @@ void CCPACSPointListXYZVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, c
     }
 }
 
-void CCPACSPointListXYZVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-{
-    // write back to CPACS fields
-    CCPACSPointListXYZVector* self =
-        const_cast<CCPACSPointListXYZVector*>(this); // TODO: ugly hack, but WriteCPACS() has to be const, fix this
-    std::vector<double>& xs = self->m_x.AsVector();
-    std::vector<double>& ys = self->m_y.AsVector();
-    std::vector<double>& zs = self->m_z.AsVector();
-    xs.clear();
-    ys.clear();
-    zs.clear();
-    for (std::vector<CTiglPoint>::const_iterator it = m_vec.begin(); it != m_vec.end(); ++it) {
-        xs.push_back(it->x);
-        ys.push_back(it->y);
-        zs.push_back(it->z);
-    }
-
-    generated::CPACSPointListXYZVector::WriteCPACS(tixiHandle, xpath);
-}
-
 const std::vector<CTiglPoint>& CCPACSPointListXYZVector::AsVector() const
 {
     return m_vec;
 }
 
-std::vector<CTiglPoint>& CCPACSPointListXYZVector::AsVector()
+void CCPACSPointListXYZVector::SetValue(int index, const CTiglPoint& point)
 {
-    return m_vec;
+    m_x.SetValue(index, point.x);
+    m_y.SetValue(index, point.y);
+    m_z.SetValue(index, point.z);
+    // no invalidation necessary, done by m_x, m_y, m_z
+}
+
+void CCPACSPointListXYZVector::SetAsVector(const std::vector<CTiglPoint>& points)
+{
+    m_vec = points;
+    std::vector<double> x, y, z;
+
+    for (std::vector<CTiglPoint>::const_iterator it = m_vec.begin(); it != m_vec.end(); ++it) {
+        x.push_back(it->x);
+        y.push_back(it->y);
+        z.push_back(it->z);
+    }
+    m_x.SetAsVector(x);
+    m_y.SetAsVector(y);
+    m_z.SetAsVector(z);
+    // no invalidation necessary, done by m_x, m_y, m_z
 }
 
 } // namespace tigl

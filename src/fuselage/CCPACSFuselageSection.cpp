@@ -36,6 +36,12 @@ void CCPACSFuselageSection::Cleanup()
     m_transformation.reset();
 }
 
+void CCPACSFuselageSection::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    // forward invalidation to section elements, these are the objects which are referenced
+    m_elements.Invalidate(GetUID());
+}
+
 // Read CPACS section elements
 void CCPACSFuselageSection::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& sectionXPath)
 {

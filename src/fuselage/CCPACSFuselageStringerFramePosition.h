@@ -39,6 +39,9 @@ public:
     TIGL_EXPORT virtual void SetPositionX(const double& value) override;
     TIGL_EXPORT virtual void SetReferenceY(const double& value) override;
     TIGL_EXPORT virtual void SetReferenceZ(const double& value) override;
+    TIGL_EXPORT virtual void SetReferenceAngle(const double& value) override;
+    TIGL_EXPORT virtual void SetContinuity(const boost::optional<ECPACSContinuity>& value) override;
+    TIGL_EXPORT virtual void SetInterpolation(const boost::optional<ECPACSInterpolation>& value) override;
 
     TIGL_EXPORT double GetPositionXRel() const;
     TIGL_EXPORT double GetReferenceYRel() const;
@@ -68,7 +71,8 @@ private:
         double zmax;
     };
 
-    void Invalidate();
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void UpdateRelativePositioning(RelativePositionCache& cache) const;
 
     Cache<RelativePositionCache, CCPACSFuselageStringerFramePosition> m_relCache;

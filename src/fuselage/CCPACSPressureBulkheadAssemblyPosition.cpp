@@ -80,7 +80,7 @@ TiglGeometricComponentIntent CCPACSPressureBulkheadAssemblyPosition::GetComponen
     return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
-void CCPACSPressureBulkheadAssemblyPosition::Invalidate()
+void CCPACSPressureBulkheadAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry.clear();
 }

@@ -26,8 +26,13 @@
 
 namespace tigl
 {
-CCPACSGuideCurves::CCPACSGuideCurves(CTiglUIDManager* uidMgr)
-    : generated::CPACSGuideCurves(uidMgr) {}
+
+CCPACSGuideCurves::CCPACSGuideCurves(CCPACSFuselageSegment* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurves(parent, uidMgr) {}
+
+CCPACSGuideCurves::CCPACSGuideCurves(CCPACSWingSegment* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurves(parent, uidMgr) {}
+
 
 void CCPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSGuideCurves::ReadCPACS(tixiHandle, xpath);

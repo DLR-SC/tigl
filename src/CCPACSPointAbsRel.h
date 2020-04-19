@@ -26,7 +26,7 @@ class CCPACSPointAbsRel : public generated::CPACSPointAbsRel
 public:
     TIGL_EXPORT static ECPACSTranslationType defaultTranslationType;
 
-    TIGL_EXPORT CCPACSPointAbsRel(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPointAbsRel(CCPACSTransformation* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPointAbsRel(const CCPACSPointAbsRel& p);
 
     TIGL_EXPORT CCPACSPointAbsRel &operator = (const CCPACSPointAbsRel& p);
@@ -34,6 +34,14 @@ public:
     TIGL_EXPORT CTiglPoint AsPoint() const; // missing coordinates default to zero
     TIGL_EXPORT void SetAsPoint(const CTiglPoint& point);
     TIGL_EXPORT ECPACSTranslationType GetRefDefaultedType() const;
+
+    TIGL_EXPORT void SetRefType(const boost::optional<ECPACSTranslationType>& value) override;
+    TIGL_EXPORT void SetX(const boost::optional<double>& value) override;
+    TIGL_EXPORT void SetY(const boost::optional<double>& value) override;
+    TIGL_EXPORT void SetZ(const boost::optional<double>& value) override;
+
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 };
 
 } // namespace tigl

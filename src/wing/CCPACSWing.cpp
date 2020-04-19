@@ -91,7 +91,6 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWing(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
-    , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
 {
@@ -109,7 +108,6 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , configuration(&parent->GetConfiguration())
     , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
-    , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
 {
@@ -123,14 +121,21 @@ CCPACSWing::~CCPACSWing()
 }
 
 // Invalidates internal state
-void CCPACSWing::Invalidate()
+void CCPACSWing::InvalidateImpl(const boost::optional<std::string>& source) const
 {
-    invalidated = true;
-    m_segments.Invalidate();
-    if (m_positionings)
-        m_positionings->Invalidate();
-    if (m_componentSegments)
-        m_componentSegments->Invalidate();
+    // TODO(rlandert): replace by caches
+    rebuildShells = true;
+    rebuildFusedSegWEdge = true;
+
+    loft.clear();
+    guideCurves.clear();
+
+    // Invalidate segments, since these get their shapes from the wing
+    m_segments.Invalidate(GetUID());
+    // Invalidate component segments, since these use the wing loft geometry
+    if (m_componentSegments) {
+        m_componentSegments->Invalidate(GetUID());
+    }
 }
 
 // Cleanup routine
@@ -173,13 +178,6 @@ void CCPACSWing::ConnectGuideCurveSegments(void)
 // Update internal wing data
 void CCPACSWing::Update()
 {
-    if (!invalidated) {
-        return;
-    }
-
-    invalidated = false;
-    rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
-    rebuildShells = true;
 }
 
 // Read CPACS wing element
@@ -207,6 +205,21 @@ void CCPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::stri
 
 std::string CCPACSWing::GetDefaultedUID() const {
     return generated::CPACSWing::GetUID();
+}
+
+void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
+void CCPACSWing::SetParentUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSWing::SetParentUID(value);
+    // invalidate in case parent transformation is relevant
+    if (GetTranslationType() == ABS_LOCAL) {
+        Invalidate();
+    }
 }
 
 // Returns whether this wing is a rotor blade

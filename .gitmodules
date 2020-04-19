@@ -1,4 +1,5 @@
 [submodule "thirdparty/cpacs_gen"]
 	path = thirdparty/cpacs_gen
 	url = https://github.com/RISCSoftware/cpacs_tigl_gen.git
+	branch = uidReferencesAndInvalidation
 	ignore = dirty

@@ -92,6 +92,23 @@ TopoDS_Compound CCPACSFuselageWallSegment::GetCutPlanes() const
     return m_cutPlanes;
 }
 
+void CCPACSFuselageWallSegment::SetPhi(const double& value)
+{
+    CPACSWallSegment::SetPhi(value);
+    Invalidate();
+}
+
+void CCPACSFuselageWallSegment::SetNegativeExtrusion(const boost::optional<bool>& value)
+{
+    CPACSWallSegment::SetNegativeExtrusion(value);
+    Invalidate();
+}
+
+void CCPACSFuselageWallSegment::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    loft.clear();
+}
+
 const CCPACSWalls& CCPACSFuselageWallSegment::GetWalls() const
 {
     const CCPACSWallSegments* wallSegments = GetParent();
@@ -117,7 +134,7 @@ const CCPACSFuselage &CCPACSFuselageWallSegment::GetFuselage() const
     }
 
     const CCPACSFuselage* fuselage = fuselageStructure->GetParent();
-    if (!fuselageStructure) {
+    if (!fuselage) {
         throw CTiglError("Cannot get fuselage in CCPACSFuselageWallSegment::GetFuselage. Null pointer parent.", TIGL_NULL_POINTER);
     }
 

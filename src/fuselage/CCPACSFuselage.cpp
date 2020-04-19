@@ -81,13 +81,11 @@ CCPACSFuselage::~CCPACSFuselage()
 }
 
 // Invalidates internal state
-void CCPACSFuselage::Invalidate()
+void CCPACSFuselage::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     loft.clear();
     guideCurves.clear();
     m_segments.Invalidate();
-    if (m_positionings)
-        m_positionings->Invalidate();
     if (m_structure)
         m_structure->Invalidate();
 }
@@ -142,6 +140,24 @@ PNamedShape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs) const
         loft->SetShape(transformedLoft);
         return loft;
     }
+}
+
+void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
+void CCPACSFuselage::SetTransformation(const CCPACSTransformation& transform)
+{
+    CTiglRelativelyPositionedComponent::SetTransformation(transform);
+    Invalidate();
+}
+
+void CCPACSFuselage::SetParentUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSFuselage::SetParentUID(value);
+    Invalidate();
 }
 
 // Get section count

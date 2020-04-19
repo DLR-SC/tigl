@@ -31,7 +31,7 @@ namespace {
         const ReturnCode ret = tixiImportFromString(cpacs.c_str(), &handle);
         ASSERT_EQ(ret, SUCCESS);
 
-        tigl::CCPACSWingRibsPositioning rp(NULL);
+        tigl::CCPACSWingRibsPositioning rp(NULL, NULL);
         rp.ReadCPACS(handle, "/ribsPositioning");
         ASSERT_EQ(expected, rp.ValidateChoices());
     }

@@ -24,8 +24,8 @@
 
 namespace tigl
 {
-CCPACSProfileBasedStructuralElement::CCPACSProfileBasedStructuralElement(CTiglUIDManager* uidMgr)
-    : generated::CPACSProfileBasedStructuralElement(uidMgr)
+CCPACSProfileBasedStructuralElement::CCPACSProfileBasedStructuralElement(CCPACSProfileBasedStructuralElements* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileBasedStructuralElement(parent, uidMgr)
 {
 }
 

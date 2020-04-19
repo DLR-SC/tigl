@@ -25,7 +25,7 @@ namespace tigl
 class CCPACSControlSurfaceSkinCutout : public generated::CPACSControlSurfaceSkinCutOut
 {
 public:
-    TIGL_EXPORT CCPACSControlSurfaceSkinCutout(CCPACSControlSurfaceWingCutOut* parent);
+    TIGL_EXPORT CCPACSControlSurfaceSkinCutout(CCPACSControlSurfaceWingCutOut* parent, CTiglUIDManager* uidMgr);
 };
 
 } // namespace tigl

@@ -100,7 +100,7 @@ double CCPACSWingSparPosition::GetXsi() const
     throw CTiglError("Invalid spar position type");
 }
 
-const generated::CPACSEtaXsiPoint &CCPACSWingSparPosition::GetEtaXsiPoint() const
+const CCPACSEtaXsiPoint &CCPACSWingSparPosition::GetEtaXsiPoint() const
 {
     if (!GetSparPositionEtaXsi_choice2()) {
         throw CTiglError("No EtaXsiPoint definied in SparPosition '" + GetUID() + "'");
@@ -116,6 +116,28 @@ const generated::CPACSWingRibPoint& CCPACSWingSparPosition::GetRibPoint() const
     }
 
     return GetSparPositionRib_choice1().value();
+}
+
+void CCPACSWingSparPosition::SetRibPoint(const CCPACSWingRibPoint& ribPoint)
+{
+    CCPACSWingRibPoint& rp = GetSparPositionRib_choice1(CreateIfNotExists);
+    rp.SetRibDefinitionUID(ribPoint.GetRibDefinitionUID());
+    rp.SetRibNumber(ribPoint.GetRibNumber());
+    rp.SetXsi(ribPoint.GetXsi());
+
+    RemoveSparPositionEtaXsi_choice2();
+    Invalidate();
+}
+
+void CCPACSWingSparPosition::SetEtaXsiPoint(const CCPACSEtaXsiPoint& etaXsiPoint)
+{
+    CCPACSEtaXsiPoint& ep = GetSparPositionEtaXsi_choice2(CreateIfNotExists);
+    ep.SetEta(etaXsiPoint.GetEta());
+    ep.SetReferenceUID(etaXsiPoint.GetReferenceUID());
+    ep.SetXsi(etaXsiPoint.GetXsi());
+
+    RemoveSparPositionRib_choice1();
+    Invalidate();
 }
 
 int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint& ribPoint)

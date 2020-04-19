@@ -50,9 +50,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSFuselageSegment() override;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) override;
 
@@ -168,6 +165,9 @@ private:
         double myVolume;      ///< Volume of this segment
         double mySurfaceArea; ///< Surface Area of this segment
     };
+
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
     // Cleanup routine
     void Cleanup();

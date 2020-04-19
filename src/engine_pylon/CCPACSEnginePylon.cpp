@@ -18,6 +18,7 @@
 
 #include "CCPACSEnginePylon.h"
 
+#include "CTiglUIDManager.h"
 #include "CTiglEnginePylonBuilder.h"
 
 namespace tigl
@@ -34,8 +35,9 @@ std::string CCPACSEnginePylon::GetDefaultedUID() const
     return generated::CPACSEnginePylon::GetUID();
 }
 
-void CCPACSEnginePylon::Invalidate()
+void CCPACSEnginePylon::InvalidateImpl(const boost::optional<std::string>& source) const
 {
+    CTiglAbstractGeometricComponent::Reset();
 }
 
 PNamedShape CCPACSEnginePylon::BuildLoft() const
@@ -43,6 +45,24 @@ PNamedShape CCPACSEnginePylon::BuildLoft() const
     CTiglEnginePylonBuilder builder(*this);
 
     return builder.BuildShape();
+}
+
+void CCPACSEnginePylon::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
+void CCPACSEnginePylon::SetTransformation(const CCPACSTransformation& transform)
+{
+    CTiglRelativelyPositionedComponent::SetTransformation(transform);
+    Invalidate();
+}
+
+void CCPACSEnginePylon::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
+{
+    generated::CPACSEnginePylon::SetSymmetry(value);
+    Invalidate();
 }
 
 // Get the positioning transformation for a given section-uid

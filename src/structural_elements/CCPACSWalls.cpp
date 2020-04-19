@@ -53,4 +53,10 @@ const CCPACSWallPosition &CCPACSWalls::GetWallPosition(const std::string &uid) c
 
 }
 
+void CCPACSWalls::Invalidate(const boost::optional<std::string>& source) const
+{
+    for (auto& seg : m_wallSegments.GetWallSegments())
+        seg->Invalidate(source);
+}
+
 } // namespace tigl

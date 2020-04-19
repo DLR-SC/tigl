@@ -57,7 +57,7 @@ public:
     TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZVector& cpacsPointlist);
     TIGL_EXPORT CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointlist);
 
-    TIGL_EXPORT void Invalidate() override;
+    TIGL_EXPORT void Invalidate() const override;
 
     // Returns the profile points as read from TIXI.
     TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const override;

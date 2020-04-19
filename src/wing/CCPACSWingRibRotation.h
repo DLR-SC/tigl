@@ -28,6 +28,9 @@ public:
     TIGL_EXPORT void SetRibRotationReference(const boost::optional<std::string>& value) override;
 
     TIGL_EXPORT void SetZ(const double& value) override;
+
+private:
+    void InvalidateParent() const;
 };
 
 } // end namespace tigl

@@ -27,7 +27,7 @@ namespace tigl
 class CCPACSEngines : public generated::CPACSEngines
 {
 public:
-    TIGL_EXPORT CCPACSEngines(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEngines(CCPACSVehicles* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT size_t GetEngineCount() const;
     TIGL_EXPORT CCPACSEngine& GetEngine(size_t index) const;

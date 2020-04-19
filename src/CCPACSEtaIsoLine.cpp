@@ -26,38 +26,38 @@
 
 namespace tigl
 {
-CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSWingCellPositionSpanwise* parent)
-    : generated::CPACSEtaIsoLine(parent)
+CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSWingCellPositionSpanwise* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEtaIsoLine(parent, uidMgr)
 {
 }
 
-CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceAirfoil* parent)
-    : generated::CPACSEtaIsoLine(parent)
+CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceAirfoil* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEtaIsoLine(parent, uidMgr)
 {
 }
 
-CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent)
-    : generated::CPACSEtaIsoLine(parent)
+CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEtaIsoLine(parent, uidMgr)
 {
 }
 
-CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceSkinCutOutBorder* parent)
-    : generated::CPACSEtaIsoLine(parent)
+CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceSkinCutOutBorder* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEtaIsoLine(parent, uidMgr)
 {
 }
 
-CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceTrackType* parent)
-    : generated::CPACSEtaIsoLine(parent)
+CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEtaIsoLine(parent, uidMgr)
 {
 }
 
-CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSCutOutProfile* parent)
-    : generated::CPACSEtaIsoLine(parent)
+CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSCutOutProfile* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEtaIsoLine(parent, uidMgr)
 {
 }
 
-CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSSparCell* parent)
-    : generated::CPACSEtaIsoLine(parent)
+CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSSparCell* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEtaIsoLine(parent, uidMgr)
 {
 }
 
@@ -77,15 +77,12 @@ void CCPACSEtaIsoLine::SetReferenceUID(const std::string& value)
 //    return transformEtaXsiToCSOrTed({ m_eta, 0 }, m_referenceUID, std::declval<CTiglUIDManager>()).eta; // TODO
 //}
 
-void CCPACSEtaIsoLine::InvalidateParent()
+void CCPACSEtaIsoLine::InvalidateParent() const
 {
-    //if (IsParent<CCPACSWingCellPositionSpanwise        >()) GetParent<CCPACSWingCellPositionSpanwise        >()->Invalidate();
-    //if (IsParent<CCPACSControlSurfaceAirfoil           >()) GetParent<CCPACSControlSurfaceAirfoil           >()->Invalidate();
-    //if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->Invalidate();
-    //if (IsParent<CCPACSControlSurfaceSkinCutOutBorder  >()) GetParent<CCPACSControlSurfaceSkinCutOutBorder  >()->Invalidate();
-    //if (IsParent<CCPACSControlSurfaceTrackType         >()) GetParent<CCPACSControlSurfaceTrackType         >()->Invalidate();
-    //if (IsParent<CCPACSCutOutProfile                   >()) GetParent<CCPACSCutOutProfile                   >()->Invalidate();
-    //if (IsParent<CCPACSSparCell                        >()) GetParent<CCPACSSparCell                        >()->Invalidate();
+    const CTiglUIDObject* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate();
+    }
 }
 
 } // namespace tigl

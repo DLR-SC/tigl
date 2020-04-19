@@ -30,7 +30,8 @@ namespace tigl
 class CCPACSGuideCurves : public generated::CPACSGuideCurves
 {
 public:
-    TIGL_EXPORT CCPACSGuideCurves(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSGuideCurves(CCPACSFuselageSegment* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSGuideCurves(CCPACSWingSegment* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 

@@ -55,9 +55,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSFuselage() override;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& fuselageXPath) override;
 
@@ -67,6 +64,11 @@ public:
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     TIGL_EXPORT PNamedShape GetLoft(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
+
+    // Override setter for invalidation
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+    TIGL_EXPORT void SetTransformation(const CCPACSTransformation& transform) override;
+    TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value) override;
 
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;
@@ -152,6 +154,9 @@ protected:
     void SetFaceTraits(PNamedShape loft) const;
 
 private:
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     // get short name for loft
     std::string GetShortShapeName() const;
 

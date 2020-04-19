@@ -22,8 +22,8 @@
 namespace tigl
 {
 
-CCPACSPointListXY::CCPACSPointListXY(CTiglUIDManager* uidMgr)
-    : generated::CPACSPointListXY(uidMgr)
+CCPACSPointListXY::CCPACSPointListXY(CCPACSStructuralProfile* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPointListXY(parent, uidMgr)
 {
 }
 
@@ -38,4 +38,27 @@ const CCPACSPointXY& CCPACSPointListXY::GetPoint(const std::string& uid) const
     LOG(ERROR) << "Invalid structural profile point uid: '" << uid << "'";
     throw CTiglError("Invalid uid in CCPACSStructuralProfilePoints::GetPoint");
 }
+
+CCPACSPointXY& CCPACSPointListXY::AddPoint()
+{
+    CCPACSPointXY& p = generated::CPACSPointListXY::AddPoint();
+    InvalidateParent();
+    return p;
+}
+
+void CCPACSPointListXY::RemovePoint(CCPACSPointXY& ref)
+{
+    generated::CPACSPointListXY::RemovePoint(ref);
+    InvalidateParent();
+}
+
+void CCPACSPointListXY::InvalidateParent() const
+{
+    const CTiglUIDObject* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate();
+    }
+}
+
+
 } // namespace tigl

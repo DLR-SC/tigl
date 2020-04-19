@@ -23,7 +23,11 @@ namespace tigl
 class CCPACSWingRibExplicitPositioning : public generated::CPACSWingRibExplicitPositioning
 {
 public:
-    TIGL_EXPORT CCPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent);
+    TIGL_EXPORT CCPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT virtual ~CCPACSWingRibExplicitPositioning();
+
+    // overriding ReadCPACS for handling registration of uid references
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     TIGL_EXPORT void SetStartCurvePoint(const CCPACSCurvePoint& value);
     TIGL_EXPORT void SetStartEtaXsiPoint(const CCPACSEtaXsiPoint& value);
@@ -32,6 +36,11 @@ public:
     TIGL_EXPORT void SetEndEtaXsiPoint(const CCPACSEtaXsiPoint& value);
     TIGL_EXPORT void SetEndSparPositionUID(const std::string& value);
 
-    TIGL_EXPORT void Invalidate();
+    // overriding setter for correct handling of invalidation
+    TIGL_EXPORT void SetRibStart(const std::string& value) override;
+    TIGL_EXPORT void SetRibEnd(const std::string& value) override;
+
+private:
+    void InvalidateParent() const;
 };
 }

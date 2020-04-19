@@ -86,6 +86,11 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
     }
 }
 
+void CCPACSExternalObject::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    loft.clear();
+}
+
 const std::string& CCPACSExternalObject::GetFilePath() const
 {
     return _filePath;
@@ -127,6 +132,30 @@ PNamedShape CCPACSExternalObject::BuildLoft() const
     else {
         throw CTiglError("Cannot open externalComponent. No file format given", TIGL_XML_ERROR);
     }
+}
+
+void CCPACSExternalObject::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
+void CCPACSExternalObject::SetTransformation(const CCPACSTransformation& transform)
+{
+    CTiglRelativelyPositionedComponent::SetTransformation(transform);
+    Invalidate();
+}
+
+void CCPACSExternalObject::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
+{
+    generated::CPACSGenericGeometricComponent::SetSymmetry(value);
+    Invalidate();
+}
+
+void CCPACSExternalObject::SetParentUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSGenericGeometricComponent::SetParentUID(value);
+    Invalidate();
 }
 
 } // namespace tigl

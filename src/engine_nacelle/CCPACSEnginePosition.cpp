@@ -33,10 +33,34 @@ std::string CCPACSEnginePosition::GetDefaultedUID() const
     return generated::CPACSEnginePosition::GetUID();
 }
 
-void CCPACSEnginePosition::Invalidate()
+void CCPACSEnginePosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
+    CTiglAbstractGeometricComponent::Reset();
 }
 
+void CCPACSEnginePosition::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
+void CCPACSEnginePosition::SetTransformation(const CCPACSTransformation& transform)
+{
+    CTiglRelativelyPositionedComponent::SetTransformation(transform);
+    Invalidate();
+}
+
+void CCPACSEnginePosition::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
+{
+    generated::CPACSEnginePosition::SetSymmetry(value);
+    Invalidate();
+}
+
+void CCPACSEnginePosition::SetEngineUID(const std::string& value)
+{
+    generated::CPACSEnginePosition::SetEngineUID(value);
+    Invalidate();
+}
 PNamedShape CCPACSEnginePosition::BuildLoft() const
 {
     try {

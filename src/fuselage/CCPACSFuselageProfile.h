@@ -46,7 +46,7 @@ class CCPACSFuselageProfile : public generated::CPACSProfileGeometry
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselageProfile(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFuselageProfile(CCPACSFuselageProfiles* parent, CTiglUIDManager* uidMgr);
 
     // Destructor
     TIGL_EXPORT ~CCPACSFuselageProfile() override;
@@ -59,9 +59,6 @@ public:
 
     // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
     TIGL_EXPORT bool GetMirrorSymmetry() const;
-
-    // Invalidates internal fuselage profile state
-    TIGL_EXPORT void Invalidate();
 
     // Returns the fuselage profile wire. The wire is already transformed by the
     // fuselage profile element transformation.
@@ -108,6 +105,9 @@ private:
 private:
     // Checks is two point are the same, or nearly the same.
     bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB) const;
+
+    // Invalidates internal wing profile state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
 private:
     bool mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */

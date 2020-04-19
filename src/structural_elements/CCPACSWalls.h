@@ -19,6 +19,9 @@
 #ifndef CCPACSWALLS_H
 #define CCPACSWALLS_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSWalls.h"
 #include "CCPACSFuselageWallSegment.h"
 #include "CCPACSWallPosition.h"
@@ -33,6 +36,8 @@ public:
 
     const CCPACSFuselageWallSegment& GetWallSegment(const std::string& uid) const;
     const CCPACSWallPosition& GetWallPosition(const std::string& uid) const;
+
+    void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 
 } // namespace tigl

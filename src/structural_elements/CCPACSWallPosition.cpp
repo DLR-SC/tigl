@@ -131,6 +131,68 @@ boost::optional<TopoDS_Shape> const& CCPACSWallPosition::GetShape() const
     return shape;
 }
 
+void CCPACSWallPosition::SetBulkheadUID_choice1(const boost::optional<std::string>& value)
+{
+    CPACSWallPosition::SetBulkheadUID_choice1(value);
+
+    CPACSWallPosition::SetWallSegmentUID_choice2(boost::none);
+    CPACSWallPosition::SetFuselageSectionUID_choice3(boost::none);
+    CPACSWallPosition::SetX_choice4(boost::none);
+
+    Invalidate();
+}
+
+void CCPACSWallPosition::SetWallSegmentUID_choice2(const boost::optional<std::string>& value)
+{
+    CPACSWallPosition::SetWallSegmentUID_choice2(value);
+
+    CPACSWallPosition::SetBulkheadUID_choice1(boost::none);
+    CPACSWallPosition::SetFuselageSectionUID_choice3(boost::none);
+    CPACSWallPosition::SetX_choice4(boost::none);
+
+    Invalidate();
+}
+
+void CCPACSWallPosition::SetFuselageSectionUID_choice3(const boost::optional<std::string>& value)
+{
+    CPACSWallPosition::SetFuselageSectionUID_choice3(value);
+
+    CPACSWallPosition::SetBulkheadUID_choice1(boost::none);
+    CPACSWallPosition::SetWallSegmentUID_choice2(boost::none);
+    CPACSWallPosition::SetX_choice4(boost::none);
+
+    Invalidate();
+}
+
+void CCPACSWallPosition::SetX_choice4(const boost::optional<double>& value)
+{
+    CPACSWallPosition::SetX_choice4(value);
+
+    CPACSWallPosition::SetBulkheadUID_choice1(boost::none);
+    CPACSWallPosition::SetWallSegmentUID_choice2(boost::none);
+    CPACSWallPosition::SetFuselageSectionUID_choice3(boost::none);
+
+    Invalidate();
+}
+
+void CCPACSWallPosition::SetY(const double& value)
+{
+    CPACSWallPosition::SetY(value);
+    Invalidate();
+}
+
+void CCPACSWallPosition::SetZ(const double& value)
+{
+    CPACSWallPosition::SetZ(value);
+    Invalidate();
+}
+
+void CCPACSWallPosition::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    isBuilt = false;
+    shape   = boost::none;
+}
+
 const CCPACSWalls& CCPACSWallPosition::GetWalls() const
 {
     const CCPACSWallPositions* wallPositions = GetParent();

@@ -100,7 +100,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile&
 {
 }
 
-void CTiglWingProfilePointList::Invalidate()
+void CTiglWingProfilePointList::Invalidate() const
 {
     wireCache.clear();
 }

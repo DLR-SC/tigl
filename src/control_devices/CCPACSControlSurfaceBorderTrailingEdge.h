@@ -26,7 +26,7 @@ namespace tigl
 class CCPACSControlSurfaceBorderTrailingEdge : public generated::CPACSControlSurfaceBorderTrailingEdge
 {
 public:
-    TIGL_EXPORT CCPACSControlSurfaceBorderTrailingEdge(CCPACSControlSurfaceOuterShapeTrailingEdge* parent);
+    TIGL_EXPORT CCPACSControlSurfaceBorderTrailingEdge(CCPACSControlSurfaceOuterShapeTrailingEdge* parent, CTiglUIDManager* uidMgr);
 };
 
 } // namespace tigl
