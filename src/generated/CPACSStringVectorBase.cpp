@@ -16,9 +16,10 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSCurveParamPointMap.h"
+#include "CCPACSCurvePointListXYZ.h"
 #include "CCPACSPointListRelXYZVector.h"
 #include "CCPACSPointListXYVector.h"
-#include "CCPACSPointListXYZVector.h"
 #include "CCPACSRotorBladeAttachment.h"
 #include "CCPACSWingProfileCST.h"
 #include "CPACSEmissivityMap.h"
@@ -40,6 +41,20 @@ namespace generated
         m_parentType = &typeid(CCPACSWingProfileCST);
     }
 
+    CPACSStringVectorBase::CPACSStringVectorBase(CCPACSCurveParamPointMap* parent)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSCurveParamPointMap);
+    }
+
+    CPACSStringVectorBase::CPACSStringVectorBase(CCPACSCurvePointListXYZ* parent)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSCurvePointListXYZ);
+    }
+
     CPACSStringVectorBase::CPACSStringVectorBase(CPACSEmissivityMap* parent)
     {
         //assert(parent != NULL);
@@ -59,13 +74,6 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSPointListXYVector);
-    }
-
-    CPACSStringVectorBase::CPACSStringVectorBase(CCPACSPointListXYZVector* parent)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CCPACSPointListXYZVector);
     }
 
     CPACSStringVectorBase::CPACSStringVectorBase(CCPACSRotorBladeAttachment* parent)
@@ -92,6 +100,12 @@ namespace generated
             if (IsParent<CCPACSWingProfileCST>()) {
                 return GetParent<CCPACSWingProfileCST>()->GetNextUIDParent();
             }
+            if (IsParent<CCPACSCurveParamPointMap>()) {
+                return GetParent<CCPACSCurveParamPointMap>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSCurvePointListXYZ>()) {
+                return GetParent<CCPACSCurvePointListXYZ>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSEmissivityMap>()) {
                 return GetParent<CPACSEmissivityMap>()->GetNextUIDParent();
             }
@@ -100,9 +114,6 @@ namespace generated
             }
             if (IsParent<CCPACSPointListXYVector>()) {
                 return GetParent<CCPACSPointListXYVector>()->GetNextUIDParent();
-            }
-            if (IsParent<CCPACSPointListXYZVector>()) {
-                return GetParent<CCPACSPointListXYZVector>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSRotorBladeAttachment>()) {
                 return GetParent<CCPACSRotorBladeAttachment>();
@@ -120,6 +131,12 @@ namespace generated
             if (IsParent<CCPACSWingProfileCST>()) {
                 return GetParent<CCPACSWingProfileCST>()->GetNextUIDParent();
             }
+            if (IsParent<CCPACSCurveParamPointMap>()) {
+                return GetParent<CCPACSCurveParamPointMap>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSCurvePointListXYZ>()) {
+                return GetParent<CCPACSCurvePointListXYZ>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSEmissivityMap>()) {
                 return GetParent<CPACSEmissivityMap>()->GetNextUIDParent();
             }
@@ -128,9 +145,6 @@ namespace generated
             }
             if (IsParent<CCPACSPointListXYVector>()) {
                 return GetParent<CCPACSPointListXYVector>()->GetNextUIDParent();
-            }
-            if (IsParent<CCPACSPointListXYZVector>()) {
-                return GetParent<CCPACSPointListXYZVector>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSRotorBladeAttachment>()) {
                 return GetParent<CCPACSRotorBladeAttachment>();

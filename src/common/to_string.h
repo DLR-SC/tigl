@@ -30,6 +30,19 @@ std::string std_to_string(T value)
     return ss.str();
 }
 
+template <typename FordwardIter>
+std::string vecToString(FordwardIter begin, FordwardIter end, const char sep)
+{
+    std::stringstream ss;
+    for (FordwardIter it = begin; it != end; ++it) {
+        ss << *it;
+        if (it != end - 1) {
+            ss << sep;
+        }
+    }
+    return ss.str();
+}
+
 }
 
 #endif

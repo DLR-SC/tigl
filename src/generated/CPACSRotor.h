@@ -39,7 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSRotors
 
-    // generated from /xsd:schema/xsd:complexType[783]
+    // generated from /xsd:schema/xsd:complexType[785]
     /// @brief Rotor type, containing a rotor (main rotor, tail rotor,
     /// fenestron, propeller,...) of an rotorcraft model.
     /// 

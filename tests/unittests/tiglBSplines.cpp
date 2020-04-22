@@ -17,9 +17,9 @@
 */
 
 #include "test.h"
+#include "testUtils.h"
 
 #include "CPointsToLinearBSpline.h"
-#include "CTiglSymetricSplineBuilder.h"
 #include "CTiglError.h"
 #include <Geom_BSplineCurve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
@@ -37,6 +37,9 @@
 #include <math_Matrix.hxx>
 #include "CTiglBSplineFit.h"
 #include "CTiglPointsToBSplineInterpolation.h"
+#include "CTiglInterpolatePointsWithKinks.h"
+#include "tiglcommonfunctions.h"
+
 
 TEST(BSplines, pointsToLinear)
 {
@@ -63,113 +66,6 @@ TEST(BSplines, pointsToLinear)
     
     curve->D1(0.8, p, v);
     ASSERT_NEAR(v.Magnitude(), v*gp_Vec(-1,0,0), 1e-10);
-}
-
-
-/// This tests checks, if the bspline
-/// has symmetric properties
-TEST(BSplines, symmetricBSpline)
-{
-    // symmetric input points wrt x-y plane
-    std::vector<gp_Pnt> points;
-    points.push_back(gp_Pnt(0,0,1));
-    points.push_back(gp_Pnt(0,-sqrt(0.5),sqrt(0.5)));
-    points.push_back(gp_Pnt(0,-1,0));
-    points.push_back(gp_Pnt(0,-sqrt(0.5),-sqrt(0.5)));
-    points.push_back(gp_Pnt(0,0,-1));
-
-    Handle(Geom_BSplineCurve) curve;
-    tigl::CTiglSymetricSplineBuilder builder(points);
-
-    ASSERT_NO_THROW(curve = builder.GetBSpline());
-
-    double umin = curve->FirstParameter();
-    double umax = curve->LastParameter();
-
-    // check, that curve start is perpendicular to x-z plane
-    gp_Pnt p; gp_Vec v;
-    curve->D1(umin, p, v);
-    ASSERT_NEAR(0., v * gp_Vec(1,0,0), 1e-10);
-    ASSERT_NEAR(0., v * gp_Vec(0,0,1), 1e-10);
-
-    // check interpolation at start
-    ASSERT_NEAR(0., p.Distance(gp_Pnt(0,0,1)), 1e-10);
-
-    // check, that curve end is perpendicular to x-z plane
-    curve->D1(umax, p, v);
-    ASSERT_NEAR(0., v * gp_Vec(1,0,0), 1e-10);
-    ASSERT_NEAR(0., v * gp_Vec(0,0,1), 1e-10);
-
-    // check interpolation at end
-    ASSERT_NEAR(0., p.Distance(points[points.size()-1]), 1e-10);
-    
-    // check symmetry wrt x-y plane
-    curve->D1((umin+umax)/2., p, v);
-    ASSERT_NEAR(0., p.Distance(gp_Pnt(0,-1,0)), 1e-10);
-    ASSERT_NEAR(0., v * gp_Vec(0,1,0), 1e-10);
-    ASSERT_NEAR(0., v * gp_Vec(1,0,0), 1e-10);
-}
-
-/// This tests checks, if the bspline
-/// is really going through the points
-TEST(BSplines, symmetricBSpline_interp)
-{
-    std::vector<gp_Pnt> points;
-    points.push_back(gp_Pnt(0,0,1));
-    points.push_back(gp_Pnt(0,-0.2, 0.8));
-    points.push_back(gp_Pnt(0,-sqrt(0.5),sqrt(0.5)));
-    points.push_back(gp_Pnt(0,-1,0));
-    points.push_back(gp_Pnt(0,-sqrt(0.5),-sqrt(0.5)));
-    points.push_back(gp_Pnt(0,0,-1));
-
-    Handle(Geom_BSplineCurve) curve;
-    tigl::CTiglSymetricSplineBuilder builder(points);
-
-    ASSERT_NO_THROW(curve = builder.GetBSpline());
-
-    GeomAPI_ProjectPointOnCurve proj;
-    proj.Init(curve, curve->FirstParameter(), curve->LastParameter());
-    for (unsigned int i = 0; i < points.size(); ++i) {
-        gp_Pnt p = points[i];
-        proj.Perform(p);
-        ASSERT_GE(proj.NbPoints(), 1);
-        ASSERT_LT(proj.LowerDistance(), 1e-10);
-    }
-}
-
-/// The CTiglSymetricSplineBuilder algorithm requires
-/// that the first and second point must have
-/// a zero y-coordinate. Test, these cases
-TEST(BSplines, symmetricBSpline_invalidInput)
-{
-    std::vector<gp_Pnt> points;
-    // the first point should have y == 0
-    points.push_back(gp_Pnt(0,-0.1 ,1));
-    points.push_back(gp_Pnt(0,-sqrt(0.5),sqrt(0.5)));
-    points.push_back(gp_Pnt(0,-1,0));
-    points.push_back(gp_Pnt(0,-sqrt(0.5),-sqrt(0.5)));
-    points.push_back(gp_Pnt(0,0,-1));
-
-    Handle(Geom_BSplineCurve) curve;
-    tigl::CTiglSymetricSplineBuilder builder(points);
-
-    ASSERT_THROW(curve = builder.GetBSpline(), tigl::CTiglError);
-}
-
-TEST(BSplines, symmetricBSpline_invalidInput2)
-{
-    std::vector<gp_Pnt> points;
-    points.push_back(gp_Pnt(0, 0 ,1));
-    points.push_back(gp_Pnt(0,-sqrt(0.5),sqrt(0.5)));
-    points.push_back(gp_Pnt(0,-1,0));
-    points.push_back(gp_Pnt(0,-sqrt(0.5),-sqrt(0.5)));
-    // the last point should have y == 0
-    points.push_back(gp_Pnt(0,-0.1,-1));
-
-    Handle(Geom_BSplineCurve) curve;
-    tigl::CTiglSymetricSplineBuilder builder(points);
-
-    ASSERT_THROW(curve = builder.GetBSpline(), tigl::CTiglError);
 }
 
 // tests the bspline basis matrix function with derivative = 0
@@ -277,24 +173,6 @@ protected:
 
     void TearDown() override
     {
-    }
-
-    void StoreResult(const std::string& filename, const Handle(Geom_BSplineCurve)& curve, const TColgp_Array1OfPnt& pt)
-    {
-        TopoDS_Compound c;
-        BRep_Builder b;
-        b.MakeCompound(c);
-
-        TopoDS_Shape e = BRepBuilderAPI_MakeEdge(curve);
-        b.Add(c, e);
-
-        for (Standard_Integer i = pt.Lower(); i <= pt.Upper(); ++i) {
-            const gp_Pnt& p = pt.Value(i);
-            TopoDS_Shape v = BRepBuilderAPI_MakeVertex(p);
-            b.Add(c, v);
-        }
-
-        BRepTools::Write(c, filename.c_str());
     }
 
     std::vector<double> parms;
@@ -597,6 +475,122 @@ TEST_F(BSplineInterpolation, tipKink2)
     tigl::CTiglApproxResult result = app.FitCurve(parms2);
 
     StoreResult("TestData/analysis/BSplineInterpolation-tipKink2.brep", result.curve, pnt2);
+}
+
+TEST_F(BSplineInterpolation, withKinksShield)
+{
+    Handle(TColgp_HArray1OfPnt) points = new TColgp_HArray1OfPnt(1, 5);
+    points->SetValue(1, gp_Pnt(0., 0., 0.));
+    points->SetValue(2, gp_Pnt(0.5, 0.25, 0.0));
+    points->SetValue(3, gp_Pnt(0., 1.0, 0.));
+    points->SetValue(4, gp_Pnt(-0.5, 0.25, 0));
+    points->SetValue(5, gp_Pnt(0., 0., 0.0));
+
+    tigl::ParamMap params = {
+        {3, 0.8},
+        {1, 0.2},
+    };
+
+    std::vector<unsigned int> kinks = {1, 3};
+    tigl::CTiglInterpolatePointsWithKinks interpolator(points, kinks, params, 0.5);
+    auto curve = interpolator.Curve();
+
+    ASSERT_FALSE(curve.IsNull());
+
+    const double tol = 1e-8;
+
+    EXPECT_TRUE(curve->Value(0.2).IsEqual(points->Value(2), tol));
+    EXPECT_TRUE(curve->Value(0.8).IsEqual(points->Value(4), tol));
+
+    auto kinkParams = tigl::CTiglBSplineAlgorithms::getKinkParameters(curve);
+    EXPECT_TRUE(ArraysMatch({0.2, 0.8}, kinkParams));
+
+    auto paramsVec = interpolator.Parameters();
+    EXPECT_TRUE(ArraysMatch({0., 0.2, 0.5, 0.8, 1.0}, paramsVec));
+
+    gp_Pnt p; gp_Vec d_start, d_end;
+    curve->D1(0., p, d_start);
+    curve->D1(1., p, d_end);
+
+    EXPECT_TRUE(d_start.IsParallel(d_end, 1e-6));
+
+    StoreResult("TestData/analysis/BSplineInterpolation-withKinksShield.brep", curve, points->Array1());
+}
+
+TEST_F(BSplineInterpolation, withKinksSlit)
+{
+    Handle(TColgp_HArray1OfPnt) points = new TColgp_HArray1OfPnt(1, 5);
+    points->SetValue(1, gp_Pnt(0., 0., 0.));
+    points->SetValue(2, gp_Pnt(0.5, 0.25, 0.0));
+    points->SetValue(3, gp_Pnt(0., 1.0, 0.));
+    points->SetValue(4, gp_Pnt(-0.5, 0.25, 0));
+    points->SetValue(5, gp_Pnt(0., 0., 0.0));
+
+    tigl::ParamMap params = {};
+
+    std::vector<unsigned int> kinks = {0, 2};
+    tigl::CTiglInterpolatePointsWithKinks interpolator(points, kinks, params, 0.5);
+    auto curve = interpolator.Curve();
+
+    ASSERT_FALSE(curve.IsNull());
+
+    const double tol = 1e-8;
+
+    EXPECT_TRUE(curve->Value(0.5).IsEqual(points->Value(3), tol));
+
+    auto kinkParams = tigl::CTiglBSplineAlgorithms::getKinkParameters(curve);
+    EXPECT_TRUE(ArraysMatch({0.5}, kinkParams, InTolerance(tol)));
+
+    auto paramsVec = interpolator.Parameters();
+    EXPECT_NEAR(0.0, paramsVec[0], tol);
+    EXPECT_NEAR(0.5, paramsVec[2], tol);
+    EXPECT_NEAR(1.0, paramsVec[4], tol);
+
+    gp_Pnt p; gp_Vec d_start, d_end;
+    curve->D1(0., p, d_start);
+    curve->D1(1., p, d_end);
+
+    EXPECT_FALSE(d_start.IsParallel(d_end, 1e-6));
+
+    StoreResult("TestData/analysis/BSplineInterpolation-withKinksSlit.brep", curve, points->Array1());
+}
+
+TEST_F(BSplineInterpolation, withKinksSmooth)
+{
+    Handle(TColgp_HArray1OfPnt) points = new TColgp_HArray1OfPnt(1, 5);
+    points->SetValue(1, gp_Pnt(0., 0., 0.));
+    points->SetValue(2, gp_Pnt(0.5, 0.25, 0.0));
+    points->SetValue(3, gp_Pnt(0., 1.0, 0.));
+    points->SetValue(4, gp_Pnt(-0.5, 0.25, 0));
+    points->SetValue(5, gp_Pnt(0., 0., 0.0));
+
+    tigl::ParamMap params = {};
+
+    std::vector<unsigned int> kinks = {};
+    tigl::CTiglInterpolatePointsWithKinks interpolator(points, kinks, params, 0.5);
+    auto curve = interpolator.Curve();
+
+    ASSERT_FALSE(curve.IsNull());
+
+    const double tol = 1e-8;
+
+    EXPECT_TRUE(curve->Value(0.5).IsEqual(points->Value(3), tol));
+
+    auto kinkParams = tigl::CTiglBSplineAlgorithms::getKinkParameters(curve);
+    EXPECT_TRUE(kinkParams.empty());
+
+    auto paramsVec = interpolator.Parameters();
+    EXPECT_NEAR(0.0, paramsVec[0], tol);
+    EXPECT_NEAR(0.5, paramsVec[2], tol);
+    EXPECT_NEAR(1.0, paramsVec[4], tol);
+
+    gp_Pnt p; gp_Vec d_start, d_end;
+    curve->D1(0., p, d_start);
+    curve->D1(1., p, d_end);
+
+    EXPECT_TRUE(d_start.IsParallel(d_end, 1e-6));
+
+    StoreResult("TestData/analysis/BSplineInterpolation-withKinksSmooth.brep", curve, points->Array1());
 }
 
 TEST_F(BSplineInterpolation, interpolationContinous)

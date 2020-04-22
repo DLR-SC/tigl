@@ -29,9 +29,10 @@ namespace tigl
 {
 class CTiglUIDObject;
 class CCPACSWingProfileCST;
+class CCPACSCurveParamPointMap;
+class CCPACSCurvePointListXYZ;
 class CCPACSPointListRelXYZVector;
 class CCPACSPointListXYVector;
-class CCPACSPointListXYZVector;
 class CCPACSRotorBladeAttachment;
 
 namespace generated
@@ -41,14 +42,15 @@ namespace generated
 
     // This class is used in:
     // CPACSCst2D
+    // CPACSCurveParamPointMap
+    // CPACSCurvePointListXYZ
     // CPACSEmissivityMap
     // CPACSPointListRelXYZVector
     // CPACSPointListXYVector
-    // CPACSPointListXYZVector
     // CPACSRotorBladeAttachment
     // CPACSSpecificHeatMap
 
-    // generated from /xsd:schema/xsd:complexType[851]
+    // generated from /xsd:schema/xsd:complexType[853]
     /// @brief stringVectorBaseType
     /// 
     /// Base type for string vector nodes (including maptype
@@ -70,10 +72,11 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSStringVectorBase(CCPACSWingProfileCST* parent);
+        TIGL_EXPORT CPACSStringVectorBase(CCPACSCurveParamPointMap* parent);
+        TIGL_EXPORT CPACSStringVectorBase(CCPACSCurvePointListXYZ* parent);
         TIGL_EXPORT CPACSStringVectorBase(CPACSEmissivityMap* parent);
         TIGL_EXPORT CPACSStringVectorBase(CCPACSPointListRelXYZVector* parent);
         TIGL_EXPORT CPACSStringVectorBase(CCPACSPointListXYVector* parent);
-        TIGL_EXPORT CPACSStringVectorBase(CCPACSPointListXYZVector* parent);
         TIGL_EXPORT CPACSStringVectorBase(CCPACSRotorBladeAttachment* parent);
         TIGL_EXPORT CPACSStringVectorBase(CPACSSpecificHeatMap* parent);
 
@@ -89,7 +92,7 @@ namespace generated
         P* GetParent()
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CPACSEmissivityMap>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSPointListXYZVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value || std::is_same<P, CPACSSpecificHeatMap>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
+            static_assert(std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CCPACSCurveParamPointMap>::value || std::is_same<P, CCPACSCurvePointListXYZ>::value || std::is_same<P, CPACSEmissivityMap>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value || std::is_same<P, CPACSSpecificHeatMap>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -101,7 +104,7 @@ namespace generated
         const P* GetParent() const
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CPACSEmissivityMap>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSPointListXYZVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value || std::is_same<P, CPACSSpecificHeatMap>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
+            static_assert(std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CCPACSCurveParamPointMap>::value || std::is_same<P, CCPACSCurvePointListXYZ>::value || std::is_same<P, CPACSEmissivityMap>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value || std::is_same<P, CPACSSpecificHeatMap>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");

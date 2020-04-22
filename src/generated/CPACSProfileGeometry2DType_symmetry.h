@@ -30,7 +30,7 @@ namespace generated
     // This enum is used in:
     // CPACSProfileGeometry2D
 
-    // generated from /xsd:schema/xsd:complexType[747]/xsd:complexContent/xsd:extension/xsd:attribute[1]/xsd:simpleType
+    // generated from /xsd:schema/xsd:complexType[749]/xsd:complexContent/xsd:extension/xsd:attribute[1]/xsd:simpleType
     enum CPACSProfileGeometry2DType_symmetry
     {
         x_axis,

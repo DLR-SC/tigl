@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSWingComponentSegmentStructure
 
-    // generated from /xsd:schema/xsd:complexType[978]
+    // generated from /xsd:schema/xsd:complexType[980]
     /// @brief Definition of the spars of the wing.
     /// 
     /// Spars type, a spar is defined by sparSegments that

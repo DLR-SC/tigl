@@ -32,7 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSCFDTool
 
-    // generated from /xsd:schema/xsd:complexType[874]
+    // generated from /xsd:schema/xsd:complexType[876]
     /// @brief Tool identification
     /// 
     /// Tool identification, containing name and version of a

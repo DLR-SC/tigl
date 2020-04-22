@@ -25,9 +25,13 @@
 
 #include<fstream>
 
+#include <Geom_BSplineCurve.hxx>
+class TColgp_Array1OfPnt;
+
 // save x-y data
 void outputXY(const int & i, const double& x, const double&y, const std::string& filename);
 void outputXYVector(const int& i, const double& x, const double& y, const double& vx, const double& vy, const std::string& filename);
+void StoreResult(const std::string& filename, const Handle(Geom_BSplineCurve)& curve, const TColgp_Array1OfPnt& pt);
 
 #endif // TESTUTILS_H
 

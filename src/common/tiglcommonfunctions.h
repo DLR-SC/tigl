@@ -296,6 +296,8 @@ TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedC
 
 /// Converters between std::vectors and opencascade vectors
 TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts);
+TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<tigl::CTiglPoint>& pnts);
+
 TIGL_EXPORT Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector);
 TIGL_EXPORT Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector);
 

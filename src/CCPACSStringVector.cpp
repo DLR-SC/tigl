@@ -19,6 +19,7 @@
 
 #include "CCPACSStringVector.h"
 #include "CTiglUIDObject.h"
+#include "to_string.h"
 
 namespace tigl
 {
@@ -39,18 +40,6 @@ std::vector<double> stringToDoubleVec(const std::string& s)
     return r;
 }
 
-std::string doubleVecToString(const std::vector<double>& v)
-{
-    std::stringstream ss;
-    for (std::vector<double>::const_iterator it = v.begin(); it != v.end(); ++it) {
-        ss << *it;
-        if (it != v.end() - 1) {
-            ss << sep;
-        }
-    }
-    return ss.str();
-}
-
 CCPACSStringVector::CCPACSStringVector(CCPACSWingProfileCST* parent)
     : generated::CPACSStringVectorBase(parent)
 {}
@@ -67,9 +56,14 @@ CCPACSStringVector::CCPACSStringVector(CCPACSPointListXYVector* parent)
     : generated::CPACSStringVectorBase(parent)
 {}
 
-CCPACSStringVector::CCPACSStringVector(CCPACSPointListXYZVector* parent)
+CCPACSStringVector::CCPACSStringVector(CCPACSCurvePointListXYZ* parent)
     : generated::CPACSStringVectorBase(parent)
 {}
+
+CCPACSStringVector::CCPACSStringVector(CCPACSCurveParamPointMap* parent)
+    : generated::CPACSStringVectorBase(parent)
+{}
+
 
 CCPACSStringVector::CCPACSStringVector(CCPACSRotorBladeAttachment* parent)
     : generated::CPACSStringVectorBase(parent)
@@ -89,7 +83,7 @@ void CCPACSStringVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const s
 void CCPACSStringVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
 {
     const_cast<std::string&>(m_simpleContent) =
-        doubleVecToString(m_vec); // TODO: this is a terrible hack, but WriteCPACS() has to be const
+        vecToString(std::begin(m_vec), std::end(m_vec), sep); // TODO: this is a terrible hack, but WriteCPACS() has to be const
     generated::CPACSStringVectorBase::WriteCPACS(tixiHandle, xpath);
 }
 

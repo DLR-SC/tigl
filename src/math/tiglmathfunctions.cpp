@@ -32,6 +32,7 @@
 #include "tiglMatrix.h"
 
 #include <math_Recipes.hxx>
+#include <CTiglLogging.h>
 
 namespace tigl 
 {
@@ -383,6 +384,72 @@ void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V)
     S(3,1) = 0.;
     S(3,2) = 0.;
     S(3,3) = Sv(3);
+}
+
+/// searches for i, such that xdata[i] <= x < xdata[i+1]
+/// used by linear interpolation function
+size_t FindPosition(const std::vector<double>& xdata, double x)
+{
+    // we assume, that the xvalues are ordered in ascending order
+    size_t ilow = 0.;
+    size_t ihigh = xdata.size()-1;
+
+    assert(xdata.size() >= 2);
+
+    // check extrapolation cases
+    if (x < xdata[ilow]) {
+        return ilow;
+    }
+
+    if (x >= xdata[ihigh]) {
+        return ihigh - 1;
+    }
+
+    // now do the search
+    while (ilow < ihigh - 1) {
+        size_t imid = (ilow + ihigh)/2;
+        if (xdata[ilow]<= x && x < xdata[imid]) {
+            ihigh = imid;
+        }
+        else if(xdata[imid] <= x && x < xdata[ihigh]) {
+            ilow = imid;
+        }
+        else {
+            // this case can only occur, if
+            // input data are not ordered
+            return xdata.size();
+        }
+    }
+
+    // we found the value
+    assert(xdata[ilow] <= x && x < xdata[ilow+1]);
+    return ilow;
+}
+
+/// linear interpolation in of xdata<->ydata array at position x
+double Interpolate(const std::vector<double>& xdata, const std::vector<double>& ydata, double x)
+{
+    if (xdata.size() == 0) {
+        return 0.;
+    }
+
+    if (xdata.size() == 1) {
+        return ydata[0];
+    }
+
+    if (x < xdata[0] || x > xdata[xdata.size() -1]) {
+        // extrapolation
+        LOG(WARNING) << "Extrapolating at x=" << x << ". XData is in range "
+                     << xdata[0] << "..." << xdata[xdata.size() -1] << ".";
+    }
+
+    size_t pos = FindPosition(xdata, x);
+
+    assert(pos < (unsigned int)(xdata.size() - 1));
+    assert(ydata.size() == xdata.size());
+
+    double y = (ydata[pos+1] - ydata[pos])/(xdata[pos+1]-xdata[pos]) * (x - xdata[pos]) + ydata[pos];
+    return y;
 }
 
 } // namespace tigl

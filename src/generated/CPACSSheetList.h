@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralProfile
 
-    // generated from /xsd:schema/xsd:complexType[811]
+    // generated from /xsd:schema/xsd:complexType[813]
     /// @brief List of sheets, connecting 2-dimensional profile
     /// points.
     /// 

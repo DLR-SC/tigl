@@ -84,6 +84,8 @@ namespace tigl
                 LOG(WARNING) << "The points don't seem to be ordered in a mathematical positive sense.";
                 std::reverse(vec.begin(), vec.end());
                 return true;
+
+                // TODO: Reverse also parameter maps and kinks
             }
             return false;
         }

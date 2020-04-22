@@ -220,6 +220,17 @@ public:
      */
     TIGL_EXPORT static std::vector<double> getKinkParameters(const Handle(Geom_BSplineCurve)& curve);
 
+    struct SurfaceKinks{
+        std::vector<double> u;
+        std::vector<double> v;
+    };
+
+    /**
+     * Returns positions, where the surface has kinks (C1 Discontinuities)
+     */
+    TIGL_EXPORT static SurfaceKinks getKinkParameters(const Handle(Geom_BSplineSurface)& surface);
+
+
     /// Checks, whether the point matrix points is closed in u direction
     TIGL_EXPORT static bool isUDirClosed(const TColgp_Array2OfPnt& points, double tolerance);
 
@@ -237,6 +248,11 @@ public:
 
     /// Trims a bspline curve
     TIGL_EXPORT static Handle(Geom_BSplineCurve) trimCurve(const Handle(Geom_BSplineCurve)& curve, double umin, double umax);
+
+    /// Concatenates a list of bspline curves
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) concatCurves(std::vector<Handle(Geom_BSplineCurve)> curves,
+                                                              bool parByLength=true, double tolerance = 1e-6);
+
 };
 } // namespace tigl
 

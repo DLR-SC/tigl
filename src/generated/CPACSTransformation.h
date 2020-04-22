@@ -61,7 +61,7 @@ namespace generated
     // CPACSWingElement
     // CPACSWingSection
 
-    // generated from /xsd:schema/xsd:complexType[895]
+    // generated from /xsd:schema/xsd:complexType[897]
     /// @brief transformationType
     /// 
     /// Transformation type, containing a set of

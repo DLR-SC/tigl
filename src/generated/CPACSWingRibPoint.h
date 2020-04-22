@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSSparPosition
 
-    // generated from /xsd:schema/xsd:complexType[965]
+    // generated from /xsd:schema/xsd:complexType[967]
     /// @brief wingRibPointType
     /// 
     /// The wingRibPointType is used to define reference points on ribs.

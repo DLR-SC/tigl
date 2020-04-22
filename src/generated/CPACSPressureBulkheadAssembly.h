@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    // generated from /xsd:schema/xsd:complexType[740]
+    // generated from /xsd:schema/xsd:complexType[742]
     /// @brief pressureBulkheadAssemblyType
     /// 
     /// PressureBulkheadAssembly type, containing pressure

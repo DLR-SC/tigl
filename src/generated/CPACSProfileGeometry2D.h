@@ -43,7 +43,7 @@ namespace generated
     // CPACSCurveProfiles
     // CPACSNacelleProfiles
 
-    // generated from /xsd:schema/xsd:complexType[747]
+    // generated from /xsd:schema/xsd:complexType[749]
     /// @brief profileGeometry2DType
     /// 
     /// A profile is defined by a profile name, an optional

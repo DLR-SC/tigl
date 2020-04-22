@@ -40,7 +40,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinition
 
-    // generated from /xsd:schema/xsd:complexType[968]
+    // generated from /xsd:schema/xsd:complexType[970]
     /// @brief wingRibsPositioningType
     /// 
     /// Within the ribsPositioing type the position and the

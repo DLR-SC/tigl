@@ -37,6 +37,7 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSNacelleProfile.h"
 #include "tiglcommonfunctions.h"
+#include "CCPACSCurvePointListXYZ.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -84,7 +85,7 @@ const double CTiglWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
 const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 
 // Constructor
-CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZVector& cpacsPointList)
+CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSCurvePointListXYZ& cpacsPointList)
     : coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , profileUID(profile.GetUID())

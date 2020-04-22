@@ -138,6 +138,8 @@
 %boost_optional(tigl::CCPACSWingProfiles)
 %boost_optional(tigl::CCPACSFuselageProfiles)
 %boost_optional(tigl::CCPACSRotorProfiles)
+%boost_optional(tigl::CCPACSCurveParamPointMap)
+%boost_optional(tigl::CCPACSCurvePointListXYZ)
 
 // ---------------- Other ------------------------------//
 %boost_optional(tigl::CCPACSEtaIsoLine)
@@ -390,6 +392,10 @@ class CCPACSWingRibsPositioning;
 %include "PTiglWingProfileAlgo.h"
 %include "generated/CPACSFuselageElements.h"
 %include "CCPACSFuselageSectionElements.h"
+%include "generated/CPACSCurveParamPointMap.h"
+%include "CCPACSCurveParamPointMap.h"
+%include "generated/CPACSCurvePointListXYZ.h"
+%include "CCPACSCurvePointListXYZ.h"
 %include "generated/CPACSProfileGeometry.h"
 %include "CCPACSWingProfile.h"
 %include "CCPACSFuselageProfile.h"

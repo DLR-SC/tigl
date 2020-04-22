@@ -23,7 +23,6 @@ CPACSPoint                         CCPACSPoint
 CPACSPointAbsRel                   CCPACSPointAbsRel
 CPACSTransformation                CCPACSTransformation
 CPACSStringVectorBase              CCPACSStringVector
-CPACSPointListXYZVector            CCPACSPointListXYZVector
 CPACSPointListRelXYZVector         CCPACSPointListRelXYZVector
 CPACSPointListXYVector			   CCPACSPointListXYVector
 CPACSPointListXY                   CCPACSPointListXY
@@ -33,6 +32,8 @@ CPACSEtaIsoLine                    CCPACSEtaIsoLine
 CPACSXsiIsoLine                    CCPACSXsiIsoLine
 CPACSEtaXsiPoint                   CCPACSEtaXsiPoint
 CPACSCurvePoint                    CCPACSCurvePoint
+CPACSCurveParamPointMap            CCPACSCurveParamPointMap
+CPACSCurvePointListXYZ             CCPACSCurvePointListXYZ
 
 CPACSFuselage                      CCPACSFuselage
 CPACSFuselages                     CCPACSFuselages

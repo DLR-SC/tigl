@@ -23,7 +23,6 @@ namespace tigl
 {
 
 TIGL_EXPORT std::vector<double> stringToDoubleVec(const std::string& s);
-TIGL_EXPORT std::string doubleVecToString(const std::vector<double>& v);
 
 class CCPACSStringVector : private generated::CPACSStringVectorBase
 {
@@ -32,7 +31,8 @@ public:
     TIGL_EXPORT CCPACSStringVector(CCPACSEmissivityMap* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSPointListRelXYZVector* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSPointListXYVector* parent);
-    TIGL_EXPORT CCPACSStringVector(CCPACSPointListXYZVector* parent);
+    TIGL_EXPORT CCPACSStringVector(CCPACSCurvePointListXYZ* parent);
+    TIGL_EXPORT CCPACSStringVector(CCPACSCurveParamPointMap* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSRotorBladeAttachment* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSSpecificHeatMap* parent);
 

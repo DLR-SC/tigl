@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSCpacs
 
-    // generated from /xsd:schema/xsd:complexType[875]
+    // generated from /xsd:schema/xsd:complexType[877]
     /// @brief toolspecificType
     /// 
     /// Toolspecific type, containing specific data for the

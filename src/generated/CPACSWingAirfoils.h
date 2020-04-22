@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    // generated from /xsd:schema/xsd:complexType[939]
+    // generated from /xsd:schema/xsd:complexType[941]
     /// @brief wingAirfoilsType
     /// 
     /// WingAirfoils type, containing wing airfoil geometries.

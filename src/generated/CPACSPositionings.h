@@ -41,7 +41,7 @@ namespace generated
     // CPACSFuselage
     // CPACSWing
 
-    // generated from /xsd:schema/xsd:complexType[737]
+    // generated from /xsd:schema/xsd:complexType[739]
     /// @brief Positionings of the wing.
     /// 
     /// Positionings type, containing all the positionings of
