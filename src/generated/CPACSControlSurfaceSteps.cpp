@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include <CCPACSControlSurfaceStep.h>
 #include "CPACSControlSurfacePath.h"
+#include "CPACSControlSurfaceStep.h"
 #include "CPACSControlSurfaceSteps.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -80,7 +80,7 @@ namespace generated
     {
         // read element step
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/step")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/step", m_steps, 2, tixi::xsdUnbounded, reinterpret_cast<CCPACSControlSurfaceSteps*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/step", m_steps, 2, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -92,23 +92,23 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CCPACSControlSurfaceStep>>& CPACSControlSurfaceSteps::GetSteps() const
+    const std::vector<std::unique_ptr<CPACSControlSurfaceStep>>& CPACSControlSurfaceSteps::GetSteps() const
     {
         return m_steps;
     }
 
-    std::vector<std::unique_ptr<CCPACSControlSurfaceStep>>& CPACSControlSurfaceSteps::GetSteps()
+    std::vector<std::unique_ptr<CPACSControlSurfaceStep>>& CPACSControlSurfaceSteps::GetSteps()
     {
         return m_steps;
     }
 
-    CCPACSControlSurfaceStep& CPACSControlSurfaceSteps::AddStep()
+    CPACSControlSurfaceStep& CPACSControlSurfaceSteps::AddStep()
     {
-        m_steps.push_back(make_unique<CCPACSControlSurfaceStep>(reinterpret_cast<CCPACSControlSurfaceSteps*>(this), m_uidMgr));
+        m_steps.push_back(make_unique<CPACSControlSurfaceStep>(this, m_uidMgr));
         return *m_steps.back();
     }
 
-    void CPACSControlSurfaceSteps::RemoveStep(CCPACSControlSurfaceStep& ref)
+    void CPACSControlSurfaceSteps::RemoveStep(CPACSControlSurfaceStep& ref)
     {
         for (std::size_t i = 0; i < m_steps.size(); i++) {
             if (m_steps[i].get() == &ref) {

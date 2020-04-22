@@ -73,6 +73,7 @@
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
 #include "BRepClass3d_SolidClassifier.hxx"
+#include "BRepExtrema_DistShapeShape.hxx"
 
 #include <Approx_Curve3d.hxx>
 #include <BRepAdaptor_HCompCurve.hxx>
@@ -317,6 +318,42 @@ Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire &wire, gp_Pnt p, gp_Di
     }
     return normalizedLength;
 }
+
+
+/// Projects the point onto the plane pln
+gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p)
+{
+    gp_Ax1 xAx = pln.XAxis();
+    gp_Ax1 yAx = pln.YAxis();
+
+    double px = (p.XYZ() - xAx.Location().XYZ()) * xAx.Direction().XYZ();
+    double py = (p.XYZ() - yAx.Location().XYZ()) * yAx.Direction().XYZ();
+
+    return gp_Pnt2d(px,py);
+}
+
+gp_Pnt ProjectPointOnShape(const TopoDS_Shape &shape, const gp_Pnt &point, const gp_Vec &direction)
+{
+    // Construct line in direction of projection through given point
+    gp_Lin line(point, gp_Dir(direction));
+    TopoDS_Edge dir = BRepBuilderAPI_MakeEdge(line).Edge();
+
+    // Construct Extrema class with line and surface and calculate closest points
+    // (should be one if line goes through surface)
+    BRepExtrema_DistShapeShape extrema_distShapeShape(dir, shape);
+    int nPoints = extrema_distShapeShape.NbSolution();
+
+    // Make sure only one point was found with a distance of "zero"
+    if (nPoints == 0) {
+        throw tigl::CTiglError("Projection of point to shape failed.", TIGL_MATH_ERROR);
+    }
+    else if (nPoints > 1) {
+        LOG(WARNING) << "Projection of point of shape has multiple results. Choosing first.";
+    }
+
+    return extrema_distShapeShape.PointOnShape2(nPoints);
+}
+
 
 gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
 {
@@ -1764,4 +1801,9 @@ bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2)
     }
 
     return gp_Vec(p1Proj, p1).Dot(gp_Vec(p2Proj, p2)) < 0.;
+}
+
+double Mix(double x, double y, double a)
+{
+    return x*(1.-a) +   y*a;
 }

@@ -25,11 +25,10 @@
 namespace tigl
 {
 class CTiglUIDObject;
+class CCPACSControlSurfaceWingCutOut;
 
 namespace generated
 {
-    class CPACSControlSurfaceWingCutOut;
-
     // This class is used in:
     // CPACSControlSurfaceWingCutOut
 
@@ -41,13 +40,13 @@ namespace generated
     class CPACSCutOutControlPoints
     {
     public:
-        TIGL_EXPORT CPACSCutOutControlPoints(CPACSControlSurfaceWingCutOut* parent);
+        TIGL_EXPORT CPACSCutOutControlPoints(CCPACSControlSurfaceWingCutOut* parent);
 
         TIGL_EXPORT virtual ~CPACSCutOutControlPoints();
 
-        TIGL_EXPORT CPACSControlSurfaceWingCutOut* GetParent();
+        TIGL_EXPORT CCPACSControlSurfaceWingCutOut* GetParent();
 
-        TIGL_EXPORT const CPACSControlSurfaceWingCutOut* GetParent() const;
+        TIGL_EXPORT const CCPACSControlSurfaceWingCutOut* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -62,7 +61,7 @@ namespace generated
         TIGL_EXPORT virtual CPACSCutOutControlPoint& GetOuterBorder();
 
     protected:
-        CPACSControlSurfaceWingCutOut* m_parent;
+        CCPACSControlSurfaceWingCutOut* m_parent;
 
         CPACSCutOutControlPoint m_innerBorder;
         CPACSCutOutControlPoint m_outerBorder;
@@ -78,5 +77,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSCutOutControlPoints = generated::CPACSCutOutControlPoints;
-using CCPACSControlSurfaceWingCutOut = generated::CPACSControlSurfaceWingCutOut;
 } // namespace tigl

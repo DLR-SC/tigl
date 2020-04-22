@@ -28,6 +28,7 @@
 #include "gp_GTrsf.hxx"
 #include "gp_Pnt.hxx"
 #include "TopoDS.hxx"
+#include "PNamedShape.h"
 
 namespace tigl
 {
@@ -105,6 +106,10 @@ public:
     // Transforms a shape with the current transformation matrix and
     // returns the transformed shape
     TIGL_EXPORT TopoDS_Shape Transform(const TopoDS_Shape& shape) const;
+
+    // Transforms the CNamedShape. It also makes sure to update
+    // the local face transformation meta data.
+    TIGL_EXPORT PNamedShape Transform(PNamedShape shape) const;
 
     // Transforms a point with the current transformation matrix and
     // returns the transformed point

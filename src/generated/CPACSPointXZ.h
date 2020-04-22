@@ -25,10 +25,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSControlSurfaceStep;
 
 namespace generated
 {
+    class CPACSControlSurfaceStep;
+
     // This class is used in:
     // CPACSControlSurfaceStep
 
@@ -40,13 +41,13 @@ namespace generated
     class CPACSPointXZ : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSPointXZ(CCPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSPointXZ(CPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSPointXZ();
 
-        TIGL_EXPORT CCPACSControlSurfaceStep* GetParent();
+        TIGL_EXPORT CPACSControlSurfaceStep* GetParent();
 
-        TIGL_EXPORT const CCPACSControlSurfaceStep* GetParent() const;
+        TIGL_EXPORT const CPACSControlSurfaceStep* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -67,7 +68,7 @@ namespace generated
         TIGL_EXPORT virtual void SetZ(const double& value);
 
     protected:
-        CCPACSControlSurfaceStep* m_parent;
+        CPACSControlSurfaceStep* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -90,4 +91,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSPointXZ = generated::CPACSPointXZ;
+using CCPACSControlSurfaceStep = generated::CPACSControlSurfaceStep;
 } // namespace tigl

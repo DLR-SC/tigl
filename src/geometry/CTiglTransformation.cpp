@@ -26,6 +26,7 @@
 #include "BRepBuilderAPI_Transform.hxx"
 #include "gp_XYZ.hxx"
 #include "Standard_Version.hxx"
+#include "CNamedShape.h"
 
 #include "tiglmathfunctions.h"
 
@@ -425,6 +426,26 @@ TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
         const TopoDS_Shape& transformedShape = brepBuilderGTransform.Shape();
         return transformedShape;
     }
+}
+
+PNamedShape tigl::CTiglTransformation::Transform(PNamedShape shape) const
+{
+    if (!shape) {
+        return nullptr;
+    }
+
+    PNamedShape mirrored(new CNamedShape(*shape));
+    mirrored->SetShape(Transform(mirrored->Shape()));
+
+    // we have to transform also the face transformation properties
+    for (unsigned int iface = 0; iface < mirrored->GetFaceCount(); ++iface) {
+        CFaceTraits& traits = mirrored->FaceTraits(iface);
+        auto faceTrafo = traits.Transformation();
+
+        faceTrafo = *this * faceTrafo * this->Inverted();
+        traits.SetTransformation(faceTrafo);
+    }
+    return mirrored;
 }
 
 // Transforms a point with the current transformation matrix and

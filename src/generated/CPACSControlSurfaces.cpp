@@ -99,17 +99,17 @@ namespace generated
 
     }
 
-    const boost::optional<CCPACSTrailingEdgeDevices>& CPACSControlSurfaces::GetTrailingEdgeDevices() const
+    const boost::optional<CPACSTrailingEdgeDevices>& CPACSControlSurfaces::GetTrailingEdgeDevices() const
     {
         return m_trailingEdgeDevices;
     }
 
-    boost::optional<CCPACSTrailingEdgeDevices>& CPACSControlSurfaces::GetTrailingEdgeDevices()
+    boost::optional<CPACSTrailingEdgeDevices>& CPACSControlSurfaces::GetTrailingEdgeDevices()
     {
         return m_trailingEdgeDevices;
     }
 
-    CCPACSTrailingEdgeDevices& CPACSControlSurfaces::GetTrailingEdgeDevices(CreateIfNotExistsTag)
+    CPACSTrailingEdgeDevices& CPACSControlSurfaces::GetTrailingEdgeDevices(CreateIfNotExistsTag)
     {
         if (!m_trailingEdgeDevices)
             m_trailingEdgeDevices = boost::in_place(reinterpret_cast<CCPACSControlSurfaces*>(this), m_uidMgr);

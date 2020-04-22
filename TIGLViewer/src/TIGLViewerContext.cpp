@@ -385,6 +385,7 @@ void TIGLViewerContext::displayShape(const PNamedShape& pshape, bool updateViewe
             displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
         }
     }
+    GetShapeManager().addObject(pshape, shape);
 }
 
 // Displays a point on the screen
@@ -575,6 +576,11 @@ void TIGLViewerContext::setFaceBoundariesEnabled(bool enabled) {
     if (myContext && myContext->DefaultDrawer()) {
         myContext->DefaultDrawer()->SetFaceBoundaryDraw(enabled);
     }
+}
+
+InteractiveShapeManager& TIGLViewerContext::GetShapeManager()
+{
+    return myShapeManager;
 }
 
 

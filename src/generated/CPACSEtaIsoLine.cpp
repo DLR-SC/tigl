@@ -17,10 +17,10 @@
 
 #include <cassert>
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
-#include "CCPACSControlSurfaceSkinCutOutBorder.h"
-#include "CCPACSControlSurfaceTrackType.h"
 #include "CCPACSWingCellPositionSpanwise.h"
 #include "CPACSControlSurfaceAirfoil.h"
+#include "CPACSControlSurfaceSkinCutOutBorder.h"
+#include "CPACSControlSurfaceTrackType.h"
 #include "CPACSCutOutProfile.h"
 #include "CPACSEtaIsoLine.h"
 #include "CPACSSparCell.h"
@@ -61,22 +61,22 @@ namespace generated
         m_parentType = &typeid(CCPACSControlSurfaceBorderTrailingEdge);
     }
 
-    CPACSEtaIsoLine::CPACSEtaIsoLine(CCPACSControlSurfaceSkinCutOutBorder* parent, CTiglUIDManager* uidMgr)
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CPACSControlSurfaceSkinCutOutBorder* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_eta(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CCPACSControlSurfaceSkinCutOutBorder);
+        m_parentType = &typeid(CPACSControlSurfaceSkinCutOutBorder);
     }
 
-    CPACSEtaIsoLine::CPACSEtaIsoLine(CCPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr)
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_eta(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CCPACSControlSurfaceTrackType);
+        m_parentType = &typeid(CPACSControlSurfaceTrackType);
     }
 
     CPACSEtaIsoLine::CPACSEtaIsoLine(CPACSCutOutProfile* parent, CTiglUIDManager* uidMgr)
@@ -116,11 +116,11 @@ namespace generated
             if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
                 return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
             }
-            if (IsParent<CCPACSControlSurfaceSkinCutOutBorder>()) {
-                return GetParent<CCPACSControlSurfaceSkinCutOutBorder>()->GetNextUIDParent();
+            if (IsParent<CPACSControlSurfaceSkinCutOutBorder>()) {
+                return GetParent<CPACSControlSurfaceSkinCutOutBorder>()->GetNextUIDParent();
             }
-            if (IsParent<CCPACSControlSurfaceTrackType>()) {
-                return GetParent<CCPACSControlSurfaceTrackType>();
+            if (IsParent<CPACSControlSurfaceTrackType>()) {
+                return GetParent<CPACSControlSurfaceTrackType>();
             }
             if (IsParent<CPACSCutOutProfile>()) {
                 return GetParent<CPACSCutOutProfile>()->GetNextUIDParent();
@@ -144,11 +144,11 @@ namespace generated
             if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
                 return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
             }
-            if (IsParent<CCPACSControlSurfaceSkinCutOutBorder>()) {
-                return GetParent<CCPACSControlSurfaceSkinCutOutBorder>()->GetNextUIDParent();
+            if (IsParent<CPACSControlSurfaceSkinCutOutBorder>()) {
+                return GetParent<CPACSControlSurfaceSkinCutOutBorder>()->GetNextUIDParent();
             }
-            if (IsParent<CCPACSControlSurfaceTrackType>()) {
-                return GetParent<CCPACSControlSurfaceTrackType>();
+            if (IsParent<CPACSControlSurfaceTrackType>()) {
+                return GetParent<CPACSControlSurfaceTrackType>();
             }
             if (IsParent<CPACSCutOutProfile>()) {
                 return GetParent<CPACSCutOutProfile>()->GetNextUIDParent();

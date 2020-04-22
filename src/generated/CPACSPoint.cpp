@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSControlSurfaceStep.h"
 #include "CCPACSTransformation.h"
+#include "CPACSControlSurfaceStep.h"
 #include "CPACSPoint.h"
 #include "CPACSPointList.h"
 #include "CPACSSeatModule.h"
@@ -30,12 +30,12 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSPoint::CPACSPoint(CCPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr)
+    CPACSPoint::CPACSPoint(CPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CCPACSControlSurfaceStep);
+        m_parentType = &typeid(CPACSControlSurfaceStep);
     }
 
     CPACSPoint::CPACSPoint(CPACSPointList* parent, CTiglUIDManager* uidMgr)
@@ -70,8 +70,8 @@ namespace generated
     const CTiglUIDObject* CPACSPoint::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CCPACSControlSurfaceStep>()) {
-                return GetParent<CCPACSControlSurfaceStep>()->GetNextUIDParent();
+            if (IsParent<CPACSControlSurfaceStep>()) {
+                return GetParent<CPACSControlSurfaceStep>()->GetNextUIDParent();
             }
             if (IsParent<CPACSPointList>()) {
                 return GetParent<CPACSPointList>()->GetNextUIDParent();
@@ -89,8 +89,8 @@ namespace generated
     CTiglUIDObject* CPACSPoint::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CCPACSControlSurfaceStep>()) {
-                return GetParent<CCPACSControlSurfaceStep>()->GetNextUIDParent();
+            if (IsParent<CPACSControlSurfaceStep>()) {
+                return GetParent<CPACSControlSurfaceStep>()->GetNextUIDParent();
             }
             if (IsParent<CPACSPointList>()) {
                 return GetParent<CPACSPointList>()->GetNextUIDParent();

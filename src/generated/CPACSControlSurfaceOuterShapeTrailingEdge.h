@@ -101,6 +101,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSControlSurfaceOuterShapeTrailingEdge = generated::CPACSControlSurfaceOuterShapeTrailingEdge;
+// CPACSControlSurfaceOuterShapeTrailingEdge is customized, use type CCPACSControlSurfaceOuterShapeTrailingEdge directly
 } // namespace tigl

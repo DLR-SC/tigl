@@ -80,7 +80,7 @@ namespace generated
     {
         // read element trailingEdgeDevice
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeDevice")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/trailingEdgeDevice", m_trailingEdgeDevices, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSTrailingEdgeDevices*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/trailingEdgeDevice", m_trailingEdgeDevices, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -104,7 +104,7 @@ namespace generated
 
     CCPACSTrailingEdgeDevice& CPACSTrailingEdgeDevices::AddTrailingEdgeDevice()
     {
-        m_trailingEdgeDevices.push_back(make_unique<CCPACSTrailingEdgeDevice>(reinterpret_cast<CCPACSTrailingEdgeDevices*>(this), m_uidMgr));
+        m_trailingEdgeDevices.push_back(make_unique<CCPACSTrailingEdgeDevice>(this, m_uidMgr));
         return *m_trailingEdgeDevices.back();
     }
 

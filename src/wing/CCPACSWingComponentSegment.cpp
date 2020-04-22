@@ -671,7 +671,7 @@ const CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const
 }
 
 // get short name for loft
-std::string CCPACSWingComponentSegment::GetShortShapeName() const
+std::string CCPACSWingComponentSegment::GetShortName() const
 {
     unsigned int windex = 0;
     unsigned int wcsindex = 0;
@@ -698,7 +698,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft() const
 {
     // Set Names
     std::string loftName = m_uID;
-    std::string loftShortName = GetShortShapeName();
+    std::string loftShortName = GetShortName();
     PNamedShape loft (new CNamedShape(geomCache->loftShape, loftName.c_str(), loftShortName));
     SetFaceTraits(loft, static_cast<unsigned int>(wingSegments->size()));
     return loft;
@@ -809,16 +809,16 @@ void CCPACSWingComponentSegment::BuildLines(LinesCache& cache) const
         const CCPACSWingSegment& segment = *(*it);
 
             // get leading edge point
-        lePointContainer.push_back(segment.GetPoint(0, 0, true, WING_COORDINATE_SYSTEM));
+        lePointContainer.push_back(segment.GetChordPoint(0, 0, WING_COORDINATE_SYSTEM));
         // get trailing edge point
-        tePointContainer.push_back(segment.GetPoint(0, 1, true, WING_COORDINATE_SYSTEM));
+        tePointContainer.push_back(segment.GetChordPoint(0, 1, WING_COORDINATE_SYSTEM));
     }
     // finally add the points for the outer section
     // get leading edge point
-    lePointContainer.push_back(segments.back()->GetPoint(1, 0, true, WING_COORDINATE_SYSTEM));
+    lePointContainer.push_back(segments.back()->GetChordPoint(1, 0, WING_COORDINATE_SYSTEM));
 
     // get trailing edge point
-    tePointContainer.push_back(segments.back()->GetPoint(1, 1, true, WING_COORDINATE_SYSTEM));
+    tePointContainer.push_back(segments.back()->GetChordPoint(1, 1, WING_COORDINATE_SYSTEM));
 
 
 

@@ -30,12 +30,12 @@ class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSWingCellPositionSpanwise;
 class CCPACSControlSurfaceBorderTrailingEdge;
-class CCPACSControlSurfaceSkinCutOutBorder;
-class CCPACSControlSurfaceTrackType;
 
 namespace generated
 {
     class CPACSControlSurfaceAirfoil;
+    class CPACSControlSurfaceSkinCutOutBorder;
+    class CPACSControlSurfaceTrackType;
     class CPACSCutOutProfile;
     class CPACSSparCell;
 
@@ -60,8 +60,8 @@ namespace generated
         TIGL_EXPORT CPACSEtaIsoLine(CCPACSWingCellPositionSpanwise* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CPACSControlSurfaceAirfoil* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSEtaIsoLine(CCPACSControlSurfaceSkinCutOutBorder* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSEtaIsoLine(CCPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSEtaIsoLine(CPACSControlSurfaceSkinCutOutBorder* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSEtaIsoLine(CPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CPACSCutOutProfile* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CPACSSparCell* parent, CTiglUIDManager* uidMgr);
 
@@ -77,7 +77,7 @@ namespace generated
         P* GetParent()
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CCPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CCPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
+            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -89,7 +89,7 @@ namespace generated
         const P* GetParent() const
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CCPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CCPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
+            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -143,6 +143,8 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSControlSurfaceAirfoil = generated::CPACSControlSurfaceAirfoil;
+using CCPACSControlSurfaceSkinCutOutBorder = generated::CPACSControlSurfaceSkinCutOutBorder;
+using CCPACSControlSurfaceTrackType = generated::CPACSControlSurfaceTrackType;
 using CCPACSCutOutProfile = generated::CPACSCutOutProfile;
 using CCPACSSparCell = generated::CPACSSparCell;
 } // namespace tigl

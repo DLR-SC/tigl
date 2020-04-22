@@ -19,10 +19,10 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSControlSurfaceSkinCutout.h>
-#include <CCPACSControlSurfaceSkinCutOutBorder.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSControlSurfaceSkinCutOut.h"
+#include "CPACSControlSurfaceSkinCutOutBorder.h"
 #include "CPACSCutOutControlPoints.h"
 #include "CPACSCutOutProfiles.h"
 #include "CreateIfNotExists.h"
@@ -74,11 +74,11 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CCPACSControlSurfaceSkinCutout& GetUpperSkin() const;
-        TIGL_EXPORT virtual CCPACSControlSurfaceSkinCutout& GetUpperSkin();
+        TIGL_EXPORT virtual const CPACSControlSurfaceSkinCutOut& GetUpperSkin() const;
+        TIGL_EXPORT virtual CPACSControlSurfaceSkinCutOut& GetUpperSkin();
 
-        TIGL_EXPORT virtual const CCPACSControlSurfaceSkinCutout& GetLowerSkin() const;
-        TIGL_EXPORT virtual CCPACSControlSurfaceSkinCutout& GetLowerSkin();
+        TIGL_EXPORT virtual const CPACSControlSurfaceSkinCutOut& GetLowerSkin() const;
+        TIGL_EXPORT virtual CPACSControlSurfaceSkinCutOut& GetLowerSkin();
 
         TIGL_EXPORT virtual const boost::optional<CPACSCutOutControlPoints>& GetCutOutProfileControlPoint() const;
         TIGL_EXPORT virtual boost::optional<CPACSCutOutControlPoints>& GetCutOutProfileControlPoint();
@@ -86,11 +86,11 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSCutOutProfiles>& GetCutOutProfiles() const;
         TIGL_EXPORT virtual boost::optional<CPACSCutOutProfiles>& GetCutOutProfiles();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSControlSurfaceSkinCutOutBorder>& GetInnerBorder() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSControlSurfaceSkinCutOutBorder>& GetInnerBorder();
+        TIGL_EXPORT virtual const boost::optional<CPACSControlSurfaceSkinCutOutBorder>& GetInnerBorder() const;
+        TIGL_EXPORT virtual boost::optional<CPACSControlSurfaceSkinCutOutBorder>& GetInnerBorder();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSControlSurfaceSkinCutOutBorder>& GetOuterBorder() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSControlSurfaceSkinCutOutBorder>& GetOuterBorder();
+        TIGL_EXPORT virtual const boost::optional<CPACSControlSurfaceSkinCutOutBorder>& GetOuterBorder() const;
+        TIGL_EXPORT virtual boost::optional<CPACSControlSurfaceSkinCutOutBorder>& GetOuterBorder();
 
         TIGL_EXPORT virtual CPACSCutOutControlPoints& GetCutOutProfileControlPoint(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCutOutProfileControlPoint();
@@ -98,10 +98,10 @@ namespace generated
         TIGL_EXPORT virtual CPACSCutOutProfiles& GetCutOutProfiles(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCutOutProfiles();
 
-        TIGL_EXPORT virtual CCPACSControlSurfaceSkinCutOutBorder& GetInnerBorder(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSControlSurfaceSkinCutOutBorder& GetInnerBorder(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveInnerBorder();
 
-        TIGL_EXPORT virtual CCPACSControlSurfaceSkinCutOutBorder& GetOuterBorder(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSControlSurfaceSkinCutOutBorder& GetOuterBorder(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveOuterBorder();
 
     protected:
@@ -109,12 +109,12 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        CCPACSControlSurfaceSkinCutout                        m_upperSkin;
-        CCPACSControlSurfaceSkinCutout                        m_lowerSkin;
-        boost::optional<CPACSCutOutControlPoints>             m_cutOutProfileControlPoint;
-        boost::optional<CPACSCutOutProfiles>                  m_cutOutProfiles;
-        boost::optional<CCPACSControlSurfaceSkinCutOutBorder> m_innerBorder;
-        boost::optional<CCPACSControlSurfaceSkinCutOutBorder> m_outerBorder;
+        CPACSControlSurfaceSkinCutOut                        m_upperSkin;
+        CPACSControlSurfaceSkinCutOut                        m_lowerSkin;
+        boost::optional<CPACSCutOutControlPoints>            m_cutOutProfileControlPoint;
+        boost::optional<CPACSCutOutProfiles>                 m_cutOutProfiles;
+        boost::optional<CPACSControlSurfaceSkinCutOutBorder> m_innerBorder;
+        boost::optional<CPACSControlSurfaceSkinCutOutBorder> m_outerBorder;
 
     private:
         CPACSControlSurfaceWingCutOut(const CPACSControlSurfaceWingCutOut&) = delete;
@@ -125,6 +125,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSControlSurfaceWingCutOut = generated::CPACSControlSurfaceWingCutOut;
+// CPACSControlSurfaceWingCutOut is customized, use type CCPACSControlSurfaceWingCutOut directly
 } // namespace tigl

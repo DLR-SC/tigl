@@ -22,6 +22,7 @@
 #include "tigl_internal.h"
 #include "CSharedPtr.h"
 #include "PNamedShape.h"
+#include "CTiglTransformation.h"
 
 #include <string>
 #include <vector>
@@ -57,12 +58,17 @@ public:
     
     TIGL_EXPORT void SetComponentUID(const std::string& uid);
     TIGL_EXPORT std::string ComponentUID() const;
+
+    TIGL_EXPORT void SetTransformation(const tigl::CTiglTransformation& trafo);
+    TIGL_EXPORT const tigl::CTiglTransformation& Transformation() const;
     
 private:
     PNamedShape  _origin;        /** Pointer to the original shape where this face was created */
     unsigned int _indexInOrigin; /** Index of face in original shape */
     std::string   _faceName;     /** Name of the face */
     std::string _componentUID;   /** UID of the TiGL component the face belongs to */
+
+    tigl::CTiglTransformation _localTransformation; /** A transformation property, e.g. for faces on flaps */
 };
 
 /**
@@ -90,8 +96,8 @@ public:
     TIGL_EXPORT std::string ShortName() const;
 
     TIGL_EXPORT unsigned int GetFaceCount() const;
-    TIGL_EXPORT const CFaceTraits& GetFaceTraits(int iFace) const;
-    TIGL_EXPORT CFaceTraits& FaceTraits(int iFace);
+    TIGL_EXPORT const CFaceTraits& GetFaceTraits(unsigned int iFace) const;
+    TIGL_EXPORT CFaceTraits& FaceTraits(unsigned int iFace);
 
     // setters
     TIGL_EXPORT void SetShape(const TopoDS_Shape&);

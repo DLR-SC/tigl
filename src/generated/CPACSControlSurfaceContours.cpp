@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "CPACSControlSurfaceAirfoil.h"
 #include "CPACSControlSurfaceContours.h"
-#include "CPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSControlSurfaceContours::CPACSControlSurfaceContours(CPACSControlSurfaceOuterShapeTrailingEdge* parent, CTiglUIDManager* uidMgr)
+    CPACSControlSurfaceContours::CPACSControlSurfaceContours(CCPACSControlSurfaceOuterShapeTrailingEdge* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSControlSurfaceOuterShapeTrailingEdge* CPACSControlSurfaceContours::GetParent() const
+    const CCPACSControlSurfaceOuterShapeTrailingEdge* CPACSControlSurfaceContours::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSControlSurfaceOuterShapeTrailingEdge* CPACSControlSurfaceContours::GetParent()
+    CCPACSControlSurfaceOuterShapeTrailingEdge* CPACSControlSurfaceContours::GetParent()
     {
         return m_parent;
     }

@@ -118,32 +118,32 @@ namespace generated
 
     }
 
-    const CCPACSControlSurfaceHingePoint& CPACSControlSurfacePath::GetInnerHingePoint() const
+    const CPACSControlSurfaceHingePoint& CPACSControlSurfacePath::GetInnerHingePoint() const
     {
         return m_innerHingePoint;
     }
 
-    CCPACSControlSurfaceHingePoint& CPACSControlSurfacePath::GetInnerHingePoint()
+    CPACSControlSurfaceHingePoint& CPACSControlSurfacePath::GetInnerHingePoint()
     {
         return m_innerHingePoint;
     }
 
-    const CCPACSControlSurfaceHingePoint& CPACSControlSurfacePath::GetOuterHingePoint() const
+    const CPACSControlSurfaceHingePoint& CPACSControlSurfacePath::GetOuterHingePoint() const
     {
         return m_outerHingePoint;
     }
 
-    CCPACSControlSurfaceHingePoint& CPACSControlSurfacePath::GetOuterHingePoint()
+    CPACSControlSurfaceHingePoint& CPACSControlSurfacePath::GetOuterHingePoint()
     {
         return m_outerHingePoint;
     }
 
-    const CCPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps() const
+    const CPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps() const
     {
         return m_steps;
     }
 
-    CCPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps()
+    CPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps()
     {
         return m_steps;
     }

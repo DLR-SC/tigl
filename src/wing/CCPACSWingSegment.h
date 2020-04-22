@@ -235,13 +235,17 @@ protected:
 private:
     struct SurfaceCache
     {
-        CTiglPointTranslator cordSurface;
-        CTiglPointTranslator cordSurfaceLocal;
-        Handle(Geom_Surface) cordFace;
         Handle(Geom_Surface) upperSurface;
         Handle(Geom_Surface) lowerSurface;
         Handle(Geom_Surface) upperSurfaceLocal;
         Handle(Geom_Surface) lowerSurfaceLocal;
+    };
+
+    struct ChordSurfaceCache
+    {
+        CTiglPointTranslator cordSurface;
+        CTiglPointTranslator cordSurfaceLocal;
+        Handle(Geom_Surface) cordFace;
     };
 
     // Invalidates internal state
@@ -254,6 +258,7 @@ private:
     void ComputeArea(double& cache) const;
 
     // Builds the chord surface
+    void MakeChordSurfaces(ChordSurfaceCache& cache) const;
     void MakeSurfaces(SurfaceCache& cache) const;
 
     void ComputeVolume(double& cache) const;
@@ -274,6 +279,7 @@ private:
                                                  * nonsmooth fuselage                       */
 
     Cache<SurfaceCache, CCPACSWingSegment> surfaceCache;
+    Cache<ChordSurfaceCache, CCPACSWingSegment> chordSurfaceCache;
     Cache<double, CCPACSWingSegment>            areaCache;
     Cache<double, CCPACSWingSegment>            volumeCache;
 

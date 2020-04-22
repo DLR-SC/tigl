@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include <CCPACSControlSurfaceTrackType.h>
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CPACSControlSurfaceTracks.h"
+#include "CPACSControlSurfaceTrackType.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -86,23 +86,23 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CCPACSControlSurfaceTrackType>>& CPACSControlSurfaceTracks::GetTracks() const
+    const std::vector<std::unique_ptr<CPACSControlSurfaceTrackType>>& CPACSControlSurfaceTracks::GetTracks() const
     {
         return m_tracks;
     }
 
-    std::vector<std::unique_ptr<CCPACSControlSurfaceTrackType>>& CPACSControlSurfaceTracks::GetTracks()
+    std::vector<std::unique_ptr<CPACSControlSurfaceTrackType>>& CPACSControlSurfaceTracks::GetTracks()
     {
         return m_tracks;
     }
 
-    CCPACSControlSurfaceTrackType& CPACSControlSurfaceTracks::AddTrack()
+    CPACSControlSurfaceTrackType& CPACSControlSurfaceTracks::AddTrack()
     {
-        m_tracks.push_back(make_unique<CCPACSControlSurfaceTrackType>(this, m_uidMgr));
+        m_tracks.push_back(make_unique<CPACSControlSurfaceTrackType>(this, m_uidMgr));
         return *m_tracks.back();
     }
 
-    void CPACSControlSurfaceTracks::RemoveTrack(CCPACSControlSurfaceTrackType& ref)
+    void CPACSControlSurfaceTracks::RemoveTrack(CPACSControlSurfaceTrackType& ref)
     {
         for (std::size_t i = 0; i < m_tracks.size(); i++) {
             if (m_tracks[i].get() == &ref) {

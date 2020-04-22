@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSTrailingEdgeDevices.h"
 #include "CPACSTrailingEdgeDevice.h"
+#include "CPACSTrailingEdgeDevices.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSTrailingEdgeDevice::CPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr)
+    CPACSTrailingEdgeDevice::CPACSTrailingEdgeDevice(CPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_outerShape(reinterpret_cast<CCPACSTrailingEdgeDevice*>(this), m_uidMgr)
         , m_path(reinterpret_cast<CCPACSTrailingEdgeDevice*>(this), m_uidMgr)
@@ -44,12 +44,12 @@ namespace generated
         }
     }
 
-    const CCPACSTrailingEdgeDevices* CPACSTrailingEdgeDevice::GetParent() const
+    const CPACSTrailingEdgeDevices* CPACSTrailingEdgeDevice::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSTrailingEdgeDevices* CPACSTrailingEdgeDevice::GetParent()
+    CPACSTrailingEdgeDevices* CPACSTrailingEdgeDevice::GetParent()
     {
         return m_parent;
     }
@@ -297,22 +297,22 @@ namespace generated
         m_parentUID = value;
     }
 
-    const CPACSControlSurfaceOuterShapeTrailingEdge& CPACSTrailingEdgeDevice::GetOuterShape() const
+    const CCPACSControlSurfaceOuterShapeTrailingEdge& CPACSTrailingEdgeDevice::GetOuterShape() const
     {
         return m_outerShape;
     }
 
-    CPACSControlSurfaceOuterShapeTrailingEdge& CPACSTrailingEdgeDevice::GetOuterShape()
+    CCPACSControlSurfaceOuterShapeTrailingEdge& CPACSTrailingEdgeDevice::GetOuterShape()
     {
         return m_outerShape;
     }
 
-    const boost::optional<CPACSControlSurfaceWingCutOut>& CPACSTrailingEdgeDevice::GetWingCutOut() const
+    const boost::optional<CCPACSControlSurfaceWingCutOut>& CPACSTrailingEdgeDevice::GetWingCutOut() const
     {
         return m_wingCutOut;
     }
 
-    boost::optional<CPACSControlSurfaceWingCutOut>& CPACSTrailingEdgeDevice::GetWingCutOut()
+    boost::optional<CCPACSControlSurfaceWingCutOut>& CPACSTrailingEdgeDevice::GetWingCutOut()
     {
         return m_wingCutOut;
     }
@@ -347,7 +347,7 @@ namespace generated
         return m_tracks;
     }
 
-    CPACSControlSurfaceWingCutOut& CPACSTrailingEdgeDevice::GetWingCutOut(CreateIfNotExistsTag)
+    CCPACSControlSurfaceWingCutOut& CPACSTrailingEdgeDevice::GetWingCutOut(CreateIfNotExistsTag)
     {
         if (!m_wingCutOut)
             m_wingCutOut = boost::in_place(reinterpret_cast<CCPACSTrailingEdgeDevice*>(this), m_uidMgr);

@@ -17,10 +17,10 @@
 
 #pragma once
 
-#include <CCPACSControlSurfaceHingePoint.h>
-#include <CCPACSControlSurfaceSteps.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSControlSurfaceHingePoint.h"
+#include "CPACSControlSurfaceSteps.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -84,23 +84,23 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CCPACSControlSurfaceHingePoint& GetInnerHingePoint() const;
-        TIGL_EXPORT virtual CCPACSControlSurfaceHingePoint& GetInnerHingePoint();
+        TIGL_EXPORT virtual const CPACSControlSurfaceHingePoint& GetInnerHingePoint() const;
+        TIGL_EXPORT virtual CPACSControlSurfaceHingePoint& GetInnerHingePoint();
 
-        TIGL_EXPORT virtual const CCPACSControlSurfaceHingePoint& GetOuterHingePoint() const;
-        TIGL_EXPORT virtual CCPACSControlSurfaceHingePoint& GetOuterHingePoint();
+        TIGL_EXPORT virtual const CPACSControlSurfaceHingePoint& GetOuterHingePoint() const;
+        TIGL_EXPORT virtual CPACSControlSurfaceHingePoint& GetOuterHingePoint();
 
-        TIGL_EXPORT virtual const CCPACSControlSurfaceSteps& GetSteps() const;
-        TIGL_EXPORT virtual CCPACSControlSurfaceSteps& GetSteps();
+        TIGL_EXPORT virtual const CPACSControlSurfaceSteps& GetSteps() const;
+        TIGL_EXPORT virtual CPACSControlSurfaceSteps& GetSteps();
 
     protected:
         CCPACSTrailingEdgeDevice* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        CCPACSControlSurfaceHingePoint m_innerHingePoint;
-        CCPACSControlSurfaceHingePoint m_outerHingePoint;
-        CCPACSControlSurfaceSteps      m_steps;
+        CPACSControlSurfaceHingePoint m_innerHingePoint;
+        CPACSControlSurfaceHingePoint m_outerHingePoint;
+        CPACSControlSurfaceSteps      m_steps;
 
     private:
         CPACSControlSurfacePath(const CPACSControlSurfacePath&) = delete;
