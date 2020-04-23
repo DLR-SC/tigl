@@ -752,16 +752,11 @@ marko.alder@dlr.de
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="cpacsVersion">
+                    <xsd:element name="cpacsVersion" type="stringBaseType">
                         <xsd:annotation>
                             <xsd:documentation>CPACS version that the dataset is valid to
                             </xsd:documentation>
                         </xsd:annotation>
-                        <xsd:simpleType>
-                            <xsd:restriction base="xsd:float">
-                                <xsd:enumeration value="3.1"/>
-                            </xsd:restriction>
-                        </xsd:simpleType>
                     </xsd:element>
                     <xsd:element minOccurs="0" name="updates" type="updatesType"/>
                 </xsd:all>
