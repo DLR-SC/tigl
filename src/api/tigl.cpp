@@ -2552,7 +2552,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPA
 
         const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
 
-        *minDeflection = ted.GetMinDeflection();
+        *minDeflection = ted.GetMinControlParameter();
 
         return TIGL_SUCCESS;
     }
@@ -2587,7 +2587,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPA
 
         const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
 
-        *maxDeflection = ted.GetMaxDeflection();
+        *maxDeflection = ted.GetMaxControlParameter();
 
         return TIGL_SUCCESS;
     }
@@ -2622,7 +2622,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfi
 
         const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
 
-        *deflection = ted.GetDeflection();
+        *deflection = ted.GetControlParameter();
 
         return TIGL_SUCCESS;
     }
@@ -2657,7 +2657,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfi
 
         auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
 
-        ted.SetDeflection(deflection);
+        ted.SetControlParameter(deflection);
 
         return TIGL_SUCCESS;
     }

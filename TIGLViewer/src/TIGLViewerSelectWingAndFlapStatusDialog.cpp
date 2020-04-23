@@ -61,17 +61,17 @@ private:
     bool _b;
 };
 
-double sliderToRelativeDeflect(const QSlider* slider, const QDoubleSpinBox* spinBox)
+double sliderToControlParameter(const QSlider* slider, const QDoubleSpinBox* spinBox)
 {
     
     double minSlider = static_cast<double>(slider->minimum());
     double maxSlider = static_cast<double>(slider->maximum());
     double valSlider = static_cast<double>(slider->value());
 
-    double minDeflect = spinBox->minimum();
-    double maxDeflect = spinBox->maximum();
+    double minControlParam = spinBox->minimum();
+    double maxControlParam = spinBox->maximum();
     
-    return (maxDeflect - minDeflect)/(maxSlider-minSlider) * (valSlider - minSlider) + minDeflect;
+    return (maxControlParam - minControlParam)/(maxSlider-minSlider) * (valSlider - minSlider) + minControlParam;
 }
 
 } // namespace
@@ -81,7 +81,7 @@ TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog
     ui(new Ui::TIGLViewerSelectWingAndFlapStatusDialog)
 {
     ui->setupUi(this);
-    this->setWindowTitle("Choose ControlSurface Deflections");
+    this->setWindowTitle("Choose ControlSurface Control Parameters");
     _document = document;
 
 }
@@ -99,14 +99,14 @@ void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int /* k */)
     std::string uid = slider->windowTitle().toStdString();
 
     DeviceWidgets& elms = _guiMap.at(uid);
-    double inputDeflection = sliderToRelativeDeflect(elms.slider, elms.deflectionBox);
+    double controlParm = sliderToControlParameter(elms.slider, elms.controlParamBox);
     
-    SignalsBlocker block(elms.deflectionBox);
-    updateWidgets(uid, inputDeflection);
+    SignalsBlocker block(elms.controlParamBox);
+    updateWidgets(uid, controlParm);
     _document->updateFlapTransform(uid);
 }
 
-void TIGLViewerSelectWingAndFlapStatusDialog::spinBox_value_changed(double inputDeflection)
+void TIGLViewerSelectWingAndFlapStatusDialog::spinBox_value_changed(double controlParam)
 {
     QDoubleSpinBox* spinBox = dynamic_cast<QDoubleSpinBox*>(QObject::sender());
     std::string uid = spinBox->windowTitle().toStdString();
@@ -114,7 +114,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::spinBox_value_changed(double input
     DeviceWidgets& elms = _guiMap.at(uid);
 
     SignalsBlocker block(elms.slider);
-    updateWidgets(uid, inputDeflection);
+    updateWidgets(uid, controlParam);
     _document->updateFlapTransform(uid);
 }
 
@@ -133,7 +133,7 @@ double TIGLViewerSelectWingAndFlapStatusDialog::getTrailingEdgeFlapValue( std::s
             throw tigl::CTiglError("getTrailingEdgeFlapValue: UID not found", TIGL_UID_ERROR);
         }
         tigl::CCPACSTrailingEdgeDevice* device = it->second;
-        return device->GetDeflection();
+        return device->GetControlParameter();
     }
     catch(...) {
         return 0;
@@ -177,22 +177,22 @@ void TIGLViewerSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPACSTra
 
     gridLayout->setCellWidget(rowIdx, 3, labelRotation);
 
-    double savedValue = controlSurfaceDevice.GetDeflection();
+    double savedValue = controlSurfaceDevice.GetControlParameter();
 
-    double minDeflect = controlSurfaceDevice.GetMinDeflection();
-    double maxDeflect = controlSurfaceDevice.GetMaxDeflection();
+    double minControlParam = controlSurfaceDevice.GetMinControlParameter();
+    double maxControlParam = controlSurfaceDevice.GetMaxControlParameter();
     
-    int newSliderValue = static_cast<int>((slider->maximum() - slider->minimum()) / (maxDeflect-minDeflect) * (savedValue - minDeflect))
+    int newSliderValue = static_cast<int>((slider->maximum() - slider->minimum()) / (maxControlParam-minControlParam) * (savedValue - minControlParam))
                         + slider->minimum();
     slider->setValue(newSliderValue);
 
-    spinBox->setMinimum(minDeflect);
+    spinBox->setMinimum(minControlParam);
     spinBox->setValue(savedValue);
-    spinBox->setMaximum(maxDeflect);
+    spinBox->setMaximum(maxControlParam);
     
     DeviceWidgets elements;
     elements.slider = slider;
-    elements.deflectionBox = spinBox;
+    elements.controlParamBox = spinBox;
     elements.rotAngleLabel = labelRotation;
     _guiMap[uid.toStdString()] = elements;
 
@@ -252,7 +252,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI()
         buildFlapRow(*device, rowIdx++, tableWidget);
 
         _deviceMap[device->GetUID()] = device;
-        updateWidgets(device->GetUID(), device->GetDeflection() );
+        updateWidgets(device->GetUID(), device->GetControlParameter() );
 
 
     }
@@ -265,7 +265,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI()
 #else
     tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 #endif
-    tableWidget->setHorizontalHeaderLabels(QStringList({"", "", "Deflection", "Rotation"}));
+    tableWidget->setHorizontalHeaderLabels(QStringList({"", "", "Control Parameter", "Rotation"}));
     tableWidget->verticalHeader()->hide();
     tableWidget->setStyleSheet("QHeaderView::section { border: 0px solid black}");
 
@@ -288,7 +288,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_checkSpoiler_stateChanged(int)
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::updateWidgets(std::string controlSurfaceDeviceUID,
-                                                            double inputDeflection)
+                                                            double controlParam)
 {
     DeviceWidgets& elms = _guiMap.at(controlSurfaceDeviceUID);
 
@@ -301,27 +301,27 @@ void TIGLViewerSelectWingAndFlapStatusDialog::updateWidgets(std::string controlS
     }
     tigl::CCPACSTrailingEdgeDevice* device = it->second;
 
-    // Get rotation for current deflection value
-    std::vector<double> relDeflections;
+    // Get rotation for current control parameter value
+    std::vector<double> controlParams;
     std::vector<double> rotations;
     const tigl::CCPACSControlSurfaceSteps& steps = device->GetPath().GetSteps();
     for ( const auto &step : steps.GetSteps()) {
         if (!step) continue;
-        relDeflections.push_back(step->GetRelDeflection());
+        controlParams.push_back(step->GetControlParameter());
         rotations.push_back(step->GetHingeLineRotation().value_or(0.));
     }
-    double rotation = tigl::Interpolate(relDeflections, rotations, inputDeflection);
+    double rotation = tigl::Interpolate(controlParams, rotations, controlParam);
     QString textRot = QString::number(rotation);
 
-    double factor = ( inputDeflection - device->GetMinDeflection()  ) / ( device->GetMaxDeflection() - device->GetMinDeflection() );
+    double factor = ( controlParam - device->GetMinControlParameter()  ) / ( device->GetMaxControlParameter() - device->GetMinControlParameter() );
     textVal.append(QString::number(100 * factor));
     textVal.append("% ");
 
     int sliderVal = static_cast<int>(Mix(elms.slider->minimum(), elms.slider->maximum(), factor));
 
     elms.slider->setValue(sliderVal);
-    elms.deflectionBox->setValue(inputDeflection);
+    elms.controlParamBox->setValue(controlParam);
     elms.rotAngleLabel->setText(textRot);
 
-    device->SetDeflection(inputDeflection);
+    device->SetControlParameter(controlParam);
 }

@@ -36,15 +36,15 @@ public:
 
     TIGL_EXPORT std::string GetShortName() const;
 
-    // Returns the flap transformation based on the current deflection
+    // Returns the flap transformation based on the current control parameter
     TIGL_EXPORT gp_Trsf GetFlapTransform() const;
 
-    TIGL_EXPORT double GetMinDeflection() const;
-    TIGL_EXPORT double GetMaxDeflection() const;
+    TIGL_EXPORT double GetMinControlParameter() const;
+    TIGL_EXPORT double GetMaxControlParameter() const;
 
-    // Get and set the current deflection  value
-    TIGL_EXPORT double GetDeflection() const;
-    TIGL_EXPORT void SetDeflection(const double deflect);
+    // Get and set the current control parameter
+    TIGL_EXPORT double GetControlParameter() const;
+    TIGL_EXPORT void SetControlParameter(const double deflect);
 
     TIGL_EXPORT PNamedShape GetCutOutShape(void) const;
     TIGL_EXPORT PNamedShape GetFlapShape() const;
@@ -68,7 +68,7 @@ private:
     Cache<PNamedShape, CCPACSTrailingEdgeDevice> m_cutoutShape;
     Cache<PNamedShape, CCPACSTrailingEdgeDevice> m_flapShape;
     TiglControlSurfaceType m_type;
-    double m_currentDeflection;
+    double m_currentControlParam;
 
     PNamedShape BuildLoft() const override;
     void ComputeHingePoints(HingePoints&) const;

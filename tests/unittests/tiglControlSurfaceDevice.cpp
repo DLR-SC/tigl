@@ -116,7 +116,7 @@ TEST_F(TiglControlSurfaceDevice, tiglGetControlSurfaceType)
     ASSERT_EQ(TRAILING_EDGE_DEVICE, type3);
 }
 
-TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMinimumDeflection)
+TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMinimumControlParameter)
 {
     double deflect1, deflect2, deflect3;
     ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceGetMinimumDeflection(tiglHandle, "rmplstlzchn"                    , &deflect1) );
@@ -129,7 +129,7 @@ TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMinimumDeflection)
     ASSERT_EQ(-1, deflect3);
 }
 
-TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMaximumDeflection)
+TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMaximumControlParameter)
 {
     double deflect1, deflect2, deflect3;
     ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceGetMaximumDeflection(tiglHandle, "rmplstlzchn"                    , &deflect1) );
@@ -142,7 +142,7 @@ TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMaximumDeflection)
     ASSERT_EQ( 1, deflect3);
 }
 
-TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetAndSetDeflection)
+TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetAndSetControlParameter)
 {
     double deflect1, deflect2, deflect3;
     ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceGetDeflection(tiglHandle, "rmplstlzchn"                    , &deflect1) );
@@ -176,7 +176,7 @@ TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetAndSetDeflection)
 
 }
 
-TEST(TiglControlSurfaceDeviceSimple, setDeflectionAndExport)
+TEST(TiglControlSurfaceDeviceSimple, setControlParameterAndExport)
 {
     TiglHandleWrapper handle("TestData/simpletest-flaps.cpacs.xml", "");
     ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceSetDeflection(handle, "Flap", 1.0));
