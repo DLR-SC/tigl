@@ -38,11 +38,11 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinition
 
-    // generated from /xsd:schema/xsd:complexType[966]
-    /// @brief wingRibExplicitPositioningType
+    /// @brief Explicit positioning of a wing rib
     /// 
-    /// Use this type for an explicit positioning of every
-    /// single rib.
+    /// Use this type for an explicit positioning of a rib. As opposed to
+    /// ribsPositioning, this defines a single rib connecting a specified start
+    /// and end point.
     /// 
     class CPACSWingRibExplicitPositioning : public ITiglUIDRefObject
     {
@@ -107,27 +107,27 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// startEtaXsiPoint defines the start of the rib defined in eta-xsi coordinates of a reference plane
+        /// Defines the start of the rib defined in eta-xsi coordinates of a reference plane
         boost::optional<CCPACSEtaXsiPoint> m_startEtaXsiPoint_choice1;
 
-        /// startCurvePoint defines the start of the rib defined by a point on a reference curve
+        /// Defines the start of the rib defined by a point on a reference curve
         /// such as a spar, but not an explicit sparPosition
         boost::optional<CCPACSCurvePoint>  m_startCurvePoint_choice2;
 
         /// Defines the location of the beginning of the rib using a specific sparPosition.
         boost::optional<std::string>       m_startSparPositionUID_choice3;
 
-        /// endEtaXsiPoint defines the end of the rib defined in eta-xsi coordinates of a reference plane
+        /// Defines the end of the rib defined in eta-xsi coordinates of a reference plane
         boost::optional<CCPACSEtaXsiPoint> m_endEtaXsiPoint_choice1;
 
-        /// endCurvePoint defines the end of the rib defined by a point on a reference curve
+        /// Defines the end of the rib given by a point on a reference curve
         /// such as a spar, but not an explicit sparPosition
         boost::optional<CCPACSCurvePoint>  m_endCurvePoint_choice2;
 
         /// Defines the location of the end of the rib using a specific sparPosition.
         boost::optional<std::string>       m_endSparPositionUID_choice3;
 
-        /// RibStart defines the forward beginning of the ribs. It can either be a
+        /// Defines the forward beginning of the ribs. It can either be a
         /// sparUID or "trailingEdge" or "leadingEdge".
         std::string                        m_ribStart;
 

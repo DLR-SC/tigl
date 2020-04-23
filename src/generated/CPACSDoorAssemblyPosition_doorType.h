@@ -30,7 +30,6 @@ namespace generated
     // This enum is used in:
     // CPACSDoorAssemblyPosition
 
-    // generated from /xsd:schema/xsd:complexType[289]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:complexType/xsd:simpleContent
     enum CPACSDoorAssemblyPosition_doorType
     {
         pax,

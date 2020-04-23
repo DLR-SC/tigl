@@ -38,7 +38,6 @@ namespace generated
     // This class is used in:
     // CPACSSparSegment
 
-    // generated from /xsd:schema/xsd:complexType[826]
     /// @brief Definition of the spar cross section.
     /// 
     /// Spar type, containing the cross section definition of

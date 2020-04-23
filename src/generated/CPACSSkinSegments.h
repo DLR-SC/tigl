@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSSkin
 
-    // generated from /xsd:schema/xsd:complexType[822]
     /// @brief fuselageSkinSegmentType
     /// 
     /// FuselageSkinSegment type, containing material on skin

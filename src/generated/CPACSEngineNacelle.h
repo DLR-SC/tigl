@@ -38,7 +38,6 @@ namespace generated
     // This class is used in:
     // CPACSEngine
 
-    // generated from /xsd:schema/xsd:complexType[311]
     /// @brief Definition of the engine nacelle type.
     /// 
     /// The engine nacelle is currently located together with

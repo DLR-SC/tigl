@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSSparCrossSection
 
-    // generated from /xsd:schema/xsd:complexType[825]
     /// @brief SparCells of current spar.
     /// 
     /// sparCells are an optional Element. They are defined via

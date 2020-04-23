@@ -34,7 +34,6 @@ namespace generated
     // This class is used in:
     // CPACSCutOutProfiles
 
-    // generated from /xsd:schema/xsd:complexType[699]
     /// @brief outerCutOutProfileType
     /// 
     /// 

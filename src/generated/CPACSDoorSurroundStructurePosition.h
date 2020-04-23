@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSDoorSurroundStructuresAssembly
 
-    // generated from /xsd:schema/xsd:complexType[291]
     /// @brief doorSurroundStructurePositionType
     /// 
     /// DoorSurroundStructurePosition type, containing the position of a

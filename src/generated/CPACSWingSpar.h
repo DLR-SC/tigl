@@ -34,8 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSWingComponentSegmentStructure
 
-    // generated from /xsd:schema/xsd:complexType[980]
-    /// @brief Definition of the spars of the wing.
+    /// @brief Wing spars
     /// 
     /// Spars type, a spar is defined by sparSegments that
     /// stretch between multiple sparPositions. The spar definition is
@@ -48,9 +47,9 @@ namespace generated
     /// plane.
     /// Two or more spar points are connected to on spar
     /// segment (->sparSegments). Each spar segment can be seen as
-    /// one spar. The spar geometry between two spar points is defined 
-    /// as a direct/straight connection in global coordinate system 
-    /// and not in eta xsi coordinates of the component segment. 
+    /// one spar. The spar geometry between two spar points is defined
+    /// as a direct/straight connection in global coordinate system
+    /// and not in eta xsi coordinates of the component segment.
     /// One spar point can be used by more than one spar, if
     /// e.g. two spars are merging. The detailed cross section of the
     /// spar is also defined with sparSegments.

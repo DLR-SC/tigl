@@ -32,7 +32,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceWingCutOut
 
-    // generated from /xsd:schema/xsd:complexType[247]
     /// @brief cutOutControlPointsType
     /// 
     /// 

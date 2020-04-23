@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSWingElements
 
-    // generated from /xsd:schema/xsd:complexType[946]
     /// @brief Element of the section.
     /// 
     /// Within elements the airfoils of the wing are defined.

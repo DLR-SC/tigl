@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSSparSegments
 
-    // generated from /xsd:schema/xsd:complexType[830]
     /// @brief SparSegments (=spars) of the wing.
     /// 
     /// SparSegmentType, each spar is defined by multiple

@@ -33,7 +33,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceBorderTrailingEdge
 
-    // generated from /xsd:schema/xsd:complexType[156]
     /// @brief Airfoil definition of an control surface at the
     /// inner/outer border.
     /// 

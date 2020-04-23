@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSWalls
 
-    // generated from /xsd:schema/xsd:complexType[1005]
     class CPACSWallPositions
     {
     public:

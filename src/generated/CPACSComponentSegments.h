@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSWing
 
-    // generated from /xsd:schema/xsd:complexType[145]
     /// @brief ComponentSegments of the wing.
     /// 
     /// ComponentSegments type, containing all the

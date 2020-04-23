@@ -41,7 +41,6 @@ namespace generated
     // This class is used in:
     // CPACSEnginePylons
 
-    // generated from /xsd:schema/xsd:complexType[316]
     /// @brief Definition of one engine pylon.
     /// 
     /// 

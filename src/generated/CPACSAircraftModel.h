@@ -41,7 +41,6 @@ namespace generated
     // This class is used in:
     // CPACSAircraft
 
-    // generated from /xsd:schema/xsd:complexType[55]
     /// @brief aircraftModelType
     /// 
     /// AircraftModel type, containing a complete aircraft

@@ -33,7 +33,6 @@ namespace generated
     // This class is used in:
     // CPACSGlobalBeamProperties
 
-    // generated from /xsd:schema/xsd:complexType[79]
     /// @brief beamCrossSectionType
     /// 
     /// beamCrossSectionType, containing the beam geometrical

@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSProfileGeometry
 
-    // generated from /xsd:schema/xsd:complexType[723]
     /// @brief A curve that interpolates a list of points.
     /// 
     /// The curve interpolates the list of points, typically with a b-spline.

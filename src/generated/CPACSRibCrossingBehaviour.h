@@ -30,7 +30,6 @@ namespace generated
     // This enum is used in:
     // CPACSWingRibsPositioning
 
-    // generated from /xsd:schema/xsd:complexType[758]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[4]/xsd:complexType/xsd:simpleContent
     enum CPACSRibCrossingBehaviour
     {
         cross,

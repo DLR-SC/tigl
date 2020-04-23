@@ -32,7 +32,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfacePath
 
-    // generated from /xsd:schema/xsd:complexType[181]
     /// @brief controlSurfaceHingePointType
     /// 
     /// The deflection path of a control surface is described

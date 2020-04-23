@@ -39,7 +39,6 @@ namespace generated
     // This class is used in:
     // CPACSTrailingEdgeDevice
 
-    // generated from /xsd:schema/xsd:complexType[194]
     /// @brief Cut out of the parents structure due to a control
     /// surface.
     /// 

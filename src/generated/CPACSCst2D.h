@@ -39,7 +39,6 @@ namespace generated
     // CPACSProfileGeometry
     // CPACSProfileGeometry2D
 
-    // generated from /xsd:schema/xsd:complexType[239]
     /// @brief cst2DType
     /// 
     /// 

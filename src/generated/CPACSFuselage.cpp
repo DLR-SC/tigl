@@ -173,6 +173,17 @@ namespace generated
             }
         }
 
+        // read element compartments
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/compartments")) {
+            m_compartments = boost::in_place(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr);
+            try {
+                m_compartments->ReadCPACS(tixiHandle, xpath + "/compartments");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read compartments at xpath " << xpath << ": " << e.what();
+                m_compartments = boost::none;
+            }
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
@@ -248,6 +259,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/structure")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/structure");
+            }
+        }
+
+        // write element compartments
+        if (m_compartments) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/compartments");
+            m_compartments->WriteCPACS(tixiHandle, xpath + "/compartments");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/compartments")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/compartments");
             }
         }
 
@@ -365,6 +387,16 @@ namespace generated
         return m_structure;
     }
 
+    const boost::optional<CPACSCompartments>& CPACSFuselage::GetCompartments() const
+    {
+        return m_compartments;
+    }
+
+    boost::optional<CPACSCompartments>& CPACSFuselage::GetCompartments()
+    {
+        return m_compartments;
+    }
+
     CCPACSPositionings& CPACSFuselage::GetPositionings(CreateIfNotExistsTag)
     {
         if (!m_positionings)
@@ -387,6 +419,18 @@ namespace generated
     void CPACSFuselage::RemoveStructure()
     {
         m_structure = boost::none;
+    }
+
+    CPACSCompartments& CPACSFuselage::GetCompartments(CreateIfNotExistsTag)
+    {
+        if (!m_compartments)
+            m_compartments = boost::in_place(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr);
+        return *m_compartments;
+    }
+
+    void CPACSFuselage::RemoveCompartments()
+    {
+        m_compartments = boost::none;
     }
 
     const CTiglUIDObject* CPACSFuselage::GetNextUIDObject() const

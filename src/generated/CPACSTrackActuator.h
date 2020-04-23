@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceTrackType
 
-    // generated from /xsd:schema/xsd:complexType[884]
     /// @brief trackActuatorType
     /// 
     /// 

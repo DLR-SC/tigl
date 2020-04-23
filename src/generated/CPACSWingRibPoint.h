@@ -35,11 +35,10 @@ namespace generated
     // This class is used in:
     // CPACSSparPosition
 
-    // generated from /xsd:schema/xsd:complexType[967]
     /// @brief wingRibPointType
     /// 
     /// The wingRibPointType is used to define reference points on ribs.
-    /// It can be used for rib set definitions (wingRibsPositioningType) as 
+    /// It can be used for rib set definitions (wingRibsPositioningType) as
     /// well as explicit rib definitions (wingRibExplicitPositioningType).
     /// 
     class CPACSWingRibPoint : public ITiglUIDRefObject
@@ -76,15 +75,15 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// The UID of the rib definition. Can be a reference to nodes 
+        /// The UID of the rib definition. Can be a reference to nodes
         /// of either wingRibsPositioningType or wingRibExplicitPositioningType.
         std::string          m_ribDefinitionUID;
 
-        /// For references of type wingRibsPositioningType this node indicates the rib number of the rib set. 
+        /// For references of type wingRibsPositioningType this node indicates the rib number of the rib set.
         /// If not given it defaults to 1.
         boost::optional<int> m_ribNumber;
 
-        /// Normalized xsi coordinate of the rib point which is measured along the rib 
+        /// Normalized xsi coordinate of the rib point which is measured along the rib
         /// from the start point [0] towards the end point [1].
         double               m_xsi;
 

@@ -43,7 +43,6 @@ namespace generated
     // CPACSSeatModule
     // CPACSTransformation
 
-    // generated from /xsd:schema/xsd:complexType[730]
     /// @brief pointType
     /// 
     /// Point type, containing an xyz data triplet.

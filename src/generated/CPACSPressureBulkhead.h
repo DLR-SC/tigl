@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSPressureBulkheads
 
-    // generated from /xsd:schema/xsd:complexType[743]
     /// @brief pressureBulkheadType
     /// 
     /// PressureBulkhead type, containing data of a pressure

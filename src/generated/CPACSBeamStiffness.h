@@ -33,7 +33,6 @@ namespace generated
     // This class is used in:
     // CPACSGlobalBeamProperties
 
-    // generated from /xsd:schema/xsd:complexType[80]
     /// @brief beamStiffnessType
     /// 
     /// globalBeamStiffnessType, containing the beam

@@ -39,8 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinition
 
-    // generated from /xsd:schema/xsd:complexType[965]
-    /// @brief wingRibCrossSectionType
+    /// @brief Cross section properties of a wing rib
     /// 
     /// wingRibCrossSectionType, containing the definition of
     /// ribsCrossSection

@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    // generated from /xsd:schema/xsd:complexType[776]
     /// @brief rivetsType
     /// 
     /// Rivets type, containing rivets

@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSRotor
 
-    // generated from /xsd:schema/xsd:complexType[784]
     /// @brief rotorHubType
     /// 
     /// RotorHub type, containing definitions for the rotor hub

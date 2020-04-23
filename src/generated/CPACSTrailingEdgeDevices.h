@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaces
 
-    // generated from /xsd:schema/xsd:complexType[892]
     /// @brief Definition of the wings trailing edge devices.
     /// 
     /// Definition of the wings trailing edge devices.

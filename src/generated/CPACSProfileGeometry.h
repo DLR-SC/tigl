@@ -44,7 +44,6 @@ namespace generated
     // CPACSRotorAirfoils
     // CPACSWingAirfoils
 
-    // generated from /xsd:schema/xsd:complexType[748]
     /// @brief profileGeometryType
     /// 
     /// A profile is defined by a profile name, an optional

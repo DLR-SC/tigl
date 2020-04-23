@@ -38,7 +38,6 @@ namespace generated
     // This class is used in:
     // CPACSSheetList
 
-    // generated from /xsd:schema/xsd:complexType[815]
     /// @brief sheetType
     /// 
     /// Sheet type, containing connection data of a sheet

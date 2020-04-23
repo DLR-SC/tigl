@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSSparPositions
 
-    // generated from /xsd:schema/xsd:complexType[827]
     /// @brief Spar position on the wing
     /// 
     /// sparPositionType, a sparPostion defines a location
@@ -94,7 +93,12 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                        m_uID;
+
+        /// Defines a spar position on an existing rib using a relative xsi coordinate
+        /// to determine the chord wise position on that rib
         boost::optional<CPACSWingRibPoint> m_sparPositionRib_choice1;
+
+        /// Defines a spar position using relative eta/xsi coordinates
         boost::optional<CCPACSEtaXsiPoint> m_sparPositionEtaXsi_choice2;
 
     private:

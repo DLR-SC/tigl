@@ -38,7 +38,6 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurves
 
-    // generated from /xsd:schema/xsd:complexType[441]
     /// @brief Guide Curve Type
     /// 
     /// A guide curve may be used to alter the shape of the

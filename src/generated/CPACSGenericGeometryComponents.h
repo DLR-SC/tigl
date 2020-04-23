@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSAircraftModel
 
-    // generated from /xsd:schema/xsd:complexType[404]
     /// @brief genericGeometryComponentsType
     /// 
     /// 

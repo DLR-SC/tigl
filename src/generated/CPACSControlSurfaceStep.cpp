@@ -30,7 +30,7 @@ namespace generated
 {
     CPACSControlSurfaceStep::CPACSControlSurfaceStep(CPACSControlSurfaceSteps* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_relDeflection(0)
+        , m_controlParameter(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -78,12 +78,12 @@ namespace generated
 
     void CPACSControlSurfaceStep::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element relDeflection
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/relDeflection")) {
-            m_relDeflection = tixi::TixiGetElement<double>(tixiHandle, xpath + "/relDeflection");
+        // read element controlParameter
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlParameter")) {
+            m_controlParameter = tixi::TixiGetElement<double>(tixiHandle, xpath + "/controlParameter");
         }
         else {
-            LOG(ERROR) << "Required element relDeflection is missing at xpath " << xpath;
+            LOG(ERROR) << "Required element controlParameter is missing at xpath " << xpath;
         }
 
         // read element innerHingeTranslation
@@ -117,15 +117,13 @@ namespace generated
 
     void CPACSControlSurfaceStep::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "relDeflection", "innerHingeTranslation", "outerHingeTranslation", "hingeLineRotation" };
-
-        // write element relDeflection
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/relDeflection", childElemOrder);
-        tixi::TixiSaveElement(tixiHandle, xpath + "/relDeflection", m_relDeflection);
+        // write element controlParameter
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/controlParameter");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/controlParameter", m_controlParameter);
 
         // write element innerHingeTranslation
         if (m_innerHingeTranslation) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/innerHingeTranslation", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/innerHingeTranslation");
             m_innerHingeTranslation->WriteCPACS(tixiHandle, xpath + "/innerHingeTranslation");
         }
         else {
@@ -136,7 +134,7 @@ namespace generated
 
         // write element outerHingeTranslation
         if (m_outerHingeTranslation) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/outerHingeTranslation", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/outerHingeTranslation");
             m_outerHingeTranslation->WriteCPACS(tixiHandle, xpath + "/outerHingeTranslation");
         }
         else {
@@ -147,7 +145,7 @@ namespace generated
 
         // write element hingeLineRotation
         if (m_hingeLineRotation) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/hingeLineRotation", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/hingeLineRotation");
             tixi::TixiSaveElement(tixiHandle, xpath + "/hingeLineRotation", *m_hingeLineRotation);
         }
         else {
@@ -158,14 +156,14 @@ namespace generated
 
     }
 
-    const double& CPACSControlSurfaceStep::GetRelDeflection() const
+    const double& CPACSControlSurfaceStep::GetControlParameter() const
     {
-        return m_relDeflection;
+        return m_controlParameter;
     }
 
-    void CPACSControlSurfaceStep::SetRelDeflection(const double& value)
+    void CPACSControlSurfaceStep::SetControlParameter(const double& value)
     {
-        m_relDeflection = value;
+        m_controlParameter = value;
     }
 
     const boost::optional<CCPACSPoint>& CPACSControlSurfaceStep::GetInnerHingeTranslation() const

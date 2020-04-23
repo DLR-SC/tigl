@@ -30,7 +30,6 @@ namespace generated
     // This enum is used in:
     // CPACSPointAbsRel
 
-    // generated from /xsd:schema/xsd:complexType[716]/xsd:complexContent/xsd:extension/xsd:attribute[2]/xsd:simpleType
     enum CPACSPointAbsRelType_refType
     {
         absGlobal,

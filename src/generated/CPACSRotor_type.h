@@ -30,7 +30,6 @@ namespace generated
     // This enum is used in:
     // CPACSRotor
 
-    // generated from /xsd:schema/xsd:complexType[785]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
     enum CPACSRotor_type
     {
         mainRotor,

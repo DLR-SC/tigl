@@ -5,6 +5,7 @@ CPACSFleets
 CPACSFlights
 CPACSMissionDefinitions
 CPACSStudies
+CPACSMaterial
 
 // in toolspecific
 CPACSAcCrashTool

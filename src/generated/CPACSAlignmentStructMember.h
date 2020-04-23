@@ -34,7 +34,6 @@ namespace generated
     // This class is used in:
     // CPACSLongFloorBeamPosition
 
-    // generated from /xsd:schema/xsd:complexType[69]
     /// @brief alignmentStructMemberType
     /// 
     /// 

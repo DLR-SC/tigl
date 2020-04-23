@@ -27,6 +27,7 @@
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
+#include "CPACSCompartments.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
@@ -42,7 +43,6 @@ namespace generated
     // This class is used in:
     // CPACSFuselages
 
-    // generated from /xsd:schema/xsd:complexType[390]
     /// @brief fuselageType
     /// 
     /// Fuselage type, containing all data related to a
@@ -99,11 +99,17 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSFuselageStructure>& GetStructure() const;
         TIGL_EXPORT virtual boost::optional<CCPACSFuselageStructure>& GetStructure();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSCompartments>& GetCompartments() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCompartments>& GetCompartments();
+
         TIGL_EXPORT virtual CCPACSPositionings& GetPositionings(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePositionings();
 
         TIGL_EXPORT virtual CCPACSFuselageStructure& GetStructure(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructure();
+
+        TIGL_EXPORT virtual CPACSCompartments& GetCompartments(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveCompartments();
 
     protected:
         CCPACSFuselages* m_parent;
@@ -133,6 +139,8 @@ namespace generated
         CCPACSFuselageSegments                   m_segments;
 
         boost::optional<CCPACSFuselageStructure> m_structure;
+
+        boost::optional<CPACSCompartments>       m_compartments;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;

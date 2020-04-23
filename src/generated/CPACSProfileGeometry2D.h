@@ -43,12 +43,11 @@ namespace generated
     // CPACSCurveProfiles
     // CPACSNacelleProfiles
 
-    // generated from /xsd:schema/xsd:complexType[749]
     /// @brief profileGeometry2DType
     /// 
     /// A profile is defined by a profile name, an optional
     /// description and a 2-dimensional pointlist with both
-    /// coordinates mandatory. All point coordinates are transferred 
+    /// coordinates mandatory. All point coordinates are transferred
     /// to the global coordinate system depending on the context they
     /// are used in. The points have to be ordered in a mathematical
     /// positive sense. The x-coordinates of the profile has to be
@@ -58,7 +57,7 @@ namespace generated
     /// the upper and lower point need to be identical. No crooked
     /// trailing edges are possible.
     /// Example 1: For a conventional nacelle profile, the airfoil
-    /// coordinates are defined in x and y. The points have to be ordered 
+    /// coordinates are defined in x and y. The points have to be ordered
     /// from the trailing edge along the lower side to the leading
     /// edge and then along the upper side back to the trailing edge.
     /// When used for a nacelle the profile axis align

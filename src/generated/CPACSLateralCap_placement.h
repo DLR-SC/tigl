@@ -30,7 +30,6 @@ namespace generated
     // This enum is used in:
     // CPACSLateralCap
 
-    // generated from /xsd:schema/xsd:complexType[1012]/xsd:complexContent/xsd:extension/xsd:sequence/xsd:element[1]/xsd:simpleType
     enum CPACSLateralCap_placement
     {
         all,

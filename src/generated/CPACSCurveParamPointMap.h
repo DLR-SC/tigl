@@ -32,7 +32,6 @@ namespace generated
     // This class is used in:
     // CPACSCurvePointListXYZ
 
-    // generated from /xsd:schema/xsd:complexType[722]
     /// @brief Maps points (actually the index in the point list) to a curve parameter.
     /// 
     /// Which parameters are allowed depends on the context.

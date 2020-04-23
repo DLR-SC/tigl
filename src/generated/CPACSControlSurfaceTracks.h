@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSTrailingEdgeDevice
 
-    // generated from /xsd:schema/xsd:complexType[193]
     /// @brief Control surface tracks (mechnaical link between control
     /// surface and parent).
     /// 

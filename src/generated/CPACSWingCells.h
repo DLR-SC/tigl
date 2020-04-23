@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSWingShell
 
-    // generated from /xsd:schema/xsd:complexType[943]
     /// @brief Cells of the wing.
     /// 
     /// WingCells type, containing all the cells of the wing.

@@ -31,7 +31,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceBorderTrailingEdge
 
-    // generated from /xsd:schema/xsd:complexType[490]
     /// @brief Optional definition of the airfoil inner shape of
     /// leading edge devices (LED).
     /// 

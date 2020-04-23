@@ -22,6 +22,7 @@
 #include <ctime>
 #include <string>
 #include <tixi.h>
+#include "CPACSHeader_cpacsVersion.h"
 #include "CPACSUpdates.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -37,7 +38,6 @@ namespace generated
     // This class is used in:
     // CPACSCpacs
 
-    // generated from /xsd:schema/xsd:complexType[463]
     /// @brief headerType
     /// 
     /// Header type, containing CPACS dataset description
@@ -74,8 +74,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetVersion() const;
         TIGL_EXPORT virtual void SetVersion(const std::string& value);
 
-        TIGL_EXPORT virtual const std::string& GetCpacsVersion() const;
-        TIGL_EXPORT virtual void SetCpacsVersion(const std::string& value);
+        TIGL_EXPORT virtual const CPACSHeader_cpacsVersion& GetCpacsVersion() const;
+        TIGL_EXPORT virtual void SetCpacsVersion(const CPACSHeader_cpacsVersion& value);
 
         TIGL_EXPORT virtual const boost::optional<CPACSUpdates>& GetUpdates() const;
         TIGL_EXPORT virtual boost::optional<CPACSUpdates>& GetUpdates();
@@ -102,7 +102,7 @@ namespace generated
         std::string                   m_version;
 
         /// CPACS version that the dataset is valid to
-        std::string                   m_cpacsVersion;
+        CPACSHeader_cpacsVersion      m_cpacsVersion;
 
         boost::optional<CPACSUpdates> m_updates;
 

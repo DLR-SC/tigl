@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    // generated from /xsd:schema/xsd:complexType[939]
     /// @brief windowsType
     /// 
     /// Windows type, containing windows

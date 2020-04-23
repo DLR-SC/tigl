@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSCargoCrossBeamsAssembly
 
-    // generated from /xsd:schema/xsd:complexType[235]
     /// @brief crossBeamAssemblyPositionType
     /// 
     /// CrossBeamAssemblyPosition type, containing the position

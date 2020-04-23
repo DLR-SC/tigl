@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSToolspecific
 
-    // generated from /xsd:schema/xsd:complexType[100]
     /// @brief cFDToolType
     /// 
     /// 

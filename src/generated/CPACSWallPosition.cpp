@@ -39,6 +39,11 @@ namespace generated
     CPACSWallPosition::~CPACSWallPosition()
     {
         if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+        if (m_uidMgr) {
+            if (m_bulkheadUID_choice1 && !m_bulkheadUID_choice1->empty()) m_uidMgr->TryUnregisterReference(*m_bulkheadUID_choice1, *this);
+            if (m_wallSegmentUID_choice2 && !m_wallSegmentUID_choice2->empty()) m_uidMgr->TryUnregisterReference(*m_wallSegmentUID_choice2, *this);
+            if (m_fuselageSectionUID_choice3 && !m_fuselageSectionUID_choice3->empty()) m_uidMgr->TryUnregisterReference(*m_fuselageSectionUID_choice3, *this);
+        }
     }
 
     const CPACSWallPositions* CPACSWallPosition::GetParent() const
@@ -93,6 +98,7 @@ namespace generated
             if (m_bulkheadUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element bulkheadUID is present but empty at xpath " << xpath;
             }
+            if (m_uidMgr && !m_bulkheadUID_choice1->empty()) m_uidMgr->RegisterReference(*m_bulkheadUID_choice1, *this);
         }
 
         // read element wallSegmentUID
@@ -101,6 +107,7 @@ namespace generated
             if (m_wallSegmentUID_choice2->empty()) {
                 LOG(WARNING) << "Optional element wallSegmentUID is present but empty at xpath " << xpath;
             }
+            if (m_uidMgr && !m_wallSegmentUID_choice2->empty()) m_uidMgr->RegisterReference(*m_wallSegmentUID_choice2, *this);
         }
 
         // read element fuselageSectionUID
@@ -109,6 +116,7 @@ namespace generated
             if (m_fuselageSectionUID_choice3->empty()) {
                 LOG(WARNING) << "Optional element fuselageSectionUID is present but empty at xpath " << xpath;
             }
+            if (m_uidMgr && !m_fuselageSectionUID_choice3->empty()) m_uidMgr->RegisterReference(*m_fuselageSectionUID_choice3, *this);
         }
 
         // read element x
@@ -300,6 +308,10 @@ namespace generated
 
     void CPACSWallPosition::SetBulkheadUID_choice1(const boost::optional<std::string>& value)
     {
+        if (m_uidMgr) {
+            if (m_bulkheadUID_choice1 && !m_bulkheadUID_choice1->empty()) m_uidMgr->TryUnregisterReference(*m_bulkheadUID_choice1, *this);
+            if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
+        }
         m_bulkheadUID_choice1 = value;
     }
 
@@ -310,6 +322,10 @@ namespace generated
 
     void CPACSWallPosition::SetWallSegmentUID_choice2(const boost::optional<std::string>& value)
     {
+        if (m_uidMgr) {
+            if (m_wallSegmentUID_choice2 && !m_wallSegmentUID_choice2->empty()) m_uidMgr->TryUnregisterReference(*m_wallSegmentUID_choice2, *this);
+            if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
+        }
         m_wallSegmentUID_choice2 = value;
     }
 
@@ -320,6 +336,10 @@ namespace generated
 
     void CPACSWallPosition::SetFuselageSectionUID_choice3(const boost::optional<std::string>& value)
     {
+        if (m_uidMgr) {
+            if (m_fuselageSectionUID_choice3 && !m_fuselageSectionUID_choice3->empty()) m_uidMgr->TryUnregisterReference(*m_fuselageSectionUID_choice3, *this);
+            if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
+        }
         m_fuselageSectionUID_choice3 = value;
     }
 
@@ -351,6 +371,24 @@ namespace generated
     void CPACSWallPosition::SetZ(const double& value)
     {
         m_z = value;
+    }
+
+    const CTiglUIDObject* CPACSWallPosition::GetNextUIDObject() const
+    {
+        return this;
+    }
+
+    void CPACSWallPosition::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
+    {
+        if (m_bulkheadUID_choice1 && *m_bulkheadUID_choice1 == oldUid) {
+            m_bulkheadUID_choice1 = newUid;
+        }
+        if (m_wallSegmentUID_choice2 && *m_wallSegmentUID_choice2 == oldUid) {
+            m_wallSegmentUID_choice2 = newUid;
+        }
+        if (m_fuselageSectionUID_choice3 && *m_fuselageSectionUID_choice3 == oldUid) {
+            m_fuselageSectionUID_choice3 = newUid;
+        }
     }
 
 } // namespace generated

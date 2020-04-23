@@ -32,7 +32,6 @@ namespace generated
     // This class is used in:
     // CPACSCutOutControlPoints
 
-    // generated from /xsd:schema/xsd:complexType[246]
     /// @brief Additional definition of the leading edge cut out.
     /// 
     /// Optional. Definition of additional parameters,

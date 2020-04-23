@@ -20,6 +20,7 @@
 #include "CPACSBoundingElementUIDs.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
@@ -27,7 +28,8 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSBoundingElementUIDs::CPACSBoundingElementUIDs(CCPACSFuselageWallSegment* parent)
+    CPACSBoundingElementUIDs::CPACSBoundingElementUIDs(CCPACSFuselageWallSegment* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -35,6 +37,11 @@ namespace generated
 
     CPACSBoundingElementUIDs::~CPACSBoundingElementUIDs()
     {
+        if (m_uidMgr) {
+            for (std::vector<std::string>::iterator it = m_boundingElementUIDs.begin(); it != m_boundingElementUIDs.end(); ++it) {
+                if (!it->empty()) m_uidMgr->TryUnregisterReference(*it, *this);
+            }
+        }
     }
 
     const CCPACSFuselageWallSegment* CPACSBoundingElementUIDs::GetParent() const
@@ -69,11 +76,26 @@ namespace generated
         return nullptr;
     }
 
+    CTiglUIDManager& CPACSBoundingElementUIDs::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+
+    const CTiglUIDManager& CPACSBoundingElementUIDs::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+
     void CPACSBoundingElementUIDs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element boundingElementUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/boundingElementUID")) {
             tixi::TixiReadElements(tixiHandle, xpath + "/boundingElementUID", m_boundingElementUIDs, 1, tixi::xsdUnbounded);
+            if (m_uidMgr) {
+                for (std::vector<std::string>::iterator it = m_boundingElementUIDs.begin(); it != m_boundingElementUIDs.end(); ++it) {
+                    if (!it->empty()) m_uidMgr->RegisterReference(*it, *this);
+                }
+            }
         }
 
     }
@@ -93,6 +115,20 @@ namespace generated
     std::vector<std::string>& CPACSBoundingElementUIDs::GetBoundingElementUIDs()
     {
         return m_boundingElementUIDs;
+    }
+
+    const CTiglUIDObject* CPACSBoundingElementUIDs::GetNextUIDObject() const
+    {
+        return GetNextUIDParent();
+    }
+
+    void CPACSBoundingElementUIDs::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
+    {
+        for (auto& entry : m_boundingElementUIDs) {
+            if (entry == oldUid) {
+                entry = newUid;
+            }
+        }
     }
 
 } // namespace generated

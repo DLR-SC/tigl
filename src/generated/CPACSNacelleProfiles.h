@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    // generated from /xsd:schema/xsd:complexType[684]
     /// @brief nacelleProfilesType
     /// 
     /// Nacelle profiles type, containing nacelle profile geometries.

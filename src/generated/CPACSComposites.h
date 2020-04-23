@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSMaterials
 
-    // generated from /xsd:schema/xsd:complexType[148]
     /// @brief compositesType
     /// 
     /// 

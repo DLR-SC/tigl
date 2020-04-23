@@ -30,7 +30,6 @@ namespace generated
     // This enum is used in:
     // CPACSRotorHub
 
-    // generated from /xsd:schema/xsd:complexType[784]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[3]/xsd:simpleType
     enum CPACSRotorHub_type
     {
         semiRigid,

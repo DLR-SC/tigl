@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSWingCell
 
-    // generated from /xsd:schema/xsd:complexType[118]
     /// @brief Spanwise positioning of wing cells.
     /// 
     /// CellPositioningSpanwise defines the chordwise direction
