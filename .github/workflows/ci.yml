@@ -37,6 +37,10 @@ jobs:
       with:
         submodules: recursive
   
+
+#  setup:
+
+  
     - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev (ubuntu)
       run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev
       if: contains(matrix.os, 'ubuntu')
@@ -73,7 +77,11 @@ jobs:
         pip install git+https://github.com/frerich/clcache.git
       shell: cmd
       if: contains(matrix.os, 'windows')
-      
+
+
+#  build:
+
+
     - name: restore ccache (ubuntu, macos)
       uses: actions/cache@v1
       with:
@@ -107,35 +115,17 @@ jobs:
         set CC=clcache.exe
         set CXX=clcache.exe
         clcache.exe -s
-        echo "::set-env name=CMAKE_PREFIX_PATH::C:/Miniconda/Library/lib;C:/Miniconda/Library/include"
+        echo "::set-env name=CMAKE_PREFIX_PATH::C:/Miniconda/Library/lib;C:/Miniconda/Library/include;C:/Miniconda/Library/bin;C:/Miniconda/Library/cmake"
         mkdir build
         cd build
-        cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install %CMAKE_TIGL_ARGS%
+        cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install %CMAKE_TIGL_ARGS% -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core
         cmake --build . -j 4 --config Release --target install
       if: contains(matrix.os, 'windows')
       
-#    - name: upload build directory
-#      uses: actions/upload-artifact@v1
-#      with:
-#        name: build
-#        path: build
-#   
+      
 #  test:
-#
-#    strategy:
-#      matrix:
-#        os: [ubuntu-latest,macos-latest,windows-latest]
-#      fail-fast: false
-#
-#    runs-on: ${{ matrix.os }}
-#    needs: build
-
-#    steps:
-#    - name: download build directory
-#      uses: actions/download-artifact@v1
-#      with:
-#        name: build
-        
+       
+       
     - name: Run unit tests (ubuntu, macos)
       run: |
         cd build
@@ -157,22 +147,10 @@ jobs:
       with:
         name: test-results
         path: build/tests/unittests/test_results.xml
-      
+    
+    
 #  deploy:
-#
-#    strategy:
-#      matrix:
-#        os: [macos-latest,windows-latest]
-#      fail-fast: false
-#
-#    runs-on: ${{ matrix.os }}
-#    needs: test 
-#
-#    steps:
-#    - name: download build directory
-#      uses: actions/download-artifact@v1
-#      with:
-#        name: build
+
       
     - name: Create package (macos)
       run: |
