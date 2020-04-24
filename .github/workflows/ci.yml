@@ -15,7 +15,7 @@ env:
   TIGL_TIXI3_VER: ">=3.0.3"
   TIGL_QT_VER: "=5.9.7"
   TIGL_PYTHONOCC_VER: "=0.17.3"
-  TIGL_DOXYGEN_VER: "=1.8.10"
+  TIGL_DOXYGEN_VER: "=1.8.16"
   TIGL_SWIG_VER: ">=3.0.11"
   TIGL_OCE_VER: "=0.17.2"
   TIGL_FREEIMAGEPLUS_VER: ""
@@ -154,11 +154,17 @@ jobs:
         .\TiGL-unittests.exe --gtest_output=xml:test_results.xml
       if: contains(matrix.config.os, 'windows')
       
-    - name: upload test results
+    - name: upload test results as artifact
       uses: actions/upload-artifact@v1
       with:
         name: test-results
         path: build/tests/unittests/test_results.xml
+        
+    - name: Publish coverage report to codecov.io (ubuntu)
+      uses: codecov/codecov-action@v1
+      with:
+        file: build/tests/unittests/test_results.xml
+      if: contains(matrix.config.os, 'ubuntu')
     
     
 #  deploy:
