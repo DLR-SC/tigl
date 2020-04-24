@@ -32,7 +32,7 @@ jobs:
         - {
             name: "Windows Latest, MSVC, 64bit",
             os: windows-latest,
-            arch: [amd64,]
+            arch: amd64
            }
         - {
             name: "Ubuntu Latest, gcc, 64bit",
