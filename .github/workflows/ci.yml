@@ -12,7 +12,7 @@ env:
   CLCACHE_HARDLINK: 1
   CMAKE_TIGL_ARGS: "-DCMAKE_BUILD_TYPE=Release -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
   TIGL_PYTHON_VER: "=3.6"
-  TIGL_TIXI3_VER: ">=3.03"
+  TIGL_TIXI3_VER: ">=3.0.3"
   TIGL_QT_VER: "=5.9.7"
   TIGL_PYTHONOCC_VER: "=0.17.3"
   TIGL_DOXYGEN_VER: ">=1.8.0"
@@ -85,7 +85,7 @@ jobs:
       
     - name: Install clcache (windows)
       run: |
-        pip install git+https://github.com/frerich/clcache.git
+        python -m pip install git+https://github.com/frerich/clcache.git
       shell: cmd
       if: contains(matrix.config.os, 'windows')
 
