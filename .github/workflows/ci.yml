@@ -157,7 +157,7 @@ jobs:
     - name: upload test results as artifact
       uses: actions/upload-artifact@v1
       with:
-        name: test-results
+        name: ${{ matrix.config.name }}-test-results
         path: build/tests/unittests/test_results.xml
         
     - name: Publish coverage report to codecov.io (ubuntu)
@@ -181,7 +181,7 @@ jobs:
       if: contains(matrix.config.os, 'macos')
       uses: actions/upload-artifact@v2-preview
       with:
-       name: ${{ matrix.config.name }}-latest-package
+       name: ${{ matrix.config.name }}-package
        path: build/*.dmg
       
     - name: Create package (windows)
@@ -195,13 +195,19 @@ jobs:
       if: contains(matrix.config.os, 'windows')
       uses: actions/upload-artifact@v2-preview
       with:
-       name: ${{ matrix.config.name }}-latest-package
+       name: ${{ matrix.config.name }}-package
        path: build/*.zip
+       
+    - name: Create documentation (ubuntu)
+      if: contains(matrix.config.os, 'ubuntu')
+      run: |
+        cd build
+        cmake --build . --target doc
        
     - name: Upload documentation as artifact (ubuntu)
       if: contains(matrix.config.os, 'ubuntu')
       uses: actions/upload-artifact@v2-preview
       with:
        name: html-documentation
-       path: install/share/doc/tigl3/html/*
+       path: build/install/share/doc/tigl3/html/*
         
