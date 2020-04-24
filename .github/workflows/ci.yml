@@ -126,7 +126,7 @@ jobs:
         set CC=clcache.exe
         set CXX=clcache.exe
         clcache.exe -s
-        set CMAKE_PREFIX_PATH=C:\Miniconda\Library
+        set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
         mkdir build
         cd build
         cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install %CMAKE_TIGL_ARGS% -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core
