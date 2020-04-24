@@ -15,7 +15,7 @@ env:
   TIGL_TIXI3_VER: ">=3.0.3"
   TIGL_QT_VER: "=5.9.7"
   TIGL_PYTHONOCC_VER: "=0.17.3"
-  TIGL_DOXYGEN_VER: ">=1.8.0"
+  TIGL_DOXYGEN_VER: "=1.8.10"
   TIGL_SWIG_VER: ">=3.0.11"
   TIGL_OCE_VER: "=0.17.2"
   TIGL_FREEIMAGEPLUS_VER: ""
@@ -31,7 +31,8 @@ jobs:
         config:
         - {
             name: "Windows Latest, MSVC, 64bit",
-            os: windows-latest
+            os: windows-latest,
+            arch: [amd64,]
            }
         - {
             name: "Ubuntu Latest, gcc, 64bit",
@@ -122,7 +123,7 @@ jobs:
     - name: Build TiGL (windows)
       shell: cmd /C call {0}
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.config.arch }}
         set CC=clcache.exe
         set CXX=clcache.exe
         clcache.exe -s
