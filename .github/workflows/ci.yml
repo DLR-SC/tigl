@@ -71,7 +71,7 @@ jobs:
         conda info -a
         conda list  
         
-    - name: Quickfix: Use different doxygen for windows
+    - name: Use different doxygen for windows (hacky quick fix)
       run: |
         conda remove doxygen
         conda install doxygen=${{ env.TIGL_DOXYGEN_VER }} -c conda-forge
