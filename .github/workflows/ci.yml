@@ -115,14 +115,14 @@ jobs:
         set CC=clcache.exe
         set CXX=clcache.exe
         clcache.exe -s
-        echo "::set-env name=CMAKE_PREFIX_PATH::C:\Miniconda\Library\lib;C:\Miniconda\Library\include;C:\Miniconda\Library\bin;C:\Miniconda\Library\cmake"        
+        set CMAKE_PREFIX_PATH=C:\Miniconda\Library      
         echo %CMAKE_PREFIX_PATH%
         echo "**** Library: ****"
         dir C:\Miniconda\Library
         echo "**** lib: ****"
         dir C:\Miniconda\Library\lib
         echo "**** include: ****"
-        dir C:\Miniconda\Library\lib
+        dir C:\Miniconda\Library\include
         echo "**** bin: ****"
         dir C:\Miniconda\Library\bin
         echo "**** cmake: ****"
