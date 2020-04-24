@@ -70,13 +70,6 @@ jobs:
         conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} tixi3${{ env.TIGL_TIXI3_VER }} doxygen${{ env.TIGL_DOXYGEN_VER }} swig${{ env.TIGL_SWIG_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list  
-        
-    - name: Use different doxygen for windows (hacky quick fix)
-      run: |
-        conda remove doxygen
-        conda install doxygen=${{ env.TIGL_DOXYGEN_VER }} -c conda-forge
-      if: contains(matrix.config.os, 'windows')
-    
 
     - name: Install ccache (ubuntu)
       run: |
