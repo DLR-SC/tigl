@@ -115,9 +115,7 @@ jobs:
         set CC=clcache.exe
         set CXX=clcache.exe
         clcache.exe -s
-        echo "::set-env name=CMAKE_PREFIX_PATH::C:\Miniconda\Library\lib;C:\Miniconda\Library\include;C:\Miniconda\Library\bin;C:\Miniconda\Library\cmake"
-        
-        #delete me: only for debugging
+        echo "::set-env name=CMAKE_PREFIX_PATH::C:\Miniconda\Library\lib;C:\Miniconda\Library\include;C:\Miniconda\Library\bin;C:\Miniconda\Library\cmake"        
         echo %CMAKE_PREFIX_PATH%
         echo "**** Library: ****"
         dir C:\Miniconda\Library
@@ -129,7 +127,6 @@ jobs:
         dir C:\Miniconda\Library\bin
         echo "**** cmake: ****"
         dir C:\Miniconda\Library\cmake
-        
         mkdir build
         cd build
         cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install %CMAKE_TIGL_ARGS% -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core
