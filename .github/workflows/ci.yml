@@ -15,6 +15,7 @@ env:
   TIGL_TIXI3_VER: ">=3.0.3"
   TIGL_QT_VER: "=5.9.7"
   TIGL_PYTHONOCC_VER: "=0.17.3"
+  TIGL_DOXYGEN_VER: "=1.8.16"
   TIGL_SWIG_VER: ">=3.0.11"
   TIGL_OCE_VER: "=0.17.2"
   TIGL_FREEIMAGEPLUS_VER: ""
@@ -68,7 +69,17 @@ jobs:
       run: |
         conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} tixi3${{ env.TIGL_TIXI3_VER }} swig${{ env.TIGL_SWIG_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
-        conda list  
+        conda list
+        
+    - name: Install doxygen (ubuntu, macos)
+      if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
+      run: conda install doxygen${{ env.TIGL_DOXYGEN_VER }}
+        
+    - name: Install doxygen 1.8.16 (windows)
+      if: contains(matrix.config.os, 'windows')
+      run: |
+       curl -o doxygen.zip -L https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
+       unzip doxygen.zip
 
     - name: Install ccache (ubuntu)
       run: |
@@ -126,7 +137,7 @@ jobs:
         set CC=clcache.exe
         set CXX=clcache.exe
         clcache.exe -s
-        set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
+        set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts;${{ github.workspace }}\doxygen
         mkdir build
         cd build
         cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install %CMAKE_TIGL_ARGS% -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core
@@ -152,12 +163,6 @@ jobs:
         cd tests\unittests
         .\TiGL-unittests.exe --gtest_output=xml:test_results.xml
       if: contains(matrix.config.os, 'windows')
-      
-    - name: upload test results as artifact
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ matrix.config.name }}-test-results
-        path: build/tests/unittests/test_results.xml
         
     - name: Publish coverage report to codecov.io (ubuntu)
       uses: codecov/codecov-action@v1
@@ -167,7 +172,6 @@ jobs:
     
     
 #  deploy:
-
       
     - name: Create package (macos)
       run: |
