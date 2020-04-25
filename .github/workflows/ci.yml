@@ -79,7 +79,7 @@ jobs:
       if: contains(matrix.config.os, 'windows')
       run: |
        curl -o doxygen.zip -L https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
-       unzip doxygen.zip
+       unzip doxygen.zip -d doxygen
 
     - name: Install ccache (ubuntu)
       run: |
