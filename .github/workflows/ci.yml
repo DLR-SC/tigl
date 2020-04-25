@@ -7,8 +7,8 @@ on:
  pull_request:
 
 env:
-  CCACHE_DIR: ccache
-  CLCACHE_DIR: clcache
+  CCACHE_DIR: ${{ github.workspace }}/ccache
+  CLCACHE_DIR: ${{ github.workspace }}\clcache
   CLCACHE_HARDLINK: 1
   CMAKE_TIGL_ARGS: "-DCMAKE_BUILD_TYPE=Release -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
   TIGL_PYTHON_VER: "=3.6"
@@ -32,15 +32,18 @@ jobs:
         - {
             name: "Win64",
             os: windows-latest,
-            arch: amd64
+            arch: amd64,
+            compiler-cache-dir: ${{ env.CLCACHE_DIR }}
            }
         - {
             name: "Ubuntu",
-            os: ubuntu-latest
+            os: ubuntu-latest,
+            compiler-cache-dir: ${{ env.CCACHE_DIR }}
           }
         - {
             name: "MacOS",
-            os: macos-latest
+            os: macos-latest,
+            compiler-cache-dir: ${{ env.CCACHE_DIR }}
           }
 
     runs-on: ${{ matrix.config.os }}    
@@ -104,21 +107,12 @@ jobs:
 #  build:
 
 
-    - name: restore ccache (ubuntu, macos)
+    - name: restore compiler cache
       uses: actions/cache@v1
       with:
-        path: ccache
-        key: ${{ matrix.config.os }}-ccache-${{ github.sha }}
-        restore-keys: ${{ matrix.config.os }}-ccache
-      if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
-      
-    - name: restore clcache (windows)
-      uses: actions/cache@v1
-      with:
-        path: clcache
-        key: ${{ matrix.config.os }}-clcache-${{ github.sha }}
-        restore-keys: ${{ matrix.config.os }}-clcache
-      if: contains(matrix.config.os, 'windows')
+        path: ${{ matrix.config.compiler_cache }}
+        key: ${{ matrix.config.os }}-compiler-cache-${{ github.sha }}
+        restore-keys: ${{ matrix.config.os }}-ccompiler-cache
       
     - name: Build TiGL (ubuntu, macos)
       shell: bash -l {0}
