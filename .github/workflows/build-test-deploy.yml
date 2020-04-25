@@ -259,16 +259,16 @@ jobs:
         asset_path: ./TiGL-${version}-Win64.zip
         asset_name: TiGL-${version}-Win64.zip
            
-      - name: download html-documentation
-        uses: actions/download-artifact@v1
-        with:
-          name: html-documentation
-          path: TiGL-${version}-documentation.zip
+    - name: download html-documentation
+      uses: actions/download-artifact@v1
+      with:
+        name: html-documentation
+        path: TiGL-${version}-documentation.zip
             
-      - name: Upload documentation Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./TiGL-${version}-documentation.zip
-          asset_name: TiGL-${version}-documentation.zip
+    - name: Upload documentation Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        asset_path: ./TiGL-${version}-documentation.zip
+        asset_name: TiGL-${version}-documentation.zip
     
