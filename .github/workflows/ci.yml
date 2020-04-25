@@ -109,7 +109,7 @@ jobs:
       with:
         path: compiler-cache
         key: ${{ matrix.config.os }}-compiler-cache-${{ github.sha }}
-        restore-keys: ${{ matrix.config.os }}-ccompiler-cache
+        restore-keys: ${{ matrix.config.os }}-compiler-cache
       
     - name: Build TiGL (ubuntu, macos)
       shell: bash -l {0}
