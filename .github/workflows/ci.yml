@@ -7,8 +7,8 @@ on:
  pull_request:
 
 env:
-  CCACHE_DIR: ${{ github.workspace }}/ccache
-  CLCACHE_DIR: ${{ github.workspace }}\clcache
+  CCACHE_DIR: ${{ github.workspace }}/compiler-cache
+  CLCACHE_DIR: ${{ github.workspace }}\compiler-cache
   CLCACHE_HARDLINK: 1
   CMAKE_TIGL_ARGS: "-DCMAKE_BUILD_TYPE=Release -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
   TIGL_PYTHON_VER: "=3.6"
@@ -33,17 +33,14 @@ jobs:
             name: "Win64",
             os: windows-latest,
             arch: amd64,
-            compiler_cache_dir: ${{ env.CLCACHE_DIR }}
            }
         - {
             name: "Ubuntu",
             os: ubuntu-latest,
-            compiler_cache_dir: ${{ env.CCACHE_DIR }}
           }
         - {
             name: "MacOS",
             os: macos-latest,
-            compiler_cache_dir: ${{ env.CCACHE_DIR }}
           }
 
     runs-on: ${{ matrix.config.os }}    
@@ -110,7 +107,7 @@ jobs:
     - name: restore compiler cache
       uses: actions/cache@v1
       with:
-        path: ${{ matrix.config.compiler_cache_dir }}
+        path: compiler-cache
         key: ${{ matrix.config.os }}-compiler-cache-${{ github.sha }}
         restore-keys: ${{ matrix.config.os }}-ccompiler-cache
       
