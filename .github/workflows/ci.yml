@@ -73,7 +73,7 @@ jobs:
         
     - name: Install doxygen (ubuntu, macos)
       if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
-      run: conda install doxygen${{ env.TIGL_DOXYGEN_VER }}
+      run: conda install doxygen${{ env.TIGL_DOXYGEN_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         
     - name: Install doxygen 1.8.16 (windows)
       if: contains(matrix.config.os, 'windows')
