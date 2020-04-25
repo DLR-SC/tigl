@@ -212,5 +212,5 @@ jobs:
       uses: actions/upload-artifact@v2-preview
       with:
        name: html-documentation
-       path: build/install/share/doc/tigl3/html/*
+       path: build/doc/tigl3/html/*
         
