@@ -33,17 +33,17 @@ jobs:
             name: "Win64",
             os: windows-latest,
             arch: amd64,
-            compiler-cache-dir: ${{ env.CLCACHE_DIR }}
+            compiler_cache_dir: ${{ env.CLCACHE_DIR }}
            }
         - {
             name: "Ubuntu",
             os: ubuntu-latest,
-            compiler-cache-dir: ${{ env.CCACHE_DIR }}
+            compiler_cache_dir: ${{ env.CCACHE_DIR }}
           }
         - {
             name: "MacOS",
             os: macos-latest,
-            compiler-cache-dir: ${{ env.CCACHE_DIR }}
+            compiler_cache_dir: ${{ env.CCACHE_DIR }}
           }
 
     runs-on: ${{ matrix.config.os }}    
@@ -110,7 +110,7 @@ jobs:
     - name: restore compiler cache
       uses: actions/cache@v1
       with:
-        path: ${{ matrix.config.compiler_cache }}
+        path: ${{ matrix.config.compiler_cache_dir }}
         key: ${{ matrix.config.os }}-compiler-cache-${{ github.sha }}
         restore-keys: ${{ matrix.config.os }}-ccompiler-cache
       
