@@ -32,6 +32,7 @@
 #include "CCPACSGuideCurve.h"
 #include "CCPACSGuideCurves.h"
 #include "CCPACSTransformation.h"
+#include "CTiglCompoundSurface.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopTools_SequenceOfShape.hxx"
@@ -48,27 +49,24 @@ public:
     TIGL_EXPORT CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
-    TIGL_EXPORT ~CCPACSFuselageSegment() OVERRIDE;
-
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT ~CCPACSFuselageSegment() override;
 
     // Read CPACS segment elements
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) override;
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    TIGL_EXPORT void SetFromElementUID(const std::string& value) OVERRIDE;
-    TIGL_EXPORT void SetToElementUID(const std::string& value) OVERRIDE;
+    TIGL_EXPORT void SetFromElementUID(const std::string& value) override;
+    TIGL_EXPORT void SetToElementUID(const std::string& value) override;
 
     // Returns the fuselage this segment belongs to
     TIGL_EXPORT CCPACSFuselage& GetFuselage() const;
 
     // Returns the start section UID of this segment
-    TIGL_EXPORT const std::string& GetStartSectionUID();
+    TIGL_EXPORT const std::string& GetStartSectionUID() const;
 
     // Returns the end section UID of this segment
-    TIGL_EXPORT const std::string& GetEndSectionUID();
+    TIGL_EXPORT const std::string& GetEndSectionUID() const;
 
     // Returns the start section index of this segment
     TIGL_EXPORT int GetStartSectionIndex();
@@ -118,7 +116,9 @@ public:
     // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
     // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0
     // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
-    TIGL_EXPORT gp_Pnt GetPoint(double eta, double zeta);
+    // The last input sets the behavior, e.g. wether a point on the linear loft for chordface parameters
+    // is output or wether a point is output for parameters on the surface.
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double zeta, TiglGetPointBehavior behavior = asParameterOnSurface);
 
     // Gets the origin (0, 0, 0) of the inner & outer profiles after trafo
     // These should be a good approximation for the center point
@@ -155,38 +155,50 @@ public:
     // Returns the outer profile points as read from TIXI. The points are already transformed.
     TIGL_EXPORT std::vector<CTiglPoint> GetRawEndProfilePoints();
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE { return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override { return TIGL_COMPONENT_FUSELSEGMENT; }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override { return  TIGL_INTENT_LOGICAL; }
 
     // Returns the number of faces in the loft. This depends on the number of guide curves as well as if the fuselage has a symmetry plane.
     TIGL_EXPORT int GetNumberOfLoftFaces() const;
 
-protected:
+private:
+    struct SurfacePropertiesCache {
+        double myVolume;      ///< Volume of this segment
+        double mySurfaceArea; ///< Surface Area of this segment
+    };
+    struct SurfaceCache {
+        CTiglCompoundSurface surface;
+    };
+
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     // Cleanup routine
     void Cleanup();
 
-    // Builds up the shape cache
-    void UpdateShapeCache() const;
-
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
-    void SetFaceTraits(PNamedShape loft);
+    void SetFaceTraits(PNamedShape loft) const;
+
+    void UpdateSurfaceProperties(SurfacePropertiesCache& cache) const;
+    void BuildSurfaces(SurfaceCache& cache) const;
 
 private:
     // get short name for loft
-    std::string GetShortShapeName();
+    std::string GetShortShapeName() const;
 
     CTiglFuselageConnection startConnection;      /**< Start segment connection                */
     CTiglFuselageConnection endConnection;        /**< End segment connection                  */
     CCPACSFuselage*         fuselage;             /**< Parent fuselage                         */
-    double                  myVolume;             /**< Volume of this segment                  */
-    double                  mySurfaceArea;        /**< Surface Area of this segment            */
+    Cache<SurfacePropertiesCache, CCPACSFuselageSegment> surfacePropertiesCache;
+    Cache<SurfaceCache, CCPACSFuselageSegment> surfaceCache;
     bool                    loftLinearly = false; /**< Set to true to speed up lofting of the
                                                     * segment. This removes the dependency on
                                                     * the fuselage loft at the price of a
                                                     * nonsmooth fuselage                       */
 
-    unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
+    std::unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
 };
 
 } // end namespace tigl

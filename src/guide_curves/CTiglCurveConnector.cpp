@@ -42,7 +42,7 @@
 namespace tigl {
 
 
-CTiglCurveConnector::CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& roots,
+CTiglCurveConnector::CTiglCurveConnector(std::map<double, const CCPACSGuideCurve*>& roots,
                                          const std::vector<double>& params)
 {
     // check if all guide curves have the same number of segments
@@ -53,7 +53,7 @@ CTiglCurveConnector::CTiglCurveConnector(std::map<double, CCPACSGuideCurve*>& ro
     //  * A connected guide curve consists of a list of partial guide curves.
     //  * A partial guide curve consists of a list of segmentwise guide curves.
     m_connectedCurves.reserve(roots.size());
-    std::map<double, CCPACSGuideCurve*>::iterator it;
+    std::map<double, const CCPACSGuideCurve*>::iterator it;
     for ( it=roots.begin(); it != roots.end(); it++) {
         guideCurveConnected connectedCurve;
         m_connectedCurves.push_back(connectedCurve);
@@ -113,15 +113,15 @@ TopoDS_Compound CTiglCurveConnector::GetConnectedGuideCurves()
     return result;
 }
 
-void CTiglCurveConnector::VerifyNumberOfSegments(std::map<double, CCPACSGuideCurve*>& roots,
+void CTiglCurveConnector::VerifyNumberOfSegments(std::map<double, const CCPACSGuideCurve*>& roots,
                                                  int shouldBeThisMany)
 {
     // check if every guidecurve consists of the same number of segments
     int numSegments = 0;
-    std::map<double, CCPACSGuideCurve*>::iterator it;
+    std::map<double, const CCPACSGuideCurve*>::iterator it;
     for (it = roots.begin(); it != roots.end(); it++) {
         numSegments = 0;
-        CCPACSGuideCurve* curCurve = it->second;
+        const CCPACSGuideCurve* curCurve = it->second;
         while (curCurve) {
             numSegments++;
             curCurve = curCurve->GetConnectedCurve();
@@ -133,7 +133,7 @@ void CTiglCurveConnector::VerifyNumberOfSegments(std::map<double, CCPACSGuideCur
     }
 }
 
-void CTiglCurveConnector::CreatePartialCurves(guideCurveConnected& connectedCurve, CCPACSGuideCurve* current)
+void CTiglCurveConnector::CreatePartialCurves(guideCurveConnected& connectedCurve, const CCPACSGuideCurve* current)
 {
     // create new guide curve part and add current curve
     connectedCurve.parts.push_back(guideCurvePart());
@@ -166,13 +166,13 @@ void CTiglCurveConnector::CreateInterpolationOrder (guideCurveConnected& connect
     std::vector<int> indegrees(nparts);
     for (size_t ipart=0; ipart < nparts; ipart++) {
         indegrees[ipart]=0;
-        CCPACSGuideCurve* partRoot = connectedCurve.parts[ipart].localGuides[0];
+        const CCPACSGuideCurve* partRoot = connectedCurve.parts[ipart].localGuides[0];
         if ( partRoot->GetContinuity_choice1() ) {
 
-            bool from =    partRoot->GetContinuity_choice1() == generated::C1_from_previous
-                        || partRoot->GetContinuity_choice1() == generated::C2_from_previous;
-            bool to   =    partRoot->GetContinuity_choice1() == generated::C1_to_previous
-                        || partRoot->GetContinuity_choice1() == generated::C2_to_previous;
+            bool from =    partRoot->GetContinuity_choice1() == ECPACSGuideCurve_continuity::C1_from_previous
+                        || partRoot->GetContinuity_choice1() == ECPACSGuideCurve_continuity::C2_from_previous;
+            bool to   =    partRoot->GetContinuity_choice1() == ECPACSGuideCurve_continuity::C1_to_previous
+                        || partRoot->GetContinuity_choice1() == ECPACSGuideCurve_continuity::C2_to_previous;
             if ( to ) {
                 connectedCurve.parts[ipart].dependency = C2_to_previous;
                 indegrees[ipart-1]++;
@@ -236,7 +236,7 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
 
     // check if a tangent for the first point is prescribed in CPACS
     if ( curvePart.localGuides[0]->GetTangent_choice2() ) {
-        generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[0]->GetTangent_choice2());
+        const generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[0]->GetTangent_choice2());
         tangents[0] = gp_Vec( tangent.GetX(), tangent.GetY(), tangent.GetZ());
         tangentFlags[0] = true;
     }
@@ -283,7 +283,7 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
 
         // check if a tangent for the last point is prescribed in CPACS
         if ( curvePart.localGuides[isegment]->GetTangent() ) {
-            generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[isegment]->GetTangent());
+            const generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[isegment]->GetTangent());
             tangents[idx_end] = gp_Vec( tangent.GetX(), tangent.GetY(), tangent.GetZ());
             tangentFlags[idx_end] = true;
         }

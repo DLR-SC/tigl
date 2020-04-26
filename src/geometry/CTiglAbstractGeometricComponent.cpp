@@ -34,11 +34,15 @@
 
 namespace tigl
 {
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent() {}
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent()
+    : loft(*this, &CTiglAbstractGeometricComponent::BuildLoft)
+    , bounding_box(*this, &CTiglAbstractGeometricComponent::CalcBoundingBox)
+{
+}
 
-
-void CTiglAbstractGeometricComponent::Reset() {
-    loft.reset();
+void CTiglAbstractGeometricComponent::Reset() const {
+    bounding_box.clear();
+    loft.clear();
 }
 
 TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() const
@@ -46,12 +50,14 @@ TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() const
     return TIGL_NO_SYMMETRY;
 }
 
-PNamedShape CTiglAbstractGeometricComponent::GetLoft()
+PNamedShape CTiglAbstractGeometricComponent::GetLoft() const
 {
-    if (!loft) {
-        loft = BuildLoft();
-    }
-    return loft;
+    return *loft;
+}
+
+Bnd_Box const& CTiglAbstractGeometricComponent::GetBoundingBox() const
+{
+    return *bounding_box;
 }
 
 PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
@@ -61,37 +67,31 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
         return PNamedShape();
     }
 
-    gp_Ax2 mirrorPlane;
+    CTiglTransformation trafo;
     if (symmetryAxis == TIGL_X_Z_PLANE) {
-        mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,1.,0.));
+        trafo.AddMirroringAtXZPlane();
     }
     else if (symmetryAxis == TIGL_X_Y_PLANE) {
-        mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,0.,1.));
+        trafo.AddMirroringAtXYPlane();
     }
     else if (symmetryAxis == TIGL_Y_Z_PLANE) {
-        mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(1.,0.,0.));
+        trafo.AddMirroringAtYZPlane();
     }
 
-    gp_Trsf theTransformation;
-    theTransformation.SetMirror(mirrorPlane);
-    const PNamedShape& loft = GetLoft();
-    BRepBuilderAPI_Transform myBRepTransformation(loft->Shape(), theTransformation);
-    std::string mirrorName = loft->Name();
+    PNamedShape mirroredShape = trafo.Transform(GetLoft());
+
+    std::string mirrorName = mirroredShape->Name();
     mirrorName += "M";
-    std::string mirrorShortName = loft->ShortName();
+    std::string mirrorShortName = mirroredShape->ShortName();
     mirrorShortName += "M";
-    TopoDS_Shape mirroredShape = myBRepTransformation.Shape();
-    
-    PNamedShape mirroredPNamedShape(new CNamedShape(*loft));
-    mirroredPNamedShape->SetShape(mirroredShape);
-    mirroredPNamedShape->SetName(mirrorName.c_str());
-    mirroredPNamedShape->SetShortName(mirrorShortName.c_str());
-    return mirroredPNamedShape;
+    mirroredShape->SetName(mirrorName.c_str());
+    mirroredShape->SetShortName(mirrorShortName.c_str());
+    return mirroredShape;
 }
 
 bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt) 
 {
-    const TopoDS_Shape& segmentShape = GetLoft()->Shape();
+    const TopoDS_Shape segmentShape = GetLoft()->Shape();
 
     // fast check with bounding box
     Bnd_Box boundingBox;
@@ -139,6 +139,16 @@ bool CTiglAbstractGeometricComponent::GetIsOnMirrored(const gp_Pnt& pnt)
     }
     
     return GetIsOn(mirroredPnt);
+}
+
+void CTiglAbstractGeometricComponent::BuildLoft(PNamedShape& cache) const
+{
+    cache = BuildLoft();
+}
+
+void CTiglAbstractGeometricComponent::CalcBoundingBox(Bnd_Box& bb) const
+{
+    BRepBndLib::Add(loft->get()->Shape(), bb);
 }
 
 } // end namespace tigl

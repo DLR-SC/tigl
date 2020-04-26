@@ -22,6 +22,9 @@
 #include "CTiglPoint.h"
 #include "CTiglPointTranslator.h"
 
+#include "CNamedShape.h"
+#include "CCPACSConfigurationManager.h"
+
 #include <string.h>
 #include <ctime>
 
@@ -54,8 +57,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -160,4 +163,64 @@ TEST_F(TestPerformance, pointTranslator)
     std::cout << "Time PointTranslator [us]: " << time_elapsed << std::endl;
 
     ASSERT_TRUE(true);
+}
+
+
+TEST_F(TestPerformance, tiglCheckPointInside_false)
+{
+
+    // define some points that are exclusively in one component
+    tigl::CTiglPoint point(1000., 1000., 1000.);
+    TiglBoolean point_inside = TIGL_FALSE;
+
+    // pre-build some geometries to warm start performance tests
+    ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_W1" , &point_inside));
+    ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_SL1", &point_inside));
+    ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_FL1", &point_inside));
+
+    int nruns = 100000;
+    double n;
+
+    clock_t start, stop;
+    double time_elapsed;
+
+    // test the four points against the wing
+    n = 0.;
+    start = clock();
+    for(int i = 0; i < nruns; ++i){
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_W1", &point_inside));
+        n += 1.;  //dummy to prevent compiler optimization
+    }
+    stop = clock();
+    ASSERT_FALSE(point_inside);
+
+    time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns * 1000000.;
+    std::cout << "Time tiglCheckPointInside wing [us]: " << time_elapsed << std::endl;
+
+    // test the four points against the vtp
+    n = 0.;
+    start = clock();
+    for(int i = 0; i < nruns; ++i){
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_SL1", &point_inside));
+        n += 1.;  //dummy to prevent compiler optimization
+    }
+    stop = clock();
+    ASSERT_FALSE(point_inside);
+
+    time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns * 1000000.;
+    std::cout << "Time tiglCheckPointInside vtp [us]: " << time_elapsed << std::endl;
+
+
+    // test the four points against the fuselage
+    n = 0.;
+    start = clock();
+    for(int i = 0; i < nruns; ++i){
+        ASSERT_EQ(TIGL_SUCCESS, tiglCheckPointInside(tiglHandle, point.x, point.y, point.z, "D150_VAMP_FL1", &point_inside));
+        n += 1.;  //dummy to prevent compiler optimization
+    }
+    stop = clock();
+    ASSERT_FALSE(point_inside);
+
+    time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns * 1000000.;
+    std::cout << "Time tiglCheckPointInside fuselage [us]: " << time_elapsed << std::endl;
 }

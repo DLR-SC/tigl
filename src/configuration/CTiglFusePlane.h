@@ -50,10 +50,10 @@ public:
     TIGL_EXPORT const PNamedShape FarField();
     TIGL_EXPORT const ListPNamedShape& Intersections();
 
+    TIGL_EXPORT void Invalidate();
+
 private:
     PNamedShape FuseWithChilds(CTiglRelativelyPositionedComponent* parent, const std::vector<CTiglRelativelyPositionedComponent*>& children);
-    
-    void Invalidate();
     void Perform();
 
     PNamedShape          _result;         /**< contains the result of the fusing operation >**/

@@ -1,5 +1,3 @@
-cmake_minimum_required (VERSION 2.8.12)
-
 # Set a default build type if none was specified
 if(NOT DEFINED CMAKE_BUILD_TYPE)
   message(STATUS "Setting build type to 'Release' as none was specified.")
@@ -9,17 +7,14 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
     "MinSizeRel" "RelWithDebInfo")
 endif()
 
-project (TiGL)
-set(TIGL_VERSION_MAJOR 3)
-set(TIGL_VERSION_MINOR 0)
-set(TIGL_VERSION_PATCH 0rc1)
-set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
+cmake_minimum_required (VERSION 3.4.0)
 
-set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
-set(TIGL_ADD_LIB_PATH "" CACHE PATH     "Additional library path for package search")
+project (TIGL VERSION 3.0.0)
+set(TIGL_VERSION 3.0.0)
 
-set(CMAKE_INCLUDE_PATH "${CMAKE_INCLUDE_PATH}" ${TIGL_ADD_INCLUDE_PATH})
-set(CMAKE_LIBRARY_PATH "${CMAKE_LIBRARY_PATH}" ${TIGL_ADD_LIB_PATH})
+# enable C++11 support
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -45,6 +40,8 @@ if (NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX})
    set (CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_PREFIX})
 endif()
 
+option(TIGL_BINDINGS_INSTALL_CPP "Install TiGL's CPP bindings" OFF)
+
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
 mark_as_advanced(TIGL_NIGHTLY)
 if(TIGL_NIGHTLY)
@@ -61,77 +58,12 @@ endif(TIGL_NIGHTLY)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
-if (MSVC)
-    option(TIGL_USE_CLCACHE "Use clcache if available (only nmake or ninja)" ON)
-    mark_as_advanced(TIGL_USE_CLCACHE)
-endif(MSVC)
-
-if (MSVC AND TIGL_USE_CLCACHE AND
-     (("${CMAKE_GENERATOR}" STREQUAL "NMake Makefiles") OR
-      ("${CMAKE_GENERATOR}" STREQUAL "Ninja")))
-  find_program(CLCACHE_FOUND clcache)
-  if(CLCACHE_FOUND)
-    set(CMAKE_CXX_COMPILER ${CLCACHE_FOUND})
-  endif(CLCACHE_FOUND)
-endif()
-
-# required opencascade libraries
-# please don't change the order of libraries as this can cause linking problems
-set (OCC_LIBS 
-        TKIGES TKSTL TKSTEP 
-        TKSTEPAttr TKOffset TKMesh 
-        TKSTEP209 TKFillet TKSTEPBase 
-        TKBool TKXSBase TKShHealing 
-        TKBO TKPrim TKTopAlgo 
-        TKGeomAlgo TKBRep TKGeomBase
-        TKG3d TKG2d TKMath TKernel
-)
-
-set (OCC_VISU_LIBS
-    TKV3d TKMesh TKHLR TKService
-)
-
-# search OCE. If OCE is not found, search for standard OpenCASCADE
-set(CMAKE_PREFIX_PATH "$ENV{CASROOT};${CASROOT};${CMAKE_PREFIX_PATH}")
-OPTION(OpenCASCADE_DONT_SEARCH_OCE "Disabled searching for OCE" OFF)
-if(NOT OpenCASCADE_DONT_SEARCH_OCE)
-  find_package(OCE 0.15 COMPONENTS ${OCC_LIBS} QUIET)
-endif()
-
-if(OCE_FOUND)
-  set(OpenCASCADE_LIBRARIES ${OCC_LIBS})
-  set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
-
-  # set shaders directory
-  if (NOT ${OCE_VERSION} VERSION_LESS "0.17")
-      FIND_PATH(OpenCASCADE_SHADER_DIRECTORY
-                NAMES PhongShading.fs
-                PATH_SUFFIXES share/oce/src/Shaders share/oce-${OCE_VERSION}/src/Shaders
-                HINTS ${CASROOT} ${OCE_INCLUDE_DIRS}/../../
-      )
-  endif()
-
-
-  # get opencascade version
-  IF(EXISTS "${OpenCASCADE_INCLUDE_DIR}/Standard_Version.hxx")
-    FILE(STRINGS "${OpenCASCADE_INCLUDE_DIR}/Standard_Version.hxx" occ_version_str REGEX "^#define[\t ]+OCC_VERSION_COMPLETE[\t ]+\".*\"")
-    STRING(REGEX REPLACE "^#define[\t ]+OCC_VERSION_COMPLETE[\t ]+\"([^\"]*)\".*" "\\1" OCC_VERSION_STRING "${occ_version_str}")
-    UNSET(occ_version_str)
-  ENDIF()
-  # get directory of shared libs
-  get_target_property(TKERNEL_LOCATION TKernel LOCATION)
-  get_filename_component(OpenCASCADE_DLL_DIRECTORY ${TKERNEL_LOCATION} PATH)
-else(OCE_FOUND)
-  message("OCE not found! Searching for OpenCASCADE.")
-  find_package(OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
-endif(OCE_FOUND)
+include(UseOpenCASCADE)
 
 # search TiXI
 set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
 set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
-find_package( TIXI 3.0.0 REQUIRED)
-get_target_property(TIXI_LIBRARY ${TIXI_LIBRARIES} LOCATION)
-get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
+find_package( tixi3 3.0.3 REQUIRED CONFIG)
 
 
 find_package( PythonInterp )
@@ -144,48 +76,10 @@ if(TIGL_USE_GLOG)
     endif()
 endif(TIGL_USE_GLOG)
 
-OPTION(TIGL_OCE_COONS_PATCHED "Check, if you have the OCCT source patched with the C2 coons algorithm" OFF)
-
-# enable C++11 support if available
-include(CheckCXXCompilerFlag)
-include(CheckCXXSourceCompiles)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif(COMPILER_SUPPORTS_CXX0X)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-endif()
-
-# supress deprecation warning of std::tr1 to allow gtest to compile
-if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING")
-endif()
-
-# check features
-file(READ cmake/cpp11featureTest.cpp src_cpp11_features)
-set(src_shared_ptr "#include <memory>\nint main(){\n std::shared_ptr<int> a(new int)\;\n return 0\;\n}\n")
-CHECK_CXX_SOURCE_COMPILES("${src_cpp11_features}" HAVE_CPP11)
-CHECK_CXX_SOURCE_COMPILES(${src_shared_ptr} HAVE_STDSHARED_PTR)
-
-set(src_unique_ptr "#include <memory>\nint main(){\n std::unique_ptr<int> a(new int)\;\n return 0\;\n}\n")
-CHECK_CXX_SOURCE_COMPILES(${src_unique_ptr} HAVE_STDUNIQUE_PTR)
-
-set(src_make_unqiue "#include <memory>\nint main(){\n std::make_unique<int>(5)\;\n return 0\;\n}\n")
-CHECK_CXX_SOURCE_COMPILES(${src_make_unqiue} HAVE_STDMAKE_UNIQUE)
-
-set(src_is_same "#include <typeinfo>\n#include <type_traits>\nint main(){\n bool issame = std::is_same<int, int>::value\;\n return 0\;\n}\n")
-CHECK_CXX_SOURCE_COMPILES(${src_is_same} HAVE_STDIS_SAME)
-
 # enable parallel builds in Visual Studio
 if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
-
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
-
-# add confidential tests
-OPTION(BUILD_TIGL_CONFIDENTIAL_TESTS "Build tests on confidential data" OFF)
 
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -195,8 +89,8 @@ IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
         IF(TIGL_ENABLE_COVERAGE)
                 MESSAGE(STATUS "Coverage enabled")
                 INCLUDE(CodeCoverage)
-                SETUP_TARGET_FOR_COVERAGE(coverage ${PROJECT_NAME}-unittests coverageReport)
-                SETUP_TARGET_FOR_COVERAGE_COBERTURA(coverage-cobertura ${PROJECT_NAME}-unittests coverage)
+                SETUP_TARGET_FOR_COVERAGE(coverage TiGL-unittests coverageReport $ENV{COVERAGE_ARGS})
+                SETUP_TARGET_FOR_COVERAGE_COBERTURA(coverage-cobertura TiGL-unittests coverage $ENV{COVERAGE_ARGS})
         ELSE()
                 MESSAGE(STATUS "Coverage disabled")
         ENDIF()
@@ -214,19 +108,13 @@ if(WIN32)
     endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(WIN32)
 
-# disable auto linking for Boost, as we include the cpp files ourselves
-add_definitions(-DBOOST_ALL_NO_LIB)
 
 if(WIN32)
     # avoid export of oce/occt classes into tigl library
-    add_definitions(-DStandard_EXPORT=)
+    
 endif(WIN32)
 
-option(TIGL_BINDINGS_JAVA "Build the java bindings of tigl (requires java)" OFF)
-
-if (TIGL_BINDINGS_JAVA)
-    find_package(Java 1.7.0 COMPONENTS Development REQUIRED)
-endif(TIGL_BINDINGS_JAVA)
+add_subdirectory(thirdparty)
 
 # style checks
 add_custom_target(checkstyle)
@@ -244,9 +132,8 @@ option(TIGL_BUILD_TESTS "Build TIGL Testsuite" OFF)
 if(TIGL_BUILD_TESTS)
   enable_testing()
   option(gtest_force_shared_crt "" ON)
-  mark_as_advanced(gtest_force_shared_crt)
-  set (gtest_SOURCE_DIR "thirdparty/gtest-1.7.0")
-  add_subdirectory (${gtest_SOURCE_DIR})
+  mark_as_advanced(gtest_force_shared_crt gtest_build_tests gtest_build_samples gtest_disable_pthreads)
+  add_subdirectory ("thirdparty/googletest" EXCLUDE_FROM_ALL)
   add_subdirectory(tests)
 endif(TIGL_BUILD_TESTS)
 
@@ -312,5 +199,6 @@ endif(APPLE)
 include(CPack)
 cpack_add_component(viewer DISPLAY_NAME "TiGL Viewer + 3rd Party DLLs")
 cpack_add_component(headers DISPLAY_NAME "Headers")
+cpack_add_component(cpp_bindings DISPLAY_NAME "Internal C++ Bindings")
 cpack_add_component(interfaces DISPLAY_NAME "Interfaces/Bindings")
 cpack_add_component(docu DISPLAY_NAME "Documentation")

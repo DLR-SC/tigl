@@ -189,27 +189,49 @@ enum TiglAlgorithmCode
   Definition of possible types for geometric components. Used for calculations where
   the type if the component changes the way of behavior.
 */
-typedef unsigned int TiglGeometricComponentType;
+enum TiglGeometricComponentType
+{
+TIGL_COMPONENT_PLANE,            /**< The whole aircraft */
+TIGL_COMPONENT_FUSELAGE,         /**< The Component is a fuselage */
+TIGL_COMPONENT_WING,             /**< The Component is a wing */
+TIGL_COMPONENT_SEGMENT,          /**< The Component is a general segment */
+TIGL_COMPONENT_WINGSEGMENT,      /**< The Component is a wing segment */
+TIGL_COMPONENT_FUSELSEGMENT,     /**< The Component is a fuselage segment */
+TIGL_COMPONENT_WINGCOMPSEGMENT,  /**< The Component is a wing component segment */
+TIGL_COMPONENT_WINGSHELL,        /**< The Component is a face of the wing (e.g. upper wing surface) */
+TIGL_COMPONENT_WINGRIB,          /**< The Component is rib (set) of a wing */
+TIGL_COMPONENT_WINGSPAR,         /**< The Component is a spar segment */
+TIGL_COMPONENT_WINGCELL,         /**< The Component is a cell on the wing */
+TIGL_COMPONENT_GENERICSYSTEM,    /**< The Component is a generic system */
+TIGL_COMPONENT_ROTOR,            /**< The Component is a rotor */
+TIGL_COMPONENT_ROTORBLADE,       /**< The Component is a rotor blade */
+TIGL_COMPONENT_ATTACHED_ROTORBLADE, /**< The Component is a attached rotor blade */
+TIGL_COMPONENT_PRESSURE_BULKHEAD,/**< The Component is a pressure bulkhead */
+TIGL_COMPONENT_CROSS_BEAM_STRUT, /**< The Component is a cross beam strut */
+TIGL_COMPONENT_CARGO_DOOR,       /**< The Component is a cargo door */
+TIGL_COMPONENT_LONG_FLOOR_BEAM,  /**< The Component is a long floor beam */
+TIGL_COMPONENT_EXTERNAL_OBJECT,  /**< The Component is a long floor beam */
+TIGL_COMPONENT_FARFIELD,         /**< The Component is a far field */
+TIGL_COMPONENT_ENGINE_PYLON,     /**< The Component is a engine pylon */
+TIGL_COMPONENT_ENGINE_NACELLE,   /**< The Component is a engine nacelle */
+TIGL_COMPONENT_FUSELAGE_WALL,    /**< The Component is a fuselage wall */
+TIGL_COMPONENT_CONTROL_SURFACE_DEVICE, /**< The component is a control surface device (flap) */
+TIGL_COMPONENT_OTHER
+};
 
-#define  TIGL_COMPONENT_PHYSICAL          1        /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
-#define  TIGL_COMPONENT_LOGICAL           2        /**< A logical component, like a wing segment */
-#define  TIGL_COMPONENT_PLANE             4        /**< The whole aircraft */
-#define  TIGL_COMPONENT_FUSELAGE          8        /**< The Component is a fuselage */
-#define  TIGL_COMPONENT_WING              16       /**< The Component is a wing */
-#define  TIGL_COMPONENT_SEGMENT           32       /**< The Component is a general segment */
-#define  TIGL_COMPONENT_WINGSEGMENT       64       /**< The Component is a wing segment */
-#define  TIGL_COMPONENT_FUSELSEGMENT      128      /**< The Component is a fuselage segment */
-#define  TIGL_COMPONENT_WINGCOMPSEGMENT   256      /**< The Component is a wing component segment */
-#define  TIGL_COMPONENT_WINGSHELL         512      /**< The Component is a face of the wing (e.g. upper wing surface) */
-#define  TIGL_COMPONENT_GENERICSYSTEM     1024     /**< The Component is a generic system */
-#define  TIGL_COMPONENT_ROTOR             2048     /**< The Component is a rotor */
-#define  TIGL_COMPONENT_ROTORBLADE        4096     /**< The Component is a rotor blade */
-#define  TIGL_COMPONENT_PRESSURE_BULKHEAD 8192     /**< The Component is a pressure bulkhead */
-#define  TIGL_COMPONENT_CROSS_BEAM_STRUT  16384    /**< The Component is a cross beam strut */
+typedef enum TiglGeometricComponentType TiglGeometricComponentType;
 
-#define  TIGL_COMPONENT_CARGO_DOOR        32768    /**< The Component is a cargo door */
+enum TiglGeometricComponentIntentFlags
+{
+    TIGL_INTENT_PHYSICAL           = 1,   /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
+    TIGL_INTENT_LOGICAL            = 2,   /**< A logical component, like a wing segment */
+    TIGL_INTENT_INNER_STRUCTURE    = 4,   /**< Part of  the aircrafts structure geometry */
+    TIGL_INTENT_OUTER_AERO_SURFACE = 8    /**< Part of the outer aircraft (wing, fuselage, nacelle)  */
+};
 
-#define  TIGL_COMPONENT_LONG_FLOOR_BEAM   65536    /**< The Component is a long floor beam */
+typedef enum TiglGeometricComponentIntentFlags TiglGeometricComponentIntentFlags;
+
+typedef unsigned long TiglGeometricComponentIntent;
 
 enum TiglStructureType 
 {
@@ -220,6 +242,14 @@ enum TiglStructureType
 
 typedef enum TiglStructureType TiglStructureType;
 
+enum TiglControlSurfaceType
+{
+    TRAILING_EDGE_DEVICE = 0,
+    LEADING_EDGE_DEVICE = 1,
+    SPOILER = 2
+};
+
+typedef enum TiglControlSurfaceType TiglControlSurfaceType;
 
 enum TiglLoftSide
 {
@@ -302,6 +332,25 @@ typedef const char** TiglStringList;
 */
 typedef enum TiglImportExportFormat TiglImportExportFormat;
 
+/**
+* @brief Options for the behavior of the GetPoint functions.
+*
+*  - asParameterOnSurface> treats eta-xsi-values as parameters on a surface.
+*    This makes sense e.g. for smoothly lofted wings that make heavy use of
+*    guide curves.
+*  - onLinearLoft: eta-xsi-values are coordinates on the chordface for the wing,
+*    respectively centerline and relative circumference parameters on the fuselage.
+*    The resulting point lies on the linear interpolation of the starting and ending
+*    profile of the segment.
+*
+*/
+enum TiglGetPointBehavior {
+    asParameterOnSurface = 0,
+    onLinearLoft,
+    numGetPointBehaviors
+};
+
+typedef enum TiglGetPointBehavior TiglGetPointBehavior;
 
 /**
   \defgroup GeneralFunctions General TIGL handling functions
@@ -539,6 +588,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConf
 * the point is equal to the trailing edge on the outer section of the given segment. The
 * point is returned in absolute world coordinates.
 *
+* The behavior of this function can be modified using ::tiglWingSetGetPointBehavior. The
+* options are asParametersOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned (default). For the second, the inputs are interpreted as eta-xsi coordinates
+* on the chordface spanned by the leading edge and trailing edge points of the inner and outer elements.
+*
 *
 * @param[in]  cpacsHandle  Handle for the CPACS configuration
 * @param[in]  wingIndex    The index of the wing, starting at 1
@@ -575,6 +630,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
 * the point is equal to the trailing edge on the outer section of the given segment. The
 * point is returned in absolute world coordinates.
 *
+* The behavior of this function can be modified using ::tiglWingSetGetPointBehavior. The
+* options are asParametersOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned (default). For the second, the inputs are interpreted as eta-xsi coordinates
+* on the chordface spanned by the leading edge and trailing edge points of the inner and outer elements.
+*
 *
 * @param[in]  cpacsHandle  Handle for the CPACS configuration
 * @param[in]  wingIndex    The index of the wing, starting at 1
@@ -600,6 +661,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
                                                         double* pointXPtr,
                                                         double* pointYPtr,
                                                         double* pointZPtr);
+
+/**
+@brief Sets the behavior of the ::tiglWingGetUpperPoint and ::tiglWingGetLowerPoint functions.
+*
+* This function sets the behavior of the ::tiglWingGetUpperPoint and ::tiglWingGetLowerPoint functions.
+* The options are asParameterOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned. For the second, the inputs are interpreted as eta-xsi coordinates
+* on the chordface spanned by the leading edge and trailing edge points of the inner and outer elements.
+*
+*
+* @param[in]  cpacsHandle   Handle for the CPACS configuration
+* @param[in]  behavior      enum describing the desired behavior of the function.
+*                           Possible values are asParameterOnSurface and onLinearLoft.
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_INDEX_ERROR if fuselageIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              TiglGetPointBehavior behavior);
 
 /**
 * @brief Returns a point on the wing chord surface for a
@@ -1257,7 +1341,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 
 
 /**
-* @brief Returns x,y,z koordinates for a given eta and xsi on a componentSegment.
+* @brief Returns x,y,z coordinates for a given eta and xsi on a componentSegment.
 *
 *
 * @param[in]  cpacsHandle               Handle for the CPACS configuration
@@ -1491,6 +1575,184 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
                                                                         int  segmentIndex,
                                                                         char ** segmentUID);
 
+/**
+* @brief Returns the span of a wing.
+*
+* The calculation of the wing span is realized as follows:
+*
+* * If the wing is mirrored at a symmetry plane (like the main wing), the wing body and its mirrored counterpart are computed
+* and are put into a bounding box. The length of the box in a specific space dimension is returned as the wing span depending
+* on the symmetry plane (y direction for x-z planes, z direction for x-y planes, x direction for y-z symmetry planes).
+*
+* * If no symmetry plane is defined (e.g. for the fins), the largest dimension of the bounding box around the wing
+* is returned.
+*
+*
+* @param[in]  cpacsHandle Handle for the CPACS configuration
+* @param[in]  wingUID     UID of the Wing
+* @param[out] pSpan       Wing span
+*
+* @returns Error code
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
+
+
+/**
+* @brief This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
+*
+* It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
+* The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
+* These values should coinside with the values found with tornado tool.
+*
+* @param[in] cpacsHandle Handle for the CPACS configuration
+* @param[in] wingUID     UID of the Wing
+* @param[out] mac_chord  Mean areadynamic chord length
+* @param[out] mac_x, mac_y, mac_z - Position of the MAC
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NULL_POINTER if wingUID, mac_chord, mac_x, mac_y or mac_z are null pointers
+*   - TIGL_ERROR In case of an unknown error
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
+
+
+/**
+* @brief Returns the number of control surfaces belonging to a component segment.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  componentSegmentUID     UID of the componentSegment
+* @param[out] numControlSurfaces      number of control surfaces of the componentSegment
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the component segment does not exist
+*   - TIGL_NULL_POINTER if either the componentSegmentUID or numControlSurfaces are NULL pointers
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                             const char * componentSegmentUID,
+                                                             int * numControlSurfaces);
+
+/**
+* @brief Returns the UID of a control surface given its index in a component segment.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  componentSegmentUID     UID of the componentSegment
+* @param[in]  controlSurfaceIndex     Index of the control surface, starting at 1
+* @param[out] controlSurfaceUID       UID of the control surface
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the component segment does not exist
+*   - TIGL_NULL_POINTER if either the componentSegmentUID or controlSurfaceUID are NULL pointers
+*   - TIGL_INDEX_ERROR if the control surface index is invalid
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char * componentSegmentUID,
+                                                          int controlSurfaceIndex,
+                                                          char ** controlSurfaceUID);
+
+/**
+* @brief Returns the type of a control surface given its UID.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] controlSurfaceType      Type of the control surface
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if controlSurfaceUID is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char * controlSurfaceUID,
+                                                            TiglControlSurfaceType * controlSurfaceType);
+
+
+/**
+* @brief Returns the minimum value for the deflection of a control device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] minDeflection           Minimum value for the deflection
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if minDeflection is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                         const char * controlSurfaceUID,
+                                                                         double * minDeflection);
+
+/**
+* @brief Returns the maximum value for the deflection of a control device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] maxDeflection           Maximum value for the deflection
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if maxDeflection is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                         const char * controlSurfaceUID,
+                                                                         double * maxDeflection);
+
+/**
+* @brief Returns the current value for the deflection of a control device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] deflection              Value for the deflection
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if deflection is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char * controlSurfaceUID,
+                                                                  double * deflection);
+
+/**
+* @brief Sets the current value for the deflection of a control device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[out] deflection              Value for the deflection
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char * controlSurfaceUID,
+                                                                  double deflection);
+
 /*@}*/
 /*****************************************************************************************************/
 
@@ -1602,6 +1864,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCenterLineLength(TiglCPACSConfi
 * identical to the start point of the profile wire, for zeta = 1.0 it is identical to the last profile point.
 * The point is returned in absolute world coordinates.
 *
+* The behavior of this function can be modified using ::tiglFuselageSetGetPointBehavior. The
+* options are asParametersOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned (default). For the second, the inputs are interpreted as eta coordinates
+* along the center line of the fuselage segment, xsi is interpreted as a relative
+* circumference between 0 and 1, and the resulting point lies on the linear loft of
+* the fuselage segment.
+*
 *
 * @param[in]  cpacsHandle   Handle for the CPACS configuration
 * @param[in]  fuselageIndex The index of the fuselage, starting at 1
@@ -1628,6 +1898,30 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
                                                        double* pointYPtr,
                                                        double* pointZPtr);
 
+
+/**
+@brief Sets the behavior of the ::tiglFuselageGetPoint function.
+*
+* This function sets the behavior of the ::tiglFuselageGetPoint function. The options
+* are asParameterOnSurface or onLinearLoft. For the first, the inputs are interpreted
+* as normalized parameters on the surface and the point corresponding to these
+* parameters is returned. For the second, the inputs are interpreted as eta coordinates
+* along the center line of the fuselage segment, xsi is interpreted as a relative
+* circumference between 0 and 1, and the resulting point lies on the linear loft of
+* the fuselage segment.
+*
+* @param[in]  cpacsHandle   Handle for the CPACS configuration
+* @param[in]  behavior      enum describing the desired behavior of the function.
+*                           Possible values are asParameterOnSurface and onLinearLoft.
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_INDEX_ERROR if fuselageIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageSetGetPointBehavior(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  TiglGetPointBehavior behavior);
 
 /**
 * @brief Returns a point on a fuselage surface for a given fuselage and segment index and an angle alpha (degree).
@@ -3367,6 +3661,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationH
 *  - IGES:
 *    - IGES5.3 (Values: "true", "false"): Whether to use IGES 5.3 format, that supports shells and solids.
 *      Note: Some software do not yet implement this standard. E.g. Catia might only load this, when set to false!
+*    - FaceNames (Values: "UIDOnly", "FaceNameOnly", "UIDandFaceName", "None"): Defines, how to write the names of the
+*      faces to the IGES files. The most versatile is probably "UIDandFaceName". (Default: "FaceNameOnly")
 *
 * Example: The IGES export normally does only write half-models. It does not apply symmetries.
 * to change this, just call 
@@ -4289,7 +4585,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
                                                            double *referenceAreaPtr);
 
 /**
-* @brief Returns the wetted area of the wing.
+* @brief Returns the wetted area of the wing. If the wing has no parent (fuselage), it returns the
+* surface area of the wing.
 *
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
@@ -4304,7 +4601,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHandle cpacsHandle, 
-                                                        char* wingUID,
+                                                        const char* wingUID,
                                                         double *wettedAreaPtr);
 
 /*@}*/
@@ -4530,6 +4827,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel level);
 
 /**
  * @brief Checks whether a point lies inside the given geometric object.
+ * Note that the symmetry attribute is ignored.
  *
  * This function works only for solid objects!
  *
@@ -4574,6 +4872,22 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
                                                            const char* componentUID,
                                                            int* hashCodePtr);
 
+/**
+* @brief Returns the type of a geometric component
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  componentUID    The uid of the component for which the hash should be computed
+* @param[out] typePtr         A pointer to a TiglGeometricComponentType to store the result
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the uid is invalid or not a known geometric component
+*   - TIGL_NULL_POINTER if componentUID or typePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetType(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       const char* componentUID,
+                                                       TiglGeometricComponentType* typePtr);
 
 /**
 * @brief Translates an error code into a string
@@ -4587,6 +4901,18 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode errorCode);
 
 
 /**
+ * @brief Set the directory path for debug data
+ * 
+ * These data are written, in case a tigl function has an internal error.
+ * 
+ * By default (directory==NULL), these files are written into the current working directory.
+ * There, the subdirectory CrashInfo is created.
+ * 
+ * @param[in] directory Path of the debugging directory.
+ */
+TIGL_COMMON_EXPORT void tiglSetDebugDataDirectory(const char* directory);
+
+/**
 * @brief Returns the length of the plane
 *
 * The calculation of the airplane lenght is realized as follows:
@@ -4594,6 +4920,8 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode errorCode);
 * All part of the configuration (currently all wing and fuselage segments) are put
 * into a bounding box. The length of the plane is returned as the length of the box
 * in x-direction.
+*
+* Note, that this resulting value is a fast but very rough approximation!
 *
 *
 * @param[in]  cpacsHandle Handle for the CPACS configuration
@@ -4603,46 +4931,26 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode errorCode);
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurationHandle cpacsHandle, double * pLength);
 
-/**
-* @brief Returns the span of a wing. 
-*
-* The calculation of the wing span is realized as follows:
-*
-* * If the wing is mirrored at a symmetry plane (like the main wing), the wing body and its mirrored counterpart are computed
-* and are put into a bounding box. The length of the box in a specific space dimension is returned as the wing span depending
-* on the symmetry plane (y direction for x-z planes, z direction for x-y planes, x direction for y-z symmetry planes).
-*
-* * If no symmetry plane is defined (e.g. for the fins), the largest dimension of the bounding box around the wing
-* is returned.
-*
-*
-* @param[in]  cpacsHandle Handle for the CPACS configuration
-* @param[in]  wingUID     UID of the Wing
-* @param[out] pSpan       Wing span
-*
-* @returns Error code
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
-
 
 /**
-* @brief This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
-* 
-* It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
-* The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
-* These values should coinside with the values found with tornado tool.
-* 
-* @param[in] cpacsHandle Handle for the CPACS configuration
-* @param[in] wingUID     UID of the Wing
-* @param[out] mac_chord  Mean areadynamic chord length
-* @param[out] mac_x, mac_y, mac_z - Position of the MAC
-* 
-* @return
-*   - TIGL_SUCCESS if no error occurred
-*   - TIGL_NULL_POINTER if wingUID, mac_chord, mac_x, mac_y or mac_z are null pointers
-*   - TIGL_ERROR In case of an unknown error
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
+ * @brief Computes the bounding box coordinates of the configuration
+ *
+ * Note, that the resulting values are a fast but very rough approximation!
+ *
+ * @param[in]  cpacsHandle Handle for the CPACS configuration
+ * @param[out] minX        Minimum x value
+ * @param[out] minY        Minimum y value
+ * @param[out] minZ        Minimum z value
+ * @param[out] maxX        Maximum x value
+ * @param[out] maxY        Maximum y value
+ * @param[out] maxZ        Maximum z value
+ *
+ * @returns Error code
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  double* minX, double* minY, double* minZ,
+                                                                  double* maxX, double* maxY, double* maxZ);
+
 
 
 /*@}*/ // end of doxygen group

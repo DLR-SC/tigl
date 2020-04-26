@@ -5,7 +5,7 @@
     <creator>Descartes</creator>
     <description>CPACS aircraft model designed using Descartes</description>
     <timestamp>2016-08-03T11:58:57</timestamp>
-    <version>1.1</version>
+    <version>1.2.0</version>
     <cpacsVersion>3.0</cpacsVersion>
     <updates>
       <update>
@@ -13,6 +13,13 @@
         <creator>cpacs2to3</creator>
         <timestamp>2018-01-15T09:01:30</timestamp>
         <version>1.1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+      <update>
+        <modification>Added missing UIDs.</modification>
+        <creator>fix_errors.py</creator>
+        <timestamp>2019-04-29T20:48:09</timestamp>
+        <version>1.2.0</version>
         <cpacsVersion>3.0</cpacsVersion>
       </update>
     </updates>
@@ -191,16 +198,57 @@
                       <name>Wing_CS_RibDef1</name>
                       <ribsPositioning>
                         <ribReference>leadingEdge</ribReference>
-                        <etaStart>0.2</etaStart>
-                        <etaEnd>0.95</etaEnd>
+                        <startCurvePoint>
+                          <eta>0.2</eta>
+                          <referenceUID>leadingEdge</referenceUID>
+                        </startCurvePoint>
+                        <endCurvePoint>
+                          <eta>0.95</eta>
+                          <referenceUID>leadingEdge</referenceUID>
+                        </endCurvePoint>
                         <ribStart>Wing_CS_spar1</ribStart>
                         <ribEnd>trailingEdge</ribEnd>
                         <numberOfRibs>2</numberOfRibs>
                         <ribCrossingBehaviour>cross</ribCrossingBehaviour>
-                        <ribRotation>
+                        <ribRotation uID="Wing_CS_RibDef1_ribRotation1">
                           <z>90</z>
                         </ribRotation>
                       </ribsPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>materialUID</materialUID>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Wing_CS_RibDef2">
+                      <name>Wing_CS_RibDef2</name>
+                      <ribExplicitPositioning>
+                        <startSparPositionUID>Wing_CS_spar1_Pos2</startSparPositionUID>
+                        <endSparPositionUID>Wing_CS_spar2_Pos1</endSparPositionUID>
+                        <ribStart>Wing_CS_spar1</ribStart>
+                        <ribEnd>trailingEdge</ribEnd>
+                      </ribExplicitPositioning>
+                      <ribCrossSection>
+                        <material>
+                          <materialUID>materialUID</materialUID>
+                        </material>
+                      </ribCrossSection>
+                    </ribsDefinition>
+                    <ribsDefinition uID="Wing_CS_RibDef3">
+                      <name>Wing_CS_RibDef3</name>
+                      <ribExplicitPositioning>
+                        <startEtaXsiPoint>
+                          <eta>0.5</eta>
+                          <xsi>0.0</xsi>
+                          <referenceUID>CS1</referenceUID>
+                        </startEtaXsiPoint>
+                        <endCurvePoint>
+                          <eta>0.5</eta>
+                          <referenceUID>trailingEdge</referenceUID>
+                        </endCurvePoint>
+                        <ribStart>leadingEdge</ribStart>
+                        <ribEnd>Wing_CS_spar2</ribEnd>
+                      </ribExplicitPositioning>
                       <ribCrossSection>
                         <material>
                           <materialUID>materialUID</materialUID>
@@ -211,20 +259,46 @@
                   <spars>
                     <sparPositions>
                       <sparPosition uID="Wing_CS_spar1_Pos1">
-                        <eta>0.0</eta>
-                        <xsi>0.2</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.0</eta>
+                          <xsi>0.2</xsi>
+                          <referenceUID>Wing_segment1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="Wing_CS_spar1_Pos2">
-                        <eta>0.4</eta>
-                        <xsi>0.4</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.4</eta>
+                          <xsi>0.4</xsi>
+                          <referenceUID>CS1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="Wing_CS_spar1_Pos3">
-                        <eta>0.9</eta>
-                        <xsi>0.5</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.9</eta>
+                          <xsi>0.5</xsi>
+                          <referenceUID>Wing_segment1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="Wing_CS_spar1_Pos4">
-                        <eta>1.0</eta>
-                        <xsi>0.3</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1.0</eta>
+                          <xsi>0.3</xsi>
+                          <referenceUID>CS1</referenceUID>
+                        </sparPositionEtaXsi>
+                      </sparPosition>
+                      <sparPosition uID="Wing_CS_spar2_Pos1">
+                        <sparPositionRib>
+                          <ribDefinitionUID>Wing_CS_RibDef1</ribDefinitionUID>
+                          <ribNumber>1</ribNumber>
+                          <xsi>0.6</xsi>
+                        </sparPositionRib>
+                      </sparPosition>
+                      <sparPosition uID="Wing_CS_spar2_Pos2">
+                        <sparPositionRib>
+                          <ribDefinitionUID>Wing_CS_RibDef1</ribDefinitionUID>
+                          <ribNumber>2</ribNumber>
+                          <xsi>0.6</xsi>
+                        </sparPositionRib>
                       </sparPosition>
                     </sparPositions>
                     <sparSegments>
@@ -245,6 +319,23 @@
                               <materialUID>
             										materialUID
             									</materialUID>
+                            </material>
+                            <relPos>0.0</relPos>
+                          </web1>
+                          <rotation>0.0</rotation>
+                        </sparCrossSection>
+                      </sparSegment>
+                      <sparSegment uID="Wing_CS_spar2">
+                        <name>Wing_CS_spar2</name>
+                        <description>description</description>
+                        <sparPositionUIDs>
+                          <sparPositionUID>Wing_CS_spar2_Pos1</sparPositionUID>
+                          <sparPositionUID>Wing_CS_spar2_Pos2</sparPositionUID>
+                        </sparPositionUIDs>
+                        <sparCrossSection>
+                          <web1>
+                            <material>
+                              <materialUID>materialUID</materialUID>
                             </material>
                             <relPos>0.0</relPos>
                           </web1>

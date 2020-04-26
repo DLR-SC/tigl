@@ -28,6 +28,9 @@
 #include "CCPACSWingSegments.h"
 #include "tiglcommonfunctions.h"
 
+using std::cout;
+using std::endl;
+
 /***************************************************************************************************/
 
 class WingSegment : public ::testing::Test 
@@ -56,8 +59,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -98,8 +101,8 @@ protected:
         tixiSimpleHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiSimpleHandle;
@@ -140,8 +143,8 @@ protected:
         tixiSpecialHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiSpecialHandle;
@@ -662,18 +665,93 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
 }
 
 /* Tests on simple geometry__________________________ */
-TEST_F(WingSegmentSimple, getPoint_accuracy)
+TEST_F(WingSegmentSimple, getPoint_accuracy_onLinearLoft)
 {
+    TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, onLinearLoft);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
     double x = 0., y = 0., z = 0.;
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
-    ASSERT_NEAR(y, 0.5, 1e-7);
-    ASSERT_NEAR(x, 0.5, 1e-7);
+    EXPECT_NEAR(y, 0.5, 1e-7);
+    EXPECT_NEAR(x, 0.5, 1e-7);
     //z value read from profile data
-    ASSERT_NEAR(z, 0.0529402520006, 1e-7);
+    EXPECT_NEAR(z, 0.0529402520006, 1e-7);
 
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 2, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
-    ASSERT_NEAR(y, 1.5, 1e-7);
-    ASSERT_NEAR(x, 0.625, 1e-7);
+    EXPECT_NEAR(y, 1.5, 1e-7);
+    EXPECT_NEAR(x, 0.625, 1e-7);
+}
+
+/* Tests on simple geometry__________________________ */
+TEST_F(WingSegmentSimple, getPoint_accuracy_asParameterOnSurface)
+{
+    TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, asParameterOnSurface);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    double x = 0., y = 0., z = 0.;
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    // plausibility of results checked with TiGLViewer. The behavior of GetPoint should not change unintentionally
+    EXPECT_NEAR(y, 0.5, 1e-7);
+    EXPECT_NEAR(x, 0.49711325655906319, 1e-7);
+    EXPECT_NEAR(z, 0.053121522829686171, 1e-7);
+
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 2, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    EXPECT_NEAR(y, 1.5, 1e-7);
+    EXPECT_NEAR(x, 0.62283494241929738, 1e-7);
+}
+
+/* Tests on simple geometry__________________________ */
+TEST_F(WingSegmentSimple, getPoint_accuracy_asParameterOnSurface_movedWing)
+{
+    double transX = 1;
+    double transY = 2;
+
+    EXPECT_EQ(SUCCESS, tixiUpdateDoubleElement(tixiSimpleHandle, "//translation[@uID='Wing_transformation1_translation1']/x", transX, "%g"));
+    EXPECT_EQ(SUCCESS, tixiUpdateDoubleElement(tixiSimpleHandle, "//translation[@uID='Wing_transformation1_translation1']/y", transY, "%g"));
+
+    tiglCloseCPACSConfiguration(tiglSimpleHandle);
+    TiglReturnCode tiglRet = tiglOpenCPACSConfiguration(tixiSimpleHandle, "Cpacs2Test", &tiglSimpleHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, asParameterOnSurface);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+
+    tigl::CCPACSWingSegment& segment1 = static_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(1));
+    tigl::CCPACSWingSegment& segment2 = static_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(2));
+
+    double x = 0., y = 0., z = 0.;
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    // plausibility of results checked with TiGLViewer. The behavior of GetPoint should not change unintentionally
+    EXPECT_NEAR(0.5 + transY, y, 1e-7);
+    EXPECT_NEAR(0.49711325655906319 + transX, x, 1e-7);
+    EXPECT_NEAR(0.053121522829686171, z, 1e-7);
+
+    // check that local coordinates are not translated
+    gp_Pnt p = segment1.GetPoint(0.5, 0.5, true, WING_COORDINATE_SYSTEM, asParameterOnSurface);
+    EXPECT_NEAR(0.5, p.Y(), 1e-7);
+    EXPECT_NEAR(0.49711325655906319, p.X(), 1e-7);
+    EXPECT_NEAR(0.053121522829686171, p.Z(), 1e-7);
+
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 2, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    EXPECT_NEAR(1.5 + transY, y, 1e-7);
+    EXPECT_NEAR(0.62283494241929738 + transX, x, 1e-7);
+
+    // check that local coordinates are not translated
+    p = segment2.GetPoint(0.5, 0.5, true, WING_COORDINATE_SYSTEM, asParameterOnSurface);
+    EXPECT_NEAR(1.5, p.Y(), 1e-7);
+    EXPECT_NEAR(0.62283494241929738, p.X(), 1e-7);
+
+    // reset the transformation
+    EXPECT_EQ(SUCCESS, tixiUpdateDoubleElement(tixiSimpleHandle, "//translation[@uID='Wing_transformation1_translation1']/x", 0., "%g"));
+    EXPECT_EQ(SUCCESS, tixiUpdateDoubleElement(tixiSimpleHandle, "//translation[@uID='Wing_transformation1_translation1']/y", 0., "%g"));
+    tiglCloseCPACSConfiguration(tiglSimpleHandle);
+    tiglRet = tiglOpenCPACSConfiguration(tixiSimpleHandle, "Cpacs2Test", &tiglSimpleHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
 }
 
 TEST_F(WingSegmentSimple, getChordPointInternal_accuracy)
@@ -708,7 +786,7 @@ TEST_F(WingSegmentSimple, getChordPointInternal_accuracy)
 
 /* Tests on simple geometry__________________________ */
 TEST_F(WingSegmentSimple, getPointDirection)
-{
+{    
     // now we have do use the internal interface as we currently have no public api for this
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
@@ -717,7 +795,7 @@ TEST_F(WingSegmentSimple, getPointDirection)
     tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     
     double deviation = 0.;
-    gp_Pnt point    = segment.GetPoint(0.5, 0.5, true);
+    gp_Pnt point    = segment.GetPoint(0.5, 0.5, true, GLOBAL_COORDINATE_SYSTEM, onLinearLoft);
     gp_Pnt pointAng = segment.GetPointDirection(0.5, 0.5, 0., 0., 1., true, deviation);
     ASSERT_NEAR(0.0, point.Distance(pointAng), 1e-7);
     
@@ -744,12 +822,14 @@ TEST_F(WingSegmentSimple, getPointDirection)
 
 TEST_F(WingSegmentSimple, getIsOnTop_success)
 {
+    TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, onLinearLoft);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
     // now we have do use the internal interface as we currently have no public api for this
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
     
     double eta_start = 0.5, xsi_start = 0.5;
@@ -771,7 +851,6 @@ TEST_F(WingSegmentSimple, getIsOnTop_performance)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
     
     double eta_start = 0.5, xsi_start = 0.5;
@@ -874,7 +953,7 @@ TEST_F(WingSegmentSimple, getEtaXsi_Performance)
 
 // @todo: test of failures, outliers etc...
 TEST_F(WingSegmentSimple, wingGetEtaXsi)
-{
+{  
     double x = 0., y = 0., z = 0.;
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
 

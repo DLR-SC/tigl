@@ -19,9 +19,12 @@
 #ifndef TIGLCOMMONFUNCTIONS_H
 #define TIGLCOMMONFUNCTIONS_H
 
-#include "tigl_internal.h"
+
+
 #include "CCPACSImportExport.h"
 #include "Standard.hxx"
+#include "Standard_values.h"
+#include "tigl_internal.h"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
 #include "gp_Pln.hxx"
@@ -89,6 +92,17 @@ TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
 TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop);
 
+// calculates the alpha value for a given point on a wire
+TIGL_EXPORT Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire& wire, gp_Pnt p, gp_Dir rotationAxisAroundP, double angle);
+
+// projects a point onto a plane and returns the point in parameters of the plane
+TIGL_EXPORT gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p);
+
+TIGL_EXPORT gp_Pnt ProjectPointOnShape(const TopoDS_Shape& shape, const gp_Pnt& point, const gp_Vec& direction);
+
+// checks, whether a face is in between two points
+TIGL_EXPORT bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2);
+
 enum IntStatus
 {
     BetweenPoints, // The intersection point lies between p1 and p2
@@ -137,16 +151,23 @@ TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);
 TIGL_EXPORT TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points);
 
 // Computes the intersection point of a face and an edge
-TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst);
+TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst, double tolerance = Precision::Confusion());
 
 // Computes the intersection point of a face and a wire
-TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst);
+TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst, double tolerance = Precision::Confusion());
 
 // Comuptes the intersection points of two wires
 TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, intersectionPointList& intersectionPoints, const double tolerance=Precision::SquareConfusion());
 
-// Checks, whether a points lies inside a given shape, which must be a solid
-TIGL_EXPORT bool IsPointInsideShape(const TopoDS_Shape& solid, gp_Pnt point);
+// Checks, whether a points lies inside a given shape, which must be a solid.
+// An optional bounding box can be passed to include a bounding box test as a prephase
+TIGL_EXPORT bool IsPointInsideShape(const TopoDS_Shape& solid, gp_Pnt point, Bnd_Box const* bounding_box = nullptr);
+
+// Checks, whether a point lies inside a given face
+TIGL_EXPORT bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt point);
+
+// Checks whether a point lies above or below a plane (determined by direction of normal)
+TIGL_EXPORT bool IsPointAbovePlane(const gp_Pln& pln, gp_Pnt point);
 
 // Returns the single face contained in the passed shape
 // Throws an exception when number of faces != 1
@@ -262,10 +283,18 @@ inline double Radians(double degree)
     return degree / 180. * M_PI;
 }
 
+inline double Degrees(double radians)
+{
+    return 180.*radians / M_PI;
+}
+
 // Clamps val between min and max
 TIGL_EXPORT int Clamp(int val, int min, int max);
 TIGL_EXPORT double Clamp(double val, double min, double max);
 TIGL_EXPORT size_t Clamp(size_t val, size_t min, size_t max);
+
+// linearly interpolate between two values result = x*(1−a)+y*a.
+TIGL_EXPORT double Mix(double x, double y, double a);
 
 // Creates a linear spaces array but with some additional breaking points
 // If the breaking points are very close to a point, the point will be replaced
@@ -276,22 +305,41 @@ TIGL_EXPORT std::vector<double> LinspaceWithBreaks(double umin, double umax, siz
 TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglTransformation& transformationToGlobal, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
 TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedComponent& component, TiglCoordinateSystem cs, const TopoDS_Shape& shape);
 
+/// Converters between std::vectors and opencascade vectors
 TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts);
+TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<tigl::CTiglPoint>& pnts);
+
+TIGL_EXPORT Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector);
+TIGL_EXPORT Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector);
 
 template <typename T>
-size_t IndexFromUid(const std::vector<tigl::unique_ptr<T> >& vectorOfPointers, const std::string& uid)
+size_t IndexFromUid(const std::vector<std::unique_ptr<T> >& vectorOfPointers, const std::string& uid)
 {
-    struct is_uid { 
-        is_uid(const std::string& uid) : m_uid(uid){}
-        bool operator()(const tigl::unique_ptr<T>& ptr)
-        { 
-            return ptr->GetUID() == m_uid;
-        }
-        std::string m_uid;
-    }; 
-    
-    typename std::vector<tigl::unique_ptr<T> >::const_iterator found = std::find_if(vectorOfPointers.begin(), vectorOfPointers.end(), is_uid(uid));
+    const auto found = std::find_if(vectorOfPointers.begin(), vectorOfPointers.end(), [&uid](const std::unique_ptr<T>& ptr) {
+        return ptr->GetUID() == uid;
+    });
     return found - vectorOfPointers.begin();
+}
+
+template <class ArrayType, typename BinaryPredicate, typename BinaryMerge>
+void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, BinaryMerge merged)
+{
+    for (auto it = std::begin(list); it != std::end(list);) {
+        auto nextIt = it;
+        
+        if (++nextIt == std::end(list)) {
+            return;
+        }
+        
+        if (is_adjacent(*it, *nextIt)) {
+            const auto merged_val = merged(*it, *nextIt);
+            it = list.erase(it, ++nextIt);
+            it = list.insert(it, merged_val);
+        }
+        else {
+            it = nextIt;
+        }
+    }
 }
 
 #endif // TIGLCOMMONFUNCTIONS_H

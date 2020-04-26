@@ -257,8 +257,15 @@
                       <name>name</name>
                       <ribsPositioning>
                         <ribReference>leadingEdge</ribReference>
-                        <elementStartUID>Wing_section2_element1</elementStartUID>
-                        <etaEnd>0.9</etaEnd>
+                        <startEtaXsiPoint>
+                          <eta>1.0</eta>
+                          <referenceUID>Wing_segment1</referenceUID>
+                          <xsi>0.0</xsi>
+                        </startEtaXsiPoint>
+                        <endCurvePoint>
+                          <eta>0.9</eta>
+                          <referenceUID>leadingEdge</referenceUID>
+                        </endCurvePoint>
                         <ribStart>Wing_FrontSpar</ribStart>
                         <ribEnd>trailingEdge</ribEnd>
                         <numberOfRibs>4</numberOfRibs>
@@ -281,20 +288,32 @@
                   <spars>
                     <sparPositions>
                       <sparPosition uID="Wing_FrontSpar_Pos1">
-                        <eta>0</eta>
-                        <xsi>0.2</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0</eta>
+                          <xsi>0.2</xsi>
+                          <referenceUID>Wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="Wing_FrontSpar_Pos2">
-                        <elementUID>Wing_section2_element1</elementUID>
-                        <xsi>0.3</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1.0</eta>
+                          <xsi>0.3</xsi>
+                          <referenceUID>Wing_segment1</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="Wing_FrontSpar_Pos3">
-                        <eta>0.46953191</eta>
-                        <xsi>0.2</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>0.46953191</eta>
+                          <xsi>0.2</xsi>
+                          <referenceUID>Wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                       <sparPosition uID="Wing_FrontSpar_Pos4">
-                        <eta>1</eta>
-                        <xsi>0.3</xsi>
+                        <sparPositionEtaXsi>
+                          <eta>1</eta>
+                          <xsi>0.3</xsi>
+                          <referenceUID>Wing_CS</referenceUID>
+                        </sparPositionEtaXsi>
                       </sparPosition>
                     </sparPositions>
                     <sparSegments>

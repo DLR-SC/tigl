@@ -102,7 +102,7 @@
 # The functions defined in this file depend on the fixup_bundle function
 # (and others) found in BundleUtilities.cmake
 
-include(BundleUtilities)
+
 set(DeployQt5_cmake_dir "${CMAKE_CURRENT_LIST_DIR}")
 set(DeployQt5_apple_plugins_dir "PlugIns")
 
@@ -383,6 +383,7 @@ installed_plugin_paths "${plugins_dir}" "${component}")
 
         install(CODE
   "include(\"${DeployQt5_cmake_dir}/DeployQt5.cmake\")
+  include(BundleUtilities)
   set(BU_CHMOD_BUNDLE_ITEMS TRUE)
   FIXUP_QT5_EXECUTABLE(\"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${executable}\"
 \"\" \"${libs}\" \"${dirs}\" \"${plugins_dir}\" \"${request_qt_conf}\")"

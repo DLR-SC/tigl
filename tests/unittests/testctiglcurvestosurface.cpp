@@ -11,10 +11,16 @@
 #include <TopoDS_Edge.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
+#include <BRep_Builder.hxx>
 #include <TopExp_Explorer.hxx>
 #include <GeomConvert.hxx>
 #include <Precision.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+
+
+#include <sstream>
+#include <tiglcommonfunctions.h>
+#include <Geom_BSplineCurve.hxx>
 
 namespace tigl
 {
@@ -117,6 +123,49 @@ TEST(TiglBSplineAlgorithms, curvesToSurfaceContinous)
 
     // Write surface
     BRepTools::Write(BRepBuilderAPI_MakeFace(surface, Precision::Confusion()).Face(), "TestData/curvesToSurfaceContinous.brep");
+}
+
+TEST(TiglBSplineAlgorithms, curvesToSurfaceBug)
+{
+
+    std::vector<Handle(Geom_Curve)> profileCurves;
+    double xmin=1e6;
+    double xmax=-1e6;
+    for (int i = 5; i<9; ++i) {
+
+        std::stringstream ss;
+        ss << "TestData/bugs/501/edge_1_profile_" << i << ".brep";
+
+        TopoDS_Edge edge;
+        BRep_Builder builder;
+        BRepTools::Read(edge, ss.str().c_str(), builder);
+
+        Standard_Real umin, umax;
+        Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
+        gp_Vec p = curve->DN(umin, 0);
+        xmin = p.X() < xmin ? p.X() : xmin;
+        xmax = p.X() > xmax ? p.X() : xmax;
+
+        profileCurves.push_back(GetBSplineCurve(edge));
+    }
+
+    tigl::CTiglCurvesToSurface surfaceSkinner(profileCurves);
+    surfaceSkinner.SetMaxDegree(1);
+    Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
+
+    double umin, umax, vmin, vmax;
+    surface->Bounds(umin, umax, vmin, vmax);
+
+    double u = umin + 0.999*(umax-umin);
+    gp_Vec p = surface->DN(u, vmin + 0.95*(vmax-vmin), 0, 0);
+    EXPECT_TRUE(p.X() <= xmax);
+    EXPECT_TRUE(p.X() >= xmin);
+
+    BRepBuilderAPI_MakeFace faceMaker(surface, 1e-10);
+    TopoDS_Face result = faceMaker.Face();
+    BRepTools::Write(result, "TestData/bugs/501/resultShape.brep");
+
+
 }
 
 }

@@ -55,17 +55,46 @@ std::string CCPACSCrossBeamStrutAssemblyPosition::GetDefaultedUID() const
     return GetUID();
 }
 
-PNamedShape CCPACSCrossBeamStrutAssemblyPosition::GetLoft()
+PNamedShape CCPACSCrossBeamStrutAssemblyPosition::GetLoft() const
 {
     return PNamedShape(new CNamedShape(GetGeometry(true), GetDefaultedUID()));
 }
 
 TiglGeometricComponentType CCPACSCrossBeamStrutAssemblyPosition::GetComponentType() const
 {
-    return TIGL_COMPONENT_CROSS_BEAM_STRUT | TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_CROSS_BEAM_STRUT;
 }
 
-void CCPACSCrossBeamStrutAssemblyPosition::Invalidate()
+TiglGeometricComponentIntent CCPACSCrossBeamStrutAssemblyPosition::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
+}
+
+void CCPACSCrossBeamStrutAssemblyPosition::SetFrameUID(const std::string& value)
+{
+    generated::CPACSCrossBeamStrutAssemblyPosition::SetFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSCrossBeamStrutAssemblyPosition::SetCrossBeamUID(const std::string& value)
+{
+    generated::CPACSCrossBeamStrutAssemblyPosition::SetCrossBeamUID(value);
+    Invalidate();
+}
+
+void CCPACSCrossBeamStrutAssemblyPosition::SetPositionYAtCrossBeam(const double& value)
+{
+    generated::CPACSCrossBeamStrutAssemblyPosition::SetPositionYAtCrossBeam(value);
+    Invalidate();
+}
+
+void CCPACSCrossBeamStrutAssemblyPosition::SetAngleX(const boost::optional<double>& value)
+{
+    generated::CPACSCrossBeamStrutAssemblyPosition::SetAngleX(value);
+    Invalidate();
+}
+
+void CCPACSCrossBeamStrutAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry1D.clear();
     m_geometry3D.clear();
@@ -133,7 +162,7 @@ void CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry(TopoDS_Shape& cache, bo
         CCPACSProfileBasedStructuralElement& structuralElement =
             m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(GetStructuralElementUID());
         CCPACSStructuralProfile& structuralProfile =
-            m_uidMgr->ResolveObject<CCPACSStructuralProfile>(*structuralElement.GetStructuralProfileUID_choice1());
+            m_uidMgr->ResolveObject<CCPACSStructuralProfile>(*structuralElement.GetStructuralProfileUID_choice2_2());
 
         // create profile plane
         const gp_Vec vector(pointOnCrossBeam, pointOnFrame);

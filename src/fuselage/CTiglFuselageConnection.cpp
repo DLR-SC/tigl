@@ -81,7 +81,7 @@ int CTiglFuselageConnection::GetSectionElementIndex() const
 
 
 // Returns the fuselage profile referenced by this connection
-CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const
+CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile()
 {
     CCPACSFuselage& fuselage = segment->GetFuselage();
     std::string profileUID;
@@ -104,6 +104,10 @@ CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const
     CCPACSConfiguration& config = fuselage.GetConfiguration();
 
     return (config.GetFuselageProfile(profileUID));
+}
+
+const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const {
+    return const_cast<CTiglFuselageConnection&>(*this).GetProfile();
 }
 
 // Returns the positioning transformation for the referenced section

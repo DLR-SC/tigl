@@ -25,13 +25,16 @@
 
 #include "CCPACSPositioning.h"
 #include "CTiglError.h"
+#include "CTiglUIDManager.h"
+#include "CCPACSWingSection.h"
+#include "CCPACSFuselageSection.h"
 #include "gp_Pnt.hxx"
 
 namespace tigl
 {
 
-CCPACSPositioning::CCPACSPositioning(CTiglUIDManager* uidMgr)
-    : generated::CPACSPositioning(uidMgr) {}
+CCPACSPositioning::CCPACSPositioning(CCPACSPositionings* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPositioning(parent, uidMgr), invalidated(true) {}
 
 // Build outer transformation matrix for the positioning
 void CCPACSPositioning::BuildMatrix()
@@ -76,10 +79,23 @@ void CCPACSPositioning::Update()
     invalidated = false;
 }
 
-// Invalidates internal state
-void CCPACSPositioning::Invalidate()
+ //Invalidates internal state
+void CCPACSPositioning::InvalidateImpl(const boost::optional<std::string>& source) const
 {
+    if (invalidated) {
+        return;
+    }
     invalidated = true;
+
+    // invalidate 
+    if (m_uidMgr && m_uidMgr->IsUIDRegistered(m_toSectionUID)) {
+        if (m_uidMgr->IsType<CCPACSWingSection>(m_toSectionUID)) {
+            m_uidMgr->ResolveObject<CCPACSWingSection>(m_toSectionUID).Invalidate(GetUID());
+        }
+        else if (m_uidMgr->IsType<CCPACSFuselageSection>(m_toSectionUID)) {
+            m_uidMgr->ResolveObject<CCPACSFuselageSection>(m_toSectionUID).Invalidate(GetUID());
+        }
+    }
 }
 
 // Read CPACS segment elements
@@ -87,6 +103,36 @@ void CCPACSPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
 {
     generated::CPACSPositioning::ReadCPACS(tixiHandle, positioningXPath);
     Update();
+}
+
+void CCPACSPositioning::SetLength(const double& value)
+{
+    generated::CPACSPositioning::SetLength(value);
+    Invalidate();
+}
+
+void CCPACSPositioning::SetSweepAngle(const double& value)
+{
+    generated::CPACSPositioning::SetSweepAngle(value);
+    Invalidate();
+}
+
+void CCPACSPositioning::SetDihedralAngle(const double& value)
+{
+    generated::CPACSPositioning::SetDihedralAngle(value);
+    Invalidate();
+}
+
+void CCPACSPositioning::SetFromSectionUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSPositioning::SetFromSectionUID(value);
+    Invalidate();
+}
+
+void CCPACSPositioning::SetToSectionUID(const std::string& value)
+{
+    generated::CPACSPositioning::SetToSectionUID(value);
+    Invalidate();
 }
 
 void CCPACSPositioning::SetFromPoint(const CTiglPoint& aPoint)

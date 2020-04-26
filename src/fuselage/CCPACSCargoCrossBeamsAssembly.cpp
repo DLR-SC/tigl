@@ -25,10 +25,10 @@ CCPACSCargoCrossBeamsAssembly::CCPACSCargoCrossBeamsAssembly(CCPACSFuselageStruc
 {
 }
 
-void CCPACSCargoCrossBeamsAssembly::Invalidate()
+void CCPACSCargoCrossBeamsAssembly::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 0; i < m_cargoCrossBeams.size(); i++) {
-        m_cargoCrossBeams[i]->Invalidate();
+        m_cargoCrossBeams[i]->Invalidate(source);
     }
 }
 

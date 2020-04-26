@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -181,6 +181,7 @@
      <addaction name="drawWingTriangulationAction"/>
      <addaction name="drawWingProfilesAction"/>
      <addaction name="drawWingGuideCurvesAction"/>
+     <addaction name="drawWingFlapsAction"/>
      <addaction name="separator"/>
      <addaction name="drawWingSamplePointsAction"/>
      <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
@@ -203,7 +204,6 @@
       <string>Rotorcraft</string>
      </property>
      <addaction name="drawRotorsAction"/>
-     <addaction name="drawRotorDisksAction"/>
      <addaction name="showRotorPropertiesAction"/>
     </widget>
     <widget class="QMenu" name="menuRotorBlades">
@@ -296,7 +296,13 @@
     <addaction name="aboutAction"/>
     <addaction name="aboutQtAction"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+   </widget>
    <addaction name="fileMenu"/>
+   <addaction name="menuEdit"/>
    <addaction name="cpacsMenu"/>
    <addaction name="viewMenu"/>
    <addaction name="helpMenu"/>
@@ -461,28 +467,6 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="undoAction">
-   <property name="text">
-    <string>&amp;Undo</string>
-   </property>
-   <property name="toolTip">
-    <string>Undo the last operation</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Z</string>
-   </property>
-  </action>
-  <action name="redoAction">
-   <property name="text">
-    <string>&amp;Redo</string>
-   </property>
-   <property name="toolTip">
-    <string>Redo the last operation</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Y</string>
-   </property>
-  </action>
   <action name="cutAction">
    <property name="text">
     <string>Cu&amp;t</string>
@@ -518,7 +502,7 @@
   </action>
   <action name="showAllWingsAndFuselagesAction">
    <property name="text">
-    <string>Show all Fuselages and Wings</string>
+    <string>Show the complete Aircraft</string>
    </property>
    <property name="statusTip">
     <string>Show all Fuselages and Wings</string>
@@ -706,14 +690,6 @@
    </property>
    <property name="toolTip">
     <string>Show only one rotor</string>
-   </property>
-  </action>
-  <action name="drawRotorDisksAction">
-   <property name="text">
-    <string>Show a Rotor Disk</string>
-   </property>
-   <property name="toolTip">
-    <string>Show only one rotor disk</string>
    </property>
   </action>
   <action name="showRotorPropertiesAction">
@@ -1431,6 +1407,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="undoAction_2">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="blaAction">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="drawWingFlapsAction">
+   <property name="text">
+    <string>Show Wing Flaps</string>
    </property>
   </action>
  </widget>

@@ -27,6 +27,9 @@
 
 #include "PNamedShape.h"
 #include "ITiglGeometricComponent.h"
+#include "Cache.h"
+
+#include "Bnd_Box.hxx"
 
 namespace tigl
 {
@@ -38,12 +41,12 @@ class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
 public:
     CTiglAbstractGeometricComponent();
 
-    TIGL_EXPORT void Reset();
+    TIGL_EXPORT void Reset() const;
 
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() const;
 
     // Gets the loft of a geometric component
-    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
+    TIGL_EXPORT PNamedShape GetLoft() const override;
 
     // Get the loft mirrored at the mirror plane
     TIGL_EXPORT virtual PNamedShape GetMirroredLoft();
@@ -55,14 +58,21 @@ public:
     // if the loft as no symmetry, false is returned
     TIGL_EXPORT bool GetIsOnMirrored(const gp_Pnt &pnt);
 
-protected:
-    virtual PNamedShape BuildLoft() = 0;
+    // returns the bounding box of this component's loft
+    TIGL_EXPORT Bnd_Box const& GetBoundingBox() const;
 
-    PNamedShape loft;
+protected:
+    virtual PNamedShape BuildLoft() const = 0;
+
+    Cache<PNamedShape, CTiglAbstractGeometricComponent> loft;
+    Cache<Bnd_Box, CTiglAbstractGeometricComponent> bounding_box;
 
 private:
     CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent&);
     void operator=(const CTiglAbstractGeometricComponent&);
+
+    void BuildLoft(PNamedShape& cache) const;
+    void CalcBoundingBox(Bnd_Box& bb) const;
 };
 
 } // end namespace tigl

@@ -31,12 +31,16 @@ class CCPACSWingSections : public generated::CPACSWingSections
 {
 public:
     TIGL_EXPORT CCPACSWingSections(CCPACSWing* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingSections(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
 
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;
 
     // Returns the section for a given index
     TIGL_EXPORT CCPACSWingSection& GetSection(int index) const;
+
+    // Returns the section for a given uid
+    TIGL_EXPORT CCPACSWingSection& GetSection(const std::string& sectionsUID);
 };
 
 } // end namespace tigl

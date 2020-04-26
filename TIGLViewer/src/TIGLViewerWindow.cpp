@@ -68,12 +68,14 @@ TIGLViewerWindow::TIGLViewerWindow()
 {
     setupUi(this);
 
-    setWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+    setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+
+    undoStack = new QUndoStack(this);
 
     tiglViewerSettings = &TIGLViewerSettings::Instance();
     settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
 
-    myScene  = new TIGLViewerContext();
+    myScene  = new TIGLViewerContext(undoStack);
     myOCC->setContext(myScene);
 
     // we create a timer to workaround QFileSystemWatcher bug,
@@ -238,7 +240,18 @@ void TIGLViewerWindow::closeConfiguration()
         delete cpacsConfiguration;
         cpacsConfiguration = NULL;
     }
-    setWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+    setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+}
+
+void TIGLViewerWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
+{
+    if (forceTitle) {
+        QMainWindow::setWindowTitle(title);
+        preferredTitle = title;
+    }
+    else if (preferredTitle.isEmpty()) {
+        QMainWindow::setWindowTitle(title);
+    }
 }
 
 void TIGLViewerWindow::openRecentFile()
@@ -340,7 +353,7 @@ void TIGLViewerWindow::reopenFile()
 
 void TIGLViewerWindow::setCurrentFile(const QString &fileName)
 {
-    setWindowTitle(QString("%2 - TiGL Viewer %1")
+    setTiglWindowTitle(QString("%2 - TiGL Viewer %1")
                    .arg(TIGL_MAJOR_VERSION)
                    .arg(QDir::toNativeSeparators(QFileInfo(fileName).absoluteFilePath())));
 
@@ -395,6 +408,7 @@ void TIGLViewerWindow::applySettings()
     myOCC->setBackgroundGradient(col.red(), col.green(), col.blue());
     getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceUIsosForDisplay(), AIS_TOI_IsoU);
     getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceVIsosForDisplay(), AIS_TOI_IsoV);
+    getScene()->setFaceBoundariesEnabled(tiglViewerSettings->drawFaceBoundaries());
     getScene()->getContext()->UpdateCurrentViewer();
     if (tiglViewerSettings->debugBooleanOperations()) {
         qputenv("TIGL_DEBUG_BOP", "1");
@@ -573,10 +587,10 @@ void TIGLViewerWindow::connectConfiguration()
     connect(drawWingCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegmentPoints()));
     connect(drawWingShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingShells()));
     connect(drawWingStructureAction, SIGNAL(triggered(bool)), cpacsConfiguration, SLOT(drawWingStructure()));
-
+    connect(drawWingFlapsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFlaps()));
 
     // CPACS Aircraft Actions
-    connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWings()));
+    connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfiguration()));
     connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
     connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
     connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
@@ -608,7 +622,6 @@ void TIGLViewerWindow::connectConfiguration()
 
     // CPACS Rotorcraft Actions
     connect(drawRotorsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotor()));
-    connect(drawRotorDisksAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorDisk()));
     connect(showRotorPropertiesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(showRotorProperties()));
 
     // Export functions
@@ -729,6 +742,15 @@ void TIGLViewerWindow::connectSignals()
     connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
 
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(changeSettings()));
+
+    QAction* undoAction = undoStack->createUndoAction(this, tr("Undo"));
+    undoAction->setShortcuts(QKeySequence::Undo);
+    menuEdit->addAction(undoAction);
+
+    QAction* redoAction = undoStack->createRedoAction(this, tr("Redo"));
+    redoAction->setShortcuts(QKeySequence::Redo);
+    menuEdit->addAction(redoAction);
+
 }
 
 void TIGLViewerWindow::createMenus()
@@ -812,7 +834,6 @@ void TIGLViewerWindow::updateMenus()
     drawFarFieldAction->setEnabled(hasFarField);
     drawSystemsAction->setEnabled(hasACSystems);
     drawRotorsAction->setEnabled(nRotors > 0);
-    drawRotorDisksAction->setEnabled(nRotors > 0);
     menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));
     menuRotorBlades->setEnabled(nRotorBlades > 0);
     menuWings->setEnabled(nWings - nRotorBlades > 0);

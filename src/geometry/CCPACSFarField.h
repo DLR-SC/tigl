@@ -32,17 +32,18 @@ namespace tigl
 class CCPACSFarField : public generated::CPACSFarField, public CTiglAbstractGeometricComponent
 {
 public:
-    TIGL_EXPORT CCPACSFarField();
+    TIGL_EXPORT CCPACSFarField(CCPACSCFDTool* parent);
 
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
 protected:
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
 private:
     void init();

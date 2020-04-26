@@ -36,11 +36,10 @@ namespace tigl
 class ITiglWingProfileAlgo
 {
 public:
-    virtual void Invalidate()   = 0;
+    virtual void Invalidate() const  = 0;
 
     // Returns points on profile.
 
-    virtual std::vector<CTiglPoint>& GetSamplePoints() = 0;
     virtual const std::vector<CTiglPoint>& GetSamplePoints() const = 0;
 
     // get upper wing profile wire
@@ -64,6 +63,8 @@ public:
 
     // Checks, whether the trailing edge is blunt or not
     virtual bool HasBluntTE() const = 0;
+
+    virtual ~ITiglWingProfileAlgo(){}
 };
 
 } // end namespace tigl

@@ -77,12 +77,18 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
 
     char* cCPACSPath = NULL;
     tixiGetDocumentPath(tixiHandle, &cCPACSPath);
-    _filePath = getPathRelativeToApp(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetBase());
+    _filePath = getPathRelativeToApp(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetSimpleContent());
 
     // test if file can be read
     if (!IsFileReadable(_filePath)) {
+        if (m_uidMgr && !m_uID.empty()) m_uidMgr->UnregisterObject(m_uID);
         throw tigl::CTiglError("File " + _filePath + " can not be read!", TIGL_OPEN_FAILED);
     }
+}
+
+void CCPACSExternalObject::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    loft.clear();
 }
 
 const std::string& CCPACSExternalObject::GetFilePath() const
@@ -92,10 +98,15 @@ const std::string& CCPACSExternalObject::GetFilePath() const
 
 TiglGeometricComponentType CCPACSExternalObject::GetComponentType() const
 {
-    return TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_EXTERNAL_OBJECT;
 }
 
-PNamedShape CCPACSExternalObject::BuildLoft()
+TiglGeometricComponentIntent CCPACSExternalObject::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
+}
+
+PNamedShape CCPACSExternalObject::BuildLoft() const
 {
     if (m_linkToFile.GetFormat()) {
         const std::string& fileType = CPACSLinkToFileType_formatToString(*m_linkToFile.GetFormat());
@@ -104,8 +115,8 @@ PNamedShape CCPACSExternalObject::BuildLoft()
             ListPNamedShape shapes = importer->Read(_filePath);
             PNamedShape shapeGroup = CGroupShapes(shapes);
             if (shapeGroup) {
-                shapeGroup->SetName(GetUID().c_str());
-                shapeGroup->SetShortName(GetUID().c_str());
+                shapeGroup->SetName(GetUID());
+                shapeGroup->SetShortName(GetUID());
 
                 // Apply transformation
                 TopoDS_Shape sh = GetTransformationMatrix().Transform(shapeGroup->Shape());
@@ -119,8 +130,32 @@ PNamedShape CCPACSExternalObject::BuildLoft()
         }
     }
     else {
-        throw CTiglError("Cannot open externalComponent. No file format given");
+        throw CTiglError("Cannot open externalComponent. No file format given", TIGL_XML_ERROR);
     }
+}
+
+void CCPACSExternalObject::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
+void CCPACSExternalObject::SetTransformation(const CCPACSTransformation& transform)
+{
+    CTiglRelativelyPositionedComponent::SetTransformation(transform);
+    Invalidate();
+}
+
+void CCPACSExternalObject::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
+{
+    generated::CPACSGenericGeometricComponent::SetSymmetry(value);
+    Invalidate();
+}
+
+void CCPACSExternalObject::SetParentUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSGenericGeometricComponent::SetParentUID(value);
+    Invalidate();
 }
 
 } // namespace tigl

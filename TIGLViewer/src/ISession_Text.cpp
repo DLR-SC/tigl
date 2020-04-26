@@ -60,8 +60,8 @@ ISession_Text::ISession_Text
                   const Standard_Integer         aFontIndex,  // = 1
                   const Quantity_Factor          aScale)      // = 1
                   :AIS_InteractiveObject(),MyText(aText),MyX(anX),MyY(anY),MyZ(aZ),
-                  MyAngle(anAngle),MySlant(aslant),MyFontIndex(aFontIndex),
-                  MyColorIndex(aColorIndex),MyScale(aScale),MyWidth(0),MyHeight(0)
+                  MyAngle(anAngle),MySlant(aslant),
+                  MyColorIndex(aColorIndex), MyFontIndex(aFontIndex), MyScale(aScale)
 {}
 
 ISession_Text::ISession_Text
@@ -73,8 +73,8 @@ ISession_Text::ISession_Text
                   const Standard_Integer         aFontIndex,  // = 1
                   const Quantity_Factor          aScale)      // = 1
                   :AIS_InteractiveObject(),MyText(aText),MyX(aPoint.X()),MyY(aPoint.Y()),MyZ(aPoint.Z()),
-                  MyAngle(anAngle),MySlant(aslant),MyFontIndex(aFontIndex),
-                  MyColorIndex(aColorIndex),MyScale(aScale),MyWidth(0),MyHeight(0)
+                  MyAngle(anAngle),MySlant(aslant),
+                  MyColorIndex(aColorIndex), MyFontIndex(aFontIndex), MyScale(aScale)
 {}
 
 

@@ -17,6 +17,7 @@
 #include "CCPACSSkinSegment.h"
 
 #include "CCPACSFuselageStructure.h"
+#include "CTiglUIDManager.h"
 
 namespace tigl
 {
@@ -25,4 +26,35 @@ CCPACSSkinSegment::CCPACSSkinSegment(CCPACSSkinSegments* parent, CTiglUIDManager
     , CTiglStringerFrameBorderedObject(*uidMgr, *parent->GetParent()->GetParent()->GetParent(), generated::CPACSSkinSegment::m_startFrameUID, generated::CPACSSkinSegment::m_endFrameUID, generated::CPACSSkinSegment::m_startStringerUID, generated::CPACSSkinSegment::m_endStringerUID)
 {
 }
+
+void CCPACSSkinSegment::SetStartFrameUID(const std::string& value)
+{
+    generated::CPACSSkinSegment::SetStartFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSSkinSegment::SetEndFrameUID(const std::string& value)
+{
+    generated::CPACSSkinSegment::SetEndFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSSkinSegment::SetStartStringerUID(const std::string& value)
+{
+    generated::CPACSSkinSegment::SetStartStringerUID(value);
+    Invalidate();
+}
+
+void CCPACSSkinSegment::SetEndStringerUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSSkinSegment::SetEndStringerUID(value);
+    Invalidate();
+}
+
+
+void CCPACSSkinSegment::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    CTiglStringerFrameBorderedObject::InvalidateShapes(source);
+}
+
 } // namespace tigl

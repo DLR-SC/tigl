@@ -28,7 +28,7 @@ namespace tigl
 class CTiglWingBuilder
 {
 public:
-    CTiglWingBuilder(CCPACSWing& wing);
+    CTiglWingBuilder(const CCPACSWing& wing);
 
 
     operator PNamedShape();
@@ -38,7 +38,7 @@ public:
 private:
     void SetFaceTraits (const std::string& uid, PNamedShape loft, bool hasBluntTE);
 
-    CCPACSWing& _wing;
+    const CCPACSWing& _wing;
 };
 
 } //namespace tigl

@@ -33,8 +33,9 @@ namespace tigl
 {
 
 // Constructor
-CCPACSGuideCurve::CCPACSGuideCurve(CTiglUIDManager* uidMgr)
-    : generated::CPACSGuideCurve(uidMgr)
+CCPACSGuideCurve::CCPACSGuideCurve(CCPACSGuideCurves* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurve(parent, uidMgr)
+    , guideCurveTopo(*this, &CCPACSGuideCurve::BuildCurve)
 {
     Cleanup();
 }
@@ -43,6 +44,11 @@ CCPACSGuideCurve::CCPACSGuideCurve(CTiglUIDManager* uidMgr)
 CCPACSGuideCurve::~CCPACSGuideCurve(void)
 {
     Cleanup();
+}
+
+void CCPACSGuideCurve::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    guideCurveTopo.clear();
 }
 
 CCPACSGuideCurve::FromDefinition CCPACSGuideCurve::GetFromDefinition() const {
@@ -58,26 +64,16 @@ CCPACSGuideCurve::FromDefinition CCPACSGuideCurve::GetFromDefinition() const {
 // Cleanup routine
 void CCPACSGuideCurve::Cleanup(void)
 {
-    nextGuideSegment = NULL;
-    guideCurveTopo.Nullify();
+    guideCurveTopo.clear();
     m_builder = NULL;
-    isBuild = false;
 }
 
-const TopoDS_Edge& CCPACSGuideCurve::GetCurve()
+TopoDS_Edge CCPACSGuideCurve::GetCurve() const
 {
-    if (m_builder && !isBuild) {
-
-        // interpolate B-Spline curve through guide curve points
-        std::vector<gp_Pnt> guideCurvePnts = GetCurvePoints();
-        guideCurveTopo = EdgeSplineFromPoints(guideCurvePnts);
-
-        isBuild = true;
-    }
-    return guideCurveTopo;
+    return *guideCurveTopo;
 }
 
-const std::vector<gp_Pnt> CCPACSGuideCurve::GetCurvePoints()
+std::vector<gp_Pnt> CCPACSGuideCurve::GetCurvePoints() const
 {
     if (!m_builder) {
         throw CTiglError("Cannot get Guide Curve Points: Null pointer to guide curve builder", TIGL_NULL_POINTER);
@@ -86,27 +82,47 @@ const std::vector<gp_Pnt> CCPACSGuideCurve::GetCurvePoints()
     return guideCurvePnts;
 }
 
-void CCPACSGuideCurve::ConnectToCurve(CCPACSGuideCurve *guide)
-{
-    if (!guide) {
-        throw CTiglError("Null pointer guide curve in CCPACSGuideCurve::ConnectToCurve", TIGL_ERROR);
-    }
-    
-    if (!guide->GetFromGuideCurveUID_choice1() || *(guide->GetFromGuideCurveUID_choice1()) != m_uID) {
-        throw CTiglError("Guide curves cannot be connected. Mismatching uids.", TIGL_ERROR);
-    }
-    
-    nextGuideSegment = guide;
-}
-
 CCPACSGuideCurve* CCPACSGuideCurve::GetConnectedCurve() const
 {
-    return nextGuideSegment;
+    std::vector<CCPACSGuideCurve*> curves = m_uidMgr->ResolveObjects<CCPACSGuideCurve>();
+    for (std::size_t i = 0; i < curves.size(); i++) {
+        if (curves[i]->GetFromGuideCurveUID_choice1() == m_uID) {
+            return curves[i];
+        }
+    }
+    return NULL;
+}
+
+CCPACSGuideCurve const* CCPACSGuideCurve::GetRootCurve() const
+{
+    if ( GetFromGuideCurveUID_choice1() ) {
+        CCPACSGuideCurve& pred = m_uidMgr->ResolveObject<CCPACSGuideCurve>(*GetFromGuideCurveUID_choice1());
+        return pred.GetRootCurve();
+    }
+    else {
+        if( !GetFromRelativeCircumference_choice2() ) {
+            throw CTiglError("CCPACSGuideCurve::GetRootCurve(): Either a fromCircumference of a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
+        } else {
+            return this;
+        }
+    }
 }
 
 void CCPACSGuideCurve::SetGuideCurveBuilder(IGuideCurveBuilder& b)
 {
     m_builder = &b;
+}
+
+void CCPACSGuideCurve::BuildCurve(TopoDS_Edge& cache) const
+{
+    if (m_builder) {
+        // interpolate B-Spline curve through guide curve points
+        cache = EdgeSplineFromPoints(GetCurvePoints());
+    }
+}
+
+IGuideCurveBuilder::~IGuideCurveBuilder()
+{
 }
 
 } // end namespace tigl

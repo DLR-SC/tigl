@@ -569,7 +569,7 @@ Handle(Geom_BSplineSurface) MakePatches::BuildSurface(
 
     Standard_Integer aNbPMin = 4;
     Standard_Integer aCont = 1;
-#ifdef TIGL_OCE_COONS_PATCHED
+#ifdef HAVE_OCE_COONS_PATCHED
     if (theStyle == GeomFill_CoonsC2Style) {
         aNbPMin = 6;
         aCont = 2;
@@ -603,7 +603,7 @@ Handle(Geom_BSplineSurface) MakePatches::BuildSurface(
     }
 
     GeomFill_BSplineCurves aPatch;
-#ifdef TIGL_OCE_COONS_PATCHED
+#ifdef HAVE_OCE_COONS_PATCHED
     aPatch.Init(C1[0], C1[1], C1[2], C1[3], theStyle, theTolConf, Standard_False);
 #else
     aPatch.Init(C1[0], C1[1], C1[2], C1[3], theStyle);

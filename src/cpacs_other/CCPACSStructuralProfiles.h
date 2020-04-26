@@ -24,7 +24,7 @@ namespace tigl
 class CCPACSStructuralProfiles : public generated::CPACSStructuralProfiles
 {
 public:
-    TIGL_EXPORT CCPACSStructuralProfiles(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSStructuralProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr);
 };
 
 } // namespace tigl

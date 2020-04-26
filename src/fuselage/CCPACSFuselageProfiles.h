@@ -22,6 +22,9 @@
 #ifndef CCPACSFUSELAGEPROFILES_H
 #define CCPACSFUSELAGEPROFILES_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSFuselageProfiles.h"
 #include "CCPACSFuselageProfile.h"
 
@@ -31,12 +34,12 @@ namespace tigl
 class CCPACSFuselageProfiles : public generated::CPACSFuselageProfiles
 {
 public:
-    TIGL_EXPORT CCPACSFuselageProfiles(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFuselageProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr);
 
     // Read CPACS fuselage profiles
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
-    TIGL_EXPORT CCPACSFuselageProfile& AddFuselageProfile() OVERRIDE;
+    TIGL_EXPORT CCPACSFuselageProfile& AddFuselageProfile() override;
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
@@ -56,7 +59,7 @@ public:
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 
 } // end namespace tigl

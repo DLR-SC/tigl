@@ -23,14 +23,14 @@
 
 namespace tigl
 {
-CCPACSRotorProfiles::CCPACSRotorProfiles(CTiglUIDManager* uidMgr)
-    : generated::CPACSRotorAirfoils(uidMgr) {}
+CCPACSRotorProfiles::CCPACSRotorProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSRotorAirfoils(parent, uidMgr) {}
 
 // Invalidates internal state
-void CCPACSRotorProfiles::Invalidate()
+void CCPACSRotorProfiles::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 0; i < m_rotorAirfoils.size(); i++) {
-        static_cast<CCPACSWingProfile&>(*m_rotorAirfoils[i]).Invalidate();
+        static_cast<CCPACSWingProfile&>(*m_rotorAirfoils[i]).Invalidate(source);
     }
 }
 
@@ -48,7 +48,11 @@ void CCPACSRotorProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, cons
     // we replace generated::CPACSRotorAirfoils::ReadCPACS and not call it to allow instantiation of CCPACSWingProfile instead of generated::CPACSProfileGeometry
     // read element wingAirfoil
     if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoil")) {
-        tixi::TixiReadElements(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils, tixi::ChildWithArgsReader1<CCPACSWingProfile, CTiglUIDManager>(m_uidMgr));
+        tixi::TixiReadElementsInternal(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils, 1, tixi::xsdUnbounded, [&](const std::string& childXPath) {
+            auto child = tigl::make_unique<CCPACSWingProfile>(this, m_uidMgr);
+            child->ReadCPACS(tixiHandle, childXPath);
+            return child;
+        });
     }
 }
 
@@ -56,13 +60,13 @@ void CCPACSRotorProfiles::AddProfile(CCPACSWingProfile* profile)
 {
     // free memory for existing profiles
     DeleteProfile(profile->GetUID());
-    m_rotorAirfoils.push_back(unique_ptr<CCPACSWingProfile>(profile));
+    m_rotorAirfoils.push_back(std::unique_ptr<CCPACSWingProfile>(profile));
 }
 
 
 void CCPACSRotorProfiles::DeleteProfile(std::string uid)
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::iterator it = m_rotorAirfoils.begin(); it != m_rotorAirfoils.end(); ++it) {
+    for (auto it = m_rotorAirfoils.begin(); it != m_rotorAirfoils.end(); ++it) {
         if ((*it)->GetUID() == uid) {
             m_rotorAirfoils.erase(it);
             return;
@@ -70,15 +74,10 @@ void CCPACSRotorProfiles::DeleteProfile(std::string uid)
     }
 }
 
-// Returns the total count of wing profiles in this configuration
-int CCPACSRotorProfiles::GetProfileCount() const {
-    return static_cast<int>(m_rotorAirfoils.size());
-}
-
 bool CCPACSRotorProfiles::HasProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_rotorAirfoils.begin(); it != m_rotorAirfoils.end(); ++it)
-        if ((*it)->GetUID() == uid)
+    for (const auto& p : m_rotorAirfoils)
+        if (p->GetUID() == uid)
             return true;
     return false;
 }
@@ -86,20 +85,11 @@ bool CCPACSRotorProfiles::HasProfile(std::string uid) const
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSRotorProfiles::GetProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_rotorAirfoils.begin(); it != m_rotorAirfoils.end(); ++it)
-        if ((*it)->GetUID() == uid)
-            return static_cast<CCPACSWingProfile&>(**it);
+    for (auto& p : m_rotorAirfoils)
+        if (p->GetUID() == uid)
+            return static_cast<CCPACSWingProfile&>(*p);
 
     throw CTiglError("Rotor profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
-}
-
-// Returns the wing profile for a given index - TODO: depricated function!
-CCPACSWingProfile& CCPACSRotorProfiles::GetProfile(int index) const {
-    index--;
-    if (index < 0 || index >= GetProfileCount()) {
-        throw CTiglError("Illegal index in CCPACSRotorProfiles::GetProfile", TIGL_INDEX_ERROR);
-    }
-    return static_cast<CCPACSWingProfile&>(*m_rotorAirfoils[index]);
 }
 
 } // end namespace tigl

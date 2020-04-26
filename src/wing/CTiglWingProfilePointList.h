@@ -39,48 +39,50 @@
 #include "Geom_TrimmedCurve.hxx"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
-#include "CCPACSPointListXYZ.h"
+#include "CCPACSPointListXYVector.h"
 #include "Cache.h"
 
 namespace tigl
 {
 
 class CCPACSWingProfile;
+class CCPACSNacelleProfile;
+class CCPACSCurvePointListXYZ;
 
 class CTiglWingProfilePointList : public ITiglWingProfileAlgo
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, CCPACSPointListXYZ& cpacsPointlist);
+    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSCurvePointListXYZ& cpacsPointlist);
+    TIGL_EXPORT CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointlist);
 
-    TIGL_EXPORT void Invalidate() OVERRIDE;
+    TIGL_EXPORT void Invalidate() const override;
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT std::vector<CTiglPoint>& GetSamplePoints() OVERRIDE;
-    TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE;
+    TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const override;
 
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get the upper and lower wing profile combined into one edge
-    TIGL_EXPORT const TopoDS_Edge& GetUpperLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get trailing edge if existing in definition
-    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get leading edge point();
-    TIGL_EXPORT const gp_Pnt& GetLEPoint() const OVERRIDE;
+    TIGL_EXPORT const gp_Pnt& GetLEPoint() const override;
 
     // get trailing edge point();
-    TIGL_EXPORT const gp_Pnt& GetTEPoint() const OVERRIDE;
+    TIGL_EXPORT const gp_Pnt& GetTEPoint() const override;
 
     // Checks, whether the trailing edge is blunt or
     // not by comparing first and last point.
-    TIGL_EXPORT bool HasBluntTE() const OVERRIDE;
+    TIGL_EXPORT bool HasBluntTE() const override;
 
 protected:
     struct WireCache {
@@ -125,9 +127,9 @@ private:
     // constant blending distance for opening/closing trailing edge
     static const double       c_blendingDistance;
 
-    std::vector<CTiglPoint>&            coordinates;    /**< Coordinates of a wing profile element */
-    unique_ptr<ITiglWireAlgorithm> profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
-    const CCPACSWingProfile&            profileRef;     /**< Reference to the wing profile */
+    const std::vector<CTiglPoint>&      coordinates;     /**< Coordinates of a wing profile element */
+    std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo; /**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
+    const std::string                   profileUID;      /**< Reference to the wing profile */
 
     Cache<WireCache, CTiglWingProfilePointList> wireCache;
 };
@@ -135,4 +137,3 @@ private:
 } // end namespace tigl
 
 #endif // CCPACSWINGPROFILEPOINTLIST_H
-

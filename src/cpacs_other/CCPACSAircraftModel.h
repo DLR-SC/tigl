@@ -38,19 +38,19 @@ class CCPACSAircraftModel : public generated::CPACSAircraftModel, public CTiglRe
 public:
     // Construct
     TIGL_EXPORT CCPACSAircraftModel(CCPACSConfiguration* config = NULL);
-    TIGL_EXPORT CCPACSAircraftModel(CTiglUIDManager* config);
+    TIGL_EXPORT CCPACSAircraftModel(CCPACSAircraft* parent, CTiglUIDManager* config);
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
-    void Invalidate();
 
 protected:
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
     CCPACSConfiguration* config;
 };

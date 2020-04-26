@@ -55,17 +55,34 @@ std::string CCPACSCrossBeamAssemblyPosition::GetDefaultedUID() const
     return GetUID();
 }
 
-PNamedShape CCPACSCrossBeamAssemblyPosition::GetLoft()
+PNamedShape CCPACSCrossBeamAssemblyPosition::GetLoft() const
 {
     return PNamedShape( new CNamedShape(GetGeometry(true), GetDefaultedUID()) );
 }
 
 TiglGeometricComponentType CCPACSCrossBeamAssemblyPosition::GetComponentType() const
 {
-    return TIGL_COMPONENT_GENERICSYSTEM | TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_GENERICSYSTEM;
 }
 
-void CCPACSCrossBeamAssemblyPosition::Invalidate()
+TiglGeometricComponentIntent CCPACSCrossBeamAssemblyPosition::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
+}
+
+void CCPACSCrossBeamAssemblyPosition::SetFrameUID(const std::string& value)
+{
+    generated::CPACSCrossBeamAssemblyPosition::SetFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSCrossBeamAssemblyPosition::SetPositionZ(const double& value)
+{
+    generated::CPACSCrossBeamAssemblyPosition::SetPositionZ(value);
+    Invalidate();
+}
+
+void CCPACSCrossBeamAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry1D.clear();
     m_geometry3D.clear();
@@ -144,7 +161,7 @@ void CCPACSCrossBeamAssemblyPosition::BuildGeometry(TopoDS_Shape& cache, bool ju
         CCPACSProfileBasedStructuralElement& structuralElement =
             m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(GetStructuralElementUID());
         CCPACSStructuralProfile& structuralProfile = m_uidMgr->ResolveObject<CCPACSStructuralProfile>(
-                                                         structuralElement.GetStructuralProfileUID_choice1().value());
+                                                         structuralElement.GetStructuralProfileUID_choice2_2().value());
 
         TopoDS_Compound compound;
         TopoDS_Builder builder;

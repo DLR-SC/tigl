@@ -28,10 +28,10 @@ namespace tigl
 CCPACSWingSparSegments::CCPACSWingSparSegments(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSSparSegments(parent, uidMgr) {}
 
-void CCPACSWingSparSegments::Invalidate()
+void CCPACSWingSparSegments::Invalidate(const boost::optional<std::string>& source) const
 {
-    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::iterator it = m_sparSegments.begin(); it != m_sparSegments.end(); ++it) {
-        (*it)->Invalidate();
+    for (auto& s : m_sparSegments) {
+        s->Invalidate(source);
     }
 }
 
@@ -52,13 +52,12 @@ CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(int index) const
 
 CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(const std::string& uid) const
 {
-    for (std::vector<unique_ptr<CCPACSWingSparSegment> >::const_iterator it = m_sparSegments.begin(); it != m_sparSegments.end(); ++it) {
-        CCPACSWingSparSegment& sparSegment = **it;
-        if (sparSegment.GetUID() == uid) {
-            return sparSegment;
+    for (auto& s : m_sparSegments) {
+        if (s->GetUID() == uid) {
+            return *s;
         }
     }
-    std::string referenceUID = GetParent()->GetParent()->GetWingStructureReference().GetUID();
+    const std::string& referenceUID = CTiglWingStructureReference(*GetParent()->GetParent()).GetUID();
     LOG(ERROR) << "Spar Segment \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
     throw CTiglError("Spar Segment \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
 }

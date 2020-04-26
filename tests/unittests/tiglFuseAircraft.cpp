@@ -68,7 +68,7 @@ public:
 class tiglFuseAircraftCPACS : public ::testing::TestWithParam<testcase>
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         // get name of the test case
         name = GetParam().name;
@@ -152,7 +152,7 @@ protected:
         BRepTools::Write(loftFuselage, ("TestData/export/" + name + "_fuselage.brep").c_str());
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);

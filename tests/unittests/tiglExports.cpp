@@ -32,6 +32,9 @@
 #include "CGlobalExporterConfigs.h"
 #include "CTiglExportIges.h"
 
+#include "TopExp.hxx"
+#include "TopTools_IndexedMapOfShape.hxx"
+
 
 /******************************************************************************/
 
@@ -61,8 +64,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -98,8 +101,8 @@ protected:
         tixiSimpleHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiSimpleHandle;
@@ -135,8 +138,8 @@ protected:
         tixiD150WGuidesHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiD150WGuidesHandle;
@@ -173,8 +176,8 @@ protected:
         tixiRectangularWingHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiRectangularWingHandle;
@@ -183,6 +186,43 @@ protected:
 
 TixiDocumentHandle tiglExportRectangularWing::tixiRectangularWingHandle = 0;
 TiglCPACSConfigurationHandle tiglExportRectangularWing::tiglRectangularWingHandle = 0;
+
+class tiglExportSymmetricWing : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/symmetry_exportBUG.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglSymmetricWingHandle = -1;
+        tixiSymmetricWingHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiSymmetricWingHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiSymmetricWingHandle, "", &tiglSymmetricWingHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSymmetricWingHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiSymmetricWingHandle) == SUCCESS);
+        tiglSymmetricWingHandle = -1;
+        tixiSymmetricWingHandle = -1;
+    }
+
+    void SetUp() override {}
+    void TearDown() override {}
+
+
+    static TixiDocumentHandle           tixiSymmetricWingHandle;
+    static TiglCPACSConfigurationHandle tiglSymmetricWingHandle;
+};
+
+TixiDocumentHandle tiglExportSymmetricWing::tixiSymmetricWingHandle = 0;
+TiglCPACSConfigurationHandle tiglExportSymmetricWing::tiglSymmetricWingHandle = 0;
 
 
 
@@ -429,4 +469,31 @@ TEST(TiglExportFactory, supportedTypes)
     ASSERT_TRUE(factory.ExporterSupported("stl"));
 
     ASSERT_FALSE(factory.ExporterSupported("unknown"));
+}
+
+TEST_F(tiglExportSymmetricWing, duplicateFaceBug)
+{
+    // Set export options
+    tiglSetExportOptions("iges", "ApplySymmetries", "true");
+    tiglSetExportOptions("iges", "IncludeFarfield", "false");
+    tiglSetExportOptions("iges", "IGES5.3", "false");
+    tiglSetExportOptions("iges", "FaceNames", "UIDOnly");
+
+    const tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglSymmetricWingHandle);
+    tigl::PTiglCADExporter exporter = tigl::createExporter("iges");
+    exporter->AddFusedConfiguration(config, tigl::TriangulatedExportOptions(0.0));
+    int nfaces = 0;
+    for (size_t i=0; i<exporter->NShapes(); ++i) {
+        TopoDS_Shape shape = exporter->GetShape(i)->Shape();
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(shape, TopAbs_FACE, map);
+        nfaces += map.Extent();
+    }
+
+    // expected number of faces = 24
+    //   main wing: three segments with upper and lower face + wing tip = 7, symmetry -> 14
+    //   HTP: one segment with upper and lower face + wing tip = 3, symmetry -> 6
+    //   VTP: one segment with upper and lower face + wing tip + wing root = 4, no symmetry -> 4
+    ASSERT_EQ(24, nfaces);
 }

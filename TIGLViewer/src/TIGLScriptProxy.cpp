@@ -209,6 +209,18 @@ QScriptValue TIGLScriptProxy::fuselageGetUID(int fuselageIndex)
     }
 }
 
+QScriptValue TIGLScriptProxy::fuselageGetCenterLineLength(QString fuselageUID)
+{
+    double length;
+    TiglReturnCode ret = ::tiglFuselageGetCenterLineLength (getTiglHandle(), qString2char(fuselageUID), &length);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return length;
+    }
+}
+
 
 QScriptValue TIGLScriptProxy::fuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta)
 {
@@ -449,6 +461,18 @@ QScriptValue TIGLScriptProxy::wingGetSegmentVolume(int wingIndex, int segmentInd
         return volume;
     }
 }
+
+QScriptValue TIGLScriptProxy::controlSurfaceSetDeflection(QString controlSurfaceUID, double deflection)
+{
+    TiglReturnCode ret = ::tiglControlSurfaceSetDeflection(getTiglHandle(), controlSurfaceUID.toStdString().c_str(), deflection);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return QScriptValue::UndefinedValue;
+    }
+}
+
 
 QScriptValue TIGLScriptProxy::getShape(QString uid)
 {

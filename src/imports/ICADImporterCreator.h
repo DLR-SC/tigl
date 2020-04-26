@@ -28,14 +28,15 @@ namespace tigl
 class ICADImporterCreator
 {
 public:
-   virtual PTiglCADImporter create() const = 0;
+    virtual PTiglCADImporter create() const = 0;
+    virtual ~ICADImporterCreator(){}
 };
 
 template <class T>
 class ICADImporterCreatorImpl : public ICADImporterCreator
 {
 public:
-   PTiglCADImporter create() const OVERRIDE
+   PTiglCADImporter create() const override
    {
        return PTiglCADImporter(new T);
    }

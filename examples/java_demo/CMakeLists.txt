@@ -7,6 +7,9 @@ install(FILES
     COMPONENT docu
 )
 
+get_target_property(TIXI_DLL tixi3 LOCATION)
+get_filename_component(TIXI_LIB_PATH ${TIXI_DLL} PATH)
+
 if (TIGL_BINDINGS_JAVA)
 	SET(TIGL_JAR "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}/tigl-${TIGL_VERSION}.jar")
 

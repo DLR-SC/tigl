@@ -28,6 +28,7 @@
 #include "TIGLViewerContext.h"
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerSettings.h"
+#include "TIGLViewerUndoCommands.h"
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
 #include "PNamedShape.h"
@@ -72,7 +73,8 @@ QString getShaderFile(const QString& filename)
     return result;
 }
 
-TIGLViewerContext::TIGLViewerContext()
+TIGLViewerContext::TIGLViewerContext(QUndoStack* stack)
+    : myUndoStack(stack)
 {
     // Create the OCC Viewers
     TCollection_ExtendedString a3DName("Visual3D");
@@ -94,7 +96,6 @@ TIGLViewerContext::TIGLViewerContext()
     myContext->SetHilightColor(Quantity_NOC_WHITE);
 #endif
     myContext->SetIsoNumber(0);
-
 
     // load shader
     initShaders();
@@ -367,7 +368,8 @@ void TIGLViewerContext::displayShape(const PNamedShape& pshape, bool updateViewe
     }
 #endif
 
-    myContext->Display(shape, updateViewer);
+    QUndoCommand* command = new TiGLViewer::DrawObjects(myContext, shape, pshape->Name(), updateViewer);
+    myUndoStack->push(command);
 
     if (settings.enumerateFaces()) {
         TopTools_IndexedMapOfShape shapeMap;
@@ -383,6 +385,7 @@ void TIGLViewerContext::displayShape(const PNamedShape& pshape, bool updateViewe
             displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
         }
     }
+    GetShapeManager().addObject(pshape, shape);
 }
 
 // Displays a point on the screen
@@ -463,12 +466,22 @@ void TIGLViewerContext::drawVector(double x, double y, double z, double dirx, do
     displayVector(gp_Pnt(x,y,z), gp_Vec(dirx, diry, dirz), "", Standard_True, 0,0,0, 1.0);
 }
 
+std::vector<Handle(AIS_InteractiveObject)> TIGLViewerContext::selected()
+{
+    std::vector<Handle(AIS_InteractiveObject)> objects;
+    if (!myContext.IsNull()) {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            objects.push_back(myContext->Current());
+        }
+    }
+    return objects;
+}
+
 void TIGLViewerContext::eraseSelected()
 {
     if (!myContext.IsNull()) {
-        myContext->EraseSelected(Standard_False);
-
-        myContext->ClearCurrents(true);
+        QUndoCommand* command = new TiGLViewer::DeleteObjects(myContext, selected());
+        myUndoStack->push(command);
     }
 }
 
@@ -554,10 +567,20 @@ void TIGLViewerContext::setReflectionlinesEnabled(bool enable)
 void TIGLViewerContext::setObjectsColor(const QColor& color)
 {
     if (color.isValid() && !myContext.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetColor (myContext->Current(),Quantity_Color(color.red()/255., color.green()/255., color.blue()/255., Quantity_TOC_RGB), true);
-        }
+        QUndoCommand* command = new TiGLViewer::ChangeObjectsColor(myContext, selected(), color);
+        myUndoStack->push(command);
     }
+}
+
+void TIGLViewerContext::setFaceBoundariesEnabled(bool enabled) {
+    if (myContext && myContext->DefaultDrawer()) {
+        myContext->DefaultDrawer()->SetFaceBoundaryDraw(enabled);
+    }
+}
+
+InteractiveShapeManager& TIGLViewerContext::GetShapeManager()
+{
+    return myShapeManager;
 }
 
 

@@ -35,17 +35,18 @@ namespace tigl
 class CCSTCurveBuilder
 {
 public:
-    TIGL_EXPORT CCSTCurveBuilder(double N1, double N2, const std::vector<double>& B);
+    TIGL_EXPORT CCSTCurveBuilder(double N1, double N2, const std::vector<double>& B, double T);
 
     // returns parameters of cst curve
     TIGL_EXPORT double N1() const;
     TIGL_EXPORT double N2() const;
     TIGL_EXPORT std::vector<double> B() const;
+    TIGL_EXPORT double T() const;
 
     TIGL_EXPORT Handle(Geom_BSplineCurve) Curve();
 
 private:
-    double _n1, _n2;
+    double _n1, _n2, _t;
     std::vector<double> _b;
 };
 

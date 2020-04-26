@@ -24,6 +24,12 @@
 #include <gp_Pln.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <Standard_Failure.hxx>
+
+#include <list>
 
 TEST(TiglCommonFunctions, isPathRelative)
 {
@@ -125,8 +131,8 @@ TEST(TiglCommonFunctions, tiglCheckPointInside_api)
     // test errors
     EXPECT_EQ(TIGL_UID_ERROR, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", &isInside));
     EXPECT_EQ(TIGL_NOT_FOUND, tiglCheckPointInside(-1, 0., 0., 0., "wrongUID", &isInside));
-    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., NULL, &isInside));
-    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", NULL));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., nullptr, &isInside));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", nullptr));
 
 
 }
@@ -153,4 +159,115 @@ TEST(TiglCommonFunctions, LinspaceWithBreaks)
     EXPECT_NEAR(0.80, res[9], 1e-10);
     EXPECT_NEAR(0.90, res[10], 1e-10);
     EXPECT_NEAR(1.00, res[11], 1e-10);
+}
+
+TEST(TiglCommonFunctions, ReplaceAdjacentWith)
+{
+    auto is_adjacent = [](int v1, int v2) {
+        return v1 + 1 == v2;
+    };
+    
+    auto merged = [](int /* v1 */, int v2) {
+        return v2;
+    };
+    
+    std::list<int> a = {1, 2, 3, 10};
+    ReplaceAdjacentWithMerged(a, is_adjacent, merged);
+    EXPECT_TRUE(ArraysMatch({3, 10}, a));
+    
+    a = {1, 2, 5, 6, 7, 9, 11, 23, 24};
+    ReplaceAdjacentWithMerged(a, is_adjacent, merged);
+    EXPECT_TRUE(ArraysMatch({2, 7, 9, 11, 24}, a));
+    
+    a = {5};
+    ReplaceAdjacentWithMerged(a, is_adjacent, merged);
+    EXPECT_TRUE(ArraysMatch({5}, a));
+    
+    a = {5, 6};
+    ReplaceAdjacentWithMerged(a, is_adjacent, merged);
+    EXPECT_TRUE(ArraysMatch({6}, a));
+    
+    a = {};
+    ReplaceAdjacentWithMerged(a, is_adjacent, merged);
+    EXPECT_TRUE(ArraysMatch({}, a));
+}
+
+TEST(TiglCommonFunctions, FaceBetweenPoints)
+{
+    gp_Pln plane(gp_Pnt(0., 0., 0.), gp_Dir(0, 1., 0));
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(plane);
+
+    EXPECT_TRUE(IsFaceBetweenPoints(face, gp_Pnt(0, -1, 0), gp_Pnt(0, 1, 0)));
+    EXPECT_FALSE(IsFaceBetweenPoints(face, gp_Pnt(0, -1, 0), gp_Pnt(0, -1, 0)));
+    EXPECT_FALSE(IsFaceBetweenPoints(face, gp_Pnt(0, 1, 0), gp_Pnt(0, 1, 0)));
+    
+    EXPECT_TRUE(IsFaceBetweenPoints(face, gp_Pnt(5, -1, 20), gp_Pnt(3, 1, -20)));
+    EXPECT_FALSE(IsFaceBetweenPoints(face, gp_Pnt(5, -1, 20), gp_Pnt(3, -10, -20)));
+}
+
+TEST(TiglCommonFunctions, IsPointInsideFace)
+{
+    TopoDS_Edge left = BRepBuilderAPI_MakeEdge(gp_Pnt(-1,-1,0), gp_Pnt(-1,1,0)).Edge();
+    TopoDS_Edge right = BRepBuilderAPI_MakeEdge(gp_Pnt(1,-1,0), gp_Pnt(1,1,0)).Edge();
+    TopoDS_Edge top = BRepBuilderAPI_MakeEdge(gp_Pnt(-1,1,0), gp_Pnt(1,1,0)).Edge();
+    TopoDS_Edge bottom = BRepBuilderAPI_MakeEdge(gp_Pnt(-1,-1,0), gp_Pnt(1,-1,0)).Edge();
+    TopoDS_Wire wire = BRepBuilderAPI_MakeWire(left, bottom, right, top).Wire();
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(wire, false).Face();
+
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(0,0,0)));
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(-1,-1,0)));
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(-1,1,0)));
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(1,1,0)));
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(1,-1,0)));
+
+    EXPECT_TRUE(IsPointInsideFace(face, gp_Pnt(1,0,0)));
+
+    EXPECT_FALSE(IsPointInsideFace(face, gp_Pnt(1,-2,0)));
+    EXPECT_FALSE(IsPointInsideFace(face, gp_Pnt(0,0,-1)));
+    EXPECT_FALSE(IsPointInsideFace(face, gp_Pnt(0,0, 1)));
+
+}
+
+TEST(TiglCommonFunctions, IsPointAbovePlane)
+{
+    gp_Pln xy = gp_Pln(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.), gp_Dir(1., 0., 0.)));
+
+    EXPECT_TRUE (IsPointAbovePlane(xy, gp_Pnt(0., 0.,  1.)));
+    EXPECT_TRUE (IsPointAbovePlane(xy, gp_Pnt(1., 1.,  1.)));
+    EXPECT_FALSE(IsPointAbovePlane(xy, gp_Pnt(1., 1., -1.)));
+    EXPECT_FALSE(IsPointAbovePlane(xy, gp_Pnt(0., 0., -1.)));
+    EXPECT_FALSE(IsPointAbovePlane(xy, gp_Pnt(0., 0.,  0.)));
+}
+
+TEST(TiglCommonFunctions, projectPointOnPlane)
+{
+    gp_Pnt p(0,0,1);
+    gp_Pln pln(gp_Pnt(0,0,0), gp_Dir(0,0,1));
+
+    gp_Pnt2d res;
+    res = ProjectPointOnPlane(pln, p);
+    ASSERT_NEAR(0, res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+
+    p = gp_Pnt(2,0,3);
+    res = ProjectPointOnPlane(pln, p);
+    ASSERT_NEAR(2, res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+
+    pln = gp_Pln(gp_Pnt(0,0,0), gp_Dir(0,1,0));
+    res = ProjectPointOnPlane(pln, p);
+    ASSERT_NEAR(3, res.X(), 1e-10);
+    ASSERT_NEAR(2, res.Y(), 1e-10);
+
+    pln = gp_Pln(gp_Pnt(0,0,0), gp_Dir(-1,1,0));
+    p = gp_Pnt(1,0,0);
+    res = ProjectPointOnPlane(pln, p);
+    ASSERT_NEAR(sqrt(0.5), res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
+
+    pln = gp_Pln(gp_Pnt(1,0,0), gp_Dir(-1,1,0));
+    p = gp_Pnt(1,0,0);
+    res = ProjectPointOnPlane(pln, p);
+    ASSERT_NEAR(0, res.X(), 1e-10);
+    ASSERT_NEAR(0, res.Y(), 1e-10);
 }

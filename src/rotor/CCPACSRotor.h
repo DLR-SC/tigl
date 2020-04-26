@@ -58,18 +58,15 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr);
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
-
-    TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const OVERRIDE;
+    TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const override;
 
     // Read CPACS rotor elements
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& rotorXPath) override;
 
     // Returns the Translation
-    TIGL_EXPORT CTiglPoint GetTranslation() const OVERRIDE;
+    TIGL_EXPORT CTiglPoint GetTranslation() const override;
 
     // Returns the type of the rotor
     TIGL_EXPORT TiglRotorType GetDefaultedType() const;
@@ -115,9 +112,14 @@ public:
     TIGL_EXPORT double GetSolidity();
 
     // Returns the Component Type TIGL_COMPONENT_ROTOR.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
     {
-        return TIGL_COMPONENT_ROTOR | TIGL_COMPONENT_PHYSICAL;
+        return TIGL_COMPONENT_ROTOR;
+    }
+
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override
+    {
+        return TIGL_INTENT_PHYSICAL;
     }
 
 protected:
@@ -129,11 +131,12 @@ protected:
 
     // Returns the geometry of the whole rotor (assembly of all rotor blades).
     // Implementation for abstract base class CTiglAbstractGeometricComponent
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
 private:
-    bool                   invalidated;                 /**< Internal state flag  */
-    bool                   rebuildGeometry;             /**< Indicates if geometry needs to be rebuilt */
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
 };
 
 } // end namespace tigl

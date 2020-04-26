@@ -19,13 +19,68 @@
 
 #include "generated/CPACSTrailingEdgeDevice.h"
 
+#include "CTiglAbstractGeometricComponent.h"
+#include "Cache.h"
+#include "tigl.h"
+#include <string>
+
 namespace tigl
 {
 
-class CCPACSTrailingEdgeDevice : public generated::CPACSTrailingEdgeDevice
+class CCPACSTrailingEdgeDevice : public generated::CPACSTrailingEdgeDevice, public CTiglAbstractGeometricComponent
 {
 public:
     TIGL_EXPORT CCPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
+
+    TIGL_EXPORT std::string GetShortName() const;
+
+    // Returns the flap transformation based on the current deflection
+    TIGL_EXPORT gp_Trsf GetFlapTransform() const;
+
+    TIGL_EXPORT double GetMinDeflection() const;
+    TIGL_EXPORT double GetMaxDeflection() const;
+
+    // Get and set the current deflection  value
+    TIGL_EXPORT double GetDeflection() const;
+    TIGL_EXPORT void SetDeflection(const double deflect);
+
+    TIGL_EXPORT PNamedShape GetCutOutShape(void) const;
+    TIGL_EXPORT PNamedShape GetFlapShape() const;
+    TIGL_EXPORT PNamedShape GetTransformedFlapShape() const;
+    TIGL_EXPORT gp_Vec GetNormalOfControlSurfaceDevice() const;
+
+    TIGL_EXPORT TiglControlSurfaceType GetType() const;
+
+    // Interface functions from CTiglAbstractGeometricComponent
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+
+private:
+    struct HingePoints {
+        gp_Pnt inner;
+        gp_Pnt outer;
+    };
+
+    Cache<HingePoints, CCPACSTrailingEdgeDevice> m_hingePoints;
+    Cache<PNamedShape, CCPACSTrailingEdgeDevice> m_cutoutShape;
+    Cache<PNamedShape, CCPACSTrailingEdgeDevice> m_flapShape;
+    TiglControlSurfaceType m_type;
+    double m_currentDeflection;
+
+    PNamedShape BuildLoft() const override;
+    void ComputeHingePoints(HingePoints&) const;
+    void ComputeCutoutShape(PNamedShape&) const;
+    void ComputeFlapShape(PNamedShape&) const;
+    void Invalidate();
+
+    const CCPACSWing& Wing() const;
+    CCPACSWing& Wing();
 };
+
+TIGL_EXPORT const CCPACSWingComponentSegment& ComponentSegment(const CCPACSTrailingEdgeDevice&);
+TIGL_EXPORT CCPACSWingComponentSegment& ComponentSegment(CCPACSTrailingEdgeDevice&);
 
 } // namespace tigl

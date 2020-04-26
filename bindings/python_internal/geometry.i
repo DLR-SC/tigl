@@ -46,15 +46,13 @@
 #include "CTiglError.h"
 #include "CTiglShapeCache.h"
 #include "CTiglPolyData.h"
-#include "CTiglSymetricSplineBuilder.h"
 #include "CWireToCurve.h"
 #include "ListPNamedShape.h"
 #include "CCPACSPoint.h"
 #include "ECPACSTranslationType.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglAbstractSegment.h"
-#include "CCPACSPointListXYZ.h"
-#include "CCPACSPointListRelXYZ.h"
+#include "CCPACSPointListRelXYZVector.h"
 #include "generated/CPACSPointXYZ.h"
 #include "generated/CPACSPointX.h"
 #include "tiglcommonfunctions.h"
@@ -68,6 +66,8 @@
 #include "CTiglInterpolateCurveNetwork.h"
 #include "CTiglPointsToBSplineInterpolation.h"
 #include "CTiglCurvesToSurface.h"
+#include "CTiglIntersectBSplines.h"
+#include "CTiglInterpolatePointsWithKinks.h"
 %}
 
 
@@ -80,14 +80,15 @@
 %template(CPointContainer) std::vector<gp_Pnt>;
 %template(BSplineCurveList) std::vector<Handle_Geom_BSplineCurve>;
 %template(CurveList) std::vector<Handle_Geom_Curve>;
+%template(CurveIntersectionResultList) std::vector<tigl::CurveIntersectionResult>;
 
 %boost_optional(tigl::CCPACSPointAbsRel)
 %boost_optional(tigl::CCPACSPoint)
 %boost_optional(tigl::ECPACSTranslationType)
 %boost_optional(tigl::generated::CPACSPointX)
 %boost_optional(tigl::generated::CPACSPointXYZ)
-%boost_optional(tigl::CCPACSPointListXYZ)
 
+%include "CTiglIntersectBSplines.h"
 %include "CTiglPointsToBSplineInterpolation.h"
 %include "CTiglInterpolateCurveNetwork.h"
 %include "CTiglCurvesToSurface.h"
@@ -122,10 +123,8 @@
 %include "PNamedShape.h"
 %include "CTiglPoint.h"
 %include "generated/CPACSPointXYZ.h"
-%include "generated/CPACSPointListXYZVector.h"
 %include "generated/CPACSPointListRelXYZVector.h"
-%include "CCPACSPointListRelXYZ.h"
-%include "CCPACSPointListXYZ.h"
+%include "CCPACSPointListRelXYZVector.h"
 %include "CFunctionToBspline.h"
 %include "generated/CPACSTransformation.h"
 %include "CCPACSTransformation.h"
@@ -135,7 +134,7 @@
 %include "CTiglAbstractSegment.h"
 %include "CTiglShapeCache.h"
 %include "CTiglPolyData.h"
-%include "CTiglSymetricSplineBuilder.h"
 %include "CWireToCurve.h"
 %include "ListPNamedShape.h"
+%include "CTiglInterpolatePointsWithKinks.h"
 

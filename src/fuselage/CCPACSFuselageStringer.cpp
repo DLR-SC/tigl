@@ -44,7 +44,7 @@ CCPACSFuselageStringer::CCPACSFuselageStringer(CCPACSStringersAssembly* parent, 
 {
 }
 
-void CCPACSFuselageStringer::Invalidate()
+void CCPACSFuselageStringer::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geomCache1D.clear();
     m_geomCache3D.clear();

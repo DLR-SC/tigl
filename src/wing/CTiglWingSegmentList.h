@@ -54,7 +54,7 @@ private:
     struct Model : Concept
     {
         Model(T const & x) : object(x) { }
-        std::vector<CCPACSWingSegment*> getSegments_() const OVERRIDE {return getSortedSegments(object);}
+        std::vector<CCPACSWingSegment*> getSegments_() const override {return getSortedSegments(object);}
 
         T const & object;
     };

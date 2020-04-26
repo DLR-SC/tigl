@@ -20,13 +20,18 @@
 #include "tigl_config.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
-
+#include "Debugging.h"
 
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglCurvesToSurface.h"
 #include "CTiglPatchShell.h"
+#include "Debugging.h"
+#include "to_string.h"
 
 #include "contrib/MakePatches.hxx"
+#include "geometry/CTiglTopoAlgorithms.h"
+#include "geometry/CTiglBSplineAlgorithms.h"
+
 
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -51,7 +56,6 @@
 #include <BRep_Tool.hxx>
 
 namespace {
-    TopoDS_Shape CutShellAtUVParameters(TopoDS_Shape const& shape, std::vector<double> uparams, std::vector<double> vparams);
     TopoDS_Shape ResortFaces(TopoDS_Shape const& shape, int nu, int nv, bool umajor2vmajor = true);
 }
 
@@ -119,7 +123,16 @@ void CTiglMakeLoft::Perform()
         return;
     }
     
+    DEBUG_SCOPE(debug);
+    for (size_t i = 0; i < profiles.size(); ++i) {
+        debug.addShape(profiles[i], "profile_" + tigl::std_to_string(i));
+    }
+
     if (guides.size() > 0) {
+        for (size_t i = 0; i < guides.size(); ++i) {
+            debug.addShape(guides[i], "guide_" + tigl::std_to_string(i));
+        }
+
         // to the loft with guides
         makeLoftWithGuides();
     }
@@ -165,19 +178,14 @@ void CTiglMakeLoft::makeLoftWithGuides()
     
 #ifdef DEBUG
     static int iLoft = 0;
-    std::stringstream sprof;
-    sprof << "profiles" << iLoft << ".brep";
-    BRepTools::Write(cprof, sprof.str().c_str());
-    
-    std::stringstream sguid;
-    sguid << "guides" << iLoft << ".brep";
-    BRepTools::Write(cguid, sguid.str().c_str());
+    tigl::dumpShape(cprof, "debugShapes", "profiles", iLoft);
+    tigl::dumpShape(cguid, "debugShapes", "guides", iLoft);
     iLoft++;
 #endif
     
     MakePatches SurfMaker(cguid, cprof);
     // Don't sew yet. We do it later in solid creation
-#ifdef TIGL_OCE_COONS_PATCHED
+#ifdef HAVE_OCE_COONS_PATCHED
     GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
 
     char* c_cont = getenv("TIGL_COONS_CONTINUITY");
@@ -273,13 +281,13 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
             vparams = surfaceSkinner.GetParameters();
         }
 
-        BRepBuilderAPI_MakeFace faceMaker(surface, 1e-10);
-        builder.Add(faces, faceMaker.Face());
+        builder.Add(faces, BRepBuilderAPI_MakeFace(surface, 1e-6).Face());
     }
-    _result = CutShellAtUVParameters(faces, uparams, vparams);
+    _result = tigl::CTiglTopoAlgorithms::CutShellAtUVParameters(faces, {}, vparams);
 
     // make sure the order is the same as for the COONS Patch algorithm
-    _result = ResortFaces(_result, nEdgesPerProfile, vparams.size()-1);
+    _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
+    _result = tigl::CTiglTopoAlgorithms::CutShellAtKinks(_result);
     CloseShape();
 }
 
@@ -297,78 +305,6 @@ void CTiglMakeLoft::CloseShape()
 
 namespace
 {
-
-    TopoDS_Shape CutShellAtUVParameters(TopoDS_Shape const& shape, std::vector<double> uparams, std::vector<double> vparams)
-    {
-
-        bool cutInUDirection = (uparams.size() > 0);
-        bool cutInVDirection = (vparams.size() > 0);
-
-        if ( !cutInUDirection && !cutInVDirection ) {
-            //nothing to do
-            return shape;
-        }
-
-        // sort parameter vectors if they are not sorted
-        if (cutInUDirection && !std::is_sorted(uparams.begin(), uparams.end()) ) {
-            std::sort(uparams.begin(), uparams.end());
-        }
-        if (cutInVDirection && !std::is_sorted(vparams.begin(), vparams.end()) ) {
-            std::sort(vparams.begin(), vparams.end());
-        }
-
-
-
-        TopoDS_Shell cutShape;
-        BRep_Builder builder;
-        builder.MakeShell(cutShape);
-
-        for(TopExp_Explorer faces(shape, TopAbs_FACE); faces.More(); faces.Next()) {
-
-            // trim each face/surface of the compound at the uv paramters in the paramter vectors
-
-            Handle(Geom_Surface) surface = BRep_Tool::Surface(TopoDS::Face(faces.Current()));
-            Standard_Real u1, u2, v1, v2;
-            surface->Bounds(u1, u2, v1, v2);
-
-            if ( !cutInUDirection ) {
-                uparams.clear();
-                uparams.push_back(u1);
-                uparams.push_back(u2);
-            }
-
-            if ( !cutInVDirection ) {
-                vparams.clear();
-                vparams.push_back(v1);
-                vparams.push_back(v2);
-            }
-
-            unsigned uidx = 0;
-            while ( uparams[uidx] < u1 ) {
-                ++uidx;
-            }
-
-            unsigned vidx = 0;
-            while ( vparams[vidx] < v1 ) {
-                ++vidx;
-            }
-
-            unsigned ustart = uidx;
-            while ( vidx+1 < vparams.size() && vparams[vidx+1] <= v2 ) {
-                uidx = ustart;
-                while ( uidx+1 < uparams.size() && uparams[uidx+1] <= u2 ) {
-
-                    Handle(Geom_BSplineSurface) trimmedSurface = tigl::CTiglBSplineAlgorithms::trimSurface(surface, uparams[uidx], uparams[uidx+1], vparams[vidx], vparams[vidx+1]);
-                    BRepBuilderAPI_MakeFace faceMaker(trimmedSurface, 1e-10);
-                    builder.Add(cutShape, faceMaker.Face());
-
-                    ++uidx;
-                }
-                ++vidx;
-            }
-        }
-        return cutShape;
-    }
 
     TopoDS_Shape ResortFaces(TopoDS_Shape const& shape, int nu, int nv, bool umajor2vmajor)
     {

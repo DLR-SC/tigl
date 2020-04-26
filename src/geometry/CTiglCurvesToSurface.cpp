@@ -29,6 +29,7 @@
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
+#include <Precision.hxx>
 
 #include "CTiglPointsToBSplineInterpolation.h"
 
@@ -44,17 +45,6 @@ void clampBSpline(Handle(Geom_BSplineCurve)& curve)
 
     Handle(Geom_Curve) c = new Geom_TrimmedCurve(curve, curve->FirstParameter(), curve->LastParameter());
     curve = GeomConvert::CurveToBSplineCurve(c);
-}
-
-Handle(TColStd_HArray1OfReal) toArray(const std::vector<double>& vector)
-{
-    Handle(TColStd_HArray1OfReal) array = new TColStd_HArray1OfReal(1, static_cast<int>(vector.size()));
-    int ipos = 1;
-    for (std::vector<double>::const_iterator it = vector.begin(); it != vector.end(); ++it, ipos++) {
-        array->SetValue(ipos, *it);
-    }
-
-    return array;
 }
 
 }
@@ -85,10 +75,10 @@ TIGL_EXPORT CTiglCurvesToSurface::CTiglCurvesToSurface(std::vector<Handle(Geom_C
         _inputCurves.push_back(GeomConvert::CurveToBSplineCurve(*curve_iter));
     }
 
+    CTiglBSplineAlgorithms::matchDegree(_inputCurves);
     if( parameters.size() == 0) {
         CalculateParameters(_inputCurves);
     }
-    CTiglBSplineAlgorithms::matchDegree(_inputCurves);
 }
 
 TIGL_EXPORT void CTiglCurvesToSurface::SetMaxDegree(int degree)
@@ -104,7 +94,7 @@ TIGL_EXPORT void CTiglCurvesToSurface::CalculateParameters(std::vector<Handle(Ge
 
     // create a common knot vector for all splines
     if ( _compatibleSplines.size() == 0 ) {
-         _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector, 1e-10);
+         _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(splines_vector, 1e-14);
     }
 
     // create a matrix of control points of all B-splines (splines do have the same amount of control points now)
@@ -137,7 +127,7 @@ TIGL_EXPORT void CTiglCurvesToSurface::Perform()
 
     // create a common knot vector for all splines
     if ( _compatibleSplines.size() == 0 ) {
-        _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(_inputCurves, 1e-10);
+        _compatibleSplines = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(_inputCurves, 1e-14);
     }
 
     const Handle(Geom_BSplineCurve)& firstCurve = _compatibleSplines[0];

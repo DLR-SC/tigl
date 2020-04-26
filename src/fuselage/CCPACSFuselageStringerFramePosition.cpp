@@ -70,6 +70,24 @@ void CCPACSFuselageStringerFramePosition::SetReferenceZ(const double& value)
     Invalidate();
 }
 
+void CCPACSFuselageStringerFramePosition::SetReferenceAngle(const double & value)
+{
+    generated::CPACSStringerFramePosition::SetReferenceAngle(value);
+    Invalidate();
+}
+
+void CCPACSFuselageStringerFramePosition::SetContinuity(const boost::optional<ECPACSContinuity>& value)
+{
+    generated::CPACSStringerFramePosition::SetContinuity(value);
+    Invalidate();
+}
+
+void CCPACSFuselageStringerFramePosition::SetInterpolation(const boost::optional<ECPACSInterpolation>& value)
+{
+    generated::CPACSStringerFramePosition::SetInterpolation(value);
+    Invalidate();
+}
+
 double CCPACSFuselageStringerFramePosition::GetPositionXRel() const {
     return m_relCache->positionXRel;
 }
@@ -109,8 +127,14 @@ void CCPACSFuselageStringerFramePosition::SetReferenceZRel(double referenceZRel)
     Invalidate();
 }
 
-void CCPACSFuselageStringerFramePosition::Invalidate() {
+void CCPACSFuselageStringerFramePosition::InvalidateImpl(const boost::optional<std::string>& source) const
+{
     m_relCache.clear();
+    // invalidate parent frame or stringer
+    const CTiglUIDObject* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate(GetUID());
+    }
 }
 
 void CCPACSFuselageStringerFramePosition::GetXBorders(double& xmin, double& xmax)
@@ -133,14 +157,7 @@ void CCPACSFuselageStringerFramePosition::GetZBorders(double& zmin, double& zmax
 
 void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePositionCache& cache) const
 {
-    CCPACSFuselageStructure* structure = NULL;
-    if (IsParent<CCPACSFuselageStringer>())
-        structure = GetParent<CCPACSFuselageStringer>()->GetParent()->GetParent();
-    else if (IsParent<CCPACSFrame>())
-        structure = GetParent<CCPACSFrame>()->GetParent()->GetParent();
-    else
-        throw CTiglError("invalid parent");
-    const TopoDS_Shape& fuselageLoft = structure->GetParent()->GetLoft()->Shape();
+    const TopoDS_Shape fuselageLoft = GetFuselage().GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
         
     Bnd_Box bBox1;
     BRepBndLib::Add(fuselageLoft, bBox1);
@@ -200,4 +217,16 @@ void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePosi
     cache.referenceYRel = referenceYRel;
     cache.referenceZRel = referenceZRel;
 }
+
+const CCPACSFuselage& CCPACSFuselageStringerFramePosition::GetFuselage() const {
+    const CCPACSFuselageStructure* s = nullptr;
+    if (IsParent<CCPACSFrame>())
+        s = GetParent<CCPACSFrame>()->GetParent()->GetParent();
+    else if (IsParent<CCPACSFuselageStringer>())
+        s = GetParent<CCPACSFuselageStringer>()->GetParent()->GetParent();
+    else
+        throw CTiglError("Invalid parent");
+    return *s->GetParent();
+}
+
 } // namespace tigl

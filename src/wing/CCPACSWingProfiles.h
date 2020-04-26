@@ -22,6 +22,8 @@
 #ifndef CCPACSWINGPROFILES_H
 #define CCPACSWINGPROFILES_H
 
+#include <boost/optional.hpp>
+
 #include "generated/CPACSWingAirfoils.h"
 #include "tigl_internal.h"
 #include "CCPACSWingProfile.h"
@@ -34,30 +36,25 @@ namespace tigl
 class CCPACSWingProfiles : public generated::CPACSWingAirfoils
 {
 public:
-    TIGL_EXPORT CCPACSWingProfiles(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr);
 
     // Read CPACS wing profiles
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     // importing profiles from CPACS
     // profiles with same UID are overwritten
     TIGL_EXPORT void ImportCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
-    TIGL_EXPORT CCPACSWingProfile& AddWingAirfoil() OVERRIDE;
-
-    // Returns the total count of wing profiles in this configuration
-    TIGL_EXPORT int GetProfileCount() const;
+    TIGL_EXPORT CCPACSWingProfile& AddWingAirfoil() override;
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
     // Returns the wing profile for a given index or uid.
     TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid) const;
 
-    // Returns the wing profile for a given index or uid
-    DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetProfile(int index) const;
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 
 } // end namespace tigl

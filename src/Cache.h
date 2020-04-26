@@ -73,7 +73,13 @@ namespace tigl
             boost::lock_guard<boost::mutex> guard(m_mutex);
             if (!m_cache) {
                 m_cache.emplace();
-                (m_instance.*m_buildFunc)(*m_cache);
+                try {
+                    (m_instance.*m_buildFunc)(*m_cache);
+                }
+                catch (...) {
+                    m_cache = boost::none;
+                    throw;
+                }
             }
             return m_cache.value();
         }
@@ -81,7 +87,7 @@ namespace tigl
         const CacheStruct& operator*() const { return value(); }
         const CacheStruct* operator->() const { return &value(); }
 
-        void clear()
+        void clear() const
         {
             //boost::lock_guard<CheckedMutex> guard(m_mutex);
             boost::lock_guard<boost::mutex> guard(m_mutex);

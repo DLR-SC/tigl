@@ -33,14 +33,14 @@
 
 namespace tigl
 {
-CCPACSWingProfiles::CCPACSWingProfiles(CTiglUIDManager* uidMgr)
-    : generated::CPACSWingAirfoils(uidMgr) {}
+CCPACSWingProfiles::CCPACSWingProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingAirfoils(parent, uidMgr) {}
 
 // Invalidates internal state
-void CCPACSWingProfiles::Invalidate()
+void CCPACSWingProfiles::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 0; i < m_wingAirfoils.size(); i++) {
-        static_cast<CCPACSWingProfile&>(*m_wingAirfoils[i]).Invalidate();
+        static_cast<const CCPACSWingProfile&>(*m_wingAirfoils[i]).Invalidate(source);
     }
 }
 
@@ -58,25 +58,23 @@ void CCPACSWingProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, const
     // we replace generated::CPACSWingAirfoils::ReadCPACS and not call it to allow instantiation of CCPACSWingProfile instead of generated::CPACSProfileGeometry
     // read element wingAirfoil
     if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
-        tixi::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, tixi::ChildWithArgsReader1<CCPACSWingProfile, CTiglUIDManager>(m_uidMgr));
+        tixi::TixiReadElementsInternal(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, 1, tixi::xsdUnbounded, [&](const std::string& childXPath) {
+            auto child = tigl::make_unique<CCPACSWingProfile>(this, m_uidMgr);
+            child->ReadCPACS(tixiHandle, childXPath);
+            return child;
+        });
     }
 }
 
 CCPACSWingProfile& CCPACSWingProfiles::AddWingAirfoil() {
-    m_wingAirfoils.push_back(make_unique<CCPACSWingProfile>(m_uidMgr));
+    m_wingAirfoils.push_back(make_unique<CCPACSWingProfile>(this, m_uidMgr));
     return static_cast<CCPACSWingProfile&>(*m_wingAirfoils.back());
-}
-
-// Returns the total count of wing profiles in this configuration
-int CCPACSWingProfiles::GetProfileCount() const
-{
-    return static_cast<int>(m_wingAirfoils.size());
 }
 
 bool CCPACSWingProfiles::HasProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_wingAirfoils.begin(); it != m_wingAirfoils.end(); ++it)
-        if ((*it)->GetUID() == uid)
+    for (const auto& p : m_wingAirfoils)
+        if (p->GetUID() == uid)
             return true;
 
     return false;
@@ -85,20 +83,10 @@ bool CCPACSWingProfiles::HasProfile(std::string uid) const
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
 {
-    for (std::vector<unique_ptr<CCPACSProfileGeometry> >::const_iterator it = m_wingAirfoils.begin(); it != m_wingAirfoils.end(); ++it)
-        if ((*it)->GetUID() == uid)
-            return static_cast<CCPACSWingProfile&>(**it);
+    for (auto& p : m_wingAirfoils)
+        if (p->GetUID() == uid)
+            return static_cast<CCPACSWingProfile&>(*p);
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
-}
-
-// Returns the wing profile for a given index - TODO: depricated function!
-CCPACSWingProfile& CCPACSWingProfiles::GetProfile(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetProfileCount()) {
-        throw CTiglError("Illegal index in CCPACSWingProfile::GetProfile", TIGL_INDEX_ERROR);
-    }
-    return static_cast<CCPACSWingProfile&>(*m_wingAirfoils[index]);
 }
 
 } // end namespace tigl

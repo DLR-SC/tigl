@@ -40,6 +40,7 @@
 #include "CNamedShape.h"
 #include "PNamedShape.h"
 #include "CTiglRelativelyPositionedComponent.h"
+#include "CTiglProjectPointOnCurveAtAngle.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -72,11 +73,13 @@
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
 #include "BRepClass3d_SolidClassifier.hxx"
+#include "BRepExtrema_DistShapeShape.hxx"
 
 #include <Approx_Curve3d.hxx>
 #include <BRepAdaptor_HCompCurve.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include "BRepExtrema_ExtCC.hxx"
 #include <BRepExtrema_DistShapeShape.hxx>
@@ -88,8 +91,11 @@
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Geom_Plane.hxx>
 #include <GeomConvert.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 #include <ShapeAnalysis_FreeBounds.hxx>
 #include <ShapeFix_EdgeConnect.hxx>
 #include <BRep_Tool.hxx>
@@ -99,8 +105,10 @@
 #include <ShapeFix_Wire.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <Standard_Version.hxx>
+#include <BRepExtrema_ExtPF.hxx>
+#include <BRepClass_FaceClassifier.hxx>
 
-#include "ShapeAnalysis_FreeBounds.hxx"
+#include <ShapeAnalysis_FreeBounds.hxx>
 
 
 #include <list>
@@ -247,6 +255,11 @@ void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, g
 
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
 {
+    return ProjectPointOnWireAtAngle(wire, p, gp_Dir(1,0,0), M_PI/2.);
+}
+
+Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire &wire, gp_Pnt p, gp_Dir rotationAxisAroundP, double angle)
+{
     double smallestDist = DBL_MAX;
     double alpha  = 0.;
     int edgeIndex = 0;
@@ -259,11 +272,22 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
         TopoDS_Edge edge = wireExplorer.Current();
         Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
 
-        GeomAPI_ProjectPointOnCurve proj(p, curve, firstParam, lastParam);
-        if (proj.NbPoints() > 0 && proj.LowerDistance() < smallestDist) {
-            smallestDist = proj.LowerDistance();
-            edgeIndex = iwire;
-            alpha = proj.LowerDistanceParameter();
+        if (fabs(angle - M_PI / 2.) < 1e-6) {
+            GeomAPI_ProjectPointOnCurve proj(p, curve, firstParam, lastParam);
+            if (proj.NbPoints() > 0 && proj.LowerDistance() < smallestDist) {
+                smallestDist = proj.LowerDistance();
+                edgeIndex = iwire;
+                alpha = proj.LowerDistanceParameter();
+            }
+        }
+        else {
+            Handle(Geom_TrimmedCurve) trimmedCurve = new Geom_TrimmedCurve(curve, firstParam, lastParam);
+            tigl::CTiglProjectPointOnCurveAtAngle proj(p, trimmedCurve, angle, rotationAxisAroundP);
+            if (proj.IsDone() && proj.NbPoints() > 0 && proj.Point(1).Distance(p) < smallestDist) {
+                smallestDist = proj.Point(1).Distance(p);
+                edgeIndex = iwire;
+                alpha = proj.Parameter(1);
+            }
         }
     }
 
@@ -294,6 +318,42 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
     }
     return normalizedLength;
 }
+
+
+/// Projects the point onto the plane pln
+gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p)
+{
+    gp_Ax1 xAx = pln.XAxis();
+    gp_Ax1 yAx = pln.YAxis();
+
+    double px = (p.XYZ() - xAx.Location().XYZ()) * xAx.Direction().XYZ();
+    double py = (p.XYZ() - yAx.Location().XYZ()) * yAx.Direction().XYZ();
+
+    return gp_Pnt2d(px,py);
+}
+
+gp_Pnt ProjectPointOnShape(const TopoDS_Shape &shape, const gp_Pnt &point, const gp_Vec &direction)
+{
+    // Construct line in direction of projection through given point
+    gp_Lin line(point, gp_Dir(direction));
+    TopoDS_Edge dir = BRepBuilderAPI_MakeEdge(line).Edge();
+
+    // Construct Extrema class with line and surface and calculate closest points
+    // (should be one if line goes through surface)
+    BRepExtrema_DistShapeShape extrema_distShapeShape(dir, shape);
+    int nPoints = extrema_distShapeShape.NbSolution();
+
+    // Make sure only one point was found with a distance of "zero"
+    if (nPoints == 0) {
+        throw tigl::CTiglError("Projection of point to shape failed.", TIGL_MATH_ERROR);
+    }
+    else if (nPoints > 1) {
+        LOG(WARNING) << "Projection of point of shape has multiple results. Choosing first.";
+    }
+
+    return extrema_distShapeShape.PointOnShape2(nPoints);
+}
+
 
 gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
 {
@@ -550,41 +610,44 @@ Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e)
     return bspl;
 }
 
-bool GetIntersectionPoint_impl(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst)
-{
-    BRepIntCurveSurface_Inter faceCurveInter;
+namespace {
+    bool GetIntersectionPoint_impl(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst, double tolerance)
+    {
+        BRepIntCurveSurface_Inter faceCurveInter;
 
-    double umin = 0., umax = 0.;
-    const Handle(Geom_Curve)& curve = BRep_Tool::Curve(edge, umin, umax);
+        double umin = 0., umax = 0.;
+        const Handle(Geom_Curve)& curve = BRep_Tool::Curve(edge, umin, umax);
 
-    faceCurveInter.Init(face, GeomAdaptor_Curve(curve, umin, umax), Precision::Confusion());
+        faceCurveInter.Init(face, GeomAdaptor_Curve(curve, umin, umax), tolerance);
 
 
-    if ( faceCurveInter.More() ) {
-        dst = faceCurveInter.Pnt();
-        faceCurveInter.Next();
-        while (faceCurveInter.More()) {
-           if ( !dst.IsEqual(faceCurveInter.Pnt(), Precision::Confusion()) ) {
-               LOG(WARNING) << "Multiple Intersections found in GetIntersectionPoint";
-           }
-           faceCurveInter.Next();
+        if (faceCurveInter.More()) {
+            dst = faceCurveInter.Pnt();
+            faceCurveInter.Next();
+            while (faceCurveInter.More()) {
+                if (!dst.IsEqual(faceCurveInter.Pnt(), Precision::Confusion())) {
+                    LOG(WARNING) << "Multiple Intersections found in GetIntersectionPoint";
+                }
+                faceCurveInter.Next();
+            }
+            return true;
         }
-        return true;
+
+        return false;
     }
-    return false;
 }
 
-bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst)
+bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst, double tolerance)
 {
-    bool intersection = GetIntersectionPoint_impl(face, edge, dst);
+    const bool intersection = GetIntersectionPoint_impl(face, edge, dst, tolerance);
     if (!intersection) {
-        LOG(WARNING) << "No Intersections found in GetIntersectionPoint(face, edge)";
+        LOG(WARNING) << "No Intersections found in GetIntersectionPoint";
     }
     return intersection;
 }
 
 
-bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst)
+bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst, double tolerance)
 {
     DEBUG_SCOPE(debug);
     debug.addShape(face, "face");
@@ -592,10 +655,11 @@ bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_P
     BRepTools_WireExplorer wireExp;
     for (wireExp.Init(wire); wireExp.More(); wireExp.Next()) {
         const TopoDS_Edge& edge = wireExp.Current();
-        if (GetIntersectionPoint_impl(face, edge, dst)) {
+        if (GetIntersectionPoint_impl(face, edge, dst, tolerance)) {
             return true;
         }
     }
+
     LOG(WARNING) << "No Intersections found in GetIntersectionPoint(face, wire)";
     return false;
 }
@@ -816,11 +880,19 @@ TiglContinuity getEdgeContinuity(const TopoDS_Edge& edge1, const TopoDS_Edge& ed
     // **********************************************************************************
     TopTools_IndexedMapOfShape edges;
     TopExp::MapShapes(wire, TopAbs_EDGE, edges);
-    if (edges.Extent() != 2) {
+    if (edges.Extent() > 2) {
         throw tigl::CTiglError("checkEdgeContinuity: Unexpected error in connected wire", TIGL_ERROR);
     }
+    // There are either two edges that are touching, or one closed edge with touching endpoints. In the latter
+    // case, edge1 and edge2 are the same object
     TopoDS_Edge newedge1 = TopoDS::Edge(edges(1));
-    TopoDS_Edge newedge2 = TopoDS::Edge(edges(2));
+    TopoDS_Edge newedge2;
+    if ( !edge1.IsEqual(edge2) ) {
+        newedge2 = TopoDS::Edge(edges(2));
+    }
+    else {
+        newedge2 = newedge1;
+    }
 
     TopExp::CommonVertex(newedge1, newedge2, commonVertex);
     if (commonVertex.IsNull()) {
@@ -907,25 +979,20 @@ TopoDS_Face BuildFace(const TopoDS_Wire& wire)
 {
     TopoDS_Face result;
 
-    // try building face using BRepLib_MakeFace, which tries to build a plane
-    // if a plane is not possible, use BRepFill_Filling
-    BRepLib_MakeFace mf(wire, Standard_True);
-    if (mf.IsDone()) {
-        result = mf.Face();
+    BRepBuilderAPI_FindPlane Searcher( wire, Precision::Confusion() );
+    if (Searcher.Found()) {
+        result = BRepBuilderAPI_MakeFace(Searcher.Plane(), wire);
     }
     else {
-        BRepFill_Filling filler;
-        TopExp_Explorer exp;
-        for (exp.Init(wire, TopAbs_EDGE); exp.More(); exp.Next()) {
-            TopoDS_Edge e = TopoDS::Edge(exp.Current());
-            filler.Add(e, GeomAbs_C0);
+        // try to find another surface
+        BRepBuilderAPI_MakeFace MF( wire );
+        if (MF.IsDone()) {
+            result = MF.Face();
         }
-        filler.Build();
-        if (!filler.IsDone()) {
-            LOG(ERROR) << "Unable to generate face from Wire!";
-            throw tigl::CTiglError("BuildFace: Unable to generate face from Wire!");
+        else {
+            LOG(ERROR) << "Could not build face from wire.";
+            throw tigl::CTiglError("Could not build face from wire.");
         }
-        result = filler.Face();
     }
     return result;
 }
@@ -1259,27 +1326,60 @@ TopoDS_Shape CutShapes(const TopoDS_Shape& shape1, const TopoDS_Shape& shape2)
 
 TopoDS_Shape SplitShape(const TopoDS_Shape& src, const TopoDS_Shape& tool)
 {
-    GEOMAlgo_Splitter splitter;
-    splitter.AddArgument(src);
-    splitter.AddTool(tool);
-    try {
-        splitter.Perform();
-    }
-    catch (const Standard_Failure& f) {
-        std::stringstream ss;
-        ss << "ERROR: splitting of shapes failed: " << f.GetMessageString();
-        LOG(ERROR) << ss.str();
-        throw tigl::CTiglError(ss.str());
-    }
-#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
-    if (splitter.HasErrors()) {
-#else
-    if (splitter.ErrorStatus() != 0) {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+    double fuzzyValue = Precision::Confusion();
+    const int c_tries = 3;
 #endif
-        LOG(ERROR) << "unable to split passed shapes!";
-        throw tigl::CTiglError("unable to split passed shapes!");
+
+    for (int i = 0;; i++) {
+        GEOMAlgo_Splitter splitter;
+        splitter.AddArgument(src);
+        splitter.AddTool(tool);
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+        splitter.SetFuzzyValue(fuzzyValue);
+#endif
+        try {
+            splitter.Perform();
+        }
+        catch (const Standard_Failure& f) {
+            std::stringstream ss;
+            ss << "ERROR: splitting of shapes failed: " << f.GetMessageString();
+            LOG(ERROR) << ss.str();
+            throw tigl::CTiglError(ss.str());
+        }
+
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
+        if (splitter.HasErrors()) {
+            if (i < c_tries - 1) {
+                fuzzyValue *= 10;
+                LOG(WARNING) << "SplitShape failed, retrying with fuzzyValue: " << fuzzyValue;
+                continue;
+            }
+
+            std::ostringstream oss;
+            splitter.GetReport()->Dump(oss);
+            LOG(ERROR) << "unable to split passed shapes: " << oss.str();
+            throw tigl::CTiglError("unable to split passed shapes: " + oss.str());
+        }
+#elif OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+        if (splitter.ErrorStatus() != 0) {
+            if (i < c_tries - 1) {
+                fuzzyValue *= 10;
+                LOG(WARNING) << "SplitShape failed, retrying with fuzzyValue: " << fuzzyValue;
+                continue;
+            }
+
+            LOG(ERROR) << "unable to split passed shapes!";
+            throw tigl::CTiglError("unable to split passed shapes!");
+        }
+#else
+        if (splitter.ErrorStatus() != 0) {
+            LOG(ERROR) << "unable to split passed shapes!";
+            throw tigl::CTiglError("unable to split passed shapes!");
+        }
+#endif
+        return splitter.Shape();
     }
-    return splitter.Shape();
 }
 
 void FindAllConnectedEdges(const TopoDS_Edge& edge, TopTools_ListOfShape& edgeList, TopTools_ListOfShape& targetList)
@@ -1380,6 +1480,18 @@ gp_Pnt GetCenterOfMass(const TopoDS_Shape &shape)
      // compute center of the shape
      gp_Pnt centerPoint = LProps.CentreOfMass();
 
+     if (LProps.Mass() < 1e-13) {
+         // Fallback using center of boundary box, fixes #551
+         double minx, maxx, miny, maxy, minz, maxz;
+         GetShapeExtension(shape, minx, maxx,
+                           miny, maxy,
+                           minz, maxz);
+
+         return gp_Pnt((maxx+minx)*0.5,
+                       (maxy+miny)*0.5,
+                       (maxz+minz)*0.5);
+     }
+
      return centerPoint;
 }
 
@@ -1461,27 +1573,65 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
 }
 
 
-bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
+bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point, Bnd_Box const* bounding_box)
 {
+    double tol = 1e-3;
     // check if solid
-    TopoDS_Solid s;
-    try {
-        s = TopoDS::Solid(solid);
-    }
-    catch (Standard_Failure) {
+    if (solid.ShapeType() != TopAbs_SOLID) {
         throw tigl::CTiglError("The shape is not a solid");
     }
 
+    TopoDS_Solid s = TopoDS::Solid(solid);
+
+    // first, check if the point is in the bounding box
+    if (bounding_box) {
+        // create a copy of the const bounding box to be able to enlarge by tolerance
+        Bnd_Box bb;
+        bb.Add(*bounding_box);
+        bb.Enlarge(tol);
+        if ( bb.IsOut(point) ) {
+            return false;
+        }
+    }
+
+    // if the point is inside the bounding box, classify the point using BRepClass3d_SolidClassifier
     BRepClass3d_SolidClassifier algo(s);
 
     // test whether a point at infinity lies inside. If yes, then the shape is reversed
-    algo.PerformInfinitePoint(1e-3);
+    algo.PerformInfinitePoint(tol);
 
     bool shapeIsReversed = (algo.State() == TopAbs_IN);
 
-    algo.Perform(point, 1e-3);
+    algo.Perform(point, tol);
 
     return ((algo.State() == TopAbs_IN) != shapeIsReversed ) || (algo.State() == TopAbs_ON);
+}
+
+// Checks, whether a point lies inside a given face
+bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt point)
+{
+    //project point onto surface of face
+    TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(point);
+    BRepExtrema_ExtPF proj(v, face);
+    if (proj.IsDone() && proj.NbExt() > 0 && proj.SquareDistance(1)> Precision::SquareConfusion()) {
+        return false;
+    }
+
+    //point is in surface of face. Check if it is inside
+    BRepClass_FaceClassifier faceClassifier;
+    faceClassifier.Perform(face, point, Precision::Confusion());
+    const TopAbs_State state = faceClassifier.State();
+
+    if (state == TopAbs_ON || state == TopAbs_IN) {
+        return true;
+    }
+    return false;
+}
+
+// Checks whether a point lies above or below a plane (determined by direction of normal)
+bool IsPointAbovePlane(const gp_Pln& pln, gp_Pnt point)
+{
+    return gp_Vec(pln.Location(), point).Dot(gp_Vec(pln.Axis().Direction())) > 0;
 }
 
 std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks)
@@ -1585,7 +1735,8 @@ TopoDS_Shape GetFacesByName(const PNamedShape shape, const std::string &name)
     return c;
 }
 
-TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts)
+/// Converters between std::vectors and opencascade vectors
+Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts)
 {
     Handle(TColgp_HArray1OfPnt) result = new TColgp_HArray1OfPnt(1, static_cast<int>(pnts.size()));
     int idx = 1;
@@ -1593,4 +1744,66 @@ TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts
         result->SetValue(idx, *it);
     }
     return result;
+}
+
+Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<tigl::CTiglPoint>& pnts)
+{
+    Handle(TColgp_HArray1OfPnt) result = new TColgp_HArray1OfPnt(1, static_cast<int>(pnts.size()));
+    int idx = 1;
+    for (std::vector<tigl::CTiglPoint>::const_iterator it = pnts.begin(); it != pnts.end(); ++it, ++idx) {
+        result->SetValue(idx, it->Get_gp_Pnt());
+    }
+    return result;
+}
+
+Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector)
+{
+    Handle(TColStd_HArray1OfReal) array = new TColStd_HArray1OfReal(1, static_cast<int>(vector.size()));
+    int ipos = 1;
+    for (const auto& value : vector) {
+        array->SetValue(ipos, value);
+        ipos++;
+    }
+    
+    return array;
+}
+
+Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector)
+{
+    Handle(TColStd_HArray1OfInteger) array = new TColStd_HArray1OfInteger(1, static_cast<int>(vector.size()));
+    int ipos = 1;
+    for (const auto& value : vector) {
+        array->SetValue(ipos++, value);
+    }
+    
+    return array;
+}
+
+bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2)
+{
+    BRepExtrema_ExtPF projector1(BRepBuilderAPI_MakeVertex(p1).Vertex(),
+                                 face,
+                                 Extrema_ExtFlag_MIN);
+
+    gp_Pnt p1Proj;
+    if (projector1.IsDone() && projector1.NbExt() > 0) {
+        p1Proj = projector1.Point(1);
+    }
+
+    // compute the projection of p1
+    BRepExtrema_ExtPF projector2(BRepBuilderAPI_MakeVertex(p2).Vertex(),
+                                 face,
+                                 Extrema_ExtFlag_MIN);
+
+    gp_Pnt p2Proj;
+    if (projector2.IsDone() && projector2.NbExt() > 0) {
+        p2Proj = projector2.Point(1);
+    }
+
+    return gp_Vec(p1Proj, p1).Dot(gp_Vec(p2Proj, p2)) < 0.;
+}
+
+double Mix(double x, double y, double a)
+{
+    return x*(1.-a) +   y*a;
 }

@@ -24,7 +24,7 @@ namespace tigl
 class CCPACSDoors : public generated::CPACSDoors
 {
 public:
-    TIGL_EXPORT CCPACSDoors(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDoors(CCPACSStructuralElements* parent, CTiglUIDManager* uidMgr);
 };
 
 } // namespace tigl

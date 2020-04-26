@@ -102,7 +102,11 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
     switch (aMode) {
         case 1: {
             Handle(Graphic3d_AspectFillArea3d) aspect = myDrawer->ShadingAspect()->Aspect();
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,4,0)
             Standard_Real ambient = aspect->FrontMaterial().Ambient();
+#else
+            Standard_Real ambient = 1.0;
+#endif
 
             const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();             //Nodes
             const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();  //Triangle

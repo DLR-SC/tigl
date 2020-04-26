@@ -31,6 +31,7 @@
 namespace tigl
 {
 class CCPACSWingCSStructure;
+class CTiglWingStructureReference;
 
 class CCPACSWingRibsDefinition : public generated::CPACSWingRibsDefinition, public CTiglAbstractGeometricComponent
 {
@@ -56,13 +57,11 @@ public:
     {
         RIB_EXPLICIT_POSITIONING,
         RIBS_POSITIONING,
-        UNDEFINED_POSITIONING
+        UNDEFINED_POSITIONING,
     };
 
 public:
     TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent, CTiglUIDManager* uidMgr);
-
-    TIGL_EXPORT void Invalidate();
 
     TIGL_EXPORT RibPositioningType GetRibPositioningType() const;
 
@@ -96,13 +95,14 @@ public:
     TIGL_EXPORT TopoDS_Shape GetRibCapsGeometry(RibCapSide side, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // ---------- INTERFACE OF CTiglAbstractGeometricComponent ------------- //
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const override;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE;
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
 protected:
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
 private:
     // Structure containing data relevant when ribs are defined via 
@@ -149,6 +149,8 @@ private:
         TopoDS_Shape lowerCapsShape;
     };
 
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void UpdateRibSetDataCache(RibSetDataCache& cache) const;
 
     void BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) const;
@@ -162,11 +164,12 @@ private:
     void BuildRibCapsGeometry(RibCapsGeometryCache& cache) const;
 
     // Generates the cut shape for the rib at the passed eta position, or at the passed element or spar position
-    CutGeometry BuildRibCutGeometry(double currentEta, const std::string& elementUID, const std::string& sparPositionUID, AuxiliaryGeomCache& cache) const;
+    CutGeometry BuildRibCutGeometry(double currentEta, bool onSparDefined, AuxiliaryGeomCache& cache) const;
 
     // Returns the wire of the rib reference line (either leadingEdge, 
     // trailingEdge, or spar midplane line)
     TopoDS_Wire GetReferenceLine() const;
+    TopoDS_Wire GetReferenceLine(const std::string& ribReference) const;
 
     // Returns the start eta value on the reference line, either directly
     // defined in positioning or it will be computed based on the section
@@ -177,13 +180,11 @@ private:
     // in positioning or it will be computed based on the section element UID
     double ComputeReferenceEtaEnd() const;
 
-    // Computes the reference-line eta value by intersection of the reference
-    // line with the section element
-    double ComputeSectionElementEta(const std::string& sectionElementUID) const;
+    gp_Pnt GetRibReferenceMidplanePoint(const boost::optional<CCPACSEtaXsiPoint>& etaXsi,
+                                        const boost::optional<CCPACSCurvePoint>& curvePoint,
+                                        const boost::optional<std::string>& sparPosition) const; 
 
-    // Computes the reference-line eta value by intersection of the reference
-    // line with the midplane point of the spar position
-    double ComputeSparPositionEta(const std::string& sparPositionUID) const;
+    double ComputeEtaOnReferenceLine(const gp_Pnt& midplanePoint, bool onSpar) const;
 
     // Returns the number of ribs in case the RibsPositioning is used by
     // computing the values from the ribsPositioning
@@ -197,11 +198,11 @@ private:
     // The elementUID value determines which section element should be used.
     // When no elementUID is passed the inner or outer section are used
     // depending on the passed eta value.
-    TopoDS_Face GetSectionRibGeometry(const std::string& elementUID, double eta, const std::string& ribStart,
+    TopoDS_Face GetSectionRibGeometry(const std::string& elementUID, const CCPACSEtaXsiPoint&, const std::string& ribStart,
                                       const std::string& ribEnd) const;
 
     // Computes the direction vector for the rib
-    gp_Vec GetRibDirection(double currentEta, const gp_Pnt& startPnt, const gp_Vec& upVec) const;
+    gp_Vec GetRibDirection(const gp_Pnt& startPnt, const gp_Vec& upVec) const;
 
     // builds the rib cut face
     TopoDS_Face BuildRibCutFace(const gp_Pnt& startPnt, const gp_Vec& ribDir, const std::string& ribStart,
@@ -213,6 +214,9 @@ private:
 
     CCPACSWingCSStructure& getStructure();
     const CCPACSWingCSStructure& getStructure() const;
+
+    gp_Vec GetRibUpVector(const CTiglWingStructureReference& wsr, gp_Pnt startPnt, gp_Pnt endPoint, bool front) const;
+    boost::optional<std::string> GetElementUID(const CCPACSEtaXsiPoint& point) const;
 
 private:
     CCPACSWingRibsDefinition(const CCPACSWingRibsDefinition&); // = delete;

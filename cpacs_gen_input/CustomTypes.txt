@@ -23,10 +23,17 @@ CPACSPoint                         CCPACSPoint
 CPACSPointAbsRel                   CCPACSPointAbsRel
 CPACSTransformation                CCPACSTransformation
 CPACSStringVectorBase              CCPACSStringVector
-CPACSPointListXYZVector            CCPACSPointListXYZ
-CPACSPointListRelXYZVector         CCPACSPointListRelXYZ
+CPACSPointListRelXYZVector         CCPACSPointListRelXYZVector
+CPACSPointListXYVector			   CCPACSPointListXYVector
+CPACSPointListXY                   CCPACSPointListXY
 CPACSGenericGeometricComponent     CCPACSExternalObject
 CPACSGenericGeometryComponents     CCPACSExternalObjects
+CPACSEtaIsoLine                    CCPACSEtaIsoLine
+CPACSXsiIsoLine                    CCPACSXsiIsoLine
+CPACSEtaXsiPoint                   CCPACSEtaXsiPoint
+CPACSCurvePoint                    CCPACSCurvePoint
+CPACSCurveParamPointMap            CCPACSCurveParamPointMap
+CPACSCurvePointListXYZ             CCPACSCurvePointListXYZ
 
 CPACSFuselage                      CCPACSFuselage
 CPACSFuselages                     CCPACSFuselages
@@ -49,6 +56,7 @@ CPACSWingRibCrossSection           CCPACSWingRibCrossSection
 CPACSRibRotation                   CCPACSWingRibRotation
 CPACSWingRibsDefinition            CCPACSWingRibsDefinition
 CPACSWingRibsDefinitions           CCPACSWingRibsDefinitions
+CPACSWingRibExplicitPositioning    CCPACSWingRibExplicitPositioning
 CPACSWingRibsPositioning           CCPACSWingRibsPositioning
 CPACSWingElement                   CCPACSWingSectionElement
 CPACSWingElements                  CCPACSWingSectionElements
@@ -98,23 +106,35 @@ CPACSFramesAssembly                       CCPACSFramesAssembly
 CPACSLongFloorBeam                        CCPACSLongFloorBeam
 CPACSLongFloorBeamPosition                CCPACSLongFloorBeamPosition
 CPACSLongFloorBeamsAssembly               CCPACSLongFloorBeamsAssembly
-CPACSPointListXY                          CCPACSPointListXY
 CPACSStringersAssembly                    CCPACSStringersAssembly
 CPACSFuselageStructure                    CCPACSFuselageStructure
 CPACSStringer                             CCPACSFuselageStringer
 CPACSPointXY                              CCPACSPointXY
 CPACSStringerFramePosition                CCPACSFuselageStringerFramePosition
 CPACSSkinSegment                          CCPACSSkinSegment
+CPACSWallSegment                          CCPACSFuselageWallSegment
+CPACSWallPosition                         CCPACSWallPosition
+CPACSWalls                                CCPACSWalls
 
 // control surfaces
 CPACSControlSurfaces                      CCPACSControlSurfaces
-CPACSControlSurfaceSkinCutOut             CCPACSControlSurfaceSkinCutout
-CPACSControlSurfaceSteps                  CCPACSControlSurfaceSteps
-CPACSControlSurfaceStep                   CCPACSControlSurfaceStep
-CPACSControlSurfaceHingePoint             CCPACSControlSurfaceHingePoint
-CPACSControlSurfaceTrackType              CCPACSControlSurfaceTrackType
 CPACSControlSurfaceBorderTrailingEdge     CCPACSControlSurfaceBorderTrailingEdge
-CPACSControlSurfaceSkinCutOutBorder       CCPACSControlSurfaceSkinCutOutBorder
 CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
-CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
+CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
+CPACSControlSurfaceWingCutOut             CCPACSControlSurfaceWingCutOut
 
+// Pylons
+CPACSEnginePylon                         CCPACSEnginePylon
+CPACSEnginePylons                        CCPACSEnginePylons
+
+// Engines
+CPACSEnginePositions                     CCPACSEnginePositions
+CPACSEnginePosition                      CCPACSEnginePosition
+CPACSEngines                             CCPACSEngines
+CPACSNacelleCowl                         CCPACSNacelleCowl
+CPACSNacelleSections                     CCPACSNacelleSections
+CPACSNacelleSection                      CCPACSNacelleSection
+CPACSProfileGeometry2D                   CCPACSNacelleProfile
+CPACSNacelleGuideCurves                  CCPACSNacelleGuideCurves
+CPACSRotationCurve                       CCPACSRotationCurve
+CPACSNacelleCenterCowl                   CCPACSNacelleCenterCowl

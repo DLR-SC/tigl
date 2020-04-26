@@ -32,6 +32,15 @@
 #include <GeomConvert.hxx>
 
 
+Handle(Geom_BSplineSurface) loadSurface(const std::string& filename)
+{
+    BRep_Builder builder;
+    TopoDS_Shape shape;
+
+    BRepTools::Read(shape, filename.c_str(), builder);
+    return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
+}
+
 namespace tigl
 {
 
@@ -292,6 +301,70 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorTolerance)
     EXPECT_EQ(2, curves[1]->Multiplicity(2));
     EXPECT_EQ(1, curves[1]->Multiplicity(3));
     EXPECT_EQ(3, curves[1]->Multiplicity(4));
+}
+
+
+TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorToleranceBug)
+{
+
+    int degree = 3;
+
+    TColgp_Array1OfPnt controlPoints1(1, 6);
+
+    TColStd_Array1OfReal Knots1(1, 4);
+    Knots1(1) = 0.;
+    Knots1(2) = 0.49;
+    Knots1(3) = 0.61;
+    Knots1(4) = 1.0;
+
+    TColStd_Array1OfInteger Multiplicities1(1, 4);
+    Multiplicities1(1) = 4;
+    Multiplicities1(2) = 1;
+    Multiplicities1(3) = 1;
+    Multiplicities1(4) = 4;
+
+    Handle(Geom_BSplineCurve) bspline1 = new Geom_BSplineCurve(controlPoints1,  Knots1, Multiplicities1, degree);
+
+    TColgp_Array1OfPnt controlPoints2(1, 6);
+
+    TColStd_Array1OfReal Knots2(1, 3);
+    Knots2(1) = 0.;
+    Knots2(2) = 0.57;
+    Knots2(3) = 1;
+
+    TColStd_Array1OfInteger Multiplicities2(1, 3);
+    Multiplicities2(1) = 4;
+    Multiplicities2(2) = 2;
+    Multiplicities2(3) = 4;
+
+    Handle(Geom_BSplineCurve) bspline2 = new Geom_BSplineCurve(controlPoints2,  Knots2, Multiplicities2, degree);
+
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+    curves.push_back(bspline1);
+    curves.push_back(bspline2);
+
+    curves = tigl::CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(curves, 0.1);
+    ASSERT_EQ(4, curves[0]->NbKnots());
+    ASSERT_EQ(4, curves[1]->NbKnots());
+
+    EXPECT_NEAR(0.00, curves[0]->Knot(1), 1e-10);
+    EXPECT_NEAR(0.49, curves[0]->Knot(2), 1e-10);
+    EXPECT_NEAR(0.61, curves[0]->Knot(3), 1e-10);
+    EXPECT_NEAR(1.00, curves[0]->Knot(4), 1e-10);
+    EXPECT_EQ(4, curves[0]->Multiplicity(1));
+    EXPECT_EQ(1, curves[0]->Multiplicity(2));
+    EXPECT_EQ(2, curves[0]->Multiplicity(3));
+    EXPECT_EQ(4, curves[0]->Multiplicity(4));
+
+
+    EXPECT_NEAR(0.00, curves[1]->Knot(1), 1e-10);
+    EXPECT_NEAR(0.49, curves[1]->Knot(2), 1e-10);
+    EXPECT_NEAR(0.57, curves[1]->Knot(3), 1e-10);
+    EXPECT_NEAR(1.00, curves[1]->Knot(4), 1e-10);
+    EXPECT_EQ(4, curves[1]->Multiplicity(1));
+    EXPECT_EQ(1, curves[1]->Multiplicity(2));
+    EXPECT_EQ(2, curves[1]->Multiplicity(3));
+    EXPECT_EQ(4, curves[1]->Multiplicity(4));
 }
 
 TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorSurface)
@@ -557,6 +630,46 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
     }
 }
 
+TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApproxWithKink)
+{
+    int degree = 3;
+
+    TColgp_Array1OfPnt controlPoints(1, 7);
+    controlPoints(1) = gp_Pnt(0., 0, 0.);
+    controlPoints(2) = gp_Pnt(0., 2., 0.);
+    controlPoints(3) = gp_Pnt(2.5, 2.5, 0.);
+    controlPoints(4) = gp_Pnt(-3.5, 4., 0.);
+    controlPoints(5) = gp_Pnt(4., 5., 0.);
+    controlPoints(6) = gp_Pnt(-1., 7., 0.);
+    controlPoints(7) = gp_Pnt(-1., 8., 0.);
+
+    TColStd_Array1OfReal knots(1, 3);
+    knots(1) = 0.;
+    knots(2) = 0.5;
+    knots(3) = 1.;
+
+    TColStd_Array1OfInteger mults(1, 3);
+    mults(1) = 4;
+    mults(2) = 3;
+    mults(3) = 4;
+
+    Handle(Geom_BSplineCurve) spline = new Geom_BSplineCurve(controlPoints, knots, mults, degree);
+    std::vector<double> oldParms;
+    oldParms.push_back(0.);
+    oldParms.push_back(0.5);
+    oldParms.push_back(1.0);
+
+    std::vector<double> newParms = oldParms;
+    newParms[1] = 0.6;
+    Handle(Geom_BSplineCurve) splineRepar = tigl::CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, oldParms, newParms, 5);
+    BRepTools::Write(BRepBuilderAPI_MakeEdge(spline).Edge(), "TestData/bugs/505/original_spline.brep");
+    BRepTools::Write(BRepBuilderAPI_MakeEdge(splineRepar).Edge(), "TestData/bugs/505/reparm_spline.brep");
+
+    EXPECT_NEAR(0.6, splineRepar->Knot(3), 1e-10);
+    EXPECT_EQ(3, splineRepar->Multiplicity(3));
+}
+
+
 TEST(TiglBSplineAlgorithms, reparametrizeBSpline)
 {
     // create B-spline
@@ -641,8 +754,6 @@ TEST(TiglBSplineAlgorithms, testFlipSurface)
     //now test it
     for (int u_idx = 0; u_idx < 101; ++u_idx) {
         for (int v_idx = 0; v_idx < 101; ++v_idx) {
-            double u_value = u_idx / 100.;
-            double v_value = v_idx / 100.;
 
             gp_Pnt point = surface->Value(u_idx, v_idx);
             gp_Pnt same_point = flippedSurface->Value(v_idx, u_idx);
@@ -1309,6 +1420,22 @@ TEST(TiglBSplineAlgorithms, knotsFromParamsClosed)
     EXPECT_NEAR(1.0, knots[14], 1e-10);
     EXPECT_NEAR(1.0625, knots[15], 1e-10);
     EXPECT_NEAR(1.125, knots[16], 1e-10);
+}
+
+TEST(TiglBSplineAlgorithms, trimSurfaceBug)
+{
+    auto surface = loadSurface("TestData/bugs/582/surface.brep");
+
+    surface = CTiglBSplineAlgorithms::trimSurface(surface, 0., 1., 0.49999999999999988898, 0.6666666666666666296);
+
+    double u1, u2, v1, v2;
+    surface->Bounds(u1, u2, v1, v2);
+
+    EXPECT_NEAR(0., u1, 1e-10);
+    EXPECT_NEAR(1., u2, 1e-10);
+    EXPECT_NEAR(0.5, v1, 1e-10);
+    EXPECT_NEAR(0.666666666666666666, v2, 1e-10);
+
 }
 
 class GordonSurface: public ::testing::TestWithParam<std::string>

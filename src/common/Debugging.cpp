@@ -39,6 +39,8 @@ void createDirs(const std::string& path)
 namespace tigl
 {
 
+std::string TracePoint::m_debugDataDir = "CrashInfo";
+
 void dumpShape(const TopoDS_Shape& shape, const std::string& outputDir, const std::string& filename, int counter)
 {
     std::stringstream ss;
@@ -52,7 +54,9 @@ void dumpShape(const TopoDS_Shape& shape, const std::string& outputDir, const st
 
     try {
         createDirs(file);
-        BRepTools::Write(shape, file.c_str());
+        if (BRepTools::Write(shape, file.c_str()) == Standard_False) {
+            LOG(WARNING) << "Failed to dump debug shape " << file;
+        }
     }
     catch (const std::exception& e) {
         LOG(WARNING) << "Failed to dump debug shape " << file << ": " << e.what();
@@ -63,12 +67,25 @@ TracePoint::TracePoint(const std::string& outputDir)
     : m_outputDir(outputDir)
     , m_counter(0)
 {
-    for (std::string::iterator it = m_outputDir.begin(); it != m_outputDir.end(); ++it) {
+    size_t pos = 0;
+    for (std::string::iterator it = m_outputDir.begin(); it != m_outputDir.end(); ++it, pos++) {
         char& c = *it;
-        if (!std::isalnum(c)) {
+        if (!std::isalnum(c) && c != '/'  && c != '\\') {
+#if defined _WIN32 || defined __WIN32__
+            if (c != ':' || pos != 1) {
+                 // Don't overwrite the drive letter on windows
+                 c = '_';
+            }
+#else
             c = '_';
+#endif
         }
     }
+}
+
+int TracePoint::hitCount() const
+{
+    return m_counter;
 }
 
 void TracePoint::operator++(int)

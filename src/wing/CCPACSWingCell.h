@@ -45,9 +45,7 @@ class CCPACSWingCell : public generated::CPACSWingCell, public ITiglGeometricCom
 {
 public:
     TIGL_EXPORT CCPACSWingCell(CCPACSWingCells* parentCells, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT ~CCPACSWingCell() OVERRIDE;
-
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT ~CCPACSWingCell() override;
 
     // determines if a given eta xsi coordinate is inside this cell
     // TODO: missing support for spar cell borders
@@ -57,7 +55,7 @@ public:
     // TODO: missing support for spar cell borders
     TIGL_EXPORT bool IsConvex() const;
 
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& cellXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& cellXPath) override;
 
     // get corner coordinates of cell
     TIGL_EXPORT EtaXsi GetLeadingEdgeInnerPoint() const;
@@ -80,16 +78,20 @@ public:
     TIGL_EXPORT CCPACSMaterialDefinition& GetMaterial();
     TIGL_EXPORT const CCPACSMaterialDefinition& GetMaterial() const;
 
-    TIGL_EXPORT TopoDS_Shape GetCellSkinGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Shape GetSkinGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
     TIGL_EXPORT bool IsPartOfCell(TopoDS_Face);
     TIGL_EXPORT bool IsPartOfCell(TopoDS_Edge);
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
-    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    TIGL_EXPORT PNamedShape GetLoft() const override;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
 private:
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     struct EtaXsiCache
     {
         EtaXsi innerLeadingEdgePoint;
@@ -100,12 +102,12 @@ private:
 
     struct GeometryCache
     {
-        TopoDS_Shape cellSkinGeometry;
+        TopoDS_Shape skinGeometry;
 
         gp_Pln cutPlaneLE, cutPlaneTE, cutPlaneIB, cutPlaneOB;
         TopoDS_Shape planeShapeLE, planeShapeTE, planeShapeIB, planeShapeOB;
         TopoDS_Shape sparShapeLE, sparShapeTE;
-        gp_Pnt pC1, pC2, pC3, pC4;
+        gp_Pnt projectedIBLE, projectedOBLE, projectedIBTE, projectedOBTE;
     };
 
     template<class T>

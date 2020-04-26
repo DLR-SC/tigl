@@ -33,6 +33,7 @@
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
 #include "PTiglWingProfileAlgo.h"
+#include "Cache.h"
 
 #include <gp_Pnt.hxx>
 
@@ -46,18 +47,16 @@ class CCPACSWingProfile : public generated::CPACSProfileGeometry
 {
 
 public:
-    TIGL_EXPORT CCPACSWingProfile(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingProfile(CCPACSWingProfiles* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingProfile(CCPACSRotorProfiles* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT ~CCPACSWingProfile() OVERRIDE;
+    TIGL_EXPORT ~CCPACSWingProfile() override;
 
     // Read CPACS wing profile file
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     // Returns whether the profile is a rotor profile
     TIGL_EXPORT bool IsRotorProfile() const;
-
-    // Invalidates internal wing profile state
-    TIGL_EXPORT void Invalidate();
 
     // Returns the wing profile wire, splitted at the leading edge
     TIGL_EXPORT TopoDS_Wire GetSplitWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const;
@@ -120,6 +119,8 @@ protected:
     // Helper function to determine the chord line between leading and trailing edge in the profile plane
     Handle(Geom2d_TrimmedCurve) GetChordLine() const;
 
+    void buildPointListAlgo(std::unique_ptr<CTiglWingProfilePointList>& cache) const;
+
 private:
     // Copy constructor
     CCPACSWingProfile(const CCPACSWingProfile& );
@@ -127,9 +128,12 @@ private:
     // Assignment operator
     void operator=(const CCPACSWingProfile& );
 
+    // Invalidates internal wing profile state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
 private:
     bool                                  isRotorProfile; /**< Indicates if this profile is a rotor profile */
-    unique_ptr<CTiglWingProfilePointList> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
+    Cache<std::unique_ptr<CTiglWingProfilePointList>, CCPACSWingProfile> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
 
 }; // class CCPACSWingProfile
 

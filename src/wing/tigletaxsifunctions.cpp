@@ -26,9 +26,12 @@
 #include "CCPACSWingRibsDefinition.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSWingSparSegment.h"
+#include "CCPACSEtaIsoLine.h"
+#include "CCPACSXsiIsoLine.h"
 #include "CTiglError.h"
 #include "CTiglWingStructureReference.h"
 #include "tiglcommonfunctions.h"
+#include "Debugging.h"
 
 
 namespace tigl
@@ -36,31 +39,25 @@ namespace tigl
 
 gp_Pnt getSectionElementChordlinePoint(const CCPACSWingComponentSegment& cs, const std::string& sectionElementUID, double xsi)
 {
-    gp_Pnt chordlinePoint;
-    CCPACSWing& wing = cs.GetWing();
-    // find section element
-    const CCPACSWingSegment& segment = static_cast<const CCPACSWingSegment&>(wing.GetSegment(1));
-    if (sectionElementUID == segment.GetInnerSectionElementUID()) {
-        // convert into wing coordinate system
-        CTiglTransformation wingTrans = wing.GetTransformationMatrix();
-        chordlinePoint = wingTrans.Inverted().Transform(segment.GetChordPoint(0, xsi));
-    }
-    else {
-        int i;
-        for (i = 1; i <= wing.GetSegmentCount(); ++i) {
-            const CCPACSWingSegment& segment = static_cast<const CCPACSWingSegment&>(wing.GetSegment(i));
-            if (sectionElementUID == segment.GetOuterSectionElementUID()) {
-                // convert into wing coordinate system
-                CTiglTransformation wingTrans = wing.GetTransformationMatrix();
-                chordlinePoint = wingTrans.Inverted().Transform(segment.GetChordPoint(1, xsi));
-                break;
-            }
+    const CCPACSWing& wing = cs.GetWing();
+    for (int i = 1; i <= wing.GetSegmentCount(); ++i) {
+        const CCPACSWingSegment& segment = wing.GetSegment(i);
+
+        double eta = -1;
+        if (sectionElementUID == segment.GetInnerSectionElementUID()) {
+            eta = 0;
         }
-        if (i > wing.GetSegmentCount()) {
-            throw CTiglError("Error in getSectionElementChordlinePoint: section element not found!");
+        if (sectionElementUID == segment.GetOuterSectionElementUID()) {
+            eta = 1;
+        }
+
+        if (eta != -1) {
+            // convert into wing coordinate system
+            return wing.GetTransformationMatrix().Inverted().Transform(segment.GetChordPoint(eta, xsi));
         }
     }
-    return chordlinePoint;
+
+    throw CTiglError("Error in getSectionElementChordlinePoint: section element not found!");
 }
 
 TopoDS_Face buildEtaCutFace(const CTiglWingStructureReference& wsr, double eta)
@@ -118,46 +115,74 @@ double computeRibEtaValue(const CTiglWingStructureReference& wsr, const CCPACSWi
 
 EtaXsi computeRibSparIntersectionEtaXsi(const CTiglWingStructureReference& wsr, const CCPACSWingRibsDefinition& rib, int ribIndex, const CCPACSWingSparSegment& spar)
 {
-    // determine rib eta/xsi values
-    gp_Pnt ribStartPoint, ribEndPoint;
-    rib.GetRibMidplanePoints(ribIndex, ribStartPoint, ribEndPoint);
+    TopoDS_Face ribShape = rib.GetRibFace(ribIndex, WING_COORDINATE_SYSTEM);
 
-    EtaXsi ribStart, ribEnd;
-    wsr.GetEtaXsiLocal(ribStartPoint, ribStart.eta, ribStart.xsi);
-    wsr.GetEtaXsiLocal(ribEndPoint, ribEnd.eta, ribEnd.xsi);
+    DEBUG_SCOPE(a);
+    TopoDS_Wire w = spar.GetSparMidplaneLine();
+    a.addShape(w, "SparMidLine");
+    a.addShape(ribShape, "RibFace");
 
-    // determine number of spar positions
-    int numSparPositions = spar.GetSparPositionUIDs().GetSparPositionUIDCount();
+    const double precision = 1E-6;
 
-    const double precision = 1E-8;
-    const double zeroMin = 0 - precision;
-    EtaXsi sparInner, sparOuter;
-    spar.GetEtaXsi(1, sparInner.eta, sparInner.xsi);
-    for (int i = 2; i <= numSparPositions; ++i) {
-        // check if requested eta lies in current spar line segment
-        spar.GetEtaXsi(i, sparOuter.eta, sparOuter.xsi);
+    gp_Pnt pIntersect;
+    if (!GetIntersectionPoint(ribShape, w, pIntersect, precision)) {
+        throw CTiglError("Error in computeRibSparIntersectionEtaXsi: intersection of rib and spar not found!");
+    }
 
-        // 2d line intersection, taken from http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-        gp_Pnt2d p(ribStart.eta, ribStart.xsi);
-        gp_Vec2d r(p, gp_Pnt2d(ribEnd.eta, ribEnd.xsi));
+    // Get Eta Xsi coordinates of the point
+    EtaXsi result;
+    wsr.GetEtaXsiLocal(pIntersect, result.eta, result.xsi);
 
-        gp_Pnt2d q(sparInner.eta, sparInner.xsi);
-        gp_Vec2d s(q, gp_Pnt2d(sparOuter.eta, sparOuter.xsi));
+    return result;
+}
 
-        double rxs = r.Crossed(s);
-        // ignore parallel or colinear lines
-        if (fabs(rxs) > precision) {
-            double t = gp_Vec2d(p, q).Crossed(s) / rxs;
-            double u = gp_Vec2d(p, q).Crossed(r) / rxs;
-            if (t >= zeroMin && t <= (1 + precision) && u >= zeroMin && u <= (1 + precision)) {
-                return EtaXsi(p.X() + t * r.X(), p.Y() + t * r.Y());
+double transformEtaToCSOrTed(const CCPACSEtaIsoLine& eta, const CTiglUIDManager& uidMgr)
+{
+    return transformEtaToCSOrTed(eta.GetEta(), eta.GetReferenceUID(), uidMgr);
+}
+
+double transformXsiToCSOrTed(const CCPACSXsiIsoLine& xsi, const CTiglUIDManager& uidMgr)
+{
+    // xsi does not depend on whether it is defined in a segment or a CS
+    return xsi.GetXsi();
+    //return transformXsiToCSOrTed(xsi.GetXsi(), xsi.GetReferenceUID(), uidMgr);
+}
+double transformEtaToCSOrTed(double eta, const std::string& referenceUid, const CTiglUIDManager& uidMgr)
+{
+    return transformEtaXsiToCSOrTed({eta, 0}, referenceUid, uidMgr).eta;
+}
+
+double transformXsiToCSOrTed(double xsi, const std::string& referenceUid, const CTiglUIDManager& uidMgr)
+{
+    // xsi does not depend on whether it is defined in a segment or a CS
+    return xsi;
+    //return transformEtaXsiToCSOrTed({0, xsi}, referenceUid, uidMgr).xsi;
+}
+
+EtaXsi transformEtaXsiToCSOrTed(EtaXsi etaXsi, const std::string& referenceUid, const CTiglUIDManager& uidMgr)
+{
+    const CTiglUIDManager::TypedPtr tp = uidMgr.ResolveObject(referenceUid);
+    if (tp.type == &typeid(CCPACSWingSegment)) {
+        const CCPACSWingSegment& segment = *reinterpret_cast<CCPACSWingSegment*>(tp.ptr);
+        const boost::optional<CCPACSWingComponentSegments>& css = segment.GetParent()->GetParent<CCPACSWing>()->GetComponentSegments();
+        if (css) {
+            for (const auto& cs : css->GetComponentSegments()) {
+                if (cs->IsSegmentContained(segment)) {
+                    EtaXsi r;
+                    cs->GetEtaXsiFromSegmentEtaXsi(referenceUid, etaXsi.eta, etaXsi.xsi, r.eta, r.xsi);
+                    return r;
+                }
             }
         }
 
-        sparInner = sparOuter;
+        throw CTiglError("Wing of segment referenced by UID " + referenceUid + " has no component segments");
     }
+    if (tp.type == &typeid(CCPACSWingComponentSegment))
+        return etaXsi;
+    //if (tp.type == &typeid(CCPACSTrailingEdgeDevice))
+    //    return etaXsi;
 
-    throw CTiglError("Error in computeRibSparIntersectionEtaXsi: intersection of rib and spar not found!");
+    throw CTiglError("Unsupported type for iso line transformation referenced by UID " + referenceUid);
 }
 
-}
+} // namespace tigl

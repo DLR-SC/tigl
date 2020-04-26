@@ -29,6 +29,10 @@
 #include <cstring>
 #include <string>
 
+#ifdef GLOG_FOUND
+  #include <glog/log_severity.h>
+#endif
+
 //macro that extracts the filename of the current file
 #if defined _WIN32 || defined __WIN32__
 #define BASENAME(MYFILE) (strrchr((MYFILE), '\\') ? strrchr((MYFILE), '\\') + 1 : (MYFILE))
@@ -82,7 +86,7 @@ void CTiglLogging::SetLogger(PTiglLogger logger)
 
     CGlogLoggerAdaptor* adaptor = new CGlogLoggerAdaptor(logger);
     // pipe EVERYTHING from glog to the logger
-    google::base::SetLogger(google::INFO, adaptor);
+    google::base::SetLogger(google::GLOG_INFO, adaptor);
 #endif
 }
 

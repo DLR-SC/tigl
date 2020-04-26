@@ -38,7 +38,7 @@ public:
     TIGL_EXPORT CCPACSFuselageSection(CCPACSFuselageSections* parent, CTiglUIDManager* uidMgr);
 
     // Read CPACS section elements
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& sectionXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& sectionXPath) override;
 
     // Get element count for this section
     TIGL_EXPORT int GetSectionElementCount() const;
@@ -52,6 +52,9 @@ public:
 protected:
     // Cleanup routine
     void Cleanup();
+
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 };
 
 } // end namespace tigl

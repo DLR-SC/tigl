@@ -1,13 +1,9 @@
 #!/usr/bin/python
 
 import argparse
-import subprocess
+import git  # pip install gitpython
 import datetime
 import re
-
-
-def run(cmd):
-    return (subprocess.check_output(cmd, shell=True)).decode()
 
 
 # TIGL changelog (subset of restructured text)
@@ -174,40 +170,22 @@ def main():
 
     args = parser.parse_args()
 
+    # TiGL repository
+    repo = git.Repo('../../')
+
     # check if on master branch
-    branch = run("git rev-parse --abbrev-ref HEAD").rsplit('\n')[0]
-    if branch != 'master':
-        print("You are not on the master branch! Break.")
-        exit(1)
+    branch = repo.head.reference
+    #if branch != 'master':
+    #    print("You are not on the master branch! Break.")
+    #    exit(1)
 
     # get relevant commit messages
-    last_commit = run("git rev-list %s  | head -n 1" % args.tag).rsplit('\n')[0]
-    current_commit = run("git rev-parse HEAD").rsplit('\n')[0]
+    last_commit = repo.commit(args.tag)
+    current_commit = repo.commit('HEAD')
 
     # get commit message heads
-    logs = run("git log --oneline %s..%s" % (last_commit, current_commit)).split('\n')
+    logs = repo.git.log("--oneline", str(last_commit) + ".." + str(current_commit)).splitlines()
     logs = [l.partition(" ")[2] for l in logs if l]
-
-    # get commit messages and
-    logs = run("git log --pretty=format:\"###seperator###%%s -- %%b\" %s..%s" % (last_commit, current_commit)).split('###seperator###')
-    # skip message body if non-existent
-    logs = [l.rstrip(' -- \n') for l in logs if l]
-    # remove newlines
-    logs = [l.replace('\n', ' ') for l in logs]
-
-    # remove Conflict messages
-    logs = [l.split(" -- Conflicts:")[0] for l in logs]
-
-    # get normal commit message heads
-    #logs = run("git log --oneline --no-merges %s..%s" % (last_commit, current_commit)).split('\n')
-    #logs = [l.partition(" ")[2] for l in logs if l]
-    # get merge commit message heads
-    #merges = run("git log --oneline --merges %s..%s" % (last_commit, current_commit)).split('\n')
-    #merges = [l.partition(" ")[2] for l in merges if l]
-    # filter the merges into master branch
-    # e.g. get 'MacCalculation' from "421218c Merge branch 'MacCalculation'"
-    # and filter out "d29b6c8 Merge branch 'master' of https://code.google.com/p/tigl"
-    #merges = [l.split(' ')[2] for l in merges if len(l.split(' '))==3 ]
 
     # decorate code words in logs
     logs = decorate(logs)

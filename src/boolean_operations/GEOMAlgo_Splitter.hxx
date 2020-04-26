@@ -66,7 +66,7 @@ public:
     GEOMAlgo_Splitter(const Handle(NCollection_BaseAllocator)& theAllocator);
   
   TIGL_EXPORT
-    ~GEOMAlgo_Splitter() OVERRIDE;
+    ~GEOMAlgo_Splitter() override;
 
   TIGL_EXPORT
     void AddTool(const TopoDS_Shape& theShape);
@@ -92,14 +92,14 @@ public:
     Standard_Integer LimitMode()const;
 
   TIGL_EXPORT
-    void Clear() OVERRIDE;
+    void Clear() override;
 
  protected:
   TIGL_EXPORT
-    void BuildResult(const TopAbs_ShapeEnum theType) OVERRIDE;
+    void BuildResult(const TopAbs_ShapeEnum theType) override;
 
   TIGL_EXPORT
-    void PostTreat() OVERRIDE;
+    void PostTreat() override;
   
  protected:
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)

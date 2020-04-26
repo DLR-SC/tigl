@@ -16,7 +16,6 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
 #include <TopoDS_Shape.hxx>
 
 #include "generated/CPACSPressureBulkheadAssemblyPosition.h"
@@ -31,18 +30,19 @@ class CCPACSPressureBulkheadAssemblyPosition : public generated::CPACSPressureBu
 public:
     TIGL_EXPORT CCPACSPressureBulkheadAssemblyPosition(CCPACSPressureBulkheadAssembly* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT virtual void SetFrameUID(const std::string& value) OVERRIDE;
-    TIGL_EXPORT virtual void SetPressureBulkheadElementUID(const std::string& value) OVERRIDE;
+    TIGL_EXPORT virtual void SetFrameUID(const std::string& value) override;
+    TIGL_EXPORT virtual void SetPressureBulkheadElementUID(const std::string& value) override;
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
-    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
-
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    TIGL_EXPORT PNamedShape GetLoft() const override;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
     TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void BuildGeometry(TopoDS_Shape& cache) const;
 
 private:

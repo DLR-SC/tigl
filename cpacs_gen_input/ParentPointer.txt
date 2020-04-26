@@ -28,6 +28,8 @@ CPACSSparSegment
 CPACSSparSegments
 CPACSComponentSegment
 CPACSComponentSegments
+CPACSEtaIsoLine
+CPACSXsiIsoLine
 
 CPACSFuselage
 CPACSFuselages
@@ -37,6 +39,11 @@ CPACSFuselageSegment
 CPACSFuselageSegments
 CPACSFuselageElement
 CPACSFuselageElements
+CPACSWalls
+CPACSWallSegment
+CPACSWallSegments
+CPACSWallPosition
+CPACSWallPositions
 
 CPACSRotorBlades
 CPACSRotor
@@ -89,3 +96,13 @@ CPACSSkin
 CPACSSkinSegment
 CPACSSkinSegments
 
+CPACSEnginePylon
+CPACSEnginePylons
+
+CPACSEnginePosition
+CPACSNacelleCowl
+CPACSNacelleCenterCowl
+CPACSNacelleSection
+CPACSNacelleSections
+CPACSNacelleGuideCurve
+CPACSNacelleGuideCurves

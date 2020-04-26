@@ -27,10 +27,10 @@ namespace tigl
 CCPACSWingRibsDefinitions::CCPACSWingRibsDefinitions(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr)
     : generated::CPACSWingRibsDefinitions(structure, uidMgr) {}
 
-void CCPACSWingRibsDefinitions::Invalidate()
+void CCPACSWingRibsDefinitions::Invalidate(const boost::optional<std::string>& source) const
 {
-    for (std::vector<unique_ptr<CCPACSWingRibsDefinition> >::iterator it = m_ribsDefinitions.begin(); it != m_ribsDefinitions.end(); ++it) {
-        (*it)->Invalidate();
+    for (auto& r : m_ribsDefinitions) {
+        r->Invalidate(source);
     }
 }
 
@@ -57,14 +57,13 @@ CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const int
 
 const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const std::string& uid) const
 {
-    for (std::vector<unique_ptr<CCPACSWingRibsDefinition> >::const_iterator it = m_ribsDefinitions.begin(); it != m_ribsDefinitions.end(); ++it) {
-        const unique_ptr<CCPACSWingRibsDefinition>& tempRib = *it;
-        if (tempRib->GetUID() == uid) {
-            return *tempRib;
+    for (const auto& r : m_ribsDefinitions) {
+        if (r->GetUID() == uid) {
+            return *r;
         }
     }
 
-    const std::string referenceUID = GetParent()->GetWingStructureReference().GetUID();
+    const std::string& referenceUID = CTiglWingStructureReference(*GetParent()).GetUID();
     LOG(ERROR) << "Ribs Definition \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
     throw CTiglError("Ribs Definition \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
 }

@@ -32,84 +32,105 @@
 namespace tigl
 {
 CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSWingComponentSegmentStructure(parent, uidMgr) {}
+    : generated::CPACSWingComponentSegmentStructure(parent, uidMgr)
+{
+}
 
 CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSWingComponentSegmentStructure(parent, uidMgr) {}
-
-CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReference() {
-    if (IsParent<CCPACSWingComponentSegment>()) return CTiglWingStructureReference(*GetParent<CCPACSWingComponentSegment>());
-    throw CTiglError("Trailing edge devices are not yet supported by CTiglWingStructureReference");
+    : generated::CPACSWingComponentSegmentStructure(parent, uidMgr)
+{
 }
 
-const CTiglWingStructureReference CCPACSWingCSStructure::GetWingStructureReference() const {
-    return const_cast<CCPACSWingCSStructure&>(*this).GetWingStructureReference();
-}
-
-int CCPACSWingCSStructure::GetSparSegmentCount() const {
+int CCPACSWingCSStructure::GetSparSegmentCount() const
+{
     if (m_spars) {
         return m_spars->GetSparSegments().GetSparSegmentCount();
     }
     return 0;
 }
 
-CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(int index) {
+CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(int index)
+{
     if (!m_spars) {
         throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparSegment!");
     }
     return m_spars->GetSparSegments().GetSparSegment(index);
 }
 
-CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::string& uid) {
+CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::string& uid)
+{
     if (!m_spars) {
         throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparSegment!");
     }
     return m_spars->GetSparSegments().GetSparSegment(uid);
 }
 
-const CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(int index) const {
+const CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(int index) const
+{
     if (!m_spars) {
         throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparSegment!");
     }
     return m_spars->GetSparSegments().GetSparSegment(index);
 }
 
-const CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::string& uid) const {
+const CCPACSWingSparSegment& CCPACSWingCSStructure::GetSparSegment(const std::string& uid) const
+{
     if (!m_spars) {
         throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparSegment!");
     }
     return m_spars->GetSparSegments().GetSparSegment(uid);
 }
 
-int CCPACSWingCSStructure::GetRibsDefinitionCount() const {
+CCPACSWingSparPosition& CCPACSWingCSStructure::GetSparPosition(const std::string& uid)
+{
+    if (!m_spars) {
+        throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparPosition!");
+    }
+    return m_spars->GetSparPositions().GetSparPosition(uid);
+}
+
+const CCPACSWingSparPosition& CCPACSWingCSStructure::GetSparPosition(const std::string& uid) const
+{
+    if (!m_spars) {
+        throw CTiglError("no spars existing in CCPACSWingCSStructure::GetSparPosition!");
+    }
+    return m_spars->GetSparPositions().GetSparPosition(uid);
+}
+
+int CCPACSWingCSStructure::GetRibsDefinitionCount() const
+{
     if (m_ribsDefinitions) {
         return m_ribsDefinitions->GetRibsDefinitionCount();
     }
     return 0;
 }
 
-CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(int index) {
+CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(int index)
+{
     if (!m_ribsDefinitions) {
         throw CTiglError("no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
     }
     return m_ribsDefinitions->GetRibsDefinition(index);
 }
 
-CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const std::string& uid) {
+CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const std::string& uid)
+{
     if (!m_ribsDefinitions) {
         throw CTiglError("no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
     }
     return m_ribsDefinitions->GetRibsDefinition(uid);
 }
 
-const CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(int index) const {
+const CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(int index) const
+{
     if (!m_ribsDefinitions) {
         throw CTiglError("no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
     }
     return m_ribsDefinitions->GetRibsDefinition(index);
 }
 
-const CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const std::string& uid) const {
+const CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const std::string& uid) const
+{
     if (!m_ribsDefinitions) {
         throw CTiglError("no ribsDefinitions existing in CCPACSWingCSStructure::GetRibsDefinition!");
     }
@@ -117,17 +138,17 @@ const CCPACSWingRibsDefinition& CCPACSWingCSStructure::GetRibsDefinition(const s
 }
 
 
-void CCPACSWingCSStructure::Invalidate()
+void CCPACSWingCSStructure::Invalidate(const boost::optional<std::string>& source) const
 {
     // forward invalidation
     if (m_spars) {
-        m_spars->Invalidate();
+        m_spars->Invalidate(source);
     }
     if (m_ribsDefinitions) {
-        m_ribsDefinitions->Invalidate();
+        m_ribsDefinitions->Invalidate(source);
     }
-    m_upperShell.Invalidate();
-    m_lowerShell.Invalidate();
+    m_upperShell.Invalidate(source);
+    m_lowerShell.Invalidate(source);
 }
 
 } // namespace tigl

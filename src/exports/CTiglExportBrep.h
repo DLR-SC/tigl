@@ -55,15 +55,15 @@ public:
     {
     }
 
-    TIGL_EXPORT ExporterOptions GetDefaultOptions() const OVERRIDE;
-    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const OVERRIDE;
+    TIGL_EXPORT ExporterOptions GetDefaultOptions() const override;
+    TIGL_EXPORT ShapeExportOptions GetDefaultShapeOptions() const override;
 
 private:
     // Writes the shapes to BREP. In multiple shapes were added
     // a compound is created.
-    TIGL_EXPORT bool WriteImpl(const std::string& filename) const OVERRIDE;
+    TIGL_EXPORT bool WriteImpl(const std::string& filename) const override;
 
-    std::string SupportedFileTypeImpl() const OVERRIDE
+    std::string SupportedFileTypeImpl() const override
     {
         return "brep";
     }

@@ -186,7 +186,7 @@ bool writeGeometryMesh(TixiDocumentHandle handle, const CTiglPolyData& polyData,
                 continue;
             }
             else if (npoints > 3) {
-                LOG(WARNING) << "Polygons with more than 3 vertices are currently not supported by CTiglExportCollada!" << endl;
+                LOG(WARNING) << "Polygons with more than 3 vertices are currently not supported by CTiglExportCollada!";
                 continue;
             }
 

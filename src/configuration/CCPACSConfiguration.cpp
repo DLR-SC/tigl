@@ -48,13 +48,14 @@
 #include "generated/TixiHelper.h"
 
 #include <cfloat>
+#include <limits>
 
 namespace tigl
 {
 
 // Constructor
 CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
-    : tixiDocumentHandle(tixiHandle) , acSystems(this)
+    : tixiDocumentHandle(tixiHandle) , acSystems(this), header(nullptr), farField(nullptr)
 {
 }
 
@@ -73,9 +74,6 @@ void CCPACSConfiguration::Invalidate()
     if (rotorcraftModel) {
         rotorcraftModel->Invalidate();
     }
-    if (profiles) {
-        profiles->Invalidate();
-    }
     aircraftFuser.reset();
     shapeCache.Clear();
 }
@@ -84,6 +82,7 @@ namespace {
     const std::string headerXPath   = "/cpacs/header";
     const std::string profilesXPath = "/cpacs/vehicles/profiles";
     const std::string farFieldXPath = "/cpacs/toolspecific/cFD/farField";
+    const std::string enginesXPath = "/cpacs/vehicles/engines";
 }
 
 // Build up memory structure for whole CPACS file
@@ -98,9 +97,13 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         header.ReadCPACS(tixiDocumentHandle, headerXPath);
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, profilesXPath)) {
-        profiles = boost::in_place(&uidManager);
+        profiles = boost::in_place(nullptr, &uidManager);
         // read wing airfoils, fuselage profiles, rotor airfoils and guide curve profiles
         profiles->ReadCPACS(tixiDocumentHandle, profilesXPath);
+    }
+    if (tixi::TixiCheckElement(tixiDocumentHandle, enginesXPath)) {
+        engines = boost::in_place(nullptr, &uidManager);
+        engines->ReadCPACS(tixiDocumentHandle, enginesXPath);
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
         farField.ReadCPACS(tixiDocumentHandle, farFieldXPath);
@@ -132,16 +135,19 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 {
     header.WriteCPACS(tixiDocumentHandle, headerXPath);
     if (aircraftModel) {
+        tixi::TixiCreateElementsIfNotExists(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model");
         tixi::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
         aircraftModel->SetUID(configurationUID);
         aircraftModel->WriteCPACS(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model[@uID=\"" + configurationUID + "\"]");
     }
     if (rotorcraftModel) {
+        tixi::TixiCreateElementsIfNotExists(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model");
         tixi::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
         rotorcraftModel->SetUID(configurationUID);
         rotorcraftModel->WriteCPACS(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model[@uID=\"" + configurationUID + "\"]");
     }
     if (profiles) {
+        tixi::TixiCreateElementsIfNotExists(tixiDocumentHandle, profilesXPath);
         profiles->WriteCPACS(tixiDocumentHandle, profilesXPath);
     }
 }
@@ -189,36 +195,39 @@ bool CCPACSConfiguration::IsRotorcraft() const
     throw CTiglError("No configuration loaded");
 }
 
-// Returns the total count of wing profiles in this configuration
-int CCPACSConfiguration::GetWingProfileCount() const
+// Returns the class which holds all wing profiles
+boost::optional<CCPACSWingProfiles&> CCPACSConfiguration::GetWingProfiles()
 {
-    size_t count = 0;
-    if (profiles) {
-        if (profiles->GetWingAirfoils()) {
-            count += profiles->GetWingAirfoils()->GetWingAirfoils().size();
-        }
-        if (profiles->GetRotorAirfoils()) {
-            count += profiles->GetRotorAirfoils()->GetRotorAirfoils().size();
-        }
-    }
-    return static_cast<int>(count);
+    if (profiles && profiles->GetWingAirfoils())
+        return *profiles->GetWingAirfoils();
+    else
+        return boost::none;
+}
+
+boost::optional<const CCPACSWingProfiles&> CCPACSConfiguration::GetWingProfiles() const
+{
+    if (profiles && profiles->GetWingAirfoils())
+        return *profiles->GetWingAirfoils();
+    else
+        return boost::none;
 }
 
 // Returns the class which holds all wing profiles
-CCPACSWingProfiles& CCPACSConfiguration::GetWingProfiles()
+boost::optional<CCPACSRotorProfiles&> CCPACSConfiguration::GetRotorProfiles()
 {
-    return *profiles->GetWingAirfoils();
-}
-
-// Returns the class which holds all wing profiles
-CCPACSRotorProfiles& CCPACSConfiguration::GetRotorProfiles() {
-    return *profiles->GetRotorAirfoils();
+    if (profiles && profiles->GetRotorAirfoils())
+        return *profiles->GetRotorAirfoils();
+    else
+        return boost::none;
 }
 
 // Returns the class which holds all fuselage profiles
-CCPACSFuselageProfiles& CCPACSConfiguration::GetFuselageProfiles()
+boost::optional<CCPACSFuselageProfiles&> CCPACSConfiguration::GetFuselageProfiles()
 {
-    return *profiles->GetFuselageProfiles();
+    if (profiles && profiles->GetFuselageProfiles())
+        return *profiles->GetFuselageProfiles();
+    else
+        return boost::none;
 }
 
 // Returns the wing profile for a given uid.
@@ -232,18 +241,6 @@ CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
     }
     else {
         throw CTiglError("Profile " + uid + " does not exists");
-    }
-}
-
-// Returns the wing profile for a given index
-CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(int index) const
-{
-    const int wingProfiles = profiles->GetWingAirfoils() ? profiles->GetWingAirfoils()->GetProfileCount() : 0;
-    if (index <= wingProfiles) {
-        return profiles->GetWingAirfoils()->GetProfile(index);
-    }
-    else {
-        return profiles->GetRotorAirfoils()->GetProfile(index - wingProfiles);
     }
 }
 
@@ -403,7 +400,11 @@ int CCPACSConfiguration::GetRotorIndex(const std::string& UID) const
 
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
 {
-    return uidManager.GetParentGeometricComponent(UID)->GetLoft()->Shape();
+    CTiglRelativelyPositionedComponent* parent = uidManager.GetParentGeometricComponent(UID);
+    if (!parent) {
+        throw CTiglError("CCPACSConfiguration::GetParentLoft: Cannot find parent of component with uID " + UID + ".");
+    }
+    return parent->GetLoft()->Shape();
 }
 
 bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
@@ -504,6 +505,71 @@ const CCPACSFuselages& CCPACSConfiguration::GetFuselages() const
     }
 }
 
+boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons()
+{
+    if (aircraftModel) {
+        return aircraftModel->GetEnginePylons();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
+const boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons() const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetEnginePylons();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
+boost::optional<CCPACSEngines>& CCPACSConfiguration::GetEngines()
+{
+    return engines;
+}
+
+const boost::optional<CCPACSEngines>& CCPACSConfiguration::GetEngines() const
+{
+    return engines;
+}
+
+boost::optional<CCPACSEnginePositions>& CCPACSConfiguration::GetEnginePositions()
+{
+    if (aircraftModel) {
+        return aircraftModel->GetEngines();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
+const boost::optional<CCPACSEnginePositions>& CCPACSConfiguration::GetEnginePositions() const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetEngines();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
+// Returns the engine for a given uid.
+CCPACSEngine& CCPACSConfiguration::GetEngine(const std::string& uid) const
+{
+    try {
+        if (GetEngines()) {
+            return GetEngines()->GetEngine(uid);
+        }
+        throw CTiglError("Could not find engine with uID" + uid, TIGL_NOT_FOUND);
+    }
+    catch(...) {
+        throw CTiglError("Could not find engine with uID" + uid, TIGL_NOT_FOUND);
+    }
+}
+
+
 CCPACSFarField& CCPACSConfiguration::GetFarField()
 {
     return farField;
@@ -568,40 +634,9 @@ const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const
 
 double CCPACSConfiguration::GetAirplaneLenth()
 {
-    Bnd_Box boundingBox;
-
-    // Draw all wings
-    for (int w = 1; w <= GetWingCount(); w++) {
-        tigl::CCPACSWing& wing = GetWing(w);
-
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(i);
-            BRepBndLib::Add(segment.GetLoft()->Shape(), boundingBox);
-
-        }
-
-        if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-            continue;
-        }
-
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(i);
-            BRepBndLib::Add(segment.GetLoft()->Shape(), boundingBox);
-        }
-    }
-
-    for (int f = 1; f <= GetFuselageCount(); f++) {
-        tigl::CCPACSFuselage& fuselage = GetFuselage(f);
-
-        for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
-            tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(i);
-            BRepBndLib::Add(segment.GetLoft()->Shape(), boundingBox);
-        }
-    }
-    Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
-    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-
-    return xmax-xmin;
+    CTiglPoint min, max;
+    ConfigurationGetBoundingBox(*this, min, max);
+    return max.x - min.x;
 }
 
 // Returns the uid manager
@@ -684,5 +719,71 @@ const CCPACSWings& CCPACSConfiguration::GetWings() const
         throw CTiglError("No configuration loaded");
     }
 }
+
+void ConfigurationGetBoundingBox(const CCPACSConfiguration &config, CTiglPoint &min, CTiglPoint &max)
+{
+    std::vector<TiglGeometricComponentType> shapesToDraw;
+    shapesToDraw.push_back(TIGL_COMPONENT_FUSELAGE);
+    shapesToDraw.push_back(TIGL_COMPONENT_WING);
+    shapesToDraw.push_back(TIGL_COMPONENT_ROTOR);
+    shapesToDraw.push_back(TIGL_COMPONENT_ENGINE_PYLON);
+    shapesToDraw.push_back(TIGL_COMPONENT_EXTERNAL_OBJECT);
+
+    CTiglPoint globalMin(std::numeric_limits<double>::max(),
+                         std::numeric_limits<double>::max(),
+                         std::numeric_limits<double>::max());
+
+    CTiglPoint globalMax(-std::numeric_limits<double>::max(),
+                         -std::numeric_limits<double>::max(),
+                         -std::numeric_limits<double>::max());
+
+    const tigl::CTiglUIDManager& uidMgr = config.GetUIDManager();
+    const tigl::ShapeContainerType& container = uidMgr.GetShapeContainer();
+
+    for (tigl::ShapeContainerType::const_iterator it = container.begin(); it != container.end(); ++it) {
+        tigl::ITiglGeometricComponent* component = it->second;
+
+        if (!component) {
+            continue;
+        }
+
+        if (std::find(shapesToDraw.begin(), shapesToDraw.end(), component->GetComponentType()) != shapesToDraw.end()) {
+            CTiglPoint curMin(globalMin), curMax(globalMax);
+            ComponentGetBoundingBox(config, component->GetDefaultedUID(), curMin, curMax);
+            globalMin.x = std::min(curMin.x, globalMin.x);
+            globalMin.y = std::min(curMin.y, globalMin.y);
+            globalMin.z = std::min(curMin.z, globalMin.z);
+
+            globalMax.x = std::max(curMax.x, globalMax.x);
+            globalMax.y = std::max(curMax.y, globalMax.y);
+            globalMax.z = std::max(curMax.z, globalMax.z);
+        }
+
+    }
+
+    min = globalMin;
+    max = globalMax;
+}
+
+void ComponentGetBoundingBox(const CCPACSConfiguration &config, const std::string &uid, CTiglPoint &min, CTiglPoint &max)
+{
+    Bnd_Box boundingBox;
+
+
+    ITiglGeometricComponent& component = config.GetUIDManager().GetGeometricComponent(uid);
+
+    PNamedShape loft = component.GetLoft();
+    if (loft) BRepBndLib::Add(loft->Shape(), boundingBox);
+
+    tigl::CTiglAbstractGeometricComponent* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+
+    if (geometricComp) {
+        PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
+        if (mirroredLoft) BRepBndLib::Add(mirroredLoft->Shape(), boundingBox);;
+    }
+
+    boundingBox.Get(min.x, min.y, min.z, max.x, max.y, max.z);
+}
+
 } // end namespace tigl
 

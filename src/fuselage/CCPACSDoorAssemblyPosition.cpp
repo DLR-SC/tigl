@@ -18,6 +18,7 @@
 
 #include "CCPACSFuselageStructure.h"
 #include "CNamedShape.h"
+#include "CTiglUIDManager.h"
 
 namespace tigl
 {
@@ -27,19 +28,53 @@ CCPACSDoorAssemblyPosition::CCPACSDoorAssemblyPosition(CCPACSCargoDoorsAssembly*
 {
 }
 
+void CCPACSDoorAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    CTiglStringerFrameBorderedObject::InvalidateShapes(source);
+}
+
 std::string CCPACSDoorAssemblyPosition::GetDefaultedUID() const
 {
     return GetUID();
 }
 
-PNamedShape CCPACSDoorAssemblyPosition::GetLoft()
+PNamedShape CCPACSDoorAssemblyPosition::GetLoft() const
 {
     return PNamedShape(new CNamedShape(GetGeometry(), GetUID()));
 }
 
 TiglGeometricComponentType CCPACSDoorAssemblyPosition::GetComponentType() const
 {
-    return TIGL_COMPONENT_CARGO_DOOR | TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_CARGO_DOOR ;
+}
+
+TiglGeometricComponentIntent CCPACSDoorAssemblyPosition::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
+}
+
+void CCPACSDoorAssemblyPosition::SetStartFrameUID(const std::string& value)
+{
+    generated::CPACSDoorAssemblyPosition::SetStartFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSDoorAssemblyPosition::SetEndFrameUID(const std::string& value)
+{
+    generated::CPACSDoorAssemblyPosition::SetEndFrameUID(value);
+    Invalidate();
+}
+
+void CCPACSDoorAssemblyPosition::SetStartStringerUID(const std::string& value)
+{
+    generated::CPACSDoorAssemblyPosition::SetStartStringerUID(value);
+    Invalidate();
+}
+
+void CCPACSDoorAssemblyPosition::SetEndStringerUID(const std::string& value)
+{
+    generated::CPACSDoorAssemblyPosition::SetEndStringerUID(value);
+    Invalidate();
 }
 
 } // namespace tigl

@@ -54,8 +54,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -95,8 +95,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -648,8 +648,8 @@ TEST_F(TiglFuselageSegmentSimple, getSectionCenter)
     ASSERT_NE(TIGL_NULL_POINTER, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetSectionCenter(tiglHandle, "segmentD150_Fuselage_1Segment2ID", eta, &pointX, &pointY, &pointZ));
     EXPECT_NEAR(-0.5, pointX, 1e-15);
-    EXPECT_NEAR(0, pointY, 1e-2);
-    EXPECT_NEAR(0, pointZ, 1e-2);
+    EXPECT_NEAR(0, pointY, 1e-6);
+    EXPECT_NEAR(0, pointZ, 1e-6);
 
     eta = 0.5;
 
@@ -776,5 +776,27 @@ TEST_F(TiglFuselageSegmentSimple, getCenterLineLength)
     ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetCenterLineLength(tiglHandle, "SimpleFuselage", NULL));
     ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetCenterLineLength(tiglHandle, NULL, &centerLineLength));
     ASSERT_EQ(TIGL_NOT_FOUND, tiglFuselageGetCenterLineLength(-1, "SimpleFuselage", &centerLineLength));
+}
+
+TEST(TiglFuselageSegmentBugs, getCenterLineLength_551)
+{
+    const char* filename = "TestData/bugs/551/zerosection.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ReturnCode tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE (tixiRet == SUCCESS);
+    TiglReturnCode tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    double centerLineLength = 0.;
+
+    // test value of the result
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetCenterLineLength(tiglHandle, "fuselage", &centerLineLength));
+    EXPECT_NEAR(centerLineLength, 1., 1e-15);
+
+    tiglCloseCPACSConfiguration(tiglHandle);
+    tixiCloseDocument(tixiHandle);
 }
 

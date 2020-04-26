@@ -42,17 +42,22 @@ std::string CCPACSLongFloorBeam::GetDefaultedUID() const
     return GetUID();
 }
 
-PNamedShape CCPACSLongFloorBeam::GetLoft()
+PNamedShape CCPACSLongFloorBeam::GetLoft() const
 {
     return PNamedShape(new CNamedShape(GetGeometry(true), GetUID()));
 }
 
 TiglGeometricComponentType CCPACSLongFloorBeam::GetComponentType() const
 {
-    return TIGL_COMPONENT_LONG_FLOOR_BEAM | TIGL_COMPONENT_PHYSICAL;
+    return TIGL_COMPONENT_LONG_FLOOR_BEAM;
 }
 
-void CCPACSLongFloorBeam::Invalidate()
+TiglGeometricComponentIntent CCPACSLongFloorBeam::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
+}
+
+void CCPACSLongFloorBeam::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry1D.clear();
     m_geometry3D.clear();
@@ -107,7 +112,7 @@ void CCPACSLongFloorBeam::BuildGeometry(TopoDS_Shape& cache, bool just1DElements
                 m_uidMgr->ResolveObject<CCPACSProfileBasedStructuralElement>(
                     m_longFloorBeamPositions[i - 1]->GetStructuralElementUID());
             const CCPACSSheetList& sheetList =
-                m_uidMgr->ResolveObject<CCPACSStructuralProfile>(pbse.GetStructuralProfileUID_choice1().value())
+                m_uidMgr->ResolveObject<CCPACSStructuralProfile>(pbse.GetStructuralProfileUID_choice2_2().value())
                     .GetSheetList();
 
             const gp_Pnt& pnt1 = points[i - 1];

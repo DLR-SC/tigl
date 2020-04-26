@@ -45,12 +45,14 @@
 #include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
 
+using namespace std;
+
 /******************************************************************************/
 
 class FuselageGuideCurve : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/simple_test_guide_curves.xml";
         ReturnCode tixiRet;
@@ -71,7 +73,7 @@ protected:
         gamma=std::vector<double>(tempz, tempz + sizeof(tempz) / sizeof(tempz[0]) );
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
@@ -121,7 +123,7 @@ protected:
 */
 TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfile)
 {
-    tigl::CCPACSGuideCurveProfile guideCurve(NULL);
+    tigl::CCPACSGuideCurveProfile guideCurve(NULL, NULL);
     guideCurve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[2]");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Middle Guide Curve Profile for GuideCurveModel - Fuselage");
@@ -131,7 +133,7 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfile)
 */
 TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfiles)
 {
-    tigl::CCPACSGuideCurveProfiles guideCurves(NULL);
+    tigl::CCPACSGuideCurveProfiles guideCurves(NULL, NULL);
     guideCurves.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves");
     ASSERT_EQ(guideCurves.GetGuideCurveProfileCount(), 6);
     tigl::CCPACSGuideCurveProfile& guideCurve = guideCurves.GetGuideCurveProfile("GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
@@ -145,7 +147,6 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfiles)
 TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointAlgoOnCircle)
 {
     double radius1=1.0;
-    double distance=1.0;
     gp_Pnt location1(radius1, 0.0,  0.0);
     gp_Ax2 circlePosition1(location1, gp::DY(), gp::DX());
     Handle(Geom_Circle) circle1 = new Geom_Circle(circlePosition1, radius1);
@@ -320,7 +321,7 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
     wireContainer2.Append(wire2);
 
     // get guide curve profile
-    tigl::CCPACSGuideCurveProfile guideCurveProfile(NULL);
+    tigl::CCPACSGuideCurveProfile guideCurveProfile(NULL, NULL);
     guideCurveProfile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[2]");
 
     std::vector<gp_Pnt> guideCurvePnts;

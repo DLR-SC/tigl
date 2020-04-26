@@ -23,10 +23,12 @@
 #define CTIGLTRANSFORMATION_H
 
 #include "tigl_internal.h"
+#include "CTiglLogging.h"
 #include "CTiglPoint.h"
 #include "gp_GTrsf.hxx"
 #include "gp_Pnt.hxx"
 #include "TopoDS.hxx"
+#include "PNamedShape.h"
 
 namespace tigl
 {
@@ -37,13 +39,12 @@ class CTiglTransformation
 public:
     // Constructor
     TIGL_EXPORT CTiglTransformation();
-    TIGL_EXPORT CTiglTransformation(const gp_GTrsf& ocMatrix);
+    TIGL_EXPORT explicit CTiglTransformation(const gp_GTrsf& ocMatrix);
 
     // Constructor for transformation based on gp_Trsf
-    TIGL_EXPORT CTiglTransformation(const gp_Trsf& trans);
+    TIGL_EXPORT explicit CTiglTransformation(const gp_Trsf& trans);
 
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglTransformation();
+    TIGL_EXPORT explicit CTiglTransformation(const gp_Vec& translation);
     
     TIGL_EXPORT CTiglTransformation& operator=(const CTiglTransformation&);
 
@@ -81,6 +82,9 @@ public:
     TIGL_EXPORT void AddRotationY(double degreeY);
     TIGL_EXPORT void AddRotationZ(double degreeZ);
 
+    // Adds a rotation in intrinsic x-y'-z'' Euler convention to the matrix
+    TIGL_EXPORT void AddRotationIntrinsicXYZ(double phi, double theta, double psi);
+
     // Adds projection on xy plane by setting the z coordinate to 0
     TIGL_EXPORT void AddProjectionOnXYPlane();
 
@@ -103,12 +107,26 @@ public:
     // returns the transformed shape
     TIGL_EXPORT TopoDS_Shape Transform(const TopoDS_Shape& shape) const;
 
+    // Transforms the CNamedShape. It also makes sure to update
+    // the local face transformation meta data.
+    TIGL_EXPORT PNamedShape Transform(PNamedShape shape) const;
+
     // Transforms a point with the current transformation matrix and
     // returns the transformed point
     TIGL_EXPORT gp_Pnt Transform(const gp_Pnt& point) const;
+
+    // Transforms a vector with the current transformation matrix and
+    // returns the transformed vector
+    // Note, that the vector transformation does not include the translation part
+    TIGL_EXPORT gp_Vec Transform(const gp_Vec& vec) const;
     
     // Returns the inverted Transformation
     TIGL_EXPORT CTiglTransformation Inverted() const;
+
+    // Decompose the Transformation into the three operations
+    // scale first, rotate second (extr. Euler as defined in CPACS),
+    // translate third
+    TIGL_EXPORT void Decompose(double scale[3], double rotation[3], double translation[3]) const;
 
     // Default copy constructor and assignment operator are correct
     // since memberwise copy is enough for this class.

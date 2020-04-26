@@ -24,8 +24,8 @@
 
 namespace tigl
 {
-CCPACSProfileBasedStructuralElement::CCPACSProfileBasedStructuralElement(CTiglUIDManager* uidMgr)
-    : generated::CPACSProfileBasedStructuralElement(uidMgr)
+CCPACSProfileBasedStructuralElement::CCPACSProfileBasedStructuralElement(CCPACSProfileBasedStructuralElements* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileBasedStructuralElement(parent, uidMgr)
 {
 }
 
@@ -33,7 +33,7 @@ TopoDS_Shape CCPACSProfileBasedStructuralElement::makeFromWire(const TopoDS_Wire
                                                                const gp_Pln& profilePlane) const
 {
     const CCPACSSheetList& sheetList =
-        m_uidMgr->ResolveObject<CCPACSStructuralProfile>(m_structuralProfileUID_choice1.value()).GetSheetList();
+        m_uidMgr->ResolveObject<CCPACSStructuralProfile>(m_structuralProfileUID_choice2_2.value()).GetSheetList();
     const TopoDS_Wire& profile = sheetList.CreateProfileWire(profilePlane);
 
     BRepOffsetAPI_MakePipeShell frameShell(spine);

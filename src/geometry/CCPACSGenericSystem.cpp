@@ -110,7 +110,6 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
     // Get attribute "uid"
     char* ptrUID = NULL;
     tempString   = "uID";
-    elementPath  = const_cast<char*>(tempString.c_str());
     if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(genericSysXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS) {
         SetUID(ptrUID);
     }
@@ -139,7 +138,7 @@ CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration() const
 }
 
 // build loft
-PNamedShape CCPACSGenericSystem::BuildLoft()
+PNamedShape CCPACSGenericSystem::BuildLoft() const
 {
     TopoDS_Shape sysShape;
     if (geometricBaseType == "cylinder") {
@@ -180,11 +179,11 @@ PNamedShape CCPACSGenericSystem::BuildLoft()
 }
 
 // get short name for loft
-std::string CCPACSGenericSystem::GetShortShapeName()
+std::string CCPACSGenericSystem::GetShortShapeName() const
 {
     unsigned int gsindex = 0;
     for (int i = 1; i <= GetConfiguration().GetGenericSystemCount(); ++i) {
-        tigl::CCPACSGenericSystem& gs = GetConfiguration().GetGenericSystem(i);
+        const tigl::CCPACSGenericSystem& gs = GetConfiguration().GetGenericSystem(i);
         if (GetUID() == gs.GetUID()) {
             gsindex = i;
             std::stringstream shortName;

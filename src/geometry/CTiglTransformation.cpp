@@ -26,6 +26,9 @@
 #include "BRepBuilderAPI_Transform.hxx"
 #include "gp_XYZ.hxx"
 #include "Standard_Version.hxx"
+#include "CNamedShape.h"
+
+#include "tiglmathfunctions.h"
 
 namespace tigl 
 {
@@ -65,9 +68,11 @@ CTiglTransformation::CTiglTransformation(const gp_Trsf& trans)
     }
 }
 
-// Destructor
-CTiglTransformation::~CTiglTransformation()
+CTiglTransformation::CTiglTransformation(const gp_Vec& t)
 {
+    SetIdentity();
+
+    AddTranslation(t.X(), t.Y(), t.Z());
 }
 
 CTiglTransformation& CTiglTransformation::operator=(const CTiglTransformation& mat)
@@ -293,6 +298,15 @@ void CTiglTransformation::AddRotationZ(double degreeZ)
     PreMultiply(trans);
 }
 
+// Adds a rotation in intrinsic x-y'-z'' Euler convention to the matrix
+void CTiglTransformation::AddRotationIntrinsicXYZ(double phi, double theta, double psi)
+{
+    // intrinsic x-y'-z'' corresponds to extrinsic z-y-x, i.e. Rx*Ry*Rz:
+    AddRotationZ(psi);
+    AddRotationY(theta);
+    AddRotationX(phi);
+}
+
 // Adds projection an xy plane by setting the z coordinate to 0
 void CTiglTransformation::AddProjectionOnXYPlane()
 {
@@ -414,6 +428,26 @@ TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
     }
 }
 
+PNamedShape tigl::CTiglTransformation::Transform(PNamedShape shape) const
+{
+    if (!shape) {
+        return nullptr;
+    }
+
+    PNamedShape mirrored(new CNamedShape(*shape));
+    mirrored->SetShape(Transform(mirrored->Shape()));
+
+    // we have to transform also the face transformation properties
+    for (unsigned int iface = 0; iface < mirrored->GetFaceCount(); ++iface) {
+        CFaceTraits& traits = mirrored->FaceTraits(iface);
+        auto faceTrafo = traits.Transformation();
+
+        faceTrafo = *this * faceTrafo * this->Inverted();
+        traits.SetTransformation(faceTrafo);
+    }
+    return mirrored;
+}
+
 // Transforms a point with the current transformation matrix and
 // returns the transformed point
 gp_Pnt CTiglTransformation::Transform(const gp_Pnt& point) const
@@ -422,6 +456,16 @@ gp_Pnt CTiglTransformation::Transform(const gp_Pnt& point) const
     Get_gp_GTrsf().Transforms(transformed);
     return gp_Pnt(transformed.X(), transformed.Y(), transformed.Z());
 }
+
+
+gp_Vec CTiglTransformation::Transform(const gp_Vec& vec) const
+{
+    gp_Pnt pTip = Transform(gp_Pnt(vec.XYZ()));
+    gp_Pnt pRoot = Transform(gp_Pnt(0., 0., 0));
+
+    return pTip.XYZ() - pRoot.XYZ();
+}
+
 
 bool CTiglTransformation::IsUniform() const
 {
@@ -509,7 +553,71 @@ bool CTiglTransformation::IsUniform() const
 
 CTiglTransformation CTiglTransformation::Inverted() const
 {
-    return Get_gp_GTrsf().Inverted();
+    return CTiglTransformation(Get_gp_GTrsf().Inverted());
+}
+
+void CTiglTransformation::Decompose(double scale[3], double rotation[3], double translation[3]) const
+{
+    // compute polar decomposition of upper 3x3 part
+    tiglMatrix A(1, 3, 1, 3);
+    tiglMatrix P(1, 3, 1, 3);
+    tiglMatrix U(1, 3, 1, 3);
+    for( int i=0; i<3; ++i) {
+        for ( int j=0; j<3; ++j) {
+            A(i+1,j+1)= GetValue(i,j);
+        }
+    }
+    PolarDecomposition(A, U, P);
+
+    // scale is diagonal of P
+    scale[0] = P(1,1);
+    scale[1] = P(2,2);
+    scale[2] = P(3,3);
+
+    // check for shearing
+    double aveAbsOffDiag = (fabs(P(1,2)) + fabs(P(1,3)) + fabs(P(2,3)))/3;
+    if (aveAbsOffDiag > Precision::Confusion() ) {
+        LOG(WARNING) << "CTiglTransformation::Decompose: The Transformation contains a Shearing, that will be discarded in the decomposition!";
+    }
+
+    // calculate intrinsic Euler angles from rotation matrix U
+    //
+    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf, where the same argumentation
+    // is used for intrinsic x,y',z'' angles and the rotatation matrix
+    //
+    //                |                        cos(y)*cos(z) |               -        cos(y)*cos(z) |         sin(y) |
+    // U = Rx*Ry*Rz = | cos(x)*sin(z) + sin(x)*sin(y)*cos(z) | cos(x)*cos(z) - sin(x)*sin(y)*sin(z) | -sin(x)*cos(y) |
+    //                | sin(x)*sin(z) - cos(x)*sin(y)*cos(z) | sin(x)*cos(z) + cos(x)*sin(y)*sin*z( |  cos(x)*cos(y) |
+    //
+    // rather than extrinsic angles and the Rotation matrix mentioned in that pdf.
+
+    if( fabs( fabs(U(1, 3)) - 1) > 1e-10 ){
+        rotation[1] = asin(U(1, 3));
+        double cosTheta = cos(rotation[1]);
+        rotation[0] = -atan2(U(2,3)/cosTheta, U(3,3)/cosTheta);
+        rotation[2] = -atan2(U(1,2)/cosTheta, U(1,1)/cosTheta);
+    }
+    else {
+        rotation[0] = 0;
+        if ( fabs(U(1,3) + 1) > 1e-10 ) {
+            rotation[2] = -rotation[0] - atan2(U(2,1), U(2,2));
+            rotation[1] = -M_PI/2;
+        }
+        else{
+            rotation[2] = -rotation[0] + atan2(U(2,1), U(2,2));
+            rotation[1] = M_PI/2;
+        }
+    }
+
+    rotation[0] = RadianToDegree(rotation[0]);
+    rotation[1] = RadianToDegree(rotation[1]);
+    rotation[2] = RadianToDegree(rotation[2]);
+
+    // translation is last column of transformation
+    translation[0] = GetValue(0,3);
+    translation[1] = GetValue(1,3);
+    translation[2] = GetValue(2,3);
+
 }
 
 // Getter for matrix values
@@ -528,7 +636,7 @@ std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
         for (int j = 0; j < 4; ++j) {
             os << t.m_matrix[i][j] << "\t";
         }
-        os << endl;
+        os << std::endl;
     }
     return os;
 }

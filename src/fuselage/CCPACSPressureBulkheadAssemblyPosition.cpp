@@ -65,17 +65,22 @@ std::string CCPACSPressureBulkheadAssemblyPosition::GetDefaultedUID() const
     return m_uID;
 }
 
-PNamedShape CCPACSPressureBulkheadAssemblyPosition::GetLoft()
+PNamedShape CCPACSPressureBulkheadAssemblyPosition::GetLoft() const
 {
     return PNamedShape(new CNamedShape(GetGeometry(GLOBAL_COORDINATE_SYSTEM), GetDefaultedUID()));
 }
 
 TiglGeometricComponentType CCPACSPressureBulkheadAssemblyPosition::GetComponentType() const
 {
-    return TIGL_COMPONENT_PHYSICAL | TIGL_COMPONENT_PRESSURE_BULKHEAD;
+    return TIGL_COMPONENT_PRESSURE_BULKHEAD;
 }
 
-void CCPACSPressureBulkheadAssemblyPosition::Invalidate()
+TiglGeometricComponentIntent CCPACSPressureBulkheadAssemblyPosition::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
+}
+
+void CCPACSPressureBulkheadAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry.clear();
 }
@@ -106,7 +111,6 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry(TopoDS_Shape& cache) 
         cache = BRepBuilderAPI_MakeFace(TopoDS::Wire(wireMap(1)));
     }
     else if (frame.GetFramePositions().size() >= 2) {
-        CCPACSFuselage& fuselage = *m_parent->GetParent()->GetParent();
 
         std::vector<gp_Pnt> refPoints;
         for (size_t i = 0; i < frame.GetFramePositions().size(); i++) {

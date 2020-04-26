@@ -57,8 +57,8 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiHandle;
@@ -68,7 +68,7 @@ protected:
 class WingComponentSegment2 : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/CPACS_30_D250_10.xml";
         ReturnCode tixiRet;
@@ -83,7 +83,7 @@ protected:
         ASSERT_EQ(TIGL_SUCCESS, tiglRet);
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
         ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
@@ -99,7 +99,7 @@ protected:
 class WingComponentSegment3 : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/D150_v30.xml";
         ReturnCode tixiRet;
@@ -114,7 +114,7 @@ protected:
         ASSERT_EQ(TIGL_SUCCESS, tiglRet);
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
         ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
@@ -136,7 +136,7 @@ TiglCPACSConfigurationHandle WingComponentSegment::tiglHandle = 0;
 class WingComponentSegmentSimple : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
@@ -152,7 +152,7 @@ protected:
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
@@ -458,7 +458,7 @@ TEST_F(WingComponentSegmentSimple, GetSegmentEtaXsi)
     tigl::CCPACSWingComponentSegment& csegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
 
     std::string segmentUID;
-    double sEta, sXsi;
+    double sEta= -1., sXsi= -1.;
     ASSERT_NO_THROW(csegment.GetSegmentEtaXsi(0., 0., segmentUID, sEta, sXsi));
 
     EXPECT_NEAR(0., sEta, 1e-10);
@@ -545,12 +545,12 @@ TEST_F(WingComponentSegmentSimple, determine_segments)
 {
     int compseg = 1;
     // now we have do use the internal interface as we currently have no public api for this
-    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-    tigl::CCPACSWing& wing = config.GetWing(1);
-    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
-    
-    tigl::SegmentList& list = segment.GetSegmentList();
+    const tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    const tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    const tigl::CCPACSWing& wing = config.GetWing(1);
+    const tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(compseg);
+
+    const tigl::SegmentList& list = segment.GetSegmentList();
     ASSERT_EQ(2, list.size());
     ASSERT_STREQ("Cpacs2Test_Wing_Seg_1_2", list.at(0)->GetUID().c_str());
     ASSERT_STREQ("Cpacs2Test_Wing_Seg_2_3", list.at(1)->GetUID().c_str());
@@ -735,12 +735,12 @@ TEST_F(WingComponentSegmentSimple, IntersectEta_cinterface)
 /// Tests the math of the new component segment definition
 TEST_F(WingComponentSegmentSimple, wingChordFace)
 {
-    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-    tigl::CCPACSWing& wing = config.GetWing(1);
-    tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
+    const tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    const tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    const tigl::CCPACSWing& wing = config.GetWing(1);
+    const tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
 
-    tigl::CTiglWingChordface& chordFace = compSegment.GetChordface();
+    const tigl::CTiglWingChordface& chordFace = compSegment.GetChordface();
 
     std::vector<double> etas = chordFace.GetElementEtas();
 

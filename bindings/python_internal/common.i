@@ -80,7 +80,7 @@ enum TiglBoolean
     TIGL_TRUE  = 1
 };
 
-%boost_optional(TiglSymmetryAxis)
+%boost_optional_enum(TiglSymmetryAxis)
 enum TiglSymmetryAxis
 {
     TIGL_NO_SYMMETRY = 0,

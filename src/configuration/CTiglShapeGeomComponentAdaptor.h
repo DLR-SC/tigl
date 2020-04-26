@@ -29,11 +29,15 @@ namespace tigl
 
 class CTiglUIDManager;
 
+template <typename T>
 class CTiglShapeGeomComponentAdaptor : public ITiglGeometricComponent
 {
 public:
-    CTiglShapeGeomComponentAdaptor(ITiglGeometricComponent* parent, CTiglUIDManager* uidMgr)
+    typedef PNamedShape(T::* GetShapeFunc)() const;
+
+    CTiglShapeGeomComponentAdaptor(const T* parent, GetShapeFunc getShapeFunc, CTiglUIDManager* uidMgr)
         : m_parent(parent)
+        , m_getShapeFunc(getShapeFunc)
         , m_uid("")
         , m_uidMgr(uidMgr)
     {
@@ -48,7 +52,6 @@ public:
     {
         unregisterShape();
         m_uid = "";
-        m_shape.reset();
     }
 
     void SetUID(const std::string &uid)
@@ -60,33 +63,29 @@ public:
         }
     }
 
-
-    void SetShape(PNamedShape shape)
-    {
-
-        m_shape = shape;
-    }
-
     // Returns the unique id of this component or an empty string if the component does not have a uid
-    std::string GetDefaultedUID() const OVERRIDE
+    std::string GetDefaultedUID() const override
     {
         return m_uid;
     }
 
-    PNamedShape GetLoft() OVERRIDE
+    PNamedShape GetLoft() const override
     {
         if (m_parent) {
-            // The shape has to be build somewhere
-            // This is the parent's tasl
-            m_parent->GetLoft();
+            return (m_parent->*m_getShapeFunc)();
         }
-
-        return m_shape;
+        // support for testing of class without parent
+        return PNamedShape();
     }
 
-    TiglGeometricComponentType GetComponentType() const OVERRIDE
+    TiglGeometricComponentType GetComponentType() const override
     {
-        return TIGL_COMPONENT_PHYSICAL;
+        return TIGL_COMPONENT_OTHER;
+    }
+
+    TiglGeometricComponentIntent GetComponentIntent() const override
+    {
+        return TIGL_INTENT_PHYSICAL;
     }
 
 private:
@@ -97,11 +96,10 @@ private:
         }
     }
 
-    ITiglGeometricComponent* m_parent;
-    PNamedShape m_shape;
+    const T* m_parent;
+    GetShapeFunc m_getShapeFunc;
     std::string m_uid;
     CTiglUIDManager* m_uidMgr;
-
 };
 
 } // namespace tigl

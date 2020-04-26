@@ -5,7 +5,7 @@
     <description>Dataset containing simple rotors for TIGL tests</description>
     <creator>Philipp Kunze, DLR-AS</creator>
     <timestamp>2014-04-23T12:00:00</timestamp>
-    <version>1.1</version>
+    <version>1.2.0</version>
     <cpacsVersion>3.0</cpacsVersion>
     <updates>
       <update>
@@ -13,6 +13,13 @@
         <creator>cpacs2to3</creator>
         <timestamp>2018-01-15T09:22:23</timestamp>
         <version>1.1</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+      <update>
+        <modification>Added missing UIDs.</modification>
+        <creator>fix_errors.py</creator>
+        <timestamp>2019-04-29T20:48:28</timestamp>
+        <version>1.2.0</version>
         <cpacsVersion>3.0</cpacsVersion>
       </update>
     </updates>
@@ -25,7 +32,7 @@
         <reference>
           <area>1</area>
           <length>1</length>
-          <point>
+          <point uID="RotorTestModel_point1">
             <x>0.0</x>
             <y>0.0</y>
             <z>0.0</z>

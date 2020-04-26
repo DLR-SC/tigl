@@ -27,6 +27,12 @@ namespace tigl
 CCPACSWingSection::CCPACSWingSection(CCPACSWingSections* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSection(parent, uidMgr) {}
 
+void CCPACSWingSection::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    // forward invalidation to section elements, these are the objects which are referenced
+    m_elements.Invalidate(GetUID());
+}
+
 // Get profile count for this section
 int CCPACSWingSection::GetSectionElementCount() const
 {
@@ -67,11 +73,9 @@ CTiglPoint CCPACSWingSection::GetScaling() const
     return m_transformation.getScaling();
 }
 
-// Setter for translation
 void CCPACSWingSection::SetTranslation(const CTiglPoint& trans)
 {
-    m_transformation.setTranslation(trans, ABS_LOCAL);
-
+    m_transformation.setTranslation(trans);
 }
 
 // Setter for rotation

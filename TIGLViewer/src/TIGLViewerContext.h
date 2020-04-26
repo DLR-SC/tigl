@@ -29,7 +29,9 @@
 #include <QObject>
 #include "TIGLViewer.h"
 #include "TIGLViewerColors.h"
+#include "TIGLInteractiveShapeManager.h"
 #include <QMetaType>
+#include <QUndoStack>
 #include <Standard_Version.hxx>
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
   #include <Graphic3d_ShaderProgram.hxx>
@@ -40,15 +42,15 @@ class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;
 
-class QOCC_DECLSPEC TIGLViewerContext : public QObject
+class TIGLViewerContext : public QObject
 {
 
     Q_OBJECT
 
 public:
 
-    TIGLViewerContext();
-    ~TIGLViewerContext() OVERRIDE;
+    TIGLViewerContext(QUndoStack*);
+    ~TIGLViewerContext() override;
 
     Handle(V3d_Viewer)&              getViewer();
     Handle(AIS_InteractiveContext)&  getContext();
@@ -80,6 +82,8 @@ public:
 
     void updateViewer();
 
+    InteractiveShapeManager& GetShapeManager();
+
 public slots:
     void displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0.);
     void displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.);
@@ -105,12 +109,14 @@ public slots:
     void setObjectsTexture(const QString& filename);
     void setReflectionlinesEnabled(bool);
     void setObjectsColor(const QColor &color);
+    void setFaceBoundariesEnabled(bool enabled);
 
 signals:
 
     void error (int errorCode, QString& errorDescription);
 
 private:
+    std::vector<Handle(AIS_InteractiveObject)> selected();
 
     Handle_V3d_Viewer               myViewer;
     Handle_AIS_InteractiveContext   myContext;
@@ -121,6 +127,8 @@ private:
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
     Handle(Graphic3d_ShaderProgram) myShader;
 #endif
+    QUndoStack* myUndoStack;
+    InteractiveShapeManager         myShapeManager;
 
     void initShaders();
 };

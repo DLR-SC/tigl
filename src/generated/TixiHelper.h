@@ -23,8 +23,13 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <ctime>
+#include <limits>
+#include <string>
 
 #include "UniquePtr.h"
+#ifndef CPACS_GEN
+#include "CTiglLogging.h"
+#endif
 
 // some extensions to tixi
 namespace tixi
@@ -45,120 +50,83 @@ namespace tixi
         TixiSaveElement(tixiHandle, xpath, boost::posix_time::to_iso_extended_string(boost::posix_time::from_time_t(value)));
     }
 
+    constexpr auto xsdUnbounded = std::numeric_limits<unsigned int>::max();
 
-    template<typename T, typename ReadChildFunc>
-    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<T>& children, ReadChildFunc readChild, int minOccurs = -1, int maxOccurs = -1)
+    template<typename T, typename ReadChildFunc, typename... ChildCtorArgs>
+    void TixiReadElementsInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<T>& children, unsigned int minOccurs, unsigned int maxOccurs, ReadChildFunc readChild, ChildCtorArgs&&... args)
     {
         // read number of child nodes
-        const int childCount = TixiGetNamedChildrenCount(tixiHandle, xpath);
+        const auto childCount = static_cast<unsigned int>(TixiGetNamedChildrenCount(tixiHandle, xpath));
 
         // validate number of child nodes
-        if (minOccurs >= 0) {
-            if (childCount < minOccurs) {
-                // TODO: replace by exception/warning
-                std::cerr
-                    << "Not enough child nodes for element\n"
-                    << "xpath: " << xpath << "\n"
-                    << "minimum: " << minOccurs << "\n"
-                    << "actual: " << childCount;
-            }
+        if (childCount < minOccurs) {
+#ifndef CPACS_GEN
+            LOG(ERROR)
+                << "Not enough child nodes for element\n"
+                << "xpath: " << xpath << "\n"
+                << "minimum: " << minOccurs << "\n"
+                << "actual: " << childCount;
+#endif
         }
-        if (maxOccurs >= 0) {
-            if (childCount > maxOccurs) {
-                // TODO: replace by exception/warning
-                std::cerr
-                    << "Too many child nodes for element\n"
-                    << "xpath: " << xpath << "\n"
-                    << "maximum: " << maxOccurs << "\n"
-                    << "actual: " << childCount;
-            }
+
+        if (childCount > maxOccurs) {
+            // TODO: replace by exception/warning
+#ifndef CPACS_GEN
+            LOG(ERROR)
+                << "Too many child nodes for element\n"
+                << "xpath: " << xpath << "\n"
+                << "maximum: " << maxOccurs << "\n"
+                << "actual: " << childCount;
+#endif
         }
 
         // read child nodes
-        for (int i = 0; i < childCount; i++) {
-            children.push_back(readChild(tixiHandle, xpath + "[" + internal::to_string(i + 1) + "]"));
+        for (unsigned int i = 0; i < childCount; i++) {
+            const std::string childXPath = xpath + "[" + std::to_string(i + 1) + "]";
+            try {
+                children.push_back(readChild(childXPath, std::forward<ChildCtorArgs>(args)...));
+            } catch (const std::exception& e) {
+#ifdef CPACS_GEN
+                throw;
+#else
+                LOG(ERROR) << "Failed to read element at xpath " << childXPath << ": " << e.what();
+#endif
+            }
         }
     }
 
     template<typename T>
-    struct PrimitiveChildReader
+    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<T>& children, unsigned int minOccurs, unsigned int maxOccurs)
     {
-        T operator()(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            return TixiGetElement<T>(tixiHandle, xpath);
-        }
-    };
-
-    template<typename T>
-    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<T>& children, int minOccurs = -1, int maxOccurs = -1)
-    {
-        TixiReadElements(tixiHandle, xpath, children, PrimitiveChildReader<T>(), minOccurs, maxOccurs);
+        TixiReadElementsInternal(tixiHandle, xpath, children, minOccurs, maxOccurs, [&](const std::string& childXPath) {
+            return TixiGetElement<T>(tixiHandle, childXPath);
+        });
     }
 
-    template<typename T>
-    struct ChildReader
+    template<typename T, typename... ChildCtorArgs>
+    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<std::unique_ptr<T>>& children, unsigned int minOccurs, unsigned int maxOccurs, ChildCtorArgs&&... args)
     {
-        tigl::unique_ptr<T> operator()(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            tigl::unique_ptr<T> child = tigl::make_unique<T>();
-            child->ReadCPACS(tixiHandle, xpath);
-            return child;
-        }
-    };
+        // TODO(bgruber): enable when support for g++ < 4.9.0 is dropped
+        //TixiReadElementsInternal(tixiHandle, xpath, children, minOccurs, maxOccurs, [&](const std::string& childXPath) {
+        //    auto child = tigl::make_unique<T>(std::forward<ChildCtorArgs>(args)...);
+        //    child->ReadCPACS(tixiHandle, childXPath);
+        //    return child;
+        //});
+        struct Reader {
+            std::unique_ptr<T> operator()(const std::string& childXPath, ChildCtorArgs&&... args) const
+            {
+                auto child = tigl::make_unique<T>(std::forward<ChildCtorArgs>(args)...);
+                child->ReadCPACS(tixiHandle, childXPath);
+                return child;
+            }
 
-    template<typename T>
-    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<tigl::unique_ptr<T> >& children, int minOccurs = -1, int maxOccurs = -1)
-    {
-        TixiReadElements(tixiHandle, xpath, children, ChildReader<T>(), minOccurs, maxOccurs);
-    }
-
-    template<typename T, typename Arg1>
-    struct ChildWithArgsReader1
-    {
-        ChildWithArgsReader1(Arg1* arg1) : m_arg1(arg1) {}
-
-        tigl::unique_ptr<T> operator()(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            tigl::unique_ptr<T> child = tigl::make_unique<T>(m_arg1);
-            child->ReadCPACS(tixiHandle, xpath);
-            return child;
-        }
-
-    private:
-        Arg1* m_arg1;
-    };
-
-    template<typename T, typename Arg1>
-    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<tigl::unique_ptr<T> >& children, Arg1* arg1, int minOccurs = -1, int maxOccurs = -1)
-    {
-        TixiReadElements(tixiHandle, xpath, children, ChildWithArgsReader1<T, Arg1>(arg1), minOccurs, maxOccurs);
-    }
-
-    template<typename T, typename Arg1, typename Arg2>
-    struct ChildWithArgsReader2
-    {
-        ChildWithArgsReader2(Arg1* arg1, Arg2* arg2) : m_arg1(arg1), m_arg2(arg2) {}
-
-        tigl::unique_ptr<T> operator()(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-        {
-            tigl::unique_ptr<T> child = tigl::make_unique<T>(m_arg1, m_arg2);
-            child->ReadCPACS(tixiHandle, xpath);
-            return child;
-        }
-
-    private:
-        Arg1* m_arg1;
-        Arg2* m_arg2;
-    };
-
-    template<typename T, typename Arg1, typename Arg2>
-    void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<tigl::unique_ptr<T> >& children, Arg1* arg1, Arg2* arg2, int minOccurs = -1, int maxOccurs = -1)
-    {
-        TixiReadElements(tixiHandle, xpath, children, ChildWithArgsReader2<T, Arg1, Arg2>(arg1, arg2), minOccurs, maxOccurs);
+            const TixiDocumentHandle& tixiHandle;
+        };
+        TixiReadElementsInternal(tixiHandle, xpath, children, minOccurs, maxOccurs, Reader{tixiHandle}, std::forward<ChildCtorArgs>(args)...);
     }
 
     template<typename T, typename WriteChildFunc>
-    void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<T>& children, WriteChildFunc writeChild)
+    void TixiSaveElementsInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<T>& children, WriteChildFunc writeChild)
     {
         // get number of children
         const int childCount = TixiGetNamedChildrenCount(tixiHandle, xpath);
@@ -168,49 +136,63 @@ namespace tixi
             // iteratore over all child nodes
             for (std::size_t i = 0; i < children.size(); i++) {
                 // if child node does not exist, create it
-                const std::string& childPath = xpath + "[" + internal::to_string(i + 1) + "]";
+                const std::string& childPath = xpath + "[" + std::to_string(i + 1) + "]";
                 if (!TixiCheckElement(tixiHandle, childPath)) {
                     TixiCreateElement(tixiHandle, xpath);
                 }
 
                 // write child node
-                writeChild(tixiHandle, childPath, children[i]);
+                writeChild(childPath, children[i]);
             }
         }
             
         // delete old children which where not overwritten
         for (std::size_t i = children.size() + 1; i <= static_cast<std::size_t>(childCount); i++) {
-            TixiRemoveElement(tixiHandle, xpath + "[" + internal::to_string(children.size() + 1) + "]");
+            TixiRemoveElement(tixiHandle, xpath + "[" + std::to_string(children.size() + 1) + "]");
         }
     }
-
-    template<typename T>
-    struct PrimitiveChildWriter
-    {
-        void operator()(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const T& child) const
-        {
-            TixiSaveElement(tixiHandle, xpath, child);
-        }
-    };
 
     template<typename T>
     void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<T>& children)
     {
-        TixiSaveElements(tixiHandle, xpath, children, PrimitiveChildWriter<T>());
+        auto writer = [&](const std::string& childXPath, const T& child) {
+            TixiSaveElement(tixiHandle, childXPath, child);
+        };
+        TixiSaveElementsInternal(tixiHandle, xpath, children, writer);
     }
 
     template<typename T>
-    struct ChildWriter
+    void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<std::unique_ptr<T>>& children)
     {
-        void operator()(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const tigl::unique_ptr<T>& child) const
-        {
-            child->WriteCPACS(tixiHandle, xpath);
+        auto writer = [&](const std::string& childXPath, const std::unique_ptr<T>& child) {
+            child->WriteCPACS(tixiHandle, childXPath);
+        };
+        TixiSaveElementsInternal(tixiHandle, xpath, children, writer);
+    }
+
+    inline void TixiCreateSequenceElementIfNotExists(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<std::string>& childElemOrder)
+    {
+        // in case element already exists, nothing left to do
+        if (TixiCheckElement(tixiHandle, xpath)) {
+            return;
         }
-    };
-
-    template<typename T>
-    void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<tigl::unique_ptr<T> >& children)
-    {
-        TixiSaveElements(tixiHandle, xpath, children, ChildWriter<T>());
+        const auto sp = internal::splitXPath(xpath);
+        const auto numChildren = tixi::TixiGetNumberOfChilds(tixiHandle, sp.parentXPath);
+        // find place of new element in sequence
+        auto it = std::find(childElemOrder.begin(), childElemOrder.end(), sp.element);
+        if (numChildren > 0 && it != childElemOrder.end()) {
+            // search for the first existing element which has to be after the new element
+            while (++it != childElemOrder.end()) {
+                for (int i = 1; i <= numChildren; i++) {
+                    if (TixiGetChildNodeName(tixiHandle, sp.parentXPath, i) == *it) {
+                        tixiCreateElementAtIndex(tixiHandle, sp.parentXPath.c_str(), sp.element.c_str(), i);
+                        return;
+                    }
+                }
+            }
+        }
+        // in case no place for insertion was found append the new element
+        TixiCreateElement(tixiHandle, xpath);
     }
+
 }

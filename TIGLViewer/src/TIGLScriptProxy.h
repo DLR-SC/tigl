@@ -76,6 +76,7 @@ public slots:
     QScriptValue fuselageGetSegmentVolume (int fuselageIndex, int segmentIndex);
     QScriptValue getFuselageCount();
     QScriptValue fuselageGetSegmentCount(int fuselageIndex);
+    QScriptValue fuselageGetCenterLineLength(QString fuselageUID);
     QScriptValue wingGetUpperPoint(int wingIndex, int segmentIndex, double eta, double xsi);
     
     // wing stuff
@@ -90,6 +91,7 @@ public slots:
     QScriptValue wingGetSegmentUID(int wingIndex, int segmentIndex);
     QScriptValue wingGetSpan(QString wingUID);
     QScriptValue wingGetSegmentVolume (int wingIndex, int segmentIndex);
+    QScriptValue controlSurfaceSetDeflection(QString controlSurfaceUID, double deflection);
     
     QString      getErrorString(int errorCode);
     QScriptValue getShape(QString uid);

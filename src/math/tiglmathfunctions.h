@@ -23,6 +23,7 @@
 #include "tigl_internal.h"
 #include <vector>
 #include <math_Vector.hxx>
+#include "tiglMatrix.h"
 
 namespace tigl 
 {
@@ -115,15 +116,16 @@ TIGL_EXPORT double shape_function_deriv(const std::vector<double>& B, const int&
  *
  * N1, N2 are the paramters of the class function C(psi) = psi^N1 * (1-psi)^N2
  * B is the vector of coefficients for the bernstein polynomials P_i^n(psi) 
+ * T is the trailing edge thickness
  * inside the shape function S(psi)=sum_i=1^N B_i * p_i^n(psi)
  * The order of the Bernstein polynomials N is defined by the length of the B vector
  */
-TIGL_EXPORT double cstcurve(const double& N1, const double& N2, const std::vector<double>& B, const double& x);
+TIGL_EXPORT double cstcurve(const double& N1, const double& N2, const std::vector<double>& B, const double& T, const double& x);
 
 /** @brief defines the derivative of the CST air profile curve 
  * CST(psi)=C(psi)*S(psi)
  */
-TIGL_EXPORT double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const int& n, const double& x);
+TIGL_EXPORT double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const double& T, const int& n, const double& x);
 
 
 /**
@@ -181,6 +183,27 @@ TIGL_EXPORT math_Matrix cheb_to_monomial(int N);
  * coefficients (control points).
 */
 TIGL_EXPORT math_Matrix monimial_to_bezier(int N);
+
+/**
+* @brief  A function that calculates the polar decomposition of a 3x3 matrix A.
+*
+* PolarDecomposition(A,U,P) calculates the polar decomposition U,P of the input
+* matrix A, such that A = U x P, where U is a unitary matrix and P is a positive
+* semi-definite Hermitian matrix. U can be interpreted as a rotation and P as a
+* spatial scaling, possibly including off-diaogonal shearing terms
+*
+* @param A input matrix
+* @param U unitary matrix U
+* @param P hermitian matrix P
+*/
+TIGL_EXPORT void PolarDecomposition(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& P);
+
+TIGL_EXPORT void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V);
+
+/**
+ * Linear interpolation in of xdata<->ydata array at position x
+ */
+TIGL_EXPORT double Interpolate(const std::vector<double>& xdata, const std::vector<double>& ydata, double x);
 
 } // namespace tigl
 

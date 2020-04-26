@@ -30,9 +30,10 @@ namespace tigl
 class CCPACSGuideCurves : public generated::CPACSGuideCurves
 {
 public:
-    TIGL_EXPORT CCPACSGuideCurves(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSGuideCurves(CCPACSFuselageSegment* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSGuideCurves(CCPACSWingSegment* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     // Returns the total count of guide curves in this configuration
     TIGL_EXPORT int GetGuideCurveCount() const;
@@ -51,6 +52,22 @@ public:
 
     // Check if guide curve with a given UID exists
     TIGL_EXPORT bool GuideCurveExists(std::string uid) const;
+
+    // Given relCirc, find the guide curves that sandwich this parameter,
+    // i.e. the guideCurve with the largerst fromRelativeCircumference < relCirc
+    // and the guideCurve with the smallest fromRelativeCircumference > relCirc.
+    // Outputs relCircStart and relCircEnd of the two guide curves.
+    // The output index is the index of the first guide curve in a sorted std::vector,
+    // i.e. index starts at 0 and the order is not necessarily the one from the cpacs
+    // file.
+    //
+    // This function is used e.g. in CCPACSWingSegment->GetPoint.
+    TIGL_EXPORT void GetRelativeCircumferenceRange(double relCirc,
+                                                   double& relCircStart,
+                                                   double& relCircEnd,
+                                                   int& index) const;
+
+    TIGL_EXPORT std::vector<double> GetRelativeCircumferenceParameters() const;
 };
 
 } // end namespace tigl

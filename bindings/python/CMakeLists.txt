@@ -31,19 +31,19 @@ endif(PYTHON_EXECUTABLE)
 if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 	#run python to create the wrapper
 		add_custom_command(
-			OUTPUT ${LIBRARY_OUTPUT_PATH}/tigl3wrapper.py
+			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
 			DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/make_tigl_python.py ${PROJECT_SOURCE_DIR}/src/api/tigl.h
-			WORKING_DIRECTORY ${LIBRARY_OUTPUT_PATH}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 			COMMAND ${PYTHON_EXECUTABLE}
 			ARGS ${CMAKE_CURRENT_SOURCE_DIR}/make_tigl_python.py
 		)
 
 		add_custom_target(tiglPython ALL
 			COMMENT "Create python interface for tigl" VERBATIM 
-			DEPENDS ${LIBRARY_OUTPUT_PATH}/tigl3wrapper.py
+			DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
 		)
 		
-		install(FILES ${LIBRARY_OUTPUT_PATH}/tigl3wrapper.py
+		install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
 				DESTINATION share/tigl3/python/tigl3
 				COMPONENT interfaces)
 else()

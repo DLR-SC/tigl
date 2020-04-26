@@ -28,9 +28,9 @@ class TIGLViewerLoggerHTMLDecorator : public tigl::ITiglLogger
 public:
     TIGLViewerLoggerHTMLDecorator(CSharedPtr<ITiglLogger>);
     
-    ~TIGLViewerLoggerHTMLDecorator() OVERRIDE;
-    void LogMessage(TiglLogLevel, const char * message) OVERRIDE;
-    void SetVerbosity(TiglLogLevel) OVERRIDE;
+    ~TIGLViewerLoggerHTMLDecorator() override;
+    void LogMessage(TiglLogLevel, const char * message) override;
+    void SetVerbosity(TiglLogLevel) override;
 private:
     CSharedPtr<ITiglLogger> _mylogger;
 };

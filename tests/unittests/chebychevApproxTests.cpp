@@ -34,8 +34,8 @@ protected:
     {
     }
 
-    void SetUp() OVERRIDE {}
-    void TearDown() OVERRIDE {}
+    void SetUp() override {}
+    void TearDown() override {}
 };
 
 namespace
@@ -46,12 +46,12 @@ namespace
     {
     public:
         MathFuncAdapter(MathFunc func, void* obj)
-            : _func(func)
-            , _p(obj)
+            : _p(obj)
+            , _func(func)
         {
         }
 
-        double value(double t) OVERRIDE
+        double value(double t) override
         {
             return _func(t, _p);
         }

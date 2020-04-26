@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSFramesAssembly.h"
 
 namespace tigl
@@ -25,7 +28,7 @@ class CCPACSFramesAssembly : public generated::CPACSFramesAssembly
 public:
     TIGL_EXPORT CCPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 
 } // namespace tigl

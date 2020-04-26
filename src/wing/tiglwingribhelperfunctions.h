@@ -54,7 +54,7 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
 
 // Computes the rib up vector for the passed eta and start point
 gp_Vec GetUpVectorWithoutXRotation(const std::string& ribReference, double currentEta, const gp_Pnt& startPnt,
-                                   const std::string& sparPositionUID, const CCPACSWingCSStructure& structure);
+                                   bool onSpar, const CCPACSWingCSStructure& structure);
 
 // Rotates the passed up-vector by the passed angle around the passed rib direction
 void ApplyXRotationToUpVector(double angle, gp_Vec& upVec, const gp_Vec& ribDir);

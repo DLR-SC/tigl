@@ -17,36 +17,51 @@
 #define CCPACSWINGSPARPOSITION_H
 
 #include "generated/CPACSSparPosition.h"
+#include <gp_Vec.hxx>
 
 namespace tigl
 {
 
 // forward declarations
-class CCPACSWingSpars;
+namespace generated
+{
+  class CPACSWingRibPoint;
+  class CPACSEtaXsiPoint;
+}
 
+class CCPACSWingCSStructure;
 
 class CCPACSWingSparPosition : public generated::CPACSSparPosition
 {
 public:
-    enum InputType
-    {
-        ElementUID,
-        Eta,
-        None
-    };
-
     TIGL_EXPORT CCPACSWingSparPosition(CCPACSWingSparPositions* sparPositions, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT InputType GetInputType() const;
+    TIGL_EXPORT bool isOnInnerSectionElement() const;
+    TIGL_EXPORT bool isOnOuterSectionElement() const;
+    TIGL_EXPORT bool isOnSectionElement() const;
+    TIGL_EXPORT bool isOnRib() const;
 
-    TIGL_EXPORT const std::string& GetElementUID() const;
-    TIGL_EXPORT void SetElementUID(const std::string&);
+    //TIGL_EXPORT InputType GetInputType() const;
+    
+    TIGL_EXPORT const std::string& GetReferenceUID() const;
 
     TIGL_EXPORT double GetEta() const;
-    TIGL_EXPORT void SetEta(double value);
+    TIGL_EXPORT double GetXsi() const;
+    
+    TIGL_EXPORT const CCPACSWingRibPoint& GetRibPoint() const;
+    TIGL_EXPORT const CCPACSEtaXsiPoint &GetEtaXsiPoint() const;
 
-    TIGL_EXPORT void SetXsi(const double& value) OVERRIDE;
+    TIGL_EXPORT void SetRibPoint(const CCPACSWingRibPoint& ribPoint);
+    TIGL_EXPORT void SetEtaXsiPoint(const CCPACSEtaXsiPoint& etaXsiPoint);
+
+    TIGL_EXPORT gp_Vec GetUpVector(const CCPACSWingCSStructure& structure, gp_Pnt midplanePnt) const;
+
 };
+
+TIGL_EXPORT int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint&);
+
+/// If the spar position is on a section element, the element uid is returned
+TIGL_EXPORT std::string WingSparPosGetElementUID(const CCPACSWingSparPosition&);
 
 } // end namespace tigl
 

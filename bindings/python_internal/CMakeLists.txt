@@ -1,12 +1,25 @@
 option(TIGL_BINDINGS_PYTHON_INTERNAL "Builds the python interface to the internal API(requires SWIG)" OFF)
 mark_as_advanced(TIGL_BINDINGS_PYTHON_INTERNAL)
 
+if (POLICY CMP0086)
+  cmake_policy(SET CMP0086 OLD)
+endif (POLICY CMP0086)
+
+if (POLICY CMP0078)
+  cmake_policy(SET CMP0078 OLD)
+endif (POLICY CMP0078)
+
 if (TIGL_BINDINGS_PYTHON_INTERNAL)
+
+    if (MSVC)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+    endif()
+
     include(tiglmacros)
 
     find_package(PythonInterp)
     find_package(PythonLibs)
-    find_package(SWIG REQUIRED)
+    find_package(SWIG 3.0.11 REQUIRED)
     find_package(PythonOCC REQUIRED)
     find_package(Doxygen 1.8.0)
 
@@ -47,23 +60,15 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     include_directories(${PYTHON_INCLUDE_PATH})
 
-    # add all tigl directories to include path
-    set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
-    subdirlist(SUBDIRS ${PROJECT_SOURCE_DIR}/src/)
-    foreach(subdir ${SUBDIRS})
-        set(TIGL_INCLUDES ${TIGL_INCLUDES} ${PROJECT_SOURCE_DIR}/src/${subdir})
-    endforeach()
-    include_directories(${TIGL_INCLUDES} ${PROJECT_BINARY_DIR}/src ${TIXI_INCLUDE_DIRS})
-
-    include_directories(${OpenCASCADE_INCLUDE_DIR} ${PythonOCC_INCLUDE_DIRS})
-
-    include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0)
+    include_directories(${PythonOCC_INCLUDE_DIRS})
 
     set (MODULES "geometry;occtaddons;tmath;configuration;core;boolean_ops;exports;imports")
 
     set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
     add_definitions(-DTIGL_INTERNAL_IMPORTS)
+    include_directories($<TARGET_PROPERTY:tigl3_cpp,INTERFACE_INCLUDE_DIRECTORIES>)
+    include_directories($<TARGET_PROPERTY:tigl3,INTERFACE_INCLUDE_DIRECTORIES>)
 
     if (UNIX)
         # find out python linking commands
@@ -75,8 +80,8 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
         set_source_files_properties(${MODULE}.i PROPERTIES CPLUSPLUS ON)
         set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i doc.i)
 
-        swig_add_module(${MODULE} python ${MODULE}.i )
-        swig_link_libraries(${MODULE} tigl3)
+        swig_add_library(${MODULE} LANGUAGE python SOURCES ${MODULE}.i )
+        swig_link_libraries(${MODULE} tigl3 tigl3_cpp)
 
         if (UNIX)
             set_target_properties(${SWIG_MODULE_${MODULE}_REAL_NAME} PROPERTIES COMPILE_FLAGS ${PYTHON_CFLAGS})

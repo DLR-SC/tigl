@@ -37,9 +37,6 @@ public:
     TIGL_EXPORT CCPACSWingCSStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSWingCSStructure(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT CTiglWingStructureReference GetWingStructureReference();
-    TIGL_EXPORT const CTiglWingStructureReference GetWingStructureReference() const;
-
     // Returns number of spar segments
     TIGL_EXPORT int GetSparSegmentCount() const;
 
@@ -50,6 +47,10 @@ public:
     // Returns spar segment with passed uid
     TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(const std::string& uid);
     TIGL_EXPORT const CCPACSWingSparSegment& GetSparSegment(const std::string& uid) const;
+
+    // Returns the spar position with the passed uid
+    TIGL_EXPORT CCPACSWingSparPosition& GetSparPosition(const std::string& uid);
+    TIGL_EXPORT const CCPACSWingSparPosition& GetSparPosition(const std::string& uid) const;
 
     // Returns number of ribs definitions
     TIGL_EXPORT int GetRibsDefinitionCount() const;
@@ -62,7 +63,7 @@ public:
     TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid);
     TIGL_EXPORT const CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid) const;
 
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 
 } // namespace tigl

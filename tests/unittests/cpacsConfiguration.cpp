@@ -29,7 +29,7 @@
 class tiglOpenCpacsConfiguration : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/CPACS_30_D150.xml";
         ReturnCode tixiRet;
@@ -40,7 +40,7 @@ protected:
         ASSERT_TRUE( tixiRet == SUCCESS);
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
@@ -95,7 +95,7 @@ TEST_F(tiglOpenCpacsConfiguration, open_without_uid)
 class TiglGetCPACSTixiHandle : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/CPACS_30_D150.xml";
         TiglReturnCode tiglRet;
@@ -109,7 +109,7 @@ protected:
         ASSERT_TRUE (tiglRet == TIGL_SUCCESS );
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle)== TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle)== SUCCESS);
@@ -152,7 +152,7 @@ TEST_F(TiglGetCPACSTixiHandle, handle_success)
 class tiglCPACSConfigurationHandleValid : public ::testing::Test
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/CPACS_30_D150.xml";
         TiglReturnCode tiglRet;
@@ -166,7 +166,7 @@ protected:
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
@@ -207,3 +207,82 @@ TEST_F(tiglCPACSConfigurationHandleValid, version_valid)
     ASSERT_EQ(0, std::string(tiglGetVersion()).find(TIGL_VERSION_STRING));
 }
 
+
+class SimpleConfigurationTests : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        const char* filename = "TestData/simpletest.cpacs.xml";
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        ASSERT_TRUE( tixiOpenDocument(filename, &tixiHandle) == SUCCESS);
+
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+
+    void TearDown() override
+    {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
+};
+
+
+TEST_F(SimpleConfigurationTests, GetAircraftLength)
+{
+    double len = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationGetLength(tiglHandle, &len));
+
+    EXPECT_NEAR(2., len, 1e-1);
+}
+
+TEST_F(SimpleConfigurationTests, GetBoundingBox)
+{
+    double minX, minY, minZ, maxX, maxY, maxZ;
+    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationGetBoundingBox(tiglHandle, &minX, &minY, &minZ, &maxX, &maxY, &maxZ));
+
+    EXPECT_NEAR(-0.5, minX, 1e-1);
+    EXPECT_NEAR( 1.5, maxX, 1e-1);
+
+    EXPECT_NEAR( -2., minY, 1e-1);
+    EXPECT_NEAR(  2., maxY, 1e-1);
+
+    // Note: the control points are used which is located at -0.75
+    EXPECT_NEAR(-0.75, minZ, 1e-1);
+    EXPECT_NEAR( 0.5, maxZ, 1e-1);
+}
+
+TEST_F(SimpleConfigurationTests, GetComponentType)
+{
+    TiglGeometricComponentType type;
+    EXPECT_EQ(TIGL_SUCCESS, tiglComponentGetType(tiglHandle, "Wing", &type));
+    EXPECT_EQ(TIGL_COMPONENT_WING, type);
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglComponentGetType(tiglHandle, "Cpacs2Test_Wing_Seg_1_2", &type));
+    EXPECT_EQ(TIGL_COMPONENT_WINGSEGMENT, type);
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglComponentGetType(tiglHandle, "WING_CS1", &type));
+    EXPECT_EQ(TIGL_COMPONENT_WINGCOMPSEGMENT, type);
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglComponentGetType(tiglHandle, "SimpleFuselage", &type));
+    EXPECT_EQ(TIGL_COMPONENT_FUSELAGE, type);
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglComponentGetType(tiglHandle, "segmentD150_Fuselage_1Segment2ID", &type));
+    EXPECT_EQ(TIGL_COMPONENT_FUSELSEGMENT, type);
+
+    // test error codes
+    EXPECT_EQ(TIGL_UID_ERROR, tiglComponentGetType(tiglHandle, "this_uid_does_not_exist", &type));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglComponentGetType(tiglHandle, nullptr, &type));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglComponentGetType(tiglHandle, "SimpleFuselage", nullptr));
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglComponentGetType(-1, "SimpleFuselage", &type));
+}

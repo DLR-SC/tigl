@@ -41,7 +41,7 @@ public:
     TIGL_EXPORT CCPACSWingComponentSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
     // Gets a segment by index
     TIGL_EXPORT CCPACSWingComponentSegment & GetComponentSegment(int index);

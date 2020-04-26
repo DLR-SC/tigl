@@ -4,25 +4,15 @@ package:
 
 source:
   fn: libxml2-2.9.3.tar.gz
-  url: ftp://xmlsoft.org/libxml2/libxml2-2.9.3.tar.gz
+  url: http://xmlsoft.org/sources/libxml2-2.9.3.tar.gz
   md5: daece17e045f1c107610e137ab50c179
 
 build:
-  number: 4
-  features:
-    - vc9  # [win and py27]
-    - vc14  # [win and (py35 or py36)]
+  number: 5
 
 requirements:
   build:
-    - python  # [win]
-    - vc 9  # [win and py27]
-    - vc 14  # [win and (py35 or py36)]
-
-  run:
-    - vc 9  # [win and py27]
-    - vc 14  # [win and (py35 or py36)]
-
+    - {{ compiler('c') }}
 about:
   home: http://www.xmlsoft.org/
   summary: The XML C parser and toolkit of Gnome

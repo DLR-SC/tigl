@@ -22,21 +22,30 @@
 #ifndef CCPACSWINGSEGMENTS_H
 #define CCPACSWINGSEGMENTS_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSWingSegments.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CCPACSWing;
+class CTiglRelativelyPositionedComponent;
 
 class CCPACSWingSegments : public generated::CPACSWingSegments
 {
 public:
     // Constructor
     TIGL_EXPORT CCPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
+
+
+    TIGL_EXPORT CCPACSWingSegment& AddSegment() override;
+    TIGL_EXPORT void RemoveSegment(CCPACSWingSegment& ref) override;
 
     // Gets a segment by index or UID.
     TIGL_EXPORT CCPACSWingSegment& GetSegment(const int index);
@@ -46,6 +55,16 @@ public:
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
+
+    const CTiglRelativelyPositionedComponent* GetParentComponent() const
+    {
+        return m_parentVariant;
+    }
+
+private:
+    void InvalidateParent() const;
+
+    CTiglRelativelyPositionedComponent* m_parentVariant;
 };
 
 } // end namespace tigl

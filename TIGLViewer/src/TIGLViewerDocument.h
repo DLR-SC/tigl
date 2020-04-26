@@ -42,7 +42,7 @@ class TIGLViewerDocument : public QObject
 public:
 
     TIGLViewerDocument(TIGLViewerWindow *parentWidget);
-    ~TIGLViewerDocument( ) OVERRIDE;
+    ~TIGLViewerDocument( ) override;
 
     TiglReturnCode openCpacsConfiguration(const QString fileName);
     void closeCpacsConfiguration();
@@ -51,12 +51,14 @@ public:
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration() const;
 
+    void updateFlapTransform(std::string controlUID);
+
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);
 
 public slots:
     // Aircraft slots
-    void drawAllFuselagesAndWings();
+    void drawConfiguration();
     void drawAllFuselagesAndWingsSurfacePoints();
     void drawFusedAircraft();
     void drawFusedAircraftTriangulation();
@@ -64,6 +66,7 @@ public slots:
     void drawFarField();
     void drawSystems();
     void drawComponent();
+    void drawComponentByUID(const QString& uid);
 
     // Wing slots
     void drawWingProfiles();
@@ -76,6 +79,7 @@ public slots:
     void drawWingComponentSegment();
     void drawWingComponentSegmentPoints();
     void drawWingShells();
+    void drawWingFlaps();
     void drawWingStructure();
 
     // Fuselage slots
@@ -100,6 +104,7 @@ public slots:
     void drawRotorBladeShells();
 
     // Rotorcraft slots
+    void drawRotorByUID(const QString& uid);
     void drawRotor();
     void drawRotorDisk();
     void showRotorProperties();
@@ -130,6 +135,7 @@ public slots:
     // General slots
     void updateConfiguration();
 
+
 private slots:
 
     // Wing selection dialogs
@@ -157,6 +163,7 @@ private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
+    class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;
 
     void writeToStatusBar(QString text);
     void displayError(QString text, QString header="");
@@ -173,6 +180,8 @@ private:
     void drawWingComponentSegment(tigl::CCPACSWingComponentSegment& segment);
     void drawWingComponentSegmentPoint(const std::string& csUID, const double& eta, const double& xsi);
     void drawWingShells(tigl::CCPACSWing& wing);
+    bool drawWingFlaps(tigl::CCPACSWing& wing);
+    void drawWingFlap(const QString& flapUID);
 
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
     

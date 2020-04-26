@@ -22,9 +22,8 @@ namespace tigl
 class CCPACSProfiles : public generated::CPACSProfiles
 {
 public:
-    TIGL_EXPORT CCPACSProfiles(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSProfiles(CCPACSVehicles* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
 };
 
 } // end namespace tigl

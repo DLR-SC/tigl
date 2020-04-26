@@ -13,7 +13,8 @@ source:
 requirements: [not win]
   build:      [not win]
     - cmake   [not win]
-    - gcc     [linux]
+    - {{ compiler('cxx') }}
+    - bison   [not win]
 
 test:
   commands:

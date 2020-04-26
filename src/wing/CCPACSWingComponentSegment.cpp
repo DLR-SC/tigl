@@ -91,26 +91,6 @@ namespace tigl
 
 namespace
 {
-    bool inBetween(const gp_Pnt& p, const gp_Pnt& p1, const gp_Pnt& p2) // TODO: move to utils?
-    {
-        gp_Vec b(p1, p2);
-        gp_Vec v1(p, p1);
-        gp_Vec v2(p, p2);
-
-        double res = (b*v1)*(b*v2);
-        return res <= 0.;
-    }
-
-    double GetNearestValidParameter(double p) // TODO: this is clamp(p, 0, 1), aka. saturate(p), rename?
-    {
-        if (p < 0.) {
-            return 0.;
-        }
-        else if ( p > 1.) {
-            return 1.;
-        }
-        return p;
-    }
 
     // Set the face traits
     void SetFaceTraits (PNamedShape loft, unsigned int nSegments) 
@@ -156,11 +136,14 @@ namespace
 
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponentSegment(parent, uidMgr)
-    , CTiglAbstractSegment<CCPACSWingComponentSegment>(parent->GetComponentSegments(), parent->GetParent()->m_symmetry)
+    , CTiglAbstractSegment<CCPACSWingComponentSegment>(parent->GetComponentSegments(), parent->GetParent())
     , wing(parent->GetParent())
-    , upperShape(make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr))
-    , lowerShape(make_unique<CTiglShapeGeomComponentAdaptor>(this, m_uidMgr))
+    , upperShape(tigl::make_unique<ShapeAdaptor>(this, &CCPACSWingComponentSegment::GetUpperShape, m_uidMgr))
+    , lowerShape(tigl::make_unique<ShapeAdaptor>(this, &CCPACSWingComponentSegment::GetLowerShape, m_uidMgr))
     , chordFace(make_unique<CTiglWingChordface>(*this, uidMgr))
+    , wingSegments(*this, &CCPACSWingComponentSegment::BuildWingSegments)
+    , geomCache(*this, &CCPACSWingComponentSegment::BuildGeometry)
+    , linesCache(*this, &CCPACSWingComponentSegment::BuildLines)
 {
     assert(wing != NULL);
     Cleanup();
@@ -173,18 +156,21 @@ CCPACSWingComponentSegment::~CCPACSWingComponentSegment()
 }
 
 // Invalidates internal state
-void CCPACSWingComponentSegment::Invalidate()
+void CCPACSWingComponentSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     // call parent class instead of directly setting invalidated flag
     CTiglAbstractSegment<CCPACSWingComponentSegment>::Reset();
     wingSegments.clear();
-    if (m_structure) {
-        m_structure->Invalidate();
-    }
-    linesAreValid = false;
+    geomCache.clear();
+    linesCache.clear();
+
+    // TODO: replace by caches
     chordFace->Reset();
     upperShape->Reset();
     lowerShape->Reset();
+    if (m_structure) {
+        m_structure->Invalidate(GetUID());
+    }
 }
 
 // Cleanup routine
@@ -193,9 +179,8 @@ void CCPACSWingComponentSegment::Cleanup()
     m_name = "";
     m_fromElementUID = "";
     m_toElementUID   = "";
-    myVolume       = 0.;
-    mySurfaceArea  = 0.;
-    linesAreValid = false;
+    geomCache.clear();
+    linesCache.clear();
     CTiglAbstractSegment<CCPACSWingComponentSegment>::Reset();
     wingSegments.clear();
 }
@@ -228,39 +213,27 @@ CCPACSWing& CCPACSWingComponentSegment::GetWing() const {
 }
 
 // Getter for upper Shape
-TopoDS_Shape CCPACSWingComponentSegment::GetUpperShape()
+PNamedShape CCPACSWingComponentSegment::GetUpperShape() const
 {
-    // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
-    //       a valid state i call GetLoft here to ensure the geometry was built
-    GetLoft();
-    return upperShape->GetLoft()->Shape();
+    return geomCache->upperShape;
 }
 
 // Getter for lower Shape
-TopoDS_Shape CCPACSWingComponentSegment::GetLowerShape()
+PNamedShape CCPACSWingComponentSegment::GetLowerShape() const
 {
-    // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
-    //       a valid state i call GetLoft here to ensure the geometry was built
-    GetLoft();
-    return lowerShape->GetLoft()->Shape();
+    return geomCache->lowerShape;
 }
 
 // Getter for inner segment face
-TopoDS_Face CCPACSWingComponentSegment::GetInnerFace()
+TopoDS_Face CCPACSWingComponentSegment::GetInnerFace() const
 {
-    // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
-    //       a valid state i call GetLoft here to ensure the geometry was built
-    GetLoft();
-    return innerFace;
+    return geomCache->innerFace;
 }
 
 // Getter for outer segment face
-TopoDS_Face CCPACSWingComponentSegment::GetOuterFace()
+TopoDS_Face CCPACSWingComponentSegment::GetOuterFace() const
 {
-    // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
-    //       a valid state i call GetLoft here to ensure the geometry was built
-    GetLoft();
-    return outerFace;
+    return geomCache->outerFace;
 }
 
 // Getter for leading edge point
@@ -384,18 +357,15 @@ double CCPACSWingComponentSegment::GetTrailingEdgeLength() const
 }
 
 // Getter for the midplane line between two eta-xsi points
-TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint, const gp_Pnt& endPoint) const
+TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& localStartPoint, const gp_Pnt& localEndPoint) const
 {
     // TODO: this method creates a straight line between the start- and end-point within the single
     // segments, while the real line could be a curve (depending on the twist and the position of
     // the points)
 
     // determine start and end point
-    // copy of variables because we have to modify them in case the points lie within a section
-    gp_Pnt startPnt = startPoint;
-    gp_Pnt endPnt = endPoint;
-    gp_Pnt globalStartPnt = wing->GetTransformationMatrix().Transform(startPnt);
-    gp_Pnt globalEndPnt = wing->GetTransformationMatrix().Transform(endPnt);
+    const gp_Pnt globalStartPnt = wing->GetTransformationMatrix().Transform(localStartPoint);
+    const gp_Pnt globalEndPnt   = wing->GetTransformationMatrix().Transform(localEndPoint);
 
     // determine wing segments containing the start and end points
     std::string startSegmentUID, endSegmentUID;
@@ -427,7 +397,7 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
 
     BRepBuilderAPI_MakeWire wireBuilder;
 
-    TopoDS_Shape localLoft = GetWing().GetTransformationMatrix().Inverted().Transform(loft->Shape());
+    TopoDS_Shape localLoft = GetWing().GetTransformationMatrix().Inverted().Transform(GetLoft()->Shape());
 
     // get minimum and maximum z-value of bounding box
     Bnd_Box bbox;
@@ -436,10 +406,10 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     const double zmax = bbox.CornerMax().Z();
 
     // build cut face
-    gp_Pnt p0 = startPnt;
-    gp_Pnt p1 = startPnt;
-    gp_Pnt p2 = endPnt;
-    gp_Pnt p3 = endPnt;
+    gp_Pnt p0 = localStartPoint;
+    gp_Pnt p1 = localStartPoint;
+    gp_Pnt p2 = localEndPoint;
+    gp_Pnt p3 = localEndPoint;
     p0.SetZ(zmin);
     p1.SetZ(zmax);
     p2.SetZ(zmin);
@@ -448,6 +418,8 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
 
     // compute start and end point from intersection with inner/outer section in
     // case the points lie outside of the segments
+    gp_Pnt startPnt       = localStartPoint;
+    gp_Pnt endPnt         = localEndPoint;
     if (startPntInSection) {
         CCPACSWingSegment& segment = (CCPACSWingSegment&)wing->GetSegment(startSegmentUID);
         gp_Pnt pl = segment.GetPoint(0, 0, true, WING_COORDINATE_SYSTEM);
@@ -506,8 +478,10 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
             }
         }
         else {
-            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, endPnt);
-            wireBuilder.Add(edge);
+            if (!prevPnt.IsEqual(endPnt, Precision::Confusion())) {
+                TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(prevPnt, endPnt);
+                wireBuilder.Add(edge);
+            }
             break;
         }
     }
@@ -517,19 +491,13 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
 // Getter for the leading edge line
 const TopoDS_Wire& CCPACSWingComponentSegment::GetLeadingEdgeLine() const
 {
-    if (!linesAreValid) {
-        BuildLines();
-    }
-    return leadingEdgeLine;
+    return linesCache->leadingEdgeLine;
 }
 
 // Getter for the trailing edge line
 const TopoDS_Wire& CCPACSWingComponentSegment::GetTrailingEdgeLine() const
 {
-    if (!linesAreValid) {
-        BuildLines();
-    }
-    return trailingEdgeLine;
+    return linesCache->trailingEdgeLine;
 }
 
 const std::string& CCPACSWingComponentSegment::GetInnerSegmentUID() const
@@ -542,31 +510,23 @@ const std::string& CCPACSWingComponentSegment::GetOuterSegmentUID() const
     return GetSegmentList().back()->GetUID();
 }
 
-SegmentList& CCPACSWingComponentSegment::GetSegmentList() const
+const SegmentList& CCPACSWingComponentSegment::GetSegmentList() const
 {
-    if (wingSegments.size() == 0) {
-        std::vector<int> path;
-        path = findPath(m_fromElementUID, m_toElementUID, path, true);
+    return *wingSegments;
+}
 
-        if (path.size() == 0) {
-            // could not find path from fromUID to toUID
-            // try the other way around
-            path = findPath(m_toElementUID, m_fromElementUID, path, true);
-        }
-
-        if (path.size() == 0) {
-            LOG(WARNING) << "Could not determine segment list to component segment from \""
-                            << GetFromElementUID() << "\" to \"" << GetToElementUID() << "\"!";
-        }
-
-        std::vector<int>::iterator it;
-        for (it = path.begin(); it != path.end(); ++it) {
-            CCPACSWingSegment* pSeg = static_cast<CCPACSWingSegment*>(&(GetWing().GetSegment(*it)));
-            wingSegments.push_back(pSeg);
-        }
+const CCPACSWingSegment& CCPACSWingComponentSegment::GetBelongingSegment(const std::string& segmentUID) const
+{
+    const SegmentList& segments = GetSegmentList();
+    SegmentList::const_iterator it = std::find_if(segments.begin(), segments.end(), [&](const CCPACSWingSegment* segment) {
+        return segment->GetUID() == segmentUID;
+    });
+    
+    if (it == segments.end()) {
+        throw CTiglError("Segment '" + segmentUID + "' does not belong to component segment '" + GetDefaultedUID() + "'");
     }
-
-    return wingSegments;
+    
+    return *(*it);
 }
 
 // Determines, which segments belong to the component segment
@@ -686,8 +646,6 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
     gp_Pnt p1 = GetPoint(csEta1, csXsi1);
     gp_Pnt p2 = GetPoint(csEta2, csXsi2);
 
-    UpdateChordFace();
-
     const Handle(Geom_Curve) etaCurve = chordFace->GetSurface()->VIso(eta);
     const Handle(Geom_Curve) line = new Geom_Line(p1, p2.XYZ() - p1.XYZ());
 
@@ -707,24 +665,22 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
     errorDistance = algo.LowerDistance();
 }
 
-CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const
+const CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const
 {
-    UpdateChordFace();
-
     return *chordFace;
 }
 
 // get short name for loft
-std::string CCPACSWingComponentSegment::GetShortShapeName() 
+std::string CCPACSWingComponentSegment::GetShortName() const
 {
     unsigned int windex = 0;
     unsigned int wcsindex = 0;
     for (int i = 1; i <= wing->GetConfiguration().GetWingCount(); ++i) {
-        tigl::CCPACSWing& w = wing->GetConfiguration().GetWing(i);
+        const CCPACSWing& w = wing->GetConfiguration().GetWing(i);
         if (wing->GetUID() == w.GetUID()) {
             windex = i;
             for (int j = 1; j <= w.GetComponentSegmentCount(); j++) {
-                CCPACSWingComponentSegment& wcs = w.GetComponentSegment(j);
+                const CCPACSWingComponentSegment& wcs = w.GetComponentSegment(j);
                 if (GetUID() == wcs.GetUID()) {
                     wcsindex = j;
                     std::stringstream shortName;
@@ -738,9 +694,41 @@ std::string CCPACSWingComponentSegment::GetShortShapeName()
 }
 
 // Builds the loft between the two segment sections
-PNamedShape CCPACSWingComponentSegment::BuildLoft()
+PNamedShape CCPACSWingComponentSegment::BuildLoft() const
 {
-    loft.reset();
+    // Set Names
+    std::string loftName = m_uID;
+    std::string loftShortName = GetShortName();
+    PNamedShape loft (new CNamedShape(geomCache->loftShape, loftName.c_str(), loftShortName));
+    SetFaceTraits(loft, static_cast<unsigned int>(wingSegments->size()));
+    return loft;
+}
+
+void CCPACSWingComponentSegment::BuildWingSegments(SegmentList& cache) const
+{
+    std::vector<int> path;
+    path = findPath(m_fromElementUID, m_toElementUID, path, true);
+
+    if (path.size() == 0) {
+        // could not find path from fromUID to toUID
+        // try the other way around
+        path = findPath(m_toElementUID, m_fromElementUID, path, true);
+    }
+
+    if (path.size() == 0) {
+        LOG(WARNING) << "Could not determine segment list to component segment from \""
+            << GetFromElementUID() << "\" to \"" << GetToElementUID() << "\"!";
+    }
+
+    std::vector<int>::iterator it;
+    for (it = path.begin(); it != path.end(); ++it) {
+        CCPACSWingSegment* pSeg = static_cast<CCPACSWingSegment*>(&(GetWing().GetSegment(*it)));
+        cache.push_back(pSeg);
+    }
+}
+
+void CCPACSWingComponentSegment::BuildGeometry(GeometryCache& cache) const
+{
     DEBUG_SCOPE(debug);
 
     // use sewing for full loft
@@ -767,17 +755,16 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
         i++;
     }
 
+    cache.innerFace = GetSingleFace(segments.front()->GetInnerClosure(WING_COORDINATE_SYSTEM));
+    cache.outerFace = GetSingleFace(segments.back()->GetOuterClosure(WING_COORDINATE_SYSTEM));
 
-    TopoDS_Shape innerShape = segments.front()->GetInnerClosure(WING_COORDINATE_SYSTEM);
-    innerFace = GetSingleFace(innerShape);
-    TopoDS_Shape outerShape = segments.back()->GetOuterClosure(WING_COORDINATE_SYSTEM);
-    outerFace = GetSingleFace(outerShape);
-
-    sewing.Add(innerFace);
-    sewing.Add(outerFace);
+    sewing.Add(cache.innerFace);
+    sewing.Add(cache.outerFace);
 
     sewing.Perform();
-    TopoDS_Shape loftShape = sewing.SewedShape();
+
+    TopoDS_Shape& loftShape = cache.loftShape;
+    loftShape = sewing.SewedShape();
     debug.addShape(loftShape, "sewedShape");
     // convert loft to solid for correct normals
     if (loftShape.ShapeType() == TopAbs_SHELL) {
@@ -797,31 +784,19 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft()
     // transform all shapes
     CTiglTransformation trafo = wing->GetTransformation().getTransformationMatrix();
 
-    PNamedShape upperShell(new CNamedShape(trafo.Transform(upperShellSewing.SewedShape()), upperShape->GetDefaultedUID().c_str()));
-    PNamedShape lowerShell(new CNamedShape(trafo.Transform(lowerShellSewing.SewedShape()), lowerShape->GetDefaultedUID().c_str()));
+    PNamedShape upperShell(new CNamedShape(trafo.Transform(upperShellSewing.SewedShape()), upperShape->GetDefaultedUID()));
+    PNamedShape lowerShell(new CNamedShape(trafo.Transform(lowerShellSewing.SewedShape()), lowerShape->GetDefaultedUID()));
+    cache.upperShape = upperShell;
+    cache.lowerShape = lowerShell;
 
     loftShape = trafo.Transform(loftShape);
 
-    upperShape->SetShape(upperShell);
-    lowerShape->SetShape(lowerShell);
-
-    BRepTools::Clean(loftShape);
-
-    Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
-    sfs->Init ( loftShape );
-    sfs->Perform();
-    loftShape = sfs->Shape();
-    
-    // Set Names
-    std::string loftName = m_uID;
-    std::string loftShortName = GetShortShapeName();
-    PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName));
-    SetFaceTraits(loft, static_cast<unsigned int>(segments.size()));
-    return loft;
+    cache.myVolume = 0;
+    cache.mySurfaceArea = 0;
 }
 
 // Method for building wires for eta-, leading edge-, trailing edge-lines
-void CCPACSWingComponentSegment::BuildLines() const
+void CCPACSWingComponentSegment::BuildLines(LinesCache& cache) const
 {
     // search for ETA coordinate
     std::vector<gp_Pnt> lePointContainer;
@@ -834,16 +809,16 @@ void CCPACSWingComponentSegment::BuildLines() const
         const CCPACSWingSegment& segment = *(*it);
 
             // get leading edge point
-        lePointContainer.push_back(segment.GetPoint(0, 0, true, WING_COORDINATE_SYSTEM));
+        lePointContainer.push_back(segment.GetChordPoint(0, 0, WING_COORDINATE_SYSTEM));
         // get trailing edge point
-        tePointContainer.push_back(segment.GetPoint(0, 1, true, WING_COORDINATE_SYSTEM));
+        tePointContainer.push_back(segment.GetChordPoint(0, 1, WING_COORDINATE_SYSTEM));
     }
     // finally add the points for the outer section
     // get leading edge point
-    lePointContainer.push_back(segments.back()->GetPoint(1, 0, true, WING_COORDINATE_SYSTEM));
+    lePointContainer.push_back(segments.back()->GetChordPoint(1, 0, WING_COORDINATE_SYSTEM));
 
     // get trailing edge point
-    tePointContainer.push_back(segments.back()->GetPoint(1, 1, true, WING_COORDINATE_SYSTEM));
+    tePointContainer.push_back(segments.back()->GetChordPoint(1, 1, WING_COORDINATE_SYSTEM));
 
 
 
@@ -868,20 +843,11 @@ void CCPACSWingComponentSegment::BuildLines() const
         wbEta.Add(etaEdge);
         wbTe.Add(teEdge);
     }
-    leadingEdgeLine = wbLe.Wire();
-    etaLine = wbEta.Wire();
-    trailingEdgeLine = wbTe.Wire();
 
-    linesAreValid = true;
+    cache.leadingEdgeLine = wbLe.Wire();
+    cache.etaLine = wbEta.Wire();
+    cache.trailingEdgeLine = wbTe.Wire();
 }
-
-void CCPACSWingComponentSegment::UpdateChordFace() const
-{
-    // update creation of segment list
-    GetSegmentList();
-    chordFace->BuildChordSurface();
-}
-
 
 // Gets a point in relative wing coordinates for a given eta and xsi
 gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi, TiglCoordinateSystem referenceCS) const
@@ -920,10 +886,27 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi, TiglCoordina
     return result;
 }
 
+// Gets a point in relative wing coordinates for a given eta and xsi
+gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi, const std::string& referenceUID, TiglCoordinateSystem referenceCS) const
+{
+    // search for ETA coordinate
+    if (eta < 0.0 || eta > 1.0) {
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+    }
+    if (xsi < 0.0 || xsi > 1.0) {
+        throw CTiglError("Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+    }
+
+    if (referenceUID == GetDefaultedUID()) {
+        return GetPoint(eta, xsi, referenceCS);
+    }
+    else {
+        return GetBelongingSegment(referenceUID).GetChordPoint(eta, xsi, referenceCS);
+    }
+}
+
 void CCPACSWingComponentSegment::GetEtaXsi(const gp_Pnt& globalPoint, double& eta, double& xsi) const
 {
-    UpdateChordFace();
-
     // TODO (siggel): check that point is part of component segment
 
     chordFace->GetEtaXsi(globalPoint, eta, xsi);
@@ -941,11 +924,7 @@ gp_Vec CCPACSWingComponentSegment::GetMidplaneEtaDir(double eta) const
     gp_Pnt etaPnt;
     gp_Vec etaDir;
 
-    if (!linesAreValid) {
-        BuildLines();
-    }
-
-    BRepAdaptor_CompCurve etaLineCurve(etaLine, Standard_True);
+    BRepAdaptor_CompCurve etaLineCurve(linesCache->etaLine, Standard_True);
     Standard_Real len = GCPnts_AbscissaPoint::Length( etaLineCurve );
     etaLineCurve.D1( len * eta, etaPnt, etaDir );
     return etaDir.Normalized();
@@ -1023,20 +1002,18 @@ void CCPACSWingComponentSegment::GetSegmentEtaXsi(double csEta, double csXsi, st
 // Returns the volume of this segment
 double CCPACSWingComponentSegment::GetVolume()
 {
-    GetLoft();
-    return( myVolume );
+    return geomCache->myVolume;
 }
 
 // Returns the surface area of this segment
 double CCPACSWingComponentSegment::GetSurfaceArea()
 {
-    GetLoft();
-    return( mySurfaceArea );
+    return geomCache->mySurfaceArea;
 }
 
 // Returns the segment to a given point on the componentSegment. 
 // Returns null if the point is not an that wing!
-const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation) const
+const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation, double maxDeviation) const
 {
     CCPACSWingSegment* result = NULL;
     gp_Pnt pnt(x, y, z);
@@ -1044,7 +1021,7 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
 
     const SegmentList& segments = GetSegmentList();
 
-    double minDist = std::numeric_limits<double>::max();
+    deviation = std::numeric_limits<double>::max();
     // now discover to which segment the point belongs
     for (SegmentList::const_iterator segit = segments.begin(); segit != segments.end(); ++segit) {
         try {
@@ -1053,15 +1030,15 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
             gp_Pnt pointProjected = (*segit)->GetChordPoint(eta, xsi);
 
             // Get nearest point on this segment
-            double nextEta = GetNearestValidParameter(eta);
-            double nextXsi = GetNearestValidParameter(xsi);
+            double nextEta = Clamp(eta, 0., 1.);
+            double nextXsi = Clamp(xsi, 0., 1.);
             gp_Pnt currentPoint = (*segit)->GetChordPoint(nextEta, nextXsi);
 
             double currentDist = currentPoint.Distance(pointProjected);
-            if (currentDist < minDist) {
-                minDist = currentDist;
+            if (currentDist < deviation) {
+                deviation    = currentDist;
                 nearestPoint = currentPoint;
-                result = *segit;
+                result       = *segit;
             }
         }
         catch (...) {
@@ -1069,7 +1046,10 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
         }
     }
 
-    deviation = minDist;
+    // check if pnt lies on component segment shape with maxDeviation tolerance (default 1cm)
+    if (deviation > maxDeviation) {
+        return NULL;
+    }
 
     return result;
 }
@@ -1133,34 +1113,6 @@ bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& seg
     }
 
     return isSegmentContained;
-}
-
-const CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell() const
-{
-    if (!m_structure) {
-        throw CTiglError("no structure existing in CCPACSWingComponentSegment::GetUpperShell!");
-    }
-    return m_structure->GetUpperShell();
-}
-
-CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell()
-{
-    // forward call to const method
-    return const_cast<CCPACSWingShell&>(static_cast<const CCPACSWingComponentSegment&>(*this).GetUpperShell());
-}
-
-const CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell() const
-{
-    if (!m_structure) {
-        throw CTiglError("no structure existing in CCPACSWingComponentSegment::GetLowerShell!");
-    }
-    return m_structure->GetLowerShell();
-}
-
-CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell()
-{
-    // forward call to const method
-    return const_cast<CCPACSWingShell&>(static_cast<const CCPACSWingComponentSegment&>(*this).GetLowerShell());
 }
 
 TopoDS_Shape CCPACSWingComponentSegment::GetMidplaneShape() const

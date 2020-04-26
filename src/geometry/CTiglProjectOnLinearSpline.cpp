@@ -24,7 +24,7 @@ namespace tigl
 {
 
 CTiglProjectOnLinearSpline::CTiglProjectOnLinearSpline(Handle(Geom_BSplineCurve) curve, gp_Pnt p)
-    : _curve(curve), _point(p), _isDone(false)
+    : _curve(curve), _isDone(false), _point(p)
 {
 }
 

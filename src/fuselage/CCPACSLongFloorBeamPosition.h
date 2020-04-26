@@ -31,14 +31,17 @@ class CCPACSLongFloorBeamPosition : public generated::CPACSLongFloorBeamPosition
 public:
     TIGL_EXPORT CCPACSLongFloorBeamPosition(CCPACSLongFloorBeam* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void SetPositionY(const double& value) OVERRIDE;
-
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void SetCrossBeamUID(const std::string& value) override;
+    TIGL_EXPORT void SetPositionY(const double& value) override;
+    TIGL_EXPORT void SetContinuity(const boost::optional<ECPACSContinuity>& value) override;
+    TIGL_EXPORT void SetInterpolation(const boost::optional<ECPACSInterpolation>& value) override;
 
     TIGL_EXPORT gp_Pnt GetCrossBeamIntersection(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
     TIGL_EXPORT TopoDS_Face GetCutGeometryForCrossBeam(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void BuildCutGeometryForCrossBeam(TopoDS_Face& cache) const;
 
 private:

@@ -43,32 +43,23 @@ namespace tigl
 CCPACSRotor::CCPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSRotor(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , rebuildGeometry(true) {}
+{}
 
 // Invalidates internal state
-void CCPACSRotor::Invalidate()
+void CCPACSRotor::InvalidateImpl(const boost::optional<std::string>& source) const
 {
-    invalidated = true;
+    CTiglRelativelyPositionedComponent::Reset();
 }
 
 // Cleanup routine
 void CCPACSRotor::Cleanup()
 {
-    // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
-    Reset();
-
     Invalidate();
 }
 
 // Update internal rotor data
 void CCPACSRotor::Update()
 {
-    if (!invalidated) {
-        return;
-    }
-
-    invalidated = false;
-    rebuildGeometry = true;
 }
 
 std::string CCPACSRotor::GetDefaultedUID() const {
@@ -80,14 +71,13 @@ void CCPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::str
 {
     Cleanup();
     generated::CPACSRotor::ReadCPACS(tixiHandle, rotorXPath);
-    Update();
 }
 
 // Get the Transformation object
 CTiglTransformation CCPACSRotor::GetTransformationMatrix() const
 {
     const_cast<CCPACSRotor*>(this)->Update();   // create new transformation matrix if scaling, rotation or translation was changed, TODO: hack
-    return m_transformation.getTransformationMatrix();
+    return CTiglRelativelyPositionedComponent::GetTransformationMatrix();
 }
 
 // Get Translation
@@ -104,10 +94,10 @@ TiglRotorType CCPACSRotor::GetDefaultedType() const
         return TIGLROTOR_UNDEFINED;
 
     switch (*m_type) {
-        case fenestron: return TIGLROTOR_FENESTRON;
-        case mainRotor: return TIGLROTOR_MAIN_ROTOR;
-        case propeller: return TIGLROTOR_PROPELLER;
-        case tailRotor: return TIGLROTOR_TAIL_ROTOR;
+        case ECPACSRotor_type::fenestron: return TIGLROTOR_FENESTRON;
+        case ECPACSRotor_type::mainRotor: return TIGLROTOR_MAIN_ROTOR;
+        case ECPACSRotor_type::propeller: return TIGLROTOR_PROPELLER;
+        case ECPACSRotor_type::tailRotor: return TIGLROTOR_TAIL_ROTOR;
         default: throw CTiglError("unknown rotor type");
     }
 }
@@ -158,7 +148,7 @@ PNamedShape CCPACSRotor::GetRotorDisk()
 }
 
 // Returns the geometry of the whole rotor (assembly of all rotor blades)
-PNamedShape CCPACSRotor::BuildLoft()
+PNamedShape CCPACSRotor::BuildLoft() const
 {
     // Create rotor assembly
     TopoDS_Compound rotorGeometry;

@@ -32,17 +32,26 @@ class CCPACSExternalObject : public generated::CPACSGenericGeometricComponent, p
 public:
     TIGL_EXPORT CCPACSExternalObject(CCPACSExternalObjects* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) override;
 
     TIGL_EXPORT const std::string& GetFilePath() const;
     
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+
+    // Override setters for invalidation
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+    TIGL_EXPORT void SetTransformation(const CCPACSTransformation& transform) override;
+    TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value) override;
+    TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value) override;
 
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     /// reads in the CAD file
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
     std::string _filePath;
 };

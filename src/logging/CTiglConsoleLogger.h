@@ -29,9 +29,9 @@ class CTiglConsoleLogger : public ITiglLogger
 {
 public:
     TIGL_EXPORT CTiglConsoleLogger();
-    TIGL_EXPORT ~CTiglConsoleLogger() OVERRIDE {}
-    TIGL_EXPORT void LogMessage(TiglLogLevel, const char * message) OVERRIDE;
-    TIGL_EXPORT void SetVerbosity(TiglLogLevel) OVERRIDE;
+    TIGL_EXPORT ~CTiglConsoleLogger() override {}
+    TIGL_EXPORT void LogMessage(TiglLogLevel, const char * message) override;
+    TIGL_EXPORT void SetVerbosity(TiglLogLevel) override;
 private:
     TiglLogLevel verbosity;
 };

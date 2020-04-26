@@ -32,15 +32,30 @@ namespace tigl
 class CCPACSTransformation : public generated::CPACSTransformation
 {
 public:
+    TIGL_EXPORT CCPACSTransformation(CCPACSEnginePosition* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSFuselageSectionElement* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSFuselageSection* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSRotor* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSRotorHinge* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSWing* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSWingSectionElement* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSWingSection* parent, CTiglUIDManager* uidMgr);
+
     TIGL_EXPORT CCPACSTransformation(CTiglUIDManager* uidMgr);
     
     TIGL_EXPORT void reset();
+
+    TIGL_EXPORT CCPACSTransformation &operator = (const CCPACSTransformation& trafo);
     
     TIGL_EXPORT void setTranslation(const CTiglPoint& translation);
     TIGL_EXPORT void setTranslation(const CTiglPoint& translation, ECPACSTranslationType);
     TIGL_EXPORT void setRotation(const CTiglPoint& rotation);
     TIGL_EXPORT void setScaling(const CTiglPoint& scale);
-    TIGL_EXPORT void setTransformationMatrix(const CTiglTransformation& matrix); // sets only the current matrix, does not update rotation, scaling and translation, changes are lost when updateMatrix() is called
+    TIGL_EXPORT void setTransformationMatrix(const CTiglTransformation& matrix);
     
     TIGL_EXPORT CTiglPoint getTranslationVector() const;
     TIGL_EXPORT CTiglPoint getRotation() const;
@@ -53,9 +68,11 @@ public:
     * @param tixiHandle Handle to the xml document
     * @param transformationXPath XPath to the parent object
     */
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) OVERRIDE;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& transformationXPath) override;
 
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void updateMatrix(CTiglTransformation& cache) const;
 
     // caches the transformation created from scaling, rotation and translation

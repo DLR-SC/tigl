@@ -22,6 +22,7 @@
 // standard libraries
 #include <iostream>
 #include <algorithm>
+#include <ostream>
 
 #include "CTiglLogging.h"
 #include "CTiglExportVtk.h"
@@ -208,6 +209,8 @@ void CTiglExportVtk::writeVTKHeader(TixiDocumentHandle& handle)
 // writes the polygon data of a surface (in vtk they call it piece)
 void CTiglExportVtk::writeVTKPiece(const CTiglPolyObject& co, TixiDocumentHandle& handle, unsigned int iObject)
 {
+    using std::endl;
+
     if (co.getNPolygons() == 0) {
         return;
     }

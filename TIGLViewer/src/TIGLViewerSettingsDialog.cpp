@@ -87,6 +87,7 @@ void TIGLViewerSettingsDialog::onSettingsAccepted()
     _settings.setEnumerateFacesEnabled(enumerateFaceCB->isChecked());
     _settings.setNumberOfUIsolinesPerFace(numUIsoLinesSB->value());
     _settings.setNumberOfVIsolinesPerFace(numVIsoLinesSB->value());
+    _settings.setDrawFaceBoundariesEnabled(cbDrawFaceBoundaries->isChecked());
 }
 
 void TIGLViewerSettingsDialog::updateEntries()
@@ -118,6 +119,7 @@ void TIGLViewerSettingsDialog::updateEntries()
     enumerateFaceCB->setChecked(_settings.enumerateFaces());
     numUIsoLinesSB->setValue(_settings.numFaceUIsosForDisplay());
     numVIsoLinesSB->setValue(_settings.numFaceVIsosForDisplay());
+    cbDrawFaceBoundaries->setChecked(_settings.drawFaceBoundaries());
 }
 
 void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val)

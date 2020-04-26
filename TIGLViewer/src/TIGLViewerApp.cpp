@@ -47,7 +47,7 @@ void showHelp(QString appName)
 
 }
 
-TIGLViewerApp::TIGLViewerApp(int argc, char* argv[])
+TIGLViewerApp::TIGLViewerApp(int& argc, char* argv[])
     : QApplication(argc, argv)
 {
     for (int iarg = 0; iarg < argc; ++iarg) {
@@ -156,6 +156,9 @@ int TIGLViewerApp::run()
     }
 
     connect(&mainwindow, SIGNAL(windowInitialized()), this, SLOT(onWindowInitalized()));
+    if (!config.windowTitle.isEmpty()) {
+        mainwindow.setTiglWindowTitle(config.windowTitle, true);
+    }
     mainwindow.show();
     
     retval = exec();

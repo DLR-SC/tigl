@@ -36,10 +36,10 @@ CCPACSRotorBladeAttachments::CCPACSRotorBladeAttachments(CCPACSRotorHub* parent,
     : generated::CPACSRotorBladeAttachments(parent, uidMgr) {}
 
 // Invalidates internal state
-void CCPACSRotorBladeAttachments::Invalidate()
+void CCPACSRotorBladeAttachments::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 1; i <= GetRotorBladeAttachmentCount(); i++) {
-        GetRotorBladeAttachment(i).Invalidate();
+        GetRotorBladeAttachment(i).Invalidate(source);
     }
 }
 

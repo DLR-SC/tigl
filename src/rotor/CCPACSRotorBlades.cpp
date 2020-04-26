@@ -35,17 +35,17 @@ CCPACSRotorBlades::CCPACSRotorBlades(CCPACSRotorcraftModel* parent, CTiglUIDMana
     : generated::CPACSRotorBlades(parent, uidMgr) {}
 
 // Invalidates internal state
-void CCPACSRotorBlades::Invalidate()
+void CCPACSRotorBlades::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 1; i <= GetRotorBladeCount(); i++) {
-        GetRotorBlade(i).Invalidate();
+        GetRotorBlade(i).Invalidate(source);
     }
 }
 
 // Adds a rotor blade to the  rotor blade container
 void CCPACSRotorBlades::AddRotorBlade(CCPACSWing* rotorBlade)
 {
-    m_rotorBlades.push_back(tigl::unique_ptr<CCPACSWing>(rotorBlade));
+    m_rotorBlades.push_back(std::unique_ptr<CCPACSWing>(rotorBlade));
 }
 
 // Returns the total count of rotor blades of a rotor blade attachment

@@ -46,16 +46,18 @@ class CTiglRelativelyPositionedComponent : public CTiglAbstractGeometricComponen
 public:
     typedef std::vector<CTiglRelativelyPositionedComponent*> ChildContainerType;
 
-    TIGL_EXPORT CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(std::string* parentUid, CCPACSTransformation* trans);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans);
     TIGL_EXPORT CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis);
     TIGL_EXPORT CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
 
-    TIGL_EXPORT void Reset();
+    TIGL_EXPORT void Reset() const;
 
-    TIGL_EXPORT TiglSymmetryAxis GetSymmetryAxis() const OVERRIDE; // resolves to parent components if no symmetry is available
+    TIGL_EXPORT TiglSymmetryAxis GetSymmetryAxis() const override; // resolves to parent components if no symmetry is available
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis);
 
     TIGL_EXPORT virtual CTiglTransformation GetTransformationMatrix() const;
+    TIGL_EXPORT virtual void SetTransformation(const CCPACSTransformation& transform);
 
     TIGL_EXPORT virtual CTiglPoint GetRotation() const;
     TIGL_EXPORT virtual CTiglPoint GetScaling() const;
@@ -80,7 +82,7 @@ private:
 private:
     CTiglRelativelyPositionedComponent* _parent;
     ChildContainerType _children;
-    boost::optional<std::string>* _parentUID; ///< UID of the parent of this component, if supported by derived type
+    boost::variant<std::string*, boost::optional<std::string>*> _parentUID; ///< UID of the parent of this component, if supported by derived type
 
     CCPACSTransformation* _transformation;                                                 // references down to the transformation of the derived class (may be empty in case derived class does not have transformation)
     boost::variant<TiglSymmetryAxis*, boost::optional<TiglSymmetryAxis>*> _symmetryAxis;   // references down to the symmetryAxis of the derived class (may be empty in case derived class does not have symmetry)

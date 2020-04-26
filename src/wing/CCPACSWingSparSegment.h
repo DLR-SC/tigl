@@ -51,8 +51,6 @@ public:
 public:
     TIGL_EXPORT CCPACSWingSparSegment(CCPACSWingSparSegments* sparSegments, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
-
     TIGL_EXPORT CCPACSWingSparPosition& GetSparPosition(std::string);
     TIGL_EXPORT const CCPACSWingSparPosition& GetSparPosition(std::string) const;
 
@@ -79,10 +77,13 @@ public:
     TIGL_EXPORT TopoDS_Shape GetSparCapsGeometry(SparCapSide side, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // ---------- INTERFACE OF CTiglAbstractGeometricComponent ------------- //
-    TIGL_EXPORT virtual std::string GetDefaultedUID() const OVERRIDE;
+    TIGL_EXPORT virtual std::string GetDefaultedUID() const override;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const OVERRIDE;
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
 private:
     struct AuxiliaryGeomCache
@@ -107,6 +108,8 @@ private:
         TopoDS_Shape lowerCapsShape;
     };
 
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) const; // Builds the cutting geometry for the spar as well as the midplane line
     void BuildGeometry(GeometryCache& cache) const;
     void BuildSplittedSparGeometry(SplittedGeomCache& cache) const; // Builds the spar geometry splitted with the ribs
@@ -116,7 +119,7 @@ private:
 
     gp_Vec GetUpVector(const std::string& positionUID, gp_Pnt midplanePnt) const;
 
-    PNamedShape BuildLoft() OVERRIDE;
+    PNamedShape BuildLoft() const override;
 
 private:
     CCPACSWingSparSegment(const CCPACSWingSparSegment&);
@@ -136,7 +139,7 @@ private:
  * 
  * The reference axis is given in normal.
  */
-TIGL_EXPORT bool PointIsInfrontSparGeometry(gp_Ax1 normal, gp_Pnt point, TopoDS_Shape sparGeometry);
+TIGL_EXPORT bool PointIsInfrontSparGeometry(gp_Dir normal, gp_Pnt point, TopoDS_Shape sparGeometry);
 
 } // end namespace tigl
 

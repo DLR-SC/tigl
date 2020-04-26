@@ -42,45 +42,58 @@ class CCPACSWingProfileCST : public generated::CPACSCst2D, public ITiglWingProfi
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingProfileCST();
+    TIGL_EXPORT CCPACSWingProfileCST(CCPACSProfileGeometry* parent);
+    TIGL_EXPORT CCPACSWingProfileCST(CCPACSNacelleProfile* parent);
 
     // Update of wire points ...
-    TIGL_EXPORT void Invalidate() OVERRIDE;
+    TIGL_EXPORT void Invalidate() const override;
+
+    // setters triggering invalidation
+    TIGL_EXPORT void SetUpperN1(const double& value) override;
+    TIGL_EXPORT void SetUpperN2(const double& value) override;
+    TIGL_EXPORT void SetLowerN1(const double& value) override;
+    TIGL_EXPORT void SetLowerN2(const double& value) override;
+    TIGL_EXPORT void SetTrailingEdgeThickness(const boost::optional<double>& value) override;
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT std::vector<CTiglPoint>& GetSamplePoints() OVERRIDE; // TODO: why do we need those anyway, they just return an empty vector?
-    TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const OVERRIDE; // TODO: why do we need those anyway, they just return an empty vector?
+    TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const override; // TODO: why do we need those anyway, they just return an empty vector?
 
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get trailing edge
-    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // gets the upper and lower wing profile into on edge
-    TIGL_EXPORT const TopoDS_Edge& GetUpperLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const OVERRIDE;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
     // get leading edge point();
-    TIGL_EXPORT const gp_Pnt & GetLEPoint() const OVERRIDE;
+    TIGL_EXPORT const gp_Pnt & GetLEPoint() const override;
 
     // get trailing edge point();
-    TIGL_EXPORT const gp_Pnt & GetTEPoint() const OVERRIDE;
+    TIGL_EXPORT const gp_Pnt & GetTEPoint() const override;
 
     // CST profiles have always sharp trailing edges
-    TIGL_EXPORT bool HasBluntTE() const OVERRIDE { return false;}
+    TIGL_EXPORT bool HasBluntTE() const override;
 
 private:
     struct WireCache {
-        TopoDS_Edge               upperWire;          /**< wire of the upper wing profile */
-        TopoDS_Edge               lowerWire;          /**< wire of the lower wing profile */
-        TopoDS_Edge               upperLowerEdge;     /**< edge consisting of upper and lower wing profile */
-        TopoDS_Edge               trailingEdge;       /**< edge of the trailing edge */
-        gp_Pnt                    lePoint;            /**< Leading edge point */
-        gp_Pnt                    tePoint;            /**< Trailing edge point */
+        TopoDS_Edge               upperWireOpened;      /**< wire of the upper wing profile */
+        TopoDS_Edge               lowerWireOpened;      /**< wire of the lower wing profile */
+        TopoDS_Edge               upperWireClosed;      /**< wire of the upper wing profile */
+        TopoDS_Edge               lowerWireClosed;      /**< wire of the lower wing profile */
+        TopoDS_Edge               upperLowerEdgeOpened; /**< edge consisting of upper and lower wing profile */
+        TopoDS_Edge               upperLowerEdgeClosed; /**< edge consisting of upper and lower wing profile */ 
+        TopoDS_Edge               trailingEdgeOpened;   /**< edge of the trailing edge */
+        TopoDS_Edge               trailingEdgeClosed;   /**< edge of the trailing edge */
+        gp_Pnt                    lePoint;              /**< Leading edge point */
+        gp_Pnt                    tePoint;              /**< Trailing edge point */
     };
+
+    void InvalidateParent() const;
 
     // Builds the wing profile wires.
     void BuildWires(WireCache& cache) const;

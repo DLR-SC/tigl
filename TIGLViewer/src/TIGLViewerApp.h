@@ -29,7 +29,7 @@ class TIGLViewerApp : public QApplication
 {
     Q_OBJECT
 public:
-    explicit TIGLViewerApp(int argc, char* argv[]);
+    explicit TIGLViewerApp(int& argc, char* argv[]);
     
     int run();
     void loadStyle();

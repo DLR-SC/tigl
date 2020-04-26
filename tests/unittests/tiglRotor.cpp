@@ -31,7 +31,7 @@
 class RotorSimple : public ::testing::Test 
 {
 protected:
-    void SetUp() OVERRIDE
+    void SetUp() override
     {
         const char* filename = "TestData/simple_test_rotors.cpacs.xml";
         ReturnCode tixiRet;
@@ -46,7 +46,7 @@ protected:
         ASSERT_EQ(tiglRet, TIGL_SUCCESS);
     }
 
-    void TearDown() OVERRIDE
+    void TearDown() override
     {
         ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
         ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);

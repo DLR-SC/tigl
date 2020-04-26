@@ -42,6 +42,7 @@
 #include "CTiglMemoryPool.h"
 #include "CSharedPtr.h"
 #include "CCPACSProfiles.h"
+#include "CCPACSEngines.h"
 
 
 namespace tigl
@@ -76,23 +77,18 @@ public:
     // Returns whether this configuration is a rotorcraft
     TIGL_EXPORT bool IsRotorcraft() const;
 
-    // Returns the total count of wing and rotor profiles in this configuration
-    TIGL_EXPORT int GetWingProfileCount() const;
-
     // Returns true if a wing or rotor profile with the given uid exists
     TIGL_EXPORT bool HasWingProfile(std::string uid) const;
 
     // Returns the class which holds all wing profiles
-    TIGL_EXPORT CCPACSWingProfiles& GetWingProfiles();
+    TIGL_EXPORT boost::optional<CCPACSWingProfiles&> GetWingProfiles();
+    TIGL_EXPORT boost::optional<const CCPACSWingProfiles&> GetWingProfiles() const;
     
     // Returns the class which holds all rotor profiles
-    TIGL_EXPORT CCPACSRotorProfiles& GetRotorProfiles();
+    TIGL_EXPORT boost::optional<CCPACSRotorProfiles&> GetRotorProfiles();
 
     // Returns the class which holds all wing profiles
-    TIGL_EXPORT CCPACSFuselageProfiles& GetFuselageProfiles();
-
-    // Returns the wing or rotor profile for a given index
-    DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
+    TIGL_EXPORT boost::optional<CCPACSFuselageProfiles&> GetFuselageProfiles();
 
     // Returns the wing or rotor profile for a given uid.
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid) const;
@@ -162,6 +158,20 @@ public:
     TIGL_EXPORT CCPACSFuselages& GetFuselages();
     TIGL_EXPORT const CCPACSFuselages& GetFuselages() const;
 
+    // Returns list of engine pylons
+    TIGL_EXPORT boost::optional<CCPACSEnginePylons>& GetEnginePylons();
+    TIGL_EXPORT const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
+
+    // Returns list of engines
+    TIGL_EXPORT boost::optional<CCPACSEngines>& GetEngines();
+    TIGL_EXPORT const boost::optional<CCPACSEngines>& GetEngines() const;
+
+    // Returns list of engine positions
+    TIGL_EXPORT boost::optional<CCPACSEnginePositions>& GetEnginePositions();
+    TIGL_EXPORT const boost::optional<CCPACSEnginePositions>& GetEnginePositions() const;
+
+    TIGL_EXPORT CCPACSEngine& GetEngine(const std::string& UID) const;
+
     // Returns the farfield
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
@@ -218,6 +228,7 @@ private:
     boost::optional<CCPACSAircraftModel>   aircraftModel;
     boost::optional<CCPACSRotorcraftModel> rotorcraftModel;
     boost::optional<CCPACSProfiles>        profiles;             /**< Wing airfoils, fuselage profiles, rotor airfoils, guide curve profiles */
+    boost::optional<CCPACSEngines>         engines;              /**< Engines under vehicle node */
     TixiDocumentHandle                     tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                           header;               /**< Configuration header element */
     CCPACSACSystems                        acSystems;            /**< Configuration aircraft systems element */
@@ -226,6 +237,12 @@ private:
     CTiglShapeCache                        shapeCache;
     CTiglMemoryPool                        memoryPool;
 };
+
+/// Computes the bounding box coordinates of the specified component
+TIGL_EXPORT void ComponentGetBoundingBox(const CCPACSConfiguration& config, const std::string& uid, CTiglPoint& min, CTiglPoint& max);
+
+/// Computes the bounding box of the whole aircraft
+TIGL_EXPORT void ConfigurationGetBoundingBox(const CCPACSConfiguration& config, CTiglPoint& min, CTiglPoint& max);
 
 } // end namespace tigl
 

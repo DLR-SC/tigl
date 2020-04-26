@@ -35,9 +35,8 @@ CCPACSRotorBladeAttachment::CCPACSRotorBladeAttachment(CCPACSRotorBladeAttachmen
 
 
 // Invalidates internal state
-void CCPACSRotorBladeAttachment::Invalidate()
+void CCPACSRotorBladeAttachment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
-    invalidated = true;
     lazyCreateAttachedRotorBlades();
     for (unsigned int i = 0; i < attachedRotorBlades.size(); i++) {
         attachedRotorBlades[i]->Invalidate();
@@ -62,17 +61,17 @@ CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatri
     if (doHingeTransformation) {
         for (int k=GetHingeCount()-1; k>=0; --k) {
             CTiglPoint curHingePosition = GetHinge(k+1).GetTranslation();
-            const generated::CPACSRotorHubHinge_type& curHingeType = GetHinge(k+1).GetType();
+            const ECPACSRotorHubHinge_type& curHingeType = GetHinge(k+1).GetType();
             // a. move to origin
             rotorBladeTransformation.AddTranslation(-curHingePosition.x, -curHingePosition.y, -curHingePosition.z);
             // b. rotate around hinge axis
-            if (curHingeType == pitch) {
+            if (curHingeType == ECPACSRotorHubHinge_type::pitch) {
                 rotorBladeTransformation.AddRotationX( (GetHinge(k+1).GetHingeAngle(bladeThetaDeg)));
             }
-            else if (curHingeType == flap) {
+            else if (curHingeType == ECPACSRotorHubHinge_type::flap) {
                 rotorBladeTransformation.AddRotationY(-(GetHinge(k+1).GetHingeAngle(bladeThetaDeg)));
             }
-            else if (curHingeType == leadLag) {
+            else if (curHingeType == ECPACSRotorHubHinge_type::leadLag) {
                 rotorBladeTransformation.AddRotationZ( (GetHinge(k+1).GetHingeAngle(bladeThetaDeg)));
             }
             // c. move back to origin
@@ -169,7 +168,7 @@ CCPACSConfiguration& CCPACSRotorBladeAttachment::GetConfiguration() const
     return m_parent->GetConfiguration();
 }
 
-void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades()
+void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades() const
 {
     // Create wrappers for attached rotor blades
     // We have to do these lazily, as we do not have control of the order in which CPACS elements are read
@@ -181,7 +180,7 @@ void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades()
         if (rotorcraft.GetRotorBlades()) {
             CCPACSWing& blade = rotorcraft.GetRotorBlades()->GetRotorBlade(m_rotorBladeUID);
             for (int i = 0; i < bladeCount; i++) {
-                attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(this, blade, i + 1));
+                attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(const_cast<CCPACSRotorBladeAttachment*>(this), blade, i + 1));
             }
         }
     }

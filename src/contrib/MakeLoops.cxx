@@ -268,7 +268,9 @@ void MakeLoops::Perform()
     TopoDS_Vertex vertex23;
     TopoDS_Vertex vertex34;
     TopoDS_Vertex vertex41;
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
     int count = 0;
+#endif
     while (true) {
         // the four edges of the patch
         TopoDS_Edge E1, E2, E3, E4;

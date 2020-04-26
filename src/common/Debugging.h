@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <boost/atomic.hpp>
 #include <string>
 #include <map>
 
@@ -32,19 +33,32 @@ public:
     TracePoint(const std::string& outputDir);
 
     void operator++(int);
+    int hitCount() const;
     void dumpShape(const TopoDS_Shape& shape, const std::string& filename);
+
+    static void setDebugDataDir(const std::string& dir)
+    {
+        m_debugDataDir = dir;
+    }
+    
+    static std::string debugDataDir()
+    {
+        return m_debugDataDir;
+    }
 
 private:
     std::string m_outputDir;
-    int m_counter;
+    boost::atomic<int> m_counter;
+
+    static std::string m_debugDataDir;
 };
 
 // creates a trace point at the location of this macro with the specified variable name and output directory
 // the trace point is static and incremented each time programm flow executes over the location of this macro
-#define TRACE_POINT_OUTPUT_DIR(variableName, outputDir) static tigl::TracePoint variableName(outputDir); variableName++
+#define TRACE_POINT_OUTPUT_DIR(variableName, outputDir) static ::tigl::TracePoint variableName(outputDir); variableName++
 
 // uses the function inside which the macro is expanded as output directory, __FUNCTION__ may not be supported by each compiler
-#define TRACE_POINT(variableName) TRACE_POINT_OUTPUT_DIR(variableName, __FUNCTION__)
+#define TRACE_POINT(variableName) TRACE_POINT_OUTPUT_DIR(variableName, std::string(tigl::TracePoint::debugDataDir() + "/") + __FUNCTION__)
 
 // allows dumping shapes in case an object of this class is destroyed by an exception
 class DebugScope
@@ -66,5 +80,5 @@ private:
 
 // creates a debug scope object at the location of this macro with the specified variable name
 // furthermore, a tracepoint is created, used by the debug scope to dump shapes in case of leaving the current scope by an exception
-#define DEBUG_SCOPE(variableName) TRACE_POINT(variableName##TracePoint); tigl::DebugScope variableName(variableName##TracePoint)
+#define DEBUG_SCOPE(variableName) TRACE_POINT(variableName##TracePoint); ::tigl::DebugScope variableName(variableName##TracePoint)
 }

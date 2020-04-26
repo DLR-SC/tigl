@@ -13,7 +13,7 @@ else(APPLE)
 endif(APPLE)
 
 
-if(TIGL_VIEWER)
+if (TIGL_VIEWER)
 
 include(SearchQt)
 
@@ -62,145 +62,109 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
   endif()
 endif() # linux‚
 
-# add all tigl directories to include path
-set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
-subdirlist(SUBDIRS ${PROJECT_SOURCE_DIR}/src/)
-foreach(subdir ${SUBDIRS})
-  set(TIGL_INCLUDES ${TIGL_INCLUDES} ${PROJECT_SOURCE_DIR}/src/${subdir})
-endforeach()
-
-include_directories(${TIGL_INCLUDES})
-
 set(tv_src
-    ISession_Point.cpp
-    ISession_Direction.cpp
-    ISession_Text.cpp
-    main.cpp
-    TIGLViewerContext.cpp
-    TIGLViewerDocument.cpp
-    TIGLViewerInputoutput.cpp
-    TIGLViewerInternal.h.cpp
-    TIGLViewerWidget.cpp
-    TIGLViewerWindow.cpp
-    TIGLViewerSettingsDialog.cpp
-    TIGLScriptProxy.cpp
-    TIXIScriptProxy.cpp
-    TIGLScriptEngine.cpp
-    TiglViewerConsole.cpp
-    TIGLViewerSettings.cpp
-    TIGLViewerControlFile.cpp
-    TIGLViewerEtaXsiDialog.cpp
-    CHotsoseMeshReader.cpp
-    TIGLAISTriangulation.cpp
-    TIGLViewerErrorDialog.cpp
-    TIGLViewerLogHistory.cpp
-    TIGLViewerLogRedirection.cpp
-    TIGLViewerLoggerHTMLDecorator.cpp
-    TIGLViewerFuseDialog.cpp
-    TIGLViewerShapeIntersectionDialog.cpp
-    TIGLViewerScreenshotDialog.cpp
-    TIGLViewerDrawVectorDialog.cpp
-    TIGLViewerScopedCommand.cpp
-    TIGLQAspectWindow.cpp
-    TIGLViewerVTKExportDialog.cpp
-    TIGLSliderDialog.cpp
-    TIGLViewerApp.cpp
-    TIGLGeometryChoserDialog.cpp
+  src/ISession_Point.cpp
+  src/ISession_Direction.cpp
+  src/ISession_Text.cpp
+  src/main.cpp
+  src/TIGLViewerContext.cpp
+  src/TIGLViewerDocument.cpp
+  src/TIGLViewerInputoutput.cpp
+  src/TIGLViewerInternal.h.cpp
+  src/TIGLViewerWidget.cpp
+  src/TIGLViewerWindow.cpp
+  src/TIGLViewerSettingsDialog.cpp
+  src/TIGLScriptProxy.cpp
+  src/TIXIScriptProxy.cpp
+  src/TIGLScriptEngine.cpp
+  src/TiglViewerConsole.cpp
+  src/TIGLViewerSettings.cpp
+  src/TIGLViewerControlFile.cpp
+  src/TIGLViewerEtaXsiDialog.cpp
+  src/CHotsoseMeshReader.cpp
+  src/TIGLAISTriangulation.cpp
+  src/TIGLViewerErrorDialog.cpp
+  src/TIGLViewerLogHistory.cpp
+  src/TIGLViewerLogRedirection.cpp
+  src/TIGLViewerLoggerHTMLDecorator.cpp
+  src/TIGLViewerFuseDialog.cpp
+  src/TIGLViewerShapeIntersectionDialog.cpp
+  src/TIGLViewerScreenshotDialog.cpp
+  src/TIGLViewerDrawVectorDialog.cpp
+  src/TIGLViewerScopedCommand.cpp
+  src/TIGLQAspectWindow.cpp
+  src/TIGLViewerVTKExportDialog.cpp
+  src/TIGLSliderDialog.cpp
+  src/TIGLViewerApp.cpp
+  src/TIGLGeometryChoserDialog.cpp
+  src/TIGLViewerUndoCommands.cpp
+  src/TIGLInteractiveShapeManager.cpp
+  src/TIGLViewerSelectWingAndFlapStatusDialog.cpp
 )
 	
-# normal header files
+# header files
 set(tv_hdr
-    CommandLineParameters.h
-    ISession_Point.h
-    ISession_Direction.h
-    ISession_Text.h
-    TIGLViewer.h
-    TIGLViewerSettings.h
-    TIGLViewerControlFile.h
-    TIGLAISTriangulation.h
-    CHotsoseMeshReader.h
-    TIGLViewerLogHistory.h
-    TIGLViewerLoggerHTMLDecorator.h
-    TIGLViewerScopedCommand.h
-    TIGLQAspectWindow.h
+  src/CommandLineParameters.h
+  src/ISession_Point.h
+  src/ISession_Direction.h
+  src/ISession_Text.h
+  src/TIGLViewer.h
+  src/TIGLViewerSettings.h
+  src/TIGLViewerControlFile.h
+  src/TIGLAISTriangulation.h
+  src/CHotsoseMeshReader.h
+  src/TIGLViewerLogHistory.h
+  src/TIGLViewerLoggerHTMLDecorator.h
+  src/TIGLViewerScopedCommand.h
+  src/TIGLQAspectWindow.h
+  src/TIGLViewerUndoCommands.h
+  src/TIGLDebugStream.h
+  src/TIGLViewerContext.h
+  src/TIGLViewerDocument.h
+  src/TIGLViewerInputoutput.h
+  src/TIGLViewerInputoutput.h
+  src/TIGLViewerWidget.h
+  src/TIGLViewerWindow.h
+  src/TIGLViewerSettingsDialog.h
+  src/TIGLScriptProxy.h
+  src/TIXIScriptProxy.h
+  src/TIGLScriptEngine.h
+  src/TiglViewerConsole.h
+  src/TIGLViewerEtaXsiDialog.h
+  src/TIGLViewerErrorDialog.h
+  src/TIGLViewerDrawVectorDialog.h
+  src/TIGLViewerLogRedirection.h
+  src/TIGLViewerFuseDialog.h
+  src/TIGLViewerShapeIntersectionDialog.h
+  src/TIGLViewerScreenshotDialog.h
+  src/TIGLViewerVTKExportDialog.h
+  src/TIGLSliderDialog.h
+  src/TIGLViewerApp.h
+  src/TIGLGeometryChoserDialog.h
+  src/TIGLInteractiveShapeManager.h
+  src/TIGLViewerSelectWingAndFlapStatusDialog.h
 )
 
-# qobject header files that have to be moced
-set(tv_hdr_qobj
-	TIGLDebugStream.h
-	TIGLViewerContext.h
-	TIGLViewerDocument.h
-	TIGLViewerInputoutput.h
-	TIGLViewerInputoutput.h
-	TIGLViewerWidget.h
-	TIGLViewerWindow.h
-	TIGLViewerSettingsDialog.h
-	TIGLScriptProxy.h
-	TIXIScriptProxy.h
-	TIGLScriptEngine.h
-	TiglViewerConsole.h
-	TIGLViewerEtaXsiDialog.h
-	TIGLViewerErrorDialog.h
-	TIGLViewerDrawVectorDialog.h
-	TIGLViewerLogRedirection.h
-	TIGLViewerFuseDialog.h
-	TIGLViewerShapeIntersectionDialog.h
-	TIGLViewerScreenshotDialog.h
-	TIGLViewerVTKExportDialog.h
-	TIGLSliderDialog.h
-	TIGLViewerApp.h
-	TIGLGeometryChoserDialog.h
+set(tv_ui
+  src/TIGLViewerWindow.ui
+  src/TIGLViewerSettingsDialog.ui
+  src/TIGLViewerEtaXsiDialog.ui
+  src/TIGLViewerErrorDialog.ui
+  src/TIGLViewerFuseDialog.ui
+  src/TIGLViewerShapeIntersectionDialog.ui
+  src/TIGLViewerScreenshotDialog.ui
+  src/TIGLViewerDrawVectorDialog.ui
+  src/TIGLViewerVTKExportDialog.ui
+  src/TIGLSliderDialog.ui
+  src/TIGLGeometryChoserDialog.ui
+  src/TIGLViewerSelectWingAndFlapStatusDialog.ui
 )
 
-set(tv_ui_comp
-	src/TIGLViewerWindow.ui
-	src/TIGLViewerSettingsDialog.ui
-	src/TIGLViewerEtaXsiDialog.ui
-	src/TIGLViewerErrorDialog.ui
-	src/TIGLViewerFuseDialog.ui
-	src/TIGLViewerShapeIntersectionDialog.ui
-	src/TIGLViewerScreenshotDialog.ui
-	src/TIGLViewerDrawVectorDialog.ui
-	src/TIGLViewerVTKExportDialog.ui
-	src/TIGLSliderDialog.ui
-	src/TIGLGeometryChoserDialog.ui
-)
-
-foreach ( _fname ${tv_src})
-   set(tv_src_comp ${tv_src_comp} src/${_fname})
-endforeach()
-foreach ( _fname ${tv_hdr_qobj})
-   set(tv_hdr_qobj_comp ${tv_hdr_qobj_comp} src/${_fname})
-endforeach()
-foreach ( _fname ${tv_hdr})
-   set(tv_hdr_comp ${tv_hdr_comp} src/${_fname})
-endforeach()
-
-# moc header files
-QTX_WRAP_CPP(tv_hdr_MOC ${tv_hdr_qobj_comp})
-QTX_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
 # compile icons
 QTX_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc styles/qdarkstyle/style.qrc)
 
-add_definitions(-DCSFDB -DQOCC_STATIC)
-
-include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
-
-# opengl
-include_directories(${OPENGL_INCLUDE_DIR})
-
-# boost
-include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_67_0)
-
-include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
-
-# include path for ui files
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
-
 source_group(MOCS REGULAR_EXPRESSION "moc_")
 source_group(RESOURCES REGULAR_EXPRESSION "qrc_")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 if(WIN32)
   # comment this line if you want to see an additional console window
@@ -222,28 +186,28 @@ if(APPLE)
 endif()
 
 add_executable(${PROGNAME} ${TYPE}
-		${tv_src_comp} 
-		${tv_hdr_MOC} 
- 		${tv_hdr_qobj_comp}        
-		${tv_hdr_comp} 
-		${tv_ui_comp}
-		${tv_rcrs}
-		${tv_icon_rc}
+  ${tv_src} 
+  ${tv_hdr}
+  ${tv_ui}
+  ${tv_rcrs}
+  ${tv_icon_rc}
 )
 
-target_link_libraries(${PROGNAME} 
-	tigl3_static
-	${TIXI_LIBRARIES} 
-	${CMake_QT_LIBRARIES} 
-	${OPENGL_LIBRARIES} 
-	${OpenCASCADE_LIBRARIES} 
-	${EXTRA_LIBRARIES} 
-)
+set_target_properties(${PROGNAME} PROPERTIES AUTOMOC TRUE)
+set_target_properties(${PROGNAME} PROPERTIES AUTOUIC TRUE)
 
-if(GLOG_FOUND)
-  include_directories(${GLOG_INCLUDE_DIR})
-  target_link_libraries (${PROGNAME} ${GLOG_LIBRARIES})
-endif(GLOG_FOUND)
+# opengl
+target_include_directories(${PROGNAME} PRIVATE ${OPENGL_INCLUDE_DIR})
+# include path for ui files
+target_include_directories(${PROGNAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+target_link_libraries(${PROGNAME} PRIVATE
+  tigl3_static tigl3_cpp
+  ${CMake_QT_LIBRARIES} 
+  ${OPENGL_LIBRARIES} 
+  ${OpenCASCADE_LIBRARIES} 
+  ${EXTRA_LIBRARIES} 
+)
 
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
@@ -259,9 +223,11 @@ INSTALL(TARGETS ${PROGNAME}
 
 
 set(APPS "bin/${PROGNAME}")
+set(DEPENDS_PATH "lib")
 IF(APPLE)
   set(APPS "${PROGNAME}.app")
-
+  set(DEPENDS_PATH "${PROGNAME}.app/Contents/MacOS/")
+  
   # TKOpenGL is loaded as a plugin, hence we must manually install it
   INSTALL(FILES ${TKOpenGl_OCCLIB} DESTINATION ${PROGNAME}.app/Contents/MacOS/ COMPONENT viewer)
   # copy icon
@@ -269,6 +235,7 @@ IF(APPLE)
 ENDIF(APPLE)
 IF(WIN32)
   set(APPS "bin/${PROGNAME}.exe")
+  set(DEPENDS_PATH "bin")
 
   # install runtime libs
   FILE(TO_CMAKE_PATH "$ENV{SYSTEMROOT}" SYSTEMROOT)
@@ -279,10 +246,28 @@ SET(CMAKE_INSTALL_OPENMP_LIBRARIES "ON")
 INCLUDE(InstallRequiredSystemLibraries)
 
 
+function (get_dll_path DLL_PATH target)
+   if (TARGET ${target})
+    get_target_property(TARGET_DLL ${target} LOCATION)
+    get_filename_component(TMP_DLL_PATH ${TARGET_DLL} PATH)
+    set (${DLL_PATH} ${TMP_DLL_PATH} PARENT_SCOPE)
+  endif()
+endfunction ()
+
+get_dll_path(OCC_DLL_PATH TKernel)
+get_dll_path(TIXI_DLL_PATH tixi3)
+get_dll_path(GLOG_DLL_PATH glog::glog)
+
 # set directories to look for dependencies
-set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY} ${OpenCASCADE_LINK_DIRECTORY} ${TIGL_ADD_LIB_PATH})
+set(DIRS ${OCC_DLL_PATH} ${TIXI_DLL_PATH} ${GLOG_DLL_PATH})
 
 if (WIN32 OR APPLE)
+  install(FILES $<TARGET_FILE:tixi3> DESTINATION ${DEPENDS_PATH} COMPONENT viewer)
+
+  if (TARGET glog::glog)
+     install(FILES $<TARGET_FILE:glog::glog> DESTINATION ${DEPENDS_PATH} COMPONENT viewer) 
+  endif()
+  
   if(Qt5Widgets_FOUND)
     if(APPLE)
       set(QT_PLUGINS  "qcocoa")
@@ -291,6 +276,13 @@ if (WIN32 OR APPLE)
       set(QT_PLUGINS  "qwindows")
     endif()
     set(QT_PLUGINS "${QT_PLUGINS};qjpeg")
+
+    install(FILES
+        $<TARGET_FILE:Qt5::Core>
+        $<TARGET_FILE:Qt5::Widgets>
+        $<TARGET_FILE:Qt5::Gui>
+        $<TARGET_FILE:Qt5::Script>
+    DESTINATION ${DEPENDS_PATH} COMPONENT viewer)
 
     include(DeployQt5)
     INSTALL_QT5_EXECUTABLE(${APPS} "${QT_PLUGINS}" "" "${DIRS}" "" "" viewer)

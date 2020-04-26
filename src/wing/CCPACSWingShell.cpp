@@ -28,7 +28,10 @@ namespace tigl
 {
 
 CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSWingShell(parent, uidMgr) {}
+    : generated::CPACSWingShell(parent, uidMgr)
+    , m_geometryCache(*this, &CCPACSWingShell::BuildGeometry)
+{
+}
 
 int CCPACSWingShell::GetCellCount() const
 {
@@ -69,26 +72,17 @@ CCPACSWingCSStructure& CCPACSWingShell::GetStructure()
     return *m_parent;
 }
 
-void CCPACSWingShell::Invalidate()
+void CCPACSWingShell::InvalidateImpl(const boost::optional<std::string>& source) const
 {
-    geometryCache = boost::none;
-    if (m_cells)
+    m_geometryCache.clear();
+    if (m_cells) {
         m_cells->Invalidate();
-}
-
-bool CCPACSWingShell::IsValid() const
-{
-    return geometryCache.is_initialized();
-}
-
-void CCPACSWingShell::Update() const
-{
-    if (geometryCache) {
-        return;
     }
-    geometryCache.emplace();
+}
 
-    // TODO: build stringer geometry
+void CCPACSWingShell::BuildGeometry(GeometryCache& cache) const
+{
+
 }
 
 TiglLoftSide CCPACSWingShell::GetLoftSide() const

@@ -23,6 +23,7 @@
 
 #include "CTiglError.h"
 #include "CCPACSWing.h"
+#include "CCPACSEnginePylon.h"
 #include "CCPACSWingSegment.h"
 
 namespace tigl
@@ -30,14 +31,36 @@ namespace tigl
 
 // Constructor
 CCPACSWingSegments::CCPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSWingSegments(parent, uidMgr) {}
+    : generated::CPACSWingSegments(parent, uidMgr)
+    , m_parentVariant(parent)
+{
+}
+
+CCPACSWingSegments::CCPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingSegments(parent, uidMgr)
+    , m_parentVariant(parent)
+{
+}
 
 // Invalidates internal state
-void CCPACSWingSegments::Invalidate()
+void CCPACSWingSegments::Invalidate(const boost::optional<std::string>& source) const
 {
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        m_segments[i]->Invalidate();
+    for (const auto& segment : m_segments) {
+        segment->Invalidate(source);
     }
+}
+
+CCPACSWingSegment& CCPACSWingSegments::AddSegment()
+{
+    CCPACSWingSegment& result = generated::CPACSWingSegments::AddSegment();
+    InvalidateParent();
+    return result;
+}
+
+void CCPACSWingSegments::RemoveSegment(CCPACSWingSegment& ref)
+{
+    generated::CPACSWingSegments::RemoveSegment(ref);
+    InvalidateParent();
 }
 
 // Gets a segment by index. 
@@ -84,6 +107,14 @@ const CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segme
 int CCPACSWingSegments::GetSegmentCount() const
 {
     return static_cast<int>(m_segments.size());
+}
+
+void CCPACSWingSegments::InvalidateParent() const
+{
+    // Invalidate wing or EnginePylon
+    if (const auto* parent = GetNextUIDParent()) {
+        parent->Invalidate();
+    }
 }
 
 } // end namespace tigl

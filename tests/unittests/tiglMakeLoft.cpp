@@ -32,6 +32,10 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 
+#include <fstream>
+
+using std::ifstream;
+
 TEST(makeLoft, nacelleInverted)
 {
     TopoDS_Shape guides;

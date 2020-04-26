@@ -23,22 +23,25 @@ CCPACSFuselageStructure::CCPACSFuselageStructure(CCPACSFuselage* parent, CTiglUI
 {
 }
 
-void CCPACSFuselageStructure::Invalidate()
+void CCPACSFuselageStructure::Invalidate(const boost::optional<std::string>& source) const
 {
     if (m_frames) {
-        m_frames->Invalidate();
+        m_frames->Invalidate(source);
     }
     if (m_stringers) {
-        m_stringers->Invalidate();
+        m_stringers->Invalidate(source);
     }
     if (m_pressureBulkheads) {
-        m_pressureBulkheads->Invalidate();
+        m_pressureBulkheads->Invalidate(source);
     }
     if (m_cargoCrossBeamStruts) {
-        m_cargoCrossBeamStruts->Invalidate();
+        m_cargoCrossBeamStruts->Invalidate(source);
     }
     if (m_longFloorBeams) {
-        m_longFloorBeams->Invalidate();
+        m_longFloorBeams->Invalidate(source);
+    }
+    if (m_walls) {
+        m_walls->Invalidate(source);
     }
 }
 

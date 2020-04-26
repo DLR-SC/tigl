@@ -29,15 +29,16 @@ class CCPACSLongFloorBeam : public generated::CPACSLongFloorBeam, public ITiglGe
 public:
     TIGL_EXPORT CCPACSLongFloorBeam(CCPACSLongFloorBeamsAssembly* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT std::string GetDefaultedUID() const OVERRIDE;
-    TIGL_EXPORT PNamedShape GetLoft() OVERRIDE;
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const OVERRIDE;
-
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    TIGL_EXPORT PNamedShape GetLoft() const override;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
     TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void BuildGeometry1D(TopoDS_Shape& cache) const;
     void BuildGeometry3D(TopoDS_Shape& cache) const;
     void BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const;

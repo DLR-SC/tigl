@@ -30,7 +30,7 @@ class TIGLViewerSettingsDialog : public QDialog, private Ui::TIGLViewerSettingsD
 public:
     TIGLViewerSettingsDialog(class TIGLViewerSettings&, class QWidget *parent=NULL);
 
-    ~TIGLViewerSettingsDialog() OVERRIDE;
+    ~TIGLViewerSettingsDialog() override;
 
 public slots:
     void updateEntries();

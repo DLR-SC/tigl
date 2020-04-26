@@ -6,10 +6,17 @@ environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       ARCH: x86
+      TYPE: STATIC
       GENERATOR: Ninja
       CONDA_INSTALL_LOCN: C:\\Miniconda35
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       ARCH: amd64
+      TYPE: STATIC
+      GENERATOR: Ninja
+      CONDA_INSTALL_LOCN: C:\\Miniconda35-x64
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      ARCH: amd64
+      TYPE: DYNAMIC
       GENERATOR: Ninja
       CONDA_INSTALL_LOCN: C:\\Miniconda35-x64
 
@@ -45,7 +52,16 @@ deploy:
 
 install:
   - call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
-  - conda install --yes  tixi3 oce-static ninja doxygen swig>=3.10 freetype-static=2.6 freeimageplus-static=3.17.0 -c dlr-sc -c dlr-sc/label/tigl-dev
+  - ps: |
+      if ($env:TYPE -eq "STATIC")
+      {
+          & conda install --yes  tixi3>=3.0.3 oce-static=0.17.2 freetype-static=2.6 freeimageplus-static=3.17.0 ninja doxygen swig>=3.0.11 -c dlr-sc -c dlr-sc/label/tigl-dev
+      }
+      if ($env:TYPE -eq "DYNAMIC")
+      {
+          & conda install --yes  tixi3>=3.0.3 oce=0.17.2 freetype=2.6.5 freeimageplus=3.18.0 tbb-devel ninja doxygen swig>=3.0.11 pythonocc-core=0.17.3 -c dlr-sc -c dlr-sc/label/tigl-dev
+      }
+  - 
   - ps: |
       Write-Output "Platform: $env:ARCH"
       $qtdist = "5.10.1/msvc2015"
@@ -75,6 +91,10 @@ install:
   - ps: |
       $BUILD_RELEASE = $($env:appveyor_repo_tag -eq "true")
       $BUILD_NIGHTLY = "ON"
+      if ($env:TYPE -eq "DYNAMIC")
+      {
+          $BUILD_RELEASE = 0
+      }
       if ($BUILD_RELEASE) {
         $BUILD_NIGHTLY = "OFF"
         Write-Output "Release builds enabled."
@@ -88,11 +108,17 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    Write-Output "Running cmake: -G "$env:GENERATOR" -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_OCE_COONS_PATCHED=ON -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win .."
-    & cmake -G "$env:GENERATOR" -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_OCE_COONS_PATCHED=ON -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_BUILD_TESTS=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win ..
+    Write-Output "Running cmake: -G "$env:GENERATOR" -DOCE_STATIC_LIBS=ON -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=$BUILD_NIGHTLY -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win .."
+    & cmake -G "$env:GENERATOR"  -DTIGL_BINDINGS_INSTALL_CPP=ON -DOCE_STATIC_LIBS=ON -DCMAKE_INSTALL_PREFIX=install -DTIGL_CONCAT_GENERATED_FILES=ON -DCMAKE_PREFIX_PATH=$env:CONDA_INSTALL_LOCN\Library -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY="$BUILD_NIGHTLY" -DQT_PATH=c:\Qt\$qtdist -DMATLAB_DIR=c:\matlab-libs-win ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
+- ps: |
+    if ($env:TYPE -eq "DYNAMIC")
+    {
+      & cmake -DTIGL_BINDINGS_PYTHON_INTERNAL=ON .
+    }
+- ps: |
     & cmake --build . --target install
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
@@ -102,15 +128,19 @@ after_build:
   - clcache.exe -s
 
 test_script:
-  - cd tests/unittests
+  - cmake --build . --target tigl-java-demo
+  - cd ../tests/unittests
+  - mkdir _build
+  - cd _build
+  - cmake -G %GENERATOR% -DCMAKE_PREFIX_PATH=C:\projects\tigl\_build\install;%CONDA_INSTALL_LOCN%\Library -DCMAKE_BUILD_TYPE=Release ..
+  - cmake --build .
   - TiGL-unittests.exe --gtest_output=xml:test_results.xml
   # Upload test results
   - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\test_results.xml))
-  - cd ..\..
-  - cmake --build . --target tigl-java-demo
 
 
 after_test:
+- cd C:\projects\tigl\_build
 - ps: |
     & cmake --build .  --target doc
     & cpack -G ZIP
