@@ -5,6 +5,9 @@ on:
     - cron: "0 0 * * *"
  push:
  pull_request:
+ create:
+    tags:
+      - v*
 
 env:
   CCACHE_DIR: ${{ github.workspace }}/compiler-cache
