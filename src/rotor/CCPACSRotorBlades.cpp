@@ -35,10 +35,10 @@ CCPACSRotorBlades::CCPACSRotorBlades(CCPACSRotorcraftModel* parent, CTiglUIDMana
     : generated::CPACSRotorBlades(parent, uidMgr) {}
 
 // Invalidates internal state
-void CCPACSRotorBlades::Invalidate()
+void CCPACSRotorBlades::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 1; i <= GetRotorBladeCount(); i++) {
-        GetRotorBlade(i).Invalidate();
+        GetRotorBlade(i).Invalidate(source);
     }
 }
 

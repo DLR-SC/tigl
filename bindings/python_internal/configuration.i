@@ -72,7 +72,7 @@
 #include "generated/CPACSControlSurfaceWingCutOut.h"
 #include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
 #include "generated/CPACSControlSurfaceTracks.h"
-#include "CCPACSControlSurfaceTrackType.h"
+#include "generated/CPACSControlSurfaceTrackType.h"
 #include "generated/CPACSTrailingEdgeDevice.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSEnginePylons.h"
@@ -138,19 +138,23 @@
 %boost_optional(tigl::CCPACSWingProfiles)
 %boost_optional(tigl::CCPACSFuselageProfiles)
 %boost_optional(tigl::CCPACSRotorProfiles)
+%boost_optional(tigl::CCPACSCurveParamPointMap)
+%boost_optional(tigl::CCPACSCurvePointListXYZ)
 
 // ---------------- Other ------------------------------//
 %boost_optional(tigl::CCPACSEtaIsoLine)
 %boost_optional(tigl::CCPACSMaterialDefinition)
-%boost_optional(tigl::generated::CPACSEtaXsiPoint)
-%boost_optional(tigl::generated::CPACSCurvePoint)
+%boost_optional(tigl::CCPACSEtaXsiPoint)
+%boost_optional(tigl::CCPACSCurvePoint)
 
 %include "generated/CPACSXsiIsoLine.h"
 %include "generated/CPACSEtaIsoLine.h"
 %include "CCPACSEtaIsoLine.h"
 %include "CCPACSXsiIsoLine.h"
 %include "generated/CPACSEtaXsiPoint.h"
+%include "CCPACSEtaXsiPoint.h"
 %include "generated/CPACSCurvePoint.h"
+%include "CCPACSCurvePoint.h"
 
 %include "generated/CPACSMaterialDefinition.h"
 %include "CCPACSMaterialDefinition.h"
@@ -214,8 +218,8 @@ namespace tigl {
 %boost_optional(tigl::generated::CPACSLeadingEdgeShape)
 %boost_optional(tigl::generated::CPACSLeadingEdgeHollow)
 %boost_optional(tigl::generated::CPACSCutOutControlPoints)
-%boost_optional(tigl::CCPACSControlSurfaceSkinCutOutBorder)
-%boost_optional(tigl::CCPACSTrailingEdgeDevices)
+%boost_optional(tigl::generated::CPACSControlSurfaceSkinCutOutBorder)
+%boost_optional(tigl::generated::CPACSTrailingEdgeDevices)
 %boost_optional(tigl::CCPACSControlSurfaces)
 %boost_optional(tigl::CPACSControlSurfaceWingCutOut)
 %boost_optional(tigl::generated::CPACSControlSurfaceTracks)
@@ -234,11 +238,9 @@ namespace tigl
 %include "generated/CPACSControlSurfaceTrackType_trackSubType.h"
 %include "generated/CPACSControlSurfaceTrackType_trackType.h"
 %include "generated/CPACSControlSurfaceTrackType.h"
-%include "CCPACSControlSurfaceTrackType.h"
 %include "generated/CPACSOuterCutOutProfile.h"
 %include "generated/CPACSCutOutProfiles.h"
 %include "generated/CPACSControlSurfaceSkinCutOut.h"
-%include "CCPACSControlSurfaceSkinCutout.h"
 %include "generated/CPACSControlSurfaceTracks.h"
 %include "generated/CPACSControlSurfaceContours.h"
 %include "generated/CPACSContourReference.h"
@@ -247,13 +249,12 @@ namespace tigl
 %include "generated/CPACSCutOutControlPoint.h"
 %include "generated/CPACSCutOutControlPoints.h"
 %include "generated/CPACSControlSurfaceSteps.h"
-%include "CCPACSControlSurfaceSteps.h"
 %include "generated/CPACSControlSurfaceHingePoint.h"
-%include "CCPACSControlSurfaceHingePoint.h"
 %include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
-%include "CCPACSControlSurfaceSkinCutOutBorder.h"
 %include "generated/CPACSCutOutControlPoints.h"
 %include "generated/CPACSControlSurfacePath.h"
+%include "CTiglControlSurfaceBorderCoordinateSystem.h"
+%ignore ComponentSegment(const CCPACSControlSurfaceBorderTrailingEdge&);
 %include "generated/CPACSControlSurfaceBorderTrailingEdge.h"
 %include "CCPACSControlSurfaceBorderTrailingEdge.h"
 %include "generated/CPACSControlSurfaceOuterShapeTrailingEdge.h"
@@ -261,9 +262,10 @@ namespace tigl
 %include "generated/CPACSControlSurfaceTracks.h"
 %include "CPACSControlSurfaceWingCutOut.h"
 %include "generated/CPACSTrailingEdgeDevice.h"
+%ignore ComponentSegment(const CCPACSTrailingEdgeDevice&);
+%ignore ComponentSegment(CCPACSTrailingEdgeDevice&);
 %include "CCPACSTrailingEdgeDevice.h"
 %include "generated/CPACSTrailingEdgeDevices.h"
-%include "CCPACSTrailingEdgeDevices.h"
 %include "generated/CPACSControlSurfaces.h"
 %include "CCPACSControlSurfaces.h"
 
@@ -388,6 +390,10 @@ class CCPACSWingRibsPositioning;
 %include "PTiglWingProfileAlgo.h"
 %include "generated/CPACSFuselageElements.h"
 %include "CCPACSFuselageSectionElements.h"
+%include "generated/CPACSCurveParamPointMap.h"
+%include "CCPACSCurveParamPointMap.h"
+%include "generated/CPACSCurvePointListXYZ.h"
+%include "CCPACSCurvePointListXYZ.h"
 %include "generated/CPACSProfileGeometry.h"
 %include "CCPACSWingProfile.h"
 %include "CCPACSFuselageProfile.h"

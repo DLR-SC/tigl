@@ -22,6 +22,7 @@
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerWindow.h"
 #include "TIGLViewerScopedCommand.h"
+#include "TIGLViewerSelectWingAndFlapStatusDialog.h"
 
 // QT Stuff
 #include <qnamespace.h>
@@ -85,6 +86,8 @@
 #include "CTiglAttachedRotorBlade.h"
 #include "TIGLGeometryChoserDialog.h"
 #include "CCPACSEnginePylon.h"
+#include "generated/CPACSTrailingEdgeDevices.h"
+#include "CCPACSTrailingEdgeDevice.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -110,6 +113,7 @@ double getAbsDeflection (const TopoDS_Shape& theShape, double relDeflection)
 
 TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
     : QObject(parentWidget)
+    , m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this, parentWidget))
 {
     app = parentWidget;
     m_cpacsHandle = -1;
@@ -669,24 +673,13 @@ void TIGLViewerDocument::drawComponentByUID(const QString& uid)
     // define some component specific draw commands
     CallbackMap callbacks;
     callbacks[TIGL_COMPONENT_ROTOR] = &TIGLViewerDocument::drawRotorByUID;
-
-    struct ContainsCallback{
-        ContainsCallback(TiglGeometricComponentType mytype)
-            : m_type(mytype) {}
-
-        bool operator()(const std::pair<TiglGeometricComponentType, Callback>& p) {
-            return p.first == m_type;
-        }
-
-        TiglGeometricComponentType m_type;
-    };
-
+    callbacks[TIGL_COMPONENT_CONTROL_SURFACE_DEVICE] = &TIGLViewerDocument::drawWingFlap;
 
     try {
         START_COMMAND();
         tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString());
 
-        CallbackMap::const_iterator found = std::find_if(callbacks.begin(), callbacks.end(), ContainsCallback(component.GetComponentType()));
+        auto found = callbacks.find(component.GetComponentType());
         if (found != callbacks.end()) {
             // call the draw function
             (this->*found->second)(uid);
@@ -901,7 +894,112 @@ void TIGLViewerDocument::drawWing()
     }
 }
 
+void TIGLViewerDocument::drawWingFlaps()
+{
+    QString wingUid = dlgGetWingSelection();
+    if (wingUid == "") {
+        return;
+    }
 
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        START_COMMAND();
+        if (drawWingFlaps(wing)) {
+            m_flapsDialog->setWing(wing.GetUID());
+            m_flapsDialog->show();
+            m_flapsDialog->raise();
+            m_flapsDialog->activateWindow();
+        }
+    }
+    catch (tigl::CTiglError& ex) {
+        displayError(ex.what(), "Error");
+    }
+}
+
+bool TIGLViewerDocument::drawWingFlaps(tigl::CCPACSWing& wing)
+{
+    try {
+        if (!wing.GetComponentSegments()) {
+            displayError(QString("The wing %1 does not have any control surfaces.").arg(wing.GetUID().c_str()), "Error");
+            return false;
+        }
+
+
+        size_t n_flaps = 0;
+        for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
+            if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
+                continue;
+            }
+            n_flaps += pcs->GetControlSurfaces()->ControlSurfaceCount();
+        }
+
+        if (n_flaps == 0) {
+            displayError(QString("The wing '%1' does not have any control surfaces.").arg(wing.GetUID().c_str()), "Error");
+            return false;
+        }
+
+        app->getScene()->deleteAllObjects();
+        app->getScene()->displayShape(wing.GetLoftWithCutouts(), true);
+
+        for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
+            if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
+                continue;
+            }
+            auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices();
+            if (!teds) {
+                continue;
+            }
+
+            for (auto& ted : teds->GetTrailingEdgeDevices()) {
+                drawWingFlap(ted->GetUID().c_str());
+            }
+        }
+        app->getScene()->updateViewer();
+
+    }
+    catch (tigl::CTiglError& ex) {
+        displayError(ex.what(), "Error");
+    }
+
+    return true;
+}
+
+void TIGLViewerDocument::drawWingFlap(const QString& uid)
+{
+    try {
+        tigl::CTiglUIDManager::TypedPtr obj = GetConfiguration().GetUIDManager().ResolveObject(uid.toStdString());
+
+        if (*obj.type == typeid(tigl::CCPACSTrailingEdgeDevice))
+        {
+            auto* ted = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
+            app->getScene()->displayShape(ted->GetLoft(), false, Quantity_NOC_GREEN);
+            updateFlapTransform(ted->GetUID());
+        }
+    }
+    catch(const tigl::CTiglError& ex) {
+        displayError(ex.what(), "Error");
+    }
+}
+
+
+
+void TIGLViewerDocument::updateFlapTransform(std::string controlUID)
+{
+    tigl::CTiglUIDManager::TypedPtr obj = GetConfiguration().GetUIDManager().ResolveObject(controlUID);
+
+    if (*obj.type == typeid(tigl::CCPACSTrailingEdgeDevice))
+    {
+        auto* controlSurfaceDevice = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
+        gp_Trsf trsf = controlSurfaceDevice->GetFlapTransform();
+
+        IObjectList flaps = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
+        for (const auto& flap : flaps) {
+            app->getScene()->getContext()->SetLocation(flap, trsf);
+        }
+    }
+
+    app->getViewer()->update();
+}
 
 void TIGLViewerDocument::drawFuselage()
 {
@@ -2644,5 +2742,4 @@ TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle() const
 {
     return this->m_cpacsHandle;
 }
-
 

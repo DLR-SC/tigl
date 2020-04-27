@@ -51,6 +51,8 @@ public:
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration() const;
 
+    void updateFlapTransform(std::string controlUID);
+
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);
 
@@ -77,6 +79,7 @@ public slots:
     void drawWingComponentSegment();
     void drawWingComponentSegmentPoints();
     void drawWingShells();
+    void drawWingFlaps();
     void drawWingStructure();
 
     // Fuselage slots
@@ -160,6 +163,7 @@ private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
+    class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;
 
     void writeToStatusBar(QString text);
     void displayError(QString text, QString header="");
@@ -176,6 +180,8 @@ private:
     void drawWingComponentSegment(tigl::CCPACSWingComponentSegment& segment);
     void drawWingComponentSegmentPoint(const std::string& csUID, const double& eta, const double& xsi);
     void drawWingShells(tigl::CCPACSWing& wing);
+    bool drawWingFlaps(tigl::CCPACSWing& wing);
+    void drawWingFlap(const QString& flapUID);
 
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
     

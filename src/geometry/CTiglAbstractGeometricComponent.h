@@ -41,7 +41,7 @@ class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
 public:
     CTiglAbstractGeometricComponent();
 
-    TIGL_EXPORT void Reset();
+    TIGL_EXPORT void Reset() const;
 
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() const;
 

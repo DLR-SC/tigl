@@ -21,8 +21,13 @@
 
 namespace tigl {
 
-CCPACSNacelleProfile::CCPACSNacelleProfile(CTiglUIDManager* uidMgr)
-    : generated::CPACSProfileGeometry2D(uidMgr)
+CCPACSNacelleProfile::CCPACSNacelleProfile(CCPACSCurveProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileGeometry2D(parent, uidMgr)
+    , pointListAlgo(*this,&CCPACSNacelleProfile::buildPointListAlgo)
+{}
+
+CCPACSNacelleProfile::CCPACSNacelleProfile(CCPACSNacelleProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileGeometry2D(parent, uidMgr)
     , pointListAlgo(*this,&CCPACSNacelleProfile::buildPointListAlgo)
 {}
 

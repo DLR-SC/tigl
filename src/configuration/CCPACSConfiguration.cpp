@@ -55,7 +55,7 @@ namespace tigl
 
 // Constructor
 CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
-    : tixiDocumentHandle(tixiHandle) , acSystems(this)
+    : tixiDocumentHandle(tixiHandle) , acSystems(this), header(nullptr), farField(nullptr)
 {
 }
 
@@ -73,9 +73,6 @@ void CCPACSConfiguration::Invalidate()
     }
     if (rotorcraftModel) {
         rotorcraftModel->Invalidate();
-    }
-    if (profiles) {
-        profiles->Invalidate();
     }
     aircraftFuser.reset();
     shapeCache.Clear();
@@ -100,12 +97,12 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         header.ReadCPACS(tixiDocumentHandle, headerXPath);
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, profilesXPath)) {
-        profiles = boost::in_place(&uidManager);
+        profiles = boost::in_place(nullptr, &uidManager);
         // read wing airfoils, fuselage profiles, rotor airfoils and guide curve profiles
         profiles->ReadCPACS(tixiDocumentHandle, profilesXPath);
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, enginesXPath)) {
-        engines = boost::in_place(&uidManager);
+        engines = boost::in_place(nullptr, &uidManager);
         engines->ReadCPACS(tixiDocumentHandle, enginesXPath);
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {

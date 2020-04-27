@@ -20,6 +20,10 @@
 namespace tigl
 {
 
+CCPACSPointListRelXYZVector::CCPACSPointListRelXYZVector(CCPACSGuideCurveProfile* parent)
+: generated::CPACSPointListRelXYZVector(parent)
+{}
+
 void CCPACSPointListRelXYZVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     generated::CPACSPointListRelXYZVector::ReadCPACS(tixiHandle, xpath);
@@ -37,34 +41,25 @@ void CCPACSPointListRelXYZVector::ReadCPACS(const TixiDocumentHandle& tixiHandle
     }
 }
 
-void CCPACSPointListRelXYZVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-{
-    // write back to CPACS fields
-    CCPACSPointListRelXYZVector* self =
-        const_cast<CCPACSPointListRelXYZVector*>(this); // TODO: ugly hack, but WriteCPACS() has to be const, fix this
-    std::vector<double>& xs = self->GetRX().AsVector();
-    std::vector<double>& ys = self->GetRY().AsVector();
-    std::vector<double>& zs = self->GetRZ().AsVector();
-    xs.clear();
-    ys.clear();
-    zs.clear();
-    for (std::vector<CTiglPoint>::const_iterator it = m_vec.begin(); it != m_vec.end(); ++it) {
-        xs.push_back(it->x);
-        ys.push_back(it->y);
-        zs.push_back(it->z);
-    }
-
-    generated::CPACSPointListRelXYZVector::WriteCPACS(tixiHandle, xpath);
-}
-
 const std::vector<CTiglPoint>& CCPACSPointListRelXYZVector::AsVector() const
 {
     return m_vec;
 }
 
-std::vector<CTiglPoint>& CCPACSPointListRelXYZVector::AsVector()
+void CCPACSPointListRelXYZVector::SetAsVector(const std::vector<CTiglPoint>& points)
 {
-    return m_vec;
+    m_vec = points;
+
+    std::vector<double> x, y, z;
+    for (std::vector<CTiglPoint>::const_iterator it = m_vec.begin(); it != m_vec.end(); ++it) {
+        x.push_back(it->x);
+        y.push_back(it->y);
+        z.push_back(it->z);
+    }
+    GetRX().SetAsVector(x);
+    GetRY().SetAsVector(y);
+    GetRZ().SetAsVector(z);
+    // no invalidation necessary, done by m_rX, m_rY, m_rZ
 }
 
 } // namespace tigl

@@ -34,6 +34,7 @@
 #include "CTiglCurveConnector.h"
 #include "CTiglMakeLoft.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CTiglTopoAlgorithms.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -81,13 +82,11 @@ CCPACSFuselage::~CCPACSFuselage()
 }
 
 // Invalidates internal state
-void CCPACSFuselage::Invalidate()
+void CCPACSFuselage::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     loft.clear();
     guideCurves.clear();
     m_segments.Invalidate();
-    if (m_positionings)
-        m_positionings->Invalidate();
     if (m_structure)
         m_structure->Invalidate();
 }
@@ -142,6 +141,24 @@ PNamedShape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs) const
         loft->SetShape(transformedLoft);
         return loft;
     }
+}
+
+void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis)
+{
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
+
+void CCPACSFuselage::SetTransformation(const CCPACSTransformation& transform)
+{
+    CTiglRelativelyPositionedComponent::SetTransformation(transform);
+    Invalidate();
+}
+
+void CCPACSFuselage::SetParentUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSFuselage::SetParentUID(value);
+    Invalidate();
 }
 
 // Get section count
@@ -215,7 +232,8 @@ std::string CCPACSFuselage::GetShortShapeName () const
 
 void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 {
-    int nFaces = GetNumberOfFaces(loft->Shape());
+    int nFacesTotal = GetNumberOfFaces(loft->Shape());
+    int nFacesAero = nFacesTotal;
     bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
 
     std::vector<std::string> names;
@@ -224,16 +242,17 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
     names.push_back("Front");
     names.push_back("Rear");
 
+    if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(1).GetStartWire())) {
+          nFacesAero-=1;
+    }
+    if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(GetSegmentCount()).GetEndWire())) {
+          nFacesAero-=1;
+    }
+
     // if we have a smooth surface, the whole fuslage is treatet as one segment
     int nSegments = this->GetSegmentCount();
 
-    // the number of faces per segment depends on the number of guide curves and the existence of the symmetry plane
-    int facesPerSegment = GetSegment(1).GetNumberOfLoftFaces();
-    int remainingFaces = nFaces - facesPerSegment * nSegments;
-    if (facesPerSegment == 0 || remainingFaces < 0 || remainingFaces > 2) {
-        LOG(WARNING) << "Fuselage faces cannot be names properly";
-        return;
-    }
+    int facesPerSegment = nFacesAero/ nSegments;
 
     int iFaceTotal = 0;
     int nSymmetryFaces = (int) hasSymmetryPlane;
@@ -248,7 +267,7 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 
     // set the caps
     int iFace = 2;
-    for (;iFaceTotal < nFaces; ++iFaceTotal) {
+    for (;iFaceTotal < nFacesTotal; ++iFaceTotal) {
         loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
     }
 }

@@ -56,6 +56,7 @@ public:
 
     // Setter for scaling
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
+
 };
 
 } // end namespace tigl

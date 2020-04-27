@@ -42,16 +42,15 @@ class CCPACSPositionings : public generated::CPACSPositionings
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSPositionings(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPositionings(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPositionings(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPositionings(CCPACSWing* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSPositionings() override;
 
     // Read CPACS positionings element
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath) override;
-
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
 
     // Returns the positioning matrix for a given section-uid
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionIndex);

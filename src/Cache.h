@@ -87,7 +87,7 @@ namespace tigl
         const CacheStruct& operator*() const { return value(); }
         const CacheStruct* operator->() const { return &value(); }
 
-        void clear()
+        void clear() const
         {
             //boost::lock_guard<CheckedMutex> guard(m_mutex);
             boost::lock_guard<boost::mutex> guard(m_mutex);

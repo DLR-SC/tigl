@@ -26,10 +26,10 @@ CCPACSStringersAssembly::CCPACSStringersAssembly(CCPACSFuselageStructure* parent
 {
 }
 
-void CCPACSStringersAssembly::Invalidate()
+void CCPACSStringersAssembly::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 0; i < m_stringers.size(); i++) {
-        m_stringers[i]->Invalidate();
+        m_stringers[i]->Invalidate(source);
     }
 }
 

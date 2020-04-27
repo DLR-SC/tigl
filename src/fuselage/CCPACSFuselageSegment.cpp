@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -86,6 +86,7 @@
 #include <TopExp.hxx>
 #include "TopTools_IndexedMapOfShape.hxx"
 #include "BRepBuilderAPI_MakeVertex.hxx"
+#include "CTiglTopoAlgorithms.h"
 
 namespace
 {
@@ -143,6 +144,7 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTi
     , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParent())
     , fuselage(parent->GetParent())
     , surfacePropertiesCache(*this, &CCPACSFuselageSegment::UpdateSurfaceProperties)
+    , surfaceCache(*this, &CCPACSFuselageSegment::BuildSurfaces)
     , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
 {
     Cleanup();
@@ -163,9 +165,14 @@ void CCPACSFuselageSegment::Cleanup()
     CTiglAbstractGeometricComponent::Reset();
 }
 
-void CCPACSFuselageSegment::Invalidate()
+void CCPACSFuselageSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglAbstractSegment<CCPACSFuselageSegment>::Reset();
+    // forward invalidation to parent fuselage
+    const auto* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate(GetUID());
+    }
 }
 
 // Read CPACS segment elements
@@ -377,6 +384,40 @@ void CCPACSFuselageSegment::UpdateSurfaceProperties(SurfacePropertiesCache& cach
     cache.mySurfaceArea = AreaSystem.Mass();
 }
 
+void CCPACSFuselageSegment::BuildSurfaces(SurfaceCache& cache) const
+{
+    TopTools_IndexedMapOfShape faceMap;
+    TopoDS_Shape s = GetFacesByName(GetLoft(), GetUID());
+    TopExp::MapShapes(s, TopAbs_FACE, faceMap);
+
+    std::vector<double> parameters;
+    std::vector<Handle(Geom_BoundedSurface)> bsurfaces;
+
+    for (int idx = 1; idx <= faceMap.Extent(); ++idx) {
+        // get uv coordinates and 3d point on the face
+        TopoDS_Face face = TopoDS::Face(faceMap(idx));
+        Handle(Geom_BoundedSurface) surface = Handle(Geom_BoundedSurface)::DownCast(BRep_Tool::Surface(face));
+        bsurfaces.push_back(surface);
+    }
+
+    if ( GetGuideCurves() ) {
+        const CCPACSGuideCurves& segmentCurves = *GetGuideCurves();
+        parameters = segmentCurves.GetRelativeCircumferenceParameters();
+
+    }
+    else {
+        double umax = 0.;
+        for (const auto& surf : bsurfaces) {
+            double umin, vmin, vmax;
+            surf->Bounds(umin, umax, vmin, vmax);
+            parameters.push_back(umin);
+        }
+        parameters.push_back(umax);
+    }
+
+    cache.surface = CTiglCompoundSurface(bsurfaces, parameters);
+}
+
 // Returns the start section UID of this segment
 const std::string& CCPACSFuselageSegment::GetStartSectionUID() const
 {
@@ -568,39 +609,7 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta, TiglGetPointBeha
         profileLine->D0(param, profilePoint);
     }
     else if ( behavior == asParameterOnSurface) {
-        // extract faces of the fuselage segment. By construction, the faces span the entire eta range of the segment,
-        // while the zeta range is split at the guide curves or because of the symmetry.
-
-        TopTools_IndexedMapOfShape faceMap;
-        TopoDS_Shape s = GetFacesByName(GetLoft(), GetUID());
-        TopExp::MapShapes(s, TopAbs_FACE, faceMap);
-
-        // get the index of the first face that belongs to the current segment.
-        int faceIdx = 1;
-
-        assert (faceIdx > 0);
-        assert (faceIdx <= faceMap.Extent() );
-
-        // get the start and end zeta coordinates of the subfaces and the index of the face at zeta.
-        // By construction, we can use the guide curves for this. If there are no guide curves,
-        // there should be only one face spanning the entire zeta range
-        double startZeta = 0.;
-        double endZeta = 1.;
-        if ( GetGuideCurves() ) {
-            int idx = 0;
-            const CCPACSGuideCurves& segmentCurves = *GetGuideCurves();
-            segmentCurves.GetRelativeCircumferenceRange(zeta, startZeta, endZeta, idx);
-            faceIdx += idx;
-        }
-
-        // get uv coordinates and 3d point on the face
-        TopoDS_Face face = TopoDS::Face(faceMap(faceIdx));
-        Handle_Geom_Surface surface = BRep_Tool::Surface(face);
-        double umin, umax, vmin, vmax;
-        surface->Bounds(umin, umax, vmin, vmax);
-        double u = umin + (zeta - startZeta)/(endZeta-startZeta)*(umax - umin);
-        double v = vmin + eta*(vmax - vmin);
-        surface->D0(u, v, profilePoint);
+        return surfaceCache->surface.Value(zeta, eta);
     }
     else {
         throw CTiglError("CCPACSFuselageSegment::GetPoint: Unknown TiglGetPointBehavior passed as argument.", TIGL_INDEX_ERROR);
@@ -877,15 +886,20 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
 // Returns the number of faces in the loft. This depends on the number of guide curves as well as if the fuselage has a symmetry plane.
 TIGL_EXPORT int CCPACSFuselageSegment::GetNumberOfLoftFaces() const
 {
-    int facesPerSegment = 0;
-    if ( GetGuideCurves() ) {
-        facesPerSegment = GetGuideCurves()->GetGuideCurveCount();
+
+    // no guide curves, therefore we either have one or two faces, depending on the symmetry plane
+    bool hasSymmetryPlane = GetNumberOfEdges(GetEndWire()) > 1;
+    int nfaces = GetNumberOfFaces(GetFuselage().GetLoft()->Shape());
+    int nSegments = GetFuselage().GetSegmentCount();
+
+    if (!CTiglTopoAlgorithms::IsDegenerated(GetFuselage().GetSegment(1).GetStartWire())) {
+          nfaces-=1;
     }
-    else {
-        // no guide curves, therefore we either have one or two faces, depending on the symmetry plane
-        bool hasSymmetryPlane = GetNumberOfEdges(GetEndWire()) > 1;
-        facesPerSegment = hasSymmetryPlane? 2 : 1;
+    if (!CTiglTopoAlgorithms::IsDegenerated(GetFuselage().GetSegment(GetFuselage().GetSegmentCount()).GetEndWire())) {
+          nfaces-=1;
     }
+
+    int facesPerSegment = nfaces / nSegments;
     return facesPerSegment;
 }
 } // end namespace tigl

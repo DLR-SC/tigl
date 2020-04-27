@@ -19,9 +19,12 @@
 #ifndef TIGLCOMMONFUNCTIONS_H
 #define TIGLCOMMONFUNCTIONS_H
 
-#include "tigl_internal.h"
+
+
 #include "CCPACSImportExport.h"
 #include "Standard.hxx"
+#include "Standard_values.h"
+#include "tigl_internal.h"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
 #include "gp_Pln.hxx"
@@ -91,6 +94,11 @@ TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt 
 
 // calculates the alpha value for a given point on a wire
 TIGL_EXPORT Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire& wire, gp_Pnt p, gp_Dir rotationAxisAroundP, double angle);
+
+// projects a point onto a plane and returns the point in parameters of the plane
+TIGL_EXPORT gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p);
+
+TIGL_EXPORT gp_Pnt ProjectPointOnShape(const TopoDS_Shape& shape, const gp_Pnt& point, const gp_Vec& direction);
 
 // checks, whether a face is in between two points
 TIGL_EXPORT bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2);
@@ -285,6 +293,9 @@ TIGL_EXPORT int Clamp(int val, int min, int max);
 TIGL_EXPORT double Clamp(double val, double min, double max);
 TIGL_EXPORT size_t Clamp(size_t val, size_t min, size_t max);
 
+// linearly interpolate between two values result = x*(1−a)+y*a.
+TIGL_EXPORT double Mix(double x, double y, double a);
+
 // Creates a linear spaces array but with some additional breaking points
 // If the breaking points are very close to a point, the point will be replaced
 // Else, the breaking point will be inserted
@@ -296,6 +307,8 @@ TIGL_EXPORT TopoDS_Shape TransformedShape(const tigl::CTiglRelativelyPositionedC
 
 /// Converters between std::vectors and opencascade vectors
 TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts);
+TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<tigl::CTiglPoint>& pnts);
+
 TIGL_EXPORT Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector);
 TIGL_EXPORT Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector);
 

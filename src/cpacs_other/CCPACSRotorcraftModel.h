@@ -31,7 +31,7 @@ class CCPACSRotorcraftModel : public generated::CPACSRotorcraftModel, public CTi
 public:
     // Construct
     TIGL_EXPORT CCPACSRotorcraftModel(CCPACSConfiguration* config = NULL);
-    TIGL_EXPORT CCPACSRotorcraftModel(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSRotorcraftModel(CCPACSRotorcraft* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
@@ -40,8 +40,6 @@ public:
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
-
-    void Invalidate();
 
 protected:
     PNamedShape BuildLoft() const override;

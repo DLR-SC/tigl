@@ -23,7 +23,6 @@ CPACSPoint                         CCPACSPoint
 CPACSPointAbsRel                   CCPACSPointAbsRel
 CPACSTransformation                CCPACSTransformation
 CPACSStringVectorBase              CCPACSStringVector
-CPACSPointListXYZVector            CCPACSPointListXYZVector
 CPACSPointListRelXYZVector         CCPACSPointListRelXYZVector
 CPACSPointListXYVector			   CCPACSPointListXYVector
 CPACSPointListXY                   CCPACSPointListXY
@@ -31,6 +30,10 @@ CPACSGenericGeometricComponent     CCPACSExternalObject
 CPACSGenericGeometryComponents     CCPACSExternalObjects
 CPACSEtaIsoLine                    CCPACSEtaIsoLine
 CPACSXsiIsoLine                    CCPACSXsiIsoLine
+CPACSEtaXsiPoint                   CCPACSEtaXsiPoint
+CPACSCurvePoint                    CCPACSCurvePoint
+CPACSCurveParamPointMap            CCPACSCurveParamPointMap
+CPACSCurvePointListXYZ             CCPACSCurvePointListXYZ
 
 CPACSFuselage                      CCPACSFuselage
 CPACSFuselages                     CCPACSFuselages
@@ -115,15 +118,10 @@ CPACSWalls                                CCPACSWalls
 
 // control surfaces
 CPACSControlSurfaces                      CCPACSControlSurfaces
-CPACSControlSurfaceSkinCutOut             CCPACSControlSurfaceSkinCutout
-CPACSControlSurfaceSteps                  CCPACSControlSurfaceSteps
-CPACSControlSurfaceStep                   CCPACSControlSurfaceStep
-CPACSControlSurfaceHingePoint             CCPACSControlSurfaceHingePoint
-CPACSControlSurfaceTrackType              CCPACSControlSurfaceTrackType
 CPACSControlSurfaceBorderTrailingEdge     CCPACSControlSurfaceBorderTrailingEdge
-CPACSControlSurfaceSkinCutOutBorder       CCPACSControlSurfaceSkinCutOutBorder
 CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
-CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
+CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
+CPACSControlSurfaceWingCutOut             CCPACSControlSurfaceWingCutOut
 
 // Pylons
 CPACSEnginePylon                         CCPACSEnginePylon
@@ -137,6 +135,6 @@ CPACSNacelleCowl                         CCPACSNacelleCowl
 CPACSNacelleSections                     CCPACSNacelleSections
 CPACSNacelleSection                      CCPACSNacelleSection
 CPACSProfileGeometry2D                   CCPACSNacelleProfile
-CPACSNacelleGuideCurves					         CCPACSNacelleGuideCurves
+CPACSNacelleGuideCurves                  CCPACSNacelleGuideCurves
 CPACSRotationCurve                       CCPACSRotationCurve
 CPACSNacelleCenterCowl                   CCPACSNacelleCenterCowl

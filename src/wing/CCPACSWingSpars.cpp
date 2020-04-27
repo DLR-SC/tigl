@@ -22,9 +22,9 @@ namespace tigl
 CCPACSWingSpars::CCPACSWingSpars(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSpar(structure, uidMgr) {}
 
-void CCPACSWingSpars::Invalidate()
+void CCPACSWingSpars::Invalidate(const boost::optional<std::string>& source) const
 {
-    m_sparSegments.Invalidate();
+    m_sparSegments.Invalidate(source);
 }
 
 } // end namespace tigl

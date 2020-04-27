@@ -24,7 +24,7 @@ namespace tigl
 class CCPACSWingSparPositionUIDs : public generated::CPACSSparPositionUIDs
 {
 public:
-    TIGL_EXPORT CCPACSWingSparPositionUIDs();
+    TIGL_EXPORT CCPACSWingSparPositionUIDs(CCPACSWingSparSegment* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT int GetSparPositionUIDCount() const;
     TIGL_EXPORT const std::string& GetSparPositionUID(int index) const;

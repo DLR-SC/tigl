@@ -22,6 +22,8 @@
 #ifndef CCPACSWINGPROFILES_H
 #define CCPACSWINGPROFILES_H
 
+#include <boost/optional.hpp>
+
 #include "generated/CPACSWingAirfoils.h"
 #include "tigl_internal.h"
 #include "CCPACSWingProfile.h"
@@ -34,7 +36,7 @@ namespace tigl
 class CCPACSWingProfiles : public generated::CPACSWingAirfoils
 {
 public:
-    TIGL_EXPORT CCPACSWingProfiles(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr);
 
     // Read CPACS wing profiles
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
@@ -52,7 +54,7 @@ public:
 
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 
 } // end namespace tigl

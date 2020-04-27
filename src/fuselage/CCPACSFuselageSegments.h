@@ -22,6 +22,9 @@
 #ifndef CCPACSFUSELAGESEGMENTS_H
 #define CCPACSFUSELAGESEGMENTS_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSFuselageSegments.h"
 
 namespace tigl
@@ -34,7 +37,7 @@ public:
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
     // Gets a segment by index.
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);

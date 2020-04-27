@@ -169,4 +169,30 @@ namespace tixi
         };
         TixiSaveElementsInternal(tixiHandle, xpath, children, writer);
     }
+
+    inline void TixiCreateSequenceElementIfNotExists(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<std::string>& childElemOrder)
+    {
+        // in case element already exists, nothing left to do
+        if (TixiCheckElement(tixiHandle, xpath)) {
+            return;
+        }
+        const auto sp = internal::splitXPath(xpath);
+        const auto numChildren = tixi::TixiGetNumberOfChilds(tixiHandle, sp.parentXPath);
+        // find place of new element in sequence
+        auto it = std::find(childElemOrder.begin(), childElemOrder.end(), sp.element);
+        if (numChildren > 0 && it != childElemOrder.end()) {
+            // search for the first existing element which has to be after the new element
+            while (++it != childElemOrder.end()) {
+                for (int i = 1; i <= numChildren; i++) {
+                    if (TixiGetChildNodeName(tixiHandle, sp.parentXPath, i) == *it) {
+                        tixiCreateElementAtIndex(tixiHandle, sp.parentXPath.c_str(), sp.element.c_str(), i);
+                        return;
+                    }
+                }
+            }
+        }
+        // in case no place for insertion was found append the new element
+        TixiCreateElement(tixiHandle, xpath);
+    }
+
 }

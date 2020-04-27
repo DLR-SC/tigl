@@ -55,13 +55,14 @@ public:
     // Virtual destructor
     TIGL_EXPORT ~CCPACSWing() override;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath) override;
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
+
+    // Override setters for invalidation
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+    TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value) override;
 
     // Returns whether this wing is a rotor blade
     TIGL_EXPORT bool IsRotorBlade() const;
@@ -107,6 +108,9 @@ public:
 
     // Gets the loft of the whole wing
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge();
+
+    // Returns the wing loft with cutted out control surfaces
+    TIGL_EXPORT TopoDS_Shape GetLoftWithCutouts();
         
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
@@ -161,6 +165,12 @@ public:
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound GetGuideCurveWires() const;
 
+    // Adjust, whether the wing should be modeled with the flaps or not
+    TIGL_EXPORT void SetBuildFlaps(bool enabled);
+
+    // Returns the wing shape without any extended flaps
+    TIGL_EXPORT PNamedShape GetWingCleanShape() const;
+
 protected:
     void BuildGuideCurveWires(TopoDS_Compound& cache) const;
 
@@ -173,15 +183,21 @@ protected:
     void Update();
 
     // Adds all Segments of this wing to one shape
-    PNamedShape BuildFusedSegments(bool splitWingInUpperAndLower) const;
+    void BuildFusedSegments(PNamedShape& ) const;
         
     PNamedShape BuildLoft() const override;
         
     void BuildUpperLowerShells();
 
 private:
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     // get short name for loft
     std::string GetShortShapeName() const;
+    void BuildWingWithCutouts(PNamedShape&) const;
+    // Adds all Segments of this wing and flaps to one shape
+    PNamedShape GroupedFlapsAndWingShapes() const;
 
 private:
     bool                           isRotorBlade;             /**< Indicates if this wing is a rotor blade */
@@ -190,10 +206,12 @@ private:
     TopoDS_Shape                   upperShape;
     TopoDS_Shape                   lowerShape;
     Cache<TopoDS_Compound, CCPACSWing> guideCurves;
-    bool                           invalidated;              /**< Internal state flag */
-    bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
-    bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
-    bool                           rebuildShells;
+
+    Cache<PNamedShape, CCPACSWing> wingShapeWithCutouts;     /**< Wing without flaps / flaps removed */
+    Cache<PNamedShape, CCPACSWing> wingCleanShape;           /**< Clean wing surface without flaps cutout*/
+    mutable bool                   rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
+    mutable bool                   rebuildShells;
+    bool                           buildFlaps;               /**< Indicates if the wing's loft shall include flaps */
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
 

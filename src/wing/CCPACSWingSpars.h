@@ -16,6 +16,9 @@
 #ifndef CCPACSWINGSPARS_H
 #define CCPACSWINGSPARS_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSWingSpar.h"
 
 namespace tigl
@@ -25,7 +28,7 @@ class CCPACSWingSpars : public generated::CPACSWingSpar
 public:
     TIGL_EXPORT CCPACSWingSpars(CCPACSWingCSStructure* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 } // end namespace tigl
 

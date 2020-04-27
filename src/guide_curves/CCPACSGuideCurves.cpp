@@ -26,8 +26,13 @@
 
 namespace tigl
 {
-CCPACSGuideCurves::CCPACSGuideCurves(CTiglUIDManager* uidMgr)
-    : generated::CPACSGuideCurves(uidMgr) {}
+
+CCPACSGuideCurves::CCPACSGuideCurves(CCPACSFuselageSegment* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurves(parent, uidMgr) {}
+
+CCPACSGuideCurves::CCPACSGuideCurves(CCPACSWingSegment* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurves(parent, uidMgr) {}
+
 
 void CCPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSGuideCurves::ReadCPACS(tixiHandle, xpath);
@@ -89,10 +94,7 @@ bool CCPACSGuideCurves::GuideCurveExists(std::string uid) const
     return false;
 }
 
-void CCPACSGuideCurves::GetRelativeCircumferenceRange(double relCirc,
-                                                      double& relCircStart,
-                                                      double& relCircEnd,
-                                                      int& idx) const
+std::vector<double> CCPACSGuideCurves::GetRelativeCircumferenceParameters() const
 {
     std::vector<double> relCircs;
     for (int iguide = 1; iguide <=  GetGuideCurveCount(); ++iguide) {
@@ -104,6 +106,16 @@ void CCPACSGuideCurves::GetRelativeCircumferenceRange(double relCirc,
     }
 
     std::sort(relCircs.begin(), relCircs.end());
+
+    return relCircs;
+}
+
+void CCPACSGuideCurves::GetRelativeCircumferenceRange(double relCirc,
+                                                      double& relCircStart,
+                                                      double& relCircEnd,
+                                                      int& idx) const
+{
+    std::vector<double> relCircs = GetRelativeCircumferenceParameters();
 
     // probably best to assert for performance reasons...
     assert( relCircs.size() > 0 );

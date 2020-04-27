@@ -79,7 +79,7 @@ CCPACSWingSparSegment::CCPACSWingSparSegment(CCPACSWingSparSegments* sparSegment
     Invalidate();
 }
 
-void CCPACSWingSparSegment::Invalidate()
+void CCPACSWingSparSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     auxGeomCache.clear();
     geometryCache.clear();
@@ -151,7 +151,7 @@ void CCPACSWingSparSegment::GetEtaXsi(int positionIndex, double& eta, double& xs
     const std::string& sparPositionUID = m_sparPositionUIDs.GetSparPositionUID(positionIndex);
     const CCPACSWingSparPosition& sparPosition = sparsNode.GetSparPositions().GetSparPosition(sparPositionUID);
 
-    CTiglWingStructureReference refCS(*sparsNode.GetParent());
+    const CTiglWingStructureReference refCS(*sparsNode.GetParent());
 
     if (sparPosition.isOnRib() || sparPosition.GetReferenceUID() != refCS.GetUID()) {
         gp_Pnt sparPositionPoint = GetMidplanePoint(sparPositionUID);

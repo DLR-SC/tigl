@@ -28,10 +28,10 @@ namespace tigl
 CCPACSWingSparSegments::CCPACSWingSparSegments(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSSparSegments(parent, uidMgr) {}
 
-void CCPACSWingSparSegments::Invalidate()
+void CCPACSWingSparSegments::Invalidate(const boost::optional<std::string>& source) const
 {
     for (auto& s : m_sparSegments) {
-        s->Invalidate();
+        s->Invalidate(source);
     }
 }
 

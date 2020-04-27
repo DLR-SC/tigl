@@ -107,7 +107,7 @@ protected:
 */
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfile)
 {
-    tigl::CCPACSGuideCurveProfile guideCurve(NULL);
+    tigl::CCPACSGuideCurveProfile guideCurve(NULL, NULL);
     guideCurve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[5]");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
@@ -118,7 +118,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfile)
 */
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfiles)
 {
-    tigl::CCPACSGuideCurveProfiles guideCurves(NULL);
+    tigl::CCPACSGuideCurveProfiles guideCurves(NULL, NULL);
     guideCurves.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves");
     ASSERT_EQ(guideCurves.GetGuideCurveProfileCount(), 6);
     tigl::CCPACSGuideCurveProfile& guideCurve = guideCurves.GetGuideCurveProfile("GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
@@ -131,7 +131,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfiles)
 */
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurve)
 {
-    tigl::CCPACSGuideCurve guideCurve(NULL);
+    tigl::CCPACSGuideCurve guideCurve(NULL, NULL);
     guideCurve.ReadCPACS(tixiHandle, "/cpacs/vehicles/aircraft/model/wings/wing/segments/segment[1]/guideCurves/guideCurve[1]");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower");
     ASSERT_EQ(guideCurve.GetName(), "Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element ");
@@ -146,7 +146,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurve)
 */
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurves)
 {
-    tigl::CCPACSGuideCurves guideCurves(NULL);
+    tigl::CCPACSGuideCurves guideCurves((tigl::CCPACSWingSegment*)NULL, NULL);
     guideCurves.ReadCPACS(tixiHandle, "/cpacs/vehicles/aircraft/model/wings/wing/segments/segment[2]/guideCurves");
     ASSERT_EQ(guideCurves.GetGuideCurveCount(), 3);
     const tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve("GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge");
@@ -359,7 +359,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     outerWireContainer.Append(outerUpperEdge);
 
     // get guide curve profile
-    tigl::CCPACSGuideCurveProfile guideCurveProfile(NULL);
+    tigl::CCPACSGuideCurveProfile guideCurveProfile(NULL, NULL);
     guideCurveProfile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves/guideCurveProfile[5]");
 
 

@@ -30,6 +30,7 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglTransformation.h"
+#include "CTiglUIDObject.h"
 #include "CWireToCurve.h"
 #include "math.h"
 
@@ -44,14 +45,30 @@
 namespace tigl
 {
 // Constructor
-CCPACSWingProfileCST::CCPACSWingProfileCST()
-    : wireCache(*this, &CCPACSWingProfileCST::BuildWires)
+CCPACSWingProfileCST::CCPACSWingProfileCST(CCPACSProfileGeometry* parent)
+    : generated::CPACSCst2D(parent)
+    , wireCache(*this, &CCPACSWingProfileCST::BuildWires)
 {
 }
 
-void CCPACSWingProfileCST::Invalidate()
+// Constructor
+CCPACSWingProfileCST::CCPACSWingProfileCST(CCPACSNacelleProfile* parent)
+    : generated::CPACSCst2D(parent)
+    , wireCache(*this, &CCPACSWingProfileCST::BuildWires)
+{
+}
+
+void CCPACSWingProfileCST::Invalidate() const
 {
     wireCache.clear();
+}
+
+void CCPACSWingProfileCST::InvalidateParent() const
+{
+    const CTiglUIDObject* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate();
+    }
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
@@ -124,6 +141,36 @@ void CCPACSWingProfileCST::BuildWires(WireCache& cache) const
 const std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints() const {
     static std::vector<CTiglPoint> dummy;
     return dummy;
+}
+
+void CCPACSWingProfileCST::SetUpperN1(const double& value)
+{
+    generated::CPACSCst2D::SetUpperN1(value);
+    InvalidateParent();
+}
+
+void CCPACSWingProfileCST::SetUpperN2(const double& value)
+{
+    generated::CPACSCst2D::SetUpperN2(value);
+    InvalidateParent();
+}
+
+void CCPACSWingProfileCST::SetLowerN1(const double& value)
+{
+    generated::CPACSCst2D::SetLowerN1(value);
+    InvalidateParent();
+}
+
+void CCPACSWingProfileCST::SetLowerN2(const double& value)
+{
+    generated::CPACSCst2D::SetLowerN2(value);
+    InvalidateParent();
+}
+
+void CCPACSWingProfileCST::SetTrailingEdgeThickness(const boost::optional<double>& value)
+{
+    generated::CPACSCst2D::SetTrailingEdgeThickness(value);
+    InvalidateParent();
 }
 
 // get upper wing profile wire
@@ -217,7 +264,7 @@ const gp_Pnt & CCPACSWingProfileCST::GetTEPoint() const
 
 bool CCPACSWingProfileCST::HasBluntTE() const
 {
-    return m_trailingEdgeThickness && *m_trailingEdgeThickness > 0 ? true : false;
+    return m_trailingEdgeThickness && *m_trailingEdgeThickness > 0;
 }
 
 } // end namespace tigl

@@ -52,7 +52,7 @@ CCPACSFrame::CCPACSFrame(CCPACSFramesAssembly* parent, CTiglUIDManager* uidMgr)
 {
 }
 
-void CCPACSFrame::Invalidate()
+void CCPACSFrame::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geomCache1D.clear();
     m_geomCache3D.clear();

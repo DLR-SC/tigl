@@ -38,8 +38,8 @@ namespace {
     }
 }
 
-CCPACSWingCellPositionSpanwise::CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent)
-    : generated::CPACSCellPositioningSpanwise(parent) {}
+CCPACSWingCellPositionSpanwise::CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSCellPositioningSpanwise(parent, uidMgr) {}
 
 CCPACSWingCellPositionSpanwise::InputType CCPACSWingCellPositionSpanwise::GetInputType() const {
     if (m_eta1_choice1 && m_eta2_choice1)

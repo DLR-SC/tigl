@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSCargoCrossBeamsAssembly.h"
 
 namespace tigl
@@ -25,7 +28,7 @@ class CCPACSCargoCrossBeamsAssembly : public generated::CPACSCargoCrossBeamsAsse
 public:
     TIGL_EXPORT CCPACSCargoCrossBeamsAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 
 } // namespace tigl

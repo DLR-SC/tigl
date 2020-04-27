@@ -24,7 +24,8 @@
 namespace tigl
 {
 
-CCPACSWingSparPositionUIDs::CCPACSWingSparPositionUIDs()
+CCPACSWingSparPositionUIDs::CCPACSWingSparPositionUIDs(CCPACSWingSparSegment* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSSparPositionUIDs(parent, uidMgr)
 {
 }
 

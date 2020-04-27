@@ -60,9 +60,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSWingSegment() override;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) override;
 
@@ -232,26 +229,27 @@ public:
     TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
 
 protected:
-    // Cleanup routine
-    void Cleanup();
-
-    // Update internal segment data
-    void Update();
-
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft() const override;
 
 private:
     struct SurfaceCache
     {
-        CTiglPointTranslator cordSurface;
-        CTiglPointTranslator cordSurfaceLocal;
-        Handle(Geom_Surface) cordFace;
         Handle(Geom_Surface) upperSurface;
         Handle(Geom_Surface) lowerSurface;
         Handle(Geom_Surface) upperSurfaceLocal;
         Handle(Geom_Surface) lowerSurfaceLocal;
     };
+
+    struct ChordSurfaceCache
+    {
+        CTiglPointTranslator cordSurface;
+        CTiglPointTranslator cordSurfaceLocal;
+        Handle(Geom_Surface) cordFace;
+    };
+
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
     // get short name for loft
     std::string GetShortShapeName () const;
@@ -260,6 +258,7 @@ private:
     void ComputeArea(double& cache) const;
 
     // Builds the chord surface
+    void MakeChordSurfaces(ChordSurfaceCache& cache) const;
     void MakeSurfaces(SurfaceCache& cache) const;
 
     void ComputeVolume(double& cache) const;
@@ -280,6 +279,7 @@ private:
                                                  * nonsmooth fuselage                       */
 
     Cache<SurfaceCache, CCPACSWingSegment> surfaceCache;
+    Cache<ChordSurfaceCache, CCPACSWingSegment> chordSurfaceCache;
     Cache<double, CCPACSWingSegment>            areaCache;
     Cache<double, CCPACSWingSegment>            volumeCache;
 

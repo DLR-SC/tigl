@@ -40,7 +40,7 @@ CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent()
 {
 }
 
-void CTiglAbstractGeometricComponent::Reset() {
+void CTiglAbstractGeometricComponent::Reset() const {
     bounding_box.clear();
     loft.clear();
 }
@@ -67,32 +67,26 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
         return PNamedShape();
     }
 
-    gp_Ax2 mirrorPlane;
+    CTiglTransformation trafo;
     if (symmetryAxis == TIGL_X_Z_PLANE) {
-        mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,1.,0.));
+        trafo.AddMirroringAtXZPlane();
     }
     else if (symmetryAxis == TIGL_X_Y_PLANE) {
-        mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,0.,1.));
+        trafo.AddMirroringAtXYPlane();
     }
     else if (symmetryAxis == TIGL_Y_Z_PLANE) {
-        mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(1.,0.,0.));
+        trafo.AddMirroringAtYZPlane();
     }
 
-    gp_Trsf theTransformation;
-    theTransformation.SetMirror(mirrorPlane);
-    const PNamedShape& loft = GetLoft();
-    BRepBuilderAPI_Transform myBRepTransformation(loft->Shape(), theTransformation);
-    std::string mirrorName = loft->Name();
+    PNamedShape mirroredShape = trafo.Transform(GetLoft());
+
+    std::string mirrorName = mirroredShape->Name();
     mirrorName += "M";
-    std::string mirrorShortName = loft->ShortName();
+    std::string mirrorShortName = mirroredShape->ShortName();
     mirrorShortName += "M";
-    TopoDS_Shape mirroredShape = myBRepTransformation.Shape();
-    
-    PNamedShape mirroredPNamedShape(new CNamedShape(*loft));
-    mirroredPNamedShape->SetShape(mirroredShape);
-    mirroredPNamedShape->SetName(mirrorName.c_str());
-    mirroredPNamedShape->SetShortName(mirrorShortName.c_str());
-    return mirroredPNamedShape;
+    mirroredShape->SetName(mirrorName.c_str());
+    mirroredShape->SetShortName(mirrorShortName.c_str());
+    return mirroredShape;
 }
 
 bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt) 

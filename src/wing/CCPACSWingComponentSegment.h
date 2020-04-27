@@ -64,9 +64,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSWingComponentSegment() override;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) override;
 
@@ -183,6 +180,8 @@ public:
 
     TIGL_EXPORT const CTiglWingChordface& GetChordface() const;
 
+    // get short name for the CS
+    TIGL_EXPORT std::string GetShortName() const;
 private:
     struct GeometryCache {
         TopoDS_Shape loftShape;
@@ -200,6 +199,9 @@ private:
         TopoDS_Wire  trailingEdgeLine;         // trailing edge as wire
     };
 
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     // Cleanup routine
     void Cleanup();
 
@@ -214,8 +216,6 @@ private:
     void BuildLines(LinesCache& cache) const; // Method for building wires for eta-, leading edge-, trailing edge-lines
 
 private:
-    // get short name for loft
-    std::string GetShortShapeName() const;
 
     std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 

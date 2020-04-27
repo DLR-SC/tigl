@@ -94,7 +94,7 @@ unsigned int CNamedShape::GetFaceCount() const
 {
     TopTools_IndexedMapOfShape faceMap;
     TopExp::MapShapes(_myshape, TopAbs_FACE, faceMap);
-    return faceMap.Extent();
+    return static_cast<unsigned int>(faceMap.Extent());
 }
 
 void CNamedShape::SetShape(const TopoDS_Shape& shape)
@@ -127,12 +127,12 @@ void CNamedShape::InitFaceTraits()
     }
 }
 
-const CFaceTraits& CNamedShape::GetFaceTraits(int iFace) const
+const CFaceTraits& CNamedShape::GetFaceTraits(unsigned int iFace) const
 {
     return _myfaceTraits.at(iFace);
 }
 
-CFaceTraits& CNamedShape::FaceTraits(int iFace)
+CFaceTraits& CNamedShape::FaceTraits(unsigned int iFace)
 {
     return  _myfaceTraits.at(iFace);
 }
@@ -196,6 +196,16 @@ void CFaceTraits::SetDerivedFromShape(PNamedShape origin, unsigned int iface)
     if (!Origin()) {
         SetOrigin(origin);
     }
+}
+
+void CFaceTraits::SetTransformation(const tigl::CTiglTransformation& trafo)
+{
+    _localTransformation = trafo;
+}
+
+const tigl::CTiglTransformation& CFaceTraits::Transformation() const
+{
+    return _localTransformation;
 }
 
 

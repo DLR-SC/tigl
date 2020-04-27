@@ -24,13 +24,23 @@ namespace tigl
 class CCPACSPoint : public generated::CPACSPoint
 {
 public:
-    TIGL_EXPORT CCPACSPoint(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(CCPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(CCPACSPointList* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(CCPACSSeatModule* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(CCPACSTransformation* parent, CTiglUIDManager* uidMgr);
+
     TIGL_EXPORT CCPACSPoint(const CCPACSPoint& p);
+    TIGL_EXPORT CCPACSPoint& operator=(const CCPACSPoint&);
 
     TIGL_EXPORT CTiglPoint AsPoint() const; // missing coordinates default to zero
     TIGL_EXPORT void SetAsPoint(const CTiglPoint& point);
 
-    TIGL_EXPORT CCPACSPoint& operator=(const CCPACSPoint&);
+    TIGL_EXPORT void SetX(const boost::optional<double>& value) override;
+    TIGL_EXPORT void SetY(const boost::optional<double>& value) override;
+    TIGL_EXPORT void SetZ(const boost::optional<double>& value) override;
+
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 };
 
 } // namespace tigl

@@ -34,14 +34,6 @@ CCPACSFuselages::CCPACSFuselages(CCPACSAircraftModel* parent, CTiglUIDManager* u
 CCPACSFuselages::CCPACSFuselages(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselages(parent, uidMgr) {}
 
-// Invalidates internal state
-void CCPACSFuselages::Invalidate()
-{
-    for (int i = 1; i <= GetFuselageCount(); i++) {
-        GetFuselage(i).Invalidate();
-    }
-}
-
 // Read CPACS fuselages element
 void CCPACSFuselages::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {

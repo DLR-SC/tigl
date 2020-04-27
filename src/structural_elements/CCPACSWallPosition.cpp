@@ -16,8 +16,6 @@
 * limitations under the License.
 */
 
-#pragma once
-
 #include "CNamedShape.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSWallPosition.h"
@@ -29,26 +27,30 @@
 #include "BRepBndLib.hxx"
 #include "gp_Lin.hxx"
 #include "IntCurvesFace_ShapeIntersector.hxx"
+#include "Debugging.h"
+#include <BRepBuilderAPI_MakeEdge.hxx>
 
 namespace {
 
-// The x coordinate is determined by an intersection of a line parallel
-// to the x-axes and a given shape.
-double GetXCoord(const TopoDS_Shape& shape, double cy, double cz, double bboxSize)
+// Computes the intersection point of a shape with a line
+gp_Pnt GetIntersectionPoint(const TopoDS_Shape& shape, gp_Pnt basePoint, gp_Vec xDir, double bboxSize)
 {
-    gp_Pnt xy_pnt(0.,cy,cz);
-    gp_Lin x_line (xy_pnt, gp_Dir(1.,0.,0.));
+    gp_Pnt xy_pnt = basePoint;
+    gp_Lin x_line (xy_pnt, xDir.XYZ());
     IntCurvesFace_ShapeIntersector intersector;
     intersector.Load(shape,1e-5);
     // ToDo: not sure if I interpret PInf and PSup correctly:
-    intersector.Perform(x_line,-bboxSize, bboxSize);
+    intersector.Perform(x_line, -bboxSize, bboxSize);
     int NbPnt = intersector.NbPnt();
     if (NbPnt == 1) {
-        gp_Pnt pnt = intersector.Pnt(1);
-        return pnt.Coord(1);
+        return intersector.Pnt(1);
     }
     else {
-        throw tigl::CTiglError("Number of intersection points in GetXCoord is not 1. Instead it is " + tigl::std_to_string(NbPnt));
+        DEBUG_SCOPE(onError);
+        onError.addShape(shape, "shape");
+        onError.addShape(BRepBuilderAPI_MakeEdge(x_line, -bboxSize, bboxSize), "line");
+
+        throw tigl::CTiglError("Number of intersection points in GetIntersectionPoint is not 1. Instead it is " + tigl::std_to_string(NbPnt));
     }
 }
 
@@ -70,32 +72,35 @@ void CCPACSWallPosition::CalcBasePointAndShape() const
     double bboxSize = sqrt(boundingBox.SquareExtent());
 
     // calculate base point and optional shape
-    double x = 0;
-    double y = GetY();
-    double z = GetZ();
+    gp_Pnt basePointTmp(0., GetY(), GetZ());
     if (GetX_choice4()) {
-        x = GetX_choice4().value();
+        basePointTmp.SetX(GetX_choice4().value());
     }
-    else if(GetBulkheadUID_choice1()) {
-        shape = GetUIDManager().GetGeometricComponent(GetBulkheadUID_choice1().value()).GetLoft()->Shape();
-        x = GetXCoord(*shape, y, z, bboxSize);
-    }
-    else if(GetWallSegmentUID_choice2()) {
-        const CCPACSFuselageWallSegment& wall = GetUIDManager().ResolveObject<CCPACSFuselageWallSegment>(GetWallSegmentUID_choice2().value());
-        if ( wall.GetDefaultedUID() == GetWallSegmentUID_choice2().value() ){
-            throw CTiglError("Fuselage wall references itself");
+    basePointTmp = fuselage.GetTransformationMatrix().Transform(basePointTmp);
+
+    if (!GetX_choice4()) {
+        if (GetBulkheadUID_choice1()) {
+            shape = GetUIDManager().GetGeometricComponent(GetBulkheadUID_choice1().value()).GetLoft()->Shape();
         }
-        shape = wall.GetLoft()->Shape();
-        x = GetXCoord(*shape, y, z, bboxSize);
+        else if(GetWallSegmentUID_choice2()) {
+            const CCPACSFuselageWallSegment& wall = GetUIDManager().ResolveObject<CCPACSFuselageWallSegment>(GetWallSegmentUID_choice2().value());
+            if ( wall.GetDefaultedUID() == GetWallSegmentUID_choice2().value() ){
+                throw CTiglError("Fuselage wall references itself");
+            }
+            shape = wall.GetLoft()->Shape();
+        }
+        else if (GetFuselageSectionUID_choice3()) {
+            shape = fuselage.GetSectionFace(GetFuselageSectionUID_choice3().value());
+        }
+        else {
+            throw CTiglError("Cannot determine wall position.");
+        }
+        // Compute the base point by intersecting the shape with the line
+        gp_Vec xDirGlobal = fuselage.GetTransformationMatrix().Transform(gp_Vec(1., 0., 0.));
+        basePointTmp = GetIntersectionPoint(*shape, basePointTmp, xDirGlobal, bboxSize);
+
     }
-    else if (GetFuselageSectionUID_choice3()) {
-        shape = fuselage.GetSectionFace(GetFuselageSectionUID_choice3().value());
-        x = GetXCoord(*shape, y, z, bboxSize);
-    }
-    else {
-        throw CTiglError("Cannot determine x coordinate of wall position.");
-    }
-    base_point = gp_Pnt(x,y,z);
+    base_point = basePointTmp;
     isBuilt = true;
 }
 
@@ -124,6 +129,68 @@ boost::optional<TopoDS_Shape> const& CCPACSWallPosition::GetShape() const
         CalcBasePointAndShape();
     }
     return shape;
+}
+
+void CCPACSWallPosition::SetBulkheadUID_choice1(const boost::optional<std::string>& value)
+{
+    CPACSWallPosition::SetBulkheadUID_choice1(value);
+
+    CPACSWallPosition::SetWallSegmentUID_choice2(boost::none);
+    CPACSWallPosition::SetFuselageSectionUID_choice3(boost::none);
+    CPACSWallPosition::SetX_choice4(boost::none);
+
+    Invalidate();
+}
+
+void CCPACSWallPosition::SetWallSegmentUID_choice2(const boost::optional<std::string>& value)
+{
+    CPACSWallPosition::SetWallSegmentUID_choice2(value);
+
+    CPACSWallPosition::SetBulkheadUID_choice1(boost::none);
+    CPACSWallPosition::SetFuselageSectionUID_choice3(boost::none);
+    CPACSWallPosition::SetX_choice4(boost::none);
+
+    Invalidate();
+}
+
+void CCPACSWallPosition::SetFuselageSectionUID_choice3(const boost::optional<std::string>& value)
+{
+    CPACSWallPosition::SetFuselageSectionUID_choice3(value);
+
+    CPACSWallPosition::SetBulkheadUID_choice1(boost::none);
+    CPACSWallPosition::SetWallSegmentUID_choice2(boost::none);
+    CPACSWallPosition::SetX_choice4(boost::none);
+
+    Invalidate();
+}
+
+void CCPACSWallPosition::SetX_choice4(const boost::optional<double>& value)
+{
+    CPACSWallPosition::SetX_choice4(value);
+
+    CPACSWallPosition::SetBulkheadUID_choice1(boost::none);
+    CPACSWallPosition::SetWallSegmentUID_choice2(boost::none);
+    CPACSWallPosition::SetFuselageSectionUID_choice3(boost::none);
+
+    Invalidate();
+}
+
+void CCPACSWallPosition::SetY(const double& value)
+{
+    CPACSWallPosition::SetY(value);
+    Invalidate();
+}
+
+void CCPACSWallPosition::SetZ(const double& value)
+{
+    CPACSWallPosition::SetZ(value);
+    Invalidate();
+}
+
+void CCPACSWallPosition::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    isBuilt = false;
+    shape   = boost::none;
 }
 
 const CCPACSWalls& CCPACSWallPosition::GetWalls() const

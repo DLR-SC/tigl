@@ -59,7 +59,7 @@ private:
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSGuideCurve(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSGuideCurve(CCPACSGuideCurves* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSGuideCurve(void) override;
@@ -83,6 +83,9 @@ private:
 
     // Assignment operator
     void operator=(const CCPACSGuideCurve&);
+
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
     void BuildCurve(TopoDS_Edge& cache) const;
 

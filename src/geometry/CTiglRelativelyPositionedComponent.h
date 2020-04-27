@@ -51,7 +51,7 @@ public:
     TIGL_EXPORT CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis);
     TIGL_EXPORT CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
 
-    TIGL_EXPORT void Reset();
+    TIGL_EXPORT void Reset() const;
 
     TIGL_EXPORT TiglSymmetryAxis GetSymmetryAxis() const override; // resolves to parent components if no symmetry is available
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis);

@@ -35,7 +35,10 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override { return TIGL_COMPONENT_ENGINE_PYLON; }
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override { return TIGL_INTENT_PHYSICAL; }
 
-    TIGL_EXPORT void Invalidate();
+    // Override setters for invalidation
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+    TIGL_EXPORT void SetTransformation(const CCPACSTransformation& transform) override;
+    TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value) override;
 
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionUID);
 
@@ -43,6 +46,10 @@ public:
 
 protected:
     virtual PNamedShape BuildLoft() const override;
+
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
 };
 
 } // end namespace tigl

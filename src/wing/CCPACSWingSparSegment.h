@@ -51,8 +51,6 @@ public:
 public:
     TIGL_EXPORT CCPACSWingSparSegment(CCPACSWingSparSegments* sparSegments, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
-
     TIGL_EXPORT CCPACSWingSparPosition& GetSparPosition(std::string);
     TIGL_EXPORT const CCPACSWingSparPosition& GetSparPosition(std::string) const;
 
@@ -109,6 +107,8 @@ private:
         TopoDS_Shape upperCapsShape;
         TopoDS_Shape lowerCapsShape;
     };
+
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
     void BuildAuxiliaryGeometry(AuxiliaryGeomCache& cache) const; // Builds the cutting geometry for the spar as well as the midplane line
     void BuildGeometry(GeometryCache& cache) const;

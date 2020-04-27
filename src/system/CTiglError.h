@@ -35,21 +35,18 @@ class CTiglError : public std::exception
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglError(std::string error = "", TiglReturnCode errorCode = TIGL_ERROR) throw();
+    TIGL_EXPORT CTiglError(std::string error = "", TiglReturnCode errorCode = TIGL_ERROR) noexcept;
 
     // Destructor
-    TIGL_EXPORT ~CTiglError() throw() override;
+    TIGL_EXPORT ~CTiglError() noexcept override;
 
     // Default copy constructor and assignment operator are correct since
     // memberwise copy is enough for this class.
 
-    // Returns the error string as C string (char*)
-    DEPRECATED TIGL_EXPORT virtual const char* getError() const throw();
-
-    TIGL_EXPORT const char* what() const throw() override;
+    TIGL_EXPORT const char* what() const noexcept override;
 
     // Returns the error code
-    TIGL_EXPORT virtual TiglReturnCode getCode() const throw();
+    TIGL_EXPORT virtual TiglReturnCode getCode() const noexcept;
 
 private:
     std::string    err;

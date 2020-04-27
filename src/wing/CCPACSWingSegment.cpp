@@ -186,43 +186,41 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
     , innerConnection(this)
     , outerConnection(this)
     , surfaceCache(*this, &CCPACSWingSegment::MakeSurfaces)
+    , chordSurfaceCache(*this, &CCPACSWingSegment::MakeChordSurfaces)
     , areaCache(*this, &CCPACSWingSegment::ComputeArea)
     , volumeCache(*this, &CCPACSWingSegment::ComputeVolume)
     , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
 {
-    Cleanup();
 }
 
 // Destructor
 CCPACSWingSegment::~CCPACSWingSegment()
 {
-    Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSWingSegment::Invalidate()
+void CCPACSWingSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
+    surfaceCache.clear();
     areaCache.clear();
     volumeCache.clear();
-}
-
-// Cleanup routine
-void CCPACSWingSegment::Cleanup()
-{
-    Invalidate();
-}
-
-// Update internal segment data
-void CCPACSWingSegment::Update()
-{
-    Invalidate();
+    // AIRBUS: added missing invalidation of guide curves
+    if (m_guideCurves) {
+        for (auto& guideCurve : m_guideCurves->GetGuideCurves()) {
+            guideCurve->Invalidate(GetUID());
+        }
+    }
+    // forward invalidation to parent wing/enginePylon
+    const auto* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate(GetUID());
+    }
 }
 
 // Read CPACS segment elements
 void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath)
 {
-    Cleanup();
     generated::CPACSWingSegment::ReadCPACS(tixiHandle, segmentXPath);
 
     // trigger creation of connections
@@ -249,8 +247,6 @@ void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
                          "All profiles must either have a sharp or a blunt trailing edge. "
                          "Mixing different profile types is not allowed.");
     }
-
-    Update();
 }
 
 std::string CCPACSWingSegment::GetDefaultedUID() const {
@@ -384,6 +380,21 @@ std::string CCPACSWingSegment::GetShortShapeName () const
     return shortName.str();
 }
 
+PNamedShape GetParentLoft(const CCPACSWingSegment& segment)
+{
+    if (segment.GetParent()->IsParent<CCPACSWing>()) {
+        const CCPACSWing* wing = segment.GetParent()->GetParent<CCPACSWing>();
+        return wing->GetWingCleanShape();
+    }
+    else if (segment.GetParent()->IsParent<CCPACSWing>()) {
+        const CCPACSEnginePylon* pylon = segment.GetParent()->GetParent<CCPACSEnginePylon>();
+        return pylon->GetLoft();
+    }
+    else {
+        throw CTiglError("Invalid parent type");
+    }
+}
+
 // Builds the loft between the two segment sections
 // build loft out of faces (for compatibility with component segmen loft)
 PNamedShape CCPACSWingSegment::BuildLoft() const
@@ -437,8 +448,7 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
     }
     else {
         const CCPACSWingSegments* segments = GetParent();
-        PNamedShape wingLoft = segments->GetParentComponent()->GetLoft();
-
+        PNamedShape wingLoft = GetParentLoft(*this);
 
         TopoDS_Shell loftShell;
         BRep_Builder BB;
@@ -933,7 +943,7 @@ bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
 
     // check if point on chord surface
     double tolerance = 0.03;
-    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCache->cordFace);
+    GeomAPI_ProjectPointOnSurf Proj(pnt, chordSurfaceCache->cordFace);
     if (Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance) {
         return true;
     }
@@ -969,7 +979,10 @@ void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
     cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(GetUpperShape()));
     cache.lowerSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetLowerShape(WING_COORDINATE_SYSTEM)));
     cache.upperSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetUpperShape(WING_COORDINATE_SYSTEM)));
+}
 
+void CCPACSWingSegment::MakeChordSurfaces(ChordSurfaceCache& cache) const
+{
     // make cordface
 
     const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
@@ -1015,10 +1028,10 @@ void CCPACSWingSegment::ComputeVolume(double& cache) const
 const CTiglPointTranslator& CCPACSWingSegment::ChordFace(TiglCoordinateSystem referenceCS) const
 {
     if (referenceCS == WING_COORDINATE_SYSTEM) {
-        return surfaceCache->cordSurfaceLocal;
+        return chordSurfaceCache->cordSurfaceLocal;
     }
     else {
-        return surfaceCache->cordSurface;
+        return chordSurfaceCache->cordSurface;
     }
 }
 

@@ -25,15 +25,21 @@
 
 #include <typeinfo>
 #include <map>
+#include <set>
 #include <string>
+#include <unordered_map>
 #include "tigl_internal.h"
 #include "CTiglError.h"
 #include "CTiglRelativelyPositionedComponent.h"
+#include "CTiglUIDObject.h"
+
 
 namespace tigl
 {
 typedef std::map<const std::string, ITiglGeometricComponent*> ShapeContainerType;
 typedef std::map<const std::string, CTiglRelativelyPositionedComponent*> RelativeComponentContainerType;
+
+class ITiglUIDRefObject;
 
 class CTiglUIDManager
 {
@@ -57,6 +63,12 @@ public:
     bool IsUIDRegistered(const std::string& uid) const
     {
         return IsUIDRegistered(uid, typeid(T));
+    }
+
+    template <typename T>
+    bool IsType(const std::string& uid) const
+    {
+        return ResolveObject(uid).type == &typeid(T);
     }
 
     template<typename T>
@@ -92,6 +104,26 @@ public:
     TIGL_EXPORT bool TryUnregisterObject(const std::string& uid); // returns false on failure
     TIGL_EXPORT void UnregisterObject(const std::string& uid); // throws on failure
 
+    TIGL_EXPORT void UpdateObjectUID(const std::string& oldUID, const std::string& newUID);
+
+    template <typename T>
+    void RegisterReference(const std::string& uid, T& object)
+    {
+        RegisterReference(uid, &object);
+    }
+
+    template <typename T>
+    bool TryUnregisterReference(const std::string& uid, T& object)
+    {
+        return TryUnregisterReference(uid, &object);
+    }
+
+    // Checks if a UID is referenced
+    TIGL_EXPORT bool IsReferenced(const std::string& uid) const;
+
+    // Returns all objects referencing the passed uid
+    TIGL_EXPORT std::set<const CTiglUIDObject*> GetReferences(const std::string& uid) const;
+
     // Checks if a UID already exists.
     TIGL_EXPORT bool HasGeometricComponent(const std::string& uid) const;
 
@@ -119,8 +151,18 @@ private:
 
     void RegisterObject(const std::string& uid, void* object, const std::type_info& typeInfo);
 
+    void RegisterReference(const std::string& targetUid, ITiglUIDRefObject* source);
+
+    bool TryUnregisterReference(const std::string& targetUid, ITiglUIDRefObject* source);
+
     // Removes a component from the UID Manager
     bool TryRemoveGeometricComponent(const std::string& uid); // returns false on failure
+
+    // Updates the uid of a component from the UID Manager
+    bool TryUpdateGeometricComponentUID(const std::string& oldUID, const std::string& newUID);
+
+    // Updates all uid references on UID change
+    void UpdateUIDReferences(const std::string& oldUID, const std::string& newUID);
 
     // Update internal UID manager data.
     void Update();
@@ -133,6 +175,8 @@ private:
 
 private:
     typedef std::map<std::string, TypedPtr> CPACSObjectMap;
+    typedef std::unordered_map<ITiglUIDRefObject*, int> UIDReferenceEntries;
+    typedef std::map<std::string, UIDReferenceEntries> UIDReferenceMap;
 
 private:
     // Copy constructor
@@ -146,6 +190,7 @@ private:
     CTiglRelativelyPositionedComponent* rootComponent;                  ///< Root component injected by configuration
     RelativeComponentContainerType      rootComponents;                 ///< All root components that have children
     CPACSObjectMap                      cpacsObjects;                   ///< All objects in CPACS which have a UID
+    UIDReferenceMap                     uidReferences;                  ///< All references to a specific UID
     bool                                invalidated;                    ///< Internal state flag
 };
 

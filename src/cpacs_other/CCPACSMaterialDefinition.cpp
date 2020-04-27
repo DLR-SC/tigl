@@ -22,8 +22,20 @@
 
 namespace tigl
 {
-CCPACSMaterialDefinition::CCPACSMaterialDefinition()
-    : generated::CPACSMaterialDefinition() {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSCap* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSLateralCap* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSSheetBasedStructuralElement* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSTrackActuator* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSTrackCar* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSTrackFairing* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSTrackStructure* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSTrackStrut1* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSTrackStrut2* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSWeb* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSWingRibCell* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSWingRibCrossSection* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSWingSkin* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+
 
 bool CCPACSMaterialDefinition::isComposite() const
 {

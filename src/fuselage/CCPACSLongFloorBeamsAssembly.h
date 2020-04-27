@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSLongFloorBeamsAssembly.h"
 
 namespace tigl
@@ -26,7 +29,7 @@ class CCPACSLongFloorBeamsAssembly : public generated::CPACSLongFloorBeamsAssemb
 public:
     TIGL_EXPORT CCPACSLongFloorBeamsAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 
 } // namespace tigl
