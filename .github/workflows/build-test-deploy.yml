@@ -12,7 +12,6 @@ env:
   CCACHE_DIR: ${{ github.workspace }}/compiler-cache
   CLCACHE_DIR: ${{ github.workspace }}\compiler-cache
   CLCACHE_HARDLINK: 1
-  CMAKE_TIGL_ARGS: "-DCMAKE_BUILD_TYPE=Release -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
   TIGL_PYTHON_VER: "=3.6"
   TIGL_TIXI3_VER: ">=3.0.3"
   TIGL_QT_VER: "=5.9.7"
@@ -35,14 +34,22 @@ jobs:
             name: "Win64",
             os: windows-latest,
             arch: amd64,
+            cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
            }
         - {
-            name: "Ubuntu",
+            name: "Ubuntu-Release",
             os: ubuntu-latest,
+            cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
+          }
+        - {
+            name: "Ubuntu-Debug",
+            os: ubuntu-latest,
+            cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_ENABLE_COVERAGE=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
           }
         - {
             name: "MacOS",
             os: macos-latest,
+            cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
           }
 
     runs-on: ${{ matrix.config.os }}    
@@ -56,8 +63,8 @@ jobs:
 #  setup:
 
   
-    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev (ubuntu)
-      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev
+    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov (ubuntu)
+      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov
       if: contains(matrix.config.os, 'ubuntu')
     
     - name: Setup conda
@@ -119,7 +126,7 @@ jobs:
         echo "::set-env name=CMAKE_PREFIX_PATH::${CONDA_PREFIX}/lib:${CONDA_PREFIX}/include"
         mkdir build
         cd build
-        cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install $CMAKE_TIGL_ARGS -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core
+        cmake .. -G "Ninja" ${{ matrix.config.cmake_args }}
         cmake --build . -j 4 --config Release --target install
       if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
       
@@ -133,12 +140,18 @@ jobs:
         set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts;${{ github.workspace }}\doxygen
         mkdir build
         cd build
-        cmake .. -G "Ninja" -DCMAKE_INSTALL_PREFIX=install %CMAKE_TIGL_ARGS% -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core
+        cmake .. -G "Ninja" ${{ matrix.config.cmake_args }}
         cmake --build . -j 4 --config Release --target install
       if: contains(matrix.config.os, 'windows')
       
       
 #  test:
+
+    - name: Create coverage report (ubuntu)
+      if: matrix.config.name == "Ubuntu-Debug"
+      run:
+        cd build
+        cmake --build . --target coverage
        
        
     - name: Run unit tests (ubuntu, macos)
@@ -146,7 +159,7 @@ jobs:
         cd build
         cd tests/unittests/
         ./TiGL-unittests --gtest_output=xml:test_results.xml
-      if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
+      if: matrix.config.name == "Ubuntu-Release" || contains(matrix.config.os, 'macos')
       
     - name: Run unit tests (windows)
       run: 
@@ -160,7 +173,7 @@ jobs:
     - name: Publish coverage report to codecov.io (ubuntu)
       uses: codecov/codecov-action@v1
       with:
-        file: build/tests/unittests/test_results.xml
+        file: code_coverage.info
       if: contains(matrix.config.os, 'ubuntu')
     
     
@@ -233,7 +246,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: TiGL ${version}
+        release_name: TiGL ${{ env.version }}
         body: |
             Changes in this Release
             - First Change
@@ -245,7 +258,7 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: MacOS-package
-        path: TiGL-${version}.dmg
+        path: TiGL-${{ env.version }}.dmg
           
     - name: Upload MacOS Release Asset
       uses: actions/upload-release-asset@v1
@@ -253,14 +266,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./TiGL-${version}.dmg
-        asset_name: TiGL-${version}.dmg
+        asset_path: ./TiGL-${{ env.version }}.dmg
+        asset_name: TiGL-${{ env.version }}.dmg
+        asset_content_type: application/zip
           
     - name: download Win64 Build artifact
       uses: actions/download-artifact@v1
       with:
         name: Win64-package
-        path: TiGL-${version}-Win64.zip
+        path: TiGL-${{ env.version }}-Win64.zip
          
     - name: Upload Win64 Release Asset
       uses: actions/upload-release-asset@v1
@@ -268,14 +282,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./TiGL-${version}-Win64.zip
-        asset_name: TiGL-${version}-Win64.zip
+        asset_path: ./TiGL-${{ env.version }}-Win64.zip
+        asset_name: TiGL-${{ env.version }}-Win64.zip
+        asset_content_type: application/zip
            
     - name: download html-documentation
       uses: actions/download-artifact@v1
       with:
         name: html-documentation
-        path: TiGL-${version}-documentation.zip
+        path: TiGL-${{ env.version }}-documentation.zip
             
     - name: Upload documentation Release Asset
       uses: actions/upload-release-asset@v1
@@ -283,6 +298,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./TiGL-${version}-documentation.zip
-        asset_name: TiGL-${version}-documentation.zip
+        asset_path: ./TiGL-${{ env.version }}-documentation.zip
+        asset_name: TiGL-${{ env.version }}-documentation.zip
+        asset_content_type: application/zip
     
