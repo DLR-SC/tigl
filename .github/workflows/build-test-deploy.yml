@@ -35,7 +35,7 @@ jobs:
             os: windows-latest,
             arch: amd64,
             cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
-           }
+          }
         - {
             name: 'Ubuntu Release',
             os: ubuntu-latest,
