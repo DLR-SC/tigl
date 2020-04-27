@@ -1,10 +1,10 @@
 name: Continuous Integration
 
 on: 
- schedule:
+  schedule:
     - cron: "0 0 * * *"
- push:
- create:
+  push:
+  create:
     tags:
       - v*
 
