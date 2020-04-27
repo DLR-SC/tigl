@@ -148,7 +148,7 @@ jobs:
 #  test:
 
     - name: Create coverage report (ubuntu)
-      if: matrix.config.name == "Ubuntu-Debug"
+      if: matrix.config.name == 'Ubuntu-Debug'
       run:
         cd build
         cmake --build . --target coverage
