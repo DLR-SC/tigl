@@ -1679,69 +1679,69 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
 
 
 /**
-* @brief Returns the minimum value for the deflection of a control device.
+* @brief Returns the minimum value for the control parameter of a control device.
 *
 *
 * @param[in]  cpacsHandle             Handle for the CPACS configuration
 * @param[in]  controlSurfaceUID       UID of the control surface
-* @param[out] minDeflection           Minimum value for the deflection
+* @param[out] minParameter            Minimum value for the control parameter
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_UID_ERROR if the control surface does not exist
-*   - TIGL_NULL_POINTER if minDeflection is a NULL pointer
+*   - TIGL_NULL_POINTER if minParameter is a NULL pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                         const char * controlSurfaceUID,
-                                                                         double * minDeflection);
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * controlSurfaceUID,
+                                                                               double * minParameter);
 
 /**
-* @brief Returns the maximum value for the deflection of a control device.
+* @brief Returns the maximum value for the control parameter of a control device.
 *
 *
 * @param[in]  cpacsHandle             Handle for the CPACS configuration
 * @param[in]  controlSurfaceUID       UID of the control surface
-* @param[out] maxDeflection           Maximum value for the deflection
+* @param[out] maxParameter            Maximum value for the control parameter
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_UID_ERROR if the control surface does not exist
-*   - TIGL_NULL_POINTER if maxDeflection is a NULL pointer
+*   - TIGL_NULL_POINTER if maxParameter is a NULL pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                         const char * controlSurfaceUID,
-                                                                         double * maxDeflection);
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * controlSurfaceUID,
+                                                                               double * maxParameter);
 
 /**
-* @brief Returns the current value for the deflection of a control device.
+* @brief Returns the current value for the control parameter of a control device.
 *
 *
 * @param[in]  cpacsHandle             Handle for the CPACS configuration
 * @param[in]  controlSurfaceUID       UID of the control surface
-* @param[out] deflection              Value for the deflection
+* @param[out] controlParameter        Value for the controlParameter
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_UID_ERROR if the control surface does not exist
-*   - TIGL_NULL_POINTER if deflection is a NULL pointer
+*   - TIGL_NULL_POINTER if controlParameter is a NULL pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                  const char * controlSurfaceUID,
-                                                                  double * deflection);
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                       const char * controlSurfaceUID,
+                                                                       double * controlParameter);
 
 /**
-* @brief Sets the current value for the deflection of a control device.
+* @brief Sets the current value for the control parameter of a control device.
 *
 *
 * @param[in]  cpacsHandle             Handle for the CPACS configuration
 * @param[in]  controlSurfaceUID       UID of the control surface
-* @param[out] deflection              Value for the deflection
+* @param[out] controlParameter              Value for the control parameter
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -1749,9 +1749,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfi
 *   - TIGL_UID_ERROR if the control surface does not exist
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                  const char * controlSurfaceUID,
-                                                                  double deflection);
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                        const char * controlSurfaceUID,
+                                                                        double controlParameter);
 
 /*@}*/
 /*****************************************************************************************************/

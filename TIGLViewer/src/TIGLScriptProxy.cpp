@@ -462,9 +462,9 @@ QScriptValue TIGLScriptProxy::wingGetSegmentVolume(int wingIndex, int segmentInd
     }
 }
 
-QScriptValue TIGLScriptProxy::controlSurfaceSetDeflection(QString controlSurfaceUID, double deflection)
+QScriptValue TIGLScriptProxy::controlSurfaceSetControlParameter(QString controlSurfaceUID, double controlParameter)
 {
-    TiglReturnCode ret = ::tiglControlSurfaceSetDeflection(getTiglHandle(), controlSurfaceUID.toStdString().c_str(), deflection);
+    TiglReturnCode ret = ::tiglControlSurfaceSetControlParameter(getTiglHandle(), controlSurfaceUID.toStdString().c_str(), controlParameter);
     if (ret != TIGL_SUCCESS) {
         return context()->throwError(tiglGetErrorString(ret));
     }

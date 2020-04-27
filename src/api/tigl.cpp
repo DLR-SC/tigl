@@ -2536,7 +2536,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
                                                                          const char * controlSurfaceUID,
                                                                          double * minDeflection)
 {
@@ -2571,7 +2571,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPA
 
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
                                                                          const char * controlSurfaceUID,
                                                                          double * maxDeflection)
 {
@@ -2606,7 +2606,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPA
 
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
                                                                   const char * controlSurfaceUID,
                                                                   double * deflection)
 {
@@ -2641,7 +2641,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfi
 
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
                                                                   const char * controlSurfaceUID,
                                                                   double deflection)
 {

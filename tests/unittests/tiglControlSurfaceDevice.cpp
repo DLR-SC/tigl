@@ -118,67 +118,67 @@ TEST_F(TiglControlSurfaceDevice, tiglGetControlSurfaceType)
 
 TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMinimumControlParameter)
 {
-    double deflect1, deflect2, deflect3;
-    ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceGetMinimumDeflection(tiglHandle, "rmplstlzchn"                    , &deflect1) );
-    ASSERT_EQ(TIGL_NOT_FOUND   , tiglControlSurfaceGetMinimumDeflection(-1        , "D150_VAMP_W1_CompSeg1_innerFlap", &deflect1 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMinimumDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &deflect1 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMinimumDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_outerFlap", &deflect2 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMinimumDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_aileron"  , &deflect3 ) );
-    ASSERT_EQ( 0, deflect1);
-    ASSERT_EQ( 0, deflect2);
-    ASSERT_EQ(-1, deflect3);
+    double controlParm1, controlParm2, controlParm3;
+    ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceGetMinimumControlParameter(tiglHandle, "rmplstlzchn"                    , &controlParm1) );
+    ASSERT_EQ(TIGL_NOT_FOUND   , tiglControlSurfaceGetMinimumControlParameter(-1        , "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm1 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMinimumControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm1 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMinimumControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_outerFlap", &controlParm2 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMinimumControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_aileron"  , &controlParm3 ) );
+    ASSERT_EQ( 0, controlParm1);
+    ASSERT_EQ( 0, controlParm2);
+    ASSERT_EQ(-1, controlParm3);
 }
 
 TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMaximumControlParameter)
 {
-    double deflect1, deflect2, deflect3;
-    ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceGetMaximumDeflection(tiglHandle, "rmplstlzchn"                    , &deflect1) );
-    ASSERT_EQ(TIGL_NOT_FOUND   , tiglControlSurfaceGetMaximumDeflection(-1        , "D150_VAMP_W1_CompSeg1_innerFlap", &deflect1 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMaximumDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &deflect1 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMaximumDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_outerFlap", &deflect2 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMaximumDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_aileron"  , &deflect3 ) );
-    ASSERT_EQ( 1, deflect1);
-    ASSERT_EQ( 1, deflect2);
-    ASSERT_EQ( 1, deflect3);
+    double controlParm1, controlParm2, controlParm3;
+    ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceGetMaximumControlParameter(tiglHandle, "rmplstlzchn"                    , &controlParm1) );
+    ASSERT_EQ(TIGL_NOT_FOUND   , tiglControlSurfaceGetMaximumControlParameter(-1        , "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm1 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMaximumControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm1 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMaximumControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_outerFlap", &controlParm2 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetMaximumControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_aileron"  , &controlParm3 ) );
+    ASSERT_EQ( 1, controlParm1);
+    ASSERT_EQ( 1, controlParm2);
+    ASSERT_EQ( 1, controlParm3);
 }
 
 TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetAndSetControlParameter)
 {
-    double deflect1, deflect2, deflect3;
-    ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceGetDeflection(tiglHandle, "rmplstlzchn"                    , &deflect1) );
-    ASSERT_EQ(TIGL_NOT_FOUND   , tiglControlSurfaceGetDeflection(-1        , "D150_VAMP_W1_CompSeg1_innerFlap", &deflect1 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &deflect1 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_outerFlap", &deflect2 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_aileron"  , &deflect3 ) );
-    ASSERT_EQ( 0, deflect1);
-    ASSERT_EQ( 0, deflect2);
-    ASSERT_EQ( 0, deflect3);
+    double controlParm1, controlParm2, controlParm3;
+    ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceGetControlParameter(tiglHandle, "rmplstlzchn"                    , &controlParm1) );
+    ASSERT_EQ(TIGL_NOT_FOUND   , tiglControlSurfaceGetControlParameter(-1        , "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm1 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm1 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_outerFlap", &controlParm2 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_aileron"  , &controlParm3 ) );
+    ASSERT_EQ( 0, controlParm1);
+    ASSERT_EQ( 0, controlParm2);
+    ASSERT_EQ( 0, controlParm3);
 
-    double deflect;
+    double controlParm;
 
-    // error codes for set deflection
-    ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceSetDeflection(tiglHandle, "rmplstlzchn"                    , 5.0) );
-    ASSERT_EQ(TIGL_NOT_FOUND   , tiglControlSurfaceSetDeflection(-1        , "D150_VAMP_W1_CompSeg1_innerFlap", 5.0 ) );
+    // error codes for set control parameter
+    ASSERT_EQ(TIGL_UID_ERROR   , tiglControlSurfaceSetControlParameter(tiglHandle, "rmplstlzchn"                    , 5.0) );
+    ASSERT_EQ(TIGL_NOT_FOUND   , tiglControlSurfaceSetControlParameter(-1        , "D150_VAMP_W1_CompSeg1_innerFlap", 5.0 ) );
 
-    // clamp to max/min deflection
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceSetDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", 5.0 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &deflect ) );
-    ASSERT_EQ(1, deflect);
+    // clamp to max/min control parameter
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceSetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", 5.0 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm ) );
+    ASSERT_EQ(1, controlParm);
 
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceSetDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", -5.0 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &deflect ) );
-    ASSERT_EQ(0, deflect);
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceSetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", -5.0 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm ) );
+    ASSERT_EQ(0, controlParm);
 
     // value between min and max
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceSetDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", 0.33 ) );
-    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetDeflection(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &deflect ) );
-    ASSERT_NEAR(0.33, deflect, 1e-10);
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceSetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", 0.33 ) );
+    ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm ) );
+    ASSERT_NEAR(0.33, controlParm, 1e-10);
 
 }
 
 TEST(TiglControlSurfaceDeviceSimple, setControlParameterAndExport)
 {
     TiglHandleWrapper handle("TestData/simpletest-flaps.cpacs.xml", "");
-    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceSetDeflection(handle, "Flap", 1.0));
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceSetControlParameter(handle, "Flap", 1.0));
     tiglExportConfiguration(handle, "TestData/export/simpletest-flaps.stp", TIGL_TRUE, 0.0);
 }
