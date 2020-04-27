@@ -147,25 +147,6 @@ jobs:
       
       
 #  test:
-
-    - name: Create coverage report (ubuntu debug)
-      if: contains(matrix.config.name, 'Ubuntu Debug')
-      run: |
-        cd build
-        cmake --build . --target coverage
-        
-    - name: Upload coverage report (ubuntu debug)
-      if: contains(matrix.config.name, 'Ubuntu Debug')
-      uses: actions/upload-artifact@v2-preview
-      with:
-       name: test-coverage-report
-       path: coverageReport*
-        
-    - name: Publish coverage report to codecov.io (ubuntu debug)
-      if: contains(matrix.config.name, 'Ubuntu Debug')
-      uses: codecov/codecov-action@v1
-      with:
-        file: code_coverage.info
        
        
     - name: Run unit tests (ubuntu, macos)
@@ -184,6 +165,25 @@ jobs:
         .\TiGL-unittests.exe --gtest_output=xml:test_results.xml
       if: contains(matrix.config.os, 'windows')
     
+    - name: Create coverage report (ubuntu debug)
+      if: contains(matrix.config.name, 'Ubuntu Debug')
+      run: |
+        cd build
+        cmake --build . --target coverage
+        
+    - name: Upload coverage report (ubuntu debug)
+      if: contains(matrix.config.name, 'Ubuntu Debug')
+      uses: actions/upload-artifact@v2-preview
+      with:
+       name: test-coverage-report
+       path: build/coverageReport*
+        
+    - name: Publish coverage report to codecov.io (ubuntu debug)
+      if: contains(matrix.config.name, 'Ubuntu Debug')
+      uses: codecov/codecov-action@v1
+      with:
+        file: code_coverage.info
+        
     
 #  deploy:
       
@@ -242,7 +242,7 @@ jobs:
     - name: Create Release Description from Changelog
       run: |
         csplit -z ChangeLog /"Version "/ {1} 
-        release_description=`cat xx01`
+        release_description=`cat xx00`
         echo $release_description
         echo "::set-env name=release_description::$release_description"
           
@@ -262,7 +262,8 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
-        body: ${{ env.release_description }}
+        body: |
+          ${{ env.release_description }}
         draft: false
         prerelease: false
       
@@ -270,7 +271,7 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: MacOS-package
-        path: TiGL-${{ env.version }}.dmg
+        path: TiGL-${{ env.version }}-Darwin
           
     - name: Upload MacOS Release Asset
       uses: actions/upload-release-asset@v1
@@ -278,15 +279,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./TiGL-${{ env.version }}.dmg
-        asset_name: TiGL-${{ env.version }}.dmg
+        asset_path: TiGL-${{ env.version }}-Darwin
+        asset_name: TiGL-${{ env.version }}-Darwin
         asset_content_type: application/zip
           
     - name: download Win64 Build artifact
       uses: actions/download-artifact@v1
       with:
         name: Win64-package
-        path: TiGL-${{ env.version }}-Win64.zip
+        path: TiGL-${{ env.version }}-win64.zip
          
     - name: Upload Win64 Release Asset
       uses: actions/upload-release-asset@v1
@@ -294,8 +295,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./TiGL-${{ env.version }}-Win64.zip
-        asset_name: TiGL-${{ env.version }}-Win64.zip
+        asset_path: TiGL-${{ env.version }}-win64.zip
+        asset_name: TiGL-${{ env.version }}-win64.zip
         asset_content_type: application/zip
            
     - name: download html-documentation
@@ -310,7 +311,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./TiGL-${{ env.version }}-documentation.zip
+        asset_path: TiGL-${{ env.version }}-documentation.zip
         asset_name: TiGL-${{ env.version }}-documentation.zip
         asset_content_type: application/zip
     
