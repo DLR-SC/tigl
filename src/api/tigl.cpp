@@ -2537,8 +2537,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                         const char * controlSurfaceUID,
-                                                                         double * minDeflection)
+                                                                               const char * controlSurfaceUID,
+                                                                               double * minDeflection)
 {
     if (controlSurfaceUID == 0) {
         LOG(ERROR) << "Error: Null pointer argument for controlSurfaceUID ";
@@ -2571,9 +2571,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumControlParameter(T
 
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
                                                                          const char * controlSurfaceUID,
-                                                                         double * maxDeflection)
+                                                                         double * minDeflection)
+{
+    LOG(WARNING) << "'tiglControlSurfaceGetMinimumDeflection' is deprecated and has been renamed to 'tiglControlSurfaceGetMinimumControlParameter'";
+    return tiglControlSurfaceGetMinimumControlParameter(cpacsHandle, controlSurfaceUID, minDeflection);
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * controlSurfaceUID,
+                                                                               double * maxDeflection)
 {
     if (controlSurfaceUID == 0) {
         LOG(ERROR) << "Error: Null pointer argument for controlSurfaceUID ";
@@ -2606,9 +2614,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumControlParameter(T
 
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                         const char * controlSurfaceUID,
+                                                                         double * maxDeflection)
+{
+    LOG(WARNING) << "'tiglControlSurfaceGetMaximumDeflection' is deprecated and has been renamed to 'tiglControlSurfaceGetMaximumControlParameter'";
+    return tiglControlSurfaceGetMaximumControlParameter(cpacsHandle, controlSurfaceUID, maxDeflection);
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                  const char * controlSurfaceUID,
-                                                                  double * deflection)
+                                                                        const char * controlSurfaceUID,
+                                                                        double * deflection)
 {
     if (controlSurfaceUID == 0) {
         LOG(ERROR) << "Error: Null pointer argument for controlSurfaceUID ";
@@ -2641,9 +2657,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetControlParameter(TiglCPAC
 
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
                                                                   const char * controlSurfaceUID,
-                                                                  double deflection)
+                                                                  double * deflection)
+{
+    LOG(WARNING) << "'tiglControlSurfaceGetDeflection' is deprecated and has been renamed to 'tiglControlSurfaceGetControlParameter'";
+    return tiglControlSurfaceGetControlParameter(cpacsHandle, controlSurfaceUID, deflection);
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                        const char * controlSurfaceUID,
+                                                                        double deflection)
 {
     if (controlSurfaceUID == 0) {
         LOG(ERROR) << "Error: Null pointer argument for controlSurfaceUID ";
@@ -2674,6 +2698,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetControlParameter(TiglCPAC
         return TIGL_ERROR;
     }
 
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char * controlSurfaceUID,
+                                                                  double deflection)
+{
+    LOG(WARNING) << "'tiglControlSurfaceSetDeflection' is deprecated and has been renamed to 'tiglControlSurfaceSetControlParameter'";
+    return tiglControlSurfaceSetControlParameter(cpacsHandle, controlSurfaceUID, deflection);
 }
 
 /******************************************************************************/

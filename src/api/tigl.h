@@ -1698,6 +1698,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumControlParameter(T
                                                                                double * minParameter);
 
 /**
+ * @brief This function is deprecated. It has been renamed to ::tiglControlSurfaceGetMinimumControlParameter.
+ *
+ * @deprecated since 3.1
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                         const char * controlSurfaceUID,
+                                                                         double * minDeflection);
+
+/**
 * @brief Returns the maximum value for the control parameter of a control device.
 *
 *
@@ -1715,6 +1724,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumControlParameter(T
 TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
                                                                                const char * controlSurfaceUID,
                                                                                double * maxParameter);
+
+/**
+ * @brief This function is deprecated. It has been renamed to ::tiglControlSurfaceGetMaximumControlParameter.
+ *
+ * @deprecated since 3.1
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                         const char * controlSurfaceUID,
+                                                                         double * maxDeflection);
 
 /**
 * @brief Returns the current value for the control parameter of a control device.
@@ -1736,6 +1754,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetControlParameter(TiglCPAC
                                                                        double * controlParameter);
 
 /**
+ * @brief This function is deprecated. It has been renamed to ::tiglControlSurfaceGetControlParameter.
+ *
+ * @deprecated since 3.1
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char * controlSurfaceUID,
+                                                                  double * deflection);
+
+/**
 * @brief Sets the current value for the control parameter of a control device.
 *
 *
@@ -1752,6 +1779,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetControlParameter(TiglCPAC
 TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
                                                                         const char * controlSurfaceUID,
                                                                         double controlParameter);
+
+/**
+ * @brief This function is deprecated. It has been renamed to ::tiglControlSurfaceSetControlParameter.
+ *
+ * @deprecated since 3.1
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char * controlSurfaceUID,
+                                                                  double deflection);
+
 
 /*@}*/
 /*****************************************************************************************************/
