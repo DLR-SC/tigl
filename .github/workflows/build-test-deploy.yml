@@ -148,11 +148,25 @@ jobs:
       
 #  test:
 
-    - name: Create coverage report (ubuntu)
+    - name: Create coverage report (ubuntu debug)
       if: contains(matrix.config.name, 'Ubuntu Debug')
       run: |
         cd build
         cmake --build . --target coverage
+        
+    - name: Upload coverage report (ubuntu debug)
+      if: contains(matrix.config.name, 'Ubuntu Debug')
+      uses: actions/upload-artifact@v2-preview
+      with:
+       name: test-coverage-report
+       path: coverageReport*
+        
+    - name: Publish coverage report to codecov.io (ubuntu debug)
+      if: contains(matrix.config.name, 'Ubuntu Debug')
+      uses: codecov/codecov-action@v1
+      with:
+        file: code_coverage.info
+      if: contains(matrix.config.os, 'ubuntu')
        
        
     - name: Run unit tests (ubuntu, macos)
@@ -170,12 +184,6 @@ jobs:
         cd tests\unittests
         .\TiGL-unittests.exe --gtest_output=xml:test_results.xml
       if: contains(matrix.config.os, 'windows')
-        
-    - name: Publish coverage report to codecov.io (ubuntu)
-      uses: codecov/codecov-action@v1
-      with:
-        file: code_coverage.info
-      if: contains(matrix.config.os, 'ubuntu')
     
     
 #  deploy:
