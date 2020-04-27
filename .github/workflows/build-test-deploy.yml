@@ -63,8 +63,8 @@ jobs:
 #  setup:
 
   
-    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov (ubuntu)
-      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov
+    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov gcovr (ubuntu)
+      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov gcovr
       if: contains(matrix.config.os, 'ubuntu')
     
     - name: Setup conda
@@ -234,10 +234,8 @@ jobs:
     
     - name: Create Release Description from Changelog
       run: |
-        last_tag = `git tag --sort=creatordate | tail -2 | head -1`
-        version_string=`echo $last_tag | cut -c 1-`
-        csplit ChangeLog /"Version $version_string"/
-        release_description=`cat xx00`
+        csplit -z ChangeLog /"Version "/ {1} 
+        release_description=`cat xx01`
         echo $release_description
         echo "::set-env name=release_description::$release_description"
           
