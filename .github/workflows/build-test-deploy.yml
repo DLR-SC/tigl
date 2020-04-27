@@ -63,8 +63,8 @@ jobs:
 #  setup:
 
   
-    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov (ubuntu)
-      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov
+    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev (ubuntu)
+      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev
       if: contains(matrix.config.os, 'ubuntu')
     
     - name: Setup conda
@@ -101,6 +101,7 @@ jobs:
         brew install zstd libb2
         brew install --HEAD ccache
         echo "::add-path::/usr/local/opt/ccache/libexec"
+        echo "::add-path::/usr/local/opt/ccache/bin"
       if: contains(matrix.config.os, 'macos')
       
     - name: Install clcache (windows)
@@ -149,7 +150,7 @@ jobs:
 
     - name: Create coverage report (ubuntu)
       if: contains(matrix.config.name, 'Ubuntu Debug')
-      run:
+      run: |
         cd build
         cmake --build . --target coverage
        
