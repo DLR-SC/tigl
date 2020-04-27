@@ -2,7 +2,7 @@ name: Build and publish conda package
 
 on:
   release:
-    types: [published]
+    types: [created]
 
 
 jobs:

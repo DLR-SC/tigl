@@ -180,7 +180,7 @@ jobs:
         
     - name: Publish coverage report to codecov.io (ubuntu debug)
       if: contains(matrix.config.name, 'Ubuntu Debug')
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@master
       with:
         file: build/coverageReport.info
         
@@ -240,11 +240,12 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Create Release Description from Changelog
+      id: changelog
       run: |
         csplit -z ChangeLog /"Version "/ {1} 
         release_description=`cat xx00`
         echo $release_description
-        echo "::set-env name=release_description::$release_description"
+        echo "::set-output name=body::$release_description
           
     - name: Parse version
       run: |
@@ -256,14 +257,13 @@ jobs:
           
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: actions/create-release@master
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
-        body: |
-          ${{ env.release_description }}
+        body: ${{ steps.changelog.outputs.release_description }}
         draft: false
         prerelease: false
       
@@ -271,23 +271,21 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: MacOS-package
-        path: TiGL-${{ env.version }}-Darwin
           
     - name: Upload MacOS Release Asset
       uses: actions/upload-release-asset@v1
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: TiGL-${{ env.version }}-Darwin
-        asset_name: TiGL-${{ env.version }}-Darwin
+        asset_path: ./TIGL-${{ env.version }}-Darwin.dmg
+        asset_name: TiGL-${{ env.version }}-Darwin.dmg
         asset_content_type: application/zip
           
     - name: download Win64 Build artifact
       uses: actions/download-artifact@v1
       with:
         name: Win64-package
-        path: TiGL-${{ env.version }}-win64.zip
          
     - name: Upload Win64 Release Asset
       uses: actions/upload-release-asset@v1
@@ -295,23 +293,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: TiGL-${{ env.version }}-win64.zip
-        asset_name: TiGL-${{ env.version }}-win64.zip
+        asset_path: ./TIGL-${{ env.version }}-win64.zip
+        asset_name: TIGL-${{ env.version }}-win64.zip
         asset_content_type: application/zip
            
-    - name: download html-documentation
-      uses: actions/download-artifact@v1
-      with:
-        name: html-documentation
-        path: TiGL-${{ env.version }}-documentation.zip
+#    - name: download html-documentation
+#      uses: actions/download-artifact@v1
+#      with:
+#        name: html-documentation
+#        path: html-documentation
             
-    - name: Upload documentation Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: TiGL-${{ env.version }}-documentation.zip
-        asset_name: TiGL-${{ env.version }}-documentation.zip
-        asset_content_type: application/zip
+#    - name: Upload documentation Release Asset
+#      uses: actions/upload-release-asset@v1
+#      env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+#        asset_path: html-documentation
+#        asset_name: TiGL-${{ env.version }}-documentation.zip
+#        asset_content_type: application/zip
     
