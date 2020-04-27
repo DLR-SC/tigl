@@ -1,7 +1,6 @@
 name: Build and publish conda package
 
 on:
-  on:
   release:
     types: [published]
 
