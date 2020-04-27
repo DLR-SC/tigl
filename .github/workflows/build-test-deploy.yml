@@ -171,13 +171,6 @@ jobs:
         cd build
         cmake --build . --target coverage
         
-    - name: Upload coverage report (ubuntu debug)
-      if: contains(matrix.config.name, 'Ubuntu Debug')
-      uses: actions/upload-artifact@v2-preview
-      with:
-       name: test-coverage-report
-       path: build/tests/unittests/coverageReport.info
-        
     - name: Publish coverage report to codecov.io (ubuntu debug)
       if: contains(matrix.config.name, 'Ubuntu Debug')
       uses: codecov/codecov-action@master
