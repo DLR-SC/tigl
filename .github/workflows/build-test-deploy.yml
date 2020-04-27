@@ -63,8 +63,8 @@ jobs:
 #  setup:
 
   
-    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev (ubuntu)
-      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev
+    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov (ubuntu)
+      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov
       if: contains(matrix.config.os, 'ubuntu')
     
     - name: Setup conda
