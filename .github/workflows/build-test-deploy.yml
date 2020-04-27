@@ -182,7 +182,7 @@ jobs:
       if: contains(matrix.config.name, 'Ubuntu Debug')
       uses: codecov/codecov-action@master
       with:
-        file: build/coverageReport.info
+        file: build/tests/unittests/coverageReport.info
         
     
 #  deploy:
