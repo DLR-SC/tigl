@@ -166,7 +166,6 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         file: code_coverage.info
-      if: contains(matrix.config.os, 'ubuntu')
        
        
     - name: Run unit tests (ubuntu, macos)
