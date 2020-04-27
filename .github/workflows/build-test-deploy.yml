@@ -148,7 +148,7 @@ jobs:
 #  test:
 
     - name: Create coverage report (ubuntu)
-      if: matrix.config.name == "Ubuntu Debug"
+      if: contains(matrix.config.name, "Ubuntu Debug")
       run:
         cd build
         cmake --build . --target coverage
@@ -159,7 +159,7 @@ jobs:
         cd build
         cd tests/unittests/
         ./TiGL-unittests --gtest_output=xml:test_results.xml
-      if: matrix.config.name == "Ubuntu-Release" || contains(matrix.config.os, 'macos')
+      if: contains(matrix.config.name, "Ubuntu Release") || contains(matrix.config.os, 'macos')
       
     - name: Run unit tests (windows)
       run: 
