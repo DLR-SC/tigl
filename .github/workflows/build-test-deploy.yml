@@ -176,13 +176,13 @@ jobs:
       uses: actions/upload-artifact@v2-preview
       with:
        name: test-coverage-report
-       path: build/coverageReport*
+       path: build/coverageReport.info
         
     - name: Publish coverage report to codecov.io (ubuntu debug)
       if: contains(matrix.config.name, 'Ubuntu Debug')
       uses: codecov/codecov-action@v1
       with:
-        file: code_coverage.info
+        file: build/coverageReport.info
         
     
 #  deploy:
