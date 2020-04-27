@@ -263,7 +263,7 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
-        body: ${{ steps.changelog.outputs.release_description }}
+        body: ${{ steps.changelog.outputs.body }}
         draft: false
         prerelease: false
       
