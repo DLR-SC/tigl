@@ -44,7 +44,7 @@ jobs:
         - {
             name: 'Ubuntu Debug',
             os: ubuntu-latest,
-            cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_ENABLE_COVERAGE=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
+            cmake_args: "-DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_ENABLE_COVERAGE=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
           }
         - {
             name: 'MacOS',
@@ -87,7 +87,7 @@ jobs:
     - name: Install doxygen 1.8.16 (windows)
       if: contains(matrix.config.os, 'windows')
       run: |
-       curl -o doxygen.zip -L https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
+       curl --max-time 900 --connect-timeout 60 -o doxygen.zip -L https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
        unzip doxygen.zip -d doxygen
 
     - name: Install ccache (ubuntu)
@@ -231,6 +231,15 @@ jobs:
     steps:
       
     - uses: actions/checkout@v2
+    
+    - name: Create Release Description from Changelog
+      run: |
+        last_tag = `git tag --sort=creatordate | tail -2 | head -1`
+        version_string=`echo $last_tag | cut -c 1-`
+        csplit ChangeLog /"Version $version_string"/
+        release_description=`cat xx00`
+        echo $release_description
+        echo "::set-env name=release_description::$release_description"
           
     - name: Parse version
       run: |
@@ -248,10 +257,7 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
-        body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+        body: ${{ env.release_description }}
         draft: false
         prerelease: false
       
