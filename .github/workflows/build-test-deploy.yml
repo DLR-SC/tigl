@@ -37,12 +37,12 @@ jobs:
             cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
            }
         - {
-            name: 'Ubuntu-Release',
+            name: 'Ubuntu Release',
             os: ubuntu-latest,
             cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
           }
         - {
-            name: 'Ubuntu-Debug',
+            name: 'Ubuntu Debug',
             os: ubuntu-latest,
             cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_ENABLE_COVERAGE=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
           }
@@ -148,7 +148,7 @@ jobs:
 #  test:
 
     - name: Create coverage report (ubuntu)
-      if: matrix.config.name == "Ubuntu-Debug"
+      if: matrix.config.name == "Ubuntu Debug"
       run:
         cd build
         cmake --build . --target coverage
