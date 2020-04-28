@@ -9,8 +9,8 @@ endif()
 
 cmake_minimum_required (VERSION 3.4.0)
 
-project (TIGL VERSION 3.0.0)
-set(TIGL_VERSION 3.0.0)
+project (TIGL VERSION 3.0.1-test-16)
+set(TIGL_VERSION 3.0.1-test-16)
 
 # enable C++11 support
 set(CMAKE_CXX_STANDARD 11)
