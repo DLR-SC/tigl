@@ -126,6 +126,14 @@ jobs:
         brew install --HEAD ccache
         echo "::add-path::/usr/local/opt/ccache/libexec"
         echo "::add-path::/usr/local/opt/ccache/bin"
+        echo '#!/bin/sh \n exec ccache /usr/bin/clang "$@"' > ccache-clang
+        echo '#!/bin/sh \n exec ccache /usr/bin/clang++ "$@"' > ccache-clang++
+        echo "::set-env name=CCACHE_MAXSIZE::10G"
+        echo "::set-env name=CCACHE_CPP2::true"
+        echo "::set-env name=CCACHE_HARDLINK::true"
+        echo "::set-env name=CCACHE_SLOPPINESS::file_macro,time_macros,include_file_mtime,include_file_ctime,file_stat_matches"
+        echo "::set-env name=CC::${{ github.workspace }}/ccache-clang"
+        echo "::set-env name=CXX::${{ github.workspace }}/ccache-clang++"
       if: contains(matrix.config.os, 'macos')
       
     - name: Install clcache (windows)
@@ -158,6 +166,7 @@ jobs:
         
     - name: prepare cmake args (ccache setup and pythonocc directory on macos, ubuntu)
       if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
+      shell: bash -l {0}
       run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core"
         
     - name: prepare cmake args (pythonocc directory and matlab libraries on windows)
@@ -204,7 +213,7 @@ jobs:
       if: contains(matrix.config.name, 'Ubuntu-Release') || contains(matrix.config.os, 'macos')
       
     - name: Run unit tests (windows)
-      run: 
+      run: |
         echo "::add-path::build\install\bin"
         cd build
         cmake --build . --target tigl-java-demo
