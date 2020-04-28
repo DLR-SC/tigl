@@ -386,8 +386,8 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        git checkout --track origin/gh-pages
-        git pull
+        git fetch
+        git checkout gh-pages
         mkdir -p doc/latest
         mkdir -p doc/${{ env.version }}
         cp -r html-documentation/* doc/latest/
