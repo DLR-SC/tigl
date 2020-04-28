@@ -390,7 +390,7 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        git checkout -b gh-pages
+        git checkout --track origin/gh-pages
         git pull
         mkdir -p doc/latest
         mkdir -p doc/${{ env.version }}
