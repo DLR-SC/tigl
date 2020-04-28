@@ -127,7 +127,13 @@ jobs:
         echo "::add-path::/usr/local/opt/ccache/libexec"
         echo "::add-path::/usr/local/opt/ccache/bin"
         echo '#!/bin/sh \n exec ccache /usr/bin/clang "$@"' > ccache-clang
+        chmod a+x ccache-clang
         echo '#!/bin/sh \n exec ccache /usr/bin/clang++ "$@"' > ccache-clang++
+        chmod a+x ccache-clang++
+        echo '### contents of ccache-clang'
+        cat ccache-clang
+        echo '### contents of ccache-clang++'
+        cat ccache-clang++
         echo "::set-env name=CCACHE_MAXSIZE::10G"
         echo "::set-env name=CCACHE_CPP2::true"
         echo "::set-env name=CCACHE_HARDLINK::true"
