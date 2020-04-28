@@ -165,7 +165,7 @@ jobs:
       run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core -DMATLAB_DIR=${{ github.workspace }}\matlab-libs-win"
     
     - name: prepare cmake args (enable coverage on ubuntu debug)
-      if: matrix.config.name == 'Ubuntu-Debug')
+      if: matrix.config.name == 'Ubuntu-Debug'
       run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DTIGL_ENABLE_COVERAGE=ON"
       
     - name: Build TiGL (ubuntu, macos)
