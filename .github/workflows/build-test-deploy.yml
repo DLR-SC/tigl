@@ -126,9 +126,11 @@ jobs:
         brew install --HEAD ccache
         echo "::add-path::/usr/local/opt/ccache/libexec"
         echo "::add-path::/usr/local/opt/ccache/bin"
-        echo '#!/bin/sh \n exec ccache /usr/bin/clang "$@"' > ccache-clang
+        echo '#!/bin/sh' > ccache-clang
+        echo 'exec ccache /usr/bin/clang "$@"' >> ccache-clang
         chmod a+x ccache-clang
-        echo '#!/bin/sh \n exec ccache /usr/bin/clang++ "$@"' > ccache-clang++
+        echo '#!/bin/sh' > ccache-clang++
+        echo 'exec ccache /usr/bin/clang++ "$@"' >> ccache-clang++
         chmod a+x ccache-clang++
         echo '### contents of ccache-clang'
         cat ccache-clang

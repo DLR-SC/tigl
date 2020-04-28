@@ -24,6 +24,7 @@ geometries or viewing CAD files.
 
 
  - Binary Downloads:  https://github.com/DLR-SC/tigl/wiki/Downloads
+ - Nightly Builds:    https://github.com/DLR-SC/tigl/actions?query=workflow%3A%22Continuous+Integration%22+event%3Aschedule
  - Wiki:              https://github.com/DLR-SC/tigl/wiki
 
 # News
