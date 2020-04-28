@@ -305,7 +305,6 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Split Release Description from Changelog
-      id: changelog
       run: |
         csplit -z ChangeLog /"Version "/ {1} 
         release_description=`cat xx00`
