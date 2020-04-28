@@ -105,13 +105,13 @@ jobs:
     - name: Install doxygen 1.8.16 (windows)
       if: contains(matrix.config.os, 'windows')
       run: |
-       curl --max-time 900 --connect-timeout 60 -o doxygen.zip -L https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
+       curl --max-time 900 --connect-timeout 60 -o doxygen.zip -SL https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
        unzip doxygen.zip -d doxygen
        
     - name: Download Matlab libs (windows)
       if: contains(matrix.config.os, 'windows')
       run: |
-        curl --max-time 900 --connect-timeout 60 -o matlab-libs-win.zip -L https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-win.zip
+        curl --max-time 900 --connect-timeout 60 -o matlab-libs-win.zip -SL https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-win.zip
         unzip matlab-libs-win.zip -d matlab-libs-win
 
     - name: Install ccache (ubuntu)
@@ -304,13 +304,18 @@ jobs:
       
     - uses: actions/checkout@v2
     
-    - name: Create Release Description from Changelog
+    - name: Split Release Description from Changelog
       id: changelog
       run: |
         csplit -z ChangeLog /"Version "/ {1} 
         release_description=`cat xx00`
         echo $release_description
-        echo "::set-output name=body::$release_description"
+        
+    -name: Read Release Description from splitted Changelog
+     id: changelog
+     uses: juliangruber/read-file-action@v1
+        with:
+          path: ./xx00
           
     - name: Parse version
       run: |
@@ -322,14 +327,13 @@ jobs:
           
     - name: Create Release
       id: create_release
-      uses: actions/create-release@master
+      uses: actions/create-release@latest
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
-        body: |
-          ${{ steps.changelog.outputs.body }}
+        body: ${{ steps.changelog.outputs.content  }}
         draft: false
         prerelease: false
       
@@ -346,7 +350,7 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./MacOS-package/TIGL-${{ env.version }}-Darwin.dmg
         asset_name: TIGL-${{ env.version }}-Darwin.dmg
-        asset_content_link_type: application/zip
+        asset_content_type: application/zip
           
     - name: download Win64 package Build artifact
       uses: actions/download-artifact@v1
@@ -356,12 +360,12 @@ jobs:
     - name: Upload Win64 Release Asset (.zip)
       uses: actions/upload-release-asset@v1
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./Win64-static-package/TIGL-${{ env.version }}-win64.zip
         asset_name: TIGL-${{ env.version }}-win64.zip
-        asset_content_link_type: application/zip
+        asset_content_type: application/zip
         
     - name: download Win64 installer Build artifact
       uses: actions/download-artifact@v1
@@ -371,12 +375,12 @@ jobs:
     - name: Upload Win64 Release Asset (.exe)
       uses: actions/upload-release-asset@v1
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./Win64-static-installer/TIGL-${{ env.version }}-win64.exe
         asset_name: TIGL-${{ env.version }}-win64.exe
-        asset_content_link_type: application/zip
+        asset_content_type: application/zip
            
     - name: download html-documentation
       uses: actions/download-artifact@v1
@@ -386,14 +390,16 @@ jobs:
             
     - name: Upload documentation to website
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         git checkout gh-pages
         git pull
-        cp -r html-documentation/* doc/latest
-        cp -r html-dockumentation/* doc/${{ env.version }}
+        mkdir -p doc/latest
+        mkdir -p doc/${{ env.version }}
+        cp -r html-documentation/* doc/latest/
+        cp -r html-dockumentation/* doc/${{ env.version }}/
         rm -rf html-documentation
-        git add .
+        git add doc/*
         git commit -m "add documentation for version ${{ env.version }} to website"
         git push
         git checkout master
