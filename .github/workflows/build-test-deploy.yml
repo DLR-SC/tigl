@@ -160,10 +160,10 @@ jobs:
         args="$CMAKE_ARGS -DTIGL_BINDINGS_PYTHON_INTERNAL=ON"
         echo "::set-env name=CMAKE_ARGS::$args"
         
-    - name: prepare cmake args (pythonocc directory on macos, ubuntu)
+    - name: prepare cmake args (ccache setup and pythonocc directory on macos, ubuntu)
       if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
       run: |
-        args="$CMAKE_ARGS -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core"
+        args="$CMAKE_ARGS -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core"
         echo "::set-env name=CMAKE_ARGS::$args"
         
     - name: prepare cmake args (pythonocc directory and matlab libraries on windows)
