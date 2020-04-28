@@ -88,7 +88,7 @@ jobs:
     - name: Install dependencies using Miniconda (static)
       if: matrix.config.type == 'static'
       run: |
-        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER } swig${{ env.TIGL_SWIG_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} swig${{ env.TIGL_SWIG_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         
     - name: Install doxygen (ubuntu, macos)
       if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
