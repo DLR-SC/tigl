@@ -108,7 +108,7 @@ jobs:
        git clone https://github.com/joergbrech/tigl-thirdparty.git
        cd tigl-thirdparty
        unzip doxygen.zip -d doxygen
-       unzip matlab-libs-win.zip matlab-libs-win
+       unzip matlab-libs-win.zip -d matlab-libs-win
 
     - name: Install ccache (ubuntu)
       run: |
