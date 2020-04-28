@@ -105,7 +105,8 @@ jobs:
     - name: download doxygen 1.8.16 and matlab libs(windows)
       if: contains(matrix.config.os, 'windows')
       run: |
-       git clone https://github.com/joergbrech/tigl-thirdparty.git
+       curl --max-time 900 --connect-timeout 60 -o tigl-thirdparty.zip -SL https://github.com/joergbrech/tigl-thirdparty/archive/master.zip
+       unzip tigl-thirdparty.zip -d tigl-thirdparty
        cd tigl-thirdparty
        unzip doxygen.zip -d doxygen
        unzip matlab-libs-win.zip -d matlab-libs-win
