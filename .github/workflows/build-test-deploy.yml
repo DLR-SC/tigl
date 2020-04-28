@@ -150,9 +150,7 @@ jobs:
       run: echo "::set-env name=TIGL_NIGHTLY::OFF"
         
     - name: prepare cmake args (common)
-      run: |
-        args="-DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }}"
-        echo "::set-env name=CMAKE_ARGS::$args"
+      run: echo "::set-env name=CMAKE_ARGS::-DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }}"
         
     - name: prepare cmake args (build python internal bindings for dynamic builds)
       if: contains(matrix.config.link_type, 'dynamic')
