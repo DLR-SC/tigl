@@ -49,19 +49,19 @@ jobs:
             name: 'Ubuntu-Release',
             os: ubuntu-latest,
             link_type: dynamic,
-            cmake_args: Release
+            build_type: Release
           }
         - {
             name: 'Ubuntu-Debug',
             os: ubuntu-latest,
             link_type: dynamic,
-            cmake_args: Debug
+            build_type: Debug
           }
         - {
             name: 'MacOS',
             os: macos-latest,
             link_type: dynamic,
-            cmake_args: Release
+            build_type: Release
           }
 
     runs-on: ${{ matrix.config.os }}    
@@ -151,7 +151,7 @@ jobs:
         
     - name: prepare cmake args (common)
       run: |
-        args="-DCMAKE_BUILD_link_type=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }}"
+        args="-DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }}"
         echo "::set-env name=CMAKE_ARGS::$args"
         
     - name: prepare cmake args (build python internal bindings for dynamic builds)
