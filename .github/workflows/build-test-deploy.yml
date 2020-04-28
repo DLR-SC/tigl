@@ -307,14 +307,13 @@ jobs:
     - name: Split Release Description from Changelog
       run: |
         csplit -z ChangeLog /"Version "/ {1} 
-        release_description=`cat xx00`
-        echo $release_description
+        cat xx00
         
     -name: Read Release Description from splitted Changelog
      id: changelog
      uses: juliangruber/read-file-action@v1
-        with:
-          path: ./xx00
+     with:
+       path: ./xx00
           
     - name: Parse version
       run: |
