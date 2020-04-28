@@ -378,19 +378,24 @@ jobs:
         asset_name: TIGL-${{ env.version }}-win64.exe
         asset_content_link_type: application/zip
            
-#    - name: download html-documentation
-#      uses: actions/download-artifact@v1
-#      with:
-#        name: html-documentation
-#        path: html-documentation
+    - name: download html-documentation
+      uses: actions/download-artifact@v1
+      with:
+        name: html-documentation
+        path: html-documentation
             
-#    - name: Upload documentation Release Asset
-#      uses: actions/upload-release-asset@v1
-#      env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-#        asset_path: html-documentation
-#        asset_name: TiGL-${{ env.version }}-documentation.zip
-#        asset_content_link_type: application/zip
+    - name: Upload documentation to website
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git checkout gh-pages
+        git pull
+        cp -r html-documentation/* doc/latest
+        cp -r html-dockumentation/* doc/${{ env.version }}
+        rm -rf html-documentation
+        git add .
+        git commit -m "add documentation for version ${{ env.version }} to website"
+        git push
+        git checkout master
+        
     
