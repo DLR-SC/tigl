@@ -34,21 +34,25 @@ jobs:
             name: 'Win64',
             os: windows-latest,
             arch: amd64,
+            type: dynamic,
             cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
           }
         - {
             name: 'Ubuntu Release',
             os: ubuntu-latest,
+            type: dynamic,
             cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
           }
         - {
             name: 'Ubuntu Debug',
             os: ubuntu-latest,
+            type: dynamic,
             cmake_args: "-DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_ENABLE_COVERAGE=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
           }
         - {
             name: 'MacOS',
             os: macos-latest,
+            type: dynamic,
             cmake_args: "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_PYTHON_INTERNAL=ON -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON"
           }
 
@@ -74,11 +78,17 @@ jobs:
         auto-activate-base: true
         activate-environment: ''
 
-    - name: Install dependencies using Miniconda
+    - name: Install dependencies using Miniconda (dynamic)
+      if: matrix.config.type == 'dynamic'
       run: |
         conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} tixi3${{ env.TIGL_TIXI3_VER }} swig${{ env.TIGL_SWIG_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list
+        
+    - name: Install dependencies using Miniconda (static)
+      if: matrix.config.type == 'static'
+      run: |
+        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER } swig${{ env.TIGL_SWIG_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         
     - name: Install doxygen (ubuntu, macos)
       if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
@@ -89,6 +99,12 @@ jobs:
       run: |
        curl --max-time 900 --connect-timeout 60 -o doxygen.zip -L https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
        unzip doxygen.zip -d doxygen
+       
+    - name: Download Matlab libs (windows)
+      if: contains(matrix.config.os, 'windows')
+      run: |
+        curl --max-time 900 --connect-timeout 60 -o matlab-libs-win.zip https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-win.zip
+        unzip matlab-libs-win.zip -d matlab-libs-win
 
     - name: Install ccache (ubuntu)
       run: |
@@ -141,7 +157,7 @@ jobs:
         set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts;${{ github.workspace }}\doxygen
         mkdir build
         cd build
-        cmake .. -G "Ninja" ${{ matrix.config.cmake_args }}
+        cmake .. -G "Ninja" ${{ matrix.config.cmake_args }} -DMATLAB_DIR=${{ github.workspace }}\matlab-libs-win
         cmake --build . -j 4 --config Release --target install
       if: contains(matrix.config.os, 'windows')
       
@@ -199,6 +215,7 @@ jobs:
         cd build
         cmake --build . --target doc
         cpack -G ZIP
+        cpack -G NSIS
       if: contains(matrix.config.os, 'windows')
       
     - name: Upload package as artifact (windows)
@@ -207,6 +224,13 @@ jobs:
       with:
        name: ${{ matrix.config.name }}-package
        path: build/*.zip
+       
+    - name: Upload installer as artifact (windows)
+      if: contains(matrix.config.os, 'windows')
+      uses: actions/upload-artifact@v2-preview
+      with:
+       name: ${{ matrix.config.name }}-installer
+       path: build/*.exe
        
     - name: Create documentation (ubuntu)
       if: contains(matrix.config.os, 'ubuntu')
@@ -256,38 +280,54 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
-        body: ${{ steps.changelog.outputs.body }}
+        body: |
+          ${{ steps.changelog.outputs.body }}
         draft: false
         prerelease: false
       
-    - name: download MacOS Build artifact
+    - name: download MacOS package Build artifact
       uses: actions/download-artifact@v1
       with:
         name: MacOS-package
           
-    - name: Upload MacOS Release Asset
+    - name: Upload MacOS Release Asset (.dmg)
       uses: actions/upload-release-asset@v1
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./TIGL-${{ env.version }}-Darwin.dmg
-        asset_name: TiGL-${{ env.version }}-Darwin.dmg
+        asset_path: ./MacOS-package/TIGL-${{ env.version }}-Darwin.dmg
+        asset_name: TIGL-${{ env.version }}-Darwin.dmg
         asset_content_type: application/zip
           
-    - name: download Win64 Build artifact
+    - name: download Win64 package Build artifact
       uses: actions/download-artifact@v1
       with:
         name: Win64-package
          
-    - name: Upload Win64 Release Asset
+    - name: Upload Win64 Release Asset (.zip)
       uses: actions/upload-release-asset@v1
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./TIGL-${{ env.version }}-win64.zip
+        asset_path: ./Win64-package/TIGL-${{ env.version }}-win64.zip
         asset_name: TIGL-${{ env.version }}-win64.zip
+        asset_content_type: application/zip
+        
+    - name: download Win64 installer Build artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: Win64-installer
+         
+    - name: Upload Win64 Release Asset (.exe)
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        asset_path: ./Win64-installer/TIGL-${{ env.version }}-win64.exe
+        asset_name: TIGL-${{ env.version }}-win64.exe
         asset_content_type: application/zip
            
 #    - name: download html-documentation
