@@ -103,7 +103,7 @@ jobs:
     - name: Download Matlab libs (windows)
       if: contains(matrix.config.os, 'windows')
       run: |
-        curl --max-time 900 --connect-timeout 60 -o matlab-libs-win.zip https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-win.zip
+        curl --max-time 900 --connect-timeout 60 -o matlab-libs-win.zip -L https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-win.zip
         unzip matlab-libs-win.zip -d matlab-libs-win
 
     - name: Install ccache (ubuntu)
