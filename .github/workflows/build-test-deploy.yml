@@ -161,11 +161,11 @@ jobs:
       run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core"
         
     - name: prepare cmake args (pythonocc directory and matlab libraries on windows)
-      if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
+      if: contains(matrix.config.os, 'windows')
       run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core -DMATLAB_DIR=${{ github.workspace }}\matlab-libs-win"
     
     - name: prepare cmake args (enable coverage on ubuntu debug)
-      if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
+      if: matrix.config.name == 'Ubuntu-Debug')
       run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DTIGL_ENABLE_COVERAGE=ON"
       
     - name: Build TiGL (ubuntu, macos)
