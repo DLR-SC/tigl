@@ -396,8 +396,8 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        git config --global user.email "fake@email.com"
-        git config --global user.name "TiGL Bot"
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
         git fetch
         git checkout gh-pages
         mkdir -p doc/latest
@@ -430,3 +430,4 @@ jobs:
         body: There has been a new release over at DLR-SC/tigl. We should create new conda packages!
         branch: bump-tigl3-version
         commit-message: bump tigl3 version to ${{ env.version }}
+        token: ${{ secrets.GH_TOKEN }}
