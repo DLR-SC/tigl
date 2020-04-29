@@ -396,6 +396,8 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
+        git config --global user.email "fake@email.com"
+        git config --global user.name "TiGL Bot"
         git fetch
         git checkout gh-pages
         mkdir -p doc/latest
