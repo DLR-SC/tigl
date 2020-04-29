@@ -402,7 +402,7 @@ jobs:
         rm -rf doc/latest/*
         mkdir -p doc/${{ env.version }}
         cp -r html-documentation/* doc/latest/
-        cp -r html-dockumentation/* doc/${{ env.version }}/
+        cp -r html-documentation/* doc/${{ env.version }}/
         rm -rf html-documentation
         git add doc/*
         git commit -m "add documentation for version ${{ env.version }} to website"
