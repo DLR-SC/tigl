@@ -399,7 +399,7 @@ jobs:
         git fetch
         git checkout gh-pages
         mkdir -p doc/latest
-        rm doc/latest/*
+        rm -rf doc/latest/*
         mkdir -p doc/${{ env.version }}
         cp -r html-documentation/* doc/latest/
         cp -r html-dockumentation/* doc/${{ env.version }}/
