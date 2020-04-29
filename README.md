@@ -3,7 +3,7 @@
 # TiGL
 
 ![Continuous Integration](https://github.com/dlr-sc/tigl/workflows/Continuous%20Integration/badge.svg?event=schedule)
-[![codecov](https://codecov.io/gh/dlr-sc/tigl/branch/cpacs_3/graph/badge.svg)](https://codecov.io/gh/dlr-sc/tigl)
+[![codecov](https://codecov.io/gh/dlr-sc/tigl/branch/master/graph/badge.svg)](https://codecov.io/gh/dlr-sc/tigl)
 [![Apache 2.0](https://img.shields.io/crates/l/k)](https://github.com/DLR-SC/tigl/blob/cpacs_3/LICENSE.txt)
 [![Install with conda](https://anaconda.org/dlr-sc/tigl/badges/installer/conda.svg)](https://conda.anaconda.org/dlr-sc/tigl3)
 [![Cite-us](https://img.shields.io/badge/doi-10.1007%2Fs11786--019--00401--y-blue)](https://doi.org/10.1007/s11786-019-00401-y) 
