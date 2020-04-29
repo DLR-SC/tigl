@@ -314,12 +314,13 @@ jobs:
       run: |
         csplit -z ChangeLog /"Version "/ {1} 
         cat xx00
+        sed s/'   -'/'-'/g xx00 > release_description.md
         
     - name: Read Release Description from splitted Changelog
       id: changelog
       uses: juliangruber/read-file-action@v1
       with:
-        path: ./xx00
+        path: ./release_description.md
           
     - name: Parse version
       run: |
