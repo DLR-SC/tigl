@@ -1,0 +1,434 @@
+name: Continuous Integration
+
+on: 
+  schedule:
+    - cron: "0 0 * * *"
+  push:
+  create:
+    tags:
+      - v*
+
+env:
+  CCACHE_DIR: ${{ github.workspace }}/compiler-cache
+  CLCACHE_DIR: ${{ github.workspace }}\compiler-cache
+  CLCACHE_HARDLINK: 1
+  TIGL_NIGHTLY: "ON"
+  TIGL_PYTHON_VER: "=3.6"
+  TIGL_TIXI3_VER: ">=3.0.3"
+  TIGL_QT_VER: "=5.9.7"
+  TIGL_PYTHONOCC_VER: "=0.17.3"
+  TIGL_DOXYGEN_VER: "=1.8.16"
+  TIGL_SWIG_VER: ">=3.0.11"
+  TIGL_OCE_VER: "=0.17.2"
+  TIGL_FREEIMAGEPLUS_VER: ""
+  TIGL_NINJA_VER: ""
+ 
+jobs:
+
+  build-and-test:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            name: 'Win64-dynamic',
+            os: windows-latest,
+            arch: amd64,
+            link_type: dynamic,
+            build_type: Release
+          }
+        - {
+            name: 'Win64-static',
+            os: windows-latest,
+            arch: amd64,
+            link_type: static,
+            build_type: Release
+          }
+        - {
+            name: 'Ubuntu-Release',
+            os: ubuntu-latest,
+            link_type: dynamic,
+            build_type: Release
+          }
+        - {
+            name: 'Ubuntu-Debug',
+            os: ubuntu-latest,
+            link_type: dynamic,
+            build_type: Debug
+          }
+        - {
+            name: 'MacOS',
+            os: macos-latest,
+            link_type: dynamic,
+            build_type: Release
+          }
+
+    runs-on: ${{ matrix.config.os }}    
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: recursive
+  
+
+#  setup:
+
+  
+    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov gcovr (ubuntu)
+      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov gcovr
+      if: contains(matrix.config.os, 'ubuntu')
+    
+    - name: Setup conda
+      uses: goanpeca/setup-miniconda@v1.0.2
+      with:
+        auto-update-conda: true
+        auto-activate-base: true
+        activate-environment: ''
+
+    - name: Install dependencies using Miniconda (dynamic)
+      if: matrix.config.link_type == 'dynamic'
+      run: |
+        conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} tixi3${{ env.TIGL_TIXI3_VER }} swig${{ env.TIGL_SWIG_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda info -a
+        conda list
+        
+    - name: Install dependencies using Miniconda (static)
+      if: matrix.config.link_type == 'static'
+      run: |
+        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} swig${{ env.TIGL_SWIG_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        
+    - name: Install doxygen (ubuntu, macos)
+      if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
+      run: conda install doxygen${{ env.TIGL_DOXYGEN_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
+      
+    - name: Cache doxygen and matlab libs for windows (windows)
+      if: contains(matrix.config.os, 'windows')
+      id: cache-win
+      uses: actions/cache@v1
+      with:
+        path: tigl-thirdparty
+        key: ${{ matrix.config.name }}-tigl-thirdparty
+        
+    - name: Install doxygen 1.8.16 and Matlab libs (windows)
+      if: contains(matrix.config.os, 'windows') && steps.cache-win.outputs.cache-hit != 'true'
+      run: |
+       mkdir tigl-thirdparty
+       cd tigl-thirdparty
+       curl --max-time 900 --connect-timeout 60 -o doxygen.zip -SL https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
+       unzip doxygen.zip -d doxygen
+       curl --max-time 900 --connect-timeout 60 -o matlab-libs-win.zip -SL https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-win.zip
+       unzip matlab-libs-win.zip -d matlab-libs-win
+
+    - name: Install ccache (ubuntu)
+      run: |
+        sudo apt-get install ccache -y
+        echo "::add-path::/usr/lib/ccache"
+      if: contains(matrix.config.os, 'ubuntu')
+      
+    - name: Install ccache (macos)
+      run: |
+        brew install zstd libb2
+        brew install --HEAD ccache
+        echo "::add-path::/usr/local/opt/ccache/libexec"
+        echo "::add-path::/usr/local/opt/ccache/bin"
+        echo '#!/bin/sh' > ccache-clang
+        echo 'exec ccache /usr/bin/clang "$@"' >> ccache-clang
+        chmod a+x ccache-clang
+        echo '#!/bin/sh' > ccache-clang++
+        echo 'exec ccache /usr/bin/clang++ "$@"' >> ccache-clang++
+        chmod a+x ccache-clang++
+        echo '### contents of ccache-clang'
+        cat ccache-clang
+        echo '### contents of ccache-clang++'
+        cat ccache-clang++
+        echo "::set-env name=CCACHE_MAXSIZE::10G"
+        echo "::set-env name=CCACHE_CPP2::true"
+        echo "::set-env name=CCACHE_HARDLINK::true"
+        echo "::set-env name=CCACHE_SLOPPINESS::file_macro,time_macros,include_file_mtime,include_file_ctime,file_stat_matches"
+        echo "::set-env name=CC::${{ github.workspace }}/ccache-clang"
+        echo "::set-env name=CXX::${{ github.workspace }}/ccache-clang++"
+      if: contains(matrix.config.os, 'macos')
+      
+    - name: Install clcache (windows)
+      run: |
+        python -m pip install git+https://github.com/frerich/clcache.git
+      shell: cmd
+      if: contains(matrix.config.os, 'windows')
+
+
+#  build:
+
+
+    - name: restore compiler cache
+      uses: actions/cache@v1
+      with:
+        path: compiler-cache
+        key: ${{ matrix.config.name }}-compiler-cache-${{ github.sha }}
+        restore-keys: ${{ matrix.config.name }}-compiler-cache
+        
+    - name: prepare cmake args (disable nightly flag for release builds)
+      if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v')
+      run: echo "::set-env name=TIGL_NIGHTLY::OFF"
+        
+    - name: prepare cmake args (common)
+      run: echo "::set-env name=CMAKE_ARGS::-DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }}"
+        
+    - name: prepare cmake args (build python internal bindings for dynamic builds)
+      if: contains(matrix.config.link_type, 'dynamic')
+      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DTIGL_BINDINGS_PYTHON_INTERNAL=ON"
+        
+    - name: prepare cmake args (ccache setup and pythonocc directory on macos, ubuntu)
+      if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
+      shell: bash -l {0}
+      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core"
+        
+    - name: prepare cmake args (pythonocc directory and matlab libraries on windows)
+      if: contains(matrix.config.os, 'windows')
+      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core -DMATLAB_DIR=${{ github.workspace }}\tigl-thirdparty\matlab-libs-win"
+    
+    - name: prepare cmake args (enable coverage on ubuntu debug)
+      if: matrix.config.name == 'Ubuntu-Debug'
+      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DTIGL_ENABLE_COVERAGE=ON"
+      
+    - name: Build TiGL (ubuntu, macos)
+      shell: bash -l {0}
+      run: |
+        echo "::set-env name=CMAKE_PREFIX_PATH::${CONDA_PREFIX}/lib:${CONDA_PREFIX}/include"
+        mkdir build
+        cd build
+        cmake .. -G "Ninja" ${{ env.CMAKE_ARGS }}
+        cmake --build . -j 4 --config ${{ matrix.config.build_type }} --target install
+      if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
+      
+    - name: Build TiGL (windows)
+      shell: cmd /C call {0}
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.config.arch }}
+        set CC=clcache.exe
+        set CXX=clcache.exe
+        clcache.exe -s
+        set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts;${{ github.workspace }}\tigl-thirdparty\doxygen
+        mkdir build
+        cd build
+        cmake .. -G "Ninja" ${{ env.CMAKE_ARGS }}
+        cmake --build . -j 4 --config ${{ matrix.config.build_type }} --target install
+      if: contains(matrix.config.os, 'windows')
+      
+      
+#  test:
+       
+       
+    - name: Run unit tests (ubuntu, macos)
+      run: |
+        cd build
+        cd tests/unittests/
+        ./TiGL-unittests --gtest_output=xml:test_results.xml
+      if: contains(matrix.config.name, 'Ubuntu-Release') || contains(matrix.config.os, 'macos')
+      
+    - name: Run unit tests (windows)
+      run: |
+        echo "::add-path::build\install\bin"
+        cd build
+        cmake --build . --target tigl-java-demo
+        cd tests\unittests
+        .\TiGL-unittests.exe --gtest_output=xml:test_results.xml
+      if: contains(matrix.config.os, 'windows')
+    
+    - name: Create coverage report (ubuntu debug)
+      if: contains(matrix.config.name, 'Ubuntu-Debug')
+      run: |
+        cd build
+        cmake --build . --target coverage
+        
+    - name: Publish coverage report to codecov.io (ubuntu debug)
+      if: contains(matrix.config.name, 'Ubuntu-Debug')
+      uses: codecov/codecov-action@master
+      with:
+        file: build/tests/unittests/coverageReport.info
+        
+    
+#  deploy:
+      
+    - name: Create package (macos)
+      run: |
+        cd build
+        cmake --build . --target doc
+        cmake --build . --target package
+      if: contains(matrix.config.os, 'macos')
+      
+    - name: Upload package as artifact (macos)
+      if: contains(matrix.config.os, 'macos')
+      uses: actions/upload-artifact@v2-preview
+      with:
+       name: ${{ matrix.config.name }}-package
+       path: build/*.dmg
+      
+    - name: Create package (windows)
+      run: |
+        cd build
+        cmake --build . --target doc
+        cpack -G ZIP
+        cpack -G NSIS
+      if: contains(matrix.config.os, 'windows')
+      
+    - name: Upload package as artifact (windows)
+      if: contains(matrix.config.os, 'windows')
+      uses: actions/upload-artifact@v2-preview
+      with:
+       name: ${{ matrix.config.name }}-package
+       path: build/*.zip
+       
+    - name: Upload installer as artifact (windows)
+      if: contains(matrix.config.os, 'windows')
+      uses: actions/upload-artifact@v2-preview
+      with:
+       name: ${{ matrix.config.name }}-installer
+       path: build/*.exe
+       
+    - name: Create documentation (ubuntu)
+      if: contains(matrix.config.os, 'ubuntu')
+      run: |
+        cd build
+        cmake --build . --target doc
+       
+    - name: Upload documentation as artifact (ubuntu)
+      if: contains(matrix.config.os, 'ubuntu')
+      uses: actions/upload-artifact@v2-preview
+      with:
+       name: html-documentation
+       path: build/doc/html/*
+        
+        
+  deploy:
+   
+    if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest     
+    needs: build-and-test
+
+    steps:
+      
+    - uses: actions/checkout@v2
+    
+    - name: Split Release Description from Changelog
+      run: |
+        csplit -z ChangeLog /"Version "/ {1} 
+        cat xx00
+        sed s/'   -'/'-'/g xx00 > release_description.md
+        
+    - name: Read Release Description from splitted Changelog
+      id: changelog
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: ./release_description.md
+          
+    - name: Parse version
+      run: |
+        version=`echo $github_ref | cut -c 12-`
+        echo $version
+        echo "::set-env name=version::$version"
+      env:
+         github_ref: ${{ github.ref }}
+          
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: TiGL ${{ env.version }}
+        body: ${{ steps.changelog.outputs.content  }}
+        draft: false
+        prerelease: false
+      
+    - name: download MacOS package Build artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: MacOS-package
+          
+    - name: Upload MacOS Release Asset (.dmg)
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        asset_path: ./MacOS-package/TIGL-${{ env.version }}-Darwin.dmg
+        asset_name: TIGL-${{ env.version }}-Darwin.dmg
+        asset_content_type: application/zip
+          
+    - name: download Win64 package Build artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: Win64-static-package
+         
+    - name: Upload Win64 Release Asset (.zip)
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        asset_path: ./Win64-static-package/TIGL-${{ env.version }}-win64.zip
+        asset_name: TIGL-${{ env.version }}-win64.zip
+        asset_content_type: application/zip
+        
+    - name: download Win64 installer Build artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: Win64-static-installer
+         
+    - name: Upload Win64 Release Asset (.exe)
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} 
+        asset_path: ./Win64-static-installer/TIGL-${{ env.version }}-win64.exe
+        asset_name: TIGL-${{ env.version }}-win64.exe
+        asset_content_type: application/zip
+           
+    - name: download html-documentation
+      uses: actions/download-artifact@v1
+      with:
+        name: html-documentation
+        path: html-documentation
+            
+    - name: Upload documentation to website
+      env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git fetch
+        git checkout gh-pages
+        mkdir -p doc/latest
+        rm -rf doc/latest/*
+        mkdir -p doc/${{ env.version }}
+        cp -r html-documentation/* doc/latest/
+        cp -r html-documentation/* doc/${{ env.version }}/
+        rm -rf html-documentation
+        git add doc/*
+        git commit -m "add documentation for version ${{ env.version }} to website"
+        git push
+        git checkout master
+        
+    - name: Checkout tigl-conda repo
+      uses: actions/checkout@v2
+      with:
+        repository: DLR-SC/tigl-conda
+        path: tigl-conda
+        
+    - name: Bump version of tigl3 conda recipe
+      run: |
+        sed -i s/"version = \".*\""/"version = \"${{ env.version }}\""/g tigl-conda/tigl3/meta.yaml
+        git diff
+        
+    - name: Create Pull Request at DLR-SC/tigl-conda
+      uses: peter-evans/create-pull-request@v2
+      with:
+        path: tigl-conda
+        title: Bump tigl3 version to ${{ env.version }}
+        body: There has been a new release over at DLR-SC/tigl. We should create new conda packages!
+        branch: bump-tigl3-version
+        commit-message: bump tigl3 version to ${{ env.version }}
+        token: ${{ secrets.GH_TOKEN }}
