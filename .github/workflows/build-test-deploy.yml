@@ -12,6 +12,7 @@ env:
   CCACHE_DIR: ${{ github.workspace }}/compiler-cache
   CLCACHE_DIR: ${{ github.workspace }}\compiler-cache
   CLCACHE_HARDLINK: 1
+  MACOSX_DEPLOYMENT_TARGET: "10.9"
   TIGL_NIGHTLY: "ON"
   TIGL_PYTHON_VER: "=3.6"
   TIGL_TIXI3_VER: ">=3.0.3"
