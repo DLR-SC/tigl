@@ -2,7 +2,7 @@ name: Continuous Integration
 
 on: 
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "40 2 * * *"
   push:
   create:
     tags:
@@ -76,32 +76,53 @@ jobs:
 #  setup:
 
   
-    - name: Install libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov gcovr (ubuntu)
-      run: sudo apt-get update &&  sudo apt-get install -y --force-yes libglu1-mesa-dev freeglut3-dev mesa-common-dev lcov gcovr
+    - name: Install dependencies (ubuntu)
       if: contains(matrix.config.os, 'ubuntu')
-    
+      run: |
+        curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/Release.key | sudo apt-key add -
+        echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/ /" | sudo tee -a /etc/apt/sources.list 
+        sudo apt-get update -qq
+        sudo apt-get install -y lcov gcovr  libtixi3-dev liboce-dev doxygen cmake cmake-data sshpass
+        
+    - name: Install dependencies (macos)
+      if: contains(matrix.config.os, 'macos')
+      uses: nick-invision/retry@v1
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          curl -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz
+          curl -o doxygen-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-macOS.tar.gz
+          curl -o oce.0.17.2.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/oce.0.17.2-1.macos_static.tar.gz
+          curl -O -L https://github.com/DLR-SC/tixi/releases/download/v3.0.3/TIXI-3.0.3-Darwin.tar.gz
+          tar xf sshpass-macOS.tar.gz -C /tmp
+          tar xf doxygen-macOS.tar.gz -C /tmp
+          tar xf oce.0.17.2.macos_static.tar.gz
+          tar xf TIXI-3.0.3-Darwin.tar.gz
+          echo "::add-path::/tmp"
+          echo "::add-path::/tmp/doxygen"
+          echo "::set-env name=DYLD_LIBRARY_PATH::${{ github.workspace }}/TIXI-3.0.3-Darwin/lib"
+          echo "::set-env name=CMAKE_PREFIX_PATH::${{ github.workspace }}/TIXI-3.0.3-Darwin:${{ github.workspace }}/oce.0.17.2.macos_static:/usr/local/opt/qt/"
+          
     - name: Setup conda
+      if: contains(matrix.config.os, 'windows')
       uses: goanpeca/setup-miniconda@v1.0.2
       with:
         auto-update-conda: true
         auto-activate-base: true
         activate-environment: ''
 
-    - name: Install dependencies using Miniconda (dynamic)
-      if: matrix.config.link_type == 'dynamic'
+    - name: Install dependencies using Miniconda (dynamic, windows)
+      if: matrix.config.link_type == 'dynamic' && contains(matrix.config.os, 'windows')
       run: |
-        conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} tixi3${{ env.TIGL_TIXI3_VER }} swig${{ env.TIGL_SWIG_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} swig${{ env.TIGL_SWIG_VER }} tixi3${{ env.TIGL_TIXI3_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list
         
-    - name: Install dependencies using Miniconda (static)
-      if: matrix.config.link_type == 'static'
+    - name: Install dependencies using Miniconda (static, windows)
+      if: matrix.config.link_type == 'static' && contains(matrix.config.os, 'windows')
       run: |
-        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} swig${{ env.TIGL_SWIG_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
-        
-    - name: Install doxygen (ubuntu, macos)
-      if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
-      run: conda install doxygen${{ env.TIGL_DOXYGEN_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
       
     - name: Cache doxygen and matlab libs for windows (windows)
       if: contains(matrix.config.os, 'windows')
@@ -113,13 +134,17 @@ jobs:
         
     - name: Install doxygen 1.8.16 and Matlab libs (windows)
       if: contains(matrix.config.os, 'windows') && steps.cache-win.outputs.cache-hit != 'true'
-      run: |
-       mkdir tigl-thirdparty
-       cd tigl-thirdparty
-       curl --max-time 900 --connect-timeout 60 -o doxygen.zip -SL https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
-       unzip doxygen.zip -d doxygen
-       curl --max-time 900 --connect-timeout 60 -o matlab-libs-win.zip -SL https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-win.zip
-       unzip matlab-libs-win.zip -d matlab-libs-win
+      uses: nick-invision/retry@v1
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          mkdir tigl-thirdparty
+          cd tigl-thirdparty
+          curl --max-time 900 --connect-timeout 60 -o doxygen.zip -SL https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
+          unzip doxygen.zip -d doxygen
+          curl --max-time 900 --connect-timeout 60 -o matlab-libs-win.zip -SL https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-win.zip
+          unzip matlab-libs-win.zip -d matlab-libs-win
 
     - name: Install ccache (ubuntu)
       run: |
@@ -175,14 +200,14 @@ jobs:
     - name: prepare cmake args (common)
       run: echo "::set-env name=CMAKE_ARGS::-DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }}"
         
-    - name: prepare cmake args (build python internal bindings for dynamic builds)
-      if: contains(matrix.config.link_type, 'dynamic')
+    - name: prepare cmake args (build python internal bindings for dynamic builds, windows)
+      if: contains(matrix.config.link_type, 'dynamic') && contains(matrix.config.os, 'windows')
       run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DTIGL_BINDINGS_PYTHON_INTERNAL=ON"
         
-    - name: prepare cmake args (ccache setup and pythonocc directory on macos, ubuntu)
+    - name: prepare cmake args (ccache setup on macos, ubuntu)
       if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
       shell: bash -l {0}
-      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DPythonOCC_SOURCE_DIR=${CONDA_PREFIX}/src/pythonocc-core"
+      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
         
     - name: prepare cmake args (pythonocc directory and matlab libraries on windows)
       if: contains(matrix.config.os, 'windows')
@@ -195,10 +220,9 @@ jobs:
     - name: Build TiGL (ubuntu, macos)
       shell: bash -l {0}
       run: |
-        echo "::set-env name=CMAKE_PREFIX_PATH::${CONDA_PREFIX}/lib:${CONDA_PREFIX}/include"
         mkdir build
         cd build
-        cmake .. -G "Ninja" ${{ env.CMAKE_ARGS }}
+        cmake .. ${{ env.CMAKE_ARGS }}
         cmake --build . -j 4 --config ${{ matrix.config.build_type }} --target install
       if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
       
