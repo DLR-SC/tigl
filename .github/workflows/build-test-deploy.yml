@@ -78,11 +78,15 @@ jobs:
   
     - name: Install dependencies (ubuntu)
       if: contains(matrix.config.os, 'ubuntu')
-      run: |
-        curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/Release.key | sudo apt-key add -
-        echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/ /" | sudo tee -a /etc/apt/sources.list 
-        sudo apt-get update -qq
-        sudo apt-get install -y lcov gcovr  libtixi3-dev liboce-dev doxygen cmake cmake-data sshpass
+      uses: nick-invision/retry@v1
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/Release.key | sudo apt-key add -
+          echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/ /" | sudo tee -a /etc/apt/sources.list 
+          sudo apt-get update -qq
+          sudo apt-get install -y lcov gcovr  libtixi3-dev liboce-dev doxygen cmake cmake-data sshpass
         
     - name: Install dependencies (macos)
       if: contains(matrix.config.os, 'macos')
@@ -105,7 +109,7 @@ jobs:
           echo "::set-env name=CMAKE_PREFIX_PATH::${{ github.workspace }}/TIXI-3.0.3-Darwin:${{ github.workspace }}/oce.0.17.2.macos_static:/usr/local/opt/qt/"
           brew install qt
           
-    - name: Setup conda
+    - name: Setup conda (windows)
       if: contains(matrix.config.os, 'windows')
       uses: goanpeca/setup-miniconda@v1.0.2
       with:
