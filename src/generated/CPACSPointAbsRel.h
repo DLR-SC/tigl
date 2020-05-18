@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSTransformation
 
-    // generated from /xsd:schema/xsd:complexType[716]
     /// @brief pointAbsRelType
     /// 
     /// PointAbsRel type, containing an xyz data triplet. Each

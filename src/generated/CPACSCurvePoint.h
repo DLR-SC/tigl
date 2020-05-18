@@ -37,7 +37,6 @@ namespace generated
     // CPACSWingRibExplicitPositioning
     // CPACSWingRibsPositioning
 
-    // generated from /xsd:schema/xsd:complexType[241]
     /// @brief curvePointType
     /// 
     /// Point on a curve in normalized curve coordinates.

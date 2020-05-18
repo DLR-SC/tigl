@@ -33,8 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsPositioning
 
-    // generated from /xsd:schema/xsd:complexType[772]
-    /// @brief Definition of the rotation of the ribs.
+    /// @brief Definition of the rib rotation
     /// 
     /// The rotation around z describes the rotation around the
     /// wings midplane normal axis. The defaults to 90°. The reference
@@ -68,7 +67,7 @@ namespace generated
         CCPACSWingRibsPositioning* m_parent;
 
         /// RotationReference defines the reference for
-        /// the z-rotation it is either sparUID, „LeadingEdge“, 
+        /// the z-rotation it is either sparUID, „LeadingEdge“,
         /// „TrailingEdge“, "globalX", "globalY" or "globalZ".
         /// If it is not defined the rotation reference is
         /// the eta-axis (=leading edge, that is projected on the wings

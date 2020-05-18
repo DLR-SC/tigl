@@ -44,7 +44,6 @@ namespace generated
     // This class is used in:
     // CPACSProfileBasedStructuralElements
 
-    // generated from /xsd:schema/xsd:complexType[745]
     /// @brief Profiles of the aircraft.
     /// 
     /// ProfileBasedStructuralElement Type, containing the

@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSHeader
 
-    // generated from /xsd:schema/xsd:complexType[907]
     /// @brief updatesType
     /// 
     /// Updates type, containing update data for the CPACS

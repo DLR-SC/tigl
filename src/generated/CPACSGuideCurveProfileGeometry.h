@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurveProfiles
 
-    // generated from /xsd:schema/xsd:complexType[439]
     /// @brief guideCurveProfileGeometryType
     /// 
     /// A guide curve profile is defined by a profile name, an

@@ -5,8 +5,8 @@
     <description>Simple Wing to test the different CPACS transformation modes</description>
     <creator>Martin Siggel</creator>
     <timestamp>2018-01-11T14:23:25</timestamp>
-    <version>0.2.0</version>
-    <cpacsVersion>3.0</cpacsVersion>
+    <version>0.3.0</version>
+    <cpacsVersion>3.1</cpacsVersion>
     <updates>
       <update>
         <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
@@ -21,6 +21,13 @@
         <timestamp>2019-04-29T20:48:32</timestamp>
         <version>0.2.0</version>
         <cpacsVersion>3.0</cpacsVersion>
+      </update>
+      <update>
+        <modification>Converted to CPACS 3.1 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2020-04-26T02:01:40</timestamp>
+        <version>0.3.0</version>
+        <cpacsVersion>3.1</cpacsVersion>
       </update>
     </updates>
   </header>

@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSCargoDoorsAssembly
 
-    // generated from /xsd:schema/xsd:complexType[289]
     /// @brief doorAssemblyPositionType
     /// 
     /// DoorAssemblyPosition type, containing the position of a door

@@ -35,8 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSWingComponentSegmentStructure
 
-    // generated from /xsd:schema/xsd:complexType[969]
-    /// @brief Ribs of the wing.
+    /// @brief Wing ribs
     /// 
     /// RibDefinitions type, containing the definition of all
     /// ribs of the wing.

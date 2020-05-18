@@ -40,21 +40,20 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinition
 
-    // generated from /xsd:schema/xsd:complexType[970]
-    /// @brief wingRibsPositioningType
+    /// @brief Positioning of a set of wing ribs
     /// 
-    /// Within the ribsPositioing type the position and the
-    /// orientaion of the ribs of the rib set are difend.
+    /// The ribsPositioning type allows the definition of a set
+    /// of ribs which is distributed over a specified spanwise area.
     /// The positions of the ribs are defined by placing the
     /// ribs on a reference line on the wing (ribReference). The inner
     /// and the outer beginning of the rib set is defined using etaStart
     /// and etaEnd. The position of the forward and rear end of the ribs
-    /// is defiend by ribStart and ribEnd. The orientation of the ribs
-    /// is defined in ribRotaton. The number of ribs of the current rib
+    /// is defined by ribStart and ribEnd. The orientation of the ribs
+    /// is defined in ribRotation. The number of ribs of the current rib
     /// set is either defined by ribNumber or by spacing.
-    /// Three examples how ribs can be placed on the wing can
-    /// be found in the picture below. For more detailed information,
-    /// pleas refer to the descripion of each parameter.
+    /// Three examples how ribs can be placed on the wing are
+    /// illustrated in the picture below. For more detailed information,
+    /// please refer to the description of each parameter.
     /// @see ribs
     /// 
     class CPACSWingRibsPositioning : public ITiglUIDRefObject
@@ -135,34 +134,32 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// startEtaXsiPoint defines the start of the rib defined in eta-xsi coordinates of a reference plane
+        /// Defines the start of the rib defined in eta-xsi coordinates of a reference plane
         boost::optional<CCPACSEtaXsiPoint> m_startEtaXsiPoint_choice1;
 
-        /// startCurvePoint defines the start of the rib defined by a point on a reference curve
+        /// Defines the start of the rib by a point on a reference curve,
         /// such as a spar, but not an explicit sparPosition
         boost::optional<CCPACSCurvePoint>  m_startCurvePoint_choice2;
 
-        /// Defines the location of the beginning of the rib using a specific sparPosition.
+        /// Defines the location of the beginning of the rib using a specific sparPosition
         boost::optional<std::string>       m_startSparPositionUID_choice3;
 
-        /// endEtaXsiPoint defines the end of the rib defined in eta-xsi coordinates of a reference plane
+        /// Defines the end of the rib defined in eta-xsi coordinates of a reference plane
         boost::optional<CCPACSEtaXsiPoint> m_endEtaXsiPoint_choice1;
 
-        /// endCurvePoint defines the end of the rib defined by a point on a reference curve
+        /// Defines the end of the rib defined by a point on a reference curve
         /// such as a spar, but not an explicit sparPosition
         boost::optional<CCPACSCurvePoint>  m_endCurvePoint_choice2;
 
-        /// Defines the location of the end of the rib using a specific sparPosition.
+        /// Defines the location of the end of the rib using a specific sparPosition
         boost::optional<std::string>       m_endSparPositionUID_choice3;
 
-        /// RibStart defines the forward beginning of the ribs. It can either be a
-        /// sparUID or
-        /// "trailingEdge" or "leadingEdge".
+        /// Defines the forward beginning of the ribs. It can either be a
+        /// sparUID or "trailingEdge" or "leadingEdge".
         std::string                        m_ribStart;
 
-        /// RibEnd defines the backward ending of the ribs. It can either be a
-        /// sparUID or
-        /// "trailingEdge" or "leadingEdge".
+        /// Defines the backward ending of the ribs. It can either be a
+        /// sparUID or "trailingEdge" or "leadingEdge".
         std::string                        m_ribEnd;
 
         /// The spacing of the ribs defines the distance between two ribs,
@@ -170,7 +167,7 @@ namespace generated
         /// ribReferenceLine. First rib is placed at etaStart.
         boost::optional<double>            m_spacing_choice1;
 
-        /// RibNumber defines the number of ribs in this ribSet. First rib is at
+        /// Defines the number of ribs in this ribSet. First rib is at
         /// etaStart on the
         /// referenceLine, last rib is at etaEnd. The spacing is constant on the
         /// ribReferenceLine.

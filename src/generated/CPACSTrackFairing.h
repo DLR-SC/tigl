@@ -34,7 +34,6 @@ namespace generated
     // This class is used in:
     // CPACSTrackStructure
 
-    // generated from /xsd:schema/xsd:complexType[886]
     /// @brief trackFairingType
     /// 
     /// 

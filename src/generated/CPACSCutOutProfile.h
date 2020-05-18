@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSCutOutProfiles
 
-    // generated from /xsd:schema/xsd:complexType[248]
     /// @brief Definition of cut out profiles.
     /// 
     /// Optional, the exact shape between the upper and lower

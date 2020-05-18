@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    // generated from /xsd:schema/xsd:complexType[823]
     /// @brief skinType
     /// 
     /// Containing data defining the skin

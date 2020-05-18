@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSNacelleSections
 
-    // generated from /xsd:schema/xsd:complexType[685]
     /// @brief nacelleSectionType
     /// 
     /// 

@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceWingCutOut
 
-    // generated from /xsd:schema/xsd:complexType[188]
     /// @brief Border type for the inner and outer border of a wing
     /// cut out
     /// 

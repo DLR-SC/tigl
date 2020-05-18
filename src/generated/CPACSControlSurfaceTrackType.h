@@ -41,7 +41,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceTracks
 
-    // generated from /xsd:schema/xsd:complexType[192]
     /// @brief Control surface tracks (mechnaical link between control
     /// surface and parent).
     /// 

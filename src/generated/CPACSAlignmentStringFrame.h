@@ -34,7 +34,6 @@ namespace generated
     // This class is used in:
     // CPACSStringerFramePosition
 
-    // generated from /xsd:schema/xsd:complexType[68]
     /// @brief alignmentStringFrameType
     /// 
     /// 

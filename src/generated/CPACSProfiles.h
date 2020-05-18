@@ -43,7 +43,6 @@ namespace generated
     // This class is used in:
     // CPACSVehicles
 
-    // generated from /xsd:schema/xsd:complexType[750]
     /// @brief profilesType
     /// 
     /// Profiles type, containing profile geometries

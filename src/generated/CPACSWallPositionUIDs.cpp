@@ -20,6 +20,7 @@
 #include "CPACSWallPositionUIDs.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
@@ -27,7 +28,8 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSWallPositionUIDs::CPACSWallPositionUIDs(CCPACSFuselageWallSegment* parent)
+    CPACSWallPositionUIDs::CPACSWallPositionUIDs(CCPACSFuselageWallSegment* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -35,6 +37,11 @@ namespace generated
 
     CPACSWallPositionUIDs::~CPACSWallPositionUIDs()
     {
+        if (m_uidMgr) {
+            for (std::vector<std::string>::iterator it = m_wallPositionUIDs.begin(); it != m_wallPositionUIDs.end(); ++it) {
+                if (!it->empty()) m_uidMgr->TryUnregisterReference(*it, *this);
+            }
+        }
     }
 
     const CCPACSFuselageWallSegment* CPACSWallPositionUIDs::GetParent() const
@@ -69,11 +76,26 @@ namespace generated
         return nullptr;
     }
 
+    CTiglUIDManager& CPACSWallPositionUIDs::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+
+    const CTiglUIDManager& CPACSWallPositionUIDs::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+
     void CPACSWallPositionUIDs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element wallPositionUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/wallPositionUID")) {
             tixi::TixiReadElements(tixiHandle, xpath + "/wallPositionUID", m_wallPositionUIDs, 2, tixi::xsdUnbounded);
+            if (m_uidMgr) {
+                for (std::vector<std::string>::iterator it = m_wallPositionUIDs.begin(); it != m_wallPositionUIDs.end(); ++it) {
+                    if (!it->empty()) m_uidMgr->RegisterReference(*it, *this);
+                }
+            }
         }
 
     }
@@ -93,6 +115,20 @@ namespace generated
     std::vector<std::string>& CPACSWallPositionUIDs::GetWallPositionUIDs()
     {
         return m_wallPositionUIDs;
+    }
+
+    const CTiglUIDObject* CPACSWallPositionUIDs::GetNextUIDObject() const
+    {
+        return GetNextUIDParent();
+    }
+
+    void CPACSWallPositionUIDs::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
+    {
+        for (auto& entry : m_wallPositionUIDs) {
+            if (entry == oldUid) {
+                entry = newUid;
+            }
+        }
     }
 
 } // namespace generated

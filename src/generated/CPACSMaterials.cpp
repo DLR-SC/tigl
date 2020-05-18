@@ -16,7 +16,6 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSMaterial.h"
 #include "CPACSMaterials.h"
 #include "CPACSVehicles.h"
 #include "CTiglError.h"
@@ -78,11 +77,6 @@ namespace generated
 
     void CPACSMaterials::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element material
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/material")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/material", m_materials, 1, tixi::xsdUnbounded, this, m_uidMgr);
-        }
-
         // read element composites
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/composites")) {
             m_composites = boost::in_place(this, m_uidMgr);
@@ -98,10 +92,7 @@ namespace generated
 
     void CPACSMaterials::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "material", "composites" };
-
-        // write element material
-        tixi::TixiSaveElements(tixiHandle, xpath + "/material", m_materials);
+        const std::vector<std::string> childElemOrder = { "composites" };
 
         // write element composites
         if (m_composites) {
@@ -116,16 +107,6 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSMaterial>>& CPACSMaterials::GetMaterials() const
-    {
-        return m_materials;
-    }
-
-    std::vector<std::unique_ptr<CPACSMaterial>>& CPACSMaterials::GetMaterials()
-    {
-        return m_materials;
-    }
-
     const boost::optional<CPACSComposites>& CPACSMaterials::GetComposites() const
     {
         return m_composites;
@@ -134,23 +115,6 @@ namespace generated
     boost::optional<CPACSComposites>& CPACSMaterials::GetComposites()
     {
         return m_composites;
-    }
-
-    CPACSMaterial& CPACSMaterials::AddMaterial()
-    {
-        m_materials.push_back(make_unique<CPACSMaterial>(this, m_uidMgr));
-        return *m_materials.back();
-    }
-
-    void CPACSMaterials::RemoveMaterial(CPACSMaterial& ref)
-    {
-        for (std::size_t i = 0; i < m_materials.size(); i++) {
-            if (m_materials[i].get() == &ref) {
-                m_materials.erase(m_materials.begin() + i);
-                return;
-            }
-        }
-        throw CTiglError("Element not found");
     }
 
     CPACSComposites& CPACSMaterials::GetComposites(CreateIfNotExistsTag)

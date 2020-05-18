@@ -44,10 +44,6 @@ CCPACSStringVector::CCPACSStringVector(CCPACSWingProfileCST* parent)
     : generated::CPACSStringVectorBase(parent)
 {}
 
-CCPACSStringVector::CCPACSStringVector(CCPACSEmissivityMap* parent)
-    : generated::CPACSStringVectorBase(parent)
-{}
-
 CCPACSStringVector::CCPACSStringVector(CCPACSPointListRelXYZVector* parent)
     : generated::CPACSStringVectorBase(parent)
 {}
@@ -68,11 +64,6 @@ CCPACSStringVector::CCPACSStringVector(CCPACSCurveParamPointMap* parent)
 CCPACSStringVector::CCPACSStringVector(CCPACSRotorBladeAttachment* parent)
     : generated::CPACSStringVectorBase(parent)
 {}
-
-CCPACSStringVector::CCPACSStringVector(CCPACSSpecificHeatMap* parent)
-    : generated::CPACSStringVectorBase(parent)
-{}
-
 
 void CCPACSStringVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {

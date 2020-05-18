@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSFuselageSections
 
-    // generated from /xsd:schema/xsd:complexType[382]
     /// @brief fuselageSectionType
     /// 
     /// FuselageSection type, containing fusleage section and

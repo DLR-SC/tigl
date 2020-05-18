@@ -34,7 +34,6 @@ namespace generated
     // This class is used in:
     // CPACSEngineNacelle
 
-    // generated from /xsd:schema/xsd:complexType[1003]
     /// @brief nacelleCenterCowlType
     /// 
     /// Describes the curve for defining rotational center of the engine.

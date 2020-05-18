@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSWingSegments
 
-    // generated from /xsd:schema/xsd:complexType[975]
     /// @brief Segment of the wing.
     /// 
     /// A segment defines which two wing elements (=cross

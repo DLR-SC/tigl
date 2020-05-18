@@ -30,7 +30,6 @@ namespace generated
     // This enum is used in:
     // CPACSRotorHubHinge
 
-    // generated from /xsd:schema/xsd:complexType[782]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[4]/xsd:simpleType
     enum CPACSRotorHubHinge_type
     {
         flap,

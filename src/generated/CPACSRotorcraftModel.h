@@ -41,7 +41,6 @@ namespace generated
     // This class is used in:
     // CPACSRotorcraft
 
-    // generated from /xsd:schema/xsd:complexType[793]
     /// @brief rotorcraftModelType
     /// 
     /// RotorCraftModel type, containing a complete rotorcraft

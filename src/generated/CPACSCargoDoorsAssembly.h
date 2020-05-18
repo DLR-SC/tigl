@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    // generated from /xsd:schema/xsd:complexType[116]
     /// @brief cargoDoorsAssemblyType
     /// 
     /// CargoDoorsAssembly type, containing cargo door

@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceWingCutOut
 
-    // generated from /xsd:schema/xsd:complexType[249]
     /// @brief Definition of cut out profiles.
     /// 
     /// 

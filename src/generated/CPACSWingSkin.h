@@ -37,7 +37,6 @@ namespace generated
     // CPACSWingCell
     // CPACSWingShell
 
-    // generated from /xsd:schema/xsd:complexType[979]
     /// @brief Material properties of the wing skin.
     /// 
     /// The wingSkinType describes the material properties of

@@ -6,8 +6,8 @@
     <description>copied some stuff from other versions. Mission is just an example as the D150 might not make it to Newark with Mach 0.84</description>
     <creator>Daniel Boehnke, DLR-LK</creator>
     <timestamp>2010-07-07T12:00:00</timestamp>
-    <version>1.7.0</version>
-    <cpacsVersion>3.0</cpacsVersion>
+    <version>1.8.0</version>
+    <cpacsVersion>3.1</cpacsVersion>
     <updates>
       <update>
         <modification>Updated to 1.4. ControlsSurfaces and Landing Gear by Felix Dorbath</modification>
@@ -78,6 +78,13 @@
         <timestamp>2019-04-29T20:48:51</timestamp>
         <version>1.7.0</version>
         <cpacsVersion>3.0</cpacsVersion>
+      </update>
+      <update>
+        <modification>Converted to CPACS 3.1 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2020-04-26T02:02:02</timestamp>
+        <version>1.8.0</version>
+        <cpacsVersion>3.1</cpacsVersion>
       </update>
     </updates>
   </header>
@@ -4545,7 +4552,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation uID="D150_InnerFlap_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -4558,7 +4565,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation uID="D150_InnerFlap_innerHingeTranslation2">
                               <x>0.2728</x>
                               <y>0.0</y>
@@ -4571,7 +4578,7 @@
                             <hingeLineRotation>10</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>4</relDeflection>
+                            <controlParameter>4</controlParameter>
                             <innerHingeTranslation uID="D150_InnerFlap_innerHingeTranslation3">
                               <x>0.2667</x>
                               <y>0.0</y>
@@ -4917,7 +4924,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0</relDeflection>
+                            <controlParameter>0</controlParameter>
                             <innerHingeTranslation uID="D150_OuterFlap_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -4930,7 +4937,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>.961</relDeflection>
+                            <controlParameter>.961</controlParameter>
                             <innerHingeTranslation uID="D150_OuterFlap_innerHingeTranslation2">
                               <x>0.2886</x>
                               <y>0.0</y>
@@ -4943,7 +4950,7 @@
                             <hingeLineRotation>9.61</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>3.845</relDeflection>
+                            <controlParameter>3.845</controlParameter>
                             <innerHingeTranslation uID="D150_OuterFlap_innerHingeTranslation3">
                               <x>0.2683</x>
                               <y>0.0</y>
@@ -5254,7 +5261,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>-1</relDeflection>
+                            <controlParameter>-1</controlParameter>
                             <innerHingeTranslation uID="D150_AllSpeedAileron_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5267,7 +5274,7 @@
                             <hingeLineRotation>-25</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation uID="D150_AllSpeedAileron_innerHingeTranslation2">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5280,7 +5287,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation uID="D150_AllSpeedAileron_innerHingeTranslation3">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5578,7 +5585,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5591,7 +5598,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5865,7 +5872,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5878,7 +5885,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6152,7 +6159,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6165,7 +6172,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6439,7 +6446,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6452,7 +6459,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6726,7 +6733,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6739,7 +6746,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -7628,7 +7635,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>-1</relDeflection>
+                            <controlParameter>-1</controlParameter>
                             <innerHingeTranslation uID="D150_Elevator_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -7641,7 +7648,7 @@
                             <hingeLineRotation>-30</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation uID="D150_Elevator_innerHingeTranslation2">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -7654,7 +7661,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation uID="D150_Elevator_innerHingeTranslation3">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -8358,7 +8365,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>-1</relDeflection>
+                            <controlParameter>-1</controlParameter>
                             <innerHingeTranslation uID="D150_Rudder_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -8371,7 +8378,7 @@
                             <hingeLineRotation>-30</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation uID="D150_Rudder_innerHingeTranslation2">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -8384,7 +8391,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation uID="D150_Rudder_innerHingeTranslation3">
                               <x>0.0</x>
                               <y>0.0</y>

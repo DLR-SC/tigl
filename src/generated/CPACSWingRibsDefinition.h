@@ -38,8 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSWingRibsDefinitions
 
-    // generated from /xsd:schema/xsd:complexType[968]
-    /// @brief Definition of an rib set.
+    /// @brief Definition of a set of ribs
     /// 
     /// RibDefinitionType, containing the definition for ribs.
     /// Ribs are defined in sets of one or more ribs. The positions of
@@ -100,10 +99,10 @@ namespace generated
 
         std::string                                       m_uID;
 
-        /// Name of the rib set.
+        /// Name of the rib set
         std::string                                       m_name;
 
-        /// Description of the rib set.
+        /// Description of the rib set
         boost::optional<std::string>                      m_description;
 
         boost::optional<CCPACSWingRibsPositioning>        m_ribsPositioning_choice1;

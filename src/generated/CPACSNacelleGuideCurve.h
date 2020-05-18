@@ -33,7 +33,6 @@ namespace generated
     // This class is used in:
     // CPACSNacelleGuideCurves
 
-    // generated from /xsd:schema/xsd:complexType[681]
     class CPACSNacelleGuideCurve : public ITiglUIDRefObject
     {
     public:

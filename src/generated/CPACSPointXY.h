@@ -41,7 +41,6 @@ namespace generated
     // CPACSSheet
     // CPACSTransformation2D
 
-    // generated from /xsd:schema/xsd:complexType[732]
     /// @brief Data points in x-y-space.
     /// 
     /// Point type, containing an xy data doublet.

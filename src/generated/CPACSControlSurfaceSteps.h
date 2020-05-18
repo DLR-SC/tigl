@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfacePath
 
-    // generated from /xsd:schema/xsd:complexType[191]
     /// @brief Definition of the steps of the control surface
     /// deflection path.
     /// 

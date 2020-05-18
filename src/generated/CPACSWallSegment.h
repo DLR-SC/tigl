@@ -25,6 +25,7 @@
 #include "CPACSWallPositionUIDs.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
+#include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -38,8 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSWallSegments
 
-    // generated from /xsd:schema/xsd:complexType[1008]
-    class CPACSWallSegment : public CTiglOptUIDObject
+    class CPACSWallSegment : public CTiglOptUIDObject, public ITiglUIDRefObject
     {
     public:
         TIGL_EXPORT CPACSWallSegment(CPACSWallSegments* parent, CTiglUIDManager* uidMgr);
@@ -65,8 +65,8 @@ namespace generated
         TIGL_EXPORT virtual const double& GetPhi() const;
         TIGL_EXPORT virtual void SetPhi(const double& value);
 
-        TIGL_EXPORT virtual const boost::optional<bool>& GetNegativeExtrusion() const;
-        TIGL_EXPORT virtual void SetNegativeExtrusion(const boost::optional<bool>& value);
+        TIGL_EXPORT virtual const boost::optional<bool>& GetDoubleSidedExtrusion() const;
+        TIGL_EXPORT virtual void SetDoubleSidedExtrusion(const boost::optional<bool>& value);
 
         TIGL_EXPORT virtual const boost::optional<bool>& GetFlushConnectionStart() const;
         TIGL_EXPORT virtual void SetFlushConnectionStart(const boost::optional<bool>& value);
@@ -99,8 +99,8 @@ namespace generated
         /// direction. Default: 0.0deg.
         double                                    m_phi;
 
-        /// By default, the wall is only extruded in positive direction. If negativeExtrusion is selected, the wall is additionaly extruded in negative direction. Default: false.
-        boost::optional<bool>                     m_negativeExtrusion;
+        /// By default, the wall is only extruded in positive direction. If doubleSidedExtrusion is true, the wall is additionaly extruded in negative direction as well. Default: false.
+        boost::optional<bool>                     m_doubleSidedExtrusion;
 
         /// Rotates the first edge of the wall segment so that it is adjacent with the structural element defined in the first wall position (bulkhead, fuselage section or another plane wall). Default: false.
         boost::optional<bool>                     m_flushConnectionStart;
@@ -136,6 +136,9 @@ namespace generated
         CPACSWallPositionUIDs                     m_wallPositionUIDs;
 
     private:
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+
         CPACSWallSegment(const CPACSWallSegment&) = delete;
         CPACSWallSegment& operator=(const CPACSWallSegment&) = delete;
 

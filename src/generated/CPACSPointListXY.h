@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSStructuralProfile
 
-    // generated from /xsd:schema/xsd:complexType[720]
     /// @brief Points, only x and y.
     /// 
     /// PointList type, containing an ordered list of points

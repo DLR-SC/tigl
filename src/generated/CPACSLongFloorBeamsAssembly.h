@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    // generated from /xsd:schema/xsd:complexType[524]
     /// @brief longFloorBeamsAssemblyType
     /// 
     /// longFloorBeamsAssembly type, containing long. floor

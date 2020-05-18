@@ -40,7 +40,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceOuterShapeTrailingEdge
 
-    // generated from /xsd:schema/xsd:complexType[173]
     /// @brief Inner/outer border of the control surface.
     /// 
     /// Definition of the inner/outer border of the control

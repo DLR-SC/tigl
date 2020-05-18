@@ -37,8 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSWingComponentSegmentStructure
 
-    // generated from /xsd:schema/xsd:complexType[978]
-    /// @brief Shells of the wing.
+    /// @brief Shells of the wing
     /// 
     /// Within the wingShellType the upper and lower skin of a
     /// and the skin stringers are defined. At 'skin' and 'stringer' the

@@ -32,7 +32,6 @@ namespace generated
     // This class is used in:
     // CPACSProfileGeometry2D
 
-    // generated from /xsd:schema/xsd:complexType[724]
     /// @brief List of 2D points, kept in two coordinate vecors (x, y)
     /// 
     /// This set of vectors contains an ordered list of points

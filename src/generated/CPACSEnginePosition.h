@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSEnginePositions
 
-    // generated from /xsd:schema/xsd:complexType[314]
     /// @brief enginePositionType
     /// 
     /// EnginePosition type, containing data for a single

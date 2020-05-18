@@ -39,7 +39,6 @@ namespace generated
     // CPACSFuselageSegment
     // CPACSWingSegment
 
-    // generated from /xsd:schema/xsd:complexType[442]
     /// @brief Guide Curves Type
     /// 
     /// Guide Curve type. This type is used to describe guide

@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceContours
 
-    // generated from /xsd:schema/xsd:complexType[170]
     /// @brief Airfoil definition of an control surface between inner
     /// and outer border.
     /// 

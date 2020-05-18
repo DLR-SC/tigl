@@ -31,7 +31,6 @@ namespace generated
     // CPACSLongFloorBeamPosition
     // CPACSStringerFramePosition
 
-    // generated from /xsd:schema/xsd:complexType[397]/xsd:complexContent/xsd:extension/xsd:all/xsd:element[13]/xsd:complexType/xsd:simpleContent
     enum CPACSInterpolation
     {
         CPACSInterpolation_0,

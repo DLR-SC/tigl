@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSRotorHubHinges
 
-    // generated from /xsd:schema/xsd:complexType[782]
     /// @brief rotorHubHinge type, containing a rotor hub hinge
     /// (flap/leadLag/pitch).
     /// 

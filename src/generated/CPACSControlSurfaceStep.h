@@ -38,7 +38,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceSteps
 
-    // generated from /xsd:schema/xsd:complexType[190]
     /// @brief controlSurfaceStepType
     /// 
     /// The deflection path of the control surface is defined
@@ -80,8 +79,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const double& GetRelDeflection() const;
-        TIGL_EXPORT virtual void SetRelDeflection(const double& value);
+        TIGL_EXPORT virtual const double& GetControlParameter() const;
+        TIGL_EXPORT virtual void SetControlParameter(const double& value);
 
         TIGL_EXPORT virtual const boost::optional<CCPACSPoint>& GetInnerHingeTranslation() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPoint>& GetInnerHingeTranslation();
@@ -103,14 +102,11 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Relative deflection. This value is an double
-        /// value and must be unique with all steps. Can be seen as a kind
-        /// of 'uID' of the step. The value can have any range and is not
-        /// limited from 0 to 1. 0 means no deflection. The values of
-        /// relDeflection define the order of the different steps (0 to the
-        /// highest relDeflection for the positive deflection; 0 to the
-        /// lowest (negative) value for the negative deflection (if any).
-        double                        m_relDeflection;
+        /// The control parameter links a generic floating point value to
+        /// a certain status of a control device (e.g. control surface, landing gear, suction
+        /// system, brake parachute, ...). See the documentation of the global CPACS-Element for
+        /// further information.
+        double                        m_controlParameter;
 
         /// Translation of the inner hinge line point
         /// within the hinge line coordinate system. Defaults to zero. Not

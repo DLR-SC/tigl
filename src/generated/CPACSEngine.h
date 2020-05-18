@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSEngines
 
-    // generated from /xsd:schema/xsd:complexType[320]
     /// @brief engineType
     /// 
     /// Engine type, containing engine data.

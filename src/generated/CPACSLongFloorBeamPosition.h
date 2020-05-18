@@ -39,7 +39,6 @@ namespace generated
     // This class is used in:
     // CPACSLongFloorBeam
 
-    // generated from /xsd:schema/xsd:complexType[522]
     /// @brief logFloorBeamPositionType
     /// 
     /// longFloorBeamPosition type, containing individual

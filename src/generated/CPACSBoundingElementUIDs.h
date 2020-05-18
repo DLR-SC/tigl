@@ -20,10 +20,12 @@
 #include <string>
 #include <tixi.h>
 #include <vector>
+#include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
+class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSFuselageWallSegment;
 
@@ -32,11 +34,10 @@ namespace generated
     // This class is used in:
     // CPACSWallSegment
 
-    // generated from /xsd:schema/xsd:complexType[1009]
-    class CPACSBoundingElementUIDs
+    class CPACSBoundingElementUIDs : public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSBoundingElementUIDs(CCPACSFuselageWallSegment* parent);
+        TIGL_EXPORT CPACSBoundingElementUIDs(CCPACSFuselageWallSegment* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSBoundingElementUIDs();
 
@@ -47,6 +48,9 @@ namespace generated
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
 
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
@@ -56,10 +60,19 @@ namespace generated
     protected:
         CCPACSFuselageWallSegment* m_parent;
 
-        /// uID referencing another structural/geometric element that shall serve as a boundary of the wall element. Possible references are floor, wall or genericGeometryComponent.
+        CTiglUIDManager* m_uidMgr;
+
+        /// UID referencing another
+        /// structural/geometric element that shall
+        /// serve as a boundary of the wall element.
+        /// Possible references are floor, wall or
+        /// genericGeometryComponent.
         std::vector<std::string> m_boundingElementUIDs;
 
     private:
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+
         CPACSBoundingElementUIDs(const CPACSBoundingElementUIDs&) = delete;
         CPACSBoundingElementUIDs& operator=(const CPACSBoundingElementUIDs&) = delete;
 

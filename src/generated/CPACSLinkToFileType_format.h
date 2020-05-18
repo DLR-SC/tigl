@@ -30,7 +30,6 @@ namespace generated
     // This enum is used in:
     // CPACSLinkToFile
 
-    // generated from /xsd:schema/xsd:complexType[503]/xsd:simpleContent/xsd:extension/xsd:attribute[1]/xsd:simpleType
     enum CPACSLinkToFileType_format
     {
         Step,

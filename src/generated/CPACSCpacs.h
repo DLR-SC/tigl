@@ -35,11 +35,10 @@ class CTiglUIDObject;
 namespace generated
 {
     // This class is used in:
-    // generated from /xsd:schema/xsd:complexType[1]
     /// @brief CPACS root element
     /// 
-    /// Version V3.0
-    /// Date 2018-07-31T18:47:00
+    /// Version V3.1
+    /// Date 2019-08-27
     /// 1. Overview
     /// The C ommon P arametric A ircraft C onfiguration S cheme (CPACS) is an XML-based data format for describing aircraft configurations and their corresponding data.
     /// This XML-Schema document provides a description of the CPACS data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.)
@@ -62,8 +61,8 @@ namespace generated
     /// Again, the aerodynamic analysis is relative to the CPACS coordinate system. That is, the angle of attack is represented by the dashed orange line. Results of the aerodynamic calculation are given in the CPACS coordinate system.
     /// 3. Units
     /// There are no explicit attributes describing units in CPACS. The general convention is that all values must be given in the following SI-units:
-    /// [m] Position, Distance [m 2 ] Area [m 3 ] Volume [kg] Mass [s] Time [K] Temperature or in derived units, e.g.:
-    /// [N] Force [Nm] Moment [W] Power [J] Energy The only non SI unit used throughout CPACS is the angle in degrees [°]. 
+    /// [m] Position, Distance [m^2] Area [m^3] Volume [kg] Mass [s] Time [K] Temperature or in derived units, e.g.:
+    /// [N] Force [Nm] Moment [W] Power [J] Energy The only non SI unit used throughout CPACS is the angle in degrees [°].
     /// For the sake of an intuitive use the angles are given in degrees rather than in radian [rad].
     /// [°] Angle 4. Splitting up a CPACS dataset into several files
     /// To provide a better overview, it is possible to split up a CPACS dataset into several files. This can be done by inserting an <externaldata> node at an arbitrary position into the datatset. This node contains a <path> node with a URI to the external file(s), followed by one or more <filename> nodes, containing each a name of a file to be included at that position. Below, an example of such external data is given:
@@ -122,7 +121,8 @@ namespace generated
     /// 6. Symmetry
     /// Sometimes it might be useful to specify a part of the aircraft as symmetric instead of holding all the data twice in nearly identical form in the dataset (e.g. left and right wing are usually identical, except for the sign of the y-coordinate). Hence, some parts offer the option to set a symmetry attribute for them, like:
     /// <wing symmetry="x-z-plane">... This attribute explains that the whole part with all its subnodes is symmetric to the given plane. Possible planes are: x-y-plane x-z-plane y-z-plane 
-    /// UIDs, references and symmetry All nodes, e.g. parentUID, in CPACS that refer to a component that holds symmetry attribute, e.g. wing, have to carry the symmetry attribute as well.
+    /// UIDs, references and symmetry
+    /// All nodes, e.g. parentUID, in CPACS that refer to a component that holds symmetry attribute, e.g. wing, have to carry the symmetry attribute as well.
     /// The symmetry attribute may take three values: symm, def, full: def: The element refers to the geometric component that has a symmetry attribute and refers only to the defined side of the geometric component. symm: The element refers to the geometric component that has a symmetry attribute and refers only to the symmetric side of the geometric component. (Similar to the previous _symm solution) full: The element refers to the geometric component that has a symmetry attribute and refers to the complete component. (This is the default behaviour) 
     /// <wing uID="ATTAS main wing" symmetry="x-z-plane">
     /// ...
@@ -134,20 +134,56 @@ namespace generated
     /// <segments>
     /// <segment>
     /// <segmentUID isLink="True" symmetry="symm">ATTAS main wing inner segment</segmentUID>
-    /// <strip>... 7. Arrays and vectors
-    /// For bigger datasets (e.g. aerodynamic or engine performance maps), it is better to insert a vector or an array of values instead of providing a single node for each data value. In CPACS , there are vectors and arrays for this purpose.
-    /// The mapType attribute specifies the type of data. It can have the following value: mapType="vector" The vector is meant as a one-dimensional-array. In such a node, the values are contained in a semicolon separated list:
+    /// <strip>... 7. Vectors and arrays
+    /// For large data sets (e.g. increments of aerodynamic coefficients due to control surface deflections) it is advantageous
+    /// to map them via vectors and arrays instead of using single nodes for each data value. The following definition of vectors and arrays,
+    /// indicated by the mapType attribute, is therefore introduced in CPACS : mapType="vector" The vector is meant as a one-dimensional-array. In such a node, the values are given in a semicolon separated list:
     /// <angleOfAttack mapType="vector">0.;1.5;3.;4.5;6;7.5;9.</angleOfAttack>  mapType="array" The array is meant for multi-dimensional-arrays. Again, the values are contained in a semicolon separated list. An array is always preceded by a sequence of vectors, containing the dimensions and index values of it:
-    /// <machNumber mapType="vector">0.5</machNumber>
-    /// <altitude mapType="vector">1000.;2000.</altitude>
-    /// <angleOfSideslip mapType="vector">-5.;0.;5.</angleOfSideslip>
-    /// <angleOfAttack mapType="vector">1.;2.;3.;4.</angleOfAttack>
-    /// <cfx mapType="array">1.;2.;3.;4.;11.;12.;13.;14.;21.;22.;23.;24.;101.;102.;103.;104.;111.;112.;113.;114.;121.;122.;123.;124.</cfx>  In this example, the values for "cfx" are given in a way to indicate the array order: The last parameter is always varied first, then the pre-last, and then further. The array above is also shown in the following tables:
-    /// Value for cfx, Mach number: 0.5, Altitude: 1000m
-    /// Angle of attack = 1.° Angle of attack = 2.° Angle of attack = 3.° Angle of attack = 4.° Angle of Sideslip = -5.° 1. 2. 3. 4. Angle of Sideslip = 0.° 11. 12. 13. 14. Angle of Sideslip = 5.° 21. 22. 23. 24.  Value for cfx, Mach number: 0.5, Altitude: 2000m
-    /// Angle of attack = 1.° Angle of attack = 2.° Angle of attack = 3.° Angle of attack = 4.° Angle of Sideslip = -5.° 101. 102. 103. 104. Angle of Sideslip = 0.° 111. 112. 113. 114. Angle of Sideslip = 5.° 121. 122. 123. 124.  
+    /// <altitude mapType="vector">1000.; 2000.; 3000.</altitude>
+    /// <incrementMaps>
+    /// <incrementMap uID="incMap_b3ac2">
+    /// <controlSurfaceUID>InnerWingFlap</controlSurfaceUID>
+    /// <controlParameters mapType="vector">-1;-0.5;0;1</controlParameters>
+    /// <dcl mapType="array">11.; 12.; 13.; 14.; 15.; 21.; 22.; 23.; 24.; 25.; 31.; 32.; 33.; 34.; 35.</dcl>  Values for cl increments:
+    /// Control parameter = -1 Control parameter = -0.5 Control parameter =  0 Control parameter =  1 Altitude = 1000m 11. 12. 13. 14. Altitude = 2000m 21. 22. 23. 24. Altitude = 3000m 31. 32. 33. 34.  
     /// 
-    /// 8. Atmosphere
+    /// 8. Control Parameters
+    /// Control parameters are abstract parameters, linking a generic floating point value to a certain status of a control device
+    /// (e.g. control surface, landing gear, suction system, brake parachute, ...). For control surfaces, such a data pair (control parameter
+    /// and control surface deflection status) is called a <step> and the ordered list of all steps for a control surface forms its deflection
+    /// <path>.
+    /// The control parameter values for each step are arbitrary floating point values. However, it is strongly recommended to use
+    /// values between -1. and +1., or between 0. And +1. (depending on the type of control surface). The smallest and the largest value implicitly
+    /// define the maximum deflection limits. It is mandatory, that the value “0.” is within the specified range, as this value is treated as
+    /// undeflected and used to specify a “clean” aircraft configuration (e.g. used in the clean aero performance map). It is recommended, but not
+    /// mandatory to specify a <step> with a <controlParameter> of 0. Consequently, no <controlParameter> must be used twice within 
+    /// a single <path> definition. Deflection values between two specified steps are handled by linear interpolation.
+    /// The following example shows the usage of control parameters within a control surface deflection path definition:
+    /// <controlSurfaces>
+    /// <trailingEdgeDevices>
+    /// <trailingEdgeDevice uID="InnerWingFlap">
+    /// ...
+    /// <path>
+    /// ...
+    /// <steps>
+    /// <step>
+    /// <controlParameter>-1</controlParameter>
+    /// <hingeLineRotation>-20.</hingeLineRotation>
+    /// </step>
+    /// <step>
+    /// <controlParameter>-0.5</controlParameter>
+    /// <hingeLineRotation>-10.</hingeLineRotation>
+    /// </step>
+    /// <step>
+    /// <controlParameter>0</controlParameter>
+    /// <hingeLineRotation>0.</hingeLineRotation>
+    /// </step>
+    /// <step>
+    /// <controlParameter>1</controlParameter>
+    /// <hingeLineRotation>5.</hingeLineRotation>
+    /// </step>
+    /// </steps>
+    /// ... 9. Atmosphere
     /// At some places in CPACS, an atmosphere has to be selected (e.g. for connecting an altitude with a certain pressure or density).
     /// Currently, CPACS does only support a single atmospheric model: The ICAO Standard Atmosphere (ISA) from 1993 (see ICAO Doc 7488/3 'MANUAL OF THE ICAO STANDARD ATMOSPHERE', third edition, 1993)
     /// It covers temperature, pressure, density, speed of sound, dynamic viscosity and kinematic viscosity with respect to altitude.
@@ -157,7 +193,9 @@ namespace generated
     /// Temperature offsets are introduced on top of the definitions in the ISA manual (which does not cover such variations). The offset model
     /// is based upon the idea that the pressure at a fixed geopotential altitude is independent from temperature offset (pressure altitude).
     /// The temperature offset changes only the density (following rho = p / Gas Constant / T) (and viscosity, of course)
-    /// CPACS 3.0
+    /// CPACS 3.1
+    /// Release in August 2019
+    /// Redefinition of aeroPerformanceMaps Added nodes for detailed engine pylons and nacelles Added nodes to model generic walls Extension of material definition Added fuselage compartment definition Added fuselage fuel tank definition Explicit wing stringer definition integrated into wing stringer definition RelativeDeflections renamed to control parameters Control distributors modified to only have a single command input vector "cpacsVersion" restricted to current schema version Code cleanup Cpacs_schema.xml removed Documentation adaptions CPACS 3.0
     /// Release in Jul 2018
     /// New component segment definition; this is affecting all structural components of wings Renamed angleOfYaw into angleOfSideslip Fixes in documentation Made all uID attributes required Minor fixes in choices and typos Added nodes for the geometry of generic system components Added performance requirements for aircraft models Redefined the whole mission definition including point performances Made link to missionUID in trajectory optional Added new parameters to enginePerformanceMap Relocated mFixedLeadingEdge and mFixedTrailingEdge within the massBReakdown structure Changed aeroPerformanceMap to use altitude and standard atmosphere instead of reynolds number Added an optional local direction for guide curves and an illustration image Announced toolspecifics definitions as deprecated; will be removed from CPACS in next release and should be managed in separate namespace by tool maintainers Added an option for aerodynamic performance maps of elastic aircraft Enabled the definition of multiple aeroPerformanceMaps Enabled the use of spar points for rib placement and rib points for spar placement Added explicit stringer definitions for wing cells All issues for this release can be found online https://github.com/DLR-LY/CPACS/issues CPACS 2.3.1
     /// Release in Jul 2016

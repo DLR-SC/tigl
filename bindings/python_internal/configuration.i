@@ -160,7 +160,9 @@
 %include "CCPACSMaterialDefinition.h"
 %include "generated/CPACSCap.h"
 
-// -------------- Fuselage Walls -----------------------//
+// -------------- Fuselage Walls, Compartments -------------//
+%boost_optional(tigl::generated::CPACSCompartments)
+%include "generated/CPACSCompartments.h"
 %include "generated/CPACSLateralCap_placement.h"
 %boost_optional(tigl::generated::CPACSLateralCap)
 %include "generated/CPACSLateralCap.h"

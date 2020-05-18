@@ -38,7 +38,6 @@ namespace generated
     // This class is used in:
     // CPACSComposites
 
-    // generated from /xsd:schema/xsd:complexType[147]
     /// @brief compositeType
     /// 
     /// Composite type, conatining data of a composite

@@ -33,7 +33,6 @@ namespace generated
     // This class is used in:
     // CPACSCFDTool
 
-    // generated from /xsd:schema/xsd:complexType[331]
     /// @brief farFieldType
     /// 
     /// 

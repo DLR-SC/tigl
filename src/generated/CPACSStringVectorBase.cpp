@@ -22,8 +22,6 @@
 #include "CCPACSPointListXYVector.h"
 #include "CCPACSRotorBladeAttachment.h"
 #include "CCPACSWingProfileCST.h"
-#include "CPACSEmissivityMap.h"
-#include "CPACSSpecificHeatMap.h"
 #include "CPACSStringVectorBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -55,13 +53,6 @@ namespace generated
         m_parentType = &typeid(CCPACSCurvePointListXYZ);
     }
 
-    CPACSStringVectorBase::CPACSStringVectorBase(CPACSEmissivityMap* parent)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSEmissivityMap);
-    }
-
     CPACSStringVectorBase::CPACSStringVectorBase(CCPACSPointListRelXYZVector* parent)
     {
         //assert(parent != NULL);
@@ -83,13 +74,6 @@ namespace generated
         m_parentType = &typeid(CCPACSRotorBladeAttachment);
     }
 
-    CPACSStringVectorBase::CPACSStringVectorBase(CPACSSpecificHeatMap* parent)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSSpecificHeatMap);
-    }
-
     CPACSStringVectorBase::~CPACSStringVectorBase()
     {
     }
@@ -106,9 +90,6 @@ namespace generated
             if (IsParent<CCPACSCurvePointListXYZ>()) {
                 return GetParent<CCPACSCurvePointListXYZ>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSEmissivityMap>()) {
-                return GetParent<CPACSEmissivityMap>()->GetNextUIDParent();
-            }
             if (IsParent<CCPACSPointListRelXYZVector>()) {
                 return GetParent<CCPACSPointListRelXYZVector>()->GetNextUIDParent();
             }
@@ -117,9 +98,6 @@ namespace generated
             }
             if (IsParent<CCPACSRotorBladeAttachment>()) {
                 return GetParent<CCPACSRotorBladeAttachment>();
-            }
-            if (IsParent<CPACSSpecificHeatMap>()) {
-                return GetParent<CPACSSpecificHeatMap>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -137,9 +115,6 @@ namespace generated
             if (IsParent<CCPACSCurvePointListXYZ>()) {
                 return GetParent<CCPACSCurvePointListXYZ>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSEmissivityMap>()) {
-                return GetParent<CPACSEmissivityMap>()->GetNextUIDParent();
-            }
             if (IsParent<CCPACSPointListRelXYZVector>()) {
                 return GetParent<CCPACSPointListRelXYZVector>()->GetNextUIDParent();
             }
@@ -148,9 +123,6 @@ namespace generated
             }
             if (IsParent<CCPACSRotorBladeAttachment>()) {
                 return GetParent<CCPACSRotorBladeAttachment>();
-            }
-            if (IsParent<CPACSSpecificHeatMap>()) {
-                return GetParent<CPACSSpecificHeatMap>()->GetNextUIDParent();
             }
         }
         return nullptr;

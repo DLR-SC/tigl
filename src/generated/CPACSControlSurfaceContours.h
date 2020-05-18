@@ -36,7 +36,6 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceOuterShapeTrailingEdge
 
-    // generated from /xsd:schema/xsd:complexType[174]
     /// @brief Optional definition of the exact airfoil shape of the
     /// control surface.
     /// 

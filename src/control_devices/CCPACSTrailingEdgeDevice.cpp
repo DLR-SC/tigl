@@ -45,7 +45,7 @@ void CCPACSTrailingEdgeDevice::ReadCPACS(const TixiDocumentHandle &tixiHandle, c
 {
     CPACSTrailingEdgeDevice::ReadCPACS(tixiHandle, xpath);
 
-    m_currentDeflection = Clamp(0., GetMinDeflection(), GetMaxDeflection());
+    m_currentControlParam = Clamp(0., GetMinControlParameter(), GetMaxControlParameter());
 }
 
 // get short name for loft
@@ -78,12 +78,12 @@ std::string CCPACSTrailingEdgeDevice::GetShortName() const
 gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
 {
     // this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
-    // to the given relDeflection by using a linearInterpolation.
-    std::vector<double> relDeflections, innerXTrans, outerXTrans, innerYTrans, innerZTrans, outerZTrans, rotations;
+    // to the given controlParal by using a linearInterpolation.
+    std::vector<double> controlParams, innerXTrans, outerXTrans, innerYTrans, innerZTrans, outerZTrans, rotations;
 
     const CCPACSControlSurfaceSteps& steps = GetPath().GetSteps();
     for (const auto& step : steps.GetSteps()) {
-        relDeflections.push_back(step->GetRelDeflection());
+        controlParams.push_back(step->GetControlParameter());
         CTiglPoint innerHingeTrans(0,0,0);
         if (step->GetInnerHingeTranslation().is_initialized()) {
             innerHingeTrans = step->GetInnerHingeTranslation()->AsPoint();
@@ -103,12 +103,12 @@ gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
         rotations.push_back(step->GetHingeLineRotation().value_or(0.));
     }
 
-    double rotation = Interpolate( relDeflections, rotations, m_currentDeflection );
-    double innerTranslationX = Interpolate( relDeflections, innerXTrans, m_currentDeflection );
-    double innerTranslationY = Interpolate( relDeflections, innerYTrans, m_currentDeflection );
-    double innerTranslationZ = Interpolate( relDeflections, innerZTrans, m_currentDeflection );
-    double outerTranslationX = Interpolate( relDeflections, outerXTrans, m_currentDeflection );
-    double outerTranslationZ = Interpolate( relDeflections, outerZTrans, m_currentDeflection );
+    double rotation = Interpolate( controlParams, rotations, m_currentControlParam );
+    double innerTranslationX = Interpolate( controlParams, innerXTrans, m_currentControlParam );
+    double innerTranslationY = Interpolate( controlParams, innerYTrans, m_currentControlParam );
+    double innerTranslationZ = Interpolate( controlParams, innerZTrans, m_currentControlParam );
+    double outerTranslationX = Interpolate( controlParams, outerXTrans, m_currentControlParam );
+    double outerTranslationZ = Interpolate( controlParams, outerZTrans, m_currentControlParam );
 
     auto wingTrafo = Wing().GetTransformation().getTransformationMatrix();
     gp_Pnt innerHingeOld = wingTrafo.Transform(m_hingePoints->inner);
@@ -125,28 +125,28 @@ gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
     return transformation.getTotalTransformation();
 }
 
-double CCPACSTrailingEdgeDevice::GetMinDeflection() const
+double CCPACSTrailingEdgeDevice::GetMinControlParameter() const
 {
-    return GetPath().GetSteps().GetSteps().front()->GetRelDeflection();
+    return GetPath().GetSteps().GetSteps().front()->GetControlParameter();
 }
 
-double CCPACSTrailingEdgeDevice::GetMaxDeflection() const
+double CCPACSTrailingEdgeDevice::GetMaxControlParameter() const
 {
-    return GetPath().GetSteps().GetSteps().back()->GetRelDeflection();
+    return GetPath().GetSteps().GetSteps().back()->GetControlParameter();
 }
 
-double CCPACSTrailingEdgeDevice::GetDeflection() const
+double CCPACSTrailingEdgeDevice::GetControlParameter() const
 {
-    return m_currentDeflection;
+    return m_currentControlParam;
 }
 
-void CCPACSTrailingEdgeDevice::SetDeflection(const double deflect)
+void CCPACSTrailingEdgeDevice::SetControlParameter(const double param)
 {
-    // clamp currentDeflection to minimum and maximum values
-    double new_deflect = Clamp(deflect, GetMinDeflection(), GetMaxDeflection());
+    // clamp currentControlParam to minimum and maximum values
+    double new_param = Clamp(param, GetMinControlParameter(), GetMaxControlParameter());
 
-    if (fabs(new_deflect - m_currentDeflection) > 1e-6) {
-        m_currentDeflection = new_deflect;
+    if (fabs(new_param - m_currentControlParam) > 1e-6) {
+        m_currentControlParam = new_param;
         // make sure the wing gets relofted with flaps
         Invalidate();
     }

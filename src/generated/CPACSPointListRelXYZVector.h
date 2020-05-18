@@ -32,7 +32,6 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurveProfileGeometry
 
-    // generated from /xsd:schema/xsd:complexType[718]
     /// @brief List of 3D points, kept in three relative coordinate
     /// vecors (rX, rY, rZ)
     /// 

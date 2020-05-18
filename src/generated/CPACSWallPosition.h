@@ -22,6 +22,7 @@
 #include <string>
 #include <tixi.h>
 #include "CTiglUIDObject.h"
+#include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -35,8 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSWallPositions
 
-    // generated from /xsd:schema/xsd:complexType[1007]
-    class CPACSWallPosition : public CTiglOptUIDObject
+    class CPACSWallPosition : public CTiglOptUIDObject, public ITiglUIDRefObject
     {
     public:
         TIGL_EXPORT CPACSWallPosition(CPACSWallPositions* parent, CTiglUIDManager* uidMgr);
@@ -86,13 +86,19 @@ namespace generated
 
         boost::optional<std::string> m_uID;
 
-        /// uID of a bulkhead determining the x-coordinate of the position with the given y- and z-coordinates.
+        /// UID of a bulkhead determining the
+        /// x-coordinate of the position with the given
+        /// y- and z-coordinates.
         boost::optional<std::string> m_bulkheadUID_choice1;
 
-        /// uID of a wall segment determining the x-coordinate of the position with the given y- and z-coordinates.
+        /// UID of a wall segment determining the
+        /// x-coordinate of the position with the given
+        /// y- and z-coordinates.
         boost::optional<std::string> m_wallSegmentUID_choice2;
 
-        /// uID of fuselage section determining the x-coordinate of the position with the given y- and z-coordinates.
+        /// UID of fuselage section determining the
+        /// x-coordinate of the position with the given
+        /// y- and z-coordinates.
         boost::optional<std::string> m_fuselageSectionUID_choice3;
 
         /// Absolute x-coordinate of wall position in fuselage coordinate system.
@@ -105,6 +111,9 @@ namespace generated
         double                       m_z;
 
     private:
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+
         CPACSWallPosition(const CPACSWallPosition&) = delete;
         CPACSWallPosition& operator=(const CPACSWallPosition&) = delete;
 

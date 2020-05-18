@@ -98,9 +98,9 @@ void CCPACSFuselageWallSegment::SetPhi(const double& value)
     Invalidate();
 }
 
-void CCPACSFuselageWallSegment::SetNegativeExtrusion(const boost::optional<bool>& value)
+void CCPACSFuselageWallSegment::SetDoubleSidedExtrusion(const boost::optional<bool>& value)
 {
-    CPACSWallSegment::SetNegativeExtrusion(value);
+    CPACSWallSegment::SetDoubleSidedExtrusion(value);
     Invalidate();
 }
 
@@ -160,7 +160,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
 
     // extrusion in negative direction is realized by setting u_neg to
     // -bboxSize:
-    bool negativeExtrusion = GetNegativeExtrusion().value_or(false);
+    bool negativeExtrusion = GetDoubleSidedExtrusion().value_or(false);
     double u_pos = bboxSize;
     double u_neg = 0.;
     if (negativeExtrusion) {

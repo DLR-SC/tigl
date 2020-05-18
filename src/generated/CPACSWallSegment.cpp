@@ -30,7 +30,7 @@ namespace generated
     CPACSWallSegment::CPACSWallSegment(CPACSWallSegments* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_phi(0.0)
-        , m_wallPositionUIDs(reinterpret_cast<CCPACSFuselageWallSegment*>(this))
+        , m_wallPositionUIDs(reinterpret_cast<CCPACSFuselageWallSegment*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -39,6 +39,9 @@ namespace generated
     CPACSWallSegment::~CPACSWallSegment()
     {
         if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
+        if (m_uidMgr) {
+            if (m_structuralWallElementUID && !m_structuralWallElementUID->empty()) m_uidMgr->TryUnregisterReference(*m_structuralWallElementUID, *this);
+        }
     }
 
     const CPACSWallSegments* CPACSWallSegment::GetParent() const
@@ -95,9 +98,9 @@ namespace generated
             LOG(ERROR) << "Required element phi is missing at xpath " << xpath;
         }
 
-        // read element negativeExtrusion
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/negativeExtrusion")) {
-            m_negativeExtrusion = tixi::TixiGetElement<bool>(tixiHandle, xpath + "/negativeExtrusion");
+        // read element doubleSidedExtrusion
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/doubleSidedExtrusion")) {
+            m_doubleSidedExtrusion = tixi::TixiGetElement<bool>(tixiHandle, xpath + "/doubleSidedExtrusion");
         }
 
         // read element flushConnectionStart
@@ -112,7 +115,7 @@ namespace generated
 
         // read element boundingElementUIDs
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/boundingElementUIDs")) {
-            m_boundingElementUIDs = boost::in_place(reinterpret_cast<CCPACSFuselageWallSegment*>(this));
+            m_boundingElementUIDs = boost::in_place(reinterpret_cast<CCPACSFuselageWallSegment*>(this), m_uidMgr);
             try {
                 m_boundingElementUIDs->ReadCPACS(tixiHandle, xpath + "/boundingElementUIDs");
             } catch(const std::exception& e) {
@@ -127,6 +130,7 @@ namespace generated
             if (m_structuralWallElementUID->empty()) {
                 LOG(WARNING) << "Optional element structuralWallElementUID is present but empty at xpath " << xpath;
             }
+            if (m_uidMgr && !m_structuralWallElementUID->empty()) m_uidMgr->RegisterReference(*m_structuralWallElementUID, *this);
         }
 
         // read element wallPositionUIDs
@@ -156,14 +160,14 @@ namespace generated
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/phi");
         tixi::TixiSaveElement(tixiHandle, xpath + "/phi", m_phi);
 
-        // write element negativeExtrusion
-        if (m_negativeExtrusion) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/negativeExtrusion");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/negativeExtrusion", *m_negativeExtrusion);
+        // write element doubleSidedExtrusion
+        if (m_doubleSidedExtrusion) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/doubleSidedExtrusion");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/doubleSidedExtrusion", *m_doubleSidedExtrusion);
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/negativeExtrusion")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/negativeExtrusion");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/doubleSidedExtrusion")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/doubleSidedExtrusion");
             }
         }
 
@@ -248,14 +252,14 @@ namespace generated
         m_phi = value;
     }
 
-    const boost::optional<bool>& CPACSWallSegment::GetNegativeExtrusion() const
+    const boost::optional<bool>& CPACSWallSegment::GetDoubleSidedExtrusion() const
     {
-        return m_negativeExtrusion;
+        return m_doubleSidedExtrusion;
     }
 
-    void CPACSWallSegment::SetNegativeExtrusion(const boost::optional<bool>& value)
+    void CPACSWallSegment::SetDoubleSidedExtrusion(const boost::optional<bool>& value)
     {
-        m_negativeExtrusion = value;
+        m_doubleSidedExtrusion = value;
     }
 
     const boost::optional<bool>& CPACSWallSegment::GetFlushConnectionStart() const
@@ -295,6 +299,10 @@ namespace generated
 
     void CPACSWallSegment::SetStructuralWallElementUID(const boost::optional<std::string>& value)
     {
+        if (m_uidMgr) {
+            if (m_structuralWallElementUID && !m_structuralWallElementUID->empty()) m_uidMgr->TryUnregisterReference(*m_structuralWallElementUID, *this);
+            if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
+        }
         m_structuralWallElementUID = value;
     }
 
@@ -311,13 +319,25 @@ namespace generated
     CPACSBoundingElementUIDs& CPACSWallSegment::GetBoundingElementUIDs(CreateIfNotExistsTag)
     {
         if (!m_boundingElementUIDs)
-            m_boundingElementUIDs = boost::in_place(reinterpret_cast<CCPACSFuselageWallSegment*>(this));
+            m_boundingElementUIDs = boost::in_place(reinterpret_cast<CCPACSFuselageWallSegment*>(this), m_uidMgr);
         return *m_boundingElementUIDs;
     }
 
     void CPACSWallSegment::RemoveBoundingElementUIDs()
     {
         m_boundingElementUIDs = boost::none;
+    }
+
+    const CTiglUIDObject* CPACSWallSegment::GetNextUIDObject() const
+    {
+        return this;
+    }
+
+    void CPACSWallSegment::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
+    {
+        if (m_structuralWallElementUID && *m_structuralWallElementUID == oldUid) {
+            m_structuralWallElementUID = newUid;
+        }
     }
 
 } // namespace generated

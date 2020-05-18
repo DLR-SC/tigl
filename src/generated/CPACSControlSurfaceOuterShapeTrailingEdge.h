@@ -37,7 +37,6 @@ namespace generated
     // This class is used in:
     // CPACSTrailingEdgeDevice
 
-    // generated from /xsd:schema/xsd:complexType[184]
     /// @brief Outer shape definition of the control surface.
     /// 
     /// Definition of the outer shape of the trailing Edge

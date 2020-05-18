@@ -49,12 +49,12 @@ public:
 
     ~TIGLViewerSelectWingAndFlapStatusDialog();
     double getTrailingEdgeFlapValue( std::string uid );
-    std::map<std::string,double> getDeflections();
+    std::map<std::string,double> getControlParameters();
 
 
 private slots:
     void slider_value_changed(int k);
-    void spinBox_value_changed(double inputDeflection);
+    void spinBox_value_changed(double controlParam);
     void on_checkTED_stateChanged(int arg1);
     void on_checkLED_stateChanged(int arg1);
     void on_checkSpoiler_stateChanged(int arg1);
@@ -64,7 +64,7 @@ private:
 
     struct DeviceWidgets {
         QSlider* slider;
-        QDoubleSpinBox* deflectionBox;
+        QDoubleSpinBox* controlParamBox;
         QLabel* rotAngleLabel;
     };
 
@@ -74,7 +74,7 @@ private:
 
     TIGLViewerDocument* _document;
     void updateWidgets(std::string controlSurfaceDeviceUID,
-                       double inputDeflection);
+                       double controlParam);
     void drawGUI();
     void cleanup();
 

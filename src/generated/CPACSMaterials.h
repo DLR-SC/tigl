@@ -21,11 +21,9 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
-#include <vector>
 #include "CPACSComposites.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
-#include "UniquePtr.h"
 
 namespace tigl
 {
@@ -34,14 +32,12 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSMaterial;
     class CPACSVehicles;
 
     // This class is used in:
     // CPACSVehicles
 
-    // generated from /xsd:schema/xsd:complexType[663]
-    /// @brief materialsType
+    /// @brief Materials
     /// 
     /// Materials type, containing material and composite data.
     /// A material describes the properties of a certain material.
@@ -67,14 +63,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSMaterial>>& GetMaterials() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSMaterial>>& GetMaterials();
-
         TIGL_EXPORT virtual const boost::optional<CPACSComposites>& GetComposites() const;
         TIGL_EXPORT virtual boost::optional<CPACSComposites>& GetComposites();
-
-        TIGL_EXPORT virtual CPACSMaterial& AddMaterial();
-        TIGL_EXPORT virtual void RemoveMaterial(CPACSMaterial& ref);
 
         TIGL_EXPORT virtual CPACSComposites& GetComposites(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveComposites();
@@ -84,8 +74,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSMaterial>> m_materials;
-        boost::optional<CPACSComposites>            m_composites;
+        boost::optional<CPACSComposites> m_composites;
 
     private:
         CPACSMaterials(const CPACSMaterials&) = delete;
@@ -98,6 +87,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSMaterials = generated::CPACSMaterials;
-using CCPACSMaterial = generated::CPACSMaterial;
 using CCPACSVehicles = generated::CPACSVehicles;
 } // namespace tigl

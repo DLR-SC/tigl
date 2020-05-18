@@ -39,7 +39,6 @@ namespace generated
     // This class is used in:
     // CPACSProfileBasedStructuralElement
 
-    // generated from /xsd:schema/xsd:complexType[436]
     /// @brief globalBeamPropertiesType
     /// 
     /// globalBeamPropertiesType, containing the global beam

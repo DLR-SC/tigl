@@ -35,7 +35,6 @@ namespace generated
     // This class is used in:
     // CPACSAircraftModel
 
-    // generated from /xsd:schema/xsd:complexType[317]
     /// @brief List of all engine pylons.
     /// 
     /// 

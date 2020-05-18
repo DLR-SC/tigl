@@ -28,13 +28,11 @@ class CCPACSStringVector : private generated::CPACSStringVectorBase
 {
 public:
     TIGL_EXPORT CCPACSStringVector(CCPACSWingProfileCST* parent);
-    TIGL_EXPORT CCPACSStringVector(CCPACSEmissivityMap* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSPointListRelXYZVector* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSPointListXYVector* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSCurvePointListXYZ* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSCurveParamPointMap* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSRotorBladeAttachment* parent);
-    TIGL_EXPORT CCPACSStringVector(CCPACSSpecificHeatMap* parent);
 
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
     TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const override;

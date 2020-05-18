@@ -34,7 +34,6 @@ namespace generated
     // This class is used in:
     // CPACSTrailingEdgeDevice
 
-    // generated from /xsd:schema/xsd:complexType[185]
     /// @brief Definition of the deflection path of the control
     /// surface.
     /// 

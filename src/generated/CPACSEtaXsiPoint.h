@@ -39,7 +39,6 @@ namespace generated
     // CPACSWingRibExplicitPositioning
     // CPACSWingRibsPositioning
 
-    // generated from /xsd:schema/xsd:complexType[323]
     /// @brief etaXsiPointType
     /// 
     /// Point described by eta-xsi coordinates.
