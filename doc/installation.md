@@ -8,9 +8,9 @@ Here, we offer packages for Windows and macOS (Darwin).
 
 ### Linux ###
 There are two ways to install TiGL on Linux:
- - Use the package manager of your distribution. Just go to https://software.opensuse.org/download.html?project=science:dlr&package=tigl3, choose 
+ - Use the package manager of your distribution. Just go to [https://software.opensuse.org/download.html?project=science:dlr&package=tigl3](https://software.opensuse.org/download.html?project=science:dlr&package=tigl3), choose 
    your linux distribution and follow the instructions.
- - If you can't install system wide packages, we provide a helper script https://raw.githubusercontent.com/DLR-SC/tigl/cpacs_3/misc/get_tigl_tixi.sh that downloads and decompresses the required packages.
+ - If you can't install system wide packages, we provide a helper script [https://github.com/DLR-SC/tigl/blob/master/misc/get_tigl_tixi.sh](https://github.com/DLR-SC/tigl/blob/master/misc/get_tigl_tixi.sh) that downloads and decompresses the required packages.
 
 ##Python##
 
@@ -25,7 +25,7 @@ All TiGL related packages are now found inside the tigl_env environment. To ente
 
     activate tigl3
 
-Have a look to our examples at https://github.com/DLR-SC/tigl/tree/cpacs_3/examples/python on how to use the Python bindings.
+Have a look to our examples at [https://github.com/DLR-SC/tigl-examples](https://github.com/DLR-SC/tigl-examples) on how to use the Python bindings.
 
 ##Matlab##
 
@@ -37,4 +37,4 @@ script files and the MEX input file tiglmatlab.c under share/tigl3/matlab. To co
 MATLAB bindings, the tool "mex" is required, which is typically part of each MATLAB installation.
 To compile, use our Makefile by typing in the command "make".
 
-Our small Matlab demo at https://github.com/DLR-SC/tigl/tree/cpacs_3/examples/matlab_demo demonstrates, how to use TiGL's Matlab bindings.
+Our small Matlab demo at [https://github.com/DLR-SC/tigl/tree/master/examples/matlab_demo](https://github.com/DLR-SC/tigl/tree/master/examples/matlab_demo) demonstrates, how to use TiGL's Matlab bindings.
