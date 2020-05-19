@@ -422,25 +422,42 @@ jobs:
       with:
         name: html-documentation
         path: html-documentation
+        
+    - name: Checkout tigl-website repo
+      uses: actions/checkout@v2
+      with:
+        repository: DLR-SC/tigl-website
+        path: tigl-website
             
-    - name: Upload documentation to website
-      env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+    - name: Add documentation to website
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git fetch
-        git checkout gh-pages
-        mkdir -p doc/latest
+        cd tigl-website/content
         rm -rf doc/latest/*
+        mkdir -p doc/latest
         mkdir -p doc/${{ env.version }}
-        cp -r html-documentation/* doc/latest/
-        cp -r html-documentation/* doc/${{ env.version }}/
-        rm -rf html-documentation
-        git add doc/*
-        git commit -m "add documentation for version ${{ env.version }} to website"
-        git push
-        git checkout master
+        cp -r ../../html-documentation/* doc/latest/
+        cp -r ../../html-documentation/* doc/${{ env.version }}/
+        cd pages
+        today=`date +'%Y-%m-%d %H:%M'`
+        sed -i s/"^Date:.*"/"Date: $today"/g 4_Documentation.md
+        prevver=`grep "Latest Release" 4_Documentation.md | grep -Eo "[0-9]{1,}.[0-9].{1,}[0-9]{1,}"`
+        csplit -z 4_Documentation.md /"Latest Release"/
+        mv xx00 4_Documentation.md
+        echo " - [Latest Release (TiGL ${{ env.version }})](../doc/latest/index.html)" >> 4_Documentation.md
+        echo " - [TiGL $prevver](../doc/$prevver/index.html)" >> 4_Documentation.md
+        tail -n +2 xx01 >> 4_Documentation.md
+        rm xx01
+        
+    
+    - name: Create Pull Request at DLR-SC/tigl-website
+      uses: peter-evans/create-pull-request@v2
+      with:
+        path: tigl-website
+        title: Add documentation for TiGL ${{ env.version }}
+        body: There has been a new release over at DLR-SC/tigl. We should add the latest documentation to our website.
+        branch: add-tigl-${{ env.version }}-documentation
+        commit-message: add documentation for tigl ${{ env.version }}
+        token: ${{ secrets.GH_TOKEN }}
         
     - name: Checkout tigl-conda repo
       uses: actions/checkout@v2
