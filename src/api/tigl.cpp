@@ -1671,25 +1671,30 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        
-        for (int iWing = 1; iWing <= config.GetWingCount(); ++iWing) {
-            tigl::CCPACSWing& wing = config.GetWing(iWing);
-            try {
-                int wingSegIndex = wing.GetSegment(segmentUID).GetSegmentIndex();
-                *segmentIndex = wingSegIndex;
-                *wingIndex = iWing;
-                return TIGL_SUCCESS;
-            }
-            catch (const tigl::CTiglError&) {
-                continue;
-            }
+        tigl::CCPACSConfiguration& config         = manager.GetConfiguration(cpacsHandle);
+        const auto& uidMgr                        = config.GetUIDManager();
+
+        if (!uidMgr.IsUIDRegistered(segmentUID) || !uidMgr.IsType<tigl::CCPACSWingSegment>(segmentUID)) {
+            LOG(ERROR) << "Error in tiglWingGetSegmentIndex: could not find a segment index with given uid \""
+                       << segmentUID << "\".";
+            return TIGL_UID_ERROR;
         }
 
-        LOG(ERROR) << "Error in tiglWingGetSegmentIndex: could not find a wing index with given uid \"" << segmentUID << "\".";
-        *segmentIndex = -1;
-        *wingIndex = -1;
-        return TIGL_UID_ERROR;
+        const tigl::CCPACSWingSegment& segment = uidMgr.ResolveObject<tigl::CCPACSWingSegment>(segmentUID);
+
+        if (!segment.GetParent()->IsParent<tigl::CCPACSWing>()) {
+            LOG(ERROR) << "Error in tiglWingGetSegmentIndex: could not find a segment index with given uid \""
+                       << segmentUID << "\".";
+            return TIGL_UID_ERROR;
+        }
+
+        const auto& pwing  = segment.GetParent()->GetParent<tigl::CCPACSWing>();
+        const auto& pwings = pwing->GetParent<tigl::CCPACSWings>();
+
+        *wingIndex    = static_cast<int>(IndexFromUid(pwings->GetWings(), pwing->GetUID())) + 1;
+        *segmentIndex = segment.GetSegmentIndex();
+
+        return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
         LOG(ERROR) << ex.what();
