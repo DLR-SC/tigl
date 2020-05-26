@@ -38,6 +38,7 @@ class CCPACSFuselage;
 class CCPACSFuselageSectionElement;
 class CCPACSFuselageSection;
 class CCPACSExternalObject;
+class CCPACSGenericSystem;
 class CCPACSNacelleSection;
 class CCPACSRotor;
 class CCPACSRotorHinge;
@@ -84,6 +85,7 @@ namespace generated
         TIGL_EXPORT CPACSTransformation(CCPACSFuselageSectionElement* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSFuselageSection* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSTransformation(CCPACSGenericSystem* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSRotor* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSRotorHinge* parent, CTiglUIDManager* uidMgr);
@@ -103,7 +105,7 @@ namespace generated
         P* GetParent()
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
+            static_assert(std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CCPACSGenericSystem>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -115,7 +117,7 @@ namespace generated
         const P* GetParent() const
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
+            static_assert(std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CCPACSGenericSystem>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");

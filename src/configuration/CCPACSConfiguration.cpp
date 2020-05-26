@@ -360,8 +360,8 @@ int CCPACSConfiguration::GetWingIndex(const std::string& UID) const
 int CCPACSConfiguration::GetGenericSystemCount()
 {
     boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
-    if (acSystems) {
-        return acSystems->GetGenericSystems().GetGenericSystemCount();
+    if (acSystems && acSystems->GetGenericSystems()) {
+        return acSystems->GetGenericSystems()->GetGenericSystemCount();
     }
     else {
         return 0;
@@ -372,8 +372,8 @@ int CCPACSConfiguration::GetGenericSystemCount()
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(int index)
 {
     boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
-    if (acSystems) {
-        return acSystems->GetGenericSystems().GetGenericSystem(index);
+    if (acSystems && acSystems->GetGenericSystems()) {
+        return acSystems->GetGenericSystems()->GetGenericSystem(index);
     }
     else {
         throw CTiglError("No generic system loaded");
@@ -384,8 +384,8 @@ CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(int index)
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID)
 {
     boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
-    if (acSystems) {
-        return acSystems->GetGenericSystems().GetGenericSystem(UID);
+    if (acSystems && acSystems->GetGenericSystems()) {
+        return acSystems->GetGenericSystems()->GetGenericSystem(UID);
     }
     else {
         throw CTiglError("No generic system loaded");
