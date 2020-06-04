@@ -268,7 +268,7 @@ PNamedShape CTiglWingBuilder::BuildShape()
     std::string loftName = _wing.GetUID();
     std::string loftShortName = _wing.GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(_wing.GetUID(), loft, hasBluntTE);
+    SetFaceTraits(_wing.GetGuideCurveStartParameters(), _wing.GetUID(), loft, hasBluntTE);
     return loft;
 }
 #endif
@@ -280,11 +280,9 @@ CTiglWingBuilder::operator PNamedShape()
     return BuildShape();
 }
 // Set the name of each wing face
-void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape loft, bool hasBluntTE)
+void CTiglWingBuilder::SetFaceTraits (const std::vector<double>& guideCurveParams, const std::string& shapeUID, PNamedShape shape, bool hasBluntTE)
 {
-    unsigned int nSegments = _wing.GetSegmentCount();
-
-    auto params = _wing.GetGuideCurveStartParameters();
+    auto params = guideCurveParams;
     assert(std::is_sorted(std::begin(params), std::end(params)));
 
     bool hasGuideCurves = params.size() > 0.;
@@ -332,13 +330,13 @@ void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape lo
     endnames[0]="Inside";
     endnames[1]="Outside";
 
-    unsigned int nFaces = GetNumberOfFaces(loft->Shape());
+    unsigned int nFaces = GetNumberOfFaces(shape->Shape());
 
     for (unsigned int i = 0; i < nFaces; i++) {
-        loft->FaceTraits(i).SetComponentUID(wingUID);
+        shape->FaceTraits(i).SetComponentUID(shapeUID);
     }
 
-    if (nFacesPerSegment*nSegments + 2 != nFaces) {
+    if ((nFaces - 2) % nFacesPerSegment != 0) {
         LOG(ERROR) << "CCPACSWingBuilder: Unable to determine wing face names from wing loft.";
         return;
     }
@@ -364,17 +362,17 @@ void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape lo
 #else
     // assign "Top" and "Bottom" to face traits
     for (unsigned int i = 0; i < nFaces-2; i++) {
-        CFaceTraits traits = loft->GetFaceTraits(i);
+        CFaceTraits traits = shape->GetFaceTraits(i);
         traits.SetName(names[i%names.size()]);
-        loft->SetFaceTraits(i, traits);
+        shape->SetFaceTraits(i, traits);
     }
 #endif
 
     // assign "Inside" and "Outside" to face traits
     for (unsigned int i = nFaces-2; i < nFaces; i++) {
-        CFaceTraits traits = loft->GetFaceTraits(i);
+        CFaceTraits traits = shape->GetFaceTraits(i);
         traits.SetName(endnames[i-nFaces+2]);
-        loft->SetFaceTraits(i, traits);
+        shape->SetFaceTraits(i, traits);
     }
 }
 

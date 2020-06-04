@@ -45,6 +45,7 @@
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
 #include "CNamedShape.h"
+#include "CTiglWingBuilder.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -126,42 +127,6 @@ namespace
         return trafo.Transform(point);
     }
 
-    // Set the face traits
-    void SetFaceTraits (PNamedShape loft, std::string shapeUID) 
-    { 
-        // designated names of the faces
-        std::vector<std::string> names(5);
-        names[0]="Bottom";
-        names[1]="Top";
-        names[2]="TrailingEdge";
-        names[3]="Inside";
-        names[4]="Outside";
-
-        // map of faces
-        TopTools_IndexedMapOfShape map;
-        TopExp::MapShapes(loft->Shape(), TopAbs_FACE, map);
-        
-        for (int iFace = 0; iFace < map.Extent(); ++iFace) {
-            loft->FaceTraits(iFace).SetComponentUID(shapeUID);
-        }
-
-        // check if number of faces is correct (only valid for ruled surfaces lofts)
-        if (map.Extent() != 5 && map.Extent() != 4) {
-            LOG(ERROR) << "CCPACSWingSegment: Unable to determine face names in ruled surface loft";
-            return;
-        }
-        // remove trailing edge name if there is no trailing edge
-        if (map.Extent() == 4) {
-            names.erase(names.begin()+2);
-        }
-        // set face trait names
-        for (int i = 0; i < map.Extent(); i++) {
-            CFaceTraits traits = loft->GetFaceTraits(i);
-            traits.SetName(names[i].c_str());
-            loft->SetFaceTraits(i, traits);
-        }
-    }
-    
     /**
      * @brief getFaceTrimmingEdge Creates an edge in parameter space to trim a face
      * @return 
@@ -486,7 +451,11 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft, GetUID());
+    std::vector<double> guideCurveParams = {};
+    if (GetParent()->IsParent<tigl::CCPACSWing>()) {
+        guideCurveParams = GetParent()->GetParent<tigl::CCPACSWing>()->GetGuideCurveStartParameters();
+    }
+    CTiglWingBuilder::SetFaceTraits(guideCurveParams,  GetUID(), loft, innerConnection.GetProfile().HasBluntTE());
     return loft;
 }
 
