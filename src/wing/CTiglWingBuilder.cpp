@@ -60,7 +60,7 @@ size_t find_index(ForwardIter begin, ForwardIter end, Compare comp)
 template <typename ArrayLike, typename ValueType>
 bool contains(const ArrayLike& array, ValueType val)
 {
-    auto idx = find_index(std::cbegin(array), std::cend(array), [val](const auto& cval) {
+    auto idx = find_index(std::begin(array), std::end(array), [val](const typename ArrayLike::value_type& cval) {
         return fabs(cval - val) < 1e-3;
     });
 
