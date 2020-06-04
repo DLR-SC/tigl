@@ -39,8 +39,35 @@
 #include <Geom_Plane.hxx>
 
 #include <cassert>
+#include <algorithm>
 
 #define NO_EXPLICIT_TE_MODELING
+
+namespace
+{
+template <typename ForwardIter, typename Compare>
+size_t find_index(ForwardIter begin, ForwardIter end, Compare comp)
+{
+    const auto it = std::find_if(begin, end, comp);
+    if (it != end) {
+        return std::distance(begin, it);
+    }
+    else {
+        return std::distance(begin, end);
+    }
+}
+
+template <typename ArrayLike, typename ValueType>
+bool contains(const ArrayLike& array, ValueType val)
+{
+    auto idx = find_index(std::cbegin(array), std::cend(array), [val](const auto& cval) {
+        return fabs(cval - val) < 1e-3;
+    });
+
+    return idx < array.size();
+}
+
+} // namespace
 
 namespace tigl
 {
@@ -257,11 +284,51 @@ void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape lo
 {
     unsigned int nSegments = _wing.GetSegmentCount();
 
+    auto params = _wing.GetGuideCurveStartParameters();
+    assert(std::is_sorted(std::begin(params), std::end(params)));
+
+    bool hasGuideCurves = params.size() > 0.;
+    LOG(ERROR) << "HasGuideCurves " << hasGuideCurves;
+
+    size_t nFacesPerSegment = 2; // Without trailing edge
+    size_t idx_leading_edge = 1;
+    if (hasGuideCurves) {
+        if (!contains(params, -1.)) {
+            params.insert(params.begin(), -1.);
+        }
+
+        if (!contains(params, 1.)) {
+            params.push_back(1.);
+        }
+
+        // find leading edge curve
+        idx_leading_edge = find_index(params.cbegin(), params.cend(), [] (double val) {
+            return fabs(val) < 1e-3;
+        });
+
+        if (idx_leading_edge == params.size()) {
+            // no guide curve at leading edge
+            LOG(ERROR) << "No guide curve at leading edge defined";
+            return;
+        }
+        nFacesPerSegment = params.size() - 1;
+    }
+
     // designated names of the faces
-    std::vector<std::string> names(3);
-    names[0]="Bottom";
-    names[1]="Top";
-    names[2]="TrailingEdge";
+    std::vector<std::string> names;
+    for (size_t i = 0; i < idx_leading_edge; ++i) {
+        names.push_back("Bottom");
+    }
+
+    for (size_t i = idx_leading_edge; i < nFacesPerSegment; ++i) {
+        names.push_back("Top");
+    }
+
+    if (hasBluntTE) {
+        names.push_back("TrailingEdge");
+        nFacesPerSegment += 1;
+    }
+
     std::vector<std::string> endnames(2);
     endnames[0]="Inside";
     endnames[1]="Outside";
@@ -271,10 +338,8 @@ void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape lo
     for (unsigned int i = 0; i < nFaces; i++) {
         loft->FaceTraits(i).SetComponentUID(wingUID);
     }
-    
-    // check if number of faces without inside and outside surface (nFaces-2)
-    // is a multiple of 2 (without Trailing Edges) or 3 (with Trailing Edges)
-    if (!((nFaces-2)/nSegments == 2 || (nFaces-2)/nSegments == 3) || nFaces < 4) {
+
+    if (nFacesPerSegment*nSegments + 2 != nFaces) {
         LOG(ERROR) << "CCPACSWingBuilder: Unable to determine wing face names from wing loft.";
         return;
     }
@@ -298,14 +363,10 @@ void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape lo
         loft->SetFaceTraits(i, traits);
     }
 #else
-    // remove trailing edge name if there is no trailing edge
-    if (!hasBluntTE) {
-        names.pop_back();
-    }
     // assign "Top" and "Bottom" to face traits
     for (unsigned int i = 0; i < nFaces-2; i++) {
         CFaceTraits traits = loft->GetFaceTraits(i);
-        traits.SetName(names[i%names.size()].c_str());
+        traits.SetName(names[i%names.size()]);
         loft->SetFaceTraits(i, traits);
     }
 #endif
@@ -313,7 +374,7 @@ void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape lo
     // assign "Inside" and "Outside" to face traits
     for (unsigned int i = nFaces-2; i < nFaces; i++) {
         CFaceTraits traits = loft->GetFaceTraits(i);
-        traits.SetName(endnames[i-nFaces+2].c_str());
+        traits.SetName(endnames[i-nFaces+2]);
         loft->SetFaceTraits(i, traits);
     }
 }

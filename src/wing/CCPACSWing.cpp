@@ -59,6 +59,8 @@
 #include "CGroupShapes.h"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS.hxx>
 
 
 namespace tigl
@@ -858,8 +860,18 @@ CCPACSGuideCurve& CCPACSWing::GetGuideCurveSegment(std::string uid)
 
 TopoDS_Compound CCPACSWing::GetGuideCurveWires() const
 {
-    return *guideCurves;
+    return guideCurves->wiresAsCompound;
 }
+
+std::vector<double> CCPACSWing::GetGuideCurveStartParameters() const
+{
+    std::vector<double> res;
+    for (const auto& curve : guideCurves->curves) {
+        res.push_back(curve.fromRelCircumference);
+    }
+    return res;
+}
+
 
 std::vector<gp_Pnt> CCPACSWing::GetGuideCurvePoints()
 {
@@ -884,7 +896,7 @@ std::vector<gp_Pnt> CCPACSWing::GetGuideCurvePoints()
 }
 
 
-void CCPACSWing::BuildGuideCurveWires(TopoDS_Compound& cache) const
+void CCPACSWing::BuildGuideCurveWires(LocatedGuideCurves& cache) const
 {
     // check, if the wing has a blunt trailing edge
     bool hasBluntTE = true;
@@ -938,7 +950,18 @@ void CCPACSWing::BuildGuideCurveWires(TopoDS_Compound& cache) const
 
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots, sectionParams);
-    cache = connector.GetConnectedGuideCurves();
+    auto wires = connector.GetConnectedGuideCurves();
+
+    //  collect the from_ref_circumference values
+    assert(roots.size() == GetNumberOfSubshapes(wires));
+
+    cache.wiresAsCompound = wires;
+    cache.curves.clear();
+
+    auto rootIt = roots.begin();
+    for (TopoDS_Iterator anIter(wires); anIter.More(); anIter.Next(), rootIt++) {
+        cache.curves.push_back(LocatedGuideCurves::LocatedGuideCurve(TopoDS::Wire(anIter.Value()), rootIt->first));
+    }
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire)

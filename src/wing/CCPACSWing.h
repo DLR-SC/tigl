@@ -165,6 +165,9 @@ public:
     // Returns all guide curve wires as a compound
     TIGL_EXPORT TopoDS_Compound GetGuideCurveWires() const;
 
+    // Returns the "fromRelCirc" parameter for each guide curve wire
+    TIGL_EXPORT std::vector<double> GetGuideCurveStartParameters() const;
+
     // Adjust, whether the wing should be modeled with the flaps or not
     TIGL_EXPORT void SetBuildFlaps(bool enabled);
 
@@ -172,7 +175,24 @@ public:
     TIGL_EXPORT PNamedShape GetWingCleanShape() const;
 
 protected:
-    void BuildGuideCurveWires(TopoDS_Compound& cache) const;
+
+    struct LocatedGuideCurves
+    {
+        struct LocatedGuideCurve
+        {
+            LocatedGuideCurve(const TopoDS_Wire& w, double relCirc)
+                : wire(w), fromRelCircumference(relCirc)
+            {}
+
+            TopoDS_Wire wire;
+            double fromRelCircumference;
+        };
+
+        TopoDS_Compound wiresAsCompound;
+        std::vector<LocatedGuideCurve> curves;
+    };
+
+    void BuildGuideCurveWires(LocatedGuideCurves& cache) const;
 
     // Cleanup routine
     void Cleanup();
@@ -205,7 +225,8 @@ private:
     TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
     TopoDS_Shape                   upperShape;
     TopoDS_Shape                   lowerShape;
-    Cache<TopoDS_Compound, CCPACSWing> guideCurves;
+
+    Cache<LocatedGuideCurves, CCPACSWing> guideCurves;
 
     Cache<PNamedShape, CCPACSWing> wingShapeWithCutouts;     /**< Wing without flaps / flaps removed */
     Cache<PNamedShape, CCPACSWing> wingCleanShape;           /**< Clean wing surface without flaps cutout*/
