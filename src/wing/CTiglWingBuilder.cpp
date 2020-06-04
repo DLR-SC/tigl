@@ -288,7 +288,6 @@ void CTiglWingBuilder::SetFaceTraits (const std::string& wingUID, PNamedShape lo
     assert(std::is_sorted(std::begin(params), std::end(params)));
 
     bool hasGuideCurves = params.size() > 0.;
-    LOG(ERROR) << "HasGuideCurves " << hasGuideCurves;
 
     size_t nFacesPerSegment = 2; // Without trailing edge
     size_t idx_leading_edge = 1;
