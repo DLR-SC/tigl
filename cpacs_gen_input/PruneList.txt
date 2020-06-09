@@ -70,7 +70,10 @@ CPACSDriveSystems
 CPACSLandingGear
 
 // in rotorcraft and aircraft model
-CPACSSystems
+CPACSCockpitControls
+CPACSCommandCases
+CPACSControlDistributors
+CPACSControlLaws
 CPACSReference
 
 // in fuselage

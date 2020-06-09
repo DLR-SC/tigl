@@ -23,11 +23,7 @@
 #ifndef CCPACSGENERICSYSTEMS_H
 #define CCPACSGENERICSYSTEMS_H
 
-#include "tigl_internal.h"
-#include "tixi.h"
-
-#include <vector>
-#include <string>
+#include "generated/CPACSGenericSystems.h"
 
 namespace tigl
 {
@@ -35,17 +31,14 @@ namespace tigl
 class CCPACSConfiguration;
 class CCPACSGenericSystem;
 
-class CCPACSGenericSystems
+class CCPACSGenericSystems : public generated::CPACSGenericSystems
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSGenericSystems(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSGenericSystems(CCPACSACSystems* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSGenericSystems();
-
-    // Read CPACS generic system elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
 
     // Returns the total count of wings in a configuration
     TIGL_EXPORT int GetGenericSystemCount() const;
@@ -56,22 +49,8 @@ public:
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID) const;
 
-protected:
-    // Cleanup routine
-    void Cleanup();
-
-private:
-    // Copy constructor
-    CCPACSGenericSystems(const CCPACSGenericSystems& );
-
-    // Assignment operator
-    void operator=(const CCPACSGenericSystem& );
-
-private:
-    typedef std::vector<CCPACSGenericSystem*> CCPACSGenericSystemContainer;
-
-    CCPACSGenericSystemContainer    systems;            /**< Generic system elements */
-    CCPACSConfiguration*            configuration;      /**< Pointer to parent configuration */
+    // Returns the parent configuration
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 };
 
 } // end namespace tigl

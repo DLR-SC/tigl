@@ -22,6 +22,7 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSectionElement.h"
+#include "CCPACSGenericSystem.h"
 #include "CCPACSNacelleSection.h"
 #include "CCPACSRotor.h"
 #include "CCPACSRotorHinge.h"
@@ -84,6 +85,14 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSExternalObject);
+    }
+
+    CPACSTransformation::CPACSTransformation(CCPACSGenericSystem* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSGenericSystem);
     }
 
     CPACSTransformation::CPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr)
@@ -160,6 +169,9 @@ namespace generated
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();
             }
+            if (IsParent<CCPACSGenericSystem>()) {
+                return GetParent<CCPACSGenericSystem>();
+            }
             if (IsParent<CCPACSNacelleSection>()) {
                 return GetParent<CCPACSNacelleSection>();
             }
@@ -202,6 +214,9 @@ namespace generated
             }
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();
+            }
+            if (IsParent<CCPACSGenericSystem>()) {
+                return GetParent<CCPACSGenericSystem>();
             }
             if (IsParent<CCPACSNacelleSection>()) {
                 return GetParent<CCPACSNacelleSection>();

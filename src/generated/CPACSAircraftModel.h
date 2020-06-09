@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSACSystems.h>
 #include <CCPACSEnginePositions.h>
 #include <CCPACSEnginePylons.h>
 #include <CCPACSExternalObjects.h>
@@ -87,6 +88,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEnginePylons>& GetEnginePylons();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSACSystems>& GetSystems() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSACSystems>& GetSystems();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents() const;
         TIGL_EXPORT virtual boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents();
 
@@ -101,6 +105,9 @@ namespace generated
 
         TIGL_EXPORT virtual CCPACSEnginePylons& GetEnginePylons(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEnginePylons();
+
+        TIGL_EXPORT virtual CCPACSACSystems& GetSystems(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSystems();
 
         TIGL_EXPORT virtual CCPACSExternalObjects& GetGenericGeometryComponents(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveGenericGeometryComponents();
@@ -125,6 +132,8 @@ namespace generated
         boost::optional<CCPACSEnginePositions> m_engines;
 
         boost::optional<CCPACSEnginePylons>    m_enginePylons;
+
+        boost::optional<CCPACSACSystems>       m_systems;
 
         boost::optional<CCPACSExternalObjects> m_genericGeometryComponents;
 

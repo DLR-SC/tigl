@@ -23,76 +23,28 @@
 #include "CCPACSGenericSystems.h"
 
 #include "CCPACSGenericSystem.h"
+#include "CCPACSACSystems.h"
 #include "CTiglError.h"
 
-#include <iostream>
-#include <sstream>
 
 namespace tigl
 {
 
 // Constructor
-CCPACSGenericSystems::CCPACSGenericSystems(CCPACSConfiguration* config)
-    : configuration(config)
+CCPACSGenericSystems::CCPACSGenericSystems(CCPACSACSystems* parent, CTiglUIDManager* uidMgr)
+: generated::CPACSGenericSystems(parent, uidMgr)
 {
-    Cleanup();
 }
 
 // Destructor
 CCPACSGenericSystems::~CCPACSGenericSystems()
 {
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSGenericSystems::Cleanup()
-{
-    for (CCPACSGenericSystemContainer::size_type i = 0; i < systems.size(); i++) {
-        delete systems[i];
-    }
-    systems.clear();
-}
-
-// Read CPACS generic system element
-void CCPACSGenericSystems::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
-{
-    Cleanup();
-    char *tmpString = NULL;
-
-    if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
-        throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSGenericSystems::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    std::string genericSysXPath= tmpString;
-    genericSysXPath += "[@uID=\"";
-    genericSysXPath += configurationUID;
-    genericSysXPath+= "\"]/systems/genericSystems";
-
-    if (tixiCheckElement(tixiHandle, genericSysXPath.c_str()) != SUCCESS) {
-        return;
-    }
-
-    /* Get generic system element count */
-    int genericSysCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, genericSysXPath.c_str(), "genericSystem", &genericSysCount) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSGenericSystems::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all generic systems
-    for (int i = 1; i <= genericSysCount; i++) {
-        CCPACSGenericSystem* sys = new CCPACSGenericSystem(configuration);
-        systems.push_back(sys);
-
-        std::ostringstream xpath;
-        xpath << genericSysXPath << "/genericSystem[" << i << "]";
-        sys->ReadCPACS(tixiHandle, xpath.str());
-    }
 }
 
 // Returns the total count of generic systems in a configuration
 int CCPACSGenericSystems::GetGenericSystemCount() const
 {
-    return (static_cast<int>(systems.size()));
+    return static_cast<int>(m_genericSystems.size());
 }
 
 // Returns the generic system for a given index.
@@ -102,21 +54,26 @@ CCPACSGenericSystem& CCPACSGenericSystems::GetGenericSystem(int index) const
     if (index < 0 || index >= GetGenericSystemCount()) {
         throw CTiglError("Invalid index in CCPACSGenericSystems::GetGenericSystem", TIGL_INDEX_ERROR);
     }
-    return (*systems[index]);
+    return *m_genericSystems[index];
 }
 
 // Returns the generic system for a given UID.
 CCPACSGenericSystem& CCPACSGenericSystems::GetGenericSystem(const std::string& UID) const
 {
     for (int i=0; i < GetGenericSystemCount(); i++) {
-        const std::string tmpUID(systems[i]->GetUID());
+        const std::string tmpUID(m_genericSystems[i]->GetUID());
         if (tmpUID == UID) {
-            return (*systems[i]);
+            return *m_genericSystems[i];
         }
     }
 
     // UID not there
     throw CTiglError("Invalid UID in CCPACSGenericSystems::GetGenericSystem", TIGL_INDEX_ERROR);
+}
+
+CCPACSConfiguration& CCPACSGenericSystems::GetConfiguration() const
+{
+    return m_parent->GetConfiguration();
 }
 
 } // end namespace tigl

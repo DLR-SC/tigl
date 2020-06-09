@@ -28,41 +28,37 @@ namespace tigl
 namespace generated
 {
     // This enum is used in:
-    // CPACSEnginePosition
-    // CPACSEnginePylon
-    // CPACSFuselage
-    // CPACSGenericGeometricComponent
     // CPACSGenericSystem
-    // CPACSGuideCurveProfileGeometry
-    // CPACSProfileGeometry
-    // CPACSRotor
-    // CPACSWing
 
-    enum CPACSSymmetry
+    enum CPACSGenericSystem_geometricBaseType
     {
-        x_y_plane,
-        x_z_plane,
-        y_z_plane
+        cone,
+        sphere,
+        cube,
+        cylinder
     };
 
-    inline std::string TiglSymmetryAxisToString(const CPACSSymmetry& value)
+    inline std::string CPACSGenericSystem_geometricBaseTypeToString(const CPACSGenericSystem_geometricBaseType& value)
     {
         switch(value) {
-        case x_y_plane: return "x-y-plane";
-        case x_z_plane: return "x-z-plane";
-        case y_z_plane: return "y-z-plane";
-        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSSymmetry");
+        case cone: return "cone";
+        case sphere: return "sphere";
+        case cube: return "cube";
+        case cylinder: return "cylinder";
+        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSGenericSystem_geometricBaseType");
         }
     }
-    inline CPACSSymmetry stringToTiglSymmetryAxis(const std::string& value)
+    inline CPACSGenericSystem_geometricBaseType stringToCPACSGenericSystem_geometricBaseType(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "x-y-plane") { return x_y_plane; }
-        if (toLower(value) == "x-z-plane") { return x_z_plane; }
-        if (toLower(value) == "y-z-plane") { return y_z_plane; }
-        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSSymmetry");
+        if (toLower(value) == "cone") { return cone; }
+        if (toLower(value) == "sphere") { return sphere; }
+        if (toLower(value) == "cube") { return cube; }
+        if (toLower(value) == "cylinder") { return cylinder; }
+        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSGenericSystem_geometricBaseType");
     }
 } // namespace generated
 
-// CPACSSymmetry is customized, use type TiglSymmetryAxis directly
+// Aliases in tigl namespace
+using ECPACSGenericSystem_geometricBaseType = generated::CPACSGenericSystem_geometricBaseType;
 } // namespace tigl

@@ -43,7 +43,10 @@
 #include "CTiglFuselageConnection.h"
 #include "CCPACSWingCell.h"
 #include "CCPACSMaterialDefinition.h"
+#include "generated/CPACSGenericSystem_geometricBaseType.h"
+#include "CCPACSACSystems.h"
 #include "CCPACSGenericSystem.h"
+#include "CCPACSGenericSystems.h"
 #include "CCPACSRotorBladeAttachment.h"
 #include "generated/CPACSWingElement.h"
 #include "CCPACSWingSectionElement.h"
@@ -533,8 +536,12 @@ public:
 } // namespace tigl
 
 %include "CTiglShapeCache.h"
+%include "generated/CPACSGenericSystem_geometricBaseType.h"
+%include "generated/CPACSGenericSystem.h"
 %include "CCPACSGenericSystem.h"
+%include "generated/CPACSGenericSystems.h"
 %include "CCPACSGenericSystems.h"
+%include "generated/CPACSSystems.h"
 %include "CCPACSACSystems.h"
 %include "generated/CPACSRotorAirfoils.h"
 %include "CCPACSRotorProfiles.h"

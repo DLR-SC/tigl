@@ -34,6 +34,9 @@ CPACSEtaXsiPoint                   CCPACSEtaXsiPoint
 CPACSCurvePoint                    CCPACSCurvePoint
 CPACSCurveParamPointMap            CCPACSCurveParamPointMap
 CPACSCurvePointListXYZ             CCPACSCurvePointListXYZ
+CPACSSystems                       CCPACSACSystems
+CPACSGenericSystems                CCPACSGenericSystems
+CPACSGenericSystem                 CCPACSGenericSystem
 
 CPACSFuselage                      CCPACSFuselage
 CPACSFuselages                     CCPACSFuselages
