@@ -160,7 +160,7 @@ jobs:
     - name: Install ccache (macos)
       run: |
         brew install zstd libb2
-        brew install --HEAD ccache
+        brew install ccache
         echo "::add-path::/usr/local/opt/ccache/libexec"
         echo "::add-path::/usr/local/opt/ccache/bin"
         echo '#!/bin/sh' > ccache-clang
