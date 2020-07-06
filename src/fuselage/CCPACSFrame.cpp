@@ -141,11 +141,34 @@ void CCPACSFrame::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
 
             const gp_Pnt refPoint0 = m_framePositions[i + 0]->GetRefPoint();
             const gp_Pnt refPoint1 = m_framePositions[i + 1]->GetRefPoint();
-            const double refAngle0 = m_framePositions[i + 0]->GetReferenceAngle();
-            const double refAngle1 = m_framePositions[i + 1]->GetReferenceAngle();
+            double refAngle0 = m_framePositions[i + 0]->GetReferenceAngle();
+            double refAngle1 = m_framePositions[i + 1]->GetReferenceAngle();
+
+            double segmentHalfAngle = 0.;
+            double absoluteSegmentMidPointAngle= 0.;
+
+            // Always work with positive angle values
+            if (refAngle0 <= 0.)
+                refAngle0 = refAngle0 + 360.;
+
+            if (refAngle1 <= 0.)
+                refAngle1 = refAngle1 + 360.;
+
+            // If the frame segment is going over the 0° angle reference, the segment half angle is calculated and added
+            // to the reference angle of the first position
+            if (refAngle0 > refAngle1)
+            {
+                segmentHalfAngle             = ((360. - refAngle0) + refAngle1) / 2.;
+                absoluteSegmentMidPointAngle = refAngle0 + segmentHalfAngle;
+                if (absoluteSegmentMidPointAngle > 360.)
+                    absoluteSegmentMidPointAngle -= 360.;
+            }
+            else
+                absoluteSegmentMidPointAngle = (refAngle0 + refAngle1) / 2.;
+
 
             // first, we cut the initial segment in 2 parts
-            const gp_Pnt midIntersection = fuselage.Intersection((refPoint0.XYZ() + refPoint1.XYZ()) / 2, Radians((refAngle0 + refAngle1) / 2.)).Location();
+            const gp_Pnt midIntersection = fuselage.Intersection((refPoint0.XYZ() + refPoint1.XYZ()) / 2, Radians(absoluteSegmentMidPointAngle)).Location();
 
             const gp_Pnt midRefPoint0 = (refPoint0.XYZ() * 0.25 + refPoint1.XYZ() * 0.75);
             const gp_Pnt midRefPoint1 = (refPoint0.XYZ() * 0.75 + refPoint1.XYZ() * 0.25);
