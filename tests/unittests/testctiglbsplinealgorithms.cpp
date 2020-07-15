@@ -597,7 +597,7 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
     new_parameters[5] = 0.95;
     new_parameters[6] = 1.;
 
-    Handle(Geom_BSplineCurve) reparam_spline = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, old_parameters, new_parameters, 100);
+    Handle(Geom_BSplineCurve) reparam_spline = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, old_parameters, new_parameters, 100).curve;
 
     TColStd_Array1OfReal test_point_params(1, 101);
     for (int i = 0; i < 101; ++i) {
@@ -661,7 +661,7 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApproxWithKink)
 
     std::vector<double> newParms = oldParms;
     newParms[1] = 0.6;
-    Handle(Geom_BSplineCurve) splineRepar = tigl::CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, oldParms, newParms, 5);
+    Handle(Geom_BSplineCurve) splineRepar = tigl::CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, oldParms, newParms, 5).curve;
     BRepTools::Write(BRepBuilderAPI_MakeEdge(spline).Edge(), "TestData/bugs/505/original_spline.brep");
     BRepTools::Write(BRepBuilderAPI_MakeEdge(splineRepar).Edge(), "TestData/bugs/505/reparm_spline.brep");
 

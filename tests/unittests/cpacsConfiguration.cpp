@@ -257,8 +257,7 @@ TEST_F(SimpleConfigurationTests, GetBoundingBox)
     EXPECT_NEAR( -2., minY, 1e-1);
     EXPECT_NEAR(  2., maxY, 1e-1);
 
-    // Note: the control points are used which is located at -0.75
-    EXPECT_NEAR(-0.75, minZ, 1e-1);
+    EXPECT_NEAR(-0.5, minZ, 1e-1);
     EXPECT_NEAR( 0.5, maxZ, 1e-1);
 }
 

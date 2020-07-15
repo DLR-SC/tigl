@@ -587,10 +587,10 @@ void CTiglBSplineAlgorithms::matchDegree(const std::vector<Handle(Geom_BSplineCu
     }
 }
 
-Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline,
-                                                                                         const std::vector<double>& old_parameters,
-                                                                                         const std::vector<double>& new_parameters,
-                                                                                         size_t n_control_pnts)
+CTiglApproxResult CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline,
+                                                                                 const std::vector<double>& old_parameters,
+                                                                                 const std::vector<double>& new_parameters,
+                                                                                 size_t n_control_pnts)
 {
     if (old_parameters.size() != new_parameters.size()) {
         throw CTiglError("parameter sizes dont match");
@@ -692,11 +692,10 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
 #endif
 
     CTiglApproxResult result = approximationObj.FitCurveOptimal(parameters);
-    Handle(Geom_BSplineCurve) reparametrized_spline = result.curve;
 
-    assert(!reparametrized_spline.IsNull());
+    assert(!result.curve.IsNull());
 
-    return reparametrized_spline;
+    return result;
 }
 
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::flipSurface(const Handle(Geom_BSplineSurface) surface)
@@ -817,6 +816,29 @@ void CTiglBSplineAlgorithms::reparametrizeBSpline(Geom_BSplineCurve& spline, dou
         BSplCLib::Reparametrize (umin, umax, aKnots);
         spline.SetKnots (aKnots);
     }
+}
+
+CTiglApproxResult CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(Handle(Geom_BSplineCurve) spline)
+{
+    if (spline.IsNull()) {
+        throw CTiglError("Null Pointer curve", TIGL_NULL_POINTER);
+    }
+
+    double umin = spline->FirstParameter();
+    double umax = spline->LastParameter();
+
+    // compute the number of desired knot segments
+
+    int nSegmentsOld = spline->NbPoles() - spline->Degree();
+    // The new number of segments is a power of two
+    int nSegmentsNew = pow(2.0, static_cast<int>(log2(static_cast<float>(nSegmentsOld))));
+
+    // we are using at least 8 segments to be safe with accuracy
+    nSegmentsNew = std::max(nSegmentsNew, 8);
+
+    // The reparametrization results in a degree 3 spline
+    int target_degree = 3;
+    return CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, {umin, umax}, {umin, umax}, nSegmentsNew + target_degree);
 }
 
 math_Matrix CTiglBSplineAlgorithms::bsplineBasisMat(int degree, const TColStd_Array1OfReal& knots, const TColStd_Array1OfReal& params, unsigned int derivOrder)
