@@ -44,7 +44,7 @@ Handle(Geom_BSplineSurface) loadSurface(const std::string& filename)
     return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
 }
 
-Handle(Geom_BSplineCurve) create_bspline(const std::vector<gp_Pnt>& poles, const std::vector<double>& knots, int degree)
+Handle(Geom_BSplineCurve) createBSpline(const std::vector<gp_Pnt>& poles, const std::vector<double>& knots, int degree)
 {
    auto occ_poles = OccArray(poles);
    auto seq = OccFArray(knots);
@@ -241,13 +241,13 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorTolerance)
     // We use two splines, that also have common knots (0, 0.5) in the tolerance of 0.01
     // We don't want to insert those, which are within the tolerance
 
-    auto bspline1 = create_bspline(
+    auto bspline1 = createBSpline(
         std::vector<gp_Pnt>(4, gp_Pnt(0., 0., 0)),
         {0.009, 0.009, 0.009, 0.5, 1., 1., 1.},
         2
     );
 
-    auto bspline2 = create_bspline(
+    auto bspline2 = createBSpline(
         std::vector<gp_Pnt>(6, gp_Pnt(0., 0., 0)),
         {0., 0., 0., 0.491, 0.491, 0.8, 1., 1., 1.},
         2
