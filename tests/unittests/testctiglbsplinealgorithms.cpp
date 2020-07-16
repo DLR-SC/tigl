@@ -15,9 +15,12 @@
 #include <cmath>
 
 #include <CTiglBSplineAlgorithms.h>
+#include <CTiglPointsToBSplineInterpolation.h>
 #include <CTiglInterpolateCurveNetwork.h>
 #include <CTiglGordonSurfaceBuilder.h>
+#include <tiglcommonfunctions.h>
 
+#include <BSplCLib.hxx>
 #include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -41,6 +44,18 @@ Handle(Geom_BSplineSurface) loadSurface(const std::string& filename)
     return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
 }
 
+Handle(Geom_BSplineCurve) create_bspline(const std::vector<gp_Pnt>& poles, const std::vector<double>& knots, int degree)
+{
+   auto occ_poles = OccArray(poles);
+   auto seq = OccFArray(knots);
+   int len = BSplCLib::KnotsLength(seq->Array1());
+   TColStd_Array1OfReal oc_knots(1, len);
+   TColStd_Array1OfInteger oc_mults(1, len);
+   BSplCLib::Knots(seq->Array1(), oc_knots, oc_mults);
+
+   return new Geom_BSplineCurve(occ_poles->Array1(), oc_knots, oc_mults, degree);
+}
+
 namespace tigl
 {
 
@@ -54,24 +69,6 @@ TEST(TiglBSplineAlgorithms, testComputeParamsBSplineCurve)
     controlPoints->SetValue(2, gp_Pnt(1, 1, 0));
     controlPoints->SetValue(3, gp_Pnt(3, -1, 0));
     controlPoints->SetValue(4, gp_Pnt(4, 0, 0));
-
-    TColStd_Array1OfReal Weights(1, 4);
-    Weights(1) = 1;
-    Weights(2) = 1;
-    Weights(3) = 1;
-    Weights(4) = 1;
-
-    TColStd_Array1OfReal Knots(1, 2);
-    Knots(1) = 0.;
-    Knots(2) = 1;
-
-    TColStd_Array1OfInteger Multiplicities(1, 2);
-    Multiplicities(1) = 4;
-    Multiplicities(2) = 4;
-
-    Standard_Integer Degree = 3;
-
-    Handle(Geom_BSplineCurve) bspline = new Geom_BSplineCurve(controlPoints->Array1(), Weights, Knots, Multiplicities, Degree);
 
     // compute centripetal parameters by the method that shall be tested here
     double alpha = 0.5;
@@ -244,37 +241,17 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorTolerance)
     // We use two splines, that also have common knots (0, 0.5) in the tolerance of 0.01
     // We don't want to insert those, which are within the tolerance
 
-    int degree = 2;
+    auto bspline1 = create_bspline(
+        std::vector<gp_Pnt>(4, gp_Pnt(0., 0., 0)),
+        {0.009, 0.009, 0.009, 0.5, 1., 1., 1.},
+        2
+    );
 
-    TColgp_Array1OfPnt controlPoints1(1, 4);
-
-    TColStd_Array1OfReal Knots1(1, 3);
-    Knots1(1) = 0.009;
-    Knots1(2) = 0.5;
-    Knots1(3) = 1;
-
-    TColStd_Array1OfInteger Multiplicities1(1, 3);
-    Multiplicities1(1) = 3;
-    Multiplicities1(2) = 1;
-    Multiplicities1(3) = 3;
-
-    Handle(Geom_BSplineCurve) bspline1 = new Geom_BSplineCurve(controlPoints1,  Knots1, Multiplicities1, degree);
-
-    TColgp_Array1OfPnt controlPoints2(1, 6);
-
-    TColStd_Array1OfReal Knots2(1, 4);
-    Knots2(1) = 0.;
-    Knots2(2) = 0.491;
-    Knots2(3) = 0.8;
-    Knots2(4) = 1;
-
-    TColStd_Array1OfInteger Multiplicities2(1, 4);
-    Multiplicities2(1) = 3;
-    Multiplicities2(2) = 2;
-    Multiplicities2(3) = 1;
-    Multiplicities2(4) = 3;
-
-    Handle(Geom_BSplineCurve) bspline2 = new Geom_BSplineCurve(controlPoints2,  Knots2, Multiplicities2, degree);
+    auto bspline2 = create_bspline(
+        std::vector<gp_Pnt>(6, gp_Pnt(0., 0., 0)),
+        {0., 0., 0., 0.491, 0.491, 0.8, 1., 1., 1.},
+        2
+    );
 
     std::vector<Handle(Geom_BSplineCurve)> curves;
     curves.push_back(bspline1);
@@ -704,6 +681,35 @@ TEST(TiglBSplineAlgorithms, reparametrizeBSpline)
     CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, -5, 5);
     ASSERT_NEAR(spline->FirstParameter(), -5, 1e-10);
     ASSERT_NEAR(spline->LastParameter(),  5, 1e-10);
+}
+
+TEST(TiglBSplineAlgorithms, reparametrizeBSplineNiceKnots)
+{
+    auto pointCountVec = {5, 10, 38, 99};
+    for (auto nPoints : pointCountVec) {
+        for (bool make_close : {false, true}) {
+
+            // create circular spline
+            Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, nPoints);
+            double dAngle = 2.*M_PI / static_cast<double>(nPoints - 1);
+            for (int i = 0; i < nPoints; ++i) {
+                pnt2->SetValue(i + 1, gp_Pnt(cos(i*dAngle),
+                                            0.,
+                                            sin(i*dAngle)));
+            }
+            auto bspline = tigl::CTiglPointsToBSplineInterpolation(pnt2, 3, make_close).Curve();
+
+            // now do the reparametrization
+            bspline = tigl::CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(bspline).curve;
+
+            EXPECT_EQ(GeomAbs_QuasiUniform, bspline->KnotDistribution());
+
+            // check, that nuber segments is power of two
+            double knotdist = bspline->Knot(2) - bspline->Knot(1);
+            EXPECT_TRUE(knotdist > 0);
+            EXPECT_TRUE(fabs(fmod(log2(knotdist), 1)) < 1e-4);
+        }
+    }
 }
 
 TEST(TiglBSplineAlgorithms, testFlipSurface)
