@@ -712,6 +712,11 @@ TEST(TiglBSplineAlgorithms, reparametrizeBSplineNiceKnots)
     }
 }
 
+TEST(TiglBSplineAlgorithms, reparametrizeBSplineNiceKnots_NullPointer)
+{
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(nullptr), tigl::CTiglError);
+}
+
 TEST(TiglBSplineAlgorithms, testFlipSurface)
 {
     /*
