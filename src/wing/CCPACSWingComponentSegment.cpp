@@ -580,7 +580,7 @@ TopoDS_Wire CCPACSWingComponentSegment::GetCSLine(double eta1, double xsi1, doub
     return wireBuilder.Wire();
 }
     
-void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi)
+void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi) const
 {
     CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(segmentUID);
 
@@ -636,7 +636,7 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
     xsi = pOnEtaLine.Parameter()/chordDepth;
 }
 
-void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double& errorDistance)
+void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double& errorDistance) const
 {
     if (eta > 1 + Precision::Confusion() || eta < - Precision::Confusion()) {
         throw CTiglError("Eta not in range [0,1] in CCPACSWingComponentSegment::InterpolateOnLine.", TIGL_MATH_ERROR);
@@ -1054,7 +1054,7 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
     return result;
 }
 
-MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, TiglStructureType type)
+MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, TiglStructureType type) const
 {
     MaterialList list;
         
@@ -1068,10 +1068,10 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
         return list;
     }
     else {
-        CCPACSWingShell* shell = (type == UPPER_SHELL? &m_structure->GetUpperShell() : &m_structure->GetLowerShell());
+        CCPACSWingShell const* shell = (type == UPPER_SHELL? &m_structure->GetUpperShell() : &m_structure->GetLowerShell());
         int ncells = shell->GetCellCount();
         for (int i = 1; i <= ncells; ++i){
-            CCPACSWingCell& cell = shell->GetCell(i);
+            CCPACSWingCell const& cell = shell->GetCell(i);
 
             if (cell.IsInside(eta, xsi)) {
                 list.push_back(&(cell.GetMaterial()));
