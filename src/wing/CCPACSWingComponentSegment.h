@@ -128,7 +128,7 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override { return TIGL_COMPONENT_WINGCOMPSEGMENT; }
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override {return TIGL_INTENT_LOGICAL; }
 
-    TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
+    TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType) const;
 
     // returns a list of segments that belong to this component segment
     TIGL_EXPORT const SegmentList& GetSegmentList() const;
@@ -140,7 +140,7 @@ public:
         
     // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
     // returns the xsi coordinate of the intersection
-    TIGL_EXPORT void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);
+    TIGL_EXPORT void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi) const;
 
     // Getter for the normalized leading edge direction
     TIGL_EXPORT gp_Vec GetLeadingEdgeDirection(const gp_Pnt& point, const std::string& defaultSegmentUID = "") const;
@@ -176,7 +176,7 @@ public:
     TIGL_EXPORT bool IsSegmentContained(const CCPACSWingSegment& segment) const;
 
     // computes the xsi coordinate on a straight line in global space, given an eta coordinate
-    TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance);
+    TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance) const;
 
     TIGL_EXPORT const CTiglWingChordface& GetChordface() const;
 

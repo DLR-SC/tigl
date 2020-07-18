@@ -353,6 +353,26 @@ TEST_F(WingComponentSegmentSimple, getEtaXsi)
     EXPECT_NEAR(0.5, xsi, 1e-6);
 }
 
+TEST_F(WingComponentSegmentSimple, CCPACSWingComponentSegments)
+{
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    const tigl::CTiglUIDManager& uidMgr = config.GetUIDManager();
+
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    const tigl::CCPACSWingComponentSegment & segment = uidMgr.ResolveObject<tigl::CCPACSWingComponentSegment>("WING_CS1");
+    const auto& psegments = segment.GetParent();
+
+    EXPECT_EQ(&segment, &(psegments->GetComponentSegment(compseg)));
+    EXPECT_EQ(&segment, &(psegments->GetComponentSegment("WING_CS1")));
+    EXPECT_EQ(&segment, &(wing.GetComponentSegment("WING_CS1")));
+
+    EXPECT_EQ(1, psegments->GetComponentSegmentCount());
+    EXPECT_THROW(psegments->GetComponentSegment(2);, tigl::CTiglError);
+}
+
 TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentPointGetEtaXsi)
 {
     double eta = 0., xsi = 0., errorDistance = 0.;
