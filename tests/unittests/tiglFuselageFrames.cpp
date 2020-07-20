@@ -31,12 +31,7 @@
 TEST(TestFuselageFrame, bug694)
 {
     const char* filename = "TestData/bugs/694/test_frame.xml";
-
-    TiglCPACSConfigurationHandle tiglHandle = -1;
-    TixiDocumentHandle tixiHandle = -1;
-
-    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
-    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+    TiglHandleWrapper tiglHandle(filename, "");
 
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
