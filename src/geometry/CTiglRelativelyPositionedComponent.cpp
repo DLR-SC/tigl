@@ -44,6 +44,9 @@ CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::op
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
     : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis) {}
 
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(std::string* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
+    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis){}
+
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
     : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis){}
 
@@ -62,7 +65,7 @@ TiglSymmetryAxis CTiglRelativelyPositionedComponent::GetSymmetryAxis() const
             : _parent(parent) {}
 
         TiglSymmetryAxis operator()(const TiglSymmetryAxis* s) {
-            if (s)
+            if (s && *s != TIGL_INHERIT_SYMMETRY)
                 return *s;
             else if (_parent)
                 return _parent->GetSymmetryAxis();
@@ -70,7 +73,7 @@ TiglSymmetryAxis CTiglRelativelyPositionedComponent::GetSymmetryAxis() const
                 return TIGL_NO_SYMMETRY;
         }
         TiglSymmetryAxis operator()(const boost::optional<TiglSymmetryAxis>* s) {
-            if (s && *s)
+            if (s && s->is_initialized() && s->value() != TIGL_INHERIT_SYMMETRY)
                 return **s;
             else if (_parent)
                 return _parent->GetSymmetryAxis();

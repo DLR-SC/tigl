@@ -152,10 +152,11 @@ typedef enum TiglBoolean TiglBoolean;
 */
 enum TiglSymmetryAxis
 {
-    TIGL_NO_SYMMETRY = 0,
-    TIGL_X_Y_PLANE   = 1,
-    TIGL_X_Z_PLANE   = 2,
-    TIGL_Y_Z_PLANE   = 3
+    TIGL_NO_SYMMETRY      = 0,
+    TIGL_X_Y_PLANE        = 1,
+    TIGL_X_Z_PLANE        = 2,
+    TIGL_Y_Z_PLANE        = 3,
+    TIGL_INHERIT_SYMMETRY = 4
 };
 
 /**
@@ -167,6 +168,7 @@ enum TiglSymmetryAxis
 *   - TIGL_X_Y_PLANE
 *   - TIGL_X_Z_PLANE
 *   - TIGL_Y_Z_PLANE
+*   - TIGL_INHERIT_SYMMETRY
 *
 */
 typedef enum TiglSymmetryAxis TiglSymmetryAxis;
