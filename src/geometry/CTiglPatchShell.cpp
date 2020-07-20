@@ -155,7 +155,7 @@ namespace {
 TopoDS_Shell MakeShells(TopoDS_Shape const& shell, const Standard_Real tol)
 {
     if (shell.IsNull()) {
-        StdFail_NotDone::Raise("Loft is not build");
+        throw tigl::CTiglError("Loft is not build", TIGL_ERROR);
     }
 
     try {
@@ -167,7 +167,9 @@ TopoDS_Shell MakeShells(TopoDS_Shape const& shell, const Standard_Real tol)
 
         if ( shellClosed.ShapeType() != TopAbs_SHELL ) {
 
-            assert(shellClosed.ShapeType() == TopAbs_FACE);
+            if ( shellClosed.ShapeType() != TopAbs_FACE) {
+                throw tigl::CTiglError("Cannot patch a shape that is neither a shell nor a face");
+            }
 
             BRep_Builder B;
             TopoDS_Shell shellFinal;
