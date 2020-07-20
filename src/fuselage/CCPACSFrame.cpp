@@ -152,6 +152,12 @@ void CCPACSFrame::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
             // Always work with positive angle values / normalize in [0, 360)
             refAngle0 = fmod(refAngle0, 360.);
             refAngle1 = fmod(refAngle1, 360.);
+            if (refAngle0 < 0) {
+                refAngle0 += 360.;
+            }
+            if (refAngle1 < 0) {
+                refAngle1 += 360.;
+            }
 
             // If the frame segment is going over the 0° angle reference, the segment half angle is calculated and added
             // to the reference angle of the first position
