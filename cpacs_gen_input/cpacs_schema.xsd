@@ -257,7 +257,11 @@ marko.alder@dlr.de
                                             <ddue:listItem>x-y-plane</ddue:listItem>
                                             <ddue:listItem>x-z-plane</ddue:listItem>
                                             <ddue:listItem>y-z-plane</ddue:listItem>
+                                            <ddue:listItem>none</ddue:listItem>
+                                            <ddue:listItem>inherit</ddue:listItem>
                                         </ddue:list>
+                                        By default, the symmetric of a component is inherited from its parent. If e.g. a wing is symmetricly defined, a pylon will also have a symmetry by default.
+                                        This symmetry inheritance can be broken, by explicitly deleting the symmetric with symmetry="none".
                                     </ddue:para>
                                 </ddue:content>
                             </ddue:section>
@@ -21534,6 +21538,8 @@ marko.alder@dlr.de
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -21614,6 +21620,8 @@ marko.alder@dlr.de
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -24621,6 +24629,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -25109,6 +25119,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -25272,6 +25284,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -25711,6 +25725,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -31096,6 +31112,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -33496,6 +33514,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -34505,6 +34525,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -34585,6 +34607,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <xsd:restriction base="xsd:string">
                             <xsd:enumeration value="x-axis"/>
                             <xsd:enumeration value="y-axis"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -37090,6 +37114,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
@@ -42078,6 +42104,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:enumeration value="x-y-plane"/>
                             <xsd:enumeration value="x-z-plane"/>
                             <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
                         </xsd:restriction>
                     </xsd:simpleType>
                 </xsd:attribute>
