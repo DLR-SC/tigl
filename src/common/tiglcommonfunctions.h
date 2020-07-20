@@ -296,6 +296,9 @@ TIGL_EXPORT size_t Clamp(size_t val, size_t min, size_t max);
 // linearly interpolate between two values result = x*(1−a)+y*a.
 TIGL_EXPORT double Mix(double x, double y, double a);
 
+// Normalizes the input angle into the range [0, 360)
+TIGL_EXPORT double NormalizeAngleDeg(double angleDeg);
+
 // Creates a linear spaces array but with some additional breaking points
 // If the breaking points are very close to a point, the point will be replaced
 // Else, the breaking point will be inserted

@@ -271,3 +271,12 @@ TEST(TiglCommonFunctions, projectPointOnPlane)
     ASSERT_NEAR(0, res.X(), 1e-10);
     ASSERT_NEAR(0, res.Y(), 1e-10);
 }
+
+TEST(TiglCommonFunctions, normalizeAngleDeg)
+{
+    EXPECT_NEAR(0., NormalizeAngleDeg(0.), 1e-9);
+    EXPECT_NEAR(0., NormalizeAngleDeg(360.), 1e-9);
+    EXPECT_NEAR(270., NormalizeAngleDeg(270.), 1e-9);
+    EXPECT_NEAR(270., NormalizeAngleDeg(-90.), 1e-9);
+    EXPECT_NEAR(45., NormalizeAngleDeg(405.), 1e-9);
+}

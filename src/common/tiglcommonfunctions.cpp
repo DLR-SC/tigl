@@ -115,6 +115,7 @@
 #include <algorithm>
 #include <cassert>
 #include <limits>
+#include <cmath>
 
 #include "Debugging.h"
 
@@ -1806,4 +1807,13 @@ bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2)
 double Mix(double x, double y, double a)
 {
     return x*(1.-a) +   y*a;
+}
+
+double NormalizeAngleDeg(double angleDeg)
+{
+    angleDeg = fmod(angleDeg, 360.);
+    if (angleDeg < 0.)
+        angleDeg += 360.;
+
+    return angleDeg;
 }
