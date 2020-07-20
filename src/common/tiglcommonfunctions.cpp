@@ -1809,7 +1809,7 @@ double Mix(double x, double y, double a)
     return x*(1.-a) +   y*a;
 }
 
-double normalizeAngleDeg(double angleDeg)
+double NormalizeAngleDeg(double angleDeg)
 {
     angleDeg = fmod(angleDeg, 360.);
     if (angleDeg < 0.)

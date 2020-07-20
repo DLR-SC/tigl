@@ -148,15 +148,15 @@ void CCPACSFrame::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
             double absoluteSegmentMidPointAngle= 0.;
 
             // Always work with positive angle values / normalize in [0, 360)
-            refAngle0 = normalizeAngleDeg(refAngle0);
-            refAngle1 = normalizeAngleDeg(refAngle1);
+            refAngle0 = NormalizeAngleDeg(refAngle0);
+            refAngle1 = NormalizeAngleDeg(refAngle1);
 
             // If the frame segment is going over the 0° angle reference, the segment half angle is calculated and added
             // to the reference angle of the first position
             if (refAngle0 > refAngle1) {
                 segmentHalfAngle             = ((360. - refAngle0) + refAngle1) / 2.;
                 absoluteSegmentMidPointAngle = refAngle0 + segmentHalfAngle;
-                absoluteSegmentMidPointAngle = normalizeAngleDeg(absoluteSegmentMidPointAngle);
+                absoluteSegmentMidPointAngle = NormalizeAngleDeg(absoluteSegmentMidPointAngle);
             }
             else {
                 absoluteSegmentMidPointAngle = (refAngle0 + refAngle1) / 2.;
