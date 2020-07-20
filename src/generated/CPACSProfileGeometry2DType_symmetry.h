@@ -33,7 +33,9 @@ namespace generated
     enum CPACSProfileGeometry2DType_symmetry
     {
         x_axis,
-        y_axis
+        y_axis,
+        none,
+        inherit
     };
 
     inline std::string CPACSProfileGeometry2DType_symmetryToString(const CPACSProfileGeometry2DType_symmetry& value)
@@ -41,6 +43,8 @@ namespace generated
         switch(value) {
         case x_axis: return "x-axis";
         case y_axis: return "y-axis";
+        case none: return "none";
+        case inherit: return "inherit";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSProfileGeometry2DType_symmetry");
         }
     }
@@ -49,6 +53,8 @@ namespace generated
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "x-axis") { return x_axis; }
         if (toLower(value) == "y-axis") { return y_axis; }
+        if (toLower(value) == "none") { return none; }
+        if (toLower(value) == "inherit") { return inherit; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSProfileGeometry2DType_symmetry");
     }
 } // namespace generated
