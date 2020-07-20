@@ -154,7 +154,7 @@ void CCPACSFrame::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
             if (refAngle1 <= 0.)
                 refAngle1 = refAngle1 + 360.;
 
-            // If the frame segment is going over the 0° angle reference, the segment half angle is calculated and added
+            // If the frame segment is going over the 0Â° angle reference, the segment half angle is calculated and added
             // to the reference angle of the first position
             if (refAngle0 > refAngle1)
             {
