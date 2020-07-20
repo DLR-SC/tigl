@@ -16,6 +16,8 @@
 
 #include "CCPACSFrame.h"
 
+#include <cmath>
+
 #include <gp_Pnt.hxx>
 #include <gp_Pln.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -147,24 +149,20 @@ void CCPACSFrame::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
             double segmentHalfAngle = 0.;
             double absoluteSegmentMidPointAngle= 0.;
 
-            // Always work with positive angle values
-            if (refAngle0 <= 0.)
-                refAngle0 = refAngle0 + 360.;
-
-            if (refAngle1 <= 0.)
-                refAngle1 = refAngle1 + 360.;
+            // Always work with positive angle values / normalize in [0, 360)
+            refAngle0 = fmod(refAngle0, 360.);
+            refAngle1 = fmod(refAngle1, 360.);
 
             // If the frame segment is going over the 0° angle reference, the segment half angle is calculated and added
             // to the reference angle of the first position
-            if (refAngle0 > refAngle1)
-            {
+            if (refAngle0 > refAngle1) {
                 segmentHalfAngle             = ((360. - refAngle0) + refAngle1) / 2.;
                 absoluteSegmentMidPointAngle = refAngle0 + segmentHalfAngle;
-                if (absoluteSegmentMidPointAngle > 360.)
-                    absoluteSegmentMidPointAngle -= 360.;
+                absoluteSegmentMidPointAngle = fmod(absoluteSegmentMidPointAngle, 360.);
             }
-            else
+            else {
                 absoluteSegmentMidPointAngle = (refAngle0 + refAngle1) / 2.;
+            }
 
 
             // first, we cut the initial segment in 2 parts
