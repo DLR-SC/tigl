@@ -260,8 +260,8 @@ marko.alder@dlr.de
                                             <ddue:listItem>none</ddue:listItem>
                                             <ddue:listItem>inherit</ddue:listItem>
                                         </ddue:list>
-                                        By default, the symmetric of a component is inherited from its parent. If e.g. a wing is symmetricly defined, a pylon will also have a symmetry by default.
-                                        This symmetry inheritance can be broken, by explicitly deleting the symmetric with symmetry="none".
+                                        By default, the symmetry of a component is inherited from its parent. If e.g. a wing is symmetrically defined, a pylon will also have a symmetry by default.
+                                        This symmetry inheritance can be broken, by explicitly deleting the symmetry with symmetry="none".
                                     </ddue:para>
                                 </ddue:content>
                             </ddue:section>
