@@ -120,7 +120,8 @@ namespace generated
     /// UID can either be named according to their appearance in the hierarchy e.g. uid=""mainWingKinkSection" or by automatically placing identifiers e.g. via processor runtime dates
     /// 6. Symmetry
     /// Sometimes it might be useful to specify a part of the aircraft as symmetric instead of holding all the data twice in nearly identical form in the dataset (e.g. left and right wing are usually identical, except for the sign of the y-coordinate). Hence, some parts offer the option to set a symmetry attribute for them, like:
-    /// <wing symmetry="x-z-plane">... This attribute explains that the whole part with all its subnodes is symmetric to the given plane. Possible planes are: x-y-plane x-z-plane y-z-plane 
+    /// <wing symmetry="x-z-plane">... This attribute explains that the whole part with all its subnodes is symmetric to the given plane. Possible planes are: x-y-plane x-z-plane y-z-plane none inherit By default, the symmetric of a component is inherited from its parent. If e.g. a wing is symmetricly defined, a pylon will also have a symmetry by default.
+    /// This symmetry inheritance can be broken, by explicitly deleting the symmetric with symmetry="none".
     /// UIDs, references and symmetry
     /// All nodes, e.g. parentUID, in CPACS that refer to a component that holds symmetry attribute, e.g. wing, have to carry the symmetry attribute as well.
     /// The symmetry attribute may take three values: symm, def, full: def: The element refers to the geometric component that has a symmetry attribute and refers only to the defined side of the geometric component. symm: The element refers to the geometric component that has a symmetry attribute and refers only to the symmetric side of the geometric component. (Similar to the previous _symm solution) full: The element refers to the geometric component that has a symmetry attribute and refers to the complete component. (This is the default behaviour) 

@@ -40,7 +40,7 @@ namespace tigl
 // Constructor
 CCPACSGenericSystem::CCPACSGenericSystem(CCPACSGenericSystems* parent, CTiglUIDManager* uidMgr)
 : generated::CPACSGenericSystem(parent, uidMgr)
-, CTiglRelativelyPositionedComponent(NULL, &m_transformation, &m_symmetry)
+, CTiglRelativelyPositionedComponent(static_cast<std::string*>(nullptr), &m_transformation, &m_symmetry)
 {
 }
 
