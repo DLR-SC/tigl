@@ -155,27 +155,34 @@ namespace {
 TopoDS_Shell MakeShells(TopoDS_Shape const& shell, const Standard_Real tol)
 {
     if (shell.IsNull()) {
-        StdFail_NotDone::Raise("Loft is not build");
+        throw tigl::CTiglError("Loft is not build", TIGL_ERROR);
     }
 
-    BRepBuilderAPI_Sewing BB(tol);
-    BB.Add(shell);
-    BB.Perform();
+    try {
+        BRepBuilderAPI_Sewing BB(tol);
+        BB.Add(shell);
+        BB.Perform();
 
-    TopoDS_Shape shellClosed  = BB.SewedShape();
+        TopoDS_Shape shellClosed  = BB.SewedShape();
 
-    if ( shellClosed.ShapeType() != TopAbs_SHELL ) {
+        if ( shellClosed.ShapeType() != TopAbs_SHELL ) {
 
-        assert(shellClosed.ShapeType() == TopAbs_FACE);
+            if ( shellClosed.ShapeType() != TopAbs_FACE) {
+                throw tigl::CTiglError("Cannot patch a shape that is neither a shell nor a face");
+            }
 
-        BRep_Builder B;
-        TopoDS_Shell shellFinal;
-        B.MakeShell(shellFinal);
-        B.Add(shellFinal, shellClosed);
-        return shellFinal;
+            BRep_Builder B;
+            TopoDS_Shell shellFinal;
+            B.MakeShell(shellFinal);
+            B.Add(shellFinal, shellClosed);
+            return shellFinal;
+        }
+        else {
+            return TopoDS::Shell(shellClosed);
+        }
     }
-    else {
-        return TopoDS::Shell(shellClosed);
+    catch( ... ) {
+        throw tigl::CTiglError("Error in geometry creation: Could not create a closed shell.", TIGL_ERROR);
     }
 }
 
