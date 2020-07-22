@@ -68,6 +68,7 @@
 #include "CTiglCurvesToSurface.h"
 #include "CTiglIntersectBSplines.h"
 #include "CTiglInterpolatePointsWithKinks.h"
+#include "CTiglApproxResult.h"
 %}
 
 
@@ -88,6 +89,7 @@
 %boost_optional(tigl::generated::CPACSPointX)
 %boost_optional(tigl::generated::CPACSPointXYZ)
 
+%include "CTiglApproxResult.h"
 %include "CTiglIntersectBSplines.h"
 %include "CTiglPointsToBSplineInterpolation.h"
 %include "CTiglInterpolateCurveNetwork.h"

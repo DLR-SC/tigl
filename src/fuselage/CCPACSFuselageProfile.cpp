@@ -214,6 +214,10 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
         CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, umin, umax);
     }
 
+    // we reparametrize the spline to get better performing lofts.
+    // there might be a small accuracy loss though.
+    spline = CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(spline).curve;
+
     // Create wires
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline).Edge();
     BRepBuilderAPI_MakeWire builder1(edge);

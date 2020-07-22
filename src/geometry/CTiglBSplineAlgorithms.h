@@ -20,6 +20,7 @@
 #define CTIGLBSPLINEALGORITHMS_H
 
 #include "tigl_internal.h"
+#include "CTiglApproxResult.h"
 
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -132,6 +133,14 @@ public:
     TIGL_EXPORT static void reparametrizeBSpline(Geom_BSplineCurve& spline, double umin, double umax, double tol=1e-15);
 
     /**
+     * Reparametrizes the B-Spline such that the knot distribution is uniform and the number of
+     * Segments is a power of 2
+     *
+     * The resulting curves are very suitable for lofting, as they share the same knots
+     */
+    TIGL_EXPORT static CTiglApproxResult reparametrizeBSplineNiceKnots(Handle(Geom_BSplineCurve) spline);
+
+    /**
      * @brief reparametrizeBSplineContinuouslyApprox:
      *          Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
      *          The B-spline geometry remains approximately the same, and:
@@ -143,8 +152,8 @@ public:
      * @return
      *          the continuously reparametrized given B-spline
      */
-    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const std::vector<double>& old_parameters,
-                                                                                        const std::vector<double>& new_parameters, size_t n_control_pnts);
+    TIGL_EXPORT static CTiglApproxResult reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const std::vector<double>& old_parameters,
+                                                                                const std::vector<double>& new_parameters, size_t n_control_pnts);
 
     /**
      * @brief flipSurface:

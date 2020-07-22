@@ -250,7 +250,7 @@ void CTiglInterpolateCurveNetwork::MakeCurvesCompatible()
         }
 
         Handle(Geom_BSplineCurve)& profile = m_profiles[static_cast<size_t>(spline_u_idx)];
-        profile = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(profile, oldParametersProfile, newParametersProfiles, max_cp_u);
+        profile = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(profile, oldParametersProfile, newParametersProfiles, max_cp_u).curve;
     }
 
     // reparametrize v-directional B-splines
@@ -280,7 +280,7 @@ void CTiglInterpolateCurveNetwork::MakeCurvesCompatible()
         }
 
         Handle(Geom_BSplineCurve)& guide = m_guides[static_cast<size_t>(spline_v_idx)];
-        guide = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(guide, oldParameterGuide, newParametersGuides, max_cp_v);
+        guide = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(guide, oldParameterGuide, newParametersGuides, max_cp_v).curve;
     }
 
 

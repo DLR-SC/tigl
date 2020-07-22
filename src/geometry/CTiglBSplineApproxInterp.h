@@ -20,6 +20,9 @@
 #define CTIGLBSPLINEAPPROXINTERP_H
 
 #include "tigl_internal.h"
+
+#include "CTiglApproxResult.h"
+
 #include <vector>
 #include <Geom_BSplineCurve.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -39,12 +42,6 @@ struct ProjectResult
     }
 
     double parameter;
-    double error;
-};
-
-struct CTiglApproxResult
-{
-    Handle(Geom_BSplineCurve) curve;
     double error;
 };
 
