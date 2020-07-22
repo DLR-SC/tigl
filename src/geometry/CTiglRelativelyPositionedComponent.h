@@ -48,7 +48,6 @@ public:
 
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(std::string* parentUid, CCPACSTransformation* trans);
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans);
-    TIGL_EXPORT CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis);
     TIGL_EXPORT CTiglRelativelyPositionedComponent(std::string* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
     TIGL_EXPORT CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
 
@@ -86,7 +85,7 @@ private:
     boost::variant<std::string*, boost::optional<std::string>*> _parentUID; ///< UID of the parent of this component, if supported by derived type
 
     CCPACSTransformation* _transformation;                                                 // references down to the transformation of the derived class (may be empty in case derived class does not have transformation)
-    boost::variant<TiglSymmetryAxis*, boost::optional<TiglSymmetryAxis>*> _symmetryAxis;   // references down to the symmetryAxis of the derived class (may be empty in case derived class does not have symmetry)
+    boost::optional<TiglSymmetryAxis>* _symmetryAxis;   // references down to the symmetryAxis of the derived class (may be empty in case derived class does not have symmetry)
 };
 
 } // end namespace tigl

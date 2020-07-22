@@ -36,13 +36,10 @@
 namespace tigl
 {
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(std::string* parentUid, CCPACSTransformation* trans)
-    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)) {}
+    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(nullptr) {}
 
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans)
-    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)) {}
-
-CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
-    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis) {}
+    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(nullptr) {}
 
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(std::string* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
     : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis){}
@@ -60,58 +57,20 @@ void CTiglRelativelyPositionedComponent::Reset() const
 
 TiglSymmetryAxis CTiglRelativelyPositionedComponent::GetSymmetryAxis() const
 {
-    struct GetSymmetryVisitor : boost::static_visitor<TiglSymmetryAxis> {
-        GetSymmetryVisitor(CTiglRelativelyPositionedComponent* parent)
-            : _parent(parent) {}
-
-        TiglSymmetryAxis operator()(const TiglSymmetryAxis* s) {
-            if (s && *s != TIGL_INHERIT_SYMMETRY)
-                return *s;
-            else if (_parent)
-                return _parent->GetSymmetryAxis();
-            else
-                return TIGL_NO_SYMMETRY;
-        }
-        TiglSymmetryAxis operator()(const boost::optional<TiglSymmetryAxis>* s) {
-            if (s && s->is_initialized() && s->value() != TIGL_INHERIT_SYMMETRY)
-                return **s;
-            else if (_parent)
-                return _parent->GetSymmetryAxis();
-            else
-                return TIGL_NO_SYMMETRY;
-        }
-
-    private:
-        CTiglRelativelyPositionedComponent* _parent;
-    };
-
-    GetSymmetryVisitor v(_parent);
-    return _symmetryAxis.apply_visitor(v);
+    if (_symmetryAxis && _symmetryAxis->is_initialized() && _symmetryAxis->value() != TIGL_INHERIT_SYMMETRY)
+        return **_symmetryAxis;
+    else if (_parent)
+        return _parent->GetSymmetryAxis();
+    else
+        return TIGL_NO_SYMMETRY;
 }
 
 void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis)
 {
-    struct SetSymmetryVisitor : boost::static_visitor<> {
-        SetSymmetryVisitor(const TiglSymmetryAxis& axis)
-            : axis(axis) {}
-        void operator()(TiglSymmetryAxis* s) {
-            if (s)
-                *s = axis;
-            else
-                throw CTiglError("Type does not have a symmetry");
-        }
-        void operator()(boost::optional<TiglSymmetryAxis>* s) {
-            if (s)
-                *s = axis;
-            else
-                throw CTiglError("Type does not have a symmetry");
-        }
-    private:
-        const TiglSymmetryAxis& axis;
-    };
-
-    SetSymmetryVisitor v(axis);
-    _symmetryAxis.apply_visitor(v);
+    if (_symmetryAxis)
+        *_symmetryAxis = axis;
+    else
+        throw CTiglError("Type does not have a symmetry");
 }
 
 CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix() const
