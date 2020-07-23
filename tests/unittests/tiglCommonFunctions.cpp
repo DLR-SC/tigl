@@ -301,4 +301,4 @@ TEST_P(TestBuildFace, build)
     EXPECT_NO_THROW(BuildFace(wire));
 }
 
-INSTANTIATE_TEST_CASE_P(TiglCommonFunctions, TestBuildFace, ::testing::Range(1, 29, 1));
+INSTANTIATE_TEST_CASE_P(TiglCommonFunctions, TestBuildFace, ::testing::Range(1, 30, 1));
