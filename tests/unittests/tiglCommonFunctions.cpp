@@ -18,6 +18,7 @@
 #include "tigl.h"
 #include "tiglcommonfunctions.h"
 #include "test.h"
+#include "to_string.h"
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
 
@@ -280,3 +281,24 @@ TEST(TiglCommonFunctions, normalizeAngleDeg)
     EXPECT_NEAR(270., NormalizeAngleDeg(-90.), 1e-9);
     EXPECT_NEAR(45., NormalizeAngleDeg(405.), 1e-9);
 }
+
+class TestBuildFace: public ::testing::TestWithParam<int>
+{
+protected:
+    virtual void SetUp()
+    {
+        // get the name of the folder with the B-spline network data
+        std::string path_wire = "TestData/functions/commonfunctions_BuildFace/" + tigl::std_to_string(GetParam()) + "_wire.brep";
+        BRep_Builder b;
+        ASSERT_EQ(Standard_True, BRepTools::Read(wire, path_wire.c_str(), b));
+    }
+
+    TopoDS_Wire wire;
+};
+
+TEST_P(TestBuildFace, build)
+{
+    EXPECT_NO_THROW(BuildFace(wire));
+}
+
+INSTANTIATE_TEST_CASE_P(TiglCommonFunctions, TestBuildFace, ::testing::Range(1, 29, 1));
