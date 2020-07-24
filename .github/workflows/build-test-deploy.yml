@@ -86,7 +86,7 @@ jobs:
           curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/Release.key | sudo apt-key add -
           echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/ /" | sudo tee -a /etc/apt/sources.list 
           sudo apt-get update -qq
-          sudo apt-get install -y lcov gcovr  libtixi3-dev liboce-dev doxygen cmake cmake-data sshpass
+          sudo apt-get install -y lcov gcovr  libtixi3-dev=3.0.3 liboce-dev doxygen cmake cmake-data sshpass
         
     - name: Install dependencies (macos)
       if: contains(matrix.config.os, 'macos')
