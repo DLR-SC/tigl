@@ -166,6 +166,9 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry(TopoDS_Shape& cache) 
 
         cache = face;
     }
+    else {
+        throw CTiglError("Cannot build geometry, frame must have at least one frame position defined.");
+    }
 }
 
 } // namespace tigl

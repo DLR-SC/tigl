@@ -25,6 +25,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSFrame.h"
+#include "CCPACSPressureBulkheadAssemblyPosition.h"
 #include "CCPACSFuselage.h"
 
 
@@ -56,4 +57,24 @@ TEST(TestFuselageFrame, bug694)
     ASSERT_TRUE(frameBBox.CornerMin().Z() > (fuselageBBox.CornerMin().Z() + fuselageBBox.CornerMax().Z()) / 2.0);
     // check that upper point of frame is at top of fuselage
     ASSERT_NEAR(frameBBox.CornerMax().Z(), fuselageBBox.CornerMax().Z(), precision);
+}
+
+TEST(TestFuselageFrame, bug710)
+{
+    // The cpacs file is missing frame positionings. without them, neither the frame, nor the pressure bulkhead can be built.
+    // TiGL should throw an error and not segfault when trying to build the pressure bulkhead
+
+    const char* filename = "TestData/bugs/710/test_fuselage_walls_ex1.xml";
+    TiglHandleWrapper tiglHandle(filename, "");
+
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    // get the geometry of the frame and check for the correct position via bounding box
+    const char* uid = "pressureBulkhead1";
+    const tigl::CCPACSPressureBulkheadAssemblyPosition& bhp = config.GetUIDManager().ResolveObject<tigl::CCPACSPressureBulkheadAssemblyPosition>(uid);
+    tigl::CCPACSFrame& frame = config.GetUIDManager().ResolveObject<tigl::CCPACSFrame>(bhp.GetFrameUID());
+    EXPECT_EQ(frame.GetFramePositions().size(), 0);
+
+    ASSERT_THROW(bhp.GetGeometry(), tigl::CTiglError);
 }

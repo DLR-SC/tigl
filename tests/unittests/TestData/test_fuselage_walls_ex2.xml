@@ -168,16 +168,10 @@
                     <positionX>5.8</positionX>
                     <referenceY>0.0</referenceY>
                     <referenceZ>-3</referenceZ>
-                    <referenceAngle>
-										0.0
-									</referenceAngle>
+                    <referenceAngle>0.0</referenceAngle>
                     <alignment uID="C01_pos1_alignment">
-                      <rotationLocX>
-											0.0
-										</rotationLocX>
-                      <translationLocY>
-											0.0
-										</translationLocY>
+                      <rotationLocX>0.0</rotationLocX>
+                      <translationLocY>0.0</translationLocY>
                       <translationLocZ>0.001</translationLocZ>
                     </alignment>
                   </framePosition>
