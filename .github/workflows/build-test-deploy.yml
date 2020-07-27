@@ -342,9 +342,9 @@ jobs:
     
     - name: Split Release Description from Changelog
       run: |
-        csplit -z ChangeLog /"Version "/ {1} 
-        cat xx00
-        sed s/'   -'/'-'/g xx00 > release_description.md
+        csplit -z ChangeLog.md /"Version "/ {1}
+        mv xx01 release_description.md
+        rm xx*
         
     - name: Read Release Description from splitted Changelog
       id: changelog
@@ -369,7 +369,7 @@ jobs:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
         body: ${{ steps.changelog.outputs.content  }}
-        draft: false
+        draft: true
         prerelease: false
       
     - name: download MacOS package Build artifact

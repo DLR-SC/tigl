@@ -1,27 +1,19 @@
 find_package(Doxygen 1.8.0)
-if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+if(DOXYGEN_FOUND)
 
     file(GLOB_RECURSE DOC_MD_SRC  "${PROJECT_SOURCE_DIR}/doc/*.md")
 
-
-    # convert ChangeLog to Markdown for usage in doxygen 
-    add_custom_command(
-        OUTPUT ${PROJECT_BINARY_DIR}/doc/ChangeLog.md
-        DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog
-        COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/misc/createChangeLog/changeLogToMD.py -i ${PROJECT_SOURCE_DIR}/ChangeLog -o ${PROJECT_BINARY_DIR}/doc/ChangeLog.md
-    )
-
     configure_file(${PROJECT_SOURCE_DIR}/doc/Doxyfile.in ${PROJECT_BINARY_DIR}/doc/Doxyfile @ONLY)
     configure_file(${PROJECT_SOURCE_DIR}/doc/footer.html ${PROJECT_BINARY_DIR}/doc/footer.html @ONLY)
-	configure_file(${PROJECT_SOURCE_DIR}/doc/header.html ${PROJECT_BINARY_DIR}/doc/header.html @ONLY)
-	configure_file(${PROJECT_SOURCE_DIR}/doc/stylesheet.css ${PROJECT_BINARY_DIR}/doc/stylesheet.css @ONLY)
+    configure_file(${PROJECT_SOURCE_DIR}/doc/header.html ${PROJECT_BINARY_DIR}/doc/header.html @ONLY)
+    configure_file(${PROJECT_SOURCE_DIR}/doc/stylesheet.css ${PROJECT_BINARY_DIR}/doc/stylesheet.css @ONLY)
     add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html
         OUTPUT ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
         DEPENDS ${PROJECT_SOURCE_DIR}/src/api/tigl.h
         DEPENDS ${DOC_MD_SRC}
         DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
-        DEPENDS ${PROJECT_BINARY_DIR}/doc/ChangeLog.md
+        DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog.md
         COMMAND ${DOXYGEN_EXECUTABLE}
         ARGS ${PROJECT_BINARY_DIR}/doc/Doxyfile
     )
@@ -119,4 +111,4 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
             COMMENT "Generating API documentation with Doxygen" VERBATIM 
         )
     endif()
-endif(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+endif(DOXYGEN_FOUND)
