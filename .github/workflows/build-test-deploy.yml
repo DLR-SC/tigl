@@ -15,7 +15,7 @@ env:
   MACOSX_DEPLOYMENT_TARGET: "10.9"
   TIGL_NIGHTLY: "ON"
   TIGL_PYTHON_VER: "=3.6"
-  TIGL_TIXI3_VER: ">=3.0.3"
+  TIGL_TIXI3_VER: "=3.1.1"
   TIGL_QT_VER: "=5.9.7"
   TIGL_PYTHONOCC_VER: "=0.17.3"
   TIGL_DOXYGEN_VER: "=1.8.16"
@@ -98,15 +98,15 @@ jobs:
           curl --retry 3 -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz
           curl --retry 3 -o doxygen-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-macOS.tar.gz
           curl --retry 3 -o oce.0.17.2.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/oce.0.17.2-1.macos_static.tar.gz
-          curl --retry 3 -O -L https://github.com/DLR-SC/tixi/releases/download/v3.0.3/TIXI-3.0.3-Darwin.tar.gz
+          curl --retry 3 -O -L https://github.com/DLR-SC/tixi/releases/download/v3.1.1/TIXI-3.1.1-Darwin.tar.gz
           tar xf sshpass-macOS.tar.gz -C /tmp
           tar xf doxygen-macOS.tar.gz -C /tmp
           tar xf oce.0.17.2.macos_static.tar.gz
-          tar xf TIXI-3.0.3-Darwin.tar.gz
+          tar xf TIXI-3.1.1-Darwin.tar.gz
           echo "::add-path::/tmp"
           echo "::add-path::/tmp/doxygen"
-          echo "::set-env name=DYLD_LIBRARY_PATH::${{ github.workspace }}/TIXI-3.0.3-Darwin/lib"
-          echo "::set-env name=CMAKE_PREFIX_PATH::${{ github.workspace }}/TIXI-3.0.3-Darwin:${{ github.workspace }}/oce.0.17.2.macos_static:/usr/local/opt/qt/"
+          echo "::set-env name=DYLD_LIBRARY_PATH::${{ github.workspace }}/TIXI-3.1.1-Darwin/lib"
+          echo "::set-env name=CMAKE_PREFIX_PATH::${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/oce.0.17.2.macos_static:/usr/local/opt/qt/"
           brew install qt
           
     - name: Setup conda (windows)
