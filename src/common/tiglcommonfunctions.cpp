@@ -978,24 +978,31 @@ TopoDS_Face BuildFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, const 
 
 TopoDS_Face BuildFace(const TopoDS_Wire& wire)
 {
-    TopoDS_Face result;
-
     BRepBuilderAPI_FindPlane Searcher( wire, Precision::Confusion() );
     if (Searcher.Found()) {
-        result = BRepBuilderAPI_MakeFace(Searcher.Plane(), wire);
+        return BRepBuilderAPI_MakeFace(Searcher.Plane(), wire);
     }
-    else {
-        // try to find another surface
-        BRepBuilderAPI_MakeFace MF( wire );
-        if (MF.IsDone()) {
-            result = MF.Face();
-        }
-        else {
-            LOG(ERROR) << "Could not build face from wire.";
-            throw tigl::CTiglError("Could not build face from wire.");
-        }
+
+    // try to find another surface
+    BRepBuilderAPI_MakeFace MF( wire );
+    if (MF.IsDone()) {
+        return MF.Face();
     }
-    return result;
+
+    // Fallback solution
+    BRepFill_Filling filler;
+    TopExp_Explorer exp;
+    for (exp.Init(wire, TopAbs_EDGE); exp.More(); exp.Next()) {
+        TopoDS_Edge e = TopoDS::Edge(exp.Current());
+        filler.Add(e, GeomAbs_C0);
+    }
+    filler.Build();
+    if (filler.IsDone()) {
+        return filler.Face();
+    }
+
+    LOG(ERROR) << "Could not build face from wire.";
+    throw tigl::CTiglError("BuildFace: Unable to generate face from Wire!");
 }
 
 TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
