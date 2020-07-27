@@ -128,17 +128,9 @@ jobs:
       if: matrix.config.link_type == 'static' && contains(matrix.config.os, 'windows')
       run: |
         conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
-      
-    - name: Cache doxygen and matlab libs for windows (windows)
-      if: contains(matrix.config.os, 'windows')
-      id: cache-win
-      uses: actions/cache@v1
-      with:
-        path: tigl-thirdparty
-        key: ${{ matrix.config.name }}-tigl-thirdparty
         
     - name: Install doxygen 1.8.16 and Matlab libs (windows)
-      if: contains(matrix.config.os, 'windows') && steps.cache-win.outputs.cache-hit != 'true'
+      if: contains(matrix.config.os, 'windows')
       uses: nick-invision/retry@v1
       with:
         timeout_minutes: 10
