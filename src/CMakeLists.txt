@@ -153,7 +153,7 @@ install (FILES api/tigl.h ${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h
          COMPONENT headers)
 
 # static lib for tiglviewer 
-add_library(tigl3_static $<TARGET_OBJECTS:tigl3_objects> ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
+add_library(tigl3_static STATIC $<TARGET_OBJECTS:tigl3_objects> ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
 # this does no actual linking but keeps track of the dependencies
 target_link_libraries (tigl3_static
      PRIVATE ${VLD_LIBRARIES}
