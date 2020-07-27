@@ -7,130 +7,50 @@ Version 3.1.0
 
  - General changes:
 
-   - Add function to check if a point lies inside a face
-   - Added Interpolate from ControlSurface branch
-   - Added common function IsFaceBetweenPoints
-   - Added control surface functions to java bindings
-   - Added control surface related API functions
-   - Added custom WallSegment class and added parents
-   - Added fuselage wall classes to bindings
-   - Added new algorithm ``CTiglInterpolatePointsWithKinks``
-   - Added topology functions
-   - Avoid displaying misleading error messages
-   - Change to the cpacs definition of the kinks
-   - Changed cpacs schema for new symmetry flags
-   - Changed encoding to UTF-8 in ``CCPACSFrame.cpp``
-   - Deprecation of *deflection functions
-   - Dont check cpacs version by generated code
-   - First working version of kink modeling
-   - Flaps are now drawn everywhere the same
-   - Implemented algorithm for b-spline intersection
-   - Implemented new symmetry behaviour
-   - Implemented workaround for surface trimming bug
-   - Improved caching in wing and wing segment
-   - Improved design of flap dialog
-   - Made wall segments a geometric component
-   - Merge branch '646-with-boundingbox-cache' into 646_tiglCheckPointInside_performance
-   - Merge pull request #637 from DLR-SC/ms/636_bspline_intersection_algo
-   - Merge pull request #644 from DLR-SC/587_fuselage_walls
-   - Merge pull request #648 from DLR-SC/jk/symmetry_fuse_export_bug
-   - Merge pull request #649 from DLR-SC/646_tiglCheckPointInside_performance
-   - Merge pull request #654 from DLR-SC/tigl3_control_surfaces
-   - Merge pull request #655 from DLR-SC/uidReferencesAndInvalidation
-   - Merge pull request #661 from DLR-SC/profiles_with_kinks
-   - Merge pull request #669 from DLR-SC/663_get_component_type
-   - Merge pull request #671 from DLR-SC/cpacs_3.1
-   - Merge pull request #686 from DLR-SC/generated_systems
-   - Merge pull request #688 from DLR-SC/jk/genericSystems_unittests
-   - Merge pull request #695 from DLR-SC/694_fuselage_frame
-   - Merge pull request #696 from DLR-SC/668_reduce_fuselage_complexity
-   - Merge pull request #697 from DLR-SC/692-add-ctiglcontrolsurfacetransformation-to-python-bindings
-   - Merge pull request #699 from DLR-SC/685_get_segment_index_exception
-   - Merge pull request #703 from DLR-SC/702-new_symmetry_flags
-   - More work on intersection algorithm
-   - Ported first large part of control surfaces codee
-   - Removed deprecated functions
-   - Rename of a function
-   - Renamed *Defection to *ControlParameter in API
-   - Reparametrized fuselage profiles for less complex lofts
-   - Respect wall building options from CPACS file
-   - Simplified symmetric spline builder
-   - Started implementing control surfaces
-   - Started prototype for kink definition in profiles
-   - Updated cpacs schema to 3.1
-   - Workaround for BFGS optimizer issue on OCCT 7.2.0
-   - Workaround for macOS crashes in IsPointInsideShape
-   - add ``CCPACSWallPosition`` to internal python API
-   - add ``CTiglControlSurfaceTransformation`` to python bindings
-   - add bounding box cache to ``CTiglAbstractGeometricComponent``
-   - add tolerance to bounding box check in IsPointInsideShape
-   - add warm start to performance test
-   - added brief documentation for ``CTiglUIDObject``, ``CTiglReqUIDObject``, ``CTiglOptUIDObject``, ``ITiglUIDRefObject``
-   - added types and functions in ``CTiglUIDManager`` for reference handling and invalidation
-   - avoid hard crash in ``CTiglPatchShell``
-   - classify point using fuselage shape not bounding box
-   - disabled warning caused by diamond inheritance
-   - fixing problem in ReadCPACS when using rotors (invalidation during read of segments caused error in lazy creation of attached rotor blades)
-   - generating classes for genericSystems
-   - mention in doc of ``tiglCheckPointInside``, that symmetry attribute is ignored.
-   - moved invalidation of references to ``CTiglUIDObject`` base class
-   - pre-calc bounding boxes for performance test
-   - quickfix for check for fuselage in wall segment
-   - refactor: create new ``CCPACSWallPosition`` class
-   - relax tolerance in CMergeShapes
-   - replace MakeFace w/ BuildFace
-   - throw an error in case of wrong number of frame positions
-   - updated invalidation logic in ``CCPACSTransformation``
-   - updating ``CCPACSACSystems`` and child classes for using generated base classes
-   - use bounding box check as preliminary test in IsPointInsideShape
+   - Full support of CPACS 3.1
+   - Backport support for control surface devices from TiGL 2. It is now possible to manipulate trailing edge devices
+     with TiGL 3.1 using the TiGL Viewer, the API or the language bindings.
+   - Added support for fuselage walls
+   - Support for fuselage profiles with kinks.
+   - Added support for new symmetry flags `inherit` and `none`. The symmetry flag `inherit` causes a geometric
+     component to inherit the symmetry flag from its parent geometry. This was and still is the default behavior in
+     TiGL. The new symmetry type `none` allows the addition of components to mirrored geometries without respecting the
+     symmetry of the parent.
+   - Substantially improve performance of `::tiglCheckPointInside`.
+   - Reduce complexity of the fuselage geometry: The profiles of the fuselage are reparametrized to create simpler
+     B-Spline surface. This will improve robustness of boolean operations and increase the general performance at the
+     cost of a small error in the geometry creation, that should be negligable in most cases.
 
  - New API functions:
 
    - Added new api function ``::tiglComponentGetType``
-   - Merge pull request #698 from DLR-SC/650-adapt-matlab-bindings-to-new-api
-   - adapt matlab bindings to new Matlab API
+   - For control devices, the `deflection` value has been renamed to `control_parameter`. Therefore the functions
+     - `::tiglControlSurfaceGetMinimumDeflection`
+     - `::tiglControlSurfaceGetMaximumDeflection`
+     - `::tiglControlSurfaceGetDeflection`
+     - `::tiglControlSurfaceSetDeflection`
+     are marked as deprecated. Please use the new functions
+     - `::tiglControlSurfaceGetMinimumControlParameter`
+     - `::tiglControlSurfaceGetMaximumControlParameter`
+     - `::tiglControlSurfaceGetControlParameter`
+     - `::tiglControlSurfaceSetControlParameter`
+     instead.
+
 
  - Fixes:
 
-   - Another compile fix for qt4
-   - Build fixes for MinGW
-   - Compiler fix
-   - Fix for ensuring positive reference angles in ``CCPACSFrame::BuildGeometry``
-   - Fixed ``CCPACSFrame::BuildGeometry``
-   - Fixed a bug in ``CTiglCurvesToSurface``
-   - Fixed a compilation issue with `boost::optional<std::string>`
-   - Fixed a compile error on qt4
-   - Fixed a deadlock, that prevented modeling a flap
-   - Fixed bug in BuildFace
-   - Fixed bug in ``CTiglTopoAlgorithms::IsDegenerated``
-   - Fixed building python bindings
-   - Fixed compilation of python bindings
-   - Fixed compilation with occt 7.2
-   - Fixed computation of the hinge line
-   - Fixed crashing tests in debug mode on linux
-   - Fixed exception in ``::tiglWingGetSegmentIndex``
-   - Fixed issue that always recreated wing flap
-   - Fixed potentially wrong code
-   - Fixed pylon symmetry
-   - Fixed python bindings
-   - Fixed two issue for the python bindings
-   - Fixed walls not respecting fuselage transform
-   - Fixed wrapping of boost::optional enums (TiglSymmetryAxis)
+   - Fixes compilation errors with MinGW and VS 2019
+   - Fixes compilation errors with qt4
+   - Fixes compilation errors with OpenCascade 7.4.0 and OCCT 7.2
+   - Several fixes to internal python bindings
+   - Several fixes to control devices code.
    - Fixes invalid segment meta data in VTK export
-   - OpenCASCADE 7.4.0 compile fixes
-   - VC 2019 compiler fixes
-   - fix the way the first and last wallsegment segments are treated
-   - fixed check for parent pointer in ``CCPACSTransformation``
-   - fixed error about reference registration from null object
-   - fixed handling of null pointers in GetNextUIDParent
-   - fixed invalidation on ribs positioning change by adding custom types ``CCPACSCurvePoint`` and ``CCPACSEtaXsiPoint``
-   - fixed missing registration of uid references for ribStart and ribEnd in ``CCPACSWingRibExplicitPositioning``
-   - fixes #694
+   - fixing problem in ReadCPACS when using rotors (invalidation during read of segments caused error in lazy creation of attached rotor blades)
+   - generating classes for genericSystems
 
  - TiGLViewer:
 
-   - Back-ported control surfaces to ``tiglviewer``
-   - Added `controlSurfaceSetDeflection` to tigl viewer script
+   - Back-ported control surfaces to TiGL Viewer and improved design of flap dialog.
    - Added option to draw face boundaries in TiGl Viewer
 
 
