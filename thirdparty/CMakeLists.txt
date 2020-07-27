@@ -5,7 +5,17 @@ option(TIGL_USE_INTERNAL_BOOST "Use boost library that comes with tigl" ON)
 if (TIGL_USE_INTERNAL_BOOST)
 
 # boost
-set  (BOOST_DIR ${PROJECT_SOURCE_DIR}/boost_1_67_0)
+set (BOOST_DIR ${PROJECT_BINARY_DIR}/boost_1_72_0)
+set (BOOST_ARCHIVE ${PROJECT_SOURCE_DIR}/boost_1_72_0.tar.gz)
+set (Boost_VERSION "1.72.0")
+
+if (NOT EXISTS ${BOOST_DIR})
+    message(STATUS "Extracting boost ${Boost_VERSION}")
+    execute_process (
+        COMMAND ${CMAKE_COMMAND} -E  tar xzf ${BOOST_ARCHIVE}
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    )
+endif()
 
 add_library(tigl_boost INTERFACE)
 add_library(Boost::boost ALIAS tigl_boost)
@@ -57,6 +67,8 @@ target_link_libraries(tigl_boost_exception PUBLIC tigl_boost_disable_autolink ti
 
 add_library(tigl_boost_filesystem STATIC
     ${BOOST_DIR}/libs/filesystem/src/codecvt_error_category.cpp
+    ${BOOST_DIR}/libs/filesystem/src/directory.cpp
+    ${BOOST_DIR}/libs/filesystem/src/exception.cpp
     ${BOOST_DIR}/libs/filesystem/src/operations.cpp
     ${BOOST_DIR}/libs/filesystem/src/path.cpp
     ${BOOST_DIR}/libs/filesystem/src/path_traits.cpp
