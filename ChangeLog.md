@@ -17,8 +17,8 @@ Version 3.1.0
      TiGL. The new symmetry type `none` allows the addition of components to mirrored geometries without respecting the
      symmetry of the parent.
    - Substantially improve performance of `::tiglCheckPointInside`.
-   - Reduce complexity of the fuselage geometry: The profiles of the fuselage are reparametrized to create simpler
-     B-Spline surface. This will improve robustness of boolean operations and increase the general performance at the
+   - Reduce complexity of the fuselage geometry: The profiles of the fuselage are reparametrized to create simpler a
+     B-spline surface. This will improve robustness of boolean operations and increase the general performance at the
      cost of a small error in the geometry creation, that should be negligable in most cases.
 
  - New API functions:
@@ -29,11 +29,14 @@ Version 3.1.0
      - `::tiglControlSurfaceGetMaximumDeflection`
      - `::tiglControlSurfaceGetDeflection`
      - `::tiglControlSurfaceSetDeflection`
+     
      are marked as deprecated. Please use the new functions
+
      - `::tiglControlSurfaceGetMinimumControlParameter`
      - `::tiglControlSurfaceGetMaximumControlParameter`
      - `::tiglControlSurfaceGetControlParameter`
      - `::tiglControlSurfaceSetControlParameter`
+     
      instead.
 
 
@@ -46,7 +49,6 @@ Version 3.1.0
    - Several fixes to control devices code.
    - Fixes invalid segment meta data in VTK export
    - fixing problem in ReadCPACS when using rotors (invalidation during read of segments caused error in lazy creation of attached rotor blades)
-   - generating classes for genericSystems
 
  - TiGLViewer:
 
