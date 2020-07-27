@@ -369,7 +369,7 @@ jobs:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
         body: ${{ steps.changelog.outputs.content  }}
-        draft: false
+        draft: true
         prerelease: false
       
     - name: download MacOS package Build artifact
