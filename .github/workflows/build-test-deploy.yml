@@ -305,14 +305,14 @@ jobs:
        name: ${{ matrix.config.name }}-installer
        path: build/*.exe
        
-    - name: Create documentation (ubuntu)
-      if: contains(matrix.config.os, 'ubuntu')
+    - name: Create documentation (windows static)
+      if: matrix.config.name == 'Win64-static'
       run: |
         cd build
         cmake --build . --target doc
        
-    - name: Upload documentation as artifact (ubuntu)
-      if: contains(matrix.config.os, 'ubuntu')
+    - name: Upload documentation as artifact (windows static)
+      if: matrix.config.name == 'Win64-static'
       uses: actions/upload-artifact@v2-preview
       with:
        name: html-documentation
