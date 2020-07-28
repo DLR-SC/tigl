@@ -206,9 +206,9 @@ jobs:
       shell: bash -l {0}
       run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
         
-    - name: prepare cmake args (pythonocc directory and matlab libraries on windows)
+    - name: prepare cmake args (pythonocc directory, matlab libraries and doxygen on windows)
       if: contains(matrix.config.os, 'windows')
-      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DPythonOCC_SOURCE_DIR=C:/Miniconda/Library/src/pythonocc-core -DMATLAB_DIR=${{ github.workspace }}\tigl-thirdparty\matlab-libs-win"
+      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DPythonOCC_SOURCE_DIR=C:\Miniconda\Library\src\pythonocc-core -DMATLAB_DIR=${{ github.workspace }}\tigl-thirdparty\matlab-libs-win -DDOXYGEN_EXECUTABLE=${{ github.workspace }}\tigl-thirdparty\doxygen\doxygen.exe"
     
     - name: prepare cmake args (enable coverage on ubuntu debug)
       if: matrix.config.name == 'Ubuntu-Debug'
@@ -230,7 +230,7 @@ jobs:
         set CC=clcache.exe
         set CXX=clcache.exe
         clcache.exe -s
-        set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts;${{ github.workspace }}\tigl-thirdparty\doxygen
+        set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
         mkdir build
         cd build
         cmake .. -G "Ninja" ${{ env.CMAKE_ARGS }}
