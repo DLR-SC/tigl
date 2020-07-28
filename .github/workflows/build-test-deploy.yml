@@ -19,7 +19,7 @@ env:
   TIGL_TIXI3_VER: "=3.1.1"
   TIGL_QT_VER: "=5.9.7"
   TIGL_PYTHONOCC_VER: "=0.17.3"
-  TIGL_DOXYGEN_VER: "=1.8.16"
+  TIGL_DOXYGEN_VER: "=1.8.15"
   TIGL_SWIG_VER: ">=3.0.11"
   TIGL_OCE_VER: "=0.17.2"
   TIGL_FREEIMAGEPLUS_VER: ""
@@ -121,26 +121,20 @@ jobs:
     - name: Install dependencies using Miniconda (dynamic, windows)
       if: matrix.config.link_type == 'dynamic' && contains(matrix.config.os, 'windows')
       run: |
-        conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} swig${{ env.TIGL_SWIG_VER }} tixi3${{ env.TIGL_TIXI3_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} doxygen${{ env.TIGL_DOXYGEN_VER }} swig${{ env.TIGL_SWIG_VER }} tixi3${{ env.TIGL_TIXI3_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list
         
     - name: Install dependencies using Miniconda (static, windows)
       if: matrix.config.link_type == 'static' && contains(matrix.config.os, 'windows')
       run: |
-        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} doxygen${{ env.TIGL_DOXYGEN_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         
-    - name: Install doxygen 1.8.16 and Matlab libs (windows)
+    - name: Install Matlab libs (windows)
       if: contains(matrix.config.os, 'windows')
-      uses: nick-invision/retry@v1
-      with:
-        timeout_minutes: 10
-        max_attempts: 3
-        command: |
-          mkdir tigl-thirdparty
-          cd tigl-thirdparty
-          curl --retry 3 --max-time 900 --connect-timeout 60 -o doxygen.zip -SL https://sourceforge.net/projects/doxygen/files/rel-1.8.16/doxygen-1.8.16.windows.x64.bin.zip
-          unzip doxygen.zip -d doxygen
+      run: |
+          mkdir ${{ github.workspace }}\tigl-thirdparty
+          cd ${{ github.workspace }}\tigl-thirdparty
           curl --retry 3 --max-time 900 --connect-timeout 60 -o matlab-libs-win.zip -SL https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-win.zip
           unzip matlab-libs-win.zip -d matlab-libs-win
 
@@ -209,9 +203,9 @@ jobs:
       shell: bash -l {0}
       run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
         
-    - name: prepare cmake args (pythonocc directory, matlab libraries and doxygen on windows)
+    - name: prepare cmake args (pythonocc directory and matlab libraries on windows)
       if: contains(matrix.config.os, 'windows')
-      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DPythonOCC_SOURCE_DIR=C:\Miniconda\Library\src\pythonocc-core -DMATLAB_DIR=${{ github.workspace }}\tigl-thirdparty\matlab-libs-win -DDOXYGEN_EXECUTABLE=${{ github.workspace }}\tigl-thirdparty\doxygen\doxygen.exe"
+      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DPythonOCC_SOURCE_DIR=C:\Miniconda\Library\src\pythonocc-core -DMATLAB_DIR=${{ github.workspace }}\tigl-thirdparty\matlab-libs-win"
     
     - name: prepare cmake args (enable coverage on ubuntu debug)
       if: matrix.config.name == 'Ubuntu-Debug'
