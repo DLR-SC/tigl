@@ -110,6 +110,14 @@ div.header {
     margin: 10px 2px;
 }
 
+table.markdownTable td, table.markdownTable th {
+    border: 1px solid #0FA200
+}
+
+th.markdownTableHeadLeft, th.markdownTableHeadRight, th.markdownTableHeadCenter, th.markdownTableHeadNone {
+    background-color: #1B8E55;
+}
+
 /** Code Section **/
 
 .memproto, dl.reflist dt {
