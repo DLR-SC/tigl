@@ -120,14 +120,14 @@ jobs:
     - name: Install dependencies using Miniconda (dynamic, windows)
       if: matrix.config.link_type == 'dynamic' && contains(matrix.config.os, 'windows')
       run: |
-        conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} doxygen${{ denv.TIGL_DOXYGEN_VER }} swig${{ env.TIGL_SWIG_VER }} tixi3${{ env.TIGL_TIXI3_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} doxygen${{ env.TIGL_DOXYGEN_VER }} swig${{ env.TIGL_SWIG_VER }} tixi3${{ env.TIGL_TIXI3_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list
         
     - name: Install dependencies using Miniconda (static, windows)
       if: matrix.config.link_type == 'static' && contains(matrix.config.os, 'windows')
       run: |
-        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} doxygen${{ denv.TIGL_DOXYGEN_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} doxygen${{ env.TIGL_DOXYGEN_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} -c dlr-sc -c dlr-sc/label/tigl-dev
         
     - name: Install Matlab libs (windows)
       if: contains(matrix.config.os, 'windows')
