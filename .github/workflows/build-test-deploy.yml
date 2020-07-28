@@ -14,6 +14,7 @@ env:
   CLCACHE_HARDLINK: 1
   MACOSX_DEPLOYMENT_TARGET: "10.9"
   TIGL_NIGHTLY: "ON"
+  TIGL_CONCAT_GENERATED_FILES: "ON"
   TIGL_PYTHON_VER: "=3.6"
   TIGL_TIXI3_VER: "=3.1.1"
   TIGL_QT_VER: "=5.9.7"
@@ -190,12 +191,14 @@ jobs:
         key: ${{ matrix.config.name }}-compiler-cache-${{ github.sha }}
         restore-keys: ${{ matrix.config.name }}-compiler-cache
         
-    - name: prepare cmake args (disable nightly flag for release builds)
+    - name: prepare cmake args (disable nightly flag and src concatenation for release builds)
       if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v')
-      run: echo "::set-env name=TIGL_NIGHTLY::OFF"
+      run: |
+        echo "::set-env name=TIGL_NIGHTLY::OFF"
+        echo "::set-env name=TIGL_CONCAT_GENERATED_FILES::OFF"
         
     - name: prepare cmake args (common)
-      run: echo "::set-env name=CMAKE_ARGS::-DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=ON -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }}"
+      run: echo "::set-env name=CMAKE_ARGS::-DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=${{ env.TIGL_CONCAT_GENERATED_FILES }} -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }}"
         
     - name: prepare cmake args (build python internal bindings for dynamic builds, windows)
       if: contains(matrix.config.link_type, 'dynamic') && contains(matrix.config.os, 'windows')
