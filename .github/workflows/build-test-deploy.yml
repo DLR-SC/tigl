@@ -229,8 +229,6 @@ jobs:
         set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
         mkdir build
         cd build
-        d:\a\tigl\tigl\tigl-thirdparty\doxygen\doxygen.exe --version
-        ${{ github.workspace }}\tigl-thirdparty\doxygen\doxygen.exe -- version
         cmake .. -G "Ninja" ${{ env.CMAKE_ARGS }}
         cmake --build . -j 4 --config ${{ matrix.config.build_type }} --target install
       if: contains(matrix.config.os, 'windows')
