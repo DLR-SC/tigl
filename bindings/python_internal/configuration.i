@@ -77,7 +77,7 @@
 #include "generated/CPACSControlSurfaceTracks.h"
 #include "generated/CPACSControlSurfaceTrackType.h"
 #include "generated/CPACSTrailingEdgeDevice.h"
-#include "CTiglControLSurfaceTransformation.h"
+#include "CTiglControlSurfaceTransformation.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSEnginePylons.h"
 #include "CCPACSEnginePylon.h"
@@ -259,7 +259,7 @@ namespace tigl
 %include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
 %include "generated/CPACSCutOutControlPoints.h"
 %include "generated/CPACSControlSurfacePath.h"
-%include "CTiglControLSurfaceTransformation.h"
+%include "CTiglControlSurfaceTransformation.h"
 %include "CTiglControlSurfaceBorderCoordinateSystem.h"
 %ignore ComponentSegment(const CCPACSControlSurfaceBorderTrailingEdge&);
 %include "generated/CPACSControlSurfaceBorderTrailingEdge.h"
