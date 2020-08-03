@@ -290,7 +290,6 @@ bool isallinteger(const mxArray* arr) {
 #else
 		const double* pr = mxGetPr(arr);
 		const double* pi = mxGetPi(arr);
-		mwSize i;
 
 		if (pr == NULL) {
 			mexErrMsgIdAndTxt(__ARGTYPEMISMATCH__, "Operation supported only on numeric arrays.");
