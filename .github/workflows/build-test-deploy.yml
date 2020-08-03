@@ -164,8 +164,6 @@ jobs:
         echo "::set-env name=CCACHE_CPP2::true"
         echo "::set-env name=CCACHE_HARDLINK::true"
         echo "::set-env name=CCACHE_SLOPPINESS::file_macro,time_macros,include_file_mtime,include_file_ctime,file_stat_matches"
-        echo "::set-env name=CC::${{ github.workspace }}/ccache-clang"
-        echo "::set-env name=CXX::${{ github.workspace }}/ccache-clang++"
       if: contains(matrix.config.os, 'macos')
       
     - name: Install clcache (windows)
