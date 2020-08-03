@@ -454,9 +454,10 @@ jobs:
         repository: DLR-SC/tigl-conda
         path: tigl-conda
         
-    - name: Bump version of tigl3 conda recipe
+    - name: Bump version of tigl3 conda recipe and reset build number
       run: |
         sed -i s/"version = \".*\""/"version = \"${{ env.version }}\""/g tigl-conda/tigl3/meta.yaml
+        sed -i s/"number: .*"/"number: 0"/g tigl-conda/tigl3/meta.yaml
         git diff
         
     - name: Create Pull Request at DLR-SC/tigl-conda
