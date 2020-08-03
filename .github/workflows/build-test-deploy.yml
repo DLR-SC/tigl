@@ -99,10 +99,12 @@ jobs:
         command: |
           curl --retry 3 -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz
           curl --retry 3 -o doxygen-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-macOS.tar.gz
+          curl --retry 3 -o matlab-libs-macos.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-macos.tar.gz
           curl --retry 3 -o oce.0.17.2.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/oce.0.17.2-1.macos_static.tar.gz
           curl --retry 3 -O -L https://github.com/DLR-SC/tixi/releases/download/v3.1.1/TIXI-3.1.1-Darwin.tar.gz
           tar xf sshpass-macOS.tar.gz -C /tmp
           tar xf doxygen-macOS.tar.gz -C /tmp
+          tar xf matlab-libs-macos.tar.gz -C /tmp
           tar xf oce.0.17.2.macos_static.tar.gz
           tar xf TIXI-3.1.1-Darwin.tar.gz
           echo "::add-path::/tmp"
@@ -193,6 +195,10 @@ jobs:
       if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
       shell: bash -l {0}
       run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+      
+    - name: prepare cmake args (matlab-libs on macos)
+      if: contains(matrix.config.os, 'macos')
+      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DMATLAB_DIR=/tmp/matlab-libs-macos"
         
     - name: prepare cmake args (pythonocc directory and matlab libraries on windows)
       if: contains(matrix.config.os, 'windows')
