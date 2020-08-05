@@ -1267,12 +1267,35 @@ bool TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBGEnabl
           .GetRGB()
 #endif
           ;
-        QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
+        QColor qcol(
+                static_cast<int>(aColor.Red()*255),
+                static_cast<int>(aColor.Green()*255),
+                static_cast<int>(aColor.Blue()*255));
         img.setPixel(aCol, aRow, qcol.rgb());
       }
     }
-    
-    if (!img.save(filename, NULL, quality)) {
+
+    // Tigl Icon for brand marking
+    QImage tiglIcon(":gfx/logo-trans.png");
+
+    // scale image to a reasonable size compared to the screenshot
+    tiglIcon = tiglIcon.scaledToWidth(width/8);
+
+    // watermark padding distance to corner
+    static constexpr unsigned int padding = 20;
+    int xPos = width - tiglIcon.width() - padding;
+    int yPos = height - tiglIcon.height() - padding;
+
+    // only draw watermark if there is enough space on the image to draw it
+    if (xPos > 0 && yPos >= 0 && xPos + tiglIcon.width() < width && yPos + tiglIcon.height() < height) {
+        QPainter p(&img);
+        p.setOpacity(0.5);
+
+        // draw watermark
+        p.drawImage(xPos, yPos, tiglIcon);
+    }
+
+    if (!img.save(filename, nullptr, quality)) {
         LOG(ERROR) << "Unable to save screenshot to file '" + filename.toStdString() + "'";
         return false;
     }
