@@ -5,6 +5,7 @@ on:
     - cron: "40 2 * * *"
   push:
     branches:
+      - '**'
     tags:
       - v*
   pull_request_target:
