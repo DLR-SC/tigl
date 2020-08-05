@@ -1267,7 +1267,8 @@ bool TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBGEnabl
           .GetRGB()
 #endif
           ;
-        QColor qcol(static_cast<int>(aColor.Red()*255),
+        QColor qcol(
+                static_cast<int>(aColor.Red()*255),
                 static_cast<int>(aColor.Green()*255),
                 static_cast<int>(aColor.Blue()*255));
         img.setPixel(aCol, aRow, qcol.rgb());
@@ -1286,8 +1287,7 @@ bool TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBGEnabl
     int yPos = height - tiglIcon.height() - padding;
 
     // only draw watermark if there is enough space on the image to draw it
-    if (xPos > 0 && yPos >= 0 && xPos + tiglIcon.width() < width && yPos + tiglIcon.height() < height)
-    {
+    if (xPos > 0 && yPos >= 0 && xPos + tiglIcon.width() < width && yPos + tiglIcon.height() < height) {
         QPainter p(&img);
         p.setOpacity(0.5);
 
