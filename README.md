@@ -6,6 +6,8 @@
 [![codecov](https://codecov.io/gh/dlr-sc/tigl/branch/master/graph/badge.svg)](https://codecov.io/gh/dlr-sc/tigl)
 [![Apache 2.0](https://img.shields.io/crates/l/k)](https://github.com/DLR-SC/tigl/blob/cpacs_3/LICENSE.txt)
 [![Install with conda](https://anaconda.org/dlr-sc/tigl/badges/installer/conda.svg)](https://conda.anaconda.org/dlr-sc/tigl3)
+Do not merge
+
 [![Cite-us](https://img.shields.io/badge/doi-10.1007%2Fs11786--019--00401--y-blue)](https://doi.org/10.1007/s11786-019-00401-y) 
 [![Documentation](https://img.shields.io/badge/docs-online-green)](https://dlr-sc.github.io/tigl/doc/latest/) 
 
