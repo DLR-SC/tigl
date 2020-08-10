@@ -22,12 +22,10 @@
 #include "tigl_internal.h"
 #include "ITiglLogger.h"
 #include <cstdio>
-#include <CSharedPtr.h>
+#include <mutex>
 
 namespace tigl 
 {
-
-class CMutex;
 
 class CTiglFileLogger : public ITiglLogger
 {
@@ -42,7 +40,7 @@ public:
 private:
     FILE * logFileStream;
     bool fileOpened;
-    CSharedPtr<CMutex> mutex;
+    std::mutex mutex;
     TiglLogLevel verbosity;
 };
 

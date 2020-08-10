@@ -18,7 +18,8 @@
 
 #include "CGlogLoggerAdaptor.h"
 #include "ITiglLogger.h"
-#include "CMutex.h"
+
+#include <mutex>
 
 #ifdef GLOG_FOUND
 
@@ -28,7 +29,7 @@
 namespace tigl 
 {
 
-CGlogLoggerAdaptor::CGlogLoggerAdaptor(PTiglLogger logger) : _mutex(new CMutex)
+CGlogLoggerAdaptor::CGlogLoggerAdaptor(PTiglLogger logger)
 {
     _mylogger = logger;
 }
@@ -47,9 +48,7 @@ void CGlogLoggerAdaptor::Write(bool force_flush,
 #endif
     
     if (_mylogger && message_len > 0) {
-        if (_mutex) {
-            _mutex->lock();
-        }
+        _mutex.lock();
         std::string msg(message, message_len);
 
         //TODO: determine log level
@@ -65,9 +64,7 @@ void CGlogLoggerAdaptor::Write(bool force_flush,
         }
 
         _mylogger->LogMessage(level, msg.c_str());
-        if (_mutex) {
-            _mutex->unlock();
-        }
+        _mutex.unlock();
     }
 }
 

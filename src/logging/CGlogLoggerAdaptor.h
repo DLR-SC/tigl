@@ -26,12 +26,12 @@
 
 #include <glog/logging.h>
 #include <CTiglLogging.h>
+#include <mutex>
 
 namespace tigl 
 {
 
 class ITiglLogger;
-class CMutex;
 
 /**
  * @brief The CGlogLoggerAdaptor class acts as an adaptor to plug
@@ -60,7 +60,7 @@ public:
 
 private:
     PTiglLogger _mylogger;
-    CSharedPtr<CMutex> _mutex;
+    std::mutex _mutex;
 };
 
 } // namespace tigl
