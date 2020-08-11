@@ -48,7 +48,7 @@ void CGlogLoggerAdaptor::Write(bool force_flush,
 #endif
     
     if (_mylogger && message_len > 0) {
-        _mutex.lock();
+        const std::lock_guard<std::mutex> lock(_mutex);
         std::string msg(message, message_len);
 
         //TODO: determine log level
@@ -64,7 +64,6 @@ void CGlogLoggerAdaptor::Write(bool force_flush,
         }
 
         _mylogger->LogMessage(level, msg.c_str());
-        _mutex.unlock();
     }
 }
 
