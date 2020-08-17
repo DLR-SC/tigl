@@ -37,11 +37,11 @@ class TIGLScriptEngine :public QObject
 public:
     TIGLScriptEngine(TIGLViewerWindow* window);
     //~TIGLScriptEngine();
-    void openFile(QString fileName);
+    void openFile(const QString& fileName);
     
 public slots:
-    void textChanged(QString line);
-    void eval(QString commandLine);
+    void textChanged(const QString& line);
+    void eval(const QString& commandLine);
     void printText(QString);
     
 signals:

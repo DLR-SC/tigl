@@ -36,15 +36,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom_Line.hxx>
 
-TIGLViewerInputOutput::TIGLViewerInputOutput()
-{
-}
-
-TIGLViewerInputOutput::~TIGLViewerInputOutput()
-{
-}
-
-bool TIGLViewerInputOutput::importModel( const QString fileName,
+bool TIGLViewerInputOutput::importModel( const QString& fileName,
                                          const FileFormat format,
                                          TIGLViewerContext& scene )
 {
@@ -64,7 +56,7 @@ bool TIGLViewerInputOutput::importModel( const QString fileName,
     return true;
 }
 
-bool TIGLViewerInputOutput::importTriangulation( const QString fileName,
+bool TIGLViewerInputOutput::importTriangulation( const QString& fileName,
                                                  const FileFormat format,
                                                  TIGLViewerContext& scene )
 {
@@ -136,7 +128,7 @@ Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importModel( const File
  * EXPORT FUNCTIONALITY
  ******************************************************************/
 
-bool TIGLViewerInputOutput::exportModel( const QString fileName,
+bool TIGLViewerInputOutput::exportModel( const QString& fileName,
                                          const FileFormat format,
                                          const Handle(AIS_InteractiveContext)& ic )
 {
@@ -227,7 +219,7 @@ Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importBREP( const QStri
         aSequence = new TopTools_HSequenceOfShape();
         if (aShape.ShapeType() == TopAbs_COMPOUND) {
             for (TopoDS_Iterator anIter(aShape); anIter.More(); anIter.Next()) {
-                TopoDS_Shape aSh = anIter.Value();
+                const TopoDS_Shape& aSh = anIter.Value();
                 aSequence->Append( aSh );
             }
         }
@@ -262,7 +254,7 @@ Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importIGES( const QStri
 
 Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importSTL( const QString& file )
 {
-    Handle(TopTools_HSequenceOfShape) aSequence = NULL;
+    Handle(TopTools_HSequenceOfShape) aSequence = nullptr;
     TopoDS_Shape aShape;
     StlAPI_Reader Reader;
     Reader.Read(aShape, file.toStdString().c_str());
@@ -278,7 +270,7 @@ Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importSTL( const QStrin
 
 Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importMESH( const QString& file )
 {
-    Handle(TopTools_HSequenceOfShape) aSequence = NULL;
+    Handle(TopTools_HSequenceOfShape) aSequence = nullptr;
 
     CHotsoseMeshReader meshReader;
     tigl::CTiglPolyData mesh;

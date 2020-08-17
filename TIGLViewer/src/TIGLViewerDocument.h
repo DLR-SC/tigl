@@ -41,17 +41,17 @@ class TIGLViewerDocument : public QObject
 
 public:
 
-    TIGLViewerDocument(TIGLViewerWindow *parentWidget);
+    explicit TIGLViewerDocument(TIGLViewerWindow *parentWidget);
     ~TIGLViewerDocument( ) override;
 
-    TiglReturnCode openCpacsConfiguration(const QString fileName);
+    TiglReturnCode openCpacsConfiguration(const QString& fileName);
     void closeCpacsConfiguration();
     TiglCPACSConfigurationHandle getCpacsHandle() const;
 
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration() const;
 
-    void updateFlapTransform(std::string controlUID);
+    void updateFlapTransform(const std::string& controlUID);
 
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);
@@ -165,10 +165,13 @@ private:
     QString                                 loadedConfigurationFileName;
     class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;
 
-    void writeToStatusBar(QString text);
-    void displayError(QString text, QString header="");
+    void writeToStatusBar(const QString& text);
+    void displayError(const QString& text, QString header="");
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
-    char* qstringToCstring(QString text);
+    char* qstringToCstring(const QString& text);
+
+    Quantity_Color getDefaultShapeColor();
+    Quantity_Color getDefaultShapeSymmetryColor();
 
     void drawAirfoil(tigl::CCPACSWingProfile& profile);
     void drawWingOverlayProfilePoints(tigl::CCPACSWing& wing);

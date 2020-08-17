@@ -19,9 +19,13 @@
 #include <TIGLViewerSettings.h>
 #include <QSettings>
 
+#include <algorithm>
+
 const double DEFAULT_TESSELATION_ACCURACY = 0.000316;
 const double DEFAULT_TRIANGULATION_ACCURACY = 0.00070;
 const QColor DEFAULT_BGCOLOR(169,237,255);
+const QColor DEFAULT_SHAPE_COLOR(20,20,200,255);
+const QColor DEFAULT_SHAPE_SYMMETRY_COLOR(200,200,0,255);
 const bool DEFAULT_DEBUG_BOPS = false;
 const bool DEFAULT_ENUM_FACES = false;
 const bool DEFAULT_DRAW_FACE_BOUNDARIES = true;
@@ -54,6 +58,43 @@ void TIGLViewerSettings::setBGColor(const QColor& col)
     _bgcolor = col;
 }
 
+void TIGLViewerSettings::setShapeColor(const QColor& col)
+{
+    _shapecolor = col;
+}
+
+void TIGLViewerSettings::setShapeSymmetryColor(const QColor& col)
+{
+    _shapesymmetrycolor = col;
+}
+
+void TIGLViewerSettings::setDefaultShapeColor(int r, int g, int b, int a)
+{
+    _shapecolor = QColor(r,g,b,a);
+    for (auto & listener : _settingsListener)
+    {
+        listener->defaultShapeColorHasChanged();
+    }
+}
+
+void TIGLViewerSettings::setDefaultShapeSymmetryColor(int r, int g, int b, int a)
+{
+    _shapesymmetrycolor = QColor(r,g,b,a);
+    for (auto & listener : _settingsListener)
+    {
+        listener->defaultShapeSymmetryColorHasChanged();
+    }
+}
+
+void TIGLViewerSettings::setBackgroundColor(int r, int g, int b, int a)
+{
+    _bgcolor = QColor(r,g,b,a);
+    for (auto & listener : _settingsListener)
+    {
+        listener->backgroundColorHasChanged();
+    }
+}
+
 double TIGLViewerSettings::tesselationAccuracy() const
 {
     return _tesselationAccuracy;
@@ -67,6 +108,16 @@ double TIGLViewerSettings::triangulationAccuracy() const
 const QColor& TIGLViewerSettings::BGColor() const
 {
     return _bgcolor;
+}
+
+const QColor& TIGLViewerSettings::shapeColor() const
+{
+    return _shapecolor;
+}
+
+const QColor& TIGLViewerSettings::shapeSymmetryColor() const
+{
+    return _shapesymmetrycolor;
 }
 
 void TIGLViewerSettings::setDebugBooleanOperationsEnabled(bool enabled)
@@ -126,7 +177,9 @@ void TIGLViewerSettings::loadSettings()
     _tesselationAccuracy   = settings.value("tesselation_accuracy"  , tesselationAccuracy()).toDouble();
     _triangulationAccuracy = settings.value("triangulation_accuracy", triangulationAccuracy()).toDouble();
     _bgcolor = settings.value("background_color", BGColor()).value<QColor>();
-    
+    _shapecolor = settings.value("shape_color", shapeColor()).value<QColor>();
+    _shapesymmetrycolor = settings.value("shape_symmetry_color", shapeSymmetryColor()).value<QColor>();
+
     _debugBOPs = settings.value("debug_bops", false).toBool();
     _enumFaces = settings.value("enumerate_faces", false).toBool();
     _nUIsosPerFace = settings.value("number_uisolines_per_face", 0).toInt();
@@ -141,7 +194,9 @@ void TIGLViewerSettings::storeSettings()
     settings.setValue("tesselation_accuracy"  , tesselationAccuracy());
     settings.setValue("triangulation_accuracy", triangulationAccuracy());
     settings.setValue("background_color", BGColor());
-    
+    settings.setValue("shape_color", shapeColor());
+    settings.setValue("shape_symmetry_color", shapeSymmetryColor());
+
     settings.setValue("debug_bops", _debugBOPs);
     settings.setValue("enumerate_faces", _enumFaces);
     settings.setValue("number_uisolines_per_face", _nUIsosPerFace);
@@ -154,6 +209,8 @@ void TIGLViewerSettings::restoreDefaults()
     _tesselationAccuracy = DEFAULT_TESSELATION_ACCURACY;
     _triangulationAccuracy = DEFAULT_TRIANGULATION_ACCURACY;
     _bgcolor = DEFAULT_BGCOLOR;
+    _shapecolor = DEFAULT_SHAPE_COLOR;
+    _shapesymmetrycolor = DEFAULT_SHAPE_SYMMETRY_COLOR;
     _debugBOPs = DEFAULT_DEBUG_BOPS;
     _enumFaces = DEFAULT_ENUM_FACES;
     _nUIsosPerFace = DEFAULT_NISO_FACES;
@@ -161,4 +218,16 @@ void TIGLViewerSettings::restoreDefaults()
     _drawFaceBoundaries = DEFAULT_DRAW_FACE_BOUNDARIES;
 }
 
-TIGLViewerSettings::~TIGLViewerSettings() {}
+void TIGLViewerSettings::addSettingsListener(ITIGLViewerSettingsChangedListener* listener)
+{
+    if (listener != nullptr) {
+        _settingsListener.push_back(listener);
+    }
+}
+
+void TIGLViewerSettings::removeSettingsListener(ITIGLViewerSettingsChangedListener* listener)
+{
+    if (listener != nullptr) {
+        _settingsListener.erase(std::remove(_settingsListener.begin(), _settingsListener.end(), listener),_settingsListener.end());
+    }
+}

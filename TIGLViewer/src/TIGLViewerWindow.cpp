@@ -64,7 +64,7 @@ namespace
 
 TIGLViewerWindow::TIGLViewerWindow()
     : myLastFolder(tr(""))
-    , cpacsConfiguration(NULL)
+    , cpacsConfiguration(nullptr)
 {
     setupUi(this);
 
@@ -114,6 +114,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     //cpacsConfiguration = new TIGLViewerDocument(this);
     scriptEngine = new TIGLScriptEngine(this);
+    getSettings().addSettingsListener(this);
     
     setAcceptDrops(true);
 
@@ -132,6 +133,7 @@ TIGLViewerWindow::~TIGLViewerWindow()
 {
     delete stdoutStream;
     delete errorStream;
+    getSettings().removeSettingsListener(this);
 }
 
 void TIGLViewerWindow::dragEnterEvent(QDragEnterEvent * ev)
@@ -163,7 +165,7 @@ void TIGLViewerWindow::dropEvent(QDropEvent *ev)
 }
 
 
-void TIGLViewerWindow::setInitialControlFile(QString filename)
+void TIGLViewerWindow::setInitialControlFile(const QString& filename)
 {
     TIGLViewerControlFile cf;
     if (cf.read(filename.toStdString().c_str()) == CF_SUCCESS) {
@@ -238,7 +240,7 @@ void TIGLViewerWindow::closeConfiguration()
     if (cpacsConfiguration) {
         getScene()->deleteAllObjects();
         delete cpacsConfiguration;
-        cpacsConfiguration = NULL;
+        cpacsConfiguration = nullptr;
     }
     setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
 }
@@ -256,7 +258,7 @@ void TIGLViewerWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
 
 void TIGLViewerWindow::openRecentFile()
 {
-    QAction *action = qobject_cast<QAction *>(sender());
+    auto *action = qobject_cast<QAction *>(sender());
     if (action) {
         openFile(action->data().toString());
     }
@@ -270,10 +272,10 @@ void TIGLViewerWindow::openFile(const QString& fileName)
     TIGLViewerInputOutput::FileFormat format;
     TIGLViewerInputOutput reader;
     bool triangulation = false;
-    bool success = false;
+    bool success;
 
     TIGLViewerScopedCommand command(getConsole());
-    Q_UNUSED(command);
+    Q_UNUSED(command)
     statusBar()->showMessage(tr("Invoked File|Open"));
 
     if (!fileName.isEmpty()) {
@@ -554,19 +556,25 @@ void TIGLViewerWindow::xyzPosition (V3d_Coordinate X,
     //statusBar()->showMessage(aString); // do not bother user with x,y,z crap
 }
 
-void TIGLViewerWindow::statusMessage (const QString aMessage)
+void TIGLViewerWindow::statusMessage (const QString& aMessage)
 {
     statusBar()->showMessage(aMessage);
 }
 
 
-void TIGLViewerWindow::displayErrorMessage (const QString aMessage, QString aHeader = "TIGL Error")
+void TIGLViewerWindow::displayErrorMessage (const QString& aMessage, const QString& aHeader = "TIGL Error")
 {
     TIGLViewerErrorDialog dialog(this);
     dialog.setMessage(QString("<b>%1</b><br /><br />%2").arg(aHeader).arg(aMessage));
     dialog.setWindowTitle("Error");
     dialog.setDetailsText(logHistory->GetAllMessages());
     dialog.exec();
+}
+
+void TIGLViewerWindow::backgroundColorHasChanged()
+{
+    QColor col = tiglViewerSettings->BGColor();
+    myOCC->setBackgroundGradient(col.red(), col.green(), col.blue());
 }
 
 void TIGLViewerWindow::connectConfiguration()
@@ -657,10 +665,10 @@ void TIGLViewerWindow::connectSignals()
     connect(openScriptAction, SIGNAL(triggered()), this, SLOT(openScript()));
     connect(closeAction, SIGNAL(triggered()), this, SLOT(closeConfiguration()));
 
-    for (int i = 0; i < MaxRecentFiles; ++i) {
-        recentFileActions[i] = new QAction(this);
-        recentFileActions[i]->setVisible(false);
-        connect(recentFileActions[i], SIGNAL(triggered()),
+    for (auto & recentFileAction : recentFileActions) {
+        recentFileAction = new QAction(this);
+        recentFileAction->setVisible(false);
+        connect(recentFileAction, SIGNAL(triggered()),
                 this, SLOT(openRecentFile()));
     }
 
@@ -755,8 +763,8 @@ void TIGLViewerWindow::connectSignals()
 
 void TIGLViewerWindow::createMenus()
 {
-    for (int i = 0; i < MaxRecentFiles; ++i) {
-        recentFileMenu->addAction(recentFileActions[i]);
+    for (auto & recentFileAction : recentFileActions) {
+        recentFileMenu->addAction(recentFileAction);
     }
     updateRecentFileActions();
 }

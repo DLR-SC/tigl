@@ -32,6 +32,8 @@
 #define BEST_TRIANGULATION 0.00005
 
 #define BTN_STYLE "#buttonColorChoser {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #buttonColorChoser:hover {border: 1px solid white;}"
+#define BTN_SHAPE_STYLE "#buttonShapeColorChoser {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #buttonShapeColorChoser:hover {border: 1px solid white;}"
+#define BTN_SHAPE_SYMMETRY_STYLE "#buttonShapeSymmetryColorChoser {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #buttonShapeSymmetryColorChoser:hover {border: 1px solid white;}"
 
 TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings, QWidget *parent)
     : QDialog(parent), _settings(settings)
@@ -46,6 +48,8 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
     connect(sliderTesselationAccuracy,   SIGNAL(valueChanged(int)), this, SLOT(onSliderTesselationChanged(int)));
     connect(sliderTriangulationAccuracy, SIGNAL(valueChanged(int)), this, SLOT(onSliderTriangulationChanged(int)));
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChoserPushed()));
+    connect(buttonShapeColorChoser, SIGNAL(clicked()), this, SLOT(onShapeColorChoserPushed()));
+    connect(buttonShapeSymmetryColorChoser, SIGNAL(clicked()), this, SLOT(onShapeSymmetryColorChoserPushed()));
     connect(settingsList, SIGNAL(currentRowChanged(int)), this, SLOT(onSettingsListChanged(int)));
     connect(btnRestoreDefaults, SIGNAL(clicked(bool)), this, SLOT(restoreDefaults()));
 }
@@ -82,7 +86,9 @@ void TIGLViewerSettingsDialog::onSettingsAccepted()
     _settings.setTesselationAccuracy(calcTesselationAccu(sliderTesselationAccuracy->value()));
     _settings.setTriangulationAccuracy(calcTriangulationAccu(sliderTriangulationAccuracy->value()));
     _settings.setBGColor(_bgcolor);
-    
+    _settings.setShapeColor(_shapecolor);
+    _settings.setShapeSymmetryColor(_shapesymmetrycolor);
+
     _settings.setDebugBooleanOperationsEnabled(debugBopCB->isChecked());
     _settings.setEnumerateFacesEnabled(enumerateFaceCB->isChecked());
     _settings.setNumberOfUIsolinesPerFace(numUIsoLinesSB->value());
@@ -113,7 +119,11 @@ void TIGLViewerSettingsDialog::updateEntries()
     sliderTriangulationAccuracy->setValue(triaVal);
 
     _bgcolor = _settings.BGColor();
+    _shapecolor = _settings.shapeColor();
+    _shapesymmetrycolor = _settings.shapeSymmetryColor();
     updateBGColorButton();
+    updateShapeColorButton();
+    updateShapeSymmetryColorButton();
 
     debugBopCB->setChecked(_settings.debugBooleanOperations());
     enumerateFaceCB->setChecked(_settings.enumerateFaces());
@@ -141,10 +151,40 @@ void TIGLViewerSettingsDialog::onColorChoserPushed()
     }
 }
 
+void TIGLViewerSettingsDialog::onShapeColorChoserPushed()
+{
+    QColor col = QColorDialog::getColor(_shapecolor, this);
+    if (col.isValid()) {
+        _shapecolor = col;
+        updateShapeColorButton();
+    }
+}
+
+void TIGLViewerSettingsDialog::onShapeSymmetryColorChoserPushed()
+{
+    QColor col = QColorDialog::getColor(_shapesymmetrycolor, this);
+    if (col.isValid()) {
+        _shapesymmetrycolor = col;
+        updateShapeSymmetryColorButton();
+    }
+}
+
 void TIGLViewerSettingsDialog::updateBGColorButton()
 {
     QString qss = QString(BTN_STYLE).arg(_bgcolor.name());
     buttonColorChoser->setStyleSheet(qss);
+}
+
+void TIGLViewerSettingsDialog::updateShapeColorButton()
+{
+    QString qss = QString(BTN_SHAPE_STYLE).arg(_shapecolor.name());
+    buttonShapeColorChoser->setStyleSheet(qss);
+}
+
+void TIGLViewerSettingsDialog::updateShapeSymmetryColorButton()
+{
+    QString qss = QString(BTN_SHAPE_SYMMETRY_STYLE).arg(_shapesymmetrycolor.name());
+    buttonShapeSymmetryColorChoser->setStyleSheet(qss);
 }
 
 void TIGLViewerSettingsDialog::onSettingsListChanged(int index)
@@ -158,4 +198,3 @@ void TIGLViewerSettingsDialog::restoreDefaults()
     updateEntries();
 }
 
-TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {}
