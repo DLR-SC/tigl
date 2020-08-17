@@ -92,7 +92,7 @@ public:
 public:
     explicit TIGLViewerWidget(QWidget*);
 
-    ~TIGLViewerWidget() override;
+    ~TIGLViewerWidget() override = default;
 
     // the scene context must be set before first use
     void setContext(TIGLViewerContext* aContext);

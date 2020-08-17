@@ -166,7 +166,7 @@ private:
     class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;
 
     void writeToStatusBar(const QString& text);
-    void displayError(const QString& text, QString header="");
+    void displayError(const QString& text, const QString& header="");
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
     char* qstringToCstring(const QString& text);
 

@@ -386,6 +386,21 @@
         </layout>
        </item>
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_material">
+         <item>
+          <widget class="QLabel" name="label_shapeMaterial">
+           <property name="text">
+            <string>Default shape material</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBoxShapeMaterial">
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
         <widget class="QCheckBox" name="cbDrawFaceBoundaries">
          <property name="text">
           <string>Draw face boundaries</string>

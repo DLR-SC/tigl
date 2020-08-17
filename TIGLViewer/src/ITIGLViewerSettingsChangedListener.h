@@ -41,5 +41,11 @@ public:
 
     }
 
+    // has default implementation so it is not mandatory to override
+    virtual void defaultMaterialHasChanged()
+    {
+
+    }
+
 };
 #endif //TIGL_ITIGLVIEWERSETTINGSCHANGEDLISTENER_H

@@ -131,7 +131,7 @@ void TIGLViewerDocument::writeToStatusBar(const QString& text)
     qApp->processEvents();
 }
 
-void TIGLViewerDocument::displayError(const QString& text, QString header)
+void TIGLViewerDocument::displayError(const QString& text, const QString& header)
 {
     app->displayErrorMessage(text, header);
 }

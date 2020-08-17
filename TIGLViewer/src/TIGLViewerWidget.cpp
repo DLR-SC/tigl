@@ -41,6 +41,7 @@
 #include "TIGLQAspectWindow.h"
 #include "TIGLViewerContext.h"
 #include "TIGLViewerSettings.h"
+#include "TIGLViewerMaterials.h"
 #include "ISession_Point.h"
 #include "ISession_Direction.h"
 #include "ISession_Text.h"
@@ -96,7 +97,7 @@ TIGLViewerWidget::TIGLViewerWidget(QWidget * parent)
     myViewPrecision   ( 0.0 ),
     myKeyboardFlags   ( Qt::NoModifier ),
     myButtonFlags     ( Qt::NoButton ),
-    viewerContext     (NULL)
+    viewerContext     (nullptr)
 {
     initialize();
 }
@@ -104,11 +105,11 @@ TIGLViewerWidget::TIGLViewerWidget(QWidget * parent)
 
 void TIGLViewerWidget::initialize()
 {
-    myView            = NULL;
-    myViewer          = NULL;
+    myView            = nullptr;
+    myViewer          = nullptr;
     
 #if OCC_VERSION_HEX < 0x070000
-    myLayer           = NULL;
+    myLayer           = nullptr;
 #else
     whiteRect = new AIS_RubberBand (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_DOT, 1.0);
     blackRect = new AIS_RubberBand (Quantity_Color(Quantity_NOC_BLACK), Aspect_TOL_DOT, 1.0);
@@ -156,10 +157,6 @@ void TIGLViewerWidget::initialize()
     winId();
 }
 
-
-TIGLViewerWidget::~TIGLViewerWidget()
-{
-}
 
 void TIGLViewerWidget::setContext(TIGLViewerContext* aContext)
 {
@@ -230,7 +227,7 @@ void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCont
 
 QPaintEngine* TIGLViewerWidget::paintEngine() const
 {
-    return NULL;
+    return nullptr;
 }
 
 
@@ -392,7 +389,7 @@ void TIGLViewerWidget::redraw( bool isPainting )
 
 
 
-void TIGLViewerWidget::fitExtents( void )
+void TIGLViewerWidget::fitExtents()
 {
     if (!myView.IsNull()) {
         myView->FitAll();
@@ -402,7 +399,7 @@ void TIGLViewerWidget::fitExtents( void )
 
 
 
-void TIGLViewerWidget::fitAll( void )
+void TIGLViewerWidget::fitAll()
 {
     if (!myView.IsNull()) {
         myView->ZFitAll();
@@ -413,14 +410,14 @@ void TIGLViewerWidget::fitAll( void )
 
 
 
-void TIGLViewerWidget::fitArea( void )
+void TIGLViewerWidget::fitArea()
 {
     setMode( CurAction3d_WindowZooming );
 }
 
 
 
-void TIGLViewerWidget::zoom( void )
+void TIGLViewerWidget::zoom()
 {
     setMode( CurAction3d_DynamicZooming );
 }
@@ -446,20 +443,20 @@ void TIGLViewerWidget::zoom(double scale)
     }
 }
 
-void TIGLViewerWidget::pan( void )
+void TIGLViewerWidget::pan()
 {
     setMode( CurAction3d_DynamicPanning );
 }
 
 
 
-void TIGLViewerWidget::rotation( void )
+void TIGLViewerWidget::rotation()
 {
     setMode( CurAction3d_DynamicRotation );
 }
 
 
-void TIGLViewerWidget::selecting( void )
+void TIGLViewerWidget::selecting()
 {
     setMode( CurAction3d_Nothing );
 }
@@ -678,7 +675,7 @@ void TIGLViewerWidget::setBGImage(const QString& filename)
 
 void TIGLViewerWidget::setTransparency()
 {
-    TIGLSliderDialog* dialog = new TIGLSliderDialog(this);
+    auto* dialog = new TIGLSliderDialog(this);
 
     // Move the slider to the mouse position
     QPoint mPos = QCursor::pos();
@@ -706,31 +703,9 @@ void TIGLViewerWidget::setObjectsColor()
 void TIGLViewerWidget::setObjectsMaterial()
 {
     bool ok = false;
+
+    QMapIterator<QString, Graphic3d_NameOfMaterial> i(tiglMaterials::materialMap);
     QStringList items;
-
-    QMap<QString, Graphic3d_NameOfMaterial> materialMap;
-    materialMap["Brass"] = Graphic3d_NOM_BRASS;
-    materialMap["Bronze"] = Graphic3d_NOM_BRONZE;
-    materialMap["Copper"] = Graphic3d_NOM_COPPER;
-    materialMap["Gold"] = Graphic3d_NOM_GOLD;
-    materialMap["Pewter"] = Graphic3d_NOM_PEWTER;
-    materialMap["Plaster"] = Graphic3d_NOM_PLASTER;
-    materialMap["Plastic"] = Graphic3d_NOM_PLASTIC;
-    materialMap["Silver"] = Graphic3d_NOM_SILVER;
-    materialMap["Steel"] = Graphic3d_NOM_STEEL;
-    materialMap["Stone"] = Graphic3d_NOM_STONE;
-    materialMap["Shiny Plastic"] = Graphic3d_NOM_SHINY_PLASTIC;
-    materialMap["Satin"] = Graphic3d_NOM_SATIN;
-    materialMap["Metalized"] = Graphic3d_NOM_METALIZED;
-    materialMap["Neon GNC"] = Graphic3d_NOM_NEON_GNC;
-    materialMap["Chrome"] = Graphic3d_NOM_CHROME;
-    materialMap["Aluminium"] = Graphic3d_NOM_ALUMINIUM;
-    materialMap["Obsidian"] = Graphic3d_NOM_OBSIDIAN;
-    materialMap["Neon PHC"] = Graphic3d_NOM_NEON_PHC;
-    materialMap["Jade"] = Graphic3d_NOM_JADE;
-    materialMap["Default"] = Graphic3d_NOM_DEFAULT;
-
-    QMapIterator<QString, Graphic3d_NameOfMaterial> i(materialMap);
     while (i.hasNext()) {
         i.next();
         items << i.key();
@@ -738,7 +713,7 @@ void TIGLViewerWidget::setObjectsMaterial()
     QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, 0, false, &ok);
 
     if (ok && !item.isEmpty()) {
-        Graphic3d_NameOfMaterial material = materialMap[item];
+        Graphic3d_NameOfMaterial material = tiglMaterials::materialMap[item];
         viewerContext->setObjectsMaterial(material);
     }
 }

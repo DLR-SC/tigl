@@ -21,6 +21,7 @@
 
 #include <QColor>
 #include <QtCore/QObject>
+#include <Graphic3d_NameOfMaterial.hxx>
 
 #include "ITIGLViewerSettingsChangedListener.h"
 
@@ -51,6 +52,9 @@ public:
     void setShapeSymmetryColor(const QColor&);
     const QColor& shapeSymmetryColor() const;
 
+    void setDefaultMaterial(Graphic3d_NameOfMaterial material);
+    Graphic3d_NameOfMaterial defaultMaterial() const;
+
     // Debugging Tab
     void setDebugBooleanOperationsEnabled(bool);
     void setEnumerateFacesEnabled(bool);
@@ -74,6 +78,7 @@ public slots:
     void setDefaultShapeColor(int r, int g, int b, int a = 0);
     void setDefaultShapeSymmetryColor(int r, int g, int b, int a = 0);
     void setBackgroundColor(int r, int g, int b, int a = 0);
+    void setDefaultMaterial(const QString& material);
 
 private:
     TIGLViewerSettings();
@@ -83,6 +88,7 @@ private:
     QColor _bgcolor;
     QColor _shapecolor;
     QColor _shapesymmetrycolor;
+    Graphic3d_NameOfMaterial _defaultMaterial;
 
     bool _debugBOPs;
     bool _enumFaces;
