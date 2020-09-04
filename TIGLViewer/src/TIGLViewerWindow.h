@@ -27,7 +27,6 @@
 
 #include "TIGLViewerContext.h"
 #include "TIGLViewerDocument.h"
-#include "ITIGLViewerSettingsChangedListener.h"
 #include "tigl.h"
 #include "CSharedPtr.h"
 
@@ -40,7 +39,7 @@ class QFileSystemWatcher;
 class TIGLViewerLogHistory;
 class TIGLViewerLogRedirection;
 
-class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow, public ITIGLViewerSettingsChangedListener
+class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow
 {
     Q_OBJECT
     Q_PROPERTY(TIGLViewerWidget*  viewer READ getViewer)
@@ -62,8 +61,6 @@ public:
 
     // Displays a simple dialog for error messages
     void displayErrorMessage (const QString& aMessage, const QString& aHeader);
-
-    void backgroundColorHasChanged() override;
 
 protected:
      void dropEvent(QDropEvent *ev) override;

@@ -19,6 +19,7 @@
 #include <TIGLViewerSettings.h>
 #include <QSettings>
 
+#include <iostream>
 #include <algorithm>
 #include "TIGLViewerMaterials.h"
 
@@ -82,37 +83,21 @@ Graphic3d_NameOfMaterial TIGLViewerSettings::defaultMaterial() const
 void TIGLViewerSettings::setDefaultShapeColor(int r, int g, int b, int a)
 {
     _shapecolor = QColor(r,g,b,a);
-    for (auto & listener : _settingsListener)
-    {
-        listener->defaultShapeColorHasChanged();
-    }
 }
 
 void TIGLViewerSettings::setDefaultShapeSymmetryColor(int r, int g, int b, int a)
 {
     _shapesymmetrycolor = QColor(r,g,b,a);
-    for (auto & listener : _settingsListener)
-    {
-        listener->defaultShapeSymmetryColorHasChanged();
-    }
-}
-
-void TIGLViewerSettings::setBackgroundColor(int r, int g, int b, int a)
-{
-    _bgcolor = QColor(r,g,b,a);
-    for (auto & listener : _settingsListener)
-    {
-        listener->backgroundColorHasChanged();
-    }
 }
 
 void TIGLViewerSettings::setDefaultMaterial(const QString& material)
 {
-    _defaultMaterial = tiglMaterials::materialMap[material];
-    for (auto & listener : _settingsListener)
+    if (!tiglMaterials::materialMap.contains(material))
     {
-        listener->defaultMaterialHasChanged();
+        std::cerr << "Error: invalid argument, material not found" << std::endl;
+        return;
     }
+    _defaultMaterial = tiglMaterials::materialMap[material];
 }
 
 double TIGLViewerSettings::tesselationAccuracy() const
@@ -241,16 +226,3 @@ void TIGLViewerSettings::restoreDefaults()
     _defaultMaterial = Graphic3d_NOM_METALIZED;
 }
 
-void TIGLViewerSettings::addSettingsListener(ITIGLViewerSettingsChangedListener* listener)
-{
-    if (listener != nullptr) {
-        _settingsListener.push_back(listener);
-    }
-}
-
-void TIGLViewerSettings::removeSettingsListener(ITIGLViewerSettingsChangedListener* listener)
-{
-    if (listener != nullptr) {
-        _settingsListener.erase(std::remove(_settingsListener.begin(), _settingsListener.end(), listener),_settingsListener.end());
-    }
-}

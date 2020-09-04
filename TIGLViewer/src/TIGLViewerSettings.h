@@ -23,8 +23,6 @@
 #include <QtCore/QObject>
 #include <Graphic3d_NameOfMaterial.hxx>
 
-#include "ITIGLViewerSettingsChangedListener.h"
-
 class TIGLViewerSettings : public QObject
 {
     Q_OBJECT
@@ -70,15 +68,12 @@ public:
 
     void restoreDefaults();
 
-    void addSettingsListener(ITIGLViewerSettingsChangedListener* listener);
-    void removeSettingsListener(ITIGLViewerSettingsChangedListener* listener);
-
 
 public slots:
     void setDefaultShapeColor(int r, int g, int b, int a = 0);
     void setDefaultShapeSymmetryColor(int r, int g, int b, int a = 0);
-    void setBackgroundColor(int r, int g, int b, int a = 0);
     void setDefaultMaterial(const QString& material);
+
 
 private:
     TIGLViewerSettings();
@@ -95,7 +90,6 @@ private:
     int  _nUIsosPerFace;
     int  _nVIsosPerFace;
     bool _drawFaceBoundaries;
-    std::vector<ITIGLViewerSettingsChangedListener*> _settingsListener;
 };
 
 #endif /* TIGLVIEWERSETTINGS_H_ */

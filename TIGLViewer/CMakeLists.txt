@@ -126,7 +126,6 @@ set(tv_hdr
   src/TIGLViewerWidget.h
   src/TIGLViewerWindow.h
   src/TIGLViewerSettingsDialog.h
-  src/ITIGLViewerSettingsChangedListener.h
   src/TIGLScriptProxy.h
   src/TIXIScriptProxy.h
   src/TIGLScriptEngine.h

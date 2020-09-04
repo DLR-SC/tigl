@@ -114,8 +114,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     //cpacsConfiguration = new TIGLViewerDocument(this);
     scriptEngine = new TIGLScriptEngine(this);
-    getSettings().addSettingsListener(this);
-    
+
     setAcceptDrops(true);
 
     connectSignals();
@@ -133,7 +132,6 @@ TIGLViewerWindow::~TIGLViewerWindow()
 {
     delete stdoutStream;
     delete errorStream;
-    getSettings().removeSettingsListener(this);
 }
 
 void TIGLViewerWindow::dragEnterEvent(QDragEnterEvent * ev)
@@ -569,12 +567,6 @@ void TIGLViewerWindow::displayErrorMessage (const QString& aMessage, const QStri
     dialog.setWindowTitle("Error");
     dialog.setDetailsText(logHistory->GetAllMessages());
     dialog.exec();
-}
-
-void TIGLViewerWindow::backgroundColorHasChanged()
-{
-    QColor col = tiglViewerSettings->BGColor();
-    myOCC->setBackgroundGradient(col.red(), col.green(), col.blue());
 }
 
 void TIGLViewerWindow::connectConfiguration()
