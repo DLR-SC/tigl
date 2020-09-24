@@ -32,7 +32,7 @@
 #include "CTiglExportVtk.h"
 #include "CNamedShape.h"
 
-#include <BRepMesh.hxx>
+// #include <BRepMesh.hxx>
 #include <TopoDS_CompSolid.hxx>
 
 #include <ctime>

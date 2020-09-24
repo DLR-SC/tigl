@@ -54,11 +54,11 @@ ISession_Text::ISession_Text
                   const Standard_Real            anX ,        // = 0
                   const Standard_Real            anY ,        // = 0
                   const Standard_Real            aZ  ,        // = 0
-                  const Quantity_PlaneAngle      anAngle,     // = 0.0
+                  const Standard_Real            anAngle,     // = 0.0
                   const Standard_Real            aslant,      // = 0.0
                   const Standard_Integer         aColorIndex, // = 0
                   const Standard_Integer         aFontIndex,  // = 1
-                  const Quantity_Factor          aScale)      // = 1
+                  const Standard_Real            aScale)      // = 1
                   :AIS_InteractiveObject(),MyText(aText),MyX(anX),MyY(anY),MyZ(aZ),
                   MyAngle(anAngle),MySlant(aslant),
                   MyColorIndex(aColorIndex), MyFontIndex(aFontIndex), MyScale(aScale)
@@ -67,11 +67,11 @@ ISession_Text::ISession_Text
 ISession_Text::ISession_Text
                  (const TCollection_AsciiString& aText, 
                   gp_Pnt&                        aPoint,
-                  const Quantity_PlaneAngle      anAngle,     // = 0.0
+                  const Standard_Real            anAngle,     // = 0.0
                   const Standard_Real            aslant,      // = 0.0
                   const Standard_Integer         aColorIndex, // = 0
                   const Standard_Integer         aFontIndex,  // = 1
-                  const Quantity_Factor          aScale)      // = 1
+                  const Standard_Real            aScale)      // = 1
                   :AIS_InteractiveObject(),MyText(aText),MyX(aPoint.X()),MyY(aPoint.Y()),MyZ(aPoint.Z()),
                   MyAngle(anAngle),MySlant(aslant),
                   MyColorIndex(aColorIndex), MyFontIndex(aFontIndex), MyScale(aScale)
@@ -88,20 +88,29 @@ void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager3d)& mgr,
                             const Standard_Integer /*aMode*/)
 {
 
-#if OCC_VERSION_HEX >= 0x070100
+#if OCC_VERSION_HEX >= 0x070200
+    Handle(Prs3d_Drawer) greenStyle = new Prs3d_Drawer();
+    greenStyle->SetColor(Quantity_NOC_GREEN);
+    mgr->Color(this, greenStyle);
+#elif OCC_VERSION_HEX >= 0x070100
     Handle(Graphic3d_HighlightStyle) greenStyle = new Graphic3d_HighlightStyle();
     greenStyle->SetColor(Quantity_NOC_GREEN);
     mgr->Color(this, greenStyle);
 #else
     mgr->Color(this, Quantity_NOC_GREEN);
 #endif
-    Prs3d_Text::Draw(aPresentation,myDrawer,MyText,gp_Pnt(  MyX ,MyY,MyZ ));
+
+#if OCC_VERSION_HEX < 0x070300
+    Prs3d_Text::Draw(aPresentation ,myDrawer, MyText, gp_Pnt(MyX, MyY, MyZ));
+#else
+    Prs3d_Text::Draw(Prs3d_Root::CurrentGroup(aPresentation), myDrawer->TextAspect(), MyText, gp_Pnt( MyX, MyY, MyZ));
+#endif
 }
 
-void ISession_Text::Compute(const Handle(Prs3d_Projector)& ,
-                            const Handle(Prs3d_Presentation)& )
-{
-}
+// void ISession_Text::Compute(const Handle(Prs3d_Projector)& ,
+//                             const Handle(Prs3d_Presentation)& )
+// {
+// }
 
 void ISession_Text::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
                                      const Standard_Integer /*unMode*/)

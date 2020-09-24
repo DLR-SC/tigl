@@ -176,8 +176,8 @@ Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::getShapes( const Handle
     Handle(TopTools_HSequenceOfShape) aSequence;
     Handle(AIS_InteractiveObject) picked;
     // export selected objects
-    for ( ic->InitCurrent(); ic->MoreCurrent(); ic->NextCurrent() ) {
-        Handle(AIS_InteractiveObject) obj = ic->Current();
+    for ( ic->InitSelected(); ic->MoreSelected(); ic->NextSelected() ) {
+        Handle(AIS_InteractiveObject) obj = ic->SelectedInteractive();
         if ( obj->IsKind( STANDARD_TYPE( AIS_Shape ) ) ) {
             TopoDS_Shape shape = Handle(AIS_Shape)::DownCast(obj)->Shape();
             if ( aSequence.IsNull() ) {

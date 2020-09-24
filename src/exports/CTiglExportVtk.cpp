@@ -39,7 +39,7 @@
 #include "CTiglTypeRegistry.h"
 
 // algorithms
-#include "BRepMesh.hxx"
+// #include "BRepMesh.hxx"
 
 
 #include "CTiglPolyData.h"

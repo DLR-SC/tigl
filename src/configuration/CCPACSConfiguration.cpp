@@ -34,7 +34,7 @@
 #include "TopoDS_Compound.hxx"
 #include "BRepFeat_Gluer.hxx"
 #include "BRep_Builder.hxx"
-#include "BRepMesh.hxx"
+// #include "BRepMesh.hxx"
 #include "IGESControl_Controller.hxx"
 #include "IGESControl_Writer.hxx"
 #include "StlAPI_Writer.hxx"

@@ -11,8 +11,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-#include <Quantity_Factor.hxx>
-#include <Quantity_PlaneAngle.hxx>
+// #include <Quantity_Factor.hxx>
+// #include <Quantity_PlaneAngle.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_CString.hxx>
@@ -34,19 +34,19 @@ public:
                              const Standard_Real            anX         = 0   ,
                              const Standard_Real            anY         = 0   ,
                              const Standard_Real            aZ          = 0   ,
-                             const Quantity_PlaneAngle      anAngle     = 0.0 ,
+                             const Standard_Real            anAngle     = 0.0 ,
                              const Standard_Real            aSlant      = 0.0 ,
                              const Standard_Integer         aColorIndex = 1   ,
                              const Standard_Integer         aFontIndex  = 1   ,
-                             const Quantity_Factor          aScale      = 0.1   );
+                             const Standard_Real            aScale      = 0.1   );
     ISession_Text
                             (const TCollection_AsciiString& aText, 
                              gp_Pnt&                        aPoint,
-                             const Quantity_PlaneAngle      anAngle     = 0.0 ,
+                             const Standard_Real            anAngle     = 0.0 ,
                              const Standard_Real            aSlant      = 0.0 ,
                              const Standard_Integer         aColorIndex = 1   ,
                              const Standard_Integer         aFontIndex  = 1   ,
-                             const Quantity_Factor          aScale      = 0.1   );
+                             const Standard_Real            aScale      = 0.1   );
 
     ~ISession_Text() override;
 
@@ -67,8 +67,8 @@ public:
     inline   void                    SetColorIndex(const Standard_Integer aNewColorIndex) ;
     inline   Standard_Integer        GetFontIndex() const;
     inline   void                    SetFontIndex(const Standard_Integer aNewFontIndex) ;
-    inline   Quantity_Factor         GetScale() const;
-    inline   void                    SetScale  (const Quantity_Factor aNewScale) ;
+    inline   Standard_Real           GetScale() const;
+    inline   void                    SetScale  (const Standard_Real aNewScale) ;
 
 
 DEFINE_STANDARD_RTTIEXT(ISession_Text,AIS_InteractiveObject)
@@ -78,8 +78,8 @@ private:
     void Compute          (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
                            const Handle(Prs3d_Presentation)& aPresentation,
                            const Standard_Integer aMode) override;
-    void Compute          (const Handle(Prs3d_Projector)& aProjector,
-                           const Handle(Prs3d_Presentation)& aPresentation) override;
+    // void Compute          (const Handle(Prs3d_Projector)& aProjector,
+    //                        const Handle(Prs3d_Presentation)& aPresentation) override;
     void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
                            const Standard_Integer unMode) override;
 
@@ -94,7 +94,7 @@ Standard_Real           MyAngle      ;
 Standard_Real           MySlant      ;
 Standard_Integer        MyColorIndex ;
 Standard_Integer        MyFontIndex  ;
-Quantity_Factor         MyScale      ;
+Standard_Real           MyScale      ;
 
 };
 
@@ -167,12 +167,12 @@ inline void ISession_Text::SetFontIndex(const Standard_Integer aNewFontIndex)
     MyFontIndex = aNewFontIndex; 
 }
 
-inline Quantity_Factor ISession_Text::GetScale() const 
+inline Standard_Real ISession_Text::GetScale() const 
 {  
     return MyScale; 
 }
 
-inline void ISession_Text::SetScale(const Quantity_Factor aNewScale)
+inline void ISession_Text::SetScale(const Standard_Real aNewScale)
 {
     MyScale  = aNewScale; 
 }

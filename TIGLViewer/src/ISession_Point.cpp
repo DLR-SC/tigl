@@ -68,10 +68,10 @@ void ISession_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPres
 }
 
 
-void ISession_Point::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
-                             const Handle(Prs3d_Presentation)& /*aPresentation*/)
-{
-}
+// void ISession_Point::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
+//                              const Handle(Prs3d_Presentation)& /*aPresentation*/)
+// {
+// }
 
 #if 0
 void ISession_Point::Compute(const Handle(PrsMgr_PresentationManager2d)& /*aPresentationManager*/,

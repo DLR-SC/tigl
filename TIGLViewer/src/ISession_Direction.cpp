@@ -106,30 +106,45 @@ void ISession_Direction::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
     Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments (2);
     aPrims->AddVertex (myPnt);
     aPrims->AddVertex (aLastPoint);
-    Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (aPrims);
+    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (aPrims);
     // Draw arrow
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,3,0)
     Prs3d_Arrow::Draw (aPresentation,
                        aLastPoint,
                        myDir,
                        anArrowAspect->Angle(),
                        anArrowAspect->Length());
+#else
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(),
+                       aLastPoint,
+                       myDir,
+                       anArrowAspect->Angle(),
+                       anArrowAspect->Length());
+#endif
 
     // Draw text
     if (myText.Length() != 0) {
         gp_Pnt aTextPosition = aLastPoint;
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,3,0)
         Prs3d_Text::Draw (aPresentation,
                           myDrawer->TextAspect(),
                           myText,
                           aTextPosition);
+#else
+        Prs3d_Text::Draw (aPresentation->CurrentGroup(),
+                          myDrawer->TextAspect(),
+                          myText,
+                          aTextPosition);
+#endif
     }
 }
 
 
-void ISession_Direction::Compute (const Handle(Prs3d_Projector)& /*aProjector*/,
-                                  const Handle(Prs3d_Presentation)& /*aPresentation*/)
-{
-}
+// void ISession_Direction::Compute (const Handle(Prs3d_Projector)& /*aProjector*/,
+//                                   const Handle(Prs3d_Presentation)& /*aPresentation*/)
+// {
+// }
 
 void ISession_Direction::ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
                                            const Standard_Integer /*aMode*/)
