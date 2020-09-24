@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.14)
 
 # tigl demo cmake project
 # author: Martin Siggel
@@ -9,7 +9,7 @@ if (NOT TARGET tigl3)
 endif()
 
 add_executable(c_demo c_demo.c)
-target_link_libraries(c_demo tigl3)
+target_link_libraries(c_demo tigl3 ${OpenCASCADE_LIBRARIES})
 
 install(FILES 
     c_demo.c

@@ -26,7 +26,7 @@
 #include<fstream>
 
 #include <Geom_BSplineCurve.hxx>
-class TColgp_Array1OfPnt;
+// class TColgp_Array1OfPnt;
 
 // save x-y data
 void outputXY(const int & i, const double& x, const double&y, const std::string& filename);

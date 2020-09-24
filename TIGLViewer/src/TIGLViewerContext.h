@@ -59,7 +59,7 @@ public:
                                      const Standard_CString aDomain,
                                      const Standard_Real ViewSize );
 
-    void setGridOffset (Quantity_Length offset);
+    void setGridOffset (Standard_Real offset);
     
     void displayPoint(const gp_Pnt& aPoint,
                       const char*   aText,

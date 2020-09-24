@@ -111,13 +111,13 @@
 #include <Precision.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_Projector.hxx>
+// #include <Prs3d_Projector.hxx>
 #include <Prs3d_Text.hxx>
-#include <Quantity_Factor.hxx>
-#include <Quantity_Length.hxx>
+// #include <Quantity_Factor.hxx>
+// #include <Quantity_Length.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Quantity_PhysicalQuantity.hxx>
-#include <Quantity_PlaneAngle.hxx>
+// #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_TypeOfColor.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>

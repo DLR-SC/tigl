@@ -96,7 +96,7 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
                                    const Standard_Integer aMode)
 {
     aPresentation->Clear();
-    Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
+    Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
     TheGroup->Clear();
 
     switch (aMode) {

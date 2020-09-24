@@ -30,8 +30,8 @@
 #include <Aspect_GridDrawMode.hxx>
 #include <Aspect_GridType.hxx>
 #include <Standard_TypeDef.hxx>
-#include <Quantity_Factor.hxx>
-#include <Quantity_Length.hxx>
+#include <Standard_Real.hxx>
+// #include <Quantity_Length.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <V3d_Coordinate.hxx>
 

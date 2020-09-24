@@ -103,7 +103,7 @@ void TIGLQAspectWindow::Unmap() const
 // function : DoResize
 // purpose  :
 // =======================================================================
-Aspect_TypeOfResize TIGLQAspectWindow::DoResize() const
+Aspect_TypeOfResize TIGLQAspectWindow::DoResize()
 {
     int                 aMask = 0;
     Aspect_TypeOfResize aMode = Aspect_TOR_UNKNOWN;

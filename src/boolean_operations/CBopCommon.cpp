@@ -61,7 +61,7 @@ void CBopCommon::PrepareFiller()
     }
 
     if (!_dsfiller) {
-        BOPCol_ListOfShape aLS;
+        TopTools_ListOfShape aLS;
         aLS.Append(_tool->Shape());
         aLS.Append(_source->Shape());
 
