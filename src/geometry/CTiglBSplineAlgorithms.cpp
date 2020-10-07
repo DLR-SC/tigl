@@ -556,6 +556,38 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
 }
 
+std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonUKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector)
+{
+    // all B-spline surfaces must have the same parameter range in u- and v-direction
+    // TODO: Match parameter range
+
+    // Create a copy that we can modify
+    std::vector<SurfAdapterView> adapterSplines;
+    for (size_t i = 0; i < old_surfaces_vector.size(); ++i) {
+        adapterSplines.push_back(SurfAdapterView(Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[i]->Copy()), udir));
+    }
+
+    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
+
+    return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
+}
+
+std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonVKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector)
+{
+    // all B-spline surfaces must have the same parameter range in u- and v-direction
+    // TODO: Match parameter range
+
+    // Create a copy that we can modify
+    std::vector<SurfAdapterView> adapterSplines;
+    for (size_t i = 0; i < old_surfaces_vector.size(); ++i) {
+        adapterSplines.push_back(SurfAdapterView(Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[i]->Copy()), vdir));
+    }
+
+    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
+
+    return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
+}
+
 void CTiglBSplineAlgorithms::matchParameterRange(std::vector<Handle(Geom_BSplineCurve)> const& bsplines, double tolerance)
 {
     Standard_Real umin = bsplines[0]->FirstParameter();
