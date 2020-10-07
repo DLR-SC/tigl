@@ -90,6 +90,16 @@ target_include_directories(tigl3_objects
     PUBLIC $<TARGET_PROPERTY:tixi3,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
+# This is a workaround for a tixi cmake bug:
+#   A installed tixi does not yet have a target tixicpp
+#   but the tixicpp includes are in the same dir as the tixi3 includes.
+#   A local build has it but has a different include directory than tixi3.
+if (TARGET tixicpp)
+    target_include_directories(tigl3_objects
+        PRIVATE $<TARGET_PROPERTY:tixicpp,INTERFACE_INCLUDE_DIRECTORIES>
+    )
+endif(TARGET tixicpp)
+
 target_compile_definitions(tigl3_objects
     PRIVATE -Dtigl3_EXPORTS
     PRIVATE $<TARGET_PROPERTY:Boost::disable_autolinking,INTERFACE_COMPILE_DEFINITIONS>
