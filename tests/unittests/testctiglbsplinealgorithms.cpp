@@ -1623,4 +1623,43 @@ TEST_F(ConcatSurfaces, error_notAdjacent)
     ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
 }
 
+TEST(ApproxSurface, simple)
+{
+    TColgp_Array2OfPnt pnts(1, 2, 1, 2);
+    pnts.SetValue(1, 1, gp_Pnt(0, 0, 0));
+    pnts.SetValue(2, 1, gp_Pnt(1, -1, 0));
+    pnts.SetValue(1, 2, gp_Pnt(0, 1, 0));
+    pnts.SetValue(2, 1, gp_Pnt(1, 2, 0));
+
+    auto surfOrig = tigl::CTiglBSplineAlgorithms::pointsToSurface(pnts, {0., 1.}, {0., 1.}, false, false);
+    auto surfApprox = tigl::CTiglBSplineAlgorithms::approxSurface(surfOrig, 4, 8);
+
+    EXPECT_EQ(3, surfApprox->NbUKnots());
+    EXPECT_EQ(7, surfApprox->NbVKnots());
+
+    EXPECT_EQ(0., surfApprox->UKnot(1));
+    EXPECT_EQ(0.5, surfApprox->UKnot(2));
+    EXPECT_EQ(1.0, surfApprox->UKnot(3));
+
+    EXPECT_EQ(0., surfApprox->VKnot(1));
+    EXPECT_EQ(0.25, surfApprox->VKnot(2));
+    EXPECT_EQ(0.375, surfApprox->VKnot(3));
+    EXPECT_EQ(0.5, surfApprox->VKnot(4));
+    EXPECT_EQ(0.625, surfApprox->VKnot(5));
+    EXPECT_EQ(0.75, surfApprox->VKnot(6));
+    EXPECT_EQ(1.0, surfApprox->VKnot(7));
+
+    // the resulting surface should match exactly the original one by design
+    auto u = LinspaceWithBreaks(0, 1, 100, {});
+    auto v = LinspaceWithBreaks(0, 1, 100, {});
+
+    for (auto u_val : u) {
+        for (auto v_val : v) {
+            auto pntApprox = surfApprox->Value(u_val, v_val);
+            auto pntOrig = surfOrig->Value(u_val, v_val);
+            EXPECT_NEAR(0., pntApprox.Distance(pntOrig), 1e-13);
+        }
+    }
+}
+
 } // namespace tigl
