@@ -1208,7 +1208,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::concatSurfacesUDir(Handle(Ge
     assert (bspl1->IsVRational() == false);
     assert (bspl2->IsVRational() == false);
 
-    double param_tol = 1e-15;
+    double param_tol = 1e-14;
 
     // check that surfaces are following parametrically
     double umin1, umax1, vmin1, vmax1;
@@ -1299,6 +1299,30 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::concatSurfacesUDir(Handle(Ge
     return new Geom_BSplineSurface(cpsNew, uknots_new, vknots_new,
                                    umults_new, vmults_new,
                                    u_degree, v_degree, false, false);
+}
+
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::approxSurface(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v)
+{
+    double u1, u2, v1, v2;
+    surf->Bounds(u1, u2, v1, v2);
+
+    // we create a degree 3 approximation in all directions
+    auto ncp_u = std::max(4, static_cast<int>(nseg_u + 1));
+    auto ncp_v = std::max(4, static_cast<int>(nseg_v + 1));
+
+    auto u = LinspaceWithBreaks(u1, u2, ncp_u, {});
+    auto v = LinspaceWithBreaks(v1, v2, ncp_v, {});
+
+    TColgp_Array2OfPnt points(1, ncp_u, 1, ncp_v);
+
+    for (size_t i = 0; i < u.size(); ++i) {
+        for (size_t j = 0; j < v.size(); ++j) {
+            auto pnt = surf->Value(u[i], v[j]);
+            points.SetValue(static_cast<Standard_Integer>(i+1), static_cast<Standard_Integer>(j+1), pnt);
+        }
+    }
+
+    return CTiglBSplineAlgorithms::pointsToSurface(points, u, v, true, true);
 }
 
 } // namespace tigl

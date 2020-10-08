@@ -308,6 +308,21 @@ public:
      * re-parametrized accordingly before
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) concatSurfacesUDir(Handle(Geom_BSplineSurface) bspl1, Handle(Geom_BSplineSurface) bspl2, double space_tol=1e-5);
+
+    /**
+     * @ brief Approximates a surface by sampling it and interpolating it
+     * with a degree 3 b-spline surface
+     *
+     * The approximation error depends on the number of segments.
+     * The more segments are used, the better will be the result.
+     *
+     * Currently, derivatives at the boundary are not taken into account.
+     *
+     * @param surf Surface to approximate
+     * @param nseg_u Number of knot segments in u direction
+     * @param nseg_v Number of knot segments in v direction
+    */
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) approxSurface(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v);
 };
 } // namespace tigl
 
