@@ -18,6 +18,7 @@
 #include <CTiglPointsToBSplineInterpolation.h>
 #include <CTiglInterpolateCurveNetwork.h>
 #include <CTiglGordonSurfaceBuilder.h>
+#include <CTiglCurvesToSurface.h>
 #include <tiglcommonfunctions.h>
 
 #include <BSplCLib.hxx>
@@ -1533,5 +1534,93 @@ INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "fuselage2",
                             "ffd"
                             ));
+
+
+class ConcatSurfaces : public ::testing::Test
+{
+protected:
+    void SetUp() override;
+
+    Handle(Geom_BSplineSurface) s1, s2;
+};
+
+void ConcatSurfaces::SetUp()
+{
+
+    auto pnts1 = OccArray({
+        gp_Pnt(0., 0., 0.),
+        gp_Pnt(1., 0.3, 0.),
+        gp_Pnt(2., 0., 0.)
+    });
+    auto c1 = tigl::CTiglPointsToBSplineInterpolation(pnts1).Curve();
+
+    auto pnts2 = OccArray({
+        gp_Pnt(0., 0., 1.),
+        gp_Pnt(1., 0.3, 1.),
+        gp_Pnt(2., 0., 1.)
+    });
+    auto c2 = tigl::CTiglPointsToBSplineInterpolation(pnts2).Curve();
+
+    auto pnts3 = OccArray({
+        gp_Pnt(-0.2, -0.2, 2.),
+        gp_Pnt(1., 0.3, 2.),
+        gp_Pnt(1.2, -0.2, 2.)
+    });
+    auto c3 = tigl::CTiglPointsToBSplineInterpolation(pnts3).Curve();
+
+    s1 = tigl::CTiglCurvesToSurface({c1, c2}).Surface();
+    s2 = tigl::CTiglCurvesToSurface({c2, c3}).Surface();
+    s1->ExchangeUV();
+    s2->ExchangeUV();
+
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s1, 0, 1, 0, 1, 1e-15);
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s2, 1, 2, 0, 1, 1e-15);
+}
+
+TEST_F(ConcatSurfaces, concatUDir)
+{
+    auto result = tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2);
+
+    double u1, u2, v1, v2;
+    result->Bounds(u1, u2, v1, v2);
+    EXPECT_NEAR(0.0, u1, 1e-15);
+    EXPECT_NEAR(2.0, u2, 1e-15);
+    EXPECT_NEAR(0.0, v1, 1e-15);
+    EXPECT_NEAR(1.0, v2, 1e-15);
+
+    EXPECT_NEAR(0.0, s1->Value(0.5, 0.5).Distance(result->Value(0.5, 0.5)), 1e-10);
+    EXPECT_NEAR(0.0, s2->Value(1.3, 0.3).Distance(result->Value(1.3, 0.3)), 1e-10);
+
+    BRepTools::Write(BRepBuilderAPI_MakeFace(result, 1e-6).Face(), "TestData/concat_faces.brep");
+
+}
+
+TEST_F(ConcatSurfaces, concatUDirDifferentDegree)
+{
+    s1->IncreaseDegree(4, 5);
+    auto result = tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2);
+    EXPECT_EQ(4, result->UDegree());
+    EXPECT_EQ(5, result->VDegree());
+}
+
+TEST_F(ConcatSurfaces, error_notParamFollowingU)
+{
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s2, 2, 3, 0, 1, 1e-15);
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
+}
+
+TEST_F(ConcatSurfaces, error_vparmDontMatch)
+{
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s2, 1, 2, 3, 4, 1e-15);
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
+}
+
+TEST_F(ConcatSurfaces, error_notAdjacent)
+{
+    gp_Trsf t;
+    t.SetTranslation(gp_Vec(0, 0, 1));
+    s2->Transform(t);
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
+}
 
 } // namespace tigl

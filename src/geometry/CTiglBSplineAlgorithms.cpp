@@ -25,6 +25,7 @@
 #include "CTiglPointsToBSplineInterpolation.h"
 #include "to_string.h"
 #include "tiglcommonfunctions.h"
+#include "Debugging.h"
 
 #include <Standard_Version.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -1192,6 +1193,10 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::concatSurfacesUDir(Handle(Ge
                                                                        Handle(Geom_BSplineSurface) bspl2,
                                                                        double space_tol)
 {
+
+    DEBUG_SCOPE(debug);
+    debug.addShape(BRepBuilderAPI_MakeFace(bspl1, 1e-6).Face(), "surf1");
+    debug.addShape(BRepBuilderAPI_MakeFace(bspl2, 1e-6).Face(), "surf2");
 
     // the surfaces must not be periodic in u direction
     assert (bspl1->IsUPeriodic() == false);
