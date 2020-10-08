@@ -152,10 +152,15 @@ public:
      */
     TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonVKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector);
 
-
     /**
+     * Changes the parameter range of the b-spline curve
      */
     TIGL_EXPORT static void reparametrizeBSpline(Geom_BSplineCurve& spline, double umin, double umax, double tol=1e-15);
+
+    /**
+     * Changes the parameter range of the b-spline surfae
+     */
+    TIGL_EXPORT static void reparametrizeBSpline(Geom_BSplineSurface& spline, double umin, double umax, double vmin, double vmax, double tol);
 
     /**
      * Reparametrizes the B-Spline such that the knot distribution is uniform and the number of

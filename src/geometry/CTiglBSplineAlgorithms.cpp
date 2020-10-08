@@ -546,12 +546,12 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKn
     }
 
     // first in u direction
-    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
+    makeGeometryCompatibleImpl(adapterSplines, 1e-14);
 
     for (size_t i = 0; i < old_surfaces_vector.size(); ++i) adapterSplines[i].setDir(vdir);
 
     // now in v direction
-    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
+    makeGeometryCompatibleImpl(adapterSplines, 1e-14);
 
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
 }
@@ -567,7 +567,7 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonUK
         adapterSplines.push_back(SurfAdapterView(Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[i]->Copy()), udir));
     }
 
-    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
+    makeGeometryCompatibleImpl(adapterSplines, 1e-14);
 
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
 }
@@ -583,7 +583,7 @@ std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonVK
         adapterSplines.push_back(SurfAdapterView(Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[i]->Copy()), vdir));
     }
 
-    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
+    makeGeometryCompatibleImpl(adapterSplines, 1e-14);
 
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
 }
@@ -847,6 +847,23 @@ void CTiglBSplineAlgorithms::reparametrizeBSpline(Geom_BSplineCurve& spline, dou
         spline.Knots (aKnots);
         BSplCLib::Reparametrize (umin, umax, aKnots);
         spline.SetKnots (aKnots);
+    }
+}
+
+void CTiglBSplineAlgorithms::reparametrizeBSpline(Geom_BSplineSurface& spline, double umin, double umax, double vmin, double vmax, double tol)
+{
+    if (std::abs(spline.UKnot(1) - umin) > tol || std::abs(spline.UKnot(spline.NbUKnots()) - umax) > tol) {
+        TColStd_Array1OfReal aKnots (1, spline.NbUKnots());
+        spline.UKnots (aKnots);
+        BSplCLib::Reparametrize (umin, umax, aKnots);
+        spline.SetUKnots (aKnots);
+    }
+
+    if (std::abs(spline.VKnot(1) - vmin) > tol || std::abs(spline.VKnot(spline.NbVKnots()) - vmax) > tol) {
+        TColStd_Array1OfReal aKnots (1, spline.NbVKnots());
+        spline.VKnots (aKnots);
+        BSplCLib::Reparametrize (vmin, vmax, aKnots);
+        spline.SetVKnots (aKnots);
     }
 }
 
