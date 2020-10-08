@@ -292,6 +292,22 @@ public:
     TIGL_EXPORT static Handle(Geom_BSplineCurve) concatCurves(std::vector<Handle(Geom_BSplineCurve)> curves,
                                                               bool parByLength=true, double tolerance = 1e-6);
 
+    /**
+     * @brief Concatenates two surfaces in u direction
+     *
+     * Note: This function has the following requirements
+     *   - s2 follows s1 in u direction and have a common boundary
+     *   - s2 follows s1 also in parametric domain
+     *   - both surfaces are non-rational!
+     *   - the surfaces a non-periodic in u direction
+     *
+     * The resulting surface might not C1 and C2 continuous.
+     * We still have geometric continuity.
+     *
+     * To achieve parametric continuity, the surfaces must be
+     * re-parametrized accordingly before
+     */
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) concatSurfacesUDir(Handle(Geom_BSplineSurface) bspl1, Handle(Geom_BSplineSurface) bspl2, double space_tol=1e-5);
 };
 } // namespace tigl
 
