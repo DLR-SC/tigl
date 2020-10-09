@@ -997,7 +997,7 @@ void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
     }
 
     cache.lowerSurfaceLocal = globalToLocalTrsf.Transform(cache.lowerSurface);
-    cache.lowerSurfaceLocal = globalToLocalTrsf.Transform(cache.upperSurface);
+    cache.upperSurfaceLocal = globalToLocalTrsf.Transform(cache.upperSurface);
 
 }
 
