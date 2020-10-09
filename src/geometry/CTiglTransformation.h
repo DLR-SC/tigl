@@ -28,6 +28,7 @@
 #include "gp_GTrsf.hxx"
 #include "gp_Pnt.hxx"
 #include "TopoDS.hxx"
+#include "Geom_Surface.hxx"
 #include "PNamedShape.h"
 
 namespace tigl
@@ -114,6 +115,10 @@ public:
     // Transforms a point with the current transformation matrix and
     // returns the transformed point
     TIGL_EXPORT gp_Pnt Transform(const gp_Pnt& point) const;
+
+    // Transforms a surface with the current transformation matrix and
+    // returns the transformed point
+    TIGL_EXPORT Handle(Geom_Surface) Transform(const Handle(Geom_Surface)& surf) const;
 
     // Transforms a vector with the current transformation matrix and
     // returns the transformed vector
