@@ -46,6 +46,8 @@
 #include "math/tiglmathfunctions.h"
 #include "CNamedShape.h"
 #include "CTiglWingBuilder.h"
+#include "CTiglConcatSurfaces.h"
+#include "GeomConvert.hxx"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -943,11 +945,60 @@ gp_Pnt CCPACSWingSegment::GetOuterProfilePoint(double xsi) const
 
 void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
 {
-    // make upper and lower surface
-    cache.lowerSurface = BRep_Tool::Surface(TopoDS::Face(GetLowerShape()));
-    cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(GetUpperShape()));
-    cache.lowerSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetLowerShape(WING_COORDINATE_SYSTEM)));
-    cache.upperSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetUpperShape(WING_COORDINATE_SYSTEM)));
+    auto globalToLocalTrsf = GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix()
+                                 .Inverted();
+
+    auto lowerShape = GetLowerShape(GLOBAL_COORDINATE_SYSTEM);
+    auto upperShape = GetUpperShape(GLOBAL_COORDINATE_SYSTEM);
+
+    if (m_guideCurves) {
+        auto params = m_guideCurves->GetRelativeCircumferenceParameters();
+        auto it = std::find_if(std::begin(params), std::end(params), [](double val) {
+            return std::abs(val) < 1e-6;
+        });
+
+        if (it == params.end()) {
+            // could not find leading edge guide curve
+            throw CTiglError ("There is no guide curve defined at the leading edge");
+        }
+
+        // split into upper and lower parameters
+        std::vector<double> lower_params, upper_params;
+        std::copy(std::begin(params), it+1, std::back_inserter(lower_params));
+        std::copy(it, std::end(params), std::back_inserter(upper_params));
+
+        auto concatSurfs = [](const TopoDS_Shape& shape, const std::vector<double>& parms) {
+            if (GetNumberOfFaces(shape) == 1) {
+                return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
+            }
+            else {
+                std::vector<Handle(Geom_BSplineSurface)> surfs;
+
+                for (TopExp_Explorer expl(shape, TopAbs_FACE); expl.More(); expl.Next()) {
+                    const TopoDS_Face& face = TopoDS::Face(expl.Current());
+                    auto bspl = GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(face));
+                    surfs.push_back(bspl);
+                }
+
+                CTiglConcatSurfaces concat(surfs, parms, ConcatDir::u);
+                return concat.Surface();
+            }
+        };
+
+        // make upper and lower surface
+        cache.lowerSurface = concatSurfs(lowerShape, lower_params);
+        cache.upperSurface = concatSurfs(upperShape, upper_params);
+
+    }
+    else {
+        // make upper and lower surface
+        cache.lowerSurface = BRep_Tool::Surface(TopoDS::Face(lowerShape));
+        cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(upperShape));
+    }
+
+    cache.lowerSurfaceLocal = globalToLocalTrsf.Transform(cache.lowerSurface);
+    cache.lowerSurfaceLocal = globalToLocalTrsf.Transform(cache.upperSurface);
+
 }
 
 void CCPACSWingSegment::MakeChordSurfaces(ChordSurfaceCache& cache) const
