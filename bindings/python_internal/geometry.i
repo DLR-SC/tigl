@@ -70,6 +70,7 @@
 #include "CTiglInterpolatePointsWithKinks.h"
 #include "CTiglApproxResult.h"
 #include "SurfTools.hxx"
+#include "CTiglConcatSurfaces.h"
 %}
 
 
@@ -92,6 +93,7 @@
 %boost_optional(tigl::generated::CPACSPointX)
 %boost_optional(tigl::generated::CPACSPointXYZ)
 
+%include "CTiglConcatSurfaces.h"
 %include "SurfTools.hxx"
 %include "CTiglApproxResult.h"
 %include "CTiglIntersectBSplines.h"
