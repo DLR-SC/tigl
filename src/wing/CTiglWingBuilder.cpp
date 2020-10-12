@@ -72,9 +72,6 @@ bool contains(const ArrayLike& array, ValueType val)
 namespace tigl
 {
 
-Standard_Boolean CreateSideCap(const TopoDS_Wire& W,
-                               const Standard_Real presPln,
-                               TopoDS_Face& theFace);
 
 CTiglWingBuilder::CTiglWingBuilder(const CCPACSWing& wing)
     : _wing(wing)
@@ -82,6 +79,10 @@ CTiglWingBuilder::CTiglWingBuilder(const CCPACSWing& wing)
 }
 
 #ifndef NO_EXPLICIT_TE_MODELING
+Standard_Boolean CreateSideCap(const TopoDS_Wire& W,
+                               const Standard_Real presPln,
+                               TopoDS_Face& theFace);
+
 PNamedShape CTiglWingBuilder::BuildShape()
 {
     const CCPACSWingSegments& segments = _wing.m_segments;
@@ -240,6 +241,44 @@ PNamedShape CTiglWingBuilder::BuildShape()
 
     return loft;
 }
+
+// creates the inside and outside cap of the wing
+Standard_Boolean CreateSideCap(const TopoDS_Wire& W,
+                               const Standard_Real presPln,
+                               TopoDS_Face& theFace)
+{
+    Standard_Boolean isDegen = Standard_True;
+    TopoDS_Iterator iter(W);
+    for (; iter.More(); iter.Next())
+    {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(iter.Value());
+        if (!BRep_Tool::Degenerated(anEdge))
+            isDegen = Standard_False;
+    }
+    if (isDegen)
+        return Standard_True;
+
+    Standard_Boolean Ok = Standard_False;
+    if (!W.IsNull()) {
+        BRepBuilderAPI_FindPlane Searcher( W, presPln );
+        if (Searcher.Found()) {
+            theFace = BRepBuilderAPI_MakeFace(Searcher.Plane(), W);
+            Ok = Standard_True;
+        }
+        else {
+            // try to find another surface
+            BRepBuilderAPI_MakeFace MF( W );
+            if (MF.IsDone())
+            {
+                theFace = MF.Face();
+                Ok = Standard_True;
+            }
+        }
+    }
+
+    return Ok;
+}
+
 #else
 PNamedShape CTiglWingBuilder::BuildShape()
 {
@@ -374,43 +413,6 @@ void CTiglWingBuilder::SetFaceTraits (const std::vector<double>& guideCurveParam
         traits.SetName(endnames[i-nFaces+2]);
         shape->SetFaceTraits(i, traits);
     }
-}
-
-// creates the inside and outside cap of the wing
-Standard_Boolean CreateSideCap(const TopoDS_Wire& W,
-                               const Standard_Real presPln,
-                               TopoDS_Face& theFace)
-{
-    Standard_Boolean isDegen = Standard_True;
-    TopoDS_Iterator iter(W);
-    for (; iter.More(); iter.Next())
-    {
-        const TopoDS_Edge& anEdge = TopoDS::Edge(iter.Value());
-        if (!BRep_Tool::Degenerated(anEdge))
-            isDegen = Standard_False;
-    }
-    if (isDegen)
-        return Standard_True;
-
-    Standard_Boolean Ok = Standard_False;
-    if (!W.IsNull()) {
-        BRepBuilderAPI_FindPlane Searcher( W, presPln );
-        if (Searcher.Found()) {
-            theFace = BRepBuilderAPI_MakeFace(Searcher.Plane(), W);
-            Ok = Standard_True;
-        }
-        else {
-            // try to find another surface
-            BRepBuilderAPI_MakeFace MF( W );
-            if (MF.IsDone())
-            {
-                theFace = MF.Face();
-                Ok = Standard_True;
-            }
-        }
-    }
-
-    return Ok;
 }
 
 } //namespace tigl
