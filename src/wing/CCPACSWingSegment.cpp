@@ -954,6 +954,7 @@ void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
     if (m_guideCurves) {
         auto params = m_guideCurves->GetRelativeCircumferenceParameters();
         auto it = std::find_if(std::begin(params), std::end(params), [](double val) {
+            // the leading edge is defined at parameter 0, we allow some tolerance
             return std::abs(val) < 1e-3;
         });
 
@@ -969,7 +970,7 @@ void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
 
         auto concatSurfs = [](const TopoDS_Shape& shape, const std::vector<double>& parms) {
             if (GetNumberOfFaces(shape) == 1) {
-                return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
+                return BRep_Tool::Surface(TopoDS::Face(shape));
             }
             else {
                 std::vector<Handle(Geom_BSplineSurface)> surfs;
@@ -981,7 +982,7 @@ void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
                 }
 
                 CTiglConcatSurfaces concat(surfs, parms, ConcatDir::u);
-                return concat.Surface();
+                return Handle(Geom_Surface)(concat.Surface());
             }
         };
 
