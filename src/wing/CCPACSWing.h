@@ -180,10 +180,6 @@ protected:
     {
         struct LocatedGuideCurve
         {
-            LocatedGuideCurve(const TopoDS_Wire& w, double relCirc)
-                : wire(w), fromRelCircumference(relCirc)
-            {}
-
             TopoDS_Wire wire;
             double fromRelCircumference;
         };

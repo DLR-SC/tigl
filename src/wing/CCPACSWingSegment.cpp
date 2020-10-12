@@ -454,8 +454,8 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     std::vector<double> guideCurveParams = {};
-    if (GetParent()->IsParent<tigl::CCPACSWing>()) {
-        guideCurveParams = GetParent()->GetParent<tigl::CCPACSWing>()->GetGuideCurveStartParameters();
+    if (GetGuideCurves()) {
+        guideCurveParams = GetGuideCurves()->GetRelativeCircumferenceParameters();
     }
     CTiglWingBuilder::SetFaceTraits(guideCurveParams,  GetUID(), loft, innerConnection.GetProfile().HasBluntTE());
     return loft;
@@ -954,7 +954,7 @@ void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
     if (m_guideCurves) {
         auto params = m_guideCurves->GetRelativeCircumferenceParameters();
         auto it = std::find_if(std::begin(params), std::end(params), [](double val) {
-            return std::abs(val) < 1e-6;
+            return std::abs(val) < 1e-3;
         });
 
         if (it == params.end()) {

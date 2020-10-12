@@ -960,8 +960,14 @@ void CCPACSWing::BuildGuideCurveWires(LocatedGuideCurves& cache) const
 
     auto rootIt = roots.begin();
     for (TopoDS_Iterator anIter(wires); anIter.More(); anIter.Next(), rootIt++) {
-        cache.curves.push_back(LocatedGuideCurves::LocatedGuideCurve(TopoDS::Wire(anIter.Value()), rootIt->first));
+        cache.curves.push_back({TopoDS::Wire(anIter.Value()), rootIt->first});
     }
+
+    // sort according to from location parameter
+    using LocCurve = LocatedGuideCurves::LocatedGuideCurve;
+    std::sort(std::begin(cache.curves), std::end(cache.curves), [](const LocCurve& c1, const LocCurve& c2) {
+        return c1.fromRelCircumference < c2.fromRelCircumference;
+    });
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire)
