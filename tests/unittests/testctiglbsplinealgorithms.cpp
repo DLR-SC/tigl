@@ -19,6 +19,7 @@
 #include <CTiglInterpolateCurveNetwork.h>
 #include <CTiglGordonSurfaceBuilder.h>
 #include <CTiglCurvesToSurface.h>
+#include <CTiglConcatSurfaces.h>
 #include <tiglcommonfunctions.h>
 
 #include <BSplCLib.hxx>
@@ -1621,6 +1622,48 @@ TEST_F(ConcatSurfaces, error_notAdjacent)
     t.SetTranslation(gp_Vec(0, 0, 1));
     s2->Transform(t);
     ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
+}
+
+TEST_F(ConcatSurfaces, concatWithParams)
+{
+    tigl::CTiglConcatSurfaces concatter({s1, s2}, {0., 2., 4.}, tigl::ConcatDir::u);
+
+    auto result = concatter.Surface();
+
+    double u1, u2, v1, v2;
+    result->Bounds(u1, u2, v1, v2);
+
+    EXPECT_NEAR(0.0, u1, 1e-15);
+    EXPECT_NEAR(4.0, u2, 1e-15);
+    EXPECT_NEAR(0.0, v1, 1e-15);
+    EXPECT_NEAR(1.0, v2, 1e-15);
+
+    EXPECT_NEAR(0.0, s1->Value(0.5, 0.5).Distance(result->Value(1.0, 0.5)), 1e-10);
+    EXPECT_NEAR(0.0, s2->Value(1.3, 0.3).Distance(result->Value(2.6, 0.3)), 1e-10);
+}
+
+TEST_F(ConcatSurfaces, concatWithParamsApprox)
+{
+    tigl::CTiglConcatSurfaces concatter({s1, s2}, {0., 2., 4.}, tigl::ConcatDir::u);
+    concatter.SetApproxInputSurfacesEnabled(3, 3);
+
+    auto result = concatter.Surface();
+
+    double u1, u2, v1, v2;
+    result->Bounds(u1, u2, v1, v2);
+
+    EXPECT_NEAR(0.0, u1, 1e-15);
+    EXPECT_NEAR(4.0, u2, 1e-15);
+    EXPECT_NEAR(0.0, v1, 1e-15);
+    EXPECT_NEAR(1.0, v2, 1e-15);
+
+    EXPECT_NEAR(0.0, s1->Value(0.5, 0.5).Distance(result->Value(1.0, 0.5)), 1e-10);
+    EXPECT_NEAR(0.0, s2->Value(1.3, 0.3).Distance(result->Value(2.6, 0.3)), 1e-10);
+}
+
+TEST_F(ConcatSurfaces, concatToFewParams)
+{
+    ASSERT_THROW(tigl::CTiglConcatSurfaces({s1, s2}, {0., 2.}, tigl::ConcatDir::u), tigl::CTiglError);
 }
 
 TEST(ApproxSurface, simple)
