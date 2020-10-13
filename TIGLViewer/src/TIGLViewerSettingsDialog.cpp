@@ -33,9 +33,7 @@
 #define WORST_TRIANGULATION 0.01
 #define BEST_TRIANGULATION 0.00005
 
-#define BTN_STYLE "#buttonColorChoser {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #buttonColorChoser:hover {border: 1px solid white;}"
-#define BTN_SHAPE_STYLE "#buttonShapeColorChoser {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #buttonShapeColorChoser:hover {border: 1px solid white;}"
-#define BTN_SHAPE_SYMMETRY_STYLE "#buttonShapeSymmetryColorChoser {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #buttonShapeSymmetryColorChoser:hover {border: 1px solid white;}"
+#define BTN_STYLE "#%2 {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #%2:hover {border: 1px solid white;}"
 
 TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings, QWidget *parent)
     : QDialog(parent), _settings(settings)
@@ -206,19 +204,19 @@ void TIGLViewerSettingsDialog::onShapeSymmetryColorChoserPushed()
 
 void TIGLViewerSettingsDialog::updateBGColorButton()
 {
-    QString qss = QString(BTN_STYLE).arg(_bgcolor.name());
+    QString qss = QString(BTN_STYLE).arg(_bgcolor.name(), "buttonColorChoser");
     buttonColorChoser->setStyleSheet(qss);
 }
 
 void TIGLViewerSettingsDialog::updateShapeColorButton()
 {
-    QString qss = QString(BTN_SHAPE_STYLE).arg(_shapecolor.name());
+    QString qss = QString(BTN_STYLE).arg(_shapecolor.name(), "buttonShapeColorChoser");
     buttonShapeColorChoser->setStyleSheet(qss);
 }
 
 void TIGLViewerSettingsDialog::updateShapeSymmetryColorButton()
 {
-    QString qss = QString(BTN_SHAPE_SYMMETRY_STYLE).arg(_shapesymmetrycolor.name());
+    QString qss = QString(BTN_STYLE).arg(_shapesymmetrycolor.name(), "buttonShapeSymmetryColorChoser");
     buttonShapeSymmetryColorChoser->setStyleSheet(qss);
 }
 
