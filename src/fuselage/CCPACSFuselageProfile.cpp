@@ -65,56 +65,57 @@
 
 namespace
 {
-    // In case of a half profile, we have to compute the symmetric points and parameters
-    void SymmetrizeFuselageProfile(std::vector<tigl::CTiglPoint>& points, tigl::ParamMap& params, std::vector<unsigned int>& kinks)
-    {
-        size_t n_points = points.size();
+// In case of a half profile, we have to compute the symmetric points and parameters
+void SymmetrizeFuselageProfile(std::vector<tigl::CTiglPoint>& points, tigl::ParamMap& params,
+                               std::vector<unsigned int>& kinks)
+{
+    size_t n_points = points.size();
 
-        if (n_points == 0) {
-            return;
-        }
-
-        if (fabs(points[0].y) > 1e-6) {
-            throw tigl::CTiglError("Cannot create a symmetric fuselage profile. Y-Coordinate not zero!");
-        }
-
-        auto get_param_or = [&params](unsigned int idx, double def_value) -> double {
-            const auto& it = params.find(idx);
-            return it != params.end() ? it->second : def_value;
-        };
-
-        double umin = get_param_or(0, 0.);
-        double umax = umin + 2. * (get_param_or(static_cast<unsigned int>(n_points - 1), 0.5)  - umin);
-
-        // y is already ~ 0, make it really zero!
-        points[0].y = 0.;
-
-        // mirror each point at x-z plane i.e. mirror y coordinate to close the profile
-        // and skip first point
-        for (size_t i = n_points - 1; i > 0; i--) {
-            auto curP = points[i];
-            if (i == n_points - 1 && std::abs(curP.y) < 1e-6) {
-                // do not add the same points twice
-                continue;
-            }
-            curP.y = -curP.y;
-            unsigned int currentIdx = static_cast<unsigned int>(points.size());
-            if (std::find(std::begin(kinks), std::end(kinks), i) != std::end(kinks)) {
-                kinks.push_back(currentIdx);
-            }
-            auto parm_it = params.find(static_cast<unsigned int>(i));
-            if (parm_it != params.end()) {
-                double param_new = umax + umin - parm_it->second;
-                params[currentIdx] = param_new;
-            }
-            points.push_back(curP);
-        }
-
-        points.push_back(points[0]);
-        params[0] = umin;
-        params[static_cast<unsigned int>(points.size() - 1)] = umax;
+    if (n_points == 0) {
+        return;
     }
+
+    if (fabs(points[0].y) > 1e-6) {
+        throw tigl::CTiglError("Cannot create a symmetric fuselage profile. Y-Coordinate not zero!");
+    }
+
+    auto get_param_or = [&params](unsigned int idx, double def_value) -> double {
+        const auto& it = params.find(idx);
+        return it != params.end() ? it->second : def_value;
+    };
+
+    double umin = get_param_or(0, 0.);
+    double umax = umin + 2. * (get_param_or(static_cast<unsigned int>(n_points - 1), 0.5) - umin);
+
+    // y is already ~ 0, make it really zero!
+    points[0].y = 0.;
+
+    // mirror each point at x-z plane i.e. mirror y coordinate to close the profile
+    // and skip first point
+    for (size_t i = n_points - 1; i > 0; i--) {
+        auto curP = points[i];
+        if (i == n_points - 1 && std::abs(curP.y) < 1e-6) {
+            // do not add the same points twice
+            continue;
+        }
+        curP.y                  = -curP.y;
+        unsigned int currentIdx = static_cast<unsigned int>(points.size());
+        if (std::find(std::begin(kinks), std::end(kinks), i) != std::end(kinks)) {
+            kinks.push_back(currentIdx);
+        }
+        auto parm_it = params.find(static_cast<unsigned int>(i));
+        if (parm_it != params.end()) {
+            double param_new   = umax + umin - parm_it->second;
+            params[currentIdx] = param_new;
+        }
+        points.push_back(curP);
+    }
+
+    points.push_back(points[0]);
+    params[0]                                            = umin;
+    params[static_cast<unsigned int>(points.size() - 1)] = umax;
 }
+} // namespace
 
 namespace tigl
 {
@@ -128,7 +129,9 @@ CCPACSFuselageProfile::CCPACSFuselageProfile(CCPACSFuselageProfiles* parent, CTi
 {
 }
 
-CCPACSFuselageProfile::~CCPACSFuselageProfile() {}
+CCPACSFuselageProfile::~CCPACSFuselageProfile()
+{
+}
 
 // Read fuselage profile file
 void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -142,7 +145,7 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     }
 }
 
-const int CCPACSFuselageProfile::GetNumPoints() const 
+const int CCPACSFuselageProfile::GetNumPoints() const
 {
     if (!m_pointList_choice1)
         return 0;
@@ -182,7 +185,6 @@ bool CCPACSFuselageProfile::checkSamePoints(gp_Pnt pointA, gp_Pnt pointB) const
     }
 }
 
-
 // Builds the fuselage profile wire. The returned wire is already transformed by the
 // fuselage profile element transformation.
 void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
@@ -195,7 +197,7 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
 
     auto points = m_pointList_choice1->AsVector();
     auto params = m_pointList_choice1->GetParamsAsMap();
-    auto kinks = m_pointList_choice1->GetKinksAsVector();
+    auto kinks  = m_pointList_choice1->GetKinksAsVector();
     if (mirrorSymmetry) {
         SymmetrizeFuselageProfile(points, params, kinks);
     }
@@ -208,9 +210,7 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
     if (mirrorSymmetry) {
         double umin = spline->FirstParameter();
         double umax = spline->LastParameter();
-        spline = CTiglBSplineAlgorithms::trimCurve(spline,
-                                                   umin,
-                                                   0.5*(umin + umax));
+        spline      = CTiglBSplineAlgorithms::trimCurve(spline, umin, 0.5 * (umin + umax));
         CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, umin, umax);
     }
 
@@ -227,7 +227,7 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
     if (!spline->IsClosed()) {
         builder2.Add(BRepBuilderAPI_MakeEdge(spline->EndPoint(), spline->StartPoint()));
     }
-    TopoDS_Wire tempWireClosed   = builder2.Wire();
+    TopoDS_Wire tempWireClosed = builder2.Wire();
     if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
         throw CTiglError("TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
     }
@@ -249,7 +249,8 @@ gp_Pnt CCPACSFuselageProfile::TransformPoint(const gp_Pnt& aPoint) const
 gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta) const
 {
     if (zeta < 0.0 || zeta > 1.0) {
-        throw CTiglError("Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CCPACSFuselageProfile::GetPoint", TIGL_ERROR);
+        throw CTiglError("Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CCPACSFuselageProfile::GetPoint",
+                         TIGL_ERROR);
     }
 
     // Get the first edge of the wire
@@ -259,14 +260,13 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta) const
     }
 
     Standard_Real firstParam = 0.;
-    Standard_Real lastParam = 1.;
+    Standard_Real lastParam  = 1.;
     Handle(Geom_Curve) curve = BRep_Tool::Curve(wireExplorer.Current(), firstParam, lastParam);
 
-    gp_Pnt point = curve->Value(firstParam*(1-zeta) + lastParam*zeta);
+    gp_Pnt point = curve->Value(firstParam * (1 - zeta) + lastParam * zeta);
 
     return point;
 }
-
 
 void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) const
 {
@@ -276,16 +276,16 @@ void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) cons
 
     if (mirrorSymmetry) {
         cache.start = coordinates[0].Get_gp_Pnt();
-        cache.end = coordinates[coordinates.size() - 1].Get_gp_Pnt();
+        cache.end   = coordinates[coordinates.size() - 1].Get_gp_Pnt();
     }
     else {
         // compute starting diameter point
         gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
         gp_Pnt lastPnt  = coordinates[coordinates.size() - 1].Get_gp_Pnt();
-        double x = (firstPnt.X() + lastPnt.X())/2.;
-        double y = (firstPnt.Y() + lastPnt.Y())/2.;
-        double z = (firstPnt.Z() + lastPnt.Z())/2.;
-        cache.start = gp_Pnt(x,y,z);
+        double x        = (firstPnt.X() + lastPnt.X()) / 2.;
+        double y        = (firstPnt.Y() + lastPnt.Y()) / 2.;
+        double z        = (firstPnt.Z() + lastPnt.Z()) / 2.;
+        cache.start     = gp_Pnt(x, y, z);
 
         // find the point with the max dist to starting point
         cache.end = cache.start;
@@ -295,19 +295,15 @@ void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) cons
                 cache.end = point;
             }
         }
-        // project into x-z plane
-        cache.end.SetY(0.);
-        cache.start.SetY(0.);
     }
 }
 
 TopoDS_Wire CCPACSFuselageProfile::GetDiameterWire() const
 {
     Handle(Geom_TrimmedCurve) diameterCurve = GC_MakeSegment(diameterPointsCache->start, diameterPointsCache->end);
-    TopoDS_Edge diameterEdge = BRepBuilderAPI_MakeEdge(diameterCurve);
-    TopoDS_Wire diameterWire = BRepBuilderAPI_MakeWire(diameterEdge);
+    TopoDS_Edge diameterEdge                = BRepBuilderAPI_MakeEdge(diameterCurve);
+    TopoDS_Wire diameterWire                = BRepBuilderAPI_MakeWire(diameterEdge);
     return diameterWire;
 }
 
 } // end namespace tigl
-
