@@ -44,6 +44,7 @@
 #include "CCPACSFuselageSegment.h"
 #include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 using namespace std;
 
@@ -62,15 +63,15 @@ protected:
         tixiHandle = -1;
 
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
-        ASSERT_TRUE (tixiRet == SUCCESS);
+        ASSERT_TRUE(tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "GuideCurveModel", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
 
         // constant values for the guide curve points
         const double tempy[] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9};
-        beta=std::vector<double>(tempy, tempy + sizeof(tempy) / sizeof(tempy[0]) );
+        beta                 = std::vector<double>(tempy, tempy + sizeof(tempy) / sizeof(tempy[0]));
         const double tempz[] = {0.0, 0.001, 0.003, 0.009, 0.008, 0.007, 0.006, 0.002, 0.0};
-        gamma=std::vector<double>(tempz, tempz + sizeof(tempz) / sizeof(tempz[0]) );
+        gamma                = std::vector<double>(tempz, tempz + sizeof(tempz) / sizeof(tempz[0]));
     }
 
     void TearDown() override
@@ -85,29 +86,30 @@ protected:
     void outputXY(const int& i, const double& x, const double& y, const std::string& filename)
     {
         ofstream out;
-        if (i>0) {
+        if (i > 0) {
             out.open(filename.c_str(), ios::app);
         }
         else {
             out.open(filename.c_str());
         }
-        out << setprecision(17) << std::scientific  << x << "\t" << y << endl;
+        out << setprecision(17) << std::scientific << x << "\t" << y << endl;
         out.close();
     }
-    void outputXYVector(const int& i, const double& x, const double& y, const double& vx, const double& vy, const std::string& filename)
+    void outputXYVector(const int& i, const double& x, const double& y, const double& vx, const double& vy,
+                        const std::string& filename)
     {
         ofstream out;
-        if (i>0) {
+        if (i > 0) {
             out.open(filename.c_str(), ios::app);
         }
         else {
             out.open(filename.c_str());
         }
-        out << setprecision(17) << std::scientific  << x << "\t" << y << "\t" << vx << "\t" << vy << "\t" << endl;
+        out << setprecision(17) << std::scientific << x << "\t" << y << "\t" << vx << "\t" << vy << "\t" << endl;
         out.close();
     }
 
-    TixiDocumentHandle           tixiHandle;
+    TixiDocumentHandle tixiHandle;
     TiglCPACSConfigurationHandle tiglHandle;
     //tigl::CCPACSGuideCurve guideCurve;
     std::vector<double> alpha;
@@ -115,6 +117,35 @@ protected:
     std::vector<double> gamma;
 };
 
+class FuselageGuideCurve2 : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        const char* filename = "TestData/bugs/747/simpletest_fuselage_guides.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE(tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "CpacsTest", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+
+    void TearDown() override
+    {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    TixiDocumentHandle tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
+};
 
 /******************************************************************************/
 
@@ -136,7 +167,8 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfiles)
     tigl::CCPACSGuideCurveProfiles guideCurves(NULL, NULL);
     guideCurves.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/guideCurves");
     ASSERT_EQ(guideCurves.GetGuideCurveProfileCount(), 6);
-    tigl::CCPACSGuideCurveProfile& guideCurve = guideCurves.GetGuideCurveProfile("GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
+    tigl::CCPACSGuideCurveProfile& guideCurve =
+        guideCurves.GetGuideCurveProfile("GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Middle Guide Curve Profile for GuideCurveModel - Fuselage");
 }
@@ -146,17 +178,17 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfiles)
 */
 TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointAlgoOnCircle)
 {
-    double radius1=1.0;
-    gp_Pnt location1(radius1, 0.0,  0.0);
+    double radius1 = 1.0;
+    gp_Pnt location1(radius1, 0.0, 0.0);
     gp_Ax2 circlePosition1(location1, gp::DY(), gp::DX());
     Handle(Geom_Circle) circle1 = new Geom_Circle(circlePosition1, radius1);
 
     // convert to edge
-    double start=0.0;
-    double end=2*M_PI;
+    double start          = 0.0;
+    double end            = 2 * M_PI;
     TopoDS_Edge innerEdge = BRepBuilderAPI_MakeEdge(circle1, start, end);
 
-    // convert to wires 
+    // convert to wires
     TopoDS_Wire innerWire = BRepBuilderAPI_MakeWire(innerEdge);
 
     // put wire into container for getPointAlgo
@@ -171,12 +203,13 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     // plot points and tangents
     int N = 20;
     int M = 2;
-    for (int i=0; i<=N+2*M; i++) {
-        double da = 1.0/double(N);
-        double alpha = -M*da + da*i;
+    for (int i = 0; i <= N + 2 * M; i++) {
+        double da    = 1.0 / double(N);
+        double alpha = -M * da + da * i;
         getPointAlgo.GetPointTangent(alpha, point, tangent);
         outputXY(i, point.X(), point.Z(), "./TestData/analysis/tiglFuselageGuideCurve_circleSamplePoints_points.dat");
-        outputXYVector(i, point.X(), point.Z(), tangent.X(), tangent.Z(), "./TestData/analysis/tiglFuselageGuideCurve_circleSamplePoints_tangents.dat");
+        outputXYVector(i, point.X(), point.Z(), tangent.X(), tangent.Z(),
+                       "./TestData/analysis/tiglFuselageGuideCurve_circleSamplePoints_tangents.dat");
         // plot points and tangents with gnuplot by:
         // echo "plot 'TestData/analysis/tiglFuselageGuideCurve_circleSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglFuselageGuideCurve_circleSamplePoints_points.dat' w linespoints lw 2" | gnuplot -persist
     }
@@ -188,16 +221,16 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     ASSERT_NEAR(point.Z(), 0.0, 1E-10);
     ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
     ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
-    ASSERT_NEAR(tangent.Z(), -2*M_PI, 1E-10);
+    ASSERT_NEAR(tangent.Z(), -2 * M_PI, 1E-10);
 
     // end: Tangent must be in negative z-direction has to be of length pi
     getPointAlgo.GetPointTangent(-1.0, point, tangent);
     ASSERT_NEAR(point.X(), 2.0, 1E-10);
     ASSERT_NEAR(point.Y(), 0.0, 1E-10);
-    ASSERT_NEAR(point.Z(), 2*M_PI, 1E-10);
+    ASSERT_NEAR(point.Z(), 2 * M_PI, 1E-10);
     ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
     ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
-    ASSERT_NEAR(tangent.Z(), -2*M_PI, 1E-10);
+    ASSERT_NEAR(tangent.Z(), -2 * M_PI, 1E-10);
 
     // check points and tangents for alpha > 1
     gp_Pnt point2;
@@ -206,28 +239,28 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     getPointAlgo.GetPointTangent(2.0, point2, tangent2);
     ASSERT_NEAR(point2.X(), 2.0, 1E-10);
     ASSERT_NEAR(point2.Y(), 0.0, 1E-10);
-    ASSERT_NEAR(point2.Z(), -2*M_PI, 1E-10);
+    ASSERT_NEAR(point2.Z(), -2 * M_PI, 1E-10);
     ASSERT_NEAR(tangent2.X(), 0.0, 1E-10);
     ASSERT_NEAR(tangent2.Y(), 0.0, 1E-10);
-    ASSERT_NEAR(tangent2.Z(), -2*M_PI, 1E-10);
+    ASSERT_NEAR(tangent2.Z(), -2 * M_PI, 1E-10);
     ASSERT_EQ(tangent.X(), tangent2.X());
     ASSERT_EQ(tangent.Y(), tangent2.Y());
     ASSERT_EQ(tangent.Z(), tangent2.Z());
-    ASSERT_NEAR(point.Distance(point2), 2*M_PI, 1E-10);
+    ASSERT_NEAR(point.Distance(point2), 2 * M_PI, 1E-10);
 
     // check if tangent is constant for alpha < 0
     getPointAlgo.GetPointTangent(0.0, point, tangent);
     getPointAlgo.GetPointTangent(-1.0, point2, tangent2);
     ASSERT_NEAR(point2.X(), 2.0, 1E-10);
     ASSERT_NEAR(point2.Y(), 0.0, 1E-10);
-    ASSERT_NEAR(point2.Z(), 2*M_PI, 1E-10);
+    ASSERT_NEAR(point2.Z(), 2 * M_PI, 1E-10);
     ASSERT_NEAR(tangent2.X(), 0.0, 1E-10);
     ASSERT_NEAR(tangent2.Y(), 0.0, 1E-10);
-    ASSERT_NEAR(tangent2.Z(), -2*M_PI, 1E-10);
+    ASSERT_NEAR(tangent2.Z(), -2 * M_PI, 1E-10);
     ASSERT_EQ(tangent.X(), tangent2.X());
     ASSERT_EQ(tangent.Y(), tangent2.Y());
     ASSERT_EQ(tangent.Z(), tangent2.Z());
-    ASSERT_NEAR(point.Distance(point2), 2*M_PI, 1E-10);
+    ASSERT_NEAR(point.Distance(point2), 2 * M_PI, 1E-10);
 }
 /**
 * * Tests CCPACSFuselageProfileGetPointAlgo class
@@ -236,11 +269,11 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
 {
     // read configuration
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
 
     // get upper and lower fuselage profile
     tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile("GuideCurveModel_Fuselage_Sec3_El1_Pro");
-    TopoDS_Wire wire = profile.GetWire();
+    TopoDS_Wire wire                     = profile.GetWire();
 
     // pack wire container for get point algo
     TopTools_SequenceOfShape wireContainer;
@@ -253,12 +286,13 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     // plot points and tangents
     int N = 20;
     int M = 2;
-    for (int i=0; i<=N+2*M; i++) {
-        double da = 1.0/double(N);
-        double alpha = -M*da + da*i;
+    for (int i = 0; i <= N + 2 * M; i++) {
+        double da    = 1.0 / double(N);
+        double alpha = -M * da + da * i;
         getPointAlgo.GetPointTangent(alpha, point, tangent);
         outputXY(i, point.Y(), point.Z(), "./TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_points.dat");
-        outputXYVector(i, point.Y(), point.Z(), tangent.Y(), tangent.Z(), "./TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_tangents.dat");
+        outputXYVector(i, point.Y(), point.Z(), tangent.Y(), tangent.Z(),
+                       "./TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_tangents.dat");
         // plot points and tangents with gnuplot by:
         // echo "plot 'TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_points.dat' w linespoints lw 2" | gnuplot -persist
     }
@@ -297,9 +331,9 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
 TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
 {
     // create two circles
-    double radius1=1.0;
-    double radius2=2.0;
-    double distance=4.0;
+    double radius1  = 1.0;
+    double radius2  = 2.0;
+    double distance = 4.0;
     gp_Pnt location1(0.0, -radius1, 0.0);
     gp_Ax2 circlePosition1(location1, gp::DX(), gp::DZ());
     Handle(Geom_Circle) circle1 = new Geom_Circle(circlePosition1, radius1);
@@ -308,9 +342,9 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
     Handle(Geom_Circle) circle2 = new Geom_Circle(circlePosition2, radius2);
 
     // convert to wires and consider only half circles starting at the bottom
-    double start=M_PI;
-    TopoDS_Edge edge1 = BRepBuilderAPI_MakeEdge(circle1, start, start+M_PI);
-    TopoDS_Edge edge2 = BRepBuilderAPI_MakeEdge(circle2, start, start+M_PI);
+    double start      = M_PI;
+    TopoDS_Edge edge1 = BRepBuilderAPI_MakeEdge(circle1, start, start + M_PI);
+    TopoDS_Edge edge2 = BRepBuilderAPI_MakeEdge(circle2, start, start + M_PI);
     TopoDS_Wire wire1 = BRepBuilderAPI_MakeWire(edge1);
     TopoDS_Wire wire2 = BRepBuilderAPI_MakeWire(edge2);
 
@@ -326,29 +360,30 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
 
     std::vector<gp_Pnt> guideCurvePnts;
     // instantiate guideCurveAlgo
-    guideCurvePnts = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSFuselageProfileGetPointAlgo> (wireContainer1, wireContainer2, 0.5, 0.5, 2*radius1, 2*radius2, gp_Dir(0.0, 0.0, 1.0), guideCurveProfile);
+    guideCurvePnts = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSFuselageProfileGetPointAlgo>(
+        wireContainer1, wireContainer2, 0.5, 0.5, 2 * radius1, 2 * radius2, gp_Dir(0.0, 0.0, 1.0), guideCurveProfile);
     TopoDS_Edge guideCurveEdge = EdgeSplineFromPoints(guideCurvePnts);
 
     // check if guide curve runs through sample points
     // get curve
     Standard_Real u1, u2;
-    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveEdge, u1, u2);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(guideCurveEdge, u1, u2);
     // set predicted sample points from cpacs file
     const double temp[] = {0, 0, 0.012, 0.037, 0.110, 0.098, 0.086, 0.073, 0.024, 0, 0};
-    std::vector<double> predictedSamplePointsY (temp, temp + sizeof(temp) / sizeof(temp[0]) );
+    std::vector<double> predictedSamplePointsY(temp, temp + sizeof(temp) / sizeof(temp[0]));
     for (unsigned int i = 0; i <= 10; ++i) {
         // get intersection point of the guide curve with planes parallel to the y-z plane located at a
-        double a = i/double(10);
-        Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(a*distance, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-        GeomAPI_IntCS intersection (curve, plane);
+        double a                 = i / double(10);
+        Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(a * distance, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+        GeomAPI_IntCS intersection(curve, plane);
         ASSERT_EQ(Standard_True, intersection.IsDone());
         ASSERT_EQ(intersection.NbPoints(), 1);
         gp_Pnt point = intersection.Point(1);
 
         // scale sample points since 2nd profile is scaled by a factor 2
-        predictedSamplePointsY[i]*=(2*radius1+(2*radius2-2*radius1)*a);
+        predictedSamplePointsY[i] *= (2 * radius1 + (2 * radius2 - 2 * radius1) * a);
         // check is guide curve runs through the predicted sample points
-        ASSERT_NEAR(a*distance, point.X(), 1E-14);
+        ASSERT_NEAR(a * distance, point.X(), 1E-14);
         ASSERT_NEAR(predictedSamplePointsY[i], point.Y(), 1E-14);
         ASSERT_NEAR(0.0, point.Z(), 1E-14);
     }
@@ -360,61 +395,87 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
 TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageSegment)
 {
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
-    tigl::CCPACSFuselage& fuselage = config.GetFuselage(1);
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSFuselage& fuselage            = config.GetFuselage(1);
 
-    ASSERT_EQ(fuselage.GetSegmentCount(),2);
-    tigl::CCPACSFuselageSegment& segment1 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(1);
+    ASSERT_EQ(fuselage.GetSegmentCount(), 2);
+    tigl::CCPACSFuselageSegment& segment1 = (tigl::CCPACSFuselageSegment&)fuselage.GetSegment(1);
 
     ASSERT_TRUE(segment1.GetGuideCurves().get_ptr() != NULL);
     tigl::CCPACSGuideCurves& guides = *segment1.GetGuideCurves();
     ASSERT_EQ(guides.GetGuideCurveCount(), 3);
 
-    // obtain leading edge guide curve 
+    // obtain leading edge guide curve
     TopoDS_Edge guideCurveWire = guides.GetGuideCurve(2).GetCurve();
 
     // check if guide curve runs through sample points
     // get curve
     Standard_Real u1, u2;
-    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveWire, u1, u2);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(guideCurveWire, u1, u2);
     // gamma values of cpacs data points
     const double temp[] = {0, 0, 0.012, 0.037, 0.110, 0.098, 0.086, 0.073, 0.024, 0, 0};
-    std::vector<double> gammaDeviation (temp, temp + sizeof(temp) / sizeof(temp[0]) );
+    std::vector<double> gammaDeviation(temp, temp + sizeof(temp) / sizeof(temp[0]));
     // number of sample points
-    unsigned int N=10;
+    unsigned int N = 10;
     // segment length
-    double length=10.0;
+    double length = 10.0;
     // segment position
-    double position=-10.0;
+    double position = -10.0;
     // start profile scale factor
-    double startScale=1.0;
+    double startScale = 1.0;
     // end profile scale factor
-    double endScale=2.0;
+    double endScale = 2.0;
     for (unsigned int i = 0; i <= N; ++i) {
         // get intersection point of the guide curve with planes parallel to the y-z-direction
         // located at a
-        double a = length*i/double(N);
-        gp_Pnt planeLocation = gp_Pnt(a+position, 0.5*startScale + 0.5*(endScale-startScale) / length * a, 0.0);
-        gp_Vec dirVec(gp_Pnt(position, 0.5*startScale, 0.0),gp_Pnt(0.0, 0.5*endScale, 0.0));
+        double a             = length * i / double(N);
+        gp_Pnt planeLocation = gp_Pnt(a + position, 0.5 * startScale + 0.5 * (endScale - startScale) / length * a, 0.0);
+        gp_Vec dirVec(gp_Pnt(position, 0.5 * startScale, 0.0), gp_Pnt(0.0, 0.5 * endScale, 0.0));
         Handle(Geom_Plane) plane = new Geom_Plane(planeLocation, gp_Dir(dirVec));
-        GeomAPI_IntCS intersection (curve, plane);
+        GeomAPI_IntCS intersection(curve, plane);
         ASSERT_EQ(intersection.NbPoints(), 1);
         gp_Pnt point = intersection.Point(1);
 
         // start at segment minimal x position
         gp_Vec predictedPoint(position, 0.0, 0.0);
         // go along the fuselage segment maximal y edge
-        predictedPoint += gp_Vec(0.0, 0.5*startScale + 0.5*(endScale-startScale) / length * a  ,  0.0);
+        predictedPoint += gp_Vec(0.0, 0.5 * startScale + 0.5 * (endScale - startScale) / length * a, 0.0);
         predictedPoint += gp_Vec(a, 0.0, 0.0);
         // scale sample points since outer profile's diameter is greater by a factor of 2
-        double s=(startScale+(endScale-startScale)*i/double(N));
+        double s = (startScale + (endScale - startScale) * i / double(N));
         // go along direction perpendicular to the leading edge in the x-y plane
-        double angle=atan2(0.5*(endScale-startScale), length);
-        predictedPoint += gp_Vec(-sin(angle)*gammaDeviation[i]*s, cos(angle)*gammaDeviation[i]*s, 0.0);
+        double angle = atan2(0.5 * (endScale - startScale), length);
+        predictedPoint += gp_Vec(-sin(angle) * gammaDeviation[i] * s, cos(angle) * gammaDeviation[i] * s, 0.0);
 
         // check is guide curve runs through the predicted sample points
         ASSERT_NEAR(predictedPoint.X(), point.X(), 1E-10);
         ASSERT_NEAR(predictedPoint.Y(), point.Y(), 1E-10);
         ASSERT_NEAR(predictedPoint.Z(), point.Z(), 1E-14);
     }
+}
+
+TEST_F(FuselageGuideCurve2, bug747)
+{
+    // https://github.com/DLR-SC/tigl/issues/747
+
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSFuselage& fuselage            = config.GetFuselage(1);
+
+    tigl::CCPACSFuselageProfile& startProfile = fuselage.GetSegment(1).GetStartConnection().GetProfile();
+    TopoDS_Wire diameter                      = startProfile.GetDiameterWire();
+
+    // Can be calculate the correct diameter?
+    EXPECT_NEAR(GetLength(diameter), 2., 1e-3);
+
+    // Can we build the loft? Is the result reasonable?
+    PNamedShape loft = fuselage.GetLoft();
+    double minx, maxx, miny, maxy, minz, maxz;
+    GetShapeExtension(loft->Shape(), minx, maxx, miny, maxy, minz, maxz);
+    EXPECT_TRUE(minx > -1.5);
+    EXPECT_TRUE(maxx < 2.);
+    EXPECT_TRUE(miny > -1.);
+    EXPECT_TRUE(maxy < 1.);
+    EXPECT_TRUE(minz > -1.);
+    EXPECT_TRUE(maxz < 1.);
 }

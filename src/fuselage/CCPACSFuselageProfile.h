@@ -90,28 +90,25 @@ private:
     // fuselage profile transformation.
     void BuildWires(WireCache& cache) const;
 
-    // Helper function to determine the "diameter" (the wing profile chord line equivalent) 
+    // Helper function to determine the "diameter" (the wing profile chord line equivalent)
     // which is defined as the line intersecting Point1 and Point2
-    // 
+    //
     // In the case of a non-mirror symmetric profile we have
     // Point1: The middle point between first and last point of the profile point list
     // Point2: The profile point list point with the largest distance to Point1
-    // 
+    //
     // In the case of a mirror symmetric profile we have
     // Point1: First point in the profile point list
     // Point2: Last point in the profile point list
     void BuildDiameterPoints(DiameterPointsCache& cache) const;
 
 private:
-    // Checks is two point are the same, or nearly the same.
-    bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB) const;
-
     // Invalidates internal wing profile state
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
 private:
     bool mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
-    Cache<WireCache, CCPACSFuselageProfile> wireCache;   /**< Original and force closed fuselage profile wire */
+    Cache<WireCache, CCPACSFuselageProfile> wireCache; /**< Original and force closed fuselage profile wire */
     Cache<DiameterPointsCache, CCPACSFuselageProfile> diameterPointsCache;
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
 };
@@ -119,4 +116,3 @@ private:
 } // end namespace tigl
 
 #endif // CCPACSFUSELAGEPROFILE_H
-
