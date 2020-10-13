@@ -171,20 +171,6 @@ TopoDS_Wire CCPACSFuselageProfile::GetWire(bool forceClosed) const
     return forceClosed ? wireCache->closed : wireCache->original;
 }
 
-// check if the distance between two points are below a fixed value, so that
-// these point could be imaged as "equal".
-bool CCPACSFuselageProfile::checkSamePoints(gp_Pnt pointA, gp_Pnt pointB) const
-{
-    Standard_Real distance;
-    distance = pointA.Distance(pointB);
-    if (distance < 0.01) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 // Builds the fuselage profile wire. The returned wire is already transformed by the
 // fuselage profile element transformation.
 void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
