@@ -322,7 +322,7 @@ void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, bool updateViewer
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(loft);
 
-    myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
+    myContext->SetMaterial(shape, settings.defaultMaterial(), Standard_False);
     myContext->SetColor(shape, color, Standard_False);
     myContext->SetTransparency(shape, transparency, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
@@ -357,7 +357,7 @@ void TIGLViewerContext::displayShape(const PNamedShape& pshape, bool updateViewe
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(pshape->Shape());
 
-    myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
+    myContext->SetMaterial(shape, settings.defaultMaterial(), Standard_False);
     myContext->SetColor(shape, color, Standard_False);
     myContext->SetTransparency(shape, transparency, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
@@ -397,7 +397,7 @@ void TIGLViewerContext::displayPoint(const gp_Pnt& aPoint,
                                      Standard_Real aZoffset,
                                      Standard_Real TextScale)
 {
-    if (std::string(aText) == "") {
+    if (std::string(aText).empty()) {
         displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), UpdateViewer, Quantity_NOC_YELLOW);
     }
     else {

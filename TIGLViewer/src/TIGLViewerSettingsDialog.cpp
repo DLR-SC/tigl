@@ -25,13 +25,15 @@
 #include <cmath>
 #include <iostream>
 
+#include "TIGLViewerMaterials.h"
+
 #define WORST_TESSELATION 0.01
 #define BEST_TESSELATION 0.00001
 
 #define WORST_TRIANGULATION 0.01
 #define BEST_TRIANGULATION 0.00005
 
-#define BTN_STYLE "#buttonColorChoser {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #buttonColorChoser:hover {border: 1px solid white;}"
+#define BTN_STYLE "#%2 {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #%2:hover {border: 1px solid white;}"
 
 TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings, QWidget *parent)
     : QDialog(parent), _settings(settings)
@@ -42,12 +44,29 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
     trianAccuEdit->setText(QString("%1").arg(sliderTriangulationAccuracy->value()));
     settingsList->item(0)->setSelected(true);
 
+    // add materials
+    QMapIterator<QString, Graphic3d_NameOfMaterial> i(tiglMaterials::materialMap);
+    QStringList items;
+    while (i.hasNext()) {
+        i.next();
+        items << i.key();
+    }
+    comboBoxShapeMaterial->addItems(items);
+
+    connect(comboBoxShapeMaterial, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(onComboBoxIndexChanged(const QString&)));
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(onSettingsAccepted()));
     connect(sliderTesselationAccuracy,   SIGNAL(valueChanged(int)), this, SLOT(onSliderTesselationChanged(int)));
     connect(sliderTriangulationAccuracy, SIGNAL(valueChanged(int)), this, SLOT(onSliderTriangulationChanged(int)));
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChoserPushed()));
+    connect(buttonShapeColorChoser, SIGNAL(clicked()), this, SLOT(onShapeColorChoserPushed()));
+    connect(buttonShapeSymmetryColorChoser, SIGNAL(clicked()), this, SLOT(onShapeSymmetryColorChoserPushed()));
     connect(settingsList, SIGNAL(currentRowChanged(int)), this, SLOT(onSettingsListChanged(int)));
     connect(btnRestoreDefaults, SIGNAL(clicked(bool)), this, SLOT(restoreDefaults()));
+}
+
+void TIGLViewerSettingsDialog::onComboBoxIndexChanged(const QString& index)
+{
+    _material = tiglMaterials::materialMap[index];
 }
 
 double TIGLViewerSettingsDialog::calcTesselationAccu(int value)
@@ -82,7 +101,10 @@ void TIGLViewerSettingsDialog::onSettingsAccepted()
     _settings.setTesselationAccuracy(calcTesselationAccu(sliderTesselationAccuracy->value()));
     _settings.setTriangulationAccuracy(calcTriangulationAccu(sliderTriangulationAccuracy->value()));
     _settings.setBGColor(_bgcolor);
-    
+    _settings.setShapeColor(_shapecolor);
+    _settings.setShapeSymmetryColor(_shapesymmetrycolor);
+    _settings.setDefaultMaterial(_material);
+
     _settings.setDebugBooleanOperationsEnabled(debugBopCB->isChecked());
     _settings.setEnumerateFacesEnabled(enumerateFaceCB->isChecked());
     _settings.setNumberOfUIsolinesPerFace(numUIsoLinesSB->value());
@@ -113,13 +135,34 @@ void TIGLViewerSettingsDialog::updateEntries()
     sliderTriangulationAccuracy->setValue(triaVal);
 
     _bgcolor = _settings.BGColor();
+    _shapecolor = _settings.shapeColor();
+    _shapesymmetrycolor = _settings.shapeSymmetryColor();
+    _material = _settings.defaultMaterial();
+
     updateBGColorButton();
+    updateShapeColorButton();
+    updateShapeSymmetryColorButton();
 
     debugBopCB->setChecked(_settings.debugBooleanOperations());
     enumerateFaceCB->setChecked(_settings.enumerateFaces());
     numUIsoLinesSB->setValue(_settings.numFaceUIsosForDisplay());
     numVIsoLinesSB->setValue(_settings.numFaceVIsosForDisplay());
     cbDrawFaceBoundaries->setChecked(_settings.drawFaceBoundaries());
+
+    QMapIterator<QString, Graphic3d_NameOfMaterial> i(tiglMaterials::materialMap);
+    QStringList items;
+    int activeItem = 0;
+    int idx = 0;
+    while (i.hasNext()) {
+        i.next();
+        items << i.key();
+        if (i.value() == _material)
+        {
+            activeItem = idx;
+        }
+        idx++;
+    }
+    comboBoxShapeMaterial->setCurrentIndex(activeItem);
 }
 
 void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val)
@@ -141,10 +184,40 @@ void TIGLViewerSettingsDialog::onColorChoserPushed()
     }
 }
 
+void TIGLViewerSettingsDialog::onShapeColorChoserPushed()
+{
+    QColor col = QColorDialog::getColor(_shapecolor, this);
+    if (col.isValid()) {
+        _shapecolor = col;
+        updateShapeColorButton();
+    }
+}
+
+void TIGLViewerSettingsDialog::onShapeSymmetryColorChoserPushed()
+{
+    QColor col = QColorDialog::getColor(_shapesymmetrycolor, this);
+    if (col.isValid()) {
+        _shapesymmetrycolor = col;
+        updateShapeSymmetryColorButton();
+    }
+}
+
 void TIGLViewerSettingsDialog::updateBGColorButton()
 {
-    QString qss = QString(BTN_STYLE).arg(_bgcolor.name());
+    QString qss = QString(BTN_STYLE).arg(_bgcolor.name(), "buttonColorChoser");
     buttonColorChoser->setStyleSheet(qss);
+}
+
+void TIGLViewerSettingsDialog::updateShapeColorButton()
+{
+    QString qss = QString(BTN_STYLE).arg(_shapecolor.name(), "buttonShapeColorChoser");
+    buttonShapeColorChoser->setStyleSheet(qss);
+}
+
+void TIGLViewerSettingsDialog::updateShapeSymmetryColorButton()
+{
+    QString qss = QString(BTN_STYLE).arg(_shapesymmetrycolor.name(), "buttonShapeSymmetryColorChoser");
+    buttonShapeSymmetryColorChoser->setStyleSheet(qss);
 }
 
 void TIGLViewerSettingsDialog::onSettingsListChanged(int index)
@@ -158,4 +231,3 @@ void TIGLViewerSettingsDialog::restoreDefaults()
     updateEntries();
 }
 
-TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {}

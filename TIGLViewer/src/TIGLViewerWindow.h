@@ -36,7 +36,6 @@ class QAction;
 class QLabel;
 class QMenu;
 class QFileSystemWatcher;
-class QShortcut;
 class TIGLViewerLogHistory;
 class TIGLViewerLogRedirection;
 
@@ -45,6 +44,7 @@ class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow
     Q_OBJECT
     Q_PROPERTY(TIGLViewerWidget*  viewer READ getViewer)
     Q_PROPERTY(TIGLViewerContext* scene  READ getScene)
+    Q_PROPERTY(TIGLViewerSettings* settings  READ getViewerSettings)
     Q_CLASSINFO("Description", "TiGL Viewer Application")
 
 public:
@@ -54,13 +54,13 @@ public:
     ~TIGLViewerWindow() override;
 
     
-    void setInitialControlFile(QString filename);
+    void setInitialControlFile(const QString& filename);
 
     class TIGLViewerSettings& getSettings();
     class Console*            getConsole();
 
     // Displays a simple dialog for error messages
-    void displayErrorMessage (const QString aMessage, QString aHeader);
+    void displayErrorMessage (const QString& aMessage, const QString& aHeader);
 
 protected:
      void dropEvent(QDropEvent *ev) override;
@@ -78,6 +78,7 @@ public slots:
     
     TIGLViewerWidget*   getViewer();
     TIGLViewerContext*  getScene() { return myScene; }
+    TIGLViewerSettings*  getViewerSettings() { return tiglViewerSettings; }
     TIGLViewerDocument* getDocument() { return cpacsConfiguration; }
 
 private slots:
@@ -94,7 +95,7 @@ private slots:
     void xyzPosition (V3d_Coordinate X,
                       V3d_Coordinate Y,
                       V3d_Coordinate Z);
-    void statusMessage (const QString aMessage);
+    void statusMessage (const QString& aMessage);
     void loadSettings();
     void saveSettings();
     void applySettings();

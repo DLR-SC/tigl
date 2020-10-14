@@ -49,7 +49,7 @@ class TIGLViewerContext : public QObject
 
 public:
 
-    TIGLViewerContext(QUndoStack*);
+    explicit TIGLViewerContext(QUndoStack*);
     ~TIGLViewerContext() override;
 
     Handle(V3d_Viewer)&              getViewer();
@@ -91,14 +91,14 @@ public slots:
     void drawPoint(double x, double y, double z);
     void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
     void deleteAllObjects();
-    void gridXY     ( void );
-    void gridXZ     ( void );
-    void gridYZ     ( void );
+    void gridXY     ();
+    void gridXZ     ();
+    void gridYZ     ();
     void toggleGrid ( bool );
-    void gridOn     ( void );
-    void gridOff    ( void );
-    void gridRect   ( void );
-    void gridCirc   ( void );
+    void gridOn     ();
+    void gridOff    ();
+    void gridRect   ();
+    void gridCirc   ();
     void wireFrame  ( bool );
     void selectAll();
     void eraseSelected();

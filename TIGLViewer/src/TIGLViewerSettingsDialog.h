@@ -20,17 +20,19 @@
 #define TIGLVIEWERSETTINGSDIALOG_H_
 
 #include "ui_TIGLViewerSettingsDialog.h"
-
 #include "tigl_internal.h"
+
+#include <Graphic3d_NameOfMaterial.hxx>
 #include <QColor>
 
 class TIGLViewerSettingsDialog : public QDialog, private Ui::TIGLViewerSettingsDialog
 {
     Q_OBJECT
-public:
-    TIGLViewerSettingsDialog(class TIGLViewerSettings&, class QWidget *parent=NULL);
 
-    ~TIGLViewerSettingsDialog() override;
+public:
+    explicit TIGLViewerSettingsDialog(class TIGLViewerSettings&, class QWidget *parent=nullptr);
+
+    ~TIGLViewerSettingsDialog() override = default;
 
 public slots:
     void updateEntries();
@@ -39,7 +41,12 @@ private slots:
     void onSettingsAccepted();
     void onSliderTesselationChanged(int);
     void onSliderTriangulationChanged(int);
+    void onComboBoxIndexChanged(const QString&);
+
     void onColorChoserPushed();
+    void onShapeColorChoserPushed();
+    void onShapeSymmetryColorChoserPushed();
+
     void onSettingsListChanged(int);
     void restoreDefaults();
 
@@ -47,9 +54,14 @@ private:
     double calcTesselationAccu(int value);
     double calcTriangulationAccu(int value);
     void updateBGColorButton();
+    void updateShapeColorButton();
+    void updateShapeSymmetryColorButton();
 
     class TIGLViewerSettings& _settings;
     QColor _bgcolor;
+    QColor _shapecolor;
+    QColor _shapesymmetrycolor;
+    Graphic3d_NameOfMaterial _material;
 };
 
 #endif /* TIGLVIEWERSETTINGSDIALOG_H_ */

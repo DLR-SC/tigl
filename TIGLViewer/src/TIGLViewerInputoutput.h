@@ -43,18 +43,18 @@ public:
         FormatMESH
     };
 
-    TIGLViewerInputOutput();
-    ~TIGLViewerInputOutput() override;
+    TIGLViewerInputOutput() = default;
+    ~TIGLViewerInputOutput() override = default;
 
-    bool importModel( const QString fileName, 
+    bool importModel( const QString& fileName,
                       const FileFormat format, 
                       TIGLViewerContext& scene );
 
-    bool importTriangulation( const QString fileName,
+    bool importTriangulation( const QString& fileName,
                               const FileFormat format,
                               TIGLViewerContext& scene );
 
-    bool exportModel( const QString fileName, 
+    bool exportModel( const QString& fileName,
                       const FileFormat format, 
                       const Handle(AIS_InteractiveContext)& ic);
 

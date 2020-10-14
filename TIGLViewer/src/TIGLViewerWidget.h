@@ -90,14 +90,14 @@ public:
                         ViewHlrOnId };
 */
 public:
-    TIGLViewerWidget(QWidget*);
+    explicit TIGLViewerWidget(QWidget*);
 
-    ~TIGLViewerWidget() override;
+    ~TIGLViewerWidget() override = default;
 
     // the scene context must be set before first use
     void setContext(TIGLViewerContext* aContext);
 
-    Handle_V3d_View                  getView( void )    { return myView; }
+    Handle_V3d_View                  getView( )    { return myView; }
 
     //Overrides
     QPaintEngine*   paintEngine() const override;
@@ -111,7 +111,7 @@ signals:
     void selectionChanged();
     void mouseMoved   ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
     void pointClicked ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
-    void sendStatus   ( const QString aMessage );
+    void sendStatus   ( QString aMessage );
 
     void error ( int errorCode, QString& errorDescription );
 
@@ -227,7 +227,7 @@ private: // methods
     Standard_Real viewPrecision( bool resized = false );
 
     void drawRubberBand( const QPoint origin, const QPoint position );
-    void hideRubberBand( void );
+    void hideRubberBand( );
 
     Standard_Boolean convertToPlane(Standard_Integer Xs, 
                                     Standard_Integer Ys, 

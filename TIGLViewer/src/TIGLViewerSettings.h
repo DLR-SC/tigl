@@ -20,24 +20,38 @@
 #define TIGLVIEWERSETTINGS_H_
 
 #include <QColor>
+#include <QtCore/QObject>
+#include <Graphic3d_NameOfMaterial.hxx>
 
-class TIGLViewerSettings
+class TIGLViewerSettings : public QObject
 {
+    Q_OBJECT
+
 public:
+    ~TIGLViewerSettings() override = default;
     static TIGLViewerSettings& Instance();
-    
+
     void loadSettings();
     void storeSettings();
 
     // Display settings Tab
     void setTesselationAccuracy(double);
     void setTriangulationAccuracy(double);
-    void setBGColor(const QColor&);
 
     double tesselationAccuracy() const;
     double triangulationAccuracy() const;
 
+    void setBGColor(const QColor&);
     const QColor& BGColor() const;
+
+    void setShapeColor(const QColor&);
+    const QColor& shapeColor() const;
+
+    void setShapeSymmetryColor(const QColor&);
+    const QColor& shapeSymmetryColor() const;
+
+    void setDefaultMaterial(Graphic3d_NameOfMaterial material);
+    Graphic3d_NameOfMaterial defaultMaterial() const;
 
     // Debugging Tab
     void setDebugBooleanOperationsEnabled(bool);
@@ -45,7 +59,7 @@ public:
     void setNumberOfUIsolinesPerFace(int);
     void setNumberOfVIsolinesPerFace(int);
     void setDrawFaceBoundariesEnabled(bool);
-    
+
     bool debugBooleanOperations() const;
     bool enumerateFaces() const;
     int  numFaceUIsosForDisplay() const;
@@ -54,14 +68,23 @@ public:
 
     void restoreDefaults();
 
-    virtual ~TIGLViewerSettings();
+
+public slots:
+    void setDefaultShapeColor(int r, int g, int b, int a = 0);
+    void setDefaultShapeSymmetryColor(int r, int g, int b, int a = 0);
+    void setDefaultMaterial(const QString& material);
+
+
 private:
     TIGLViewerSettings();
-    
+
     double _tesselationAccuracy;
     double _triangulationAccuracy;
     QColor _bgcolor;
-    
+    QColor _shapecolor;
+    QColor _shapesymmetrycolor;
+    Graphic3d_NameOfMaterial _defaultMaterial;
+
     bool _debugBOPs;
     bool _enumFaces;
     int  _nUIsosPerFace;
