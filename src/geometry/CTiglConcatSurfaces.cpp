@@ -44,7 +44,7 @@ CTiglConcatSurfaces::CTiglConcatSurfaces(const std::vector<Handle(Geom_BSplineSu
     std::sort(m_params.begin(), m_params.end());
 }
 
-void CTiglConcatSurfaces::SetApproxInputSurfacesEnabled(unsigned int nUSeg, unsigned int nVSeg)
+void CTiglConcatSurfaces::SetMakeKnotsUniformEnabled(unsigned int nUSeg, unsigned int nVSeg)
 {
     if (nUSeg > 0 && nVSeg > 0) {
         m_approxSegments.reset({nUSeg, nVSeg});
@@ -66,7 +66,7 @@ Handle(Geom_BSplineSurface) CTiglConcatSurfaces::Surface() const
     if (m_approxSegments) {
         std::transform(
             std::begin(surfaces), std::end(surfaces), std::begin(surfaces), [this](Handle(Geom_BSplineSurface) & surf) {
-                return CTiglBSplineAlgorithms::approxSurface(surf, m_approxSegments->nu, m_approxSegments->nv);
+                return CTiglBSplineAlgorithms::makeKnotsUniform(surf, m_approxSegments->nu, m_approxSegments->nv);
             });
     }
 

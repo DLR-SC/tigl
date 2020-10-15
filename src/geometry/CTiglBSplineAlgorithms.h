@@ -310,19 +310,20 @@ public:
     TIGL_EXPORT static Handle(Geom_BSplineSurface) concatSurfacesUDir(Handle(Geom_BSplineSurface) bspl1, Handle(Geom_BSplineSurface) bspl2, double space_tol=1e-5);
 
     /**
-     * @ brief Approximates a surface by sampling it and interpolating it
-     * with a degree 3 b-spline surface
+     * @ brief Changes the knot sequence to be uniform after calling the function
      *
-     * The approximation error depends on the number of segments.
-     * The more segments are used, the better will be the result.
+     * Technically, this is done by approximating the surface with a new surface
+     * which also adds an approximation error.
+     * For the surface approximation, derivatives at the boundary are not taken into account yet.
      *
-     * Currently, derivatives at the boundary are not taken into account.
+     * The approximation error depends on the number of knot segments,
+     * the more segments are used, the better will be the result.
      *
      * @param surf Surface to approximate
      * @param nseg_u Number of knot segments in u direction
      * @param nseg_v Number of knot segments in v direction
     */
-    TIGL_EXPORT static Handle(Geom_BSplineSurface) approxSurface(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v);
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) makeKnotsUniform(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v);
 };
 } // namespace tigl
 

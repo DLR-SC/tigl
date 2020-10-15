@@ -1301,7 +1301,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::concatSurfacesUDir(Handle(Ge
                                    u_degree, v_degree, false, false);
 }
 
-Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::approxSurface(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v)
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::makeKnotsUniform(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v)
 {
     double u1, u2, v1, v2;
     surf->Bounds(u1, u2, v1, v2);

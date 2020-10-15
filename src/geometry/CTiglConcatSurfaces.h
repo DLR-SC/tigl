@@ -50,11 +50,17 @@ public:
                                     const std::vector<double>& surfaceParams, ConcatDir dir);
 
     /**
-     * @brief Enables the approximation of the input surfaces with the specified number of segments
-     * @param nUSeg Number of segments in u dir to approximate
-     * @param nVSeg Number of segments in v dir to approximate
+     * @brief This allows the algorithm to make the knot sequence of each input
+     * surface uniform.
+     *
+     * This might be useful, if the input surfaces have very different knot distributions
+     * leaving a resulting in a bad balanced knot vector of the final surfaces.
+     * This approximation comes however with an error.
+     *
+     * @param nUSeg Number of knot segments in u dir to approximate
+     * @param nVSeg Number of knot segments in v dir to approximate
      */
-    TIGL_EXPORT void SetApproxInputSurfacesEnabled(unsigned int nUSeg, unsigned int nVSeg);
+    TIGL_EXPORT void SetMakeKnotsUniformEnabled(unsigned int nUSeg, unsigned int nVSeg);
 
     /**
      + @brief Returns the final surface

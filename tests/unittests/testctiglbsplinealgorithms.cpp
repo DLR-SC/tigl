@@ -1645,7 +1645,7 @@ TEST_F(ConcatSurfaces, concatWithParams)
 TEST_F(ConcatSurfaces, concatWithParamsApprox)
 {
     tigl::CTiglConcatSurfaces concatter({s1, s2}, {0., 2., 4.}, tigl::ConcatDir::u);
-    concatter.SetApproxInputSurfacesEnabled(3, 3);
+    concatter.SetMakeKnotsUniformEnabled(3, 3);
 
     auto result = concatter.Surface();
 
@@ -1675,7 +1675,7 @@ TEST(ApproxSurface, simple)
     pnts.SetValue(2, 1, gp_Pnt(1, 2, 0));
 
     auto surfOrig = tigl::CTiglBSplineAlgorithms::pointsToSurface(pnts, {0., 1.}, {0., 1.}, false, false);
-    auto surfApprox = tigl::CTiglBSplineAlgorithms::approxSurface(surfOrig, 4, 8);
+    auto surfApprox = tigl::CTiglBSplineAlgorithms::makeKnotsUniform(surfOrig, 4, 8);
 
     EXPECT_EQ(3, surfApprox->NbUKnots());
     EXPECT_EQ(7, surfApprox->NbVKnots());
