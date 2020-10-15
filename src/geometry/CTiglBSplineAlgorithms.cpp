@@ -25,6 +25,7 @@
 #include "CTiglPointsToBSplineInterpolation.h"
 #include "to_string.h"
 #include "tiglcommonfunctions.h"
+#include "Debugging.h"
 
 #include <Standard_Version.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -534,24 +535,24 @@ std::vector<Handle(Geom_BSplineCurve)> CTiglBSplineAlgorithms::createCommonKnots
     return std::vector<Handle(Geom_BSplineCurve)>(splines_adapter.begin(), splines_adapter.end());
 }
 
-std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector)
+std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector, SurfaceDirection dir)
 {
-    // all B-spline surfaces must have the same parameter range in u- and v-direction
-    // TODO: Match parameter range
-
     // Create a copy that we can modify
     std::vector<SurfAdapterView> adapterSplines;
     for (size_t i = 0; i < old_surfaces_vector.size(); ++i) {
         adapterSplines.push_back(SurfAdapterView(Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[i]->Copy()), udir));
     }
 
-    // first in u direction
-    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
+    if (dir == SurfaceDirection::u || dir == SurfaceDirection::both) {
+        // first in u direction
+        makeGeometryCompatibleImpl(adapterSplines, 1e-14);
+    }
 
-    for (size_t i = 0; i < old_surfaces_vector.size(); ++i) adapterSplines[i].setDir(vdir);
-
-    // now in v direction
-    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
+    if (dir == SurfaceDirection::v || dir == SurfaceDirection::both) {
+         // now in v direction
+        for (size_t i = 0; i < old_surfaces_vector.size(); ++i) adapterSplines[i].setDir(vdir);
+        makeGeometryCompatibleImpl(adapterSplines, 1e-14);
+    }
 
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
 }
@@ -815,6 +816,23 @@ void CTiglBSplineAlgorithms::reparametrizeBSpline(Geom_BSplineCurve& spline, dou
         spline.Knots (aKnots);
         BSplCLib::Reparametrize (umin, umax, aKnots);
         spline.SetKnots (aKnots);
+    }
+}
+
+void CTiglBSplineAlgorithms::reparametrizeBSpline(Geom_BSplineSurface& spline, double umin, double umax, double vmin, double vmax, double tol)
+{
+    if (std::abs(spline.UKnot(1) - umin) > tol || std::abs(spline.UKnot(spline.NbUKnots()) - umax) > tol) {
+        TColStd_Array1OfReal aKnots (1, spline.NbUKnots());
+        spline.UKnots (aKnots);
+        BSplCLib::Reparametrize (umin, umax, aKnots);
+        spline.SetUKnots (aKnots);
+    }
+
+    if (std::abs(spline.VKnot(1) - vmin) > tol || std::abs(spline.VKnot(spline.NbVKnots()) - vmax) > tol) {
+        TColStd_Array1OfReal aKnots (1, spline.NbVKnots());
+        spline.VKnots (aKnots);
+        BSplCLib::Reparametrize (vmin, vmax, aKnots);
+        spline.SetVKnots (aKnots);
     }
 }
 
@@ -1137,6 +1155,142 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::concatCurves(std::vector<Handl
     // build the resulting B-Spline
     Handle(Geom_BSplineCurve) result = new Geom_BSplineCurve(cpoints, weights, knots, mults, maxDegree, false);
     return result;
+}
+
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::concatSurfacesUDir(Handle(Geom_BSplineSurface) bspl1,
+                                                                       Handle(Geom_BSplineSurface) bspl2,
+                                                                       double space_tol)
+{
+
+    DEBUG_SCOPE(debug);
+    debug.addShape(BRepBuilderAPI_MakeFace(bspl1, 1e-6).Face(), "surf1");
+    debug.addShape(BRepBuilderAPI_MakeFace(bspl2, 1e-6).Face(), "surf2");
+
+    // the surfaces must not be periodic in u direction
+    assert (bspl1->IsUPeriodic() == false);
+    assert (bspl2->IsUPeriodic() == false);
+
+    // we dont have nurbs implemented right now
+    assert (bspl1->IsURational() == false);
+    assert (bspl2->IsURational() == false);
+    assert (bspl1->IsVRational() == false);
+    assert (bspl2->IsVRational() == false);
+
+    double param_tol = 1e-14;
+
+    // check that surfaces are following parametrically
+    double umin1, umax1, vmin1, vmax1;
+    bspl1->Bounds(umin1, umax1, vmin1, vmax1);
+    double umin2, umax2, vmin2, vmax2;
+    bspl2->Bounds(umin2, umax2, vmin2, vmax2);
+
+    if (std::abs(umax1 - umin2) > param_tol) {
+        std::stringstream str;
+        str << "Surfaces do not follow in u-parametric direction in CTiglBSplineAlgorithms::concatSurfacesUDir. ";
+        str << "Surface 1 ends at " << umax1 << ", Surface 2 begins at " << umin2 << "!";
+        throw CTiglError(str.str(), TIGL_MATH_ERROR);
+    }
+
+    bspl1->SetVNotPeriodic();
+    bspl2->SetVNotPeriodic();
+
+    auto u_degree = std::max(bspl1->UDegree(), bspl2->UDegree());
+    auto v_degree = std::max(bspl1->VDegree(), bspl2->VDegree());
+
+    bspl1->IncreaseDegree(u_degree, v_degree);
+    bspl2->IncreaseDegree(u_degree, v_degree);
+
+    // check that corner points match
+    auto leftCornerDist = bspl1->Value(umax1, vmin1).Distance(bspl2->Value(umin2, vmin2));
+    auto rightCornerDist = bspl1->Value(umax1, vmax1).Distance(bspl2->Value(umin2, vmax2)) ;
+    if (leftCornerDist > space_tol || rightCornerDist > space_tol) {
+        throw CTiglError("Surfaces don't match within tolerances in CTiglBSplineAlgorithms::concatSurfacesUDir.", TIGL_MATH_ERROR);
+    }
+
+    auto spl_vec = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface({bspl1, bspl2}, SurfaceDirection::v);
+    bspl1 = spl_vec[0];
+    bspl2 = spl_vec[1];
+
+    assert(bspl1->NbVPoles() == bspl2->NbVPoles());
+
+    // concat control points
+    TColgp_Array2OfPnt cpsNew(1, bspl1->NbUPoles() + bspl2->NbUPoles() - 1, 1, bspl1->NbVPoles());
+    for (int iv = 0; iv < bspl1->NbVPoles(); ++iv) {
+        for (int iu = 0; iu < bspl1->NbUPoles() - 1; ++iu) {
+            cpsNew.SetValue(iu+1, iv+1, bspl1->Pole(iu+1, iv+1));
+        }
+        auto offset = bspl1->NbUPoles();
+        for (int iu = 0; iu < bspl2->NbUPoles(); ++iu) {
+            cpsNew.SetValue(iu + offset, iv+1, bspl2->Pole(iu+1, iv+1));
+        }
+    }
+
+    // concat knots and mults
+    TColStd_Array1OfReal uknots_new(1, bspl1->NbUKnots() + bspl2->NbUKnots() - 1);
+    TColStd_Array1OfInteger umults_new(1, bspl1->NbUKnots() + bspl2->NbUKnots() - 1);
+
+    for (int i = 0; i < bspl1->NbUKnots()-1; ++i) {
+        uknots_new.SetValue(i+1, bspl1->UKnot(i+1));
+        umults_new.SetValue(i+1, bspl1->UMultiplicity(i+1));
+    }
+
+    int middleIdx = bspl1->NbUKnots();
+    uknots_new.SetValue(middleIdx, 0.5 * (bspl1->UKnot(middleIdx) + bspl2->UKnot(1)));
+    umults_new.SetValue(middleIdx, bspl1->UMultiplicity(middleIdx) - 1);
+
+    for (int i = 1; i < bspl2->NbUKnots(); ++i) {
+        uknots_new.SetValue(i + middleIdx, bspl2->UKnot(i+1));
+        umults_new.SetValue(i + middleIdx, bspl2->UMultiplicity(i+1));
+    }
+
+    // we simply take the v-knots of the first spline
+    TColStd_Array1OfReal vknots_new(1, bspl1->NbVKnots());
+    TColStd_Array1OfInteger vmults_new(1, bspl1->NbVKnots());
+    bspl1->VKnots(vknots_new);
+    bspl1->VMultiplicities(vmults_new);
+
+#ifdef DEBUG
+    int sum_umults = 0;
+    for (int i = umults_new.Lower(); i <= umults_new.Upper(); ++i) {
+        sum_umults += umults_new.Value(i);
+    }
+
+    int sum_vmults = 0;
+    for (int i = vmults_new.Lower(); i <= vmults_new.Upper(); ++i) {
+        sum_vmults += vmults_new.Value(i);
+    }
+
+    assert(cpsNew.ColLength() + u_degree + 1 == sum_umults);
+    assert(cpsNew.RowLength() + v_degree + 1 == sum_vmults);
+#endif
+
+    return new Geom_BSplineSurface(cpsNew, uknots_new, vknots_new,
+                                   umults_new, vmults_new,
+                                   u_degree, v_degree, false, false);
+}
+
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::makeKnotsUniform(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v)
+{
+    double u1, u2, v1, v2;
+    surf->Bounds(u1, u2, v1, v2);
+
+    // we create a degree 3 approximation in all directions
+    auto ncp_u = std::max(4, static_cast<int>(nseg_u + 1));
+    auto ncp_v = std::max(4, static_cast<int>(nseg_v + 1));
+
+    auto u = LinspaceWithBreaks(u1, u2, ncp_u, {});
+    auto v = LinspaceWithBreaks(v1, v2, ncp_v, {});
+
+    TColgp_Array2OfPnt points(1, ncp_u, 1, ncp_v);
+
+    for (size_t i = 0; i < u.size(); ++i) {
+        for (size_t j = 0; j < v.size(); ++j) {
+            auto pnt = surf->Value(u[i], v[j]);
+            points.SetValue(static_cast<Standard_Integer>(i+1), static_cast<Standard_Integer>(j+1), pnt);
+        }
+    }
+
+    return CTiglBSplineAlgorithms::pointsToSurface(points, u, v, true, true);
 }
 
 } // namespace tigl

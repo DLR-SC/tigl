@@ -324,6 +324,44 @@ size_t IndexFromUid(const std::vector<std::unique_ptr<T> >& vectorOfPointers, co
     return found - vectorOfPointers.begin();
 }
 
+/**
+ * @brief Searches for a entry in a range and returns its index
+ *
+ * This function can be used with std::arrays, std::vectors
+ * and also possible other containers supported by std::distance
+ *
+ * If the index is not found, the size of the range will be returned instead
+ */
+template <typename ForwardIter, typename Compare>
+size_t FindIndex(ForwardIter begin, ForwardIter end, Compare comp)
+{
+    const auto it = std::find_if(begin, end, comp);
+    if (it != end) {
+        return std::distance(begin, it);
+    }
+    else {
+        return std::distance(begin, end);
+    }
+}
+
+/**
+ * @brief Checks, whether an array contains a value or not
+ *
+ * @param array The array to be searched in
+ * @param val The value to be saerched for
+ * @param tolerance This functions is typically used with floating point values. The tolerance allows
+ *                  to search for a value within the specified tolerance.
+ */
+template <typename ArrayLike, typename ValueType>
+bool Contains(const ArrayLike& array, ValueType val, ValueType tolerance)
+{
+    auto idx = FindIndex(std::begin(array), std::end(array), [val, tolerance](const typename ArrayLike::value_type& cval) {
+        return fabs(cval - val) < tolerance;
+    });
+
+    return idx < array.size();
+}
+
 template <class ArrayType, typename BinaryPredicate, typename BinaryMerge>
 void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, BinaryMerge merged)
 {

@@ -101,11 +101,12 @@ std::vector<double> CCPACSGuideCurves::GetRelativeCircumferenceParameters() cons
         const CCPACSGuideCurve* root = GetGuideCurve(iguide).GetRootCurve();
         relCircs.push_back(*root->GetFromRelativeCircumference_choice2());
     }
-    if ( relCircs.back() < 1.0 ) {
-        relCircs.push_back(1.0);
-    }
 
     std::sort(relCircs.begin(), relCircs.end());
+
+    if (std::abs(relCircs.back() - 1.0) >= 1e-3 ) {
+        relCircs.push_back(1.0);
+    }
 
     return relCircs;
 }

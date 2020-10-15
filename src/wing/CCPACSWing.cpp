@@ -59,6 +59,8 @@
 #include "CGroupShapes.h"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS.hxx>
 
 
 namespace tigl
@@ -858,8 +860,24 @@ CCPACSGuideCurve& CCPACSWing::GetGuideCurveSegment(std::string uid)
 
 TopoDS_Compound CCPACSWing::GetGuideCurveWires() const
 {
-    return *guideCurves;
+    return guideCurves->wiresAsCompound;
 }
+
+std::vector<double> CCPACSWing::GetGuideCurveStartParameters() const
+{
+    if (GetSegmentCount() == 0) {
+        return {};
+    }
+
+    const auto& segment = GetSegment(1);
+    const auto& guides = segment.GetGuideCurves();
+    if (!guides) {
+        return {};
+    }
+
+    return guides->GetRelativeCircumferenceParameters();
+}
+
 
 std::vector<gp_Pnt> CCPACSWing::GetGuideCurvePoints()
 {
@@ -884,7 +902,7 @@ std::vector<gp_Pnt> CCPACSWing::GetGuideCurvePoints()
 }
 
 
-void CCPACSWing::BuildGuideCurveWires(TopoDS_Compound& cache) const
+void CCPACSWing::BuildGuideCurveWires(LocatedGuideCurves& cache) const
 {
     // check, if the wing has a blunt trailing edge
     bool hasBluntTE = true;
@@ -938,7 +956,24 @@ void CCPACSWing::BuildGuideCurveWires(TopoDS_Compound& cache) const
 
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots, sectionParams);
-    cache = connector.GetConnectedGuideCurves();
+    auto wires = connector.GetConnectedGuideCurves();
+
+    //  collect the from_ref_circumference values
+    assert(roots.size() == GetNumberOfSubshapes(wires));
+
+    cache.wiresAsCompound = wires;
+    cache.curves.clear();
+
+    auto rootIt = roots.begin();
+    for (TopoDS_Iterator anIter(wires); anIter.More(); anIter.Next(), rootIt++) {
+        cache.curves.push_back({TopoDS::Wire(anIter.Value()), rootIt->first});
+    }
+
+    // sort according to from location parameter
+    using LocCurve = LocatedGuideCurves::LocatedGuideCurve;
+    std::sort(std::begin(cache.curves), std::end(cache.curves), [](const LocCurve& c1, const LocCurve& c2) {
+        return c1.fromRelCircumference < c2.fromRelCircumference;
+    });
 }
 
 TopoDS_Shape transformWingProfileGeometry(const CTiglTransformation& wingTransform, const CTiglWingConnection& connection, const TopoDS_Shape& wire)

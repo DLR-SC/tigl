@@ -1969,16 +1969,7 @@ void TIGLViewerDocument::drawWingComponentSegment()
         return;
     }
 
-    for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
-        tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
-        for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
-            auto& segment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(j));
-            if (segment.GetUID() == csUid.toStdString()) {
-                drawWingComponentSegment(segment);
-                break;
-            }
-        }
-    }
+    drawComponentByUID(csUid);
 }
 
 void TIGLViewerDocument::drawWingComponentSegmentPoints()

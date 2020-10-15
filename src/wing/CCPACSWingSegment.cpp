@@ -45,6 +45,9 @@
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
 #include "CNamedShape.h"
+#include "CTiglWingBuilder.h"
+#include "CTiglConcatSurfaces.h"
+#include "GeomConvert.hxx"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -126,42 +129,6 @@ namespace
         return trafo.Transform(point);
     }
 
-    // Set the face traits
-    void SetFaceTraits (PNamedShape loft, std::string shapeUID) 
-    { 
-        // designated names of the faces
-        std::vector<std::string> names(5);
-        names[0]="Bottom";
-        names[1]="Top";
-        names[2]="TrailingEdge";
-        names[3]="Inside";
-        names[4]="Outside";
-
-        // map of faces
-        TopTools_IndexedMapOfShape map;
-        TopExp::MapShapes(loft->Shape(), TopAbs_FACE, map);
-        
-        for (int iFace = 0; iFace < map.Extent(); ++iFace) {
-            loft->FaceTraits(iFace).SetComponentUID(shapeUID);
-        }
-
-        // check if number of faces is correct (only valid for ruled surfaces lofts)
-        if (map.Extent() != 5 && map.Extent() != 4) {
-            LOG(ERROR) << "CCPACSWingSegment: Unable to determine face names in ruled surface loft";
-            return;
-        }
-        // remove trailing edge name if there is no trailing edge
-        if (map.Extent() == 4) {
-            names.erase(names.begin()+2);
-        }
-        // set face trait names
-        for (int i = 0; i < map.Extent(); i++) {
-            CFaceTraits traits = loft->GetFaceTraits(i);
-            traits.SetName(names[i].c_str());
-            loft->SetFaceTraits(i, traits);
-        }
-    }
-    
     /**
      * @brief getFaceTrimmingEdge Creates an edge in parameter space to trim a face
      * @return 
@@ -486,7 +453,11 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft, GetUID());
+    std::vector<double> guideCurveParams = {};
+    if (GetGuideCurves()) {
+        guideCurveParams = GetGuideCurves()->GetRelativeCircumferenceParameters();
+    }
+    CTiglWingBuilder::SetFaceTraits(guideCurveParams,  GetUID(), loft, innerConnection.GetProfile().HasBluntTE());
     return loft;
 }
 
@@ -974,11 +945,61 @@ gp_Pnt CCPACSWingSegment::GetOuterProfilePoint(double xsi) const
 
 void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
 {
-    // make upper and lower surface
-    cache.lowerSurface = BRep_Tool::Surface(TopoDS::Face(GetLowerShape()));
-    cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(GetUpperShape()));
-    cache.lowerSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetLowerShape(WING_COORDINATE_SYSTEM)));
-    cache.upperSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetUpperShape(WING_COORDINATE_SYSTEM)));
+    auto globalToLocalTrsf = GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix()
+                                 .Inverted();
+
+    auto lowerShape = GetLowerShape(GLOBAL_COORDINATE_SYSTEM);
+    auto upperShape = GetUpperShape(GLOBAL_COORDINATE_SYSTEM);
+
+    if (m_guideCurves) {
+        auto params = m_guideCurves->GetRelativeCircumferenceParameters();
+        auto it = std::find_if(std::begin(params), std::end(params), [](double val) {
+            // the leading edge is defined at parameter 0, we allow some tolerance
+            return std::abs(val) < 1e-3;
+        });
+
+        if (it == params.end()) {
+            // could not find leading edge guide curve
+            throw CTiglError ("There is no guide curve defined at the leading edge");
+        }
+
+        // split into upper and lower parameters
+        std::vector<double> lower_params, upper_params;
+        std::copy(std::begin(params), it+1, std::back_inserter(lower_params));
+        std::copy(it, std::end(params), std::back_inserter(upper_params));
+
+        auto concatSurfs = [](const TopoDS_Shape& shape, const std::vector<double>& parms) {
+            if (GetNumberOfFaces(shape) == 1) {
+                return BRep_Tool::Surface(TopoDS::Face(shape));
+            }
+            else {
+                std::vector<Handle(Geom_BSplineSurface)> surfs;
+
+                for (TopExp_Explorer expl(shape, TopAbs_FACE); expl.More(); expl.Next()) {
+                    const TopoDS_Face& face = TopoDS::Face(expl.Current());
+                    auto bspl = GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(face));
+                    surfs.push_back(bspl);
+                }
+
+                CTiglConcatSurfaces concat(surfs, parms, ConcatDir::u);
+                return Handle(Geom_Surface)(concat.Surface());
+            }
+        };
+
+        // make upper and lower surface
+        cache.lowerSurface = concatSurfs(lowerShape, lower_params);
+        cache.upperSurface = concatSurfs(upperShape, upper_params);
+
+    }
+    else {
+        // make upper and lower surface
+        cache.lowerSurface = BRep_Tool::Surface(TopoDS::Face(lowerShape));
+        cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(upperShape));
+    }
+
+    cache.lowerSurfaceLocal = globalToLocalTrsf.Transform(cache.lowerSurface);
+    cache.upperSurfaceLocal = globalToLocalTrsf.Transform(cache.upperSurface);
+
 }
 
 void CCPACSWingSegment::MakeChordSurfaces(ChordSurfaceCache& cache) const

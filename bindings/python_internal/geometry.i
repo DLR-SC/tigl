@@ -69,6 +69,8 @@
 #include "CTiglIntersectBSplines.h"
 #include "CTiglInterpolatePointsWithKinks.h"
 #include "CTiglApproxResult.h"
+#include "SurfTools.hxx"
+#include "CTiglConcatSurfaces.h"
 %}
 
 
@@ -80,7 +82,9 @@
 
 %template(CPointContainer) std::vector<gp_Pnt>;
 %template(BSplineCurveList) std::vector<Handle_Geom_BSplineCurve>;
+%template(BSplineSurfaceList) std::vector<Handle_Geom_BSplineSurface>;
 %template(CurveList) std::vector<Handle_Geom_Curve>;
+%template(SurfaceList) std::vector<Handle_Geom_Surface>;
 %template(CurveIntersectionResultList) std::vector<tigl::CurveIntersectionResult>;
 
 %boost_optional(tigl::CCPACSPointAbsRel)
@@ -89,6 +93,8 @@
 %boost_optional(tigl::generated::CPACSPointX)
 %boost_optional(tigl::generated::CPACSPointXYZ)
 
+%include "CTiglConcatSurfaces.h"
+%include "SurfTools.hxx"
 %include "CTiglApproxResult.h"
 %include "CTiglIntersectBSplines.h"
 %include "CTiglPointsToBSplineInterpolation.h"

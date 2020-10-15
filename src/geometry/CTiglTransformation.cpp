@@ -24,7 +24,10 @@
 #include "tigl.h"
 #include "BRepBuilderAPI_GTransform.hxx"
 #include "BRepBuilderAPI_Transform.hxx"
+#include "BRepBuilderAPI_MakeFace.hxx"
+#include "BRep_Tool.hxx"
 #include "gp_XYZ.hxx"
+#include "TopoDS_Face.hxx"
 #include "Standard_Version.hxx"
 #include "CNamedShape.h"
 
@@ -426,6 +429,21 @@ TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
         const TopoDS_Shape& transformedShape = brepBuilderGTransform.Shape();
         return transformedShape;
     }
+}
+
+// Transforms a surface with the current transformation matrix and
+// returns the transformed point
+TIGL_EXPORT Handle(Geom_Surface) CTiglTransformation::Transform(const Handle(Geom_Surface)& surf) const
+{
+    auto surfCopy = Handle(Geom_Surface)::DownCast(surf->Copy());
+
+    TopoDS_Face tmpFace = BRepBuilderAPI_MakeFace(surfCopy, 1e-6);
+    tmpFace = TopoDS::Face(Transform(tmpFace));
+    TopLoc_Location L;
+    surfCopy = BRep_Tool::Surface(tmpFace, L);
+    surfCopy->Transform(L.Transformation());
+
+    return surfCopy;
 }
 
 PNamedShape tigl::CTiglTransformation::Transform(PNamedShape shape) const

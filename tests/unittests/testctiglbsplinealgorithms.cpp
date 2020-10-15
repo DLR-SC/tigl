@@ -18,6 +18,8 @@
 #include <CTiglPointsToBSplineInterpolation.h>
 #include <CTiglInterpolateCurveNetwork.h>
 #include <CTiglGordonSurfaceBuilder.h>
+#include <CTiglCurvesToSurface.h>
+#include <CTiglConcatSurfaces.h>
 #include <tiglcommonfunctions.h>
 
 #include <BSplCLib.hxx>
@@ -477,7 +479,7 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorSurface)
     surfaces_vector.push_back(surface2);
     surfaces_vector.push_back(surface3);
 
-    std::vector<Handle(Geom_BSplineSurface) > modified_surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(surfaces_vector);
+    std::vector<Handle(Geom_BSplineSurface) > modified_surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(surfaces_vector, SurfaceDirection::both);
 
     TColStd_Array1OfReal computed_knot_vector_u(1, 6);
     modified_surfaces_vector[0]->UKnots(computed_knot_vector_u);
@@ -1533,5 +1535,174 @@ INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "fuselage2",
                             "ffd"
                             ));
+
+
+class ConcatSurfaces : public ::testing::Test
+{
+protected:
+    void SetUp() override;
+
+    Handle(Geom_BSplineSurface) s1, s2;
+};
+
+void ConcatSurfaces::SetUp()
+{
+
+    auto pnts1 = OccArray({
+        gp_Pnt(0., 0., 0.),
+        gp_Pnt(1., 0.3, 0.),
+        gp_Pnt(2., 0., 0.)
+    });
+    auto c1 = tigl::CTiglPointsToBSplineInterpolation(pnts1).Curve();
+
+    auto pnts2 = OccArray({
+        gp_Pnt(0., 0., 1.),
+        gp_Pnt(1., 0.3, 1.),
+        gp_Pnt(2., 0., 1.)
+    });
+    auto c2 = tigl::CTiglPointsToBSplineInterpolation(pnts2).Curve();
+
+    auto pnts3 = OccArray({
+        gp_Pnt(-0.2, -0.2, 2.),
+        gp_Pnt(1., 0.3, 2.),
+        gp_Pnt(1.2, -0.2, 2.)
+    });
+    auto c3 = tigl::CTiglPointsToBSplineInterpolation(pnts3).Curve();
+
+    s1 = tigl::CTiglCurvesToSurface({c1, c2}).Surface();
+    s2 = tigl::CTiglCurvesToSurface({c2, c3}).Surface();
+    s1->ExchangeUV();
+    s2->ExchangeUV();
+
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s1, 0, 1, 0, 1, 1e-15);
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s2, 1, 2, 0, 1, 1e-15);
+}
+
+TEST_F(ConcatSurfaces, concatUDir)
+{
+    auto result = tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2);
+
+    double u1, u2, v1, v2;
+    result->Bounds(u1, u2, v1, v2);
+    EXPECT_NEAR(0.0, u1, 1e-15);
+    EXPECT_NEAR(2.0, u2, 1e-15);
+    EXPECT_NEAR(0.0, v1, 1e-15);
+    EXPECT_NEAR(1.0, v2, 1e-15);
+
+    EXPECT_NEAR(0.0, s1->Value(0.5, 0.5).Distance(result->Value(0.5, 0.5)), 1e-10);
+    EXPECT_NEAR(0.0, s2->Value(1.3, 0.3).Distance(result->Value(1.3, 0.3)), 1e-10);
+
+    BRepTools::Write(BRepBuilderAPI_MakeFace(result, 1e-6).Face(), "TestData/concat_faces.brep");
+
+}
+
+TEST_F(ConcatSurfaces, concatUDirDifferentDegree)
+{
+    s1->IncreaseDegree(4, 5);
+    auto result = tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2);
+    EXPECT_EQ(4, result->UDegree());
+    EXPECT_EQ(5, result->VDegree());
+}
+
+TEST_F(ConcatSurfaces, error_notParamFollowingU)
+{
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s2, 2, 3, 0, 1, 1e-15);
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
+}
+
+TEST_F(ConcatSurfaces, error_vparmDontMatch)
+{
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s2, 1, 2, 3, 4, 1e-15);
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
+}
+
+TEST_F(ConcatSurfaces, error_notAdjacent)
+{
+    gp_Trsf t;
+    t.SetTranslation(gp_Vec(0, 0, 1));
+    s2->Transform(t);
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
+}
+
+TEST_F(ConcatSurfaces, concatWithParams)
+{
+    tigl::CTiglConcatSurfaces concatter({s1, s2}, {0., 2., 4.}, tigl::ConcatDir::u);
+
+    auto result = concatter.Surface();
+
+    double u1, u2, v1, v2;
+    result->Bounds(u1, u2, v1, v2);
+
+    EXPECT_NEAR(0.0, u1, 1e-15);
+    EXPECT_NEAR(4.0, u2, 1e-15);
+    EXPECT_NEAR(0.0, v1, 1e-15);
+    EXPECT_NEAR(1.0, v2, 1e-15);
+
+    EXPECT_NEAR(0.0, s1->Value(0.5, 0.5).Distance(result->Value(1.0, 0.5)), 1e-10);
+    EXPECT_NEAR(0.0, s2->Value(1.3, 0.3).Distance(result->Value(2.6, 0.3)), 1e-10);
+}
+
+TEST_F(ConcatSurfaces, concatWithParamsApprox)
+{
+    tigl::CTiglConcatSurfaces concatter({s1, s2}, {0., 2., 4.}, tigl::ConcatDir::u);
+    concatter.SetMakeKnotsUniformEnabled(3, 3);
+
+    auto result = concatter.Surface();
+
+    double u1, u2, v1, v2;
+    result->Bounds(u1, u2, v1, v2);
+
+    EXPECT_NEAR(0.0, u1, 1e-15);
+    EXPECT_NEAR(4.0, u2, 1e-15);
+    EXPECT_NEAR(0.0, v1, 1e-15);
+    EXPECT_NEAR(1.0, v2, 1e-15);
+
+    EXPECT_NEAR(0.0, s1->Value(0.5, 0.5).Distance(result->Value(1.0, 0.5)), 1e-10);
+    EXPECT_NEAR(0.0, s2->Value(1.3, 0.3).Distance(result->Value(2.6, 0.3)), 1e-10);
+}
+
+TEST_F(ConcatSurfaces, concatToFewParams)
+{
+    ASSERT_THROW(tigl::CTiglConcatSurfaces({s1, s2}, {0., 2.}, tigl::ConcatDir::u), tigl::CTiglError);
+}
+
+TEST(ApproxSurface, simple)
+{
+    TColgp_Array2OfPnt pnts(1, 2, 1, 2);
+    pnts.SetValue(1, 1, gp_Pnt(0, 0, 0));
+    pnts.SetValue(2, 1, gp_Pnt(1, -1, 0));
+    pnts.SetValue(1, 2, gp_Pnt(0, 1, 0));
+    pnts.SetValue(2, 1, gp_Pnt(1, 2, 0));
+
+    auto surfOrig = tigl::CTiglBSplineAlgorithms::pointsToSurface(pnts, {0., 1.}, {0., 1.}, false, false);
+    auto surfApprox = tigl::CTiglBSplineAlgorithms::makeKnotsUniform(surfOrig, 4, 8);
+
+    EXPECT_EQ(3, surfApprox->NbUKnots());
+    EXPECT_EQ(7, surfApprox->NbVKnots());
+
+    EXPECT_EQ(0., surfApprox->UKnot(1));
+    EXPECT_EQ(0.5, surfApprox->UKnot(2));
+    EXPECT_EQ(1.0, surfApprox->UKnot(3));
+
+    EXPECT_EQ(0., surfApprox->VKnot(1));
+    EXPECT_EQ(0.25, surfApprox->VKnot(2));
+    EXPECT_EQ(0.375, surfApprox->VKnot(3));
+    EXPECT_EQ(0.5, surfApprox->VKnot(4));
+    EXPECT_EQ(0.625, surfApprox->VKnot(5));
+    EXPECT_EQ(0.75, surfApprox->VKnot(6));
+    EXPECT_EQ(1.0, surfApprox->VKnot(7));
+
+    // the resulting surface should match exactly the original one by design
+    auto u = LinspaceWithBreaks(0, 1, 100, {});
+    auto v = LinspaceWithBreaks(0, 1, 100, {});
+
+    for (auto u_val : u) {
+        for (auto v_val : v) {
+            auto pntApprox = surfApprox->Value(u_val, v_val);
+            auto pntOrig = surfOrig->Value(u_val, v_val);
+            EXPECT_NEAR(0., pntApprox.Distance(pntOrig), 1e-13);
+        }
+    }
+}
 
 } // namespace tigl

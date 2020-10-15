@@ -39,6 +39,14 @@
 namespace tigl
 {
 
+enum class SurfaceDirection
+{
+    u,
+    v,
+    both
+};
+
+
 class CTiglBSplineAlgorithms
 {
 public:
@@ -117,20 +125,30 @@ public:
 
     /**
      * @brief createCommonKnotsVectorSurface:
-     *          Creates a common knot vector in both u- and v-direction of the given vector of B-spline surfaces
+     *          Creates a common knot vector in both u- and / or v-direction of the given vector of B-spline surfaces
      *          The common knot vector contains all knots in u- and v-direction of all surfaces with the highest multiplicity of all surfaces.
-     *          !!! This method calls the method createCommonKnotsVectorSurfaceOneDir two times to create a common knot vector in both directions !!!
+     *
+     *          Note: the parameter range of the surfaces must match before calling this function.
+     *
      * @param old_surfaces_vector:
      *          the given vector of B-spline surfaces that could have a different knot vector in u- and v-direction
+     * @param dir:
+     *          Defines, which knot vector (u/v/both) is modified
      * @return
      *          the given vector of B-spline surfaces, now with a common knot vector
      *          The B-spline surface geometry remains the same.
      */
-    TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector);
+    TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector, SurfaceDirection dir);
 
     /**
+     * Changes the parameter range of the b-spline curve
      */
     TIGL_EXPORT static void reparametrizeBSpline(Geom_BSplineCurve& spline, double umin, double umax, double tol=1e-15);
+
+    /**
+     * Changes the parameter range of the b-spline surfae
+     */
+    TIGL_EXPORT static void reparametrizeBSpline(Geom_BSplineSurface& spline, double umin, double umax, double vmin, double vmax, double tol);
 
     /**
      * Reparametrizes the B-Spline such that the knot distribution is uniform and the number of
@@ -262,6 +280,38 @@ public:
     TIGL_EXPORT static Handle(Geom_BSplineCurve) concatCurves(std::vector<Handle(Geom_BSplineCurve)> curves,
                                                               bool parByLength=true, double tolerance = 1e-6);
 
+    /**
+     * @brief Concatenates two surfaces in u direction
+     *
+     * Note: This function has the following requirements
+     *   - s2 follows s1 in u direction and have a common boundary
+     *   - s2 follows s1 also in parametric domain
+     *   - both surfaces are non-rational!
+     *   - the surfaces a non-periodic in u direction
+     *
+     * The resulting surface might not C1 and C2 continuous.
+     * We still have geometric continuity.
+     *
+     * To achieve parametric continuity, the surfaces must be
+     * re-parametrized accordingly before
+     */
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) concatSurfacesUDir(Handle(Geom_BSplineSurface) bspl1, Handle(Geom_BSplineSurface) bspl2, double space_tol=1e-5);
+
+    /**
+     * @ brief Changes the knot sequence to be uniform after calling the function
+     *
+     * Technically, this is done by approximating the surface with a new surface
+     * which also adds an approximation error.
+     * For the surface approximation, derivatives at the boundary are not taken into account yet.
+     *
+     * The approximation error depends on the number of knot segments,
+     * the more segments are used, the better will be the result.
+     *
+     * @param surf Surface to approximate
+     * @param nseg_u Number of knot segments in u direction
+     * @param nseg_v Number of knot segments in v direction
+    */
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) makeKnotsUniform(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v);
 };
 } // namespace tigl
 

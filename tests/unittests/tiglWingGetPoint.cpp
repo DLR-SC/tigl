@@ -440,3 +440,30 @@ TEST(WingGetPointBugs, getPointDirection_Fuehrer)
     ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 1.0, dirx, diry, dirz, &px, &py, &pz, &distance));
     ASSERT_LT(distance, tolerance);
 }
+
+TEST(WingGetPointWithGuides, fourGuideCurves)
+{
+    TiglHandleWrapper handle("TestData/simpletest-with-guides.cpacs.xml", "");
+    double x, y, z;
+    tiglWingGetUpperPoint(handle, 1, 1, 1.0, 0.5, &x, &y, &z);
+
+    EXPECT_NEAR(0.053, z, 1e-3);
+    EXPECT_NEAR(0.8, y, 1e-10);
+    EXPECT_NEAR(0.5, x, 0.01);
+
+    tiglWingGetUpperPoint(handle, 1, 1, 1.0, 0.0, &x, &y, &z);
+
+    EXPECT_NEAR(0.0, z, 1e-3);
+    EXPECT_NEAR(0.8, y, 1e-10);
+    EXPECT_NEAR(0.0, x, 1e-10);
+
+    // check, that get point function succeed and do not crash
+    for (double eta = 0; eta <= 1.0; eta += 0.1) {
+        for (double xsi = 0; xsi <= 1.0; xsi += 0.1) {
+            EXPECT_EQ(TIGL_SUCCESS, tiglWingGetUpperPoint(handle, 1, 1, eta, xsi, &x, &y, &z));
+            EXPECT_EQ(TIGL_SUCCESS, tiglWingGetLowerPoint(handle, 1, 2, eta, xsi, &x, &y, &z));
+            EXPECT_EQ(TIGL_SUCCESS, tiglWingGetUpperPoint(handle, 1, 1, eta, xsi, &x, &y, &z));
+            EXPECT_EQ(TIGL_SUCCESS, tiglWingGetLowerPoint(handle, 1, 2, eta, xsi, &x, &y, &z));
+        }
+    }
+}
