@@ -865,11 +865,17 @@ TopoDS_Compound CCPACSWing::GetGuideCurveWires() const
 
 std::vector<double> CCPACSWing::GetGuideCurveStartParameters() const
 {
-    std::vector<double> res;
-    for (const auto& curve : guideCurves->curves) {
-        res.push_back(curve.fromRelCircumference);
+    if (GetSegmentCount() == 0) {
+        return {};
     }
-    return res;
+
+    const auto& segment = GetSegment(1);
+    const auto& guides = segment.GetGuideCurves();
+    if (!guides) {
+        return {};
+    }
+
+    return guides->GetRelativeCircumferenceParameters();
 }
 
 
