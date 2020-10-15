@@ -104,8 +104,7 @@ std::vector<double> CCPACSGuideCurves::GetRelativeCircumferenceParameters() cons
 
     std::sort(relCircs.begin(), relCircs.end());
 
-    double eps = 1e-10;
-    if ( relCircs.back() < 1.0 - eps ) {
+    if (std::abs(relCircs.back() - 1.0) >= 1e-3 ) {
         relCircs.push_back(1.0);
     }
 
