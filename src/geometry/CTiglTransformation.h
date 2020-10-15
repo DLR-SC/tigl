@@ -117,7 +117,7 @@ public:
     TIGL_EXPORT gp_Pnt Transform(const gp_Pnt& point) const;
 
     // Transforms a surface with the current transformation matrix and
-    // returns the transformed point
+    // returns the transformed surface
     TIGL_EXPORT Handle(Geom_Surface) Transform(const Handle(Geom_Surface)& surf) const;
 
     // Transforms a vector with the current transformation matrix and
