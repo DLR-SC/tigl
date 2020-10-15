@@ -324,6 +324,28 @@ size_t IndexFromUid(const std::vector<std::unique_ptr<T> >& vectorOfPointers, co
     return found - vectorOfPointers.begin();
 }
 
+template <typename ForwardIter, typename Compare>
+size_t FindIndex(ForwardIter begin, ForwardIter end, Compare comp)
+{
+    const auto it = std::find_if(begin, end, comp);
+    if (it != end) {
+        return std::distance(begin, it);
+    }
+    else {
+        return std::distance(begin, end);
+    }
+}
+
+template <typename ArrayLike, typename ValueType>
+bool Contains(const ArrayLike& array, ValueType val, ValueType tolerance)
+{
+    auto idx = FindIndex(std::begin(array), std::end(array), [val, tolerance](const typename ArrayLike::value_type& cval) {
+        return fabs(cval - val) < tolerance;
+    });
+
+    return idx < array.size();
+}
+
 template <class ArrayType, typename BinaryPredicate, typename BinaryMerge>
 void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, BinaryMerge merged)
 {

@@ -41,32 +41,6 @@
 #include <cassert>
 #include <algorithm>
 
-namespace
-{
-template <typename ForwardIter, typename Compare>
-size_t find_index(ForwardIter begin, ForwardIter end, Compare comp)
-{
-    const auto it = std::find_if(begin, end, comp);
-    if (it != end) {
-        return std::distance(begin, it);
-    }
-    else {
-        return std::distance(begin, end);
-    }
-}
-
-template <typename ArrayLike, typename ValueType>
-bool contains(const ArrayLike& array, ValueType val)
-{
-    auto idx = find_index(std::begin(array), std::end(array), [val](const typename ArrayLike::value_type& cval) {
-        return fabs(cval - val) < 1e-3;
-    });
-
-    return idx < array.size();
-}
-
-} // namespace
-
 namespace tigl
 {
 
@@ -123,17 +97,18 @@ void CTiglWingBuilder::SetFaceTraits (const std::vector<double>& guideCurveParam
     size_t nFacesPerSegment = 2; // Without trailing edge
     size_t idx_leading_edge = 1;
     if (hasGuideCurves) {
-        if (!contains(params, -1.)) {
+        double tolerance = 1e-3;
+        if (!Contains(params, -1., tolerance)) {
             params.insert(params.begin(), -1.);
         }
 
-        if (!contains(params, 1.)) {
+        if (!Contains(params, 1., tolerance)) {
             params.push_back(1.);
         }
 
         // find leading edge curve
-        idx_leading_edge = find_index(params.cbegin(), params.cend(), [] (double val) {
-            return fabs(val) < 1e-3;
+        idx_leading_edge = FindIndex(params.cbegin(), params.cend(), [tolerance] (double val) {
+            return fabs(val) < tolerance;
         });
 
         if (idx_leading_edge == params.size()) {
