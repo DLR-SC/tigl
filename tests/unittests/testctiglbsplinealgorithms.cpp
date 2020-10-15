@@ -479,7 +479,7 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorSurface)
     surfaces_vector.push_back(surface2);
     surfaces_vector.push_back(surface3);
 
-    std::vector<Handle(Geom_BSplineSurface) > modified_surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(surfaces_vector);
+    std::vector<Handle(Geom_BSplineSurface) > modified_surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(surfaces_vector, SurfaceDirection::both);
 
     TColStd_Array1OfReal computed_knot_vector_u(1, 6);
     modified_surfaces_vector[0]->UKnots(computed_knot_vector_u);

@@ -189,7 +189,8 @@ void CTiglGordonSurfaceBuilder::CreateGordonSurface(const std::vector<Handle(Geo
     surfaces_vector_unmod.push_back(tensorProdSurf);
 
     // create common knot vector for all three surfaces
-    std::vector<Handle(Geom_BSplineSurface)> surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(surfaces_vector_unmod);
+    std::vector<Handle(Geom_BSplineSurface)> surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(surfaces_vector_unmod,
+                                                                                                                      SurfaceDirection::both);
 
     assert(surfaces_vector.size() == 3);
 

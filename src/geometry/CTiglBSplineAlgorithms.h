@@ -39,6 +39,14 @@
 namespace tigl
 {
 
+enum class SurfaceDirection
+{
+    u,
+    v,
+    both
+};
+
+
 class CTiglBSplineAlgorithms
 {
 public:
@@ -117,40 +125,20 @@ public:
 
     /**
      * @brief createCommonKnotsVectorSurface:
-     *          Creates a common knot vector in both u- and v-direction of the given vector of B-spline surfaces
+     *          Creates a common knot vector in both u- and / or v-direction of the given vector of B-spline surfaces
      *          The common knot vector contains all knots in u- and v-direction of all surfaces with the highest multiplicity of all surfaces.
-     *          !!! This method calls the method createCommonKnotsVectorSurfaceOneDir two times to create a common knot vector in both directions !!!
+     *
+     *          Note: the parameter range of the surfaces must match before calling this function.
+     *
      * @param old_surfaces_vector:
      *          the given vector of B-spline surfaces that could have a different knot vector in u- and v-direction
+     * @param dir:
+     *          Defines, which knot vector (u/v/both) is modified
      * @return
      *          the given vector of B-spline surfaces, now with a common knot vector
      *          The B-spline surface geometry remains the same.
      */
-    TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector);
-
-    /**
-     * @brief createCommonUKnotsVectorSurface:
-     *          Creates a common knot vector in u-direction of the given vector of B-spline surfaces
-     *          The common knot vector contains all knots in u-direction of all surfaces with the highest multiplicity of all surfaces.
-     * @param old_surfaces_vector:
-     *          the given vector of B-spline surfaces that could have a different knot vector in u-direction
-     * @return
-     *          the given vector of B-spline surfaces, now with a common knot vector
-     *          The B-spline surface geometry remains the same.
-     */
-    TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonUKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector);
-
-    /**
-     * @brief createCommonVKnotsVectorSurface:
-     *          Creates a common knot vector in v-direction of the given vector of B-spline surfaces
-     *          The common knot vector contains all knots in v-direction of all surfaces with the highest multiplicity of all surfaces.
-     * @param old_surfaces_vector:
-     *          the given vector of B-spline surfaces that could have a different knot vector in v-direction
-     * @return
-     *          the given vector of B-spline surfaces, now with a common knot vector
-     *          The B-spline surface geometry remains the same.
-     */
-    TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonVKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector);
+    TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector, SurfaceDirection dir);
 
     /**
      * Changes the parameter range of the b-spline curve

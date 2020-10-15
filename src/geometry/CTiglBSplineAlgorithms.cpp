@@ -535,56 +535,24 @@ std::vector<Handle(Geom_BSplineCurve)> CTiglBSplineAlgorithms::createCommonKnots
     return std::vector<Handle(Geom_BSplineCurve)>(splines_adapter.begin(), splines_adapter.end());
 }
 
-std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector)
+std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector, SurfaceDirection dir)
 {
-    // all B-spline surfaces must have the same parameter range in u- and v-direction
-    // TODO: Match parameter range
-
     // Create a copy that we can modify
     std::vector<SurfAdapterView> adapterSplines;
     for (size_t i = 0; i < old_surfaces_vector.size(); ++i) {
         adapterSplines.push_back(SurfAdapterView(Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[i]->Copy()), udir));
     }
 
-    // first in u direction
-    makeGeometryCompatibleImpl(adapterSplines, 1e-14);
-
-    for (size_t i = 0; i < old_surfaces_vector.size(); ++i) adapterSplines[i].setDir(vdir);
-
-    // now in v direction
-    makeGeometryCompatibleImpl(adapterSplines, 1e-14);
-
-    return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
-}
-
-std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonUKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector)
-{
-    // all B-spline surfaces must have the same parameter range in u- and v-direction
-    // TODO: Match parameter range
-
-    // Create a copy that we can modify
-    std::vector<SurfAdapterView> adapterSplines;
-    for (size_t i = 0; i < old_surfaces_vector.size(); ++i) {
-        adapterSplines.push_back(SurfAdapterView(Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[i]->Copy()), udir));
+    if (dir == SurfaceDirection::u || dir == SurfaceDirection::both) {
+        // first in u direction
+        makeGeometryCompatibleImpl(adapterSplines, 1e-14);
     }
 
-    makeGeometryCompatibleImpl(adapterSplines, 1e-14);
-
-    return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
-}
-
-std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonVKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector)
-{
-    // all B-spline surfaces must have the same parameter range in u- and v-direction
-    // TODO: Match parameter range
-
-    // Create a copy that we can modify
-    std::vector<SurfAdapterView> adapterSplines;
-    for (size_t i = 0; i < old_surfaces_vector.size(); ++i) {
-        adapterSplines.push_back(SurfAdapterView(Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[i]->Copy()), vdir));
+    if (dir == SurfaceDirection::v || dir == SurfaceDirection::both) {
+         // now in v direction
+        for (size_t i = 0; i < old_surfaces_vector.size(); ++i) adapterSplines[i].setDir(vdir);
+        makeGeometryCompatibleImpl(adapterSplines, 1e-14);
     }
-
-    makeGeometryCompatibleImpl(adapterSplines, 1e-14);
 
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
 }
@@ -1239,7 +1207,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::concatSurfacesUDir(Handle(Ge
         throw CTiglError("Surfaces don't match within tolerances in CTiglBSplineAlgorithms::concatSurfacesUDir.", TIGL_MATH_ERROR);
     }
 
-    auto spl_vec = CTiglBSplineAlgorithms::createCommonVKnotsVectorSurface({bspl1, bspl2});
+    auto spl_vec = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface({bspl1, bspl2}, SurfaceDirection::v);
     bspl1 = spl_vec[0];
     bspl2 = spl_vec[1];
 
