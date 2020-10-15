@@ -98,11 +98,11 @@ void CTiglWingBuilder::SetFaceTraits (const std::vector<double>& guideCurveParam
     size_t idx_leading_edge = 1;
     if (hasGuideCurves) {
         double tolerance = 1e-3;
-        if (!Contains(params, -1., tolerance)) {
+        if (std::abs(params.front() + 1.) > tolerance) {
             params.insert(params.begin(), -1.);
         }
 
-        if (!Contains(params, 1., tolerance)) {
+        if (std::abs(params.back() - 1.) > tolerance) {
             params.push_back(1.);
         }
 
