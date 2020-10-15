@@ -282,6 +282,30 @@ TEST(TiglCommonFunctions, normalizeAngleDeg)
     EXPECT_NEAR(45., NormalizeAngleDeg(405.), 1e-9);
 }
 
+TEST(TiglCommonFunctions, findIndex)
+{
+    std::array<float, 5> arr{0., 1.0, 2.0, 3.0, 4.0};
+
+    size_t idx = FindIndex(std::begin(arr), std::end(arr), [](float v) {
+        return v == 2.0;
+    });
+    EXPECT_EQ(2, idx);
+
+    idx = FindIndex(std::begin(arr), std::end(arr), [](float v) {
+        return v == -2.0;
+    });
+
+    EXPECT_EQ(5, idx);
+}
+
+TEST(TiglCommonFunctions, contains)
+{
+    std::array<float, 5> arr{0., 1.0, 2.0, 3.0, 4.0};
+    EXPECT_TRUE(Contains(arr, 1.00, 1e-15));
+    EXPECT_FALSE(Contains(arr, 1.01, 1e-15));
+    EXPECT_TRUE(Contains(arr, 1.01, 2e-2));
+}
+
 class TestBuildFace: public ::testing::TestWithParam<int>
 {
 protected:
