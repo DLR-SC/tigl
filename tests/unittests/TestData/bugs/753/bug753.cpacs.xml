@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs>
+  <header>
+    <name>Test case for bug 753</name>
+    <creator>Martin Siggel</creator>
+    <timestamp>2020-10-16T00:00:00</timestamp>
+    <version>1.0.0</version>
+    <cpacsVersion>3.1</cpacsVersion>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="Geom753">
+        <name>Geometry</name>
+        <fuselages>
+          <fuselage uID="intake" symmetry="x-z-plane">
+            <name>intake</name>
+            <transformation uID="geom_transformation1">
+              <scaling uID="geom_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="geom_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="geom_transformation1_translation1">
+                <x>4.67712</x>
+                <y>0.437083</y>
+                <z>-0.454521</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="geom_Sec1">
+                <name>geom_Sec1</name>
+                <description>geom_Sec1</description>
+                <transformation uID="geom_Sec1_transformation1">
+                  <scaling uID="geom_Sec1_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="geom_Sec1_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal" uID="geom_Sec1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="geom_Sec1_Elem1">
+                    <name>geom_Sec1_Elem1</name>
+                    <description>geom_Sec1_Element1</description>
+                    <profileUID isLink="True">Rectangle</profileUID>
+                    <transformation uID="geom_Sec1_Elem1_transformation1">
+                      <scaling uID="geom_Sec1_Elem1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>0.437082</y>
+                        <z>0.437082</z>
+                      </scaling>
+                      <rotation uID="geom_Sec1_Elem1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal" uID="geom_Sec1_Elem1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="geom_Sec2">
+                <name>geom_Sec2</name>
+                <description>geom_Sec2</description>
+                <transformation uID="geom_Sec2_transformation1">
+                  <scaling uID="geom_Sec2_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="geom_Sec2_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal" uID="geom_Sec2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="geom_Sec2_Elem1">
+                    <name>geom_Sec2_Elem1</name>
+                    <description>geom_Sec2_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation uID="geom_Sec2_Elem1_transformation1">
+                      <scaling uID="geom_Sec2_Elem1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>0.407182</y>
+                        <z>0.407182</z>
+                      </scaling>
+                      <rotation uID="geom_Sec2_Elem1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal" uID="geom_Sec2_Elem1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="geom_Sec3">
+                <name>geom_Sec3</name>
+                <description>geom_Sec3</description>
+                <transformation uID="geom_Sec3_transformation1">
+                  <scaling uID="geom_Sec3_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="geom_Sec3_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal" uID="geom_Sec3_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="geom_Sec3_Elem1">
+                    <name>geom_Sec3_Elem1</name>
+                    <description>geom_Sec3_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation uID="geom_Sec3_Elem1_transformation1">
+                      <scaling uID="geom_Sec3_Elem1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>0.377281</y>
+                        <z>0.377281</z>
+                      </scaling>
+                      <rotation uID="geom_Sec3_Elem1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal" uID="geom_Sec3_Elem1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="geom_Sec4">
+                <name>geom_Sec4</name>
+                <description>geom_Sec4</description>
+                <transformation uID="geom_Sec4_transformation1">
+                  <scaling uID="geom_Sec4_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="geom_Sec4_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absGlobal" uID="geom_Sec4_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="geom_Sec4_Elem1">
+                    <name>geom_Sec4_Elem1</name>
+                    <description>geom_Sec4_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation uID="geom_Sec4_Elem1_transformation1">
+                      <scaling uID="geom_Sec4_Elem1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>0.377281</y>
+                        <z>0.377281</z>
+                      </scaling>
+                      <rotation uID="geom_Sec4_Elem1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absGlobal" uID="geom_Sec4_Elem1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="geom_Pos1">
+                <name>geom_Pos1</name>
+                <length>0</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID isLink="True">geom_Sec1</toSectionUID>
+              </positioning>
+              <positioning uID="geom_Pos2">
+                <name>geom_Pos2</name>
+                <length>2.23263</length>
+                <sweepAngle>90.5665</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID isLink="True">geom_Sec1</fromSectionUID>
+                <toSectionUID isLink="True">geom_Sec2</toSectionUID>
+              </positioning>
+              <positioning uID="geom_Pos3">
+                <name>geom_Pos3</name>
+                <length>2.27832</length>
+                <sweepAngle>78.4924</sweepAngle>
+                <dihedralAngle>90</dihedralAngle>
+                <fromSectionUID isLink="True">geom_Sec2</fromSectionUID>
+                <toSectionUID isLink="True">geom_Sec3</toSectionUID>
+              </positioning>
+              <positioning uID="geom_Pos4">
+                <name>geom_Pos4</name>
+                <length>2.23253</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID isLink="True">geom_Sec3</fromSectionUID>
+                <toSectionUID isLink="True">geom_Sec4</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="geom_Seg1">
+                <name>geom_Seg1</name>
+                <description>geom_Seg1</description>
+                <fromElementUID isLink="True">geom_Sec1_Elem1</fromElementUID>
+                <toElementUID isLink="True">geom_Sec2_Elem1</toElementUID>
+              </segment>
+              <segment uID="geom_Seg2">
+                <name>geom_Seg2</name>
+                <description>geom_Seg2</description>
+                <fromElementUID isLink="True">geom_Sec2_Elem1</fromElementUID>
+                <toElementUID isLink="True">geom_Sec3_Elem1</toElementUID>
+              </segment>
+              <segment uID="geom_Seg3">
+                <name>geom_Seg3</name>
+                <description>geom_Seg3</description>
+                <fromElementUID isLink="True">geom_Sec3_Elem1</fromElementUID>
+                <toElementUID isLink="True">geom_Sec4_Elem1</toElementUID>
+              </segment>
+            </segments>
+          </fuselage>
+        </fuselages>
+      </model>
+    </aircraft>
+    <profiles>
+      <fuselageProfiles>
+        <fuselageProfile uID="Circle">
+          <name>Circle Profile</name>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</x>
+            <y mapType="vector">-0;-0.0784591;-0.156434;-0.233445;-0.309017;-0.382683;-0.45399;-0.522499;-0.587785;-0.649448;-0.707107;-0.760406;-0.809017;-0.85264;-0.891007;-0.92388;-0.951057;-0.97237;-0.987688;-0.996917;-1;-0.996917;-0.987688;-0.97237;-0.951057;-0.92388;-0.891007;-0.85264;-0.809017;-0.760406;-0.707107;-0.649448;-0.587785;-0.522499;-0.45399;-0.382683;-0.309017;-0.233445;-0.156434;-0.0784591;-0;0.0784591;0.156434;0.233445;0.309017;0.382683;0.45399;0.522499;0.587785;0.649448;0.707107;0.760406;0.809017;0.85264;0.891007;0.92388;0.951057;0.97237;0.987688;0.996917;1;0.996917;0.987688;0.97237;0.951057;0.92388;0.891007;0.85264;0.809017;0.760406;0.707107;0.649448;0.587785;0.522499;0.45399;0.382683;0.309017;0.233445;0.156434;0.0784591;0</y>
+            <z mapType="vector">1;0.996917;0.987688;0.97237;0.951057;0.92388;0.891007;0.85264;0.809017;0.760406;0.707107;0.649448;0.587785;0.522499;0.45399;0.382683;0.309017;0.233445;0.156434;0.0784591;0;-0.0784591;-0.156434;-0.233445;-0.309017;-0.382683;-0.45399;-0.522499;-0.587785;-0.649448;-0.707107;-0.760406;-0.809017;-0.85264;-0.891007;-0.92388;-0.951057;-0.97237;-0.987688;-0.996917;-1;-0.996917;-0.987688;-0.97237;-0.951057;-0.92388;-0.891007;-0.85264;-0.809017;-0.760406;-0.707107;-0.649448;-0.587785;-0.522499;-0.45399;-0.382683;-0.309017;-0.233445;-0.156434;-0.0784591;-0;0.0784591;0.156434;0.233445;0.309017;0.382683;0.45399;0.522499;0.587785;0.649448;0.707107;0.760406;0.809017;0.85264;0.891007;0.92388;0.951057;0.97237;0.987688;0.996917;1</z>
+          </pointList>
+        </fuselageProfile>
+        <fuselageProfile uID="Rectangle">
+          <name>Rectangle Profile</name>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</x>
+            <y mapType="vector">0.0239165;-0.723427;-0.77529;-0.807268;-0.830679;-0.849227;-0.864607;-0.877743;-0.889198;-0.899337;-0.908414;-0.916613;-0.92407;-0.930888;-0.937149;-0.942918;-0.948248;-0.953182;-0.957755;-0.961998;-0.965936;-0.969591;-0.972981;-0.976123;-0.979029;-0.981713;-0.984185;-0.986453;-0.988526;-0.990411;-0.992114;-0.99364;-0.994994;-0.996181;-0.997202;-0.998062;-0.998762;-0.999305;-0.999691;-0.999923;-1;-0.999923;-0.999691;-0.999305;-0.998762;-0.998062;-0.997202;-0.996181;-0.994994;-0.99364;-0.992114;-0.990411;-0.988526;-0.986453;-0.984185;-0.981713;-0.979029;-0.976123;-0.972981;-0.969591;-0.965936;-0.961998;-0.957755;-0.953182;-0.948248;-0.942918;-0.937149;-0.930888;-0.92407;-0.916613;-0.908414;-0.899337;-0.889198;-0.877743;-0.864607;-0.849227;-0.830679;-0.807268;-0.77529;-0.723427;-0.0266938;0.723427;0.77529;0.807268;0.830679;0.849227;0.864607;0.877743;0.889198;0.899337;0.908414;0.916613;0.92407;0.930888;0.937149;0.942918;0.948248;0.953182;0.957755;0.961998;0.965936;0.969591;0.972981;0.976123;0.979029;0.981713;0.984185;0.986453;0.988526;0.990411;0.992114;0.99364;0.994994;0.996181;0.997202;0.998062;0.998762;0.999305;0.999691;0.999923;1;0.999923;0.999691;0.999305;0.998762;0.998062;0.997202;0.996181;0.994994;0.99364;0.992114;0.990411;0.988526;0.986453;0.984185;0.981713;0.979029;0.976123;0.972981;0.969591;0.965936;0.961998;0.957755;0.953182;0.948248;0.942918;0.937149;0.930888;0.92407;0.916613;0.908414;0.899337;0.889198;0.877743;0.864607;0.849227;0.830679;0.807268;0.77529;0.723427;0.0280928</y>
+            <z mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;-0.723427;-0.77529;-0.807268;-0.830679;-0.849227;-0.864607;-0.877743;-0.889198;-0.899337;-0.908414;-0.916613;-0.92407;-0.930888;-0.937149;-0.942918;-0.948248;-0.953182;-0.957755;-0.961998;-0.965936;-0.969591;-0.972981;-0.976123;-0.979029;-0.981713;-0.984185;-0.986453;-0.988526;-0.990411;-0.992114;-0.99364;-0.994994;-0.996181;-0.997202;-0.998062;-0.998762;-0.999305;-0.999691;-0.999923;-1;-0.999923;-0.999691;-0.999305;-0.998762;-0.998062;-0.997202;-0.996181;-0.994994;-0.99364;-0.992114;-0.990411;-0.988526;-0.986453;-0.984185;-0.981713;-0.979029;-0.976123;-0.972981;-0.969591;-0.965936;-0.961998;-0.957755;-0.953182;-0.948248;-0.942918;-0.937149;-0.930888;-0.92407;-0.916613;-0.908414;-0.899337;-0.889198;-0.877743;-0.864607;-0.849227;-0.830679;-0.807268;-0.77529;-0.723427;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</z>
+          </pointList>
+        </fuselageProfile>
+      </fuselageProfiles>
+    </profiles>
+  </vehicles>
+</cpacs>

@@ -20,6 +20,7 @@
 #include "tigl.h"
 #include "CTiglMakeLoft.h"
 #include "CTiglError.h"
+#include "CCPACSConfigurationManager.h"
 
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
@@ -122,6 +123,13 @@ TEST(makeLoft, bug753)
     loftMaker.setMakeSolid(true);
     loftMaker.setMakeSmooth(true);
     ASSERT_THROW(loftMaker.Shape(), tigl::CTiglError);
+}
+
+TEST(makeLoft, bug753_cpacs)
+{
+    TiglHandleWrapper handle("TestData/bugs/753/bug753.cpacs.xml", "");
+    const auto &fuselage = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(handle).GetFuselage(1);
+    EXPECT_NO_THROW(fuselage.GetLoft());
 }
 
 class CurveNetworkCoons: public ::testing::TestWithParam<std::string>
