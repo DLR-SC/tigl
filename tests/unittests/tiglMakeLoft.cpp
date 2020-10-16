@@ -19,6 +19,7 @@
 #include "test.h"
 #include "tigl.h"
 #include "CTiglMakeLoft.h"
+#include "CTiglError.h"
 
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
@@ -105,6 +106,10 @@ TEST(makeLoft, nacelleClosed)
 
 TEST(makeLoft, bug753)
 {
+    /**
+     * The lofter should call an exception, as the number of wires
+     * is not equal
+     */
     BRep_Builder b;
     CTiglMakeLoft loftMaker;
     for (size_t i = 0; i < 4; ++i) {
@@ -116,10 +121,7 @@ TEST(makeLoft, bug753)
     }
     loftMaker.setMakeSolid(true);
     loftMaker.setMakeSmooth(true);
-    TopoDS_Shape loft = loftMaker.Shape();
-    EXPECT_FALSE(loft.IsNull());
-
-    BRepTools::Write(loft, "TestData/export/makeLoft_bug753.brep");
+    ASSERT_THROW(loftMaker.Shape(), tigl::CTiglError);
 }
 
 class CurveNetworkCoons: public ::testing::TestWithParam<std::string>

@@ -306,6 +306,13 @@ TEST(TiglCommonFunctions, contains)
     EXPECT_TRUE(Contains(arr, 1.01, 2e-2));
 }
 
+TEST(TiglCommonFunctions, allSame)
+{
+    std::vector<int> vec = {2, 1, 1, 1, 1, 1};
+    EXPECT_FALSE(AllSame(vec.begin(), vec.end()));
+    EXPECT_TRUE(AllSame(vec.begin() + 1, vec.end()));
+}
+
 class TestBuildFace: public ::testing::TestWithParam<int>
 {
 protected:

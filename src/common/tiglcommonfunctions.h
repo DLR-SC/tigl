@@ -362,6 +362,15 @@ bool Contains(const ArrayLike& array, ValueType val, ValueType tolerance)
     return idx < array.size();
 }
 
+/**
+ * Returns true, if all elements are the same
+ */
+template <typename ForwardIter>
+bool AllSame(ForwardIter begin, ForwardIter end)
+{
+    return std::adjacent_find( begin, end, std::not_equal_to<typename std::iterator_traits<ForwardIter>::value_type>() ) == end;
+}
+
 template <class ArrayType, typename BinaryPredicate, typename BinaryMerge>
 void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, BinaryMerge merged)
 {
