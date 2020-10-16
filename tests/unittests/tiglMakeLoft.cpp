@@ -103,6 +103,25 @@ TEST(makeLoft, nacelleClosed)
     BRepTools::Write(loft, "TestData/export/makeLoft_nacellePatchesClosed.brep");
 }
 
+TEST(makeLoft, bug753)
+{
+    BRep_Builder b;
+    CTiglMakeLoft loftMaker;
+    for (size_t i = 0; i < 4; ++i) {
+        std::stringstream str;
+        str << "TestData/bugs/753/4_profile_" << i << ".brep";
+        TopoDS_Shape wire;
+        EXPECT_EQ(Standard_True, BRepTools::Read(wire, str.str().c_str(), b));
+        loftMaker.addProfiles(TopoDS::Wire(wire));
+    }
+    loftMaker.setMakeSolid(true);
+    loftMaker.setMakeSmooth(true);
+    TopoDS_Shape loft = loftMaker.Shape();
+    EXPECT_FALSE(loft.IsNull());
+
+    BRepTools::Write(loft, "TestData/export/makeLoft_bug753.brep");
+}
+
 class CurveNetworkCoons: public ::testing::TestWithParam<std::string>
 {
 protected:
