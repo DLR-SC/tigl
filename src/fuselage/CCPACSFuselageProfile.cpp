@@ -193,11 +193,11 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
 
     // we always want to include the endpoint, if it's the same as the startpoint
     // we use the middle to enforce closing of the spline
-    gp_Pnt pStart =  points.front().Get_gp_Pnt();
-    gp_Pnt pEnd   =  points.back().Get_gp_Pnt();
+    gp_Pnt pStart = points.front().Get_gp_Pnt();
+    gp_Pnt pEnd   = points.back().Get_gp_Pnt();
 
     // this check allows some tolerance, based on the absolute size of the profile
-    if (pStart.Distance(pEnd) < 0.005*CTiglBSplineAlgorithms::scale(occPoints->Array1())) {
+    if (pStart.Distance(pEnd) < 0.005 * CTiglBSplineAlgorithms::scale(occPoints->Array1())) {
         gp_Pnt pMiddle = 0.5 * (pStart.XYZ() + pEnd.XYZ());
         occPoints->SetValue(occPoints->Lower(), pMiddle);
         occPoints->SetValue(occPoints->Upper(), pMiddle);
