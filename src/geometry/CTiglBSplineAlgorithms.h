@@ -242,6 +242,9 @@ public:
     /// Returns the scale of the point matrix
     TIGL_EXPORT static double scale(const TColgp_Array2OfPnt& points);
 
+    /// Returns the scale of the point list by searching for the largest distance between two points
+    TIGL_EXPORT static double scale(const TColgp_Array1OfPnt& points);
+
     /**
      * Returns positions, where the curve has kinks (C1 Discontinuities)
      */

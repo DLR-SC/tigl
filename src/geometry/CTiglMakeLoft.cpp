@@ -31,6 +31,7 @@
 #include "contrib/MakePatches.hxx"
 #include "geometry/CTiglTopoAlgorithms.h"
 #include "geometry/CTiglBSplineAlgorithms.h"
+#include "system/CTiglError.h"
 
 
 #include <TopoDS.hxx>
@@ -240,6 +241,15 @@ void CTiglMakeLoft::makeLoftWithGuides()
 
 void CTiglMakeLoft::makeLoftWithoutGuides()
 {
+    // check number of edges are all same
+    std::vector<unsigned int> edgeCountPerProfile;
+    for (const auto& profile : profiles) {
+        edgeCountPerProfile.push_back(GetNumberOfEdges(profile));
+    }
+    if (!AllSame(edgeCountPerProfile.begin(), edgeCountPerProfile.end())) {
+        throw tigl::CTiglError("Number of edges not equal in CTiglMakeLoft");
+    }
+
     TopoDS_Shell faces;
     BRep_Builder builder;
     builder.MakeShell(faces);

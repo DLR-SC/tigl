@@ -449,6 +449,19 @@ double CTiglBSplineAlgorithms::scale(const TColgp_Array2OfPnt& points)
     return theScale;
 }
 
+double CTiglBSplineAlgorithms::scale(const TColgp_Array1OfPnt& points)
+{
+    double theScale = 0.;
+
+    for (int i = points.Lower(); i <= points.Upper(); ++i) {
+        for (int j = i + 1; j < points.Upper(); ++j) {
+            double dist = points.Value(i).Distance(points.Value(j));
+            theScale = std::max(theScale, dist);
+        }
+    }
+    return theScale;
+}
+
 std::vector<double> CTiglBSplineAlgorithms::computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, const double alpha)
 {
     return computeParamsBSplineCurve(points, 0., 1., alpha);

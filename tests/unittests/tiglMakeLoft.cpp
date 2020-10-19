@@ -19,6 +19,8 @@
 #include "test.h"
 #include "tigl.h"
 #include "CTiglMakeLoft.h"
+#include "CTiglError.h"
+#include "CCPACSConfigurationManager.h"
 
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
@@ -101,6 +103,33 @@ TEST(makeLoft, nacelleClosed)
     ASSERT_FALSE(loft.IsNull());
     ASSERT_EQ(TopAbs_SOLID, loft.ShapeType());
     BRepTools::Write(loft, "TestData/export/makeLoft_nacellePatchesClosed.brep");
+}
+
+TEST(makeLoft, bug753)
+{
+    /**
+     * The lofter should call an exception, as the number of wires
+     * is not equal
+     */
+    BRep_Builder b;
+    CTiglMakeLoft loftMaker;
+    for (size_t i = 0; i < 4; ++i) {
+        std::stringstream str;
+        str << "TestData/bugs/753/4_profile_" << i << ".brep";
+        TopoDS_Shape wire;
+        EXPECT_EQ(Standard_True, BRepTools::Read(wire, str.str().c_str(), b));
+        loftMaker.addProfiles(TopoDS::Wire(wire));
+    }
+    loftMaker.setMakeSolid(true);
+    loftMaker.setMakeSmooth(true);
+    ASSERT_THROW(loftMaker.Shape(), tigl::CTiglError);
+}
+
+TEST(makeLoft, bug753_cpacs)
+{
+    TiglHandleWrapper handle("TestData/bugs/753/bug753.cpacs.xml", "");
+    const auto &fuselage = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(handle).GetFuselage(1);
+    EXPECT_NO_THROW(fuselage.GetLoft());
 }
 
 class CurveNetworkCoons: public ::testing::TestWithParam<std::string>
