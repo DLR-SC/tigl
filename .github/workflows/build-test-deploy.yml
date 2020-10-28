@@ -17,7 +17,7 @@ env:
   MACOSX_DEPLOYMENT_TARGET: "10.9"
   TIGL_NIGHTLY: "ON"
   TIGL_CONCAT_GENERATED_FILES: "ON"
-  TIGL_PYTHON_VER: "=3.6"
+  TIGL_PYTHON_VER: "=3.7"
   TIGL_TIXI3_VER: "=3.1.1"
   TIGL_QT_VER: "=5.9.7"
   TIGL_PYTHONOCC_VER: "=0.17.3"
@@ -117,7 +117,7 @@ jobs:
           
     - name: Setup conda (windows)
       if: contains(matrix.config.os, 'windows')
-      uses: goanpeca/setup-miniconda@v1.0.2
+      uses: conda-incubator/setup-miniconda@v1
       with:
         auto-update-conda: true
         auto-activate-base: true
@@ -133,7 +133,7 @@ jobs:
     - name: Install dependencies using Miniconda (static, windows)
       if: matrix.config.link_type == 'static' && contains(matrix.config.os, 'windows')
       run: |
-        conda install tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} doxygen${{ env.TIGL_DOXYGEN_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} matlab-libs${{ env.TIGL_MATLAB_LIBS }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install pip python${{ env.TIGL_PYTHON_VER }} tixi3${{ env.TIGL_TIXI3_VER }} oce-static${{ env.TIGL_OCE_VER }} doxygen${{ env.TIGL_DOXYGEN_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} matlab-libs${{ env.TIGL_MATLAB_LIBS }} -c dlr-sc -c dlr-sc/label/tigl-dev
 
     - name: Install ccache (ubuntu)
       run: |
