@@ -21,6 +21,9 @@
 
 namespace tigl
 {
+    template <typename T>
+    using unique_ptr [[deprecated]] = std::unique_ptr<T>;
+
     template<typename T, typename... Args>
     auto make_unique(Args&&... args) -> std::unique_ptr<T>
     {
