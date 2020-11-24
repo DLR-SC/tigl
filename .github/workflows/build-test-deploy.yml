@@ -263,7 +263,7 @@ jobs:
     - name: Run unit tests (windows)
       shell: cmd /C call {0}
       run: |
-        echo build\install\bin >> %GITHUB_PATH%
+        set PATH=%cd%\build\install\bin;%PATH%
         cd build
         cmake --build . --target tigl-java-demo
         cd tests\unittests
