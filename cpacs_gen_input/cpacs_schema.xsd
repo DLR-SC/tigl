@@ -15673,6 +15673,18 @@ marko.alder@dlr.de
                                 </xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
+                        <xsd:sequence>
+                        <xsd:element name="innerContourCoordinate" type="doubleBaseType">
+                            <xsd:annotation>
+                                <xsd:documentation>Contour coordinate of the inner end. 0 equals LE, 1 equals TE.</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="outerContourCoordinate" type="doubleBaseType">
+                            <xsd:annotation>
+                                <xsd:documentation>Contour coordinate of the outer end. 0 equals LE, 1 equals TE.</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                   </xsd:sequence>
                     </xsd:choice>
                 </xsd:sequence>
             </xsd:extension>
