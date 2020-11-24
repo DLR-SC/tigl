@@ -72,6 +72,12 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetXsi2_choice2() const;
         TIGL_EXPORT virtual void SetXsi2_choice2(const boost::optional<double>& value);
 
+        TIGL_EXPORT virtual const boost::optional<double>& GetInnerContourCoordinate_choice3() const;
+        TIGL_EXPORT virtual void SetInnerContourCoordinate_choice3(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetOuterContourCoordinate_choice3() const;
+        TIGL_EXPORT virtual void SetOuterContourCoordinate_choice3(const boost::optional<double>& value);
+
     protected:
         CCPACSWingCell* m_parent;
 
@@ -87,6 +93,12 @@ namespace generated
         /// Relative chordwise position of the outer
         /// end.
         boost::optional<double>      m_xsi2_choice2;
+
+        /// Contour coordinate of the inner end. 0 equals LE, 1 equals TE.
+        boost::optional<double>      m_innerContourCoordinate_choice3;
+
+        /// Contour coordinate of the outer end. 0 equals LE, 1 equals TE.
+        boost::optional<double>      m_outerContourCoordinate_choice3;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;

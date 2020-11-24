@@ -93,6 +93,16 @@ namespace generated
             m_xsi2_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi2");
         }
 
+        // read element innerContourCoordinate
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/innerContourCoordinate")) {
+            m_innerContourCoordinate_choice3 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/innerContourCoordinate");
+        }
+
+        // read element outerContourCoordinate
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/outerContourCoordinate")) {
+            m_outerContourCoordinate_choice3 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/outerContourCoordinate");
+        }
+
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
         }
@@ -133,6 +143,28 @@ namespace generated
             }
         }
 
+        // write element innerContourCoordinate
+        if (m_innerContourCoordinate_choice3) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/innerContourCoordinate");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/innerContourCoordinate", *m_innerContourCoordinate_choice3);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/innerContourCoordinate")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/innerContourCoordinate");
+            }
+        }
+
+        // write element outerContourCoordinate
+        if (m_outerContourCoordinate_choice3) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/outerContourCoordinate");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/outerContourCoordinate", *m_outerContourCoordinate_choice3);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/outerContourCoordinate")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/outerContourCoordinate");
+            }
+        }
+
     }
 
     bool CPACSCellPositioningChordwise::ValidateChoices() const
@@ -149,6 +181,10 @@ namespace generated
                         m_xsi1_choice2.is_initialized()
                         ||
                         m_xsi2_choice2.is_initialized()
+                        ||
+                        m_innerContourCoordinate_choice3.is_initialized()
+                        ||
+                        m_outerContourCoordinate_choice3.is_initialized()
                     )
                 )
                 +
@@ -161,6 +197,26 @@ namespace generated
                     // elements of other choices must not be there
                     !(
                         m_sparUID_choice1.is_initialized()
+                        ||
+                        m_innerContourCoordinate_choice3.is_initialized()
+                        ||
+                        m_outerContourCoordinate_choice3.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_innerContourCoordinate_choice3.is_initialized()
+                    &&
+                    m_outerContourCoordinate_choice3.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_sparUID_choice1.is_initialized()
+                        ||
+                        m_xsi1_choice2.is_initialized()
+                        ||
+                        m_xsi2_choice2.is_initialized()
                     )
                 )
                 == 1
@@ -201,6 +257,26 @@ namespace generated
     void CPACSCellPositioningChordwise::SetXsi2_choice2(const boost::optional<double>& value)
     {
         m_xsi2_choice2 = value;
+    }
+
+    const boost::optional<double>& CPACSCellPositioningChordwise::GetInnerContourCoordinate_choice3() const
+    {
+        return m_innerContourCoordinate_choice3;
+    }
+
+    void CPACSCellPositioningChordwise::SetInnerContourCoordinate_choice3(const boost::optional<double>& value)
+    {
+        m_innerContourCoordinate_choice3 = value;
+    }
+
+    const boost::optional<double>& CPACSCellPositioningChordwise::GetOuterContourCoordinate_choice3() const
+    {
+        return m_outerContourCoordinate_choice3;
+    }
+
+    void CPACSCellPositioningChordwise::SetOuterContourCoordinate_choice3(const boost::optional<double>& value)
+    {
+        m_outerContourCoordinate_choice3 = value;
     }
 
     const CTiglUIDObject* CPACSCellPositioningChordwise::GetNextUIDObject() const
