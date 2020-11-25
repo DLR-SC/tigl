@@ -23,7 +23,7 @@ To install TiGL into a separate environement, enter the following from the conda
 
 All TiGL related packages are now found inside the tigl_env environment. To enter this environment, type
 
-    activate tigl3
+    activate tigl_env
 
 Have a look to our examples at [https://github.com/DLR-SC/tigl-examples](https://github.com/DLR-SC/tigl-examples) on how to use the Python bindings.
 
