@@ -91,10 +91,7 @@ void CCPACSWingCellPositionSpanwise::SetEta(double eta1, const std::string& eta1
 }
 
 void CCPACSWingCellPositionSpanwise::GetEta(double& eta1, double& eta2) const {
-    // std::tie(eta1, eta2) = GetEta();
-    std::pair<double, double> etas = GetEta();
-    eta1 = etas.first;
-    eta2 = etas.second;
+    std::tie(eta1, eta2) = GetEta();
 }
 
 std::pair<double, double> CCPACSWingCellPositionSpanwise::GetEta() const {

@@ -246,7 +246,7 @@ TEST(TestPerformanceWingCell, GetLoft)
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
     tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(1);
 
-    int nruns = 50;
+    int nruns = 20;
     double n;
 
     clock_t start, stop, pause, resume;
@@ -260,6 +260,7 @@ TEST(TestPerformanceWingCell, GetLoft)
         TopoDS_Shape cellGeom = cell.GetLoft()->Shape();
         pause = clock();
         cell.Invalidate();
+        componentSegment.Invalidate();
         resume = clock();
     }
     stop = clock();

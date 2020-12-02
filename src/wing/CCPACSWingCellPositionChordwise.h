@@ -36,7 +36,8 @@ public:
     enum InputType
     {
         Xsi,
-        Spar
+        Spar,
+        Contour
     };
 
     TIGL_EXPORT CCPACSWingCellPositionChordwise(CCPACSWingCell* parent, CTiglUIDManager* uidMgr);
