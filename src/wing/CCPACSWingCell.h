@@ -125,6 +125,26 @@ private:
 
     void BuildSkinGeometry(GeometryCache& cache) const;
 
+    enum class SpanWiseBorder {
+        Inner,
+        Outer
+    };
+    TopoDS_Shape CutSpanwise(TopoDS_Shape const& loftShape,
+                             SpanWiseBorder border,
+                             CCPACSWingCellPositionSpanwise const& positioning,
+                             gp_Dir const& zRefDir,
+                             double max_extents,
+                             double tol=5e-3) const;
+    enum class ChordWiseBorder {
+        LE,
+        TE
+    };
+    TopoDS_Shape CutChordwise(TopoDS_Shape const& loftShape,
+                             ChordWiseBorder border,
+                             CCPACSWingCellPositionChordwise const& positioning,
+                             gp_Dir const& zRefDir,
+                             double max_extents,
+                             double tol=5e-3) const;
     TopoDS_Shape GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const;
 
     Cache<EtaXsiCache, CCPACSWingCell> m_etaXsiCache;

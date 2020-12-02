@@ -62,10 +62,7 @@ void CCPACSWingCellPositionChordwise::SetXsi(double xsi1, double xsi2)
 
 void CCPACSWingCellPositionChordwise::GetXsi(double& xsi1, double& xsi2) const
 {
-    //std::tie(xsi1, xsi2) = GetXsi();
-    std::pair<double, double> xsis = GetXsi();
-    xsi1 = xsis.first;
-    xsi2 = xsis.second;
+    std::tie(xsi1, xsi2) = GetXsi();
 }
 
 std::pair<double, double> CCPACSWingCellPositionChordwise::GetXsi() const
