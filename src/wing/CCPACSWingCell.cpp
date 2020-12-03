@@ -122,7 +122,7 @@ namespace WingCellInternal
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
         for (int f = 1; f <= faceMap.Extent(); f++) {
-            TopoDS_Face face = TopoDS::Face(faceMap(f));
+            TopoDS_Face const& face = TopoDS::Face(faceMap(f));
 
             BRepExtrema_ExtPF proj(v, face);
             for (auto i=1; i<=proj.NbExt(); ++i) {
@@ -463,7 +463,7 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
     }
 
     TopoDS_Shape result;
-    if ( (te_intersect.face == le_intersect.face) && fabs(te_intersect.v - le_intersect.v ) < tol ){
+    if ( te_intersect.face.IsEqual(le_intersect.face) && fabs(te_intersect.v - le_intersect.v ) < tol ){
         // border runs along an isocurve of a single fac => we can trim
 
         // trim along v
@@ -587,7 +587,6 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(TopoDS_Shape const& loftShape,
     auto ob_intersect = ClosestPointOnShapeAlongDir(loftShape,
                                                     ob_point,
                                                     zRefDir);
-
     gp_Vec ib_to_ob = gp_Vec(ib_point, ob_point).Normalized();
     gp_Ax3 border_axis(ib_point, zRefDir ^ ib_to_ob, ib_to_ob);
 
@@ -596,7 +595,7 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(TopoDS_Shape const& loftShape,
     }
 
     TopoDS_Shape result;
-    if ( (ib_intersect.face == ob_intersect.face) && fabs(ib_intersect.u - ob_intersect.u ) < tol ){
+    if ( ib_intersect.face.IsEqual(ob_intersect.face) && fabs(ib_intersect.u - ob_intersect.u ) < tol ){
         // border runs along an isocurve of a single fac => we can trim
 
         // trim along v
