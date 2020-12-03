@@ -41,6 +41,7 @@
 #include <TopoDS.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <BRepExtrema_ExtPF.hxx>
+#include <GeomLib_IsPlanarSurface.hxx>
 
 #include <GeomConvert.hxx>
 #include <CTiglBSplineAlgorithms.h>
@@ -506,8 +507,18 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
 
         TopoDS_Shape cuttingShape;
         if (positioning.GetInputType() == CCPACSWingCellPositionSpanwise::InputType::Rib ) {
-            // we can use the cutting shape defined by the rib
-            cuttingShape = GetRibCutGeometry(positioning.GetRib());
+            // we can use the cutting plane defined by the rib
+            gp_Pln pln;
+            TopoDS_Shape ribcutface = GetRibCutGeometry(positioning.GetRib());
+            Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(ribcutface));
+            GeomLib_IsPlanarSurface surf_check(surf);
+            if (surf_check.IsPlanar()) {
+                pln = surf_check.Plan();
+            }
+            else {
+                throw tigl::CTiglError("Cannot create cutting plane from RibCutGeometry");
+            }
+            cuttingShape = BRepBuilderAPI_MakeFace(pln);
         } else {
 
             double eta_lim = 0;
