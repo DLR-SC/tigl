@@ -185,18 +185,6 @@ TEST(WingCell, IsConvex)
     ASSERT_TRUE(cell.IsConvex());
 }
 
-TEST(WingCell, area)
-{
-    WingCellInternal::Point2D p1, p2, p3;
-    p1.x = 1.; p1.y = 1.;
-    p2.x = 2.; p2.y = 1.;
-    p3.x = 1.7; p3.y = 2.;
-    
-    ASSERT_NEAR(0.5, WingCellInternal::area(p1,p2,p3), 1e-7);
-    ASSERT_NEAR(0.5, WingCellInternal::area(p2,p3,p1), 1e-7);
-    ASSERT_NEAR(0.5, WingCellInternal::area(p3,p1,p2), 1e-7);
-}
-
 TEST_F(WingCellSpar, sparCellXsi) {
     // See: cell_test_spars.png for placement of cells
 

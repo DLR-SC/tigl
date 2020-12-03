@@ -74,17 +74,6 @@ namespace WingCellInternal
         return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
     }
 
-    // calculates the area of a triangle
-    double area(Point2D p1, Point2D p2, Point2D p3)
-    {
-        double area = 0.;
-        area += p1.x * (p2.y - p3.y);
-        area += p2.x * (p3.y - p1.y);
-        area += p3.x * (p1.y - p2.y);
-
-        return fabs(area / 2.);
-    }
-
     // checks if point p is in triangle p1-p2-p3
     bool is_in_trian(Point2D p, Point2D p1, Point2D p2, Point2D p3)
     {
@@ -96,37 +85,12 @@ namespace WingCellInternal
         return (s1 == s2) && (s2 == s3);
     }
 
-    gp_Pnt pointOnShape(TopoDS_Edge edge)
-    {
-        BRepAdaptor_Curve curve(edge);
-        double u_min = curve.FirstParameter();
-        double u_max = curve.LastParameter();
-
-        return curve.Value(u_min + ((u_max - u_min) / 2.));
-    }
-
-    gp_Pnt pointOnShape(TopoDS_Face face)
-    {
-        return GetCentralFacePoint(face);
-    }
-
     Point2D toPoint2D(EtaXsi etaXsi)
     {
         Point2D p;
         p.x = etaXsi.eta;
         p.y = etaXsi.xsi;
         return p;
-    }
-
-    gp_Pnt projectCornerPointOntoLoft(const gp_Pnt& p, const gp_Vec& zRefDir, double bboxSize, const TopoDS_Shape& loftShape)
-    {
-        // build cut edge along z reference axis for intersection points on loft
-        const gp_Vec offset = zRefDir * bboxSize;
-        const TopoDS_Edge cutEdge = BRepBuilderAPI_MakeEdge(p.Translated(-offset), p.Translated(offset));
-
-        BRepExtrema_DistShapeShape extrema(loftShape, cutEdge, Extrema_ExtFlag_MIN);
-        extrema.Perform();
-        return extrema.PointOnShape1(1);
     }
 
     struct IntersectionResult
@@ -148,7 +112,7 @@ namespace WingCellInternal
     IntersectionResult ClosestPointOnShapeAlongDir(TopoDS_Shape const& shape,
                                                    gp_Pnt const& pnt,
                                                    gp_Dir const& dir,
-                                                   double tol = 1e-6)
+                                                   double tol = 1e-3)
     {
         //first, find closest point to the shape
         gp_Pnt pntOnShape = ProjectPointOnShape(shape, pnt, dir);
@@ -729,232 +693,17 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
     const gp_Vec xRefDir(p1, tePoint0);
     const gp_Vec zRefDir = gp_Vec(-yRefDirStern ^ xRefDir).Normalized();
 
+    // get the shape of the skin
     TopoDS_Shape loftShape = m_parent->GetParent()->GetLoftSide() == UPPER_SIDE ? wsr.GetUpperShape() : wsr.GetLowerShape();
 
-    // determine diagonal vector of loft bounding box (e.g. used for size of cut faces)
-    Bnd_Box boundingBox;
-    BRepBndLib::Add(wsr.GetUpperShape(), boundingBox);
-    BRepBndLib::Add(wsr.GetLowerShape(), boundingBox);
-    double xmin, ymin, zmin, xmax, ymax, zmax;
-    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-    const gp_Vec diagonal(xmax - xmin, ymax - ymin, zmax - zmin);
-    const double bboxSize = diagonal.Magnitude();
-
-
-
-    // cut the shape
+    // cut the shape at the cell borders
     TopoDS_Shape resultShape = CutSpanwise(loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-2);
     resultShape              = CutSpanwise(resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-2);
     resultShape              = CutChordwise(resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-2);
     resultShape              = CutChordwise(resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, 1e-2);
 
-
-    const double LEXsi1 = m_etaXsiCache->innerLeadingEdgePoint.xsi;
-    const double LEXsi2 = m_etaXsiCache->outerLeadingEdgePoint.xsi;
-    const double TEXsi1 = m_etaXsiCache->innerTrailingEdgePoint.xsi;
-    const double TEXsi2 = m_etaXsiCache->outerTrailingEdgePoint.xsi;
-    const double IBEta1 = m_etaXsiCache->innerLeadingEdgePoint.eta;
-    const double IBEta2 = m_etaXsiCache->innerTrailingEdgePoint.eta;
-    const double OBEta1 = m_etaXsiCache->outerLeadingEdgePoint.eta;
-    const double OBEta2 = m_etaXsiCache->outerTrailingEdgePoint.eta;
-
-    // Get references to all objects in geometry cache
-    gp_Pnt& projectedIBLE = cache.projectedIBLE;
-    gp_Pnt& projectedOBLE = cache.projectedOBLE;
-    gp_Pnt& projectedIBTE = cache.projectedIBTE;
-    gp_Pnt& projectedOBTE = cache.projectedOBTE;
-
-    gp_Pln& cutPlaneLE = cache.cutPlaneLE;
-    gp_Pln& cutPlaneTE = cache.cutPlaneTE;
-    gp_Pln& cutPlaneIB = cache.cutPlaneIB;
-    gp_Pln& cutPlaneOB = cache.cutPlaneOB;
-
-    TopoDS_Shape& planeShapeLE = cache.planeShapeLE;
-    TopoDS_Shape& planeShapeTE = cache.planeShapeTE;
-    TopoDS_Shape& planeShapeIB = cache.planeShapeIB;
-    TopoDS_Shape& planeShapeOB = cache.planeShapeOB;
-    TopoDS_Shape& sparShapeLE  = cache.sparShapeLE;
-    TopoDS_Shape& sparShapeTE  = cache.sparShapeTE;
-
-    const gp_Pnt midPlaneIBLE = wsr.GetPoint(IBEta1, LEXsi1, WING_COORDINATE_SYSTEM);
-    const gp_Pnt midPlaneOBLE = wsr.GetPoint(OBEta1, LEXsi2, WING_COORDINATE_SYSTEM);
-    const gp_Pnt midPlaneIBTE = wsr.GetPoint(IBEta2, TEXsi1, WING_COORDINATE_SYSTEM);
-    const gp_Pnt midPlaneOBTE = wsr.GetPoint(OBEta2, TEXsi2, WING_COORDINATE_SYSTEM);
-
-    projectedIBLE = projectCornerPointOntoLoft(midPlaneIBLE, zRefDir, bboxSize, loftShape);
-    projectedOBLE = projectCornerPointOntoLoft(midPlaneOBLE, zRefDir, bboxSize, loftShape);
-    projectedIBTE = projectCornerPointOntoLoft(midPlaneIBTE, zRefDir, bboxSize, loftShape);
-    projectedOBTE = projectCornerPointOntoLoft(midPlaneOBTE, zRefDir, bboxSize, loftShape);
-
-    // check the 3d point coordinates
-
-    if (projectedIBLE.X() > projectedIBTE.X()) {
-        throw CTiglError(
-            "Wrong value for cell input in CCPACSWingShell::BuildStringerGeometry!\nThe X values on the inner border.");
-    }
-    if (projectedOBLE.X() > projectedOBTE.X()) {
-        throw CTiglError(
-            "Wrong value for cell input in CCPACSWingShell::BuildStringerGeometry!\nThe X values on the outer border.");
-    }
-    if (projectedIBLE.Y() > projectedOBLE.Y()) {
-        throw CTiglError(
-            "Wrong value for cell input in CCPACSWingShell::BuildStringerGeometry!\nThe Y values on the leading edge.");
-    }
-    if (projectedIBTE.Y() > projectedOBTE.Y()) {
-        throw CTiglError("Wrong value for cell input in CCPACSWingShell::BuildStringerGeometry!\nThe Y values on the "
-                         "trailing edge.");
-    }
-
-    // combine the cell cutting cutPlanes to a compound
-    TopoDS_Builder builder;
-    TopoDS_Compound cutPlanes;
-    builder.MakeCompound(cutPlanes);
-
-    // build the Leading edge cutting plane
-    const gp_Vec vCLE = gp_Vec(projectedIBLE, projectedOBLE).Normalized();
-    const gp_Ax3 refAxLE((projectedIBLE.XYZ() + projectedOBLE.XYZ()) / 2, -zRefDir ^ vCLE, vCLE);
-    cutPlaneLE   = gp_Pln(refAxLE);
-    planeShapeLE = BRepBuilderAPI_MakeFace(cutPlaneLE).Face();
-
-    // build the Trailing edge cutting plane
-    const gp_Vec vCTE = gp_Vec(projectedIBTE, projectedOBTE).Normalized();
-    const gp_Ax3 refAxTE((projectedIBTE.XYZ() + projectedOBTE.XYZ()) / 2, zRefDir ^ vCTE, vCTE);
-    cutPlaneTE   = gp_Pln(refAxTE);
-    planeShapeTE = BRepBuilderAPI_MakeFace(cutPlaneTE).Face();
-
-    // build the inner border cutting plane
-    const gp_Vec vCIB = gp_Vec(projectedIBLE, projectedIBTE).Normalized();
-    const gp_Ax3 refAxIB((projectedIBLE.XYZ() + projectedIBTE.XYZ()) / 2, zRefDir ^ vCIB, vCIB);
-    cutPlaneIB   = gp_Pln(refAxIB);
-    planeShapeIB = BRepBuilderAPI_MakeFace(cutPlaneIB).Face();
-
-    // build the Outer border cutting plane
-    const gp_Vec vCOB = gp_Vec(projectedOBLE, projectedOBTE).Normalized();
-    const gp_Ax3 refAxOB((projectedOBLE.XYZ() + projectedOBTE.XYZ()) / 2, -zRefDir ^ vCOB, vCOB);
-    cutPlaneOB   = gp_Pln(refAxOB);
-    planeShapeOB = BRepBuilderAPI_MakeFace(cutPlaneOB).Face();
-
-    if (!m_uidMgr) {
-        throw CTiglError("No uid manager in CCPACSWingCell::BuildSkinGeometry");
-    }
-
-    // If any border is defined by a rib or a spar, the cutting plane is changed
-    if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        planeShapeLE = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningLeadingEdge.GetSparUId())
-                          .GetSparCutGeometry(WING_COORDINATE_SYSTEM);
-        sparShapeLE  = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningLeadingEdge.GetSparUId())
-                          .GetSparGeometry(WING_COORDINATE_SYSTEM);
-    }
-
-    if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        planeShapeTE = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningTrailingEdge.GetSparUId())
-                          .GetSparCutGeometry(WING_COORDINATE_SYSTEM);
-        sparShapeTE  = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningTrailingEdge.GetSparUId())
-                          .GetSparGeometry(WING_COORDINATE_SYSTEM);
-    }
-
-    double u05 = 0.5, u1 = 1., v0 = 0., v1 = 1.;
-    if (m_positioningInnerBorder.GetInputType() == CCPACSWingCellPositionSpanwise::InputType::Rib) {
-        planeShapeIB = GetRibCutGeometry(m_positioningInnerBorder.GetRib());
-    }
-    else if (IBEta1 == 0. && IBEta2 == 0.) {
-        // if the inner border of the cell is the inner border of the Component segment
-        // a cutting plane from the inner border of the WCS is created
-        // this is necessary due to cutting precision
-        BRepAdaptor_Surface surf(wsr.GetInnerFace());
-        gp_Pnt p0 = surf.Value(u05, v0);
-        gp_Pnt pU = surf.Value(u05, v1);
-        gp_Pnt pV = surf.Value(u1, v0);
-        gp_Ax3 ax0UV(p0, gp_Vec(p0, pU) ^ gp_Vec(p0, pV), gp_Vec(p0, pU));
-
-        planeShapeIB = BRepBuilderAPI_MakeFace(gp_Pln(ax0UV)).Face();
-    }
-
-    if (m_positioningOuterBorder.GetInputType() == CCPACSWingCellPositionSpanwise::InputType::Rib) {
-        planeShapeOB = GetRibCutGeometry(m_positioningOuterBorder.GetRib());
-    }
-    else if (OBEta1 == 1. && OBEta2 == 1.) {
-        // if the outer border of the cell is the outer border of the Component segment
-        // a cutting plane from the outer border of the WCS is created
-        // this is necessary due to cutting precision
-        BRepAdaptor_Surface surf(wsr.GetOuterFace());
-        gp_Pnt p0 = surf.Value(u05, v0);
-        gp_Pnt pU = surf.Value(u05, v1);
-        gp_Pnt pV = surf.Value(u1, v0);
-        gp_Ax3 ax0UV(p0, gp_Vec(p0, pU) ^ gp_Vec(p0, pV), gp_Vec(p0, pU));
-
-        planeShapeOB = BRepBuilderAPI_MakeFace(gp_Pln(ax0UV)).Face();
-    }
-
-    builder.Add(cutPlanes, planeShapeLE);
-    builder.Add(cutPlanes, planeShapeTE);
-    builder.Add(cutPlanes, planeShapeIB);
-    builder.Add(cutPlanes, planeShapeOB);
-
-    // cut the lower or upper loft with the cutPlanes
-    const TopoDS_Shape result = SplitShape(loftShape, cutPlanes);
-    TopTools_IndexedMapOfShape faceMap;
-    TopExp::MapShapes(result, TopAbs_FACE, faceMap);
-
-    TopoDS_Compound compound;
-    builder.MakeCompound(compound);
-
-    bool notFound = true;
-
-    for (int f = 1; f <= faceMap.Extent(); f++) {
-        const TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
-        const gp_Pnt faceCenter = GetCentralFacePoint(loftFace);
-
-        // create each midpoint for the vector basis
-        bool test = false;
-        if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-            test = PointIsInfrontSparGeometry(cutPlaneLE.Axis().Direction(), faceCenter, sparShapeLE);
-        }
-        else {
-            // test if the midplane point is behind the leading edge border plane
-            // create an Ax1 from the Leading edge plane origin to the midpoint of the current face
-            const gp_Pnt midPnt = (projectedIBLE.XYZ() + projectedOBLE.XYZ()) / 2;
-            const gp_Vec vTest(midPnt, faceCenter);
-            const gp_Ax1 a1Test(midPnt, vTest);
-            test = a1Test.Angle(cutPlaneLE.Axis()) < M_PI_2;
-        }
-
-        if (test) {
-            if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-                test = PointIsInfrontSparGeometry(cutPlaneTE.Axis().Direction(), faceCenter, sparShapeTE);
-            }
-            else {
-                // create an Ax1 from the trailing edge plane origin to the midpoint of the current face
-                const gp_Pnt midPnt = (projectedIBTE.XYZ() + projectedOBTE.XYZ()) / 2;
-                const gp_Vec vTest = gp_Vec(midPnt, faceCenter);
-                const gp_Ax1 a1Test = gp_Ax1(midPnt, vTest);
-                test = a1Test.Angle(cutPlaneTE.Axis()) < M_PI_2;
-            }
-
-            if (test) {
-                // create an Ax1 from the inner border plane origin to the midpoint of the current face
-                const gp_Pnt midPnt = (projectedIBLE.XYZ() + projectedIBTE.XYZ()) / 2;
-                const gp_Vec vTest = gp_Vec(midPnt, faceCenter);
-                const gp_Ax1 a1Test = gp_Ax1(midPnt, vTest);
-                if (a1Test.Angle(cutPlaneIB.Axis()) < M_PI_2) {
-                    // create an Ax1 from the outer border plane origin to the midpoint of the current face
-                    const gp_Pnt midPnt = (projectedOBLE.XYZ() + projectedOBTE.XYZ()) / 2;
-                    const gp_Vec vTest = gp_Vec(midPnt, faceCenter);
-                    const gp_Ax1 a1Test = gp_Ax1(midPnt, vTest);
-                    if (a1Test.Angle(cutPlaneOB.Axis()) < M_PI_2) {
-                        builder.Add(compound, loftFace);
-                        notFound = false;
-                    }
-                }
-            }
-        }
-    }
-
-    if (notFound) {
-        throw CTiglError("Can not find a matching edge for cell input CCPACSWingCell::BuildSkinGeometry!");
-    }
-
-    cache.skinGeometry = compound;
+    // store the result
+    cache.skinGeometry = resultShape;
 }
 
 TopoDS_Shape CCPACSWingCell::GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const
@@ -972,83 +721,6 @@ TopoDS_Shape CCPACSWingCell::GetRibCutGeometry(std::pair<std::string, int> ribUi
         return BRepBuilderAPI_MakeFace(surf.Plane()).Face();
     }
     return cutGeometry.shape;
-}
-
-template<class T>
-bool CCPACSWingCell::IsPartOfCellImpl(T t)
-{
-    Bnd_Box bBox1, bBox2;
-    BRepBndLib::Add(m_geometryCache->skinGeometry, bBox1);
-    TopoDS_Shape t_transformed = CTiglWingStructureReference(m_parent->GetParent()->GetStructure())
-                                        .GetWing()
-                                        .GetTransformationMatrix()
-                                        .Inverted()
-                                        .Transform(t);
-    BRepBndLib::Add(t_transformed, bBox2);
-
-    if (bBox1.IsOut(bBox2)) {
-        return false;
-    }
-
-    gp_Pnt pTest = WingCellInternal::pointOnShape(t);
-
-    gp_Pnt midPnt = (m_geometryCache->projectedIBLE.XYZ() + m_geometryCache->projectedOBLE.XYZ()) / 2;
-    gp_Vec vTest(midPnt, pTest);
-    gp_Ax1 a1Test(midPnt, vTest);
-
-    bool sparTest = false, plainTest = false;
-
-    if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-        sparTest = PointIsInfrontSparGeometry(m_geometryCache->cutPlaneLE.Axis().Direction(), pTest, m_geometryCache->sparShapeLE);
-    }
-    else {
-        plainTest = a1Test.Angle(m_geometryCache->cutPlaneLE.Axis()) < M_PI_2;
-    }
-
-    if (plainTest || sparTest) {
-        // create an Ax1 from the trailing edge plane origin to the midpoint of the current face
-        midPnt = (m_geometryCache->projectedIBTE.XYZ() + m_geometryCache->projectedOBTE.XYZ()) / 2;
-        vTest  = gp_Vec(midPnt, pTest);
-        a1Test = gp_Ax1(midPnt, vTest);
-
-        sparTest  = false;
-        plainTest = false;
-        if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
-            sparTest = PointIsInfrontSparGeometry(m_geometryCache->cutPlaneTE.Axis().Direction(), pTest, m_geometryCache->sparShapeTE);
-        }
-        else {
-            plainTest = a1Test.Angle(m_geometryCache->cutPlaneTE.Axis()) < M_PI_2;
-        }
-
-        if (plainTest || sparTest) {
-            // create an Ax1 from the inner border plane origin to the midpoint of the current face
-            midPnt = (m_geometryCache->projectedIBLE.XYZ() + m_geometryCache->projectedIBTE.XYZ()) / 2;
-            vTest  = gp_Vec(midPnt, pTest);
-            a1Test = gp_Ax1(midPnt, vTest);
-            if (a1Test.Angle(m_geometryCache->cutPlaneIB.Axis()) < M_PI_2) {
-                // create an Ax1 from the outer border plane origin to the midpoint of the current face
-                midPnt = (m_geometryCache->projectedOBLE.XYZ() + m_geometryCache->projectedOBTE.XYZ()) / 2;
-                vTest  = gp_Vec(midPnt, pTest);
-                a1Test = gp_Ax1(midPnt, vTest);
-                if (a1Test.Angle(m_geometryCache->cutPlaneOB.Axis()) < M_PI_2) {
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
-bool CCPACSWingCell::IsPartOfCell(TopoDS_Face f)
-{
-    return IsPartOfCellImpl(f);
-}
-
-
-bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
-{
-    return IsPartOfCellImpl(e);
 }
 
 std::string CCPACSWingCell::GetDefaultedUID() const

@@ -103,15 +103,7 @@ private:
     struct GeometryCache
     {
         TopoDS_Shape skinGeometry;
-
-        gp_Pln cutPlaneLE, cutPlaneTE, cutPlaneIB, cutPlaneOB;
-        TopoDS_Shape planeShapeLE, planeShapeTE, planeShapeIB, planeShapeOB;
-        TopoDS_Shape sparShapeLE, sparShapeTE;
-        gp_Pnt projectedIBLE, projectedOBLE, projectedIBTE, projectedOBTE;
     };
-
-    template<class T>
-    bool IsPartOfCellImpl(T t);
     
     EtaXsi computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
                                     const CCPACSWingCellPositionChordwise& chordwisePos, bool inner,
