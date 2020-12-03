@@ -133,8 +133,8 @@ private:
                              SpanWiseBorder border,
                              CCPACSWingCellPositionSpanwise const& positioning,
                              gp_Dir const& zRefDir,
-                             double max_extents,
                              double tol=5e-3) const;
+
     enum class ChordWiseBorder {
         LE,
         TE
@@ -143,7 +143,6 @@ private:
                              ChordWiseBorder border,
                              CCPACSWingCellPositionChordwise const& positioning,
                              gp_Dir const& zRefDir,
-                             double max_extents,
                              double tol=5e-3) const;
     TopoDS_Shape GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const;
 

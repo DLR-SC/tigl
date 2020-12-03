@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2013-05-28 Martin Siggel <Martin.Siggel@dlr.de>
@@ -40,7 +40,7 @@
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <IntCurvesFace_ShapeIntersector.hxx>
+#include <BRepExtrema_ExtPF.hxx>
 
 #include <GeomConvert.hxx>
 #include <CTiglBSplineAlgorithms.h>
@@ -141,29 +141,36 @@ namespace WingCellInternal
      * @param shape Input shape
      * @param pnt Input point
      * @param dir Search direction for the closest point
-     * @param start optional starting limit along the search direction
-     * @param end optional starting limit along the search direction
+     * @param tol a tolerance for the squared distance of the projected point
      * @return IntersectionResult instance, containing the face containing the closest point
      * together with the (u,v) coordinates of the closest point on that face
      */
     IntersectionResult ClosestPointOnShapeAlongDir(TopoDS_Shape const& shape,
                                                    gp_Pnt const& pnt,
                                                    gp_Dir const& dir,
-                                                   double start = std::numeric_limits<double>::min(),
-                                                   double end = std::numeric_limits<double>::max())
+                                                   double tol = 1e-6)
     {
-        IntCurvesFace_ShapeIntersector intersector;
-        intersector.Load(shape, Precision::Confusion());
-        intersector.PerformNearest(gp_Lin(pnt, dir), start, end);
-        if (!intersector.IsDone() || intersector.NbPnt() < 1) {
-            LOG(ERROR) << "unable to determine nearest point between face and vertex!";
-            throw tigl::CTiglError("unable to determine nearest point between face and vertex!");
+        //first, find closest point to the shape
+        gp_Pnt pntOnShape = ProjectPointOnShape(shape, pnt, dir);
+
+        //next, find a face that contains the point and query the uv coordinates
+        TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(pntOnShape);
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+        for (int f = 1; f <= faceMap.Extent(); f++) {
+            TopoDS_Face face = TopoDS::Face(faceMap(f));
+
+            BRepExtrema_ExtPF proj(v, face);
+            for (auto i=1; i<=proj.NbExt(); ++i) {
+                if(proj.SquareDistance(i) < tol) {
+                    IntersectionResult res;
+                    res.face = face;
+                    proj.Parameter(i, res.u, res.v);
+                    return res;
+                }
+            }
         }
-        IntersectionResult res;
-        res.face = intersector.Face(1);
-        res.u = intersector.UParameter(1);
-        res.v = intersector.VParameter(1);
-        return res;
+        throw tigl::CTiglError("Projection onto lofting surface failed");
     }
 
 
@@ -455,7 +462,6 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
                                          SpanWiseBorder border,
                                          CCPACSWingCellPositionSpanwise const& positioning,
                                          gp_Dir const& zRefDir,
-                                         double max_extents,
                                          double tol) const
 {
     CTiglWingStructureReference wsr(m_parent->GetParent()->GetStructure());
@@ -477,17 +483,13 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
     gp_Pnt le_point = wsr.GetPoint(eta_le, xsi_le, WING_COORDINATE_SYSTEM);
     auto le_intersect = ClosestPointOnShapeAlongDir(loftShape,
                                                     le_point,
-                                                    zRefDir,
-                                                    -max_extents,
-                                                    max_extents);
+                                                    zRefDir);
 
     // get (u,v) coordinates of closest point on loft for trailing edge point
     gp_Pnt te_point = wsr.GetPoint(eta_te, xsi_te, WING_COORDINATE_SYSTEM);
     auto te_intersect = ClosestPointOnShapeAlongDir(loftShape,
                                                     te_point,
-                                                    zRefDir,
-                                                    -max_extents,
-                                                    max_extents);
+                                                    zRefDir);
 
     gp_Vec te_to_le = gp_Vec(le_point, te_point).Normalized();
     gp_Ax3 border_axis(le_point, zRefDir ^ te_to_le, te_to_le);
@@ -516,17 +518,6 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
                                                 : CTiglBSplineAlgorithms::trimSurface(surf, umin, umax, vmin, v);
         }
         TopoDS_Face trimmed_face = BRepBuilderAPI_MakeFace(trimmed_surf, Precision::Confusion());
-
-#ifdef DEBUG
-        if ( border == SpanWiseBorder::Inner ) {
-       BRepTools::Write(face, "face_untrimmed_inner.brep");
-       BRepTools::Write(trimmed_face, "face_trimmed_inner.brep");
-        }
-        else {
-            BRepTools::Write(face, "face_untrimmed_outer.brep");
-            BRepTools::Write(trimmed_face, "face_trimmed_outer.brep");
-        }
-#endif
 
         // create a compound of all faces of the loft shape, where the original face
         // gets replaced by the trimmed face
@@ -595,14 +586,6 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
         }
     }
 
-#ifdef DEBUG
-    if ( border == SpanWiseBorder::Inner ) {
-       BRepTools::Write(compound, "compound_inner.brep");
-    }
-    else {
-       BRepTools::Write(compound, "compound_outer.brep");
-    }
-#endif
     return compound;
 }
 
@@ -610,7 +593,6 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(TopoDS_Shape const& loftShape,
                                           ChordWiseBorder border,
                                           CCPACSWingCellPositionChordwise const& positioning,
                                           gp_Dir const& zRefDir,
-                                          double max_extents,
                                           double tol) const
 {
 
@@ -634,25 +616,13 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(TopoDS_Shape const& loftShape,
     gp_Pnt ib_point = wsr.GetPoint(eta_inner, xsi_inner, WING_COORDINATE_SYSTEM);
     auto ib_intersect = ClosestPointOnShapeAlongDir(loftShape,
                                                     ib_point,
-                                                    zRefDir,
-                                                    -max_extents,
-                                                    max_extents);
+                                                    zRefDir);
 
     // get (u,v) coordinates of closest point on loft for trailing edge point
     gp_Pnt ob_point = wsr.GetPoint(eta_outer, xsi_outer, WING_COORDINATE_SYSTEM);
-#ifdef DEBUG
-    BRepTools::Write(loftShape, "loftShape.brep");
-#endif
     auto ob_intersect = ClosestPointOnShapeAlongDir(loftShape,
                                                     ob_point,
-                                                    zRefDir,
-                                                    -max_extents,
-                                                    max_extents);
-
-#ifdef DEBUG
-    BRepTools::Write(ib_intersect.face, "ib_intersect_face.brep");
-    BRepTools::Write(ob_intersect.face, "ob_intersect_face.brep");
-#endif
+                                                    zRefDir);
 
     gp_Vec ib_to_ob = gp_Vec(ib_point, ob_point).Normalized();
     gp_Ax3 border_axis(ib_point, zRefDir ^ ib_to_ob, ib_to_ob);
@@ -732,7 +702,6 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(TopoDS_Shape const& loftShape,
         }
     }
     return compound;
-
 }
 
 void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
@@ -763,18 +732,11 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
 
 
 
-    // cut at inner and outer border
-    TopoDS_Shape resultShape = CutSpanwise(loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, bboxSize, 1e-2);
-    resultShape              = CutSpanwise(resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, bboxSize, 1e-3);
-    resultShape              = CutChordwise(resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, bboxSize, 1e-2);
-    //resultShape              = CutChordwise(resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, bboxSize, 1e-2);
-
-#ifdef DEBUG
-        BRepTools::Write(resultShape, "resultShape.brep");
-#endif
-
-    // do the same for m_positioningOuterBorder
-
+    // cut the shape
+    TopoDS_Shape resultShape = CutSpanwise(loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-2);
+    resultShape              = CutSpanwise(resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-2);
+    resultShape              = CutChordwise(resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-2);
+    resultShape              = CutChordwise(resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, 1e-2);
 
 
     const double LEXsi1 = m_etaXsiCache->innerLeadingEdgePoint.xsi;
@@ -791,12 +753,12 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
     gp_Pnt& projectedOBLE = cache.projectedOBLE;
     gp_Pnt& projectedIBTE = cache.projectedIBTE;
     gp_Pnt& projectedOBTE = cache.projectedOBTE;
-    
+
     gp_Pln& cutPlaneLE = cache.cutPlaneLE;
     gp_Pln& cutPlaneTE = cache.cutPlaneTE;
     gp_Pln& cutPlaneIB = cache.cutPlaneIB;
     gp_Pln& cutPlaneOB = cache.cutPlaneOB;
-    
+
     TopoDS_Shape& planeShapeLE = cache.planeShapeLE;
     TopoDS_Shape& planeShapeTE = cache.planeShapeTE;
     TopoDS_Shape& planeShapeIB = cache.planeShapeIB;
@@ -865,7 +827,7 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
     if (!m_uidMgr) {
         throw CTiglError("No uid manager in CCPACSWingCell::BuildSkinGeometry");
     }
-    
+
     // If any border is defined by a rib or a spar, the cutting plane is changed
     if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
         planeShapeLE = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningLeadingEdge.GetSparUId())
@@ -990,7 +952,7 @@ TopoDS_Shape CCPACSWingCell::GetRibCutGeometry(std::pair<std::string, int> ribUi
     if (!m_uidMgr) {
         throw CTiglError("No uid manager in CCPACSWingCell::GetRibCutGeometry");
     }
-    
+
     const CCPACSWingRibsDefinition& ribsDefinition = m_uidMgr->ResolveObject<CCPACSWingRibsDefinition>(ribUidAndIndex.first);
     const CCPACSWingRibsDefinition::CutGeometry& cutGeometry = ribsDefinition.GetRibCutGeometry(ribUidAndIndex.second);
 
