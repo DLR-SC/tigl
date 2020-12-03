@@ -75,6 +75,17 @@ namespace WingCellInternal
         return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
     }
 
+    // calculates the area of a triangle
+    double area(Point2D p1, Point2D p2, Point2D p3)
+    {
+        double area = 0.;
+        area += p1.x * (p2.y - p3.y);
+        area += p2.x * (p3.y - p1.y);
+        area += p3.x * (p1.y - p2.y);
+
+        return fabs(area / 2.);
+    }
+
     // checks if point p is in triangle p1-p2-p3
     bool is_in_trian(Point2D p, Point2D p1, Point2D p2, Point2D p3)
     {
