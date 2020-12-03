@@ -86,6 +86,20 @@ namespace WingCellInternal
         return (s1 == s2) && (s2 == s3);
     }
 
+    gp_Pnt pointOnShape(TopoDS_Edge edge)
+    {
+        BRepAdaptor_Curve curve(edge);
+        double u_min = curve.FirstParameter();
+        double u_max = curve.LastParameter();
+
+        return curve.Value(u_min + ((u_max - u_min) / 2.));
+    }
+
+    gp_Pnt pointOnShape(TopoDS_Face face)
+    {
+        return GetCentralFacePoint(face);
+    }
+
     Point2D toPoint2D(EtaXsi etaXsi)
     {
         Point2D p;
@@ -423,7 +437,8 @@ TopoDS_Shape CCPACSWingCell::GetSkinGeometry(TiglCoordinateSystem cs) const
     }
 }
 
-TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
+TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
+                                         TopoDS_Shape const& loftShape,
                                          SpanWiseBorder border,
                                          CCPACSWingCellPositionSpanwise const& positioning,
                                          gp_Dir const& zRefDir,
@@ -461,6 +476,10 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
 
     if ( border == SpanWiseBorder::Inner ){
         border_axis.ZReverse();
+        cache.border_inner_ax3 = border_axis;
+    }
+    else {
+        cache.border_outer_ax3 = border_axis;
     }
 
     TopoDS_Shape result;
@@ -564,7 +583,8 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
     return compound;
 }
 
-TopoDS_Shape CCPACSWingCell::CutChordwise(TopoDS_Shape const& loftShape,
+TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
+                                          TopoDS_Shape const& loftShape,
                                           ChordWiseBorder border,
                                           CCPACSWingCellPositionChordwise const& positioning,
                                           gp_Dir const& zRefDir,
@@ -603,6 +623,10 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(TopoDS_Shape const& loftShape,
 
     if ( border == ChordWiseBorder::TE ){
         border_axis.ZReverse();
+        cache.border_te_ax3 = border_axis;
+    }
+    else {
+        cache.border_le_ax3 = border_axis;
     }
 
     TopoDS_Shape result;
@@ -675,6 +699,12 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(TopoDS_Shape const& loftShape,
         if ( positioning.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar ) {
             TopoDS_Shape sparShape  = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(positioning.GetSparUId())
                               .GetSparGeometry(WING_COORDINATE_SYSTEM);
+            if ( border == ChordWiseBorder::LE ){
+                cache.sparShapeLE = sparShape;
+            }
+            else {
+                cache.sparShapeTE = sparShape;
+            }
             keep_face = PointIsInfrontSparGeometry(border_axis.Direction(), faceCenter, sparShape);
         }
         else {
@@ -707,10 +737,10 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
     TopoDS_Shape loftShape = m_parent->GetParent()->GetLoftSide() == UPPER_SIDE ? wsr.GetUpperShape() : wsr.GetLowerShape();
 
     // cut the shape at the cell borders
-    TopoDS_Shape resultShape = CutSpanwise(loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-2);
-    resultShape              = CutSpanwise(resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-2);
-    resultShape              = CutChordwise(resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-2);
-    resultShape              = CutChordwise(resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, 1e-2);
+    TopoDS_Shape resultShape = CutSpanwise(cache, loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-2);
+    resultShape              = CutSpanwise(cache, resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-2);
+    resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-2);
+    resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, 1e-2);
 
     // store the result
     cache.skinGeometry = resultShape;
@@ -731,6 +761,81 @@ TopoDS_Shape CCPACSWingCell::GetRibCutGeometry(std::pair<std::string, int> ribUi
         return BRepBuilderAPI_MakeFace(surf.Plane()).Face();
     }
     return cutGeometry.shape;
+}
+
+template<class T>
+bool CCPACSWingCell::IsPartOfCellImpl(T t)
+{
+    Bnd_Box bBox1, bBox2;
+    BRepBndLib::Add(m_geometryCache->skinGeometry, bBox1);
+    TopoDS_Shape t_transformed = CTiglWingStructureReference(m_parent->GetParent()->GetStructure())
+                                        .GetWing()
+                                        .GetTransformationMatrix()
+                                        .Inverted()
+                                        .Transform(t);
+    BRepBndLib::Add(t_transformed, bBox2);
+
+    if (bBox1.IsOut(bBox2)) {
+        return false;
+    }
+
+    gp_Pnt pTest = WingCellInternal::pointOnShape(t);
+
+    gp_Ax3 border_le_ax3 = m_geometryCache->border_le_ax3;
+    gp_Vec center_loc = pTest.XYZ() - border_le_ax3.Location().XYZ();
+
+    bool sparTest = false, plainTest = false;
+
+    if (m_positioningLeadingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
+        sparTest = PointIsInfrontSparGeometry(border_le_ax3.Direction(), pTest, m_geometryCache->sparShapeLE);
+    }
+    else {
+        plainTest = (center_loc).Dot(border_le_ax3.Direction()) > 0;
+    }
+
+    if (plainTest || sparTest) {
+
+        gp_Ax3 border_te_ax3 = m_geometryCache->border_te_ax3;
+        center_loc = pTest.XYZ() - border_te_ax3.Location().XYZ();
+
+        sparTest  = false;
+        plainTest = false;
+        if (m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar) {
+            sparTest = PointIsInfrontSparGeometry(border_le_ax3.Direction(), pTest, m_geometryCache->sparShapeTE);
+        }
+        else {
+            plainTest = (center_loc).Dot(border_te_ax3.Direction()) > 0;
+        }
+
+        if (plainTest || sparTest) {
+
+            gp_Ax3 border_inner_ax3 = m_geometryCache->border_inner_ax3;
+            center_loc = pTest.XYZ() - border_inner_ax3.Location().XYZ();
+
+            if ((center_loc).Dot(border_inner_ax3.Direction()) > 0) {
+
+                gp_Ax3 border_outer_ax3 = m_geometryCache->border_outer_ax3;
+                center_loc = pTest.XYZ() - border_outer_ax3.Location().XYZ();
+
+                if ((center_loc).Dot(border_outer_ax3.Direction()) > 0) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+bool CCPACSWingCell::IsPartOfCell(TopoDS_Face f)
+{
+    return IsPartOfCellImpl(f);
+}
+
+
+bool CCPACSWingCell::IsPartOfCell(TopoDS_Edge e)
+{
+    return IsPartOfCellImpl(e);
 }
 
 std::string CCPACSWingCell::GetDefaultedUID() const

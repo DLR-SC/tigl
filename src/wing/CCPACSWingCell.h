@@ -103,7 +103,13 @@ private:
     struct GeometryCache
     {
         TopoDS_Shape skinGeometry;
+
+        gp_Ax3 border_inner_ax3, border_outer_ax3, border_le_ax3, border_te_ax3;
+        TopoDS_Shape sparShapeLE, sparShapeTE;
     };
+
+    template<class T>
+    bool IsPartOfCellImpl(T t);
     
     EtaXsi computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
                                     const CCPACSWingCellPositionChordwise& chordwisePos, bool inner,
@@ -121,7 +127,8 @@ private:
         Inner,
         Outer
     };
-    TopoDS_Shape CutSpanwise(TopoDS_Shape const& loftShape,
+    TopoDS_Shape CutSpanwise(GeometryCache& cache,
+                             TopoDS_Shape const& loftShape,
                              SpanWiseBorder border,
                              CCPACSWingCellPositionSpanwise const& positioning,
                              gp_Dir const& zRefDir,
@@ -131,11 +138,12 @@ private:
         LE,
         TE
     };
-    TopoDS_Shape CutChordwise(TopoDS_Shape const& loftShape,
-                             ChordWiseBorder border,
-                             CCPACSWingCellPositionChordwise const& positioning,
-                             gp_Dir const& zRefDir,
-                             double tol=5e-3) const;
+    TopoDS_Shape CutChordwise(GeometryCache& cache,
+                              TopoDS_Shape const& loftShape,
+                              ChordWiseBorder border,
+                              CCPACSWingCellPositionChordwise const& positioning,
+                              gp_Dir const& zRefDir,
+                              double tol=5e-3) const;
     TopoDS_Shape GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const;
 
     Cache<EtaXsiCache, CCPACSWingCell> m_etaXsiCache;
