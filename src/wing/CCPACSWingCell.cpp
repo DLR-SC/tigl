@@ -154,13 +154,10 @@ namespace WingCellInternal
                                                    double end = std::numeric_limits<double>::max(),
                                                    double tol = 0.001)
     {
-        IntersectionResult res;
-
         //first, find closest point to the shape
         gp_Pnt pntOnShape = ProjectPointOnShape(shape, pnt, dir);
 
         //next, find a face that contains the point and query the uv coordinates
-        bool found = false;
         TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(pntOnShape);
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
@@ -168,28 +165,16 @@ namespace WingCellInternal
             TopoDS_Face face = TopoDS::Face(faceMap(f));
 
             BRepExtrema_ExtPF proj(v, face);
-
             for (auto i=1; i<=proj.NbExt(); ++i) {
-
                 if(proj.SquareDistance(i) < tol) {
-
-                    found = true;
-
+                    IntersectionResult res;
                     res.face = face;
                     proj.Parameter(i, res.u, res.v);
-                    break;
+                    return res;
                 }
             }
-
-            if (found) {
-                break;
-            }
         }
-        if (!found) {
-            throw tigl::CTiglError("Projection onto lofting surface failed");
-        }
-
-        return res;
+        throw tigl::CTiglError("Projection onto lofting surface failed");
     }
 
 
