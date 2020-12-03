@@ -41,6 +41,7 @@
 #include <TopoDS.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <IntCurvesFace_ShapeIntersector.hxx>
+#include <BRepExtrema_ExtPF.hxx>
 
 #include <GeomConvert.hxx>
 #include <CTiglBSplineAlgorithms.h>
@@ -150,19 +151,44 @@ namespace WingCellInternal
                                                    gp_Pnt const& pnt,
                                                    gp_Dir const& dir,
                                                    double start = std::numeric_limits<double>::min(),
-                                                   double end = std::numeric_limits<double>::max())
+                                                   double end = std::numeric_limits<double>::max(),
+                                                   double tol = 0.001)
     {
-        IntCurvesFace_ShapeIntersector intersector;
-        intersector.Load(shape, Precision::Confusion());
-        intersector.PerformNearest(gp_Lin(pnt, dir), start, end);
-        if (!intersector.IsDone() || intersector.NbPnt() < 1) {
-            LOG(ERROR) << "unable to determine nearest point between face and vertex!";
-            throw tigl::CTiglError("unable to determine nearest point between face and vertex!");
-        }
         IntersectionResult res;
-        res.face = intersector.Face(1);
-        res.u = intersector.UParameter(1);
-        res.v = intersector.VParameter(1);
+
+        //first, find closest point to the shape
+        gp_Pnt pntOnShape = ProjectPointOnShape(shape, pnt, dir);
+
+        //next, find a face that contains the point and query the uv coordinates
+        bool found = false;
+        TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(pntOnShape);
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+        for (int f = 1; f <= faceMap.Extent(); f++) {
+            TopoDS_Face face = TopoDS::Face(faceMap(f));
+
+            BRepExtrema_ExtPF proj(v, face);
+
+            for (auto i=1; i<=proj.NbExt(); ++i) {
+
+                if(proj.SquareDistance(i) < tol) {
+
+                    found = true;
+
+                    res.face = face;
+                    proj.Parameter(i, res.u, res.v);
+                    break;
+                }
+            }
+
+            if (found) {
+                break;
+            }
+        }
+        if (!found) {
+            throw tigl::CTiglError("Projection onto lofting surface failed");
+        }
+
         return res;
     }
 
@@ -525,17 +551,6 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
         }
         TopoDS_Face trimmed_face = BRepBuilderAPI_MakeFace(trimmed_surf, Precision::Confusion());
 
-#ifdef DEBUG
-        if ( border == SpanWiseBorder::Inner ) {
-       BRepTools::Write(face, "face_untrimmed_inner.brep");
-       BRepTools::Write(trimmed_face, "face_trimmed_inner.brep");
-        }
-        else {
-            BRepTools::Write(face, "face_untrimmed_outer.brep");
-            BRepTools::Write(trimmed_face, "face_trimmed_outer.brep");
-        }
-#endif
-
         // create a compound of all faces of the loft shape, where the original face
         // gets replaced by the trimmed face
         TopoDS_Builder builder;
@@ -603,14 +618,6 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(TopoDS_Shape const& loftShape,
         }
     }
 
-#ifdef DEBUG
-    if ( border == SpanWiseBorder::Inner ) {
-       BRepTools::Write(compound, "compound_inner.brep");
-    }
-    else {
-       BRepTools::Write(compound, "compound_outer.brep");
-    }
-#endif
     return compound;
 }
 
@@ -651,19 +658,11 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(TopoDS_Shape const& loftShape,
 
         // get (u,v) coordinates of closest point on loft for trailing edge point
         gp_Pnt ob_point = wsr.GetPoint(eta_outer, xsi_outer, WING_COORDINATE_SYSTEM);
-#ifdef DEBUG
-        BRepTools::Write(loftShape, "loftShape.brep");
-#endif
         auto ob_intersect = ClosestPointOnShapeAlongDir(loftShape,
                                                         ob_point,
                                                         zRefDir,
                                                         -max_extents,
                                                         max_extents);
-
-#ifdef DEBUG
-        BRepTools::Write(ib_intersect.face, "ib_intersect_face.brep");
-        BRepTools::Write(ob_intersect.face, "ob_intersect_face.brep");
-#endif
 
         gp_Vec ib_to_ob = gp_Vec(ib_point, ob_point).Normalized();
         gp_Ax3 border_axis(ib_point, zRefDir ^ ib_to_ob, ib_to_ob);
@@ -775,18 +774,11 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
 
 
 
-    // cut at inner and outer border
+    // cut the shape
     TopoDS_Shape resultShape = CutSpanwise(loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, bboxSize, 1e-2);
-    resultShape              = CutSpanwise(resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, bboxSize, 1e-3);
+    resultShape              = CutSpanwise(resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, bboxSize, 1e-2);
     resultShape              = CutChordwise(resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, bboxSize, 1e-2);
-    //resultShape              = CutChordwise(resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, bboxSize, 1e-2);
-
-#ifdef DEBUG
-        BRepTools::Write(resultShape, "resultShape.brep");
-#endif
-
-    // do the same for m_positioningOuterBorder
-
+    resultShape              = CutChordwise(resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, bboxSize, 1e-2);
 
 
     const double LEXsi1 = m_etaXsiCache->innerLeadingEdgePoint.xsi;
