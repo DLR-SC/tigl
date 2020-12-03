@@ -246,7 +246,8 @@ TEST(TestPerformanceWingCell, GetLoft)
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
     tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(1);
 
-    int nruns = 20;
+
+    int nruns = 50;
     double n;
 
     clock_t start, stop, pause, resume;

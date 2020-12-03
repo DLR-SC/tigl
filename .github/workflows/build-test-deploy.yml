@@ -109,15 +109,15 @@ jobs:
           tar xf matlab-libs-macos.tar.gz -C /tmp
           tar xf oce.0.17.2.macos_static.tar.gz
           tar xf TIXI-3.1.1-Darwin.tar.gz
-          echo "::add-path::/tmp"
-          echo "::add-path::/tmp/doxygen"
-          echo "::set-env name=DYLD_LIBRARY_PATH::${{ github.workspace }}/TIXI-3.1.1-Darwin/lib"
-          echo "::set-env name=CMAKE_PREFIX_PATH::${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/oce.0.17.2.macos_static:/usr/local/opt/qt/"
+          echo "/tmp" >> $GITHUB_PATH
+          echo "/tmp/doxygen" >> $GITHUB_PATH
+          echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/oce.0.17.2.macos_static:/usr/local/opt/qt/" >> $GITHUB_ENV
           brew install qt
           
     - name: Setup conda (windows)
       if: contains(matrix.config.os, 'windows')
-      uses: conda-incubator/setup-miniconda@v1
+      uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
         auto-activate-base: true
@@ -138,15 +138,15 @@ jobs:
     - name: Install ccache (ubuntu)
       run: |
         sudo apt-get install ccache -y
-        echo "::add-path::/usr/lib/ccache"
+        echo "/usr/lib/ccache" >> $GITHUB_PATH
       if: contains(matrix.config.os, 'ubuntu')
       
     - name: Install ccache (macos)
       run: |
         brew install zstd libb2
         brew install ccache
-        echo "::add-path::/usr/local/opt/ccache/libexec"
-        echo "::add-path::/usr/local/opt/ccache/bin"
+        echo "/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
+        echo "/usr/local/opt/ccache/bin" >> $GITHUB_PATH
         echo '#!/bin/sh' > ccache-clang
         echo 'exec ccache /usr/bin/clang "$@"' >> ccache-clang
         chmod a+x ccache-clang
@@ -157,10 +157,10 @@ jobs:
         cat ccache-clang
         echo '### contents of ccache-clang++'
         cat ccache-clang++
-        echo "::set-env name=CCACHE_MAXSIZE::10G"
-        echo "::set-env name=CCACHE_CPP2::true"
-        echo "::set-env name=CCACHE_HARDLINK::true"
-        echo "::set-env name=CCACHE_SLOPPINESS::file_macro,time_macros,include_file_mtime,include_file_ctime,file_stat_matches"
+        echo "CCACHE_MAXSIZE=10G" >> $GITHUB_ENV
+        echo "CCACHE_CPP2=true" >> $GITHUB_ENV
+        echo "CCACHE_HARDLINK=true" >> $GITHUB_ENV
+        echo "CCACHE_SLOPPINESS=file_macro,time_macros,include_file_mtime,include_file_ctime,file_stat_matches" >> $GITHUB_ENV
       if: contains(matrix.config.os, 'macos')
       
     - name: Install clcache (windows)
@@ -181,34 +181,50 @@ jobs:
         restore-keys: ${{ matrix.config.name }}-compiler-cache
         
     - name: prepare cmake args (disable nightly flag and src concatenation for release builds)
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && !contains(matrix.config.os, 'windows')
       run: |
-        echo "::set-env name=TIGL_NIGHTLY::OFF"
-        echo "::set-env name=TIGL_CONCAT_GENERATED_FILES::OFF"
+        echo "TIGL_NIGHTLY=OFF" >> $GITHUB_ENV
+        echo "TIGL_CONCAT_GENERATED_FILES=OFF" >> $GITHUB_ENV
         
-    - name: prepare cmake args (common)
-      run: echo "::set-env name=CMAKE_ARGS::-DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=${{ env.TIGL_CONCAT_GENERATED_FILES }} -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }}"
+    - name: prepare cmake args (disable nightly flag and src concatenation for release builds)
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && contains(matrix.config.os, 'windows')
+      shell: cmd /C call {0}
+      run: |
+        echo TIGL_NIGHTLY=OFF >> %GITHUB_ENV%
+        echo TIGL_CONCAT_GENERATED_FILES=OFF >> %GITHUB_ENV%
+        
+    - name: prepare cmake args (ubuntu/macos)
+      if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
+      shell: bash -l {0}
+      run: echo "CMAKE_ARGS=-DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=${{ env.TIGL_CONCAT_GENERATED_FILES }} -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }}" >> $GITHUB_ENV
+      
+    - name: prepare cmake args (windows)
+      if: contains(matrix.config.os, 'windows')
+      shell: cmd /C call {0}
+      run: echo CMAKE_ARGS=-DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_INSTALL_PREFIX=install -DOCE_STATIC_LIBS=ON -DTIGL_BUILD_TESTS=ON -DTIGL_CONCAT_GENERATED_FILES=${{ env.TIGL_CONCAT_GENERATED_FILES }} -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BINDINGS_JAVA=ON -DTIGL_NIGHTLY=${{ env.TIGL_NIGHTLY }} >> %GITHUB_ENV%
         
     - name: prepare cmake args (build python internal bindings for dynamic builds, windows)
       if: contains(matrix.config.link_type, 'dynamic') && contains(matrix.config.os, 'windows')
-      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DTIGL_BINDINGS_PYTHON_INTERNAL=ON"
+      shell: cmd /C call {0}
+      run: echo CMAKE_ARGS=${{ env.CMAKE_ARGS }} -DTIGL_BINDINGS_PYTHON_INTERNAL=ON >> %GITHUB_ENV%
         
     - name: prepare cmake args (ccache setup on macos, ubuntu)
       if: contains(matrix.config.os, 'ubuntu') || contains(matrix.config.os, 'macos')
       shell: bash -l {0}
-      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+      run: echo "CMAKE_ARGS=${{ env.CMAKE_ARGS }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
       
     - name: prepare cmake args (matlab-libs on macos)
       if: contains(matrix.config.os, 'macos')
-      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DMATLAB_DIR=/tmp/matlab-libs-macos"
+      run: echo "CMAKE_ARGS=${{ env.CMAKE_ARGS }} -DMATLAB_DIR=/tmp/matlab-libs-macos" >> $GITHUB_ENV
         
     - name: prepare cmake args (pythonocc directory and matlab libraries on windows)
       if: contains(matrix.config.os, 'windows')
-      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DPythonOCC_SOURCE_DIR=C:\Miniconda\Library\src\pythonocc-core -DMATLAB_DIR=C:\Miniconda\Library\share\matlab"
+      shell: cmd /C call {0}
+      run: echo CMAKE_ARGS=${{ env.CMAKE_ARGS }} -DPythonOCC_SOURCE_DIR=C:\Miniconda\Library\src\pythonocc-core -DMATLAB_DIR=C:\Miniconda\Library\share\matlab >> %GITHUB_ENV%
     
     - name: prepare cmake args (enable coverage on ubuntu debug)
       if: matrix.config.name == 'Ubuntu-Debug'
-      run: echo "::set-env name=CMAKE_ARGS::${{ env.CMAKE_ARGS }} -DTIGL_ENABLE_COVERAGE=ON"
+      run: echo "CMAKE_ARGS=${{ env.CMAKE_ARGS }} -DTIGL_ENABLE_COVERAGE=ON" >> $GITHUB_ENV
       
     - name: Build TiGL (ubuntu, macos)
       shell: bash -l {0}
@@ -245,8 +261,9 @@ jobs:
       if: contains(matrix.config.name, 'Ubuntu-Release') || contains(matrix.config.os, 'macos')
       
     - name: Run unit tests (windows)
+      shell: cmd /C call {0}
       run: |
-        echo "::add-path::build\install\bin"
+        set PATH=%cd%\build\install\bin;%PATH%
         cd build
         cmake --build . --target tigl-java-demo
         cd tests\unittests
@@ -344,7 +361,7 @@ jobs:
       run: |
         version=`echo $github_ref | cut -c 12-`
         echo $version
-        echo "::set-env name=version::$version"
+        echo "version=$version" >> $GITHUB_ENV
       env:
          github_ref: ${{ github.ref }}
           
