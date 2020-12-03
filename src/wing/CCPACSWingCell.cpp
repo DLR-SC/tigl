@@ -696,8 +696,18 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(TopoDS_Shape const& loftShape,
     for (int f = 1; f <= faceMap.Extent(); f++) {
         TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
         gp_Pnt faceCenter = GetCentralFacePoint(loftFace);
-        gp_Vec center_loc = faceCenter.XYZ() - border_axis.Location().XYZ();
-        if ( (center_loc).Dot(border_axis.Direction()) > 0 ) {
+
+        bool keep_face = false;
+        if ( positioning.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar ) {
+            TopoDS_Shape sparShape  = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(positioning.GetSparUId())
+                              .GetSparGeometry(WING_COORDINATE_SYSTEM);
+            keep_face = PointIsInfrontSparGeometry(border_axis.Direction(), faceCenter, sparShape);
+        }
+        else {
+            gp_Vec center_loc = faceCenter.XYZ() - border_axis.Location().XYZ();
+            keep_face = (center_loc).Dot(border_axis.Direction()) > 0;
+        }
+        if (keep_face) {
             builder.Add(compound, loftFace);
         }
     }
