@@ -103,7 +103,10 @@ private:
     struct GeometryCache
     {
         TopoDS_Shape skinGeometry;
-
+        gp_Pnt IBLE, projectedIBLE,
+               OBLE, projectedOBLE,
+               IBTE, projectedIBTE,
+               OBTE, projectedOBTE;
         gp_Ax3 border_inner_ax3, border_outer_ax3, border_le_ax3, border_te_ax3;
         TopoDS_Shape sparShapeLE, sparShapeTE;
     };

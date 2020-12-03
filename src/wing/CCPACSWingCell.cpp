@@ -124,16 +124,12 @@ namespace WingCellInternal
      * @return IntersectionResult instance, containing the face containing the closest point
      * together with the (u,v) coordinates of the closest point on that face
      */
-    IntersectionResult ClosestPointOnShapeAlongDir(TopoDS_Shape const& shape,
-                                                   gp_Pnt const& pnt,
-                                                   gp_Dir const& dir,
-                                                   double tol = 1e-3)
+    IntersectionResult GetFaceAndUV(TopoDS_Shape const& shape,
+                                    gp_Pnt const& pnt,
+                                    double tol = 1e-3)
     {
-        //first, find closest point to the shape
-        gp_Pnt pntOnShape = ProjectPointOnShape(shape, pnt, dir);
-
-        //next, find a face that contains the point and query the uv coordinates
-        TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(pntOnShape);
+        //find a face that contains the point and query the uv coordinates
+        TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(pnt);
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
         for (int f = 1; f <= faceMap.Extent(); f++) {
@@ -444,42 +440,32 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
                                          gp_Dir const& zRefDir,
                                          double tol) const
 {
-    CTiglWingStructureReference wsr(m_parent->GetParent()->GetStructure());
-
-    double eta_le, eta_te, xsi_le, xsi_te;
-    if (border == SpanWiseBorder::Inner ) {
-        eta_le = m_etaXsiCache->innerLeadingEdgePoint.eta;
-        eta_te = m_etaXsiCache->innerTrailingEdgePoint.eta;
-        xsi_le = m_etaXsiCache->innerLeadingEdgePoint.xsi;
-        xsi_le = m_etaXsiCache->innerTrailingEdgePoint.xsi;
-    } else {
-        eta_le = m_etaXsiCache->outerLeadingEdgePoint.eta;
-        eta_te = m_etaXsiCache->outerTrailingEdgePoint.eta;
-        xsi_le = m_etaXsiCache->outerLeadingEdgePoint.xsi;
-        xsi_le = m_etaXsiCache->outerTrailingEdgePoint.xsi;
+    gp_Pnt le_point, le_point_proj, te_point, te_point_proj;
+    if (border == SpanWiseBorder::Inner ){
+        le_point = cache.IBLE;
+        le_point_proj = cache.projectedIBLE;
+        te_point = cache.IBTE;
+        te_point_proj = cache.projectedIBTE;
+    }
+    else {
+        le_point = cache.OBLE;
+        le_point_proj = cache.projectedOBLE;
+        te_point = cache.OBTE;
+        te_point_proj = cache.projectedOBTE;
     }
 
-    // get (u,v) coordinates of closest point on loft for leading edge point
-    gp_Pnt le_point = wsr.GetPoint(eta_le, xsi_le, WING_COORDINATE_SYSTEM);
-    auto le_intersect = ClosestPointOnShapeAlongDir(loftShape,
-                                                    le_point,
-                                                    zRefDir);
-
-    // get (u,v) coordinates of closest point on loft for trailing edge point
-    gp_Pnt te_point = wsr.GetPoint(eta_te, xsi_te, WING_COORDINATE_SYSTEM);
-    auto te_intersect = ClosestPointOnShapeAlongDir(loftShape,
-                                                    te_point,
-                                                    zRefDir);
+    auto le_intersect = GetFaceAndUV(loftShape, le_point_proj);
+    auto te_intersect = GetFaceAndUV(loftShape, te_point_proj);
 
     gp_Vec te_to_le = gp_Vec(le_point, te_point).Normalized();
     gp_Ax3 border_axis(le_point, zRefDir ^ te_to_le, te_to_le);
 
-    if ( border == SpanWiseBorder::Inner ){
+    if ( border == SpanWiseBorder::Outer ){
         border_axis.ZReverse();
-        cache.border_inner_ax3 = border_axis;
+        cache.border_outer_ax3 = border_axis;
     }
     else {
-        cache.border_outer_ax3 = border_axis;
+        cache.border_inner_ax3 = border_axis;
     }
 
     TopoDS_Shape result;
@@ -540,15 +526,22 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
             cuttingShape = BRepBuilderAPI_MakeFace(pln);
         } else {
 
-            double eta_lim = 0;
-            if ( border == SpanWiseBorder::Outer ){
-                eta_lim = 1;
+            double eta_le, eta_te, eta_lim;
+            if (border == SpanWiseBorder::Inner ) {
+                eta_le = m_etaXsiCache->innerLeadingEdgePoint.eta;
+                eta_te = m_etaXsiCache->innerTrailingEdgePoint.eta;
+                eta_lim = 0.;
+            } else {
+                eta_le = m_etaXsiCache->outerLeadingEdgePoint.eta;
+                eta_te = m_etaXsiCache->outerTrailingEdgePoint.eta;
+                eta_lim = 1.;
             }
 
             if ( fabs(eta_le - eta_lim) < tol && fabs(eta_te - eta_lim) < Precision::Confusion() ) {
                 // if the inner border of the cell is the inner border of the Component segment
                 // a cutting plane from the inner border of the WCS is created
                 // this is necessary due to cutting precision
+                CTiglWingStructureReference wsr(m_parent->GetParent()->GetStructure());
                 BRepAdaptor_Surface surf(wsr.GetInnerFace());
                 gp_Pnt p0 = surf.Value(0.5, 0.0);
                 gp_Pnt pU = surf.Value(0.5, 1.0);
@@ -590,43 +583,31 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
                                           gp_Dir const& zRefDir,
                                           double tol) const
 {
-
-
-    CTiglWingStructureReference wsr(m_parent->GetParent()->GetStructure());
-
-    double eta_inner, eta_outer, xsi_inner, xsi_outer;
+    gp_Pnt ib_point, ib_point_proj, ob_point, ob_point_proj;
     if (border == ChordWiseBorder::LE ) {
-        eta_inner = m_etaXsiCache->innerLeadingEdgePoint.eta;
-        eta_outer = m_etaXsiCache->outerLeadingEdgePoint.eta;
-        xsi_inner = m_etaXsiCache->innerLeadingEdgePoint.xsi;
-        xsi_outer = m_etaXsiCache->outerLeadingEdgePoint.xsi;
+        ib_point = cache.IBLE;
+        ib_point_proj = cache.projectedIBLE;
+        ob_point = cache.OBLE;
+        ob_point_proj = cache.projectedOBLE;
     } else {
-        eta_inner = m_etaXsiCache->innerTrailingEdgePoint.eta;
-        eta_outer = m_etaXsiCache->outerTrailingEdgePoint.eta;
-        xsi_inner = m_etaXsiCache->innerTrailingEdgePoint.xsi;
-        xsi_outer = m_etaXsiCache->outerTrailingEdgePoint.xsi;
+        ib_point = cache.IBTE;
+        ib_point_proj = cache.projectedIBTE;
+        ob_point = cache.OBTE;
+        ob_point_proj = cache.projectedOBTE;
     }
 
-    // get (u,v) coordinates of closest point on loft for leading edge point
-    gp_Pnt ib_point = wsr.GetPoint(eta_inner, xsi_inner, WING_COORDINATE_SYSTEM);
-    auto ib_intersect = ClosestPointOnShapeAlongDir(loftShape,
-                                                    ib_point,
-                                                    zRefDir);
+    auto ib_intersect = GetFaceAndUV(loftShape, ib_point_proj);
+    auto ob_intersect = GetFaceAndUV(loftShape, ob_point_proj);
 
-    // get (u,v) coordinates of closest point on loft for trailing edge point
-    gp_Pnt ob_point = wsr.GetPoint(eta_outer, xsi_outer, WING_COORDINATE_SYSTEM);
-    auto ob_intersect = ClosestPointOnShapeAlongDir(loftShape,
-                                                    ob_point,
-                                                    zRefDir);
     gp_Vec ib_to_ob = gp_Vec(ib_point, ob_point).Normalized();
     gp_Ax3 border_axis(ib_point, zRefDir ^ ib_to_ob, ib_to_ob);
 
-    if ( border == ChordWiseBorder::TE ){
+    if ( border == ChordWiseBorder::LE ){
         border_axis.ZReverse();
-        cache.border_te_ax3 = border_axis;
+        cache.border_le_ax3 = border_axis;
     }
     else {
-        cache.border_le_ax3 = border_axis;
+        cache.border_te_ax3 = border_axis;
     }
 
     TopoDS_Shape result;
@@ -735,6 +716,25 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
 
     // get the shape of the skin
     TopoDS_Shape loftShape = m_parent->GetParent()->GetLoftSide() == UPPER_SIDE ? wsr.GetUpperShape() : wsr.GetLowerShape();
+
+    // calculate corner points on chord face and project points on loftShape
+    // cache points for later use
+    cache.IBLE = wsr.GetPoint(m_etaXsiCache->innerLeadingEdgePoint.eta,
+                              m_etaXsiCache->innerLeadingEdgePoint.xsi,
+                              WING_COORDINATE_SYSTEM);
+    cache.projectedIBLE = ProjectPointOnShape(loftShape, cache.IBLE, zRefDir);
+    cache.IBTE = wsr.GetPoint(m_etaXsiCache->innerTrailingEdgePoint.eta,
+                              m_etaXsiCache->innerTrailingEdgePoint.xsi,
+                              WING_COORDINATE_SYSTEM);
+    cache.projectedIBTE = ProjectPointOnShape(loftShape, cache.IBTE, zRefDir);
+    cache.OBLE = wsr.GetPoint(m_etaXsiCache->outerLeadingEdgePoint.eta,
+                              m_etaXsiCache->outerLeadingEdgePoint.xsi,
+                              WING_COORDINATE_SYSTEM);
+    cache.projectedOBLE = ProjectPointOnShape(loftShape, cache.OBLE, zRefDir);
+    cache.OBTE = wsr.GetPoint(m_etaXsiCache->outerTrailingEdgePoint.eta,
+                              m_etaXsiCache->outerTrailingEdgePoint.xsi,
+                              WING_COORDINATE_SYSTEM);
+    cache.projectedOBTE = ProjectPointOnShape(loftShape, cache.OBTE, zRefDir);
 
     // cut the shape at the cell borders
     TopoDS_Shape resultShape = CutSpanwise(cache, loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-2);
