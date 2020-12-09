@@ -118,48 +118,6 @@ namespace WingCellInternal
         p.y = etaXsi.xsi;
         return p;
     }
-
-    struct IntersectionResult
-    {
-        TopoDS_Face face;
-        double u, v;
-    };
-
-    /**
-     * @brief ClosestPntOnShapeAlongDir calculates the closest point on a shape to a
-     * given input point along a direction.
-     * @param shape Input shape
-     * @param pnt Input point
-     * @param dir Search direction for the closest point
-     * @param tol a tolerance for the squared distance of the projected point
-     * @return IntersectionResult instance, containing the face containing the closest point
-     * together with the (u,v) coordinates of the closest point on that face
-     */
-    IntersectionResult GetFaceAndUV(TopoDS_Shape const& shape,
-                                    gp_Pnt const& pnt,
-                                    double tol = 1e-3)
-    {
-        //find a face that contains the point and query the uv coordinates
-        TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(pnt);
-        TopTools_IndexedMapOfShape faceMap;
-        TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
-        for (int f = 1; f <= faceMap.Extent(); f++) {
-            TopoDS_Face const& face = TopoDS::Face(faceMap(f));
-
-            BRepExtrema_ExtPF proj(v, face);
-            for (auto i=1; i<=proj.NbExt(); ++i) {
-                if(proj.SquareDistance(i) < tol) {
-                    IntersectionResult res;
-                    res.face = face;
-                    proj.Parameter(i, res.u, res.v);
-                    return res;
-                }
-            }
-        }
-        throw tigl::CTiglError("Projection onto lofting surface failed");
-    }
-
-
 }
 
 using namespace WingCellInternal;
@@ -468,6 +426,10 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
     auto le_intersect = GetFaceAndUV(loftShape, le_point_proj);
     auto te_intersect = GetFaceAndUV(loftShape, te_point_proj);
 
+    if ( !le_intersect || !te_intersect ){
+        throw CTiglError("Cannot associate projected point with (u,v)-coordinates");
+    }
+
     gp_Vec te_to_le = gp_Vec(le_point, te_point).Normalized();
     gp_Ax3 border_axis(le_point, zRefDir ^ te_to_le, te_to_le);
 
@@ -480,12 +442,12 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
     }
 
     TopoDS_Shape result;
-    if ( te_intersect.face.IsEqual(le_intersect.face) && fabs(te_intersect.v - le_intersect.v ) < tol ){
+    if ( te_intersect->face.IsEqual(le_intersect->face) && fabs(te_intersect->v - le_intersect->v ) < tol ){
         // border runs along an isocurve of a single fac => we can trim
 
         // trim along v
-        double v = le_intersect.v;
-        TopoDS_Face face = le_intersect.face;
+        double v = le_intersect->v;
+        TopoDS_Face face = le_intersect->face;
         Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
         Standard_Real umin, umax, vmin, vmax;
         BRepTools::UVBounds(face, umin, umax, vmin, vmax);
@@ -610,6 +572,10 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
     auto ib_intersect = GetFaceAndUV(loftShape, ib_point_proj);
     auto ob_intersect = GetFaceAndUV(loftShape, ob_point_proj);
 
+    if ( !ib_intersect || !ob_intersect ){
+        throw CTiglError("Cannot associate projected point with (u,v)-coordinates");
+    }
+
     gp_Vec ib_to_ob = gp_Vec(ib_point, ob_point).Normalized();
     gp_Ax3 border_axis(ib_point, zRefDir ^ ib_to_ob, ib_to_ob);
 
@@ -622,12 +588,12 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
     }
 
     TopoDS_Shape result;
-    if ( ib_intersect.face.IsEqual(ob_intersect.face) && fabs(ib_intersect.u - ob_intersect.u ) < tol ){
+    if ( ib_intersect->face.IsEqual(ob_intersect->face) && fabs(ib_intersect->u - ob_intersect->u ) < tol ){
         // border runs along an isocurve of a single fac => we can trim
 
         // trim along v
-        double u = ib_intersect.u;
-        TopoDS_Face face = ib_intersect.face;
+        double u = ib_intersect->u;
+        TopoDS_Face face = ib_intersect->face;
         Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
         Standard_Real umin, umax, vmin, vmax;
         BRepTools::UVBounds(face, umin, umax, vmin, vmax);

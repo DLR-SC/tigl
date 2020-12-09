@@ -100,6 +100,33 @@ TIGL_EXPORT gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p);
 
 TIGL_EXPORT gp_Pnt ProjectPointOnShape(const TopoDS_Shape& shape, const gp_Pnt& point, const gp_Vec& direction);
 
+/**
+ * @brief The UVResult struct is used as an output for GetFaceAndUV
+ */
+struct UVResult
+{
+    TopoDS_Face face;
+    double u, v;
+};
+
+/**
+ * @brief Given a point on a shape, GetFaceAndUV finds all faces
+ * which contain the point and determines its (u,v)-coordinates on that face.
+ *
+ * It is assumes that the point is on the shape. Typically this function would
+ * be used on the output of ProjectPointOnShape.
+ *
+ * @param shape Input shape
+ * @param pnt Input point
+ * @param tol a tolerance for the squared distance of the point
+ * @return a boost::optional<UVResult> instance containing the face together with the
+ * (u,v) coordinates of the point on that face, if the algorithm succeeded
+ */
+boost::optional<UVResult> GetFaceAndUV(TopoDS_Shape const& shape,
+                                   gp_Pnt const& pnt,
+                                   double tol = 1e-3);
+
+
 // checks, whether a face is in between two points
 TIGL_EXPORT bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2);
 
