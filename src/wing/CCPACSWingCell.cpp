@@ -448,37 +448,21 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
         // trim along v
         double v = le_intersect->v;
         TopoDS_Face face = le_intersect->face;
-        Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
+
         Standard_Real umin, umax, vmin, vmax;
         BRepTools::UVBounds(face, umin, umax, vmin, vmax);
-        Handle(Geom_BSplineSurface) trimmed_surf;
         if ( border == SpanWiseBorder::Inner ) {
-            trimmed_surf = fabs(v - vmin) < tol ? GeomConvert::SurfaceToBSplineSurface(surf)
-                                                : CTiglBSplineAlgorithms::trimSurface(surf, umin, umax, v, vmax);
+            if (fabs(v - vmin) > tol ) {
+                vmin = v;
+            }
         }
         else {
-            trimmed_surf = fabs(v - vmax) < tol ? GeomConvert::SurfaceToBSplineSurface(surf)
-                                                : CTiglBSplineAlgorithms::trimSurface(surf, umin, umax, vmin, v);
-        }
-        TopoDS_Face trimmed_face = BRepBuilderAPI_MakeFace(trimmed_surf, Precision::Confusion());
-
-        // create a compound of all faces of the loft shape, where the original face
-        // gets replaced by the trimmed face
-        TopoDS_Builder builder;
-        TopoDS_Compound compound;
-        builder.MakeCompound(compound);
-        builder.Add(compound, trimmed_face);
-
-        TopTools_IndexedMapOfShape faceMap;
-        TopExp::MapShapes(loftShape, TopAbs_FACE, faceMap);
-        for (int f = 1; f <= faceMap.Extent(); f++) {
-            TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
-            if( loftFace == face ) {
-                continue;
+            if (fabs(vmax - v) > tol ) {
+                vmax = v;
             }
-            builder.Add(compound, loftFace);
         }
-        result = compound;
+        TopoDS_Face trimmed_face = TrimFace(face, umin, umax, vmin, vmax);
+        result = ReplaceFaceInShape(loftShape, trimmed_face, face);
 
     } else {
         // border is not an isocurve => we must cut
@@ -531,6 +515,7 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
         result = SplitShape(loftShape, cuttingShape);
     }
 
+    // remove all faces on the "outside" of this boundary
     TopoDS_Builder builder;
     TopoDS_Compound compound;
     builder.MakeCompound(compound);
@@ -591,40 +576,23 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
     if ( ib_intersect->face.IsEqual(ob_intersect->face) && fabs(ib_intersect->u - ob_intersect->u ) < tol ){
         // border runs along an isocurve of a single fac => we can trim
 
-        // trim along v
+        // trim along u
         double u = ib_intersect->u;
         TopoDS_Face face = ib_intersect->face;
-        Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
         Standard_Real umin, umax, vmin, vmax;
         BRepTools::UVBounds(face, umin, umax, vmin, vmax);
-        Handle(Geom_BSplineSurface) trimmed_surf;
         if ( border == ChordWiseBorder::TE ) {
-            trimmed_surf = fabs(u - umin) < tol ? GeomConvert::SurfaceToBSplineSurface(surf)
-                                                : CTiglBSplineAlgorithms::trimSurface(surf, u, umax, vmin, vmax);
+            if (fabs(u-umin) > tol ){
+                umin = u;
+            }
         }
         else {
-            trimmed_surf = fabs(u - umax) < tol ? GeomConvert::SurfaceToBSplineSurface(surf)
-                                                : CTiglBSplineAlgorithms::trimSurface(surf, umin, u, vmin, vmax);
-        }
-        TopoDS_Face trimmed_face = BRepBuilderAPI_MakeFace(trimmed_surf, Precision::Confusion());
-
-        // create a compound of all faces of the loft shape, where the original face
-        // gets replaced by the trimmed face
-        TopoDS_Builder builder;
-        TopoDS_Compound compound;
-        builder.MakeCompound(compound);
-        builder.Add(compound, trimmed_face);
-
-        TopTools_IndexedMapOfShape faceMap;
-        TopExp::MapShapes(loftShape, TopAbs_FACE, faceMap);
-        for (int f = 1; f <= faceMap.Extent(); f++) {
-            TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
-            if( loftFace == face ) {
-                continue;
+            if (fabs(umax-u) > tol ){
+                umax = u;
             }
-            builder.Add(compound, loftFace);
         }
-        result = compound;
+        TopoDS_Face trimmed_face = TrimFace(face, umin, umax, vmin, vmax);
+        result = ReplaceFaceInShape(loftShape, trimmed_face, face);
 
     } else {
         // border is not an isocurve => we must cut
@@ -643,6 +611,7 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
         result = SplitShape(loftShape, cuttingShape);
     }
 
+    // remove all faces on the "outside" of this boundary
     TopoDS_Builder builder;
     TopoDS_Compound compound;
     builder.MakeCompound(compound);

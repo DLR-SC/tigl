@@ -41,6 +41,7 @@
 #include "PNamedShape.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglProjectPointOnCurveAtAngle.h"
+#include "CTiglBSplineAlgorithms.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -378,6 +379,39 @@ boost::optional<UVResult> GetFaceAndUV(TopoDS_Shape const& shape,
             }
         }
     }
+}
+
+TopoDS_Face TrimFace(TopoDS_Face const& face,
+                     double umin,
+                     double umax,
+                     double vmin,
+                     double vmax)
+{
+    Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
+    Handle(Geom_BSplineSurface) trimmed_surf
+            = tigl::CTiglBSplineAlgorithms::trimSurface(surf, umin, umax, vmin, vmax);
+    return BRepBuilderAPI_MakeFace(trimmed_surf, Precision::Confusion()).Face();
+}
+
+TopoDS_Shape ReplaceFaceInShape(TopoDS_Shape const& shape,
+                                TopoDS_Face const& new_face,
+                                TopoDS_Face const& old_face)
+{
+    TopoDS_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, new_face);
+
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+    for (int f = 1; f <= faceMap.Extent(); f++) {
+        TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
+        if( loftFace.IsEqual(old_face) ) {
+            continue;
+        }
+        builder.Add(compound, loftFace);
+    }
+    return compound;
 }
 
 
