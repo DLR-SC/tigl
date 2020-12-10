@@ -29,6 +29,13 @@ CCPACSGuideCurveProfile::CCPACSGuideCurveProfile(CCPACSGuideCurveProfiles* paren
     : generated::CPACSGuideCurveProfileGeometry(parent, uidMgr) {}
 
 const std::vector<CTiglPoint>& CCPACSGuideCurveProfile::GetGuideCurveProfilePoints() {
-    return m_pointList.AsVector();
+    const std::vector<CTiglPoint>& ret = m_pointList.AsVector();
+    if( ret[0].y  < 1e-14) {
+        throw CTiglError("Wrong CPACS Definition: First guidecurve profile points should have a y component > 0.\n.");
+    }
+    if( ret.back().y  > 1 - 1e-14) {
+        throw CTiglError("Wrong CPACS Definition: Last guidecurve profile points should have a y component < 1.\n.");
+    }
+    return ret;
 }
 } // end namespace tigl
