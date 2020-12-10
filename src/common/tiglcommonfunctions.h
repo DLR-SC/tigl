@@ -122,7 +122,7 @@ struct UVResult
  * @return a boost::optional<UVResult> instance containing the face together with the
  * (u,v) coordinates of the point on that face, if the algorithm succeeded
  */
-boost::optional<UVResult> GetFaceAndUV(TopoDS_Shape const& shape,
+TIGL_EXPORT boost::optional<UVResult> GetFaceAndUV(TopoDS_Shape const& shape,
                                    gp_Pnt const& pnt,
                                    double tol = 1e-3);
 
