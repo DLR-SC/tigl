@@ -323,7 +323,12 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
 
     GeomAPI_Interpolate interpol(hpoints, hparams, Standard_False, Precision::Confusion());
     interpol.Load(htangents, htangentFlags, false);
-    interpol.Perform();
+    try {
+        interpol.Perform();
+    } catch(...)
+    {
+        throw CTiglError("Error interpolating guide curve points.");
+    }
     Handle(Geom_BSplineCurve) hcurve = interpol.Curve();
     curvePart.localCurve = BRepBuilderAPI_MakeEdge(hcurve);
 }
