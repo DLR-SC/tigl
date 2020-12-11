@@ -100,6 +100,62 @@ TIGL_EXPORT gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p);
 
 TIGL_EXPORT gp_Pnt ProjectPointOnShape(const TopoDS_Shape& shape, const gp_Pnt& point, const gp_Vec& direction);
 
+/**
+ * @brief The UVResult struct is used as an output for GetFaceAndUV
+ */
+struct UVResult
+{
+    TopoDS_Face face;
+    double u, v;
+};
+
+/**
+ * @brief Given a point on a shape, GetFaceAndUV finds all faces
+ * which contain the point and determines its (u,v)-coordinates on that face.
+ *
+ * It is assumes that the point is on the shape. Typically this function would
+ * be used on the output of ProjectPointOnShape.
+ *
+ * @param shape Input shape
+ * @param pnt Input point
+ * @param tol a tolerance for the squared distance of the point
+ * @return a boost::optional<UVResult> instance containing the face together with the
+ * (u,v) coordinates of the point on that face, if the algorithm succeeded
+ */
+TIGL_EXPORT boost::optional<UVResult> GetFaceAndUV(TopoDS_Shape const& shape,
+                                   gp_Pnt const& pnt,
+                                   double tol = 1e-3);
+
+
+/**
+ * @brief TrimFace trims a face given new minium and maxinum values for the (u,v)-
+ * coordinates
+ * @param face The face to be trimmed
+ * @param umin new minimum u value
+ * @param umax new maximum u value
+ * @param vmin new minimum v value
+ * @param vmax new maximum v value
+ * @return the trimmed face
+ */
+TIGL_EXPORT TopoDS_Face TrimFace(TopoDS_Face const& face,
+                                 double umin,
+                                 double umax,
+                                 double vmin,
+                                 double vmax);
+
+
+/**
+ * @brief ReplaceFaceInShape returns a new shape that corresponds to
+ * the input shape, except that old_face is replaced by new_face
+ * @param shape The input shape
+ * @param new_face the new face that shall take the place of the old shape
+ * @param old_face the old face to be replaced
+ * @return the shape with the replaced faces
+ */
+TIGL_EXPORT TopoDS_Shape ReplaceFaceInShape(TopoDS_Shape const& shape,
+                                            TopoDS_Face const& new_face,
+                                            TopoDS_Face const& old_face);
+
 // checks, whether a face is in between two points
 TIGL_EXPORT bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2);
 

@@ -41,6 +41,7 @@
 #include "PNamedShape.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglProjectPointOnCurveAtAngle.h"
+#include "CTiglBSplineAlgorithms.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -353,6 +354,64 @@ gp_Pnt ProjectPointOnShape(const TopoDS_Shape &shape, const gp_Pnt &point, const
     }
 
     return extrema_distShapeShape.PointOnShape2(nPoints);
+}
+
+boost::optional<UVResult> GetFaceAndUV(TopoDS_Shape const& shape,
+                                       gp_Pnt const& pnt,
+                                       double tol)
+{
+    boost::optional<UVResult> res;
+    //find a face that contains the point and query the uv coordinates
+    TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(pnt);
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+    for (int f = 1; f <= faceMap.Extent(); f++) {
+        TopoDS_Face const& face = TopoDS::Face(faceMap(f));
+
+        BRepExtrema_ExtPF proj(v, face);
+        for (auto i=1; i<=proj.NbExt(); ++i) {
+            if(proj.SquareDistance(i) < tol) {
+                UVResult current;
+                current.face = face;
+                proj.Parameter(i, current.u, current.v);
+                res = current;
+                return res;
+            }
+        }
+    }
+}
+
+TopoDS_Face TrimFace(TopoDS_Face const& face,
+                     double umin,
+                     double umax,
+                     double vmin,
+                     double vmax)
+{
+    Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
+    Handle(Geom_BSplineSurface) trimmed_surf
+            = tigl::CTiglBSplineAlgorithms::trimSurface(surf, umin, umax, vmin, vmax);
+    return BRepBuilderAPI_MakeFace(trimmed_surf, Precision::Confusion()).Face();
+}
+
+TopoDS_Shape ReplaceFaceInShape(TopoDS_Shape const& shape,
+                                TopoDS_Face const& new_face,
+                                TopoDS_Face const& old_face)
+{
+    TopoDS_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, new_face);
+
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+    for (int f = 1; f <= faceMap.Extent(); f++) {
+        TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
+        if( loftFace.IsEqual(old_face) ) {
+            continue;
+        }
+        builder.Add(compound, loftFace);
+    }
+    return compound;
 }
 
 
