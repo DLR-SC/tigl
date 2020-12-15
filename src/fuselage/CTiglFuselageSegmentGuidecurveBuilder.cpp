@@ -94,6 +94,13 @@ std::vector<gp_Pnt> CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(c
     CCPACSConfiguration& config = m_segment.GetFuselage().GetConfiguration();
     CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
+    if( guideCurveProfile.GetGuideCurveProfilePoints()[0].y  < 1e-14) {
+        throw CTiglError("Wrong CPACS Definition: First guidecurve profile points should have a y component > 0.\n.");
+    }
+    if( guideCurveProfile.GetGuideCurveProfilePoints().back().y  > 1 - 1e-14) {
+        throw CTiglError("Wrong CPACS Definition: Last guidecurve profile points should have a y component < 1.\n.");
+    }
+
     // get local x-direction for the guide curve
     gp_Dir rxDir = gp_Dir(0., 0., 1.);
     if (guideCurve->GetRXDirection()) {
