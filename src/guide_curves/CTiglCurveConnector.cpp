@@ -325,8 +325,8 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
     interpol.Load(htangents, htangentFlags, false);
     try {
         interpol.Perform();
-    } catch(...)
-    {
+    }
+    catch(...) {
         throw CTiglError("Error interpolating guide curve points.");
     }
     Handle(Geom_BSplineCurve) hcurve = interpol.Curve();

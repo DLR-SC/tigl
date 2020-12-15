@@ -103,10 +103,10 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
     // get guide curve profile
     CCPACSGuideCurveProfile& guideCurveProfile = m_segment.GetUIDManager().ResolveObject<CCPACSGuideCurveProfile>(guideCurveProfileUID);
 
-    if( guideCurveProfile.GetGuideCurveProfilePoints()[0].y  < 1e-14) {
+    if (guideCurveProfile.GetGuideCurveProfilePoints()[0].y < 1e-14) {
         throw CTiglError("Wrong CPACS Definition: First guidecurve profile points should have a y component > 0.\n.");
     }
-    if( guideCurveProfile.GetGuideCurveProfilePoints().back().y  > 1 - 1e-14) {
+    if (guideCurveProfile.GetGuideCurveProfilePoints().back().y > 1 - 1e-14) {
         throw CTiglError("Wrong CPACS Definition: Last guidecurve profile points should have a y component < 1.\n.");
     }
 
