@@ -15673,6 +15673,11 @@ marko.alder@dlr.de
                                 </xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
+                        <xsd:element name="chordwiseContourCoordinate" type="doubleBaseType">
+                            <xsd:annotation>
+                                <xsd:documentation>Contour coordinate as chordwise border. 0 equals LE, 1 equals TE.</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
                     </xsd:choice>
                 </xsd:sequence>
             </xsd:extension>
@@ -15729,6 +15734,11 @@ marko.alder@dlr.de
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:sequence>
+                        <xsd:element name="spanwiseContourCoordinate" type="doubleBaseType">
+                            <xsd:annotation>
+                                <xsd:documentation>Contour coordinate as spanwise border. 0 equals root, 1 equals tip.</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
                     </xsd:choice>
                 </xsd:sequence>
             </xsd:extension>
