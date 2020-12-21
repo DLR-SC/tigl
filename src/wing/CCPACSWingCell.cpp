@@ -118,6 +118,163 @@ namespace WingCellInternal
         p.y = etaXsi.xsi;
         return p;
     }
+
+
+    void RectangularGrid(TopoDS_Shape const& shape)
+    {
+        // To Do:
+        //  - Move this to CTiglWingStructureRerefence
+        //  - Clean up
+        //  - Testing
+
+        struct FaceInfoInternal {
+
+            FaceInfoInternal(TopoDS_Face const& f)
+                : face(f)
+            {
+                BRepTools::UVBounds(face, umin, umax, vmin, vmax);
+                Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
+                surf->D0(umin, vmin, u0v0);
+                surf->D0(umax, vmin, u1v0);
+                surf->D0(umin, vmax, u0v1);
+                surf->D0(umax, vmax, u1v1);
+            }
+
+            TopoDS_Face face;
+            gp_Pnt u0v0, u1v0, u0v1, u1v1; // corner points
+            double umin, umax, vmin, vmax; // parametric bounds
+            double ccmin, ccmax; // chordwise contour coordinate bounds
+            double scmin, scmax; // spanwise contour coordinate bounds
+            FaceInfoInternal* Neg_u_Neighbor;
+            FaceInfoInternal* Pos_u_Neighbor;
+            FaceInfoInternal* Neg_v_Neighbor;
+            FaceInfoInternal* Pos_v_Neighbor;
+
+        };
+
+        /*
+         *  Create vector of FaceInfos from the faces of the shape
+         */
+        std::vector<FaceInfoInternal> face_infos;
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+        for (int i = 1; i <= faceMap.Extent(); i++) {
+            TopoDS_Face current = TopoDS::Face(faceMap(i));
+            face_infos.emplace_back(FaceInfoInternal(current));
+        }
+
+        /*
+         *  Connect faces (brute force!)
+         */
+        for (auto& current : face_infos ) {
+            for (auto& other : face_infos) {
+
+                if (    (void*)&current == (void*)&other ) {
+                    continue;
+                }
+
+                //  if other face has no negative u neighbor yet,
+                // and the corner points match, register neighborship
+                if (    other.Neg_u_Neighbor == nullptr
+                     && current.u1v0.SquareDistance(other.u0v0) < 1e-4
+                     && current.u1v1.SquareDistance(other.u0v1) < 1e-4 ) {
+                    current.Pos_u_Neighbor = &other;
+                    other.Neg_u_Neighbor = &current;
+                }
+                else if (    other.Neg_v_Neighbor == nullptr
+                          && current.u0v1.SquareDistance(other.u0v0) < 1e-4
+                          && current.u1v1.SquareDistance(other.u1v0) < 1e-4 ) {
+                    // do the same for the v direction
+                    current.Pos_v_Neighbor = &other;
+                    other.Neg_v_Neighbor = &current;
+                }
+            }
+        }
+
+        /*
+         * find face without negative neighbors (= "root" face)
+         */
+        size_t root = 0;
+        for (; root < face_infos.size(); ++root ) {
+            if(    face_infos[root].Neg_u_Neighbor == nullptr
+                && face_infos[root].Neg_v_Neighbor == nullptr ){
+                break;
+            }
+        }
+
+        /*
+         * Determine number of rows and columns
+         */
+        int nrows = 0;
+        for(FaceInfoInternal& current = face_infos[root]; current.Pos_u_Neighbor; current = *(current.Pos_u_Neighbor)) {
+            ++nrows;
+        }
+        int ncols = 0;
+        for(FaceInfoInternal& current = face_infos[root]; current.Pos_v_Neighbor; current = *(current.Pos_v_Neighbor)) {
+            ++ncols;
+        }
+
+
+        /*
+         * create parameter range sums for every row and every column
+         */
+        std::vector<double> row_ranges(nrows, 0.);
+        std::vector<double> col_ranges(ncols, 0.);
+        FaceInfoInternal& current = face_infos[root];
+        int i=0;
+        int j=0;
+        while( current.Pos_v_Neighbor ){
+            FaceInfoInternal& row_start = current;
+            while (current.Pos_u_Neighbor) {
+                row_ranges[i] += current.umax - current.umin;
+                col_ranges[j] += current.vmax - current.vmin;
+                current = *(current.Pos_u_Neighbor);
+                i++;
+            }
+            current = *(row_start.Pos_v_Neighbor);
+            j++;
+        }
+
+        /*
+         * determine chordwise and spanwise min and max coordinates for each face
+         */
+        current = face_infos[root];
+        while( current.Pos_v_Neighbor ){
+            // for each row
+            FaceInfoInternal& row_start = current;
+            double sc = 0;
+            i = 0;
+            while (current.Pos_u_Neighbor) {
+                // for each column
+                current.scmin = sc;
+                current.scmax = sc + (current.umax - current.umin)/row_ranges[i];
+
+                current = *(current.Pos_u_Neighbor);
+                sc = current.scmax;
+                ++i;
+            }
+            current = *(row_start.Pos_v_Neighbor);
+        }
+
+        current = face_infos[root];
+        while( current.Pos_u_Neighbor ){
+            // for each column
+            FaceInfoInternal& col_start = current;
+            double cc = 0;
+            j = 0;
+            while (current.Pos_v_Neighbor) {
+                // for each row
+                current.ccmin = cc;
+                current.ccmax = cc + (current.vmax - current.vmin)/col_ranges[j];
+
+                current = *(current.Pos_v_Neighbor);
+                cc = current.ccmax;
+                ++j;
+            }
+            current = *(col_start.Pos_u_Neighbor);
+        }
+
+    }
 }
 
 using namespace WingCellInternal;
@@ -409,6 +566,19 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
                                          gp_Dir const& zRefDir,
                                          double tol) const
 {
+
+    if (positioning.GetInputType() == CCPACSWingCellPositionSpanwise::InputType::Contour){
+
+
+
+
+        //return something
+    }
+
+    // Border not defined by contour cooordinate.
+    // check if border definition allows trimming along contour coordinate anyway,
+    // otherwise use Boolean operations
+
     gp_Pnt le_point, le_point_proj, te_point, te_point_proj;
     if (border == SpanWiseBorder::Inner ){
         le_point = cache.IBLE;
