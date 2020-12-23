@@ -479,3 +479,30 @@ TEST_F(FuselageGuideCurve2, bug747)
     EXPECT_TRUE(minz > -1.);
     EXPECT_TRUE(maxz < 1.);
 }
+
+
+TEST(FuselageGuideCurve_bug, 766)
+{
+    // https://github.com/DLR-SC/tigl/issues/766
+    const char* filename = "TestData/bugs/766/simple_test_guide_curves.xml";
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE(tixiRet == SUCCESS);
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "GuideCurveModel", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
+
+    tigl::CCPACSFuselage& fuselage = config.GetFuselage(1);
+    EXPECT_THROW(fuselage.GetLoft()->Shape(), tigl::CTiglError);
+
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    EXPECT_THROW(wing.GetLoft()->Shape(), tigl::CTiglError);
+
+}
