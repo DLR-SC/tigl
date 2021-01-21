@@ -77,8 +77,8 @@ TiglCPACSConfigurationHandle WingSegment::tiglHandle = 0;
 class WingSegmentSimple : public ::testing::Test 
 {
 protected:
-    static void SetUpTestCase() 
-    {
+
+    void SetUp() override {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -92,17 +92,12 @@ protected:
         tiglRet = tiglOpenCPACSConfiguration(tixiSimpleHandle, "Cpacs2Test", &tiglSimpleHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
     }
-
-    static void TearDownTestCase() 
-    {
+    void TearDown() override {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSimpleHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiSimpleHandle) == SUCCESS);
         tiglSimpleHandle = -1;
         tixiSimpleHandle = -1;
     }
-
-    void SetUp() override {}
-    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiSimpleHandle;
@@ -886,6 +881,9 @@ TEST_F(WingSegmentSimple, getIsOnTop_performance)
 
 TEST_F(WingSegmentSimple, trafo_Consistency)
 {
+    TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, onLinearLoft);
+    ASSERT_EQ(tiglRet, SUCCESS);
+
     // we transform eta, xsi to x,y,z and perform the back transform
     // we check if we get the the same eta xsi as before
     int segIndex = 1;
@@ -964,6 +962,9 @@ TEST_F(WingSegmentSimple, getEtaXsi_Performance)
 // @todo: test of failures, outliers etc...
 TEST_F(WingSegmentSimple, wingGetEtaXsi)
 {  
+    TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, onLinearLoft);
+    ASSERT_EQ(tiglRet, SUCCESS);
+
     double x = 0., y = 0., z = 0.;
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
 
