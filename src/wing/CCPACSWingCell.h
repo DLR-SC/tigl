@@ -24,6 +24,7 @@
 #include "generated/UniquePtr.h"
 #include "tigletaxsifunctions.h"
 #include "Cache.h"
+#include "CTiglRectGridSurface.h"
 
 #include <gp_Pln.hxx>
 #include <TopoDS_Shape.hxx>
@@ -100,6 +101,12 @@ private:
         EtaXsi outerTrailingEdgePoint;
     };
 
+    struct ContourCoordinateBounds
+    {
+        double ccmin, ccmax; // chordwise contour coordinate bounds
+        double scmin, scmax; // spanwise contour coordinate bounds
+    };
+
     struct GeometryCache
     {
         TopoDS_Shape skinGeometry;
@@ -109,6 +116,9 @@ private:
                OBTE, projectedOBTE;
         gp_Ax3 border_inner_ax3, border_outer_ax3, border_le_ax3, border_te_ax3;
         TopoDS_Shape sparShapeLE, sparShapeTE;
+
+        // this cache is used for the contour coordinate implementation
+        CTiglRectGridSurface<ContourCoordinateBounds> rgsurface;
     };
 
     template<class T>
