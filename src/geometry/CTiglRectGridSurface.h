@@ -165,7 +165,7 @@ public:
      * face.
      */
     template <typename... Args>
-    TIGL_EXPORT CTiglRectGridSurface(TopoDS_Shape const& shape, Args&&... args)
+    CTiglRectGridSurface(TopoDS_Shape const& shape, Args&&... args)
     {
         SetShape(shape, std::forward<Args>(args)...);
     }
@@ -177,7 +177,7 @@ public:
      * face.
      */
     template <typename... Args>
-    TIGL_EXPORT void SetShape(TopoDS_Shape const& shape, Args&&... args)
+    void SetShape(TopoDS_Shape const& shape, Args&&... args)
     {
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
@@ -198,12 +198,12 @@ public:
      * @brief Root returns the root face of the rectangular grid, which is one of its corners
      * @return the root face of the rectangular grid, which is one of its corners
      */
-    TIGL_EXPORT AnnotatedFace* Root() {
+    AnnotatedFace* Root() {
         assert(face_infos.size()>0);
         return &face_infos[root_idx];
     }
 
-    TIGL_EXPORT AnnotatedFace const* Root() const {
+    AnnotatedFace const* Root() const {
         assert(face_infos.size()>0);
         return &face_infos[root_idx];
     }
@@ -212,13 +212,13 @@ public:
      * @brief NRows number of rows
      * @return number of rows
      */
-    TIGL_EXPORT int NRows() const { return nrows; };
+    size_t NRows() const { return nrows; };
 
     /**
      * @brief NCols number of columns
      * @return number of columns
      */
-    TIGL_EXPORT int NCols() const { return ncols; };
+    size_t NCols() const { return ncols; };
 
 
 private:
