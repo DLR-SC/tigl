@@ -240,7 +240,7 @@ private:
                     current.Pos_u_Neighbor = &other;
                     other.Neg_u_Neighbor = &current;
                 }
-                else if (    other.Neg_v_Neighbor == nullptr
+                if (    other.Neg_v_Neighbor == nullptr
                           && current.u0v1.SquareDistance(other.u0v0) < m_sqr_dist_tol
                           && current.u1v1.SquareDistance(other.u1v0) < m_sqr_dist_tol ) {
                     // do the same for the v direction
@@ -251,7 +251,7 @@ private:
         }
 
         //Determine root
-        for (; root_idx < face_infos.size(); ++root_idx ) {
+        for (root_idx=0; root_idx < face_infos.size(); ++root_idx ) {
             if( face_infos[root_idx].Neg_u_Neighbor == nullptr
                 && face_infos[root_idx].Neg_v_Neighbor == nullptr ){
                 break;
@@ -261,40 +261,34 @@ private:
         /*
          * Determine number of rows and columns
          */
-        nrows = 0;
-        for(AnnotatedFace* current = Root(); current->UNext(); current = current->UNext()) {
-            ++nrows;
-        }
-        ncols = 0;
-        for(AnnotatedFace* current = Root(); current->VNext(); current = current->VNext()) {
-            ++ncols;
-        }
+        ncols = 1;
+        for(AnnotatedFace* current = Root(); current->UNext(); current = current->UNext(), ++ncols)
+        {}
+        nrows = 1;
+        for(AnnotatedFace* current = Root(); current->VNext(); current = current->VNext(), ++nrows)
+        {}
 
-#ifdef DEBUG
         //Check faces: Are they really a rectangular grid?
         for (auto& face : face_infos ) {
-            if (!face.VPrev()){
-                //every face without vprev should have ncols vnext neighbors
-                size_t ncols_tmp = 0;
-                for(AnnotatedFace* current = &face; current->VNext(); current = current->VNext()) {
-                    ++ncols_tmp;
-                }
+            if (!face.UPrev()){
+                //every face without uprev should have ncols unext neighbors
+                size_t ncols_tmp = 1;
+                for(AnnotatedFace* current = &face; current->UNext(); current = current->UNext(), ++ncols_tmp)
+                {}
                 if (ncols_tmp != ncols ) {
                     throw CTiglError("The Input Shape is not a rectangular grid of faces");
                 }
             }
-            if (!face.UPrev()) {
-                //every face without uprev should have nrows unext neighbors
-                size_t nrows_tmp = 0;
-                for(AnnotatedFace* current = &face; current->UNext(); current = current->UNext()) {
-                    ++nrows_tmp;
-                }
+            if (!face.VPrev()) {
+                //every face without vprev should have nrows vnext neighbors
+                size_t nrows_tmp = 1;
+                for(AnnotatedFace* current = &face; current->VNext(); current = current->VNext(), ++nrows_tmp)
+                {}
                 if (nrows_tmp != nrows ) {
                     throw CTiglError("The Input Shape is not a rectangular grid of faces");
                 }
             }
         }
-#endif
 
     }
 
