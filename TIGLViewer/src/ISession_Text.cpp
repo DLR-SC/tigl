@@ -107,11 +107,6 @@ void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager3d)& mgr,
 #endif
 }
 
-// void ISession_Text::Compute(const Handle(Prs3d_Projector)& ,
-//                             const Handle(Prs3d_Presentation)& )
-// {
-// }
-
 void ISession_Text::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
                                      const Standard_Integer /*unMode*/)
 {

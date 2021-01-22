@@ -11,8 +11,6 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
-// #include <Quantity_Factor.hxx>
-// #include <Quantity_PlaneAngle.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_CString.hxx>
@@ -78,8 +76,6 @@ private:
     void Compute          (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
                            const Handle(Prs3d_Presentation)& aPresentation,
                            const Standard_Integer aMode) override;
-    // void Compute          (const Handle(Prs3d_Projector)& aProjector,
-    //                        const Handle(Prs3d_Presentation)& aPresentation) override;
     void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
                            const Standard_Integer unMode) override;
 

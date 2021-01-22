@@ -80,30 +80,7 @@
 #include <gp_Pln.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Dir.hxx>
-#if 0
-#include <Graphic2d_Array1OfVertex.hxx>
-#include <Graphic2d_Buffer.hxx>
-#include <Graphic2d_CircleMarker.hxx>
-#include <Graphic2d_DisplayList.hxx>
-#include <Graphic2d_Drawer.hxx>
-#include <Graphic2d_Polyline.hxx>
-#include <Graphic2d_Segment.hxx>
-#include <GGraphic2d_SetOfCurves.hxx>
-#include <Graphic2d_SetOfSegments.hxx>
-#include <Graphic2d_Text.hxx>
-#include <Graphic2d_Vertex.hxx>
-#include <Graphic2d_View.hxx>
-#include <PrsMgr_PresentationManager2d.hxx>
-#include <Select2D_SensitiveArc.hxx>
-#include <Select2D_SensitiveBox.hxx>
-#include <Select2D_SensitiveEntity.hxx>
-#include <Select2D_SensitiveSegment.hxx>
-#include <StdSelect_SensitiveText2d.hxx>
-#include <StdSelect_TextProjector2d.hxx>
-#include <StdSelect_ViewerSelector2d.hxx>
-#include <V2d_View.hxx>
-#include <V2d_Viewer.hxx>
-#endif
+
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <MMgt_TShared.hxx>
@@ -111,13 +88,9 @@
 #include <Precision.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-// #include <Prs3d_Projector.hxx>
 #include <Prs3d_Text.hxx>
-// #include <Quantity_Factor.hxx>
-// #include <Quantity_Length.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Quantity_PhysicalQuantity.hxx>
-// #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_TypeOfColor.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
@@ -126,7 +99,6 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_ErrorHandler.hxx>
-//#include <Standard_Integer.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_NotImplemented.hxx>
