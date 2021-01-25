@@ -118,19 +118,19 @@ private:
          * @brief UMax returns the ending u parameter of this face
          * @return the ending u parameter of this face
          */
-        double UMax() const { return umin; };
+        double UMax() const { return umax; };
 
         /**
          * @brief VMin returns the starting v parameter of this face
          * @return the starting v parameter of this face
          */
-        double VMin() const { return umin; };
+        double VMin() const { return vmin; };
 
         /**
          * @brief VMax returns the ending v parameter of this face
          * @return the ending v parameter of this face
          */
-        double VMax() const { return umin; };
+        double VMax() const { return vmax; };
 
         /**
          * @brief GetAnnotation returns the custom annotation associated with this face
