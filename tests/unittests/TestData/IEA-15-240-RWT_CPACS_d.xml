@@ -607,10 +607,10 @@
                                        <chordwiseContourCoordinate>0.542325</chordwiseContourCoordinate>
                                     </positioningTrailingEdge>
                                     <positioningInnerBorder>
-                                       <chordwiseContourCoordinate>0</chordwiseContourCoordinate>
+                                       <spanwiseContourCoordinate>0</spanwiseContourCoordinate>
                                     </positioningInnerBorder>
                                     <positioningOuterBorder>
-                                       <chordwiseContourCoordinate>0.0333333</chordwiseContourCoordinate>
+                                       <spanwiseContourCoordinate>0.0333333</spanwiseContourCoordinate>
                                     </positioningOuterBorder>
                                  </cell>
                               </cells>

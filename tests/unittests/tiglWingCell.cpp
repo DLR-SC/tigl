@@ -343,3 +343,11 @@ TEST_F(WingCellContourCoordinates, mixedBorderDefError)
     auto& cell = getCell(2);
     EXPECT_THROW(cell.GetLoft(), tigl::CTiglError);
 }
+
+
+TEST_F(WingCellContourCoordinates, computeGeometry)
+{
+    auto& cell = getCell(3);
+    TopoDS_Shape cellGeom = cell.GetSkinGeometry();
+    BRepTools::Write(cellGeom, "TestData/export/WingCellContourCoordinates_CellGeometry.brep");
+}
