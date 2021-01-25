@@ -687,53 +687,70 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
     }
 
     if ( use_contour_coordinates ) {
+
+        // The skin is composed of a rectangular grid of faces. We need to annotate
+        // these faces to trim the correct faces at the correct parameters.
+
         cache.rgsurface.SetShape(loftShape);
 
-        // create parameter range sums for every row and every column
+        /*
+         *  Step 1/2:
+         *
+         *  create sums of all parameter ranges for every row (in spanwise v-dir)
+         *  and every column (in chordwise u-dir) of the grid of faces composing
+         *  the upper skin
+         *
+         *  This is needed to calculate the contour coordinate range of each face,
+         *  so that we can translate between local parameter ranges (u,v)
+         *  and contour coordinates.
+         *
+         */
         std::vector<double> row_ranges(cache.rgsurface.NRows(), 0.);
         std::vector<double> col_ranges(cache.rgsurface.NCols(), 0.);
+
         int j = 0;
-        for (auto current = cache.rgsurface.Root(); current->VNext(); current->VNext()) {
-            auto row_start = current;
+        for (auto row = cache.rgsurface.Root(); row; row = row->VNext()) {
+            // iterate cells in spanwise direction: Increment v/row/j
             int i = 0;
-            for (; current->UNext(); current->UNext()){
-                row_ranges[i] += current->UMax() - current->UMin();
-                col_ranges[j] += current->VMax() - current->VMin();
+            for (auto current = row; current; current = current->UNext()){
+                //iterate cells in chordwise direction: Increment u/col/i
+                row_ranges[j] += current->UMax() - current->UMin();
+                col_ranges[i] += current->VMax() - current->VMin();
                 i++;
             }
-            current = row_start;
             j++;
         }
 
-        // determine chordwise and spanwise min and max coordinates for each face
-        for (auto current = cache.rgsurface.Root(); current->VNext(); current->VNext()) {
-            auto row_start = current;
-            double spanwise_contour_coordinate = 0;
-            int i = 0;
-            for (; current->UNext(); current->UNext()){
-                current->GetAnnotation().scmin = spanwise_contour_coordinate;
-                current->GetAnnotation().scmax = spanwise_contour_coordinate
-                        + (current->UMax() - current->UMin())/row_ranges[i];
+        /*
+         *  Step 2/2:
+         *
+         *  Compute the relative contribution of each face to the total parameter
+         *  range in u- and v-direction respectively. These relative contributions
+         *  correspond to the contour coordinates spanned by each individual face.
+         */
 
-                spanwise_contour_coordinate = current->GetAnnotation().scmax;
-                i++;
-            }
-            current = row_start;
-        }
+        // coordinates go from 0 to 1 on upper side, and from 0 to -1 on lower side
+        int sign = m_parent->GetParent()->GetLoftSide() == UPPER_SIDE ? 1 : -1;
 
-        for (auto current = cache.rgsurface.Root(); current->UNext(); current->UNext()) {
-            auto col_start = current;
+        double spanwise_contour_coordinate = 0;
+        j = 0;
+        for (auto row = cache.rgsurface.Root(); row; row = row->VNext()) {
             double chordwise_contour_coordinate = 0;
             int i = 0;
-            for (; current->UNext(); current->UNext()){
+            for (auto current = row; current; current = current->UNext()){
+                current->GetAnnotation().scmin = spanwise_contour_coordinate;
+                current->GetAnnotation().scmax = spanwise_contour_coordinate
+                        + (current->VMax() - current->VMin())/col_ranges[i];
+                spanwise_contour_coordinate = current->GetAnnotation().scmax;
+
                 current->GetAnnotation().ccmin = chordwise_contour_coordinate;
                 current->GetAnnotation().ccmax = chordwise_contour_coordinate
-                        + (current->VMax() - current->VMin())/col_ranges[j];
+                        + sign*(current->UMax() - current->UMin())/row_ranges[j];
+                chordwise_contour_coordinate = current->GetAnnotation().ccmax;
 
-                chordwise_contour_coordinate = current->GetAnnotation().scmax;
-                j++;
+                i++;
             }
-            current = col_start;
+            j++;
         }
 
     }
