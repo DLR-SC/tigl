@@ -568,12 +568,10 @@
                                        </material>
                                     </skin>
                                     <positioningLeadingEdge>
-                                       <xsi1>0.542325</xsi1>
-                                       <xsi2>0.542325</xsi2>
+                                       <chordwiseContourCoordinate>0.542325</chordwiseContourCoordinate>
                                     </positioningLeadingEdge>
                                     <positioningTrailingEdge>
-                                       <xsi1>0.707197</xsi1>
-                                       <xsi2>0.707197</xsi2>
+                                       <chordwiseContourCoordinate>0.707197</chordwiseContourCoordinate>
                                     </positioningTrailingEdge>
                                     <positioningInnerBorder>
                                        <eta1>
@@ -603,32 +601,16 @@
                                        </material>
                                     </skin>
                                     <positioningLeadingEdge>
-                                       <xsi1>0</xsi1>
-                                       <xsi2>0</xsi2>
+                                       <chordwiseContourCoordinate>0</chordwiseContourCoordinate>
                                     </positioningLeadingEdge>
                                     <positioningTrailingEdge>
-                                       <xsi1>0.542325</xsi1>
-                                       <xsi2>0.542325</xsi2>
+                                       <chordwiseContourCoordinate>0.542325</chordwiseContourCoordinate>
                                     </positioningTrailingEdge>
                                     <positioningInnerBorder>
-                                       <eta1>
-                                          <eta>0</eta>
-                                          <referenceUID>blade_component_segment</referenceUID>
-                                       </eta1>
-                                       <eta2>
-                                          <eta>0</eta>
-                                          <referenceUID>blade_component_segment</referenceUID>
-                                       </eta2>
+                                       <chordwiseContourCoordinate>0</chordwiseContourCoordinate>
                                     </positioningInnerBorder>
                                     <positioningOuterBorder>
-                                       <eta1>
-                                          <eta>0.0333333</eta>
-                                          <referenceUID>blade_component_segment</referenceUID>
-                                       </eta1>
-                                       <eta2>
-                                          <eta>0.0333333</eta>
-                                          <referenceUID>blade_component_segment</referenceUID>
-                                       </eta2>
+                                       <chordwiseContourCoordinate>0.0333333</chordwiseContourCoordinate>
                                     </positioningOuterBorder>
                                  </cell>
                               </cells>
