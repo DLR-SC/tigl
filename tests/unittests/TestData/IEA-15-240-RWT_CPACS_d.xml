@@ -1,82 +1,1170 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://www.cpacs.de/schema/v3_1_0/cpacs_schema.xsd">
-  <header>
-    <name>IEA-15-240-RWT Wing Model</name>
-    <creator>Daniel Hardt</creator>
-    <version>0.1</version>
-    <timestamp>2020-08-13T12:00:00</timestamp>
-    <cpacsVersion>3.1</cpacsVersion>
-  </header>
-  <vehicles>
-    <aircraft>
-      <model uID="IEA-15-240-RWT">
-        <name>IEA-15-240-RWT</name>
-        <description>Wind blade</description>
-        <wings>
-          <wing uID="blade">
-            <name>blade</name>
-            <description>The blade of IEA-15-240-RWT</description>
-            <transformation uID="blade_transformation1">
-              <scaling uID="blade_transformation1_scaling1">
-                <x>1</x>
-                <y>1</y>
-                <z>1</z>
-              </scaling>
-              <rotation uID="blade_transformation1_rotation1">
-                <x>0</x>
-                <y>0</y>
-                <z>0</z>
-              </rotation>
-              <translation refType="absLocal" uID="blade_transformation1_translation1">
-                <x>0</x>
-                <y>0 </y>
-                <z>0</z>
-              </translation>
-            </transformation>
-            <sections>
-						<section uID="blade_section_1"><name>blade_section_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_transformation_scaling"><x>1</x><y>1</y><z>1</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_transformation_rotation"><x>0</x><y>15.5946</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_transformation_translation"><x>0</x><y>0</y><z>-0</z></translation></transformation><elements><element uID="blade_section_1_element_1"><name>blade_section_1_element_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_elements_element_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_elements_element_transformation_scaling"><x>5.2</x><y>5.2</y><z>5.2</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_elements_element_transformation_rotation"><x>0</x><y>0</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_elements_element_transformation_translation"><x>-2.62364</x><y>0</y><z>0</z></translation></transformation><airfoilUID>circular</airfoilUID></element></elements></section><section uID="blade_section_2"><name>blade_section_2</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_transformation_scaling"><x>1</x><y>1</y><z>1</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_transformation_rotation"><x>0</x><y>15.5911</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_transformation_translation"><x>0</x><y>2.34</y><z>0.0179273</z></translation></transformation><elements><element uID="blade_section_2_element_1"><name>blade_section_2_element_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_elements_element_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_elements_element_transformation_scaling"><x>5.20828</x><y>5.20828</y><z>5.20828</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_elements_element_transformation_rotation"><x>0</x><y>0</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_elements_element_transformation_translation"><x>-2.55395</x><y>0</y><z>0</z></translation></transformation><airfoilUID>circular</airfoilUID></element></elements></section><section uID="blade_section_3"><name>blade_section_3</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_transformation_scaling"><x>1</x><y>1</y><z>1</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_transformation_rotation"><x>0</x><y>11.0305</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_transformation_translation"><x>0</x><y>17.55</y><z>0.209188</z></translation></transformation><elements><element uID="blade_section_3_element_1"><name>blade_section_3_element_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_elements_element_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_elements_element_transformation_scaling"><x>5.65491</x><y>5.65491</y><z>5.65491</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_elements_element_transformation_rotation"><x>0</x><y>0</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_elements_element_transformation_translation"><x>-2.12358</x><y>0</y><z>0</z></translation></transformation><airfoilUID>SNL-FFA-W3-500</airfoilUID></element></elements></section><section uID="blade_section_4"><name>blade_section_4</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_transformation_scaling"><x>1</x><y>1</y><z>1</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_transformation_rotation"><x>0</x><y>7.18285</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_transformation_translation"><x>0</x><y>28.6849</y><z>0.2494</z></translation></transformation><elements><element uID="blade_section_4_element_1"><name>blade_section_4_element_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_elements_element_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_elements_element_transformation_scaling"><x>5.70234</x><y>5.70234</y><z>5.70234</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_elements_element_transformation_rotation"><x>0</x><y>0</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_elements_element_transformation_translation"><x>-1.84763</x><y>0</y><z>0</z></translation></transformation><airfoilUID>FFA-W3-360</airfoilUID></element></elements></section><section uID="blade_section_5"><name>blade_section_5</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_transformation_scaling"><x>1</x><y>1</y><z>1</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_transformation_rotation"><x>0</x><y>4.73442</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_transformation_translation"><x>0</x><y>38.4747</y><z>0.236494</z></translation></transformation><elements><element uID="blade_section_5_element_1"><name>blade_section_5_element_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_elements_element_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_elements_element_transformation_scaling"><x>5.1487</x><y>5.1487</y><z>5.1487</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_elements_element_transformation_rotation"><x>0</x><y>0</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_elements_element_transformation_translation"><x>-1.58862</x><y>0</y><z>0</z></translation></transformation><airfoilUID>FFA-W3-330blend</airfoilUID></element></elements></section><section uID="blade_section_6"><name>blade_section_6</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_transformation_scaling"><x>1</x><y>1</y><z>1</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_transformation_rotation"><x>0</x><y>2.561</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_transformation_translation"><x>0</x><y>51.384</y><z>0.124335</z></translation></transformation><elements><element uID="blade_section_6_element_1"><name>blade_section_6_element_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_elements_element_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_elements_element_transformation_scaling"><x>4.48206</x><y>4.48206</y><z>4.48206</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_elements_element_transformation_rotation"><x>0</x><y>0</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_elements_element_transformation_translation"><x>-1.32256</x><y>0</y><z>0</z></translation></transformation><airfoilUID>FFA-W3-301</airfoilUID></element></elements></section><section uID="blade_section_7"><name>blade_section_7</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_transformation_scaling"><x>1</x><y>1</y><z>1</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_transformation_rotation"><x>0</x><y>1.21559</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_transformation_translation"><x>0</x><y>62.9076</y><z>-0.183819</z></translation></transformation><elements><element uID="blade_section_7_element_1"><name>blade_section_7_element_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_elements_element_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_elements_element_transformation_scaling"><x>3.96353</x><y>3.96353</y><z>3.96353</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_elements_element_transformation_rotation"><x>0</x><y>0</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_elements_element_transformation_translation"><x>-1.1408</x><y>0</y><z>0</z></translation></transformation><airfoilUID>FFA-W3-270blend</airfoilUID></element></elements></section><section uID="blade_section_8"><name>blade_section_8</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_transformation_scaling"><x>1</x><y>1</y><z>1</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_transformation_rotation"><x>0</x><y>0.186029</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_transformation_translation"><x>0</x><y>74.6703</y><z>-0.733371</z></translation></transformation><elements><element uID="blade_section_8_element_1"><name>blade_section_8_element_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_elements_element_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_elements_element_transformation_scaling"><x>3.50079</x><y>3.50079</y><z>3.50079</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_elements_element_transformation_rotation"><x>0</x><y>0</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_elements_element_transformation_translation"><x>-1.02072</x><y>0</y><z>0</z></translation></transformation><airfoilUID>FFA-W3-241</airfoilUID></element></elements></section><section uID="blade_section_9"><name>blade_section_9</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_transformation_scaling"><x>1</x><y>1</y><z>1</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_transformation_rotation"><x>0</x><y>-1.5751</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_transformation_translation"><x>0</x><y>90.294</y><z>-1.71102</z></translation></transformation><elements><element uID="blade_section_9_element_1"><name>blade_section_9_element_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_elements_element_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_elements_element_transformation_scaling"><x>2.898</x><y>2.898</y><z>2.898</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_elements_element_transformation_rotation"><x>0</x><y>0</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_elements_element_transformation_translation"><x>-0.896368</x><y>0</y><z>0</z></translation></transformation><airfoilUID>FFA-W3-211</airfoilUID></element></elements></section><section uID="blade_section_10"><name>blade_section_10</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_transformation_scaling"><x>1</x><y>1</y><z>1</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_transformation_rotation"><x>0</x><y>-1.24239</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_transformation_translation"><x>0</x><y>117</y><z>-4</z></translation></transformation><elements><element uID="blade_section_10_element_1"><name>blade_section_10_element_1</name><transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_elements_element_transformation"><scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_elements_element_transformation_scaling"><x>0.5</x><y>0.5</y><z>0.5</z></scaling><rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_elements_element_transformation_rotation"><x>0</x><y>0</y><z>0</z></rotation><translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_elements_element_transformation_translation"><x>-0.184091</x><y>0</y><z>0</z></translation></transformation><airfoilUID>FFA-W3-211</airfoilUID></element></elements></section></sections>
-            <segments>
-						<segment uID="blade_segment_1"><name>blade_segment_1</name><fromElementUID>blade_section_1_element_1</fromElementUID><toElementUID>blade_section_2_element_1</toElementUID></segment><segment uID="blade_segment_2"><name>blade_segment_2</name><fromElementUID>blade_section_2_element_1</fromElementUID><toElementUID>blade_section_3_element_1</toElementUID></segment><segment uID="blade_segment_3"><name>blade_segment_3</name><fromElementUID>blade_section_3_element_1</fromElementUID><toElementUID>blade_section_4_element_1</toElementUID></segment><segment uID="blade_segment_4"><name>blade_segment_4</name><fromElementUID>blade_section_4_element_1</fromElementUID><toElementUID>blade_section_5_element_1</toElementUID></segment><segment uID="blade_segment_5"><name>blade_segment_5</name><fromElementUID>blade_section_5_element_1</fromElementUID><toElementUID>blade_section_6_element_1</toElementUID></segment><segment uID="blade_segment_6"><name>blade_segment_6</name><fromElementUID>blade_section_6_element_1</fromElementUID><toElementUID>blade_section_7_element_1</toElementUID></segment><segment uID="blade_segment_7"><name>blade_segment_7</name><fromElementUID>blade_section_7_element_1</fromElementUID><toElementUID>blade_section_8_element_1</toElementUID></segment><segment uID="blade_segment_8"><name>blade_segment_8</name><fromElementUID>blade_section_8_element_1</fromElementUID><toElementUID>blade_section_9_element_1</toElementUID></segment><segment uID="blade_segment_9"><name>blade_segment_9</name><fromElementUID>blade_section_9_element_1</fromElementUID><toElementUID>blade_section_10_element_1</toElementUID></segment></segments>
-            <componentSegments>
-              <componentSegment uID="blade_component_segment">
-                <name>blade_component_segment</name>
-                <fromElementUID>blade_section_1_element_1</fromElementUID>
-                <toElementUID>blade_section_10_element_1</toElementUID>
-                <structure>
-                  <upperShell uID="blade_component_segment_upper_shell">
-                    <skin>
-                      <material>
-											<materialUID>Gelcoat</materialUID><thickness>0.0005</thickness></material>
-                    </skin>
-                    <cells>
-										<cell uID="blade_component_segment_upper_shell_cell_1_1"><skin><material><compositeUID>blade_component_segment_upper_shell_cell_1_1_material</compositeUID></material></skin><positioningLeadingEdge><xsi1>0.707197</xsi1><xsi2>0.707197</xsi2></positioningLeadingEdge><positioningTrailingEdge><xsi1>1</xsi1><xsi2>1</xsi2></positioningTrailingEdge><positioningInnerBorder><eta1><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningInnerBorder><positioningOuterBorder><eta1><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningOuterBorder></cell><cell uID="blade_component_segment_upper_shell_cell_1_2"><skin><material><compositeUID>blade_component_segment_upper_shell_cell_1_2_material</compositeUID></material></skin><positioningLeadingEdge><xsi1>0.542325</xsi1><xsi2>0.542325</xsi2></positioningLeadingEdge><positioningTrailingEdge><xsi1>0.707197</xsi1><xsi2>0.707197</xsi2></positioningTrailingEdge><positioningInnerBorder><eta1><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningInnerBorder><positioningOuterBorder><eta1><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningOuterBorder></cell><cell uID="blade_component_segment_upper_shell_cell_1_3"><skin><material><compositeUID>blade_component_segment_upper_shell_cell_1_3_material</compositeUID></material></skin><positioningLeadingEdge><xsi1>0</xsi1><xsi2>0</xsi2></positioningLeadingEdge><positioningTrailingEdge><xsi1>0.542325</xsi1><xsi2>0.542325</xsi2></positioningTrailingEdge><positioningInnerBorder><eta1><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningInnerBorder><positioningOuterBorder><eta1><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningOuterBorder></cell></cells>
-                  </upperShell>
-                  <spars>
-                    <sparPositions>
-										<sparPosition uID="spar_1_position_1"><sparPositionEtaXsi><referenceUID>blade_component_segment</referenceUID><eta>0.0333333</eta><xsi>0.468638</xsi></sparPositionEtaXsi></sparPosition><sparPosition uID="spar_1_position_2"><sparPositionEtaXsi><referenceUID>blade_component_segment</referenceUID><eta>0.0666667</eta><xsi>0.438422</xsi></sparPositionEtaXsi></sparPosition><sparPosition uID="spar_2_position_1"><sparPositionEtaXsi><referenceUID>blade_component_segment</referenceUID><eta>0.0333333</eta><xsi>0.468638</xsi></sparPositionEtaXsi></sparPosition><sparPosition uID="spar_2_position_2"><sparPositionEtaXsi><referenceUID>blade_component_segment</referenceUID><eta>0.0666667</eta><xsi>0.438422</xsi></sparPositionEtaXsi></sparPosition></sparPositions>
-                    <sparSegments>
-										</sparSegments>
-                  </spars>
-                  <lowerShell uID="blade_component_segment_lower_shell">
-                    <skin>
-                      <material>
-											<materialUID>Gelcoat</materialUID><thickness>0.0005</thickness></material>
-                    </skin>
-                    <cells>
-										<cell uID="blade_component_segment_lower_shell_cell_1_1"><skin><material><compositeUID>blade_component_segment_lower_shell_cell_1_1_material</compositeUID></material></skin><positioningLeadingEdge><xsi1>0</xsi1><xsi2>0</xsi2></positioningLeadingEdge><positioningTrailingEdge><xsi1>0.266746</xsi1><xsi2>0.266746</xsi2></positioningTrailingEdge><positioningInnerBorder><eta1><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningInnerBorder><positioningOuterBorder><eta1><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningOuterBorder></cell><cell uID="blade_component_segment_lower_shell_cell_1_2"><skin><material><compositeUID>blade_component_segment_lower_shell_cell_1_2_material</compositeUID></material></skin><positioningLeadingEdge><xsi1>0.266746</xsi1><xsi2>0.266746</xsi2></positioningLeadingEdge><positioningTrailingEdge><xsi1>0.428793</xsi1><xsi2>0.428793</xsi2></positioningTrailingEdge><positioningInnerBorder><eta1><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningInnerBorder><positioningOuterBorder><eta1><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningOuterBorder></cell><cell uID="blade_component_segment_lower_shell_cell_1_3"><skin><material><compositeUID>blade_component_segment_lower_shell_cell_1_3_material</compositeUID></material></skin><positioningLeadingEdge><xsi1>0.428793</xsi1><xsi2>0.428793</xsi2></positioningLeadingEdge><positioningTrailingEdge><xsi1>1</xsi1><xsi2>1</xsi2></positioningTrailingEdge><positioningInnerBorder><eta1><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningInnerBorder><positioningOuterBorder><eta1><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta1><eta2><eta>0.0333333</eta><referenceUID>blade_component_segment</referenceUID></eta2></positioningOuterBorder></cell></cells>
-                  </lowerShell>
-                </structure>
-              </componentSegment>
-            </componentSegments>
-          </wing>
-        </wings>
-      </model>
-    </aircraft>
-    <profiles>
-      <wingAirfoils>
-			<wingAirfoil uID="circular"><name>circular</name><pointList><x mapType="vector">1;0.99901;0.99606;0.99114;0.98429;0.97553;0.96489;0.95241;0.93815;0.92216;0.90451;0.88526;0.86448;0.84227;0.81871;0.79389;0.76791;0.74088;0.71289;0.68406;0.65451;0.62434;0.59369;0.56267;0.5314;0.5;0.4686;0.43733;0.40631;0.37566;0.34549;0.31594;0.28711;0.25912;0.23209;0.20611;0.18129;0.15773;0.13552;0.11474;0.09549;0.07784;0.06185;0.04759;0.03511;0.02447;0.01571;0.00886;0.00394;0.00099;0;0.00099;0.00394;0.00886;0.01571;0.02447;0.03511;0.04759;0.06185;0.07784;0.09549;0.11474;0.13552;0.15773;0.18129;0.20611;0.23209;0.25912;0.28711;0.31594;0.34549;0.37566;0.40631;0.43733;0.4686;0.5;0.5314;0.56267;0.59369;0.62434;0.65451;0.68406;0.71289;0.74088;0.76791;0.79389;0.81871;0.84227;0.86448;0.88526;0.90451;0.92216;0.93815;0.95241;0.96489;0.97553;0.98429;0.99114;0.99606;0.99901</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">0;0.0314;0.06267;0.09369;0.12434;0.15451;0.18406;0.21289;0.24088;0.26791;0.29389;0.31871;0.34227;0.36448;0.38526;0.40451;0.42216;0.43815;0.45241;0.46489;0.47553;0.48429;0.49114;0.49606;0.49901;0.5;0.49901;0.49606;0.49114;0.48429;0.47553;0.46489;0.45241;0.43815;0.42216;0.40451;0.38526;0.36448;0.34227;0.31871;0.29389;0.26791;0.24088;0.21289;0.18406;0.15451;0.12434;0.09369;0.06267;0.0314;0;-0.0314;-0.06267;-0.09369;-0.12434;-0.15451;-0.18406;-0.21289;-0.24088;-0.26791;-0.29389;-0.31871;-0.34227;-0.36448;-0.38526;-0.40451;-0.42216;-0.43815;-0.45241;-0.46489;-0.47553;-0.48429;-0.49114;-0.49606;-0.49901;-0.5;-0.49901;-0.49606;-0.49114;-0.48429;-0.47553;-0.46489;-0.45241;-0.43815;-0.42216;-0.40451;-0.38526;-0.36448;-0.34227;-0.31871;-0.29389;-0.26791;-0.24088;-0.21289;-0.18406;-0.15451;-0.12434;-0.09369;-0.06267;-0.0314</z></pointList></wingAirfoil><wingAirfoil uID="FFA-W3-211"><name>FFA-W3-211</name><pointList><x mapType="vector">1;0.999443;0.99812;0.995694;0.992305;0.988028;0.982815;0.976664;0.969641;0.961743;0.952973;0.943389;0.933013;0.921851;0.909955;0.897361;0.884085;0.870163;0.855653;0.840577;0.824975;0.808895;0.792362;0.775421;0.758125;0.740502;0.722592;0.704445;0.686088;0.66757;0.648927;0.630186;0.611401;0.592597;0.573808;0.555076;0.536418;0.51788;0.499481;0.481252;0.463222;0.445407;0.427843;0.410539;0.393525;0.376811;0.36042;0.344365;0.328658;0.313319;0.298348;0.283766;0.269567;0.255774;0.242378;0.229396;0.216817;0.204658;0.192908;0.181575;0.170658;0.160149;0.150055;0.140355;0.131068;0.122161;0.113659;0.105536;0.0977907;0.090429;0.0834162;0.076774;0.0704692;0.0645002;0.0588818;0.053568;0.0485758;0.0438979;0.039495;0.0353948;0.0315763;0.0280064;0.0247159;0.0216807;0.0188632;0.0162951;0.0139662;0.0118176;0.00988361;0.00818368;0.00663128;0.00524853;0.00408271;0.00308998;0.00219098;0.00145967;0.00096333;0.00059878;0.00028988;7.804e-05;0;7.807e-05;0.00029009;0.00059937;0.00096448;0.00146264;0.00219661;0.00309879;0.00409516;0.00526774;0.00665839;0.00821941;0.00993095;0.0118798;0.0140446;0.0163922;0.0189847;0.0218287;0.0248925;0.02822;0.0318292;0.03569;0.0398424;0.0443004;0.0490379;0.0541003;0.0594875;0.0651879;0.0712479;0.0776465;0.084397;0.0915234;0.0990071;0.106887;0.115148;0.123806;0.132872;0.142332;0.152215;0.162499;0.173214;0.184341;0.195903;0.207883;0.220294;0.233123;0.246375;0.260041;0.274124;0.288611;0.3035;0.318774;0.334434;0.350457;0.366843;0.383561;0.40061;0.417956;0.435593;0.453493;0.471632;0.489992;0.508536;0.527249;0.546089;0.565031;0.584045;0.603088;0.622138;0.641148;0.66008;0.678906;0.697572;0.716045;0.734291;0.752252;0.769898;0.787192;0.804074;0.820513;0.836469;0.85189;0.866748;0.88101;0.89461;0.907525;0.91973;0.931175;0.941828;0.951675;0.960675;0.968787;0.976012;0.982331;0.987686;0.992086;0.995574;0.998063;0.99943;1</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">0.00094;0.00103065;0.00124638;0.00164402;0.00220291;0.00291409;0.00378945;0.00483319;0.0060382;0.00740799;0.00894481;0.0106395;0.0125242;0.014572;0.0167974;0.0191801;0.0217427;0.0244546;0.0273497;0.0303833;0.0335578;0.0368767;0.0403455;0.0439472;0.0476627;0.0514856;0.0554082;0.0593585;0.0633879;0.0674002;0.0714304;0.0754176;0.0793805;0.0832204;0.0869486;0.0905373;0.0939943;0.0972973;0.100366;0.103312;0.106071;0.108533;0.110806;0.112735;0.114468;0.115904;0.117029;0.117833;0.118381;0.11853;0.118416;0.11789;0.117126;0.116104;0.114821;0.113251;0.111409;0.109435;0.107287;0.10496;0.102465;0.0999348;0.097204;0.0944128;0.0915694;0.0886332;0.0856454;0.082602;0.0795408;0.0764742;0.0733825;0.0702923;0.0671992;0.0641144;0.0610602;0.0580252;0.0550344;0.0520794;0.0491488;0.0462711;0.0434493;0.0406615;0.0379578;0.0353076;0.0326917;0.030158;0.0276842;0.0252567;0.0229183;0.0206544;0.0183897;0.016327;0.0143358;0.0122789;0.0100017;0.00710112;0.0046218;0.00275976;0.00126291;0.00032267;0;-0.00031745;-0.00119506;-0.00249968;-0.0040402;-0.00605796;-0.00861062;-0.0106474;-0.0122995;-0.0138891;-0.0154239;-0.0169133;-0.018543;-0.0202974;-0.0220606;-0.0238346;-0.0257133;-0.0276445;-0.0296023;-0.0316298;-0.0337097;-0.0358258;-0.0379932;-0.0402073;-0.0424526;-0.0447376;-0.0470515;-0.0493894;-0.0517691;-0.0541705;-0.0565876;-0.0590152;-0.0614404;-0.0638658;-0.0662727;-0.0686484;-0.0709983;-0.073294;-0.0755455;-0.0777339;-0.0798263;-0.0818247;-0.083709;-0.0854483;-0.087035;-0.0884657;-0.0897173;-0.090753;-0.0915773;-0.0921612;-0.0924577;-0.0924743;-0.0921629;-0.0914934;-0.0904684;-0.0890386;-0.087207;-0.0849601;-0.0822618;-0.0791106;-0.0755025;-0.0714746;-0.0670522;-0.0623403;-0.0574317;-0.052357;-0.0471886;-0.041968;-0.0368155;-0.0317763;-0.0269251;-0.0223071;-0.0179799;-0.0139806;-0.0103244;-0.00703746;-0.00411605;-0.00155747;0.00059313;0.00235599;0.00375549;0.00481536;0.00553358;0.00595799;0.00609949;0.00599693;0.00565716;0.00513478;0.00447175;0.00377384;0.00309945;0.00245775;0.00185661;0.00130603;0.00082003;0.00040675;6.986e-05;-0.00017578;-0.00031253;-0.00037</z></pointList></wingAirfoil><wingAirfoil uID="FFA-W3-241"><name>FFA-W3-241</name><pointList><x mapType="vector">1;0.999443;0.99812;0.995694;0.992305;0.988028;0.982815;0.976664;0.969641;0.961743;0.952973;0.943389;0.933013;0.921851;0.909955;0.897361;0.884085;0.870163;0.855653;0.840577;0.824975;0.808895;0.792362;0.775421;0.758125;0.740502;0.722592;0.704445;0.686088;0.66757;0.648927;0.630186;0.611401;0.592597;0.573808;0.555076;0.536418;0.51788;0.499481;0.481252;0.463222;0.445407;0.427843;0.410539;0.393525;0.376811;0.36042;0.344365;0.328658;0.313319;0.298348;0.283766;0.269567;0.255774;0.242378;0.229396;0.216817;0.204658;0.192908;0.181575;0.170658;0.160149;0.150055;0.140355;0.131068;0.122161;0.113659;0.105536;0.0977907;0.090429;0.0834162;0.076774;0.0704692;0.0645002;0.0588818;0.053568;0.0485758;0.0438979;0.039495;0.0353948;0.0315763;0.0280064;0.0247159;0.0216807;0.0188632;0.0162951;0.0139662;0.0118176;0.00988361;0.00818368;0.00663128;0.00524853;0.00408271;0.00308998;0.00219098;0.00145967;0.00096333;0.00059878;0.00028988;7.804e-05;0;7.807e-05;0.00029009;0.00059937;0.00096448;0.00146264;0.00219661;0.00309879;0.00409516;0.00526774;0.00665839;0.00821941;0.00993095;0.0118798;0.0140446;0.0163922;0.0189847;0.0218287;0.0248925;0.02822;0.0318292;0.03569;0.0398424;0.0443004;0.0490379;0.0541003;0.0594875;0.0651879;0.0712479;0.0776465;0.084397;0.0915234;0.0990071;0.106887;0.115148;0.123806;0.132872;0.142332;0.152215;0.162499;0.173214;0.184341;0.195903;0.207883;0.220294;0.233123;0.246375;0.260041;0.274124;0.288611;0.3035;0.318774;0.334434;0.350457;0.366843;0.383561;0.40061;0.417956;0.435593;0.453493;0.471632;0.489992;0.508536;0.527249;0.546089;0.565031;0.584045;0.603088;0.622138;0.641148;0.66008;0.678906;0.697572;0.716045;0.734291;0.752252;0.769898;0.787192;0.804074;0.820513;0.836469;0.85189;0.866748;0.88101;0.89461;0.907525;0.91973;0.931175;0.941828;0.951675;0.960675;0.968787;0.976012;0.982331;0.987686;0.992086;0.995574;0.998063;0.99943;1</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">0.00425;0.0043621;0.00462832;0.00511699;0.00579959;0.00666146;0.00771282;0.0089541;0.0103725;0.0119686;0.0137423;0.0156819;0.0177856;0.0200693;0.0225171;0.0251378;0.0279092;0.0308491;0.0339361;0.0371642;0.0405286;0.0440098;0.0476172;0.0513267;0.055123;0.0589939;0.0629341;0.0669008;0.0708832;0.0748671;0.078835;0.0827544;0.0866141;0.090373;0.0940254;0.0975492;0.100926;0.104147;0.107193;0.110062;0.112712;0.115147;0.117353;0.119317;0.121026;0.122488;0.123679;0.124602;0.125239;0.125605;0.125674;0.125465;0.12499;0.124236;0.123239;0.122002;0.120538;0.118867;0.116993;0.11493;0.112693;0.110298;0.107768;0.105108;0.102331;0.0994503;0.0964904;0.0934585;0.0903636;0.0872218;0.0840345;0.0808268;0.0775944;0.0743479;0.0711095;0.0678734;0.0646534;0.061454;0.0582601;0.0551095;0.0519956;0.0489185;0.0458905;0.0428962;0.0399191;0.0370023;0.0341846;0.0313719;0.0286109;0.0260379;0.0234295;0.0207611;0.0183045;0.015951;0.0132708;0.0104986;0.00746215;0.00453721;0.00204453;0.00050657;0;-0.00049018;-0.00184125;-0.00381822;-0.00605713;-0.00870563;-0.0112292;-0.0134221;-0.0153437;-0.0171669;-0.0190964;-0.0213065;-0.0235141;-0.0257991;-0.0281599;-0.0305397;-0.0329686;-0.0354906;-0.0380747;-0.0407257;-0.0434599;-0.0462315;-0.0490703;-0.0519696;-0.0549089;-0.0579043;-0.06095;-0.0640249;-0.0671284;-0.0702441;-0.0733705;-0.0764911;-0.0795957;-0.0826829;-0.085719;-0.088705;-0.0916174;-0.0944378;-0.0971658;-0.0997698;-0.102239;-0.104545;-0.106689;-0.10863;-0.110373;-0.111878;-0.113141;-0.114149;-0.114866;-0.115297;-0.11538;-0.115133;-0.114506;-0.113498;-0.112081;-0.110234;-0.107933;-0.105193;-0.101976;-0.0982976;-0.0941408;-0.089522;-0.0844731;-0.0790568;-0.0733102;-0.0672996;-0.0610933;-0.0547706;-0.0484252;-0.0421379;-0.0360081;-0.0301266;-0.0245751;-0.0194214;-0.0147011;-0.0104542;-0.00673447;-0.00355842;-0.00093374;0.00117919;0.00284598;0.00409407;0.00495249;0.00546535;0.00561958;0.00547727;0.00504714;0.00440395;0.00360867;0.00270812;0.0018027;0.00091285;5.718e-05;-0.00074311;-0.00146131;-0.00207989;-0.00258907;-0.00296293;-0.00317197;-0.00326</z></pointList></wingAirfoil><wingAirfoil uID="FFA-W3-270blend"><name>FFA-W3-270blend</name><pointList><x mapType="vector">1;0.99185;0.98371;0.97556;0.96742;0.95928;0.95114;0.94301;0.93488;0.92675;0.91863;0.91052;0.90241;0.8943;0.8862;0.8781;0.87001;0.86192;0.85384;0.84576;0.83768;0.8296;0.82153;0.81346;0.80539;0.79732;0.78926;0.7812;0.77314;0.76508;0.75702;0.74897;0.74091;0.73285;0.7248;0.71675;0.70869;0.70064;0.69258;0.68452;0.67647;0.66841;0.66035;0.65229;0.64422;0.63616;0.62809;0.62002;0.61195;0.60387;0.5958;0.58772;0.57963;0.57154;0.56345;0.55536;0.54726;0.53916;0.53105;0.52294;0.51482;0.5067;0.49858;0.49045;0.48231;0.47417;0.46603;0.45787;0.44972;0.44155;0.43338;0.42521;0.41702;0.40884;0.40064;0.39244;0.38424;0.37602;0.36781;0.35958;0.35135;0.34312;0.33488;0.32664;0.31839;0.31014;0.30188;0.29363;0.28537;0.27711;0.26886;0.2606;0.25235;0.24411;0.23587;0.22763;0.21941;0.2112;0.20301;0.19483;0.18668;0.17855;0.17045;0.16238;0.15434;0.14635;0.1384;0.1305;0.12265;0.11487;0.10716;0.09952;0.09197;0.08451;0.07715;0.06991;0.0628;0.05584;0.04905;0.04245;0.03607;0.02994;0.02413;0.01869;0.0137;0.00923;0.0054;0.00249;0.00064;0;0.00089;0.00355;0.00749;0.01224;0.01762;0.0234;0.02952;0.03592;0.04253;0.04932;0.05615;0.06309;0.07018;0.0774;0.08474;0.09218;0.09973;0.10736;0.11507;0.12286;0.13073;0.13866;0.14664;0.15469;0.16279;0.17093;0.17911;0.18733;0.19559;0.20387;0.21219;0.22053;0.22889;0.23726;0.24566;0.25406;0.26248;0.2709;0.27933;0.28777;0.2962;0.30464;0.31308;0.32151;0.32994;0.33836;0.34678;0.35518;0.36358;0.37196;0.38033;0.38869;0.39703;0.40536;0.41366;0.42195;0.43023;0.43848;0.44671;0.45493;0.46312;0.47129;0.47944;0.48757;0.49567;0.50376;0.51182;0.51986;0.52788;0.53589;0.54387;0.55184;0.55979;0.56773;0.57566;0.58358;0.59149;0.59939;0.60729;0.61518;0.62308;0.63098;0.63888;0.64679;0.65471;0.66263;0.67057;0.67853;0.68649;0.69448;0.70248;0.7105;0.71854;0.7266;0.73468;0.74278;0.75091;0.75905;0.76722;0.77541;0.78362;0.79186;0.80012;0.80839;0.81669;0.82499;0.83332;0.84165;0.85;0.85835;0.86671;0.87508;0.88346;0.89184;0.90022;0.90859;0.91697;0.92533;0.93369;0.94203;0.95037;0.95868;0.96698;0.97526;0.98352;0.99177;1</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">0.00652;0.00831;0.0101;0.01188;0.01366;0.01544;0.01721;0.01898;0.02076;0.02255;0.02435;0.02617;0.02799;0.02982;0.03166;0.0335;0.03535;0.03721;0.03907;0.04094;0.04281;0.04468;0.04655;0.04843;0.05031;0.05219;0.05407;0.05594;0.05782;0.05969;0.06157;0.06343;0.0653;0.06716;0.06901;0.07086;0.0727;0.07453;0.07636;0.07817;0.07997;0.08176;0.08355;0.08531;0.08707;0.08881;0.09054;0.09225;0.09395;0.09562;0.09729;0.09893;0.10055;0.10215;0.10373;0.10529;0.10683;0.10834;0.10983;0.11129;0.11272;0.11413;0.11551;0.11686;0.11817;0.11946;0.1207;0.12191;0.12307;0.1242;0.12529;0.12633;0.12733;0.12828;0.12918;0.13003;0.13083;0.13157;0.13226;0.13288;0.13345;0.13395;0.13438;0.13474;0.13502;0.13523;0.13537;0.13541;0.13537;0.13524;0.13501;0.13469;0.13426;0.13373;0.13308;0.13233;0.13146;0.13048;0.12936;0.12811;0.12672;0.12518;0.1235;0.12167;0.11969;0.11754;0.11522;0.11274;0.11008;0.10724;0.10422;0.10101;0.09759;0.09398;0.09014;0.08609;0.0818;0.07727;0.07247;0.06739;0.06196;0.05624;0.05049;0.04439;0.03792;0.03107;0.02383;0.01614;0.00809;-0.00019;-0.00845;-0.01641;-0.02407;-0.03122;-0.03781;-0.04403;-0.0499;-0.05547;-0.06076;-0.06581;-0.07063;-0.07523;-0.07962;-0.08382;-0.08782;-0.09164;-0.09527;-0.09873;-0.10201;-0.10512;-0.10805;-0.11082;-0.11341;-0.11584;-0.11811;-0.12022;-0.12218;-0.12397;-0.12562;-0.12711;-0.12846;-0.12966;-0.13073;-0.13166;-0.13245;-0.13312;-0.13365;-0.13406;-0.13435;-0.13451;-0.13455;-0.13447;-0.13428;-0.13397;-0.13354;-0.13301;-0.13236;-0.13161;-0.13075;-0.12978;-0.12871;-0.12753;-0.12626;-0.12489;-0.12341;-0.12185;-0.1202;-0.11845;-0.11662;-0.1147;-0.1127;-0.11061;-0.10845;-0.10621;-0.1039;-0.10152;-0.09907;-0.09656;-0.09399;-0.09137;-0.0887;-0.08599;-0.08323;-0.08044;-0.07761;-0.07476;-0.07188;-0.06898;-0.06607;-0.06315;-0.06024;-0.05732;-0.05441;-0.05152;-0.04864;-0.04579;-0.04297;-0.04019;-0.03745;-0.03476;-0.03213;-0.02955;-0.02704;-0.02459;-0.02222;-0.01993;-0.01771;-0.01559;-0.01356;-0.01163;-0.00982;-0.00814;-0.00656;-0.00511;-0.00377;-0.00254;-0.00143;-0.00044;0.00045;0.00121;0.00185;0.00237;0.00275;0.003;0.0031;0.00305;0.00287;0.00254;0.00207;0.00147;0.00074;-0.00012;-0.00112;-0.00224;-0.00347;-0.00479;-0.00613</z></pointList></wingAirfoil><wingAirfoil uID="FFA-W3-301"><name>FFA-W3-301</name><pointList><x mapType="vector">1;0.999443;0.99812;0.995694;0.992305;0.988028;0.982815;0.976664;0.969641;0.961743;0.952973;0.943389;0.933013;0.921851;0.909955;0.897361;0.884085;0.870163;0.855653;0.840577;0.824975;0.808895;0.792362;0.775421;0.758125;0.740502;0.722592;0.704445;0.686088;0.66757;0.648927;0.630186;0.611401;0.592597;0.573808;0.555076;0.536418;0.51788;0.499481;0.481252;0.463222;0.445407;0.427843;0.410539;0.393525;0.376811;0.36042;0.344365;0.328658;0.313319;0.298348;0.283766;0.269567;0.255774;0.242378;0.229396;0.216817;0.204658;0.192908;0.181575;0.170658;0.160149;0.150055;0.140355;0.131068;0.122161;0.113659;0.105536;0.0977907;0.090429;0.0834162;0.076774;0.0704692;0.0645002;0.0588818;0.053568;0.0485758;0.0438979;0.039495;0.0353948;0.0315763;0.0280064;0.0247159;0.0216807;0.0188632;0.0162951;0.0139662;0.0118176;0.00988361;0.00818368;0.00663128;0.00524853;0.00408271;0.00308998;0.00219098;0.00145967;0.00096333;0.00059878;0.00028988;7.804e-05;0;7.807e-05;0.00029009;0.00059937;0.00096448;0.00146264;0.00219661;0.00309879;0.00409516;0.00526774;0.00665839;0.00821941;0.00993095;0.0118798;0.0140446;0.0163922;0.0189847;0.0218287;0.0248925;0.02822;0.0318292;0.03569;0.0398424;0.0443004;0.0490379;0.0541003;0.0594875;0.0651879;0.0712479;0.0776465;0.084397;0.0915234;0.0990071;0.106887;0.115148;0.123806;0.132872;0.142332;0.152215;0.162499;0.173214;0.184341;0.195903;0.207883;0.220294;0.233123;0.246375;0.260041;0.274124;0.288611;0.3035;0.318774;0.334434;0.350457;0.366843;0.383561;0.40061;0.417956;0.435593;0.453493;0.471632;0.489992;0.508536;0.527249;0.546089;0.565031;0.584045;0.603088;0.622138;0.641148;0.66008;0.678906;0.697572;0.716045;0.734291;0.752252;0.769898;0.787192;0.804074;0.820513;0.836469;0.85189;0.866748;0.88101;0.89461;0.907525;0.91973;0.931175;0.941828;0.951675;0.960675;0.968787;0.976012;0.982331;0.987686;0.992086;0.995574;0.998063;0.99943;1</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">0.0091;0.0092;0.0095;0.010191;0.0109872;0.0119927;0.0132197;0.0146687;0.016325;0.0181894;0.0202618;0.0225287;0.0249894;0.0276563;0.0305358;0.0336128;0.0368819;0.0403284;0.0439421;0.0477194;0.0516343;0.0556812;0.0598265;0.064066;0.0683837;0.0727568;0.0771688;0.0815929;0.0859995;0.0903934;0.094736;0.0990184;0.103229;0.107342;0.111352;0.115235;0.118971;0.122565;0.125997;0.12923;0.132262;0.135059;0.137626;0.13995;0.142029;0.143831;0.145374;0.146641;0.147629;0.148345;0.148783;0.148918;0.148782;0.148351;0.147639;0.146656;0.145408;0.143894;0.142118;0.140099;0.137841;0.13536;0.132676;0.129806;0.126763;0.123565;0.120227;0.11677;0.113195;0.109531;0.105788;0.101981;0.098121;0.0942234;0.090316;0.0863747;0.0824277;0.0784947;0.0745555;0.0706547;0.0667826;0.0629269;0.0591231;0.055364;0.0516146;0.0479351;0.044343;0.0407365;0.0372303;0.0338471;0.0304174;0.0270792;0.0238587;0.0206917;0.0176261;0.0144022;0.0114845;0.0081594;0.00393427;0.0009904;0;-0.00098225;-0.0038427;-0.00790888;-0.0111944;-0.0139587;-0.0170269;-0.0198634;-0.0227771;-0.0258536;-0.0290272;-0.0322542;-0.0354754;-0.0387984;-0.0422242;-0.0456621;-0.0491874;-0.0528118;-0.056457;-0.0601823;-0.0639773;-0.0678137;-0.0717123;-0.0756711;-0.0796478;-0.0836589;-0.0876906;-0.0917285;-0.0957752;-0.0998001;-0.103804;-0.107768;-0.111669;-0.115509;-0.11925;-0.122883;-0.126397;-0.129759;-0.132959;-0.135981;-0.138801;-0.141392;-0.143751;-0.145852;-0.147679;-0.149218;-0.150443;-0.151337;-0.151899;-0.152079;-0.151883;-0.151278;-0.150265;-0.148808;-0.146898;-0.144511;-0.141652;-0.138295;-0.134441;-0.130096;-0.125256;-0.119926;-0.114135;-0.107918;-0.10132;-0.0943796;-0.08718;-0.0797953;-0.0723041;-0.0648181;-0.0574332;-0.0502355;-0.0433309;-0.0368034;-0.0307197;-0.0251232;-0.0200465;-0.01556;-0.0117003;-0.00840864;-0.00567019;-0.00346747;-0.00177337;-0.00057044;0.00016442;0.00045227;0.00040686;4.808e-05;-0.00057005;-0.00142772;-0.00241285;-0.00346998;-0.00454941;-0.00560222;-0.00657537;-0.00743116;-0.00814595;-0.00867599;-0.0089741;-0.0091</z></pointList></wingAirfoil><wingAirfoil uID="FFA-W3-330blend"><name>FFA-W3-330blend</name><pointList><x mapType="vector">1;0.9917;0.98339;0.97509;0.96678;0.95847;0.95016;0.94186;0.93356;0.92526;0.91697;0.90869;0.90042;0.89215;0.88388;0.87562;0.86736;0.85911;0.85086;0.84261;0.83437;0.82613;0.81789;0.80966;0.80143;0.7932;0.78497;0.77674;0.76852;0.76029;0.75207;0.74385;0.73562;0.7274;0.71918;0.71096;0.70273;0.69451;0.68629;0.67806;0.66983;0.66161;0.65338;0.64514;0.63691;0.62867;0.62044;0.61219;0.60395;0.5957;0.58745;0.5792;0.57094;0.56268;0.55441;0.54614;0.53787;0.52959;0.5213;0.51301;0.50471;0.49641;0.48813;0.47986;0.47159;0.4633;0.45501;0.44671;0.4384;0.43008;0.42176;0.41342;0.40507;0.39672;0.38835;0.37998;0.37159;0.3632;0.35479;0.34638;0.33796;0.32953;0.32109;0.31264;0.30418;0.29572;0.28725;0.27878;0.2703;0.26182;0.25334;0.24486;0.23638;0.2279;0.21943;0.21097;0.20253;0.1941;0.1857;0.17733;0.16898;0.16068;0.15243;0.14423;0.1361;0.12803;0.12004;0.11215;0.10436;0.09669;0.08915;0.08176;0.07453;0.06748;0.06064;0.05402;0.04763;0.04151;0.03567;0.03015;0.02498;0.02018;0.01577;0.01178;0.0083;0.00551;0.0034;0.00177;0.00052;0;0.00048;0.00174;0.00344;0.00581;0.00892;0.01269;0.01696;0.02165;0.02674;0.03223;0.03808;0.04424;0.05068;0.05737;0.06428;0.07139;0.07869;0.08616;0.09378;0.10153;0.1094;0.11738;0.12545;0.13361;0.14184;0.15013;0.15849;0.16691;0.17537;0.18388;0.19242;0.20099;0.2096;0.21822;0.22687;0.23554;0.24423;0.25292;0.26162;0.27033;0.27905;0.28776;0.29648;0.30519;0.31389;0.32259;0.33128;0.33996;0.34863;0.35728;0.36592;0.37455;0.38315;0.39174;0.40031;0.40885;0.41738;0.42588;0.43435;0.44281;0.45123;0.45963;0.46801;0.47636;0.48469;0.493;0.50128;0.50954;0.51777;0.52599;0.53418;0.54235;0.5505;0.55863;0.56675;0.57484;0.58293;0.591;0.59905;0.6071;0.61517;0.62324;0.63131;0.63937;0.64743;0.65549;0.66356;0.67163;0.67971;0.6878;0.6959;0.70402;0.71216;0.72031;0.72849;0.73669;0.74491;0.75315;0.76143;0.76973;0.77805;0.78641;0.7948;0.80321;0.81165;0.82012;0.82861;0.83712;0.84566;0.85422;0.8628;0.87141;0.88003;0.88866;0.89733;0.90601;0.91468;0.92334;0.93199;0.94063;0.94925;0.95784;0.96639;0.97489;0.98332;0.99168;1</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">0.01245;0.0146;0.01675;0.01888;0.021;0.0231;0.0252;0.0273;0.0294;0.03151;0.03364;0.03578;0.03793;0.04009;0.04226;0.04443;0.0466;0.04878;0.05097;0.05315;0.05535;0.05754;0.05973;0.06193;0.06412;0.0663;0.06849;0.07067;0.07285;0.07503;0.0772;0.07937;0.08153;0.08369;0.08584;0.08798;0.09011;0.09223;0.09434;0.09644;0.09853;0.10062;0.10268;0.10474;0.10678;0.10881;0.11083;0.11283;0.11481;0.11678;0.11874;0.12067;0.12259;0.12449;0.12636;0.12822;0.13005;0.13187;0.13365;0.13542;0.13715;0.13886;0.14053;0.14218;0.14378;0.14536;0.14689;0.14838;0.14984;0.15124;0.1526;0.15392;0.15518;0.15639;0.15755;0.15865;0.15969;0.16067;0.16158;0.16242;0.16319;0.16389;0.16451;0.16504;0.16549;0.16586;0.16613;0.1663;0.16636;0.16632;0.16615;0.16587;0.16546;0.16491;0.16423;0.1634;0.1624;0.16125;0.15991;0.15839;0.15668;0.15478;0.15266;0.15033;0.14779;0.14502;0.14203;0.1388;0.13531;0.13157;0.12757;0.12331;0.11877;0.11395;0.10886;0.10348;0.09783;0.09189;0.08568;0.07919;0.07242;0.06539;0.0581;0.05056;0.04277;0.03473;0.02648;0.01806;0.00955;0.00098;-0.00761;-0.01613;-0.02443;-0.03254;-0.04061;-0.0484;-0.05589;-0.0631;-0.07004;-0.07669;-0.08304;-0.0891;-0.09487;-0.10036;-0.10559;-0.11054;-0.11522;-0.11964;-0.1238;-0.12771;-0.13138;-0.13483;-0.13805;-0.14107;-0.14388;-0.14648;-0.14889;-0.15111;-0.15313;-0.15498;-0.15666;-0.15816;-0.1595;-0.16068;-0.16169;-0.16255;-0.16325;-0.16381;-0.16421;-0.16447;-0.16458;-0.16456;-0.1644;-0.1641;-0.16368;-0.16312;-0.16244;-0.16164;-0.16071;-0.15967;-0.15851;-0.15723;-0.15585;-0.15435;-0.15274;-0.15103;-0.14921;-0.14729;-0.14527;-0.14316;-0.14094;-0.13864;-0.13625;-0.13378;-0.13123;-0.12861;-0.12592;-0.12316;-0.12034;-0.11746;-0.11452;-0.11153;-0.10849;-0.1054;-0.10226;-0.09909;-0.09589;-0.09265;-0.08939;-0.08611;-0.08281;-0.0795;-0.07618;-0.07286;-0.06955;-0.06624;-0.06295;-0.05968;-0.05644;-0.05323;-0.05005;-0.04693;-0.04386;-0.04085;-0.0379;-0.03502;-0.03221;-0.02949;-0.02685;-0.02431;-0.02187;-0.01954;-0.01733;-0.01523;-0.01325;-0.01138;-0.00965;-0.00805;-0.00658;-0.00526;-0.0041;-0.0031;-0.00227;-0.00161;-0.00114;-0.00084;-0.00073;-0.00081;-0.00107;-0.00152;-0.00216;-0.00302;-0.00415;-0.00559;-0.00734;-0.00939;-0.01163</z></pointList></wingAirfoil><wingAirfoil uID="FFA-W3-360"><name>FFA-W3-360</name><pointList><x mapType="vector">1;0.999443;0.99812;0.995694;0.992305;0.988028;0.982815;0.976664;0.969641;0.961743;0.952973;0.943389;0.933013;0.921851;0.909955;0.897361;0.884085;0.870163;0.855653;0.840577;0.824975;0.808895;0.792362;0.775421;0.758125;0.740502;0.722592;0.704445;0.686088;0.66757;0.648927;0.630186;0.611401;0.592597;0.573808;0.555076;0.536418;0.51788;0.499481;0.481252;0.463222;0.445407;0.427843;0.410539;0.393525;0.376811;0.36042;0.344365;0.328658;0.313319;0.298348;0.283766;0.269567;0.255774;0.242378;0.229396;0.216817;0.204658;0.192908;0.181575;0.170658;0.160149;0.150055;0.140355;0.131068;0.122161;0.113659;0.105536;0.0977907;0.090429;0.0834162;0.076774;0.0704692;0.0645002;0.0588818;0.053568;0.0485758;0.0438979;0.039495;0.0353948;0.0315763;0.0280064;0.0247159;0.0216807;0.0188632;0.0162951;0.0139662;0.0118176;0.00988361;0.00818368;0.00663128;0.00524853;0.00408271;0.00308998;0.00219098;0.00145967;0.00096333;0.00059878;0.00028988;7.804e-05;0;7.807e-05;0.00029009;0.00059937;0.00096448;0.00146264;0.00219661;0.00309879;0.00409516;0.00526774;0.00665839;0.00821941;0.00993095;0.0118798;0.0140446;0.0163922;0.0189847;0.0218287;0.0248925;0.02822;0.0318292;0.03569;0.0398424;0.0443004;0.0490379;0.0541003;0.0594875;0.0651879;0.0712479;0.0776465;0.084397;0.0915234;0.0990071;0.106887;0.115148;0.123806;0.132872;0.142332;0.152215;0.162499;0.173214;0.184341;0.195903;0.207883;0.220294;0.233123;0.246375;0.260041;0.274124;0.288611;0.3035;0.318774;0.334434;0.350457;0.366843;0.383561;0.40061;0.417956;0.435593;0.453493;0.471632;0.489992;0.508536;0.527249;0.546089;0.565031;0.584045;0.603088;0.622138;0.641148;0.66008;0.678906;0.697572;0.716045;0.734291;0.752252;0.769898;0.787192;0.804074;0.820513;0.836469;0.85189;0.866748;0.88101;0.89461;0.907525;0.91973;0.931175;0.941828;0.951675;0.960675;0.968787;0.976012;0.982331;0.987686;0.992086;0.995574;0.998063;0.99943;1</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">0.01298;0.0132585;0.0135371;0.0142549;0.0152543;0.016511;0.0180367;0.0198283;0.0218639;0.024141;0.0266572;0.0293943;0.0323205;0.0354614;0.0388279;0.0424191;0.0462191;0.0502115;0.0543748;0.0587118;0.0632037;0.0678318;0.0725837;0.0774446;0.0823902;0.0874051;0.0924871;0.0975908;0.102722;0.107848;0.112952;0.118031;0.123052;0.127988;0.132831;0.137554;0.142132;0.146556;0.150796;0.154834;0.158648;0.162214;0.165526;0.168561;0.171317;0.173764;0.175908;0.177737;0.179261;0.180457;0.181327;0.181878;0.182111;0.182039;0.181642;0.18094;0.179929;0.178623;0.177015;0.175114;0.172933;0.170489;0.167794;0.164855;0.161695;0.158332;0.154789;0.151079;0.147208;0.143189;0.139008;0.134724;0.130324;0.125817;0.121221;0.116532;0.111791;0.107002;0.102147;0.0972927;0.092423;0.0875121;0.082622;0.0777462;0.0728229;0.0679297;0.0631447;0.0583935;0.0537118;0.049301;0.044623;0.0395525;0.0342339;0.028127;0.0215989;0.0165599;0.0125249;0.0086197;0.00433033;0.00116483;0;-0.00122141;-0.00493025;-0.0100658;-0.0140419;-0.0181846;-0.0232599;-0.0289512;-0.0340269;-0.0386738;-0.0432304;-0.0476871;-0.0519481;-0.0564;-0.0609559;-0.0655006;-0.0701534;-0.0748356;-0.0794402;-0.0840325;-0.0886188;-0.0931531;-0.0976768;-0.102197;-0.10668;-0.111138;-0.11555;-0.11989;-0.124168;-0.128353;-0.132446;-0.136444;-0.140326;-0.144107;-0.147762;-0.1513;-0.154698;-0.157929;-0.160994;-0.163865;-0.166526;-0.168985;-0.171212;-0.173185;-0.174889;-0.176295;-0.177382;-0.178129;-0.178504;-0.178519;-0.178112;-0.177294;-0.176044;-0.174339;-0.172161;-0.169497;-0.166327;-0.162637;-0.158402;-0.153618;-0.14833;-0.142568;-0.136362;-0.129739;-0.122734;-0.115374;-0.107723;-0.0998435;-0.0917859;-0.0836476;-0.0755182;-0.0674952;-0.0596799;-0.0521917;-0.0450983;-0.0384986;-0.0324603;-0.0270035;-0.0221334;-0.017863;-0.0141983;-0.0111631;-0.00876892;-0.00697163;-0.00574853;-0.0050322;-0.00479161;-0.004;-0.0037;-0.0034;-0.0031;-0.0028;-0.0025;-0.0022;-0.0019;-0.0016;-0.0013;-0.001;-0.0007;-0.0007</z></pointList></wingAirfoil><wingAirfoil uID="SNL-FFA-W3-500"><name>SNL-FFA-W3-500</name><pointList><x mapType="vector">1;0.999443;0.99812;0.995694;0.992305;0.988028;0.982815;0.976664;0.969641;0.961743;0.952973;0.943389;0.933013;0.921851;0.909955;0.897361;0.884085;0.870163;0.855653;0.840577;0.824975;0.808895;0.792362;0.775421;0.758125;0.740502;0.722592;0.704445;0.686088;0.66757;0.648927;0.630186;0.611401;0.592597;0.573808;0.555076;0.536418;0.51788;0.499481;0.481252;0.463222;0.445407;0.427843;0.410539;0.393525;0.376811;0.36042;0.344365;0.328658;0.313319;0.298348;0.283766;0.269567;0.255774;0.242378;0.229396;0.216817;0.204658;0.192908;0.181575;0.170658;0.160149;0.150055;0.140355;0.131068;0.122161;0.113659;0.105536;0.0977907;0.090429;0.0834162;0.076774;0.0704692;0.0645002;0.0588818;0.053568;0.0485758;0.0438979;0.039495;0.0353948;0.0315763;0.0280064;0.0247159;0.0216807;0.0188632;0.0162951;0.0139662;0.0118176;0.00988361;0.00818368;0.00663128;0.00524853;0.00408271;0.00308998;0.00219098;0.00145967;0.00096333;0.00059878;0.00028988;7.804e-05;0;7.807e-05;0.00029009;0.00059937;0.00096448;0.00146264;0.00219661;0.00309879;0.00409516;0.00526774;0.00665839;0.00821941;0.00993095;0.0118798;0.0140446;0.0163922;0.0189847;0.0218287;0.0248925;0.02822;0.0318292;0.03569;0.0398424;0.0443004;0.0490379;0.0541003;0.0594875;0.0651879;0.0712479;0.0776465;0.084397;0.0915234;0.0990071;0.106887;0.115148;0.123806;0.132872;0.142332;0.152215;0.162499;0.173214;0.184341;0.195903;0.207883;0.220294;0.233123;0.246375;0.260041;0.274124;0.288611;0.3035;0.318774;0.334434;0.350457;0.366843;0.383561;0.40061;0.417956;0.435593;0.453493;0.471632;0.489992;0.508536;0.527249;0.546089;0.565031;0.584045;0.603088;0.622138;0.641148;0.66008;0.678906;0.697572;0.716045;0.734291;0.752252;0.769898;0.787192;0.804074;0.820513;0.836469;0.85189;0.866748;0.88101;0.89461;0.907525;0.91973;0.931175;0.941828;0.951675;0.960675;0.968787;0.976012;0.982331;0.987686;0.992086;0.995574;0.998063;0.99943;1</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">0.0105;0.0108698;0.0117452;0.0133415;0.0155489;0.0183004;0.0216057;0.0254403;0.0297394;0.0344821;0.0396488;0.045193;0.050916;0.0570828;0.0635814;0.0704274;0.0773466;0.0846708;0.0921802;0.0999012;0.107566;0.11534;0.123144;0.131059;0.138808;0.146561;0.154144;0.161622;0.169076;0.176219;0.183092;0.18987;0.19625;0.20235;0.208316;0.213761;0.219027;0.223925;0.228358;0.232431;0.236029;0.23923;0.242067;0.244395;0.246329;0.247812;0.249076;0.249618;0.25;0.249915;0.249404;0.24844;0.247234;0.245559;0.243584;0.241248;0.238604;0.23566;0.232432;0.22884;0.224967;0.220832;0.216496;0.211979;0.207228;0.202323;0.197174;0.192037;0.186559;0.181093;0.175459;0.169682;0.163786;0.157765;0.151699;0.145565;0.139486;0.133338;0.12705;0.120866;0.11469;0.108492;0.102225;0.0958929;0.0898072;0.0837478;0.0777384;0.0718792;0.0660103;0.0601891;0.0539095;0.047327;0.0401488;0.0337262;0.0259103;0.0200319;0.0148116;0.0109643;0.00515421;0.00237777;0;-0.00676349;-0.0092701;-0.0148527;-0.019098;-0.0242516;-0.03028;-0.0374918;-0.0433971;-0.049743;-0.0559364;-0.061913;-0.0675827;-0.0734017;-0.0791325;-0.0849817;-0.0909918;-0.0969206;-0.10303;-0.109154;-0.115311;-0.121138;-0.127147;-0.133199;-0.13898;-0.14485;-0.150675;-0.156488;-0.162318;-0.167951;-0.173555;-0.179048;-0.184361;-0.189648;-0.19467;-0.199677;-0.204486;-0.209113;-0.213565;-0.217905;-0.221899;-0.22585;-0.229428;-0.232825;-0.235942;-0.238678;-0.241276;-0.243429;-0.245365;-0.246688;-0.247752;-0.248407;-0.2487;-0.248315;-0.247642;-0.246395;-0.244546;-0.242218;-0.239365;-0.235936;-0.231738;-0.227148;-0.221774;-0.215936;-0.209513;-0.202426;-0.194844;-0.186809;-0.178307;-0.16937;-0.160061;-0.150313;-0.140494;-0.13045;-0.120286;-0.110205;-0.100388;-0.0907307;-0.0814058;-0.0727164;-0.064445;-0.0566646;-0.0495395;-0.0429906;-0.0371305;-0.0319789;-0.0274752;-0.0237017;-0.0203752;-0.0179936;-0.0159302;-0.0142142;-0.0128381;-0.0117773;-0.0109987;-0.0104513;-0.0100816;-0.00985456;-0.00974345;-0.0097</z></pointList></wingAirfoil></wingAirfoils>
-    </profiles>
-    <materials>
-		<material uID="Gelcoat"><name>Gelcoat</name><rho>1235</rho><orthotropicSolidProperties><E1>3440</E1><E2>3440</E2><E3>3440</E3><G12>1323</G12><G23>1323</G23><G31>1323</G31><nu12>0.3</nu12><nu23>0.3</nu23><nu31>0.3</nu31><sig1t>7.4e-05</sig1t><sig2t>7.4e-05</sig2t><sig3t>7.4e-05</sig3t><sig1c>8.7e-05</sig1c><sig2c>8.7e-05</sig2c><sig3c>8.7e-05</sig3c></orthotropicSolidProperties></material><material uID="Steel"><name>Steel</name><rho>7850</rho><orthotropicSolidProperties><E1>200000</E1><E2>200000</E2><E3>200000</E3><G12>79300</G12><G23>79300</G23><G31>79300</G31><nu12>0.265</nu12><nu23>0.265</nu23><nu31>0.265</nu31><sig1t>1120</sig1t><sig2t>1120</sig2t><sig3t>1120</sig3t><sig1c>2160</sig1c><sig2c>2160</sig2c><sig3c>2160</sig3c></orthotropicSolidProperties></material><material uID="glass_uni"><name>glass_uni</name><rho>1940</rho><orthotropicSolidProperties><E1>44600</E1><E2>17000</E2><E3>16700</E3><G12>3270</G12><G23>3500</G23><G31>3480</G31><nu12>0.262</nu12><nu23>0.264</nu23><nu31>0.098852</nu31><sig1t>1060</sig1t><sig2t>66.3</sig2t><sig3t>26.6</sig3t><sig1c>826</sig1c><sig2c>196</sig2c><sig3c>197</sig3c></orthotropicSolidProperties></material><material uID="CarbonUD"><name>CarbonUD</name><rho>1220</rho><orthotropicSolidProperties><E1>114500</E1><E2>8390</E2><E3>8390</E3><G12>5990</G12><G23>5990</G23><G31>5990</G31><nu12>0.27</nu12><nu23>0.27</nu23><nu31>0.0197843</nu31><sig1t>0</sig1t><sig2t>0</sig2t><sig3t>0</sig3t><sig1c>0</sig1c><sig2c>0</sig2c><sig3c>0</sig3c></orthotropicSolidProperties></material><material uID="glass_biax"><name>glass_biax</name><rho>1940</rho><orthotropicSolidProperties><E1>11100</E1><E2>11100</E2><E3>16700</E3><G12>13530</G12><G23>3490</G23><G31>3490</G31><nu12>0.5</nu12><nu23>0.066</nu23><nu31>0.0992973</nu31><sig1t>54.47</sig1t><sig2t>54.47</sig2t><sig3t>26.6</sig3t><sig1c>74.1</sig1c><sig2c>74.1</sig2c><sig3c>197</sig3c></orthotropicSolidProperties></material><material uID="glass_triax"><name>glass_triax</name><rho>1940</rho><orthotropicSolidProperties><E1>28700</E1><E2>16600</E2><E3>16700</E3><G12>8400</G12><G23>3490</G23><G31>3490</G31><nu12>0.5</nu12><nu23>0.17</nu23><nu31>0.0989199</nu31><sig1t>54.5</sig1t><sig2t>54.5</sig2t><sig3t>26.6</sig3t><sig1c>74.1</sig1c><sig2c>74.1</sig2c><sig3c>197</sig3c></orthotropicSolidProperties></material><material uID="balsa"><name>balsa</name><rho>110</rho><orthotropicSolidProperties><E1>50</E1><E2>50</E2><E3>2730</E3><G12>16.67</G12><G23>150</G23><G31>150</G31><nu12>0.5</nu12><nu23>0.013</nu23><nu31>0.7098</nu31><sig1t>0</sig1t><sig2t>0</sig2t><sig3t>0</sig3t><sig1c>0</sig1c><sig2c>0</sig2c><sig3c>0</sig3c></orthotropicSolidProperties></material><material uID="medium_density_foam"><name>medium_density_foam</name><rho>130</rho><orthotropicSolidProperties><E1>129.2</E1><E2>129.2</E2><E3>129.2</E3><G12>48.947</G12><G23>48.947</G23><G31>48.947</G31><nu12>0.32</nu12><nu23>0.32</nu23><nu31>0.32</nu31><sig1t>4</sig1t><sig2t>4</sig2t><sig3t>4</sig3t><sig1c>3</sig1c><sig2c>3</sig2c><sig3c>3</sig3c></orthotropicSolidProperties></material><composites><composite uID="blade_component_segment_upper_shell_cell_1_1_material"><name>blade_component_segment_upper_shell_cell_1_1_material</name><compositeLayer><materialUID>Gelcoat</materialUID><name>UV_protection</name><phi>0</phi><thickness>0.0005</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin_inner</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer></composite><composite uID="blade_component_segment_upper_shell_cell_1_2_material"><name>blade_component_segment_upper_shell_cell_1_2_material</name><compositeLayer><materialUID>Gelcoat</materialUID><name>UV_protection</name><phi>0</phi><thickness>0.0005</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer><compositeLayer><materialUID>CarbonUD</materialUID><name>Spar_cap_ss</name><phi>0</phi><thickness>0.00155681</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin_inner</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer></composite><composite uID="blade_component_segment_upper_shell_cell_1_3_material"><name>blade_component_segment_upper_shell_cell_1_3_material</name><compositeLayer><materialUID>Gelcoat</materialUID><name>UV_protection</name><phi>0</phi><thickness>0.0005</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin_inner</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer></composite><composite uID="blade_component_segment_lower_shell_cell_1_1_material"><name>blade_component_segment_lower_shell_cell_1_1_material</name><compositeLayer><materialUID>Gelcoat</materialUID><name>UV_protection</name><phi>0</phi><thickness>0.0005</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin_inner</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer></composite><composite uID="blade_component_segment_lower_shell_cell_1_2_material"><name>blade_component_segment_lower_shell_cell_1_2_material</name><compositeLayer><materialUID>Gelcoat</materialUID><name>UV_protection</name><phi>0</phi><thickness>0.0005</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer><compositeLayer><materialUID>CarbonUD</materialUID><name>Spar_cap_ps</name><phi>0</phi><thickness>0.00155681</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin_inner</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer></composite><composite uID="blade_component_segment_lower_shell_cell_1_3_material"><name>blade_component_segment_lower_shell_cell_1_3_material</name><compositeLayer><materialUID>Gelcoat</materialUID><name>UV_protection</name><phi>0</phi><thickness>0.0005</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer><compositeLayer><materialUID>glass_triax</materialUID><name>Shell_skin_inner</name><phi>0</phi><thickness>0.0454928</thickness></compositeLayer></composite></composites></materials>
-  </vehicles>
+   <header>
+      <name>IEA-15-240-RWT Wing Model</name>
+      <creator>Daniel Hardt</creator>
+      <version>0.1</version>
+      <timestamp>2020-08-13T12:00:00</timestamp>
+      <cpacsVersion>3.1</cpacsVersion>
+   </header>
+   <vehicles>
+      <aircraft>
+         <model uID="IEA-15-240-RWT">
+            <name>IEA-15-240-RWT</name>
+            <description>Wind blade</description>
+            <wings>
+               <wing uID="blade">
+                  <name>blade</name>
+                  <description>The blade of IEA-15-240-RWT</description>
+                  <transformation uID="blade_transformation1">
+                     <scaling uID="blade_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                     </scaling>
+                     <rotation uID="blade_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                     </rotation>
+                     <translation refType="absLocal" uID="blade_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                     </translation>
+                  </transformation>
+                  <sections>
+                     <section uID="blade_section_1">
+                        <name>blade_section_1</name>
+                        <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_transformation">
+                           <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_transformation_scaling">
+                              <x>1</x>
+                              <y>1</y>
+                              <z>1</z>
+                           </scaling>
+                           <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_transformation_rotation">
+                              <x>0</x>
+                              <y>15.5946</y>
+                              <z>0</z>
+                           </rotation>
+                           <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_transformation_translation">
+                              <x>0</x>
+                              <y>0</y>
+                              <z>-0</z>
+                           </translation>
+                        </transformation>
+                        <elements>
+                           <element uID="blade_section_1_element_1">
+                              <name>blade_section_1_element_1</name>
+                              <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_elements_element_transformation">
+                                 <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_elements_element_transformation_scaling">
+                                    <x>5.2</x>
+                                    <y>5.2</y>
+                                    <z>5.2</z>
+                                 </scaling>
+                                 <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_elements_element_transformation_rotation">
+                                    <x>0</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </rotation>
+                                 <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[1]_elements_element_transformation_translation">
+                                    <x>-2.62364</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </translation>
+                              </transformation>
+                              <airfoilUID>circular</airfoilUID>
+                           </element>
+                        </elements>
+                     </section>
+                     <section uID="blade_section_2">
+                        <name>blade_section_2</name>
+                        <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_transformation">
+                           <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_transformation_scaling">
+                              <x>1</x>
+                              <y>1</y>
+                              <z>1</z>
+                           </scaling>
+                           <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_transformation_rotation">
+                              <x>0</x>
+                              <y>15.5911</y>
+                              <z>0</z>
+                           </rotation>
+                           <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_transformation_translation">
+                              <x>0</x>
+                              <y>2.34</y>
+                              <z>0.0179273</z>
+                           </translation>
+                        </transformation>
+                        <elements>
+                           <element uID="blade_section_2_element_1">
+                              <name>blade_section_2_element_1</name>
+                              <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_elements_element_transformation">
+                                 <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_elements_element_transformation_scaling">
+                                    <x>5.20828</x>
+                                    <y>5.20828</y>
+                                    <z>5.20828</z>
+                                 </scaling>
+                                 <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_elements_element_transformation_rotation">
+                                    <x>0</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </rotation>
+                                 <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[2]_elements_element_transformation_translation">
+                                    <x>-2.55395</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </translation>
+                              </transformation>
+                              <airfoilUID>circular</airfoilUID>
+                           </element>
+                        </elements>
+                     </section>
+                     <section uID="blade_section_3">
+                        <name>blade_section_3</name>
+                        <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_transformation">
+                           <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_transformation_scaling">
+                              <x>1</x>
+                              <y>1</y>
+                              <z>1</z>
+                           </scaling>
+                           <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_transformation_rotation">
+                              <x>0</x>
+                              <y>11.0305</y>
+                              <z>0</z>
+                           </rotation>
+                           <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_transformation_translation">
+                              <x>0</x>
+                              <y>17.55</y>
+                              <z>0.209188</z>
+                           </translation>
+                        </transformation>
+                        <elements>
+                           <element uID="blade_section_3_element_1">
+                              <name>blade_section_3_element_1</name>
+                              <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_elements_element_transformation">
+                                 <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_elements_element_transformation_scaling">
+                                    <x>5.65491</x>
+                                    <y>5.65491</y>
+                                    <z>5.65491</z>
+                                 </scaling>
+                                 <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_elements_element_transformation_rotation">
+                                    <x>0</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </rotation>
+                                 <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[3]_elements_element_transformation_translation">
+                                    <x>-2.12358</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </translation>
+                              </transformation>
+                              <airfoilUID>SNL-FFA-W3-500</airfoilUID>
+                           </element>
+                        </elements>
+                     </section>
+                     <section uID="blade_section_4">
+                        <name>blade_section_4</name>
+                        <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_transformation">
+                           <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_transformation_scaling">
+                              <x>1</x>
+                              <y>1</y>
+                              <z>1</z>
+                           </scaling>
+                           <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_transformation_rotation">
+                              <x>0</x>
+                              <y>7.18285</y>
+                              <z>0</z>
+                           </rotation>
+                           <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_transformation_translation">
+                              <x>0</x>
+                              <y>28.6849</y>
+                              <z>0.2494</z>
+                           </translation>
+                        </transformation>
+                        <elements>
+                           <element uID="blade_section_4_element_1">
+                              <name>blade_section_4_element_1</name>
+                              <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_elements_element_transformation">
+                                 <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_elements_element_transformation_scaling">
+                                    <x>5.70234</x>
+                                    <y>5.70234</y>
+                                    <z>5.70234</z>
+                                 </scaling>
+                                 <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_elements_element_transformation_rotation">
+                                    <x>0</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </rotation>
+                                 <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[4]_elements_element_transformation_translation">
+                                    <x>-1.84763</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </translation>
+                              </transformation>
+                              <airfoilUID>FFA-W3-360</airfoilUID>
+                           </element>
+                        </elements>
+                     </section>
+                     <section uID="blade_section_5">
+                        <name>blade_section_5</name>
+                        <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_transformation">
+                           <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_transformation_scaling">
+                              <x>1</x>
+                              <y>1</y>
+                              <z>1</z>
+                           </scaling>
+                           <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_transformation_rotation">
+                              <x>0</x>
+                              <y>4.73442</y>
+                              <z>0</z>
+                           </rotation>
+                           <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_transformation_translation">
+                              <x>0</x>
+                              <y>38.4747</y>
+                              <z>0.236494</z>
+                           </translation>
+                        </transformation>
+                        <elements>
+                           <element uID="blade_section_5_element_1">
+                              <name>blade_section_5_element_1</name>
+                              <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_elements_element_transformation">
+                                 <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_elements_element_transformation_scaling">
+                                    <x>5.1487</x>
+                                    <y>5.1487</y>
+                                    <z>5.1487</z>
+                                 </scaling>
+                                 <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_elements_element_transformation_rotation">
+                                    <x>0</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </rotation>
+                                 <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[5]_elements_element_transformation_translation">
+                                    <x>-1.58862</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </translation>
+                              </transformation>
+                              <airfoilUID>FFA-W3-330blend</airfoilUID>
+                           </element>
+                        </elements>
+                     </section>
+                     <section uID="blade_section_6">
+                        <name>blade_section_6</name>
+                        <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_transformation">
+                           <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_transformation_scaling">
+                              <x>1</x>
+                              <y>1</y>
+                              <z>1</z>
+                           </scaling>
+                           <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_transformation_rotation">
+                              <x>0</x>
+                              <y>2.561</y>
+                              <z>0</z>
+                           </rotation>
+                           <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_transformation_translation">
+                              <x>0</x>
+                              <y>51.384</y>
+                              <z>0.124335</z>
+                           </translation>
+                        </transformation>
+                        <elements>
+                           <element uID="blade_section_6_element_1">
+                              <name>blade_section_6_element_1</name>
+                              <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_elements_element_transformation">
+                                 <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_elements_element_transformation_scaling">
+                                    <x>4.48206</x>
+                                    <y>4.48206</y>
+                                    <z>4.48206</z>
+                                 </scaling>
+                                 <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_elements_element_transformation_rotation">
+                                    <x>0</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </rotation>
+                                 <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[6]_elements_element_transformation_translation">
+                                    <x>-1.32256</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </translation>
+                              </transformation>
+                              <airfoilUID>FFA-W3-301</airfoilUID>
+                           </element>
+                        </elements>
+                     </section>
+                     <section uID="blade_section_7">
+                        <name>blade_section_7</name>
+                        <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_transformation">
+                           <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_transformation_scaling">
+                              <x>1</x>
+                              <y>1</y>
+                              <z>1</z>
+                           </scaling>
+                           <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_transformation_rotation">
+                              <x>0</x>
+                              <y>1.21559</y>
+                              <z>0</z>
+                           </rotation>
+                           <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_transformation_translation">
+                              <x>0</x>
+                              <y>62.9076</y>
+                              <z>-0.183819</z>
+                           </translation>
+                        </transformation>
+                        <elements>
+                           <element uID="blade_section_7_element_1">
+                              <name>blade_section_7_element_1</name>
+                              <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_elements_element_transformation">
+                                 <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_elements_element_transformation_scaling">
+                                    <x>3.96353</x>
+                                    <y>3.96353</y>
+                                    <z>3.96353</z>
+                                 </scaling>
+                                 <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_elements_element_transformation_rotation">
+                                    <x>0</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </rotation>
+                                 <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[7]_elements_element_transformation_translation">
+                                    <x>-1.1408</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </translation>
+                              </transformation>
+                              <airfoilUID>FFA-W3-270blend</airfoilUID>
+                           </element>
+                        </elements>
+                     </section>
+                     <section uID="blade_section_8">
+                        <name>blade_section_8</name>
+                        <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_transformation">
+                           <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_transformation_scaling">
+                              <x>1</x>
+                              <y>1</y>
+                              <z>1</z>
+                           </scaling>
+                           <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_transformation_rotation">
+                              <x>0</x>
+                              <y>0.186029</y>
+                              <z>0</z>
+                           </rotation>
+                           <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_transformation_translation">
+                              <x>0</x>
+                              <y>74.6703</y>
+                              <z>-0.733371</z>
+                           </translation>
+                        </transformation>
+                        <elements>
+                           <element uID="blade_section_8_element_1">
+                              <name>blade_section_8_element_1</name>
+                              <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_elements_element_transformation">
+                                 <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_elements_element_transformation_scaling">
+                                    <x>3.50079</x>
+                                    <y>3.50079</y>
+                                    <z>3.50079</z>
+                                 </scaling>
+                                 <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_elements_element_transformation_rotation">
+                                    <x>0</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </rotation>
+                                 <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[8]_elements_element_transformation_translation">
+                                    <x>-1.02072</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </translation>
+                              </transformation>
+                              <airfoilUID>FFA-W3-241</airfoilUID>
+                           </element>
+                        </elements>
+                     </section>
+                     <section uID="blade_section_9">
+                        <name>blade_section_9</name>
+                        <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_transformation">
+                           <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_transformation_scaling">
+                              <x>1</x>
+                              <y>1</y>
+                              <z>1</z>
+                           </scaling>
+                           <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_transformation_rotation">
+                              <x>0</x>
+                              <y>-1.5751</y>
+                              <z>0</z>
+                           </rotation>
+                           <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_transformation_translation">
+                              <x>0</x>
+                              <y>90.294</y>
+                              <z>-1.71102</z>
+                           </translation>
+                        </transformation>
+                        <elements>
+                           <element uID="blade_section_9_element_1">
+                              <name>blade_section_9_element_1</name>
+                              <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_elements_element_transformation">
+                                 <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_elements_element_transformation_scaling">
+                                    <x>2.898</x>
+                                    <y>2.898</y>
+                                    <z>2.898</z>
+                                 </scaling>
+                                 <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_elements_element_transformation_rotation">
+                                    <x>0</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </rotation>
+                                 <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[9]_elements_element_transformation_translation">
+                                    <x>-0.896368</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </translation>
+                              </transformation>
+                              <airfoilUID>FFA-W3-211</airfoilUID>
+                           </element>
+                        </elements>
+                     </section>
+                     <section uID="blade_section_10">
+                        <name>blade_section_10</name>
+                        <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_transformation">
+                           <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_transformation_scaling">
+                              <x>1</x>
+                              <y>1</y>
+                              <z>1</z>
+                           </scaling>
+                           <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_transformation_rotation">
+                              <x>0</x>
+                              <y>-1.24239</y>
+                              <z>0</z>
+                           </rotation>
+                           <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_transformation_translation">
+                              <x>0</x>
+                              <y>117</y>
+                              <z>-4</z>
+                           </translation>
+                        </transformation>
+                        <elements>
+                           <element uID="blade_section_10_element_1">
+                              <name>blade_section_10_element_1</name>
+                              <transformation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_elements_element_transformation">
+                                 <scaling uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_elements_element_transformation_scaling">
+                                    <x>0.5</x>
+                                    <y>0.5</y>
+                                    <z>0.5</z>
+                                 </scaling>
+                                 <rotation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_elements_element_transformation_rotation">
+                                    <x>0</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </rotation>
+                                 <translation uID="cpacs_vehicles_aircraft_model_wings_wing_sections_section[10]_elements_element_transformation_translation">
+                                    <x>-0.184091</x>
+                                    <y>0</y>
+                                    <z>0</z>
+                                 </translation>
+                              </transformation>
+                              <airfoilUID>FFA-W3-211</airfoilUID>
+                           </element>
+                        </elements>
+                     </section>
+                  </sections>
+                  <segments>
+                     <segment uID="blade_segment_1">
+                        <name>blade_segment_1</name>
+                        <fromElementUID>blade_section_1_element_1</fromElementUID>
+                        <toElementUID>blade_section_2_element_1</toElementUID>
+                     </segment>
+                     <segment uID="blade_segment_2">
+                        <name>blade_segment_2</name>
+                        <fromElementUID>blade_section_2_element_1</fromElementUID>
+                        <toElementUID>blade_section_3_element_1</toElementUID>
+                     </segment>
+                     <segment uID="blade_segment_3">
+                        <name>blade_segment_3</name>
+                        <fromElementUID>blade_section_3_element_1</fromElementUID>
+                        <toElementUID>blade_section_4_element_1</toElementUID>
+                     </segment>
+                     <segment uID="blade_segment_4">
+                        <name>blade_segment_4</name>
+                        <fromElementUID>blade_section_4_element_1</fromElementUID>
+                        <toElementUID>blade_section_5_element_1</toElementUID>
+                     </segment>
+                     <segment uID="blade_segment_5">
+                        <name>blade_segment_5</name>
+                        <fromElementUID>blade_section_5_element_1</fromElementUID>
+                        <toElementUID>blade_section_6_element_1</toElementUID>
+                     </segment>
+                     <segment uID="blade_segment_6">
+                        <name>blade_segment_6</name>
+                        <fromElementUID>blade_section_6_element_1</fromElementUID>
+                        <toElementUID>blade_section_7_element_1</toElementUID>
+                     </segment>
+                     <segment uID="blade_segment_7">
+                        <name>blade_segment_7</name>
+                        <fromElementUID>blade_section_7_element_1</fromElementUID>
+                        <toElementUID>blade_section_8_element_1</toElementUID>
+                     </segment>
+                     <segment uID="blade_segment_8">
+                        <name>blade_segment_8</name>
+                        <fromElementUID>blade_section_8_element_1</fromElementUID>
+                        <toElementUID>blade_section_9_element_1</toElementUID>
+                     </segment>
+                     <segment uID="blade_segment_9">
+                        <name>blade_segment_9</name>
+                        <fromElementUID>blade_section_9_element_1</fromElementUID>
+                        <toElementUID>blade_section_10_element_1</toElementUID>
+                     </segment>
+                  </segments>
+                  <componentSegments>
+                     <componentSegment uID="blade_component_segment">
+                        <name>blade_component_segment</name>
+                        <fromElementUID>blade_section_1_element_1</fromElementUID>
+                        <toElementUID>blade_section_10_element_1</toElementUID>
+                        <structure>
+                           <upperShell uID="blade_component_segment_upper_shell">
+                              <skin>
+                                 <material>
+                                    <materialUID>Gelcoat</materialUID>
+                                    <thickness>0.0005</thickness>
+                                 </material>
+                              </skin>
+                              <cells>
+                                 <cell uID="blade_component_segment_upper_shell_cell_1_1">
+                                    <skin>
+                                       <material>
+                                          <compositeUID>blade_component_segment_upper_shell_cell_1_1_material</compositeUID>
+                                       </material>
+                                    </skin>
+                                    <positioningLeadingEdge>
+                                       <xsi1>0.707197</xsi1>
+                                       <xsi2>0.707197</xsi2>
+                                    </positioningLeadingEdge>
+                                    <positioningTrailingEdge>
+                                       <xsi1>1</xsi1>
+                                       <xsi2>1</xsi2>
+                                    </positioningTrailingEdge>
+                                    <positioningInnerBorder>
+                                       <eta1>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningInnerBorder>
+                                    <positioningOuterBorder>
+                                       <eta1>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningOuterBorder>
+                                 </cell>
+                                 <cell uID="blade_component_segment_upper_shell_cell_1_2">
+                                    <skin>
+                                       <material>
+                                          <compositeUID>blade_component_segment_upper_shell_cell_1_2_material</compositeUID>
+                                       </material>
+                                    </skin>
+                                    <positioningLeadingEdge>
+                                       <xsi1>0.542325</xsi1>
+                                       <xsi2>0.542325</xsi2>
+                                    </positioningLeadingEdge>
+                                    <positioningTrailingEdge>
+                                       <xsi1>0.707197</xsi1>
+                                       <xsi2>0.707197</xsi2>
+                                    </positioningTrailingEdge>
+                                    <positioningInnerBorder>
+                                       <eta1>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningInnerBorder>
+                                    <positioningOuterBorder>
+                                       <eta1>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningOuterBorder>
+                                 </cell>
+                                 <cell uID="blade_component_segment_upper_shell_cell_1_3">
+                                    <skin>
+                                       <material>
+                                          <compositeUID>blade_component_segment_upper_shell_cell_1_3_material</compositeUID>
+                                       </material>
+                                    </skin>
+                                    <positioningLeadingEdge>
+                                       <xsi1>0</xsi1>
+                                       <xsi2>0</xsi2>
+                                    </positioningLeadingEdge>
+                                    <positioningTrailingEdge>
+                                       <xsi1>0.542325</xsi1>
+                                       <xsi2>0.542325</xsi2>
+                                    </positioningTrailingEdge>
+                                    <positioningInnerBorder>
+                                       <eta1>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningInnerBorder>
+                                    <positioningOuterBorder>
+                                       <eta1>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningOuterBorder>
+                                 </cell>
+                              </cells>
+                           </upperShell>
+                           <spars>
+                              <sparPositions>
+                                 <sparPosition uID="spar_1_position_1">
+                                    <sparPositionEtaXsi>
+                                       <referenceUID>blade_component_segment</referenceUID>
+                                       <eta>0.0333333</eta>
+                                       <xsi>0.468638</xsi>
+                                    </sparPositionEtaXsi>
+                                 </sparPosition>
+                                 <sparPosition uID="spar_1_position_2">
+                                    <sparPositionEtaXsi>
+                                       <referenceUID>blade_component_segment</referenceUID>
+                                       <eta>0.0666667</eta>
+                                       <xsi>0.438422</xsi>
+                                    </sparPositionEtaXsi>
+                                 </sparPosition>
+                                 <sparPosition uID="spar_2_position_1">
+                                    <sparPositionEtaXsi>
+                                       <referenceUID>blade_component_segment</referenceUID>
+                                       <eta>0.0333333</eta>
+                                       <xsi>0.468638</xsi>
+                                    </sparPositionEtaXsi>
+                                 </sparPosition>
+                                 <sparPosition uID="spar_2_position_2">
+                                    <sparPositionEtaXsi>
+                                       <referenceUID>blade_component_segment</referenceUID>
+                                       <eta>0.0666667</eta>
+                                       <xsi>0.438422</xsi>
+                                    </sparPositionEtaXsi>
+                                 </sparPosition>
+                              </sparPositions>
+                              <sparSegments/>
+                           </spars>
+                           <lowerShell uID="blade_component_segment_lower_shell">
+                              <skin>
+                                 <material>
+                                    <materialUID>Gelcoat</materialUID>
+                                    <thickness>0.0005</thickness>
+                                 </material>
+                              </skin>
+                              <cells>
+                                 <cell uID="blade_component_segment_lower_shell_cell_1_1">
+                                    <skin>
+                                       <material>
+                                          <compositeUID>blade_component_segment_lower_shell_cell_1_1_material</compositeUID>
+                                       </material>
+                                    </skin>
+                                    <positioningLeadingEdge>
+                                       <xsi1>0</xsi1>
+                                       <xsi2>0</xsi2>
+                                    </positioningLeadingEdge>
+                                    <positioningTrailingEdge>
+                                       <xsi1>0.266746</xsi1>
+                                       <xsi2>0.266746</xsi2>
+                                    </positioningTrailingEdge>
+                                    <positioningInnerBorder>
+                                       <eta1>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningInnerBorder>
+                                    <positioningOuterBorder>
+                                       <eta1>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningOuterBorder>
+                                 </cell>
+                                 <cell uID="blade_component_segment_lower_shell_cell_1_2">
+                                    <skin>
+                                       <material>
+                                          <compositeUID>blade_component_segment_lower_shell_cell_1_2_material</compositeUID>
+                                       </material>
+                                    </skin>
+                                    <positioningLeadingEdge>
+                                       <xsi1>0.266746</xsi1>
+                                       <xsi2>0.266746</xsi2>
+                                    </positioningLeadingEdge>
+                                    <positioningTrailingEdge>
+                                       <xsi1>0.428793</xsi1>
+                                       <xsi2>0.428793</xsi2>
+                                    </positioningTrailingEdge>
+                                    <positioningInnerBorder>
+                                       <eta1>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningInnerBorder>
+                                    <positioningOuterBorder>
+                                       <eta1>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningOuterBorder>
+                                 </cell>
+                                 <cell uID="blade_component_segment_lower_shell_cell_1_3">
+                                    <skin>
+                                       <material>
+                                          <compositeUID>blade_component_segment_lower_shell_cell_1_3_material</compositeUID>
+                                       </material>
+                                    </skin>
+                                    <positioningLeadingEdge>
+                                       <xsi1>0.428793</xsi1>
+                                       <xsi2>0.428793</xsi2>
+                                    </positioningLeadingEdge>
+                                    <positioningTrailingEdge>
+                                       <xsi1>1</xsi1>
+                                       <xsi2>1</xsi2>
+                                    </positioningTrailingEdge>
+                                    <positioningInnerBorder>
+                                       <eta1>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningInnerBorder>
+                                    <positioningOuterBorder>
+                                       <eta1>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta1>
+                                       <eta2>
+                                          <eta>0.0333333</eta>
+                                          <referenceUID>blade_component_segment</referenceUID>
+                                       </eta2>
+                                    </positioningOuterBorder>
+                                 </cell>
+                              </cells>
+                           </lowerShell>
+                        </structure>
+                     </componentSegment>
+                  </componentSegments>
+               </wing>
+            </wings>
+         </model>
+      </aircraft>
+      <profiles>
+         <wingAirfoils>
+            <wingAirfoil uID="circular">
+               <name>circular</name>
+               <pointList>
+                  <x mapType="vector">1;0.99901;0.99606;0.99114;0.98429;0.97553;0.96489;0.95241;0.93815;0.92216;0.90451;0.88526;0.86448;0.84227;0.81871;0.79389;0.76791;0.74088;0.71289;0.68406;0.65451;0.62434;0.59369;0.56267;0.5314;0.5;0.4686;0.43733;0.40631;0.37566;0.34549;0.31594;0.28711;0.25912;0.23209;0.20611;0.18129;0.15773;0.13552;0.11474;0.09549;0.07784;0.06185;0.04759;0.03511;0.02447;0.01571;0.00886;0.00394;0.00099;0;0.00099;0.00394;0.00886;0.01571;0.02447;0.03511;0.04759;0.06185;0.07784;0.09549;0.11474;0.13552;0.15773;0.18129;0.20611;0.23209;0.25912;0.28711;0.31594;0.34549;0.37566;0.40631;0.43733;0.4686;0.5;0.5314;0.56267;0.59369;0.62434;0.65451;0.68406;0.71289;0.74088;0.76791;0.79389;0.81871;0.84227;0.86448;0.88526;0.90451;0.92216;0.93815;0.95241;0.96489;0.97553;0.98429;0.99114;0.99606;0.99901</x>
+                  <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
+                  <z mapType="vector">0;0.0314;0.06267;0.09369;0.12434;0.15451;0.18406;0.21289;0.24088;0.26791;0.29389;0.31871;0.34227;0.36448;0.38526;0.40451;0.42216;0.43815;0.45241;0.46489;0.47553;0.48429;0.49114;0.49606;0.49901;0.5;0.49901;0.49606;0.49114;0.48429;0.47553;0.46489;0.45241;0.43815;0.42216;0.40451;0.38526;0.36448;0.34227;0.31871;0.29389;0.26791;0.24088;0.21289;0.18406;0.15451;0.12434;0.09369;0.06267;0.0314;0;-0.0314;-0.06267;-0.09369;-0.12434;-0.15451;-0.18406;-0.21289;-0.24088;-0.26791;-0.29389;-0.31871;-0.34227;-0.36448;-0.38526;-0.40451;-0.42216;-0.43815;-0.45241;-0.46489;-0.47553;-0.48429;-0.49114;-0.49606;-0.49901;-0.5;-0.49901;-0.49606;-0.49114;-0.48429;-0.47553;-0.46489;-0.45241;-0.43815;-0.42216;-0.40451;-0.38526;-0.36448;-0.34227;-0.31871;-0.29389;-0.26791;-0.24088;-0.21289;-0.18406;-0.15451;-0.12434;-0.09369;-0.06267;-0.0314</z>
+               </pointList>
+            </wingAirfoil>
+            <wingAirfoil uID="FFA-W3-211">
+               <name>FFA-W3-211</name>
+               <pointList>
+                  <x mapType="vector">1;0.999443;0.99812;0.995694;0.992305;0.988028;0.982815;0.976664;0.969641;0.961743;0.952973;0.943389;0.933013;0.921851;0.909955;0.897361;0.884085;0.870163;0.855653;0.840577;0.824975;0.808895;0.792362;0.775421;0.758125;0.740502;0.722592;0.704445;0.686088;0.66757;0.648927;0.630186;0.611401;0.592597;0.573808;0.555076;0.536418;0.51788;0.499481;0.481252;0.463222;0.445407;0.427843;0.410539;0.393525;0.376811;0.36042;0.344365;0.328658;0.313319;0.298348;0.283766;0.269567;0.255774;0.242378;0.229396;0.216817;0.204658;0.192908;0.181575;0.170658;0.160149;0.150055;0.140355;0.131068;0.122161;0.113659;0.105536;0.0977907;0.090429;0.0834162;0.076774;0.0704692;0.0645002;0.0588818;0.053568;0.0485758;0.0438979;0.039495;0.0353948;0.0315763;0.0280064;0.0247159;0.0216807;0.0188632;0.0162951;0.0139662;0.0118176;0.00988361;0.00818368;0.00663128;0.00524853;0.00408271;0.00308998;0.00219098;0.00145967;0.00096333;0.00059878;0.00028988;7.804e-05;0;7.807e-05;0.00029009;0.00059937;0.00096448;0.00146264;0.00219661;0.00309879;0.00409516;0.00526774;0.00665839;0.00821941;0.00993095;0.0118798;0.0140446;0.0163922;0.0189847;0.0218287;0.0248925;0.02822;0.0318292;0.03569;0.0398424;0.0443004;0.0490379;0.0541003;0.0594875;0.0651879;0.0712479;0.0776465;0.084397;0.0915234;0.0990071;0.106887;0.115148;0.123806;0.132872;0.142332;0.152215;0.162499;0.173214;0.184341;0.195903;0.207883;0.220294;0.233123;0.246375;0.260041;0.274124;0.288611;0.3035;0.318774;0.334434;0.350457;0.366843;0.383561;0.40061;0.417956;0.435593;0.453493;0.471632;0.489992;0.508536;0.527249;0.546089;0.565031;0.584045;0.603088;0.622138;0.641148;0.66008;0.678906;0.697572;0.716045;0.734291;0.752252;0.769898;0.787192;0.804074;0.820513;0.836469;0.85189;0.866748;0.88101;0.89461;0.907525;0.91973;0.931175;0.941828;0.951675;0.960675;0.968787;0.976012;0.982331;0.987686;0.992086;0.995574;0.998063;0.99943;1</x>
+                  <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
+                  <z mapType="vector">0.00094;0.00103065;0.00124638;0.00164402;0.00220291;0.00291409;0.00378945;0.00483319;0.0060382;0.00740799;0.00894481;0.0106395;0.0125242;0.014572;0.0167974;0.0191801;0.0217427;0.0244546;0.0273497;0.0303833;0.0335578;0.0368767;0.0403455;0.0439472;0.0476627;0.0514856;0.0554082;0.0593585;0.0633879;0.0674002;0.0714304;0.0754176;0.0793805;0.0832204;0.0869486;0.0905373;0.0939943;0.0972973;0.100366;0.103312;0.106071;0.108533;0.110806;0.112735;0.114468;0.115904;0.117029;0.117833;0.118381;0.11853;0.118416;0.11789;0.117126;0.116104;0.114821;0.113251;0.111409;0.109435;0.107287;0.10496;0.102465;0.0999348;0.097204;0.0944128;0.0915694;0.0886332;0.0856454;0.082602;0.0795408;0.0764742;0.0733825;0.0702923;0.0671992;0.0641144;0.0610602;0.0580252;0.0550344;0.0520794;0.0491488;0.0462711;0.0434493;0.0406615;0.0379578;0.0353076;0.0326917;0.030158;0.0276842;0.0252567;0.0229183;0.0206544;0.0183897;0.016327;0.0143358;0.0122789;0.0100017;0.00710112;0.0046218;0.00275976;0.00126291;0.00032267;0;-0.00031745;-0.00119506;-0.00249968;-0.0040402;-0.00605796;-0.00861062;-0.0106474;-0.0122995;-0.0138891;-0.0154239;-0.0169133;-0.018543;-0.0202974;-0.0220606;-0.0238346;-0.0257133;-0.0276445;-0.0296023;-0.0316298;-0.0337097;-0.0358258;-0.0379932;-0.0402073;-0.0424526;-0.0447376;-0.0470515;-0.0493894;-0.0517691;-0.0541705;-0.0565876;-0.0590152;-0.0614404;-0.0638658;-0.0662727;-0.0686484;-0.0709983;-0.073294;-0.0755455;-0.0777339;-0.0798263;-0.0818247;-0.083709;-0.0854483;-0.087035;-0.0884657;-0.0897173;-0.090753;-0.0915773;-0.0921612;-0.0924577;-0.0924743;-0.0921629;-0.0914934;-0.0904684;-0.0890386;-0.087207;-0.0849601;-0.0822618;-0.0791106;-0.0755025;-0.0714746;-0.0670522;-0.0623403;-0.0574317;-0.052357;-0.0471886;-0.041968;-0.0368155;-0.0317763;-0.0269251;-0.0223071;-0.0179799;-0.0139806;-0.0103244;-0.00703746;-0.00411605;-0.00155747;0.00059313;0.00235599;0.00375549;0.00481536;0.00553358;0.00595799;0.00609949;0.00599693;0.00565716;0.00513478;0.00447175;0.00377384;0.00309945;0.00245775;0.00185661;0.00130603;0.00082003;0.00040675;6.986e-05;-0.00017578;-0.00031253;-0.00037</z>
+               </pointList>
+            </wingAirfoil>
+            <wingAirfoil uID="FFA-W3-241">
+               <name>FFA-W3-241</name>
+               <pointList>
+                  <x mapType="vector">1;0.999443;0.99812;0.995694;0.992305;0.988028;0.982815;0.976664;0.969641;0.961743;0.952973;0.943389;0.933013;0.921851;0.909955;0.897361;0.884085;0.870163;0.855653;0.840577;0.824975;0.808895;0.792362;0.775421;0.758125;0.740502;0.722592;0.704445;0.686088;0.66757;0.648927;0.630186;0.611401;0.592597;0.573808;0.555076;0.536418;0.51788;0.499481;0.481252;0.463222;0.445407;0.427843;0.410539;0.393525;0.376811;0.36042;0.344365;0.328658;0.313319;0.298348;0.283766;0.269567;0.255774;0.242378;0.229396;0.216817;0.204658;0.192908;0.181575;0.170658;0.160149;0.150055;0.140355;0.131068;0.122161;0.113659;0.105536;0.0977907;0.090429;0.0834162;0.076774;0.0704692;0.0645002;0.0588818;0.053568;0.0485758;0.0438979;0.039495;0.0353948;0.0315763;0.0280064;0.0247159;0.0216807;0.0188632;0.0162951;0.0139662;0.0118176;0.00988361;0.00818368;0.00663128;0.00524853;0.00408271;0.00308998;0.00219098;0.00145967;0.00096333;0.00059878;0.00028988;7.804e-05;0;7.807e-05;0.00029009;0.00059937;0.00096448;0.00146264;0.00219661;0.00309879;0.00409516;0.00526774;0.00665839;0.00821941;0.00993095;0.0118798;0.0140446;0.0163922;0.0189847;0.0218287;0.0248925;0.02822;0.0318292;0.03569;0.0398424;0.0443004;0.0490379;0.0541003;0.0594875;0.0651879;0.0712479;0.0776465;0.084397;0.0915234;0.0990071;0.106887;0.115148;0.123806;0.132872;0.142332;0.152215;0.162499;0.173214;0.184341;0.195903;0.207883;0.220294;0.233123;0.246375;0.260041;0.274124;0.288611;0.3035;0.318774;0.334434;0.350457;0.366843;0.383561;0.40061;0.417956;0.435593;0.453493;0.471632;0.489992;0.508536;0.527249;0.546089;0.565031;0.584045;0.603088;0.622138;0.641148;0.66008;0.678906;0.697572;0.716045;0.734291;0.752252;0.769898;0.787192;0.804074;0.820513;0.836469;0.85189;0.866748;0.88101;0.89461;0.907525;0.91973;0.931175;0.941828;0.951675;0.960675;0.968787;0.976012;0.982331;0.987686;0.992086;0.995574;0.998063;0.99943;1</x>
+                  <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
+                  <z mapType="vector">0.00425;0.0043621;0.00462832;0.00511699;0.00579959;0.00666146;0.00771282;0.0089541;0.0103725;0.0119686;0.0137423;0.0156819;0.0177856;0.0200693;0.0225171;0.0251378;0.0279092;0.0308491;0.0339361;0.0371642;0.0405286;0.0440098;0.0476172;0.0513267;0.055123;0.0589939;0.0629341;0.0669008;0.0708832;0.0748671;0.078835;0.0827544;0.0866141;0.090373;0.0940254;0.0975492;0.100926;0.104147;0.107193;0.110062;0.112712;0.115147;0.117353;0.119317;0.121026;0.122488;0.123679;0.124602;0.125239;0.125605;0.125674;0.125465;0.12499;0.124236;0.123239;0.122002;0.120538;0.118867;0.116993;0.11493;0.112693;0.110298;0.107768;0.105108;0.102331;0.0994503;0.0964904;0.0934585;0.0903636;0.0872218;0.0840345;0.0808268;0.0775944;0.0743479;0.0711095;0.0678734;0.0646534;0.061454;0.0582601;0.0551095;0.0519956;0.0489185;0.0458905;0.0428962;0.0399191;0.0370023;0.0341846;0.0313719;0.0286109;0.0260379;0.0234295;0.0207611;0.0183045;0.015951;0.0132708;0.0104986;0.00746215;0.00453721;0.00204453;0.00050657;0;-0.00049018;-0.00184125;-0.00381822;-0.00605713;-0.00870563;-0.0112292;-0.0134221;-0.0153437;-0.0171669;-0.0190964;-0.0213065;-0.0235141;-0.0257991;-0.0281599;-0.0305397;-0.0329686;-0.0354906;-0.0380747;-0.0407257;-0.0434599;-0.0462315;-0.0490703;-0.0519696;-0.0549089;-0.0579043;-0.06095;-0.0640249;-0.0671284;-0.0702441;-0.0733705;-0.0764911;-0.0795957;-0.0826829;-0.085719;-0.088705;-0.0916174;-0.0944378;-0.0971658;-0.0997698;-0.102239;-0.104545;-0.106689;-0.10863;-0.110373;-0.111878;-0.113141;-0.114149;-0.114866;-0.115297;-0.11538;-0.115133;-0.114506;-0.113498;-0.112081;-0.110234;-0.107933;-0.105193;-0.101976;-0.0982976;-0.0941408;-0.089522;-0.0844731;-0.0790568;-0.0733102;-0.0672996;-0.0610933;-0.0547706;-0.0484252;-0.0421379;-0.0360081;-0.0301266;-0.0245751;-0.0194214;-0.0147011;-0.0104542;-0.00673447;-0.00355842;-0.00093374;0.00117919;0.00284598;0.00409407;0.00495249;0.00546535;0.00561958;0.00547727;0.00504714;0.00440395;0.00360867;0.00270812;0.0018027;0.00091285;5.718e-05;-0.00074311;-0.00146131;-0.00207989;-0.00258907;-0.00296293;-0.00317197;-0.00326</z>
+               </pointList>
+            </wingAirfoil>
+            <wingAirfoil uID="FFA-W3-270blend">
+               <name>FFA-W3-270blend</name>
+               <pointList>
+                  <x mapType="vector">1;0.99185;0.98371;0.97556;0.96742;0.95928;0.95114;0.94301;0.93488;0.92675;0.91863;0.91052;0.90241;0.8943;0.8862;0.8781;0.87001;0.86192;0.85384;0.84576;0.83768;0.8296;0.82153;0.81346;0.80539;0.79732;0.78926;0.7812;0.77314;0.76508;0.75702;0.74897;0.74091;0.73285;0.7248;0.71675;0.70869;0.70064;0.69258;0.68452;0.67647;0.66841;0.66035;0.65229;0.64422;0.63616;0.62809;0.62002;0.61195;0.60387;0.5958;0.58772;0.57963;0.57154;0.56345;0.55536;0.54726;0.53916;0.53105;0.52294;0.51482;0.5067;0.49858;0.49045;0.48231;0.47417;0.46603;0.45787;0.44972;0.44155;0.43338;0.42521;0.41702;0.40884;0.40064;0.39244;0.38424;0.37602;0.36781;0.35958;0.35135;0.34312;0.33488;0.32664;0.31839;0.31014;0.30188;0.29363;0.28537;0.27711;0.26886;0.2606;0.25235;0.24411;0.23587;0.22763;0.21941;0.2112;0.20301;0.19483;0.18668;0.17855;0.17045;0.16238;0.15434;0.14635;0.1384;0.1305;0.12265;0.11487;0.10716;0.09952;0.09197;0.08451;0.07715;0.06991;0.0628;0.05584;0.04905;0.04245;0.03607;0.02994;0.02413;0.01869;0.0137;0.00923;0.0054;0.00249;0.00064;0;0.00089;0.00355;0.00749;0.01224;0.01762;0.0234;0.02952;0.03592;0.04253;0.04932;0.05615;0.06309;0.07018;0.0774;0.08474;0.09218;0.09973;0.10736;0.11507;0.12286;0.13073;0.13866;0.14664;0.15469;0.16279;0.17093;0.17911;0.18733;0.19559;0.20387;0.21219;0.22053;0.22889;0.23726;0.24566;0.25406;0.26248;0.2709;0.27933;0.28777;0.2962;0.30464;0.31308;0.32151;0.32994;0.33836;0.34678;0.35518;0.36358;0.37196;0.38033;0.38869;0.39703;0.40536;0.41366;0.42195;0.43023;0.43848;0.44671;0.45493;0.46312;0.47129;0.47944;0.48757;0.49567;0.50376;0.51182;0.51986;0.52788;0.53589;0.54387;0.55184;0.55979;0.56773;0.57566;0.58358;0.59149;0.59939;0.60729;0.61518;0.62308;0.63098;0.63888;0.64679;0.65471;0.66263;0.67057;0.67853;0.68649;0.69448;0.70248;0.7105;0.71854;0.7266;0.73468;0.74278;0.75091;0.75905;0.76722;0.77541;0.78362;0.79186;0.80012;0.80839;0.81669;0.82499;0.83332;0.84165;0.85;0.85835;0.86671;0.87508;0.88346;0.89184;0.90022;0.90859;0.91697;0.92533;0.93369;0.94203;0.95037;0.95868;0.96698;0.97526;0.98352;0.99177;1</x>
+                  <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
+                  <z mapType="vector">0.00652;0.00831;0.0101;0.01188;0.01366;0.01544;0.01721;0.01898;0.02076;0.02255;0.02435;0.02617;0.02799;0.02982;0.03166;0.0335;0.03535;0.03721;0.03907;0.04094;0.04281;0.04468;0.04655;0.04843;0.05031;0.05219;0.05407;0.05594;0.05782;0.05969;0.06157;0.06343;0.0653;0.06716;0.06901;0.07086;0.0727;0.07453;0.07636;0.07817;0.07997;0.08176;0.08355;0.08531;0.08707;0.08881;0.09054;0.09225;0.09395;0.09562;0.09729;0.09893;0.10055;0.10215;0.10373;0.10529;0.10683;0.10834;0.10983;0.11129;0.11272;0.11413;0.11551;0.11686;0.11817;0.11946;0.1207;0.12191;0.12307;0.1242;0.12529;0.12633;0.12733;0.12828;0.12918;0.13003;0.13083;0.13157;0.13226;0.13288;0.13345;0.13395;0.13438;0.13474;0.13502;0.13523;0.13537;0.13541;0.13537;0.13524;0.13501;0.13469;0.13426;0.13373;0.13308;0.13233;0.13146;0.13048;0.12936;0.12811;0.12672;0.12518;0.1235;0.12167;0.11969;0.11754;0.11522;0.11274;0.11008;0.10724;0.10422;0.10101;0.09759;0.09398;0.09014;0.08609;0.0818;0.07727;0.07247;0.06739;0.06196;0.05624;0.05049;0.04439;0.03792;0.03107;0.02383;0.01614;0.00809;-0.00019;-0.00845;-0.01641;-0.02407;-0.03122;-0.03781;-0.04403;-0.0499;-0.05547;-0.06076;-0.06581;-0.07063;-0.07523;-0.07962;-0.08382;-0.08782;-0.09164;-0.09527;-0.09873;-0.10201;-0.10512;-0.10805;-0.11082;-0.11341;-0.11584;-0.11811;-0.12022;-0.12218;-0.12397;-0.12562;-0.12711;-0.12846;-0.12966;-0.13073;-0.13166;-0.13245;-0.13312;-0.13365;-0.13406;-0.13435;-0.13451;-0.13455;-0.13447;-0.13428;-0.13397;-0.13354;-0.13301;-0.13236;-0.13161;-0.13075;-0.12978;-0.12871;-0.12753;-0.12626;-0.12489;-0.12341;-0.12185;-0.1202;-0.11845;-0.11662;-0.1147;-0.1127;-0.11061;-0.10845;-0.10621;-0.1039;-0.10152;-0.09907;-0.09656;-0.09399;-0.09137;-0.0887;-0.08599;-0.08323;-0.08044;-0.07761;-0.07476;-0.07188;-0.06898;-0.06607;-0.06315;-0.06024;-0.05732;-0.05441;-0.05152;-0.04864;-0.04579;-0.04297;-0.04019;-0.03745;-0.03476;-0.03213;-0.02955;-0.02704;-0.02459;-0.02222;-0.01993;-0.01771;-0.01559;-0.01356;-0.01163;-0.00982;-0.00814;-0.00656;-0.00511;-0.00377;-0.00254;-0.00143;-0.00044;0.00045;0.00121;0.00185;0.00237;0.00275;0.003;0.0031;0.00305;0.00287;0.00254;0.00207;0.00147;0.00074;-0.00012;-0.00112;-0.00224;-0.00347;-0.00479;-0.00613</z>
+               </pointList>
+            </wingAirfoil>
+            <wingAirfoil uID="FFA-W3-301">
+               <name>FFA-W3-301</name>
+               <pointList>
+                  <x mapType="vector">1;0.999443;0.99812;0.995694;0.992305;0.988028;0.982815;0.976664;0.969641;0.961743;0.952973;0.943389;0.933013;0.921851;0.909955;0.897361;0.884085;0.870163;0.855653;0.840577;0.824975;0.808895;0.792362;0.775421;0.758125;0.740502;0.722592;0.704445;0.686088;0.66757;0.648927;0.630186;0.611401;0.592597;0.573808;0.555076;0.536418;0.51788;0.499481;0.481252;0.463222;0.445407;0.427843;0.410539;0.393525;0.376811;0.36042;0.344365;0.328658;0.313319;0.298348;0.283766;0.269567;0.255774;0.242378;0.229396;0.216817;0.204658;0.192908;0.181575;0.170658;0.160149;0.150055;0.140355;0.131068;0.122161;0.113659;0.105536;0.0977907;0.090429;0.0834162;0.076774;0.0704692;0.0645002;0.0588818;0.053568;0.0485758;0.0438979;0.039495;0.0353948;0.0315763;0.0280064;0.0247159;0.0216807;0.0188632;0.0162951;0.0139662;0.0118176;0.00988361;0.00818368;0.00663128;0.00524853;0.00408271;0.00308998;0.00219098;0.00145967;0.00096333;0.00059878;0.00028988;7.804e-05;0;7.807e-05;0.00029009;0.00059937;0.00096448;0.00146264;0.00219661;0.00309879;0.00409516;0.00526774;0.00665839;0.00821941;0.00993095;0.0118798;0.0140446;0.0163922;0.0189847;0.0218287;0.0248925;0.02822;0.0318292;0.03569;0.0398424;0.0443004;0.0490379;0.0541003;0.0594875;0.0651879;0.0712479;0.0776465;0.084397;0.0915234;0.0990071;0.106887;0.115148;0.123806;0.132872;0.142332;0.152215;0.162499;0.173214;0.184341;0.195903;0.207883;0.220294;0.233123;0.246375;0.260041;0.274124;0.288611;0.3035;0.318774;0.334434;0.350457;0.366843;0.383561;0.40061;0.417956;0.435593;0.453493;0.471632;0.489992;0.508536;0.527249;0.546089;0.565031;0.584045;0.603088;0.622138;0.641148;0.66008;0.678906;0.697572;0.716045;0.734291;0.752252;0.769898;0.787192;0.804074;0.820513;0.836469;0.85189;0.866748;0.88101;0.89461;0.907525;0.91973;0.931175;0.941828;0.951675;0.960675;0.968787;0.976012;0.982331;0.987686;0.992086;0.995574;0.998063;0.99943;1</x>
+                  <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
+                  <z mapType="vector">0.0091;0.0092;0.0095;0.010191;0.0109872;0.0119927;0.0132197;0.0146687;0.016325;0.0181894;0.0202618;0.0225287;0.0249894;0.0276563;0.0305358;0.0336128;0.0368819;0.0403284;0.0439421;0.0477194;0.0516343;0.0556812;0.0598265;0.064066;0.0683837;0.0727568;0.0771688;0.0815929;0.0859995;0.0903934;0.094736;0.0990184;0.103229;0.107342;0.111352;0.115235;0.118971;0.122565;0.125997;0.12923;0.132262;0.135059;0.137626;0.13995;0.142029;0.143831;0.145374;0.146641;0.147629;0.148345;0.148783;0.148918;0.148782;0.148351;0.147639;0.146656;0.145408;0.143894;0.142118;0.140099;0.137841;0.13536;0.132676;0.129806;0.126763;0.123565;0.120227;0.11677;0.113195;0.109531;0.105788;0.101981;0.098121;0.0942234;0.090316;0.0863747;0.0824277;0.0784947;0.0745555;0.0706547;0.0667826;0.0629269;0.0591231;0.055364;0.0516146;0.0479351;0.044343;0.0407365;0.0372303;0.0338471;0.0304174;0.0270792;0.0238587;0.0206917;0.0176261;0.0144022;0.0114845;0.0081594;0.00393427;0.0009904;0;-0.00098225;-0.0038427;-0.00790888;-0.0111944;-0.0139587;-0.0170269;-0.0198634;-0.0227771;-0.0258536;-0.0290272;-0.0322542;-0.0354754;-0.0387984;-0.0422242;-0.0456621;-0.0491874;-0.0528118;-0.056457;-0.0601823;-0.0639773;-0.0678137;-0.0717123;-0.0756711;-0.0796478;-0.0836589;-0.0876906;-0.0917285;-0.0957752;-0.0998001;-0.103804;-0.107768;-0.111669;-0.115509;-0.11925;-0.122883;-0.126397;-0.129759;-0.132959;-0.135981;-0.138801;-0.141392;-0.143751;-0.145852;-0.147679;-0.149218;-0.150443;-0.151337;-0.151899;-0.152079;-0.151883;-0.151278;-0.150265;-0.148808;-0.146898;-0.144511;-0.141652;-0.138295;-0.134441;-0.130096;-0.125256;-0.119926;-0.114135;-0.107918;-0.10132;-0.0943796;-0.08718;-0.0797953;-0.0723041;-0.0648181;-0.0574332;-0.0502355;-0.0433309;-0.0368034;-0.0307197;-0.0251232;-0.0200465;-0.01556;-0.0117003;-0.00840864;-0.00567019;-0.00346747;-0.00177337;-0.00057044;0.00016442;0.00045227;0.00040686;4.808e-05;-0.00057005;-0.00142772;-0.00241285;-0.00346998;-0.00454941;-0.00560222;-0.00657537;-0.00743116;-0.00814595;-0.00867599;-0.0089741;-0.0091</z>
+               </pointList>
+            </wingAirfoil>
+            <wingAirfoil uID="FFA-W3-330blend">
+               <name>FFA-W3-330blend</name>
+               <pointList>
+                  <x mapType="vector">1;0.9917;0.98339;0.97509;0.96678;0.95847;0.95016;0.94186;0.93356;0.92526;0.91697;0.90869;0.90042;0.89215;0.88388;0.87562;0.86736;0.85911;0.85086;0.84261;0.83437;0.82613;0.81789;0.80966;0.80143;0.7932;0.78497;0.77674;0.76852;0.76029;0.75207;0.74385;0.73562;0.7274;0.71918;0.71096;0.70273;0.69451;0.68629;0.67806;0.66983;0.66161;0.65338;0.64514;0.63691;0.62867;0.62044;0.61219;0.60395;0.5957;0.58745;0.5792;0.57094;0.56268;0.55441;0.54614;0.53787;0.52959;0.5213;0.51301;0.50471;0.49641;0.48813;0.47986;0.47159;0.4633;0.45501;0.44671;0.4384;0.43008;0.42176;0.41342;0.40507;0.39672;0.38835;0.37998;0.37159;0.3632;0.35479;0.34638;0.33796;0.32953;0.32109;0.31264;0.30418;0.29572;0.28725;0.27878;0.2703;0.26182;0.25334;0.24486;0.23638;0.2279;0.21943;0.21097;0.20253;0.1941;0.1857;0.17733;0.16898;0.16068;0.15243;0.14423;0.1361;0.12803;0.12004;0.11215;0.10436;0.09669;0.08915;0.08176;0.07453;0.06748;0.06064;0.05402;0.04763;0.04151;0.03567;0.03015;0.02498;0.02018;0.01577;0.01178;0.0083;0.00551;0.0034;0.00177;0.00052;0;0.00048;0.00174;0.00344;0.00581;0.00892;0.01269;0.01696;0.02165;0.02674;0.03223;0.03808;0.04424;0.05068;0.05737;0.06428;0.07139;0.07869;0.08616;0.09378;0.10153;0.1094;0.11738;0.12545;0.13361;0.14184;0.15013;0.15849;0.16691;0.17537;0.18388;0.19242;0.20099;0.2096;0.21822;0.22687;0.23554;0.24423;0.25292;0.26162;0.27033;0.27905;0.28776;0.29648;0.30519;0.31389;0.32259;0.33128;0.33996;0.34863;0.35728;0.36592;0.37455;0.38315;0.39174;0.40031;0.40885;0.41738;0.42588;0.43435;0.44281;0.45123;0.45963;0.46801;0.47636;0.48469;0.493;0.50128;0.50954;0.51777;0.52599;0.53418;0.54235;0.5505;0.55863;0.56675;0.57484;0.58293;0.591;0.59905;0.6071;0.61517;0.62324;0.63131;0.63937;0.64743;0.65549;0.66356;0.67163;0.67971;0.6878;0.6959;0.70402;0.71216;0.72031;0.72849;0.73669;0.74491;0.75315;0.76143;0.76973;0.77805;0.78641;0.7948;0.80321;0.81165;0.82012;0.82861;0.83712;0.84566;0.85422;0.8628;0.87141;0.88003;0.88866;0.89733;0.90601;0.91468;0.92334;0.93199;0.94063;0.94925;0.95784;0.96639;0.97489;0.98332;0.99168;1</x>
+                  <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
+                  <z mapType="vector">0.01245;0.0146;0.01675;0.01888;0.021;0.0231;0.0252;0.0273;0.0294;0.03151;0.03364;0.03578;0.03793;0.04009;0.04226;0.04443;0.0466;0.04878;0.05097;0.05315;0.05535;0.05754;0.05973;0.06193;0.06412;0.0663;0.06849;0.07067;0.07285;0.07503;0.0772;0.07937;0.08153;0.08369;0.08584;0.08798;0.09011;0.09223;0.09434;0.09644;0.09853;0.10062;0.10268;0.10474;0.10678;0.10881;0.11083;0.11283;0.11481;0.11678;0.11874;0.12067;0.12259;0.12449;0.12636;0.12822;0.13005;0.13187;0.13365;0.13542;0.13715;0.13886;0.14053;0.14218;0.14378;0.14536;0.14689;0.14838;0.14984;0.15124;0.1526;0.15392;0.15518;0.15639;0.15755;0.15865;0.15969;0.16067;0.16158;0.16242;0.16319;0.16389;0.16451;0.16504;0.16549;0.16586;0.16613;0.1663;0.16636;0.16632;0.16615;0.16587;0.16546;0.16491;0.16423;0.1634;0.1624;0.16125;0.15991;0.15839;0.15668;0.15478;0.15266;0.15033;0.14779;0.14502;0.14203;0.1388;0.13531;0.13157;0.12757;0.12331;0.11877;0.11395;0.10886;0.10348;0.09783;0.09189;0.08568;0.07919;0.07242;0.06539;0.0581;0.05056;0.04277;0.03473;0.02648;0.01806;0.00955;0.00098;-0.00761;-0.01613;-0.02443;-0.03254;-0.04061;-0.0484;-0.05589;-0.0631;-0.07004;-0.07669;-0.08304;-0.0891;-0.09487;-0.10036;-0.10559;-0.11054;-0.11522;-0.11964;-0.1238;-0.12771;-0.13138;-0.13483;-0.13805;-0.14107;-0.14388;-0.14648;-0.14889;-0.15111;-0.15313;-0.15498;-0.15666;-0.15816;-0.1595;-0.16068;-0.16169;-0.16255;-0.16325;-0.16381;-0.16421;-0.16447;-0.16458;-0.16456;-0.1644;-0.1641;-0.16368;-0.16312;-0.16244;-0.16164;-0.16071;-0.15967;-0.15851;-0.15723;-0.15585;-0.15435;-0.15274;-0.15103;-0.14921;-0.14729;-0.14527;-0.14316;-0.14094;-0.13864;-0.13625;-0.13378;-0.13123;-0.12861;-0.12592;-0.12316;-0.12034;-0.11746;-0.11452;-0.11153;-0.10849;-0.1054;-0.10226;-0.09909;-0.09589;-0.09265;-0.08939;-0.08611;-0.08281;-0.0795;-0.07618;-0.07286;-0.06955;-0.06624;-0.06295;-0.05968;-0.05644;-0.05323;-0.05005;-0.04693;-0.04386;-0.04085;-0.0379;-0.03502;-0.03221;-0.02949;-0.02685;-0.02431;-0.02187;-0.01954;-0.01733;-0.01523;-0.01325;-0.01138;-0.00965;-0.00805;-0.00658;-0.00526;-0.0041;-0.0031;-0.00227;-0.00161;-0.00114;-0.00084;-0.00073;-0.00081;-0.00107;-0.00152;-0.00216;-0.00302;-0.00415;-0.00559;-0.00734;-0.00939;-0.01163</z>
+               </pointList>
+            </wingAirfoil>
+            <wingAirfoil uID="FFA-W3-360">
+               <name>FFA-W3-360</name>
+               <pointList>
+                  <x mapType="vector">1;0.999443;0.99812;0.995694;0.992305;0.988028;0.982815;0.976664;0.969641;0.961743;0.952973;0.943389;0.933013;0.921851;0.909955;0.897361;0.884085;0.870163;0.855653;0.840577;0.824975;0.808895;0.792362;0.775421;0.758125;0.740502;0.722592;0.704445;0.686088;0.66757;0.648927;0.630186;0.611401;0.592597;0.573808;0.555076;0.536418;0.51788;0.499481;0.481252;0.463222;0.445407;0.427843;0.410539;0.393525;0.376811;0.36042;0.344365;0.328658;0.313319;0.298348;0.283766;0.269567;0.255774;0.242378;0.229396;0.216817;0.204658;0.192908;0.181575;0.170658;0.160149;0.150055;0.140355;0.131068;0.122161;0.113659;0.105536;0.0977907;0.090429;0.0834162;0.076774;0.0704692;0.0645002;0.0588818;0.053568;0.0485758;0.0438979;0.039495;0.0353948;0.0315763;0.0280064;0.0247159;0.0216807;0.0188632;0.0162951;0.0139662;0.0118176;0.00988361;0.00818368;0.00663128;0.00524853;0.00408271;0.00308998;0.00219098;0.00145967;0.00096333;0.00059878;0.00028988;7.804e-05;0;7.807e-05;0.00029009;0.00059937;0.00096448;0.00146264;0.00219661;0.00309879;0.00409516;0.00526774;0.00665839;0.00821941;0.00993095;0.0118798;0.0140446;0.0163922;0.0189847;0.0218287;0.0248925;0.02822;0.0318292;0.03569;0.0398424;0.0443004;0.0490379;0.0541003;0.0594875;0.0651879;0.0712479;0.0776465;0.084397;0.0915234;0.0990071;0.106887;0.115148;0.123806;0.132872;0.142332;0.152215;0.162499;0.173214;0.184341;0.195903;0.207883;0.220294;0.233123;0.246375;0.260041;0.274124;0.288611;0.3035;0.318774;0.334434;0.350457;0.366843;0.383561;0.40061;0.417956;0.435593;0.453493;0.471632;0.489992;0.508536;0.527249;0.546089;0.565031;0.584045;0.603088;0.622138;0.641148;0.66008;0.678906;0.697572;0.716045;0.734291;0.752252;0.769898;0.787192;0.804074;0.820513;0.836469;0.85189;0.866748;0.88101;0.89461;0.907525;0.91973;0.931175;0.941828;0.951675;0.960675;0.968787;0.976012;0.982331;0.987686;0.992086;0.995574;0.998063;0.99943;1</x>
+                  <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
+                  <z mapType="vector">0.01298;0.0132585;0.0135371;0.0142549;0.0152543;0.016511;0.0180367;0.0198283;0.0218639;0.024141;0.0266572;0.0293943;0.0323205;0.0354614;0.0388279;0.0424191;0.0462191;0.0502115;0.0543748;0.0587118;0.0632037;0.0678318;0.0725837;0.0774446;0.0823902;0.0874051;0.0924871;0.0975908;0.102722;0.107848;0.112952;0.118031;0.123052;0.127988;0.132831;0.137554;0.142132;0.146556;0.150796;0.154834;0.158648;0.162214;0.165526;0.168561;0.171317;0.173764;0.175908;0.177737;0.179261;0.180457;0.181327;0.181878;0.182111;0.182039;0.181642;0.18094;0.179929;0.178623;0.177015;0.175114;0.172933;0.170489;0.167794;0.164855;0.161695;0.158332;0.154789;0.151079;0.147208;0.143189;0.139008;0.134724;0.130324;0.125817;0.121221;0.116532;0.111791;0.107002;0.102147;0.0972927;0.092423;0.0875121;0.082622;0.0777462;0.0728229;0.0679297;0.0631447;0.0583935;0.0537118;0.049301;0.044623;0.0395525;0.0342339;0.028127;0.0215989;0.0165599;0.0125249;0.0086197;0.00433033;0.00116483;0;-0.00122141;-0.00493025;-0.0100658;-0.0140419;-0.0181846;-0.0232599;-0.0289512;-0.0340269;-0.0386738;-0.0432304;-0.0476871;-0.0519481;-0.0564;-0.0609559;-0.0655006;-0.0701534;-0.0748356;-0.0794402;-0.0840325;-0.0886188;-0.0931531;-0.0976768;-0.102197;-0.10668;-0.111138;-0.11555;-0.11989;-0.124168;-0.128353;-0.132446;-0.136444;-0.140326;-0.144107;-0.147762;-0.1513;-0.154698;-0.157929;-0.160994;-0.163865;-0.166526;-0.168985;-0.171212;-0.173185;-0.174889;-0.176295;-0.177382;-0.178129;-0.178504;-0.178519;-0.178112;-0.177294;-0.176044;-0.174339;-0.172161;-0.169497;-0.166327;-0.162637;-0.158402;-0.153618;-0.14833;-0.142568;-0.136362;-0.129739;-0.122734;-0.115374;-0.107723;-0.0998435;-0.0917859;-0.0836476;-0.0755182;-0.0674952;-0.0596799;-0.0521917;-0.0450983;-0.0384986;-0.0324603;-0.0270035;-0.0221334;-0.017863;-0.0141983;-0.0111631;-0.00876892;-0.00697163;-0.00574853;-0.0050322;-0.00479161;-0.004;-0.0037;-0.0034;-0.0031;-0.0028;-0.0025;-0.0022;-0.0019;-0.0016;-0.0013;-0.001;-0.0007;-0.0007</z>
+               </pointList>
+            </wingAirfoil>
+            <wingAirfoil uID="SNL-FFA-W3-500">
+               <name>SNL-FFA-W3-500</name>
+               <pointList>
+                  <x mapType="vector">1;0.999443;0.99812;0.995694;0.992305;0.988028;0.982815;0.976664;0.969641;0.961743;0.952973;0.943389;0.933013;0.921851;0.909955;0.897361;0.884085;0.870163;0.855653;0.840577;0.824975;0.808895;0.792362;0.775421;0.758125;0.740502;0.722592;0.704445;0.686088;0.66757;0.648927;0.630186;0.611401;0.592597;0.573808;0.555076;0.536418;0.51788;0.499481;0.481252;0.463222;0.445407;0.427843;0.410539;0.393525;0.376811;0.36042;0.344365;0.328658;0.313319;0.298348;0.283766;0.269567;0.255774;0.242378;0.229396;0.216817;0.204658;0.192908;0.181575;0.170658;0.160149;0.150055;0.140355;0.131068;0.122161;0.113659;0.105536;0.0977907;0.090429;0.0834162;0.076774;0.0704692;0.0645002;0.0588818;0.053568;0.0485758;0.0438979;0.039495;0.0353948;0.0315763;0.0280064;0.0247159;0.0216807;0.0188632;0.0162951;0.0139662;0.0118176;0.00988361;0.00818368;0.00663128;0.00524853;0.00408271;0.00308998;0.00219098;0.00145967;0.00096333;0.00059878;0.00028988;7.804e-05;0;7.807e-05;0.00029009;0.00059937;0.00096448;0.00146264;0.00219661;0.00309879;0.00409516;0.00526774;0.00665839;0.00821941;0.00993095;0.0118798;0.0140446;0.0163922;0.0189847;0.0218287;0.0248925;0.02822;0.0318292;0.03569;0.0398424;0.0443004;0.0490379;0.0541003;0.0594875;0.0651879;0.0712479;0.0776465;0.084397;0.0915234;0.0990071;0.106887;0.115148;0.123806;0.132872;0.142332;0.152215;0.162499;0.173214;0.184341;0.195903;0.207883;0.220294;0.233123;0.246375;0.260041;0.274124;0.288611;0.3035;0.318774;0.334434;0.350457;0.366843;0.383561;0.40061;0.417956;0.435593;0.453493;0.471632;0.489992;0.508536;0.527249;0.546089;0.565031;0.584045;0.603088;0.622138;0.641148;0.66008;0.678906;0.697572;0.716045;0.734291;0.752252;0.769898;0.787192;0.804074;0.820513;0.836469;0.85189;0.866748;0.88101;0.89461;0.907525;0.91973;0.931175;0.941828;0.951675;0.960675;0.968787;0.976012;0.982331;0.987686;0.992086;0.995574;0.998063;0.99943;1</x>
+                  <y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y>
+                  <z mapType="vector">0.0105;0.0108698;0.0117452;0.0133415;0.0155489;0.0183004;0.0216057;0.0254403;0.0297394;0.0344821;0.0396488;0.045193;0.050916;0.0570828;0.0635814;0.0704274;0.0773466;0.0846708;0.0921802;0.0999012;0.107566;0.11534;0.123144;0.131059;0.138808;0.146561;0.154144;0.161622;0.169076;0.176219;0.183092;0.18987;0.19625;0.20235;0.208316;0.213761;0.219027;0.223925;0.228358;0.232431;0.236029;0.23923;0.242067;0.244395;0.246329;0.247812;0.249076;0.249618;0.25;0.249915;0.249404;0.24844;0.247234;0.245559;0.243584;0.241248;0.238604;0.23566;0.232432;0.22884;0.224967;0.220832;0.216496;0.211979;0.207228;0.202323;0.197174;0.192037;0.186559;0.181093;0.175459;0.169682;0.163786;0.157765;0.151699;0.145565;0.139486;0.133338;0.12705;0.120866;0.11469;0.108492;0.102225;0.0958929;0.0898072;0.0837478;0.0777384;0.0718792;0.0660103;0.0601891;0.0539095;0.047327;0.0401488;0.0337262;0.0259103;0.0200319;0.0148116;0.0109643;0.00515421;0.00237777;0;-0.00676349;-0.0092701;-0.0148527;-0.019098;-0.0242516;-0.03028;-0.0374918;-0.0433971;-0.049743;-0.0559364;-0.061913;-0.0675827;-0.0734017;-0.0791325;-0.0849817;-0.0909918;-0.0969206;-0.10303;-0.109154;-0.115311;-0.121138;-0.127147;-0.133199;-0.13898;-0.14485;-0.150675;-0.156488;-0.162318;-0.167951;-0.173555;-0.179048;-0.184361;-0.189648;-0.19467;-0.199677;-0.204486;-0.209113;-0.213565;-0.217905;-0.221899;-0.22585;-0.229428;-0.232825;-0.235942;-0.238678;-0.241276;-0.243429;-0.245365;-0.246688;-0.247752;-0.248407;-0.2487;-0.248315;-0.247642;-0.246395;-0.244546;-0.242218;-0.239365;-0.235936;-0.231738;-0.227148;-0.221774;-0.215936;-0.209513;-0.202426;-0.194844;-0.186809;-0.178307;-0.16937;-0.160061;-0.150313;-0.140494;-0.13045;-0.120286;-0.110205;-0.100388;-0.0907307;-0.0814058;-0.0727164;-0.064445;-0.0566646;-0.0495395;-0.0429906;-0.0371305;-0.0319789;-0.0274752;-0.0237017;-0.0203752;-0.0179936;-0.0159302;-0.0142142;-0.0128381;-0.0117773;-0.0109987;-0.0104513;-0.0100816;-0.00985456;-0.00974345;-0.0097</z>
+               </pointList>
+            </wingAirfoil>
+         </wingAirfoils>
+      </profiles>
+      <materials>
+         <material uID="Gelcoat">
+            <name>Gelcoat</name>
+            <rho>1235</rho>
+            <orthotropicSolidProperties>
+               <E1>3440</E1>
+               <E2>3440</E2>
+               <E3>3440</E3>
+               <G12>1323</G12>
+               <G23>1323</G23>
+               <G31>1323</G31>
+               <nu12>0.3</nu12>
+               <nu23>0.3</nu23>
+               <nu31>0.3</nu31>
+               <sig1t>7.4e-05</sig1t>
+               <sig2t>7.4e-05</sig2t>
+               <sig3t>7.4e-05</sig3t>
+               <sig1c>8.7e-05</sig1c>
+               <sig2c>8.7e-05</sig2c>
+               <sig3c>8.7e-05</sig3c>
+            </orthotropicSolidProperties>
+         </material>
+         <material uID="Steel">
+            <name>Steel</name>
+            <rho>7850</rho>
+            <orthotropicSolidProperties>
+               <E1>200000</E1>
+               <E2>200000</E2>
+               <E3>200000</E3>
+               <G12>79300</G12>
+               <G23>79300</G23>
+               <G31>79300</G31>
+               <nu12>0.265</nu12>
+               <nu23>0.265</nu23>
+               <nu31>0.265</nu31>
+               <sig1t>1120</sig1t>
+               <sig2t>1120</sig2t>
+               <sig3t>1120</sig3t>
+               <sig1c>2160</sig1c>
+               <sig2c>2160</sig2c>
+               <sig3c>2160</sig3c>
+            </orthotropicSolidProperties>
+         </material>
+         <material uID="glass_uni">
+            <name>glass_uni</name>
+            <rho>1940</rho>
+            <orthotropicSolidProperties>
+               <E1>44600</E1>
+               <E2>17000</E2>
+               <E3>16700</E3>
+               <G12>3270</G12>
+               <G23>3500</G23>
+               <G31>3480</G31>
+               <nu12>0.262</nu12>
+               <nu23>0.264</nu23>
+               <nu31>0.098852</nu31>
+               <sig1t>1060</sig1t>
+               <sig2t>66.3</sig2t>
+               <sig3t>26.6</sig3t>
+               <sig1c>826</sig1c>
+               <sig2c>196</sig2c>
+               <sig3c>197</sig3c>
+            </orthotropicSolidProperties>
+         </material>
+         <material uID="CarbonUD">
+            <name>CarbonUD</name>
+            <rho>1220</rho>
+            <orthotropicSolidProperties>
+               <E1>114500</E1>
+               <E2>8390</E2>
+               <E3>8390</E3>
+               <G12>5990</G12>
+               <G23>5990</G23>
+               <G31>5990</G31>
+               <nu12>0.27</nu12>
+               <nu23>0.27</nu23>
+               <nu31>0.0197843</nu31>
+               <sig1t>0</sig1t>
+               <sig2t>0</sig2t>
+               <sig3t>0</sig3t>
+               <sig1c>0</sig1c>
+               <sig2c>0</sig2c>
+               <sig3c>0</sig3c>
+            </orthotropicSolidProperties>
+         </material>
+         <material uID="glass_biax">
+            <name>glass_biax</name>
+            <rho>1940</rho>
+            <orthotropicSolidProperties>
+               <E1>11100</E1>
+               <E2>11100</E2>
+               <E3>16700</E3>
+               <G12>13530</G12>
+               <G23>3490</G23>
+               <G31>3490</G31>
+               <nu12>0.5</nu12>
+               <nu23>0.066</nu23>
+               <nu31>0.0992973</nu31>
+               <sig1t>54.47</sig1t>
+               <sig2t>54.47</sig2t>
+               <sig3t>26.6</sig3t>
+               <sig1c>74.1</sig1c>
+               <sig2c>74.1</sig2c>
+               <sig3c>197</sig3c>
+            </orthotropicSolidProperties>
+         </material>
+         <material uID="glass_triax">
+            <name>glass_triax</name>
+            <rho>1940</rho>
+            <orthotropicSolidProperties>
+               <E1>28700</E1>
+               <E2>16600</E2>
+               <E3>16700</E3>
+               <G12>8400</G12>
+               <G23>3490</G23>
+               <G31>3490</G31>
+               <nu12>0.5</nu12>
+               <nu23>0.17</nu23>
+               <nu31>0.0989199</nu31>
+               <sig1t>54.5</sig1t>
+               <sig2t>54.5</sig2t>
+               <sig3t>26.6</sig3t>
+               <sig1c>74.1</sig1c>
+               <sig2c>74.1</sig2c>
+               <sig3c>197</sig3c>
+            </orthotropicSolidProperties>
+         </material>
+         <material uID="balsa">
+            <name>balsa</name>
+            <rho>110</rho>
+            <orthotropicSolidProperties>
+               <E1>50</E1>
+               <E2>50</E2>
+               <E3>2730</E3>
+               <G12>16.67</G12>
+               <G23>150</G23>
+               <G31>150</G31>
+               <nu12>0.5</nu12>
+               <nu23>0.013</nu23>
+               <nu31>0.7098</nu31>
+               <sig1t>0</sig1t>
+               <sig2t>0</sig2t>
+               <sig3t>0</sig3t>
+               <sig1c>0</sig1c>
+               <sig2c>0</sig2c>
+               <sig3c>0</sig3c>
+            </orthotropicSolidProperties>
+         </material>
+         <material uID="medium_density_foam">
+            <name>medium_density_foam</name>
+            <rho>130</rho>
+            <orthotropicSolidProperties>
+               <E1>129.2</E1>
+               <E2>129.2</E2>
+               <E3>129.2</E3>
+               <G12>48.947</G12>
+               <G23>48.947</G23>
+               <G31>48.947</G31>
+               <nu12>0.32</nu12>
+               <nu23>0.32</nu23>
+               <nu31>0.32</nu31>
+               <sig1t>4</sig1t>
+               <sig2t>4</sig2t>
+               <sig3t>4</sig3t>
+               <sig1c>3</sig1c>
+               <sig2c>3</sig2c>
+               <sig3c>3</sig3c>
+            </orthotropicSolidProperties>
+         </material>
+         <composites>
+            <composite uID="blade_component_segment_upper_shell_cell_1_1_material">
+               <name>blade_component_segment_upper_shell_cell_1_1_material</name>
+               <compositeLayer>
+                  <materialUID>Gelcoat</materialUID>
+                  <name>UV_protection</name>
+                  <phi>0</phi>
+                  <thickness>0.0005</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin_inner</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+            </composite>
+            <composite uID="blade_component_segment_upper_shell_cell_1_2_material">
+               <name>blade_component_segment_upper_shell_cell_1_2_material</name>
+               <compositeLayer>
+                  <materialUID>Gelcoat</materialUID>
+                  <name>UV_protection</name>
+                  <phi>0</phi>
+                  <thickness>0.0005</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>CarbonUD</materialUID>
+                  <name>Spar_cap_ss</name>
+                  <phi>0</phi>
+                  <thickness>0.00155681</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin_inner</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+            </composite>
+            <composite uID="blade_component_segment_upper_shell_cell_1_3_material">
+               <name>blade_component_segment_upper_shell_cell_1_3_material</name>
+               <compositeLayer>
+                  <materialUID>Gelcoat</materialUID>
+                  <name>UV_protection</name>
+                  <phi>0</phi>
+                  <thickness>0.0005</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin_inner</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+            </composite>
+            <composite uID="blade_component_segment_lower_shell_cell_1_1_material">
+               <name>blade_component_segment_lower_shell_cell_1_1_material</name>
+               <compositeLayer>
+                  <materialUID>Gelcoat</materialUID>
+                  <name>UV_protection</name>
+                  <phi>0</phi>
+                  <thickness>0.0005</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin_inner</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+            </composite>
+            <composite uID="blade_component_segment_lower_shell_cell_1_2_material">
+               <name>blade_component_segment_lower_shell_cell_1_2_material</name>
+               <compositeLayer>
+                  <materialUID>Gelcoat</materialUID>
+                  <name>UV_protection</name>
+                  <phi>0</phi>
+                  <thickness>0.0005</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>CarbonUD</materialUID>
+                  <name>Spar_cap_ps</name>
+                  <phi>0</phi>
+                  <thickness>0.00155681</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin_inner</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+            </composite>
+            <composite uID="blade_component_segment_lower_shell_cell_1_3_material">
+               <name>blade_component_segment_lower_shell_cell_1_3_material</name>
+               <compositeLayer>
+                  <materialUID>Gelcoat</materialUID>
+                  <name>UV_protection</name>
+                  <phi>0</phi>
+                  <thickness>0.0005</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+               <compositeLayer>
+                  <materialUID>glass_triax</materialUID>
+                  <name>Shell_skin_inner</name>
+                  <phi>0</phi>
+                  <thickness>0.0454928</thickness>
+               </compositeLayer>
+            </composite>
+         </composites>
+      </materials>
+   </vehicles>
 </cpacs>
