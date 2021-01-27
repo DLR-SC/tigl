@@ -404,6 +404,58 @@ TopoDS_Shape CCPACSWingCell::GetSkinGeometry(TiglCoordinateSystem cs) const
     }
 }
 
+void CCPACSWingCell::TrimSpanwise(GeometryCache& cache,
+                                  SpanWiseBorder border,
+                                  CCPACSWingCellPositionSpanwise const& positioning,
+                                  double tol) const
+{
+    if (!positioning.GetSpanwiseContourCoordinate_choice1()){
+        throw CTiglError("Internal Error when trying to create the cell geometry");
+    }
+
+    double trim_coordinate = positioning.GetSpanwiseContourCoordinate_choice1().get();
+
+    for(auto row = cache.rgsurface.Root(); row; row = row->UNext()) {
+        for (auto current = row; current; current = current->VNext()) {
+            if (current->GetAnnotation().keep) {
+                if (trim_coordinate < current->GetAnnotation().scmin) {
+                    if (border == SpanWiseBorder::Outer) {
+                        // remove this face from the rgsurface
+                        current->GetAnnotation().keep = false;
+                    }
+                }
+                else if (trim_coordinate > current->GetAnnotation().scmax) {
+                    if (border == SpanWiseBorder::Inner) {
+                        // remove this face from the rgsurface
+                        current->GetAnnotation().keep = false;
+                    }
+                }
+                else {
+                    //trim the face
+
+                    double alpha = (trim_coordinate - current->GetAnnotation().scmin) / (current->GetAnnotation().scmax - current->GetAnnotation().scmin);
+                    double v = (1-alpha)*current->VMin() + alpha * current->VMax();
+
+                    double vmin = current->VMin();
+                    double vmax = current->VMax();
+                    if (border == SpanWiseBorder::Inner) {
+                        vmin = fabs(v - vmin) > tol? v : vmin;
+                    }
+                    else {
+                        vmax = fabs(vmax - v) > tol? v : vmax;
+                    }
+
+                    current->ReplaceFace(TrimFace(current->GetFace(),
+                                                  current->UMin(),
+                                                  current->UMax(),
+                                                  vmin,
+                                                  vmax));
+                }
+            }
+        }
+    }
+}
+
 TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
                                          TopoDS_Shape const& loftShape,
                                          SpanWiseBorder border,
@@ -412,13 +464,11 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
                                          double tol) const
 {
 
-    if (positioning.GetInputType() == CCPACSWingCellPositionSpanwise::InputType::Contour){
-
-
-        //return something
+    // Border not defined by contour cooordinate.
+    if (positioning.GetSpanwiseContourCoordinate_choice1()){
+        throw CTiglError("Internal Error when trying to create the cell geometry");
     }
 
-    // Border not defined by contour cooordinate.
     // check if border definition allows trimming along contour coordinate anyway,
     // otherwise use Boolean operations
 
@@ -547,6 +597,69 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
     return compound;
 }
 
+void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
+                                  ChordWiseBorder border,
+                                  CCPACSWingCellPositionChordwise const& positioning,
+                                  double tol) const
+{
+    if (!positioning.GetChordwiseContourCoordinate_choice2()){
+        throw CTiglError("Internal Error when trying to create the cell geometry");
+    }
+
+    double trim_coordinate = positioning.GetChordwiseContourCoordinate_choice2().get();
+    bool upper = (m_parent->GetParent()->GetLoftSide() == UPPER_SIDE);
+
+    for(auto row = cache.rgsurface.Root(); row; row = row->UNext()) {
+        for (auto current = row; current; current = current->VNext()) {
+            if (current->GetAnnotation().keep) {
+                if (trim_coordinate < current->GetAnnotation().ccmin) {
+                    if (border == ChordWiseBorder::LE && upper) {
+                        // remove this face from the rgsurface
+                        current->GetAnnotation().keep = false;
+                    }
+                    if (border == ChordWiseBorder::TE && !upper) {
+                        // remove this face from the rgsurface
+                        current->GetAnnotation().keep = false;
+                    }
+                }
+                else if (trim_coordinate > current->GetAnnotation().ccmax) {
+                    if (border == ChordWiseBorder::TE && upper) {
+                        // remove this face from the rgsurface
+                        current->GetAnnotation().keep = false;
+                    }
+                    if (border == ChordWiseBorder::LE && !upper) {
+                        // remove this face from the rgsurface
+                        current->GetAnnotation().keep = false;
+                    }
+                }
+                else {
+                    //trim the face
+
+                    double alpha = (trim_coordinate - current->GetAnnotation().ccmin) / (current->GetAnnotation().ccmax - current->GetAnnotation().ccmin);
+                    double u = (1-alpha)*current->UMin() + alpha * current->UMax();
+
+                    double umin = current->UMin();
+                    double umax = current->UMax();
+                    if (  (border == ChordWiseBorder::LE &&  upper)
+                        ||(border == ChordWiseBorder::TE && !upper)) {
+                        umin = fabs(u - umin) > tol? u : umin;
+                    }
+                    if (  (border == ChordWiseBorder::TE &&  upper)
+                        ||(border == ChordWiseBorder::LE && !upper)) {
+                        umax = fabs(umax - u) > tol? u : umax;
+                    }
+
+                    current->ReplaceFace(TrimFace(current->GetFace(),
+                                                  umin,
+                                                  umax,
+                                                  current->VMin(),
+                                                  current->VMax()));
+                }
+            }
+        }
+    }
+}
+
 TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
                                           TopoDS_Shape const& loftShape,
                                           ChordWiseBorder border,
@@ -554,6 +667,10 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
                                           gp_Dir const& zRefDir,
                                           double tol) const
 {
+    if (positioning.GetChordwiseContourCoordinate_choice2()){
+        throw CTiglError("Internal Error when trying to create the cell geometry");
+    }
+
     gp_Pnt ib_point, ib_point_proj, ob_point, ob_point_proj;
     if (border == ChordWiseBorder::LE ) {
         ib_point = cache.IBLE;
@@ -694,7 +811,7 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
         cache.rgsurface.SetShape(loftShape);
 
         /*
-         *  Step 1/2:
+         *  Step 1/3:
          *
          *  create sums of all parameter ranges for every row (in spanwise v-dir)
          *  and every column (in chordwise u-dir) of the grid of faces composing
@@ -722,7 +839,7 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
         }
 
         /*
-         *  Step 2/2:
+         *  Step 2/3:
          *
          *  Compute the relative contribution of each face to the total parameter
          *  range in u- and v-direction respectively. These relative contributions
@@ -753,6 +870,31 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
             j++;
         }
 
+        /*
+         *  Step 3/3:
+         *
+         *  Trim all the faces and store the result
+         */
+        TrimSpanwise(cache, SpanWiseBorder::Inner, m_positioningInnerBorder, 1e-2);
+        TrimSpanwise(cache, SpanWiseBorder::Outer, m_positioningOuterBorder, 1e-2);
+        TrimChordwise(cache, ChordWiseBorder::LE, m_positioningLeadingEdge, 1e-2);
+        TrimChordwise(cache, ChordWiseBorder::TE, m_positioningTrailingEdge, 1e-2);
+
+        TopoDS_Builder builder;
+        TopoDS_Compound resultShape;
+        builder.MakeCompound(resultShape);
+
+        for (auto row = cache.rgsurface.Root(); row; row = row->VNext()) {
+            for (auto current = row; current; current = current->UNext()) {
+                if (current->GetAnnotation().keep == true ) {
+                    builder.Add(resultShape, current->GetFace());
+                }
+            }
+        }
+
+        // store the result
+        cache.skinGeometry = resultShape;
+
     }
     else {
         // calculate corner points on chord face and project points on loftShape
@@ -773,16 +915,18 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
                                   m_etaXsiCache->outerTrailingEdgePoint.xsi,
                                   WING_COORDINATE_SYSTEM);
         cache.projectedOBTE = ProjectPointOnShape(loftShape, cache.OBTE, zRefDir);
+
+
+        // cut the shape at the cell borders
+        TopoDS_Shape resultShape = CutSpanwise(cache, loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-2);
+        resultShape              = CutSpanwise(cache, resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-2);
+        resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-2);
+        resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, 1e-2);
+
+        // store the result
+        cache.skinGeometry = resultShape;
     }
 
-    // cut the shape at the cell borders
-    TopoDS_Shape resultShape = CutSpanwise(cache, loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-2);
-    resultShape              = CutSpanwise(cache, resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-2);
-    resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-2);
-    resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, 1e-2);
-
-    // store the result
-    cache.skinGeometry = resultShape;
 }
 
 TopoDS_Shape CCPACSWingCell::GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const

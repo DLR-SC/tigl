@@ -109,6 +109,26 @@ private:
 
 
         /**
+         * @brief GetFace returns the wrapped TopoDS_Face
+         * @return the wrapped TopoDS_Face
+         */
+        TopoDS_Face       GetFace()       { return face; }
+        TopoDS_Face const GetFace() const { return face; }
+
+        /**
+         * @brief SetFace replaces the wrapped TopoDS_Face with another face
+         *
+         * Note, that this possibly breaks the rectangular grid and the
+         * u,v bounds are not updated. This is intentional and not checked internally.
+         *
+         * @param f the new TopoDS_Face
+         *
+         */
+        void ReplaceFace(TopoDS_Face const& f) {
+            face = f;
+        }
+
+        /**
          * @brief UMin returns the starting u parameter of this face
          * @return the starting u parameter of this face
          */
