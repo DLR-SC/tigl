@@ -698,12 +698,10 @@
                                        </material>
                                     </skin>
                                     <positioningLeadingEdge>
-                                       <xsi1>0.266746</xsi1>
-                                       <xsi2>0.266746</xsi2>
+                                       <spanwiseContourCoordinate>-0.266746</spanwiseContourCoordinate>
                                     </positioningLeadingEdge>
                                     <positioningTrailingEdge>
-                                       <xsi1>0.428793</xsi1>
-                                       <xsi2>0.428793</xsi2>
+                                       <spanwiseContourCoordinate>-0.428793</spanwiseContourCoordinate>
                                     </positioningTrailingEdge>
                                     <positioningInnerBorder>
                                        <eta1>
@@ -733,32 +731,16 @@
                                        </material>
                                     </skin>
                                     <positioningLeadingEdge>
-                                       <xsi1>0.428793</xsi1>
-                                       <xsi2>0.428793</xsi2>
+                                       <chordwiseContourCoordinate>-0.428793</chordwiseContourCoordinate>
                                     </positioningLeadingEdge>
                                     <positioningTrailingEdge>
-                                       <xsi1>1</xsi1>
-                                       <xsi2>1</xsi2>
+                                       <chordwiseContourCoordinate>-1</chordwiseContourCoordinate>
                                     </positioningTrailingEdge>
                                     <positioningInnerBorder>
-                                       <eta1>
-                                          <eta>0</eta>
-                                          <referenceUID>blade_component_segment</referenceUID>
-                                       </eta1>
-                                       <eta2>
-                                          <eta>0</eta>
-                                          <referenceUID>blade_component_segment</referenceUID>
-                                       </eta2>
+                                       <spanwiseContourCoordinate>0</spanwiseContourCoordinate>
                                     </positioningInnerBorder>
                                     <positioningOuterBorder>
-                                       <eta1>
-                                          <eta>0.0333333</eta>
-                                          <referenceUID>blade_component_segment</referenceUID>
-                                       </eta1>
-                                       <eta2>
-                                          <eta>0.0333333</eta>
-                                          <referenceUID>blade_component_segment</referenceUID>
-                                       </eta2>
+                                       <spanwiseContourCoordinate>0.0333333</spanwiseContourCoordinate>
                                     </positioningOuterBorder>
                                  </cell>
                               </cells>

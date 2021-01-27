@@ -340,14 +340,21 @@ TEST_F(WingCellContourCoordinates, mixedBorderDefError)
 {
     // This cell is defined with both borders relative to the skin and the chordface.
     // This is (currently) not supported by TiGL
-    auto& cell = getCell(2);
-    EXPECT_THROW(cell.GetLoft(), tigl::CTiglError);
+    auto& cell1 = getCell(2, true);
+    EXPECT_THROW(cell1.GetLoft(), tigl::CTiglError);
+
+    auto& cell2 = getCell(2, false);
+    EXPECT_THROW(cell2.GetLoft(), tigl::CTiglError);
 }
 
 
 TEST_F(WingCellContourCoordinates, computeGeometry)
 {
-    auto& cell = getCell(3);
-    TopoDS_Shape cellGeom = cell.GetSkinGeometry();
-    BRepTools::Write(cellGeom, "TestData/export/WingCellContourCoordinates_CellGeometry.brep");
+    auto& cell1= getCell(3, true);
+    TopoDS_Shape cellGeom1 = cell1.GetSkinGeometry();
+    BRepTools::Write(cellGeom1, "TestData/export/WingCellContourCoordinates_CellGeometry_upper.brep");
+
+    auto& cell2 = getCell(3, false);
+    TopoDS_Shape cellGeom2 = cell2.GetSkinGeometry();
+    BRepTools::Write(cellGeom2, "TestData/export/WingCellContourCoordinates_CellGeometry_lower.brep");
 }
