@@ -418,13 +418,13 @@ void CCPACSWingCell::TrimSpanwise(GeometryCache& cache,
     for(auto row = cache.rgsurface.Root(); row; row = row->UNext()) {
         for (auto current = row; current; current = current->VNext()) {
             if (current->GetAnnotation().keep) {
-                if (trim_coordinate < current->GetAnnotation().scmin) {
+                if (trim_coordinate <= current->GetAnnotation().scmin) {
                     if (border == SpanWiseBorder::Outer) {
                         // remove this face from the rgsurface
                         current->GetAnnotation().keep = false;
                     }
                 }
-                else if (trim_coordinate > current->GetAnnotation().scmax) {
+                else if (trim_coordinate >= current->GetAnnotation().scmax) {
                     if (border == SpanWiseBorder::Inner) {
                         // remove this face from the rgsurface
                         current->GetAnnotation().keep = false;
@@ -438,18 +438,27 @@ void CCPACSWingCell::TrimSpanwise(GeometryCache& cache,
 
                     double vmin = current->VMin();
                     double vmax = current->VMax();
+                    bool trim = false;
                     if (border == SpanWiseBorder::Inner) {
-                        vmin = fabs(v - vmin) > tol? v : vmin;
+                        if ( fabs(v - vmin) > tol ) {
+                            vmin = v;
+                            trim = true;
+                        }
                     }
                     else {
-                        vmax = fabs(vmax - v) > tol? v : vmax;
+                        if ( fabs(vmax - v) > tol ) {
+                            vmin = v;
+                            trim = true;
+                        }
                     }
 
-                    current->ReplaceFace(TrimFace(current->GetFace(),
-                                                  current->UMin(),
-                                                  current->UMax(),
-                                                  vmin,
-                                                  vmax));
+                    if (trim) {
+                        current->ReplaceFace(TrimFace(current->GetFace(),
+                                                      current->UMin(),
+                                                      current->UMax(),
+                                                      vmin,
+                                                      vmax));
+                    }
                 }
             }
         }
@@ -612,22 +621,22 @@ void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
     for(auto row = cache.rgsurface.Root(); row; row = row->UNext()) {
         for (auto current = row; current; current = current->VNext()) {
             if (current->GetAnnotation().keep) {
-                if (trim_coordinate < current->GetAnnotation().ccmin) {
-                    if (border == ChordWiseBorder::LE && upper) {
-                        // remove this face from the rgsurface
-                        current->GetAnnotation().keep = false;
-                    }
-                    if (border == ChordWiseBorder::TE && !upper) {
-                        // remove this face from the rgsurface
-                        current->GetAnnotation().keep = false;
-                    }
-                }
-                else if (trim_coordinate > current->GetAnnotation().ccmax) {
+                if (trim_coordinate <= current->GetAnnotation().ccmin) {
                     if (border == ChordWiseBorder::TE && upper) {
                         // remove this face from the rgsurface
                         current->GetAnnotation().keep = false;
                     }
                     if (border == ChordWiseBorder::LE && !upper) {
+                        // remove this face from the rgsurface
+                        current->GetAnnotation().keep = false;
+                    }
+                }
+                else if (trim_coordinate >= current->GetAnnotation().ccmax) {
+                    if (border == ChordWiseBorder::LE && upper) {
+                        // remove this face from the rgsurface
+                        current->GetAnnotation().keep = false;
+                    }
+                    if (border == ChordWiseBorder::TE && !upper) {
                         // remove this face from the rgsurface
                         current->GetAnnotation().keep = false;
                     }
@@ -640,20 +649,29 @@ void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
 
                     double umin = current->UMin();
                     double umax = current->UMax();
+                    bool trim = false;
                     if (  (border == ChordWiseBorder::LE &&  upper)
                         ||(border == ChordWiseBorder::TE && !upper)) {
-                        umin = fabs(u - umin) > tol? u : umin;
+                        if ( fabs(u - umin) > tol ) {
+                            umin = u;
+                            trim = true;
+                        }
                     }
                     if (  (border == ChordWiseBorder::TE &&  upper)
                         ||(border == ChordWiseBorder::LE && !upper)) {
-                        umax = fabs(umax - u) > tol? u : umax;
+                        if ( fabs(umax - u) > tol ) {
+                            umax = u;
+                            trim = true;
+                        }
                     }
 
-                    current->ReplaceFace(TrimFace(current->GetFace(),
-                                                  umin,
-                                                  umax,
-                                                  current->VMin(),
-                                                  current->VMax()));
+                    if (trim) {
+                        current->ReplaceFace(TrimFace(current->GetFace(),
+                                                      umin,
+                                                      umax,
+                                                      current->VMin(),
+                                                      current->VMax()));
+                    }
                 }
             }
         }
@@ -846,13 +864,12 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
          *  correspond to the contour coordinates spanned by each individual face.
          */
 
-        // coordinates go from 0 to 1 on upper side, and from 0 to -1 on lower side
-        int sign = m_parent->GetParent()->GetLoftSide() == UPPER_SIDE ? 1 : -1;
-
         double spanwise_contour_coordinate = 0;
+        // coordinates go from 0 to 1 on upper side, and from -1 to 0 on lower side
+        int chordwise_contour_start = m_parent->GetParent()->GetLoftSide() == UPPER_SIDE ? 0 : -1;
         j = 0;
         for (auto row = cache.rgsurface.Root(); row; row = row->VNext()) {
-            double chordwise_contour_coordinate = 0;
+            double chordwise_contour_coordinate = chordwise_contour_start;
             int i = 0;
             for (auto current = row; current; current = current->UNext()){
                 current->GetAnnotation().scmin = spanwise_contour_coordinate;
@@ -862,7 +879,7 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
 
                 current->GetAnnotation().ccmin = chordwise_contour_coordinate;
                 current->GetAnnotation().ccmax = chordwise_contour_coordinate
-                        + sign*(current->UMax() - current->UMin())/row_ranges[j];
+                        + (current->UMax() - current->UMin())/row_ranges[j];
                 chordwise_contour_coordinate = current->GetAnnotation().ccmax;
 
                 i++;
