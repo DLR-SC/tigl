@@ -118,14 +118,20 @@ private:
         /**
          * @brief SetFace replaces the wrapped TopoDS_Face with another face
          *
-         * Note, that this possibly breaks the rectangular grid and the
-         * u,v bounds are not updated. This is intentional and not checked internally.
+         * Note, that this possibly breaks the rectangular grid.
+         * This is intentional and not checked internally.
          *
          * @param f the new TopoDS_Face
          *
          */
         void ReplaceFace(TopoDS_Face const& f) {
             face = f;
+            BRepTools::UVBounds(face, umin, umax, vmin, vmax);
+            Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
+            surf->D0(umin, vmin, u0v0);
+            surf->D0(umax, vmin, u1v0);
+            surf->D0(umin, vmax, u0v1);
+            surf->D0(umax, vmax, u1v1);
         }
 
         /**

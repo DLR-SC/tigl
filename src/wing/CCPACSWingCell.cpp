@@ -442,12 +442,14 @@ void CCPACSWingCell::TrimSpanwise(GeometryCache& cache,
                     if (border == SpanWiseBorder::Inner) {
                         if ( fabs(v - vmin) > tol ) {
                             vmin = v;
+                            current->GetAnnotation().scmin = trim_coordinate;
                             trim = true;
                         }
                     }
                     else {
                         if ( fabs(vmax - v) > tol ) {
-                            vmin = v;
+                            vmax = v;
+                            current->GetAnnotation().scmax = trim_coordinate;
                             trim = true;
                         }
                     }
@@ -654,6 +656,7 @@ void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
                         ||(border == ChordWiseBorder::TE && !upper)) {
                         if ( fabs(u - umin) > tol ) {
                             umin = u;
+                            current->GetAnnotation().ccmin = trim_coordinate;
                             trim = true;
                         }
                     }
@@ -661,6 +664,7 @@ void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
                         ||(border == ChordWiseBorder::LE && !upper)) {
                         if ( fabs(umax - u) > tol ) {
                             umax = u;
+                            current->GetAnnotation().ccmax = trim_coordinate;
                             trim = true;
                         }
                     }
