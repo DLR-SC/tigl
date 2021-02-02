@@ -828,44 +828,19 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
         cache.rgsurface.SetShape(loftShape);
 
         /*
-         *  Step 1/3:
-         *
-         *  create sums of all parameter ranges for every row (in spanwise v-dir)
-         *  and every column (in chordwise u-dir) of the grid of faces composing
-         *  the upper skin
-         *
-         *  This is needed to calculate the contour coordinate range of each face,
-         *  so that we can translate between local parameter ranges (u,v)
-         *  and contour coordinates.
-         *
-         */
-        std::vector<double> row_ranges(cache.rgsurface.NRows(), 0.);
-        std::vector<double> col_ranges(cache.rgsurface.NCols(), 0.);
-
-        int j = 0;
-        for (auto row = cache.rgsurface.Root(); row; row = row->VNext()) {
-            // iterate cells in spanwise direction: Increment v/row/j
-            int i = 0;
-            for (auto current = row; current; current = current->UNext()){
-                //iterate cells in chordwise direction: Increment u/col/i
-                row_ranges[j] += current->UMax() - current->UMin();
-                col_ranges[i] += current->VMax() - current->VMin();
-                i++;
-            }
-            j++;
-        }
-
-        /*
-         *  Step 2/3:
+         *  Step 1/2:
          *
          *  Compute the relative contribution of each face to the total parameter
          *  range in u- and v-direction respectively. These relative contributions
          *  correspond to the contour coordinates spanned by each individual face.
          */
 
+        std::vector<double> row_ranges, col_ranges;
+        cache.rgsurface.GetParameterRanges(row_ranges, col_ranges);
+
         double spanwise_contour_coordinate = 0;
         double chordwise_contour_coordinate = 0;
-        j = 0;
+        int j = 0;
         for (auto row = cache.rgsurface.Root(); row; row = row->VNext()) {
             int i = 0;
             for (auto current = row; current; current = current->UNext()){
@@ -885,7 +860,7 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
         }
 
         /*
-         *  Step 3/3:
+         *  Step 2/2:
          *
          *  Trim all the faces and store the result
          */
