@@ -74,9 +74,9 @@ namespace generated
 
     void CPACSCellPositioningSpanwise::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element spanwiseContourCoordinate
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/spanwiseContourCoordinate")) {
-            m_spanwiseContourCoordinate_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/spanwiseContourCoordinate");
+        // read element contourCoordinate
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/contourCoordinate")) {
+            m_contourCoordinate_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/contourCoordinate");
         }
 
         // read element eta1
@@ -122,14 +122,14 @@ namespace generated
 
     void CPACSCellPositioningSpanwise::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element spanwiseContourCoordinate
-        if (m_spanwiseContourCoordinate_choice1) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/spanwiseContourCoordinate");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/spanwiseContourCoordinate", *m_spanwiseContourCoordinate_choice1);
+        // write element contourCoordinate
+        if (m_contourCoordinate_choice1) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/contourCoordinate");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/contourCoordinate", *m_contourCoordinate_choice1);
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/spanwiseContourCoordinate")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/spanwiseContourCoordinate");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/contourCoordinate")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/contourCoordinate");
             }
         }
 
@@ -186,7 +186,7 @@ namespace generated
             (
                 (
                     // mandatory elements of this choice must be there
-                    m_spanwiseContourCoordinate_choice1.is_initialized()
+                    m_contourCoordinate_choice1.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
@@ -208,7 +208,7 @@ namespace generated
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_spanwiseContourCoordinate_choice1.is_initialized()
+                        m_contourCoordinate_choice1.is_initialized()
                         ||
                         m_ribNumber_choice3.is_initialized()
                         ||
@@ -224,7 +224,7 @@ namespace generated
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_spanwiseContourCoordinate_choice1.is_initialized()
+                        m_contourCoordinate_choice1.is_initialized()
                         ||
                         m_eta1_choice2.is_initialized()
                         ||
@@ -237,14 +237,14 @@ namespace generated
         ;
     }
 
-    const boost::optional<double>& CPACSCellPositioningSpanwise::GetSpanwiseContourCoordinate_choice1() const
+    const boost::optional<double>& CPACSCellPositioningSpanwise::GetContourCoordinate_choice1() const
     {
-        return m_spanwiseContourCoordinate_choice1;
+        return m_contourCoordinate_choice1;
     }
 
-    void CPACSCellPositioningSpanwise::SetSpanwiseContourCoordinate_choice1(const boost::optional<double>& value)
+    void CPACSCellPositioningSpanwise::SetContourCoordinate_choice1(const boost::optional<double>& value)
     {
-        m_spanwiseContourCoordinate_choice1 = value;
+        m_contourCoordinate_choice1 = value;
     }
 
     const boost::optional<CCPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta1_choice2() const

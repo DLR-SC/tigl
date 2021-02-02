@@ -15641,45 +15641,42 @@ marko.alder@dlr.de
                         <ddue:para>Chordwise positioning of wing cells.</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
-                        <ddue:para>CellPositioningChordwise defines the chordwise
-                            direction of a wing cell either in two xsi (xsi1 at innerBorder
-                            and xsi2 at outerBorder) coordinates or via a sparUID.
-                        </ddue:para>
+                    <ddue:para>CellPositioningChordwise defines the chordwise direction of a wing cell either in two xsi
+                                                   (xsi1 at innerBorder and xsi2 at outerBorder) coordinates, via referencing a spar-uID or via a
+                                                   contour coordinate in chordwise direction.</ddue:para>
                     </ddue:remarks>
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
-                <xsd:sequence>
-                    <xsd:choice>
-                        <xsd:sequence>
-                            <xsd:element name="xsi1" type="doubleBaseType">
-                                <xsd:annotation>
-                                    <xsd:documentation>Relative chordwise position of the inner
-                                        end.</xsd:documentation>
-                                </xsd:annotation>
-                            </xsd:element>
-                            <xsd:element name="xsi2" type="doubleBaseType">
-                                <xsd:annotation>
-                                    <xsd:documentation>Relative chordwise position of the outer
-                                        end.</xsd:documentation>
-                                </xsd:annotation>
-                            </xsd:element>
-                        </xsd:sequence>
-                        <xsd:element name="sparUID" type="stringUIDBaseType">
+                <xsd:choice>
+                    <xsd:sequence>
+                        <xsd:element name="xsi1" type="doubleBaseType">
                             <xsd:annotation>
-                                <xsd:documentation>Reference to a spar as chordwise border.
-                                </xsd:documentation>
+                                <xsd:documentation>Relative chordwise position of the inner
+                                    end.</xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
-                        <xsd:element name="chordwiseContourCoordinate" type="doubleBaseType">
+                        <xsd:element name="xsi2" type="doubleBaseType">
                             <xsd:annotation>
-                                <xsd:documentation>Contour coordinate as chordwise border. 0 equals LE, 1 equals TE.</xsd:documentation>
+                                <xsd:documentation>Relative chordwise position of the outer
+                                    end.</xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
-                    </xsd:choice>
-                </xsd:sequence>
+                    </xsd:sequence>
+                    <xsd:element name="sparUID" type="stringUIDBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Reference to a spar as chordwise border.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="contourCoordinate" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Chordwise contour coordinate as chordwise border. 0 equals LE, 1 equals TE.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:choice>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -15692,55 +15689,52 @@ marko.alder@dlr.de
                         <ddue:para>Spanwise positioning of wing cells.</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
-                        <ddue:para>CellPositioningSpanwise defines the chordwise direction
-                            of a wing cell either in two eta (eta1 at leadingEdge and eta2 at
-                            trailingEdge) coordinates or via referencing to a rib.
-                        </ddue:para>
+                    <ddue:para>CellPositioningSpanwise defines the chordwise direction of a wing cell either in two eta
+                                            (eta1 at leadingEdge and eta2 at trailingEdge) coordinates, via referencing a rib-uID or via a contour
+                                            coordinate in chordwise direction.</ddue:para>
                     </ddue:remarks>
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
-                <xsd:sequence>
-                    <xsd:choice>
-                        <xsd:sequence>
-                            <xsd:element name="eta1" type="etaIsoLineType">
-                                <xsd:annotation>
-                                    <xsd:documentation>Relative spanwise position of the forward
-                                        end.</xsd:documentation>
-                                </xsd:annotation>
-                            </xsd:element>
-                            <xsd:element name="eta2" type="etaIsoLineType">
-                                <xsd:annotation>
-                                    <xsd:documentation>Relative spanwise position of the rear end.
-                                    </xsd:documentation>
-                                </xsd:annotation>
-                            </xsd:element>
-                        </xsd:sequence>
-                        <xsd:sequence>
-                            <xsd:element name="ribNumber" type="integerBaseType">
-                                <xsd:annotation>
-                                    <xsd:documentation>RibNumber is the reference to the rib number
-                                        of the rib set which is referenced by 'ribDefinitionUID'.
-                                    </xsd:documentation>
-                                </xsd:annotation>
-                            </xsd:element>
-                            <xsd:element name="ribDefinitionUID" type="stringUIDBaseType">
-                                <xsd:annotation>
-                                    <xsd:documentation>Reference to a ribDefinition set. The single
-                                        rib of this ribDefinition set is defined by using 'ribNumber'.
-                                    </xsd:documentation>
-                                </xsd:annotation>
-                            </xsd:element>
-                        </xsd:sequence>
-                        <xsd:element name="spanwiseContourCoordinate" type="doubleBaseType">
+                <xsd:choice>
+                    <xsd:sequence>
+                        <xsd:element name="eta1" type="etaIsoLineType">
                             <xsd:annotation>
-                                <xsd:documentation>Contour coordinate as spanwise border. 0 equals root, 1 equals tip.</xsd:documentation>
+                                <xsd:documentation>Relative spanwise position of the forward
+                                    end.</xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
-                    </xsd:choice>
-                </xsd:sequence>
+                        <xsd:element name="eta2" type="etaIsoLineType">
+                            <xsd:annotation>
+                                <xsd:documentation>Relative spanwise position of the rear end.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                    <xsd:sequence>
+                        <xsd:element name="ribNumber" type="integerBaseType">
+                            <xsd:annotation>
+                                <xsd:documentation>RibNumber is the reference to the rib number
+                                    of the rib set which is referenced by 'ribDefinitionUID'.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="ribDefinitionUID" type="stringUIDBaseType">
+                            <xsd:annotation>
+                                <xsd:documentation>Reference to a ribDefinition set. The single
+                                    rib of this ribDefinition set is defined by using 'ribNumber'.
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                    <xsd:element name="contourCoordinate" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Spanwise contour coordinate as spanwise border. 0 equals root, 1 equals tip.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:choice>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

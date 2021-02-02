@@ -83,9 +83,9 @@ namespace generated
             if (m_uidMgr && !m_sparUID_choice1->empty()) m_uidMgr->RegisterReference(*m_sparUID_choice1, *this);
         }
 
-        // read element chordwiseContourCoordinate
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/chordwiseContourCoordinate")) {
-            m_chordwiseContourCoordinate_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/chordwiseContourCoordinate");
+        // read element contourCoordinate
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/contourCoordinate")) {
+            m_contourCoordinate_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/contourCoordinate");
         }
 
         // read element xsi1
@@ -116,14 +116,14 @@ namespace generated
             }
         }
 
-        // write element chordwiseContourCoordinate
-        if (m_chordwiseContourCoordinate_choice2) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/chordwiseContourCoordinate");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/chordwiseContourCoordinate", *m_chordwiseContourCoordinate_choice2);
+        // write element contourCoordinate
+        if (m_contourCoordinate_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/contourCoordinate");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/contourCoordinate", *m_contourCoordinate_choice2);
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/chordwiseContourCoordinate")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/chordwiseContourCoordinate");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/contourCoordinate")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/contourCoordinate");
             }
         }
 
@@ -162,7 +162,7 @@ namespace generated
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_chordwiseContourCoordinate_choice2.is_initialized()
+                        m_contourCoordinate_choice2.is_initialized()
                         ||
                         m_xsi1_choice3.is_initialized()
                         ||
@@ -172,7 +172,7 @@ namespace generated
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_chordwiseContourCoordinate_choice2.is_initialized()
+                    m_contourCoordinate_choice2.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
@@ -194,7 +194,7 @@ namespace generated
                     !(
                         m_sparUID_choice1.is_initialized()
                         ||
-                        m_chordwiseContourCoordinate_choice2.is_initialized()
+                        m_contourCoordinate_choice2.is_initialized()
                     )
                 )
                 == 1
@@ -217,14 +217,14 @@ namespace generated
         m_sparUID_choice1 = value;
     }
 
-    const boost::optional<double>& CPACSCellPositioningChordwise::GetChordwiseContourCoordinate_choice2() const
+    const boost::optional<double>& CPACSCellPositioningChordwise::GetContourCoordinate_choice2() const
     {
-        return m_chordwiseContourCoordinate_choice2;
+        return m_contourCoordinate_choice2;
     }
 
-    void CPACSCellPositioningChordwise::SetChordwiseContourCoordinate_choice2(const boost::optional<double>& value)
+    void CPACSCellPositioningChordwise::SetContourCoordinate_choice2(const boost::optional<double>& value)
     {
-        m_chordwiseContourCoordinate_choice2 = value;
+        m_contourCoordinate_choice2 = value;
     }
 
     const boost::optional<double>& CPACSCellPositioningChordwise::GetXsi1_choice3() const

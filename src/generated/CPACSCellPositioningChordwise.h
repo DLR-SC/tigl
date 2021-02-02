@@ -37,9 +37,9 @@ namespace generated
 
     /// @brief Chordwise positioning of wing cells.
     /// 
-    /// CellPositioningChordwise defines the chordwise
-    /// direction of a wing cell either in two xsi (xsi1 at innerBorder
-    /// and xsi2 at outerBorder) coordinates or via a sparUID.
+    /// CellPositioningChordwise defines the chordwise direction of a wing cell either in two xsi
+    /// (xsi1 at innerBorder and xsi2 at outerBorder) coordinates, via referencing a spar-uID or via a
+    /// contour coordinate in chordwise direction.
     /// 
     class CPACSCellPositioningChordwise : public ITiglUIDRefObject
     {
@@ -66,8 +66,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetSparUID_choice1() const;
         TIGL_EXPORT virtual void SetSparUID_choice1(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetChordwiseContourCoordinate_choice2() const;
-        TIGL_EXPORT virtual void SetChordwiseContourCoordinate_choice2(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetContourCoordinate_choice2() const;
+        TIGL_EXPORT virtual void SetContourCoordinate_choice2(const boost::optional<double>& value);
 
         TIGL_EXPORT virtual const boost::optional<double>& GetXsi1_choice3() const;
         TIGL_EXPORT virtual void SetXsi1_choice3(const boost::optional<double>& value);
@@ -83,8 +83,8 @@ namespace generated
         /// Reference to a spar as chordwise border.
         boost::optional<std::string> m_sparUID_choice1;
 
-        /// Contour coordinate as chordwise border. 0 equals LE, 1 equals TE.
-        boost::optional<double>      m_chordwiseContourCoordinate_choice2;
+        /// Chordwise contour coordinate as chordwise border. 0 equals LE, 1 equals TE.
+        boost::optional<double>      m_contourCoordinate_choice2;
 
         /// Relative chordwise position of the inner
         /// end.

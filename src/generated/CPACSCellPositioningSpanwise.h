@@ -39,9 +39,9 @@ namespace generated
 
     /// @brief Spanwise positioning of wing cells.
     /// 
-    /// CellPositioningSpanwise defines the chordwise direction
-    /// of a wing cell either in two eta (eta1 at leadingEdge and eta2 at
-    /// trailingEdge) coordinates or via referencing to a rib.
+    /// CellPositioningSpanwise defines the chordwise direction of a wing cell either in two eta
+    /// (eta1 at leadingEdge and eta2 at trailingEdge) coordinates, via referencing a rib-uID or via a contour
+    /// coordinate in chordwise direction.
     /// 
     class CPACSCellPositioningSpanwise : public ITiglUIDRefObject
     {
@@ -65,8 +65,8 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetSpanwiseContourCoordinate_choice1() const;
-        TIGL_EXPORT virtual void SetSpanwiseContourCoordinate_choice1(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetContourCoordinate_choice1() const;
+        TIGL_EXPORT virtual void SetContourCoordinate_choice1(const boost::optional<double>& value);
 
         TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEta1_choice2() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEta1_choice2();
@@ -91,8 +91,8 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Contour coordinate as spanwise border. 0 equals root, 1 equals tip.
-        boost::optional<double>           m_spanwiseContourCoordinate_choice1;
+        /// Spanwise contour coordinate as spanwise border. 0 equals root, 1 equals tip.
+        boost::optional<double>           m_contourCoordinate_choice1;
 
         /// Relative spanwise position of the forward
         /// end.
