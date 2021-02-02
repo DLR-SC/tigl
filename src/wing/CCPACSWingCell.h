@@ -101,15 +101,7 @@ private:
         EtaXsi outerTrailingEdgePoint;
     };
 
-    // This struct is used to annotate all the faces of the
-    // wing skin. The annotations are used in the lofting algorithm
-    struct TrimShapeAnnotation
-    {
-        double ccmin, ccmax; // chordwise contour coordinate bounds
-        double scmin, scmax; // spanwise contour coordinate bounds
-        bool keep = true;    // a label, specifying if the face
-                             // will be part of the resulting shape
-    };
+
 
     struct GeometryCache
     {
@@ -124,7 +116,14 @@ private:
         gp_Ax3 border_inner_ax3, border_outer_ax3, border_le_ax3, border_te_ax3;
         TopoDS_Shape sparShapeLE, sparShapeTE;
 
-        // this cache is used for the contour coordinate implementation
+        // the following cache is used for the contour coordinate implementation
+        struct TrimShapeAnnotation
+        {
+            double ccmin, ccmax; // chordwise contour coordinate bounds
+            double scmin, scmax; // spanwise contour coordinate bounds
+            bool keep = true;    // a label, specifying if the face
+                                 // will be part of the resulting shape
+        };
         CTiglRectGridSurface<TrimShapeAnnotation> rgsurface;
     };
 
