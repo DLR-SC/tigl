@@ -42,7 +42,7 @@ CCPACSWingCellPositionSpanwise::CCPACSWingCellPositionSpanwise(CCPACSWingCell* p
     : generated::CPACSCellPositioningSpanwise(parent, uidMgr) {}
 
 CCPACSWingCellPositionSpanwise::InputType CCPACSWingCellPositionSpanwise::GetInputType() const {
-    if (m_spanwiseContourCoordinate_choice1) {
+    if (m_contourCoordinate_choice1) {
         return Contour;
     }
     if (m_eta1_choice2 && m_eta2_choice2)

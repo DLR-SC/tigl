@@ -568,10 +568,10 @@
                                        </material>
                                     </skin>
                                     <positioningLeadingEdge>
-                                       <chordwiseContourCoordinate>0.542325</chordwiseContourCoordinate>
+                                       <contourCoordinate>0.542325</contourCoordinate>
                                     </positioningLeadingEdge>
                                     <positioningTrailingEdge>
-                                       <chordwiseContourCoordinate>0.707197</chordwiseContourCoordinate>
+                                       <contourCoordinate>0.707197</contourCoordinate>
                                     </positioningTrailingEdge>
                                     <positioningInnerBorder>
                                        <eta1>
@@ -601,16 +601,16 @@
                                        </material>
                                     </skin>
                                     <positioningLeadingEdge>
-                                       <chordwiseContourCoordinate>0</chordwiseContourCoordinate>
+                                       <contourCoordinate>0</contourCoordinate>
                                     </positioningLeadingEdge>
                                     <positioningTrailingEdge>
-                                       <chordwiseContourCoordinate>0.542325</chordwiseContourCoordinate>
+                                       <contourCoordinate>0.542325</contourCoordinate>
                                     </positioningTrailingEdge>
                                     <positioningInnerBorder>
-                                       <spanwiseContourCoordinate>0</spanwiseContourCoordinate>
+                                       <contourCoordinate>0</contourCoordinate>
                                     </positioningInnerBorder>
                                     <positioningOuterBorder>
-                                       <spanwiseContourCoordinate>0.0333333</spanwiseContourCoordinate>
+                                       <contourCoordinate>0.0333333</contourCoordinate>
                                     </positioningOuterBorder>
                                  </cell>
                               </cells>
@@ -698,10 +698,10 @@
                                        </material>
                                     </skin>
                                     <positioningLeadingEdge>
-                                       <spanwiseContourCoordinate>-0.266746</spanwiseContourCoordinate>
+                                       <contourCoordinate>0.266746</contourCoordinate>
                                     </positioningLeadingEdge>
                                     <positioningTrailingEdge>
-                                       <spanwiseContourCoordinate>-0.428793</spanwiseContourCoordinate>
+                                       <contourCoordinate>0.428793</contourCoordinate>
                                     </positioningTrailingEdge>
                                     <positioningInnerBorder>
                                        <eta1>
@@ -731,16 +731,16 @@
                                        </material>
                                     </skin>
                                     <positioningLeadingEdge>
-                                       <chordwiseContourCoordinate>-0.428793</chordwiseContourCoordinate>
+                                       <contourCoordinate>0.428793</contourCoordinate>
                                     </positioningLeadingEdge>
                                     <positioningTrailingEdge>
-                                       <chordwiseContourCoordinate>-1</chordwiseContourCoordinate>
+                                       <contourCoordinate>1</contourCoordinate>
                                     </positioningTrailingEdge>
                                     <positioningInnerBorder>
-                                       <spanwiseContourCoordinate>0</spanwiseContourCoordinate>
+                                       <contourCoordinate>0</contourCoordinate>
                                     </positioningInnerBorder>
                                     <positioningOuterBorder>
-                                       <spanwiseContourCoordinate>0.0333333</spanwiseContourCoordinate>
+                                       <contourCoordinate>0.0333333</contourCoordinate>
                                     </positioningOuterBorder>
                                  </cell>
                               </cells>

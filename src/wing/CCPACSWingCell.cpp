@@ -409,11 +409,11 @@ void CCPACSWingCell::TrimSpanwise(GeometryCache& cache,
                                   CCPACSWingCellPositionSpanwise const& positioning,
                                   double tol) const
 {
-    if (!positioning.GetSpanwiseContourCoordinate_choice1()){
+    if (!positioning.GetContourCoordinate_choice1()){
         throw CTiglError("Internal Error when trying to create the cell geometry");
     }
 
-    double trim_coordinate = positioning.GetSpanwiseContourCoordinate_choice1().get();
+    double trim_coordinate = positioning.GetContourCoordinate_choice1().get();
 
     for(auto row = cache.rgsurface.Root(); row; row = row->UNext()) {
         for (auto current = row; current; current = current->VNext()) {
@@ -476,7 +476,7 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
 {
 
     // Border not defined by contour cooordinate.
-    if (positioning.GetSpanwiseContourCoordinate_choice1()){
+    if (positioning.GetContourCoordinate_choice1()){
         throw CTiglError("Internal Error when trying to create the cell geometry");
     }
 
@@ -613,32 +613,24 @@ void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
                                   CCPACSWingCellPositionChordwise const& positioning,
                                   double tol) const
 {
-    if (!positioning.GetChordwiseContourCoordinate_choice2()){
+    if (!positioning.GetContourCoordinate_choice2()){
         throw CTiglError("Internal Error when trying to create the cell geometry");
     }
 
-    double trim_coordinate = positioning.GetChordwiseContourCoordinate_choice2().get();
+    double trim_coordinate = positioning.GetContourCoordinate_choice2().get();
     bool upper = (m_parent->GetParent()->GetLoftSide() == UPPER_SIDE);
 
     for(auto row = cache.rgsurface.Root(); row; row = row->UNext()) {
         for (auto current = row; current; current = current->VNext()) {
             if (current->GetAnnotation().keep) {
                 if (trim_coordinate <= current->GetAnnotation().ccmin) {
-                    if (border == ChordWiseBorder::TE && upper) {
-                        // remove this face from the rgsurface
-                        current->GetAnnotation().keep = false;
-                    }
-                    if (border == ChordWiseBorder::LE && !upper) {
+                    if (border == ChordWiseBorder::TE) {
                         // remove this face from the rgsurface
                         current->GetAnnotation().keep = false;
                     }
                 }
                 else if (trim_coordinate >= current->GetAnnotation().ccmax) {
-                    if (border == ChordWiseBorder::LE && upper) {
-                        // remove this face from the rgsurface
-                        current->GetAnnotation().keep = false;
-                    }
-                    if (border == ChordWiseBorder::TE && !upper) {
+                    if (border == ChordWiseBorder::LE) {
                         // remove this face from the rgsurface
                         current->GetAnnotation().keep = false;
                     }
@@ -647,20 +639,23 @@ void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
                     //trim the face
 
                     double alpha = (trim_coordinate - current->GetAnnotation().ccmin) / (current->GetAnnotation().ccmax - current->GetAnnotation().ccmin);
-                    double u = (1-alpha)*current->UMin() + alpha * current->UMax();
+
+                    // On the lower side, u increases from TE to LE, while contour coordinates increase from LE (0) to TE (1)
+                    double u = upper? (1-alpha)*current->UMin() + alpha * current->UMax()
+                                    : (1-alpha)*current->UMax() + alpha * current->UMin();
 
                     double umin = current->UMin();
                     double umax = current->UMax();
                     bool trim = false;
-                    if (  (border == ChordWiseBorder::LE &&  upper)
-                        ||(border == ChordWiseBorder::TE && !upper)) {
+                    if (   (border == ChordWiseBorder::LE && upper)
+                         ||(border == ChordWiseBorder::TE && !upper)) {
                         if ( fabs(u - umin) > tol ) {
                             umin = u;
                             current->GetAnnotation().ccmin = trim_coordinate;
                             trim = true;
                         }
                     }
-                    if (  (border == ChordWiseBorder::TE &&  upper)
+                    if (  (border == ChordWiseBorder::TE && upper)
                         ||(border == ChordWiseBorder::LE && !upper)) {
                         if ( fabs(umax - u) > tol ) {
                             umax = u;
@@ -689,7 +684,7 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
                                           gp_Dir const& zRefDir,
                                           double tol) const
 {
-    if (positioning.GetChordwiseContourCoordinate_choice2()){
+    if (positioning.GetContourCoordinate_choice2()){
         throw CTiglError("Internal Error when trying to create the cell geometry");
     }
 
@@ -869,11 +864,9 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
          */
 
         double spanwise_contour_coordinate = 0;
-        // coordinates go from 0 to 1 on upper side, and from -1 to 0 on lower side
-        int chordwise_contour_start = m_parent->GetParent()->GetLoftSide() == UPPER_SIDE ? 0 : -1;
+        double chordwise_contour_coordinate = 0;
         j = 0;
         for (auto row = cache.rgsurface.Root(); row; row = row->VNext()) {
-            double chordwise_contour_coordinate = chordwise_contour_start;
             int i = 0;
             for (auto current = row; current; current = current->UNext()){
                 current->GetAnnotation().scmin = spanwise_contour_coordinate;

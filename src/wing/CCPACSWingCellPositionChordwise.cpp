@@ -28,7 +28,7 @@ CCPACSWingCellPositionChordwise::CCPACSWingCellPositionChordwise(CCPACSWingCell*
 
 CCPACSWingCellPositionChordwise::InputType CCPACSWingCellPositionChordwise::GetInputType() const
 {
-    if (m_chordwiseContourCoordinate_choice2)
+    if (m_contourCoordinate_choice2)
         return Contour;
     if (m_xsi1_choice3 && m_xsi2_choice3)
         return Xsi;
