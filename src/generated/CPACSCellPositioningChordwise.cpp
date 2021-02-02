@@ -83,14 +83,19 @@ namespace generated
             if (m_uidMgr && !m_sparUID_choice1->empty()) m_uidMgr->RegisterReference(*m_sparUID_choice1, *this);
         }
 
+        // read element contourCoordinate
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/contourCoordinate")) {
+            m_contourCoordinate_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/contourCoordinate");
+        }
+
         // read element xsi1
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi1")) {
-            m_xsi1_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi1");
+            m_xsi1_choice3 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi1");
         }
 
         // read element xsi2
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi2")) {
-            m_xsi2_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi2");
+            m_xsi2_choice3 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi2");
         }
 
         if (!ValidateChoices()) {
@@ -111,10 +116,21 @@ namespace generated
             }
         }
 
+        // write element contourCoordinate
+        if (m_contourCoordinate_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/contourCoordinate");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/contourCoordinate", *m_contourCoordinate_choice2);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/contourCoordinate")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/contourCoordinate");
+            }
+        }
+
         // write element xsi1
-        if (m_xsi1_choice2) {
+        if (m_xsi1_choice3) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsi1");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/xsi1", *m_xsi1_choice2);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/xsi1", *m_xsi1_choice3);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi1")) {
@@ -123,9 +139,9 @@ namespace generated
         }
 
         // write element xsi2
-        if (m_xsi2_choice2) {
+        if (m_xsi2_choice3) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsi2");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/xsi2", *m_xsi2_choice2);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/xsi2", *m_xsi2_choice3);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi2")) {
@@ -146,21 +162,39 @@ namespace generated
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_xsi1_choice2.is_initialized()
+                        m_contourCoordinate_choice2.is_initialized()
                         ||
-                        m_xsi2_choice2.is_initialized()
+                        m_xsi1_choice3.is_initialized()
+                        ||
+                        m_xsi2_choice3.is_initialized()
                     )
                 )
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_xsi1_choice2.is_initialized()
-                    &&
-                    m_xsi2_choice2.is_initialized()
+                    m_contourCoordinate_choice2.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
                         m_sparUID_choice1.is_initialized()
+                        ||
+                        m_xsi1_choice3.is_initialized()
+                        ||
+                        m_xsi2_choice3.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_xsi1_choice3.is_initialized()
+                    &&
+                    m_xsi2_choice3.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_sparUID_choice1.is_initialized()
+                        ||
+                        m_contourCoordinate_choice2.is_initialized()
                     )
                 )
                 == 1
@@ -183,24 +217,34 @@ namespace generated
         m_sparUID_choice1 = value;
     }
 
-    const boost::optional<double>& CPACSCellPositioningChordwise::GetXsi1_choice2() const
+    const boost::optional<double>& CPACSCellPositioningChordwise::GetContourCoordinate_choice2() const
     {
-        return m_xsi1_choice2;
+        return m_contourCoordinate_choice2;
     }
 
-    void CPACSCellPositioningChordwise::SetXsi1_choice2(const boost::optional<double>& value)
+    void CPACSCellPositioningChordwise::SetContourCoordinate_choice2(const boost::optional<double>& value)
     {
-        m_xsi1_choice2 = value;
+        m_contourCoordinate_choice2 = value;
     }
 
-    const boost::optional<double>& CPACSCellPositioningChordwise::GetXsi2_choice2() const
+    const boost::optional<double>& CPACSCellPositioningChordwise::GetXsi1_choice3() const
     {
-        return m_xsi2_choice2;
+        return m_xsi1_choice3;
     }
 
-    void CPACSCellPositioningChordwise::SetXsi2_choice2(const boost::optional<double>& value)
+    void CPACSCellPositioningChordwise::SetXsi1_choice3(const boost::optional<double>& value)
     {
-        m_xsi2_choice2 = value;
+        m_xsi1_choice3 = value;
+    }
+
+    const boost::optional<double>& CPACSCellPositioningChordwise::GetXsi2_choice3() const
+    {
+        return m_xsi2_choice3;
+    }
+
+    void CPACSCellPositioningChordwise::SetXsi2_choice3(const boost::optional<double>& value)
+    {
+        m_xsi2_choice3 = value;
     }
 
     const CTiglUIDObject* CPACSCellPositioningChordwise::GetNextUIDObject() const

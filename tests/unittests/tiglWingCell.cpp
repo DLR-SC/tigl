@@ -108,6 +108,54 @@ protected:
 TixiDocumentHandle WingCellRibSpar::tixiHandle = 0;
 TiglCPACSConfigurationHandle WingCellRibSpar::tiglHandle = 0;
 
+
+class WingCellContourCoordinates : public testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        const char* filename = "TestData/IEA-15-240-RWT_CPACS_d.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_EQ(SUCCESS, tixiRet);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "IEA-15-240-RWT", &tiglHandle);
+        ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    }
+
+    void TearDown() override
+    {
+        ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+        ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    TixiDocumentHandle tixiHandle {-1};
+    TiglCPACSConfigurationHandle tiglHandle {-1};
+
+public:
+
+    //returns the ith cell on the upper shell if, upperShell == true, on the lower shell if upperShell == false
+    tigl::CCPACSWingCell& getCell(int i, bool upperShell = true)
+    {
+        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+        tigl::CCPACSWing& wing = config.GetWing(1);
+        tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+        if (upperShell) {
+            return componentSegment.GetStructure()->GetUpperShell().GetCell(i);
+        }
+        else {
+            return componentSegment.GetStructure()->GetLowerShell().GetCell(i);
+        }
+    }
+};
+
 /******************************************************************************/
 
 TEST(WingCell, IsInner)
@@ -286,4 +334,27 @@ TEST_F(WingCellRibSpar, computeGeometry) {
     tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(1);
     TopoDS_Shape cellGeom = cell.GetSkinGeometry();
     BRepTools::Write(cellGeom, "TestData/export/WingCellRibSpar_CellGeometry.brep");
+}
+
+TEST_F(WingCellContourCoordinates, mixedBorderDefError)
+{
+    // This cell is defined with both borders relative to the skin and the chordface.
+    // This is (currently) not supported by TiGL
+    auto& cell1 = getCell(2, true);
+    EXPECT_THROW(cell1.GetLoft(), tigl::CTiglError);
+
+    auto& cell2 = getCell(2, false);
+    EXPECT_THROW(cell2.GetLoft(), tigl::CTiglError);
+}
+
+
+TEST_F(WingCellContourCoordinates, computeGeometry)
+{
+    auto& cell1= getCell(3, true);
+    TopoDS_Shape cellGeom1 = cell1.GetSkinGeometry();
+    BRepTools::Write(cellGeom1, "TestData/export/WingCellContourCoordinates_CellGeometry_upper.brep");
+
+    auto& cell2 = getCell(3, false);
+    TopoDS_Shape cellGeom2 = cell2.GetSkinGeometry();
+    BRepTools::Write(cellGeom2, "TestData/export/WingCellContourCoordinates_CellGeometry_lower.brep");
 }

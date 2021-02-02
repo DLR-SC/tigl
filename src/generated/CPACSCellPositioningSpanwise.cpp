@@ -38,7 +38,7 @@ namespace generated
     CPACSCellPositioningSpanwise::~CPACSCellPositioningSpanwise()
     {
         if (m_uidMgr) {
-            if (m_ribDefinitionUID_choice2 && !m_ribDefinitionUID_choice2->empty()) m_uidMgr->TryUnregisterReference(*m_ribDefinitionUID_choice2, *this);
+            if (m_ribDefinitionUID_choice3 && !m_ribDefinitionUID_choice3->empty()) m_uidMgr->TryUnregisterReference(*m_ribDefinitionUID_choice3, *this);
         }
     }
 
@@ -74,40 +74,45 @@ namespace generated
 
     void CPACSCellPositioningSpanwise::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read element contourCoordinate
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/contourCoordinate")) {
+            m_contourCoordinate_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/contourCoordinate");
+        }
+
         // read element eta1
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta1")) {
-            m_eta1_choice1 = boost::in_place(reinterpret_cast<CCPACSWingCellPositionSpanwise*>(this), m_uidMgr);
+            m_eta1_choice2 = boost::in_place(reinterpret_cast<CCPACSWingCellPositionSpanwise*>(this), m_uidMgr);
             try {
-                m_eta1_choice1->ReadCPACS(tixiHandle, xpath + "/eta1");
+                m_eta1_choice2->ReadCPACS(tixiHandle, xpath + "/eta1");
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read eta1 at xpath " << xpath << ": " << e.what();
-                m_eta1_choice1 = boost::none;
+                m_eta1_choice2 = boost::none;
             }
         }
 
         // read element eta2
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta2")) {
-            m_eta2_choice1 = boost::in_place(reinterpret_cast<CCPACSWingCellPositionSpanwise*>(this), m_uidMgr);
+            m_eta2_choice2 = boost::in_place(reinterpret_cast<CCPACSWingCellPositionSpanwise*>(this), m_uidMgr);
             try {
-                m_eta2_choice1->ReadCPACS(tixiHandle, xpath + "/eta2");
+                m_eta2_choice2->ReadCPACS(tixiHandle, xpath + "/eta2");
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read eta2 at xpath " << xpath << ": " << e.what();
-                m_eta2_choice1 = boost::none;
+                m_eta2_choice2 = boost::none;
             }
         }
 
         // read element ribNumber
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribNumber")) {
-            m_ribNumber_choice2 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/ribNumber");
+            m_ribNumber_choice3 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/ribNumber");
         }
 
         // read element ribDefinitionUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribDefinitionUID")) {
-            m_ribDefinitionUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribDefinitionUID");
-            if (m_ribDefinitionUID_choice2->empty()) {
+            m_ribDefinitionUID_choice3 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribDefinitionUID");
+            if (m_ribDefinitionUID_choice3->empty()) {
                 LOG(WARNING) << "Optional element ribDefinitionUID is present but empty at xpath " << xpath;
             }
-            if (m_uidMgr && !m_ribDefinitionUID_choice2->empty()) m_uidMgr->RegisterReference(*m_ribDefinitionUID_choice2, *this);
+            if (m_uidMgr && !m_ribDefinitionUID_choice3->empty()) m_uidMgr->RegisterReference(*m_ribDefinitionUID_choice3, *this);
         }
 
         if (!ValidateChoices()) {
@@ -117,10 +122,21 @@ namespace generated
 
     void CPACSCellPositioningSpanwise::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write element contourCoordinate
+        if (m_contourCoordinate_choice1) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/contourCoordinate");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/contourCoordinate", *m_contourCoordinate_choice1);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/contourCoordinate")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/contourCoordinate");
+            }
+        }
+
         // write element eta1
-        if (m_eta1_choice1) {
+        if (m_eta1_choice2) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta1");
-            m_eta1_choice1->WriteCPACS(tixiHandle, xpath + "/eta1");
+            m_eta1_choice2->WriteCPACS(tixiHandle, xpath + "/eta1");
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta1")) {
@@ -129,9 +145,9 @@ namespace generated
         }
 
         // write element eta2
-        if (m_eta2_choice1) {
+        if (m_eta2_choice2) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta2");
-            m_eta2_choice1->WriteCPACS(tixiHandle, xpath + "/eta2");
+            m_eta2_choice2->WriteCPACS(tixiHandle, xpath + "/eta2");
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta2")) {
@@ -140,9 +156,9 @@ namespace generated
         }
 
         // write element ribNumber
-        if (m_ribNumber_choice2) {
+        if (m_ribNumber_choice3) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribNumber");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/ribNumber", *m_ribNumber_choice2);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/ribNumber", *m_ribNumber_choice3);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribNumber")) {
@@ -151,9 +167,9 @@ namespace generated
         }
 
         // write element ribDefinitionUID
-        if (m_ribDefinitionUID_choice2) {
+        if (m_ribDefinitionUID_choice3) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribDefinitionUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/ribDefinitionUID", *m_ribDefinitionUID_choice2);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/ribDefinitionUID", *m_ribDefinitionUID_choice3);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribDefinitionUID")) {
@@ -170,29 +186,49 @@ namespace generated
             (
                 (
                     // mandatory elements of this choice must be there
-                    m_eta1_choice1.is_initialized()
-                    &&
-                    m_eta2_choice1.is_initialized()
+                    m_contourCoordinate_choice1.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_ribNumber_choice2.is_initialized()
+                        m_eta1_choice2.is_initialized()
                         ||
-                        m_ribDefinitionUID_choice2.is_initialized()
+                        m_eta2_choice2.is_initialized()
+                        ||
+                        m_ribNumber_choice3.is_initialized()
+                        ||
+                        m_ribDefinitionUID_choice3.is_initialized()
                     )
                 )
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_ribNumber_choice2.is_initialized()
+                    m_eta1_choice2.is_initialized()
                     &&
-                    m_ribDefinitionUID_choice2.is_initialized()
+                    m_eta2_choice2.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_eta1_choice1.is_initialized()
+                        m_contourCoordinate_choice1.is_initialized()
                         ||
-                        m_eta2_choice1.is_initialized()
+                        m_ribNumber_choice3.is_initialized()
+                        ||
+                        m_ribDefinitionUID_choice3.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_ribNumber_choice3.is_initialized()
+                    &&
+                    m_ribDefinitionUID_choice3.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_contourCoordinate_choice1.is_initialized()
+                        ||
+                        m_eta1_choice2.is_initialized()
+                        ||
+                        m_eta2_choice2.is_initialized()
                     )
                 )
                 == 1
@@ -201,72 +237,82 @@ namespace generated
         ;
     }
 
-    const boost::optional<CCPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta1_choice1() const
+    const boost::optional<double>& CPACSCellPositioningSpanwise::GetContourCoordinate_choice1() const
     {
-        return m_eta1_choice1;
+        return m_contourCoordinate_choice1;
     }
 
-    boost::optional<CCPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta1_choice1()
+    void CPACSCellPositioningSpanwise::SetContourCoordinate_choice1(const boost::optional<double>& value)
     {
-        return m_eta1_choice1;
+        m_contourCoordinate_choice1 = value;
     }
 
-    const boost::optional<CCPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta2_choice1() const
+    const boost::optional<CCPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta1_choice2() const
     {
-        return m_eta2_choice1;
+        return m_eta1_choice2;
     }
 
-    boost::optional<CCPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta2_choice1()
+    boost::optional<CCPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta1_choice2()
     {
-        return m_eta2_choice1;
+        return m_eta1_choice2;
     }
 
-    const boost::optional<int>& CPACSCellPositioningSpanwise::GetRibNumber_choice2() const
+    const boost::optional<CCPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta2_choice2() const
     {
-        return m_ribNumber_choice2;
+        return m_eta2_choice2;
     }
 
-    void CPACSCellPositioningSpanwise::SetRibNumber_choice2(const boost::optional<int>& value)
+    boost::optional<CCPACSEtaIsoLine>& CPACSCellPositioningSpanwise::GetEta2_choice2()
     {
-        m_ribNumber_choice2 = value;
+        return m_eta2_choice2;
     }
 
-    const boost::optional<std::string>& CPACSCellPositioningSpanwise::GetRibDefinitionUID_choice2() const
+    const boost::optional<int>& CPACSCellPositioningSpanwise::GetRibNumber_choice3() const
     {
-        return m_ribDefinitionUID_choice2;
+        return m_ribNumber_choice3;
     }
 
-    void CPACSCellPositioningSpanwise::SetRibDefinitionUID_choice2(const boost::optional<std::string>& value)
+    void CPACSCellPositioningSpanwise::SetRibNumber_choice3(const boost::optional<int>& value)
+    {
+        m_ribNumber_choice3 = value;
+    }
+
+    const boost::optional<std::string>& CPACSCellPositioningSpanwise::GetRibDefinitionUID_choice3() const
+    {
+        return m_ribDefinitionUID_choice3;
+    }
+
+    void CPACSCellPositioningSpanwise::SetRibDefinitionUID_choice3(const boost::optional<std::string>& value)
     {
         if (m_uidMgr) {
-            if (m_ribDefinitionUID_choice2 && !m_ribDefinitionUID_choice2->empty()) m_uidMgr->TryUnregisterReference(*m_ribDefinitionUID_choice2, *this);
+            if (m_ribDefinitionUID_choice3 && !m_ribDefinitionUID_choice3->empty()) m_uidMgr->TryUnregisterReference(*m_ribDefinitionUID_choice3, *this);
             if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
         }
-        m_ribDefinitionUID_choice2 = value;
+        m_ribDefinitionUID_choice3 = value;
     }
 
-    CCPACSEtaIsoLine& CPACSCellPositioningSpanwise::GetEta1_choice1(CreateIfNotExistsTag)
+    CCPACSEtaIsoLine& CPACSCellPositioningSpanwise::GetEta1_choice2(CreateIfNotExistsTag)
     {
-        if (!m_eta1_choice1)
-            m_eta1_choice1 = boost::in_place(reinterpret_cast<CCPACSWingCellPositionSpanwise*>(this), m_uidMgr);
-        return *m_eta1_choice1;
+        if (!m_eta1_choice2)
+            m_eta1_choice2 = boost::in_place(reinterpret_cast<CCPACSWingCellPositionSpanwise*>(this), m_uidMgr);
+        return *m_eta1_choice2;
     }
 
-    void CPACSCellPositioningSpanwise::RemoveEta1_choice1()
+    void CPACSCellPositioningSpanwise::RemoveEta1_choice2()
     {
-        m_eta1_choice1 = boost::none;
+        m_eta1_choice2 = boost::none;
     }
 
-    CCPACSEtaIsoLine& CPACSCellPositioningSpanwise::GetEta2_choice1(CreateIfNotExistsTag)
+    CCPACSEtaIsoLine& CPACSCellPositioningSpanwise::GetEta2_choice2(CreateIfNotExistsTag)
     {
-        if (!m_eta2_choice1)
-            m_eta2_choice1 = boost::in_place(reinterpret_cast<CCPACSWingCellPositionSpanwise*>(this), m_uidMgr);
-        return *m_eta2_choice1;
+        if (!m_eta2_choice2)
+            m_eta2_choice2 = boost::in_place(reinterpret_cast<CCPACSWingCellPositionSpanwise*>(this), m_uidMgr);
+        return *m_eta2_choice2;
     }
 
-    void CPACSCellPositioningSpanwise::RemoveEta2_choice1()
+    void CPACSCellPositioningSpanwise::RemoveEta2_choice2()
     {
-        m_eta2_choice1 = boost::none;
+        m_eta2_choice2 = boost::none;
     }
 
     const CTiglUIDObject* CPACSCellPositioningSpanwise::GetNextUIDObject() const
@@ -276,8 +322,8 @@ namespace generated
 
     void CPACSCellPositioningSpanwise::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
     {
-        if (m_ribDefinitionUID_choice2 && *m_ribDefinitionUID_choice2 == oldUid) {
-            m_ribDefinitionUID_choice2 = newUid;
+        if (m_ribDefinitionUID_choice3 && *m_ribDefinitionUID_choice3 == oldUid) {
+            m_ribDefinitionUID_choice3 = newUid;
         }
     }
 

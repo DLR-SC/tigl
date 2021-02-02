@@ -39,9 +39,9 @@ namespace generated
 
     /// @brief Spanwise positioning of wing cells.
     /// 
-    /// CellPositioningSpanwise defines the chordwise direction
-    /// of a wing cell either in two eta (eta1 at leadingEdge and eta2 at
-    /// trailingEdge) coordinates or via referencing to a rib.
+    /// CellPositioningSpanwise defines the chordwise direction of a wing cell either in two eta
+    /// (eta1 at leadingEdge and eta2 at trailingEdge) coordinates, via referencing a rib-uID or via a contour
+    /// coordinate in chordwise direction.
     /// 
     class CPACSCellPositioningSpanwise : public ITiglUIDRefObject
     {
@@ -65,43 +65,49 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEta1_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEta1_choice1();
+        TIGL_EXPORT virtual const boost::optional<double>& GetContourCoordinate_choice1() const;
+        TIGL_EXPORT virtual void SetContourCoordinate_choice1(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEta2_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEta2_choice1();
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEta1_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEta1_choice2();
 
-        TIGL_EXPORT virtual const boost::optional<int>& GetRibNumber_choice2() const;
-        TIGL_EXPORT virtual void SetRibNumber_choice2(const boost::optional<int>& value);
+        TIGL_EXPORT virtual const boost::optional<CCPACSEtaIsoLine>& GetEta2_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSEtaIsoLine>& GetEta2_choice2();
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetRibDefinitionUID_choice2() const;
-        TIGL_EXPORT virtual void SetRibDefinitionUID_choice2(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual const boost::optional<int>& GetRibNumber_choice3() const;
+        TIGL_EXPORT virtual void SetRibNumber_choice3(const boost::optional<int>& value);
 
-        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta1_choice1(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveEta1_choice1();
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetRibDefinitionUID_choice3() const;
+        TIGL_EXPORT virtual void SetRibDefinitionUID_choice3(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta2_choice1(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveEta2_choice1();
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta1_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEta1_choice2();
+
+        TIGL_EXPORT virtual CCPACSEtaIsoLine& GetEta2_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEta2_choice2();
 
     protected:
         CCPACSWingCell* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Spanwise contour coordinate as spanwise border. 0 equals root, 1 equals tip.
+        boost::optional<double>           m_contourCoordinate_choice1;
+
         /// Relative spanwise position of the forward
         /// end.
-        boost::optional<CCPACSEtaIsoLine> m_eta1_choice1;
+        boost::optional<CCPACSEtaIsoLine> m_eta1_choice2;
 
         /// Relative spanwise position of the rear end.
-        boost::optional<CCPACSEtaIsoLine> m_eta2_choice1;
+        boost::optional<CCPACSEtaIsoLine> m_eta2_choice2;
 
         /// RibNumber is the reference to the rib number
         /// of the rib set which is referenced by 'ribDefinitionUID'.
-        boost::optional<int>              m_ribNumber_choice2;
+        boost::optional<int>              m_ribNumber_choice3;
 
         /// Reference to a ribDefinition set. The single
         /// rib of this ribDefinition set is defined by using 'ribNumber'.
-        boost::optional<std::string>      m_ribDefinitionUID_choice2;
+        boost::optional<std::string>      m_ribDefinitionUID_choice3;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
