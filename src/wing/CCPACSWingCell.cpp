@@ -810,17 +810,17 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
     // get the shape of the skin
     TopoDS_Shape loftShape = m_parent->GetParent()->GetLoftSide() == UPPER_SIDE ? wsr.GetUpperShape() : wsr.GetLowerShape();
 
-    int use_contour_coordinates = (int)(m_positioningInnerBorder.GetInputType()  == CCPACSWingCellPositionSpanwise::Contour);
-    use_contour_coordinates    += (int)(m_positioningOuterBorder.GetInputType()  == CCPACSWingCellPositionSpanwise::Contour);
-    use_contour_coordinates    += (int)(m_positioningLeadingEdge.GetInputType()  == CCPACSWingCellPositionChordwise::Contour);
-    use_contour_coordinates    += (int)(m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::Contour);
+    int useContourCoordinates= (int)(m_positioningInnerBorder.GetInputType()  == CCPACSWingCellPositionSpanwise::Contour);
+    useContourCoordinates   += (int)(m_positioningOuterBorder.GetInputType()  == CCPACSWingCellPositionSpanwise::Contour);
+    useContourCoordinates   += (int)(m_positioningLeadingEdge.GetInputType()  == CCPACSWingCellPositionChordwise::Contour);
+    useContourCoordinates   += (int)(m_positioningTrailingEdge.GetInputType() == CCPACSWingCellPositionChordwise::Contour);
 
-    if ( use_contour_coordinates > 0 && use_contour_coordinates != 4 ) {
+    if ( useContourCoordinates> 0 && useContourCoordinates!= 4 ) {
         throw CTiglError("If one boundary of a wing cell is defined using contour coordinates, "
                          "all boundaries must be defined using contour coordinates");
     }
 
-    if ( use_contour_coordinates ) {
+    if ( useContourCoordinates) {
 
         // The skin is composed of a rectangular grid of faces. We need to annotate
         // these faces to trim the correct faces at the correct parameters.
