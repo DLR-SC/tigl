@@ -21,7 +21,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSConfigurationManager.h"
-
+#include "CCPACSConfiguration.h"
 
 #include "TopoDS_Face.hxx"
 #include "TopExp_Explorer.hxx"
@@ -174,6 +174,37 @@ TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetAndSetControlParameter)
     ASSERT_EQ(TIGL_SUCCESS     , tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm ) );
     ASSERT_NEAR(0.33, controlParm, 1e-10);
 
+}
+
+TEST_F(TiglControlSurfaceDevice, CCPACSTrailingEdgeDevices)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+    tigl::CCPACSTrailingEdgeDevices& devices = *componentSegment.GetControlSurfaces()->GetTrailingEdgeDevices();
+
+    // trailing edge device count
+    ASSERT_EQ(devices.GetTrailingEdgeDeviceCount(), 3);
+
+    // get trailing edge device by index
+    ASSERT_EQ(devices.GetTrailingEdgeDevice(1).GetUID(), "D150_VAMP_W1_CompSeg1_innerFlap");
+    ASSERT_EQ(devices.GetTrailingEdgeDevice(2).GetUID(), "D150_VAMP_W1_CompSeg1_outerFlap");
+    ASSERT_EQ(devices.GetTrailingEdgeDevice(3).GetUID(), "D150_VAMP_W1_CompSeg1_aileron");
+    ASSERT_THROW(devices.GetTrailingEdgeDevice(-1), tigl::CTiglError);
+    ASSERT_THROW(devices.GetTrailingEdgeDevice(4), tigl::CTiglError);
+
+    // get index of trailing edge device by uid
+    ASSERT_EQ(devices.GetTrailingEdgeDeviceIndex("D150_VAMP_W1_CompSeg1_innerFlap"), 1);
+    ASSERT_EQ(devices.GetTrailingEdgeDeviceIndex("D150_VAMP_W1_CompSeg1_outerFlap"), 2);
+    ASSERT_EQ(devices.GetTrailingEdgeDeviceIndex("D150_VAMP_W1_CompSeg1_aileron"), 3);
+    ASSERT_THROW(devices.GetTrailingEdgeDeviceIndex("WrongUID"), tigl::CTiglError);
+
+    // get trailing edge device by uid
+    ASSERT_EQ(devices.GetTrailingEdgeDevice("D150_VAMP_W1_CompSeg1_innerFlap").GetName(), devices.GetTrailingEdgeDevice(1).GetName());
+    ASSERT_EQ(devices.GetTrailingEdgeDevice("D150_VAMP_W1_CompSeg1_outerFlap").GetName(), devices.GetTrailingEdgeDevice(2).GetName());
+    ASSERT_EQ(devices.GetTrailingEdgeDevice("D150_VAMP_W1_CompSeg1_aileron").GetName(), devices.GetTrailingEdgeDevice(3).GetName());
+    ASSERT_THROW(devices.GetTrailingEdgeDevice("WrongUID"), tigl::CTiglError);
 }
 
 TEST(TiglControlSurfaceDeviceSimple, setControlParameterAndExport)

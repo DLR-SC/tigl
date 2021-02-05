@@ -225,7 +225,7 @@ namespace tigl {
 %boost_optional(tigl::generated::CPACSLeadingEdgeHollow)
 %boost_optional(tigl::generated::CPACSCutOutControlPoints)
 %boost_optional(tigl::generated::CPACSControlSurfaceSkinCutOutBorder)
-%boost_optional(tigl::generated::CPACSTrailingEdgeDevices)
+%boost_optional(tigl::CCPACSTrailingEdgeDevices)
 %boost_optional(tigl::CCPACSControlSurfaces)
 %boost_optional(tigl::CPACSControlSurfaceWingCutOut)
 %boost_optional(tigl::generated::CPACSControlSurfaceTracks)
@@ -273,6 +273,7 @@ namespace tigl
 %ignore ComponentSegment(CCPACSTrailingEdgeDevice&);
 %include "CCPACSTrailingEdgeDevice.h"
 %include "generated/CPACSTrailingEdgeDevices.h"
+%include "CCPACSTrailingEdgeDevices.h"
 %include "generated/CPACSControlSurfaces.h"
 %include "CCPACSControlSurfaces.h"
 
@@ -512,7 +513,8 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSWingCell,
          tigl::CCPACSWingRibsDefinition,
          tigl::CCPACSWingSparSegment,
-         tigl::CCPACSEnginePylon
+         tigl::CCPACSEnginePylon,
+         tigl::CCPACSTrailingEdgeDevice
 );
 
 namespace tigl
