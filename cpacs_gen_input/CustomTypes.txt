@@ -122,6 +122,7 @@ CPACSWalls                                CCPACSWalls
 // control surfaces
 CPACSControlSurfaces                      CCPACSControlSurfaces
 CPACSControlSurfaceBorderTrailingEdge     CCPACSControlSurfaceBorderTrailingEdge
+CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
 CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
 CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
 CPACSControlSurfaceWingCutOut             CCPACSControlSurfaceWingCutOut
