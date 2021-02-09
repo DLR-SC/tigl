@@ -649,7 +649,7 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
     const Handle(Geom_Curve) etaCurve = chordFace->GetSurface()->VIso(eta);
     const Handle(Geom_Curve) line = new Geom_Line(p1, p2.XYZ() - p1.XYZ());
 
-    GeomAPI_ExtremaCurveCurve algo(etaCurve, line, 0., 1., 0., p1.Distance(p2));
+    GeomAPI_ExtremaCurveCurve algo(etaCurve, line);
     if (algo.NbExtrema() < 1) {
         throw CTiglError("Cannot compute xsi coordinate in CCPACSWingComponentSegment::InterpolateOnLine", TIGL_MATH_ERROR);
     }
