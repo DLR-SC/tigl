@@ -733,6 +733,42 @@ TEST_F(WingComponentSegmentSimple, InterpolateOnLine)
     ASSERT_NEAR(0.0, error, 1e-6);
 }
 
+TEST_F(WingComponentSegment, InterpolateOnLine_sanityCheck)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
+
+    double xsi = 0;
+    double error = 0.;
+
+    // check xsi values at eta = 0
+    for (double xsi_current = 0; xsi_current <=1.0001; xsi_current += 0.1) {
+        compSegment.InterpolateOnLine(0.0, xsi_current, 0.10398, xsi_current, 0.0, xsi, error);
+        EXPECT_NEAR(xsi_current, xsi, 1e-6);
+        EXPECT_NEAR(0.0, error, 1e-6);
+    }
+}
+
+TEST_F(WingComponentSegment, InterpolateOnLine_accuracyCheck)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
+
+    double xsi = 0;
+    double error = 0.;
+
+    // check xsi values at iso-xsi line
+    for (double eta_current = 0; eta_current <=0.103981; eta_current += 0.010398) {
+        compSegment.InterpolateOnLine(0.0, 0.4, 0.10398, 0.4, eta_current, xsi, error);
+        EXPECT_NEAR(0.4, xsi, 1e-6);
+        EXPECT_NEAR(0.0, error, 1e-6);
+    }
+}
+
 TEST_F(WingComponentSegmentSimple, IntersectEta_cinterface)
 {
     double xsi;
