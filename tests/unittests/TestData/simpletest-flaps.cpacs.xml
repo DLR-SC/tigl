@@ -484,8 +484,8 @@
                 </structure>
                 <controlSurfaces>
                   <trailingEdgeDevices>
-                    <trailingEdgeDevice uID="Flap">
-                      <name>Flap</name>
+                    <trailingEdgeDevice uID="FlapInner">
+                      <name>FlapInner</name>
                       <parentUID>Wing_CS1</parentUID>
                       <outerShape>
                         <innerBorder>
@@ -558,6 +558,88 @@
                               <z>-0.1</z>
                             </innerHingeTranslation>
                             <outerHingeTranslation uID="Flap_outerHingeTranslation2">
+                              <x>0.1</x>
+                              <z>-0.1</z>
+                            </outerHingeTranslation>
+                            <hingeLineRotation>30</hingeLineRotation>
+                          </step>
+                        </steps>
+                      </path>
+                    </trailingEdgeDevice>
+                    <trailingEdgeDevice uID="FlapOuter">
+                      <name>FlapOuter</name>
+                      <parentUID>Wing_CS1</parentUID>
+                      <outerShape>
+                        <innerBorder>
+                          <etaLE>
+                            <eta>0.25</eta>
+                            <referenceUID>Cpacs2Test_Wing_Seg_2_3</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.25</eta>
+                            <referenceUID>Cpacs2Test_Wing_Seg_2_3</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.75</xsi>
+                            <referenceUID>Cpacs2Test_Wing_Seg_2_3</referenceUID>
+                          </xsiLE>
+                          <leadingEdgeShape>
+                            <relHeightLE>0.5</relHeightLE>
+                            <xsiUpperSkin>0.8</xsiUpperSkin>
+                            <xsiLowerSkin>0.8</xsiLowerSkin>
+                          </leadingEdgeShape>
+                        </innerBorder>
+                        <outerBorder>
+                          <etaLE>
+                            <eta>0.75</eta>
+                            <referenceUID>Cpacs2Test_Wing_Seg_2_3</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.75</eta>
+                            <referenceUID>Cpacs2Test_Wing_Seg_2_3</referenceUID>
+                          </etaTE>
+                          <xsiLE>
+                            <xsi>0.75</xsi>
+                            <referenceUID>Cpacs2Test_Wing_Seg_2_3</referenceUID>
+                          </xsiLE>
+                          <leadingEdgeShape>
+                            <relHeightLE>0.5</relHeightLE>
+                            <xsiUpperSkin>0.8</xsiUpperSkin>
+                            <xsiLowerSkin>0.8</xsiLowerSkin>
+                          </leadingEdgeShape>
+                        </outerBorder>
+                      </outerShape>
+                      <path>
+                        <innerHingePoint>
+                          <hingeXsi>0.8</hingeXsi>
+                          <hingeRelHeight>0.5</hingeRelHeight>
+                        </innerHingePoint>
+                        <outerHingePoint>
+                          <hingeXsi>0.8</hingeXsi>
+                          <hingeRelHeight>0.5</hingeRelHeight>
+                        </outerHingePoint>
+                        <steps>
+                          <step>
+                            <controlParameter>0.0</controlParameter>
+                            <innerHingeTranslation uID="FlapOuter_innerHingeTranslation1">
+                              <x>0.0</x>
+                              <y>0.0</y>
+                              <z>0.0</z>
+                            </innerHingeTranslation>
+                            <outerHingeTranslation uID="FlapOuter_outerHingeTranslation1">
+                              <x>0.0</x>
+                              <z>0.0</z>
+                            </outerHingeTranslation>
+                            <hingeLineRotation>0.0</hingeLineRotation>
+                          </step>
+                          <step>
+                            <controlParameter>1</controlParameter>
+                            <innerHingeTranslation uID="FlapOuter_innerHingeTranslation2">
+                              <x>0.1</x>
+                              <y>0.0</y>
+                              <z>-0.1</z>
+                            </innerHingeTranslation>
+                            <outerHingeTranslation uID="FlapOuter_outerHingeTranslation2">
                               <x>0.1</x>
                               <z>-0.1</z>
                             </outerHingeTranslation>
