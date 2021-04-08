@@ -252,7 +252,8 @@ TEST_F(TiglControlSurfaceDeviceSimple, setControlParameterAndExport)
 
 TEST_F(TiglControlSurfaceDeviceSimple, bug_780_reference_segment)
 {
-    // a test for Github issue #780
+    // a test for Github issue #780, the flap should extend from eta 0.25
+    // to eta 0.75 relative to the outer segment, not the component segment
     auto& manager = tigl::CCPACSConfigurationManager::GetInstance();
     auto& config = manager.GetConfiguration(tiglHandle);
     auto& wing = config.GetWing(1);
