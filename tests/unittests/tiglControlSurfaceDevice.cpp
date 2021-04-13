@@ -32,6 +32,8 @@
 #include "GeomLProp_SLProps.hxx"
 #include "gp_Pln.hxx"
 #include "Geom_Plane.hxx"
+#include "CNamedShape.h"
+#include "tiglcommonfunctions.h"
 
 using namespace std;
 
@@ -72,6 +74,41 @@ class TiglControlSurfaceDevice : public ::testing::Test {
 TixiDocumentHandle TiglControlSurfaceDevice::tixiHandle = 0;
 TiglCPACSConfigurationHandle TiglControlSurfaceDevice::tiglHandle = 0;
 
+
+class TiglControlSurfaceDeviceSimple : public ::testing::Test {
+ protected:
+  static void SetUpTestCase() {
+        const char* filename = "TestData/simpletest-flaps.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+  }
+
+  static void TearDownTestCase() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+  }
+
+  virtual void SetUp() {}
+  virtual void TearDown() {}
+
+
+  static TixiDocumentHandle           tixiHandle;
+  static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+
+TixiDocumentHandle TiglControlSurfaceDeviceSimple::tixiHandle = 0;
+TiglCPACSConfigurationHandle TiglControlSurfaceDeviceSimple::tiglHandle = 0;
 //#########################################################################################################
 
 TEST_F(TiglControlSurfaceDevice, tiglGetControlSurfaceCount)
@@ -207,9 +244,28 @@ TEST_F(TiglControlSurfaceDevice, CCPACSTrailingEdgeDevices)
     ASSERT_THROW(devices.GetTrailingEdgeDevice("WrongUID"), tigl::CTiglError);
 }
 
-TEST(TiglControlSurfaceDeviceSimple, setControlParameterAndExport)
+TEST_F(TiglControlSurfaceDeviceSimple, setControlParameterAndExport)
 {
-    TiglHandleWrapper handle("TestData/simpletest-flaps.cpacs.xml", "");
-    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceSetControlParameter(handle, "Flap", 1.0));
-    tiglExportConfiguration(handle, "TestData/export/simpletest-flaps.stp", TIGL_TRUE, 0.0);
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceSetControlParameter(tiglHandle, "FlapInner", 1.0));
+    tiglExportConfiguration(tiglHandle, "TestData/export/simpletest-flaps.stp", TIGL_TRUE, 0.0);
+}
+
+TEST_F(TiglControlSurfaceDeviceSimple, bug_780_reference_segment)
+{
+    // a test for Github issue #780, the flap should extend from eta 0.25
+    // to eta 0.75 relative to the outer segment, not the component segment
+    auto& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    auto& config = manager.GetConfiguration(tiglHandle);
+    auto& wing = config.GetWing(1);
+    auto& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+    auto& devices = *componentSegment.GetControlSurfaces()->GetTrailingEdgeDevices();
+    auto& outer_flap = devices.GetTrailingEdgeDevice(2);
+    auto flap_shape = outer_flap.GetFlapShape()->Shape();
+
+    //To Do: With OpenCascade 7.x we can calculate a tight bounding box, instead of checking for
+    //the extremal points along the y-axis
+    gp_Pnt min, max;
+    GetMinMaxPoint(flap_shape, gp_Vec(0., 1., 0.), min, max);
+    EXPECT_NEAR(min.Y(), 1.25, 1e-2);
+    EXPECT_NEAR(max.Y(), 1.75, 1e-2);
 }

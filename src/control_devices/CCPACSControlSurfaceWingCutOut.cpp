@@ -24,6 +24,7 @@
 #include "Debugging.h"
 #include "generated/CPACSCutOutControlPoint.h"
 #include "CControlSurfaceBorderBuilder.h"
+#include "tigletaxsifunctions.h"
 
 #include <gp_Vec.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
@@ -125,10 +126,10 @@ CCPACSControlSurfaceWingCutOut::GetCutoutCS(bool isInnerBorder, const CCPACSCont
         throw CTiglError("Cutout border of '" + GetParent()->GetUID() + "' requires etaLE and etaTE values to proceed.");
     }
 
-    double lEta = cutOutBorder->GetEtaLE_choice2().value().GetEta();
-    double lXsi = outerShapeBorder->getXsiLE();
-    double tEta = cutOutBorder->GetEtaTE_choice2().value().GetEta();
-    double tXsi = outerShapeBorder->getXsiTE();
+    double lEta = transformEtaToCSOrTed(cutOutBorder->GetEtaLE_choice2().value(), *m_uidMgr);
+    double lXsi = transformXsiToCSOrTed(outerShapeBorder->GetXsiLE(), *m_uidMgr);
+    double tEta = transformEtaToCSOrTed(cutOutBorder->GetEtaTE_choice2().value(), *m_uidMgr);
+    double tXsi = outerShapeBorder->getXsiTE(); // this is always 1.0
 
     const auto& segment = ComponentSegment(*this);
     gp_Pnt pLE = segment.GetPoint(lEta, lXsi);

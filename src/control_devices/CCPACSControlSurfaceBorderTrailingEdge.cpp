@@ -20,6 +20,7 @@
 #include "CControlSurfaceBorderBuilder.h"
 #include "CCPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "tigletaxsifunctions.h"
 
 #include "CNamedShape.h"
 #include "Debugging.h"
@@ -106,8 +107,10 @@ TopoDS_Wire CCPACSControlSurfaceBorderTrailingEdge::GetAirfoilWire(CTiglControlS
 CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceBorderTrailingEdge::GetCoordinateSystem(gp_Vec upDir) const
 {
     const auto& segment = ComponentSegment(*this);
-    gp_Pnt pLE = segment.GetPoint(getEtaLE(), getXsiLE());
-    gp_Pnt pTE = segment.GetPoint(getEtaTE(), getXsiTE());
+    auto& etaLE = GetEtaLE();
+    auto& etaTE = GetEtaTE().is_initialized()? GetEtaTE().value() : GetEtaLE();
+    gp_Pnt pLE = segment.GetPoint(transformEtaToCSOrTed(etaLE, *m_uidMgr), getXsiLE());
+    gp_Pnt pTE = segment.GetPoint(transformEtaToCSOrTed(etaTE, *m_uidMgr), getXsiTE());
 
     CTiglControlSurfaceBorderCoordinateSystem coords(pLE, pTE, upDir);
     return coords;
