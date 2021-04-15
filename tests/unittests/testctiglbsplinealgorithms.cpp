@@ -1,4 +1,5 @@
 #include "test.h"
+#include "testUtils.h"
 #include "CTiglError.h"
 
 #include "tigl_internal.h"
@@ -35,16 +36,6 @@
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <GeomConvert.hxx>
-
-
-Handle(Geom_BSplineSurface) loadSurface(const std::string& filename)
-{
-    BRep_Builder builder;
-    TopoDS_Shape shape;
-
-    BRepTools::Read(shape, filename.c_str(), builder);
-    return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
-}
 
 Handle(Geom_BSplineCurve) createBSpline(const std::vector<gp_Pnt>& poles, const std::vector<double>& knots, int degree)
 {
@@ -1295,6 +1286,40 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinderClosed)
     std::vector<std::pair<double, double> > intersection_params_vector = CTiglBSplineAlgorithms::intersections(splines_u_vector[5], splines_v_vector[2]);
 }
 
+/// Regression with occt 7.4.0
+TEST(TiglBSplineAlgorithms, testIntersection_Bug783_1)
+{
+    auto profile = LoadBSplineCurve("TestData/bugs/783/11_profile.brep");
+    auto guide = LoadBSplineCurve("TestData/bugs/783/11_guide.brep");
+
+    ASSERT_FALSE(profile.IsNull());
+    ASSERT_FALSE(guide.IsNull());
+
+    auto result = CTiglBSplineAlgorithms::intersections(profile, guide);
+    ASSERT_EQ(1, result.size());
+
+    // Result from OCCT 6.9.x
+    EXPECT_NEAR(0.25, result.front().first, 1e-6);
+    EXPECT_NEAR(0.215758, result.front().second, 1e-6);
+}
+
+/// Regression with occt 7.4.0
+TEST(TiglBSplineAlgorithms, testIntersection_Bug783_2)
+{
+    auto profile = LoadBSplineCurve("TestData/bugs/783/12_profile.brep");
+    auto guide = LoadBSplineCurve("TestData/bugs/783/12_guide.brep");
+
+    ASSERT_FALSE(profile.IsNull());
+    ASSERT_FALSE(guide.IsNull());
+
+    auto result = CTiglBSplineAlgorithms::intersections(profile, guide);
+    ASSERT_EQ(1, result.size());
+
+    // Result from OCCT 6.9.x
+    EXPECT_NEAR(0.25, result.front().first, 1e-6);
+    EXPECT_NEAR(0.0, result.front().second, 1e-6);
+}
+
 TEST(TiglBSplineAlgorithms, findKinks)
 {
     int degree = 3;
@@ -1437,7 +1462,7 @@ TEST(TiglBSplineAlgorithms, knotsFromParamsClosed)
 
 TEST(TiglBSplineAlgorithms, trimSurfaceBug)
 {
-    auto surface = loadSurface("TestData/bugs/582/surface.brep");
+    auto surface = LoadBSplineSurface("TestData/bugs/582/surface.brep");
 
     surface = CTiglBSplineAlgorithms::trimSurface(surface, 0., 1., 0.49999999999999988898, 0.6666666666666666296);
 
