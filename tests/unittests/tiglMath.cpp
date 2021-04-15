@@ -24,7 +24,9 @@
 #include "CTiglTransformation.h"
 
 #include "CCPACSTransformation.h"
+#include "tiglMatrix.h"
 
+#include <cstdlib>
 
 TEST(TiglMath, factorial)
 {
@@ -469,4 +471,38 @@ TEST(TiglMath, SVD)
     EXPECT_NEAR(USVt(3,3), A(3,3), 1e-8);
 
 
+}
+
+TEST(TiglMath, matrixIO)
+{
+    // This test checks matrix io routines by writing and reading a matrix
+    // and comparing it to the reference values
+
+    auto randfloat = [](Standard_Real min, Standard_Real max) {
+        Standard_Real random = ((Standard_Real) std::rand()) / static_cast<Standard_Real>(RAND_MAX);
+        Standard_Real range = max - min;
+        return (random*range) + min;
+    };
+
+    tigl::tiglMatrix matRef(1, 5, 2, 7);
+    // some random initialization
+    for (int i = matRef.LowerRow(); i <= matRef.UpperRow(); ++i) {
+        for (int j = matRef.LowerCol(); j <= matRef.UpperCol(); ++j) {
+            matRef.Value(i, j) = randfloat(1.0, 2.0);
+        }
+    }
+
+    tigl::writeMatrix(matRef, "tmpMatrix.mat");
+    auto mat = tigl::readMatrix("tmpMatrix.mat");
+
+    ASSERT_EQ(mat.LowerCol(), matRef.LowerCol());
+    ASSERT_EQ(mat.UpperCol(), matRef.UpperCol());
+    ASSERT_EQ(mat.LowerRow(), matRef.LowerRow());
+    ASSERT_EQ(mat.UpperRow(), matRef.UpperRow());
+
+    for (int i = matRef.LowerRow(); i <= matRef.UpperRow(); ++i) {
+        for (int j = matRef.LowerCol(); j <= matRef.UpperCol(); ++j) {
+            EXPECT_EQ(matRef.Value(i, j), mat.Value(i, j));
+        }
+    }
 }
