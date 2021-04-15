@@ -770,26 +770,29 @@ std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersections(co
             intersection_params_vector.push_back(std::make_pair(param1, param2));
         }
         else {
-            throw CTiglError("Curves do not intersect each other", TIGL_MATH_ERROR);
+            continue;
         }
 
+        double parTol1 = (spline1->LastParameter() - spline1->FirstParameter())* 1e-6;
+        double parTol2 = (spline2->LastParameter() - spline2->FirstParameter())* 1e-6;
+
         // for closed B-splines:
-        if (intersectionObj.NbExtrema() == 1 && spline1->IsClosed() && std::abs(param1 - spline1->Knot(1)) < 1e-6) {
+        if (intersectionObj.NbExtrema() == 1 && spline1->IsClosed() && std::abs(param1 - spline1->FirstParameter()) < parTol1) {
             // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the end of the closed curve, so add it by hand
             intersection_params_vector.push_back(std::make_pair(spline1->Knot(spline1->NbKnots()), param2));
         }
 
-        if (intersectionObj.NbExtrema() == 1 && spline1->IsClosed() && std::abs(param1 - spline1->Knot(spline1->NbKnots())) < 1e-6) {
+        if (intersectionObj.NbExtrema() == 1 && spline1->IsClosed() && std::abs(param1 - spline1->LastParameter()) < parTol1) {
             // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the beginning of the closed curve, so add it by hand
             intersection_params_vector.push_back(std::make_pair(spline1->Knot(1), param2));
         }
 
-        if (intersectionObj.NbExtrema() == 1 && spline2->IsClosed() && std::abs(param2 - spline2->Knot(1)) < 1e-6) {
+        if (intersectionObj.NbExtrema() == 1 && spline2->IsClosed() && std::abs(param2 - spline2->FirstParameter()) < parTol2) {
             // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the end of the closed curve, so add it by hand
             intersection_params_vector.push_back(std::make_pair(param1, spline2->Knot(spline2->NbKnots())));
         }
 
-        if (intersectionObj.NbExtrema() == 1 && spline2->IsClosed() && std::abs(param2 - spline2->Knot(spline2->NbKnots())) < 1e-6) {
+        if (intersectionObj.NbExtrema() == 1 && spline2->IsClosed() && std::abs(param2 - spline2->LastParameter()) < parTol2) {
             // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the beginning of the closed curve, so add it by hand
             intersection_params_vector.push_back(std::make_pair(param1, spline2->Knot(1)));
         }
