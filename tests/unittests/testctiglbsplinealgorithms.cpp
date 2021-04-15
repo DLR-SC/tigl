@@ -22,6 +22,7 @@
 #include <CTiglCurvesToSurface.h>
 #include <CTiglConcatSurfaces.h>
 #include <tiglcommonfunctions.h>
+#include <tiglMatrix.h>
 
 #include <BSplCLib.hxx>
 #include <BRepTools.hxx>
@@ -1482,9 +1483,51 @@ protected:
     virtual void SetUp()
     {
         // get the name of the folder with the B-spline network data
-        path_profiles = "TestData/CurveNetworks/" + GetParam() + "/profiles.brep";
-        path_guides = "TestData/CurveNetworks/" + GetParam() + "/guides.brep";
+        std::string path_profiles = "TestData/CurveNetworks/" + GetParam() + "/profiles.brep";
+        std::string path_guides = "TestData/CurveNetworks/" + GetParam() + "/guides.brep";
         path_output = "TestData/CurveNetworks/" + GetParam() + "/result_gordon.brep";
+
+        // first read the brep-input file
+        TopoDS_Shape shape_u;
+
+        BRep_Builder builder_u;
+
+        BRepTools::Read(shape_u, path_profiles.c_str(), builder_u);
+
+        TopExp_Explorer Explorer;
+        // get the splines in u-direction from the Edges
+        splines_u_vector.clear();
+        for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+            TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+            double beginning = 0;
+            double end = 1;
+            Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+            Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+            splines_u_vector.push_back(spline);
+        }
+
+        // v-directional B-spline curves
+        // first read the BRep-input file
+        TopoDS_Shape shape_v;
+
+        BRep_Builder builder_v;
+
+        BRepTools::Read(shape_v, path_guides.c_str(), builder_v);
+
+        // now filter out the Edges
+        TopTools_IndexedMapOfShape mapEdges_v;
+        TopExp::MapShapes(shape_v, TopAbs_EDGE, mapEdges_v);
+
+        // get the splines in v-direction from the Edges
+        splines_v_vector.clear();
+        for (Explorer.Init(shape_v, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+            TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+            double beginning = 0;
+            double end = 1;
+            Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+            Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+            splines_v_vector.push_back(spline);
+        }
     }
 
     void TearDown()
@@ -1492,59 +1535,99 @@ protected:
     }
 
     // name of the folder with the B-spline network data
-    std::string path_profiles;
-    std::string path_guides;
+    std::vector<Handle(Geom_Curve)> splines_v_vector, splines_u_vector;
     std::string path_output;
+
 };
 
 TEST_P(GordonSurface, testFromBRep)
 {
-    // u-directional B-spline curves
-    // first read the brep-input file
-    TopoDS_Shape shape_u;
-
-    BRep_Builder builder_u;
-
-    BRepTools::Read(shape_u, path_profiles.c_str(), builder_u);
-
-    TopExp_Explorer Explorer;
-    // get the splines in u-direction from the Edges
-    std::vector<Handle(Geom_Curve)> splines_u_vector;
-    for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
-        TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
-        double beginning = 0;
-        double end = 1;
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
-        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
-        splines_u_vector.push_back(spline);
-    }
-
-    // v-directional B-spline curves
-    // first read the BRep-input file
-    TopoDS_Shape shape_v;
-
-    BRep_Builder builder_v;
-
-    BRepTools::Read(shape_v, path_guides.c_str(), builder_v);
-
-    // now filter out the Edges
-    TopTools_IndexedMapOfShape mapEdges_v;
-    TopExp::MapShapes(shape_v, TopAbs_EDGE, mapEdges_v);
-
-    // get the splines in v-direction from the Edges
-    std::vector<Handle(Geom_Curve)> splines_v_vector;
-    for (Explorer.Init(shape_v, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
-        TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
-        double beginning = 0;
-        double end = 1;
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
-        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
-        splines_v_vector.push_back(spline);
-    }
 
     Handle(Geom_BSplineSurface) gordonSurface = CTiglInterpolateCurveNetwork(splines_u_vector, splines_v_vector, 3e-4).Surface();
     BRepTools::Write(BRepBuilderAPI_MakeFace(gordonSurface, Precision::Confusion()), path_output.c_str());
 }
+
+TEST_P(GordonSurface, testIntersectionRegressions)
+{
+    math_Matrix intersection_params_u(0, splines_u_vector.size() - 1,
+                                      0, splines_v_vector.size() - 1);
+    math_Matrix intersection_params_v(0, splines_u_vector.size() - 1,
+                                      0, splines_v_vector.size() - 1);
+
+
+    std::vector<Handle(Geom_BSplineCurve)> profiles, guides;
+
+    for (auto profile : splines_u_vector) {
+        Handle(Geom_BSplineCurve) c = Handle(Geom_BSplineCurve)::DownCast(profile);
+        CTiglBSplineAlgorithms::reparametrizeBSpline(*c, 0, 1, 1e-15);
+        profiles.push_back(c);
+    }
+
+    for (auto profile : splines_v_vector) {
+        Handle(Geom_BSplineCurve) c = Handle(Geom_BSplineCurve)::DownCast(profile);
+        CTiglBSplineAlgorithms::reparametrizeBSpline(*c, 0, 1, 1e-15);
+        guides.push_back(c);
+    }
+
+    auto readIntersections = [](const std::string& filename) {
+        auto mat = readMatrix(filename);
+
+        std::vector<std::pair<double, double>> intersections;
+
+        for (int i=1; i<=mat.UpperRow(); ++i) {
+            intersections.push_back({mat(i, 1), mat(i, 2)});
+        }
+
+        return intersections;
+    };
+
+    double spatialTol = 1e-3;
+
+    unsigned int iprofile=0;
+    for (auto profile : splines_u_vector) {
+        unsigned int iguide = 0;
+        for (auto guide : splines_v_vector) {
+            // compute intersections
+            auto profileBspl = Handle(Geom_BSplineCurve)::DownCast(profile);
+            auto guideBspl = Handle(Geom_BSplineCurve)::DownCast(guide);
+
+            double splines_scale = (CTiglBSplineAlgorithms::scale(profileBspl) + CTiglBSplineAlgorithms::scale(guideBspl)) / 2.;
+
+            auto intersections = CTiglBSplineAlgorithms::intersections(profileBspl, guideBspl, spatialTol / splines_scale);
+
+            // read reference intersections
+            std::stringstream str;
+            str << "TestData/CurveNetworks/" << GetParam() << "/" << iprofile << "_" << iguide << "_intersections.mat";
+            auto referenceInters = readIntersections(str.str());
+
+            ASSERT_TRUE(referenceInters.size() > 0);
+
+            // we should at least find the same number of intersections than the reference implementation
+            ASSERT_TRUE(referenceInters.size() <= intersections.size());
+
+            // check that each old intersection is found
+            for (auto refInter : referenceInters) {
+                bool found = std::find_if(std::begin(intersections), std::end(intersections), [&](const std::pair<double, double>& result) {
+                    double tol = 1e-5;
+                    return std::fabs(refInter.first - result.first) <= tol && std::fabs(refInter.second - result.second) <= tol;
+                }) != std::end(intersections);
+
+                EXPECT_TRUE(found);
+            }
+
+            // check that all computed intersections are truely intersections
+            for (const auto& inter : intersections) {
+                auto p1 = profile->Value(inter.first);
+                auto p2 = guide->Value(inter.second);
+                EXPECT_TRUE(p1.Distance(p2) <= spatialTol);
+            }
+
+            iguide++;
+        }
+        iprofile++;
+    }
+}
+
 
 INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "nacelle",
