@@ -19,8 +19,10 @@
 #include <boost/atomic.hpp>
 #include <string>
 #include <map>
+#include <Geom_Curve.hxx>
 
 class TopoDS_Shape;
+class Geom_Curve;
 
 namespace tigl
 {
@@ -69,6 +71,8 @@ public:
 
     // stores shape and dumps it in case the scope is left by exception
     void addShape(const TopoDS_Shape& shape, const std::string& filename);
+
+    void addShape(const Handle(Geom_Curve) & curve, const std::string& filename);
 
     // dumps the shape to the filesystem immediately
     void dumpShape(const TopoDS_Shape& shape, const std::string& filename);

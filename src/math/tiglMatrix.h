@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "tigl_internal.h"
+
 #include <math_Matrix.hxx>
 
 namespace tigl
@@ -29,9 +31,9 @@ typedef math_Vector tiglVector;
 /// be different on varying platforms.
 ///
 /// The corresponding read function should be used only on the same system
-void writeMatrix(const tiglMatrix& x, const std::string& filename);
+TIGL_EXPORT void writeMatrix(const tiglMatrix& x, const std::string& filename);
 
 
-tiglMatrix readMatrix(const std::string& filename);
+TIGL_EXPORT tiglMatrix readMatrix(const std::string& filename);
 
 }
