@@ -262,7 +262,9 @@ namespace
             G(1) = 2. * diff.Dot(d1);
             G(2) = -2. * diff.Dot(d2);
 
-            // we add a large penalty, if the variables go outside the valid range
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,2,0)
+            // OCCT < 7.2.0 does not support bound bfgs optimization. Hence, we add soft constraints instead by
+            // adding a large penalty of 1e7, if the variables go outside the valid range
             double u_penalty = sqr(maxval(0., m_c1->FirstParameter() - u)) + sqr(maxval(0., u - m_c1->LastParameter()));
             double v_penalty = sqr(maxval(0., m_c2->FirstParameter() - v)) + sqr(maxval(0., v - m_c2->LastParameter()));
 
@@ -273,7 +275,7 @@ namespace
             F += fac*(u_penalty + v_penalty);
             G(1) += fac*d_u_penalty;
             G(2) += fac*d_v_penalty;
-
+#endif
             return true;
         }
 
@@ -343,15 +345,36 @@ std::vector<tigl::CurveIntersectionResult> IntersectBSplines(const Handle(Geom_B
         guess(1) = 0.5*(boxes.b1.range.min + boxes.b1.range.max);
         guess(2) = 0.5*(boxes.b2.range.min + boxes.b2.range.max);
 
+
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,1)
         math_BFGS optimizer(obj.NbVariables(), 1e-8, 50, 1e-8);
+
+  #if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
+        // OCCT Added bound optimization with 7.2.0
+        math_Vector lb(1, 2), ub(1, 2);
+        lb(1) = boxes.b1.range.min;
+        lb(2) = boxes.b2.range.min;
+        ub(1) = boxes.b1.range.max;
+        ub(2) = boxes.b2.range.max;
+        optimizer.SetBoundary(lb, ub);
+  #endif
         optimizer.Perform(obj, guess);
 #else
         math_BFGS optimizer(obj, guess, 1e-12);
 #endif
 
-        double u = Clamp(optimizer.Location().Value(1), curve1->FirstParameter(), curve1->LastParameter());
-        double v = Clamp(optimizer.Location().Value(2), curve2->FirstParameter(), curve2->LastParameter());
+        double u = optimizer.Location().Value(1);
+        double v = optimizer.Location().Value(2);
+
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,2,0)
+        u = Clamp(u, curve1->FirstParameter(), curve1->LastParameter());
+        v = Clamp(v, curve2->FirstParameter(), curve2->LastParameter());
+
+#else
+        assert(lb(1) <= u && u <= ub(1));
+        assert(lb(2) <= v && v <= ub(2));
+#endif
+
         CurveIntersectionResult result;
         result.parmOnCurve1 = u;
         result.parmOnCurve2 = v;
