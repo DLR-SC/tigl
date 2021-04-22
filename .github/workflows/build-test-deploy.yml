@@ -258,6 +258,8 @@ jobs:
         cd build
         cd tests/unittests/
         ./TiGL-unittests --gtest_shuffle --gtest_output=xml:test_results.xml
+        cd ../integrationtests/
+        ./TiGL-integrationtests --gtest_shuffle --gtest_output=xml:test_int_results.xml
       if: contains(matrix.config.name, 'Ubuntu-Release') || contains(matrix.config.os, 'macos')
       
     - name: Run unit tests (windows)
@@ -268,6 +270,8 @@ jobs:
         cmake --build . --target tigl-java-demo
         cd tests\unittests
         .\TiGL-unittests.exe --gtest_shuffle --gtest_output=xml:test_results.xml
+        cd ..\integrationtests
+        .\TiGL-integrationtests --gtest_shuffle --gtest_output=xml:test_int_results.xml
       if: contains(matrix.config.os, 'windows')
     
     - name: Create coverage report (ubuntu debug)
