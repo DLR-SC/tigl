@@ -137,19 +137,17 @@ namespace generated
 
     void CPACSControlSurfaceWingCutOut::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "upperSkin", "lowerSkin", "cutOutProfileControlPoint", "cutOutProfiles", "innerBorder", "outerBorder" };
-
         // write element upperSkin
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperSkin", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperSkin");
         m_upperSkin.WriteCPACS(tixiHandle, xpath + "/upperSkin");
 
         // write element lowerSkin
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lowerSkin", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerSkin");
         m_lowerSkin.WriteCPACS(tixiHandle, xpath + "/lowerSkin");
 
         // write element cutOutProfileControlPoint
         if (m_cutOutProfileControlPoint) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cutOutProfileControlPoint", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cutOutProfileControlPoint");
             m_cutOutProfileControlPoint->WriteCPACS(tixiHandle, xpath + "/cutOutProfileControlPoint");
         }
         else {
@@ -160,7 +158,7 @@ namespace generated
 
         // write element cutOutProfiles
         if (m_cutOutProfiles) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cutOutProfiles", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cutOutProfiles");
             m_cutOutProfiles->WriteCPACS(tixiHandle, xpath + "/cutOutProfiles");
         }
         else {
@@ -171,7 +169,7 @@ namespace generated
 
         // write element innerBorder
         if (m_innerBorder) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/innerBorder", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/innerBorder");
             m_innerBorder->WriteCPACS(tixiHandle, xpath + "/innerBorder");
         }
         else {
@@ -182,7 +180,7 @@ namespace generated
 
         // write element outerBorder
         if (m_outerBorder) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/outerBorder", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/outerBorder");
             m_outerBorder->WriteCPACS(tixiHandle, xpath + "/outerBorder");
         }
         else {

@@ -104,19 +104,17 @@ namespace generated
 
     void CPACSControlSurfaceOuterShapeTrailingEdge::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "innerBorder", "outerBorder", "intermediateAirfoils" };
-
         // write element innerBorder
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/innerBorder", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/innerBorder");
         m_innerBorder.WriteCPACS(tixiHandle, xpath + "/innerBorder");
 
         // write element outerBorder
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/outerBorder", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/outerBorder");
         m_outerBorder.WriteCPACS(tixiHandle, xpath + "/outerBorder");
 
         // write element intermediateAirfoils
         if (m_intermediateAirfoils) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/intermediateAirfoils", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/intermediateAirfoils");
             m_intermediateAirfoils->WriteCPACS(tixiHandle, xpath + "/intermediateAirfoils");
         }
         else {

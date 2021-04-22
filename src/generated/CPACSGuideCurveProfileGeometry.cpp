@@ -126,8 +126,6 @@ namespace generated
 
     void CPACSGuideCurveProfileGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "pointList" };
-
         // write attribute symmetry
         if (m_symmetry) {
             tixi::TixiSaveAttribute(tixiHandle, xpath, "symmetry", TiglSymmetryAxisToString(*m_symmetry));
@@ -142,12 +140,12 @@ namespace generated
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element name
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/name", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
         tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
 
         // write element description
         if (m_description) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/description", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
             tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
         }
         else {
@@ -157,7 +155,7 @@ namespace generated
         }
 
         // write element pointList
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/pointList", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/pointList");
         m_pointList.WriteCPACS(tixiHandle, xpath + "/pointList");
 
     }

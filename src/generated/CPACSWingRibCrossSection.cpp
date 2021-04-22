@@ -128,15 +128,13 @@ namespace generated
 
     void CPACSWingRibCrossSection::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "material", "ribRotation", "ribCell", "upperCap", "lowerCap" };
-
         // write element material
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/material", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
         m_material.WriteCPACS(tixiHandle, xpath + "/material");
 
         // write element ribRotation
         if (m_ribRotation) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/ribRotation", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
             m_ribRotation->WriteCPACS(tixiHandle, xpath + "/ribRotation");
         }
         else {
@@ -147,7 +145,7 @@ namespace generated
 
         // write element ribCell
         if (m_ribCell) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/ribCell", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribCell");
             m_ribCell->WriteCPACS(tixiHandle, xpath + "/ribCell");
         }
         else {
@@ -158,7 +156,7 @@ namespace generated
 
         // write element upperCap
         if (m_upperCap) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperCap", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
             m_upperCap->WriteCPACS(tixiHandle, xpath + "/upperCap");
         }
         else {
@@ -169,7 +167,7 @@ namespace generated
 
         // write element lowerCap
         if (m_lowerCap) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lowerCap", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
             m_lowerCap->WriteCPACS(tixiHandle, xpath + "/lowerCap");
         }
         else {

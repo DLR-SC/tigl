@@ -137,22 +137,20 @@ namespace generated
 
     void CPACSControlSurfaceTrackType::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "eta", "trackType", "trackSubType", "actuator", "trackStructure" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element eta
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/eta", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta");
         m_eta.WriteCPACS(tixiHandle, xpath + "/eta");
 
         // write element trackType
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/trackType", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trackType");
         tixi::TixiSaveElement(tixiHandle, xpath + "/trackType", CPACSControlSurfaceTrackType_trackTypeToString(m_trackType));
 
         // write element trackSubType
         if (m_trackSubType) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/trackSubType", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trackSubType");
             tixi::TixiSaveElement(tixiHandle, xpath + "/trackSubType", CPACSControlSurfaceTrackType_trackSubTypeToString(*m_trackSubType));
         }
         else {
@@ -163,7 +161,7 @@ namespace generated
 
         // write element actuator
         if (m_actuator) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/actuator", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/actuator");
             m_actuator->WriteCPACS(tixiHandle, xpath + "/actuator");
         }
         else {
@@ -174,7 +172,7 @@ namespace generated
 
         // write element trackStructure
         if (m_trackStructure) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/trackStructure", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trackStructure");
             m_trackStructure->WriteCPACS(tixiHandle, xpath + "/trackStructure");
         }
         else {

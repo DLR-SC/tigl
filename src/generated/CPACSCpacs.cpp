@@ -77,7 +77,6 @@ namespace generated
             }
         }
 
-
     }
 
     void CPACSCpacs::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const

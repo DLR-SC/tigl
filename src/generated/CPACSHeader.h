@@ -73,8 +73,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetVersion() const;
         TIGL_EXPORT virtual void SetVersion(const std::string& value);
 
-        TIGL_EXPORT virtual const std::string& GetCpacsVersion() const;
-        TIGL_EXPORT virtual void SetCpacsVersion(const std::string& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetCpacsVersion() const;
+        TIGL_EXPORT virtual void SetCpacsVersion(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const boost::optional<CPACSUpdates>& GetUpdates() const;
         TIGL_EXPORT virtual boost::optional<CPACSUpdates>& GetUpdates();
@@ -100,8 +100,11 @@ namespace generated
         /// Version of initial CPACS dataset
         std::string                   m_version;
 
-        /// CPACS version that the dataset is valid to
-        std::string                   m_cpacsVersion;
+        /// CPACS version that the dataset is valid to. The element is optional, since data sets 
+        /// can be valid for several CPACS versions. However, we strongly recommend to assign data sets to a
+        /// specific CPACS version as far as possible, especially since some tools and libraries (e.g. TiGL) 
+        /// require this specification.
+        boost::optional<std::string>  m_cpacsVersion;
 
         boost::optional<CPACSUpdates> m_updates;
 

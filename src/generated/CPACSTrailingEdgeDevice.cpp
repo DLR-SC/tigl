@@ -178,18 +178,16 @@ namespace generated
 
     void CPACSTrailingEdgeDevice::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "parentUID", "outerShape", "wingCutOut", "structure", "path", "tracks" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element name
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/name", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
         tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
 
         // write element description
         if (m_description) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/description", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
             tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
         }
         else {
@@ -199,16 +197,16 @@ namespace generated
         }
 
         // write element parentUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/parentUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/parentUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/parentUID", m_parentUID);
 
         // write element outerShape
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/outerShape", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/outerShape");
         m_outerShape.WriteCPACS(tixiHandle, xpath + "/outerShape");
 
         // write element wingCutOut
         if (m_wingCutOut) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/wingCutOut", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/wingCutOut");
             m_wingCutOut->WriteCPACS(tixiHandle, xpath + "/wingCutOut");
         }
         else {
@@ -219,7 +217,7 @@ namespace generated
 
         // write element structure
         if (m_structure) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/structure", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structure");
             m_structure->WriteCPACS(tixiHandle, xpath + "/structure");
         }
         else {
@@ -229,12 +227,12 @@ namespace generated
         }
 
         // write element path
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/path", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/path");
         m_path.WriteCPACS(tixiHandle, xpath + "/path");
 
         // write element tracks
         if (m_tracks) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/tracks", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tracks");
             m_tracks->WriteCPACS(tixiHandle, xpath + "/tracks");
         }
         else {

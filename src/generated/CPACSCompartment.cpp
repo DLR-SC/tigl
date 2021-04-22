@@ -120,8 +120,6 @@ namespace generated
 
     void CPACSCompartment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "geometry", "name", "description", "designVolume" };
-
         // write attribute uID
         if (m_uID) {
             tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
@@ -133,12 +131,12 @@ namespace generated
         }
 
         // write element geometry
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/geometry", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/geometry");
         m_geometry.WriteCPACS(tixiHandle, xpath + "/geometry");
 
         // write element name
         if (m_name) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/name", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
             tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
         }
         else {
@@ -149,7 +147,7 @@ namespace generated
 
         // write element description
         if (m_description) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/description", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
             tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
         }
         else {
@@ -160,7 +158,7 @@ namespace generated
 
         // write element designVolume
         if (m_designVolume) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/designVolume", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/designVolume");
             tixi::TixiSaveElement(tixiHandle, xpath + "/designVolume", *m_designVolume);
         }
         else {

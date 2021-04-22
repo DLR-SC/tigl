@@ -123,22 +123,20 @@ namespace generated
 
     void CPACSContourReference::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "airfoilUID", "rotX", "scalY", "scalZ" };
-
         // write element airfoilUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/airfoilUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/airfoilUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/airfoilUID", m_airfoilUID);
 
         // write element rotX
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/rotX", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotX");
         tixi::TixiSaveElement(tixiHandle, xpath + "/rotX", m_rotX);
 
         // write element scalY
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/scalY", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/scalY");
         tixi::TixiSaveElement(tixiHandle, xpath + "/scalY", m_scalY);
 
         // write element scalZ
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/scalZ", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/scalZ");
         tixi::TixiSaveElement(tixiHandle, xpath + "/scalZ", m_scalZ);
 
     }

@@ -121,18 +121,16 @@ namespace generated
 
     void CPACSSheet3D::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "sheetPoints" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element name
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/name", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
         tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
 
         // write element description
         if (m_description) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/description", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
             tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
         }
         else {
@@ -142,7 +140,7 @@ namespace generated
         }
 
         // write element sheetPoints
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sheetPoints", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sheetPoints");
         m_sheetPoints.WriteCPACS(tixiHandle, xpath + "/sheetPoints");
 
     }

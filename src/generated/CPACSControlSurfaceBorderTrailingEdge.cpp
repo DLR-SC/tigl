@@ -143,15 +143,13 @@ namespace generated
 
     void CPACSControlSurfaceBorderTrailingEdge::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "etaLE", "etaTE", "xsiLE", "innerShape", "leadingEdgeShape", "airfoil" };
-
         // write element etaLE
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/etaLE", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaLE");
         m_etaLE.WriteCPACS(tixiHandle, xpath + "/etaLE");
 
         // write element etaTE
         if (m_etaTE) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/etaTE", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaTE");
             m_etaTE->WriteCPACS(tixiHandle, xpath + "/etaTE");
         }
         else {
@@ -161,12 +159,12 @@ namespace generated
         }
 
         // write element xsiLE
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/xsiLE", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsiLE");
         m_xsiLE.WriteCPACS(tixiHandle, xpath + "/xsiLE");
 
         // write element innerShape
         if (m_innerShape) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/innerShape", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/innerShape");
             m_innerShape->WriteCPACS(tixiHandle, xpath + "/innerShape");
         }
         else {
@@ -177,7 +175,7 @@ namespace generated
 
         // write element leadingEdgeShape
         if (m_leadingEdgeShape) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/leadingEdgeShape", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/leadingEdgeShape");
             m_leadingEdgeShape->WriteCPACS(tixiHandle, xpath + "/leadingEdgeShape");
         }
         else {
@@ -188,7 +186,7 @@ namespace generated
 
         // write element airfoil
         if (m_airfoil) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/airfoil", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/airfoil");
             m_airfoil->WriteCPACS(tixiHandle, xpath + "/airfoil");
         }
         else {

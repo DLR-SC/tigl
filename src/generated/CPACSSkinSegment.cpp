@@ -157,30 +157,28 @@ namespace generated
 
     void CPACSSkinSegment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "sheetElementUID", "startFrameUID", "endFrameUID", "startStringerUID", "endStringerUID" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element sheetElementUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sheetElementUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sheetElementUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/sheetElementUID", m_sheetElementUID);
 
         // write element startFrameUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/startFrameUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/startFrameUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/startFrameUID", m_startFrameUID);
 
         // write element endFrameUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/endFrameUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/endFrameUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/endFrameUID", m_endFrameUID);
 
         // write element startStringerUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/startStringerUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/startStringerUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/startStringerUID", m_startStringerUID);
 
         // write element endStringerUID
         if (m_endStringerUID) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/endStringerUID", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/endStringerUID");
             tixi::TixiSaveElement(tixiHandle, xpath + "/endStringerUID", *m_endStringerUID);
         }
         else {

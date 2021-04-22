@@ -41,7 +41,7 @@ namespace generated
     /// 
     /// 
     /// 
-    class CPACSTransformation2D : public CTiglReqUIDObject
+    class CPACSTransformation2D : public CTiglOptUIDObject
     {
     public:
         TIGL_EXPORT CPACSTransformation2D(CCPACSProfileBasedStructuralElement* parent, CTiglUIDManager* uidMgr);
@@ -61,8 +61,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::string& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const boost::optional<CCPACSPointXY>& GetScaling() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPointXY>& GetScaling();
@@ -87,7 +87,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                    m_uID;
+        boost::optional<std::string>   m_uID;
 
         /// Scaling of the structural profile
         boost::optional<CCPACSPointXY> m_scaling;

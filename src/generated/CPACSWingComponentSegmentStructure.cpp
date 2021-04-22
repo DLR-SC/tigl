@@ -133,19 +133,17 @@ namespace generated
 
     void CPACSWingComponentSegmentStructure::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "upperShell", "lowerShell", "ribsDefinitions", "spars" };
-
         // write element upperShell
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperShell", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperShell");
         m_upperShell.WriteCPACS(tixiHandle, xpath + "/upperShell");
 
         // write element lowerShell
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lowerShell", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerShell");
         m_lowerShell.WriteCPACS(tixiHandle, xpath + "/lowerShell");
 
         // write element ribsDefinitions
         if (m_ribsDefinitions) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/ribsDefinitions", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribsDefinitions");
             m_ribsDefinitions->WriteCPACS(tixiHandle, xpath + "/ribsDefinitions");
         }
         else {
@@ -156,7 +154,7 @@ namespace generated
 
         // write element spars
         if (m_spars) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/spars", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/spars");
             m_spars->WriteCPACS(tixiHandle, xpath + "/spars");
         }
         else {

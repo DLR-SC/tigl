@@ -151,33 +151,31 @@ namespace generated
 
     void CPACSWingRibCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "fromRib", "toRib", "ribRotation", "material", "upperCap", "lowerCap" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element fromRib
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/fromRib", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromRib");
         tixi::TixiSaveElement(tixiHandle, xpath + "/fromRib", m_fromRib);
 
         // write element toRib
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/toRib", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toRib");
         tixi::TixiSaveElement(tixiHandle, xpath + "/toRib", m_toRib);
 
         // write element ribRotation
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/ribRotation", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotation");
         m_ribRotation.WriteCPACS(tixiHandle, xpath + "/ribRotation");
 
         // write element material
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/material", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
         m_material.WriteCPACS(tixiHandle, xpath + "/material");
 
         // write element upperCap
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperCap", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
         m_upperCap.WriteCPACS(tixiHandle, xpath + "/upperCap");
 
         // write element lowerCap
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lowerCap", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
         m_lowerCap.WriteCPACS(tixiHandle, xpath + "/lowerCap");
 
     }

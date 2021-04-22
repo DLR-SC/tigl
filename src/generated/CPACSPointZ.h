@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
 #include "CTiglUIDObject.h"
@@ -37,7 +39,7 @@ namespace generated
     /// 
     /// Point type, containing a z data.
     /// 
-    class CPACSPointZ : public CTiglReqUIDObject
+    class CPACSPointZ : public CTiglOptUIDObject
     {
     public:
         TIGL_EXPORT CPACSPointZ(CPACSTransformation2D* parent, CTiglUIDManager* uidMgr);
@@ -57,8 +59,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::string& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const double& GetZ() const;
         TIGL_EXPORT virtual void SetZ(const double& value);
@@ -68,10 +70,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string m_uID;
+        boost::optional<std::string> m_uID;
 
         /// Z-Component
-        double      m_z;
+        double                       m_z;
 
     private:
         CPACSPointZ(const CPACSPointZ&) = delete;

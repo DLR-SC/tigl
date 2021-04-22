@@ -47,7 +47,7 @@ namespace generated
     /// 
     /// Point type, containing an xyz data triplet.
     /// 
-    class CPACSPoint : public CTiglReqUIDObject
+    class CPACSPoint : public CTiglOptUIDObject
     {
     public:
         TIGL_EXPORT CPACSPoint(CPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr);
@@ -96,8 +96,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::string& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const std::string& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const boost::optional<double>& GetX() const;
         TIGL_EXPORT virtual void SetX(const boost::optional<double>& value);
@@ -114,16 +114,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string             m_uID;
+        boost::optional<std::string> m_uID;
 
         /// X-Component
-        boost::optional<double> m_x;
+        boost::optional<double>      m_x;
 
         /// Y-Component
-        boost::optional<double> m_y;
+        boost::optional<double>      m_y;
 
         /// Z-Component
-        boost::optional<double> m_z;
+        boost::optional<double>      m_z;
 
     private:
         CPACSPoint(const CPACSPoint&) = delete;

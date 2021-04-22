@@ -130,18 +130,16 @@ namespace generated
 
     void CPACSStructuralProfile3D::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "pointList", "sheetList3D" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element name
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/name", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
         tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
 
         // write element description
         if (m_description) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/description", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
             tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
         }
         else {
@@ -151,11 +149,11 @@ namespace generated
         }
 
         // write element pointList
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/pointList", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/pointList");
         m_pointList.WriteCPACS(tixiHandle, xpath + "/pointList");
 
         // write element sheetList3D
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sheetList3D", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sheetList3D");
         m_sheetList3D.WriteCPACS(tixiHandle, xpath + "/sheetList3D");
 
     }

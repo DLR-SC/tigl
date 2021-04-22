@@ -158,34 +158,32 @@ namespace generated
 
     void CPACSSparCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "fromEta", "toEta", "upperCap", "lowerCap", "web1", "web2", "rotation" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element fromEta
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/fromEta", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromEta");
         m_fromEta.WriteCPACS(tixiHandle, xpath + "/fromEta");
 
         // write element toEta
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/toEta", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toEta");
         m_toEta.WriteCPACS(tixiHandle, xpath + "/toEta");
 
         // write element upperCap
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperCap", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
         m_upperCap.WriteCPACS(tixiHandle, xpath + "/upperCap");
 
         // write element lowerCap
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lowerCap", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
         m_lowerCap.WriteCPACS(tixiHandle, xpath + "/lowerCap");
 
         // write element web1
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/web1", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web1");
         m_web1.WriteCPACS(tixiHandle, xpath + "/web1");
 
         // write element web2
         if (m_web2) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/web2", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web2");
             m_web2->WriteCPACS(tixiHandle, xpath + "/web2");
         }
         else {
@@ -195,7 +193,7 @@ namespace generated
         }
 
         // write element rotation
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/rotation", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
         tixi::TixiSaveElement(tixiHandle, xpath + "/rotation", m_rotation);
 
     }

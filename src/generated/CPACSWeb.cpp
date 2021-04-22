@@ -111,14 +111,12 @@ namespace generated
 
     void CPACSWeb::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "material", "relPos" };
-
         // write element material
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/material", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
         m_material.WriteCPACS(tixiHandle, xpath + "/material");
 
         // write element relPos
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/relPos", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/relPos");
         tixi::TixiSaveElement(tixiHandle, xpath + "/relPos", m_relPos);
 
     }

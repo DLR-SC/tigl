@@ -99,14 +99,12 @@ namespace generated
 
     void CPACSWingSpar::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "sparPositions", "sparSegments" };
-
         // write element sparPositions
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sparPositions", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositions");
         m_sparPositions.WriteCPACS(tixiHandle, xpath + "/sparPositions");
 
         // write element sparSegments
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sparSegments", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparSegments");
         m_sparSegments.WriteCPACS(tixiHandle, xpath + "/sparSegments");
 
     }

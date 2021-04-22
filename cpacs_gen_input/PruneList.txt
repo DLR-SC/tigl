@@ -8,43 +8,7 @@ CPACSStudies
 CPACSMaterial
 
 // in toolspecific
-CPACSAcCrashTool
-CPACSAeroFuseTool
-CPACSAeroPoleTool
-CPACSAirportFeesTool
-CPACSBoxBeamTool
-CPACSCabinTool
-//CPACSCFDTool
-CPACSCmuTool
-CPACSComradeTool
-CPACSDelisToolspecific
-CPACSDirectOC
-CPACSELWiSTool
-CPACSFDesignTool
-CPACSFDesignRCTool
-CPACSFDSTool
-CPACSGeogenTool
-CPACSHandbookAeroTool
-CPACSHaremTool
-CPACSHostTool
-CPACSLgDesignTool
-CPACSLiftingLineTool
-CPACSMapet2CTool
-CPACSMaseratiTool
-CPACSMisSimTool
-CPACSModGenTool
-CPACSPanamTool
-CPACSParamamSbotTool
-CPACSRofumaTool
-CPACSSBotPlusTool
-CPACSSectmeshPamcrashTool
-CPACSSteffsTool
-CPACSTornadoTool
-CPACSTrafumoTool
-CPACSTWDatTool
-CPACSVampZeroTool
-CPACSVSAeroTool
-CPACSParadiseTool
+CPACSToolspecific
 
 // in vehicles
 CPACSFuels

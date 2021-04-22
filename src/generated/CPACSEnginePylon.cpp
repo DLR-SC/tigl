@@ -171,8 +171,6 @@ namespace generated
 
     void CPACSEnginePylon::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "parentUID", "transformation", "sections", "segments", "positionings" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
@@ -188,7 +186,7 @@ namespace generated
 
         // write element name
         if (m_name) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/name", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
             tixi::TixiSaveElement(tixiHandle, xpath + "/name", *m_name);
         }
         else {
@@ -199,7 +197,7 @@ namespace generated
 
         // write element description
         if (m_description) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/description", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
             tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
         }
         else {
@@ -209,16 +207,16 @@ namespace generated
         }
 
         // write element parentUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/parentUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/parentUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/parentUID", m_parentUID);
 
         // write element transformation
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/transformation", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
         m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
         // write element sections
         if (m_sections) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sections", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sections");
             m_sections->WriteCPACS(tixiHandle, xpath + "/sections");
         }
         else {
@@ -229,7 +227,7 @@ namespace generated
 
         // write element segments
         if (m_segments) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/segments", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/segments");
             m_segments->WriteCPACS(tixiHandle, xpath + "/segments");
         }
         else {
@@ -240,7 +238,7 @@ namespace generated
 
         // write element positionings
         if (m_positionings) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/positionings", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positionings");
             m_positionings->WriteCPACS(tixiHandle, xpath + "/positionings");
         }
         else {

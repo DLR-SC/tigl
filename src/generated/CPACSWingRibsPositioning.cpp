@@ -89,7 +89,7 @@ namespace generated
 
         // read element startCurvePoint
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/startCurvePoint")) {
-            m_startCurvePoint_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this), m_uidMgr);
+            m_startCurvePoint_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this));
             try {
                 m_startCurvePoint_choice2->ReadCPACS(tixiHandle, xpath + "/startCurvePoint");
             } catch(const std::exception& e) {
@@ -120,7 +120,7 @@ namespace generated
 
         // read element endCurvePoint
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/endCurvePoint")) {
-            m_endCurvePoint_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this), m_uidMgr);
+            m_endCurvePoint_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this));
             try {
                 m_endCurvePoint_choice2->ReadCPACS(tixiHandle, xpath + "/endCurvePoint");
             } catch(const std::exception& e) {
@@ -577,7 +577,7 @@ namespace generated
     CCPACSCurvePoint& CPACSWingRibsPositioning::GetStartCurvePoint_choice2(CreateIfNotExistsTag)
     {
         if (!m_startCurvePoint_choice2)
-            m_startCurvePoint_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this), m_uidMgr);
+            m_startCurvePoint_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this));
         return *m_startCurvePoint_choice2;
     }
 
@@ -601,7 +601,7 @@ namespace generated
     CCPACSCurvePoint& CPACSWingRibsPositioning::GetEndCurvePoint_choice2(CreateIfNotExistsTag)
     {
         if (!m_endCurvePoint_choice2)
-            m_endCurvePoint_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this), m_uidMgr);
+            m_endCurvePoint_choice2 = boost::in_place(reinterpret_cast<CCPACSWingRibsPositioning*>(this));
         return *m_endCurvePoint_choice2;
     }
 

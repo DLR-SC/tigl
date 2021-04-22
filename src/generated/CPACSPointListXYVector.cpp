@@ -81,14 +81,12 @@ namespace generated
 
     void CPACSPointListXYVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "x", "y" };
-
         // write element x
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/x", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
         m_x.WriteCPACS(tixiHandle, xpath + "/x");
 
         // write element y
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/y", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
         m_y.WriteCPACS(tixiHandle, xpath + "/y");
 
     }
