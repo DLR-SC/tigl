@@ -157,6 +157,7 @@ namespace
         BoundingBox h2(curve2);
         
         if (!h1.Intersects(h2, tolerance)) {
+            // Bounding boxes do not intersect. No intersection possible
             return {};
         }
         
@@ -164,6 +165,7 @@ namespace
         double c2_curvature = curvature(curve2);
         double max_curvature = 1.0005;
         
+        // If both curves are linear enough, we can stop refining
         if (c1_curvature <= max_curvature && c2_curvature <= max_curvature) {
             // both curves are now almost linear. check approximate distance between line segments
             tigl::CTiglLineSegment l1(curve1->Pole(1).XYZ(), curve1->Pole(curve1->NbPoles()).XYZ());
@@ -181,6 +183,7 @@ namespace
         double curve2MidParm = 0.5*(curve2->FirstParameter() + curve2->LastParameter());
         
         if (c1_curvature > max_curvature && c2_curvature > max_curvature) {
+            // Refine both curves by splitting them in the parametric center
             Handle_Geom_BSplineCurve c11 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1->FirstParameter(), curve1MidParm);
             Handle_Geom_BSplineCurve c12 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1MidParm, curve1->LastParameter());
             
@@ -200,6 +203,7 @@ namespace
             return result1;
         }
         else if (c1_curvature <= max_curvature && max_curvature < c2_curvature) {
+            // Refine only curve 2
             Handle_Geom_BSplineCurve c21 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2->FirstParameter(), curve2MidParm);
             Handle_Geom_BSplineCurve c22 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2MidParm, curve2->LastParameter());
             
@@ -210,6 +214,7 @@ namespace
             return result1;
         }
         else if (c2_curvature <= max_curvature && max_curvature < c1_curvature) {
+            // Refine only curve 1
             Handle_Geom_BSplineCurve c11 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1->FirstParameter(), curve1MidParm);
             Handle_Geom_BSplineCurve c12 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1MidParm, curve1->LastParameter());
             
