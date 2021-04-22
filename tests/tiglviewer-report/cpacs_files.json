@@ -1,0 +1,24 @@
+[
+  {
+    "cpacs_file": "../unittests/TestData/simpletest.cpacs.xml"
+  },
+  {
+    "cpacs_file": "../unittests/TestData/simple_test_guide_curves.xml"
+  },
+  {
+    "cpacs_file": "../unittests/TestData/fuselage_structure-v3.xml",
+    "extra_screenshots" :
+    [
+      {
+        "name": "structure",
+        "script": "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"half_bulkhead\"));\napp.viewer.viewAxo();\napp.viewer.fitAll();\n"
+      }
+    ]
+  },
+  {
+    "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/concorde.cpacs3.xml"
+  },
+  {
+    "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/ariane.xml"
+  }
+]
