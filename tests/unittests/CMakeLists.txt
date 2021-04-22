@@ -1,32 +1,10 @@
-# Set a default build type if none was specified
-if(NOT DEFINED CMAKE_BUILD_TYPE)
-  message(STATUS "Setting build type to 'Release' as none was specified.")
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
-  # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
-    "MinSizeRel" "RelWithDebInfo")
-endif()
-
-cmake_minimum_required(VERSION 3.0)
-project (TiGL-unittests)
-
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
-if (NOT TARGET tigl3_cpp)
-    find_package(tigl3_cpp CONFIG REQUIRED)
-endif()
-
-if (NOT TARGET gtest)
-    include(AddGoogleTest)
-endif()
-
 file (GLOB test_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
 
-set (test_BIN ${PROJECT_NAME})
+set (test_BIN "TiGL-unittests")
 
 
 add_executable(${test_BIN} ${test_SRCS} )
-target_link_libraries(${test_BIN} PUBLIC gtest tigl3_static tigl3_cpp)
+target_link_libraries(${test_BIN} PUBLIC gtest tigl3_static tigl3_cpp tiglCommonTestUtils)
 
 ADD_CUSTOM_TARGET(check_tigl ${test_BIN} --gtest_output=xml DEPENDS ${test_BIN} COMMENT "Executing unit tests..." VERBATIM SOURCES ${test_SRCS})
 
