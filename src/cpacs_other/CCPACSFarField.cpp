@@ -38,8 +38,8 @@
 namespace tigl
 {
 
-CCPACSFarField::CCPACSFarField(CCPACSCFDTool* parent) 
-    : generated::CPACSFarField(parent)
+CCPACSFarField::CCPACSFarField()
+    : generated::CPACSFarField()
 {
     init();
 }

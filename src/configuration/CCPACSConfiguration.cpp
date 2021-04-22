@@ -55,7 +55,7 @@ namespace tigl
 
 // Constructor
 CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
-    : tixiDocumentHandle(tixiHandle), header(nullptr), farField(nullptr)
+    : tixiDocumentHandle(tixiHandle), header(nullptr)
 {
 }
 

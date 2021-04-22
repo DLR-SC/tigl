@@ -22,7 +22,6 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSHeader.h"
-#include "CPACSToolspecific.h"
 #include "CPACSVehicles.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -247,21 +246,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSVehicles>& GetVehicles() const;
         TIGL_EXPORT virtual boost::optional<CPACSVehicles>& GetVehicles();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSToolspecific>& GetToolspecific() const;
-        TIGL_EXPORT virtual boost::optional<CPACSToolspecific>& GetToolspecific();
-
         TIGL_EXPORT virtual CPACSVehicles& GetVehicles(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveVehicles();
-
-        TIGL_EXPORT virtual CPACSToolspecific& GetToolspecific(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveToolspecific();
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
         CPACSHeader                        m_header;
         boost::optional<CPACSVehicles>     m_vehicles;
-        boost::optional<CPACSToolspecific> m_toolspecific;
 
     private:
         CPACSCpacs(const CPACSCpacs&) = delete;

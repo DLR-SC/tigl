@@ -19,7 +19,7 @@
 #ifndef CCPACSFARFIELD_H
 #define CCPACSFARFIELD_H
 
-#include "generated/CPACSFarField.h"
+#include "CPACSFarField.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "CCPACSTransformation.h"
 #include "tixi.h"
@@ -32,7 +32,7 @@ namespace tigl
 class CCPACSFarField : public generated::CPACSFarField, public CTiglAbstractGeometricComponent
 {
 public:
-    TIGL_EXPORT CCPACSFarField(CCPACSCFDTool* parent);
+    TIGL_EXPORT CCPACSFarField();
 
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 

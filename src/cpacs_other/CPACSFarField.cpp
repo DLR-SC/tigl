@@ -16,7 +16,6 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSCFDTool.h"
 #include "CPACSFarField.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,42 +26,14 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSFarField::CPACSFarField(CPACSCFDTool* parent)
+    CPACSFarField::CPACSFarField()
         : m_referenceLength(0)
         , m_multiplier(0)
     {
-        //assert(parent != NULL);
-        m_parent = parent;
     }
 
     CPACSFarField::~CPACSFarField()
     {
-    }
-
-    const CPACSCFDTool* CPACSFarField::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSCFDTool* CPACSFarField::GetParent()
-    {
-        return m_parent;
-    }
-
-    const CTiglUIDObject* CPACSFarField::GetNextUIDParent() const
-    {
-        if (m_parent) {
-            return m_parent->GetNextUIDParent();
-        }
-        return nullptr;
-    }
-
-    CTiglUIDObject* CPACSFarField::GetNextUIDParent()
-    {
-        if (m_parent) {
-            return m_parent->GetNextUIDParent();
-        }
-        return nullptr;
     }
 
     void CPACSFarField::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
