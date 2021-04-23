@@ -168,7 +168,7 @@ header-includes: \\usepackage{color}
                 expected_screenshot_string = "**\\textcolor{red}{**FAILED**}**"
 
             screenshot_path = os.path.join(screenshot_dir, basename + '-' + x + '.jpg')
-            if os.path.exists(expected_screenshot_path):
+            if os.path.exists(screenshot_path):
                 screenshot_string = "![](" + screenshot_path + "){width=40%}"
             else:
                 screenshot_string = "**\\textcolor{red}{**FAILED**}**"
