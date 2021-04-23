@@ -477,7 +477,6 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingCells.h"
 %include "generated/CPACSWingShell.h"
 %include "CCPACSWingShell.h"
-%include "CPACSFarField.h"
 %include "CCPACSFarField.h"
 %include "generated/CPACSLinkToFileType_format.h"
 %include "generated/CPACSLinkToFile.h"
