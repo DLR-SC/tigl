@@ -23,6 +23,9 @@ def open_input_file(input_file, download_dir):
     to the url of the file. The file can be a local path or an online resource. If the path
     starts with \"http\" it will be downloaded from the given url.
 
+    If the dict has the optional key \"before_script\", the associated value will be
+    interpreted as js commands that are to be run before a screenshot is taken.
+
     If the dict has the optional key \"extra_screenshots\", the associated value will be
     interpreted as a list of dicts with the required keys \"name\" and \"script\". These
     dicts can be used to add custom screenshots labeled by \"name\" for the CPACS file. The
@@ -84,7 +87,9 @@ app.scene.gridOff();
 
 '''
 
-    def add_screenshot_command(content, screenshot_path):
+    def add_screenshot_command(content, cpacs_dict, screenshot_path):
+        if "before_script" in cpacs_dict.keys():
+            content = content + cpacs_dict["before_script"]
         content = content + "app.viewer.view" + v + "();\napp.viewer.fitAll();"
         content = content + "app.viewer.makeScreenshot(\"" \
                   + screenshot_path \
@@ -99,13 +104,13 @@ app.scene.gridOff();
 
         for v in ["Front", "Back", "Top", "Bottom", "Left", "Right", "Axo"]:
             screenshot_path = Path(os.path.join(screenshot_dir, basename + "-" + v + ".jpg")).as_posix()
-            content = add_screenshot_command(content, screenshot_path)
+            content = add_screenshot_command(content, d, screenshot_path)
 
         if 'extra_screenshots' in d.keys():
             for extra in d["extra_screenshots"]:
                 screenshot_path = Path(os.path.join(screenshot_dir, basename + "-" + extra["name"] + ".jpg")).as_posix()
                 content = content + extra["script"]
-                content = add_screenshot_command(content, screenshot_path)
+                content = add_screenshot_command(content, d, screenshot_path)
 
     content = content + "\napp.close();\n"
 
@@ -187,6 +192,9 @@ to be a list of dicts, one per CPACS file.
 Each dict must have at least a "cpacs_file" key pointing 
 to the url of the file. The file can be a local path or an online resource. If the path
 starts with \"http\" it will be downloaded from the given url.
+
+If the dict has the optional key \"before_script\", the associated value will be
+interpreted as js commands that are to be run before a screenshot is taken.
 
 If the dict has the optional key \"extra_screenshots\", the associated value will be
 interpreted as a list of dicts with the required keys \"name\" and \"script\". These

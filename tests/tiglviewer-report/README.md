@@ -45,6 +45,9 @@ Each dict must have at least a `"cpacs_file"` key pointing
 to the url of the file. The file can be a local path or an online resource. If the path
 starts with `"http"` it will be downloaded from the given url.
 
+If the dict has the optional key `"before_script"`, the associated value will be
+interpreted as js commands that are to be run before a screenshot is taken.
+
 If the dict has the optional key `"extra_screenshots"`, the associated value will be
 interpreted as a list of dicts with the required keys `"name"` and `"script"`. These
 dicts can be used to add custom screenshots labeled by `"name"` for the CPACS file. The
@@ -55,8 +58,12 @@ Example contents for the input file:
 
 ```json
 [
+    { 
+      "cpacs_file":  "input1.xml",
+      "before_script": "app.scene.selectAll();\napp.scene.setTransparency(90);\n" 
+    },
     {
-      "cpacs_file": "input.xml",
+      "cpacs_file": "input2.xml",
       "extra_screenshots" :
          [
             { "name": "structure",
@@ -64,9 +71,7 @@ Example contents for the input file:
             }
         ]
     },
-    {
-        "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/concorde.cpacs3.xml"
-    }
+    { "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/concorde.cpacs3.xml" }
 ]
 ```
 
