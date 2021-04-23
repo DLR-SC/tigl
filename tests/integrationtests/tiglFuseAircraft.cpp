@@ -239,6 +239,6 @@ TEST_P(tiglFuseAircraftCPACS, fusedAircraftMirror)
     ASSERT_TRUE(BRepTools::Write(airplane->Shape(), ("TestData/export/" + name + "_fusedAircraftMirrored.brep").c_str()));
 }
 
-INSTANTIATE_TEST_CASE_P(xrf1, tiglFuseAircraftCPACS, ::testing::Values(
+INSTANTIATE_TEST_CASE_P(D150, tiglFuseAircraftCPACS, ::testing::Values(
                         testcase("D150WithGuides", "D150modelID", 246) 
                         ));
