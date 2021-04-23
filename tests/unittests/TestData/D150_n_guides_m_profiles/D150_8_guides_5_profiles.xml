@@ -6,8 +6,8 @@
     <description>copied some stuff from other versions. Mission is just an example as the D150 might not make it to Newark with Mach 0.84</description>
     <creator>Daniel Boehnke, DLR-LK</creator>
     <timestamp>2010-07-07T12:00:00</timestamp>
-    <version>1.8.0</version>
-    <cpacsVersion>3.1</cpacsVersion>
+    <version>1.9.0</version>
+    <cpacsVersion>3.2</cpacsVersion>
     <updates>
       <update>
         <modification>Updated to 1.4. ControlsSurfaces and Landing Gear by Felix Dorbath</modification>
@@ -85,6 +85,13 @@
         <timestamp>2020-04-26T02:02:06</timestamp>
         <version>1.8.0</version>
         <cpacsVersion>3.1</cpacsVersion>
+      </update>
+      <update>
+        <modification>Converted to CPACS 3.2 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2021-04-23T18:02:25</timestamp>
+        <version>1.9.0</version>
+        <cpacsVersion>3.2</cpacsVersion>
       </update>
     </updates>
   </header>
