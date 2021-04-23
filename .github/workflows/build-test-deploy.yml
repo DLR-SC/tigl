@@ -255,12 +255,15 @@ jobs:
        
     - name: Run unit tests (ubuntu, macos)
       run: |
-        cd build
-        cd tests/unittests/
+        cd build/tests/unittests/
         ./TiGL-unittests --gtest_shuffle --gtest_output=xml:test_results.xml
-        cd ../integrationtests/
-        ./TiGL-integrationtests --gtest_shuffle --gtest_output=xml:test_int_results.xml
       if: contains(matrix.config.name, 'Ubuntu-Release') || contains(matrix.config.os, 'macos')
+
+    - name: Run integration tests (ubuntu, macos)
+      run: |
+        cd build/tests/integrationtests/
+        ./TiGL-integrationtests --gtest_shuffle --gtest_output=xml:test_int_results.xml
+      if: (github.event_name == 'pull' || github.event_name == 'schedule') && (contains(matrix.config.name, 'Ubuntu-Release') || contains(matrix.config.os, 'macos'))
       
     - name: Run unit tests (windows)
       shell: cmd /C call {0}
@@ -270,9 +273,15 @@ jobs:
         cmake --build . --target tigl-java-demo
         cd tests\unittests
         .\TiGL-unittests.exe --gtest_shuffle --gtest_output=xml:test_results.xml
-        cd ..\integrationtests
-        .\TiGL-integrationtests --gtest_shuffle --gtest_output=xml:test_int_results.xml
       if: contains(matrix.config.os, 'windows')
+
+    - name: Run integration tests (windows)
+      shell: cmd /C call {0}
+      run: |
+        set PATH=%cd%\build\install\bin;%PATH%
+        cd build\tests\integrationtests
+        .\TiGL-integrationtests --gtest_shuffle --gtest_output=xml:test_int_results.xml
+      if:  (github.event_name == 'pull' || github.event_name == 'schedule') && contains(matrix.config.os, 'windows')
     
     - name: Create coverage report (ubuntu debug)
       if: contains(matrix.config.name, 'Ubuntu-Debug')
