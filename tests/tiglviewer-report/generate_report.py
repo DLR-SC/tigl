@@ -124,7 +124,8 @@ def create_screenshots(tigl_script):
     :param tigl_script: A js TiGL script
     :return: None
     """
-    subprocess.run(["tiglviewer-3", "--script", tigl_script])
+    subprocess.run(["tiglviewer-3", "--script", tigl_script],
+                   timeout=3600)
 
 
 def generate_pdf_report(cpacs_dicts, output_file, screenshots_expected_dir, screenshot_dir):
