@@ -109,8 +109,6 @@ void CCPACSFuselage::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::
     Cleanup();
 
     generated::CPACSFuselage::ReadCPACS(tixiHandle, fuselageXPath);
-
-    ConnectGuideCurveSegments();
 }
 
 // Returns the parent configuration
@@ -627,27 +625,6 @@ void CCPACSFuselage::BuildGuideCurves(TopoDS_Compound& cache) const
     // connect guide curve segments to a spline with given continuity conditions and tangents
     CTiglCurveConnector connector(roots, sectionParams);
     cache = connector.GetConnectedGuideCurves();
-}
-
-void CCPACSFuselage::ConnectGuideCurveSegments(void)
-{
-    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
-        CCPACSFuselageSegment& segment = GetSegment(isegment);
-
-        if (!segment.GetGuideCurves()) {
-            continue;
-        }
-
-        CCPACSGuideCurves& curves = *segment.GetGuideCurves();
-        for (int icurve = 1; icurve <= curves.GetGuideCurveCount(); ++icurve) {
-            CCPACSGuideCurve& curve = curves.GetGuideCurve(icurve);
-            if (!curve.GetFromRelativeCircumference_choice2()) {
-                std::string fromUID = *curve.GetFromGuideCurveUID_choice1();
-                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromUID);
-                curve.SetFromRelativeCircumference_choice2(fromCurve.GetToRelativeCircumference());
-            }
-        }
-    }
 }
 
 TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTransform, const CTiglFuselageConnection& connection, const TopoDS_Shape& shape)

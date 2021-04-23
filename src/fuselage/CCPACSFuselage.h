@@ -143,8 +143,6 @@ public:
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;
 
-    void ConnectGuideCurveSegments();
-
     // Cleanup routine
     void Cleanup();
 

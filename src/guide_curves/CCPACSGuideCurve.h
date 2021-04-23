@@ -66,6 +66,10 @@ public:
 
     TIGL_EXPORT FromDefinition GetFromDefinition() const;
 
+    // Returns the relalive circumference
+    // If fromUID is set, the relativeCircumference is returned from the specified curve instead
+    TIGL_EXPORT double GetFromRelativeCircumference() const;
+
     TIGL_EXPORT std::vector<gp_Pnt> GetCurvePoints() const;
     TIGL_EXPORT TopoDS_Edge GetCurve() const;
 

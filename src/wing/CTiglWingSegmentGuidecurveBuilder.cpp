@@ -79,20 +79,8 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
     double outerScale = GetLength(outerChordLineWire);
 
 
-    double fromRelativeCircumference;
-    // check if fromRelativeCircumference is given in the current guide curve
-    if (guideCurve->GetFromRelativeCircumference_choice2()) {
-        fromRelativeCircumference = *guideCurve->GetFromRelativeCircumference_choice2();
-    }
-    // otherwise get relative circumference from neighboring segment guide curve
-    else {
-        // get neighboring guide curve UID
-        std::string neighborGuideCurveUID = *guideCurve->GetFromGuideCurveUID_choice1();
-        // get neighboring guide curve
-        const CCPACSGuideCurve& neighborGuideCurve = m_segment.GetGuideCurves()->GetGuideCurve(neighborGuideCurveUID);
-        // get relative circumference from neighboring guide curve
-        fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
-    }
+    // get relative circumference of inner profile
+    double fromRelativeCircumference = guideCurve->GetFromRelativeCircumference();
 
     // get relative circumference of outer profile
     double toRelativeCircumference = guideCurve->GetToRelativeCircumference();
