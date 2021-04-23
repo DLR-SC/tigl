@@ -1,24 +1,25 @@
 [
-  {
-    "cpacs_file": "../unittests/TestData/simpletest.cpacs.xml"
-  },
-  {
-    "cpacs_file": "../unittests/TestData/simple_test_guide_curves.xml"
-  },
+  { "cpacs_file": "../unittests/TestData/bellyfairingtest.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/cell_rib_spar_test.xml" },
+  { "cpacs_file": "../unittests/TestData/cell_rib_spar_test-bugs.xml" },
+  { "cpacs_file": "../unittests/TestData/cell_rib_spar_test-bugs.xml" },
+  { "cpacs_file": "../unittests/TestData/cell_test_spars.xml" },
+  { "cpacs_file": "../unittests/TestData/component-segment-bwb.xml" },
+  { "cpacs_file": "../unittests/TestData/compseg-rotated.xml" },
+  { "cpacs_file": "../unittests/TestData/CPACS_30_CST_simple.xml" },
+  { "cpacs_file": "../unittests/TestData/CPACS_30_CST_simple_bluntTE.xml" },
+  { "cpacs_file": "../unittests/TestData/CPACS_30_D150.xml" },
+  { "cpacs_file": "../unittests/TestData/simple_test_guide_curves.xml" },
   {
     "cpacs_file": "../unittests/TestData/fuselage_structure-v3.xml",
     "extra_screenshots" :
     [
       {
         "name": "structure",
-        "script": "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"half_bulkhead\"));\napp.viewer.viewAxo();\napp.viewer.fitAll();\n"
+        "script": "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"half_bulkhead\"));\napp.viewer.viewAxo();\n"
       }
     ]
   },
-  {
-    "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/concorde.cpacs3.xml"
-  },
-  {
-    "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/ariane.xml"
-  }
+  { "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/concorde.cpacs3.xml" },
+  { "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/ariane.xml" }
 ]
