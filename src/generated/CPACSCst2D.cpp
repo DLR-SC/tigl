@@ -153,39 +153,37 @@ namespace generated
 
     void CPACSCst2D::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "psi", "upperN1", "upperN2", "upperB", "lowerN1", "lowerN2", "lowerB", "trailingEdgeThickness" };
-
         // write element psi
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/psi", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/psi");
         m_psi.WriteCPACS(tixiHandle, xpath + "/psi");
 
         // write element upperN1
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperN1", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperN1");
         tixi::TixiSaveElement(tixiHandle, xpath + "/upperN1", m_upperN1);
 
         // write element upperN2
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperN2", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperN2");
         tixi::TixiSaveElement(tixiHandle, xpath + "/upperN2", m_upperN2);
 
         // write element upperB
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperB", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperB");
         m_upperB.WriteCPACS(tixiHandle, xpath + "/upperB");
 
         // write element lowerN1
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lowerN1", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerN1");
         tixi::TixiSaveElement(tixiHandle, xpath + "/lowerN1", m_lowerN1);
 
         // write element lowerN2
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lowerN2", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerN2");
         tixi::TixiSaveElement(tixiHandle, xpath + "/lowerN2", m_lowerN2);
 
         // write element lowerB
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lowerB", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerB");
         m_lowerB.WriteCPACS(tixiHandle, xpath + "/lowerB");
 
         // write element trailingEdgeThickness
         if (m_trailingEdgeThickness) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/trailingEdgeThickness", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trailingEdgeThickness");
             tixi::TixiSaveElement(tixiHandle, xpath + "/trailingEdgeThickness", *m_trailingEdgeThickness);
         }
         else {

@@ -77,17 +77,6 @@ namespace generated
             }
         }
 
-        // read element toolspecific
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toolspecific")) {
-            m_toolspecific = boost::in_place(this, m_uidMgr);
-            try {
-                m_toolspecific->ReadCPACS(tixiHandle, xpath + "/toolspecific");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read toolspecific at xpath " << xpath << ": " << e.what();
-                m_toolspecific = boost::none;
-            }
-        }
-
     }
 
     void CPACSCpacs::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -104,17 +93,6 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/vehicles")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/vehicles");
-            }
-        }
-
-        // write element toolspecific
-        if (m_toolspecific) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toolspecific");
-            m_toolspecific->WriteCPACS(tixiHandle, xpath + "/toolspecific");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toolspecific")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/toolspecific");
             }
         }
 
@@ -140,16 +118,6 @@ namespace generated
         return m_vehicles;
     }
 
-    const boost::optional<CPACSToolspecific>& CPACSCpacs::GetToolspecific() const
-    {
-        return m_toolspecific;
-    }
-
-    boost::optional<CPACSToolspecific>& CPACSCpacs::GetToolspecific()
-    {
-        return m_toolspecific;
-    }
-
     CPACSVehicles& CPACSCpacs::GetVehicles(CreateIfNotExistsTag)
     {
         if (!m_vehicles)
@@ -160,18 +128,6 @@ namespace generated
     void CPACSCpacs::RemoveVehicles()
     {
         m_vehicles = boost::none;
-    }
-
-    CPACSToolspecific& CPACSCpacs::GetToolspecific(CreateIfNotExistsTag)
-    {
-        if (!m_toolspecific)
-            m_toolspecific = boost::in_place(this, m_uidMgr);
-        return *m_toolspecific;
-    }
-
-    void CPACSCpacs::RemoveToolspecific()
-    {
-        m_toolspecific = boost::none;
     }
 
 } // namespace generated

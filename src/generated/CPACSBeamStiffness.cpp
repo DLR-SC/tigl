@@ -150,37 +150,35 @@ namespace generated
 
     void CPACSBeamStiffness::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "EA", "EIxx", "EIyy", "EIxy", "GIt", "G", "It" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element EA
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/EA", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/EA");
         tixi::TixiSaveElement(tixiHandle, xpath + "/EA", m_EA);
 
         // write element EIxx
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/EIxx", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/EIxx");
         tixi::TixiSaveElement(tixiHandle, xpath + "/EIxx", m_EIxx);
 
         // write element EIyy
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/EIyy", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/EIyy");
         tixi::TixiSaveElement(tixiHandle, xpath + "/EIyy", m_EIyy);
 
         // write element EIxy
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/EIxy", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/EIxy");
         tixi::TixiSaveElement(tixiHandle, xpath + "/EIxy", m_EIxy);
 
         // write element GIt
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/GIt", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/GIt");
         tixi::TixiSaveElement(tixiHandle, xpath + "/GIt", m_GIt);
 
         // write element G
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/G", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/G");
         tixi::TixiSaveElement(tixiHandle, xpath + "/G", m_G);
 
         // write element It
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/It", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/It");
         tixi::TixiSaveElement(tixiHandle, xpath + "/It", m_It);
 
     }

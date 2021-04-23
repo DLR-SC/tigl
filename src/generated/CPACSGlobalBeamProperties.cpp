@@ -167,34 +167,32 @@ namespace generated
 
     void CPACSGlobalBeamProperties::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "materialUID", "source", "consistancy", "beamCrossSection", "beamCOG", "beamShearCenter", "beamStiffness", "beamSpecificMass" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element materialUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/materialUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/materialUID", m_materialUID);
 
         // write element source
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/source", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/source");
         tixi::TixiSaveElement(tixiHandle, xpath + "/source", m_source);
 
         // write element consistancy
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/consistancy", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/consistancy");
         tixi::TixiSaveElement(tixiHandle, xpath + "/consistancy", m_consistancy);
 
         // write element beamCrossSection
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/beamCrossSection", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/beamCrossSection");
         m_beamCrossSection.WriteCPACS(tixiHandle, xpath + "/beamCrossSection");
 
         // write element beamCOG
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/beamCOG", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/beamCOG");
         m_beamCOG.WriteCPACS(tixiHandle, xpath + "/beamCOG");
 
         // write element beamShearCenter
         if (m_beamShearCenter) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/beamShearCenter", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/beamShearCenter");
             m_beamShearCenter->WriteCPACS(tixiHandle, xpath + "/beamShearCenter");
         }
         else {
@@ -205,7 +203,7 @@ namespace generated
 
         // write element beamStiffness
         if (m_beamStiffness) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/beamStiffness", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/beamStiffness");
             m_beamStiffness->WriteCPACS(tixiHandle, xpath + "/beamStiffness");
         }
         else {
@@ -216,7 +214,7 @@ namespace generated
 
         // write element beamSpecificMass
         if (m_beamSpecificMass) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/beamSpecificMass", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/beamSpecificMass");
             tixi::TixiSaveElement(tixiHandle, xpath + "/beamSpecificMass", *m_beamSpecificMass);
         }
         else {

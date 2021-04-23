@@ -105,14 +105,12 @@ namespace generated
 
     void CPACSOuterCutOutProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "profileUID", "rotZ" };
-
         // write element profileUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/profileUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/profileUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/profileUID", m_profileUID);
 
         // write element rotZ
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/rotZ", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotZ");
         tixi::TixiSaveElement(tixiHandle, xpath + "/rotZ", m_rotZ);
 
     }

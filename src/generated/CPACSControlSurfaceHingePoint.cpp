@@ -87,14 +87,12 @@ namespace generated
 
     void CPACSControlSurfaceHingePoint::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "hingeXsi", "hingeRelHeight" };
-
         // write element hingeXsi
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/hingeXsi", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/hingeXsi");
         tixi::TixiSaveElement(tixiHandle, xpath + "/hingeXsi", m_hingeXsi);
 
         // write element hingeRelHeight
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/hingeRelHeight", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/hingeRelHeight");
         tixi::TixiSaveElement(tixiHandle, xpath + "/hingeRelHeight", m_hingeRelHeight);
 
     }

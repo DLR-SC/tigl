@@ -19,7 +19,6 @@
 #ifndef CCPACSFARFIELD_H
 #define CCPACSFARFIELD_H
 
-#include "generated/CPACSFarField.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "CCPACSTransformation.h"
 #include "tixi.h"
@@ -29,12 +28,22 @@
 
 namespace tigl
 {
-class CCPACSFarField : public generated::CPACSFarField, public CTiglAbstractGeometricComponent
+class CCPACSFarField : public CTiglAbstractGeometricComponent
 {
 public:
-    TIGL_EXPORT CCPACSFarField(CCPACSCFDTool* parent);
+    TIGL_EXPORT CCPACSFarField();
 
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+
+    TIGL_EXPORT virtual const TiglFarFieldType& GetType() const;
+    TIGL_EXPORT virtual void SetType(const TiglFarFieldType& value);
+
+    TIGL_EXPORT virtual const double& GetReferenceLength() const;
+    TIGL_EXPORT virtual void SetReferenceLength(const double& value);
+
+    TIGL_EXPORT virtual const double& GetMultiplier() const;
+    TIGL_EXPORT virtual void SetMultiplier(const double& value);
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
@@ -43,7 +52,18 @@ public:
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
 protected:
+    TiglFarFieldType m_type;
+    double           m_referenceLength;
+    double           m_multiplier;
+
     PNamedShape BuildLoft() const override;
+
+private:
+    CCPACSFarField(const CCPACSFarField&) = delete;
+    CCPACSFarField& operator=(const CCPACSFarField&) = delete;
+
+    CCPACSFarField(CCPACSFarField&&) = delete;
+    CCPACSFarField& operator=(CCPACSFarField&&) = delete;
 
 private:
     void init();

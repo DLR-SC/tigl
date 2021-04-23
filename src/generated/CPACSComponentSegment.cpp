@@ -162,18 +162,16 @@ namespace generated
 
     void CPACSComponentSegment::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "fromElementUID", "toElementUID", "structure", "controlSurfaces" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element name
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/name", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
         tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
 
         // write element description
         if (m_description) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/description", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
             tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
         }
         else {
@@ -183,16 +181,16 @@ namespace generated
         }
 
         // write element fromElementUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/fromElementUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromElementUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/fromElementUID", m_fromElementUID);
 
         // write element toElementUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/toElementUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toElementUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/toElementUID", m_toElementUID);
 
         // write element structure
         if (m_structure) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/structure", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structure");
             m_structure->WriteCPACS(tixiHandle, xpath + "/structure");
         }
         else {
@@ -203,7 +201,7 @@ namespace generated
 
         // write element controlSurfaces
         if (m_controlSurfaces) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/controlSurfaces", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/controlSurfaces");
             m_controlSurfaces->WriteCPACS(tixiHandle, xpath + "/controlSurfaces");
         }
         else {

@@ -36,7 +36,7 @@ namespace generated
 
     CPACSTransformation2D::~CPACSTransformation2D()
     {
-        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+        if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
     const CCPACSProfileBasedStructuralElement* CPACSTransformation2D::GetParent() const
@@ -74,12 +74,9 @@ namespace generated
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
             m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-            if (m_uID.empty()) {
-                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
+            if (m_uID->empty()) {
+                LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
             }
-        }
-        else {
-            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
         // read element scaling
@@ -115,19 +112,24 @@ namespace generated
             }
         }
 
-        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+        if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
     }
 
     void CPACSTransformation2D::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "scaling", "rotation", "translation" };
-
         // write attribute uID
-        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+        if (m_uID) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+            }
+        }
 
         // write element scaling
         if (m_scaling) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/scaling", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/scaling");
             m_scaling->WriteCPACS(tixiHandle, xpath + "/scaling");
         }
         else {
@@ -138,7 +140,7 @@ namespace generated
 
         // write element rotation
         if (m_rotation) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/rotation", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotation");
             m_rotation->WriteCPACS(tixiHandle, xpath + "/rotation");
         }
         else {
@@ -149,7 +151,7 @@ namespace generated
 
         // write element translation
         if (m_translation) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/translation", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translation");
             m_translation->WriteCPACS(tixiHandle, xpath + "/translation");
         }
         else {
@@ -160,19 +162,22 @@ namespace generated
 
     }
 
-    const std::string& CPACSTransformation2D::GetUID() const
+    const boost::optional<std::string>& CPACSTransformation2D::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSTransformation2D::SetUID(const std::string& value)
+    void CPACSTransformation2D::SetUID(const boost::optional<std::string>& value)
     {
         if (m_uidMgr && value != m_uID) {
-            if (m_uID.empty()) {
-                m_uidMgr->RegisterObject(value, *this);
+            if (!m_uID && value) {
+                m_uidMgr->RegisterObject(*value, *this);
             }
-            else {
-                m_uidMgr->UpdateObjectUID(m_uID, value);
+            else if (m_uID && !value) {
+                m_uidMgr->TryUnregisterObject(*m_uID);
+            }
+            else if (m_uID && value) {
+                m_uidMgr->UpdateObjectUID(*m_uID, *value);
             }
         }
         m_uID = value;

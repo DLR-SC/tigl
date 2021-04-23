@@ -86,11 +86,9 @@ namespace generated
 
     void CPACSRibRotation::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "ribRotationReference", "z" };
-
         // write element ribRotationReference
         if (m_ribRotationReference) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/ribRotationReference", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribRotationReference");
             tixi::TixiSaveElement(tixiHandle, xpath + "/ribRotationReference", *m_ribRotationReference);
         }
         else {
@@ -100,7 +98,7 @@ namespace generated
         }
 
         // write element z
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/z", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
         tixi::TixiSaveElement(tixiHandle, xpath + "/z", m_z);
 
     }

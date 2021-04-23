@@ -111,17 +111,15 @@ namespace generated
 
     void CPACSTrackActuator::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "actuatorUID", "material" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element actuatorUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/actuatorUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/actuatorUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/actuatorUID", m_actuatorUID);
 
         // write element material
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/material", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
         m_material.WriteCPACS(tixiHandle, xpath + "/material");
 
     }

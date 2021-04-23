@@ -119,11 +119,9 @@ namespace generated
 
     void CPACSMaterialDefinitionForProfileBasedPoint::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "pointUID", "materialUID", "crossSectionArea", "optionalAux1", "optionalAux2" };
-
         // write element pointUID
         if (m_pointUID) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/pointUID", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/pointUID");
             tixi::TixiSaveElement(tixiHandle, xpath + "/pointUID", *m_pointUID);
         }
         else {
@@ -133,16 +131,16 @@ namespace generated
         }
 
         // write element materialUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/materialUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materialUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/materialUID", m_materialUID);
 
         // write element crossSectionArea
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/crossSectionArea", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/crossSectionArea");
         tixi::TixiSaveElement(tixiHandle, xpath + "/crossSectionArea", m_crossSectionArea);
 
         // write element optionalAux1
         if (m_optionalAux1) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/optionalAux1", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/optionalAux1");
             tixi::TixiSaveElement(tixiHandle, xpath + "/optionalAux1", *m_optionalAux1);
         }
         else {
@@ -153,7 +151,7 @@ namespace generated
 
         // write element optionalAux2
         if (m_optionalAux2) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/optionalAux2", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/optionalAux2");
             tixi::TixiSaveElement(tixiHandle, xpath + "/optionalAux2", *m_optionalAux2);
         }
         else {

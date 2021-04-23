@@ -196,11 +196,9 @@ namespace generated
 
     void CPACSTrackStructure::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "controlSurfaceAttachment", "car", "strut1", "strut2", "strut3", "sidePanels", "upperPanel", "lowerPanel", "rollerTrack", "ribs", "fairing" };
-
         // write element controlSurfaceAttachment
         if (m_controlSurfaceAttachment) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/controlSurfaceAttachment", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/controlSurfaceAttachment");
             m_controlSurfaceAttachment->WriteCPACS(tixiHandle, xpath + "/controlSurfaceAttachment");
         }
         else {
@@ -211,7 +209,7 @@ namespace generated
 
         // write element car
         if (m_car) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/car", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/car");
             m_car->WriteCPACS(tixiHandle, xpath + "/car");
         }
         else {
@@ -222,7 +220,7 @@ namespace generated
 
         // write element strut1
         if (m_strut1) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/strut1", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/strut1");
             m_strut1->WriteCPACS(tixiHandle, xpath + "/strut1");
         }
         else {
@@ -233,7 +231,7 @@ namespace generated
 
         // write element strut2
         if (m_strut2) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/strut2", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/strut2");
             m_strut2->WriteCPACS(tixiHandle, xpath + "/strut2");
         }
         else {
@@ -244,7 +242,7 @@ namespace generated
 
         // write element strut3
         if (m_strut3) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/strut3", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/strut3");
             m_strut3->WriteCPACS(tixiHandle, xpath + "/strut3");
         }
         else {
@@ -255,7 +253,7 @@ namespace generated
 
         // write element sidePanels
         if (m_sidePanels) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sidePanels", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sidePanels");
             m_sidePanels->WriteCPACS(tixiHandle, xpath + "/sidePanels");
         }
         else {
@@ -266,7 +264,7 @@ namespace generated
 
         // write element upperPanel
         if (m_upperPanel) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperPanel", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperPanel");
             m_upperPanel->WriteCPACS(tixiHandle, xpath + "/upperPanel");
         }
         else {
@@ -277,7 +275,7 @@ namespace generated
 
         // write element lowerPanel
         if (m_lowerPanel) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lowerPanel", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerPanel");
             m_lowerPanel->WriteCPACS(tixiHandle, xpath + "/lowerPanel");
         }
         else {
@@ -288,7 +286,7 @@ namespace generated
 
         // write element rollerTrack
         if (m_rollerTrack) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/rollerTrack", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rollerTrack");
             m_rollerTrack->WriteCPACS(tixiHandle, xpath + "/rollerTrack");
         }
         else {
@@ -299,7 +297,7 @@ namespace generated
 
         // write element ribs
         if (m_ribs) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/ribs", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribs");
             m_ribs->WriteCPACS(tixiHandle, xpath + "/ribs");
         }
         else {
@@ -310,7 +308,7 @@ namespace generated
 
         // write element fairing
         if (m_fairing) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/fairing", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fairing");
             m_fairing->WriteCPACS(tixiHandle, xpath + "/fairing");
         }
         else {

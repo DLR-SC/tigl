@@ -102,18 +102,16 @@ namespace generated
 
     void CPACSControlSurfacePath::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "innerHingePoint", "outerHingePoint", "steps" };
-
         // write element innerHingePoint
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/innerHingePoint", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/innerHingePoint");
         m_innerHingePoint.WriteCPACS(tixiHandle, xpath + "/innerHingePoint");
 
         // write element outerHingePoint
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/outerHingePoint", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/outerHingePoint");
         m_outerHingePoint.WriteCPACS(tixiHandle, xpath + "/outerHingePoint");
 
         // write element steps
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/steps", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/steps");
         m_steps.WriteCPACS(tixiHandle, xpath + "/steps");
 
     }

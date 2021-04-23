@@ -114,18 +114,16 @@ namespace generated
 
     void CPACSCutOutProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "profileUID", "eta", "rotZ" };
-
         // write element profileUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/profileUID", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/profileUID");
         tixi::TixiSaveElement(tixiHandle, xpath + "/profileUID", m_profileUID);
 
         // write element eta
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/eta", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta");
         m_eta.WriteCPACS(tixiHandle, xpath + "/eta");
 
         // write element rotZ
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/rotZ", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotZ");
         tixi::TixiSaveElement(tixiHandle, xpath + "/rotZ", m_rotZ);
 
     }

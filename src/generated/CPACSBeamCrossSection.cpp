@@ -132,29 +132,27 @@ namespace generated
 
     void CPACSBeamCrossSection::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "area", "xMin", "xMax", "yMin", "yMax" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element area
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/area", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/area");
         tixi::TixiSaveElement(tixiHandle, xpath + "/area", m_area);
 
         // write element xMin
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/xMin", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xMin");
         tixi::TixiSaveElement(tixiHandle, xpath + "/xMin", m_xMin);
 
         // write element xMax
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/xMax", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xMax");
         tixi::TixiSaveElement(tixiHandle, xpath + "/xMax", m_xMax);
 
         // write element yMin
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/yMin", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/yMin");
         tixi::TixiSaveElement(tixiHandle, xpath + "/yMin", m_yMin);
 
         // write element yMax
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/yMax", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/yMax");
         tixi::TixiSaveElement(tixiHandle, xpath + "/yMax", m_yMax);
 
     }

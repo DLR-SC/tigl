@@ -145,7 +145,7 @@ namespace generated
 
     CPACSTransformation::~CPACSTransformation()
     {
-        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+        if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
     const CTiglUIDObject* CPACSTransformation::GetNextUIDParent() const
@@ -255,12 +255,9 @@ namespace generated
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
             m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-            if (m_uID.empty()) {
-                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
+            if (m_uID->empty()) {
+                LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
             }
-        }
-        else {
-            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
         // read element scaling
@@ -296,13 +293,20 @@ namespace generated
             }
         }
 
-        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+        if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
     }
 
     void CPACSTransformation::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         // write attribute uID
-        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+        if (m_uID) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+            }
+        }
 
         // write element scaling
         if (m_scaling) {
@@ -339,19 +343,22 @@ namespace generated
 
     }
 
-    const std::string& CPACSTransformation::GetUID() const
+    const boost::optional<std::string>& CPACSTransformation::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSTransformation::SetUID(const std::string& value)
+    void CPACSTransformation::SetUID(const boost::optional<std::string>& value)
     {
         if (m_uidMgr && value != m_uID) {
-            if (m_uID.empty()) {
-                m_uidMgr->RegisterObject(value, *this);
+            if (!m_uID && value) {
+                m_uidMgr->RegisterObject(*value, *this);
             }
-            else {
-                m_uidMgr->UpdateObjectUID(m_uID, value);
+            else if (m_uID && !value) {
+                m_uidMgr->TryUnregisterObject(*m_uID);
+            }
+            else if (m_uID && value) {
+                m_uidMgr->UpdateObjectUID(*m_uID, *value);
             }
         }
         m_uID = value;

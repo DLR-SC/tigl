@@ -102,14 +102,12 @@ namespace generated
 
     void CPACSAlignmentStringFrame::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "rotationLocX", "translationLocY", "translationLocZ" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element rotationLocX
         if (m_rotationLocX) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/rotationLocX", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotationLocX");
             tixi::TixiSaveElement(tixiHandle, xpath + "/rotationLocX", *m_rotationLocX);
         }
         else {
@@ -120,7 +118,7 @@ namespace generated
 
         // write element translationLocY
         if (m_translationLocY) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/translationLocY", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translationLocY");
             tixi::TixiSaveElement(tixiHandle, xpath + "/translationLocY", *m_translationLocY);
         }
         else {
@@ -131,7 +129,7 @@ namespace generated
 
         // write element translationLocZ
         if (m_translationLocZ) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/translationLocZ", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translationLocZ");
             tixi::TixiSaveElement(tixiHandle, xpath + "/translationLocZ", *m_translationLocZ);
         }
         else {

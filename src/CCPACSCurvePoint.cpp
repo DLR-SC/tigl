@@ -5,11 +5,11 @@
 namespace tigl
 {
 
-CCPACSCurvePoint::CCPACSCurvePoint(CCPACSWingRibExplicitPositioning* parent, CTiglUIDManager* uidMgr)
-: generated::CPACSCurvePoint(parent, uidMgr) {}
+CCPACSCurvePoint::CCPACSCurvePoint(CCPACSWingRibExplicitPositioning* parent)
+: generated::CPACSCurvePoint(parent) {}
 
-CCPACSCurvePoint::CCPACSCurvePoint(CCPACSWingRibsPositioning* parent, CTiglUIDManager* uidMgr)
-: generated::CPACSCurvePoint(parent, uidMgr) {}
+CCPACSCurvePoint::CCPACSCurvePoint(CCPACSWingRibsPositioning* parent)
+: generated::CPACSCurvePoint(parent) {}
 
 void CCPACSCurvePoint::SetEta(const double& value)
 {

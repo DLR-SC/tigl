@@ -138,29 +138,27 @@ namespace generated
 
     void CPACSWingCell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "skin", "positioningLeadingEdge", "positioningTrailingEdge", "positioningInnerBorder", "positioningOuterBorder" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element skin
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/skin", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/skin");
         m_skin.WriteCPACS(tixiHandle, xpath + "/skin");
 
         // write element positioningLeadingEdge
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/positioningLeadingEdge", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningLeadingEdge");
         m_positioningLeadingEdge.WriteCPACS(tixiHandle, xpath + "/positioningLeadingEdge");
 
         // write element positioningTrailingEdge
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/positioningTrailingEdge", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningTrailingEdge");
         m_positioningTrailingEdge.WriteCPACS(tixiHandle, xpath + "/positioningTrailingEdge");
 
         // write element positioningInnerBorder
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/positioningInnerBorder", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningInnerBorder");
         m_positioningInnerBorder.WriteCPACS(tixiHandle, xpath + "/positioningInnerBorder");
 
         // write element positioningOuterBorder
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/positioningOuterBorder", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positioningOuterBorder");
         m_positioningOuterBorder.WriteCPACS(tixiHandle, xpath + "/positioningOuterBorder");
 
     }

@@ -64,7 +64,7 @@ namespace generated
 
     CPACSPoint::~CPACSPoint()
     {
-        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+        if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
     const CTiglUIDObject* CPACSPoint::GetNextUIDParent() const
@@ -80,7 +80,10 @@ namespace generated
                 return GetParent<CPACSSeatModule>();
             }
             if (IsParent<CCPACSTransformation>()) {
-                return GetParent<CCPACSTransformation>();
+                if (GetParent<CCPACSTransformation>()->GetUID())
+                    return GetParent<CCPACSTransformation>();
+                else
+                    return GetParent<CCPACSTransformation>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -99,7 +102,10 @@ namespace generated
                 return GetParent<CPACSSeatModule>();
             }
             if (IsParent<CCPACSTransformation>()) {
-                return GetParent<CCPACSTransformation>();
+                if (GetParent<CCPACSTransformation>()->GetUID())
+                    return GetParent<CCPACSTransformation>();
+                else
+                    return GetParent<CCPACSTransformation>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -120,12 +126,9 @@ namespace generated
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
             m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-            if (m_uID.empty()) {
-                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
+            if (m_uID->empty()) {
+                LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
             }
-        }
-        else {
-            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
         // read element x
@@ -143,19 +146,24 @@ namespace generated
             m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
         }
 
-        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+        if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
     }
 
     void CPACSPoint::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "x", "y", "z" };
-
         // write attribute uID
-        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+        if (m_uID) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+            }
+        }
 
         // write element x
         if (m_x) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/x", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
             tixi::TixiSaveElement(tixiHandle, xpath + "/x", *m_x);
         }
         else {
@@ -166,7 +174,7 @@ namespace generated
 
         // write element y
         if (m_y) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/y", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/y");
             tixi::TixiSaveElement(tixiHandle, xpath + "/y", *m_y);
         }
         else {
@@ -177,7 +185,7 @@ namespace generated
 
         // write element z
         if (m_z) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/z", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
             tixi::TixiSaveElement(tixiHandle, xpath + "/z", *m_z);
         }
         else {
@@ -188,19 +196,22 @@ namespace generated
 
     }
 
-    const std::string& CPACSPoint::GetUID() const
+    const boost::optional<std::string>& CPACSPoint::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSPoint::SetUID(const std::string& value)
+    void CPACSPoint::SetUID(const boost::optional<std::string>& value)
     {
         if (m_uidMgr && value != m_uID) {
-            if (m_uID.empty()) {
-                m_uidMgr->RegisterObject(value, *this);
+            if (!m_uID && value) {
+                m_uidMgr->RegisterObject(*value, *this);
             }
-            else {
-                m_uidMgr->UpdateObjectUID(m_uID, value);
+            else if (m_uID && !value) {
+                m_uidMgr->TryUnregisterObject(*m_uID);
+            }
+            else if (m_uID && value) {
+                m_uidMgr->UpdateObjectUID(*m_uID, *value);
             }
         }
         m_uID = value;

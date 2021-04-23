@@ -22,7 +22,6 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSHeader.h"
-#include "CPACSToolspecific.h"
 #include "CPACSVehicles.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -37,19 +36,27 @@ namespace generated
     // This class is used in:
     /// @brief CPACS root element
     /// 
-    /// Version V3.1
-    /// Date 2019-08-27
+    /// Version V3.2
+    /// Date 2020-02-18
     /// 1. Overview
     /// The C ommon P arametric A ircraft C onfiguration S cheme (CPACS) is an XML-based data format for describing aircraft configurations and their corresponding data.
-    /// This XML-Schema document provides a description of the CPACS data structure that can be used for automatic validation as well as for documentation purposes. In this Schema, type declarations and element definitions are seperated. This means, there is e.g. a pointType class, containing x, y and z components. This class is then used in different places under different names (e.g. the "translation" node in "transformation" is made of pointType, meaning it has x, y and z subnodes.)
-    /// CPACS is an open source project published by the German Aerospace Center (DLR e.V.). For further information please go to http://software.dlr.de/p/cpacs/home/
-    /// You can display the text based version of CPACS in every text editor. Further tools are for example www.eclipse.org
+    /// This XML-Schema document ( XSD ) serves two purposes: (1) it defines the CPACS data structure used in the XML file (e.g., aircraft.xml) and 
+    /// (2) it provides the corresponding documentation (see picture below). An XML processor (e.g., Tixi or 
+    /// XML tools in Eclipse) parses the XSD and XML files and validates whether the data set defined by the user (or tool) conforms to the given structure defined by the schema.
+    /// @see basicPrinciple
+    /// This documentation explains the elements defined in CPACS and its corresponding data types . 
+    /// Data types can either be simple types (string, double, boolean, etc.) or complex types (definition of attributes and sub-elements to build a hierarchical 
+    /// structure). In addition, the sequence of the elements and their occurrence is documented.
+    /// To link the XML file to the XSD file, the header of the XML file should specify the path of the schema file. 
+    /// An example could look like this: <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    /// xsi:noNamespaceSchemaLocation="pathToSchemaFile/cpacs_schema.xsd"> 
+    /// CPACS is an open source project published by the German Aerospace Center (DLR e.V.). For further information please visit www.cpacs.de.
     /// 2. Coordinate Systems
     /// Coordinate systems are a regular cause for ambiguous interpretation of data. In CPACS, the reference coordinate system is the CPACS-coordinate system. This coordinate system is used for most of the data. A single exception is made in order to keep aerodynamic data in an aerodynamic coordinate system. The following paragraphs outline the determination to known coordinate systems.
     /// The CPACS coordinate system is the coordinate system identified by TIGL, CPACS's geometric library. It is a right-handed coordinate system. If an aircraft is defined in the CPACS coordinate system it will usually follow the directions listed in the table below.
     /// Therefore, the CPACS coordinate system can be confused with the body-fixed coordinate system. While often the CPACS coordinate system and the body-fixed coordinate system overlap, this must not always be true. Several definitions for body-fixed coordinate systems exist (x-axis through nose and tail, x-axis perpendicular to nose plane). For non-symmetric aircraft, body-fixed coordinate systems become even more complicated. Hence, analysis tools should stick to the CPACS-Coordinate system. It remains to the designer to model the geometry accordingly.
-    /// The CPACS coordinate system does not rotate with flow. Hence, aerodynamic calculations do rotate their flow relative to the CPACS-coordinate system. If not stated explicitly different, e.g. for target lift-coefficients, results are returned in the CPACS coordinate system, i.e. the cfx-coefficient is parrallel to the CPACS x-Coordinate, regardless of the way the geometry is defined.
-    /// The following table gives an "best-practice" advice on how to locate a geometry within CPACS. Different approaches are, of course, valid as well.
+    /// The CPACS coordinate system does not rotate with flow. Hence, aerodynamic calculations do rotate their flow relative to the CPACS-coordinate system. If not stated explicitly different, e.g. for target lift-coefficients, results are returned in the CPACS coordinate system, i.e. the cfx-coefficient is parallel to the CPACS x-Coordinate, regardless of the way the geometry is defined.
+    /// The following table gives a "best-practice" advice on how to locate a geometry within CPACS. Different approaches are, of course, valid as well.
     /// Axis Direction Description x tailwards from nose to tail y spanwise from symmetry plane to the right wingtip z upwards from landing gear to tip of vertical tailplane The following pictures give an example for a geometry that is defined in alignment with the CPACS coordinate system, i.e. the body coordinate system overlaps with the CPACS coordinate system.
     /// @see cosys01
     /// The aerodynamic analysis is relative to the CPACS coordinate system. That is, the angle of attack is represented by the dashed orange line. Results of the aerodynamic calculation are given in the CPACS coordinate system.
@@ -67,7 +74,8 @@ namespace generated
     /// [°] Angle 4. Splitting up a CPACS dataset into several files
     /// To provide a better overview, it is possible to split up a CPACS dataset into several files. This can be done by inserting an <externaldata> node at an arbitrary position into the datatset. This node contains a <path> node with a URI to the external file(s), followed by one or more <filename> nodes, containing each a name of a file to be included at that position. Below, an example of such external data is given:
     /// <?xml version="1.0" encoding="utf-8"?>
-    /// <cpacs xsi:noNamespaceSchemaLocation="cpacs_schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    /// <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    /// xsi:noNamespaceSchemaLocation="pathToSchemaFile/cpacs_schema.xsd">
     /// <vehicles>
     /// <profiles>
     /// <wingAirfoils>
@@ -89,17 +97,18 @@ namespace generated
     /// <name>NACA 0010 Airfoil</name>
     /// <pointList>...</pointList>
     /// </airfoil> The file would be included completely, except for its title line <?xml version="1.0" encoding="utf-8"?> . This concept can also be used recursively (external files of external files), then it is important to prevent circle connections (file "A" loading file "B" loading file "C" loading again file "A" ...).
-    /// For path URI adresses, the trailing file separator "/" may be omitted. Below, some examples for path URIs are given:
+    /// For path URI addresses, the trailing file separator "/" may be omitted. Below, some examples for path URIs are given:
     /// Absolute local path: "file:///tmp" or "file:///c:/windows/tmp" Relative local direcotry: "file://relativeDirectory" or "file://../anotherRelativeDirectory" Remote net ressource: "http://www.someurl.de" A CPACS dataset with external files, being loaded by a special library like the TI VA X ML I nterface TIXI , shall collect all its external datafiles and build up a single tree from them. A validation against this schema is only possible for such a single tree file; the <externaldata>nodes are not recognized by it. To preserve the information, necessary to split the file up into external files again later, externaldata information is maintained within three attributes of the former external top node:
     /// externalFileName - Name of the file where the external data shall be saved externalDataDirectory - Directory of the external data file. Its content is analogous to the <externaldata>'s <path>node described above. externalDataNodePath - XPATH of the node which is replaced with the content of the external file. In case that it is an external file of an external file, then it is the XPATH in the outer external file. If, e.g., in the example above the <pointList>node would have also been loaded from an external file, then the entry would just be: externalDataNodePath="/airfoil". This is used primarily for loop-detection. The single tree for the example above would look like:
     /// <?xml version="1.0" encoding="utf-8"?>
-    /// <cpacs xsi:noNamespaceSchemaLocation="cpacs_schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    /// <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    /// xsi:noNamespaceSchemaLocation="pathToSchemaFile/cpacs_schema.xsd">
     /// <vehicles>
     /// <profiles>
     /// <wingAirfoils>
     /// <airfoil uID="NACA0010" externalFileName="NACA0010.xml" externalDataDirectory="file://airfoils" externalDataNodePath="/cpacs/vehicles/profiles/wingAirfoils">
     /// <name>NACA 0010 Airfoil</name>
-    /// <pointList">...</pointList">
+    /// <pointList>...</pointList>
     /// </airfoil>
     /// ...
     /// <airfoil uID="NACA0012">
@@ -110,14 +119,15 @@ namespace generated
     /// </profiles>
     /// </vehicles>
     /// <cpacs> 5. UIDs and references
-    /// The CPACS -dataset often uses references between nodes. Typically, these references define connections between parts that are located somewhere else in the dataset (e.g. a wing is connected to a fuselage, a specific engine from the "engines"-section is used, ...). These connections are made, using UID attributes. This means, that a node, that shall be referenced (e.g. an engine type, an airfoil geometry, a mission definition, ...), gets an additional UID attribute, consisting of a unique (in the scope of the whole CPACS dataset) text, like:
-    /// <fuselage uID="ATTAS fuselage">... Such a node with a UID is then typically referred to by a subnode, like:
-    /// <wing>
+    /// The CPACS -dataset often uses references between nodes. Typically, these 
+    /// references define connections between elements which are located somewhere else in the hierarchical dataset (e.g. a wing is connected to a fuselage ; a specific engine is connected to a pylon ; etc.). These connections are defined by unique identifiers (uID) which are specified as attributes. Thus, there are elements which can be referenced via a uID attribute, e.g. a fuselage: <fuselage uID="ATTAS_fuselage">... 
+    /// as well as elements which refer to the former, e.g. a wing pointing to its geometrical parent: <wing uID="e382bf5j">
     /// <name>ATTAS main wing</name>
-    /// <parentUID isLink="True">ATTAS fuselage</parentUID>
-    /// ... It is absolutely essential to ensure that a UID attribute is unique within the whole dataset, as searching for this name is the only way to resolve the reference!
-    /// This is also important for testing. All nodes that refer to an UID like e.g. parentUID carry an additional attribute "isLink". If this attribute is true the dataset can be tested for valid UIDs.
-    /// UID can either be named according to their appearance in the hierarchy e.g. uid=""mainWingKinkSection" or by automatically placing identifiers e.g. via processor runtime dates
+    /// <parentUID isLink="True">ATTAS_fuselage</parentUID>
+    /// ... Such referencing elements must carry the isLink="True" attribute.
+    /// Since uIDs are only used to link nodes within the XML file, no naming convention is required. UIDs, however, must be unique! Although a common practice for naming uIDs is their position in the data hierarchy (e.g. uID="mainWingSection3" ), 
+    /// uIDs as shown in the above example are absolutely valid as well. It is therefore recommended to use the name element 
+    /// to convey human-readable meanings.
     /// 6. Symmetry
     /// Sometimes it might be useful to specify a part of the aircraft as symmetric instead of holding all the data twice in nearly identical form in the dataset (e.g. left and right wing are usually identical, except for the sign of the y-coordinate). Hence, some parts offer the option to set a symmetry attribute for them, like:
     /// <wing symmetry="x-z-plane">... This attribute explains that the whole part with all its subnodes is symmetric to the given plane. Possible planes are: x-y-plane x-z-plane y-z-plane none inherit By default, the symmetry of a component is inherited from its parent. If e.g. a wing is symmetrically defined, a pylon will also have a symmetry by default.
@@ -125,16 +135,16 @@ namespace generated
     /// UIDs, references and symmetry
     /// All nodes, e.g. parentUID, in CPACS that refer to a component that holds symmetry attribute, e.g. wing, have to carry the symmetry attribute as well.
     /// The symmetry attribute may take three values: symm, def, full: def: The element refers to the geometric component that has a symmetry attribute and refers only to the defined side of the geometric component. symm: The element refers to the geometric component that has a symmetry attribute and refers only to the symmetric side of the geometric component. (Similar to the previous _symm solution) full: The element refers to the geometric component that has a symmetry attribute and refers to the complete component. (This is the default behaviour) 
-    /// <wing uID="ATTAS main wing" symmetry="x-z-plane">
+    /// <wing uID="ATTAS_main_wing" symmetry="x-z-plane">
     /// ...
     /// <segments>
-    /// <segment uID="ATTAS main wing innersegment">
+    /// <segment uID="ATTAS_main_wing_innersegment">
     /// ... In the example above, to refer to the "other" side of the wing on must use the definition as such:
     /// <loadcase>
     /// ...
     /// <segments>
     /// <segment>
-    /// <segmentUID isLink="True" symmetry="symm">ATTAS main wing inner segment</segmentUID>
+    /// <segmentUID isLink="True" symmetry="symm">ATTAS_main_wing_inner_segment</segmentUID>
     /// <strip>... 7. Vectors and arrays
     /// For large data sets (e.g. increments of aerodynamic coefficients due to control surface deflections) it is advantageous
     /// to map them via vectors and arrays instead of using single nodes for each data value. The following definition of vectors and arrays,
@@ -194,7 +204,9 @@ namespace generated
     /// Temperature offsets are introduced on top of the definitions in the ISA manual (which does not cover such variations). The offset model
     /// is based upon the idea that the pressure at a fixed geopotential altitude is independent from temperature offset (pressure altitude).
     /// The temperature offset changes only the density (following rho = p / Gas Constant / T) (and viscosity, of course)
-    /// CPACS 3.1
+    /// CPACS 3.2
+    /// Release in February 2020
+    /// Replaced tool-specific elements with xsd:any element and strict schema request for validation UIDs adapted to type xsd:ID and xsd:IDREF UIDs optional for transformationType and pointTypes Replaced xsd:sequence elements with xsd:all elements where possible CpacsVersion element set to optional GuideCurves are now optional for nacelleCowlType Documentation adaptions CPACS 3.1
     /// Release in August 2019
     /// Redefinition of aeroPerformanceMaps Added nodes for detailed engine pylons and nacelles Added nodes to model generic walls Extension of material definition Added fuselage compartment definition Added fuselage fuel tank definition Explicit wing stringer definition integrated into wing stringer definition RelativeDeflections renamed to control parameters Control distributors modified to only have a single command input vector "cpacsVersion" restricted to current schema version Code cleanup Cpacs_schema.xml removed Documentation adaptions CPACS 3.0
     /// Release in Jul 2018
@@ -247,21 +259,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSVehicles>& GetVehicles() const;
         TIGL_EXPORT virtual boost::optional<CPACSVehicles>& GetVehicles();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSToolspecific>& GetToolspecific() const;
-        TIGL_EXPORT virtual boost::optional<CPACSToolspecific>& GetToolspecific();
-
         TIGL_EXPORT virtual CPACSVehicles& GetVehicles(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveVehicles();
-
-        TIGL_EXPORT virtual CPACSToolspecific& GetToolspecific(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveToolspecific();
 
     protected:
         CTiglUIDManager* m_uidMgr;
 
-        CPACSHeader                        m_header;
-        boost::optional<CPACSVehicles>     m_vehicles;
-        boost::optional<CPACSToolspecific> m_toolspecific;
+        CPACSHeader                    m_header;
+        boost::optional<CPACSVehicles> m_vehicles;
 
     private:
         CPACSCpacs(const CPACSCpacs&) = delete;

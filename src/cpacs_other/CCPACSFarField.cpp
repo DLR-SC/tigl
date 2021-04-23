@@ -25,6 +25,8 @@
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
 
+#include "TixiHelper.h"
+
 #include <string>
 #include <cmath>
 
@@ -38,22 +40,95 @@
 namespace tigl
 {
 
-CCPACSFarField::CCPACSFarField(CCPACSCFDTool* parent) 
-    : generated::CPACSFarField(parent)
+CCPACSFarField::CCPACSFarField()
+    : m_referenceLength(0)
+    , m_multiplier(0)
 {
     init();
+}
+
+void CCPACSFarField::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+{
+    init();
+
+    // read element type
+    if (tixi::TixiCheckElement(tixiHandle, xpath + "/type")) {
+        m_type = stringToTiglFarFieldType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
+    }
+    else {
+        LOG(ERROR) << "Required element type is missing at xpath " << xpath;
+    }
+
+    // read element referenceLength
+    if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceLength")) {
+        m_referenceLength = tixi::TixiGetElement<double>(tixiHandle, xpath + "/referenceLength");
+    }
+    else {
+        LOG(ERROR) << "Required element referenceLength is missing at xpath " << xpath;
+    }
+
+    // read element multiplier
+    if (tixi::TixiCheckElement(tixiHandle, xpath + "/multiplier")) {
+        m_multiplier = tixi::TixiGetElement<double>(tixiHandle, xpath + "/multiplier");
+    }
+    else {
+        LOG(ERROR) << "Required element multiplier is missing at xpath " << xpath;
+    }
+
+}
+
+void CCPACSFarField::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+{
+    const std::vector<std::string> childElemOrder = { "type", "referenceLength", "multiplier" };
+
+    // write element type
+    tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/type", childElemOrder);
+    tixi::TixiSaveElement(tixiHandle, xpath + "/type", TiglFarFieldTypeToString(m_type));
+
+    // write element referenceLength
+    tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/referenceLength", childElemOrder);
+    tixi::TixiSaveElement(tixiHandle, xpath + "/referenceLength", m_referenceLength);
+
+    // write element multiplier
+    tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/multiplier", childElemOrder);
+    tixi::TixiSaveElement(tixiHandle, xpath + "/multiplier", m_multiplier);
+
+}
+
+const TiglFarFieldType& CCPACSFarField::GetType() const
+{
+    return m_type;
+}
+
+void CCPACSFarField::SetType(const TiglFarFieldType& value)
+{
+    m_type = value;
+}
+
+const double& CCPACSFarField::GetReferenceLength() const
+{
+    return m_referenceLength;
+}
+
+void CCPACSFarField::SetReferenceLength(const double& value)
+{
+    m_referenceLength = value;
+}
+
+const double& CCPACSFarField::GetMultiplier() const
+{
+    return m_multiplier;
+}
+
+void CCPACSFarField::SetMultiplier(const double& value)
+{
+    m_multiplier = value;
 }
 
 void CCPACSFarField::init()
 {
     SetType(NONE);
     loft.clear();
-}
-
-void CCPACSFarField::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-{
-    init();
-    generated::CPACSFarField::ReadCPACS(tixiHandle, xpath);
 }
 
 std::string CCPACSFarField::GetDefaultedUID() const {

@@ -87,14 +87,12 @@ namespace generated
 
     void CPACSCutOutControlPoint::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "relHeight", "xsi" };
-
         // write element relHeight
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/relHeight", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/relHeight");
         tixi::TixiSaveElement(tixiHandle, xpath + "/relHeight", m_relHeight);
 
         // write element xsi
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/xsi", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsi");
         tixi::TixiSaveElement(tixiHandle, xpath + "/xsi", m_xsi);
 
     }

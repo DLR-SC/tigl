@@ -87,14 +87,12 @@ namespace generated
 
     void CPACSLeadingEdgeHollow::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "relHeightTE", "xsiTE" };
-
         // write element relHeightTE
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/relHeightTE", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/relHeightTE");
         tixi::TixiSaveElement(tixiHandle, xpath + "/relHeightTE", m_relHeightTE);
 
         // write element xsiTE
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/xsiTE", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsiTE");
         tixi::TixiSaveElement(tixiHandle, xpath + "/xsiTE", m_xsiTE);
 
     }

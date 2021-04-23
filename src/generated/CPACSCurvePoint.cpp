@@ -21,7 +21,6 @@
 #include "CPACSCurvePoint.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "CTiglUIDManager.h"
 #include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
@@ -29,18 +28,16 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSCurvePoint::CPACSCurvePoint(CCPACSWingRibExplicitPositioning* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-        , m_eta(0)
+    CPACSCurvePoint::CPACSCurvePoint(CCPACSWingRibExplicitPositioning* parent)
+        : m_eta(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSWingRibExplicitPositioning);
     }
 
-    CPACSCurvePoint::CPACSCurvePoint(CCPACSWingRibsPositioning* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-        , m_eta(0)
+    CPACSCurvePoint::CPACSCurvePoint(CCPACSWingRibsPositioning* parent)
+        : m_eta(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -49,9 +46,6 @@ namespace generated
 
     CPACSCurvePoint::~CPACSCurvePoint()
     {
-        if (m_uidMgr) {
-            if (!m_referenceUID.empty()) m_uidMgr->TryUnregisterReference(m_referenceUID, *this);
-        }
     }
 
     const CTiglUIDObject* CPACSCurvePoint::GetNextUIDParent() const
@@ -80,16 +74,6 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDManager& CPACSCurvePoint::GetUIDManager()
-    {
-        return *m_uidMgr;
-    }
-
-    const CTiglUIDManager& CPACSCurvePoint::GetUIDManager() const
-    {
-        return *m_uidMgr;
-    }
-
     void CPACSCurvePoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element eta
@@ -106,7 +90,6 @@ namespace generated
             if (m_referenceUID.empty()) {
                 LOG(WARNING) << "Required element referenceUID is empty at xpath " << xpath;
             }
-            if (m_uidMgr && !m_referenceUID.empty()) m_uidMgr->RegisterReference(m_referenceUID, *this);
         }
         else {
             LOG(ERROR) << "Required element referenceUID is missing at xpath " << xpath;
@@ -143,23 +126,7 @@ namespace generated
 
     void CPACSCurvePoint::SetReferenceUID(const std::string& value)
     {
-        if (m_uidMgr) {
-            if (!m_referenceUID.empty()) m_uidMgr->TryUnregisterReference(m_referenceUID, *this);
-            if (!value.empty()) m_uidMgr->RegisterReference(value, *this);
-        }
         m_referenceUID = value;
-    }
-
-    const CTiglUIDObject* CPACSCurvePoint::GetNextUIDObject() const
-    {
-        return GetNextUIDParent();
-    }
-
-    void CPACSCurvePoint::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
-    {
-        if (m_referenceUID == oldUid) {
-            m_referenceUID = newUid;
-        }
     }
 
 } // namespace generated

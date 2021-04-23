@@ -21,12 +21,10 @@
 #include <tixi.h>
 #include <typeinfo>
 #include "CTiglError.h"
-#include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
-class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSWingRibExplicitPositioning;
 class CCPACSWingRibsPositioning;
@@ -42,11 +40,11 @@ namespace generated
     /// Point on a curve in normalized curve coordinates.
     /// The referenceUID must reference a one-dimensional curve such as spars.
     /// 
-    class CPACSCurvePoint : public ITiglUIDRefObject
+    class CPACSCurvePoint
     {
     public:
-        TIGL_EXPORT CPACSCurvePoint(CCPACSWingRibExplicitPositioning* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSCurvePoint(CCPACSWingRibsPositioning* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSCurvePoint(CCPACSWingRibExplicitPositioning* parent);
+        TIGL_EXPORT CPACSCurvePoint(CCPACSWingRibsPositioning* parent);
 
         TIGL_EXPORT virtual ~CPACSCurvePoint();
 
@@ -83,9 +81,6 @@ namespace generated
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
 
-        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
-        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
-
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
@@ -99,8 +94,6 @@ namespace generated
         void* m_parent;
         const std::type_info* m_parentType;
 
-        CTiglUIDManager* m_uidMgr;
-
         /// Relative position on the referenced line/curve.
         double      m_eta;
 
@@ -110,9 +103,6 @@ namespace generated
         std::string m_referenceUID;
 
     private:
-        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
-        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
-
         CPACSCurvePoint(const CPACSCurvePoint&) = delete;
         CPACSCurvePoint& operator=(const CPACSCurvePoint&) = delete;
 

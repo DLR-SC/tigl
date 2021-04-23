@@ -96,18 +96,16 @@ namespace generated
 
     void CPACSLeadingEdgeShape::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "relHeightLE", "xsiUpperSkin", "xsiLowerSkin" };
-
         // write element relHeightLE
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/relHeightLE", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/relHeightLE");
         tixi::TixiSaveElement(tixiHandle, xpath + "/relHeightLE", m_relHeightLE);
 
         // write element xsiUpperSkin
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/xsiUpperSkin", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsiUpperSkin");
         tixi::TixiSaveElement(tixiHandle, xpath + "/xsiUpperSkin", m_xsiUpperSkin);
 
         // write element xsiLowerSkin
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/xsiLowerSkin", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/xsiLowerSkin");
         tixi::TixiSaveElement(tixiHandle, xpath + "/xsiLowerSkin", m_xsiLowerSkin);
 
     }

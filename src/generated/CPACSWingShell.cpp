@@ -113,18 +113,16 @@ namespace generated
 
     void CPACSWingShell::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "skin", "cells" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element skin
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/skin", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/skin");
         m_skin.WriteCPACS(tixiHandle, xpath + "/skin");
 
         // write element cells
         if (m_cells) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cells", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cells");
             m_cells->WriteCPACS(tixiHandle, xpath + "/cells");
         }
         else {

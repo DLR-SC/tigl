@@ -38,7 +38,7 @@ namespace generated
 
     CPACSPointXZ::~CPACSPointXZ()
     {
-        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
+        if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
     const CPACSControlSurfaceStep* CPACSPointXZ::GetParent() const
@@ -82,12 +82,9 @@ namespace generated
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
             m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-            if (m_uID.empty()) {
-                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
+            if (m_uID->empty()) {
+                LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
             }
-        }
-        else {
-            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
         // read element x
@@ -106,39 +103,47 @@ namespace generated
             LOG(ERROR) << "Required element z is missing at xpath " << xpath;
         }
 
-        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+        if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
     }
 
     void CPACSPointXZ::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "x", "z" };
-
         // write attribute uID
-        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+        if (m_uID) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+            }
+        }
 
         // write element x
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/x", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/x");
         tixi::TixiSaveElement(tixiHandle, xpath + "/x", m_x);
 
         // write element z
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/z", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/z");
         tixi::TixiSaveElement(tixiHandle, xpath + "/z", m_z);
 
     }
 
-    const std::string& CPACSPointXZ::GetUID() const
+    const boost::optional<std::string>& CPACSPointXZ::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSPointXZ::SetUID(const std::string& value)
+    void CPACSPointXZ::SetUID(const boost::optional<std::string>& value)
     {
         if (m_uidMgr && value != m_uID) {
-            if (m_uID.empty()) {
-                m_uidMgr->RegisterObject(value, *this);
+            if (!m_uID && value) {
+                m_uidMgr->RegisterObject(*value, *this);
             }
-            else {
-                m_uidMgr->UpdateObjectUID(m_uID, value);
+            else if (m_uID && !value) {
+                m_uidMgr->TryUnregisterObject(*m_uID);
+            }
+            else if (m_uID && value) {
+                m_uidMgr->UpdateObjectUID(*m_uID, *value);
             }
         }
         m_uID = value;

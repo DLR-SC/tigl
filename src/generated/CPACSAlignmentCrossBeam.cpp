@@ -128,14 +128,12 @@ namespace generated
 
     void CPACSAlignmentCrossBeam::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "offset1LocX", "offset2LocX", "rotationLocX", "translationLocY", "translationLocZ" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element offset1LocX
         if (m_offset1LocX) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/offset1LocX", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/offset1LocX");
             tixi::TixiSaveElement(tixiHandle, xpath + "/offset1LocX", *m_offset1LocX);
         }
         else {
@@ -146,7 +144,7 @@ namespace generated
 
         // write element offset2LocX
         if (m_offset2LocX) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/offset2LocX", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/offset2LocX");
             tixi::TixiSaveElement(tixiHandle, xpath + "/offset2LocX", *m_offset2LocX);
         }
         else {
@@ -157,7 +155,7 @@ namespace generated
 
         // write element rotationLocX
         if (m_rotationLocX) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/rotationLocX", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rotationLocX");
             tixi::TixiSaveElement(tixiHandle, xpath + "/rotationLocX", *m_rotationLocX);
         }
         else {
@@ -168,7 +166,7 @@ namespace generated
 
         // write element translationLocY
         if (m_translationLocY) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/translationLocY", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translationLocY");
             tixi::TixiSaveElement(tixiHandle, xpath + "/translationLocY", *m_translationLocY);
         }
         else {
@@ -179,7 +177,7 @@ namespace generated
 
         // write element translationLocZ
         if (m_translationLocZ) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/translationLocZ", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translationLocZ");
             tixi::TixiSaveElement(tixiHandle, xpath + "/translationLocZ", *m_translationLocZ);
         }
         else {
