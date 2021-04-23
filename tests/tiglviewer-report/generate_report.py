@@ -240,6 +240,15 @@ def main(input_file, output_file, update, tigl_script, screenshot_dir, download_
         f = tempfile.NamedTemporaryFile(mode='w', delete=False)
         tigl_script = f.name
 
+    if update:
+        # empty screenshots_expected_dir and set screenshots_dir schreenshots_expected_dir
+        if os.path.exists(screenshots_expected_dir) and os.path.isdir(screenshots_expected_dir):
+            shutil.rmtree(screenshots_expected_dir)
+            Path(screenshots_expected_dir).mkdir(parents=True, exist_ok=True)
+        screenshot_dir = screenshots_expected_dir
+        with open(os.path.join(screenshots_expected_dir, 'date.txt'), 'w') as f:
+            f.write(str(datetime.datetime.now().date()))
+
     # open input file and download nonlocal files, if any
     cpacs_dicts = open_input_file(input_file, download_dir)
 
@@ -250,15 +259,6 @@ def main(input_file, output_file, update, tigl_script, screenshot_dir, download_
 
     # take the screenshots using tiglviewer-3
     create_screenshots(tigl_script)
-
-    if update:
-        # copy the new screenshots to the expected folder and update the
-        # date
-        if os.path.exists(screenshots_expected_dir) and os.path.isdir(screenshots_expected_dir):
-            shutil.rmtree(screenshots_expected_dir)
-        shutil.copytree(screenshot_dir, screenshots_expected_dir)
-        with open(os.path.join(screenshots_expected_dir, 'date.txt'), 'w') as f:
-            f.write(str(datetime.datetime.now().date()))
 
     # generate the screenshot report using pandoc
     generate_pdf_report(cpacs_dicts,
