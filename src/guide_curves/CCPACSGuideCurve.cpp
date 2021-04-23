@@ -61,6 +61,21 @@ CCPACSGuideCurve::FromDefinition CCPACSGuideCurve::GetFromDefinition() const {
     throw CTiglError("Logic error in FromDefinition detection");
 }
 
+
+double CCPACSGuideCurve::GetFromRelativeCircumference() const
+{
+    if ( GetFromGuideCurveUID_choice1() ) {
+        CCPACSGuideCurve& pred = m_uidMgr->ResolveObject<CCPACSGuideCurve>(*GetFromGuideCurveUID_choice1());
+        return pred.GetToRelativeCircumference();
+    }
+    else if (GetFromRelativeCircumference_choice2()) {
+        return *GetFromRelativeCircumference_choice2();
+    }
+    else {
+        throw CTiglError("CCPACSGuideCurve::GetFromRelativeCircumference(): Either a fromCircumference of a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
+    }
+}
+
 // Cleanup routine
 void CCPACSGuideCurve::Cleanup(void)
 {

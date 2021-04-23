@@ -169,29 +169,6 @@ void CCPACSWing::Cleanup()
     Invalidate();
 }
 
-void CCPACSWing::ConnectGuideCurveSegments(void)
-{
-    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
-        CCPACSWingSegment& segment = GetSegment(isegment);
-
-        if (!segment.GetGuideCurves()) {
-            continue;
-        }
-
-        CCPACSGuideCurves& curves = *segment.GetGuideCurves();
-        for (int icurve = 1; icurve <= curves.GetGuideCurveCount(); ++icurve) {
-            CCPACSGuideCurve& curve = curves.GetGuideCurve(icurve);
-
-            if (!curve.GetFromRelativeCircumference_choice2()) {
-                std::string fromUID = *curve.GetFromGuideCurveUID_choice1();
-                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromUID);
-                curve.SetFromRelativeCircumference_choice2(fromCurve.GetToRelativeCircumference());
-                //TODO: also call curve->connect already
-            }
-        }
-    }
-}
-
 // Update internal wing data
 void CCPACSWing::Update()
 {
@@ -214,8 +191,6 @@ void CCPACSWing::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::stri
             m_parentUID = boost::none;
         }
     }
-
-    ConnectGuideCurveSegments();
 
     Update();
 }

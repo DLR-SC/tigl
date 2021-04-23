@@ -193,8 +193,6 @@ protected:
     // Cleanup routine
     void Cleanup();
 
-    void ConnectGuideCurveSegments(void);
-
     // Update internal wing data
     void Update();
 
