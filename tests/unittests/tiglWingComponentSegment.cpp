@@ -635,30 +635,6 @@ TEST_F(WingComponentSegmentSimple, tiglWingSegmentPointGetComponentSegmentEtaXsi
     ASSERT_NEAR(0.50, xsi, 1e-7);
 }
 
-TEST_F(WingComponentSegmentSimple, GetSegmentIntersection)
-{
-    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-    tigl::CCPACSWing& wing = config.GetWing(1);
-    tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
-
-    double eta = 1.;
-    double xsi = 0;
-    //compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, eta, xsi);
-    //ASSERT_NEAR(0.28, xsi, 1e-6);
-
-    compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.0, 0.0, 1.0, 1.0, eta, xsi);
-    ASSERT_NEAR(0.5, xsi, 1e-6);
-
-    compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.0, 1.0, 1.0, 0.0, eta, xsi);
-    ASSERT_NEAR(0.75, xsi, 1e-6);
-
-    compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.0, 0.0, 1.0, 1.0, 0.0, xsi);
-    ASSERT_NEAR(0.0, xsi, 1e-6);
-
-    ASSERT_THROW(compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_2_3", 0.1, 0.1, 0.9, 0.1, eta, xsi), tigl::CTiglError);
-}
-
 TEST_F(WingComponentSegmentSimple, GetSegmentIntersection_cinterface)
 {
     double xsi;
@@ -685,52 +661,6 @@ TEST_F(WingComponentSegmentSimple, GetSegmentIntersection_cinterface)
 
     ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, NULL, &hasWarning);
     ASSERT_EQ(TIGL_NULL_POINTER, ret);
-}
-
-TEST_F(WingComponentSegmentSimple, InterpolateOnLine)
-{
-    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-    tigl::CCPACSWing& wing = config.GetWing(1);
-    tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
-
-    double xsi = 0;
-    double error = 0.;
-
-    // check trivial borders for validity
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.0, xsi, error);
-    ASSERT_NEAR(0.0, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
-
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 1.0, xsi, error);
-    ASSERT_NEAR(1.0, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
-
-    // check cases in first segment
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.5 / (1. + sqrt(17./16.)), xsi, error);
-    ASSERT_NEAR(0.25, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
-
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.8 / (1. + sqrt(17./16.)), xsi, error);
-    ASSERT_NEAR(0.4, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
-
-    // now check the not so trivial cases in second segment
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 1.0 / (1. + sqrt(17./16.)), xsi, error);
-    ASSERT_NEAR(0.5, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
-
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, (1 + 0.5*sqrt(17./16.)) / (1. + sqrt(17./16.)), xsi, error);
-    ASSERT_NEAR(0.5/0.75, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
-
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, (1 + 0.2*sqrt(17./16.)) / (1. + sqrt(17./16.)), xsi, error);
-    ASSERT_NEAR(0.5/0.9, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
-
-    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, (1 + 0.8*sqrt(17./16.)) / (1. + sqrt(17./16.)), xsi, error);
-    ASSERT_NEAR(0.5/0.6, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
 }
 
 TEST_F(WingComponentSegmentSimple, IntersectEta_cinterface)
