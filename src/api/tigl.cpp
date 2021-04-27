@@ -27,6 +27,7 @@
 #include "tigl_version.h"
 #include "tigl_config.h"
 #include "tiglcommonfunctions.h"
+#include "tigletaxsifunctions.h"
 #include "tigl_error_strings.h"
 #include "CTiglTypeRegistry.h"
 #include "CTiglError.h"
@@ -2136,6 +2137,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                                                                                  double * segmentXsi,
                                                                                  TiglBoolean* hasWarning)
 {
+    LOG(WARNING) << "'tiglWingComponentSegmentGetSegmentIntersection' is deprecated. Please use the unified function 'tiglWingInterpolateXsi'";
+
+
     if (segmentUID == 0) {
         LOG(ERROR) << "Null pointer argument for segmentUID\n"
                    << "in function call to tiglWingComponentSegmentGetSegmentIntersection.";
@@ -2153,45 +2157,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                    << "in function call to tiglWingComponentSegmentGetSegmentIntersection.";
         return TIGL_NULL_POINTER;
     }
-    
-    try {
-        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration& config         = manager.GetConfiguration(cpacsHandle);
-        const auto& uidMgr                        = config.GetUIDManager();
-        
 
-        if (!uidMgr.IsUIDRegistered(componentSegmentUID) || !uidMgr.IsType<tigl::CCPACSWingComponentSegment>(componentSegmentUID)) {
-            LOG(ERROR) << "Invalid component segment uid in tiglWingComponentSegmentGetSegmentIntersection";
-            return TIGL_UID_ERROR;
-        }
-
-        const tigl::CCPACSWingComponentSegment & compSeg =  uidMgr.ResolveObject<tigl::CCPACSWingComponentSegment>(componentSegmentUID);
-        compSeg.GetSegmentIntersection(segmentUID, csEta1, csXsi1, csEta2, csXsi2, segmentEta, *segmentXsi);
-
-        // check if xsi is valid
-        if (hasWarning) {
-            if (*segmentXsi < 0. || *segmentXsi > 1.) {
-                *hasWarning = TIGL_TRUE;
-            }
-            else {
-                *hasWarning = TIGL_FALSE;
-            }
-        }
-
-        return TIGL_SUCCESS;
-    }
-    catch (const tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.what();
-        return ex.getCode();
-    }
-    catch (std::exception& ex) {
-        LOG(ERROR) << ex.what();
-        return TIGL_ERROR;
-    }
-    catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentGetSegmentIntersection!";
-        return TIGL_ERROR;
-    }
+    return tiglWingInterpolateXsi(cpacsHandle,
+                                  componentSegmentUID, csEta1, csXsi1,
+                                  componentSegmentUID, csEta2, csXsi2,
+                                  segmentUID, segmentEta, segmentXsi, hasWarning);
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection(TiglCPACSConfigurationHandle cpacsHandle,
@@ -2202,6 +2172,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection
                                                                                  double* xsi,
                                                                                  TiglBoolean* hasWarning)
 {
+    LOG(WARNING) << "'tiglWingComponentSegmentComputeEtaIntersection' is deprecated. Please use the unified function 'tiglWingInterpolateXsi'";
+
     if (componentSegmentUID == 0) {
         LOG(ERROR) << "Null pointer for argument componentSegmentUID\n"
                    << "in function call to tiglWingComponentSegmentComputeEtaIntersection.";
@@ -2214,25 +2186,60 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection
         return TIGL_NULL_POINTER;
     }
 
+    return tiglWingInterpolateXsi(cpacsHandle,
+                                  componentSegmentUID, csEta1, csXsi1,
+                                  componentSegmentUID, csEta2, csXsi2,
+                                  componentSegmentUID, eta, xsi, hasWarning);
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingInterpolateXsi(TiglCPACSConfigurationHandle cpacsHandle,
+                                                         const char * firstUID, double firstEta, double firstXsi,
+                                                         const char * secondUID, double secondEta, double secondXsi,
+                                                         const char * intersectionUID, double intersectionEta,
+                                                         double * intersectionXsi,
+                                                         TiglBoolean * hasWarning)
+
+{
+    if (firstUID == 0) {
+        LOG(ERROR) << "Null pointer for argument firstUID\n"
+                   << "in function call to tiglWingInterpolateXsi.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (secondUID == 0) {
+        LOG(ERROR) << "Null pointer for argument secondUID\n"
+                   << "in function call to tiglWingInterpolateXsi.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (intersectionUID == 0) {
+        LOG(ERROR) << "Null pointer for argument intersectionUID\n"
+                   << "in function call to tiglWingInterpolateXsi.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (intersectionXsi == 0) {
+        LOG(ERROR) << "Null pointer for argument intersectionXsi\n"
+                   << "in function call to tiglWingInterpolateXsi.";
+        return TIGL_NULL_POINTER;
+    }
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config         = manager.GetConfiguration(cpacsHandle);
         const auto& uidMgr                        = config.GetUIDManager();
 
-        if (!uidMgr.IsUIDRegistered(componentSegmentUID) || !uidMgr.IsType<tigl::CCPACSWingComponentSegment>(componentSegmentUID)) {
-            LOG(ERROR) << "Invalid component segment uid in tiglWingComponentSegmentComputeEtaIntersection";
-            return TIGL_UID_ERROR;
-        }
-
-        const tigl::CCPACSWingComponentSegment & compSeg =  uidMgr.ResolveObject<tigl::CCPACSWingComponentSegment>(componentSegmentUID);
         double xsiTemp = 0.;
         double distanceTmp = 0.;
-        compSeg.InterpolateOnLine(csEta1, csXsi1, csEta2, csXsi2, eta, xsiTemp, distanceTmp);
-        *xsi = xsiTemp;
+        tigl::InterpolateXsi(firstUID, tigl::EtaXsi(firstEta, firstXsi),
+                             secondUID, tigl::EtaXsi(secondEta, secondXsi),
+                             intersectionUID, intersectionEta, uidMgr,
+                             xsiTemp, distanceTmp);
+        *intersectionXsi = xsiTemp;
 
         // check if xsi is valid
         if (hasWarning) {
-            if (*xsi < 0. || *xsi > 1.) {
+            if (*intersectionXsi < 0. || *intersectionXsi > 1.) {
                 *hasWarning = TIGL_TRUE;
             }
             else {
@@ -2251,7 +2258,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection
         return TIGL_ERROR;
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentComputeEtaIntersection!";
+        LOG(ERROR) << "Caught an unknown exception in tiglWingInterpolateXsi!";
         return TIGL_ERROR;
     }
 }
