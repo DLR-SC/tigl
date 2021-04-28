@@ -62,6 +62,8 @@ public:
     // Displays a simple dialog for error messages
     void displayErrorMessage (const QString& aMessage, const QString& aHeader);
 
+    void suppressErrors(bool v = true);
+
 protected:
      void dropEvent(QDropEvent *ev) override;
      void dragEnterEvent(QDragEnterEvent *ev) override;
@@ -134,6 +136,8 @@ private:
     class TIGLViewerSettings * tiglViewerSettings;
     class QTimer * openTimer;
     class QUndoStack* undoStack;
+
+    bool suppress_errors{false};
 
 };
 

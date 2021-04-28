@@ -30,6 +30,7 @@ struct CommandLineParameters
     QString windowTitle;
     QString modelUID;
     QString controlFile;
+    bool suppress_errors{false};
 };
 
 #endif /* COMMANDLINEPARAMETERS_H */

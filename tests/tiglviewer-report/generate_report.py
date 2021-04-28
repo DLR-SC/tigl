@@ -124,7 +124,7 @@ def create_screenshots(tigl_script):
     :param tigl_script: A js TiGL script
     :return: None
     """
-    subprocess.run(["tiglviewer-3", "--script", tigl_script],
+    subprocess.run(["tiglviewer-3", "--script", tigl_script, '--suppress-errors'],
                    timeout=3600)
 
 
