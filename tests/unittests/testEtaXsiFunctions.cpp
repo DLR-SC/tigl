@@ -39,19 +39,19 @@ TEST(EtaXsiFunctions, interpolateXsi_onSegment)
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          "Cpacs2Test_Wing_Seg_1_2", eta, uidMgr,
                          xsi, errorDist);
-    ASSERT_NEAR(0.5, xsi, 1e-6);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
 
     tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.0, 1.0),
                          compSegmentUID, tigl::EtaXsi(1.0, 0.0),
                          "Cpacs2Test_Wing_Seg_1_2", eta, uidMgr,
                          xsi, errorDist);
-    ASSERT_NEAR(0.75, xsi, 1e-6);
+    EXPECT_NEAR(0.75, xsi, 1e-6);
 
     tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.0, 0.0),
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          "Cpacs2Test_Wing_Seg_1_2", 0.0, uidMgr,
                          xsi, errorDist);
-    ASSERT_NEAR(0.0, xsi, 1e-6);
+    EXPECT_NEAR(0.0, xsi, 1e-6);
 
     ASSERT_THROW(
         tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.1, 0.1),
@@ -78,58 +78,116 @@ TEST(EtaXsiFunctions, InterpolateOnLine_onComponentSegment)
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          compSegmentUID, 0.0, uidMgr,
                          xsi, error);
-    //compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.0, xsi, error);
-    ASSERT_NEAR(0.0, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
+    EXPECT_NEAR(0.0, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
 
     tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.0, 0.0),
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          compSegmentUID, 1.0, uidMgr,
                          xsi, error);
-    ASSERT_NEAR(1.0, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
+    EXPECT_NEAR(1.0, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
 
     // check cases in first segment
     tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.0, 0.0),
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          compSegmentUID, 0.5 / (1. + sqrt(17./16.)), uidMgr,
                          xsi, error);
-    ASSERT_NEAR(0.25, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
+    EXPECT_NEAR(0.25, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
 
     tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.0, 0.0),
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          compSegmentUID, 0.8 / (1. + sqrt(17./16.)), uidMgr,
                          xsi, error);
-    ASSERT_NEAR(0.4, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
+    EXPECT_NEAR(0.4, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
 
     // now check the not so trivial cases in second segment
     tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.0, 0.0),
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          compSegmentUID, 1.0 / (1. + sqrt(17./16.)), uidMgr,
                          xsi, error);
-    ASSERT_NEAR(0.5, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
 
     tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.0, 0.0),
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          compSegmentUID, (1 + 0.5*sqrt(17./16.)) / (1. + sqrt(17./16.)), uidMgr,
                          xsi, error);
-    ASSERT_NEAR(0.5/0.75, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
+    EXPECT_NEAR(0.5/0.75, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
 
     tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.0, 0.0),
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          compSegmentUID, (1 + 0.2*sqrt(17./16.)) / (1. + sqrt(17./16.)), uidMgr,
                          xsi, error);
-    ASSERT_NEAR(0.5/0.9, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
+    EXPECT_NEAR(0.5/0.9, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
 
     tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.0, 0.0),
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          compSegmentUID, (1 + 0.8*sqrt(17./16.)) / (1. + sqrt(17./16.)), uidMgr,
                          xsi, error);
-    ASSERT_NEAR(0.5/0.6, xsi, 1e-6);
-    ASSERT_NEAR(0.0, error, 1e-6);
+    EXPECT_NEAR(0.5/0.6, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
+}
+
+TEST(EtaXsiFunctions, InterpolateOnLine_onSegmentsOnly)
+{
+    TiglHandleWrapper handle("TestData/simpletest.cpacs.xml", "");
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(handle);
+    const auto& uidMgr = config.GetUIDManager();
+    double xsi = 0;
+    double error = 0.;
+
+
+    tigl::InterpolateXsi("Cpacs2Test_Wing_Seg_1_2", tigl::EtaXsi(0.0, 0.0),
+                         "Cpacs2Test_Wing_Seg_1_2", tigl::EtaXsi(1.0, 1.0),
+                         "Cpacs2Test_Wing_Seg_1_2", 0.5, uidMgr,
+                         xsi, error);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
+
+    tigl::InterpolateXsi("Cpacs2Test_Wing_Seg_1_2", tigl::EtaXsi(0.0, 0.0),
+                         "Cpacs2Test_Wing_Seg_2_3", tigl::EtaXsi(1.0, 1.0),
+                         "Cpacs2Test_Wing_Seg_1_2", 1.0, uidMgr,
+                         xsi, error);
+    EXPECT_NEAR(0.5, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
+
+    tigl::InterpolateXsi("Cpacs2Test_Wing_Seg_1_2", tigl::EtaXsi(0.0, 0.0),
+                         "Cpacs2Test_Wing_Seg_2_3", tigl::EtaXsi(1.0, 0.0),
+                         "Cpacs2Test_Wing_Seg_1_2", 1.0, uidMgr,
+                         xsi, error);
+    EXPECT_NEAR(0.25, xsi, 1e-6);
+    EXPECT_NEAR(0.0, error, 1e-6);
+
+    // the eta point is outside the line, the function must throw
+    ASSERT_THROW(
+        tigl::InterpolateXsi("Cpacs2Test_Wing_Seg_1_2", tigl::EtaXsi(0.0, 0.0),
+                             "Cpacs2Test_Wing_Seg_1_2", tigl::EtaXsi(1.0, 1.0),
+                             "Cpacs2Test_Wing_Seg_2_3", 0.2, uidMgr,
+                             xsi, error),
+        tigl::CTiglError);
+}
+
+
+TEST(EtaXsiFunctions, InterpolateOnLine_onDifferentWings)
+{
+    TiglHandleWrapper handle("TestData/CPACS_30_D150.xml", "");
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(handle);
+    const auto& uidMgr = config.GetUIDManager();
+    double xsi = 0;
+    double error = 0.;
+
+    // the eta point is outside the line, the function must throw
+    ASSERT_THROW(
+        tigl::InterpolateXsi("D150_VAMP_W1_Seg1", tigl::EtaXsi(0.0, 0.0),
+                             "D150_VAMP_W1_Seg1", tigl::EtaXsi(1.0, 1.0),
+                             "D150_VAMP_HL1_Seg1", 0.2, uidMgr,
+                             xsi, error),
+        tigl::CTiglError);
 }
