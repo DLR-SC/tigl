@@ -206,8 +206,6 @@ const CCPACSWingComponentSegment& _getBelongingComponentSegment(const std::strin
         }
 
         throw CTiglError("No component segment associated to wing segment with UID " + referenceUid);
-
-
     }
     if (tp.type == &typeid(CCPACSWingComponentSegment)) {
         const auto& compSeg = *reinterpret_cast<CCPACSWingComponentSegment*>(tp.ptr);
