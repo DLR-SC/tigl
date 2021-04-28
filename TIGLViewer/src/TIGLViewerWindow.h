@@ -62,7 +62,7 @@ public:
     // Displays a simple dialog for error messages
     void displayErrorMessage (const QString& aMessage, const QString& aHeader);
 
-    void suppressErrors(bool v = true);
+    void setSuppressErrorsEnabled(bool v = true);
 
 protected:
      void dropEvent(QDropEvent *ev) override;
@@ -137,7 +137,7 @@ private:
     class QTimer * openTimer;
     class QUndoStack* undoStack;
 
-    bool m_suppressErrors{false};
+    bool suppressErrors{false};
 
 };
 

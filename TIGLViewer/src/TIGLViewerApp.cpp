@@ -137,7 +137,7 @@ int TIGLViewerApp::parseArguments(QStringList argList)
 void TIGLViewerApp::onWindowInitalized()
 {
     // suppress errors
-    mainwindow.suppressErrors(config.suppressErrors);
+    mainwindow.setSuppressErrorsEnabled(config.suppressErrors);
 
     if (!config.controlFile.isEmpty()){
         mainwindow.setInitialControlFile(config.controlFile);
