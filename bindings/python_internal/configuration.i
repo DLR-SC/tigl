@@ -558,3 +558,7 @@ public:
 %include "CCPACSLongFloorBeam.h"
 
 %clear double* eta, double* xsi;
+
+// ---------------------- Eta / Xsi Functions ---------------------- //
+
+%include "tigletaxsifunctions.h"

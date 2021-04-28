@@ -582,87 +582,19 @@ TopoDS_Wire CCPACSWingComponentSegment::GetCSLine(double eta1, double xsi1, doub
     
 void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi) const
 {
-    CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(segmentUID);
+    double errorDistance = 0;
+    InterpolateXsi(GetUID(), EtaXsi(csEta1, csXsi1),
+                   GetUID(), EtaXsi(csEta2, csXsi2),
+                   segmentUID, eta, GetUIDManager(), xsi, errorDistance);
 
-    // compute component segment line
-    gp_Pnt p1 = GetPoint(csEta1, csXsi1);
-    gp_Pnt p2 = GetPoint(csEta2, csXsi2);
-    double csLen = p1.Distance(p2);
-
-    gp_Lin csLine(p1, p2.XYZ() - p1.XYZ());
-
-    // compute iso eta line of segment
-    gp_Pnt pLE = segment.GetChordPoint(eta, 0.);
-    gp_Pnt pTE = segment.GetChordPoint(eta, 1.);
-    double chordDepth = pTE.Distance(pLE);
-
-    gp_Lin etaLine(pLE, pTE.XYZ() - pLE.XYZ());
-
-    // check, if both lines are parallel
-    if (etaLine.Direction().IsParallel(csLine.Direction(), M_PI/180.)) {
-        throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
-        }
-
-    Handle(Geom_Curve) csCurve = new Geom_Line(csLine);
-    Handle(Geom_Curve) etaCurve = new Geom_Line(etaLine);
-    GeomAdaptor_Curve csAdptAcuve(csCurve);
-    GeomAdaptor_Curve etaAdptCurve(etaCurve);
-
-    // find point on etaLine, that minimizes distance to csLine
-    Extrema_ExtCC minimizer(csAdptAcuve, etaAdptCurve);
-    minimizer.Perform();
-
-    if (!minimizer.IsDone()) {
-        throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
-        }
-
-    // there should be exactly on minimum between two lines
-    // if they are not parallel
-    assert(minimizer.NbExt() == 1);
-
-    Extrema_POnCurv pOnCSLine, pOnEtaLine;
-    minimizer.Points(1, pOnCSLine, pOnEtaLine);
-
-    // If parameter on CS line is < 0 or larger than 
-    // Length of line, there is not actual intersection,
-    // i.e. the CS Line is choosen to small
-    // We use a tolerance here, to account for small user errors
-    double tol = 1e-5;
-    if (pOnCSLine.Parameter() < -tol || pOnCSLine.Parameter() > csLen + tol) {
-        throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
-            }
-
-    // compute xsi value
-    xsi = pOnEtaLine.Parameter()/chordDepth;
 }
 
 void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double& errorDistance) const
 {
-    if (eta > 1 + Precision::Confusion() || eta < - Precision::Confusion()) {
-        throw CTiglError("Eta not in range [0,1] in CCPACSWingComponentSegment::InterpolateOnLine.", TIGL_MATH_ERROR);
-    }
 
-    // compute component segment line
-    gp_Pnt p1 = GetPoint(csEta1, csXsi1);
-    gp_Pnt p2 = GetPoint(csEta2, csXsi2);
-
-    const Handle(Geom_Curve) etaCurve = chordFace->GetSurface()->VIso(eta);
-    const Handle(Geom_Curve) line = new Geom_Line(p1, p2.XYZ() - p1.XYZ());
-
-    GeomAPI_ExtremaCurveCurve algo(etaCurve, line, 0., 1., 0., p1.Distance(p2));
-    if (algo.NbExtrema() < 1) {
-        throw CTiglError("Cannot compute xsi coordinate in CCPACSWingComponentSegment::InterpolateOnLine", TIGL_MATH_ERROR);
-    }
-
-    // xsi coordinate
-    double u;
-    algo.LowerDistanceParameters(xsi, u);
-
-    // TODO (siggel): check if point on line is outside the wing
-
-    // compute the error distance
-    // This is the distance from the line to the nearest point on the chord face
-    errorDistance = algo.LowerDistance();
+    InterpolateXsi(GetUID(), EtaXsi(csEta1, csXsi1),
+                   GetUID(), EtaXsi(csEta2, csXsi2),
+                   GetUID(), eta, GetUIDManager(), xsi, errorDistance);
 }
 
 const CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const

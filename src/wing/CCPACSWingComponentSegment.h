@@ -138,9 +138,12 @@ public:
     // creates an (iso) component segment line 
     TIGL_EXPORT TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
         
-    // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
-    // returns the xsi coordinate of the intersection
-    TIGL_EXPORT void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi) const;
+    /**
+     * calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
+     * returns the xsi coordinate of the intersection
+     * This function is deprecated: Use interpolateXsi from etaXsiFunctions
+     */
+    DEPRECATED TIGL_EXPORT void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi) const;
 
     // Getter for the normalized leading edge direction
     TIGL_EXPORT gp_Vec GetLeadingEdgeDirection(const gp_Pnt& point, const std::string& defaultSegmentUID = "") const;
@@ -175,8 +178,12 @@ public:
     // Method for checking whether segment is contained in componentSegment
     TIGL_EXPORT bool IsSegmentContained(const CCPACSWingSegment& segment) const;
 
-    // computes the xsi coordinate on a straight line in global space, given an eta coordinate
-    TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance) const;
+    /**
+     * Computes the xsi coordinate on a straight line in global space, given an eta coordinate
+     *
+     * This function is deprecated: Use interpolateXsi from etaXsiFunctions
+     */
+    DEPRECATED TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance) const;
 
     TIGL_EXPORT const CTiglWingChordface& GetChordface() const;
 

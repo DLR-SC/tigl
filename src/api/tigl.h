@@ -1454,7 +1454,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
 
 
 /**
-* @brief Computes the intersection of a line (defined by component segment coordinates) with an iso-eta line on a
+* @brief This function is deprecated. Use the generalized function ::tiglWingInterpolateXsi.
+*
+* @deprecated since 3.2
+*
+* Computes the intersection of a line (defined by component segment coordinates) with an iso-eta line on a
 * specified wing segment.
 *
 * The component segment line is defined by its inner and outer point, both defined in
@@ -1496,7 +1500,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
 
 
 /**
-* @brief Given a straight line in space defined by a pair of component segment (eta,xsi) coordinates,
+* @brief This function is deprecated. Use the generalized function ::tiglWingInterpolateXsi.
+*
+* @deprecated since 3.2
+*
+* Given a straight line in space defined by a pair of component segment (eta,xsi) coordinates,
 * the function computes the intersection of the line with a component segment iso-eta line.
 *
 * The function is similar to ::tiglWingComponentSegmentGetSegmentIntersection, with the difference, that
@@ -1535,6 +1543,46 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection
                                                                                  double eta,
                                                                                  double* xsi,
                                                                                  TiglBoolean* hasWarning);
+
+/**
+* @brief Given a straight line in space defined by a pair of segment / component segment (eta,xsi) coordinates,
+* the function computes the intersection of the line with an iso-eta line of a segment or component segment.
+*
+* The line is defined by its inner and outer point, both given in
+* segment or component segment coordinates. Typically, these might be spar positions or leading
+* edge coordinates of flaps.
+* The function returns the xsi coordinate (depth coordinate) of the intersection point in the
+* coordinate system defined by the uid.
+* Hence, this coordinate is given in either the segment or component segment coordinate system. See image below for details.
+*
+* @image html InterpolateXsi.png "Computation of the interpolation point."
+* @image latex InterpolateXsi.pdf "Computation of the interpolation point." width=7.5cm
+*
+* @param[in] cpacsHandle
+* @param[in] firstUID, firstEta, firstXsi    Starting point of the intersection line (on segment or component segment)
+* @param[in] secondUID, secondEta, secondXsi Ending point of the intersection line (on segment or component segment)
+* @param[in] intersectionUID                 UID of the segment or componentSegment that relates to eta
+* @param[in] intersectionEta                 Eta coordinate of the iso-eta segment or component segment intersection line
+* @param[out] intersectionXsi                Xsi coordinate of the intersection point on the referred segment or component segment
+* @param[out] hasWarning                     The hasWarning flag is true (1), if the resulting xsi value is either outside the valid
+*                                             range [0,1]. It is up to the user to handle these cases properly. This flag is only
+*                                             valid, if the function returns TIGL_SUCCESS.
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the segment or the component segment does not exist
+*   - TIGL_MATH_ERROR if the intersection could not be computed (e.g. if no intersection exists)
+*   - TIGL_NULL_POINTER if componentSegmentUID or xsi are null pointers
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingInterpolateXsi(TiglCPACSConfigurationHandle cpacsHandle,
+                                                         const char * firstUID, double firstEta, double firstXsi,
+                                                         const char * secondUID, double secondEta, double secondXsi,
+                                                         const char * intersectionUID, double intersectionEta,
+                                                         double * intersectionXsi,
+                                                         TiglBoolean * hasWarning);
+
+
 
 /**
 * @brief Returns the number of segments belonging to a component segment
