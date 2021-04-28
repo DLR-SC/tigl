@@ -23,7 +23,7 @@ Finally, the executable `tiglviewer-3` must be in the path.
 
 Run the command
 ```buildoutcfg
-python generate_report.py -i cpacs_files.json -o my-report.pdf
+python generate_report.py cpacs_files.json more_cpacs_files.json -o my-report.pdf
 ```
 
 Enter
@@ -82,5 +82,5 @@ Remember to update the expected screenshots when you add new test cases!
 Run the command to generate screenshots with the `--update` option:
 
 ```
-python generate_report.py -i cpacs_files.json -o my-report.pdf --update
+python generate_report.py cpacs_files.json -o my-report.pdf --update
 ```

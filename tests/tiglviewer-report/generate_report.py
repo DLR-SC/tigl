@@ -184,31 +184,9 @@ header-includes: \\usepackage{color}
     return pypandoc.convert_text(md_string, 'pdf', format='md', outputfile=output_file)
 
 @click.command(help='''
-Generates a tigl viewer report that compares expected screenshots to newly generated screenshots, given a list of CPACS files
-''')
-@click.option('-i', '--input-file', required=True, type=click.Path(), help='''
-A json file containing the CPACS files to be used for the report. The file is expected
-to be a list of dicts, one per CPACS file.
- 
-Each dict must have at least a "cpacs_file" key pointing 
-to the url of the file. The file can be a local path or an online resource. If the path
-starts with \"http\" it will be downloaded from the given url.
-
-If the dict has the optional key \"before_script\", the associated value will be
-interpreted as js commands that are to be run before a screenshot is taken.
-
-If the dict has the optional key \"extra_screenshots\", the associated value will be
-interpreted as a list of dicts with the required keys \"name\" and \"script\". These
-dicts can be used to add custom screenshots labeled by \"name\" for the CPACS file. The
-script must contain js commands intrepretable by the TiGLViewer js scripting API, that will 
-be performed before taking the extra screenshot.
-
-Example contents for the input file: 
-
-[{"cpacs_file": "input.xml", "extra_screenshots" : [ { "name": "structure", "script": "app.scene.selectAll();\napp.scene.setTransparency(90);\n"}]},{"cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/concorde.cpacs3.xml"}]
-
 
 ''')
+@click.argument('input-files', nargs=-1, required=True, type=click.Path(exists=True))
 @click.option('-o', '--output-file', required=True, type=click.Path(), help='''
 The path for the generated report.
 ''')
@@ -228,8 +206,40 @@ directory will be used.
 An optional directory that is used as a download location for remote cpacs files. 
 If not provided, a system default temporary directory will be used.
 ''')
-def main(input_file, output_file, update, tigl_script, screenshot_dir, download_dir):
+def main(input_files, output_file, update, tigl_script, screenshot_dir, download_dir):
+    """
+    json file(s) containing the CPACS files to be used for the report. Each file is expected
+    to be a list of dicts, one per CPACS file.
 
+    Each dict must have at least a "cpacs_file" key pointing
+    to the url of the file. The file can be a local path or an online resource. If the path
+    starts with \"http\" it will be downloaded from the given url.
+
+    If the dict has the optional key \"before_script\", the associated value will be
+    interpreted as js commands that are to be run before a screenshot is taken.
+
+    If the dict has the optional key \"extra_screenshots\", the associated value will be
+    interpreted as a list of dicts with the required keys \"name\" and \"script\". These
+    dicts can be used to add custom screenshots labeled by \"name\" for the CPACS file. The
+    script must contain js commands intrepretable by the TiGLViewer js scripting API, that will
+    be performed before taking the extra screenshot.
+
+    Example contents for the input file:
+
+    [
+        {
+            "cpacs_file": "input.xml",
+            "extra_screenshots" :
+                [
+                    {
+                        "name": "structure",
+                        "script": "app.scene.selectAll();\napp.scene.setTransparency(90);\n"}]},{"cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/concorde.cpacs3.xml"
+                    }
+                ]
+        }
+    ]
+
+    """
     screenshots_expected_dir = 'screenshots-expected'
 
     # create temporary screenshot dir, if none is provided
@@ -259,7 +269,9 @@ def main(input_file, output_file, update, tigl_script, screenshot_dir, download_
             f.write(str(datetime.datetime.now().date()))
 
     # open input file and download nonlocal files, if any
-    cpacs_dicts = open_input_file(input_file, download_dir)
+    cpacs_dicts = []
+    for file in input_files:
+        cpacs_dicts = cpacs_dicts + open_input_file(file, download_dir)
 
     # create the tiglviewer-3 script that generates screenshots
     create_tiglviewer_script(cpacs_dicts,
