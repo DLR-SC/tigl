@@ -137,7 +137,7 @@ private:
     class QTimer * openTimer;
     class QUndoStack* undoStack;
 
-    bool suppress_errors{false};
+    bool m_suppressErrors{false};
 
 };
 

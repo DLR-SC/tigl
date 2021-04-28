@@ -96,7 +96,7 @@ int TIGLViewerApp::parseArguments(QStringList argList)
             }
         }
         else if (arg.compare("--suppress-errors") == 0) {
-            config.suppress_errors = true;
+            config.suppressErrors = true;
         }
         else if (arg.compare("--windowtitle") == 0) {
             if (i+1 >= argList.size()) {
@@ -137,7 +137,7 @@ int TIGLViewerApp::parseArguments(QStringList argList)
 void TIGLViewerApp::onWindowInitalized()
 {
     // suppress errors
-    mainwindow.suppressErrors(config.suppress_errors);
+    mainwindow.suppressErrors(config.suppressErrors);
 
     if (!config.controlFile.isEmpty()){
         mainwindow.setInitialControlFile(config.controlFile);

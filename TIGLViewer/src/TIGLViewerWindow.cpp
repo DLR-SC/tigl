@@ -562,7 +562,7 @@ void TIGLViewerWindow::statusMessage (const QString& aMessage)
 
 void TIGLViewerWindow::displayErrorMessage (const QString& aMessage, const QString& aHeader = "TIGL Error")
 {
-    if (!suppress_errors) {
+    if (!m_suppressErrors) {
         TIGLViewerErrorDialog dialog(this);
         dialog.setMessage(QString("<b>%1</b><br /><br />%2").arg(aHeader).arg(aMessage));
         dialog.setWindowTitle("Error");
@@ -573,7 +573,7 @@ void TIGLViewerWindow::displayErrorMessage (const QString& aMessage, const QStri
 
 void TIGLViewerWindow::suppressErrors(bool v)
 {
-    suppress_errors = v;
+    m_suppressErrors = v;
 }
 
 void TIGLViewerWindow::connectConfiguration()
