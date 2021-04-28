@@ -1555,8 +1555,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection
 * coordinate system defined by the uid.
 * Hence, this coordinate is given in either the segment or component segment coordinate system. See image below for details.
 *
-* @image html compseg-intersect.png "Computation of the interpolation point."
-* @image latex compseg-intersect.pdf "Computation of the interpolation point." width=7.5cm
+* @image html InterpolateXsi.png "Computation of the interpolation point."
+* @image latex InterpolateXsi.pdf "Computation of the interpolation point." width=7.5cm
 *
 * @param[in] cpacsHandle
 * @param[in] firstUID, firstEta, firstXsi    Starting point of the intersection line (on segment or component segment)
