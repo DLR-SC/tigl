@@ -1454,7 +1454,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
 
 
 /**
-* @brief Computes the intersection of a line (defined by component segment coordinates) with an iso-eta line on a
+* @brief This function is deprecated. Use the generalized function ::tiglWingInterpolateXsi.
+*
+* @deprecated since 3.2
+*
+* Computes the intersection of a line (defined by component segment coordinates) with an iso-eta line on a
 * specified wing segment.
 *
 * The component segment line is defined by its inner and outer point, both defined in
@@ -1496,7 +1500,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
 
 
 /**
-* @brief Given a straight line in space defined by a pair of component segment (eta,xsi) coordinates,
+* @brief This function is deprecated. Use the generalized function ::tiglWingInterpolateXsi.
+*
+* @deprecated since 3.2
+*
+* Given a straight line in space defined by a pair of component segment (eta,xsi) coordinates,
 * the function computes the intersection of the line with a component segment iso-eta line.
 *
 * The function is similar to ::tiglWingComponentSegmentGetSegmentIntersection, with the difference, that
