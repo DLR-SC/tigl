@@ -39,6 +39,7 @@ void showHelp(QString appName)
     helpText += "  --script <filename>       Script to execute.\n";
     helpText += "  --windowtitle <title>    The titel of the TiGL Viewer window.\n";
     helpText += "  --controlFile <filename>    Name of the control file.\n";
+    helpText += "  --suppress-errors        Suppress all error message dialogs\n";
 
     QMessageBox::information(0, "TiGL Viewer Argument Error",
                                  helpText,
@@ -94,6 +95,9 @@ int TIGLViewerApp::parseArguments(QStringList argList)
                 config.initialScript = argList.at(++i);
             }
         }
+        else if (arg.compare("--suppress-errors") == 0) {
+            config.suppressErrors = true;
+        }
         else if (arg.compare("--windowtitle") == 0) {
             if (i+1 >= argList.size()) {
                 std::cout << "missing windowtitle" << std::endl;
@@ -132,6 +136,9 @@ int TIGLViewerApp::parseArguments(QStringList argList)
 
 void TIGLViewerApp::onWindowInitalized()
 {
+    // suppress errors
+    mainwindow.setSuppressErrorsEnabled(config.suppressErrors);
+
     if (!config.controlFile.isEmpty()){
         mainwindow.setInitialControlFile(config.controlFile);
     }
