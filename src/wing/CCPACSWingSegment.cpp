@@ -774,11 +774,7 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
         }
 
         // Get point on wing segment in dependence of eta by linear interpolation
-        Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
-        Standard_Real firstParam = profileLine->FirstParameter();
-        Standard_Real lastParam  = profileLine->LastParameter();
-        Standard_Real param = firstParam + (lastParam - firstParam) * eta;
-        profileLine->D0(param, profilePoint);
+        profilePoint = innerProfilePoint.XYZ()*(1. - eta) + outerProfilePoint.XYZ() * eta;
     }
     else if ( behavior == asParameterOnSurface )
     {
