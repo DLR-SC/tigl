@@ -67,7 +67,8 @@ PNamedShape CCPACSEnginePosition::BuildLoft() const
         CCPACSEngine& engine = m_uidMgr->ResolveObject<CCPACSEngine>(m_engineUID);
         if (engine.GetNacelle()) {
             boost::optional<CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
-            CTiglEngineNacelleBuilder builder(*nacelle, CTiglRelativelyPositionedComponent::GetTransformationMatrix());
+            auto transform = this->GetTransformationMatrix();
+            CTiglEngineNacelleBuilder builder(*nacelle, transform);
             return builder.BuildShape();
         }
         else {
