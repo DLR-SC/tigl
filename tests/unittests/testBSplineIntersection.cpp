@@ -52,7 +52,7 @@ TEST(BSplineIntersection, ex1)
     Handle(Geom_BSplineCurve) c1 = new Geom_BSplineCurve(cp->Array1(), knots->Array1(), mults->Array1(), 2);
     Handle(Geom_BSplineCurve) c2 = new Geom_BSplineCurve(cp2->Array1(), knots->Array1(), mults->Array1(), 2);
 
-    const double tolerance = 0.03;
+    const double tolerance = 1e-3;
     auto results = tigl::IntersectBSplines(c1, c2, tolerance);
 
     EXPECT_EQ(11, results.size());

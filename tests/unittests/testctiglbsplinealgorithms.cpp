@@ -1013,8 +1013,8 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinder)
     std::vector<std::pair<double, double> > intersection_vector = CTiglBSplineAlgorithms::intersections(spline_u, spline_v);
 
     // splines should intersect at u = 0.5 + std::sqrt(0.1) and v = 4. / 5
-    ASSERT_NEAR(intersection_vector[0].first, 0.5 + std::sqrt(0.1), 1e-15);
-    ASSERT_NEAR(intersection_vector[0].second, 4. / 5, 1e-15);
+    ASSERT_NEAR(intersection_vector[0].first, 0.5 + std::sqrt(0.1), 1e-13);
+    ASSERT_NEAR(intersection_vector[0].second, 4. / 5, 1e-13);
 }
 /*
 TEST(TiglBSplineAlgorithms, testSortBSpline)
