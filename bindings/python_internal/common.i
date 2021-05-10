@@ -36,8 +36,10 @@
 
 %include boost_optional.i
 
-
+#if PYTHONNOCC_LEGACY
 #define Handle(ClassName)  Handle_##ClassName
+#endif
+
 #define TixiDocumentHandle int
 #define TiglCPACSConfigurationHandle int
 %template(DoubleVector) std::vector<double>;

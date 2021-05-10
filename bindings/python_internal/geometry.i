@@ -31,6 +31,8 @@
 %import tmath.i
 %import core.i
 
+%import TopoDS.i
+
 %{
 // All includes that are required for the wrapper compilation
 #include "tiglmathfunctions.h"
