@@ -36,7 +36,7 @@
 
 %include boost_optional.i
 
-#if PYTHONNOCC_LEGACY
+#ifdef PYTHONNOCC_LEGACY
 #define Handle(ClassName)  Handle_##ClassName
 #endif
 
