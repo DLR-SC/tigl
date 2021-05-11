@@ -20,7 +20,7 @@ env:
   TIGL_PYTHON_VER: "=3.7"
   TIGL_TIXI3_VER: "=3.1.1"
   TIGL_QT_VER: "=5.9.7"
-  TIGL_PYTHONOCC_VER: "=0.17.3"
+  TIGL_PYTHONOCC_VER: "=7.4.0"
   TIGL_DOXYGEN_VER: "=1.8.15"
   TIGL_SWIG_VER: ">=3.0.11"
   TIGL_OCE_VER: "=0.17.2"
@@ -126,7 +126,7 @@ jobs:
     - name: Install dependencies using Miniconda (dynamic, windows)
       if: matrix.config.link_type == 'dynamic' && contains(matrix.config.os, 'windows')
       run: |
-        conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} doxygen${{ env.TIGL_DOXYGEN_VER }} swig${{ env.TIGL_SWIG_VER }} tixi3${{ env.TIGL_TIXI3_VER }} qt${{ env.TIGL_QT_VER }} oce${{ env.TIGL_OCE_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} matlab-libs${{ env.TIGL_MATLAB_LIBS }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install pip python${{ env.TIGL_PYTHON_VER }} pythonocc-core${{ env.TIGL_PYTHONOCC_VER }} doxygen${{ env.TIGL_DOXYGEN_VER }} swig${{ env.TIGL_SWIG_VER }} tixi3${{ env.TIGL_TIXI3_VER }} qt${{ env.TIGL_QT_VER }} freeimageplus${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} matlab-libs${{ env.TIGL_MATLAB_LIBS }} -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list
         

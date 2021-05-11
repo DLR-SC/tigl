@@ -50,6 +50,8 @@ else(OCE_FOUND)
   message("OCE not found! Searching for OpenCASCADE.")
   find_package(OpenCASCADE 7.4.0 CONFIG REQUIRED)
   option(OpenCASCADE_STATIC_LIBS "Should be checked, if static OpenCASCADE libs are linked" OFF)
+
+  message(STATUS "Found opencascade " ${OpenCASCADE_VERSION})
 endif(OCE_FOUND)
 
 set_property(TARGET TKernel APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "Standard_EXPORT=")

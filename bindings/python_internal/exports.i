@@ -20,6 +20,8 @@
 
 %include common.i
 %include math_headers.i
+%include Geom_headers.i
+%include TopoDS_headers.i
 
 %shared_ptr(tigl::CTiglCADExporter)
 %shared_ptr(tigl::CTiglExportBrep)

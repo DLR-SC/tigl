@@ -38,10 +38,10 @@ if(OCE_FOUND)
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
 else(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES "")
-  find_package(OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
 endif(OCE_FOUND)
 
 # we need opengl in order to build tiglviewer
+cmake_policy(SET CMP0072 NEW)
 find_package(OpenGL REQUIRED)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
