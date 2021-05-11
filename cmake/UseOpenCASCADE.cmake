@@ -52,6 +52,12 @@ else(OCE_FOUND)
   option(OpenCASCADE_STATIC_LIBS "Should be checked, if static OpenCASCADE libs are linked" OFF)
 
   message(STATUS "Found opencascade " ${OpenCASCADE_VERSION})
+
+  FIND_PATH(OpenCASCADE_SHADER_DIRECTORY
+            NAMES PhongShading.fs
+            PATH_SUFFIXES share/opencascade/resources/Shaders
+            HINTS ${CASROOT} ${OCE_INCLUDE_DIRS}/../../
+  )
 endif(OCE_FOUND)
 
 set_property(TARGET TKernel APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "Standard_EXPORT=")
