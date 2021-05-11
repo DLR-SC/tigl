@@ -79,6 +79,7 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     if (PYTHONNOCC_LEGACY)
         set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -DPYTHONNOCC_LEGACY)
+        add_definitions(-DPYTHONNOCC_LEGACY)
     else(PYTHONNOCC_LEGACY)
         # This directory will only we rea at least and includes file of pythonocc < 7
         include_directories(${CMAKE_CURRENT_SOURCE_DIR}/compat )

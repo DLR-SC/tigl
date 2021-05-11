@@ -28,10 +28,12 @@
 %}
 
 %include math_headers.i
+%include Geom_headers.i
 %import tmath.i
 %import core.i
 
 %import TopoDS.i
+%import Geom.i
 
 %{
 // All includes that are required for the wrapper compilation

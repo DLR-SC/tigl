@@ -1,6 +1,7 @@
-from OCC.BRep import BRep_Tool_Curve
+from OCC.Core.BRep import BRep_Tool_Curve
 from OCC.Display.SimpleGui import init_display
 from tigl3.geometry import curve_network_to_surface
+from tigl3.occ_helpers.containers import geomcurve_vector
 
 from tigl3.occ_helpers.topology import read_brep, iter_edges
 
@@ -22,7 +23,7 @@ def main():
         profile_curves.append(curve)
 
     # create the gordon surface
-    surface = curve_network_to_surface(profile_curves, guide_curves, 1.e-4)
+    surface = curve_network_to_surface(geomcurve_vector(profile_curves), geomcurve_vector(guide_curves), 1.e-4)
 
     # display curves and resulting surface
     display, start_display, add_menu, add_function_to_menu = init_display()

@@ -46,7 +46,7 @@ def fit_bspline_to_parabola():
     approx_algo = CFunctionToBspline(tigl_parabola, umin=-1., umax=1., degree=3, tolerance=1e-3)
 
     # we get a Geom_BSplineCurve as a result
-    bspline_curve = approx_algo.curve().GetObject()
+    bspline_curve = approx_algo.curve()
     # get the error of the fir
     error = approx_algo.approx_error()
 

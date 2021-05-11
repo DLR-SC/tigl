@@ -1,7 +1,8 @@
-from OCC.TColStd import TColStd_HArray1OfReal, TColStd_HArray1OfInteger
-from OCC.TColgp import TColgp_HArray1OfPnt
-from OCC.TColGeom import TColGeom_HArray1OfBSplineCurve
-from OCC.gp import gp_Pnt
+from OCC.Core.TColStd import TColStd_HArray1OfReal, TColStd_HArray1OfInteger
+from OCC.Core.TColgp import TColgp_HArray1OfPnt
+from OCC.Core.TColGeom import TColGeom_HArray1OfBSplineCurve
+from OCC.Core.gp import gp_Pnt
+from tigl3.geometry import CurveList
 
 
 def float_array(float_list):
@@ -62,6 +63,22 @@ def bspline_array(bspline_list):
     for i, curve in enumerate(bspline_list):
         result.SetValue(i, curve)
     return result
+
+
+def geomcurve_vector(geomcurve_list):
+    """
+    Creates a std::vector of Handle(Geom_Curve) to be passed
+    to different geometry algorithms of tigl
+
+    :param geomcurve_list: list of Geom_Curve
+    :return: VectorHandleGeom_Curve
+    """
+
+    vec = CurveList()
+    for curve in geomcurve_list:
+        vec.push_back(curve)
+
+    return vec
 
 
 def iter_array(occ_array):

@@ -41,7 +41,7 @@ if __name__ == '__main__':
     tigl_h = tigl3wrapper.Tigl3()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    tixi_h.open(dir_path + "/../../tests/unittests/TestData/cell_rib_spar_test.xml")
+    tixi_h.open(dir_path + "/../../tests/integrationtests/TestData/cell_rib_spar_test.xml")
     tigl_h.open(tixi_h, "")
 
     # get the configuration manager

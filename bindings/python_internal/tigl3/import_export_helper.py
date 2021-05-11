@@ -2,7 +2,7 @@ import os
 from tigl3.exports import TriangulatedExportOptions, create_exporter as tigl_create_exporter
 from tigl3.geometry import CNamedShape
 
-from OCC.TopoDS import TopoDS_Shape
+from OCC.Core.TopoDS import TopoDS_Shape
 
 
 def export_shapes(shapes, filename, deflection=0.001):

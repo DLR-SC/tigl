@@ -24,6 +24,7 @@
 %include math_headers.i
 %include TopoDS_headers.i
 %include TopLoc_headers.i
+%include Geom_headers.i
 
 %import geometry.i
 %import core.i
