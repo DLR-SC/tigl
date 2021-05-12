@@ -95,6 +95,8 @@
 
 %feature("autodoc", "3");
 
+%catch_exceptions()
+
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 

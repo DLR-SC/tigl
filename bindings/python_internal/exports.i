@@ -48,6 +48,8 @@
 #include "CGlobalExporterConfigs.h"
 %}
 
+%catch_exceptions()
+
 %template(ListPNamedShape) std::vector<PNamedShape>;
 
 %feature("autodoc", "3");

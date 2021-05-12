@@ -29,11 +29,14 @@
 
 %include math_headers.i
 %include Geom_headers.i
-%import tmath.i
-%import core.i
+%include TopoDS_headers.i
+
 
 %import TopoDS.i
 %import Geom.i
+
+%import tmath.i
+%import core.i
 
 %{
 // All includes that are required for the wrapper compilation
@@ -77,18 +80,18 @@
 #include "CTiglConcatSurfaces.h"
 %}
 
+%catch_exceptions()
 
 %feature("autodoc", "3");
-
 
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
 %template(CPointContainer) std::vector<gp_Pnt>;
-%template(BSplineCurveList) std::vector<Handle_Geom_BSplineCurve>;
-%template(BSplineSurfaceList) std::vector<Handle_Geom_BSplineSurface>;
-%template(CurveList) std::vector<Handle_Geom_Curve>;
-%template(SurfaceList) std::vector<Handle_Geom_Surface>;
+%template(BSplineCurveList) std::vector<Handle(Geom_BSplineCurve)>;
+%template(BSplineSurfaceList) std::vector<Handle(Geom_BSplineSurface)>;
+%template(CurveList) std::vector<Handle(Geom_Curve)>;
+%template(SurfaceList) std::vector<Handle(Geom_Surface)>;
 %template(CurveIntersectionResultList) std::vector<tigl::CurveIntersectionResult>;
 
 %boost_optional(tigl::CCPACSPointAbsRel)

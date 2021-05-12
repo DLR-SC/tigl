@@ -36,6 +36,7 @@
 #include "CTiglError.h"
 %}
 
+%catch_exceptions()
 
 %feature("autodoc", "3");
 

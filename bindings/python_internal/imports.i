@@ -29,6 +29,8 @@
 %import core.i
 %import geometry.i
 
+%catch_exceptions()
+
 %{
 #include "ITiglCADImporter.h"
 #include "ICADImporterCreator.h"
