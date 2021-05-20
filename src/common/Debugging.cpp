@@ -18,6 +18,8 @@
 
 #include <boost/filesystem.hpp>
 #include <BRepTools.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Geom_Curve.hxx>
 
 #include <sstream>
 #include <cctype>
@@ -116,6 +118,11 @@ DebugScope::~DebugScope()
 void DebugScope::addShape(const TopoDS_Shape& shape, const std::string& filename)
 {
     m_shapes[filename] = shape;
+}
+
+void DebugScope::addShape(const Handle(Geom_Curve) &curve, const std::string &filename)
+{
+    addShape(BRepBuilderAPI_MakeEdge(curve).Edge(), filename);
 }
 
 void DebugScope::dumpShape(const TopoDS_Shape& shape, const std::string& filename)

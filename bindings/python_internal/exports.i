@@ -20,6 +20,8 @@
 
 %include common.i
 %include math_headers.i
+%include Geom_headers.i
+%include TopoDS_headers.i
 
 %shared_ptr(tigl::CTiglCADExporter)
 %shared_ptr(tigl::CTiglExportBrep)
@@ -45,6 +47,8 @@
 #include "CTiglExporterFactory.h"
 #include "CGlobalExporterConfigs.h"
 %}
+
+%catch_exceptions()
 
 %template(ListPNamedShape) std::vector<PNamedShape>;
 

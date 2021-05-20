@@ -816,7 +816,7 @@ TopoDS_Face BuildFace(const gp_Pnt& p1, const gp_Pnt& p2, const gp_Pnt& p3, cons
 bool IsPathRelative(const std::string& path)
 {
 #if defined _WIN32 || defined __WIN32__
-    return PathIsRelative(path.c_str()) == 1;
+    return PathIsRelativeA(path.c_str()) == 1;
 #else
     if (path.size() > 0 && path[0] == '/') {
         return false;

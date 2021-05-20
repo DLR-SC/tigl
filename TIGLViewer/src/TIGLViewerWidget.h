@@ -184,7 +184,7 @@ private: // members
     Standard_Boolean                myViewResized;
     Standard_Boolean                myViewInitialized;
     CurrentAction3d                 myMode;
-    Quantity_Factor                 myCurZoom;
+    Standard_Real                   myCurZoom;
     Standard_Boolean                myGridSnap;
     AIS_StatusOfDetection           myDetection;
 

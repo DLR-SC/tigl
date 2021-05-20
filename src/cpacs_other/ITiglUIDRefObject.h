@@ -40,6 +40,9 @@ class CTiglUIDObject;
  */
 class ITiglUIDRefObject
 {
+public:
+    virtual ~ITiglUIDRefObject() = default;
+
 private:
     friend class CTiglUIDManager;
 

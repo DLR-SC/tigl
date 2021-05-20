@@ -22,6 +22,9 @@
 %include <factory.i>
 %include common.i
 %include math_headers.i
+%include TopoDS_headers.i
+%include TopLoc_headers.i
+%include Geom_headers.i
 
 %import geometry.i
 %import core.i
@@ -65,10 +68,6 @@
 #include "CCPACSLongFloorBeam.h"
 #include "CCPACSLongFloorBeamPosition.h"
 #include "CCPACSPressureBulkheadAssemblyPosition.h"
-#include <TopoDS_TEdge.hxx>
-#include <TopoDS_HShape.hxx>
-#include <TopLoc_IndexedMapNodeOfIndexedMapOfLocation.hxx>
-#include <TopLoc_StdMapNodeOfMapOfLocation.hxx>
 #include "generated/CPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "generated/CPACSControlSurfacePath.h"
 #include "generated/CPACSCutOutControlPoints.h"
@@ -95,6 +94,8 @@
 %}
 
 %feature("autodoc", "3");
+
+%catch_exceptions()
 
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";

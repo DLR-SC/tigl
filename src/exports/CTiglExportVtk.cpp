@@ -39,9 +39,6 @@
 #include "CTiglTypeRegistry.h"
 
 // algorithms
-#include "BRepMesh.hxx"
-
-
 #include "CTiglPolyData.h"
 #include "CTiglTriangularizer.h"
 #include "CTiglPolyData.h"

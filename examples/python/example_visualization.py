@@ -3,7 +3,7 @@ from __future__ import print_function
 from tixi3 import tixi3wrapper
 from tigl3 import tigl3wrapper
 import tigl3.configuration, tigl3.geometry, tigl3.boolean_ops, tigl3.exports
-from OCC.Quantity import Quantity_NOC_RED
+from OCC.Core.Quantity import Quantity_NOC_RED
 import os
 
 def display_configuration(tigl_handle):

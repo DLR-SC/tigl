@@ -41,7 +41,7 @@ PNamedShape InteractiveShapeManager::GetShapeFromName(const std::string& name)
 }
 
 PNamedShape InteractiveShapeManager::GetShapeFromIObject(const
-        Handle_AIS_InteractiveObject obj)
+        Handle(AIS_InteractiveObject) obj)
 {
     NameIterator it = _names.find(obj);
 
@@ -114,7 +114,7 @@ void InteractiveShapeManager::removeObject(const std::string& name)
     }
 }
 
-void InteractiveShapeManager::removeObject(Handle_AIS_InteractiveObject obj)
+void InteractiveShapeManager::removeObject(Handle(AIS_InteractiveObject) obj)
 {
     NameIterator nameIt = _names.find(obj);
 
@@ -147,7 +147,7 @@ void InteractiveShapeManager::removeObject(Handle_AIS_InteractiveObject obj)
     }
 }
 
-void InteractiveShapeManager::addObject(PNamedShape shape, Handle_AIS_InteractiveObject iObject)
+void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_InteractiveObject) iObject)
 {
     std::string name = shape->Name();
 

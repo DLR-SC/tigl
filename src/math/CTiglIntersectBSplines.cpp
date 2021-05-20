@@ -18,11 +18,10 @@
 
 #include "CTiglIntersectBSplines.h"
 #include "CTiglBSplineAlgorithms.h"
-#include "CTiglLineSegment.h"
 #include "tiglcommonfunctions.h"
 
 #include <math_MultipleVarFunctionWithGradient.hxx>
-#include <math_BFGS.hxx>
+#include <math_FRPR.hxx>
 
 #include <limits>
 #include <list>
@@ -157,6 +156,7 @@ namespace
         BoundingBox h2(curve2);
         
         if (!h1.Intersects(h2, tolerance)) {
+            // Bounding boxes do not intersect. No intersection possible
             return {};
         }
         
@@ -164,23 +164,16 @@ namespace
         double c2_curvature = curvature(curve2);
         double max_curvature = 1.0005;
         
+        // If both curves are linear enough, we can stop refining
         if (c1_curvature <= max_curvature && c2_curvature <= max_curvature) {
-            // both curves are now almost linear. check approximate distance between line segments
-            tigl::CTiglLineSegment l1(curve1->Pole(1).XYZ(), curve1->Pole(curve1->NbPoles()).XYZ());
-            tigl::CTiglLineSegment l2(curve2->Pole(1).XYZ(), curve2->Pole(curve2->NbPoles()).XYZ());
-            
-            if (l1.distance(l2) < tolerance){
-                return {BoundingBoxPair(h1, h2)};
-            }
-            else {
-                return {};
-            }
+            return {BoundingBoxPair(h1, h2)};
         }
         
         double curve1MidParm = 0.5*(curve1->FirstParameter() + curve1->LastParameter());
         double curve2MidParm = 0.5*(curve2->FirstParameter() + curve2->LastParameter());
         
         if (c1_curvature > max_curvature && c2_curvature > max_curvature) {
+            // Refine both curves by splitting them in the parametric center
             Handle_Geom_BSplineCurve c11 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1->FirstParameter(), curve1MidParm);
             Handle_Geom_BSplineCurve c12 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1MidParm, curve1->LastParameter());
             
@@ -200,6 +193,7 @@ namespace
             return result1;
         }
         else if (c1_curvature <= max_curvature && max_curvature < c2_curvature) {
+            // Refine only curve 2
             Handle_Geom_BSplineCurve c21 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2->FirstParameter(), curve2MidParm);
             Handle_Geom_BSplineCurve c22 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2MidParm, curve2->LastParameter());
             
@@ -210,6 +204,7 @@ namespace
             return result1;
         }
         else if (c2_curvature <= max_curvature && max_curvature < c1_curvature) {
+            // Refine only curve 1
             Handle_Geom_BSplineCurve c11 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1->FirstParameter(), curve1MidParm);
             Handle_Geom_BSplineCurve c12 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1MidParm, curve1->LastParameter());
             
@@ -247,10 +242,56 @@ namespace
             return Values(X, F, G);
         }
 
+        // Reparametrization function R -> [0,1]
+        static double activate(double z)
+        {
+            return 0.5 * (sin(z) + 1.);
+        }
+
+        // Derivative of reparametrization function
+        static double d_activate(double z)
+        {
+            return 0.5 * cos(z);
+        }
+
+        double getUParam(double x0) const
+        {
+            double umin = m_c1->FirstParameter();
+            double umax = m_c1->LastParameter();
+
+            return activate(x0)*(umax - umin) + umin;
+        }
+
+        double getVParam(double x1) const
+        {
+            double vmin = m_c2->FirstParameter();
+            double vmax = m_c2->LastParameter();
+
+            return activate(x1)*(vmax - vmin) + vmin;
+        }
+
+        double d_getUParam(double x0) const
+        {
+            double umin = m_c1->FirstParameter();
+            double umax = m_c1->LastParameter();
+
+            return d_activate(x0)*(umax - umin);
+        }
+
+        double d_getVParam(double x1) const
+        {
+            double vmin = m_c2->FirstParameter();
+            double vmax = m_c2->LastParameter();
+
+            return d_activate(x1)*(vmax - vmin);
+        }
+
         virtual  Standard_Boolean Values (const math_Vector& X, Standard_Real& F, math_Vector& G) override
         {
-            double u = X.Value(1);
-            double v = X.Value(2);
+
+            // We use a reparametrization trick to ensure that u is in [umin, umax] and v in [vmin, vmax]
+            double u = getUParam(X.Value(1));
+            double v = getVParam(X.Value(2));
 
             gp_Pnt p1, p2;
             gp_Vec d1, d2;
@@ -259,20 +300,8 @@ namespace
 
             gp_Vec diff = p1.XYZ() - p2.XYZ();
             F = diff.SquareMagnitude();
-            G(1) = 2. * diff.Dot(d1);
-            G(2) = -2. * diff.Dot(d2);
-
-            // we add a large penalty, if the variables go outside the valid range
-            double u_penalty = sqr(maxval(0., m_c1->FirstParameter() - u)) + sqr(maxval(0., u - m_c1->LastParameter()));
-            double v_penalty = sqr(maxval(0., m_c2->FirstParameter() - v)) + sqr(maxval(0., v - m_c2->LastParameter()));
-
-            double d_u_penalty = -2. * maxval(0., m_c1->FirstParameter() - u) + 2.*maxval(0., u - m_c1->LastParameter());
-            double d_v_penalty = -2. * maxval(0., m_c2->FirstParameter() - v) + 2.*maxval(0., v - m_c2->LastParameter());
-
-            double fac = 1e7;
-            F += fac*(u_penalty + v_penalty);
-            G(1) += fac*d_u_penalty;
-            G(2) += fac*d_v_penalty;
+            G(1) = 2. * diff.Dot(d1)* (m_c1->LastParameter()-m_c1->FirstParameter()) * d_getUParam(X.Value(1));
+            G(2) = -2. * diff.Dot(d2) * (m_c2->LastParameter()-m_c2->FirstParameter()) * d_getUParam(X.Value(2));
 
             return true;
         }
@@ -334,30 +363,42 @@ std::vector<tigl::CurveIntersectionResult> IntersectBSplines(const Handle(Geom_B
         }
     }
 
-    CurveCurveDistanceObjective obj(curve1, curve2);
 
     std::vector<tigl::CurveIntersectionResult> results;
 
     for (const BoundingBoxPair& boxes : intersectionCandidates) {
+
+        auto c1 = CTiglBSplineAlgorithms::trimCurve(curve1, boxes.b1.range.min,boxes.b1.range.max);
+        auto c2 = CTiglBSplineAlgorithms::trimCurve(curve2, boxes.b2.range.min,boxes.b2.range.max);
+
+        CurveCurveDistanceObjective obj(c1, c2);
+
+        // The objective is designed such that x=[0, 0] is in the middle of the parameter space of both curves
         math_Vector guess(1, 2);
-        guess(1) = 0.5*(boxes.b1.range.min + boxes.b1.range.max);
-        guess(2) = 0.5*(boxes.b2.range.min + boxes.b2.range.max);
+        guess(1) = 0.;
+        guess(2) = 0.;
 
-#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,1)
-        math_BFGS optimizer(obj.NbVariables(), 1e-8, 50, 1e-8);
+
+        math_FRPR optimizer(obj, 1e-10, 200);
         optimizer.Perform(obj, guess);
-#else
-        math_BFGS optimizer(obj, guess, 1e-12);
-#endif
 
-        double u = Clamp(optimizer.Location().Value(1), curve1->FirstParameter(), curve1->LastParameter());
-        double v = Clamp(optimizer.Location().Value(2), curve2->FirstParameter(), curve2->LastParameter());
-        CurveIntersectionResult result;
-        result.parmOnCurve1 = u;
-        result.parmOnCurve2 = v;
-        result.point = (CTiglPoint(curve1->Value(u).XYZ()) + CTiglPoint(curve2->Value(v).XYZ()))*0.5;
+        if (!optimizer.IsDone()) {
+            LOG(ERROR) << "Unable to compute exact intersection in `IntersectBSplines` due to failure in minimization. Please file a report";
+            continue;
+        }
 
-        results.push_back(result);
+        // convert parameter space of optimized into u/v curve parameters
+        double u = obj.getUParam(optimizer.Location().Value(1));
+        double v = obj.getVParam(optimizer.Location().Value(2));
+
+        double distance = c1->Value(u).Distance(c2->Value(v));
+        if (distance < std::max(1e-10, tolerance)) {
+            CurveIntersectionResult result;
+            result.parmOnCurve1 = u;
+            result.parmOnCurve2 = v;
+            result.point = (CTiglPoint(curve1->Value(u).XYZ()) + CTiglPoint(curve2->Value(v).XYZ()))*0.5;
+            results.push_back(result);
+        }
     }
     
     return results;

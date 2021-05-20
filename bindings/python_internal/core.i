@@ -35,6 +35,8 @@
 
 %feature("autodoc", "3");
 
+%catch_exceptions()
+
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
@@ -50,30 +52,3 @@
 %include "generated/CPACSUpdates.h"
 %include "generated/CPACSHeader.h"
 
-%feature("director:except") {
-    if ($error != NULL) {
-        throw Swig::DirectorMethodException();
-    }
-}
-
-%exception {
-    try {
-        $action
-    }
-    catch (tigl::CTiglError & err) {
-        PyErr_SetString(tiglError_to_PyExc(err), const_cast<char*>(err.what()));
-        SWIG_fail;
-    }
-    catch(Standard_Failure & err) {
-        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>((std::string("OpenCASCADE Error: ") + err.GetMessageString()).c_str()));
-        SWIG_fail;
-    }
-    catch(std::exception & err) {
-        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(err.what()));
-        SWIG_fail;
-    }
-    catch(...) {
-        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>("An unkown error occured!"));
-        SWIG_fail;
-    }
-}

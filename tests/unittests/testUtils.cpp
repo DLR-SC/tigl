@@ -24,11 +24,14 @@
 #include<fstream>
 #include<iomanip>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomConvert.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <BRepTools.hxx>
+#include <TopoDS.hxx>
 
 // save x-y data
 void outputXY(const int & i, const double& x, const double&y, const std::string& filename)
@@ -72,4 +75,26 @@ void StoreResult(const std::string& filename, const Handle(Geom_BSplineCurve)& c
     }
 
     BRepTools::Write(c, filename.c_str());
+}
+
+Handle(Geom_BSplineCurve) LoadBSplineCurve(const std::string& filename)
+{
+    BRep_Builder b;
+    TopoDS_Shape e;
+    if (BRepTools::Read(e, filename.c_str(), b) != true) {
+        return nullptr;
+    }
+
+    double umin, umax;
+    return Handle(Geom_BSplineCurve)::DownCast(BRep_Tool::Curve(TopoDS::Edge(e), umin, umax));
+}
+
+
+Handle(Geom_BSplineSurface) LoadBSplineSurface(const std::string& filename)
+{
+    BRep_Builder builder;
+    TopoDS_Shape shape;
+
+    BRepTools::Read(shape, filename.c_str(), builder);
+    return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
 }

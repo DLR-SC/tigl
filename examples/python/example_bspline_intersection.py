@@ -27,7 +27,7 @@ if __name__ == "__main__":
     curve1 = bspline_curve(cp1, knots1, mults, 2)
     curve2 = bspline_curve(cp2, knots1, mults, 2)
 
-    results = intersect_bsplines(curve1, curve2, 0.03)
+    results = intersect_bsplines(curve1, curve2, 0.001)
     print("Number of intersections: " + str(len(results)))
 
     for result in results:

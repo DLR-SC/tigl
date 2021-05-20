@@ -71,6 +71,7 @@ class CTiglReqUIDObject : public virtual CTiglUIDObject
 {
 public:
     virtual const std::string& GetUID() const = 0;
+    virtual ~CTiglReqUIDObject() = default;
 
     boost::optional<std::string> GetObjectUID() const {
         return GetUID();
@@ -84,6 +85,7 @@ class CTiglOptUIDObject : public virtual CTiglUIDObject
 {
 public:
     virtual const boost::optional<std::string>& GetUID() const = 0;
+    virtual ~CTiglOptUIDObject() = default;
 
     boost::optional<std::string> GetObjectUID() const {
         return GetUID();

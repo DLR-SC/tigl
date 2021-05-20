@@ -1,8 +1,8 @@
-from OCC.TopExp import TopExp_Explorer
-from OCC.BRepTools import BRepTools_WireExplorer, breptools_Read, breptools_Write
-from OCC.TopoDS import topods_Edge, topods_Wire, TopoDS_Compound, TopoDS_Shape
-from OCC.BRep import BRep_Builder
-from OCC.TopAbs import TopAbs_EDGE, TopAbs_WIRE
+from OCC.Core.TopExp import TopExp_Explorer
+from OCC.Core.BRepTools import BRepTools_WireExplorer, breptools_Read, breptools_Write
+from OCC.Core.TopoDS import topods_Edge, topods_Wire, TopoDS_Compound, TopoDS_Shape
+from OCC.Core.BRep import BRep_Builder
+from OCC.Core.TopAbs import TopAbs_EDGE, TopAbs_WIRE
 from pathlib import Path
 
 

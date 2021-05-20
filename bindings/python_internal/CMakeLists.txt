@@ -58,6 +58,15 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     include(${SWIG_USE_FILE})
 
+    # we use the same definitions as pythonocc for their build to hide some of their warnings
+    option(SWIG_HIDE_WARNINGS "Check this option if you want a less verbose swig output." ON)
+    set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -py3)
+    if(SWIG_HIDE_WARNINGS)
+      message(STATUS "Disabled SWIG warnings")
+      set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -w302,401,402,412,314,509,512,504,325,503,520,350,351,383,389,394,395,404)
+    endif()
+
+
     include_directories(${PYTHON_INCLUDE_PATH})
 
     include_directories(${PythonOCC_INCLUDE_DIRS})
@@ -67,6 +76,15 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
     set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
     add_definitions(-DTIGL_INTERNAL_IMPORTS)
+
+    if (PYTHONNOCC_LEGACY)
+        set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -DPYTHONNOCC_LEGACY)
+        add_definitions(-DPYTHONNOCC_LEGACY)
+    else(PYTHONNOCC_LEGACY)
+        # This directory will only we rea at least and includes file of pythonocc < 7
+        include_directories(${CMAKE_CURRENT_SOURCE_DIR}/compat )
+    endif(PYTHONNOCC_LEGACY)
+
     include_directories($<TARGET_PROPERTY:tigl3_cpp,INTERFACE_INCLUDE_DIRECTORIES>)
     include_directories($<TARGET_PROPERTY:tigl3,INTERFACE_INCLUDE_DIRECTORIES>)
 

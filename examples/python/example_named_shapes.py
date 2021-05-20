@@ -5,7 +5,7 @@ from tigl3 import tigl3wrapper
 from tigl3.configuration import CCPACSConfigurationManager_get_instance
 from tigl3.geometry import CNamedShape
 from tigl3.import_export_helper import export_shapes
-from OCC.BRepPrimAPI import BRepPrimAPI_MakeBox
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
 import os
 
 

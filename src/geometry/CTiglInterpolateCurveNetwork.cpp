@@ -24,6 +24,7 @@
 #include "CTiglCurveNetworkSorter.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglGordonSurfaceBuilder.h"
+#include "Debugging.h"
 
 #include <algorithm>
 
@@ -68,6 +69,9 @@ void CTiglInterpolateCurveNetwork::ComputeIntersections(math_Matrix& intersectio
     const std::vector<Handle(Geom_BSplineCurve)>& profiles = m_profiles;
     const std::vector<Handle(Geom_BSplineCurve)>& guides = m_guides;
     
+    bool fail = false;
+    DEBUG_SCOPE(debug);
+
     for (int spline_u_idx = 0; spline_u_idx < static_cast<int>(profiles.size()); ++spline_u_idx) {
         for (int spline_v_idx = 0; spline_v_idx < static_cast<int>(guides.size()); ++spline_v_idx) {
             std::vector<std::pair<double, double> > currentIntersections = CTiglBSplineAlgorithms::intersections(profiles[static_cast<size_t>(spline_u_idx)],
@@ -75,7 +79,9 @@ void CTiglInterpolateCurveNetwork::ComputeIntersections(math_Matrix& intersectio
                                                                                                                  m_spatialTol);
 
             if (currentIntersections.size() < 1) {
-                throw tigl::CTiglError("U-directional B-spline and v-directional B-spline don't intersect each other!");
+                fail = true;
+                debug.addShape(profiles[static_cast<size_t>(spline_u_idx)], "profile");
+                debug.addShape(guides[static_cast<size_t>(spline_v_idx)], "guide");
             }
 
             else if (currentIntersections.size() == 1) {
@@ -122,6 +128,10 @@ void CTiglInterpolateCurveNetwork::ComputeIntersections(math_Matrix& intersectio
                 throw tigl::CTiglError("U-directional B-spline and v-directional B-spline have more than two intersections with each other!");
             }
         }
+    }
+
+    if (fail) {
+        throw tigl::CTiglError("U-directional B-spline and v-directional B-spline don't intersect each other!");
     }
 }
 
