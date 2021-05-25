@@ -55,9 +55,29 @@ else(OCE_FOUND)
 
   FIND_PATH(OpenCASCADE_SHADER_DIRECTORY
             NAMES PhongShading.fs
-            PATH_SUFFIXES share/opencascade/resources/Shaders
-            HINTS ${CASROOT} ${OCE_INCLUDE_DIRS}/../../
+            PATH_SUFFIXES
+               share/opencascade/resources/Shaders
+               Shaders
+            HINTS ${CASROOT} ${OCE_INCLUDE_DIRS}/../../ ${OpenCASCADE_RESOURCE_DIR}
   )
+
+
+  if (OpenCASCADE_WITH_TBB AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
+      set(TBB_FIND_QUIETLY 1)
+      find_package(TBB REQUIRED)
+      set_property(TARGET TKernel APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES TBB::tbb TBB::tbbmalloc)
+  endif()
+
+  if (OpenCASCADE_WITH_FREEIMAGE AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
+      find_package(FreeImageLib  MODULE REQUIRED)
+      set_property(TARGET TKService APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES freeimage::freeimage)
+  endif()
+
+  if (OpenCASCADE_WITH_FREETYPE AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
+      find_package(freetype CONFIG REQUIRED)
+      set_property(TARGET TKService APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES freetype)
+  endif()
+
 endif(OCE_FOUND)
 
 set_property(TARGET TKernel APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "Standard_EXPORT=")
