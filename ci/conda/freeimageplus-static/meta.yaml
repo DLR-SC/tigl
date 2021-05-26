@@ -1,12 +1,12 @@
 package:
   name: freeimageplus-static
-  version: 3.17.0
+  version: 3.18.0
 
 source:
   fn: new-bundle.zip [win]
   url: https://github.com/QbProg/oce-win-bundle/archive/qb/new-bundle.zip [win]
-  fn: FreeImage3170.zip [unix]
-  url: http://downloads.sourceforge.net/freeimage/FreeImage3170.zip [unix]
+  fn: FreeImage3180.zip [unix]
+  url: http://downloads.sourceforge.net/freeimage/FreeImage3180.zip [unix]
   patches:
     - installdir.patch   [win]
     - installlinux.patch [linux]
@@ -16,9 +16,9 @@ build:
 
 requirements:
   build:
+    - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - patch             [win]
-    - cmake             [win]
+    - cmake
     - ninja
 
 
