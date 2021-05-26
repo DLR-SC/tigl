@@ -134,7 +134,7 @@ jobs:
     - name: Install dependencies using Miniconda (static, windows)
       if: matrix.config.link_type == 'static' && contains(matrix.config.os, 'windows')
       run: |
-        conda install pip python${{ env.TIGL_PYTHON_VER }} tixi3${{ env.TIGL_TIXI3_VER }} opencascade-static${{ env.TIGL_OPENCASCADE_VER }} doxygen${{ env.TIGL_DOXYGEN_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} matlab-libs${{ env.TIGL_MATLAB_LIBS }} -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install pip python${{ env.TIGL_PYTHON_VER }} tixi3${{ env.TIGL_TIXI3_VER }} opencascade-static${{ env.TIGL_OPENCASCADE_VER }} tbb-devel doxygen${{ env.TIGL_DOXYGEN_VER }} qt${{ env.TIGL_QT_VER }} freetype-static=2.6 freeimageplus-static${{ env.TIGL_FREEIMAGEPLUS_VER }} ninja${{ env.TIGL_NINJA_VER }} matlab-libs${{ env.TIGL_MATLAB_LIBS }} -c dlr-sc -c dlr-sc/label/tigl-dev
 
     - name: Install ccache (ubuntu)
       run: |
