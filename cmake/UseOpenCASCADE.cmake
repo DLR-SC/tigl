@@ -74,7 +74,12 @@ else(OCE_FOUND)
   endif()
 
   if (OpenCASCADE_WITH_FREETYPE AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
-      find_package(freetype CONFIG REQUIRED)
+      find_package(Freetype REQUIRED)
+      if (NOT TARGET freetype)
+          add_library(freetype UNKNOWN IMPORTED)
+          set_property(TARGET freetype APPEND PROPERTY IMPORTED_LOCATION "${FREETYPE_LIBRARY}")
+      endif()
+
       set_property(TARGET TKService APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES freetype)
   endif()
 
