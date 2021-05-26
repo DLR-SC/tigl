@@ -1,0 +1,13 @@
+Index: opencascade-7.4.0/adm/cmake/occt_toolkit.cmake
+===================================================================
+--- opencascade-7.4.0.orig/adm/cmake/occt_toolkit.cmake
++++ opencascade-7.4.0/adm/cmake/occt_toolkit.cmake
+@@ -354,7 +354,7 @@ else()
+ endif()
+ 
+ if (BUILD_SHARED_LIBS)
+-  target_link_libraries (${PROJECT_NAME} ${USED_TOOLKITS_BY_CURRENT_PROJECT} ${USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT})
++  target_link_libraries (${PROJECT_NAME} PUBLIC ${USED_TOOLKITS_BY_CURRENT_PROJECT} PRIVATE ${USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT})
+ endif()
+ 
+ if (USE_QT)

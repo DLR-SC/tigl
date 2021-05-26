@@ -1,0 +1,13 @@
+Index: opencascade-7.4.0/src/BRepBlend/BRepBlend_AppSurface.cxx
+===================================================================
+--- opencascade-7.4.0.orig/src/BRepBlend/BRepBlend_AppSurface.cxx
++++ opencascade-7.4.0/src/BRepBlend/BRepBlend_AppSurface.cxx
+@@ -126,7 +126,7 @@ Standard_Real BRepBlend_AppSurface::TolC
+   return approx.TolCurveOnSurf(Index);
+ }
+ 
+-inline void  BRepBlend_AppSurface::TolReached (Standard_Real& Tol3d,
++void  BRepBlend_AppSurface::TolReached (Standard_Real& Tol3d,
+ 					 Standard_Real& Tol2d) const
+ {
+   Tol3d = approx.MaxErrorOnSurf();

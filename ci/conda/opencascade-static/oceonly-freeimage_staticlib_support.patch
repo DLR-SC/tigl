@@ -1,0 +1,48 @@
+From 2c718e5e80e4bf8e28ca1dc9a5b15660cc69e779 Mon Sep 17 00:00:00 2001
+From: Martin Siggel <martin.siggel@dlr.de>
+Date: Tue, 25 May 2021 12:29:45 +0200
+Subject: [PATCH 1/2] Freeimage static fix
+
+---
+ src/Image/Image_AlienPixMap.cxx | 6 ++++++
+ src/TKService/CMakeLists.txt    | 2 ++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/src/Image/Image_AlienPixMap.cxx b/src/Image/Image_AlienPixMap.cxx
+index 5d4d8a9b..c80fbf44 100644
+--- a/src/Image/Image_AlienPixMap.cxx
++++ b/src/Image/Image_AlienPixMap.cxx
+@@ -337,6 +337,9 @@ namespace
+ Image_AlienPixMap::Image_AlienPixMap()
+ : myLibImage (NULL)
+ {
++#ifdef HAVE_FREEIMAGE
++  FreeImage_Initialise();
++#endif
+   SetTopDown (false);
+ }
+ 
+@@ -347,6 +350,9 @@ Image_AlienPixMap::Image_AlienPixMap()
+ Image_AlienPixMap::~Image_AlienPixMap()
+ {
+   Clear();
++#ifdef HAVE_FREEIMAGE
++   FreeImage_DeInitialise();
++#endif
+ }
+ 
+ // =======================================================================
+diff --git a/src/TKService/CMakeLists.txt b/src/TKService/CMakeLists.txt
+index 90c6b1e1..1ddec0fa 100644
+--- a/src/TKService/CMakeLists.txt
++++ b/src/TKService/CMakeLists.txt
+@@ -1,3 +1,5 @@
+ project(TKService)
+ 
+ OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)
++
++target_compile_definitions(TKService PRIVATE -DFREEIMAGE_LIB)
+\ No newline at end of file
+-- 
+2.31.1.windows.1
+
