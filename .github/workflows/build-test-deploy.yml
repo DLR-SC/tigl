@@ -113,7 +113,7 @@ jobs:
           echo "/tmp/doxygen" >> $GITHUB_PATH
           echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
           echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/oce.0.17.2.macos_static:/usr/local/opt/qt/" >> $GITHUB_ENV
-          brew install qt
+          brew install qt@5
           
     - name: Setup conda (windows)
       if: contains(matrix.config.os, 'windows')
