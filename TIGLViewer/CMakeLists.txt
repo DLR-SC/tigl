@@ -204,7 +204,7 @@ target_include_directories(${PROGNAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMA
 target_link_libraries(${PROGNAME} PRIVATE
   tigl3_static tigl3_cpp
   ${CMake_QT_LIBRARIES} 
-  ${OPENGL_LIBRARIES} 
+  OpenGL::GL
   ${OpenCASCADE_LIBRARIES} 
   ${EXTRA_LIBRARIES} 
 )
