@@ -114,6 +114,7 @@ jobs:
           echo "/tmp/doxygen" >> $GITHUB_PATH
           echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
           echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/occt.7.4.0.macos_static:/usr/local/opt/qt@5/" >> $GITHUB_ENV
+          echo "CXXFLAGS=-fvisibility-inlines-hidden" >> $GITHUB_ENV
           brew install qt@5
           
     - name: Setup conda (windows)
