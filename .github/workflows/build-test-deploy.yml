@@ -103,7 +103,7 @@ jobs:
           curl --retry 3 -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz
           curl --retry 3 -o doxygen-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-macOS.tar.gz
           curl --retry 3 -o matlab-libs-macos.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-macos.tar.gz
-          curl --retry 3 -o oce.0.17.2.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/occt.7.4.0.macos_static.tar.gz
+          curl --retry 3 -o occt.7.4.0.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/occt.7.4.0.macos_static.tar.gz
           curl --retry 3 -O -L https://github.com/DLR-SC/tixi/releases/download/v3.1.1/TIXI-3.1.1-Darwin.tar.gz
           tar xf sshpass-macOS.tar.gz -C /tmp
           tar xf doxygen-macOS.tar.gz -C /tmp
