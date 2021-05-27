@@ -103,18 +103,18 @@ jobs:
           curl --retry 3 -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz
           curl --retry 3 -o doxygen-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-macOS.tar.gz
           curl --retry 3 -o matlab-libs-macos.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-macos.tar.gz
-          curl --retry 3 -o oce.0.17.2.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/oce.0.17.2-1.macos_static.tar.gz
+          curl --retry 3 -o oce.0.17.2.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/occt.7.4.0.macos_static.tar.gz
           curl --retry 3 -O -L https://github.com/DLR-SC/tixi/releases/download/v3.1.1/TIXI-3.1.1-Darwin.tar.gz
           tar xf sshpass-macOS.tar.gz -C /tmp
           tar xf doxygen-macOS.tar.gz -C /tmp
           tar xf matlab-libs-macos.tar.gz -C /tmp
-          tar xf oce.0.17.2.macos_static.tar.gz
+          tar xf occt.7.4.0.macos_static.tar.gz
           tar xf TIXI-3.1.1-Darwin.tar.gz
           echo "/tmp" >> $GITHUB_PATH
           echo "/tmp/doxygen" >> $GITHUB_PATH
           echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
-          echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/oce.0.17.2.macos_static:/usr/local/opt/qt/" >> $GITHUB_ENV
-          brew install qt
+          echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/occt.7.4.0.macos_static:/usr/local/opt/qt@5/" >> $GITHUB_ENV
+          brew install qt@5
           
     - name: Setup conda (windows)
       if: contains(matrix.config.os, 'windows')
