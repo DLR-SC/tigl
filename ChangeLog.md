@@ -1,6 +1,38 @@
 Changelog
 =========
 
+Version 3.2.0
+-------------
+28/05/2021
+
+ - Highlights / General changes:
+ 
+   - Full support of CPACS 3.2
+   - TiGL 3.2 is shipped with OpenCASCADE 7.4.0 and is now compatible with pythonOCC 7.4.0. This includes all TiGL releases and Conda packages.
+   - Improved computation speed of wing cell geometries.
+   - Implemented cell definition with contour coordinates. This feature will be part of CPACS 3.4.
+   - A new curve / curve intersection algorithm. This is used e.g. for the computation of curve network interpolation and was necessary due to a regression in OpenCASCADE 7.4.0. The new algorithm is designed to find all intersections between two curves within a user defined tolerance.
+   
+   
+
+ - New API functions:
+  
+   - New function `::tiglWingInterpolateXsi`, that generalizes the functions `::tiglWingComponentSegmentGetSegmentIntersection` and `::tiglWingComponentSegmentComputeEtaIntersection`. Both old functions are now deprecated.
+
+ - Fixes:
+  
+  - Fixed fuselage walls transformation that did not respect the fuselage transformation before.
+  - Fixed fuselage profiles, that had different positions than y=0 at start or end point.
+  - Fixed crash, if first guide curve point is (0,0,0) or last point is (0,1,0).
+  - Fixed wrong position of trailing edge device borders, if referenceUID is referring to a segment.
+  - Fixed a bug in `::tiglWingGetUpperPoint` and `::tiglWingGetLowerPoint`, if the leading edge has zero size.
+
+ 
+ - Python Bindings:
+   
+   - The tigl3 Conda packages depend not on pythonOCC-core 7.4.0. If you plan to migrate your code, please notice that pythonOCC and TiGL don't use OpenCASCADE handles anymore. For more insights, please see here: https://github.com/tpaviot/pythonocc-core/pull/583
+ 
+
 Version 3.1.0
 -------------
 27/07/2020
