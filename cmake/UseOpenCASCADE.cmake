@@ -83,6 +83,11 @@ else(OCE_FOUND)
       set_property(TARGET TKService APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES freetype)
   endif()
 
+  if (APPLE)
+    find_library (Appkit_LIB NAMES AppKit)
+    set_property(TARGET TKOpenGl APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES ${Appkit_LIB})
+  endif(APPLE)
+
 endif(OCE_FOUND)
 
 set_property(TARGET TKernel APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "Standard_EXPORT=")
