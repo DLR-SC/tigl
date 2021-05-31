@@ -86,6 +86,7 @@ else(OCE_FOUND)
   if (APPLE)
     find_library (Appkit_LIB NAMES AppKit)
     set_property(TARGET TKOpenGl APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES ${Appkit_LIB})
+
   endif(APPLE)
 
 endif(OCE_FOUND)

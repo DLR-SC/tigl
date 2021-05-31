@@ -9,7 +9,7 @@ if (NOT TARGET tigl3)
 endif()
 
 add_executable(c_demo c_demo.c)
-target_link_libraries(c_demo tigl3 ${OpenCASCADE_LIBRARIES})
+target_link_libraries(c_demo tigl3)
 
 install(FILES 
     c_demo.c

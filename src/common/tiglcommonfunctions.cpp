@@ -379,6 +379,8 @@ boost::optional<UVResult> GetFaceAndUV(TopoDS_Shape const& shape,
             }
         }
     }
+
+    return res;
 }
 
 TopoDS_Face TrimFace(TopoDS_Face const& face,
