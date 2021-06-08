@@ -92,7 +92,7 @@ void TIGLViewerSettings::setDefaultShapeSymmetryColor(int r, int g, int b, int a
 
 void TIGLViewerSettings::setDefaultMaterial(const QString& material)
 {
-    if (!tiglMaterials::materialMap.contains(material))
+    if (tiglMaterials::materialMap.find(material) == tiglMaterials::materialMap.end())
     {
         std::cerr << "Error: invalid argument, material not found" << std::endl;
         return;

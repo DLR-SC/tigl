@@ -19,8 +19,10 @@
 #ifndef TIGLVIEWERMATERIALS_H
 #define TIGLVIEWERMATERIALS_H
 
+#include <map>
+
 namespace tiglMaterials {
-    static QMap<QString, Graphic3d_NameOfMaterial> materialMap{
+    static std::map<QString, Graphic3d_NameOfMaterial> materialMap{
             {"Brass",         Graphic3d_NOM_BRASS},
             {"Bronze",        Graphic3d_NOM_BRONZE},
             {"Copper",        Graphic3d_NOM_COPPER},
