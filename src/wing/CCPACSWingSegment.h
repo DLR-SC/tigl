@@ -78,10 +78,10 @@ public:
     TIGL_EXPORT gp_Pnt GetOuterProfilePoint(double xsi) const;
 
     // Gets the upper point in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetUpperPoint(double eta, double xsi) const;
+    TIGL_EXPORT gp_Pnt GetUpperPoint(double eta, double xsi, TiglGetPointBehavior getPointBehavior) const;
 
     // Gets the lower point in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetLowerPoint(double eta, double xsi) const;
+    TIGL_EXPORT gp_Pnt GetLowerPoint(double eta, double xsi, TiglGetPointBehavior getPointBehavior) const;
 
     // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
@@ -157,7 +157,7 @@ public:
 
 
     // projects a point unto the wing and returns its coordinates
-    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi) const;
+    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi, gp_Pnt& projectedPoint, TiglGetPointBehavior behavior) const;
 
 
     // Returns if the given point is ont the Top of the wing or on the lower side.
@@ -221,12 +221,6 @@ public:
 
     TIGL_EXPORT CTiglTransformation GetParentTransformation() const;
 
-    // Sets the getPointBehavior to asParameterOnSurface or onLinearLoft
-    TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
-
-    // Gets the getPointBehavior
-    TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
-    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
 
 protected:
     // Builds the loft between the two segment sections
@@ -269,6 +263,8 @@ private:
 
     // converts segment eta xsi coordinates to face uv coordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const;
+    void uvToEtaXsi(bool isFromUpper, double u, double v, double& eta, double& xsi) const;
+
 
     CTiglWingConnection  innerConnection;      /**< Inner segment connection (root)         */
     CTiglWingConnection  outerConnection;      /**< Outer segment connection (tip)          */
@@ -284,8 +280,6 @@ private:
     Cache<double, CCPACSWingSegment>            volumeCache;
 
     std::unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
-
-    TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
 };
 
 } // end namespace tigl

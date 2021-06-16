@@ -881,15 +881,8 @@ TEST_F(WingSegmentSimple, getIsOnTop_performance)
 
 TEST_F(WingSegmentSimple, trafo_Consistency)
 {
-    TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, onLinearLoft);
-    ASSERT_EQ(tiglRet, SUCCESS);
 
-    // we transform eta, xsi to x,y,z and perform the back transform
-    // we check if we get the the same eta xsi as before
     int segIndex = 1;
-    double eta_start = 0.2;
-    double xsi_start = 0.3;
-    double x = 0., y = 0., z = 0.;
 
     // now we have do use the internal interface as we currently have no public api for this
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -897,34 +890,49 @@ TEST_F(WingSegmentSimple, trafo_Consistency)
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
 
-    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+    for (auto behavior : {onLinearLoft, asParameterOnSurface}) {
 
-    gp_Pnt point(x,y,z);
-    double eta_end=0., xsi_end = 0.;
-    segment.GetEtaXsi(point, eta_end, xsi_end);
+        TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, behavior);
+        ASSERT_EQ(tiglRet, SUCCESS);
 
-    ASSERT_NEAR(eta_end, eta_start, 1e-7);
-    ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+        // we transform eta, xsi to x,y,z and perform the back transform
+        // we check if we get the the same eta xsi as before
+        segIndex = 1;
+        double eta_start = 0.2;
+        double xsi_start = 0.3;
+        double x = 0., y = 0., z = 0.;
 
-    // lower wing surface
-    ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
-    point = gp_Pnt(x,y,z);
-    segment.GetEtaXsi(point, eta_end, xsi_end);
+        ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
 
-    ASSERT_NEAR(eta_end, eta_start, 1e-7);
-    ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+        gp_Pnt point(x,y,z);
+        gp_Pnt pproj;
+        double eta_end=0., xsi_end = 0.;
+        segment.GetEtaXsi(point, eta_end, xsi_end, pproj, behavior);
 
-    // second segment, more complex
-    eta_start = 0.3;
-    xsi_start = 0.7;
-    segIndex = 2;
-    tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
-    ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
-    point = gp_Pnt(x,y,z);
-    segment2.GetEtaXsi(point, eta_end, xsi_end);
+        ASSERT_NEAR(eta_end, eta_start, 1e-7);
+        ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
 
-    ASSERT_NEAR(eta_end, eta_start, 1e-7);
-    ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+        // lower wing surface
+        ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+        point = gp_Pnt(x,y,z);
+        segment.GetEtaXsi(point, eta_end, xsi_end, pproj, behavior);
+
+        ASSERT_NEAR(eta_end, eta_start, 1e-7);
+        ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+
+        // second segment, more complex
+        eta_start = 0.3;
+        xsi_start = 0.7;
+        segIndex = 2;
+        tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
+        ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+        point = gp_Pnt(x,y,z);
+        segment2.GetEtaXsi(point, eta_end, xsi_end, pproj, behavior);
+
+        ASSERT_NEAR(eta_end, eta_start, 1e-7);
+        ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+
+    }
 }
 
 TEST_F(WingSegmentSimple, getEtaXsi_Performance)
@@ -945,18 +953,30 @@ TEST_F(WingSegmentSimple, getEtaXsi_Performance)
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
 
     gp_Pnt point(x,y,z);
+    gp_Pnt pproj;
     double eta_end=0., xsi_end = 0.;
 
     // we do one cold start to create all faces, we don't count it
-    segment.GetEtaXsi(point, eta_end, xsi_end);
+    segment.GetEtaXsi(point, eta_end, xsi_end, pproj, onLinearLoft);
 
     int nruns = 100000;
     clock_t start = clock();
     for (int i = 0; i < nruns; ++i) {
-        segment.GetEtaXsi(point, eta_end, xsi_end);
+        segment.GetEtaXsi(point, eta_end, xsi_end, pproj, onLinearLoft);
     }
     clock_t stop = clock();
-    cout << "Elapsed time per projection [us]: " << double(stop-start)/(double)CLOCKS_PER_SEC/(double)nruns * 1.e6 << endl;
+    cout << "Elapsed time per projection onLinearLoft [us]: " << double(stop-start)/(double)CLOCKS_PER_SEC/(double)nruns * 1.e6 << endl;
+
+    // we do one cold start to create all faces, we don't count it
+    segment.GetEtaXsi(point, eta_end, xsi_end, pproj, asParameterOnSurface);
+
+    nruns = 100;
+    start = clock();
+    for (int i = 0; i < nruns; ++i) {
+        segment.GetEtaXsi(point, eta_end, xsi_end, pproj, asParameterOnSurface);
+    }
+    stop = clock();
+    cout << "Elapsed time per projection asParameterOnSurface [us]: " << double(stop-start)/(double)CLOCKS_PER_SEC/(double)nruns * 1.e6 << endl;
 }
 
 // @todo: test of failures, outliers etc...
@@ -1174,7 +1194,11 @@ TEST_F(WingSegmentSimple, wingGetEtaXsiBug1)
 {
     int idx = -1, onTop;
     double eta = 0., xsi = 0.;
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentEtaXsi(tiglSimpleHandle, 1, 0.5, 1.0005, 0.0, &idx, &eta, &xsi, &onTop));
+
+    double px, py, pz;
+    tiglWingGetUpperPoint(tiglSimpleHandle, 1, 2, 0.0005, 0.5, &px, &py, &pz);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentEtaXsi(tiglSimpleHandle, 1, px, py, pz, &idx, &eta, &xsi, &onTop));
     ASSERT_EQ(2, idx);
     ASSERT_NEAR(0.0005, eta, 1e-8);
 }

@@ -462,13 +462,13 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
 }
 
 // Gets the upper point in relative wing coordinates for a given eta and xsi
-gp_Pnt CCPACSWingSegment::GetUpperPoint(double eta, double xsi) const
+gp_Pnt CCPACSWingSegment::GetUpperPoint(double eta, double xsi, TiglGetPointBehavior getPointBehavior) const
 {
     return GetPoint(eta, xsi, true, GLOBAL_COORDINATE_SYSTEM, getPointBehavior);
 }
 
 // Gets the lower point in relative wing coordinates for a given eta and xsi
-gp_Pnt CCPACSWingSegment::GetLowerPoint(double eta, double xsi) const
+gp_Pnt CCPACSWingSegment::GetLowerPoint(double eta, double xsi, TiglGetPointBehavior getPointBehavior) const
 {
     return GetPoint(eta, xsi, false, GLOBAL_COORDINATE_SYSTEM, getPointBehavior);
 }
@@ -581,6 +581,30 @@ void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, dou
     else {
         u = umin*xsi + umax*(1-xsi);
         v = vmin*(1-eta) + vmax*eta;
+    }
+}
+
+void CCPACSWingSegment::uvToEtaXsi(bool isFromUpper, double u, double v, double& eta, double& xsi) const
+{
+
+
+    Handle(Geom_Surface) surf;
+    if (isFromUpper) {
+        surf = GetUpperSurface();
+    }
+    else {
+        surf = GetLowerSurface();
+    }
+
+    double umin, umax, vmin, vmax;
+    surf->Bounds(umin,umax,vmin, vmax);
+    if (isFromUpper) {
+        xsi = (u - umin) / (umax - umin);
+        eta = (v - vmin) / (vmax - vmin);
+    }
+    else {
+        xsi = (u - umax) / (umin - umax);
+        eta = (v - vmin) / (vmax - vmin);
     }
 }
 
@@ -877,11 +901,72 @@ gp_Pnt CCPACSWingSegment::GetChordNormal(double eta, double xsi) const
 }
 
 // Returns xsi as parametric distance from a given point on the surface
-void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi) const
+void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi, gp_Pnt& projectedPoint, TiglGetPointBehavior behavior) const
 {
-    CTiglPoint tmpPnt(pnt.XYZ());
-    if (ChordFace().translate(tmpPnt, &eta, &xsi) != TIGL_SUCCESS) {
-        throw tigl::CTiglError("Cannot determine eta, xsi coordinates of current point in CCPACSWingSegment::GetEtaXsi!", TIGL_MATH_ERROR);
+    if (behavior == onLinearLoft) {
+
+        CTiglPoint tmpPnt(pnt.XYZ());
+        if (ChordFace().translate(tmpPnt, &eta, &xsi) != TIGL_SUCCESS) {
+            throw tigl::CTiglError("Cannot determine eta, xsi coordinates of current point in CCPACSWingSegment::GetEtaXsi!", TIGL_MATH_ERROR);
+        }
+
+        eta = Clamp(eta, 0., 1.);
+        xsi = Clamp(xsi, 0., 1.);
+
+        CTiglPoint ptmp;
+        ChordFace().translate(eta, xsi, &ptmp);
+        projectedPoint = ptmp.Get_gp_Pnt();
+
+    }
+    else  {
+       // GetUpperSurface()
+        double maxdist = 10000;
+        double dist = maxdist;
+        double u,v;
+
+        bool onUpper;
+
+        GeomAPI_ProjectPointOnSurf projUpper(pnt, GetUpperSurface());
+
+
+        if (projUpper.NbPoints() > 0 && projUpper.LowerDistance() < dist) {
+            dist = projUpper.LowerDistance();
+            projUpper.LowerDistanceParameters(u, v);
+            uvToEtaXsi(true, u, v, eta, xsi);
+            onUpper = true;
+        }
+
+
+        GeomAPI_ProjectPointOnSurf projLower(pnt, GetLowerSurface());
+
+        if (projLower.NbPoints() > 0 && projLower.LowerDistance() < dist) {
+            dist = projLower.LowerDistance();
+            projLower.LowerDistanceParameters(u, v);
+            uvToEtaXsi(false, u, v, eta, xsi);
+            onUpper = false;
+
+        }
+
+        if (dist == maxdist) {
+            throw tigl::CTiglError("Cannot determine eta, xsi coordinates of current point in CCPACSWingSegment::GetEtaXsi!", TIGL_MATH_ERROR);
+        }
+        else {
+            double etaTmp = Clamp(eta, 0., 1.);
+            double xsiTmp = Clamp(xsi, 0., 1.);
+
+            etaXsiToUV(onUpper, etaTmp, xsiTmp, u, v);
+
+
+            // compute projected point
+            if (onUpper) {
+                projectedPoint = GetUpperSurface()->Value(u,v);
+            }
+            else {
+                projectedPoint = GetLowerSurface()->Value(u,v);
+            }
+        }
+
+
     }
 }
 
@@ -1163,23 +1248,6 @@ TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem refere
     return GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
-// Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
-void CCPACSWingSegment::SetGetPointBehavior(TiglGetPointBehavior behavior)
-{
-    getPointBehavior = behavior;
-}
-
-// Gets the getPointBehavior
-TiglGetPointBehavior const CCPACSWingSegment::GetGetPointBehavior() const
-{
-    return getPointBehavior;
-}
-
-// Gets the getPointBehavior
-TiglGetPointBehavior CCPACSWingSegment::GetGetPointBehavior()
-{
-    return getPointBehavior;
-}
 
 } // end namespace tigl
 

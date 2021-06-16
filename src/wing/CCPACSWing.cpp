@@ -496,13 +496,13 @@ CTiglTransformation CCPACSWing::GetPositioningTransformation(std::string section
 // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
 gp_Pnt CCPACSWing::GetUpperPoint(int segmentIndex, double eta, double xsi)
 {
-    return ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetUpperPoint(eta, xsi);
+    return ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetUpperPoint(eta, xsi, getPointBehavior);
 }
 
 // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
 gp_Pnt CCPACSWing::GetLowerPoint(int segmentIndex, double eta, double xsi)
 {
-    return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetLowerPoint(eta, xsi);
+    return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetLowerPoint(eta, xsi, getPointBehavior);
 }
 
 // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
@@ -769,17 +769,9 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
         CCPACSWingSegment& segment2 = (CCPACSWingSegment&) GetSegment(segmentFound+1);
 
         double eta1, eta2, xsi1, xsi2;
-        segment1.GetEtaXsi(point, eta1, xsi1);
-        segment2.GetEtaXsi(point, eta2, xsi2);
-
-        // Get the points on the chord face
-        double eta1p = max(0.0, min(1.0, eta1));
-        double eta2p = max(0.0, min(1.0, eta2));
-        double xsi1p = max(0.0, min(1.0, xsi1));
-        double xsi2p = max(0.0, min(1.0, xsi2));
-
-        gp_Pnt p1 = segment1.GetChordPoint(eta1p, xsi1p);
-        gp_Pnt p2 = segment2.GetChordPoint(eta2p, xsi2p);
+        gp_Pnt p1, p2;
+        segment1.GetEtaXsi(point, eta1, xsi1, p1, getPointBehavior);
+        segment2.GetEtaXsi(point, eta2, xsi2, p2, getPointBehavior);
 
         double d1 = p1.Distance(point);
         double d2 = p2.Distance(point);
@@ -807,7 +799,8 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
     else {
 
         CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(segmentFound);
-        segment.GetEtaXsi(point, eta, xsi);
+        gp_Pnt pTmp;
+        segment.GetEtaXsi(point, eta, xsi, pTmp, getPointBehavior);
 
         // TODO: do we need that here?
         onTop = segment.GetIsOnTop(point);
@@ -983,6 +976,23 @@ PNamedShape CCPACSWing::GetWingCleanShape() const
     return *wingCleanShape;
 }
 
+// Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
+void CCPACSWing::SetGetPointBehavior(TiglGetPointBehavior behavior)
+{
+    getPointBehavior = behavior;
+}
+
+// Gets the getPointBehavior
+TiglGetPointBehavior const CCPACSWing::GetGetPointBehavior() const
+{
+    return getPointBehavior;
+}
+
+// Gets the getPointBehavior
+TiglGetPointBehavior CCPACSWing::GetGetPointBehavior()
+{
+    return getPointBehavior;
+}
 namespace
 {
 

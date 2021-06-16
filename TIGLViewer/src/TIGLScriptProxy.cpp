@@ -474,6 +474,50 @@ QScriptValue TIGLScriptProxy::controlSurfaceSetControlParameter(QString controlS
 }
 
 
+QScriptValue TIGLScriptProxy::wingSetGetPointBehaviour (int behaviour)
+{
+    TiglGetPointBehavior b = onLinearLoft;
+    if (behaviour == 0) {
+        b = asParameterOnSurface;
+    }
+    else {
+        b = onLinearLoft;
+    }
+
+    TiglReturnCode ret = ::tiglWingSetGetPointBehavior(getTiglHandle(), b);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return QScriptValue::UndefinedValue;
+    }
+}
+
+QScriptValue TIGLScriptProxy::wingGetSegmentEtaXsi(int wingIdx, double px, double py, double pz)
+{
+    double eta, xsi;
+    int segmentIndex, isOnTop;
+
+    TiglReturnCode ret = ::tiglWingGetSegmentEtaXsi(getTiglHandle(), wingIdx, px, py, pz, &segmentIndex, &eta, &xsi, &isOnTop);
+
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        QScriptValue EtaXsiCtor = engine()->globalObject().property("EtaXsi");
+        QScriptValue etaxsi = EtaXsiCtor.construct(QScriptValueList() << eta << xsi);
+
+        QScriptValue obj = engine()->newObject();
+
+        obj.setProperty("etaxsi", etaxsi);
+        obj.setProperty("isOnTop", isOnTop);
+        obj.setProperty("segmentIndex", segmentIndex);
+        return obj;
+    }
+
+}
+
+
 QScriptValue TIGLScriptProxy::getShape(QString uid)
 {
     if (!_app->getDocument()) {

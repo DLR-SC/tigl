@@ -174,6 +174,13 @@ public:
     // Returns the wing shape without any extended flaps
     TIGL_EXPORT PNamedShape GetWingCleanShape() const;
 
+    // Sets the getPointBehavior to asParameterOnSurface or onLinearLoft
+    TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
+
+    // Gets the getPointBehavior
+    TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
+    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
+
 protected:
 
     struct LocatedGuideCurves
@@ -229,6 +236,9 @@ private:
     bool                           buildFlaps;               /**< Indicates if the wing's loft shall include flaps */
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
+
+
+    TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
 
     friend class CCPACSWingSegment;
     friend class CCPACSWingComponentSegment;
