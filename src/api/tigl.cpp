@@ -738,10 +738,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSetGetPointBehavior(TiglCPACSConfigura
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         for(int wingIndex = 1; wingIndex <= config.GetWingCount(); ++wingIndex ) {
             tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-            for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); ++segmentIndex) {
-                tigl::CCPACSWingSegment& segment = wing.GetSegment(segmentIndex);
-                segment.SetGetPointBehavior(behavior);
-            }
+            wing.SetGetPointBehavior(behavior);
         }
 
         return TIGL_SUCCESS;

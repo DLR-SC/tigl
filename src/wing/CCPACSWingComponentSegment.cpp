@@ -958,13 +958,10 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
     for (SegmentList::const_iterator segit = segments.begin(); segit != segments.end(); ++segit) {
         try {
             double eta, xsi;
-            (*segit)->GetEtaXsi(pnt, eta, xsi);
-            gp_Pnt pointProjected = (*segit)->GetChordPoint(eta, xsi);
+            gp_Pnt currentPoint;
+            (*segit)->GetEtaXsi(pnt, eta, xsi, currentPoint, onLinearLoft);
 
-            // Get nearest point on this segment
-            double nextEta = Clamp(eta, 0., 1.);
-            double nextXsi = Clamp(xsi, 0., 1.);
-            gp_Pnt currentPoint = (*segit)->GetChordPoint(nextEta, nextXsi);
+            gp_Pnt pointProjected = (*segit)->GetChordPoint(eta, xsi);
 
             double currentDist = currentPoint.Distance(pointProjected);
             if (currentDist < deviation) {

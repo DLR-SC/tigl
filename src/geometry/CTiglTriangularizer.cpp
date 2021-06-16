@@ -255,7 +255,8 @@ bool CTiglTriangularizer::writeWingSegmentMeta(tigl::ITiglGeometricComponent &se
         }
         
         double eta = 0., xsi = 0.;
-        segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), eta, xsi);
+        gp_Pnt pDummy;
+        segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), eta, xsi, pDummy, onLinearLoft);
         polys.currentObject().setPolyDataReal(iPoly, "eta", eta);
         polys.currentObject().setPolyDataReal(iPoly, "xsi", xsi);
         
