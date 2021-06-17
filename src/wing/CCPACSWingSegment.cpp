@@ -910,11 +910,11 @@ void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi, gp_Pnt& 
             throw tigl::CTiglError("Cannot determine eta, xsi coordinates of current point in CCPACSWingSegment::GetEtaXsi!", TIGL_MATH_ERROR);
         }
 
-        eta = Clamp(eta, 0., 1.);
-        xsi = Clamp(xsi, 0., 1.);
+        double etaTmp = Clamp(eta, 0., 1.);
+        double xsiTmp = Clamp(xsi, 0., 1.);
 
         CTiglPoint ptmp;
-        ChordFace().translate(eta, xsi, &ptmp);
+        ChordFace().translate(etaTmp, xsiTmp, &ptmp);
         projectedPoint = ptmp.Get_gp_Pnt();
 
     }
