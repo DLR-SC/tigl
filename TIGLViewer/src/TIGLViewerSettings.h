@@ -20,6 +20,7 @@
 #define TIGLVIEWERSETTINGS_H_
 
 #include <QColor>
+#include <QMetaType>
 #include <QtCore/QObject>
 #include <Graphic3d_NameOfMaterial.hxx>
 
@@ -91,5 +92,8 @@ private:
     int  _nVIsosPerFace;
     bool _drawFaceBoundaries;
 };
+
+Q_DECLARE_METATYPE(TIGLViewerSettings*)
+
 
 #endif /* TIGLVIEWERSETTINGS_H_ */

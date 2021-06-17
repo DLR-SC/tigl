@@ -704,11 +704,11 @@ void TIGLViewerWidget::setObjectsMaterial()
 {
     bool ok = false;
 
-    QMapIterator<QString, Graphic3d_NameOfMaterial> i(tiglMaterials::materialMap);
+    auto i = tiglMaterials::materialMap.begin();
     QStringList items;
-    while (i.hasNext()) {
-        i.next();
-        items << i.key();
+    while (i != tiglMaterials::materialMap.end()) {
+        items << i->first;
+        i++;
     }
     QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, 0, false, &ok);
 

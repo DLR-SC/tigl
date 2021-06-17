@@ -45,11 +45,11 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
     settingsList->item(0)->setSelected(true);
 
     // add materials
-    QMapIterator<QString, Graphic3d_NameOfMaterial> i(tiglMaterials::materialMap);
+    auto  i = tiglMaterials::materialMap.begin();
     QStringList items;
-    while (i.hasNext()) {
-        i.next();
-        items << i.key();
+    while (i != tiglMaterials::materialMap.end()) {
+        items << i->first;
+        i++;
     }
     comboBoxShapeMaterial->addItems(items);
 
@@ -149,17 +149,17 @@ void TIGLViewerSettingsDialog::updateEntries()
     numVIsoLinesSB->setValue(_settings.numFaceVIsosForDisplay());
     cbDrawFaceBoundaries->setChecked(_settings.drawFaceBoundaries());
 
-    QMapIterator<QString, Graphic3d_NameOfMaterial> i(tiglMaterials::materialMap);
+    auto i(tiglMaterials::materialMap.begin());
     QStringList items;
     int activeItem = 0;
     int idx = 0;
-    while (i.hasNext()) {
-        i.next();
-        items << i.key();
-        if (i.value() == _material)
+    while (i != tiglMaterials::materialMap.end()) {
+        items << i->first;
+        if (i->second == _material)
         {
             activeItem = idx;
         }
+        i++;
         idx++;
     }
     comboBoxShapeMaterial->setCurrentIndex(activeItem);
