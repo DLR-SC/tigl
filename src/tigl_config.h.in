@@ -19,12 +19,12 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// to be backwards compatible with older tigl code that checks this
+#define HAVE_CPP11
+#define HAVE_STDIS_SAME
+
 // include files and other standard functionality
-#cmakedefine HAVE_CPP11
-#cmakedefine HAVE_STDSHARED_PTR
-#cmakedefine HAVE_STDUNIQUE_PTR
 #cmakedefine HAVE_STDMAKE_UNIQUE
-#cmakedefine HAVE_STDIS_SAME
 
 // optional libraries
 #cmakedefine GLOG_FOUND
