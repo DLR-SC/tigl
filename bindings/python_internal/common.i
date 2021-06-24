@@ -26,11 +26,7 @@
 
 %include tigl_internal.h
 
-#ifdef HAVE_STDSHARED_PTR
-  %include std_shared_ptr.i
-#else
-  %include boost_shared_ptr.i
-#endif
+%include std_shared_ptr.i
 
 %include unique_pointer.i
 

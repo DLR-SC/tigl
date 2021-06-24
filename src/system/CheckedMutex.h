@@ -37,12 +37,10 @@ namespace tigl {
         boost::condition_variable  _cv;
 
     public:
-#ifdef HAVE_CPP11
         CheckedMutex() = default;
         ~CheckedMutex() = default;
         CheckedMutex(const CheckedMutex&) = delete;
         CheckedMutex& operator=(const CheckedMutex&) = delete;
-#endif
 
         void lock()
         {

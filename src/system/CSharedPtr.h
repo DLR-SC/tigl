@@ -21,12 +21,7 @@
 
 #include "tigl_config.h"
 
-#ifdef HAVE_STDSHARED_PTR
-    #include <memory>
-    #define CSharedPtr std::shared_ptr
-#else
-    #include <boost/shared_ptr.hpp>
-    #define CSharedPtr boost::shared_ptr
-#endif
+#include <memory>
+#define CSharedPtr std::shared_ptr
 
 #endif // CSHAREDPTR_H
