@@ -35,6 +35,10 @@ add_library(Boost::atomic ALIAS tigl_boost_atomic)
 set_property(TARGET tigl_boost_atomic PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(tigl_boost_atomic PUBLIC tigl_boost_disable_autolink tigl_boost)
 
+target_include_directories(tigl_boost_atomic PRIVATE
+    ${BOOST_DIR}/libs/atomic/src
+)
+
 add_library(tigl_boost_chrono STATIC
     ${BOOST_DIR}/libs/chrono/src/chrono.cpp
     ${BOOST_DIR}/libs/chrono/src/process_cpu_clocks.cpp
