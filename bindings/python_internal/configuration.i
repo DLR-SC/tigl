@@ -80,7 +80,6 @@
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSEnginePylons.h"
 #include "CCPACSEnginePylon.h"
-#include "generated/CPACSRibRotation_ribRotationReference.h"
 #include "generated/CPACSLateralCap_placement.h"
 #include "generated/CPACSLateralCap.h"
 #include "generated/CPACSBoundingElementUIDs.h"
@@ -101,7 +100,6 @@
 %rename("%(undercase)s", %$isfunction) "";
 
 // wrap optional classes
-%boost_optional(tigl::generated::CPACSRibRotation_ribRotationReference)
 %boost_optional(tigl::CCPACSWingCSStructure)
 %boost_optional(tigl::generated::CPACSSkinSegments)
 %boost_optional(tigl::generated::CPACSSkin)
@@ -325,7 +323,6 @@ class CCPACSWingCSStructure;
 class CCPACSWingSparSegment;
 class CCPACSWingRibsPositioning;
 }
-%include "generated/CPACSRibRotation_ribRotationReference.h"
 %include "generated/CPACSWingRibExplicitPositioning.h"
 %include "CCPACSWingRibExplicitPositioning.h"
 %include "generated/CPACSRibRotation.h"
