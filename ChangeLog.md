@@ -1,6 +1,17 @@
 Changelog
 =========
 
+Version 3.2.1
+-------------
+01/07/2021
+
+- Fixes:
+
+  - Fixed function `::tiglWingGetSegmentEtaXsi` ignoring the GetPointBehaviour that was introduced in TIGL 3.1.0: Since TiGL 3.1.0, the getPoint functions
+    now use the parametrization of the wing surface geometries instead . This behaviour can be switched back to the old bevahiour using `::tiglWingSetGetPointBehaviour`.
+    Before fixing now `::tiglWingGetSegmentEtaXsi`, the functions always used the old behaviour such that the back and fort computation etaXsi -> point -> etaXsi
+    did not result in the same values. 
+
 Version 3.2.0
 -------------
 28/05/2021
