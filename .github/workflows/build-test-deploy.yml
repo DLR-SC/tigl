@@ -470,7 +470,7 @@ jobs:
         
     
     - name: Create Pull Request at DLR-SC/tigl-website
-      uses: peter-evans/create-pull-request@v2
+      uses: peter-evans/create-pull-request@v3
       with:
         path: tigl-website
         title: Add documentation for TiGL ${{ env.version }}
@@ -492,7 +492,7 @@ jobs:
         git diff
         
     - name: Create Pull Request at DLR-SC/tigl-conda
-      uses: peter-evans/create-pull-request@v2
+      uses: peter-evans/create-pull-request@v3
       with:
         path: tigl-conda
         title: Bump tigl3 version to ${{ env.version }}
