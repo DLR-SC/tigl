@@ -26,6 +26,11 @@ CCPACSPoint::CCPACSPoint(CCPACSControlSurfaceStep* parent, CTiglUIDManager* uidM
 {
 }
 
+CCPACSPoint::CCPACSPoint(CCPACSControlSurfaceHingePoint* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPoint(parent, uidMgr)
+{
+}
+
 CCPACSPoint::CCPACSPoint(CCPACSPointList* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSPoint(parent, uidMgr)
 {
