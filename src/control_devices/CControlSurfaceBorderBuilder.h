@@ -70,6 +70,12 @@ public:
      */
     TopoDS_Wire borderSimple(double xsiUpper, double xsiLower);
 
+    /**
+     * @brief Computes a border that spans the whole wing, i.e. for canard style flaps
+     * @return
+     */
+    TopoDS_Wire wholeWingBorder();
+
     gp_Pnt2d upperPoint();
     gp_Pnt2d lowerPoint();
 
