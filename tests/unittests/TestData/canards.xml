@@ -491,8 +491,8 @@
                 </structure>
                 <controlSurfaces>
                   <trailingEdgeDevices>
-                    <trailingEdgeDevice uID="FlapOuter">
-                      <name>FlapOuter</name>
+                    <trailingEdgeDevice uID="Canard">
+                      <name>Canard</name>
                       <parentUID>Wing_CS1</parentUID>
                       <outerShape>
                         <innerBorder>
@@ -527,38 +527,34 @@
                       </outerShape>
                       <path>
                         <innerHingePoint>
-                          <hingeXsi>0.8</hingeXsi>
+                          <hingeXsi>0.0</hingeXsi>
                           <hingeRelHeight>0.5</hingeRelHeight>
+                          <translation>
+                            <x>0.5</x>
+                            <y>0</y>
+                            <z>0</z>
+                          </translation>
                         </innerHingePoint>
                         <outerHingePoint>
-                          <hingeXsi>0.8</hingeXsi>
+                          <hingeXsi>0.0</hingeXsi>
                           <hingeRelHeight>0.5</hingeRelHeight>
+                          <translation>
+                            <x>-0.15</x>
+                            <y>0</y>
+                            <z>0</z>
+                          </translation>
                         </outerHingePoint>
                         <steps>
                           <step>
+                            <controlParameter>-1.0</controlParameter>
+                            <hingeLineRotation>-30.0</hingeLineRotation>
+                          </step>
+                          <step>
                             <controlParameter>0.0</controlParameter>
-                            <innerHingeTranslation uID="FlapOuter_innerHingeTranslation1">
-                              <x>0.0</x>
-                              <y>0.0</y>
-                              <z>0.0</z>
-                            </innerHingeTranslation>
-                            <outerHingeTranslation uID="FlapOuter_outerHingeTranslation1">
-                              <x>0.0</x>
-                              <z>0.0</z>
-                            </outerHingeTranslation>
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
                             <controlParameter>1</controlParameter>
-                            <innerHingeTranslation uID="FlapOuter_innerHingeTranslation2">
-                              <x>0.1</x>
-                              <y>0.0</y>
-                              <z>-0.1</z>
-                            </innerHingeTranslation>
-                            <outerHingeTranslation uID="FlapOuter_outerHingeTranslation2">
-                              <x>0.1</x>
-                              <z>-0.1</z>
-                            </outerHingeTranslation>
                             <hingeLineRotation>30</hingeLineRotation>
                           </step>
                         </steps>
