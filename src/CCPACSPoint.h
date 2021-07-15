@@ -25,6 +25,7 @@ class CCPACSPoint : public generated::CPACSPoint
 {
 public:
     TIGL_EXPORT CCPACSPoint(CCPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(CCPACSControlSurfaceHingePoint* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPoint(CCPACSPointList* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPoint(CCPACSSeatModule* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPoint(CCPACSTransformation* parent, CTiglUIDManager* uidMgr);

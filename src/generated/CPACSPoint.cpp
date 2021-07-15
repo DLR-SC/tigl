@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include "CCPACSTransformation.h"
+#include "CPACSControlSurfaceHingePoint.h"
 #include "CPACSControlSurfaceStep.h"
 #include "CPACSPoint.h"
 #include "CPACSPointList.h"
@@ -30,6 +31,14 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSPoint::CPACSPoint(CPACSControlSurfaceHingePoint* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSControlSurfaceHingePoint);
+    }
+
     CPACSPoint::CPACSPoint(CPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -70,6 +79,9 @@ namespace generated
     const CTiglUIDObject* CPACSPoint::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CPACSControlSurfaceHingePoint>()) {
+                return GetParent<CPACSControlSurfaceHingePoint>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSControlSurfaceStep>()) {
                 return GetParent<CPACSControlSurfaceStep>()->GetNextUIDParent();
             }
@@ -92,6 +104,9 @@ namespace generated
     CTiglUIDObject* CPACSPoint::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CPACSControlSurfaceHingePoint>()) {
+                return GetParent<CPACSControlSurfaceHingePoint>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSControlSurfaceStep>()) {
                 return GetParent<CPACSControlSurfaceStep>()->GetNextUIDParent();
             }

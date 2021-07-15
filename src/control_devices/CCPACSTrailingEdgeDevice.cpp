@@ -225,6 +225,7 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
             cSegment.GetPoint(transformEtaToCSOrTed(border.GetEtaLE(), *m_uidMgr), hingeXsi[i], WING_COORDINATE_SYSTEM);
         gp_Vec midplaneNormal = cSegment.GetMidplaneNormal(transformEtaToCSOrTed(border.GetEtaLE(), *m_uidMgr));
 
+
         // Project point on the inner and outer face of the Wing loft
         gp_Pnt upper, lower;
         upper = ProjectPointOnShape(wsr.GetUpperShape(WING_COORDINATE_SYSTEM), myHingePoint, midplaneNormal);
@@ -233,6 +234,12 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
         gp_Vec delta(lower, upper);
         delta *= relHingeHeight[i];
         lower.Translate(delta);
+
+        // do we have to translate the point?
+        auto translation = (i == 0? GetPath().GetInnerHingePoint().GetTranslation() : GetPath().GetOuterHingePoint().GetTranslation());
+        if (translation) {
+            lower = lower.XYZ() + translation.value().AsPoint().Get_gp_Pnt().XYZ();
+        }
 
         points[i] = lower;
     }

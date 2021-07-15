@@ -20,6 +20,7 @@
 #include "CPACSControlSurfacePath.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
@@ -27,8 +28,9 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSControlSurfaceHingePoint::CPACSControlSurfaceHingePoint(CPACSControlSurfacePath* parent)
-        : m_hingeXsi(0)
+    CPACSControlSurfaceHingePoint::CPACSControlSurfaceHingePoint(CPACSControlSurfacePath* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_hingeXsi(0)
         , m_hingeRelHeight(0)
     {
         //assert(parent != NULL);
@@ -65,6 +67,16 @@ namespace generated
         return nullptr;
     }
 
+    CTiglUIDManager& CPACSControlSurfaceHingePoint::GetUIDManager()
+    {
+        return *m_uidMgr;
+    }
+
+    const CTiglUIDManager& CPACSControlSurfaceHingePoint::GetUIDManager() const
+    {
+        return *m_uidMgr;
+    }
+
     void CPACSControlSurfaceHingePoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element hingeXsi
@@ -83,6 +95,17 @@ namespace generated
             LOG(ERROR) << "Required element hingeRelHeight is missing at xpath " << xpath;
         }
 
+        // read element translation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/translation")) {
+            m_translation = boost::in_place(this, m_uidMgr);
+            try {
+                m_translation->ReadCPACS(tixiHandle, xpath + "/translation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read translation at xpath " << xpath << ": " << e.what();
+                m_translation = boost::none;
+            }
+        }
+
     }
 
     void CPACSControlSurfaceHingePoint::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -94,6 +117,17 @@ namespace generated
         // write element hingeRelHeight
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/hingeRelHeight");
         tixi::TixiSaveElement(tixiHandle, xpath + "/hingeRelHeight", m_hingeRelHeight);
+
+        // write element translation
+        if (m_translation) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/translation");
+            m_translation->WriteCPACS(tixiHandle, xpath + "/translation");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/translation")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/translation");
+            }
+        }
 
     }
 
@@ -115,6 +149,28 @@ namespace generated
     void CPACSControlSurfaceHingePoint::SetHingeRelHeight(const double& value)
     {
         m_hingeRelHeight = value;
+    }
+
+    const boost::optional<CCPACSPoint>& CPACSControlSurfaceHingePoint::GetTranslation() const
+    {
+        return m_translation;
+    }
+
+    boost::optional<CCPACSPoint>& CPACSControlSurfaceHingePoint::GetTranslation()
+    {
+        return m_translation;
+    }
+
+    CCPACSPoint& CPACSControlSurfaceHingePoint::GetTranslation(CreateIfNotExistsTag)
+    {
+        if (!m_translation)
+            m_translation = boost::in_place(this, m_uidMgr);
+        return *m_translation;
+    }
+
+    void CPACSControlSurfaceHingePoint::RemoveTranslation()
+    {
+        m_translation = boost::none;
     }
 
 } // namespace generated
