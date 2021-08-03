@@ -7,7 +7,7 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
     "MinSizeRel" "RelWithDebInfo")
 endif()
 
-cmake_minimum_required (VERSION 3.4.0)
+cmake_minimum_required (VERSION 3.11.0)
 
 project (TIGL VERSION 3.2.1)
 set(TIGL_VERSION 3.2.1)
