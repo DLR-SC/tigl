@@ -64,7 +64,7 @@ private:
     bool needsShifting() const;
 
     /// curve coordinates to be fitted by the B-spline
-    const Handle(TColgp_HArray1OfPnt) & m_pnts;
+    const Handle(TColgp_HArray1OfPnt) m_pnts;
 
     std::vector<double> m_params;
 
