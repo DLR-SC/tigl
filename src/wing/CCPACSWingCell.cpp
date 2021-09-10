@@ -720,6 +720,7 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
     }
 
     TopoDS_Shape result;
+    bool upper = (m_parent->GetParent()->GetLoftSide() == UPPER_SIDE);
     if ( ib_intersect->face.IsEqual(ob_intersect->face) && fabs(ib_intersect->u - ob_intersect->u ) < tol ){
         // border runs along an isocurve of a single fac => we can trim
 
@@ -729,15 +730,23 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
         Standard_Real umin, umax, vmin, vmax;
         BRepTools::UVBounds(face, umin, umax, vmin, vmax);
         if ( border == ChordWiseBorder::TE ) {
-            if (fabs(u-umin) > tol ){
+            if (fabs(u-umin) > tol && !upper){
                 umin = u;
             }
-        }
-        else {
-            if (fabs(umax-u) > tol ){
+            if (fabs(u-umax) > tol && upper){
                 umax = u;
             }
         }
+        else {
+            if (fabs(umax-u) > tol && !upper){
+                umax = u;
+            }
+            if (fabs(umin-u) > tol && upper){
+                umin = u;
+            }
+        }
+
+
         TopoDS_Face trimmed_face = TrimFace(face, umin, umax, vmin, vmax);
         result = ReplaceFaceInShape(loftShape, trimmed_face, face);
 
