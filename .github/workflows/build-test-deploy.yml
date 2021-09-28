@@ -293,9 +293,9 @@ jobs:
         
     - name: Publish coverage report to codecov.io (ubuntu debug)
       if: contains(matrix.config.name, 'Ubuntu-Debug')
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2
       with:
-        file: build/tests/unittests/coverageReport.info
+        files: build/tests/unittests/coverageReport.info, build/tests/integrationtests/coverageReport.info
         
     
 #  deploy:
