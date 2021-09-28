@@ -286,16 +286,22 @@ jobs:
       if:  (github.event_name == 'pull' || github.event_name == 'schedule') && contains(matrix.config.os, 'windows')
     
     - name: Create coverage report (ubuntu debug)
+      if: (github.event_name == 'pull' || github.event_name == 'schedule') && contains(matrix.config.name, 'Ubuntu-Debug')
+      run: |
+        cd build
+        cmake --build . --target coverage-unittests
+        
+    - name: Create coverage report (ubuntu debug)
       if: contains(matrix.config.name, 'Ubuntu-Debug')
       run: |
         cd build
-        cmake --build . --target coverage
+        cmake --build . --target coverage-integrationtests
         
     - name: Publish coverage report to codecov.io (ubuntu debug)
       if: contains(matrix.config.name, 'Ubuntu-Debug')
       uses: codecov/codecov-action@v2
       with:
-        files: build/tests/unittests/coverageReport.info, build/tests/integrationtests/coverageReport.info
+        files: build/tests/unittests/coverageReport-unit.info, build/tests/integrationtests/coverageReport-integration.info
         
     
 #  deploy:
