@@ -22,7 +22,7 @@
 #include "CCPACSWingComponentSegment.h"
 #include "tiglcommonfunctions.h"
 
-TEST(Bug815, wingGetPoint_onLinearLoft)
+TEST(Bug815, cell_getLoft)
 {
    // https://github.com/DLR-SC/tigl/issues/815
    TiglHandleWrapper handle("TestData/bugs/815/Beam_Composite_Export_Test_33_cell.xml", "RectBeam");
