@@ -838,16 +838,15 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
         std::vector<double> row_ranges, col_ranges;
         cache.rgsurface.GetParameterRanges(row_ranges, col_ranges);
 
-        double spanwise_contour_coordinate = 0;
-        double chordwise_contour_coordinate = 0;
         int j = 0;
+        double spanwise_contour_coordinate = 0;
         for (auto row = cache.rgsurface.Root(); row; row = row->VNext()) {
             int i = 0;
+            double chordwise_contour_coordinate = 0;
             for (auto current = row; current; current = current->UNext()){
                 current->GetAnnotation().scmin = spanwise_contour_coordinate;
                 current->GetAnnotation().scmax = spanwise_contour_coordinate
                         + (current->VMax() - current->VMin())/col_ranges[i];
-                spanwise_contour_coordinate = current->GetAnnotation().scmax;
 
                 current->GetAnnotation().ccmin = chordwise_contour_coordinate;
                 current->GetAnnotation().ccmax = chordwise_contour_coordinate
@@ -855,6 +854,10 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
                 chordwise_contour_coordinate = current->GetAnnotation().ccmax;
 
                 i++;
+                if (!(current->UNext()))
+                {
+                    spanwise_contour_coordinate = current->GetAnnotation().scmax;
+                }
             }
             j++;
         }
