@@ -81,6 +81,9 @@
   { "cpacs_file": "../integrationtests/TestData/D150WithGuides.xml" },
   { "cpacs_file": "../integrationtests/TestData/distorted_wing.xml" },
   { "cpacs_file": "../integrationtests/TestData/IEA-15-240-RWT_CPACS_d.xml" },
+  { "cpacs_file": "../integrationtests/TestData/bugs/829/IEA-10.0-198-RWT_CPACS_contour_coordinates.xml",
+    "before_script": "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_1_1\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_2_3\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_12_3\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_28_3\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_39_2\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_39_5\"));\n"
+  },
   { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems.xml" },
   { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems_cone.xml" },
   { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems_cube.xml" },
