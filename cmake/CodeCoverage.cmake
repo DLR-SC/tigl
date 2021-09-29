@@ -44,11 +44,12 @@ ENDIF()
 
 # Param _targetname     The name of new the custom make target
 # Param _testrunner     The name of the target which runs the tests
+# Param _testdir        Relative path to the test directory from PROJECT_SOURCE_DIR
 # Param _outputname     lcov output is generated as _outputname.info
 #                       HTML report is generated in _outputname/index.html
 # Optional fourth parameter is passed as arguments to _testrunner
 #   Pass them in list form, e.g.: "-j;2" for -j 2
-FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
+FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _testdir _outputname)
 
         IF(NOT LCOV_PATH)
                 MESSAGE(FATAL_ERROR "lcov not found! Aborting...")
@@ -59,7 +60,7 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
         ENDIF() # NOT GENHTML_PATH
         
         # copy testdata
-        file(COPY ${PROJECT_SOURCE_DIR}/tests/unittests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+        file(COPY ${PROJECT_SOURCE_DIR}/${_testdir}/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
         if (BUILD_TIGL_CONFIDENTIAL_TESTS)
             file(COPY ${PROJECT_SOURCE_DIR}/tests/conftests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
         endif()
@@ -75,12 +76,12 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
 
                 # Capturing lcov counters and generating report
                 COMMAND ${LCOV_PATH} --directory ../.. --capture --output-file ${_outputname}_all.info
-                COMMAND ${LCOV_PATH} --remove ${_outputname}_all.info '${PROJECT_SOURCE_DIR}/tests/unittests/*' '${PROJECT_SOURCE_DIR}/thirdparty/**' '/usr/*' '*oce*' '*build*' '*tixi3*' '${PROJECT_SOURCE_DIR}/src/generated/*' --output-file ${_outputname}.info
+                COMMAND ${LCOV_PATH} --remove ${_outputname}_all.info '${PROJECT_SOURCE_DIR}/${_testdir}/*' '${PROJECT_SOURCE_DIR}/thirdparty/**' '/usr/*' '*oce*' '*build*' '*tixi3*' '${PROJECT_SOURCE_DIR}/src/generated/*' --output-file ${_outputname}.info
                 COMMAND ${GENHTML_PATH} -o ../../${_outputname} ${_outputname}.info
                 COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}_all.info 
 
                 USES_TERMINAL
-                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/unittests
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${_testdir}
                 COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
         )
 
