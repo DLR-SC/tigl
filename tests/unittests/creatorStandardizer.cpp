@@ -139,8 +139,7 @@ TEST_F(creatorStandardizer, standardizeFuselage)
     tigl::CTiglPoint translationFuselage = fuselage.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationFuselage.isNear(fuselage.GetNoseCenter()));
     // verfying that positonining has the correct structure:
-    std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec =
-        fuselage.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
+    auto& posVec = fuselage.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec.size(), 3);
     EXPECT_EQ(*(posVec.at(0)->GetFromSectionUID()), "");
     EXPECT_EQ(posVec.at(0)->GetToSectionUID(), "D150_Fuselage_1Section1ID");
@@ -176,8 +175,7 @@ TEST_F(creatorStandardizer, standardizeFuselageSimpleDecomposition)
     tigl::CTiglPoint translationFuselage = fuselage.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationFuselage.isNear(fuselage.GetNoseCenter()));
     // verfying that positonining has the correct structure:
-    std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec =
-        fuselage.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
+    auto& posVec = fuselage.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec.size(), 3);
     EXPECT_EQ(*(posVec.at(0)->GetFromSectionUID()), "");
     EXPECT_EQ(posVec.at(0)->GetToSectionUID(), "D150_Fuselage_1Section1ID");
@@ -209,8 +207,7 @@ TEST_F(creatorStandardizer, standardizeFuselageSimpleDecomposition)
     translationFuselage = fuselage2.GetTranslation();
     EXPECT_TRUE(translationFuselage.isNear(fuselage2.GetNoseCenter()));
     //verfying that positonining has the correct structure:
-    std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec2 =
-        fuselage2.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
+    auto& posVec2 = fuselage2.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec2.size(), 3);
     EXPECT_EQ(*(posVec2.at(0)->GetFromSectionUID()), "");
     EXPECT_EQ(posVec2.at(0)->GetToSectionUID(), "FuselageShearingSection_1Section1ID");
@@ -252,8 +249,7 @@ TEST_F(creatorStandardizer, standardizeWing)
     tigl::CTiglPoint translationWing = wing.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationWing.isNear(wing.GetRootLEPosition()));
     // verfying that positonining has the correct structure:
-    std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec =
-        wing.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
+    auto& posVec = wing.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec.size(), 3);
     EXPECT_EQ(*(posVec.at(0)->GetFromSectionUID()), "");
     EXPECT_EQ(posVec.at(0)->GetToSectionUID(), "W17_RotSec_Sec1");
@@ -284,8 +280,7 @@ TEST_F(creatorStandardizer, standardizeWing)
     translationWing = wing2.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationWing.isNear(wing2.GetRootLEPosition()));
     // verfying that positonining has the correct structure:
-    std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec2 =
-        wing2.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
+    auto& posVec2 = wing2.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec2.size(), 3);
     EXPECT_EQ(*(posVec2.at(0)->GetFromSectionUID()), "");
     EXPECT_EQ(posVec2.at(0)->GetToSectionUID(), "Cpacs2Test_Wing_Sec1");
@@ -322,8 +317,7 @@ TEST_F(creatorStandardizer, standardizeWingSimpleDecomposition)
     tigl::CTiglPoint translationWing = wing.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationWing.isNear(wing.GetRootLEPosition()));
     // verfying that positonining has the correct structure:
-    std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec =
-        wing.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
+    auto& posVec = wing.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec.size(), 3);
     EXPECT_EQ(*(posVec.at(0)->GetFromSectionUID()), "");
     EXPECT_EQ(posVec.at(0)->GetToSectionUID(), "W17_RotSec_Sec1");
@@ -354,8 +348,7 @@ TEST_F(creatorStandardizer, standardizeWingSimpleDecomposition)
     translationWing = wing2.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationWing.isNear(wing2.GetRootLEPosition()));
     // verfying that positonining has the correct structure:
-    std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec2 =
-        wing2.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
+    auto& posVec2 = wing2.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec2.size(), 3);
     EXPECT_EQ(*(posVec2.at(0)->GetFromSectionUID()), "");
     EXPECT_EQ(posVec2.at(0)->GetToSectionUID(), "Cpacs2Test_Wing_Sec1");
