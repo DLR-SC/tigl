@@ -6485,6 +6485,63 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
 /*                     Surface Area calculations                                                     */
 /*****************************************************************************************************/
 
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          double origin_x, double origin_y, double origin_z,
+                                                          double normal_x, double normal_y, double normal_z,
+                                                          int fuse_result_mode,
+                                                          double* area
+                                                          )
+{
+    if (normal_x*normal_x + normal_y*normal_y + normal_z*normal_z < 1e-15){
+        LOG(ERROR) << "Plane normal must be non-zero.";
+        return TIGL_MATH_ERROR;
+    }
+    if (fuse_result_mode < 0 || fuse_result_mode > 3){
+        LOG(ERROR) << "fuse_result_mode must be between 0 and 3";
+        return TIGL_INDEX_ERROR;
+    }
+    try {
+        // get configuration
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // get fused aircraft
+        tigl::PTiglFusePlane fuser = config.AircraftFusingAlgo();
+        fuser->SetResultMode((tigl::TiglFuseResultMode)fuse_result_mode);
+        PNamedShape airplane = fuser->FusedPlane();
+
+        // calculate intersection with plane
+        auto intersection = tigl::CTiglIntersectionCalculation(&config.GetShapeCache(),
+                                                               config.GetUID() + std::to_string(fuse_result_mode),
+                                                               airplane->Shape(),
+                                                               gp_Pnt(origin_x, origin_y, origin_z),
+                                                               gp_Dir(normal_x, normal_y, normal_z));
+
+        // calculate area of every found intersection
+        *area = 0.;
+        for (int i = 1; i <= intersection.GetCountIntersectionLines(); ++i) {
+            //TODO: Check some fringe cases, e.g. wire should be (nearly) closed, nonsingular
+            *area += GetArea(BuildFace(intersection.GetWire(i)));
+        }
+
+        return TIGL_SUCCESS;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetCrossSectionArea!";
+        return TIGL_ERROR;
+    }
+    return TIGL_SUCCESS;
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
                                                          double *surfaceAreaPtr)
 {

@@ -4477,6 +4477,40 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
 /*@{*/
 
 /**
+ * @brief tiglGetCrossSectionArea returns the area of the intersection of the fused aircraft with a plane.
+ * Thi function can be used for the surface rule. If no intersections are found, the resulting area is
+ * is zero. No warning or error is thrwon in this case. If more than one intersection is found, the returned area
+ * is the some of the areas of the intersections. No warning or error is thrown.
+ *
+ * @param[in]  cpacsHandle      Handle for the CPACS configuration
+ * @param[in]  origin_x         x-component of the origin of the plane
+ * @param[in]  origin_y         y-component of the origin of the plane
+ * @param[in]  origin_z         z-component of the origin of the plane
+ * @param[in]  normal_x         x-direction of the normal of the plane
+ * @param[in]  normal_y         y-direction of the normal of the plane
+ * @param[in]  normal_z         z-direction of the normal of the plane
+ * @param[in]  fuse_result_mode An integer denoting the fusing mode. Can be
+ *                              HALF_PLANE = 0,
+ *                              FULL_PLANE = 1,
+ *                              HALF_PLANE_TRIMMED_FF = 2,
+ *                              FULL_PLANE_TRIMMED_FF = 3
+ *                              This option is forwarded to the fusing algorithum
+ * @param[out] area             The area of the intersection of the aircraft with the plane
+ * @return
+ *   - TIGL_SUCCESS if no error occurred
+ *   - TIGL_MATH_ERROR if the normal of the plane is zero
+ *   - TIGL_INDEX_ERROR if the fuse_result_mode is not between 0 and 3.
+ *   - TIGL_ERROR if some other error occurred
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          double origin_x, double origin_y, double origin_z,
+                                                          double normal_x, double normal_y, double normal_z,
+                                                          int fuse_result_mode,
+                                                          double* area
+                                                          );
+
+
+/**
 * @brief Returns the surface area of the wing. Currently, the area includes also the faces
 * on the wing symmetry plane (in case of a symmetric wing). In coming releases, these faces will
 * not belong anymore to the surface area calculation.
