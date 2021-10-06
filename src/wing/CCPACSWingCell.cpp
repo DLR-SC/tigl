@@ -497,11 +497,19 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
         te_point_proj = cache.projectedOBTE;
     }
 
+    bool trimmable = false;
     auto le_intersect = GetFaceAndUV(loftShape, le_point_proj);
     auto te_intersect = GetFaceAndUV(loftShape, te_point_proj);
 
-    if ( !le_intersect || !te_intersect ){
-        throw CTiglError("Cannot associate projected point with (u,v)-coordinates");
+    if ( !(le_intersect && te_intersect) ){
+        // could not associate projected point with any face on the loft surface
+        trimmable = false;
+    }
+    else {
+        if ( te_intersect->face.IsEqual(le_intersect->face) && fabs(te_intersect->v - le_intersect->v ) < tol ){
+            // border runs along an isocurve of a single face => we can trim
+            trimmable = true;
+        }
     }
 
     gp_Vec te_to_le = gp_Vec(le_point, te_point).Normalized();
@@ -516,8 +524,7 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
     }
 
     TopoDS_Shape result;
-    if ( te_intersect->face.IsEqual(le_intersect->face) && fabs(te_intersect->v - le_intersect->v ) < tol ){
-        // border runs along an isocurve of a single fac => we can trim
+    if ( trimmable ){
 
         // trim along v
         double v = le_intersect->v;
@@ -701,11 +708,19 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
         ob_point_proj = cache.projectedOBTE;
     }
 
+    bool trimmable = false;
     auto ib_intersect = GetFaceAndUV(loftShape, ib_point_proj);
     auto ob_intersect = GetFaceAndUV(loftShape, ob_point_proj);
 
-    if ( !ib_intersect || !ob_intersect ){
-        throw CTiglError("Cannot associate projected point with (u,v)-coordinates");
+    if ( !(ib_intersect && ob_intersect) ){
+        // could not associate projected point with any face on the loft surface
+        trimmable = false;
+    }
+    else {
+        if ( ib_intersect->face.IsEqual(ob_intersect->face) && fabs(ib_intersect->u - ob_intersect->u ) < tol ) {
+            // border runs along an isocurve of a single fac => we can trim
+            trimmable = true;
+        }
     }
 
     gp_Vec ib_to_ob = gp_Vec(ib_point, ob_point).Normalized();
@@ -721,8 +736,7 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
 
     TopoDS_Shape result;
     bool upper = (m_parent->GetParent()->GetLoftSide() == UPPER_SIDE);
-    if ( ib_intersect->face.IsEqual(ob_intersect->face) && fabs(ib_intersect->u - ob_intersect->u ) < tol ){
-        // border runs along an isocurve of a single fac => we can trim
+    if ( trimmable ){
 
         // trim along u
         double u = ib_intersect->u;
