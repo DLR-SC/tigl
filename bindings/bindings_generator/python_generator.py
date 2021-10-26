@@ -51,7 +51,7 @@ class PythonGenerator(object):
         if self.license:
             string += self.license
         
-        string += 'import sys, ctypes\n\n'
+        string += 'import sys, ctypes, ctypes.util\n\n'
         for enumname, values in cparser.enums.items():
             string += self.create_enum(enumname, values) + '\n\n'
 
@@ -120,7 +120,8 @@ class PythonGenerator(object):
         
         string += indent + 'try:\n'
         string += indent + '    if sys.platform == \'win32\':\n'
-        string += indent + '        lib = ctypes.cdll.%s\n' % self.libname
+        string += indent + '        name = ctypes.util.find_library("%s")\n' % self.libname
+        string += indent + '        lib = ctypes.cdll.LoadLibrary(name)\n'
         string += indent + '    elif sys.platform == \'darwin\':\n'
         string += indent + '        lib = ctypes.CDLL("lib%s.dylib")\n' % self.libname
         string += indent + '    else:\n'
