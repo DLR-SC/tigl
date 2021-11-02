@@ -319,8 +319,8 @@ jobs:
       run: |
         cd build
         cmake --build . --target doc
-        cpack -G ZIP
-        cpack -G NSIS
+        "C:\Program Files\CMake\bin\cpack.exe" -G ZIP
+        "C:\Program Files\CMake\bin\cpack.exe" -G NSIS
       if: contains(matrix.config.os, 'windows')
       
     - name: Upload package as artifact (windows)
