@@ -55,6 +55,7 @@
 #include "CTiglAttachedRotorBlade.h"
 #include "CGlobalExporterConfigs.h"
 #include "Debugging.h"
+#include "Version.h"
 
 #include "CTiglPoint.h"
 
@@ -155,15 +156,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
 
     /* check TIXI Version */
-    if ( atof(tixiGetVersion()) < 2.2 ) {
+    if ( Version(tixiGetVersion()) < Version("2.2") ) {
         LOG(ERROR) << "Incompatible TIXI Version in use with this TIGL" << std::endl;
         return TIGL_WRONG_TIXI_VERSION;
     }
 
+
     /* check CPACS Version */
     {
-        double dcpacsVersion = 1.0;
-        ReturnCode tixiRet = tixiGetDoubleElement(tixiHandle, "/cpacs/header/cpacsVersion", &dcpacsVersion);
+        char* cpacsVersionStr = NULL;
+        ReturnCode tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/cpacsVersion", &cpacsVersionStr);
+
         if (tixiRet != SUCCESS) {
             // NO CPACS Version Information in Header
             if (tixiRet == ELEMENT_PATH_NOT_UNIQUE) {
@@ -177,15 +180,23 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
             }
             return TIGL_WRONG_CPACS_VERSION;
         }
-        else {
-            if (dcpacsVersion < (double) TIGL_MAJOR_VERSION) {
+
+        try {
+            const auto cpacsVersion = Version(cpacsVersionStr);
+
+            if (cpacsVersion.vMajor() < TIGL_MAJOR_VERSION) {
                 LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_MAJOR_VERSION << "!";
                 return TIGL_WRONG_CPACS_VERSION;
             }
-            else if (dcpacsVersion > atof(tiglGetVersion())) {
+            else if (cpacsVersion > Version(tiglGetVersion())) {
                 LOG(WARNING) << "CPACS dataset version is higher than TIGL library version!";
             }
         }
+        catch (const std::invalid_argument& err) {
+            LOG(ERROR) << "Cannot read CPACS Version: " <<  err.what();
+            return TIGL_WRONG_CPACS_VERSION;
+        }
+
     }
 
     /* check if there is only one configuration in the data set. Then we open this */
