@@ -24,7 +24,11 @@
 #include <exception>
 
 /**
- * @brief A class to parse and compare version strings
+ * @brief This class implements semver 2.0.0 with one modification:
+ *
+ * For backwards compatibility we allow to ommit the patch version.
+ * A missing patch version is assumed to have the patch version number
+ * of 0.
  */
 class Version
 {
@@ -89,10 +93,7 @@ public:
 
         // we don't compare build or pre-release right now
         // is there any sane way to do it???
-
-
         return false;
-
     }
 
     bool operator> (const Version& other) const
@@ -112,7 +113,9 @@ private:
 
     void parse(const std::string& str)
     {
-        const auto expr = std::regex("([0-9]+)\\.([0-9]+)(\\.([0-9]+))?(?:-(\\w+(\\.\\w*)?)(\\+(.*))?|\\+(.*))?");
+        // Copied and modified from: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+        const auto expr = std::regex(R"(^(0|[1-9]\d*)\.(0|[1-9]\d*)(\.(0|[1-9]\d*))?(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))"
+                                     R"((?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$)");
         auto results = std::match_results<std::string::const_iterator>();
 
         if (std::regex_search(str, results, expr)) {
@@ -120,14 +123,12 @@ private:
             m_minor = atof(results[2].str().c_str());
             m_patch = atof(results[4].str().c_str());
             m_label = results[5];
-            m_build = results[8] != "" ? results[8] : results[9];
+            m_build = results[6];
         }
         else {
             throw std::invalid_argument("Invalid format of version string '" + str + "'." );
         }
     }
-
-
 };
 
 #endif // VERSION_H
