@@ -101,9 +101,13 @@ TEST(Version, Compare)
 
     EXPECT_TRUE(Version("1.2") < Version("1.2.3"));
 
+    // pre-release is always smaller than release version
+    EXPECT_TRUE(Version("1.2.3-alpha") < Version("1.2.3"));
+
     // we don't compare build or pre-release
     EXPECT_TRUE(Version("1.2.3+1") == Version("1.2.3+2"));
     EXPECT_TRUE(Version("1.2.3-beta") == Version("1.2.3-alpha"));
+
 }
 
 /**

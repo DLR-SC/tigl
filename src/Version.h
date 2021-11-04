@@ -91,6 +91,11 @@ public:
             return false;
         }
 
+        // pre-release version is always lower than release version
+        if (!vLabel().empty() && other.vLabel().empty()) {
+            return true;
+        }
+
         // we don't compare build or pre-release right now
         // is there any sane way to do it???
         return false;
