@@ -93,21 +93,40 @@ TEST(Version, Compare)
     EXPECT_TRUE(Version("2.2.3") > Version("1.2.3"));
     EXPECT_TRUE(Version("1.2.3") == Version("1.2.3"));
 
+    EXPECT_FALSE(Version("1.2.3") > Version("2.2.3"));
+    EXPECT_FALSE(Version("2.2.3") < Version("1.2.3"));
+
     // compare minor level
     EXPECT_TRUE(Version("1.2.3") < Version("1.3.0"));
+    EXPECT_FALSE(Version("1.2.3") > Version("1.3.0"));
 
     // compare patch level
     EXPECT_TRUE(Version("1.2.3") < Version("1.2.4"));
+    EXPECT_FALSE(Version("1.2.3") > Version("1.2.4"));
 
     EXPECT_TRUE(Version("1.2") < Version("1.2.3"));
+    EXPECT_FALSE(Version("1.2") > Version("1.2.3"));
 
-    // pre-release is always smaller than release version
-    EXPECT_TRUE(Version("1.2.3-alpha") < Version("1.2.3"));
+    // From https://semver.org/#spec-item-11:
+    // 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0
+    EXPECT_TRUE(Version("1.0.0-alpha") < Version("1.0.0-alpha.1"));
+    EXPECT_TRUE(Version("1.0.0-alpha.1") < Version("1.0.0-alpha.beta"));
+    EXPECT_TRUE(Version("1.0.0-alpha.beta") < Version("1.0.0-beta"));
+    EXPECT_TRUE(Version("1.0.0-beta") < Version("1.0.0-beta.2"));
+    EXPECT_TRUE(Version("1.0.0-beta.2") < Version("1.0.0-beta.11"));
+    EXPECT_TRUE(Version("1.0.0-beta.11") < Version("1.0.0-rc.1"));
+    EXPECT_TRUE(Version("1.0.0-rc1") < Version("1.0.0"));
 
-    // we don't compare build or pre-release
+    EXPECT_FALSE(Version("1.0.0-alpha") > Version("1.0.0-alpha.1"));
+    EXPECT_FALSE(Version("1.0.0-alpha.1") > Version("1.0.0-alpha.beta"));
+    EXPECT_FALSE(Version("1.0.0-alpha.beta") > Version("1.0.0-beta"));
+    EXPECT_FALSE(Version("1.0.0-beta") > Version("1.0.0-beta.2"));
+    EXPECT_FALSE(Version("1.0.0-beta.2") > Version("1.0.0-beta.11"));
+    EXPECT_FALSE(Version("1.0.0-beta.11") > Version("1.0.0-rc.1"));
+    EXPECT_FALSE(Version("1.0.0-rc1") > Version("1.0.0"));
+
+    // we don't compare build versions yet
     EXPECT_TRUE(Version("1.2.3+1") == Version("1.2.3+2"));
-    EXPECT_TRUE(Version("1.2.3-beta") == Version("1.2.3-alpha"));
-
 }
 
 /**

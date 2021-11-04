@@ -20,6 +20,7 @@
 #define VERSION_H
 
 #include <string>
+#include <cctype>
 #include <regex>
 #include <exception>
 
@@ -91,13 +92,15 @@ public:
             return false;
         }
 
-        // pre-release version is always lower than release version
-        if (!vLabel().empty() && other.vLabel().empty()) {
+        if (comparePreleases(vLabel(), other.vLabel())) {
             return true;
         }
+        else if (comparePreleases(other.vLabel(), vLabel())) {
+            return false;
+        }
 
-        // we don't compare build or pre-release right now
-        // is there any sane way to do it???
+        // TODO: compare builds right now
+
         return false;
     }
 
@@ -134,6 +137,83 @@ private:
             throw std::invalid_argument("Invalid format of version string '" + str + "'." );
         }
     }
+
+    // Returns true, if pr1 < pr2
+    static bool comparePreleases(const std::string& pr1, const std::string& pr2)
+    {
+        // pre-release version is always lower than release version
+        if (!pr1.empty() && pr2.empty()) {
+            return true;
+        }
+        else if (pr1.empty() && !pr2.empty()) {
+            return false;
+        }
+
+        auto pr1fields = split(pr1, '.');
+        auto pr2fields = split(pr2, '.');
+
+        auto nSameFields = std::min(pr1fields.size(), pr2fields.size());
+
+        for (unsigned int i = 0; i < nSameFields; ++i) {
+            if (comparePreleaseField(pr1fields[i], pr2fields[i])) {
+                return true;
+            }
+            else if (comparePreleaseField(pr2fields[i], pr1fields[i])) {
+                return false;
+            }
+        }
+
+        // all until nSameField are same, only field size matterss
+        return pr1fields.size() < pr2fields.size();
+
+    }
+
+    static bool comparePreleaseField(const std::string& pr1, const std::string& pr2)
+    {
+
+        if (isNumber(pr1) && isNumber(pr2)) {
+            return std::stoi(pr1) < std::stoi(pr2);
+        }
+        else if (isNumber(pr1) && !isNumber(pr2)) {
+            return true;
+        }
+        else {
+            return lexicographicalCompare(pr1.begin(), pr1.end(), pr2.begin(), pr2.end());
+        }
+
+        return false;
+    }
+
+    static bool isNumber(const std::string& str)
+    {
+        auto iter = str.begin();
+        while (iter != str.end() && std::isdigit(*iter)) ++iter;
+        return !str.empty() && iter == str.end();
+    }
+
+    static std::vector<std::string> split(const std::string& s, char delimiter)
+    {
+       std::vector<std::string> tokens;
+       std::string token;
+       std::istringstream tokenStream(s);
+       while (std::getline(tokenStream, token, delimiter))
+       {
+          tokens.push_back(token);
+       }
+       return tokens;
+    }
+
+    template<class InputIt1, class InputIt2>
+    static bool lexicographicalCompare(InputIt1 first1, InputIt1 last1,
+                                 InputIt2 first2, InputIt2 last2)
+    {
+        for ( ; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2 ) {
+            if (*first1 < *first2) return true;
+            if (*first2 < *first1) return false;
+        }
+        return (first1 == last1) && (first2 != last2);
+    }
+
 };
 
 #endif // VERSION_H
