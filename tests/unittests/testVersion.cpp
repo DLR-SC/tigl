@@ -125,8 +125,10 @@ TEST(Version, Compare)
     EXPECT_FALSE(Version("1.0.0-beta.11") > Version("1.0.0-rc.1"));
     EXPECT_FALSE(Version("1.0.0-rc1") > Version("1.0.0"));
 
-    // we don't compare build versions yet
+    // Build Versions must be ignored
     EXPECT_TRUE(Version("1.2.3+1") == Version("1.2.3+2"));
+    EXPECT_TRUE(Version("1.2.3-alpha+1") == Version("1.2.3-alpha+2"));
+    EXPECT_TRUE(Version("1.2.3-alpha+2") < Version("1.2.3-beta+1"));
 }
 
 /**

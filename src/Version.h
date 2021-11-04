@@ -95,13 +95,10 @@ public:
         if (comparePreleases(vLabel(), other.vLabel())) {
             return true;
         }
-        else if (comparePreleases(other.vLabel(), vLabel())) {
+        else {
+            // Build string must be ignored by definition
             return false;
         }
-
-        // TODO: compare builds right now
-
-        return false;
     }
 
     bool operator> (const Version& other) const
