@@ -41,6 +41,7 @@
 #include "CTiglBSplineAlgorithms.h"
 #include "CCPACSControlSurfaces.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "TiglWingHelperFunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -68,16 +69,6 @@ namespace tigl
 
 namespace
 {
-    inline double max(double a, double b)
-    {
-        return a > b? a : b;
-    }
-
-    inline double min(double a, double b)
-    {
-        return a < b? a : b;
-    }
-
     // Returns the index of the maximum value
     int maxIndex(double x, double y, double z)
     {
@@ -546,6 +537,35 @@ double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane) const
     return refArea;
 }
 
+double CCPACSWing::GetReferenceArea() const
+{
+    TiglAxis spanDir = winghelper::GetMajorDirection(*this);
+    TiglAxis deepDir = winghelper::GetDeepDirection(*this);
+
+    if (spanDir == TIGL_Y_AXIS && deepDir == TIGL_X_AXIS) {
+        return GetReferenceArea(TIGL_X_Y_PLANE);
+    }
+    else if (spanDir == TIGL_Y_AXIS && deepDir == TIGL_Z_AXIS) {
+        return GetReferenceArea(TIGL_Y_Z_PLANE);
+    }
+    else if (spanDir == TIGL_Z_AXIS && deepDir == TIGL_X_AXIS) {
+        return GetReferenceArea(TIGL_X_Z_PLANE);
+    }
+    else if (spanDir == TIGL_Z_AXIS && deepDir == TIGL_Y_AXIS) {
+        return GetReferenceArea(TIGL_Y_Z_PLANE);
+    }
+    else if (spanDir == TIGL_X_AXIS && deepDir == TIGL_Z_AXIS) {
+        return GetReferenceArea(TIGL_X_Z_PLANE);
+    }
+    else if (spanDir == TIGL_X_AXIS && deepDir == TIGL_Y_AXIS) {
+        return GetReferenceArea(TIGL_X_Y_PLANE);
+    }
+    else {
+       LOG(ERROR) << "CCPACSWing::GetReferenceArea: Unexpected pair of major direction and deep direction.";
+       return 0.0;
+    }
+}
+
 
 double CCPACSWing::GetWettedArea(TopoDS_Shape parent) const
 {
@@ -662,7 +682,21 @@ double CCPACSWing::GetWingspan() const
 //     s: half span; A_half: Reference area of wing without symmetrical wing
 double CCPACSWing::GetAspectRatio() const
 {
-    return 2.0*(pow_int(GetWingspan(),2)/GetReferenceArea(GetSymmetryAxis()));
+    auto refArea = GetReferenceArea();
+
+    if ( isNear(refArea, 0.) ) {
+        LOG(WARNING) << "Wing area is close to zero, thus the AR is not computed and 0 is returned.";
+        return 0;
+    }
+
+    auto halfSpan = GetWingspan();
+
+    // If the wing has symmetry defined, the full span was returned
+    if (GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+        halfSpan *= 0.5;
+    }
+
+    return 2.0*halfSpan*halfSpan/refArea;
 }
 
 /**

@@ -23,6 +23,7 @@
 #include "tigl_internal.h"
 #include <vector>
 #include <math_Vector.hxx>
+#include <Precision.hxx>
 #include "tiglMatrix.h"
 
 namespace tigl 
@@ -127,6 +128,14 @@ TIGL_EXPORT double cstcurve(const double& N1, const double& N2, const std::vecto
  */
 TIGL_EXPORT double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const double& T, const int& n, const double& x);
 
+/**
+ * Return true if the value of a is similar to b
+ * @param a
+ * @param b
+ * @param epsilon
+ * @return
+ */
+TIGL_EXPORT bool isNear(double a, double b, double epsilon = Precision::Confusion());
 
 /**
  * 1D Function interface accepting one parameter t and returning

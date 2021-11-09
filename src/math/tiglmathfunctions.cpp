@@ -452,4 +452,9 @@ double Interpolate(const std::vector<double>& xdata, const std::vector<double>& 
     return y;
 }
 
+bool isNear(double a, double b, double epsilon)
+{
+    return (fabs(a - b) <= epsilon);
+}
+
 } // namespace tigl

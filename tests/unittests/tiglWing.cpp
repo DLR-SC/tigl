@@ -322,16 +322,17 @@ TEST_F(TiglWing, bug849)
     EXPECT_NEAR(5.9, span, 0.1); // the reported wing span is 0.62 instead of 5.4
 }
 
+/// Regression reported by issue #827
 TEST_F(TiglWing, tiglGetAspectRatio)
 {
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
 
     const auto& wing = config.GetWing(1);
-    auto ar = wing.GetAspectRatio();
-    EXPECT_NEAR(9.4, ar, 0.1);
-}
 
+    // The expected value was provided by the issue report
+    EXPECT_NEAR(9.4031, wing.GetAspectRatio(), 1e-4);
+}
 
 TEST_F(WingSimple, wingGetMAC_success)
 {
