@@ -24,7 +24,6 @@
 #include <string.h>
 #include <CCPACSConfigurationManager.h>
 
-
 /******************************************************************************/
 
 class TiglWing : public ::testing::Test 
@@ -282,14 +281,16 @@ TEST_F(TiglWing, tiglWingGetSegmentIndex_nullPtr)
     ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg1", &segmentIndex, NULL) == TIGL_NULL_POINTER);
 }
 
-TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongHandle){
+TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongHandle)
+{
     TiglCPACSConfigurationHandle myWrongHandle = -1234;
     int segmentIndex = 0;
     int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetSegmentIndex(myWrongHandle, "D150_VAMP_W1_Seg1", &segmentIndex, &wingIndex) == TIGL_NOT_FOUND);
 }
 
-TEST_F(TiglWing, tiglWingGetSpanVTP){
+TEST_F(TiglWing, tiglWingGetSpanVTP)
+{
     double span = 0.;
     tiglWingGetSpan(tiglHandle, "D150_VAMP_SL1", &span);
     ASSERT_LT(span, 5.9);
@@ -301,6 +302,7 @@ TEST_F(TiglWing, tiglWingGetSpanVTP){
  * behaviour while invalidating the wing
  */
 TEST_F(TiglWing, bug849)
+
 {
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
@@ -318,6 +320,16 @@ TEST_F(TiglWing, bug849)
 
     auto span = vtp.GetWingspan();
     EXPECT_NEAR(5.9, span, 0.1); // the reported wing span is 0.62 instead of 5.4
+}
+
+TEST_F(TiglWing, tiglGetAspectRatio)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    const auto& wing = config.GetWing(1);
+    auto ar = wing.GetAspectRatio();
+    EXPECT_NEAR(9.4, ar, 0.1);
 }
 
 
