@@ -1,6 +1,24 @@
 Changelog
 =========
 
+Version 3.2.2
+-------------
+xx/11/2021
+
+- Highlights / General changes:
+
+  - Added support for canard style flaps. This allows to position the hinge points
+    outside of the wing by providing an additional translation vector.
+
+- Fixes:
+
+  - Fixed CPACS versions header not correctly parsed, if the version number contained a patch version.
+  - Fixed multiple errors that occured during the computation of wing cells.
+
+- Bindings:
+  - Added python 3.9 conda packages 
+  - Fixed loading python bindings with python 3.8 due to a changed DLL loading policy.
+
 Version 3.2.1
 -------------
 01/07/2021
