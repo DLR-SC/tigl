@@ -331,7 +331,9 @@ TEST_F(TiglWing, tiglGetAspectRatio)
     const auto& wing = config.GetWing(1);
 
     // The expected value was provided by the issue report
-    EXPECT_NEAR(9.4031, wing.GetAspectRatio(), 1e-4);
+    // The exact value also depends on the opencascade version
+    // used so we are using a pretty large tolerance here
+    EXPECT_NEAR(9.4031, wing.GetAspectRatio(), 1e-2);
 }
 
 TEST_F(WingSimple, wingGetMAC_success)
