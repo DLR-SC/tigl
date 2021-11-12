@@ -29,13 +29,30 @@ namespace tigl
 namespace winghelper
 {
 
- // Returns the deep direction of the wing
-TiglAxis GetDeepDirection(const tigl::CCPACSWing& wing);
+/**
+ * Returns the depth direction of the wing
+ *
+ * Note: this is a heuristic that is determined by the wing shape
+ * and its position in 3D space.
+ *
+ * TODO: In future we need do define on the cpacs basis the projection
+ * plane of the wing
+ */
+TiglAxis GetWingDepthAxis(const tigl::CCPACSWing& wing);
 
-// Returns the major direction of the wing (correspond to the span direction)
-// @Details: If a symmetry plan is set, the major direction is normal to the symmetry plan,
-// otherwise, an heuristic is used to find out the best span axis candidate.
-TiglAxis GetMajorDirection(const tigl::CCPACSWing& wing);
+/**
+ * Returns the major direction of the wing (correspond to the span direction)
+ *
+ * @Details: If a symmetry plan is set, the major direction is normal to the symmetry plan,
+ * otherwise, an heuristic is used to find out the best span axis candidate.
+ *
+ * Note: this is a heuristic that is determined by the wing shape
+ * and its position in 3D space.
+ *
+ * TODO: In future we need do define on the cpacs basis the projection
+ * plane of the wing
+ */
+TiglAxis GetWingSpanAxis(const tigl::CCPACSWing& wing);
 
 } // namespace winghelper
 

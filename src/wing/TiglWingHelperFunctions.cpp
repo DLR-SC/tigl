@@ -23,6 +23,35 @@
 #include "tigl.h"
 #include "CCPACSWingSegment.h"
 
+namespace
+{
+    struct CumulatedLength
+    {
+        gp_XYZ depth{0., 0., 0.};
+        gp_XYZ span{0., 0., 0.};
+    };
+
+
+    // Helper function to compute accumulated depth and span of the wing
+    CumulatedLength GetCumulatedLength(const tigl::CCPACSWing& wing)
+    {
+        CumulatedLength length;
+        for (int i = 1; i <= wing.GetSegmentCount(); ++i) {
+            const auto& segment = wing.GetSegment(i);
+            gp_XYZ dirSpan  = segment.GetChordPoint(1, 0).XYZ() - segment.GetChordPoint(0, 0).XYZ();
+            gp_XYZ dirDepth = segment.GetChordPoint(0, 1).XYZ() - segment.GetChordPoint(0, 0).XYZ();
+            length.span  += gp_XYZ(fabs(dirSpan.X()), fabs(dirSpan.Y()), fabs(dirSpan.Z()));
+            length.depth += gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
+
+        }
+        const auto& outerSegment = wing.GetSegment(wing.GetSegmentCount());
+        gp_XYZ dirDepth = outerSegment.GetChordPoint(1, 1).XYZ() - outerSegment.GetChordPoint(1, 0).XYZ();
+        length.depth    += gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
+
+        return length;
+    }
+}
+
 namespace tigl
 {
 
@@ -35,7 +64,7 @@ bool HasShape(const tigl::CCPACSWing& wing)
 
 }
 
-TiglAxis GetDeepDirection(const tigl::CCPACSWing& wing)
+TiglAxis GetWingDepthAxis(const tigl::CCPACSWing& wing)
 {
     if (!HasShape(wing)) {
         LOG(WARNING) << "CTiglWingHelper::GetDeepDirection: This wing has no shape -> impossible to determine the "
@@ -43,19 +72,9 @@ TiglAxis GetDeepDirection(const tigl::CCPACSWing& wing)
         return TIGL_X_AXIS;
     }
 
-    gp_XYZ cumulatedDepthDirection(0, 0, 0);
-    for (int i = 1; i <= wing.GetSegmentCount(); ++i) {
-        const CCPACSWingSegment& segment = wing.GetSegment(i);
-        gp_XYZ dirDepth                  = segment.GetChordPoint(0, 1).XYZ() - segment.GetChordPoint(0, 0).XYZ();
-        dirDepth                         = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
-        cumulatedDepthDirection += dirDepth;
-    }
-    const CCPACSWingSegment& outerSegment = wing.GetSegment(wing.GetSegmentCount());
-    gp_XYZ dirDepth = outerSegment.GetChordPoint(1, 1).XYZ() - outerSegment.GetChordPoint(1, 0).XYZ();
-    dirDepth        = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
-    cumulatedDepthDirection += dirDepth;
+    gp_XYZ cumulatedDepthDirection = GetCumulatedLength(wing).depth;
 
-    switch (GetMajorDirection(wing)) {
+    switch (GetWingSpanAxis(wing)) {
     case TIGL_Y_AXIS:
         return cumulatedDepthDirection.X() >= cumulatedDepthDirection.Z() ? TiglAxis::TIGL_X_AXIS
                                                                           : TiglAxis::TIGL_Z_AXIS;
@@ -70,7 +89,7 @@ TiglAxis GetDeepDirection(const tigl::CCPACSWing& wing)
     }
 }
 
-TiglAxis GetMajorDirection(const CCPACSWing& wing)
+TiglAxis GetWingSpanAxis(const CCPACSWing& wing)
 {
     if (!HasShape(wing)) {
         LOG(WARNING) << "CTiglWingHelper::GetMajorDirection: This wing has no shape -> impossible to determine the "
@@ -88,21 +107,9 @@ TiglAxis GetMajorDirection(const CCPACSWing& wing)
     default:
         // heuristic to find the best major axis
         // first find the deep axis , then chose the major axis between the two left axis
-        gp_XYZ cumulatedSpanDirection(0, 0, 0);
-        gp_XYZ cumulatedDepthDirection(0, 0, 0);
-        for (int i = 1; i <= wing.GetSegmentCount(); ++i) {
-            const CCPACSWingSegment& segment = wing.GetSegment(i);
-            gp_XYZ dirSpan                   = segment.GetChordPoint(1, 0).XYZ() - segment.GetChordPoint(0, 0).XYZ();
-            gp_XYZ dirDepth                  = segment.GetChordPoint(0, 1).XYZ() - segment.GetChordPoint(0, 0).XYZ();
-            dirSpan  = gp_XYZ(fabs(dirSpan.X()), fabs(dirSpan.Y()), fabs(dirSpan.Z())); // why we use abs value?
-            dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
-            cumulatedSpanDirection += dirSpan;
-            cumulatedDepthDirection += dirDepth;
-        }
-        const CCPACSWingSegment& outerSegment = wing.GetSegment(wing.GetSegmentCount());
-        gp_XYZ dirDepth = outerSegment.GetChordPoint(1, 1).XYZ() - outerSegment.GetChordPoint(1, 0).XYZ();
-        dirDepth        = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
-        cumulatedDepthDirection += dirDepth;
+        auto length = GetCumulatedLength(wing);
+        gp_XYZ cumulatedSpanDirection = length.span;
+        gp_XYZ cumulatedDepthDirection = length.depth;
 
         int depthIndex = 0;
         if (cumulatedDepthDirection.X() >= cumulatedDepthDirection.Y() &&

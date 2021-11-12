@@ -23,6 +23,7 @@
 #include "tigl.h"
 #include <string.h>
 #include <CCPACSConfigurationManager.h>
+#include <TiglWingHelperFunctions.h>
 
 /******************************************************************************/
 
@@ -340,6 +341,56 @@ TEST_F(TiglWing, tiglGetAspectRatio)
     // This value was roughly estimated
     EXPECT_NEAR(3.2, vtp.GetAspectRatio(), 1e-1);
 
+}
+
+TEST_F(TiglWing, spanDirection)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    auto& wing = config.GetWing(1);
+    auto& vtp = config.GetWing(3);
+
+    auto axis = tigl::winghelper::GetWingSpanAxis(wing);
+    EXPECT_EQ(TIGL_Y_AXIS, axis);
+
+
+    axis = tigl::winghelper::GetWingSpanAxis(vtp);
+    EXPECT_EQ(TIGL_Z_AXIS, axis);
+
+    wing.SetSymmetryAxis(TIGL_NO_SYMMETRY);
+    vtp.SetSymmetryAxis(TIGL_X_Y_PLANE);
+
+    axis = tigl::winghelper::GetWingSpanAxis(wing);
+    EXPECT_EQ(TIGL_Y_AXIS, axis);
+
+    axis = tigl::winghelper::GetWingSpanAxis(vtp);
+    EXPECT_EQ(TIGL_Z_AXIS, axis);
+}
+
+TEST_F(TiglWing, depthDirection)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    auto& wing = config.GetWing(1);
+    auto& vtp = config.GetWing(3);
+
+    auto axis = tigl::winghelper::GetWingDepthAxis(wing);
+    EXPECT_EQ(TIGL_X_AXIS, axis);
+
+
+    axis = tigl::winghelper::GetWingDepthAxis(vtp);
+    EXPECT_EQ(TIGL_X_AXIS, axis);
+
+    wing.SetSymmetryAxis(TIGL_NO_SYMMETRY);
+    vtp.SetSymmetryAxis(TIGL_X_Y_PLANE);
+
+    axis = tigl::winghelper::GetWingDepthAxis(wing);
+    EXPECT_EQ(TIGL_X_AXIS, axis);
+
+    axis = tigl::winghelper::GetWingDepthAxis(vtp);
+    EXPECT_EQ(TIGL_X_AXIS, axis);
 }
 
 TEST_F(WingSimple, wingGetMAC_success)

@@ -539,8 +539,8 @@ double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane) const
 
 double CCPACSWing::GetReferenceArea() const
 {
-    TiglAxis spanDir = winghelper::GetMajorDirection(*this);
-    TiglAxis deepDir = winghelper::GetDeepDirection(*this);
+    TiglAxis spanDir = winghelper::GetWingSpanAxis(*this);
+    TiglAxis deepDir = winghelper::GetWingDepthAxis(*this);
 
     if (spanDir == TIGL_Y_AXIS && deepDir == TIGL_X_AXIS) {
         return GetReferenceArea(TIGL_X_Y_PLANE);
