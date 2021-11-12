@@ -141,7 +141,6 @@ void CCPACSWing::InvalidateImpl(const boost::optional<std::string>& source) cons
     rebuildShells = true;
     rebuildFusedSegWEdge = true;
 
-    Reset();
     loft.clear();
     guideCurves.clear();
     wingCleanShape.clear();

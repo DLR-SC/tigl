@@ -22,6 +22,7 @@
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
 #include <string.h>
+#include <CCPACSConfigurationManager.h>
 
 
 /******************************************************************************/
@@ -293,6 +294,30 @@ TEST_F(TiglWing, tiglWingGetSpanVTP){
     tiglWingGetSpan(tiglHandle, "D150_VAMP_SL1", &span);
     ASSERT_LT(span, 5.9);
     ASSERT_GT(span, 5.8);
+}
+
+/**
+ * This test replicates issue 849, which showed a strange
+ * behaviour while invalidating the wing
+ */
+TEST_F(TiglWing, bug849)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    auto& vtp = config.GetWing(3);
+
+    // somehow, this generates something
+    // removing this line maade the test succeed
+    // otherwise, the test failed
+    vtp.GetWingspan();
+
+    // which is not correctly invalidated now
+    // note, that we actually don't change anything
+    vtp.SetSymmetryAxis(vtp.GetSymmetryAxis());
+
+    auto span = vtp.GetWingspan();
+    EXPECT_NEAR(5.9, span, 0.1); // the reported wing span is 0.62 instead of 5.4
 }
 
 
