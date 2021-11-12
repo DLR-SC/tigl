@@ -985,7 +985,7 @@ bool CCPACSWingSegment::GetIsOnTop(gp_Pnt pnt) const
 }
 
 
-bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
+bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt) const
 {
     bool isOnLoft = CTiglAbstractSegment<CCPACSWingSegment>::GetIsOn(pnt);
 

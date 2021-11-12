@@ -123,19 +123,22 @@ public:
 
     // Returns the reference area of the wing by taking account the drilateral portions
     // of each wing segment by projecting the wing segments into the plane defined by the user
-    TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane);
+    TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane) const;
+
+    // Returns the reference area of the wing in the plane normal to the major direction
+    TIGL_EXPORT double GetReferenceArea() const;
 
     // Returns wetted Area
-    TIGL_EXPORT double GetWettedArea(TopoDS_Shape parent);
+    TIGL_EXPORT double GetWettedArea(TopoDS_Shape parent) const;
 
     // Returns the wingspan of the wing
-    TIGL_EXPORT double GetWingspan();
+    TIGL_EXPORT double GetWingspan() const;
 
     // Returns the aspect ratio of the wing
-    TIGL_EXPORT double GetAspectRatio();
+    TIGL_EXPORT double GetAspectRatio() const;
 
     // Returns the mean aerodynamic chord of the wing
-    TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
+    TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z) const;
 
     // Calculates the segment coordinates from global (x,y,z) coordinates
     // Returns the segment index of the according segment

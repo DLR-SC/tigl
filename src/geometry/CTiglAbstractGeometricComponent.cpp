@@ -60,7 +60,7 @@ Bnd_Box const& CTiglAbstractGeometricComponent::GetBoundingBox() const
     return *bounding_box;
 }
 
-PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
+PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft() const
 {
     const TiglSymmetryAxis& symmetryAxis = GetSymmetryAxis();
     if (symmetryAxis == TIGL_NO_SYMMETRY) {
@@ -89,7 +89,7 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
     return mirroredShape;
 }
 
-bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt) 
+bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt) const
 {
     const TopoDS_Shape segmentShape = GetLoft()->Shape();
 
@@ -120,7 +120,7 @@ bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt)
     }
 }
 
-bool CTiglAbstractGeometricComponent::GetIsOnMirrored(const gp_Pnt& pnt) 
+bool CTiglAbstractGeometricComponent::GetIsOnMirrored(const gp_Pnt& pnt) const
 {
     const TiglSymmetryAxis& symmetryAxis = GetSymmetryAxis();
     if (symmetryAxis == TIGL_NO_SYMMETRY) {

@@ -41,6 +41,7 @@
 #include "CTiglBSplineAlgorithms.h"
 #include "CCPACSControlSurfaces.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "TiglWingHelperFunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -68,16 +69,6 @@ namespace tigl
 
 namespace
 {
-    inline double max(double a, double b)
-    {
-        return a > b? a : b;
-    }
-
-    inline double min(double a, double b)
-    {
-        return a < b? a : b;
-    }
-
     // Returns the index of the maximum value
     int maxIndex(double x, double y, double z)
     {
@@ -536,7 +527,7 @@ double CCPACSWing::GetSurfaceArea()
 
 // Returns the reference area of the wing by taking account the quadrilateral portions
 // of each wing segment by projecting the wing segments into the plane defined by the user
-double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane)
+double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane) const
 {
     double refArea = 0.0;
 
@@ -546,8 +537,37 @@ double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane)
     return refArea;
 }
 
+double CCPACSWing::GetReferenceArea() const
+{
+    TiglAxis spanDir = winghelper::GetWingSpanAxis(*this);
+    TiglAxis deepDir = winghelper::GetWingDepthAxis(*this);
 
-double CCPACSWing::GetWettedArea(TopoDS_Shape parent)
+    if (spanDir == TIGL_Y_AXIS && deepDir == TIGL_X_AXIS) {
+        return GetReferenceArea(TIGL_X_Y_PLANE);
+    }
+    else if (spanDir == TIGL_Y_AXIS && deepDir == TIGL_Z_AXIS) {
+        return GetReferenceArea(TIGL_Y_Z_PLANE);
+    }
+    else if (spanDir == TIGL_Z_AXIS && deepDir == TIGL_X_AXIS) {
+        return GetReferenceArea(TIGL_X_Z_PLANE);
+    }
+    else if (spanDir == TIGL_Z_AXIS && deepDir == TIGL_Y_AXIS) {
+        return GetReferenceArea(TIGL_Y_Z_PLANE);
+    }
+    else if (spanDir == TIGL_X_AXIS && deepDir == TIGL_Z_AXIS) {
+        return GetReferenceArea(TIGL_X_Z_PLANE);
+    }
+    else if (spanDir == TIGL_X_AXIS && deepDir == TIGL_Y_AXIS) {
+        return GetReferenceArea(TIGL_X_Y_PLANE);
+    }
+    else {
+       LOG(ERROR) << "CCPACSWing::GetReferenceArea: Unexpected pair of major direction and deep direction.";
+       return 0.0;
+    }
+}
+
+
+double CCPACSWing::GetWettedArea(TopoDS_Shape parent) const
 {
     const TopoDS_Shape loft = GetLoft()->Shape();
 
@@ -572,7 +592,7 @@ Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
     return m_segments.GetSegment(index).GetUpperSurface();
 }
 
-double CCPACSWing::GetWingspan()
+double CCPACSWing::GetWingspan() const
 {
     Bnd_Box boundingBox;
     if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -590,7 +610,7 @@ double CCPACSWing::GetWingspan()
         gp_XYZ cumulatedSpanDirection(0, 0, 0);
         gp_XYZ cumulatedDepthDirection(0, 0, 0);
         for (int i = 1; i <= GetSegmentCount(); ++i) {
-            CCPACSWingSegment& segment = m_segments.GetSegment(i);
+            const CCPACSWingSegment& segment = m_segments.GetSegment(i);
             const TopoDS_Shape segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
 
@@ -601,7 +621,7 @@ double CCPACSWing::GetWingspan()
             cumulatedSpanDirection += dirSpan;
             cumulatedDepthDirection += dirDepth;
         }
-        CCPACSWingSegment& outerSegment = m_segments.GetSegment(GetSegmentCount());
+        const CCPACSWingSegment& outerSegment = m_segments.GetSegment(GetSegmentCount());
         gp_XYZ dirDepth = outerSegment.GetChordPoint(1,1).XYZ() - outerSegment.GetChordPoint(1,0).XYZ();
         dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
         cumulatedDepthDirection += dirDepth;
@@ -631,7 +651,7 @@ double CCPACSWing::GetWingspan()
     }
     else {
         for (int i = 1; i <= GetSegmentCount(); ++i) {
-            CCPACSWingSegment& segment = GetSegment(i);
+            const CCPACSWingSegment& segment = GetSegment(i);
             TopoDS_Shape segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
             TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft()->Shape();
@@ -660,9 +680,23 @@ double CCPACSWing::GetWingspan()
 // Returns the aspect ratio of a wing: AR=b**2/A=((2s)**2)/(2A_half)
 //     b: full span; A: Reference area of full wing (wing + symmetrical wing)
 //     s: half span; A_half: Reference area of wing without symmetrical wing
-double CCPACSWing::GetAspectRatio()
+double CCPACSWing::GetAspectRatio() const
 {
-    return 2.0*(pow_int(GetWingspan(),2)/GetReferenceArea(GetSymmetryAxis()));
+    auto refArea = GetReferenceArea();
+
+    if ( isNear(refArea, 0.) ) {
+        LOG(WARNING) << "Wing area is close to zero, thus the AR is not computed and 0 is returned.";
+        return 0;
+    }
+
+    auto halfSpan = GetWingspan();
+
+    // If the wing has symmetry defined, the full span was returned
+    if (GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+        halfSpan *= 0.5;
+    }
+
+    return 2.0*halfSpan*halfSpan/refArea;
 }
 
 /**
@@ -673,7 +707,7 @@ double CCPACSWing::GetAspectRatio()
     * But the effect of insidance angle is neglected. These values should coincide
     * with the values found with tornado tool.
     */
-void  CCPACSWing::GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z)
+void  CCPACSWing::GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z) const
 {
     double A_sum = 0.;
     double cc_mac_sum=0.;

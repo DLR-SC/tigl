@@ -164,7 +164,7 @@ public:
     TIGL_EXPORT bool GetIsOnTop(gp_Pnt pnt) const;
 
     // return if pnt lies on the loft or on the segment chord face
-    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt) override;
+    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt) const override;
 
     // Returns the reference area of the quadrilateral portion of the wing segment
     // by projecting the wing segment into the plane defined by the user
