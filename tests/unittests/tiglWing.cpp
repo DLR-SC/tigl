@@ -358,6 +358,9 @@ TEST_F(TiglWing, spanDirection)
     axis = tigl::winghelper::GetWingSpanAxis(vtp);
     EXPECT_EQ(TIGL_Z_AXIS, axis);
 
+    auto wingSymAx = wing.GetSymmetryAxis();
+    auto vtpSymAx = vtp.GetSymmetryAxis();
+
     wing.SetSymmetryAxis(TIGL_NO_SYMMETRY);
     vtp.SetSymmetryAxis(TIGL_X_Y_PLANE);
 
@@ -366,6 +369,11 @@ TEST_F(TiglWing, spanDirection)
 
     axis = tigl::winghelper::GetWingSpanAxis(vtp);
     EXPECT_EQ(TIGL_Z_AXIS, axis);
+
+    // we need to reset the axes, since the cpacs handle
+    // is static for all tests
+    wing.SetSymmetryAxis(wingSymAx);
+    vtp.SetSymmetryAxis(vtpSymAx);
 }
 
 TEST_F(TiglWing, depthDirection)
@@ -383,6 +391,9 @@ TEST_F(TiglWing, depthDirection)
     axis = tigl::winghelper::GetWingDepthAxis(vtp);
     EXPECT_EQ(TIGL_X_AXIS, axis);
 
+    auto wingSymAx = wing.GetSymmetryAxis();
+    auto vtpSymAx = vtp.GetSymmetryAxis();
+
     wing.SetSymmetryAxis(TIGL_NO_SYMMETRY);
     vtp.SetSymmetryAxis(TIGL_X_Y_PLANE);
 
@@ -391,6 +402,11 @@ TEST_F(TiglWing, depthDirection)
 
     axis = tigl::winghelper::GetWingDepthAxis(vtp);
     EXPECT_EQ(TIGL_X_AXIS, axis);
+
+    // we need to reset the axes, since the cpacs handle
+    // is static for all tests
+    wing.SetSymmetryAxis(wingSymAx);
+    vtp.SetSymmetryAxis(vtpSymAx);
 }
 
 TEST_F(WingSimple, wingGetMAC_success)
