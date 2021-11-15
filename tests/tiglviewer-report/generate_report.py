@@ -87,10 +87,13 @@ app.scene.gridOff();
 
 '''
 
-    def add_screenshot_command(content, cpacs_dict, screenshot_path):
+    def add_screenshot_command(content, cpacs_dict, screenshot_path, view=None):
         if "before_script" in cpacs_dict.keys():
             content = content + cpacs_dict["before_script"]
-        content = content + "app.viewer.view" + v + "();\napp.viewer.fitAll();"
+
+        if view is not None:
+            content = content + "app.viewer.view" + view + "();\n"
+        content = content + "app.viewer.fitAll();"
         content = content + "app.viewer.makeScreenshot(\"" \
                   + screenshot_path \
                   + "\");\n"
@@ -104,13 +107,13 @@ app.scene.gridOff();
 
         for v in ["Front", "Back", "Top", "Bottom", "Left", "Right", "Axo"]:
             screenshot_path = Path(os.path.join(screenshot_dir, basename + "-" + v + ".jpg")).as_posix()
-            content = add_screenshot_command(content, d, screenshot_path)
+            content = add_screenshot_command(content, d, screenshot_path, view=v)
 
         if 'extra_screenshots' in d.keys():
             for extra in d["extra_screenshots"]:
                 screenshot_path = Path(os.path.join(screenshot_dir, basename + "-" + extra["name"] + ".jpg")).as_posix()
-                content = content + extra["script"]
-                content = add_screenshot_command(content, d, screenshot_path)
+                content = content + "app.viewer.viewAxo();\n" + extra["script"]
+                content = add_screenshot_command(content, d, screenshot_path, view=None)
 
     content = content + "\napp.close();\n"
 

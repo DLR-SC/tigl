@@ -42,7 +42,16 @@
   { "cpacs_file": "../unittests/TestData/compseg-rotated.xml" },
   { "cpacs_file": "../unittests/TestData/CPACS_30_CST_simple.xml" },
   { "cpacs_file": "../unittests/TestData/CPACS_30_CST_simple_bluntTE.xml" },
-  { "cpacs_file": "../unittests/TestData/CPACS_30_D150.xml" },
+  { 
+    "cpacs_file": "../unittests/TestData/CPACS_30_D150.xml",
+    "extra_screenshots" :
+    [
+      {
+        "name": "flaps",
+        "script": "app.scene.deleteAllObjects();\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_innerFlap', 1.0);\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_outerFlap', 1.0);\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_aileron', -1.0);\ndrawShape(tigl.getShape('D150_VAMP_W1'));\napp.viewer.setCameraPosition(45, 45);\napp.viewer.fitAll()\n"
+      }
+    ]
+  },
   { "cpacs_file": "../unittests/TestData/CPACS_30_D250_10.xml" },
   { "cpacs_file": "../unittests/TestData/CS_SegIntersectionBUG.xml" },
   { "cpacs_file": "../unittests/TestData/D150_v30.xml" },
