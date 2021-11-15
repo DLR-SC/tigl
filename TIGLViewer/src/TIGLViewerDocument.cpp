@@ -959,6 +959,7 @@ bool TIGLViewerDocument::drawWingFlaps(tigl::CCPACSWing& wing)
     }
     catch (tigl::CTiglError& ex) {
         displayError(ex.what(), "Error");
+        return false;
     }
 
     return true;
@@ -990,11 +991,16 @@ void TIGLViewerDocument::updateFlapTransform(const std::string& controlUID)
     if (*obj.type == typeid(tigl::CCPACSTrailingEdgeDevice))
     {
         auto* controlSurfaceDevice = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
-        gp_Trsf trsf = controlSurfaceDevice->GetFlapTransform();
+        try {
+            gp_Trsf trsf = controlSurfaceDevice->GetFlapTransform();
 
-        IObjectList flaps = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
-        for (const auto& flap : flaps) {
-            app->getScene()->getContext()->SetLocation(flap, trsf);
+            IObjectList flaps = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
+            for (const auto& flap : flaps) {
+                app->getScene()->getContext()->SetLocation(flap, trsf);
+            }
+        }
+        catch (const tigl::CTiglError&){
+            displayError(QString("Error computing control surface device '%1'").arg(controlUID.c_str()), QString("Error"));
         }
     }
 

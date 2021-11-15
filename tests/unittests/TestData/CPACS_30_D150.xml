@@ -5,7 +5,7 @@
     <description>D150_reference_VAMP, outer geometry reshapedP2C'ed from PrADO A320-200, CPACS 2.0</description>
     <creator>Thomas Zill, DLR, LY-ILE</creator>
     <timestamp>2012-04-23T12:00:00</timestamp>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <cpacsVersion>3.2</cpacsVersion>
     <updates>
       <update>
@@ -34,6 +34,13 @@
         <creator>cpacs2to3</creator>
         <timestamp>2021-04-23T18:01:59</timestamp>
         <version>1.4.0</version>
+        <cpacsVersion>3.2</cpacsVersion>
+      </update>
+      <update>
+        <modification>Fixed incorrectly referenced uids for flap outer shape</modification>
+        <creator>Martin Siggel</creator>
+        <timestamp>2021-11-15T00:04:32</timestamp>
+        <version>1.4.1</version>
         <cpacsVersion>3.2</cpacsVersion>
       </update>
     </updates>
@@ -4251,29 +4258,29 @@
                         <innerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
                           <etaLE>
                             <eta>0.1103</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_innerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.1103</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_innerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.812922</xsi>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_innerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </xsiLE>
                         </innerBorder>
                         <outerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
                           <etaLE>
                             <eta>0.325678</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_innerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.325678</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_innerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.7195</xsi>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_innerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </xsiLE>
                         </outerBorder>
                       </outerShape>
@@ -4324,29 +4331,29 @@
                         <innerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
                           <etaLE>
                             <eta>0.325678</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_outerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.325678</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_outerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.7195</xsi>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_outerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </xsiLE>
                         </innerBorder>
                         <outerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
                           <etaLE>
                             <eta>0.758902</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_outerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.758902</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_outerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.705129</xsi>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_outerFlap</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </xsiLE>
                         </outerBorder>
                       </outerShape>
@@ -4397,29 +4404,29 @@
                         <innerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
                           <etaLE>
                             <eta>0.770741</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_aileron</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.770741</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_aileron</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.702209</xsi>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_aileron</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </xsiLE>
                         </innerBorder>
                         <outerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
                           <etaLE>
                             <eta>0.956947</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_aileron</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.956947</eta>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_aileron</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.712</xsi>
-                            <referenceUID>D150_VAMP_W1_CompSeg1_aileron</referenceUID>
+                            <referenceUID>D150_VAMP_W1_CompSeg1</referenceUID>
                           </xsiLE>
                         </outerBorder>
                       </outerShape>
@@ -5036,29 +5043,29 @@
                         <innerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
                           <etaLE>
                             <eta>0.16</eta>
-                            <referenceUID>D150_VAMP_HL1_CompSeg1_elevator</referenceUID>
+                            <referenceUID>D150_VAMP_HL1_CompSeg1</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.169255</eta>
-                            <referenceUID>D150_VAMP_HL1_CompSeg1_elevator</referenceUID>
+                            <referenceUID>D150_VAMP_HL1_CompSeg1</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.577506</xsi>
-                            <referenceUID>D150_VAMP_HL1_CompSeg1_elevator</referenceUID>
+                            <referenceUID>D150_VAMP_HL1_CompSeg1</referenceUID>
                           </xsiLE>
                         </innerBorder>
                         <outerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
                           <etaLE>
                             <eta>0.95</eta>
-                            <referenceUID>D150_VAMP_HL1_CompSeg1_elevator</referenceUID>
+                            <referenceUID>D150_VAMP_HL1_CompSeg1</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.95</eta>
-                            <referenceUID>D150_VAMP_HL1_CompSeg1_elevator</referenceUID>
+                            <referenceUID>D150_VAMP_HL1_CompSeg1</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.64</xsi>
-                            <referenceUID>D150_VAMP_HL1_CompSeg1_elevator</referenceUID>
+                            <referenceUID>D150_VAMP_HL1_CompSeg1</referenceUID>
                           </xsiLE>
                         </outerBorder>
                       </outerShape>
@@ -5273,29 +5280,29 @@
                         <innerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
                           <etaLE>
                             <eta>0.01</eta>
-                            <referenceUID>D150_VAMP_SL1_CompSeg1_rudder</referenceUID>
+                            <referenceUID>D150_VAMP_SL1_CompSeg1</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.01</eta>
-                            <referenceUID>D150_VAMP_SL1_CompSeg1_rudder</referenceUID>
+                            <referenceUID>D150_VAMP_SL1_CompSeg1</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.6875</xsi>
-                            <referenceUID>D150_VAMP_SL1_CompSeg1_rudder</referenceUID>
+                            <referenceUID>D150_VAMP_SL1_CompSeg1</referenceUID>
                           </xsiLE>
                         </innerBorder>
                         <outerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
                           <etaLE>
                             <eta>0.95</eta>
-                            <referenceUID>D150_VAMP_SL1_CompSeg1_rudder</referenceUID>
+                            <referenceUID>D150_VAMP_SL1_CompSeg1</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.95</eta>
-                            <referenceUID>D150_VAMP_SL1_CompSeg1_rudder</referenceUID>
+                            <referenceUID>D150_VAMP_SL1_CompSeg1</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.714</xsi>
-                            <referenceUID>D150_VAMP_SL1_CompSeg1_rudder</referenceUID>
+                            <referenceUID>D150_VAMP_SL1_CompSeg1</referenceUID>
                           </xsiLE>
                         </outerBorder>
                       </outerShape>

@@ -214,33 +214,31 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI()
     tigl::CCPACSConfiguration& config = _document->GetConfiguration();
     tigl::CCPACSWing &wing = config.GetWing(wingUID);
 
-    int noDevices = wing.GetComponentSegmentCount();
     std::vector<tigl::CCPACSTrailingEdgeDevice*> devices;
 
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
         tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
         const auto& controlSurfaces = componentSegment.GetControlSurfaces();
-        if (!controlSurfaces || controlSurfaces->ControlSurfaceCount() < 1) {
-            noDevices--;
-            if (noDevices < 1) {
-                continue;
-            }
+        if (!controlSurfaces.is_initialized() || controlSurfaces->ControlSurfaceCount() < 1) {
+            continue;
         }
 
-        // @todo: what if no TEDS? fix this
-        for (  const auto&  controlSurfaceDevice : controlSurfaces->GetTrailingEdgeDevices()->GetTrailingEdgeDevices()) {
-            if (!controlSurfaceDevice) {
-                continue;
+        // TODO: this logic needs to be adapted when there's support for LEDs and Spoilers
+        if (controlSurfaces->GetTrailingEdgeDevices().is_initialized()) {
+            for ( const auto&  controlSurfaceDevice : controlSurfaces->GetTrailingEdgeDevices()->GetTrailingEdgeDevices()) {
+                if (!controlSurfaceDevice) {
+                    continue;
+                }
+
+                if ((!ui->checkTED->isChecked() && controlSurfaceDevice->GetType() == TRAILING_EDGE_DEVICE) ||
+                    (!ui->checkLED->isChecked() && controlSurfaceDevice->GetType() == LEADING_EDGE_DEVICE) ||
+                    (!ui->checkSpoiler->isChecked() && controlSurfaceDevice->GetType() == SPOILER)) {
+
+                    continue;
+                }
+
+                devices.push_back(controlSurfaceDevice.get());
             }
-
-            if ((!ui->checkTED->isChecked() && controlSurfaceDevice->GetType() == TRAILING_EDGE_DEVICE) ||
-                (!ui->checkLED->isChecked() && controlSurfaceDevice->GetType() == LEADING_EDGE_DEVICE) ||
-                (!ui->checkSpoiler->isChecked() && controlSurfaceDevice->GetType() == SPOILER)) {
-
-                continue;
-            }
-
-            devices.push_back(controlSurfaceDevice.get());
         }
 
     }

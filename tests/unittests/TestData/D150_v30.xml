@@ -6,7 +6,7 @@
     <description>copied some stuff from other versions. Mission is just an example as the D150 might not make it to Newark with Mach 0.84</description>
     <creator>Daniel Boehnke, DLR-LK</creator>
     <timestamp>2010-07-07T12:00:00</timestamp>
-    <version>1.9.0</version>
+    <version>1.9.1</version>
     <cpacsVersion>3.2</cpacsVersion>
     <updates>
       <update>
@@ -84,6 +84,13 @@
         <creator>cpacs2to3</creator>
         <timestamp>2021-04-23T18:01:59</timestamp>
         <version>1.9.0</version>
+        <cpacsVersion>3.2</cpacsVersion>
+      </update>
+      <update>
+        <modification>Fixed incorrectly referenced uids for flap outer shape</modification>
+        <creator>Martin Siggel</creator>
+        <timestamp>2021-11-15T00:04:32</timestamp>
+        <version>1.9.1</version>
         <cpacsVersion>3.2</cpacsVersion>
       </update>
     </updates>
@@ -4243,15 +4250,15 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0.11015</eta>
-                            <referenceUID>D150_InnerFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.11015</eta>
-                            <referenceUID>D150_InnerFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.828</xsi>
-                            <referenceUID>D150_InnerFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.211</relHeightLE>
@@ -4262,15 +4269,15 @@
                         <outerBorder>
                           <etaLE>
                             <eta>0.3735</eta>
-                            <referenceUID>D150_InnerFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.3735</eta>
-                            <referenceUID>D150_InnerFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.73</xsi>
-                            <referenceUID>D150_InnerFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.211</relHeightLE>
@@ -4673,15 +4680,15 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0.3735</eta>
-                            <referenceUID>D150_OuterFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.3735</eta>
-                            <referenceUID>D150_OuterFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.73</xsi>
-                            <referenceUID>D150_OuterFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.211</relHeightLE>
@@ -4692,15 +4699,15 @@
                         <outerBorder>
                           <etaLE>
                             <eta>0.779</eta>
-                            <referenceUID>D150_OuterFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.779</eta>
-                            <referenceUID>D150_OuterFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.723</xsi>
-                            <referenceUID>D150_OuterFlap</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.211</relHeightLE>
@@ -5068,15 +5075,15 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0.81268</eta>
-                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.81268</eta>
-                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.721</xsi>
-                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
@@ -5087,15 +5094,15 @@
                         <outerBorder>
                           <etaLE>
                             <eta>0.96</eta>
-                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.96</eta>
-                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.697</xsi>
-                            <referenceUID>D150_AllSpeedAileron</referenceUID>
+                            <referenceUID>D150_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
@@ -7589,25 +7596,25 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0.2</eta>
-                            <referenceUID>D150_Elevator</referenceUID>
+                            <referenceUID>D150_HTP_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.2</eta>
-                            <referenceUID>D150_Elevator</referenceUID>
+                            <referenceUID>D150_HTP_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.7</xsi>
-                            <referenceUID>D150_Elevator</referenceUID>
+                            <referenceUID>D150_HTP_CS</referenceUID>
                           </xsiLE>
                         </innerBorder>
                         <outerBorder>
                           <etaLE>
                             <eta>0.96</eta>
-                            <referenceUID>D150_Elevator</referenceUID>
+                            <referenceUID>D150_HTP_CS</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.7</xsi>
-                            <referenceUID>D150_Elevator</referenceUID>
+                            <referenceUID>D150_HTP_CS</referenceUID>
                           </xsiLE>
                         </outerBorder>
                       </outerShape>
@@ -8305,25 +8312,25 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0.2</eta>
-                            <referenceUID>D150_Rudder</referenceUID>
+                            <referenceUID>D150_VTP_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.2</eta>
-                            <referenceUID>D150_Rudder</referenceUID>
+                            <referenceUID>D150_VTP_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.7</xsi>
-                            <referenceUID>D150_Rudder</referenceUID>
+                            <referenceUID>D150_VTP_CS</referenceUID>
                           </xsiLE>
                         </innerBorder>
                         <outerBorder>
                           <etaLE>
                             <eta>0.96</eta>
-                            <referenceUID>D150_Rudder</referenceUID>
+                            <referenceUID>D150_VTP_CS</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.7</xsi>
-                            <referenceUID>D150_Rudder</referenceUID>
+                            <referenceUID>D150_VTP_CS</referenceUID>
                           </xsiLE>
                         </outerBorder>
                       </outerShape>
