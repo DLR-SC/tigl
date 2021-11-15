@@ -15,6 +15,7 @@ xx/11/2021
   - Fixed CPACS versions header not correctly parsed, if the version number contained a patch version (issue #830).
   - Fixed multiple errors that occured during the computation of wing cells (issues #815, #829, #840).
   - Fixed computation of the wing aspect ratio (issue #827).
+  - Fixed crashes in TiGL Viewer when displaying control surface devices (issue #851).
 
 - Bindings:
   - Added python 3.9 conda packages 
