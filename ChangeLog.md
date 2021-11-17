@@ -16,6 +16,8 @@ xx/11/2021
   - Fixed multiple errors that occured during the computation of wing cells (issues #815, #829, #840).
   - Fixed computation of the wing aspect ratio (issue #827).
   - Fixed crashes in TiGL Viewer when displaying control surface devices (issue #851).
+  - Improved robustness of export functions. The export now tries to export as much as possible,
+    even if one component failed to built (issue #853).
 
 - Bindings:
   - Added python 3.9 conda packages 

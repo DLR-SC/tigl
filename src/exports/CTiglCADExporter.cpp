@@ -59,19 +59,29 @@ void CTiglCADExporter::AddShape(PNamedShape shape, const CCPACSConfiguration* co
     }
 }
 
-void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const ShapeExportOptions& options)
+bool CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const ShapeExportOptions& options)
 {
+
+    bool success = true;
+
     // Export all wings of the configuration
     for (int w = 1; w <= config.GetWingCount(); w++) {
         CCPACSWing& wing = config.GetWing(w);
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            PNamedShape loft = segment.GetLoft();
-            AddShape(loft, &config, options);
 
-            if (GlobalExportOptions().Get<bool>("ApplySymmetries") && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-                AddShape(segment.GetMirroredLoft(), &config, options);
+            try {
+                PNamedShape loft = segment.GetLoft();
+                AddShape(loft, &config, options);
+
+                if (GlobalExportOptions().Get<bool>("ApplySymmetries") && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                    AddShape(segment.GetMirroredLoft(), &config, options);
+                }
+            }
+            catch (const CTiglError& err) {
+                LOG(ERROR) << "Unable to export wing segment '" + segment.GetUID() << "': " << err.what();
+                success = false;
             }
         }
     }
@@ -86,11 +96,18 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const Shape
                 continue;
             }
 
-            PNamedShape loft = pylon.GetLoft();
-            AddShape(loft, &config, options);
+            try {
+                PNamedShape loft = pylon.GetLoft();
+                AddShape(loft, &config, options);
 
-            if (GlobalExportOptions().Get<bool>("ApplySymmetries") && pylon.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-                AddShape(pylon.GetMirroredLoft(), &config, options);
+                if (GlobalExportOptions().Get<bool>("ApplySymmetries") && pylon.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                    AddShape(pylon.GetMirroredLoft(), &config, options);
+                }
+
+            }
+            catch (const CTiglError& err) {
+                LOG(ERROR) << "Unable to export pylon '" + pylon.GetUID() << "': " << err.what();
+                success = false;
             }
         }
     }
@@ -98,14 +115,21 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const Shape
     if (config.GetEnginePositions()) {
         CCPACSEnginePositions& positions = config.GetEnginePositions().value();
 
-        for (int p = 1; p <= positions.GetEnginePositionCount(); ++p) {
+        for (size_t p = 1; p <= positions.GetEnginePositionCount(); ++p) {
             CCPACSEnginePosition& engine = positions.GetEnginePosition(p);
 
-            PNamedShape loft = engine.GetLoft();
-            AddShape(loft, &config, options);
+            try {
+                PNamedShape loft = engine.GetLoft();
+                AddShape(loft, &config, options);
 
-            if (GlobalExportOptions().Get<bool>("ApplySymmetries") && engine.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-                AddShape(engine.GetMirroredLoft(), &config, options);
+                if (GlobalExportOptions().Get<bool>("ApplySymmetries") && engine.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                    AddShape(engine.GetMirroredLoft(), &config, options);
+                }
+
+            }
+            catch (const CTiglError& err) {
+                LOG(ERROR) << "Unable to export engine '" + engine.GetUID() << "': " << err.what();
+                success = false;
             }
         }
     }
@@ -116,11 +140,17 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const Shape
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            PNamedShape loft = segment.GetLoft();
-            AddShape(loft, &config, options);
+            try {
+                PNamedShape loft = segment.GetLoft();
+                AddShape(loft, &config, options);
 
-            if (GlobalExportOptions().Get<bool>("ApplySymmetries") && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-                AddShape(segment.GetMirroredLoft(), &config, options);
+                if (GlobalExportOptions().Get<bool>("ApplySymmetries") && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                    AddShape(segment.GetMirroredLoft(), &config, options);
+                }
+            }
+            catch (const CTiglError& err) {
+                LOG(ERROR) << "Unable to fuselage segment '" + segment.GetUID() << "': " << err.what();
+                success = false;
             }
         }
     }
@@ -128,11 +158,17 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const Shape
     // Export external objects
     for (int e = 1; e <= config.GetExternalObjectCount(); e++) {
         CCPACSExternalObject& obj = config.GetExternalObject(e);
-        PNamedShape loft = obj.GetLoft();
-        AddShape(loft, &config, options);
+        try {
+            PNamedShape loft = obj.GetLoft();
+            AddShape(loft, &config, options);
 
-        if (GlobalExportOptions().Get<bool>("ApplySymmetries") && obj.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-            AddShape(obj.GetMirroredLoft(), &config, options);
+            if (GlobalExportOptions().Get<bool>("ApplySymmetries") && obj.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                AddShape(obj.GetMirroredLoft(), &config, options);
+            }
+        }
+        catch (const CTiglError& err) {
+            LOG(ERROR) << "Unable to external object '" + obj.GetUID() << "': " << err.what();
+            success = false;
         }
     }
 
@@ -142,6 +178,8 @@ void CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const Shape
             AddShape(farfield.GetLoft(), &config, options);
         }
     }
+
+    return success;
 }
 
 void CTiglCADExporter::AddFusedConfiguration(CCPACSConfiguration &config, const ShapeExportOptions& options)

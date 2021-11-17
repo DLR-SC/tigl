@@ -5346,9 +5346,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::PTiglCADExporter exporter = tigl::createExporter("iges");
-        exporter->AddConfiguration(config);
-        bool ret = exporter->Write(filenamePtr);
-        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
+        bool success = exporter->AddConfiguration(config);
+        success = exporter->Write(filenamePtr) && success;
+        return success ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (const tigl::CTiglError& ex) {
         LOG(ERROR) << ex.what();
@@ -5409,9 +5409,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::PTiglCADExporter exporter = tigl::createExporter("step");
-        exporter->AddConfiguration(config);
-        bool ret = exporter->Write(filenamePtr);
-        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
+        bool success = exporter->AddConfiguration(config);
+        success = exporter->Write(filenamePtr) && success;
+        return success ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (const tigl::CTiglError& ex) {
         LOG(ERROR) << ex.what();
@@ -5651,9 +5651,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::PTiglCADExporter exporter = tigl::createExporter("stl");
 
-        exporter->AddConfiguration(config, tigl::TriangulatedExportOptions(deflection));
-        bool ret = exporter->Write(filenamePtr);
-        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
+        bool success = exporter->AddConfiguration(config, tigl::TriangulatedExportOptions(deflection));
+        success = exporter->Write(filenamePtr) && success;
+        return success ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (const tigl::CTiglError& ex) {
         LOG(ERROR) << ex.what();
@@ -6958,7 +6958,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetType(TiglCPACSConfigurationHan
 
 TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode code)
 {
-    if (code > TIGL_MATH_ERROR || code < 0) {
+    if (code > TIGL_WRITE_FAILED || code < 0) {
         LOG(ERROR) << "TIGL error code " << code << " is unknown!";
         return "TIGL_UNKNOWN_ERROR";
     }
@@ -7276,19 +7276,16 @@ TiglReturnCode tiglExportConfiguration(TiglCPACSConfigurationHandle cpacsHandle,
         }
 
         tigl::PTiglCADExporter exporter = tigl::createExporter(extension);
+        bool success = true;
         if (fuseAllShapes) {
             exporter->AddFusedConfiguration(config, tigl::TriangulatedExportOptions(deflection));
         }
         else {
-            exporter->AddConfiguration(config, tigl::TriangulatedExportOptions(deflection));
+            success = exporter->AddConfiguration(config, tigl::TriangulatedExportOptions(deflection));
         }
 
-        if (exporter->Write(fileName) == true) {
-            return TIGL_SUCCESS;
-        }
-        else {
-            return TIGL_WRITE_FAILED;
-        }
+        success = exporter->Write(fileName) && success;
+        return success ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (const tigl::CTiglError& ex) {
         LOG(ERROR) << "In tiglExportConfiguration: " << ex.what();
