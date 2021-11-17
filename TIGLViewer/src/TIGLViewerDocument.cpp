@@ -111,6 +111,7 @@ double getAbsDeflection (const TopoDS_Shape& theShape, double relDeflection)
     return aDeflection;
 }
 
+
 TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
     : QObject(parentWidget)
     , m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this, parentWidget))
@@ -134,6 +135,11 @@ void TIGLViewerDocument::writeToStatusBar(const QString& text)
 void TIGLViewerDocument::displayError(const QString& text, const QString& header)
 {
     app->displayErrorMessage(text, header);
+}
+
+void TIGLViewerDocument::displayTiglError(const QString& msg, TiglReturnCode ret)
+{
+    displayError(QString("%1 Error code: %2").arg(msg).arg(tiglGetErrorString(ret)), "TIGL Error");
 }
 
 
@@ -1231,7 +1237,7 @@ void TIGLViewerDocument::exportAsIges()
         START_COMMAND()
         TiglReturnCode err = tiglExportIGES(m_cpacsHandle, qstringToCstring(fileName));
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportIGES</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportIGES</u>", err);
         }
     }
 }
@@ -1252,7 +1258,7 @@ void TIGLViewerDocument::exportFusedAsIges()
         START_COMMAND()
         TiglReturnCode err = tiglExportFusedWingFuselageIGES(m_cpacsHandle, qstringToCstring(fileName));
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportFusedWingFuselageIGES</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportFusedWingFuselageIGES</u>.", err);
         }
     }
 }
@@ -1271,7 +1277,7 @@ void TIGLViewerDocument::exportAsStep()
         START_COMMAND()
         TiglReturnCode err = tiglExportSTEP(m_cpacsHandle, qstringToCstring(fileName));
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportSTEP</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportSTEP</u>.", err);
         }
     }
 }
@@ -1288,7 +1294,7 @@ void TIGLViewerDocument::exportAsStepFused()
         START_COMMAND()
         TiglReturnCode err = tiglExportFusedSTEP(m_cpacsHandle, qstringToCstring(fileName));
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportFusedSTEP</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportFusedSTEP</u>.", err);
         }
     }
 }
@@ -1313,7 +1319,7 @@ void TIGLViewerDocument::exportMeshedWingSTL()
         double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
         TiglReturnCode err = tiglExportMeshedWingSTLByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedWingSTLByUID</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportMeshedWingSTLByUID</u>.", err);
         }
     }
 }
@@ -1337,7 +1343,7 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
         START_COMMAND()
         TiglReturnCode err = tiglExportMeshedFuselageSTLByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), TIGLViewerSettings::Instance().triangulationAccuracy());
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedFuselageSTLByUID</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportMeshedFuselageSTLByUID</u>.", err);
         }
     }
 }
@@ -1355,7 +1361,7 @@ void TIGLViewerDocument::exportMeshedConfigSTL()
         START_COMMAND()
         TiglReturnCode err = tiglExportMeshedGeometrySTL(m_cpacsHandle, qstringToCstring(fileName), TIGLViewerSettings::Instance().triangulationAccuracy());
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedGeometrySTL</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportMeshedGeometrySTL</u>.", err);
         }
     }
 }
@@ -1393,7 +1399,7 @@ void TIGLViewerDocument::exportMeshedWingVTK()
         START_COMMAND()
         TiglReturnCode err = tiglExportMeshedWingVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), settings.getDeflection());
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedWingVTKByUID</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportMeshedWingVTKByUID</u>.", err);
         }
     }
 }
@@ -1432,7 +1438,7 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
         START_COMMAND()
         TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedWingVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportMeshedWingVTKSimpleByUID</u>.", err);
         }
     }
 }
@@ -1458,7 +1464,7 @@ void TIGLViewerDocument::exportWingCollada()
 
         TiglReturnCode err = tiglExportWingColladaByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), deflection);
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportWingColladaByUID</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportWingColladaByUID</u>.", err);
         }
     }
 }
@@ -1479,7 +1485,7 @@ void TIGLViewerDocument::exportFuselageCollada()
                 * TIGLViewerSettings::Instance().triangulationAccuracy();
         TiglReturnCode err = tiglExportFuselageColladaByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), deflection);
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportFuselageColladaByUID</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportFuselageColladaByUID</u>.", err);
         }
     }
 }
@@ -1495,10 +1501,10 @@ void TIGLViewerDocument::exportConfigCollada()
 
         tigl::CTiglExportCollada exporter;
         tigl::CCPACSConfiguration& config = GetConfiguration();
-        exporter.AddConfiguration(config, options);
+        bool okay = exporter.AddConfiguration(config, options);
 
         writeToStatusBar(tr("Meshing and writing COLLADA file ") + fileName + ".");
-        bool okay = exporter.Write(fileName.toStdString());
+        okay = exporter.Write(fileName.toStdString()) && okay;
         writeToStatusBar("");
         if (!okay) {
             displayError(QString("Error while exporting to COLLADA."), "TIGL Error");
@@ -1537,7 +1543,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
         START_COMMAND()
         TiglReturnCode err = tiglExportMeshedFuselageVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), settings.getDeflection());
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKByUID</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportMeshedFuselageVTKByUID</u>.", err);
         }
     }
 }
@@ -1566,7 +1572,10 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         START_COMMAND()
         writeToStatusBar("Calculating fused airplane, this can take a while");
 
-        tiglExportMeshedGeometryVTK(m_cpacsHandle, fileName.toStdString().c_str(), settings.getDeflection());
+        TiglReturnCode err = tiglExportMeshedGeometryVTK(m_cpacsHandle, fileName.toStdString().c_str(), settings.getDeflection());
+        if (err != TIGL_SUCCESS) {
+            displayTiglError("Error in function <u>tiglExportMeshedGeometryVTK</u>.", err);
+        }
 
         writeToStatusBar("");
     }
@@ -1596,10 +1605,14 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
         writeToStatusBar("Writing meshed vtk file");
 
         tigl::CTiglExportVtk exporter;
-        exporter.AddConfiguration(GetConfiguration(), tigl::TriangulatedExportOptions(settings.getDeflection()));
+        bool okay = exporter.AddConfiguration(GetConfiguration(), tigl::TriangulatedExportOptions(settings.getDeflection()));
 
-        exporter.Write(fileName.toStdString());
+        okay = exporter.Write(fileName.toStdString()) && okay;
         writeToStatusBar("");
+
+        if (!okay) {
+            displayError(QString("Error while exporting to VTK."), "TIGL Error");
+        }
     }
 }
 
@@ -1619,7 +1632,8 @@ void TIGLViewerDocument::exportWingBRep()
         START_COMMAND()
         TiglReturnCode err = tiglExportWingBREPByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName));
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportWingBREPByUID</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>tiglExportWingBREPByUID</u>.", err);
+
             return;
         }
     }
@@ -1640,7 +1654,8 @@ void TIGLViewerDocument::exportFuselageBRep()
         START_COMMAND()
         TiglReturnCode err = tiglExportFuselageBREPByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName));
         if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>exportFuselageBRepByUID</u>. Error code: %1").arg(err), "TIGL Error");
+            displayTiglError("Error in function <u>exportFuselageBRepByUID</u>.", err);
+
             return;
         }
     }
@@ -1654,19 +1669,13 @@ void TIGLViewerDocument::exportFusedConfigBRep()
     }
 
     START_COMMAND()
-    try {
-        TiglReturnCode err = tiglExportFusedBREP(m_cpacsHandle, qstringToCstring(fileName));
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportBREP</u>. Error code: %1").arg(err), "TIGL Error");
-            return;
-        }
+
+    TiglReturnCode err = tiglExportFusedBREP(m_cpacsHandle, qstringToCstring(fileName));
+    if (err != TIGL_SUCCESS) {
+        displayTiglError("Error in function <u>tiglExportBREP</u>.", err);
+        return;
     }
-    catch(tigl::CTiglError & error){
-        displayError(error.what(), "Error in BRep export");
-    }
-    catch(...){
-        displayError("Unknown Exception during computation of fused aircraft.", "Error in BRep export");
-    }
+
 }
 
 void TIGLViewerDocument::exportWingCurvesBRep()

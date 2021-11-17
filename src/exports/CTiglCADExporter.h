@@ -136,8 +136,9 @@ public:
     TIGL_EXPORT void AddShape(PNamedShape shape, const CCPACSConfiguration* config, const ShapeExportOptions& options = DefaultShapeExportOptions());
     
 
-    ///  Adds the whole non-fused configuration, to the exporter
-    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration &config, const ShapeExportOptions& options = DefaultShapeExportOptions());
+    /// Adds the whole non-fused configuration, to the exporter
+    /// If one of the components fail to export, the function returns false
+    TIGL_EXPORT bool AddConfiguration(CCPACSConfiguration &config, const ShapeExportOptions& options = DefaultShapeExportOptions());
 
     /// Adds a whole geometry, boolean fused and meshed
     TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config, const ShapeExportOptions& options = DefaultShapeExportOptions());

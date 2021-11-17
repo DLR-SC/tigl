@@ -334,8 +334,8 @@ TEST_F(tiglExportSimple, export_componentplane_vtk_newapi_meta)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
 
     tigl::CTiglExportVtk vtkWriter;
-    vtkWriter.AddConfiguration(config, tigl::TriangulatedExportOptions(0.01));
-    bool ret = vtkWriter.Write("TestData/export/simpletest_nonfusedplane_meta_newapi.vtp");
+    bool ret = vtkWriter.AddConfiguration(config, tigl::TriangulatedExportOptions(0.01));
+    ret = vtkWriter.Write("TestData/export/simpletest_nonfusedplane_meta_newapi.vtp") && ret;
 
     ASSERT_EQ(true, ret);
 }
@@ -421,10 +421,10 @@ TEST_F(tiglExportSimple, export_iges_symmetry)
     options.SetIncludeFarfield(false);
     tigl::PTiglCADExporter igesExporter = tigl::createExporter("iges", options);
 
-    igesExporter->AddConfiguration(config);
-    bool ret = igesExporter->Write("TestData/export/simpletest_export_iges_sym.igs");
+    bool success = igesExporter->AddConfiguration(config);
+    success = igesExporter->Write("TestData/export/simpletest_export_iges_sym.igs") && success;
 
-    ASSERT_EQ(true, ret);
+    ASSERT_EQ(true, success);
 }
 
 // check if face names were set correctly in the case with a trailing edge

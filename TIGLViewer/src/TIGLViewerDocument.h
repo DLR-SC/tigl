@@ -167,6 +167,7 @@ private:
 
     void writeToStatusBar(const QString& text);
     void displayError(const QString& text, const QString& header="");
+    void displayTiglError(const QString& text, TiglReturnCode ret);
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
     char* qstringToCstring(const QString& text);
 
