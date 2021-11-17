@@ -3,7 +3,7 @@ Changelog
 
 Version 3.2.2
 -------------
-xx/11/2021
+17/11/2021
 
 - Highlights / General changes:
 
