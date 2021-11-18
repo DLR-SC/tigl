@@ -158,7 +158,7 @@ pwdir=`pwd`
 tmpdir=`mktemp -d`
 cd $tmpdir
 
-prefix=http://download.opensuse.org/repositories/science:/dlr/$DIST/$PACK_ARCH/
+prefix=https://download.opensuse.org/repositories/science:/dlr/$DIST/$PACK_ARCH/
 
 echo "Downloading from repository $prefix"
 echo "Using working directory: $tmpdir"
