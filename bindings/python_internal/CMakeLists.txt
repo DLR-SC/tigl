@@ -9,6 +9,7 @@ if (POLICY CMP0078)
   cmake_policy(SET CMP0078 OLD)
 endif (POLICY CMP0078)
 
+
 if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     if (MSVC)
@@ -17,8 +18,12 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     include(tiglmacros)
 
-    find_package(PythonInterp)
-    find_package(PythonLibs)
+    find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+    message(STATUS "Python3 interpreter:" ${Python3_EXECUTABLE})
+    message(STATUS "Python include directory: ${Python3_INCLUDE_DIR}")
+    message(STATUS "Python library release: ${Python3_LIBRARY_RELEASE}")
+
+
     find_package(SWIG 3.0.11 REQUIRED)
     find_package(PythonOCC REQUIRED)
     find_package(Doxygen 1.8.0)
@@ -88,25 +93,12 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
     include_directories($<TARGET_PROPERTY:tigl3_cpp,INTERFACE_INCLUDE_DIRECTORIES>)
     include_directories($<TARGET_PROPERTY:tigl3,INTERFACE_INCLUDE_DIRECTORIES>)
 
-    if (UNIX)
-        # find out python linking commands
-        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_config_vars('CFLAGS')[0])" OUTPUT_VARIABLE PYTHON_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE )
-        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_config_vars('BLDSHARED')[0].split(' ', 1)[1])" OUTPUT_VARIABLE PYTHON_LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE )
-    endif(UNIX)
-
     foreach(MODULE ${MODULES})
         set_source_files_properties(${MODULE}.i PROPERTIES CPLUSPLUS ON)
         set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i doc.i)
 
-        swig_add_library(${MODULE} LANGUAGE python SOURCES ${MODULE}.i )
-        swig_link_libraries(${MODULE} tigl3 tigl3_cpp)
-
-        if (UNIX)
-            set_target_properties(${SWIG_MODULE_${MODULE}_REAL_NAME} PROPERTIES COMPILE_FLAGS ${PYTHON_CFLAGS})
-            set_target_properties(${SWIG_MODULE_${MODULE}_REAL_NAME} PROPERTIES LINK_FLAGS ${PYTHON_LDFLAGS})
-        else(UNIX)
-            swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES})
-        endif(UNIX)
+        swig_add_library(${MODULE} LANGUAGE python SOURCES ${MODULE}.i TYPE MODULE)
+        swig_link_libraries(${MODULE} tigl3 tigl3_cpp Python3::Module)
 
         install(TARGETS _${MODULE}
                 DESTINATION share/tigl3/python/tigl3
