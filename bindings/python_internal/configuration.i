@@ -80,6 +80,7 @@
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSEnginePylons.h"
 #include "CCPACSEnginePylon.h"
+#include "CCPACSEnginePosition.h"
 #include "generated/CPACSLateralCap_placement.h"
 #include "generated/CPACSLateralCap.h"
 #include "generated/CPACSBoundingElementUIDs.h"
@@ -190,6 +191,8 @@
 %boost_optional(tigl::CCPACSEnginePositions)
 %include "generated/CPACSEnginePositions.h"
 %include "CCPACSEnginePositions.h"
+%include "generated/CPACSEnginePosition.h"
+%include "CCPACSEnginePosition.h"
 %include "generated/CPACSNacelleCenterCowl.h"
 %include "CCPACSNacelleCenterCowl.h"
 %include "generated/CPACSNacelleSections.h"
