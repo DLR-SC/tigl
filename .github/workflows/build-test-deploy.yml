@@ -176,7 +176,7 @@ jobs:
 
 
     - name: restore compiler cache
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: compiler-cache
         key: ${{ matrix.config.name }}-compiler-cache-${{ github.sha }}
