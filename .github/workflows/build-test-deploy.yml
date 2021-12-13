@@ -12,8 +12,6 @@ on:
 
 env:
   CCACHE_DIR: ${{ github.workspace }}/compiler-cache
-  CLCACHE_DIR: ${{ github.workspace }}\compiler-cache
-  CLCACHE_HARDLINK: 1
   MACOSX_DEPLOYMENT_TARGET: "10.9"
   TIGL_NIGHTLY: "ON"
   TIGL_CONCAT_GENERATED_FILES: "ON"
@@ -164,13 +162,6 @@ jobs:
         echo "CCACHE_HARDLINK=true" >> $GITHUB_ENV
         echo "CCACHE_SLOPPINESS=file_macro,time_macros,include_file_mtime,include_file_ctime,file_stat_matches" >> $GITHUB_ENV
       if: contains(matrix.config.os, 'macos')
-      
-    - name: Install clcache (windows)
-      run: |
-        python -m pip install git+https://github.com/frerich/clcache.git
-      shell: cmd
-      if: contains(matrix.config.os, 'windows')
-
 
 #  build:
 
@@ -241,9 +232,6 @@ jobs:
       shell: cmd /C call {0}
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.config.arch }}
-        set CC=clcache.exe
-        set CXX=clcache.exe
-        clcache.exe -s
         set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
         mkdir build
         cd build
