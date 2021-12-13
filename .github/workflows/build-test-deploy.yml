@@ -63,7 +63,7 @@ jobs:
           }
         - {
             name: 'MacOS',
-            os: macos-latest,
+            os: macOS-10.15,
             link_type: dynamic,
             build_type: Release
           }
