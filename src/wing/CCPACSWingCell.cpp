@@ -933,10 +933,10 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
 
 
         // cut the shape at the cell borders
-        TopoDS_Shape resultShape = CutSpanwise(cache, loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-2);
-        resultShape              = CutSpanwise(cache, resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-2);
-        resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-2);
-        resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, 1e-2);
+        TopoDS_Shape resultShape = CutSpanwise(cache, loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-4);
+        resultShape              = CutSpanwise(cache, resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-4);
+        resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-4);
+        resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, 1e-4);
 
         // store the result
         cache.skinGeometry = resultShape;
