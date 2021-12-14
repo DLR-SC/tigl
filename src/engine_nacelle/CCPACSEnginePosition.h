@@ -38,8 +38,6 @@ public:
     TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value) override;
     TIGL_EXPORT void SetEngineUID(const std::string& value) override;
 
-    TIGL_EXPORT bool HasLoft() const;
-
 protected:
     virtual PNamedShape BuildLoft() const override;
 
