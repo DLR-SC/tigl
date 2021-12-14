@@ -336,6 +336,28 @@ TEST_F(WingCellRibSpar, computeGeometry) {
    BRepTools::Write(cellGeom, "TestData/export/WingCellRibSpar_CellGeometry.brep");
 }
 
+TEST_F(WingCellRibSpar, bug864)
+{
+    // A test for Bug #864 https://github.com/DLR-SC/tigl/issues/864
+
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+
+    tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(2);
+
+
+    const std::pair<double, double> arr[] = { DP(0.2, 0.3), DP(0.95, 0.4), DP(0.2, 0.72), DP(0.95, 0.75) };
+    std::vector< std::pair<double, double> > expectedEtaXsi (arr, arr + sizeof(arr) / sizeof(arr[0]));
+    checkCellEtaXsis(cell, expectedEtaXsi, 1.E-2);
+
+
+    TopoDS_Shape cellGeom = cell.GetSkinGeometry();
+    BRepTools::Write(cellGeom, "TestData/export/WingCellRibSpar_CellGeometry.brep");
+
+}
+
 TEST_F(WingCellContourCoordinates, mixedBorderDefError)
 {
    // This cell is defined with both borders relative to the skin and the chordface.

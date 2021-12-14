@@ -196,6 +196,29 @@
                           <ribDefinitionUID>Wing_CS_RibDef1</ribDefinitionUID>
                         </positioningOuterBorder>
                       </cell>
+                      <cell uID="Wing_CS_upperShell_Cell2">
+                        <skin>
+                          <material>
+                            <materialUID>
+                                                                                materialUID
+                                                                        </materialUID>
+                          </material>
+                        </skin>
+                        <positioningLeadingEdge>
+                          <sparUID>Wing_CS_spar1</sparUID>
+                        </positioningLeadingEdge>
+                        <positioningTrailingEdge>
+                          <sparUID>Wing_CS_spar2</sparUID>
+                        </positioningTrailingEdge>
+                        <positioningInnerBorder>
+                          <ribNumber>1</ribNumber>
+                          <ribDefinitionUID>Wing_CS_RibDef1</ribDefinitionUID>
+                        </positioningInnerBorder>
+                        <positioningOuterBorder>
+                          <ribNumber>2</ribNumber>
+                          <ribDefinitionUID>Wing_CS_RibDef1</ribDefinitionUID>
+                        </positioningOuterBorder>
+                      </cell>
                     </cells>
                   </upperShell>
                   <lowerShell uID="CS1_lowerShell1">
