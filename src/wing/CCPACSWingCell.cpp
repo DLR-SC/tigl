@@ -770,7 +770,10 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
         TopoDS_Shape cuttingShape;
         if (positioning.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar ) {
             // we can use the cutting shape defined by the spar
-            cuttingShape = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningLeadingEdge.GetSparUId())
+            auto sparUid =
+                    (border == ChordWiseBorder::LE)? m_positioningLeadingEdge.GetSparUId()
+                                                   : m_positioningTrailingEdge.GetSparUId();
+            cuttingShape = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(sparUid)
                     .GetSparCutGeometry(WING_COORDINATE_SYSTEM);
         } else {
 
