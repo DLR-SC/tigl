@@ -511,6 +511,7 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
             trimmable = true;
         }
     }
+    trimmable = false;
 
     gp_Vec te_to_le = gp_Vec(le_point, te_point).Normalized();
     gp_Ax3 border_axis(le_point, zRefDir ^ te_to_le, te_to_le);
@@ -722,6 +723,7 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
             trimmable = true;
         }
     }
+    trimmable = false;
 
     gp_Vec ib_to_ob = gp_Vec(ib_point, ob_point).Normalized();
     gp_Ax3 border_axis(ib_point, zRefDir ^ ib_to_ob, ib_to_ob);
