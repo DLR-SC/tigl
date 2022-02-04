@@ -20,7 +20,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingCell.h"
 #include "CCPACSWingComponentSegment.h"
-#include "tiglcommonfunctions.h"
+#include "BRepBndLib.hxx"
 
 TEST(Bug815, cell_getLoft)
 {
@@ -37,9 +37,12 @@ TEST(Bug815, cell_getLoft)
    TopoDS_Shape cellGeom = cell_upper.GetSkinGeometry();
 
    double xmin, xmax, ymin, ymax, zmin, zmax;
-   GetShapeExtension(cellGeom, xmin, xmax, ymin, ymax, zmin, zmax);
+   Bnd_Box boundingBox;
+   BRepBndLib::AddOptimal(cellGeom, boundingBox);
+   boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
    EXPECT_NEAR(xmin, 0.2, 0.01);
    EXPECT_NEAR(xmax, 0.8, 0.01);
 
    BRepTools::Write(cellGeom, "TestData/export/bug815_cell_upper.brep");
 }
+
