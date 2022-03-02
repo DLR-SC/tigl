@@ -37,14 +37,14 @@ jobs:
         config:
         - {
             name: 'Win64-dynamic',
-            os: windows-latest,
+            os: windows-2019,
             arch: amd64,
             link_type: dynamic,
             build_type: Release
           }
         - {
             name: 'Win64-static',
-            os: windows-latest,
+            os: windows-2019,
             arch: amd64,
             link_type: static,
             build_type: Release
