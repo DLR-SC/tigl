@@ -14,7 +14,7 @@ Version 3.2.3
     led to false positives and thus faulty wing cell geometries (issues #865, #869).
   - Fixed a bug, where the trailing edge of a wing cell could not be defined by referencing a
     spar (issue #864).
-  - The class `CCPACSEnginePosition` has been added to the swig interface (issue #858). Without 
+  - The class `::CCPACSEnginePosition` has been added to the swig interface (issue #858). Without 
     this it was previously impossible to access the transformed engine nacelle geometrie from Python.
 
 Version 3.2.2
