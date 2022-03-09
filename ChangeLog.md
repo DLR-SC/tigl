@@ -1,6 +1,22 @@
 Changelog
 =========
 
+Version 3.2.3
+-------------
+09/03/2022
+
+- Fixes:
+
+  - Disabled check, if wing cells can be trimmed rather than cut, even if they are not defined
+    by contour coordinates. This check was put in place for better performance and robustness, 
+    because with trimmed curves expensive and error-prone boolean operations can be avoided.
+    However, the current implementation of the check relies on some hard to tune tolerances and
+    led to false positives and thus faulty wing cell geometries (issues #865, #869).
+  - Fixed a bug, where the trailing edge of a wing cell could not be defined by referencing a
+    spar (issue #864).
+  - The class `CCPACSEnginePosition` has been added to the swig interface (issue #858). Without 
+    this it was previously impossible to access the transformed engine nacelle geometrie from Python.
+
 Version 3.2.2
 -------------
 17/11/2021
