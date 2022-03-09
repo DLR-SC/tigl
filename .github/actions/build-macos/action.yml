@@ -1,0 +1,102 @@
+name: "MacOS Build"
+description: "Build TiGL on MacOS with clang"
+inputs:
+  config:
+    description: "Configuration to build (Release or Debug, see CMAKE_BUILD_TYPE)"
+    required: true
+    default: "Release"
+  tigl_nightly:
+    description: "CMake option to amend the version with the git hash (ON or OFF)"
+    required: true
+    default: "ON"
+  tigl_concat_generated_files:
+    description: "CMake option to concatenate the generated source files (ON or OFF)"
+    required: true
+    default: "ON"
+  tigl_bindings-python-internal:
+    description: "CMake option to build the interal python API"
+    required: false
+    default: "OFF"
+  tigl_enable_coverage:
+    description: "CMake option to enable code coverage with gcov/lcov (ON or OFF)"
+    required: false
+    default: "OFF"
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies
+      uses: nick-invision/retry@v1
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          curl --retry 3 -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz
+          curl --retry 3 -o doxygen-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-macOS.tar.gz
+          curl --retry 3 -o matlab-libs-macos.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-macos.tar.gz
+          curl --retry 3 -o occt.7.4.0.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/occt.7.4.0.macos_static.tar.gz
+          curl --retry 3 -O -L https://github.com/DLR-SC/tixi/releases/download/v3.1.1/TIXI-3.1.1-Darwin.tar.gz
+          tar xf sshpass-macOS.tar.gz -C /tmp
+          tar xf doxygen-macOS.tar.gz -C /tmp
+          tar xf matlab-libs-macos.tar.gz -C /tmp
+          tar xf occt.7.4.0.macos_static.tar.gz
+          tar xf TIXI-3.1.1-Darwin.tar.gz
+          echo "/tmp" >> $GITHUB_PATH
+          echo "/tmp/doxygen" >> $GITHUB_PATH
+          echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/occt.7.4.0.macos_static:/usr/local/opt/qt@5/" >> $GITHUB_ENV
+          echo "CXXFLAGS=-fvisibility-inlines-hidden" >> $GITHUB_ENV
+          brew install qt@5
+    - name: Install ccache
+      run: |
+        brew install zstd libb2
+        brew install ccache
+        echo "/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
+        echo "/usr/local/opt/ccache/bin" >> $GITHUB_PATH
+        echo '#!/bin/sh' > ccache-clang
+        echo 'exec ccache /usr/bin/clang "$@"' >> ccache-clang
+        chmod a+x ccache-clang
+        echo '#!/bin/sh' > ccache-clang++
+        echo 'exec ccache /usr/bin/clang++ "$@"' >> ccache-clang++
+        chmod a+x ccache-clang++
+        echo '### contents of ccache-clang'
+        cat ccache-clang
+        echo '### contents of ccache-clang++'
+        cat ccache-clang++
+        echo "CCACHE_MAXSIZE=10G" >> $GITHUB_ENV
+        echo "CCACHE_CPP2=true" >> $GITHUB_ENV
+        echo "CCACHE_HARDLINK=true" >> $GITHUB_ENV
+        echo "CCACHE_SLOPPINESS=file_macro,time_macros,include_file_mtime,include_file_ctime,file_stat_matches" >> $GITHUB_ENV
+    - name: restore compiler cache
+      uses: actions/cache@v2
+      with:
+        path: compiler-cache
+        key: build-macos-${{ inputs.config }}-compiler-cache-${{ github.sha }}
+        restore-keys: ${{ inputs.config }}-compiler-cache
+    - name: Build TiGL
+      shell: bash -l {0}
+      run: |
+        mkdir build
+        cd build
+        cmake .. -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+                         -DCMAKE_BUILD_TYPE=${{ inputs.config }} \
+                         -DCMAKE_INSTALL_PREFIX=install \
+                         -DOCE_STATIC_LIBS=ON \
+                         -DTIGL_BUILD_TESTS=ON \
+                         -DTIGL_ENABLE_COVERAGE=${{ inputs.tigl_enable_coverage }} \
+                         -DTIGL_CONCAT_GENERATED_FILES=${{ inputs.tigl_concat_generated_files }} \
+                         -DTIGL_BINDINGS_PYTHON_INTERNAL=${{ inputs.tigl_bindings_python_internal }} \
+                         -DTIGL_BINDINGS_MATLAB=ON \
+                         -DTIGL_BINDINGS_JAVA=ON \
+                         -DTIGL_NIGHTLY=${{ inputs.tigl_nightly }} \
+                         -DMATLAB_DIR=/tmp/matlab-libs-macos
+        cmake --build . -j 4 --target install
+    - name: create build dir archive
+      shell: bash
+      run: |
+        tar -czf build.tar.gz build
+    - name: Upload build directory
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-macos-${{ inputs.config }}-${{ inputs.tigl_nightly == 'ON' }}-${{ inputs.tigl_concat_generated_files == 'ON' }}-${{ inputs.tigl_enable_coverage == 'ON' }}
+        path: build.tar.gz
+        retention-days: 1

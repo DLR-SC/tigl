@@ -1,0 +1,48 @@
+name: "Windows Deployment"
+description: "Create Installer, Windows Package and Documentation"
+inputs:
+  build-artifact:
+    description: "Name of the build artifact that contains the unit test binary."
+    required: true
+  documentation:
+    description: "Build the documentation and store as artifact (true or false)"
+    required: false
+    default: false
+runs:
+  using: "composite"
+  steps:
+    - name: Download built test directory
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ inputs.build-artifact }}
+    - name: extract build archive
+      shell: bash
+      run: |
+        tar -xzf build.tar.gz
+    - name: Create package
+      run: |
+        cd build
+        cmake --build . --target doc
+        & 'C:\Program Files\CMake\bin\cpack.exe' -G ZIP
+        & 'C:\Program Files\CMake\bin\cpack.exe' -G NSIS
+    - name: Upload package as artifact
+      uses: actions/upload-artifact@v2
+      with:
+       name: win-package
+       path: build/*.zip
+    - name: Upload installer as artifact
+      uses: actions/upload-artifact@v2
+      with:
+       name: win-installer
+       path: build/*.exe
+    - name: Create documentation
+      if: ${{ inputs.documentation }}
+      run: |
+        cd build
+        cmake --build . --target doc
+    - name: Upload documentation as artifact
+      if: ${{ inputs.documentation }}
+      uses: actions/upload-artifact@v2
+      with:
+       name: html-documentation
+       path: build/doc/html/*

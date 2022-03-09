@@ -1,0 +1,95 @@
+name: "Windows Build"
+description: "Build TiGL on Windows using MSVC"
+inputs:
+  config:
+    description: "Configuration to build (Release or Debug, see CMAKE_BUILD_TYPE)"
+    required: true
+    default: "Release"
+  oce_static_libs:
+    description: "Link OpenCascade statically or dynamically (ON or OFF)"
+    required: false
+    default: "OFF"
+  tigl_nightly:
+    description: "CMake option to amend the version with the git hash (ON or OFF)"
+    required: true
+    default: "ON"
+  tigl_concat_generated_files:
+    description: "CMake option to concatenate the generated source files (ON or OFF)"
+    required: true
+    default: "ON"
+  tigl_bindings_python_internal:
+    description: "CMake option to build the interal python API"
+    required: false
+    default: "OFF"
+  tigl_enable_coverage:
+    description: "CMake option to enable code coverage with gcov/lcov (ON or OFF)"
+    required: false
+    default: "OFF"
+runs:
+  using: "composite"
+  steps:
+    - name: Setup miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        auto-activate-base: true
+        activate-environment: ''
+    - name: Install dependencies
+      run: |
+        conda install pip \
+                      python=3.7 \
+                      doxygen=1.8.15 \
+                      swig>=3.0.11 \
+                      tixi3=3.3.0 \
+                      qt=5.9.7 \
+                      ninja \
+                      matlab-libs \
+              -c dlr-sc -c dlr-sc/label/tigl-dev
+    - name: Install dependencies (dynamic opencascade)
+      if: inputs.oce_static_libs == 'OFF'
+      run: |
+        conda install pythonocc-core=7.4.1 freeimageplus -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda info -a
+        conda list
+    - name: Install dependencies (static opencascade)
+      if: inputs.oce_static_libs == 'ON'
+      run: |
+        conda install opencascade-static=7.4.0 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda info -a
+        conda list
+    - name: restore compiler cache
+      uses: actions/cache@v2
+      with:
+        path: compiler-cache
+        key: build-win-${{ inputs.config }}-compiler-cache-${{ github.sha }}
+        restore-keys: ${{ inputs.config }}-compiler-cache
+    - name: Build TiGL
+      shell: cmd /C call {0}
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.config.arch }}
+        set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
+        mkdir build
+        cd build
+        cmake .. -GNinja -DCMAKE_BUILD_TYPE=${{ inputs.config }} \
+                         -DCMAKE_INSTALL_PREFIX=install \
+                         -DOCE_STATIC_LIBS=${{ inputs.oce_static_libs }} \
+                         -DTIGL_BUILD_TESTS=ON \
+                         -DTIGL_CONCAT_GENERATED_FILES=${{ inputs.tigl_concat_generated_files }} \
+                         -DTIGL_BINDINGS_PYTHON_INTERNAL=${{ inputs.tigl_bindings_python_internal }} \
+                         -DTIGL_BINDINGS_MATLAB=ON \
+                         -DTIGL_BINDINGS_JAVA=ON \
+                         -DTIGL_NIGHTLY=${{ inputs.tigl-nightly }} \
+                         -DPythonOCC_SOURCE_DIR=C:\Miniconda\Library\src\pythonocc-core \
+                         -DMATLAB_DIR=C:\Miniconda\Library\share\matlab \
+                         -DTIGL_ENABLE_COVERAGE=${{ inputs.tigl_enable_coverage }}
+        cmake --build . -j 4 --target install
+    - name: create build dir archive
+      shell: bash
+      run: |
+        tar -czf build.tar.gz build
+    - name: Upload build directory
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-win-${{ inputs.config }}-${{ inputs.tigl_nightly == 'ON' }}-${{ inputs.tigl_concat_generated_files == 'ON' }}-${{ inputs.tigl_enable_coverage == 'ON' }}
+        path: build.tar.gz
+        retention-days: 1
