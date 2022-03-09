@@ -1,14 +1,21 @@
 name: Continuous Integration
 
-on: 
-  schedule:
-    - cron: "40 2 * * *"
+# this effectively ignores this workflow.
+# This file needs to be deleted before merging.
+on:
   push:
-    branches:
+    branches-ignore:
       - '**'
-    tags:
-      - v*
-  pull_request:
+
+#on:
+#  schedule:
+#    - cron: "40 2 * * *"
+#  push:
+#    branches:
+#      - '**'
+#    tags:
+#      - v*
+#  pull_request:
 
 env:
   CCACHE_DIR: ${{ github.workspace }}/compiler-cache
@@ -89,7 +96,9 @@ jobs:
           curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/Release.key | sudo apt-key add -
           echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/ /" | sudo tee -a /etc/apt/sources.list 
           sudo apt-get update -qq
-          sudo apt-get install -y lcov gcovr  libtixi3-dev libocct-ocaf-dev libtbb-dev occt-misc libxi-dev libocct-draw-dev libocct-data-exchange-dev tk-dev tcl-dev doxygen cmake cmake-data sshpass
+          sudo apt-get install -y lcov gcovr  libtixi3-dev libocct-ocaf-dev libtbb-dev occt-misc libxi-dev libocct-draw-dev \
+                                  libocct-data-exchange-dev tk-dev tcl-dev doxygen cmake cmake-data sshpass  \
+                                  qt5-default qt5-qmake qtbase5-dev-tools
         
     - name: Install dependencies (macos)
       if: contains(matrix.config.os, 'macos')

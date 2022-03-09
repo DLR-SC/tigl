@@ -1,0 +1,55 @@
+name: CI workflow for main branch
+
+on:
+  schedule:
+    - cron: "40 2 * * *"
+  push:
+    branches:
+      - 'master'
+    tags:
+      - v*
+  workflow_dispatch:
+
+env:
+  TIGL_NIGHTLY: "ON"
+  TIGL_CONCAT_GENERATED_FILES: "ON"
+
+jobs:
+
+  build-linux:
+    strategy:
+      matrix:
+        config: ["Debug", "Release"]
+        os: ["ubuntu-latest", "ubuntu-18.04"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Set CMake options for release builds
+        # no nightly builds and concatenation of generated files, if we push a new tag (i.e. new release)
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "TIGL_NIGHTLY=OFF" >> $GITHUB_ENV
+          echo "TIGL_CONCAT_GENERATED_FILES=OFF" >> $GITHUB_ENV
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/build-linux
+        with:
+          config: ${{ matrix.config }}
+          tigl_nightly: ${{ env.TIGL_NIGHTLY }}
+          tigl_concat_generated_files: ${{ env.TIGL_CONCAT_GENERATED_FILES }}
+          tigl_enable_coverage: "OFF"
+
+
+  test-linux:
+    needs: build-linux
+    strategy:
+      matrix:
+        config: ["Debug", "Release"]
+        os: ["ubuntu-latest", "ubuntu-18.04"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/test-linux
+        with:
+          build-artifact: build-linux-${{ matrix.config }}-${{ env.TIGL_NIGHTLY == 'ON' }}-${{ env.TIGL_CONCAT_GENERATED_FILES == 'ON' }}-false
+          coverage: false
+          unit-tests: true
+          integration-tests: true

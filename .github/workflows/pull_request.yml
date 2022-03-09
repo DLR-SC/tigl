@@ -1,0 +1,50 @@
+name: Pull Request CI workflow
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  build-linux:
+    strategy:
+      matrix:
+        config: ["Debug", "Release"]
+        os: ["ubuntu-latest", "ubuntu-18.04"]
+        # only enable coverage for Debug build on latest ubuntu
+        include:
+          - config: "Debug"
+            os: "ubuntu-latest"
+            coverage: "ON"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/build-linux
+        with:
+          config: ${{ matrix.config }}
+          tigl_nightly: "ON"
+          tigl_concat_generated_files: "ON"
+          tigl_enable_coverage: ${{ matrix.coverage || 'OFF' }}
+
+
+  test-linux:
+    needs: build-linux
+    strategy:
+      matrix:
+        config: ["Debug", "Release"]
+        os: ["ubuntu-latest", "ubuntu-18.04"]
+        include:
+          - config: "Debug"
+            os: "ubuntu-latest"
+            coverage: true
+            unit-tests: false
+            integration-tests: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/test-linux
+        with:
+          build-artifact: build-linux-${{ matrix.config }}-true-true-${{ matrix.coverage || false }}
+          coverage: ${{ matrix.coverage || false }}
+          unit-tests: ${{ matrix.unit-tests || true }}
+          integration-tests: ${{ matrix.integration-tests || false }}
