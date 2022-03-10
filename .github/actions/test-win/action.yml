@@ -28,7 +28,7 @@ runs:
       run: |
         tar -xzf build.tar.gz
     - name: Run unit tests
-      if: ${{ inputs.unit-tests }}
+      if: ${{ inputs.unit-tests == 'true' }}
       shell: cmd /C call {0}
       run: |
         set PATH=%cd%\build\install\bin;%PATH%
@@ -37,21 +37,21 @@ runs:
         cd tests\unittests
         .\TiGL-unittests.exe --gtest_shuffle --gtest_output=xml:unit_test_results.xml
     - name: Run integration tests
-      if: ${{ inputs.integration-tests }}
+      if: ${{ inputs.integration-tests == 'true' }}
       shell: cmd /C call {0}
       run: |
         set PATH=%cd%\build\install\bin;%PATH%
         cd build\tests\integrationtests
         .\TiGL-integrationtests --gtest_shuffle --gtest_output=xml:integration_test_results.xml
     - name: Generate coverage report
-      if: ${{ inputs.coverage }}
+      if: ${{ inputs.coverage == 'true' }}
       shell: cmd /C call {0}
       run: |
         cd build
         cmake --build . --target coverage-unittests
         cmake --build . --target coverage-integrationtests
     - name: Publish coverage report to codecov.io (ubuntu debug)
-      if: ${{ inputs.coverage }}
+      if: ${{ inputs.coverage == 'true' }}
       uses: codecov/codecov-action@v2
       with:
         files: build/tests/unittests/coverageReport-unit.info, build/tests/integrationtests/coverageReport-integration.info
