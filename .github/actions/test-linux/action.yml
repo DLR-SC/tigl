@@ -36,6 +36,7 @@ runs:
       shell: bash
       run: |
         tar -xzf build.tar.gz
+        find -name '*.obj' | xargs touch
     - name: Run unit tests
       if: ${{ inputs.unit-tests == 'true' }}
       shell: bash
