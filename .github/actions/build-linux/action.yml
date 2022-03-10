@@ -21,6 +21,9 @@ inputs:
     description: "CMake option to enable code coverage with gcov/lcov (ON or OFF)"
     required: false
     default: "OFF"
+  build-artifact:
+    descpription: "Set the name for the build artifact stored by this job"
+    required: true
 runs:
   using: "composite"
   steps:
@@ -67,6 +70,6 @@ runs:
     - name: Upload build directory
       uses: actions/upload-artifact@v2
       with:
-        name: build-linux-${{ inputs.config }}-${{ inputs.tigl_nightly == 'ON' }}-${{ inputs.tigl_concat_generated_files == 'ON' }}-${{ inputs.tigl_enable_coverage == 'ON' }}
+        name: ${{ inputs.build-artifact }}
         path: build.tar.gz
         retention-days: 1
