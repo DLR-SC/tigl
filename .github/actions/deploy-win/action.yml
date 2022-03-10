@@ -19,33 +19,32 @@ runs:
       shell: bash
       run: |
         tar -xzf build.tar.gz
-
-  - name: Setup miniconda
-    uses: conda-incubator/setup-miniconda@v2
-    with:
-      auto-update-conda: true
-      auto-activate-base: true
-      activate-environment: ''
-  - name: Install dependencies
-    shell: cmd /C call {0}
-    run: |
-      conda install pip ^
-                    python=3.7 ^
-                    doxygen=1.8.15 ^
-                    swig>=3.0.11 ^
-                    tixi3=3.3.0 ^
-                    qt=5.9.7 ^
-                    ninja ^
-                    matlab-libs ^
-                    opencascade-static=7.4.0 ^
-                    pythonocc-core=7.4.1 ^
-                    tbb-devel ^
-                    freetype-static=2.6 ^
-                    freeimageplus-static
-            -c dlr-sc -c dlr-sc/label/tigl-dev
-      conda info -a
-      conda list
-   - name: Create package
+    - name: Setup miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        auto-activate-base: true
+        activate-environment: ''
+    - name: Install dependencies
+      shell: cmd /C call {0}
+      run: |
+        conda install pip ^
+                      python=3.7 ^
+                      doxygen=1.8.15 ^
+                      swig>=3.0.11 ^
+                      tixi3=3.3.0 ^
+                      qt=5.9.7 ^
+                      ninja ^
+                      matlab-libs ^
+                      opencascade-static=7.4.0 ^
+                      pythonocc-core=7.4.1 ^
+                      tbb-devel ^
+                      freetype-static=2.6 ^
+                      freeimageplus-static
+              -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda info -a
+        conda list
+    - name: Create package
       shell: cmd /C call {0}
       run: |
         cd build
@@ -53,7 +52,7 @@ runs:
         cmake --build . --target doc
         & 'C:\Program Files\CMake\bin\cpack.exe' -G ZIP
         & 'C:\Program Files\CMake\bin\cpack.exe' -G NSIS
-   - name: Upload package as artifact
+    - name: Upload package as artifact
       uses: actions/upload-artifact@v2
       with:
         name: win-package
