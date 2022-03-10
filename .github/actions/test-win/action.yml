@@ -4,10 +4,6 @@ inputs:
   build-artifact:
     description: "Name of the build artifact that contains the unit test binary."
     required: true
-  coverage:
-    description: "Create coverage report (true or false)"
-    required: false
-    default: false
   unit-tests:
     description: "Set to true to run TiGLs unit tests (true or false)"
     required: false
@@ -43,14 +39,6 @@ runs:
         set PATH=%cd%\build\install\bin;%PATH%
         cd build\tests\integrationtests
         .\TiGL-integrationtests --gtest_shuffle --gtest_output=xml:integration_test_results.xml
-    - name: Generate coverage report
-      if: ${{ inputs.coverage == 'true' }}
-      shell: cmd /C call {0}
-      run: |
-        cd build
-        ninja -t restat
-        cmake --build . --target coverage-unittests
-        cmake --build . --target coverage-integrationtests
     - name: Publish coverage report to codecov.io (ubuntu debug)
       if: ${{ inputs.coverage == 'true' }}
       uses: codecov/codecov-action@v2

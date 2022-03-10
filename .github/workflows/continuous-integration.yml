@@ -116,7 +116,6 @@ jobs:
       - uses: ./.github/actions/test-win
         with:
           build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-${{ matrix.oce_static_libs || 'OFF' }}-python-${{ matrix.tigl_bindings_python_internal || 'OFF' }}
-          coverage: false
           unit-tests: true
           integration-tests: ${{ inputs.integration-tests == 'true' }}
 
@@ -150,7 +149,6 @@ jobs:
       - uses: ./.github/actions/test-macos
         with:
           build-artifact: build-macOS-10.15-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
-          coverage: false
           unit-tests: true
           integration-tests: ${{ inputs.integration-tests == 'true' }}
 
