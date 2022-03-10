@@ -74,8 +74,8 @@ runs:
       uses: actions/cache@v2
       with:
         path: compiler-cache
-        key: build-macos-${{ inputs.config }}-compiler-cache-${{ github.sha }}
-        restore-keys: ${{ inputs.config }}-compiler-cache
+        key: compiler-cache-${{ inputs.build-artifact }}-${{ github.sha }}
+        restore-keys: compiler-cache-${{ inputs.build-artifact }}
     - name: Build TiGL
       shell: bash -l {0}
       run: |

@@ -67,8 +67,8 @@ runs:
       uses: actions/cache@v2
       with:
         path: compiler-cache
-        key: build-win-${{ inputs.config }}-compiler-cache-${{ github.sha }}
-        restore-keys: ${{ inputs.config }}-compiler-cache
+        key: compiler-cache-${{ inputs.build-artifact }}-${{ github.sha }}
+        restore-keys: compiler-cache-${{ inputs.build-artifact }}
     - name: Set up Visual Studio shell
       uses: egor-tensin/vs-shell@v2
       with:
