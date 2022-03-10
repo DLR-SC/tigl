@@ -1,0 +1,168 @@
+name: "Reusable Continuous Integration workflow"
+
+on:
+  workflow_call:
+    inputs:
+      draft-release:
+        description: "Set to true, if the workflow shall draft a release"
+        required: false
+        default: false
+      tigl_nightly:
+        description: "CMake option to amend the version with the git hash (ON or OFF). Should be OFF for release builds."
+        required: false
+        default: "ON"
+      tigl_concat_generated_files:
+        description: "CMake option to concatenate the generated source files (ON or OFF). Should be OFF for release builds."
+        required: false
+        default: "ON"
+      deploy-win-doc:
+        description: "Build and artifact documentation as part of deploy-win action (true or false)"
+        required: false
+        default: false
+      integration-tests:
+        description: "Run integration tests"
+        required: false
+        default: false
+
+jobs:
+
+  build-linux:
+    strategy:
+      matrix:
+        config: ["Debug", "Release"]
+        os: ["ubuntu-latest", "ubuntu-18.04"]
+        # only enable coverage for Debug build on latest ubuntu
+        include:
+          - config: "Debug"
+            os: "ubuntu-latest"
+            coverage: "ON"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/build-linux
+        with:
+          config: ${{ matrix.config }}
+          tigl_nightly: ${{ inputs.tigl_nightly =='true' }}
+          tigl_concat_generated_files: ${{ inputs.tigl_concat_generated_files == 'true' }}
+          tigl_enable_coverage: ${{ matrix.coverage || 'OFF' }}
+          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}
+
+
+  test-linux:
+    needs: build-linux
+    strategy:
+      matrix:
+        config: ["Debug", "Release"]
+        os: ["ubuntu-latest", "ubuntu-18.04"]
+        include:
+          - config: "Debug"
+            os: "ubuntu-latest"
+            coverage: "ON"
+            unit-tests: false
+            integration-tests: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/test-linux
+        with:
+          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}
+          coverage: ${{ matrix.coverage == 'ON' || false }}
+          unit-tests: ${{ matrix.unit-tests || false }}
+          integration-tests: ${{ matrix.integration-tests || false }}
+
+
+  build-windows:
+    strategy:
+      matrix:
+        config: ["Release"]
+        os: ["windows-2016", "windows-2019"]
+        include:
+         - config: "Release"
+           os: "windows-2019"
+           oce_static_libs: "ON"
+           tigl_bindings_python_internal: "ON"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/build-win
+        with:
+          config: ${{ matrix.config }}
+          tigl_nightly: ${{ inputs.tigl_nightly =='true' }}
+          tigl_concat_generated_files: ${{ inputs.tigl_concat_generated_files == 'true' }}
+          tigl_enable_coverage: 'OFF'
+          oce_static_libs: ${{ matrix.oce_static_libs || 'OFF' }}
+          tigl_bindings_python_internal: ${{ matrix.tigl_bindings_python_internal || 'OFF' }}
+          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-${{ matrix.oce_static_libs || 'OFF' }}-python-${{ matrix.tigl_bindings_python_internal || 'OFF' }}
+
+  test-windows:
+    needs: build-windows
+    strategy:
+      matrix:
+        config: ["Release"]
+        os: ["windows-2016", "windows-2019"]
+        include:
+         - config: "Release"
+           os: "windows-2019"
+           oce_static_libs: "ON"
+           tigl_bindings_python_internal: "ON"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/test-win
+        with:
+          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-${{ matrix.oce_static_libs || 'OFF' }}-python-${{ matrix.tigl_bindings_python_internal || 'OFF' }}
+          coverage: false
+          unit-tests: true
+          integration-tests: ${{ integration-tests == 'true' }}
+
+  deploy-windows:
+    needs: test-windows
+    runs-on: "windows-2019"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy-win
+        with:
+          build-artifact: build-windows-2019-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-ON
+          documentation: ${{ inputs.deploy-win-doc == 'true' }}
+
+  build-macos:
+    runs-on: "macOS-10.15"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/build-macos
+        with:
+          config: "Release"
+          tigl_nightly: ${{ inputs.tigl_nightly =='true' }}
+          tigl_concat_generated_files: ${{ inputs.tigl_concat_generated_files == 'true' }}
+          tigl_enable_coverage: 'OFF'
+          build-artifact: build-macOS-10.15-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+
+  test-macos:
+    needs: build-macos
+    runs-on: "macOS-10.15"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/test-macos
+        with:
+          build-artifact: build-macOS-10.15-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+          coverage: false
+          unit-tests: true
+          integration-tests: ${{ integration-tests == 'true' }}
+
+  deploy-macos:
+    needs: test-macos
+    runs-on: "macOS-10.15"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy-macos
+        with:
+          build-artifact: build-macOS-10.15-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+          documentation: false
+
+
+  draft-release:
+    if: ${{ inputs.draft-release == 'true' }}
+    needs: ["deploy-macos", "deploy-windows", "test-linux"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: ./.github/actions/release
