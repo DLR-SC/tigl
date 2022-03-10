@@ -20,12 +20,12 @@ runs:
       run: |
         tar -xzf build.tar.gz
 
-- name: Setup miniconda
-  uses: conda-incubator/setup-miniconda@v2
-  with:
-    auto-update-conda: true
-    auto-activate-base: true
-    activate-environment: ''
+  - name: Setup miniconda
+    uses: conda-incubator/setup-miniconda@v2
+    with:
+      auto-update-conda: true
+      auto-activate-base: true
+      activate-environment: ''
   - name: Install dependencies
     shell: cmd /C call {0}
     run: |
@@ -49,6 +49,7 @@ runs:
       shell: cmd /C call {0}
       run: |
         cd build
+        ninja -t restat
         cmake --build . --target doc
         & 'C:\Program Files\CMake\bin\cpack.exe' -G ZIP
         & 'C:\Program Files\CMake\bin\cpack.exe' -G NSIS
@@ -67,6 +68,7 @@ runs:
       shell: cmd /C call {0}
       run: |
         cd build
+        ninja -t restat
         cmake --build . --target doc
     - name: Upload documentation as artifact
       if: ${{ inputs.documentation }}

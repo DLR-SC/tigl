@@ -45,6 +45,7 @@ runs:
       shell: bash
       run: |
         cd build
+        ninja -t restat
         cmake --build . --target doc
         cmake --build . --target package
     - name: Upload package as artifact
@@ -57,6 +58,7 @@ runs:
       shell: bash
       run: |
         cd build
+        ninja -t restat
         cmake --build . --target doc
     - name: Upload documentation as artifact
       if: ${{ inputs.documentation }}

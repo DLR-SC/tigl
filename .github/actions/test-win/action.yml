@@ -48,6 +48,7 @@ runs:
       shell: cmd /C call {0}
       run: |
         cd build
+        ninja -t restat
         cmake --build . --target coverage-unittests
         cmake --build . --target coverage-integrationtests
     - name: Publish coverage report to codecov.io (ubuntu debug)
