@@ -69,10 +69,13 @@ runs:
         path: compiler-cache
         key: build-win-${{ inputs.config }}-compiler-cache-${{ github.sha }}
         restore-keys: ${{ inputs.config }}-compiler-cache
+    - name: Set up Visual Studio shell
+      uses: egor-tensin/vs-shell@v2
+      with:
+        arch: x64
     - name: Build TiGL
       shell: cmd /C call {0}
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
         mkdir build
         cd build
