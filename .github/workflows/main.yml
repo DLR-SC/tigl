@@ -58,7 +58,7 @@ jobs:
   build-windows:
     strategy:
       matrix:
-        config: ["Debug", "Release"]
+        config: ["Release"]
         os: ["windows-2016", "windows-2019"]
         include:
          - config: "Release"
@@ -74,29 +74,29 @@ jobs:
         run: |
           echo "TIGL_NIGHTLY=OFF" >> $GITHUB_ENV
           echo "TIGL_CONCAT_GENERATED_FILES=OFF" >> $GITHUB_ENV
-      - uses: ./.github/actions/build-windows
+      - uses: ./.github/actions/build-win
         with:
           config: ${{ matrix.config }}
           tigl_nightly: ${{ env.TIGL_NIGHTLY }}
           tigl_concat_generated_files: ${{ env.TIGL_CONCAT_GENERATED_FILES }}
           tigl_enable_coverage: 'OFF'
-          oce_static_libs: ${{ matrix.oce_static_libs || "OFF" }}
-          tigl_bindings_python_internal: ${{ matrix.tigl_bindings_python_internal || "OFF" }}
-          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ env.TIGL_NIGHTLY }}-concat-${{ env.TIGL_CONCAT_GENERATED_FILES }}-cov-OFF-static-${{ matrix.oce_static_libs || "OFF" }}-python-${{ matrix.tigl_bindings_python_internal || "OFF" }}
+          oce_static_libs: ${{ matrix.oce_static_libs || 'OFF' }}
+          tigl_bindings_python_internal: ${{ matrix.tigl_bindings_python_internal || 'OFF' }}
+          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ env.TIGL_NIGHTLY }}-concat-${{ env.TIGL_CONCAT_GENERATED_FILES }}-cov-OFF-static-${{ matrix.oce_static_libs || 'OFF' }}-python-${{ matrix.tigl_bindings_python_internal || 'OFF' }}
 
 
   test-windows:
     needs: build-windows
     strategy:
       matrix:
-        config: ["Debug", "Release"]
+        config: ["Release"]
         os: ["windows-2016", "windows-2019"]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/test-windows
+      - uses: ./.github/actions/test-win
         with:
-          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ env.TIGL_NIGHTLY }}-concat-${{ env.TIGL_CONCAT_GENERATED_FILES }}-cov-OFF-static-${{ matrix.oce_static_libs || "OFF" }}-python-${{ matrix.tigl_bindings_python_internal || "OFF" }}
+          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ env.TIGL_NIGHTLY }}-concat-${{ env.TIGL_CONCAT_GENERATED_FILES }}-cov-OFF-static-${{ matrix.oce_static_libs || 'OFF' }}-python-${{ matrix.tigl_bindings_python_internal || 'OFF' }}
           coverage: false
           unit-tests: true
           integration-tests: true
@@ -106,7 +106,7 @@ jobs:
     runs-on: "windows-2019"
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/deploy-windows
+      - uses: ./.github/actions/deploy-win
         with:
           build-artifact: build-windows-2019-Release-nightly-ON-concat-ON-cov-OFF-static-ON-python-ON
           documentation: true
@@ -150,3 +150,10 @@ jobs:
         with:
           build-artifact: build-macOS-10.15-Release-nightly-${{ env.TIGL_NIGHTLY }}-concat-${{ env.TIGL_CONCAT_GENERATED_FILES }}-cov-OFF-static-ON-python-OFF
           documentation: false
+
+  draft-release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: ["deploy-macos", "deploy-windows", "test-linux"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: ./.github/actions/release

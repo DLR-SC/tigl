@@ -1,13 +1,5 @@
 name: "Create a Release"
 description: "This action drafts a Github release, adds the release notes and windows and mac os artifacts and creates PRs at tigl-conda and the tigl website"
-inputs:
-  build-artifact:
-    description: "Name of the build artifact that contains the unit test binary."
-    required: true
-  documentation:
-    description: "Build the documentation and store as artifact (true or false)"
-    required: false
-    default: false
 runs:
   using: "composite"
   steps:

@@ -38,24 +38,27 @@ runs:
         auto-activate-base: true
         activate-environment: ''
     - name: Install dependencies
+      shell: cmd /C call {0}
       run: |
-        conda install pip \
-                      python=3.7 \
-                      doxygen=1.8.15 \
-                      swig>=3.0.11 \
-                      tixi3=3.3.0 \
-                      qt=5.9.7 \
-                      ninja \
-                      matlab-libs \
+        conda install pip ^
+                      python=3.7 ^
+                      doxygen=1.8.15 ^
+                      swig>=3.0.11 ^
+                      tixi3=3.3.0 ^
+                      qt=5.9.7 ^
+                      ninja ^
+                      matlab-libs ^
               -c dlr-sc -c dlr-sc/label/tigl-dev
     - name: Install dependencies (dynamic opencascade)
       if: inputs.oce_static_libs == 'OFF'
+      shell: cmd /C call {0}
       run: |
         conda install pythonocc-core=7.4.1 freeimageplus -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list
     - name: Install dependencies (static opencascade)
       if: inputs.oce_static_libs == 'ON'
+      shell: cmd /C call {0}
       run: |
         conda install opencascade-static=7.4.0 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
@@ -69,21 +72,21 @@ runs:
     - name: Build TiGL
       shell: cmd /C call {0}
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.config.arch }}
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
         mkdir build
         cd build
-        cmake .. -GNinja -DCMAKE_BUILD_TYPE=${{ inputs.config }} \
-                         -DCMAKE_INSTALL_PREFIX=install \
-                         -DOCE_STATIC_LIBS=${{ inputs.oce_static_libs }} \
-                         -DTIGL_BUILD_TESTS=ON \
-                         -DTIGL_CONCAT_GENERATED_FILES=${{ inputs.tigl_concat_generated_files }} \
-                         -DTIGL_BINDINGS_PYTHON_INTERNAL=${{ inputs.tigl_bindings_python_internal }} \
-                         -DTIGL_BINDINGS_MATLAB=ON \
-                         -DTIGL_BINDINGS_JAVA=ON \
-                         -DTIGL_NIGHTLY=${{ inputs.tigl-nightly }} \
-                         -DPythonOCC_SOURCE_DIR=C:\Miniconda\Library\src\pythonocc-core \
-                         -DMATLAB_DIR=C:\Miniconda\Library\share\matlab \
+        cmake .. -GNinja -DCMAKE_BUILD_TYPE=${{ inputs.config }} ^
+                         -DCMAKE_INSTALL_PREFIX=install ^
+                         -DOCE_STATIC_LIBS=${{ inputs.oce_static_libs }} ^
+                         -DTIGL_BUILD_TESTS=ON ^
+                         -DTIGL_CONCAT_GENERATED_FILES=${{ inputs.tigl_concat_generated_files }} ^
+                         -DTIGL_BINDINGS_PYTHON_INTERNAL=${{ inputs.tigl_bindings_python_internal }} ^
+                         -DTIGL_BINDINGS_MATLAB=ON ^
+                         -DTIGL_BINDINGS_JAVA=ON ^
+                         -DTIGL_NIGHTLY=${{ inputs.tigl-nightly }} ^
+                         -DPythonOCC_SOURCE_DIR=C:\Miniconda\Library\src\pythonocc-core ^
+                         -DMATLAB_DIR=C:\Miniconda\Library\share\matlab ^
                          -DTIGL_ENABLE_COVERAGE=${{ inputs.tigl_enable_coverage }}
         cmake --build . -j 4 --target install
     - name: create build dir archive
@@ -93,6 +96,6 @@ runs:
     - name: Upload build directory
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ build-artifact }}
+        name: ${{ inputs.build-artifact }}
         path: build.tar.gz
         retention-days: 1

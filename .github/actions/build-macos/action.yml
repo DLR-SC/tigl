@@ -48,8 +48,9 @@ runs:
           echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
           echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/occt.7.4.0.macos_static:/usr/local/opt/qt@5/" >> $GITHUB_ENV
           echo "CXXFLAGS=-fvisibility-inlines-hidden" >> $GITHUB_ENV
-          brew install qt@5
+          brew install qt@5 ninja
     - name: Install ccache
+      shell: bash
       run: |
         brew install zstd libb2
         brew install ccache
@@ -100,6 +101,6 @@ runs:
     - name: Upload build directory
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ build-artifact }}
+        name: ${{ inputs.build-artifact }}
         path: build.tar.gz
         retention-days: 1

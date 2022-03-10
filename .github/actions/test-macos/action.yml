@@ -19,6 +19,20 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install dependencies
+      uses: nick-invision/retry@v1
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          curl --retry 3 -o occt.7.4.0.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/occt.7.4.0.macos_static.tar.gz
+          curl --retry 3 -O -L https://github.com/DLR-SC/tixi/releases/download/v3.1.1/TIXI-3.1.1-Darwin.tar.gz
+          tar xf occt.7.4.0.macos_static.tar.gz
+          tar xf TIXI-3.1.1-Darwin.tar.gz
+          echo "/tmp" >> $GITHUB_PATH
+          echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/occt.7.4.0.macos_static:/usr/local/opt/qt@5/" >> $GITHUB_ENV
+          brew install ninja
     - name: Download built test directory
       uses: actions/download-artifact@v2
       with:
