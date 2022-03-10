@@ -7,22 +7,27 @@ on:
         description: "Set to true, if the workflow shall draft a release"
         required: false
         default: false
+        type: boolean
       tigl_nightly:
         description: "CMake option to amend the version with the git hash (ON or OFF). Should be OFF for release builds."
         required: false
         default: "ON"
+        type: string
       tigl_concat_generated_files:
         description: "CMake option to concatenate the generated source files (ON or OFF). Should be OFF for release builds."
         required: false
         default: "ON"
+        type: string
       deploy-win-doc:
         description: "Build and artifact documentation as part of deploy-win action (true or false)"
         required: false
         default: false
+        type: boolean
       integration-tests:
         description: "Run integration tests"
         required: false
         default: false
+        type: boolean
 
 jobs:
 
@@ -113,7 +118,7 @@ jobs:
           build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-${{ matrix.oce_static_libs || 'OFF' }}-python-${{ matrix.tigl_bindings_python_internal || 'OFF' }}
           coverage: false
           unit-tests: true
-          integration-tests: ${{ integration-tests == 'true' }}
+          integration-tests: ${{ inputs.integration-tests == 'true' }}
 
   deploy-windows:
     needs: test-windows
@@ -147,7 +152,7 @@ jobs:
           build-artifact: build-macOS-10.15-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
           coverage: false
           unit-tests: true
-          integration-tests: ${{ integration-tests == 'true' }}
+          integration-tests: ${{ inputs.integration-tests == 'true' }}
 
   deploy-macos:
     needs: test-macos
