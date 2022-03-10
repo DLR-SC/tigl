@@ -20,9 +20,10 @@ runs:
       run: |
         tar -xzf build.tar.gz
     - name: Create package
+      shell: cmd /C call {0}
       run: |
         cd build
-        cmake --build . --target doc
+        cmake --build . --target doc/fast
         & 'C:\Program Files\CMake\bin\cpack.exe' -G ZIP
         & 'C:\Program Files\CMake\bin\cpack.exe' -G NSIS
     - name: Upload package as artifact
@@ -37,9 +38,10 @@ runs:
        path: build/*.exe
     - name: Create documentation
       if: ${{ inputs.documentation }}
+      shell: cmd /C call {0}
       run: |
         cd build
-        cmake --build . --target doc
+        cmake --build . --target doc/fast
     - name: Upload documentation as artifact
       if: ${{ inputs.documentation }}
       uses: actions/upload-artifact@v2

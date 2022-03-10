@@ -47,7 +47,7 @@ jobs:
         with:
           build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-ON-concat-ON-cov-${{ matrix.coverage || 'OFF' }}
           coverage: ${{ matrix.coverage == 'ON' || false }}
-          unit-tests: ${{ matrix.unit-tests || true }}
+          unit-tests: ${{ matrix.unit-tests || false }}
           integration-tests: ${{ matrix.integration-tests || false }}
 
 
@@ -81,6 +81,11 @@ jobs:
       matrix:
         config: ["Release"]
         os: ["windows-2016", "windows-2019"]
+        include:
+         - config: "Release"
+           os: "windows-2019"
+           oce_static_libs: "ON"
+           tigl_bindings_python_internal: "ON"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
