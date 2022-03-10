@@ -33,7 +33,7 @@ LIBDIR=NO_DIR
 PACK_TYPE=NO_TYPE
 
 TIGL3VER="3.2"
-TIXIVER="3.1"
+TIXIVER="3.3"
 
 read_dom () {
     local IFS=\>
