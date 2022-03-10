@@ -53,8 +53,8 @@ runs:
       shell: bash
       run: |
         cd build
-        cmake --build . --target coverage-unittests/fast
-        cmake --build . --target coverage-integrationtests/fast
+        cmake --build . --target coverage-unittests
+        cmake --build . --target coverage-integrationtests
     - name: Publish coverage report to codecov.io (ubuntu debug)
       if: ${{ inputs.coverage == 'true' }}
       uses: codecov/codecov-action@v2
