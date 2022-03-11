@@ -84,7 +84,7 @@ jobs:
       matrix:
         config: ["Debug", "Release"]
         os: ["ubuntu-latest", "ubuntu-18.04"]
-        unit-tests: true
+        unit-tests: [true]
         include:
           - config: "Debug"
             os: "ubuntu-latest"

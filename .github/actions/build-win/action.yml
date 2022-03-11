@@ -52,6 +52,10 @@ inputs:
   build-artifact:
     descpription: "Set the name for the build artifact stored by this job"
     required: true
+    
+env:
+  CC: clcache
+  CXX: clcache
 
 runs:
 
@@ -78,6 +82,7 @@ runs:
                       ninja ^
                       matlab-libs ^
               -c dlr-sc -c dlr-sc/label/tigl-dev
+        pip install git+https://github.com/frerich/clcache.git
 
     - name: Install dependencies (dynamic opencascade)
       if: inputs.oce_static_libs == 'OFF'
@@ -98,7 +103,7 @@ runs:
     - name: restore compiler cache
       uses: actions/cache@v2
       with:
-        path: compiler-cache
+        path: ~/clcache
         key: compiler-cache-${{ inputs.build-artifact }}-${{ github.sha }}
         restore-keys: compiler-cache-${{ inputs.build-artifact }}
 
