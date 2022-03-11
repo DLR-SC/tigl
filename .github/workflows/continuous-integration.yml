@@ -85,6 +85,10 @@ jobs:
         config: ["Debug", "Release"]
         os: ["ubuntu-latest", "ubuntu-18.04"]
         unit-tests: [true]
+        # generate coverage reports on latest ubuntu debug builds
+        exclude:
+          - config: "Debug"
+            os: "ubuntu-latest"
         include:
           - config: "Debug"
             os: "ubuntu-latest"
