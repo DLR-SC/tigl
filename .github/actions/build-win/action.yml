@@ -52,10 +52,6 @@ inputs:
   build-artifact:
     descpription: "Set the name for the build artifact stored by this job"
     required: true
-    
-env:
-  CC: clcache
-  CXX: clcache
 
 runs:
 
@@ -82,7 +78,6 @@ runs:
                       ninja ^
                       matlab-libs ^
               -c dlr-sc -c dlr-sc/label/tigl-dev
-        pip install git+https://github.com/frerich/clcache.git
 
     - name: Install dependencies (dynamic opencascade)
       if: inputs.oce_static_libs == 'OFF'
@@ -99,13 +94,6 @@ runs:
         conda install opencascade-static=7.4.0 pythonocc-core=7.4.1 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list
-
-    - name: restore compiler cache
-      uses: actions/cache@v2
-      with:
-        path: ~/clcache
-        key: compiler-cache-${{ inputs.build-artifact }}-${{ github.sha }}
-        restore-keys: compiler-cache-${{ inputs.build-artifact }}
 
     - name: Set up Visual Studio shell
       uses: egor-tensin/vs-shell@v2
