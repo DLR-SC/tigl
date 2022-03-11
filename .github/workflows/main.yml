@@ -36,3 +36,7 @@ jobs:
       tigl_nightly: ${{ env.tigl-nightly }}
       tigl_concat_generated_files: ${{ env.tigl-concat-generated-files }}
       integration-tests: true
+      html-documentation-artifact: 'html-documentation'
+      win-installer-artifact: 'win-installer'
+      win-package-artifact: 'win-package'
+      macos-package-artifact: 'macos-package'

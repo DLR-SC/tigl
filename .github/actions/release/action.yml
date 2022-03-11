@@ -1,8 +1,13 @@
 name: "Create a Release"
+
 description: "This action drafts a Github release, adds the release notes and windows and mac os artifacts and creates PRs at tigl-conda and the tigl website"
+
 runs:
+
   using: "composite"
+
   steps:
+
     - uses: actions/checkout@v2
 
     - name: Split Release Description from Changelog

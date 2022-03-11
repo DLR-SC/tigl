@@ -1,20 +1,29 @@
 name: "MacOS Tests"
+
 description: "Test TiGL on MacOS"
+
 inputs:
+
   build-artifact:
     description: "Name of the build artifact that contains the unit test binary."
     required: true
+
   unit-tests:
     description: "Set to true to run TiGLs unit tests (true or false)"
     required: false
     default: true
+
   integration-tests:
     description: "Set to true to run TiGLs integration tests (true or false)"
     required: false
     default: true
+
 runs:
+
   using: "composite"
+
   steps:
+
     - name: Install dependencies
       uses: nick-invision/retry@v1
       with:
@@ -29,28 +38,27 @@ runs:
           echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
           echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/occt.7.4.0.macos_static:/usr/local/opt/qt@5/" >> $GITHUB_ENV
           brew install ninja
+
     - name: Download built test directory
       uses: actions/download-artifact@v2
       with:
         name: ${{ inputs.build-artifact }}
+
     - name: extract build archive
       shell: bash
       run: |
         tar -xzf build.tar.gz
+
     - name: Run unit tests
       if: ${{ inputs.unit-tests == 'true' }}
       shell: bash
       run: |
         cd build/tests/unittests/
         ./TiGL-unittests --gtest_shuffle --gtest_output=xml:unit_test_results.xml
+
     - name: Run integration tests
       if: ${{ inputs.integration-tests == 'true' }}
       shell: bash
       run: |
         cd build/tests/integrationtests/
         ./TiGL-integrationtests --gtest_shuffle --gtest_output=xml:integration_test_results.xml
-    - name: Publish coverage report to codecov.io (ubuntu debug)
-      if: ${{ inputs.coverage == 'true' }}
-      uses: codecov/codecov-action@v2
-      with:
-        files: build/tests/unittests/coverageReport-unit.info, build/tests/integrationtests/coverageReport-integration.info

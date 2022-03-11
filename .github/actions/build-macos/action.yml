@@ -1,32 +1,49 @@
 name: "MacOS Build"
+
 description: "Build TiGL on MacOS with clang"
+
 inputs:
+
   config:
     description: "Configuration to build (Release or Debug, see CMAKE_BUILD_TYPE)"
     required: true
     default: "Release"
+
   tigl_nightly:
     description: "CMake option to amend the version with the git hash (ON or OFF)"
     required: true
     default: "ON"
+
   tigl_concat_generated_files:
     description: "CMake option to concatenate the generated source files (ON or OFF)"
     required: true
     default: "ON"
+
   tigl_bindings-python-internal:
     description: "CMake option to build the interal python API"
     required: false
     default: "OFF"
+
   tigl_enable_coverage:
     description: "CMake option to enable code coverage with gcov/lcov (ON or OFF)"
     required: false
     default: "OFF"
+
+  package-artifact:
+    description: "Name of the package artifact. Leave empty to skip package generation."
+    required: false
+    default: ''
+
   build-artifact:
     descpription: "Set the name for the build artifact stored by this job"
     required: true
+
 runs:
+
   using: "composite"
+
   steps:
+
     - name: Install dependencies
       uses: nick-invision/retry@v1
       with:
@@ -49,7 +66,8 @@ runs:
           echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/occt.7.4.0.macos_static:/usr/local/opt/qt@5/" >> $GITHUB_ENV
           echo "CXXFLAGS=-fvisibility-inlines-hidden" >> $GITHUB_ENV
           brew install qt@5 ninja
-    - name: Install ccache
+
+    - name: Install and setup ccache
       shell: bash
       run: |
         brew install zstd libb2
@@ -70,12 +88,14 @@ runs:
         echo "CCACHE_CPP2=true" >> $GITHUB_ENV
         echo "CCACHE_HARDLINK=true" >> $GITHUB_ENV
         echo "CCACHE_SLOPPINESS=file_macro,time_macros,include_file_mtime,include_file_ctime,file_stat_matches" >> $GITHUB_ENV
+
     - name: restore compiler cache
       uses: actions/cache@v2
       with:
         path: compiler-cache
         key: compiler-cache-${{ inputs.build-artifact }}-${{ github.sha }}
         restore-keys: compiler-cache-${{ inputs.build-artifact }}
+
     - name: Build TiGL
       shell: bash -l {0}
       run: |
@@ -94,10 +114,27 @@ runs:
                          -DTIGL_NIGHTLY=${{ inputs.tigl_nightly }} \
                          -DMATLAB_DIR=/tmp/matlab-libs-macos
         cmake --build . -j 4 --target install
+
+    - name: Create package
+      if: ${{ inputs.package-artifact }}
+      shell: bash
+      run: |
+        cd build
+        cmake --build . --target doc
+        cmake --build . --target package
+
+    - name: Upload package as artifact
+      if: ${{ inputs.package-artifact }}
+      uses: actions/upload-artifact@v2
+      with:
+       name: ${{ inputs.package-artifact }}
+       path: build/*.dmg
+
     - name: create build dir archive
       shell: bash
       run: |
         tar -czf build.tar.gz build
+
     - name: Upload build directory
       uses: actions/upload-artifact@v2
       with:
