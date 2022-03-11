@@ -109,7 +109,7 @@ jobs:
     strategy:
       matrix:
         config: ["Release"]
-        os: ["windows-2016", "windows-2019"]
+        os: ["windows-2019", "windows-latest"]
         include:
          - config: "Release"
            os: "windows-2019"
@@ -139,7 +139,7 @@ jobs:
     strategy:
       matrix:
         config: ["Release"]
-        os: ["windows-2016", "windows-2019"]
+        os: ["windows-2019", "windows-latest"]
         include:
          - config: "Release"
            os: "windows-2019"
