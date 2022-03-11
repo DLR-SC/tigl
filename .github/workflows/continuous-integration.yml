@@ -84,12 +84,12 @@ jobs:
       matrix:
         config: ["Debug", "Release"]
         os: ["ubuntu-latest", "ubuntu-18.04"]
+        unit-tests: true
         include:
           - config: "Debug"
             os: "ubuntu-latest"
             coverage: "ON"
             unit-tests: false
-            integration-tests: false
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -97,8 +97,8 @@ jobs:
         with:
           build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}
           coverage: ${{ matrix.coverage == 'ON' || false }}
-          unit-tests: ${{ matrix.unit-tests == '' || false }}
-          integration-tests: ${{ matrix.integration-tests == '' || inputs.integration-tests == 'true' || false }}
+          unit-tests: ${{ matrix.unit-tests }}
+          integration-tests: ${{ inputs.integration-tests || false }}
 
 
   build-windows:
