@@ -32,7 +32,6 @@ jobs:
     with:
       # create a release build on new git tag
       draft-release: ${{ env.is-new-tag }}
-      deploy-win-doc: ${{ env.is-new-tag }}
       tigl_nightly: ${{ env.tigl-nightly }}
       tigl_concat_generated_files: ${{ env.tigl-concat-generated-files }}
       integration-tests: true
