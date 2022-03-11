@@ -92,15 +92,13 @@ jobs:
             integration-tests: false
     runs-on: ${{ matrix.os }}
     steps:
-      # deleteme: just for debugging
-      - run: echo ${{ matrix.unit-tests }}
       - uses: actions/checkout@v2
       - uses: ./.github/actions/test-linux
         with:
           build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}
           coverage: ${{ matrix.coverage == 'ON' || false }}
-          unit-tests: ${{ matrix.unit-tests || false }}
-          integration-tests: ${{ matrix.integration-tests || inputs.integration-tests == 'true' || false }}
+          unit-tests: ${{ matrix.unit-tests == '' || false }}
+          integration-tests: ${{ matrix.integration-tests == '' || inputs.integration-tests == 'true' || false }}
 
 
   build-windows:

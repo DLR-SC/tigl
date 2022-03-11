@@ -35,8 +35,7 @@ runs:
         curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/Release.key | sudo apt-key add -
         echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/ /" | sudo tee -a /etc/apt/sources.list
         sudo apt-get update -qq
-        sudo apt-get install -y libtixi3
-      # libocct-ocaf-dev occt-misc libocct-draw-dev libocct-data-exchange-dev
+        sudo apt-get install -y libtixi3 lcov libocct-ocaf-dev occt-misc libocct-draw-dev libocct-data-exchange-dev
 
     - name: Download build directory
       uses: actions/download-artifact@v2

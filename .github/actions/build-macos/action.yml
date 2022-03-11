@@ -67,34 +67,10 @@ runs:
           echo "CXXFLAGS=-fvisibility-inlines-hidden" >> $GITHUB_ENV
           brew install qt@5 ninja
 
-    - name: Install and setup ccache
-      shell: bash
-      run: |
-        brew install zstd libb2
-        brew install ccache
-        echo "/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
-        echo "/usr/local/opt/ccache/bin" >> $GITHUB_PATH
-        echo '#!/bin/sh' > ccache-clang
-        echo 'exec ccache /usr/bin/clang "$@"' >> ccache-clang
-        chmod a+x ccache-clang
-        echo '#!/bin/sh' > ccache-clang++
-        echo 'exec ccache /usr/bin/clang++ "$@"' >> ccache-clang++
-        chmod a+x ccache-clang++
-        echo '### contents of ccache-clang'
-        cat ccache-clang
-        echo '### contents of ccache-clang++'
-        cat ccache-clang++
-        echo "CCACHE_MAXSIZE=10G" >> $GITHUB_ENV
-        echo "CCACHE_CPP2=true" >> $GITHUB_ENV
-        echo "CCACHE_HARDLINK=true" >> $GITHUB_ENV
-        echo "CCACHE_SLOPPINESS=file_macro,time_macros,include_file_mtime,include_file_ctime,file_stat_matches" >> $GITHUB_ENV
-
-    - name: restore compiler cache
-      uses: actions/cache@v2
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1
       with:
-        path: compiler-cache
-        key: compiler-cache-${{ inputs.build-artifact }}-${{ github.sha }}
-        restore-keys: compiler-cache-${{ inputs.build-artifact }}
+        key: compiler-cache-${{ inputs.build-artifact }}
 
     - name: Build TiGL
       shell: bash -l {0}

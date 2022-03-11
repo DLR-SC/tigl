@@ -53,12 +53,10 @@ runs:
                                   qt5-default qt5-qmake qtbase5-dev-tools qtscript5-dev
           echo "/usr/lib/ccache" >> $GITHUB_PATH
 
-    - name: restore compiler cache
-      uses: actions/cache@v2
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1
       with:
-        path: compiler-cache
-        key: compiler-cache-${{ inputs.build-artifact }}-${{ github.sha }}
-        restore-keys: compiler-cache-${{ inputs.build-artifact }}
+        key: compiler-cache-${{ inputs.build-artifact }}
 
     - name: Build TiGL
       shell: bash -l {0}
