@@ -1,0 +1,41 @@
+name: CI workflow for main branch
+
+on:
+  schedule:
+    - cron: "40 2 * * *"
+  push:
+    branches:
+      - 'master'
+    tags:
+      - v*
+  workflow_dispatch:
+
+env:
+  is-new-tag: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+  tigl-nightly: 'ON'
+  tigl-concat-generated-files: 'ON'
+
+jobs:
+
+  pre:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: disable tigl-nightly and tigl-concat-generated-files for release builds
+        if: ${{ env.is-new-tag }}
+        run: |
+          echo "tigl-nightly=OFF" >> $GITHUB_ENV
+          echo "tigl-concat-generated-files=OFF" >> $GITHUB_ENV
+
+  continuous-integration:
+    needs: pre
+    uses: ./.github/workflows/continuous-integration.yml
+    with:
+      # create a release build on new git tag
+      draft-release: ${{ env.is-new-tag }}
+      tigl_nightly: ${{ env.tigl-nightly }}
+      tigl_concat_generated_files: ${{ env.tigl-concat-generated-files }}
+      integration-tests: true
+      html-documentation-artifact: 'html-documentation'
+      win-installer-artifact: 'win-installer'
+      win-package-artifact: 'win-package'
+      macos-package-artifact: 'macos-package'

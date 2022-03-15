@@ -1,0 +1,10 @@
+name: Pull Request CI workflow
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  continuous-integration:
+    uses: ./.github/workflows/continuous-integration.yml
