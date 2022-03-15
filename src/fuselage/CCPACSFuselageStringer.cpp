@@ -55,7 +55,7 @@ TopoDS_Shape CCPACSFuselageStringer::GetGeometry(bool just1DElements, TiglCoordi
 {
     const TopoDS_Shape shape = just1DElements ? *m_geomCache1D : *m_geomCache3D;
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
-        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+        CTiglTransformation trafo = m_parent->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
     else
@@ -66,7 +66,7 @@ TopoDS_Shape CCPACSFuselageStringer::GetCutGeometry(TiglCoordinateSystem cs) con
 {
     TopoDS_Shape shape = *m_cutGeomCache;
     if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
-        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+        CTiglTransformation trafo = m_parent->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
     else

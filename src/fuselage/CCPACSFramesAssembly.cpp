@@ -15,8 +15,10 @@
 */
 
 #include "CCPACSFramesAssembly.h"
-
+#include "CTiglTransformation.h"
 #include "CCPACSFrame.h"
+#include "CCPACSFuselage.h"
+#include "CCPACSDuct.h"
 
 namespace tigl
 {
@@ -30,4 +32,16 @@ void CCPACSFramesAssembly::Invalidate(const boost::optional<std::string>& source
     for (size_t i = 0; i < m_frames.size(); i++)
         m_frames[i]->Invalidate(source);
 }
+
+CTiglTransformation CCPACSFramesAssembly::GetTransformationMatrix() const
+{
+    if (IsParent<CCPACSDuctStructure>()) {
+        return GetParent<CCPACSDuctStructure>()->GetParent()->GetTransformationMatrix();
+    }
+    if (IsParent<CCPACSFuselageStructure>()) {
+        return GetParent<CCPACSFuselageStructure>()->GetParent()->GetTransformationMatrix();
+    }
+    throw CTiglError("Unexpected error: Parent of CCPACSFramesAssembly must either be CCPACSDuctStructure or CCPACSFuselageStructure.");
+}
+
 } // namespace tigl

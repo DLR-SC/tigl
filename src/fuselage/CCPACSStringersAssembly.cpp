@@ -15,8 +15,9 @@
 */
 
 #include "CCPACSStringersAssembly.h"
-
 #include "CCPACSFuselageStringer.h"
+#include "CCPACSFuselage.h"
+#include "CCPACSDuct.h"
 
 namespace tigl
 {
@@ -32,5 +33,17 @@ void CCPACSStringersAssembly::Invalidate(const boost::optional<std::string>& sou
         m_stringers[i]->Invalidate(source);
     }
 }
+
+CTiglTransformation CCPACSStringersAssembly::GetTransformationMatrix() const
+{
+    if (IsParent<CCPACSDuctStructure>()) {
+        return GetParent<CCPACSDuctStructure>()->GetParent()->GetTransformationMatrix();
+    }
+    if (IsParent<CCPACSFuselageStructure>()) {
+        return GetParent<CCPACSFuselageStructure>()->GetParent()->GetTransformationMatrix();
+    }
+    throw CTiglError("Unexpected error: Parent of CCPACSStringersAssembly must either be CCPACSDuctStructure or CCPACSFuselageStructure.");
+}
+
 
 } // namespace tigl

@@ -63,7 +63,8 @@ TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem 
 {
     TopoDS_Shape shape = just1DElements ? *m_geomCache1D : *m_geomCache3D;
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
-        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+
+        CTiglTransformation trafo = m_parent->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
     else
@@ -74,7 +75,7 @@ TopoDS_Shape CCPACSFrame::GetCutGeometry(TiglCoordinateSystem cs) const
 {
     TopoDS_Shape shape = *m_cutGeomCache;
     if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
-        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+        CTiglTransformation trafo = m_parent->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
     else

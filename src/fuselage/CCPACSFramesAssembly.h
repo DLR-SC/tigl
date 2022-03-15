@@ -18,7 +18,7 @@
 
 #include <string>
 #include <boost/optional.hpp>
-
+#include "CTiglTransformation.h"
 #include "generated/CPACSFramesAssembly.h"
 
 namespace tigl
@@ -29,6 +29,8 @@ public:
     TIGL_EXPORT CCPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
+
+    TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const;
 };
 
 } // namespace tigl
