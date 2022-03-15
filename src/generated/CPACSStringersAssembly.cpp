@@ -18,6 +18,7 @@
 #include <cassert>
 #include <CCPACSFuselageStringer.h>
 #include "CCPACSFuselageStructure.h"
+#include "CPACSDuctStructure.h"
 #include "CPACSStringersAssembly.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,31 +30,35 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSStringersAssembly::CPACSStringersAssembly(CPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSDuctStructure);
+    }
+
     CPACSStringersAssembly::CPACSStringersAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSFuselageStructure);
     }
 
     CPACSStringersAssembly::~CPACSStringersAssembly()
     {
     }
 
-    const CCPACSFuselageStructure* CPACSStringersAssembly::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSFuselageStructure* CPACSStringersAssembly::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSStringersAssembly::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSDuctStructure>()) {
+                return GetParent<CPACSDuctStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSFuselageStructure>()) {
+                return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -61,7 +66,12 @@ namespace generated
     CTiglUIDObject* CPACSStringersAssembly::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSDuctStructure>()) {
+                return GetParent<CPACSDuctStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSFuselageStructure>()) {
+                return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

@@ -94,7 +94,8 @@ namespace generated
         /// Reference is the parent airfoil height.
         double                       m_hingeRelHeight;
 
-        /// Optional absolute translation of the hinge point
+        /// Optional absolute translation of the hinge point.
+        /// This can be used to move the hinge points outside of the wing shape.
         boost::optional<CCPACSPoint> m_translation;
 
     private:

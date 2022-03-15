@@ -33145,7 +33145,17 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <xsd:element minOccurs="0" name="structure" type="ductStructureType"/>
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>
-                <xsd:attribute name="symmetry" type="symmetryXyXzYzType"/>
+				<xsd:attribute name="symmetry">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="x-y-plane"/>
+                            <xsd:enumeration value="x-z-plane"/>
+                            <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:attribute>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include "CCPACSFuselageStructure.h"
+#include "CPACSDuctStructure.h"
 #include "CPACSSkin.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -28,11 +29,20 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSSkin::CPACSSkin(CPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSDuctStructure);
+    }
+
     CPACSSkin::CPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSFuselageStructure);
     }
 
     CPACSSkin::~CPACSSkin()
@@ -42,20 +52,15 @@ namespace generated
         }
     }
 
-    const CCPACSFuselageStructure* CPACSSkin::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSFuselageStructure* CPACSSkin::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSSkin::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSDuctStructure>()) {
+                return GetParent<CPACSDuctStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSFuselageStructure>()) {
+                return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -63,7 +68,12 @@ namespace generated
     CTiglUIDObject* CPACSSkin::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSDuctStructure>()) {
+                return GetParent<CPACSDuctStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSFuselageStructure>()) {
+                return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

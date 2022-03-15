@@ -21,8 +21,10 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include "CPACSSkinSegments.h"
 #include "CreateIfNotExists.h"
+#include "CTiglError.h"
 #include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
 
@@ -34,7 +36,10 @@ class CCPACSFuselageStructure;
 
 namespace generated
 {
+    class CPACSDuctStructure;
+
     // This class is used in:
+    // CPACSDuctStructure
     // CPACSFuselageStructure
 
     /// @brief skinType
@@ -44,13 +49,40 @@ namespace generated
     class CPACSSkin : public ITiglUIDRefObject
     {
     public:
+        TIGL_EXPORT CPACSSkin(CPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSkin();
 
-        TIGL_EXPORT CCPACSFuselageStructure* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSFuselageStructure* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSSkin");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSSkin");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -71,7 +103,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSkinSegments();
 
     protected:
-        CCPACSFuselageStructure* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -95,4 +128,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSkin = generated::CPACSSkin;
+using CCPACSDuctStructure = generated::CPACSDuctStructure;
 } // namespace tigl

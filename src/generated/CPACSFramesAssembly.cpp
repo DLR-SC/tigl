@@ -18,6 +18,7 @@
 #include <cassert>
 #include <CCPACSFrame.h>
 #include "CCPACSFuselageStructure.h"
+#include "CPACSDuctStructure.h"
 #include "CPACSFramesAssembly.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,31 +30,35 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSFramesAssembly::CPACSFramesAssembly(CPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSDuctStructure);
+    }
+
     CPACSFramesAssembly::CPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSFuselageStructure);
     }
 
     CPACSFramesAssembly::~CPACSFramesAssembly()
     {
     }
 
-    const CCPACSFuselageStructure* CPACSFramesAssembly::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSFuselageStructure* CPACSFramesAssembly::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSFramesAssembly::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSDuctStructure>()) {
+                return GetParent<CPACSDuctStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSFuselageStructure>()) {
+                return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -61,7 +66,12 @@ namespace generated
     CTiglUIDObject* CPACSFramesAssembly::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSDuctStructure>()) {
+                return GetParent<CPACSDuctStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSFuselageStructure>()) {
+                return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

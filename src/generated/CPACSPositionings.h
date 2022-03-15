@@ -30,6 +30,7 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSPositioning;
+class CCPACSDuct;
 class CCPACSEnginePylon;
 class CCPACSFuselage;
 class CCPACSWing;
@@ -37,6 +38,7 @@ class CCPACSWing;
 namespace generated
 {
     // This class is used in:
+    // CPACSDuct
     // CPACSEnginePylon
     // CPACSFuselage
     // CPACSWing
@@ -49,6 +51,7 @@ namespace generated
     class CPACSPositionings
     {
     public:
+        TIGL_EXPORT CPACSPositionings(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSPositionings(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSPositionings(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSPositionings(CCPACSWing* parent, CTiglUIDManager* uidMgr);
@@ -65,7 +68,7 @@ namespace generated
         P* GetParent()
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSPositionings");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSPositionings");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -77,7 +80,7 @@ namespace generated
         const P* GetParent() const
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSPositionings");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSWing>::value, "template argument for P is not a parent class of CPACSPositionings");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
