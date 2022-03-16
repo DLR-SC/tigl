@@ -34,7 +34,7 @@ public:
     TIGL_EXPORT CCPACSGuideCurveProfile(CCPACSGuideCurveProfiles* parent, CTiglUIDManager* uidMgr);
 
     // Returns the guide curve points as read from TIXI.
-    TIGL_EXPORT const std::vector<CTiglPoint>& GetGuideCurveProfilePoints();
+    TIGL_EXPORT const std::vector<CTiglPoint>& GetGuideCurveProfilePoints() const;
 };
 
 } // end namespace tigl

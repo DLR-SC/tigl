@@ -53,6 +53,20 @@ CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManag
 CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSegments(parent, uidMgr) {}
 
+CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
+{
+    if (IsParent<CCPACSFuselage>()) {
+        return GetParent<CCPACSFuselage>()->GetConfiguration();
+    }
+    else if (IsParent<CCPACSDuct>()) {
+        return GetParent<CCPACSDuct>()->GetConfiguration();
+    }
+    else
+    {
+        throw CTiglError("CCPACSFuselageSegments: Unknown parent.");
+    }
+}
+
 // Invalidates internal state
 void CCPACSFuselageSegments::Invalidate(const boost::optional<std::string>& source) const
 {
@@ -94,7 +108,7 @@ int CCPACSFuselageSegments::GetSegmentCount() const
 }
 
 
-CTiglAbstractGeometricComponent const* CCPACSFuselageSegments::GetParentComponent() const
+CTiglRelativelyPositionedComponent const* CCPACSFuselageSegments::GetParentComponent() const
 {
     if (IsParent<CCPACSFuselage>()) {
         return GetParent<CCPACSFuselage>();

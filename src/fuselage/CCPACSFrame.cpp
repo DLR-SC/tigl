@@ -32,9 +32,6 @@
 #include <Bnd_Box.hxx>
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <IntCurvesFace_Intersector.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
-#include <BRepProj_Projection.hxx>
 
 #include "Debugging.h"
 #include "tiglcommonfunctions.h"

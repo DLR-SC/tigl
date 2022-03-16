@@ -24,6 +24,7 @@
 #include "CCPACSFuselageSegment.h"
 #include "CTiglFuselageSegmentGuidecurveBuilder.h"
 #include "CCPACSFuselage.h"
+#include "CCPACSDuct.h"
 
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"
@@ -142,7 +143,6 @@ namespace tigl
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSegment(parent, uidMgr)
     , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParentComponent())
-    , fuselage(parent->GetParent())
     , surfacePropertiesCache(*this, &CCPACSFuselageSegment::UpdateSurfaceProperties)
     , surfaceCache(*this, &CCPACSFuselageSegment::BuildSurfaces)
     , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
@@ -210,12 +210,6 @@ void CCPACSFuselageSegment::SetToElementUID(const std::string& value) {
     endConnection = CTiglFuselageConnection(m_toElementUID, this);
 }
 
-// Returns the fuselage this segment belongs to
-CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const
-{
-    return *fuselage;
-}
-
 // helper function to get the wire of the start section
 TopoDS_Wire CCPACSFuselageSegment::GetStartWire(TiglCoordinateSystem referenceCS) const
 {
@@ -228,7 +222,7 @@ TopoDS_Wire CCPACSFuselageSegment::GetStartWire(TiglCoordinateSystem referenceCS
         return transformProfileWire(identity, startConnection, startWire);
     case GLOBAL_COORDINATE_SYSTEM:
         return TopoDS::Wire(
-            transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), startConnection, startWire));
+            transformFuselageProfileGeometry(GetParent()->GetParentComponent()->GetTransformationMatrix(), startConnection, startWire));
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetStartWire");
     }
@@ -246,7 +240,7 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) 
         return transformProfileWire(identity, endConnection, endWire);
     case GLOBAL_COORDINATE_SYSTEM:
         return TopoDS::Wire(
-            transformFuselageProfileGeometry(GetFuselage().GetTransformationMatrix(), endConnection, endWire));
+            transformFuselageProfileGeometry(GetParent()->GetParentComponent()->GetTransformationMatrix(), endConnection, endWire));
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetEndWire");
     }
@@ -255,21 +249,49 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) 
 // get short name for loft
 std::string CCPACSFuselageSegment::GetShortShapeName() const
 {
+    // 1: Get fuselage/duct index from fuselage/duct
+    std::string prefix;
+    std::string uid;
     unsigned int findex = 0;
-    unsigned int fsindex = 0;
-    for (int i = 1; i <= fuselage->GetConfiguration().GetFuselageCount(); ++i) {
-        tigl::CCPACSFuselage& f = fuselage->GetConfiguration().GetFuselage(i);
-        if (fuselage->GetUID() == f.GetUID()) {
-            findex = i;
-            for (int j = 1; j <= f.GetSegmentCount(); j++) {
-                CCPACSFuselageSegment& fs = f.GetSegment(j);
-                if (GetUID() == fs.GetUID()) {
-                    fsindex = j;
-                    std::stringstream shortName;
-                    shortName << "F" << findex << "S" << fsindex;
-                    return shortName.str();
-                }
+    if (m_parent->IsParent<CCPACSDuct>()) {
+
+        prefix = "D";
+        auto* duct = m_parent->GetParent<CCPACSDuct>();
+        unsigned int i = 0;
+        for (auto& d: duct->GetParent()->GetParent()->GetDucts()->GetDucts()) {
+            ++i;
+            if (duct->GetUID() == d->GetUID()) {
+                findex = i+1;
+                break;
             }
+        }
+    }
+    else if (m_parent->IsParent<CCPACSFuselage>()) {
+
+        prefix = "F";
+        auto* fuselage = m_parent->GetParent<CCPACSFuselage>();
+
+        for (int i = 1; fuselage->GetConfiguration().GetFuselageCount(); ++i) {
+            auto& f = fuselage->GetConfiguration().GetFuselage(i);
+            if (fuselage->GetUID() == f.GetUID()) {
+                findex = i;
+                break;
+            }
+        }
+    }
+    else {
+        throw CTiglError("CCPACSFuselageSegment: Unknown parent.");
+    }
+
+    // 2: get segment index and return combined short name
+    unsigned int fsindex = 0;
+    for (int j = 1; j <= GetParent()->GetSegmentCount(); j++) {
+        CCPACSFuselageSegment const& fs = GetParent()->GetSegment(j);
+        if (GetUID() == fs.GetUID()) {
+            fsindex = j;
+            std::stringstream shortName;
+            shortName << prefix << findex << "S" << fsindex;
+            return shortName.str();
         }
     }
     return "UNKNOWN";
@@ -323,8 +345,7 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
     }
     else {
         // retrieve segment loft as subshape of the fuselage loft
-        CCPACSFuselage& fuselage = GetFuselage();
-        PNamedShape fuselageLoft = fuselage.GetLoft();
+        PNamedShape fuselageLoft = GetParent()->GetParentComponent()->GetLoft();
 
         TopoDS_Shell loftShell;
         BRep_Builder BB;
@@ -494,8 +515,8 @@ double CCPACSFuselageSegment::GetSurfaceArea()
 int CCPACSFuselageSegment::GetStartConnectedSegmentCount()
 {
     int count = 0;
-    for (int i = 1; i <= GetFuselage().GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
+    for (int i = 1; i <= GetParent()->GetSegmentCount(); i++) {
+        CCPACSFuselageSegment& nextSegment = GetParent()->GetSegment(i);
         if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
@@ -512,8 +533,8 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentCount()
 int CCPACSFuselageSegment::GetEndConnectedSegmentCount()
 {
     int count = 0;
-    for (int i = 1; i <= GetFuselage().GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
+    for (int i = 1; i <= GetParent()->GetSegmentCount(); i++) {
+        CCPACSFuselageSegment& nextSegment = GetParent()->GetSegment(i);
         if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
@@ -534,8 +555,8 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentIndex(int n)
         throw CTiglError("Invalid value for parameter n in CCPACSFuselageSegment::GetStartConnectedSegmentIndex", TIGL_INDEX_ERROR);
     }
 
-    for (int i = 1, count = 0; i <= GetFuselage().GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
+    for (int i = 1, count = 0; i <= GetParent()->GetSegmentCount(); i++) {
+        CCPACSFuselageSegment& nextSegment = GetParent()->GetSegment(i);
         if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
@@ -559,8 +580,8 @@ int CCPACSFuselageSegment::GetEndConnectedSegmentIndex(int n)
         throw CTiglError("Invalid value for parameter n in CCPACSFuselageSegment::GetEndConnectedSegmentIndex", TIGL_INDEX_ERROR);
     }
 
-    for (int i = 1, count = 0; i <= GetFuselage().GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& nextSegment = (CCPACSFuselageSegment &) GetFuselage().GetSegment(i);
+    for (int i = 1, count = 0; i <= GetParent()->GetSegmentCount(); i++) {
+        CCPACSFuselageSegment& nextSegment = (CCPACSFuselageSegment &) GetParent()->GetSegment(i);
         if (nextSegment.GetSegmentIndex() == GetSegmentIndex()) {
             continue;
         }
@@ -598,8 +619,8 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta, TiglGetPointBeha
         gp_Pnt startProfilePoint = startProfile.GetPoint(zeta);
         gp_Pnt endProfilePoint   = endProfile.GetPoint(zeta);
 
-        startProfilePoint = transformProfilePoint(GetFuselage().GetTransformationMatrix(), startConnection, startProfilePoint);
-        endProfilePoint   = transformProfilePoint(GetFuselage().GetTransformationMatrix(), endConnection,   endProfilePoint);
+        startProfilePoint = transformProfilePoint(GetParent()->GetParentComponent()->GetTransformationMatrix(), startConnection, startProfilePoint);
+        endProfilePoint   = transformProfilePoint(GetParent()->GetParentComponent()->GetTransformationMatrix(), endConnection,   endProfilePoint);
 
         // Get point on fuselage segment in dependence of eta by linear interpolation
         Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(startProfilePoint, endProfilePoint);
@@ -620,12 +641,12 @@ gp_Pnt CCPACSFuselageSegment::GetPoint(double eta, double zeta, TiglGetPointBeha
 
 TIGL_EXPORT gp_Pnt CCPACSFuselageSegment::GetTransformedProfileOriginStart() const
 {
-    return transformProfilePoint(GetFuselage().GetTransformationMatrix(), startConnection, gp_Pnt(0., 0., 0.));
+    return transformProfilePoint(GetParent()->GetParentComponent()->GetTransformationMatrix(), startConnection, gp_Pnt(0., 0., 0.));
 }
 
 TIGL_EXPORT gp_Pnt CCPACSFuselageSegment::GetTransformedProfileOriginEnd() const
 {
-    return transformProfilePoint(GetFuselage().GetTransformationMatrix(), endConnection, gp_Pnt(0., 0., 0.));
+    return transformProfilePoint(GetParent()->GetParentComponent()->GetTransformationMatrix(), endConnection, gp_Pnt(0., 0., 0.));
 }
 
 
@@ -639,7 +660,7 @@ std::vector<CTiglPoint> CCPACSFuselageSegment::GetRawStartProfilePoints()
         for (std::vector<CTiglPoint>::size_type i = 0; i < points.size(); i++) {
             gp_Pnt pnt = points[i].Get_gp_Pnt();
 
-            pnt = transformProfilePoint(fuselage->GetTransformationMatrix(), startConnection, pnt);
+            pnt = transformProfilePoint(GetParent()->GetParentComponent()->GetTransformationMatrix(), startConnection, pnt);
 
             pointsTransformed.push_back(CTiglPoint(pnt.X(), pnt.Y(), pnt.Z()));
         }
@@ -659,7 +680,7 @@ std::vector<CTiglPoint> CCPACSFuselageSegment::GetRawEndProfilePoints()
         for (std::vector<tigl::CTiglPoint>::size_type i = 0; i < points.size(); i++) {
             gp_Pnt pnt = points[i].Get_gp_Pnt();
 
-            pnt = transformProfilePoint(fuselage->GetTransformationMatrix(), endConnection, pnt);
+            pnt = transformProfilePoint(GetParent()->GetParentComponent()->GetTransformationMatrix(), endConnection, pnt);
 
             pointsTransformed.push_back(CTiglPoint(pnt.X(), pnt.Y(), pnt.Z()));
         }
@@ -889,13 +910,13 @@ TIGL_EXPORT int CCPACSFuselageSegment::GetNumberOfLoftFaces() const
 
     // no guide curves, therefore we either have one or two faces, depending on the symmetry plane
     bool hasSymmetryPlane = GetNumberOfEdges(GetEndWire()) > 1;
-    int nfaces = GetNumberOfFaces(GetFuselage().GetLoft()->Shape());
-    int nSegments = GetFuselage().GetSegmentCount();
+    int nfaces = GetNumberOfFaces(GetParent()->GetParentComponent()->GetLoft()->Shape());
+    int nSegments = GetParent()->GetSegmentCount();
 
-    if (!CTiglTopoAlgorithms::IsDegenerated(GetFuselage().GetSegment(1).GetStartWire())) {
+    if (!CTiglTopoAlgorithms::IsDegenerated(GetParent()->GetSegment(1).GetStartWire())) {
           nfaces-=1;
     }
-    if (!CTiglTopoAlgorithms::IsDegenerated(GetFuselage().GetSegment(GetFuselage().GetSegmentCount()).GetEndWire())) {
+    if (!CTiglTopoAlgorithms::IsDegenerated(GetParent()->GetSegment(GetParent()->GetSegmentCount()).GetEndWire())) {
           nfaces-=1;
     }
 

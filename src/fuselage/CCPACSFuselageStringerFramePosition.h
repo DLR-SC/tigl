@@ -21,7 +21,7 @@
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 
-#include "CTiglRelativelyPositionedComponent.h"
+#include "ITiglFuselageDuctStructure.h"
 #include "generated/CPACSStringerFramePosition.h"
 #include "Cache.h"
 
@@ -59,7 +59,7 @@ public:
 
 private:
 
-    CTiglRelativelyPositionedComponent const* GetParentComponent() const;
+    ITiglFuselageDuctStructure const* GetStructureInterface() const;
 
     struct RelativePositionCache {
         double positionXRel;

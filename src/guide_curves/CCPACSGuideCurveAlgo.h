@@ -65,7 +65,7 @@ public:
                                      const Standard_Real& scale1,
                                      const Standard_Real& scale2,
                                      const gp_Dir& x_direction,
-                                     CCPACSGuideCurveProfile& gcp) :
+                                     const CCPACSGuideCurveProfile& gcp) :
         _getPointAlgo1(profileContainer1),
         _getPointAlgo2(profileContainer2),
         _alpha1(alpha1),
@@ -127,7 +127,7 @@ private:
     Standard_Real           _scale1;               /**< 1st scale factor */
     Standard_Real           _scale2;               /**< 2nd scale factor */
     gp_Dir                  _x_direction;          /**< x-direction of the guide curve points */
-    CCPACSGuideCurveProfile& _guideCurveProfile;   /**< Guide curve profile */
+    CCPACSGuideCurveProfile const& _guideCurveProfile;   /**< Guide curve profile */
 };
 
 } // end namespace tigl

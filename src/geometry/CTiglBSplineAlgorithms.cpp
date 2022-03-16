@@ -826,7 +826,7 @@ CTiglApproxResult CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(Handle(G
 
     int nSegmentsOld = spline->NbPoles() - spline->Degree();
     // The new number of segments is a power of two
-    int nSegmentsNew = pow(2.0, static_cast<int>(log2(static_cast<float>(nSegmentsOld))));
+    int nSegmentsNew = (int)pow(2.0, static_cast<int>(log2(static_cast<float>(nSegmentsOld))));
 
     // we are using at least 8 segments to be safe with accuracy
     nSegmentsNew = std::max(nSegmentsNew, 8);

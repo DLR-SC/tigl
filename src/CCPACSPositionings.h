@@ -44,6 +44,7 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSPositionings(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPositionings(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPositionings(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPositionings(CCPACSWing* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor

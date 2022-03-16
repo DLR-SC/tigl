@@ -20,7 +20,7 @@
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSDuct.h"
 #include "CCPACSFuselage.h"
-#include "generated/CPACSDuctStructure.h"
+#include "CCPACSDuctStructure.h"
 #include "CCPACSFuselageStructure.h"
 
 namespace tigl

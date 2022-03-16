@@ -26,6 +26,8 @@
 #include "CTiglFuselageConnection.h"
 #include "CTiglError.h"
 #include "CCPACSFuselage.h"
+#include "CCPACSDuct.h"
+#include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
@@ -41,12 +43,12 @@ CTiglFuselageConnection::CTiglFuselageConnection(const std::string& elementUID, 
     : elementUID(&elementUID), segment(aSegment)
 {
     // find the corresponding section to this segment
-    CCPACSFuselage& fuselage = segment->GetFuselage();
-    for (int i = 1; i <= fuselage.GetSectionCount(); i++) {
-        CCPACSFuselageSection& section = fuselage.GetSection(i);
-        for (int j = 1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == elementUID) {
-                sectionUID = section.GetUID();
+    int i = 0;
+    for (auto& section: GetParentComponentSections().GetSections()) {
+        ++i;
+        for (int j = 1; j <= section->GetSectionElementCount(); j++) {
+            if (section->GetSectionElement(j).GetUID() == elementUID) {
+                sectionUID = section->GetUID();
                 sectionIndex = i;
                 elementIndex = j;
             }
@@ -83,15 +85,13 @@ int CTiglFuselageConnection::GetSectionElementIndex() const
 // Returns the fuselage profile referenced by this connection
 CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile()
 {
-    CCPACSFuselage& fuselage = segment->GetFuselage();
     std::string profileUID;
 
     bool found = false;
-    for (int i=1; i <= fuselage.GetSectionCount(); i++) {
-        CCPACSFuselageSection& section = fuselage.GetSection(i);
-        for (int j=1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == *elementUID ) {
-                CCPACSFuselageSectionElement& element = section.GetSectionElement(j);
+    for (auto& section: GetParentComponentSections().GetSections()) {
+        for (int j=1; j <= section->GetSectionElementCount(); j++) {
+            if (section->GetSectionElement(j).GetUID() == *elementUID ) {
+                CCPACSFuselageSectionElement& element = section->GetSectionElement(j);
                 profileUID = element.GetProfileUID();
                 found = true;
                 break;
@@ -101,7 +101,7 @@ CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile()
             break;
         }
     }
-    CCPACSConfiguration& config = fuselage.GetConfiguration();
+    CCPACSConfiguration const& config = segment->GetParent()->GetConfiguration();
 
     return (config.GetFuselageProfile(profileUID));
 }
@@ -113,20 +113,22 @@ const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const {
 // Returns the positioning transformation for the referenced section
 boost::optional<CTiglTransformation> CTiglFuselageConnection::GetPositioningTransformation() const
 {
-    return (segment->GetFuselage().GetPositioningTransformation(sectionUID));
+    boost::optional<CTiglTransformation> ret;
+    if (GetParentComponentPositionings()) {
+        ret = GetParentComponentPositionings()->GetPositioningTransformation(sectionUID);
+    }
+    return ret;
 }
 
 // Returns the section matrix referenced by this connection
 CTiglTransformation CTiglFuselageConnection::GetSectionTransformation() const
 {
-    CCPACSFuselage& fuselage = segment->GetFuselage();
     CTiglTransformation transformation;
 
-    for (int i = 1; i <= fuselage.GetSectionCount(); i++) {
-        CCPACSFuselageSection& section = fuselage.GetSection(i);
-        for (int j = 1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == *elementUID) {
-                transformation = section.GetSectionTransformation();
+    for (auto& section: GetParentComponentSections().GetSections()) {
+        for (int j = 1; j <= section->GetSectionElementCount(); j++) {
+            if (section->GetSectionElement(j).GetUID() == *elementUID) {
+                transformation = section->GetSectionTransformation();
             }
         }
     }
@@ -136,19 +138,43 @@ CTiglTransformation CTiglFuselageConnection::GetSectionTransformation() const
 // Returns the section element matrix referenced by this connection
 CTiglTransformation CTiglFuselageConnection::GetSectionElementTransformation() const
 {
-    CCPACSFuselage& fuselage = segment->GetFuselage();
     CTiglTransformation transformation;
 
-    for (int i = 1; i <= fuselage.GetSectionCount(); i++) {
-        CCPACSFuselageSection& section = fuselage.GetSection(i);
-        for (int j = 1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == *elementUID) {
-                CCPACSFuselageSectionElement& element = section.GetSectionElement(j);
+    for (auto& section: GetParentComponentSections().GetSections()) {
+        for (int j = 1; j <= section->GetSectionElementCount(); j++) {
+            if (section->GetSectionElement(j).GetUID() == *elementUID) {
+                CCPACSFuselageSectionElement& element = section->GetSectionElement(j);
                 transformation = element.GetSectionElementTransformation();
             }
         }  
     }
     return transformation;
+}
+
+CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSections() const
+{
+    if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
+        return segment->GetParent()->GetParent<CCPACSFuselage>()->GetSections();
+    }
+    else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
+        return segment->GetParent()->GetParent<CCPACSDuct>()->GetSections();
+    }
+    else {
+        throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");
+    }
+}
+
+boost::optional<CCPACSPositionings>& CTiglFuselageConnection::GetParentComponentPositionings() const
+{
+    if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
+        return segment->GetParent()->GetParent<CCPACSFuselage>()->GetPositionings();
+    }
+    else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
+        return segment->GetParent()->GetParent<CCPACSDuct>()->GetPositionings();
+    }
+    else {
+        throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");
+    }
 }
 
 } // end namespace tigl

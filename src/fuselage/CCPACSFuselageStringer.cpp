@@ -95,8 +95,7 @@ void CCPACSFuselageStringer::BuildGeometry(TopoDS_Shape& cache, bool just1DEleme
     // 2) if not just 1D element, build and sweep the profile all along the path
 
     // -1) place every points in the fuselage loft
-    auto trafo = m_parent->GetTransformationMatrix().Inverted();
-    const TopoDS_Shape loft = trafo.Transform(m_parent->GetParentComponent()->GetLoft()->DeepCopy()->Shape());
+    const TopoDS_Shape loft = m_parent->GetStructureInterface()->GetLoft();
     std::vector<gp_Lin> pointList;
     for (size_t i = 0; i < m_stringerPositions.size(); i++) {
         pointList.push_back(m_parent->GetStructureInterface()->Intersection(*m_stringerPositions[i]));
@@ -146,8 +145,7 @@ void CCPACSFuselageStringer::BuildGeometry(TopoDS_Shape& cache, bool just1DEleme
 
 void CCPACSFuselageStringer::BuildCutGeometry(TopoDS_Shape& cache) const
 {
-    auto trafo = m_parent->GetTransformationMatrix().Inverted();
-    const TopoDS_Shape fuselageLoft = trafo.Transform(m_parent->GetParentComponent()->GetLoft()->DeepCopy()->Shape());
+    const TopoDS_Shape fuselageLoft =  m_parent->GetStructureInterface()->GetLoft();
 
     Bnd_Box fuselageBox;
     BRepBndLib::Add(fuselageLoft, fuselageBox);

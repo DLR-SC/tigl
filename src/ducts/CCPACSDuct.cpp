@@ -20,6 +20,7 @@
 */
 
 #include "CCPACSDuct.h"
+#include "generated/CPACSDucts.h"
 
 namespace tigl {
 
@@ -28,6 +29,11 @@ CCPACSDuct::CCPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
   , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
 {}
 
+CCPACSConfiguration& CCPACSDuct::GetConfiguration() const
+{
+    return GetParent()->GetParent()->GetConfiguration();
+}
+
 std::string CCPACSDuct::GetDefaultedUID() const
 {
     return generated::CPACSDuct::GetUID();
@@ -35,7 +41,7 @@ std::string CCPACSDuct::GetDefaultedUID() const
 
 TiglGeometricComponentType CCPACSDuct::GetComponentType() const
 {
-    return TIGL_COMPONENT_OTHER;
+    return TIGL_COMPONENT_DUCT;
 }
 
 TiglGeometricComponentIntent CCPACSDuct::GetComponentIntent() const

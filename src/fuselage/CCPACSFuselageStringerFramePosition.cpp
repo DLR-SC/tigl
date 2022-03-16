@@ -127,7 +127,7 @@ void CCPACSFuselageStringerFramePosition::SetReferenceZRel(double referenceZRel)
     Invalidate();
 }
 
-void CCPACSFuselageStringerFramePosition::InvalidateImpl(const boost::optional<std::string>& source) const
+void CCPACSFuselageStringerFramePosition::InvalidateImpl(const boost::optional<std::string>& /*source*/) const
 {
     m_relCache.clear();
     // invalidate parent frame or stringer
@@ -157,7 +157,7 @@ void CCPACSFuselageStringerFramePosition::GetZBorders(double& zmin, double& zmax
 
 void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePositionCache& cache) const
 {
-    const TopoDS_Shape loft = GetParentComponent()->GetTransformationMatrix().Inverted().Transform(GetParentComponent()->GetLoft()->DeepCopy()->Shape());
+    const TopoDS_Shape loft = GetStructureInterface()->GetLoft();
         
     Bnd_Box bBox1;
     BRepBndLib::Add(loft, bBox1);
@@ -218,11 +218,11 @@ void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePosi
     cache.referenceZRel = referenceZRel;
 }
 
-CTiglRelativelyPositionedComponent const* CCPACSFuselageStringerFramePosition::GetParentComponent() const {
+ITiglFuselageDuctStructure const* CCPACSFuselageStringerFramePosition::GetStructureInterface() const {
     if (IsParent<CCPACSFrame>())
-        return GetParent<CCPACSFrame>()->GetParent()->GetParentComponent();
+        return GetParent<CCPACSFrame>()->GetParent()->GetStructureInterface();
     else if (IsParent<CCPACSFuselageStringer>())
-        return GetParent<CCPACSFuselageStringer>()->GetParent()->GetParentComponent();
+        return GetParent<CCPACSFuselageStringer>()->GetParent()->GetStructureInterface();
     else
         throw CTiglError("Invalid parent");
 }
