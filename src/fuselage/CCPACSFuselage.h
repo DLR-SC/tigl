@@ -102,8 +102,7 @@ public:
     TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
 
     // Gets the getPointBehavior
-    TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
-    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
+    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior() const;
 
     // Gets the volume of this fuselage
     TIGL_EXPORT double GetVolume();

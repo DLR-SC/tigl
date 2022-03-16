@@ -29,7 +29,17 @@ namespace tigl
 
 class CCPACSDuct : public generated::CPACSDuct, public CTiglRelativelyPositionedComponent
 {
+public:
 
+    TIGL_EXPORT CCPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    // Returns the Component Type TIGL_COMPONENT_OTHER
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+
+protected:
+    PNamedShape BuildLoft() const override;
 };
 
 }

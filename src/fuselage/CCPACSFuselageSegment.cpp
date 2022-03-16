@@ -165,7 +165,7 @@ void CCPACSFuselageSegment::Cleanup()
     CTiglAbstractGeometricComponent::Reset();
 }
 
-void CCPACSFuselageSegment::InvalidateImpl(const boost::optional<std::string>& source) const
+void CCPACSFuselageSegment::InvalidateImpl(const boost::optional<std::string>& /*source*/) const
 {
     CTiglAbstractSegment<CCPACSFuselageSegment>::Reset();
     // forward invalidation to parent fuselage

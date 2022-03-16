@@ -82,7 +82,7 @@ CCPACSFuselage::~CCPACSFuselage()
 }
 
 // Invalidates internal state
-void CCPACSFuselage::InvalidateImpl(const boost::optional<std::string>& source) const
+void CCPACSFuselage::InvalidateImpl(const boost::optional<std::string>& /*source*/) const
 {
     loft.clear();
     guideCurves.clear();
@@ -324,13 +324,7 @@ void CCPACSFuselage::SetGetPointBehavior(TiglGetPointBehavior behavior)
 }
 
 // Gets the getPointBehavior
-TiglGetPointBehavior const CCPACSFuselage::GetGetPointBehavior() const
-{
-    return getPointBehavior;
-}
-
-// Gets the getPointBehavior
-TiglGetPointBehavior CCPACSFuselage::GetGetPointBehavior()
+TiglGetPointBehavior CCPACSFuselage::GetGetPointBehavior() const
 {
     return getPointBehavior;
 }
