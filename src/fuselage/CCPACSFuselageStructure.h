@@ -20,7 +20,7 @@
 #include <boost/optional.hpp>
 
 #include "generated/CPACSFuselageStructure.h"
-#include "ITiGLFuselageDuctStructure.h"
+#include "ITiglFuselageDuctStructure.h"
 
 namespace tigl
 {
