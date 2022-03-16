@@ -15,16 +15,20 @@
 */
 
 #include "CCPACSFuselageStructure.h"
+#include "CCPACSFuselage.h"
 
 namespace tigl
 {
 CCPACSFuselageStructure::CCPACSFuselageStructure(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageStructure(parent, uidMgr)
+    , ITiglFuselageDuctStructure(parent)
 {
 }
 
 void CCPACSFuselageStructure::Invalidate(const boost::optional<std::string>& source) const
 {
+    ITiglFuselageDuctStructure::Invalidate();
+
     if (m_frames) {
         m_frames->Invalidate(source);
     }

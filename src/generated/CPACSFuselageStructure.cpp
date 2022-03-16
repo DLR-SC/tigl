@@ -275,12 +275,12 @@ namespace generated
 
     }
 
-    const boost::optional<CPACSSkin>& CPACSFuselageStructure::GetSkin() const
+    const boost::optional<CCPACSSkin>& CPACSFuselageStructure::GetSkin() const
     {
         return m_skin;
     }
 
-    boost::optional<CPACSSkin>& CPACSFuselageStructure::GetSkin()
+    boost::optional<CCPACSSkin>& CPACSFuselageStructure::GetSkin()
     {
         return m_skin;
     }
@@ -365,7 +365,7 @@ namespace generated
         return m_cargoDoors;
     }
 
-    CPACSSkin& CPACSFuselageStructure::GetSkin(CreateIfNotExistsTag)
+    CCPACSSkin& CPACSFuselageStructure::GetSkin(CreateIfNotExistsTag)
     {
         if (!m_skin)
             m_skin = boost::in_place(reinterpret_cast<CCPACSFuselageStructure*>(this), m_uidMgr);

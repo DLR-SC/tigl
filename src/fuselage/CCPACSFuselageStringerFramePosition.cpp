@@ -157,10 +157,10 @@ void CCPACSFuselageStringerFramePosition::GetZBorders(double& zmin, double& zmax
 
 void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePositionCache& cache) const
 {
-    const TopoDS_Shape fuselageLoft = GetFuselage().GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
+    const TopoDS_Shape loft = GetParentComponent()->GetTransformationMatrix().Inverted().Transform(GetParentComponent()->GetLoft()->DeepCopy()->Shape());
         
     Bnd_Box bBox1;
-    BRepBndLib::Add(fuselageLoft, bBox1);
+    BRepBndLib::Add(loft, bBox1);
     double XMN = 0., XMX = 0., YMN = 0., YMX = 0., ZMN = 0., ZMX = 0.;
     bBox1.Get(XMN, YMN, ZMN, XMX, YMX, ZMX);
         
@@ -179,7 +179,7 @@ void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePosi
     gp_Pnt pRef(m_positionX, 0., 0.);
     gp_Pln cutPlane(pRef, gp_Dir(1,0,0));
         
-    TopoDS_Shape Section = CutShapes(fuselageLoft, BRepBuilderAPI_MakeFace(cutPlane).Face());
+    TopoDS_Shape Section = CutShapes(loft, BRepBuilderAPI_MakeFace(cutPlane).Face());
         
     Bnd_Box bBox2;
     BRepBndLib::Add(Section, bBox2);
@@ -218,15 +218,13 @@ void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePosi
     cache.referenceZRel = referenceZRel;
 }
 
-const CCPACSFuselage& CCPACSFuselageStringerFramePosition::GetFuselage() const {
-    const CCPACSFuselageStructure* s = nullptr;
+CTiglRelativelyPositionedComponent const* CCPACSFuselageStringerFramePosition::GetParentComponent() const {
     if (IsParent<CCPACSFrame>())
-        s = GetParent<CCPACSFrame>()->GetParent()->GetParent();
+        return GetParent<CCPACSFrame>()->GetParent()->GetParentComponent();
     else if (IsParent<CCPACSFuselageStringer>())
-        s = GetParent<CCPACSFuselageStringer>()->GetParent()->GetParent();
+        return GetParent<CCPACSFuselageStringer>()->GetParent()->GetParentComponent();
     else
         throw CTiglError("Invalid parent");
-    return *s->GetParent();
 }
 
 } // namespace tigl

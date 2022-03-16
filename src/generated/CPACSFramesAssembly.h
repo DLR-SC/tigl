@@ -30,12 +30,11 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSFrame;
+class CCPACSDuctStructure;
 class CCPACSFuselageStructure;
 
 namespace generated
 {
-    class CPACSDuctStructure;
-
     // This class is used in:
     // CPACSDuctStructure
     // CPACSFuselageStructure
@@ -47,7 +46,7 @@ namespace generated
     class CPACSFramesAssembly
     {
     public:
-        TIGL_EXPORT CPACSFramesAssembly(CPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFramesAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFramesAssembly();
@@ -62,7 +61,7 @@ namespace generated
         P* GetParent()
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -74,7 +73,7 @@ namespace generated
         const P* GetParent() const
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -115,7 +114,4 @@ namespace generated
 } // namespace generated
 
 // CPACSFramesAssembly is customized, use type CCPACSFramesAssembly directly
-
-// Aliases in tigl namespace
-using CCPACSDuctStructure = generated::CPACSDuctStructure;
 } // namespace tigl

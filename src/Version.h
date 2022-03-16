@@ -124,9 +124,9 @@ private:
         auto results = std::match_results<std::string::const_iterator>();
 
         if (std::regex_search(str, results, expr)) {
-            m_major = atof(results[1].str().c_str());
-            m_minor = atof(results[2].str().c_str());
-            m_patch = atof(results[4].str().c_str());
+            m_major = (int)atof(results[1].str().c_str());
+            m_minor = (int)atof(results[2].str().c_str());
+            m_patch = (int)atof(results[4].str().c_str());
             m_label = results[5];
             m_build = results[6];
         }

@@ -141,7 +141,7 @@ namespace tigl
 
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSegment(parent, uidMgr)
-    , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParent())
+    , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParentComponent())
     , fuselage(parent->GetParent())
     , surfacePropertiesCache(*this, &CCPACSFuselageSegment::UpdateSurfaceProperties)
     , surfaceCache(*this, &CCPACSFuselageSegment::BuildSurfaces)

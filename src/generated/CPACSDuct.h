@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSDuctStructure.h>
 #include <CCPACSFuselageSections.h>
 #include <CCPACSFuselageSegments.h>
 #include <CCPACSPositionings.h>
@@ -26,7 +27,6 @@
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
-#include "CPACSDuctStructure.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
@@ -93,13 +93,13 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSFuselageSegments& GetSegments() const;
         TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSDuctStructure>& GetStructure() const;
-        TIGL_EXPORT virtual boost::optional<CPACSDuctStructure>& GetStructure();
+        TIGL_EXPORT virtual const boost::optional<CCPACSDuctStructure>& GetStructure() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSDuctStructure>& GetStructure();
 
         TIGL_EXPORT virtual CCPACSPositionings& GetPositionings(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePositionings();
 
-        TIGL_EXPORT virtual CPACSDuctStructure& GetStructure(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSDuctStructure& GetStructure(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructure();
 
     protected:
@@ -107,29 +107,29 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                         m_uID;
+        std::string                          m_uID;
 
-        boost::optional<TiglSymmetryAxis>   m_symmetry;
+        boost::optional<TiglSymmetryAxis>    m_symmetry;
 
         /// Name
-        std::string                         m_name;
+        std::string                          m_name;
 
         /// Description
-        boost::optional<std::string>        m_description;
+        boost::optional<std::string>         m_description;
 
         /// UID of part to which the duct is
         /// mounted (if any)
-        boost::optional<std::string>        m_parentUID;
+        boost::optional<std::string>         m_parentUID;
 
-        CCPACSTransformation                m_transformation;
+        CCPACSTransformation                 m_transformation;
 
-        CCPACSFuselageSections              m_sections;
+        CCPACSFuselageSections               m_sections;
 
-        boost::optional<CCPACSPositionings> m_positionings;
+        boost::optional<CCPACSPositionings>  m_positionings;
 
-        CCPACSFuselageSegments              m_segments;
+        CCPACSFuselageSegments               m_segments;
 
-        boost::optional<CPACSDuctStructure> m_structure;
+        boost::optional<CCPACSDuctStructure> m_structure;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;

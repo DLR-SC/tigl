@@ -44,7 +44,7 @@ CCPACSFuselageStringer::CCPACSFuselageStringer(CCPACSStringersAssembly* parent, 
 {
 }
 
-void CCPACSFuselageStringer::InvalidateImpl(const boost::optional<std::string>& source) const
+void CCPACSFuselageStringer::InvalidateImpl(const boost::optional<std::string>& /*source*/) const
 {
     m_geomCache1D.clear();
     m_geomCache3D.clear();
@@ -95,10 +95,11 @@ void CCPACSFuselageStringer::BuildGeometry(TopoDS_Shape& cache, bool just1DEleme
     // 2) if not just 1D element, build and sweep the profile all along the path
 
     // -1) place every points in the fuselage loft
-    CCPACSFuselage& fuselage  = *m_parent->GetParent()->GetParent();
+    auto trafo = m_parent->GetTransformationMatrix().Inverted();
+    const TopoDS_Shape loft = trafo.Transform(m_parent->GetParentComponent()->GetLoft()->DeepCopy()->Shape());
     std::vector<gp_Lin> pointList;
     for (size_t i = 0; i < m_stringerPositions.size(); i++) {
-        pointList.push_back(fuselage.Intersection(*m_stringerPositions[i]));
+        pointList.push_back(m_parent->GetStructureInterface()->Intersection(*m_stringerPositions[i]));
     }
 
     // creation of the profile plane
@@ -125,7 +126,7 @@ void CCPACSFuselageStringer::BuildGeometry(TopoDS_Shape& cache, bool just1DEleme
         const gp_Dir interDir(0, midPointOnStringer.Y() - midPointRefs.Y(), midPointOnStringer.Z() - midPointRefs.Z());
 
         // then, we project the segment on the fuselage, and get the resulting wire
-        const TopoDS_Wire path = fuselage.projectParallel(BRepBuilderAPI_MakeEdge(p1, p3).Edge(), interDir);
+        const TopoDS_Wire path = m_parent->GetStructureInterface()->projectParallel(BRepBuilderAPI_MakeEdge(p1, p3).Edge(), interDir);
 
         if (just1DElements) {
             builder.Add(compound, path);
@@ -145,7 +146,8 @@ void CCPACSFuselageStringer::BuildGeometry(TopoDS_Shape& cache, bool just1DEleme
 
 void CCPACSFuselageStringer::BuildCutGeometry(TopoDS_Shape& cache) const
 {
-    const TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
+    auto trafo = m_parent->GetTransformationMatrix().Inverted();
+    const TopoDS_Shape fuselageLoft = trafo.Transform(m_parent->GetParentComponent()->GetLoft()->DeepCopy()->Shape());
 
     Bnd_Box fuselageBox;
     BRepBndLib::Add(fuselageLoft, fuselageBox);

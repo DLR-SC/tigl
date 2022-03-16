@@ -27,6 +27,7 @@
 
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
+#include "CCPACSDuct.h"
 #include "CTiglError.h"
 #include "sorting.h"
 #include "CTiglLogging.h"
@@ -45,6 +46,10 @@ namespace
 
 namespace tigl
 {
+
+CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSegments(parent, uidMgr) {}
+
 CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSegments(parent, uidMgr) {}
 
@@ -86,6 +91,20 @@ CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& se
 int CCPACSFuselageSegments::GetSegmentCount() const
 {
     return static_cast<int>(m_segments.size());
+}
+
+
+CTiglAbstractGeometricComponent const* CCPACSFuselageSegments::GetParentComponent() const
+{
+    if (IsParent<CCPACSFuselage>()) {
+        return GetParent<CCPACSFuselage>();
+    }
+    else if (IsParent<CCPACSDuct>()) {
+        return GetParent<CCPACSDuct>();
+    }
+    else {
+        throw CTiglError("Unknown parent type for CCPACSFuselageSegments.");
+    }
 }
 
 void tigl::CCPACSFuselageSegments::ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath)

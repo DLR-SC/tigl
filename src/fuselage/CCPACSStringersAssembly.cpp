@@ -34,16 +34,31 @@ void CCPACSStringersAssembly::Invalidate(const boost::optional<std::string>& sou
     }
 }
 
-CTiglTransformation CCPACSStringersAssembly::GetTransformationMatrix() const
+CTiglRelativelyPositionedComponent const* CCPACSStringersAssembly::GetParentComponent() const
 {
     if (IsParent<CCPACSDuctStructure>()) {
-        return GetParent<CCPACSDuctStructure>()->GetParent()->GetTransformationMatrix();
+        return GetParent<CCPACSDuctStructure>()->GetParent();
     }
     if (IsParent<CCPACSFuselageStructure>()) {
-        return GetParent<CCPACSFuselageStructure>()->GetParent()->GetTransformationMatrix();
+        return GetParent<CCPACSFuselageStructure>()->GetParent();
     }
     throw CTiglError("Unexpected error: Parent of CCPACSStringersAssembly must either be CCPACSDuctStructure or CCPACSFuselageStructure.");
 }
 
+CTiglTransformation CCPACSStringersAssembly::GetTransformationMatrix() const
+{
+    return GetParentComponent()->GetTransformationMatrix();
+}
+
+ITiglFuselageDuctStructure const* CCPACSStringersAssembly::GetStructureInterface() const
+{
+    if (IsParent<CCPACSDuctStructure>()) {
+        return GetParent<CCPACSDuctStructure>();
+    }
+    if (IsParent<CCPACSFuselageStructure>()) {
+        return GetParent<CCPACSFuselageStructure>();
+    }
+    throw CTiglError("Unexpected error: Parent of CCPACSStringersAssembly must either be CCPACSDuctStructure or CCPACSFuselageStructure.");
+}
 
 } // namespace tigl

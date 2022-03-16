@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSDuctStructure.h"
 #include "CCPACSFuselageStructure.h"
-#include "CPACSDuctStructure.h"
 #include "CPACSSkin.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,12 +29,12 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSkin::CPACSSkin(CPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
+    CPACSSkin::CPACSSkin(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSDuctStructure);
+        m_parentType = &typeid(CCPACSDuctStructure);
     }
 
     CPACSSkin::CPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
@@ -55,8 +55,8 @@ namespace generated
     const CTiglUIDObject* CPACSSkin::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CPACSDuctStructure>()) {
-                return GetParent<CPACSDuctStructure>()->GetNextUIDParent();
+            if (IsParent<CCPACSDuctStructure>()) {
+                return GetParent<CCPACSDuctStructure>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
@@ -68,8 +68,8 @@ namespace generated
     CTiglUIDObject* CPACSSkin::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CPACSDuctStructure>()) {
-                return GetParent<CPACSDuctStructure>()->GetNextUIDParent();
+            if (IsParent<CCPACSDuctStructure>()) {
+                return GetParent<CCPACSDuctStructure>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
@@ -101,7 +101,7 @@ namespace generated
 
         // read element skinSegments
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skinSegments")) {
-            m_skinSegments = boost::in_place(this, m_uidMgr);
+            m_skinSegments = boost::in_place(reinterpret_cast<CCPACSSkin*>(this), m_uidMgr);
             try {
                 m_skinSegments->ReadCPACS(tixiHandle, xpath + "/skinSegments");
             } catch(const std::exception& e) {
@@ -165,7 +165,7 @@ namespace generated
     CPACSSkinSegments& CPACSSkin::GetSkinSegments(CreateIfNotExistsTag)
     {
         if (!m_skinSegments)
-            m_skinSegments = boost::in_place(this, m_uidMgr);
+            m_skinSegments = boost::in_place(reinterpret_cast<CCPACSSkin*>(this), m_uidMgr);
         return *m_skinSegments;
     }
 

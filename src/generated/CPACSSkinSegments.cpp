@@ -17,7 +17,7 @@
 
 #include <cassert>
 #include <CCPACSSkinSegment.h>
-#include "CPACSSkin.h"
+#include "CCPACSSkin.h"
 #include "CPACSSkinSegments.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSkinSegments::CPACSSkinSegments(CPACSSkin* parent, CTiglUIDManager* uidMgr)
+    CPACSSkinSegments::CPACSSkinSegments(CCPACSSkin* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSkin* CPACSSkinSegments::GetParent() const
+    const CCPACSSkin* CPACSSkinSegments::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSkin* CPACSSkinSegments::GetParent()
+    CCPACSSkin* CPACSSkinSegments::GetParent()
     {
         return m_parent;
     }

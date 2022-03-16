@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include <CCPACSFrame.h>
+#include "CCPACSDuctStructure.h"
 #include "CCPACSFuselageStructure.h"
-#include "CPACSDuctStructure.h"
 #include "CPACSFramesAssembly.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -30,12 +30,12 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSFramesAssembly::CPACSFramesAssembly(CPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
+    CPACSFramesAssembly::CPACSFramesAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSDuctStructure);
+        m_parentType = &typeid(CCPACSDuctStructure);
     }
 
     CPACSFramesAssembly::CPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
@@ -53,8 +53,8 @@ namespace generated
     const CTiglUIDObject* CPACSFramesAssembly::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CPACSDuctStructure>()) {
-                return GetParent<CPACSDuctStructure>()->GetNextUIDParent();
+            if (IsParent<CCPACSDuctStructure>()) {
+                return GetParent<CCPACSDuctStructure>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
@@ -66,8 +66,8 @@ namespace generated
     CTiglUIDObject* CPACSFramesAssembly::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CPACSDuctStructure>()) {
-                return GetParent<CPACSDuctStructure>()->GetNextUIDParent();
+            if (IsParent<CCPACSDuctStructure>()) {
+                return GetParent<CCPACSDuctStructure>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();

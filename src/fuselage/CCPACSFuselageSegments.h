@@ -26,6 +26,7 @@
 #include <boost/optional.hpp>
 
 #include "generated/CPACSFuselageSegments.h"
+#include "CTiglAbstractGeometricComponent.h"
 
 namespace tigl
 {
@@ -34,6 +35,7 @@ class CCPACSFuselageSegment;
 class CCPACSFuselageSegments : public generated::CPACSFuselageSegments
 {
 public:
+    TIGL_EXPORT CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
@@ -48,6 +50,10 @@ public:
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
+
+    // Gets the parent component
+    TIGL_EXPORT CTiglAbstractGeometricComponent const* GetParentComponent() const;
+
 
     // CPACSFuselageSegments interface
 public:

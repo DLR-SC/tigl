@@ -20,10 +20,10 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSFramesAssembly.h>
+#include <CCPACSSkin.h>
 #include <CCPACSStringersAssembly.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSSkin.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -61,8 +61,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSkin>& GetSkin() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSkin>& GetSkin();
+        TIGL_EXPORT virtual const boost::optional<CCPACSSkin>& GetSkin() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSSkin>& GetSkin();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSStringersAssembly>& GetStringers() const;
         TIGL_EXPORT virtual boost::optional<CCPACSStringersAssembly>& GetStringers();
@@ -70,7 +70,7 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSFramesAssembly>& GetFrames() const;
         TIGL_EXPORT virtual boost::optional<CCPACSFramesAssembly>& GetFrames();
 
-        TIGL_EXPORT virtual CPACSSkin& GetSkin(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSSkin& GetSkin(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSkin();
 
         TIGL_EXPORT virtual CCPACSStringersAssembly& GetStringers(CreateIfNotExistsTag);
@@ -84,7 +84,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CPACSSkin>               m_skin;
+        boost::optional<CCPACSSkin>              m_skin;
         boost::optional<CCPACSStringersAssembly> m_stringers;
         boost::optional<CCPACSFramesAssembly>    m_frames;
 
@@ -97,6 +97,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSDuctStructure = generated::CPACSDuctStructure;
+// CPACSDuctStructure is customized, use type CCPACSDuctStructure directly
 } // namespace tigl

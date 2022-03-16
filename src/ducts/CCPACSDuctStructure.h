@@ -1,6 +1,7 @@
 /*
-* Copyright (c) 2018 RISC Software GmbH
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
+* Created: 2022-03-15 Anton Reiswich <Anton.Reiswich@dlr.de>
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -13,23 +14,24 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+/**
+* @file
+* @brief  Implementation of CPACS duct structure handling routines.
+*/
 
 #pragma once
 
-#include <string>
-#include <boost/optional.hpp>
-
-#include "generated/CPACSFuselageStructure.h"
-#include "ITiGLFuselageDuctStructure.h"
+#include "generated/CPACSDuctStructure.h"
+#include "CTiglRelativelyPositionedComponent.h"
+#include "ITiglFuselageDuctStructure.h"
 
 namespace tigl
 {
-class CCPACSFuselageStructure : public generated::CPACSFuselageStructure, public ITiglFuselageDuctStructure
+
+class CCPACSDuctStructure : public generated::CPACSDuctStructure, public ITiglFuselageDuctStructure
 {
 public:
-    TIGL_EXPORT CCPACSFuselageStructure(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
-
-    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
+    TIGL_EXPORT CCPACSDuctStructure(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
 };
 
-} // namespace tigl
+} //namespace tigl

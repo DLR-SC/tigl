@@ -73,7 +73,7 @@ namespace generated
     {
         // read element skin
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skin")) {
-            m_skin = boost::in_place(this, m_uidMgr);
+            m_skin = boost::in_place(reinterpret_cast<CCPACSDuctStructure*>(this), m_uidMgr);
             try {
                 m_skin->ReadCPACS(tixiHandle, xpath + "/skin");
             } catch(const std::exception& e) {
@@ -84,7 +84,7 @@ namespace generated
 
         // read element stringers
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/stringers")) {
-            m_stringers = boost::in_place(this, m_uidMgr);
+            m_stringers = boost::in_place(reinterpret_cast<CCPACSDuctStructure*>(this), m_uidMgr);
             try {
                 m_stringers->ReadCPACS(tixiHandle, xpath + "/stringers");
             } catch(const std::exception& e) {
@@ -95,7 +95,7 @@ namespace generated
 
         // read element frames
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/frames")) {
-            m_frames = boost::in_place(this, m_uidMgr);
+            m_frames = boost::in_place(reinterpret_cast<CCPACSDuctStructure*>(this), m_uidMgr);
             try {
                 m_frames->ReadCPACS(tixiHandle, xpath + "/frames");
             } catch(const std::exception& e) {
@@ -143,12 +143,12 @@ namespace generated
 
     }
 
-    const boost::optional<CPACSSkin>& CPACSDuctStructure::GetSkin() const
+    const boost::optional<CCPACSSkin>& CPACSDuctStructure::GetSkin() const
     {
         return m_skin;
     }
 
-    boost::optional<CPACSSkin>& CPACSDuctStructure::GetSkin()
+    boost::optional<CCPACSSkin>& CPACSDuctStructure::GetSkin()
     {
         return m_skin;
     }
@@ -173,10 +173,10 @@ namespace generated
         return m_frames;
     }
 
-    CPACSSkin& CPACSDuctStructure::GetSkin(CreateIfNotExistsTag)
+    CCPACSSkin& CPACSDuctStructure::GetSkin(CreateIfNotExistsTag)
     {
         if (!m_skin)
-            m_skin = boost::in_place(this, m_uidMgr);
+            m_skin = boost::in_place(reinterpret_cast<CCPACSDuctStructure*>(this), m_uidMgr);
         return *m_skin;
     }
 
@@ -188,7 +188,7 @@ namespace generated
     CCPACSStringersAssembly& CPACSDuctStructure::GetStringers(CreateIfNotExistsTag)
     {
         if (!m_stringers)
-            m_stringers = boost::in_place(this, m_uidMgr);
+            m_stringers = boost::in_place(reinterpret_cast<CCPACSDuctStructure*>(this), m_uidMgr);
         return *m_stringers;
     }
 
@@ -200,7 +200,7 @@ namespace generated
     CCPACSFramesAssembly& CPACSDuctStructure::GetFrames(CreateIfNotExistsTag)
     {
         if (!m_frames)
-            m_frames = boost::in_place(this, m_uidMgr);
+            m_frames = boost::in_place(reinterpret_cast<CCPACSDuctStructure*>(this), m_uidMgr);
         return *m_frames;
     }
 

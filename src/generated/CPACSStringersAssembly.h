@@ -30,12 +30,11 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSFuselageStringer;
+class CCPACSDuctStructure;
 class CCPACSFuselageStructure;
 
 namespace generated
 {
-    class CPACSDuctStructure;
-
     // This class is used in:
     // CPACSDuctStructure
     // CPACSFuselageStructure
@@ -48,7 +47,7 @@ namespace generated
     class CPACSStringersAssembly
     {
     public:
-        TIGL_EXPORT CPACSStringersAssembly(CPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSStringersAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSStringersAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSStringersAssembly();
@@ -63,7 +62,7 @@ namespace generated
         P* GetParent()
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -75,7 +74,7 @@ namespace generated
         const P* GetParent() const
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -116,7 +115,4 @@ namespace generated
 } // namespace generated
 
 // CPACSStringersAssembly is customized, use type CCPACSStringersAssembly directly
-
-// Aliases in tigl namespace
-using CCPACSDuctStructure = generated::CPACSDuctStructure;
 } // namespace tigl

@@ -1,5 +1,7 @@
 /*
-* Copyright (c) 2018 RISC Software GmbH
+* Copyright (C) 2022 German Aerospace Center (DLR/SC)
+*
+* Created: 2022-03-16 Jan Kleinert <Jan.Kleinert@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,20 +18,20 @@
 
 #pragma once
 
-#include <string>
-#include <boost/optional.hpp>
+#include "generated/CPACSSkin.h"
 
-#include "generated/CPACSFuselageStructure.h"
-#include "ITiGLFuselageDuctStructure.h"
+namespace tigl {
 
-namespace tigl
-{
-class CCPACSFuselageStructure : public generated::CPACSFuselageStructure, public ITiglFuselageDuctStructure
+class CTiglRelativelyPositionedComponent;
+
+class CCPACSSkin : public generated::CPACSSkin
 {
 public:
-    TIGL_EXPORT CCPACSFuselageStructure(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSSkin(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
+    // returns the parent as abstract geometric component
+    TIGL_EXPORT CTiglRelativelyPositionedComponent const* GetParentComponent() const;
 };
 
-} // namespace tigl
+} //namespace tigl

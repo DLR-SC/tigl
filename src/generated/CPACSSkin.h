@@ -32,12 +32,11 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSDuctStructure;
 class CCPACSFuselageStructure;
 
 namespace generated
 {
-    class CPACSDuctStructure;
-
     // This class is used in:
     // CPACSDuctStructure
     // CPACSFuselageStructure
@@ -49,7 +48,7 @@ namespace generated
     class CPACSSkin : public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSSkin(CPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSkin(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSkin();
@@ -64,7 +63,7 @@ namespace generated
         P* GetParent()
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSSkin");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSSkin");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -76,7 +75,7 @@ namespace generated
         const P* GetParent() const
         {
 #ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSSkin");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSSkin");
 #endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
@@ -126,7 +125,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSSkin = generated::CPACSSkin;
-using CCPACSDuctStructure = generated::CPACSDuctStructure;
+// CPACSSkin is customized, use type CCPACSSkin directly
 } // namespace tigl

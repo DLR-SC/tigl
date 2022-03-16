@@ -19,6 +19,7 @@
 #include "CCPACSFrame.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
+#include "ITiglFuselageDuctStructure.h"
 
 namespace tigl
 {
@@ -33,13 +34,30 @@ void CCPACSFramesAssembly::Invalidate(const boost::optional<std::string>& source
         m_frames[i]->Invalidate(source);
 }
 
-CTiglTransformation CCPACSFramesAssembly::GetTransformationMatrix() const
+
+CTiglRelativelyPositionedComponent const* CCPACSFramesAssembly::GetParentComponent() const
 {
     if (IsParent<CCPACSDuctStructure>()) {
-        return GetParent<CCPACSDuctStructure>()->GetParent()->GetTransformationMatrix();
+        return GetParent<CCPACSDuctStructure>()->GetParent();
     }
     if (IsParent<CCPACSFuselageStructure>()) {
-        return GetParent<CCPACSFuselageStructure>()->GetParent()->GetTransformationMatrix();
+        return GetParent<CCPACSFuselageStructure>()->GetParent();
+    }
+    throw CTiglError("Unexpected error: Parent of CCPACSFramesAssembly must either be CCPACSDuctStructure or CCPACSFuselageStructure.");
+}
+
+CTiglTransformation CCPACSFramesAssembly::GetTransformationMatrix() const
+{
+    return GetParentComponent()->GetTransformationMatrix();
+}
+
+ITiglFuselageDuctStructure const* CCPACSFramesAssembly::GetStructureInterface() const
+{
+    if (IsParent<CCPACSDuctStructure>()) {
+        return GetParent<CCPACSDuctStructure>();
+    }
+    if (IsParent<CCPACSFuselageStructure>()) {
+        return GetParent<CCPACSFuselageStructure>();
     }
     throw CTiglError("Unexpected error: Parent of CCPACSFramesAssembly must either be CCPACSDuctStructure or CCPACSFuselageStructure.");
 }

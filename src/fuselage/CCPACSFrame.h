@@ -22,6 +22,8 @@
 #include "tigl.h"
 #include "Cache.h"
 
+class TopoDS_Wire;
+
 namespace tigl
 {
 class CCPACSFrame : public generated::CPACSFrame

@@ -114,6 +114,7 @@ CPACSFuselageStructure                    CCPACSFuselageStructure
 CPACSStringer                             CCPACSFuselageStringer
 CPACSPointXY                              CCPACSPointXY
 CPACSStringerFramePosition                CCPACSFuselageStringerFramePosition
+CPACSSkin                                 CCPACSSkin
 CPACSSkinSegment                          CCPACSSkinSegment
 CPACSWallSegment                          CCPACSFuselageWallSegment
 CPACSWallPosition                         CCPACSWallPosition
@@ -143,4 +144,6 @@ CPACSNacelleGuideCurves                  CCPACSNacelleGuideCurves
 CPACSRotationCurve                       CCPACSRotationCurve
 CPACSNacelleCenterCowl                   CCPACSNacelleCenterCowl
 
+// Ducts
 CPACSDuct                                CCPACSDuct
+CPACSDuctStructure                       CCPACSDuctStructure

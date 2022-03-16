@@ -355,12 +355,12 @@ namespace generated
         return m_segments;
     }
 
-    const boost::optional<CPACSDuctStructure>& CPACSDuct::GetStructure() const
+    const boost::optional<CCPACSDuctStructure>& CPACSDuct::GetStructure() const
     {
         return m_structure;
     }
 
-    boost::optional<CPACSDuctStructure>& CPACSDuct::GetStructure()
+    boost::optional<CCPACSDuctStructure>& CPACSDuct::GetStructure()
     {
         return m_structure;
     }
@@ -377,7 +377,7 @@ namespace generated
         m_positionings = boost::none;
     }
 
-    CPACSDuctStructure& CPACSDuct::GetStructure(CreateIfNotExistsTag)
+    CCPACSDuctStructure& CPACSDuct::GetStructure(CreateIfNotExistsTag)
     {
         if (!m_structure)
             m_structure = boost::in_place(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr);
