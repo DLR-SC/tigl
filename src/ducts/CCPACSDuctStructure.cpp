@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2022 German Aerospace Center (DLR/SC)
 *
 * Created: 2022-03-15 Anton Reiswich <Anton.Reiswich@dlr.de>
 * Licensed under the Apache License, Version 2.0 (the "License");
