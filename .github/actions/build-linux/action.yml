@@ -11,15 +11,15 @@ inputs:
 
   tigl_nightly:
     description: "CMake option to amend the version with the git hash (ON or OFF)"
-    required: true
+    required: false
     default: "ON"
 
   tigl_concat_generated_files:
     description: "CMake option to concatenate the generated source files (ON or OFF)"
-    required: true
+    required: false
     default: "ON"
 
-  tigl_bindings-python-internal:
+  tigl_bindings_python_internal:
     description: "CMake option to build the interal python API"
     required: false
     default: "OFF"
