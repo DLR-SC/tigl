@@ -10,30 +10,34 @@ on:
       - v*
   workflow_dispatch:
 
-env:
-  is-new-tag: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
-  tigl-nightly: 'ON'
-  tigl-concat-generated-files: 'ON'
-
 jobs:
 
   pre:
+    # no nightly cmake flag and no concatenation of generated files for release builds
     runs-on: "ubuntu-latest"
+    outputs:
+      nightly: ${{ steps.set_flags.outputs.nightly }}
+      concat: ${{ steps.set_flags.outputs.concat }}
     steps:
-      - name: disable tigl-nightly and tigl-concat-generated-files for release builds
-        if: ${{ env.is-new-tag }}
+      - id: set_flags
+        shell: bash
         run: |
-          echo "tigl-nightly=OFF" >> $GITHUB_ENV
-          echo "tigl-concat-generated-files=OFF" >> $GITHUB_ENV
+          if [[ ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }} ]]; then
+            echo "::set-output name=nightly::OFF"
+            echo "::set-output name=concat::OFF"
+          else
+            echo "::set-output name=nightly::ON"
+            echo "::set-output name=concat::ON"
+          fi
 
   continuous-integration:
     needs: pre
     uses: ./.github/workflows/continuous-integration.yml
     with:
       # create a release build on new git tag
-      draft-release: ${{ env.is-new-tag }}
-      tigl_nightly: ${{ env.tigl-nightly }}
-      tigl_concat_generated_files: ${{ env.tigl-concat-generated-files }}
+      draft-release: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+      tigl_nightly: ${{ needs.pre.outputs.nightly }}
+      tigl_concat_generated_files: ${{ needs.pre.outputs.concat }}
       integration-tests: true
       html-documentation-artifact: 'html-documentation'
       win-installer-artifact: 'win-installer'
