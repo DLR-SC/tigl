@@ -22,7 +22,7 @@ jobs:
       - id: set_flags
         shell: bash
         run: |
-          if [[ ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }} ]]; then
+          if [[ "${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}" == "true" ]]; then
             echo "::set-output name=nightly::OFF"
             echo "::set-output name=concat::OFF"
           else

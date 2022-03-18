@@ -7,10 +7,11 @@ on:
     inputs:
 
       draft-release:
+        # This should be a Boolean, but https://github.com/actions/runner/issues/1483
         description: "Set to true, if the workflow shall draft a release"
         required: false
-        default: false
-        type: boolean
+        default: "false"
+        type: string
 
       tigl_nightly:
         description: "CMake option to amend the version with the git hash (ON or OFF). Should be OFF for release builds."
@@ -25,10 +26,11 @@ on:
         type: string
 
       integration-tests:
+        # This should be a Boolean, but https://github.com/actions/runner/issues/1483
         description: "Run integration tests"
         required: false
-        default: false
-        type: boolean
+        default: "false"
+        type: string
 
       documentation-artifact:
         description: "Name of the html documentation artifact. Will be build on Windows. Leave empty to skip documentation build."
@@ -102,7 +104,7 @@ jobs:
           build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}
           coverage: ${{ matrix.coverage == 'ON' || false }}
           unit-tests: ${{ matrix.unit-tests }}
-          integration-tests: ${{ inputs.integration-tests || false }}
+          integration-tests: ${{ inputs.integration-tests == 'true' || false }}
 
 
   build-windows:
