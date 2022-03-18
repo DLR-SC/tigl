@@ -2,7 +2,7 @@ name: Pull Request CI workflow
 
 on:
   pull_request:
-    types: [ assigned, opened, synchronize, reopened ]
+    types: [opened, reopened, synchronize, ready_for_review]
   workflow_dispatch:
 
 jobs:
