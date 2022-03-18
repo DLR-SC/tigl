@@ -3759,7 +3759,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentIndex(TiglCPACSConfigura
 
         if (!segment.GetParent()->IsParent<tigl::CCPACSFuselage>()){
             LOG(ERROR) << "Error in tiglFuselageGetSegmentIndex: The segment with given uid \"" << segmentUID << "\" is not part of a fuselage.";
-            return TIGL_UID_ERROR;
+            return TIGL_NOT_FOUND;
         }
 
         const auto& pfuselage  = segment.GetParent()->GetParent<tigl::CCPACSFuselage>();
