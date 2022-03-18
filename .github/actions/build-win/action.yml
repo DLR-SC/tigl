@@ -37,7 +37,7 @@ inputs:
   documentation-artifact:
     description: "Name of the documentation artifact. Leave empty to skip doc build"
     required: false
-    default: false
+    default: ''
 
   installer-artifact:
     description: "Name of the installer artifact. Leave empty to skip installer generation with NSIS"
