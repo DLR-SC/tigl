@@ -39,7 +39,7 @@ jobs:
       tigl_nightly: ${{ needs.pre.outputs.nightly }}
       tigl_concat_generated_files: ${{ needs.pre.outputs.concat }}
       integration-tests: true
-      html-documentation-artifact: 'html-documentation'
+      documentation-artifact: 'html-documentation'
       win-installer-artifact: 'win-installer'
       win-package-artifact: 'win-package'
       macos-package-artifact: 'macos-package'
