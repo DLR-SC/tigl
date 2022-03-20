@@ -122,10 +122,11 @@ runs:
 
     - name: Create package and installer
       if: ${{ inputs.package-artifact || inputs.installer-artifact }}
-      shell: cmd /C call {0}
+      shell: cmd
       run: |
         cd build
-        'C:\Program Files\CMake\bin\cpack.exe' -G ZIP
+        cmake --build . --target doc
+        & 'C:\Program Files\CMake\bin\cpack.exe' -G ZIP
         & 'C:\Program Files\CMake\bin\cpack.exe' -G NSIS
 
     - name: Upload package as artifact
@@ -144,7 +145,7 @@ runs:
 
     - name: Create documentation
       if: ${{ inputs.documentation-artifact }}
-      shell: cmd /C call {0}
+      shell: cmd
       run: |
         cd build
         cmake --build . --target doc
