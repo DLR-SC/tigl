@@ -41,8 +41,18 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
+
+
 protected:
     PNamedShape BuildLoft() const override;
+
+private:
+
+    // get short name for loft
+    std::string GetShortShapeName() const;
+
+    void SetFaceTraits (PNamedShape loft) const;
+
 };
 
 }
