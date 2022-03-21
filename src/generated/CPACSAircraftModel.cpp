@@ -151,6 +151,17 @@ namespace generated
             }
         }
 
+        // read element ducts
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ducts")) {
+            m_ducts = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            try {
+                m_ducts->ReadCPACS(tixiHandle, xpath + "/ducts");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read ducts at xpath " << xpath << ": " << e.what();
+                m_ducts = boost::none;
+            }
+        }
+
         // read element systems
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/systems")) {
             m_systems = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -237,6 +248,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/enginePylons")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/enginePylons");
+            }
+        }
+
+        // write element ducts
+        if (m_ducts) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ducts");
+            m_ducts->WriteCPACS(tixiHandle, xpath + "/ducts");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ducts")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/ducts");
             }
         }
 
@@ -342,6 +364,16 @@ namespace generated
         return m_enginePylons;
     }
 
+    const boost::optional<CPACSDucts>& CPACSAircraftModel::GetDucts() const
+    {
+        return m_ducts;
+    }
+
+    boost::optional<CPACSDucts>& CPACSAircraftModel::GetDucts()
+    {
+        return m_ducts;
+    }
+
     const boost::optional<CCPACSACSystems>& CPACSAircraftModel::GetSystems() const
     {
         return m_systems;
@@ -408,6 +440,18 @@ namespace generated
     void CPACSAircraftModel::RemoveEnginePylons()
     {
         m_enginePylons = boost::none;
+    }
+
+    CPACSDucts& CPACSAircraftModel::GetDucts(CreateIfNotExistsTag)
+    {
+        if (!m_ducts)
+            m_ducts = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+        return *m_ducts;
+    }
+
+    void CPACSAircraftModel::RemoveDucts()
+    {
+        m_ducts = boost::none;
     }
 
     CCPACSACSystems& CPACSAircraftModel::GetSystems(CreateIfNotExistsTag)

@@ -1,8 +1,7 @@
 /*
-* Copyright (C) 2007-2014 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2022 German Aerospace Center (DLR/SC)
 *
-* Created: 2014-02-10 Tobias Stollenwerk <tobias.stollenwerk@dlr.de>
-*
+* Created: 2022-03-15 Anton Reiswich <Anton.Reiswich@dlr.de>
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -17,18 +16,22 @@
 */
 /**
 * @file
-* @brief  Implementation of a CPACS guide curve profile
+* @brief  Implementation of CPACS duct structure handling routines.
 */
 
-#include "CCPACSGuideCurveProfile.h"
-#include "CTiglPoint.h"
+#pragma once
+
+#include "generated/CPACSDuctStructure.h"
+#include "CTiglRelativelyPositionedComponent.h"
+#include "ITiglFuselageDuctStructure.h"
 
 namespace tigl
 {
-CCPACSGuideCurveProfile::CCPACSGuideCurveProfile(CCPACSGuideCurveProfiles* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSGuideCurveProfileGeometry(parent, uidMgr) {}
 
-const std::vector<CTiglPoint>& CCPACSGuideCurveProfile::GetGuideCurveProfilePoints() const {
-    return m_pointList.AsVector();
-}
-} // end namespace tigl
+class CCPACSDuctStructure : public generated::CPACSDuctStructure, public ITiglFuselageDuctStructure
+{
+public:
+    TIGL_EXPORT CCPACSDuctStructure(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
+};
+
+} //namespace tigl

@@ -27,6 +27,7 @@
 
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
+#include "CCPACSDuct.h"
 #include "CTiglError.h"
 #include "sorting.h"
 #include "CTiglLogging.h"
@@ -45,8 +46,26 @@ namespace
 
 namespace tigl
 {
+
+CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSegments(parent, uidMgr) {}
+
 CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSegments(parent, uidMgr) {}
+
+CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
+{
+    if (IsParent<CCPACSFuselage>()) {
+        return GetParent<CCPACSFuselage>()->GetConfiguration();
+    }
+    else if (IsParent<CCPACSDuct>()) {
+        return GetParent<CCPACSDuct>()->GetConfiguration();
+    }
+    else
+    {
+        throw CTiglError("CCPACSFuselageSegments: Unknown parent.");
+    }
+}
 
 // Invalidates internal state
 void CCPACSFuselageSegments::Invalidate(const boost::optional<std::string>& source) const
@@ -86,6 +105,20 @@ CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& se
 int CCPACSFuselageSegments::GetSegmentCount() const
 {
     return static_cast<int>(m_segments.size());
+}
+
+
+CTiglRelativelyPositionedComponent const* CCPACSFuselageSegments::GetParentComponent() const
+{
+    if (IsParent<CCPACSFuselage>()) {
+        return GetParent<CCPACSFuselage>();
+    }
+    else if (IsParent<CCPACSDuct>()) {
+        return GetParent<CCPACSDuct>();
+    }
+    else {
+        throw CTiglError("Unknown parent type for CCPACSFuselageSegments.");
+    }
 }
 
 void tigl::CCPACSFuselageSegments::ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath)

@@ -6,7 +6,7 @@ you may not use this file except in compliance with
 the License. You may obtain a copy of the License at
 
 http://www.apache.org/licenses/LICENSE-2.0
-
+f
 Unless required by applicable law or agreed to in writing,
 software distributed under the License is distributed on
 an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -2916,6 +2916,7 @@ marko.alder@dlr.de
                     <xsd:element minOccurs="0" name="engines" type="enginePositionsType"/>
                     <xsd:element minOccurs="0" name="enginePylons" type="enginePylonsType"/>
                     <xsd:element minOccurs="0" name="landingGear" type="landingGearType"/>
+                    <xsd:element minOccurs="0" name="ducts" type="ductsType"/>
                     <xsd:element minOccurs="0" name="systems" type="systemsType"/>
                     <xsd:element minOccurs="0" name="genericGeometryComponents" type="genericGeometryComponentsType"/>
                     <xsd:element minOccurs="0" name="global" type="aircraftGlobalType"/>
@@ -33079,6 +33080,103 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         </xsd:annotation>
                     </xsd:any>
                 </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ductsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Ducts</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="duct" maxOccurs="unbounded" type="ductType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ductType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Duct</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="name" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Name
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" name="description" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Description
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" name="parentUID" type="stringUIDBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                UID of part to which the duct is
+                                mounted (if any)
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="transformation" type="transformationType"/>
+                    <xsd:element name="sections" type="fuselageSectionsType"/>
+                    <xsd:element name="positionings" minOccurs="0" type="positioningsType"/>
+                    <xsd:element name="segments" type="fuselageSegmentsType"/>
+                    <xsd:element minOccurs="0" name="structure" type="ductStructureType"/>
+                </xsd:all>
+                <xsd:attribute name="uID" type="xsd:ID" use="required"/>
+				<xsd:attribute name="symmetry">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="x-y-plane"/>
+                            <xsd:enumeration value="x-z-plane"/>
+                            <xsd:enumeration value="y-z-plane"/>
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ductStructureType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Duct structure</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element minOccurs="0" name="skin" type="skinType"/>
+                    <xsd:element minOccurs="0" name="stringers" type="stringersAssemblyType"/>
+                    <xsd:element minOccurs="0" name="frames" type="framesAssemblyType"/>
+                </xsd:all>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

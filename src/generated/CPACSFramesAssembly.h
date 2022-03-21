@@ -19,7 +19,9 @@
 
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include <vector>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 #include "UniquePtr.h"
 
@@ -28,11 +30,13 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSFrame;
+class CCPACSDuctStructure;
 class CCPACSFuselageStructure;
 
 namespace generated
 {
     // This class is used in:
+    // CPACSDuctStructure
     // CPACSFuselageStructure
 
     /// @brief framesAssemblyType
@@ -42,13 +46,40 @@ namespace generated
     class CPACSFramesAssembly
     {
     public:
+        TIGL_EXPORT CPACSFramesAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFramesAssembly();
 
-        TIGL_EXPORT CCPACSFuselageStructure* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSFuselageStructure* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -66,7 +97,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveFrame(CCPACSFrame& ref);
 
     protected:
-        CCPACSFuselageStructure* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 

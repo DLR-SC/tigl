@@ -2439,7 +2439,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfiguratio
         const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
         const auto& uidMgr = config.GetUIDManager();
         const auto& compSeg = uidMgr.ResolveObject<tigl::CCPACSWingComponentSegment>(componentSegmentUID);
-        if (!compSeg.GetControlSurfaces() || controlSurfaceIndex > compSeg.GetControlSurfaces()->ControlSurfaceCount())
+        if (!compSeg.GetControlSurfaces() || controlSurfaceIndex > (int)compSeg.GetControlSurfaces()->ControlSurfaceCount())
             return TIGL_INDEX_ERROR;
 
         *controlSurfaceUID = const_cast<char*>(compSeg.GetControlSurfaces()->GetTrailingEdgeDevices() \
@@ -3757,7 +3757,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentIndex(TiglCPACSConfigura
 
         const tigl::CCPACSFuselageSegment& segment = uidMgr.ResolveObject<tigl::CCPACSFuselageSegment>(segmentUID);
 
-        const auto& pfuselage  = segment.GetParent()->GetParent();
+        if (!segment.GetParent()->IsParent<tigl::CCPACSFuselage>()){
+            LOG(ERROR) << "Error in tiglFuselageGetSegmentIndex: The segment with given uid \"" << segmentUID << "\" is not part of a fuselage.";
+            return TIGL_NOT_FOUND;
+        }
+
+        const auto& pfuselage  = segment.GetParent()->GetParent<tigl::CCPACSFuselage>();
         const auto& pfuselages = pfuselage->GetParent();
 
         *fuselageIndex = static_cast<int>(IndexFromUid(pfuselages->GetFuselages(), pfuselage->GetUID())) + 1;

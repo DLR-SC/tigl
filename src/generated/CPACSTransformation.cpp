@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSDuct.h"
 #include "CCPACSEnginePosition.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSExternalObject.h"
@@ -39,6 +40,14 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSTransformation::CPACSTransformation(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDuct);
+    }
+
     CPACSTransformation::CPACSTransformation(CCPACSEnginePosition* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -151,6 +160,9 @@ namespace generated
     const CTiglUIDObject* CPACSTransformation::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CCPACSDuct>()) {
+                return GetParent<CCPACSDuct>();
+            }
             if (IsParent<CCPACSEnginePosition>()) {
                 return GetParent<CCPACSEnginePosition>();
             }
@@ -197,6 +209,9 @@ namespace generated
     CTiglUIDObject* CPACSTransformation::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CCPACSDuct>()) {
+                return GetParent<CCPACSDuct>();
+            }
             if (IsParent<CCPACSEnginePosition>()) {
                 return GetParent<CCPACSEnginePosition>();
             }

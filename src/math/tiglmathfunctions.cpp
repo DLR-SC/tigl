@@ -391,7 +391,7 @@ void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V)
 size_t FindPosition(const std::vector<double>& xdata, double x)
 {
     // we assume, that the xvalues are ordered in ascending order
-    size_t ilow = 0.;
+    size_t ilow = 0;
     size_t ihigh = xdata.size()-1;
 
     assert(xdata.size() >= 2);

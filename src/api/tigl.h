@@ -232,6 +232,7 @@ TIGL_COMPONENT_ENGINE_PYLON,     /**< The Component is a engine pylon */
 TIGL_COMPONENT_ENGINE_NACELLE,   /**< The Component is a engine nacelle */
 TIGL_COMPONENT_FUSELAGE_WALL,    /**< The Component is a fuselage wall */
 TIGL_COMPONENT_CONTROL_SURFACE_DEVICE, /**< The component is a control surface device (flap) */
+TIGL_COMPONENT_DUCT,              /**< The Component belongs to a duct */
 TIGL_COMPONENT_OTHER
 };
 
@@ -2622,7 +2623,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
-*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle, or if the segmentUID is not
+*                    part of any fuselage. This could be the case if the segment is part of a duct
+*                    for instance.
 *   - TIGL_INDEX_ERROR if fuselageIndex is not valid
 *   - TIGL_UID_ERROR if the segmentUID does not exist
 *   - TIGL_NULL_POINTER if segmentUID is a null pointer

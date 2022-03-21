@@ -33,12 +33,12 @@ class TopoDS_Edge;
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSFuselage;
+class CTiglRelativelyPositionedComponent;
 
 class CTiglStringerFrameBorderedObject
 {
 public:
-    TIGL_EXPORT CTiglStringerFrameBorderedObject(const CTiglUIDManager& uidMgr, const CCPACSFuselage& fuselage,
+    TIGL_EXPORT CTiglStringerFrameBorderedObject(const CTiglUIDManager& uidMgr, const CTiglRelativelyPositionedComponent* parent,
                                                  std::string& startFrameUID, std::string& endFrameUID,
                                                  std::string& startStringerUID,
                                                  boost::variant<std::string&, boost::optional<std::string>&> endStringerUID);
@@ -67,7 +67,7 @@ private:
 
 private:
     const CTiglUIDManager& m_uidMgr;
-    const CCPACSFuselage& m_fuselage;
+    const CTiglRelativelyPositionedComponent* m_parent;
     std::string& m_startFrameUID;
     std::string& m_endFrameUID;
     std::string& m_startStringerUID;

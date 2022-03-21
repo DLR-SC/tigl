@@ -59,9 +59,6 @@ public:
     TIGL_EXPORT void SetFromElementUID(const std::string& value) override;
     TIGL_EXPORT void SetToElementUID(const std::string& value) override;
 
-    // Returns the fuselage this segment belongs to
-    TIGL_EXPORT CCPACSFuselage& GetFuselage() const;
-
     // Returns the start section UID of this segment
     TIGL_EXPORT const std::string& GetStartSectionUID() const;
 
@@ -190,7 +187,6 @@ private:
 
     CTiglFuselageConnection startConnection;      /**< Start segment connection                */
     CTiglFuselageConnection endConnection;        /**< End segment connection                  */
-    CCPACSFuselage*         fuselage;             /**< Parent fuselage                         */
     Cache<SurfacePropertiesCache, CCPACSFuselageSegment> surfacePropertiesCache;
     Cache<SurfaceCache, CCPACSFuselageSegment> surfaceCache;
     bool                    loftLinearly = false; /**< Set to true to speed up lofting of the

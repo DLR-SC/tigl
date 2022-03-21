@@ -54,8 +54,8 @@ std::vector<gp_Pnt> CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(c
     TopoDS_Wire endWire   = endProfile.GetWire(!endProfile.GetMirrorSymmetry());
 
     // get profile wires in world coordinates
-    startWire = TopoDS::Wire(transformFuselageProfileGeometry(m_segment.GetFuselage().GetTransformationMatrix(), startConnection, startWire));
-    endWire   = TopoDS::Wire(transformFuselageProfileGeometry(m_segment.GetFuselage().GetTransformationMatrix(), endConnection, endWire));
+    startWire = TopoDS::Wire(transformFuselageProfileGeometry(m_segment.GetParent()->GetParentComponent()->GetTransformationMatrix(), startConnection, startWire));
+    endWire   = TopoDS::Wire(transformFuselageProfileGeometry(m_segment.GetParent()->GetParentComponent()->GetTransformationMatrix(), endConnection, endWire));
 
     // put wires into container for guide curve algo
     TopTools_SequenceOfShape startWireContainer;
@@ -64,8 +64,8 @@ std::vector<gp_Pnt> CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(c
     endWireContainer.Append(endWire);
 
     // get chord lengths for inner profile in word coordinates
-    TopoDS_Wire innerChordLineWire = TopoDS::Wire(transformFuselageProfileGeometry(m_segment.GetFuselage().GetTransformationMatrix(), startConnection, startProfile.GetDiameterWire()));
-    TopoDS_Wire outerChordLineWire = TopoDS::Wire(transformFuselageProfileGeometry(m_segment.GetFuselage().GetTransformationMatrix(), endConnection, endProfile.GetDiameterWire()));
+    TopoDS_Wire innerChordLineWire = TopoDS::Wire(transformFuselageProfileGeometry(m_segment.GetParent()->GetParentComponent()->GetTransformationMatrix(), startConnection, startProfile.GetDiameterWire()));
+    TopoDS_Wire outerChordLineWire = TopoDS::Wire(transformFuselageProfileGeometry(m_segment.GetParent()->GetParentComponent()->GetTransformationMatrix(), endConnection, endProfile.GetDiameterWire()));
     double innerScale = GetLength(innerChordLineWire);
     double outerScale = GetLength(outerChordLineWire);
 
@@ -79,8 +79,8 @@ std::vector<gp_Pnt> CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(c
     std::string guideCurveProfileUID = guideCurve->GetGuideCurveProfileUID();
 
     // get guide curve profile
-    CCPACSConfiguration& config = m_segment.GetFuselage().GetConfiguration();
-    CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
+    CCPACSConfiguration const& config = m_segment.GetParent()->GetConfiguration();
+    CCPACSGuideCurveProfile const& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
     auto& profilePoints = guideCurveProfile.GetGuideCurveProfilePoints();
     if (profilePoints.size() > 0 && profilePoints[0].y < 1e-14) {

@@ -19,7 +19,9 @@
 
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include <vector>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 #include "UniquePtr.h"
 
@@ -28,11 +30,13 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSFuselageSegment;
+class CCPACSDuct;
 class CCPACSFuselage;
 
 namespace generated
 {
     // This class is used in:
+    // CPACSDuct
     // CPACSFuselage
 
     /// @brief fuselageSegmentsType
@@ -43,13 +47,40 @@ namespace generated
     class CPACSFuselageSegments
     {
     public:
+        TIGL_EXPORT CPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFuselageSegments();
 
-        TIGL_EXPORT CCPACSFuselage* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSFuselage* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value, "template argument for P is not a parent class of CPACSFuselageSegments");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+#ifdef HAVE_STDIS_SAME
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value, "template argument for P is not a parent class of CPACSFuselageSegments");
+#endif
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -67,7 +98,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSegment(CCPACSFuselageSegment& ref);
 
     protected:
-        CCPACSFuselage* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 

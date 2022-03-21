@@ -21,6 +21,7 @@
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 
+#include "ITiglFuselageDuctStructure.h"
 #include "generated/CPACSStringerFramePosition.h"
 #include "Cache.h"
 
@@ -54,8 +55,11 @@ public:
     TIGL_EXPORT void GetXBorders(double& ymin, double& ymax);
     TIGL_EXPORT void GetYBorders(double& ymin, double& ymax);
     TIGL_EXPORT void GetZBorders(double& zmin, double& zmax);
+
+
 private:
-    const CCPACSFuselage& GetFuselage() const;
+
+    ITiglFuselageDuctStructure const* GetStructureInterface() const;
 
     struct RelativePositionCache {
         double positionXRel;

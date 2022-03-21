@@ -28,6 +28,7 @@ namespace tigl
 namespace generated
 {
     // This enum is used in:
+    // CPACSDuct
     // CPACSEnginePosition
     // CPACSEnginePylon
     // CPACSFuselage

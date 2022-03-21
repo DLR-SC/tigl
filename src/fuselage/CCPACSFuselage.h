@@ -102,8 +102,7 @@ public:
     TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
 
     // Gets the getPointBehavior
-    TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
-    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
+    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior() const;
 
     // Gets the volume of this fuselage
     TIGL_EXPORT double GetVolume();
@@ -131,14 +130,6 @@ public:
 
     // Returns all guide curve points
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
-
-    // create the line intersecting the fuselage for the stringer/frame profile
-    TIGL_EXPORT gp_Lin Intersection(gp_Pnt pRef, double angleRef) const;
-    TIGL_EXPORT gp_Lin Intersection(const CCPACSFuselageStringerFramePosition& pos) const;
-
-    // project the edge/wire onto the fuselage loft
-    TIGL_EXPORT TopoDS_Wire projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin) const;
-    TIGL_EXPORT TopoDS_Wire projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction) const;
 
 protected:
     void BuildGuideCurves(TopoDS_Compound& cache) const;

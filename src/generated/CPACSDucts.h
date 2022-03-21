@@ -27,29 +27,27 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSSkinSegment;
-class CCPACSSkin;
+class CCPACSDuct;
+class CCPACSAircraftModel;
 
 namespace generated
 {
     // This class is used in:
-    // CPACSSkin
+    // CPACSAircraftModel
 
-    /// @brief fuselageSkinSegmentType
+    /// @brief Ducts
     /// 
-    /// FuselageSkinSegment type, containing material on skin
-    /// over circumference
     /// 
-    class CPACSSkinSegments
+    class CPACSDucts
     {
     public:
-        TIGL_EXPORT CPACSSkinSegments(CCPACSSkin* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDucts(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSSkinSegments();
+        TIGL_EXPORT virtual ~CPACSDucts();
 
-        TIGL_EXPORT CCPACSSkin* GetParent();
+        TIGL_EXPORT CCPACSAircraftModel* GetParent();
 
-        TIGL_EXPORT const CCPACSSkin* GetParent() const;
+        TIGL_EXPORT const CCPACSAircraftModel* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -60,28 +58,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSSkinSegment>>& GetSkinSegments() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSSkinSegment>>& GetSkinSegments();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDuct>>& GetDucts() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDuct>>& GetDucts();
 
-        TIGL_EXPORT virtual CCPACSSkinSegment& AddSkinSegment();
-        TIGL_EXPORT virtual void RemoveSkinSegment(CCPACSSkinSegment& ref);
+        TIGL_EXPORT virtual CCPACSDuct& AddDuct();
+        TIGL_EXPORT virtual void RemoveDuct(CCPACSDuct& ref);
 
     protected:
-        CCPACSSkin* m_parent;
+        CCPACSAircraftModel* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CCPACSSkinSegment>> m_skinSegments;
+        std::vector<std::unique_ptr<CCPACSDuct>> m_ducts;
 
     private:
-        CPACSSkinSegments(const CPACSSkinSegments&) = delete;
-        CPACSSkinSegments& operator=(const CPACSSkinSegments&) = delete;
+        CPACSDucts(const CPACSDucts&) = delete;
+        CPACSDucts& operator=(const CPACSDucts&) = delete;
 
-        CPACSSkinSegments(CPACSSkinSegments&&) = delete;
-        CPACSSkinSegments& operator=(CPACSSkinSegments&&) = delete;
+        CPACSDucts(CPACSDucts&&) = delete;
+        CPACSDucts& operator=(CPACSDucts&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSSkinSegments = generated::CPACSSkinSegments;
+using CCPACSDucts = generated::CPACSDucts;
 } // namespace tigl

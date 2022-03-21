@@ -18,17 +18,30 @@
 
 #include <string>
 #include <boost/optional.hpp>
-
+#include "CTiglTransformation.h"
 #include "generated/CPACSFramesAssembly.h"
 
 namespace tigl
 {
+
+class CTiglRelativelyPositionedComponent;
+class ITiglFuselageDuctStructure;
+
 class CCPACSFramesAssembly : public generated::CPACSFramesAssembly
 {
 public:
     TIGL_EXPORT CCPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFramesAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
+
+    // returns the (grand)-parent component (either a fuselage or a duct)
+    TIGL_EXPORT CTiglRelativelyPositionedComponent const* GetParentComponent() const;
+
+    // returns the transformation matrix of the (grand-)parent component
+    TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const;
+
+    TIGL_EXPORT ITiglFuselageDuctStructure const* GetStructureInterface() const;
 };
 
 } // namespace tigl
