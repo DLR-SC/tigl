@@ -27,6 +27,7 @@
 
 #include "generated/CPACSFuselageSegments.h"
 #include "CTiglRelativelyPositionedComponent.h"
+#include "TopoDS_Compound.hxx"
 
 namespace tigl
 {
@@ -59,11 +60,16 @@ public:
 
 
     // CPACSFuselageSegments interface
-public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
+
+    TIGL_EXPORT const TopoDS_Compound& GetGuideCurveWires() const;
 
 private:
     void ReorderSegments();
+
+    void BuildGuideCurves(TopoDS_Compound& cache) const;
+
+    Cache<TopoDS_Compound, CCPACSFuselageSegments> guideCurves;
 };
 
 } // end namespace tigl
