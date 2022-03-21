@@ -126,7 +126,7 @@ runs:
       run: |
         cd build
         cmake --build . --target doc
-        'C:\Program Files\CMake\bin\cpack.exe' -G ZIP & 'C:\Program Files\CMake\bin\cpack.exe' -G NSIS
+        cpack.exe -G ZIP & cpack.exe -G NSIS
 
     - name: Upload package as artifact
       if: ${{ inputs.package-artifact }}
