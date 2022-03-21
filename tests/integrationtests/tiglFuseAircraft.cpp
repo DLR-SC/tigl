@@ -124,7 +124,7 @@ protected:
                 fuselageProfileBuilder.Add(fuselageProfiles, segment.GetEndWire());
             }
         }
-        fuselageGuides = fuselage.GetGuideCurveWires();
+        fuselageGuides = fuselage.GetSegments().GetGuideCurveWires();
         ASSERT_FALSE(wingGuides.IsNull());
         ASSERT_FALSE(wingProfiles.IsNull());
         ASSERT_FALSE(fuselageGuides.IsNull());

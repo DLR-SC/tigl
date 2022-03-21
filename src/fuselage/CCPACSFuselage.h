@@ -125,9 +125,6 @@ public:
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
     TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurveSegment(std::string uid) const;
 
-    // Returns all guide curve wires as a compound
-    TIGL_EXPORT const TopoDS_Compound& GetGuideCurveWires() const;
-
     // Returns all guide curve points
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
 
@@ -154,7 +151,6 @@ private:
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
     TopoDS_Compound            aCompound;
-    Cache<TopoDS_Compound, CCPACSFuselage> guideCurves;
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
 
