@@ -542,6 +542,26 @@ const CCPACSFuselages& CCPACSConfiguration::GetFuselages() const
     }
 }
 
+boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts()
+{
+    if (aircraftModel) {
+        return aircraftModel->GetDucts();
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
+const boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts() const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetDucts();
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
 boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons()
 {
     if (aircraftModel) {
