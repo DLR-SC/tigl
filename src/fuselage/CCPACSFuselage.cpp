@@ -70,7 +70,8 @@ namespace tigl
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselage(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , loftWithCutouts(*this, &CCPACSFuselage::BuildLoftWithCutouts)
+    , withDucts(false)
+    , cleanLoft(*this, &CCPACSFuselage::BuildCleanLoft)
 {
     Cleanup();
     if (parent->IsParent<CCPACSAircraftModel>())
@@ -88,6 +89,7 @@ CCPACSFuselage::~CCPACSFuselage()
 // Invalidates internal state
 void CCPACSFuselage::InvalidateImpl(const boost::optional<std::string>& /*source*/) const
 {
+    cleanLoft.clear();
     loft.clear();
     m_segments.Invalidate();
     if (m_structure)
@@ -276,6 +278,49 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 // Builds a fused shape of all fuselage segments
 PNamedShape CCPACSFuselage::BuildLoft() const
 {
+    if (!withDucts) {
+        return *cleanLoft;
+    }
+
+    auto& ducts = GetConfiguration().GetDucts()->GetDucts();
+    if (ducts.size() == 0) {
+        return *cleanLoft;
+    }
+
+    // first fuse all ducts to one solid tool
+    PNamedShape parentDuct = nullptr;
+    ListPNamedShape childDucts;
+    for (auto& duct: ducts) {
+        if (!parentDuct) {
+            parentDuct = duct->GetLoft();
+        }
+        else {
+            childDucts.push_back(duct->GetLoft());
+        }
+    }
+    auto tool = CFuseShapes(parentDuct, childDucts);
+
+    // second, cut the ducts from the fuselage clean shape
+    auto const& fuselageCleanShape = GetLoft();
+    auto loft = CCutShape(fuselageCleanShape, tool).NamedShape();
+
+    // finally, update the facetraits for every face of the result
+    for (int iFace = 0; iFace < static_cast<int>(loft->GetFaceCount()); ++iFace) {
+        CFaceTraits ft = loft->GetFaceTraits(iFace);
+        ft.SetOrigin(fuselageCleanShape);
+        loft->SetFaceTraits(iFace, ft);
+    }
+
+#ifdef DEBUG
+    dumpShape(tool.NamedShape()->Shape(), "debugShapes", "ductTool");
+    dumpShape(loft->Shape(), "debugShapes", "fuselageWithCutOut");
+#endif
+
+    return loft;
+}
+
+void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
+{
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean smooth = (cont == ::C0? false : true);
 
@@ -296,54 +341,18 @@ PNamedShape CCPACSFuselage::BuildLoft() const
 
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
-    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft);
-
-    return loft;
+    cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
+    SetFaceTraits(cache);
 }
 
-void CCPACSFuselage::BuildLoftWithCutouts(PNamedShape& cache) const
+void CCPACSFuselage::SetWithDucts(bool value)
 {
-    auto& ducts = GetConfiguration().GetDucts()->GetDucts();
-    if (ducts.size() == 0) {
-        cache = GetLoft();
-        return;
-    }
-
-    // first fuse all ducts to one solid tool
-    PNamedShape parentDuct = nullptr;
-    ListPNamedShape childDucts;
-    for (auto& duct: ducts) {
-        if (!parentDuct) {
-            parentDuct = duct->GetLoft();
-        }
-        else {
-            childDucts.push_back(duct->GetLoft());
-        }
-    }
-    auto tool = CFuseShapes(parentDuct, childDucts);
-
-    // second, cut the ducts from the fuselage clean shape
-    auto const& fuselageCleanShape = GetLoft();
-    cache = CCutShape(fuselageCleanShape, tool);
-
-    // finally, update the facetraits for every face of the result
-    for (int iFace = 0; iFace < static_cast<int>(cache->GetFaceCount()); ++iFace) {
-        CFaceTraits ft = cache->GetFaceTraits(iFace);
-        ft.SetOrigin(fuselageCleanShape);
-        cache->SetFaceTraits(iFace, ft);
-    }
-
-#ifdef DEBUG
-    dumpShape(tool.NamedShape()->Shape(), "debugShapes", "ductTool");
-    dumpShape(cache->Shape(), "debugShapes", "fuselageWithCutOut");
-#endif
-
+    withDucts = value;
 }
 
-PNamedShape const& CCPACSFuselage::GetLoftWithCutouts() const
+bool CCPACSFuselage::WithDucts() const
 {
-    return *loftWithCutouts;
+    return withDucts;
 }
 
 // Get the positioning transformation for a given section index

@@ -128,12 +128,14 @@ public:
     // Returns all guide curve points
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
 
-    // Returns the loft with all cutouts (specifically, ducts)
-    TIGL_EXPORT PNamedShape const & GetLoftWithCutouts() const;
+    // set the flag to subtract the ducts from the fuselage
+    TIGL_EXPORT void SetWithDucts(bool);
 
+    // Query the flag, that determines if the fuselage is built with or without ducts
+    TIGL_EXPORT bool WithDucts() const;
 protected:
 
-    void BuildLoftWithCutouts(PNamedShape& cache) const;
+    void BuildCleanLoft(PNamedShape& cache) const;
 
     // Cleanup routine
     void Cleanup();
@@ -152,7 +154,10 @@ private:
 
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
-    Cache<PNamedShape, CCPACSFuselage> loftWithCutouts; /**< Stores the loft with cutouts (e.g. ducts) */
+
+    bool withDucts;
+    Cache<PNamedShape, CCPACSFuselage> cleanLoft; /**< Stores the loft with cutouts (e.g. ducts) */
+
 
     TopoDS_Compound            aCompound;
     BRep_Builder               aBuilder;

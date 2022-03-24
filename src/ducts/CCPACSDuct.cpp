@@ -72,7 +72,7 @@ PNamedShape CCPACSDuct::BuildLoft() const
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
 
-    TopoDS_Shape loftShape =  lofter.Shape();//.Reversed();
+    TopoDS_Shape loftShape =  lofter.Shape();
 
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
