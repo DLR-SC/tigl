@@ -26,6 +26,7 @@
 #include "CTiglUIDManager.h"
 #include "CCPACSDuct.h"
 #include "CNamedShape.h"
+#include "tiglcommonfunctions.h"
 
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
@@ -82,6 +83,7 @@ TEST_F(DuctSimple, LoftGeometry)
 
     const TopoDS_Shape& ductShape = shape->Shape();
 
+    //Check the positioning of the duct with help of its bounding box
     Bnd_Box ductBBox;
     BRepBndLib::AddOptimal(ductShape, ductBBox);
 
@@ -107,9 +109,12 @@ TEST_F(DuctSimple, LoftGeometry)
     ASSERT_NEAR(ductBBox.CornerMin().Z(), -0.1, precisionZ );
 
 
+    //Check for the right number of faces
+    EXPECT_EQ(GetNumberOfFaces(ductShape), 4);
 
+    //Check for the right number of edges
+    EXPECT_EQ(GetNumberOfEdges(ductShape),10);
 
-    //To Do: Use OpenCascade Queries to check, if the geometry makes sense, e.g. is the bounding box ok, number of faces/edges etc.
 }
 
 TEST_F(DuctSimple, SanityCheck)
@@ -119,14 +124,19 @@ TEST_F(DuctSimple, SanityCheck)
     EXPECT_EQ(ducts->GetDucts().size(), 1);
 
     EXPECT_EQ(duct->GetSegments().GetSegmentCount(), 2);
-    // To Do: Check sections, positionings etc....
+
+    EXPECT_EQ(duct->GetSections().GetSectionCount(), 3);
+
+    ASSERT_TRUE(duct->GetPositionings());
+    EXPECT_EQ(duct->GetPositionings()->GetPositionings().size(), 2);
 
 }
 
 TEST_F(DuctSimple, DuctCutOut)
 {
-    auto& fuselage = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(1);
+   /* auto& fuselage = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(1);
     fuselage.SetWithDucts(true);
     fuselage.GetLoft();
+   */
 }
 
