@@ -128,8 +128,12 @@ public:
     // Returns all guide curve points
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
 
+    // Returns the loft with all cutouts (specifically, ducts)
+    TIGL_EXPORT PNamedShape const & GetLoftWithCutouts() const;
+
 protected:
-    void BuildGuideCurves(TopoDS_Compound& cache) const;
+
+    void BuildLoftWithCutouts(PNamedShape& cache) const;
 
     // Cleanup routine
     void Cleanup();
@@ -146,9 +150,9 @@ private:
     // get short name for loft
     std::string GetShortShapeName() const;
 
-private:
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
+    Cache<PNamedShape, CCPACSFuselage> loftWithCutouts; /**< Stores the loft with cutouts (e.g. ducts) */
 
     TopoDS_Compound            aCompound;
     BRep_Builder               aBuilder;
