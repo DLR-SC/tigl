@@ -20,7 +20,7 @@
 */
 
 #include "CCPACSDuct.h"
-#include "generated/CPACSDucts.h"
+#include "CCPACSDucts.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglMakeLoft.h"
 #include "CNamedShape.h"
@@ -56,6 +56,7 @@ TiglGeometricComponentIntent CCPACSDuct::GetComponentIntent() const
 
 PNamedShape CCPACSDuct::BuildLoft() const
 {
+    m_parent->Invalidate();
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean smooth = (cont == ::C0? false : true);
 
@@ -140,6 +141,12 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
     for (;iFaceTotal < nFacesTotal; ++iFaceTotal) {
         loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
     }
+}
+
+void CCPACSDuct::InvalidateImpl(const boost::optional<std::string>&) const
+{
+    // clear cache of fused ducts in CCPACSDucts
+    m_parent->Invalidate();
 }
 
 } //namespace tigl

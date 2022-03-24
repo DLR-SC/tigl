@@ -74,7 +74,7 @@ namespace generated
     {
         // read element duct
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/duct")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/duct", m_ducts, 1, tixi::xsdUnbounded, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/duct", m_ducts, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDucts*>(this), m_uidMgr);
         }
 
     }
@@ -98,7 +98,7 @@ namespace generated
 
     CCPACSDuct& CPACSDucts::AddDuct()
     {
-        m_ducts.push_back(make_unique<CCPACSDuct>(this, m_uidMgr));
+        m_ducts.push_back(make_unique<CCPACSDuct>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
         return *m_ducts.back();
     }
 

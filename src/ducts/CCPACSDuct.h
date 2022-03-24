@@ -41,12 +41,12 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
-
-
 protected:
     PNamedShape BuildLoft() const override;
 
 private:
+
+    virtual void InvalidateImpl(const boost::optional<std::string>&) const override;
 
     // get short name for loft
     std::string GetShortShapeName() const;

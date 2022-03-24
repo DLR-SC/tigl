@@ -132,11 +132,22 @@ TEST_F(DuctSimple, SanityCheck)
 
 }
 
-TEST_F(DuctSimple, DuctCutOut)
+TEST_F(DuctSimple, FuselageDuctCutOut)
 {
-   /* auto& fuselage = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(1);
+    auto& fuselage = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(1);
     fuselage.SetWithDucts(true);
     fuselage.GetLoft();
-   */
+
+    // TODO test geometry somehow (e.g. IsPointInside?)
+}
+
+
+TEST_F(DuctSimple, WingDuctCutOut)
+{
+    auto& wing = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetWing(1);
+    wing.SetWithDucts(true);
+    wing.GetLoft();
+
+    // TODO test geometry somehow (e.g. IsPointInside?)
 }
 
