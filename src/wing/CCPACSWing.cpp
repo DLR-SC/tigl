@@ -95,6 +95,7 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
     , buildFlaps(false)
+    , withDucts(false)
 {
     if (parent->IsParent<CCPACSAircraftModel>())
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
@@ -115,6 +116,7 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
     , buildFlaps(false)
+    , withDucts(false)
 {
     Cleanup();
 }
@@ -342,11 +344,24 @@ PNamedShape CCPACSWing::BuildLoft() const
         ret = *wingCleanShape;
     }
 
-//    if (withDucts) {
-//        ret =
-//    }
+    if (withDucts && GetConfiguration().GetDucts()) {
+        // To Do: In ase of GroupedFlapsAndWingShapes, we probably want to
+        // exclude the flaps.
+        ret = GetConfiguration().GetDucts()->LoftWithoutDucts(*wingCleanShape);
+    }
 
     return ret;
+}
+
+void CCPACSWing::SetWithDucts(bool value)
+{
+    Reset();
+    withDucts = value;
+}
+
+bool CCPACSWing::WithDucts() const
+{
+    return withDucts;
 }
 
 TopoDS_Shape CCPACSWing::GetLoftWithCutouts()

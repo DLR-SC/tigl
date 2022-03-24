@@ -35,6 +35,7 @@
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurve.h"
 #include "Cache.h"
+#include "CCPACSDucts.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -184,6 +185,12 @@ public:
     TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
     TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
 
+    // set the flag to subtract the ducts from the fuselage
+    TIGL_EXPORT void SetWithDucts(bool);
+
+    // Query the flag, that determines if the fuselage is built with or without ducts
+    TIGL_EXPORT bool WithDucts() const;
+
 protected:
 
     struct LocatedGuideCurves
@@ -237,6 +244,7 @@ private:
     mutable bool                   rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
     mutable bool                   rebuildShells;
     bool                           buildFlaps;               /**< Indicates if the wing's loft shall include flaps */
+    bool                           withDucts;                /**< Indicates if the wing's loft shall include duct cutouts */
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
 
