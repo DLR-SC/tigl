@@ -355,7 +355,9 @@ PNamedShape CCPACSWing::BuildLoft() const
 
 void CCPACSWing::SetWithDucts(bool value)
 {
-    Reset();
+    if (withDucts != value) {
+        Reset();
+    }
     withDucts = value;
 }
 
