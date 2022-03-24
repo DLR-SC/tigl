@@ -123,3 +123,9 @@ TEST_F(DuctSimple, SanityCheck)
 
 }
 
+TEST_F(DuctSimple, DuctCutOut)
+{
+    auto& fuselage = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(1);
+    fuselage.GetLoftWithCutouts();
+}
+

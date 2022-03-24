@@ -69,10 +69,10 @@ PNamedShape CCPACSDuct::BuildLoft() const
     // add guides
     lofter.addGuides(m_segments.GetGuideCurveWires());
 
-    lofter.setMakeSolid(false);
+    lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
 
-    TopoDS_Shape loftShape =  lofter.Shape().Reversed();
+    TopoDS_Shape loftShape =  lofter.Shape();//.Reversed();
 
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
@@ -109,6 +109,8 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
     std::vector<std::string> names;
     names.push_back(loft->Name());
     names.push_back("symmetry");
+    names.push_back("Front");
+    names.push_back("Rear");
 
     if (!CTiglTopoAlgorithms::IsDegenerated(m_segments.GetSegment(1).GetStartWire())) {
           nFacesAero-=1;
@@ -131,6 +133,12 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
         for (int iFace = 0; iFace < nSymmetryFaces; ++iFace) {
             loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
         }
+    }
+
+    // set the caps
+    int iFace = 2;
+    for (;iFaceTotal < nFacesTotal; ++iFaceTotal) {
+        loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
     }
 }
 

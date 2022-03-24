@@ -35,6 +35,9 @@
 #include "CTiglMakeLoft.h"
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglTopoAlgorithms.h"
+#include "CCPACSDuct.h"
+#include "CCutShape.h"
+#include "CFuseShapes.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -67,6 +70,7 @@ namespace tigl
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselage(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
+    , loftWithCutouts(*this, &CCPACSFuselage::BuildLoftWithCutouts)
 {
     Cleanup();
     if (parent->IsParent<CCPACSAircraftModel>())
@@ -296,6 +300,50 @@ PNamedShape CCPACSFuselage::BuildLoft() const
     SetFaceTraits(loft);
 
     return loft;
+}
+
+void CCPACSFuselage::BuildLoftWithCutouts(PNamedShape& cache) const
+{
+    auto& ducts = GetConfiguration().GetDucts()->GetDucts();
+    if (ducts.size() == 0) {
+        cache = GetLoft();
+        return;
+    }
+
+    // first fuse all ducts to one solid tool
+    PNamedShape parentDuct = nullptr;
+    ListPNamedShape childDucts;
+    for (auto& duct: ducts) {
+        if (!parentDuct) {
+            parentDuct = duct->GetLoft();
+        }
+        else {
+            childDucts.push_back(duct->GetLoft());
+        }
+    }
+    auto tool = CFuseShapes(parentDuct, childDucts);
+
+    // second, cut the ducts from the fuselage clean shape
+    auto const& fuselageCleanShape = GetLoft();
+    cache = CCutShape(fuselageCleanShape, tool);
+
+    // finally, update the facetraits for every face of the result
+    for (int iFace = 0; iFace < static_cast<int>(cache->GetFaceCount()); ++iFace) {
+        CFaceTraits ft = cache->GetFaceTraits(iFace);
+        ft.SetOrigin(fuselageCleanShape);
+        cache->SetFaceTraits(iFace, ft);
+    }
+
+#ifdef DEBUG
+    dumpShape(tool.NamedShape()->Shape(), "debugShapes", "ductTool");
+    dumpShape(cache->Shape(), "debugShapes", "fuselageWithCutOut");
+#endif
+
+}
+
+PNamedShape const& CCPACSFuselage::GetLoftWithCutouts() const
+{
+    return *loftWithCutouts;
 }
 
 // Get the positioning transformation for a given section index
