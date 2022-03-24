@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSDucts.h"
 #include "CPACSDuct.h"
-#include "CPACSDucts.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDuct::CPACSDuct(CPACSDucts* parent, CTiglUIDManager* uidMgr)
+    CPACSDuct::CPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr)
         , m_sections(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr)
@@ -45,12 +45,12 @@ namespace generated
         }
     }
 
-    const CPACSDucts* CPACSDuct::GetParent() const
+    const CCPACSDucts* CPACSDuct::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSDucts* CPACSDuct::GetParent()
+    CCPACSDucts* CPACSDuct::GetParent()
     {
         return m_parent;
     }

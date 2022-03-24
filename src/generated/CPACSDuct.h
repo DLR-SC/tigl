@@ -35,11 +35,10 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSDucts;
 
 namespace generated
 {
-    class CPACSDucts;
-
     // This class is used in:
     // CPACSDucts
 
@@ -49,13 +48,13 @@ namespace generated
     class CPACSDuct : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSDuct(CPACSDucts* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSDuct();
 
-        TIGL_EXPORT CPACSDucts* GetParent();
+        TIGL_EXPORT CCPACSDucts* GetParent();
 
-        TIGL_EXPORT const CPACSDucts* GetParent() const;
+        TIGL_EXPORT const CCPACSDucts* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -103,7 +102,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveStructure();
 
     protected:
-        CPACSDucts* m_parent;
+        CCPACSDucts* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -144,7 +143,4 @@ namespace generated
 } // namespace generated
 
 // CPACSDuct is customized, use type CCPACSDuct directly
-
-// Aliases in tigl namespace
-using CCPACSDucts = generated::CPACSDucts;
 } // namespace tigl

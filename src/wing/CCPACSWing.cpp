@@ -335,11 +335,18 @@ std::string CCPACSWing::GetShortShapeName() const
 // build loft
 PNamedShape CCPACSWing::BuildLoft() const
 {
+    PNamedShape ret;
     if (buildFlaps) {
-        return GroupedFlapsAndWingShapes();
+        ret = GroupedFlapsAndWingShapes();
     } else {
-        return *wingCleanShape;
+        ret = *wingCleanShape;
     }
+
+//    if (withDucts) {
+//        ret =
+//    }
+
+    return ret;
 }
 
 TopoDS_Shape CCPACSWing::GetLoftWithCutouts()

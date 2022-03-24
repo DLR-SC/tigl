@@ -80,6 +80,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSDucts = generated::CPACSDucts;
+// CPACSDucts is customized, use type CCPACSDucts directly
 } // namespace tigl

@@ -35,9 +35,7 @@
 #include "CTiglMakeLoft.h"
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglTopoAlgorithms.h"
-#include "CCPACSDuct.h"
-#include "CCutShape.h"
-#include "CFuseShapes.h"
+#include "CCPACSDucts.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -282,41 +280,12 @@ PNamedShape CCPACSFuselage::BuildLoft() const
         return *cleanLoft;
     }
 
-    auto& ducts = GetConfiguration().GetDucts()->GetDucts();
-    if (ducts.size() == 0) {
+    auto& ducts = GetConfiguration().GetDucts();
+    if (!ducts) {
         return *cleanLoft;
     }
 
-    // first fuse all ducts to one solid tool
-    PNamedShape parentDuct = nullptr;
-    ListPNamedShape childDucts;
-    for (auto& duct: ducts) {
-        if (!parentDuct) {
-            parentDuct = duct->GetLoft();
-        }
-        else {
-            childDucts.push_back(duct->GetLoft());
-        }
-    }
-    auto tool = CFuseShapes(parentDuct, childDucts);
-
-    // second, cut the ducts from the fuselage clean shape
-    auto const& fuselageCleanShape = GetLoft();
-    auto loft = CCutShape(fuselageCleanShape, tool).NamedShape();
-
-    // finally, update the facetraits for every face of the result
-    for (int iFace = 0; iFace < static_cast<int>(loft->GetFaceCount()); ++iFace) {
-        CFaceTraits ft = loft->GetFaceTraits(iFace);
-        ft.SetOrigin(fuselageCleanShape);
-        loft->SetFaceTraits(iFace, ft);
-    }
-
-#ifdef DEBUG
-    dumpShape(tool.NamedShape()->Shape(), "debugShapes", "ductTool");
-    dumpShape(loft->Shape(), "debugShapes", "fuselageWithCutOut");
-#endif
-
-    return loft;
+    return ducts->LoftWithoutDucts(*cleanLoft);
 }
 
 void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
@@ -347,6 +316,7 @@ void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
 
 void CCPACSFuselage::SetWithDucts(bool value)
 {
+    Reset();
     withDucts = value;
 }
 
