@@ -339,16 +339,19 @@ PNamedShape CCPACSWing::BuildLoft() const
 {
     PNamedShape ret;
     if (buildFlaps) {
-        ret = GroupedFlapsAndWingShapes();
+
+        // note: ducts are removed in BuildWingWithCutouts
+        return GroupedFlapsAndWingShapes();
     } else {
-        ret = *wingCleanShape;
+
+        if (withDucts && GetConfiguration().GetDucts()) {
+            return GetConfiguration().GetDucts()->LoftWithoutDucts(*wingCleanShape);
+        }
+
+        return *wingCleanShape;
     }
 
-    if (withDucts && GetConfiguration().GetDucts()) {
-        // To Do: In ase of GroupedFlapsAndWingShapes, we probably want to
-        // exclude the flaps.
-        ret = GetConfiguration().GetDucts()->LoftWithoutDucts(*wingCleanShape);
-    }
+
 
     return ret;
 }
@@ -462,6 +465,11 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         CFaceTraits ft = result->GetFaceTraits(iFace);
         ft.SetOrigin(*wingCleanShape);
         result->SetFaceTraits(iFace, ft);
+    }
+
+    // cutout ducts
+    if (withDucts && GetConfiguration().GetDucts()) {
+        result = GetConfiguration().GetDucts()->LoftWithoutDucts(result);
     }
 }
 
