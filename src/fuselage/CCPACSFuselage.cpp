@@ -125,25 +125,6 @@ std::string CCPACSFuselage::GetDefaultedUID() const
     return generated::CPACSFuselage::GetUID();
 }
 
-PNamedShape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs) const
-{
-    PNamedShape loft = CTiglRelativelyPositionedComponent::GetLoft();
-    if (!loft) {
-        return loft;
-    }
-
-    if (cs == GLOBAL_COORDINATE_SYSTEM) {
-        return loft;
-    }
-    else {
-        // we want to modify the shape. we have to create a copy first
-        loft = loft->DeepCopy();
-        TopoDS_Shape transformedLoft = GetTransformationMatrix().Inverted().Transform(loft->Shape());
-        loft->SetShape(transformedLoft);
-        return loft;
-    }
-}
-
 void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis)
 {
     CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);

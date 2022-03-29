@@ -63,8 +63,6 @@ public:
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    TIGL_EXPORT PNamedShape GetLoft(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
-
     // Override setter for invalidation
     TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
     TIGL_EXPORT void SetTransformation(const CCPACSTransformation& transform) override;
