@@ -317,7 +317,7 @@ void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
 void CCPACSFuselage::SetWithDucts(bool value)
 {
     if (withDucts != value) {
-        Reset();
+        loft.clear();
     }
     withDucts = value;
 }
