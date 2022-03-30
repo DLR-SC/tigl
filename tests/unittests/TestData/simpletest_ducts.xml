@@ -1478,8 +1478,8 @@
                 <toElementUID>D150_Duct_8Section3IDElement1</toElementUID>
               </segment>
             </segments>
-          </duct>^
-          <duct uID="SimpleDuct9">
+          </duct>
+          <duct uID="YDuct1">
             <name>name</name>
             <description>description</description>
             <transformation uID="SimpleDuct9_transformation1">
@@ -1652,15 +1652,45 @@
                 <name>D150_Duct_9Segment2</name>
                 <fromElementUID>D150_Duct_9Section1IDElement1</fromElementUID>
                 <toElementUID>D150_Duct_9Section2IDElement1</toElementUID>
+                <guideCurves>
+                  <guideCurve uID="Duct_9_upperGuideCurveSegment1">
+                    <name>sDuct_9_upperGuideCurveSegment1</name>
+                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                    <fromRelativeCircumference>0.</fromRelativeCircumference>
+                    <toRelativeCircumference>0.</toRelativeCircumference>
+                  </guideCurve>
+                  <guideCurve uID="Duct_9_lowerGuideCurveSegment1">
+                    <name>Duct_9_lowerGuideCurveSegment1</name>
+                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                    <fromRelativeCircumference>0.5</fromRelativeCircumference>
+                    <toRelativeCircumference>0.5</toRelativeCircumference>
+                  </guideCurve>
+                </guideCurves>
               </segment>
               <segment uID="segmentD150_Duct_9Segment3ID">
                 <name>D150_Duct_9Segment3</name>
                 <fromElementUID>D150_Duct_9Section2IDElement1</fromElementUID>
                 <toElementUID>D150_Duct_9Section3IDElement1</toElementUID>
+                <guideCurves>
+                  <guideCurve uID="Duct_9_upperGuideCurveSegment2">
+                    <name>sDuct_9_upperGuideCurveSegment2</name>
+                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                    <fromGuideCurveUID>Duct_9_upperGuideCurveSegment1</fromGuideCurveUID>
+                    <continuity>C2 to previous</continuity>
+                    <toRelativeCircumference>0.0</toRelativeCircumference>
+                  </guideCurve>
+                  <guideCurve uID="Duct_9_lowerGuideCurveSegment2">
+                    <name>Duct_9_lowerGuideCurveSegment2</name>
+                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                    <fromGuideCurveUID>Duct_9_lowerGuideCurveSegment1</fromGuideCurveUID>
+                    <continuity>C2 to previous</continuity>
+                    <toRelativeCircumference>0.5</toRelativeCircumference>
+                  </guideCurve>
+                </guideCurves>
               </segment>
             </segments>
           </duct>
-          <duct uID="SimpleDuct10">
+          <duct uID="YDuct2">
             <name>name</name>
             <description>description</description>
             <transformation uID="SimpleDuct10_transformation1">
@@ -1833,11 +1863,41 @@
                 <name>D150_Duct_10Segment2</name>
                 <fromElementUID>D150_Duct_10Section1IDElement1</fromElementUID>
                 <toElementUID>D150_Duct_10Section2IDElement1</toElementUID>
+                <guideCurves>
+                  <guideCurve uID="Duct_10_upperGuideCurveSegment1">
+                    <name>Duct_10_upperGuideCurveSegment1</name>
+                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                    <fromRelativeCircumference>0.</fromRelativeCircumference>
+                    <toRelativeCircumference>0.</toRelativeCircumference>
+                  </guideCurve>
+                  <guideCurve uID="Duct_10_lowerGuideCurveSegment1">
+                    <name>Duct_10_lowerGuideCurveSegment1</name>
+                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                    <fromRelativeCircumference>0.5</fromRelativeCircumference>
+                    <toRelativeCircumference>0.5</toRelativeCircumference>
+                  </guideCurve>
+                </guideCurves>
               </segment>
               <segment uID="segmentD150_Duct_10Segment3ID">
                 <name>D150_Duct_10Segment3</name>
                 <fromElementUID>D150_Duct_10Section2IDElement1</fromElementUID>
                 <toElementUID>D150_Duct_10Section3IDElement1</toElementUID>
+                <guideCurves>
+                  <guideCurve uID="Duct_10_upperGuideCurveSegment2">
+                    <name>Duct_10_upperGuideCurveSegment2</name>
+                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                    <fromGuideCurveUID>Duct_10_upperGuideCurveSegment1</fromGuideCurveUID>
+                    <continuity>C2 to previous</continuity>
+                    <toRelativeCircumference>0.0</toRelativeCircumference>
+                  </guideCurve>
+                  <guideCurve uID="Duct_10_lowerGuideCurveSegment2">
+                    <name>Duct_10_lowerGuideCurveSegment2</name>
+                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                    <fromGuideCurveUID>Duct_10_lowerGuideCurveSegment1</fromGuideCurveUID>
+                    <continuity>C2 to previous</continuity>
+                    <toRelativeCircumference>0.5</toRelativeCircumference>
+                  </guideCurve>
+                </guideCurves>
               </segment>
             </segments>
           </duct>
@@ -2484,6 +2544,16 @@
           </pointList>
         </fuselageProfile>
       </fuselageProfiles>
+      <guideCurves>
+        <guideCurveProfile uID="dummyGuideCurveProfile">
+          <name>dummyGuideCurveProfile</name>
+          <pointList>
+            <rX mapType="vector">0.000000</rX>
+            <rY mapType="vector">0.500000</rY>
+            <rZ mapType="vector">0.000000</rZ>
+          </pointList>
+        </guideCurveProfile>
+      </guideCurves>
     </profiles>
   </vehicles>
   <toolspecific>
