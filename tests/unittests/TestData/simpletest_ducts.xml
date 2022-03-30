@@ -1479,8 +1479,9 @@
               </segment>
             </segments>
           </duct>
-          <duct uID="YDuct1">
+          <duct uID="YDuct1" symmetry="x-z-plane">
             <name>name</name>
+            <parentUID>SimpleFuselage2</parentUID>
             <description>description</description>
             <transformation uID="SimpleDuct9_transformation1">
               <scaling uID="SimpleDuct9_transformation1_scaling1">
@@ -1494,9 +1495,9 @@
                 <z>0.0</z>
               </rotation>
               <translation refType="absLocal" uID="SimpleDuct9_transformation1_translation1">
-                <x>0.0</x>
-                <y>5</y>
-                <z>0.0</z>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
               </translation>
             </transformation>
             <sections>
@@ -1657,12 +1658,22 @@
                     <name>sDuct_9_upperGuideCurveSegment1</name>
                     <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
                     <fromRelativeCircumference>0.</fromRelativeCircumference>
+                    <tangent>
+                      <x>1.</x>
+                      <y>0.</y>
+                      <z>0.</z>
+                    </tangent>
                     <toRelativeCircumference>0.</toRelativeCircumference>
                   </guideCurve>
                   <guideCurve uID="Duct_9_lowerGuideCurveSegment1">
                     <name>Duct_9_lowerGuideCurveSegment1</name>
                     <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
                     <fromRelativeCircumference>0.5</fromRelativeCircumference>
+                    <tangent>
+                      <x>1.</x>
+                      <y>0.</y>
+                      <z>0.</z>
+                    </tangent>
                     <toRelativeCircumference>0.5</toRelativeCircumference>
                   </guideCurve>
                 </guideCurves>
@@ -1683,217 +1694,6 @@
                     <name>Duct_9_lowerGuideCurveSegment2</name>
                     <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
                     <fromGuideCurveUID>Duct_9_lowerGuideCurveSegment1</fromGuideCurveUID>
-                    <continuity>C2 to previous</continuity>
-                    <toRelativeCircumference>0.5</toRelativeCircumference>
-                  </guideCurve>
-                </guideCurves>
-              </segment>
-            </segments>
-          </duct>
-          <duct uID="YDuct2">
-            <name>name</name>
-            <description>description</description>
-            <transformation uID="SimpleDuct10_transformation1">
-              <scaling uID="SimpleDuct10_transformation1_scaling1">
-                <x>2.0</x>
-                <y>0.15</y>
-                <z>0.15</z>
-              </scaling>
-              <rotation uID="SimpleDuct10_transformation1_rotation1">
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
-              </rotation>
-              <translation refType="absLocal" uID="SimpleDuct10_transformation1_translation1">
-                <x>0.0</x>
-                <y>5</y>
-                <z>0.0</z>
-              </translation>
-            </transformation>
-            <sections>
-              <section uID="D150_Duct_10Section1ID">
-                <name>D150_Duct_10Section1</name>
-                <transformation uID="D150_Duct_10Section1ID_transformation1">
-                  <scaling uID="D150_Duct_10Section1ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_10Section1ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_10Section1ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>-4</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_10Section1IDElement1">
-                    <name>D150_Duct_10Section1</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_10Section1IDElement1_transformation1">
-                      <scaling uID="D150_Duct_10Section1IDElement1_transformation1_scaling1">
-                        <x>1.0</x>
-                        <y>1.0</y>
-                        <z>1.0</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_10Section1IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_10Section1IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_10Section2ID">
-                <name>D150_Duct_10Section2</name>
-                <transformation uID="D150_Duct_10Section2ID_transformation1">
-                  <scaling uID="D150_Duct_10Section2ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_10Section2ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_10Section2ID_transformation1_translation1">
-                    <x>0.5</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_10Section2IDElement1">
-                    <name>D150_Duct_10Section2</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_10Section2IDElement1_transformation1">
-                      <scaling uID="D150_Duct_10Section2IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_10Section2IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_10Section2IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_10Section3ID">
-                <name>D150_Duct_10Section3</name>
-                <transformation uID="D150_Duct_10Section3ID_transformation1">
-                  <scaling uID="D150_Duct_10Section3ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_10Section3ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_10Section3ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_10Section3IDElement1">
-                    <name>D150_Duct_10Section3</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_10Section3IDElement1_transformation1">
-                      <scaling uID="D150_Duct_10Section3IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_10Section3IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_10Section3IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-            </sections>
-            <positionings>
-              <positioning uID="D150_Duct_10Positioning1ID">
-                <name>D150_Duct_10Positioning1</name>
-                <length>-0.5</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <toSectionUID>D150_Duct_10Section1ID</toSectionUID>
-              </positioning>
-              <positioning uID="D150_Duct_10Positioning3ID">
-                <name>D150_Duct_10Positioning3</name>
-                <length>2</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <fromSectionUID>D150_Duct_10Section1ID</fromSectionUID>
-                <toSectionUID>D150_Duct_10Section3ID</toSectionUID>
-              </positioning>
-            </positionings>
-            <segments>
-              <segment uID="segmentD150_Duct_10Segment2ID">
-                <name>D150_Duct_10Segment2</name>
-                <fromElementUID>D150_Duct_10Section1IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_10Section2IDElement1</toElementUID>
-                <guideCurves>
-                  <guideCurve uID="Duct_10_upperGuideCurveSegment1">
-                    <name>Duct_10_upperGuideCurveSegment1</name>
-                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
-                    <fromRelativeCircumference>0.</fromRelativeCircumference>
-                    <toRelativeCircumference>0.</toRelativeCircumference>
-                  </guideCurve>
-                  <guideCurve uID="Duct_10_lowerGuideCurveSegment1">
-                    <name>Duct_10_lowerGuideCurveSegment1</name>
-                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
-                    <fromRelativeCircumference>0.5</fromRelativeCircumference>
-                    <toRelativeCircumference>0.5</toRelativeCircumference>
-                  </guideCurve>
-                </guideCurves>
-              </segment>
-              <segment uID="segmentD150_Duct_10Segment3ID">
-                <name>D150_Duct_10Segment3</name>
-                <fromElementUID>D150_Duct_10Section2IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_10Section3IDElement1</toElementUID>
-                <guideCurves>
-                  <guideCurve uID="Duct_10_upperGuideCurveSegment2">
-                    <name>Duct_10_upperGuideCurveSegment2</name>
-                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
-                    <fromGuideCurveUID>Duct_10_upperGuideCurveSegment1</fromGuideCurveUID>
-                    <continuity>C2 to previous</continuity>
-                    <toRelativeCircumference>0.0</toRelativeCircumference>
-                  </guideCurve>
-                  <guideCurve uID="Duct_10_lowerGuideCurveSegment2">
-                    <name>Duct_10_lowerGuideCurveSegment2</name>
-                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
-                    <fromGuideCurveUID>Duct_10_lowerGuideCurveSegment1</fromGuideCurveUID>
                     <continuity>C2 to previous</continuity>
                     <toRelativeCircumference>0.5</toRelativeCircumference>
                   </guideCurve>
@@ -2099,8 +1899,8 @@
                 <z>0.0</z>
               </rotation>
               <translation refType="absLocal" uID="SimpleFuselage2_transformation1_translation1">
-                <x>0.0</x>
-                <y>5.0</y>
+                <x>5.0</x>
+                <y>0.0</y>
                 <z>0.0</z>
               </translation>
             </transformation>
