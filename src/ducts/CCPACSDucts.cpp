@@ -34,7 +34,8 @@ CCPACSDucts::CCPACSDucts(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
 {}
 
 void CCPACSDucts::Invalidate() {
-    fusedDucts.clear();
+    //TODO: uncommenting this yields a deadlock in Cache. Why?
+//    fusedDucts.clear();
 }
 
 void CCPACSDucts::FuseDucts(PNamedShape& tool) const
@@ -49,6 +50,13 @@ void CCPACSDucts::FuseDucts(PNamedShape& tool) const
         else {
             childDucts.push_back(duct->GetLoft());
         }
+
+        // add mirrored loft, if any
+        PNamedShape mirroredLoft = duct->GetMirroredLoft();
+        if (mirroredLoft) {
+            childDucts.push_back(mirroredLoft);
+        }
+
     }
     tool = CFuseShapes(parentDuct, childDucts);
 }
