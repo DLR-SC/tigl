@@ -51,7 +51,8 @@ TiglGeometricComponentType CCPACSDuct::GetComponentType() const
 
 TiglGeometricComponentIntent CCPACSDuct::GetComponentIntent() const
 {
-    return TIGL_INTENT_LOGICAL;
+    // needs to be physical, so that transformation relative to parent works
+    return TIGL_INTENT_PHYSICAL;
 }
 
 PNamedShape CCPACSDuct::BuildLoft() const
