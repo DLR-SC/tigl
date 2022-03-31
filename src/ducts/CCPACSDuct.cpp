@@ -57,7 +57,6 @@ TiglGeometricComponentIntent CCPACSDuct::GetComponentIntent() const
 
 PNamedShape CCPACSDuct::BuildLoft() const
 {
-    m_parent->Invalidate();
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean smooth = (cont == ::C0? false : true);
 
@@ -146,7 +145,7 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
 
 void CCPACSDuct::InvalidateImpl(const boost::optional<std::string>&) const
 {
-    // clear cache of fused ducts in CCPACSDucts
+    CTiglAbstractGeometricComponent::Reset();
     m_parent->Invalidate();
 }
 
