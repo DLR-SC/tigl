@@ -212,6 +212,7 @@
               </segment>
             </segments>
           </duct>
+          <!--
           <duct uID="SimpleDuct2">
             <name>name</name>
             <description>description</description>
@@ -1701,6 +1702,7 @@
               </segment>
             </segments>
           </duct>
+        -->
         </ducts>
         <fuselages>
           <fuselage uID="SimpleFuselage">
