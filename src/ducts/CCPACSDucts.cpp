@@ -19,12 +19,23 @@
 * @brief  Implementation of CPACS duct handling routines.
 */
 
+//#define USE_TIGL_FUSER
+
 #include "CCPACSDucts.h"
 #include "CCPACSDuct.h"
 #include "Debugging.h"
 #include "CCutShape.h"
-#include "CFuseShapes.h"
 #include "CNamedShape.h"
+#include "CTiglError.h"
+
+#ifdef USE_TIGL_FUSER
+#include "CFuseShapes.h"
+#else
+#include "TopTools_ListOfShape.hxx"
+#include "BRepAlgoAPI_Fuse.hxx"
+#endif
+
+
 
 namespace tigl {
 
@@ -40,6 +51,7 @@ void CCPACSDucts::Invalidate() {
 
 void CCPACSDucts::FuseDucts(PNamedShape& tool) const
 {
+#ifdef USE_TIGL_FUSER
     // first fuse all ducts to one solid tool
     PNamedShape parentDuct = nullptr;
     ListPNamedShape childDucts;
@@ -59,6 +71,36 @@ void CCPACSDucts::FuseDucts(PNamedShape& tool) const
 
     }
     tool = CFuseShapes(parentDuct, childDucts);
+#else
+    TopTools_ListOfShape arguments, tools;
+    for (auto const& duct: m_ducts) {
+
+        PNamedShape loft = duct->GetLoft();
+        if (arguments.Extent() == 0) {
+            arguments.Append(loft->Shape());
+        }
+        else {
+            tools.Append(loft->Shape());
+        }
+
+        // add mirrored loft, if any
+        PNamedShape mirroredLoft = duct->GetMirroredLoft();
+        if (mirroredLoft) {
+            tools.Append(mirroredLoft->Shape());
+        }
+    }
+
+    BRepAlgoAPI_Fuse fuse;
+    fuse.SetArguments(arguments);
+    fuse.SetTools(tools);
+    fuse.Build();
+    if (fuse.IsDone()) {
+        tool = std::make_shared<CNamedShape>(fuse.Shape(), "some_name");
+    }
+    else {
+        throw CTiglError("Cannot fuse ducts to a single cutting tool for Boolean operations with geometric components\n.");
+    }
+#endif
 }
 
 PNamedShape CCPACSDucts::LoftWithoutDucts(PNamedShape const& cleanLoft) const
