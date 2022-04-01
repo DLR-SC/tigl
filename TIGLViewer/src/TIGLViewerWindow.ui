@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -161,6 +161,7 @@
       <string>Aircraft</string>
      </property>
      <addaction name="showAllWingsAndFuselagesAction"/>
+     <addaction name="showAllWingsAndFuselageDuctCutoutsAction"/>
      <addaction name="showAllWingsAndFuselagesSurfacePointsAction"/>
      <addaction name="drawFusedAircraftAction"/>
      <addaction name="showFusedAirplaneTriangulation"/>
@@ -1422,6 +1423,17 @@
   <action name="drawWingFlapsAction">
    <property name="text">
     <string>Show Wing Flaps</string>
+   </property>
+  </action>
+  <action name="showAllWingsAndFuselageDuctCutoutsAction">
+   <property name="text">
+    <string>Show the complete Aircraft with Duct Cutouts</string>
+   </property>
+   <property name="statusTip">
+    <string>Show all Fuselages and Wings with Duct Cutouts</string>
+   </property>
+   <property name="whatsThis">
+    <string>Show all Fuselages and Wings with Duct Cutouts</string>
    </property>
   </action>
  </widget>

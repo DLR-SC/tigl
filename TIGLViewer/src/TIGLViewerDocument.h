@@ -58,7 +58,8 @@ signals:
 
 public slots:
     // Aircraft slots
-    void drawConfiguration();
+    void drawConfiguration(bool WithDuctCutouts=false);
+    void drawConfigurationWithDuctCutouts();
     void drawAllFuselagesAndWingsSurfacePoints();
     void drawFusedAircraft();
     void drawFusedAircraftTriangulation();

@@ -598,6 +598,7 @@ void TIGLViewerWindow::connectConfiguration()
 
     // CPACS Aircraft Actions
     connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfiguration()));
+    connect(showAllWingsAndFuselageDuctCutoutsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfigurationWithDuctCutouts()));
     connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
     connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
     connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
@@ -826,6 +827,7 @@ void TIGLViewerWindow::updateMenus()
 
     bool hasFarField = false;
     bool hasACSystems = false;
+    bool hasDucts = false;
     int nRotorBlades = 0;
     int nRotors = 0;
     try {
@@ -833,12 +835,16 @@ void TIGLViewerWindow::updateMenus()
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
             hasFarField = config.GetFarField().GetType() != tigl::NONE;
             hasACSystems = config.GetGenericSystemCount() > 0;
+            if (config.GetDucts()) {
+                hasDucts = config.GetDucts()->GetDucts().size() > 0;
+            }
             nRotorBlades = config.GetRotorBladeCount();
             nRotors = config.GetRotorCount();
         }
     }
     catch(tigl::CTiglError& ){}
     drawFarFieldAction->setEnabled(hasFarField);
+    showAllWingsAndFuselageDuctCutoutsAction->setEnabled(hasDucts);
     drawSystemsAction->setEnabled(hasACSystems);
     drawRotorsAction->setEnabled(nRotors > 0);
     menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));
