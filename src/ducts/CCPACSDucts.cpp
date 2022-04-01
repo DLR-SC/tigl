@@ -102,7 +102,7 @@ void CCPACSDucts::FuseDucts(PNamedShape& tool) const
 #endif
 }
 
-PNamedShape CCPACSDucts::LoftWithoutDucts(PNamedShape const& cleanLoft) const
+PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft) const
 {
     if (m_ducts.size() == 0) {
         return cleanLoft;

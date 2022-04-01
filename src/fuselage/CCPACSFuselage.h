@@ -127,10 +127,10 @@ public:
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
 
     // set the flag to subtract the ducts from the fuselage
-    TIGL_EXPORT void SetWithDucts(bool);
+    TIGL_EXPORT void SetWithDuctCutouts(bool);
 
     // Query the flag, that determines if the fuselage is built with or without ducts
-    TIGL_EXPORT bool WithDucts() const;
+    TIGL_EXPORT bool WithDuctCutouts() const;
 protected:
 
     void BuildCleanLoft(PNamedShape& cache) const;
@@ -153,7 +153,7 @@ private:
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
-    bool withDucts;
+    bool withDuctCutouts;
     Cache<PNamedShape, CCPACSFuselage> cleanLoft; /**< Stores the loft with cutouts (e.g. ducts) */
 
 

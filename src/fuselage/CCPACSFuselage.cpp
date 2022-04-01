@@ -68,7 +68,7 @@ namespace tigl
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselage(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , withDucts(false)
+    , withDuctCutouts(false)
     , cleanLoft(*this, &CCPACSFuselage::BuildCleanLoft)
 {
     Cleanup();
@@ -257,7 +257,7 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 // Builds a fused shape of all fuselage segments
 PNamedShape CCPACSFuselage::BuildLoft() const
 {
-    if (!withDucts) {
+    if (!withDuctCutouts) {
         return *cleanLoft;
     }
 
@@ -266,7 +266,7 @@ PNamedShape CCPACSFuselage::BuildLoft() const
         return *cleanLoft;
     }
 
-    return ducts->LoftWithoutDucts(*cleanLoft);
+    return ducts->LoftWithDuctCutouts(*cleanLoft);
 }
 
 void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
@@ -295,17 +295,17 @@ void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
     SetFaceTraits(cache);
 }
 
-void CCPACSFuselage::SetWithDucts(bool value)
+void CCPACSFuselage::SetWithDuctCutouts(bool value)
 {
-    if (withDucts != value) {
+    if (withDuctCutouts != value) {
         CTiglAbstractGeometricComponent::Reset();
     }
-    withDucts = value;
+    withDuctCutouts = value;
 }
 
-bool CCPACSFuselage::WithDucts() const
+bool CCPACSFuselage::WithDuctCutouts() const
 {
-    return withDucts;
+    return withDuctCutouts;
 }
 
 // Get the positioning transformation for a given section index

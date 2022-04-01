@@ -125,43 +125,43 @@ TEST_F(DuctSimple, SanityCheck)
 TEST_F(DuctSimple, FuselageDuctCutOut)
 {
     auto& fuselage_1 = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(2);
-    fuselage_1.SetWithDucts(true);
+    fuselage_1.SetWithDuctCutouts(true);
     auto shape = fuselage_1.GetLoft();
     const TopoDS_Shape& cutFuselage_1_Shape = shape->Shape();
 
-     EXPECT_FALSE(IsPointInsideShape(cutFuselage_1_Shape, gp_Pnt(0.0, 0.0, 0.0)));
-     EXPECT_TRUE(IsPointInsideShape(cutFuselage_1_Shape, gp_Pnt(0.0, 0.0, 0.25)));
-     EXPECT_FALSE(IsPointInsideShape(cutFuselage_1_Shape, gp_Pnt(0.0, 0.0, 0.6)));
-     EXPECT_FALSE(IsPointInsideShape(cutFuselage_1_Shape, gp_Pnt(0.0, 0.4, -0.1)));
-     EXPECT_FALSE(IsPointInsideShape(cutFuselage_1_Shape, gp_Pnt(1.0, 0.0, 0.25)));
+    EXPECT_FALSE(IsPointInsideShape(cutFuselage_1_Shape, gp_Pnt(0.0, 0.0, 0.0)));
+    EXPECT_TRUE(IsPointInsideShape(cutFuselage_1_Shape, gp_Pnt(0.0, 0.0, 0.25)));
+    EXPECT_FALSE(IsPointInsideShape(cutFuselage_1_Shape, gp_Pnt(0.0, 0.0, 0.6)));
+    EXPECT_FALSE(IsPointInsideShape(cutFuselage_1_Shape, gp_Pnt(0.0, 0.4, -0.1)));
+    EXPECT_FALSE(IsPointInsideShape(cutFuselage_1_Shape, gp_Pnt(1.0, 0.0, 0.25)));
 
-     //Check for the right number of faces
-     EXPECT_EQ(GetNumberOfFaces(cutFuselage_1_Shape), 12);
+    //Check for the right number of faces
+    EXPECT_EQ(GetNumberOfFaces(cutFuselage_1_Shape), 12);
 
-     //Check for the right number of edges
-     EXPECT_EQ(GetNumberOfEdges(cutFuselage_1_Shape),76); //not checked
+    //Check for the right number of edges
+    EXPECT_EQ(GetNumberOfEdges(cutFuselage_1_Shape),76); //not checked
 
-     //Check if the bounding box of the cut fuselage has the right dimensions
-     Bnd_Box ductBBox;
-     BRepBndLib::AddOptimal(cutFuselage_1_Shape, ductBBox);
+    //Check if the bounding box of the cut fuselage has the right dimensions
+    Bnd_Box ductBBox;
+    BRepBndLib::AddOptimal(cutFuselage_1_Shape, ductBBox);
 
-     // X positioning of cut fuselage in coordinate system
-     const double precisionX = 1.E-5 * (ductBBox.CornerMax().X() - ductBBox.CornerMin().X());
+    // X positioning of cut fuselage in coordinate system
+    const double precisionX = 1.E-5 * (ductBBox.CornerMax().X() - ductBBox.CornerMin().X());
 
-     ASSERT_NEAR(ductBBox.CornerMax().X(), 0.5, precisionX );
-     ASSERT_NEAR(ductBBox.CornerMin().X(), -0.5, precisionX );
+    ASSERT_NEAR(ductBBox.CornerMax().X(), 0.5, precisionX );
+    ASSERT_NEAR(ductBBox.CornerMin().X(), -0.5, precisionX );
 /*
-     // Y positioning of cut fuselage in coordinate system
-     const double precisionY = 1.E-5 * (ductBBox.CornerMax().Y() - ductBBox.CornerMin().Y());
+    // Y positioning of cut fuselage in coordinate system
+    const double precisionY = 1.E-5 * (ductBBox.CornerMax().Y() - ductBBox.CornerMin().Y());
 
-     ASSERT_NEAR(ductBBox.CornerMax().Y(), 0.25, precisionY );
-     ASSERT_NEAR(ductBBox.CornerMin().Y(), -0.25, precisionY );
+    ASSERT_NEAR(ductBBox.CornerMax().Y(), 0.25, precisionY );
+    ASSERT_NEAR(ductBBox.CornerMin().Y(), -0.25, precisionY );
 
-     // Z positioning of duct in coordinate system
-     const double precisionZ = 1.E-5 * (ductBBox.CornerMax().Z() - ductBBox.CornerMin().Z());
+    // Z positioning of duct in coordinate system
+    const double precisionZ = 1.E-5 * (ductBBox.CornerMax().Z() - ductBBox.CornerMin().Z());
 
-     ASSERT_NEAR(ductBBox.CornerMax().Z(), 0.1, precisionZ );
-     ASSERT_NEAR(ductBBox.CornerMin().Z(), -0.1, precisionZ );
+    ASSERT_NEAR(ductBBox.CornerMax().Z(), 0.1, precisionZ );
+    ASSERT_NEAR(ductBBox.CornerMin().Z(), -0.1, precisionZ );
 */
 
 
@@ -170,7 +170,7 @@ TEST_F(DuctSimple, FuselageDuctCutOut)
 TEST_F(DuctSimple, WingDuctCutOut)
 {
     auto& wing = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetWing(1);
-    wing.SetWithDucts(true);
+    wing.SetWithDuctCutouts(true);
     wing.GetLoft();
 
     // TODO test geometry somehow (e.g. IsPointInside?)
