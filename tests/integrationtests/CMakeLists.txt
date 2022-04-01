@@ -11,7 +11,11 @@ ADD_TEST(
   COMMAND ${test_BIN} --gtest_output=xml
 )
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(
+        TARGET ${test_BIN} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_CURRENT_SOURCE_DIR}/TestData
+                ${CMAKE_CURRENT_BINARY_DIR}/TestData)
 
 #create directory to avoid crash in unit tests
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/export)
