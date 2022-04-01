@@ -35,7 +35,7 @@ public:
     TIGL_EXPORT CCPACSDucts(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
     // Given an input loft, create a new loft where all ducts have been cut away.
-    TIGL_EXPORT PNamedShape LoftWithoutDucts(PNamedShape const&) const;
+    TIGL_EXPORT PNamedShape LoftWithDuctCutouts(PNamedShape const&) const;
 
     TIGL_EXPORT void Invalidate();
 
