@@ -708,8 +708,9 @@ void TIGLViewerDocument::drawComponentByUID(const QString& uid)
 
 }
 
-void TIGLViewerDocument::drawConfiguration( )
+void TIGLViewerDocument::drawConfiguration(bool withDuctCutouts)
 {
+    tiglConfigurationSetWithDuctCutouts(m_cpacsHandle, NULL, withDuctCutouts);
 
     std::vector<TiglGeometricComponentType> shapesToDraw;
     shapesToDraw.push_back(TIGL_COMPONENT_FUSELAGE);
@@ -741,6 +742,11 @@ void TIGLViewerDocument::drawConfiguration( )
     catch(tigl::CTiglError& err) {
         displayError(err.what());
     }
+}
+
+void TIGLViewerDocument::drawConfigurationWithDuctCutouts() {
+    app->getScene()->deleteAllObjects();
+    drawConfiguration(true);
 }
 
 
