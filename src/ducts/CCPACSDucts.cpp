@@ -44,9 +44,9 @@ CCPACSDucts::CCPACSDucts(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
   , fusedDucts(*this, &CCPACSDucts::FuseDucts)
 {}
 
-void CCPACSDucts::Invalidate() {
-    //TODO: uncommenting this yields a deadlock in Cache. Why?
-    //fusedDucts.clear();
+void CCPACSDucts::Invalidate()
+{
+    fusedDucts.clear();
 }
 
 void CCPACSDucts::FuseDucts(PNamedShape& tool) const

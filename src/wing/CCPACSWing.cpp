@@ -359,7 +359,7 @@ PNamedShape CCPACSWing::BuildLoft() const
 void CCPACSWing::SetWithDucts(bool value)
 {
     if (withDucts != value) {
-         loft.clear();
+         CTiglAbstractGeometricComponent::Reset();
     }
     withDucts = value;
 }
