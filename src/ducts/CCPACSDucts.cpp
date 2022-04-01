@@ -50,6 +50,14 @@ void CCPACSDucts::Invalidate() {
 
 void CCPACSDucts::FuseDucts(PNamedShape& tool) const
 {
+    if (m_ducts.size() == 0) {
+        return;
+    }
+
+    if (m_ducts.size() == 1 && !m_ducts[0]->GetMirroredLoft()) {
+        // no need to fuse, there is just one solid
+        tool = m_ducts[0]->GetLoft();
+    }
 #ifdef USE_TIGL_FUSER
     // first fuse all ducts to one solid tool
     PNamedShape parentDuct = nullptr;
