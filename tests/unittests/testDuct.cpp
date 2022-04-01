@@ -22,6 +22,7 @@
 
 #include "test.h" // Brings in the GTest framework
 
+#include "tigl.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSDuct.h"
@@ -65,7 +66,12 @@ protected:
         duct = &uidMgr.ResolveObject<tigl::CCPACSDuct>("SimpleDuct");
 
     }
-    void TearDown() override {}
+    void TearDown() override {
+        // reset WithDuctCutouts flags
+        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(1).SetWithDuctCutouts(false);
+        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(2).SetWithDuctCutouts(false);
+        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetWing(1).SetWithDuctCutouts(false);
+    }
 
     static TixiDocumentHandle           tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
@@ -174,6 +180,75 @@ TEST_F(DuctSimple, WingDuctCutOut)
     wing.GetLoft();
 
     // TODO test geometry somehow (e.g. IsPointInside?)
+}
+
+TEST_F(DuctSimple, tiglConfigurationSetWithDuctCutouts){
+
+    auto& wing = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetWing(1);
+    auto& fuselage1 = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(1);
+    auto& fuselage2 = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(2);
+
+    // test errors
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglConfigurationSetWithDuctCutouts(-1, "Wing", true));
+    EXPECT_EQ(TIGL_UID_ERROR, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "Rxlquap", true));
+    EXPECT_EQ(TIGL_UID_ERROR, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "fuselageCircleProfileuID", true));
+
+    // ducts are not considered by default
+    EXPECT_FALSE(wing.WithDuctCutouts());
+    EXPECT_FALSE(fuselage1.WithDuctCutouts());
+    EXPECT_FALSE(fuselage2.WithDuctCutouts());
+
+    // set the flag for all components, by setting the componentUID to NULL
+    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, NULL, true));
+    EXPECT_TRUE(wing.WithDuctCutouts());
+    EXPECT_TRUE(fuselage1.WithDuctCutouts());
+    EXPECT_TRUE(fuselage2.WithDuctCutouts());
+
+    // set the flag for individual components
+    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "SimpleFuselage", false));
+    EXPECT_TRUE(wing.WithDuctCutouts());
+    EXPECT_FALSE(fuselage1.WithDuctCutouts());
+    EXPECT_TRUE(fuselage2.WithDuctCutouts());
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "SimpleFuselage2", false));
+    EXPECT_TRUE(wing.WithDuctCutouts());
+    EXPECT_FALSE(fuselage1.WithDuctCutouts());
+    EXPECT_FALSE(fuselage2.WithDuctCutouts());
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "Wing", false));
+    EXPECT_FALSE(wing.WithDuctCutouts());
+    EXPECT_FALSE(fuselage1.WithDuctCutouts());
+    EXPECT_FALSE(fuselage2.WithDuctCutouts());
+
+    //TODO: Should we test also the fuselage wing structure?
+}
+
+TEST_F(DuctSimple, tiglConfigurationGetWithDuctCutouts)
+{
+    bool flag;
+
+    // test errors
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglConfigurationGetWithDuctCutouts(-1, "Wing", &flag));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglConfigurationGetWithDuctCutouts(DuctSimple::tiglHandle, NULL, &flag));
+    EXPECT_EQ(TIGL_UID_ERROR, tiglConfigurationGetWithDuctCutouts(DuctSimple::tiglHandle, "Rxlquap", &flag));
+    EXPECT_EQ(TIGL_UID_ERROR, tiglConfigurationGetWithDuctCutouts(DuctSimple::tiglHandle, "fuselageCircleProfileuID", &flag));
+
+    std::vector<std::string> uids {"SimpleFuselage", "SimpleFuselage2", "Wing"};
+    for (auto& uid: uids) {
+        ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationGetWithDuctCutouts(DuctSimple::tiglHandle, uid.c_str(), &flag))
+                << "for uid " << uid;
+        // ducts are not considered by default
+        EXPECT_FALSE(flag);
+
+        // check if the flag changes after a call to tiglConfigurationSetWithDuctCutouts
+        tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, uid.c_str(), !flag);
+        ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationGetWithDuctCutouts(DuctSimple::tiglHandle, uid.c_str(), &flag))
+                << "for uid " << uid;
+        EXPECT_TRUE(flag);
+    }
+
+    //TODO: Should we test also the fuselage wing structure?
+
 }
 
 
