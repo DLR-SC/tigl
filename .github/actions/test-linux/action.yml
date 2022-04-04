@@ -73,4 +73,4 @@ runs:
       if: ${{ inputs.coverage == 'true' }}
       uses: codecov/codecov-action@v2
       with:
-        files: build/tests/unittests/coverageReport-unit.info, build/tests/integrationtests/coverageReport-integration.info
+        files: ./build/tests/unittests/coverageReport-unit.info,./build/tests/integrationtests/coverageReport-integration.info
