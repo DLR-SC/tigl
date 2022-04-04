@@ -68,21 +68,17 @@ bool CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const Shape
     for (int w = 1; w <= config.GetWingCount(); w++) {
         CCPACSWing& wing = config.GetWing(w);
 
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+        try {
+            PNamedShape loft = wing.GetLoft();
+            AddShape(loft, &config, options);
 
-            try {
-                PNamedShape loft = segment.GetLoft();
-                AddShape(loft, &config, options);
-
-                if (GlobalExportOptions().Get<bool>("ApplySymmetries") && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-                    AddShape(segment.GetMirroredLoft(), &config, options);
-                }
+            if (GlobalExportOptions().Get<bool>("ApplySymmetries") && wing.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                AddShape(wing.GetMirroredLoft(), &config, options);
             }
-            catch (const CTiglError& err) {
-                LOG(ERROR) << "Unable to export wing segment '" + segment.GetUID() << "': " << err.what();
-                success = false;
-            }
+        }
+        catch (const CTiglError& err) {
+            LOG(ERROR) << "Unable to export wing '" + wing.GetUID() << "': " << err.what();
+            success = false;
         }
     }
 
@@ -138,20 +134,17 @@ bool CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const Shape
     for (int f = 1; f <= config.GetFuselageCount(); f++) {
         CCPACSFuselage& fuselage = config.GetFuselage(f);
 
-        for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
-            CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            try {
-                PNamedShape loft = segment.GetLoft();
-                AddShape(loft, &config, options);
+        try {
+            PNamedShape loft = fuselage.GetLoft();
+            AddShape(loft, &config, options);
 
-                if (GlobalExportOptions().Get<bool>("ApplySymmetries") && segment.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-                    AddShape(segment.GetMirroredLoft(), &config, options);
-                }
+            if (GlobalExportOptions().Get<bool>("ApplySymmetries") && fuselage.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                AddShape(fuselage.GetMirroredLoft(), &config, options);
             }
-            catch (const CTiglError& err) {
-                LOG(ERROR) << "Unable to fuselage segment '" + segment.GetUID() << "': " << err.what();
-                success = false;
-            }
+        }
+        catch (const CTiglError& err) {
+            LOG(ERROR) << "Unable to fuselage '" + fuselage.GetUID() << "': " << err.what();
+            success = false;
         }
     }
 
