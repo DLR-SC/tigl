@@ -5078,7 +5078,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfi
  */
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
                                                                       const char* componentUID,
-                                                                      bool WithDuctCutoutsFlag);
+                                                                      TiglBoolean WithDuctCutoutsFlag);
 
 /**
  * @brief Gets the flag, wether a geometric component with given UID shall be build with duct cutouts,
@@ -5100,7 +5100,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSC
  */
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
                                                                       const char* componentUID,
-                                                                      bool* WithDuctCutoutsFlag);
+                                                                      TiglBoolean* WithDuctCutoutsFlag);
 
 /*@}*/ // end of doxygen group
 

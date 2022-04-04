@@ -7369,7 +7369,7 @@ TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfigurationHandle cpac
 
 TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
                                                    const char* componentUID,
-                                                   bool WithDuctCutoutsFlag)
+                                                   TiglBoolean WithDuctCutoutsFlag)
 {
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -7433,7 +7433,7 @@ TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSConfigurationHandle 
 
 TiglReturnCode tiglConfigurationGetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
                                                    const char* componentUID,
-                                                   bool* WithDuctCutoutsFlag)
+                                                   TiglBoolean* WithDuctCutoutsFlag)
 {
     if (!componentUID) {
         LOG(ERROR) << "Null pointer for argument componentUID in tiglConfigurationGetWithDuctCutouts.";
@@ -7449,13 +7449,13 @@ TiglReturnCode tiglConfigurationGetWithDuctCutouts(TiglCPACSConfigurationHandle 
 
             if (uidManager.IsType<tigl::CCPACSFuselage>(componentUID)) {
                 auto& fuselage = uidManager.ResolveObject<tigl::CCPACSFuselage>(componentUID);
-                *WithDuctCutoutsFlag = fuselage.WithDuctCutouts();
+                *WithDuctCutoutsFlag = (TiglBoolean)fuselage.WithDuctCutouts();
                 return TIGL_SUCCESS;
             }
 
             if (uidManager.IsType<tigl::CCPACSWing>(componentUID)) {
                 auto& wing = uidManager.ResolveObject<tigl::CCPACSWing>(componentUID);
-                *WithDuctCutoutsFlag = wing.WithDuctCutouts();
+                *WithDuctCutoutsFlag = (TiglBoolean)wing.WithDuctCutouts();
                 return TIGL_SUCCESS;
             }
 

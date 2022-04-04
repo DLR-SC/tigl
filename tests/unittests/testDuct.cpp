@@ -189,9 +189,9 @@ TEST_F(DuctSimple, tiglConfigurationSetWithDuctCutouts){
     auto& fuselage2 = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(2);
 
     // test errors
-    EXPECT_EQ(TIGL_NOT_FOUND, tiglConfigurationSetWithDuctCutouts(-1, "Wing", true));
-    EXPECT_EQ(TIGL_UID_ERROR, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "Rxlquap", true));
-    EXPECT_EQ(TIGL_UID_ERROR, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "fuselageCircleProfileuID", true));
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglConfigurationSetWithDuctCutouts(-1, "Wing", TIGL_TRUE));
+    EXPECT_EQ(TIGL_UID_ERROR, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "Rxlquap", TIGL_TRUE));
+    EXPECT_EQ(TIGL_UID_ERROR, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "fuselageCircleProfileuID", TIGL_TRUE));
 
     // ducts are not considered by default
     EXPECT_FALSE(wing.WithDuctCutouts());
@@ -199,23 +199,23 @@ TEST_F(DuctSimple, tiglConfigurationSetWithDuctCutouts){
     EXPECT_FALSE(fuselage2.WithDuctCutouts());
 
     // set the flag for all components, by setting the componentUID to NULL
-    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, NULL, true));
+    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, NULL, TIGL_TRUE));
     EXPECT_TRUE(wing.WithDuctCutouts());
     EXPECT_TRUE(fuselage1.WithDuctCutouts());
     EXPECT_TRUE(fuselage2.WithDuctCutouts());
 
     // set the flag for individual components
-    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "SimpleFuselage", false));
+    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "SimpleFuselage", TIGL_FALSE));
     EXPECT_TRUE(wing.WithDuctCutouts());
     EXPECT_FALSE(fuselage1.WithDuctCutouts());
     EXPECT_TRUE(fuselage2.WithDuctCutouts());
 
-    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "SimpleFuselage2", false));
+    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "SimpleFuselage2", TIGL_FALSE));
     EXPECT_TRUE(wing.WithDuctCutouts());
     EXPECT_FALSE(fuselage1.WithDuctCutouts());
     EXPECT_FALSE(fuselage2.WithDuctCutouts());
 
-    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "Wing", false));
+    ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, "Wing", TIGL_FALSE));
     EXPECT_FALSE(wing.WithDuctCutouts());
     EXPECT_FALSE(fuselage1.WithDuctCutouts());
     EXPECT_FALSE(fuselage2.WithDuctCutouts());
@@ -225,7 +225,7 @@ TEST_F(DuctSimple, tiglConfigurationSetWithDuctCutouts){
 
 TEST_F(DuctSimple, tiglConfigurationGetWithDuctCutouts)
 {
-    bool flag;
+    TiglBoolean flag;
 
     // test errors
     EXPECT_EQ(TIGL_NOT_FOUND, tiglConfigurationGetWithDuctCutouts(-1, "Wing", &flag));
@@ -241,7 +241,7 @@ TEST_F(DuctSimple, tiglConfigurationGetWithDuctCutouts)
         EXPECT_FALSE(flag);
 
         // check if the flag changes after a call to tiglConfigurationSetWithDuctCutouts
-        tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, uid.c_str(), !flag);
+        tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, uid.c_str(), (TiglBoolean)!(bool)flag);
         ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationGetWithDuctCutouts(DuctSimple::tiglHandle, uid.c_str(), &flag))
                 << "for uid " << uid;
         EXPECT_TRUE(flag);
@@ -254,7 +254,7 @@ TEST_F(DuctSimple, tiglConfigurationGetWithDuctCutouts)
 
 TEST_F(DuctSimple, Export)
 {
-    tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, NULL, true);
+    tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, NULL, TIGL_TRUE);
     tiglSetExportOptions("iges", "ApplySymmetries", "true");
     tiglSetExportOptions("iges", "IncludeFarfield", "false");
     tiglSetExportOptions("iges", "FaceNames", "UIDandFaceName");
