@@ -252,3 +252,13 @@ TEST_F(DuctSimple, tiglConfigurationGetWithDuctCutouts)
 }
 
 
+TEST_F(DuctSimple, Export)
+{
+    tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, NULL, true);
+    tiglSetExportOptions("iges", "ApplySymmetries", "true");
+    tiglSetExportOptions("iges", "IncludeFarfield", "false");
+    tiglSetExportOptions("iges", "FaceNames", "UIDandFaceName");
+    EXPECT_EQ(TIGL_SUCCESS, tiglExportIGES(DuctSimple::tiglHandle,"TestData/export/duct_simple.iges"));
+    EXPECT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(DuctSimple::tiglHandle,"TestData/export/duct_simple_fused.iges"));
+}
+
