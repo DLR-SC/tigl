@@ -33,6 +33,7 @@
 #else
 #include "TopTools_ListOfShape.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
+#include "CBooleanOperTools.h"
 #endif
 
 
@@ -103,7 +104,12 @@ void CCPACSDucts::FuseDucts(PNamedShape& tool) const
     fuse.SetTools(tools);
     fuse.Build();
     if (fuse.IsDone()) {
-        tool = std::make_shared<CNamedShape>(fuse.Shape(), "some_name");
+        tool = std::make_shared<CNamedShape>(fuse.Shape(), "BOP_FUSE");
+
+        // map names to tool
+        for (auto const& duct: m_ducts) {
+            CBooleanOperTools::MapFaceNamesAfterBOP(fuse, duct->GetLoft(), tool);
+        }
     }
     else {
         throw CTiglError("Cannot fuse ducts to a single cutting tool for Boolean operations with geometric components\n.");
@@ -118,7 +124,7 @@ PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft) const
     }
     auto loft = CCutShape(cleanLoft, *fusedDucts).NamedShape();
 
-    // update the facetraits for every face of the result
+    // Mark the clean loft as parent, rather than the duct loft
     for (int iFace = 0; iFace < static_cast<int>(loft->GetFaceCount()); ++iFace) {
         CFaceTraits ft = loft->GetFaceTraits(iFace);
         ft.SetOrigin(cleanLoft);
