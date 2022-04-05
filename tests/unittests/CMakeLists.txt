@@ -13,8 +13,11 @@ ADD_TEST(
   COMMAND ${test_BIN} --gtest_output=xml
 )
 
-#execute_process(COMMAND ${CMAKE_PROGRAM} -E copy_if_different ${PROJECT_SOURCE_DIR}/tests/TestData tests/Testdata)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(
+        TARGET ${test_BIN} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_CURRENT_SOURCE_DIR}/TestData
+                ${CMAKE_CURRENT_BINARY_DIR}/TestData)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pythonwrapper-tests.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test_logging.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
