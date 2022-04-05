@@ -43,8 +43,8 @@ CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(MaybeOpti
 void CTiglRelativelyPositionedComponent::Reset() const
 {
     CTiglAbstractGeometricComponent::Reset();
-    if (GetTransformation())
-        GetTransformation()->reset();
+    if (GetTransform())
+        const_cast<CCPACSTransformation&>(*GetTransform()).reset();
 }
 
 TiglSymmetryAxis CTiglRelativelyPositionedComponent::GetSymmetryAxis() const
@@ -67,7 +67,7 @@ void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis&
 
 CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix() const
 {
-    const CTiglTransformation thisTransformation = GetTransformation() ? GetTransformation()->getTransformationMatrix() : CTiglTransformation();
+    const CTiglTransformation thisTransformation = GetTransform() ? GetTransform()->getTransformationMatrix() : CTiglTransformation();
     if (_parent && GetTranslationType() == ABS_LOCAL) {
         const CTiglTransformation& parentTransformation = _parent->GetTransformationMatrix();
 
@@ -86,7 +86,7 @@ CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix(
 
 void CTiglRelativelyPositionedComponent::SetTransformation(const CCPACSTransformation &transform)
 {
-    if (!GetTransformation()) {
+    if (!GetTransform()) {
         throw CTiglError("Cannot set Transformation for component \"" + GetDefaultedUID() + "\". The component has not transformation");
     }
 
@@ -99,32 +99,32 @@ void CTiglRelativelyPositionedComponent::SetTransformation(const CCPACSTransform
 
 CTiglPoint CTiglRelativelyPositionedComponent::GetRotation() const
 {
-    if (GetTransformation())
-        return GetTransformation()->getRotation();
+    if (GetTransform())
+        return GetTransform()->getRotation();
     else
         return CTiglPoint(0, 0, 0);
 }
 
 CTiglPoint CTiglRelativelyPositionedComponent::GetScaling() const
 {
-    if (GetTransformation())
-        return GetTransformation()->getScaling();
+    if (GetTransform())
+        return GetTransform()->getScaling();
     else
         return CTiglPoint(1, 1, 1);
 }
 
 CTiglPoint CTiglRelativelyPositionedComponent::GetTranslation() const
 {
-    if (GetTransformation())
-        return GetTransformation()->getTranslationVector();
+    if (GetTransform())
+        return GetTransform()->getTranslationVector();
     else
         return CTiglPoint(0, 0, 0);
 }
 
 ECPACSTranslationType CTiglRelativelyPositionedComponent::GetTranslationType() const
 {
-    if (GetTransformation())
-        return GetTransformation()->getTranslationType();
+    if (GetTransform())
+        return GetTransform()->getTranslationType();
     else
         return ABS_GLOBAL; // TODO(bgruber): is this a valid default?
 }
@@ -153,7 +153,7 @@ boost::optional<const std::string&> CTiglRelativelyPositionedComponent::GetParen
 }
 
 // Returns the transformation
-boost::optional<const CCPACSTransformation&> CTiglRelativelyPositionedComponent::GetTransformation() const
+boost::optional<const CCPACSTransformation&> CTiglRelativelyPositionedComponent::GetTransform() const
 {
     return _transformation.Get();
 }

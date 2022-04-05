@@ -35,15 +35,19 @@
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 #include "ECPACSTranslationType.h"
+#include "CTiglError.h"
 
 /**
- * @brief The MaybeOptionalPtr class is a wrapper for a variant over a pointer
- * to T or a pointer to a boost::optional<T>. It provides a conversion to a
+ * @brief The MaybeOptionalPtr class is a wrapper for a boost::variant over a
+ * T* or a a boost::optional<T>*. It provides a getter returning a
  * boost::optional<const T&> and a setter. The setter throws an error if the
  * underlying value is invalid (either a nullptr or an empty optional).
  *
  * The main purpose of this class is to avoid a large number of overloaded ctors
- * for CTiglRelativelyPositionedComponent
+ * for CTiglRelativelyPositionedComponent: Some derived classes of
+ * CTiglRelativelyPositionedComponent can have either a mandatory parentUID or an
+ * optional parentUID as well as either a mandatory transformation or an optional
+ * transformation.
  */
 template <typename T>
 class MaybeOptionalPtr : public boost::variant<T*, boost::optional<T>*>
@@ -53,7 +57,6 @@ public:
     MaybeOptionalPtr(T* t) : boost::variant<T*, boost::optional<T>*>(t) {}
     MaybeOptionalPtr(boost::optional<T>* t) : boost::variant<T*, boost::optional<T>*>(t) {}
 
-    // Returns the parent unique id
     boost::optional<const T&> Get() const
     {
         struct Visitor : boost::static_visitor<boost::optional<const T&> > {
@@ -76,33 +79,32 @@ public:
         };
 
         Visitor v;
-        return apply_visitor(v);
+        return this->apply_visitor(v);
     }
 
 
     void Set(const T& value)
     {
         struct Visitor : boost::static_visitor<> {
-            Visitor(const T& value)
-                : m_value(value) {}
+            Visitor(const T& v)
+                : m_value(v) {}
             void operator()(T* p) {
                 if (p)
-                    *p = value;
+                    *p = m_value;
                 else
-                    throw CTiglError("Cannot set an invalid MaybeOptionalPtr.");
+                    throw tigl::CTiglError("Cannot set an invalid MaybeOptionalPtr.");
             }
             void operator()(boost::optional<T>* p) {
                 if (p)
-                    *p = value;
+                    **p = m_value;
                 else
-                    throw CTiglError("Cannot set an invalid MaybeOptionalPtr");
+                    throw tigl::CTiglError("Cannot set an invalid MaybeOptionalPtr");
             }
-        private:
             const T& m_value;
         };
 
         Visitor v(value);
-        apply_visitor(v);
+        this->apply_visitor(v);
     }
 };
 
@@ -126,7 +128,6 @@ public:
 
     TIGL_EXPORT virtual CTiglTransformation GetTransformationMatrix() const;
 
-    TIGL_EXPORT boost::optional<const CCPACSTransformation&> GetTransformation() const;
     TIGL_EXPORT virtual void SetTransformation(const CCPACSTransformation& transform);
 
     TIGL_EXPORT virtual CTiglPoint GetRotation() const;
@@ -145,6 +146,8 @@ protected:
 
 private:
     friend class CTiglUIDManager;
+
+    TIGL_EXPORT boost::optional<const CCPACSTransformation&> GetTransform() const;
     TIGL_EXPORT void SetParent(CTiglRelativelyPositionedComponent& parent);
     TIGL_EXPORT void AddChild(CTiglRelativelyPositionedComponent& child);
     TIGL_EXPORT void ClearChildren();
