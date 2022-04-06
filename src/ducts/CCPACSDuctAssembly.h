@@ -35,9 +35,6 @@ public:
 
     TIGL_EXPORT CCPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
 
-    // Given an input loft, create a new loft where all ducts have been cut away.
-    TIGL_EXPORT PNamedShape LoftWithDuctCutouts(PNamedShape const&) const;
-
     TIGL_EXPORT std::string GetDefaultedUID() const override;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;

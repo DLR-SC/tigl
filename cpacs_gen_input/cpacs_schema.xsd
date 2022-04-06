@@ -33164,7 +33164,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="transformation" minOccurs="0" type="transformationType"/>
-                    <xsd:element name="excludeObjectUIs" minOccurs="0" type="uIDSequenceType"/>
+                    <xsd:element name="excludeObjectUIDs" minOccurs="0" type="uIDSequenceType"/>
                     <xsd:element name="duct" maxOccurs="unbounded" type="ductType"/>
                 </xsd:sequence>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>

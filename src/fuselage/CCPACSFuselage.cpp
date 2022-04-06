@@ -261,17 +261,12 @@ PNamedShape CCPACSFuselage::BuildLoft() const
         return *cleanLoft;
     }
 
-    auto& ducts = GetConfiguration().GetDucts();
+    auto const & ducts = GetConfiguration().GetDucts();
     if (!ducts) {
         return *cleanLoft;
     }
 
-    PNamedShape result = *cleanLoft;
-    for (auto& ductAssembly: ducts->GetDuctAssemblys()) {
-        result = ductAssembly->LoftWithDuctCutouts(result);
-    }
-
-    return result;
+    return ducts->LoftWithDuctCutouts(*cleanLoft, GetUID());
 }
 
 void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const

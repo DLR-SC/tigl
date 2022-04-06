@@ -135,26 +135,4 @@ PNamedShape CCPACSDuctAssembly::BuildLoft() const
 #endif
 }
 
-PNamedShape CCPACSDuctAssembly::LoftWithDuctCutouts(PNamedShape const& cleanLoft) const
-{
-    if (m_ducts.size() == 0) {
-        return cleanLoft;
-    }
-    auto loft = CCutShape(cleanLoft, GetLoft()).NamedShape();
-
-    // Mark the clean loft as parent, rather than the duct loft
-    for (int iFace = 0; iFace < static_cast<int>(loft->GetFaceCount()); ++iFace) {
-        CFaceTraits ft = loft->GetFaceTraits(iFace);
-        ft.SetOrigin(cleanLoft);
-        loft->SetFaceTraits(iFace, ft);
-    }
-
-#ifdef DEBUG
-    dumpShape(GetLoft()->Shape(), "debugShapes", "ductTool");
-    dumpShape(loft->Shape(), "debugShapes", "loftWithoutDucts");
-#endif
-
-    return loft;
-}
-
 } //namespace tigl

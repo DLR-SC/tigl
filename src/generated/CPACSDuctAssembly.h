@@ -34,11 +34,10 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CCPACSDuct;
+class CCPACSDucts;
 
 namespace generated
 {
-    class CPACSDucts;
-
     // This class is used in:
     // CPACSDucts
 
@@ -48,13 +47,13 @@ namespace generated
     class CPACSDuctAssembly : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSDuctAssembly(CPACSDucts* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSDuctAssembly();
 
-        TIGL_EXPORT CPACSDucts* GetParent();
+        TIGL_EXPORT CCPACSDucts* GetParent();
 
-        TIGL_EXPORT const CPACSDucts* GetParent() const;
+        TIGL_EXPORT const CCPACSDucts* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -80,8 +79,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSTransformation>& GetTransformation() const;
         TIGL_EXPORT virtual boost::optional<CCPACSTransformation>& GetTransformation();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSUIDSequence>& GetExcludeObjectUIs() const;
-        TIGL_EXPORT virtual boost::optional<CPACSUIDSequence>& GetExcludeObjectUIs();
+        TIGL_EXPORT virtual const boost::optional<CPACSUIDSequence>& GetExcludeObjectUIDs() const;
+        TIGL_EXPORT virtual boost::optional<CPACSUIDSequence>& GetExcludeObjectUIDs();
 
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDuct>>& GetDucts() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDuct>>& GetDucts();
@@ -89,14 +88,14 @@ namespace generated
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveTransformation();
 
-        TIGL_EXPORT virtual CPACSUIDSequence& GetExcludeObjectUIs(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveExcludeObjectUIs();
+        TIGL_EXPORT virtual CPACSUIDSequence& GetExcludeObjectUIDs(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveExcludeObjectUIDs();
 
         TIGL_EXPORT virtual CCPACSDuct& AddDuct();
         TIGL_EXPORT virtual void RemoveDuct(CCPACSDuct& ref);
 
     protected:
-        CPACSDucts* m_parent;
+        CCPACSDucts* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -114,7 +113,7 @@ namespace generated
 
         boost::optional<CCPACSTransformation>    m_transformation;
 
-        boost::optional<CPACSUIDSequence>        m_excludeObjectUIs;
+        boost::optional<CPACSUIDSequence>        m_excludeObjectUIDs;
 
         std::vector<std::unique_ptr<CCPACSDuct>> m_ducts;
 
@@ -131,7 +130,4 @@ namespace generated
 } // namespace generated
 
 // CPACSDuctAssembly is customized, use type CCPACSDuctAssembly directly
-
-// Aliases in tigl namespace
-using CCPACSDucts = generated::CPACSDucts;
 } // namespace tigl

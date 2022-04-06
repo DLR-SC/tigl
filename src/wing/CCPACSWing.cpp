@@ -345,19 +345,11 @@ PNamedShape CCPACSWing::BuildLoft() const
     } else {
 
         if (withDuctCutouts && GetConfiguration().GetDucts()) {
-            auto& ducts = GetConfiguration().GetDucts();
-
-            PNamedShape result = *wingCleanShape;
-            for (auto& ductAssembly: ducts->GetDuctAssemblys()) {
-                    result = ductAssembly->LoftWithDuctCutouts(result);
-            }
-            return result;
+            return  GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
         }
 
         return *wingCleanShape;
     }
-
-
 
     return ret;
 }
@@ -472,7 +464,7 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         ft.SetOrigin(*wingCleanShape);
         result->SetFaceTraits(iFace, ft);
     }
-
+/*
     // cutout ducts
     if (withDuctCutouts && GetConfiguration().GetDucts()) {
         auto& ducts = GetConfiguration().GetDucts();
@@ -480,6 +472,12 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
                 result = ductAssembly->LoftWithDuctCutouts(result);
         }
     }
+*/
+    // cutout ducts
+    if (withDuctCutouts && GetConfiguration().GetDucts()) {
+         result = GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
+    }
+
 }
 
 // Builds a fuse shape of all wing segments with flaps

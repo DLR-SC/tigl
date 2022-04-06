@@ -74,7 +74,7 @@ namespace generated
     {
         // read element ductAssembly
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ductAssembly")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/ductAssembly", m_ductAssemblys, 1, tixi::xsdUnbounded, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/ductAssembly", m_ductAssemblys, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDucts*>(this), m_uidMgr);
         }
 
     }
@@ -98,7 +98,7 @@ namespace generated
 
     CCPACSDuctAssembly& CPACSDucts::AddDuctAssembly()
     {
-        m_ductAssemblys.push_back(make_unique<CCPACSDuctAssembly>(this, m_uidMgr));
+        m_ductAssemblys.push_back(make_unique<CCPACSDuctAssembly>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
         return *m_ductAssemblys.back();
     }
 

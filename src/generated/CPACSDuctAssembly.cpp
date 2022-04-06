@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include <CCPACSDuct.h>
+#include "CCPACSDucts.h"
 #include "CPACSDuctAssembly.h"
-#include "CPACSDucts.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -28,7 +28,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDuctAssembly::CPACSDuctAssembly(CPACSDucts* parent, CTiglUIDManager* uidMgr)
+    CPACSDuctAssembly::CPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -43,12 +43,12 @@ namespace generated
         }
     }
 
-    const CPACSDucts* CPACSDuctAssembly::GetParent() const
+    const CCPACSDucts* CPACSDuctAssembly::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSDucts* CPACSDuctAssembly::GetParent()
+    CCPACSDucts* CPACSDuctAssembly::GetParent()
     {
         return m_parent;
     }
@@ -131,14 +131,14 @@ namespace generated
             }
         }
 
-        // read element excludeObjectUIs
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/excludeObjectUIs")) {
-            m_excludeObjectUIs = boost::in_place(reinterpret_cast<CCPACSDuctAssembly*>(this), m_uidMgr);
+        // read element excludeObjectUIDs
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/excludeObjectUIDs")) {
+            m_excludeObjectUIDs = boost::in_place(reinterpret_cast<CCPACSDuctAssembly*>(this), m_uidMgr);
             try {
-                m_excludeObjectUIs->ReadCPACS(tixiHandle, xpath + "/excludeObjectUIs");
+                m_excludeObjectUIDs->ReadCPACS(tixiHandle, xpath + "/excludeObjectUIDs");
             } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read excludeObjectUIs at xpath " << xpath << ": " << e.what();
-                m_excludeObjectUIs = boost::none;
+                LOG(ERROR) << "Failed to read excludeObjectUIDs at xpath " << xpath << ": " << e.what();
+                m_excludeObjectUIDs = boost::none;
             }
         }
 
@@ -152,7 +152,7 @@ namespace generated
 
     void CPACSDuctAssembly::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "parentUID", "transformation", "excludeObjectUIs", "duct" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "parentUID", "transformation", "excludeObjectUIDs", "duct" };
 
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -194,14 +194,14 @@ namespace generated
             }
         }
 
-        // write element excludeObjectUIs
-        if (m_excludeObjectUIs) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/excludeObjectUIs", childElemOrder);
-            m_excludeObjectUIs->WriteCPACS(tixiHandle, xpath + "/excludeObjectUIs");
+        // write element excludeObjectUIDs
+        if (m_excludeObjectUIDs) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/excludeObjectUIDs", childElemOrder);
+            m_excludeObjectUIDs->WriteCPACS(tixiHandle, xpath + "/excludeObjectUIDs");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/excludeObjectUIs")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/excludeObjectUIs");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/excludeObjectUIDs")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/excludeObjectUIDs");
             }
         }
 
@@ -272,14 +272,14 @@ namespace generated
         return m_transformation;
     }
 
-    const boost::optional<CPACSUIDSequence>& CPACSDuctAssembly::GetExcludeObjectUIs() const
+    const boost::optional<CPACSUIDSequence>& CPACSDuctAssembly::GetExcludeObjectUIDs() const
     {
-        return m_excludeObjectUIs;
+        return m_excludeObjectUIDs;
     }
 
-    boost::optional<CPACSUIDSequence>& CPACSDuctAssembly::GetExcludeObjectUIs()
+    boost::optional<CPACSUIDSequence>& CPACSDuctAssembly::GetExcludeObjectUIDs()
     {
-        return m_excludeObjectUIs;
+        return m_excludeObjectUIDs;
     }
 
     const std::vector<std::unique_ptr<CCPACSDuct>>& CPACSDuctAssembly::GetDucts() const
@@ -304,16 +304,16 @@ namespace generated
         m_transformation = boost::none;
     }
 
-    CPACSUIDSequence& CPACSDuctAssembly::GetExcludeObjectUIs(CreateIfNotExistsTag)
+    CPACSUIDSequence& CPACSDuctAssembly::GetExcludeObjectUIDs(CreateIfNotExistsTag)
     {
-        if (!m_excludeObjectUIs)
-            m_excludeObjectUIs = boost::in_place(reinterpret_cast<CCPACSDuctAssembly*>(this), m_uidMgr);
-        return *m_excludeObjectUIs;
+        if (!m_excludeObjectUIDs)
+            m_excludeObjectUIDs = boost::in_place(reinterpret_cast<CCPACSDuctAssembly*>(this), m_uidMgr);
+        return *m_excludeObjectUIDs;
     }
 
-    void CPACSDuctAssembly::RemoveExcludeObjectUIs()
+    void CPACSDuctAssembly::RemoveExcludeObjectUIDs()
     {
-        m_excludeObjectUIs = boost::none;
+        m_excludeObjectUIDs = boost::none;
     }
 
     CCPACSDuct& CPACSDuctAssembly::AddDuct()
