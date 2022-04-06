@@ -345,7 +345,13 @@ PNamedShape CCPACSWing::BuildLoft() const
     } else {
 
         if (withDuctCutouts && GetConfiguration().GetDucts()) {
-            return GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape);
+            auto& ducts = GetConfiguration().GetDucts();
+
+            PNamedShape result = *wingCleanShape;
+            for (auto& ductAssembly: ducts->GetDuctAssemblys()) {
+                    result = ductAssembly->LoftWithDuctCutouts(result);
+            }
+            return result;
         }
 
         return *wingCleanShape;
@@ -469,7 +475,10 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
 
     // cutout ducts
     if (withDuctCutouts && GetConfiguration().GetDucts()) {
-        result = GetConfiguration().GetDucts()->LoftWithDuctCutouts(result);
+        auto& ducts = GetConfiguration().GetDucts();
+        for (auto& ductAssembly: ducts->GetDuctAssemblys()) {
+                result = ductAssembly->LoftWithDuctCutouts(result);
+        }
     }
 }
 

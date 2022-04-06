@@ -121,7 +121,7 @@ TEST_F(DuctSimple, SanityCheck)
     auto& ducts = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetDucts();
 
     ASSERT_TRUE(ducts);
-    EXPECT_EQ(ducts->GetDucts().size(), 10);
+    EXPECT_EQ(ducts->GetDuctAssemblys().size(), 10);
     EXPECT_EQ(duct->GetSegments().GetSegmentCount(), 2);
     EXPECT_EQ(duct->GetSections().GetSectionCount(), 3);
     ASSERT_TRUE(duct->GetPositionings());

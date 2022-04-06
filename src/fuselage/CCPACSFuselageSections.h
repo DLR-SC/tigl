@@ -22,8 +22,6 @@
 #ifndef CCPACSFUSELAGESECTIONS_H
 #define CCPACSFUSELAGESECTIONS_H
 
-#include "CCPACSDuct.h"
-
 #include "generated/CPACSFuselageSections.h"
 #include "tigl_internal.h"
 #include "tixi.h"

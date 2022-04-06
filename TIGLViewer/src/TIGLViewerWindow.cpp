@@ -836,7 +836,7 @@ void TIGLViewerWindow::updateMenus()
             hasFarField = config.GetFarField().GetType() != tigl::NONE;
             hasACSystems = config.GetGenericSystemCount() > 0;
             if (config.GetDucts()) {
-                hasDucts = config.GetDucts()->GetDucts().size() > 0;
+                hasDucts = config.GetDucts()->GetDuctAssemblys().size() > 0;
             }
             nRotorBlades = config.GetRotorBladeCount();
             nRotors = config.GetRotorCount();

@@ -38,14 +38,17 @@ public:
     // Given an input loft, create a new loft where all ducts have been cut away.
     TIGL_EXPORT PNamedShape LoftWithDuctCutouts(PNamedShape const&) const;
 
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+
+protected:
+
+    PNamedShape BuildLoft() const override;
 
 private:
 
-    // create (and cache) all ducts fused together. This can be used as a cutting tool
-    void FuseDucts(PNamedShape&) const;
-
-    Cache<PNamedShape, CCPACSDuctAssembly> fusedDucts;
+    virtual void InvalidateImpl(const boost::optional<std::string>&) const override;
 
 };
 

@@ -43,23 +43,38 @@ namespace tigl {
 CCPACSDuctAssembly::CCPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
   : generated::CPACSDuctAssembly(parent, uidMgr)
   , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
-  , fusedDucts(*this, &CCPACSDuctAssembly::FuseDucts)
 {}
 
-void CCPACSDuctAssembly::Invalidate() {
-    fusedDucts.clear();
+std::string CCPACSDuctAssembly::GetDefaultedUID() const
+{
+    return generated::CPACSDuctAssembly::GetUID();
 }
 
-void CCPACSDuctAssembly::FuseDucts(PNamedShape& tool) const
+TiglGeometricComponentType CCPACSDuctAssembly::GetComponentType() const
+{
+    return TIGL_COMPONENT_DUCT;
+}
+
+TiglGeometricComponentIntent CCPACSDuctAssembly::GetComponentIntent() const
+{
+    // needs to be physical, so that transformation relative to parent works
+    return TIGL_INTENT_PHYSICAL;
+}
+
+void CCPACSDuctAssembly::InvalidateImpl(const boost::optional<std::string>&) const
+{
+    CTiglAbstractGeometricComponent::Reset();
+}
+
+PNamedShape CCPACSDuctAssembly::BuildLoft() const
 {
     if (m_ducts.size() == 0) {
-        return;
+        return PNamedShape();
     }
 
     if (m_ducts.size() == 1 && !m_ducts[0]->GetMirroredLoft()) {
         // no need to fuse, there is just one solid
-        tool = m_ducts[0]->GetLoft();
-        return;
+        return m_ducts[0]->GetLoft();
     }
 #ifdef USE_TIGL_FUSER
     // first fuse all ducts to one solid tool
@@ -100,6 +115,7 @@ void CCPACSDuctAssembly::FuseDucts(PNamedShape& tool) const
         }
     }
 
+    PNamedShape tool;
     BRepAlgoAPI_Fuse fuse;
     fuse.SetArguments(arguments);
     fuse.SetTools(tools);
@@ -115,6 +131,7 @@ void CCPACSDuctAssembly::FuseDucts(PNamedShape& tool) const
     else {
         throw CTiglError("Cannot fuse ducts to a single cutting tool for Boolean operations with geometric components\n.");
     }
+    return tool;
 #endif
 }
 
@@ -123,7 +140,7 @@ PNamedShape CCPACSDuctAssembly::LoftWithDuctCutouts(PNamedShape const& cleanLoft
     if (m_ducts.size() == 0) {
         return cleanLoft;
     }
-    auto loft = CCutShape(cleanLoft, *fusedDucts).NamedShape();
+    auto loft = CCutShape(cleanLoft, GetLoft()).NamedShape();
 
     // Mark the clean loft as parent, rather than the duct loft
     for (int iFace = 0; iFace < static_cast<int>(loft->GetFaceCount()); ++iFace) {
@@ -133,7 +150,7 @@ PNamedShape CCPACSDuctAssembly::LoftWithDuctCutouts(PNamedShape const& cleanLoft
     }
 
 #ifdef DEBUG
-    dumpShape((*fusedDucts)->Shape(), "debugShapes", "ductTool");
+    dumpShape(GetLoft()->Shape(), "debugShapes", "ductTool");
     dumpShape(loft->Shape(), "debugShapes", "loftWithoutDucts");
 #endif
 

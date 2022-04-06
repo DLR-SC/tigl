@@ -37,7 +37,6 @@ public:
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
-    // Returns the Component Type TIGL_COMPONENT_DUCT
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 

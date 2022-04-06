@@ -91,7 +91,9 @@
 #include "generated/CPACSWallPositions.h"
 #include "generated/CPACSWallSegment.h"
 #include "generated/CPACSWallSegments.h"
-#include "CCPACSDucts.h"
+#include "generated/CPACSUIDSequence.h"
+#include "generated/CPACSDucts.h"
+#include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
 %}
 
@@ -496,8 +498,12 @@ class CCPACSWingRibsPositioning;
 
 //  ---------------- Ducts ------------------ //
 
+%boost_optional(tigl::CCPACSTransformation)
 %boost_optional(tigl::CCPACSDucts)
-%include "CCPACSDucts.h"
+%boost_optional(tigl::CPACSUIDSequence)
+%include "generated/CPACSUIDSequence.h"
+%include "generated/CPACSDucts.h"
+%include "CCPACSDuctAssembly.h"
 %include "CCPACSDuct.h"
 
 // CTiglUIDManager::GetGeometricComponent returns the interface type ITiglGeometricComponent
