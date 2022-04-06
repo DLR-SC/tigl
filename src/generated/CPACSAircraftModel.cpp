@@ -364,12 +364,12 @@ namespace generated
         return m_enginePylons;
     }
 
-    const boost::optional<CCPACSDucts>& CPACSAircraftModel::GetDucts() const
+    const boost::optional<CPACSDucts>& CPACSAircraftModel::GetDucts() const
     {
         return m_ducts;
     }
 
-    boost::optional<CCPACSDucts>& CPACSAircraftModel::GetDucts()
+    boost::optional<CPACSDucts>& CPACSAircraftModel::GetDucts()
     {
         return m_ducts;
     }
@@ -442,7 +442,7 @@ namespace generated
         m_enginePylons = boost::none;
     }
 
-    CCPACSDucts& CPACSAircraftModel::GetDucts(CreateIfNotExistsTag)
+    CPACSDucts& CPACSAircraftModel::GetDucts(CreateIfNotExistsTag)
     {
         if (!m_ducts)
             m_ducts = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);

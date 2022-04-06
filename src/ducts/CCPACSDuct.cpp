@@ -20,7 +20,7 @@
 */
 
 #include "CCPACSDuct.h"
-#include "CCPACSDucts.h"
+#include "CCPACSDuctAssembly.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglMakeLoft.h"
 #include "CNamedShape.h"
@@ -29,14 +29,14 @@
 
 namespace tigl {
 
-CCPACSDuct::CCPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
+CCPACSDuct::CCPACSDuct(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr)
   : generated::CPACSDuct(parent, uidMgr)
-  , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
+  , CTiglRelativelyPositionedComponent(const_cast<std::string*>(&parent->GetUID()), &m_transformation, &m_symmetry)
 {}
 
 CCPACSConfiguration& CCPACSDuct::GetConfiguration() const
 {
-    return GetParent()->GetParent()->GetConfiguration();
+    return GetParent()->GetParent()->GetParent()->GetConfiguration();
 }
 
 std::string CCPACSDuct::GetDefaultedUID() const

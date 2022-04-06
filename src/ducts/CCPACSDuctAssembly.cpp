@@ -21,7 +21,7 @@
 
 //#define USE_TIGL_FUSER
 
-#include "CCPACSDucts.h"
+#include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
 #include "Debugging.h"
 #include "CCutShape.h"
@@ -40,16 +40,17 @@
 
 namespace tigl {
 
-CCPACSDucts::CCPACSDucts(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
-  : generated::CPACSDucts(parent, uidMgr)
-  , fusedDucts(*this, &CCPACSDucts::FuseDucts)
+CCPACSDuctAssembly::CCPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
+  : generated::CPACSDuctAssembly(parent, uidMgr)
+  , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
+  , fusedDucts(*this, &CCPACSDuctAssembly::FuseDucts)
 {}
 
-void CCPACSDucts::Invalidate() {
+void CCPACSDuctAssembly::Invalidate() {
     fusedDucts.clear();
 }
 
-void CCPACSDucts::FuseDucts(PNamedShape& tool) const
+void CCPACSDuctAssembly::FuseDucts(PNamedShape& tool) const
 {
     if (m_ducts.size() == 0) {
         return;
@@ -117,7 +118,7 @@ void CCPACSDucts::FuseDucts(PNamedShape& tool) const
 #endif
 }
 
-PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft) const
+PNamedShape CCPACSDuctAssembly::LoftWithDuctCutouts(PNamedShape const& cleanLoft) const
 {
     if (m_ducts.size() == 0) {
         return cleanLoft;

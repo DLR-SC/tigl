@@ -22,6 +22,8 @@
 #ifndef CCPACSFUSELAGESECTIONS_H
 #define CCPACSFUSELAGESECTIONS_H
 
+#include "CCPACSDuct.h"
+
 #include "generated/CPACSFuselageSections.h"
 #include "tigl_internal.h"
 #include "tixi.h"
@@ -30,6 +32,7 @@
 
 namespace tigl
 {
+
 class CCPACSFuselageSection;
 
 class CCPACSFuselageSections : public generated::CPACSFuselageSections

@@ -21,18 +21,19 @@
 
 #pragma once
 
-#include "generated/CPACSDucts.h"
+#include "generated/CPACSDuctAssembly.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "PNamedShape.h"
 #include "Cache.h"
 
 namespace tigl
 {
 
-class CCPACSDucts : public generated::CPACSDucts
+class CCPACSDuctAssembly : public generated::CPACSDuctAssembly, public CTiglRelativelyPositionedComponent
 {
 public:
 
-    TIGL_EXPORT CCPACSDucts(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
 
     // Given an input loft, create a new loft where all ducts have been cut away.
     TIGL_EXPORT PNamedShape LoftWithDuctCutouts(PNamedShape const&) const;
@@ -44,7 +45,7 @@ private:
     // create (and cache) all ducts fused together. This can be used as a cutting tool
     void FuseDucts(PNamedShape&) const;
 
-    Cache<PNamedShape, CCPACSDucts> fusedDucts;
+    Cache<PNamedShape, CCPACSDuctAssembly> fusedDucts;
 
 };
 

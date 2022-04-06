@@ -32,7 +32,7 @@ class CCPACSDuct : public generated::CPACSDuct, public CTiglRelativelyPositioned
 {
 public:
 
-    TIGL_EXPORT CCPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDuct(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 

@@ -20,7 +20,6 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSACSystems.h>
-#include <CCPACSDucts.h>
 #include <CCPACSEnginePositions.h>
 #include <CCPACSEnginePylons.h>
 #include <CCPACSExternalObjects.h>
@@ -28,6 +27,7 @@
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSDucts.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -89,8 +89,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEnginePylons>& GetEnginePylons();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSDucts>& GetDucts() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSDucts>& GetDucts();
+        TIGL_EXPORT virtual const boost::optional<CPACSDucts>& GetDucts() const;
+        TIGL_EXPORT virtual boost::optional<CPACSDucts>& GetDucts();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSACSystems>& GetSystems() const;
         TIGL_EXPORT virtual boost::optional<CCPACSACSystems>& GetSystems();
@@ -110,7 +110,7 @@ namespace generated
         TIGL_EXPORT virtual CCPACSEnginePylons& GetEnginePylons(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEnginePylons();
 
-        TIGL_EXPORT virtual CCPACSDucts& GetDucts(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSDucts& GetDucts(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveDucts();
 
         TIGL_EXPORT virtual CCPACSACSystems& GetSystems(CreateIfNotExistsTag);
@@ -140,7 +140,7 @@ namespace generated
 
         boost::optional<CCPACSEnginePylons>    m_enginePylons;
 
-        boost::optional<CCPACSDucts>           m_ducts;
+        boost::optional<CPACSDucts>            m_ducts;
 
         boost::optional<CCPACSACSystems>       m_systems;
 

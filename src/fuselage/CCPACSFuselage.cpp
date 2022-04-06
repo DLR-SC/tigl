@@ -35,7 +35,7 @@
 #include "CTiglMakeLoft.h"
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglTopoAlgorithms.h"
-#include "CCPACSDucts.h"
+#include "CCPACSDuctAssembly.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"

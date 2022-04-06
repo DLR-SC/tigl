@@ -20,34 +20,33 @@
 #include <string>
 #include <tixi.h>
 #include <vector>
+#include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
-#include "UniquePtr.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSDuctAssembly;
-class CCPACSAircraftModel;
 
 namespace generated
 {
     // This class is used in:
-    // CPACSAircraftModel
+    // CPACSDuctAssembly
 
-    /// @brief Ducts
+    /// @brief List of uIDs
     /// 
     /// 
-    class CPACSDucts
+    class CPACSUIDSequence : public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSDucts(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSUIDSequence(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSDucts();
+        TIGL_EXPORT virtual ~CPACSUIDSequence();
 
-        TIGL_EXPORT CCPACSAircraftModel* GetParent();
+        TIGL_EXPORT CCPACSDuctAssembly* GetParent();
 
-        TIGL_EXPORT const CCPACSAircraftModel* GetParent() const;
+        TIGL_EXPORT const CCPACSDuctAssembly* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -58,28 +57,29 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDuctAssembly>>& GetDuctAssemblys() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDuctAssembly>>& GetDuctAssemblys();
-
-        TIGL_EXPORT virtual CCPACSDuctAssembly& AddDuctAssembly();
-        TIGL_EXPORT virtual void RemoveDuctAssembly(CCPACSDuctAssembly& ref);
+        TIGL_EXPORT virtual const std::vector<std::string>& GetUIDs() const;
+        TIGL_EXPORT virtual std::vector<std::string>& GetUIDs();
 
     protected:
-        CCPACSAircraftModel* m_parent;
+        CCPACSDuctAssembly* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CCPACSDuctAssembly>> m_ductAssemblys;
+        /// Reference to a uID
+        std::vector<std::string> m_uIDs;
 
     private:
-        CPACSDucts(const CPACSDucts&) = delete;
-        CPACSDucts& operator=(const CPACSDucts&) = delete;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
-        CPACSDucts(CPACSDucts&&) = delete;
-        CPACSDucts& operator=(CPACSDucts&&) = delete;
+        CPACSUIDSequence(const CPACSUIDSequence&) = delete;
+        CPACSUIDSequence& operator=(const CPACSUIDSequence&) = delete;
+
+        CPACSUIDSequence(CPACSUIDSequence&&) = delete;
+        CPACSUIDSequence& operator=(CPACSUIDSequence&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSDucts = generated::CPACSDucts;
+using CCPACSUIDSequence = generated::CPACSUIDSequence;
 } // namespace tigl

@@ -35,7 +35,7 @@
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurve.h"
 #include "Cache.h"
-#include "CCPACSDucts.h"
+#include "CCPACSDuctAssembly.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
