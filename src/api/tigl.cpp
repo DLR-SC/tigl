@@ -7368,53 +7368,16 @@ TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfigurationHandle cpac
 }
 
 TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
-                                                   const char* componentUID,
                                                    TiglBoolean WithDuctCutoutsFlag)
 {
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
-        if (!componentUID) {
-            // set the flag for all components that can be manipulated with ducts
-            for (auto& fuselage: config.GetFuselages().GetFuselages()) {
-                fuselage->SetWithDuctCutouts(WithDuctCutoutsFlag);
-            }
-
-            for (auto& wing: config.GetWings().GetWings()) {
-                wing->SetWithDuctCutouts(WithDuctCutoutsFlag);
-            }
-
-            //TODO: set the flag for the fuselage and duct structure
-
-            return TIGL_SUCCESS;
+        if (config.GetDucts()) {
+            config.GetDucts()->SetEnabled((bool)WithDuctCutoutsFlag);
         }
-        else {
-            // try to resolve the object for the given uid and set the flag
-            tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
-            if (uidManager.HasGeometricComponent(componentUID)) {
-
-                if (uidManager.IsType<tigl::CCPACSFuselage>(componentUID)) {
-                    auto& fuselage = uidManager.ResolveObject<tigl::CCPACSFuselage>(componentUID);
-                    fuselage.SetWithDuctCutouts(WithDuctCutoutsFlag);
-                    return TIGL_SUCCESS;
-                }
-
-                if (uidManager.IsType<tigl::CCPACSWing>(componentUID)) {
-                    auto& wing = uidManager.ResolveObject<tigl::CCPACSWing>(componentUID);
-                    wing.SetWithDuctCutouts(WithDuctCutoutsFlag);
-                    return TIGL_SUCCESS;
-                }
-
-                //TODO: set the flag for the fuselage and duct structure
-
-                return TIGL_UID_ERROR;
-            }
-            else {
-                return TIGL_UID_ERROR;
-            }
-
-        }
+        return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
         LOG(ERROR) << ex.what();
@@ -7432,40 +7395,17 @@ TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSConfigurationHandle 
 
 
 TiglReturnCode tiglConfigurationGetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
-                                                   const char* componentUID,
                                                    TiglBoolean* WithDuctCutoutsFlag)
 {
-    if (!componentUID) {
-        LOG(ERROR) << "Null pointer for argument componentUID in tiglConfigurationGetWithDuctCutouts.";
-        return TIGL_NULL_POINTER;
-    }
-
     try {
         // try to resolve the object for the given uid and get the flag
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
-        if (uidManager.HasGeometricComponent(componentUID)) {
 
-            if (uidManager.IsType<tigl::CCPACSFuselage>(componentUID)) {
-                auto& fuselage = uidManager.ResolveObject<tigl::CCPACSFuselage>(componentUID);
-                *WithDuctCutoutsFlag = (TiglBoolean)fuselage.WithDuctCutouts();
-                return TIGL_SUCCESS;
-            }
-
-            if (uidManager.IsType<tigl::CCPACSWing>(componentUID)) {
-                auto& wing = uidManager.ResolveObject<tigl::CCPACSWing>(componentUID);
-                *WithDuctCutoutsFlag = (TiglBoolean)wing.WithDuctCutouts();
-                return TIGL_SUCCESS;
-            }
-
-            //TODO: get the flag for the fuselage and duct structure
-
-            return TIGL_UID_ERROR;
+        if (config.GetDucts()) {
+            *WithDuctCutoutsFlag = (TiglBoolean)config.GetDucts()->IsEnabled();
         }
-        else {
-            return TIGL_UID_ERROR;
-        }
+        return TIGL_SUCCESS;
 
     }
     catch (const tigl::CTiglError& ex) {

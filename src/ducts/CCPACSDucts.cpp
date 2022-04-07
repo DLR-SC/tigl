@@ -30,11 +30,16 @@ namespace tigl {
 
 CCPACSDucts::CCPACSDucts(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSDucts(parent, uidMgr)
+    , enabled(false)
 {}
+
+void CCPACSDucts::RegisterInvalidationCallback(std::function<void()> const& fn){
+    invalidationCallbacks.push_back(fn);
+}
 
 PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::string const & uid) const
 {
-    if (m_ductAssemblys.size() == 0) {
+    if (!enabled || m_ductAssemblys.size() == 0) {
         return cleanLoft;
     }
 
@@ -61,6 +66,21 @@ PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::
     }
 
     return loft;
+}
+
+bool CCPACSDucts::IsEnabled() const
+{
+    return enabled;
+}
+
+void CCPACSDucts::SetEnabled(bool val)
+{
+    if (enabled != val) {
+        for (auto const& invalidator: invalidationCallbacks) {
+            invalidator();
+        }
+        enabled = val;
+    }
 }
 
 } //namespace tigl

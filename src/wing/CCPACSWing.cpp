@@ -95,10 +95,15 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
     , buildFlaps(false)
-    , withDuctCutouts(false)
 {
-    if (parent->IsParent<CCPACSAircraftModel>())
+    if (parent->IsParent<CCPACSAircraftModel>()) {
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
+
+        // register invalidation in CCPACSDucts
+        if (configuration->GetDucts()) {
+            configuration->GetDucts()->RegisterInvalidationCallback([&](){ this->Invalidate(); });
+        }
+    }
     else if (parent->IsParent<CCPACSRotorcraftModel>())
         configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
     else
@@ -116,7 +121,6 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
     , buildFlaps(false)
-    , withDuctCutouts(false)
 {
     Cleanup();
 }
@@ -344,7 +348,7 @@ PNamedShape CCPACSWing::BuildLoft() const
         return GroupedFlapsAndWingShapes();
     } else {
 
-        if (withDuctCutouts && GetConfiguration().GetDucts()) {
+        if (GetConfiguration().GetDucts()) {
             return  GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
         }
 
@@ -352,19 +356,6 @@ PNamedShape CCPACSWing::BuildLoft() const
     }
 
     return ret;
-}
-
-void CCPACSWing::SetWithDuctCutouts(bool value)
-{
-    if (withDuctCutouts != value) {
-         CTiglAbstractGeometricComponent::Reset();
-    }
-    withDuctCutouts = value;
-}
-
-bool CCPACSWing::WithDuctCutouts() const
-{
-    return withDuctCutouts;
 }
 
 TopoDS_Shape CCPACSWing::GetLoftWithCutouts()
@@ -466,7 +457,7 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
     }
 
     // cutout ducts
-    if (withDuctCutouts && GetConfiguration().GetDucts()) {
+    if (GetConfiguration().GetDucts()) {
          result = GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
     }
 

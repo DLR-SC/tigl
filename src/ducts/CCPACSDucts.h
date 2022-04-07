@@ -23,6 +23,7 @@
 
 #include "generated/CPACSDucts.h"
 #include "PNamedShape.h"
+#include <functional>
 
 namespace tigl {
 
@@ -35,7 +36,17 @@ public:
     // Given an input loft, create a new loft where all ducts have been cut away.
     TIGL_EXPORT PNamedShape LoftWithDuctCutouts(PNamedShape const&, std::string const &) const;
 
+    TIGL_EXPORT bool IsEnabled()  const;
+    TIGL_EXPORT void SetEnabled(bool val=true);
 
+    //Any AbstractGeometricComponent, that shall be cut with ducts, can register its Invalidation
+    //as a callback.
+    TIGL_EXPORT void RegisterInvalidationCallback(std::function<void()> const&);
+
+private:
+    bool enabled;
+
+    std::vector<std::function<void()>> invalidationCallbacks;
 };
 
 } //namespace tigl

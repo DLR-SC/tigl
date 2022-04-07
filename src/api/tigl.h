@@ -5058,16 +5058,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfi
 
 
 /**
- * @brief Sets a flag, wether a geometric component for a given UID shall be build with duct cutouts,
- * if any ducts are defined in the CPACS configuration.
+ * @brief Sets a flag, wether ducts defined in CPACS shall be removed from using Boolean operations.
  *
  * By default ducts are disabled. If no ducts are defined in CPACS, this function has no effect.
  *
- * If componentUID is NULL, the flag will be set for all geometric components that can be manipulated
- * with ducts (fuselages, wings, fuselage structure, wing structure)
+ * Currently, ducts are only removed from fuselages and wings.
  *
  * @param[in] cpacsHandle         Handle for the CPACS configuration
- * @param[in] componentUID        UID of the component for which the hash should be computed
  * @param[in] WithDuctCutoutsFlag flag, wether all geometric components shall be build with duct cutouts
  *
  * @return
@@ -5077,29 +5074,22 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfi
  *
  */
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                      const char* componentUID,
                                                                       TiglBoolean WithDuctCutoutsFlag);
 
 /**
- * @brief Gets the flag, wether a geometric component with given UID shall be build with duct cutouts,
- * if any ducts are defined in the CPACS configuration. The UID must be associated with either a fuselage,
- * a wing, the fuselage structure or the wing structure.
+ * @brief Gets the flag, ether ducts defined in CPACS shall be removed from using Boolean operations,
+ * if any ducts are defined in the CPACS configuration.
  *
  * @param[in]  cpacsHandle         Handle for the CPACS configuration
- * @param[in]  componentUID        UID of the component for which the hash should be computed
  * @param[out] WithDuctCutoutsFlag flag, wether all geometric components shall be build with duct cutouts
  *
  * @return
  *   - TIGL_SUCCESS if no error occurred
  *   - TIGL_NOT_FOUND if no configuration was found for the given handle
- *   - TIGL_NULL_POINTER if componentUID is a null pointer
- *   - TIGL_UID_ERROR if componentUID is not a valid UID or not associated to a component which can be
- *   manipulated with ducts (e.g. a fuselage, wing or a part of the fuselage or wing structure)
  *   - TIGL_ERROR if some other error occurred
  *
  */
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                      const char* componentUID,
                                                                       TiglBoolean* WithDuctCutoutsFlag);
 
 /*@}*/ // end of doxygen group

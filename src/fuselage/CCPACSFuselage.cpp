@@ -68,14 +68,20 @@ namespace tigl
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselage(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , withDuctCutouts(false)
     , cleanLoft(*this, &CCPACSFuselage::BuildCleanLoft)
 {
     Cleanup();
-    if (parent->IsParent<CCPACSAircraftModel>())
+    if (parent->IsParent<CCPACSAircraftModel>()) {
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
+
+        // register invalidation in CCPACSDucts
+        if (configuration->GetDucts()) {
+            configuration->GetDucts()->RegisterInvalidationCallback([&](){ this->Invalidate(); });
+        }
+    }
     else
         configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
+
 }
 
 // Destructor
@@ -257,10 +263,6 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 // Builds a fused shape of all fuselage segments
 PNamedShape CCPACSFuselage::BuildLoft() const
 {
-    if (!withDuctCutouts) {
-        return *cleanLoft;
-    }
-
     auto const & ducts = GetConfiguration().GetDucts();
     if (!ducts) {
         return *cleanLoft;
@@ -293,19 +295,6 @@ void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
     std::string loftShortName = GetShortShapeName();
     cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
     SetFaceTraits(cache);
-}
-
-void CCPACSFuselage::SetWithDuctCutouts(bool value)
-{
-    if (withDuctCutouts != value) {
-        CTiglAbstractGeometricComponent::Reset();
-    }
-    withDuctCutouts = value;
-}
-
-bool CCPACSFuselage::WithDuctCutouts() const
-{
-    return withDuctCutouts;
 }
 
 // Get the positioning transformation for a given section index

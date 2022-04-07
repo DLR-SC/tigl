@@ -710,7 +710,7 @@ void TIGLViewerDocument::drawComponentByUID(const QString& uid)
 
 void TIGLViewerDocument::drawConfiguration(bool withDuctCutouts)
 {
-    tiglConfigurationSetWithDuctCutouts(m_cpacsHandle, NULL, (TiglBoolean)withDuctCutouts);
+    tiglConfigurationSetWithDuctCutouts(m_cpacsHandle, (TiglBoolean)withDuctCutouts);
 
     std::vector<TiglGeometricComponentType> shapesToDraw;
     shapesToDraw.push_back(TIGL_COMPONENT_FUSELAGE);
