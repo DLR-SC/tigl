@@ -50,7 +50,6 @@ PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::
             }
         }
 
-
         loft = CCutShape(loft, ductAssembly->GetLoft()).NamedShape();
 
         // Mark the clean loft as origin, rather than the duct loft
@@ -63,15 +62,5 @@ PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::
 
     return loft;
 }
-
-
-
-
-
-
-
-
-
-
 
 } //namespace tigl

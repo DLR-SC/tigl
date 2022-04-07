@@ -464,15 +464,7 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         ft.SetOrigin(*wingCleanShape);
         result->SetFaceTraits(iFace, ft);
     }
-/*
-    // cutout ducts
-    if (withDuctCutouts && GetConfiguration().GetDucts()) {
-        auto& ducts = GetConfiguration().GetDucts();
-        for (auto& ductAssembly: ducts->GetDuctAssemblys()) {
-                result = ductAssembly->LoftWithDuctCutouts(result);
-        }
-    }
-*/
+
     // cutout ducts
     if (withDuctCutouts && GetConfiguration().GetDucts()) {
          result = GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
