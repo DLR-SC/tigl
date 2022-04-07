@@ -92,7 +92,7 @@
 #include "generated/CPACSWallSegment.h"
 #include "generated/CPACSWallSegments.h"
 #include "generated/CPACSUIDSequence.h"
-#include "generated/CPACSDucts.h"
+#include "CCPACSDucts.h"
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
 %}
@@ -502,7 +502,7 @@ class CCPACSWingRibsPositioning;
 %boost_optional(tigl::CCPACSDucts)
 %boost_optional(tigl::CPACSUIDSequence)
 %include "generated/CPACSUIDSequence.h"
-%include "generated/CPACSDucts.h"
+%include "CCPACSDucts.h"
 %include "CCPACSDuctAssembly.h"
 %include "CCPACSDuct.h"
 
