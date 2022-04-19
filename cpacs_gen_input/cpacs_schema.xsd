@@ -33123,6 +33123,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
                     <xsd:element name="ductAssembly" maxOccurs="unbounded" type="ductAssemblyType"/>
+                    <xsd:element name="duct" maxOccurs="unbounded" type="ductType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -33165,7 +33166,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     </xsd:element>
                     <xsd:element name="transformation" minOccurs="0" type="transformationType"/>
                     <xsd:element name="excludeObjectUIDs" minOccurs="0" type="uIDSequenceType"/>
-                    <xsd:element name="duct" maxOccurs="unbounded" type="ductType"/>
+                    <xsd:element name="ductElements" minOccurs="1" type="uIDSequenceType"/>
                 </xsd:sequence>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>
             </xsd:extension>
