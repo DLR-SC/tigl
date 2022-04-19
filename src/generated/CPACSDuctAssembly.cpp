@@ -29,7 +29,7 @@ namespace generated
 {
     CPACSDuctAssembly::CPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_ductElements(reinterpret_cast<CCPACSDuctAssembly*>(this), m_uidMgr)
+        , m_ducts(reinterpret_cast<CCPACSDuctAssembly*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -142,12 +142,12 @@ namespace generated
             }
         }
 
-        // read element ductElements
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ductElements")) {
-            m_ductElements.ReadCPACS(tixiHandle, xpath + "/ductElements");
+        // read element ducts
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ducts")) {
+            m_ducts.ReadCPACS(tixiHandle, xpath + "/ducts");
         }
         else {
-            LOG(ERROR) << "Required element ductElements is missing at xpath " << xpath;
+            LOG(ERROR) << "Required element ducts is missing at xpath " << xpath;
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -155,7 +155,7 @@ namespace generated
 
     void CPACSDuctAssembly::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "parentUID", "transformation", "excludeObjectUIDs", "ductElements" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "parentUID", "transformation", "excludeObjectUIDs", "ducts" };
 
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -208,9 +208,9 @@ namespace generated
             }
         }
 
-        // write element ductElements
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/ductElements", childElemOrder);
-        m_ductElements.WriteCPACS(tixiHandle, xpath + "/ductElements");
+        // write element ducts
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/ducts", childElemOrder);
+        m_ducts.WriteCPACS(tixiHandle, xpath + "/ducts");
 
     }
 
@@ -286,14 +286,14 @@ namespace generated
         return m_excludeObjectUIDs;
     }
 
-    const CPACSUIDSequence& CPACSDuctAssembly::GetDuctElements() const
+    const CPACSUIDSequence& CPACSDuctAssembly::GetDucts() const
     {
-        return m_ductElements;
+        return m_ducts;
     }
 
-    CPACSUIDSequence& CPACSDuctAssembly::GetDuctElements()
+    CPACSUIDSequence& CPACSDuctAssembly::GetDucts()
     {
-        return m_ductElements;
+        return m_ducts;
     }
 
     CCPACSTransformation& CPACSDuctAssembly::GetTransformation(CreateIfNotExistsTag)
