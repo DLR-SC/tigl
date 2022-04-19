@@ -159,6 +159,7 @@ public:
     TIGL_EXPORT const CCPACSFuselages& GetFuselages() const;
 
     // Returns ducts
+    TIGL_EXPORT bool HasDucts() const;
     TIGL_EXPORT boost::optional<CCPACSDucts>& GetDucts();
     TIGL_EXPORT const boost::optional<CCPACSDucts>& GetDucts() const;
 

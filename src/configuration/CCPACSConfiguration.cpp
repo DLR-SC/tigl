@@ -542,6 +542,16 @@ const CCPACSFuselages& CCPACSConfiguration::GetFuselages() const
     }
 }
 
+bool CCPACSConfiguration::HasDucts() const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetDucts()? true : false;
+    }
+    else {
+        return false;
+    }
+}
+
 boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts()
 {
     if (aircraftModel) {

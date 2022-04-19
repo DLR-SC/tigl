@@ -348,7 +348,7 @@ PNamedShape CCPACSWing::BuildLoft() const
         return GroupedFlapsAndWingShapes();
     } else {
 
-        if (GetConfiguration().GetDucts()) {
+        if (GetConfiguration().HasDucts()) {
             return  GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
         }
 
@@ -457,7 +457,7 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
     }
 
     // cutout ducts
-    if (GetConfiguration().GetDucts()) {
+    if (GetConfiguration().HasDucts()) {
          result = GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
     }
 

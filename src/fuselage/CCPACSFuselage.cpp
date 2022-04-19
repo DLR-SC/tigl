@@ -75,7 +75,7 @@ CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
 
         // register invalidation in CCPACSDucts
-        if (configuration->GetDucts()) {
+        if (configuration->HasDucts()) {
             configuration->GetDucts()->RegisterInvalidationCallback([&](){ this->Invalidate(); });
         }
     }
@@ -263,12 +263,11 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 // Builds a fused shape of all fuselage segments
 PNamedShape CCPACSFuselage::BuildLoft() const
 {
-    auto const & ducts = GetConfiguration().GetDucts();
-    if (!ducts) {
+    if (!GetConfiguration().HasDucts()) {
         return *cleanLoft;
     }
 
-    return ducts->LoftWithDuctCutouts(*cleanLoft, GetUID());
+    return GetConfiguration().GetDucts()->LoftWithDuctCutouts(*cleanLoft, GetUID());
 }
 
 void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
