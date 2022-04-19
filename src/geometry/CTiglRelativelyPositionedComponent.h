@@ -19,8 +19,7 @@
 * @brief  Definition of the interface which describes a geometric component.
 */
 
-#ifndef CTIGLABSTRACTPHYISICALCOMPONENT_H
-#define CTIGLABSTRACTPHYISICALCOMPONENT_H
+#pragma once
 
 #include <boost/optional.hpp>
 #include <boost/variant.hpp>
@@ -32,6 +31,7 @@
 #include "tigl_internal.h"
 #include "tigl_config.h"
 #include "CTiglAbstractGeometricComponent.h"
+#include "CCPACSTransformation.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 #include "ECPACSTranslationType.h"
@@ -119,7 +119,7 @@ public:
     typedef std::vector<CTiglRelativelyPositionedComponent*> ChildContainerType;
 
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans);
-    TIGL_EXPORT CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
 
     TIGL_EXPORT void Reset() const;
 
@@ -162,5 +162,3 @@ private:
 };
 
 } // end namespace tigl
-
-#endif // CTIGLABSTRACTPHYISICALCOMPONENT_H
