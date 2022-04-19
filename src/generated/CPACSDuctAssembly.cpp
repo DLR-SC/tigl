@@ -16,7 +16,6 @@
 // limitations under the License.
 
 #include <cassert>
-#include <CCPACSDuct.h>
 #include "CCPACSDucts.h"
 #include "CPACSDuctAssembly.h"
 #include "CTiglError.h"
@@ -30,6 +29,7 @@ namespace generated
 {
     CPACSDuctAssembly::CPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
+        , m_ductElements(reinterpret_cast<CCPACSDuctAssembly*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -142,9 +142,12 @@ namespace generated
             }
         }
 
-        // read element duct
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/duct")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/duct", m_ducts, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDuctAssembly*>(this), m_uidMgr);
+        // read element ductElements
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ductElements")) {
+            m_ductElements.ReadCPACS(tixiHandle, xpath + "/ductElements");
+        }
+        else {
+            LOG(ERROR) << "Required element ductElements is missing at xpath " << xpath;
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -152,7 +155,7 @@ namespace generated
 
     void CPACSDuctAssembly::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "parentUID", "transformation", "excludeObjectUIDs", "duct" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "parentUID", "transformation", "excludeObjectUIDs", "ductElements" };
 
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -205,8 +208,9 @@ namespace generated
             }
         }
 
-        // write element duct
-        tixi::TixiSaveElements(tixiHandle, xpath + "/duct", m_ducts);
+        // write element ductElements
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/ductElements", childElemOrder);
+        m_ductElements.WriteCPACS(tixiHandle, xpath + "/ductElements");
 
     }
 
@@ -282,14 +286,14 @@ namespace generated
         return m_excludeObjectUIDs;
     }
 
-    const std::vector<std::unique_ptr<CCPACSDuct>>& CPACSDuctAssembly::GetDucts() const
+    const CPACSUIDSequence& CPACSDuctAssembly::GetDuctElements() const
     {
-        return m_ducts;
+        return m_ductElements;
     }
 
-    std::vector<std::unique_ptr<CCPACSDuct>>& CPACSDuctAssembly::GetDucts()
+    CPACSUIDSequence& CPACSDuctAssembly::GetDuctElements()
     {
-        return m_ducts;
+        return m_ductElements;
     }
 
     CCPACSTransformation& CPACSDuctAssembly::GetTransformation(CreateIfNotExistsTag)
@@ -314,23 +318,6 @@ namespace generated
     void CPACSDuctAssembly::RemoveExcludeObjectUIDs()
     {
         m_excludeObjectUIDs = boost::none;
-    }
-
-    CCPACSDuct& CPACSDuctAssembly::AddDuct()
-    {
-        m_ducts.push_back(make_unique<CCPACSDuct>(reinterpret_cast<CCPACSDuctAssembly*>(this), m_uidMgr));
-        return *m_ducts.back();
-    }
-
-    void CPACSDuctAssembly::RemoveDuct(CCPACSDuct& ref)
-    {
-        for (std::size_t i = 0; i < m_ducts.size(); i++) {
-            if (m_ducts[i].get() == &ref) {
-                m_ducts.erase(m_ducts.begin() + i);
-                return;
-            }
-        }
-        throw CTiglError("Element not found");
     }
 
     const CTiglUIDObject* CPACSDuctAssembly::GetNextUIDObject() const

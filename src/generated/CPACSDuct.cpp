@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSDuctAssembly.h"
+#include "CCPACSDucts.h"
 #include "CPACSDuct.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDuct::CPACSDuct(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr)
+    CPACSDuct::CPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_segments(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr)
         , m_sections(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr)
@@ -41,24 +41,30 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CCPACSDuctAssembly* CPACSDuct::GetParent() const
+    const CCPACSDucts* CPACSDuct::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSDuctAssembly* CPACSDuct::GetParent()
+    CCPACSDucts* CPACSDuct::GetParent()
     {
         return m_parent;
     }
 
     const CTiglUIDObject* CPACSDuct::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            return m_parent->GetNextUIDParent();
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSDuct::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            return m_parent->GetNextUIDParent();
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSDuct::GetUIDManager()

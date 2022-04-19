@@ -22,6 +22,7 @@
 #pragma once
 
 #include "generated/CPACSDucts.h"
+#include "CCPACSDuct.h"
 #include "PNamedShape.h"
 #include <functional>
 
@@ -35,6 +36,9 @@ public:
 
     // Given an input loft, create a new loft where all ducts have been cut away.
     TIGL_EXPORT PNamedShape LoftWithDuctCutouts(PNamedShape const&, std::string const &) const;
+
+    TIGL_EXPORT CCPACSDuct const& GetDuct(std::string const& uid) const;
+    TIGL_EXPORT CCPACSDuct& GetDuct(std::string const& uid);
 
     TIGL_EXPORT bool IsEnabled()  const;
     TIGL_EXPORT void SetEnabled(bool val=true);

@@ -43,7 +43,12 @@ namespace tigl {
 CCPACSDuctAssembly::CCPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
   : generated::CPACSDuctAssembly(parent, uidMgr)
   , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
-{}
+{
+    for (auto const& uid: m_ducts) {
+        auto& duct = GetParent()->GetDuct(uid);
+        duct->RegisterInvalidationCallback([&](){ this->Invalidate(); });
+    }
+}
 
 std::string CCPACSDuctAssembly::GetDefaultedUID() const
 {

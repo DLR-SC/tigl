@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include <CCPACSDuct.h>
 #include <CCPACSDuctAssembly.h>
 #include "CCPACSAircraftModel.h"
 #include "CPACSDucts.h"
@@ -77,12 +78,22 @@ namespace generated
             tixi::TixiReadElements(tixiHandle, xpath + "/ductAssembly", m_ductAssemblys, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDucts*>(this), m_uidMgr);
         }
 
+        // read element duct
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/duct")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/duct", m_ducts, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDucts*>(this), m_uidMgr);
+        }
+
     }
 
     void CPACSDucts::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        const std::vector<std::string> childElemOrder = { "ductAssembly", "duct" };
+
         // write element ductAssembly
         tixi::TixiSaveElements(tixiHandle, xpath + "/ductAssembly", m_ductAssemblys);
+
+        // write element duct
+        tixi::TixiSaveElements(tixiHandle, xpath + "/duct", m_ducts);
 
     }
 
@@ -96,6 +107,16 @@ namespace generated
         return m_ductAssemblys;
     }
 
+    const std::vector<std::unique_ptr<CCPACSDuct>>& CPACSDucts::GetDucts() const
+    {
+        return m_ducts;
+    }
+
+    std::vector<std::unique_ptr<CCPACSDuct>>& CPACSDucts::GetDucts()
+    {
+        return m_ducts;
+    }
+
     CCPACSDuctAssembly& CPACSDucts::AddDuctAssembly()
     {
         m_ductAssemblys.push_back(make_unique<CCPACSDuctAssembly>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
@@ -107,6 +128,23 @@ namespace generated
         for (std::size_t i = 0; i < m_ductAssemblys.size(); i++) {
             if (m_ductAssemblys[i].get() == &ref) {
                 m_ductAssemblys.erase(m_ductAssemblys.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+
+    CCPACSDuct& CPACSDucts::AddDuct()
+    {
+        m_ducts.push_back(make_unique<CCPACSDuct>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
+        return *m_ducts.back();
+    }
+
+    void CPACSDucts::RemoveDuct(CCPACSDuct& ref)
+    {
+        for (std::size_t i = 0; i < m_ducts.size(); i++) {
+            if (m_ducts[i].get() == &ref) {
+                m_ducts.erase(m_ducts.begin() + i);
                 return;
             }
         }

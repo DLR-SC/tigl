@@ -68,6 +68,22 @@ PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::
     return loft;
 }
 
+CCPACSDuct const& CCPACSDucts::GetDuct(std::string const& uid) const
+{
+    return GetDuct(uid);
+}
+
+CCPACSDuct& CCPACSDucts::GetDuct(std::string const& uid)
+{
+    auto it = std::find(m_ducts.begin(), m_ducts.end(), [&](auto const& v){ return v == uid; });
+
+    if ( it != std::end(m_ducts)) {
+        return **it;
+    }
+    throw CTiglError("Could not find duct with uid" + uid);
+}
+
+
 bool CCPACSDucts::IsEnabled() const
 {
     return enabled;

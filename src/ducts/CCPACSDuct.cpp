@@ -29,14 +29,14 @@
 
 namespace tigl {
 
-CCPACSDuct::CCPACSDuct(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr)
+CCPACSDuct::CCPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
   : generated::CPACSDuct(parent, uidMgr)
-  , CTiglRelativelyPositionedComponent(const_cast<std::string*>(&parent->GetUID()), &m_transformation, &m_symmetry)
+  , CTiglRelativelyPositionedComponent(static_cast<std::string*>(nullptr), &m_transformation, &m_symmetry)
 {}
 
 CCPACSConfiguration& CCPACSDuct::GetConfiguration() const
 {
-    return GetParent()->GetParent()->GetParent()->GetConfiguration();
+    return GetParent()->GetParent()->GetConfiguration();
 }
 
 std::string CCPACSDuct::GetDefaultedUID() const
@@ -143,10 +143,16 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
     }
 }
 
+void CCPACSDuct::RegisterInvalidationCallback(std::function<void()> const& fn){
+    invalidationCallbacks.push_back(fn);
+}
+
 void CCPACSDuct::InvalidateImpl(const boost::optional<std::string>&) const
 {
     CTiglAbstractGeometricComponent::Reset();
-    m_parent->Invalidate();
+    for (auto const& invalidator: invalidationCallbacks) {
+        invalidator();
+    }
 }
 
 } //namespace tigl

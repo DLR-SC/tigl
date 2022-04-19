@@ -22,18 +22,15 @@
 #include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
-#include <vector>
 #include "CPACSUIDSequence.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
-#include "UniquePtr.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSDuct;
 class CCPACSDucts;
 
 namespace generated
@@ -82,8 +79,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSUIDSequence>& GetExcludeObjectUIDs() const;
         TIGL_EXPORT virtual boost::optional<CPACSUIDSequence>& GetExcludeObjectUIDs();
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDuct>>& GetDucts() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDuct>>& GetDucts();
+        TIGL_EXPORT virtual const CPACSUIDSequence& GetDuctElements() const;
+        TIGL_EXPORT virtual CPACSUIDSequence& GetDuctElements();
 
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveTransformation();
@@ -91,31 +88,28 @@ namespace generated
         TIGL_EXPORT virtual CPACSUIDSequence& GetExcludeObjectUIDs(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveExcludeObjectUIDs();
 
-        TIGL_EXPORT virtual CCPACSDuct& AddDuct();
-        TIGL_EXPORT virtual void RemoveDuct(CCPACSDuct& ref);
-
     protected:
         CCPACSDucts* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                              m_uID;
+        std::string                           m_uID;
 
         /// Name
-        std::string                              m_name;
+        std::string                           m_name;
 
         /// Description
-        boost::optional<std::string>             m_description;
+        boost::optional<std::string>          m_description;
 
         /// UID of part to which the duct is
         /// mounted (if any)
-        boost::optional<std::string>             m_parentUID;
+        boost::optional<std::string>          m_parentUID;
 
-        boost::optional<CCPACSTransformation>    m_transformation;
+        boost::optional<CCPACSTransformation> m_transformation;
 
-        boost::optional<CPACSUIDSequence>        m_excludeObjectUIDs;
+        boost::optional<CPACSUIDSequence>     m_excludeObjectUIDs;
 
-        std::vector<std::unique_ptr<CCPACSDuct>> m_ducts;
+        CPACSUIDSequence                      m_ductElements;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;

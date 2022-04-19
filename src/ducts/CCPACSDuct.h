@@ -32,13 +32,17 @@ class CCPACSDuct : public generated::CPACSDuct, public CTiglRelativelyPositioned
 {
 public:
 
-    TIGL_EXPORT CCPACSDuct(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT explicit CCPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+
+    //Any DuctAssembly that references this duct element, can register its Invalidation
+    //as a callback.
+    TIGL_EXPORT void RegisterInvalidationCallback(std::function<void()> const&);
 
 protected:
     PNamedShape BuildLoft() const override;
@@ -51,6 +55,8 @@ private:
     std::string GetShortShapeName() const;
 
     void SetFaceTraits (PNamedShape loft) const;
+
+    std::vector<std::function<void()>> invalidationCallbacks;
 
 };
 
