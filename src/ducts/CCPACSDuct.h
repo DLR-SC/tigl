@@ -24,6 +24,7 @@
 #include "generated/CPACSDuct.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSConfiguration.h"
+#include "CCPACSDucts.h"
 
 namespace tigl
 {

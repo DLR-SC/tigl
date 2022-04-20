@@ -22,9 +22,9 @@
 #pragma once
 
 #include "generated/CPACSDucts.h"
-#include "CCPACSDuct.h"
 #include "PNamedShape.h"
 #include <functional>
+#include "CCPACSDuctAssembly.h"
 
 namespace tigl {
 

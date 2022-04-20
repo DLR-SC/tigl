@@ -48,6 +48,7 @@
 namespace tigl
 {
 
+class CCPACSEnginePylons;
 class CTiglFusePlane;
 typedef CSharedPtr<CTiglFusePlane> PTiglFusePlane;
 

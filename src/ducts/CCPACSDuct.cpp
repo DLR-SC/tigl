@@ -20,7 +20,6 @@
 */
 
 #include "CCPACSDuct.h"
-#include "CCPACSDuctAssembly.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglMakeLoft.h"
 #include "CNamedShape.h"
