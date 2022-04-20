@@ -44,7 +44,7 @@ CCPACSDuctAssembly::CCPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uid
   : generated::CPACSDuctAssembly(parent, uidMgr)
   , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
 {
-    for (auto const& uid: m_ducts.GetUIDs()) {
+    for (auto const& uid: m_ductUIDs.GetUIDs()) {
         auto& duct = GetParent()->GetDuct(uid);
         duct.RegisterInvalidationCallback([&](){ this->Invalidate(); });
     }
@@ -73,13 +73,13 @@ void CCPACSDuctAssembly::InvalidateImpl(const boost::optional<std::string>&) con
 
 PNamedShape CCPACSDuctAssembly::BuildLoft() const
 {
-    if (m_ducts.GetUIDs().size() == 0) {
+    if (m_ductUIDs.GetUIDs().size() == 0) {
         return PNamedShape();
     }
 
-    if (m_ducts.GetUIDs().size() == 1 && !GetParent()->GetDuct(m_ducts.GetUIDs()[0]).GetMirroredLoft()) {
+    if (m_ductUIDs.GetUIDs().size() == 1 && !GetParent()->GetDuct(m_ductUIDs.GetUIDs()[0]).GetMirroredLoft()) {
         // no need to fuse, there is just one solid
-        return GetParent()->GetDuct(m_ducts.GetUIDs()[0]).GetLoft();
+        return GetParent()->GetDuct(m_ductUIDs.GetUIDs()[0]).GetLoft();
     }
 #ifdef USE_TIGL_FUSER
     // first fuse all ducts to one solid tool
@@ -103,7 +103,7 @@ PNamedShape CCPACSDuctAssembly::BuildLoft() const
     tool = CFuseShapes(parentDuct, childDucts);
 #else
     TopTools_ListOfShape arguments, tools;
-    for (auto const& duct_uid: m_ducts.GetUIDs()) {
+    for (auto const& duct_uid: m_ductUIDs.GetUIDs()) {
 
         auto& duct = GetParent()->GetDuct(duct_uid);
 
@@ -131,7 +131,7 @@ PNamedShape CCPACSDuctAssembly::BuildLoft() const
         tool = std::make_shared<CNamedShape>(fuse.Shape(), "BOP_FUSE");
 
         // map names to tool
-        for (auto const& duct_uid: m_ducts.GetUIDs()) {
+        for (auto const& duct_uid: m_ductUIDs.GetUIDs()) {
             auto& duct = GetParent()->GetDuct(duct_uid);
             CBooleanOperTools::MapFaceNamesAfterBOP(fuse, duct.GetLoft(), tool);
         }

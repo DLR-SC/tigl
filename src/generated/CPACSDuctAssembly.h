@@ -79,8 +79,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSUIDSequence>& GetExcludeObjectUIDs() const;
         TIGL_EXPORT virtual boost::optional<CPACSUIDSequence>& GetExcludeObjectUIDs();
 
-        TIGL_EXPORT virtual const CPACSUIDSequence& GetDucts() const;
-        TIGL_EXPORT virtual CPACSUIDSequence& GetDucts();
+        TIGL_EXPORT virtual const CPACSUIDSequence& GetDuctUIDs() const;
+        TIGL_EXPORT virtual CPACSUIDSequence& GetDuctUIDs();
 
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveTransformation();
@@ -109,7 +109,7 @@ namespace generated
 
         boost::optional<CPACSUIDSequence>     m_excludeObjectUIDs;
 
-        CPACSUIDSequence                      m_ducts;
+        CPACSUIDSequence                      m_ductUIDs;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
