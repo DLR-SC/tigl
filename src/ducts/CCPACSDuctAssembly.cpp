@@ -73,13 +73,14 @@ void CCPACSDuctAssembly::InvalidateImpl(const boost::optional<std::string>&) con
 
 PNamedShape CCPACSDuctAssembly::BuildLoft() const
 {
+    auto const& trafo = GetTransformationMatrix();
     if (m_ductUIDs.GetUIDs().size() == 0) {
         return PNamedShape();
     }
 
     if (m_ductUIDs.GetUIDs().size() == 1 && !GetParent()->GetDuct(m_ductUIDs.GetUIDs()[0]).GetMirroredLoft()) {
         // no need to fuse, there is just one solid
-        return GetParent()->GetDuct(m_ductUIDs.GetUIDs()[0]).GetLoft();
+        return trafo.Transform(GetParent()->GetDuct(m_ductUIDs.GetUIDs()[0]).GetLoft());
     }
 #ifdef USE_TIGL_FUSER
     // first fuse all ducts to one solid tool
@@ -139,7 +140,7 @@ PNamedShape CCPACSDuctAssembly::BuildLoft() const
     else {
         throw CTiglError("Cannot fuse ducts to a single cutting tool for Boolean operations with geometric components\n.");
     }
-    return tool;
+    return trafo.Transform(tool);
 #endif
 }
 
