@@ -31,6 +31,31 @@
           </point>
         </reference>
         <ducts>
+          <ductAssembly uID="DuctAssembly1">
+            <name>DuctAssembly1</name>
+            <ductUIDs>
+              <uID>SimpleDuct</uID>
+              <uID>SimpleDuct2</uID>
+              <uID>SimpleDuct3</uID>
+              <uID>SimpleDuct4</uID>
+              <uID>SimpleDuct5</uID>
+              <uID>SimpleDuct6</uID>
+            </ductUIDs>
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly2">
+            <name>DuctAssembly2</name>
+            <ductUIDs>
+              <uID>SimpleDuct7</uID>
+              <uID>SimpleDuct8</uID>
+            </ductUIDs>  
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly3">
+            <name>DuctAssembly3</name>
+            <parentUID>SimpleFuselage2</parentUID>
+            <ductUIDs>
+              <uID>YDuct1</uID>
+            </ductUIDs> 
+          </ductAssembly>
           <duct uID="SimpleDuct">
             <name>name</name>
             <description>description</description>
@@ -756,951 +781,950 @@
             </segments>
           </duct>
           <duct uID="SimpleDuct5">
-            <name>name</name>
-            <description>description</description>
-            <transformation uID="SimpleDuct5_transformation1">
-              <scaling uID="SimpleDuct5_transformation1_scaling1">
-                <x>1.0</x>
-                <y>1.0</y>
-                <z>1.0</z>
-              </scaling>
-              <rotation uID="SimpleDuct5_transformation1_rotation1">
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
-              </rotation>
-              <translation refType="absLocal" uID="SimpleDuct5_transformation1_translation1">
-                <x>1.0</x>
-                <y>0.0</y>
-                <z>0.5</z>
-              </translation>
-            </transformation>
-            <sections>
-              <section uID="D150_Duct_5Section1ID">
-                <name>D150_Duct_5Section1</name>
-                <transformation uID="D150_Duct_5Section1ID_transformation1">
-                  <scaling uID="D150_Duct_5Section1ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_5Section1ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_5Section1ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_5Section1IDElement1">
-                    <name>D150_Duct_5Section1</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_5Section1IDElement1_transformation1">
-                      <scaling uID="D150_Duct_5Section1IDElement1_transformation1_scaling1">
-                        <x>1.0</x>
-                        <y>1.0</y>
-                        <z>1.0</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_5Section1IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_5Section1IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_5Section2ID">
-                <name>D150_Duct_5Section2</name>
-                <transformation uID="D150_Duct_5Section2ID_transformation1">
-                  <scaling uID="D150_Duct_5Section2ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_5Section2ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_5Section2ID_transformation1_translation1">
-                    <x>0.5</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_5Section2IDElement1">
-                    <name>D150_Duct_5Section2</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_5Section2IDElement1_transformation1">
-                      <scaling uID="D150_Duct_5Section2IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_5Section2IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_5Section2IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_5Section3ID">
-                <name>D150_Duct_5Section3</name>
-                <transformation uID="D150_Duct_5Section3ID_transformation1">
-                  <scaling uID="D150_Duct_5Section3ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_5Section3ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_5Section3ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_5Section3IDElement1">
-                    <name>D150_Duct_5Section3</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_5Section3IDElement1_transformation1">
-                      <scaling uID="D150_Duct_5Section3IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_5Section3IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_5Section3IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-            </sections>
-            <positionings>
-              <positioning uID="D150_Duct_5Positioning1ID">
-                <name>D150_Duct_5Positioning1</name>
-                <length>-0.5</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <toSectionUID>D150_Duct_5Section1ID</toSectionUID>
-              </positioning>
-              <positioning uID="D150_Duct_5Positioning3ID">
-                <name>D150_Duct_5Positioning3</name>
-                <length>2</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <fromSectionUID>D150_Duct_5Section1ID</fromSectionUID>
-                <toSectionUID>D150_Duct_5Section3ID</toSectionUID>
-              </positioning>
-            </positionings>
-            <segments>
-              <segment uID="segmentD150_Duct_5Segment2ID">
-                <name>D150_Duct_5Segment2</name>
-                <fromElementUID>D150_Duct_5Section1IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_5Section2IDElement1</toElementUID>
-              </segment>
-              <segment uID="segmentD150_Duct_5Segment3ID">
-                <name>D150_Duct_5Segment3</name>
-                <fromElementUID>D150_Duct_5Section2IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_5Section3IDElement1</toElementUID>
-              </segment>
-            </segments>
+          <name>name</name>
+          <description>description</description>
+          <transformation uID="SimpleDuct5_transformation1">
+            <scaling uID="SimpleDuct5_transformation1_scaling1">
+              <x>1.0</x>
+              <y>1.0</y>
+              <z>1.0</z>
+            </scaling>
+            <rotation uID="SimpleDuct5_transformation1_rotation1">
+              <x>0.0</x>
+              <y>0.0</y>
+              <z>0.0</z>
+            </rotation>
+            <translation refType="absLocal" uID="SimpleDuct5_transformation1_translation1">
+              <x>1.0</x>
+              <y>0.0</y>
+              <z>0.5</z>
+            </translation>
+          </transformation>
+          <sections>
+            <section uID="D150_Duct_5Section1ID">
+              <name>D150_Duct_5Section1</name>
+              <transformation uID="D150_Duct_5Section1ID_transformation1">
+                <scaling uID="D150_Duct_5Section1ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_5Section1ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_5Section1ID_transformation1_translation1">
+                  <x>0</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_5Section1IDElement1">
+                  <name>D150_Duct_5Section1</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_5Section1IDElement1_transformation1">
+                    <scaling uID="D150_Duct_5Section1IDElement1_transformation1_scaling1">
+                      <x>1.0</x>
+                      <y>1.0</y>
+                      <z>1.0</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_5Section1IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_5Section1IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+            <section uID="D150_Duct_5Section2ID">
+              <name>D150_Duct_5Section2</name>
+              <transformation uID="D150_Duct_5Section2ID_transformation1">
+                <scaling uID="D150_Duct_5Section2ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_5Section2ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_5Section2ID_transformation1_translation1">
+                  <x>0.5</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_5Section2IDElement1">
+                  <name>D150_Duct_5Section2</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_5Section2IDElement1_transformation1">
+                    <scaling uID="D150_Duct_5Section2IDElement1_transformation1_scaling1">
+                      <x>1</x>
+                      <y>1</y>
+                      <z>1</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_5Section2IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_5Section2IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+            <section uID="D150_Duct_5Section3ID">
+              <name>D150_Duct_5Section3</name>
+              <transformation uID="D150_Duct_5Section3ID_transformation1">
+                <scaling uID="D150_Duct_5Section3ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_5Section3ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_5Section3ID_transformation1_translation1">
+                  <x>0</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_5Section3IDElement1">
+                  <name>D150_Duct_5Section3</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_5Section3IDElement1_transformation1">
+                    <scaling uID="D150_Duct_5Section3IDElement1_transformation1_scaling1">
+                      <x>1</x>
+                      <y>1</y>
+                      <z>1</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_5Section3IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_5Section3IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+          </sections>
+          <positionings>
+            <positioning uID="D150_Duct_5Positioning1ID">
+              <name>D150_Duct_5Positioning1</name>
+              <length>-0.5</length>
+              <sweepAngle>90</sweepAngle>
+              <dihedralAngle>0</dihedralAngle>
+              <toSectionUID>D150_Duct_5Section1ID</toSectionUID>
+            </positioning>
+            <positioning uID="D150_Duct_5Positioning3ID">
+              <name>D150_Duct_5Positioning3</name>
+              <length>2</length>
+              <sweepAngle>90</sweepAngle>
+              <dihedralAngle>0</dihedralAngle>
+              <fromSectionUID>D150_Duct_5Section1ID</fromSectionUID>
+              <toSectionUID>D150_Duct_5Section3ID</toSectionUID>
+            </positioning>
+          </positionings>
+          <segments>
+            <segment uID="segmentD150_Duct_5Segment2ID">
+              <name>D150_Duct_5Segment2</name>
+              <fromElementUID>D150_Duct_5Section1IDElement1</fromElementUID>
+              <toElementUID>D150_Duct_5Section2IDElement1</toElementUID>
+            </segment>
+            <segment uID="segmentD150_Duct_5Segment3ID">
+              <name>D150_Duct_5Segment3</name>
+              <fromElementUID>D150_Duct_5Section2IDElement1</fromElementUID>
+              <toElementUID>D150_Duct_5Section3IDElement1</toElementUID>
+            </segment>
+          </segments>
           </duct>
           <duct uID="SimpleDuct6">
-            <name>name</name>
-            <description>description</description>
-            <transformation uID="SimpleDuct6_transformation1">
-              <scaling uID="SimpleDuct6_transformation1_scaling1">
-                <x>1.0</x>
-                <y>0.2</y>
-                <z>0.2</z>
-              </scaling>
-              <rotation uID="SimpleDuct6_transformation1_rotation1">
-                <x>0.0</x>
-                <y>90.0</y>
-                <z>0.0</z>
-              </rotation>
-              <translation refType="absLocal" uID="SimpleDuct6_transformation1_translation1">
-                <x>-0.25</x>
-                <y>0.0</y>
-                <z>0.5</z>
-              </translation>
-            </transformation>
-            <sections>
-              <section uID="D150_Duct_6Section1ID">
-                <name>D150_Duct_6Section1</name>
-                <transformation uID="D150_Duct_6Section1ID_transformation1">
-                  <scaling uID="D150_Duct_6Section1ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_6Section1ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_6Section1ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_6Section1IDElement1">
-                    <name>D150_Duct_6Section1</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_6Section1IDElement1_transformation1">
-                      <scaling uID="D150_Duct_6Section1IDElement1_transformation1_scaling1">
-                        <x>1.0</x>
-                        <y>1.0</y>
-                        <z>1.0</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_6Section1IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_6Section1IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_6Section2ID">
-                <name>D150_Duct_6Section2</name>
-                <transformation uID="D150_Duct_6Section2ID_transformation1">
-                  <scaling uID="D150_Duct_6Section2ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_6Section2ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_6Section2ID_transformation1_translation1">
-                    <x>0.5</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_6Section2IDElement1">
-                    <name>D150_Duct_6Section2</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_6Section2IDElement1_transformation1">
-                      <scaling uID="D150_Duct_6Section2IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_6Section2IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_6Section2IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_6Section3ID">
-                <name>D150_Duct_6Section3</name>
-                <transformation uID="D150_Duct_6Section3ID_transformation1">
-                  <scaling uID="D150_Duct_6Section3ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_6Section3ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_6Section3ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_6Section3IDElement1">
-                    <name>D150_Duct_6Section3</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_6Section3IDElement1_transformation1">
-                      <scaling uID="D150_Duct_6Section3IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_6Section3IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_6Section3IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-            </sections>
-            <positionings>
-              <positioning uID="D150_Duct_6Positioning1ID">
-                <name>D150_Duct_6Positioning1</name>
-                <length>-0.5</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <toSectionUID>D150_Duct_6Section1ID</toSectionUID>
-              </positioning>
-              <positioning uID="D150_Duct_6Positioning3ID">
-                <name>D150_Duct_6Positioning3</name>
-                <length>2</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <fromSectionUID>D150_Duct_6Section1ID</fromSectionUID>
-                <toSectionUID>D150_Duct_6Section3ID</toSectionUID>
-              </positioning>
-            </positionings>
-            <segments>
-              <segment uID="segmentD150_Duct_6Segment2ID">
-                <name>D150_Duct_6Segment2</name>
-                <fromElementUID>D150_Duct_6Section1IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_6Section2IDElement1</toElementUID>
-              </segment>
-              <segment uID="segmentD150_Duct_6Segment3ID">
-                <name>D150_Duct_6Segment3</name>
-                <fromElementUID>D150_Duct_6Section2IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_6Section3IDElement1</toElementUID>
-              </segment>
-            </segments>
+          <name>name</name>
+          <description>description</description>
+          <transformation uID="SimpleDuct6_transformation1">
+            <scaling uID="SimpleDuct6_transformation1_scaling1">
+              <x>1.0</x>
+              <y>0.2</y>
+              <z>0.2</z>
+            </scaling>
+            <rotation uID="SimpleDuct6_transformation1_rotation1">
+              <x>0.0</x>
+              <y>90.0</y>
+              <z>0.0</z>
+            </rotation>
+            <translation refType="absLocal" uID="SimpleDuct6_transformation1_translation1">
+              <x>-0.25</x>
+              <y>0.0</y>
+              <z>0.5</z>
+            </translation>
+          </transformation>
+          <sections>
+            <section uID="D150_Duct_6Section1ID">
+              <name>D150_Duct_6Section1</name>
+              <transformation uID="D150_Duct_6Section1ID_transformation1">
+                <scaling uID="D150_Duct_6Section1ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_6Section1ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_6Section1ID_transformation1_translation1">
+                  <x>0</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_6Section1IDElement1">
+                  <name>D150_Duct_6Section1</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_6Section1IDElement1_transformation1">
+                    <scaling uID="D150_Duct_6Section1IDElement1_transformation1_scaling1">
+                      <x>1.0</x>
+                      <y>1.0</y>
+                      <z>1.0</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_6Section1IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_6Section1IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+            <section uID="D150_Duct_6Section2ID">
+              <name>D150_Duct_6Section2</name>
+              <transformation uID="D150_Duct_6Section2ID_transformation1">
+                <scaling uID="D150_Duct_6Section2ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_6Section2ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_6Section2ID_transformation1_translation1">
+                  <x>0.5</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_6Section2IDElement1">
+                  <name>D150_Duct_6Section2</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_6Section2IDElement1_transformation1">
+                    <scaling uID="D150_Duct_6Section2IDElement1_transformation1_scaling1">
+                      <x>1</x>
+                      <y>1</y>
+                      <z>1</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_6Section2IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_6Section2IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+            <section uID="D150_Duct_6Section3ID">
+              <name>D150_Duct_6Section3</name>
+              <transformation uID="D150_Duct_6Section3ID_transformation1">
+                <scaling uID="D150_Duct_6Section3ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_6Section3ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_6Section3ID_transformation1_translation1">
+                  <x>0</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_6Section3IDElement1">
+                  <name>D150_Duct_6Section3</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_6Section3IDElement1_transformation1">
+                    <scaling uID="D150_Duct_6Section3IDElement1_transformation1_scaling1">
+                      <x>1</x>
+                      <y>1</y>
+                      <z>1</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_6Section3IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_6Section3IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+          </sections>
+          <positionings>
+            <positioning uID="D150_Duct_6Positioning1ID">
+              <name>D150_Duct_6Positioning1</name>
+              <length>-0.5</length>
+              <sweepAngle>90</sweepAngle>
+              <dihedralAngle>0</dihedralAngle>
+              <toSectionUID>D150_Duct_6Section1ID</toSectionUID>
+            </positioning>
+            <positioning uID="D150_Duct_6Positioning3ID">
+              <name>D150_Duct_6Positioning3</name>
+              <length>2</length>
+              <sweepAngle>90</sweepAngle>
+              <dihedralAngle>0</dihedralAngle>
+              <fromSectionUID>D150_Duct_6Section1ID</fromSectionUID>
+              <toSectionUID>D150_Duct_6Section3ID</toSectionUID>
+            </positioning>
+          </positionings>
+          <segments>
+            <segment uID="segmentD150_Duct_6Segment2ID">
+              <name>D150_Duct_6Segment2</name>
+              <fromElementUID>D150_Duct_6Section1IDElement1</fromElementUID>
+              <toElementUID>D150_Duct_6Section2IDElement1</toElementUID>
+            </segment>
+            <segment uID="segmentD150_Duct_6Segment3ID">
+              <name>D150_Duct_6Segment3</name>
+              <fromElementUID>D150_Duct_6Section2IDElement1</fromElementUID>
+              <toElementUID>D150_Duct_6Section3IDElement1</toElementUID>
+            </segment>
+          </segments>
           </duct>
           <duct uID="SimpleDuct7">
-            <name>name</name>
-            <description>description</description>
-            <transformation uID="SimpleDuct7_transformation1">
-              <scaling uID="SimpleDuct7_transformation1_scaling1">
-                <x>2.0</x>
-                <y>0.05</y>
-                <z>0.05</z>
-              </scaling>
-              <rotation uID="SimpleDuct7_transformation1_rotation1">
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
-              </rotation>
-              <translation refType="absLocal" uID="SimpleDuct7_transformation1_translation1">
-                <x>0.0</x>
-                <y>-1.0</y>
-                <z>0.0</z>
-              </translation>
-            </transformation>
-            <sections>
-              <section uID="D150_Duct_7Section1ID">
-                <name>D150_Duct_7Section1</name>
-                <transformation uID="D150_Duct_7Section1ID_transformation1">
-                  <scaling uID="D150_Duct_7Section1ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_7Section1ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_7Section1ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_7Section1IDElement1">
-                    <name>D150_Duct_7Section1</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_7Section1IDElement1_transformation1">
-                      <scaling uID="D150_Duct_7Section1IDElement1_transformation1_scaling1">
-                        <x>1.0</x>
-                        <y>1.0</y>
-                        <z>1.0</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_7Section1IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_7Section1IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_7Section2ID">
-                <name>D150_Duct_7Section2</name>
-                <transformation uID="D150_Duct_7Section2ID_transformation1">
-                  <scaling uID="D150_Duct_7Section2ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_7Section2ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_7Section2ID_transformation1_translation1">
-                    <x>0.5</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_7Section2IDElement1">
-                    <name>D150_Duct_7Section2</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_7Section2IDElement1_transformation1">
-                      <scaling uID="D150_Duct_7Section2IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_7Section2IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_7Section2IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_7Section3ID">
-                <name>D150_Duct_7Section3</name>
-                <transformation uID="D150_Duct_7Section3ID_transformation1">
-                  <scaling uID="D150_Duct_7Section3ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_7Section3ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_7Section3ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_7Section3IDElement1">
-                    <name>D150_Duct_7Section3</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_7Section3IDElement1_transformation1">
-                      <scaling uID="D150_Duct_7Section3IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_7Section3IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_7Section3IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-            </sections>
-            <positionings>
-              <positioning uID="D150_Duct_7Positioning1ID">
-                <name>D150_Duct_7Positioning1</name>
-                <length>-0.5</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <toSectionUID>D150_Duct_7Section1ID</toSectionUID>
-              </positioning>
-              <positioning uID="D150_Duct_7Positioning3ID">
-                <name>D150_Duct_7Positioning3</name>
-                <length>2</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <fromSectionUID>D150_Duct_7Section1ID</fromSectionUID>
-                <toSectionUID>D150_Duct_7Section3ID</toSectionUID>
-              </positioning>
-            </positionings>
-            <segments>
-              <segment uID="segmentD150_Duct_7Segment2ID">
-                <name>D150_Duct_7Segment2</name>
-                <fromElementUID>D150_Duct_7Section1IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_7Section2IDElement1</toElementUID>
-              </segment>
-              <segment uID="segmentD150_Duct_7Segment3ID">
-                <name>D150_Duct_7Segment3</name>
-                <fromElementUID>D150_Duct_7Section2IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_7Section3IDElement1</toElementUID>
-              </segment>
-            </segments>
+          <name>name</name>
+          <description>description</description>
+          <transformation uID="SimpleDuct7_transformation1">
+            <scaling uID="SimpleDuct7_transformation1_scaling1">
+              <x>2.0</x>
+              <y>0.05</y>
+              <z>0.05</z>
+            </scaling>
+            <rotation uID="SimpleDuct7_transformation1_rotation1">
+              <x>0.0</x>
+              <y>0.0</y>
+              <z>0.0</z>
+            </rotation>
+            <translation refType="absLocal" uID="SimpleDuct7_transformation1_translation1">
+              <x>0.0</x>
+              <y>-1.0</y>
+              <z>0.0</z>
+            </translation>
+          </transformation>
+          <sections>
+            <section uID="D150_Duct_7Section1ID">
+              <name>D150_Duct_7Section1</name>
+              <transformation uID="D150_Duct_7Section1ID_transformation1">
+                <scaling uID="D150_Duct_7Section1ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_7Section1ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_7Section1ID_transformation1_translation1">
+                  <x>0</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_7Section1IDElement1">
+                  <name>D150_Duct_7Section1</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_7Section1IDElement1_transformation1">
+                    <scaling uID="D150_Duct_7Section1IDElement1_transformation1_scaling1">
+                      <x>1.0</x>
+                      <y>1.0</y>
+                      <z>1.0</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_7Section1IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_7Section1IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+            <section uID="D150_Duct_7Section2ID">
+              <name>D150_Duct_7Section2</name>
+              <transformation uID="D150_Duct_7Section2ID_transformation1">
+                <scaling uID="D150_Duct_7Section2ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_7Section2ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_7Section2ID_transformation1_translation1">
+                  <x>0.5</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_7Section2IDElement1">
+                  <name>D150_Duct_7Section2</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_7Section2IDElement1_transformation1">
+                    <scaling uID="D150_Duct_7Section2IDElement1_transformation1_scaling1">
+                      <x>1</x>
+                      <y>1</y>
+                      <z>1</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_7Section2IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_7Section2IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+            <section uID="D150_Duct_7Section3ID">
+              <name>D150_Duct_7Section3</name>
+              <transformation uID="D150_Duct_7Section3ID_transformation1">
+                <scaling uID="D150_Duct_7Section3ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_7Section3ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_7Section3ID_transformation1_translation1">
+                  <x>0</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_7Section3IDElement1">
+                  <name>D150_Duct_7Section3</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_7Section3IDElement1_transformation1">
+                    <scaling uID="D150_Duct_7Section3IDElement1_transformation1_scaling1">
+                      <x>1</x>
+                      <y>1</y>
+                      <z>1</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_7Section3IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_7Section3IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+          </sections>
+          <positionings>
+            <positioning uID="D150_Duct_7Positioning1ID">
+              <name>D150_Duct_7Positioning1</name>
+              <length>-0.5</length>
+              <sweepAngle>90</sweepAngle>
+              <dihedralAngle>0</dihedralAngle>
+              <toSectionUID>D150_Duct_7Section1ID</toSectionUID>
+            </positioning>
+            <positioning uID="D150_Duct_7Positioning3ID">
+              <name>D150_Duct_7Positioning3</name>
+              <length>2</length>
+              <sweepAngle>90</sweepAngle>
+              <dihedralAngle>0</dihedralAngle>
+              <fromSectionUID>D150_Duct_7Section1ID</fromSectionUID>
+              <toSectionUID>D150_Duct_7Section3ID</toSectionUID>
+            </positioning>
+          </positionings>
+          <segments>
+            <segment uID="segmentD150_Duct_7Segment2ID">
+              <name>D150_Duct_7Segment2</name>
+              <fromElementUID>D150_Duct_7Section1IDElement1</fromElementUID>
+              <toElementUID>D150_Duct_7Section2IDElement1</toElementUID>
+            </segment>
+            <segment uID="segmentD150_Duct_7Segment3ID">
+              <name>D150_Duct_7Segment3</name>
+              <fromElementUID>D150_Duct_7Section2IDElement1</fromElementUID>
+              <toElementUID>D150_Duct_7Section3IDElement1</toElementUID>
+            </segment>
+          </segments>
           </duct>
           <duct uID="SimpleDuct8">
-            <name>name</name>
-            <description>description</description>
-            <transformation uID="SimpleDuct8_transformation1">
-              <scaling uID="SimpleDuct8_transformation1_scaling1">
-                <x>0.25</x>
-                <y>0.25</y>
-                <z>0.25</z>
-              </scaling>
-              <rotation uID="SimpleDuct8_transformation1_rotation1">
-                <x>0.0</x>
-                <y>90.0</y>
-                <z>0.0</z>
-              </rotation>
-              <translation refType="absLocal" uID="SimpleDuct8_transformation1_translation1">
-                <x>0.75</x>
-                <y>-1.5</y>
-                <z>0.1</z>
-              </translation>
-            </transformation>
-            <sections>
-              <section uID="D150_Duct_8Section1ID">
-                <name>D150_Duct_8Section1</name>
-                <transformation uID="D150_Duct_8Section1ID_transformation1">
-                  <scaling uID="D150_Duct_8Section1ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_8Section1ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_8Section1ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_8Section1IDElement1">
-                    <name>D150_Duct_8Section1</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_8Section1IDElement1_transformation1">
-                      <scaling uID="D150_Duct_8Section1IDElement1_transformation1_scaling1">
-                        <x>1.0</x>
-                        <y>1.0</y>
-                        <z>1.0</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_8Section1IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_8Section1IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_8Section2ID">
-                <name>D150_Duct_8Section2</name>
-                <transformation uID="D150_Duct_8Section2ID_transformation1">
-                  <scaling uID="D150_Duct_8Section2ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_8Section2ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_8Section2ID_transformation1_translation1">
-                    <x>0.5</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_8Section2IDElement1">
-                    <name>D150_Duct_8Section2</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_8Section2IDElement1_transformation1">
-                      <scaling uID="D150_Duct_8Section2IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_8Section2IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_8Section2IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_8Section3ID">
-                <name>D150_Duct_8Section3</name>
-                <transformation uID="D150_Duct_8Section3ID_transformation1">
-                  <scaling uID="D150_Duct_8Section3ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_8Section3ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_8Section3ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_8Section3IDElement1">
-                    <name>D150_Duct_8Section3</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_8Section3IDElement1_transformation1">
-                      <scaling uID="D150_Duct_8Section3IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_8Section3IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_8Section3IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-            </sections>
-            <positionings>
-              <positioning uID="D150_Duct_8Positioning1ID">
-                <name>D150_Duct_8Positioning1</name>
-                <length>-0.5</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <toSectionUID>D150_Duct_8Section1ID</toSectionUID>
-              </positioning>
-              <positioning uID="D150_Duct_8Positioning3ID">
-                <name>D150_Duct_8Positioning3</name>
-                <length>2</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <fromSectionUID>D150_Duct_8Section1ID</fromSectionUID>
-                <toSectionUID>D150_Duct_8Section3ID</toSectionUID>
-              </positioning>
-            </positionings>
-            <segments>
-              <segment uID="segmentD150_Duct_8Segment2ID">
-                <name>D150_Duct_8Segment2</name>
-                <fromElementUID>D150_Duct_8Section1IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_8Section2IDElement1</toElementUID>
-              </segment>
-              <segment uID="segmentD150_Duct_8Segment3ID">
-                <name>D150_Duct_8Segment3</name>
-                <fromElementUID>D150_Duct_8Section2IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_8Section3IDElement1</toElementUID>
-              </segment>
-            </segments>
+          <name>name</name>
+          <description>description</description>
+          <transformation uID="SimpleDuct8_transformation1">
+            <scaling uID="SimpleDuct8_transformation1_scaling1">
+              <x>0.25</x>
+              <y>0.25</y>
+              <z>0.25</z>
+            </scaling>
+            <rotation uID="SimpleDuct8_transformation1_rotation1">
+              <x>0.0</x>
+              <y>90.0</y>
+              <z>0.0</z>
+            </rotation>
+            <translation refType="absLocal" uID="SimpleDuct8_transformation1_translation1">
+              <x>0.75</x>
+              <y>-1.5</y>
+              <z>0.1</z>
+            </translation>
+          </transformation>
+          <sections>
+            <section uID="D150_Duct_8Section1ID">
+              <name>D150_Duct_8Section1</name>
+              <transformation uID="D150_Duct_8Section1ID_transformation1">
+                <scaling uID="D150_Duct_8Section1ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_8Section1ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_8Section1ID_transformation1_translation1">
+                  <x>0</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_8Section1IDElement1">
+                  <name>D150_Duct_8Section1</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_8Section1IDElement1_transformation1">
+                    <scaling uID="D150_Duct_8Section1IDElement1_transformation1_scaling1">
+                      <x>1.0</x>
+                      <y>1.0</y>
+                      <z>1.0</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_8Section1IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_8Section1IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+            <section uID="D150_Duct_8Section2ID">
+              <name>D150_Duct_8Section2</name>
+              <transformation uID="D150_Duct_8Section2ID_transformation1">
+                <scaling uID="D150_Duct_8Section2ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_8Section2ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_8Section2ID_transformation1_translation1">
+                  <x>0.5</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_8Section2IDElement1">
+                  <name>D150_Duct_8Section2</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_8Section2IDElement1_transformation1">
+                    <scaling uID="D150_Duct_8Section2IDElement1_transformation1_scaling1">
+                      <x>1</x>
+                      <y>1</y>
+                      <z>1</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_8Section2IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_8Section2IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+            <section uID="D150_Duct_8Section3ID">
+              <name>D150_Duct_8Section3</name>
+              <transformation uID="D150_Duct_8Section3ID_transformation1">
+                <scaling uID="D150_Duct_8Section3ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_8Section3ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_8Section3ID_transformation1_translation1">
+                  <x>0</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_8Section3IDElement1">
+                  <name>D150_Duct_8Section3</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_8Section3IDElement1_transformation1">
+                    <scaling uID="D150_Duct_8Section3IDElement1_transformation1_scaling1">
+                      <x>1</x>
+                      <y>1</y>
+                      <z>1</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_8Section3IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_8Section3IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+          </sections>
+          <positionings>
+            <positioning uID="D150_Duct_8Positioning1ID">
+              <name>D150_Duct_8Positioning1</name>
+              <length>-0.5</length>
+              <sweepAngle>90</sweepAngle>
+              <dihedralAngle>0</dihedralAngle>
+              <toSectionUID>D150_Duct_8Section1ID</toSectionUID>
+            </positioning>
+            <positioning uID="D150_Duct_8Positioning3ID">
+              <name>D150_Duct_8Positioning3</name>
+              <length>2</length>
+              <sweepAngle>90</sweepAngle>
+              <dihedralAngle>0</dihedralAngle>
+              <fromSectionUID>D150_Duct_8Section1ID</fromSectionUID>
+              <toSectionUID>D150_Duct_8Section3ID</toSectionUID>
+            </positioning>
+          </positionings>
+          <segments>
+            <segment uID="segmentD150_Duct_8Segment2ID">
+              <name>D150_Duct_8Segment2</name>
+              <fromElementUID>D150_Duct_8Section1IDElement1</fromElementUID>
+              <toElementUID>D150_Duct_8Section2IDElement1</toElementUID>
+            </segment>
+            <segment uID="segmentD150_Duct_8Segment3ID">
+              <name>D150_Duct_8Segment3</name>
+              <fromElementUID>D150_Duct_8Section2IDElement1</fromElementUID>
+              <toElementUID>D150_Duct_8Section3IDElement1</toElementUID>
+            </segment>
+          </segments>
           </duct>
           <duct uID="YDuct1" symmetry="x-z-plane">
-            <name>name</name>
-            <parentUID>SimpleFuselage2</parentUID>
-            <description>description</description>
-            <transformation uID="SimpleDuct9_transformation1">
-              <scaling uID="SimpleDuct9_transformation1_scaling1">
-                <x>2.0</x>
-                <y>0.15</y>
-                <z>0.15</z>
-              </scaling>
-              <rotation uID="SimpleDuct9_transformation1_rotation1">
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
-              </rotation>
-              <translation refType="absLocal" uID="SimpleDuct9_transformation1_translation1">
-                <x>0</x>
-                <y>0</y>
-                <z>0</z>
-              </translation>
-            </transformation>
-            <sections>
-              <section uID="D150_Duct_9Section1ID">
-                <name>D150_Duct_9Section1</name>
-                <transformation uID="D150_Duct_9Section1ID_transformation1">
-                  <scaling uID="D150_Duct_9Section1ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_9Section1ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_9Section1ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>4</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_9Section1IDElement1">
-                    <name>D150_Duct_9Section1</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_9Section1IDElement1_transformation1">
-                      <scaling uID="D150_Duct_9Section1IDElement1_transformation1_scaling1">
-                        <x>1.0</x>
-                        <y>1.0</y>
-                        <z>1.0</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_9Section1IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_9Section1IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_9Section2ID">
-                <name>D150_Duct_9Section2</name>
-                <transformation uID="D150_Duct_9Section2ID_transformation1">
-                  <scaling uID="D150_Duct_9Section2ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_9Section2ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_9Section2ID_transformation1_translation1">
-                    <x>0.5</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_9Section2IDElement1">
-                    <name>D150_Duct_9Section2</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_9Section2IDElement1_transformation1">
-                      <scaling uID="D150_Duct_9Section2IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_9Section2IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_9Section2IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-              <section uID="D150_Duct_9Section3ID">
-                <name>D150_Duct_9Section3</name>
-                <transformation uID="D150_Duct_9Section3ID_transformation1">
-                  <scaling uID="D150_Duct_9Section3ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
-                  </scaling>
-                  <rotation uID="D150_Duct_9Section3ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
-                  </rotation>
-                  <translation refType="absLocal" uID="D150_Duct_9Section3ID_transformation1_translation1">
-                    <x>0</x>
-                    <y>0</y>
-                    <z>0</z>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="D150_Duct_9Section3IDElement1">
-                    <name>D150_Duct_9Section3</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation uID="D150_Duct_9Section3IDElement1_transformation1">
-                      <scaling uID="D150_Duct_9Section3IDElement1_transformation1_scaling1">
-                        <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
-                      </scaling>
-                      <rotation uID="D150_Duct_9Section3IDElement1_transformation1_rotation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </rotation>
-                      <translation refType="absLocal" uID="D150_Duct_9Section3IDElement1_transformation1_translation1">
-                        <x>0</x>
-                        <y>0</y>
-                        <z>0</z>
-                      </translation>
-                    </transformation>
-                  </element>
-                </elements>
-              </section>
-            </sections>
-            <positionings>
-              <positioning uID="D150_Duct_9Positioning1ID">
-                <name>D150_Duct_9Positioning1</name>
-                <length>-0.5</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <toSectionUID>D150_Duct_9Section1ID</toSectionUID>
-              </positioning>
-              <positioning uID="D150_Duct_9Positioning3ID">
-                <name>D150_Duct_9Positioning3</name>
-                <length>2</length>
-                <sweepAngle>90</sweepAngle>
-                <dihedralAngle>0</dihedralAngle>
-                <fromSectionUID>D150_Duct_9Section1ID</fromSectionUID>
-                <toSectionUID>D150_Duct_9Section3ID</toSectionUID>
-              </positioning>
-            </positionings>
-            <segments>
-              <segment uID="segmentD150_Duct_9Segment2ID">
-                <name>D150_Duct_9Segment2</name>
-                <fromElementUID>D150_Duct_9Section1IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_9Section2IDElement1</toElementUID>
-                <guideCurves>
-                  <guideCurve uID="Duct_9_upperGuideCurveSegment1">
-                    <name>sDuct_9_upperGuideCurveSegment1</name>
-                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
-                    <fromRelativeCircumference>0.</fromRelativeCircumference>
-                    <tangent>
-                      <x>1.</x>
-                      <y>0.</y>
-                      <z>0.</z>
-                    </tangent>
-                    <toRelativeCircumference>0.</toRelativeCircumference>
-                  </guideCurve>
-                  <guideCurve uID="Duct_9_lowerGuideCurveSegment1">
-                    <name>Duct_9_lowerGuideCurveSegment1</name>
-                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
-                    <fromRelativeCircumference>0.5</fromRelativeCircumference>
-                    <tangent>
-                      <x>1.</x>
-                      <y>0.</y>
-                      <z>0.</z>
-                    </tangent>
-                    <toRelativeCircumference>0.5</toRelativeCircumference>
-                  </guideCurve>
-                </guideCurves>
-              </segment>
-              <segment uID="segmentD150_Duct_9Segment3ID">
-                <name>D150_Duct_9Segment3</name>
-                <fromElementUID>D150_Duct_9Section2IDElement1</fromElementUID>
-                <toElementUID>D150_Duct_9Section3IDElement1</toElementUID>
-                <guideCurves>
-                  <guideCurve uID="Duct_9_upperGuideCurveSegment2">
-                    <name>sDuct_9_upperGuideCurveSegment2</name>
-                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
-                    <fromGuideCurveUID>Duct_9_upperGuideCurveSegment1</fromGuideCurveUID>
-                    <continuity>C2 to previous</continuity>
-                    <toRelativeCircumference>0.0</toRelativeCircumference>
-                  </guideCurve>
-                  <guideCurve uID="Duct_9_lowerGuideCurveSegment2">
-                    <name>Duct_9_lowerGuideCurveSegment2</name>
-                    <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
-                    <fromGuideCurveUID>Duct_9_lowerGuideCurveSegment1</fromGuideCurveUID>
-                    <continuity>C2 to previous</continuity>
-                    <toRelativeCircumference>0.5</toRelativeCircumference>
-                  </guideCurve>
-                </guideCurves>
-              </segment>
-            </segments>
-          </duct>
+          <name>name</name>
+          <description>description</description>
+          <transformation uID="SimpleDuct9_transformation1">
+            <scaling uID="SimpleDuct9_transformation1_scaling1">
+              <x>2.0</x>
+              <y>0.15</y>
+              <z>0.15</z>
+            </scaling>
+            <rotation uID="SimpleDuct9_transformation1_rotation1">
+              <x>0.0</x>
+              <y>0.0</y>
+              <z>0.0</z>
+            </rotation>
+            <translation refType="absLocal" uID="SimpleDuct9_transformation1_translation1">
+              <x>0.0</x>
+              <y>0</y>
+              <z>0</z>
+            </translation>
+          </transformation>
+          <sections>
+            <section uID="D150_Duct_9Section1ID">
+              <name>D150_Duct_9Section1</name>
+              <transformation uID="D150_Duct_9Section1ID_transformation1">
+                <scaling uID="D150_Duct_9Section1ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_9Section1ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_9Section1ID_transformation1_translation1">
+                  <x>0</x>
+                  <y>4</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_9Section1IDElement1">
+                  <name>D150_Duct_9Section1</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_9Section1IDElement1_transformation1">
+                    <scaling uID="D150_Duct_9Section1IDElement1_transformation1_scaling1">
+                      <x>1.0</x>
+                      <y>1.0</y>
+                      <z>1.0</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_9Section1IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_9Section1IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+            <section uID="D150_Duct_9Section2ID">
+              <name>D150_Duct_9Section2</name>
+              <transformation uID="D150_Duct_9Section2ID_transformation1">
+                <scaling uID="D150_Duct_9Section2ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_9Section2ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_9Section2ID_transformation1_translation1">
+                  <x>0.5</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_9Section2IDElement1">
+                  <name>D150_Duct_9Section2</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_9Section2IDElement1_transformation1">
+                    <scaling uID="D150_Duct_9Section2IDElement1_transformation1_scaling1">
+                      <x>1</x>
+                      <y>1</y>
+                      <z>1</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_9Section2IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_9Section2IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+            <section uID="D150_Duct_9Section3ID">
+              <name>D150_Duct_9Section3</name>
+              <transformation uID="D150_Duct_9Section3ID_transformation1">
+                <scaling uID="D150_Duct_9Section3ID_transformation1_scaling1">
+                  <x>1.0</x>
+                  <y>1.0</y>
+                  <z>1.0</z>
+                </scaling>
+                <rotation uID="D150_Duct_9Section3ID_transformation1_rotation1">
+                  <x>0.0</x>
+                  <y>0.0</y>
+                  <z>0.0</z>
+                </rotation>
+                <translation refType="absLocal" uID="D150_Duct_9Section3ID_transformation1_translation1">
+                  <x>0</x>
+                  <y>0</y>
+                  <z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="D150_Duct_9Section3IDElement1">
+                  <name>D150_Duct_9Section3</name>
+                  <profileUID>fuselageCircleProfileuID</profileUID>
+                  <transformation uID="D150_Duct_9Section3IDElement1_transformation1">
+                    <scaling uID="D150_Duct_9Section3IDElement1_transformation1_scaling1">
+                      <x>1</x>
+                      <y>1</y>
+                      <z>1</z>
+                    </scaling>
+                    <rotation uID="D150_Duct_9Section3IDElement1_transformation1_rotation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </rotation>
+                    <translation refType="absLocal" uID="D150_Duct_9Section3IDElement1_transformation1_translation1">
+                      <x>0</x>
+                      <y>0</y>
+                      <z>0</z>
+                    </translation>
+                  </transformation>
+                </element>
+              </elements>
+            </section>
+          </sections>
+          <positionings>
+            <positioning uID="D150_Duct_9Positioning1ID">
+              <name>D150_Duct_9Positioning1</name>
+              <length>-0.5</length>
+              <sweepAngle>90</sweepAngle>
+              <dihedralAngle>0</dihedralAngle>
+              <toSectionUID>D150_Duct_9Section1ID</toSectionUID>
+            </positioning>
+            <positioning uID="D150_Duct_9Positioning3ID">
+              <name>D150_Duct_9Positioning3</name>
+              <length>2</length>
+              <sweepAngle>90</sweepAngle>
+              <dihedralAngle>0</dihedralAngle>
+              <fromSectionUID>D150_Duct_9Section1ID</fromSectionUID>
+              <toSectionUID>D150_Duct_9Section3ID</toSectionUID>
+            </positioning>
+          </positionings>
+          <segments>
+            <segment uID="segmentD150_Duct_9Segment2ID">
+              <name>D150_Duct_9Segment2</name>
+              <fromElementUID>D150_Duct_9Section1IDElement1</fromElementUID>
+              <toElementUID>D150_Duct_9Section2IDElement1</toElementUID>
+              <guideCurves>
+                <guideCurve uID="Duct_9_upperGuideCurveSegment1">
+                  <name>sDuct_9_upperGuideCurveSegment1</name>
+                  <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                  <fromRelativeCircumference>0.</fromRelativeCircumference>
+                  <tangent>
+                    <x>1.</x>
+                    <y>0.</y>
+                    <z>0.</z>
+                  </tangent>
+                  <toRelativeCircumference>0.</toRelativeCircumference>
+                </guideCurve>
+                <guideCurve uID="Duct_9_lowerGuideCurveSegment1">
+                  <name>Duct_9_lowerGuideCurveSegment1</name>
+                  <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                  <fromRelativeCircumference>0.5</fromRelativeCircumference>
+                  <tangent>
+                    <x>1.</x>
+                    <y>0.</y>
+                    <z>0.</z>
+                  </tangent>
+                  <toRelativeCircumference>0.5</toRelativeCircumference>
+                </guideCurve>
+              </guideCurves>
+            </segment>
+            <segment uID="segmentD150_Duct_9Segment3ID">
+              <name>D150_Duct_9Segment3</name>
+              <fromElementUID>D150_Duct_9Section2IDElement1</fromElementUID>
+              <toElementUID>D150_Duct_9Section3IDElement1</toElementUID>
+              <guideCurves>
+                <guideCurve uID="Duct_9_upperGuideCurveSegment2">
+                  <name>sDuct_9_upperGuideCurveSegment2</name>
+                  <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                  <fromGuideCurveUID>Duct_9_upperGuideCurveSegment1</fromGuideCurveUID>
+                  <continuity>C2 to previous</continuity>
+                  <toRelativeCircumference>0.0</toRelativeCircumference>
+                </guideCurve>
+                <guideCurve uID="Duct_9_lowerGuideCurveSegment2">
+                  <name>Duct_9_lowerGuideCurveSegment2</name>
+                  <guideCurveProfileUID>dummyGuideCurveProfile</guideCurveProfileUID>
+                  <fromGuideCurveUID>Duct_9_lowerGuideCurveSegment1</fromGuideCurveUID>
+                  <continuity>C2 to previous</continuity>
+                  <toRelativeCircumference>0.5</toRelativeCircumference>
+                </guideCurve>
+              </guideCurves>
+            </segment>
+          </segments>
+          </duct>  
         </ducts>
         <fuselages>
           <fuselage uID="SimpleFuselage">
