@@ -126,6 +126,9 @@ ECPACSTranslationType CTiglRelativelyPositionedComponent::GetTranslationType() c
     if (GetTransform())
         return GetTransform()->getTranslationType();
     else
+        if (_parent) {
+            return ABS_LOCAL;
+        }
         return ABS_GLOBAL; // TODO(bgruber): is this a valid default?
 }
 
