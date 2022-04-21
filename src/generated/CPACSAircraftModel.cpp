@@ -107,6 +107,17 @@ namespace generated
             }
         }
 
+        // read element ducts
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ducts")) {
+            m_ducts = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            try {
+                m_ducts->ReadCPACS(tixiHandle, xpath + "/ducts");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read ducts at xpath " << xpath << ": " << e.what();
+                m_ducts = boost::none;
+            }
+        }
+
         // read element fuselages
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
             m_fuselages = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -148,17 +159,6 @@ namespace generated
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read enginePylons at xpath " << xpath << ": " << e.what();
                 m_enginePylons = boost::none;
-            }
-        }
-
-        // read element ducts
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ducts")) {
-            m_ducts = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
-            try {
-                m_ducts->ReadCPACS(tixiHandle, xpath + "/ducts");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read ducts at xpath " << xpath << ": " << e.what();
-                m_ducts = boost::none;
             }
         }
 
@@ -207,6 +207,17 @@ namespace generated
             }
         }
 
+        // write element ducts
+        if (m_ducts) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ducts");
+            m_ducts->WriteCPACS(tixiHandle, xpath + "/ducts");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ducts")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/ducts");
+            }
+        }
+
         // write element fuselages
         if (m_fuselages) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselages");
@@ -248,17 +259,6 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/enginePylons")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/enginePylons");
-            }
-        }
-
-        // write element ducts
-        if (m_ducts) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ducts");
-            m_ducts->WriteCPACS(tixiHandle, xpath + "/ducts");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ducts")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/ducts");
             }
         }
 
@@ -324,6 +324,16 @@ namespace generated
         m_description = value;
     }
 
+    const boost::optional<CCPACSDucts>& CPACSAircraftModel::GetDucts() const
+    {
+        return m_ducts;
+    }
+
+    boost::optional<CCPACSDucts>& CPACSAircraftModel::GetDucts()
+    {
+        return m_ducts;
+    }
+
     const boost::optional<CCPACSFuselages>& CPACSAircraftModel::GetFuselages() const
     {
         return m_fuselages;
@@ -364,16 +374,6 @@ namespace generated
         return m_enginePylons;
     }
 
-    const boost::optional<CCPACSDucts>& CPACSAircraftModel::GetDucts() const
-    {
-        return m_ducts;
-    }
-
-    boost::optional<CCPACSDucts>& CPACSAircraftModel::GetDucts()
-    {
-        return m_ducts;
-    }
-
     const boost::optional<CCPACSACSystems>& CPACSAircraftModel::GetSystems() const
     {
         return m_systems;
@@ -392,6 +392,18 @@ namespace generated
     boost::optional<CCPACSExternalObjects>& CPACSAircraftModel::GetGenericGeometryComponents()
     {
         return m_genericGeometryComponents;
+    }
+
+    CCPACSDucts& CPACSAircraftModel::GetDucts(CreateIfNotExistsTag)
+    {
+        if (!m_ducts)
+            m_ducts = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+        return *m_ducts;
+    }
+
+    void CPACSAircraftModel::RemoveDucts()
+    {
+        m_ducts = boost::none;
     }
 
     CCPACSFuselages& CPACSAircraftModel::GetFuselages(CreateIfNotExistsTag)
@@ -440,18 +452,6 @@ namespace generated
     void CPACSAircraftModel::RemoveEnginePylons()
     {
         m_enginePylons = boost::none;
-    }
-
-    CCPACSDucts& CPACSAircraftModel::GetDucts(CreateIfNotExistsTag)
-    {
-        if (!m_ducts)
-            m_ducts = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
-        return *m_ducts;
-    }
-
-    void CPACSAircraftModel::RemoveDucts()
-    {
-        m_ducts = boost::none;
     }
 
     CCPACSACSystems& CPACSAircraftModel::GetSystems(CreateIfNotExistsTag)

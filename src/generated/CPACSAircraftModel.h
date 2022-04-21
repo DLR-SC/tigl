@@ -77,6 +77,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSDucts>& GetDucts() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSDucts>& GetDucts();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSFuselages>& GetFuselages() const;
         TIGL_EXPORT virtual boost::optional<CCPACSFuselages>& GetFuselages();
 
@@ -89,14 +92,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEnginePylons>& GetEnginePylons();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSDucts>& GetDucts() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSDucts>& GetDucts();
-
         TIGL_EXPORT virtual const boost::optional<CCPACSACSystems>& GetSystems() const;
         TIGL_EXPORT virtual boost::optional<CCPACSACSystems>& GetSystems();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents() const;
         TIGL_EXPORT virtual boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents();
+
+        TIGL_EXPORT virtual CCPACSDucts& GetDucts(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveDucts();
 
         TIGL_EXPORT virtual CCPACSFuselages& GetFuselages(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFuselages();
@@ -109,9 +112,6 @@ namespace generated
 
         TIGL_EXPORT virtual CCPACSEnginePylons& GetEnginePylons(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEnginePylons();
-
-        TIGL_EXPORT virtual CCPACSDucts& GetDucts(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveDucts();
 
         TIGL_EXPORT virtual CCPACSACSystems& GetSystems(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSystems();
@@ -132,6 +132,8 @@ namespace generated
         /// Description of the aircraft model.
         boost::optional<std::string>           m_description;
 
+        boost::optional<CCPACSDucts>           m_ducts;
+
         boost::optional<CCPACSFuselages>       m_fuselages;
 
         boost::optional<CCPACSWings>           m_wings;
@@ -139,8 +141,6 @@ namespace generated
         boost::optional<CCPACSEnginePositions> m_engines;
 
         boost::optional<CCPACSEnginePylons>    m_enginePylons;
-
-        boost::optional<CCPACSDucts>           m_ducts;
 
         boost::optional<CCPACSACSystems>       m_systems;
 

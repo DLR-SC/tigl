@@ -2936,12 +2936,12 @@ marko.alder@dlr.de
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element minOccurs="0" name="reference" type="referenceType"/>
+                    <xsd:element minOccurs="0" name="ducts" type="ductsType"/>
                     <xsd:element minOccurs="0" name="fuselages" type="fuselagesType"/>
                     <xsd:element minOccurs="0" name="wings" type="wingsType"/>
                     <xsd:element minOccurs="0" name="engines" type="enginePositionsType"/>
                     <xsd:element minOccurs="0" name="enginePylons" type="enginePylonsType"/>
                     <xsd:element minOccurs="0" name="landingGear" type="landingGearType"/>
-                    <xsd:element minOccurs="0" name="ducts" type="ductsType"/>
                     <xsd:element minOccurs="0" name="systems" type="systemsType"/>
                     <xsd:element minOccurs="0" name="genericGeometryComponents" type="genericGeometryComponentsType"/>
                     <xsd:element minOccurs="0" name="global" type="aircraftGlobalType"/>
