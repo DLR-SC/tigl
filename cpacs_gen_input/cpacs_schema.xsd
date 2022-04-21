@@ -33201,9 +33201,9 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="transformation" minOccurs="0" type="transformationType"/>
+                    <xsd:element name="sections" type="fuselageSectionsType"/>
                     <xsd:element name="positionings" minOccurs="0" type="positioningsType"/>
                     <xsd:element name="segments" type="fuselageSegmentsType"/>
-                    <xsd:element name="sections" type="fuselageSectionsType"/>
                     <xsd:element minOccurs="0" name="structure" type="ductStructureType"/>
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>

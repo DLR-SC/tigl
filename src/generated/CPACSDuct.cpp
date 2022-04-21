@@ -29,8 +29,8 @@ namespace generated
 {
     CPACSDuct::CPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_segments(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr)
         , m_sections(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr)
+        , m_segments(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -125,6 +125,14 @@ namespace generated
             }
         }
 
+        // read element sections
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sections")) {
+            m_sections.ReadCPACS(tixiHandle, xpath + "/sections");
+        }
+        else {
+            LOG(ERROR) << "Required element sections is missing at xpath " << xpath;
+        }
+
         // read element positionings
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/positionings")) {
             m_positionings = boost::in_place(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr);
@@ -142,14 +150,6 @@ namespace generated
         }
         else {
             LOG(ERROR) << "Required element segments is missing at xpath " << xpath;
-        }
-
-        // read element sections
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sections")) {
-            m_sections.ReadCPACS(tixiHandle, xpath + "/sections");
-        }
-        else {
-            LOG(ERROR) << "Required element sections is missing at xpath " << xpath;
         }
 
         // read element structure
@@ -207,6 +207,10 @@ namespace generated
             }
         }
 
+        // write element sections
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sections");
+        m_sections.WriteCPACS(tixiHandle, xpath + "/sections");
+
         // write element positionings
         if (m_positionings) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positionings");
@@ -221,10 +225,6 @@ namespace generated
         // write element segments
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/segments");
         m_segments.WriteCPACS(tixiHandle, xpath + "/segments");
-
-        // write element sections
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sections");
-        m_sections.WriteCPACS(tixiHandle, xpath + "/sections");
 
         // write element structure
         if (m_structure) {
@@ -297,6 +297,16 @@ namespace generated
         return m_transformation;
     }
 
+    const CCPACSFuselageSections& CPACSDuct::GetSections() const
+    {
+        return m_sections;
+    }
+
+    CCPACSFuselageSections& CPACSDuct::GetSections()
+    {
+        return m_sections;
+    }
+
     const boost::optional<CCPACSPositionings>& CPACSDuct::GetPositionings() const
     {
         return m_positionings;
@@ -315,16 +325,6 @@ namespace generated
     CCPACSFuselageSegments& CPACSDuct::GetSegments()
     {
         return m_segments;
-    }
-
-    const CCPACSFuselageSections& CPACSDuct::GetSections() const
-    {
-        return m_sections;
-    }
-
-    CCPACSFuselageSections& CPACSDuct::GetSections()
-    {
-        return m_sections;
     }
 
     const boost::optional<CCPACSDuctStructure>& CPACSDuct::GetStructure() const

@@ -79,14 +79,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSTransformation>& GetTransformation() const;
         TIGL_EXPORT virtual boost::optional<CCPACSTransformation>& GetTransformation();
 
+        TIGL_EXPORT virtual const CCPACSFuselageSections& GetSections() const;
+        TIGL_EXPORT virtual CCPACSFuselageSections& GetSections();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSPositionings>& GetPositionings() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPositionings>& GetPositionings();
 
         TIGL_EXPORT virtual const CCPACSFuselageSegments& GetSegments() const;
         TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments();
-
-        TIGL_EXPORT virtual const CCPACSFuselageSections& GetSections() const;
-        TIGL_EXPORT virtual CCPACSFuselageSections& GetSections();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSDuctStructure>& GetStructure() const;
         TIGL_EXPORT virtual boost::optional<CCPACSDuctStructure>& GetStructure();
@@ -117,11 +117,11 @@ namespace generated
 
         boost::optional<CCPACSTransformation> m_transformation;
 
+        CCPACSFuselageSections                m_sections;
+
         boost::optional<CCPACSPositionings>   m_positionings;
 
         CCPACSFuselageSegments                m_segments;
-
-        CCPACSFuselageSections                m_sections;
 
         boost::optional<CCPACSDuctStructure>  m_structure;
 
