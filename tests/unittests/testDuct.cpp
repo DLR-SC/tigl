@@ -356,41 +356,6 @@ TEST_F(DuctSimple, WithDuctCutoutsTrue)
     EXPECT_TRUE(IsPointInsideShape(shapeWing, gp_Pnt(0.7, 1.3, 0.0)));
     EXPECT_TRUE(IsPointInsideShape(shapeSimpleFuselage, gp_Pnt(1.8, 0.4, 0.0)));
     EXPECT_TRUE(IsPointInsideShape(shapeSimpleFuselage2, gp_Pnt(5.8, -0.4, 0.0)));
-
-/*
-    // Check if loft with duct coutouts is solid or a compound of solids
-    // Check number of solids at the same time
-
-    std::vector <TopoDS_Shape> shapes{shapeWing, shapeSimpleFuselage,shapeSimpleFuselage2};
-
-    int numberOfSolids = 0;
-
-    for(TopoDS_Shape& sh : shapes)
-    {
-        //auto shapetype = sh.ShapeType();
-        //if(sh.ShapeType() == TopAbs_COMPOUND)
-        {
-            for (TopoDS_Iterator anIter(sh); anIter.More(); anIter.Next())
-            {
-                TopoDS_Shape shapeIT = anIter.Value();
-                EXPECT_TRUE(shapeIT.ShapeType() == TopAbs_SOLID);
-
-                numberOfSolids += 1;
-            }
-        }
-
-        else if(sh.ShapeType() == TopAbs_SOLID)
-        {
-            numberOfSolids += 11;
-            continue;
-        }
-
-        else
-             EXPECT_TRUE(false);
-
-    }
-    EXPECT_EQ(numberOfSolids,222);
-*/
 }
 
 TEST_F(DuctSimple, tiglConfigurationSetWithDuctCutouts){
