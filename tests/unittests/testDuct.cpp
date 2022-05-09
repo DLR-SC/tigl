@@ -68,7 +68,7 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() override {
+    void SetUp() override{
 
     }
     void TearDown() override {
@@ -118,7 +118,7 @@ TEST_F(DuctSimple, DuctLevel)
     EXPECT_EQ(ductsN.size(), 31);
 
     // Check if ducts are solids
-    for(std::unique_ptr<tigl::CCPACSDuct>& d : ductsN)
+    for (std::unique_ptr<tigl::CCPACSDuct>& d : ductsN)
     {
         auto loftD = d->GetLoft();
         const TopoDS_Shape& shapeD = loftD->Shape();
@@ -163,7 +163,6 @@ TEST_F(DuctSimple, DuctLevel)
     EXPECT_EQ(ductSimpleDuct->GetSections().GetSectionCount(), 3);
 
     // Check number of positionings in sample duct
-    // ASSERT_TRUE(ductSimpleDuct->GetPositionings());
     EXPECT_EQ(ductSimpleDuct->GetPositionings()->GetPositionings().size(), 2);
 
 }
@@ -174,26 +173,20 @@ TEST_F(DuctSimple, DuctAssemblyLevel)
     EXPECT_EQ(ductAssembliesN.size(), 10);
 
     // Check number of ducts in each assembly
-    if(ductAssembliesN.size() != expectedNumberOfDuctsInAssembly.size())
-    {
-        EXPECT_TRUE(false);
-    }
+    ASSERT_EQ(ductAssembliesN.size(), expectedNumberOfDuctsInAssembly.size());
 
-    else
+    for (int i = 1; i < ductAssembliesN.size(); i++)
     {
-        for(int i = 1; i < ductAssembliesN.size(); i++)
-        {
-            EXPECT_EQ(ductAssembliesN[i]->GetDuctUIDs().GetUIDs().size(), expectedNumberOfDuctsInAssembly[i]);
-        }
+        EXPECT_EQ(ductAssembliesN[i]->GetDuctUIDs().GetUIDs().size(), expectedNumberOfDuctsInAssembly[i]);
     }
 
     // Check if duct assemblies are solids or compounds of solids
-    for(std::unique_ptr<tigl::CCPACSDuctAssembly>& dA : ductAssembliesN)
+    for (std::unique_ptr<tigl::CCPACSDuctAssembly>& dA : ductAssembliesN)
     {
         auto loftDA = dA->GetLoft();
         const TopoDS_Shape& shapeDA = loftDA->Shape();
 
-        if(shapeDA.ShapeType() == TopAbs_COMPOUND)
+        if (shapeDA.ShapeType() == TopAbs_COMPOUND)
         {
             for (TopoDS_Iterator anIter(shapeDA); anIter.More(); anIter.Next())
             {
@@ -201,33 +194,37 @@ TEST_F(DuctSimple, DuctAssemblyLevel)
                 EXPECT_TRUE(shapeIT.ShapeType() == TopAbs_SOLID);
             }  
         }
-
-        else if(shapeDA.ShapeType() == TopAbs_SOLID)
+        else if (shapeDA.ShapeType() == TopAbs_SOLID)
+        {
             continue;
-
+        }
         else
-             EXPECT_TRUE(false);
+        {
+             EXPECT_TRUE(false) << "shape is neither a solid or a compound\n";
+        }
     }
 
     // Check number of solids in each duct assembly after fusing
-    for(int i = 1; i < ductAssembliesN.size(); i++)
+    for (int i = 1; i < ductAssembliesN.size(); i++)
     {
         std::unique_ptr<tigl::CCPACSDuctAssembly>& dA = ductAssembliesN[i];
         auto loftDA = dA->GetLoft();
         const TopoDS_Shape& shapeDA = loftDA->Shape();
 
-        if(shapeDA.ShapeType() == TopAbs_COMPOUND)
+        if (shapeDA.ShapeType() == TopAbs_COMPOUND)
         {
            TopTools_IndexedMapOfShape solids;
            TopExp::MapShapes (shapeDA, TopAbs_SOLID, solids);
            EXPECT_EQ(solids.Extent(), expectedNumberOfFusedSolidsInAssembly[i]);
         }
-
-        else if(shapeDA.ShapeType() == TopAbs_SOLID)
+        else if (shapeDA.ShapeType() == TopAbs_SOLID)
+        {
             EXPECT_EQ(expectedNumberOfFusedSolidsInAssembly[i], 1);
-
+        }
         else
-             EXPECT_TRUE(false);
+        {
+             EXPECT_TRUE(false) << "shape is neither a solid or a compound\n";
+        }
     }
 
     // Check the position of a sample duct assembly with help of its bounding box
@@ -257,23 +254,18 @@ TEST_F(DuctSimple, DuctAssemblyLevel)
 
     // Check duct symmetry
     auto loftYDuctAssembly2 = ductAssembly2->GetLoft();
-     const TopoDS_Shape& shapeDuctAssembly2 = loftYDuctAssembly2->Shape();
+    const TopoDS_Shape& shapeDuctAssembly2 = loftYDuctAssembly2->Shape();
 
-     for (TopoDS_Iterator anIter(shapeDuctAssembly2); anIter.More(); anIter.Next())
-     {
-         TopoDS_Shape shapeIT = anIter.Value();
+    TopTools_IndexedMapOfShape solids;
+    TopExp::MapShapes (shapeDuctAssembly2, TopAbs_SOLID, solids);
 
-         {
-             EXPECT_TRUE(IsPointInsideShape(shapeIT, gp_Pnt(5.0, -0.4, 0.0)));
-         }
-     }
+    EXPECT_TRUE(IsPointInsideShape(solids(1), gp_Pnt(5.0, -0.4, 0.0)));
 }
 
 // DuctCutOutLevel
 
 TEST_F(DuctSimple, WithDuctCutoutsFalse)
 {
-    // Check if flag for duct cutouts is set to false by default
     auto loftWing = wing.GetLoft();
     const TopoDS_Shape& shapeWing = loftWing->Shape();
 
@@ -282,8 +274,6 @@ TEST_F(DuctSimple, WithDuctCutoutsFalse)
 
     auto loftSimpleFuselage2 = simpleFuselage2.GetLoft();
     const TopoDS_Shape& shapeSimpleFuselage2 = loftSimpleFuselage2->Shape();
-
-    // std::vector <TopoDS_Shape> shapes{shapeWing, shapeSimpleFuselage /*,shapeSimpleFuselage2*/};
 
     // Check if flag for duct cutouts is set to false by default
 
@@ -390,14 +380,6 @@ TEST_F(DuctSimple, tiglConfigurationGetWithDuctCutouts)
     EXPECT_TRUE(flag);
 }
 
-TEST_F(DuctSimple, Export)
-{
-    tiglConfigurationSetWithDuctCutouts(DuctSimple::tiglHandle, TIGL_TRUE);
-    tiglSetExportOptions("iges", "ApplySymmetries", "true");
-    tiglSetExportOptions("iges", "IncludeFarfield", "false");
-    tiglSetExportOptions("iges", "FaceNames", "UIDandFaceName");
-    EXPECT_EQ(TIGL_SUCCESS, tiglExportIGES(DuctSimple::tiglHandle,"TestData/export/duct_simple.iges"));
-    EXPECT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(DuctSimple::tiglHandle,"TestData/export/duct_simple_fused.iges"));
-}
+
 
 
