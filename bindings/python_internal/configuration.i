@@ -529,7 +529,8 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSWingSparSegment,
          tigl::CCPACSEnginePylon,
          tigl::CCPACSTrailingEdgeDevice,
-         tigl::CCPACSDuct
+         tigl::CCPACSDuct,
+         tigl::CCPACSDuctAssembly
 );
 
 namespace tigl
