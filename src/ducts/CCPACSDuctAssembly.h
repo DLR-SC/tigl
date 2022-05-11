@@ -38,6 +38,7 @@ public:
     TIGL_EXPORT std::string GetDefaultedUID() const override;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle&, const std::string&) override;
 
 protected:
 

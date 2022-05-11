@@ -43,12 +43,7 @@ namespace tigl {
 CCPACSDuctAssembly::CCPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
   : generated::CPACSDuctAssembly(parent, uidMgr)
   , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
-{
-    for (auto const& uid: m_ductUIDs.GetUIDs()) {
-        auto& duct = GetParent()->GetDuct(uid);
-        duct.RegisterInvalidationCallback([&](){ this->Invalidate(); });
-    }
-}
+{}
 
 std::string CCPACSDuctAssembly::GetDefaultedUID() const
 {
@@ -64,6 +59,17 @@ TiglGeometricComponentIntent CCPACSDuctAssembly::GetComponentIntent() const
 {
     // needs to be physical, so that transformation relative to parent works
     return TIGL_INTENT_PHYSICAL;
+}
+
+void CCPACSDuctAssembly::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+{
+    generated::CPACSDuctAssembly::ReadCPACS(tixiHandle, xpath);
+
+    //register invalidation in CCPACSDuct instances
+    for (auto const& uid: m_ductUIDs.GetUIDs()) {
+        auto& duct = GetParent()->GetDuct(uid);
+        duct.RegisterInvalidationCallback([&](){ this->Invalidate(); });
+    }
 }
 
 void CCPACSDuctAssembly::InvalidateImpl(const boost::optional<std::string>&) const
