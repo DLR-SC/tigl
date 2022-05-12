@@ -95,8 +95,8 @@ protected:
     tigl::CCPACSFuselage& simpleFuselage2 = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(2);
 
     // expected values
-    std::vector<int> expectedNumberOfDuctsInAssembly{0,6,1,3,3,3,3,3,3,3,3};
-    std::vector<int> expectedNumberOfFusedSolidsInAssembly{0,2,1,3,3,3,3,3,3,3,3};
+    std::vector<int> expectedNumberOfDuctsInAssembly{0,6,1,3,3,3,3,3,3,3,3,1};
+    std::vector<int> expectedNumberOfFusedSolidsInAssembly{0,2,1,3,3,3,3,3,3,3,3,1};
 
     // duct samples
     tigl::CCPACSDuct const* ductSimpleDuct = &uidMgr.ResolveObject<tigl::CCPACSDuct>("SimpleDuct");
@@ -116,7 +116,7 @@ TiglCPACSConfigurationHandle DuctSimple::tiglHandle = 0;
 TEST_F(DuctSimple, DuctLevel)
 {
     // Check number of ducts
-    EXPECT_EQ(ductsN.size(), 31);
+    EXPECT_EQ(ductsN.size(), 32);
 
     // Check if ducts are solids
     for (std::unique_ptr<tigl::CCPACSDuct>& d : ductsN)
@@ -171,7 +171,7 @@ TEST_F(DuctSimple, DuctLevel)
 TEST_F(DuctSimple, DuctAssemblyLevel)
 {
     // Check number of duct assemblies
-    EXPECT_EQ(ductAssembliesN.size(), 11);
+    EXPECT_EQ(ductAssembliesN.size(), 12);
 
     // Check number of ducts in each assembly
     ASSERT_EQ(ductAssembliesN.size(), expectedNumberOfDuctsInAssembly.size());
@@ -185,6 +185,7 @@ TEST_F(DuctSimple, DuctAssemblyLevel)
     for (std::unique_ptr<tigl::CCPACSDuctAssembly>& dA : ductAssembliesN)
     {
         auto loftDA = dA->GetLoft();
+
         if (!loftDA)
         {
             EXPECT_EQ(dA->GetUID(), "DuctAssembly0");
@@ -307,6 +308,9 @@ TEST_F(DuctSimple, WithDuctCutoutsTrue)
     EXPECT_FALSE(IsPointInsideShape(shapeWing, gp_Pnt(0.2, 1.0, 0.0)));
     EXPECT_FALSE(IsPointInsideShape(shapeSimpleFuselage, gp_Pnt(-0.2, 0.0, 0.0)));
     EXPECT_FALSE(IsPointInsideShape(shapeSimpleFuselage2, gp_Pnt(6.0, 0.0, 0.0)));
+
+    // Check if assembly consisting of only one duct works
+    EXPECT_FALSE(IsPointInsideShape(shapeSimpleFuselage, gp_Pnt(1.6, 0.4, 0.0)));
 
     // Check if the wing symmetry is respected
     EXPECT_FALSE(IsPointInsideShape(shapeWing, gp_Pnt(0.2, -1.0, 0.0)));
