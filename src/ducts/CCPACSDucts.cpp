@@ -71,17 +71,17 @@ PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::
 
 CCPACSDuct const& CCPACSDucts::GetDuct(std::string const& uid) const
 {
+    return const_cast<CCPACSDucts&>(*this).GetDuct(uid);
+}
+
+CCPACSDuct& CCPACSDucts::GetDuct(std::string const& uid)
+{
     auto it = std::find_if(m_ducts.begin(), m_ducts.end(), [&](std::unique_ptr<CCPACSDuct> const& v){ return v->GetUID() == uid; });
 
     if ( it != std::end(m_ducts)) {
         return **it;
     }
     throw CTiglError("Could not find duct with uid" + uid);
-}
-
-CCPACSDuct& CCPACSDucts::GetDuct(std::string const& uid)
-{
-    return const_cast<CCPACSDuct&>(GetDuct(uid));
 }
 
 

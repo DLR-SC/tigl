@@ -27,8 +27,8 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSDuctAssembly;
 class CCPACSDuct;
+class CCPACSDuctAssembly;
 class CCPACSAircraftModel;
 
 namespace generated
@@ -59,25 +59,25 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDuctAssembly>>& GetDuctAssemblys() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDuctAssembly>>& GetDuctAssemblys();
-
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDuct>>& GetDucts() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDuct>>& GetDucts();
 
-        TIGL_EXPORT virtual CCPACSDuctAssembly& AddDuctAssembly();
-        TIGL_EXPORT virtual void RemoveDuctAssembly(CCPACSDuctAssembly& ref);
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDuctAssembly>>& GetDuctAssemblys() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDuctAssembly>>& GetDuctAssemblys();
 
         TIGL_EXPORT virtual CCPACSDuct& AddDuct();
         TIGL_EXPORT virtual void RemoveDuct(CCPACSDuct& ref);
+
+        TIGL_EXPORT virtual CCPACSDuctAssembly& AddDuctAssembly();
+        TIGL_EXPORT virtual void RemoveDuctAssembly(CCPACSDuctAssembly& ref);
 
     protected:
         CCPACSAircraftModel* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CCPACSDuctAssembly>> m_ductAssemblys;
         std::vector<std::unique_ptr<CCPACSDuct>>         m_ducts;
+        std::vector<std::unique_ptr<CCPACSDuctAssembly>> m_ductAssemblys;
 
     private:
         CPACSDucts(const CPACSDucts&) = delete;

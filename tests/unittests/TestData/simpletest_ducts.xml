@@ -31,114 +31,6 @@
           </point>
         </reference>
         <ducts>
-          <ductAssembly uID="DuctAssembly1">
-            <name>DuctAssembly1</name>
-            <ductUIDs>
-              <uID>SimpleDuct</uID>
-              <uID>SimpleDuct2</uID>
-              <uID>SimpleDuct3</uID>
-              <uID>SimpleDuct4</uID>
-              <uID>SimpleDuct5</uID>
-              <uID>SimpleDuct6</uID>
-            </ductUIDs>
-          </ductAssembly>
-          <ductAssembly uID="DuctAssembly2">
-            <name>DuctAssembly2</name>
-            <parentUID>SimpleFuselage2</parentUID>
-            <ductUIDs>
-              <uID>YDuct1</uID>
-            </ductUIDs>  
-          </ductAssembly>
-          <ductAssembly uID="DuctAssembly3">
-            <name>DuctAssembly3</name>
-            <ductUIDs>
-              <uID>SimpleDuct7</uID>
-              <uID>SimpleDuct8</uID>
-              <uID>SimpleDuct9</uID>
-            </ductUIDs> 
-          </ductAssembly>
-          <ductAssembly uID="DuctAssembly4">
-            <name>DuctAssembly4</name>
-            <ductUIDs>
-              <uID>SimpleDuct10</uID>
-              <uID>SimpleDuct11</uID>
-              <uID>SimpleDuct12</uID>
-            </ductUIDs> 
-            <excludeObjectUIDs>
-              <uID>SimpleFuselage</uID>
-            </excludeObjectUIDs>
-          </ductAssembly>
-          <ductAssembly uID="DuctAssembly5">
-            <name>DuctAssembly5</name>
-            <ductUIDs>
-              <uID>SimpleDuct13</uID>
-              <uID>SimpleDuct14</uID>
-              <uID>SimpleDuct15</uID>
-            </ductUIDs> 
-            <excludeObjectUIDs>
-              <uID>SimpleFuselage2</uID>
-            </excludeObjectUIDs>
-          </ductAssembly>
-          <ductAssembly uID="DuctAssembly6">
-            <name>DuctAssembly6</name>
-            <ductUIDs>
-              <uID>SimpleDuct16</uID>
-              <uID>SimpleDuct17</uID>
-              <uID>SimpleDuct18</uID>
-            </ductUIDs> 
-            <excludeObjectUIDs>
-              <uID>Wing</uID>
-            </excludeObjectUIDs>
-          </ductAssembly>
-          <ductAssembly uID="DuctAssembly7">
-            <name>DuctAssembly7</name>
-            <ductUIDs>
-              <uID>SimpleDuct19</uID>
-              <uID>SimpleDuct20</uID>
-              <uID>SimpleDuct21</uID>
-            </ductUIDs> 
-            <excludeObjectUIDs>
-              <uID>SimpleFuselage</uID>
-              <uID>SimpleFuselage2</uID>
-            </excludeObjectUIDs>
-          </ductAssembly>
-          <ductAssembly uID="DuctAssembly8">
-            <name>DuctAssembly8</name>
-            <ductUIDs>
-              <uID>SimpleDuct22</uID>
-              <uID>SimpleDuct23</uID>
-              <uID>SimpleDuct24</uID>
-            </ductUIDs> 
-            <excludeObjectUIDs>
-              <uID>SimpleFuselage</uID>
-              <uID>Wing</uID>
-            </excludeObjectUIDs>
-          </ductAssembly>
-          <ductAssembly uID="DuctAssembly9">
-            <name>DuctAssembly9</name>
-            <ductUIDs>
-              <uID>SimpleDuct25</uID>
-              <uID>SimpleDuct26</uID>
-              <uID>SimpleDuct27</uID>
-            </ductUIDs> 
-            <excludeObjectUIDs>
-              <uID>SimpleFuselage2</uID>
-              <uID>Wing</uID>
-            </excludeObjectUIDs>
-          </ductAssembly>
-          <ductAssembly uID="DuctAssembly10">
-            <name>DuctAssembly10</name>
-            <ductUIDs>
-              <uID>SimpleDuct28</uID>
-              <uID>SimpleDuct29</uID>
-              <uID>SimpleDuct30</uID>
-            </ductUIDs> 
-            <excludeObjectUIDs>
-              <uID>SimpleFuselage</uID>
-              <uID>SimpleFuselage2</uID>
-              <uID>Wing</uID>
-            </excludeObjectUIDs>
-          </ductAssembly>
           <duct uID="SimpleDuct">
             <name>name</name>
             <description>description</description>
@@ -5790,6 +5682,114 @@
             </segment>
           </segments>
           </duct>  
+          <ductAssembly uID="DuctAssembly1">
+            <name>DuctAssembly1</name>
+            <ductUIDs>
+              <uID>SimpleDuct</uID>
+              <uID>SimpleDuct2</uID>
+              <uID>SimpleDuct3</uID>
+              <uID>SimpleDuct4</uID>
+              <uID>SimpleDuct5</uID>
+              <uID>SimpleDuct6</uID>
+            </ductUIDs>
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly2">
+            <name>DuctAssembly2</name>
+            <parentUID>SimpleFuselage2</parentUID>
+            <ductUIDs>
+              <uID>YDuct1</uID>
+            </ductUIDs>  
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly3">
+            <name>DuctAssembly3</name>
+            <ductUIDs>
+              <uID>SimpleDuct7</uID>
+              <uID>SimpleDuct8</uID>
+              <uID>SimpleDuct9</uID>
+            </ductUIDs> 
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly4">
+            <name>DuctAssembly4</name>
+            <ductUIDs>
+              <uID>SimpleDuct10</uID>
+              <uID>SimpleDuct11</uID>
+              <uID>SimpleDuct12</uID>
+            </ductUIDs> 
+            <excludeObjectUIDs>
+              <uID>SimpleFuselage</uID>
+            </excludeObjectUIDs>
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly5">
+            <name>DuctAssembly5</name>
+            <ductUIDs>
+              <uID>SimpleDuct13</uID>
+              <uID>SimpleDuct14</uID>
+              <uID>SimpleDuct15</uID>
+            </ductUIDs> 
+            <excludeObjectUIDs>
+              <uID>SimpleFuselage2</uID>
+            </excludeObjectUIDs>
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly6">
+            <name>DuctAssembly6</name>
+            <ductUIDs>
+              <uID>SimpleDuct16</uID>
+              <uID>SimpleDuct17</uID>
+              <uID>SimpleDuct18</uID>
+            </ductUIDs> 
+            <excludeObjectUIDs>
+              <uID>Wing</uID>
+            </excludeObjectUIDs>
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly7">
+            <name>DuctAssembly7</name>
+            <ductUIDs>
+              <uID>SimpleDuct19</uID>
+              <uID>SimpleDuct20</uID>
+              <uID>SimpleDuct21</uID>
+            </ductUIDs> 
+            <excludeObjectUIDs>
+              <uID>SimpleFuselage</uID>
+              <uID>SimpleFuselage2</uID>
+            </excludeObjectUIDs>
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly8">
+            <name>DuctAssembly8</name>
+            <ductUIDs>
+              <uID>SimpleDuct22</uID>
+              <uID>SimpleDuct23</uID>
+              <uID>SimpleDuct24</uID>
+            </ductUIDs> 
+            <excludeObjectUIDs>
+              <uID>SimpleFuselage</uID>
+              <uID>Wing</uID>
+            </excludeObjectUIDs>
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly9">
+            <name>DuctAssembly9</name>
+            <ductUIDs>
+              <uID>SimpleDuct25</uID>
+              <uID>SimpleDuct26</uID>
+              <uID>SimpleDuct27</uID>
+            </ductUIDs> 
+            <excludeObjectUIDs>
+              <uID>SimpleFuselage2</uID>
+              <uID>Wing</uID>
+            </excludeObjectUIDs>
+          </ductAssembly>
+          <ductAssembly uID="DuctAssembly10">
+            <name>DuctAssembly10</name>
+            <ductUIDs>
+              <uID>SimpleDuct28</uID>
+              <uID>SimpleDuct29</uID>
+              <uID>SimpleDuct30</uID>
+            </ductUIDs> 
+            <excludeObjectUIDs>
+              <uID>SimpleFuselage</uID>
+              <uID>SimpleFuselage2</uID>
+              <uID>Wing</uID>
+            </excludeObjectUIDs>
+          </ductAssembly>
         </ducts>
         <fuselages>
           <fuselage uID="SimpleFuselage">

@@ -33122,8 +33122,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element name="ductAssembly" maxOccurs="unbounded" type="ductAssemblyType"/>
                     <xsd:element name="duct" maxOccurs="unbounded" type="ductType"/>
+                    <xsd:element name="ductAssembly" maxOccurs="unbounded" type="ductAssemblyType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>

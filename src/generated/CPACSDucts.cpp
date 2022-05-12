@@ -73,38 +73,28 @@ namespace generated
 
     void CPACSDucts::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element ductAssembly
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ductAssembly")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/ductAssembly", m_ductAssemblys, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDucts*>(this), m_uidMgr);
-        }
-
         // read element duct
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/duct")) {
             tixi::TixiReadElements(tixiHandle, xpath + "/duct", m_ducts, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDucts*>(this), m_uidMgr);
+        }
+
+        // read element ductAssembly
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ductAssembly")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/ductAssembly", m_ductAssemblys, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDucts*>(this), m_uidMgr);
         }
 
     }
 
     void CPACSDucts::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "ductAssembly", "duct" };
-
-        // write element ductAssembly
-        tixi::TixiSaveElements(tixiHandle, xpath + "/ductAssembly", m_ductAssemblys);
+        const std::vector<std::string> childElemOrder = { "duct", "ductAssembly" };
 
         // write element duct
         tixi::TixiSaveElements(tixiHandle, xpath + "/duct", m_ducts);
 
-    }
+        // write element ductAssembly
+        tixi::TixiSaveElements(tixiHandle, xpath + "/ductAssembly", m_ductAssemblys);
 
-    const std::vector<std::unique_ptr<CCPACSDuctAssembly>>& CPACSDucts::GetDuctAssemblys() const
-    {
-        return m_ductAssemblys;
-    }
-
-    std::vector<std::unique_ptr<CCPACSDuctAssembly>>& CPACSDucts::GetDuctAssemblys()
-    {
-        return m_ductAssemblys;
     }
 
     const std::vector<std::unique_ptr<CCPACSDuct>>& CPACSDucts::GetDucts() const
@@ -117,21 +107,14 @@ namespace generated
         return m_ducts;
     }
 
-    CCPACSDuctAssembly& CPACSDucts::AddDuctAssembly()
+    const std::vector<std::unique_ptr<CCPACSDuctAssembly>>& CPACSDucts::GetDuctAssemblys() const
     {
-        m_ductAssemblys.push_back(make_unique<CCPACSDuctAssembly>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
-        return *m_ductAssemblys.back();
+        return m_ductAssemblys;
     }
 
-    void CPACSDucts::RemoveDuctAssembly(CCPACSDuctAssembly& ref)
+    std::vector<std::unique_ptr<CCPACSDuctAssembly>>& CPACSDucts::GetDuctAssemblys()
     {
-        for (std::size_t i = 0; i < m_ductAssemblys.size(); i++) {
-            if (m_ductAssemblys[i].get() == &ref) {
-                m_ductAssemblys.erase(m_ductAssemblys.begin() + i);
-                return;
-            }
-        }
-        throw CTiglError("Element not found");
+        return m_ductAssemblys;
     }
 
     CCPACSDuct& CPACSDucts::AddDuct()
@@ -145,6 +128,23 @@ namespace generated
         for (std::size_t i = 0; i < m_ducts.size(); i++) {
             if (m_ducts[i].get() == &ref) {
                 m_ducts.erase(m_ducts.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+
+    CCPACSDuctAssembly& CPACSDucts::AddDuctAssembly()
+    {
+        m_ductAssemblys.push_back(make_unique<CCPACSDuctAssembly>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
+        return *m_ductAssemblys.back();
+    }
+
+    void CPACSDucts::RemoveDuctAssembly(CCPACSDuctAssembly& ref)
+    {
+        for (std::size_t i = 0; i < m_ductAssemblys.size(); i++) {
+            if (m_ductAssemblys[i].get() == &ref) {
+                m_ductAssemblys.erase(m_ductAssemblys.begin() + i);
                 return;
             }
         }
