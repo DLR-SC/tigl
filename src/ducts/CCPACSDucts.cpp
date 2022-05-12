@@ -54,6 +54,10 @@ PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::
             if (std::any_of(excludeVector.begin(), excludeVector.end(), [&](const std::string& elem) { return elem == uid; })) {
                 continue;
             }
+        }        
+        if (!ductAssembly->GetLoft())
+        {
+            continue;
         }
 
         loft = CCutShape(loft, ductAssembly->GetLoft()).NamedShape();

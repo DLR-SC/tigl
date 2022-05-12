@@ -95,8 +95,8 @@ protected:
     tigl::CCPACSFuselage& simpleFuselage2 = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetFuselage(2);
 
     // expected values
-    std::vector<int> expectedNumberOfDuctsInAssembly{6,1,3,3,3,3,3,3,3,3};
-    std::vector<int> expectedNumberOfFusedSolidsInAssembly{2,1,3,3,3,3,3,3,3,3};
+    std::vector<int> expectedNumberOfDuctsInAssembly{0,6,1,3,3,3,3,3,3,3,3};
+    std::vector<int> expectedNumberOfFusedSolidsInAssembly{0,2,1,3,3,3,3,3,3,3,3};
 
     // duct samples
     tigl::CCPACSDuct const* ductSimpleDuct = &uidMgr.ResolveObject<tigl::CCPACSDuct>("SimpleDuct");
@@ -104,6 +104,7 @@ protected:
     tigl::CCPACSDuct const* ductYDuct1 = &uidMgr.ResolveObject<tigl::CCPACSDuct>("YDuct1");
 
     // duct assembly samples
+    tigl::CCPACSDuctAssembly const* ductAssembly0 = &uidMgr.ResolveObject<tigl::CCPACSDuctAssembly>("DuctAssembly0");
     tigl::CCPACSDuctAssembly const* ductAssembly1 = &uidMgr.ResolveObject<tigl::CCPACSDuctAssembly>("DuctAssembly1");
     tigl::CCPACSDuctAssembly const* ductAssembly2 = &uidMgr.ResolveObject<tigl::CCPACSDuctAssembly>("DuctAssembly2");
 
@@ -170,12 +171,12 @@ TEST_F(DuctSimple, DuctLevel)
 TEST_F(DuctSimple, DuctAssemblyLevel)
 {
     // Check number of duct assemblies
-    EXPECT_EQ(ductAssembliesN.size(), 10);
+    EXPECT_EQ(ductAssembliesN.size(), 11);
 
     // Check number of ducts in each assembly
     ASSERT_EQ(ductAssembliesN.size(), expectedNumberOfDuctsInAssembly.size());
 
-    for (int i = 1; i < ductAssembliesN.size(); i++)
+    for (int i = 0; i < ductAssembliesN.size(); i++)
     {
         EXPECT_EQ(ductAssembliesN[i]->GetDuctUIDs().GetUIDs().size(), expectedNumberOfDuctsInAssembly[i]);
     }
@@ -184,6 +185,11 @@ TEST_F(DuctSimple, DuctAssemblyLevel)
     for (std::unique_ptr<tigl::CCPACSDuctAssembly>& dA : ductAssembliesN)
     {
         auto loftDA = dA->GetLoft();
+        if (!loftDA)
+        {
+            EXPECT_EQ(dA->GetUID(), "DuctAssembly0");
+            continue;
+        }
         const TopoDS_Shape& shapeDA = loftDA->Shape();
 
         if (shapeDA.ShapeType() == TopAbs_COMPOUND)
@@ -204,7 +210,9 @@ TEST_F(DuctSimple, DuctAssemblyLevel)
         }
     }
 
+
     // Check number of solids in each duct assembly after fusing
+    // The for loop starts with i=1 on purpose: to skip ductAssembly0
     for (int i = 1; i < ductAssembliesN.size(); i++)
     {
         std::unique_ptr<tigl::CCPACSDuctAssembly>& dA = ductAssembliesN[i];
@@ -379,7 +387,3 @@ TEST_F(DuctSimple, tiglConfigurationGetWithDuctCutouts)
     EXPECT_TRUE(tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetDucts()->IsEnabled());
     EXPECT_TRUE(flag);
 }
-
-
-
-

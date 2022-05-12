@@ -5681,7 +5681,12 @@
               </guideCurves>
             </segment>
           </segments>
-          </duct>  
+          </duct> 
+          <ductAssembly uID="DuctAssembly0">
+            <name>DuctAssembly1</name>
+            <ductUIDs>
+            </ductUIDs>
+          </ductAssembly>
           <ductAssembly uID="DuctAssembly1">
             <name>DuctAssembly1</name>
             <ductUIDs>

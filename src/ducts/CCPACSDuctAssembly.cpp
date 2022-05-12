@@ -81,6 +81,7 @@ PNamedShape CCPACSDuctAssembly::BuildLoft() const
 {
     auto const& trafo = GetTransformationMatrix();
     if (m_ductUIDs.GetUIDs().size() == 0) {
+        //Invoking this block means being not conformal with the CPACS schema definition because uIDSequenceType has minOccurs ="1".
         return PNamedShape();
     }
 
