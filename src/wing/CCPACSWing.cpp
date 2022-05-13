@@ -458,7 +458,7 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
 
     // cutout ducts
     if (GetConfiguration().HasDucts()) {
-         result = GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
+         result = GetConfiguration().GetDucts()->LoftWithDuctCutouts(result, GetUID());
     }
 
 }
