@@ -5476,8 +5476,8 @@
               <z>0.0</z>
             </rotation>
             <translation refType="absLocal" uID="SimpleDuctY_transformation1_translation1">
-              <x>0.0</x>
-              <y>0</y>
+              <x>-5.0</x>
+              <y>0.0</y>
               <z>0</z>
             </translation>
           </transformation>
@@ -5497,7 +5497,7 @@
                 </rotation>
                 <translation refType="absLocal" uID="D150_Duct_YSection1ID_transformation1_translation1">
                   <x>0</x>
-                  <y>4</y>
+                  <y>4.0</y>
                   <z>0</z>
                 </translation>
               </transformation>
@@ -5882,6 +5882,23 @@
           <ductAssembly uID="DuctAssembly2">
             <name>DuctAssembly2</name>
             <parentUID>SimpleFuselage2</parentUID>
+            <transformation uID="DuctAssembly2_transformation1">
+              <scaling uID="DuctAssembly2_transformation1_scaling1">
+                <x>1.0</x>
+                <y>1.</y>
+                <z>1.</z>
+              </scaling>
+              <rotation uID="DuctAssembly2_transformation1_rotation1">
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </rotation>
+              <translation refType="absLocal" uID="DuctAssembly2_transformation1_translation1">
+                <x>5.0</x>
+                <y>0.0</y>
+                <z>0</z>
+              </translation>
+            </transformation>
             <ductUIDs>
               <uID>YDuct1</uID>
             </ductUIDs>  

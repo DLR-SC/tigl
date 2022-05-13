@@ -316,7 +316,7 @@ TEST_F(DuctSimple, WithDuctCutoutsTrue)
     EXPECT_FALSE(IsPointInsideShape(shapeWing, gp_Pnt(0.2, -1.0, 0.0)));
 
     // Check if duct symmetry is respected in the cutout
-    EXPECT_FALSE(IsPointInsideShape(shapeWing, gp_Pnt(5.0, -0.3, 0.0)));
+    EXPECT_FALSE(IsPointInsideShape(shapeSimpleFuselage2, gp_Pnt(5.0, -0.3, 0.0)));
 
     // Check the exclusion list functionality
     // Assembly 3, empty exclusion list
