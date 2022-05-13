@@ -7366,3 +7366,58 @@ TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfigurationHandle cpac
     return TIGL_ERROR;
 
 }
+
+TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
+                                                   TiglBoolean WithDuctCutoutsFlag)
+{
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        if (config.GetDucts()) {
+            config.GetDucts()->SetEnabled((bool)WithDuctCutoutsFlag);
+        }
+        return TIGL_SUCCESS;
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetFuselageCount!";
+        return TIGL_ERROR;
+    }
+}
+
+
+TiglReturnCode tiglConfigurationGetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
+                                                   TiglBoolean* WithDuctCutoutsFlag)
+{
+    try {
+        // try to resolve the object for the given uid and get the flag
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        if (config.GetDucts()) {
+            *WithDuctCutoutsFlag = (TiglBoolean)config.GetDucts()->IsEnabled();
+        }
+        return TIGL_SUCCESS;
+
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetFuselageCount!";
+        return TIGL_ERROR;
+    }
+}

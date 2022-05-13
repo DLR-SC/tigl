@@ -96,8 +96,14 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , rebuildShells(true)
     , buildFlaps(false)
 {
-    if (parent->IsParent<CCPACSAircraftModel>())
+    if (parent->IsParent<CCPACSAircraftModel>()) {
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
+
+        // register invalidation in CCPACSDucts
+        if (configuration->GetDucts()) {
+            configuration->GetDucts()->RegisterInvalidationCallback([&](){ this->Invalidate(); });
+        }
+    }
     else if (parent->IsParent<CCPACSRotorcraftModel>())
         configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
     else
@@ -335,11 +341,21 @@ std::string CCPACSWing::GetShortShapeName() const
 // build loft
 PNamedShape CCPACSWing::BuildLoft() const
 {
+    PNamedShape ret;
     if (buildFlaps) {
+
+        // note: ducts are removed in BuildWingWithCutouts
         return GroupedFlapsAndWingShapes();
     } else {
+
+        if (GetConfiguration().HasDucts()) {
+            return  GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
+        }
+
         return *wingCleanShape;
     }
+
+    return ret;
 }
 
 TopoDS_Shape CCPACSWing::GetLoftWithCutouts()
@@ -439,6 +455,12 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         ft.SetOrigin(*wingCleanShape);
         result->SetFaceTraits(iFace, ft);
     }
+
+    // cutout ducts
+    if (GetConfiguration().HasDucts()) {
+         result = GetConfiguration().GetDucts()->LoftWithDuctCutouts(result, GetUID());
+    }
+
 }
 
 // Builds a fuse shape of all wing segments with flaps

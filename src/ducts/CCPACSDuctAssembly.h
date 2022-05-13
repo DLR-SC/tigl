@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2007-2022 German Aerospace Center (DLR/SC)
 *
-* Created: 2022-03-15 Anton Reiswich <Anton.Reiswich@dlr.de>
+* Created: 2022-03-24 Jan Kleinert <Jan.Kleinert@dlr.de>
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -16,48 +16,37 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS duct handling routines.
+* @brief  Implementation of CPACS ducts handling routines.
 */
 
 #pragma once
 
-#include "generated/CPACSDuct.h"
+#include "generated/CPACSDuctAssembly.h"
 #include "CTiglRelativelyPositionedComponent.h"
-#include "CCPACSConfiguration.h"
-#include "CCPACSDucts.h"
+#include "PNamedShape.h"
+#include "Cache.h"
 
 namespace tigl
 {
 
-class CCPACSDuct : public generated::CPACSDuct, public CTiglRelativelyPositionedComponent
+class CCPACSDuctAssembly : public generated::CPACSDuctAssembly, public CTiglRelativelyPositionedComponent
 {
 public:
 
-    TIGL_EXPORT explicit CCPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
-
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
-
-    //Any DuctAssembly that references this duct element, can register its Invalidation
-    //as a callback.
-    TIGL_EXPORT void RegisterInvalidationCallback(std::function<void()> const&);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle&, const std::string&) override;
 
 protected:
+
     PNamedShape BuildLoft() const override;
 
 private:
 
     virtual void InvalidateImpl(const boost::optional<std::string>&) const override;
-
-    // get short name for loft
-    std::string GetShortShapeName() const;
-
-    void SetFaceTraits (PNamedShape loft) const;
-
-    std::vector<std::function<void()>> invalidationCallbacks;
 
 };
 

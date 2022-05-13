@@ -48,6 +48,7 @@
 namespace tigl
 {
 
+class CCPACSEnginePylons;
 class CTiglFusePlane;
 typedef CSharedPtr<CTiglFusePlane> PTiglFusePlane;
 
@@ -157,6 +158,11 @@ public:
     // Returns list of fuselages
     TIGL_EXPORT CCPACSFuselages& GetFuselages();
     TIGL_EXPORT const CCPACSFuselages& GetFuselages() const;
+
+    // Returns ducts
+    TIGL_EXPORT bool HasDucts() const;
+    TIGL_EXPORT boost::optional<CCPACSDucts>& GetDucts();
+    TIGL_EXPORT const boost::optional<CCPACSDucts>& GetDucts() const;
 
     // Returns list of engine pylons
     TIGL_EXPORT boost::optional<CCPACSEnginePylons>& GetEnginePylons();

@@ -91,6 +91,10 @@
 #include "generated/CPACSWallPositions.h"
 #include "generated/CPACSWallSegment.h"
 #include "generated/CPACSWallSegments.h"
+#include "generated/CPACSUIDSequence.h"
+#include "CCPACSDucts.h"
+#include "CCPACSDuctAssembly.h"
+#include "CCPACSDuct.h"
 %}
 
 %feature("autodoc", "3");
@@ -492,6 +496,16 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSEnginePylons.h"
 %include "CCPACSEnginePylons.h"
 
+//  ---------------- Ducts ------------------ //
+
+%boost_optional(tigl::CCPACSTransformation)
+%boost_optional(tigl::CCPACSDucts)
+%boost_optional(tigl::CPACSUIDSequence)
+%include "generated/CPACSUIDSequence.h"
+%include "CCPACSDucts.h"
+%include "CCPACSDuctAssembly.h"
+%include "CCPACSDuct.h"
+
 // CTiglUIDManager::GetGeometricComponent returns the interface type ITiglGeometricComponent
 // In the target language, we want to get the concrete type back
 %factory(tigl::ITiglGeometricComponent& tigl::CTiglUIDManager::GetGeometricComponent,
@@ -514,7 +528,9 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSWingRibsDefinition,
          tigl::CCPACSWingSparSegment,
          tigl::CCPACSEnginePylon,
-         tigl::CCPACSTrailingEdgeDevice
+         tigl::CCPACSTrailingEdgeDevice,
+         tigl::CCPACSDuct,
+         tigl::CCPACSDuctAssembly
 );
 
 namespace tigl

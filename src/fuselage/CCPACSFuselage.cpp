@@ -35,6 +35,7 @@
 #include "CTiglMakeLoft.h"
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglTopoAlgorithms.h"
+#include "CCPACSDuctAssembly.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -67,12 +68,20 @@ namespace tigl
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselage(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , guideCurves(*this, &CCPACSFuselage::BuildGuideCurves) {
+    , cleanLoft(*this, &CCPACSFuselage::BuildCleanLoft)
+{
     Cleanup();
-    if (parent->IsParent<CCPACSAircraftModel>())
+    if (parent->IsParent<CCPACSAircraftModel>()) {
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
+
+        // register invalidation in CCPACSDucts
+        if (configuration->HasDucts()) {
+            configuration->GetDucts()->RegisterInvalidationCallback([&](){ this->Invalidate(); });
+        }
+    }
     else
         configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
+
 }
 
 // Destructor
@@ -84,8 +93,8 @@ CCPACSFuselage::~CCPACSFuselage()
 // Invalidates internal state
 void CCPACSFuselage::InvalidateImpl(const boost::optional<std::string>& /*source*/) const
 {
+    cleanLoft.clear();
     loft.clear();
-    guideCurves.clear();
     m_segments.Invalidate();
     if (m_structure)
         m_structure->Invalidate();
@@ -120,25 +129,6 @@ CCPACSConfiguration& CCPACSFuselage::GetConfiguration() const
 std::string CCPACSFuselage::GetDefaultedUID() const
 {
     return generated::CPACSFuselage::GetUID();
-}
-
-PNamedShape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs) const
-{
-    PNamedShape loft = CTiglRelativelyPositionedComponent::GetLoft();
-    if (!loft) {
-        return loft;
-    }
-
-    if (cs == GLOBAL_COORDINATE_SYSTEM) {
-        return loft;
-    }
-    else {
-        // we want to modify the shape. we have to create a copy first
-        loft = loft->DeepCopy();
-        TopoDS_Shape transformedLoft = GetTransformationMatrix().Inverted().Transform(loft->Shape());
-        loft->SetShape(transformedLoft);
-        return loft;
-    }
 }
 
 void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis)
@@ -273,6 +263,15 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 // Builds a fused shape of all fuselage segments
 PNamedShape CCPACSFuselage::BuildLoft() const
 {
+    if (!GetConfiguration().HasDucts()) {
+        return *cleanLoft;
+    }
+
+    return GetConfiguration().GetDucts()->LoftWithDuctCutouts(*cleanLoft, GetUID());
+}
+
+void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
+{
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean smooth = (cont == ::C0? false : true);
 
@@ -284,7 +283,7 @@ PNamedShape CCPACSFuselage::BuildLoft() const
     lofter.addProfiles(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire());
 
     // add guides
-    lofter.addGuides(GetGuideCurveWires());
+    lofter.addGuides(m_segments.GetGuideCurveWires());
 
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
@@ -293,10 +292,8 @@ PNamedShape CCPACSFuselage::BuildLoft() const
 
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
-    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft);
-
-    return loft;
+    cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
+    SetFaceTraits(cache);
 }
 
 // Get the positioning transformation for a given section index
@@ -433,11 +430,6 @@ const CCPACSGuideCurve& CCPACSFuselage::GetGuideCurveSegment(std::string uid) co
     throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
-const TopoDS_Compound &CCPACSFuselage::GetGuideCurveWires() const
-{
-    return *guideCurves;
-}
-
 std::vector<gp_Pnt> CCPACSFuselage::GetGuideCurvePoints() const
 {
     std::vector<gp_Pnt> points;
@@ -460,48 +452,7 @@ std::vector<gp_Pnt> CCPACSFuselage::GetGuideCurvePoints() const
     return points;
 }
 
-void CCPACSFuselage::BuildGuideCurves(TopoDS_Compound& cache) const
-{
-    std::map<double, const CCPACSGuideCurve*> roots;
 
-    // get section centers for the centripetal parametrization
-    std::vector<gp_Pnt> sectionCenters(GetSegmentCount()+1);
-
-    // get center of inner section of first segment
-    const CCPACSFuselageSegment& innerSegment = m_segments.GetSegment(1);
-    sectionCenters[0] = innerSegment.GetTransformedProfileOriginStart();
-    
-    // find roots and connect the belonging guide curve segments
-    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
-        const CCPACSFuselageSegment& segment = m_segments.GetSegment(isegment);
-
-        if (!segment.GetGuideCurves()) {
-            continue;
-        }
-
-        // get center of outer section
-        sectionCenters[isegment] = segment.GetTransformedProfileOriginEnd();
-
-        const CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
-        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
-            const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
-            if (!curve.GetFromGuideCurveUID_choice1()) {
-                // this is a root curve
-                double relCirc= *curve.GetFromRelativeCircumference_choice2();
-                //TODO: determine if half fuselage or not. If not
-                //the guide curve at relCirc=1 should be inserted at relCirc=0
-                roots.insert(std::make_pair(relCirc, &curve));
-            }
-        }
-    }
-
-    // get the parameters at the section centers
-    std::vector<double> sectionParams = CTiglBSplineAlgorithms::computeParamsBSplineCurve(OccArray(sectionCenters), 0., 1., 0.5);
-
-    // connect guide curve segments to a spline with given continuity conditions and tangents
-    CTiglCurveConnector connector(roots, sectionParams);
-    cache = connector.GetConnectedGuideCurves();
-}
 
 TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTransform, const CTiglFuselageConnection& connection, const TopoDS_Shape& shape)
 {

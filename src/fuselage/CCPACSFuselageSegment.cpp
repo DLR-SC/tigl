@@ -258,10 +258,10 @@ std::string CCPACSFuselageSegment::GetShortShapeName() const
         prefix = "D";
         auto* duct = m_parent->GetParent<CCPACSDuct>();
         unsigned int i = 0;
-        for (auto& d: duct->GetParent()->GetParent()->GetDucts()->GetDucts()) {
+        for (auto& d: duct->GetParent()->GetDucts()) {
             ++i;
             if (duct->GetUID() == d->GetUID()) {
-                findex = i+1;
+                findex = i;
                 break;
             }
         }

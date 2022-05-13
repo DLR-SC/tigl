@@ -20,13 +20,17 @@
 */
 
 #include "CCPACSDuct.h"
-#include "generated/CPACSDucts.h"
+#include "CCPACSFuselageSegment.h"
+#include "CTiglMakeLoft.h"
+#include "CNamedShape.h"
+#include "CTiglTopoAlgorithms.h"
+#include "tiglcommonfunctions.h"
 
 namespace tigl {
 
 CCPACSDuct::CCPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
   : generated::CPACSDuct(parent, uidMgr)
-  , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
+  , CTiglRelativelyPositionedComponent(static_cast<std::string*>(nullptr), &m_transformation, &m_symmetry)
 {}
 
 CCPACSConfiguration& CCPACSDuct::GetConfiguration() const
@@ -46,12 +50,108 @@ TiglGeometricComponentType CCPACSDuct::GetComponentType() const
 
 TiglGeometricComponentIntent CCPACSDuct::GetComponentIntent() const
 {
-    return TIGL_INTENT_LOGICAL;
+    // needs to be physical, so that transformation relative to parent works
+    return TIGL_INTENT_PHYSICAL;
 }
 
 PNamedShape CCPACSDuct::BuildLoft() const
 {
-    throw CTiglError("Not implemented yet");
+    TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
+    Standard_Boolean smooth = (cont == ::C0? false : true);
+
+    CTiglMakeLoft lofter;
+    // add profiles
+    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
+        lofter.addProfiles(m_segments.GetSegment(i).GetStartWire());
+    }
+    lofter.addProfiles(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire());
+
+    // add guides
+    lofter.addGuides(m_segments.GetGuideCurveWires());
+
+    lofter.setMakeSolid(true);
+    lofter.setMakeSmooth(smooth);
+
+    TopoDS_Shape loftShape =  lofter.Shape();
+
+    std::string loftName = GetUID();
+    std::string loftShortName = GetShortShapeName();
+    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+    SetFaceTraits(loft);
+
+    return loft;
+}
+
+// get short name for loft
+std::string CCPACSDuct::GetShortShapeName() const
+{
+    unsigned int findex = 0;
+    unsigned int i = 0;
+
+    for (auto& d: GetParent()->GetDucts()) {
+        ++i;
+        if (GetUID() == d->GetUID()) {
+            findex = i;
+            std::stringstream shortName;
+            shortName << "D" << findex;
+            return shortName.str();
+        }
+    }
+    return "UNKNOWN";
+}
+
+void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
+{
+    int nFacesTotal = GetNumberOfFaces(loft->Shape());
+    int nFacesAero = nFacesTotal;
+    bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
+
+    std::vector<std::string> names;
+    names.push_back(loft->Name());
+    names.push_back("symmetry");
+    names.push_back("Front");
+    names.push_back("Rear");
+
+    if (!CTiglTopoAlgorithms::IsDegenerated(m_segments.GetSegment(1).GetStartWire())) {
+          nFacesAero-=1;
+    }
+    if (!CTiglTopoAlgorithms::IsDegenerated(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire())) {
+          nFacesAero-=1;
+    }
+
+    // if we have a smooth surface, the whole fuslage is treatet as one segment
+    int nSegments = m_segments.GetSegmentCount();
+
+    int facesPerSegment = nFacesAero/ nSegments;
+
+    int iFaceTotal = 0;
+    int nSymmetryFaces = (int) hasSymmetryPlane;
+    for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
+        for (int iFace = 0; iFace < facesPerSegment - nSymmetryFaces; ++iFace) {
+            loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
+        }
+        for (int iFace = 0; iFace < nSymmetryFaces; ++iFace) {
+            loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
+        }
+    }
+
+    // set the caps
+    int iFace = 2;
+    for (;iFaceTotal < nFacesTotal; ++iFaceTotal) {
+        loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
+    }
+}
+
+void CCPACSDuct::RegisterInvalidationCallback(std::function<void()> const& fn){
+    invalidationCallbacks.push_back(fn);
+}
+
+void CCPACSDuct::InvalidateImpl(const boost::optional<std::string>&) const
+{
+    CTiglAbstractGeometricComponent::Reset();
+    for (auto const& invalidator: invalidationCallbacks) {
+        invalidator();
+    }
 }
 
 } //namespace tigl

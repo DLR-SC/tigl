@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include "CCPACSDuct.h"
+#include "CCPACSDuctAssembly.h"
 #include "CCPACSEnginePosition.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSExternalObject.h"
@@ -46,6 +47,14 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSDuct);
+    }
+
+    CPACSTransformation::CPACSTransformation(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDuctAssembly);
     }
 
     CPACSTransformation::CPACSTransformation(CCPACSEnginePosition* parent, CTiglUIDManager* uidMgr)
@@ -163,6 +172,9 @@ namespace generated
             if (IsParent<CCPACSDuct>()) {
                 return GetParent<CCPACSDuct>();
             }
+            if (IsParent<CCPACSDuctAssembly>()) {
+                return GetParent<CCPACSDuctAssembly>();
+            }
             if (IsParent<CCPACSEnginePosition>()) {
                 return GetParent<CCPACSEnginePosition>();
             }
@@ -211,6 +223,9 @@ namespace generated
         if (m_parent) {
             if (IsParent<CCPACSDuct>()) {
                 return GetParent<CCPACSDuct>();
+            }
+            if (IsParent<CCPACSDuctAssembly>()) {
+                return GetParent<CCPACSDuctAssembly>();
             }
             if (IsParent<CCPACSEnginePosition>()) {
                 return GetParent<CCPACSEnginePosition>();

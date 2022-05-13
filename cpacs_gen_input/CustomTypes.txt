@@ -147,3 +147,5 @@ CPACSNacelleCenterCowl                   CCPACSNacelleCenterCowl
 // Ducts
 CPACSDuct                                CCPACSDuct
 CPACSDuctStructure                       CCPACSDuctStructure
+CPACSDuctAssembly                        CCPACSDuctAssembly
+CPACSDucts                               CCPACSDucts

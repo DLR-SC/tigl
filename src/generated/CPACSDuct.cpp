@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSDucts.h"
 #include "CPACSDuct.h"
-#include "CPACSDucts.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,9 +27,8 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDuct::CPACSDuct(CPACSDucts* parent, CTiglUIDManager* uidMgr)
+    CPACSDuct::CPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_transformation(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr)
         , m_sections(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr)
         , m_segments(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr)
     {
@@ -40,17 +39,14 @@ namespace generated
     CPACSDuct::~CPACSDuct()
     {
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
-        if (m_uidMgr) {
-            if (m_parentUID && !m_parentUID->empty()) m_uidMgr->TryUnregisterReference(*m_parentUID, *this);
-        }
     }
 
-    const CPACSDucts* CPACSDuct::GetParent() const
+    const CCPACSDucts* CPACSDuct::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSDucts* CPACSDuct::GetParent()
+    CCPACSDucts* CPACSDuct::GetParent()
     {
         return m_parent;
     }
@@ -118,21 +114,15 @@ namespace generated
             }
         }
 
-        // read element parentUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
-            m_parentUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/parentUID");
-            if (m_parentUID->empty()) {
-                LOG(WARNING) << "Optional element parentUID is present but empty at xpath " << xpath;
-            }
-            if (m_uidMgr && !m_parentUID->empty()) m_uidMgr->RegisterReference(*m_parentUID, *this);
-        }
-
         // read element transformation
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
-        }
-        else {
-            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
+            m_transformation = boost::in_place(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr);
+            try {
+                m_transformation->ReadCPACS(tixiHandle, xpath + "/transformation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read transformation at xpath " << xpath << ": " << e.what();
+                m_transformation = boost::none;
+            }
         }
 
         // read element sections
@@ -206,20 +196,16 @@ namespace generated
             }
         }
 
-        // write element parentUID
-        if (m_parentUID) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/parentUID");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/parentUID", *m_parentUID);
+        // write element transformation
+        if (m_transformation) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
+            m_transformation->WriteCPACS(tixiHandle, xpath + "/transformation");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/parentUID");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/transformation");
             }
         }
-
-        // write element transformation
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
-        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
         // write element sections
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sections");
@@ -301,26 +287,12 @@ namespace generated
         m_description = value;
     }
 
-    const boost::optional<std::string>& CPACSDuct::GetParentUID() const
-    {
-        return m_parentUID;
-    }
-
-    void CPACSDuct::SetParentUID(const boost::optional<std::string>& value)
-    {
-        if (m_uidMgr) {
-            if (m_parentUID && !m_parentUID->empty()) m_uidMgr->TryUnregisterReference(*m_parentUID, *this);
-            if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
-        }
-        m_parentUID = value;
-    }
-
-    const CCPACSTransformation& CPACSDuct::GetTransformation() const
+    const boost::optional<CCPACSTransformation>& CPACSDuct::GetTransformation() const
     {
         return m_transformation;
     }
 
-    CCPACSTransformation& CPACSDuct::GetTransformation()
+    boost::optional<CCPACSTransformation>& CPACSDuct::GetTransformation()
     {
         return m_transformation;
     }
@@ -365,6 +337,18 @@ namespace generated
         return m_structure;
     }
 
+    CCPACSTransformation& CPACSDuct::GetTransformation(CreateIfNotExistsTag)
+    {
+        if (!m_transformation)
+            m_transformation = boost::in_place(reinterpret_cast<CCPACSDuct*>(this), m_uidMgr);
+        return *m_transformation;
+    }
+
+    void CPACSDuct::RemoveTransformation()
+    {
+        m_transformation = boost::none;
+    }
+
     CCPACSPositionings& CPACSDuct::GetPositionings(CreateIfNotExistsTag)
     {
         if (!m_positionings)
@@ -387,18 +371,6 @@ namespace generated
     void CPACSDuct::RemoveStructure()
     {
         m_structure = boost::none;
-    }
-
-    const CTiglUIDObject* CPACSDuct::GetNextUIDObject() const
-    {
-        return this;
-    }
-
-    void CPACSDuct::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
-    {
-        if (m_parentUID && *m_parentUID == oldUid) {
-            m_parentUID = newUid;
-        }
     }
 
 } // namespace generated

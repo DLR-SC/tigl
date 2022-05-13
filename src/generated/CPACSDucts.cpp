@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include <CCPACSDuct.h>
+#include <CCPACSDuctAssembly.h>
 #include "CCPACSAircraftModel.h"
 #include "CPACSDucts.h"
 #include "CTiglError.h"
@@ -74,15 +75,25 @@ namespace generated
     {
         // read element duct
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/duct")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/duct", m_ducts, 1, tixi::xsdUnbounded, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/duct", m_ducts, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDucts*>(this), m_uidMgr);
+        }
+
+        // read element ductAssembly
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ductAssembly")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/ductAssembly", m_ductAssemblys, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDucts*>(this), m_uidMgr);
         }
 
     }
 
     void CPACSDucts::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        const std::vector<std::string> childElemOrder = { "duct", "ductAssembly" };
+
         // write element duct
         tixi::TixiSaveElements(tixiHandle, xpath + "/duct", m_ducts);
+
+        // write element ductAssembly
+        tixi::TixiSaveElements(tixiHandle, xpath + "/ductAssembly", m_ductAssemblys);
 
     }
 
@@ -96,9 +107,19 @@ namespace generated
         return m_ducts;
     }
 
+    const std::vector<std::unique_ptr<CCPACSDuctAssembly>>& CPACSDucts::GetDuctAssemblys() const
+    {
+        return m_ductAssemblys;
+    }
+
+    std::vector<std::unique_ptr<CCPACSDuctAssembly>>& CPACSDucts::GetDuctAssemblys()
+    {
+        return m_ductAssemblys;
+    }
+
     CCPACSDuct& CPACSDucts::AddDuct()
     {
-        m_ducts.push_back(make_unique<CCPACSDuct>(this, m_uidMgr));
+        m_ducts.push_back(make_unique<CCPACSDuct>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
         return *m_ducts.back();
     }
 
@@ -107,6 +128,23 @@ namespace generated
         for (std::size_t i = 0; i < m_ducts.size(); i++) {
             if (m_ducts[i].get() == &ref) {
                 m_ducts.erase(m_ducts.begin() + i);
+                return;
+            }
+        }
+        throw CTiglError("Element not found");
+    }
+
+    CCPACSDuctAssembly& CPACSDucts::AddDuctAssembly()
+    {
+        m_ductAssemblys.push_back(make_unique<CCPACSDuctAssembly>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
+        return *m_ductAssemblys.back();
+    }
+
+    void CPACSDucts::RemoveDuctAssembly(CCPACSDuctAssembly& ref)
+    {
+        for (std::size_t i = 0; i < m_ductAssemblys.size(); i++) {
+            if (m_ductAssemblys[i].get() == &ref) {
+                m_ductAssemblys.erase(m_ductAssemblys.begin() + i);
                 return;
             }
         }

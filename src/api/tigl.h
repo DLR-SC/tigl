@@ -5057,6 +5057,41 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfi
 
 
 
+/**
+ * @brief Sets a flag, wether ducts defined in CPACS shall be removed from using Boolean operations.
+ *
+ * By default ducts are disabled. If no ducts are defined in CPACS, this function has no effect.
+ *
+ * Currently, ducts are only removed from fuselages and wings.
+ *
+ * @param[in] cpacsHandle         Handle for the CPACS configuration
+ * @param[in] WithDuctCutoutsFlag flag, wether all geometric components shall be build with duct cutouts
+ *
+ * @return
+ *   - TIGL_SUCCESS if no error occurred
+ *   - TIGL_NOT_FOUND if no configuration was found for the given handle
+ *   - TIGL_ERROR if some other error occurred
+ *
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                      TiglBoolean WithDuctCutoutsFlag);
+
+/**
+ * @brief Gets the flag, ether ducts defined in CPACS shall be removed from using Boolean operations,
+ * if any ducts are defined in the CPACS configuration.
+ *
+ * @param[in]  cpacsHandle         Handle for the CPACS configuration
+ * @param[out] WithDuctCutoutsFlag flag, wether all geometric components shall be build with duct cutouts
+ *
+ * @return
+ *   - TIGL_SUCCESS if no error occurred
+ *   - TIGL_NOT_FOUND if no configuration was found for the given handle
+ *   - TIGL_ERROR if some other error occurred
+ *
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                      TiglBoolean* WithDuctCutoutsFlag);
+
 /*@}*/ // end of doxygen group
 
 #endif /* TIGL_H */

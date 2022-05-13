@@ -708,8 +708,9 @@ void TIGLViewerDocument::drawComponentByUID(const QString& uid)
 
 }
 
-void TIGLViewerDocument::drawConfiguration( )
+void TIGLViewerDocument::drawConfiguration(bool withDuctCutouts)
 {
+    tiglConfigurationSetWithDuctCutouts(m_cpacsHandle, (TiglBoolean)withDuctCutouts);
 
     std::vector<TiglGeometricComponentType> shapesToDraw;
     shapesToDraw.push_back(TIGL_COMPONENT_FUSELAGE);
@@ -741,6 +742,11 @@ void TIGLViewerDocument::drawConfiguration( )
     catch(tigl::CTiglError& err) {
         displayError(err.what());
     }
+}
+
+void TIGLViewerDocument::drawConfigurationWithDuctCutouts() {
+    app->getScene()->deleteAllObjects();
+    drawConfiguration(true);
 }
 
 
@@ -869,7 +875,7 @@ void TIGLViewerDocument::drawFuselageGuideCurves()
     
     START_COMMAND()
     const tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
-    const TopoDS_Compound& guideCurves = fuselage.GetGuideCurveWires();
+    const TopoDS_Compound& guideCurves = fuselage.GetSegments().GetGuideCurveWires();
 
     TopoDS_Iterator anIter(guideCurves);
     if (!anIter.More()) {
@@ -1764,7 +1770,7 @@ void TIGLViewerDocument::exportFuselageCurvesBRep()
     std::string profFileName = baseName.toStdString() + "_profiles.brep";
     BRepTools::Write(profiles, profFileName.c_str());
     
-    TopoDS_Compound guides = fuselage.GetGuideCurveWires();
+    TopoDS_Compound guides = fuselage.GetSegments().GetGuideCurveWires();
     TopoDS_Iterator it(guides);
     if (it.More()) {
         // write to brep

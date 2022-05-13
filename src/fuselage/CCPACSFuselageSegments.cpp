@@ -31,6 +31,9 @@
 #include "CTiglError.h"
 #include "sorting.h"
 #include "CTiglLogging.h"
+#include "CTiglBSplineAlgorithms.h"
+#include "tiglcommonfunctions.h"
+#include "CTiglCurveConnector.h"
 
 namespace
 {
@@ -48,10 +51,14 @@ namespace tigl
 {
 
 CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSFuselageSegments(parent, uidMgr) {}
+    : generated::CPACSFuselageSegments(parent, uidMgr)
+    , guideCurves(*this, &CCPACSFuselageSegments::BuildGuideCurves)
+{}
 
 CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSFuselageSegments(parent, uidMgr) {}
+    : generated::CPACSFuselageSegments(parent, uidMgr)
+    , guideCurves(*this, &CCPACSFuselageSegments::BuildGuideCurves)
+{}
 
 CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
 {
@@ -73,6 +80,7 @@ void CCPACSFuselageSegments::Invalidate(const boost::optional<std::string>& sour
     for (int i = 1; i <= GetSegmentCount(); i++) {
         GetSegment(i).Invalidate(source);
     }
+    guideCurves.clear();
 }
 
 // Gets a segment by index. 
@@ -154,6 +162,54 @@ void CCPACSFuselageSegments::ReorderSegments()
     } catch (std::invalid_argument) {
         throw CTiglError("Fuselage segments not continous.");
     }
+}
+
+void CCPACSFuselageSegments::BuildGuideCurves(TopoDS_Compound& cache) const
+{
+    std::map<double, const CCPACSGuideCurve*> roots;
+
+    // get section centers for the centripetal parametrization
+    std::vector<gp_Pnt> sectionCenters(GetSegmentCount()+1);
+
+    // get center of inner section of first segment
+    const CCPACSFuselageSegment& innerSegment = GetSegment(1);
+    sectionCenters[0] = innerSegment.GetTransformedProfileOriginStart();
+
+    // find roots and connect the belonging guide curve segments
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        const CCPACSFuselageSegment& segment = GetSegment(isegment);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        // get center of outer section
+        sectionCenters[isegment] = segment.GetTransformedProfileOriginEnd();
+
+        const CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
+            const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            if (!curve.GetFromGuideCurveUID_choice1()) {
+                // this is a root curve
+                double relCirc= *curve.GetFromRelativeCircumference_choice2();
+                //TODO: determine if half fuselage or not. If not
+                //the guide curve at relCirc=1 should be inserted at relCirc=0
+                roots.insert(std::make_pair(relCirc, &curve));
+            }
+        }
+    }
+
+    // get the parameters at the section centers
+    std::vector<double> sectionParams = CTiglBSplineAlgorithms::computeParamsBSplineCurve(OccArray(sectionCenters), 0., 1., 0.5);
+
+    // connect guide curve segments to a spline with given continuity conditions and tangents
+    CTiglCurveConnector connector(roots, sectionParams);
+    cache = connector.GetConnectedGuideCurves();
+}
+
+const TopoDS_Compound &CCPACSFuselageSegments::GetGuideCurveWires() const
+{
+    return *guideCurves;
 }
 
 } // end namespace tigl

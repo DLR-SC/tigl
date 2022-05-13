@@ -30,6 +30,7 @@
 
 namespace tigl
 {
+
 class CCPACSFuselageSection;
 
 class CCPACSFuselageSections : public generated::CPACSFuselageSections

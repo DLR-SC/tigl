@@ -19,16 +19,13 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSDuctStructure.h>
-#include <CCPACSFuselageSections.h>
-#include <CCPACSFuselageSegments.h>
-#include <CCPACSPositionings.h>
 #include <CCPACSTransformation.h>
 #include <string>
-#include <TiglSymmetryAxis.h>
 #include <tixi.h>
+#include "CPACSUIDSequence.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
+#include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -41,15 +38,15 @@ namespace generated
     // This class is used in:
     // CPACSDucts
 
-    /// @brief Duct
+    /// @brief Duct assembly
     /// 
     /// 
-    class CPACSDuct : public CTiglReqUIDObject
+    class CPACSDuctAssembly : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDuctAssembly(CCPACSDucts* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSDuct();
+        TIGL_EXPORT virtual ~CPACSDuctAssembly();
 
         TIGL_EXPORT CCPACSDucts* GetParent();
 
@@ -67,38 +64,29 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
-        TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
-
         TIGL_EXPORT virtual const std::string& GetName() const;
         TIGL_EXPORT virtual void SetName(const std::string& value);
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
+        TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
+
         TIGL_EXPORT virtual const boost::optional<CCPACSTransformation>& GetTransformation() const;
         TIGL_EXPORT virtual boost::optional<CCPACSTransformation>& GetTransformation();
 
-        TIGL_EXPORT virtual const CCPACSFuselageSections& GetSections() const;
-        TIGL_EXPORT virtual CCPACSFuselageSections& GetSections();
+        TIGL_EXPORT virtual const boost::optional<CPACSUIDSequence>& GetExcludeObjectUIDs() const;
+        TIGL_EXPORT virtual boost::optional<CPACSUIDSequence>& GetExcludeObjectUIDs();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSPositionings>& GetPositionings() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSPositionings>& GetPositionings();
-
-        TIGL_EXPORT virtual const CCPACSFuselageSegments& GetSegments() const;
-        TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments();
-
-        TIGL_EXPORT virtual const boost::optional<CCPACSDuctStructure>& GetStructure() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSDuctStructure>& GetStructure();
+        TIGL_EXPORT virtual const CPACSUIDSequence& GetDuctUIDs() const;
+        TIGL_EXPORT virtual CPACSUIDSequence& GetDuctUIDs();
 
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveTransformation();
 
-        TIGL_EXPORT virtual CCPACSPositionings& GetPositionings(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemovePositionings();
-
-        TIGL_EXPORT virtual CCPACSDuctStructure& GetStructure(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveStructure();
+        TIGL_EXPORT virtual CPACSUIDSequence& GetExcludeObjectUIDs(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveExcludeObjectUIDs();
 
     protected:
         CCPACSDucts* m_parent;
@@ -107,32 +95,33 @@ namespace generated
 
         std::string                           m_uID;
 
-        boost::optional<TiglSymmetryAxis>     m_symmetry;
-
         /// Name
         std::string                           m_name;
 
         /// Description
         boost::optional<std::string>          m_description;
 
+        /// UID of part to which the duct is
+        /// mounted (if any)
+        boost::optional<std::string>          m_parentUID;
+
         boost::optional<CCPACSTransformation> m_transformation;
 
-        CCPACSFuselageSections                m_sections;
+        boost::optional<CPACSUIDSequence>     m_excludeObjectUIDs;
 
-        boost::optional<CCPACSPositionings>   m_positionings;
-
-        CCPACSFuselageSegments                m_segments;
-
-        boost::optional<CCPACSDuctStructure>  m_structure;
+        CPACSUIDSequence                      m_ductUIDs;
 
     private:
-        CPACSDuct(const CPACSDuct&) = delete;
-        CPACSDuct& operator=(const CPACSDuct&) = delete;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
-        CPACSDuct(CPACSDuct&&) = delete;
-        CPACSDuct& operator=(CPACSDuct&&) = delete;
+        CPACSDuctAssembly(const CPACSDuctAssembly&) = delete;
+        CPACSDuctAssembly& operator=(const CPACSDuctAssembly&) = delete;
+
+        CPACSDuctAssembly(CPACSDuctAssembly&&) = delete;
+        CPACSDuctAssembly& operator=(CPACSDuctAssembly&&) = delete;
     };
 } // namespace generated
 
-// CPACSDuct is customized, use type CCPACSDuct directly
+// CPACSDuctAssembly is customized, use type CCPACSDuctAssembly directly
 } // namespace tigl
