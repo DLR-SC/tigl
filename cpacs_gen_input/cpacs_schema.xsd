@@ -847,7 +847,7 @@ marko.alder@dlr.de
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="cpacsVersion" minOccurs="0">
+                    <xsd:element name="cpacsVersion" minOccurs="0" type="stringBaseType">
                         <xsd:annotation>
                             <xsd:documentation>CPACS version that the dataset is valid to. The element is optional, since data sets
                                 can be valid for several CPACS versions. However, we strongly recommend to assign data sets to a
@@ -855,11 +855,6 @@ marko.alder@dlr.de
                                 require this specification.
                             </xsd:documentation>
                         </xsd:annotation>
-                        <xsd:simpleType>
-                            <xsd:restriction base="xsd:float">
-                                <xsd:enumeration value="3.3"/>
-                            </xsd:restriction>
-                        </xsd:simpleType>
                     </xsd:element>
                     <xsd:element minOccurs="0" name="updates" type="updatesType"/>
                 </xsd:all>

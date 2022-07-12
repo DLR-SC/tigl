@@ -117,7 +117,10 @@ namespace generated
 
         // read element cpacsVersion
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cpacsVersion")) {
-            m_cpacsVersion = stringToCPACSHeader_cpacsVersion(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/cpacsVersion"));
+            m_cpacsVersion = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/cpacsVersion");
+            if (m_cpacsVersion->empty()) {
+                LOG(WARNING) << "Optional element cpacsVersion is present but empty at xpath " << xpath;
+            }
         }
 
         // read element updates
@@ -165,7 +168,7 @@ namespace generated
         // write element cpacsVersion
         if (m_cpacsVersion) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cpacsVersion");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/cpacsVersion", CPACSHeader_cpacsVersionToString(*m_cpacsVersion));
+            tixi::TixiSaveElement(tixiHandle, xpath + "/cpacsVersion", *m_cpacsVersion);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/cpacsVersion")) {
@@ -236,12 +239,12 @@ namespace generated
         m_version = value;
     }
 
-    const boost::optional<CPACSHeader_cpacsVersion>& CPACSHeader::GetCpacsVersion() const
+    const boost::optional<std::string>& CPACSHeader::GetCpacsVersion() const
     {
         return m_cpacsVersion;
     }
 
-    void CPACSHeader::SetCpacsVersion(const boost::optional<CPACSHeader_cpacsVersion>& value)
+    void CPACSHeader::SetCpacsVersion(const boost::optional<std::string>& value)
     {
         m_cpacsVersion = value;
     }

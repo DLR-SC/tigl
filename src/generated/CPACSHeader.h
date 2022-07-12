@@ -22,7 +22,6 @@
 #include <ctime>
 #include <string>
 #include <tixi.h>
-#include "CPACSHeader_cpacsVersion.h"
 #include "CPACSUpdates.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -74,8 +73,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetVersion() const;
         TIGL_EXPORT virtual void SetVersion(const std::string& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSHeader_cpacsVersion>& GetCpacsVersion() const;
-        TIGL_EXPORT virtual void SetCpacsVersion(const boost::optional<CPACSHeader_cpacsVersion>& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetCpacsVersion() const;
+        TIGL_EXPORT virtual void SetCpacsVersion(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const boost::optional<CPACSUpdates>& GetUpdates() const;
         TIGL_EXPORT virtual boost::optional<CPACSUpdates>& GetUpdates();
@@ -87,27 +86,27 @@ namespace generated
         CPACSCpacs* m_parent;
 
         /// Name of CPACS dataset
-        std::string                               m_name;
+        std::string                   m_name;
 
         /// Description of CPACS dataset
-        boost::optional<std::string>              m_description;
+        boost::optional<std::string>  m_description;
 
         /// Creator of initial CPACS dataset
-        std::string                               m_creator;
+        std::string                   m_creator;
 
         /// Timestamp of initial CPACS dataset creation
-        std::time_t                               m_timestamp;
+        std::time_t                   m_timestamp;
 
         /// Version of initial CPACS dataset
-        std::string                               m_version;
+        std::string                   m_version;
 
         /// CPACS version that the dataset is valid to. The element is optional, since data sets
         /// can be valid for several CPACS versions. However, we strongly recommend to assign data sets to a
         /// specific CPACS version as far as possible, especially since some tools and libraries (e.g. TiGL)
         /// require this specification.
-        boost::optional<CPACSHeader_cpacsVersion> m_cpacsVersion;
+        boost::optional<std::string>  m_cpacsVersion;
 
-        boost::optional<CPACSUpdates>             m_updates;
+        boost::optional<CPACSUpdates> m_updates;
 
     private:
         CPACSHeader(const CPACSHeader&) = delete;
