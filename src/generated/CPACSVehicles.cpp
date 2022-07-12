@@ -67,11 +67,17 @@ namespace generated
 
     CTiglUIDManager& CPACSVehicles::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSVehicles::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -96,6 +102,28 @@ namespace generated
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read rotorcraft at xpath " << xpath << ": " << e.what();
                 m_rotorcraft = boost::none;
+            }
+        }
+
+        // read element performanceCases
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/performanceCases")) {
+            m_performanceCases = boost::in_place(this, m_uidMgr);
+            try {
+                m_performanceCases->ReadCPACS(tixiHandle, xpath + "/performanceCases");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read performanceCases at xpath " << xpath << ": " << e.what();
+                m_performanceCases = boost::none;
+            }
+        }
+
+        // read element flightPoints
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/flightPoints")) {
+            m_flightPoints = boost::in_place(this, m_uidMgr);
+            try {
+                m_flightPoints->ReadCPACS(tixiHandle, xpath + "/flightPoints");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read flightPoints at xpath " << xpath << ": " << e.what();
+                m_flightPoints = boost::none;
             }
         }
 
@@ -169,6 +197,28 @@ namespace generated
             }
         }
 
+        // write element performanceCases
+        if (m_performanceCases) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/performanceCases");
+            m_performanceCases->WriteCPACS(tixiHandle, xpath + "/performanceCases");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/performanceCases")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/performanceCases");
+            }
+        }
+
+        // write element flightPoints
+        if (m_flightPoints) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/flightPoints");
+            m_flightPoints->WriteCPACS(tixiHandle, xpath + "/flightPoints");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/flightPoints")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/flightPoints");
+            }
+        }
+
         // write element engines
         if (m_engines) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/engines");
@@ -235,6 +285,26 @@ namespace generated
         return m_rotorcraft;
     }
 
+    const boost::optional<CPACSGlobalPerformanceCases>& CPACSVehicles::GetPerformanceCases() const
+    {
+        return m_performanceCases;
+    }
+
+    boost::optional<CPACSGlobalPerformanceCases>& CPACSVehicles::GetPerformanceCases()
+    {
+        return m_performanceCases;
+    }
+
+    const boost::optional<CPACSFlightPoints>& CPACSVehicles::GetFlightPoints() const
+    {
+        return m_flightPoints;
+    }
+
+    boost::optional<CPACSFlightPoints>& CPACSVehicles::GetFlightPoints()
+    {
+        return m_flightPoints;
+    }
+
     const boost::optional<CCPACSEngines>& CPACSVehicles::GetEngines() const
     {
         return m_engines;
@@ -297,6 +367,30 @@ namespace generated
     void CPACSVehicles::RemoveRotorcraft()
     {
         m_rotorcraft = boost::none;
+    }
+
+    CPACSGlobalPerformanceCases& CPACSVehicles::GetPerformanceCases(CreateIfNotExistsTag)
+    {
+        if (!m_performanceCases)
+            m_performanceCases = boost::in_place(this, m_uidMgr);
+        return *m_performanceCases;
+    }
+
+    void CPACSVehicles::RemovePerformanceCases()
+    {
+        m_performanceCases = boost::none;
+    }
+
+    CPACSFlightPoints& CPACSVehicles::GetFlightPoints(CreateIfNotExistsTag)
+    {
+        if (!m_flightPoints)
+            m_flightPoints = boost::in_place(this, m_uidMgr);
+        return *m_flightPoints;
+    }
+
+    void CPACSVehicles::RemoveFlightPoints()
+    {
+        m_flightPoints = boost::none;
     }
 
     CCPACSEngines& CPACSVehicles::GetEngines(CreateIfNotExistsTag)

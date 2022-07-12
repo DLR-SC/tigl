@@ -31,6 +31,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSectionElement.h"
+#include "CPACSLandingGearBase.h"
 #include "CPACSTransformation.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -111,6 +112,14 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSGenericSystem);
+    }
+
+    CPACSTransformation::CPACSTransformation(CPACSLandingGearBase* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSLandingGearBase);
     }
 
     CPACSTransformation::CPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr)
@@ -196,6 +205,9 @@ namespace generated
             if (IsParent<CCPACSGenericSystem>()) {
                 return GetParent<CCPACSGenericSystem>();
             }
+            if (IsParent<CPACSLandingGearBase>()) {
+                return GetParent<CPACSLandingGearBase>();
+            }
             if (IsParent<CCPACSNacelleSection>()) {
                 return GetParent<CCPACSNacelleSection>();
             }
@@ -248,6 +260,9 @@ namespace generated
             if (IsParent<CCPACSGenericSystem>()) {
                 return GetParent<CCPACSGenericSystem>();
             }
+            if (IsParent<CPACSLandingGearBase>()) {
+                return GetParent<CPACSLandingGearBase>();
+            }
             if (IsParent<CCPACSNacelleSection>()) {
                 return GetParent<CCPACSNacelleSection>();
             }
@@ -272,11 +287,17 @@ namespace generated
 
     CTiglUIDManager& CPACSTransformation::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSTransformation::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

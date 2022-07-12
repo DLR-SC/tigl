@@ -23,6 +23,7 @@
 #include "CCPACSRotorBladeAttachment.h"
 #include "CCPACSWingProfileCST.h"
 #include "CPACSStringVectorBase.h"
+#include "CPACSTrackJointPosition.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDObject.h"
@@ -74,6 +75,13 @@ namespace generated
         m_parentType = &typeid(CCPACSRotorBladeAttachment);
     }
 
+    CPACSStringVectorBase::CPACSStringVectorBase(CPACSTrackJointPosition* parent)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSTrackJointPosition);
+    }
+
     CPACSStringVectorBase::~CPACSStringVectorBase()
     {
     }
@@ -98,6 +106,9 @@ namespace generated
             }
             if (IsParent<CCPACSRotorBladeAttachment>()) {
                 return GetParent<CCPACSRotorBladeAttachment>();
+            }
+            if (IsParent<CPACSTrackJointPosition>()) {
+                return GetParent<CPACSTrackJointPosition>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -124,6 +135,9 @@ namespace generated
             if (IsParent<CCPACSRotorBladeAttachment>()) {
                 return GetParent<CCPACSRotorBladeAttachment>();
             }
+            if (IsParent<CPACSTrackJointPosition>()) {
+                return GetParent<CPACSTrackJointPosition>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -133,12 +147,9 @@ namespace generated
         // read attribute mapType
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "mapType")) {
             m_mapType = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "mapType");
-            if (m_mapType.empty()) {
-                LOG(WARNING) << "Required attribute mapType is empty at xpath " << xpath;
+            if (m_mapType->empty()) {
+                LOG(WARNING) << "Optional attribute mapType is present but empty at xpath " << xpath;
             }
-        }
-        else {
-            LOG(ERROR) << "Required attribute mapType is missing at xpath " << xpath;
         }
 
         // read attribute mu
@@ -213,7 +224,14 @@ namespace generated
     void CPACSStringVectorBase::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         // write attribute mapType
-        tixi::TixiSaveAttribute(tixiHandle, xpath, "mapType", m_mapType);
+        if (m_mapType) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "mapType", *m_mapType);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "mapType")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "mapType");
+            }
+        }
 
         // write attribute mu
         if (m_mu) {
@@ -290,12 +308,12 @@ namespace generated
 
     }
 
-    const std::string& CPACSStringVectorBase::GetMapType() const
+    const boost::optional<std::string>& CPACSStringVectorBase::GetMapType() const
     {
         return m_mapType;
     }
 
-    void CPACSStringVectorBase::SetMapType(const std::string& value)
+    void CPACSStringVectorBase::SetMapType(const boost::optional<std::string>& value)
     {
         m_mapType = value;
     }

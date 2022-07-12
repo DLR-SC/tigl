@@ -43,7 +43,7 @@ namespace generated
     // CPACSSheet
     // CPACSTransformation2D
 
-    /// @brief Data points in x-y-space.
+    /// @brief Point: x,y
     /// 
     /// Point type, containing an xy data doublet.
     /// 
@@ -66,9 +66,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CPACSGlobalBeamProperties>::value || std::is_same<P, CCPACSPointListXY>::value || std::is_same<P, CPACSSheet>::value || std::is_same<P, CPACSTransformation2D>::value, "template argument for P is not a parent class of CPACSPointXY");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -78,9 +76,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CPACSGlobalBeamProperties>::value || std::is_same<P, CCPACSPointListXY>::value || std::is_same<P, CPACSSheet>::value || std::is_same<P, CPACSTransformation2D>::value, "template argument for P is not a parent class of CPACSPointXY");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

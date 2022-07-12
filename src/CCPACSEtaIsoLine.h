@@ -30,6 +30,7 @@ public:
     TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSEtaIsoLine(CCPACSCutOutProfile* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSEtaIsoLine(CCPACSSparCell* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSLandingGearSupportBeamPosition* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void SetEta(const double& value) override;
     TIGL_EXPORT void SetReferenceUID(const std::string& value) override;

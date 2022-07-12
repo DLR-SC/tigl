@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralProfile
 
-    /// @brief Points, only x and y.
+    /// @brief List of points in x,y
     /// 
     /// PointList type, containing an ordered list of points
     /// 

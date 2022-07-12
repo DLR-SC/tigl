@@ -22,6 +22,8 @@
 #include <ECPACSTranslationType.h>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
@@ -32,10 +34,13 @@ class CCPACSTransformation;
 
 namespace generated
 {
+    class CPACSStrutAssembly;
+
     // This class is used in:
+    // CPACSStrutAssembly
     // CPACSTransformation
 
-    /// @brief pointAbsRelType
+    /// @brief Point with global/local reference
     /// 
     /// PointAbsRel type, containing an xyz data triplet. Each
     /// of the components is optional. The refType attribute defines,
@@ -47,13 +52,36 @@ namespace generated
     class CPACSPointAbsRel : public CTiglOptUIDObject
     {
     public:
+        TIGL_EXPORT CPACSPointAbsRel(CPACSStrutAssembly* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSPointAbsRel(CCPACSTransformation* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSPointAbsRel();
 
-        TIGL_EXPORT CCPACSTransformation* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSTransformation* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CPACSStrutAssembly>::value || std::is_same<P, CCPACSTransformation>::value, "template argument for P is not a parent class of CPACSPointAbsRel");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CPACSStrutAssembly>::value || std::is_same<P, CCPACSTransformation>::value, "template argument for P is not a parent class of CPACSPointAbsRel");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -80,7 +108,8 @@ namespace generated
         TIGL_EXPORT virtual void SetZ(const boost::optional<double>& value);
 
     protected:
-        CCPACSTransformation* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -107,4 +136,7 @@ namespace generated
 } // namespace generated
 
 // CPACSPointAbsRel is customized, use type CCPACSPointAbsRel directly
+
+// Aliases in tigl namespace
+using CCPACSStrutAssembly = generated::CPACSStrutAssembly;
 } // namespace tigl

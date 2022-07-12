@@ -67,11 +67,17 @@ namespace generated
 
     CTiglUIDManager& CPACSAircraftModel::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSAircraftModel::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -162,6 +168,17 @@ namespace generated
             }
         }
 
+        // read element landingGears
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/landingGears")) {
+            m_landingGears = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            try {
+                m_landingGears->ReadCPACS(tixiHandle, xpath + "/landingGears");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read landingGears at xpath " << xpath << ": " << e.what();
+                m_landingGears = boost::none;
+            }
+        }
+
         // read element systems
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/systems")) {
             m_systems = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -181,6 +198,17 @@ namespace generated
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read genericGeometryComponents at xpath " << xpath << ": " << e.what();
                 m_genericGeometryComponents = boost::none;
+            }
+        }
+
+        // read element configurations
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/configurations")) {
+            m_configurations = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            try {
+                m_configurations->ReadCPACS(tixiHandle, xpath + "/configurations");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read configurations at xpath " << xpath << ": " << e.what();
+                m_configurations = boost::none;
             }
         }
 
@@ -262,6 +290,17 @@ namespace generated
             }
         }
 
+        // write element landingGears
+        if (m_landingGears) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/landingGears");
+            m_landingGears->WriteCPACS(tixiHandle, xpath + "/landingGears");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/landingGears")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/landingGears");
+            }
+        }
+
         // write element systems
         if (m_systems) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/systems");
@@ -281,6 +320,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericGeometryComponents")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/genericGeometryComponents");
+            }
+        }
+
+        // write element configurations
+        if (m_configurations) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/configurations");
+            m_configurations->WriteCPACS(tixiHandle, xpath + "/configurations");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/configurations")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/configurations");
             }
         }
 
@@ -374,6 +424,16 @@ namespace generated
         return m_enginePylons;
     }
 
+    const boost::optional<CPACSLandingGears>& CPACSAircraftModel::GetLandingGears() const
+    {
+        return m_landingGears;
+    }
+
+    boost::optional<CPACSLandingGears>& CPACSAircraftModel::GetLandingGears()
+    {
+        return m_landingGears;
+    }
+
     const boost::optional<CCPACSACSystems>& CPACSAircraftModel::GetSystems() const
     {
         return m_systems;
@@ -392,6 +452,16 @@ namespace generated
     boost::optional<CCPACSExternalObjects>& CPACSAircraftModel::GetGenericGeometryComponents()
     {
         return m_genericGeometryComponents;
+    }
+
+    const boost::optional<CPACSVehicleConfigurations>& CPACSAircraftModel::GetConfigurations() const
+    {
+        return m_configurations;
+    }
+
+    boost::optional<CPACSVehicleConfigurations>& CPACSAircraftModel::GetConfigurations()
+    {
+        return m_configurations;
     }
 
     CCPACSDucts& CPACSAircraftModel::GetDucts(CreateIfNotExistsTag)
@@ -454,6 +524,18 @@ namespace generated
         m_enginePylons = boost::none;
     }
 
+    CPACSLandingGears& CPACSAircraftModel::GetLandingGears(CreateIfNotExistsTag)
+    {
+        if (!m_landingGears)
+            m_landingGears = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+        return *m_landingGears;
+    }
+
+    void CPACSAircraftModel::RemoveLandingGears()
+    {
+        m_landingGears = boost::none;
+    }
+
     CCPACSACSystems& CPACSAircraftModel::GetSystems(CreateIfNotExistsTag)
     {
         if (!m_systems)
@@ -476,6 +558,18 @@ namespace generated
     void CPACSAircraftModel::RemoveGenericGeometryComponents()
     {
         m_genericGeometryComponents = boost::none;
+    }
+
+    CPACSVehicleConfigurations& CPACSAircraftModel::GetConfigurations(CreateIfNotExistsTag)
+    {
+        if (!m_configurations)
+            m_configurations = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+        return *m_configurations;
+    }
+
+    void CPACSAircraftModel::RemoveConfigurations()
+    {
+        m_configurations = boost::none;
     }
 
 } // namespace generated

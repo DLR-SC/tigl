@@ -29,7 +29,7 @@ namespace generated
 {
     CPACSWallSegment::CPACSWallSegment(CPACSWallSegments* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_phi(0.0)
+        , m_phi(reinterpret_cast<CCPACSFuselageWallSegment*>(this))
         , m_wallPositionUIDs(reinterpret_cast<CCPACSFuselageWallSegment*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
@@ -72,11 +72,17 @@ namespace generated
 
     CTiglUIDManager& CPACSWallSegment::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSWallSegment::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -92,7 +98,7 @@ namespace generated
 
         // read element phi
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/phi")) {
-            m_phi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/phi");
+            m_phi.ReadCPACS(tixiHandle, xpath + "/phi");
         }
         else {
             LOG(ERROR) << "Required element phi is missing at xpath " << xpath;
@@ -158,7 +164,7 @@ namespace generated
 
         // write element phi
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/phi");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/phi", m_phi);
+        m_phi.WriteCPACS(tixiHandle, xpath + "/phi");
 
         // write element doubleSidedExtrusion
         if (m_doubleSidedExtrusion) {
@@ -242,14 +248,14 @@ namespace generated
         m_uID = value;
     }
 
-    const double& CPACSWallSegment::GetPhi() const
+    const CPACSWallSegment_phi& CPACSWallSegment::GetPhi() const
     {
         return m_phi;
     }
 
-    void CPACSWallSegment::SetPhi(const double& value)
+    CPACSWallSegment_phi& CPACSWallSegment::GetPhi()
     {
-        m_phi = value;
+        return m_phi;
     }
 
     const boost::optional<bool>& CPACSWallSegment::GetDoubleSidedExtrusion() const

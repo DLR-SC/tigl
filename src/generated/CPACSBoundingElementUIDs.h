@@ -55,7 +55,8 @@ namespace generated
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
         TIGL_EXPORT virtual const std::vector<std::string>& GetBoundingElementUIDs() const;
-        TIGL_EXPORT virtual std::vector<std::string>& GetBoundingElementUIDs();
+        TIGL_EXPORT virtual void AddToBoundingElementUIDs(const std::string& value);
+        TIGL_EXPORT virtual bool RemoveFromBoundingElementUIDs(const std::string& value);
 
     protected:
         CCPACSFuselageWallSegment* m_parent;

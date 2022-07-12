@@ -44,25 +44,28 @@ namespace generated
     // This class is used in:
     // CPACSProfileBasedStructuralElements
 
-    /// @brief Profiles of the aircraft.
+    /// @brief Structural elements based on profiles
     /// 
-    /// ProfileBasedStructuralElement Type, containing the
-    /// data of a structural element, that are based on 2-dimensional
-    /// profiles.
-    /// The parameter 'structuralProfileUID' refers to the
-    /// definition of the 2-dimensional profile. This profile is defined
-    /// by several points in the x-y-space. Always two points are
-    /// combined two one sheet. The properties of each sheet are defined
-    /// in the 'sheetProperties' section by referencing on the sheetUID
-    /// and the material properties. The orthotropy direction of
-    /// composite materials equals the x-sheet axis. The orthotropy
-    /// direction angle equals a positive rotation around the z-sheet
-    /// axis as indicated in the picture below (part 3.), where a wing
-    /// stringer is defined as an example:
-    /// @see stringer2
-    /// In the section 'globalBeamProperties' the properties
+    /// Short description
+    /// The ProfileBasedStructuralElement type containins the
+    /// data of a structural element, that are based on 2-dimensional profiles.
+    /// There are three approaches to model profile based structural elements: by specifying global beam properties by referencing a structuralProfile2D element by choosing one of the prescribed standard profiles 
+    /// 1. Global beam properties
+    /// In the section globalBeamProperties the properties
     /// of the structural profile in an equivalent beam representation
     /// are defined.
+    /// 2. Structural 2D profile
+    /// The structuralProfileUID element refers to the uID of the structuralProfile2D element.
+    /// As described in the corresponding documentation, this profile is defined by several points in the x-y-space.
+    /// Two points always form a sheet.
+    /// The properties of each sheet are defined in the sheetProperties element.
+    /// The orthotropy direction of composite materials equals the sheets' x-axis.
+    /// The orthotropy direction angle equals a positive rotation around the sheets' z-axis as indicated in the picture below (part 3), which shows an example of a wing stringer.:
+    /// @see stringer2
+    /// 3. Standard structural 2D profile
+    /// Instead of referencing a structuralProfile2D element, it is also possible to select a predefined standard profile.
+    /// These profiles are listed in the figure below.
+    /// Under sheetProperties , only the standardProfileSheetID (equals S1, S2, ...) must now be specified along with a corresponding length.
     /// @see standard_profile
     /// 
     class CPACSProfileBasedStructuralElement : public CTiglReqUIDObject, public ITiglUIDRefObject
@@ -152,7 +155,7 @@ namespace generated
         boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>   m_standardProfileType_choice2_1;
 
         /// Reference to the structural profile profile
-        /// uID.
+        /// uID
         boost::optional<std::string>                                              m_structuralProfileUID_choice2_2;
 
         std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>> m_pointProperties_choice2_2;

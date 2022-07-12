@@ -60,7 +60,8 @@ namespace generated
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
         TIGL_EXPORT virtual const std::vector<std::string>& GetSheetPointUIDs() const;
-        TIGL_EXPORT virtual std::vector<std::string>& GetSheetPointUIDs();
+        TIGL_EXPORT virtual void AddToSheetPointUIDs(const std::string& value);
+        TIGL_EXPORT virtual bool RemoveFromSheetPointUIDs(const std::string& value);
 
     protected:
         CPACSSheet3D* m_parent;

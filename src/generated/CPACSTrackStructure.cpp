@@ -30,6 +30,8 @@ namespace generated
 {
     CPACSTrackStructure::CPACSTrackStructure(CPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
+        , m_struts(this, m_uidMgr)
+        , m_jointPositions(this)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -61,16 +63,38 @@ namespace generated
 
     CTiglUIDManager& CPACSTrackStructure::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSTrackStructure::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     void CPACSTrackStructure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read element struts
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/struts")) {
+            m_struts.ReadCPACS(tixiHandle, xpath + "/struts");
+        }
+        else {
+            LOG(ERROR) << "Required element struts is missing at xpath " << xpath;
+        }
+
+        // read element jointPositions
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/jointPositions")) {
+            m_jointPositions.ReadCPACS(tixiHandle, xpath + "/jointPositions");
+        }
+        else {
+            LOG(ERROR) << "Required element jointPositions is missing at xpath " << xpath;
+        }
+
         // read element controlSurfaceAttachment
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlSurfaceAttachment")) {
             m_controlSurfaceAttachment = boost::in_place(this, m_uidMgr);
@@ -82,47 +106,14 @@ namespace generated
             }
         }
 
-        // read element car
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/car")) {
-            m_car = boost::in_place(this, m_uidMgr);
+        // read element carriage
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/carriage")) {
+            m_carriage = boost::in_place(this, m_uidMgr);
             try {
-                m_car->ReadCPACS(tixiHandle, xpath + "/car");
+                m_carriage->ReadCPACS(tixiHandle, xpath + "/carriage");
             } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read car at xpath " << xpath << ": " << e.what();
-                m_car = boost::none;
-            }
-        }
-
-        // read element strut1
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/strut1")) {
-            m_strut1 = boost::in_place(this, m_uidMgr);
-            try {
-                m_strut1->ReadCPACS(tixiHandle, xpath + "/strut1");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read strut1 at xpath " << xpath << ": " << e.what();
-                m_strut1 = boost::none;
-            }
-        }
-
-        // read element strut2
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/strut2")) {
-            m_strut2 = boost::in_place(this, m_uidMgr);
-            try {
-                m_strut2->ReadCPACS(tixiHandle, xpath + "/strut2");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read strut2 at xpath " << xpath << ": " << e.what();
-                m_strut2 = boost::none;
-            }
-        }
-
-        // read element strut3
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/strut3")) {
-            m_strut3 = boost::in_place(this, m_uidMgr);
-            try {
-                m_strut3->ReadCPACS(tixiHandle, xpath + "/strut3");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read strut3 at xpath " << xpath << ": " << e.what();
-                m_strut3 = boost::none;
+                LOG(ERROR) << "Failed to read carriage at xpath " << xpath << ": " << e.what();
+                m_carriage = boost::none;
             }
         }
 
@@ -196,6 +187,14 @@ namespace generated
 
     void CPACSTrackStructure::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write element struts
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/struts");
+        m_struts.WriteCPACS(tixiHandle, xpath + "/struts");
+
+        // write element jointPositions
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/jointPositions");
+        m_jointPositions.WriteCPACS(tixiHandle, xpath + "/jointPositions");
+
         // write element controlSurfaceAttachment
         if (m_controlSurfaceAttachment) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/controlSurfaceAttachment");
@@ -207,47 +206,14 @@ namespace generated
             }
         }
 
-        // write element car
-        if (m_car) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/car");
-            m_car->WriteCPACS(tixiHandle, xpath + "/car");
+        // write element carriage
+        if (m_carriage) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/carriage");
+            m_carriage->WriteCPACS(tixiHandle, xpath + "/carriage");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/car")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/car");
-            }
-        }
-
-        // write element strut1
-        if (m_strut1) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/strut1");
-            m_strut1->WriteCPACS(tixiHandle, xpath + "/strut1");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/strut1")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/strut1");
-            }
-        }
-
-        // write element strut2
-        if (m_strut2) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/strut2");
-            m_strut2->WriteCPACS(tixiHandle, xpath + "/strut2");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/strut2")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/strut2");
-            }
-        }
-
-        // write element strut3
-        if (m_strut3) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/strut3");
-            m_strut3->WriteCPACS(tixiHandle, xpath + "/strut3");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/strut3")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/strut3");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/carriage")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/carriage");
             }
         }
 
@@ -319,117 +285,107 @@ namespace generated
 
     }
 
-    const boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetControlSurfaceAttachment() const
+    const CPACSTrackStruts& CPACSTrackStructure::GetStruts() const
+    {
+        return m_struts;
+    }
+
+    CPACSTrackStruts& CPACSTrackStructure::GetStruts()
+    {
+        return m_struts;
+    }
+
+    const CPACSTrackJointPositions& CPACSTrackStructure::GetJointPositions() const
+    {
+        return m_jointPositions;
+    }
+
+    CPACSTrackJointPositions& CPACSTrackStructure::GetJointPositions()
+    {
+        return m_jointPositions;
+    }
+
+    const boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetControlSurfaceAttachment() const
     {
         return m_controlSurfaceAttachment;
     }
 
-    boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetControlSurfaceAttachment()
+    boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetControlSurfaceAttachment()
     {
         return m_controlSurfaceAttachment;
     }
 
-    const boost::optional<CPACSTrackCar>& CPACSTrackStructure::GetCar() const
+    const boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetCarriage() const
     {
-        return m_car;
+        return m_carriage;
     }
 
-    boost::optional<CPACSTrackCar>& CPACSTrackStructure::GetCar()
+    boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetCarriage()
     {
-        return m_car;
+        return m_carriage;
     }
 
-    const boost::optional<CPACSTrackStrut1>& CPACSTrackStructure::GetStrut1() const
-    {
-        return m_strut1;
-    }
-
-    boost::optional<CPACSTrackStrut1>& CPACSTrackStructure::GetStrut1()
-    {
-        return m_strut1;
-    }
-
-    const boost::optional<CPACSTrackStrut2>& CPACSTrackStructure::GetStrut2() const
-    {
-        return m_strut2;
-    }
-
-    boost::optional<CPACSTrackStrut2>& CPACSTrackStructure::GetStrut2()
-    {
-        return m_strut2;
-    }
-
-    const boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetStrut3() const
-    {
-        return m_strut3;
-    }
-
-    boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetStrut3()
-    {
-        return m_strut3;
-    }
-
-    const boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetSidePanels() const
+    const boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetSidePanels() const
     {
         return m_sidePanels;
     }
 
-    boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetSidePanels()
+    boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetSidePanels()
     {
         return m_sidePanels;
     }
 
-    const boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetUpperPanel() const
+    const boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetUpperPanel() const
     {
         return m_upperPanel;
     }
 
-    boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetUpperPanel()
+    boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetUpperPanel()
     {
         return m_upperPanel;
     }
 
-    const boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetLowerPanel() const
+    const boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetLowerPanel() const
     {
         return m_lowerPanel;
     }
 
-    boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetLowerPanel()
+    boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetLowerPanel()
     {
         return m_lowerPanel;
     }
 
-    const boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetRollerTrack() const
+    const boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetRollerTrack() const
     {
         return m_rollerTrack;
     }
 
-    boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetRollerTrack()
+    boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetRollerTrack()
     {
         return m_rollerTrack;
     }
 
-    const boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetRibs() const
+    const boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetRibs() const
     {
         return m_ribs;
     }
 
-    boost::optional<CCPACSMaterialDefinition>& CPACSTrackStructure::GetRibs()
+    boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetRibs()
     {
         return m_ribs;
     }
 
-    const boost::optional<CPACSTrackFairing>& CPACSTrackStructure::GetFairing() const
+    const boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetFairing() const
     {
         return m_fairing;
     }
 
-    boost::optional<CPACSTrackFairing>& CPACSTrackStructure::GetFairing()
+    boost::optional<CPACSTrackSecondaryStructure>& CPACSTrackStructure::GetFairing()
     {
         return m_fairing;
     }
 
-    CCPACSMaterialDefinition& CPACSTrackStructure::GetControlSurfaceAttachment(CreateIfNotExistsTag)
+    CPACSTrackSecondaryStructure& CPACSTrackStructure::GetControlSurfaceAttachment(CreateIfNotExistsTag)
     {
         if (!m_controlSurfaceAttachment)
             m_controlSurfaceAttachment = boost::in_place(this, m_uidMgr);
@@ -441,55 +397,19 @@ namespace generated
         m_controlSurfaceAttachment = boost::none;
     }
 
-    CPACSTrackCar& CPACSTrackStructure::GetCar(CreateIfNotExistsTag)
+    CPACSTrackSecondaryStructure& CPACSTrackStructure::GetCarriage(CreateIfNotExistsTag)
     {
-        if (!m_car)
-            m_car = boost::in_place(this, m_uidMgr);
-        return *m_car;
+        if (!m_carriage)
+            m_carriage = boost::in_place(this, m_uidMgr);
+        return *m_carriage;
     }
 
-    void CPACSTrackStructure::RemoveCar()
+    void CPACSTrackStructure::RemoveCarriage()
     {
-        m_car = boost::none;
+        m_carriage = boost::none;
     }
 
-    CPACSTrackStrut1& CPACSTrackStructure::GetStrut1(CreateIfNotExistsTag)
-    {
-        if (!m_strut1)
-            m_strut1 = boost::in_place(this, m_uidMgr);
-        return *m_strut1;
-    }
-
-    void CPACSTrackStructure::RemoveStrut1()
-    {
-        m_strut1 = boost::none;
-    }
-
-    CPACSTrackStrut2& CPACSTrackStructure::GetStrut2(CreateIfNotExistsTag)
-    {
-        if (!m_strut2)
-            m_strut2 = boost::in_place(this, m_uidMgr);
-        return *m_strut2;
-    }
-
-    void CPACSTrackStructure::RemoveStrut2()
-    {
-        m_strut2 = boost::none;
-    }
-
-    CCPACSMaterialDefinition& CPACSTrackStructure::GetStrut3(CreateIfNotExistsTag)
-    {
-        if (!m_strut3)
-            m_strut3 = boost::in_place(this, m_uidMgr);
-        return *m_strut3;
-    }
-
-    void CPACSTrackStructure::RemoveStrut3()
-    {
-        m_strut3 = boost::none;
-    }
-
-    CCPACSMaterialDefinition& CPACSTrackStructure::GetSidePanels(CreateIfNotExistsTag)
+    CPACSTrackSecondaryStructure& CPACSTrackStructure::GetSidePanels(CreateIfNotExistsTag)
     {
         if (!m_sidePanels)
             m_sidePanels = boost::in_place(this, m_uidMgr);
@@ -501,7 +421,7 @@ namespace generated
         m_sidePanels = boost::none;
     }
 
-    CCPACSMaterialDefinition& CPACSTrackStructure::GetUpperPanel(CreateIfNotExistsTag)
+    CPACSTrackSecondaryStructure& CPACSTrackStructure::GetUpperPanel(CreateIfNotExistsTag)
     {
         if (!m_upperPanel)
             m_upperPanel = boost::in_place(this, m_uidMgr);
@@ -513,7 +433,7 @@ namespace generated
         m_upperPanel = boost::none;
     }
 
-    CCPACSMaterialDefinition& CPACSTrackStructure::GetLowerPanel(CreateIfNotExistsTag)
+    CPACSTrackSecondaryStructure& CPACSTrackStructure::GetLowerPanel(CreateIfNotExistsTag)
     {
         if (!m_lowerPanel)
             m_lowerPanel = boost::in_place(this, m_uidMgr);
@@ -525,7 +445,7 @@ namespace generated
         m_lowerPanel = boost::none;
     }
 
-    CCPACSMaterialDefinition& CPACSTrackStructure::GetRollerTrack(CreateIfNotExistsTag)
+    CPACSTrackSecondaryStructure& CPACSTrackStructure::GetRollerTrack(CreateIfNotExistsTag)
     {
         if (!m_rollerTrack)
             m_rollerTrack = boost::in_place(this, m_uidMgr);
@@ -537,7 +457,7 @@ namespace generated
         m_rollerTrack = boost::none;
     }
 
-    CCPACSMaterialDefinition& CPACSTrackStructure::GetRibs(CreateIfNotExistsTag)
+    CPACSTrackSecondaryStructure& CPACSTrackStructure::GetRibs(CreateIfNotExistsTag)
     {
         if (!m_ribs)
             m_ribs = boost::in_place(this, m_uidMgr);
@@ -549,7 +469,7 @@ namespace generated
         m_ribs = boost::none;
     }
 
-    CPACSTrackFairing& CPACSTrackStructure::GetFairing(CreateIfNotExistsTag)
+    CPACSTrackSecondaryStructure& CPACSTrackStructure::GetFairing(CreateIfNotExistsTag)
     {
         if (!m_fairing)
             m_fairing = boost::in_place(this, m_uidMgr);

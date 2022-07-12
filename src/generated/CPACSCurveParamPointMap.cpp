@@ -28,7 +28,7 @@ namespace tigl
 namespace generated
 {
     CPACSCurveParamPointMap::CPACSCurveParamPointMap(CCPACSCurvePointListXYZ* parent)
-        : m_pointIndex(reinterpret_cast<CCPACSCurveParamPointMap*>(this))
+        : m_pointIndices(reinterpret_cast<CCPACSCurveParamPointMap*>(this))
         , m_paramOnCurve(reinterpret_cast<CCPACSCurveParamPointMap*>(this))
     {
         //assert(parent != NULL);
@@ -67,12 +67,12 @@ namespace generated
 
     void CPACSCurveParamPointMap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element pointIndex
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/pointIndex")) {
-            m_pointIndex.ReadCPACS(tixiHandle, xpath + "/pointIndex");
+        // read element pointIndices
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/pointIndices")) {
+            m_pointIndices.ReadCPACS(tixiHandle, xpath + "/pointIndices");
         }
         else {
-            LOG(ERROR) << "Required element pointIndex is missing at xpath " << xpath;
+            LOG(ERROR) << "Required element pointIndices is missing at xpath " << xpath;
         }
 
         // read element paramOnCurve
@@ -87,11 +87,11 @@ namespace generated
 
     void CPACSCurveParamPointMap::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "pointIndex", "paramOnCurve" };
+        const std::vector<std::string> childElemOrder = { "pointIndices", "paramOnCurve" };
 
-        // write element pointIndex
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/pointIndex", childElemOrder);
-        m_pointIndex.WriteCPACS(tixiHandle, xpath + "/pointIndex");
+        // write element pointIndices
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/pointIndices", childElemOrder);
+        m_pointIndices.WriteCPACS(tixiHandle, xpath + "/pointIndices");
 
         // write element paramOnCurve
         tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/paramOnCurve", childElemOrder);
@@ -99,14 +99,14 @@ namespace generated
 
     }
 
-    const CCPACSStringVector& CPACSCurveParamPointMap::GetPointIndex() const
+    const CCPACSStringVector& CPACSCurveParamPointMap::GetPointIndices() const
     {
-        return m_pointIndex;
+        return m_pointIndices;
     }
 
-    CCPACSStringVector& CPACSCurveParamPointMap::GetPointIndex()
+    CCPACSStringVector& CPACSCurveParamPointMap::GetPointIndices()
     {
-        return m_pointIndex;
+        return m_pointIndices;
     }
 
     const CCPACSStringVector& CPACSCurveParamPointMap::GetParamOnCurve() const

@@ -78,11 +78,17 @@ namespace generated
 
     CTiglUIDManager& CPACSBoundingElementUIDs::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSBoundingElementUIDs::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -112,9 +118,25 @@ namespace generated
         return m_boundingElementUIDs;
     }
 
-    std::vector<std::string>& CPACSBoundingElementUIDs::GetBoundingElementUIDs()
+    void CPACSBoundingElementUIDs::AddToBoundingElementUIDs(const std::string& value)
     {
-        return m_boundingElementUIDs;
+        if (m_uidMgr) {
+            if (!value.empty()) m_uidMgr->RegisterReference(value, *this);
+        }
+        m_boundingElementUIDs.push_back(value);
+    }
+
+    bool CPACSBoundingElementUIDs::RemoveFromBoundingElementUIDs(const std::string& value)
+    {
+        const auto it = std::find(m_boundingElementUIDs.begin(), m_boundingElementUIDs.end(), value);
+        if (it != m_boundingElementUIDs.end()) {
+            if (m_uidMgr && !it->empty()) {
+                m_uidMgr->TryUnregisterReference(*it, *this);
+            }
+            m_boundingElementUIDs.erase(it);
+            return true;
+        }
+        return false;
     }
 
     const CTiglUIDObject* CPACSBoundingElementUIDs::GetNextUIDObject() const

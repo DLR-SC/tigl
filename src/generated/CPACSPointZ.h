@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSTransformation2D
 
-    /// @brief pointZType
+    /// @brief Point: z
     /// 
     /// Point type, containing a z data.
     /// 

@@ -25,6 +25,7 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include <typeinfo>
+#include "CPACSStandardProfile.h"
 #include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "CTiglUIDObject.h"
@@ -96,9 +97,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CCPACSFuselageProfiles>::value || std::is_same<P, CCPACSRotorProfiles>::value || std::is_same<P, CCPACSWingProfiles>::value, "template argument for P is not a parent class of CPACSProfileGeometry");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -108,9 +107,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CCPACSFuselageProfiles>::value || std::is_same<P, CCPACSRotorProfiles>::value || std::is_same<P, CCPACSWingProfiles>::value, "template argument for P is not a parent class of CPACSProfileGeometry");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -146,11 +143,17 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSWingProfileCST>& GetCst2D_choice2() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWingProfileCST>& GetCst2D_choice2();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSStandardProfile>& GetStandardProfile_choice3() const;
+        TIGL_EXPORT virtual boost::optional<CPACSStandardProfile>& GetStandardProfile_choice3();
+
         TIGL_EXPORT virtual CCPACSCurvePointListXYZ& GetPointList_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePointList_choice1();
 
         TIGL_EXPORT virtual CCPACSWingProfileCST& GetCst2D_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCst2D_choice2();
+
+        TIGL_EXPORT virtual CPACSStandardProfile& GetStandardProfile_choice3(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveStandardProfile_choice3();
 
     protected:
         void* m_parent;
@@ -171,6 +174,8 @@ namespace generated
         boost::optional<CCPACSCurvePointListXYZ> m_pointList_choice1;
 
         boost::optional<CCPACSWingProfileCST>    m_cst2D_choice2;
+
+        boost::optional<CPACSStandardProfile>    m_standardProfile_choice3;
 
     private:
         CPACSProfileGeometry(const CPACSProfileGeometry&) = delete;

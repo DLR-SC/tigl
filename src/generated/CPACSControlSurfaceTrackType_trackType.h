@@ -35,10 +35,7 @@ namespace generated
         trackType1,
         trackType2,
         trackType3,
-        trackType4,
-        trackType5,
-        trackType6,
-        trackType7
+        trackType4
     };
 
     inline std::string CPACSControlSurfaceTrackType_trackTypeToString(const CPACSControlSurfaceTrackType_trackType& value)
@@ -48,9 +45,6 @@ namespace generated
         case trackType2: return "trackType2";
         case trackType3: return "trackType3";
         case trackType4: return "trackType4";
-        case trackType5: return "trackType5";
-        case trackType6: return "trackType6";
-        case trackType7: return "trackType7";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSControlSurfaceTrackType_trackType");
         }
     }
@@ -61,9 +55,6 @@ namespace generated
         if (toLower(value) == "tracktype2") { return trackType2; }
         if (toLower(value) == "tracktype3") { return trackType3; }
         if (toLower(value) == "tracktype4") { return trackType4; }
-        if (toLower(value) == "tracktype5") { return trackType5; }
-        if (toLower(value) == "tracktype6") { return trackType6; }
-        if (toLower(value) == "tracktype7") { return trackType7; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSControlSurfaceTrackType_trackType");
     }
 } // namespace generated

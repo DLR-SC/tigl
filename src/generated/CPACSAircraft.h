@@ -36,9 +36,10 @@ namespace generated
     // This class is used in:
     // CPACSVehicles
 
-    /// @brief aircraftType
+    /// @brief Aircraft
     /// 
-    /// Aircraft type, containing all the aircraft models
+    /// The aircraftType contains a list of aircraft models.
+    /// Note: Since there is no distinction between plural and singular in English, aircraft refers to plural form, while a single aircraft itself is referened as model .
     /// 
     class CPACSAircraft
     {

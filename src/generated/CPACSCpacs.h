@@ -36,43 +36,50 @@ namespace generated
     // This class is used in:
     /// @brief CPACS root element
     /// 
-    /// Version V3.2
-    /// Date 2020-02-18
+    /// Version V3.3
+    /// Date 2020-06-03
     /// 1. Overview
     /// The C ommon P arametric A ircraft C onfiguration S cheme (CPACS) is an XML-based data format for describing aircraft configurations and their corresponding data.
-    /// This XML-Schema document ( XSD ) serves two purposes: (1) it defines the CPACS data structure used in the XML file (e.g., aircraft.xml) and 
-    /// (2) it provides the corresponding documentation (see picture below). An XML processor (e.g., Tixi or 
+    /// This XML-Schema document ( XSD ) serves two purposes: (1) it defines the CPACS data structure used in the XML file (e.g., aircraft.xml) and
+    /// (2) it provides the corresponding documentation (see picture below). An XML processor (e.g., Tixi or
     /// XML tools in Eclipse) parses the XSD and XML files and validates whether the data set defined by the user (or tool) conforms to the given structure defined by the schema.
     /// @see basicPrinciple
-    /// This documentation explains the elements defined in CPACS and its corresponding data types . 
-    /// Data types can either be simple types (string, double, boolean, etc.) or complex types (definition of attributes and sub-elements to build a hierarchical 
+    /// This documentation explains the elements defined in CPACS and its corresponding data types .
+    /// Data types can either be simple types (string, double, boolean, etc.) or complex types (definition of attributes and sub-elements to build a hierarchical
     /// structure). In addition, the sequence of the elements and their occurrence is documented.
-    /// To link the XML file to the XSD file, the header of the XML file should specify the path of the schema file. 
-    /// An example could look like this: <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    /// xsi:noNamespaceSchemaLocation="pathToSchemaFile/cpacs_schema.xsd"> 
+    /// To link the XML file to the XSD file, the header of the XML file should specify the path of the schema file.
+    /// An example could look like this:
+    /// <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    /// xsi:noNamespaceSchemaLocation="pathToSchemaFile/cpacs_schema.xsd">
+    /// 
     /// CPACS is an open source project published by the German Aerospace Center (DLR e.V.). For further information please visit www.cpacs.de.
-    /// 2. Coordinate Systems
+    /// 2. Data hierarchy
+    /// CPACS data is modeled in a hierarchical structure whose underlying concept follows a top-down description of a system-of-systems which decomposes a generic concept (e.g., an aircraft or rotorcraft )  into  a  more  detailed  description  of  its  components.  This originates from the conceptual and preliminary design of aircraft, where the level of detail is initially low and continues to increase as the design process progresses.
+    /// For some concepts within CPACS, however, a bottom-up approach is applied where the components are first defined in detail (sometimes referred to as library ) and then linked within an instantiated higher-level concept. This is advantageous when used multiple times within complex systems, such as engines , which only have to be defined once in order to be referenced several times on the aircraft . The combination of these two methodologies is known as middle-out  approach  and  enables  the  goal  to  fully  parametrize aeronautical systems.
+    /// @see dataHierarchy
+    /// 3. Coordinate Systems
     /// Coordinate systems are a regular cause for ambiguous interpretation of data. In CPACS, the reference coordinate system is the CPACS-coordinate system. This coordinate system is used for most of the data. A single exception is made in order to keep aerodynamic data in an aerodynamic coordinate system. The following paragraphs outline the determination to known coordinate systems.
     /// The CPACS coordinate system is the coordinate system identified by TIGL, CPACS's geometric library. It is a right-handed coordinate system. If an aircraft is defined in the CPACS coordinate system it will usually follow the directions listed in the table below.
     /// Therefore, the CPACS coordinate system can be confused with the body-fixed coordinate system. While often the CPACS coordinate system and the body-fixed coordinate system overlap, this must not always be true. Several definitions for body-fixed coordinate systems exist (x-axis through nose and tail, x-axis perpendicular to nose plane). For non-symmetric aircraft, body-fixed coordinate systems become even more complicated. Hence, analysis tools should stick to the CPACS-Coordinate system. It remains to the designer to model the geometry accordingly.
     /// The CPACS coordinate system does not rotate with flow. Hence, aerodynamic calculations do rotate their flow relative to the CPACS-coordinate system. If not stated explicitly different, e.g. for target lift-coefficients, results are returned in the CPACS coordinate system, i.e. the cfx-coefficient is parallel to the CPACS x-Coordinate, regardless of the way the geometry is defined.
     /// The following table gives a "best-practice" advice on how to locate a geometry within CPACS. Different approaches are, of course, valid as well.
-    /// Axis Direction Description x tailwards from nose to tail y spanwise from symmetry plane to the right wingtip z upwards from landing gear to tip of vertical tailplane The following pictures give an example for a geometry that is defined in alignment with the CPACS coordinate system, i.e. the body coordinate system overlaps with the CPACS coordinate system.
+    /// Axis Direction Description x tailwards from nose to tail y spanwise from symmetry plane to the right wingtip z upwards from landing gear to tip of vertical tailplane The following figures show an example of a geometry that is aligned with the CPACS coordinate system, i.e. the body-fixed coordinate system corresponds to the CPACS coordinate system.
     /// @see cosys01
     /// The aerodynamic analysis is relative to the CPACS coordinate system. That is, the angle of attack is represented by the dashed orange line. Results of the aerodynamic calculation are given in the CPACS coordinate system.
     /// @see cosys02
-    /// The following pictures give an example for a geometry that is not defined in alignment with the CPACS coordinate system. It is a valid CPACS file, but chosen here for demonstrative purposes.
+    /// The following figures give an example of a geometry that is not defined in alignment with the CPACS coordinate system. It is a valid CPACS file, but only used in this example for demonstrative purposes.
     /// @see cosys1
     /// The body axes and the CPACS coordinate system do not align. That is, the origin of the geometry is not at CPACS (0,0,0) but at a point in positive x- and z-direction.
     /// @see cosys2
     /// Again, the aerodynamic analysis is relative to the CPACS coordinate system. That is, the angle of attack is represented by the dashed orange line. Results of the aerodynamic calculation are given in the CPACS coordinate system.
-    /// 3. Units
+    /// 4. Units
     /// There are no explicit attributes describing units in CPACS. The general convention is that all values must be given in the following SI-units:
     /// [m] Position, Distance [m^2] Area [m^3] Volume [kg] Mass [s] Time [K] Temperature or in derived units, e.g.:
     /// [N] Force [Nm] Moment [W] Power [J] Energy The only non SI unit used throughout CPACS is the angle in degrees [°].
     /// For the sake of an intuitive use the angles are given in degrees rather than in radian [rad].
-    /// [°] Angle 4. Splitting up a CPACS dataset into several files
+    /// [°] Angle 5. Splitting up a CPACS dataset into several files
     /// To provide a better overview, it is possible to split up a CPACS dataset into several files. This can be done by inserting an <externaldata> node at an arbitrary position into the datatset. This node contains a <path> node with a URI to the external file(s), followed by one or more <filename> nodes, containing each a name of a file to be included at that position. Below, an example of such external data is given:
+    /// 
     /// <?xml version="1.0" encoding="utf-8"?>
     /// <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     /// xsi:noNamespaceSchemaLocation="pathToSchemaFile/cpacs_schema.xsd">
@@ -91,15 +98,19 @@ namespace generated
     /// </wingAirfoils>
     /// </profiles>
     /// </vehicles>
-    /// <cpacs> Such an external file would look like:
+    /// <cpacs>
+    /// Such an external file would look like:
+    /// 
     /// <?xml version="1.0" encoding="utf-8"?>
     /// <airfoil uID="NACA0010">
     /// <name>NACA 0010 Airfoil</name>
     /// <pointList>...</pointList>
-    /// </airfoil> The file would be included completely, except for its title line <?xml version="1.0" encoding="utf-8"?> . This concept can also be used recursively (external files of external files), then it is important to prevent circle connections (file "A" loading file "B" loading file "C" loading again file "A" ...).
+    /// </airfoil>
+    /// The file would be included completely, except for its title line <?xml version="1.0" encoding="utf-8"?> . This concept can also be used recursively (external files of external files), then it is important to prevent circle connections (file "A" loading file "B" loading file "C" loading again file "A" ...).
     /// For path URI addresses, the trailing file separator "/" may be omitted. Below, some examples for path URIs are given:
     /// Absolute local path: "file:///tmp" or "file:///c:/windows/tmp" Relative local direcotry: "file://relativeDirectory" or "file://../anotherRelativeDirectory" Remote net ressource: "http://www.someurl.de" A CPACS dataset with external files, being loaded by a special library like the TI VA X ML I nterface TIXI , shall collect all its external datafiles and build up a single tree from them. A validation against this schema is only possible for such a single tree file; the <externaldata>nodes are not recognized by it. To preserve the information, necessary to split the file up into external files again later, externaldata information is maintained within three attributes of the former external top node:
     /// externalFileName - Name of the file where the external data shall be saved externalDataDirectory - Directory of the external data file. Its content is analogous to the <externaldata>'s <path>node described above. externalDataNodePath - XPATH of the node which is replaced with the content of the external file. In case that it is an external file of an external file, then it is the XPATH in the outer external file. If, e.g., in the example above the <pointList>node would have also been loaded from an external file, then the entry would just be: externalDataNodePath="/airfoil". This is used primarily for loop-detection. The single tree for the example above would look like:
+    /// 
     /// <?xml version="1.0" encoding="utf-8"?>
     /// <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     /// xsi:noNamespaceSchemaLocation="pathToSchemaFile/cpacs_schema.xsd">
@@ -118,47 +129,62 @@ namespace generated
     /// </wingAirfoils>
     /// </profiles>
     /// </vehicles>
-    /// <cpacs> 5. UIDs and references
-    /// The CPACS -dataset often uses references between nodes. Typically, these 
-    /// references define connections between elements which are located somewhere else in the hierarchical dataset (e.g. a wing is connected to a fuselage ; a specific engine is connected to a pylon ; etc.). These connections are defined by unique identifiers (uID) which are specified as attributes. Thus, there are elements which can be referenced via a uID attribute, e.g. a fuselage: <fuselage uID="ATTAS_fuselage">... 
-    /// as well as elements which refer to the former, e.g. a wing pointing to its geometrical parent: <wing uID="e382bf5j">
+    /// <cpacs>
+    /// 6. UIDs and references
+    /// The CPACS -dataset often uses references between nodes. Typically, these
+    /// references define connections between elements which are located somewhere else in the hierarchical dataset (e.g. a wing is connected to a fuselage ; a specific engine is connected to a pylon ; etc.). These connections are defined by unique identifiers (uID) which are specified as attributes. Thus, there are elements which can be referenced via a uID attribute, e.g. a fuselage:
+    /// <fuselage uID="ATTAS_fuselage">...
+    /// 
+    /// as well as elements which refer to the former, e.g. a wing pointing to its geometrical parent:
+    /// <wing uID="e382bf5j">
     /// <name>ATTAS main wing</name>
     /// <parentUID isLink="True">ATTAS_fuselage</parentUID>
-    /// ... Such referencing elements must carry the isLink="True" attribute.
-    /// Since uIDs are only used to link nodes within the XML file, no naming convention is required. UIDs, however, must be unique! Although a common practice for naming uIDs is their position in the data hierarchy (e.g. uID="mainWingSection3" ), 
-    /// uIDs as shown in the above example are absolutely valid as well. It is therefore recommended to use the name element 
+    /// ...
+    /// Such referencing elements must carry the isLink="True" attribute.
+    /// Since uIDs are only used to link nodes within the XML file, no naming convention is required. UIDs, however, must be unique! Although a common practice for naming uIDs is their position in the data hierarchy (e.g. uID="mainWingSection3" ),
+    /// uIDs as shown in the above example are absolutely valid as well. It is therefore recommended to use the name element
     /// to convey human-readable meanings.
-    /// 6. Symmetry
+    /// 7. Symmetry
     /// Sometimes it might be useful to specify a part of the aircraft as symmetric instead of holding all the data twice in nearly identical form in the dataset (e.g. left and right wing are usually identical, except for the sign of the y-coordinate). Hence, some parts offer the option to set a symmetry attribute for them, like:
-    /// <wing symmetry="x-z-plane">... This attribute explains that the whole part with all its subnodes is symmetric to the given plane. Possible planes are: x-y-plane x-z-plane y-z-plane none inherit By default, the symmetry of a component is inherited from its parent. If e.g. a wing is symmetrically defined, a pylon will also have a symmetry by default.
+    /// 
+    /// <wing symmetry="x-z-plane">...
+    /// This attribute explains that the whole part with all its subnodes is symmetric to the given plane. Possible planes are: x-y-plane x-z-plane y-z-plane none inherit By default, the symmetry of a component is inherited from its parent. If e.g. a wing is symmetrically defined, a pylon will also have a symmetry by default.
     /// This symmetry inheritance can be broken, by explicitly deleting the symmetry with symmetry="none".
     /// UIDs, references and symmetry
     /// All nodes, e.g. parentUID, in CPACS that refer to a component that holds symmetry attribute, e.g. wing, have to carry the symmetry attribute as well.
     /// The symmetry attribute may take three values: symm, def, full: def: The element refers to the geometric component that has a symmetry attribute and refers only to the defined side of the geometric component. symm: The element refers to the geometric component that has a symmetry attribute and refers only to the symmetric side of the geometric component. (Similar to the previous _symm solution) full: The element refers to the geometric component that has a symmetry attribute and refers to the complete component. (This is the default behaviour) 
+    /// 
     /// <wing uID="ATTAS_main_wing" symmetry="x-z-plane">
     /// ...
     /// <segments>
     /// <segment uID="ATTAS_main_wing_innersegment">
-    /// ... In the example above, to refer to the "other" side of the wing on must use the definition as such:
+    /// ...
+    /// In the example above, to refer to the "other" side of the wing on must use the definition as such:
+    /// 
     /// <loadcase>
     /// ...
     /// <segments>
     /// <segment>
     /// <segmentUID isLink="True" symmetry="symm">ATTAS_main_wing_inner_segment</segmentUID>
-    /// <strip>... 7. Vectors and arrays
+    /// <strip>...
+    /// 8. Vectors and arrays
     /// For large data sets (e.g. increments of aerodynamic coefficients due to control surface deflections) it is advantageous
-    /// to map them via vectors and arrays instead of using single nodes for each data value. The following definition of vectors and arrays,
-    /// indicated by the mapType attribute, is therefore introduced in CPACS : mapType="vector" The vector is meant as a one-dimensional-array. In such a node, the values are given in a semicolon separated list:
-    /// <angleOfAttack mapType="vector">0.;1.5;3.;4.5;6;7.5;9.</angleOfAttack>  mapType="array" The array is meant for multi-dimensional-arrays. Again, the values are contained in a semicolon separated list. An array is always preceded by a sequence of vectors, containing the dimensions and index values of it:
-    /// <altitude mapType="vector">1000.; 2000.; 3000.</altitude>
+    /// to map them via vectors and arrays instead of using a sequence of nodes for each data value. Therefore vectors and arrays are defined as semicolon-separated lists in CPACS . Via the documentation (derived from the XSD) of the corresponding nodes it has to be checked whether it is a vector or an array. Vector The vector is meant as a one-dimensional-array. In such a node, the values are given in a semicolon separated list:
+    /// 
+    /// <angleOfAttack>0.;1.5;3.;4.5;6;7.5;9.</angleOfAttack>
+    /// Array As for vectors, multi-dimensional arrays provide values in a semicolon separated list. An array is always preceded by a sequence of vectors, containing the dimensions and index values. Which vectors of an array are dimensioning is specified in the respective documentation of the array.
+    /// 
+    /// <altitude>1000.;2000.;3000.</altitude> <!-- vector element -->
     /// <incrementMaps>
     /// <incrementMap uID="incMap_b3ac2">
     /// <controlSurfaceUID>InnerWingFlap</controlSurfaceUID>
-    /// <controlParameters mapType="vector">-1;-0.5;0;1</controlParameters>
-    /// <dcl mapType="array">11.; 12.; 13.; 14.; 15.; 21.; 22.; 23.; 24.; 25.; 31.; 32.; 33.; 34.; 35.</dcl>  Values for cl increments:
+    /// <controlParameters>-1;-0.5;0;1</controlParameters> <!-- vector element -->
+    /// <!-- array of dimension length(altitude) x length(controlParameters): -->
+    /// <dcl>11.;12.;13.;14.;21.;22.;23.;24.;31.;32.;33.;34.</dcl>
+    /// Values for cl increments:
     /// Control parameter = -1 Control parameter = -0.5 Control parameter =  0 Control parameter =  1 Altitude = 1000m 11. 12. 13. 14. Altitude = 2000m 21. 22. 23. 24. Altitude = 3000m 31. 32. 33. 34.  
     /// 
-    /// 8. Control Parameters
+    /// 9. Control Parameters
     /// Control parameters are abstract parameters, linking a generic floating point value to a certain status of a control device
     /// (e.g. control surface, landing gear, suction system, brake parachute, ...). For control surfaces, such a data pair (control parameter
     /// and control surface deflection status) is called a <step> and the ordered list of all steps for a control surface forms its deflection
@@ -167,9 +193,10 @@ namespace generated
     /// values between -1. and +1., or between 0. And +1. (depending on the type of control surface). The smallest and the largest value implicitly
     /// define the maximum deflection limits. It is mandatory, that the value “0.” is within the specified range, as this value is treated as
     /// undeflected and used to specify a “clean” aircraft configuration (e.g. used in the clean aero performance map). It is recommended, but not
-    /// mandatory to specify a <step> with a <controlParameter> of 0. Consequently, no <controlParameter> must be used twice within 
+    /// mandatory to specify a <step> with a <controlParameter> of 0. Consequently, no <controlParameter> must be used twice within
     /// a single <path> definition. Deflection values between two specified steps are handled by linear interpolation.
     /// The following example shows the usage of control parameters within a control surface deflection path definition:
+    /// 
     /// <controlSurfaces>
     /// <trailingEdgeDevices>
     /// <trailingEdgeDevice uID="InnerWingFlap">
@@ -194,7 +221,8 @@ namespace generated
     /// <hingeLineRotation>5.</hingeLineRotation>
     /// </step>
     /// </steps>
-    /// ... 9. Atmosphere
+    /// ...
+    /// 10. Atmosphere
     /// At some places in CPACS, an atmosphere has to be selected (e.g. for connecting an altitude with a certain pressure or density).
     /// Currently, CPACS does only support a single atmospheric model: The ICAO Standard Atmosphere (ISA) from 1993 (see ICAO Doc 7488/3 'MANUAL OF THE ICAO STANDARD ATMOSPHERE', third edition, 1993)
     /// It covers temperature, pressure, density, speed of sound, dynamic viscosity and kinematic viscosity with respect to altitude.
@@ -204,7 +232,9 @@ namespace generated
     /// Temperature offsets are introduced on top of the definitions in the ISA manual (which does not cover such variations). The offset model
     /// is based upon the idea that the pressure at a fixed geopotential altitude is independent from temperature offset (pressure altitude).
     /// The temperature offset changes only the density (following rho = p / Gas Constant / T) (and viscosity, of course)
-    /// CPACS 3.2
+    /// CPACS 3.3
+    /// Release in June 2021
+    /// Revision of the mission definition including parameter lapses within segments ( compatibility break ) Revision of the point performance definition ( compatibility break ) Revision of performance requirements ( compatibility break ) Revision of landing gears ( compatibility break ) Revision of control surface tracks definition ( compatibility break ) Load analysis: Revision of flightLoadCasesType ( compatibility break ) Load analysis: Revision of aeroCasesType ( compatibility break ) Load analysis: loadEnvelopesType relocated and envelope simplified to a single uID-Sequence ( compatibility break ) Load analysis: Replaced dynamicAircraftModel elements by loadApplicationPointSets ( compatibility break ) Flight dynamics: Group flightPerformance, flyingQualities and trim under flightDynamics parent node ( compatibility break ) Introduced a configuration node to describe aircraft and payload configurations Fuselage profiles: Introduced rectangle and super ellipse as standard profiles Fuselage profiles: Added vector to specify curve parameters for profiles with kinks Internal structure: Added standard profiles to profile based structural elements Internal structure: Added ribPosts element to wingRibCrossSectionType Internal structure: Upper and lowerCap now optional in sparCellType Internal structure: Stringers and frames can reference sections MassBreakdown: Set mass inertia Jxy, Jxz and Jyz optional MassBreakdown: Added mMiscellaneous element MassBreakdown: Added fuselage walls Added flight envelope to aircraft global element Added new base types: doubleVectorBaseType, posIntVectorBaseType, doubleArrayBaseType Added 'none' and 'inherit' to list of symmetry flags Set mapType attribute of vector and array elements to optional (requires TiXI>=3.1) AeroMaps: Defined angleOfSideslip as input and added distinction between minimum and maximum angleOfAttack in aeroLimitMaps ( compatibility break ) AeroMaps: Added missing singular incrementMap element to incrementMaps in aeroLimitsMap ( compatibility break ) AeroMaps: Adopted the camelCase style for damping derivatives ( compatibility break ) Introduced common nomenclature for speeds and altitudes ( compatibility break ) Control distributors are set to optional Added instructions for superposition of control surface deflections Further elaboration of development standards General improvements of the documentation CPACS 3.2
     /// Release in February 2020
     /// Replaced tool-specific elements with xsd:any element and strict schema request for validation UIDs adapted to type xsd:ID and xsd:IDREF UIDs optional for transformationType and pointTypes Replaced xsd:sequence elements with xsd:all elements where possible CpacsVersion element set to optional GuideCurves are now optional for nacelleCowlType Documentation adaptions CPACS 3.1
     /// Release in August 2019

@@ -35,12 +35,15 @@ namespace generated
     // CPACSGenericGeometricComponent
     // CPACSGenericSystem
     // CPACSGuideCurveProfileGeometry
+    // CPACSLandingGearBase
     // CPACSProfileGeometry
     // CPACSRotor
     // CPACSWing
 
     enum CPACSSymmetry
     {
+        none,
+        inherit,
         x_y_plane,
         x_z_plane,
         y_z_plane
@@ -49,6 +52,8 @@ namespace generated
     inline std::string TiglSymmetryAxisToString(const CPACSSymmetry& value)
     {
         switch(value) {
+        case none: return "none";
+        case inherit: return "inherit";
         case x_y_plane: return "x-y-plane";
         case x_z_plane: return "x-z-plane";
         case y_z_plane: return "y-z-plane";
@@ -58,6 +63,8 @@ namespace generated
     inline CPACSSymmetry stringToTiglSymmetryAxis(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
+        if (toLower(value) == "none") { return none; }
+        if (toLower(value) == "inherit") { return inherit; }
         if (toLower(value) == "x-y-plane") { return x_y_plane; }
         if (toLower(value) == "x-z-plane") { return x_z_plane; }
         if (toLower(value) == "y-z-plane") { return y_z_plane; }

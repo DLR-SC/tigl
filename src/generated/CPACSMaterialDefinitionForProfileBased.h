@@ -21,6 +21,7 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include "CPACSMaterialDefinitionForProfileBased_standardProfileSheetID.h"
 #include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
 
@@ -35,8 +36,8 @@ namespace generated
     // This class is used in:
     // CPACSProfileBasedStructuralElement
 
-    /// @brief Definition of the material properties of the structural
-    /// profile sheet.
+    /// @brief Definition of the properties of the structural
+    /// profile sheet
     /// 
     /// MaterialDefinitionForProfileBased type, containing a
     /// material definition (Reference to material and thickness) for
@@ -64,8 +65,14 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const std::string& GetSheetUID() const;
-        TIGL_EXPORT virtual void SetSheetUID(const std::string& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetSheetUID_choice1() const;
+        TIGL_EXPORT virtual void SetSheetUID_choice1(const boost::optional<std::string>& value);
+
+        TIGL_EXPORT virtual const boost::optional<CPACSMaterialDefinitionForProfileBased_standardProfileSheetID>& GetStandardProfileSheetID_choice2() const;
+        TIGL_EXPORT virtual void SetStandardProfileSheetID_choice2(const boost::optional<CPACSMaterialDefinitionForProfileBased_standardProfileSheetID>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetLength_choice2() const;
+        TIGL_EXPORT virtual void SetLength_choice2(const boost::optional<double>& value);
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetCompositeUID_choice1() const;
         TIGL_EXPORT virtual void SetCompositeUID_choice1(const boost::optional<std::string>& value);
@@ -87,24 +94,30 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// uID of the sheet to which the material
-        /// properties shall be applied.
-        std::string                  m_sheetUID;
+        /// UID of the sheet to which the material
+        /// properties shall be applied
+        boost::optional<std::string>                                                   m_sheetUID_choice1;
+
+        /// Predefined ID of the sheet of a standard profile
+        boost::optional<CPACSMaterialDefinitionForProfileBased_standardProfileSheetID> m_standardProfileSheetID_choice2;
+
+        /// Length of the sheet of a standard profile [m]
+        boost::optional<double>                                                        m_length_choice2;
 
         /// uID of a composite definition.
-        boost::optional<std::string> m_compositeUID_choice1;
+        boost::optional<std::string>                                                   m_compositeUID_choice1;
 
         /// Orthoropy direction of the composite.
-        boost::optional<double>      m_orthotropyDirection_choice1;
+        boost::optional<double>                                                        m_orthotropyDirection_choice1;
 
         /// Scaling factor of the composite thickness.
-        boost::optional<double>      m_thicknessScaling_choice1;
+        boost::optional<double>                                                        m_thicknessScaling_choice1;
 
         /// uID of a material definition.
-        boost::optional<std::string> m_materialUID_choice2;
+        boost::optional<std::string>                                                   m_materialUID_choice2;
 
-        /// Absolute thickness of the material.
-        boost::optional<double>      m_thickness_choice2;
+        /// Absolute thickness of the material [m]
+        boost::optional<double>                                                        m_thickness_choice2;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;

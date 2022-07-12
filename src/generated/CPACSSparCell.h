@@ -78,11 +78,11 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSEtaIsoLine& GetToEta() const;
         TIGL_EXPORT virtual CCPACSEtaIsoLine& GetToEta();
 
-        TIGL_EXPORT virtual const CPACSCap& GetUpperCap() const;
-        TIGL_EXPORT virtual CPACSCap& GetUpperCap();
+        TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetUpperCap() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCap>& GetUpperCap();
 
-        TIGL_EXPORT virtual const CPACSCap& GetLowerCap() const;
-        TIGL_EXPORT virtual CPACSCap& GetLowerCap();
+        TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetLowerCap() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCap>& GetLowerCap();
 
         TIGL_EXPORT virtual const CPACSWeb& GetWeb1() const;
         TIGL_EXPORT virtual CPACSWeb& GetWeb1();
@@ -92,6 +92,12 @@ namespace generated
 
         TIGL_EXPORT virtual const double& GetRotation() const;
         TIGL_EXPORT virtual void SetRotation(const double& value);
+
+        TIGL_EXPORT virtual CPACSCap& GetUpperCap(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveUpperCap();
+
+        TIGL_EXPORT virtual CPACSCap& GetLowerCap(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveLowerCap();
 
         TIGL_EXPORT virtual CPACSWeb& GetWeb2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveWeb2();
@@ -109,16 +115,20 @@ namespace generated
         /// Ending (= outer border) of the spar cell.
         CCPACSEtaIsoLine          m_toEta;
 
-        CPACSCap                  m_upperCap;
+        /// Upper Cap
+        boost::optional<CPACSCap> m_upperCap;
 
-        CPACSCap                  m_lowerCap;
+        /// Lower Cap
+        boost::optional<CPACSCap> m_lowerCap;
 
+        /// Web 1
         CPACSWeb                  m_web1;
 
+        /// Web 2
         boost::optional<CPACSWeb> m_web2;
 
         /// The angle between the wing middle plane and
-        /// web1. Default is 90 degrees. Positive rotation is around the
+        /// web 1 [deg]. Default is 90 degrees. Positive rotation is around the
         /// spar axis heading along with the positive eta-axis.
         double                    m_rotation;
 

@@ -19,7 +19,9 @@
 
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include <vector>
+#include "CTiglError.h"
 #include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
 
@@ -31,8 +33,11 @@ class CCPACSDuctAssembly;
 
 namespace generated
 {
+    class CPACSLandingGearStrutAttachment;
+
     // This class is used in:
     // CPACSDuctAssembly
+    // CPACSLandingGearStrutAttachment
 
     /// @brief List of uIDs
     /// 
@@ -41,12 +46,35 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSUIDSequence(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSUIDSequence(CPACSLandingGearStrutAttachment* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSUIDSequence();
 
-        TIGL_EXPORT CCPACSDuctAssembly* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSDuctAssembly* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CCPACSDuctAssembly>::value || std::is_same<P, CPACSLandingGearStrutAttachment>::value, "template argument for P is not a parent class of CPACSUIDSequence");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CCPACSDuctAssembly>::value || std::is_same<P, CPACSLandingGearStrutAttachment>::value, "template argument for P is not a parent class of CPACSUIDSequence");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -58,10 +86,12 @@ namespace generated
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
         TIGL_EXPORT virtual const std::vector<std::string>& GetUIDs() const;
-        TIGL_EXPORT virtual std::vector<std::string>& GetUIDs();
+        TIGL_EXPORT virtual void AddToUIDs(const std::string& value);
+        TIGL_EXPORT virtual bool RemoveFromUIDs(const std::string& value);
 
     protected:
-        CCPACSDuctAssembly* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -82,4 +112,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSUIDSequence = generated::CPACSUIDSequence;
+using CCPACSLandingGearStrutAttachment = generated::CPACSLandingGearStrutAttachment;
 } // namespace tigl

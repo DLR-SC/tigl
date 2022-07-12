@@ -30,7 +30,6 @@ namespace generated
 {
     CPACSStringerFramePosition::CPACSStringerFramePosition(CCPACSFrame* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_positionX(0)
         , m_referenceY(0)
         , m_referenceZ(0)
         , m_referenceAngle(0)
@@ -42,7 +41,6 @@ namespace generated
 
     CPACSStringerFramePosition::CPACSStringerFramePosition(CCPACSFuselageStringer* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_positionX(0)
         , m_referenceY(0)
         , m_referenceZ(0)
         , m_referenceAngle(0)
@@ -57,6 +55,7 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         if (m_uidMgr) {
             if (!m_structuralElementUID.empty()) m_uidMgr->TryUnregisterReference(m_structuralElementUID, *this);
+            if (m_sectionElementUID_choice2 && !m_sectionElementUID_choice2->empty()) m_uidMgr->TryUnregisterReference(*m_sectionElementUID_choice2, *this);
         }
     }
 
@@ -88,11 +87,17 @@ namespace generated
 
     CTiglUIDManager& CPACSStringerFramePosition::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSStringerFramePosition::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -123,10 +128,16 @@ namespace generated
 
         // read element positionX
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/positionX")) {
-            m_positionX = tixi::TixiGetElement<double>(tixiHandle, xpath + "/positionX");
+            m_positionX_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/positionX");
         }
-        else {
-            LOG(ERROR) << "Required element positionX is missing at xpath " << xpath;
+
+        // read element sectionElementUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sectionElementUID")) {
+            m_sectionElementUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sectionElementUID");
+            if (m_sectionElementUID_choice2->empty()) {
+                LOG(WARNING) << "Optional element sectionElementUID is present but empty at xpath " << xpath;
+            }
+            if (m_uidMgr && !m_sectionElementUID_choice2->empty()) m_uidMgr->RegisterReference(*m_sectionElementUID_choice2, *this);
         }
 
         // read element referenceY
@@ -175,36 +186,59 @@ namespace generated
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+        if (!ValidateChoices()) {
+            LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+        }
     }
 
     void CPACSStringerFramePosition::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        const std::vector<std::string> childElemOrder = { "structuralElementUID", "positionX", "sectionElementUID", "referenceY", "referenceZ", "referenceAngle", "alignment", "continuity", "interpolation" };
+
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element structuralElementUID
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structuralElementUID");
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/structuralElementUID", childElemOrder);
         tixi::TixiSaveElement(tixiHandle, xpath + "/structuralElementUID", m_structuralElementUID);
 
         // write element positionX
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/positionX");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/positionX", m_positionX);
+        if (m_positionX_choice1) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/positionX", childElemOrder);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/positionX", *m_positionX_choice1);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/positionX")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/positionX");
+            }
+        }
+
+        // write element sectionElementUID
+        if (m_sectionElementUID_choice2) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sectionElementUID", childElemOrder);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/sectionElementUID", *m_sectionElementUID_choice2);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sectionElementUID")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/sectionElementUID");
+            }
+        }
 
         // write element referenceY
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceY");
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/referenceY", childElemOrder);
         tixi::TixiSaveElement(tixiHandle, xpath + "/referenceY", m_referenceY);
 
         // write element referenceZ
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceZ");
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/referenceZ", childElemOrder);
         tixi::TixiSaveElement(tixiHandle, xpath + "/referenceZ", m_referenceZ);
 
         // write element referenceAngle
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/referenceAngle");
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/referenceAngle", childElemOrder);
         tixi::TixiSaveElement(tixiHandle, xpath + "/referenceAngle", m_referenceAngle);
 
         // write element alignment
         if (m_alignment) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/alignment");
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/alignment", childElemOrder);
             m_alignment->WriteCPACS(tixiHandle, xpath + "/alignment");
         }
         else {
@@ -215,7 +249,7 @@ namespace generated
 
         // write element continuity
         if (m_continuity) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/continuity");
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/continuity", childElemOrder);
             tixi::TixiSaveElement(tixiHandle, xpath + "/continuity", CPACSContinuityToString(*m_continuity));
         }
         else {
@@ -226,7 +260,7 @@ namespace generated
 
         // write element interpolation
         if (m_interpolation) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/interpolation");
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/interpolation", childElemOrder);
             tixi::TixiSaveElement(tixiHandle, xpath + "/interpolation", CPACSInterpolationToString(*m_interpolation));
         }
         else {
@@ -235,6 +269,36 @@ namespace generated
             }
         }
 
+    }
+
+    bool CPACSStringerFramePosition::ValidateChoices() const
+    {
+        return
+        (
+            (
+                (
+                    // mandatory elements of this choice must be there
+                    m_positionX_choice1.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_sectionElementUID_choice2.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_sectionElementUID_choice2.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_positionX_choice1.is_initialized()
+                    )
+                )
+                == 1
+            )
+        )
+        ;
     }
 
     const std::string& CPACSStringerFramePosition::GetUID() const
@@ -269,14 +333,28 @@ namespace generated
         m_structuralElementUID = value;
     }
 
-    const double& CPACSStringerFramePosition::GetPositionX() const
+    const boost::optional<double>& CPACSStringerFramePosition::GetPositionX_choice1() const
     {
-        return m_positionX;
+        return m_positionX_choice1;
     }
 
-    void CPACSStringerFramePosition::SetPositionX(const double& value)
+    void CPACSStringerFramePosition::SetPositionX_choice1(const boost::optional<double>& value)
     {
-        m_positionX = value;
+        m_positionX_choice1 = value;
+    }
+
+    const boost::optional<std::string>& CPACSStringerFramePosition::GetSectionElementUID_choice2() const
+    {
+        return m_sectionElementUID_choice2;
+    }
+
+    void CPACSStringerFramePosition::SetSectionElementUID_choice2(const boost::optional<std::string>& value)
+    {
+        if (m_uidMgr) {
+            if (m_sectionElementUID_choice2 && !m_sectionElementUID_choice2->empty()) m_uidMgr->TryUnregisterReference(*m_sectionElementUID_choice2, *this);
+            if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
+        }
+        m_sectionElementUID_choice2 = value;
     }
 
     const double& CPACSStringerFramePosition::GetReferenceY() const
@@ -360,6 +438,9 @@ namespace generated
     {
         if (m_structuralElementUID == oldUid) {
             m_structuralElementUID = newUid;
+        }
+        if (m_sectionElementUID_choice2 && *m_sectionElementUID_choice2 == oldUid) {
+            m_sectionElementUID_choice2 = newUid;
         }
     }
 

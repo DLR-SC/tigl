@@ -47,19 +47,21 @@ namespace generated
     /// Kinks can also be modeled by populating the "kinks" array with the
     /// indices of points that should be on a kink. As an example, look at the following image:
     /// @see curve_point_list_xyz
-    /// In this example, the kinks array will be "2;6".
+    /// In this example, the kinks array will be "3;7".
     /// Optionally, the parameters of the kinks can be set in the parameter map.
     /// The whole profile looks as follows:
+    /// 
     /// <pointList>
-    /// <x mapType="vector">...</x>
-    /// <y mapType="vector">...</y>
-    /// <z mapType="vector">...</z>
-    /// <kinks mapType="vector">2;6</kinks>
+    /// <x>...</x>
+    /// <y>...</y>
+    /// <z>...</z>
+    /// <kinks>3;7</kinks>
     /// <parameterMap>
-    /// <pointIndex mapType="vector">2;4;6</pointIndex>
-    /// <paramOnCurve mapType="vector">0.2;0.5;0.8</paramOnCurve>
+    /// <pointIndex>3;5;7</pointIndex>
+    /// <paramOnCurve>0.2;0.5;0.8</paramOnCurve>
     /// </parameterMap>
     /// </pointList>
+    /// 
     class CPACSCurvePointListXYZ
     {
     public:
@@ -86,14 +88,14 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSStringVector& GetZ() const;
         TIGL_EXPORT virtual CCPACSStringVector& GetZ();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSStringVector>& GetKinks() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSStringVector>& GetKinks();
+        TIGL_EXPORT virtual const boost::optional<CCPACSStringVector>& GetKinkIndices() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSStringVector>& GetKinkIndices();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSCurveParamPointMap>& GetParameterMap() const;
         TIGL_EXPORT virtual boost::optional<CCPACSCurveParamPointMap>& GetParameterMap();
 
-        TIGL_EXPORT virtual CCPACSStringVector& GetKinks(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveKinks();
+        TIGL_EXPORT virtual CCPACSStringVector& GetKinkIndices(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveKinkIndices();
 
         TIGL_EXPORT virtual CCPACSCurveParamPointMap& GetParameterMap(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveParameterMap();
@@ -110,9 +112,8 @@ namespace generated
         /// Vector of z coordinates
         CCPACSStringVector                        m_z;
 
-        /// Points, at which the curve has a kink. This list contains the indices
-        /// of the points at which the curve should contain a kink. Each index is in the range [0, n-1].
-        boost::optional<CCPACSStringVector>       m_kinks;
+        /// Indices of points at which the curve has a kink. Each index is in the range [1, npoints].
+        boost::optional<CCPACSStringVector>       m_kinkIndices;
 
         /// Map between point index and curve parameter.
         boost::optional<CCPACSCurveParamPointMap> m_parameterMap;

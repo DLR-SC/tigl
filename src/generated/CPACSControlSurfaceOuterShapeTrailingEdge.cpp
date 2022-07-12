@@ -63,11 +63,17 @@ namespace generated
 
     CTiglUIDManager& CPACSControlSurfaceOuterShapeTrailingEdge::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSControlSurfaceOuterShapeTrailingEdge::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

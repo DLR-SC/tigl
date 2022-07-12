@@ -53,7 +53,7 @@ public:
 
     TopoDS_Compound GetCutPlanes() const;
 
-    TIGL_EXPORT void SetPhi(const double& value) override;
+    TIGL_EXPORT void SetPhi(const double& value);
     TIGL_EXPORT void SetDoubleSidedExtrusion(const boost::optional<bool>& value) override;
 
 private:

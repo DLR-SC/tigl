@@ -55,7 +55,8 @@ namespace generated
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
         TIGL_EXPORT virtual const std::vector<std::string>& GetWallPositionUIDs() const;
-        TIGL_EXPORT virtual std::vector<std::string>& GetWallPositionUIDs();
+        TIGL_EXPORT virtual void AddToWallPositionUIDs(const std::string& value);
+        TIGL_EXPORT virtual bool RemoveFromWallPositionUIDs(const std::string& value);
 
     protected:
         CCPACSFuselageWallSegment* m_parent;

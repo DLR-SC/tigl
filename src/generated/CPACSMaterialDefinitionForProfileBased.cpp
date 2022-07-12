@@ -38,7 +38,7 @@ namespace generated
     CPACSMaterialDefinitionForProfileBased::~CPACSMaterialDefinitionForProfileBased()
     {
         if (m_uidMgr) {
-            if (!m_sheetUID.empty()) m_uidMgr->TryUnregisterReference(m_sheetUID, *this);
+            if (m_sheetUID_choice1 && !m_sheetUID_choice1->empty()) m_uidMgr->TryUnregisterReference(*m_sheetUID_choice1, *this);
             if (m_compositeUID_choice1 && !m_compositeUID_choice1->empty()) m_uidMgr->TryUnregisterReference(*m_compositeUID_choice1, *this);
             if (m_materialUID_choice2 && !m_materialUID_choice2->empty()) m_uidMgr->TryUnregisterReference(*m_materialUID_choice2, *this);
         }
@@ -66,11 +66,17 @@ namespace generated
 
     CTiglUIDManager& CPACSMaterialDefinitionForProfileBased::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSMaterialDefinitionForProfileBased::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -78,14 +84,21 @@ namespace generated
     {
         // read element sheetUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetUID")) {
-            m_sheetUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sheetUID");
-            if (m_sheetUID.empty()) {
-                LOG(WARNING) << "Required element sheetUID is empty at xpath " << xpath;
+            m_sheetUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sheetUID");
+            if (m_sheetUID_choice1->empty()) {
+                LOG(WARNING) << "Optional element sheetUID is present but empty at xpath " << xpath;
             }
-            if (m_uidMgr && !m_sheetUID.empty()) m_uidMgr->RegisterReference(m_sheetUID, *this);
+            if (m_uidMgr && !m_sheetUID_choice1->empty()) m_uidMgr->RegisterReference(*m_sheetUID_choice1, *this);
         }
-        else {
-            LOG(ERROR) << "Required element sheetUID is missing at xpath " << xpath;
+
+        // read element standardProfileSheetID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/standardProfileSheetID")) {
+            m_standardProfileSheetID_choice2 = stringToCPACSMaterialDefinitionForProfileBased_standardProfileSheetID(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/standardProfileSheetID"));
+        }
+
+        // read element length
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/length")) {
+            m_length_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/length");
         }
 
         // read element compositeUID
@@ -128,11 +141,40 @@ namespace generated
 
     void CPACSMaterialDefinitionForProfileBased::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "sheetUID", "compositeUID", "orthotropyDirection", "thicknessScaling", "materialUID", "thickness" };
+        const std::vector<std::string> childElemOrder = { "sheetUID", "standardProfileSheetID", "length", "compositeUID", "orthotropyDirection", "thicknessScaling", "materialUID", "thickness" };
 
         // write element sheetUID
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sheetUID", childElemOrder);
-        tixi::TixiSaveElement(tixiHandle, xpath + "/sheetUID", m_sheetUID);
+        if (m_sheetUID_choice1) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sheetUID", childElemOrder);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/sheetUID", *m_sheetUID_choice1);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetUID")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/sheetUID");
+            }
+        }
+
+        // write element standardProfileSheetID
+        if (m_standardProfileSheetID_choice2) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/standardProfileSheetID", childElemOrder);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/standardProfileSheetID", CPACSMaterialDefinitionForProfileBased_standardProfileSheetIDToString(*m_standardProfileSheetID_choice2));
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/standardProfileSheetID")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/standardProfileSheetID");
+            }
+        }
+
+        // write element length
+        if (m_length_choice2) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/length", childElemOrder);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/length", *m_length_choice2);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/length")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/length");
+            }
+        }
 
         // write element compositeUID
         if (m_compositeUID_choice1) {
@@ -198,6 +240,33 @@ namespace generated
             (
                 (
                     // mandatory elements of this choice must be there
+                    m_sheetUID_choice1.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_standardProfileSheetID_choice2.is_initialized()
+                        ||
+                        m_length_choice2.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_standardProfileSheetID_choice2.is_initialized()
+                    &&
+                    m_length_choice2.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_sheetUID_choice1.is_initialized()
+                    )
+                )
+                == 1
+            )
+            &&
+            (
+                (
+                    // mandatory elements of this choice must be there
                     m_compositeUID_choice1.is_initialized()
                     &&
                     true // m_orthotropyDirection_choice1 is optional in choice
@@ -233,18 +302,38 @@ namespace generated
         ;
     }
 
-    const std::string& CPACSMaterialDefinitionForProfileBased::GetSheetUID() const
+    const boost::optional<std::string>& CPACSMaterialDefinitionForProfileBased::GetSheetUID_choice1() const
     {
-        return m_sheetUID;
+        return m_sheetUID_choice1;
     }
 
-    void CPACSMaterialDefinitionForProfileBased::SetSheetUID(const std::string& value)
+    void CPACSMaterialDefinitionForProfileBased::SetSheetUID_choice1(const boost::optional<std::string>& value)
     {
         if (m_uidMgr) {
-            if (!m_sheetUID.empty()) m_uidMgr->TryUnregisterReference(m_sheetUID, *this);
-            if (!value.empty()) m_uidMgr->RegisterReference(value, *this);
+            if (m_sheetUID_choice1 && !m_sheetUID_choice1->empty()) m_uidMgr->TryUnregisterReference(*m_sheetUID_choice1, *this);
+            if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
         }
-        m_sheetUID = value;
+        m_sheetUID_choice1 = value;
+    }
+
+    const boost::optional<CPACSMaterialDefinitionForProfileBased_standardProfileSheetID>& CPACSMaterialDefinitionForProfileBased::GetStandardProfileSheetID_choice2() const
+    {
+        return m_standardProfileSheetID_choice2;
+    }
+
+    void CPACSMaterialDefinitionForProfileBased::SetStandardProfileSheetID_choice2(const boost::optional<CPACSMaterialDefinitionForProfileBased_standardProfileSheetID>& value)
+    {
+        m_standardProfileSheetID_choice2 = value;
+    }
+
+    const boost::optional<double>& CPACSMaterialDefinitionForProfileBased::GetLength_choice2() const
+    {
+        return m_length_choice2;
+    }
+
+    void CPACSMaterialDefinitionForProfileBased::SetLength_choice2(const boost::optional<double>& value)
+    {
+        m_length_choice2 = value;
     }
 
     const boost::optional<std::string>& CPACSMaterialDefinitionForProfileBased::GetCompositeUID_choice1() const
@@ -312,8 +401,8 @@ namespace generated
 
     void CPACSMaterialDefinitionForProfileBased::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
     {
-        if (m_sheetUID == oldUid) {
-            m_sheetUID = newUid;
+        if (m_sheetUID_choice1 && *m_sheetUID_choice1 == oldUid) {
+            m_sheetUID_choice1 = newUid;
         }
         if (m_compositeUID_choice1 && *m_compositeUID_choice1 == oldUid) {
             m_compositeUID_choice1 = newUid;
