@@ -208,7 +208,9 @@ void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& ma
     m_rotation->SetX(rotation[0]);
     m_rotation->SetY(rotation[1]);
     m_rotation->SetZ(rotation[2]);
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSTransformation::updateMatrix(CTiglTransformation& cache) const
