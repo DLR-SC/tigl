@@ -42,7 +42,6 @@
 
 %boost_optional(tigl::generated::CPACSUpdates)
 %boost_optional(tigl::CCPACSStringVector)
-%boost_optional(tigl::generated::CPACSHeader_cpacsVersion)
 
 %include "ITiglUIDRefObject.h"
 %include "CTiglUIDObject.h"
@@ -51,6 +50,5 @@
 %include "generated/CPACSStringVectorBase.h"
 %include "CCPACSStringVector.h"
 %include "generated/CPACSUpdates.h"
-%include "generated/CPACSHeader_cpacsVersion.h"
 %include "generated/CPACSHeader.h"
 
