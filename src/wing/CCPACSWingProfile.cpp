@@ -379,7 +379,7 @@ ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo()
     } else if (m_cst2D_choice2) {
         return &*m_cst2D_choice2;
     } else {
-        throw CTiglError("no profile algorithm");
+        throw CTiglError("Currently only point list and CST profile definitions are supported by TiGL.");
     }
 }
 
