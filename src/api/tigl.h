@@ -4493,6 +4493,50 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
  */
 /*@{*/
 
+
+
+
+
+/**
+ * @brief tiglGetCrossSectionArea returns the area of the intersection of either the fused aircraft or its component (via UID) with a plane.
+ * The function can be used for Whitcomb's area rule.// If no intersections are found, the resulting area is
+ *                                                   //is zero. No warning or error is thrwon in this case. If more than one intersection is found, the returned area
+ *                                                   //is the some of the areas of the intersections. No warning or error is thrown.
+ *
+ * @param[in]  cpacsHandle      Handle for the CPACS configuration
+ * @param[in]  componentUID     UID of a geometric component or the whole plane
+ * @param[in]  origin_x         x-component of the origin of the plane
+ * @param[in]  origin_y         y-component of the origin of the plane
+ * @param[in]  origin_z         z-component of the origin of the plane
+ * @param[in]  normal_x         x-direction of the normal of the plane
+ * @param[in]  normal_y         y-direction of the normal of the plane
+ * @param[in]  normal_z         z-direction of the normal of the plane
+ * @param[out] area             The area of the intersection of the aircraft with the plane
+ * @return
+ *   - TIGL_SUCCESS if no error occurred
+ *   - TIGL_MATH_ERROR if the normal of the plane is zero
+ *   - TIGL_INDEX_ERROR if the fuse_result_mode is not between 0 and 3.
+ *   - TIGL_ERROR if some other error occurred
+ */
+
+/*
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char* componentUID,
+                                                          double origin_x, double origin_y, double origin_z,
+                                                          double normal_x, double normal_y, double normal_z,
+                                                          double* area
+                                                          );
+*/
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionAreaTestFunction(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char* componentUID,
+                                                          double origin_x, double origin_y, double origin_z,
+                                                          double normal_x, double normal_y, double normal_z,
+                                                          double* area
+                                                          );
+
+
+
 /**
 * @brief Returns the surface area of the wing. Currently, the area includes also the faces
 * on the wing symmetry plane (in case of a symmetric wing). In coming releases, these faces will

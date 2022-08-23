@@ -65,6 +65,13 @@
 #include "TopoDS_Edge.hxx"
 #include "TopoDS_Vertex.hxx"
 
+#include "BRepBuilderAPI_MakeFace.hxx"
+#include "BRepPrimAPI_MakeBox.hxx"
+#include "BRepAlgoAPI_Common.hxx"
+#include "GProp_GProps.hxx"
+#include "BRepGProp.hxx"
+
+
 /*****************************************************************************/
 /* Private functions.                                                 */
 /*****************************************************************************/
@@ -6500,6 +6507,126 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
 /*****************************************************************************************************/
 /*                     Surface Area calculations                                                     */
 /*****************************************************************************************************/
+
+
+//TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfigurationHandle cpacsHandle,
+//                                                          const char* componentUID,
+//                                                          double origin_x, double origin_y, double origin_z,
+//                                                          double normal_x, double normal_y, double normal_z,
+//                                                          double* area
+//                                                          )
+//{
+//    if (normal_x*normal_x + normal_y*normal_y + normal_z*normal_z < 1e-15){
+//        LOG(ERROR) << "Plane normal must be non-zero.";
+//        return TIGL_MATH_ERROR;
+//    }
+//    /*
+//    if (fuse_result_mode < 0 || fuse_result_mode > 3){
+//        LOG(ERROR) << "fuse_result_mode must be between 0 and 3";
+//        return TIGL_INDEX_ERROR;
+//    }
+//    */
+
+//    // if UID not of a geometric component or the whole plane...Error...
+
+//    try {
+//        // get configuration
+//        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+//        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+//        //if the UID belongs to a whole aircraft
+//        //if ()
+
+//        //if the UID belongs not to the whole aircraft but to a geometric component of the aircraft
+//        //if ()
+
+
+
+//        // get fused aircraft
+//        tigl::PTiglFusePlane fuser = config.AircraftFusingAlgo();
+//        fuser->SetResultMode((tigl::TiglFuseResultMode)fuse_result_mode);
+//        PNamedShape airplane = fuser->FusedPlane();
+
+//        // calculate intersection with plane
+//        auto intersection = tigl::CTiglIntersectionCalculation(&config.GetShapeCache(),
+//                                                               config.GetUID() + std::to_string(fuse_result_mode),
+//                                                               airplane->Shape(),
+//                                                               gp_Pnt(origin_x, origin_y, origin_z),
+//                                                               gp_Dir(normal_x, normal_y, normal_z));
+
+//        // calculate area of every found intersection
+//        *area = 0.;
+//        for (int i = 1; i <= intersection.GetCountIntersectionLines(); ++i) {
+//            //TODO: Check some fringe cases, e.g. wire should be (nearly) closed, nonsingular
+//            *area += GetArea(BuildFace(intersection.GetWire(i)));
+//        }
+
+//        return TIGL_SUCCESS;
+//    }
+//    catch (const tigl::CTiglError& ex) {
+//        LOG(ERROR) << ex.what();
+//        return ex.getCode();
+//    }
+//    catch (std::exception& ex) {
+//        LOG(ERROR) << ex.what();
+//        return TIGL_ERROR;
+//    }
+//    catch (...) {
+//        LOG(ERROR) << "Caught an exception in tiglGetCrossSectionArea!";
+//        return TIGL_ERROR;
+//    }
+//    return TIGL_SUCCESS;
+//}
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionAreaTestFunction(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char* componentUID,
+                                                          double origin_x, double origin_y, double origin_z,
+                                                          double normal_x, double normal_y, double normal_z,
+                                                          double* area
+                                                          )
+{
+     //get configuration
+     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+     tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+     *area = 3.;
+
+     // create plane
+
+     gp_Pnt point = gp_Pnt(origin_x, origin_y, origin_z);
+     gp_Dir normal = gp_Dir(normal_x, normal_y, normal_z);
+
+     TopoDS_Shape planeSurface = BRepBuilderAPI_MakeFace(gp_Pln(point, normal));
+
+     // create box
+
+     TopoDS_Shape box =BRepPrimAPI_MakeBox(3.5, 0.5, 0.7);
+
+     // get fused airplane
+
+     tigl::PTiglFusePlane fuser = config.AircraftFusingAlgo();
+     fuser->SetResultMode((tigl::TiglFuseResultMode) 1);
+     PNamedShape airplane = fuser->FusedPlane();
+     TopoDS_Shape airplaneShape = airplane->Shape();
+
+     // compute intersection of fused airplane and box
+
+     TopoDS_Shape commonSurface = BRepAlgoAPI_Common(planeSurface, airplaneShape);
+
+     // calculate intersection area of plane and box
+
+     GProp_GProps props = GProp_GProps();
+     BRepGProp::SurfaceProperties(commonSurface, props);
+
+     double val = props.Mass();
+
+     *area =val;
+
+
+     return TIGL_SUCCESS;
+}
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
                                                          double *surfaceAreaPtr)
