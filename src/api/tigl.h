@@ -4528,7 +4528,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfiguration
                                                           );
 */
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionAreaTestFunction(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfigurationHandle cpacsHandle,
                                                           const char* componentUID,
                                                           double origin_x, double origin_y, double origin_z,
                                                           double normal_x, double normal_y, double normal_z,

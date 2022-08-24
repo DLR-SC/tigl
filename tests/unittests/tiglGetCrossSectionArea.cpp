@@ -54,8 +54,7 @@ protected:
 TixiDocumentHandle  GetCrossSectionAreaSimple::tixiHandle = 0;
 TiglCPACSConfigurationHandle  GetCrossSectionAreaSimple::tiglHandle = 0;
 
-////////////////////////////////////////////////////////////////////////
-
+// TODO: Test if uID is valid: Does it exist and is it in case of existence assigned to a geometric component?
 
 TEST_F(GetCrossSectionAreaSimple, area_computations_fused_airplane)
 {
@@ -63,16 +62,28 @@ TEST_F(GetCrossSectionAreaSimple, area_computations_fused_airplane)
 
     // In the following line both wings and the fuselage are cut simultaneously.
 
-    EXPECT_EQ(tiglGetCrossSectionAreaTestFunction(tiglHandle, "Hallo", 0., 0., 0., 0., 0., 1., &area), TIGL_SUCCESS);
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Cpacs2Test", 0., 0., 0., 0., 0., 1., &area), TIGL_SUCCESS);
 
     double precision = 1.E-5;
 
     ASSERT_NEAR(area, 4.5, precision);
 
+    // Now let the cutting plane given by the x-z-plane
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Cpacs2Test", 0., 0., 0., 0., 1., 0., &area), TIGL_SUCCESS);
+
+    ASSERT_NEAR(area, 2., precision);
+
+    // Choose a cutting plane, parallel to the x-z-plane, that doesn't intersect the airplane
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Cpacs2Test", 0., 2.5, 0., 0., 1., 0., &area), TIGL_SUCCESS);
+
+    ASSERT_NEAR(area, 0., precision);
+
     // In the following line the cutting plane is chosen in such a way, that it is expected to be "tangent" to the fuselage and not
     // cut any of the wings at the same time. Hence the cross section area is expected to be 0.
 
-    EXPECT_EQ(tiglGetCrossSectionAreaTestFunction(tiglHandle, "Hallo", 0., 0., 0.5, 0., 0., 1., &area), TIGL_SUCCESS);
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Cpacs2Test", 0., 0., 0.5, 0., 0., 1., &area), TIGL_SUCCESS);
 
     ASSERT_NEAR(area, 0., precision);
 
@@ -81,61 +92,73 @@ TEST_F(GetCrossSectionAreaSimple, area_computations_fused_airplane)
     // For the following test, a low precision (precisionLow) has been chosen, since the cross section area of the cutting plane
     // with the non-cylindrical fuselage has been computet in an approximative way (visually in the GUI).
 
-    EXPECT_EQ(tiglGetCrossSectionAreaTestFunction(tiglHandle, "Hallo", 0., 0., 0.25, 0., 0., 1., &area), TIGL_SUCCESS);
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Cpacs2Test", 0., 0., 0.25, 0., 0., 1., &area), TIGL_SUCCESS);
 
     double precisionLow = 5.E-2;
 
     ASSERT_NEAR(area, 1.72, precisionLow);
 }
 
-////////////////////////////////////////////////////////////////////////
+TEST_F(GetCrossSectionAreaSimple, area_computations_wing)
+{
+    double area;
 
-//TEST_F(GetCrossSectionAreaSimple, error_handle_invalid)
-//{
-//    double area;
-//    EXPECT_EQ(tiglGetCrossSectionArea(-1, 0., 0., 0., 1., 0., 0., 0, &area), TIGL_NOT_FOUND);
-//}
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Wing", 0., 0., 0., 0., 0., 1., &area), TIGL_SUCCESS);
 
-//TEST_F(GetCrossSectionAreaSimple, fuse_result_mode_invalid)
-//{
-//    double area;
-//    EXPECT_EQ(tiglGetCrossSectionArea(-1, 0., 0., 0., 1., 0., 0., -1, &area), TIGL_INDEX_ERROR);
-//    EXPECT_EQ(tiglGetCrossSectionArea(-1, 0., 0., 0., 1., 0., 0.,  4, &area), TIGL_INDEX_ERROR);
-//}
+    double precision = 1.E-5;
 
-//TEST_F(GetCrossSectionAreaSimple, error_zero_normal)
-//{
-//    double area;
-//    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, 0., 0., 0., 0., 0., 0., 0, &area), TIGL_MATH_ERROR);
-//}
+    ASSERT_NEAR(area, 1.75, precision);
 
+    // Position the cutting plane in such a way that it doesn't intersect the wing
 
-//TEST_F(GetCrossSectionAreaSimple, sanity_values)
-//{
-//    double area_half, area_full, area;
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Wing", 0., 0., 0.25, 0., 0., 1., &area), TIGL_SUCCESS);
 
-//    // in x-direction at x=0.75
-//    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, -1, 0., 0., 1., 0., 0., 0, &area), TIGL_SUCCESS);
-//    EXPECT_EQ(area, 0.);
+    ASSERT_NEAR(area, 0., precision);
+}
 
-//    // in x-direction
-//    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, -0.25, 0., 0., 1., 0., 0., 1, &area), TIGL_SUCCESS);
-//    EXPECT_NEAR(area, 3.1416*0.25, 0.05);
+TEST_F(GetCrossSectionAreaSimple, area_computations_fuselage)
+{
+    double area;
 
-//    // reversed normal
-//    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, -0.25, 0., 0., -1., 0., 0., 1, &area_full), TIGL_SUCCESS);
-//    EXPECT_EQ(area_full, area);
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "SimpleFuselage", 0., 0., 0., 0., 0., 1., &area), TIGL_SUCCESS);
 
-//    // in z-direction at z=0
-//    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, 0., 0., 0., 0., 0., 1., 0, &area_half), TIGL_SUCCESS);
-//    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, 0., 0., 0., 0., 0., 1., 1, &area_full), TIGL_SUCCESS);
-//    EXPECT_NEAR(area_half, 2 +   1.25, 0.1);  // full fuselage, one wing
-//    EXPECT_NEAR(area_full, 2 + 2*1.25, 0.01); // full fuselage, two wings
+    double precision = 1.E-5;
 
-//    // non-uniqe intersection (should not throw error and should be larger than zero
-//    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, 1.25, -0.5, 0., 1., -1., 0., 1, &area), TIGL_SUCCESS);
-//    EXPECT_GE(area, 0.);
+    ASSERT_NEAR(area, 2., precision);
 
-//}
+    // Choose three different cutting planes in such a way, that they are "tangent" to the fuselage.
+    // Hence the cross section area is expected to be 0.
 
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "SimpleFuselage", 0., 0., 0.5, 0., 0., 1., &area), TIGL_SUCCESS);
 
+    ASSERT_NEAR(area, 0., precision);
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "SimpleFuselage", 0., 0.5, 0., 0., 1., 0., &area), TIGL_SUCCESS);
+
+    ASSERT_NEAR(area, 0., precision);
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "SimpleFuselage", 0., - 0.5, 0., 0., 1., 0., &area), TIGL_SUCCESS);
+
+    ASSERT_NEAR(area, 0., precision);
+
+    // Compute the cross section of the non-perfectly cylindrical fuselage with the y-z-plane.
+    // It is expected to be less than the area of a disc with radius 0.5.
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "SimpleFuselage", 0., 0., 0., 1., 0., 0., &area), TIGL_SUCCESS);
+
+    double precisionLow = 5.E-2;
+
+    ASSERT_NEAR(area, 0.76, precisionLow);
+}
+
+TEST_F(GetCrossSectionAreaSimple, error_handle_invalid)
+{
+    double area;
+    EXPECT_EQ(tiglGetCrossSectionArea(-1, "Cpacs2Test", 0., 0., 0., 1., 0., 0., &area), TIGL_NOT_FOUND);
+}
+
+TEST_F(GetCrossSectionAreaSimple, error_zero_normal)
+{
+    double area;
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle,"Cpacs2Test", 0., 0., 0., 0., 0., 0., &area), TIGL_MATH_ERROR);
+}
