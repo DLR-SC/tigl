@@ -68,11 +68,17 @@ namespace generated
 
     CTiglUIDManager& CPACSStructuralWallElements::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSStructuralWallElements::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

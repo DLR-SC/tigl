@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include <CCPACSMaterialDefinition.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSAxle.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -29,25 +29,26 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSTrackStructure;
+    class CPACSAxleAssemblies;
 
     // This class is used in:
-    // CPACSTrackStructure
+    // CPACSAxleAssemblies
 
-    /// @brief trackStrut1Type
+    /// @brief Bogie axle assembly
     /// 
+    /// Description of an axle installed on the bogie and its
+    /// relative position to it
     /// 
-    /// 
-    class CPACSTrackStrut1
+    class CPACSAxleAssembly
     {
     public:
-        TIGL_EXPORT CPACSTrackStrut1(CPACSTrackStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSAxleAssembly(CPACSAxleAssemblies* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSTrackStrut1();
+        TIGL_EXPORT virtual ~CPACSAxleAssembly();
 
-        TIGL_EXPORT CPACSTrackStructure* GetParent();
+        TIGL_EXPORT CPACSAxleAssemblies* GetParent();
 
-        TIGL_EXPORT const CPACSTrackStructure* GetParent() const;
+        TIGL_EXPORT const CPACSAxleAssemblies* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -58,27 +59,32 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
-        TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
+        TIGL_EXPORT virtual const CPACSAxle& GetAxle() const;
+        TIGL_EXPORT virtual CPACSAxle& GetAxle();
+
+        TIGL_EXPORT virtual const double& GetPosOnBogie() const;
+        TIGL_EXPORT virtual void SetPosOnBogie(const double& value);
 
     protected:
-        CPACSTrackStructure* m_parent;
+        CPACSAxleAssemblies* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Definition of the material properties.
-        CCPACSMaterialDefinition m_material;
+        CPACSAxle m_axle;
+
+        /// Relative position of the axle to the bogie (if more than one axle is defined; 0 = forward end of bogie; 1 = rear end of bogie)
+        double    m_posOnBogie;
 
     private:
-        CPACSTrackStrut1(const CPACSTrackStrut1&) = delete;
-        CPACSTrackStrut1& operator=(const CPACSTrackStrut1&) = delete;
+        CPACSAxleAssembly(const CPACSAxleAssembly&) = delete;
+        CPACSAxleAssembly& operator=(const CPACSAxleAssembly&) = delete;
 
-        CPACSTrackStrut1(CPACSTrackStrut1&&) = delete;
-        CPACSTrackStrut1& operator=(CPACSTrackStrut1&&) = delete;
+        CPACSAxleAssembly(CPACSAxleAssembly&&) = delete;
+        CPACSAxleAssembly& operator=(CPACSAxleAssembly&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSTrackStrut1 = generated::CPACSTrackStrut1;
-using CCPACSTrackStructure = generated::CPACSTrackStructure;
+using CCPACSAxleAssembly = generated::CPACSAxleAssembly;
+using CCPACSAxleAssemblies = generated::CPACSAxleAssemblies;
 } // namespace tigl

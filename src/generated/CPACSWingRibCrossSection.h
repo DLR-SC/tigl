@@ -79,6 +79,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetLowerCap() const;
         TIGL_EXPORT virtual boost::optional<CPACSCap>& GetLowerCap();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSCap>& GetRibPost() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCap>& GetRibPost();
+
         TIGL_EXPORT virtual CPACSPointX& GetRibRotation(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveRibRotation();
 
@@ -90,6 +93,9 @@ namespace generated
 
         TIGL_EXPORT virtual CPACSCap& GetLowerCap(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveLowerCap();
+
+        TIGL_EXPORT virtual CPACSCap& GetRibPost(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveRibPost();
 
     protected:
         CCPACSWingRibsDefinition* m_parent;
@@ -123,6 +129,9 @@ namespace generated
         boost::optional<CPACSCap>         m_upperCap;
 
         boost::optional<CPACSCap>         m_lowerCap;
+
+        /// Post element definition applied to all vertical intersections with spars
+        boost::optional<CPACSCap>         m_ribPost;
 
     private:
         CPACSWingRibCrossSection(const CPACSWingRibCrossSection&) = delete;

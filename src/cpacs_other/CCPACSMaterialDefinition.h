@@ -35,11 +35,6 @@ public:
     TIGL_EXPORT CCPACSMaterialDefinition(CCPACSLateralCap* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSMaterialDefinition(CCPACSSheetBasedStructuralElement* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSMaterialDefinition(CCPACSTrackActuator* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSTrackCar* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSTrackFairing* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSTrackStructure* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSTrackStrut1* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSTrackStrut2* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSMaterialDefinition(CCPACSWeb* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSMaterialDefinition(CCPACSWingRibCell* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSMaterialDefinition(CCPACSWingRibCrossSection* parent, CTiglUIDManager* uidMgr);

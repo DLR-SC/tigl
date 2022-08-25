@@ -71,11 +71,17 @@ namespace generated
 
     CTiglUIDManager& CPACSPressureBulkheadAssemblyPosition::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSPressureBulkheadAssemblyPosition::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

@@ -71,11 +71,17 @@ namespace generated
 
     CTiglUIDManager& CPACSComponentSegment::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSComponentSegment::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

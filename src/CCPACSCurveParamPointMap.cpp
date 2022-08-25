@@ -40,7 +40,7 @@ void CCPACSCurveParamPointMap::ReadCPACS(const TixiDocumentHandle &tixiHandle, c
     m_pointIndices.clear();
     m_pointParams.clear();
 
-    const auto& indexAsDouble = GetPointIndex().AsVector();
+    const auto& indexAsDouble = GetPointIndices().AsVector();
     const auto& params = GetParamOnCurve().AsVector();
 
     if (params.size() != indexAsDouble.size()) {
@@ -75,11 +75,11 @@ void CCPACSCurveParamPointMap::Reverse(double minAllowedParam, double maxAllowed
         return minAllowedParam + maxAllowedParam - oldParm;
     });
 
-    auto pointIndexDouble = GetPointIndex().AsVector();
+    auto pointIndexDouble = GetPointIndices().AsVector();
     std::transform(std::begin(m_pointIndices), std::end(m_pointIndices), std::begin(pointIndexDouble), [](int val) {
         return val;
     });
-    GetPointIndex().SetAsVector(pointIndexDouble);
+    GetPointIndices().SetAsVector(pointIndexDouble);
 
     GetParamOnCurve().SetAsVector(m_pointParams);
 }

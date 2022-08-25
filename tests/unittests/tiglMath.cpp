@@ -23,6 +23,7 @@
 #include "CTiglPoint.h"
 #include "CTiglTransformation.h"
 
+#include "CTiglUIDManager.h"
 #include "CCPACSTransformation.h"
 #include "tiglMatrix.h"
 
@@ -412,7 +413,8 @@ TEST(TiglMath, CTiglTransform_setTransformationMatrix)
     tiglTrafo.AddRotationIntrinsicXYZ(rot[0], rot[1], rot[2]);
     tiglTrafo.AddTranslation(trans[0], trans[1], trans[2]);
 
-    tigl::CCPACSTransformation cpacsTrafo(NULL);
+    tigl::CTiglUIDManager dummy;
+    tigl::CCPACSTransformation cpacsTrafo(&dummy);
     cpacsTrafo.setTransformationMatrix(tiglTrafo);
 
     EXPECT_NEAR(*cpacsTrafo.GetScaling()->GetX(), scale[0], 1e-8);

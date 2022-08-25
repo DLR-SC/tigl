@@ -72,7 +72,8 @@ namespace generated
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
         TIGL_EXPORT virtual const std::vector<std::string>& GetSparPositionUIDs() const;
-        TIGL_EXPORT virtual std::vector<std::string>& GetSparPositionUIDs();
+        TIGL_EXPORT virtual void AddToSparPositionUIDs(const std::string& value);
+        TIGL_EXPORT virtual bool RemoveFromSparPositionUIDs(const std::string& value);
 
     protected:
         CCPACSWingSparSegment* m_parent;

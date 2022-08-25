@@ -66,11 +66,17 @@ namespace generated
 
     CTiglUIDManager& CPACSMaterialDefinitionForProfileBasedPoint::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSMaterialDefinitionForProfileBasedPoint::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

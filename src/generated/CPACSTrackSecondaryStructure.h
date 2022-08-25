@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include <CCPACSMaterialDefinition.h>
 #include <string>
 #include <tixi.h>
+#include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -34,16 +34,12 @@ namespace generated
     // This class is used in:
     // CPACSTrackStructure
 
-    /// @brief trackCarType
-    /// 
-    /// 
-    /// 
-    class CPACSTrackCar
+    class CPACSTrackSecondaryStructure : public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSTrackCar(CPACSTrackStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSTrackSecondaryStructure(CPACSTrackStructure* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSTrackCar();
+        TIGL_EXPORT virtual ~CPACSTrackSecondaryStructure();
 
         TIGL_EXPORT CPACSTrackStructure* GetParent();
 
@@ -58,27 +54,29 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
-        TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
+        TIGL_EXPORT virtual const std::string& GetMaterialUID() const;
+        TIGL_EXPORT virtual void SetMaterialUID(const std::string& value);
 
     protected:
         CPACSTrackStructure* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Definition of the material properties.
-        CCPACSMaterialDefinition m_material;
+        std::string m_materialUID;
 
     private:
-        CPACSTrackCar(const CPACSTrackCar&) = delete;
-        CPACSTrackCar& operator=(const CPACSTrackCar&) = delete;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
-        CPACSTrackCar(CPACSTrackCar&&) = delete;
-        CPACSTrackCar& operator=(CPACSTrackCar&&) = delete;
+        CPACSTrackSecondaryStructure(const CPACSTrackSecondaryStructure&) = delete;
+        CPACSTrackSecondaryStructure& operator=(const CPACSTrackSecondaryStructure&) = delete;
+
+        CPACSTrackSecondaryStructure(CPACSTrackSecondaryStructure&&) = delete;
+        CPACSTrackSecondaryStructure& operator=(CPACSTrackSecondaryStructure&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSTrackCar = generated::CPACSTrackCar;
+using CCPACSTrackSecondaryStructure = generated::CPACSTrackSecondaryStructure;
 using CCPACSTrackStructure = generated::CPACSTrackStructure;
 } // namespace tigl

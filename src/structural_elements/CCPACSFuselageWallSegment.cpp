@@ -94,7 +94,7 @@ TopoDS_Compound CCPACSFuselageWallSegment::GetCutPlanes() const
 
 void CCPACSFuselageWallSegment::SetPhi(const double& value)
 {
-    CPACSWallSegment::SetPhi(value);
+    CPACSWallSegment::GetPhi().SetSimpleContent(value);
     Invalidate();
 }
 
@@ -188,7 +188,7 @@ PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
         }
 
         // extrusion vector
-        double phiRad = Radians(GetPhi());
+        double phiRad = Radians(GetPhi().GetSimpleContent());
         gp_Vec ext_vec(0., -sin(phiRad), cos(phiRad));
         ext_vec = GetFuselage().GetTransformationMatrix().Transform(ext_vec);
 

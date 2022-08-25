@@ -22,6 +22,8 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSCompartmentGeometry.h"
+#include "CPACSCompartment_designVolume.h"
+#include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
@@ -68,27 +70,30 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetDesignVolume() const;
-        TIGL_EXPORT virtual void SetDesignVolume(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<CPACSCompartment_designVolume>& GetDesignVolume() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCompartment_designVolume>& GetDesignVolume();
+
+        TIGL_EXPORT virtual CPACSCompartment_designVolume& GetDesignVolume(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveDesignVolume();
 
     protected:
         CPACSCompartments* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<std::string> m_uID;
+        boost::optional<std::string>                   m_uID;
 
         /// Compartment geometry uIDs list.
-        CPACSCompartmentGeometry     m_geometry;
+        CPACSCompartmentGeometry                       m_geometry;
 
         /// Name of the compartment.
-        boost::optional<std::string> m_name;
+        boost::optional<std::string>                   m_name;
 
         /// Description of the compartment.
-        boost::optional<std::string> m_description;
+        boost::optional<std::string>                   m_description;
 
         /// Ideal design volume of the compartment.
-        boost::optional<double>      m_designVolume;
+        boost::optional<CPACSCompartment_designVolume> m_designVolume;
 
     private:
         CPACSCompartment(const CPACSCompartment&) = delete;

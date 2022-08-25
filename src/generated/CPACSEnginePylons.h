@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSAircraftModel
 
-    /// @brief List of all engine pylons.
+    /// @brief Engine pylons
     /// 
     /// 
     /// 

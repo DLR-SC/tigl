@@ -64,9 +64,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CCPACSWingComponentSegment>::value || std::is_same<P, CCPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSWingComponentSegmentStructure");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -76,9 +74,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CCPACSWingComponentSegment>::value || std::is_same<P, CCPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSWingComponentSegmentStructure");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

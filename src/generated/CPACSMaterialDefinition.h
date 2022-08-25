@@ -38,11 +38,6 @@ namespace generated
     class CPACSLateralCap;
     class CPACSSheetBasedStructuralElement;
     class CPACSTrackActuator;
-    class CPACSTrackCar;
-    class CPACSTrackFairing;
-    class CPACSTrackStructure;
-    class CPACSTrackStrut1;
-    class CPACSTrackStrut2;
     class CPACSWeb;
     class CPACSWingRibCell;
     class CPACSWingSkin;
@@ -52,17 +47,12 @@ namespace generated
     // CPACSLateralCap
     // CPACSSheetBasedStructuralElement
     // CPACSTrackActuator
-    // CPACSTrackCar
-    // CPACSTrackFairing
-    // CPACSTrackStructure
-    // CPACSTrackStrut1
-    // CPACSTrackStrut2
     // CPACSWeb
     // CPACSWingRibCell
     // CPACSWingRibCrossSection
     // CPACSWingSkin
 
-    /// @brief materialDefinitionType
+    /// @brief Material Definition
     /// 
     /// MaterialDefinition type, containing a material
     /// definition (Reference to material and thickness)
@@ -74,11 +64,6 @@ namespace generated
         TIGL_EXPORT CPACSMaterialDefinition(CPACSLateralCap* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSMaterialDefinition(CPACSSheetBasedStructuralElement* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSMaterialDefinition(CPACSTrackActuator* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSMaterialDefinition(CPACSTrackCar* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSMaterialDefinition(CPACSTrackFairing* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSMaterialDefinition(CPACSTrackStructure* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSMaterialDefinition(CPACSTrackStrut1* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSMaterialDefinition(CPACSTrackStrut2* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSMaterialDefinition(CPACSWeb* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSMaterialDefinition(CPACSWingRibCell* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSMaterialDefinition(CCPACSWingRibCrossSection* parent, CTiglUIDManager* uidMgr);
@@ -95,9 +80,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-#ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CPACSCap>::value || std::is_same<P, CPACSLateralCap>::value || std::is_same<P, CPACSSheetBasedStructuralElement>::value || std::is_same<P, CPACSTrackActuator>::value || std::is_same<P, CPACSTrackCar>::value || std::is_same<P, CPACSTrackFairing>::value || std::is_same<P, CPACSTrackStructure>::value || std::is_same<P, CPACSTrackStrut1>::value || std::is_same<P, CPACSTrackStrut2>::value || std::is_same<P, CPACSWeb>::value || std::is_same<P, CPACSWingRibCell>::value || std::is_same<P, CCPACSWingRibCrossSection>::value || std::is_same<P, CPACSWingSkin>::value, "template argument for P is not a parent class of CPACSMaterialDefinition");
-#endif
+            static_assert(std::is_same<P, CPACSCap>::value || std::is_same<P, CPACSLateralCap>::value || std::is_same<P, CPACSSheetBasedStructuralElement>::value || std::is_same<P, CPACSTrackActuator>::value || std::is_same<P, CPACSWeb>::value || std::is_same<P, CPACSWingRibCell>::value || std::is_same<P, CCPACSWingRibCrossSection>::value || std::is_same<P, CPACSWingSkin>::value, "template argument for P is not a parent class of CPACSMaterialDefinition");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -107,9 +90,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-#ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CPACSCap>::value || std::is_same<P, CPACSLateralCap>::value || std::is_same<P, CPACSSheetBasedStructuralElement>::value || std::is_same<P, CPACSTrackActuator>::value || std::is_same<P, CPACSTrackCar>::value || std::is_same<P, CPACSTrackFairing>::value || std::is_same<P, CPACSTrackStructure>::value || std::is_same<P, CPACSTrackStrut1>::value || std::is_same<P, CPACSTrackStrut2>::value || std::is_same<P, CPACSWeb>::value || std::is_same<P, CPACSWingRibCell>::value || std::is_same<P, CCPACSWingRibCrossSection>::value || std::is_same<P, CPACSWingSkin>::value, "template argument for P is not a parent class of CPACSMaterialDefinition");
-#endif
+            static_assert(std::is_same<P, CPACSCap>::value || std::is_same<P, CPACSLateralCap>::value || std::is_same<P, CPACSSheetBasedStructuralElement>::value || std::is_same<P, CPACSTrackActuator>::value || std::is_same<P, CPACSWeb>::value || std::is_same<P, CPACSWingRibCell>::value || std::is_same<P, CCPACSWingRibCrossSection>::value || std::is_same<P, CPACSWingSkin>::value, "template argument for P is not a parent class of CPACSMaterialDefinition");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -184,11 +165,6 @@ using CCPACSCap = generated::CPACSCap;
 using CCPACSLateralCap = generated::CPACSLateralCap;
 using CCPACSSheetBasedStructuralElement = generated::CPACSSheetBasedStructuralElement;
 using CCPACSTrackActuator = generated::CPACSTrackActuator;
-using CCPACSTrackCar = generated::CPACSTrackCar;
-using CCPACSTrackFairing = generated::CPACSTrackFairing;
-using CCPACSTrackStructure = generated::CPACSTrackStructure;
-using CCPACSTrackStrut1 = generated::CPACSTrackStrut1;
-using CCPACSTrackStrut2 = generated::CPACSTrackStrut2;
 using CCPACSWeb = generated::CPACSWeb;
 using CCPACSWingRibCell = generated::CPACSWingRibCell;
 using CCPACSWingSkin = generated::CPACSWingSkin;

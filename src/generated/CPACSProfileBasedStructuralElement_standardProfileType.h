@@ -33,7 +33,10 @@ namespace generated
     enum CPACSProfileBasedStructuralElement_standardProfileType
     {
         C,
+        I,
         T,
+        T1,
+        T2,
         Z,
         L,
         HAT,
@@ -47,7 +50,10 @@ namespace generated
     {
         switch(value) {
         case C: return "C";
+        case I: return "I";
         case T: return "T";
+        case T1: return "T1";
+        case T2: return "T2";
         case Z: return "Z";
         case L: return "L";
         case HAT: return "HAT";
@@ -62,7 +68,10 @@ namespace generated
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "c") { return C; }
+        if (toLower(value) == "i") { return I; }
         if (toLower(value) == "t") { return T; }
+        if (toLower(value) == "t1") { return T1; }
+        if (toLower(value) == "t2") { return T2; }
         if (toLower(value) == "z") { return Z; }
         if (toLower(value) == "l") { return L; }
         if (toLower(value) == "hat") { return HAT; }

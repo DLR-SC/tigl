@@ -68,11 +68,17 @@ namespace generated
 
     CTiglUIDManager& CPACSDoorSurroundStructuresAssembly::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSDoorSurroundStructuresAssembly::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

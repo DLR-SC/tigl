@@ -54,8 +54,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CCPACSStringVector& GetPointIndex() const;
-        TIGL_EXPORT virtual CCPACSStringVector& GetPointIndex();
+        TIGL_EXPORT virtual const CCPACSStringVector& GetPointIndices() const;
+        TIGL_EXPORT virtual CCPACSStringVector& GetPointIndices();
 
         TIGL_EXPORT virtual const CCPACSStringVector& GetParamOnCurve() const;
         TIGL_EXPORT virtual CCPACSStringVector& GetParamOnCurve();
@@ -63,8 +63,8 @@ namespace generated
     protected:
         CCPACSCurvePointListXYZ* m_parent;
 
-        /// List of indices of points to be mapped. Each index must be in the range 0 ... npoints-1 .
-        CCPACSStringVector m_pointIndex;
+        /// List of indices of points to be mapped. Each index must be in the range [1, npoints].
+        CCPACSStringVector m_pointIndices;
 
         /// List of parameters on the curve, that is mapped to the points defined by their index.
         CCPACSStringVector m_paramOnCurve;

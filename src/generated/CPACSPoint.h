@@ -45,7 +45,7 @@ namespace generated
     // CPACSSeatModule
     // CPACSTransformation
 
-    /// @brief pointType
+    /// @brief Point: x,y,z
     /// 
     /// Point type, containing an xyz data triplet.
     /// 
@@ -69,9 +69,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CPACSControlSurfaceHingePoint>::value || std::is_same<P, CPACSControlSurfaceStep>::value || std::is_same<P, CPACSPointList>::value || std::is_same<P, CPACSSeatModule>::value || std::is_same<P, CCPACSTransformation>::value, "template argument for P is not a parent class of CPACSPoint");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -81,9 +79,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CPACSControlSurfaceHingePoint>::value || std::is_same<P, CPACSControlSurfaceStep>::value || std::is_same<P, CPACSPointList>::value || std::is_same<P, CPACSSeatModule>::value || std::is_same<P, CCPACSTransformation>::value, "template argument for P is not a parent class of CPACSPoint");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

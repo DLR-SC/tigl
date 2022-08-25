@@ -17,37 +17,39 @@
 
 #pragma once
 
-#include <CCPACSMaterialDefinition.h>
 #include <string>
 #include <tixi.h>
+#include <vector>
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSAircraftModel;
 
 namespace generated
 {
-    class CPACSTrackStructure;
+    class CPACSLandingGearBase;
 
     // This class is used in:
-    // CPACSTrackStructure
+    // CPACSAircraftModel
 
-    /// @brief trackFairingType
+    /// @brief Landing gears
     /// 
+    /// Contains a list of landing gears.
     /// 
-    /// 
-    class CPACSTrackFairing
+    class CPACSLandingGears
     {
     public:
-        TIGL_EXPORT CPACSTrackFairing(CPACSTrackStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSLandingGears(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSTrackFairing();
+        TIGL_EXPORT virtual ~CPACSLandingGears();
 
-        TIGL_EXPORT CPACSTrackStructure* GetParent();
+        TIGL_EXPORT CCPACSAircraftModel* GetParent();
 
-        TIGL_EXPORT const CPACSTrackStructure* GetParent() const;
+        TIGL_EXPORT const CCPACSAircraftModel* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -58,27 +60,29 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
-        TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSLandingGearBase>>& GetLandingGears() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSLandingGearBase>>& GetLandingGears();
+
+        TIGL_EXPORT virtual CPACSLandingGearBase& AddLandingGear();
+        TIGL_EXPORT virtual void RemoveLandingGear(CPACSLandingGearBase& ref);
 
     protected:
-        CPACSTrackStructure* m_parent;
+        CCPACSAircraftModel* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Definition of the material properties.
-        CCPACSMaterialDefinition m_material;
+        std::vector<std::unique_ptr<CPACSLandingGearBase>> m_landingGears;
 
     private:
-        CPACSTrackFairing(const CPACSTrackFairing&) = delete;
-        CPACSTrackFairing& operator=(const CPACSTrackFairing&) = delete;
+        CPACSLandingGears(const CPACSLandingGears&) = delete;
+        CPACSLandingGears& operator=(const CPACSLandingGears&) = delete;
 
-        CPACSTrackFairing(CPACSTrackFairing&&) = delete;
-        CPACSTrackFairing& operator=(CPACSTrackFairing&&) = delete;
+        CPACSLandingGears(CPACSLandingGears&&) = delete;
+        CPACSLandingGears& operator=(CPACSLandingGears&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSTrackFairing = generated::CPACSTrackFairing;
-using CCPACSTrackStructure = generated::CPACSTrackStructure;
+using CCPACSLandingGears = generated::CPACSLandingGears;
+using CCPACSLandingGearBase = generated::CPACSLandingGearBase;
 } // namespace tigl

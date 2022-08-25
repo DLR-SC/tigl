@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSCpacs
 
-    /// @brief headerType
+    /// @brief CPACS header
     /// 
     /// Header type, containing CPACS dataset description
     /// 
@@ -100,9 +100,9 @@ namespace generated
         /// Version of initial CPACS dataset
         std::string                   m_version;
 
-        /// CPACS version that the dataset is valid to. The element is optional, since data sets 
+        /// CPACS version that the dataset is valid to. The element is optional, since data sets
         /// can be valid for several CPACS versions. However, we strongly recommend to assign data sets to a
-        /// specific CPACS version as far as possible, especially since some tools and libraries (e.g. TiGL) 
+        /// specific CPACS version as far as possible, especially since some tools and libraries (e.g. TiGL)
         /// require this specification.
         boost::optional<std::string>  m_cpacsVersion;
 

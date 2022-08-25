@@ -19,6 +19,7 @@
 #include "test.h"
 #include "tigl.h"
 
+#include "CTiglUIDManager.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingCell.h"
@@ -158,7 +159,8 @@ public:
 
 TEST(WingCell, IsInner)
 {
-   tigl::CCPACSWingCell cell(NULL, NULL);
+   tigl::CTiglUIDManager dummy_manager;
+   tigl::CCPACSWingCell cell(NULL, &dummy_manager);
    cell.SetLeadingEdgeInnerPoint (0,0);
    cell.SetLeadingEdgeOuterPoint (1,0);
    cell.SetTrailingEdgeInnerPoint(0,1);
@@ -193,7 +195,8 @@ TEST(WingCell, IsInner)
 
 TEST(WingCell, IsInner_NonConvex)
 {
-   tigl::CCPACSWingCell cell(NULL, NULL);
+   tigl::CTiglUIDManager dummy_manager;
+   tigl::CCPACSWingCell cell(NULL, &dummy_manager);
    cell.SetLeadingEdgeInnerPoint (0,0);
    cell.SetLeadingEdgeOuterPoint (1,0);
    cell.SetTrailingEdgeInnerPoint(0,1);
@@ -210,7 +213,8 @@ TEST(WingCell, IsInner_NonConvex)
 
 TEST(WingCell, IsConvex)
 {
-   tigl::CCPACSWingCell cell(NULL, NULL);
+   tigl::CTiglUIDManager dummy_manager;
+   tigl::CCPACSWingCell cell(NULL, &dummy_manager);
    cell.SetLeadingEdgeInnerPoint (0,0);
    cell.SetLeadingEdgeOuterPoint (1,0);
    cell.SetTrailingEdgeInnerPoint(0,1);

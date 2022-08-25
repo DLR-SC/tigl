@@ -33,6 +33,7 @@ public:
     TIGL_EXPORT CCPACSStringVector(CCPACSCurvePointListXYZ* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSCurveParamPointMap* parent);
     TIGL_EXPORT CCPACSStringVector(CCPACSRotorBladeAttachment* parent);
+    TIGL_EXPORT CCPACSStringVector(CCPACSTrackJointPosition* parent);
 
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
     TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const override;

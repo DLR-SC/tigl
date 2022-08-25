@@ -45,8 +45,8 @@ namespace generated
 
     /// @brief stringerFramePositionType
     /// 
-    /// stringerFramePosition type, containing individual
-    /// stringer / frame postion definition (CPACS V2.1+)
+    /// Description of individual stringer / frame postions
+    /// @see stringerFramePositioning
     /// 
     class CPACSStringerFramePosition : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -65,9 +65,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CCPACSFrame>::value || std::is_same<P, CCPACSFuselageStringer>::value, "template argument for P is not a parent class of CPACSStringerFramePosition");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -77,9 +75,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CCPACSFrame>::value || std::is_same<P, CCPACSFuselageStringer>::value, "template argument for P is not a parent class of CPACSStringerFramePosition");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -95,14 +91,19 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
+        TIGL_EXPORT bool ValidateChoices() const;
+
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
         TIGL_EXPORT virtual const std::string& GetStructuralElementUID() const;
         TIGL_EXPORT virtual void SetStructuralElementUID(const std::string& value);
 
-        TIGL_EXPORT virtual const double& GetPositionX() const;
-        TIGL_EXPORT virtual void SetPositionX(const double& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetPositionX_choice1() const;
+        TIGL_EXPORT virtual void SetPositionX_choice1(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetSectionElementUID_choice2() const;
+        TIGL_EXPORT virtual void SetSectionElementUID_choice2(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const double& GetReferenceY() const;
         TIGL_EXPORT virtual void SetReferenceY(const double& value);
@@ -137,7 +138,10 @@ namespace generated
         std::string                                m_structuralElementUID;
 
         /// x position in absolute value
-        double                                     m_positionX;
+        boost::optional<double>                    m_positionX_choice1;
+
+        /// UID reference to a fuselageSectionElement
+        boost::optional<std::string>               m_sectionElementUID_choice2;
 
         /// y coordinate of reference system
         double                                     m_referenceY;

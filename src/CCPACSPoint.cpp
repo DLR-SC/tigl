@@ -62,7 +62,9 @@ CCPACSPoint &CCPACSPoint::operator=(const CCPACSPoint & p)
     m_x = p.m_x;
     m_y = p.m_y;
     m_z = p.m_z;
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
     return *this;
 }
 
@@ -80,25 +82,33 @@ void CCPACSPoint::SetAsPoint(const CTiglPoint& point)
     m_x = point.x;
     m_y = point.y;
     m_z = point.z;
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSPoint::SetX(const boost::optional<double>& value)
 {
     generated::CPACSPoint::SetX(value);
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSPoint::SetY(const boost::optional<double>& value)
 {
     generated::CPACSPoint::SetY(value);
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSPoint::SetZ(const boost::optional<double>& value)
 {
     generated::CPACSPoint::SetZ(value);
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSPoint::InvalidateImpl(const boost::optional<std::string>& source) const

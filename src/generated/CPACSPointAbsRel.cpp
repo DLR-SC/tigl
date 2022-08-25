@@ -18,6 +18,7 @@
 #include <cassert>
 #include "CCPACSTransformation.h"
 #include "CPACSPointAbsRel.h"
+#include "CPACSStrutAssembly.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,11 +28,20 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSPointAbsRel::CPACSPointAbsRel(CPACSStrutAssembly* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSStrutAssembly);
+    }
+
     CPACSPointAbsRel::CPACSPointAbsRel(CCPACSTransformation* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSTransformation);
     }
 
     CPACSPointAbsRel::~CPACSPointAbsRel()
@@ -39,23 +49,18 @@ namespace generated
         if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
-    const CCPACSTransformation* CPACSPointAbsRel::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSTransformation* CPACSPointAbsRel::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSPointAbsRel::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (m_parent->GetUID())
-                return m_parent;
-            else
-                return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSStrutAssembly>()) {
+                return GetParent<CPACSStrutAssembly>();
+            }
+            if (IsParent<CCPACSTransformation>()) {
+                if (GetParent<CCPACSTransformation>()->GetUID())
+                    return GetParent<CCPACSTransformation>();
+                else
+                    return GetParent<CCPACSTransformation>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -63,21 +68,32 @@ namespace generated
     CTiglUIDObject* CPACSPointAbsRel::GetNextUIDParent()
     {
         if (m_parent) {
-            if (m_parent->GetUID())
-                return m_parent;
-            else
-                return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSStrutAssembly>()) {
+                return GetParent<CPACSStrutAssembly>();
+            }
+            if (IsParent<CCPACSTransformation>()) {
+                if (GetParent<CCPACSTransformation>()->GetUID())
+                    return GetParent<CCPACSTransformation>();
+                else
+                    return GetParent<CCPACSTransformation>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDManager& CPACSPointAbsRel::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSPointAbsRel::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

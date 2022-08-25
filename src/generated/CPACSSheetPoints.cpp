@@ -66,11 +66,17 @@ namespace generated
 
     CTiglUIDManager& CPACSSheetPoints::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSSheetPoints::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -100,9 +106,25 @@ namespace generated
         return m_sheetPointUIDs;
     }
 
-    std::vector<std::string>& CPACSSheetPoints::GetSheetPointUIDs()
+    void CPACSSheetPoints::AddToSheetPointUIDs(const std::string& value)
     {
-        return m_sheetPointUIDs;
+        if (m_uidMgr) {
+            if (!value.empty()) m_uidMgr->RegisterReference(value, *this);
+        }
+        m_sheetPointUIDs.push_back(value);
+    }
+
+    bool CPACSSheetPoints::RemoveFromSheetPointUIDs(const std::string& value)
+    {
+        const auto it = std::find(m_sheetPointUIDs.begin(), m_sheetPointUIDs.end(), value);
+        if (it != m_sheetPointUIDs.end()) {
+            if (m_uidMgr && !it->empty()) {
+                m_uidMgr->TryUnregisterReference(*it, *this);
+            }
+            m_sheetPointUIDs.erase(it);
+            return true;
+        }
+        return false;
     }
 
     const CTiglUIDObject* CPACSSheetPoints::GetNextUIDObject() const

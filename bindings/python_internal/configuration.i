@@ -35,6 +35,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglFusePlane.h"
 #include "CCPACSWingProfile.h"
+#include "generated/CPACSStandardProfile.h" //TODO: Replace with CCPACSStandardProfile, once it exists.
 #include "CCPACSFuselageSection.h"
 #include "CCPACSExternalObject.h"
 #include "CTiglShapeCache.h"
@@ -89,6 +90,7 @@
 #include "generated/CPACSWallPositionUIDs.h"
 #include "generated/CPACSWallPosition.h"
 #include "generated/CPACSWallPositions.h"
+#include "generated/CPACSWallSegment_phi.h"
 #include "generated/CPACSWallSegment.h"
 #include "generated/CPACSWallSegments.h"
 #include "generated/CPACSUIDSequence.h"
@@ -128,6 +130,9 @@
 %boost_optional(tigl::CCPACSWingRibsDefinitions)
 %boost_optional(tigl::CCPACSWingSpars)
 %boost_optional(tigl::generated::CPACSGuideCurve_continuity)
+%boost_optional(tigl::CCPACSRectangleProfile_cornerRadius)
+%boost_optional(tigl::CCPACSRectangleProfile)
+%boost_optional(tigl::CCPACSStandardProfile)
 %boost_optional(tigl::CCPACSWingProfileCST)
 %boost_optional(tigl::CTiglTransformation)
 %boost_optional(tigl::CCPACSRotorHinges)
@@ -182,6 +187,7 @@
 %include "generated/CPACSWallPositionUIDs.h"
 %include "generated/CPACSWallPosition.h"
 %include "generated/CPACSWallPositions.h"
+%include "generated/CPACSWallSegment_phi.h"
 %include "generated/CPACSWallSegment.h"
 %include "generated/CPACSWallSegments.h"
 %boost_optional(tigl::generated::CPACSWalls)
@@ -241,10 +247,9 @@ namespace tigl
 {
     class CCPACSWingCSStructure;
 }
-%include "generated/CPACSTrackFairing.h"
-%include "generated/CPACSTrackStrut2.h"
-%include "generated/CPACSTrackStrut1.h"
-%include "generated/CPACSTrackCar.h"
+%include "generated/CPACSTrackSecondaryStructure.h"
+%include "generated/CPACSTrackJointPositions.h"
+%include "generated/CPACSTrackStruts.h"
 %include "generated/CPACSTrackStructure.h"
 %include "generated/CPACSTrackActuator.h"
 %include "generated/CPACSControlSurfaceTrackType_trackSubType.h"
@@ -399,6 +404,10 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSGuideCurves.h"
 %include "generated/CPACSCst2D.h"
 %include "ITiglWingProfileAlgo.h"
+%include "generated/CPACSPosExcl0DoubleBase.h"
+%include "generated/CPACSRectangleProfile_cornerRadius.h"
+%include "generated/CPACSRectangleProfile.h"
+%include "generated/CPACSStandardProfile.h" //TODO: Need to replace with implementation CCPACSStandardProfile.h, once it exists.
 %include "CCPACSWingProfileCST.h"
 %include "PTiglWingProfileAlgo.h"
 %include "generated/CPACSFuselageElements.h"

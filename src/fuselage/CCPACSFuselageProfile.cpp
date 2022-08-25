@@ -176,7 +176,7 @@ TopoDS_Wire CCPACSFuselageProfile::GetWire(bool forceClosed) const
 void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
 {
     if (!m_pointList_choice1)
-        throw CTiglError("No pointlist specified");
+        throw CTiglError("Currently only fuselage profiles defined by pointList are supported.");
     if (GetNumPoints() < 2) {
         throw CTiglError("Number of points is less than 2 in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
     }

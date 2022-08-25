@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include "CCPACSDuctAssembly.h"
+#include "CPACSLandingGearStrutAttachment.h"
 #include "CPACSUIDSequence.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -33,6 +34,15 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSDuctAssembly);
+    }
+
+    CPACSUIDSequence::CPACSUIDSequence(CPACSLandingGearStrutAttachment* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSLandingGearStrutAttachment);
     }
 
     CPACSUIDSequence::~CPACSUIDSequence()
@@ -44,33 +54,45 @@ namespace generated
         }
     }
 
-    const CCPACSDuctAssembly* CPACSUIDSequence::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSDuctAssembly* CPACSUIDSequence::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSUIDSequence::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSDuctAssembly>()) {
+                return GetParent<CCPACSDuctAssembly>();
+            }
+            if (IsParent<CPACSLandingGearStrutAttachment>()) {
+                return GetParent<CPACSLandingGearStrutAttachment>()->GetNextUIDParent();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSUIDSequence::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSDuctAssembly>()) {
+                return GetParent<CCPACSDuctAssembly>();
+            }
+            if (IsParent<CPACSLandingGearStrutAttachment>()) {
+                return GetParent<CPACSLandingGearStrutAttachment>()->GetNextUIDParent();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSUIDSequence::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSUIDSequence::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -100,9 +122,25 @@ namespace generated
         return m_uIDs;
     }
 
-    std::vector<std::string>& CPACSUIDSequence::GetUIDs()
+    void CPACSUIDSequence::AddToUIDs(const std::string& value)
     {
-        return m_uIDs;
+        if (m_uidMgr) {
+            if (!value.empty()) m_uidMgr->RegisterReference(value, *this);
+        }
+        m_uIDs.push_back(value);
+    }
+
+    bool CPACSUIDSequence::RemoveFromUIDs(const std::string& value)
+    {
+        const auto it = std::find(m_uIDs.begin(), m_uIDs.end(), value);
+        if (it != m_uIDs.end()) {
+            if (m_uidMgr && !it->empty()) {
+                m_uidMgr->TryUnregisterReference(*it, *this);
+            }
+            m_uIDs.erase(it);
+            return true;
+        }
+        return false;
     }
 
     const CTiglUIDObject* CPACSUIDSequence::GetNextUIDObject() const

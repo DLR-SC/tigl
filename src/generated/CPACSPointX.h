@@ -39,7 +39,7 @@ namespace generated
     // CPACSWingRibCell
     // CPACSWingRibCrossSection
 
-    /// @brief pointXType
+    /// @brief Point: x
     /// 
     /// Point type, containing a x data.
     /// 
@@ -60,9 +60,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CPACSWingRibCell>::value || std::is_same<P, CCPACSWingRibCrossSection>::value, "template argument for P is not a parent class of CPACSPointX");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -72,9 +70,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CPACSWingRibCell>::value || std::is_same<P, CCPACSWingRibCrossSection>::value, "template argument for P is not a parent class of CPACSPointX");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

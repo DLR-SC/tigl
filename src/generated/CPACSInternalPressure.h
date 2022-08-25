@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include <CCPACSMaterialDefinition.h>
 #include <string>
 #include <tixi.h>
+#include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -29,25 +29,25 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSTrackStructure;
+    class CPACSInternalPressures;
 
     // This class is used in:
-    // CPACSTrackStructure
+    // CPACSInternalPressures
 
-    /// @brief trackStrut2Type
+    /// @brief Cabin pressure
     /// 
+    /// Internal pressure of a fuselage, deck or compartment
     /// 
-    /// 
-    class CPACSTrackStrut2
+    class CPACSInternalPressure : public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSTrackStrut2(CPACSTrackStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSInternalPressure(CPACSInternalPressures* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSTrackStrut2();
+        TIGL_EXPORT virtual ~CPACSInternalPressure();
 
-        TIGL_EXPORT CPACSTrackStructure* GetParent();
+        TIGL_EXPORT CPACSInternalPressures* GetParent();
 
-        TIGL_EXPORT const CPACSTrackStructure* GetParent() const;
+        TIGL_EXPORT const CPACSInternalPressures* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -58,27 +58,36 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CCPACSMaterialDefinition& GetMaterial() const;
-        TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
+        TIGL_EXPORT virtual const std::string& GetReferenceUID() const;
+        TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
+
+        TIGL_EXPORT virtual const double& GetPressure() const;
+        TIGL_EXPORT virtual void SetPressure(const double& value);
 
     protected:
-        CPACSTrackStructure* m_parent;
+        CPACSInternalPressures* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Definition of the material properties.
-        CCPACSMaterialDefinition m_material;
+        /// UID of a fuselage, deck or compartment
+        std::string m_referenceUID;
+
+        /// Internal pressure [Pa]
+        double      m_pressure;
 
     private:
-        CPACSTrackStrut2(const CPACSTrackStrut2&) = delete;
-        CPACSTrackStrut2& operator=(const CPACSTrackStrut2&) = delete;
+        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
+        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
-        CPACSTrackStrut2(CPACSTrackStrut2&&) = delete;
-        CPACSTrackStrut2& operator=(CPACSTrackStrut2&&) = delete;
+        CPACSInternalPressure(const CPACSInternalPressure&) = delete;
+        CPACSInternalPressure& operator=(const CPACSInternalPressure&) = delete;
+
+        CPACSInternalPressure(CPACSInternalPressure&&) = delete;
+        CPACSInternalPressure& operator=(CPACSInternalPressure&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSTrackStrut2 = generated::CPACSTrackStrut2;
-using CCPACSTrackStructure = generated::CPACSTrackStructure;
+using CCPACSInternalPressure = generated::CPACSInternalPressure;
+using CCPACSInternalPressures = generated::CPACSInternalPressures;
 } // namespace tigl

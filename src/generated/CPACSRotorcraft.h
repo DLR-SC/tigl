@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSVehicles
 
-    /// @brief rotorcraftType
+    /// @brief Rotorcraft
     /// 
     /// Rotorcraft type, containing all the rotorcraft models.
     /// Most of the extensions used in the rotorcraft type have

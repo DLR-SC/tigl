@@ -22,11 +22,6 @@
 #include "CPACSMaterialDefinition.h"
 #include "CPACSSheetBasedStructuralElement.h"
 #include "CPACSTrackActuator.h"
-#include "CPACSTrackCar.h"
-#include "CPACSTrackFairing.h"
-#include "CPACSTrackStructure.h"
-#include "CPACSTrackStrut1.h"
-#include "CPACSTrackStrut2.h"
 #include "CPACSWeb.h"
 #include "CPACSWingRibCell.h"
 #include "CPACSWingSkin.h"
@@ -70,46 +65,6 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CPACSTrackActuator);
-    }
-
-    CPACSMaterialDefinition::CPACSMaterialDefinition(CPACSTrackCar* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSTrackCar);
-    }
-
-    CPACSMaterialDefinition::CPACSMaterialDefinition(CPACSTrackFairing* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSTrackFairing);
-    }
-
-    CPACSMaterialDefinition::CPACSMaterialDefinition(CPACSTrackStructure* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSTrackStructure);
-    }
-
-    CPACSMaterialDefinition::CPACSMaterialDefinition(CPACSTrackStrut1* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSTrackStrut1);
-    }
-
-    CPACSMaterialDefinition::CPACSMaterialDefinition(CPACSTrackStrut2* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSTrackStrut2);
     }
 
     CPACSMaterialDefinition::CPACSMaterialDefinition(CPACSWeb* parent, CTiglUIDManager* uidMgr)
@@ -167,21 +122,6 @@ namespace generated
             if (IsParent<CPACSTrackActuator>()) {
                 return GetParent<CPACSTrackActuator>();
             }
-            if (IsParent<CPACSTrackCar>()) {
-                return GetParent<CPACSTrackCar>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSTrackFairing>()) {
-                return GetParent<CPACSTrackFairing>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSTrackStructure>()) {
-                return GetParent<CPACSTrackStructure>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSTrackStrut1>()) {
-                return GetParent<CPACSTrackStrut1>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSTrackStrut2>()) {
-                return GetParent<CPACSTrackStrut2>()->GetNextUIDParent();
-            }
             if (IsParent<CPACSWeb>()) {
                 return GetParent<CPACSWeb>()->GetNextUIDParent();
             }
@@ -213,21 +153,6 @@ namespace generated
             if (IsParent<CPACSTrackActuator>()) {
                 return GetParent<CPACSTrackActuator>();
             }
-            if (IsParent<CPACSTrackCar>()) {
-                return GetParent<CPACSTrackCar>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSTrackFairing>()) {
-                return GetParent<CPACSTrackFairing>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSTrackStructure>()) {
-                return GetParent<CPACSTrackStructure>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSTrackStrut1>()) {
-                return GetParent<CPACSTrackStrut1>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSTrackStrut2>()) {
-                return GetParent<CPACSTrackStrut2>()->GetNextUIDParent();
-            }
             if (IsParent<CPACSWeb>()) {
                 return GetParent<CPACSWeb>()->GetNextUIDParent();
             }
@@ -246,11 +171,17 @@ namespace generated
 
     CTiglUIDManager& CPACSMaterialDefinition::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSMaterialDefinition::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

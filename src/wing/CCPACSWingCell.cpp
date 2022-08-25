@@ -145,7 +145,9 @@ void CCPACSWingCell::InvalidateImpl(const boost::optional<std::string>& source) 
 void CCPACSWingCell::Reset()
 {
     m_uID         = "";
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 bool CCPACSWingCell::IsConvex() const

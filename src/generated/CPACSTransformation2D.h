@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSProfileBasedStructuralElement
 
-    /// @brief transformation2DType
+    /// @brief 2D transformation
     /// 
     /// 
     /// 

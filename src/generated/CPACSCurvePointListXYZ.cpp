@@ -86,14 +86,14 @@ namespace generated
             LOG(ERROR) << "Required element z is missing at xpath " << xpath;
         }
 
-        // read element kinks
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/kinks")) {
-            m_kinks = boost::in_place(reinterpret_cast<CCPACSCurvePointListXYZ*>(this));
+        // read element kinkIndices
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/kinkIndices")) {
+            m_kinkIndices = boost::in_place(reinterpret_cast<CCPACSCurvePointListXYZ*>(this));
             try {
-                m_kinks->ReadCPACS(tixiHandle, xpath + "/kinks");
+                m_kinkIndices->ReadCPACS(tixiHandle, xpath + "/kinkIndices");
             } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read kinks at xpath " << xpath << ": " << e.what();
-                m_kinks = boost::none;
+                LOG(ERROR) << "Failed to read kinkIndices at xpath " << xpath << ": " << e.what();
+                m_kinkIndices = boost::none;
             }
         }
 
@@ -112,7 +112,7 @@ namespace generated
 
     void CPACSCurvePointListXYZ::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "x", "y", "z", "kinks", "parameterMap" };
+        const std::vector<std::string> childElemOrder = { "x", "y", "z", "kinkIndices", "parameterMap" };
 
         // write element x
         tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/x", childElemOrder);
@@ -126,14 +126,14 @@ namespace generated
         tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/z", childElemOrder);
         m_z.WriteCPACS(tixiHandle, xpath + "/z");
 
-        // write element kinks
-        if (m_kinks) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/kinks", childElemOrder);
-            m_kinks->WriteCPACS(tixiHandle, xpath + "/kinks");
+        // write element kinkIndices
+        if (m_kinkIndices) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/kinkIndices", childElemOrder);
+            m_kinkIndices->WriteCPACS(tixiHandle, xpath + "/kinkIndices");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/kinks")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/kinks");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/kinkIndices")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/kinkIndices");
             }
         }
 
@@ -180,14 +180,14 @@ namespace generated
         return m_z;
     }
 
-    const boost::optional<CCPACSStringVector>& CPACSCurvePointListXYZ::GetKinks() const
+    const boost::optional<CCPACSStringVector>& CPACSCurvePointListXYZ::GetKinkIndices() const
     {
-        return m_kinks;
+        return m_kinkIndices;
     }
 
-    boost::optional<CCPACSStringVector>& CPACSCurvePointListXYZ::GetKinks()
+    boost::optional<CCPACSStringVector>& CPACSCurvePointListXYZ::GetKinkIndices()
     {
-        return m_kinks;
+        return m_kinkIndices;
     }
 
     const boost::optional<CCPACSCurveParamPointMap>& CPACSCurvePointListXYZ::GetParameterMap() const
@@ -200,16 +200,16 @@ namespace generated
         return m_parameterMap;
     }
 
-    CCPACSStringVector& CPACSCurvePointListXYZ::GetKinks(CreateIfNotExistsTag)
+    CCPACSStringVector& CPACSCurvePointListXYZ::GetKinkIndices(CreateIfNotExistsTag)
     {
-        if (!m_kinks)
-            m_kinks = boost::in_place(reinterpret_cast<CCPACSCurvePointListXYZ*>(this));
-        return *m_kinks;
+        if (!m_kinkIndices)
+            m_kinkIndices = boost::in_place(reinterpret_cast<CCPACSCurvePointListXYZ*>(this));
+        return *m_kinkIndices;
     }
 
-    void CPACSCurvePointListXYZ::RemoveKinks()
+    void CPACSCurvePointListXYZ::RemoveKinkIndices()
     {
-        m_kinks = boost::none;
+        m_kinkIndices = boost::none;
     }
 
     CCPACSCurveParamPointMap& CPACSCurvePointListXYZ::GetParameterMap(CreateIfNotExistsTag)
