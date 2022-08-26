@@ -54,7 +54,18 @@ protected:
 TixiDocumentHandle  GetCrossSectionAreaSimple::tixiHandle = 0;
 TiglCPACSConfigurationHandle  GetCrossSectionAreaSimple::tiglHandle = 0;
 
-// TODO: Test if uID is valid: Does it exist and is it in case of existence assigned to a geometric component?
+TEST_F(GetCrossSectionAreaSimple, uID_check)
+{
+    double area;
+
+    // Test if the uID is valid, i.e. it exists and is related to a geometric component
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "nonExistentUID", 0., 0., 0., 0., 0., 1., &area), TIGL_UID_ERROR);
+
+    // Empty uID
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "", 0., 0., 0., 0., 0., 1., &area), TIGL_XML_ERROR);
+}
 
 TEST_F(GetCrossSectionAreaSimple, area_computations_fused_airplane)
 {

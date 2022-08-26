@@ -6516,15 +6516,23 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfiguration
                                                           double* area
                                                           )
 {
-    if (normal_x*normal_x + normal_y*normal_y + normal_z*normal_z < 1e-15) {
-        LOG(ERROR) << "Plane normal must be non-zero.";
-        return TIGL_MATH_ERROR;
-    }
+
     try {
-        //get configuration
+
+        //get configuration and uID manager
 
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglUIDManager& uIDManager = config.GetUIDManager();
+
+        if (normal_x*normal_x + normal_y*normal_y + normal_z*normal_z < 1e-15) {
+            LOG(ERROR) << "Plane normal must be non-zero.";
+            return TIGL_MATH_ERROR;
+        }
+        if (uIDManager.HasGeometricComponent(componentUID) == false) {
+            LOG(ERROR) << "uID doesn't refer to a geometric component.";
+            return TIGL_UID_ERROR;
+        }
 
         *area = 0.;
 
@@ -6536,6 +6544,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfiguration
         TopoDS_Shape planeSurface = BRepBuilderAPI_MakeFace(gp_Pln(point, normal));
 
         if (componentUID == config.GetUID()) {
+
             // get the fused airplane
 
             tigl::PTiglFusePlane fuser = config.AircraftFusingAlgo();
@@ -6556,7 +6565,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfiguration
             return TIGL_SUCCESS;
          }
          else {
-            tigl::CTiglUIDManager& uIDManager = config.GetUIDManager();
+
             auto& component = uIDManager.GetGeometricComponent(componentUID);
             auto componentLoft = component.GetLoft();
             auto componentShape = componentLoft->Shape();
