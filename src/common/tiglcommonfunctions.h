@@ -128,7 +128,7 @@ TIGL_EXPORT boost::optional<UVResult> GetFaceAndUV(TopoDS_Shape const& shape,
 
 
 /**
- * @brief TrimFace trims a face given new minium and maxinum values for the (u,v)-
+ * @brief TrimFace trims a face given new minimum and maximum values for the (u,v)-
  * coordinates
  * @param face The face to be trimmed
  * @param umin new minimum u value
@@ -298,7 +298,7 @@ TIGL_EXPORT void GetListOfShape(const TopoDS_Shape& shape, TopAbs_ShapeEnum type
 TIGL_EXPORT std::vector<TopoDS_Shape> GetSubShapes(const TopoDS_Shape& shape, TopAbs_ShapeEnum type);
 
 // Cuts two shapes and returns the common geometry (e.g. intersection edges)
-// Throws an exception in case the interesection failed
+// Throws an exception in case the intersection failed
 TIGL_EXPORT TopoDS_Shape CutShapes(const TopoDS_Shape& shape1, const TopoDS_Shape& shape2);
 
 // Helper for splitting a shape by another shape

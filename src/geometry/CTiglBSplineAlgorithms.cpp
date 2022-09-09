@@ -640,7 +640,7 @@ CTiglApproxResult CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox
 #ifdef MODEL_KINKS
     // remove kinks from breaks
     std::vector<double> kinks = CTiglBSplineAlgorithms::getKinkParameters(spline);
-    // convert kink parameters into reparamtetrized parameter using the
+    // convert kink parameters into reparametrized parameter using the
     // inverse reparametrization function
     for (size_t ikink = 0; ikink < kinks.size(); ++ikink) {
         kinks[ikink] = Geom2dAPI_ProjectPointOnCurve(gp_Pnt2d(kinks[ikink], 0.), reparametrizing_spline)
@@ -1099,7 +1099,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::concatCurves(std::vector<Handl
             weights.SetValue(iweightT++, (lastCurve->Weight(lastCurve->NbPoles()) + curve->Weight(1))/2.);
         }
 
-        // just copy control points, weights, knots and multiplicites
+        // just copy control points, weights, knots and multiplicities
         for (int iknot = 2; iknot < curve->NbKnots(); ++iknot) {
             knots.SetValue(iknotT++, curve->Knot(iknot));
             mults.SetValue(imultT++, curve->Multiplicity(iknot));

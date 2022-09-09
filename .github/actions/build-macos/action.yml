@@ -20,7 +20,7 @@ inputs:
     default: "ON"
 
   tigl_bindings-python-internal:
-    description: "CMake option to build the interal python API"
+    description: "CMake option to build the internal python API"
     required: false
     default: "OFF"
 

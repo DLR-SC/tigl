@@ -43,7 +43,7 @@ public:
      * of the interpolation in v-direction using ::SetMaxDegree.
      *
      * @param splines_vector Curves to be interpolated.
-     * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
+     * @param continuousIfClosed Make a C2 continuous surface at the start/end junction if the first and last curve are the same
      */
     TIGL_EXPORT explicit CTiglCurvesToSurface(const std::vector<Handle(Geom_Curve) >& splines_vector,
                                               bool continuousIfClosed = false);
@@ -56,7 +56,7 @@ public:
      *
      * @param splines_vector Curves to be interpolated.
      * @param parameters Parameters of v-direction at which the resulting surface should interpolate the input curves.
-     * @param continuousIfClosed Make a C2 continous surface at the start/end junction if the first and last curve are the same
+     * @param continuousIfClosed Make a C2 continuous surface at the start/end junction if the first and last curve are the same
      */
     TIGL_EXPORT explicit CTiglCurvesToSurface(const std::vector<Handle(Geom_Curve) >& splines_vector,
                                               const std::vector<double>& parameters,

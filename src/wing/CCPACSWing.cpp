@@ -372,7 +372,7 @@ void CCPACSWing::BuildFusedSegments(PNamedShape& shape) const
 // Builds a fused shape of all wing segments
 void CCPACSWing::BuildUpperLowerShells()
 {
-    //@todo: this probably works only if the wings does not split somewere
+    //@todo: this probably works only if the wings does not split somewhere
     BRepOffsetAPI_ThruSections generatorUp(Standard_False, Standard_True, Precision::Confusion() );
     BRepOffsetAPI_ThruSections generatorLow(Standard_False, Standard_True, Precision::Confusion() );
 
@@ -723,7 +723,7 @@ double CCPACSWing::GetAspectRatio() const
 
 /**
     * This function calculates location of the quarter of mean aerodynamic chord,
-    * and gives the chord lenght as well. It uses the classical method that can
+    * and gives the chord length as well. It uses the classical method that can
     * be applied to trapozaidal wings. This method is used for each segment.
     * The values are found by taking into account of sweep and dihedral.
     * But the effect of insidance angle is neglected. These values should coincide

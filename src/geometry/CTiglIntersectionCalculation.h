@@ -111,7 +111,7 @@ public:
     // gives a reference to the computed vertex
     TIGL_EXPORT TopoDS_Vertex GetVertex(int vertexID);
 
-    // returnes the unique ID for the current intersection
+    // returns the unique ID for the current intersection
     TIGL_EXPORT const std::string& GetID();
 
 protected:
@@ -124,7 +124,7 @@ protected:
 private:        
     Standard_Real tolerance;
     TopoDS_Compound intersectionResult;     /* The full Intersection result */
-    std::string id;                         /* identifcation id of the intersection */
+    std::string id;                         /* identification id of the intersection */
     
 };
 

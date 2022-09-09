@@ -25,7 +25,7 @@
         <wings>
           <wing symmetry="x-z-plane" uID="beam">
             <name>beam</name>
-            <description>This has been crated manually</description>
+            <description>This has been created manually</description>
             <transformation uID="beam_transformation1">
               <scaling uID="beam_transformation1_scaling1">
                 <x>1</x>

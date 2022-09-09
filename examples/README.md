@@ -46,7 +46,7 @@ Then type
 to build the c-demo.
 
 
-To build this example program by yourself without a makefile, one has to link against the following libaries:
+To build this example program by yourself without a makefile, one has to link against the following libraries:
   - (lib)tigl3
   - (lib)tixi3
 

@@ -482,7 +482,7 @@ class ComponentSegmentGeometry:
 		vProj = array([0, 1, 1])
 		n = vProj*(self.__p2p-self.__p1p)
 		
-		# calc eta koordinate of that point
+		# calc eta coordinate of that point
 		eta = (dot(p_proj,n)*(self.__eta2 - self.__eta1) + dot(self.__p2,n)*self.__eta1 - dot(self.__p1,n)*self.__eta2) \
 				/ dot(self.__p2 - self.__p1, n);
 		

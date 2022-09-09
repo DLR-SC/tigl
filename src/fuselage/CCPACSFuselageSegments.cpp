@@ -160,7 +160,7 @@ void CCPACSFuselageSegments::ReorderSegments()
     try {
         tigl::follow_sort(GetSegments().begin(), GetSegments().end(), segment_follows);
     } catch (std::invalid_argument) {
-        throw CTiglError("Fuselage segments not continous.");
+        throw CTiglError("Fuselage segments not continuous.");
     }
 }
 

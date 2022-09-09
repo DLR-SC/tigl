@@ -238,7 +238,7 @@ class Annotation(object):
         ins = res.group()
         # parse each input parameter
         while ins:
-            # find paramter
+            # find parameter
             tmp = re.search(Annotation.regex, ins)
             if not tmp:
                 break

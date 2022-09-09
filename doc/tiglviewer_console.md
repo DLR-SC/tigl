@@ -10,7 +10,7 @@ The console has two purposes
  2. to enter user code to steer the TiGL Viewer application
 
 In many cases, the user wants to open a CPACS file and execute TiGL function to compute and draw some points
-on the aircraft surface. Another use case would be to automatize the creation of screenshots of a changing aircraft
+on the aircraft surface. Another use case would be to automate the creation of screenshots of a changing aircraft
 geometry.
 
 @image html images/tiglviewer_console.png "The scripting console"

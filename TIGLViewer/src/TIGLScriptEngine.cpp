@@ -323,7 +323,7 @@ void TIGLScriptEngine::displayHelp()
     helpString += "    app.viewer.makeScreenshot('image.png');//PNG image, white background<br/>";
     helpString += "    app.viewer.makeScreenshot('image.jpg', false);//JPEG image, current background<br/><br/>";
 
-    helpString += "Type 'help(tigl)' to get a list of available TiGL fuctions.<br/>";
+    helpString += "Type 'help(tigl)' to get a list of available TiGL functions.<br/>";
     helpString += "Use the help function on any object to display its public methods e.g. 'help(app.viewer)'.";
     emit scriptResult(helpString);
     emit evalDone();

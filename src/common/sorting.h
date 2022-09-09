@@ -32,7 +32,7 @@ void rotate_right(ForwardIterator begin, ForwardIterator last)
 }
 
 /**
- * Sorts an array that contains a continous number of entries, possible unordered
+ * Sorts an array that contains a continuous number of entries, possible unordered
  */
 template<class ForwardIterator, class UnaryPredicate>
 void follow_sort(ForwardIterator begin, ForwardIterator end, UnaryPredicate follows)
@@ -59,7 +59,7 @@ void follow_sort(ForwardIterator begin, ForwardIterator end, UnaryPredicate foll
     }
 
     if (sorted+1 != end) {
-        throw std::invalid_argument("Vector not continous");
+        throw std::invalid_argument("Vector not continuous");
     }
 }
 

@@ -242,13 +242,13 @@ class MatlabGenerator(object):
         pseudocall += ')'
         
         #check correct number in inargs
-        string += 4*' ' + '/* check for corect number of in and out args */\n'
+        string += 4*' ' + '/* check for correct number of in and out args */\n'
         string += 4*' ' + 'if (nrhs != %d) {\n' % (len(inargs_wo_sizes) + 1 + add_arg_count)
         
         string += 4*' ' + '    mexErrMsgTxt("%s: Wrong number of arguments\\n");\n' % pseudocall
         string += 4*' ' + '}\n'
         
-        #check correct bumber of outargs
+        #check correct number of outargs
         noutargs = len(outargs)
         if not func.returns_error and func.return_value.type != 'void':
             noutargs += 1

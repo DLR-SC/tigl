@@ -275,7 +275,7 @@ void InterpolateXsi(const std::string& refUID1, const EtaXsi& etaXsi1,
 
     // If parameter on CS line is < 0 or larger than
     // Length of line, there is not actual intersection,
-    // i.e. the CS Line is choosen to small
+    // i.e. the CS Line is chosen too small
     // We use a tolerance here, to account for small user errors
     double tol = 1e-5;
     if (pOnCSLine.Parameter() < -tol || pOnCSLine.Parameter() > p1.Distance(p2) + tol) {

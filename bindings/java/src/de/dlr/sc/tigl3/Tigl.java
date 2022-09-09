@@ -76,7 +76,7 @@ public class Tigl {
         	throw new TiglException("openCPACSConfiguration", TiglReturnCode.getEnum(error));
         }
         config.setCPACSHandle(tiglHandleTemp.getValue());
-        LOGGER.info("TiGL: Cpacs configuration " + configurationUID + "opened succesfully");
+        LOGGER.info("TiGL: Cpacs configuration " + configurationUID + "opened successfully");
         
         
         return config;
@@ -112,7 +112,7 @@ public class Tigl {
             throw new TiglException("openCPACSConfiguration", TiglReturnCode.getEnum(error));
         }
         config.setCPACSHandle(tiglHandleTemp.getValue());
-        LOGGER.info("TiGL: Cpacs configuration " + configurationUID + "opened succesfully");
+        LOGGER.info("TiGL: Cpacs configuration " + configurationUID + "opened successfully");
 
         return config;
     }

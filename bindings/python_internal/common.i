@@ -184,7 +184,7 @@ PyObject* tiglError_to_PyExc(const tigl::CTiglError& err) {
         SWIG_fail;
     }
     catch(...) {
-        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>("An unkown error occured!"));
+        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>("An unknown error occurred!"));
         SWIG_fail;
     }
 }

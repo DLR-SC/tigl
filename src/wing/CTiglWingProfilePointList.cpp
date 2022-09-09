@@ -143,7 +143,7 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
 
     // CCPACSWingSegment::makeSurfaces cannot handle currently
     // wire with multiple edges. Thus we get problems if we have
-    // a linear interpolated wire consting of many edges.
+    // a linear interpolated wire consisting of many edges.
     if (dynamic_cast<const CTiglInterpolateLinearWire*>(&wireBuilder)) {
         LOG(ERROR) << "Linear Wing Profiles are currently not supported";
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);

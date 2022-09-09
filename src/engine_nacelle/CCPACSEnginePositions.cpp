@@ -55,4 +55,4 @@ TIGL_EXPORT CCPACSEnginePosition& CCPACSEnginePositions::GetEnginePosition(std::
     throw CTiglError("CCPACSEnginePositions::GetEnginePosition: EnginePosition \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
-} //namepsace tigl
+} //namespace tigl

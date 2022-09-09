@@ -160,7 +160,7 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry(TopoDS_Shape& cache) 
 
         TopoDS_Face face = makeFace.Face();
 
-        // for some rediculous reason, BRepBuilderAPI_MakeFace alters the tolerance of the underlying wire's edges and vertices,
+        // for some ridiculous reason, BRepBuilderAPI_MakeFace alters the tolerance of the underlying wire's edges and vertices,
         // causing subsequent boolean operations to fail (self intersections)
         ShapeFix_ShapeTolerance().SetTolerance(face, Precision::Confusion());
 

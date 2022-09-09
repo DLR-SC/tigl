@@ -157,7 +157,7 @@ bool writeGeometryMesh(TixiDocumentHandle handle, const CTiglPolyData& polyData,
     std::stringstream stream_verts;
     std::stringstream stream_normals;
     std::stringstream stream_trians;
-    unsigned long count_pos =0, count_norm =0, count_vert =0; // count Points, Normals, Verticies for COLLADA-schema arrays
+    unsigned long count_pos =0, count_norm =0, count_vert =0; // count Points, Normals, Vertices for COLLADA-schema arrays
 
     for (unsigned int i = 1; i <= polyData.getNObjects(); ++i) {
         const CTiglPolyObject& obj = polyData.getObject(i);

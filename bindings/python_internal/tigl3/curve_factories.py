@@ -29,7 +29,7 @@ def interpolate_points(points, params=None, degree=3, close_continuous=False):
 
 def bspline_curve(cp, knots, mults, degree):
     """
-    Creates a BSplineCurve from the control points, knots, multiplicites and degree
+    Creates a BSplineCurve from the control points, knots, multiplicities and degree
 
     :param points: Array of points (numpy array also works!). First dimension over number of points, second must be 3!
     :param knots: Knot vector (not flattened)

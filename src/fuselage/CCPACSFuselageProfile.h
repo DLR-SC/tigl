@@ -107,7 +107,7 @@ private:
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
 private:
-    bool mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
+    bool mirrorSymmetry; /**< Mirror symmetry with respect to the x-z plane */
     Cache<WireCache, CCPACSFuselageProfile> wireCache; /**< Original and force closed fuselage profile wire */
     Cache<DiameterPointsCache, CCPACSFuselageProfile> diameterPointsCache;
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;

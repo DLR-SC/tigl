@@ -47,7 +47,7 @@ public:
      * \brief Constructor which expects a wire of to concatenated upper and lower wing edges as input
      *
      *
-     * \param wireContainer Containes exactly two wires: The upper and lower wing profile wires
+     * \param wireContainer Contains exactly two wires: The upper and lower wing profile wires
      */
     TIGL_EXPORT CCPACSWingProfileGetPointAlgo (const TopTools_SequenceOfShape& wireContainer);
 
