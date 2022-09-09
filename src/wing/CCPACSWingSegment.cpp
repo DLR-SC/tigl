@@ -240,7 +240,7 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS, Ti
     /*
     * The loft algorithm with guide curves does not like splitted
     * wing profiles, we have to give him the unsplitted one.
-    * In all other cases, we need the splitted wire to distiguish
+    * In all other cases, we need the splitted wire to distinguish
     * upper und lower wing surface
     */
     if (m_guideCurves && m_guideCurves->GetGuideCurveCount() > 0) {
@@ -273,7 +273,7 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(TiglCoordinateSystem referenceCS, Ti
     /*
     * The loft algorithm with guide curves does not like splitted
     * wing profiles, we have to give him the unsplitted one.
-    * In all other cases, we need the splitted wire to distiguish
+    * In all other cases, we need the splitted wire to distinguish
     * upper und lower wing surface
     */
     if (m_guideCurves && m_guideCurves->GetGuideCurveCount() > 0) {

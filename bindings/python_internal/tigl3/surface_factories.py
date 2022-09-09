@@ -8,7 +8,7 @@ def interpolate_curves(curve_list, params=None, degree=3, close_continuous=False
 
 
     :param curve_list: List of Geom_Curves, that are created using e.g. tigl3.curve_factories
-    :param params: Optional surface parameters (list of floats), at which the surfaces passes trough the curves.
+    :param params: Optional surface parameters (list of floats), at which the surfaces passes through the curves.
                    This has a strong effect on the final surface shape.
     :param degree: Maximum degree that is used for interpolation. When degree=1, a linear loft is created.
     :param close_continuous: If the first and last curve are equal close_continuous and is true,

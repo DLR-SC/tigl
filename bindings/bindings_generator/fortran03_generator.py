@@ -280,7 +280,7 @@ end type
 
     def requires_method_wrapper(self, fun_dec):
         '''
-        Checks wether there are subroutine/function arguments (or return values) that require a wrapper function
+        Checks whether there are subroutine/function arguments (or return values) that require a wrapper function
         '''
 
         for arg in fun_dec.arguments:

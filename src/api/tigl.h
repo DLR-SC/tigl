@@ -668,7 +668,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
 *   - TIGL_NOT_FOUND if no intersection point was found or the cpacs handle is not valid
 *   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
 *   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
-*   - TIGL_ERROR if some other error occured
+*   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                         int wingIndex,
@@ -726,7 +726,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSetGetPointBehavior(TiglCPACSConfigura
 *   - TIGL_NOT_FOUND if cpacs handle is not valid
 *   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
 *   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
-*   - TIGL_ERROR if some other error occured
+*   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                         int wingIndex,
@@ -758,7 +758,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHa
 *   - TIGL_NOT_FOUND if cpacs handle is not valid
 *   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
 *   - TIGL_NULL_POINTER if normalXPtr, normalYPtr or normalZPtr are null pointers
-*   - TIGL_ERROR if some other error occured
+*   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationHandle cpacsHandle,
                                                          int wingIndex,
@@ -950,7 +950,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentCount(TiglCPAC
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle or no n-th connected segment was found
 *   - TIGL_INDEX_ERROR if wingIndex, segmentIndex or n are not valid
 *   - TIGL_NULL_POINTER if segmentIndexPtr is a null pointer
-*   - TIGL_ERROR if some other error occured
+*   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                                         int wingIndex,
@@ -1663,11 +1663,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
 
 
 /**
-* @brief This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
+* @brief This function calculates location of the quarter of mean aerodynamic chord, and gives the chord length as well.
 *
 * It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
 * The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
-* These values should coinside with the values found with tornado tool.
+* These values should coincide with the values found with tornado tool.
 *
 * @param[in] cpacsHandle Handle for the CPACS configuration
 * @param[in] wingUID     UID of the Wing
@@ -2229,7 +2229,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnXPlane(TiglCPACSConf
 * @param[in]  segmentIndex  The index of the segment of the fuselage, starting at 1
 * @param[in]  eta           eta in the range 0.0 <= eta <= 1.0
 * @param[in]  ypos          Y position
-* @param[out] numPointsPtr  Pointer to a interger for the number of intersection points
+* @param[out] numPointsPtr  Pointer to an integer for the number of intersection points
 *
 * @return
 *   - TIGL_SUCCESS if a point was found
@@ -3581,7 +3581,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveIntersection(TiglCPACSConfiguratio
 *                             If no intersection could be computed, line count is 0.
 *
 * @return
-*   - TIGL_SUCCESS if no error occured
+*   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if the cpacs handle  or the intersectionID is not valid
 *   - TIGL_NULL_POINTER if lineCount is a NULL pointer
 */
@@ -3599,7 +3599,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurati
 *                             If no intersection could be computed, pointCount is 0.
 *
 * @return
-*   - TIGL_SUCCESS if no error occured
+*   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if the cpacs handle is not valid
 *   - TIGL_NULL_POINTER if either intersectionID or pointCount is a NULL pointer
 */
@@ -3621,7 +3621,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveIntersectionCount(TiglCPACSConfigu
 * @param[out] pointZ          Z coordinate of the resulting point.
 *
 * @return
-*   - TIGL_SUCCESS if no error occured
+*   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if the cpacs handle  or the intersectionID is not valid
 *   - TIGL_NULL_POINTER if pointX, pointY, or pointZ are NULL pointers
 *   - TIGL_INDEX_ERROR if lineIdx is not in valid range
@@ -3647,7 +3647,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHa
 * @param[out] pointZ          Z coordinate of the resulting point.
 *
 * @return
-*   - TIGL_SUCCESS if no error occured
+*   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if the cpacs handle is not valid
 *   - TIGL_NULL_POINTER if pointX, pointY, or pointZ or the intersectionID are NULL pointers
 *   - TIGL_INDEX_ERROR if pointIdx is not in valid range
@@ -3675,7 +3675,7 @@ The intersection line is specified by a curveID. The curveID can be calculated u
 * @param[out] eta             The parameter along the first curve.
 *
 * @return
-*   - TIGL_SUCCESS if no error occured
+*   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if the cpacs handle is not valid
 *   - TIGL_NULL_POINTER if intersectionID, curveID or eta are NULL pointers
 *   - TIGL_INDEX_ERROR if curveIdx is not in valid range
@@ -3700,8 +3700,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationH
 
 # VTK-Export #
     There a various different VTK exports functions in TIGL. All functions starting with 'tiglExportVTK[Fuselage|Wing]...' are exporting
-    a special triangulation with no duplicated points into a VTK file formated in XML (file extension .vtp) with some custom
-    informations added to the file.
+    a special triangulation with no duplicated points into a VTK file formatted in XML (file extension .vtp) with some custom
+    information added to the file.
 
     In addition to the triangulated geometry, additional data are written to the VTK file. These data currently include:
     - uID: The UID of the fuselage or wing component segment on which the triangle exists.
@@ -3789,7 +3789,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglSetExportOptions(const char* exporter_name
 /**
 * @brief Exports a geometric component (e.g. a wing, a fuselage etc.)
 * 
-* The component to be exported is definied via its uid. The export format
+* The component to be exported is defined via its uid. The export format
 * is specified with the file extension of fileName.
 * 
 * The export can be configured in more detail using ::tiglSetExportOptions.
@@ -4538,7 +4538,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSurfaceArea(TiglCPACSConfigurat
 
 /**
 * @brief Returns the surface area of a segment of a wing. This includes only the area
-* of the upper and lower wing segment surface and does not include the trailing egde
+* of the upper and lower wing segment surface and does not include the trailing edge
 * or any closing faces.
 *
 *
@@ -4592,7 +4592,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigu
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_INDEX_ERROR if wingIndex ot segmentIndex are not valid
 *   - TIGL_NULL_POINTER if surfaceArea is a null pointer
-*   - TIGL_ERROR if the eta/xsi coordinates are not in the valid range [0,1] or another error occured
+*   - TIGL_ERROR if the eta/xsi coordinates are not in the valid range [0,1] or another error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
                                                                             int wingIndex,
@@ -4627,7 +4627,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(Tigl
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_INDEX_ERROR if wingIndex ot segmentIndex are not valid
 *   - TIGL_NULL_POINTER if surfaceArea is a null pointer
-*   - TIGL_ERROR if the eta/xsi coordinates are not in the valid range [0,1] or another error occured
+*   - TIGL_ERROR if the eta/xsi coordinates are not in the valid range [0,1] or another error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
                                                                             int wingIndex,
@@ -5019,7 +5019,7 @@ TIGL_COMMON_EXPORT void tiglSetDebugDataDirectory(const char* directory);
 /**
 * @brief Returns the length of the plane
 *
-* The calculation of the airplane lenght is realized as follows:
+* The calculation of the airplane length is realized as follows:
 *
 * All part of the configuration (currently all wing and fuselage segments) are put
 * into a bounding box. The length of the plane is returned as the length of the box
@@ -5058,14 +5058,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetBoundingBox(TiglCPACSConfi
 
 
 /**
- * @brief Sets a flag, wether ducts defined in CPACS shall be removed from using Boolean operations.
+ * @brief Sets a flag, whether ducts defined in CPACS shall be removed from using Boolean operations.
  *
  * By default ducts are disabled. If no ducts are defined in CPACS, this function has no effect.
  *
  * Currently, ducts are only removed from fuselages and wings.
  *
  * @param[in] cpacsHandle         Handle for the CPACS configuration
- * @param[in] WithDuctCutoutsFlag flag, wether all geometric components shall be build with duct cutouts
+ * @param[in] WithDuctCutoutsFlag flag, whether all geometric components shall be build with duct cutouts
  *
  * @return
  *   - TIGL_SUCCESS if no error occurred
@@ -5081,7 +5081,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSC
  * if any ducts are defined in the CPACS configuration.
  *
  * @param[in]  cpacsHandle         Handle for the CPACS configuration
- * @param[out] WithDuctCutoutsFlag flag, wether all geometric components shall be build with duct cutouts
+ * @param[out] WithDuctCutoutsFlag flag, whether all geometric components shall be build with duct cutouts
  *
  * @return
  *   - TIGL_SUCCESS if no error occurred

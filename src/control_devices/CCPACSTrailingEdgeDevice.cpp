@@ -115,7 +115,7 @@ gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
     gp_Pnt outerHingeOld = wingTrafo.Transform(m_hingePoints->outer);
 
     // innerTranslationY on hingePoint1 on purpose, maybe consider setting it to zero as default. See CPACS definition on
-    // Path/Step/HingeLineTransformation for more informations.
+    // Path/Step/HingeLineTransformation for more information.
     gp_Pnt outerHingeNew = outerHingeOld.XYZ() + gp_XYZ(outerTranslationX, innerTranslationY, outerTranslationZ);
     gp_Pnt innerHingeNew = innerHingeOld.XYZ() + gp_XYZ(innerTranslationX, innerTranslationY, innerTranslationZ);
 

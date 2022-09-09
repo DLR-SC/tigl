@@ -477,7 +477,7 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
                                          double tol) const
 {
 
-    // Border not defined by contour cooordinate.
+    // Border not defined by contour coordinate.
     if (positioning.GetContourCoordinate_choice1()){
         throw CTiglError("Internal Error when trying to create the cell geometry");
     }

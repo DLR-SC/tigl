@@ -28,7 +28,7 @@ namespace tigl
 {
 
 /**
- * @brief Defines are coordiante system for the wing flap
+ * @brief Defines a coordinate system for the wing flap
  * border.
  * 
  * The x direction of the coordinate system points from the

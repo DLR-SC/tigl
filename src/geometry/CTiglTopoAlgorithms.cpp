@@ -113,7 +113,7 @@ TopoDS_Shape CTiglTopoAlgorithms::CutShellAtUVParameters(TopoDS_Shape const& sha
     builder.MakeShell(cutShape);
 
     for (TopExp_Explorer faces(shape, TopAbs_FACE); faces.More(); faces.Next()) {
-        // trim each face/surface of the compound at the uv paramters in the paramter vectors
+        // trim each face/surface of the compound at the uv parameters in the parameter vectors
         auto surface = BRep_Tool::Surface(TopoDS::Face(faces.Current()));
         CutSurfaceAtUVParametersImpl(surface, uparams, vparams, cutShape);
     }
@@ -128,7 +128,7 @@ TopoDS_Shape CTiglTopoAlgorithms::CutShellAtKinks(TopoDS_Shape const& shape)
     builder.MakeShell(cutShape);
 
     for (TopExp_Explorer faces(shape, TopAbs_FACE); faces.More(); faces.Next()) {
-        // trim each face/surface of the compound at the uv paramters in the paramter vectors
+        // trim each face/surface of the compound at the uv parameters in the parameter vectors
         auto surface = BRep_Tool::Surface(TopoDS::Face(faces.Current()));
         CutSurfaceAtKinks(GeomConvert::SurfaceToBSplineSurface(surface), cutShape);
     }

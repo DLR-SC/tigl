@@ -135,7 +135,7 @@ void CCPACSCrossBeamAssemblyPosition::BuildGeometry(TopoDS_Shape& cache, bool ju
         //debug.addShape(frameGeometry, "frameGeometry");
         const TopoDS_Shape frameFace = BRepBuilderAPI_MakeFace(CloseWire(TopoDS::Wire(frameGeometry)));
 
-        // for some rediculous reason, BRepBuilderAPI_MakeFace alters the tolerance of the underlying wire's edges and vertices,
+        // for some ridiculous reason, BRepBuilderAPI_MakeFace alters the tolerance of the underlying wire's edges and vertices,
         // causing subsequent boolean operations to fail (self intersections)
         ShapeFix_ShapeTolerance().SetTolerance(frameFace, Precision::Confusion());
         //debug.addShape(frameFace, "frameFace");

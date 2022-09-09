@@ -66,7 +66,7 @@ double BSplineArcLength::getParameter(double arcLength)
         return algo.Parameter();
     }
     else {
-        throw tigl::CTiglError("BSplineArcLength: can't compute paramter for arc given length.", TIGL_MATH_ERROR);
+        throw tigl::CTiglError("BSplineArcLength: can't compute parameter for arc given length.", TIGL_MATH_ERROR);
     }
 }
 

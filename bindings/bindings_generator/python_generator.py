@@ -195,7 +195,7 @@ class PythonGenerator(object):
                 num_outargs += 1
                 
         for index, arg in enumerate(fun_dec.arguments):
-            # create aditional size argument for manually allocated arrays
+            # create additional size argument for manually allocated arrays
             if arg.arrayinfos['is_array'] and arg.is_outarg and not arg.arrayinfos['autoalloc'] and len(arg.arrayinfos['arraysizes']) == 0:
                 string += ', %s_len' % arg.name
             
@@ -326,7 +326,7 @@ class PythonGenerator(object):
         call += ')'
         
         # we assume that each function is returning an error code
-        # only if explictly specified otherwise
+        # only if explicitly specified otherwise
         if not ret_val:
             call  = indent + 'errorCode = %s\n' % call
             call += indent + 'catch_error(errorCode, \'%s\'' % fun_dec.method_name
@@ -372,7 +372,7 @@ class PythonGenerator(object):
             if arg.is_outarg:
                 outargs.append(arg)
         
-        # convert c ouputs to python output values
+        # convert c outputs to python output values
         if len(outargs) > 0:
             string += '\n'
         # non array value

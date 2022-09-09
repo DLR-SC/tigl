@@ -6,7 +6,7 @@
 #  Java_JAVA_EXECUTABLE    = the full path to the Java runtime
 #  Java_JAVAC_EXECUTABLE   = the full path to the Java compiler
 #  Java_JAVAH_EXECUTABLE   = the full path to the Java header generator
-#  Java_JAVADOC_EXECUTABLE = the full path to the Java documention generator
+#  Java_JAVADOC_EXECUTABLE = the full path to the Java documentation generator
 #  Java_JAR_EXECUTABLE     = the full path to the Java archiver
 #  Java_VERSION_STRING     = Version of the package found (java version), eg. 1.6.0_12^gol
 #  Java_VERSION_PATCH      = The patch version of the package found.

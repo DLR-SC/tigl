@@ -49,9 +49,9 @@ public:
     explicit CTiglPatchShell(TopoDS_Shape const& shell, double tolerance = 1e-6);
 
     /**
-     * @brief Determine, wether the resulting shape shall be a solid or a closed shell
+     * @brief Determine, whether the resulting shape shall be a solid or a closed shell
      *
-     * @param enabled boolean wether to create a solid or not
+     * @param enabled boolean whether to create a solid or not
      */
     void SetMakeSolid(bool enabled = true) { _makeSolid = enabled; }
 

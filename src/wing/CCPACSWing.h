@@ -109,7 +109,7 @@ public:
     // Gets the loft of the whole wing
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge();
 
-    // Returns the wing loft with cutted out control surfaces
+    // Returns the wing loft with cut out control surfaces
     TIGL_EXPORT TopoDS_Shape GetLoftWithCutouts();
         
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();

@@ -49,4 +49,4 @@ TIGL_EXPORT CCPACSEngine& CCPACSEngines::GetEngine(std::string const uid) const
     throw CTiglError("CCPACSEngines::GetEngine: Engine \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
-} //namepsace tigl
+} //namespace tigl
