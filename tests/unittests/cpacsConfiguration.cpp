@@ -63,7 +63,7 @@ TEST_F(tiglOpenCpacsConfiguration, nullPointerArgument)
 }
 
 /**
-* Tests a successfull run of tiglOpenCPACSConfiguration.
+* Tests a successful run of tiglOpenCPACSConfiguration.
 */
 TEST_F(tiglOpenCpacsConfiguration, openSuccess) 
 {
@@ -73,7 +73,7 @@ TEST_F(tiglOpenCpacsConfiguration, openSuccess)
 }
 
 /**
-* Tests a successfull open of tiglOpenCPACSConfiguration with specifiing the uid of the configuration.
+* Tests a successful open of tiglOpenCPACSConfiguration with specifiing the uid of the configuration.
 */
 TEST_F(tiglOpenCpacsConfiguration, open_without_uid) 
 {
@@ -139,7 +139,7 @@ TEST_F(TiglGetCPACSTixiHandle, hanlde_notFound)
 }
 
 /**
-* Tests a successfull run of tiglGetCPACSTixiHandle.
+* Tests a successful run of tiglGetCPACSTixiHandle.
 */
 TEST_F(TiglGetCPACSTixiHandle, handle_success)
 {

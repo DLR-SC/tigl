@@ -219,7 +219,7 @@ TEST_F(WingGetPoint, tiglWingGetLowerPoint_nullPointerArgument)
 }
 
 /**
-* Tests successfull call to tiglWingGetUpperPoint.
+* Tests successful call to tiglWingGetUpperPoint.
 */
 TEST_F(WingGetPoint, tiglWingGetUpperPoint_success)
 {
@@ -230,7 +230,7 @@ TEST_F(WingGetPoint, tiglWingGetUpperPoint_success)
 }
 
 /**
-* Tests successfull call to tiglWingGetLowerPoint.
+* Tests successful call to tiglWingGetLowerPoint.
 */
 TEST_F(WingGetPoint, tiglWingGetLowerPoint_success)
 {

@@ -3933,7 +3933,7 @@
                     </ribsDefinition>
                     <ribsDefinition uID="ribs_EM">
                       <name>ribs_EM</name>
-                      <description>ribs for the Enginge Mount</description>
+                      <description>ribs for the Engine Mount</description>
                       <ribsPositioning>
                         <ribReference>frontSpar</ribReference>
                         <startCurvePoint>

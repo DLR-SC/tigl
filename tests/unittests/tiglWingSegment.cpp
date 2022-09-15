@@ -170,7 +170,7 @@ TEST_F(WingSegment, tiglGetWingCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglGetWingCount.
+* Tests successful call of tiglGetWingCount.
 */
 TEST_F(WingSegment, tiglGetWingCount_success)
 {
@@ -208,7 +208,7 @@ TEST_F(WingSegment, tiglWingGetSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetSegmentCount.
+* Tests successful call of tiglWingGetSegmentCount.
 */
 TEST_F(WingSegment, tiglWingGetSegmentCount_success)
 {
@@ -255,7 +255,7 @@ TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetInnerConnectedSegmentCount.
+* Tests successful call of tiglWingGetInnerConnectedSegmentCount.
 */
 TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentCount_success)
 {
@@ -304,7 +304,7 @@ TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterConnectedSegmentCount.
+* Tests successful call of tiglWingGetOuterConnectedSegmentCount.
 */
 TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentCount_success)
 {
@@ -364,7 +364,7 @@ TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetInnerConnectedSegmentIndex.
+* Tests successful call of tiglWingGetInnerConnectedSegmentIndex.
 */
 TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentIndex_success)
 {
@@ -424,7 +424,7 @@ TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterConnectedSegmentIndex.
+* Tests successful call of tiglWingGetOuterConnectedSegmentIndex.
 */
 TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentIndex_success)
 {
@@ -480,7 +480,7 @@ TEST_F(WingSegment, tiglWingGetInnerSectionAndElementIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetInnerSectionAndElementIndex.
+* Tests successful call of tiglWingGetInnerSectionAndElementIndex.
 */
 TEST_F(WingSegment, tiglWingGetInnerSectionAndElementIndex_success)
 {
@@ -542,7 +542,7 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterSectionAndElementIndex.
+* Tests successful call of tiglWingGetOuterSectionAndElementIndex.
 */
 TEST_F(WingSegment, tiglWingGetOuterSectionAndElementIndex_success)
 {
@@ -597,7 +597,7 @@ TEST_F(WingSegment, tiglWingGetInnerSectionAndElementUID_invalidSegment)
 
 
 /**
-* Tests successfull call of tiglWingGetInnerSectionAndElementUID.
+* Tests successful call of tiglWingGetInnerSectionAndElementUID.
 */
 TEST_F(WingSegment, tiglWingGetInnerSectionAndElementUID_success)
 {
@@ -650,7 +650,7 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_invalidSegment)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterSectionAndElementUID.
+* Tests successful call of tiglWingGetOuterSectionAndElementUID.
 */
 TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
 {

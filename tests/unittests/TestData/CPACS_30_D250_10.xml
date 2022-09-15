@@ -9290,11 +9290,11 @@
       </fuselage>
       <designMode>presize<!--comment for designMode: use  presize, fsd or optimization-->
 			</designMode>
-      <optimizationMethod>1<!--comment for optimizationMethod: Method for internal mathematically optimization (only sensible if designMode 'optimization' is choosen) : values: 1,2,3; Modified Method of Feasible Directions [1] (default); Sequential Linear Programming [2]; Sequential Quadratic Programming [3]-->
+      <optimizationMethod>1<!--comment for optimizationMethod: Method for internal mathematically optimization (only sensible if designMode 'optimization' is chosen) : values: 1,2,3; Modified Method of Feasible Directions [1] (default); Sequential Linear Programming [2]; Sequential Quadratic Programming [3]-->
 			</optimizationMethod>
       <reducedModel>1<!--comment for reducedModel: should the A-Set structure reduction be modelled-->
 			</reducedModel>
-      <archiveMode>3<!--comment for archiveMode: Postprogram: to generate and copie more data to the output (value 1 (default),2)-->
+      <archiveMode>3<!--comment for archiveMode: Postprogram: to generate and copy more data to the output (value 1 (default),2)-->
 			</archiveMode>
       <debugMode>0<!--comment for debugMode: 1: to print all script output during the run, 0: print less-->
 			</debugMode>
