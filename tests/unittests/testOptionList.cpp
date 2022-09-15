@@ -68,7 +68,7 @@ TEST(OptionList, AddGetSet)
     EXPECT_STREQ("hello world", v2.c_str());
 
     // check failures
-    // connot convert
+    // cannot convert
     EXPECT_THROW(options.Set("my_string", 2.0), tigl::CTiglError);
 
     // no such option

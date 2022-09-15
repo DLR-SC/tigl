@@ -131,7 +131,7 @@ TEST_F( TiglFuselageSegment, FuselageCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglGetFuselageCount.
+* Tests successful call of tiglGetFuselageCount.
 */
 TEST_F( TiglFuselageSegment, FuselageCount_success)
 {
@@ -169,7 +169,7 @@ TEST_F( TiglFuselageSegment, FuselageSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglFuselageGetSegmentCount.
+* Tests successful call of tiglFuselageGetSegmentCount.
 */
 TEST_F( TiglFuselageSegment, FuselageSegmentCount_success)
 {
@@ -216,7 +216,7 @@ TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentCount_nullPointerAr
 }
 
 /**
-* Tests successfull call of tiglFuselageGetStartConnectedSegmentCount.
+* Tests successful call of tiglFuselageGetStartConnectedSegmentCount.
 */
 TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentCount_success)
 {
@@ -265,7 +265,7 @@ TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentCount_nullPointerArgu
 }
 
 /**
-* Tests successfull call of tiglFuselageGetEndConnectedSegmentCount.
+* Tests successful call of tiglFuselageGetEndConnectedSegmentCount.
 */
 TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentCount_success)
 {
@@ -325,7 +325,7 @@ TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentIndex_nullPointerAr
 }
 
 /**
-* Tests successfull call of tiglFuselageGetStartConnectedSegmentIndex.
+* Tests successful call of tiglFuselageGetStartConnectedSegmentIndex.
 */
 TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentIndex_success)
 {
@@ -385,7 +385,7 @@ TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentIndex_nullPointerArgu
 }
 
 /**
-* Tests successfull call of tiglFuselageGetEndConnectedSegmentIndex.
+* Tests successful call of tiglFuselageGetEndConnectedSegmentIndex.
 */
 TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentIndex_success)
 {
@@ -441,7 +441,7 @@ TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementIndex_nullPointerA
 }
 
 /**
-* Tests successfull call of tiglFuselageGetStartSectionAndElementIndex.
+* Tests successful call of tiglFuselageGetStartSectionAndElementIndex.
 */
 TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementIndex_success)
 {
@@ -503,7 +503,7 @@ TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementIndex_nullPointerArg
 }
 
 /**
-* Tests successfull call of tiglFuselageGetEndSectionAndElementIndex.
+* Tests successful call of tiglFuselageGetEndSectionAndElementIndex.
 */
 TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementIndex_success)
 {
@@ -559,7 +559,7 @@ TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementUID_invalidSegment
 
 
 /**
-* Tests successfull call of tiglFuselageGetStartSectionAndElementUID.
+* Tests successful call of tiglFuselageGetStartSectionAndElementUID.
 */
 TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementUID_success)
 {
@@ -611,7 +611,7 @@ TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_invalidSegment)
 }
 
 /**
-* Tests successfull call of tiglFuselageGetEndSectionAndElementUID.
+* Tests successful call of tiglFuselageGetEndSectionAndElementUID.
 */
 TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_success)
 {
