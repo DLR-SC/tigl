@@ -188,7 +188,7 @@ Handle(V3d_Viewer) TIGLViewerContext::createViewer( const Standard_ExtString aNa
 /*! 
 \brief    Deletes all objects.
 
-        This function deletes all dispayed objects from the AIS context.
+        This function deletes all displayed objects from the AIS context.
         No parameters.
 */
 void TIGLViewerContext::deleteAllObjects()
@@ -215,7 +215,7 @@ void TIGLViewerContext::gridXY  ( void )
 \brief    Sets the privileged plane to the XZ Axis.
 
           Note the negative direction of the Y axis.
-          This is corrrect for a right-handed co-ordinate set.
+          This is correct for a right-handed co-ordinate set.
 */
 void TIGLViewerContext::gridXZ  ( void )
 {
