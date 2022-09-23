@@ -19,7 +19,6 @@
 * @brief  Class to compute intersection algorithms.
 */
 
-#include "CTiglIntersectionCalculationBase.h"
 #include "CTiglIntersectionCalculationCommon.h"
 #include "CTiglError.h"
 #include "CTiglShapeCache.h"
@@ -185,14 +184,9 @@ void CTiglIntersectionCalculationCommon::computeIntersection(CTiglShapeCache * c
     }
 
     if (!inCache) {
-//        Standard_Boolean PerformNow=Standard_False;
-//        BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow);
-//        section.ComputePCurveOn1(Standard_True);
-//        section.Approximation(Standard_True);
-//        section.Build();
-//        TopoDS_Shape result = section.Shape();
-        TopoDS_Shape result = BRepAlgoAPI_Common(compoundOne, compoundTwo);  // contrary to the implementation in the base class, the overwritten function
-                                                                             // uses the BRepAlgoAPI_Common class to compute "result"
+        // contrary to the implementation in the base class, the overwritten function uses the BRepAlgoAPI_Common class to compute "result"
+        TopoDS_Shape result = BRepAlgoAPI_Common(compoundOne, compoundTwo);
+
         TopExp_Explorer myEdgeExplorer (result, TopAbs_EDGE);
 
         Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
