@@ -115,13 +115,13 @@ public:
     TIGL_EXPORT const std::string& GetID();
 
 protected:
-    void computeIntersection(CTiglShapeCache* cache,
+    virtual void computeIntersection(CTiglShapeCache* cache,
                              size_t hashOne,
                              size_t hashTwo,
                              TopoDS_Shape compoundOne,
                              TopoDS_Shape compoundTwo );
 
-private:        
+
     Standard_Real tolerance;
     TopoDS_Compound intersectionResult;     /* The full Intersection result */
     std::string id;                         /* identifcation id of the intersection */
