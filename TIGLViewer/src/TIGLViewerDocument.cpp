@@ -2714,7 +2714,7 @@ void TIGLViewerDocument::drawWingShells(tigl::CCPACSWing& wing)
 }
 
 /*
- * Reads traingles from Mesh of shape and creates vertices and triangular faces
+ * Reads triangles from Mesh of shape and creates vertices and triangular faces
  */
 void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, TopoDS_Compound& compound)
 {
