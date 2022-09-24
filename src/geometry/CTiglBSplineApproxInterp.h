@@ -61,7 +61,7 @@ public:
     TIGL_EXPORT CTiglApproxResult FitCurveOptimal(const std::vector<double>& initialParms = std::vector<double>(), int maxIter=10) const;
 
 private:
-    ProjectResult projectOnCurve(const gp_Pnt& pnt, const Handle(Geom_Curve)& curve, double inital_Parm) const;
+    ProjectResult projectOnCurve(const gp_Pnt& pnt, const Handle(Geom_Curve)& curve, double initial_Parm) const;
     std::vector<double> computeParameters(double alpha) const;
     void computeKnots(int ncp, const std::vector<double>& params, std::vector<double>& knots, std::vector<int>& mults) const;
 

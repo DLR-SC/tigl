@@ -134,7 +134,7 @@ int TIGLViewerApp::parseArguments(QStringList argList)
     return 0;
 }
 
-void TIGLViewerApp::onWindowInitalized()
+void TIGLViewerApp::onWindowInitialized()
 {
     // suppress errors
     mainwindow.setSuppressErrorsEnabled(config.suppressErrors);
@@ -162,7 +162,7 @@ int TIGLViewerApp::run()
         return retval;
     }
 
-    connect(&mainwindow, SIGNAL(windowInitialized()), this, SLOT(onWindowInitalized()));
+    connect(&mainwindow, SIGNAL(windowInitialized()), this, SLOT(onWindowInitialized()));
     if (!config.windowTitle.isEmpty()) {
         mainwindow.setTiglWindowTitle(config.windowTitle, true);
     }

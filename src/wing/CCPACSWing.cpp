@@ -756,20 +756,20 @@ void  CCPACSWing::GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, do
         double len3 = outerLeadingPoint.Y()  - innerLeadingPoint.Y();
         double len4 = innterTrailingPoint.Y()- innerTrailingPoint.Y();
 
-        double lenght  =(len1+len2)/2.;
-        double lenght2 =(len3+len4)/2.;
+        double length  =(len1+len2)/2.;
+        double length2 =(len3+len4)/2.;
 
         double T = distance2/distance;
 
-        double b_mac =lenght*(2*distance2+distance)/(3*(distance2+distance));
-        double c_mac =distance-(distance-distance2)/lenght*b_mac;
+        double b_mac =length*(2*distance2+distance)/(3*(distance2+distance));
+        double c_mac =distance-(distance-distance2)/length*b_mac;
 
         gp_Pnt quarterchord  = segment.GetChordPoint(0, 0.25);
         gp_Pnt quarterchord2 = segment.GetChordPoint(1, 0.25);
 
-        double sw_tan   = (quarterchord2.X()-quarterchord.X())/lenght;
-        double dihe_sin = (quarterchord2.Z()-quarterchord.Z())/lenght;
-        double dihe_cos = lenght2/lenght;
+        double sw_tan   = (quarterchord2.X()-quarterchord.X())/length;
+        double dihe_sin = (quarterchord2.Z()-quarterchord.Z())/length;
+        double dihe_cos = length2/length;
 
         gp_XYZ seg_mac_p;
         seg_mac_p.SetX(0.25*distance - 0.25*c_mac + b_mac*sw_tan);
@@ -777,7 +777,7 @@ void  CCPACSWing::GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, do
         seg_mac_p.SetZ(dihe_sin*b_mac);
         seg_mac_p.Add(innerLeadingPoint.XYZ());
 
-        double A =((1. + T)*distance*lenght/2.);
+        double A =((1. + T)*distance*length/2.);
 
         A_sum += A;
         cc_mac_sum_p += seg_mac_p.Multiplied(A);

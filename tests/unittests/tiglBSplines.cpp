@@ -311,7 +311,7 @@ TEST_F(BSplineInterpolation, interpolateAll)
     StoreResult("TestData/analysis/BSplineInterpolation-interpolateAll.brep", curve, pnt2);
 }
 
-TEST_F(BSplineInterpolation, interpolateAllContinous)
+TEST_F(BSplineInterpolation, interpolateAllContinuous)
 {
     int nPoints = 8;
     TColgp_Array1OfPnt pnt2(1, nPoints);
@@ -335,7 +335,7 @@ TEST_F(BSplineInterpolation, interpolateAllContinous)
     StoreResult("TestData/analysis/BSplineInterpolation-interpolateAllCont.brep", curve, pnt2);
 }
 
-TEST_F(BSplineInterpolation, interpolateAllContinousHalfCircle)
+TEST_F(BSplineInterpolation, interpolateAllContinuousHalfCircle)
 {
     int nPoints = 8;
     TColgp_Array1OfPnt pnt2(1, nPoints);
@@ -593,7 +593,7 @@ TEST_F(BSplineInterpolation, withKinksSmooth)
     StoreResult("TestData/analysis/BSplineInterpolation-withKinksSmooth.brep", curve, points->Array1());
 }
 
-TEST_F(BSplineInterpolation, interpolationContinous)
+TEST_F(BSplineInterpolation, interpolationContinuous)
 {
 
     Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, 13);
@@ -624,12 +624,12 @@ TEST_F(BSplineInterpolation, interpolationContinous)
         }
 
         std::stringstream str;
-        str << "TestData/analysis/BSplineInterpolation-interpolationContinousDegree" << degree << ".brep";
+        str << "TestData/analysis/BSplineInterpolation-interpolationContinuousDegree" << degree << ".brep";
         StoreResult(str.str(), result, pnt2->Array1());
     }
 }
 
-TEST_F(BSplineInterpolation, interpolationDiscontinous)
+TEST_F(BSplineInterpolation, interpolationDiscontinuous)
 {
 
     Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, 12);
@@ -660,7 +660,7 @@ TEST_F(BSplineInterpolation, interpolationDiscontinous)
         }
 
         std::stringstream str;
-        str << "TestData/analysis/BSplineInterpolation-interpolationDiscontinousDegree" << degree << ".brep";
+        str << "TestData/analysis/BSplineInterpolation-interpolationDiscontinuousDegree" << degree << ".brep";
         StoreResult(str.str(), result, pnt2->Array1());
     }
 }
