@@ -476,5 +476,10 @@ const std::string& CTiglIntersectionCalculation::GetID()
     return id;
 }
 
+const TopoDS_Compound& CTiglIntersectionCalculation::GetIntersectionResult()
+{
+    return intersectionResult;
+}
+
 } // end namespace tigl
 

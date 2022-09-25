@@ -187,39 +187,47 @@ void CTiglIntersectionCalculationCommon::computeIntersection(CTiglShapeCache * c
         // contrary to the implementation in the base class, the overwritten function uses the BRepAlgoAPI_Common class to compute "result"
         TopoDS_Shape result = BRepAlgoAPI_Common(compoundOne, compoundTwo);
 
-        TopExp_Explorer myEdgeExplorer (result, TopAbs_EDGE);
-
-        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
-
-        while (myEdgeExplorer.More()) {
-            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
-            myEdgeExplorer.Next();
-        }
-
-        // connect all connected edges to wires and save them in container Edges again
-        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
-        int numWires = Edges->Length();
-
         intersectionResult.Nullify();
         BRep_Builder builder;
         builder.MakeCompound(intersectionResult);
-        std::vector<TopoDS_Wire> Wires;
+        builder.Add(intersectionResult, result);
 
-        // filter duplicated wires
-        for (int wireID=1; wireID <= numWires; wireID++) {
-            bool found = false;
-            TopoDS_Wire wire = TopoDS::Wire(Edges->Value(wireID));
-            for (std::vector<TopoDS_Wire>::size_type i = 0; i < Wires.size(); i++) {
-                if (Wires[i].HashCode(200000) == wire.HashCode(200000)) {
-                        found = true;
-                }
-            }
 
-            if (!found) {
-                Wires.push_back(wire);
-                builder.Add(intersectionResult, wire);
-            }
-        }
+//        TopExp_Explorer myEdgeExplorer (result, TopAbs_EDGE);
+
+//        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
+
+//        while (myEdgeExplorer.More()) {
+//            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
+//            myEdgeExplorer.Next();
+//        }
+
+//        // connect all connected edges to wires and save them in container Edges again
+//        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
+//        int numWires = Edges->Length();
+
+//        intersectionResult.Nullify();
+//        BRep_Builder builder;
+//        builder.MakeCompound(intersectionResult);
+//        std::vector<TopoDS_Wire> Wires;
+
+//        // filter duplicated wires
+//        for (int wireID=1; wireID <= numWires; wireID++) {
+//            bool found = false;
+//            TopoDS_Wire wire = TopoDS::Wire(Edges->Value(wireID));
+//            for (std::vector<TopoDS_Wire>::size_type i = 0; i < Wires.size(); i++) {
+//                if (Wires[i].HashCode(200000) == wire.HashCode(200000)) {
+//                        found = true;
+//                }
+//            }
+
+//            if (!found) {
+//                Wires.push_back(wire);
+//                builder.Add(intersectionResult, wire);
+//            }
+
+
+//        }
 
         // add to cache
         if (cache) {

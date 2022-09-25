@@ -6555,7 +6555,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfiguration
 
             // compute intersection of fused airplane and cutting plane
 
-            TopoDS_Shape commonSurface = BRepAlgoAPI_Common(planeSurface, airplaneShape);
+            auto intersection = tigl::CTiglIntersectionCalculationCommon(&config.GetShapeCache(),config.GetUID(),airplaneShape,point,normal);
+            TopoDS_Shape commonSurface = intersection.GetIntersectionResult();
+
+            //TopoDS_Shape commonSurface = BRepAlgoAPI_Common(planeSurface, airplaneShape);
 
             // calculate intersection area
 

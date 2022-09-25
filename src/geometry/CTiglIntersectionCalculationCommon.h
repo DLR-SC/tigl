@@ -45,6 +45,9 @@ class CTiglShapeCache;
 class CTiglIntersectionCalculationCommon : public CTiglIntersectionCalculation
 {
 
+public:
+    using CTiglIntersectionCalculation::CTiglIntersectionCalculation;
+
 protected:
     void computeIntersection(CTiglShapeCache* cache,
                                    size_t hashOne,
