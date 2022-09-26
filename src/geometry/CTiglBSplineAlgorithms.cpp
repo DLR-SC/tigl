@@ -679,11 +679,11 @@ CTiglApproxResult CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox
         points(static_cast<Standard_Integer>(i)) = spline->Value(oldParameter);
     }
 
-    bool makeContinous = spline->IsClosed() &&
+    bool makeContinuous = spline->IsClosed() &&
             spline->DN(spline->FirstParameter(), 1).Angle(spline->DN(spline->LastParameter(), 1)) < 6. / 180. * M_PI;
 
     // Create the new spline as a interpolation of the old one
-    CTiglBSplineApproxInterp approximationObj(points, static_cast<int>(n_control_pnts), 3, makeContinous);
+    CTiglBSplineApproxInterp approximationObj(points, static_cast<int>(n_control_pnts), 3, makeContinuous);
 
     breaks.insert(breaks.begin(), new_parameters.front());
     breaks.push_back(new_parameters.back());
@@ -723,12 +723,12 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::flipSurface(const Handle(Geo
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::pointsToSurface(const TColgp_Array2OfPnt& points,
                                                                     const std::vector<double>& uParams,
                                                                     const std::vector<double>& vParams,
-                                                                    bool uContinousIfClosed, bool vContinousIfClosed)
+                                                                    bool uContinuousIfClosed, bool vContinuousIfClosed)
 {
 
     double tolerance = REL_TOL_CLOSED * scale(points);
-    bool makeVDirClosed = vContinousIfClosed & isVDirClosed(points, tolerance);
-    bool makeUDirClosed = uContinousIfClosed & isUDirClosed(points, tolerance);
+    bool makeVDirClosed = vContinuousIfClosed & isVDirClosed(points, tolerance);
+    bool makeUDirClosed = uContinuousIfClosed & isUDirClosed(points, tolerance);
 
     // first interpolate all points by B-splines in u-direction
     std::vector<Handle(Geom_Curve)> uSplines;

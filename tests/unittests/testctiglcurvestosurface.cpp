@@ -86,7 +86,7 @@ TEST(CTiglCurvesToSurface, testSkinnedBSplineSurface)
     }
 }
 
-TEST(TiglBSplineAlgorithms, curvesToSurfaceContinous)
+TEST(TiglBSplineAlgorithms, curvesToSurfaceContinuous)
 {
     // Read in nacelle data from BRep
     TopoDS_Shape shape_u;
@@ -122,7 +122,7 @@ TEST(TiglBSplineAlgorithms, curvesToSurfaceContinous)
     EXPECT_TRUE(surface->DN(umax, vmin, 0, 1).IsEqual(surface->DN(umax, vmax, 0, 1), 1e-10, 1e-6));
 
     // Write surface
-    BRepTools::Write(BRepBuilderAPI_MakeFace(surface, Precision::Confusion()).Face(), "TestData/curvesToSurfaceContinous.brep");
+    BRepTools::Write(BRepBuilderAPI_MakeFace(surface, Precision::Confusion()).Face(), "TestData/curvesToSurfaceContinuous.brep");
 }
 
 TEST(TiglBSplineAlgorithms, curvesToSurfaceBug)

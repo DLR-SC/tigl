@@ -163,15 +163,15 @@ void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const
     auto kinks = m_kinks;
     std::sort(std::begin(kinks), std::end(kinks));
 
-    bool make_continous = false;
+    bool make_continuous = false;
     if (m_pnts->Value(m_pnts->Lower()).IsEqual(m_pnts->Value(m_pnts->Upper()), 1e-6)) {
         if (!in(0, kinks) && ! in(n_pnts - 1, kinks)) {
-            make_continous = true;
+            make_continuous = true;
         }
     }
 
     // make sure, that first and last points are in kink list
-    if (!make_continous) {
+    if (!make_continuous) {
         if (!in(0, kinks)) {
             kinks.insert(kinks.begin(), 0);
         }
@@ -193,8 +193,8 @@ void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const
         curve_segments.push_back(segment_curve);
     }
 
-    // create a continous spline from the last to the first kink
-    if (make_continous && kinks.size() > 0) {
+    // create a continuous spline from the last to the first kink
+    if (make_continuous && kinks.size() > 0) {
         double offset = new_params.front() - new_params.back();
 
         auto last_kink_idx = kinks.back();
@@ -222,7 +222,7 @@ void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const
         curve_segments.insert(curve_segments.begin(), first);
         curve_segments.push_back(last);
     }
-    else if (make_continous && kinks.empty()) {
+    else if (make_continuous && kinks.empty()) {
         auto curve = CTiglPointsToBSplineInterpolation(m_pnts, new_params, m_maxDegree, true).Curve();
         curve_segments.push_back(curve);
     }

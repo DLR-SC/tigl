@@ -276,12 +276,12 @@ CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<do
     return result;
 }
 
-ProjectResult CTiglBSplineApproxInterp::projectOnCurve(const gp_Pnt& pnt, const Handle(Geom_Curve) &curve, double inital_Parm) const
+ProjectResult CTiglBSplineApproxInterp::projectOnCurve(const gp_Pnt& pnt, const Handle(Geom_Curve) &curve, double initial_Parm) const
 {
     const int maxIter = 10; // maximum No of iterations
     const double eps  = 1.0E-6; // accuracy of arc length parameter
 
-    double t = inital_Parm;
+    double t = initial_Parm;
 
     // newton step
     double dt = 0;
@@ -309,7 +309,7 @@ ProjectResult CTiglBSplineApproxInterp::projectOnCurve(const gp_Pnt& pnt, const 
 
         // if parameter out of range reset it to the start value
         if (t_new < curve->FirstParameter() || t_new > curve->LastParameter()) {
-            t_new = inital_Parm;
+            t_new = initial_Parm;
             dt = 0.;
         }
         t = t_new;

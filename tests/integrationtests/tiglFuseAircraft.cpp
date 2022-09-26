@@ -90,7 +90,7 @@ protected:
 
 
         //*********************************************************************
-        // Tests the successfull creation of the wing and fuselage surfaces
+        // Tests the successful creation of the wing and fuselage surfaces
         //*********************************************************************
         TopoDS_Compound wingProfiles;
         TopoDS_Compound fuselageProfiles;

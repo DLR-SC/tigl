@@ -43,7 +43,7 @@ private:
 signals:
     
 public slots:
-    void onWindowInitalized();
+    void onWindowInitialized();
 };
 
 #endif // TIGLVIEWERAPP_H

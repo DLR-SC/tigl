@@ -44,7 +44,7 @@ TEST(TestInvalidation, invalidation)
     const char* ribUid = "Wing_CS_RibDef2";
     const tigl::CCPACSWingRibsDefinition& rib = config.GetUIDManager().ResolveObject<tigl::CCPACSWingRibsDefinition>(ribUid);
     
-    // get inital start point of rib
+    // get initial start point of rib
     gp_Pnt initialStartPnt, finalStartPnt, dummy;
     rib.GetRibMidplanePoints(1, initialStartPnt, dummy);
 

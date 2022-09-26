@@ -193,17 +193,17 @@ public:
      *          parameters in u-direction where the points shall be at on the interpolating surface
      * @param vParams:
      *          parameters in v-direction where the points shall be at on the interpolating surface
-     * @param uContinousIfClosed:
-     *          Make a continous junction in u d-directions, if the u direction is closed
-     * @param vContinousIfClosed:
-     *          Make a continous junction in v d-directions, if the v direction is closed
+     * @param uContinuousIfClosed:
+     *          Make a continuous junction in u d-directions, if the u direction is closed
+     * @param vContinuousIfClosed:
+     *          Make a continuous junction in v d-directions, if the v direction is closed
      * @return
      *          B-spline surface which interpolates the given points with the given parameters
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) pointsToSurface(const TColgp_Array2OfPnt& points,
                                                                    const std::vector<double>& uParams,
                                                                    const std::vector<double>& vParams,
-                                                                   bool uContinousIfClosed, bool vContinousIfClosed);
+                                                                   bool uContinuousIfClosed, bool vContinuousIfClosed);
 
     /**
      * @brief intersections:

@@ -1097,13 +1097,13 @@ void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint positio
 #if OCC_VERSION_HEX < 0x070000
     if ( !myLayer.IsNull() && !myView.IsNull() ) {
 
-        int witdh, height;
-        myView->Window()->Size(witdh, height);
+        int width, height;
+        myView->Window()->Size(width, height);
         
         myLayer->Clear(); 
         // The -1 is a hack from the opencascade forums to avoid clipping
         // of the coordinates. This way it behaves identically to opengl
-        myLayer->SetOrtho(0, witdh, height, 0, (Aspect_TypeOfConstraint) -1);
+        myLayer->SetOrtho(0, width, height, 0, (Aspect_TypeOfConstraint) -1);
         
         myLayer->Begin();
         myLayer->SetTransparency(1.0);
