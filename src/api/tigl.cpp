@@ -34,8 +34,6 @@
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
-#include "CTiglIntersectionCalculation.h"
-#include "CTiglIntersectionCalculationCommon.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
