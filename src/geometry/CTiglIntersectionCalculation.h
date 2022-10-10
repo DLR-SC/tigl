@@ -118,7 +118,7 @@ public:
     TIGL_EXPORT const TopoDS_Compound& GetIntersectionResult();
 
 protected:
-    virtual void computeIntersection(CTiglShapeCache* cache,
+    void computeIntersection(CTiglShapeCache* cache,
                              size_t hashOne,
                              size_t hashTwo,
                              TopoDS_Shape compoundOne,
