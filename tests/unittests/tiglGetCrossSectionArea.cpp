@@ -32,6 +32,22 @@ protected:
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+        // Add D150 test case
+
+        const char* filename2 = "TestData/CPACS_30_D150.xml";
+        ReturnCode tixiRet2;
+        TiglReturnCode tiglRet2;
+
+        tiglHandle2 = -1;
+        tixiHandle2 = -1;
+
+        tixiRet2 = tixiOpenDocument(filename2, &tixiHandle2);
+        ASSERT_TRUE (tixiRet2 == SUCCESS);
+        tiglRet2 = tiglOpenCPACSConfiguration(tixiHandle2, "", &tiglHandle2);
+        ASSERT_TRUE(tiglRet2 == TIGL_SUCCESS);
+
+
     }
 
     static void TearDownTestCase()
@@ -40,6 +56,13 @@ protected:
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
+
+        //Adding D150 test case
+
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle2) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle2) == SUCCESS);
+        tiglHandle2 = -1;
+        tixiHandle2 = -1;
     }
 
     void SetUp() override {}
@@ -48,11 +71,19 @@ protected:
 
     static TixiDocumentHandle           tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
+
+    //Add D150 test case
+
+    static TixiDocumentHandle       	tixiHandle2;
+    static TiglCPACSConfigurationHandle tiglHandle2;
 };
 
 
 TixiDocumentHandle  GetCrossSectionAreaSimple::tixiHandle = 0;
 TiglCPACSConfigurationHandle  GetCrossSectionAreaSimple::tiglHandle = 0;
+
+TixiDocumentHandle  GetCrossSectionAreaSimple::tixiHandle2 = 0;
+TiglCPACSConfigurationHandle  GetCrossSectionAreaSimple::tiglHandle2 = 0;
 
 TEST_F(GetCrossSectionAreaSimple, uID_check)
 {
@@ -65,6 +96,17 @@ TEST_F(GetCrossSectionAreaSimple, uID_check)
     // Empty uID
 
     EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "", 0., 0., 0., 0., 0., 1., &area), TIGL_XML_ERROR);
+
+    // For the D150 configuration:
+
+    // Test if the uID is valid, i.e. it exists and is related to a geometric component
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle2, "nonExistentUID", 0., 0., 0., 0., 0., 1., &area), TIGL_UID_ERROR);
+
+    // Empty uID
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle2, "", 0., 0., 0., 0., 0., 1., &area), TIGL_XML_ERROR);
+
 }
 
 TEST_F(GetCrossSectionAreaSimple, area_computations_fused_airplane)
@@ -79,7 +121,7 @@ TEST_F(GetCrossSectionAreaSimple, area_computations_fused_airplane)
 
     ASSERT_NEAR(area, 4.5, precision);
 
-    // Now let the cutting plane given by the x-z-plane
+    // Now let the cutting plane be given by the x-z-plane
 
     EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Cpacs2Test", 0., 0., 0., 0., 1., 0., &area), TIGL_SUCCESS);
 
@@ -108,6 +150,28 @@ TEST_F(GetCrossSectionAreaSimple, area_computations_fused_airplane)
     double precisionLow = 5.E-2;
 
     ASSERT_NEAR(area, 1.72, precisionLow);
+
+    // For the D150 configuration:
+
+    // The cross section area of the following plane and the configuration is expected to be zero.
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle2, "D150_VAMP", 0., 0., 0., 1., 0., 0., &area), TIGL_SUCCESS);
+
+    ASSERT_NEAR(area, 0., precision);
+
+    // The expected area for the following intersection is verified through an approximative estimation in the GUI.
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle2, "D150_VAMP", 10., 0., 0., 1., 0., 0., &area), TIGL_SUCCESS);
+
+    ASSERT_NEAR(area, 12.84858, precision);
+
+    // An approximation using the GUI shows that the following expected area is plausible.
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle2, "D150_VAMP", 15., 0., 0., 1., 0., 0., &area), TIGL_SUCCESS);
+
+    ASSERT_NEAR(area, 18.88991, precision);
+
+
 }
 
 TEST_F(GetCrossSectionAreaSimple, area_computations_wing)
@@ -125,6 +189,15 @@ TEST_F(GetCrossSectionAreaSimple, area_computations_wing)
     EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Wing", 0., 0., 0.25, 0., 0., 1., &area), TIGL_SUCCESS);
 
     ASSERT_NEAR(area, 0., precision);
+
+    // For the D150 configuration:
+
+    // An approximation using the GUI shows that the following expected area is plausible.
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle2, "D150_VAMP_W1", 15., 0., 0., 1., 0., 0., &area), TIGL_SUCCESS);
+
+    ASSERT_NEAR(area, 4.44927, precision);
+
 }
 
 TEST_F(GetCrossSectionAreaSimple, area_computations_fuselage)
@@ -160,6 +233,14 @@ TEST_F(GetCrossSectionAreaSimple, area_computations_fuselage)
     double precisionLow = 5.E-2;
 
     ASSERT_NEAR(area, 0.76, precisionLow);
+
+    // For the D150 configuration:
+
+    // An approximation using the GUI shows that the following expected area is plausible.
+
+    EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle2, "D150_VAMP_FL1", 15., 0., 0., 1., 0., 0., &area), TIGL_SUCCESS);
+
+    ASSERT_NEAR(area, 12.84757, precision);
 }
 
 TEST_F(GetCrossSectionAreaSimple, error_handle_invalid)
@@ -173,3 +254,4 @@ TEST_F(GetCrossSectionAreaSimple, error_zero_normal)
     double area;
     EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle,"Cpacs2Test", 0., 0., 0., 0., 0., 0., &area), TIGL_MATH_ERROR);
 }
+

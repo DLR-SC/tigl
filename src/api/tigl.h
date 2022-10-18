@@ -4499,7 +4499,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
 
 /**
  * @brief tiglGetCrossSectionArea returns the area of the intersection of either the fused aircraft or its component (via UID) with a plane.
- * The function can be used for Whitcomb's area rule.// If no intersections are found, the resulting area is
+ * The function can be used for Whitcomb's area rule.// If no intersections are found, the resulting area
  *                                                   //is zero. No warning or error is thrwon in this case. If more than one intersection is found, the returned area
  *                                                   //is the sum of the areas of the intersections. No warning or error is thrown.
  *
