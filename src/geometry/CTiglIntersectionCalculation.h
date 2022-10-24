@@ -114,9 +114,6 @@ public:
     // returnes the unique ID for the current intersection
     TIGL_EXPORT const std::string& GetID();
 
-    // returns the member variable intersectionResult
-    TIGL_EXPORT const TopoDS_Compound& GetIntersectionResult();
-
 protected:
     void computeIntersection(CTiglShapeCache* cache,
                              size_t hashOne,
@@ -124,7 +121,7 @@ protected:
                              TopoDS_Shape compoundOne,
                              TopoDS_Shape compoundTwo );
 
-
+private:
     Standard_Real tolerance;
     TopoDS_Compound intersectionResult;     /* The full Intersection result */
     std::string id;                         /* identifcation id of the intersection */

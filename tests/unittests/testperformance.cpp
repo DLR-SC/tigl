@@ -30,8 +30,7 @@
 #include <string.h>
 #include <ctime>
 
-#include "CGlobalExporterConfigs.h"
-
+#include "CTiglFusePlane.h"
 /******************************************************************************/
 
 class TestPerformance : public ::testing::Test

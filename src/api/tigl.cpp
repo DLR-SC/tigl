@@ -6542,6 +6542,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfiguration
 
         TopoDS_Shape planeSurface = BRepBuilderAPI_MakeFace(gp_Pln(point, normal));
 
+        TopoDS_Shape commonSurface;
+
         if (componentUID == config.GetUID()) {
 
             // get the fused airplane
@@ -6553,34 +6555,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfiguration
 
             // compute intersection of fused airplane and cutting plane
 
-            TopoDS_Shape commonSurface = BRepAlgoAPI_Common(planeSurface, airplaneShape);
-
-            // calculate intersection area
-
-            GProp_GProps props = GProp_GProps();
-            BRepGProp::SurfaceProperties(commonSurface, props);
-            double val = props.Mass();
-            *area =val;
-            return TIGL_SUCCESS;
-         }
-         else {
-
+            commonSurface = BRepAlgoAPI_Common(planeSurface, airplaneShape);
+         }else{
             auto& component = uIDManager.GetGeometricComponent(componentUID);
             auto componentLoft = component.GetLoft();
             auto componentShape = componentLoft->Shape();
 
             // compute intersection of componentShape with the cutting plane
 
-            TopoDS_Shape commonSurface = BRepAlgoAPI_Common(planeSurface, componentShape);
+            commonSurface = BRepAlgoAPI_Common(planeSurface, componentShape);
+        }
 
-            // calculate intersection area
+        // calculate intersection area
 
-            GProp_GProps props = GProp_GProps();
-            BRepGProp::SurfaceProperties(commonSurface, props);
-            double val = props.Mass();
-            *area =val;
-            return TIGL_SUCCESS;
-         }
+        GProp_GProps props = GProp_GProps();
+        BRepGProp::SurfaceProperties(commonSurface, props);
+        double val = props.Mass();
+        *area =val;
+        return TIGL_SUCCESS;
+
     }
     catch (const tigl::CTiglError& ex) {
         LOG(ERROR) << ex.what();
