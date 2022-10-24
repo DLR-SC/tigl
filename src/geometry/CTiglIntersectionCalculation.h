@@ -121,7 +121,7 @@ protected:
                              TopoDS_Shape compoundOne,
                              TopoDS_Shape compoundTwo );
 
-private:        
+private:
     Standard_Real tolerance;
     TopoDS_Compound intersectionResult;     /* The full Intersection result */
     std::string id;                         /* identification id of the intersection */

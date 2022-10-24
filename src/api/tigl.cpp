@@ -34,7 +34,6 @@
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
-#include "CTiglIntersectionCalculation.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
@@ -64,6 +63,13 @@
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
 #include "TopoDS_Vertex.hxx"
+
+#include "BRepBuilderAPI_MakeFace.hxx"
+#include "BRepPrimAPI_MakeBox.hxx"
+#include "BRepAlgoAPI_Common.hxx"
+#include "GProp_GProps.hxx"
+#include "BRepGProp.hxx"
+
 
 /*****************************************************************************/
 /* Private functions.                                                 */
@@ -6500,6 +6506,91 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
 /*****************************************************************************************************/
 /*                     Surface Area calculations                                                     */
 /*****************************************************************************************************/
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char* componentUID,
+                                                          double origin_x, double origin_y, double origin_z,
+                                                          double normal_x, double normal_y, double normal_z,
+                                                          double* area
+                                                          )
+{
+
+    try {
+
+        //get configuration and uID manager
+
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglUIDManager& uIDManager = config.GetUIDManager();
+
+        if (normal_x*normal_x + normal_y*normal_y + normal_z*normal_z < 1e-15) {
+            LOG(ERROR) << "Plane normal must be non-zero.";
+            return TIGL_MATH_ERROR;
+        }
+        if (uIDManager.HasGeometricComponent(componentUID) == false) {
+            LOG(ERROR) << "uID doesn't refer to a geometric component.";
+            return TIGL_UID_ERROR;
+        }
+
+        *area = 0.;
+
+        // create plane
+
+        gp_Pnt point = gp_Pnt(origin_x, origin_y, origin_z);
+        gp_Dir normal = gp_Dir(normal_x, normal_y, normal_z);
+
+        TopoDS_Shape planeSurface = BRepBuilderAPI_MakeFace(gp_Pln(point, normal));
+
+        TopoDS_Shape commonSurface;
+
+        if (componentUID == config.GetUID()) {
+
+            // get the fused airplane
+
+            tigl::PTiglFusePlane fuser = config.AircraftFusingAlgo();
+            fuser->SetResultMode((tigl::TiglFuseResultMode) 1);
+            PNamedShape airplane = fuser->FusedPlane();
+            TopoDS_Shape airplaneShape = airplane->Shape();
+
+            // compute intersection of fused airplane and cutting plane
+
+            commonSurface = BRepAlgoAPI_Common(planeSurface, airplaneShape);
+         }else{
+            auto& component = uIDManager.GetGeometricComponent(componentUID);
+            auto componentLoft = component.GetLoft();
+            auto componentShape = componentLoft->Shape();
+
+            // compute intersection of componentShape with the cutting plane
+
+            commonSurface = BRepAlgoAPI_Common(planeSurface, componentShape);
+        }
+
+        // calculate intersection area
+
+        GProp_GProps props = GProp_GProps();
+        BRepGProp::SurfaceProperties(commonSurface, props);
+        double val = props.Mass();
+        *area =val;
+        return TIGL_SUCCESS;
+
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetCrossSectionArea!";
+        return TIGL_ERROR;
+    }
+
+    return TIGL_SUCCESS;
+}
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
                                                          double *surfaceAreaPtr)
