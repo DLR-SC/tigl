@@ -661,7 +661,6 @@ void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
                          ||(border == ChordWiseBorder::TE && !upper)) {
                         if ( fabs(u - umin) > tol ) {
                             umin = u;
-                            current->GetAnnotation().ccmin = trim_coordinate;
                             trim = true;
                         }
                     }
@@ -669,12 +668,19 @@ void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
                         ||(border == ChordWiseBorder::LE && !upper)) {
                         if ( fabs(umax - u) > tol ) {
                             umax = u;
-                            current->GetAnnotation().ccmax = trim_coordinate;
                             trim = true;
                         }
                     }
 
                     if (trim) {
+                        // update annotation
+                        if (border == ChordWiseBorder::LE) {
+                            current->GetAnnotation().ccmin = trim_coordinate;
+                        } else {
+                            current->GetAnnotation().ccmax = trim_coordinate;
+                        }
+
+                        // replace face
                         current->ReplaceFace(TrimFace(current->GetFace(),
                                                       umin,
                                                       umax,
@@ -872,16 +878,23 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
         double spanwise_contour_coordinate = 0;
         for (auto row = cache.rgsurface.Root(); row; row = row->VNext()) {
             int i = 0;
-            double chordwise_contour_coordinate = 0;
+            double chordwise_contour_coordinate = UPPER_SIDE? 0. : 1.;
             for (auto current = row; current; current = current->UNext()){
                 current->GetAnnotation().scmin = spanwise_contour_coordinate;
                 current->GetAnnotation().scmax = spanwise_contour_coordinate
                         + (current->VMax() - current->VMin())/col_ranges[i];
 
-                current->GetAnnotation().ccmin = chordwise_contour_coordinate;
-                current->GetAnnotation().ccmax = chordwise_contour_coordinate
-                        + (current->UMax() - current->UMin())/row_ranges[j];
-                chordwise_contour_coordinate = current->GetAnnotation().ccmax;
+                if (UPPER_SIDE) {
+                    current->GetAnnotation().ccmin = chordwise_contour_coordinate;
+                    current->GetAnnotation().ccmax = chordwise_contour_coordinate
+                            + (current->UMax() - current->UMin())/row_ranges[j];
+                    chordwise_contour_coordinate = current->GetAnnotation().ccmax;
+                } else {
+                    current->GetAnnotation().ccmax = chordwise_contour_coordinate;
+                    current->GetAnnotation().ccmin = chordwise_contour_coordinate
+                            - (current->UMax() - current->UMin())/row_ranges[j];
+                    chordwise_contour_coordinate = current->GetAnnotation().ccmin;
+                }
 
                 i++;
                 if (!(current->UNext()))
