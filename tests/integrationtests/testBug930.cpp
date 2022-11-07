@@ -46,6 +46,5 @@ TEST(Bug930, cell_getLoft)
    EXPECT_NEAR(zmin, -3.267, 0.01);
    EXPECT_NEAR(zmax, -0.443, 0.01);
 
-   BRepTools::Write(span01_circ07, "TestData/export/bug930_span01_circ07.brep");
 
 }
