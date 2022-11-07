@@ -20,7 +20,6 @@
 #include "CTiglUIDManager.h"
 #include "CNamedShape.h"
 #include "tiglcommonfunctions.h"
-#include "BRepTools.hxx"
 
 
 TEST(Bug930, cell_getLoft)
