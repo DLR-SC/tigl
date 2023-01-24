@@ -62,21 +62,22 @@ namespace {
 }
 
 CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
+    : _hasPerformed{false}
+    , _makeSolid{true}
+#ifdef TIGL_GORDON_SURFACE
+    , _use_gordon_surface_algorithm(true)
+#else
+    , _use_gordon_surface_algorithm(false)
+#endif
+    , _myTolerance{tolerance}
+    , _mySameKnotTolerance{sameKnotTolerance}
 {
-    _hasPerformed = false;
-    _makeSolid = true;
     _result.Nullify();
-    _myTolerance = tolerance;
-    _mySameKnotTolerance = sameKnotTolerance;
 }
 
 CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance, double sameKnotTolerance)
+    : CTiglMakeLoft(tolerance, sameKnotTolerance)
 {
-    _hasPerformed = false;
-    _result.Nullify();
-    _myTolerance = tolerance;
-    _myTolerance = tolerance;
-    _mySameKnotTolerance = sameKnotTolerance;
     addProfiles(profiles);
     addGuides(guides);
 }
@@ -144,6 +145,10 @@ void CTiglMakeLoft::Perform()
     _hasPerformed = true;
 }
 
+void CTiglMakeLoft::useGordonSurfaceAlgorithm(bool enabled) {
+    _use_gordon_surface_algorithm = enabled;
+}
+
 void CTiglMakeLoft::setMakeSolid(bool enabled)
 {
     _makeSolid = enabled;
@@ -159,11 +164,12 @@ void CTiglMakeLoft::setMakeSmooth(bool enabled)
  */
 void CTiglMakeLoft::makeLoftWithGuides()
 {
-#ifdef TIGL_GORDON_SURFACE
-    makeLoftGordon();
-#else
-    makeLoftCoons();
-#endif
+    if (_use_gordon_surface_algorithm) {
+        makeLoftGordon();
+    }
+    else {
+        makeLoftCoons();
+    }
 }
 
 

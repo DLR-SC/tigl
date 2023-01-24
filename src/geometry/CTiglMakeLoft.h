@@ -54,10 +54,19 @@ public:
      * @brief Use the function to adjust, if you want to get a closed
      * solid (inclidung the side caps at the inner and outer profile)
      * or just the surface without caps.
-     * 
+     *
      * @param enabled If true, a solid is built.
      */
     TIGL_EXPORT void setMakeSolid(bool enabled);
+
+    /**
+     * @brief Use the function to enable the Gordon surface algorithm to
+     * interpolate curve networks.
+     * If enabled is false, Coons patches will be used instead.
+     *
+     * @param enabled If true, the Gordon Surface algorithm is used.
+     */
+    TIGL_EXPORT void useGordonSurfaceAlgorithm(bool enabled);
 
     /**
      * @brief setMakeSmooth switches, whether the resulting loft will be ruled
@@ -107,7 +116,7 @@ private:
     double _mySameKnotTolerance;
     std::vector<TopoDS_Wire> guides, profiles;
     std::vector<Standard_Real> uparams, vparams;
-    bool _hasPerformed, _makeSolid;
+    bool _hasPerformed, _makeSolid, _use_gordon_surface_algorithm;
     bool _makeSmooth = false;
     
     TopoDS_Shape _result;
