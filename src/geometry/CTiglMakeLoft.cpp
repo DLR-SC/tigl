@@ -64,13 +64,13 @@ namespace {
 CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
     : _hasPerformed{false}
     , _makeSolid{true}
-#ifdef TIGL_GORDON_SURFACE
-    , _use_gordon_surface_algorithm(true)
-#else
-    , _use_gordon_surface_algorithm(false)
-#endif
     , _myTolerance{tolerance}
     , _mySameKnotTolerance{sameKnotTolerance}
+    #ifdef TIGL_GORDON_SURFACE
+        , _use_gordon_surface_algorithm(true)
+    #else
+        , _use_gordon_surface_algorithm(false)
+    #endif
 {
     _result.Nullify();
 }
@@ -185,18 +185,9 @@ void CTiglMakeLoft::makeLoftGordon()
     int guide_idx = 0;
 #endif
 
-    std::vector<Handle(Geom_Curve)> guide_curves;
-    for (auto const& guide : guides) {
-        // TODO: Currently only considering first edge of wire, regardless of the
-        // actual number of edges
-        guide_curves.push_back(GetBSplineCurve(GetEdge(guide, 0)));
-
-#ifdef DEBUG
-        tigl::dumpShape(GetEdge(guide,0), "debugShapes", "gordon_guide_", guide_idx++);
-#endif
-    }
-
     // get the profile curves
+    bool all_profiles_are_closed = true;
+    bool no_profile_is_closed = true;
     std::vector<Handle(Geom_Curve)> profiles_curves;
     for (auto& profile : profiles){
 
@@ -206,12 +197,46 @@ void CTiglMakeLoft::makeLoftGordon()
         }
 
 #ifdef DEBUG
-        tigl::dumpShape(GetEdge(profile,0), "debugShapes", "gordon_profile_", profile_idx++);
+        tigl::dumpShape(profile, "debugShapes", "gordon_profile_wire", profile_idx);
+        tigl::dumpShape(GetEdge(profile,0), "debugShapes", "gordon_profile", profile_idx++);
 #endif
 
         // TODO: Currently only considering first edge of wire, regardless of the
         // actual number of edges
         profiles_curves.push_back(GetBSplineCurve(GetEdge(profile, 0)));
+
+
+        // trim periodic curves
+        if (profiles_curves.back()->IsClosed()) {
+            no_profile_is_closed = false;
+            if (profiles_curves.back()->IsPeriodic()) {
+                auto curve = profiles_curves.back();
+                Handle(Geom_Curve) c = new Geom_TrimmedCurve(curve, curve->FirstParameter(), curve->LastParameter());
+                profiles_curves.back() = GeomConvert::CurveToBSplineCurve(c);
+            }
+        } else {
+            all_profiles_are_closed = false;
+        }
+    }
+
+    if (!(all_profiles_are_closed || no_profile_is_closed)) {
+        throw tigl::CTiglError("Either all profile curves must be periodic or none.", TIGL_ERROR);
+    }
+
+    std::vector<Handle(Geom_Curve)> guide_curves;
+    for (auto const& guide : guides) {
+        // TODO: Currently only considering first edge of wire, regardless of the
+        // actual number of edges
+        guide_curves.push_back(GetBSplineCurve(GetEdge(guide, 0)));
+
+#ifdef DEBUG
+        tigl::dumpShape(GetEdge(guide,0), "debugShapes", "gordon_guide", guide_idx++);
+#endif
+    }
+
+    if (all_profiles_are_closed) {
+                    //TODO: First check if the first and last are already the same.
+        guide_curves.push_back(guide_curves.front());
     }
 
 
@@ -224,6 +249,11 @@ void CTiglMakeLoft::makeLoftGordon()
 
     auto face_maker = BRepBuilderAPI_MakeFace(surface, _myTolerance);
     _result = face_maker.Face();
+
+#ifdef DEBUG
+        tigl::dumpShape(_result, "debugShapes", "gordon_face");
+#endif
+
 
     // make surface to face(s). We likely needSurface to trim along profiles and guides.
 

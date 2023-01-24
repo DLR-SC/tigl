@@ -18,6 +18,7 @@
 
 #include "CTiglPatchShell.h"
 #include "CTiglError.h"
+#include "Debugging.h"
 
 
 #include <cassert>
@@ -36,6 +37,9 @@
 
 #include "CTiglLogging.h"
 #include "CTiglLogSplitter.h"
+
+#include <TopoDS_FrozenShape.hxx>
+#include <TopoDS_UnCompatibleShapes.hxx>
 
 namespace
 {
@@ -113,12 +117,13 @@ TopoDS_Shape CTiglPatchShell::PatchedShape()
 void CTiglPatchShell::Perform()
 {
     TopoDS_Shape shell = MakeShells(_inputShell, _tolerance);
+    auto x = shell.ShapeType();
 
     if (_sidecaps.size()>0) {
         // close holes using side caps
         Standard_Boolean B = shell.Closed();
 
-        BRepBuilderAPI_Sewing sewingAlgo;
+        BRepBuilderAPI_Sewing sewingAlgo(1e-4);
         sewingAlgo.Add(shell);
 
 
@@ -133,6 +138,16 @@ void CTiglPatchShell::Perform()
         shell.Closed(Standard_True);
     }
 
+    auto y = shell.ShapeType();
+
+#if DEBUG
+    size_t i = 0;
+    for (auto const& cap : _sidecaps) {
+        tigl::dumpShape(cap, "debugShapes", "cap", i++);
+    }
+    tigl::dumpShape(shell, "debugShapes", "shell");
+#endif
+
     if (_makeSolid) {
         BRep_Builder B;
         TopoDS_Solid solid;
@@ -140,8 +155,11 @@ void CTiglPatchShell::Perform()
         try {
             B.Add(solid, shell);
         }
-        catch ( ... ) {
-            throw CTiglError("Cannot make a solid out of the shell. Is the base type correct?", TIGL_ERROR);
+        catch ( TopoDS_FrozenShape const& ) {
+            throw CTiglError("FrozenShape: Cannot make a solid out of the shell. Is the base type correct?", TIGL_ERROR);
+        }
+        catch ( TopoDS_UnCompatibleShapes const& ex){
+            throw CTiglError(std::string("UncompatibleShapes: Cannot make a solid out of the shell. Is the base type correct?"), TIGL_ERROR);
         }
 
         // verify the orientation of the solid

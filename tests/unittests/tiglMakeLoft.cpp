@@ -132,6 +132,16 @@ TEST(makeLoft, bug753_cpacs)
     EXPECT_NO_THROW(fuselage.GetLoft());
 }
 
+
+TEST(makeLoft, simple_duct)
+{
+    TiglHandleWrapper handle("TestData/simpletest_ducts.xml", "");
+    const auto &uidMgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(handle).GetUIDManager();
+    auto& yduct = uidMgr.GetGeometricComponent("YDuct1");
+//    EXPECT_NO_THROW(yduct.GetLoft());
+    yduct.GetLoft();
+}
+
 class CurveNetworkCoons: public ::testing::TestWithParam<std::string>
 {
 protected:
