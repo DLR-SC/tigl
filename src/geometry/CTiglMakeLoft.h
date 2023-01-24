@@ -81,6 +81,9 @@ private:
     void makeLoftWithGuides();
     void makeLoftWithoutGuides();
 
+    void makeLoftCoons();
+    void makeLoftGordon();
+
     /**
      * @brief transform the shape to a solid if the correspondig flag is set,
      * transform it to a shell otherwise (wrapper for CTiglPatchShell)

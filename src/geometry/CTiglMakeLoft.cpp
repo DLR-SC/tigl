@@ -24,6 +24,7 @@
 
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglCurvesToSurface.h"
+#include "CTiglInterpolateCurveNetwork.h"
 #include "CTiglPatchShell.h"
 #include "Debugging.h"
 #include "to_string.h"
@@ -157,6 +158,62 @@ void CTiglMakeLoft::setMakeSmooth(bool enabled)
  * @brief Builds the loft using profiles and guide curves
  */
 void CTiglMakeLoft::makeLoftWithGuides()
+{
+#ifdef TIGL_GORDON_SURFACE
+    makeLoftGordon();
+#else
+    makeLoftCoons();
+#endif
+}
+
+
+
+/**
+ * @brief Builds the loft using profiles and guide curves using Coons patches
+ */
+void CTiglMakeLoft::makeLoftGordon()
+{
+    std::vector<Handle(Geom_Curve)> guide_curves;
+    for (auto const& guide : guides) {
+        // TODO: Currently only considering first edge of wire, regardless of the
+        // actual number of edges
+        guide_curves.push_back(GetBSplineCurve(GetEdge(guide, 0)));
+    }
+
+    // get the profile curves
+    std::vector<Handle(Geom_Curve)> profiles_curves;
+    for (auto& profile : profiles){
+
+        // remove leading edge split in profile
+        if (GetNumberOfEdges(profile) > 1) {
+            profile =  BRepAlgo::ConcatenateWire(profile,GeomAbs_C1);
+        }
+
+        // TODO: Currently only considering first edge of wire, regardless of the
+        // actual number of edges
+        profiles_curves.push_back(GetBSplineCurve(GetEdge(profile, 0)));
+    }
+
+
+    auto interpolator = tigl::CTiglInterpolateCurveNetwork(
+                profiles_curves,
+                guide_curves,
+                1e-8 //TODO: spatial tolerance
+    );
+    auto surface = interpolator.Surface();
+
+    auto face_maker = BRepBuilderAPI_MakeFace(surface, 1e-8); //TODO sensible tolerance
+    _result = face_maker.Face();
+
+    // make surface to face(s). We likely needSurface to trim along profiles and guides.
+
+    CloseShape();
+}
+
+/**
+ * @brief Builds the loft using profiles and guide curves using Coons patches
+ */
+void CTiglMakeLoft::makeLoftCoons()
 {
     BRep_Builder b;
     TopoDS_Compound cprof, cguid;
