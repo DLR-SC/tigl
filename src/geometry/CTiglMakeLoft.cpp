@@ -204,11 +204,11 @@ void CTiglMakeLoft::makeLoftGordon()
     auto interpolator = tigl::CTiglInterpolateCurveNetwork(
                 profiles_curves,
                 guide_curves,
-                1e-8 //TODO: spatial tolerance
+                _myTolerance
     );
     auto surface = interpolator.Surface();
 
-    auto face_maker = BRepBuilderAPI_MakeFace(surface, 1e-8); //TODO sensible tolerance
+    auto face_maker = BRepBuilderAPI_MakeFace(surface, _myTolerance);
     _result = face_maker.Face();
 
     // make surface to face(s). We likely needSurface to trim along profiles and guides.
