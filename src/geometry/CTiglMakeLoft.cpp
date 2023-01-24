@@ -179,11 +179,21 @@ void CTiglMakeLoft::makeLoftWithGuides()
  */
 void CTiglMakeLoft::makeLoftGordon()
 {
+
+#ifdef DEBUG
+    int profile_idx = 0;
+    int guide_idx = 0;
+#endif
+
     std::vector<Handle(Geom_Curve)> guide_curves;
     for (auto const& guide : guides) {
         // TODO: Currently only considering first edge of wire, regardless of the
         // actual number of edges
         guide_curves.push_back(GetBSplineCurve(GetEdge(guide, 0)));
+
+#ifdef DEBUG
+        tigl::dumpShape(GetEdge(guide,0), "debugShapes", "gordon_guide_", guide_idx++);
+#endif
     }
 
     // get the profile curves
@@ -194,6 +204,10 @@ void CTiglMakeLoft::makeLoftGordon()
         if (GetNumberOfEdges(profile) > 1) {
             profile =  BRepAlgo::ConcatenateWire(profile,GeomAbs_C1);
         }
+
+#ifdef DEBUG
+        tigl::dumpShape(GetEdge(profile,0), "debugShapes", "gordon_profile_", profile_idx++);
+#endif
 
         // TODO: Currently only considering first edge of wire, regardless of the
         // actual number of edges
