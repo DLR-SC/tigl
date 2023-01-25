@@ -56,6 +56,8 @@
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 
 namespace {
     TopoDS_Shape ResortFaces(TopoDS_Shape const& shape, int nu, int nv, bool umajor2vmajor = true);
@@ -248,11 +250,41 @@ void CTiglMakeLoft::makeLoftGordon()
     auto surface = interpolator.Surface();
 
     auto face_maker = BRepBuilderAPI_MakeFace(surface, _myTolerance);
-    _result = face_maker.Face();
+    auto gordon_face = face_maker.Face();
 
+
+    // trim gordon face at intersections, so that we have a face for every patch which is enclosed
+    // by two guides and two profiles
+    TopoDS_Shell faces;
+    BRep_Builder builder;
+    builder.MakeShell(faces);
+    auto const& us = interpolator.ParametersProfiles();
+    auto const& vs = interpolator.ParametersGuides();
+    for (size_t i = 0; i < us.size() - 1; ++i) {
+        for (size_t j = 0; j < vs.size() - 1; ++j) {
+            builder.Add(faces, TrimFace(gordon_face, us[i], us[i+1], vs[j], vs[j+1]));
 #ifdef DEBUG
-        tigl::dumpShape(_result, "debugShapes", "gordon_face");
+        tigl::dumpShape(TrimFace(gordon_face, us[i], us[i+1], vs[j], vs[j+1]), "debugShapes", "gordon_face", i*vs.size() + j);
 #endif
+
+        }
+    }
+    _result = faces;
+
+    // since the Gordon Surface algorithm reparametrizes its profiles and guide curves,
+    // we need to make sure that this instance stores the reparametrized curves before
+    // closing the shape. Otherwise, there might be tolerance issues when sewing the
+    // gordon surface faces with side caps.
+    std::transform(
+        interpolator.ReparametrizedProfiles().begin(),
+        interpolator.ReparametrizedProfiles().end(),
+        profiles.begin(),
+        [](Handle(Geom_BSplineCurve) const& curve){
+            auto edge_maker = BRepBuilderAPI_MakeEdge(curve);
+            auto wire_maker = BRepBuilderAPI_MakeWire(edge_maker.Edge());
+            return wire_maker.Wire();
+        }
+    );
 
 
     // make surface to face(s). We likely needSurface to trim along profiles and guides.
