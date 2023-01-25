@@ -26,6 +26,7 @@
 #include "CTiglCurvesToSurface.h"
 #include "CTiglInterpolateCurveNetwork.h"
 #include "CTiglPatchShell.h"
+#include "CWireToCurve.h"
 #include "Debugging.h"
 #include "to_string.h"
 
@@ -193,19 +194,22 @@ void CTiglMakeLoft::makeLoftGordon()
     std::vector<Handle(Geom_Curve)> profiles_curves;
     for (auto& profile : profiles){
 
-        // remove leading edge split in profile
+        // concatenate all edges to a single curve
         if (GetNumberOfEdges(profile) > 1) {
-            profile =  BRepAlgo::ConcatenateWire(profile,GeomAbs_C1);
+            std::vector<Handle(Geom_BSplineCurve)> curves;
+            for (size_t i = 0; i < GetNumberOfEdges(profile); ++i) {
+                curves.push_back(GetBSplineCurve(GetEdge(profile, i)));
+            }
+            auto curve = tigl::CWireToCurve(profile, true, _myTolerance).curve();
+            profiles_curves.push_back(curve);
+        } else {
+            profiles_curves.push_back(GetBSplineCurve(GetEdge(profile, 0)));
         }
 
 #ifdef DEBUG
-        tigl::dumpShape(profile, "debugShapes", "gordon_profile_wire", profile_idx);
-        tigl::dumpShape(GetEdge(profile,0), "debugShapes", "gordon_profile", profile_idx++);
+        auto edge_maker = BRepBuilderAPI_MakeEdge(profiles_curves.back());
+        tigl::dumpShape(edge_maker.Edge(), "debugShapes", "gordon_profile", profile_idx++);
 #endif
-
-        // TODO: Currently only considering first edge of wire, regardless of the
-        // actual number of edges
-        profiles_curves.push_back(GetBSplineCurve(GetEdge(profile, 0)));
 
 
         // trim periodic curves
@@ -236,8 +240,8 @@ void CTiglMakeLoft::makeLoftGordon()
 #endif
     }
 
-    if (all_profiles_are_closed) {
-                    //TODO: First check if the first and last are already the same.
+    // if all profiles are closed, the first and last guide curve must be the same
+    if (all_profiles_are_closed && !guides.front().IsEqual(guides.back())) {
         guide_curves.push_back(guide_curves.front());
     }
 
@@ -275,13 +279,19 @@ void CTiglMakeLoft::makeLoftGordon()
     // we need to make sure that this instance stores the reparametrized curves before
     // closing the shape. Otherwise, there might be tolerance issues when sewing the
     // gordon surface faces with side caps.
+#ifdef DEBUG
+    profile_idx = 0;
+#endif
     std::transform(
-        interpolator.ReparametrizedProfiles().begin(),
-        interpolator.ReparametrizedProfiles().end(),
+        interpolator.ReparametrizedProfiles().cbegin(),
+        interpolator.ReparametrizedProfiles().cend(),
         profiles.begin(),
-        [](Handle(Geom_BSplineCurve) const& curve){
+        [&](Handle(Geom_BSplineCurve) const& curve){
             auto edge_maker = BRepBuilderAPI_MakeEdge(curve);
             auto wire_maker = BRepBuilderAPI_MakeWire(edge_maker.Edge());
+#ifdef DEBUG
+        tigl::dumpShape(wire_maker.Wire(), "debugShapes", "gordon_profile_wire", profile_idx++);
+#endif
             return wire_maker.Wire();
         }
     );
