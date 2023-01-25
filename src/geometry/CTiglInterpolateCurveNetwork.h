@@ -74,6 +74,12 @@ public:
     /// Returns the u parameters of the final surface, that correspond to the guide curve locations
     TIGL_EXPORT std::vector<double> ParametersGuides();
 
+    /// Returns the reparametrized profile curves
+    TIGL_EXPORT std::vector<Handle(Geom_BSplineCurve)> const& ReparametrizedProfiles() const;
+
+    /// Returns the reparametrized guide curves
+    TIGL_EXPORT std::vector<Handle(Geom_BSplineCurve)> const& ReparametrizedGuides() const;
+
 private:
     void Perform();
 

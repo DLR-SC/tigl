@@ -411,6 +411,16 @@ void CTiglInterpolateCurveNetwork::Perform()
     m_hasPerformed = true;
 }
 
+std::vector<Handle(Geom_BSplineCurve)> const& CTiglInterpolateCurveNetwork::ReparametrizedProfiles() const
+{
+    return m_profiles;
+}
+
+std::vector<Handle(Geom_BSplineCurve)> const& CTiglInterpolateCurveNetwork::ReparametrizedGuides() const
+{
+    return m_guides;
+}
+
 Handle(Geom_BSplineSurface) curveNetworkToSurface(const std::vector<Handle (Geom_Curve)> &profiles, const std::vector<Handle (Geom_Curve)> &guides, double tol)
 {
     return CTiglInterpolateCurveNetwork(profiles, guides, tol).Surface();
