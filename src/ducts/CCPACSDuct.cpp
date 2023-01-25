@@ -122,6 +122,8 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
     // if we have a smooth surface, the whole fuslage is treatet as one segment
     int nSegments = m_segments.GetSegmentCount();
 
+    assert(nFacesAero >= nSegments);
+    assert(nFacesAero % nSegments == 0);
     int facesPerSegment = nFacesAero/ nSegments;
 
     int iFaceTotal = 0;
@@ -138,6 +140,7 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
     // set the caps
     int iFace = 2;
     for (;iFaceTotal < nFacesTotal; ++iFaceTotal) {
+        assert(iFace < names.size());
         loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
     }
 }
