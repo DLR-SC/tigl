@@ -1099,7 +1099,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::trimSurface(const Handle(Geo
 
     // workaround for OCCT bug https://tracker.dev.opencascade.org/view.php?id=31402
     // We set the trimming parameters to a knot, if they are close to them
-    double parTol = 1e-10;
+    double parTol = 1e-12;
     int i1, i2;
     trimmedSurface->LocateU(umin, parTol, i1, i2);
     if (i1 == i2) {
@@ -1123,7 +1123,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::trimSurface(const Handle(Geo
     }
 
     // Perform the trimming
-    trimmedSurface->Segment(umin, umax, vmin, vmax);
+    trimmedSurface->CheckAndSegment(umin, umax, vmin, vmax, parTol, parTol);
 
 #ifdef DEBUG
     double u1, u2, v1, v2;
