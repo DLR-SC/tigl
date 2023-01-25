@@ -123,7 +123,7 @@ void CTiglPatchShell::Perform()
         // close holes using side caps
         Standard_Boolean B = shell.Closed();
 
-        BRepBuilderAPI_Sewing sewingAlgo(1e-4);
+        BRepBuilderAPI_Sewing sewingAlgo(_tolerance);
         sewingAlgo.Add(shell);
 
 
