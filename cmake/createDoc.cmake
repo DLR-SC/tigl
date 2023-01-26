@@ -10,7 +10,7 @@ if(DOXYGEN_FOUND)
     add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html
         OUTPUT ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
-        DEPENDS ${PROJECT_SOURCE_DIR}/src/api/tigl.h
+        DEPENDS ${PROJECT_SOURCE_DIR}/src/
         DEPENDS ${DOC_MD_SRC}
         DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
         DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog.md
