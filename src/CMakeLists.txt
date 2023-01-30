@@ -143,6 +143,11 @@ target_link_libraries (tigl3 PRIVATE ${OpenCASCADE_LIBRARIES} ${VLD_LIBRARIES}
                              PRIVATE ${CMAKE_THREAD_LIBS_INIT}
                              PUBLIC tixi3)
 
+if(TIGL_BUILD_MESHER)
+  message("HALLLOOOO")
+  target_link_libraries(tigl3 PRIVATE gmsh)
+endif(TIGL_BUILD_MESHER)
+
 target_include_directories(tigl3 PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
