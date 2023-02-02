@@ -44,14 +44,31 @@ runs:
       with:
         timeout_minutes: 10
         max_attempts: 3
-        command: |
-          curl http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/Release.key | sudo apt-key add -
-          echo "deb http://download.opensuse.org/repositories/science:/dlr/xUbuntu_18.04/ /" | sudo tee -a /etc/apt/sources.list
+        command: 
           sudo apt-get update -qq
-          sudo apt-get install -y ccache lcov gcovr libtixi3-dev libocct-ocaf-dev libtbb-dev occt-misc libxi-dev \
-                                  libocct-draw-dev libocct-data-exchange-dev tk-dev tcl-dev doxygen cmake cmake-data sshpass \
-                                  qt5-default qt5-qmake qtbase5-dev-tools qtscript5-dev
+          sudo apt-get install -y ccache lcov gcovr cmake cmake-data sshpass 
           echo "/usr/lib/ccache" >> $GITHUB_PATH
+
+    - name: Setup miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        auto-activate-base: true
+        activate-environment: ''
+
+    - name: Install conda-dependencies
+      shell: cmd /C call {0}
+      run: |
+        conda install pip ^
+                      python=3.7 ^
+                      doxygen=1.8.15 ^
+                      swig>=3.0.11 ^
+                      tixi3=3.3.0 ^
+                      qt=5.9.7 ^
+                      ninja ^
+                      pythonocc-core=7.4.1 ^
+                      freeimageplus ^
+              -c dlr-sc -c dlr-sc/label/tigl-dev
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
