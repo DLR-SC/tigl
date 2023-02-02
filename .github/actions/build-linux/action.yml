@@ -57,7 +57,7 @@ runs:
         activate-environment: ''
 
     - name: Install conda-dependencies
-      shell: cmd /C call {0}
+      shell: bash -l {0}
       run: |
         conda install pip ^
                       python=3.7 ^
