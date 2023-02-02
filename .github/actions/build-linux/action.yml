@@ -40,7 +40,7 @@ runs:
   steps:
 
     - name: Install dependencies
-      uses: nick-invision/retry@v1
+      uses: nick-invision/retry@v2
       with:
         timeout_minutes: 10
         max_attempts: 3
