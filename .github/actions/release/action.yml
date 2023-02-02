@@ -43,7 +43,7 @@ runs:
         prerelease: false
 
     - name: download MacOS package Build artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: macos-package
 
@@ -58,7 +58,7 @@ runs:
         asset_content_type: application/zip
 
     - name: download Win64 package Build artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: win-package
 
@@ -73,7 +73,7 @@ runs:
         asset_content_type: application/zip
 
     - name: download Win64 installer Build artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: win-installer
 
@@ -88,7 +88,7 @@ runs:
         asset_content_type: application/zip
 
     - name: download html-documentation
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: html-documentation
         path: html-documentation

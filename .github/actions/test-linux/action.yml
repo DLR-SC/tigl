@@ -38,7 +38,7 @@ runs:
         sudo apt-get install -y libtixi3 lcov libocct-ocaf-dev occt-misc libocct-draw-dev libocct-data-exchange-dev
 
     - name: Download build directory
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.build-artifact }}
 

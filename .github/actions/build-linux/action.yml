@@ -82,7 +82,7 @@ runs:
         tar -czf build.tar.gz build
 
     - name: Upload build directory
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.build-artifact }}
         path: build.tar.gz
