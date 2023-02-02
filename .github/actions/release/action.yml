@@ -8,7 +8,7 @@ runs:
 
   steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Split Release Description from Changelog
       run: |
@@ -94,7 +94,7 @@ runs:
         path: html-documentation
 
     - name: Checkout tigl-website repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: DLR-SC/tigl-website
         path: tigl-website
@@ -130,7 +130,7 @@ runs:
         token: ${{ secrets.GH_TOKEN }}
 
     - name: Checkout tigl-conda repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: DLR-SC/tigl-conda
         path: tigl-conda
