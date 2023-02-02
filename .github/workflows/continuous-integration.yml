@@ -62,7 +62,7 @@ jobs:
     strategy:
       matrix:
         config: ["Debug", "Release"]
-        os: ["ubuntu-latest", "ubuntu-18.04"]
+        os: ["ubuntu-latest", "ubuntu-20.04"]
         # only enable coverage for Debug build on latest ubuntu
         include:
           - config: "Debug"
@@ -85,7 +85,7 @@ jobs:
     strategy:
       matrix:
         config: ["Debug", "Release"]
-        os: ["ubuntu-latest", "ubuntu-18.04"]
+        os: ["ubuntu-latest", "ubuntu-20.04"]
         unit-tests: [true]
         # generate coverage reports on latest ubuntu debug builds
         exclude:
@@ -157,7 +157,7 @@ jobs:
           integration-tests: ${{ inputs.integration-tests == 'true' }}
 
   build-macos:
-    runs-on: "macOS-10.15"
+    runs-on: "macos-latest"
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/build-macos
@@ -167,16 +167,16 @@ jobs:
           tigl_concat_generated_files: ${{ inputs.tigl_concat_generated_files == 'true' }}
           tigl_enable_coverage: 'OFF'
           package-artifact: ${{ inputs.macos-package-artifact }}
-          build-artifact: build-macOS-10.15-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+          build-artifact: build-macos-latest-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
 
   test-macos:
     needs: build-macos
-    runs-on: "macOS-10.15"
+    runs-on: "macos-latest"
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/test-macos
         with:
-          build-artifact: build-macOS-10.15-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+          build-artifact: build-macos-latest-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
           unit-tests: true
           integration-tests: ${{ inputs.integration-tests == 'true' }}
 
