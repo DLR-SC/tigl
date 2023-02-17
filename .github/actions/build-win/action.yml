@@ -74,11 +74,11 @@ runs:
                       doxygen=1.8.15 ^
                       swig>=3.0.11 ^
                       tixi3=3.3.0 ^
-                      qt-main=5.15.6 ^
+                      qt-main=5.15.2 ^
                       ninja ^
                       matlab-libs ^
                       brotlipy ^
-              -c dlr-sc -c dlr-sc/label/tigl-dev -c conda-forge
+              -c dlr-sc -c dlr-sc/label/tigl-dev
 
     - name: Install dependencies (dynamic opencascade)
       if: inputs.oce_static_libs == 'OFF'

@@ -64,11 +64,11 @@ runs:
                       doxygen=1.8.15 \
                       swig>=3.0.11 \
                       tixi3=3.3.0 \
-                      qt=5.15.6 \
+                      qt=5.15.2 \
                       ninja \
                       pythonocc-core=7.4.1 \
                       freeimageplus \
-              -c dlr-sc -c dlr-sc/label/tigl-dev -c conda-forge
+              -c dlr-sc -c dlr-sc/label/tigl-dev
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
