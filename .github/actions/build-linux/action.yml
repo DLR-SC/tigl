@@ -46,7 +46,7 @@ runs:
         max_attempts: 3
         command: |
           sudo apt-get update -qq
-          sudo apt-get install -y ccache lcov gcovr cmake cmake-data sshpass 
+          sudo apt-get install -y ccache lcov gcovr cmake cmake-data sshpass mesa-common-dev libglu1-mesa-dev
           echo "/usr/lib/ccache" >> $GITHUB_PATH
 
     - name: Setup miniconda
