@@ -77,6 +77,7 @@ runs:
                       qt-main=5.15.6 ^
                       ninja ^
                       matlab-libs ^
+                      brotlipy ^
               -c dlr-sc -c dlr-sc/label/tigl-dev -c conda-forge
 
     - name: Install dependencies (dynamic opencascade)
