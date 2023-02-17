@@ -34,14 +34,12 @@
 
 class PropertyTwo : public testing::Test {
  protected:
-  virtual void SetUp() {
-    RecordProperty("SetUpProp", 2);
-  }
-  virtual void TearDown() {
-    RecordProperty("TearDownProp", 2);
-  }
+  void SetUp() override { RecordProperty("SetUpProp", 2); }
+  void TearDown() override { RecordProperty("TearDownProp", 2); }
 };
 
 TEST_F(PropertyTwo, TestSomeProperties) {
-  RecordProperty("TestSomeProperty", 2);
+  // Validate we can write an unsigned size_t as a property
+  size_t prop_two = 2;
+  RecordProperty("TestSomeProperty", prop_two);
 }
