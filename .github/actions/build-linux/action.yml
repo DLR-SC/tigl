@@ -68,7 +68,7 @@ runs:
                       ninja \
                       pythonocc-core=7.4.1 \
                       freeimageplus \
-              -c dlr-sc -c dlr-sc/label/tigl-dev
+              -c dlr-sc -c dlr-sc/label/tigl-dev -c conda-forge
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1

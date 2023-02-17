@@ -77,7 +77,7 @@ runs:
                       qt=5.12.9 ^
                       ninja ^
                       matlab-libs ^
-              -c dlr-sc -c dlr-sc/label/tigl-dev
+              -c dlr-sc -c dlr-sc/label/tigl-dev -c conda-forge
 
     - name: Install dependencies (dynamic opencascade)
       if: inputs.oce_static_libs == 'OFF'
