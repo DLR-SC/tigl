@@ -21,6 +21,8 @@ inputs:
 runs:
 
   using: "composite"
+  
+  steps:
 
     - name: Download built test directory
       uses: actions/download-artifact@v3
