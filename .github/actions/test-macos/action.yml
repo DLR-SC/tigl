@@ -37,8 +37,9 @@ runs:
     - name: Run unit tests
       if: ${{ inputs.unit-tests == 'true' }}
       shell: bash
+      env:
+        DYLD_LIBRARY_PATH: ${{ github.workspace }}/build/install/TiGL-Viewer3.app/Contents/Frameworks/"
       run: |
-        echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/build/install/TiGL-Viewer3.app/Contents/Frameworks/" >> $GITHUB_ENV
         cd build/tests/unittests/
         ./TiGL-unittests --gtest_shuffle --gtest_output=xml:unit_test_results.xml
 
