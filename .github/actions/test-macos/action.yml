@@ -22,22 +22,6 @@ runs:
 
   using: "composite"
 
-  steps:
-     
-    - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        auto-update-conda: true
-        auto-activate-base: true
-        activate-environment: ''
-        
-    - name: Install conda-dependencies
-      shell: bash -l {0}
-      run: |
-        conda install tixi3=3.3.0 \
-                      pythonocc-core=7.4.1
-              -c dlr-sc -c dlr-sc/label/tigl-dev -c conda-forge
-
     - name: Download built test directory
       uses: actions/download-artifact@v3
       with:
@@ -52,6 +36,7 @@ runs:
       if: ${{ inputs.unit-tests == 'true' }}
       shell: bash
       run: |
+        echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/build/install/TiGL-Viewer3.app/Contents/Frameworks/" >> $GITHUB_ENV
         cd build/tests/unittests/
         ./TiGL-unittests --gtest_shuffle --gtest_output=xml:unit_test_results.xml
 
