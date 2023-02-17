@@ -23,21 +23,20 @@ runs:
   using: "composite"
 
   steps:
-
-    - name: Install dependencies
-      uses: nick-invision/retry@v2
+     
+    - name: Setup miniconda
+      uses: conda-incubator/setup-miniconda@v2
       with:
-        timeout_minutes: 10
-        max_attempts: 3
-        command: |
-          curl --retry 3 -o occt.7.4.0.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/occt.7.4.0.macos_static.tar.gz
-          curl --retry 3 -O -L https://github.com/DLR-SC/tixi/releases/download/v3.1.1/TIXI-3.1.1-Darwin.tar.gz
-          tar xf occt.7.4.0.macos_static.tar.gz
-          tar xf TIXI-3.1.1-Darwin.tar.gz
-          echo "/tmp" >> $GITHUB_PATH
-          echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
-          echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/occt.7.4.0.macos_static:/usr/local/opt/qt@5/" >> $GITHUB_ENV
-          brew install ninja
+        auto-update-conda: true
+        auto-activate-base: true
+        activate-environment: ''
+        
+    - name: Install conda-dependencies
+      shell: bash -l {0}
+      run: |
+        conda install tixi3=3.3.0 \
+                      pythonocc-core=7.4.1
+              -c dlr-sc -c dlr-sc/label/tigl-dev -c conda-forge
 
     - name: Download built test directory
       uses: actions/download-artifact@v3
