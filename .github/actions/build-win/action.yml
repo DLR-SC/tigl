@@ -74,7 +74,7 @@ runs:
                       doxygen=1.8.15 ^
                       swig>=3.0.11 ^
                       tixi3=3.3.0 ^
-                      qt=5.12.9 ^
+                      qt=5.15.6 ^
                       ninja ^
                       matlab-libs ^
               -c dlr-sc -c dlr-sc/label/tigl-dev -c conda-forge
