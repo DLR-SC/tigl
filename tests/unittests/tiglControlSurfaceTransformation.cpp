@@ -61,7 +61,14 @@ TEST(TiglControlSurfaceTransformation, localTransformation)
             xyz3 = gp_XYZ(-1,-1,0);
             xyz4 = gp_XYZ(-1,-2,0);
         }
-        else { /* i = 4 */
+        else if ( i == 4) {
+            // testing with hinge line with both points equal y-position
+            xyz1 = gp_XYZ(1,1,0);
+            xyz2 = gp_XYZ(1,1,1);
+            xyz3 = gp_XYZ(1,2,0);
+            xyz4 = gp_XYZ(1,2,1);
+        }
+        else { /* i = 5 */
             // testing with big values
             xyz1 = gp_XYZ(818,1,0);
             xyz2 = gp_XYZ(1,2048,0);
