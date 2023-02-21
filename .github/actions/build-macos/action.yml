@@ -45,27 +45,39 @@ runs:
   steps:
 
     - name: Install dependencies
-      uses: nick-invision/retry@v1
+      uses: nick-invision/retry@v2
       with:
         timeout_minutes: 10
         max_attempts: 3
         command: |
           curl --retry 3 -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz
-          curl --retry 3 -o doxygen-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/doxygen-macOS.tar.gz
           curl --retry 3 -o matlab-libs-macos.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-macos.tar.gz
-          curl --retry 3 -o occt.7.4.0.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/occt.7.4.0.macos_static.tar.gz
-          curl --retry 3 -O -L https://github.com/DLR-SC/tixi/releases/download/v3.1.1/TIXI-3.1.1-Darwin.tar.gz
           tar xf sshpass-macOS.tar.gz -C /tmp
           tar xf doxygen-macOS.tar.gz -C /tmp
           tar xf matlab-libs-macos.tar.gz -C /tmp
-          tar xf occt.7.4.0.macos_static.tar.gz
-          tar xf TIXI-3.1.1-Darwin.tar.gz
           echo "/tmp" >> $GITHUB_PATH
-          echo "/tmp/doxygen" >> $GITHUB_PATH
-          echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
-          echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/occt.7.4.0.macos_static:/usr/local/opt/qt@5/" >> $GITHUB_ENV
           echo "CXXFLAGS=-fvisibility-inlines-hidden" >> $GITHUB_ENV
-          brew install qt@5 ninja
+          
+    - name: Setup miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        auto-activate-base: true
+        activate-environment: ''
+
+    - name: Install conda-dependencies
+      shell: bash -l {0}
+      run: |
+        conda install pip \
+                      python=3.8 \
+                      doxygen=1.8.15 \
+                      swig>=3.0.11 \
+                      tixi3=3.3.0 \
+                      qt-main=5.15.2 \
+                      ninja \
+                      pythonocc-core=7.4.1 \
+                      freeimageplus \
+              -c dlr-sc -c dlr-sc/label/tigl-dev
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -101,7 +113,7 @@ runs:
 
     - name: Upload package as artifact
       if: ${{ inputs.package-artifact }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
        name: ${{ inputs.package-artifact }}
        path: build/*.dmg
@@ -112,7 +124,7 @@ runs:
         tar -czf build.tar.gz build
 
     - name: Upload build directory
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.build-artifact }}
         path: build.tar.gz

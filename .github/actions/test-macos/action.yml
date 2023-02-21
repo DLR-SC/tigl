@@ -21,26 +21,23 @@ inputs:
 runs:
 
   using: "composite"
-
+  
   steps:
-
-    - name: Install dependencies
-      uses: nick-invision/retry@v1
+  
+    - name: Setup miniconda
+      uses: conda-incubator/setup-miniconda@v2
       with:
-        timeout_minutes: 10
-        max_attempts: 3
-        command: |
-          curl --retry 3 -o occt.7.4.0.macos_static.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/occt.7.4.0.macos_static.tar.gz
-          curl --retry 3 -O -L https://github.com/DLR-SC/tixi/releases/download/v3.1.1/TIXI-3.1.1-Darwin.tar.gz
-          tar xf occt.7.4.0.macos_static.tar.gz
-          tar xf TIXI-3.1.1-Darwin.tar.gz
-          echo "/tmp" >> $GITHUB_PATH
-          echo "DYLD_LIBRARY_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin/lib" >> $GITHUB_ENV
-          echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/TIXI-3.1.1-Darwin:${{ github.workspace }}/occt.7.4.0.macos_static:/usr/local/opt/qt@5/" >> $GITHUB_ENV
-          brew install ninja
+        auto-update-conda: true
+        auto-activate-base: true
+        activate-environment: ''
+
+    - name: Install tixi and pythonocc-core from conda
+      shell: bash -l {0}
+      run: |
+        conda install tixi3=3.3.0 pythonocc-core=7.4.1 -c dlr-sc -c dlr-sc/label/tigl-dev
 
     - name: Download built test directory
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.build-artifact }}
 
@@ -54,6 +51,7 @@ runs:
       shell: bash
       run: |
         cd build/tests/unittests/
+        chmod a+x ./TiGL-unittests
         ./TiGL-unittests --gtest_shuffle --gtest_output=xml:unit_test_results.xml
 
     - name: Run integration tests
@@ -61,4 +59,5 @@ runs:
       shell: bash
       run: |
         cd build/tests/integrationtests/
+        chmod a+x ./TiGL-integrationtests
         ./TiGL-integrationtests --gtest_shuffle --gtest_output=xml:integration_test_results.xml

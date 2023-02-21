@@ -8,7 +8,7 @@ runs:
 
   steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Split Release Description from Changelog
       run: |
@@ -43,7 +43,7 @@ runs:
         prerelease: false
 
     - name: download MacOS package Build artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: macos-package
 
@@ -58,7 +58,7 @@ runs:
         asset_content_type: application/zip
 
     - name: download Win64 package Build artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: win-package
 
@@ -73,7 +73,7 @@ runs:
         asset_content_type: application/zip
 
     - name: download Win64 installer Build artifact
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: win-installer
 
@@ -88,13 +88,13 @@ runs:
         asset_content_type: application/zip
 
     - name: download html-documentation
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v3
       with:
         name: html-documentation
         path: html-documentation
 
     - name: Checkout tigl-website repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: DLR-SC/tigl-website
         path: tigl-website
@@ -130,7 +130,7 @@ runs:
         token: ${{ secrets.GH_TOKEN }}
 
     - name: Checkout tigl-conda repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: DLR-SC/tigl-conda
         path: tigl-conda
