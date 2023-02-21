@@ -31,7 +31,6 @@
 #include "TopExp_Explorer.hxx"
 #include "gp_Lin.hxx"
 
-
 namespace tigl {
 
 ITiglFuselageDuctStructure::ITiglFuselageDuctStructure(CTiglRelativelyPositionedComponent const* parent)
