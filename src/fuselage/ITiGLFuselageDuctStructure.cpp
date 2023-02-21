@@ -22,6 +22,7 @@
 #include "CCPACSFuselageStringerFramePosition.h"
 #include "CNamedShape.h"
 
+#include "TopTools_ListIteratorOfListOfShape.hxx"
 #include "IntCurvesFace_Intersector.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
@@ -29,6 +30,7 @@
 #include "BRepProj_Projection.hxx"
 #include "TopExp_Explorer.hxx"
 #include "gp_Lin.hxx"
+
 
 namespace tigl {
 
