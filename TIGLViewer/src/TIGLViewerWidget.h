@@ -172,6 +172,9 @@ protected: // methods
 private: // members
     void initializeOCC(const Handle(AIS_InteractiveContext)& aContext);
 
+    void setStartPoint(const QPoint&);
+    void setCurrentPoint(const QPoint&);
+
     Handle(V3d_View)                myView;
     Handle(V3d_Viewer)              myViewer;
 

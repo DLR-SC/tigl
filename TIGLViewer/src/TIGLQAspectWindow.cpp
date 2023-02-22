@@ -180,8 +180,9 @@ Standard_Real TIGLQAspectWindow::Ratio() const
 void TIGLQAspectWindow::Size ( Standard_Integer& theWidth, Standard_Integer& theHeight ) const
 {
     QRect aRect = myWidget->rect();
-    theWidth  = aRect.width();
-    theHeight = aRect.height();
+    auto scale = myWidget->devicePixelRatioF();
+    theWidth  = aRect.width() * scale;
+    theHeight = aRect.height() * scale;
 }
 
 // =======================================================================
@@ -191,8 +192,9 @@ void TIGLQAspectWindow::Size ( Standard_Integer& theWidth, Standard_Integer& the
 void TIGLQAspectWindow::Position ( Standard_Integer& theX1, Standard_Integer& theY1,
                                    Standard_Integer& theX2, Standard_Integer& theY2 ) const
 {
-    theX1 = myWidget->rect().left();
-    theX2 = myWidget->rect().right();
-    theY1 = myWidget->rect().top();
-    theY2 = myWidget->rect().bottom();
+    auto scale = myWidget->devicePixelRatioF();
+    theX1 = myWidget->rect().left() * scale;
+    theX2 = myWidget->rect().right() * scale;
+    theY1 = myWidget->rect().top() * scale;
+    theY2 = myWidget->rect().bottom() * scale;
 }
