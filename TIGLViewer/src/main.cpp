@@ -40,6 +40,10 @@ void loadStyle();
 
 int main(int argc, char *argv[])
 {
+    // make sure, that the proper scaling is automatically used on highdpi displays
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     TIGLViewerApp app(argc, argv);
 
 #ifdef __APPLE__
