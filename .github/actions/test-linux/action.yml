@@ -91,6 +91,6 @@ runs:
 
     - name: Publish coverage report to codecov.io (ubuntu debug)
       if: ${{ inputs.coverage == 'true' }}
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         files: ./build/tests/unittests/coverageReport-unit.info,./build/tests/integrationtests/coverageReport-integration.info
