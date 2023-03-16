@@ -20,8 +20,8 @@ from pickle import TRUE
 import sys
 
 sys.path.insert(0, os.path.abspath('.') )
-sys.path.insert(1, os.path.abspath('../../../../build/bindings/python_internal/') )
-sys.path.append('../../../../build/bindings/python_internal/')   
+#sys.path.insert(1, os.path.abspath('../../../../build/bindings/python_internal/') )
+#sys.path.append('../../../../build/bindings/python_internal/')   
 
 
 extensions = [
@@ -54,7 +54,7 @@ html_theme_options = {
     # Toc options
     'collapse_navigation': True,
     #'sticky_navigation': True,
-    'navigation_depth': 2,
+    'navigation_depth': 4
     # 'includehidden': True,
     #'titles_only': False
 }
