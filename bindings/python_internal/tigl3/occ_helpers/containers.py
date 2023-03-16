@@ -9,6 +9,7 @@ def float_array(float_list):
     """
     Creates an OpenCASCADE TColStd_HArray1OfReal from
     a list of floats
+
     :param float_list: List of integer values
     :return: TColStd_HArray1OfReal
     """
@@ -23,6 +24,7 @@ def int_array(int_list):
     """
     Creates an OpenCASCADE TColStd_HArray1OfInteger from
     a list of integers
+
     :param int_list: List of integer values
     :return: TColStd_HArray1OfInteger
     """
@@ -55,6 +57,7 @@ def point_array(points):
 def bspline_array(bspline_list):
     """
     Create a TColGeom_HArray1OfBSplineCurve from a list of Geom_BSplineCurves
+
     :param bspline_list: list of TColGeom_HArray1OfBSplineCurve
     :return: TColGeom_HArray1OfBSplineCurve
     """
@@ -84,6 +87,7 @@ def geomcurve_vector(geomcurve_list):
 def iter_array(occ_array):
     """
     Provides a generator for an OpenCASCADE array
+    
     """
 
     if hasattr(occ_array, "GetObject"):
