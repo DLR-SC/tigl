@@ -87,6 +87,7 @@ target_include_directories(tigl3_objects
     PRIVATE ${TIGL_INCLUDES}
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/api
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+    PRIVATE ${GMSH_INCLUDE_DIR}
     PRIVATE $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
     PUBLIC $<TARGET_PROPERTY:tixi3,INTERFACE_INCLUDE_DIRECTORIES>
 )
@@ -141,12 +142,13 @@ target_compile_definitions(tigl3
 target_link_libraries (tigl3 PRIVATE ${OpenCASCADE_LIBRARIES} ${VLD_LIBRARIES}
                              PRIVATE Boost::filesystem Boost::thread Boost::system Boost::atomic Boost::chrono Boost::date_time
                              PRIVATE ${CMAKE_THREAD_LIBS_INIT}
+                             PRIVATE ${GMSH_LIB}
                              PUBLIC tixi3)
 
-if(TIGL_BUILD_MESHER)
-  message("HALLLOOOO")
-  target_link_libraries(tigl3 PRIVATE gmsh)
-endif(TIGL_BUILD_MESHER)
+#if(TIGL_BUILD_MESHER)
+#  message("HALLLOOOO")
+#  target_link_libraries(tigl3 PRIVATE gmsh)
+#endif(TIGL_BUILD_MESHER)
 
 target_include_directories(tigl3 PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
