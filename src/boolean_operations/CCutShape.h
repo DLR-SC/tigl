@@ -35,6 +35,11 @@ public:
     TIGL_EXPORT operator PNamedShape ();
 
     TIGL_EXPORT void Perform();
+    
+    /**
+     * @brief NamedShape returns the result of the cutting operation.
+     * @return PNamedShape
+     */
     TIGL_EXPORT const PNamedShape NamedShape();
 
 protected:
