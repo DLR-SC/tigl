@@ -17,6 +17,11 @@
 /**
 * @file
 * @brief  Implementation of CPACS wing section handling routines.
+*
+* A section is a coordinate system that is used to position airfoil curves in three-dimensional space.
+* This coordinate system is defined using a transformation consisting of scaling in three dimensions,
+* rotation around the z-, y- and x-axis, as well as a three-dimensional translation.
+* In addition to the transformations, sections can be translated relative to each other using a positioning vector.
 */
 
 #ifndef CCPACSWINGSECTION_H
@@ -56,7 +61,8 @@ public:
     // Gets the section scaling
     TIGL_EXPORT CTiglPoint GetScaling() const;
 
-    // Setter for translation
+    // Setter for translation.
+    // The total translation of the section is the sum of the positioning vector in Cartesian coordinates and the translation prescribed in the section’s transformation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
 
     // Setter for rotation
