@@ -16,7 +16,7 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS wing ComponentSegment handling routines.  A component segment is a part of the wing that consists of several adjacent segments. Component segments are used to define the relative position of the internal wing structural elements and fuel tanks, control devices, and the wing fuselage attachment.
+* @brief  Implementation of CPACS wing ComponentSegment handling routines.
 */
 
 #ifndef CCPACSWINGCOMPONENTSEGMENT_H

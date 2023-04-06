@@ -18,8 +18,6 @@
 /**
 * @file
 * @brief  Implementation of CPACS wing segment handling routines.
-*
-* A wing segment is the volumetric part of the wing that connects two elements from adjacent sections
 */
 
 #ifndef CCPACSWINGSEGMENT_H
