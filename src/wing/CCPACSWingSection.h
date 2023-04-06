@@ -57,6 +57,7 @@ public:
     TIGL_EXPORT CTiglPoint GetScaling() const;
 
     // Setter for translation
+    // The total translation of the section is the sum of the positioning vector in Cartesian coordinates and the translation prescribed in the section’s transformation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
 
     // Setter for rotation
