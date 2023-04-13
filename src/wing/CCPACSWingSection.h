@@ -37,33 +37,58 @@ class CCPACSWingSection : public generated::CPACSWingSection
 public:
     TIGL_EXPORT CCPACSWingSection(CCPACSWingSections* parent, CTiglUIDManager* uidMgr);
 
-    // Get element count for this section
+    /**
+    * @brief Get element count for this section
+    * @return int
+    */
     TIGL_EXPORT int GetSectionElementCount() const;
 
-    // Get element for a given index
+    /**
+    * @brief Get element for a given index
+    * @return CCPACSWingSectionElement
+    */
     TIGL_EXPORT CCPACSWingSectionElement& GetSectionElement(int index);
     TIGL_EXPORT const CCPACSWingSectionElement& GetSectionElement(int index) const;
 
-    // Gets the section transformation
+    /**
+    * @brief Gets the section transformation
+    * @return CTiglTransformation
+    */
     TIGL_EXPORT CTiglTransformation GetSectionTransformation() const;
 
-    // Gets the section translation
+    /**
+    * @brief Returns the translation of a wing section in CPACS-coordinates
+    * @return CTiglPoint
     TIGL_EXPORT CTiglPoint GetTranslation() const;
 
-    // Gets the section rotation
+    /**
+    * @brief Returns the rotation of a wing section in degree
+    * @return CTiglPoint
+    */
     TIGL_EXPORT CTiglPoint GetRotation() const;
 
-    // Gets the section scaling
+    /**
+    * @brief Returns the scaling of a wing section
+    * @return CTiglpoint 
+    */
     TIGL_EXPORT CTiglPoint GetScaling() const;
 
-    // Setter for translation
-    // The total translation of the section is the sum of the positioning vector in Cartesian coordinates and the translation prescribed in the section’s transformation
+    /** 
+    * @brief Sets the translation vector for a wing section.
+    * @param trans translation vector
+    */
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
 
-    // Setter for rotation
+    /**
+    * @brief Sets the rotation angles for a wing section
+    * @param rot euler angles in degree
+    */
     TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
 
-    // Setter for scaling
+    /**
+    * @brief Sets the scaling for a wing section
+    * @param scaling scaling in three dimensions
+    */
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
 private:
