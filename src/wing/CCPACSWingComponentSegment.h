@@ -56,7 +56,7 @@ typedef std::vector<const CCPACSMaterialDefinition*> MaterialList;
 typedef std::vector<CCPACSWingSegment*>              SegmentList;
 
 /**
-* @brief A component segment is a part of the wing that consists of several adjacent segments.
+* @brief A CCPACSWingComponentSegment is a part of the wing that consists of several adjacent segments.
 * Component segments are used to define the relative position of the internal wing structural elements and fuel tanks, 
 * control devices, and the wing fuselage attachment.
 */
