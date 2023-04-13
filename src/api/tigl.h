@@ -419,7 +419,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configu
 * @param[in]  cpacsHandle Handle for the CPACS configuration.
 *
 * @return
-*   - TIGL_SUCCESS if successfully opened the CPACS configuration file
+*   - TIGL_SUCCESS if successfully closed the CPACS configuration file
 *   - TIGL_CLOSE_FAILED if closing of the CPACS configuration failed
 *   - TIGL_NOT_FOUND if handle ist not found in handle container
 *   - TIGL_ERROR if some other kind of error occurred
