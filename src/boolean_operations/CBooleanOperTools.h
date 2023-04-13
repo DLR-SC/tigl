@@ -28,17 +28,22 @@ class BRepBuilderAPI_MakeShape;
 class CBooleanOperTools
 {
 public:
-    /// maps the face names of source to the facenames of
-    /// the resultShape as a result of a boolean operation bop
+    /**
+     *  @brief maps the face names of source to the facenames of the resultShape as a result of a boolean operation bop
+     */
     TIGL_EXPORT static void MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, const PNamedShape source, PNamedShape result);
 
 
-     /// AppendNamesToShape searches for each target face, if it
-     /// can be found in the source shape. If so, it applies the name of
-     /// the source face to the target face
+     /**
+      *  @brief AppendNamesToShape searches for each target face, if it can be found in the source shape.
+      *  If so, it applies the name of the source face to the target face
+      */
     TIGL_EXPORT static void AppendNamesToShape(const PNamedShape source, PNamedShape target);
 
-    /// Tries to sew adjacent faces to create a shell (equivalent to create wires)
+    /**
+     * @brief Tries to sew adjacent faces to create a shell (equivalent to create wires)
+     * @return PNamedShape
+     */
     TIGL_EXPORT static PNamedShape Shellify(PNamedShape shape);
 };
 
