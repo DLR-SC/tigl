@@ -60,7 +60,6 @@ typedef std::vector<CCPACSWingSegment*>              SegmentList;
 * Component segments are used to define the relative position of the internal wing structural elements and fuel tanks, 
 * control devices, and the wing fuselage attachment.
 */
-
 class CCPACSWingComponentSegment : public generated::CPACSComponentSegment, public CTiglAbstractSegment<CCPACSWingComponentSegment>
 {
 public:
