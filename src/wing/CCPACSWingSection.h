@@ -59,6 +59,7 @@ public:
     /**
     * @brief Returns the translation of a wing section in CPACS-coordinates
     * @return CTiglPoint
+    */
     TIGL_EXPORT CTiglPoint GetTranslation() const;
 
     /**
