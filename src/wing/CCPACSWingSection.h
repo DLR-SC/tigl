@@ -76,19 +76,25 @@ public:
 
     /** 
     * @brief Sets the translation vector for a wing section.
-    * @param trans translation vector
+    * @param trans Translation vector
+    *              Default data value: (0,0,0)
     */
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
 
     /**
     * @brief Sets the rotation angles for a wing section
-    * @param rot euler angles in degree
+    * @param rot Euler angles (x,y,z) -> (x,y', z'') in degree, which means, that the object will be rotaded in following order:
+    * 1st Rotation around x-axis
+    * 2nd Rotation around the rotaded y-axis y'
+    * 3rd Rotation around the twice rotaded z axis x''.
+    * Default data value:(0,0,0).
     */
     TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
 
     /**
     * @brief Sets the scaling for a wing section
-    * @param scaling scaling in three dimensions
+    * @param scaling Scaling in three dimensions, in the order xyz.
+    * Default data value: (1,1,1)
     */
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
