@@ -77,7 +77,7 @@ public:
     /** 
     * @brief Sets the translation vector for a wing section.
     * @param trans Translation vector
-    *              Default data value: (0,0,0)
+    * Default data value: (0,0,0)
     */
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
 
