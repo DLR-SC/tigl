@@ -110,12 +110,21 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
                 COMPONENT interfaces
         )
 
-        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tigl3
-                DESTINATION share/tigl3/python
-                COMPONENT interfaces
-        )
-
     endforeach(MODULE)
+
+#    add_custom_command(
+#        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}
+#        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/tigl3
+#        COMMAND ${CMAKE_COMMAND} -E copy_directory
+#                ${CMAKE_CURRENT_SOURCE_DIR}/tigl3
+#                ${CMAKE_CURRENT_BINARY_DIR}
+#    )
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tigl3/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tigl3
+            DESTINATION share/tigl3/python
+            COMPONENT interfaces
+    )
 
 
 endif(TIGL_BINDINGS_PYTHON_INTERNAL)
