@@ -1294,10 +1294,16 @@ TEST_F(WingSegmentSimple, segmentIndexFromUID)
 TEST_F(WingSegmentGuideCurves, tiglWingGetSegmentUpperSurfaceAreaTrimmed)
 {
     double upperArea;
+
+    // test if the return code 0 is returned by the function for the provided valid argument list
     EXPECT_EQ(0,tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglGuideCurvesHandle, 1, 1,
                                                           0, 0,
                                                           0, 1,
                                                           0.05, 1,
                                                           0.05, 0,
                                                           &upperArea));
+    // Test if the calculated area has the expected value. The first argument in the following test is computed by the function itself,
+    // and is therefore obviously true. The benifit of this test case lies in the fact, that the value of the first argument has been estimated visually from the test configuration's
+    // CAD representation in TiGL Viewer and is meeting the computed value.
+    ASSERT_NEAR(0.036530682797528628, upperArea, 1e-8);
 }
