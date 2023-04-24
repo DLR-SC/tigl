@@ -1294,7 +1294,7 @@ TEST_F(WingSegmentSimple, segmentIndexFromUID)
 TEST_F(WingSegmentGuideCurves, tiglWingGetSegmentUpperSurfaceAreaTrimmed)
 {
     double upperArea;
-    EXPECT_EQ(1,tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglGuideCurvesHandle, 1, 1,
+    EXPECT_EQ(0,tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglGuideCurvesHandle, 1, 1,
                                                           0, 0,
                                                           0, 1,
                                                           0.05, 1,
