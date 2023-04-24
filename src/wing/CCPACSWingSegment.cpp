@@ -614,13 +614,7 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
                                          double eta3, double xsi3,
                                          double eta4, double xsi4) const
 {
-    TopoDS_Face face;
-    if (fromUpper) {
-        face = TopoDS::Face(GetUpperShape());
-    }
-    else {
-        face = TopoDS::Face(GetLowerShape());
-    }
+    Handle(Geom_Surface) surf = fromUpper? surfaceCache->upperSurface : surfaceCache->lowerSurface;
 
     // convert eta xsi coordinates to u,v
     double u1, u2, u3, u4, v1, v2, v3, v4;
