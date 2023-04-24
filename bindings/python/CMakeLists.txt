@@ -31,7 +31,7 @@ endif(PYTHON_EXECUTABLE)
 if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 	#run python to create the wrapper
 		add_custom_command(
-			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
+			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tigl3/tigl3wrapper.py
 			DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/make_tigl_python.py ${PROJECT_SOURCE_DIR}/src/api/tigl.h
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 			COMMAND ${PYTHON_EXECUTABLE}
@@ -40,10 +40,10 @@ if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 
 		add_custom_target(tiglPython ALL
 			COMMENT "Create python interface for tigl" VERBATIM 
-			DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
+			DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/tigl3/tigl3wrapper.py
 		)
 		
-		install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
+		install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tigl3/tigl3wrapper.py
 				DESTINATION share/tigl3/python/tigl3
 				COMPONENT interfaces)
 else()
@@ -132,7 +132,8 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     set (MODULES "geometry;occtaddons;tmath;configuration;core;boolean_ops;exports;imports")
 
-    set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
+    set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/tigl3)
+    #set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/tigl3)
 
     add_definitions(-DTIGL_INTERNAL_IMPORTS)
 
@@ -151,7 +152,7 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
         set_source_files_properties(${MODULE}.i PROPERTIES CPLUSPLUS ON)
         set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i doc.i)
 
-        swig_add_library(${MODULE} LANGUAGE python SOURCES ${MODULE}.i TYPE MODULE)
+        swig_add_library(${MODULE} LANGUAGE python SOURCES ${MODULE}.i TYPE MODULE OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/tigl3)
         swig_link_libraries(${MODULE} tigl3 tigl3_cpp Python3::Module)
 
         install(TARGETS _${MODULE}
@@ -159,14 +160,14 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
                 COMPONENT interfaces
         )
 
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MODULE}.py
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tigl3/${MODULE}.py
                 DESTINATION share/tigl3/python/tigl3
                 COMPONENT interfaces
         )
 
     endforeach(MODULE)
 
-    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tigl3/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tigl3 DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
     install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tigl3
             DESTINATION share/tigl3/python
