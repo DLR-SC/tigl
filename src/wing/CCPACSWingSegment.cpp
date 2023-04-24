@@ -614,13 +614,7 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
                                          double eta3, double xsi3,
                                          double eta4, double xsi4) const
 {
-    TopoDS_Face face;
-    if (fromUpper) {
-        face = TopoDS::Face(GetUpperShape());
-    }
-    else {
-        face = TopoDS::Face(GetLowerShape());
-    }
+    Handle(Geom_Surface) surf = fromUpper? surfaceCache->upperSurface : surfaceCache->lowerSurface;
 
     // convert eta xsi coordinates to u,v
     double u1, u2, u3, u4, v1, v2, v3, v4;
@@ -629,13 +623,15 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
     etaXsiToUV(fromUpper, eta3, xsi3, u3, v3);
     etaXsiToUV(fromUpper, eta4, xsi4, u4, v4);
     
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(surf, 1e-8);
+
     TopoDS_Edge e1 = getFaceTrimmingEdge(face, u1, v1, u2, v2);
     TopoDS_Edge e2 = getFaceTrimmingEdge(face, u2, v2, u3, v3);
     TopoDS_Edge e3 = getFaceTrimmingEdge(face, u3, v3, u4, v4);
     TopoDS_Edge e4 = getFaceTrimmingEdge(face, u4, v4, u1, v1);
 
     TopoDS_Wire w = BRepBuilderAPI_MakeWire(e1,e2,e3,e4);
-    TopoDS_Face f = BRepBuilderAPI_MakeFace(BRep_Tool::Surface(face), w);
+    TopoDS_Face f = BRepBuilderAPI_MakeFace(surf, w);
 
     // compute the surface area
     GProp_GProps sprops;
