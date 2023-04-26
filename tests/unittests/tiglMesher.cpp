@@ -17,8 +17,31 @@
 */
 
 #include "test.h"
+#include "Mesher.h"
+//#include <TopoDS_Shape.hxx>
+//#include <BRepPrimAPI_MakeBox.hxx>
+#include <gmsh.h>
 
-TEST(TiglMesher, always_fail)
+TEST(tiglMesher, cube)
 {
-    ASSERT_TRUE(false);
+    //gmsh::model::mesh::generate();
+    gmsh::initialize();
+    gmsh::model::occ::addBox(0,0,0,5,5,5);
+    gmsh::model::occ::synchronize();
+   // gmsh::model::getDimension();
+    // create cube and mesh to test if linking with gmsh works
+    ASSERT_EQ(gmsh::model::getDimension(), 3);
+}
+
+TEST(tiglMesher, wing)
+{
+
+
+
+    // open cpacs configuration, read wing TopoDS_Shape and create mesh
+}
+
+TEST(tigLMesher, fused)
+{
+    // open cpacs configuration, fuse aircract and mesh far field
 }
