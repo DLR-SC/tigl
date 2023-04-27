@@ -47,8 +47,22 @@ class CCPACSWing : public generated::CPACSWing, public CTiglRelativelyPositioned
 friend class CTiglWingBuilder;
 
 public:
-    // Constructor
+    /**
+     *  Constructor of Class CCPACSWing
+     *  Constructor is automatically called during reading of a CPACS-file.
+     *  Not intended to be called manually.
+     *  @param parent
+     *  @param uidMgr
+     */
     TIGL_EXPORT CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr);
+
+    /**
+     *  Constructor of Class CCPACSWing
+     *  Constructor is automatically called during reading of a CPACS-file.
+     *  Not intended to be called manually.
+     *  @param parent
+     *  @param uidMgr
+     */
     TIGL_EXPORT CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr);
 
     // Virtual destructor
@@ -306,16 +320,7 @@ public:
      */
     TIGL_EXPORT PNamedShape GetWingCleanShape() const;
 
-    /**
-     * @brief Sets the getPointBehavior to asParameterOnSurface or onLinearLoft
-     */
-    TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
-
-    /*
-     * @brief Gets the getPointBehavior
-     */
-    TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
-    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
+    TiglGetPointBehavior getPointBehavior {asParameterOnSurface};       /**< sets behavior of the GetPoint-function (default: asParameterOnSurface)      */
 
 protected:
 
@@ -356,7 +361,6 @@ private:
     // Adds all Segments of this wing and flaps to one shape
     PNamedShape GroupedFlapsAndWingShapes() const;
 
-private:
     bool                           isRotorBlade;             /**< Indicates if this wing is a rotor blade */
     CCPACSConfiguration*           configuration;            /**< Parent configuration*/
     TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
@@ -372,9 +376,6 @@ private:
     bool                           buildFlaps;               /**< Indicates if the wing's loft shall include flaps */
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
-
-
-    TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
 
     friend class CCPACSWingSegment;
     friend class CCPACSWingComponentSegment;
