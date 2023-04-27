@@ -825,7 +825,7 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
 
         double eta1, eta2, xsi1, xsi2;
         gp_Pnt p1, p2;
-        segment1.GetEtaXsi(point, eta1, xsi1, p1, getPointBehavior);//ist das nicht das selbe? wie unten drunter?
+        segment1.GetEtaXsi(point, eta1, xsi1, p1, getPointBehavior);
         segment2.GetEtaXsi(point, eta2, xsi2, p2, getPointBehavior);
 
         double d1 = p1.Distance(point);

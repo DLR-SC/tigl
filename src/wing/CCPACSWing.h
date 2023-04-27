@@ -30,6 +30,7 @@
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSWingSections.h"
 #include "CCPACSWingSegments.h"
+#include "CCPACSWingComponentSegments.h"
 #include "CCPACSPositionings.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurve.h"
@@ -113,12 +114,29 @@ public:
     /**
      * @brief Returns the segment for a given index or uid
      * @param index Segment index
-     * @param uid Segment UID
      * @return CCPACSWingSegment&
      */
     TIGL_EXPORT CCPACSWingSegment& GetSegment(const int index);
+
+    /**
+     * @brief Returns the segment for a given index or uid
+     * @param index Segment index
+     * @return CCPACSWingSegment&
+     */
     TIGL_EXPORT const CCPACSWingSegment& GetSegment(const int index) const;
+
+    /**
+     * @brief Returns the segment for a given index or uid
+     * @param uid Segment UID
+     * @return CCPACSWingSegment&
+     */
     TIGL_EXPORT CCPACSWingSegment& GetSegment(std::string uid);
+
+    /**
+     * @brief Returns the segment for a given index or uid
+     * @param uid Segment UID
+     * @return CCPACSWingSegment&
+     */
     TIGL_EXPORT const CCPACSWingSegment& GetSegment(std::string uid) const;
 
     /**
@@ -174,13 +192,13 @@ public:
 
     /**
      * @brief Gets the loft of the whole wing
-     * @return TopoDS_Shape& Returns a reference to the OCC Type TopoDS_Shape
+     * @return TopoDS_Shape& Returns the wing shape
      */
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge();
 
     /**
      * @brief Returns the wing loft with cut out control surface
-     * @return TopoDS_Shape Returns OCC Type TopoDS_Shape
+     * @return TopoDS_Shape Returns the wing shape with cutouts
      */
     TIGL_EXPORT TopoDS_Shape GetLoftWithCutouts();
         
@@ -298,12 +316,14 @@ public:
 
     /**
      * @brief Returns a wire consisting of all guide curves as a compound
-     * @return TopoDS_Compound Returns the OCC Type TopoDS_Compound
+     * @return TopoDS_Compound
      */
     TIGL_EXPORT TopoDS_Compound GetGuideCurveWires() const;
-//toDo better description for that?
+
     /**
-     * @brief Returns the relative circumference parameters for each guide curve wire
+     * @brief Returns the relative circumference parameters (as defined in CPACS)
+     * (These parameters are calculated to scale the guide curve wire and construct the
+     * guide curves)
      * @return std::vector<double>
      */
     TIGL_EXPORT std::vector<double> GetGuideCurveStartParameters() const;
