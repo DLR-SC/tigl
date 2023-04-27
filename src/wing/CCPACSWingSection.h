@@ -56,7 +56,7 @@ public:
     // Gets the section scaling
     TIGL_EXPORT CTiglPoint GetScaling() const;
 
-    // Setter for translation.
+    // Setter for translation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
 
     // Setter for rotation
