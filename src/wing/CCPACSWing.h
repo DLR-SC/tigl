@@ -163,7 +163,8 @@ public:
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionUID);
 
     /**
-     * @brief Returns the upper point in absolute (world) coordinates for a given segment, eta, xsi
+     * @brief Returns the upper point in absolute (world) coordinates for a given segment,
+     * eta, xsi (calculated output may be influenced by setting different value for Enum getPointBehavior)
      * @param segmentIndex
      * @param eta
      * @param xsi
