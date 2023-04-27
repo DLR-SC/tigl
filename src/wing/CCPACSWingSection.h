@@ -90,7 +90,7 @@ public:
     * @param rot Euler angles (x,y,z) -> (x,y', z'') in degree, which means, that the object will be rotaded in following order:
     * 1st Rotation around x-axis
     * 2nd Rotation around the rotaded y-axis y'
-    * 3rd Rotation around the twice rotaded z axis x''.
+    * 3rd Rotation around the twice rotaded z axis z''.
     * Default data value:(0,0,0).
     */
     TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
