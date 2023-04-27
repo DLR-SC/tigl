@@ -71,7 +71,7 @@ public:
 
     /**
      *  @brief Returns the parent configuration
-     *  @return CCPACSConfiguration& Returns reference to configuration
+     *  @return CCPACSConfiguration&
      */
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
@@ -88,7 +88,7 @@ public:
     TIGL_EXPORT CCPACSWingSection& GetSection(int index);
     TIGL_EXPORT const CCPACSWingSection& GetSection(int index) const;
 
-//toDo section Index different from segment Index?
+
     /**
      *  @brief Returns the number of segments of the wing
      *  @param index
@@ -232,10 +232,8 @@ public:
      */
     TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z) const;
 
-    //toDo Whats coming in and whats going out
     /**
      * @brief Calculates the segment coordinates from global (x,y,z) coordinates
-     * Returns the segment index of the according segment
      * If x,y,z does not belong to any segment, -1 is returned
      * @param xyz Global (x,y,z) coordinates
      * @param[in] eta
@@ -243,12 +241,12 @@ public:
      * @param[out] eta
      * @param[out] xsi
      * @param onTop
-     * @return int Returns the segment Index
+     * @return int Returns -1 if x,y,z does not belong to any segment
      */
     TIGL_EXPORT int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
     /**
-     * @brief Returns the Component Type TIGL_COMPONENT_WING.
+     * @brief Returns the Component Type TIGL_COMPONENT_WING or TIGL_COMPONENT_ROTORBLADE.
      */
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
     {
@@ -297,18 +295,25 @@ public:
     TIGL_EXPORT std::vector<double> GetGuideCurveStartParameters() const;
 
     /**
-     * @brief Adjust, whether the wing should be modeled with the flaps or not
+     * @brief Determines, whether the wing should be modeled with the flaps or not
      * @param enabled Set 'True' if wing should be built with flags
      */
     TIGL_EXPORT void SetBuildFlaps(bool enabled);
 
-    // Returns the wing shape without any extended flaps
+    /**
+     * @brief Returns the wing shape without flaps cut out
+     * @return PNamedShape
+     */
     TIGL_EXPORT PNamedShape GetWingCleanShape() const;
 
-    // Sets the getPointBehavior to asParameterOnSurface or onLinearLoft
+    /**
+     * @brief Sets the getPointBehavior to asParameterOnSurface or onLinearLoft
+     */
     TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
 
-    // Gets the getPointBehavior
+    /*
+     * @brief Gets the getPointBehavior
+     */
     TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
     TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
 
