@@ -64,7 +64,11 @@ public:
 
     /**
     * @brief Returns the rotation of a wing section in degree
-    * @return CTiglPoint
+    * @return CTiglPoint Euler angles (x,y,z) -> (x,y', z'') in degree, which means, that the object will be rotaded in following order:
+    * 1st Rotation around x-axis
+    * 2nd Rotation around the rotaded y-axis y'
+    * 3rd Rotation around the twice rotaded z axis x''.
+    * Default data value:(0,0,0).
     */
     TIGL_EXPORT CTiglPoint GetRotation() const;
 
