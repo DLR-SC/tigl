@@ -1,6 +1,35 @@
 Changelog
 =========
 
+Version 3.3.0
+-------------
+02/05/2023
+
+ - General changes:
+
+   - Support CPACS 3.3 (#883). The following CPACS 3.3 functionality is not yet supported: stringerFramePosition definition at fuselage section (#915), landing gears (#908), parametric fuselage profiles (#909). 
+   - Implemented the upcoming CPACS 3.5 feature for modeling ducts. It allows the user to create duct cutouts in        wings and fuselages. TiGL was extended to support ducts and duct assemblies for aircraft configurations. It is      to mention, that currently wings and fuselages are the only components that enable duct cutouts (#881).
+   - Generate doxygen documentation for all classes, not just the API functions (#943).
+ 
+ - New API functions:
+
+   - New functions `::tiglConfigurationSetWithDuctCutouts` and `::tiglConfigurationGetWithDuctCutouts` that set and      get the flag whether the ducts defined in CPACS shall be removed from the configuration using Boolean operations. 
+   - New function #::tiglGetCrossSectionArea' that allows cutting either a whole configuration or single parts with a plane and calculating the cross section area. This functionality can be used for the application for Whitcomb's area rule (#763). 
+ 
+ - Fixes:
+
+   - Adapt get_tigl_tixi.sh to properly download the tixi3 package for debian (#884).
+   - Export fuselages and wings as a whole and not segmentwise in the CAD export of the unfused configuration (#897).
+   - Fix typos (#923, #924, #925).
+   - Fix bug concerning the conversion of the internal parametrization of the faces of a wing to contour coordinates (#930).
+   - Update CI (#918, #839).
+   - Fix a compilation error with gcc 12.2 (#948).
+   - Fix bug in `::tiglWingGetSegmentUpperSurfaceAreaTrimmed` (#961).
+
+ - TiGLViewer:
+
+   - Implement high dpi screen support (#953).
+
 Version 3.2.3
 -------------
 09/03/2022
