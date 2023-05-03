@@ -184,7 +184,7 @@ jobs:
     if: ${{ inputs.draft-release == 'true' }}
     needs: ["test-macos", "test-windows", "test-linux"]
     runs-on: "ubuntu-latest"
+    secrets: inherit
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/release
-        secrets: inherit
