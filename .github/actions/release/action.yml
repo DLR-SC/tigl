@@ -36,7 +36,7 @@ runs:
       id: create_release
       uses: actions/create-release@latest
       env:
-          GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
@@ -52,7 +52,7 @@ runs:
     - name: Upload MacOS Release Asset (.dmg)
       uses: actions/upload-release-asset@v1
       env:
-          GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./macos-package/TIGL-${{ env.version }}-Darwin.dmg
@@ -67,7 +67,7 @@ runs:
     - name: Upload Win64 Release Asset (.zip)
       uses: actions/upload-release-asset@v1
       env:
-          GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./win-package/TIGL-${{ env.version }}-win64.zip
@@ -82,7 +82,7 @@ runs:
     - name: Upload Win64 Release Asset (.exe)
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./win-installer/TIGL-${{ env.version }}-win64.exe
@@ -153,4 +153,4 @@ runs:
         body: There has been a new release over at DLR-SC/tigl. We should create new conda packages!
         branch: bump-tigl3-version
         commit-message: bump tigl3 version to ${{ env.version }}
-        token: "${{ secrets.GH_TOKEN }}"
+        token: ${{ secrets.GH_TOKEN }}
