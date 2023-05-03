@@ -4,6 +4,11 @@ on:
 
   workflow_call:
 
+    secrets:
+      GH_TOKEN:
+        description: 'A Github PAT'
+        required: true
+
     inputs:
 
       draft-release:
@@ -187,3 +192,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/release
+        with:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
