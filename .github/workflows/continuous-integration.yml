@@ -187,5 +187,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/release
-        secrets:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        secrets: inherit
