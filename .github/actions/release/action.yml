@@ -11,6 +11,7 @@ runs:
     - uses: actions/checkout@v3
 
     - name: Split Release Description from Changelog
+      shell: bash -l {0}
       run: |
         csplit -z ChangeLog.md /"Version "/ {1}
         mv xx01 release_description.md
@@ -23,6 +24,7 @@ runs:
         path: ./release_description.md
 
     - name: Parse version
+      shell: bash -l {0}
       run: |
         version=`echo $github_ref | cut -c 12-`
         echo $version
@@ -100,6 +102,7 @@ runs:
         path: tigl-website
 
     - name: Add documentation to website
+      shell: bash -l {0}
       run: |
         cd tigl-website/content
         rm -rf doc/latest/*
@@ -136,6 +139,7 @@ runs:
         path: tigl-conda
 
     - name: Bump version of tigl3 conda recipe and reset build number
+      shell: bash -l {0}
       run: |
         sed -i s/"version = \".*\""/"version = \"${{ env.version }}\""/g tigl-conda/tigl3/meta.yaml
         sed -i s/"number: .*"/"number: 0"/g tigl-conda/tigl3/meta.yaml
