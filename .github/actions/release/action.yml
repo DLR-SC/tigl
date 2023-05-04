@@ -66,16 +66,16 @@ runs:
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ env.version }}
+        tag_name: v${{ env.version }}
         name: TiGL ${{ env.version }}
         body: ${{ steps.changelog.outputs.content  }}
         draft: true
         prerelease: false
         token: ${{ inputs.GH_TOKEN }}
         files: |
-          ./win-installer/TIGL-${{ env.version }}-win64.exe
-          ./win-package/TIGL-${{ env.version }}-win64.zip
-          ./macos-package/TIGL-${{ env.version }}-Darwin.dmg
+          TIGL-${{ env.version }}-win64.exe
+          TIGL-${{ env.version }}-win64.zip
+          TIGL-${{ env.version }}-Darwin.dmg
 
     - name: Checkout tigl-website repo
       uses: actions/checkout@v3
