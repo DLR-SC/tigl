@@ -36,69 +36,42 @@ runs:
         echo "version=$version" >> $GITHUB_ENV
       env:
          github_ref: ${{ github.ref }}
+         
+    - name: download Win64 package Build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: win-package
+        
+    - name: download Win64 installer Build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: win-installer
+         
+    - name: download MacOS package Build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: macos-package
+        
+    - name: download html-documentation
+      uses: actions/download-artifact@v3
+      with:
+        name: html-documentation
+        path: html-documentation
 
     - name: Create Release
       id: create_release
-      uses: actions/create-release@latest
-      env:
-          GITHUB_TOKEN: ${{ inputs.GH_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
         body: ${{ steps.changelog.outputs.content  }}
         draft: true
         prerelease: false
-
-    - name: download MacOS package Build artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: macos-package
-
-    - name: Upload MacOS Release Asset (.dmg)
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ inputs.GH_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./macos-package/TIGL-${{ env.version }}-Darwin.dmg
-        asset_name: TIGL-${{ env.version }}-Darwin.dmg
-        asset_content_type: application/zip
-
-    - name: download Win64 package Build artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: win-package
-
-    - name: Upload Win64 Release Asset (.zip)
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ inputs.GH_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./win-package/TIGL-${{ env.version }}-win64.zip
-        asset_name: TIGL-${{ env.version }}-win64.zip
-        asset_content_type: application/zip
-
-    - name: download Win64 installer Build artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: win-installer
-
-    - name: Upload Win64 Release Asset (.exe)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ inputs.GH_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./win-installer/TIGL-${{ env.version }}-win64.exe
-        asset_name: TIGL-${{ env.version }}-win64.exe
-        asset_content_type: application/zip
-
-    - name: download html-documentation
-      uses: actions/download-artifact@v3
-      with:
-        name: html-documentation
-        path: html-documentation
+        token: ${{ inputs.GH_TOKEN }}
+        files: |
+          ./win-installer/TIGL-${{ env.version }}-win64.exe
+          ./win-package/TIGL-${{ env.version }}-win64.zip
+          ./macos-package/TIGL-${{ env.version }}-Darwin.dmg
 
     - name: Checkout tigl-website repo
       uses: actions/checkout@v3
@@ -128,7 +101,7 @@ runs:
 
 
     - name: Create Pull Request at DLR-SC/tigl-website
-      uses: peter-evans/create-pull-request@v3
+      uses: peter-evans/create-pull-request@v5
       with:
         path: tigl-website
         title: Add documentation for TiGL ${{ env.version }}
@@ -151,7 +124,7 @@ runs:
         git diff
 
     - name: Create Pull Request at DLR-SC/tigl-conda
-      uses: peter-evans/create-pull-request@v3
+      uses: peter-evans/create-pull-request@v5
       with:
         path: tigl-conda
         title: Bump tigl3 version to ${{ env.version }}
