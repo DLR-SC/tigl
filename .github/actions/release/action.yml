@@ -57,13 +57,17 @@ runs:
       with:
         name: html-documentation
         path: html-documentation
+        
+    - name: ls
+      shell: bash -l {0}
+      run: ls -lhrt
 
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: TiGL ${{ env.version }}
+        tag_name: ${{ env.version }}
+        name: TiGL ${{ env.version }}
         body: ${{ steps.changelog.outputs.content  }}
         draft: true
         prerelease: false
