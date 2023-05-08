@@ -301,7 +301,7 @@ TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge()
     return fusedSegmentWithEdge;
 }
     
-// Gets the loft of the whole wing.
+// Gets the upper loft of the wing
 TopoDS_Shape & CCPACSWing::GetUpperShape()
 {
     if (rebuildShells) {
@@ -311,7 +311,7 @@ TopoDS_Shape & CCPACSWing::GetUpperShape()
     return upperShape;
 }
     
-// Gets the loft of the whole wing.
+// Gets the lower loft of the wing.
 TopoDS_Shape & CCPACSWing::GetLowerShape()
 {
     if (rebuildShells) {
