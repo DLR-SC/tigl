@@ -112,14 +112,14 @@ public:
     TIGL_EXPORT int GetSegmentCount() const;
 
     /**
-     * @brief Returns the segment for a given index or uid
+     * @brief Returns the segment for a given index
      * @param index Segment index
      * @return CCPACSWingSegment&
      */
     TIGL_EXPORT CCPACSWingSegment& GetSegment(const int index);
 
     /**
-     * @brief Returns the segment for a given index or uid
+     * @brief Returns the segment for a given index
      * @param index Segment index
      * @return CCPACSWingSegment&
      */
