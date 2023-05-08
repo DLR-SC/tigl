@@ -174,6 +174,7 @@ public:
 
     /**
      * @brief Returns the lower point in absolute (world) coordinates for a given segment, eta, xsi
+     * (calculated output may be influenced by setting different value for Enum getPointBehavior)
      * @param segmentIndex
      * @param eta
      * @param xsi
