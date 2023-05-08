@@ -193,7 +193,7 @@ public:
     TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
     /**
-     * @brief Gets the loft of the whole wing
+     * @brief Gets the loft of the whole wing with modeled leading edge
      * @return TopoDS_Shape& Returns the wing shape
      */
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge();
@@ -203,8 +203,17 @@ public:
      * @return TopoDS_Shape Returns the wing shape with cutouts
      */
     TIGL_EXPORT TopoDS_Shape GetLoftWithCutouts();
-        
+
+    /**
+     * @brief Returns upper loft of the wing and builds it if shells require rebuild
+     * @return TopoDS_Shape
+     */
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
+
+    /**
+     * @brief Returns lower loft of the wing and builds it if shells require rebuild
+     * @return TooDS_Shape
+     */
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
 
     /**
