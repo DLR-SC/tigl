@@ -38,7 +38,8 @@ public:
     TIGL_EXPORT CCPACSWingSection(CCPACSWingSections* parent, CTiglUIDManager* uidMgr);
 
     /**
-    * @brief Get element count for this section
+    * @brief Get element count for this section.
+    * While CPACS supports several elements per section, a section in TiGL must contain exactly one element
     * @return int
     */
     TIGL_EXPORT int GetSectionElementCount() const;
