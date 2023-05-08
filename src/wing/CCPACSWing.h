@@ -126,14 +126,14 @@ public:
     TIGL_EXPORT const CCPACSWingSegment& GetSegment(const int index) const;
 
     /**
-     * @brief Returns the segment for a given index or uid
+     * @brief Returns the segment for a given uid
      * @param uid Segment UID
      * @return CCPACSWingSegment&
      */
     TIGL_EXPORT CCPACSWingSegment& GetSegment(std::string uid);
 
     /**
-     * @brief Returns the segment for a given index or uid
+     * @brief Returns the segment for a given uid
      * @param uid Segment UID
      * @return CCPACSWingSegment&
      */
