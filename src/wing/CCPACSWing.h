@@ -183,7 +183,7 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
     /**
-     * @brief Returns a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
+     * @brief Returns a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi, if fourth parameter is ommited
      * @param segmentIndex
      * @param eta
      * @param xsi
