@@ -121,34 +121,69 @@ public:
 class CTiglCADExporter
 {
 public:
-    /// Constructor
+
+    /**
+     * @brief Constructor
+     * @param options Sets options for exporter
+     */
     TIGL_EXPORT CTiglCADExporter(const ExporterOptions& options = DefaultExporterOption());
 
-    // Empty destructor
+
+    /**
+     * @brief Destructor
+     */
     TIGL_EXPORT virtual ~CTiglCADExporter() { /* empty */}
 
     virtual ExporterOptions GetDefaultOptions() const = 0;
     virtual ShapeExportOptions GetDefaultShapeOptions() const = 0;
 
-    /// Adds a shape
+    /**
+     * @brief Adds a shape to the exporter
+     * @param shape
+     * @param options
+     */
     TIGL_EXPORT void AddShape(PNamedShape shape, const ShapeExportOptions& options = DefaultShapeExportOptions());
 
+    /**
+     * @brief Adds a shape and configuration to exporter
+     * @param shape
+     * @param config
+     * @param options
+     */
     TIGL_EXPORT void AddShape(PNamedShape shape, const CCPACSConfiguration* config, const ShapeExportOptions& options = DefaultShapeExportOptions());
-    
 
-    /// Adds the whole non-fused configuration, to the exporter
-    /// If one of the components fail to export, the function returns false
+    /**
+     * @brief Adds the whole non-fused configuration to the exporter. If one of the components fail to export, funtion returns fals
+     * @param config
+     * @param options
+     * @return TIGL_EXPORT If one of the components fail to export, the function returns false
+     */
     TIGL_EXPORT bool AddConfiguration(CCPACSConfiguration &config, const ShapeExportOptions& options = DefaultShapeExportOptions());
 
-    /// Adds a whole geometry, boolean fused and meshed
+    /**
+     * @brief Adds the geometry (as described in loaded file) to exporter as one fused shape
+     * @param config
+     * @param options
+     */
     TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config, const ShapeExportOptions& options = DefaultShapeExportOptions());
 
+    /**
+     * @brief Writes the file to working directory
+     * @param filename
+     */
     TIGL_EXPORT bool Write(const std::string& filename) const;
 
-    /// Number of shapes
+    /**
+     * @brief Returns the number of shapes added to exporter
+     */
     TIGL_EXPORT size_t NShapes() const;
 
-    /// Returns all shapes added to the exporter
+    /**
+     * @brief Returns shape added to the exporter by position in list, in order it was added to exporter, note that adding the whole
+     * configuration adds shapes seperatly if not fused.
+     *
+     * @param iShape Index refering to position of shape that was added to exporter. Index starts at '0'
+     */
     TIGL_EXPORT PNamedShape GetShape(size_t iShape) const;
 
     TIGL_EXPORT const ShapeExportOptions& GetOptions(size_t iShape) const;
@@ -167,10 +202,10 @@ private:
     /// must be overridden. If multiple types supported, separate with a ";"
     virtual std::string SupportedFileTypeImpl() const = 0;
 
-    ListPNamedShape _shapes;
+    ListPNamedShape _shapes;                /**< stores all shapes for export */
     mutable ExporterOptions _globalOptions;
     std::vector<ShapeExportOptions> _shapeOptions;
-    std::vector<const CCPACSConfiguration*> _configs; //!< TIGL configurations */
+    std::vector<const CCPACSConfiguration*> _configs; /**< TIGL configurations */
 
 };
 
