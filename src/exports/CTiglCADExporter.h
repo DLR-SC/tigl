@@ -168,7 +168,7 @@ public:
     TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config, const ShapeExportOptions& options = DefaultShapeExportOptions());
 
     /**
-     * @brief Writes the file to working directory
+     * @brief Writes the export file to working directory
      * @param filename
      */
     TIGL_EXPORT bool Write(const std::string& filename) const;
