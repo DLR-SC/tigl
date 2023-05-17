@@ -32,11 +32,9 @@ public:
 
 Mesher();
 ~Mesher();
-void set_options(int dimensions,double mySize, std::string myName);
+void set_options(int dimensions, std::string myName);
 void mesh();
 void import(TopoDS_Shape shape);
-
-// Refine the mesh of the current model by uniformly splitting the elements.
 void refine();
 
     
