@@ -138,11 +138,11 @@ target_compile_definitions(tigl3
     PRIVATE $<TARGET_PROPERTY:Boost::disable_autolinking,INTERFACE_COMPILE_DEFINITIONS>
 )
 
-
+message("gmsh_lib = ${GMSH_LIBRARY}")
 target_link_libraries (tigl3 PRIVATE ${OpenCASCADE_LIBRARIES} ${VLD_LIBRARIES}
                              PRIVATE Boost::filesystem Boost::thread Boost::system Boost::atomic Boost::chrono Boost::date_time
                              PRIVATE ${CMAKE_THREAD_LIBS_INIT}
-                             PRIVATE ${GMSH_LIB}
+                             PRIVATE ${GMSH_LIBRARY}
                              PUBLIC tixi3)
 
 #if(TIGL_BUILD_MESHER)
@@ -179,6 +179,7 @@ target_link_libraries (tigl3_static
      PUBLIC tixi3
      PRIVATE ${CMAKE_THREAD_LIBS_INIT}
      PRIVATE ${OpenCASCADE_LIBRARIES} Boost::boost Boost::filesystem Boost::thread Boost::system Boost::atomic Boost::chrono Boost::date_time
+     PRIVATE ${GMSH_LIBRARY}
 )
 
 if (TARGET glog::glog)
