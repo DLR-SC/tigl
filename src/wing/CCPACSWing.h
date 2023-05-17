@@ -183,7 +183,8 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
     /**
-     * @brief Returns a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi, if fourth parameter is ommited
+     * @brief Returns a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi,
+     * if fourth parameter is ommited, otherwise it will give you the point in the chosen coordinate system (e.g.  WING_COORDINATE_SYSTEM)
      * @param segmentIndex
      * @param eta
      * @param xsi
@@ -193,7 +194,7 @@ public:
     TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
     /**
-     * @brief Gets the loft of the whole wing with modeled leading edge
+     * @brief Returns the rebuilt loft of the whole wing with modeled leading edge, if wing shape rebuild is indicated
      * @return TopoDS_Shape& Returns the wing shape
      */
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge();
