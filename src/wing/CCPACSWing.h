@@ -101,6 +101,11 @@ public:
      * @return CCPACSWingSection&
      */
     TIGL_EXPORT CCPACSWingSection& GetSection(int index);
+
+    /**
+     * @brief Returns the section for a given index
+     * @return CCPACSWingSection&
+     */
     TIGL_EXPORT const CCPACSWingSection& GetSection(int index) const;
 
 
