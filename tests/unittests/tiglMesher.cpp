@@ -24,7 +24,7 @@
 
 TEST(tiglMesher, cube)
 {
-    // create cube and mesh to test if linking with gmsh works
+    // create cube in gmsh to test if linking with gmsh works
 
     gmsh::initialize();
     gmsh::model::occ::addBox(0,0,0,5,5,5);
@@ -37,7 +37,7 @@ TEST(tiglMesher, cube)
 
 TEST(tiglMesher, cubeTopoDS)
 {
-    // open cpacs configuration, read wing TopoDS_Shape and create mesh
+    // creat cube as TopoDS-Shpae and mesh to test the Mesher functions
 
     Mesher m {};
 
@@ -45,12 +45,12 @@ TEST(tiglMesher, cubeTopoDS)
     TopoDS_Shape testShape = testBox.Solid();
 
     m.import(testShape);
-    gmsh::model::occ::synchronize();
+    //gmsh::model::occ::synchronize();
 
     ASSERT_EQ(gmsh::model::getDimension(), 3);
 
-
-    m.set_options(3,0.1,"testcube.msh");
+    //set options for meshing the shape. dim = 3, name = "testcube.msh"
+    m.set_options(3,"testcube.msh");
     m.mesh();
 
     //test if the maxNodeTag of the Mesh is 430 (Mesh should have 348 Nodes)
@@ -75,7 +75,7 @@ TEST(tiglMesher, cubeTopoDS)
 TEST(tiglMesher, wing)
 {
 
-    // refine the previously meshed file
+    // open cpacs configuration, read wing TopoDS_Shape and create mesh
 }
 
 TEST(tigLMesher, fused)
