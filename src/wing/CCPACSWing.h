@@ -151,13 +151,24 @@ public:
     TIGL_EXPORT int GetComponentSegmentCount() const;
 
     /**
-     * @brief Returns the segment for a given index or uid
+     * @brief Returns the segment for a given index
      * @param index Segment index
-     * @param uid Segment UID
      * @return CCPACSWingComponentSegment&
      */
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const int index);
+
+    /**
+     * @brief Returns the segment for a given index
+     * @param index Segment index
+     * @return CCPACSWingComponentSegment&
+     */
     TIGL_EXPORT const CCPACSWingComponentSegment& GetComponentSegment(const int index) const;
+
+    /**
+     * @brief Returns the segment for a given uid
+     * @param uid Segment UID
+     * @return CCPACSWingComponentSegment&
+     */
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const std::string& uid);
 
     /**
