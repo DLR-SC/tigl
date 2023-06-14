@@ -55,19 +55,7 @@ set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
 set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
 find_package( tixi3 3.0.3 REQUIRED CONFIG)
 
-#OPTION(TIGL_BUILD_MESHER "Enables simple meshing using gmsh. Requires a gmsh installation" ON)
-#if(TIGL_BUILD_MESHER)
-#  include(FetchContent)
-#  FetchContent_Declare(
-#    gmsh
-#    GIT_REPOSITORY "https://gitlab.onelab.info/gmsh/gmsh.git"
-#    GIT_TAG "gmsh_4_11_1"
-#  )
-#  FetchContent_MakeAvailable(gmsh)
-#endif(TIGL_BUILD_MESHER)
 
-#set(gmsh_DIR "/home/albe_ol/data/code/gmsh/build" CACHE PATH "gmsh installation prefix")
-#set(CMAKE_PREFIX_PATH "${gmsh_PATH};${CMAKE_PREFIX_PATH}")
 find_package( gmsh REQUIRED) 
 
 

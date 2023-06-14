@@ -138,17 +138,12 @@ target_compile_definitions(tigl3
     PRIVATE $<TARGET_PROPERTY:Boost::disable_autolinking,INTERFACE_COMPILE_DEFINITIONS>
 )
 
-message("gmsh_lib = ${GMSH_LIBRARY}")
 target_link_libraries (tigl3 PRIVATE ${OpenCASCADE_LIBRARIES} ${VLD_LIBRARIES}
                              PRIVATE Boost::filesystem Boost::thread Boost::system Boost::atomic Boost::chrono Boost::date_time
                              PRIVATE ${CMAKE_THREAD_LIBS_INIT}
                              PRIVATE ${GMSH_LIBRARY}
                              PUBLIC tixi3)
 
-#if(TIGL_BUILD_MESHER)
-#  message("HALLLOOOO")
-#  target_link_libraries(tigl3 PRIVATE gmsh)
-#endif(TIGL_BUILD_MESHER)
 
 target_include_directories(tigl3 PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
