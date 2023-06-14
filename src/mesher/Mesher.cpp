@@ -2,49 +2,28 @@
 #include "Mesher.h"
 #include <string>
 
+namespace tigl {
 
 Mesher::Mesher() { gmsh::initialize(); }
 Mesher::~Mesher(){ gmsh::finalize(); }
 
-//Options: dimensions: digit 1-3, myName: "filename.format"
-void Mesher::set_options(int dimensions, std::string myName)
+static Mesher& get_instance()
 {
-   
-    options.setDimension(dimensions);
-    //options.setSize(mySize);
-    options.setName(myName);
-
+        static Mesher m;
+        return m;
 }
 
-void Mesher::Options::setDimension(int dimension)
+//Options: dimensions: digit 1-3, min and max elementsize (0-1e+22)
+void Mesher::set_options(int dimensions, int min, int max)
 {
-    dim = dimension;
+    options.dim = dimensions;
+    options.minelementsize = min;
+    options.maxelementsize = max;
+
+    gmsh::option::setNumber("Mesh.MeshSizeMin", options.minelementsize);
+    gmsh::option::setNumber("Mesh.MeshSizeMax", options.maxelementsize);
 }
 
-int Mesher::Options::getDimension()
-{
-    return dim;
-}
-
-//void Mesher::Options::setSize(int mySize)
-//{
-//    size = mySize;
-//}
-
-//int Mesher::Options::getSize()
-//{
-//    return size;
-//}
-
-void Mesher::Options::setName(std::string myName)
-{
-    fileName = myName;
-}
-
-std::string Mesher::Options::getName()
-{
-    return fileName;
-}
 
 // imports an TopoDS_Shape by using a pointer to void
 void Mesher::import(TopoDS_Shape shape)
@@ -57,13 +36,10 @@ void Mesher::import(TopoDS_Shape shape)
 
 // meshes the previous called Shape (currently without a size option) and save it as .msh
 void Mesher::mesh()
-{
-//    std::vector<std::pair<int, int> > out;
-//    gmsh::model::mesh::setSize(out, options.getSize());
+{  
+    gmsh::model::mesh::generate(options.dim);
 
-    gmsh::model::mesh::generate(options.getDimension());
-
-    gmsh::write(options.getName().c_str());
+    //gmsh::write(options.getName().c_str());
 }
 
 // refines the mesh by splitting the Elemnts and saves it as .msh
@@ -71,7 +47,13 @@ void Mesher::refine()
 {
     gmsh::model::mesh::refine();
     
-    gmsh::write(options.getName().c_str());
+    //gmsh::write(options.getName().c_str());
 }
 
+void Mesher::write(std::string myName)
+{
 
+    gmsh::write(myName.c_str());
+
+}
+}
