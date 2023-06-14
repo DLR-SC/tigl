@@ -18,9 +18,14 @@
 
 #include "test.h"
 #include "Mesher.h"
-//#include <TopoDS_Shape.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <gmsh.h>
+#include <vector>
+#include <TopoDS_Shape.hxx>
+#include <tigl.h>
+#include <CCPACSConfigurationManager.h>
+#include <CCPACSWing.h>
+
 
 TEST(tiglMesher, cube)
 {
@@ -32,6 +37,8 @@ TEST(tiglMesher, cube)
 
     ASSERT_EQ(gmsh::model::getDimension(), 3);
 
+    gmsh::clear();
+
     gmsh::finalize();
 }
 
@@ -39,47 +46,43 @@ TEST(tiglMesher, cubeTopoDS)
 {
     // creat cube as TopoDS-Shpae and mesh to test the Mesher functions
 
-    Mesher m {};
+    tigl::Mesher m {};
+    gmsh::clear();
 
     BRepPrimAPI_MakeBox testBox {5,5,5};
     TopoDS_Shape testShape = testBox.Solid();
 
     m.import(testShape);
-    //gmsh::model::occ::synchronize();
 
     ASSERT_EQ(gmsh::model::getDimension(), 3);
 
-    //set options for meshing the shape. dim = 3, name = "testcube.msh"
-    m.set_options(3,"testcube.msh");
+    //set options for meshing the shape. dim = 2, min and max elementsize = 5 -> lenght of cube edges
+    m.set_options(2, 5, 5);
+
     m.mesh();
+    //mesh contains four triangular elements on every face -> 14 nodes and 36 elements
 
-    //test if the maxNodeTag of the Mesh is 430 (Mesh should have 348 Nodes)
-    std::size_t  maxTag;
-    gmsh::model::mesh::getMaxNodeTag(maxTag);
-    ASSERT_EQ(maxTag, 430);
+    //test if the mesh has 14 nodes ('nodeTags' contains all nodes in the mesh)
+    std::vector<std::size_t>  nodeTags;
+    std::vector<double>  coord;
+    std::vector<double>  parametricCoord;
+    gmsh::model::mesh::getNodes(nodeTags, coord, parametricCoord);
 
-    //test if the maxElementTag of the Mesh is 6483 (Mesh should have 1790 Elements)
-    std::size_t  maxTag2;
-    gmsh::model::mesh::getMaxElementTag(maxTag2);
-    ASSERT_EQ(maxTag2, 6483);
+    ASSERT_EQ(nodeTags.size(), 14);
 
-    //refine the mesh and test if the new MaxElementTag is 19913
+    //refine the mesh by splitting the elements and test if the new mesh has 50 nodes
     m.refine();
-    std::size_t  maxTag3;
-    gmsh::model::mesh::getMaxElementTag(maxTag3);
-    ASSERT_EQ(maxTag3, 19913);
+    std::vector<std::size_t>  nodeTags_r;
+    std::vector<double>  coord_r;
+    std::vector<double>  parametricCoord_r;
+    gmsh::model::mesh::getNodes(nodeTags_r, coord_r, parametricCoord_r);
 
-}
+    ASSERT_EQ(nodeTags_r.size(), 50);
 
 
-TEST(tiglMesher, wing)
-{
+    m.write("test1.msh");
 
-    // open cpacs configuration, read wing TopoDS_Shape and create mesh
-}
+    gmsh::clear();
+    }
 
-TEST(tigLMesher, fused)
-{
 
-    // open cpacs configuration, fuse aircract and mesh far field
-}
