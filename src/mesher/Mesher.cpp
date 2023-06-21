@@ -26,7 +26,7 @@ void Mesher::set_options(int dimensions, int min, int max)
 
 
 // imports an TopoDS_Shape by using a pointer to void
-void Mesher::import(TopoDS_Shape shape)
+void Mesher::import(TopoDS_Shape shape) const
 {
     gmsh::vectorpair outDimTags;
     gmsh::model::occ::importShapesNativePointer((void const*)&shape, outDimTags);
@@ -35,22 +35,20 @@ void Mesher::import(TopoDS_Shape shape)
 }
 
 // meshes the previous called Shape (currently without a size option) and save it as .msh
-void Mesher::mesh()
+void Mesher::mesh() const
 {  
     gmsh::model::mesh::generate(options.dim);
 
-    //gmsh::write(options.getName().c_str());
 }
 
 // refines the mesh by splitting the Elemnts and saves it as .msh
-void Mesher::refine()
+void Mesher::refine() const
 {
     gmsh::model::mesh::refine();
     
-    //gmsh::write(options.getName().c_str());
 }
 
-void Mesher::write(std::string myName)
+void Mesher::write(std::string myName) const
 {
 
     gmsh::write(myName.c_str());
