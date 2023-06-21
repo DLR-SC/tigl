@@ -40,7 +40,6 @@ if (NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX})
    set (CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_PREFIX})
 endif()
 
-# set(CMAKE_MACOSX_RPATH ON)- Could NOT find GMSH (missing: GMSH_INCLUDE_DIR GMSH_EXECUTABLE)
 option(TIGL_BINDINGS_INSTALL_CPP "Install TiGL's CPP bindings" OFF)
 
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
