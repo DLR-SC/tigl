@@ -29,6 +29,17 @@ endif(NOT DEFINED CMAKE_INSTALL_BINDIR)
 
 # these settings are required in order to create fully relocatable
 # libraries on osx
+set(CMAKE_MACOSX_RPATH ON)
+set(CMAKE_SKIP_BUILD_RPATH FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# convert path to absolute (required for some scripts)
+if (NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX})
+   set (CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_PREFIX})
+endif()
+
 # set(CMAKE_MACOSX_RPATH ON)- Could NOT find GMSH (missing: GMSH_INCLUDE_DIR GMSH_EXECUTABLE)
 option(TIGL_BINDINGS_INSTALL_CPP "Install TiGL's CPP bindings" OFF)
 
