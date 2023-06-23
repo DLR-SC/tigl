@@ -66,6 +66,9 @@ set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
 find_package( tixi3 3.0.3 REQUIRED CONFIG)
 
 
+find_package( gmsh REQUIRED) 
+
+
 find_package( PythonInterp )
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)

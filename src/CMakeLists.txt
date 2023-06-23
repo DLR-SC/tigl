@@ -87,6 +87,7 @@ target_include_directories(tigl3_objects
     PRIVATE ${TIGL_INCLUDES}
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/api
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+    PRIVATE ${GMSH_INCLUDE_DIR}
     PRIVATE $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
     PUBLIC $<TARGET_PROPERTY:tixi3,INTERFACE_INCLUDE_DIRECTORIES>
 )
@@ -137,11 +138,12 @@ target_compile_definitions(tigl3
     PRIVATE $<TARGET_PROPERTY:Boost::disable_autolinking,INTERFACE_COMPILE_DEFINITIONS>
 )
 
-
 target_link_libraries (tigl3 PRIVATE ${OpenCASCADE_LIBRARIES} ${VLD_LIBRARIES}
                              PRIVATE Boost::filesystem Boost::thread Boost::system Boost::atomic Boost::chrono Boost::date_time
                              PRIVATE ${CMAKE_THREAD_LIBS_INIT}
+                             PRIVATE ${GMSH_LIBRARY}
                              PUBLIC tixi3)
+
 
 target_include_directories(tigl3 PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
@@ -172,6 +174,7 @@ target_link_libraries (tigl3_static
      PUBLIC tixi3
      PRIVATE ${CMAKE_THREAD_LIBS_INIT}
      PRIVATE ${OpenCASCADE_LIBRARIES} Boost::boost Boost::filesystem Boost::thread Boost::system Boost::atomic Boost::chrono Boost::date_time
+     PRIVATE ${GMSH_LIBRARY}
 )
 
 if (TARGET glog::glog)
