@@ -18,6 +18,7 @@
 
 #include "test.h"
 #include "Mesher.h"
+#include "TiglMesher.h"
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <gmsh.h>
 #include <vector>
@@ -34,6 +35,7 @@
 #include "CGlobalExporterConfigs.h"
 #include "COptionList.h"
 #include "CTiglExportBrep.h"
+#include "TopoDS_Edge.hxx"
 
 
 TEST(tiglMesher, cube)
@@ -66,7 +68,10 @@ TEST(tiglMesher, cubeTopoDS)
     ASSERT_EQ(gmsh::model::getDimension(), 3);
 
     //set options for meshing the shape. dim = 2, min and max elementsize = 5 -> lenght of cube edges
-    m.set_options(2, 5, 5, false);
+
+    m.set_dimension(2);
+    m.set_minMeshSize(5);
+    m.set_maxMeshSize(5);
 
     m.mesh();
     //mesh contains four triangular elements on every face -> 14 nodes and 36 elements
@@ -94,36 +99,5 @@ TEST(tiglMesher, cubeTopoDS)
     gmsh::clear();
     }
 
-TEST(tiglMesher, wing)
-{
-     tigl::Mesher m {};
-    // import the D150 wing and convert to the TopoDS Shape "Wingshape"!
-    TixiDocumentHandle           tixiHandle;
-    TiglCPACSConfigurationHandle tiglHandle;
 
-    const char* filename = "TestData/D150_v30.xml";
-    ReturnCode tixiRet;
-    TiglReturnCode tiglRet;
-
-    tixiRet = tixiOpenDocument(filename, &tixiHandle);
-    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
-
-    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
-    tigl::CTiglUIDManager& uIDManager = config.GetUIDManager();
-
-    auto& component = uIDManager.GetGeometricComponent("D150_wing_1ID");
-    auto componentLoft = component.GetLoft();
-    auto WingShape = componentLoft->Shape();
-
-    // gmsh shuold already be intilizied so the cache is cleared
-    gmsh::clear();
-
-    m.import(WingShape);
-    m.set_options(2, 3, 5, true);
-    m.leading_trailingEdge({1,3,7,8,11,12});
-    m.mesh();
-    gmsh::fltk::run();
-
-}
 

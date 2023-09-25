@@ -13,20 +13,26 @@ public:
        struct Options
     {
         int dim;
-        int minelementsize;
-        int maxelementsize;
+        double minelementsize;
+        double minelementsize2;
+        double minelementsize3;
+        double maxelementsize;
+        double mindistance;
+        double maxdistance;
     };
 
 Mesher();
 ~Mesher();
-void set_options(int dimensions,int min, int max, bool adapted_mesh);
+void set_dimension(int dimension);
+void set_minMeshSize(double min);
+void set_maxMeshSize(double max);
 void mesh() const;
 void import(TopoDS_Shape shape) const;
-void leading_trailingEdge( std::vector<double> Edge, const int SizeMin = 0.1, const int SizeMax = 1, const int DistMin = 0.5, const int DistMax = 1);
+
 void refine() const;
 void write(std::string myName) const;
     
-private:
+
     Options options;
 };
 }
