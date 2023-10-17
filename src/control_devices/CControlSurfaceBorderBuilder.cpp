@@ -25,6 +25,7 @@
 #include <gp_Vec.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepIntCurveSurface_Inter.hxx>

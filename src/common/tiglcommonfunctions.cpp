@@ -43,6 +43,8 @@
 #include "CTiglProjectPointOnCurveAtAngle.h"
 #include "CTiglBSplineAlgorithms.h"
 
+#include "Standard_Version.hxx"
+
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
 #include "GeomAdaptor_Curve.hxx"
@@ -77,7 +79,6 @@
 #include "BRepExtrema_DistShapeShape.hxx"
 
 #include <Approx_Curve3d.hxx>
-#include <BRepAdaptor_HCompCurve.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_FindPlane.hxx>
@@ -1101,8 +1102,8 @@ TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
 
     // Wrap the adaptor in a class which manages curve access via handle (HCurve). According to doxygen
     // this is required by the algorithms
-    Handle(Adaptor3d_HCurve) curve1 = new BRepAdaptor_HCompCurve(compCurve1);
-    Handle(Adaptor3d_HCurve) curve2 = new BRepAdaptor_HCompCurve(compCurve2);
+    const Handle(Adaptor3d_Curve) curve1 = new BRepAdaptor_CompCurve(compCurve1);
+    const Handle(Adaptor3d_Curve) curve2 = new BRepAdaptor_CompCurve(compCurve2);
 
     // We have to generate an approximated curve now from the wire using the adaptor
     // NOTE: last parameter value unknown

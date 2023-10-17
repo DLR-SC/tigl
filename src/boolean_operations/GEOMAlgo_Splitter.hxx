@@ -99,7 +99,11 @@ public:
     void BuildResult(const TopAbs_ShapeEnum theType) override;
 
   TIGL_EXPORT
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,6,0)
+    void PostTreat(const Message_ProgressRange&) override;
+#else
     void PostTreat() override;
+#endif
   
  protected:
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
