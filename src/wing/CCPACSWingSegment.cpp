@@ -94,7 +94,6 @@
 
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAPI_PointsToBSpline.hxx"
-#include "GeomAdaptor_HCurve.hxx"
 #include "GeomFill.hxx"
 #include "GeomFill_SimpleBound.hxx"
 #include "GeomFill_BSplineCurves.hxx"
@@ -105,7 +104,6 @@
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "BRepIntCurveSurface_Inter.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
-#include "BRepAdaptor_CompCurve.hxx"
 #include "BRepTools.hxx"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
