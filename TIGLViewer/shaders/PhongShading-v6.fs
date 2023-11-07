@@ -183,7 +183,7 @@ vec4 computeLighting (in vec3 theNormal,
     vec3 v = vec3(0., 0., -1.);
 
     // Direction of the view reflected on the surface
-    vec3 vReflect = 2. * (dot(Normal, v)*Normal - v);
+    vec3 vReflect = 2. * (dot(theNormal, v)*theNormal - v);
 
     // normal vector of the light stripe plane
     vec3 lightDir = normalize(vec3(0., 1., 0.));
