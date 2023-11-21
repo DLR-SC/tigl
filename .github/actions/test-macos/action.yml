@@ -30,6 +30,7 @@ runs:
         auto-update-conda: true
         auto-activate-base: true
         activate-environment: ''
+        python-version: "3.8"
 
     - name: Install tixi and pythonocc-core from conda
       shell: bash -l {0}
