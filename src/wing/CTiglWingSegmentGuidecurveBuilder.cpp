@@ -99,7 +99,7 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
     }
 
     // get local x-direction for the guide curve
-    gp_Dir rxDir = gp_Dir(1., 0., 0.);
+    gp_Dir rxDir = wingTransform.Transform(gp_Dir(1., 0., 0.));
     if (guideCurve->GetRXDirection()) {
         rxDir.SetX(guideCurve->GetRXDirection()->GetX());
         rxDir.SetY(guideCurve->GetRXDirection()->GetY());
