@@ -30,12 +30,11 @@ runs:
         auto-update-conda: true
         auto-activate-base: true
         activate-environment: ''
-        python-version: "3.8"
 
     - name: Install tixi and pythonocc-core from conda
       shell: bash -l {0}
       run: |
-        conda install tixi3=3.3.0 pythonocc-core=7.4.1 -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install python=3.8 tixi3=3.3.0 pythonocc-core=7.4.1 -c dlr-sc -c dlr-sc/label/tigl-dev
 
     - name: Download built test directory
       uses: actions/download-artifact@v3
