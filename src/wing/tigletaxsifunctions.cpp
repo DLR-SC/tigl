@@ -225,68 +225,113 @@ void InterpolateXsi(const std::string& refUID1, const EtaXsi& etaXsi1,
         throw CTiglError("Eta not in range [0,1] in InterpolateXsi.", TIGL_MATH_ERROR);
     }
 
-    // make sure all uids refer to the same wing
-    const auto& wingcs1 = _getBelongingComponentSegment(refUID1, uidMgr);
-    const auto& wingcs2 = _getBelongingComponentSegment(refUID2, uidMgr);
-    const auto& wingcs3 = _getBelongingComponentSegment(targetUID, uidMgr);
+    // declare points to compute the (component) segment line
+    gp_Pnt p1;
+    gp_Pnt p2;
 
-    if (&wingcs1 != &wingcs2 || &wingcs1 != &wingcs3 || &wingcs2 != &wingcs3) {
-        throw CTiglError("The referenced UIDs don't lie on the same component segment in InterpolateXsi.", TIGL_UID_ERROR);
+    // declare points to compute the iso eta line of segment
+    gp_Pnt pLE;
+    gp_Pnt pTE;
+
+    // check if all three UIDs in the argument refer to the same segment
+    const CTiglUIDManager::TypedPtr tp1 = uidMgr.ResolveObject(refUID1);
+    const CTiglUIDManager::TypedPtr tp2 = uidMgr.ResolveObject(refUID2);
+    const CTiglUIDManager::TypedPtr tpTarget = uidMgr.ResolveObject(targetUID);
+
+    bool onlySegments = false;
+    bool allSegmentsSame = false;
+
+    if(tp1.type == &typeid(CCPACSWingSegment) && tp2.type == &typeid(CCPACSWingSegment) && tpTarget.type == &typeid(CCPACSWingSegment)) {
+        onlySegments = true;
     }
 
-    EtaXsi etaXsiOn1 = transformEtaXsiToCSOrTed(etaXsi1, refUID1, uidMgr);
-    EtaXsi etaXsiOn2 = transformEtaXsiToCSOrTed(etaXsi2, refUID2, uidMgr);
-    double etaTarget = transformEtaXsiToCSOrTed(EtaXsi(eta, 0), targetUID, uidMgr).eta;
+    if(onlySegments == true){
+        const auto& segment1 = *reinterpret_cast<CCPACSWingSegment*>(tp1.ptr);
+        const auto& segment2 = *reinterpret_cast<CCPACSWingSegment*>(tp2.ptr);
+        const auto& segmentTarget = *reinterpret_cast<CCPACSWingSegment*>(tpTarget.ptr);
 
-    // compute component segment line
-    gp_Pnt p1 = wingcs1.GetPoint(etaXsiOn1.eta, etaXsiOn1.xsi);
-    gp_Pnt p2 = wingcs1.GetPoint(etaXsiOn2.eta, etaXsiOn2.xsi);
-    gp_Lin csLine(p1, p2.XYZ() - p1.XYZ());
+        if(&segment1 == &segment2 && &segment2 == &segmentTarget) {
+            allSegmentsSame = true;
+        }
+
+    }
+
+    if(onlySegments == true && allSegmentsSame == true) {
+        const auto& segment1 = *reinterpret_cast<CCPACSWingSegment*>(tp1.ptr);
+        const auto& segment2 = *reinterpret_cast<CCPACSWingSegment*>(tp2.ptr);
+        const auto& segmentTarget = *reinterpret_cast<CCPACSWingSegment*>(tpTarget.ptr);
+
+        p1 = segment1.GetChordPoint(etaXsi1.eta, etaXsi1.xsi);
+        p2 = segment1.GetChordPoint(etaXsi2.eta, etaXsi2.xsi);
+
+        pLE = segment1.GetChordPoint(eta, 0.);
+        pTE = segment1.GetChordPoint(eta, 1.);
+    }
+    else {
+        // make sure all uids refer to the same wing
+        const auto& wingcs1 = _getBelongingComponentSegment(refUID1, uidMgr);
+        const auto& wingcs2 = _getBelongingComponentSegment(refUID2, uidMgr);
+        const auto& wingcs3 = _getBelongingComponentSegment(targetUID, uidMgr);
+
+        if (&wingcs1 != &wingcs2 || &wingcs1 != &wingcs3 || &wingcs2 != &wingcs3) {
+            throw CTiglError("The referenced UIDs don't lie on the same component segment in InterpolateXsi.", TIGL_UID_ERROR);
+        }
+
+        EtaXsi etaXsiOn1 = transformEtaXsiToCSOrTed(etaXsi1, refUID1, uidMgr);
+        EtaXsi etaXsiOn2 = transformEtaXsiToCSOrTed(etaXsi2, refUID2, uidMgr);
+        double etaTarget = transformEtaXsiToCSOrTed(EtaXsi(eta, 0), targetUID, uidMgr).eta;
+
+        p1 = wingcs1.GetPoint(etaXsiOn1.eta, etaXsiOn1.xsi);
+        p2 = wingcs1.GetPoint(etaXsiOn2.eta, etaXsiOn2.xsi);
+
+        pLE = wingcs3.GetPoint(etaTarget, 0.);
+        pTE = wingcs3.GetPoint(etaTarget, 1.);
+    }
+
+    // compute (component) segment line
+    gp_Lin Line(p1, p2.XYZ() - p1.XYZ());
 
     // compute iso eta line of segment
-    gp_Pnt pLE = wingcs3.GetPoint(etaTarget, 0.);
-    gp_Pnt pTE = wingcs3.GetPoint(etaTarget, 1.);
     double chordDepth = pTE.Distance(pLE);
-
     gp_Lin etaLine(pLE, pTE.XYZ() - pLE.XYZ());
 
     // check, if both lines are parallel
-    if (etaLine.Direction().IsParallel(csLine.Direction(), M_PI/180.)) {
-        throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
+    if (etaLine.Direction().IsParallel(Line.Direction(), M_PI/180.)) {
+        throw CTiglError("(Component) segment line does not intersect iso eta line of segment.", TIGL_MATH_ERROR);
     }
 
-    Handle(Geom_Curve) csCurve = new Geom_Line(csLine);
+    Handle(Geom_Curve) Curve = new Geom_Line(Line);
     Handle(Geom_Curve) etaCurve = new Geom_Line(etaLine);
-    GeomAdaptor_Curve csAdptAcuve(csCurve);
+    GeomAdaptor_Curve AdptAcuve(Curve);
     GeomAdaptor_Curve etaAdptCurve(etaCurve);
 
-    // find point on etaLine, that minimizes distance to csLine
-    Extrema_ExtCC minimizer(csAdptAcuve, etaAdptCurve);
+    // find point on etaLine, that minimizes distance to Line
+    Extrema_ExtCC minimizer(AdptAcuve, etaAdptCurve);
     minimizer.Perform();
 
     // there should be exactly on minimum between two lines
     // if they are not parallel
     if (!minimizer.IsDone() || minimizer.NbExt() != 1) {
-        throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
+        throw CTiglError("(Component) segment line does not intersect iso eta line of segment.", TIGL_MATH_ERROR);
     }
 
-    Extrema_POnCurv pOnCSLine, pOnEtaLine;
-    minimizer.Points(1, pOnCSLine, pOnEtaLine);
+    Extrema_POnCurv pOnLine, pOnEtaLine;
+    minimizer.Points(1, pOnLine, pOnEtaLine);
 
-    // If parameter on CS line is < 0 or larger than
-    // Length of line, there is not actual intersection,
-    // i.e. the CS Line is chosen too small
+    // If parameter on Line is < 0 or larger than
+    // Length of Line, there is not actual intersection,
+    // i.e. the Line is chosen too small
     // We use a tolerance here, to account for small user errors
     double tol = 1e-5;
-    if (pOnCSLine.Parameter() < -tol || pOnCSLine.Parameter() > p1.Distance(p2) + tol) {
-        throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
+    if (pOnLine.Parameter() < -tol || pOnLine.Parameter() > p1.Distance(p2) + tol) {
+        throw CTiglError("(Component) segment line does not intersect iso eta line of segment.", TIGL_MATH_ERROR);
     }
 
     xsi = pOnEtaLine.Parameter()/chordDepth;
 
     // compute the error distance
     // This is the distance from the line to the nearest point on the chord face
-    errorDistance = pOnCSLine.Value().Distance(pOnEtaLine.Value());
+    errorDistance = pOnLine.Value().Distance(pOnEtaLine.Value());
 }
 
 } // namespace tigl
