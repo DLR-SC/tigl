@@ -119,22 +119,21 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
                         );
 
 
-            gp_Vec3f aNormal;
             if (hasVNormals) {
                 if (hasVColors) {
                     const TColStd_Array1OfInteger& colors = myColor->Array1();
                     for (int i = 1; i <= myTriangulation->NbNodes(); i++ ) {
                         anArray->AddVertex(myTriangulation->Node(i), AttenuateColor(colors(i), ambient));
-                        myTriangulation->Normal(i, aNormal);
-                        anArray->SetVertexNormal(i, aNormal.x(), aNormal.y(), aNormal.z());
+                        auto aNormal = myTriangulation->Normal(i);
+                        anArray->SetVertexNormal(i, aNormal.X(), aNormal.Y(), aNormal.Z());
                     }
                 }
                 // !hasVColors
                 else {
                     for (int i = 1; i <= myTriangulation->NbNodes(); i++ ) {
                         anArray->AddVertex(myTriangulation->Node(i));
-                        myTriangulation->Normal(i, aNormal);
-                        anArray->SetVertexNormal(i, aNormal.x(), aNormal.y(), aNormal.z());
+                        auto aNormal = myTriangulation->Normal(i);
+                        anArray->SetVertexNormal(i, aNormal.X(), aNormal.Y(), aNormal.Z());
 
                     }
                 }
