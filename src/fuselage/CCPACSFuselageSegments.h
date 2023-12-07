@@ -39,6 +39,7 @@ class CCPACSFuselageSegments : public generated::CPACSFuselageSegments
 public:
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFuselageSegments(CCPACSHull* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 

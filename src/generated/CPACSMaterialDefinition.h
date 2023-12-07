@@ -35,6 +35,7 @@ class CCPACSWingRibCrossSection;
 namespace generated
 {
     class CPACSCap;
+    class CPACSGenericFuelTankParameters;
     class CPACSLateralCap;
     class CPACSSheetBasedStructuralElement;
     class CPACSTrackActuator;
@@ -44,6 +45,7 @@ namespace generated
 
     // This class is used in:
     // CPACSCap
+    // CPACSGenericFuelTankParameters
     // CPACSLateralCap
     // CPACSSheetBasedStructuralElement
     // CPACSTrackActuator
@@ -61,6 +63,7 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSMaterialDefinition(CPACSCap* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSMaterialDefinition(CPACSGenericFuelTankParameters* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSMaterialDefinition(CPACSLateralCap* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSMaterialDefinition(CPACSSheetBasedStructuralElement* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSMaterialDefinition(CPACSTrackActuator* parent, CTiglUIDManager* uidMgr);
@@ -80,7 +83,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSCap>::value || std::is_same<P, CPACSLateralCap>::value || std::is_same<P, CPACSSheetBasedStructuralElement>::value || std::is_same<P, CPACSTrackActuator>::value || std::is_same<P, CPACSWeb>::value || std::is_same<P, CPACSWingRibCell>::value || std::is_same<P, CCPACSWingRibCrossSection>::value || std::is_same<P, CPACSWingSkin>::value, "template argument for P is not a parent class of CPACSMaterialDefinition");
+            static_assert(std::is_same<P, CPACSCap>::value || std::is_same<P, CPACSGenericFuelTankParameters>::value || std::is_same<P, CPACSLateralCap>::value || std::is_same<P, CPACSSheetBasedStructuralElement>::value || std::is_same<P, CPACSTrackActuator>::value || std::is_same<P, CPACSWeb>::value || std::is_same<P, CPACSWingRibCell>::value || std::is_same<P, CCPACSWingRibCrossSection>::value || std::is_same<P, CPACSWingSkin>::value, "template argument for P is not a parent class of CPACSMaterialDefinition");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -90,7 +93,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSCap>::value || std::is_same<P, CPACSLateralCap>::value || std::is_same<P, CPACSSheetBasedStructuralElement>::value || std::is_same<P, CPACSTrackActuator>::value || std::is_same<P, CPACSWeb>::value || std::is_same<P, CPACSWingRibCell>::value || std::is_same<P, CCPACSWingRibCrossSection>::value || std::is_same<P, CPACSWingSkin>::value, "template argument for P is not a parent class of CPACSMaterialDefinition");
+            static_assert(std::is_same<P, CPACSCap>::value || std::is_same<P, CPACSGenericFuelTankParameters>::value || std::is_same<P, CPACSLateralCap>::value || std::is_same<P, CPACSSheetBasedStructuralElement>::value || std::is_same<P, CPACSTrackActuator>::value || std::is_same<P, CPACSWeb>::value || std::is_same<P, CPACSWingRibCell>::value || std::is_same<P, CCPACSWingRibCrossSection>::value || std::is_same<P, CPACSWingSkin>::value, "template argument for P is not a parent class of CPACSMaterialDefinition");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -162,6 +165,7 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSCap = generated::CPACSCap;
+using CCPACSGenericFuelTankParameters = generated::CPACSGenericFuelTankParameters;
 using CCPACSLateralCap = generated::CPACSLateralCap;
 using CCPACSSheetBasedStructuralElement = generated::CPACSSheetBasedStructuralElement;
 using CCPACSTrackActuator = generated::CPACSTrackActuator;

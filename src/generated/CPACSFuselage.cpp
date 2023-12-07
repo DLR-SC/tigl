@@ -190,6 +190,17 @@ namespace generated
             }
         }
 
+        // read element fuelTanks
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelTanks")) {
+            m_fuelTanks = boost::in_place(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr);
+            try {
+                m_fuelTanks->ReadCPACS(tixiHandle, xpath + "/fuelTanks");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read fuelTanks at xpath " << xpath << ": " << e.what();
+                m_fuelTanks = boost::none;
+            }
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
@@ -276,6 +287,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/compartments")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/compartments");
+            }
+        }
+
+        // write element fuelTanks
+        if (m_fuelTanks) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuelTanks");
+            m_fuelTanks->WriteCPACS(tixiHandle, xpath + "/fuelTanks");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelTanks")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/fuelTanks");
             }
         }
 
@@ -403,6 +425,16 @@ namespace generated
         return m_compartments;
     }
 
+    const boost::optional<CPACSFuselageFuelTanks>& CPACSFuselage::GetFuelTanks() const
+    {
+        return m_fuelTanks;
+    }
+
+    boost::optional<CPACSFuselageFuelTanks>& CPACSFuselage::GetFuelTanks()
+    {
+        return m_fuelTanks;
+    }
+
     CCPACSPositionings& CPACSFuselage::GetPositionings(CreateIfNotExistsTag)
     {
         if (!m_positionings)
@@ -437,6 +469,18 @@ namespace generated
     void CPACSFuselage::RemoveCompartments()
     {
         m_compartments = boost::none;
+    }
+
+    CPACSFuselageFuelTanks& CPACSFuselage::GetFuelTanks(CreateIfNotExistsTag)
+    {
+        if (!m_fuelTanks)
+            m_fuelTanks = boost::in_place(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr);
+        return *m_fuelTanks;
+    }
+
+    void CPACSFuselage::RemoveFuelTanks()
+    {
+        m_fuelTanks = boost::none;
     }
 
     const CTiglUIDObject* CPACSFuselage::GetNextUIDObject() const

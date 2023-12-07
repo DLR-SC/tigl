@@ -18,6 +18,7 @@
 #include <cassert>
 #include "CCPACSWingRibCrossSection.h"
 #include "CPACSCap.h"
+#include "CPACSGenericFuelTankParameters.h"
 #include "CPACSLateralCap.h"
 #include "CPACSMaterialDefinition.h"
 #include "CPACSSheetBasedStructuralElement.h"
@@ -41,6 +42,14 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CPACSCap);
+    }
+
+    CPACSMaterialDefinition::CPACSMaterialDefinition(CPACSGenericFuelTankParameters* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSGenericFuelTankParameters);
     }
 
     CPACSMaterialDefinition::CPACSMaterialDefinition(CPACSLateralCap* parent, CTiglUIDManager* uidMgr)
@@ -113,6 +122,9 @@ namespace generated
             if (IsParent<CPACSCap>()) {
                 return GetParent<CPACSCap>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSGenericFuelTankParameters>()) {
+                return GetParent<CPACSGenericFuelTankParameters>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSLateralCap>()) {
                 return GetParent<CPACSLateralCap>()->GetNextUIDParent();
             }
@@ -143,6 +155,9 @@ namespace generated
         if (m_parent) {
             if (IsParent<CPACSCap>()) {
                 return GetParent<CPACSCap>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGenericFuelTankParameters>()) {
+                return GetParent<CPACSGenericFuelTankParameters>()->GetNextUIDParent();
             }
             if (IsParent<CPACSLateralCap>()) {
                 return GetParent<CPACSLateralCap>()->GetNextUIDParent();

@@ -12615,58 +12615,12 @@ marko.alder@dlr.de
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="fuselageFuelTankType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Definition of one fuselage fuel tank.</ddue:para>
-                    </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:para>The definition of fuselage tanks is still preliminary.
-                            Currently, there is no link to any structural elements
-                        </ddue:para>
-                    </ddue:remarks>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:all>
-                    <xsd:element minOccurs="0" name="name" type="stringBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Name of the fuselage fuel tank.
-                            </xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element minOccurs="0" name="description" type="stringBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Description of the fuselage fuel tank.
-                            </xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="compartmentUID" type="stringUIDBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Link to the tank geometry defined by a compartment.</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element minOccurs="0" name="volume" type="fuelTankVolumeType">
-                        <xsd:annotation>
-                            <xsd:documentation/>
-                        </xsd:annotation>
-                    </xsd:element>
-                </xsd:all>
-                <xsd:attribute name="uID" type="xsd:ID" use="required"/>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
     <xsd:complexType name="fuselageFuelTanksType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>List of fuselage fuel tanks.</ddue:para>
+                        <ddue:para>List of fuel tanks</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
                         <ddue:para/>
@@ -12677,12 +12631,13 @@ marko.alder@dlr.de
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element maxOccurs="unbounded" name="fuselageFuelTank" type="fuselageFuelTankType">
+                    <xsd:element name="integralFuelTanks" minOccurs="0" type="integralFuelTanksType">
                         <xsd:annotation>
                             <xsd:documentation>The fuselage fuel tank geometry is defined by a link to a fuselage geometry compartment.
 The fuel tank volume type should also be used for the wing fuel tank</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+                    <xsd:element name="genericFuelTanks" minOccurs="0" type="genericFuelTanksType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -34131,5 +34086,397 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
              </xsd:extension>
          </xsd:complexContent>
      </xsd:complexType>
+
+     <xsd:complexType name="integralFuelTanksType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>List of fuselage fuel tanks integrated in compartments.</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para/>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="integralFuelTank" maxOccurs="unbounded" type="integralFuelTankType">
+                        <xsd:annotation>
+                            <xsd:documentation>The integral fuel tank geometry is defined by a link to a fuselage geometry compartment.
+The fuel tank volume type should also be used for the wing fuel tank</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="integralFuelTankType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Definition of one fuel tank integrated in a fuselage compartment.</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para>The definition of fuselage tanks is still preliminary.
+                            Currently, there is no link to any structural elements
+                        </ddue:para>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="name" minOccurs="0" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Name of the fuselage fuel tank.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="description" minOccurs="0" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Description of the fuselage fuel tank.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="compartmentUID" type="stringUIDBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Link to the tank geometry defined by a compartment.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="volume" minOccurs="0" type="fuelTankVolumeType">
+                        <xsd:annotation>
+                            <xsd:documentation/>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+                <xsd:attribute name="uID" use="required" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="genericFuelTanksType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Generic fuel tank</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para/>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="genericFuelTank" maxOccurs="unbounded" type="genericFuelTankType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="genericFuelTankType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Cryogenic tank</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="name" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Name
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="description" minOccurs="0" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Description
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:choice>
+                        <xsd:element name="hulls" type="hullsType"/>
+                        <xsd:element name="designParameters" type="genericFuelTankParametersType"/>
+                    </xsd:choice>
+                    <xsd:element name="volume" minOccurs="0" type="fuelTankVolumeType">
+                        <xsd:annotation>
+                            <xsd:documentation>Volume</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="burstPressure" minOccurs="0" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Burst pressure</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="uID" use="required" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="hullsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Hulls</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="hull" maxOccurs="unbounded" type="hullType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="hullType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Hulls</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="name" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Name
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="description" minOccurs="0" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Description
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="transformation" type="transformationType"/>
+                    <xsd:element name="sections" type="fuselageSectionsType"/>
+                    <xsd:element name="segments" type="fuselageSegmentsType"/>
+                    <xsd:element name="structure" minOccurs="0" type="hullStructureType"/>
+                    <xsd:element name="cutOuts" minOccurs="0" type="fuselageCutOutsType"/>
+                </xsd:all>
+                <xsd:attribute name="uID" use="required" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="genericFuelTankParametersType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Global design parameters</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="transformation" type="transformationType"/>
+                    <xsd:element name="cylinderRadius" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Inner radius of the cylinder</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="cylinderLength" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Inner length of the cylinder</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="domeType" type="domeTypeType"/>
+                    <xsd:element name="material" type="materialDefinitionType"/>
+                </xsd:all>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="domeTypeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Dome Type</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para/>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:choice>
+                    <xsd:element name="spherical" type="emptyElementBaseType"/>
+                    <xsd:element name="ellipsoid" type="ellipsoidDomeType"/>
+                    <xsd:element name="torispherical" type="torisphericalDomeType"/>
+                    <xsd:element name="isotensoid" type="isotensoidDomeType"/>
+                </xsd:choice>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="emptyElementBaseType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Emtpy element</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para>Base type for string nodes (including external data
+                            attributes)</ddue:para>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:simpleContent>
+            <xsd:restriction base="stringBaseType">
+                <xsd:pattern value=""/>
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ellipsoidDomeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Ellipsoid dome</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="halfAxisFraction" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Half axis fraction</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="torisphericalDomeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Torispherical dome</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="dishRadius" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>R1: dish radius</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="knuckleRadius" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>R2: knuckle radius</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="isotensoidDomeType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Isotensoid dome</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="polarOpeningRadius" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Radius of the fitting/smaller polar opening</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="hullStructureType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Structure</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="stringers" minOccurs="0" type="stringersAssemblyType"/>
+                    <xsd:element name="frames" minOccurs="0" type="framesAssemblyType"/>
+                    <xsd:element name="virtualStringers" minOccurs="0" type="stringersAssemblyType"/>
+                    <xsd:element name="virtualFrames" minOccurs="0" type="framesAssemblyType"/>
+                    <xsd:element name="skinLayers" minOccurs="0" type="hullSkinLayersType"/>
+                </xsd:all>
+                <xsd:attribute name="uID" use="required" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="hullSkinLayersType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Skin Layers</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para/>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="skinLayer" maxOccurs="unbounded" type="skinType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
 
 </xsd:schema>

@@ -19,6 +19,7 @@
 #include <CCPACSFuselageStringer.h>
 #include "CCPACSDuctStructure.h"
 #include "CCPACSFuselageStructure.h"
+#include "CPACSHullStructure.h"
 #include "CPACSStringersAssembly.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -46,6 +47,14 @@ namespace generated
         m_parentType = &typeid(CCPACSFuselageStructure);
     }
 
+    CPACSStringersAssembly::CPACSStringersAssembly(CPACSHullStructure* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSHullStructure);
+    }
+
     CPACSStringersAssembly::~CPACSStringersAssembly()
     {
     }
@@ -59,6 +68,9 @@ namespace generated
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSHullStructure>()) {
+                return GetParent<CPACSHullStructure>();
+            }
         }
         return nullptr;
     }
@@ -71,6 +83,9 @@ namespace generated
             }
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSHullStructure>()) {
+                return GetParent<CPACSHullStructure>();
             }
         }
         return nullptr;

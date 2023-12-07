@@ -32,6 +32,11 @@ CCPACSStringersAssembly::CCPACSStringersAssembly(CCPACSDuctStructure* parent, CT
 {
 }
 
+CCPACSStringersAssembly::CCPACSStringersAssembly(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSStringersAssembly(parent, uidMgr)
+{
+}
+
 void CCPACSStringersAssembly::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 0; i < (int)m_stringers.size(); i++) {

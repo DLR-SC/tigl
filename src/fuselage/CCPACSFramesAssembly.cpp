@@ -33,6 +33,11 @@ CCPACSFramesAssembly::CCPACSFramesAssembly(CCPACSDuctStructure* parent, CTiglUID
 {
 }
 
+CCPACSFramesAssembly::CCPACSFramesAssembly(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFramesAssembly(parent, uidMgr)
+{
+}
+
 void CCPACSFramesAssembly::Invalidate(const boost::optional<std::string>& source) const
 {
     for (size_t i = 0; i < m_frames.size(); i++)

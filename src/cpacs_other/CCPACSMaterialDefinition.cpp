@@ -30,6 +30,7 @@ CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSWeb* parent, CTiglUIDMa
 CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSWingRibCell* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
 CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSWingRibCrossSection* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
 CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSWingSkin* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
+CCPACSMaterialDefinition::CCPACSMaterialDefinition(CCPACSGenericFuelTankParameters* parent, CTiglUIDManager* uidMgr) : generated::CPACSMaterialDefinition(parent, uidMgr) {}
 
 
 bool CCPACSMaterialDefinition::isComposite() const

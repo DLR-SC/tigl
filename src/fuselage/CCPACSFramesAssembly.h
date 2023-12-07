@@ -32,6 +32,7 @@ class CCPACSFramesAssembly : public generated::CPACSFramesAssembly
 public:
     TIGL_EXPORT CCPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFramesAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFramesAssembly(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 

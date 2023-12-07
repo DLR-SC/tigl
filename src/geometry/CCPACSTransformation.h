@@ -39,8 +39,10 @@ public:
     TIGL_EXPORT CCPACSTransformation(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSFuselageSectionElement* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSFuselageSection* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSGenericFuelTankParameters* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSGenericSystem* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSHull* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSLandingGearBase* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSRotor* parent, CTiglUIDManager* uidMgr);

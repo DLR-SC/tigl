@@ -18,6 +18,7 @@
 #include <cassert>
 #include "CCPACSDuctStructure.h"
 #include "CCPACSFuselageStructure.h"
+#include "CPACSHullSkinLayers.h"
 #include "CPACSSkin.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -45,6 +46,14 @@ namespace generated
         m_parentType = &typeid(CCPACSFuselageStructure);
     }
 
+    CPACSSkin::CPACSSkin(CPACSHullSkinLayers* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSHullSkinLayers);
+    }
+
     CPACSSkin::~CPACSSkin()
     {
         if (m_uidMgr) {
@@ -61,6 +70,9 @@ namespace generated
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSHullSkinLayers>()) {
+                return GetParent<CPACSHullSkinLayers>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -73,6 +85,9 @@ namespace generated
             }
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSHullSkinLayers>()) {
+                return GetParent<CPACSHullSkinLayers>()->GetNextUIDParent();
             }
         }
         return nullptr;

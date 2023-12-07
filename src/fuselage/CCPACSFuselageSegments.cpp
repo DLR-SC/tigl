@@ -60,6 +60,11 @@ CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDM
     , guideCurves(*this, &CCPACSFuselageSegments::BuildGuideCurves)
 {}
 
+CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSHull* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSegments(parent, uidMgr)
+    , guideCurves(*this, &CCPACSFuselageSegments::BuildGuideCurves)
+{}
+
 CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
 {
     if (IsParent<CCPACSFuselage>()) {

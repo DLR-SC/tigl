@@ -35,9 +35,12 @@ class CCPACSFuselageStructure;
 
 namespace generated
 {
+    class CPACSHullStructure;
+
     // This class is used in:
     // CPACSDuctStructure
     // CPACSFuselageStructure
+    // CPACSHullStructure
 
     /// @brief framesAssemblyType
     /// 
@@ -48,6 +51,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSFramesAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFramesAssembly(CPACSHullStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFramesAssembly();
 
@@ -60,7 +64,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CPACSHullStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -70,7 +74,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CPACSHullStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -110,4 +114,7 @@ namespace generated
 } // namespace generated
 
 // CPACSFramesAssembly is customized, use type CCPACSFramesAssembly directly
+
+// Aliases in tigl namespace
+using CCPACSHullStructure = generated::CPACSHullStructure;
 } // namespace tigl

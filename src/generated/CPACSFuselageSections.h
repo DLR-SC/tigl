@@ -35,9 +35,12 @@ class CCPACSFuselage;
 
 namespace generated
 {
+    class CPACSHull;
+
     // This class is used in:
     // CPACSDuct
     // CPACSFuselage
+    // CPACSHull
 
     /// @brief fuselageSectionsType
     /// 
@@ -48,6 +51,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSFuselageSections(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSFuselageSections(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuselageSections(CPACSHull* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFuselageSections();
 
@@ -60,7 +64,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value, "template argument for P is not a parent class of CPACSFuselageSections");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CPACSHull>::value, "template argument for P is not a parent class of CPACSFuselageSections");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -70,7 +74,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value, "template argument for P is not a parent class of CPACSFuselageSections");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CPACSHull>::value, "template argument for P is not a parent class of CPACSFuselageSections");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -110,4 +114,7 @@ namespace generated
 } // namespace generated
 
 // CPACSFuselageSections is customized, use type CCPACSFuselageSections directly
+
+// Aliases in tigl namespace
+using CCPACSHull = generated::CPACSHull;
 } // namespace tigl
