@@ -32,7 +32,7 @@ namespace generated
         , m_nUpper(this)
         , m_mLower(this)
         , m_nLower(this)
-        , m_lowerHeightFraction(this)
+        , m_lowerHeightFraction(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -104,7 +104,7 @@ namespace generated
 
         // read element lowerHeightFraction
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerHeightFraction")) {
-            m_lowerHeightFraction.ReadCPACS(tixiHandle, xpath + "/lowerHeightFraction");
+            m_lowerHeightFraction = tixi::TixiGetElement<double>(tixiHandle, xpath + "/lowerHeightFraction");
         }
         else {
             LOG(ERROR) << "Required element lowerHeightFraction is missing at xpath " << xpath;
@@ -132,7 +132,7 @@ namespace generated
 
         // write element lowerHeightFraction
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerHeightFraction");
-        m_lowerHeightFraction.WriteCPACS(tixiHandle, xpath + "/lowerHeightFraction");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/lowerHeightFraction", m_lowerHeightFraction);
 
     }
 
@@ -176,14 +176,14 @@ namespace generated
         return m_nLower;
     }
 
-    const CPACSSuperEllipseProfile_lowerHeightFraction& CPACSSuperEllipseProfile::GetLowerHeightFraction() const
+    const double& CPACSSuperEllipseProfile::GetLowerHeightFraction() const
     {
         return m_lowerHeightFraction;
     }
 
-    CPACSSuperEllipseProfile_lowerHeightFraction& CPACSSuperEllipseProfile::GetLowerHeightFraction()
+    void CPACSSuperEllipseProfile::SetLowerHeightFraction(const double& value)
     {
-        return m_lowerHeightFraction;
+        m_lowerHeightFraction = value;
     }
 
 } // namespace generated

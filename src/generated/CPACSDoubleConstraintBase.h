@@ -58,14 +58,14 @@ namespace generated
         TIGL_EXPORT virtual const CPACSRelationalOperator& GetRelationalOperator() const;
         TIGL_EXPORT virtual void SetRelationalOperator(const CPACSRelationalOperator& value);
 
-        TIGL_EXPORT virtual const double& GetSimpleContent() const;
-        TIGL_EXPORT virtual void SetSimpleContent(const double& value);
+        TIGL_EXPORT virtual const double& GetValue() const;
+        TIGL_EXPORT virtual void SetValue(const double& value);
 
     protected:
         CPACSPointPerformanceConstraints* m_parent;
 
         CPACSRelationalOperator m_relationalOperator;
-        double                  m_simpleContent;
+        double                  m_value;
 
     private:
         CPACSDoubleConstraintBase(const CPACSDoubleConstraintBase&) = delete;

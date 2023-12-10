@@ -29,7 +29,7 @@ namespace tigl
 namespace generated
 {
     CPACSPosExcl0DoubleBase::CPACSPosExcl0DoubleBase(CPACSRectangleProfile* parent)
-        : m_simpleContent(0)
+        : m_value(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -37,7 +37,7 @@ namespace generated
     }
 
     CPACSPosExcl0DoubleBase::CPACSPosExcl0DoubleBase(CPACSSuperEllipseProfile* parent)
-        : m_simpleContent(0)
+        : m_value(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -76,9 +76,68 @@ namespace generated
 
     void CPACSPosExcl0DoubleBase::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read attribute externalDataNodePath
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "externalDataNodePath")) {
+            m_externalDataNodePath = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "externalDataNodePath");
+            if (m_externalDataNodePath->empty()) {
+                LOG(WARNING) << "Optional attribute externalDataNodePath is present but empty at xpath " << xpath;
+            }
+        }
+
+        // read attribute externalFileName
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "externalFileName")) {
+            m_externalFileName = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "externalFileName");
+            if (m_externalFileName->empty()) {
+                LOG(WARNING) << "Optional attribute externalFileName is present but empty at xpath " << xpath;
+            }
+        }
+
+        // read attribute externalDataDirectory
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "externalDataDirectory")) {
+            m_externalDataDirectory = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "externalDataDirectory");
+            if (m_externalDataDirectory->empty()) {
+                LOG(WARNING) << "Optional attribute externalDataDirectory is present but empty at xpath " << xpath;
+            }
+        }
+
+        // read attribute mu
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "mu")) {
+            m_mu = tixi::TixiGetAttribute<double>(tixiHandle, xpath, "mu");
+        }
+
+        // read attribute delta
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "delta")) {
+            m_delta = tixi::TixiGetAttribute<double>(tixiHandle, xpath, "delta");
+        }
+
+        // read attribute a
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "a")) {
+            m_a = tixi::TixiGetAttribute<double>(tixiHandle, xpath, "a");
+        }
+
+        // read attribute b
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "b")) {
+            m_b = tixi::TixiGetAttribute<double>(tixiHandle, xpath, "b");
+        }
+
+        // read attribute c
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "c")) {
+            m_c = tixi::TixiGetAttribute<double>(tixiHandle, xpath, "c");
+        }
+
+        // read attribute v
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "v")) {
+            m_v = tixi::TixiGetAttribute<double>(tixiHandle, xpath, "v");
+        }
+
+        // read attribute w
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "w")) {
+            m_w = tixi::TixiGetAttribute<double>(tixiHandle, xpath, "w");
+        }
+
         // read simpleContent 
         if (tixi::TixiCheckElement(tixiHandle, xpath)) {
-            m_simpleContent = tixi::TixiGetElement<double>(tixiHandle, xpath);
+            m_value = tixi::TixiGetElement<double>(tixiHandle, xpath);
         }
         else {
             LOG(ERROR) << "Required simpleContent  is missing at xpath " << xpath;
@@ -88,19 +147,219 @@ namespace generated
 
     void CPACSPosExcl0DoubleBase::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write attribute externalDataNodePath
+        if (m_externalDataNodePath) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "externalDataNodePath", *m_externalDataNodePath);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "externalDataNodePath")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "externalDataNodePath");
+            }
+        }
+
+        // write attribute externalFileName
+        if (m_externalFileName) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "externalFileName", *m_externalFileName);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "externalFileName")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "externalFileName");
+            }
+        }
+
+        // write attribute externalDataDirectory
+        if (m_externalDataDirectory) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "externalDataDirectory", *m_externalDataDirectory);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "externalDataDirectory")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "externalDataDirectory");
+            }
+        }
+
+        // write attribute mu
+        if (m_mu) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "mu", *m_mu);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "mu")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "mu");
+            }
+        }
+
+        // write attribute delta
+        if (m_delta) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "delta", *m_delta);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "delta")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "delta");
+            }
+        }
+
+        // write attribute a
+        if (m_a) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "a", *m_a);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "a")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "a");
+            }
+        }
+
+        // write attribute b
+        if (m_b) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "b", *m_b);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "b")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "b");
+            }
+        }
+
+        // write attribute c
+        if (m_c) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "c", *m_c);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "c")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "c");
+            }
+        }
+
+        // write attribute v
+        if (m_v) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "v", *m_v);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "v")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "v");
+            }
+        }
+
+        // write attribute w
+        if (m_w) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "w", *m_w);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "w")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "w");
+            }
+        }
+
         // write simpleContent 
-        tixi::TixiSaveElement(tixiHandle, xpath, m_simpleContent);
+        tixi::TixiSaveElement(tixiHandle, xpath, m_value);
 
     }
 
-    const double& CPACSPosExcl0DoubleBase::GetSimpleContent() const
+    const boost::optional<std::string>& CPACSPosExcl0DoubleBase::GetExternalDataNodePath() const
     {
-        return m_simpleContent;
+        return m_externalDataNodePath;
     }
 
-    void CPACSPosExcl0DoubleBase::SetSimpleContent(const double& value)
+    void CPACSPosExcl0DoubleBase::SetExternalDataNodePath(const boost::optional<std::string>& value)
     {
-        m_simpleContent = value;
+        m_externalDataNodePath = value;
+    }
+
+    const boost::optional<std::string>& CPACSPosExcl0DoubleBase::GetExternalFileName() const
+    {
+        return m_externalFileName;
+    }
+
+    void CPACSPosExcl0DoubleBase::SetExternalFileName(const boost::optional<std::string>& value)
+    {
+        m_externalFileName = value;
+    }
+
+    const boost::optional<std::string>& CPACSPosExcl0DoubleBase::GetExternalDataDirectory() const
+    {
+        return m_externalDataDirectory;
+    }
+
+    void CPACSPosExcl0DoubleBase::SetExternalDataDirectory(const boost::optional<std::string>& value)
+    {
+        m_externalDataDirectory = value;
+    }
+
+    const boost::optional<double>& CPACSPosExcl0DoubleBase::GetMu() const
+    {
+        return m_mu;
+    }
+
+    void CPACSPosExcl0DoubleBase::SetMu(const boost::optional<double>& value)
+    {
+        m_mu = value;
+    }
+
+    const boost::optional<double>& CPACSPosExcl0DoubleBase::GetDelta() const
+    {
+        return m_delta;
+    }
+
+    void CPACSPosExcl0DoubleBase::SetDelta(const boost::optional<double>& value)
+    {
+        m_delta = value;
+    }
+
+    const boost::optional<double>& CPACSPosExcl0DoubleBase::GetA() const
+    {
+        return m_a;
+    }
+
+    void CPACSPosExcl0DoubleBase::SetA(const boost::optional<double>& value)
+    {
+        m_a = value;
+    }
+
+    const boost::optional<double>& CPACSPosExcl0DoubleBase::GetB() const
+    {
+        return m_b;
+    }
+
+    void CPACSPosExcl0DoubleBase::SetB(const boost::optional<double>& value)
+    {
+        m_b = value;
+    }
+
+    const boost::optional<double>& CPACSPosExcl0DoubleBase::GetC() const
+    {
+        return m_c;
+    }
+
+    void CPACSPosExcl0DoubleBase::SetC(const boost::optional<double>& value)
+    {
+        m_c = value;
+    }
+
+    const boost::optional<double>& CPACSPosExcl0DoubleBase::GetV() const
+    {
+        return m_v;
+    }
+
+    void CPACSPosExcl0DoubleBase::SetV(const boost::optional<double>& value)
+    {
+        m_v = value;
+    }
+
+    const boost::optional<double>& CPACSPosExcl0DoubleBase::GetW() const
+    {
+        return m_w;
+    }
+
+    void CPACSPosExcl0DoubleBase::SetW(const boost::optional<double>& value)
+    {
+        m_w = value;
+    }
+
+    const double& CPACSPosExcl0DoubleBase::GetValue() const
+    {
+        return m_value;
+    }
+
+    void CPACSPosExcl0DoubleBase::SetValue(const double& value)
+    {
+        m_value = value;
     }
 
 } // namespace generated

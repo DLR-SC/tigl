@@ -19,7 +19,9 @@
 
 #include <tixicpp.h>
 
-#define BOOST_DATE_TIME_NO_LIB
+#ifndef BOOST_DATE_TIME_NO_LIB
+    #define BOOST_DATE_TIME_NO_LIB
+#endif
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <ctime>

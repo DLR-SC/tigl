@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
@@ -36,8 +38,19 @@ namespace generated
     // CPACSRectangleProfile
     // CPACSSuperEllipseProfile
 
-    /// @brief Positive double values larger than 0
+    /// @brief doubleBaseType
     /// 
+    /// Base type for double nodes (including external data
+    /// attributes)
+    /// The double base type can include optional uncertainty
+    /// information. The description of uncertainties is placed in
+    /// addtional attributes. First, it is described by an attribute
+    /// that describes the type of uncertainty function called
+    /// functionName. The functionName attribute includes the tag name
+    /// of the distribution function which is listened in the table
+    /// shown below. Each uncertainty function is further describes by a
+    /// set of parameters that are described in the table below.
+    /// @see uncertaintyFunctions
     /// 
     class CPACSPosExcl0DoubleBase
     {
@@ -79,14 +92,54 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const double& GetSimpleContent() const;
-        TIGL_EXPORT virtual void SetSimpleContent(const double& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetExternalDataNodePath() const;
+        TIGL_EXPORT virtual void SetExternalDataNodePath(const boost::optional<std::string>& value);
+
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetExternalFileName() const;
+        TIGL_EXPORT virtual void SetExternalFileName(const boost::optional<std::string>& value);
+
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetExternalDataDirectory() const;
+        TIGL_EXPORT virtual void SetExternalDataDirectory(const boost::optional<std::string>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetMu() const;
+        TIGL_EXPORT virtual void SetMu(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetDelta() const;
+        TIGL_EXPORT virtual void SetDelta(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetA() const;
+        TIGL_EXPORT virtual void SetA(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetB() const;
+        TIGL_EXPORT virtual void SetB(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetC() const;
+        TIGL_EXPORT virtual void SetC(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetV() const;
+        TIGL_EXPORT virtual void SetV(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetW() const;
+        TIGL_EXPORT virtual void SetW(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const double& GetValue() const;
+        TIGL_EXPORT virtual void SetValue(const double& value);
 
     protected:
         void* m_parent;
         const std::type_info* m_parentType;
 
-        double m_simpleContent;
+        boost::optional<std::string> m_externalDataNodePath;
+        boost::optional<std::string> m_externalFileName;
+        boost::optional<std::string> m_externalDataDirectory;
+        boost::optional<double>      m_mu;
+        boost::optional<double>      m_delta;
+        boost::optional<double>      m_a;
+        boost::optional<double>      m_b;
+        boost::optional<double>      m_c;
+        boost::optional<double>      m_v;
+        boost::optional<double>      m_w;
+        double                       m_value;
 
     private:
         CPACSPosExcl0DoubleBase(const CPACSPosExcl0DoubleBase&) = delete;
