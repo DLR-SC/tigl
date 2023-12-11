@@ -51,6 +51,7 @@ runs:
       shell: bash
       run: |
         cd build/tests/unittests/
+        file TiGL-unittests
         chmod a+x ./TiGL-unittests
         ./TiGL-unittests --gtest_shuffle --gtest_output=xml:unit_test_results.xml
 

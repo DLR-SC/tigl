@@ -102,6 +102,7 @@ runs:
                          -DTIGL_NIGHTLY=${{ inputs.tigl_nightly }} \
                          -DMATLAB_DIR=/tmp/matlab-libs-macos
         cmake --build . -j 4 --target install
+        file tests/unittests/TiGL-unittests
 
     - name: Create package
       if: ${{ inputs.package-artifact }}
