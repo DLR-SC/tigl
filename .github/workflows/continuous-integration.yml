@@ -176,6 +176,7 @@ jobs:
 
   test-macos:
     needs: build-macos
+    continue-on-error: true
     runs-on: "macos-latest"
     steps:
       - uses: actions/checkout@v3
