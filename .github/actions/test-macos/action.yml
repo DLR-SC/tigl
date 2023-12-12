@@ -44,14 +44,13 @@ runs:
     - name: extract build archive
       shell: bash
       run: |
-        tar -xzf build.tar.gz
+        gtar -xzf build.tar.gz
 
     - name: Run unit tests
       if: ${{ inputs.unit-tests == 'true' }}
       shell: bash
       run: |
         cd build/tests/unittests/
-        file TiGL-unittests
         chmod a+x ./TiGL-unittests
         ./TiGL-unittests --gtest_shuffle --gtest_output=xml:unit_test_results.xml
 
