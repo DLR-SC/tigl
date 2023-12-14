@@ -83,7 +83,6 @@
 
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
-#include <MMgt_TShared.hxx>
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
 #include <Prs3d_IsoAspect.hxx>
