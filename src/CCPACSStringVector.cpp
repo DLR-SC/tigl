@@ -72,12 +72,12 @@ CCPACSStringVector::CCPACSStringVector(CCPACSTrackJointPosition* parent)
 void CCPACSStringVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     generated::CPACSStringVectorBase::ReadCPACS(tixiHandle, xpath);
-    m_vec = stringToDoubleVec(m_simpleContent);
+    m_vec = stringToDoubleVec(m_value);
 }
 
 void CCPACSStringVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
 {
-    const_cast<std::string&>(m_simpleContent) =
+    const_cast<std::string&>(m_value) =
         vecToString(std::begin(m_vec), std::end(m_vec), sep); // TODO: this is a terrible hack, but WriteCPACS() has to be const
     generated::CPACSStringVectorBase::WriteCPACS(tixiHandle, xpath);
 }

@@ -138,8 +138,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetW() const;
         TIGL_EXPORT virtual void SetW(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const std::string& GetSimpleContent() const;
-        TIGL_EXPORT virtual void SetSimpleContent(const std::string& value);
+        TIGL_EXPORT virtual const std::string& GetValue() const;
+        TIGL_EXPORT virtual void SetValue(const std::string& value);
 
     protected:
         void* m_parent;
@@ -153,7 +153,7 @@ namespace generated
         boost::optional<std::string> m_c;
         boost::optional<std::string> m_v;
         boost::optional<std::string> m_w;
-        std::string                  m_simpleContent;
+        std::string                  m_value;
 
     private:
         CPACSStringVectorBase(const CPACSStringVectorBase&) = delete;

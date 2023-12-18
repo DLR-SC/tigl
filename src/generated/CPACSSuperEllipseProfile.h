@@ -20,7 +20,6 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSPosExcl0DoubleBase.h"
-#include "CPACSSuperEllipseProfile_lowerHeightFraction.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -81,25 +80,25 @@ namespace generated
         TIGL_EXPORT virtual const CPACSPosExcl0DoubleBase& GetNLower() const;
         TIGL_EXPORT virtual CPACSPosExcl0DoubleBase& GetNLower();
 
-        TIGL_EXPORT virtual const CPACSSuperEllipseProfile_lowerHeightFraction& GetLowerHeightFraction() const;
-        TIGL_EXPORT virtual CPACSSuperEllipseProfile_lowerHeightFraction& GetLowerHeightFraction();
+        TIGL_EXPORT virtual const double& GetLowerHeightFraction() const;
+        TIGL_EXPORT virtual void SetLowerHeightFraction(const double& value);
 
     protected:
         CPACSStandardProfile* m_parent;
 
         /// Exponent m for upper semi-ellipse
-        CPACSPosExcl0DoubleBase                      m_mUpper;
+        CPACSPosExcl0DoubleBase m_mUpper;
 
         /// Exponent n for upper semi-ellipse
-        CPACSPosExcl0DoubleBase                      m_nUpper;
+        CPACSPosExcl0DoubleBase m_nUpper;
 
         /// Exponent m for lower semi-ellipse
-        CPACSPosExcl0DoubleBase                      m_mLower;
+        CPACSPosExcl0DoubleBase m_mLower;
 
         /// Exponent n for lower semi-ellipse
-        CPACSPosExcl0DoubleBase                      m_nLower;
+        CPACSPosExcl0DoubleBase m_nLower;
 
-        CPACSSuperEllipseProfile_lowerHeightFraction m_lowerHeightFraction;
+        double                  m_lowerHeightFraction;
 
     private:
         CPACSSuperEllipseProfile(const CPACSSuperEllipseProfile&) = delete;
