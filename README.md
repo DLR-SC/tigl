@@ -1,4 +1,4 @@
-![Screenshot of the TiGL Viewer](doc/images/logo.png)
+<p><img src="doc/images/logo.png" alt="TiGL Logo" title="TiGL Logo" style="background-color:white;padding:5px;"/></p>
 
 [![CI workflow for main branch](https://github.com/DLR-SC/tigl/actions/workflows/main.yml/badge.svg)](https://github.com/DLR-SC/tigl/actions/workflows/main.yml)
 [![codecov](https://codecov.io/gh/dlr-sc/tigl/branch/master/graph/badge.svg)](https://codecov.io/gh/dlr-sc/tigl)
