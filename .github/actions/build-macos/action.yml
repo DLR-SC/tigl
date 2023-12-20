@@ -121,7 +121,7 @@ runs:
     - name: create build dir archive
       shell: bash
       run: |
-        tar -czf build.tar.gz build
+        gtar -czf build.tar.gz build
 
     - name: Upload build directory
       uses: actions/upload-artifact@v3
