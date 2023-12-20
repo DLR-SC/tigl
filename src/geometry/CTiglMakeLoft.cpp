@@ -67,13 +67,10 @@ namespace {
 CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
     : _hasPerformed{false}
     , _makeSolid{true}
+    , _makeSmooth{false}
     , _myTolerance{tolerance}
     , _mySameKnotTolerance{sameKnotTolerance}
-    #ifdef TIGL_GORDON_SURFACE
-        , _use_gordon_surface_algorithm(true)
-    #else
-        , _use_gordon_surface_algorithm(false)
-    #endif
+    , _algorithm(Algorithm::COONS_PATCHES)
 {
     _result.Nullify();
 }
@@ -148,10 +145,6 @@ void CTiglMakeLoft::Perform()
     _hasPerformed = true;
 }
 
-void CTiglMakeLoft::useGordonSurfaceAlgorithm(bool enabled) {
-    _use_gordon_surface_algorithm = enabled;
-}
-
 void CTiglMakeLoft::setMakeSolid(bool enabled)
 {
     _makeSolid = enabled;
@@ -162,16 +155,26 @@ void CTiglMakeLoft::setMakeSmooth(bool enabled)
     _makeSmooth = enabled;
 }
 
+void CTiglMakeLoft::setAlgorithm(Algorithm algorithm)
+{
+    _algorithm = algorithm;
+}
+
 /**
  * @brief Builds the loft using profiles and guide curves
  */
 void CTiglMakeLoft::makeLoftWithGuides()
 {
-    if (_use_gordon_surface_algorithm) {
-        makeLoftGordon();
-    }
-    else {
-        makeLoftCoons();
+    switch(_algorithm) {
+        case Algorithm::GORDON_SURFACE: {
+            makeLoftGordon();
+            break;
+        }
+        case Algorithm::COONS_PATCHES: {
+            makeLoftCoons();
+            break;
+        }
+        default: throw tigl::CTiglError("Invalid algorithm. Currently only Algorithm::GORDON_SURFACE and Algorithm::COONS_PATCHES are supported.", TIGL_ERROR);
     }
 }
 

@@ -232,7 +232,7 @@ TEST_P(CurveNetworkCoons, testFromBRep)
 
     CTiglMakeLoft lofter(1e-6, 1e-4);
     lofter.setMakeSolid(false);
-    lofter.useGordonSurfaceAlgorithm(false);
+    lofter.setAlgorithm(CTiglMakeLoft::Algorithm::COONS_PATCHES);
     
     for (std::vector<Handle(Geom_BSplineCurve)>::const_iterator it = splines_u_vector.begin(); it != splines_u_vector.end(); ++it) {
         const Handle(Geom_BSplineCurve)& curve = *it;

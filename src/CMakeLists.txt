@@ -83,6 +83,7 @@ target_compile_features(tigl3_objects PRIVATE cxx_std_11)
 set_property(TARGET tigl3_objects PROPERTY POSITION_INDEPENDENT_CODE ON) # needed for shared libraries
 
 option(TIGL_GORDON_SURFACE "Loft curve networks using the Gordon surface algorithm (instead of using Coons patches)" OFF)
+mark_as_advanced(TIGL_GORDON_SURFACE)
 if (TIGL_GORDON_SURFACE)
     target_compile_definitions(tigl3_objects PUBLIC TIGL_GORDON_SURFACE)
 endif(TIGL_GORDON_SURFACE)

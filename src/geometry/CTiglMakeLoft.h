@@ -24,6 +24,7 @@
 #include <vector>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
+
 /**
  * @brief The CTiglMakeLoft class is used to create loft topologies using cross sections
  * and optional guide curves. By default, the resulting topology is a solid. In order to
@@ -33,6 +34,12 @@
 class CTiglMakeLoft
 {
 public:
+    enum class Algorithm {
+        COONS_PATCHES,
+        GORDON_SURFACE
+    };
+
+
     TIGL_EXPORT CTiglMakeLoft(double tolerance = 1e-6, double sameKnotTolerance = 1e-6);
     TIGL_EXPORT CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance = 1e-6, double sameKnotTolerance = 1e-6);
     
@@ -58,6 +65,14 @@ public:
      * @param enabled If true, a solid is built.
      */
     TIGL_EXPORT void setMakeSolid(bool enabled);
+
+    /**
+     * @brief use this function to select the internal algorithm used by the lofter.
+     *
+     * @param algorithm enum for the algorithm (default: Algorithm::COONS_PATCHES)
+     */
+    TIGL_EXPORT void setAlgorithm(Algorithm algorithm);
+
 
     /**
      * @brief Use the function to enable the Gordon surface algorithm to
@@ -116,8 +131,9 @@ private:
     double _mySameKnotTolerance;
     std::vector<TopoDS_Wire> guides, profiles;
     std::vector<Standard_Real> uparams, vparams;
-    bool _hasPerformed, _makeSolid, _use_gordon_surface_algorithm;
+    bool _hasPerformed, _makeSolid;
     bool _makeSmooth = false;
+    Algorithm _algorithm;
     
     TopoDS_Shape _result;
 };
