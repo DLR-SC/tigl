@@ -76,6 +76,10 @@ jobs:
           - config: "Debug"
             os: "ubuntu-latest"
             coverage: "ON"
+          - config: "Debug"
+            os: "ubuntu-latest"
+            #TODO: This should only be used for a transition period before Gordon surfaces are enabled by default
+            gordon_surface: "ON"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -85,7 +89,9 @@ jobs:
           tigl_nightly: ${{ inputs.tigl_nightly }}
           tigl_concat_generated_files: ${{ inputs.tigl_concat_generated_files }}
           tigl_enable_coverage: ${{ matrix.coverage || 'OFF' }}
-          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}
+          #TODO: This should only be used for a transition period before Gordon surfaces are enabled by default
+          tigl_enable_gordon_surface: ${{ matrix.gordon_surface || 'OFF'  }}
+          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}-gordon-${{ matrix.gordon_surface || 'OFF'  }}
 
 
   test-linux:
@@ -104,12 +110,16 @@ jobs:
             os: "ubuntu-latest"
             coverage: "ON"
             unit-tests: false
+        #TODO: This should only be used for a transition period before Gordon surfaces are enabled by default
+          - config: "Debug"
+            os: "ubuntu-latest"
+            gordon_surface: "ON"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/test-linux
         with:
-          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}
+          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}-gordon-${{ matrix.gordon_surface || 'OFF'  }}
           coverage: ${{ matrix.coverage == 'ON' || false }}
           unit-tests: ${{ matrix.unit-tests }}
           integration-tests: ${{ inputs.integration-tests == 'true' || false }}

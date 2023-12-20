@@ -29,6 +29,12 @@ inputs:
     required: false
     default: "OFF"
 
+  #TODO: This should only be used for a transition period before Gordon surfaces are enabled by default
+  tigl_enable_gordon_surface:
+    description: "CMake option used to enable Gordon Surface lofting"
+    required: false
+    default: "OFF"
+
   build-artifact:
     descpription: "Set the name for the build artifact stored by this job"
     required: true
@@ -81,6 +87,7 @@ runs:
                  -DTIGL_ENABLE_COVERAGE=${{ inputs.tigl_enable_coverage }} \
                  -DTIGL_CONCAT_GENERATED_FILES=${{ inputs.tigl_concat_generated_files }} \
                  -DTIGL_BINDINGS_PYTHON_INTERNAL=${{ inputs.tigl_bindings_python_internal }} \
+                 -DTIGL_GORDON_SURFACE=${{ inputs.tigl_enable_gordon_surface }} \
                  -DTIGL_BINDINGS_MATLAB=ON \
                  -DTIGL_BINDINGS_JAVA=ON \
                  -DTIGL_NIGHTLY=${{ inputs.tigl_nightly }}
