@@ -279,6 +279,9 @@ void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
     Standard_Boolean smooth = (cont == ::C0? false : true);
 
     CTiglMakeLoft lofter;
+#ifdef TIGL_GORDON_SURFACE
+    lofter.setAlgorithm(CTiglMakeLoft::Algorithm::GORDON_SURFACE);
+#endif
     // add profiles
     for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
         lofter.addProfiles(m_segments.GetSegment(i).GetStartWire());
