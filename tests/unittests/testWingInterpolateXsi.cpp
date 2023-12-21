@@ -38,7 +38,7 @@ class WingInterpolateXsi : public ::testing::Test
 protected:
     static void SetUpTestCase()
     {
-        const char* filename = "TestData/test_wing_segment_special_without_component_segments.xml";
+        const char* filename = "TestData/test_wing_segment_special_modified_component_segments.xml";
         //const char* filename = "TestData/test_wing_segment_special.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -76,13 +76,32 @@ protected:
 TixiDocumentHandle WingInterpolateXsi::tixiHandle = 0;
 TiglCPACSConfigurationHandle WingInterpolateXsi::tiglHandle = 0;
 
-TEST_F(WingInterpolateXsi, tigl_wing_interpolate_xsi_no_component_segments)
+TEST_F(WingInterpolateXsi, tigl_wing_interpolate_xsi_segment_not_contained_in_component_segment)
 {    
     double intersectionXsi = 0;
     TiglBoolean hasWarning;
 
     EXPECT_EQ(tiglWingInterpolateXsi(tiglHandle, "Aircraft1_Wing1_Seg2", 0., 0.0, "Aircraft1_Wing1_Seg2", 1., 0.5, "Aircraft1_Wing1_Seg2", 0.5, &intersectionXsi, &hasWarning), TIGL_SUCCESS);
+}
 
-    std::cout << "intersectionXsi: " << intersectionXsi << std::endl;
+TEST_F(WingInterpolateXsi, tigl_wing_interpolate_xsi_check_different_combinations)
+{
+    double intersectionXsi = 0;
+    TiglBoolean hasWarning;
+
+    EXPECT_EQ(tiglWingInterpolateXsi(tiglHandle, "Aircraft1_Wing1_Seg1", 0., 0.0, "Aircraft1_Wing1_Seg2", 1., 0.5, "Aircraft1_Wing1_Seg2", 0.5, &intersectionXsi, &hasWarning), TIGL_SUCCESS);
+    // this has been checked through a geometric reconstruction in CAD
+    EXPECT_NEAR(intersectionXsi, 0.32119, 1e-5);
+
+    EXPECT_EQ(tiglWingInterpolateXsi(tiglHandle, "Aircraft1_Wing1_CompSeg1", 0., 0.0, "Aircraft1_Wing1_Seg2", 1., 0.5, "Aircraft1_Wing1_Seg2", 0.5, &intersectionXsi, &hasWarning), TIGL_SUCCESS);
+    EXPECT_NEAR(intersectionXsi, 0.32119, 1e-5);
+
+    EXPECT_EQ(tiglWingInterpolateXsi(tiglHandle, "Aircraft1_Wing1_CompSeg1", 0., 0.0, "Aircraft1_Wing1_CompSeg2", 1., 0.5, "Aircraft1_Wing1_Seg2", 0.5, &intersectionXsi, &hasWarning), TIGL_SUCCESS);
+    // this has been checked through a geometric reconstruction in CAD
+    EXPECT_NEAR(intersectionXsi, 0.19294, 1e-5);
+
+    EXPECT_EQ(tiglWingInterpolateXsi(tiglHandle, "Aircraft1_Wing1_CompSeg1", 0., 0.0, "Aircraft1_Wing1_CompSeg1", 1., 0.5, "Aircraft1_Wing1_Seg3", 0.5, &intersectionXsi, &hasWarning), TIGL_MATH_ERROR);
+    EXPECT_NEAR(intersectionXsi, 0.19294, 1e-5);
+
 }
 
