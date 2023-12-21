@@ -238,14 +238,20 @@ void InterpolateXsi(const std::string& refUID1, const EtaXsi& etaXsi1,
     const CTiglUIDManager::TypedPtr tp2 = uidMgr.ResolveObject(refUID2);
     const CTiglUIDManager::TypedPtr tpTarget = uidMgr.ResolveObject(targetUID);
 
+    std::string wingUID1;
+    std::string wingUID2;
+    std::string wingUIDTarget;
+
     // compute the start point of the (component) segment line
     if (tp1.type == &typeid(CCPACSWingSegment)) {
         const auto& segment1 = *reinterpret_cast<CCPACSWingSegment*>(tp1.ptr);
         p1 = segment1.GetChordPoint(etaXsi1.eta, etaXsi1.xsi);
+        wingUID1 = segment1.GetParent()->GetParent<CCPACSWing>()->GetUID();
 
     } else if (tp1.type == &typeid(CCPACSWingComponentSegment)) {
         const auto& compSeg1 = *reinterpret_cast<CCPACSWingComponentSegment*>(tp1.ptr);
         p1 = compSeg1.GetPoint(etaXsi1.eta, etaXsi1.xsi);
+        wingUID1 = compSeg1.GetParent()->GetParent()->GetUID();
 
     }
 
@@ -253,10 +259,12 @@ void InterpolateXsi(const std::string& refUID1, const EtaXsi& etaXsi1,
     if (tp2.type == &typeid(CCPACSWingSegment)) {
         const auto& segment2 = *reinterpret_cast<CCPACSWingSegment*>(tp2.ptr);
         p2 = segment2.GetChordPoint(etaXsi2.eta, etaXsi2.xsi);
+        wingUID2 = segment2.GetParent()->GetParent<CCPACSWing>()->GetUID();
 
     } else if (tp2.type == &typeid(CCPACSWingComponentSegment)) {
         const auto& compSeg2 = *reinterpret_cast<CCPACSWingComponentSegment*>(tp2.ptr);
         p2 = compSeg2.GetPoint(etaXsi2.eta, etaXsi2.xsi);
+        wingUID2 = compSeg2.GetParent()->GetParent()->GetUID();
 
     }
 
@@ -265,12 +273,19 @@ void InterpolateXsi(const std::string& refUID1, const EtaXsi& etaXsi1,
         const auto& segmentTarget = *reinterpret_cast<CCPACSWingSegment*>(tpTarget.ptr);
         pLE = segmentTarget.GetChordPoint(eta, 0.);
         pTE = segmentTarget.GetChordPoint(eta, 1.);
+        wingUIDTarget = segmentTarget.GetParent()->GetParent<CCPACSWing>()->GetUID();
 
     } else if (tpTarget.type == &typeid(CCPACSWingComponentSegment)) {
         const auto& compSegTarget = *reinterpret_cast<CCPACSWingComponentSegment*>(tpTarget.ptr);
         pLE = compSegTarget.GetPoint(eta, 0.);
         pTE = compSegTarget.GetPoint(eta, 1.);
+        wingUIDTarget = compSegTarget.GetParent()->GetParent()->GetUID();
 
+    }
+
+    // throw an error if the UIDs do not refer to one and the same wing
+    if (wingUID1 != wingUID2 || wingUID2 != wingUIDTarget) {
+        throw CTiglError("The referenced segments or component segments don't lie on the same wing.", TIGL_UID_ERROR);
     }
 
    // compute (component) segment line
