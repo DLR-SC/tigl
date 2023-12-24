@@ -118,13 +118,7 @@ namespace generated
 
         // read element designVolume
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/designVolume")) {
-            m_designVolume = boost::in_place(this);
-            try {
-                m_designVolume->ReadCPACS(tixiHandle, xpath + "/designVolume");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read designVolume at xpath " << xpath << ": " << e.what();
-                m_designVolume = boost::none;
-            }
+            m_designVolume = tixi::TixiGetElement<double>(tixiHandle, xpath + "/designVolume");
         }
 
         if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
@@ -171,7 +165,7 @@ namespace generated
         // write element designVolume
         if (m_designVolume) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/designVolume");
-            m_designVolume->WriteCPACS(tixiHandle, xpath + "/designVolume");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/designVolume", *m_designVolume);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/designVolume")) {
@@ -232,26 +226,14 @@ namespace generated
         m_description = value;
     }
 
-    const boost::optional<CPACSCompartment_designVolume>& CPACSCompartment::GetDesignVolume() const
+    const boost::optional<double>& CPACSCompartment::GetDesignVolume() const
     {
         return m_designVolume;
     }
 
-    boost::optional<CPACSCompartment_designVolume>& CPACSCompartment::GetDesignVolume()
+    void CPACSCompartment::SetDesignVolume(const boost::optional<double>& value)
     {
-        return m_designVolume;
-    }
-
-    CPACSCompartment_designVolume& CPACSCompartment::GetDesignVolume(CreateIfNotExistsTag)
-    {
-        if (!m_designVolume)
-            m_designVolume = boost::in_place(this);
-        return *m_designVolume;
-    }
-
-    void CPACSCompartment::RemoveDesignVolume()
-    {
-        m_designVolume = boost::none;
+        m_designVolume = value;
     }
 
 } // namespace generated

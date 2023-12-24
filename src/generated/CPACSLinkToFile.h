@@ -62,14 +62,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSLinkToFileType_format>& GetFormat() const;
         TIGL_EXPORT virtual void SetFormat(const boost::optional<CPACSLinkToFileType_format>& value);
 
-        TIGL_EXPORT virtual const std::string& GetSimpleContent() const;
-        TIGL_EXPORT virtual void SetSimpleContent(const std::string& value);
+        TIGL_EXPORT virtual const std::string& GetValue() const;
+        TIGL_EXPORT virtual void SetValue(const std::string& value);
 
     protected:
         CCPACSExternalObject* m_parent;
 
         boost::optional<CPACSLinkToFileType_format> m_format;
-        std::string                                 m_simpleContent;
+        std::string                                 m_value;
 
     private:
         CPACSLinkToFile(const CPACSLinkToFile&) = delete;
