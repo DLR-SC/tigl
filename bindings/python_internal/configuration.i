@@ -325,6 +325,14 @@ namespace tigl
 %include "CTiglAttachedRotorBlade.h"
 %include "CPACSRotorHubHinge_type.h"
 
+// --------------- Fuselage tanks -----------------//
+// ToDo: Check which classes need to be assigned to boost_optional
+// %boost_optional(tigl::generated::CPACSGenericFuelTanks)
+// %boost_optional(tigl::generated::CPACSFuselageFuelTanks)
+
+%include "generated/CPACSGenericFuelTanks.h"
+%include "generated/CPACSFuselageFuelTanks.h"
+
 // -------------------- Wing Structure -------------------//
 
 namespace tigl {

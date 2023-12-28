@@ -55,6 +55,12 @@ on:
         default: ''
         type: string
 
+      macos-package-artifact:
+        description: "Name of the Mac OS package artifact. Leave empty to skip building the package."
+        required: false
+        default: ''
+        type: string
+
 jobs:
 
   build-linux:
@@ -155,9 +161,33 @@ jobs:
           unit-tests: true
           integration-tests: ${{ inputs.integration-tests == 'true' }}
 
+  build-macos:
+    runs-on: "macos-latest"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/build-macos
+        with:
+          config: "Release"
+          tigl_nightly: ${{ inputs.tigl_nightly =='true' }}
+          tigl_concat_generated_files: ${{ inputs.tigl_concat_generated_files == 'true' }}
+          tigl_enable_coverage: 'OFF'
+          package-artifact: ${{ inputs.macos-package-artifact }}
+          build-artifact: build-macos-latest-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+
+  test-macos:
+    needs: build-macos
+    runs-on: "macos-latest"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/test-macos
+        with:
+          build-artifact: build-macos-latest-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+          unit-tests: true
+          integration-tests: ${{ inputs.integration-tests == 'true' }}
+
   draft-release:
     if: ${{ inputs.draft-release == 'true' }}
-    needs: ["test-windows", "test-linux"]
+    needs: ["test-macos", "test-windows", "test-linux"]
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v3
