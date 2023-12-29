@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../cpacs_gen_input/cpacs_schema.xsd">
+  <header>
+    <name>Fuel tanks test</name>
+    <description>Simple fuel tank for unit testing</description>
+    <creator>Marko Alder</creator>
+    <timestamp>2023-12-28T12:00:00</timestamp>
+    <version>1.0.0</version>
+    <cpacsVersion>3.3</cpacsVersion>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="testAircraft">
+        <name>Test aircraft</name>
+        <fuselages>
+          <fuselage uID="SimpleFuselage">
+            <name>Simple fuselage</name>
+            <transformation>
+              <scaling>
+                <x>1.0</x>
+                <y>0.5</y>
+                <z>0.5</z>
+              </scaling>
+            </transformation>
+            <sections>
+              <section uID="fuselage_1Section1ID">
+                <name>Fuselage Section 1</name>
+                <transformation />
+                <elements>
+                  <element uID="fuselage_1Section1IDElement1">
+                    <name>Fuselage Section 1</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation />
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_1Section2ID">
+                <name>Fuselage Section 2</name>
+                <transformation>
+                  <translation refType="absLocal">
+                    <x>0.5</x>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_1Section2IDElement1">
+                    <name>Fuselage Section 2</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation />
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_1Section3ID">
+                <name>Fuselage Section 3</name>
+                <transformation />
+                <elements>
+                  <element uID="fuselage_1Section3IDElement1">
+                    <name>Fuselage Section 3</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation />
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="fuselage_1Positioning1ID">
+                <name>Fuselage Positioning 1</name>
+                <length>-0.5</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID>fuselage_1Section1ID</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_1Positioning3ID">
+                <name>Fuselage Positioning 3</name>
+                <length>2</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>fuselage_1Section1ID</fromSectionUID>
+                <toSectionUID>fuselage_1Section3ID</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="segmentD150_Fuselage_1Segment2ID">
+                <name>Fuselage Segment 2</name>
+                <fromElementUID>fuselage_1Section1IDElement1</fromElementUID>
+                <toElementUID>fuselage_1Section2IDElement1</toElementUID>
+              </segment>
+              <segment uID="segmentD150_Fuselage_1Segment3ID">
+                <name>Fuselage Segment 3</name>
+                <fromElementUID>fuselage_1Section2IDElement1</fromElementUID>
+                <toElementUID>fuselage_1Section3IDElement1</toElementUID>
+              </segment>
+            </segments>
+            <fuelTanks>
+              <genericFuelTanks>
+                <genericFuelTank uID="genericTank1">
+                  <name>Simple tank</name>
+                  <hulls>
+                    <hull uID="outerHull">
+                      <name>Outer hull</name>
+                      <transformation>
+                        <scaling>
+                          <x>1</x>
+                          <y>0.3</y>
+                          <z>0.3</z>
+                        </scaling>
+                      </transformation>
+                      <sections>
+                        <section uID="hull1_section1">
+                          <name>Section 1</name>
+                          <transformation>
+                            <translation>
+                              <x>1</x>
+                            </translation>
+                          </transformation>
+                          <elements>
+                            <element uID="hull1_section1_element1">
+                              <name>Section 1 Element 1</name>
+                              <profileUID>fuselageCircleProfileuID</profileUID>
+                              <transformation />
+                            </element>
+                          </elements>
+                        </section>
+                        <section uID="hull1_section2">
+                          <name>Section 2</name>
+                          <transformation>
+                            <translation>
+                              <x>1.5</x>
+                            </translation>
+                          </transformation>
+                          <elements>
+                            <element uID="hull1_section2_element1">
+                              <name>Section 2 Element 1</name>
+                              <profileUID>fuselageCircleProfileuID</profileUID>
+                              <transformation />
+                            </element>
+                          </elements>
+                        </section>
+                        <section uID="hull1_section3">
+                          <name>Section 3</name>
+                          <transformation>
+                            <translation>
+                              <x>2</x>
+                            </translation>
+                          </transformation>
+                          <elements>
+                            <element uID="hull1_section3_element1">
+                              <name>Section 3 Element 1</name>
+                              <profileUID>fuselageCircleProfileuID</profileUID>
+                              <transformation />
+                            </element>
+                          </elements>
+                        </section>
+                      </sections>
+                      <segments>
+                        <segment uID="hull1_segment1">
+                          <name>Hull 1 Segment 1</name>
+                          <fromElementUID>hull1_section1_element1</fromElementUID>
+                          <toElementUID>hull1_section2_element1</toElementUID>
+                        </segment>
+                        <segment uID="hull1_segment2">
+                          <name>Hull 1 Segment 2</name>
+                          <fromElementUID>hull1_section2_element1</fromElementUID>
+                          <toElementUID>hull1_section3_element1</toElementUID>
+                        </segment>
+                      </segments>
+                    </hull>
+                  </hulls>
+                </genericFuelTank>
+              </genericFuelTanks>
+            </fuelTanks>
+          </fuselage>
+          <!-- <fuselage uID="hull">
+            <name>Outer hull</name>
+            <transformation>
+              <scaling>
+                <x>1</x>
+                <y>0.3</y>
+                <z>0.3</z>
+              </scaling>
+            </transformation>
+            <sections>
+              <section uID="hull1_section1">
+                <name>Section 1</name>
+                <transformation>
+                  <translation>
+                    <x>1</x>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="hull1_section1_element1">
+                    <name>Section 1 Element 1</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation />
+                  </element>
+                </elements>
+              </section>
+              <section uID="hull1_section2">
+                <name>Section 2</name>
+                <transformation>
+                  <translation>
+                    <x>1.5</x>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="hull1_section2_element1">
+                    <name>Section 2 Element 1</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation />
+                  </element>
+                </elements>
+              </section>
+              <section uID="hull1_section3">
+                <name>Section 3</name>
+                <transformation>
+                  <translation>
+                    <x>2</x>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="hull1_section3_element1">
+                    <name>Section 3 Element 1</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation />
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <segments>
+              <segment uID="hull1_segment1">
+                <name>Hull 1 Segment 1</name>
+                <fromElementUID>hull1_section1_element1</fromElementUID>
+                <toElementUID>hull1_section2_element1</toElementUID>
+              </segment>
+              <segment uID="hull1_segment2">
+                <name>Hull 1 Segment 2</name>
+                <fromElementUID>hull1_section2_element1</fromElementUID>
+                <toElementUID>hull1_section3_element1</toElementUID>
+              </segment>
+            </segments>
+          </fuselage> -->
+        </fuselages>
+      </model>
+    </aircraft>
+    <profiles>
+      <fuselageProfiles>
+        <fuselageProfile uID="fuselageCircleProfileuID">
+          <name>Circle</name>
+          <description>Profile build up from set of Points on Circle where may Dimensions are 1..-1</description>
+          <pointList>
+            <x>0.0;0.0;0.0;0.0;0.0</x>
+            <y>0.0;1.0;0.0;-1.0;0.0</y>
+            <z>1.0;0.0;-1.0;0.0;1.0</z>
+          </pointList>
+        </fuselageProfile>
+      </fuselageProfiles>
+    </profiles>
+  </vehicles>
+</cpacs>
