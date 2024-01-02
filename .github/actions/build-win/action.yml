@@ -71,8 +71,7 @@ runs:
       if: inputs.oce_static_libs == 'ON'
       shell: cmd /C call {0}
       run: |
-        conda remove opencascade freeimageplus
-        conda install opencascade-static=7.4.0 pythonocc-core=7.4.1 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install opencascade-static=7.4.0 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list
 
@@ -84,7 +83,7 @@ runs:
     - name: Build TiGL
       shell: cmd /C call {0}
       run: |
-        set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
+        set CMAKE_PREFIX_PATH=C:\Miniconda\envs\tigl-bld\Library;C:\Miniconda\envs\tigl-bld\Scripts
         mkdir build
         cd build
         cmake .. -GNinja -DCMAKE_BUILD_TYPE=${{ inputs.config }} ^
@@ -96,8 +95,8 @@ runs:
                          -DTIGL_BINDINGS_MATLAB=ON ^
                          -DTIGL_BINDINGS_JAVA=ON ^
                          -DTIGL_NIGHTLY=${{ inputs.tigl-nightly }} ^
-                         -DPythonOCC_SOURCE_DIR=C:\Miniconda\Library\src\pythonocc-core ^
-                         -DMATLAB_DIR=C:\Miniconda\Library\share\matlab ^
+                         -DPythonOCC_SOURCE_DIR=C:\Miniconda\envs\tigl-bld\Library\src\pythonocc-core ^
+                         -DMATLAB_DIR=C:\Miniconda\envs\tigl-bld\Library\share\matlab ^
                          -DTIGL_ENABLE_COVERAGE=${{ inputs.tigl_enable_coverage }}
         cmake --build . -j 4 --target install
 
