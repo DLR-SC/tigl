@@ -233,57 +233,46 @@ void InterpolateXsi(const std::string& refUID1, const EtaXsi& etaXsi1,
     gp_Pnt pLE;
     gp_Pnt pTE;
 
-    // check if all three UIDs in the argument refer to the same segment
-    const CTiglUIDManager::TypedPtr tp1 = uidMgr.ResolveObject(refUID1);
-    const CTiglUIDManager::TypedPtr tp2 = uidMgr.ResolveObject(refUID2);
-    const CTiglUIDManager::TypedPtr tpTarget = uidMgr.ResolveObject(targetUID);
-
     std::string wingUID1;
     std::string wingUID2;
     std::string wingUIDTarget;
 
     // compute the start point of the (component) segment line
-    if (tp1.type == &typeid(CCPACSWingSegment)) {
-        const auto& segment1 = *reinterpret_cast<CCPACSWingSegment*>(tp1.ptr);
+    if (uidMgr.IsType<CCPACSWingSegment>(refUID1)) {
+        const auto& segment1 = uidMgr.ResolveObject<CCPACSWingSegment>(refUID1);
         p1 = segment1.GetChordPoint(etaXsi1.eta, etaXsi1.xsi);
         wingUID1 = segment1.GetParent()->GetParent<CCPACSWing>()->GetUID();
-
     }
-    else if (tp1.type == &typeid(CCPACSWingComponentSegment)) {
-        const auto& compSeg1 = *reinterpret_cast<CCPACSWingComponentSegment*>(tp1.ptr);
+    else if (uidMgr.IsType<CCPACSWingComponentSegment>(refUID1)) {
+        const auto& compSeg1 = uidMgr.ResolveObject<CCPACSWingComponentSegment>(refUID1);
         p1 = compSeg1.GetPoint(etaXsi1.eta, etaXsi1.xsi);
         wingUID1 = compSeg1.GetParent()->GetParent()->GetUID();
-
     }
 
     // compute the end point of the (component) segment line
-    if (tp2.type == &typeid(CCPACSWingSegment)) {
-        const auto& segment2 = *reinterpret_cast<CCPACSWingSegment*>(tp2.ptr);
+    if (uidMgr.IsType<CCPACSWingSegment>(refUID2)) {
+       const auto& segment2 = uidMgr.ResolveObject<CCPACSWingSegment>(refUID2);
         p2 = segment2.GetChordPoint(etaXsi2.eta, etaXsi2.xsi);
         wingUID2 = segment2.GetParent()->GetParent<CCPACSWing>()->GetUID();
-
     }
-    else if (tp2.type == &typeid(CCPACSWingComponentSegment)) {
-        const auto& compSeg2 = *reinterpret_cast<CCPACSWingComponentSegment*>(tp2.ptr);
+    else if (uidMgr.IsType<CCPACSWingComponentSegment>(refUID2)) {
+        const auto& compSeg2 = uidMgr.ResolveObject<CCPACSWingComponentSegment>(refUID2);
         p2 = compSeg2.GetPoint(etaXsi2.eta, etaXsi2.xsi);
         wingUID2 = compSeg2.GetParent()->GetParent()->GetUID();
-
     }
 
     // compute the start and end point of the iso eta line
-    if (tpTarget.type == &typeid(CCPACSWingSegment)) {
-        const auto& segmentTarget = *reinterpret_cast<CCPACSWingSegment*>(tpTarget.ptr);
+     if (uidMgr.IsType<CCPACSWingSegment>(targetUID)) {
+        const auto& segmentTarget = uidMgr.ResolveObject<CCPACSWingSegment>(targetUID);
         pLE = segmentTarget.GetChordPoint(eta, 0.);
         pTE = segmentTarget.GetChordPoint(eta, 1.);
         wingUIDTarget = segmentTarget.GetParent()->GetParent<CCPACSWing>()->GetUID();
-
     }
-    else if (tpTarget.type == &typeid(CCPACSWingComponentSegment)) {
-        const auto& compSegTarget = *reinterpret_cast<CCPACSWingComponentSegment*>(tpTarget.ptr);
+    else if (uidMgr.IsType<CCPACSWingComponentSegment>(targetUID)) {
+        const auto& compSegTarget = uidMgr.ResolveObject<CCPACSWingComponentSegment>(targetUID);
         pLE = compSegTarget.GetPoint(eta, 0.);
         pTE = compSegTarget.GetPoint(eta, 1.);
         wingUIDTarget = compSegTarget.GetParent()->GetParent()->GetUID();
-
     }
 
     // throw an error if the UIDs do not refer to one and the same wing
