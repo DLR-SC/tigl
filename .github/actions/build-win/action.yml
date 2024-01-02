@@ -76,7 +76,7 @@ runs:
       if: inputs.oce_static_libs == 'ON'
       shell: cmd /C call {0}
       run: |
-        conda remove opencacsade freeimageplus
+        conda remove opencascade freeimageplus
         conda install opencascade-static=7.4.0 pythonocc-core=7.4.1 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list
