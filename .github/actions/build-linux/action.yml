@@ -57,6 +57,11 @@ runs:
         environment-file: environment.yml
         auto-activate-base: false
 
+    - name: remove qt-main from anaconda, enforce use of system qt (for now)
+      shell: bash -l {0}
+      run: |
+        conda remove qt-main
+
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
       with:

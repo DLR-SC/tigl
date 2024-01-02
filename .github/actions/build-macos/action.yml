@@ -63,11 +63,6 @@ runs:
         environment-file: environment.yml
         auto-activate-base: false
 
-    - name: Install qt-main from anaconda
-      shell: bash -l {0}
-      run: |
-        conda install qt-main=5.15.2
-
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
       with:
