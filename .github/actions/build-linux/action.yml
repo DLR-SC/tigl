@@ -46,7 +46,7 @@ runs:
         max_attempts: 3
         command: |
           sudo apt-get update -qq
-          sudo apt-get install -y ccache lcov gcovr cmake cmake-data sshpass mesa-common-dev libglu1-mesa-dev
+          sudo apt-get install -y ccache lcov gcovr cmake cmake-data sshpass mesa-common-dev libglu1-mesa-dev  qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-qmake qtbase5-dev-tools qtscript5-dev
           echo "/usr/lib/ccache" >> $GITHUB_PATH
 
     - name: Setup miniconda
@@ -55,18 +55,7 @@ runs:
         auto-update-conda: true
         activate-environment: tigl-bld
         environment-file: environment.yml
-
-    # Workaround because of a GLIBCXX conflict in the Anaconda qt-main package
-    # only applies to ubuntu-20.04
-    - name: Install qt via apt
-      if: contains(matrix.os, 'ubuntu-20.04')
-      uses: nick-invision/retry@v2
-      with:
-        timeout_minutes: 10
-        max_attempts: 3
-        command: |
-          conda remove qt-main
-          sudo apt-get install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-qmake qtbase5-dev-tools qtscript5-dev
+        auto-activate-base: false
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1

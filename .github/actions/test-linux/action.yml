@@ -43,6 +43,7 @@ runs:
         auto-update-conda: true
         activate-environment: tigl-bld
         environment-file: environment.yml
+        auto-activate-base: false
 
     - name: Download build directory
       uses: actions/download-artifact@v3
