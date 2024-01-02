@@ -499,3 +499,30 @@ TEST_F(WingGuideCurve, bug975)
     }
 
 }
+
+
+TEST_F(WingGuideCurve, bug962)
+{
+    //https://github.com/DLR-SC/tigl/issues/962
+
+    TixiDocumentHandle           tixi_h;
+    TiglCPACSConfigurationHandle tigl_h;
+
+    // open simpletest with tixi and add empty guidecurves node
+    const char* filename = "TestData/simpletest.cpacs.xml";
+    auto tixiRet = tixiOpenDocument(filename, &tixi_h);
+    ASSERT_EQ (tixiRet, SUCCESS);
+    tixiRet = tixiCreateElement(tixi_h, "/cpacs/vehicles/aircraft/model/wings/wing[1]/segments/segment[1]", "guideCurves");
+    ASSERT_EQ (tixiRet, SUCCESS);
+
+    // open with tigl and try to build segment loft
+    auto tiglRet = tiglOpenCPACSConfiguration(tixi_h, "Cpacs2Test", &tigl_h);
+    ASSERT_EQ(tiglRet, TIGL_SUCCESS);
+
+
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tigl_h);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingSegment& segment1 = wing.GetSegment(1);
+    segment1.GetLoft();
+}
