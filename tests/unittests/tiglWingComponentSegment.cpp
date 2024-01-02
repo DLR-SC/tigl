@@ -164,6 +164,37 @@ protected:
     TiglCPACSConfigurationHandle tiglHandle;
 };
 
+class WingComponentSegmentSpecialModified : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        const char* filename = "TestData/test_wing_segment_special_modified_component_segments.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_EQ (SUCCESS, tixiRet);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Aircraft1", &tiglHandle);
+        ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    }
+
+    void TearDown() override
+    {
+        ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+        ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
+};
+
+
 TEST_F(WingComponentSegment, tiglWingGetComponentSegmentCount_success)
 {
     int numCompSeg = 0;
@@ -944,3 +975,17 @@ TEST(WingComponentSegment5, IntersectEta_bug)
     ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
 }
+
+TEST_F(WingComponentSegmentSpecialModified, SegmentContainedInComponentSegment)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& compSegment = wing.GetComponentSegment("Aircraft1_Wing1_CompSeg1");
+    tigl::CCPACSWingSegment& segment1 = wing.GetSegment("Aircraft1_Wing1_Seg1");
+    tigl::CCPACSWingSegment& segment2 = wing.GetSegment("Aircraft1_Wing1_Seg2");
+
+    EXPECT_TRUE(compSegment.IsSegmentContained(segment1));
+    EXPECT_FALSE(compSegment.IsSegmentContained(segment2));
+}
+
