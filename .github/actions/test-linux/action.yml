@@ -44,18 +44,13 @@ runs:
         auto-activate-base: true
         activate-environment: ''
 
+    # re-use build environment (only really needed: tixi and opencascade)
     - name: Install conda-dependencies
       shell: bash -l {0}
       run: |
-        conda install pip \
-                      python=3.8 \
-                      doxygen=1.8.15 \
-                      swig>=3.0.11 \
-                      tixi3=3.3.0 \
-                      ninja \
-                      pythonocc-core=7.4.1 \
-                      freeimageplus \
-              -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda env create -f environment.yml
+        conda info -a
+        conda list
 
     - name: Download build directory
       uses: actions/download-artifact@v3
@@ -71,6 +66,7 @@ runs:
       if: ${{ inputs.unit-tests == 'true' }}
       shell: bash
       run: |
+        conda activate tigl-bld
         cd build/tests/unittests/
         ./TiGL-unittests --gtest_shuffle --gtest_output=xml:unit_test_results.xml
 
@@ -78,6 +74,7 @@ runs:
       if: ${{ inputs.integration-tests == 'true' }}
       shell: bash
       run: |
+        conda activate tigl-bld
         cd build/tests/integrationtests/
         ./TiGL-integrationtests --gtest_shuffle --gtest_output=xml:integration_test_results.xml
 
@@ -85,6 +82,7 @@ runs:
       if: ${{ inputs.coverage == 'true' }}
       shell: bash
       run: |
+        conda activate tigl-bld
         cd build
         cmake --build . --target coverage-unittests/fast
         cmake --build . --target coverage-integrationtests/fast

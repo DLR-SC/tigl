@@ -51,10 +51,7 @@ runs:
         max_attempts: 3
         command: |
           curl --retry 3 -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz
-          curl --retry 3 -o matlab-libs-macos.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-macos.tar.gz
           tar xf sshpass-macOS.tar.gz -C /tmp
-          tar xf doxygen-macOS.tar.gz -C /tmp
-          tar xf matlab-libs-macos.tar.gz -C /tmp
           echo "/tmp" >> $GITHUB_PATH
           echo "CXXFLAGS=-fvisibility-inlines-hidden" >> $GITHUB_ENV
           
@@ -68,16 +65,9 @@ runs:
     - name: Install conda-dependencies
       shell: bash -l {0}
       run: |
-        conda install pip \
-                      python=3.8 \
-                      doxygen=1.8.15 \
-                      swig>=3.0.11 \
-                      tixi3=3.3.0 \
-                      qt-main=5.15.2 \
-                      ninja \
-                      pythonocc-core=7.4.1 \
-                      freeimageplus \
-              -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda env create -f environment.yml
+        conda info -a
+        conda list
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -89,6 +79,7 @@ runs:
       run: |
         mkdir build
         cd build
+        conda activate tigl-bld
         cmake .. -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
                          -DCMAKE_BUILD_TYPE=${{ inputs.config }} \
                          -DCMAKE_INSTALL_PREFIX=install \

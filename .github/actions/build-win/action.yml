@@ -68,23 +68,8 @@ runs:
 
     - name: Install dependencies
       shell: cmd /C call {0}
-      run: |
-        conda install pip ^
-                      python=3.8 ^
-                      doxygen=1.8.15 ^
-                      swig>=3.0.11 ^
-                      tixi3=3.3.0 ^
-                      qt-main=5.15.2 ^
-                      ninja ^
-                      matlab-libs ^
-                      brotlipy ^
-              -c dlr-sc -c dlr-sc/label/tigl-dev
-
-    - name: Install dependencies (dynamic opencascade)
-      if: inputs.oce_static_libs == 'OFF'
-      shell: cmd /C call {0}
-      run: |
-        conda install pythonocc-core=7.4.1 freeimageplus -c dlr-sc -c dlr-sc/label/tigl-dev
+      run: | 
+        conda env create -f environment.yml
         conda info -a
         conda list
 
@@ -92,6 +77,8 @@ runs:
       if: inputs.oce_static_libs == 'ON'
       shell: cmd /C call {0}
       run: |
+        conda activate tigl-bld
+        conda remove opencacsade freeimageplus
         conda install opencascade-static=7.4.0 pythonocc-core=7.4.1 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
         conda list
@@ -107,6 +94,7 @@ runs:
         set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
         mkdir build
         cd build
+        conda activate tigl-bld
         cmake .. -GNinja -DCMAKE_BUILD_TYPE=${{ inputs.config }} ^
                          -DCMAKE_INSTALL_PREFIX=install ^
                          -DOCE_STATIC_LIBS=${{ inputs.oce_static_libs }} ^
