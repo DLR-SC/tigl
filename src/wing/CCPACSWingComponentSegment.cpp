@@ -586,7 +586,7 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
     tigl::CCPACSWingSegment& segment = wing->GetSegment(segmentUID);
 
     if(this->IsSegmentContained(segment) == false) {
-        throw CTiglError("The wing segment with UID " + segmentUID + " is not contained in this component segment.");
+        throw CTiglError("The wing segment with UID " + segmentUID + " is not contained in this component segment.", TIGL_UID_ERROR);
     }
 
     double errorDistance = 0;
