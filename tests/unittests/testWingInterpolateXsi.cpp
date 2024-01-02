@@ -39,7 +39,6 @@ protected:
     static void SetUpTestCase()
     {
         const char* filename = "TestData/test_wing_segment_special_modified_component_segments.xml";
-        //const char* filename = "TestData/test_wing_segment_special.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
