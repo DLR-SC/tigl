@@ -985,7 +985,10 @@ TEST_F(WingComponentSegmentSpecialModified, SegmentContainedInComponentSegment)
     tigl::CCPACSWingSegment& segment1 = wing.GetSegment("Aircraft1_Wing1_Seg1");
     tigl::CCPACSWingSegment& segment2 = wing.GetSegment("Aircraft1_Wing1_Seg2");
 
-    EXPECT_TRUE(compSegment.IsSegmentContained(segment1));
-    EXPECT_FALSE(compSegment.IsSegmentContained(segment2));
+    double xsi = 0;
+    ASSERT_THROW(compSegment.GetSegmentIntersection("Aircraft1_Wing1_Seg2", 0.0, 0.0, 1.0, 1.0, 0.5, xsi), tigl::CTiglError);
+
+    compSegment.GetSegmentIntersection("Aircraft1_Wing1_Seg1", 0.0, 0.0, 1.0, 1.0, 0.5, xsi);
+    EXPECT_NEAR(xsi, 0.5, 1e-5);
 }
 
