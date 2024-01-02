@@ -28,16 +28,8 @@ runs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
-        auto-activate-base: true
-        activate-environment: ''
-
-    # re-use build environment (only really needed: tixi and opencascade)
-    - name: Install conda-dependencies
-      shell: bash -l {0}
-      run: |
-        conda env create -f environment.yml
-        conda info -a
-        conda list
+        activate-environment: tigl-bld
+        environment-file: environment.yml
 
     - name: Download built test directory
       uses: actions/download-artifact@v3
@@ -53,7 +45,6 @@ runs:
       if: ${{ inputs.unit-tests == 'true' }}
       shell: bash
       run: |
-        conda activate tigl-bld
         cd build/tests/unittests/
         chmod a+x ./TiGL-unittests
         ./TiGL-unittests --gtest_shuffle --gtest_output=xml:unit_test_results.xml
@@ -62,7 +53,6 @@ runs:
       if: ${{ inputs.integration-tests == 'true' }}
       shell: bash
       run: |
-        conda activate tigl-bld
         cd build/tests/integrationtests/
         chmod a+x ./TiGL-integrationtests
         ./TiGL-integrationtests --gtest_shuffle --gtest_output=xml:integration_test_results.xml

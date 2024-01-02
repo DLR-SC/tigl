@@ -53,15 +53,20 @@ runs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
-        auto-activate-base: true
-        activate-environment: ''
+        activate-environment: tigl-bld
+        environment-file: environment.yml
 
-    - name: Install conda-dependencies
-      shell: bash -l {0}
-      run: |
-        conda env create -f environment.yml
-        conda info -a
-        conda list
+    # Workaround because of a GLIBCXX conflict in the Anaconda qt-main package
+    # only applies to ubuntu-20.04
+    - name: Install qt via apt
+      if: contains(matrix.os, 'ubuntu-20.04')
+      uses: nick-invision/retry@v2
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          conda remove qt-main
+          sudo apt-get install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-qmake qtbase5-dev-tools qtscript5-dev
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -73,7 +78,6 @@ runs:
       run: |
         mkdir build
         cd build
-        conda activate tigl-bld
         cmake .. -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
                  -DCMAKE_BUILD_TYPE=${{ inputs.config }} \
                  -DCMAKE_INSTALL_PREFIX=install \

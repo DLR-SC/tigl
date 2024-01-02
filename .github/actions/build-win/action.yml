@@ -63,21 +63,13 @@ runs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
-        auto-activate-base: true
-        activate-environment: ''
-
-    - name: Install dependencies
-      shell: cmd /C call {0}
-      run: | 
-        conda env create -f environment.yml
-        conda info -a
-        conda list
+        activate-environment: tigl-bld
+        environment-file: environment.yml
 
     - name: Install dependencies (static opencascade)
       if: inputs.oce_static_libs == 'ON'
       shell: cmd /C call {0}
       run: |
-        conda activate tigl-bld
         conda remove opencacsade freeimageplus
         conda install opencascade-static=7.4.0 pythonocc-core=7.4.1 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
         conda info -a
@@ -94,7 +86,6 @@ runs:
         set CMAKE_PREFIX_PATH=C:\Miniconda\Library;C:\Miniconda\Scripts
         mkdir build
         cd build
-        conda activate tigl-bld
         cmake .. -GNinja -DCMAKE_BUILD_TYPE=${{ inputs.config }} ^
                          -DCMAKE_INSTALL_PREFIX=install ^
                          -DOCE_STATIC_LIBS=${{ inputs.oce_static_libs }} ^
