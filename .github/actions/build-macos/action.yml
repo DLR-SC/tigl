@@ -63,6 +63,12 @@ runs:
         environment-file: environment.yml
         auto-activate-base: false
 
+    - name: Conda info
+      shell: bash -l {0}
+      run: |
+        conda info
+        conda list
+
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
       with:

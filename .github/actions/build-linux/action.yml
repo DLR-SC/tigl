@@ -46,7 +46,7 @@ runs:
         max_attempts: 3
         command: |
           sudo apt-get update -qq
-          sudo apt-get install -y ccache lcov gcovr cmake cmake-data sshpass mesa-common-dev libglu1-mesa-dev  qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-qmake qtbase5-dev-tools qtscript5-dev
+          sudo apt-get install -y ccache lcov gcovr cmake cmake-data sshpass mesa-common-dev libglu1-mesa-dev
           echo "/usr/lib/ccache" >> $GITHUB_PATH
 
     - name: Setup miniconda
@@ -57,10 +57,11 @@ runs:
         environment-file: environment.yml
         auto-activate-base: false
 
-    - name: remove qt-main from anaconda, enforce use of system qt (for now)
-      shell: bash -l {0}
+    - name: Conda info
+      shell: bash -el {0}
       run: |
-        conda remove qt-main
+        conda info
+        conda list
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1

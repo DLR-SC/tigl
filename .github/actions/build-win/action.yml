@@ -72,7 +72,11 @@ runs:
       shell: cmd /C call {0}
       run: |
         conda install opencascade-static=7.4.0 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
-        conda info -a
+    
+    - name: Conda info
+      shell: cmd /C call {0}
+      run: |
+        conda info
         conda list
 
     - name: Set up Visual Studio shell

@@ -7,15 +7,15 @@ dependencies:
  - pip                   # just make sure that pip installs into this env, if used
  # required build dependencies
  - tixi3=3.3.0          # library for dealing with xml files
- - opencascade=7.4.0    # library for dealing with b-spline and nurbs geometries
+ - opencascade=7.4.0    # library for dealing with b-spline and nurbs geometries. dlr-sc version contains patch for C2-cont. Coons patches
  # optional dependencies
- - qt-main=5.15.2       # only needed to build tiglviewer
- - doxygen=1.8.15       # only needed to build the documenation
- - python=3.8           # only needed to build python bindings
- - swig>=3.0.11         # only needed to build python bindings
- - pythonocc-core=7.4.1 # only needed to build python bindings
- - matlab-libs          # only needed to build matlab bindings (on windows)
+ - qt=5.9.7             # needed to build tiglviewer
+ - doxygen=1.8.15       # needed to build the documenation
+ - python=3.8           # needed to build python bindings
+ - swig>=3.0.11         # needed to build python bindings
+ - pythonocc-core=7.4.1 # needed to build python bindings
+ - matlab-libs          # needed to build matlab bindings
  # other build dependencies
- - ninja                # not strictly needed, tigl can be built using any other camke generator
+ - ninja                # not strictly needed, tigl can be build using any other camke generator
  - freeimageplus        # used by opencascade
- - brotlipy             # Workaround for Issue on windows, see: https://github.com/conda/conda/issues/9903#issuecomment-647091019
+ - brotlipy             # Workaround for issue on windows, see: https://github.com/conda/conda/issues/9903#issuecomment-647091019
