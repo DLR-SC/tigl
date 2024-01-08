@@ -37,32 +37,75 @@ class CCPACSWingSection : public generated::CPACSWingSection
 public:
     TIGL_EXPORT CCPACSWingSection(CCPACSWingSections* parent, CTiglUIDManager* uidMgr);
 
-    // Get element count for this section
+    /**
+    * @brief Get element count for this section.
+    * While CPACS supports several elements per section, a section in TiGL must contain exactly one element
+    * @return int
+    */
     TIGL_EXPORT int GetSectionElementCount() const;
 
-    // Get element for a given index
+    /**
+    * @brief Get element for a given index
+    * @return CCPACSWingSectionElement
+    */
     TIGL_EXPORT CCPACSWingSectionElement& GetSectionElement(int index);
+
+    /**
+    * @brief Get element for a given index
+    * @return CCPACSWingSectionElement
+    */
     TIGL_EXPORT const CCPACSWingSectionElement& GetSectionElement(int index) const;
 
-    // Gets the section transformation
+    /**
+    * @brief Gets the section transformation
+    * @return CTiglTransformation
+    */
     TIGL_EXPORT CTiglTransformation GetSectionTransformation() const;
 
-    // Gets the section translation
+    /**
+    * @brief Returns the translation of a wing section relative to the wing CPACS-coordinate system, as defined in the CPACS file
+    * @return CTiglPoint
+    */
     TIGL_EXPORT CTiglPoint GetTranslation() const;
 
-    // Gets the section rotation
+    /**
+    * @brief Returns the rotation of a wing section in degree
+    * @return CTiglPoint Euler angles (x,y,z) -> (x,y', z'') in degree, which means, that the object will be rotaded in following order:
+    * 1st Rotation around x-axis
+    * 2nd Rotation around the rotaded y-axis y'
+    * 3rd Rotation around the twice rotaded z axis z''.
+    * Default data value:(0,0,0).
+    */
     TIGL_EXPORT CTiglPoint GetRotation() const;
 
-    // Gets the section scaling
+    /**
+    * @brief Returns the scaling of a wing section
+    * @return CTiglpoint 
+    */
     TIGL_EXPORT CTiglPoint GetScaling() const;
 
-    // Setter for translation
+    /** 
+    * @brief Sets the translation vector for a wing section.
+    * @param trans Translation vector
+    * Default data value: (0,0,0)
+    */
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
 
-    // Setter for rotation
+    /**
+    * @brief Sets the rotation angles for a wing section
+    * @param rot Euler angles (x,y,z) -> (x,y', z'') in degree, which means, that the object will be rotaded in following order:
+    * 1st Rotation around x-axis
+    * 2nd Rotation around the rotaded y-axis y'
+    * 3rd Rotation around the twice rotaded z axis z''.
+    * Default data value:(0,0,0).
+    */
     TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
 
-    // Setter for scaling
+    /**
+    * @brief Sets the scaling for a wing section
+    * @param scaling Scaling in three dimensions, in the order xyz.
+    * Default data value: (1,1,1)
+    */
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
 private:
