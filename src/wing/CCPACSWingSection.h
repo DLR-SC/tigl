@@ -49,6 +49,11 @@ public:
     * @return CCPACSWingSectionElement
     */
     TIGL_EXPORT CCPACSWingSectionElement& GetSectionElement(int index);
+
+    /**
+    * @brief Get element for a given index
+    * @return CCPACSWingSectionElement
+    */
     TIGL_EXPORT const CCPACSWingSectionElement& GetSectionElement(int index) const;
 
     /**
@@ -58,7 +63,7 @@ public:
     TIGL_EXPORT CTiglTransformation GetSectionTransformation() const;
 
     /**
-    * @brief Returns the translation of a wing section in CPACS-coordinates
+    * @brief Returns the translation of a wing section relative to the wing CPACS-coordinate system, as defined in the CPACS file
     * @return CTiglPoint
     */
     TIGL_EXPORT CTiglPoint GetTranslation() const;
