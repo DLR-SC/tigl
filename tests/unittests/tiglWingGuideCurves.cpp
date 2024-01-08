@@ -51,6 +51,7 @@
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSWingSegment.h"
 #include "tiglcommonfunctions.h"
+#include "CTiglWingSegmentGuidecurveBuilder.h"
 
 /******************************************************************************/
 
@@ -456,4 +457,72 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
         ASSERT_NEAR(predictedPoint.Y(), point.Y(), 1E-5);
         ASSERT_NEAR(predictedPoint.Z(), point.Z(), 1E-14);
     }
+}
+
+TEST_F(WingGuideCurve, bug975)
+{
+    //https://github.com/DLR-SC/tigl/issues/975
+
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+
+
+    tigl::CCPACSWingSegment& segment1 = wing.GetSegment(1);
+    tigl::CTiglWingSegmentGuidecurveBuilder builder(segment1);
+
+    auto const& guideCurves = segment1.GetGuideCurves();
+    if(guideCurves) {
+        tigl::CCPACSGuideCurve const& guidecurve = guideCurves->GetGuideCurve(1);
+        auto points_before = builder.BuildGuideCurvePnts(&guidecurve);
+
+        tigl::CCPACSTransformation& trafo = wing.GetTransformation();
+        trafo.setRotation(tigl::CTiglPoint(0, 90, 0));
+        wing.SetTransformation(trafo);
+        tigl::CTiglTransformation const& wingTrafo = wing.GetTransformationMatrix();
+
+        auto points_after = builder.BuildGuideCurvePnts(&guidecurve);
+        int idx = 0;
+        for (auto const& p : points_after) {
+
+            // per design, the guide curve should have a zero x-component
+            EXPECT_NEAR(p.X(), 0.0, 1e-12);
+
+            // transforming the guide curve points of the untransformed wing should
+            // yield the same points as building the points after transforming the wing
+            gp_Pnt pt = wingTrafo.Transform(points_before[idx++]);
+            EXPECT_NEAR(p.X(), pt.X(), 1e-12);
+            EXPECT_NEAR(p.Y(), pt.Y(), 1e-12);
+            EXPECT_NEAR(p.Z(), pt.Z(), 1e-12);
+
+        }
+    }
+
+}
+
+
+TEST_F(WingGuideCurve, bug962)
+{
+    //https://github.com/DLR-SC/tigl/issues/962
+
+    TixiDocumentHandle           tixi_h;
+    TiglCPACSConfigurationHandle tigl_h;
+
+    // open simpletest with tixi and add empty guidecurves node
+    const char* filename = "TestData/simpletest.cpacs.xml";
+    auto tixiRet = tixiOpenDocument(filename, &tixi_h);
+    ASSERT_EQ (tixiRet, SUCCESS);
+    tixiRet = tixiCreateElement(tixi_h, "/cpacs/vehicles/aircraft/model/wings/wing[1]/segments/segment[1]", "guideCurves");
+    ASSERT_EQ (tixiRet, SUCCESS);
+
+    // open with tigl and try to build segment loft
+    auto tiglRet = tiglOpenCPACSConfiguration(tixi_h, "Cpacs2Test", &tigl_h);
+    ASSERT_EQ(tiglRet, TIGL_SUCCESS);
+
+
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tigl_h);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingSegment& segment1 = wing.GetSegment(1);
+    segment1.GetLoft();
 }

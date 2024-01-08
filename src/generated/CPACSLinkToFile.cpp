@@ -66,8 +66,8 @@ namespace generated
 
         // read simpleContent 
         if (tixi::TixiCheckElement(tixiHandle, xpath)) {
-            m_simpleContent = tixi::TixiGetElement<std::string>(tixiHandle, xpath);
-            if (m_simpleContent.empty()) {
+            m_value = tixi::TixiGetElement<std::string>(tixiHandle, xpath);
+            if (m_value.empty()) {
                 LOG(WARNING) << "Required element  is empty at xpath " << xpath;
             }
         }
@@ -90,7 +90,7 @@ namespace generated
         }
 
         // write simpleContent 
-        tixi::TixiSaveElement(tixiHandle, xpath, m_simpleContent);
+        tixi::TixiSaveElement(tixiHandle, xpath, m_value);
 
     }
 
@@ -104,14 +104,14 @@ namespace generated
         m_format = value;
     }
 
-    const std::string& CPACSLinkToFile::GetSimpleContent() const
+    const std::string& CPACSLinkToFile::GetValue() const
     {
-        return m_simpleContent;
+        return m_value;
     }
 
-    void CPACSLinkToFile::SetSimpleContent(const std::string& value)
+    void CPACSLinkToFile::SetValue(const std::string& value)
     {
-        m_simpleContent = value;
+        m_value = value;
     }
 
 } // namespace generated

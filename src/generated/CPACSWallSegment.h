@@ -23,7 +23,6 @@
 #include <tixi.h>
 #include "CPACSBoundingElementUIDs.h"
 #include "CPACSWallPositionUIDs.h"
-#include "CPACSWallSegment_phi.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
@@ -63,8 +62,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const CPACSWallSegment_phi& GetPhi() const;
-        TIGL_EXPORT virtual CPACSWallSegment_phi& GetPhi();
+        TIGL_EXPORT virtual const double& GetPhi() const;
+        TIGL_EXPORT virtual void SetPhi(const double& value);
 
         TIGL_EXPORT virtual const boost::optional<bool>& GetDoubleSidedExtrusion() const;
         TIGL_EXPORT virtual void SetDoubleSidedExtrusion(const boost::optional<bool>& value);
@@ -98,7 +97,7 @@ namespace generated
         /// around fuselage x-axis of extrusion direction. A
         /// value of 0deg means fuselage z-axis as extrusion
         /// direction. Default: 0.0deg.
-        CPACSWallSegment_phi                      m_phi;
+        double                                    m_phi;
 
         /// By default, the wall is only extruded in positive direction. If doubleSidedExtrusion is true, the wall is additionaly extruded in negative direction as well. Default: false.
         boost::optional<bool>                     m_doubleSidedExtrusion;

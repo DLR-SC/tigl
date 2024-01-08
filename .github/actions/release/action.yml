@@ -2,6 +2,11 @@ name: "Create a Release"
 
 description: "This action drafts a Github release, adds the release notes and windows and mac os artifacts and creates PRs at tigl-conda and the tigl website"
 
+inputs:
+  GH_TOKEN:
+    description: 'A Github PAT'
+    required: true
+
 runs:
 
   using: "composite"
@@ -11,6 +16,7 @@ runs:
     - uses: actions/checkout@v3
 
     - name: Split Release Description from Changelog
+      shell: bash -l {0}
       run: |
         csplit -z ChangeLog.md /"Version "/ {1}
         mv xx01 release_description.md
@@ -23,75 +29,49 @@ runs:
         path: ./release_description.md
 
     - name: Parse version
+      shell: bash -l {0}
       run: |
         version=`echo $github_ref | cut -c 12-`
         echo $version
         echo "version=$version" >> $GITHUB_ENV
       env:
          github_ref: ${{ github.ref }}
+         
+    - name: download Win64 package Build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: win-package
+        
+    - name: download Win64 installer Build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: win-installer
+         
+    - name: download MacOS package Build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: macos-package
+        
+    - name: download html-documentation
+      uses: actions/download-artifact@v3
+      with:
+        name: html-documentation
+        path: html-documentation
 
     - name: Create Release
       id: create_release
-      uses: actions/create-release@latest
-      env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref }}
         release_name: TiGL ${{ env.version }}
         body: ${{ steps.changelog.outputs.content  }}
         draft: true
         prerelease: false
-
-    - name: download MacOS package Build artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: macos-package
-
-    - name: Upload MacOS Release Asset (.dmg)
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./macos-package/TIGL-${{ env.version }}-Darwin.dmg
-        asset_name: TIGL-${{ env.version }}-Darwin.dmg
-        asset_content_type: application/zip
-
-    - name: download Win64 package Build artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: win-package
-
-    - name: Upload Win64 Release Asset (.zip)
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./win-package/TIGL-${{ env.version }}-win64.zip
-        asset_name: TIGL-${{ env.version }}-win64.zip
-        asset_content_type: application/zip
-
-    - name: download Win64 installer Build artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: win-installer
-
-    - name: Upload Win64 Release Asset (.exe)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./win-installer/TIGL-${{ env.version }}-win64.exe
-        asset_name: TIGL-${{ env.version }}-win64.exe
-        asset_content_type: application/zip
-
-    - name: download html-documentation
-      uses: actions/download-artifact@v3
-      with:
-        name: html-documentation
-        path: html-documentation
+        token: ${{ inputs.GH_TOKEN }}
+        files: |
+          ./win-installer/TIGL-${{ env.version }}-win64.exe
+          ./win-package/TIGL-${{ env.version }}-win64.zip
+          ./macos-package/TIGL-${{ env.version }}-Darwin.dmg
 
     - name: Checkout tigl-website repo
       uses: actions/checkout@v3
@@ -100,6 +80,7 @@ runs:
         path: tigl-website
 
     - name: Add documentation to website
+      shell: bash -l {0}
       run: |
         cd tigl-website/content
         rm -rf doc/latest/*
@@ -120,14 +101,14 @@ runs:
 
 
     - name: Create Pull Request at DLR-SC/tigl-website
-      uses: peter-evans/create-pull-request@v3
+      uses: peter-evans/create-pull-request@v5
       with:
         path: tigl-website
         title: Add documentation for TiGL ${{ env.version }}
         body: There has been a new release over at DLR-SC/tigl. We should add the latest documentation to our website.
         branch: add-tigl-${{ env.version }}-documentation
         commit-message: add documentation for tigl ${{ env.version }}
-        token: ${{ secrets.GH_TOKEN }}
+        token: ${{ inputs.GH_TOKEN }}
 
     - name: Checkout tigl-conda repo
       uses: actions/checkout@v3
@@ -136,17 +117,18 @@ runs:
         path: tigl-conda
 
     - name: Bump version of tigl3 conda recipe and reset build number
+      shell: bash -l {0}
       run: |
         sed -i s/"version = \".*\""/"version = \"${{ env.version }}\""/g tigl-conda/tigl3/meta.yaml
         sed -i s/"number: .*"/"number: 0"/g tigl-conda/tigl3/meta.yaml
         git diff
 
     - name: Create Pull Request at DLR-SC/tigl-conda
-      uses: peter-evans/create-pull-request@v3
+      uses: peter-evans/create-pull-request@v5
       with:
         path: tigl-conda
         title: Bump tigl3 version to ${{ env.version }}
         body: There has been a new release over at DLR-SC/tigl. We should create new conda packages!
         branch: bump-tigl3-version
         commit-message: bump tigl3 version to ${{ env.version }}
-        token: ${{ secrets.GH_TOKEN }}
+        token: ${{ inputs.GH_TOKEN }}

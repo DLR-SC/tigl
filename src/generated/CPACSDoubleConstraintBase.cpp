@@ -28,7 +28,7 @@ namespace tigl
 namespace generated
 {
     CPACSDoubleConstraintBase::CPACSDoubleConstraintBase(CPACSPointPerformanceConstraints* parent)
-        : m_simpleContent(0)
+        : m_value(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -76,7 +76,7 @@ namespace generated
 
         // read simpleContent 
         if (tixi::TixiCheckElement(tixiHandle, xpath)) {
-            m_simpleContent = tixi::TixiGetElement<double>(tixiHandle, xpath);
+            m_value = tixi::TixiGetElement<double>(tixiHandle, xpath);
         }
         else {
             LOG(ERROR) << "Required simpleContent  is missing at xpath " << xpath;
@@ -90,7 +90,7 @@ namespace generated
         tixi::TixiSaveAttribute(tixiHandle, xpath, "relationalOperator", CPACSRelationalOperatorToString(m_relationalOperator));
 
         // write simpleContent 
-        tixi::TixiSaveElement(tixiHandle, xpath, m_simpleContent);
+        tixi::TixiSaveElement(tixiHandle, xpath, m_value);
 
     }
 
@@ -104,14 +104,14 @@ namespace generated
         m_relationalOperator = value;
     }
 
-    const double& CPACSDoubleConstraintBase::GetSimpleContent() const
+    const double& CPACSDoubleConstraintBase::GetValue() const
     {
-        return m_simpleContent;
+        return m_value;
     }
 
-    void CPACSDoubleConstraintBase::SetSimpleContent(const double& value)
+    void CPACSDoubleConstraintBase::SetValue(const double& value)
     {
-        m_simpleContent = value;
+        m_value = value;
     }
 
 } // namespace generated

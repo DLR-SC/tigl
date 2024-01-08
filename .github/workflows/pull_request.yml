@@ -9,3 +9,4 @@ jobs:
 
   continuous-integration:
     uses: ./.github/workflows/continuous-integration.yml
+    secrets: inherit

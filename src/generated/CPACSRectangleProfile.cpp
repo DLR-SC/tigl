@@ -68,13 +68,7 @@ namespace generated
     {
         // read element cornerRadius
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cornerRadius")) {
-            m_cornerRadius = boost::in_place(this);
-            try {
-                m_cornerRadius->ReadCPACS(tixiHandle, xpath + "/cornerRadius");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read cornerRadius at xpath " << xpath << ": " << e.what();
-                m_cornerRadius = boost::none;
-            }
+            m_cornerRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/cornerRadius");
         }
 
         // read element heightToWidthRatio
@@ -92,7 +86,7 @@ namespace generated
         // write element cornerRadius
         if (m_cornerRadius) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cornerRadius");
-            m_cornerRadius->WriteCPACS(tixiHandle, xpath + "/cornerRadius");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/cornerRadius", *m_cornerRadius);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/cornerRadius")) {
@@ -106,14 +100,14 @@ namespace generated
 
     }
 
-    const boost::optional<CPACSRectangleProfile_cornerRadius>& CPACSRectangleProfile::GetCornerRadius() const
+    const boost::optional<double>& CPACSRectangleProfile::GetCornerRadius() const
     {
         return m_cornerRadius;
     }
 
-    boost::optional<CPACSRectangleProfile_cornerRadius>& CPACSRectangleProfile::GetCornerRadius()
+    void CPACSRectangleProfile::SetCornerRadius(const boost::optional<double>& value)
     {
-        return m_cornerRadius;
+        m_cornerRadius = value;
     }
 
     const CPACSPosExcl0DoubleBase& CPACSRectangleProfile::GetHeightToWidthRatio() const
@@ -124,18 +118,6 @@ namespace generated
     CPACSPosExcl0DoubleBase& CPACSRectangleProfile::GetHeightToWidthRatio()
     {
         return m_heightToWidthRatio;
-    }
-
-    CPACSRectangleProfile_cornerRadius& CPACSRectangleProfile::GetCornerRadius(CreateIfNotExistsTag)
-    {
-        if (!m_cornerRadius)
-            m_cornerRadius = boost::in_place(this);
-        return *m_cornerRadius;
-    }
-
-    void CPACSRectangleProfile::RemoveCornerRadius()
-    {
-        m_cornerRadius = boost::none;
     }
 
 } // namespace generated

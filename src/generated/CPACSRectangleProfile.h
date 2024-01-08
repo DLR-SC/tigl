@@ -22,8 +22,6 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSPosExcl0DoubleBase.h"
-#include "CPACSRectangleProfile_cornerRadius.h"
-#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -63,20 +61,17 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const boost::optional<CPACSRectangleProfile_cornerRadius>& GetCornerRadius() const;
-        TIGL_EXPORT virtual boost::optional<CPACSRectangleProfile_cornerRadius>& GetCornerRadius();
+        TIGL_EXPORT virtual const boost::optional<double>& GetCornerRadius() const;
+        TIGL_EXPORT virtual void SetCornerRadius(const boost::optional<double>& value);
 
         TIGL_EXPORT virtual const CPACSPosExcl0DoubleBase& GetHeightToWidthRatio() const;
         TIGL_EXPORT virtual CPACSPosExcl0DoubleBase& GetHeightToWidthRatio();
 
-        TIGL_EXPORT virtual CPACSRectangleProfile_cornerRadius& GetCornerRadius(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveCornerRadius();
-
     protected:
         CPACSStandardProfile* m_parent;
 
-        boost::optional<CPACSRectangleProfile_cornerRadius> m_cornerRadius;
-        CPACSPosExcl0DoubleBase                             m_heightToWidthRatio;
+        boost::optional<double> m_cornerRadius;
+        CPACSPosExcl0DoubleBase m_heightToWidthRatio;
 
     private:
         CPACSRectangleProfile(const CPACSRectangleProfile&) = delete;
