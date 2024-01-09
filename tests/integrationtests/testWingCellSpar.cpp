@@ -350,9 +350,9 @@ TEST_F(WingCellRibSpar, bug864)
     tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(2);
 
 
-    const std::pair<double, double> arr[] = { DP(0.2, 0.3), DP(0.95, 0.4), DP(0.2, 0.72), DP(0.95, 0.75) };
+    const std::pair<double, double> arr[] = { DP(0.2, 0.3), DP(0.95, 0.4), DP(0.2, 0.72), DP(0.95, 0.76) };
     std::vector< std::pair<double, double> > expectedEtaXsi (arr, arr + sizeof(arr) / sizeof(arr[0]));
-    checkCellEtaXsis(cell, expectedEtaXsi, 1.E-2);
+    checkCellEtaXsis(cell, expectedEtaXsi, 1.E-3);
 
 
     TopoDS_Shape cellGeom = cell.GetSkinGeometry();
