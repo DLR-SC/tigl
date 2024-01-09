@@ -51,10 +51,7 @@ runs:
         max_attempts: 3
         command: |
           curl --retry 3 -o sshpass-macOS.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/sshpass-macOS.tar.gz
-          curl --retry 3 -o matlab-libs-macos.tar.gz -L https://sourceforge.net/projects/tigl/files/Thirdparty/matlab-libs-macos.tar.gz
           tar xf sshpass-macOS.tar.gz -C /tmp
-          tar xf doxygen-macOS.tar.gz -C /tmp
-          tar xf matlab-libs-macos.tar.gz -C /tmp
           echo "/tmp" >> $GITHUB_PATH
           echo "CXXFLAGS=-fvisibility-inlines-hidden" >> $GITHUB_ENV
           
@@ -62,22 +59,15 @@ runs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
-        auto-activate-base: true
-        activate-environment: ''
+        activate-environment: tigl-bld
+        environment-file: environment.yml
+        auto-activate-base: false
 
-    - name: Install conda-dependencies
+    - name: Conda info
       shell: bash -l {0}
       run: |
-        conda install pip \
-                      python=3.8 \
-                      doxygen=1.8.15 \
-                      swig>=3.0.11 \
-                      tixi3=3.3.0 \
-                      qt-main=5.15.2 \
-                      ninja \
-                      pythonocc-core=7.4.1 \
-                      freeimageplus \
-              -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda info
+        conda list
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1
