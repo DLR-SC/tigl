@@ -2734,16 +2734,14 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
         }
 
         gp_Trsf nodeTransformation = location;
-        const TColgp_Array1OfPnt& nodes = triangulation->Nodes();
 
         int index1, index2, index3;
-        const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
-        for (int j = triangles.Lower(); j <= triangles.Upper(); j++) {
-            const Poly_Triangle& triangle = triangles(j);
+        for (int j = 1; j <= triangulation->NbTriangles(); j++) {
+            const Poly_Triangle& triangle = triangulation->Triangle(j);
             triangle.Get(index1, index2, index3);
-            gp_Pnt point1 = nodes(index1).Transformed(nodeTransformation);
-            gp_Pnt point2 = nodes(index2).Transformed(nodeTransformation);
-            gp_Pnt point3 = nodes(index3).Transformed(nodeTransformation);
+            gp_Pnt point1 = triangulation->Node(index1).Transformed(nodeTransformation);
+            gp_Pnt point2 = triangulation->Node(index2).Transformed(nodeTransformation);
+            gp_Pnt point3 = triangulation->Node(index3).Transformed(nodeTransformation);
 
             BRepBuilderAPI_MakeEdge edge1(point1, point2);
             BRepBuilderAPI_MakeEdge edge2(point2, point3);

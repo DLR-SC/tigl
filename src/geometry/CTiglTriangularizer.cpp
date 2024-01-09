@@ -294,13 +294,11 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         
         BRepGProp_Face prop(face);
         
-        const TColgp_Array1OfPnt2d& uvnodes = triangulation->UVNodes(); // get (face-local) list of nodes
-        ilower = uvnodes.Lower();
-        
-        iBufferSize = uvnodes.Upper()-uvnodes.Lower()+1;
+        ilower = 1;
+        iBufferSize = triangulation->NbNodes();
         indexBuffer.reserve(iBufferSize);
-        for (int inode = uvnodes.Lower(); inode <= uvnodes.Upper(); ++inode) {
-            const gp_Pnt2d& uv_pnt = uvnodes(inode);
+        for (int inode = 1; inode <= triangulation->NbNodes(); ++inode) {
+            const gp_Pnt2d& uv_pnt = triangulation->UVNode(inode);
             gp_Pnt p; gp_Vec n;
             prop.Normal(uv_pnt.X(),uv_pnt.Y(),p,n);
             if (n.SquareMagnitude() > 0.) {
@@ -315,23 +313,20 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
     else {
         // we cannot compute normals
         
-        const TColgp_Array1OfPnt& nodes = triangulation->Nodes(); // get (face-local) list of nodes
-        ilower = nodes.Lower();
-
-        iBufferSize = nodes.Upper()-nodes.Lower()+1;
+        ilower = 1;
+        iBufferSize = triangulation->NbNodes();
         indexBuffer.reserve(iBufferSize);
-        for (int inode = nodes.Lower(); inode <= nodes.Upper(); inode++) {
-            const gp_Pnt& p = nodes(inode).Transformed(nodeTransformation);
+        for (int inode = 1; inode <= triangulation->NbNodes(); inode++) {
+            const gp_Pnt& p = triangulation->Node(inode).Transformed(nodeTransformation);
             indexBuffer.push_back(polys.currentObject().addPointNormal(p.XYZ(), CTiglPoint(1,0,0)));
         }
     }
 
-    const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
     iPolyLower = ULONG_MAX;
     iPolyUpper = 0;
-    // iterate over triangles in the array 
-    for (int j = triangles.Lower(); j <= triangles.Upper(); j++) {
-        const Poly_Triangle& triangle = triangles(j);
+    // iterate over triangles in the array
+    for (int j = 1; j <= triangulation->NbTriangles(); j++) {
+        const Poly_Triangle& triangle = triangulation->Triangle(j);
         int occindex1, occindex2, occindex3;
         triangle.Get(occindex1, occindex2, occindex3); // get indices into index1..3
         unsigned long index1, index2, index3;
