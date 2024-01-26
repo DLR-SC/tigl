@@ -175,65 +175,83 @@ TopoDS_Wire CCPACSFuselageProfile::GetWire(bool forceClosed) const
 // fuselage profile element transformation.
 void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
 {
-    if (!m_pointList_choice1)
-        throw CTiglError("Currently only fuselage profiles defined by pointList are supported.");
-    if (GetNumPoints() < 2) {
-        throw CTiglError("Number of points is less than 2 in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+    if(m_pointList_choice1){
+        BuildWiresPointList(cache);
     }
-
-    auto points = m_pointList_choice1->AsVector();
-    auto params = m_pointList_choice1->GetParamsAsMap();
-    auto kinks  = m_pointList_choice1->GetKinksAsVector();
-    if (mirrorSymmetry) {
-        SymmetrizeFuselageProfile(points, params, kinks);
+    if(m_standardProfile_choice3){
+        BuildWiresRectangle(cache);
     }
+    if (!m_pointList_choice1||!m_standardProfile_choice3)
+        throw CTiglError("Currently only fuselage profiles defined by pointList and rectangular fuselage profiles are supported.");
 
-    // Build the B-Spline
-    auto occPoints = OccArray(points);
-
-    // we always want to include the endpoint, if it's the same as the startpoint
-    // we use the middle to enforce closing of the spline
-    gp_Pnt pStart = points.front().Get_gp_Pnt();
-    gp_Pnt pEnd   = points.back().Get_gp_Pnt();
-
-    // this check allows some tolerance, based on the absolute size of the profile
-    if (pStart.Distance(pEnd) < 0.005 * CTiglBSplineAlgorithms::scale(occPoints->Array1())) {
-        gp_Pnt pMiddle = 0.5 * (pStart.XYZ() + pEnd.XYZ());
-        occPoints->SetValue(occPoints->Lower(), pMiddle);
-        occPoints->SetValue(occPoints->Upper(), pMiddle);
-    }
-
-    CTiglInterpolatePointsWithKinks interp(occPoints, kinks, params, 0.5, 3);
-    auto spline = interp.Curve();
-
-    if (mirrorSymmetry) {
-        double umin = spline->FirstParameter();
-        double umax = spline->LastParameter();
-        spline      = CTiglBSplineAlgorithms::trimCurve(spline, umin, 0.5 * (umin + umax));
-        CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, umin, umax);
-    }
-
-    // we reparametrize the spline to get better performing lofts.
-    // there might be a small accuracy loss though.
-    spline = CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(spline).curve;
-
-    // Create wires
-    TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline).Edge();
-    BRepBuilderAPI_MakeWire builder1(edge);
-    TopoDS_Wire tempWireOriginal = builder1.Wire();
-
-    BRepBuilderAPI_MakeWire builder2(edge);
-    if (!spline->IsClosed()) {
-        builder2.Add(BRepBuilderAPI_MakeEdge(spline->EndPoint(), spline->StartPoint()));
-    }
-    TopoDS_Wire tempWireClosed = builder2.Wire();
-    if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
-        throw CTiglError("TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
-    }
-
-    cache.closed   = tempWireClosed;
-    cache.original = tempWireOriginal;
 }
+
+// Builds the fuselage profile wire from point list.
+void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
+{
+        if (GetNumPoints() < 2) {
+            throw CTiglError("Number of points is less than 2 in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+        }
+
+        auto points = m_pointList_choice1->AsVector();
+        auto params = m_pointList_choice1->GetParamsAsMap();
+        auto kinks  = m_pointList_choice1->GetKinksAsVector();
+        if (mirrorSymmetry) {
+            SymmetrizeFuselageProfile(points, params, kinks);
+        }
+
+        // Build the B-Spline
+        auto occPoints = OccArray(points);
+
+        // we always want to include the endpoint, if it's the same as the startpoint
+        // we use the middle to enforce closing of the spline
+        gp_Pnt pStart = points.front().Get_gp_Pnt();
+        gp_Pnt pEnd   = points.back().Get_gp_Pnt();
+
+        // this check allows some tolerance, based on the absolute size of the profile
+        if (pStart.Distance(pEnd) < 0.005 * CTiglBSplineAlgorithms::scale(occPoints->Array1())) {
+            gp_Pnt pMiddle = 0.5 * (pStart.XYZ() + pEnd.XYZ());
+            occPoints->SetValue(occPoints->Lower(), pMiddle);
+            occPoints->SetValue(occPoints->Upper(), pMiddle);
+        }
+
+        CTiglInterpolatePointsWithKinks interp(occPoints, kinks, params, 0.5, 3);
+        auto spline = interp.Curve();
+
+        if (mirrorSymmetry) {
+            double umin = spline->FirstParameter();
+            double umax = spline->LastParameter();
+            spline      = CTiglBSplineAlgorithms::trimCurve(spline, umin, 0.5 * (umin + umax));
+            CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, umin, umax);
+        }
+
+        // we reparametrize the spline to get better performing lofts.
+        // there might be a small accuracy loss though.
+        spline = CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(spline).curve;
+
+        // Create wires
+        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline).Edge();
+        BRepBuilderAPI_MakeWire builder1(edge);
+        TopoDS_Wire tempWireOriginal = builder1.Wire();
+
+        BRepBuilderAPI_MakeWire builder2(edge);
+        if (!spline->IsClosed()) {
+            builder2.Add(BRepBuilderAPI_MakeEdge(spline->EndPoint(), spline->StartPoint()));
+        }
+        TopoDS_Wire tempWireClosed = builder2.Wire();
+        if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
+            throw CTiglError("TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+        }
+
+        cache.closed   = tempWireClosed;
+        cache.original = tempWireOriginal;
+}
+
+void CCPACSFuselageProfile::BuildWiresRectangle(WireCache& cache) const
+{
+
+}
+
 
 // Transforms a point by the fuselage profile transformation
 gp_Pnt CCPACSFuselageProfile::TransformPoint(const gp_Pnt& aPoint) const
