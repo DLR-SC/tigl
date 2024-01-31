@@ -46,6 +46,8 @@
 #include <algorithm>
 #include "UniquePtr.h"
 
+
+
 typedef std::map<std::string, PNamedShape> ShapeMap;
 
 // helper function for std::find
@@ -268,6 +270,14 @@ TIGL_EXPORT TopoDS_Wire BuildWire(const gp_Pnt& p1, const gp_Pnt& p2);
 
 // Method for building a wire out of the edges from the passed geometry
 TIGL_EXPORT TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges);
+
+/**
+ * @brief BuildWireRectangle Builds a rectangular wire in (y,z) - plane with width 1, center of coordinate system is the center of the rectangle
+ * @param heightToWidthRatio
+ * @param cornerRadius
+ * @return
+ */
+TIGL_EXPORT TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& cornerRadius =0.0);
 
 // Returns a list of wires built from all connected edges in the passed shape
 TIGL_EXPORT void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList);

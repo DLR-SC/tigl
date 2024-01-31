@@ -126,6 +126,8 @@
 #include <cmath>
 
 #include "Debugging.h"
+#include <GC_MakeArcOfCircle.hxx>
+
 
 namespace
 {
@@ -1154,6 +1156,69 @@ TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges)
     }
     TopoDS_Wire result = TopoDS::Wire(wireList.First());
     return result;
+}
+
+TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& cornerRadius){
+
+    //TODO CHECK RADIUS
+    //define boundaries for edges
+    gp_Pnt startUpper(0., (-0.5 + cornerRadius), 0.5 * heightToWidthRatio);
+    gp_Pnt endUpper(0., (0.5 - cornerRadius), 0.5 * heightToWidthRatio);
+    gp_Pnt startRight(0., 0.5, 0.5 * heightToWidthRatio - cornerRadius);
+    gp_Pnt endRight(0., 0.5, -0.5 * heightToWidthRatio + cornerRadius);
+    gp_Pnt startLower(0., (0.5 - cornerRadius), -0.5 * heightToWidthRatio);
+    gp_Pnt endLower(0., (-0.5 + cornerRadius), -0.5 * heightToWidthRatio);
+    gp_Pnt startLeft(0., -0.5, -0.5 * heightToWidthRatio + cornerRadius);
+    gp_Pnt endLeft(0., -0.5, 0.5 * heightToWidthRatio - cornerRadius);
+
+    // build upper edge from gp_points
+    TopoDS_Edge upperEdge = BRepBuilderAPI_MakeEdge(startUpper, endUpper).Edge();
+    BRepBuilderAPI_MakeWire wire(upperEdge);
+
+    if (cornerRadius > 0.0) {
+        // create first arc
+        gp_Vec tangent(0.0, 1., 0.);
+        auto arc1 = GC_MakeArcOfCircle(endUpper, tangent, startRight).Value();
+        TopoDS_Edge arcEdge1 = BRepBuilderAPI_MakeEdge(arc1, endUpper, startRight).Edge();
+        wire.BRepBuilderAPI_MakeWire::Add(arcEdge1);
+    }
+
+    // build right edge
+    TopoDS_Edge rightEdge = BRepBuilderAPI_MakeEdge(startRight, endRight).Edge();
+    wire.Add(rightEdge);
+
+    if (cornerRadius > 0.0){
+        // create second arc
+        gp_Vec tangent(0.0, 0., -1.);
+        auto arc2 = GC_MakeArcOfCircle(endRight, tangent, startLower).Value();
+        TopoDS_Edge arc_edge2 = BRepBuilderAPI_MakeEdge(arc2, endRight, startLower).Edge();
+        wire.Add(arc_edge2);
+    }
+
+    // build lower edge from gp_points
+    TopoDS_Edge lowerEdge = BRepBuilderAPI_MakeEdge(startLower, endLower).Edge();
+    wire.Add(lowerEdge);
+
+    if (cornerRadius > 0.0){
+        //create third arc
+        gp_Vec tangent(0.0, -1., 0.);
+        auto arc3 = GC_MakeArcOfCircle(endLower, tangent, startLeft).Value();
+        TopoDS_Edge arcEdge3 = BRepBuilderAPI_MakeEdge(arc3, endLower, startLeft).Edge();
+        wire.Add(arcEdge3);
+    }
+
+    // build left edge
+    TopoDS_Edge leftEdge = BRepBuilderAPI_MakeEdge(startLeft, endLeft).Edge();
+    wire.Add(leftEdge);
+
+    if (cornerRadius > 0.0){
+        // create fourth arc
+        gp_Vec tangent(0., 0., 1.);
+        auto arc4 = GC_MakeArcOfCircle(endLeft, tangent, startUpper).Value();
+        TopoDS_Edge arcEdge4 = BRepBuilderAPI_MakeEdge(arc4, endLeft, startUpper).Edge();
+        wire.Add(arcEdge4);
+    }
+    return wire.Wire();
 }
 
 void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList)
