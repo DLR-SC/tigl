@@ -177,12 +177,15 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
 {
     if(m_pointList_choice1){
         BuildWiresPointList(cache);
+        return;
     }
     if(m_standardProfile_choice3){
-        BuildWiresRectangle(cache);
+        if(m_standardProfile_choice3->GetRectangle_choice1()){
+            BuildWiresRectangle(cache);
+            return;
+        }
     }
-    if (!m_pointList_choice1||!m_standardProfile_choice3)
-        throw CTiglError("Currently only fuselage profiles defined by pointList and rectangular fuselage profiles are supported.");
+    throw CTiglError("Currently only fuselage profiles defined by pointList and rectangular fuselage profiles are supported.");
 
 }
 
@@ -246,7 +249,7 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
         cache.closed   = tempWireClosed;
         cache.original = tempWireOriginal;
 }
-
+//TODO
 void CCPACSFuselageProfile::BuildWiresRectangle(WireCache& cache) const
 {
 
