@@ -13,8 +13,12 @@
 * limitations under the License.
 */
 
+#include "CTiglMakeLoft.h"
 #include "test.h"
 #include "tigl.h"
+#include "tiglcommonfunctions.h"
+#include "Debugging.h"
+#include "BRepBuilderAPI_Transform.hxx"
 
 class FuselageStandardProfile : public ::testing::Test
 {
@@ -76,3 +80,85 @@ protected:
     static TixiDocumentHandle       	tixiHandle2;
     static TiglCPACSConfigurationHandle tiglHandle2;
 };
+
+
+TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusZero)
+{
+    auto wire = BuildWireRectangle(1, 0.);
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire);
+    loft.addProfiles(wire2);
+    auto shape =  loft.Shape();
+
+
+
+    tigl::dumpShape(wire, "mydir", "mywire");
+    tigl::dumpShape(shape, "mydir", "myshape");
+
+//    ASSERT_FALSE(true);
+}
+
+
+TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusOK)
+{
+    auto wire = BuildWireRectangle(0.5, 0.14);
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire);
+    loft.addProfiles(wire2);
+    auto shape =  loft.Shape();
+
+
+
+    tigl::dumpShape(wire, "mydir", "mywire1");
+    tigl::dumpShape(shape, "mydir", "myshape1");
+
+//    ASSERT_FALSE(true);
+}
+
+TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_Negative)
+{
+    auto wire = BuildWireRectangle(0.5, -0.14);
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire);
+    loft.addProfiles(wire2);
+    auto shape =  loft.Shape();
+
+
+
+    tigl::dumpShape(wire, "mydir", "mywire2");
+    tigl::dumpShape(shape, "mydir", "myshape2");
+
+//    ASSERT_FALSE(true);
+}
+
+TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_TooLargeNumber)
+{
+    auto wire = BuildWireRectangle(0.5, 1);
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire);
+    loft.addProfiles(wire2);
+    auto shape =  loft.Shape();
+
+
+
+    tigl::dumpShape(wire, "mydir", "mywire3");
+    tigl::dumpShape(shape, "mydir", "myshape3");
+
+//    ASSERT_FALSE(true);
+}
