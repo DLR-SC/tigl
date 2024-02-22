@@ -1487,7 +1487,7 @@ void TIGLViewerDocument::exportFuselageCollada()
 
     if (!fileName.isEmpty()) {
         START_COMMAND()
-        double deflection = GetConfiguration().GetAirplaneLenth() 
+        double deflection = GetConfiguration().GetAirplaneLength()
                 * TIGLViewerSettings::Instance().triangulationAccuracy();
         TiglReturnCode err = tiglExportFuselageColladaByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), deflection);
         if (err != TIGL_SUCCESS) {
@@ -1537,7 +1537,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
     double deflection = 1.0;
     if (1) {
         START_COMMAND()
-        deflection = GetConfiguration().GetAirplaneLenth()
+        deflection = GetConfiguration().GetAirplaneLength()
                 * TIGLViewerSettings::Instance().triangulationAccuracy();
     }
 
@@ -1567,7 +1567,7 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
     double deflection = 1.0;
     if (1) {
         START_COMMAND()
-        deflection = GetConfiguration().GetAirplaneLenth()
+        deflection = GetConfiguration().GetAirplaneLength()
                         * TIGLViewerSettings::Instance().triangulationAccuracy();
     }
 
@@ -1599,7 +1599,7 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
     double deflection = 1.0;
     if (1) {
         START_COMMAND()
-        deflection = GetConfiguration().GetAirplaneLenth()
+        deflection = GetConfiguration().GetAirplaneLength()
                         * TIGLViewerSettings::Instance().triangulationAccuracy();
     }
 
