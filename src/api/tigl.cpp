@@ -7082,7 +7082,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        *pLength = config.GetAirplaneLenth();
+        *pLength = config.GetAirplaneLength();
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
