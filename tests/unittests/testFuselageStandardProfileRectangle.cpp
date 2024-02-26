@@ -19,6 +19,7 @@
 #include "tiglcommonfunctions.h"
 #include "Debugging.h"
 #include "BRepBuilderAPI_Transform.hxx"
+#include <BRepCheck_Analyzer.hxx>
 
 class FuselageStandardProfile : public ::testing::Test
 {
@@ -92,14 +93,7 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusZero)
     auto loft = CTiglMakeLoft();
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
-    auto shape =  loft.Shape();
-
-
-
-    tigl::dumpShape(wire, "mydir", "mywire");
-    tigl::dumpShape(shape, "mydir", "myshape");
-
-//    ASSERT_FALSE(true);
+    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
 }
 
 
@@ -113,14 +107,7 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusOK)
     auto loft = CTiglMakeLoft();
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
-    auto shape =  loft.Shape();
-
-
-
-    tigl::dumpShape(wire, "mydir", "mywire1");
-    tigl::dumpShape(shape, "mydir", "myshape1");
-
-//    ASSERT_FALSE(true);
+    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
 }
 
 TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_Negative)
@@ -133,14 +120,7 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_Negative)
     auto loft = CTiglMakeLoft();
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
-    auto shape =  loft.Shape();
-
-
-
-    tigl::dumpShape(wire, "mydir", "mywire2");
-    tigl::dumpShape(shape, "mydir", "myshape2");
-
-//    ASSERT_FALSE(true);
+    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
 }
 
 TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_TooLargeNumber)
@@ -153,12 +133,6 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_TooLargeNumber)
     auto loft = CTiglMakeLoft();
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
-    auto shape =  loft.Shape();
-
-
-
-    tigl::dumpShape(wire, "mydir", "mywire3");
-    tigl::dumpShape(shape, "mydir", "myshape3");
-
-//    ASSERT_FALSE(true);
+    ASSERT_THROW(loft.Shape(), tigl::CTiglError);
 }
+
