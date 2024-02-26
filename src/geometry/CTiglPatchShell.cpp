@@ -32,6 +32,7 @@
 #include <StdFail_NotDone.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <Geom_Plane.hxx>
+#include <BRepCheck_Analyzer.hxx>
 
 namespace
 {
@@ -70,6 +71,9 @@ void CTiglPatchShell::AddSideCap(TopoDS_Wire const& boundaryWire)
         BRepBuilderAPI_FindPlane Searcher( boundaryWire, _tolerance );
         if (Searcher.Found()) {
             cap = BRepBuilderAPI_MakeFace(Searcher.Plane(), boundaryWire);
+            if(!BRepCheck_Analyzer(cap).IsValid()){
+                throw CTiglError("Error occured while building side caps. Built shape invalid.");
+            }
             Ok = true;
         }
         else {
@@ -78,6 +82,9 @@ void CTiglPatchShell::AddSideCap(TopoDS_Wire const& boundaryWire)
             if (MF.IsDone())
             {
                 cap = MF.Face();
+                if(!BRepCheck_Analyzer(cap).IsValid()){
+                    throw CTiglError("Error occured while building side caps. Built shape invalid.");
+                }
                 Ok = true;
             }
         }
