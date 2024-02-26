@@ -119,6 +119,7 @@
 #include <ShapeAnalysis_FreeBounds.hxx>
 
 
+
 #include <list>
 #include <algorithm>
 #include <cassert>
@@ -1177,6 +1178,7 @@ TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& c
     // build upper edge from gp_points
     TopoDS_Edge upperEdge = BRepBuilderAPI_MakeEdge(startUpper, endUpper).Edge();
     BRepBuilderAPI_MakeWire wire(upperEdge);
+
 
     if (!(cornerRadius == 0.)) {
         // create first arc
