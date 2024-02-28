@@ -43,6 +43,9 @@ public:
                                                   const std::vector<double>& parameters, unsigned int maxDegree = 3,
                                                   bool continuousIfClosed = false);
 
+    TIGL_EXPORT CTiglPointsToBSplineInterpolation(const std::vector<gp_Pnt>& points, unsigned int maxDegree = 3,
+                                                  bool continuousIfClosed = false);
+
     /// Returns the interpolation curve
     TIGL_EXPORT Handle(Geom_BSplineCurve) Curve() const;
 
