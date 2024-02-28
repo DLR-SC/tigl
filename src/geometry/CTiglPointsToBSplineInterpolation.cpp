@@ -83,9 +83,6 @@ CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const std::
     , m_degree(static_cast<int>(maxDegree))
     , m_C2Continuous(continuousIfClosed)
 {
-    if (static_cast<int>(m_params.size()) != m_pnts->Length()) {
-        throw CTiglError("Number of parameters and points don't match in CTiglPointsToBSplineInterpolation");
-    }
 
     if (maxDegree < 1) {
         throw CTiglError("Degree must be larger than 1 in CTiglPointsToBSplineInterpolation!");
