@@ -272,6 +272,17 @@ TIGL_EXPORT TopoDS_Wire BuildWire(const gp_Pnt& p1, const gp_Pnt& p2);
 TIGL_EXPORT TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges);
 
 /**
+ * @brief ApproximateArcOfCircleToRationalBSpline
+ * @param cornerRadius
+ * @param uMin
+ * @param uMax
+ * @param y_position
+ * @param z_position
+ * @return
+ */
+TIGL_EXPORT opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double cornerRadius, double uMin = 0, double uMax = M_PI/4 ,double y_position = 0., double z_position = 0.);
+
+/**
  * @brief BuildWireRectangle Builds a rectangular wire in (y,z) - plane with width 1, center of coordinate system is the center of the rectangle
  * @param heightToWidthRatio
  * @param cornerRadius
@@ -364,6 +375,9 @@ TIGL_EXPORT double Mix(double x, double y, double a);
 
 // Normalizes the input angle into the range [0, 360)
 TIGL_EXPORT double NormalizeAngleDeg(double angleDeg);
+
+// Creates a linear spaces array
+TIGL_EXPORT std::vector<double> Linspace(double umin, double umax, size_t n_values);
 
 // Creates a linear spaces array but with some additional breaking points
 // If the breaking points are very close to a point, the point will be replaced

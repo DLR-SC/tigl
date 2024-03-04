@@ -42,6 +42,7 @@
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglProjectPointOnCurveAtAngle.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CTiglPointsToBSplineInterpolation.h"
 
 #include "Standard_Version.hxx"
 
@@ -1159,6 +1160,16 @@ TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges)
     return result;
 }
 
+opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double cornerRadius, double uMin, double uMax,double y_position, double z_position)
+{
+    std::vector<gp_Pnt> ArcPnts;
+    std::vector<double> alpha = Linspace(uMin, uMax, 64);
+    for (double a : alpha){
+        ArcPnts.push_back(gp_Pnt(0., y_position + cornerRadius * std::cos(a), z_position + cornerRadius* std::sin(a)));
+            }
+    return tigl::CTiglPointsToBSplineInterpolation(ArcPnts).Curve();
+}
+
 TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& cornerRadius)
 {
     double radius = cornerRadius;
@@ -1181,29 +1192,25 @@ TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& c
 
 
     if (!(cornerRadius == 0.)) {
-        // create first arc
-        gp_Vec tangent(0., 1., 0.);
-        if(cornerRadius < 0){
-            tangent = gp_Vec(0.,0.,-1.);
-        }
-        auto arc1 = GC_MakeArcOfCircle(endUpper, tangent, startRight).Value();
-        TopoDS_Edge arcEdge1 = BRepBuilderAPI_MakeEdge(arc1, endUpper, startRight).Edge();
-        wire.BRepBuilderAPI_MakeWire::Add(arcEdge1);
+        // build upper left arc
+        double y0 = - 0.5 + radius;
+        double z0 = 0.5 * heightToWidthRatio - radius;
+        auto ArcCurve = ApproximateArcOfCircleToRationalBSpline(radius, M_PI/2., M_PI, y0, z0);
+        auto ArcEdge = BRepBuilderAPI_MakeEdge(ArcCurve).Edge();
+        wire.BRepBuilderAPI_MakeWire::Add(ArcEdge);
     }
 
-    // build right edge
-    TopoDS_Edge rightEdge = BRepBuilderAPI_MakeEdge(startRight, endRight).Edge();
-    wire.Add(rightEdge);
+    // build left edge
+    TopoDS_Edge leftEdge = BRepBuilderAPI_MakeEdge(startLeft, endLeft).Edge();
+    wire.Add(leftEdge);
 
     if (!(cornerRadius == 0.)){
-        // create second arc
-        gp_Vec tangent(0., 0., -1.);
-        if(cornerRadius < 0){
-            tangent = gp_Vec(0., -1., 0.);
-        }
-        auto arc2 = GC_MakeArcOfCircle(endRight, tangent, startLower).Value();
-        TopoDS_Edge arc_edge2 = BRepBuilderAPI_MakeEdge(arc2, endRight, startLower).Edge();
-        wire.Add(arc_edge2);
+        // build lower left arc
+        double y0 = - 0.5 + radius;
+        double z0 = -0.5 * heightToWidthRatio + radius;
+        auto ArcCurve = ApproximateArcOfCircleToRationalBSpline(radius, M_PI, M_PI*(3./2.), y0, z0);
+        auto ArcEdge = BRepBuilderAPI_MakeEdge(ArcCurve).Edge();
+        wire.BRepBuilderAPI_MakeWire::Add(ArcEdge);
     }
 
     // build lower edge from gp_points
@@ -1211,29 +1218,25 @@ TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& c
     wire.Add(lowerEdge);
 
     if (!(cornerRadius == 0.0)){
-        //create third arc
-        gp_Vec tangent(0.0, -1., 0.);
-        if(cornerRadius < 0){
-            tangent = gp_Vec(0.0, 0., 1.);
-        }
-        auto arc3 = GC_MakeArcOfCircle(endLower, tangent, startLeft).Value();
-        TopoDS_Edge arcEdge3 = BRepBuilderAPI_MakeEdge(arc3, endLower, startLeft).Edge();
-        wire.Add(arcEdge3);
+        //build lower right arc
+        double y0 = 0.5 - radius;
+        double z0 = - 0.5 * heightToWidthRatio + radius;
+        auto ArcCurve = ApproximateArcOfCircleToRationalBSpline(radius, M_PI*(3./2.), M_PI*2., y0, z0);
+        auto ArcEdge = BRepBuilderAPI_MakeEdge(ArcCurve).Edge();
+        wire.BRepBuilderAPI_MakeWire::Add(ArcEdge);
     }
 
-    // build left edge
-    TopoDS_Edge leftEdge = BRepBuilderAPI_MakeEdge(startLeft, endLeft).Edge();
-    wire.Add(leftEdge);
+    // build right edge
+    TopoDS_Edge rightEdge = BRepBuilderAPI_MakeEdge(startRight, endRight).Edge();
+    wire.Add(rightEdge);
 
     if (!(cornerRadius == 0.0)){
-        // create fourth arc
-        gp_Vec tangent(0., 0., 1.);
-        if(cornerRadius < 0){
-            tangent = gp_Vec(0., 1., 0.);
-        }
-        auto arc4 = GC_MakeArcOfCircle(endLeft, tangent, startUpper).Value();
-        TopoDS_Edge arcEdge4 = BRepBuilderAPI_MakeEdge(arc4, endLeft, startUpper).Edge();
-        wire.Add(arcEdge4);
+        //build upper right arc
+        double y0 = 0.5 - radius;
+        double z0 = 0.5 * heightToWidthRatio - radius;
+        auto ArcCurve = ApproximateArcOfCircleToRationalBSpline(radius, 0., M_PI/2., y0, z0);
+        auto ArcEdge = BRepBuilderAPI_MakeEdge(ArcCurve).Edge();
+        wire.BRepBuilderAPI_MakeWire::Add(ArcEdge);
     }
     return wire.Wire();
 }
@@ -1799,6 +1802,17 @@ bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt point)
 bool IsPointAbovePlane(const gp_Pln& pln, gp_Pnt point)
 {
     return gp_Vec(pln.Location(), point).Dot(gp_Vec(pln.Axis().Direction())) > 0;
+}
+
+std::vector<double> Linspace(double umin, double umax, size_t n_values)
+{
+    double du = (umax - umin) / static_cast<double>(n_values - 1);
+
+    std::vector<double> result(n_values);
+    for (int i = 0; i < n_values; ++i) {
+        result[i] = i * du + umin;
+    }
+    return result;
 }
 
 std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks)

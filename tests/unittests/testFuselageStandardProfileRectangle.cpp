@@ -16,8 +16,8 @@
 #include "CTiglMakeLoft.h"
 #include "test.h"
 #include "tigl.h"
-#include "tiglcommonfunctions.h"
 #include "Debugging.h"
+#include "tiglcommonfunctions.h"
 #include "BRepBuilderAPI_Transform.hxx"
 #include <BRepCheck_Analyzer.hxx>
 
@@ -86,10 +86,12 @@ protected:
 TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusZero)
 {
     auto wire = BuildWireRectangle(1, 0.);
+    ASSERT_TRUE(wire.Closed());
     auto trafo = gp_Trsf();
     auto vec = gp_Vec(-1.,0.,0.);
     trafo.SetTranslation(vec);
     auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    ASSERT_TRUE(wire2.Closed());
     auto loft = CTiglMakeLoft();
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
@@ -100,10 +102,12 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusZero)
 TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusOK)
 {
     auto wire = BuildWireRectangle(0.5, 0.14);
+    ASSERT_TRUE(wire.Closed());
     auto trafo = gp_Trsf();
     auto vec = gp_Vec(-1.,0.,0.);
     trafo.SetTranslation(vec);
     auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    ASSERT_TRUE(wire2.Closed());
     auto loft = CTiglMakeLoft();
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
@@ -113,10 +117,12 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusOK)
 TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_Negative)
 {
     auto wire = BuildWireRectangle(0.5, -0.14);
+    ASSERT_TRUE(wire.Closed());
     auto trafo = gp_Trsf();
     auto vec = gp_Vec(-1.,0.,0.);
     trafo.SetTranslation(vec);
     auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    ASSERT_TRUE(wire2.Closed());
     auto loft = CTiglMakeLoft();
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
@@ -126,10 +132,12 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_Negative)
 TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_TooLargeNumber)
 {
     auto wire = BuildWireRectangle(0.5, 1);
+    ASSERT_TRUE(wire.Closed());
     auto trafo = gp_Trsf();
     auto vec = gp_Vec(-1.,0.,0.);
     trafo.SetTranslation(vec);
     auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    ASSERT_TRUE(wire2.Closed());
     auto loft = CTiglMakeLoft();
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
