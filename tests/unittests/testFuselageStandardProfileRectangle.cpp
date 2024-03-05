@@ -20,6 +20,9 @@
 #include "tiglcommonfunctions.h"
 #include "BRepBuilderAPI_Transform.hxx"
 #include <BRepCheck_Analyzer.hxx>
+#include "CCPACSConfigurationManager.h"
+#include "CCPACSConfiguration.h"
+#include "CNamedShape.h"
 
 class FuselageStandardProfile : public ::testing::Test
 {
@@ -82,8 +85,12 @@ protected:
     static TiglCPACSConfigurationHandle tiglHandle2;
 };
 
+TixiDocumentHandle FuselageStandardProfile::tixiHandle = 0;
+TiglCPACSConfigurationHandle FuselageStandardProfile::tiglHandle = 0;
+TixiDocumentHandle FuselageStandardProfile::tixiHandle2 = 0;
+TiglCPACSConfigurationHandle FuselageStandardProfile::tiglHandle2 = 0;
 
-TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusZero)
+TEST_F(FuselageStandardProfile, BuildWireRectangle_CornerRadiusZero)
 {
     auto wire = BuildWireRectangle(1, 0.);
     ASSERT_TRUE(wire.Closed());
@@ -99,7 +106,7 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusZero)
 }
 
 
-TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusOK)
+TEST_F(FuselageStandardProfile, BuildWireRectangle_CornerRadiusOK)
 {
     auto wire = BuildWireRectangle(0.5, 0.14);
     ASSERT_TRUE(wire.Closed());
@@ -114,7 +121,7 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadiusOK)
     ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
 }
 
-TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_Negative)
+TEST_F(FuselageStandardProfile, BuildWireRectangle_CornerRadius_Negative)
 {
     auto wire = BuildWireRectangle(0.5, -0.14);
     ASSERT_TRUE(wire.Closed());
@@ -129,7 +136,7 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_Negative)
     ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
 }
 
-TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_TooLargeNumber)
+TEST_F(FuselageStandardProfile, BuildWireRectangle_CornerRadius_TooLargeNumber)
 {
     auto wire = BuildWireRectangle(0.5, 1);
     ASSERT_TRUE(wire.Closed());
@@ -144,3 +151,13 @@ TEST(FuselageStandardProfile, BuildWireRectangle_CornerRadius_TooLargeNumber)
     ASSERT_THROW(loft.Shape(), tigl::CTiglError);
 }
 
+TEST_F(FuselageStandardProfile, BuildWingRectangle_CornerRadiusZero)
+{
+    // read configuration
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
+    // config.GetFuselages();
+    auto fuselage = config.GetFuselage(1).GetLoft();
+    ASSERT_TRUE(BRepCheck_Analyzer(fuselage->Shape()).IsValid());
+    tigl::dumpShape(fuselage->Shape(), "mydir", "fuselage");
+}
