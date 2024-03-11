@@ -600,7 +600,7 @@ void CTiglTransformation::Decompose(double scale[3], double rotation[3], double 
 
     // calculate intrinsic Euler angles from rotation matrix U
     //
-    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf, where the same argumentation
+    // This implementation is based on https://www.eecs.qmul.ac.uk/~gslabaugh/publications/euler.pdf, where the same argumentation
     // is used for intrinsic x,y',z'' angles and the rotatation matrix
     //
     //                |                        cos(y)*cos(z) |               -        cos(y)*cos(z) |         sin(y) |
