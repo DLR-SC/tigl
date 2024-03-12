@@ -1170,75 +1170,94 @@ opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(d
     return tigl::CTiglPointsToBSplineInterpolation(ArcPnts).Curve();
 }
 
+
+//gp_Pnt startUpper(0., (-0.5 + radius), 0.5 * heightToWidthRatio);
+//gp_Pnt endUpper(0., (0.5 - radius), 0.5 * heightToWidthRatio);
+//gp_Pnt startRight(0., 0.5, 0.5 * heightToWidthRatio - radius);
+//gp_Pnt endRight(0., 0.5, -0.5 * heightToWidthRatio + radius);
+//gp_Pnt startLower(0., (0.5 - radius), -0.5 * heightToWidthRatio);
+//gp_Pnt endLower(0., (-0.5 + radius), -0.5 * heightToWidthRatio);
+//gp_Pnt startLeft(0., -0.5, -0.5 * heightToWidthRatio + radius);
+//gp_Pnt endLeft(0., -0.5, 0.5 * heightToWidthRatio - radius);
+
 TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& cornerRadius)
 {
     double radius = cornerRadius;
     if(cornerRadius<0.){
         radius*= -1;
     }
-    //define boundaries for edges
-    gp_Pnt startUpper(0., (-0.5 + radius), 0.5 * heightToWidthRatio);
-    gp_Pnt endUpper(0., (0.5 - radius), 0.5 * heightToWidthRatio);
-    gp_Pnt startRight(0., 0.5, 0.5 * heightToWidthRatio - radius);
-    gp_Pnt endRight(0., 0.5, -0.5 * heightToWidthRatio + radius);
-    gp_Pnt startLower(0., (0.5 - radius), -0.5 * heightToWidthRatio);
-    gp_Pnt endLower(0., (-0.5 + radius), -0.5 * heightToWidthRatio);
-    gp_Pnt startLeft(0., -0.5, -0.5 * heightToWidthRatio + radius);
-    gp_Pnt endLeft(0., -0.5, 0.5 * heightToWidthRatio - radius);
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+    // build upper line from gp_points
+    std::vector<gp_Pnt> linePnts_upper;
+    std::vector<double> y_upper = Linspace((-0.5+radius), (0.5-radius),5);
+    for (double y: y_upper){
+        linePnts_upper.push_back(gp_Pnt(0., y, 0.5*heightToWidthRatio));
+    }
+    opencascade::handle<Geom_BSplineCurve> upperLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_upper).Curve();
 
-    // build upper edge from gp_points
-    TopoDS_Edge upperEdge = BRepBuilderAPI_MakeEdge(startUpper, endUpper).Edge();
-    BRepBuilderAPI_MakeWire wire(upperEdge);
-
+    curves.push_back(upperLine);
 
     if (!(cornerRadius == 0.)) {
         // build upper left arc
         double y0 = - 0.5 + radius;
         double z0 = 0.5 * heightToWidthRatio - radius;
         auto ArcCurve = ApproximateArcOfCircleToRationalBSpline(radius, M_PI/2., M_PI, y0, z0);
-        auto ArcEdge = BRepBuilderAPI_MakeEdge(ArcCurve).Edge();
-        wire.BRepBuilderAPI_MakeWire::Add(ArcEdge);
+        curves.push_back(ArcCurve);
     }
 
-    // build left edge
-    TopoDS_Edge leftEdge = BRepBuilderAPI_MakeEdge(startLeft, endLeft).Edge();
-    wire.Add(leftEdge);
+    //build left line from gp_points
+    std::vector<gp_Pnt> linePnts_left;
+    std::vector<double> z_left = Linspace(-0.5 * heightToWidthRatio + radius, 0.5 * heightToWidthRatio - radius, 5);
+    for (double z: z_left){
+        linePnts_left.push_back(gp_Pnt(0., -0.5, z));
+    }
+    opencascade::handle<Geom_BSplineCurve> leftLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_left).Curve();
+    curves.push_back(leftLine);
 
     if (!(cornerRadius == 0.)){
         // build lower left arc
         double y0 = - 0.5 + radius;
         double z0 = -0.5 * heightToWidthRatio + radius;
         auto ArcCurve = ApproximateArcOfCircleToRationalBSpline(radius, M_PI, M_PI*(3./2.), y0, z0);
-        auto ArcEdge = BRepBuilderAPI_MakeEdge(ArcCurve).Edge();
-        wire.BRepBuilderAPI_MakeWire::Add(ArcEdge);
+        curves.push_back(ArcCurve);
     }
 
-    // build lower edge from gp_points
-    TopoDS_Edge lowerEdge = BRepBuilderAPI_MakeEdge(startLower, endLower).Edge();
-    wire.Add(lowerEdge);
+    // build lower line from gp_points
+    std::vector<gp_Pnt> linePnts_lower;
+    std::vector<double> y_lower = Linspace((0.5-radius),(-0.5+radius) ,5);
+    for (double y: y_lower){
+        linePnts_lower.push_back(gp_Pnt(0., y, -0.5 * heightToWidthRatio));
+    }
+    opencascade::handle<Geom_BSplineCurve> lowerLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_lower).Curve();
+    curves.push_back(lowerLine);
 
     if (!(cornerRadius == 0.0)){
         //build lower right arc
         double y0 = 0.5 - radius;
         double z0 = - 0.5 * heightToWidthRatio + radius;
         auto ArcCurve = ApproximateArcOfCircleToRationalBSpline(radius, M_PI*(3./2.), M_PI*2., y0, z0);
-        auto ArcEdge = BRepBuilderAPI_MakeEdge(ArcCurve).Edge();
-        wire.BRepBuilderAPI_MakeWire::Add(ArcEdge);
+        curves.push_back(ArcCurve);
     }
 
-    // build right edge
-    TopoDS_Edge rightEdge = BRepBuilderAPI_MakeEdge(startRight, endRight).Edge();
-    wire.Add(rightEdge);
+    // build right line from gp_Pnts
+    std::vector<gp_Pnt> linePnts_right;
+    std::vector<double> z_right = Linspace(0.5 * heightToWidthRatio - radius, -0.5 * heightToWidthRatio + radius, 5);
+    for (double z: z_right){
+        linePnts_right.push_back(gp_Pnt(0., -0.5, z));
+    }
+    opencascade::handle<Geom_BSplineCurve> rightLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_right).Curve();
+    curves.push_back(rightLine);
 
     if (!(cornerRadius == 0.0)){
         //build upper right arc
         double y0 = 0.5 - radius;
         double z0 = 0.5 * heightToWidthRatio - radius;
         auto ArcCurve = ApproximateArcOfCircleToRationalBSpline(radius, 0., M_PI/2., y0, z0);
-        auto ArcEdge = BRepBuilderAPI_MakeEdge(ArcCurve).Edge();
-        wire.BRepBuilderAPI_MakeWire::Add(ArcEdge);
+        curves.push_back(ArcCurve);
     }
-    return wire.Wire();
+    auto curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
+    TopoDS_Wire wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    return wire;
 }
 
 void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList)
