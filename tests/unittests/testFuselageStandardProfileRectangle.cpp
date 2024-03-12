@@ -43,6 +43,20 @@ protected:
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
 
+        // Test case on standardProfile rectangle, no rounded corners, mixed profiles, guidecurves
+
+        const char* filename1 = "TestData/simpletest-rectangle-circle-kink-profile-with-guides.cpacs.xml";
+        ReturnCode tixiRet1;
+        TiglReturnCode tiglRet1;
+
+        tiglHandle1 = -1;
+        tixiHandle1 = -1;
+
+        tixiRet1 = tixiOpenDocument(filename1, &tixiHandle1);
+        ASSERT_TRUE (tixiRet1 == SUCCESS);
+        tiglRet1 = tiglOpenCPACSConfiguration(tixiHandle1, "", &tiglHandle1);
+        ASSERT_TRUE(tiglRet1 == TIGL_SUCCESS);
+
         // Test case on standardProfile rectangle with rounded corners
 
         const char* filename2 = "TestData/simpletest_standard_profile_rounded_rectangle.xml";
@@ -67,6 +81,11 @@ protected:
         tiglHandle = -1;
         tixiHandle = -1;
 
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle1) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle1) == SUCCESS);
+        tiglHandle1 = -1;
+        tixiHandle1 = -1;
+
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle2) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle2) == SUCCESS);
         tiglHandle2 = -1;
@@ -80,6 +99,8 @@ protected:
     static TixiDocumentHandle           tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
 
+    static TixiDocumentHandle           tixiHandle1;
+    static TiglCPACSConfigurationHandle tiglHandle1;
 
     static TixiDocumentHandle       	tixiHandle2;
     static TiglCPACSConfigurationHandle tiglHandle2;
@@ -87,6 +108,8 @@ protected:
 
 TixiDocumentHandle FuselageStandardProfile::tixiHandle = 0;
 TiglCPACSConfigurationHandle FuselageStandardProfile::tiglHandle = 0;
+TixiDocumentHandle FuselageStandardProfile::tixiHandle1 = 0;
+TiglCPACSConfigurationHandle FuselageStandardProfile::tiglHandle1 = 0;
 TixiDocumentHandle FuselageStandardProfile::tixiHandle2 = 0;
 TiglCPACSConfigurationHandle FuselageStandardProfile::tiglHandle2 = 0;
 
@@ -151,13 +174,28 @@ TEST_F(FuselageStandardProfile, BuildWireRectangle_CornerRadius_TooLargeNumber)
     ASSERT_THROW(loft.Shape(), tigl::CTiglError);
 }
 
-TEST_F(FuselageStandardProfile, BuildWingRectangle_CornerRadiusZero)
+TEST_F(FuselageStandardProfile, BuildFuselageRectangle_CornerRadiusZero)
 {
     // read configuration
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
-    // config.GetFuselages();
+    tigl::CTiglUIDManager& uidmgr = config.GetUIDManager();
+    auto wing = uidmgr.GetGeometricComponent("Wing").GetLoft();
     auto fuselage = config.GetFuselage(1).GetLoft();
     ASSERT_TRUE(BRepCheck_Analyzer(fuselage->Shape()).IsValid());
     tigl::dumpShape(fuselage->Shape(), "mydir", "fuselage");
+    tigl::dumpShape(wing->Shape(), "mydir", "wing1");
+}
+
+TEST_F(FuselageStandardProfile, BuildFuselageMixedProfiles_CornerRadiusZero)
+{
+    // read configuration
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle1);
+    tigl::CTiglUIDManager& uidmgr = config.GetUIDManager();
+    auto wing = uidmgr.GetGeometricComponent("Wing").GetLoft();
+    auto fuselage = config.GetFuselage(1).GetLoft();
+    ASSERT_TRUE(BRepCheck_Analyzer(fuselage->Shape()).IsValid());
+    tigl::dumpShape(fuselage->Shape(), "mydir", "fuselageMix");
+    tigl::dumpShape(wing->Shape(), "mydir", "wing1");
 }
