@@ -252,7 +252,17 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
 //TODO
 void CCPACSFuselageProfile::BuildWiresRectangle(WireCache& cache) const
 {
-
+    if(!m_standardProfile_choice3->GetRectangle_choice1()){
+        throw CTiglError("CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+    }
+    //Get Paramenters
+    auto& rectangle_profile = *m_standardProfile_choice3->GetRectangle_choice1();
+    double heightToWidthRatio = rectangle_profile.GetHeightToWidthRatio().GetValue();
+    double radius = (rectangle_profile.GetCornerRadius())? *rectangle_profile.GetCornerRadius() : 0. ;
+    //Build wire
+    TopoDS_Wire wire = BuildWireRectangle(heightToWidthRatio,radius);
+    cache.closed = wire;
+    cache.original = wire;
 }
 
 
