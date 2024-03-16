@@ -31,11 +31,10 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSHull;
 
 namespace generated
 {
-    class CPACSHull;
-
     // This class is used in:
     // CPACSHull
 
@@ -45,13 +44,13 @@ namespace generated
     class CPACSHullStructure : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSHullStructure(CPACSHull* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSHullStructure(CCPACSHull* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSHullStructure();
 
-        TIGL_EXPORT CPACSHull* GetParent();
+        TIGL_EXPORT CCPACSHull* GetParent();
 
-        TIGL_EXPORT const CPACSHull* GetParent() const;
+        TIGL_EXPORT const CCPACSHull* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -96,7 +95,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSkinLayers();
 
     protected:
-        CPACSHull* m_parent;
+        CCPACSHull* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -118,5 +117,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSHullStructure = generated::CPACSHullStructure;
-using CCPACSHull = generated::CPACSHull;
 } // namespace tigl

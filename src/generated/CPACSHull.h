@@ -117,7 +117,8 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSHull is customized, use type CCPACSHull directly
+
 // Aliases in tigl namespace
-using CCPACSHull = generated::CPACSHull;
 using CCPACSHulls = generated::CPACSHulls;
 } // namespace tigl

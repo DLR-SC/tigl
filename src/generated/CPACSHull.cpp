@@ -29,9 +29,9 @@ namespace generated
 {
     CPACSHull::CPACSHull(CPACSHulls* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_transformation(this, m_uidMgr)
-        , m_sections(this, m_uidMgr)
-        , m_segments(this, m_uidMgr)
+        , m_transformation(reinterpret_cast<CCPACSHull*>(this), m_uidMgr)
+        , m_sections(reinterpret_cast<CCPACSHull*>(this), m_uidMgr)
+        , m_segments(reinterpret_cast<CCPACSHull*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -142,7 +142,7 @@ namespace generated
 
         // read element structure
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structure")) {
-            m_structure = boost::in_place(this, m_uidMgr);
+            m_structure = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
             try {
                 m_structure->ReadCPACS(tixiHandle, xpath + "/structure");
             } catch(const std::exception& e) {
@@ -280,7 +280,7 @@ namespace generated
     CPACSHullStructure& CPACSHull::GetStructure(CreateIfNotExistsTag)
     {
         if (!m_structure)
-            m_structure = boost::in_place(this, m_uidMgr);
+            m_structure = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
         return *m_structure;
     }
 

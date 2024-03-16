@@ -25,6 +25,7 @@
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSectionElement.h"
 #include "CCPACSGenericSystem.h"
+#include "CCPACSHull.h"
 #include "CCPACSNacelleSection.h"
 #include "CCPACSRotor.h"
 #include "CCPACSRotorHinge.h"
@@ -32,7 +33,6 @@
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSectionElement.h"
 #include "CPACSGenericFuelTankParameters.h"
-#include "CPACSHull.h"
 #include "CPACSLandingGearBase.h"
 #include "CPACSTransformation.h"
 #include "CTiglError.h"
@@ -124,12 +124,12 @@ namespace generated
         m_parentType = &typeid(CCPACSGenericSystem);
     }
 
-    CPACSTransformation::CPACSTransformation(CPACSHull* parent, CTiglUIDManager* uidMgr)
+    CPACSTransformation::CPACSTransformation(CCPACSHull* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSHull);
+        m_parentType = &typeid(CCPACSHull);
     }
 
     CPACSTransformation::CPACSTransformation(CPACSLandingGearBase* parent, CTiglUIDManager* uidMgr)
@@ -226,8 +226,8 @@ namespace generated
             if (IsParent<CCPACSGenericSystem>()) {
                 return GetParent<CCPACSGenericSystem>();
             }
-            if (IsParent<CPACSHull>()) {
-                return GetParent<CPACSHull>();
+            if (IsParent<CCPACSHull>()) {
+                return GetParent<CCPACSHull>();
             }
             if (IsParent<CPACSLandingGearBase>()) {
                 return GetParent<CPACSLandingGearBase>();
@@ -287,8 +287,8 @@ namespace generated
             if (IsParent<CCPACSGenericSystem>()) {
                 return GetParent<CCPACSGenericSystem>();
             }
-            if (IsParent<CPACSHull>()) {
-                return GetParent<CPACSHull>();
+            if (IsParent<CCPACSHull>()) {
+                return GetParent<CCPACSHull>();
             }
             if (IsParent<CPACSLandingGearBase>()) {
                 return GetParent<CPACSLandingGearBase>();

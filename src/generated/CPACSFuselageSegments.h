@@ -32,11 +32,10 @@ class CTiglUIDObject;
 class CCPACSFuselageSegment;
 class CCPACSDuct;
 class CCPACSFuselage;
+class CCPACSHull;
 
 namespace generated
 {
-    class CPACSHull;
-
     // This class is used in:
     // CPACSDuct
     // CPACSFuselage
@@ -52,7 +51,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSFuselageSegments(CPACSHull* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuselageSegments(CCPACSHull* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFuselageSegments();
 
@@ -65,7 +64,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CPACSHull>::value, "template argument for P is not a parent class of CPACSFuselageSegments");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSHull>::value, "template argument for P is not a parent class of CPACSFuselageSegments");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -75,7 +74,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CPACSHull>::value, "template argument for P is not a parent class of CPACSFuselageSegments");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSHull>::value, "template argument for P is not a parent class of CPACSFuselageSegments");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -115,7 +114,4 @@ namespace generated
 } // namespace generated
 
 // CPACSFuselageSegments is customized, use type CCPACSFuselageSegments directly
-
-// Aliases in tigl namespace
-using CCPACSHull = generated::CPACSHull;
 } // namespace tigl

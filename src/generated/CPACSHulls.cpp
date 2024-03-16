@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include <CCPACSHull.h>
 #include "CPACSGenericFuelTank.h"
-#include "CPACSHull.h"
 #include "CPACSHulls.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -92,23 +92,23 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSHull>>& CPACSHulls::GetHulls() const
+    const std::vector<std::unique_ptr<CCPACSHull>>& CPACSHulls::GetHulls() const
     {
         return m_hulls;
     }
 
-    std::vector<std::unique_ptr<CPACSHull>>& CPACSHulls::GetHulls()
+    std::vector<std::unique_ptr<CCPACSHull>>& CPACSHulls::GetHulls()
     {
         return m_hulls;
     }
 
-    CPACSHull& CPACSHulls::AddHull()
+    CCPACSHull& CPACSHulls::AddHull()
     {
-        m_hulls.push_back(make_unique<CPACSHull>(this, m_uidMgr));
+        m_hulls.push_back(make_unique<CCPACSHull>(this, m_uidMgr));
         return *m_hulls.back();
     }
 
-    void CPACSHulls::RemoveHull(CPACSHull& ref)
+    void CPACSHulls::RemoveHull(CCPACSHull& ref)
     {
         for (std::size_t i = 0; i < m_hulls.size(); i++) {
             if (m_hulls[i].get() == &ref) {

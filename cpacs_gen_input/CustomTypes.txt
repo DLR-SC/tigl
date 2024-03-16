@@ -149,3 +149,6 @@ CPACSDuct                                CCPACSDuct
 CPACSDuctStructure                       CCPACSDuctStructure
 CPACSDuctAssembly                        CCPACSDuctAssembly
 CPACSDucts                               CCPACSDucts
+
+// Tanks
+CPACSHull                                CCPACSHull

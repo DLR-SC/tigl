@@ -71,3 +71,9 @@ TEST_F(FuselageTank, getName)
     const std::string name = fuelTank->GetName();
     EXPECT_EQ(name, "Simple tank");
 }
+
+TEST_F(FuselageTank, getViaTree)
+{
+    const std::string name = fuelTank->GetName();
+    EXPECT_EQ(name, "Simple tank");
+}

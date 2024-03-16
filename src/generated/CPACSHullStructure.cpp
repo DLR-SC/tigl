@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSHull.h"
+#include "CCPACSHull.h"
 #include "CPACSHullStructure.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSHullStructure::CPACSHullStructure(CPACSHull* parent, CTiglUIDManager* uidMgr)
+    CPACSHullStructure::CPACSHullStructure(CCPACSHull* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -39,12 +39,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CPACSHull* CPACSHullStructure::GetParent() const
+    const CCPACSHull* CPACSHullStructure::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSHull* CPACSHullStructure::GetParent()
+    CCPACSHull* CPACSHullStructure::GetParent()
     {
         return m_parent;
     }

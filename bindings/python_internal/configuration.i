@@ -96,6 +96,8 @@
 #include "CCPACSDucts.h"
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
+#include "generated/CPACSFuselageFuelTanks.h"
+#include "generated/CPACSGenericFuelTanks.h"
 %}
 
 %feature("autodoc", "3");
@@ -327,8 +329,8 @@ namespace tigl
 
 // --------------- Fuselage tanks -----------------//
 // ToDo: Check which classes need to be assigned to boost_optional
-// %boost_optional(tigl::generated::CPACSGenericFuelTanks)
-// %boost_optional(tigl::generated::CPACSFuselageFuelTanks)
+%boost_optional(tigl::generated::CPACSGenericFuelTanks)
+%boost_optional(tigl::generated::CPACSFuselageFuelTanks)
 
 %include "generated/CPACSGenericFuelTanks.h"
 %include "generated/CPACSFuselageFuelTanks.h"

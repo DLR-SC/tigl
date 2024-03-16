@@ -27,10 +27,10 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSHull;
 
 namespace generated
 {
-    class CPACSHull;
     class CPACSGenericFuelTank;
 
     // This class is used in:
@@ -59,18 +59,18 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSHull>>& GetHulls() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSHull>>& GetHulls();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSHull>>& GetHulls() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSHull>>& GetHulls();
 
-        TIGL_EXPORT virtual CPACSHull& AddHull();
-        TIGL_EXPORT virtual void RemoveHull(CPACSHull& ref);
+        TIGL_EXPORT virtual CCPACSHull& AddHull();
+        TIGL_EXPORT virtual void RemoveHull(CCPACSHull& ref);
 
     protected:
         CPACSGenericFuelTank* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSHull>> m_hulls;
+        std::vector<std::unique_ptr<CCPACSHull>> m_hulls;
 
     private:
         CPACSHulls(const CPACSHulls&) = delete;
@@ -83,6 +83,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSHulls = generated::CPACSHulls;
-using CCPACSHull = generated::CPACSHull;
 using CCPACSGenericFuelTank = generated::CPACSGenericFuelTank;
 } // namespace tigl
