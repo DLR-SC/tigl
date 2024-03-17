@@ -16,13 +16,12 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS hulls handling routines.
+* @brief  Implementation of CPACS genericFuelTank handling routines.
 */
 
 #pragma once
 
 #include "generated/CPACSGenericFuelTank.h"
-// #include <functional>
 
 namespace tigl {
 

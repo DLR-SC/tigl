@@ -49,7 +49,7 @@ std::string CCPACSHull::GetDefaultedUID() const
 
 TiglGeometricComponentType CCPACSHull::GetComponentType() const
 {
-    return TIGL_COMPONENT_DUCT;
+    return TIGL_COMPONENT_FUSELAGE_TANK_HULL;
 }
 
 TiglGeometricComponentIntent CCPACSHull::GetComponentIntent() const
@@ -145,17 +145,5 @@ void CCPACSHull::SetFaceTraits (PNamedShape loft) const
         loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
     }
 }
-
-// void CCPACSDuct::RegisterInvalidationCallback(std::function<void()> const& fn){
-//     invalidationCallbacks.push_back(fn);
-// }
-
-// void CCPACSDuct::InvalidateImpl(const boost::optional<std::string>&) const
-// {
-//     CTiglAbstractGeometricComponent::Reset();
-//     for (auto const& invalidator: invalidationCallbacks) {
-//         invalidator();
-//     }
-// }
 
 } //namespace tigl

@@ -32,21 +32,11 @@ public:
 
     TIGL_EXPORT CCPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr);
 
-
     TIGL_EXPORT CCPACSHull const& GetHull(std::string const& uid) const;
     TIGL_EXPORT CCPACSHull& GetHull(std::string const& uid);
 
-    TIGL_EXPORT bool IsEnabled()  const;
-    TIGL_EXPORT void SetEnabled(bool val=true);
-
-    // //Any AbstractGeometricComponent, that shall be cut with ducts, can register its Invalidation
-    // //as a callback.
-    // TIGL_EXPORT void RegisterInvalidationCallback(std::function<void()> const&);
-
 private:
-    bool enabled;
 
-    std::vector<std::function<void()>> invalidationCallbacks;
 };
 
 } //namespace tigl

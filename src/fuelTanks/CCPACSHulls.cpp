@@ -23,18 +23,11 @@
 #include "CCPACSHull.h"
 #include "CTiglError.h"
 
-// #include <algorithm>
-
 namespace tigl {
 
 CCPACSHulls::CCPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSHulls(parent, uidMgr)
-    , enabled(false)
 {}
-
-// void CCPACSHulls::RegisterInvalidationCallback(std::function<void()> const& fn){
-//     invalidationCallbacks.push_back(fn);
-// }
 
 CCPACSHull const& CCPACSHulls::GetHull(std::string const& uid) const
 {
@@ -49,22 +42,6 @@ CCPACSHull& CCPACSHulls::GetHull(std::string const& uid)
         return **it;
     }
     throw CTiglError("Could not find hull with uid" + uid);
-}
-
-
-bool CCPACSHulls::IsEnabled() const
-{
-    return enabled;
-}
-
-void CCPACSHulls::SetEnabled(bool val)
-{
-    if (enabled != val) {
-        for (auto const& invalidator: invalidationCallbacks) {
-            invalidator();
-        }
-        enabled = val;
-    }
 }
 
 } //namespace tigl

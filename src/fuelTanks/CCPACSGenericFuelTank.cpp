@@ -16,7 +16,7 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS ducts handling routines.
+* @brief  Implementation of CPACS genericFuelTank handling routines.
 */
 
 #include "CCPACSGenericFuelTank.h"
@@ -28,7 +28,6 @@ namespace tigl {
 
 CCPACSGenericFuelTank::CCPACSGenericFuelTank(CCPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSGenericFuelTank(parent, uidMgr)
-    // , enabled(false)
 {}
 
 } //namespace tigl

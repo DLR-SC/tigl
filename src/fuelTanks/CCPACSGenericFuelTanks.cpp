@@ -16,7 +16,7 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS ducts handling routines.
+* @brief  Implementation of CPACS genericFuelTanks handling routines.
 */
 
 #include "CCPACSGenericFuelTanks.h"

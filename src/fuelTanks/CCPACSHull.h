@@ -24,7 +24,7 @@
 #include "generated/CPACSHull.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSConfiguration.h"
-#include "generated/CPACSHulls.h"
+#include "CCPACSHulls.h"
 
 namespace tigl
 {
@@ -41,23 +41,15 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
-    // //Any DuctAssembly that references this duct element, can register its Invalidation
-    // //as a callback.
-    // TIGL_EXPORT void RegisterInvalidationCallback(std::function<void()> const&);
-
 protected:
     PNamedShape BuildLoft() const override;
 
 private:
 
-    // virtual void InvalidateImpl(const boost::optional<std::string>&) const override;
-
-    // // get short name for loft
+    // get short name for loft
     std::string GetShortShapeName() const;
 
     void SetFaceTraits (PNamedShape loft) const;
-
-    // std::vector<std::function<void()>> invalidationCallbacks;
 
 };
 
