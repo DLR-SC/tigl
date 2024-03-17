@@ -74,6 +74,9 @@ CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
     else if (IsParent<CCPACSDuct>()) {
         return GetParent<CCPACSDuct>()->GetConfiguration();
     }
+    else if (IsParent<CCPACSHull>()) {
+        return GetParent<CCPACSHull>()->GetConfiguration();
+    }
     else
     {
         throw CTiglError("CCPACSFuselageSegments: Unknown parent.");

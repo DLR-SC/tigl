@@ -25,6 +25,7 @@
 #include "CTiglFuselageSegmentGuidecurveBuilder.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
+#include "CCPACSHull.h"
 
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"
@@ -261,6 +262,19 @@ std::string CCPACSFuselageSegment::GetShortShapeName() const
         for (auto& d: duct->GetParent()->GetDucts()) {
             ++i;
             if (duct->GetUID() == d->GetUID()) {
+                findex = i;
+                break;
+            }
+        }
+    }
+    else if (m_parent->IsParent<CCPACSHull>()) {
+
+        prefix = "H";
+        auto* hull = m_parent->GetParent<CCPACSHull>();
+        unsigned int i = 0;
+        for (auto& h: hull->GetParent()->GetHulls()) {
+            ++i;
+            if (hull->GetUID() == h->GetUID()) {
                 findex = i;
                 break;
             }

@@ -27,6 +27,8 @@
 #include "CTiglError.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
+#include "CCPACSHull.h"
+#include "CPACSGenericFuelTank.h"
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSegment.h"
@@ -159,6 +161,9 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
     else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetSections();
     }
+    else if (segment->GetParent()->IsParent<CCPACSHull>()) {
+        return segment->GetParent()->GetParent<CCPACSHull>()->GetSections();
+    }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");
     }
@@ -171,6 +176,9 @@ boost::optional<CCPACSPositionings>& CTiglFuselageConnection::GetParentComponent
     }
     else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetPositionings();
+    }
+    else if (segment->GetParent()->IsParent<CCPACSHull>()) {
+        return segment->GetParent()->GetParent<CCPACSHull>()->GetParent()->GetParent()->GetParent()->GetParent()->GetParent()->GetPositionings();
     }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");
