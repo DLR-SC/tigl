@@ -23,7 +23,7 @@
 
 #include "generated/CPACSHull.h"
 #include "CTiglRelativelyPositionedComponent.h"
-// #include "CCPACSConfiguration.h"
+#include "CCPACSConfiguration.h"
 #include "generated/CPACSHulls.h"
 
 namespace tigl
@@ -35,7 +35,7 @@ public:
 
     TIGL_EXPORT explicit CCPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr);
 
-    // TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;

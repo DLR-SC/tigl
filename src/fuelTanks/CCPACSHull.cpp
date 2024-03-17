@@ -25,6 +25,10 @@
 #include "CNamedShape.h"
 #include "CTiglTopoAlgorithms.h"
 #include "tiglcommonfunctions.h"
+#include "generated/CPACSGenericFuelTank.h"
+#include "generated/CPACSGenericFuelTanks.h"
+#include "generated/CPACSFuselageFuelTanks.h"
+
 
 namespace tigl {
 
@@ -33,11 +37,10 @@ CCPACSHull::CCPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr)
   , CTiglRelativelyPositionedComponent(static_cast<std::string*>(nullptr), &m_transformation)
 {}
 
-// CCPACSConfiguration& CCPACSHull::GetConfiguration() const
-// {
-//     // return GetParent()->GetParent()->GetConfiguration();
-//     return GetParent()->GetParent()
-// }
+CCPACSConfiguration& CCPACSHull::GetConfiguration() const
+{
+    return GetParent()->GetParent()->GetParent()->GetParent()->GetParent()->GetConfiguration();
+}
 
 std::string CCPACSHull::GetDefaultedUID() const
 {
