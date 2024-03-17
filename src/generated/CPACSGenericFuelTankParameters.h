@@ -18,7 +18,6 @@
 #pragma once
 
 #include <CCPACSMaterialDefinition.h>
-#include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSDomeType.h"
@@ -28,11 +27,10 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSGenericFuelTank;
 
 namespace generated
 {
-    class CPACSGenericFuelTank;
-
     // This class is used in:
     // CPACSGenericFuelTank
 
@@ -42,13 +40,13 @@ namespace generated
     class CPACSGenericFuelTankParameters
     {
     public:
-        TIGL_EXPORT CPACSGenericFuelTankParameters(CPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSGenericFuelTankParameters(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSGenericFuelTankParameters();
 
-        TIGL_EXPORT CPACSGenericFuelTank* GetParent();
+        TIGL_EXPORT CCPACSGenericFuelTank* GetParent();
 
-        TIGL_EXPORT const CPACSGenericFuelTank* GetParent() const;
+        TIGL_EXPORT const CCPACSGenericFuelTank* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -58,9 +56,6 @@ namespace generated
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-
-        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
         TIGL_EXPORT virtual const double& GetCylinderRadius() const;
         TIGL_EXPORT virtual void SetCylinderRadius(const double& value);
@@ -75,11 +70,9 @@ namespace generated
         TIGL_EXPORT virtual CCPACSMaterialDefinition& GetMaterial();
 
     protected:
-        CPACSGenericFuelTank* m_parent;
+        CCPACSGenericFuelTank* m_parent;
 
         CTiglUIDManager* m_uidMgr;
-
-        CCPACSTransformation     m_transformation;
 
         /// Inner radius of the cylinder
         double                   m_cylinderRadius;
@@ -102,5 +95,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSGenericFuelTankParameters = generated::CPACSGenericFuelTankParameters;
-using CCPACSGenericFuelTank = generated::CPACSGenericFuelTank;
 } // namespace tigl

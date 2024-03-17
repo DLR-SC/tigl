@@ -24,6 +24,7 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSectionElement.h"
+#include "CCPACSGenericFuelTank.h"
 #include "CCPACSGenericSystem.h"
 #include "CCPACSHull.h"
 #include "CCPACSNacelleSection.h"
@@ -32,7 +33,6 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSectionElement.h"
-#include "CPACSGenericFuelTankParameters.h"
 #include "CPACSLandingGearBase.h"
 #include "CPACSTransformation.h"
 #include "CTiglError.h"
@@ -100,12 +100,12 @@ namespace generated
         m_parentType = &typeid(CCPACSFuselageSection);
     }
 
-    CPACSTransformation::CPACSTransformation(CPACSGenericFuelTankParameters* parent, CTiglUIDManager* uidMgr)
+    CPACSTransformation::CPACSTransformation(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSGenericFuelTankParameters);
+        m_parentType = &typeid(CCPACSGenericFuelTank);
     }
 
     CPACSTransformation::CPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr)
@@ -217,8 +217,8 @@ namespace generated
             if (IsParent<CCPACSFuselageSection>()) {
                 return GetParent<CCPACSFuselageSection>();
             }
-            if (IsParent<CPACSGenericFuelTankParameters>()) {
-                return GetParent<CPACSGenericFuelTankParameters>()->GetNextUIDParent();
+            if (IsParent<CCPACSGenericFuelTank>()) {
+                return GetParent<CCPACSGenericFuelTank>();
             }
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();
@@ -278,8 +278,8 @@ namespace generated
             if (IsParent<CCPACSFuselageSection>()) {
                 return GetParent<CCPACSFuselageSection>();
             }
-            if (IsParent<CPACSGenericFuelTankParameters>()) {
-                return GetParent<CPACSGenericFuelTankParameters>()->GetNextUIDParent();
+            if (IsParent<CCPACSGenericFuelTank>()) {
+                return GetParent<CCPACSGenericFuelTank>();
             }
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();

@@ -19,11 +19,12 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSHulls.h>
+#include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSFuelTankVolume.h"
 #include "CPACSGenericFuelTankParameters.h"
-#include "CPACSHulls.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -31,11 +32,10 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSGenericFuelTanks;
 
 namespace generated
 {
-    class CPACSGenericFuelTanks;
-
     // This class is used in:
     // CPACSGenericFuelTanks
 
@@ -45,13 +45,13 @@ namespace generated
     class CPACSGenericFuelTank : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSGenericFuelTank(CPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSGenericFuelTank(CCPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSGenericFuelTank();
 
-        TIGL_EXPORT CPACSGenericFuelTanks* GetParent();
+        TIGL_EXPORT CCPACSGenericFuelTanks* GetParent();
 
-        TIGL_EXPORT const CPACSGenericFuelTanks* GetParent() const;
+        TIGL_EXPORT const CCPACSGenericFuelTanks* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -73,11 +73,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSHulls>& GetHulls_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CPACSHulls>& GetHulls_choice1();
+        TIGL_EXPORT virtual const boost::optional<CCPACSHulls>& GetHulls_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSHulls>& GetHulls_choice1();
 
         TIGL_EXPORT virtual const boost::optional<CPACSGenericFuelTankParameters>& GetDesignParameters_choice2() const;
         TIGL_EXPORT virtual boost::optional<CPACSGenericFuelTankParameters>& GetDesignParameters_choice2();
+
+        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
+        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
         TIGL_EXPORT virtual const boost::optional<CPACSFuelTankVolume>& GetVolume() const;
         TIGL_EXPORT virtual boost::optional<CPACSFuelTankVolume>& GetVolume();
@@ -85,7 +88,7 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetBurstPressure() const;
         TIGL_EXPORT virtual void SetBurstPressure(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual CPACSHulls& GetHulls_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSHulls& GetHulls_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveHulls_choice1();
 
         TIGL_EXPORT virtual CPACSGenericFuelTankParameters& GetDesignParameters_choice2(CreateIfNotExistsTag);
@@ -95,7 +98,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveVolume();
 
     protected:
-        CPACSGenericFuelTanks* m_parent;
+        CCPACSGenericFuelTanks* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -107,9 +110,11 @@ namespace generated
         /// Description
         boost::optional<std::string>                    m_description;
 
-        boost::optional<CPACSHulls>                     m_hulls_choice1;
+        boost::optional<CCPACSHulls>                    m_hulls_choice1;
 
         boost::optional<CPACSGenericFuelTankParameters> m_designParameters_choice2;
+
+        CCPACSTransformation                            m_transformation;
 
         /// Volume
         boost::optional<CPACSFuelTankVolume>            m_volume;
@@ -126,7 +131,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSGenericFuelTank = generated::CPACSGenericFuelTank;
-using CCPACSGenericFuelTanks = generated::CPACSGenericFuelTanks;
+// CPACSGenericFuelTank is customized, use type CCPACSGenericFuelTank directly
 } // namespace tigl

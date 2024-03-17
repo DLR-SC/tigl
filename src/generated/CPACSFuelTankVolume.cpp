@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSGenericFuelTank.h"
 #include "CPACSFuelTankVolume.h"
-#include "CPACSGenericFuelTank.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDObject.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSFuelTankVolume::CPACSFuelTankVolume(CPACSGenericFuelTank* parent)
+    CPACSFuelTankVolume::CPACSFuelTankVolume(CCPACSGenericFuelTank* parent)
         : m_optimalVolume(0)
     {
         //assert(parent != NULL);
@@ -38,12 +38,12 @@ namespace generated
     {
     }
 
-    const CPACSGenericFuelTank* CPACSFuelTankVolume::GetParent() const
+    const CCPACSGenericFuelTank* CPACSFuelTankVolume::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSGenericFuelTank* CPACSFuelTankVolume::GetParent()
+    CCPACSGenericFuelTank* CPACSFuelTankVolume::GetParent()
     {
         return m_parent;
     }

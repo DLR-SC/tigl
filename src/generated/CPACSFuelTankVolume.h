@@ -26,11 +26,10 @@
 namespace tigl
 {
 class CTiglUIDObject;
+class CCPACSGenericFuelTank;
 
 namespace generated
 {
-    class CPACSGenericFuelTank;
-
     // This class is used in:
     // CPACSGenericFuelTank
 
@@ -41,13 +40,13 @@ namespace generated
     class CPACSFuelTankVolume
     {
     public:
-        TIGL_EXPORT CPACSFuelTankVolume(CPACSGenericFuelTank* parent);
+        TIGL_EXPORT CPACSFuelTankVolume(CCPACSGenericFuelTank* parent);
 
         TIGL_EXPORT virtual ~CPACSFuelTankVolume();
 
-        TIGL_EXPORT CPACSGenericFuelTank* GetParent();
+        TIGL_EXPORT CCPACSGenericFuelTank* GetParent();
 
-        TIGL_EXPORT const CPACSGenericFuelTank* GetParent() const;
+        TIGL_EXPORT const CCPACSGenericFuelTank* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -73,7 +72,7 @@ namespace generated
         TIGL_EXPORT virtual void SetRealVolumeFactor_choice2(const boost::optional<double>& value);
 
     protected:
-        CPACSGenericFuelTank* m_parent;
+        CCPACSGenericFuelTank* m_parent;
 
         /// Theoretical volume if material thicknesses
         /// (ribs, spars, skins, stringers) and systems (fuel pumps,
@@ -105,5 +104,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSFuelTankVolume = generated::CPACSFuelTankVolume;
-using CCPACSGenericFuelTank = generated::CPACSGenericFuelTank;
 } // namespace tigl

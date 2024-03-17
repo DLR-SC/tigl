@@ -20,14 +20,14 @@
 */
 
 #include "CCPACSHull.h"
+#include "CCPACSHulls.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglMakeLoft.h"
 #include "CNamedShape.h"
 #include "CTiglTopoAlgorithms.h"
 #include "tiglcommonfunctions.h"
-#include "generated/CPACSGenericFuelTank.h"
-#include "generated/CPACSGenericFuelTanks.h"
-#include "generated/CPACSFuselageFuelTanks.h"
+#include "CCPACSGenericFuelTank.h"
+#include "CCPACSGenericFuelTanks.h"
 
 
 namespace tigl {

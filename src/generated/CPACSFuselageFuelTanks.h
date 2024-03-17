@@ -19,9 +19,9 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSGenericFuelTanks.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSGenericFuelTanks.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -60,10 +60,10 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const boost::optional<CPACSGenericFuelTanks>& GetGenericFuelTanks() const;
-        TIGL_EXPORT virtual boost::optional<CPACSGenericFuelTanks>& GetGenericFuelTanks();
+        TIGL_EXPORT virtual const boost::optional<CCPACSGenericFuelTanks>& GetGenericFuelTanks() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSGenericFuelTanks>& GetGenericFuelTanks();
 
-        TIGL_EXPORT virtual CPACSGenericFuelTanks& GetGenericFuelTanks(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSGenericFuelTanks& GetGenericFuelTanks(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveGenericFuelTanks();
 
     protected:
@@ -71,7 +71,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CPACSGenericFuelTanks> m_genericFuelTanks;
+        boost::optional<CCPACSGenericFuelTanks> m_genericFuelTanks;
 
     private:
         CPACSFuselageFuelTanks(const CPACSFuselageFuelTanks&) = delete;

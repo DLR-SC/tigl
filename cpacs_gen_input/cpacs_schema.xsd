@@ -34211,6 +34211,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <xsd:element name="hulls" type="hullsType"/>
                         <xsd:element name="designParameters" type="genericFuelTankParametersType"/>
                     </xsd:choice>
+                    <xsd:element name="transformation" type="transformationType"/>
                     <xsd:element name="volume" minOccurs="0" type="fuelTankVolumeType">
                         <xsd:annotation>
                             <xsd:documentation>Volume</xsd:documentation>
@@ -34295,7 +34296,6 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:all>
-                    <xsd:element name="transformation" type="transformationType"/>
                     <xsd:element name="cylinderRadius" type="doubleBaseType">
                         <xsd:annotation>
                             <xsd:documentation>Inner radius of the cylinder</xsd:documentation>

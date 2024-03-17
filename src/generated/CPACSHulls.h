@@ -28,11 +28,10 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSHull;
+class CCPACSGenericFuelTank;
 
 namespace generated
 {
-    class CPACSGenericFuelTank;
-
     // This class is used in:
     // CPACSGenericFuelTank
 
@@ -42,13 +41,13 @@ namespace generated
     class CPACSHulls
     {
     public:
-        TIGL_EXPORT CPACSHulls(CPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSHulls();
 
-        TIGL_EXPORT CPACSGenericFuelTank* GetParent();
+        TIGL_EXPORT CCPACSGenericFuelTank* GetParent();
 
-        TIGL_EXPORT const CPACSGenericFuelTank* GetParent() const;
+        TIGL_EXPORT const CCPACSGenericFuelTank* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -66,7 +65,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveHull(CCPACSHull& ref);
 
     protected:
-        CPACSGenericFuelTank* m_parent;
+        CCPACSGenericFuelTank* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -81,7 +80,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSHulls = generated::CPACSHulls;
-using CCPACSGenericFuelTank = generated::CPACSGenericFuelTank;
+// CPACSHulls is customized, use type CCPACSHulls directly
 } // namespace tigl

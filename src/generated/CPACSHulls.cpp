@@ -17,7 +17,7 @@
 
 #include <cassert>
 #include <CCPACSHull.h>
-#include "CPACSGenericFuelTank.h"
+#include "CCPACSGenericFuelTank.h"
 #include "CPACSHulls.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSHulls::CPACSHulls(CPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
+    CPACSHulls::CPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSGenericFuelTank* CPACSHulls::GetParent() const
+    const CCPACSGenericFuelTank* CPACSHulls::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSGenericFuelTank* CPACSHulls::GetParent()
+    CCPACSGenericFuelTank* CPACSHulls::GetParent()
     {
         return m_parent;
     }
@@ -80,7 +80,7 @@ namespace generated
     {
         // read element hull
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/hull")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/hull", m_hulls, 1, tixi::xsdUnbounded, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/hull", m_hulls, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSHulls*>(this), m_uidMgr);
         }
 
     }
@@ -104,7 +104,7 @@ namespace generated
 
     CCPACSHull& CPACSHulls::AddHull()
     {
-        m_hulls.push_back(make_unique<CCPACSHull>(this, m_uidMgr));
+        m_hulls.push_back(make_unique<CCPACSHull>(reinterpret_cast<CCPACSHulls*>(this), m_uidMgr));
         return *m_hulls.back();
     }
 

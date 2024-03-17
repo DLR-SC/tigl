@@ -23,7 +23,7 @@
 #include "test.h"
 #include "tigl.h"
 
-#include "generated/CPACSGenericFuelTank.h"
+#include "CCPACSGenericFuelTank.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 

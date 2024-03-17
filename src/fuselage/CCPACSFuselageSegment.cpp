@@ -26,6 +26,7 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
 #include "CCPACSHull.h"
+#include "CCPACSHulls.h"
 
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"

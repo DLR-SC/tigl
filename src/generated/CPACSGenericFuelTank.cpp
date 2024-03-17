@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSGenericFuelTanks.h"
 #include "CPACSGenericFuelTank.h"
-#include "CPACSGenericFuelTanks.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,8 +27,9 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSGenericFuelTank::CPACSGenericFuelTank(CPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr)
+    CPACSGenericFuelTank::CPACSGenericFuelTank(CCPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
+        , m_transformation(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -39,12 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CPACSGenericFuelTanks* CPACSGenericFuelTank::GetParent() const
+    const CCPACSGenericFuelTanks* CPACSGenericFuelTank::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSGenericFuelTanks* CPACSGenericFuelTank::GetParent()
+    CCPACSGenericFuelTanks* CPACSGenericFuelTank::GetParent()
     {
         return m_parent;
     }
@@ -115,7 +116,7 @@ namespace generated
 
         // read element hulls
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/hulls")) {
-            m_hulls_choice1 = boost::in_place(this, m_uidMgr);
+            m_hulls_choice1 = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr);
             try {
                 m_hulls_choice1->ReadCPACS(tixiHandle, xpath + "/hulls");
             } catch(const std::exception& e) {
@@ -126,7 +127,7 @@ namespace generated
 
         // read element designParameters
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/designParameters")) {
-            m_designParameters_choice2 = boost::in_place(this, m_uidMgr);
+            m_designParameters_choice2 = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr);
             try {
                 m_designParameters_choice2->ReadCPACS(tixiHandle, xpath + "/designParameters");
             } catch(const std::exception& e) {
@@ -135,9 +136,17 @@ namespace generated
             }
         }
 
+        // read element transformation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
+        }
+        else {
+            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
+        }
+
         // read element volume
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/volume")) {
-            m_volume = boost::in_place(this);
+            m_volume = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this));
             try {
                 m_volume->ReadCPACS(tixiHandle, xpath + "/volume");
             } catch(const std::exception& e) {
@@ -159,7 +168,7 @@ namespace generated
 
     void CPACSGenericFuelTank::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "hulls", "designParameters", "volume", "burstPressure" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "hulls", "designParameters", "transformation", "volume", "burstPressure" };
 
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -200,6 +209,10 @@ namespace generated
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/designParameters");
             }
         }
+
+        // write element transformation
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/transformation", childElemOrder);
+        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
         // write element volume
         if (m_volume) {
@@ -293,12 +306,12 @@ namespace generated
         m_description = value;
     }
 
-    const boost::optional<CPACSHulls>& CPACSGenericFuelTank::GetHulls_choice1() const
+    const boost::optional<CCPACSHulls>& CPACSGenericFuelTank::GetHulls_choice1() const
     {
         return m_hulls_choice1;
     }
 
-    boost::optional<CPACSHulls>& CPACSGenericFuelTank::GetHulls_choice1()
+    boost::optional<CCPACSHulls>& CPACSGenericFuelTank::GetHulls_choice1()
     {
         return m_hulls_choice1;
     }
@@ -311,6 +324,16 @@ namespace generated
     boost::optional<CPACSGenericFuelTankParameters>& CPACSGenericFuelTank::GetDesignParameters_choice2()
     {
         return m_designParameters_choice2;
+    }
+
+    const CCPACSTransformation& CPACSGenericFuelTank::GetTransformation() const
+    {
+        return m_transformation;
+    }
+
+    CCPACSTransformation& CPACSGenericFuelTank::GetTransformation()
+    {
+        return m_transformation;
     }
 
     const boost::optional<CPACSFuelTankVolume>& CPACSGenericFuelTank::GetVolume() const
@@ -333,10 +356,10 @@ namespace generated
         m_burstPressure = value;
     }
 
-    CPACSHulls& CPACSGenericFuelTank::GetHulls_choice1(CreateIfNotExistsTag)
+    CCPACSHulls& CPACSGenericFuelTank::GetHulls_choice1(CreateIfNotExistsTag)
     {
         if (!m_hulls_choice1)
-            m_hulls_choice1 = boost::in_place(this, m_uidMgr);
+            m_hulls_choice1 = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr);
         return *m_hulls_choice1;
     }
 
@@ -348,7 +371,7 @@ namespace generated
     CPACSGenericFuelTankParameters& CPACSGenericFuelTank::GetDesignParameters_choice2(CreateIfNotExistsTag)
     {
         if (!m_designParameters_choice2)
-            m_designParameters_choice2 = boost::in_place(this, m_uidMgr);
+            m_designParameters_choice2 = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr);
         return *m_designParameters_choice2;
     }
 
@@ -360,7 +383,7 @@ namespace generated
     CPACSFuelTankVolume& CPACSGenericFuelTank::GetVolume(CreateIfNotExistsTag)
     {
         if (!m_volume)
-            m_volume = boost::in_place(this);
+            m_volume = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this));
         return *m_volume;
     }
 

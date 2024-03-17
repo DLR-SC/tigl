@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSGenericFuelTank.h"
+#include "CCPACSGenericFuelTank.h"
 #include "CPACSGenericFuelTankParameters.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -28,9 +28,8 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSGenericFuelTankParameters::CPACSGenericFuelTankParameters(CPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
+    CPACSGenericFuelTankParameters::CPACSGenericFuelTankParameters(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_transformation(this, m_uidMgr)
         , m_cylinderRadius(0)
         , m_cylinderLength(0)
         , m_domeType(this)
@@ -44,12 +43,12 @@ namespace generated
     {
     }
 
-    const CPACSGenericFuelTank* CPACSGenericFuelTankParameters::GetParent() const
+    const CCPACSGenericFuelTank* CPACSGenericFuelTankParameters::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSGenericFuelTank* CPACSGenericFuelTankParameters::GetParent()
+    CCPACSGenericFuelTank* CPACSGenericFuelTankParameters::GetParent()
     {
         return m_parent;
     }
@@ -82,14 +81,6 @@ namespace generated
 
     void CPACSGenericFuelTankParameters::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element transformation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
-        }
-        else {
-            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
-        }
-
         // read element cylinderRadius
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cylinderRadius")) {
             m_cylinderRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/cylinderRadius");
@@ -126,10 +117,6 @@ namespace generated
 
     void CPACSGenericFuelTankParameters::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element transformation
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
-        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
-
         // write element cylinderRadius
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cylinderRadius");
         tixi::TixiSaveElement(tixiHandle, xpath + "/cylinderRadius", m_cylinderRadius);
@@ -146,16 +133,6 @@ namespace generated
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/material");
         m_material.WriteCPACS(tixiHandle, xpath + "/material");
 
-    }
-
-    const CCPACSTransformation& CPACSGenericFuelTankParameters::GetTransformation() const
-    {
-        return m_transformation;
-    }
-
-    CCPACSTransformation& CPACSGenericFuelTankParameters::GetTransformation()
-    {
-        return m_transformation;
     }
 
     const double& CPACSGenericFuelTankParameters::GetCylinderRadius() const

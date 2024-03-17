@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include <CCPACSGenericFuelTank.h>
 #include "CPACSFuselageFuelTanks.h"
-#include "CPACSGenericFuelTank.h"
 #include "CPACSGenericFuelTanks.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -86,7 +86,7 @@ namespace generated
     {
         // read element genericFuelTank
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericFuelTank")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/genericFuelTank", m_genericFuelTanks, 1, tixi::xsdUnbounded, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/genericFuelTank", m_genericFuelTanks, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSGenericFuelTanks*>(this), m_uidMgr);
         }
 
     }
@@ -98,23 +98,23 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSGenericFuelTank>>& CPACSGenericFuelTanks::GetGenericFuelTanks() const
+    const std::vector<std::unique_ptr<CCPACSGenericFuelTank>>& CPACSGenericFuelTanks::GetGenericFuelTanks() const
     {
         return m_genericFuelTanks;
     }
 
-    std::vector<std::unique_ptr<CPACSGenericFuelTank>>& CPACSGenericFuelTanks::GetGenericFuelTanks()
+    std::vector<std::unique_ptr<CCPACSGenericFuelTank>>& CPACSGenericFuelTanks::GetGenericFuelTanks()
     {
         return m_genericFuelTanks;
     }
 
-    CPACSGenericFuelTank& CPACSGenericFuelTanks::AddGenericFuelTank()
+    CCPACSGenericFuelTank& CPACSGenericFuelTanks::AddGenericFuelTank()
     {
-        m_genericFuelTanks.push_back(make_unique<CPACSGenericFuelTank>(this, m_uidMgr));
+        m_genericFuelTanks.push_back(make_unique<CCPACSGenericFuelTank>(reinterpret_cast<CCPACSGenericFuelTanks*>(this), m_uidMgr));
         return *m_genericFuelTanks.back();
     }
 
-    void CPACSGenericFuelTanks::RemoveGenericFuelTank(CPACSGenericFuelTank& ref)
+    void CPACSGenericFuelTanks::RemoveGenericFuelTank(CCPACSGenericFuelTank& ref)
     {
         for (std::size_t i = 0; i < m_genericFuelTanks.size(); i++) {
             if (m_genericFuelTanks[i].get() == &ref) {

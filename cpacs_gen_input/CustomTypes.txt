@@ -152,3 +152,6 @@ CPACSDucts                               CCPACSDucts
 
 // Tanks
 CPACSHull                                CCPACSHull
+CPACSHulls                               CCPACSHulls
+CPACSGenericFuelTank                     CCPACSGenericFuelTank
+CPACSGenericFuelTanks                    CCPACSGenericFuelTanks

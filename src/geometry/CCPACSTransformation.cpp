@@ -65,12 +65,6 @@ CCPACSTransformation::CCPACSTransformation(CCPACSFuselageSection* parent, CTiglU
 {
 }
 
-CCPACSTransformation::CCPACSTransformation(CCPACSGenericFuelTankParameters* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSTransformation(parent, uidMgr)
-    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
-{
-}
-
 CCPACSTransformation::CCPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
@@ -90,6 +84,12 @@ CCPACSTransformation::CCPACSTransformation(CCPACSLandingGearBase* parent, CTiglU
 }
 
 CCPACSTransformation::CCPACSTransformation(CCPACSHull* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
 {

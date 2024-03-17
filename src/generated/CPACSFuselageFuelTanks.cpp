@@ -107,17 +107,17 @@ namespace generated
 
     }
 
-    const boost::optional<CPACSGenericFuelTanks>& CPACSFuselageFuelTanks::GetGenericFuelTanks() const
+    const boost::optional<CCPACSGenericFuelTanks>& CPACSFuselageFuelTanks::GetGenericFuelTanks() const
     {
         return m_genericFuelTanks;
     }
 
-    boost::optional<CPACSGenericFuelTanks>& CPACSFuselageFuelTanks::GetGenericFuelTanks()
+    boost::optional<CCPACSGenericFuelTanks>& CPACSFuselageFuelTanks::GetGenericFuelTanks()
     {
         return m_genericFuelTanks;
     }
 
-    CPACSGenericFuelTanks& CPACSFuselageFuelTanks::GetGenericFuelTanks(CreateIfNotExistsTag)
+    CCPACSGenericFuelTanks& CPACSFuselageFuelTanks::GetGenericFuelTanks(CreateIfNotExistsTag)
     {
         if (!m_genericFuelTanks)
             m_genericFuelTanks = boost::in_place(this, m_uidMgr);
