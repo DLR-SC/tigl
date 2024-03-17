@@ -35,7 +35,8 @@ CCPACSHull::CCPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr)
 
 // CCPACSConfiguration& CCPACSHull::GetConfiguration() const
 // {
-//     return GetParent()->GetParent()->GetConfiguration();
+//     // return GetParent()->GetParent()->GetConfiguration();
+//     return GetParent()->GetParent()
 // }
 
 std::string CCPACSHull::GetDefaultedUID() const

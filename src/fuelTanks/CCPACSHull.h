@@ -24,7 +24,6 @@
 #include "generated/CPACSHull.h"
 #include "CTiglRelativelyPositionedComponent.h"
 // #include "CCPACSConfiguration.h"
-// #include "CCPACSDucts.h"
 #include "generated/CPACSHulls.h"
 
 namespace tigl
@@ -38,16 +37,16 @@ public:
 
     // TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
-    TIGL_EXPORT std::string GetDefaultedUID() const; // override;
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const; // override;
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const; // override;
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
     // //Any DuctAssembly that references this duct element, can register its Invalidation
     // //as a callback.
     // TIGL_EXPORT void RegisterInvalidationCallback(std::function<void()> const&);
 
 protected:
-    PNamedShape BuildLoft() const; // override;
+    PNamedShape BuildLoft() const override;
 
 private:
 

@@ -27,6 +27,25 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 
+#include "CCPACSHull.h"
+
+// #include "generated/CPACSHulls.h"
+// #include "generated/CPACSHull.h"
+
+// #include "CNamedShape.h"
+// #include "tiglcommonfunctions.h"
+
+// #include <Bnd_Box.hxx>
+// #include <BRepBndLib.hxx>
+// #include <gp_Pnt.hxx>
+
+// #include <TopoDS_Shape.hxx>
+
+// #include <TopTools_IndexedMapOfShape.hxx>
+// #include <TopExp.hxx>
+
+// #include <TopoDS_Iterator.hxx>
+
 class FuselageTank : public ::testing::Test
 {
 protected:
@@ -60,7 +79,12 @@ protected:
     static TiglCPACSConfigurationHandle tiglHandle;
 
     tigl::CTiglUIDManager &uidMgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(FuselageTank::tiglHandle).GetUIDManager();
+
+    // generic tank
     tigl::CCPACSGenericFuelTank const *fuelTank = &uidMgr.ResolveObject<tigl::CCPACSGenericFuelTank>("genericTank1");
+
+    // hulls
+    const std::vector<std::unique_ptr<tigl::CCPACSHull>> &hulls = fuelTank->GetHulls_choice1()->GetHulls();
 };
 
 TixiDocumentHandle FuselageTank::tixiHandle = 0;
@@ -72,8 +96,13 @@ TEST_F(FuselageTank, getName)
     EXPECT_EQ(name, "Simple tank");
 }
 
-TEST_F(FuselageTank, getViaTree)
+TEST_F(FuselageTank, countHulls)
 {
-    const std::string name = fuelTank->GetName();
-    EXPECT_EQ(name, "Simple tank");
+    EXPECT_EQ(hulls.size(), 1);  
+}
+
+TEST_F(FuselageTank, testLoft)
+{
+    const std::unique_ptr<tigl::CCPACSHull> &hull = hulls.at(0);
+    const PNamedShape &loft = hull->GetLoft();
 }

@@ -28,6 +28,7 @@
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
+#include "CCPACSHull.h"
 #include "CTiglError.h"
 #include "sorting.h"
 #include "CTiglLogging.h"
@@ -128,6 +129,9 @@ CTiglRelativelyPositionedComponent const* CCPACSFuselageSegments::GetParentCompo
     }
     else if (IsParent<CCPACSDuct>()) {
         return GetParent<CCPACSDuct>();
+    }
+    else if (IsParent<CCPACSHull>()) {
+        return GetParent<CCPACSHull>();
     }
     else {
         throw CTiglError("Unknown parent type for CCPACSFuselageSegments.");
