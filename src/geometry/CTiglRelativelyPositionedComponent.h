@@ -120,6 +120,8 @@ public:
 
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans);
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
 
     TIGL_EXPORT void Reset() const;
 

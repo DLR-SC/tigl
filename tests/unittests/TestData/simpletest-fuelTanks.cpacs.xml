@@ -17,6 +17,9 @@
           <fuselage uID="SimpleFuselage">
             <name>Simple fuselage</name>
             <transformation>
+              <translation>
+                <x>1</x>
+              </translation>
               <scaling>
                 <x>1.0</x>
                 <y>0.5</y>
@@ -72,7 +75,7 @@
               </positioning>
               <positioning uID="fuselage_1Positioning3ID">
                 <name>Fuselage Positioning 3</name>
-                <length>2</length>
+                <length>2.1</length>
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
                 <fromSectionUID>fuselage_1Section1ID</fromSectionUID>
@@ -140,7 +143,7 @@
                           <name>Section 3</name>
                           <transformation>
                             <translation>
-                              <x>2</x>
+                              <x>1</x>
                             </translation>
                           </transformation>
                           <elements>
@@ -166,6 +169,11 @@
                       </segments>
                     </hull>
                   </hulls>
+                  <transformation>
+                    <translation>
+                      <x>2</x>
+                    </translation>
+                  </transformation>
                 </genericFuelTank>
               </genericFuelTanks>
             </fuelTanks>

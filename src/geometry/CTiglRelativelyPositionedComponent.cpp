@@ -40,6 +40,12 @@ CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(MaybeOpti
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
     : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis){}
 
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans)
+    : _parent(parent), _transformation(trans), _symmetryAxis(nullptr){}
+
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
+    : _parent(parent), _transformation(trans), _symmetryAxis(symmetryAxis){}
+
 void CTiglRelativelyPositionedComponent::Reset() const
 {
     CTiglAbstractGeometricComponent::Reset();

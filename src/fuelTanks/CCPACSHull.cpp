@@ -34,7 +34,7 @@ namespace tigl {
 
 CCPACSHull::CCPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr)
   : generated::CPACSHull(parent, uidMgr)
-  , CTiglRelativelyPositionedComponent(static_cast<std::string*>(nullptr), &m_transformation)
+    , CTiglRelativelyPositionedComponent(GetParent()->GetParent()->GetParent()->GetParent()->GetParent(), &m_transformation)
 {}
 
 CCPACSConfiguration& CCPACSHull::GetConfiguration() const
