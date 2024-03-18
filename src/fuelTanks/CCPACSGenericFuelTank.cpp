@@ -20,14 +20,68 @@
 */
 
 #include "CCPACSGenericFuelTank.h"
+#include "CCPACSHull.h"
 #include "CTiglError.h"
-
-#include <algorithm>
+#include "CGroupShapes.h"
 
 namespace tigl {
 
 CCPACSGenericFuelTank::CCPACSGenericFuelTank(CCPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSGenericFuelTank(parent, uidMgr)
+    , CTiglRelativelyPositionedComponent(GetParent()->GetParent()->GetParent(), &m_transformation)
 {}
+
+CCPACSConfiguration& CCPACSGenericFuelTank::GetConfiguration() const
+{
+    return GetParent()->GetParent()->GetParent()->GetConfiguration();
+}
+
+std::string CCPACSGenericFuelTank::GetDefaultedUID() const
+{
+    return generated::CPACSGenericFuelTank::GetUID();
+}
+
+TiglGeometricComponentType CCPACSGenericFuelTank::GetComponentType() const
+{
+    return TIGL_COMPONENT_FUSELAGE_TANK;
+}
+
+TiglGeometricComponentIntent CCPACSGenericFuelTank::GetComponentIntent() const
+{
+    // needs to be physical, so that transformation relative to parent works
+    return TIGL_INTENT_PHYSICAL;
+}
+
+PNamedShape CCPACSGenericFuelTank::BuildLoft() const
+{
+    const auto& hulls = GetHulls_choice1()->GetHulls();
+    ListPNamedShape shapes;    
+
+    for (const auto& hull : hulls) {
+        auto loft = hull->GetLoft();
+        shapes.push_back(loft);
+    }
+
+    PNamedShape groupedShape = CGroupShapes(shapes);
+    
+    return groupedShape;
+}
+
+std::string CCPACSGenericFuelTank::GetShortShapeName() const
+{
+    unsigned int findex = 0;
+    unsigned int i = 0;
+
+    for (auto& t: GetParent()->GetGenericFuelTanks()) {
+        ++i;
+        if (GetUID() == t->GetUID()) {
+            findex = i;
+            std::stringstream shortName;
+            shortName << "D" << findex;
+            return shortName.str();
+        }
+    }
+    return "UNKNOWN";
+}
 
 } //namespace tigl

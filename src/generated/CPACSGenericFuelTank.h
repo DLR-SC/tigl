@@ -73,14 +73,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
+        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
+        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSHulls>& GetHulls_choice1() const;
         TIGL_EXPORT virtual boost::optional<CCPACSHulls>& GetHulls_choice1();
 
         TIGL_EXPORT virtual const boost::optional<CPACSGenericFuelTankParameters>& GetDesignParameters_choice2() const;
         TIGL_EXPORT virtual boost::optional<CPACSGenericFuelTankParameters>& GetDesignParameters_choice2();
-
-        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
         TIGL_EXPORT virtual const boost::optional<CPACSFuelTankVolume>& GetVolume() const;
         TIGL_EXPORT virtual boost::optional<CPACSFuelTankVolume>& GetVolume();
@@ -110,11 +110,11 @@ namespace generated
         /// Description
         boost::optional<std::string>                    m_description;
 
+        CCPACSTransformation                            m_transformation;
+
         boost::optional<CCPACSHulls>                    m_hulls_choice1;
 
         boost::optional<CPACSGenericFuelTankParameters> m_designParameters_choice2;
-
-        CCPACSTransformation                            m_transformation;
 
         /// Volume
         boost::optional<CPACSFuelTankVolume>            m_volume;

@@ -75,7 +75,7 @@
               </positioning>
               <positioning uID="fuselage_1Positioning3ID">
                 <name>Fuselage Positioning 3</name>
-                <length>2.1</length>
+                <length>3.1</length>
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
                 <fromSectionUID>fuselage_1Section1ID</fromSectionUID>
@@ -98,6 +98,11 @@
               <genericFuelTanks>
                 <genericFuelTank uID="genericTank1">
                   <name>Simple tank</name>
+                  <transformation>
+                    <translation>
+                      <x>1</x>
+                    </translation>
+                  </transformation>
                   <hulls>
                     <hull uID="outerHull">
                       <name>Outer hull</name>
@@ -109,7 +114,7 @@
                         </scaling>
                       </transformation>
                       <sections>
-                        <section uID="hull1_section1">
+                        <section uID="outerHull_section1">
                           <name>Section 1</name>
                           <transformation>
                             <translation>
@@ -117,37 +122,37 @@
                             </translation>
                           </transformation>
                           <elements>
-                            <element uID="hull1_section1_element1">
+                            <element uID="outerHull_section1_element1">
                               <name>Section 1 Element 1</name>
                               <profileUID>fuselageCircleProfileuID</profileUID>
                               <transformation />
                             </element>
                           </elements>
                         </section>
-                        <section uID="hull1_section2">
+                        <section uID="outerHull_section2">
                           <name>Section 2</name>
-                          <transformation>
-                            <translation>
-                              <x>1.5</x>
-                            </translation>
-                          </transformation>
-                          <elements>
-                            <element uID="hull1_section2_element1">
-                              <name>Section 2 Element 1</name>
-                              <profileUID>fuselageCircleProfileuID</profileUID>
-                              <transformation />
-                            </element>
-                          </elements>
-                        </section>
-                        <section uID="hull1_section3">
-                          <name>Section 3</name>
                           <transformation>
                             <translation>
                               <x>1</x>
                             </translation>
                           </transformation>
                           <elements>
-                            <element uID="hull1_section3_element1">
+                            <element uID="outerHull_section2_element1">
+                              <name>Section 2 Element 1</name>
+                              <profileUID>fuselageCircleProfileuID</profileUID>
+                              <transformation />
+                            </element>
+                          </elements>
+                        </section>
+                        <section uID="outerHull_section3">
+                          <name>Section 3</name>
+                          <transformation>
+                            <translation>
+                              <x>1.5</x>
+                            </translation>
+                          </transformation>
+                          <elements>
+                            <element uID="outerHull_section3_element1">
                               <name>Section 3 Element 1</name>
                               <profileUID>fuselageCircleProfileuID</profileUID>
                               <transformation />
@@ -156,24 +161,91 @@
                         </section>
                       </sections>
                       <segments>
-                        <segment uID="hull1_segment1">
-                          <name>Hull 1 Segment 1</name>
-                          <fromElementUID>hull1_section1_element1</fromElementUID>
-                          <toElementUID>hull1_section2_element1</toElementUID>
+                        <segment uID="outerHull_segment1">
+                          <name>Outer hull Segment 1</name>
+                          <fromElementUID>outerHull_section1_element1</fromElementUID>
+                          <toElementUID>outerHull_section2_element1</toElementUID>
                         </segment>
-                        <segment uID="hull1_segment2">
-                          <name>Hull 1 Segment 2</name>
-                          <fromElementUID>hull1_section2_element1</fromElementUID>
-                          <toElementUID>hull1_section3_element1</toElementUID>
+                        <segment uID="outerHull_segment2">
+                          <name>Outer hull Segment 2</name>
+                          <fromElementUID>outerHull_section2_element1</fromElementUID>
+                          <toElementUID>outerHull_section3_element1</toElementUID>
+                        </segment>
+                      </segments>
+                    </hull>
+                    <hull uID="innerHull">
+                      <name>Inner hull</name>
+                      <transformation>
+                        <translation>
+                          <x>0.2</x>
+                        </translation>
+                        <scaling>
+                          <x>0.8</x>
+                          <y>0.2</y>
+                          <z>0.2</z>
+                        </scaling>
+                      </transformation>
+                      <sections>
+                        <section uID="innerHull_section1">
+                          <name>Section 1</name>
+                          <transformation>
+                            <translation>
+                              <x>0</x>
+                            </translation>
+                          </transformation>
+                          <elements>
+                            <element uID="innerHull_section1_element1">
+                              <name>Section 1 Element 1</name>
+                              <profileUID>fuselageCircleProfileuID</profileUID>
+                              <transformation />
+                            </element>
+                          </elements>
+                        </section>
+                        <section uID="innerHull_section2">
+                          <name>Section 2</name>
+                          <transformation>
+                            <translation>
+                              <x>1</x>
+                            </translation>
+                          </transformation>
+                          <elements>
+                            <element uID="innerHull_section2_element1">
+                              <name>Section 2 Element 1</name>
+                              <profileUID>fuselageCircleProfileuID</profileUID>
+                              <transformation />
+                            </element>
+                          </elements>
+                        </section>
+                        <section uID="innerHull_section3">
+                          <name>Section 3</name>
+                          <transformation>
+                            <translation>
+                              <x>1.5</x>
+                            </translation>
+                          </transformation>
+                          <elements>
+                            <element uID="innerHull_section3_element1">
+                              <name>Section 3 Element 1</name>
+                              <profileUID>fuselageCircleProfileuID</profileUID>
+                              <transformation />
+                            </element>
+                          </elements>
+                        </section>
+                      </sections>
+                      <segments>
+                        <segment uID="innerHull_segment1">
+                          <name>Inner hull Segment 1</name>
+                          <fromElementUID>innerHull_section1_element1</fromElementUID>
+                          <toElementUID>innerHull_section2_element1</toElementUID>
+                        </segment>
+                        <segment uID="innerHull_segment2">
+                          <name>Inner hull Segment 2</name>
+                          <fromElementUID>innerHull_section2_element1</fromElementUID>
+                          <toElementUID>innerHull_section3_element1</toElementUID>
                         </segment>
                       </segments>
                     </hull>
                   </hulls>
-                  <transformation>
-                    <translation>
-                      <x>2</x>
-                    </translation>
-                  </transformation>
                 </genericFuelTank>
               </genericFuelTanks>
             </fuelTanks>

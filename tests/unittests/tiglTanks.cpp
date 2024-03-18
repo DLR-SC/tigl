@@ -98,7 +98,7 @@ TEST_F(FuselageTank, getName)
 
 TEST_F(FuselageTank, countHulls)
 {
-    EXPECT_EQ(hulls.size(), 1);  
+    EXPECT_EQ(hulls.size(), 2);  
 }
 
 TEST_F(FuselageTank, testLoft)

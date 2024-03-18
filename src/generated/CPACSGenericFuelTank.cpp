@@ -114,6 +114,14 @@ namespace generated
             }
         }
 
+        // read element transformation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
+        }
+        else {
+            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
+        }
+
         // read element hulls
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/hulls")) {
             m_hulls_choice1 = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr);
@@ -134,14 +142,6 @@ namespace generated
                 LOG(ERROR) << "Failed to read designParameters at xpath " << xpath << ": " << e.what();
                 m_designParameters_choice2 = boost::none;
             }
-        }
-
-        // read element transformation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
-        }
-        else {
-            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
         }
 
         // read element volume
@@ -168,7 +168,7 @@ namespace generated
 
     void CPACSGenericFuelTank::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "hulls", "designParameters", "transformation", "volume", "burstPressure" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "transformation", "hulls", "designParameters", "volume", "burstPressure" };
 
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -187,6 +187,10 @@ namespace generated
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
             }
         }
+
+        // write element transformation
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/transformation", childElemOrder);
+        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
         // write element hulls
         if (m_hulls_choice1) {
@@ -209,10 +213,6 @@ namespace generated
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/designParameters");
             }
         }
-
-        // write element transformation
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/transformation", childElemOrder);
-        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
         // write element volume
         if (m_volume) {
@@ -306,6 +306,16 @@ namespace generated
         m_description = value;
     }
 
+    const CCPACSTransformation& CPACSGenericFuelTank::GetTransformation() const
+    {
+        return m_transformation;
+    }
+
+    CCPACSTransformation& CPACSGenericFuelTank::GetTransformation()
+    {
+        return m_transformation;
+    }
+
     const boost::optional<CCPACSHulls>& CPACSGenericFuelTank::GetHulls_choice1() const
     {
         return m_hulls_choice1;
@@ -324,16 +334,6 @@ namespace generated
     boost::optional<CPACSGenericFuelTankParameters>& CPACSGenericFuelTank::GetDesignParameters_choice2()
     {
         return m_designParameters_choice2;
-    }
-
-    const CCPACSTransformation& CPACSGenericFuelTank::GetTransformation() const
-    {
-        return m_transformation;
-    }
-
-    CCPACSTransformation& CPACSGenericFuelTank::GetTransformation()
-    {
-        return m_transformation;
     }
 
     const boost::optional<CPACSFuelTankVolume>& CPACSGenericFuelTank::GetVolume() const

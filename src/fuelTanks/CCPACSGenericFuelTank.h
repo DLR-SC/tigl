@@ -22,16 +22,29 @@
 #pragma once
 
 #include "generated/CPACSGenericFuelTank.h"
+#include "CTiglRelativelyPositionedComponent.h"
+#include "CCPACSConfiguration.h"
 
 namespace tigl {
 
-class CCPACSGenericFuelTank: public generated::CPACSGenericFuelTank
+class CCPACSGenericFuelTank: public generated::CPACSGenericFuelTank, public CTiglRelativelyPositionedComponent
 {
 public:
 
     TIGL_EXPORT CCPACSGenericFuelTank(CCPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr);
 
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+
+    TIGL_EXPORT std::string GetDefaultedUID() const override;
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+
 private:
+    PNamedShape BuildLoft() const override;
+
+private:
+
+    std::string GetShortShapeName() const;
 
 };
 

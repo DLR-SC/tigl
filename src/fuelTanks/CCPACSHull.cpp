@@ -34,12 +34,12 @@ namespace tigl {
 
 CCPACSHull::CCPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr)
   : generated::CPACSHull(parent, uidMgr)
-    , CTiglRelativelyPositionedComponent(GetParent()->GetParent()->GetParent()->GetParent()->GetParent(), &m_transformation)
+    , CTiglRelativelyPositionedComponent(GetParent()->GetParent(), &m_transformation)
 {}
 
 CCPACSConfiguration& CCPACSHull::GetConfiguration() const
 {
-    return GetParent()->GetParent()->GetParent()->GetParent()->GetParent()->GetConfiguration();
+    return GetParent()->GetParent()->GetConfiguration();
 }
 
 std::string CCPACSHull::GetDefaultedUID() const
