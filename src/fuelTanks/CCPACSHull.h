@@ -40,6 +40,21 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
+    TIGL_EXPORT int GetSectionCount() const;
+
+    TIGL_EXPORT int GetSegmentCount() const;
+
+    TIGL_EXPORT CCPACSFuselageSegment& GetSegment(const int index);
+    TIGL_EXPORT const CCPACSFuselageSegment& GetSegment(const int index) const;
+    TIGL_EXPORT CCPACSFuselageSegment& GetSegment(std::string uid);
+
+    TIGL_EXPORT double GetVolume();
+
+    TIGL_EXPORT double GetSurfaceArea();
+
+    TIGL_EXPORT double GetCircumference(int segmentIndex, double eta);
+
+
 protected:
     PNamedShape BuildLoft() const override;
 

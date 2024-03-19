@@ -29,6 +29,11 @@
 #include "CCPACSGenericFuelTank.h"
 #include "CCPACSGenericFuelTanks.h"
 
+#include "GProp_GProps.hxx"
+#include "BRepGProp.hxx"
+#include "TopTools_IndexedMapOfShape.hxx"
+#include "TopExp.hxx"
+
 
 namespace tigl {
 
@@ -56,6 +61,68 @@ TiglGeometricComponentIntent CCPACSHull::GetComponentIntent() const
 {
     // needs to be physical, so that transformation relative to parent works
     return TIGL_INTENT_PHYSICAL;
+}
+
+int CCPACSHull::GetSectionCount() const
+{
+    return m_sections.GetSectionCount();
+}
+
+int CCPACSHull::GetSegmentCount() const
+{
+    return m_segments.GetSegmentCount();
+}
+
+CCPACSFuselageSegment& CCPACSHull::GetSegment(const int index)
+{
+    return m_segments.GetSegment(index);
+}
+
+const CCPACSFuselageSegment& CCPACSHull::GetSegment(const int index) const
+{
+    return m_segments.GetSegment(index);
+}
+
+CCPACSFuselageSegment& CCPACSHull::GetSegment(std::string uid)
+{
+    return m_segments.GetSegment(uid);
+}
+
+double CCPACSHull::GetVolume()
+{
+    const TopoDS_Shape fusedSegments = GetLoft()->Shape();
+
+    GProp_GProps hull;
+    BRepGProp::VolumeProperties(fusedSegments, hull);
+    double myVolume = hull.Mass();
+    return myVolume;
+}
+
+double CCPACSHull::GetSurfaceArea()
+{
+    const PNamedShape& fusedSegments = GetLoft();
+
+    // loop over all faces that are not symmetry, front or rear
+    double myArea = 0.;
+
+    TopTools_IndexedMapOfShape shapeMap;
+    TopExp::MapShapes(fusedSegments->Shape(), TopAbs_FACE, shapeMap);
+    for (int i = 1; i <= shapeMap.Extent(); ++i) {
+        if (GetUID() == fusedSegments->GetFaceTraits(i-1).Name()) {
+            const TopoDS_Face& f = TopoDS::Face(shapeMap(i));
+            GProp_GProps System;
+            BRepGProp::SurfaceProperties(f, System);
+            myArea += System.Mass();
+        }
+    }
+
+    // Calculate surface area
+    return myArea;
+}
+
+double CCPACSHull::GetCircumference(const int segmentIndex, const double eta)
+{
+    return static_cast<CCPACSFuselageSegment&>(GetSegment(segmentIndex)).GetCircumference(eta);
 }
 
 PNamedShape CCPACSHull::BuildLoft() const

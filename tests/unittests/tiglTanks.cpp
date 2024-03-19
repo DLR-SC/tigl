@@ -85,6 +85,7 @@ protected:
 
     // hulls
     const std::vector<std::unique_ptr<tigl::CCPACSHull>> &hulls = fuelTank->GetHulls_choice1()->GetHulls();
+    tigl::CCPACSHull *hull = &uidMgr.ResolveObject<tigl::CCPACSHull>("outerHull");
 };
 
 TixiDocumentHandle FuselageTank::tixiHandle = 0;
@@ -105,4 +106,13 @@ TEST_F(FuselageTank, testLoft)
 {
     const std::unique_ptr<tigl::CCPACSHull> &hull = hulls.at(0);
     const PNamedShape &loft = hull->GetLoft();
+}
+
+TEST_F(FuselageTank, hull)
+{
+    EXPECT_EQ(hull->GetSectionCount(), 3);
+    EXPECT_EQ(hull->GetSegmentCount(), 2);
+    EXPECT_EQ(hull->GetVolume(),0.41085764204179498);
+    EXPECT_EQ(hull->GetSurfaceArea(), 2.7879599486116566);
+    EXPECT_EQ(hull->GetCircumference(1, 0.5), 1.8586415856382374);
 }

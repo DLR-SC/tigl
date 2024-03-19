@@ -97,7 +97,12 @@
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
 #include "generated/CPACSFuselageFuelTanks.h"
-#include "generated/CPACSGenericFuelTanks.h"
+#include "CCPACSGenericFuelTanks.h"
+#include "CCPACSGenericFuelTank.h"
+#include "CCPACSHulls.h"
+#include "CCPACSHull.h"
+
+
 %}
 
 %feature("autodoc", "3");
@@ -328,14 +333,22 @@ namespace tigl
 %include "CPACSRotorHubHinge_type.h"
 
 // --------------- Fuselage tanks -----------------//
-// ToDo: Check which classes need to be assigned to boost_optional
-%boost_optional(tigl::generated::CPACSGenericFuelTanks)
+%boost_optional(tigl::CCPACSGenericFuelTanks)
 %boost_optional(tigl::generated::CPACSFuselageFuelTanks)
 
-%include "generated/CPACSGenericFuelTanks.h"
+namespace tigl {
+class CCPACSFuselageSegments;
+}
+%include "CTiglFuselageConnection.h"
+%include "CCPACSFuselageSegment.h"
+%include "CCPACSFuselageSegments.h"
+%include "CCPACSGenericFuelTanks.h"
+%include "CCPACSGenericFuelTank.h"
+%include "CCPACSHulls.h"
+%include "CCPACSHull.h"
 %include "generated/CPACSFuselageFuelTanks.h"
 
-// -------------------- Wing Structure -------------------//
+// -------------------- Wing Structure -------------------// 
 
 namespace tigl {
 class CCPACSWingCSStructure;
@@ -545,7 +558,9 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSEnginePylon,
          tigl::CCPACSTrailingEdgeDevice,
          tigl::CCPACSDuct,
-         tigl::CCPACSDuctAssembly
+         tigl::CCPACSDuctAssembly,
+         tigl::CCPACSGenericFuelTank,
+         tigl::CCPACSHull
 );
 
 namespace tigl
