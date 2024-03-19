@@ -40,10 +40,13 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
+    // Section operations
     TIGL_EXPORT int GetSectionCount() const;
+    TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
+    TIGL_EXPORT TopoDS_Shape GetSectionFace(const std::string section_uid) const;
 
+    // Segment operations
     TIGL_EXPORT int GetSegmentCount() const;
-
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(const int index);
     TIGL_EXPORT const CCPACSFuselageSegment& GetSegment(const int index) const;
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(std::string uid);

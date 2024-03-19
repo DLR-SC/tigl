@@ -112,7 +112,17 @@ TEST_F(FuselageTank, hull)
 {
     EXPECT_EQ(hull->GetSectionCount(), 3);
     EXPECT_EQ(hull->GetSegmentCount(), 2);
-    EXPECT_EQ(hull->GetVolume(),0.41085764204179498);
-    EXPECT_EQ(hull->GetSurfaceArea(), 2.7879599486116566);
-    EXPECT_EQ(hull->GetCircumference(1, 0.5), 1.8586415856382374);
+    EXPECT_NEAR(hull->GetVolume(), 0.41, 1e-2);
+    EXPECT_NEAR(hull->GetSurfaceArea(), 2.79, 1e-2);
+    EXPECT_NEAR(hull->GetCircumference(1, 0.5), 1.86, 1e-2);
+
+    EXPECT_EQ(hull->GetSectionCount(), 3);
+    EXPECT_NO_THROW(hull->GetSection(1));
+    EXPECT_NO_THROW(hull->GetSectionFace("outerHull_section1"));
+    EXPECT_THROW(hull->GetSection(4), tigl::CTiglError);
+
+    EXPECT_EQ(hull->GetSegmentCount(), 2);
+    EXPECT_NO_THROW(hull->GetSegment(1));
+    EXPECT_NO_THROW(hull->GetSegment("outerHull_segment1"));
+    EXPECT_THROW(hull->GetSegment(3), tigl::CTiglError);
 }

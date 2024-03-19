@@ -68,6 +68,30 @@ int CCPACSHull::GetSectionCount() const
     return m_sections.GetSectionCount();
 }
 
+CCPACSFuselageSection& CCPACSHull::GetSection(int index) const
+{
+    return m_sections.GetSection(index);
+}
+
+TopoDS_Shape CCPACSHull::GetSectionFace(const std::string section_uid) const
+{
+    // search for the section in all segments
+    for (int n = 0; n < GetSegmentCount(); ++n) {
+        const CCPACSFuselageSegment& segment = GetSegment(n+1);
+
+        if ( section_uid == segment.GetStartSectionUID() ) {
+            return BuildFace( segment.GetStartWire() );
+        }
+        else if ( section_uid == segment.GetEndSectionUID() ) {
+            return BuildFace( segment.GetEndWire() );
+        }
+    }
+    throw CTiglError("GetSectionFace: Could not find a section for the given UID");
+    return TopoDS_Shape();
+}
+
+
+
 int CCPACSHull::GetSegmentCount() const
 {
     return m_segments.GetSegmentCount();

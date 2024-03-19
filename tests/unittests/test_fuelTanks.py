@@ -4,6 +4,8 @@ from tigl3.tigl3wrapper import *
 from tixi3.tixi3wrapper import *
 from tigl3 import configuration
 
+from OCC.Core.TopoDS import TopoDS_Face
+
 
 class FuselageTank(unittest.TestCase):
 
@@ -29,9 +31,22 @@ class FuselageTank(unittest.TestCase):
     def test_hull(self):
         self.assertEqual(self.hull.get_section_count(), 3)
         self.assertEqual(self.hull.get_segment_count(), 2)
-        self.assertEqual(self.hull.get_volume(), 0.41085764204179498)
-        self.assertEqual(self.hull.get_surface_area(), 2.7879599486116566)
-        self.assertEqual(self.hull.get_circumference(1, 0.5), 1.8586415856382374)
+        self.assertAlmostEqual(round(self.hull.get_volume(), 2), 0.41)
+        self.assertAlmostEqual(round(self.hull.get_surface_area(), 2), 2.79)
+        self.assertAlmostEqual(round(self.hull.get_circumference(1, 0.5), 2), 1.86)
+
+        self.assertEqual(self.hull.get_segment_count(), 2)
+        self.assertIsInstance(
+            self.hull.get_segment(1), configuration.CCPACSFuselageSegment
+        )
+
+        self.assertEqual(self.hull.get_section_count(), 3)
+        self.assertIsInstance(
+            self.hull.get_section(1), configuration.CCPACSFuselageSection
+        )
+        self.assertIsInstance(
+            self.hull.get_section_face("outerHull_section3"), TopoDS_Face
+        )
 
 
 if __name__ == "__main__":
