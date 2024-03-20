@@ -20,8 +20,6 @@ class FuselageTank(unittest.TestCase):
         
         self.fuelTank = uid_mgr.get_geometric_component("genericTank1")
         self.hull = uid_mgr.get_geometric_component("outerHull")
-        
-        # print(self.fuelTank.has_hulls())
 
     def tearDown(self):
         self.tigl.close()
@@ -30,7 +28,7 @@ class FuselageTank(unittest.TestCase):
     def test_genericTank(self):
         self.assertTrue(self.fuelTank.has_hulls(), True)
         self.assertIsInstance(self.fuelTank.get_hulls(), configuration.CCPACSHulls)
-        # help(self.fuelTank.get_hulls())
+        self.assertEqual(self.fuelTank.get_name(), "Simple tank")
 
     def test_hull(self):
         self.assertEqual(self.hull.get_section_count(), 3)

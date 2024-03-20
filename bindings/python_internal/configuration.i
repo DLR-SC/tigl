@@ -97,6 +97,8 @@
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
 #include "generated/CPACSFuselageFuelTanks.h"
+#include "generated/CPACSGenericFuelTank.h"
+#include "generated/CPACSFuelTankVolume.h"
 #include "CCPACSGenericFuelTanks.h"
 #include "CCPACSGenericFuelTank.h"
 #include "CCPACSHulls.h"
@@ -336,11 +338,15 @@ namespace tigl
 %boost_optional(tigl::CCPACSGenericFuelTanks)
 %boost_optional(tigl::generated::CPACSFuselageFuelTanks)
 %boost_optional(tigl::CCPACSHulls)
+%boost_optional(tigl::generated::CPACSFuelTankVolume)
 
 namespace tigl {
 class CCPACSFuselageSegments;
 class CCPACSHulls;
 }
+
+%include "generated/CPACSFuelTankVolume.h"
+%include "generated/CPACSGenericFuelTank.h"
 %include "CTiglFuselageConnection.h"
 %include "CCPACSFuselageSegment.h"
 %include "CCPACSFuselageSegments.h"
@@ -349,6 +355,7 @@ class CCPACSHulls;
 %include "CCPACSHulls.h"
 %include "CCPACSHull.h"
 %include "generated/CPACSFuselageFuelTanks.h"
+
 
 // -------------------- Wing Structure -------------------// 
 
