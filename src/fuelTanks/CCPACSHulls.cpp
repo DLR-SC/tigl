@@ -29,6 +29,11 @@ CCPACSHulls::CCPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSHulls(parent, uidMgr)
 {}
 
+int CCPACSHulls::GetHullsCount() const
+{
+    return static_cast<int>(m_hulls.size());
+}
+
 CCPACSHull const& CCPACSHulls::GetHull(std::string const& uid) const
 {
     return const_cast<CCPACSHulls&>(*this).GetHull(uid);
@@ -42,6 +47,26 @@ CCPACSHull& CCPACSHulls::GetHull(std::string const& uid)
         return **it;
     }
     throw CTiglError("Could not find hull with uid" + uid);
+}
+
+CCPACSHull& CCPACSHulls::GetHull(int index) const
+{
+    index--;
+    if (index < 0 || index >= GetHullsCount()) {
+        throw CTiglError("Invalid index in CCPACSHulls::GetHull", TIGL_INDEX_ERROR);
+    }
+    return *m_hulls[index];
+}
+
+int CCPACSHulls::GetHullIndex(const std::string& UID) const
+{
+    for (int i=0; i < GetHullsCount(); i++) {
+        const std::string tmpUID(m_hulls[i]->GetUID());
+        if (tmpUID == UID) {
+            return i+1;
+        }
+    }
+    throw CTiglError("Invalid UID in CCPACSHulls::GetHullIndex", TIGL_UID_ERROR);
 }
 
 } //namespace tigl

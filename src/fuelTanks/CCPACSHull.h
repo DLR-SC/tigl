@@ -32,41 +32,75 @@ class CCPACSHull : public generated::CPACSHull, public CTiglRelativelyPositioned
 {
 public:
 
+    // Constructor
     TIGL_EXPORT explicit CCPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr);
 
+    // Get the parent configuration
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
+    // Get the default uID
     TIGL_EXPORT std::string GetDefaultedUID() const override;
+
+    // Get the component type: TIGL_COMPONENT_FUSELAGE_TANK_HULL
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+    // Get the component intent: TIGL_INTENT_PHYSICAL
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
-    // Section operations
+    // Get number of sections
     TIGL_EXPORT int GetSectionCount() const;
+    // Get a specific section
     TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
+    // Get a section face
     TIGL_EXPORT TopoDS_Shape GetSectionFace(const std::string section_uid) const;
 
-    // Segment operations
+    // Get number of segments
     TIGL_EXPORT int GetSegmentCount() const;
+    // Get a specific segment via its index
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(const int index);
     TIGL_EXPORT const CCPACSFuselageSegment& GetSegment(const int index) const;
+    // Get a specific segment via its uID
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(std::string uid);
 
+    // Get the volume of the hull
     TIGL_EXPORT double GetVolume();
 
+    // Get the surface area of the hull
     TIGL_EXPORT double GetSurfaceArea();
 
+    // Get the circumference of the hull
     TIGL_EXPORT double GetCircumference(int segmentIndex, double eta);
+
+    // Get a point on the given hull segment in dependence of a parameters eta and zeta with
+    // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
+    // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0
+    // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
+    TIGL_EXPORT gp_Pnt GetPoint(int segmentIndex, double eta, double zeta);
+    // Set the getPointBehavior to asParameterOnSurface or onLinearLoft
+    TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
+    // Get the getPointBehavior
+    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior() const;
+
+    // Get the guide curve segment (partial guide curve) with a given uID
+    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
+    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurveSegment(std::string uid) const;
+    // Returns all guide curve points
+    TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
 
 
 protected:
+
+    // Build the loft
     PNamedShape BuildLoft() const override;
+
+    // Set the face traints
+    void SetFaceTraits (PNamedShape loft) const;
 
 private:
 
-    // get short name for loft
+    // Get short name for loft
     std::string GetShortShapeName() const;
 
-    void SetFaceTraits (PNamedShape loft) const;
+    TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
 
 };
 

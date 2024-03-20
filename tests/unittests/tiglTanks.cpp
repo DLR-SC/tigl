@@ -84,7 +84,7 @@ protected:
     tigl::CCPACSGenericFuelTank const *fuelTank = &uidMgr.ResolveObject<tigl::CCPACSGenericFuelTank>("genericTank1");
 
     // hulls
-    const std::vector<std::unique_ptr<tigl::CCPACSHull>> &hulls = fuelTank->GetHulls_choice1()->GetHulls();
+    const boost::optional<tigl::CCPACSHulls> &hulls = fuelTank->GetHulls_choice1();
     tigl::CCPACSHull *hull = &uidMgr.ResolveObject<tigl::CCPACSHull>("outerHull");
 };
 
@@ -97,15 +97,13 @@ TEST_F(FuselageTank, getName)
     EXPECT_EQ(name, "Simple tank");
 }
 
-TEST_F(FuselageTank, countHulls)
+TEST_F(FuselageTank, hulls)
 {
-    EXPECT_EQ(hulls.size(), 2);  
-}
-
-TEST_F(FuselageTank, testLoft)
-{
-    const std::unique_ptr<tigl::CCPACSHull> &hull = hulls.at(0);
-    const PNamedShape &loft = hull->GetLoft();
+    EXPECT_EQ(hulls->GetHullsCount(), 2);
+    EXPECT_EQ(hulls->GetHull(1).GetDefaultedUID(), "outerHull");
+    EXPECT_EQ(hulls->GetHull("outerHull").GetDefaultedUID(), "outerHull");
+    EXPECT_EQ(hulls->GetHullIndex("outerHull"), 1);
+    EXPECT_EQ(hulls->GetHulls().at(0)->GetDefaultedUID(), "outerHull");
 }
 
 TEST_F(FuselageTank, hull)
@@ -125,4 +123,11 @@ TEST_F(FuselageTank, hull)
     EXPECT_NO_THROW(hull->GetSegment(1));
     EXPECT_NO_THROW(hull->GetSegment("outerHull_segment1"));
     EXPECT_THROW(hull->GetSegment(3), tigl::CTiglError);
+
+    EXPECT_EQ(hull->GetDefaultedUID(), "outerHull");
+    EXPECT_NO_THROW(hull->GetConfiguration());
+
+    EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).X(), 2.54, 1e-2);
+    EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).Y(), 0, 1e-5);
+    EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).Z(), -0.3, 1e-1);
 }

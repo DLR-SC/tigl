@@ -38,7 +38,7 @@
 namespace tigl {
 
 CCPACSHull::CCPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr)
-  : generated::CPACSHull(parent, uidMgr)
+    : generated::CPACSHull(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(GetParent()->GetParent(), &m_transformation)
 {}
 
@@ -89,8 +89,6 @@ TopoDS_Shape CCPACSHull::GetSectionFace(const std::string section_uid) const
     throw CTiglError("GetSectionFace: Could not find a section for the given UID");
     return TopoDS_Shape();
 }
-
-
 
 int CCPACSHull::GetSegmentCount() const
 {
@@ -177,18 +175,77 @@ PNamedShape CCPACSHull::BuildLoft() const
     return loft;
 }
 
+gp_Pnt CCPACSHull::GetPoint(int segmentIndex, double eta, double zeta)
+{
+    return ((CCPACSFuselageSegment &) GetSegment(segmentIndex)).GetPoint(eta, zeta, getPointBehavior);
+}
+
+// Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
+void CCPACSHull::SetGetPointBehavior(TiglGetPointBehavior behavior)
+{
+    getPointBehavior = behavior;
+}
+
+TiglGetPointBehavior CCPACSHull::GetGetPointBehavior() const
+{
+    return getPointBehavior;
+}
+
+CCPACSGuideCurve& CCPACSHull::GetGuideCurveSegment(std::string uid)
+{
+    return const_cast<CCPACSGuideCurve&>(static_cast<const CCPACSHull&>(*this).GetGuideCurveSegment(uid));
+}
+
+const CCPACSGuideCurve& CCPACSHull::GetGuideCurveSegment(std::string uid) const
+{
+    for (int i = 1; i <= m_segments.GetSegmentCount(); i++) {
+        const CCPACSFuselageSegment& segment = m_segments.GetSegment(i);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        if (segment.GetGuideCurves()->GuideCurveExists(uid)) {
+            return segment.GetGuideCurves()->GetGuideCurve(uid);
+        }
+    }
+    throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
+}
+
+std::vector<gp_Pnt> CCPACSHull::GetGuideCurvePoints() const
+{
+    std::vector<gp_Pnt> points;
+
+    // connect the belonging guide curve segments
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        const CCPACSFuselageSegment& segment = m_segments.GetSegment(isegment);
+
+        if (!segment.GetGuideCurves()) {
+            continue;
+        }
+
+        const CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
+            const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            std::vector<gp_Pnt> curPoints = curve.GetCurvePoints();
+            points.insert(points.end(), curPoints.begin(), curPoints.end());
+        }
+    }
+    return points;
+}
+
 // get short name for loft
 std::string CCPACSHull::GetShortShapeName() const
 {
     unsigned int findex = 0;
     unsigned int i = 0;
 
-    for (auto& d: GetParent()->GetHulls()) {
+    for (auto& h: GetParent()->GetHulls()) {
         ++i;
-        if (GetUID() == d->GetUID()) {
+        if (GetUID() == h->GetUID()) {
             findex = i;
             std::stringstream shortName;
-            shortName << "D" << findex;
+            shortName << "H" << findex;
             return shortName.str();
         }
     }

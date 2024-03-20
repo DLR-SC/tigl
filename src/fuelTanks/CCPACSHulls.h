@@ -32,8 +32,18 @@ public:
 
     TIGL_EXPORT CCPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT CCPACSHull const& GetHull(std::string const& uid) const;
-    TIGL_EXPORT CCPACSHull& GetHull(std::string const& uid);
+    // Get a specific hull for a given uID
+    TIGL_EXPORT CCPACSHull const& GetHull(std::string const& uID) const;
+    TIGL_EXPORT CCPACSHull& GetHull(std::string const& uID);
+
+    // Get a specific hull for a given index.
+    TIGL_EXPORT CCPACSHull& GetHull(int index) const;
+
+    // Returns the hull index for a given uID.
+    TIGL_EXPORT int GetHullIndex(const std::string& uID) const;
+
+    // Returns the total count of fuselages in a configuration
+    TIGL_EXPORT int GetHullsCount() const;
 
 private:
 
