@@ -97,6 +97,12 @@ TEST_F(FuselageTank, getName)
     EXPECT_EQ(name, "Simple tank");
 }
 
+TEST_F(FuselageTank, tank)
+{
+    EXPECT_TRUE(fuelTank->HasHulls());
+    EXPECT_NO_THROW(fuelTank->GetHulls());
+}
+
 TEST_F(FuselageTank, hulls)
 {
     EXPECT_EQ(hulls->GetHullsCount(), 2);

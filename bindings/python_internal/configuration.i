@@ -335,9 +335,11 @@ namespace tigl
 // --------------- Fuselage tanks -----------------//
 %boost_optional(tigl::CCPACSGenericFuelTanks)
 %boost_optional(tigl::generated::CPACSFuselageFuelTanks)
+%boost_optional(tigl::CCPACSHulls)
 
 namespace tigl {
 class CCPACSFuselageSegments;
+class CCPACSHulls;
 }
 %include "CTiglFuselageConnection.h"
 %include "CCPACSFuselageSegment.h"
