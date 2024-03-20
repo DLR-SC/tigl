@@ -39,6 +39,13 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
+    // Check if hulls are available
+    TIGL_EXPORT bool HasHulls() const;
+
+    // Get hulls
+    TIGL_EXPORT boost::optional<CCPACSHulls>& GetHulls();
+    TIGL_EXPORT const boost::optional<CCPACSHulls>& GetHulls() const;
+
 private:
     PNamedShape BuildLoft() const override;
 
