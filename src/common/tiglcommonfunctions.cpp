@@ -1189,7 +1189,7 @@ TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& c
     std::vector<Handle(Geom_BSplineCurve)> curves;
     // build upper line from gp_points
     std::vector<gp_Pnt> linePnts_upper;
-    std::vector<double> y_upper = Linspace((-0.5+radius), (0.5-radius),5);
+    std::vector<double> y_upper = Linspace((0.5-radius),(-0.5+radius),5);
     for (double y: y_upper){
         linePnts_upper.push_back(gp_Pnt(0., y, 0.5*heightToWidthRatio));
     }
@@ -1207,7 +1207,7 @@ TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& c
 
     //build left line from gp_points
     std::vector<gp_Pnt> linePnts_left;
-    std::vector<double> z_left = Linspace(-0.5 * heightToWidthRatio + radius, 0.5 * heightToWidthRatio - radius, 5);
+    std::vector<double> z_left = Linspace(0.5 * heightToWidthRatio - radius, -0.5 * heightToWidthRatio + radius, 5);
     for (double z: z_left){
         linePnts_left.push_back(gp_Pnt(0., -0.5, z));
     }
@@ -1224,7 +1224,7 @@ TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& c
 
     // build lower line from gp_points
     std::vector<gp_Pnt> linePnts_lower;
-    std::vector<double> y_lower = Linspace((0.5-radius),(-0.5+radius) ,5);
+    std::vector<double> y_lower = Linspace((-0.5+radius),(0.5-radius),5);
     for (double y: y_lower){
         linePnts_lower.push_back(gp_Pnt(0., y, -0.5 * heightToWidthRatio));
     }
@@ -1241,9 +1241,9 @@ TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& c
 
     // build right line from gp_Pnts
     std::vector<gp_Pnt> linePnts_right;
-    std::vector<double> z_right = Linspace(0.5 * heightToWidthRatio - radius, -0.5 * heightToWidthRatio + radius, 5);
+    std::vector<double> z_right = Linspace( -0.5 * heightToWidthRatio + radius, 0.5 * heightToWidthRatio - radius, 5);
     for (double z: z_right){
-        linePnts_right.push_back(gp_Pnt(0., -0.5, z));
+        linePnts_right.push_back(gp_Pnt(0., 0.5, z));
     }
     opencascade::handle<Geom_BSplineCurve> rightLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_right).Curve();
     curves.push_back(rightLine);
@@ -1255,8 +1255,13 @@ TopoDS_Wire BuildWireRectangle(const double& heightToWidthRatio, const double& c
         auto ArcCurve = ApproximateArcOfCircleToRationalBSpline(radius, 0., M_PI/2., y0, z0);
         curves.push_back(ArcCurve);
     }
-    auto curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
-    TopoDS_Wire wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
+    curve->Reverse();
+    TopoDS_Wire wire;
+    if(!curve.IsNull())
+        {
+        wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    }
     return wire;
 }
 
