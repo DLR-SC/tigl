@@ -24,6 +24,7 @@
 #include "tigl.h"
 
 #include "CCPACSGenericFuelTank.h"
+#include "CCPACSGenericFuelTanks.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 
@@ -97,7 +98,17 @@ TEST_F(FuselageTank, getName)
     EXPECT_EQ(name, "Simple tank");
 }
 
-TEST_F(FuselageTank, tank)
+TEST_F(FuselageTank, genericFuelTanks)
+{
+    std::string uID = "genericTank1";
+    const tigl::CCPACSGenericFuelTanks* fuelTanks = fuelTank->GetParent();
+    EXPECT_EQ(fuelTanks->GetGenericFuelTank(1).GetDefaultedUID(), uID);
+    EXPECT_NO_THROW(fuelTanks->GetGenericFuelTank(uID));
+    EXPECT_EQ(fuelTanks->GetGenericFuelTankIndex(uID), 1);
+    EXPECT_EQ(fuelTanks->GetGenericFuelTanksCount(), 1);
+}
+
+TEST_F(FuselageTank, genericFuelTank)
 {
     EXPECT_TRUE(fuelTank->HasHulls());
     EXPECT_NO_THROW(fuelTank->GetHulls());

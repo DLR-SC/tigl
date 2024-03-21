@@ -34,19 +34,19 @@ int CCPACSHulls::GetHullsCount() const
     return static_cast<int>(m_hulls.size());
 }
 
-CCPACSHull const& CCPACSHulls::GetHull(std::string const& uid) const
+CCPACSHull const& CCPACSHulls::GetHull(std::string const& uID) const
 {
-    return const_cast<CCPACSHulls&>(*this).GetHull(uid);
+    return const_cast<CCPACSHulls&>(*this).GetHull(uID);
 }
 
-CCPACSHull& CCPACSHulls::GetHull(std::string const& uid)
+CCPACSHull& CCPACSHulls::GetHull(std::string const& uID)
 {
-    auto it = std::find_if(m_hulls.begin(), m_hulls.end(), [&](std::unique_ptr<CCPACSHull> const& v){ return v->GetUID() == uid; });
+    auto it = std::find_if(m_hulls.begin(), m_hulls.end(), [&](std::unique_ptr<CCPACSHull> const& v){ return v->GetUID() == uID; });
 
     if ( it != std::end(m_hulls)) {
         return **it;
     }
-    throw CTiglError("Could not find hull with uid" + uid);
+    throw CTiglError("Could not find hull with uid" + uID);
 }
 
 CCPACSHull& CCPACSHulls::GetHull(int index) const
@@ -58,11 +58,11 @@ CCPACSHull& CCPACSHulls::GetHull(int index) const
     return *m_hulls[index];
 }
 
-int CCPACSHulls::GetHullIndex(const std::string& UID) const
+int CCPACSHulls::GetHullIndex(const std::string& uID) const
 {
     for (int i=0; i < GetHullsCount(); i++) {
         const std::string tmpUID(m_hulls[i]->GetUID());
-        if (tmpUID == UID) {
+        if (tmpUID == uID) {
             return i+1;
         }
     }

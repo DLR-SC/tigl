@@ -17,20 +17,48 @@ class FuselageTank(unittest.TestCase):
 
         mgr = configuration.CCPACSConfigurationManager_get_instance()
         uid_mgr = mgr.get_configuration(self.tigl._handle.value).get_uidmanager()
-        
+
         self.fuelTank = uid_mgr.get_geometric_component("genericTank1")
         self.hull = uid_mgr.get_geometric_component("outerHull")
 
     def tearDown(self):
         self.tigl.close()
         self.tixi.close()
-        
-    def test_genericTank(self):
+
+    def test_genericFuelTanks(self):
+        # Test custom class methods:
+        fuelTanks = self.fuelTank.get_parent()
+        self.assertIsInstance(
+            fuelTanks.get_generic_fuel_tank(1), configuration.CCPACSGenericFuelTank
+        )
+        self.assertEqual(
+            fuelTanks.get_generic_fuel_tank(1).get_defaulted_uid(), "genericTank1"
+        )
+        self.assertIsInstance(
+            fuelTanks.get_generic_fuel_tank("genericTank1"),
+            configuration.CCPACSGenericFuelTank,
+        )
+        self.assertEqual(
+            fuelTanks.get_generic_fuel_tank_index("genericTank1"),
+            1,
+        )
+        self.assertEqual(fuelTanks.get_generic_fuel_tanks_count(), 1)
+
+        # Test availability of generated class:
+        self.assertIsInstance(
+            fuelTanks.get_parent(), configuration.CPACSFuselageFuelTanks
+        )
+
+    def test_genericFuelTank(self):
+        # Test custom class methods:
         self.assertTrue(self.fuelTank.has_hulls(), True)
         self.assertIsInstance(self.fuelTank.get_hulls(), configuration.CCPACSHulls)
+
+        # Test availability of generated class:
         self.assertEqual(self.fuelTank.get_name(), "Simple tank")
 
     def test_hull(self):
+        # Test custom class methods:
         self.assertEqual(self.hull.get_section_count(), 3)
         self.assertEqual(self.hull.get_segment_count(), 2)
         self.assertAlmostEqual(round(self.hull.get_volume(), 2), 0.41)
