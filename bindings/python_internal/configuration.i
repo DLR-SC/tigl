@@ -437,6 +437,7 @@ class CCPACSWingRibsPositioning;
 %include "CPACSGuideCurve_continuity.h"
 %include "generated/CPACSGuideCurve.h"
 %include "generated/CPACSGuideCurves.h"
+%include "CCPACSGuideCurve.h"
 %include "CCPACSGuideCurves.h"
 %include "generated/CPACSCst2D.h"
 %include "ITiglWingProfileAlgo.h"

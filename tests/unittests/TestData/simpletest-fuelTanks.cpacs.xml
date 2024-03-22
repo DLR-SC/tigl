@@ -100,7 +100,7 @@
                   <name>Simple tank</name>
                   <transformation>
                     <translation>
-                      <x>1</x>
+                      <x>-0.2</x>
                     </translation>
                   </transformation>
                   <hulls>
@@ -247,78 +247,151 @@
                     </hull>
                   </hulls>
                 </genericFuelTank>
+                <genericFuelTank uID="genericTank2">
+                  <name>Simple tank 2</name>
+                  <description>Test case for guide curves</description>
+                  <transformation>
+                    <translation>
+                      <x>1.5</x>
+                    </translation>
+                  </transformation>
+                  <hulls>
+                    <hull uID="genericTank2_outerHull">
+                      <name>Outer hull</name>
+                      <transformation>
+                        <scaling>
+                          <x>1</x>
+                          <y>0.3</y>
+                          <z>0.3</z>
+                        </scaling>
+                      </transformation>
+                      <sections>
+                        <section uID="genericTank2_outerHull_section1">
+                          <name>Section 1</name>
+                          <transformation>
+                            <translation>
+                              <x>0</x>
+                            </translation>
+                          </transformation>
+                          <elements>
+                            <element uID="genericTank2_outerHull_section1_element1">
+                              <name>Section 1 Element 1</name>
+                              <profileUID>fuselageCircleProfileuID</profileUID>
+                              <transformation>
+                                <scaling>
+                                  <y>0.01</y>
+                                  <z>0.01</z>
+                                </scaling>
+                              </transformation>
+                            </element>
+                          </elements>
+                        </section>
+                        <section uID="genericTank2_outerHull_section2">
+                          <name>Section 2</name>
+                          <transformation>
+                            <translation>
+                              <x>0.5</x>
+                            </translation>
+                          </transformation>
+                          <elements>
+                            <element uID="genericTank2_outerHull_section2_element1">
+                              <name>Section 2 Element 1</name>
+                              <profileUID>fuselageCircleProfileuID</profileUID>
+                              <transformation />
+                            </element>
+                          </elements>
+                        </section>
+                        <section uID="genericTank2_outerHull_section3">
+                          <name>Section 3</name>
+                          <transformation>
+                            <translation>
+                              <x>1</x>
+                            </translation>
+                          </transformation>
+                          <elements>
+                            <element uID="genericTank2_outerHull_section3_element1">
+                              <name>Section 3 Element 1</name>
+                              <profileUID>fuselageCircleProfileuID</profileUID>
+                              <transformation>
+                                <scaling>
+                                  <y>0.01</y>
+                                  <z>0.01</z>
+                                </scaling>
+                              </transformation>
+                            </element>
+                          </elements>
+                        </section>
+                      </sections>
+                      <segments>
+                        <segment uID="genericTank2_outerHull_segment1">
+                          <name>Outer hull Segment 1</name>
+                          <fromElementUID>genericTank2_outerHull_section1_element1</fromElementUID>
+                          <toElementUID>genericTank2_outerHull_section2_element1</toElementUID>
+                          <guideCurves>
+                            <guideCurve uID="genericTank2_seg1_upper">
+                              <name>Guide Segment 1 Upper</name>
+                              <guideCurveProfileUID>gc_upper</guideCurveProfileUID>
+                              <fromRelativeCircumference>0</fromRelativeCircumference>
+                              <toRelativeCircumference>0</toRelativeCircumference>
+                            </guideCurve>
+                            <guideCurve uID="genericTank2_seg1_starbord">
+                              <name>Guide Segment 1 Starbord</name>
+                              <guideCurveProfileUID>gc_starbord</guideCurveProfileUID>
+                              <fromRelativeCircumference>0.25</fromRelativeCircumference>
+                              <toRelativeCircumference>0.25</toRelativeCircumference>
+                            </guideCurve>
+                            <guideCurve uID="genericTank2_seg1_lower">
+                              <name>Guide Segment 1 Lower</name>
+                              <guideCurveProfileUID>gc_lower</guideCurveProfileUID>
+                              <fromRelativeCircumference>0.5</fromRelativeCircumference>
+                              <toRelativeCircumference>0.5</toRelativeCircumference>
+                            </guideCurve>
+                            <guideCurve uID="genericTank2_seg1_port">
+                              <name>Guide Segment 1 Port</name>
+                              <guideCurveProfileUID>gc_port</guideCurveProfileUID>
+                              <fromRelativeCircumference>0.75</fromRelativeCircumference>
+                              <toRelativeCircumference>0.75</toRelativeCircumference>
+                            </guideCurve>
+                          </guideCurves>
+                        </segment>
+                        <segment uID="genericTank2_outerHull_segment2">
+                          <name>Outer hull Segment 2</name>
+                          <fromElementUID>genericTank2_outerHull_section2_element1</fromElementUID>
+                          <toElementUID>genericTank2_outerHull_section3_element1</toElementUID>
+                          <guideCurves>
+                            <guideCurve uID="genericTank2_seg2_upper">
+                              <name>Guide Segment 2 Upper</name>
+                              <guideCurveProfileUID>gc_upper</guideCurveProfileUID>
+                              <fromGuideCurveUID>genericTank2_seg1_upper</fromGuideCurveUID>
+                              <toRelativeCircumference>0</toRelativeCircumference>
+                            </guideCurve>
+                            <guideCurve uID="genericTank2_seg2_starbord">
+                              <name>Guide Segment 2 Starbord</name>
+                              <guideCurveProfileUID>gc_starbord</guideCurveProfileUID>
+                              <fromGuideCurveUID>genericTank2_seg1_starbord</fromGuideCurveUID>
+                              <toRelativeCircumference>0.25</toRelativeCircumference>
+                            </guideCurve>
+                            <guideCurve uID="genericTank2_seg2_lower">
+                              <name>Guide Segment 2 Lower</name>
+                              <guideCurveProfileUID>gc_lower</guideCurveProfileUID>
+                              <fromGuideCurveUID>genericTank2_seg1_lower</fromGuideCurveUID>
+                              <toRelativeCircumference>0.5</toRelativeCircumference>
+                            </guideCurve>
+                            <guideCurve uID="genericTank2_seg2_port">
+                              <name>Guide Segment 2 Port</name>
+                              <guideCurveProfileUID>gc_port</guideCurveProfileUID>
+                              <fromGuideCurveUID>genericTank2_seg1_port</fromGuideCurveUID>
+                              <toRelativeCircumference>0.75</toRelativeCircumference>
+                            </guideCurve>
+                          </guideCurves>
+                        </segment>
+                      </segments>
+                    </hull>
+                  </hulls>
+                </genericFuelTank>
               </genericFuelTanks>
             </fuelTanks>
           </fuselage>
-          <!-- <fuselage uID="hull">
-            <name>Outer hull</name>
-            <transformation>
-              <scaling>
-                <x>1</x>
-                <y>0.3</y>
-                <z>0.3</z>
-              </scaling>
-            </transformation>
-            <sections>
-              <section uID="hull1_section1">
-                <name>Section 1</name>
-                <transformation>
-                  <translation>
-                    <x>1</x>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="hull1_section1_element1">
-                    <name>Section 1 Element 1</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation />
-                  </element>
-                </elements>
-              </section>
-              <section uID="hull1_section2">
-                <name>Section 2</name>
-                <transformation>
-                  <translation>
-                    <x>1.5</x>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="hull1_section2_element1">
-                    <name>Section 2 Element 1</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation />
-                  </element>
-                </elements>
-              </section>
-              <section uID="hull1_section3">
-                <name>Section 3</name>
-                <transformation>
-                  <translation>
-                    <x>2</x>
-                  </translation>
-                </transformation>
-                <elements>
-                  <element uID="hull1_section3_element1">
-                    <name>Section 3 Element 1</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
-                    <transformation />
-                  </element>
-                </elements>
-              </section>
-            </sections>
-            <segments>
-              <segment uID="hull1_segment1">
-                <name>Hull 1 Segment 1</name>
-                <fromElementUID>hull1_section1_element1</fromElementUID>
-                <toElementUID>hull1_section2_element1</toElementUID>
-              </segment>
-              <segment uID="hull1_segment2">
-                <name>Hull 1 Segment 2</name>
-                <fromElementUID>hull1_section2_element1</fromElementUID>
-                <toElementUID>hull1_section3_element1</toElementUID>
-              </segment>
-            </segments>
-          </fuselage> -->
         </fuselages>
       </model>
     </aircraft>
@@ -334,6 +407,44 @@
           </pointList>
         </fuselageProfile>
       </fuselageProfiles>
+      <guideCurves>
+        <guideCurveProfile uID="gc_upper">
+          <name>Upper Guide Curve Profile</name>
+          <description>This profile is used for tank test cases</description>
+          <pointList>
+            <rX>0.3</rX>
+            <rY>0.5</rY>
+            <rZ>0.0</rZ>
+          </pointList>
+        </guideCurveProfile>
+        <guideCurveProfile uID="gc_starbord">
+          <name>Starbord Guide Curve Profile</name>
+          <description>This profile is used for tank test cases</description>
+          <pointList>
+            <rX>0.0</rX>
+            <rY>0.5</rY>
+            <rZ>0.3</rZ>
+          </pointList>
+        </guideCurveProfile>
+        <guideCurveProfile uID="gc_lower">
+          <name>Lower Guide Curve Profile</name>
+          <description>This profile is used for tank test cases</description>
+          <pointList>
+            <rX>-0.3</rX>
+            <rY>0.5</rY>
+            <rZ>0.0</rZ>
+          </pointList>
+        </guideCurveProfile>
+        <guideCurveProfile uID="gc_port">
+          <name>Port Guide Curve Profile</name>
+          <description>This profile is used for tank test cases</description>
+          <pointList>
+            <rX>0.0</rX>
+            <rY>0.5</rY>
+            <rZ>-0.3</rZ>
+          </pointList>
+        </guideCurveProfile>
+      </guideCurves>
     </profiles>
   </vehicles>
 </cpacs>

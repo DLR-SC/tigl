@@ -20,6 +20,9 @@ class FuselageTank(unittest.TestCase):
 
         self.fuelTank = uid_mgr.get_geometric_component("genericTank1")
         self.hull = uid_mgr.get_geometric_component("outerHull")
+        self.hull_with_guides = uid_mgr.get_geometric_component(
+            "genericTank2_outerHull"
+        )
 
     def tearDown(self):
         self.tigl.close()
@@ -45,7 +48,7 @@ class FuselageTank(unittest.TestCase):
             fuelTanks.get_generic_fuel_tank_index(tank1_uID),
             1,
         )
-        self.assertEqual(fuelTanks.get_generic_fuel_tanks_count(), 1)
+        self.assertEqual(fuelTanks.get_generic_fuel_tanks_count(), 2)
 
         # Test availability of generated class:
         self.assertIsInstance(
@@ -106,9 +109,21 @@ class FuselageTank(unittest.TestCase):
         )
 
         point = self.hull.get_point(1, 0.5, 0.5)
-        self.assertAlmostEqual(round(point.X(), 2), 2.54)
+        self.assertAlmostEqual(round(point.X(), 2), 1.34)
         self.assertAlmostEqual(round(point.Y(), 2), 0)
         self.assertAlmostEqual(round(point.Z(), 2), -0.3)
+
+        point = self.hull_with_guides.get_guide_curve_points()[1]
+        self.assertAlmostEqual(round(point.X(), 2), 2.75, 1e-2)
+        self.assertAlmostEqual(round(point.Y(), 2), 0.0, 1e-5)
+        self.assertAlmostEqual(round(point.Z(), 2), -0.24, 1e-2)
+
+        self.assertEqual(
+            self.hull_with_guides.get_guide_curve_segment(
+                "genericTank2_seg1_upper"
+            ).get_guide_curve_profile_uid(),
+            "gc_upper",
+        )
 
         # Test availability of generated class:
         self.assertEqual(self.hull.get_name(), "Outer hull")
