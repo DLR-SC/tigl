@@ -102,7 +102,9 @@
 #include "generated/CPACSFuelTankVolume.h"
 #include "CCPACSGenericFuelTanks.h"
 #include "CCPACSGenericFuelTank.h"
+#include "generated/CPACSHulls.h"
 #include "CCPACSHulls.h"
+#include "generated/CPACSHull.h"
 #include "CCPACSHull.h"
 
 
@@ -355,7 +357,9 @@ class CCPACSHulls;
 %include "CCPACSFuselageSegments.h"
 %include "CCPACSGenericFuelTanks.h"
 %include "CCPACSGenericFuelTank.h"
+%include "generated/CPACSHulls.h"
 %include "CCPACSHulls.h"
+%include "generated/CPACSHull.h"
 %include "CCPACSHull.h"
 %include "generated/CPACSFuselageFuelTanks.h"
 

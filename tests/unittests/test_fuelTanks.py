@@ -28,18 +28,21 @@ class FuselageTank(unittest.TestCase):
     def test_genericFuelTanks(self):
         # Test custom class methods:
         fuelTanks = self.fuelTank.get_parent()
+        tank1_uID = "genericTank1"
+
+        ## Test accessability of childs:
         self.assertIsInstance(
             fuelTanks.get_generic_fuel_tank(1), configuration.CCPACSGenericFuelTank
         )
         self.assertEqual(
-            fuelTanks.get_generic_fuel_tank(1).get_defaulted_uid(), "genericTank1"
+            fuelTanks.get_generic_fuel_tank(1).get_defaulted_uid(), tank1_uID
         )
         self.assertIsInstance(
-            fuelTanks.get_generic_fuel_tank("genericTank1"),
+            fuelTanks.get_generic_fuel_tank(tank1_uID),
             configuration.CCPACSGenericFuelTank,
         )
         self.assertEqual(
-            fuelTanks.get_generic_fuel_tank_index("genericTank1"),
+            fuelTanks.get_generic_fuel_tank_index(tank1_uID),
             1,
         )
         self.assertEqual(fuelTanks.get_generic_fuel_tanks_count(), 1)
@@ -56,6 +59,26 @@ class FuselageTank(unittest.TestCase):
 
         # Test availability of generated class:
         self.assertEqual(self.fuelTank.get_name(), "Simple tank")
+
+    def test_hulls(self):
+        # Test custom class methods:
+        hulls = self.hull.get_parent()
+        hull1_uID = "outerHull"
+
+        ## Test accessability of childs:
+        self.assertIsInstance(hulls.get_hull(1), configuration.CCPACSHull)
+        self.assertEqual(hulls.get_hull(1).get_defaulted_uid(), hull1_uID)
+        self.assertIsInstance(hulls.get_hull(hull1_uID), configuration.CCPACSHull)
+        self.assertEqual(
+            hulls.get_hull_index(hull1_uID),
+            1,
+        )
+        self.assertEqual(hulls.get_hulls_count(), 2)
+
+        # Test availability of generated class:
+        self.assertIsInstance(
+            hulls.get_parent(), configuration.CCPACSGenericFuelTank
+        )
 
     def test_hull(self):
         # Test custom class methods:
@@ -88,6 +111,9 @@ class FuselageTank(unittest.TestCase):
         self.assertAlmostEqual(round(point.X(), 2), 2.54)
         self.assertAlmostEqual(round(point.Y(), 2), 0)
         self.assertAlmostEqual(round(point.Z(), 2), -0.3)
+
+        # Test availability of generated class:
+        self.assertEqual(self.hull.get_name(), "Outer hull")
 
 
 if __name__ == "__main__":
