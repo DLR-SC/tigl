@@ -76,9 +76,7 @@ class FuselageTank(unittest.TestCase):
         self.assertEqual(hulls.get_hulls_count(), 2)
 
         # Test availability of generated class:
-        self.assertIsInstance(
-            hulls.get_parent(), configuration.CCPACSGenericFuelTank
-        )
+        self.assertIsInstance(hulls.get_parent(), configuration.CCPACSGenericFuelTank)
 
     def test_hull(self):
         # Test custom class methods:
