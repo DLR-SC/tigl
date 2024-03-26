@@ -128,6 +128,16 @@ class FuselageTank(unittest.TestCase):
         # Test availability of generated class:
         self.assertEqual(self.hull.get_name(), "Outer hull")
 
+    def test_structure(self):
+        structure = self.hull.get_structure()
+        # Test custom class methods:
+        self.assertIsInstance(
+            structure.get_frames(), configuration.CCPACSFramesAssembly
+        )
+
+        # Test availability of generated class:
+        self.assertEqual(structure.get_uid(), "outerHullStructure")
+
 
 if __name__ == "__main__":
     unittest.main()

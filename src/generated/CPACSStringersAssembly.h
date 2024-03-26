@@ -32,11 +32,10 @@ class CTiglUIDObject;
 class CCPACSFuselageStringer;
 class CCPACSDuctStructure;
 class CCPACSFuselageStructure;
+class CCPACSHullStructure;
 
 namespace generated
 {
-    class CPACSHullStructure;
-
     // This class is used in:
     // CPACSDuctStructure
     // CPACSFuselageStructure
@@ -52,7 +51,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSStringersAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSStringersAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSStringersAssembly(CPACSHullStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSStringersAssembly(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSStringersAssembly();
 
@@ -65,7 +64,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CPACSHullStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSHullStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -75,7 +74,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CPACSHullStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSHullStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -115,7 +114,4 @@ namespace generated
 } // namespace generated
 
 // CPACSStringersAssembly is customized, use type CCPACSStringersAssembly directly
-
-// Aliases in tigl namespace
-using CCPACSHullStructure = generated::CPACSHullStructure;
 } // namespace tigl

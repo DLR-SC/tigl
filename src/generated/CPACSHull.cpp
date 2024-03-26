@@ -267,17 +267,17 @@ namespace generated
         return m_segments;
     }
 
-    const boost::optional<CPACSHullStructure>& CPACSHull::GetStructure() const
+    const boost::optional<CCPACSHullStructure>& CPACSHull::GetStructure() const
     {
         return m_structure;
     }
 
-    boost::optional<CPACSHullStructure>& CPACSHull::GetStructure()
+    boost::optional<CCPACSHullStructure>& CPACSHull::GetStructure()
     {
         return m_structure;
     }
 
-    CPACSHullStructure& CPACSHull::GetStructure(CreateIfNotExistsTag)
+    CCPACSHullStructure& CPACSHull::GetStructure(CreateIfNotExistsTag)
     {
         if (!m_structure)
             m_structure = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);

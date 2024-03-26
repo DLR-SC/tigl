@@ -157,3 +157,11 @@ TEST_F(FuselageTank, hull)
 
     EXPECT_EQ(hull_with_guides->GetGuideCurveSegment("genericTank2_seg1_upper").GetGuideCurveProfileUID(), "gc_upper");
 }
+
+TEST_F(FuselageTank, structure)
+{
+    auto &structure = hull->GetStructure();
+
+    EXPECT_EQ(structure->GetFrames()->GetFrames().size(),1);
+    EXPECT_EQ(structure->GetUID(), "outerHullStructure");
+}

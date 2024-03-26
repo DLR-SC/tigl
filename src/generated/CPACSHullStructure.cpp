@@ -90,7 +90,7 @@ namespace generated
 
         // read element stringers
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/stringers")) {
-            m_stringers = boost::in_place(this, m_uidMgr);
+            m_stringers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
             try {
                 m_stringers->ReadCPACS(tixiHandle, xpath + "/stringers");
             } catch(const std::exception& e) {
@@ -101,7 +101,7 @@ namespace generated
 
         // read element frames
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/frames")) {
-            m_frames = boost::in_place(this, m_uidMgr);
+            m_frames = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
             try {
                 m_frames->ReadCPACS(tixiHandle, xpath + "/frames");
             } catch(const std::exception& e) {
@@ -112,7 +112,7 @@ namespace generated
 
         // read element virtualStringers
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/virtualStringers")) {
-            m_virtualStringers = boost::in_place(this, m_uidMgr);
+            m_virtualStringers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
             try {
                 m_virtualStringers->ReadCPACS(tixiHandle, xpath + "/virtualStringers");
             } catch(const std::exception& e) {
@@ -123,7 +123,7 @@ namespace generated
 
         // read element virtualFrames
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/virtualFrames")) {
-            m_virtualFrames = boost::in_place(this, m_uidMgr);
+            m_virtualFrames = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
             try {
                 m_virtualFrames->ReadCPACS(tixiHandle, xpath + "/virtualFrames");
             } catch(const std::exception& e) {
@@ -134,7 +134,7 @@ namespace generated
 
         // read element skinLayers
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skinLayers")) {
-            m_skinLayers = boost::in_place(this, m_uidMgr);
+            m_skinLayers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
             try {
                 m_skinLayers->ReadCPACS(tixiHandle, xpath + "/skinLayers");
             } catch(const std::exception& e) {
@@ -279,7 +279,7 @@ namespace generated
     CCPACSStringersAssembly& CPACSHullStructure::GetStringers(CreateIfNotExistsTag)
     {
         if (!m_stringers)
-            m_stringers = boost::in_place(this, m_uidMgr);
+            m_stringers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
         return *m_stringers;
     }
 
@@ -291,7 +291,7 @@ namespace generated
     CCPACSFramesAssembly& CPACSHullStructure::GetFrames(CreateIfNotExistsTag)
     {
         if (!m_frames)
-            m_frames = boost::in_place(this, m_uidMgr);
+            m_frames = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
         return *m_frames;
     }
 
@@ -303,7 +303,7 @@ namespace generated
     CCPACSStringersAssembly& CPACSHullStructure::GetVirtualStringers(CreateIfNotExistsTag)
     {
         if (!m_virtualStringers)
-            m_virtualStringers = boost::in_place(this, m_uidMgr);
+            m_virtualStringers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
         return *m_virtualStringers;
     }
 
@@ -315,7 +315,7 @@ namespace generated
     CCPACSFramesAssembly& CPACSHullStructure::GetVirtualFrames(CreateIfNotExistsTag)
     {
         if (!m_virtualFrames)
-            m_virtualFrames = boost::in_place(this, m_uidMgr);
+            m_virtualFrames = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
         return *m_virtualFrames;
     }
 
@@ -327,7 +327,7 @@ namespace generated
     CPACSHullSkinLayers& CPACSHullStructure::GetSkinLayers(CreateIfNotExistsTag)
     {
         if (!m_skinLayers)
-            m_skinLayers = boost::in_place(this, m_uidMgr);
+            m_skinLayers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
         return *m_skinLayers;
     }
 

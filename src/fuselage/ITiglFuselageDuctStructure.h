@@ -33,8 +33,8 @@ class CCPACSFuselageStringerFramePosition;
 
 /**
  * @brief The ITiglFuselageDuctStructure class provides some common
- * geometric functionality needed by structural elements of both
- * ducts and fuselages
+ * geometric functionality needed by structural elements of
+ * ducts, fuselages, and hulls
  */
 class ITiglFuselageDuctStructure
 {
@@ -45,7 +45,7 @@ public:
 
     TIGL_EXPORT TopoDS_Shape const& GetLoft() const;
 
-    // calculates the intersection of the stringer frame position with the parent loft (duct/fuselage)
+    // calculates the intersection of the stringer frame position with the parent loft (duct/fuselage/hull)
     TIGL_EXPORT gp_Lin Intersection(CCPACSFuselageStringerFramePosition const& pos) const;
     TIGL_EXPORT gp_Lin Intersection(gp_Pnt pRef, double angleRef) const;
 

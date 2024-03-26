@@ -106,6 +106,9 @@
 #include "CCPACSHulls.h"
 #include "generated/CPACSHull.h"
 #include "CCPACSHull.h"
+#include "generated/CPACSHullStructure.h"
+#include "CCPACSHullStructure.h"
+#include "CCPACSFrame.h"
 
 
 %}
@@ -343,12 +346,15 @@ namespace tigl
 %boost_optional(tigl::generated::CPACSGenericFuelTanks)
 %boost_optional(tigl::CCPACSHulls)
 %boost_optional(tigl::generated::CPACSFuelTankVolume)
+%boost_optional(tigl::CCPACSHullStructure)
 
 namespace tigl {
 class CCPACSFuselageSegments;
 class CCPACSHulls;
 }
 
+%include "generated/CPACSHullStructure.h"
+%include "CCPACSHullStructure.h"
 %include "generated/CPACSGenericFuelTanks.h"
 %include "generated/CPACSFuelTankVolume.h"
 %include "generated/CPACSGenericFuelTank.h"

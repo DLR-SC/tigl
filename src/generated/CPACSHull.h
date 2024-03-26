@@ -21,10 +21,10 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSFuselageSections.h>
 #include <CCPACSFuselageSegments.h>
+#include <CCPACSHullStructure.h>
 #include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSHullStructure.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -80,10 +80,10 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSFuselageSegments& GetSegments() const;
         TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSHullStructure>& GetStructure() const;
-        TIGL_EXPORT virtual boost::optional<CPACSHullStructure>& GetStructure();
+        TIGL_EXPORT virtual const boost::optional<CCPACSHullStructure>& GetStructure() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSHullStructure>& GetStructure();
 
-        TIGL_EXPORT virtual CPACSHullStructure& GetStructure(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSHullStructure& GetStructure(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructure();
 
     protected:
@@ -91,21 +91,21 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                         m_uID;
+        std::string                          m_uID;
 
         /// Name
-        std::string                         m_name;
+        std::string                          m_name;
 
         /// Description
-        boost::optional<std::string>        m_description;
+        boost::optional<std::string>         m_description;
 
-        CCPACSTransformation                m_transformation;
+        CCPACSTransformation                 m_transformation;
 
-        CCPACSFuselageSections              m_sections;
+        CCPACSFuselageSections               m_sections;
 
-        CCPACSFuselageSegments              m_segments;
+        CCPACSFuselageSegments               m_segments;
 
-        boost::optional<CPACSHullStructure> m_structure;
+        boost::optional<CCPACSHullStructure> m_structure;
 
     private:
         CPACSHull(const CPACSHull&) = delete;

@@ -172,6 +172,19 @@
                           <toElementUID>outerHull_section3_element1</toElementUID>
                         </segment>
                       </segments>
+                      <structure uID="outerHullStructure">
+                        <frames>
+                          <frame uID="outerHullStructureFrame1">
+                            <framePosition uID="outerHullStructureFrame1_fp1">
+                              <structuralElementUID>dummyMaterial</structuralElementUID>
+                              <sectionElementUID>outerHull_section2</sectionElementUID>
+                              <referenceY>0</referenceY>
+                              <referenceZ>0</referenceZ>
+                              <referenceAngle>45</referenceAngle>
+                            </framePosition>
+                          </frame>
+                        </frames>
+                      </structure>
                     </hull>
                     <hull uID="innerHull">
                       <name>Inner hull</name>
@@ -446,5 +459,34 @@
         </guideCurveProfile>
       </guideCurves>
     </profiles>
+    <structuralElements>
+      <profileBasedStructuralElements>
+        <profileBasedStructuralElement uID="strutElement">
+          <name>Frame structural element</name>
+          <sheetProperties>
+            <sheetUID>sheet</sheetUID>
+            <materialUID>dummyMaterial</materialUID>
+            <thickness>0.05</thickness>
+          </sheetProperties>
+          <standardProfileType>T</standardProfileType>
+        </profileBasedStructuralElement>
+      </profileBasedStructuralElements>
+      <sheetBasedStructuralElements>
+        <sheetBasedStructuralElement uID="sheet">
+          <materialDefinition>
+            <materialUID>dummyMaterial</materialUID>
+          </materialDefinition>
+        </sheetBasedStructuralElement>
+      </sheetBasedStructuralElements>
+    </structuralElements>
+    <materials>
+      <material uID="dummyMaterial">
+        <name>Dummy material</name>
+        <rho>1</rho>
+        <isotropicProperties>
+          <E>1</E>
+        </isotropicProperties>
+      </material>
+    </materials>
   </vehicles>
 </cpacs>
