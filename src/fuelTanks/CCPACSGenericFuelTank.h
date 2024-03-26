@@ -25,12 +25,12 @@
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSConfiguration.h"
 
-namespace tigl {
+namespace tigl
+{
 
-class CCPACSGenericFuelTank: public generated::CPACSGenericFuelTank, public CTiglRelativelyPositionedComponent
+class CCPACSGenericFuelTank : public generated::CPACSGenericFuelTank, public CTiglRelativelyPositionedComponent
 {
 public:
-
     TIGL_EXPORT CCPACSGenericFuelTank(CCPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
@@ -50,9 +50,7 @@ private:
     PNamedShape BuildLoft() const override;
 
 private:
-
     std::string GetShortShapeName() const;
-
 };
 
 } //namespace tigl

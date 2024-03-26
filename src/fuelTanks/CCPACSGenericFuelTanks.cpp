@@ -23,11 +23,13 @@
 #include "CCPACSGenericFuelTank.h"
 #include "CTiglError.h"
 
-namespace tigl {
+namespace tigl
+{
 
 CCPACSGenericFuelTanks::CCPACSGenericFuelTanks(generated::CPACSFuselageFuelTanks* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSGenericFuelTanks(parent, uidMgr)
-{}
+{
+}
 
 int CCPACSGenericFuelTanks::GetGenericFuelTanksCount() const
 {
@@ -41,9 +43,10 @@ CCPACSGenericFuelTank const& CCPACSGenericFuelTanks::GetGenericFuelTank(std::str
 
 CCPACSGenericFuelTank& CCPACSGenericFuelTanks::GetGenericFuelTank(std::string const& uID)
 {
-    auto it = std::find_if(m_genericFuelTanks.begin(), m_genericFuelTanks.end(), [&](std::unique_ptr<CCPACSGenericFuelTank> const& v){ return v->GetUID() == uID; });
+    auto it = std::find_if(m_genericFuelTanks.begin(), m_genericFuelTanks.end(),
+                           [&](std::unique_ptr<CCPACSGenericFuelTank> const& v) { return v->GetUID() == uID; });
 
-    if ( it != std::end(m_genericFuelTanks)) {
+    if (it != std::end(m_genericFuelTanks)) {
         return **it;
     }
     throw CTiglError("Could not find genericFuelTank with uid" + uID);
@@ -60,10 +63,10 @@ CCPACSGenericFuelTank& CCPACSGenericFuelTanks::GetGenericFuelTank(int index) con
 
 int CCPACSGenericFuelTanks::GetGenericFuelTankIndex(const std::string& uID) const
 {
-    for (int i=0; i < GetGenericFuelTanksCount(); i++) {
+    for (int i = 0; i < GetGenericFuelTanksCount(); i++) {
         const std::string tmpUID(m_genericFuelTanks[i]->GetUID());
         if (tmpUID == uID) {
-            return i+1;
+            return i + 1;
         }
     }
     throw CTiglError("Invalid UID in CCPACSGenericFuelTanks::GetGenericFuelTankIndex", TIGL_UID_ERROR);

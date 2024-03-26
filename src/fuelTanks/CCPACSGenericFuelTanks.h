@@ -23,12 +23,12 @@
 
 #include "generated/CPACSGenericFuelTanks.h"
 
-namespace tigl {
+namespace tigl
+{
 
-class CCPACSGenericFuelTanks: public generated::CPACSGenericFuelTanks
+class CCPACSGenericFuelTanks : public generated::CPACSGenericFuelTanks
 {
 public:
-
     TIGL_EXPORT CCPACSGenericFuelTanks(generated::CPACSFuselageFuelTanks* parent, CTiglUIDManager* uidMgr);
 
     // Get a specific hull for a given uID
@@ -43,9 +43,6 @@ public:
 
     // Returns the total count of fuselages in a configuration
     TIGL_EXPORT int GetGenericFuelTanksCount() const;
-
-private:
-
 };
 
 } //namespace tigl

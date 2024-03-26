@@ -31,7 +31,6 @@ namespace tigl
 class CCPACSHull : public generated::CPACSHull, public CTiglRelativelyPositionedComponent
 {
 public:
-
     // Constructor
     TIGL_EXPORT explicit CCPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr);
 
@@ -86,22 +85,18 @@ public:
     // Returns all guide curve points
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
 
-
 protected:
-
     // Build the loft
     PNamedShape BuildLoft() const override;
 
     // Set the face traints
-    void SetFaceTraits (PNamedShape loft) const;
+    void SetFaceTraits(PNamedShape loft) const;
 
 private:
-
     // Get short name for loft
     std::string GetShortShapeName() const;
 
-    TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
-
+    TiglGetPointBehavior getPointBehavior{asParameterOnSurface};
 };
 
-}
+} // namespace tigl

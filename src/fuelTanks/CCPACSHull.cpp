@@ -34,13 +34,14 @@
 #include "TopTools_IndexedMapOfShape.hxx"
 #include "TopExp.hxx"
 
-
-namespace tigl {
+namespace tigl
+{
 
 CCPACSHull::CCPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSHull(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(GetParent()->GetParent(), &m_transformation)
-{}
+{
+}
 
 CCPACSConfiguration& CCPACSHull::GetConfiguration() const
 {
@@ -77,13 +78,13 @@ TopoDS_Shape CCPACSHull::GetSectionFace(const std::string section_uid) const
 {
     // search for the section in all segments
     for (int n = 0; n < GetSegmentCount(); ++n) {
-        const CCPACSFuselageSegment& segment = GetSegment(n+1);
+        const CCPACSFuselageSegment& segment = GetSegment(n + 1);
 
-        if ( section_uid == segment.GetStartSectionUID() ) {
-            return BuildFace( segment.GetStartWire() );
+        if (section_uid == segment.GetStartSectionUID()) {
+            return BuildFace(segment.GetStartWire());
         }
-        else if ( section_uid == segment.GetEndSectionUID() ) {
-            return BuildFace( segment.GetEndWire() );
+        else if (section_uid == segment.GetEndSectionUID()) {
+            return BuildFace(segment.GetEndWire());
         }
     }
     throw CTiglError("GetSectionFace: Could not find a section for the given UID");
@@ -130,7 +131,7 @@ double CCPACSHull::GetSurfaceArea()
     TopTools_IndexedMapOfShape shapeMap;
     TopExp::MapShapes(fusedSegments->Shape(), TopAbs_FACE, shapeMap);
     for (int i = 1; i <= shapeMap.Extent(); ++i) {
-        if (GetUID() == fusedSegments->GetFaceTraits(i-1).Name()) {
+        if (GetUID() == fusedSegments->GetFaceTraits(i - 1).Name()) {
             const TopoDS_Face& f = TopoDS::Face(shapeMap(i));
             GProp_GProps System;
             BRepGProp::SurfaceProperties(f, System);
@@ -149,12 +150,12 @@ double CCPACSHull::GetCircumference(const int segmentIndex, const double eta)
 
 PNamedShape CCPACSHull::BuildLoft() const
 {
-    TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
-    Standard_Boolean smooth = (cont == ::C0? false : true);
+    TiglContinuity cont     = m_segments.GetSegment(1).GetContinuity();
+    Standard_Boolean smooth = (cont == ::C0 ? false : true);
 
     CTiglMakeLoft lofter;
     // add profiles
-    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
+    for (int i = 1; i <= m_segments.GetSegmentCount(); i++) {
         lofter.addProfiles(m_segments.GetSegment(i).GetStartWire());
     }
     lofter.addProfiles(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire());
@@ -165,9 +166,9 @@ PNamedShape CCPACSHull::BuildLoft() const
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
 
-    TopoDS_Shape loftShape =  lofter.Shape();
+    TopoDS_Shape loftShape = lofter.Shape();
 
-    std::string loftName = GetUID();
+    std::string loftName      = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     SetFaceTraits(loft);
@@ -177,7 +178,7 @@ PNamedShape CCPACSHull::BuildLoft() const
 
 gp_Pnt CCPACSHull::GetPoint(int segmentIndex, double eta, double zeta)
 {
-    return ((CCPACSFuselageSegment &) GetSegment(segmentIndex)).GetPoint(eta, zeta, getPointBehavior);
+    return ((CCPACSFuselageSegment&)GetSegment(segmentIndex)).GetPoint(eta, zeta, getPointBehavior);
 }
 
 // Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
@@ -225,7 +226,7 @@ std::vector<gp_Pnt> CCPACSHull::GetGuideCurvePoints() const
         }
 
         const CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
-        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
+        for (int iguide = 1; iguide <= segmentCurves.GetGuideCurveCount(); ++iguide) {
             const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             std::vector<gp_Pnt> curPoints = curve.GetCurvePoints();
             points.insert(points.end(), curPoints.begin(), curPoints.end());
@@ -238,9 +239,9 @@ std::vector<gp_Pnt> CCPACSHull::GetGuideCurvePoints() const
 std::string CCPACSHull::GetShortShapeName() const
 {
     unsigned int findex = 0;
-    unsigned int i = 0;
+    unsigned int i      = 0;
 
-    for (auto& h: GetParent()->GetHulls()) {
+    for (auto& h : GetParent()->GetHulls()) {
         ++i;
         if (GetUID() == h->GetUID()) {
             findex = i;
@@ -252,10 +253,10 @@ std::string CCPACSHull::GetShortShapeName() const
     return "UNKNOWN";
 }
 
-void CCPACSHull::SetFaceTraits (PNamedShape loft) const
+void CCPACSHull::SetFaceTraits(PNamedShape loft) const
 {
-    int nFacesTotal = GetNumberOfFaces(loft->Shape());
-    int nFacesAero = nFacesTotal;
+    int nFacesTotal       = GetNumberOfFaces(loft->Shape());
+    int nFacesAero        = nFacesTotal;
     bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
 
     std::vector<std::string> names;
@@ -265,19 +266,19 @@ void CCPACSHull::SetFaceTraits (PNamedShape loft) const
     names.push_back("Rear");
 
     if (!CTiglTopoAlgorithms::IsDegenerated(m_segments.GetSegment(1).GetStartWire())) {
-          nFacesAero-=1;
+        nFacesAero -= 1;
     }
     if (!CTiglTopoAlgorithms::IsDegenerated(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire())) {
-          nFacesAero-=1;
+        nFacesAero -= 1;
     }
 
     // if we have a smooth surface, the whole fuslage is treatet as one segment
     int nSegments = m_segments.GetSegmentCount();
 
-    int facesPerSegment = nFacesAero/ nSegments;
+    int facesPerSegment = nFacesAero / nSegments;
 
-    int iFaceTotal = 0;
-    int nSymmetryFaces = (int) hasSymmetryPlane;
+    int iFaceTotal     = 0;
+    int nSymmetryFaces = (int)hasSymmetryPlane;
     for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
         for (int iFace = 0; iFace < facesPerSegment - nSymmetryFaces; ++iFace) {
             loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
@@ -289,7 +290,7 @@ void CCPACSHull::SetFaceTraits (PNamedShape loft) const
 
     // set the caps
     int iFace = 2;
-    for (;iFaceTotal < nFacesTotal; ++iFaceTotal) {
+    for (; iFaceTotal < nFacesTotal; ++iFaceTotal) {
         loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
     }
 }

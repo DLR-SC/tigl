@@ -24,12 +24,12 @@
 #include "generated/CPACSHulls.h"
 #include <functional>
 
-namespace tigl {
+namespace tigl
+{
 
-class CCPACSHulls: public generated::CPACSHulls
+class CCPACSHulls : public generated::CPACSHulls
 {
 public:
-
     TIGL_EXPORT CCPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr);
 
     // Get a specific hull for a given uID
@@ -46,7 +46,6 @@ public:
     TIGL_EXPORT int GetHullsCount() const;
 
 private:
-
 };
 
 } //namespace tigl

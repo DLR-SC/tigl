@@ -23,11 +23,13 @@
 #include "CCPACSHull.h"
 #include "CTiglError.h"
 
-namespace tigl {
+namespace tigl
+{
 
 CCPACSHulls::CCPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSHulls(parent, uidMgr)
-{}
+{
+}
 
 int CCPACSHulls::GetHullsCount() const
 {
@@ -41,9 +43,10 @@ CCPACSHull const& CCPACSHulls::GetHull(std::string const& uID) const
 
 CCPACSHull& CCPACSHulls::GetHull(std::string const& uID)
 {
-    auto it = std::find_if(m_hulls.begin(), m_hulls.end(), [&](std::unique_ptr<CCPACSHull> const& v){ return v->GetUID() == uID; });
+    auto it = std::find_if(m_hulls.begin(), m_hulls.end(),
+                           [&](std::unique_ptr<CCPACSHull> const& v) { return v->GetUID() == uID; });
 
-    if ( it != std::end(m_hulls)) {
+    if (it != std::end(m_hulls)) {
         return **it;
     }
     throw CTiglError("Could not find hull with uid" + uID);
@@ -60,10 +63,10 @@ CCPACSHull& CCPACSHulls::GetHull(int index) const
 
 int CCPACSHulls::GetHullIndex(const std::string& uID) const
 {
-    for (int i=0; i < GetHullsCount(); i++) {
+    for (int i = 0; i < GetHullsCount(); i++) {
         const std::string tmpUID(m_hulls[i]->GetUID());
         if (tmpUID == uID) {
-            return i+1;
+            return i + 1;
         }
     }
     throw CTiglError("Invalid UID in CCPACSHulls::GetHullIndex", TIGL_UID_ERROR);
