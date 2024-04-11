@@ -273,12 +273,15 @@ TIGL_EXPORT TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges);
 
 /**
  * @brief ApproximateArcOfCircleToRationalBSpline
- * @param cornerRadius
- * @param uMin
+ * The result of this function is a rational B-Spline curve that approximates an arc of circle in the y-z plane. Its center is given by the y- and z-position.
+ * The angle is given in rad.
+ * The direction of rotation is counter-clockwise, starting with alpha=0 on the positive y-axis,  with z=0.
+ * @param radius    Radius of the circle
+ * @param uMin      Starting parameter in rad. Range: [0,2*Pi]
  * @param uMax
  * @param y_position
  * @param z_position
- * @return
+ * @return opencascade::handle<Geom_BSplineCurve>
  */
 TIGL_EXPORT opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double cornerRadius, double uMin = 0, double uMax = M_PI/4 ,double y_position = 0., double z_position = 0.);
 
