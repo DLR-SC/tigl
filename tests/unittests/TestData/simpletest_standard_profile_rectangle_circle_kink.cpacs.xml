@@ -181,6 +181,49 @@
                   </element>
                 </elements>
               </section>
+              <section uID="D150_Fuselage_1Section4ID">
+                <name>D150_Fuselage_1Section3</name>
+                <transformation uID="D150_Fuselage_1Section4ID_transformation1">
+                  <scaling uID="D150_Fuselage_1Section4ID_transformation1_scaling1">
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation uID="D150_Fuselage_1Section4ID_transformation1_rotation1">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="D150_Fuselage_1Section4ID_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="D150_Fuselage_1Section4IDElement1">
+                    <name>D150_Fuselage_1Section3</name>
+                    <profileUID>fuselageRectangle1ProfileuID</profileUID>
+                    <transformation uID="D150_Fuselage_1Section4IDElement1_transformation1">
+                      <scaling uID="D150_Fuselage_1Section4IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="D150_Fuselage_1Section4IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="D150_Fuselage_1Section4IDElement1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
             </sections>
             <positionings>
               <positioning uID="D150_Fuselage_1Positioning1ID">
@@ -196,7 +239,7 @@
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
                 <fromSectionUID>D150_Fuselage_1Section1ID</fromSectionUID>
-                <toSectionUID>D150_Fuselage_1Section3ID</toSectionUID>
+                <toSectionUID>D150_Fuselage_1Section4ID</toSectionUID>
               </positioning>
             </positionings>
             <segments>
@@ -209,6 +252,11 @@
                 <name>D150_Fuselage_1Segment3</name>
                 <fromElementUID>D150_Fuselage_1Section2IDElement1</fromElementUID>
                 <toElementUID>D150_Fuselage_1Section3IDElement1</toElementUID>
+              </segment>
+                <segment uID="segmentD150_Fuselage_1Segment4ID">
+                <name>D150_Fuselage_1Segment4</name>
+                <fromElementUID>D150_Fuselage_1Section3IDElement1</fromElementUID>
+                <toElementUID>D150_Fuselage_1Section4IDElement1</toElementUID>
               </segment>
             </segments>
           </fuselage>
@@ -571,10 +619,10 @@
             <x mapType="vector">0.0;0.0;0.0;0.0;0.0</x>
             <y mapType="vector">0.0;1.0;0.0;-1.0;0.0</y>
             <z mapType="vector">1.0;0.0;-1.0;0.0;1.0</z>
-            <kinkIndices>3;7</kinkIndices>
+            <kinkIndices mapType="vector">1;3</kinkIndices>
             <parameterMap>
-                <pointIndices>3;5;7</pointIndices>
-                <paramOnCurve>0.2;0.5;0.8</paramOnCurve>
+              <pointIndices mapType="vector">1;3</pointIndices>
+              <paramOnCurve mapType="vector">0.25;0.75</paramOnCurve>
             </parameterMap>
           </pointList>
         </fuselageProfile>
@@ -584,6 +632,16 @@
           <standardProfile>
             <rectangle>
                 <heightToWidthRatio>0.5</heightToWidthRatio>
+            </rectangle>
+          </standardProfile>
+        </fuselageProfile>
+          <fuselageProfile uID="fuselageRectangle1ProfileuID">
+          <name>Rectangle1</name>
+          <description>Standard Profile Type Rectangle</description>
+          <standardProfile>
+            <rectangle>
+                <heightToWidthRatio>0.5</heightToWidthRatio>
+                <cornerRadius>0.14</cornerRadius>
             </rectangle>
           </standardProfile>
         </fuselageProfile>
