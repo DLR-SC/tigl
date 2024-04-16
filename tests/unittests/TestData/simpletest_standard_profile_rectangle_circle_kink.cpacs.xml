@@ -109,7 +109,7 @@
                     <z>0.0</z>
                   </rotation>
                   <translation refType="absLocal" uID="D150_Fuselage_1Section2ID_transformation1_translation1">
-                    <x>0.5</x>
+                    <x>0.01</x>
                     <y>0</y>
                     <z>0</z>
                   </translation>
@@ -121,8 +121,8 @@
                     <transformation uID="D150_Fuselage_1Section2IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section2IDElement1_transformation1_scaling1">
                         <x>1</x>
-                        <y>1</y>
-                        <z>1</z>
+                        <y>3</y>
+                        <z>3</z>
                       </scaling>
                       <rotation uID="D150_Fuselage_1Section2IDElement1_transformation1_rotation1">
                         <x>0</x>
@@ -143,8 +143,8 @@
                 <transformation uID="D150_Fuselage_1Section3ID_transformation1">
                   <scaling uID="D150_Fuselage_1Section3ID_transformation1_scaling1">
                     <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
+                    <y>3.0</y>
+                    <z>3.0</z>
                   </scaling>
                   <rotation uID="D150_Fuselage_1Section3ID_transformation1_rotation1">
                     <x>0.0</x>
@@ -152,7 +152,7 @@
                     <z>0.0</z>
                   </rotation>
                   <translation refType="absLocal" uID="D150_Fuselage_1Section3ID_transformation1_translation1">
-                    <x>0</x>
+                    <x>1</x>
                     <y>0</y>
                     <z>0</z>
                   </translation>
@@ -173,7 +173,7 @@
                         <z>0</z>
                       </rotation>
                       <translation refType="absLocal" uID="D150_Fuselage_1Section3IDElement1_transformation1_translation1">
-                        <x>0</x>
+                        <x>0.5</x>
                         <y>0</y>
                         <z>0</z>
                       </translation>
@@ -216,7 +216,7 @@
                         <z>0</z>
                       </rotation>
                       <translation refType="absLocal" uID="D150_Fuselage_1Section4IDElement1_transformation1_translation1">
-                        <x>0</x>
+                        <x>0.9</x>
                         <y>0</y>
                         <z>0</z>
                       </translation>
@@ -640,7 +640,7 @@
           <description>Standard Profile Type Rectangle</description>
           <standardProfile>
             <rectangle>
-                <heightToWidthRatio>0.5</heightToWidthRatio>
+                <heightToWidthRatio>1</heightToWidthRatio>
                 <cornerRadius>0.14</cornerRadius>
             </rectangle>
           </standardProfile>

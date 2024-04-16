@@ -181,7 +181,7 @@
                 <elements>
                   <element uID="D150_Fuselage_1Section3IDElement1">
                     <name>D150_Fuselage_1Section3</name>
-                    <profileUID>fuselageRectangle1ProfileuID</profileUID>
+                    <profileUID>fuselageRectangleProfileuID</profileUID>
                     <transformation uID="D150_Fuselage_1Section3IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section3IDElement1_transformation1_scaling1">
                         <x>1</x>
@@ -225,11 +225,29 @@
                 <name>D150_Fuselage_1Segment2</name>
                 <fromElementUID>D150_Fuselage_1Section1IDElement1</fromElementUID>
                 <guideCurves>
-                    <guideCurve>
+                    <guideCurve uID= "D150_Fuselage_1_Segment2_guide0">
                       <name>D150_Fuselage_1_Segment2_guide0</name>
                       <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
                       <fromRelativeCircumference>0</fromRelativeCircumference>
                       <toRelativeCircumference>0</toRelativeCircumference>
+                    </guideCurve>
+                    <guideCurve uID= "D150_Fuselage_1_Segment2_guide1">
+                      <name>D150_Fuselage_1_Segment2_guide1</name>
+                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
+                      <fromRelativeCircumference>0.3</fromRelativeCircumference>
+                      <toRelativeCircumference>0.3</toRelativeCircumference>
+                    </guideCurve>
+                    <guideCurve uID= "D150_Fuselage_1_Segment2_guide2">
+                      <name>D150_Fuselage_1_Segment2_guide2</name>
+                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
+                      <fromRelativeCircumference>0.6</fromRelativeCircumference>
+                      <toRelativeCircumference>0.6</toRelativeCircumference>
+                    </guideCurve>
+                    <guideCurve uID= "D150_Fuselage_1_Segment2_guide3">
+                      <name>D150_Fuselage_1_Segment2_guide3</name>
+                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
+                      <fromRelativeCircumference>1</fromRelativeCircumference>
+                      <toRelativeCircumference>1</toRelativeCircumference>
                     </guideCurve>
                 </guideCurves>
                 <toElementUID>D150_Fuselage_1Section2IDElement1</toElementUID>
@@ -243,6 +261,24 @@
                       <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
                       <fromGuideCurveUID>D150_Fuselage_1_Segment2_guide0</fromGuideCurveUID>
                       <toRelativeCircumference>0</toRelativeCircumference>
+                    </guideCurve>
+                    <guideCurve uID="D150_Fuselage_1_Segment3_guide1">
+                      <name>D150_Fuselage_1_Segment3_guide1</name>
+                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
+                      <fromGuideCurveUID>D150_Fuselage_1_Segment2_guide1</fromGuideCurveUID>
+                      <toRelativeCircumference>0.3</toRelativeCircumference>
+                    </guideCurve>
+                    <guideCurve uID="D150_Fuselage_1_Segment3_guide2">
+                      <name>D150_Fuselage_1_Segment3_guide2</name>
+                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
+                      <fromGuideCurveUID>D150_Fuselage_1_Segment2_guide2</fromGuideCurveUID>
+                      <toRelativeCircumference>0.6</toRelativeCircumference>
+                    </guideCurve>
+                    <guideCurve uID="D150_Fuselage_1_Segment3_guide3">
+                      <name>D150_Fuselage_1_Segment3_guide3</name>
+                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
+                      <fromGuideCurveUID>D150_Fuselage_1_Segment2_guide3</fromGuideCurveUID>
+                      <toRelativeCircumference>1</toRelativeCircumference>
                     </guideCurve>
                 </guideCurves>
                 <toElementUID>D150_Fuselage_1Section3IDElement1</toElementUID>
@@ -561,11 +597,11 @@
       </fuselageProfiles>
       <guideCurves>
         <guideCurveProfile uID="guideCurveProfileFuselage">
-          <name>NameGuideCurveProfileFuselage</name>
+          <name>GuideCurveProfileFuselage</name>
           <pointList>
-            <rX mapType="vector">0.000000</rX>
-            <rY mapType="vector">0.500000</rY>
-            <rZ mapType="vector">0.000000</rZ>
+            <rX mapType="vector">0.0</rX>
+            <rY mapType="vector">0.5</rY>
+            <rZ mapType="vector">0.0</rZ>
           </pointList>
         </guideCurveProfile>
       </guideCurves>
