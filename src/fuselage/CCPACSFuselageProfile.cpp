@@ -300,31 +300,43 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta) const
 
 void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) const
 {
-    if (!m_pointList_choice1)
-        throw CTiglError("No pointlist specified");
-    const std::vector<CTiglPoint>& coordinates = m_pointList_choice1->AsVector();
+    if (m_pointList_choice1){
+        const std::vector<CTiglPoint>& coordinates = m_pointList_choice1->AsVector();
+        if (mirrorSymmetry) {
+            cache.start = coordinates[0].Get_gp_Pnt();
+            cache.end   = coordinates[coordinates.size() - 1].Get_gp_Pnt();
+        }
+        else {
+            // compute starting diameter point
+            gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
+            gp_Pnt lastPnt  = coordinates[coordinates.size() - 1].Get_gp_Pnt();
+            double x        = (firstPnt.X() + lastPnt.X()) / 2.;
+            double y        = (firstPnt.Y() + lastPnt.Y()) / 2.;
+            double z        = (firstPnt.Z() + lastPnt.Z()) / 2.;
+            cache.start     = gp_Pnt(x, y, z);
 
-    if (mirrorSymmetry) {
-        cache.start = coordinates[0].Get_gp_Pnt();
-        cache.end   = coordinates[coordinates.size() - 1].Get_gp_Pnt();
-    }
-    else {
-        // compute starting diameter point
-        gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
-        gp_Pnt lastPnt  = coordinates[coordinates.size() - 1].Get_gp_Pnt();
-        double x        = (firstPnt.X() + lastPnt.X()) / 2.;
-        double y        = (firstPnt.Y() + lastPnt.Y()) / 2.;
-        double z        = (firstPnt.Z() + lastPnt.Z()) / 2.;
-        cache.start     = gp_Pnt(x, y, z);
-
-        // find the point with the max dist to starting point
-        cache.end = cache.start;
-        for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
-            gp_Pnt point = it->Get_gp_Pnt();
-            if (cache.start.Distance(point) > cache.start.Distance(cache.end)) {
-                cache.end = point;
+            // find the point with the max dist to starting point
+            cache.end = cache.start;
+            for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
+                gp_Pnt point = it->Get_gp_Pnt();
+                if (cache.start.Distance(point) > cache.start.Distance(cache.end)) {
+                    cache.end = point;
+                }
             }
         }
+    } else if (m_standardProfile_choice3)
+    {
+        //Get Paramenters
+        auto& rectangle_profile = *m_standardProfile_choice3->GetRectangle_choice1();
+        double heightToWidthRatio = rectangle_profile.GetHeightToWidthRatio().GetValue();
+        double radius = (rectangle_profile.GetCornerRadius())? *rectangle_profile.GetCornerRadius() : 0. ;
+
+        cache.start = gp_Pnt(0., 0, 0.5 * heightToWidthRatio);
+        cache.end = gp_Pnt(0., 0, -0.5 * heightToWidthRatio);
+    } else if(m_cst2D_choice2){
+        throw CTiglError("Error defining diameter - unsupported profiletype");
+    } else {
+        throw CTiglError("Error defining diameter");
     }
 }
 
