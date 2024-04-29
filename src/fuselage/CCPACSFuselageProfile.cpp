@@ -326,17 +326,18 @@ void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) cons
         }
     } else if (m_standardProfile_choice3)
     {
-        //Get Paramenters
-        auto& rectangle_profile = *m_standardProfile_choice3->GetRectangle_choice1();
-        double heightToWidthRatio = rectangle_profile.GetHeightToWidthRatio().GetValue();
-        double radius = (rectangle_profile.GetCornerRadius())? *rectangle_profile.GetCornerRadius() : 0. ;
-
-        cache.start = gp_Pnt(0., 0, 0.5 * heightToWidthRatio);
-        cache.end = gp_Pnt(0., 0, -0.5 * heightToWidthRatio);
-    } else if(m_cst2D_choice2){
-        throw CTiglError("Error defining diameter - unsupported profiletype");
+        if(m_standardProfile_choice3->GetRectangle_choice1())
+        {
+           //Get Paramenters
+           auto& rectangle_profile = *m_standardProfile_choice3->GetRectangle_choice1();
+           double heightToWidthRatio = rectangle_profile.GetHeightToWidthRatio().GetValue();
+           cache.start = gp_Pnt(0., 0, 0.5 * heightToWidthRatio);
+           cache.end = gp_Pnt(0., 0, -0.5 * heightToWidthRatio);
+        } else {
+            throw CTiglError("Unknown or unsupported profile type");
+        }
     } else {
-        throw CTiglError("Error defining diameter");
+        throw CTiglError("Unknown or unsupported profile type");
     }
 }
 
