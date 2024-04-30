@@ -401,6 +401,40 @@ TEST(TiglMath, CTiglTransform_Decompose2)
     EXPECT_NEAR(resultV.Z(), expectV.Z(), 1e-8 );
 }
 
+TEST(TiglMath, CTiglTransform_Decompose3)
+{
+    // Simulate the case where a cpacs transformation has a rotation RX:0;RY:90;RZ:00 and RX:0;RY:-90;RZ:00, respectively
+    // This caused a bug due to a wrong if condition in the decompose routine which resulted in a sign flip of RY afterwards
+    tigl::CTiglTransformation rotA, rotB;
+
+    // Set up 2 example rotations
+    rotA.AddRotationZ(0);
+    rotA.AddRotationY(90);
+    rotA.AddRotationX(0);
+
+    rotB.AddRotationZ(0);
+    rotB.AddRotationY(-90);
+    rotB.AddRotationX(0);
+
+    double ScalA[3] = {0., 0., 0.};
+    double RotA[3] = {0., 0., 0.};
+    double TransA[3] = {0., 0., 0.};
+    double ScalB[3] = {0., 0., 0.};
+    double RotB[3] = {0., 0., 0.};
+    double TransB[3] = {0., 0., 0.};
+
+    rotA.Decompose(ScalA, RotA, TransA);
+    rotB.Decompose(ScalB, RotB, TransB);
+
+    EXPECT_NEAR(RotA[0], 0, 1e-8);
+    EXPECT_NEAR(RotA[1], 90, 1e-8);
+    EXPECT_NEAR(RotA[2], 0, 1e-8);
+
+    EXPECT_NEAR(RotB[0], 0, 1e-8);
+    EXPECT_NEAR(RotB[1], -90, 1e-8);
+    EXPECT_NEAR(RotB[2], 0, 1e-8);
+}
+
 TEST(TiglMath, CTiglTransform_setTransformationMatrix)
 {
     double scale[3] = {2., 4., 8.};

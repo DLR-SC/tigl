@@ -198,7 +198,7 @@ public:
     TIGL_EXPORT PTiglFusePlane AircraftFusingAlgo();
 
     // Returns the length of the airplane
-    TIGL_EXPORT double GetAirplaneLenth();
+    TIGL_EXPORT double GetAirplaneLength();
 
     // Returns the UID of the loaded configuration.
     TIGL_EXPORT const std::string& GetUID() const;

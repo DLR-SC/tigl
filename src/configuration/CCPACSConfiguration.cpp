@@ -698,7 +698,7 @@ const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const
     return uidManager;
 }
 
-double CCPACSConfiguration::GetAirplaneLenth()
+double CCPACSConfiguration::GetAirplaneLength()
 {
     CTiglPoint min, max;
     ConfigurationGetBoundingBox(*this, min, max);
