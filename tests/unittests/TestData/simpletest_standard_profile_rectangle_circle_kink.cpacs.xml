@@ -121,8 +121,8 @@
                     <transformation uID="D150_Fuselage_1Section2IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section2IDElement1_transformation1_scaling1">
                         <x>1</x>
-                        <y>3</y>
-                        <z>3</z>
+                        <y>1</y>
+                        <z>1</z>
                       </scaling>
                       <rotation uID="D150_Fuselage_1Section2IDElement1_transformation1_rotation1">
                         <x>0</x>
