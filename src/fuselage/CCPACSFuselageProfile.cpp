@@ -249,7 +249,7 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
         cache.closed   = tempWireClosed;
         cache.original = tempWireOriginal;
 }
-//TODO
+//Builds the fuselage profile wire from heightToWidthRatio and cornerRadius
 void CCPACSFuselageProfile::BuildWiresRectangle(WireCache& cache) const
 {
     if(!m_standardProfile_choice3->GetRectangle_choice1()){
