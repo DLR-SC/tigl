@@ -1001,6 +1001,8 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::bsplineReparameterizePicewiseL
     if (tolerance < 0)
         throw CTiglError("Tolerance for reparameterization has to be non-negative in bsplineReparameterizePicewiseLinear");
 
+    const Standard_Integer degree = curve->Degree();
+
     // Create copy as its original information (e.g. poles) is needed later
     Handle(Geom_BSplineCurve) curveCopy = Handle(Geom_BSplineCurve)::DownCast(curve->Copy());
 
@@ -1013,7 +1015,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::bsplineReparameterizePicewiseL
 
     // Step 3 is not necessary as all poles remain the same (NURBS book, p. 250)
     // -> Set up B-Spline from poles resulting from first knot refinement (step 1) and the new knots (and mults)
-    Handle(Geom_BSplineCurve) curveReparameterized = new Geom_BSplineCurve(curve->Poles(), newKnots, newKnotMults, 3);
+    Handle(Geom_BSplineCurve) curveReparameterized = new Geom_BSplineCurve(curve->Poles(), newKnots, newKnotMults, degree);
 
     // Step 4
     removeKnotsAfterReparam(curveReparameterized, curveCopy, paramsOld, paramsNew, tolerance);
