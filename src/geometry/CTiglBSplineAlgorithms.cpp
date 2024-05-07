@@ -836,6 +836,191 @@ CTiglApproxResult CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(Handle(G
     return CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, {umin, umax}, {umin, umax}, nSegmentsNew + target_degree);
 }
 
+void knotRefinementForReparam(const Handle(Geom_BSplineCurve) curve, std::vector<double> paramsOld)
+{
+    // This function matches the first step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
+
+    Standard_Integer nbKnots = curve->NbKnots();
+
+    //Start with increasing the multiplicity up to p
+    Standard_Integer degree = curve->Degree();
+
+    // Pass first and last index of knots (to increase all multiplicities until mult >= degree)
+    curve->IncreaseMultiplicity(1, nbKnots, degree);
+
+    // Add all knots u_i=f(s_i)
+    // Since we assume a picewise linear reparameterization function f, the knots of f are just the new parameters
+    // Hence, evaluating f at one knot gives the corresponding old parameter
+    TColStd_Array1OfReal knotsParams(1, paramsOld.size());
+    TColStd_Array1OfInteger multsParams(1, paramsOld.size());
+    for (int paramIdx = 0; paramIdx < paramsOld.size(); paramIdx++) {
+        knotsParams.SetValue(paramIdx+1, paramsOld[paramIdx]);
+        multsParams.SetValue(paramIdx+1, degree);
+    }
+    curve->InsertKnots(knotsParams, multsParams);
+}
+
+double calcReparamfctInv(std::vector<double> paramsOld, std::vector<double> paramsNew, double u)
+{
+    // Calc inverse of reparametrization function s=g(u)=f⁻¹(s)
+    // We set up BSpline of degree 1 -> g is piecewise linear
+    // In the interval [p_i,p_{i+1}], g(u)=m*u+n
+    // p_i and p_{i+1} are old parameters that need to be determined in the first place
+
+    // u needs to be in range of paramsOld
+    if (u < paramsOld[0] || paramsOld[paramsOld.size()-1] < u)
+        throw CTiglError("Argument of reparameterization function out of range in calcReparamfctInv");
+
+    // First: Find interval [p_i,p_{i+1}] to determine boundaries
+    // a_x = lowerBound, b_x = upperBound
+    double a_x = paramsOld[0];
+    double b_x = paramsOld[1];
+    double a_y = paramsNew[0];
+    double b_y = paramsNew[1];
+
+    for (int paramsIdx=1; paramsIdx < paramsOld.size()-1; paramsIdx++) {
+        // Break condition
+        if (a_x <= u && u <= b_x)
+            paramsIdx = paramsOld.size();
+        else {
+            a_x = paramsOld[paramsIdx];
+            b_x = paramsOld[paramsIdx+1];
+            a_y = paramsNew[paramsIdx];
+            b_y = paramsNew[paramsIdx+1];
+        }
+    }
+
+    // Calc slope m
+    double m = (b_y-a_y) / (b_x-a_x);
+    // Calc intercept n
+    double n = a_y - a_x*m;
+
+    // Calc inverse g(u) [linear function value]
+    return m*u + n;
+}
+
+TColStd_Array1OfReal calcNewKnotVectorS(const Handle(Geom_BSplineCurve) curve, std::vector<double> paramsOld, std::vector<double> paramsNew)
+{
+    // This function matches part one of the second step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
+
+    double newKnot;
+
+    // Set up knot vector S' consisting of s_i=g(u_i) [inverse reparametrization fct]
+    Standard_Integer nbKnots = curve->NbKnots(); // Size of distinct knots
+    TColStd_Array1OfReal newKnots(1, nbKnots);
+    for (int knotIdx = 1; knotIdx <= nbKnots; knotIdx++) {
+        // Calc s_i=g(u_i) of picewise linear fct
+        // defined as inverse of interpolation (x_i,y_i)=(paramsNew[i], paramsOld[i])
+        newKnot = calcReparamfctInv(paramsOld, paramsNew, curve->Knot(knotIdx));
+        newKnots.SetValue(knotIdx, newKnot);
+    }
+    return newKnots;
+}
+
+TColStd_Array1OfInteger setNewKnotMultsS(const Handle(Geom_BSplineCurve) curve)
+{
+    // This function matches part two of the second step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
+
+    // Set up mults for new knot vector S'
+    Standard_Integer mult;
+    Standard_Integer nbKnots = curve->NbKnots(); // Size of distinct knots
+    TColStd_Array1OfInteger knotMults(1, nbKnots);
+    for (int knotIdx = 1; knotIdx <= nbKnots; knotIdx++) {
+        // Account for potentially higher mult at global boundaries (usually p+1)
+        // That is why, not the degree is used as mult (as described in the NURBS book), but the mult of the old knot vector
+        // mult should be equal to p*q (degree of original BSpline [p] times degree of reparam fct [q])
+        // We use q=1 for simplification and for not raising the degree
+        // Refined knot vector was set to have m_i=p (or p+1 at global boundaries), so we use it here
+        mult = curve->Multiplicity(knotIdx);
+        knotMults.SetValue(knotIdx, mult);
+    }
+    return knotMults;
+}
+
+Standard_Integer findKnotIndex(TColStd_Array1OfReal knots, double value)
+{
+    for(int idx = 1; idx <= knots.Size(); idx++) {
+        if(knots[idx] == value)
+            return idx;
+    }
+    return -1;
+}
+
+void removeKnotsAfterReparam(const Handle(Geom_BSplineCurve) &curve,
+                             const Handle(Geom_BSplineCurve) curveOrigin,
+                             std::vector<double> paramsOld, std::vector<double> paramsNew,
+                             double tolerance)
+{
+    // This function matches the fourth step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
+
+    TColStd_Array1OfReal knotsSBar = curve->Knots();
+
+    Standard_Integer nbKnots = curve->NbKnots();
+    double knotS, knotU;
+    Standard_Integer multS, multU, idxU, multNew;
+    Standard_Boolean boolRemove;
+    // Exclude first and last knot
+    // Iterate backwards to account for shrinking size of knots vector by deletion if multNew is 0
+    for (int knotIdx = nbKnots-1; knotIdx >= 2; knotIdx--) {
+        knotS = knotsSBar[knotIdx];
+        multS = 0;
+        // Define multiplicity of knotS in original knot vector S of reparam fct
+        // By construction, the new parameters are exactely these knots and they all have mult=1
+        // => If knotS is found in these, its mult in this knot vector is exactely 1, 0 else
+        if(std::find(paramsNew.begin(), paramsNew.end(), knotS) != paramsNew.end())
+            multS = 1;
+
+        // Used as original function, not inverse [swap interpolation dimensions]
+        knotU = calcReparamfctInv(paramsNew, paramsOld, knotS);
+        idxU = findKnotIndex(curveOrigin->Knots(), knotU);
+        if(idxU != -1)
+            multU = curveOrigin->Multiplicity(idxU);
+        else
+            multU = 0;
+
+        //multNew = max(pq - p + multU, pq - q + multS) = max(multU, multS) [since q=1 and pq=p]
+        multNew = std::max(multU, multS);
+        // Decrease mult of knot to multNew
+        boolRemove = curve->RemoveKnot(knotIdx, multNew, tolerance);
+    }
+}
+
+Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::bsplineReparameterizePicewiseLinear(Handle(Geom_BSplineCurve) curve,
+                                                                                      std::vector<double> paramsOld,
+                                                                                      std::vector<double> paramsNew,
+                                                                                      double tolerance)
+{
+    // Apply reparameterization on a given B-Spline curve defined by old and new parameters
+    // Assumption:  - Reparameterization function given as 1D-interpolation of (x=paramsNew, y=paramsOld)
+    //              - Picewise linear function -> B-Spline of degree 1 (q=1 => pq=1)
+
+    // Check inputs
+    if (paramsOld.size() != paramsOld.size())
+        throw CTiglError("Parameter sizes for reparameterization do not match in bsplineReparameterizePicewiseLinear");
+
+    if (tolerance < 0)
+        throw CTiglError("Tolerance for reparameterization has to be non-negative in bsplineReparameterizePicewiseLinear");
+
+    // Create copy as its original information (e.g. poles) is needed later
+    Handle(Geom_BSplineCurve) curveCopy = Handle(Geom_BSplineCurve)::DownCast(curve->Copy());
+
+    // Step 1
+    knotRefinementForReparam(curve, paramsOld);
+
+    // Step 2
+    TColStd_Array1OfReal newKnots = calcNewKnotVectorS(curve, paramsOld, paramsNew);
+    TColStd_Array1OfInteger newKnotMults = setNewKnotMultsS(curve);
+
+    // Step 3 is not necessary as all poles remain the same (NURBS book, p. 250)
+    // -> Set up B-Spline from poles resulting from first knot refinement (step 1) and the new knots (and mults)
+    Handle(Geom_BSplineCurve) curveReparameterized = new Geom_BSplineCurve(curve->Poles(), newKnots, newKnotMults, 3);
+
+    // Step 4
+    removeKnotsAfterReparam(curveReparameterized, curveCopy, paramsOld, paramsNew, tolerance);
+
+    return curveReparameterized;
+}
+
 math_Matrix CTiglBSplineAlgorithms::bsplineBasisMat(int degree, const TColStd_Array1OfReal& knots, const TColStd_Array1OfReal& params, unsigned int derivOrder)
 {
     Standard_Integer ncp = knots.Length() - degree - 1;

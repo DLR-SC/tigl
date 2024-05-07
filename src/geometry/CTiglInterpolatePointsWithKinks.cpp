@@ -89,7 +89,10 @@ namespace
 
         return result;
     }
+} // namespace
 
+namespace details
+{
     std::vector<double> computeParams(const Handle(TColgp_HArray1OfPnt)& pnts, tigl::ParamMap& params, double alpha)
     {
         auto initial_params = tigl::CTiglBSplineAlgorithms::computeParamsBSplineCurve(pnts, alpha);
@@ -121,7 +124,7 @@ namespace
         return new_params;
     }
 
-} // namespace
+} // namespace details
 
 namespace tigl
 {
@@ -155,7 +158,7 @@ void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const
     auto params = m_params;
 
     // assuming iterating over parameters is sorted in keys
-    auto new_params = computeParams(m_pnts, params, m_alpha);
+    auto new_params = details::computeParams(m_pnts, params, m_alpha);
 
     unsigned int n_pnts = static_cast<unsigned int>(m_pnts->Length());
 
