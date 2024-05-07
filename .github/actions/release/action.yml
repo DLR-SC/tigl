@@ -60,18 +60,18 @@ runs:
 
     - name: Create Release
       id: create_release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.ref }}
-        release_name: TiGL ${{ env.version }}
+        name: TiGL ${{ env.version }}
         body: ${{ steps.changelog.outputs.content  }}
         draft: true
         prerelease: false
         token: ${{ inputs.GH_TOKEN }}
         files: |
-          ./win-installer/TIGL-${{ env.version }}-win64.exe
-          ./win-package/TIGL-${{ env.version }}-win64.zip
-          ./macos-package/TIGL-${{ env.version }}-Darwin.dmg
+          win-installer/TIGL-${{ env.version }}-win64.exe
+          win-package/TIGL-${{ env.version }}-win64.zip
+          macos-package/TIGL-${{ env.version }}-Darwin.dmg
 
     - name: Checkout tigl-website repo
       uses: actions/checkout@v3

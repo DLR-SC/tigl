@@ -1,6 +1,30 @@
 Changelog
 =========
 
+Version 3.3.1
+-------------
+14/03/2024
+
+ - General changes:
+
+   - Improve documentation and update installation instructions.
+   - TiGL now supports Opencascade Technology 7.6.2 (#973).
+   - Extension of the functionality of `::tiglwinginterpolatexsi` to work on a single segment that is not part of a component segment (#970). The function
+   is now generalized, so that the start and end uid can be either a segment or component segment and the two do not have to be related to each other.
+   - TiGL now supplies an environment.yml file that can be used with conda to install all build requirements of tigl into an Anaconda environment.
+   - Renamed the function `::CCPACSConfiguration::GetAirplaneLenth` to `::CCPACSConfiguration::GetAirplaneLength` (#992).
+   
+ - Fixes:
+
+   - Fix bug in guide curve transformation. The rX-Direction was wrongly interpreted with respect to global coordinates, not wing coordinates (#975).
+   - Fix for hard crash if guiceCurves node is present but empty in wing segment (#962).
+   - Fix bug related to the calculation of Euler angles from a given rotation matrix (#870).
+
+ - TiGLViewer:
+
+   - Improved visual quality of zebra stripes (#974).
+
+
 Version 3.3.0
 -------------
 02/05/2023
