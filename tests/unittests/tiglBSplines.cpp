@@ -539,16 +539,15 @@ TEST_F(BSplineInterpolation, bsplineReparameterizePicewiseLinear)
     }
 
     // Check if B-Spline is geometrically identical by choosing equally distributed parameters on the definition area
-    Standard_Integer testSize = 100;
-    double testParams[testSize];
+    const Standard_Integer testSize = 100;
     gp_Pnt curvePnt, projectedPnt;
-    double deviation, deviationMax=0.0;
+    double testParam, deviation, deviationMax=0.0;
     Standard_Real firstKnot = curveReparameterized->Knot(1);
     Standard_Real lastKnot = curveReparameterized->Knot(curveReparameterized->NbKnots());
 
     for (int idx=0; idx < testSize; idx++) {
-        testParams[idx] = (double) firstKnot + (idx*lastKnot)/(testSize-1);
-        curve->D0(testParams[idx], curvePnt);
+        testParam = (double) firstKnot + (idx*lastKnot)/(testSize-1);
+        curve->D0(testParam, curvePnt);
         GeomAPI_ProjectPointOnCurve projection(curvePnt, curveReparameterized);
         projectedPnt = projection.NearestPoint();
         deviation = curvePnt.Distance(projectedPnt);
