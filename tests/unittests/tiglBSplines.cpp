@@ -477,7 +477,7 @@ TEST_F(BSplineInterpolation, tipKink2)
     StoreResult("TestData/analysis/BSplineInterpolation-tipKink2.brep", result.curve, pnt2);
 }
 
-TEST_F(BSplineInterpolation, bsplineReparameterizePicewiseLinear)
+TEST_F(BSplineInterpolation, reparameterizePiecewiseLinear)
 {
     Handle(TColgp_HArray1OfPnt) pnts = new TColgp_HArray1OfPnt(1, 23);
 
@@ -505,25 +505,25 @@ TEST_F(BSplineInterpolation, bsplineReparameterizePicewiseLinear)
     pnts->SetValue(22, gp_Pnt(0.0, -0.0707107, -0.494975));
     pnts->SetValue(23, gp_Pnt(0.0, 0.0, -0.5));
 
-    tigl::ParamMap params = {};
-    std::vector<unsigned int> kinks = {2, 5, 17, 21};
-    tigl::CTiglInterpolatePointsWithKinks interpolator(pnts, kinks, params, 0.5);
 
+    std::vector<unsigned int> kinks = {2, 5, 17, 21};
     // Force parameter values at the kinks
-    tigl::ParamMap paramsNewMap = {
+    tigl::ParamMap params = {
         {2, 0.0209721},
         {5, 0.221424},
         {17, 0.780347},
         {21, 0.976773}
     };
 
-    std::vector<double> paramsOld = interpolator.Parameters();
-    Handle(Geom_BSplineCurve) curve = interpolator.Curve();
-    double alpha = 0.5;
-    std::vector<double> paramsNew = details::computeParams(pnts, paramsNewMap, alpha);
-
+    // Interpolate without reparameterization to compare
+    tigl::CTiglInterpolatePointsWithKinks interpolatorOrig(pnts, kinks, {}, 0.5);
     double tolerance = 0.00001;
-    Handle(Geom_BSplineCurve) curveReparameterized = tigl::CTiglBSplineAlgorithms::bsplineReparameterizePicewiseLinear(curve, paramsOld, paramsNew, tolerance);
+    // Interpolate with reparameterization
+    tigl::CTiglInterpolatePointsWithKinks interpolatorReparam(pnts, kinks, params, 0.5, 3,
+                                                              tigl::CTiglInterpolatePointsWithKinks::Algo::InterpolateFirstThenReparametrize, tolerance);
+
+    Handle(Geom_BSplineCurve) curve = interpolatorOrig.Curve();
+    Handle(Geom_BSplineCurve) curveReparameterized = interpolatorReparam.Curve();
 
     // Check correct reparameterization
     double param;
@@ -531,7 +531,7 @@ TEST_F(BSplineInterpolation, bsplineReparameterizePicewiseLinear)
     for (int kinkIdx=0; kinkIdx < kinks.size(); kinkIdx++) {
         // Parameters are defined at the points at which kinks are set
         pointIdx = kinks[kinkIdx];
-        param = paramsNewMap[pointIdx];
+        param = params[pointIdx];
 
         // Test whether B-Spline evaluation at the wanted parameters equals the matching interpolation point
         // Point handle index starts at 1, kinks and parameter index starts at 0 -> shift point evaluation
@@ -555,7 +555,7 @@ TEST_F(BSplineInterpolation, bsplineReparameterizePicewiseLinear)
             deviationMax = deviation;
     }
     ASSERT_NEAR(0.0, deviationMax, tolerance);
-    StoreResult("TestData/analysis/BSplineInterpolation-bsplineReparameterizePicewiseLinear.brep", curveReparameterized, pnts->Array1());
+    StoreResult("TestData/analysis/BSplineInterpolation-reparameterizePiecewiseLinear.brep", curveReparameterized, pnts->Array1());
 }
 
 TEST_F(BSplineInterpolation, withKinksShield)
@@ -584,7 +584,8 @@ TEST_F(BSplineInterpolation, withKinksShield)
     EXPECT_TRUE(curve->Value(0.8).IsEqual(points->Value(4), tol));
 
     auto kinkParams = tigl::CTiglBSplineAlgorithms::getKinkParameters(curve);
-    EXPECT_TRUE(ArraysMatch({0.2, 0.8}, kinkParams));
+    EXPECT_NEAR(0.2, kinkParams[0], 1e-13);
+    EXPECT_NEAR(0.8, kinkParams[1], 1e-13);
 
     auto paramsVec = interpolator.Parameters();
     EXPECT_TRUE(ArraysMatch({0., 0.2, 0.5, 0.8, 1.0}, paramsVec));

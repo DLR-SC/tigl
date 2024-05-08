@@ -89,10 +89,7 @@ namespace
 
         return result;
     }
-} // namespace
 
-namespace details
-{
     std::vector<double> computeParams(const Handle(TColgp_HArray1OfPnt)& pnts, tigl::ParamMap& params, double alpha)
     {
         auto initial_params = tigl::CTiglBSplineAlgorithms::computeParamsBSplineCurve(pnts, alpha);
@@ -130,15 +127,19 @@ namespace tigl
 {
 
 CTiglInterpolatePointsWithKinks::CTiglInterpolatePointsWithKinks(const Handle(TColgp_HArray1OfPnt) & points,
-                                                                const std::vector<unsigned int>& kinkIndices,
-                                                                const ParamMap& parameters,
-                                                                double alpha,
-                                                                unsigned int maxDegree)
+                                                                 const std::vector<unsigned int>& kinkIndices,
+                                                                 const ParamMap& parameters,
+                                                                 double alpha,
+                                                                 unsigned int maxDegree,
+                                                                 Algo algo,
+                                                                 const double tolerance)
     : m_pnts(points)
     , m_kinks(kinkIndices)
     , m_params(parameters)
     , m_alpha(alpha)
     , m_maxDegree(maxDegree)
+    , m_algo(algo)
+    , m_tolerance(tolerance)
     , m_result(*this, &CTiglInterpolatePointsWithKinks::ComputeResult)
 {
 }
@@ -155,10 +156,17 @@ std::vector<double> CTiglInterpolatePointsWithKinks::Parameters() const
 
 void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const
 {
-    auto params = m_params;
+
+    ParamMap params;
+    // m_params should only be used for Algo::InterpolateBasedOnParameters
+    // When Algo::InterpolateFirstThenReparametrize is used, the parameterization should be applied after interpolating
+    // So, params stay empty to ensure TiGL uses its default parameters
+    if (m_algo == Algo::InterpolateBasedOnParameters) {
+        params = m_params;
+    }
 
     // assuming iterating over parameters is sorted in keys
-    auto new_params = details::computeParams(m_pnts, params, m_alpha);
+    auto new_params = computeParams(m_pnts, params, m_alpha);
 
     unsigned int n_pnts = static_cast<unsigned int>(m_pnts->Length());
 
@@ -232,6 +240,19 @@ void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const
 
     result.curve = CTiglBSplineAlgorithms::concatCurves(curve_segments, false);
     result.parameters = new_params;
+
+    if (m_algo == Algo::InterpolateFirstThenReparametrize) {
+        // We reparametrize the spline to get better performing lofts
+        const double tolerance = m_tolerance; // Define tolerance for knot removal in reparameterizePiecewiseLinear
+        // Get the above calculated params (Default params calculated without setting them explicitely) => paramsOld
+        // Wanted parameters [m_params] appear as map -> transform and interpolate to all m_pnts => paramsNew
+        std::vector<double> paramsOld = new_params;
+        params = m_params;
+        std::vector<double> paramsNew = computeParams(m_pnts, params, 0.5);
+        result.curve = CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(result.curve, paramsOld, paramsNew, tolerance);
+        // Overwrite the object's variable with the parameters that are set after applying the reparameterization
+        result.parameters = paramsNew;
+    }
 }
 
 

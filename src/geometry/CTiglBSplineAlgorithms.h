@@ -159,7 +159,7 @@ public:
     TIGL_EXPORT static CTiglApproxResult reparametrizeBSplineNiceKnots(Handle(Geom_BSplineCurve) spline);
 
     /**
-     * @brief bsplineReparameterizePicewiseLinear:
+     * @brief reparameterizePiecewiseLinear:
      *          Apply reparameterization on a given B-Spline curve defined by old and new parameters
      *          Based on algorithm found in The NURBS book (2nd edition), p. 251, and the explanations
      *          Here, we use a picewise linear reparameterization function (q=1) interpolating the wanted parameters
@@ -171,9 +171,9 @@ public:
      * @param tolerance:
      *          Define the tolerance used for OpenCascade knot removal funtion [Geom_BSplineCurve::RemoveKnot(Index, M, Tolerance)]
      */
-    TIGL_EXPORT static Handle(Geom_BSplineCurve) bsplineReparameterizePicewiseLinear(Handle(Geom_BSplineCurve) curve,
-                                                                                     std::vector<double> paramsOld, std::vector<double> paramsNew,
-                                                                                     double tolerance);
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparameterizePiecewiseLinear(Handle(Geom_BSplineCurve) curve,
+                                                                               std::vector<double> paramsOld, std::vector<double> paramsNew,
+                                                                               double tolerance);
 
 
     /**

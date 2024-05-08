@@ -203,10 +203,8 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
         occPoints->SetValue(occPoints->Upper(), pMiddle);
     }
 
-    // Here, interpolate without params, only with defined kinks
-    // This way, the B-Spline is set up with a default parameterization
-    // We reparameterize afer that to achieve the wanted parameters
-    CTiglInterpolatePointsWithKinks interp(occPoints, kinks, {}, 0.5, 3);
+    // Here, the B-spline is reparameterized after setting it up, at first
+    CTiglInterpolatePointsWithKinks interp(occPoints, kinks, params, 0.5, 3, CTiglInterpolatePointsWithKinks::Algo::InterpolateFirstThenReparametrize);
     auto spline = interp.Curve();
 
     if (mirrorSymmetry) {
@@ -215,14 +213,6 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
         spline      = CTiglBSplineAlgorithms::trimCurve(spline, umin, 0.5 * (umin + umax));
         CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, umin, umax);
     }
-
-    // We reparametrize the spline to get better performing lofts
-    // Get the calculated (default) params => paramsOld
-    // Wanted parameters [params] appear as map -> transform and interpolate to all occPoints => paramsNew
-    std::vector<double> paramsOld = interp.Parameters();
-    std::vector<double> paramsNew = details::computeParams(occPoints, params, 0.5);
-    double tolerance = 0.00001; // Define tolerance for knot removal in bsplineReparameterizePicewiseLinear
-    spline = CTiglBSplineAlgorithms::bsplineReparameterizePicewiseLinear(spline, paramsOld, paramsNew, tolerance);
 
     // Create wires
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline).Edge();

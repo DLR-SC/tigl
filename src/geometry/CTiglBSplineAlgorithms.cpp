@@ -985,10 +985,10 @@ void removeKnotsAfterReparam(const Handle(Geom_BSplineCurve) &curve,
     }
 }
 
-Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::bsplineReparameterizePicewiseLinear(Handle(Geom_BSplineCurve) curve,
-                                                                                      std::vector<double> paramsOld,
-                                                                                      std::vector<double> paramsNew,
-                                                                                      double tolerance)
+Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(Handle(Geom_BSplineCurve) curve,
+                                                                                std::vector<double> paramsOld,
+                                                                                std::vector<double> paramsNew,
+                                                                                double tolerance)
 {
     // Apply reparameterization on a given B-Spline curve defined by old and new parameters
     // Assumption:  - Reparameterization function given as 1D-interpolation of (x=paramsNew, y=paramsOld)
@@ -996,10 +996,10 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::bsplineReparameterizePicewiseL
 
     // Check inputs
     if (paramsOld.size() != paramsOld.size())
-        throw CTiglError("Parameter sizes for reparameterization do not match in bsplineReparameterizePicewiseLinear");
+        throw CTiglError("Parameter sizes for reparameterization do not match in reparameterizePiecewiseLinear");
 
     if (tolerance < 0)
-        throw CTiglError("Tolerance for reparameterization has to be non-negative in bsplineReparameterizePicewiseLinear");
+        throw CTiglError("Tolerance for reparameterization has to be non-negative in reparameterizePiecewiseLinear");
 
     const Standard_Integer degree = curve->Degree();
 
@@ -1015,6 +1015,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::bsplineReparameterizePicewiseL
 
     // Step 3 is not necessary as all poles remain the same (NURBS book, p. 250)
     // -> Set up B-Spline from poles resulting from first knot refinement (step 1) and the new knots (and mults)
+
     Handle(Geom_BSplineCurve) curveReparameterized = new Geom_BSplineCurve(curve->Poles(), newKnots, newKnotMults, degree);
 
     // Step 4

@@ -41,11 +41,18 @@ using ParamMap = std::map<unsigned int, double>;
 class CTiglInterpolatePointsWithKinks
 {
 public:
+    enum class Algo {
+        InterpolateBasedOnParameters,       /**< generates an interpolating curve that matches the parameter map directly. The geometry of the curve is directly influenced by the parameter map */
+        InterpolateFirstThenReparametrize,  /**< interpolates first and then reparametrizes to match the parameter map. The geometry of the curve is independent of the parameter map*/
+    };
+
     TIGL_EXPORT CTiglInterpolatePointsWithKinks(const Handle(TColgp_HArray1OfPnt) & points,
                                                 const std::vector<unsigned int>& kinkIndices,
                                                 const ParamMap& parameters,
                                                 double alpha = 0.5,
-                                                unsigned int maxDegree=3);
+                                                unsigned int maxDegree=3,
+                                                Algo algo = Algo::InterpolateBasedOnParameters,
+                                                const double tolerance = 0.00001);
 
 
     TIGL_EXPORT Handle(Geom_BSplineCurve) Curve() const;
@@ -58,6 +65,8 @@ private:
     ParamMap m_params;
     double m_alpha;
     unsigned int m_maxDegree;
+    Algo m_algo;
+    const double m_tolerance;
 
     struct Result {
         Handle(Geom_BSplineCurve) curve;
@@ -70,12 +79,5 @@ private:
 };
 
 } // namespace tigl
-
-
-namespace details
-{
-    TIGL_EXPORT std::vector<double> computeParams(const Handle(TColgp_HArray1OfPnt)& pnts,
-                                                  tigl::ParamMap& params, double alpha);
-}
 
 #endif // CTIGLINTERPOLATEPOINTSWITHKINKS_H
