@@ -13,6 +13,10 @@ inputs:
     required: false
     default: false
 
+  codecov_token:
+    description: 'CodeCov token needed to publish coverage report on codecov'
+    required: true
+
   unit-tests:
     description: "Set to true to run TiGLs unit tests (true or false)"
     required: false
@@ -80,3 +84,4 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./build/tests/unittests/coverageReport-unit.info,./build/tests/integrationtests/coverageReport-integration.info
+        token: ${{ inputs.codecov_token }}

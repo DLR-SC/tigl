@@ -8,6 +8,9 @@ on:
       GH_TOKEN:
         description: 'A Github PAT'
         required: true
+      CODECOV_TOKEN:
+        description: 'Needed to upload coverage report to codecov'
+        required: true
 
     inputs:
 
@@ -110,6 +113,7 @@ jobs:
           coverage: ${{ matrix.coverage == 'ON' || false }}
           unit-tests: ${{ matrix.unit-tests }}
           integration-tests: ${{ inputs.integration-tests == 'true' || false }}
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
 
   build-windows:
