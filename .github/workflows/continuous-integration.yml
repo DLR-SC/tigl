@@ -162,7 +162,7 @@ jobs:
           integration-tests: ${{ inputs.integration-tests == 'true' }}
 
   build-macos:
-    runs-on: "macos-latest"
+    runs-on: "macos-13"
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/build-macos
@@ -172,16 +172,16 @@ jobs:
           tigl_concat_generated_files: ${{ inputs.tigl_concat_generated_files == 'true' }}
           tigl_enable_coverage: 'OFF'
           package-artifact: ${{ inputs.macos-package-artifact }}
-          build-artifact: build-macos-latest-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+          build-artifact: build-macos-13-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
 
   test-macos:
     needs: build-macos
-    runs-on: "macos-latest"
+    runs-on: "macos-13"
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/test-macos
         with:
-          build-artifact: build-macos-latest-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+          build-artifact: build-macos-13-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
           unit-tests: true
           integration-tests: ${{ inputs.integration-tests == 'true' }}
 
