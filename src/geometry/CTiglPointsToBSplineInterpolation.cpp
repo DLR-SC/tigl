@@ -79,24 +79,8 @@ CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handl
 
 CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const std::vector<gp_Pnt>& points,
                                                                      unsigned int maxDegree, bool continuousIfClosed)
-    : m_pnts(OccArray(points))
-    , m_degree(static_cast<int>(maxDegree))
-    , m_C2Continuous(continuousIfClosed)
-{
-    m_params = CTiglBSplineAlgorithms::computeParamsBSplineCurve(m_pnts);
-
-    if (maxDegree < 1) {
-        throw CTiglError("Degree must be larger than 1 in CTiglPointsToBSplineInterpolation!");
-    }
-
-    if (points.empty()) {
-        throw CTiglError("No points given in CTiglPointsToBSplineInterpolation", TIGL_NULL_POINTER);
-    }
-
-    if (points.size()< 2) {
-        throw CTiglError("Too few points in CTiglPointsToBSplineInterpolation", TIGL_MATH_ERROR);
-    }
-}
+    : CTiglPointsToBSplineInterpolation(OccArray(points), maxDegree, continuousIfClosed)
+{}
 
 CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
                                                                      const std::vector<double>& parameters,
@@ -126,27 +110,8 @@ CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handl
 CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const std::vector<gp_Pnt>& points,
                                                                      const std::vector<double>& parameters,
                                                                      unsigned int maxDegree, bool continuousIfClosed)
-    : m_pnts(OccArray(points))
-    , m_params(parameters)
-    , m_degree(static_cast<int>(maxDegree))
-    , m_C2Continuous(continuousIfClosed)
-{
-    if (static_cast<int>(m_params.size()) != m_pnts->Length()) {
-        throw CTiglError("Number of parameters and points don't match in CTiglPointsToBSplineInterpolation");
-    }
-
-    if (maxDegree < 1) {
-        throw CTiglError("Degree must be larger than 1 in CTiglPointsToBSplineInterpolation!");
-    }
-
-    if (points.empty()) {
-        throw CTiglError("No points given in CTiglPointsToBSplineInterpolation", TIGL_NULL_POINTER);
-    }
-
-    if (points.size() < 2) {
-        throw CTiglError("Too few points in CTiglPointsToBSplineInterpolation", TIGL_MATH_ERROR);
-    }
-}
+    : CTiglPointsToBSplineInterpolation(OccArray(points), parameters, maxDegree, continuousIfClosed)
+{}
 
 Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
 {
