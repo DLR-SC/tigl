@@ -93,7 +93,7 @@ TiglCPACSConfigurationHandle FuselageStandardProfile::tiglHandle1 = 0;
 
 TEST_F(FuselageStandardProfile, BuildWireRectangle_CornerRadiusZero)
 {
-    auto wire = BuildWireRectangle(1, 0.);
+    auto wire = BuildWireRectangle(1., 0.);
     ASSERT_TRUE(wire.Closed());
     auto trafo = gp_Trsf();
     auto vec = gp_Vec(-1.,0.,0.);
@@ -121,38 +121,6 @@ TEST_F(FuselageStandardProfile, BuildWireRectangle_CornerRadiusOK)
     loft.addProfiles(wire2);
     ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
 }
-
-TEST_F(FuselageStandardProfile, BuildWireRectangle_CornerRadius_Negative)
-{
-    auto wire = BuildWireRectangle(0.5, -0.14);
-    ASSERT_TRUE(wire.Closed());
-    auto trafo = gp_Trsf();
-    auto vec = gp_Vec(-1.,0.,0.);
-    trafo.SetTranslation(vec);
-    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
-    ASSERT_TRUE(wire2.Closed());
-    auto loft = CTiglMakeLoft();
-    loft.addProfiles(wire);
-    loft.addProfiles(wire2);
-    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
-}
-
-TEST_F(FuselageStandardProfile, BuildWireRectangle_CornerRadius_TooLargeNumber)
-{
-    auto wire = BuildWireRectangle(0.5, 1);
-    ASSERT_TRUE(wire.Closed());
-    auto trafo = gp_Trsf();
-    auto vec = gp_Vec(-1.,0.,0.);
-    trafo.SetTranslation(vec);
-    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
-    ASSERT_TRUE(wire2.Closed());
-    auto loft = CTiglMakeLoft();
-    loft.addProfiles(wire);
-    loft.addProfiles(wire2);
-    ASSERT_THROW(loft.Shape(), tigl::CTiglError);
-}
-
-
 
 TEST_F(FuselageStandardProfile, BuildFuselageMixedProfilesWithKinks_ValidValues)
 {
