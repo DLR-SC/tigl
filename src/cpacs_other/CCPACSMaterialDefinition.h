@@ -39,7 +39,6 @@ public:
     TIGL_EXPORT CCPACSMaterialDefinition(CCPACSWingRibCell* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSMaterialDefinition(CCPACSWingRibCrossSection* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSMaterialDefinition(CCPACSWingSkin* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSGenericFuelTankParameters* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT bool isComposite() const;
     

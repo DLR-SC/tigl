@@ -25,6 +25,7 @@
 #include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSDomeType.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -62,6 +63,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
+        TIGL_EXPORT bool ValidateChoices() const;
+
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
@@ -74,14 +77,32 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
-        TIGL_EXPORT virtual const CCPACSFuselageSections& GetSections() const;
-        TIGL_EXPORT virtual CCPACSFuselageSections& GetSections();
+        TIGL_EXPORT virtual const boost::optional<CCPACSFuselageSections>& GetSections_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSFuselageSections>& GetSections_choice1();
 
-        TIGL_EXPORT virtual const CCPACSFuselageSegments& GetSegments() const;
-        TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments();
+        TIGL_EXPORT virtual const boost::optional<CCPACSFuselageSegments>& GetSegments_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSFuselageSegments>& GetSegments_choice1();
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetCylinderRadius_choice2() const;
+        TIGL_EXPORT virtual void SetCylinderRadius_choice2(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetCylinderLength_choice2() const;
+        TIGL_EXPORT virtual void SetCylinderLength_choice2(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<CPACSDomeType>& GetDomeType_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CPACSDomeType>& GetDomeType_choice2();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSHullStructure>& GetStructure() const;
         TIGL_EXPORT virtual boost::optional<CCPACSHullStructure>& GetStructure();
+
+        TIGL_EXPORT virtual CCPACSFuselageSections& GetSections_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSections_choice1();
+
+        TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSegments_choice1();
+
+        TIGL_EXPORT virtual CPACSDomeType& GetDomeType_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveDomeType_choice2();
 
         TIGL_EXPORT virtual CCPACSHullStructure& GetStructure(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructure();
@@ -91,21 +112,29 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                          m_uID;
+        std::string                             m_uID;
 
         /// Name
-        std::string                          m_name;
+        std::string                             m_name;
 
         /// Description
-        boost::optional<std::string>         m_description;
+        boost::optional<std::string>            m_description;
 
-        CCPACSTransformation                 m_transformation;
+        CCPACSTransformation                    m_transformation;
 
-        CCPACSFuselageSections               m_sections;
+        boost::optional<CCPACSFuselageSections> m_sections_choice1;
 
-        CCPACSFuselageSegments               m_segments;
+        boost::optional<CCPACSFuselageSegments> m_segments_choice1;
 
-        boost::optional<CCPACSHullStructure> m_structure;
+        /// Inner radius of the cylinder
+        boost::optional<double>                 m_cylinderRadius_choice2;
+
+        /// Inner length of the cylinder
+        boost::optional<double>                 m_cylinderLength_choice2;
+
+        boost::optional<CPACSDomeType>          m_domeType_choice2;
+
+        boost::optional<CCPACSHullStructure>    m_structure;
 
     private:
         CPACSHull(const CPACSHull&) = delete;

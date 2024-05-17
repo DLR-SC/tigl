@@ -54,39 +54,9 @@ TiglGeometricComponentIntent CCPACSGenericFuelTank::GetComponentIntent() const
     return TIGL_INTENT_PHYSICAL;
 }
 
-bool CCPACSGenericFuelTank::HasHulls() const
-{
-    if (GetHulls_choice1()->GetHullsCount() > 0) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-boost::optional<CCPACSHulls>& CCPACSGenericFuelTank::GetHulls()
-{
-    if (HasHulls()) {
-        return GetHulls_choice1();
-    }
-    else {
-        throw CTiglError("No hulls defined.");
-    }
-}
-
-const boost::optional<CCPACSHulls>& CCPACSGenericFuelTank::GetHulls() const
-{
-    if (HasHulls()) {
-        return GetHulls_choice1();
-    }
-    else {
-        throw CTiglError("No hulls defined.");
-    }
-}
-
 PNamedShape CCPACSGenericFuelTank::BuildLoft() const
 {
-    const auto& hulls = GetHulls_choice1()->GetHulls();
+    const auto& hulls = GetHulls().GetHulls();
     ListPNamedShape shapes;
 
     for (const auto& hull : hulls) {

@@ -34208,10 +34208,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="transformation" type="transformationType"/>
-                    <xsd:choice>
-                        <xsd:element name="hulls" type="hullsType"/>
-                        <xsd:element name="designParameters" type="genericFuelTankParametersType"/>
-                    </xsd:choice>
+                    <xsd:element name="hulls" type="hullsType"/>
                     <xsd:element name="volume" minOccurs="0" type="fuelTankVolumeType">
                         <xsd:annotation>
                             <xsd:documentation>Volume</xsd:documentation>
@@ -34259,7 +34256,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
-                <xsd:all>
+                <xsd:sequence>
                     <xsd:element name="name" type="stringBaseType">
                         <xsd:annotation>
                             <xsd:documentation>Name
@@ -34273,42 +34270,29 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="transformation" type="transformationType"/>
-                    <xsd:element name="sections" type="fuselageSectionsType"/>
-                    <xsd:element name="segments" type="fuselageSegmentsType"/>
+                    <xsd:choice>
+                        <xsd:sequence>
+                            <xsd:element name="sections" type="fuselageSectionsType"/>
+                            <xsd:element name="segments" type="fuselageSegmentsType"/>
+                        </xsd:sequence>
+                        <xsd:sequence>
+                            <xsd:element name="cylinderRadius" type="doubleBaseType">
+                                <xsd:annotation>
+                                    <xsd:documentation>Inner radius of the cylinder</xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element name="cylinderLength" type="doubleBaseType">
+                                <xsd:annotation>
+                                    <xsd:documentation>Inner length of the cylinder</xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element name="domeType" type="domeTypeType"/>
+                        </xsd:sequence>
+                    </xsd:choice>
                     <xsd:element name="structure" minOccurs="0" type="hullStructureType"/>
                     <xsd:element name="cutOuts" minOccurs="0" type="fuselageCutOutsType"/>
-                </xsd:all>
+                </xsd:sequence>
                 <xsd:attribute name="uID" use="required" type="xsd:ID"/>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="genericFuelTankParametersType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Global design parameters</ddue:para>
-                    </ddue:summary>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:all>
-                    <xsd:element name="cylinderRadius" type="doubleBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Inner radius of the cylinder</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="cylinderLength" type="doubleBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Inner length of the cylinder</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="domeType" type="domeTypeType"/>
-                    <xsd:element name="material" type="materialDefinitionType"/>
-                </xsd:all>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

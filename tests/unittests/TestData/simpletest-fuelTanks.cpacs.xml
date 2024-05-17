@@ -402,6 +402,61 @@
                     </hull>
                   </hulls>
                 </genericFuelTank>
+                <genericFuelTank uID="genericTank3">
+                  <name>Simple tank 3</name>
+                  <description>Test case for simple parametrization</description>
+                  <transformation>
+                    <translation>
+                      <x>3.5</x>
+                    </translation>
+                  </transformation>
+                  <hulls>
+                    <hull uID="genericTank3_sphericalDome">
+                      <name>Hull with spherical dome</name>
+                      <transformation>
+                        <translation>
+                          <x>10.</x>
+                        </translation>
+                      </transformation>
+                      <cylinderRadius>1.0</cylinderRadius>
+                      <cylinderLength>2.0</cylinderLength>
+                      <domeType>
+                        <spherical/>
+                      </domeType>
+                    </hull>
+                    <hull uID="genericTank3_ellipsoidDome">
+                      <name>Hull with ellipsoid dome</name>
+                      <transformation>
+                        <translation>
+                          <x>10.</x>
+                        </translation>
+                      </transformation>
+                      <cylinderRadius>1.0</cylinderRadius>
+                      <cylinderLength>2.0</cylinderLength>
+                      <domeType>
+                        <ellipsoid>
+                          <halfAxisFraction>0.5</halfAxisFraction>
+                        </ellipsoid>
+                      </domeType>
+                    </hull>
+                    <hull uID="genericTank3_torispherical">
+                      <name>Hull with torispherical dome</name>
+                      <transformation>
+                        <translation>
+                          <x>10.</x>
+                        </translation>
+                      </transformation>
+                      <cylinderRadius>1.0</cylinderRadius>
+                      <cylinderLength>2.0</cylinderLength>
+                      <domeType>
+                        <torispherical>
+                          <dishRadius>2.0</dishRadius>
+                          <knuckleRadius>0.2</knuckleRadius>
+                        </torispherical>
+                      </domeType>
+                    </hull>
+                  </hulls>
+                </genericFuelTank>
               </genericFuelTanks>
             </fuelTanks>
           </fuselage>

@@ -52,7 +52,7 @@ class FuselageTank : public ::testing::Test
 protected:
     static void SetUpTestCase()
     {
-        const char *filename = "TestData/simpletest-fuelTanks.cpacs.xml";
+        const char* filename = "TestData/simpletest-fuelTanks.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -73,24 +73,30 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() override {}
-    void TearDown() override {}
+    void SetUp() override
+    {
+    }
+    void TearDown() override
+    {
+    }
 
     static TixiDocumentHandle tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
 
-    tigl::CTiglUIDManager &uidMgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(FuselageTank::tiglHandle).GetUIDManager();
+    tigl::CTiglUIDManager& uidMgr =
+        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(FuselageTank::tiglHandle).GetUIDManager();
 
     // generic tank
-    tigl::CCPACSGenericFuelTank const *fuelTank = &uidMgr.ResolveObject<tigl::CCPACSGenericFuelTank>("genericTank1");
+    tigl::CCPACSGenericFuelTank const* fuelTank = &uidMgr.ResolveObject<tigl::CCPACSGenericFuelTank>("genericTank1");
 
     // hulls
-    const boost::optional<tigl::CCPACSHulls> &hulls = fuelTank->GetHulls_choice1();
-    tigl::CCPACSHull *hull = &uidMgr.ResolveObject<tigl::CCPACSHull>("outerHull");
-    tigl::CCPACSHull *hull_with_guides = &uidMgr.ResolveObject<tigl::CCPACSHull>("genericTank2_outerHull");
+    const tigl::CCPACSHulls& hulls     = fuelTank->GetHulls();
+    tigl::CCPACSHull* hull             = &uidMgr.ResolveObject<tigl::CCPACSHull>("outerHull");
+    tigl::CCPACSHull* hull_with_guides = &uidMgr.ResolveObject<tigl::CCPACSHull>("genericTank2_outerHull");
+    tigl::CCPACSHull* hull_spheric     = &uidMgr.ResolveObject<tigl::CCPACSHull>("genericTank3_sphericalDome");
 };
 
-TixiDocumentHandle FuselageTank::tixiHandle = 0;
+TixiDocumentHandle FuselageTank::tixiHandle           = 0;
 TiglCPACSConfigurationHandle FuselageTank::tiglHandle = 0;
 
 TEST_F(FuselageTank, getName)
@@ -101,27 +107,27 @@ TEST_F(FuselageTank, getName)
 
 TEST_F(FuselageTank, genericFuelTanks)
 {
-    std::string uID = "genericTank1";
+    std::string uID                               = "genericTank1";
     const tigl::CCPACSGenericFuelTanks* fuelTanks = fuelTank->GetParent();
     EXPECT_EQ(fuelTanks->GetGenericFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(fuelTanks->GetGenericFuelTank(uID));
     EXPECT_EQ(fuelTanks->GetGenericFuelTankIndex(uID), 1);
-    EXPECT_EQ(fuelTanks->GetGenericFuelTanksCount(), 2);
+    EXPECT_EQ(fuelTanks->GetGenericFuelTanksCount(), 3);
 }
 
 TEST_F(FuselageTank, genericFuelTank)
 {
-    EXPECT_TRUE(fuelTank->HasHulls());
     EXPECT_NO_THROW(fuelTank->GetHulls());
 }
 
+// ToDo: Check how to use pointer ->
 TEST_F(FuselageTank, hulls)
 {
-    EXPECT_EQ(hulls->GetHullsCount(), 2);
-    EXPECT_EQ(hulls->GetHull(1).GetDefaultedUID(), "outerHull");
-    EXPECT_EQ(hulls->GetHull("outerHull").GetDefaultedUID(), "outerHull");
-    EXPECT_EQ(hulls->GetHullIndex("outerHull"), 1);
-    EXPECT_EQ(hulls->GetHulls().at(0)->GetDefaultedUID(), "outerHull");
+    EXPECT_EQ(hulls.GetHullsCount(), 2);
+    EXPECT_EQ(hulls.GetHull(1).GetDefaultedUID(), "outerHull");
+    EXPECT_EQ(hulls.GetHull("outerHull").GetDefaultedUID(), "outerHull");
+    EXPECT_EQ(hulls.GetHullIndex("outerHull"), 1);
+    EXPECT_EQ(hulls.GetHulls().at(0)->GetDefaultedUID(), "outerHull");
 }
 
 TEST_F(FuselageTank, hull)
@@ -158,10 +164,15 @@ TEST_F(FuselageTank, hull)
     EXPECT_EQ(hull_with_guides->GetGuideCurveSegment("genericTank2_seg1_upper").GetGuideCurveProfileUID(), "gc_upper");
 }
 
+TEST_F(FuselageTank, parametric_hull)
+{
+    auto &loft = hull_spheric->GetLoft();
+}
+
 TEST_F(FuselageTank, structure)
 {
-    auto &structure = hull->GetStructure();
+    auto& structure = hull->GetStructure();
 
-    EXPECT_EQ(structure->GetFrames()->GetFrames().size(),1);
+    EXPECT_EQ(structure->GetFrames()->GetFrames().size(), 1);
     EXPECT_EQ(structure->GetUID(), "outerHullStructure");
 }

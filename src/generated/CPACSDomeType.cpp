@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSHull.h"
 #include "CPACSDomeType.h"
-#include "CPACSGenericFuelTankParameters.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDObject.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDomeType::CPACSDomeType(CPACSGenericFuelTankParameters* parent)
+    CPACSDomeType::CPACSDomeType(CCPACSHull* parent)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -37,30 +37,24 @@ namespace generated
     {
     }
 
-    const CPACSGenericFuelTankParameters* CPACSDomeType::GetParent() const
+    const CCPACSHull* CPACSDomeType::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSGenericFuelTankParameters* CPACSDomeType::GetParent()
+    CCPACSHull* CPACSDomeType::GetParent()
     {
         return m_parent;
     }
 
     const CTiglUIDObject* CPACSDomeType::GetNextUIDParent() const
     {
-        if (m_parent) {
-            return m_parent->GetNextUIDParent();
-        }
-        return nullptr;
+        return m_parent;
     }
 
     CTiglUIDObject* CPACSDomeType::GetNextUIDParent()
     {
-        if (m_parent) {
-            return m_parent->GetNextUIDParent();
-        }
-        return nullptr;
+        return m_parent;
     }
 
     void CPACSDomeType::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

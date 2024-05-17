@@ -162,8 +162,9 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
     else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetSections();
     }
+    // ToDo: add exception handling
     else if (segment->GetParent()->IsParent<CCPACSHull>()) {
-        return segment->GetParent()->GetParent<CCPACSHull>()->GetSections();
+        return segment->GetParent()->GetParent<CCPACSHull>()->GetSections_choice1().get();
     }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");

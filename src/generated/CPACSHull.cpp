@@ -30,8 +30,6 @@ namespace generated
     CPACSHull::CPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(reinterpret_cast<CCPACSHull*>(this), m_uidMgr)
-        , m_sections(reinterpret_cast<CCPACSHull*>(this), m_uidMgr)
-        , m_segments(reinterpret_cast<CCPACSHull*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -126,18 +124,45 @@ namespace generated
 
         // read element sections
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sections")) {
-            m_sections.ReadCPACS(tixiHandle, xpath + "/sections");
-        }
-        else {
-            LOG(ERROR) << "Required element sections is missing at xpath " << xpath;
+            m_sections_choice1 = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
+            try {
+                m_sections_choice1->ReadCPACS(tixiHandle, xpath + "/sections");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read sections at xpath " << xpath << ": " << e.what();
+                m_sections_choice1 = boost::none;
+            }
         }
 
         // read element segments
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/segments")) {
-            m_segments.ReadCPACS(tixiHandle, xpath + "/segments");
+            m_segments_choice1 = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
+            try {
+                m_segments_choice1->ReadCPACS(tixiHandle, xpath + "/segments");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read segments at xpath " << xpath << ": " << e.what();
+                m_segments_choice1 = boost::none;
+            }
         }
-        else {
-            LOG(ERROR) << "Required element segments is missing at xpath " << xpath;
+
+        // read element cylinderRadius
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cylinderRadius")) {
+            m_cylinderRadius_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/cylinderRadius");
+        }
+
+        // read element cylinderLength
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cylinderLength")) {
+            m_cylinderLength_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/cylinderLength");
+        }
+
+        // read element domeType
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/domeType")) {
+            m_domeType_choice2 = boost::in_place(reinterpret_cast<CCPACSHull*>(this));
+            try {
+                m_domeType_choice2->ReadCPACS(tixiHandle, xpath + "/domeType");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read domeType at xpath " << xpath << ": " << e.what();
+                m_domeType_choice2 = boost::none;
+            }
         }
 
         // read element structure
@@ -152,20 +177,25 @@ namespace generated
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
+        if (!ValidateChoices()) {
+            LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
+        }
     }
 
     void CPACSHull::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        const std::vector<std::string> childElemOrder = { "name", "description", "transformation", "sections", "segments", "cylinderRadius", "cylinderLength", "domeType", "structure" };
+
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element name
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/name", childElemOrder);
         tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
 
         // write element description
         if (m_description) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/description", childElemOrder);
             tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
         }
         else {
@@ -175,20 +205,67 @@ namespace generated
         }
 
         // write element transformation
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/transformation", childElemOrder);
         m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
         // write element sections
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sections");
-        m_sections.WriteCPACS(tixiHandle, xpath + "/sections");
+        if (m_sections_choice1) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sections", childElemOrder);
+            m_sections_choice1->WriteCPACS(tixiHandle, xpath + "/sections");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sections")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/sections");
+            }
+        }
 
         // write element segments
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/segments");
-        m_segments.WriteCPACS(tixiHandle, xpath + "/segments");
+        if (m_segments_choice1) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/segments", childElemOrder);
+            m_segments_choice1->WriteCPACS(tixiHandle, xpath + "/segments");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/segments")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/segments");
+            }
+        }
+
+        // write element cylinderRadius
+        if (m_cylinderRadius_choice2) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cylinderRadius", childElemOrder);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/cylinderRadius", *m_cylinderRadius_choice2);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cylinderRadius")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/cylinderRadius");
+            }
+        }
+
+        // write element cylinderLength
+        if (m_cylinderLength_choice2) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cylinderLength", childElemOrder);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/cylinderLength", *m_cylinderLength_choice2);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cylinderLength")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/cylinderLength");
+            }
+        }
+
+        // write element domeType
+        if (m_domeType_choice2) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/domeType", childElemOrder);
+            m_domeType_choice2->WriteCPACS(tixiHandle, xpath + "/domeType");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/domeType")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/domeType");
+            }
+        }
 
         // write element structure
         if (m_structure) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structure");
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/structure", childElemOrder);
             m_structure->WriteCPACS(tixiHandle, xpath + "/structure");
         }
         else {
@@ -197,6 +274,48 @@ namespace generated
             }
         }
 
+    }
+
+    bool CPACSHull::ValidateChoices() const
+    {
+        return
+        (
+            (
+                (
+                    // mandatory elements of this choice must be there
+                    m_sections_choice1.is_initialized()
+                    &&
+                    m_segments_choice1.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_cylinderRadius_choice2.is_initialized()
+                        ||
+                        m_cylinderLength_choice2.is_initialized()
+                        ||
+                        m_domeType_choice2.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_cylinderRadius_choice2.is_initialized()
+                    &&
+                    m_cylinderLength_choice2.is_initialized()
+                    &&
+                    m_domeType_choice2.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_sections_choice1.is_initialized()
+                        ||
+                        m_segments_choice1.is_initialized()
+                    )
+                )
+                == 1
+            )
+        )
+        ;
     }
 
     const std::string& CPACSHull::GetUID() const
@@ -247,24 +366,54 @@ namespace generated
         return m_transformation;
     }
 
-    const CCPACSFuselageSections& CPACSHull::GetSections() const
+    const boost::optional<CCPACSFuselageSections>& CPACSHull::GetSections_choice1() const
     {
-        return m_sections;
+        return m_sections_choice1;
     }
 
-    CCPACSFuselageSections& CPACSHull::GetSections()
+    boost::optional<CCPACSFuselageSections>& CPACSHull::GetSections_choice1()
     {
-        return m_sections;
+        return m_sections_choice1;
     }
 
-    const CCPACSFuselageSegments& CPACSHull::GetSegments() const
+    const boost::optional<CCPACSFuselageSegments>& CPACSHull::GetSegments_choice1() const
     {
-        return m_segments;
+        return m_segments_choice1;
     }
 
-    CCPACSFuselageSegments& CPACSHull::GetSegments()
+    boost::optional<CCPACSFuselageSegments>& CPACSHull::GetSegments_choice1()
     {
-        return m_segments;
+        return m_segments_choice1;
+    }
+
+    const boost::optional<double>& CPACSHull::GetCylinderRadius_choice2() const
+    {
+        return m_cylinderRadius_choice2;
+    }
+
+    void CPACSHull::SetCylinderRadius_choice2(const boost::optional<double>& value)
+    {
+        m_cylinderRadius_choice2 = value;
+    }
+
+    const boost::optional<double>& CPACSHull::GetCylinderLength_choice2() const
+    {
+        return m_cylinderLength_choice2;
+    }
+
+    void CPACSHull::SetCylinderLength_choice2(const boost::optional<double>& value)
+    {
+        m_cylinderLength_choice2 = value;
+    }
+
+    const boost::optional<CPACSDomeType>& CPACSHull::GetDomeType_choice2() const
+    {
+        return m_domeType_choice2;
+    }
+
+    boost::optional<CPACSDomeType>& CPACSHull::GetDomeType_choice2()
+    {
+        return m_domeType_choice2;
     }
 
     const boost::optional<CCPACSHullStructure>& CPACSHull::GetStructure() const
@@ -275,6 +424,42 @@ namespace generated
     boost::optional<CCPACSHullStructure>& CPACSHull::GetStructure()
     {
         return m_structure;
+    }
+
+    CCPACSFuselageSections& CPACSHull::GetSections_choice1(CreateIfNotExistsTag)
+    {
+        if (!m_sections_choice1)
+            m_sections_choice1 = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
+        return *m_sections_choice1;
+    }
+
+    void CPACSHull::RemoveSections_choice1()
+    {
+        m_sections_choice1 = boost::none;
+    }
+
+    CCPACSFuselageSegments& CPACSHull::GetSegments_choice1(CreateIfNotExistsTag)
+    {
+        if (!m_segments_choice1)
+            m_segments_choice1 = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
+        return *m_segments_choice1;
+    }
+
+    void CPACSHull::RemoveSegments_choice1()
+    {
+        m_segments_choice1 = boost::none;
+    }
+
+    CPACSDomeType& CPACSHull::GetDomeType_choice2(CreateIfNotExistsTag)
+    {
+        if (!m_domeType_choice2)
+            m_domeType_choice2 = boost::in_place(reinterpret_cast<CCPACSHull*>(this));
+        return *m_domeType_choice2;
+    }
+
+    void CPACSHull::RemoveDomeType_choice2()
+    {
+        m_domeType_choice2 = boost::none;
     }
 
     CCPACSHullStructure& CPACSHull::GetStructure(CreateIfNotExistsTag)

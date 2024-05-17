@@ -30,6 +30,7 @@ namespace generated
     CPACSGenericFuelTank::CPACSGenericFuelTank(CCPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr)
+        , m_hulls(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -124,24 +125,10 @@ namespace generated
 
         // read element hulls
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/hulls")) {
-            m_hulls_choice1 = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr);
-            try {
-                m_hulls_choice1->ReadCPACS(tixiHandle, xpath + "/hulls");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read hulls at xpath " << xpath << ": " << e.what();
-                m_hulls_choice1 = boost::none;
-            }
+            m_hulls.ReadCPACS(tixiHandle, xpath + "/hulls");
         }
-
-        // read element designParameters
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/designParameters")) {
-            m_designParameters_choice2 = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr);
-            try {
-                m_designParameters_choice2->ReadCPACS(tixiHandle, xpath + "/designParameters");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read designParameters at xpath " << xpath << ": " << e.what();
-                m_designParameters_choice2 = boost::none;
-            }
+        else {
+            LOG(ERROR) << "Required element hulls is missing at xpath " << xpath;
         }
 
         // read element volume
@@ -161,14 +148,11 @@ namespace generated
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
-        if (!ValidateChoices()) {
-            LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
-        }
     }
 
     void CPACSGenericFuelTank::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "transformation", "hulls", "designParameters", "volume", "burstPressure" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "transformation", "hulls", "volume", "burstPressure" };
 
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -193,26 +177,8 @@ namespace generated
         m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
         // write element hulls
-        if (m_hulls_choice1) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/hulls", childElemOrder);
-            m_hulls_choice1->WriteCPACS(tixiHandle, xpath + "/hulls");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/hulls")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/hulls");
-            }
-        }
-
-        // write element designParameters
-        if (m_designParameters_choice2) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/designParameters", childElemOrder);
-            m_designParameters_choice2->WriteCPACS(tixiHandle, xpath + "/designParameters");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/designParameters")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/designParameters");
-            }
-        }
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/hulls", childElemOrder);
+        m_hulls.WriteCPACS(tixiHandle, xpath + "/hulls");
 
         // write element volume
         if (m_volume) {
@@ -236,36 +202,6 @@ namespace generated
             }
         }
 
-    }
-
-    bool CPACSGenericFuelTank::ValidateChoices() const
-    {
-        return
-        (
-            (
-                (
-                    // mandatory elements of this choice must be there
-                    m_hulls_choice1.is_initialized()
-                    &&
-                    // elements of other choices must not be there
-                    !(
-                        m_designParameters_choice2.is_initialized()
-                    )
-                )
-                +
-                (
-                    // mandatory elements of this choice must be there
-                    m_designParameters_choice2.is_initialized()
-                    &&
-                    // elements of other choices must not be there
-                    !(
-                        m_hulls_choice1.is_initialized()
-                    )
-                )
-                == 1
-            )
-        )
-        ;
     }
 
     const std::string& CPACSGenericFuelTank::GetUID() const
@@ -316,24 +252,14 @@ namespace generated
         return m_transformation;
     }
 
-    const boost::optional<CCPACSHulls>& CPACSGenericFuelTank::GetHulls_choice1() const
+    const CCPACSHulls& CPACSGenericFuelTank::GetHulls() const
     {
-        return m_hulls_choice1;
+        return m_hulls;
     }
 
-    boost::optional<CCPACSHulls>& CPACSGenericFuelTank::GetHulls_choice1()
+    CCPACSHulls& CPACSGenericFuelTank::GetHulls()
     {
-        return m_hulls_choice1;
-    }
-
-    const boost::optional<CPACSGenericFuelTankParameters>& CPACSGenericFuelTank::GetDesignParameters_choice2() const
-    {
-        return m_designParameters_choice2;
-    }
-
-    boost::optional<CPACSGenericFuelTankParameters>& CPACSGenericFuelTank::GetDesignParameters_choice2()
-    {
-        return m_designParameters_choice2;
+        return m_hulls;
     }
 
     const boost::optional<CPACSFuelTankVolume>& CPACSGenericFuelTank::GetVolume() const
@@ -354,30 +280,6 @@ namespace generated
     void CPACSGenericFuelTank::SetBurstPressure(const boost::optional<double>& value)
     {
         m_burstPressure = value;
-    }
-
-    CCPACSHulls& CPACSGenericFuelTank::GetHulls_choice1(CreateIfNotExistsTag)
-    {
-        if (!m_hulls_choice1)
-            m_hulls_choice1 = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr);
-        return *m_hulls_choice1;
-    }
-
-    void CPACSGenericFuelTank::RemoveHulls_choice1()
-    {
-        m_hulls_choice1 = boost::none;
-    }
-
-    CPACSGenericFuelTankParameters& CPACSGenericFuelTank::GetDesignParameters_choice2(CreateIfNotExistsTag)
-    {
-        if (!m_designParameters_choice2)
-            m_designParameters_choice2 = boost::in_place(reinterpret_cast<CCPACSGenericFuelTank*>(this), m_uidMgr);
-        return *m_designParameters_choice2;
-    }
-
-    void CPACSGenericFuelTank::RemoveDesignParameters_choice2()
-    {
-        m_designParameters_choice2 = boost::none;
     }
 
     CPACSFuelTankVolume& CPACSGenericFuelTank::GetVolume(CreateIfNotExistsTag)

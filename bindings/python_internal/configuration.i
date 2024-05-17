@@ -344,7 +344,6 @@ namespace tigl
 %boost_optional(tigl::CCPACSGenericFuelTanks)
 %boost_optional(tigl::generated::CPACSFuselageFuelTanks)
 %boost_optional(tigl::generated::CPACSGenericFuelTanks)
-%boost_optional(tigl::CCPACSHulls)
 %boost_optional(tigl::generated::CPACSFuelTankVolume)
 %boost_optional(tigl::CCPACSHullStructure)
 
@@ -368,6 +367,7 @@ class CCPACSHulls;
 %include "generated/CPACSHull.h"
 %include "CCPACSHull.h"
 %include "generated/CPACSFuselageFuelTanks.h"
+%include "generated/CPACSDomeType.h"
 
 
 // -------------------- Wing Structure -------------------// 

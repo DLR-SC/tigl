@@ -31,13 +31,12 @@
 namespace tigl
 {
 class CTiglUIDObject;
+class CCPACSHull;
 
 namespace generated
 {
-    class CPACSGenericFuelTankParameters;
-
     // This class is used in:
-    // CPACSGenericFuelTankParameters
+    // CPACSHull
 
     /// @brief Dome Type
     /// 
@@ -46,13 +45,13 @@ namespace generated
     class CPACSDomeType
     {
     public:
-        TIGL_EXPORT CPACSDomeType(CPACSGenericFuelTankParameters* parent);
+        TIGL_EXPORT CPACSDomeType(CCPACSHull* parent);
 
         TIGL_EXPORT virtual ~CPACSDomeType();
 
-        TIGL_EXPORT CPACSGenericFuelTankParameters* GetParent();
+        TIGL_EXPORT CCPACSHull* GetParent();
 
-        TIGL_EXPORT const CPACSGenericFuelTankParameters* GetParent() const;
+        TIGL_EXPORT const CCPACSHull* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -87,7 +86,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveIsotensoid_choice4();
 
     protected:
-        CPACSGenericFuelTankParameters* m_parent;
+        CCPACSHull* m_parent;
 
         boost::optional<CPACSEmptyElementBase>  m_spherical_choice1;
         boost::optional<CPACSEllipsoidDome>     m_ellipsoid_choice2;
@@ -105,5 +104,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSDomeType = generated::CPACSDomeType;
-using CCPACSGenericFuelTankParameters = generated::CPACSGenericFuelTankParameters;
 } // namespace tigl
