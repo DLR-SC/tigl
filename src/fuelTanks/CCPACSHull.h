@@ -97,6 +97,9 @@ private:
     std::string GetShortShapeName() const;
 
     TiglGetPointBehavior getPointBehavior{asParameterOnSurface};
+
+    void IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber, std::vector<double>& x,
+                           std::vector<double>& r) const;
 };
 
 } // namespace tigl

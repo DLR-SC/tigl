@@ -47,6 +47,7 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepPrimAPI_MakeRevol.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
+#include <GeomAPI_PointsToBSpline.hxx>
 
 namespace tigl
 {
@@ -169,23 +170,50 @@ double CCPACSHull::GetCircumference(const int segmentIndex, const double eta)
     return static_cast<CCPACSFuselageSegment&>(GetSegment(segmentIndex)).GetCircumference(eta);
 }
 
-// ToDo: Add parametric build algorithms
+void CCPACSHull::IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber, std::vector<double>& x,
+                                   std::vector<double>& r) const
+{
+    double dPhi = 1.0 / nodeNumber;
+
+    r.push_back(rCyl);
+    x.push_back(0.0);
+
+    double phi   = 0.0;
+    double alpha = std::asin(rPolarOpening / rCyl);
+
+    while (std::tan(alpha) * std::tan(alpha) < 2 && r.back() > 1.22 * rPolarOpening) {
+        phi += dPhi;
+        alpha     = std::asin(rPolarOpening / r.back());
+        double rm = r.back() / (std::cos(phi) * (2 - std::tan(alpha) * std::tan(alpha)));
+        double dr = rm * dPhi * std::sin(phi);
+        r.push_back(r.back() - dr);
+        double dx = rm * dPhi * std::cos(phi);
+        x.push_back(x.back() + dx);
+    }
+
+    double slope = (r.back() - r[r.size() - 2]) / (x.back() - x[x.size() - 2]);
+    for (int i = 0; i < 5; ++i) {
+        x.push_back(x.back() + (rPolarOpening - r.back()) / slope);
+        r.push_back(r.back() + slope * (x.back() - x[x.size() - 2]));
+    }
+}
+
 PNamedShape CCPACSHull::BuildLoft() const
 {
     if (m_segments_choice1 && m_sections_choice1) {
-        TiglContinuity cont     = m_segments_choice1.get().GetSegment(1).GetContinuity();
+        const auto& segments    = m_segments_choice1.get();
+        TiglContinuity cont     = segments.GetSegment(1).GetContinuity();
         Standard_Boolean smooth = (cont == ::C0 ? false : true);
 
         CTiglMakeLoft lofter;
         // add profiles
-        for (int i = 1; i <= m_segments_choice1.get().GetSegmentCount(); i++) {
-            lofter.addProfiles(m_segments_choice1.get().GetSegment(i).GetStartWire());
+        for (int i = 1; i <= segments.GetSegmentCount(); i++) {
+            lofter.addProfiles(segments.GetSegment(i).GetStartWire());
         }
-        lofter.addProfiles(
-            m_segments_choice1.get().GetSegment(m_segments_choice1.get().GetSegmentCount()).GetEndWire());
+        lofter.addProfiles(segments.GetSegment(segments.GetSegmentCount()).GetEndWire());
 
         // add guides
-        lofter.addGuides(m_segments_choice1.get().GetGuideCurveWires());
+        lofter.addGuides(segments.GetGuideCurveWires());
 
         lofter.setMakeSolid(true);
         lofter.setMakeSmooth(smooth);
@@ -200,87 +228,118 @@ PNamedShape CCPACSHull::BuildLoft() const
         return loft;
     }
     else if (m_cylinderRadius_choice2 && m_cylinderLength_choice2 && m_domeType_choice2) {
+
+        // Determine dome type
+        const auto* spherical     = m_domeType_choice2.get_ptr()->GetSpherical_choice1().get_ptr();
+        const auto* ellipsoid     = m_domeType_choice2.get_ptr()->GetEllipsoid_choice2().get_ptr();
+        const auto* torispherical = m_domeType_choice2.get_ptr()->GetTorispherical_choice3().get_ptr();
+        const auto* isotensoid    = m_domeType_choice2.get_ptr()->GetIsotensoid_choice4().get_ptr();
+
         double cylinderRadius = m_cylinderRadius_choice2.get();
         double cylinderLength = m_cylinderLength_choice2.get();
 
-        double R, r, a, c, axRatio, h, alpha;
+        // if (spherical || ellipsoid || torispherical) {
+        //     BuildTorisphericalWire();
+        // }
+        // else {
+        //     BuildIsotensoidWire();
+        // }
+        // Default settings, following the nomenclature and equations from https://mathworld.wolfram.com/TorisphericalDome.html
+        // R - Radius of the sphere (crown radius)
+        // r - Radius where the transition from sphere to torus occurs
+        // a - Radius of the torus (knuckle radius)
+        // c - Distance from the center to the center of the torus tube
+        // h - Height from the base of the dome to the top
+        double R = cylinderRadius, h = cylinderRadius, r = 0.0, a = 0.0, c = 0.0, axRatio = 1.0, alpha = 0.0;
 
-        if (m_domeType_choice2.get().GetSpherical_choice1()) {
-            R       = cylinderRadius;
-            a       = 0.0;
-            axRatio = 1.0;
+        if (ellipsoid) {
+            axRatio = ellipsoid->GetHalfAxisFraction();
+            h       = R * axRatio;
         }
-        else if (m_domeType_choice2.get().GetEllipsoid_choice2()) {
-            R       = cylinderRadius;
-            a       = 0.0;
-            axRatio = m_domeType_choice2.get().GetEllipsoid_choice2().get().GetHalfAxisFraction();
-        }
-        else if (m_domeType_choice2.get().GetTorispherical_choice3()) {
-            R       = m_domeType_choice2.get().GetTorispherical_choice3().get().GetDishRadius();
-            a       = m_domeType_choice2.get().GetTorispherical_choice3().get().GetKnuckleRadius();
-            axRatio = 1.0;
-        }
+        else if (torispherical) {
+            R = torispherical->GetDishRadius();
+            a = torispherical->GetKnuckleRadius();
 
-        if (a > 0.0) {
             c     = cylinderRadius - a;
             h     = R - sqrt((a + c - R) * (a - c - R));
             r     = c * (1.0 + pow((R / a - 1), -1.0));
             alpha = acos((r - c) / a);
         }
-        else {
-            alpha = 0.0;
-            h     = R;
-        }
 
         gp_Dir dir(0.0, 1.0, 0.0);
+        TopoDS_Edge edge1_l, edge1_r;
 
-        gp_Pnt p1_l(R - h, 0.0, 0.0);
-        gp_Pnt p1_r(cylinderLength - (R - h), 0.0, 0.0);
+        if (spherical || ellipsoid || torispherical) {
+            gp_Pnt p1_l(R - h, 0.0, 0.0);
+            gp_Pnt p1_r(cylinderLength - (R - h), 0.0, 0.0);
 
-        gp_Elips ellips_l_gp(gp_Ax2(p1_l, dir), R, R * axRatio);
-        gp_Elips ellips_r_gp(gp_Ax2(p1_r, dir), R, R * axRatio);
+            gp_Elips ellips_l_gp(gp_Ax2(p1_l, dir), R, R * axRatio);
+            gp_Elips ellips_r_gp(gp_Ax2(p1_r, dir), R, R * axRatio);
 
-        GC_MakeArcOfEllipse arc1_l(ellips_l_gp, -M_PI / 2, -alpha, Standard_True);
-        GC_MakeArcOfEllipse arc1_r(ellips_r_gp, alpha, M_PI / 2, Standard_True);
+            GC_MakeArcOfEllipse arc1_l(ellips_l_gp, -M_PI / 2, -alpha, Standard_True);
+            GC_MakeArcOfEllipse arc1_r(ellips_r_gp, alpha, M_PI / 2, Standard_True);
 
-        TopoDS_Edge edge1_l = BRepBuilderAPI_MakeEdge(arc1_l.Value()).Edge();
-        TopoDS_Edge edge1_r = BRepBuilderAPI_MakeEdge(arc1_r.Value()).Edge();
-
-        TopoDS_Edge edge2_l;
-        TopoDS_Edge edge2_r;
-
-        TopoDS_Vertex v1;
-        TopoDS_Vertex v2;
-        if (a > 0) {
-            gp_Pnt p2_l(0, 0.0, cylinderRadius - a);
-            gp_Pnt p2_r(cylinderLength, 0.0, cylinderRadius - a);
-
-            gp_Circ circ2_l_gp(gp_Ax2(p2_l, dir), a);
-            gp_Circ circ2_r_gp(gp_Ax2(p2_r, dir), a);
-
-            GC_MakeArcOfCircle arc2_l(circ2_l_gp, -alpha, 0, Standard_True);
-            GC_MakeArcOfCircle arc2_r(circ2_r_gp, 0, alpha, Standard_True);
-
-            edge2_l = BRepBuilderAPI_MakeEdge(arc2_l.Value()).Edge();
-            edge2_r = BRepBuilderAPI_MakeEdge(arc2_r.Value()).Edge();
-
-            v1 = GetLastVertex(edge2_l);
-            v2 = GetFirstVertex(edge2_r);
+            edge1_l = BRepBuilderAPI_MakeEdge(arc1_l.Value()).Edge();
+            edge1_r = BRepBuilderAPI_MakeEdge(arc1_r.Value()).Edge();
         }
-        else {
-            v1 = GetLastVertex(edge1_l);
+        else if (isotensoid) {
+
+            double polarOpeningRadius = isotensoid->GetPolarOpeningRadius();
+            std::vector<double> x, r;
+            IsotensoidContour(cylinderRadius, polarOpeningRadius, 50, x, r);
+
+            TColgp_Array1OfPnt array1(1, x.size());
+            for (size_t i = 0; i < x.size(); ++i) {
+                array1.SetValue(i + 1, gp_Pnt(-x[i], 0.0, r[i]));
+            }
+            Handle(Geom_BSplineCurve) bspline_l = GeomAPI_PointsToBSpline(array1).Curve();
+            edge1_l                             = BRepBuilderAPI_MakeEdge(bspline_l);
+
+            TColgp_Array1OfPnt array2(1, x.size());
+            for (size_t i = 0; i < x.size(); ++i) {
+                array2.SetValue(i + 1, gp_Pnt(x[i] + cylinderLength, 0.0, r[i]));
+            }
+            Handle(Geom_BSplineCurve) bspline_r = GeomAPI_PointsToBSpline(array2).Curve();
+            edge1_r                             = BRepBuilderAPI_MakeEdge(bspline_r);
+        }
+
+        TopoDS_Edge edge2_l, edge2_r;
+        TopoDS_Vertex v1, v2;
+
+        if (spherical || ellipsoid || torispherical) {
+            if (a > 0) {
+                gp_Pnt p2_l(0, 0.0, cylinderRadius - a);
+                gp_Pnt p2_r(cylinderLength, 0.0, cylinderRadius - a);
+
+                gp_Circ circ2_l_gp(gp_Ax2(p2_l, dir), a);
+                gp_Circ circ2_r_gp(gp_Ax2(p2_r, dir), a);
+
+                GC_MakeArcOfCircle arc2_l(circ2_l_gp, -alpha, 0, Standard_True);
+                GC_MakeArcOfCircle arc2_r(circ2_r_gp, 0, alpha, Standard_True);
+
+                edge2_l = BRepBuilderAPI_MakeEdge(arc2_l.Value()).Edge();
+                edge2_r = BRepBuilderAPI_MakeEdge(arc2_r.Value()).Edge();
+
+                v1 = GetLastVertex(edge2_l);
+                v2 = GetFirstVertex(edge2_r);
+            }
+            else {
+                v1 = GetLastVertex(edge1_l);
+                v2 = GetFirstVertex(edge1_r);
+            }
+        }
+        else if (isotensoid) {
+            v1 = GetFirstVertex(edge1_l);
             v2 = GetFirstVertex(edge1_r);
         }
 
         TopoDS_Edge cylinder_edge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
 
         BRepBuilderAPI_MakeWire wire;
-        std::vector<TopoDS_Edge> edges;
+        std::vector<TopoDS_Edge> edges = {edge1_l, cylinder_edge, edge1_r};
         if (a > 0) {
-            edges = {edge1_l, edge2_l, cylinder_edge, edge2_r, edge1_r};
-        }
-        else {
-            edges = {edge1_l, cylinder_edge, edge1_r};
+            edges.insert(edges.begin() + 1, edge2_l);
+            edges.insert(edges.end() - 1, edge2_r);
         }
 
         for (const auto& edge : edges) {
@@ -290,15 +349,12 @@ PNamedShape CCPACSHull::BuildLoft() const
         gp_Ax1 ax(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
         TopoDS_Shape loftShape = BRepPrimAPI_MakeRevol(wire.Shape(), ax).Shape();
 
-        // gp_Trsf translationTrsf;
-        // translationTrsf.SetTranslation(gp_Vec(h, 0, 0));
-        // BRepBuilderAPI_Transform shapeTranslation(loftShape, translationTrsf);
-        // shapeTranslation.Build();
-        // TopoDS_Shape loftShape_translated = shapeTranslation.Shape();
+        tigl::CTiglTransformation transform = this->GetTransformationMatrix();
+        TopoDS_Shape TransformedShape       = transform.Transform(loftShape);
 
         std::string loftName      = GetUID();
         std::string loftShortName = GetShortShapeName();
-        PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+        PNamedShape loft(new CNamedShape(TransformedShape, loftName.c_str(), loftShortName.c_str()));
 
         return loft;
     }

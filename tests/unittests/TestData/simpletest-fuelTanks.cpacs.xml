@@ -407,7 +407,7 @@
                   <description>Test case for simple parametrization</description>
                   <transformation>
                     <translation>
-                      <x>3.5</x>
+                      <x>-1</x>
                     </translation>
                   </transformation>
                   <hulls>
@@ -415,11 +415,11 @@
                       <name>Hull with spherical dome</name>
                       <transformation>
                         <translation>
-                          <x>10.</x>
+                          <x>0.</x>
                         </translation>
                       </transformation>
                       <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>2.0</cylinderLength>
+                      <cylinderLength>10.0</cylinderLength>
                       <domeType>
                         <spherical/>
                       </domeType>
@@ -428,31 +428,46 @@
                       <name>Hull with ellipsoid dome</name>
                       <transformation>
                         <translation>
-                          <x>10.</x>
+                          <x>0.</x>
                         </translation>
                       </transformation>
                       <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>2.0</cylinderLength>
+                      <cylinderLength>10.0</cylinderLength>
                       <domeType>
                         <ellipsoid>
                           <halfAxisFraction>0.5</halfAxisFraction>
                         </ellipsoid>
                       </domeType>
                     </hull>
-                    <hull uID="genericTank3_torispherical">
+                    <hull uID="genericTank3_torisphericalDome">
                       <name>Hull with torispherical dome</name>
                       <transformation>
                         <translation>
-                          <x>10.</x>
+                          <x>0.</x>
                         </translation>
                       </transformation>
                       <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>2.0</cylinderLength>
+                      <cylinderLength>10.0</cylinderLength>
                       <domeType>
                         <torispherical>
                           <dishRadius>2.0</dishRadius>
                           <knuckleRadius>0.2</knuckleRadius>
                         </torispherical>
+                      </domeType>
+                    </hull>
+                    <hull uID="genericTank3_isotensoidDome">
+                      <name>Hull with isotensoid dome</name>
+                      <transformation>
+                        <translation>
+                          <x>0.</x>
+                        </translation>
+                      </transformation>
+                      <cylinderRadius>1.0</cylinderRadius>
+                      <cylinderLength>10.0</cylinderLength>
+                      <domeType>
+                        <isotensoid>
+                          <polarOpeningRadius>0.1</polarOpeningRadius>
+                        </isotensoid>
                       </domeType>
                     </hull>
                   </hulls>
