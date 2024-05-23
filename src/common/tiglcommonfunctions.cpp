@@ -1163,25 +1163,26 @@ opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(d
 {
     std::vector<gp_Pnt> arcPnts(nb_points);
     std::vector<double> alpha = LinspaceWithBreaks(uMin, uMax, nb_points);
+    size_t index = 0;
     for (double a : alpha){
-        arcPnts.push_back(gp_Pnt(0., y_position + radius * std::cos(a), z_position + radius* std::sin(a)));
+        arcPnts.at(index++) = (gp_Pnt(0., y_position + radius * std::cos(a), z_position + radius* std::sin(a)));
             }
     return tigl::CTiglPointsToBSplineInterpolation(arcPnts).Curve();
 }
 
 TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cornerRadius, const double tol)
 {
-    //compute number of points required for a quarter of a circle
-    int nb_points = (int) (2*M_PI/(4*2*acos(1-tol)));
+    int nb_points(0);
 
     if(cornerRadius<0.||cornerRadius>0.5){
         throw tigl::CTiglError("Invalid input for corner radius. Must be in range: 0 <= cornerRadius <= 0.5");
     }
+
     std::vector<Handle(Geom_BSplineCurve)> curves;
 
     // build half upper line from gp_points
     std::vector<gp_Pnt> linePntsUpperRightHalf;
-    std::vector<double> y_UpperRightHalf = LinspaceWithBreaks(0., (0.5-cornerRadius), 3);
+    std::vector<double> y_UpperRightHalf = LinspaceWithBreaks(0., (0.5-cornerRadius), 2);
     for (double y: y_UpperRightHalf){
         linePntsUpperRightHalf.push_back(gp_Pnt(0., y, 0.5 * heightToWidthRatio));
     }
@@ -1189,6 +1190,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     curves.push_back(lowerLineRightHalf);
 
     if (!(cornerRadius == 0.0)){
+        //calculate the number of points required to maintain the minimum distance (<tol) between the bisector of two neighboring points on an arc circle
+        nb_points = (int) (M_PI/(acos(1-tol/cornerRadius)));
         //build upper right arc
         double y0 = 0.5 - cornerRadius;
         double z0 = 0.5 * heightToWidthRatio - cornerRadius;
@@ -1199,7 +1202,7 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     // build right line from gp_Pnts
     std::vector<gp_Pnt> linePnts_right;
-    std::vector<double> z_right = LinspaceWithBreaks( 0.5 * heightToWidthRatio - cornerRadius, -0.5 * heightToWidthRatio + cornerRadius, 3);
+    std::vector<double> z_right = LinspaceWithBreaks( 0.5 * heightToWidthRatio - cornerRadius, -0.5 * heightToWidthRatio + cornerRadius, 2);
     for (double z: z_right){
         linePnts_right.push_back(gp_Pnt(0., 0.5, z));
     }
@@ -1217,8 +1220,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     // build lower line from gp_points
     std::vector<gp_Pnt> linePnts_lower;
-    std::vector<double> y_upper = LinspaceWithBreaks((0.5-cornerRadius),(-0.5+cornerRadius),3);
-    for (double y: y_upper){
+    std::vector<double> y_lower = LinspaceWithBreaks((0.5-cornerRadius),(-0.5+cornerRadius),2);
+    for (double y: y_lower){
         linePnts_lower.push_back(gp_Pnt(0., y, -0.5*heightToWidthRatio));
     }
     opencascade::handle<Geom_BSplineCurve> lowerLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_lower).Curve();
@@ -1254,7 +1257,7 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     // build half upper line from gp_points
     std::vector<gp_Pnt> linePntsUpperLeftHalf;
-    std::vector<double> y_UpperLeftHalf = LinspaceWithBreaks(-(0.5-cornerRadius),0.,3);
+    std::vector<double> y_UpperLeftHalf = LinspaceWithBreaks(-(0.5-cornerRadius),0.,2);
     for (double y: y_UpperLeftHalf){
         linePntsUpperLeftHalf.push_back(gp_Pnt(0., y, 0.5 * heightToWidthRatio));
     }

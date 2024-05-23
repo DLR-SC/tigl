@@ -291,9 +291,10 @@ TIGL_EXPORT opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRatio
  * @brief BuildWireRectangle Builds a rectangular wire in (y,z) - plane with width 1, center of coordinate system is the center of the rectangle
  * @param heightToWidthRatio
  * @param cornerRadius
+ * @param tol
  * @return
  */
-TIGL_EXPORT TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cornerRadius =0.0, const double tol= 1e-4);
+TIGL_EXPORT TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cornerRadius =0.0, const double tol= 1e-3);
 
 // Returns a list of wires built from all connected edges in the passed shape
 TIGL_EXPORT void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList);

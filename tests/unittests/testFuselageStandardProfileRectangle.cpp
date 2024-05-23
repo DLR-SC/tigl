@@ -131,8 +131,6 @@ TEST_F(FuselageStandardProfile, BuildFuselageMixedProfilesWithKinks_ValidValues)
     auto wing = uidmgr.GetGeometricComponent("Wing").GetLoft();
     auto fuselage = config.GetFuselage(1).GetLoft();
     ASSERT_TRUE(BRepCheck_Analyzer(fuselage->Shape()).IsValid());
-    tigl::dumpShape(fuselage->Shape(), "mydir", "fuselageMix");
-    tigl::dumpShape(wing->Shape(), "mydir", "wing1");
 }
 
 TEST_F(FuselageStandardProfile, BuildFuselageMixedProfilesWithGuides_ValidValues)
@@ -144,7 +142,5 @@ TEST_F(FuselageStandardProfile, BuildFuselageMixedProfilesWithGuides_ValidValues
     auto wing = uidmgr.GetGeometricComponent("Wing").GetLoft();
     auto fuselage = config.GetFuselage(1).GetLoft();
     ASSERT_TRUE(BRepCheck_Analyzer(fuselage->Shape()).IsValid());
-    tigl::dumpShape(fuselage->Shape(), "mydir", "fuselageMixGuide");
-    tigl::dumpShape(wing->Shape(), "mydir", "wing2");
 }
 
