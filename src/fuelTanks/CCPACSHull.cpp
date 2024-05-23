@@ -199,8 +199,8 @@ void CCPACSHull::IsotensoidContour(double rCyl, double rPolarOpening, int nodeNu
 
     double dx = x.back() - x.front();
     for (auto& val : x) {
-            val -= dx;
-        }
+        val -= dx;
+    }
 }
 
 TopoDS_Shape CCPACSHull::BuildShapeFromSegments() const
@@ -254,7 +254,17 @@ void CCPACSHull::BuildTankWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
 
     if (ellipsoid) {
         axRatio = ellipsoid->GetHalfAxisFraction();
-        h       = R * axRatio;
+        if (axRatio < 0.0) {
+            LOG(WARNING) << "Half axis fraction (" << axRatio
+                         << ") must be between 0 and 1! It will be set to 0.";
+            axRatio = 0.;
+        }
+        else if (axRatio > 1.0) {
+            LOG(WARNING) << "Half axis fraction (" << axRatio
+                         << ") must be between 0 and 1! It will be set to 1.";
+            axRatio = 1.0;
+        }
+        h = R * axRatio;
     }
 
     gp_Dir dir(0.0, 1.0, 0.0);
