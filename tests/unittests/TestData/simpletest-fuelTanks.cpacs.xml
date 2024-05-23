@@ -18,7 +18,7 @@
             <name>Simple fuselage</name>
             <transformation>
               <translation>
-                <x>1</x>
+                <x>0.5</x>
               </translation>
               <scaling>
                 <x>1.0</x>
@@ -40,11 +40,7 @@
               </section>
               <section uID="fuselage_1Section2ID">
                 <name>Fuselage Section 2</name>
-                <transformation>
-                  <translation refType="absLocal">
-                    <x>0.5</x>
-                  </translation>
-                </transformation>
+                <transformation />
                 <elements>
                   <element uID="fuselage_1Section2IDElement1">
                     <name>Fuselage Section 2</name>
@@ -68,17 +64,25 @@
             <positionings>
               <positioning uID="fuselage_1Positioning1ID">
                 <name>Fuselage Positioning 1</name>
-                <length>-0.5</length>
+                <length>0.</length>
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
                 <toSectionUID>fuselage_1Section1ID</toSectionUID>
               </positioning>
-              <positioning uID="fuselage_1Positioning3ID">
-                <name>Fuselage Positioning 3</name>
-                <length>3.1</length>
+              <positioning uID="fuselage_1Positioning2ID">
+                <name>Fuselage Positioning 2</name>
+                <length>2.</length>
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
                 <fromSectionUID>fuselage_1Section1ID</fromSectionUID>
+                <toSectionUID>fuselage_1Section2ID</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_1Positioning3ID">
+                <name>Fuselage Positioning 3</name>
+                <length>5.</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>fuselage_1Section2ID</fromSectionUID>
                 <toSectionUID>fuselage_1Section3ID</toSectionUID>
               </positioning>
             </positionings>
@@ -100,7 +104,7 @@
                   <name>Simple tank</name>
                   <transformation>
                     <translation>
-                      <x>-0.2</x>
+                      <x>0.5</x>
                     </translation>
                   </transformation>
                   <hulls>
@@ -265,7 +269,7 @@
                   <description>Test case for guide curves</description>
                   <transformation>
                     <translation>
-                      <x>1.5</x>
+                      <x>2.5</x>
                     </translation>
                   </transformation>
                   <hulls>
@@ -407,7 +411,7 @@
                   <description>Test case for simple parametrization</description>
                   <transformation>
                     <translation>
-                      <x>-1</x>
+                      <x>4.</x>
                     </translation>
                   </transformation>
                   <hulls>
@@ -419,7 +423,7 @@
                         </translation>
                       </transformation>
                       <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>10.0</cylinderLength>
+                      <cylinderLength>2.0</cylinderLength>
                       <domeType>
                         <spherical/>
                       </domeType>
@@ -432,7 +436,7 @@
                         </translation>
                       </transformation>
                       <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>10.0</cylinderLength>
+                      <cylinderLength>2.0</cylinderLength>
                       <domeType>
                         <ellipsoid>
                           <halfAxisFraction>0.5</halfAxisFraction>
@@ -447,7 +451,7 @@
                         </translation>
                       </transformation>
                       <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>10.0</cylinderLength>
+                      <cylinderLength>2.0</cylinderLength>
                       <domeType>
                         <torispherical>
                           <dishRadius>2.0</dishRadius>
@@ -463,7 +467,7 @@
                         </translation>
                       </transformation>
                       <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>10.0</cylinderLength>
+                      <cylinderLength>2.0</cylinderLength>
                       <domeType>
                         <isotensoid>
                           <polarOpeningRadius>0.1</polarOpeningRadius>

@@ -151,13 +151,13 @@ TEST_F(FuselageTank, hull)
     EXPECT_EQ(hull->GetDefaultedUID(), "outerHull");
     EXPECT_NO_THROW(hull->GetConfiguration());
 
-    EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).X(), 1.34, 1e-2);
+    EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).X(), 2.54, 1e-2);
     EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).Y(), 0, 1e-5);
     EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).Z(), -0.3, 1e-1);
 
     auto points = hull_with_guides->GetGuideCurvePoints();
     EXPECT_EQ(points.size(), 24);
-    EXPECT_NEAR(points.at(1).X(), 2.75, 1e-2);
+    EXPECT_NEAR(points.at(1).X(), 3.75, 1e-2);
     EXPECT_NEAR(points.at(1).Y(), 0, 1e-5);
     EXPECT_NEAR(points.at(1).Z(), -0.24, 1e-2);
 

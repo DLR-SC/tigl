@@ -25,6 +25,8 @@
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSConfiguration.h"
 
+#include <BRepBuilderAPI_MakeWire.hxx>
+
 namespace tigl
 {
 
@@ -89,7 +91,7 @@ protected:
     // Build the loft
     PNamedShape BuildLoft() const override;
 
-    // Set the face traints
+    // Set the face traits
     void SetFaceTraits(PNamedShape loft) const;
 
 private:
@@ -97,9 +99,16 @@ private:
     std::string GetShortShapeName() const;
 
     TiglGetPointBehavior getPointBehavior{asParameterOnSurface};
-
     void IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber, std::vector<double>& x,
                            std::vector<double>& r) const;
+
+    TopoDS_Shape BuildShapeFromSegments() const;
+    TopoDS_Shape BuildShapeFromSimpleParameters() const;
+
+    void BuildTankWire(std::vector<TopoDS_Edge>& edges, BRepBuilderAPI_MakeWire& wire) const;
+    void BuildTankWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const;
+    void BuildTankWireTorispherical(BRepBuilderAPI_MakeWire& wire) const;
+    void BuildTankWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const;
 };
 
 } // namespace tigl
