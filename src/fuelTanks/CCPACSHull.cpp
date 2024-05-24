@@ -247,21 +247,14 @@ void CCPACSHull::BuildTankWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    const auto* ellipsoid = m_domeType_choice2->GetEllipsoid_choice1().get_ptr();
-
     double R = cylinderRadius, h = cylinderRadius;
 
-    double axRatio = ellipsoid->GetHalfAxisFraction();
-    if (axRatio < 0.0) {
-        LOG(WARNING) << "Half axis fraction (" << axRatio << ") of hull \"" << GetName() << "\" (uID=\"" << GetUID()
-                     << "\") must be between 0 and 1! It will be set to 0!";
-        axRatio = 0.;
+    double axRatio = m_domeType_choice2->GetEllipsoid_choice1().get_ptr()->GetHalfAxisFraction();
+    if (axRatio < 0.0 || axRatio > 1.0) {
+        throw CTiglError("Half axis fraction (" + std::to_string(axRatio) + ") of hull \"" + GetName() + "\" (uID=\"" +
+                         GetUID() + "\") must be between 0 and 1!");
     }
-    else if (axRatio > 1.0) {
-        LOG(WARNING) << "Half axis fraction (" << axRatio << ") of hull \"" << GetName() << "\" (uID=\"" << GetUID()
-                     << "\") must be between 0 and 1! It will be set to 1!";
-        axRatio = 1.0;
-    }
+
     h = R * axRatio;
 
     gp_Dir dir(0.0, 1.0, 0.0);
@@ -292,6 +285,17 @@ void CCPACSHull::BuildTankWireTorispherical(BRepBuilderAPI_MakeWire& wire) const
 
     double R = torispherical->GetDishRadius(); // Radius of the sphere (crown radius)
     double r = torispherical->GetKnuckleRadius(); // Radius of the torus (knuckle radius)
+
+    if (R <= cylinderRadius) {
+        throw CTiglError("The dish radius (" + std::to_string(R) + ") of hull \"" + GetName() + "\" (uID=\"" +
+                         GetUID() + "\") must be larger than the cylinder radius (" + std::to_string(cylinderRadius) +
+                         ")!");
+    }
+    if (r <= 0. || r >= cylinderRadius) {
+        throw CTiglError("The knuckle radius (" + std::to_string(r) + ") of hull \"" + GetName() + "\" (uID=\"" +
+                         GetUID() + "\") must be larger than 0 and smaller than the cylinder Radius (" +
+                         std::to_string(cylinderRadius) + ")!");
+    }
 
     double c     = cylinderRadius - r; // Distance from the center to the center of the torus tube
     double h     = R - sqrt((r + c - R) * (r - c - R)); // Height from the base of the dome to the top
@@ -326,9 +330,13 @@ void CCPACSHull::BuildTankWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    const auto* isotensoid = m_domeType_choice2->GetIsotensoid_choice3().get_ptr();
+    double polarOpeningRadius = m_domeType_choice2->GetIsotensoid_choice3().get_ptr()->GetPolarOpeningRadius();
+    if (polarOpeningRadius <= 0 || polarOpeningRadius >= cylinderRadius) {
+        throw CTiglError("The polar opening radius (" + std::to_string(polarOpeningRadius) + ") of hull \"" + GetName() + "\" (uID=\"" +
+                         GetUID() + "\") must be larger than 0 and smaller than the cylinder radius (" +
+                         std::to_string(cylinderRadius) + ")!");
+    }
 
-    double polarOpeningRadius = isotensoid->GetPolarOpeningRadius();
     std::vector<double> x, r;
     IsotensoidContour(cylinderRadius, polarOpeningRadius, 50, x, r);
     double h = x.back() - x.front();
@@ -352,6 +360,15 @@ void CCPACSHull::BuildTankWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const
 void CCPACSHull::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
 {
     BRepBuilderAPI_MakeWire wire;
+
+    if (m_cylinderRadius_choice2.get() <= 0) {
+        throw CTiglError("The cylinder radius (" + std::to_string(m_cylinderRadius_choice2.get()) + ") of hull \"" +
+                         GetName() + "\" (uID=\"" + GetUID() + "\") must be larger than 0!");
+    }
+    if (m_cylinderLength_choice2.get() <= 0) {
+        throw CTiglError("The cylinder length (" + std::to_string(m_cylinderLength_choice2.get()) + ") of hull \"" +
+                         GetName() + "\" (uID=\"" + GetUID() + "\") must be larger than 0!");
+    }
 
     if (m_domeType_choice2->GetEllipsoid_choice1()) {
         BuildTankWireEllipsoid(wire);

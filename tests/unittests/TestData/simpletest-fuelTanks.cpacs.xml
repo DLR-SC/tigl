@@ -451,9 +451,8 @@
                         </ellipsoid>
                       </domeType>
                     </hull>
-                    <hull uID="genericTank3_ellipsoidDome2">
-                      <name>Hull with ellipsoid dome</name>
-                      <description>This hull has an invalid halfAxisFraction. It is used for testing of exeption handling.</description>
+                    <hull uID="genericTank3_cylindricalDome">
+                      <name>Hull with cylindrical dome</name>
                       <transformation>
                         <translation>
                           <x>1</x>
@@ -468,8 +467,7 @@
                       <cylinderLength>2.0</cylinderLength>
                       <domeType>
                         <ellipsoid>
-                          <!-- This should throw a warning and be set to 0 -->
-                          <halfAxisFraction>-0.2</halfAxisFraction>
+                          <halfAxisFraction>0</halfAxisFraction>
                         </ellipsoid>
                       </domeType>
                     </hull>
