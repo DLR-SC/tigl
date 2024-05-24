@@ -22,7 +22,6 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSEllipsoidDome.h"
-#include "CPACSEmptyElementBase.h"
 #include "CPACSIsotensoidDome.h"
 #include "CPACSTorisphericalDome.h"
 #include "CreateIfNotExists.h"
@@ -61,37 +60,30 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const boost::optional<CPACSEmptyElementBase>& GetSpherical_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEmptyElementBase>& GetSpherical_choice1();
+        TIGL_EXPORT virtual const boost::optional<CPACSEllipsoidDome>& GetEllipsoid_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEllipsoidDome>& GetEllipsoid_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSEllipsoidDome>& GetEllipsoid_choice2() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEllipsoidDome>& GetEllipsoid_choice2();
+        TIGL_EXPORT virtual const boost::optional<CPACSTorisphericalDome>& GetTorispherical_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CPACSTorisphericalDome>& GetTorispherical_choice2();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSTorisphericalDome>& GetTorispherical_choice3() const;
-        TIGL_EXPORT virtual boost::optional<CPACSTorisphericalDome>& GetTorispherical_choice3();
+        TIGL_EXPORT virtual const boost::optional<CPACSIsotensoidDome>& GetIsotensoid_choice3() const;
+        TIGL_EXPORT virtual boost::optional<CPACSIsotensoidDome>& GetIsotensoid_choice3();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSIsotensoidDome>& GetIsotensoid_choice4() const;
-        TIGL_EXPORT virtual boost::optional<CPACSIsotensoidDome>& GetIsotensoid_choice4();
+        TIGL_EXPORT virtual CPACSEllipsoidDome& GetEllipsoid_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEllipsoid_choice1();
 
-        TIGL_EXPORT virtual CPACSEmptyElementBase& GetSpherical_choice1(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveSpherical_choice1();
+        TIGL_EXPORT virtual CPACSTorisphericalDome& GetTorispherical_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveTorispherical_choice2();
 
-        TIGL_EXPORT virtual CPACSEllipsoidDome& GetEllipsoid_choice2(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveEllipsoid_choice2();
-
-        TIGL_EXPORT virtual CPACSTorisphericalDome& GetTorispherical_choice3(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveTorispherical_choice3();
-
-        TIGL_EXPORT virtual CPACSIsotensoidDome& GetIsotensoid_choice4(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveIsotensoid_choice4();
+        TIGL_EXPORT virtual CPACSIsotensoidDome& GetIsotensoid_choice3(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveIsotensoid_choice3();
 
     protected:
         CCPACSHull* m_parent;
 
-        boost::optional<CPACSEmptyElementBase>  m_spherical_choice1;
-        boost::optional<CPACSEllipsoidDome>     m_ellipsoid_choice2;
-        boost::optional<CPACSTorisphericalDome> m_torispherical_choice3;
-        boost::optional<CPACSIsotensoidDome>    m_isotensoid_choice4;
+        boost::optional<CPACSEllipsoidDome>     m_ellipsoid_choice1;
+        boost::optional<CPACSTorisphericalDome> m_torispherical_choice2;
+        boost::optional<CPACSIsotensoidDome>    m_isotensoid_choice3;
 
     private:
         CPACSDomeType(const CPACSDomeType&) = delete;

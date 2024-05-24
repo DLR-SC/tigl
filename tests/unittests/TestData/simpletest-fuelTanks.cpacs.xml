@@ -425,7 +425,9 @@
                       <cylinderRadius>1.0</cylinderRadius>
                       <cylinderLength>2.0</cylinderLength>
                       <domeType>
-                        <spherical/>
+                        <ellipsoid>
+                          <halfAxisFraction>1</halfAxisFraction>
+                        </ellipsoid>
                       </domeType>
                     </hull>
                     <hull uID="genericTank3_ellipsoidDome">

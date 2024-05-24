@@ -34313,34 +34313,12 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:choice>
-                    <xsd:element name="spherical" type="emptyElementBaseType"/>
                     <xsd:element name="ellipsoid" type="ellipsoidDomeType"/>
                     <xsd:element name="torispherical" type="torisphericalDomeType"/>
                     <xsd:element name="isotensoid" type="isotensoidDomeType"/>
                 </xsd:choice>
             </xsd:extension>
         </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="emptyElementBaseType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Emtpy element</ddue:para>
-                    </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:para>Base type for string nodes (including external data
-                            attributes)</ddue:para>
-                    </ddue:remarks>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:simpleContent>
-            <xsd:restriction base="stringBaseType">
-                <xsd:pattern value=""/>
-            </xsd:restriction>
-        </xsd:simpleContent>
     </xsd:complexType>
 
     <xsd:complexType name="ellipsoidDomeType">

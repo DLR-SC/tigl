@@ -247,25 +247,20 @@ void CCPACSHull::BuildTankWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    const auto* spherical = m_domeType_choice2->GetSpherical_choice1().get_ptr();
-    const auto* ellipsoid = m_domeType_choice2->GetEllipsoid_choice2().get_ptr();
+    const auto* ellipsoid = m_domeType_choice2->GetEllipsoid_choice1().get_ptr();
 
-    double R = cylinderRadius, h = cylinderRadius, axRatio = 1.0;
+    double R = cylinderRadius, h = cylinderRadius;
 
-    if (ellipsoid) {
-        axRatio = ellipsoid->GetHalfAxisFraction();
-        if (axRatio < 0.0) {
-            LOG(WARNING) << "Half axis fraction (" << axRatio
-                         << ") must be between 0 and 1! It will be set to 0.";
-            axRatio = 0.;
-        }
-        else if (axRatio > 1.0) {
-            LOG(WARNING) << "Half axis fraction (" << axRatio
-                         << ") must be between 0 and 1! It will be set to 1.";
-            axRatio = 1.0;
-        }
-        h = R * axRatio;
+    double axRatio = ellipsoid->GetHalfAxisFraction();
+    if (axRatio < 0.0) {
+        LOG(WARNING) << "Half axis fraction (" << axRatio << ") must be between 0 and 1! It will be set to 0.";
+        axRatio = 0.;
     }
+    else if (axRatio > 1.0) {
+        LOG(WARNING) << "Half axis fraction (" << axRatio << ") must be between 0 and 1! It will be set to 1.";
+        axRatio = 1.0;
+    }
+    h = R * axRatio;
 
     gp_Dir dir(0.0, 1.0, 0.0);
 
@@ -291,7 +286,7 @@ void CCPACSHull::BuildTankWireTorispherical(BRepBuilderAPI_MakeWire& wire) const
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    const auto* torispherical = m_domeType_choice2->GetTorispherical_choice3().get_ptr();
+    const auto* torispherical = m_domeType_choice2->GetTorispherical_choice2().get_ptr();
 
     double R = torispherical->GetDishRadius(); // Radius of the sphere (crown radius)
     double r = torispherical->GetKnuckleRadius(); // Radius of the torus (knuckle radius)
@@ -329,7 +324,7 @@ void CCPACSHull::BuildTankWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    const auto* isotensoid = m_domeType_choice2->GetIsotensoid_choice4().get_ptr();
+    const auto* isotensoid = m_domeType_choice2->GetIsotensoid_choice3().get_ptr();
 
     double polarOpeningRadius = isotensoid->GetPolarOpeningRadius();
     std::vector<double> x, r;
@@ -356,13 +351,13 @@ TopoDS_Shape CCPACSHull::BuildShapeFromSimpleParameters() const
 {
     BRepBuilderAPI_MakeWire wire;
 
-    if (m_domeType_choice2->GetSpherical_choice1() || m_domeType_choice2->GetEllipsoid_choice2()) {
+    if (m_domeType_choice2->GetEllipsoid_choice1()) {
         BuildTankWireEllipsoid(wire);
     }
-    else if (m_domeType_choice2->GetTorispherical_choice3()) {
+    else if (m_domeType_choice2->GetTorispherical_choice2()) {
         BuildTankWireTorispherical(wire);
     }
-    else if (m_domeType_choice2->GetIsotensoid_choice4()) {
+    else if (m_domeType_choice2->GetIsotensoid_choice3()) {
         BuildTankWireIsotensoid(wire);
     }
 
@@ -390,11 +385,10 @@ PNamedShape CCPACSHull::BuildLoft() const
     }
     else if (m_cylinderRadius_choice2 && m_cylinderLength_choice2 && m_domeType_choice2) {
 
-        const tigl::generated::CPACSEmptyElementBase* spherical = m_domeType_choice2->GetSpherical_choice1().get_ptr();
-        const tigl::generated::CPACSEllipsoidDome* ellipsoid    = m_domeType_choice2->GetEllipsoid_choice2().get_ptr();
+        const tigl::generated::CPACSEllipsoidDome* ellipsoid = m_domeType_choice2->GetEllipsoid_choice1().get_ptr();
         const tigl::generated::CPACSTorisphericalDome* torispherical =
-            m_domeType_choice2->GetTorispherical_choice3().get_ptr();
-        const tigl::generated::CPACSIsotensoidDome* isotensoid = m_domeType_choice2->GetIsotensoid_choice4().get_ptr();
+            m_domeType_choice2->GetTorispherical_choice2().get_ptr();
+        const tigl::generated::CPACSIsotensoidDome* isotensoid = m_domeType_choice2->GetIsotensoid_choice3().get_ptr();
 
         loftShape = BuildShapeFromSimpleParameters();
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));

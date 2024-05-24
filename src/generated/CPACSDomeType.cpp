@@ -59,47 +59,36 @@ namespace generated
 
     void CPACSDomeType::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element spherical
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/spherical")) {
-            m_spherical_choice1 = boost::in_place(this);
-            try {
-                m_spherical_choice1->ReadCPACS(tixiHandle, xpath + "/spherical");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read spherical at xpath " << xpath << ": " << e.what();
-                m_spherical_choice1 = boost::none;
-            }
-        }
-
         // read element ellipsoid
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ellipsoid")) {
-            m_ellipsoid_choice2 = boost::in_place(this);
+            m_ellipsoid_choice1 = boost::in_place(this);
             try {
-                m_ellipsoid_choice2->ReadCPACS(tixiHandle, xpath + "/ellipsoid");
+                m_ellipsoid_choice1->ReadCPACS(tixiHandle, xpath + "/ellipsoid");
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read ellipsoid at xpath " << xpath << ": " << e.what();
-                m_ellipsoid_choice2 = boost::none;
+                m_ellipsoid_choice1 = boost::none;
             }
         }
 
         // read element torispherical
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/torispherical")) {
-            m_torispherical_choice3 = boost::in_place(this);
+            m_torispherical_choice2 = boost::in_place(this);
             try {
-                m_torispherical_choice3->ReadCPACS(tixiHandle, xpath + "/torispherical");
+                m_torispherical_choice2->ReadCPACS(tixiHandle, xpath + "/torispherical");
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read torispherical at xpath " << xpath << ": " << e.what();
-                m_torispherical_choice3 = boost::none;
+                m_torispherical_choice2 = boost::none;
             }
         }
 
         // read element isotensoid
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/isotensoid")) {
-            m_isotensoid_choice4 = boost::in_place(this);
+            m_isotensoid_choice3 = boost::in_place(this);
             try {
-                m_isotensoid_choice4->ReadCPACS(tixiHandle, xpath + "/isotensoid");
+                m_isotensoid_choice3->ReadCPACS(tixiHandle, xpath + "/isotensoid");
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read isotensoid at xpath " << xpath << ": " << e.what();
-                m_isotensoid_choice4 = boost::none;
+                m_isotensoid_choice3 = boost::none;
             }
         }
 
@@ -110,21 +99,10 @@ namespace generated
 
     void CPACSDomeType::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element spherical
-        if (m_spherical_choice1) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/spherical");
-            m_spherical_choice1->WriteCPACS(tixiHandle, xpath + "/spherical");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/spherical")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/spherical");
-            }
-        }
-
         // write element ellipsoid
-        if (m_ellipsoid_choice2) {
+        if (m_ellipsoid_choice1) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ellipsoid");
-            m_ellipsoid_choice2->WriteCPACS(tixiHandle, xpath + "/ellipsoid");
+            m_ellipsoid_choice1->WriteCPACS(tixiHandle, xpath + "/ellipsoid");
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/ellipsoid")) {
@@ -133,9 +111,9 @@ namespace generated
         }
 
         // write element torispherical
-        if (m_torispherical_choice3) {
+        if (m_torispherical_choice2) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/torispherical");
-            m_torispherical_choice3->WriteCPACS(tixiHandle, xpath + "/torispherical");
+            m_torispherical_choice2->WriteCPACS(tixiHandle, xpath + "/torispherical");
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/torispherical")) {
@@ -144,9 +122,9 @@ namespace generated
         }
 
         // write element isotensoid
-        if (m_isotensoid_choice4) {
+        if (m_isotensoid_choice3) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/isotensoid");
-            m_isotensoid_choice4->WriteCPACS(tixiHandle, xpath + "/isotensoid");
+            m_isotensoid_choice3->WriteCPACS(tixiHandle, xpath + "/isotensoid");
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/isotensoid")) {
@@ -163,57 +141,37 @@ namespace generated
             (
                 (
                     // mandatory elements of this choice must be there
-                    m_spherical_choice1.is_initialized()
+                    m_ellipsoid_choice1.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_ellipsoid_choice2.is_initialized()
+                        m_torispherical_choice2.is_initialized()
                         ||
-                        m_torispherical_choice3.is_initialized()
-                        ||
-                        m_isotensoid_choice4.is_initialized()
+                        m_isotensoid_choice3.is_initialized()
                     )
                 )
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_ellipsoid_choice2.is_initialized()
+                    m_torispherical_choice2.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_spherical_choice1.is_initialized()
+                        m_ellipsoid_choice1.is_initialized()
                         ||
-                        m_torispherical_choice3.is_initialized()
-                        ||
-                        m_isotensoid_choice4.is_initialized()
+                        m_isotensoid_choice3.is_initialized()
                     )
                 )
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_torispherical_choice3.is_initialized()
+                    m_isotensoid_choice3.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_spherical_choice1.is_initialized()
+                        m_ellipsoid_choice1.is_initialized()
                         ||
-                        m_ellipsoid_choice2.is_initialized()
-                        ||
-                        m_isotensoid_choice4.is_initialized()
-                    )
-                )
-                +
-                (
-                    // mandatory elements of this choice must be there
-                    m_isotensoid_choice4.is_initialized()
-                    &&
-                    // elements of other choices must not be there
-                    !(
-                        m_spherical_choice1.is_initialized()
-                        ||
-                        m_ellipsoid_choice2.is_initialized()
-                        ||
-                        m_torispherical_choice3.is_initialized()
+                        m_torispherical_choice2.is_initialized()
                     )
                 )
                 == 1
@@ -222,92 +180,70 @@ namespace generated
         ;
     }
 
-    const boost::optional<CPACSEmptyElementBase>& CPACSDomeType::GetSpherical_choice1() const
+    const boost::optional<CPACSEllipsoidDome>& CPACSDomeType::GetEllipsoid_choice1() const
     {
-        return m_spherical_choice1;
+        return m_ellipsoid_choice1;
     }
 
-    boost::optional<CPACSEmptyElementBase>& CPACSDomeType::GetSpherical_choice1()
+    boost::optional<CPACSEllipsoidDome>& CPACSDomeType::GetEllipsoid_choice1()
     {
-        return m_spherical_choice1;
+        return m_ellipsoid_choice1;
     }
 
-    const boost::optional<CPACSEllipsoidDome>& CPACSDomeType::GetEllipsoid_choice2() const
+    const boost::optional<CPACSTorisphericalDome>& CPACSDomeType::GetTorispherical_choice2() const
     {
-        return m_ellipsoid_choice2;
+        return m_torispherical_choice2;
     }
 
-    boost::optional<CPACSEllipsoidDome>& CPACSDomeType::GetEllipsoid_choice2()
+    boost::optional<CPACSTorisphericalDome>& CPACSDomeType::GetTorispherical_choice2()
     {
-        return m_ellipsoid_choice2;
+        return m_torispherical_choice2;
     }
 
-    const boost::optional<CPACSTorisphericalDome>& CPACSDomeType::GetTorispherical_choice3() const
+    const boost::optional<CPACSIsotensoidDome>& CPACSDomeType::GetIsotensoid_choice3() const
     {
-        return m_torispherical_choice3;
+        return m_isotensoid_choice3;
     }
 
-    boost::optional<CPACSTorisphericalDome>& CPACSDomeType::GetTorispherical_choice3()
+    boost::optional<CPACSIsotensoidDome>& CPACSDomeType::GetIsotensoid_choice3()
     {
-        return m_torispherical_choice3;
+        return m_isotensoid_choice3;
     }
 
-    const boost::optional<CPACSIsotensoidDome>& CPACSDomeType::GetIsotensoid_choice4() const
+    CPACSEllipsoidDome& CPACSDomeType::GetEllipsoid_choice1(CreateIfNotExistsTag)
     {
-        return m_isotensoid_choice4;
+        if (!m_ellipsoid_choice1)
+            m_ellipsoid_choice1 = boost::in_place(this);
+        return *m_ellipsoid_choice1;
     }
 
-    boost::optional<CPACSIsotensoidDome>& CPACSDomeType::GetIsotensoid_choice4()
+    void CPACSDomeType::RemoveEllipsoid_choice1()
     {
-        return m_isotensoid_choice4;
+        m_ellipsoid_choice1 = boost::none;
     }
 
-    CPACSEmptyElementBase& CPACSDomeType::GetSpherical_choice1(CreateIfNotExistsTag)
+    CPACSTorisphericalDome& CPACSDomeType::GetTorispherical_choice2(CreateIfNotExistsTag)
     {
-        if (!m_spherical_choice1)
-            m_spherical_choice1 = boost::in_place(this);
-        return *m_spherical_choice1;
+        if (!m_torispherical_choice2)
+            m_torispherical_choice2 = boost::in_place(this);
+        return *m_torispherical_choice2;
     }
 
-    void CPACSDomeType::RemoveSpherical_choice1()
+    void CPACSDomeType::RemoveTorispherical_choice2()
     {
-        m_spherical_choice1 = boost::none;
+        m_torispherical_choice2 = boost::none;
     }
 
-    CPACSEllipsoidDome& CPACSDomeType::GetEllipsoid_choice2(CreateIfNotExistsTag)
+    CPACSIsotensoidDome& CPACSDomeType::GetIsotensoid_choice3(CreateIfNotExistsTag)
     {
-        if (!m_ellipsoid_choice2)
-            m_ellipsoid_choice2 = boost::in_place(this);
-        return *m_ellipsoid_choice2;
+        if (!m_isotensoid_choice3)
+            m_isotensoid_choice3 = boost::in_place(this);
+        return *m_isotensoid_choice3;
     }
 
-    void CPACSDomeType::RemoveEllipsoid_choice2()
+    void CPACSDomeType::RemoveIsotensoid_choice3()
     {
-        m_ellipsoid_choice2 = boost::none;
-    }
-
-    CPACSTorisphericalDome& CPACSDomeType::GetTorispherical_choice3(CreateIfNotExistsTag)
-    {
-        if (!m_torispherical_choice3)
-            m_torispherical_choice3 = boost::in_place(this);
-        return *m_torispherical_choice3;
-    }
-
-    void CPACSDomeType::RemoveTorispherical_choice3()
-    {
-        m_torispherical_choice3 = boost::none;
-    }
-
-    CPACSIsotensoidDome& CPACSDomeType::GetIsotensoid_choice4(CreateIfNotExistsTag)
-    {
-        if (!m_isotensoid_choice4)
-            m_isotensoid_choice4 = boost::in_place(this);
-        return *m_isotensoid_choice4;
-    }
-
-    void CPACSDomeType::RemoveIsotensoid_choice4()
-    {
-        m_isotensoid_choice4 = boost::none;
+        m_isotensoid_choice3 = boost::none;
     }
 
 } // namespace generated
