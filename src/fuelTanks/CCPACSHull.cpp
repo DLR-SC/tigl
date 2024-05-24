@@ -253,11 +253,13 @@ void CCPACSHull::BuildTankWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
 
     double axRatio = ellipsoid->GetHalfAxisFraction();
     if (axRatio < 0.0) {
-        LOG(WARNING) << "Half axis fraction (" << axRatio << ") must be between 0 and 1! It will be set to 0.";
+        LOG(WARNING) << "Half axis fraction (" << axRatio << ") of hull \"" << GetName() << "\" (uID=\"" << GetUID()
+                     << "\") must be between 0 and 1! It will be set to 0!";
         axRatio = 0.;
     }
     else if (axRatio > 1.0) {
-        LOG(WARNING) << "Half axis fraction (" << axRatio << ") must be between 0 and 1! It will be set to 1.";
+        LOG(WARNING) << "Half axis fraction (" << axRatio << ") of hull \"" << GetName() << "\" (uID=\"" << GetUID()
+                     << "\") must be between 0 and 1! It will be set to 1!";
         axRatio = 1.0;
     }
     h = R * axRatio;

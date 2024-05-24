@@ -22,8 +22,8 @@
               </translation>
               <scaling>
                 <x>1.0</x>
-                <y>0.5</y>
-                <z>0.5</z>
+                <y>2.0</y>
+                <z>2.0</z>
               </scaling>
             </transformation>
             <sections>
@@ -79,7 +79,7 @@
               </positioning>
               <positioning uID="fuselage_1Positioning3ID">
                 <name>Fuselage Positioning 3</name>
-                <length>5.</length>
+                <length>15.</length>
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
                 <fromSectionUID>fuselage_1Section2ID</fromSectionUID>
@@ -102,6 +102,7 @@
               <genericFuelTanks>
                 <genericFuelTank uID="genericTank1">
                   <name>Simple tank</name>
+                  <description>This is a simple tank build via sections and segments with internal structure</description>
                   <transformation>
                     <translation>
                       <x>0.5</x>
@@ -113,8 +114,8 @@
                       <transformation>
                         <scaling>
                           <x>1</x>
-                          <y>0.3</y>
-                          <z>0.3</z>
+                          <y>1.2</y>
+                          <z>1.2</z>
                         </scaling>
                       </transformation>
                       <sections>
@@ -198,8 +199,8 @@
                         </translation>
                         <scaling>
                           <x>0.8</x>
-                          <y>0.2</y>
-                          <z>0.2</z>
+                          <y>0.9</y>
+                          <z>0.9</z>
                         </scaling>
                       </transformation>
                       <sections>
@@ -266,7 +267,7 @@
                 </genericFuelTank>
                 <genericFuelTank uID="genericTank2">
                   <name>Simple tank 2</name>
-                  <description>Test case for guide curves</description>
+                  <description>Test case of a simple tank via sections and segments with guide curves</description>
                   <transformation>
                     <translation>
                       <x>2.5</x>
@@ -278,8 +279,8 @@
                       <transformation>
                         <scaling>
                           <x>1</x>
-                          <y>0.3</y>
-                          <z>0.3</z>
+                          <y>0.8</y>
+                          <z>0.8</z>
                         </scaling>
                       </transformation>
                       <sections>
@@ -307,7 +308,7 @@
                           <name>Section 2</name>
                           <transformation>
                             <translation>
-                              <x>0.5</x>
+                              <x>1.0</x>
                             </translation>
                           </transformation>
                           <elements>
@@ -322,7 +323,7 @@
                           <name>Section 3</name>
                           <transformation>
                             <translation>
-                              <x>1</x>
+                              <x>2</x>
                             </translation>
                           </transformation>
                           <elements>
@@ -408,10 +409,10 @@
                 </genericFuelTank>
                 <genericFuelTank uID="genericTank3">
                   <name>Simple tank 3</name>
-                  <description>Test case for simple parametrization</description>
+                  <description>Test case for simple parametrization with ellipsoid domes</description>
                   <transformation>
                     <translation>
-                      <x>4.</x>
+                      <x>5.</x>
                     </translation>
                   </transformation>
                   <hulls>
@@ -434,8 +435,13 @@
                       <name>Hull with ellipsoid dome</name>
                       <transformation>
                         <translation>
-                          <x>0.</x>
+                          <x>0.5</x>
                         </translation>
+                        <scaling>
+                          <x>1</x>
+                          <y>0.8</y>
+                          <z>0.8</z>
+                        </scaling>
                       </transformation>
                       <cylinderRadius>1.0</cylinderRadius>
                       <cylinderLength>2.0</cylinderLength>
@@ -445,7 +451,40 @@
                         </ellipsoid>
                       </domeType>
                     </hull>
-                    <hull uID="genericTank3_torisphericalDome">
+                    <hull uID="genericTank3_ellipsoidDome2">
+                      <name>Hull with ellipsoid dome</name>
+                      <description>This hull has an invalid halfAxisFraction. It is used for testing of exeption handling.</description>
+                      <transformation>
+                        <translation>
+                          <x>1</x>
+                        </translation>
+                        <scaling>
+                          <x>1</x>
+                          <y>0.7</y>
+                          <z>0.7</z>
+                        </scaling>
+                      </transformation>
+                      <cylinderRadius>1.0</cylinderRadius>
+                      <cylinderLength>2.0</cylinderLength>
+                      <domeType>
+                        <ellipsoid>
+                          <!-- This should throw a warning and be set to 0 -->
+                          <halfAxisFraction>-0.2</halfAxisFraction>
+                        </ellipsoid>
+                      </domeType>
+                    </hull>
+                  </hulls>
+                </genericFuelTank>
+                <genericFuelTank uID="genericTank4">
+                  <name>Simple tank 4</name>
+                  <description>Test case for simple parametrization</description>
+                  <transformation>
+                    <translation>
+                      <x>9.5</x>
+                    </translation>
+                  </transformation>
+                  <hulls>
+                    <hull uID="genericTank4_torisphericalDome">
                       <name>Hull with torispherical dome</name>
                       <transformation>
                         <translation>
@@ -461,7 +500,18 @@
                         </torispherical>
                       </domeType>
                     </hull>
-                    <hull uID="genericTank3_isotensoidDome">
+                  </hulls>
+                </genericFuelTank>
+                <genericFuelTank uID="genericTank5">
+                  <name>Simple tank 5</name>
+                  <description>Test case for simple parametrization</description>
+                  <transformation>
+                    <translation>
+                      <x>13.</x>
+                    </translation>
+                  </transformation>
+                  <hulls>
+                    <hull uID="genericTank5_isotensoidDome">
                       <name>Hull with isotensoid dome</name>
                       <transformation>
                         <translation>
