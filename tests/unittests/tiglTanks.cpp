@@ -91,7 +91,7 @@ protected:
 
     // hulls
     const tigl::CCPACSHulls& hulls     = fuelTank->GetHulls();
-    tigl::CCPACSHull* hull             = &uidMgr.ResolveObject<tigl::CCPACSHull>("outerHull");
+    tigl::CCPACSHull* hull             = &uidMgr.ResolveObject<tigl::CCPACSHull>("genericTank1_outerHull");
     tigl::CCPACSHull* hull_with_guides = &uidMgr.ResolveObject<tigl::CCPACSHull>("genericTank2_outerHull");
     tigl::CCPACSHull* hull_spheric     = &uidMgr.ResolveObject<tigl::CCPACSHull>("genericTank3_sphericalDome");
 };
@@ -112,7 +112,7 @@ TEST_F(FuselageTank, genericFuelTanks)
     EXPECT_EQ(fuelTanks->GetGenericFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(fuelTanks->GetGenericFuelTank(uID));
     EXPECT_EQ(fuelTanks->GetGenericFuelTankIndex(uID), 1);
-    EXPECT_EQ(fuelTanks->GetGenericFuelTanksCount(), 3);
+    EXPECT_EQ(fuelTanks->GetGenericFuelTanksCount(), 5);
 }
 
 TEST_F(FuselageTank, genericFuelTank)
@@ -124,19 +124,19 @@ TEST_F(FuselageTank, genericFuelTank)
 TEST_F(FuselageTank, hulls)
 {
     EXPECT_EQ(hulls.GetHullsCount(), 2);
-    EXPECT_EQ(hulls.GetHull(1).GetDefaultedUID(), "outerHull");
-    EXPECT_EQ(hulls.GetHull("outerHull").GetDefaultedUID(), "outerHull");
-    EXPECT_EQ(hulls.GetHullIndex("outerHull"), 1);
-    EXPECT_EQ(hulls.GetHulls().at(0)->GetDefaultedUID(), "outerHull");
+    EXPECT_EQ(hulls.GetHull(1).GetDefaultedUID(), "genericTank1_outerHull");
+    EXPECT_EQ(hulls.GetHull("genericTank1_outerHull").GetDefaultedUID(), "genericTank1_outerHull");
+    EXPECT_EQ(hulls.GetHullIndex("genericTank1_outerHull"), 1);
+    EXPECT_EQ(hulls.GetHulls().at(0)->GetDefaultedUID(), "genericTank1_outerHull");
 }
 
 TEST_F(FuselageTank, hull)
 {
     EXPECT_EQ(hull->GetSectionCount(), 3);
     EXPECT_EQ(hull->GetSegmentCount(), 2);
-    EXPECT_NEAR(hull->GetVolume(), 0.41, 1e-2);
-    EXPECT_NEAR(hull->GetSurfaceArea(), 2.79, 1e-2);
-    EXPECT_NEAR(hull->GetCircumference(1, 0.5), 1.86, 1e-2);
+    EXPECT_NEAR(hull->GetVolume(), 6.57, 1e-2);
+    EXPECT_NEAR(hull->GetSurfaceArea(), 11.15, 1e-2);
+    EXPECT_NEAR(hull->GetCircumference(1, 0.5), 7.43, 1e-2);
 
     EXPECT_EQ(hull->GetSectionCount(), 3);
     EXPECT_NO_THROW(hull->GetSection(1));
@@ -148,18 +148,18 @@ TEST_F(FuselageTank, hull)
     EXPECT_NO_THROW(hull->GetSegment("outerHull_segment1"));
     EXPECT_THROW(hull->GetSegment(3), tigl::CTiglError);
 
-    EXPECT_EQ(hull->GetDefaultedUID(), "outerHull");
+    EXPECT_EQ(hull->GetDefaultedUID(), "genericTank1_outerHull");
     EXPECT_NO_THROW(hull->GetConfiguration());
 
-    EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).X(), 2.54, 1e-2);
+    EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).X(), 1.54, 1e-2);
     EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).Y(), 0, 1e-5);
-    EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).Z(), -0.3, 1e-1);
+    EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).Z(), -1.2, 1e-1);
 
     auto points = hull_with_guides->GetGuideCurvePoints();
     EXPECT_EQ(points.size(), 24);
-    EXPECT_NEAR(points.at(1).X(), 3.75, 1e-2);
+    EXPECT_NEAR(points.at(1).X(), 3.5, 1e-2);
     EXPECT_NEAR(points.at(1).Y(), 0, 1e-5);
-    EXPECT_NEAR(points.at(1).Z(), -0.24, 1e-2);
+    EXPECT_NEAR(points.at(1).Z(), -0.65, 1e-2);
 
     EXPECT_EQ(hull_with_guides->GetGuideCurveSegment("genericTank2_seg1_upper").GetGuideCurveProfileUID(), "gc_upper");
 }

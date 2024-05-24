@@ -109,7 +109,7 @@
                     </translation>
                   </transformation>
                   <hulls>
-                    <hull uID="outerHull">
+                    <hull uID="genericTank1_outerHull">
                       <name>Outer hull</name>
                       <transformation>
                         <scaling>
@@ -191,7 +191,7 @@
                         </frames>
                       </structure>
                     </hull>
-                    <hull uID="innerHull">
+                    <hull uID="genericTank1_innerHull">
                       <name>Inner hull</name>
                       <transformation>
                         <translation>

@@ -102,8 +102,8 @@ private:
     void IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber, std::vector<double>& x,
                            std::vector<double>& r) const;
 
-    TopoDS_Shape BuildShapeFromSegments() const;
-    TopoDS_Shape BuildShapeFromSimpleParameters() const;
+    void BuildShapeFromSegments(TopoDS_Shape& loftShape) const;
+    void BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const;
 
     void BuildTankWire(std::vector<TopoDS_Edge>& edges, BRepBuilderAPI_MakeWire& wire) const;
     void BuildTankWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const;

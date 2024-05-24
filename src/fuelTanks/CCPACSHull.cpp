@@ -203,7 +203,7 @@ void CCPACSHull::IsotensoidContour(double rCyl, double rPolarOpening, int nodeNu
     }
 }
 
-TopoDS_Shape CCPACSHull::BuildShapeFromSegments() const
+void CCPACSHull::BuildShapeFromSegments(TopoDS_Shape& loftShape) const
 {
     const auto& segments    = m_segments_choice1.get();
     TiglContinuity cont     = segments.GetSegment(1).GetContinuity();
@@ -222,7 +222,7 @@ TopoDS_Shape CCPACSHull::BuildShapeFromSegments() const
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
 
-    return lofter.Shape();
+    loftShape = lofter.Shape();
 }
 
 void CCPACSHull::BuildTankWire(std::vector<TopoDS_Edge>& edges, BRepBuilderAPI_MakeWire& wire) const
@@ -349,7 +349,7 @@ void CCPACSHull::BuildTankWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const
     BuildTankWire(edges, wire);
 }
 
-TopoDS_Shape CCPACSHull::BuildShapeFromSimpleParameters() const
+void CCPACSHull::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
 {
     BRepBuilderAPI_MakeWire wire;
 
@@ -364,12 +364,12 @@ TopoDS_Shape CCPACSHull::BuildShapeFromSimpleParameters() const
     }
 
     gp_Ax1 ax(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-    TopoDS_Shape loftShape = BRepPrimAPI_MakeRevol(wire, ax).Shape();
+    loftShape = BRepPrimAPI_MakeRevol(wire, ax).Shape();
 
     tigl::CTiglTransformation transform = this->GetTransformationMatrix();
     TopoDS_Shape TransformedShape       = transform.Transform(loftShape);
 
-    return TransformedShape;
+    loftShape = TransformedShape;
 }
 
 PNamedShape CCPACSHull::BuildLoft() const
@@ -380,7 +380,7 @@ PNamedShape CCPACSHull::BuildLoft() const
     std::string loftShortName = GetShortShapeName();
 
     if (m_segments_choice1 && m_sections_choice1) {
-        loftShape = BuildShapeFromSegments();
+        BuildShapeFromSegments(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
         SetFaceTraits(loft);
         return loft;
@@ -392,7 +392,7 @@ PNamedShape CCPACSHull::BuildLoft() const
             m_domeType_choice2->GetTorispherical_choice2().get_ptr();
         const tigl::generated::CPACSIsotensoidDome* isotensoid = m_domeType_choice2->GetIsotensoid_choice3().get_ptr();
 
-        loftShape = BuildShapeFromSimpleParameters();
+        BuildShapeFromSimpleParameters(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
         return loft;
     }
