@@ -166,7 +166,7 @@ TEST_F(FuselageTank, hull)
 
 TEST_F(FuselageTank, parametric_hull)
 {
-    auto &loft = hull_spheric->GetLoft();
+    auto& loft = hull_spheric->GetLoft();
 }
 
 TEST_F(FuselageTank, structure)

@@ -107,6 +107,10 @@
                     <translation>
                       <x>0.5</x>
                     </translation>
+                    <!-- Rotation and scaling has currently no effect on the hulls -->
+                    <rotation>
+                      <z>45</z>
+                    </rotation>
                   </transformation>
                   <hulls>
                     <hull uID="genericTank1_outerHull">

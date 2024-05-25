@@ -46,6 +46,12 @@ CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(tigl::CTi
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
     : _parent(parent), _transformation(trans), _symmetryAxis(symmetryAxis){}
 
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, Standard_Boolean applyRotation, Standard_Boolean applyScaling)
+    : _parent(parent), _transformation(trans), _symmetryAxis(nullptr), _applyRotation(applyRotation), _applyScaling(applyScaling){}
+
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis, Standard_Boolean applyRotation, Standard_Boolean applyScaling)
+    : _parent(parent), _transformation(trans), _symmetryAxis(symmetryAxis), _applyRotation(applyRotation), _applyScaling(applyScaling){}
+
 void CTiglRelativelyPositionedComponent::Reset() const
 {
     CTiglAbstractGeometricComponent::Reset();
@@ -76,15 +82,34 @@ CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix(
     const CTiglTransformation thisTransformation = GetTransform() ? GetTransform()->getTransformationMatrix() : CTiglTransformation();
     if (_parent && GetTranslationType() == ABS_LOCAL) {
         const CTiglTransformation& parentTransformation = _parent->GetTransformationMatrix();
+        CTiglTransformation transformation = thisTransformation;
 
-        // we only transform with the parent's translation
+        double scale[3], rotation[3], translation[3];
+        parentTransformation.Decompose(&scale[0], &rotation[0], &translation[0]);
+
+        if (_applyScaling) {
+            CTiglTransformation parentScaling;
+            parentScaling.AddScaling(scale[0],scale[1],scale[2]);
+            transformation = parentScaling * transformation;
+        }
+
+        if (_applyRotation) {
+            CTiglTransformation parentRotation;
+            parentRotation.AddRotationX(rotation[0]);
+            parentRotation.AddRotationY(rotation[1]);
+            parentRotation.AddRotationZ(rotation[2]);
+            transformation = parentRotation * transformation;
+        }
+
         CTiglTransformation parentTranslation;
         parentTranslation.AddTranslation(
-            parentTransformation.GetValue(0, 3),
-            parentTransformation.GetValue(1, 3),
-            parentTransformation.GetValue(2, 3)
+            translation[0],
+            translation[1],
+            translation[2]
         );
-        return parentTranslation * thisTransformation;
+        transformation = parentTranslation * transformation;
+
+        return transformation;
     }
     else
         return thisTransformation;

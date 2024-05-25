@@ -54,7 +54,7 @@ namespace tigl
 
 CCPACSHull::CCPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSHull(parent, uidMgr)
-    , CTiglRelativelyPositionedComponent(GetParent()->GetParent(), &m_transformation)
+    , CTiglRelativelyPositionedComponent(GetParent()->GetParent(), &m_transformation, true, true)
 {
 }
 
@@ -332,8 +332,9 @@ void CCPACSHull::BuildTankWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const
 
     double polarOpeningRadius = m_domeType_choice2->GetIsotensoid_choice3().get_ptr()->GetPolarOpeningRadius();
     if (polarOpeningRadius <= 0 || polarOpeningRadius >= cylinderRadius) {
-        throw CTiglError("The polar opening radius (" + std::to_string(polarOpeningRadius) + ") of hull \"" + GetName() + "\" (uID=\"" +
-                         GetUID() + "\") must be larger than 0 and smaller than the cylinder radius (" +
+        throw CTiglError("The polar opening radius (" + std::to_string(polarOpeningRadius) + ") of hull \"" +
+                         GetName() + "\" (uID=\"" + GetUID() +
+                         "\") must be larger than 0 and smaller than the cylinder radius (" +
                          std::to_string(cylinderRadius) + ")!");
     }
 

@@ -56,6 +56,17 @@ TiglGeometricComponentIntent CCPACSGenericFuelTank::GetComponentIntent() const
 
 PNamedShape CCPACSGenericFuelTank::BuildLoft() const
 {
+    if (GetTransformation().GetScaling()) {
+        LOG(WARNING) << "Scaling entries were found for tank \"" + GetName() + "\" (uID=\"" + GetUID() +
+                            "\"). Currently TiGL only supports the translation of tanks, "
+                            "while scaling of a tank is not applied to its hulls.";
+    }
+    if (GetTransformation().GetRotation()) {
+        LOG(WARNING) << "Rotation entries were found for tank \"" + GetName() + "\" (uID=\"" + GetUID() +
+                            "\"). Currently TiGL only supports the translation of tanks, "
+                            "while rotation of a tank is not applied to its hulls.";
+    }
+
     const auto& hulls = GetHulls().GetHulls();
     ListPNamedShape shapes;
 
