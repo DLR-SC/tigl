@@ -1182,10 +1182,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     // build half upper line from gp_points
     std::vector<gp_Pnt> linePntsUpperRightHalf;
-    std::vector<double> y_UpperRightHalf = LinspaceWithBreaks(0., (0.5-cornerRadius), 2);
-    for (double y: y_UpperRightHalf){
-        linePntsUpperRightHalf.push_back(gp_Pnt(0., y, 0.5 * heightToWidthRatio));
-    }
+    linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
+    linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.5-cornerRadius,0.5*heightToWidthRatio));
     opencascade::handle<Geom_BSplineCurve> lowerLineRightHalf = tigl::CTiglPointsToBSplineInterpolation(linePntsUpperRightHalf).Curve();
     curves.push_back(lowerLineRightHalf);
 
@@ -1202,10 +1200,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     // build right line from gp_Pnts
     std::vector<gp_Pnt> linePnts_right;
-    std::vector<double> z_right = LinspaceWithBreaks( 0.5 * heightToWidthRatio - cornerRadius, -0.5 * heightToWidthRatio + cornerRadius, 2);
-    for (double z: z_right){
-        linePnts_right.push_back(gp_Pnt(0., 0.5, z));
-    }
+    linePnts_right.push_back(gp_Pnt(0., 0.5, 0.5 * heightToWidthRatio - cornerRadius));
+    linePnts_right.push_back(gp_Pnt(0., 0.5, -0.5 * heightToWidthRatio + cornerRadius));
     opencascade::handle<Geom_BSplineCurve> rightLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_right).Curve();
     curves.push_back(rightLine);
 
@@ -1220,10 +1216,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     // build lower line from gp_points
     std::vector<gp_Pnt> linePnts_lower;
-    std::vector<double> y_lower = LinspaceWithBreaks((0.5-cornerRadius),(-0.5+cornerRadius),2);
-    for (double y: y_lower){
-        linePnts_lower.push_back(gp_Pnt(0., y, -0.5*heightToWidthRatio));
-    }
+    linePnts_lower.push_back(gp_Pnt(0.,(0.5-cornerRadius),-0.5*heightToWidthRatio));
+    linePnts_lower.push_back(gp_Pnt(0.,(-0.5+cornerRadius),-0.5*heightToWidthRatio));
     opencascade::handle<Geom_BSplineCurve> lowerLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_lower).Curve();
 
     curves.push_back(lowerLine);
@@ -1239,10 +1233,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     //build left line from gp_points
     std::vector<gp_Pnt> linePnts_left;
-    std::vector<double> z_left = LinspaceWithBreaks(-0.5 * heightToWidthRatio + cornerRadius, 0.5 * heightToWidthRatio - cornerRadius, 3);
-    for (double z: z_left){
-        linePnts_left.push_back(gp_Pnt(0., -0.5, z));
-    }
+    linePnts_left.push_back(gp_Pnt(0.,-0.5,-0.5 * heightToWidthRatio + cornerRadius));
+    linePnts_left.push_back(gp_Pnt(0.,-0.5,0.5 * heightToWidthRatio - cornerRadius));
     opencascade::handle<Geom_BSplineCurve> leftLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_left).Curve();
     curves.push_back(leftLine);
 
@@ -1257,18 +1249,23 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     // build half upper line from gp_points
     std::vector<gp_Pnt> linePntsUpperLeftHalf;
-    std::vector<double> y_UpperLeftHalf = LinspaceWithBreaks(-(0.5-cornerRadius),0.,2);
-    for (double y: y_UpperLeftHalf){
-        linePntsUpperLeftHalf.push_back(gp_Pnt(0., y, 0.5 * heightToWidthRatio));
-    }
+    linePntsUpperLeftHalf.push_back(gp_Pnt(0.,-(0.5-cornerRadius),0.5*heightToWidthRatio));
+    linePntsUpperLeftHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
     opencascade::handle<Geom_BSplineCurve> upperLineLeftHalf = tigl::CTiglPointsToBSplineInterpolation(linePntsUpperLeftHalf).Curve();
     curves.push_back(upperLineLeftHalf);
 
     opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
+
+    if (curve->Degree()<2){
+        curve->IncreaseDegree(2);
+    }
     TopoDS_Wire wire;
     if(!curve.IsNull())
         {
         wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    }
+    if(wire.IsNull()){
+        throw tigl::CTiglError("Error building profile wire");
     }
     return wire;
 }
