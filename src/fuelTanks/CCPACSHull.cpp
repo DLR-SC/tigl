@@ -271,23 +271,35 @@ void CCPACSHull::BuildTankWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    double R = cylinderRadius, h = cylinderRadius;
-
     double axRatio = m_ellipsoid->GetHalfAxisFraction();
-    if (axRatio < 0.0 || axRatio > 1.0) {
+    if (axRatio < 0.0) {
         throw CTiglError("Half axis fraction (" + std::to_string(axRatio) + ") of hull \"" + GetName() + "\" (uID=\"" +
-                         GetUID() + "\") must be between 0 and 1!");
+                         GetUID() + "\") must be a positive value!");
     }
 
-    h = R * axRatio;
+    double R = cylinderRadius;
+    double h = R * axRatio;
 
     gp_Dir dir(0.0, 1.0, 0.0);
-
     gp_Pnt p(h, 0.0, 0.0);
 
-    gp_Elips ellips(gp_Ax2(p, dir), R, R * axRatio);
+    double major_ax    = R;
+    double minor_ax    = R * axRatio;
+    double rot_angle   = 0;
+    double start_angle = -M_PI / 2;
+    double end_angle   = 0.0;
 
-    GC_MakeArcOfEllipse arc(ellips, -M_PI / 2, 0.0, Standard_True);
+    if (axRatio > 1) {
+        major_ax    = R * axRatio;
+        minor_ax    = R;
+        rot_angle   = 0.5 * M_PI;
+        start_angle = -M_PI;
+        end_angle   = -M_PI / 2;
+    }
+
+    gp_Elips ellips(gp_Ax2(p, dir), major_ax, minor_ax);
+    ellips.Rotate(gp_Ax1(p, dir), rot_angle);
+    GC_MakeArcOfEllipse arc(ellips, start_angle, end_angle, Standard_True);
 
     TopoDS_Edge dome_edge = BRepBuilderAPI_MakeEdge(arc.Value()).Edge();
 

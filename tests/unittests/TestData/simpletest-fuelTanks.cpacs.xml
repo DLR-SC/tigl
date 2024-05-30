@@ -682,14 +682,14 @@
                 <name>Hull with ellipsoid dome for wing tank</name>
                 <transformation>
                   <translation>
-                    <x>0.</x>
+                    <x>-1.1</x>
                   </translation>
                 </transformation>
                 <cylinderRadius>0.4</cylinderRadius>
-                <cylinderLength>2.0</cylinderLength>
+                <cylinderLength>1.</cylinderLength>
                 <domeType>
                   <ellipsoid>
-                    <halfAxisFraction>1</halfAxisFraction>
+                    <halfAxisFraction>5</halfAxisFraction>
                   </ellipsoid>
                 </domeType>
               </hull>
