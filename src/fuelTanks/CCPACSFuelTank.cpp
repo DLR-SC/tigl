@@ -16,10 +16,10 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS genericFuelTank handling routines.
+* @brief  Implementation of CPACS fuelTank handling routines.
 */
 
-#include "CCPACSGenericFuelTank.h"
+#include "CCPACSFuelTank.h"
 #include "CCPACSHull.h"
 #include "CTiglError.h"
 #include "CGroupShapes.h"
@@ -27,34 +27,34 @@
 namespace tigl
 {
 
-CCPACSGenericFuelTank::CCPACSGenericFuelTank(CCPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSGenericFuelTank(parent, uidMgr)
-    , CTiglRelativelyPositionedComponent(GetParent()->GetParent()->GetParent(), &m_transformation)
+CCPACSFuelTank::CCPACSFuelTank(CCPACSFuelTanks* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuelTank(parent, uidMgr)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
 {
 }
 
-CCPACSConfiguration& CCPACSGenericFuelTank::GetConfiguration() const
+CCPACSConfiguration& CCPACSFuelTank::GetConfiguration() const
 {
-    return GetParent()->GetParent()->GetParent()->GetConfiguration();
+    return GetParent()->GetParent()->GetConfiguration();
 }
 
-std::string CCPACSGenericFuelTank::GetDefaultedUID() const
+std::string CCPACSFuelTank::GetDefaultedUID() const
 {
-    return generated::CPACSGenericFuelTank::GetUID();
+    return generated::CPACSFuelTank::GetUID();
 }
 
-TiglGeometricComponentType CCPACSGenericFuelTank::GetComponentType() const
+TiglGeometricComponentType CCPACSFuelTank::GetComponentType() const
 {
     return TIGL_COMPONENT_FUSELAGE_TANK;
 }
 
-TiglGeometricComponentIntent CCPACSGenericFuelTank::GetComponentIntent() const
+TiglGeometricComponentIntent CCPACSFuelTank::GetComponentIntent() const
 {
     // needs to be physical, so that transformation relative to parent works
     return TIGL_INTENT_PHYSICAL;
 }
 
-PNamedShape CCPACSGenericFuelTank::BuildLoft() const
+PNamedShape CCPACSFuelTank::BuildLoft() const
 {
     const auto& hulls = GetHulls().GetHulls();
     ListPNamedShape shapes;
@@ -69,12 +69,12 @@ PNamedShape CCPACSGenericFuelTank::BuildLoft() const
     return groupedShape;
 }
 
-std::string CCPACSGenericFuelTank::GetShortShapeName() const
+std::string CCPACSFuelTank::GetShortShapeName() const
 {
     unsigned int findex = 0;
     unsigned int i      = 0;
 
-    for (auto& t : GetParent()->GetGenericFuelTanks()) {
+    for (auto& t : GetParent()->GetFuelTanks()) {
         ++i;
         if (GetUID() == t->GetUID()) {
             findex = i;

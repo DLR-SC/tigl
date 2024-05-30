@@ -16,22 +16,22 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS genericFuelTank handling routines.
+* @brief  Implementation of CPACS fuelTank handling routines.
 */
 
 #pragma once
 
-#include "generated/CPACSGenericFuelTank.h"
+#include "generated/CPACSFuelTank.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSConfiguration.h"
 
 namespace tigl
 {
 
-class CCPACSGenericFuelTank : public generated::CPACSGenericFuelTank, public CTiglRelativelyPositionedComponent
+class CCPACSFuelTank : public generated::CPACSFuelTank, public CTiglRelativelyPositionedComponent
 {
 public:
-    TIGL_EXPORT CCPACSGenericFuelTank(CCPACSGenericFuelTanks* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFuelTank(CCPACSFuelTanks* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 

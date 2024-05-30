@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include "CCPACSFuselage.h"
+#include "CPACSFuselageFuelTank.h"
 #include "CPACSFuselageFuelTanks.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -77,56 +78,45 @@ namespace generated
 
     void CPACSFuselageFuelTanks::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element genericFuelTanks
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericFuelTanks")) {
-            m_genericFuelTanks = boost::in_place(this, m_uidMgr);
-            try {
-                m_genericFuelTanks->ReadCPACS(tixiHandle, xpath + "/genericFuelTanks");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read genericFuelTanks at xpath " << xpath << ": " << e.what();
-                m_genericFuelTanks = boost::none;
-            }
+        // read element fuselageFuelTank
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageFuelTank")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/fuselageFuelTank", m_fuselageFuelTanks, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
 
     void CPACSFuselageFuelTanks::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "genericFuelTanks" };
+        // write element fuselageFuelTank
+        tixi::TixiSaveElements(tixiHandle, xpath + "/fuselageFuelTank", m_fuselageFuelTanks);
 
-        // write element genericFuelTanks
-        if (m_genericFuelTanks) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/genericFuelTanks", childElemOrder);
-            m_genericFuelTanks->WriteCPACS(tixiHandle, xpath + "/genericFuelTanks");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericFuelTanks")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/genericFuelTanks");
+    }
+
+    const std::vector<std::unique_ptr<CPACSFuselageFuelTank>>& CPACSFuselageFuelTanks::GetFuselageFuelTanks() const
+    {
+        return m_fuselageFuelTanks;
+    }
+
+    std::vector<std::unique_ptr<CPACSFuselageFuelTank>>& CPACSFuselageFuelTanks::GetFuselageFuelTanks()
+    {
+        return m_fuselageFuelTanks;
+    }
+
+    CPACSFuselageFuelTank& CPACSFuselageFuelTanks::AddFuselageFuelTank()
+    {
+        m_fuselageFuelTanks.push_back(make_unique<CPACSFuselageFuelTank>(this, m_uidMgr));
+        return *m_fuselageFuelTanks.back();
+    }
+
+    void CPACSFuselageFuelTanks::RemoveFuselageFuelTank(CPACSFuselageFuelTank& ref)
+    {
+        for (std::size_t i = 0; i < m_fuselageFuelTanks.size(); i++) {
+            if (m_fuselageFuelTanks[i].get() == &ref) {
+                m_fuselageFuelTanks.erase(m_fuselageFuelTanks.begin() + i);
+                return;
             }
         }
-
-    }
-
-    const boost::optional<CCPACSGenericFuelTanks>& CPACSFuselageFuelTanks::GetGenericFuelTanks() const
-    {
-        return m_genericFuelTanks;
-    }
-
-    boost::optional<CCPACSGenericFuelTanks>& CPACSFuselageFuelTanks::GetGenericFuelTanks()
-    {
-        return m_genericFuelTanks;
-    }
-
-    CCPACSGenericFuelTanks& CPACSFuselageFuelTanks::GetGenericFuelTanks(CreateIfNotExistsTag)
-    {
-        if (!m_genericFuelTanks)
-            m_genericFuelTanks = boost::in_place(this, m_uidMgr);
-        return *m_genericFuelTanks;
-    }
-
-    void CPACSFuselageFuelTanks::RemoveGenericFuelTanks()
-    {
-        m_genericFuelTanks = boost::none;
+        throw CTiglError("Element not found");
     }
 
 } // namespace generated

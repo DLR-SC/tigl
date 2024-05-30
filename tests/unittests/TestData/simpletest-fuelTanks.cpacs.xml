@@ -98,450 +98,618 @@
                 <toElementUID>fuselage_1Section3IDElement1</toElementUID>
               </segment>
             </segments>
-            <fuelTanks>
-              <genericFuelTanks>
-                <genericFuelTank uID="genericTank1">
-                  <name>Simple tank 1</name>
-                  <description>This is a simple tank build via sections and segments with internal structure</description>
-                  <transformation>
-                    <translation>
-                      <x>0.5</x>
-                    </translation>
-                  </transformation>
-                  <hulls>
-                    <hull uID="genericTank1_outerHull">
-                      <name>Outer hull</name>
-                      <transformation>
-                        <scaling>
-                          <x>1</x>
-                          <y>1.2</y>
-                          <z>1.2</z>
-                        </scaling>
-                      </transformation>
-                      <sections>
-                        <section uID="outerHull_section1">
-                          <name>Section 1</name>
-                          <transformation>
-                            <translation>
-                              <x>0</x>
-                            </translation>
-                          </transformation>
-                          <elements>
-                            <element uID="outerHull_section1_element1">
-                              <name>Section 1 Element 1</name>
-                              <profileUID>fuselageCircleProfileuID</profileUID>
-                              <transformation />
-                            </element>
-                          </elements>
-                        </section>
-                        <section uID="outerHull_section2">
-                          <name>Section 2</name>
-                          <transformation>
-                            <translation>
-                              <x>1</x>
-                            </translation>
-                          </transformation>
-                          <elements>
-                            <element uID="outerHull_section2_element1">
-                              <name>Section 2 Element 1</name>
-                              <profileUID>fuselageCircleProfileuID</profileUID>
-                              <transformation />
-                            </element>
-                          </elements>
-                        </section>
-                        <section uID="outerHull_section3">
-                          <name>Section 3</name>
-                          <transformation>
-                            <translation>
-                              <x>1.5</x>
-                            </translation>
-                          </transformation>
-                          <elements>
-                            <element uID="outerHull_section3_element1">
-                              <name>Section 3 Element 1</name>
-                              <profileUID>fuselageCircleProfileuID</profileUID>
-                              <transformation />
-                            </element>
-                          </elements>
-                        </section>
-                      </sections>
-                      <segments>
-                        <segment uID="outerHull_segment1">
-                          <name>Outer hull Segment 1</name>
-                          <fromElementUID>outerHull_section1_element1</fromElementUID>
-                          <toElementUID>outerHull_section2_element1</toElementUID>
-                        </segment>
-                        <segment uID="outerHull_segment2">
-                          <name>Outer hull Segment 2</name>
-                          <fromElementUID>outerHull_section2_element1</fromElementUID>
-                          <toElementUID>outerHull_section3_element1</toElementUID>
-                        </segment>
-                      </segments>
-                      <structure uID="outerHullStructure">
-                        <frames>
-                          <frame uID="outerHullStructureFrame1">
-                            <framePosition uID="outerHullStructureFrame1_fp1">
-                              <structuralElementUID>dummyMaterial</structuralElementUID>
-                              <sectionElementUID>outerHull_section2</sectionElementUID>
-                              <referenceY>0</referenceY>
-                              <referenceZ>0</referenceZ>
-                              <referenceAngle>45</referenceAngle>
-                            </framePosition>
-                          </frame>
-                        </frames>
-                      </structure>
-                    </hull>
-                    <hull uID="genericTank1_innerHull">
-                      <name>Inner hull</name>
-                      <transformation>
-                        <translation>
-                          <x>0.2</x>
-                        </translation>
-                        <scaling>
-                          <x>0.8</x>
-                          <y>0.9</y>
-                          <z>0.9</z>
-                        </scaling>
-                      </transformation>
-                      <sections>
-                        <section uID="innerHull_section1">
-                          <name>Section 1</name>
-                          <transformation>
-                            <translation>
-                              <x>0</x>
-                            </translation>
-                          </transformation>
-                          <elements>
-                            <element uID="innerHull_section1_element1">
-                              <name>Section 1 Element 1</name>
-                              <profileUID>fuselageCircleProfileuID</profileUID>
-                              <transformation />
-                            </element>
-                          </elements>
-                        </section>
-                        <section uID="innerHull_section2">
-                          <name>Section 2</name>
-                          <transformation>
-                            <translation>
-                              <x>1</x>
-                            </translation>
-                          </transformation>
-                          <elements>
-                            <element uID="innerHull_section2_element1">
-                              <name>Section 2 Element 1</name>
-                              <profileUID>fuselageCircleProfileuID</profileUID>
-                              <transformation />
-                            </element>
-                          </elements>
-                        </section>
-                        <section uID="innerHull_section3">
-                          <name>Section 3</name>
-                          <transformation>
-                            <translation>
-                              <x>1.5</x>
-                            </translation>
-                          </transformation>
-                          <elements>
-                            <element uID="innerHull_section3_element1">
-                              <name>Section 3 Element 1</name>
-                              <profileUID>fuselageCircleProfileuID</profileUID>
-                              <transformation />
-                            </element>
-                          </elements>
-                        </section>
-                      </sections>
-                      <segments>
-                        <segment uID="innerHull_segment1">
-                          <name>Inner hull Segment 1</name>
-                          <fromElementUID>innerHull_section1_element1</fromElementUID>
-                          <toElementUID>innerHull_section2_element1</toElementUID>
-                        </segment>
-                        <segment uID="innerHull_segment2">
-                          <name>Inner hull Segment 2</name>
-                          <fromElementUID>innerHull_section2_element1</fromElementUID>
-                          <toElementUID>innerHull_section3_element1</toElementUID>
-                        </segment>
-                      </segments>
-                    </hull>
-                  </hulls>
-                </genericFuelTank>
-                <genericFuelTank uID="genericTank2">
-                  <name>Simple tank 2</name>
-                  <description>Test case of a simple tank via sections and segments with guide curves</description>
-                  <transformation>
-                    <translation>
-                      <x>2.5</x>
-                    </translation>
-                  </transformation>
-                  <hulls>
-                    <hull uID="genericTank2_outerHull">
-                      <name>Outer hull</name>
-                      <transformation>
-                        <scaling>
-                          <x>1</x>
-                          <y>0.8</y>
-                          <z>0.8</z>
-                        </scaling>
-                      </transformation>
-                      <sections>
-                        <section uID="genericTank2_outerHull_section1">
-                          <name>Section 1</name>
-                          <transformation>
-                            <translation>
-                              <x>0</x>
-                            </translation>
-                          </transformation>
-                          <elements>
-                            <element uID="genericTank2_outerHull_section1_element1">
-                              <name>Section 1 Element 1</name>
-                              <profileUID>fuselageCircleProfileuID</profileUID>
-                              <transformation>
-                                <scaling>
-                                  <y>0.01</y>
-                                  <z>0.01</z>
-                                </scaling>
-                              </transformation>
-                            </element>
-                          </elements>
-                        </section>
-                        <section uID="genericTank2_outerHull_section2">
-                          <name>Section 2</name>
-                          <transformation>
-                            <translation>
-                              <x>1.0</x>
-                            </translation>
-                          </transformation>
-                          <elements>
-                            <element uID="genericTank2_outerHull_section2_element1">
-                              <name>Section 2 Element 1</name>
-                              <profileUID>fuselageCircleProfileuID</profileUID>
-                              <transformation />
-                            </element>
-                          </elements>
-                        </section>
-                        <section uID="genericTank2_outerHull_section3">
-                          <name>Section 3</name>
-                          <transformation>
-                            <translation>
-                              <x>2</x>
-                            </translation>
-                          </transformation>
-                          <elements>
-                            <element uID="genericTank2_outerHull_section3_element1">
-                              <name>Section 3 Element 1</name>
-                              <profileUID>fuselageCircleProfileuID</profileUID>
-                              <transformation>
-                                <scaling>
-                                  <y>0.01</y>
-                                  <z>0.01</z>
-                                </scaling>
-                              </transformation>
-                            </element>
-                          </elements>
-                        </section>
-                      </sections>
-                      <segments>
-                        <segment uID="genericTank2_outerHull_segment1">
-                          <name>Outer hull Segment 1</name>
-                          <fromElementUID>genericTank2_outerHull_section1_element1</fromElementUID>
-                          <toElementUID>genericTank2_outerHull_section2_element1</toElementUID>
-                          <guideCurves>
-                            <guideCurve uID="genericTank2_seg1_upper">
-                              <name>Guide Segment 1 Upper</name>
-                              <guideCurveProfileUID>gc_upper</guideCurveProfileUID>
-                              <fromRelativeCircumference>0</fromRelativeCircumference>
-                              <toRelativeCircumference>0</toRelativeCircumference>
-                            </guideCurve>
-                            <guideCurve uID="genericTank2_seg1_starbord">
-                              <name>Guide Segment 1 Starbord</name>
-                              <guideCurveProfileUID>gc_starbord</guideCurveProfileUID>
-                              <fromRelativeCircumference>0.25</fromRelativeCircumference>
-                              <toRelativeCircumference>0.25</toRelativeCircumference>
-                            </guideCurve>
-                            <guideCurve uID="genericTank2_seg1_lower">
-                              <name>Guide Segment 1 Lower</name>
-                              <guideCurveProfileUID>gc_lower</guideCurveProfileUID>
-                              <fromRelativeCircumference>0.5</fromRelativeCircumference>
-                              <toRelativeCircumference>0.5</toRelativeCircumference>
-                            </guideCurve>
-                            <guideCurve uID="genericTank2_seg1_port">
-                              <name>Guide Segment 1 Port</name>
-                              <guideCurveProfileUID>gc_port</guideCurveProfileUID>
-                              <fromRelativeCircumference>0.75</fromRelativeCircumference>
-                              <toRelativeCircumference>0.75</toRelativeCircumference>
-                            </guideCurve>
-                          </guideCurves>
-                        </segment>
-                        <segment uID="genericTank2_outerHull_segment2">
-                          <name>Outer hull Segment 2</name>
-                          <fromElementUID>genericTank2_outerHull_section2_element1</fromElementUID>
-                          <toElementUID>genericTank2_outerHull_section3_element1</toElementUID>
-                          <guideCurves>
-                            <guideCurve uID="genericTank2_seg2_upper">
-                              <name>Guide Segment 2 Upper</name>
-                              <guideCurveProfileUID>gc_upper</guideCurveProfileUID>
-                              <fromGuideCurveUID>genericTank2_seg1_upper</fromGuideCurveUID>
-                              <toRelativeCircumference>0</toRelativeCircumference>
-                            </guideCurve>
-                            <guideCurve uID="genericTank2_seg2_starbord">
-                              <name>Guide Segment 2 Starbord</name>
-                              <guideCurveProfileUID>gc_starbord</guideCurveProfileUID>
-                              <fromGuideCurveUID>genericTank2_seg1_starbord</fromGuideCurveUID>
-                              <toRelativeCircumference>0.25</toRelativeCircumference>
-                            </guideCurve>
-                            <guideCurve uID="genericTank2_seg2_lower">
-                              <name>Guide Segment 2 Lower</name>
-                              <guideCurveProfileUID>gc_lower</guideCurveProfileUID>
-                              <fromGuideCurveUID>genericTank2_seg1_lower</fromGuideCurveUID>
-                              <toRelativeCircumference>0.5</toRelativeCircumference>
-                            </guideCurve>
-                            <guideCurve uID="genericTank2_seg2_port">
-                              <name>Guide Segment 2 Port</name>
-                              <guideCurveProfileUID>gc_port</guideCurveProfileUID>
-                              <fromGuideCurveUID>genericTank2_seg1_port</fromGuideCurveUID>
-                              <toRelativeCircumference>0.75</toRelativeCircumference>
-                            </guideCurve>
-                          </guideCurves>
-                        </segment>
-                      </segments>
-                    </hull>
-                  </hulls>
-                </genericFuelTank>
-                <genericFuelTank uID="genericTank3">
-                  <name>Simple tank 3</name>
-                  <description>Test case for simple parametrization with ellipsoid domes</description>
-                  <transformation>
-                    <translation>
-                      <x>5.</x>
-                    </translation>
-                  </transformation>
-                  <hulls>
-                    <hull uID="genericTank3_sphericalDome">
-                      <name>Hull with spherical dome</name>
-                      <transformation>
-                        <translation>
-                          <x>0.</x>
-                        </translation>
-                        <scaling>
-                          <x>1.2</x>
-                          <y>1.2</y>
-                          <z>1.2</z>
-                        </scaling>
-                      </transformation>
-                      <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>2.0</cylinderLength>
-                      <domeType>
-                        <ellipsoid>
-                          <halfAxisFraction>1</halfAxisFraction>
-                        </ellipsoid>
-                      </domeType>
-                    </hull>
-                    <hull uID="genericTank3_ellipsoidDome">
-                      <name>Hull with ellipsoid dome</name>
-                      <transformation>
-                        <translation>
-                          <x>0.5</x>
-                        </translation>
-                        <scaling>
-                          <x>1</x>
-                          <y>0.8</y>
-                          <z>0.8</z>
-                        </scaling>
-                      </transformation>
-                      <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>2.0</cylinderLength>
-                      <domeType>
-                        <ellipsoid>
-                          <halfAxisFraction>0.5</halfAxisFraction>
-                        </ellipsoid>
-                      </domeType>
-                    </hull>
-                    <hull uID="genericTank3_cylindricalDome">
-                      <name>Hull with cylindrical dome</name>
-                      <transformation>
-                        <translation>
-                          <x>1</x>
-                        </translation>
-                        <scaling>
-                          <x>1</x>
-                          <y>0.7</y>
-                          <z>0.7</z>
-                        </scaling>
-                      </transformation>
-                      <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>2.0</cylinderLength>
-                      <domeType>
-                        <ellipsoid>
-                          <halfAxisFraction>0</halfAxisFraction>
-                        </ellipsoid>
-                      </domeType>
-                    </hull>
-                  </hulls>
-                </genericFuelTank>
-                <genericFuelTank uID="genericTank4">
-                  <name>Simple tank 4</name>
-                  <description>Test case for simple parametrization</description>
-                  <transformation>
-                    <translation>
-                      <x>11.5</x>
-                      <y>-1.388</y>
-                    </translation>
-                    <rotation>
-                      <z>90</z>
-                    </rotation>
-                  </transformation>
-                  <hulls>
-                    <hull uID="genericTank4_torisphericalDome">
-                      <name>Hull with torispherical dome</name>
-                      <transformation>
-                        <translation>
-                          <x>0.</x>
-                        </translation>
-                      </transformation>
-                      <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>2.0</cylinderLength>
-                      <domeType>
-                        <torispherical>
-                          <dishRadius>2.0</dishRadius>
-                          <knuckleRadius>0.2</knuckleRadius>
-                        </torispherical>
-                      </domeType>
-                    </hull>
-                  </hulls>
-                </genericFuelTank>
-                <genericFuelTank uID="genericTank5">
-                  <name>Simple tank 5</name>
-                  <description>Test case for simple parametrization</description>
-                  <transformation>
-                    <translation>
-                      <x>13.</x>
-                    </translation>
-                  </transformation>
-                  <hulls>
-                    <hull uID="genericTank5_isotensoidDome">
-                      <name>Hull with isotensoid dome</name>
-                      <transformation>
-                        <translation>
-                          <x>0.</x>
-                        </translation>
-                      </transformation>
-                      <cylinderRadius>1.0</cylinderRadius>
-                      <cylinderLength>2.0</cylinderLength>
-                      <domeType>
-                        <isotensoid>
-                          <polarOpeningRadius>0.1</polarOpeningRadius>
-                        </isotensoid>
-                      </domeType>
-                    </hull>
-                  </hulls>
-                </genericFuelTank>
-              </genericFuelTanks>
-            </fuelTanks>
           </fuselage>
         </fuselages>
+        <wings>
+          <wing uID="SimpleWing" symmetry="x-z-plane">
+            <name>Simple Wing</name>
+            <transformation>
+              <translation>
+                <x>5.</x>
+                <y>2</y>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="wing1section1">
+                <name>root section</name>
+                <transformation>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <scaling>
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <translation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="wing1section1element1">
+                    <name>wing root element</name>
+                    <airfoilUID>NACA0009</airfoilUID>
+                    <transformation>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <scaling>
+                        <x>3</x>
+                        <y>1</y>
+                        <z>2</z>
+                      </scaling>
+                      <translation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="wing1section2">
+                <name>tip section</name>
+                <transformation>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <scaling>
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <translation>
+                    <x>1.5</x>
+                    <y>10.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="wing1section2element1">
+                    <name>wing tip element</name>
+                    <airfoilUID>NACA0009</airfoilUID>
+                    <transformation>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <scaling>
+                        <x>1.5</x>
+                        <y>1</y>
+                        <z>2</z>
+                      </scaling>
+                      <translation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <segments>
+              <segment uID="wing1segment1">
+                <name>wing segment</name>
+                <fromElementUID>wing1section1element1</fromElementUID>
+                <toElementUID>wing1section2element1</toElementUID>
+              </segment>
+            </segments>
+          </wing>
+        </wings>
+        <fuelTanks>
+          <fuelTank uID="tank1">
+            <name>Simple tank 1</name>
+            <description>This is a simple tank build via sections and segments with internal structure</description>
+            <parentUID>SimpleFuselage</parentUID>
+            <transformation>
+              <translation>
+                <x>0.5</x>
+              </translation>
+            </transformation>
+            <hulls>
+              <hull uID="tank1_outerHull">
+                <name>Outer hull</name>
+                <transformation>
+                  <scaling>
+                    <x>1</x>
+                    <y>1.2</y>
+                    <z>1.2</z>
+                  </scaling>
+                </transformation>
+                <sections>
+                  <section uID="outerHull_section1">
+                    <name>Section 1</name>
+                    <transformation>
+                      <translation>
+                        <x>0</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="outerHull_section1_element1">
+                        <name>Section 1 Element 1</name>
+                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <transformation />
+                      </element>
+                    </elements>
+                  </section>
+                  <section uID="outerHull_section2">
+                    <name>Section 2</name>
+                    <transformation>
+                      <translation>
+                        <x>1</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="outerHull_section2_element1">
+                        <name>Section 2 Element 1</name>
+                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <transformation />
+                      </element>
+                    </elements>
+                  </section>
+                  <section uID="outerHull_section3">
+                    <name>Section 3</name>
+                    <transformation>
+                      <translation>
+                        <x>1.5</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="outerHull_section3_element1">
+                        <name>Section 3 Element 1</name>
+                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <transformation />
+                      </element>
+                    </elements>
+                  </section>
+                </sections>
+                <segments>
+                  <segment uID="outerHull_segment1">
+                    <name>Outer hull Segment 1</name>
+                    <fromElementUID>outerHull_section1_element1</fromElementUID>
+                    <toElementUID>outerHull_section2_element1</toElementUID>
+                  </segment>
+                  <segment uID="outerHull_segment2">
+                    <name>Outer hull Segment 2</name>
+                    <fromElementUID>outerHull_section2_element1</fromElementUID>
+                    <toElementUID>outerHull_section3_element1</toElementUID>
+                  </segment>
+                </segments>
+                <structure uID="outerHullStructure">
+                  <frames>
+                    <frame uID="outerHullStructureFrame1">
+                      <framePosition uID="outerHullStructureFrame1_fp1">
+                        <structuralElementUID>dummyMaterial</structuralElementUID>
+                        <sectionElementUID>outerHull_section2</sectionElementUID>
+                        <referenceY>0</referenceY>
+                        <referenceZ>0</referenceZ>
+                        <referenceAngle>45</referenceAngle>
+                      </framePosition>
+                    </frame>
+                  </frames>
+                </structure>
+              </hull>
+              <hull uID="tank1_innerHull">
+                <name>Inner hull</name>
+                <transformation>
+                  <translation>
+                    <x>0.2</x>
+                  </translation>
+                  <scaling>
+                    <x>0.8</x>
+                    <y>0.9</y>
+                    <z>0.9</z>
+                  </scaling>
+                </transformation>
+                <sections>
+                  <section uID="innerHull_section1">
+                    <name>Section 1</name>
+                    <transformation>
+                      <translation>
+                        <x>0</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="innerHull_section1_element1">
+                        <name>Section 1 Element 1</name>
+                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <transformation />
+                      </element>
+                    </elements>
+                  </section>
+                  <section uID="innerHull_section2">
+                    <name>Section 2</name>
+                    <transformation>
+                      <translation>
+                        <x>1</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="innerHull_section2_element1">
+                        <name>Section 2 Element 1</name>
+                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <transformation />
+                      </element>
+                    </elements>
+                  </section>
+                  <section uID="innerHull_section3">
+                    <name>Section 3</name>
+                    <transformation>
+                      <translation>
+                        <x>1.5</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="innerHull_section3_element1">
+                        <name>Section 3 Element 1</name>
+                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <transformation />
+                      </element>
+                    </elements>
+                  </section>
+                </sections>
+                <segments>
+                  <segment uID="innerHull_segment1">
+                    <name>Inner hull Segment 1</name>
+                    <fromElementUID>innerHull_section1_element1</fromElementUID>
+                    <toElementUID>innerHull_section2_element1</toElementUID>
+                  </segment>
+                  <segment uID="innerHull_segment2">
+                    <name>Inner hull Segment 2</name>
+                    <fromElementUID>innerHull_section2_element1</fromElementUID>
+                    <toElementUID>innerHull_section3_element1</toElementUID>
+                  </segment>
+                </segments>
+              </hull>
+            </hulls>
+          </fuelTank>
+          <fuelTank uID="tank2">
+            <name>Simple tank 2</name>
+            <description>Test case of a simple tank via sections and segments with guide curves</description>
+            <parentUID>SimpleFuselage</parentUID>
+            <transformation>
+              <translation>
+                <x>2.5</x>
+              </translation>
+            </transformation>
+            <hulls>
+              <hull uID="tank2_outerHull">
+                <name>Outer hull</name>
+                <transformation>
+                  <scaling>
+                    <x>1</x>
+                    <y>0.8</y>
+                    <z>0.8</z>
+                  </scaling>
+                </transformation>
+                <sections>
+                  <section uID="tank2_outerHull_section1">
+                    <name>Section 1</name>
+                    <transformation>
+                      <translation>
+                        <x>0</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="tank2_outerHull_section1_element1">
+                        <name>Section 1 Element 1</name>
+                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <transformation>
+                          <scaling>
+                            <y>0.01</y>
+                            <z>0.01</z>
+                          </scaling>
+                        </transformation>
+                      </element>
+                    </elements>
+                  </section>
+                  <section uID="tank2_outerHull_section2">
+                    <name>Section 2</name>
+                    <transformation>
+                      <translation>
+                        <x>1.0</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="tank2_outerHull_section2_element1">
+                        <name>Section 2 Element 1</name>
+                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <transformation />
+                      </element>
+                    </elements>
+                  </section>
+                  <section uID="tank2_outerHull_section3">
+                    <name>Section 3</name>
+                    <transformation>
+                      <translation>
+                        <x>2</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="tank2_outerHull_section3_element1">
+                        <name>Section 3 Element 1</name>
+                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <transformation>
+                          <scaling>
+                            <y>0.01</y>
+                            <z>0.01</z>
+                          </scaling>
+                        </transformation>
+                      </element>
+                    </elements>
+                  </section>
+                </sections>
+                <segments>
+                  <segment uID="tank2_outerHull_segment1">
+                    <name>Outer hull Segment 1</name>
+                    <fromElementUID>tank2_outerHull_section1_element1</fromElementUID>
+                    <toElementUID>tank2_outerHull_section2_element1</toElementUID>
+                    <guideCurves>
+                      <guideCurve uID="tank2_seg1_upper">
+                        <name>Guide Segment 1 Upper</name>
+                        <guideCurveProfileUID>gc_upper</guideCurveProfileUID>
+                        <fromRelativeCircumference>0</fromRelativeCircumference>
+                        <toRelativeCircumference>0</toRelativeCircumference>
+                      </guideCurve>
+                      <guideCurve uID="tank2_seg1_starbord">
+                        <name>Guide Segment 1 Starbord</name>
+                        <guideCurveProfileUID>gc_starbord</guideCurveProfileUID>
+                        <fromRelativeCircumference>0.25</fromRelativeCircumference>
+                        <toRelativeCircumference>0.25</toRelativeCircumference>
+                      </guideCurve>
+                      <guideCurve uID="tank2_seg1_lower">
+                        <name>Guide Segment 1 Lower</name>
+                        <guideCurveProfileUID>gc_lower</guideCurveProfileUID>
+                        <fromRelativeCircumference>0.5</fromRelativeCircumference>
+                        <toRelativeCircumference>0.5</toRelativeCircumference>
+                      </guideCurve>
+                      <guideCurve uID="tank2_seg1_port">
+                        <name>Guide Segment 1 Port</name>
+                        <guideCurveProfileUID>gc_port</guideCurveProfileUID>
+                        <fromRelativeCircumference>0.75</fromRelativeCircumference>
+                        <toRelativeCircumference>0.75</toRelativeCircumference>
+                      </guideCurve>
+                    </guideCurves>
+                  </segment>
+                  <segment uID="tank2_outerHull_segment2">
+                    <name>Outer hull Segment 2</name>
+                    <fromElementUID>tank2_outerHull_section2_element1</fromElementUID>
+                    <toElementUID>tank2_outerHull_section3_element1</toElementUID>
+                    <guideCurves>
+                      <guideCurve uID="tank2_seg2_upper">
+                        <name>Guide Segment 2 Upper</name>
+                        <guideCurveProfileUID>gc_upper</guideCurveProfileUID>
+                        <fromGuideCurveUID>tank2_seg1_upper</fromGuideCurveUID>
+                        <toRelativeCircumference>0</toRelativeCircumference>
+                      </guideCurve>
+                      <guideCurve uID="tank2_seg2_starbord">
+                        <name>Guide Segment 2 Starbord</name>
+                        <guideCurveProfileUID>gc_starbord</guideCurveProfileUID>
+                        <fromGuideCurveUID>tank2_seg1_starbord</fromGuideCurveUID>
+                        <toRelativeCircumference>0.25</toRelativeCircumference>
+                      </guideCurve>
+                      <guideCurve uID="tank2_seg2_lower">
+                        <name>Guide Segment 2 Lower</name>
+                        <guideCurveProfileUID>gc_lower</guideCurveProfileUID>
+                        <fromGuideCurveUID>tank2_seg1_lower</fromGuideCurveUID>
+                        <toRelativeCircumference>0.5</toRelativeCircumference>
+                      </guideCurve>
+                      <guideCurve uID="tank2_seg2_port">
+                        <name>Guide Segment 2 Port</name>
+                        <guideCurveProfileUID>gc_port</guideCurveProfileUID>
+                        <fromGuideCurveUID>tank2_seg1_port</fromGuideCurveUID>
+                        <toRelativeCircumference>0.75</toRelativeCircumference>
+                      </guideCurve>
+                    </guideCurves>
+                  </segment>
+                </segments>
+              </hull>
+            </hulls>
+          </fuelTank>
+          <fuelTank uID="tank3">
+            <name>Simple tank 3</name>
+            <description>Test case for simple parametrization with ellipsoid domes</description>
+            <parentUID>SimpleFuselage</parentUID>
+            <transformation>
+              <translation>
+                <x>5.</x>
+              </translation>
+            </transformation>
+            <hulls>
+              <hull uID="tank3_sphericalDome">
+                <name>Hull with spherical dome</name>
+                <transformation>
+                  <translation>
+                    <x>0.</x>
+                  </translation>
+                  <scaling>
+                    <x>1.2</x>
+                    <y>1.2</y>
+                    <z>1.2</z>
+                  </scaling>
+                </transformation>
+                <cylinderRadius>1.0</cylinderRadius>
+                <cylinderLength>2.0</cylinderLength>
+                <domeType>
+                  <ellipsoid>
+                    <halfAxisFraction>1</halfAxisFraction>
+                  </ellipsoid>
+                </domeType>
+              </hull>
+              <hull uID="tank3_ellipsoidDome">
+                <name>Hull with ellipsoid dome</name>
+                <transformation>
+                  <translation>
+                    <x>0.5</x>
+                  </translation>
+                  <scaling>
+                    <x>1</x>
+                    <y>0.8</y>
+                    <z>0.8</z>
+                  </scaling>
+                </transformation>
+                <cylinderRadius>1.0</cylinderRadius>
+                <cylinderLength>2.0</cylinderLength>
+                <domeType>
+                  <ellipsoid>
+                    <halfAxisFraction>0.5</halfAxisFraction>
+                  </ellipsoid>
+                </domeType>
+              </hull>
+              <hull uID="tank3_cylindricalDome">
+                <name>Hull with cylindrical dome</name>
+                <transformation>
+                  <translation>
+                    <x>1</x>
+                  </translation>
+                  <scaling>
+                    <x>1</x>
+                    <y>0.7</y>
+                    <z>0.7</z>
+                  </scaling>
+                </transformation>
+                <cylinderRadius>1.0</cylinderRadius>
+                <cylinderLength>2.0</cylinderLength>
+                <domeType>
+                  <ellipsoid>
+                    <halfAxisFraction>0</halfAxisFraction>
+                  </ellipsoid>
+                </domeType>
+              </hull>
+              <hull uID="tank3_spherical">
+                <name>Hull as pure sphere</name>
+                <transformation>
+                  <translation>
+                    <x>1.5</x>
+                  </translation>
+                  <scaling>
+                    <x>0.6</x>
+                    <y>0.6</y>
+                    <z>0.6</z>
+                  </scaling>
+                </transformation>
+                <cylinderRadius>1.0</cylinderRadius>
+                <cylinderLength>0</cylinderLength>
+                <domeType>
+                  <ellipsoid>
+                    <halfAxisFraction>1</halfAxisFraction>
+                  </ellipsoid>
+                </domeType>
+              </hull>
+            </hulls>
+          </fuelTank>
+          <fuelTank uID="tank4">
+            <name>Simple tank 4</name>
+            <description>Test case for simple parametrization</description>
+            <parentUID>SimpleFuselage</parentUID>
+            <transformation>
+              <translation>
+                <x>11.5</x>
+                <y>-1.388</y>
+              </translation>
+              <rotation>
+                <z>90</z>
+              </rotation>
+            </transformation>
+            <hulls>
+              <hull uID="tank4_torisphericalDome">
+                <name>Hull with torispherical dome</name>
+                <transformation>
+                  <translation>
+                    <x>0.</x>
+                  </translation>
+                </transformation>
+                <cylinderRadius>1.0</cylinderRadius>
+                <cylinderLength>2.0</cylinderLength>
+                <domeType>
+                  <torispherical>
+                    <dishRadius>2.0</dishRadius>
+                    <knuckleRadius>0.2</knuckleRadius>
+                  </torispherical>
+                </domeType>
+              </hull>
+            </hulls>
+          </fuelTank>
+          <fuelTank uID="tank5">
+            <name>Simple tank 5</name>
+            <description>Test case for simple parametrization</description>
+            <parentUID>SimpleFuselage</parentUID>
+            <transformation>
+              <translation>
+                <x>13.</x>
+              </translation>
+            </transformation>
+            <hulls>
+              <hull uID="tank5_isotensoidDome">
+                <name>Hull with isotensoid dome</name>
+                <transformation>
+                  <translation>
+                    <x>0.</x>
+                  </translation>
+                </transformation>
+                <cylinderRadius>1.0</cylinderRadius>
+                <cylinderLength>2.0</cylinderLength>
+                <domeType>
+                  <isotensoid>
+                    <polarOpeningRadius>0.1</polarOpeningRadius>
+                  </isotensoid>
+                </domeType>
+              </hull>
+            </hulls>
+          </fuelTank>
+          <fuelTank uID="tank6">
+            <name>Simple tank 6</name>
+            <description>Test case tank referencing a wing</description>
+            <parentUID>SimpleWing</parentUID>
+            <transformation>
+              <translation>
+                <x>0.8</x>
+                <y>10.</y>
+              </translation>
+            </transformation>
+            <hulls>
+              <hull uID="tank6_ellipsoidDome">
+                <name>Hull with ellipsoid dome for wing tank</name>
+                <transformation>
+                  <translation>
+                    <x>0.</x>
+                  </translation>
+                </transformation>
+                <cylinderRadius>0.4</cylinderRadius>
+                <cylinderLength>2.0</cylinderLength>
+                <domeType>
+                  <ellipsoid>
+                    <halfAxisFraction>1</halfAxisFraction>
+                  </ellipsoid>
+                </domeType>
+              </hull>
+            </hulls>
+          </fuelTank>
+        </fuelTanks>
       </model>
     </aircraft>
     <profiles>
+      <wingAirfoils>
+        <wingAirfoil uID="NACA0009">
+          <name>NACA0009 Airfoil</name>
+          <description>NACA 4-digit symmetrical airfoil with a thickness of 9percent</description>
+          <pointList>
+            <x>1.0;0.99572;0.98296;0.96194;0.93301;0.89668;0.85355;0.80438;0.75;0.69134;0.62941;0.56526;0.5;0.43474;0.37059;0.33928;0.30866;0.27886;0.25;0.22221;0.19562;0.17033;0.14645;0.12408;0.10332;0.08427;0.06699;0.05156;0.03806;0.02653;0.01704;0.00961;0.00428;0.00107;0.0;0.00107;0.00428;0.00961;0.01704;0.02653;0.03806;0.05156;0.06699;0.08427;0.10332;0.12408;0.14645;0.17033;0.19562;0.22221;0.25;0.27886;0.30866;0.33928;0.37059;0.43474;0.5;0.56526;0.62941;0.69134;0.75;0.80438;0.85355;0.89668;0.93301;0.96194;0.98296;0.99572;1.0</x>
+            <y>0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</y>
+            <z>0.0;0.00057;0.00218;0.00463;0.0077;0.01127;0.01522;0.01945;0.02384;0.02823;0.03247;0.03638;0.03978;0.04248;0.04431;0.04484;0.04509;0.04504;0.04466;0.04397;0.04295;0.04161;0.03994;0.03795;0.03564;0.03305;0.03023;0.0272;0.02395;0.02039;0.01646;0.01214;0.00767;0.00349;0.0;-0.00349;-0.00767;-0.01214;-0.01646;-0.02039;-0.02395;-0.0272;-0.03023;-0.03305;-0.03564;-0.03795;-0.03994;-0.04161;-0.04295;-0.04397;-0.04466;-0.04504;-0.04509;-0.04484;-0.04431;-0.04248;-0.03978;-0.03638;-0.03247;-0.02823;-0.02384;-0.01945;-0.01522;-0.01127;-0.0077;-0.00463;-0.00218;-0.00057;0.0</z>
+          </pointList>
+        </wingAirfoil>
+      </wingAirfoils>
       <fuselageProfiles>
         <fuselageProfile uID="fuselageCircleProfileuID">
           <name>Circle</name>

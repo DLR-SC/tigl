@@ -30,7 +30,7 @@ namespace tigl
 class CCPACSHulls : public generated::CPACSHulls
 {
 public:
-    TIGL_EXPORT CCPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSHulls(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr);
 
     // Get a specific hull for a given uID
     TIGL_EXPORT CCPACSHull const& GetHull(std::string const& uID) const;

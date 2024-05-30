@@ -17,13 +17,11 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/utility/in_place_factory.hpp>
-#include <CCPACSGenericFuelTanks.h>
 #include <string>
 #include <tixi.h>
-#include "CreateIfNotExists.h"
+#include <vector>
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
@@ -33,10 +31,12 @@ class CCPACSFuselage;
 
 namespace generated
 {
+    class CPACSFuselageFuelTank;
+
     // This class is used in:
     // CPACSFuselage
 
-    /// @brief List of fuel tanks
+    /// @brief List of fuselage fuel tanks.
     /// 
     /// 
     /// 
@@ -60,18 +60,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSGenericFuelTanks>& GetGenericFuelTanks() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSGenericFuelTanks>& GetGenericFuelTanks();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSFuselageFuelTank>>& GetFuselageFuelTanks() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSFuselageFuelTank>>& GetFuselageFuelTanks();
 
-        TIGL_EXPORT virtual CCPACSGenericFuelTanks& GetGenericFuelTanks(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveGenericFuelTanks();
+        TIGL_EXPORT virtual CPACSFuselageFuelTank& AddFuselageFuelTank();
+        TIGL_EXPORT virtual void RemoveFuselageFuelTank(CPACSFuselageFuelTank& ref);
 
     protected:
         CCPACSFuselage* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CCPACSGenericFuelTanks> m_genericFuelTanks;
+        /// The fuselage fuel tank geometry is defined by a link to a fuselage geometry compartment.
+        /// The fuel tank volume type should also be used for the wing fuel tank
+        std::vector<std::unique_ptr<CPACSFuselageFuelTank>> m_fuselageFuelTanks;
 
     private:
         CPACSFuselageFuelTanks(const CPACSFuselageFuelTanks&) = delete;
@@ -84,4 +86,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSFuselageFuelTanks = generated::CPACSFuselageFuelTanks;
+using CCPACSFuselageFuelTank = generated::CPACSFuselageFuelTank;
 } // namespace tigl

@@ -89,7 +89,7 @@ CCPACSTransformation::CCPACSTransformation(CCPACSHull* parent, CTiglUIDManager* 
 {
 }
 
-CCPACSTransformation::CCPACSTransformation(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
+CCPACSTransformation::CCPACSTransformation(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
 {

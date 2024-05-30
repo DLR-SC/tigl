@@ -3057,6 +3057,7 @@ marko.alder@dlr.de
                     <xsd:element minOccurs="0" name="engines" type="enginePositionsType"/>
                     <xsd:element minOccurs="0" name="enginePylons" type="enginePylonsType"/>
                     <xsd:element minOccurs="0" name="landingGears" type="landingGearsType"/>
+                    <xsd:element minOccurs="0" name="fuelTanks" type="fuelTanksType"/>
                     <xsd:element minOccurs="0" name="systems" type="systemsType"/>
                     <xsd:element minOccurs="0" name="genericGeometryComponents" type="genericGeometryComponentsType"/>
                     <xsd:element minOccurs="0" name="global" type="aircraftGlobalType"/>
@@ -12615,12 +12616,58 @@ marko.alder@dlr.de
         </xsd:complexContent>
     </xsd:complexType>
 
+    <xsd:complexType name="fuselageFuelTankType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Definition of one fuselage fuel tank.</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para>The definition of fuselage tanks is still preliminary.
+                            Currently, there is no link to any structural elements
+                        </ddue:para>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element minOccurs="0" name="name" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Name of the fuselage fuel tank.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" name="description" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Description of the fuselage fuel tank.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="compartmentUID" type="stringUIDBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Link to the tank geometry defined by a compartment.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" name="volume" type="fuelTankVolumeType">
+                        <xsd:annotation>
+                            <xsd:documentation/>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+                <xsd:attribute name="uID" type="xsd:ID" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
     <xsd:complexType name="fuselageFuelTanksType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>List of fuel tanks</ddue:para>
+                        <ddue:para>List of fuselage fuel tanks.</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
                         <ddue:para/>
@@ -12631,13 +12678,12 @@ marko.alder@dlr.de
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element name="integralFuelTanks" minOccurs="0" type="integralFuelTanksType">
+                    <xsd:element maxOccurs="unbounded" name="fuselageFuelTank" type="fuselageFuelTankType">
                         <xsd:annotation>
                             <xsd:documentation>The fuselage fuel tank geometry is defined by a link to a fuselage geometry compartment.
 The fuel tank volume type should also be used for the wing fuel tank</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="genericFuelTanks" minOccurs="0" type="genericFuelTanksType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -34087,12 +34133,12 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
          </xsd:complexContent>
      </xsd:complexType>
 
-     <xsd:complexType name="integralFuelTanksType">
+    <xsd:complexType name="fuelTanksType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>List of fuselage fuel tanks integrated in compartments.</ddue:para>
+                        <ddue:para>Fuel tanks</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
                         <ddue:para/>
@@ -34103,91 +34149,18 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element name="integralFuelTank" maxOccurs="unbounded" type="integralFuelTankType">
-                        <xsd:annotation>
-                            <xsd:documentation>The integral fuel tank geometry is defined by a link to a fuselage geometry compartment.
-The fuel tank volume type should also be used for the wing fuel tank</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
+                    <xsd:element name="fuelTank" maxOccurs="unbounded" type="fuelTankType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="integralFuelTankType">
+    <xsd:complexType name="fuelTankType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>Definition of one fuel tank integrated in a fuselage compartment.</ddue:para>
-                    </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:para>The definition of fuselage tanks is still preliminary.
-                            Currently, there is no link to any structural elements
-                        </ddue:para>
-                    </ddue:remarks>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:all>
-                    <xsd:element name="name" minOccurs="0" type="stringBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Name of the fuselage fuel tank.
-                            </xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="description" minOccurs="0" type="stringBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Description of the fuselage fuel tank.
-                            </xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="compartmentUID" type="stringUIDBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Link to the tank geometry defined by a compartment.</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="volume" minOccurs="0" type="fuelTankVolumeType">
-                        <xsd:annotation>
-                            <xsd:documentation/>
-                        </xsd:annotation>
-                    </xsd:element>
-                </xsd:all>
-                <xsd:attribute name="uID" use="required" type="xsd:ID"/>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="genericFuelTanksType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Generic fuel tank</ddue:para>
-                    </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:para/>
-                    </ddue:remarks>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:sequence>
-                    <xsd:element name="genericFuelTank" maxOccurs="unbounded" type="genericFuelTankType"/>
-                </xsd:sequence>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="genericFuelTankType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Cryogenic tank</ddue:para>
+                        <ddue:para>Fuel tank</ddue:para>
                     </ddue:summary>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -34207,6 +34180,12 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+                    <xsd:element name="parentUID" minOccurs="0" type="stringUIDBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Parent component
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
                     <xsd:element name="transformation" type="transformationType"/>
                     <xsd:element name="hulls" type="hullsType"/>
                     <xsd:element name="volume" minOccurs="0" type="fuelTankVolumeType">
@@ -34221,6 +34200,17 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     </xsd:element>
                 </xsd:sequence>
                 <xsd:attribute name="uID" use="required" type="xsd:ID"/>
+                <xsd:attribute name="symmetry">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="none"/>
+                            <xsd:enumeration value="inherit"/>
+                            <xsd:enumeration value="x-y-plane"/>
+                            <xsd:enumeration value="x-z-plane"/>
+                            <xsd:enumeration value="y-z-plane"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:attribute>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

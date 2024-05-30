@@ -21,17 +21,22 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDObject;
-class CCPACSGenericFuelTank;
+class CCPACSFuelTank;
 
 namespace generated
 {
+    class CPACSFuselageFuelTank;
+
     // This class is used in:
-    // CPACSGenericFuelTank
+    // CPACSFuelTank
+    // CPACSFuselageFuelTank
 
     /// @brief Definition of different volumes of the fuel tank.
     /// 
@@ -40,13 +45,36 @@ namespace generated
     class CPACSFuelTankVolume
     {
     public:
-        TIGL_EXPORT CPACSFuelTankVolume(CCPACSGenericFuelTank* parent);
+        TIGL_EXPORT CPACSFuelTankVolume(CCPACSFuelTank* parent);
+        TIGL_EXPORT CPACSFuelTankVolume(CPACSFuselageFuelTank* parent);
 
         TIGL_EXPORT virtual ~CPACSFuelTankVolume();
 
-        TIGL_EXPORT CCPACSGenericFuelTank* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSGenericFuelTank* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CPACSFuselageFuelTank>::value, "template argument for P is not a parent class of CPACSFuelTankVolume");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CPACSFuselageFuelTank>::value, "template argument for P is not a parent class of CPACSFuelTankVolume");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -72,7 +100,8 @@ namespace generated
         TIGL_EXPORT virtual void SetRealVolumeFactor_choice2(const boost::optional<double>& value);
 
     protected:
-        CCPACSGenericFuelTank* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         /// Theoretical volume if material thicknesses
         /// (ribs, spars, skins, stringers) and systems (fuel pumps,
@@ -104,4 +133,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSFuelTankVolume = generated::CPACSFuelTankVolume;
+using CCPACSFuselageFuelTank = generated::CPACSFuselageFuelTank;
 } // namespace tigl

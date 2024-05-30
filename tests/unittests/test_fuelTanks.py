@@ -18,47 +18,37 @@ class FuselageTank(unittest.TestCase):
         mgr = configuration.CCPACSConfigurationManager_get_instance()
         uid_mgr = mgr.get_configuration(self.tigl._handle.value).get_uidmanager()
 
-        self.fuelTank = uid_mgr.get_geometric_component("genericTank1")
-        self.hull_with_segments = uid_mgr.get_geometric_component(
-            "genericTank1_outerHull"
-        )
-        self.hull_with_guides = uid_mgr.get_geometric_component(
-            "genericTank2_outerHull"
-        )
+        self.fuelTank = uid_mgr.get_geometric_component("tank1")
+        self.hull_with_segments = uid_mgr.get_geometric_component("tank1_outerHull")
+        self.hull_with_guides = uid_mgr.get_geometric_component("tank2_outerHull")
         self.hull_with_spherical_dome = uid_mgr.get_geometric_component(
-            "genericTank3_sphericalDome"
+            "tank3_sphericalDome"
         )
 
     def tearDown(self):
         self.tigl.close()
         self.tixi.close()
 
-    def test_genericFuelTanks(self):
+    def test_fuelTanks(self):
         # Test custom class methods:
         fuelTanks = self.fuelTank.get_parent()
-        tank1_uID = "genericTank1"
+        tank1_uID = "tank1"
 
         ## Test accessability of childs:
+        self.assertIsInstance(fuelTanks.get_fuel_tank(1), configuration.CCPACSFuelTank)
+        self.assertEqual(fuelTanks.get_fuel_tank(1).get_defaulted_uid(), tank1_uID)
         self.assertIsInstance(
-            fuelTanks.get_generic_fuel_tank(1), configuration.CCPACSGenericFuelTank
+            fuelTanks.get_fuel_tank(tank1_uID),
+            configuration.CCPACSFuelTank,
         )
         self.assertEqual(
-            fuelTanks.get_generic_fuel_tank(1).get_defaulted_uid(), tank1_uID
-        )
-        self.assertIsInstance(
-            fuelTanks.get_generic_fuel_tank(tank1_uID),
-            configuration.CCPACSGenericFuelTank,
-        )
-        self.assertEqual(
-            fuelTanks.get_generic_fuel_tank_index(tank1_uID),
+            fuelTanks.get_fuel_tank_index(tank1_uID),
             1,
         )
-        self.assertEqual(fuelTanks.get_generic_fuel_tanks_count(), 5)
+        self.assertEqual(fuelTanks.get_fuel_tanks_count(), 6)
 
         # Test availability of generated class:
-        self.assertIsInstance(
-            fuelTanks.get_parent(), configuration.CPACSFuselageFuelTanks
-        )
+        self.assertIsInstance(fuelTanks, configuration.CCPACSFuelTanks)
 
     def test_genericFuelTank(self):
         # Test custom class methods:
@@ -70,7 +60,7 @@ class FuselageTank(unittest.TestCase):
     def test_hulls(self):
         # Test custom class methods:
         hulls = self.hull_with_segments.get_parent()
-        hull1_uID = "genericTank1_outerHull"
+        hull1_uID = "tank1_outerHull"
 
         ## Test accessability of childs:
         self.assertIsInstance(hulls.get_hull(1), configuration.CCPACSHull)
@@ -83,7 +73,7 @@ class FuselageTank(unittest.TestCase):
         self.assertEqual(hulls.get_hulls_count(), 2)
 
         # Test availability of generated class:
-        self.assertIsInstance(hulls.get_parent(), configuration.CCPACSGenericFuelTank)
+        self.assertIsInstance(hulls.get_parent(), configuration.CCPACSFuelTank)
 
     def test_hull(self):
 
@@ -123,7 +113,7 @@ class FuselageTank(unittest.TestCase):
             hull_segments.get_section_face("outerHull_section3"), TopoDS_Face
         )
 
-        self.assertEqual(hull_segments.get_defaulted_uid(), "genericTank1_outerHull")
+        self.assertEqual(hull_segments.get_defaulted_uid(), "tank1_outerHull")
 
         self.assertIsInstance(
             hull_segments.get_configuration(),
@@ -142,7 +132,7 @@ class FuselageTank(unittest.TestCase):
 
         self.assertEqual(
             self.hull_with_guides.get_guide_curve_segment(
-                "genericTank2_seg1_upper"
+                "tank2_seg1_upper"
             ).get_guide_curve_profile_uid(),
             "gc_upper",
         )

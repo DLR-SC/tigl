@@ -29,7 +29,7 @@
 #include "CCPACSDuct.h"
 #include "CCPACSHull.h"
 #include "CCPACSHulls.h"
-#include "CCPACSGenericFuelTank.h"
+#include "CCPACSFuelTank.h"
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSegment.h"
@@ -173,6 +173,9 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
 
 boost::optional<CCPACSPositionings>& CTiglFuselageConnection::GetParentComponentPositionings() const
 {
+    // ToDo: is there a better implementation for Elements not having a positionings element?
+    static boost::optional<CCPACSPositionings> dummyPositionings;
+
     if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
         return segment->GetParent()->GetParent<CCPACSFuselage>()->GetPositionings();
     }
@@ -180,7 +183,7 @@ boost::optional<CCPACSPositionings>& CTiglFuselageConnection::GetParentComponent
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetPositionings();
     }
     else if (segment->GetParent()->IsParent<CCPACSHull>()) {
-        return segment->GetParent()->GetParent<CCPACSHull>()->GetParent()->GetParent()->GetParent()->GetParent()->GetParent()->GetPositionings();
+        return dummyPositionings;
     }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");

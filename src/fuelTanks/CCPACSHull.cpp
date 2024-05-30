@@ -26,8 +26,8 @@
 #include "CNamedShape.h"
 #include "CTiglTopoAlgorithms.h"
 #include "tiglcommonfunctions.h"
-#include "CCPACSGenericFuelTank.h"
-#include "CCPACSGenericFuelTanks.h"
+#include "CCPACSFuelTank.h"
+#include "CCPACSFuelTanks.h"
 #include "generated/CPACSDomeType.h"
 #include "generated/CPACSEllipsoidDome.h"
 #include "generated/CPACSTorisphericalDome.h"
@@ -291,12 +291,16 @@ void CCPACSHull::BuildTankWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
 
     TopoDS_Edge dome_edge = BRepBuilderAPI_MakeEdge(arc.Value()).Edge();
 
-    TopoDS_Vertex v1 = GetLastVertex(dome_edge);
-    TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
+    std::vector<TopoDS_Edge> edges = {dome_edge};
 
-    TopoDS_Edge cylinder_edge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
+    if (cylinderLength > 0.0) {
+        TopoDS_Vertex v1 = GetLastVertex(dome_edge);
+        TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
 
-    std::vector<TopoDS_Edge> edges = {dome_edge, cylinder_edge};
+        TopoDS_Edge cylinder_edge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
+        edges.push_back(cylinder_edge);
+    }
+
     BuildTankWire(edges, wire);
 }
 
@@ -388,9 +392,9 @@ void CCPACSHull::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
         throw CTiglError("The cylinder radius (" + std::to_string(m_cylinderRadius_choice2.get()) + ") of hull \"" +
                          GetName() + "\" (uID=\"" + GetUID() + "\") must be larger than 0!");
     }
-    if (m_cylinderLength_choice2.get() <= 0) {
+    if (m_cylinderLength_choice2.get() < 0) {
         throw CTiglError("The cylinder length (" + std::to_string(m_cylinderLength_choice2.get()) + ") of hull \"" +
-                         GetName() + "\" (uID=\"" + GetUID() + "\") must be larger than 0!");
+                         GetName() + "\" (uID=\"" + GetUID() + "\") must be larger than or equal to 0!");
     }
 
     if (m_ellipsoid) {

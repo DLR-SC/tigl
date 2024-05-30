@@ -21,10 +21,10 @@
 #include "CCPACSEnginePosition.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSExternalObject.h"
+#include "CCPACSFuelTank.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSectionElement.h"
-#include "CCPACSGenericFuelTank.h"
 #include "CCPACSGenericSystem.h"
 #include "CCPACSHull.h"
 #include "CCPACSNacelleSection.h"
@@ -76,6 +76,14 @@ namespace generated
         m_parentType = &typeid(CCPACSEnginePylon);
     }
 
+    CPACSTransformation::CPACSTransformation(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSFuelTank);
+    }
+
     CPACSTransformation::CPACSTransformation(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -98,14 +106,6 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSFuselageSection);
-    }
-
-    CPACSTransformation::CPACSTransformation(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CCPACSGenericFuelTank);
     }
 
     CPACSTransformation::CPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr)
@@ -208,6 +208,9 @@ namespace generated
             if (IsParent<CCPACSEnginePylon>()) {
                 return GetParent<CCPACSEnginePylon>();
             }
+            if (IsParent<CCPACSFuelTank>()) {
+                return GetParent<CCPACSFuelTank>();
+            }
             if (IsParent<CCPACSFuselage>()) {
                 return GetParent<CCPACSFuselage>();
             }
@@ -216,9 +219,6 @@ namespace generated
             }
             if (IsParent<CCPACSFuselageSection>()) {
                 return GetParent<CCPACSFuselageSection>();
-            }
-            if (IsParent<CCPACSGenericFuelTank>()) {
-                return GetParent<CCPACSGenericFuelTank>();
             }
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();
@@ -269,6 +269,9 @@ namespace generated
             if (IsParent<CCPACSEnginePylon>()) {
                 return GetParent<CCPACSEnginePylon>();
             }
+            if (IsParent<CCPACSFuelTank>()) {
+                return GetParent<CCPACSFuelTank>();
+            }
             if (IsParent<CCPACSFuselage>()) {
                 return GetParent<CCPACSFuselage>();
             }
@@ -277,9 +280,6 @@ namespace generated
             }
             if (IsParent<CCPACSFuselageSection>()) {
                 return GetParent<CCPACSFuselageSection>();
-            }
-            if (IsParent<CCPACSGenericFuelTank>()) {
-                return GetParent<CCPACSGenericFuelTank>();
             }
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();

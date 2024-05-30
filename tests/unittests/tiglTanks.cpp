@@ -23,8 +23,8 @@
 #include "test.h"
 #include "tigl.h"
 
-#include "CCPACSGenericFuelTank.h"
-#include "CCPACSGenericFuelTanks.h"
+#include "CCPACSFuelTank.h"
+#include "CCPACSFuelTanks.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 
@@ -86,14 +86,14 @@ protected:
     tigl::CTiglUIDManager& uidMgr =
         tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(FuselageTank::tiglHandle).GetUIDManager();
 
-    // generic tank
-    tigl::CCPACSGenericFuelTank const* fuelTank = &uidMgr.ResolveObject<tigl::CCPACSGenericFuelTank>("genericTank1");
+    // tank
+    tigl::CCPACSFuelTank const* fuelTank = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank1");
 
     // hulls
     const tigl::CCPACSHulls& hulls     = fuelTank->GetHulls();
-    tigl::CCPACSHull* hull             = &uidMgr.ResolveObject<tigl::CCPACSHull>("genericTank1_outerHull");
-    tigl::CCPACSHull* hull_with_guides = &uidMgr.ResolveObject<tigl::CCPACSHull>("genericTank2_outerHull");
-    tigl::CCPACSHull* hull_spheric     = &uidMgr.ResolveObject<tigl::CCPACSHull>("genericTank3_sphericalDome");
+    tigl::CCPACSHull* hull             = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank1_outerHull");
+    tigl::CCPACSHull* hull_with_guides = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank2_outerHull");
+    tigl::CCPACSHull* hull_spheric     = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank3_sphericalDome");
 };
 
 TixiDocumentHandle FuselageTank::tixiHandle           = 0;
@@ -105,17 +105,17 @@ TEST_F(FuselageTank, getName)
     EXPECT_EQ(name, "Simple tank 1");
 }
 
-TEST_F(FuselageTank, genericFuelTanks)
+TEST_F(FuselageTank, fuelTanks)
 {
-    std::string uID                               = "genericTank1";
-    const tigl::CCPACSGenericFuelTanks* fuelTanks = fuelTank->GetParent();
-    EXPECT_EQ(fuelTanks->GetGenericFuelTank(1).GetDefaultedUID(), uID);
-    EXPECT_NO_THROW(fuelTanks->GetGenericFuelTank(uID));
-    EXPECT_EQ(fuelTanks->GetGenericFuelTankIndex(uID), 1);
-    EXPECT_EQ(fuelTanks->GetGenericFuelTanksCount(), 5);
+    std::string uID                               = "tank1";
+    const tigl::CCPACSFuelTanks* fuelTanks = fuelTank->GetParent();
+    EXPECT_EQ(fuelTanks->GetFuelTank(1).GetDefaultedUID(), uID);
+    EXPECT_NO_THROW(fuelTanks->GetFuelTank(uID));
+    EXPECT_EQ(fuelTanks->GetFuelTankIndex(uID), 1);
+    EXPECT_EQ(fuelTanks->GetFuelTanksCount(), 6);
 }
 
-TEST_F(FuselageTank, genericFuelTank)
+TEST_F(FuselageTank, fuelTank)
 {
     EXPECT_NO_THROW(fuelTank->GetHulls());
 }
@@ -124,10 +124,10 @@ TEST_F(FuselageTank, genericFuelTank)
 TEST_F(FuselageTank, hulls)
 {
     EXPECT_EQ(hulls.GetHullsCount(), 2);
-    EXPECT_EQ(hulls.GetHull(1).GetDefaultedUID(), "genericTank1_outerHull");
-    EXPECT_EQ(hulls.GetHull("genericTank1_outerHull").GetDefaultedUID(), "genericTank1_outerHull");
-    EXPECT_EQ(hulls.GetHullIndex("genericTank1_outerHull"), 1);
-    EXPECT_EQ(hulls.GetHulls().at(0)->GetDefaultedUID(), "genericTank1_outerHull");
+    EXPECT_EQ(hulls.GetHull(1).GetDefaultedUID(), "tank1_outerHull");
+    EXPECT_EQ(hulls.GetHull("tank1_outerHull").GetDefaultedUID(), "tank1_outerHull");
+    EXPECT_EQ(hulls.GetHullIndex("tank1_outerHull"), 1);
+    EXPECT_EQ(hulls.GetHulls().at(0)->GetDefaultedUID(), "tank1_outerHull");
 }
 
 TEST_F(FuselageTank, hull)
@@ -148,7 +148,7 @@ TEST_F(FuselageTank, hull)
     EXPECT_NO_THROW(hull->GetSegment("outerHull_segment1"));
     EXPECT_THROW(hull->GetSegment(3), tigl::CTiglError);
 
-    EXPECT_EQ(hull->GetDefaultedUID(), "genericTank1_outerHull");
+    EXPECT_EQ(hull->GetDefaultedUID(), "tank1_outerHull");
     EXPECT_NO_THROW(hull->GetConfiguration());
 
     EXPECT_NEAR(hull->GetPoint(1, 0.5, 0.5).X(), 1.54, 1e-2);
@@ -161,7 +161,7 @@ TEST_F(FuselageTank, hull)
     EXPECT_NEAR(points.at(1).Y(), 0, 1e-5);
     EXPECT_NEAR(points.at(1).Z(), -0.65, 1e-2);
 
-    EXPECT_EQ(hull_with_guides->GetGuideCurveSegment("genericTank2_seg1_upper").GetGuideCurveProfileUID(), "gc_upper");
+    EXPECT_EQ(hull_with_guides->GetGuideCurveSegment("tank2_seg1_upper").GetGuideCurveProfileUID(), "gc_upper");
 }
 
 TEST_F(FuselageTank, parametric_hull)

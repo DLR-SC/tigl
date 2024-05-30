@@ -96,12 +96,11 @@
 #include "CCPACSDucts.h"
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
-#include "generated/CPACSFuselageFuelTanks.h"
-#include "generated/CPACSGenericFuelTanks.h"
-#include "generated/CPACSGenericFuelTank.h"
+#include "generated/CPACSFuelTanks.h"
+#include "generated/CPACSFuelTank.h"
 #include "generated/CPACSFuelTankVolume.h"
-#include "CCPACSGenericFuelTanks.h"
-#include "CCPACSGenericFuelTank.h"
+#include "CCPACSFuelTanks.h"
+#include "CCPACSFuelTank.h"
 #include "generated/CPACSHulls.h"
 #include "CCPACSHulls.h"
 #include "generated/CPACSHull.h"
@@ -341,9 +340,9 @@ namespace tigl
 %include "CPACSRotorHubHinge_type.h"
 
 // --------------- Fuselage tanks -----------------//
-%boost_optional(tigl::CCPACSGenericFuelTanks)
 %boost_optional(tigl::generated::CPACSFuselageFuelTanks)
-%boost_optional(tigl::generated::CPACSGenericFuelTanks)
+%boost_optional(tigl::CCPACSFuelTanks)
+%boost_optional(tigl::generated::CPACSFuelTanks)
 %boost_optional(tigl::generated::CPACSFuelTankVolume)
 %boost_optional(tigl::CCPACSHullStructure)
 
@@ -358,14 +357,14 @@ class CCPACSHulls;
 %include "generated/CPACSDomeType.h"
 %include "generated/CPACSHullStructure.h"
 %include "CCPACSHullStructure.h"
-%include "generated/CPACSGenericFuelTanks.h"
+%include "generated/CPACSFuelTanks.h"
 %include "generated/CPACSFuelTankVolume.h"
-%include "generated/CPACSGenericFuelTank.h"
+%include "generated/CPACSFuelTank.h"
 %include "CTiglFuselageConnection.h"
 %include "CCPACSFuselageSegment.h"
 %include "CCPACSFuselageSegments.h"
-%include "CCPACSGenericFuelTanks.h"
-%include "CCPACSGenericFuelTank.h"
+%include "CCPACSFuelTanks.h"
+%include "CCPACSFuelTank.h"
 %include "generated/CPACSHulls.h"
 %include "CCPACSHulls.h"
 %include "generated/CPACSHull.h"
@@ -586,7 +585,7 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSTrailingEdgeDevice,
          tigl::CCPACSDuct,
          tigl::CCPACSDuctAssembly,
-         tigl::CCPACSGenericFuelTank,
+         tigl::CCPACSFuelTank,
          tigl::CCPACSHull
 );
 

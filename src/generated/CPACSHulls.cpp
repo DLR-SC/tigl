@@ -17,7 +17,7 @@
 
 #include <cassert>
 #include <CCPACSHull.h>
-#include "CCPACSGenericFuelTank.h"
+#include "CCPACSFuelTank.h"
 #include "CPACSHulls.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSHulls::CPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
+    CPACSHulls::CPACSHulls(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSGenericFuelTank* CPACSHulls::GetParent() const
+    const CCPACSFuelTank* CPACSHulls::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSGenericFuelTank* CPACSHulls::GetParent()
+    CCPACSFuelTank* CPACSHulls::GetParent()
     {
         return m_parent;
     }

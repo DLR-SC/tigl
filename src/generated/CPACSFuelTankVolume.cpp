@@ -16,8 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSGenericFuelTank.h"
+#include "CCPACSFuelTank.h"
 #include "CPACSFuelTankVolume.h"
+#include "CPACSFuselageFuelTank.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDObject.h"
@@ -27,35 +28,50 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSFuelTankVolume::CPACSFuelTankVolume(CCPACSGenericFuelTank* parent)
+    CPACSFuelTankVolume::CPACSFuelTankVolume(CCPACSFuelTank* parent)
         : m_optimalVolume(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSFuelTank);
+    }
+
+    CPACSFuelTankVolume::CPACSFuelTankVolume(CPACSFuselageFuelTank* parent)
+        : m_optimalVolume(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSFuselageFuelTank);
     }
 
     CPACSFuelTankVolume::~CPACSFuelTankVolume()
     {
     }
 
-    const CCPACSGenericFuelTank* CPACSFuelTankVolume::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSGenericFuelTank* CPACSFuelTankVolume::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSFuelTankVolume::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSFuelTank>()) {
+                return GetParent<CCPACSFuelTank>();
+            }
+            if (IsParent<CPACSFuselageFuelTank>()) {
+                return GetParent<CPACSFuselageFuelTank>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSFuelTankVolume::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSFuelTank>()) {
+                return GetParent<CCPACSFuelTank>();
+            }
+            if (IsParent<CPACSFuselageFuelTank>()) {
+                return GetParent<CPACSFuselageFuelTank>();
+            }
+        }
+        return nullptr;
     }
 
     void CPACSFuelTankVolume::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

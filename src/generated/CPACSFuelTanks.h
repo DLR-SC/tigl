@@ -27,29 +27,28 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSGenericFuelTank;
+class CCPACSFuelTank;
+class CCPACSAircraftModel;
 
 namespace generated
 {
-    class CPACSFuselageFuelTanks;
-
     // This class is used in:
-    // CPACSFuselageFuelTanks
+    // CPACSAircraftModel
 
-    /// @brief Generic fuel tank
+    /// @brief Fuel tanks
     /// 
     /// 
     /// 
-    class CPACSGenericFuelTanks
+    class CPACSFuelTanks
     {
     public:
-        TIGL_EXPORT CPACSGenericFuelTanks(CPACSFuselageFuelTanks* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuelTanks(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSGenericFuelTanks();
+        TIGL_EXPORT virtual ~CPACSFuelTanks();
 
-        TIGL_EXPORT CPACSFuselageFuelTanks* GetParent();
+        TIGL_EXPORT CCPACSAircraftModel* GetParent();
 
-        TIGL_EXPORT const CPACSFuselageFuelTanks* GetParent() const;
+        TIGL_EXPORT const CCPACSAircraftModel* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -60,30 +59,27 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSGenericFuelTank>>& GetGenericFuelTanks() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSGenericFuelTank>>& GetGenericFuelTanks();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuelTank>>& GetFuelTanks() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuelTank>>& GetFuelTanks();
 
-        TIGL_EXPORT virtual CCPACSGenericFuelTank& AddGenericFuelTank();
-        TIGL_EXPORT virtual void RemoveGenericFuelTank(CCPACSGenericFuelTank& ref);
+        TIGL_EXPORT virtual CCPACSFuelTank& AddFuelTank();
+        TIGL_EXPORT virtual void RemoveFuelTank(CCPACSFuelTank& ref);
 
     protected:
-        CPACSFuselageFuelTanks* m_parent;
+        CCPACSAircraftModel* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CCPACSGenericFuelTank>> m_genericFuelTanks;
+        std::vector<std::unique_ptr<CCPACSFuelTank>> m_fuelTanks;
 
     private:
-        CPACSGenericFuelTanks(const CPACSGenericFuelTanks&) = delete;
-        CPACSGenericFuelTanks& operator=(const CPACSGenericFuelTanks&) = delete;
+        CPACSFuelTanks(const CPACSFuelTanks&) = delete;
+        CPACSFuelTanks& operator=(const CPACSFuelTanks&) = delete;
 
-        CPACSGenericFuelTanks(CPACSGenericFuelTanks&&) = delete;
-        CPACSGenericFuelTanks& operator=(CPACSGenericFuelTanks&&) = delete;
+        CPACSFuelTanks(CPACSFuelTanks&&) = delete;
+        CPACSFuelTanks& operator=(CPACSFuelTanks&&) = delete;
     };
 } // namespace generated
 
-// CPACSGenericFuelTanks is customized, use type CCPACSGenericFuelTanks directly
-
-// Aliases in tigl namespace
-using CCPACSFuselageFuelTanks = generated::CPACSFuselageFuelTanks;
+// CPACSFuelTanks is customized, use type CCPACSFuelTanks directly
 } // namespace tigl

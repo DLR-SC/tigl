@@ -26,7 +26,7 @@
 namespace tigl
 {
 
-CCPACSHulls::CCPACSHulls(CCPACSGenericFuelTank* parent, CTiglUIDManager* uidMgr)
+CCPACSHulls::CCPACSHulls(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSHulls(parent, uidMgr)
 {
 }
