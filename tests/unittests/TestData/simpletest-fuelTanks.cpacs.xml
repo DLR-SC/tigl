@@ -101,16 +101,12 @@
             <fuelTanks>
               <genericFuelTanks>
                 <genericFuelTank uID="genericTank1">
-                  <name>Simple tank</name>
+                  <name>Simple tank 1</name>
                   <description>This is a simple tank build via sections and segments with internal structure</description>
                   <transformation>
                     <translation>
                       <x>0.5</x>
                     </translation>
-                    <!-- Rotation and scaling has currently no effect on the hulls -->
-                    <rotation>
-                      <z>45</z>
-                    </rotation>
                   </transformation>
                   <hulls>
                     <hull uID="genericTank1_outerHull">
@@ -426,6 +422,11 @@
                         <translation>
                           <x>0.</x>
                         </translation>
+                        <scaling>
+                          <x>1.2</x>
+                          <y>1.2</y>
+                          <z>1.2</z>
+                        </scaling>
                       </transformation>
                       <cylinderRadius>1.0</cylinderRadius>
                       <cylinderLength>2.0</cylinderLength>
@@ -482,8 +483,12 @@
                   <description>Test case for simple parametrization</description>
                   <transformation>
                     <translation>
-                      <x>9.5</x>
+                      <x>11.5</x>
+                      <y>-1.388</y>
                     </translation>
+                    <rotation>
+                      <z>90</z>
+                    </rotation>
                   </transformation>
                   <hulls>
                     <hull uID="genericTank4_torisphericalDome">

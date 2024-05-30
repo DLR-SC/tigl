@@ -95,6 +95,30 @@ protected:
     void SetFaceTraits(PNamedShape loft) const;
 
 private:
+    enum TankType
+    {
+        TANK_VIA_SEGMENTS,
+        TANK_VIA_DESIGN_PARAMETERS,
+    };
+
+    enum DomeType
+    {
+        TANK_WITH_SPHERICAL_DOME,
+        TANK_WITH_ELLIPSOID_DOME,
+        TANK_WITH_TORISPHERICAL_DOME,
+        TANK_WITH_ISOTENSOID_DOME,
+        TANK_WITH_SEGMENT_DOME
+    };
+
+    mutable TankType tankType;
+    mutable DomeType domeType;
+
+    mutable const tigl::generated::CPACSEllipsoidDome* m_ellipsoid;
+    mutable const tigl::generated::CPACSTorisphericalDome* m_torispherical;
+    mutable const tigl::generated::CPACSIsotensoidDome* m_isotensoid;
+
+    void DetermineTankType() const;
+
     // Get short name for loft
     std::string GetShortShapeName() const;
 

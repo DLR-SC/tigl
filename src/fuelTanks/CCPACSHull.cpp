@@ -81,9 +81,12 @@ TiglGeometricComponentIntent CCPACSHull::GetComponentIntent() const
 
 int CCPACSHull::GetSectionCount() const
 {
-    // ToDo: add exception handling
-    // ToDo: .get() or .get_ptr()?
-    return m_sections_choice1.get().GetSectionCount();
+    if (m_sections_choice1) {
+        return m_sections_choice1.get_ptr()->GetSectionCount();
+    }
+    else {
+        return 0;
+    }
 }
 
 CCPACSFuselageSection& CCPACSHull::GetSection(int index) const
@@ -111,26 +114,42 @@ TopoDS_Shape CCPACSHull::GetSectionFace(const std::string section_uid) const
 
 int CCPACSHull::GetSegmentCount() const
 {
-    // ToDo: add exception handling
-    return m_segments_choice1.get().GetSegmentCount();
+    if (m_segments_choice1) {
+        return m_segments_choice1.get_ptr()->GetSegmentCount();
+    }
+    else {
+        return 0;
+    }
 }
 
 CCPACSFuselageSegment& CCPACSHull::GetSegment(const int index)
 {
-    // ToDo: add exception handling
-    return m_segments_choice1.get().GetSegment(index);
+    if (m_segments_choice1) {
+        return m_segments_choice1.get().GetSegment(index);
+    }
+    else {
+        throw CTiglError("Method only available for hulls with segments.");
+    }
 }
 
 const CCPACSFuselageSegment& CCPACSHull::GetSegment(const int index) const
 {
-    // ToDo: add exception handling
-    return m_segments_choice1.get().GetSegment(index);
+    if (m_segments_choice1) {
+        return m_segments_choice1.get().GetSegment(index);
+    }
+    else {
+        throw CTiglError("Method only available for hulls with segments.");
+    }
 }
 
 CCPACSFuselageSegment& CCPACSHull::GetSegment(std::string uid)
 {
-    // ToDo: add exception handling
-    return m_segments_choice1.get().GetSegment(uid);
+    if (m_segments_choice1) {
+        return m_segments_choice1.get().GetSegment(uid);
+    }
+    else {
+        throw CTiglError("Method only available for hulls with segments.");
+    }
 }
 
 double CCPACSHull::GetVolume()
@@ -167,7 +186,12 @@ double CCPACSHull::GetSurfaceArea()
 
 double CCPACSHull::GetCircumference(const int segmentIndex, const double eta)
 {
-    return static_cast<CCPACSFuselageSegment&>(GetSegment(segmentIndex)).GetCircumference(eta);
+    if (m_segments_choice1) {
+        return static_cast<CCPACSFuselageSegment&>(GetSegment(segmentIndex)).GetCircumference(eta);
+    }
+    else {
+        throw CTiglError("Method only available for hulls with segments.");
+    }
 }
 
 void CCPACSHull::IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber, std::vector<double>& x,
@@ -249,7 +273,7 @@ void CCPACSHull::BuildTankWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
 
     double R = cylinderRadius, h = cylinderRadius;
 
-    double axRatio = m_domeType_choice2->GetEllipsoid_choice1().get_ptr()->GetHalfAxisFraction();
+    double axRatio = m_ellipsoid->GetHalfAxisFraction();
     if (axRatio < 0.0 || axRatio > 1.0) {
         throw CTiglError("Half axis fraction (" + std::to_string(axRatio) + ") of hull \"" + GetName() + "\" (uID=\"" +
                          GetUID() + "\") must be between 0 and 1!");
@@ -281,10 +305,8 @@ void CCPACSHull::BuildTankWireTorispherical(BRepBuilderAPI_MakeWire& wire) const
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    const auto* torispherical = m_domeType_choice2->GetTorispherical_choice2().get_ptr();
-
-    double R = torispherical->GetDishRadius(); // Radius of the sphere (crown radius)
-    double r = torispherical->GetKnuckleRadius(); // Radius of the torus (knuckle radius)
+    double R = m_torispherical->GetDishRadius(); // Radius of the sphere (crown radius)
+    double r = m_torispherical->GetKnuckleRadius(); // Radius of the torus (knuckle radius)
 
     if (R <= cylinderRadius) {
         throw CTiglError("The dish radius (" + std::to_string(R) + ") of hull \"" + GetName() + "\" (uID=\"" +
@@ -330,7 +352,7 @@ void CCPACSHull::BuildTankWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    double polarOpeningRadius = m_domeType_choice2->GetIsotensoid_choice3().get_ptr()->GetPolarOpeningRadius();
+    double polarOpeningRadius = m_isotensoid->GetPolarOpeningRadius();
     if (polarOpeningRadius <= 0 || polarOpeningRadius >= cylinderRadius) {
         throw CTiglError("The polar opening radius (" + std::to_string(polarOpeningRadius) + ") of hull \"" +
                          GetName() + "\" (uID=\"" + GetUID() +
@@ -371,13 +393,13 @@ void CCPACSHull::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
                          GetName() + "\" (uID=\"" + GetUID() + "\") must be larger than 0!");
     }
 
-    if (m_domeType_choice2->GetEllipsoid_choice1()) {
+    if (m_ellipsoid) {
         BuildTankWireEllipsoid(wire);
     }
-    else if (m_domeType_choice2->GetTorispherical_choice2()) {
+    else if (m_torispherical) {
         BuildTankWireTorispherical(wire);
     }
-    else if (m_domeType_choice2->GetIsotensoid_choice3()) {
+    else if (m_isotensoid) {
         BuildTankWireIsotensoid(wire);
     }
 
@@ -390,25 +412,54 @@ void CCPACSHull::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
     loftShape = TransformedShape;
 }
 
+void CCPACSHull::DetermineTankType() const
+{
+    if (m_segments_choice1 && m_sections_choice1) {
+        tankType = TANK_VIA_SEGMENTS;
+        domeType = TANK_WITH_SEGMENT_DOME;
+    }
+    else if (m_cylinderRadius_choice2 && m_cylinderLength_choice2 && m_domeType_choice2) {
+        tankType = TANK_VIA_DESIGN_PARAMETERS;
+
+        m_ellipsoid     = m_domeType_choice2->GetEllipsoid_choice1().get_ptr();
+        m_torispherical = m_domeType_choice2->GetTorispherical_choice2().get_ptr();
+        m_isotensoid    = m_domeType_choice2->GetIsotensoid_choice3().get_ptr();
+
+        if (m_ellipsoid) {
+            m_ellipsoid->GetHalfAxisFraction() == 1 ? domeType = TANK_WITH_SPHERICAL_DOME
+                                                    : domeType = TANK_WITH_ELLIPSOID_DOME;
+        }
+        else if (m_torispherical) {
+            domeType = TANK_WITH_TORISPHERICAL_DOME;
+        }
+        else if (m_isotensoid) {
+            domeType = TANK_WITH_ISOTENSOID_DOME;
+        }
+    }
+    else {
+        throw CTiglError("No valid combination of segments and sections or parametric specification for lofting of "
+                         "tank hull available.",
+                         TIGL_ERROR);
+    }
+}
+
 PNamedShape CCPACSHull::BuildLoft() const
 {
+
+    DetermineTankType();
 
     TopoDS_Shape loftShape;
     std::string loftName      = GetUID();
     std::string loftShortName = GetShortShapeName();
 
-    if (m_segments_choice1 && m_sections_choice1) {
+    if (tankType == TANK_VIA_SEGMENTS) {
+
         BuildShapeFromSegments(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
         SetFaceTraits(loft);
         return loft;
     }
-    else if (m_cylinderRadius_choice2 && m_cylinderLength_choice2 && m_domeType_choice2) {
-
-        const tigl::generated::CPACSEllipsoidDome* ellipsoid = m_domeType_choice2->GetEllipsoid_choice1().get_ptr();
-        const tigl::generated::CPACSTorisphericalDome* torispherical =
-            m_domeType_choice2->GetTorispherical_choice2().get_ptr();
-        const tigl::generated::CPACSIsotensoidDome* isotensoid = m_domeType_choice2->GetIsotensoid_choice3().get_ptr();
+    else if (tankType == TANK_VIA_DESIGN_PARAMETERS) {
 
         BuildShapeFromSimpleParameters(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));

@@ -102,7 +102,7 @@ TiglCPACSConfigurationHandle FuselageTank::tiglHandle = 0;
 TEST_F(FuselageTank, getName)
 {
     const std::string name = fuelTank->GetName();
-    EXPECT_EQ(name, "Simple tank");
+    EXPECT_EQ(name, "Simple tank 1");
 }
 
 TEST_F(FuselageTank, genericFuelTanks)

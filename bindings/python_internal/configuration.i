@@ -352,6 +352,10 @@ class CCPACSFuselageSegments;
 class CCPACSHulls;
 }
 
+%include "generated/CPACSIsotensoidDome.h"
+%include "generated/CPACSTorisphericalDome.h"
+%include "generated/CPACSEllipsoidDome.h"
+%include "generated/CPACSDomeType.h"
 %include "generated/CPACSHullStructure.h"
 %include "CCPACSHullStructure.h"
 %include "generated/CPACSGenericFuelTanks.h"
@@ -367,7 +371,7 @@ class CCPACSHulls;
 %include "generated/CPACSHull.h"
 %include "CCPACSHull.h"
 %include "generated/CPACSFuselageFuelTanks.h"
-%include "generated/CPACSDomeType.h"
+
 
 
 // -------------------- Wing Structure -------------------// 
