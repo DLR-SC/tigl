@@ -342,12 +342,16 @@ void CCPACSHull::BuildTankWireTorispherical(BRepBuilderAPI_MakeWire& wire) const
     TopoDS_Edge dome_edge1 = BRepBuilderAPI_MakeEdge(arc1.Value()).Edge();
     TopoDS_Edge dome_edge2 = BRepBuilderAPI_MakeEdge(arc2.Value()).Edge();
 
-    TopoDS_Vertex v1 = GetLastVertex(dome_edge2);
-    TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
+    std::vector<TopoDS_Edge> edges = {dome_edge1, dome_edge2};
 
-    TopoDS_Edge cylinder_edge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
+    if (cylinderLength > 0.0) {
+        TopoDS_Vertex v1 = GetLastVertex(dome_edge2);
+        TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
 
-    std::vector<TopoDS_Edge> edges = {dome_edge1, dome_edge2, cylinder_edge};
+        TopoDS_Edge cylinder_edge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
+        edges.push_back(cylinder_edge);
+    }
+
     BuildTankWire(edges, wire);
 }
 
@@ -375,12 +379,16 @@ void CCPACSHull::BuildTankWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const
     Handle(Geom_BSplineCurve) bspline = GeomAPI_PointsToBSpline(array).Curve();
     TopoDS_Edge dome_edge             = BRepBuilderAPI_MakeEdge(bspline);
 
-    TopoDS_Vertex v1 = GetFirstVertex(dome_edge);
-    TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
+    std::vector<TopoDS_Edge> edges = {dome_edge};
 
-    TopoDS_Edge cylinder_edge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
+    if (cylinderLength > 0.0) {
+        TopoDS_Vertex v1 = GetFirstVertex(dome_edge);
+        TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
 
-    std::vector<TopoDS_Edge> edges = {dome_edge, cylinder_edge};
+        TopoDS_Edge cylinder_edge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
+        edges.push_back(cylinder_edge);
+    }
+
     BuildTankWire(edges, wire);
 }
 
