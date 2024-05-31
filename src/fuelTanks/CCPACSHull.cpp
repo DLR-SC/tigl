@@ -95,24 +95,27 @@ CCPACSFuselageSection& CCPACSHull::GetSection(int index) const
         return m_sections_choice1.get().GetSection(index);
     }
     else {
-        throw CTiglError(tank_type_error_msg);
+        throw CTiglError(tankTypeException);
     }
 }
 
-TopoDS_Shape CCPACSHull::GetSectionFace(const std::string section_uid) const
+TopoDS_Shape CCPACSHull::GetSectionFace(const std::string sectionUID) const
 {
-    // search for the section in all segments
-    for (int n = 0; n < GetSegmentCount(); ++n) {
+    const int segmentCount = GetSegmentCount();
+
+    // Search for the section in all segments
+    for (int n = 0; n < segmentCount; ++n) {
         const CCPACSFuselageSegment& segment = GetSegment(n + 1);
 
-        if (section_uid == segment.GetStartSectionUID()) {
+        if (sectionUID == segment.GetStartSectionUID()) {
             return BuildFace(segment.GetStartWire());
         }
-        else if (section_uid == segment.GetEndSectionUID()) {
+        else if (sectionUID == segment.GetEndSectionUID()) {
             return BuildFace(segment.GetEndWire());
         }
     }
-    throw CTiglError(tank_type_error_msg);
+    m_sections_choice1 ? throw CTiglError("GetSectionFace: Could not find a fuselage section for the given UID")
+                       : throw CTiglError(tankTypeException);
     return TopoDS_Shape();
 }
 
@@ -132,7 +135,7 @@ CCPACSFuselageSegment& CCPACSHull::GetSegment(const int index)
         return m_segments_choice1.get().GetSegment(index);
     }
     else {
-        throw CTiglError(tank_type_error_msg);
+        throw CTiglError(tankTypeException);
     }
 }
 
@@ -142,7 +145,7 @@ const CCPACSFuselageSegment& CCPACSHull::GetSegment(const int index) const
         return m_segments_choice1.get().GetSegment(index);
     }
     else {
-        throw CTiglError(tank_type_error_msg);
+        throw CTiglError(tankTypeException);
     }
 }
 
@@ -152,40 +155,39 @@ CCPACSFuselageSegment& CCPACSHull::GetSegment(std::string uid)
         return m_segments_choice1.get().GetSegment(uid);
     }
     else {
-        throw CTiglError(tank_type_error_msg);
+        throw CTiglError(tankTypeException);
     }
 }
 
 double CCPACSHull::GetVolume()
 {
-    const TopoDS_Shape fusedSegments = GetLoft()->Shape();
+    const TopoDS_Shape& shape = GetLoft()->Shape();
+    GProp_GProps shapeProps;
+    BRepGProp::VolumeProperties(shape, shapeProps);
 
-    GProp_GProps hull;
-    BRepGProp::VolumeProperties(fusedSegments, hull);
-    double myVolume = hull.Mass();
-    return myVolume;
+    return shapeProps.Mass();
 }
 
 double CCPACSHull::GetSurfaceArea()
 {
-    const PNamedShape& fusedSegments = GetLoft();
+    const PNamedShape& shape = GetLoft();
 
-    // loop over all faces that are not symmetry, front or rear
-    double myArea = 0.;
+    // Loop over all faces that are not symmetry, front or rear
+    double area = 0.;
 
     TopTools_IndexedMapOfShape shapeMap;
-    TopExp::MapShapes(fusedSegments->Shape(), TopAbs_FACE, shapeMap);
+    TopExp::MapShapes(shape->Shape(), TopAbs_FACE, shapeMap);
     for (int i = 1; i <= shapeMap.Extent(); ++i) {
-        if (GetUID() == fusedSegments->GetFaceTraits(i - 1).Name()) {
-            const TopoDS_Face& f = TopoDS::Face(shapeMap(i));
-            GProp_GProps System;
-            BRepGProp::SurfaceProperties(f, System);
-            myArea += System.Mass();
+        const std::string& faceName = shape->GetFaceTraits(i - 1).Name();
+        if (GetUID() == faceName) {
+            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
+            GProp_GProps shapeProps;
+            BRepGProp::SurfaceProperties(face, shapeProps);
+            area += shapeProps.Mass();
         }
     }
 
-    // Calculate surface area
-    return myArea;
+    return area;
 }
 
 double CCPACSHull::GetCircumference(const int segmentIndex, const double eta)
@@ -194,7 +196,7 @@ double CCPACSHull::GetCircumference(const int segmentIndex, const double eta)
         return static_cast<CCPACSFuselageSegment&>(GetSegment(segmentIndex)).GetCircumference(eta);
     }
     else {
-        throw CTiglError(tank_type_error_msg);
+        throw CTiglError(tankTypeException);
     }
 }
 

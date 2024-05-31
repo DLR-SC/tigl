@@ -94,10 +94,26 @@ protected:
     tigl::CCPACSHull* hull_segments   = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank1_outerHull");
     tigl::CCPACSHull* hull_guides     = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank2_outerHull");
     tigl::CCPACSHull* hull_parametric = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank3_sphericalDome");
+
+    const char* tankTypeExceptionString = "This method is only available for hulls with segments. No segment found.";
 };
 
 TixiDocumentHandle FuselageTank::tixiHandle           = 0;
 TiglCPACSConfigurationHandle FuselageTank::tiglHandle = 0;
+
+void CheckExceptionMessage(std::function<void()> func, const char* expectedMessage)
+{
+    try {
+        func();
+        FAIL() << "Expected tigl::CTiglError but no exception was thrown.";
+    }
+    catch (const tigl::CTiglError& e) {
+        EXPECT_STREQ(e.what(), expectedMessage);
+    }
+    catch (...) {
+        FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
+    }
+}
 
 TEST_F(FuselageTank, getName)
 {
@@ -144,14 +160,19 @@ TEST_F(FuselageTank, hull_component_info)
 
 TEST_F(FuselageTank, hull_sections)
 {
+    const char* invalidIndexMessage    = "Invalid index in CCPACSFuselageSections::GetSection";
+    const char* wrongSectionUIDMessage = "GetSectionFace: Could not find a fuselage section for the given UID";
+
     EXPECT_EQ(hull_segments->GetSectionCount(), 3);
     EXPECT_EQ(hull_parametric->GetSectionCount(), 0);
 
     EXPECT_NO_THROW(hull_segments->GetSection(1));
-    EXPECT_THROW(hull_parametric->GetSection(2), tigl::CTiglError);
+    CheckExceptionMessage([&]() { hull_segments->GetSection(4); }, invalidIndexMessage);
+    CheckExceptionMessage([&]() { hull_parametric->GetSection(2); }, tankTypeExceptionString);
 
-    EXPECT_NO_THROW(hull_segments->GetSectionFace("outerHull_section1"));
-    EXPECT_THROW(hull_segments->GetSection(4), tigl::CTiglError);
+    EXPECT_NO_THROW(hull_segments->GetSectionFace("outerHull_section3"));
+    CheckExceptionMessage([&]() { hull_segments->GetSectionFace("wrongSectionUID"); }, wrongSectionUIDMessage);
+    CheckExceptionMessage([&]() { hull_parametric->GetSectionFace("outerHull_section3"); }, tankTypeExceptionString);
 }
 
 TEST_F(FuselageTank, hull_segments)
@@ -178,6 +199,8 @@ TEST_F(FuselageTank, hull_guide_curves)
 TEST_F(FuselageTank, hull_loft_methods)
 {
     EXPECT_NEAR(hull_segments->GetVolume(), 6.57, 1e-2);
+    EXPECT_NEAR(hull_parametric->GetVolume(), 18.1, 1e-2);
+
     EXPECT_NEAR(hull_segments->GetSurfaceArea(), 11.15, 1e-2);
     EXPECT_NEAR(hull_segments->GetCircumference(1, 0.5), 7.43, 1e-2);
 

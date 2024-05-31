@@ -7,7 +7,7 @@ from tigl3 import configuration
 from OCC.Core.TopoDS import TopoDS_Face
 
 
-class FuselageTank(unittest.TestCase):
+class Tank(unittest.TestCase):
 
     def setUp(self):
         self.tixi = Tixi3()
@@ -25,7 +25,7 @@ class FuselageTank(unittest.TestCase):
             "tank3_sphericalDome"
         )
 
-        self.tank_type_exception_msg = "Method only available for hulls with segments."
+        self.tank_type_exception_msg = "This method is only available for hulls with segments. No segment found."
 
     def tearDown(self):
         self.tigl.close()
@@ -103,13 +103,16 @@ class FuselageTank(unittest.TestCase):
         self.assertIsInstance(
             hull_segments.get_section(1), configuration.CCPACSFuselageSection
         )
-        # with self.assertRaises(RuntimeError) as context:
-        #     hull_parametric.get_section(1)
-        # self.assertEqual(str(context.exception), self.tank_type_exception_msg)
+        with self.assertRaises(RuntimeError) as context:
+            hull_parametric.get_section(1)
+        self.assertEqual(str(context.exception), self.tank_type_exception_msg)
 
         self.assertIsInstance(
             hull_segments.get_section_face("outerHull_section3"), TopoDS_Face
         )
+        with self.assertRaises(RuntimeError) as context:
+            hull_parametric.get_section_face("outerHull_section3")
+        self.assertEqual(str(context.exception), self.tank_type_exception_msg)
 
     def test_hull_segments(self):
         hull_segments = self.hull_with_segments
@@ -121,9 +124,9 @@ class FuselageTank(unittest.TestCase):
         self.assertIsInstance(
             hull_segments.get_segment(1), configuration.CCPACSFuselageSegment
         )
-        # with self.assertRaises(RuntimeError) as context:
-        #     hull_parametric.get_segment(1)
-        # self.assertEqual(str(context.exception), self.tank_type_exception_msg)
+        with self.assertRaises(RuntimeError) as context:
+            hull_parametric.get_segment(1)
+        self.assertEqual(str(context.exception), self.tank_type_exception_msg)
 
     def test_hull_guide_curves(self):
         # point = self.hull_with_guides.get_guide_curve_points()[1]
@@ -149,9 +152,9 @@ class FuselageTank(unittest.TestCase):
         self.assertAlmostEqual(round(hull_parametric.get_surface_area(), 2), 36.19)
 
         self.assertAlmostEqual(round(hull_segments.get_circumference(1, 0.5), 2), 7.43)
-        # with self.assertRaises(RuntimeError) as context:
-        #     hull_parametric.get_circumference(1, 0.5)
-        # self.assertEqual(str(context.exception), self.tank_type_exception_msg)
+        with self.assertRaises(RuntimeError) as context:
+            hull_parametric.get_circumference(1, 0.5)
+        self.assertEqual(str(context.exception), self.tank_type_exception_msg)
 
         point = hull_segments.get_point(1, 0.5, 0.5)
         self.assertAlmostEqual(round(point.X(), 2), 1.54)

@@ -113,7 +113,8 @@ private:
     mutable TankType tankType;
     mutable DomeType domeType;
 
-    const std::string tank_type_error_msg = "GetSectionFace: Could not find a section for the given UID";
+    const std::string tankTypeException =
+        "This method is only available for hulls with segments. No segment found.";
 
     mutable const tigl::generated::CPACSEllipsoidDome* m_ellipsoid;
     mutable const tigl::generated::CPACSTorisphericalDome* m_torispherical;
