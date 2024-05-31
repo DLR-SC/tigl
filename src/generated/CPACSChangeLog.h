@@ -29,27 +29,25 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSUpdate;
-    class CPACSHeader;
+    class CPACSLogEntry;
+    class CPACSVersionInfo;
 
     // This class is used in:
-    // CPACSHeader
+    // CPACSVersionInfo
 
-    /// @brief updatesType
+    /// @brief Change log
     /// 
-    /// Updates type, containing update data for the CPACS
-    /// dataset
     /// 
-    class CPACSUpdates
+    class CPACSChangeLog
     {
     public:
-        TIGL_EXPORT CPACSUpdates(CPACSHeader* parent);
+        TIGL_EXPORT CPACSChangeLog(CPACSVersionInfo* parent);
 
-        TIGL_EXPORT virtual ~CPACSUpdates();
+        TIGL_EXPORT virtual ~CPACSChangeLog();
 
-        TIGL_EXPORT CPACSHeader* GetParent();
+        TIGL_EXPORT CPACSVersionInfo* GetParent();
 
-        TIGL_EXPORT const CPACSHeader* GetParent() const;
+        TIGL_EXPORT const CPACSVersionInfo* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -57,28 +55,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSUpdate>>& GetUpdates() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSUpdate>>& GetUpdates();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSLogEntry>>& GetLogEntrys() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSLogEntry>>& GetLogEntrys();
 
-        TIGL_EXPORT virtual CPACSUpdate& AddUpdate();
-        TIGL_EXPORT virtual void RemoveUpdate(CPACSUpdate& ref);
+        TIGL_EXPORT virtual CPACSLogEntry& AddLogEntry();
+        TIGL_EXPORT virtual void RemoveLogEntry(CPACSLogEntry& ref);
 
     protected:
-        CPACSHeader* m_parent;
+        CPACSVersionInfo* m_parent;
 
-        std::vector<std::unique_ptr<CPACSUpdate>> m_updates;
+        std::vector<std::unique_ptr<CPACSLogEntry>> m_logEntrys;
 
     private:
-        CPACSUpdates(const CPACSUpdates&) = delete;
-        CPACSUpdates& operator=(const CPACSUpdates&) = delete;
+        CPACSChangeLog(const CPACSChangeLog&) = delete;
+        CPACSChangeLog& operator=(const CPACSChangeLog&) = delete;
 
-        CPACSUpdates(CPACSUpdates&&) = delete;
-        CPACSUpdates& operator=(CPACSUpdates&&) = delete;
+        CPACSChangeLog(CPACSChangeLog&&) = delete;
+        CPACSChangeLog& operator=(CPACSChangeLog&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSUpdates = generated::CPACSUpdates;
-using CCPACSUpdate = generated::CPACSUpdate;
-using CCPACSHeader = generated::CPACSHeader;
+using CCPACSChangeLog = generated::CPACSChangeLog;
+using CCPACSLogEntry = generated::CPACSLogEntry;
+using CCPACSVersionInfo = generated::CPACSVersionInfo;
 } // namespace tigl

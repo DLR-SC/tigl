@@ -823,40 +823,26 @@ marko.alder@dlr.de
                             <xsd:documentation>Name of CPACS dataset</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element minOccurs="0" name="description" type="stringBaseType">
+                    <xsd:element name="description" minOccurs="0" type="stringBaseType">
                         <xsd:annotation>
                             <xsd:documentation>Description of CPACS dataset
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="creator" type="stringBaseType">
+                    <xsd:element name="version" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:documentation>Creator of initial CPACS dataset
+                            <xsd:documentation>Version of initial CPACS dataset according to the Semantic Versioning 2.0.0 standard.
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="timestamp" type="dateTimeBaseType">
+                    <xsd:element name="cpacsVersion" minOccurs="0" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:documentation>Timestamp of initial CPACS dataset creation
+                            <xsd:documentation>DEPRECATED: Should only be set to allow TiGL to open the file until TiGL is adopted accordingly.
+                                Will be replaced by the cpacsVersion element in versionInfos.
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="version" type="stringBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Version of initial CPACS dataset
-                            </xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="cpacsVersion" minOccurs="0" type="stringBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>CPACS version that the dataset is valid to. The element is optional, since data sets
-                                can be valid for several CPACS versions. However, we strongly recommend to assign data sets to a
-                                specific CPACS version as far as possible, especially since some tools and libraries (e.g. TiGL)
-                                require this specification.
-                            </xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element minOccurs="0" name="updates" type="updatesType"/>
+                    <xsd:element name="versionInfos" type="versionInfosType"/>
                 </xsd:all>
             </xsd:extension>
         </xsd:complexContent>
@@ -34131,5 +34117,123 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
              </xsd:extension>
          </xsd:complexContent>
      </xsd:complexType>
+
+     <xsd:complexType name="versionInfosType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Version Informations</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="versionInfo" maxOccurs="unbounded" type="versionInfoType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="versionInfoType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Version Information</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="cpacsVersion" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation>CPACS version of the dataset
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="description" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Description of CPACS dataset
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="timestamp" type="dateTimeBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Timestamp of initial CPACS dataset creation
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="creator" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Creator of initial CPACS dataset
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="changeLog" minOccurs="0" type="changeLogType"/>
+                </xsd:all>
+                <xsd:attribute name="version" use="required" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="changeLogType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Change log</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="logEntry" maxOccurs="unbounded" type="logEntryType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="logEntryType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Log entry</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="description" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Description of CPACS dataset
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="timestamp" type="dateTimeBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Timestamp
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="creator" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Creator (tool, person, etc.)
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
 
 </xsd:schema>

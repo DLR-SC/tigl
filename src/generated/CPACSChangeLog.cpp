@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSHeader.h"
-#include "CPACSUpdate.h"
-#include "CPACSUpdates.h"
+#include "CPACSChangeLog.h"
+#include "CPACSLogEntry.h"
+#include "CPACSVersionInfo.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDObject.h"
@@ -28,27 +28,27 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSUpdates::CPACSUpdates(CPACSHeader* parent)
+    CPACSChangeLog::CPACSChangeLog(CPACSVersionInfo* parent)
     {
         //assert(parent != NULL);
         m_parent = parent;
     }
 
-    CPACSUpdates::~CPACSUpdates()
+    CPACSChangeLog::~CPACSChangeLog()
     {
     }
 
-    const CPACSHeader* CPACSUpdates::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSHeader* CPACSUpdates::GetParent()
+    const CPACSVersionInfo* CPACSChangeLog::GetParent() const
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSUpdates::GetNextUIDParent() const
+    CPACSVersionInfo* CPACSChangeLog::GetParent()
+    {
+        return m_parent;
+    }
+
+    const CTiglUIDObject* CPACSChangeLog::GetNextUIDParent() const
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -56,7 +56,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDObject* CPACSUpdates::GetNextUIDParent()
+    CTiglUIDObject* CPACSChangeLog::GetNextUIDParent()
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -64,43 +64,43 @@ namespace generated
         return nullptr;
     }
 
-    void CPACSUpdates::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSChangeLog::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element update
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/update")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/update", m_updates, 1, tixi::xsdUnbounded, this);
+        // read element logEntry
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/logEntry")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/logEntry", m_logEntrys, 1, tixi::xsdUnbounded, this);
         }
 
     }
 
-    void CPACSUpdates::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSChangeLog::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element update
-        tixi::TixiSaveElements(tixiHandle, xpath + "/update", m_updates);
+        // write element logEntry
+        tixi::TixiSaveElements(tixiHandle, xpath + "/logEntry", m_logEntrys);
 
     }
 
-    const std::vector<std::unique_ptr<CPACSUpdate>>& CPACSUpdates::GetUpdates() const
+    const std::vector<std::unique_ptr<CPACSLogEntry>>& CPACSChangeLog::GetLogEntrys() const
     {
-        return m_updates;
+        return m_logEntrys;
     }
 
-    std::vector<std::unique_ptr<CPACSUpdate>>& CPACSUpdates::GetUpdates()
+    std::vector<std::unique_ptr<CPACSLogEntry>>& CPACSChangeLog::GetLogEntrys()
     {
-        return m_updates;
+        return m_logEntrys;
     }
 
-    CPACSUpdate& CPACSUpdates::AddUpdate()
+    CPACSLogEntry& CPACSChangeLog::AddLogEntry()
     {
-        m_updates.push_back(make_unique<CPACSUpdate>(this));
-        return *m_updates.back();
+        m_logEntrys.push_back(make_unique<CPACSLogEntry>(this));
+        return *m_logEntrys.back();
     }
 
-    void CPACSUpdates::RemoveUpdate(CPACSUpdate& ref)
+    void CPACSChangeLog::RemoveLogEntry(CPACSLogEntry& ref)
     {
-        for (std::size_t i = 0; i < m_updates.size(); i++) {
-            if (m_updates[i].get() == &ref) {
-                m_updates.erase(m_updates.begin() + i);
+        for (std::size_t i = 0; i < m_logEntrys.size(); i++) {
+            if (m_logEntrys[i].get() == &ref) {
+                m_logEntrys.erase(m_logEntrys.begin() + i);
                 return;
             }
         }
