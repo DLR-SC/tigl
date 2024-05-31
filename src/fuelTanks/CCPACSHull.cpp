@@ -91,8 +91,12 @@ int CCPACSHull::GetSectionCount() const
 
 CCPACSFuselageSection& CCPACSHull::GetSection(int index) const
 {
-    // ToDo: add exception handling
-    return m_sections_choice1.get().GetSection(index);
+    if (m_sections_choice1) {
+        return m_sections_choice1.get().GetSection(index);
+    }
+    else {
+        throw CTiglError(tank_type_error_msg);
+    }
 }
 
 TopoDS_Shape CCPACSHull::GetSectionFace(const std::string section_uid) const
@@ -108,7 +112,7 @@ TopoDS_Shape CCPACSHull::GetSectionFace(const std::string section_uid) const
             return BuildFace(segment.GetEndWire());
         }
     }
-    throw CTiglError("GetSectionFace: Could not find a section for the given UID");
+    throw CTiglError(tank_type_error_msg);
     return TopoDS_Shape();
 }
 
@@ -128,7 +132,7 @@ CCPACSFuselageSegment& CCPACSHull::GetSegment(const int index)
         return m_segments_choice1.get().GetSegment(index);
     }
     else {
-        throw CTiglError("Method only available for hulls with segments.");
+        throw CTiglError(tank_type_error_msg);
     }
 }
 
@@ -138,7 +142,7 @@ const CCPACSFuselageSegment& CCPACSHull::GetSegment(const int index) const
         return m_segments_choice1.get().GetSegment(index);
     }
     else {
-        throw CTiglError("Method only available for hulls with segments.");
+        throw CTiglError(tank_type_error_msg);
     }
 }
 
@@ -148,7 +152,7 @@ CCPACSFuselageSegment& CCPACSHull::GetSegment(std::string uid)
         return m_segments_choice1.get().GetSegment(uid);
     }
     else {
-        throw CTiglError("Method only available for hulls with segments.");
+        throw CTiglError(tank_type_error_msg);
     }
 }
 
@@ -190,7 +194,7 @@ double CCPACSHull::GetCircumference(const int segmentIndex, const double eta)
         return static_cast<CCPACSFuselageSegment&>(GetSegment(segmentIndex)).GetCircumference(eta);
     }
     else {
-        throw CTiglError("Method only available for hulls with segments.");
+        throw CTiglError(tank_type_error_msg);
     }
 }
 
