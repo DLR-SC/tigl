@@ -171,7 +171,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     /* check CPACS Version */
     {
         char* cpacsVersionStr = NULL;
-        ReturnCode tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/cpacsVersion", &cpacsVersionStr);
+        ReturnCode tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/versionInfos/versionInfo[@version=../../version]/cpacsVersion", &cpacsVersionStr);
+
+        if (tixiRet != SUCCESS) {
+            tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/cpacsVersion", &cpacsVersionStr);
+        }
 
         if (tixiRet != SUCCESS) {
             // NO CPACS Version Information in Header

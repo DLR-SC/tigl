@@ -17,13 +17,9 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/utility/in_place_factory.hpp>
 #include <ctime>
 #include <string>
 #include <tixi.h>
-#include "CPACSChangeLog.h"
-#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -72,30 +68,22 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetCreator() const;
         TIGL_EXPORT virtual void SetCreator(const std::string& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSChangeLog>& GetChangeLog() const;
-        TIGL_EXPORT virtual boost::optional<CPACSChangeLog>& GetChangeLog();
-
-        TIGL_EXPORT virtual CPACSChangeLog& GetChangeLog(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveChangeLog();
-
     protected:
         CPACSVersionInfos* m_parent;
 
-        std::string                     m_version;
+        std::string m_version;
 
         /// CPACS version of the dataset
-        std::string                     m_cpacsVersion;
+        std::string m_cpacsVersion;
 
         /// Description of CPACS dataset
-        std::string                     m_description;
+        std::string m_description;
 
         /// Timestamp of initial CPACS dataset creation
-        std::time_t                     m_timestamp;
+        std::time_t m_timestamp;
 
         /// Creator of initial CPACS dataset
-        std::string                     m_creator;
-
-        boost::optional<CPACSChangeLog> m_changeLog;
+        std::string m_creator;
 
     private:
         CPACSVersionInfo(const CPACSVersionInfo&) = delete;

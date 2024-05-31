@@ -118,17 +118,6 @@ namespace generated
             LOG(ERROR) << "Required element creator is missing at xpath " << xpath;
         }
 
-        // read element changeLog
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/changeLog")) {
-            m_changeLog = boost::in_place(this);
-            try {
-                m_changeLog->ReadCPACS(tixiHandle, xpath + "/changeLog");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read changeLog at xpath " << xpath << ": " << e.what();
-                m_changeLog = boost::none;
-            }
-        }
-
     }
 
     void CPACSVersionInfo::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -151,17 +140,6 @@ namespace generated
         // write element creator
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/creator");
         tixi::TixiSaveElement(tixiHandle, xpath + "/creator", m_creator);
-
-        // write element changeLog
-        if (m_changeLog) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/changeLog");
-            m_changeLog->WriteCPACS(tixiHandle, xpath + "/changeLog");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/changeLog")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/changeLog");
-            }
-        }
 
     }
 
@@ -213,28 +191,6 @@ namespace generated
     void CPACSVersionInfo::SetCreator(const std::string& value)
     {
         m_creator = value;
-    }
-
-    const boost::optional<CPACSChangeLog>& CPACSVersionInfo::GetChangeLog() const
-    {
-        return m_changeLog;
-    }
-
-    boost::optional<CPACSChangeLog>& CPACSVersionInfo::GetChangeLog()
-    {
-        return m_changeLog;
-    }
-
-    CPACSChangeLog& CPACSVersionInfo::GetChangeLog(CreateIfNotExistsTag)
-    {
-        if (!m_changeLog)
-            m_changeLog = boost::in_place(this);
-        return *m_changeLog;
-    }
-
-    void CPACSVersionInfo::RemoveChangeLog()
-    {
-        m_changeLog = boost::none;
     }
 
 } // namespace generated
