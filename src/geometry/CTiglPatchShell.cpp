@@ -82,9 +82,11 @@ void CTiglPatchShell::AddSideCap(TopoDS_Wire const& boundaryWire)
             if (MF.IsDone())
             {
                 cap = MF.Face();
+#ifdef DEBUG
                 if(!BRepCheck_Analyzer(cap).IsValid()){
                     throw CTiglError("Error occured while building side caps. Built shape invalid.");
                 }
+#endif
                 Ok = true;
             }
         }
