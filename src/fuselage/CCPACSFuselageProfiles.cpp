@@ -109,5 +109,4 @@ CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(int index) const
     return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfiles[index]);
 }
 
-
 } // end namespace tigl
