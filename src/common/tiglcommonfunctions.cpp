@@ -1189,7 +1189,7 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     if (!(cornerRadius == 0.0)){
         //calculate the number of points required to maintain the minimum distance (<tol) between the bisector of two neighboring points on an arc circle
-        nb_points = (int) (M_PI/(acos(1-tol/cornerRadius)));
+        nb_points = std::round(M_PI/(acos(1-tol/cornerRadius)));
         //build upper right arc
         double y0 = 0.5 - cornerRadius;
         double z0 = 0.5 * heightToWidthRatio - cornerRadius;
@@ -1256,9 +1256,14 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
 
+    // workaround for lofting algorithm not working with  curves of degree '1' (i.e. concatenated lines)
+    // if guide curves are involved, the lofter doesn't generate a valid geometry without thowing an error
+    // This only occurs if the cornerRadius is zero and the profile is a rectangle, which in theory could
+    // just have degree 1.
     if (curve->Degree()<2){
         curve->IncreaseDegree(2);
     }
+
     TopoDS_Wire wire;
     if(!curve.IsNull())
         {
