@@ -60,3 +60,13 @@ TEST(CPACSVersion, noCPACSVersion)
 
     tiglCloseCPACSConfiguration(tiglHandle);
 }
+
+TEST(CPACSVersion, newCPACSHeader)
+{
+    TixiHandleWrapper tixihandle("TestData/testversion_new_header.xml");
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    EXPECT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixihandle, "", &tiglHandle));
+
+    tiglCloseCPACSConfiguration(tiglHandle);
+}
