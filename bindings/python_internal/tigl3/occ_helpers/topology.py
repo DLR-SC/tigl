@@ -77,6 +77,7 @@ def read_brep(filename):
 def write_brep(shape, filename):
     """
     Writes a TopoDS_Shape to a brep file
+    
     :param shape: The shape given as a PythonOCC TopoDS_Shape
     :param filename: Filename to be written
     """

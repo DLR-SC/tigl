@@ -29,7 +29,6 @@
 #include "Standard_CString.hxx"
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
-#include "BRepAlgo_Fuse.hxx"
 #include "ShapeFix_Shape.hxx"
 #include "TopoDS_Compound.hxx"
 #include "BRepFeat_Gluer.hxx"
@@ -699,7 +698,7 @@ const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const
     return uidManager;
 }
 
-double CCPACSConfiguration::GetAirplaneLenth()
+double CCPACSConfiguration::GetAirplaneLength()
 {
     CTiglPoint min, max;
     ConfigurationGetBoundingBox(*this, min, max);

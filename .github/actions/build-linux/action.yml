@@ -46,28 +46,22 @@ runs:
         max_attempts: 3
         command: |
           sudo apt-get update -qq
-          sudo apt-get install -y ccache lcov gcovr cmake cmake-data sshpass mesa-common-dev libglu1-mesa-dev qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-qmake qtbase5-dev-tools qtscript5-dev
+          sudo apt-get install -y ccache lcov gcovr cmake cmake-data sshpass mesa-common-dev libglu1-mesa-dev
           echo "/usr/lib/ccache" >> $GITHUB_PATH
 
     - name: Setup miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
-        auto-activate-base: true
-        activate-environment: ''
+        activate-environment: tigl-bld
+        environment-file: environment.yml
+        auto-activate-base: false
 
-    - name: Install conda-dependencies
-      shell: bash -l {0}
+    - name: Conda info
+      shell: bash -el {0}
       run: |
-        conda install pip \
-                      python=3.8 \
-                      doxygen=1.8.15 \
-                      swig>=3.0.11 \
-                      tixi3=3.3.0 \
-                      ninja \
-                      pythonocc-core=7.4.1 \
-                      freeimageplus \
-              -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda info
+        conda list
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1

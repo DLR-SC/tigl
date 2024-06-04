@@ -94,9 +94,9 @@ private slots:
     void setBackgroundImage();
     void about();
     void aboutQt();
-    void xyzPosition (V3d_Coordinate X,
-                      V3d_Coordinate Y,
-                      V3d_Coordinate Z);
+    void xyzPosition (Standard_Real X,
+                      Standard_Real Y,
+                      Standard_Real Z);
     void statusMessage (const QString& aMessage);
     void loadSettings();
     void saveSettings();

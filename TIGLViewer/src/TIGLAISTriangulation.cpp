@@ -74,9 +74,8 @@ TIGLAISTriangulation::TIGLAISTriangulation(const Handle(Poly_Triangulation)& Tri
     maxy = DBL_MIN; 
     maxz = DBL_MIN;
     
-    const TColgp_Array1OfPnt& nodes = Triangulation->Nodes();
-    for (int i = nodes.Lower(); i <= nodes.Upper(); ++i) {
-        const gp_Pnt& p = nodes.Value(i);
+    for (int i = 1; i <= Triangulation->NbNodes(); ++i) {
+        const gp_Pnt& p = Triangulation->Node(i);
         minx = min(minx, p.X());
         miny = min(miny, p.Y());
         minz = min(minz, p.Z());
@@ -108,9 +107,6 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
             Standard_Real ambient = 1.0;
 #endif
 
-            const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();             //Nodes
-            const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();  //Triangle
-
             Standard_Boolean hasVNormals = myTriangulation->HasNormals();
             Standard_Boolean hasVColors  = (myFlagColor == 1);
 
@@ -122,25 +118,23 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
                         Standard_False    //hasTexels
                         );
 
-            Standard_Integer i;
-            Standard_Integer j;
 
             if (hasVNormals) {
-                const TShort_Array1OfShortReal& normals = myTriangulation->Normals();
                 if (hasVColors) {
                     const TColStd_Array1OfInteger& colors = myColor->Array1();
-                    for ( i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
-                        j = (i - nodes.Lower()) * 3;
-                        anArray->AddVertex(nodes(i), AttenuateColor(colors(i), ambient));
-                        anArray->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
+                    for (int i = 1; i <= myTriangulation->NbNodes(); i++ ) {
+                        anArray->AddVertex(myTriangulation->Node(i), AttenuateColor(colors(i), ambient));
+                        auto aNormal = myTriangulation->Normal(i);
+                        anArray->SetVertexNormal(i, aNormal.X(), aNormal.Y(), aNormal.Z());
                     }
                 }
                 // !hasVColors
                 else {
-                    for ( i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
-                        j = (i - nodes.Lower()) * 3;
-                        anArray->AddVertex(nodes(i));
-                        anArray->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
+                    for (int i = 1; i <= myTriangulation->NbNodes(); i++ ) {
+                        anArray->AddVertex(myTriangulation->Node(i));
+                        auto aNormal = myTriangulation->Normal(i);
+                        anArray->SetVertexNormal(i, aNormal.X(), aNormal.Y(), aNormal.Z());
+
                     }
                 }
             }
@@ -148,21 +142,21 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
             else {
                 if (hasVColors) {
                     const TColStd_Array1OfInteger& colors = myColor->Array1();
-                    for ( i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
-                        anArray->AddVertex(nodes(i), AttenuateColor(colors(i), ambient));
+                    for (int i = 1; i <= myTriangulation->NbNodes(); i++ ) {
+                        anArray->AddVertex(myTriangulation->Node(i), AttenuateColor(colors(i), ambient));
                     }
                 }
                 // !hasVColors
                 else {
-                    for ( i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
-                        anArray->AddVertex(nodes(i));
+                    for (int i = 1; i <= myTriangulation->NbNodes(); i++ ) {
+                        anArray->AddVertex(myTriangulation->Node(i));
                     }
                 }
             }
 
             Standard_Integer indexTriangle[3] = {0,0,0};
-            for ( i = triangles.Lower(); i<= triangles.Upper(); i++ ) {
-                triangles(i).Get(indexTriangle[0], indexTriangle[1], indexTriangle[2]);
+            for (Standard_Integer i = 1; i<= myTriangulation->NbTriangles(); i++ ) {
+                myTriangulation->Triangle(i).Get(indexTriangle[0], indexTriangle[1], indexTriangle[2]);
                 anArray->AddEdge(indexTriangle[0]);
                 anArray->AddEdge(indexTriangle[1]);
                 anArray->AddEdge(indexTriangle[2]);
@@ -172,18 +166,16 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
             break;
         }
         case 0: {
-            const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();
-            const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();
             Handle(Graphic3d_AspectLine3d) aspect = myDrawer->WireAspect()->Aspect();
      
-            Handle(Graphic3d_ArrayOfPrimitives) segments =  new Graphic3d_ArrayOfSegments(nodes.Length(),triangles.Length()*6);
-            for (Standard_Integer i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
-                segments->AddVertex(nodes(i));
+            Handle(Graphic3d_ArrayOfPrimitives) segments =  new Graphic3d_ArrayOfSegments(myTriangulation->NbNodes(),myTriangulation->NbTriangles()*6);
+            for (Standard_Integer i = 1; i <= myTriangulation->NbNodes(); i++ ) {
+                segments->AddVertex(myTriangulation->Node(i));
             }
      
             Standard_Integer indexTriangle[3] = {0,0,0};
-            for (Standard_Integer i = triangles.Lower(); i<= triangles.Upper(); i++ ) {
-                triangles(i).Get(indexTriangle[0], indexTriangle[1], indexTriangle[2]);
+            for (Standard_Integer i = 1; i<= myTriangulation->NbTriangles(); i++ ) {
+                myTriangulation->Triangle(i).Get(indexTriangle[0], indexTriangle[1], indexTriangle[2]);
                 segments->AddEdge(indexTriangle[0]);
                 segments->AddEdge(indexTriangle[1]);
                 segments->AddEdge(indexTriangle[1]);

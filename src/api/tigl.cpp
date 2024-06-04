@@ -171,7 +171,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     /* check CPACS Version */
     {
         char* cpacsVersionStr = NULL;
-        ReturnCode tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/cpacsVersion", &cpacsVersionStr);
+
+        // Default behavior: CPACS versioning since v3.5
+        ReturnCode tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/versionInfos/versionInfo[@version=../../version]/cpacsVersion", &cpacsVersionStr);
+
+        // CPACS versioning until v3.4
+        // Note: should return a deprication warning when TiGL is at v3.5
+        if (tixiRet != SUCCESS) {
+            tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/cpacsVersion", &cpacsVersionStr);
+        }
 
         if (tixiRet != SUCCESS) {
             // NO CPACS Version Information in Header
@@ -755,7 +763,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSetGetPointBehavior(TiglCPACSConfigura
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         for(int wingIndex = 1; wingIndex <= config.GetWingCount(); ++wingIndex ) {
             tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-            wing.SetGetPointBehavior(behavior);
+            wing.getPointBehavior = behavior;
         }
 
         return TIGL_SUCCESS;
@@ -7082,7 +7090,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        *pLength = config.GetAirplaneLenth();
+        *pLength = config.GetAirplaneLength();
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {

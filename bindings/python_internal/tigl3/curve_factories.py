@@ -6,7 +6,7 @@ def interpolate_points(points, params=None, degree=3, close_continuous=False):
     """
     Creates a b-spline that passes through the given points
     using b-spline interpolation.
-
+    
     :param points: Array of points (numpy array also works!). First dimension over number of points, second must be 3!
     :param params: Optional list of parameters (list of floats), at which the points should be interpolated.
                    This has a strong effect on the final curve shape.

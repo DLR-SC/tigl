@@ -111,7 +111,9 @@ TIGLViewerContext::TIGLViewerContext(QUndoStack* stack)
 
 void TIGLViewerContext::initShaders()
 {
-#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,0,0)
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,6,0)
+    QString shaderVersion = "v7.6";
+#elif OCC_VERSION_HEX >= VERSION_HEX_CODE(7,0,0)
     QString shaderVersion = "v7";
 #elif OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
     QString shaderVersion = "v6";

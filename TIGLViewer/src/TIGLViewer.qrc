@@ -28,6 +28,8 @@
         <file>../shaders/PhongShading-v6.vs</file>
         <file>../shaders/PhongShading-v7.fs</file>
         <file>../shaders/PhongShading-v7.vs</file>
+        <file>../shaders/PhongShading-v7.6.fs</file>
+        <file>../shaders/PhongShading-v7.6.vs</file>
         <file>../gfx/error.png</file>
     </qresource>
 </RCC>
