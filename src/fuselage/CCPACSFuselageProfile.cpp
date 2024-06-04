@@ -279,7 +279,7 @@ void CCPACSFuselageProfile::BuildWiresSuperellipse(WireCache& cache) const
     }
     //Get Paramenters
     auto& superellipse_profile = *m_standardProfile_choice3->GetSuperEllipse_choice2();
-    double lowerHeightFraction = superellipse_profile.GetLowerHeightFraction().GetValue();
+    double lowerHeightFraction = superellipse_profile.GetLowerHeightFraction();
     double mLower = superellipse_profile.GetMLower().GetValue();
     double mUpper = superellipse_profile.GetMUpper().GetValue();
     double nLower = superellipse_profile.GetNLower().GetValue();
