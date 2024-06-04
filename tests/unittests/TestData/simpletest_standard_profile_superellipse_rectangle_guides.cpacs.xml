@@ -138,7 +138,7 @@
                 <elements>
                   <element uID="D150_Fuselage_1Section2IDElement1">
                     <name>D150_Fuselage_1Section2</name>
-                    <profileUID>fuselageRectangleProfileuID</profileUID>
+                    <profileUID>fuselageSuperellipseProfileuID</profileUID>
                     <transformation uID="D150_Fuselage_1Section2IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section2IDElement1_transformation1_scaling1">
                         <x>1</x>
@@ -181,7 +181,7 @@
                 <elements>
                   <element uID="D150_Fuselage_1Section3IDElement1">
                     <name>D150_Fuselage_1Section3</name>
-                    <profileUID>fuselageRectangle1ProfileuID</profileUID>
+                    <profileUID>fuselageSuperellipseProfileuID</profileUID>
                     <transformation uID="D150_Fuselage_1Section3IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section3IDElement1_transformation1_scaling1">
                         <x>1</x>
@@ -224,63 +224,11 @@
               <segment uID="segmentD150_Fuselage_1Segment2ID">
                 <name>D150_Fuselage_1Segment2</name>
                 <fromElementUID>D150_Fuselage_1Section1IDElement1</fromElementUID>
-                <guideCurves>
-                    <guideCurve uID= "D150_Fuselage_1_Segment2_guide0">
-                      <name>D150_Fuselage_1_Segment2_guide0</name>
-                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
-                      <fromRelativeCircumference>0</fromRelativeCircumference>
-                      <toRelativeCircumference>0</toRelativeCircumference>
-                    </guideCurve>
-                    <guideCurve uID= "D150_Fuselage_1_Segment2_guide1">
-                      <name>D150_Fuselage_1_Segment2_guide1</name>
-                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
-                      <fromRelativeCircumference>0.333</fromRelativeCircumference>
-                      <toRelativeCircumference>0.333</toRelativeCircumference>
-                    </guideCurve>
-                    <guideCurve uID= "D150_Fuselage_1_Segment2_guide2">
-                      <name>D150_Fuselage_1_Segment2_guide2</name>
-                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
-                      <fromRelativeCircumference>0.666</fromRelativeCircumference>
-                      <toRelativeCircumference>0.666</toRelativeCircumference>
-                    </guideCurve>
-                    <guideCurve uID= "D150_Fuselage_1_Segment2_guide3">
-                      <name>D150_Fuselage_1_Segment2_guide3</name>
-                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
-                      <fromRelativeCircumference>1</fromRelativeCircumference>
-                      <toRelativeCircumference>1</toRelativeCircumference>
-                    </guideCurve>
-                </guideCurves>
                 <toElementUID>D150_Fuselage_1Section2IDElement1</toElementUID>
               </segment>
               <segment uID="segmentD150_Fuselage_1Segment3ID">
                 <name>D150_Fuselage_1Segment3</name>
                 <fromElementUID>D150_Fuselage_1Section2IDElement1</fromElementUID>
-                <guideCurves>
-                    <guideCurve uID="D150_Fuselage_1_Segment3_guide0">
-                      <name>D150_Fuselage_1_Segment3_guide0</name>
-                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
-                      <fromGuideCurveUID>D150_Fuselage_1_Segment2_guide0</fromGuideCurveUID>
-                      <toRelativeCircumference>0</toRelativeCircumference>
-                    </guideCurve>
-                    <guideCurve uID="D150_Fuselage_1_Segment3_guide1">
-                      <name>D150_Fuselage_1_Segment3_guide1</name>
-                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
-                      <fromGuideCurveUID>D150_Fuselage_1_Segment2_guide1</fromGuideCurveUID>
-                      <toRelativeCircumference>0.333</toRelativeCircumference>
-                    </guideCurve>
-                    <guideCurve uID="D150_Fuselage_1_Segment3_guide2">
-                      <name>D150_Fuselage_1_Segment3_guide2</name>
-                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
-                      <fromGuideCurveUID>D150_Fuselage_1_Segment2_guide2</fromGuideCurveUID>
-                      <toRelativeCircumference>0.666</toRelativeCircumference>
-                    </guideCurve>
-                    <guideCurve uID="D150_Fuselage_1_Segment3_guide3">
-                      <name>D150_Fuselage_1_Segment3_guide3</name>
-                      <guideCurveProfileUID>guideCurveProfileFuselage</guideCurveProfileUID>
-                      <fromGuideCurveUID>D150_Fuselage_1_Segment2_guide3</fromGuideCurveUID>
-                      <toRelativeCircumference>1</toRelativeCircumference>
-                    </guideCurve>
-                </guideCurves>
                 <toElementUID>D150_Fuselage_1Section3IDElement1</toElementUID>
               </segment>
             </segments>
@@ -598,13 +546,13 @@
           <name>Superellipse</name>
           <description>Standard Profile Type Superellipse</description>
           <standardProfile>
-            <superellipse>
-              <lowerHeightFraction>0.5</lowerHeightFraction>
-              <mLower>2.</mLower>
-              <mUpper>5.</mUpper>
-              <nLower>3.</nLower>
-              <nUpper>0.25</nUpper>
-            </superellipse>
+            <superEllipse>
+              <lowerHeightFraction>0.25</lowerHeightFraction>
+              <mLower>5.0</mLower>
+              <mUpper>0.5</mUpper>
+              <nLower>3.0</nLower>
+              <nUpper>2.0</nUpper>
+            </superEllipse>
           </standardProfile>
         </fuselageProfile>
       </fuselageProfiles>
