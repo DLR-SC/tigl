@@ -1275,6 +1275,55 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     return wire;
 }
 
+TIGL_EXPORT TopoDS_Wire BuildWireSuperellipse(const double lowerHeightFraction, const double mLower, const double mUpper,
+                                              const double nLower, const double nUpper, const double tol){
+    double z_0 = lowerHeightFraction - 0.5;
+    int nb_points = 64; //TODO add tol
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+    std::vector<gp_Pnt> points(nb_points);
+
+    //build right upper half of semi ellipse
+    for (int i=0; i<nb_points; i++){
+        //define parameters 0. <=y < 0.5
+        double y_i = 0. + i/(2*nb_points);
+        double z_i = z_0 + (0.5 -z_0)* std::pow((1 - std::pow(std::abs(2 * y_i), mUpper)), 1 / nUpper);
+        points.push_back(gp_Pnt(0.,y_i,z_i));
+    }
+
+    //build lower semi ellipse
+    for (int i=0; i<=nb_points*2; i++){
+        //define parameters 0.5>=y>=-0.5
+        double y_i = 0.5 - i/(2*nb_points);
+        double z_i = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2 * y_i), mLower)), 1. / nLower);
+        points.push_back(gp_Pnt(0., y_i, z_i));
+    }
+
+    //build left upper half of semi ellipse
+    for (int i=0; i<nb_points; i++){
+        //define parameters -0.5 <=y < 0.
+        double y_i = -0.5 + i/(2*nb_points);
+        double z_i = z_0 + (0.5 -z_0)* std::pow((1 - std::pow(std::abs(2 * y_i), mUpper)), 1 / nUpper);
+        points.push_back(gp_Pnt(0.,y_i,z_i));
+    }
+
+    //build curve from points
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglPointsToBSplineInterpolation(points).Curve();
+
+    //build wire
+    TopoDS_Wire wire;
+    if(!curve.IsNull())
+        {
+        wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    }
+    if(wire.IsNull()){
+        throw tigl::CTiglError("Error building profile wire");
+    }
+    return wire;
+
+
+
+}
+
 void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList)
 {
     // get list of edges from passed shape
