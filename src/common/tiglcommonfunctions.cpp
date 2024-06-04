@@ -1275,7 +1275,7 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     return wire;
 }
 
-TIGL_EXPORT TopoDS_Wire BuildWireSuperellipse(const double lowerHeightFraction, const double mLower, const double mUpper,
+TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper,
                                               const double nLower, const double nUpper, const double tol){
     double z_0 = lowerHeightFraction - 0.5;
     int nb_points = 64; //TODO add tol
