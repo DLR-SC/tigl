@@ -185,7 +185,13 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
             return;
         }
     }
-    throw CTiglError("Currently only fuselage profiles defined by pointList and rectangular fuselage profiles are supported.");
+    if(m_standardProfile_choice3){
+        if(m_standardProfile_choice3->GetSuperEllipse_choice2()){
+            BuildWiresSuperellipse(cache);
+            return;
+        }
+    }
+    throw CTiglError("Fuselage profile type not supported.");
 
 }
 
@@ -264,6 +270,26 @@ void CCPACSFuselageProfile::BuildWiresRectangle(WireCache& cache) const
     cache.closed = wire;
     cache.original = wire;
 }
+
+//Builds the fuselage profile wires from lowerHeightFraction and exponents m,n for lower and upper semi-ellipse
+void CCPACSFuselageProfile::BuildWiresSuperellipse(WireCache& cache) const
+{
+    if(!m_standardProfile_choice3->GetSuperEllipse_choice2()){
+        throw CTiglError("CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+    }
+    //Get Paramenters
+    auto& superellipse_profile = *m_standardProfile_choice3->GetSuperEllipse_choice2();
+    double lowerHeightFraction = superellipse_profile.GetLowerHeightFraction().GetValue();
+    double mLower = superellipse_profile.GetMLower().GetValue();
+    double mUpper = superellipse_profile.GetMUpper().GetValue();
+    double nLower = superellipse_profile.GetNLower().GetValue();
+    double nUpper = superellipse_profile.GetNUpper().GetValue();
+    //Build wire
+    TopoDS_Wire wire = BuildWireSuperellipse(lowerHeightFraction, mLower, mUpper, nLower, nUpper);
+    cache.closed = wire;
+    cache.original = wire;
+}
+
 
 
 // Transforms a point by the fuselage profile transformation
