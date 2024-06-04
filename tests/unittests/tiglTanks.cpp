@@ -95,6 +95,11 @@ protected:
     tigl::CCPACSHull* hull_guides     = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank2_outerHull");
     tigl::CCPACSHull* hull_parametric = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank3_sphericalDome");
 
+    tigl::CCPACSHull* hull_spherical     = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank3_sphericalDome");
+    tigl::CCPACSHull* hull_ellipsoid     = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank3_ellipsoidDome");
+    tigl::CCPACSHull* hull_torispherical = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank4_torisphericalDome");
+    tigl::CCPACSHull* hull_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank5_isotensoidDome");
+
     const char* tankTypeExceptionString = "This method is only available for hulls with segments. No segment found.";
 };
 
@@ -156,6 +161,39 @@ TEST_F(FuselageTank, hull_component_info)
 {
     EXPECT_EQ(hull_segments->GetComponentType(), TIGL_COMPONENT_FUSELAGE_TANK_HULL);
     EXPECT_EQ(hull_segments->GetComponentIntent(), TIGL_INTENT_PHYSICAL);
+}
+
+TEST_F(FuselageTank, hull_type_info)
+{
+    EXPECT_TRUE(hull_segments->IsHullViaSegments());
+    EXPECT_FALSE(hull_segments->IsHullViaDesignParameters());
+    EXPECT_FALSE(hull_spherical->IsHullViaSegments());
+    EXPECT_TRUE(hull_spherical->IsHullViaDesignParameters());
+
+    EXPECT_FALSE(hull_segments->HasSphericalDome());
+    EXPECT_FALSE(hull_segments->HasEllipsoidDome());
+    EXPECT_FALSE(hull_segments->HasTorisphericalDome());
+    EXPECT_FALSE(hull_segments->HasIsotensoidDome());
+
+    EXPECT_TRUE(hull_spherical->HasSphericalDome());
+    EXPECT_TRUE(hull_spherical->HasEllipsoidDome());
+    EXPECT_FALSE(hull_spherical->HasTorisphericalDome());
+    EXPECT_FALSE(hull_spherical->HasIsotensoidDome());
+
+    EXPECT_FALSE(hull_ellipsoid->HasSphericalDome());
+    EXPECT_TRUE(hull_ellipsoid->HasEllipsoidDome());
+    EXPECT_FALSE(hull_ellipsoid->HasTorisphericalDome());
+    EXPECT_FALSE(hull_ellipsoid->HasIsotensoidDome());
+
+    EXPECT_FALSE(hull_torispherical->HasSphericalDome());
+    EXPECT_FALSE(hull_torispherical->HasEllipsoidDome());
+    EXPECT_TRUE(hull_torispherical->HasTorisphericalDome());
+    EXPECT_FALSE(hull_torispherical->HasIsotensoidDome());
+
+    EXPECT_FALSE(hull_isotensoid->HasSphericalDome());
+    EXPECT_FALSE(hull_isotensoid->HasEllipsoidDome());
+    EXPECT_FALSE(hull_isotensoid->HasTorisphericalDome());
+    EXPECT_TRUE(hull_isotensoid->HasIsotensoidDome());
 }
 
 TEST_F(FuselageTank, hull_sections)

@@ -19,13 +19,18 @@ class Tank(unittest.TestCase):
         uid_mgr = mgr.get_configuration(self.tigl._handle.value).get_uidmanager()
 
         self.fuelTank = uid_mgr.get_geometric_component("tank1")
-        self.hull_with_segments = uid_mgr.get_geometric_component("tank1_outerHull")
-        self.hull_with_guides = uid_mgr.get_geometric_component("tank2_outerHull")
-        self.hull_with_spherical_dome = uid_mgr.get_geometric_component(
-            "tank3_sphericalDome"
+        self.hull_segments = uid_mgr.get_geometric_component("tank1_outerHull")
+        self.hull_guides = uid_mgr.get_geometric_component("tank2_outerHull")
+        self.hull_spherical = uid_mgr.get_geometric_component("tank3_sphericalDome")
+        self.hull_ellipsoid = uid_mgr.get_geometric_component("tank3_ellipsoidDome")
+        self.hull_torispherical = uid_mgr.get_geometric_component(
+            "tank4_torisphericalDome"
         )
+        self.hull_isotensoid = uid_mgr.get_geometric_component("tank5_isotensoidDome")
 
-        self.tank_type_exception_msg = "This method is only available for hulls with segments. No segment found."
+        self.tank_type_exception_msg = (
+            "This method is only available for hulls with segments. No segment found."
+        )
 
     def tearDown(self):
         self.tigl.close()
@@ -61,7 +66,7 @@ class Tank(unittest.TestCase):
 
     def test_hulls(self):
         # Test custom class methods:
-        hulls = self.hull_with_segments.get_parent()
+        hulls = self.hull_segments.get_parent()
         hull1_uID = "tank1_outerHull"
 
         ## Test accessability of childs:
@@ -81,21 +86,53 @@ class Tank(unittest.TestCase):
 
         # Custom class methods
         self.assertEqual(
-            self.hull_with_segments.get_configuration().get_uid(), "testAircraft"
+            self.hull_segments.get_configuration().get_uid(), "testAircraft"
         )
-        self.assertEqual(self.hull_with_segments.get_defaulted_uid(), "tank1_outerHull")
+        self.assertEqual(self.hull_segments.get_defaulted_uid(), "tank1_outerHull")
 
         # Generated class methods
         self.assertIsInstance(
-            self.hull_with_segments.get_configuration(),
+            self.hull_segments.get_configuration(),
             configuration.CCPACSConfiguration,
         )
 
-        self.assertEqual(self.hull_with_segments.get_name(), "Outer hull")
+        self.assertEqual(self.hull_segments.get_name(), "Outer hull")
+
+    def test_hull_type_info(self):
+
+        self.assertTrue(self.hull_segments.is_hull_via_segments())
+        self.assertFalse(self.hull_segments.is_hull_via_design_parameters())
+        self.assertFalse(self.hull_spherical.is_hull_via_segments())
+        self.assertTrue(self.hull_spherical.is_hull_via_design_parameters())
+
+        self.assertFalse(self.hull_segments.has_spherical_dome())
+        self.assertFalse(self.hull_segments.has_ellipsoid_dome())
+        self.assertFalse(self.hull_segments.has_torispherical_dome())
+        self.assertFalse(self.hull_segments.has_isotensoid_dome())
+
+        self.assertTrue(self.hull_spherical.has_spherical_dome())
+        self.assertTrue(self.hull_spherical.has_ellipsoid_dome())
+        self.assertFalse(self.hull_spherical.has_torispherical_dome())
+        self.assertFalse(self.hull_spherical.has_isotensoid_dome())
+
+        self.assertFalse(self.hull_ellipsoid.has_spherical_dome())
+        self.assertTrue(self.hull_ellipsoid.has_ellipsoid_dome())
+        self.assertFalse(self.hull_ellipsoid.has_torispherical_dome())
+        self.assertFalse(self.hull_ellipsoid.has_isotensoid_dome())
+
+        self.assertFalse(self.hull_torispherical.has_spherical_dome())
+        self.assertFalse(self.hull_torispherical.has_ellipsoid_dome())
+        self.assertTrue(self.hull_torispherical.has_torispherical_dome())
+        self.assertFalse(self.hull_torispherical.has_isotensoid_dome())
+
+        self.assertFalse(self.hull_isotensoid.has_spherical_dome())
+        self.assertFalse(self.hull_isotensoid.has_ellipsoid_dome())
+        self.assertFalse(self.hull_isotensoid.has_torispherical_dome())
+        self.assertTrue(self.hull_isotensoid.has_isotensoid_dome())
 
     def test_hull_sections(self):
-        hull_segments = self.hull_with_segments
-        hull_parametric = self.hull_with_spherical_dome
+        hull_segments = self.hull_segments
+        hull_parametric = self.hull_spherical
 
         self.assertEqual(hull_segments.get_section_count(), 3)
         self.assertEqual(hull_parametric.get_section_count(), 0)
@@ -115,8 +152,8 @@ class Tank(unittest.TestCase):
         self.assertEqual(str(context.exception), self.tank_type_exception_msg)
 
     def test_hull_segments(self):
-        hull_segments = self.hull_with_segments
-        hull_parametric = self.hull_with_spherical_dome
+        hull_segments = self.hull_segments
+        hull_parametric = self.hull_spherical
 
         self.assertEqual(hull_segments.get_segment_count(), 2)
         self.assertEqual(hull_parametric.get_segment_count(), 0)
@@ -135,15 +172,15 @@ class Tank(unittest.TestCase):
         # self.assertAlmostEqual(round(point.Z(), 2), -0.24, 1e-2)
 
         self.assertEqual(
-            self.hull_with_guides.get_guide_curve_segment(
+            self.hull_guides.get_guide_curve_segment(
                 "tank2_seg1_upper"
             ).get_guide_curve_profile_uid(),
             "gc_upper",
         )
 
     def test_hull_loft_methods(self):
-        hull_segments = self.hull_with_segments
-        hull_parametric = self.hull_with_spherical_dome
+        hull_segments = self.hull_segments
+        hull_parametric = self.hull_spherical
 
         self.assertAlmostEqual(round(hull_segments.get_volume(), 2), 6.57)
         self.assertAlmostEqual(round(hull_parametric.get_volume(), 2), 18.1)
@@ -162,7 +199,7 @@ class Tank(unittest.TestCase):
         self.assertAlmostEqual(round(point.Z(), 2), -1.2)
 
     def test_structure(self):
-        structure = self.hull_with_segments.get_structure()
+        structure = self.hull_segments.get_structure()
         # Test custom class methods:
         self.assertIsInstance(
             structure.get_frames(), configuration.CCPACSFramesAssembly

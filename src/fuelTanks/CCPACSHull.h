@@ -87,6 +87,15 @@ public:
     // Returns all guide curve points
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
 
+    // Check whether the hull is defined using segments or design parameters
+    TIGL_EXPORT bool IsHullViaSegments() const;
+    TIGL_EXPORT bool IsHullViaDesignParameters() const;
+
+    TIGL_EXPORT bool HasSphericalDome() const;
+    TIGL_EXPORT bool HasEllipsoidDome() const;
+    TIGL_EXPORT bool HasTorisphericalDome() const;
+    TIGL_EXPORT bool HasIsotensoidDome() const;
+
 protected:
     // Build the loft
     PNamedShape BuildLoft() const override;
@@ -95,32 +104,13 @@ protected:
     void SetFaceTraits(PNamedShape loft) const;
 
 private:
-    enum TankType
-    {
-        TANK_VIA_SEGMENTS,
-        TANK_VIA_DESIGN_PARAMETERS,
-    };
+    const std::string _hullTypeException = "This method is only available for hulls with segments. No segment found.";
 
-    enum DomeType
-    {
-        TANK_WITH_SPHERICAL_DOME,
-        TANK_WITH_ELLIPSOID_DOME,
-        TANK_WITH_TORISPHERICAL_DOME,
-        TANK_WITH_ISOTENSOID_DOME,
-        TANK_WITH_SEGMENT_DOME
-    };
-
-    mutable TankType tankType;
-    mutable DomeType domeType;
-
-    const std::string tankTypeException =
-        "This method is only available for hulls with segments. No segment found.";
-
-    mutable const tigl::generated::CPACSEllipsoidDome* m_ellipsoid;
-    mutable const tigl::generated::CPACSTorisphericalDome* m_torispherical;
-    mutable const tigl::generated::CPACSIsotensoidDome* m_isotensoid;
-
-    void DetermineTankType() const;
+    mutable const tigl::generated::CPACSEllipsoidDome* _ellipsoidPtr         = NULL;
+    mutable const tigl::generated::CPACSTorisphericalDome* _torisphericalPtr = NULL;
+    mutable const tigl::generated::CPACSIsotensoidDome* _isotensoidPtr       = NULL;
+    mutable bool _isEvaluated                                                = false;
+    void EvaluateDome() const;
 
     // Get short name for loft
     std::string GetShortShapeName() const;
@@ -132,10 +122,10 @@ private:
     void BuildShapeFromSegments(TopoDS_Shape& loftShape) const;
     void BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const;
 
-    void BuildTankWire(std::vector<TopoDS_Edge>& edges, BRepBuilderAPI_MakeWire& wire) const;
-    void BuildTankWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const;
-    void BuildTankWireTorispherical(BRepBuilderAPI_MakeWire& wire) const;
-    void BuildTankWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const;
+    void BuildHullWire(std::vector<TopoDS_Edge>& edges, BRepBuilderAPI_MakeWire& wire) const;
+    void BuildHullWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const;
+    void BuildHullWireTorispherical(BRepBuilderAPI_MakeWire& wire) const;
+    void BuildHullWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const;
 };
 
 } // namespace tigl

@@ -371,8 +371,6 @@ class CCPACSHulls;
 %include "CCPACSHull.h"
 %include "generated/CPACSFuselageFuelTanks.h"
 
-
-
 // -------------------- Wing Structure -------------------// 
 
 namespace tigl {
