@@ -4,10 +4,15 @@
   <header>
     <name>Fuel tanks test</name>
     <description>Simple fuel tank for unit testing</description>
-    <creator>Marko Alder</creator>
-    <timestamp>2023-12-28T12:00:00</timestamp>
     <version>1.0.0</version>
-    <cpacsVersion>3.3</cpacsVersion>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <description>First test set with different tank and hull types</description>
+        <creator>Marko Alder</creator>
+        <timestamp>2023-12-28T12:00:00</timestamp>
+        <cpacsVersion>3.5</cpacsVersion>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>
