@@ -849,7 +849,7 @@ void knotRefinementForReparam(const Handle(Geom_BSplineCurve) curve, std::vector
     curve->IncreaseMultiplicity(1, nbKnots, degree);
 
     // Add all knots u_i=f(s_i)
-    // Since we assume a picewise linear reparameterization function f, the knots of f are just the new parameters
+    // Since we assume a piecewise linear reparameterization function f, the knots of f are just the new parameters
     // Hence, evaluating f at one knot gives the corresponding old parameter
     TColStd_Array1OfReal knotsParams(1, paramsOld.size());
     TColStd_Array1OfInteger multsParams(1, paramsOld.size());

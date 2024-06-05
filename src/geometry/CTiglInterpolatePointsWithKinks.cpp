@@ -121,7 +121,7 @@ namespace
         return new_params;
     }
 
-} // namespace details
+} // namespace
 
 namespace tigl
 {

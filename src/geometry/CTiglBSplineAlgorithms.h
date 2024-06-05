@@ -162,7 +162,7 @@ public:
      * @brief reparameterizePiecewiseLinear:
      *          Apply reparameterization on a given B-Spline curve defined by old and new parameters
      *          Based on algorithm found in The NURBS book (2nd edition), p. 251, and the explanations
-     *          Here, we use a picewise linear reparameterization function (q=1) interpolating the wanted parameters
+     *          Here, we use a piecewise linear reparameterization function (degree q=1) interpolating the wanted parameters
      *          As a result, the degree stays the same after reparameterization
      * @param paramsOld:
      *          Array of the old parameters
