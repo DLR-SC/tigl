@@ -551,18 +551,24 @@ PNamedShape CCPACSHull::BuildLoft() const
 
 gp_Pnt CCPACSHull::GetPoint(int segmentIndex, double eta, double zeta)
 {
-    return ((CCPACSFuselageSegment&)GetSegment(segmentIndex)).GetPoint(eta, zeta, getPointBehavior);
+    // ToDo: This functionality could also be implemented for parametric hulls, if needed
+    if (m_segments_choice1) {
+        return ((CCPACSFuselageSegment&)GetSegment(segmentIndex)).GetPoint(eta, zeta, _getPointBehavior);
+    }
+    else {
+        throw CTiglError(_hullTypeException);
+    }
 }
 
 // Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
 void CCPACSHull::SetGetPointBehavior(TiglGetPointBehavior behavior)
 {
-    getPointBehavior = behavior;
+    _getPointBehavior = behavior;
 }
 
 TiglGetPointBehavior CCPACSHull::GetGetPointBehavior() const
 {
-    return getPointBehavior;
+    return _getPointBehavior;
 }
 
 CCPACSGuideCurve& CCPACSHull::GetGuideCurveSegment(std::string uid)

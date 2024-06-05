@@ -76,9 +76,9 @@ public:
     // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0
     // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
     TIGL_EXPORT gp_Pnt GetPoint(int segmentIndex, double eta, double zeta);
-    // Set the getPointBehavior to asParameterOnSurface or onLinearLoft
+    // Set the _getPointBehavior to asParameterOnSurface or onLinearLoft
     TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
-    // Get the getPointBehavior
+    // Get the _getPointBehavior
     TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior() const;
 
     // Get the guide curve segment (partial guide curve) with a given uID
@@ -119,7 +119,7 @@ private:
     // Get short name for loft
     std::string GetShortShapeName() const;
 
-    TiglGetPointBehavior getPointBehavior{asParameterOnSurface};
+    TiglGetPointBehavior _getPointBehavior{asParameterOnSurface};
     void IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber, std::vector<double>& x,
                            std::vector<double>& r) const;
 

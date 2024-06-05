@@ -178,7 +178,7 @@ class Tank(unittest.TestCase):
             "gc_upper",
         )
 
-    def test_hull_loft_methods(self):
+    def test_hull_loft_evaluation(self):
         hull_segments = self.hull_segments
         hull_parametric = self.hull_spherical
 
@@ -197,6 +197,19 @@ class Tank(unittest.TestCase):
         self.assertAlmostEqual(round(point.X(), 2), 1.54)
         self.assertAlmostEqual(round(point.Y(), 2), 0.0)
         self.assertAlmostEqual(round(point.Z(), 2), -1.2)
+        with self.assertRaises(RuntimeError) as context:
+            hull_parametric.get_point(1, 0.5, 0.5)
+        self.assertEqual(str(context.exception), self.tank_type_exception_msg)
+
+        self.assertEqual(
+            hull_segments.get_get_point_behavior(), configuration.asParameterOnSurface
+        )
+        self.assertIsNone(
+            hull_segments.set_get_point_behavior(configuration.onLinearLoft)
+        )
+        self.assertEqual(
+            hull_segments.get_get_point_behavior(), configuration.onLinearLoft
+        )
 
     def test_structure(self):
         structure = self.hull_segments.get_structure()

@@ -219,8 +219,11 @@ TEST_F(FuselageTank, hull_segments)
     EXPECT_EQ(hull_parametric->GetSegmentCount(), 0);
 
     EXPECT_NO_THROW(hull_segments->GetSegment(1));
+    CheckExceptionMessage([&]() { hull_parametric->GetSegment(1); }, tankTypeExceptionString);
+
     EXPECT_NO_THROW(hull_segments->GetSegment("outerHull_segment1"));
-    EXPECT_THROW(hull_segments->GetSegment(3), tigl::CTiglError);
+    CheckExceptionMessage([&]() { hull_segments->GetSegment(3); },
+                          "Invalid index value in CCPACSFuselageSegments::GetSegment");
 }
 
 TEST_F(FuselageTank, hull_guide_curves)
@@ -234,17 +237,25 @@ TEST_F(FuselageTank, hull_guide_curves)
     EXPECT_EQ(hull_guides->GetGuideCurveSegment("tank2_seg1_upper").GetGuideCurveProfileUID(), "gc_upper");
 }
 
-TEST_F(FuselageTank, hull_loft_methods)
+TEST_F(FuselageTank, hull_loft_evaluation)
 {
     EXPECT_NEAR(hull_segments->GetVolume(), 6.57, 1e-2);
     EXPECT_NEAR(hull_parametric->GetVolume(), 18.1, 1e-2);
 
     EXPECT_NEAR(hull_segments->GetSurfaceArea(), 11.15, 1e-2);
+    EXPECT_NEAR(hull_parametric->GetSurfaceArea(), 36.19, 1e-2);
+
     EXPECT_NEAR(hull_segments->GetCircumference(1, 0.5), 7.43, 1e-2);
+    CheckExceptionMessage([&]() { hull_parametric->GetCircumference(1, 0.5); }, tankTypeExceptionString);
 
     EXPECT_NEAR(hull_segments->GetPoint(1, 0.5, 0.5).X(), 1.54, 1e-2);
     EXPECT_NEAR(hull_segments->GetPoint(1, 0.5, 0.5).Y(), 0, 1e-5);
     EXPECT_NEAR(hull_segments->GetPoint(1, 0.5, 0.5).Z(), -1.2, 1e-1);
+    CheckExceptionMessage([&]() { hull_parametric->GetPoint(1, 0.5, 0.5); }, tankTypeExceptionString);
+
+    EXPECT_EQ(hull_segments->GetGetPointBehavior(), asParameterOnSurface);
+    EXPECT_NO_THROW(hull_segments->SetGetPointBehavior(onLinearLoft));
+    EXPECT_EQ(hull_segments->GetGetPointBehavior(), onLinearLoft);
 }
 
 TEST_F(FuselageTank, parametric_hull)
