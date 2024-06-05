@@ -384,7 +384,7 @@ namespace
 
     TColStd_Array1OfReal calcNewKnotVectorS(const Handle(Geom_BSplineCurve) curve, std::vector<double> const& paramsOld, std::vector<double> const& paramsNew)
     {
-        // This function matches part one of the second step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
+        // This function matches the second step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
 
         double newKnot;
 
@@ -398,26 +398,6 @@ namespace
             newKnots.SetValue(knotIdx, newKnot);
         }
         return newKnots;
-    }
-
-    TColStd_Array1OfInteger setNewKnotMultsS(const Handle(Geom_BSplineCurve) curve)
-    {
-        // This function matches part two of the second step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
-
-        // Set up mults for new knot vector S'
-        Standard_Integer mult;
-        Standard_Integer nbKnots = curve->NbKnots(); // Size of distinct knots
-        TColStd_Array1OfInteger knotMults(1, nbKnots);
-        for (int knotIdx = 1; knotIdx <= nbKnots; knotIdx++) {
-            // Account for potentially higher mult at global boundaries (usually p+1)
-            // That is why, not the degree is used as mult (as described in the NURBS book), but the mult of the old knot vector
-            // mult should be equal to p*q (degree of original BSpline [p] times degree of reparam fct [q])
-            // We use q=1 for simplification and for not raising the degree
-            // Refined knot vector was set to have m_i=p (or p+1 at global boundaries), so we use it here
-            mult = curve->Multiplicity(knotIdx);
-            knotMults.SetValue(knotIdx, mult);
-        }
-        return knotMults;
     }
 
     Standard_Integer findKnotIndex(TColStd_Array1OfReal knots, double value)
@@ -1014,12 +994,13 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(
 
     // Step 2
     TColStd_Array1OfReal newKnots = calcNewKnotVectorS(curve, paramsOld, paramsNew);
-    TColStd_Array1OfInteger newKnotMults = setNewKnotMultsS(curve);
 
     // Step 3 is not necessary as all poles remain the same (NURBS book, p. 250)
     // -> Set up B-Spline from poles resulting from first knot refinement (step 1) and the new knots (and mults)
 
-    Handle(Geom_BSplineCurve) curveReparameterized = new Geom_BSplineCurve(curve->Poles(), newKnots, newKnotMults, degree);
+    // Internal knots should appear with multiplicity p*q according to the NURBS book, boundary knots have multiplicity p+1 (step 2)
+    // For that reason, the multiplicities of the curve after knot refinement are used when setting up the curve later
+    Handle(Geom_BSplineCurve) curveReparameterized = new Geom_BSplineCurve(curve->Poles(), newKnots, curve->Multiplicities(), degree);
 
     // Step 4
     removeKnotsAfterReparam(curveReparameterized, curveCopy, paramsOld, paramsNew, tolerance);
