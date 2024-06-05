@@ -316,7 +316,7 @@ namespace
     }
 
     // Some helper functions for CTiglBSplineAlgorithms::reparameterizePiecewiseLinear ...
-    void knotRefinementForReparam(const Handle(Geom_BSplineCurve) curve, std::vector<double> paramsOld)
+    void knotRefinementForReparam(const Handle(Geom_BSplineCurve) curve, std::vector<double> const& paramsOld)
     {
         // This function matches the first step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
 
@@ -340,7 +340,7 @@ namespace
         curve->InsertKnots(knotsParams, multsParams);
     }
 
-    double calcReparamfctInv(std::vector<double> paramsOld, std::vector<double> paramsNew, double u)
+    double calcReparamfctInv(std::vector<double> const& paramsOld, std::vector<double> const& paramsNew, double u)
     {
         // Calc inverse of reparametrization function s=g(u)=f⁻¹(s)
         // We set up BSpline of degree 1 -> g is piecewise linear
@@ -379,7 +379,7 @@ namespace
         return m*u + n;
     }
 
-    TColStd_Array1OfReal calcNewKnotVectorS(const Handle(Geom_BSplineCurve) curve, std::vector<double> paramsOld, std::vector<double> paramsNew)
+    TColStd_Array1OfReal calcNewKnotVectorS(const Handle(Geom_BSplineCurve) curve, std::vector<double> const& paramsOld, std::vector<double> const& paramsNew)
     {
         // This function matches part one of the second step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
 
@@ -428,7 +428,7 @@ namespace
 
     void removeKnotsAfterReparam(const Handle(Geom_BSplineCurve) &curve,
                                  const Handle(Geom_BSplineCurve) curveOrigin,
-                                 std::vector<double> paramsOld, std::vector<double> paramsNew,
+                                 std::vector<double> const& paramsOld, std::vector<double> const& paramsNew,
                                  double tolerance)
     {
         // This function matches the fourth step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
@@ -987,8 +987,8 @@ CTiglApproxResult CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(Handle(G
 }
 
 Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(Handle(Geom_BSplineCurve) curve,
-                                                                                std::vector<double> paramsOld,
-                                                                                std::vector<double> paramsNew,
+                                                                                std::vector<double> const& paramsOld,
+                                                                                std::vector<double> const& paramsNew,
                                                                                 double tolerance)
 {
     // Apply reparameterization on a given B-Spline curve defined by old and new parameters

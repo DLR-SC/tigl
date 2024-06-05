@@ -172,7 +172,7 @@ public:
      *          Define the tolerance used for OpenCascade knot removal funtion [Geom_BSplineCurve::RemoveKnot(Index, M, Tolerance)]
      */
     TIGL_EXPORT static Handle(Geom_BSplineCurve) reparameterizePiecewiseLinear(Handle(Geom_BSplineCurve) curve,
-                                                                               std::vector<double> paramsOld, std::vector<double> paramsNew,
+                                                                               std::vector<double> const& paramsOld, std::vector<double> const& paramsNew,
                                                                                double tolerance);
 
 
