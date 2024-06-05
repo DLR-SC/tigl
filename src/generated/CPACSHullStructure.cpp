@@ -143,6 +143,17 @@ namespace generated
             }
         }
 
+        // read element walls
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/walls")) {
+            m_walls = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
+            try {
+                m_walls->ReadCPACS(tixiHandle, xpath + "/walls");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read walls at xpath " << xpath << ": " << e.what();
+                m_walls = boost::none;
+            }
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
@@ -203,6 +214,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/skinLayers")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/skinLayers");
+            }
+        }
+
+        // write element walls
+        if (m_walls) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/walls");
+            m_walls->WriteCPACS(tixiHandle, xpath + "/walls");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/walls")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/walls");
             }
         }
 
@@ -276,6 +298,16 @@ namespace generated
         return m_skinLayers;
     }
 
+    const boost::optional<CCPACSWalls>& CPACSHullStructure::GetWalls() const
+    {
+        return m_walls;
+    }
+
+    boost::optional<CCPACSWalls>& CPACSHullStructure::GetWalls()
+    {
+        return m_walls;
+    }
+
     CCPACSStringersAssembly& CPACSHullStructure::GetStringers(CreateIfNotExistsTag)
     {
         if (!m_stringers)
@@ -334,6 +366,18 @@ namespace generated
     void CPACSHullStructure::RemoveSkinLayers()
     {
         m_skinLayers = boost::none;
+    }
+
+    CCPACSWalls& CPACSHullStructure::GetWalls(CreateIfNotExistsTag)
+    {
+        if (!m_walls)
+            m_walls = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
+        return *m_walls;
+    }
+
+    void CPACSHullStructure::RemoveWalls()
+    {
+        m_walls = boost::none;
     }
 
 } // namespace generated

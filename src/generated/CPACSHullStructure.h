@@ -21,6 +21,7 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSFramesAssembly.h>
 #include <CCPACSStringersAssembly.h>
+#include <CCPACSWalls.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSHullSkinLayers.h"
@@ -79,6 +80,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSHullSkinLayers>& GetSkinLayers() const;
         TIGL_EXPORT virtual boost::optional<CPACSHullSkinLayers>& GetSkinLayers();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSWalls>& GetWalls() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSWalls>& GetWalls();
+
         TIGL_EXPORT virtual CCPACSStringersAssembly& GetStringers(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStringers();
 
@@ -94,6 +98,9 @@ namespace generated
         TIGL_EXPORT virtual CPACSHullSkinLayers& GetSkinLayers(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSkinLayers();
 
+        TIGL_EXPORT virtual CCPACSWalls& GetWalls(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveWalls();
+
     protected:
         CCPACSHull* m_parent;
 
@@ -105,6 +112,7 @@ namespace generated
         boost::optional<CCPACSStringersAssembly> m_virtualStringers;
         boost::optional<CCPACSFramesAssembly>    m_virtualFrames;
         boost::optional<CPACSHullSkinLayers>     m_skinLayers;
+        boost::optional<CCPACSWalls>             m_walls;
 
     private:
         CPACSHullStructure(const CPACSHullStructure&) = delete;

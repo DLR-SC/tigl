@@ -34507,6 +34507,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <xsd:element name="virtualStringers" minOccurs="0" type="stringersAssemblyType"/>
                     <xsd:element name="virtualFrames" minOccurs="0" type="framesAssemblyType"/>
                     <xsd:element name="skinLayers" minOccurs="0" type="hullSkinLayersType"/>
+                    <xsd:element name="walls" minOccurs="0" type="wallsType"/>
                 </xsd:all>
                 <xsd:attribute name="uID" use="required" type="xsd:ID"/>
             </xsd:extension>
