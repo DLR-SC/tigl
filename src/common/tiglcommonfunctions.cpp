@@ -1279,35 +1279,51 @@ TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, 
                                               const double nLower, const double nUpper, const double tol){
     double z_0 = lowerHeightFraction - 0.5;
     int nb_points = 64; //TODO add tol
+    std::vector<gp_Pnt> points(nb_points+1);
     std::vector<Handle(Geom_BSplineCurve)> curves;
-    std::vector<gp_Pnt> points(nb_points);
 
     //build right upper half of semi ellipse
-    for (int i=0; i<nb_points; i++){
+    for (int i=0; i<=(nb_points); i++){
         //define parameters 0. <=y < 0.5
-        double y_i = 0. + i/(2*nb_points);
-        double z_i = z_0 + (0.5 -z_0)* std::pow((1 - std::pow(std::abs(2 * y_i), mUpper)), 1 / nUpper);
-        points.push_back(gp_Pnt(0.,y_i,z_i));
+        double y_i = 0. + i/(2.*(nb_points));     //add 1 to nb_points to  make sure that y is lower than 0.5
+        double z_i = z_0 + (0.5 -z_0)* std::pow((1. - std::pow(std::abs(2. * y_i), mUpper)), 1. / nUpper);
+        points.at(i) = gp_Pnt(0.,y_i,z_i);
     }
+    opencascade::handle<Geom_BSplineCurve> upper_right_curve = tigl::CTiglPointsToBSplineInterpolation(points).Curve();
+    curves.push_back(upper_right_curve);
 
-    //build lower semi ellipse
-    for (int i=0; i<=nb_points*2; i++){
-        //define parameters 0.5>=y>=-0.5
-        double y_i = 0.5 - i/(2*nb_points);
-        double z_i = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2 * y_i), mLower)), 1. / nLower);
-        points.push_back(gp_Pnt(0., y_i, z_i));
+    //build lower right half of semi ellipse
+    for (int i=0; i<=(nb_points); i++){
+        //define parameters 0.5>=y>0.
+        double y_i = 0.5 - i/(2.*(nb_points));
+        double z_i = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2. * y_i), mLower)), 1. / nLower);
+        points.at(i) = (gp_Pnt(0., y_i, z_i));
     }
+    opencascade::handle<Geom_BSplineCurve> lower_right_curve = tigl::CTiglPointsToBSplineInterpolation(points).Curve();
+    curves.push_back(lower_right_curve);
+
+    //build lower left half of semi ellipse
+    for (int i=0; i<=(nb_points); i++){
+        //define parameters 0.>=y>-0.5
+        double y_i = 0. - i/(2.*(nb_points));
+        double z_i = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2. * y_i), mLower)), 1. / nLower);
+        points.at(i) = (gp_Pnt(0., y_i, z_i));
+    }
+    opencascade::handle<Geom_BSplineCurve> lower_left_curve = tigl::CTiglPointsToBSplineInterpolation(points).Curve();
+    curves.push_back(lower_left_curve);
 
     //build left upper half of semi ellipse
-    for (int i=0; i<nb_points; i++){
+    for (int i=0; i<=(nb_points); i++){
         //define parameters -0.5 <=y < 0.
-        double y_i = -0.5 + i/(2*nb_points);
-        double z_i = z_0 + (0.5 -z_0)* std::pow((1 - std::pow(std::abs(2 * y_i), mUpper)), 1 / nUpper);
-        points.push_back(gp_Pnt(0.,y_i,z_i));
+        double y_i = -0.5 + i/(2.*(nb_points));
+        double z_i = z_0 + (0.5 -z_0)* std::pow((1. - std::pow(std::abs(2. * y_i), mUpper)), 1. / nUpper);
+        points.at(i) = (gp_Pnt(0.,y_i,z_i));
     }
+    opencascade::handle<Geom_BSplineCurve> upper_left_curve = tigl::CTiglPointsToBSplineInterpolation(points).Curve();
+    curves.push_back(upper_left_curve);
 
-    //build curve from points
-    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglPointsToBSplineInterpolation(points).Curve();
+    //concatenate curves
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
 
     //build wire
     TopoDS_Wire wire;
