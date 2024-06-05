@@ -166,10 +166,13 @@ class Tank(unittest.TestCase):
         self.assertEqual(str(context.exception), self.tank_type_exception_msg)
 
     def test_hull_guide_curves(self):
-        # point = self.hull_with_guides.get_guide_curve_points()[1]
-        # self.assertAlmostEqual(round(point.X(), 2), 2.75, 1e-2)
-        # self.assertAlmostEqual(round(point.Y(), 2), 0.0, 1e-5)
-        # self.assertAlmostEqual(round(point.Z(), 2), -0.24, 1e-2)
+        point = self.hull_guides.get_guide_curve_points()[1]
+        self.assertAlmostEqual(round(point.X(), 2), 3.5, 1e-2)
+        self.assertAlmostEqual(round(point.Y(), 2), 0.0, 1e-5)
+        self.assertAlmostEqual(round(point.Z(), 2), -0.65, 1e-2)
+        with self.assertRaises(RuntimeError) as context:
+            self.hull_spherical.get_guide_curve_points()[1]
+        self.assertEqual(str(context.exception), self.tank_type_exception_msg)
 
         self.assertEqual(
             self.hull_guides.get_guide_curve_segment(
@@ -177,6 +180,9 @@ class Tank(unittest.TestCase):
             ).get_guide_curve_profile_uid(),
             "gc_upper",
         )
+        with self.assertRaises(RuntimeError) as context:
+            self.hull_spherical.get_guide_curve_segment("tank2_seg1_upper")
+        self.assertEqual(str(context.exception), self.tank_type_exception_msg)
 
     def test_hull_loft_evaluation(self):
         hull_segments = self.hull_segments

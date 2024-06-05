@@ -233,8 +233,11 @@ TEST_F(FuselageTank, hull_guide_curves)
     EXPECT_NEAR(points.at(1).X(), 3.5, 1e-2);
     EXPECT_NEAR(points.at(1).Y(), 0, 1e-5);
     EXPECT_NEAR(points.at(1).Z(), -0.65, 1e-2);
+    CheckExceptionMessage([&]() { hull_parametric->GetGuideCurvePoints(); }, tankTypeExceptionString);
 
     EXPECT_EQ(hull_guides->GetGuideCurveSegment("tank2_seg1_upper").GetGuideCurveProfileUID(), "gc_upper");
+    CheckExceptionMessage([&]() { hull_parametric->GetGuideCurveSegment("tank2_seg1_upper"); },
+                          tankTypeExceptionString);
 }
 
 TEST_F(FuselageTank, hull_loft_evaluation)

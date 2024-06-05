@@ -578,40 +578,50 @@ CCPACSGuideCurve& CCPACSHull::GetGuideCurveSegment(std::string uid)
 
 const CCPACSGuideCurve& CCPACSHull::GetGuideCurveSegment(std::string uid) const
 {
-    for (int i = 1; i <= m_segments_choice1.get().GetSegmentCount(); i++) {
-        const CCPACSFuselageSegment& segment = m_segments_choice1.get().GetSegment(i);
+    if (m_segments_choice1) {
+        for (int i = 1; i <= m_segments_choice1.get().GetSegmentCount(); i++) {
+            const CCPACSFuselageSegment& segment = m_segments_choice1.get().GetSegment(i);
 
-        if (!segment.GetGuideCurves()) {
-            continue;
-        }
+            if (!segment.GetGuideCurves()) {
+                continue;
+            }
 
-        if (segment.GetGuideCurves()->GuideCurveExists(uid)) {
-            return segment.GetGuideCurves()->GetGuideCurve(uid);
+            if (segment.GetGuideCurves()->GuideCurveExists(uid)) {
+                return segment.GetGuideCurves()->GetGuideCurve(uid);
+            }
         }
+        throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
     }
-    throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
+    else {
+        throw CTiglError(_hullTypeException);
+    }
 }
 
 std::vector<gp_Pnt> CCPACSHull::GetGuideCurvePoints() const
 {
-    std::vector<gp_Pnt> points;
+    if (m_segments_choice1) {
+        std::vector<gp_Pnt> points;
 
-    // connect the belonging guide curve segments
-    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
-        const CCPACSFuselageSegment& segment = m_segments_choice1.get().GetSegment(isegment);
+        // connect the belonging guide curve segments
+        for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+            const CCPACSFuselageSegment& segment = m_segments_choice1.get().GetSegment(isegment);
 
-        if (!segment.GetGuideCurves()) {
-            continue;
+            if (!segment.GetGuideCurves()) {
+                continue;
+            }
+
+            const CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
+            for (int iguide = 1; iguide <= segmentCurves.GetGuideCurveCount(); ++iguide) {
+                const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+                std::vector<gp_Pnt> curPoints = curve.GetCurvePoints();
+                points.insert(points.end(), curPoints.begin(), curPoints.end());
+            }
         }
-
-        const CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
-        for (int iguide = 1; iguide <= segmentCurves.GetGuideCurveCount(); ++iguide) {
-            const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
-            std::vector<gp_Pnt> curPoints = curve.GetCurvePoints();
-            points.insert(points.end(), curPoints.begin(), curPoints.end());
-        }
+        return points;
     }
-    return points;
+    else {
+        throw CTiglError(_hullTypeException);
+    }
 }
 
 // get short name for loft
