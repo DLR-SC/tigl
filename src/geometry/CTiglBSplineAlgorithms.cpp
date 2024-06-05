@@ -353,22 +353,25 @@ namespace
 
         // First: Find interval [p_i,p_{i+1}] to determine boundaries
         // a_x = lowerBound, b_x = upperBound
-        double a_x = paramsOld[0];
-        double b_x = paramsOld[1];
-        double a_y = paramsNew[0];
-        double b_y = paramsNew[1];
 
-        for (int paramsIdx=1; paramsIdx < paramsOld.size()-1; paramsIdx++) {
-            // Break condition
-            if (a_x <= u && u <= b_x)
-                paramsIdx = paramsOld.size();
-            else {
-                a_x = paramsOld[paramsIdx];
-                b_x = paramsOld[paramsIdx+1];
-                a_y = paramsNew[paramsIdx];
-                b_y = paramsNew[paramsIdx+1];
-            }
-        }
+        double a_x, a_y, b_x, b_y;
+        auto it = std::find_if(
+            paramsOld.begin(),
+            paramsOld.end(),
+            [&u](double v){ return u <= v; }
+        );
+
+        int paramsIdx;
+        // Catch case u=0, since distance would be 0 which causes in illegal vector access with subtraction of 1
+        if (*it == 0)
+            paramsIdx = 1;
+        else
+            paramsIdx = std::distance(paramsOld.begin(), it);
+
+        a_x = paramsOld[paramsIdx - 1];
+        b_x = paramsOld[paramsIdx];
+        a_y = paramsNew[paramsIdx - 1];
+        b_y = paramsNew[paramsIdx];
 
         // Calc slope m
         double m = (b_y-a_y) / (b_x-a_x);
@@ -438,7 +441,6 @@ namespace
         Standard_Integer nbKnots = curve->NbKnots();
         double knotS, knotU;
         Standard_Integer multS, multU, idxU, multNew;
-        Standard_Boolean boolRemove;
         // Exclude first and last knot
         // Iterate backwards to account for shrinking size of knots vector by deletion if multNew is 0
         for (int knotIdx = nbKnots-1; knotIdx >= 2; knotIdx--) {
@@ -461,7 +463,7 @@ namespace
             //multNew = max(pq - p + multU, pq - q + multS) = max(multU, multS) [since q=1 and pq=p]
             multNew = std::max(multU, multS);
             // Decrease mult of knot to multNew
-            boolRemove = curve->RemoveKnot(knotIdx, multNew, tolerance);
+            curve->RemoveKnot(knotIdx, multNew, tolerance);
         }
     }
 
