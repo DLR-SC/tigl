@@ -403,7 +403,7 @@ namespace
     Standard_Integer findKnotIndex(TColStd_Array1OfReal knots, double value)
     {
         for(int idx = 1; idx <= knots.Size(); idx++) {
-            if(knots[idx] == value)
+            if(fabs(knots[idx] - value) <= 1e-12)
                 return idx;
         }
         return -1;
@@ -429,9 +429,8 @@ namespace
             // Define multiplicity of knotS in original knot vector S of reparam fct
             // By construction, the new parameters are exactely these knots and they all have mult=1
             // => If knotS is found in these, its mult in this knot vector is exactely 1, 0 else
-            if(std::find(paramsNew.begin(), paramsNew.end(), knotS) != paramsNew.end())
+            if(std::find_if(paramsNew.begin(), paramsNew.end(), [&knotS](double v){ return fabs(knotS-v) <= 1e-12; }) != paramsNew.end())
                 multS = 1;
-
             // Used as original function, not inverse [swap interpolation dimensions]
             knotU = calcReparamfctInv(paramsNew, paramsOld, knotS);
             idxU = findKnotIndex(curveOrigin->Knots(), knotU);
