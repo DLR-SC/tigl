@@ -29,23 +29,21 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSUpdate;
+    class CPACSVersionInfo;
     class CPACSHeader;
 
     // This class is used in:
     // CPACSHeader
 
-    /// @brief updatesType
+    /// @brief Version Informations
     /// 
-    /// Updates type, containing update data for the CPACS
-    /// dataset
     /// 
-    class CPACSUpdates
+    class CPACSVersionInfos
     {
     public:
-        TIGL_EXPORT CPACSUpdates(CPACSHeader* parent);
+        TIGL_EXPORT CPACSVersionInfos(CPACSHeader* parent);
 
-        TIGL_EXPORT virtual ~CPACSUpdates();
+        TIGL_EXPORT virtual ~CPACSVersionInfos();
 
         TIGL_EXPORT CPACSHeader* GetParent();
 
@@ -57,28 +55,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSUpdate>>& GetUpdates() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSUpdate>>& GetUpdates();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVersionInfo>>& GetVersionInfos() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVersionInfo>>& GetVersionInfos();
 
-        TIGL_EXPORT virtual CPACSUpdate& AddUpdate();
-        TIGL_EXPORT virtual void RemoveUpdate(CPACSUpdate& ref);
+        TIGL_EXPORT virtual CPACSVersionInfo& AddVersionInfo();
+        TIGL_EXPORT virtual void RemoveVersionInfo(CPACSVersionInfo& ref);
 
     protected:
         CPACSHeader* m_parent;
 
-        std::vector<std::unique_ptr<CPACSUpdate>> m_updates;
+        std::vector<std::unique_ptr<CPACSVersionInfo>> m_versionInfos;
 
     private:
-        CPACSUpdates(const CPACSUpdates&) = delete;
-        CPACSUpdates& operator=(const CPACSUpdates&) = delete;
+        CPACSVersionInfos(const CPACSVersionInfos&) = delete;
+        CPACSVersionInfos& operator=(const CPACSVersionInfos&) = delete;
 
-        CPACSUpdates(CPACSUpdates&&) = delete;
-        CPACSUpdates& operator=(CPACSUpdates&&) = delete;
+        CPACSVersionInfos(CPACSVersionInfos&&) = delete;
+        CPACSVersionInfos& operator=(CPACSVersionInfos&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSUpdates = generated::CPACSUpdates;
-using CCPACSUpdate = generated::CPACSUpdate;
+using CCPACSVersionInfos = generated::CPACSVersionInfos;
+using CCPACSVersionInfo = generated::CPACSVersionInfo;
 using CCPACSHeader = generated::CPACSHeader;
 } // namespace tigl

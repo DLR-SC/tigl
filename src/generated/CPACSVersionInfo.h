@@ -28,26 +28,24 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSUpdates;
+    class CPACSVersionInfos;
 
     // This class is used in:
-    // CPACSUpdates
+    // CPACSVersionInfos
 
-    /// @brief updateType
+    /// @brief Version Information
     /// 
-    /// Update type, containing a datablock for each update of
-    /// the CPACS dataset
     /// 
-    class CPACSUpdate
+    class CPACSVersionInfo
     {
     public:
-        TIGL_EXPORT CPACSUpdate(CPACSUpdates* parent);
+        TIGL_EXPORT CPACSVersionInfo(CPACSVersionInfos* parent);
 
-        TIGL_EXPORT virtual ~CPACSUpdate();
+        TIGL_EXPORT virtual ~CPACSVersionInfo();
 
-        TIGL_EXPORT CPACSUpdates* GetParent();
+        TIGL_EXPORT CPACSVersionInfos* GetParent();
 
-        TIGL_EXPORT const CPACSUpdates* GetParent() const;
+        TIGL_EXPORT const CPACSVersionInfos* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -55,50 +53,48 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::string& GetModification() const;
-        TIGL_EXPORT virtual void SetModification(const std::string& value);
-
-        TIGL_EXPORT virtual const std::string& GetCreator() const;
-        TIGL_EXPORT virtual void SetCreator(const std::string& value);
-
-        TIGL_EXPORT virtual const std::time_t& GetTimestamp() const;
-        TIGL_EXPORT virtual void SetTimestamp(const std::time_t& value);
-
         TIGL_EXPORT virtual const std::string& GetVersion() const;
         TIGL_EXPORT virtual void SetVersion(const std::string& value);
 
         TIGL_EXPORT virtual const std::string& GetCpacsVersion() const;
         TIGL_EXPORT virtual void SetCpacsVersion(const std::string& value);
 
+        TIGL_EXPORT virtual const std::string& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const std::string& value);
+
+        TIGL_EXPORT virtual const std::time_t& GetTimestamp() const;
+        TIGL_EXPORT virtual void SetTimestamp(const std::time_t& value);
+
+        TIGL_EXPORT virtual const std::string& GetCreator() const;
+        TIGL_EXPORT virtual void SetCreator(const std::string& value);
+
     protected:
-        CPACSUpdates* m_parent;
+        CPACSVersionInfos* m_parent;
 
-        /// Description of Modification of CPACS data
-        std::string m_modification;
-
-        /// Creator of CPACS modification
-        std::string m_creator;
-
-        /// Timestamp of CPACS modification
-        std::time_t m_timestamp;
-
-        /// New version number of CPACS dataset after
-        /// modification
         std::string m_version;
 
-        /// CPACS version that the dataset is valid to
+        /// CPACS version of the dataset
         std::string m_cpacsVersion;
 
-    private:
-        CPACSUpdate(const CPACSUpdate&) = delete;
-        CPACSUpdate& operator=(const CPACSUpdate&) = delete;
+        /// Description of CPACS dataset
+        std::string m_description;
 
-        CPACSUpdate(CPACSUpdate&&) = delete;
-        CPACSUpdate& operator=(CPACSUpdate&&) = delete;
+        /// Timestamp of initial CPACS dataset creation
+        std::time_t m_timestamp;
+
+        /// Creator of initial CPACS dataset
+        std::string m_creator;
+
+    private:
+        CPACSVersionInfo(const CPACSVersionInfo&) = delete;
+        CPACSVersionInfo& operator=(const CPACSVersionInfo&) = delete;
+
+        CPACSVersionInfo(CPACSVersionInfo&&) = delete;
+        CPACSVersionInfo& operator=(CPACSVersionInfo&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSUpdate = generated::CPACSUpdate;
-using CCPACSUpdates = generated::CPACSUpdates;
+using CCPACSVersionInfo = generated::CPACSVersionInfo;
+using CCPACSVersionInfos = generated::CPACSVersionInfos;
 } // namespace tigl
