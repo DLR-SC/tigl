@@ -216,8 +216,8 @@ TEST_F(FuselageTank, hull_sections)
 TEST_F(FuselageTank, hull_segments)
 {
     EXPECT_EQ(hull_segments->GetSegmentCount(), 2);
+    EXPECT_EQ(hull_parametric->GetSegmentCount(), 0);
 
-    EXPECT_EQ(hull_segments->GetSegmentCount(), 2);
     EXPECT_NO_THROW(hull_segments->GetSegment(1));
     EXPECT_NO_THROW(hull_segments->GetSegment("outerHull_segment1"));
     EXPECT_THROW(hull_segments->GetSegment(3), tigl::CTiglError);

@@ -87,13 +87,17 @@ public:
     // Returns all guide curve points
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
 
-    // Check whether the hull is defined using segments or design parameters
+    // Check whether the hull is defined using segments
     TIGL_EXPORT bool IsHullViaSegments() const;
+    // Check whether the hull is defined using design parameters
     TIGL_EXPORT bool IsHullViaDesignParameters() const;
-
+    // Check whether the hull has spherical dome
     TIGL_EXPORT bool HasSphericalDome() const;
+    // Check whether the hull has ellipsoid dome
     TIGL_EXPORT bool HasEllipsoidDome() const;
+    // Check whether the hull has spherical dome
     TIGL_EXPORT bool HasTorisphericalDome() const;
+    // Check whether the hull has isotensoid dome
     TIGL_EXPORT bool HasIsotensoidDome() const;
 
 protected:

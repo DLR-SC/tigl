@@ -371,34 +371,34 @@ void CCPACSHull::BuildHullWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
     gp_Dir dir(0.0, 1.0, 0.0);
     gp_Pnt p(h, 0.0, 0.0);
 
-    double major_ax    = R;
-    double minor_ax    = R * axRatio;
-    double rot_angle   = 0;
-    double start_angle = -M_PI / 2;
-    double end_angle   = 0.0;
+    double majorAxis  = R;
+    double minorAxis  = R * axRatio;
+    double rotAngle   = 0;
+    double startAngle = -M_PI / 2;
+    double endAngle   = 0.0;
 
     if (axRatio > 1) {
-        major_ax    = R * axRatio;
-        minor_ax    = R;
-        rot_angle   = 0.5 * M_PI;
-        start_angle = -M_PI;
-        end_angle   = -M_PI / 2;
+        majorAxis  = R * axRatio;
+        minorAxis  = R;
+        rotAngle   = 0.5 * M_PI;
+        startAngle = -M_PI;
+        endAngle   = -M_PI / 2;
     }
 
-    gp_Elips ellips(gp_Ax2(p, dir), major_ax, minor_ax);
-    ellips.Rotate(gp_Ax1(p, dir), rot_angle);
-    GC_MakeArcOfEllipse arc(ellips, start_angle, end_angle, Standard_True);
+    gp_Elips ellips(gp_Ax2(p, dir), majorAxis, minorAxis);
+    ellips.Rotate(gp_Ax1(p, dir), rotAngle);
+    GC_MakeArcOfEllipse arc(ellips, startAngle, endAngle, Standard_True);
 
-    TopoDS_Edge dome_edge = BRepBuilderAPI_MakeEdge(arc.Value()).Edge();
+    TopoDS_Edge domeEdge = BRepBuilderAPI_MakeEdge(arc.Value()).Edge();
 
-    std::vector<TopoDS_Edge> edges = {dome_edge};
+    std::vector<TopoDS_Edge> edges = {domeEdge};
 
     if (cylinderLength > 0.0) {
-        TopoDS_Vertex v1 = GetLastVertex(dome_edge);
+        TopoDS_Vertex v1 = GetLastVertex(domeEdge);
         TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
 
-        TopoDS_Edge cylinder_edge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
-        edges.push_back(cylinder_edge);
+        TopoDS_Edge cylinderEdge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
+        edges.push_back(cylinderEdge);
     }
 
     BuildHullWire(edges, wire);
@@ -439,17 +439,17 @@ void CCPACSHull::BuildHullWireTorispherical(BRepBuilderAPI_MakeWire& wire) const
     GC_MakeArcOfCircle arc1(circ1, -M_PI / 2, -alpha, Standard_True);
     GC_MakeArcOfCircle arc2(circ2, -alpha, 0, Standard_True);
 
-    TopoDS_Edge dome_edge1 = BRepBuilderAPI_MakeEdge(arc1.Value()).Edge();
-    TopoDS_Edge dome_edge2 = BRepBuilderAPI_MakeEdge(arc2.Value()).Edge();
+    TopoDS_Edge domeEdge1 = BRepBuilderAPI_MakeEdge(arc1.Value()).Edge();
+    TopoDS_Edge domeEdge2 = BRepBuilderAPI_MakeEdge(arc2.Value()).Edge();
 
-    std::vector<TopoDS_Edge> edges = {dome_edge1, dome_edge2};
+    std::vector<TopoDS_Edge> edges = {domeEdge1, domeEdge2};
 
     if (cylinderLength > 0.0) {
-        TopoDS_Vertex v1 = GetLastVertex(dome_edge2);
+        TopoDS_Vertex v1 = GetLastVertex(domeEdge2);
         TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
 
-        TopoDS_Edge cylinder_edge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
-        edges.push_back(cylinder_edge);
+        TopoDS_Edge cylinderEdge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
+        edges.push_back(cylinderEdge);
     }
 
     BuildHullWire(edges, wire);
@@ -477,16 +477,16 @@ void CCPACSHull::BuildHullWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const
         array.SetValue(i + 1, gp_Pnt(-x[i], 0.0, r[i]));
     }
     Handle(Geom_BSplineCurve) bspline = GeomAPI_PointsToBSpline(array).Curve();
-    TopoDS_Edge dome_edge             = BRepBuilderAPI_MakeEdge(bspline);
+    TopoDS_Edge domeEdge              = BRepBuilderAPI_MakeEdge(bspline);
 
-    std::vector<TopoDS_Edge> edges = {dome_edge};
+    std::vector<TopoDS_Edge> edges = {domeEdge};
 
     if (cylinderLength > 0.0) {
-        TopoDS_Vertex v1 = GetFirstVertex(dome_edge);
+        TopoDS_Vertex v1 = GetFirstVertex(domeEdge);
         TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
 
-        TopoDS_Edge cylinder_edge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
-        edges.push_back(cylinder_edge);
+        TopoDS_Edge cylinderEdge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
+        edges.push_back(cylinderEdge);
     }
 
     BuildHullWire(edges, wire);
@@ -529,8 +529,6 @@ PNamedShape CCPACSHull::BuildLoft() const
     TopoDS_Shape loftShape;
     std::string loftName      = GetUID();
     std::string loftShortName = GetShortShapeName();
-
-    
 
     if (m_sections_choice1) {
         BuildShapeFromSegments(loftShape);
