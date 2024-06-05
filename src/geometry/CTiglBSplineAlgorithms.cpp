@@ -361,12 +361,11 @@ namespace
             [&u](double v){ return u <= v; }
         );
 
-        int paramsIdx;
-        // Catch case u=0, since distance would be 0 which causes in illegal vector access with subtraction of 1
-        if (*it == 0)
-            paramsIdx = 1;
-        else
-            paramsIdx = std::distance(paramsOld.begin(), it);
+        int paramsIdx = std::distance(paramsOld.begin(), it);
+        // Catch case u=0, since distance would be 0 which causes illegal vector access by subtraction of 1
+        if (paramsIdx  == 0) {
+            ++paramsIdx;
+        }
 
         a_x = paramsOld[paramsIdx - 1];
         b_x = paramsOld[paramsIdx];
