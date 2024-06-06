@@ -479,7 +479,11 @@ void CCPACSHull::BuildHullWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const
     Handle(Geom_BSplineCurve) bspline = GeomAPI_PointsToBSpline(array).Curve();
     TopoDS_Edge domeEdge              = BRepBuilderAPI_MakeEdge(bspline);
 
-    std::vector<TopoDS_Edge> edges = {domeEdge};
+    TopoDS_Vertex v1    = BRepBuilderAPI_MakeVertex(gp_Pnt(-x.back(), 0.0, 0.0));
+    TopoDS_Vertex v2    = GetLastVertex(domeEdge);
+    TopoDS_Edge lidEdge = BRepBuilderAPI_MakeEdge(v1, v2);
+
+    std::vector<TopoDS_Edge> edges = {lidEdge, domeEdge};
 
     if (cylinderLength > 0.0) {
         TopoDS_Vertex v1 = GetFirstVertex(domeEdge);

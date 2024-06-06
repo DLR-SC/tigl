@@ -571,6 +571,66 @@ const boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts() const
     }
 }
 
+int CCPACSConfiguration::GetFuelTanksCount() const
+{
+    if (aircraftModel) {
+        if (aircraftModel->GetFuelTanks()) {
+            return aircraftModel->GetFuelTanks()->GetFuelTanksCount();
+        }
+        else {
+            return 0;
+        }
+    }
+    else {
+        return 0;
+    }
+}
+
+CCPACSFuelTank& CCPACSConfiguration::GetFuelTank(int index) const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetFuelTanks()->GetFuelTank(index);
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
+CCPACSFuelTank const& CCPACSConfiguration::GetFuelTank(const std::string& UID) const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetFuelTanks()->GetFuelTank(UID);
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
+int CCPACSConfiguration::GetFuelTankIndex(const std::string& UID) const
+{
+    return GetFuelTanks().GetFuelTankIndex(UID);
+}
+
+CCPACSFuelTanks& CCPACSConfiguration::GetFuelTanks()
+{
+    if (aircraftModel) {
+        return *aircraftModel->GetFuelTanks();
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
+const CCPACSFuelTanks& CCPACSConfiguration::GetFuelTanks() const
+{
+    if (aircraftModel) {
+        return *aircraftModel->GetFuelTanks();
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
 boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons()
 {
     if (aircraftModel) {

@@ -120,10 +120,14 @@ void CheckExceptionMessage(std::function<void()> func, const char* expectedMessa
     }
 }
 
-TEST_F(FuselageTank, getName)
+TEST_F(FuselageTank, configuration)
 {
-    const std::string name = fuelTank->GetName();
-    EXPECT_EQ(name, "Simple tank 1");
+    auto& config    = fuelTank->GetConfiguration();
+    std::string uID = "tank1";
+    EXPECT_EQ(config.GetFuelTanksCount(), 6);
+    EXPECT_EQ(config.GetFuelTank(1).GetDefaultedUID(), uID);
+    EXPECT_NO_THROW(config.GetFuelTank(uID));
+    EXPECT_EQ(config.GetFuelTankIndex(uID), 1);
 }
 
 TEST_F(FuselageTank, fuelTanks)
@@ -139,6 +143,9 @@ TEST_F(FuselageTank, fuelTanks)
 TEST_F(FuselageTank, fuelTank)
 {
     EXPECT_NO_THROW(fuelTank->GetHulls());
+
+    const std::string name = fuelTank->GetName();
+    EXPECT_EQ(name, "Simple tank 1");
 }
 
 // ToDo: Check how to use pointer ->
