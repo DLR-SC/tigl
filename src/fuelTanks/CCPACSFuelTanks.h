@@ -31,17 +31,17 @@ class CCPACSFuelTanks : public generated::CPACSFuelTanks
 public:
     TIGL_EXPORT CCPACSFuelTanks(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
-    // Get a specific hull for a given uID
+    // Get a specific fuel tank for a given uID
     TIGL_EXPORT CCPACSFuelTank const& GetFuelTank(std::string const& uID) const;
     TIGL_EXPORT CCPACSFuelTank& GetFuelTank(std::string const& uID);
 
-    // Get a specific hull for a given index.
+    // Get a specific fuel tank for a given index.
     TIGL_EXPORT CCPACSFuelTank& GetFuelTank(int index) const;
 
-    // Returns the hull index for a given uID.
+    // Returns the fuel tank index for a given uID.
     TIGL_EXPORT int GetFuelTankIndex(const std::string& uID) const;
 
-    // Returns the total count of fuselages in a configuration
+    // Returns the total count of fuel tank in a configuration
     TIGL_EXPORT int GetFuelTanksCount() const;
 };
 

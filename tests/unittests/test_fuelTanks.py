@@ -16,7 +16,8 @@ class Tank(unittest.TestCase):
         self.assertIsNone(self.tigl.open(self.tixi, ""))
 
         mgr = configuration.CCPACSConfigurationManager_get_instance()
-        uid_mgr = mgr.get_configuration(self.tigl._handle.value).get_uidmanager()
+        self.config = mgr.get_configuration(self.tigl._handle.value)
+        uid_mgr = self.config.get_uidmanager()
 
         self.fuelTank = uid_mgr.get_geometric_component("tank1")
         self.hull_segments = uid_mgr.get_geometric_component("tank1_outerHull")
@@ -35,6 +36,25 @@ class Tank(unittest.TestCase):
     def tearDown(self):
         self.tigl.close()
         self.tixi.close()
+
+    def test_configuration(self):
+
+        tank1_uID = "tank1"
+        self.assertEqual(self.config.get_fuel_tanks_count(), 6)
+        self.assertIsInstance(
+            self.config.get_fuel_tank(1), configuration.CCPACSFuelTank
+        )
+        self.assertIsInstance(
+            self.config.get_fuel_tank(tank1_uID),
+            configuration.CCPACSFuelTank,
+        )
+        self.assertEqual(
+            self.config.get_fuel_tank_index(tank1_uID),
+            1,
+        )
+        self.assertIsInstance(
+            self.config.get_fuel_tanks(), configuration.CCPACSFuelTanks
+        )
 
     def test_fuelTanks(self):
         # Test custom class methods:
