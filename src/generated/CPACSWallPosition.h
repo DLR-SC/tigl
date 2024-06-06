@@ -70,8 +70,11 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetFuselageSectionUID_choice3() const;
         TIGL_EXPORT virtual void SetFuselageSectionUID_choice3(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetX_choice4() const;
-        TIGL_EXPORT virtual void SetX_choice4(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetHullSectionUID_choice4() const;
+        TIGL_EXPORT virtual void SetHullSectionUID_choice4(const boost::optional<std::string>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetX_choice5() const;
+        TIGL_EXPORT virtual void SetX_choice5(const boost::optional<double>& value);
 
         TIGL_EXPORT virtual const double& GetY() const;
         TIGL_EXPORT virtual void SetY(const double& value);
@@ -96,13 +99,18 @@ namespace generated
         /// y- and z-coordinates.
         boost::optional<std::string> m_wallSegmentUID_choice2;
 
-        /// UID of fuselage section determining the
+        /// UID of a fuselage section determining the
         /// x-coordinate of the position with the given
         /// y- and z-coordinates.
         boost::optional<std::string> m_fuselageSectionUID_choice3;
 
+        /// UID of a tank hull section determining the
+        /// x-coordinate of the position with the given
+        /// y- and z-coordinates.
+        boost::optional<std::string> m_hullSectionUID_choice4;
+
         /// Absolute x-coordinate of wall position in fuselage coordinate system.
-        boost::optional<double>      m_x_choice4;
+        boost::optional<double>      m_x_choice5;
 
         /// Absolute y-coordinate of wall position in fuselage coordinate system.
         double                       m_y;

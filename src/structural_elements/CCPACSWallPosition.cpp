@@ -73,12 +73,12 @@ void CCPACSWallPosition::CalcBasePointAndShape() const
 
     // calculate base point and optional shape
     gp_Pnt basePointTmp(0., GetY(), GetZ());
-    if (GetX_choice4()) {
-        basePointTmp.SetX(GetX_choice4().value());
+    if (GetX_choice5()) {
+        basePointTmp.SetX(GetX_choice5().value());
     }
     basePointTmp = fuselage.GetTransformationMatrix().Transform(basePointTmp);
 
-    if (!GetX_choice4()) {
+    if (!GetX_choice5()) {
         if (GetBulkheadUID_choice1()) {
             shape = GetUIDManager().GetGeometricComponent(GetBulkheadUID_choice1().value()).GetLoft()->Shape();
         }
@@ -137,7 +137,7 @@ void CCPACSWallPosition::SetBulkheadUID_choice1(const boost::optional<std::strin
 
     CPACSWallPosition::SetWallSegmentUID_choice2(boost::none);
     CPACSWallPosition::SetFuselageSectionUID_choice3(boost::none);
-    CPACSWallPosition::SetX_choice4(boost::none);
+    CPACSWallPosition::SetX_choice5(boost::none);
 
     Invalidate();
 }
@@ -148,7 +148,7 @@ void CCPACSWallPosition::SetWallSegmentUID_choice2(const boost::optional<std::st
 
     CPACSWallPosition::SetBulkheadUID_choice1(boost::none);
     CPACSWallPosition::SetFuselageSectionUID_choice3(boost::none);
-    CPACSWallPosition::SetX_choice4(boost::none);
+    CPACSWallPosition::SetX_choice5(boost::none);
 
     Invalidate();
 }
@@ -159,14 +159,14 @@ void CCPACSWallPosition::SetFuselageSectionUID_choice3(const boost::optional<std
 
     CPACSWallPosition::SetBulkheadUID_choice1(boost::none);
     CPACSWallPosition::SetWallSegmentUID_choice2(boost::none);
-    CPACSWallPosition::SetX_choice4(boost::none);
+    CPACSWallPosition::SetX_choice5(boost::none);
 
     Invalidate();
 }
 
-void CCPACSWallPosition::SetX_choice4(const boost::optional<double>& value)
+void CCPACSWallPosition::SetX_choice5(const boost::optional<double>& value)
 {
-    CPACSWallPosition::SetX_choice4(value);
+    CPACSWallPosition::SetX_choice5(value);
 
     CPACSWallPosition::SetBulkheadUID_choice1(boost::none);
     CPACSWallPosition::SetWallSegmentUID_choice2(boost::none);

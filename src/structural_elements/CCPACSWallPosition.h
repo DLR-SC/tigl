@@ -43,7 +43,7 @@ public:
     TIGL_EXPORT void SetBulkheadUID_choice1(const boost::optional<std::string>& value) override;
     TIGL_EXPORT void SetWallSegmentUID_choice2(const boost::optional<std::string>& value) override;
     TIGL_EXPORT void SetFuselageSectionUID_choice3(const boost::optional<std::string>& value) override;
-    TIGL_EXPORT void SetX_choice4(const boost::optional<double>& value) override;
+    TIGL_EXPORT void SetX_choice5(const boost::optional<double>& value) override;
     TIGL_EXPORT void SetY(const double& value) override;
     TIGL_EXPORT void SetZ(const double& value) override;
 
