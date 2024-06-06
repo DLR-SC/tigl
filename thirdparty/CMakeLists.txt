@@ -1,7 +1,7 @@
 project(thirdparty-libs)
 
 # --------------  BOOST ----------------- #
-option(TIGL_USE_INTERNAL_BOOST "Use boost library that comes with tigl" ON)
+option(TIGL_USE_INTERNAL_BOOST "Use boost library that comes with tigl" OFF)
 if (TIGL_USE_INTERNAL_BOOST)
 
 # boost
