@@ -18,5 +18,5 @@ dependencies:
  # other build dependencies
  - ninja=1.10.2         # not strictly needed, tigl can be build using any other camke generator
  - freeimageplus        # used by opencascade
- - libboost=1.82.0
+ - libboost=1.82.0      # TiGL comes equipped with boost 1.76, that can be used by using the CMAKE option TIGL_USE_INTERNAL_BOOST=ON
  - brotlipy             # Workaround for issue on windows, see: https://github.com/conda/conda/issues/9903#issuecomment-647091019
