@@ -70,7 +70,7 @@ jobs:
     strategy:
       matrix:
         config: ["Debug", "Release"]
-        os: ["ubuntu-latest", "ubuntu-20.04"]
+        os: ["ubuntu-latest", "ubuntu-22.04"]
         # only enable coverage for Debug build on latest ubuntu
         include:
           - config: "Debug"
@@ -93,7 +93,7 @@ jobs:
     strategy:
       matrix:
         config: ["Debug", "Release"]
-        os: ["ubuntu-latest", "ubuntu-20.04"]
+        os: ["ubuntu-latest", "ubuntu-22.04"]
         unit-tests: [true]
         # generate coverage reports on latest ubuntu debug builds
         exclude:
