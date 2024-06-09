@@ -695,6 +695,65 @@
                     <polarOpeningRadius>0.1</polarOpeningRadius>
                   </isotensoid>
                 </domeType>
+                <structure uID="tank5_structure">
+                  <walls>
+                    <wallPositions>
+                      <wallPosition uID="tank5_wall_p1">
+                        <x>1</x>
+                        <y>-1</y>
+                        <z>-0.2</z>
+                      </wallPosition>
+                      <wallPosition uID="tank5_wall_p2">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>-0.2</z>
+                      </wallPosition>
+                      <wallPosition uID="tank5_wall_p3">
+                        <x>1.5</x>
+                        <y>-1</y>
+                        <z>0.2</z>
+                      </wallPosition>
+                      <wallPosition uID="tank5_wall_p4">
+                        <x>1.5</x>
+                        <y>1</y>
+                        <z>0.2</z>
+                      </wallPosition>
+                      <wallPosition uID="tank5_wall_p5">
+                        <x>2</x>
+                        <y>-1</y>
+                        <z>-0.2</z>
+                      </wallPosition>
+                      <wallPosition uID="tank5_wall_p6">
+                        <x>2</x>
+                        <y>1</y>
+                        <z>-0.2</z>
+                      </wallPosition>
+                    </wallPositions>
+                    <wallSegments>
+                      <wallSegment uID="tank5_wall1">
+                        <phi>180</phi>
+                        <wallPositionUIDs>
+                          <wallPositionUID>tank5_wall_p1</wallPositionUID>
+                          <wallPositionUID>tank5_wall_p2</wallPositionUID>
+                        </wallPositionUIDs>
+                      </wallSegment>
+                      <wallSegment uID="tank5_wall2">
+                        <phi>0</phi>
+                        <wallPositionUIDs>
+                          <wallPositionUID>tank5_wall_p3</wallPositionUID>
+                          <wallPositionUID>tank5_wall_p4</wallPositionUID>
+                        </wallPositionUIDs>
+                      </wallSegment>
+                      <wallSegment uID="tank5_wall3">
+                        <phi>180</phi>
+                        <wallPositionUIDs>
+                          <wallPositionUID>tank5_wall_p5</wallPositionUID>
+                          <wallPositionUID>tank5_wall_p6</wallPositionUID>
+                        </wallPositionUIDs>
+                      </wallSegment>
+                    </wallSegments>
+                  </walls>
+                </structure>
               </hull>
             </hulls>
           </fuelTank>

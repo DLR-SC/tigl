@@ -16,11 +16,13 @@
 * limitations under the License.
 */
 
-#include "CCPACSFuselageWallSegment.h"
+#include "CCPACSWallSegment.h"
 #include "generated/CPACSWallSegments.h"
 #include "generated/CPACSWalls.h"
 #include "CCPACSFuselageStructure.h"
 #include "CCPACSFuselage.h"
+#include "CCPACSHull.h"
+#include "CCPACSHullStructure.h"
 #include "CCPACSFuselageSegment.h"
 #include "CNamedShape.h"
 #include "CCPACSWallPosition.h"
@@ -46,7 +48,8 @@
 
 #include <algorithm>
 
-namespace {
+namespace
+{
 
 // Given a CCPACSWallposition with a defined shape, project the point pnt along the direction dir onto the
 // plane, in which the shape lies. The shape must be convertable to a planar TopoDS_Face.
@@ -56,7 +59,7 @@ void FlushPointAlongVec(tigl::CCPACSWallPosition const& p, gp_Vec const dir, dou
         throw tigl::CTiglError("Cannot flush point for wall position without shape definition.");
     }
     gp_Pln pln;
-    TopoDS_Shape shape = *p.GetShape();
+    TopoDS_Shape shape        = *p.GetShape();
     Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(*p.GetShape()));
     GeomLib_IsPlanarSurface surf_check(surf);
     if (surf_check.IsPlanar()) {
@@ -68,231 +71,268 @@ void FlushPointAlongVec(tigl::CCPACSWallPosition const& p, gp_Vec const dir, dou
 
     pln.SetLocation(p.GetBasePoint());
     TopoDS_Face face = BRepBuilderAPI_MakeFace(pln);
-    TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(pnt.Translated( dir*extents),
-                                               pnt.Translated(-dir*extents)).Edge();
+    TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(pnt.Translated(dir * extents), pnt.Translated(-dir * extents)).Edge();
     GetIntersectionPoint(face, edge, pnt);
 }
 
-}
+} // namespace
 
 namespace tigl
 {
 
-CCPACSFuselageWallSegment::CCPACSFuselageWallSegment(CCPACSWallSegments* parent, tigl::CTiglUIDManager *uidMgr)
+CCPACSWallSegment::CCPACSWallSegment(CCPACSWallSegments* parent, tigl::CTiglUIDManager* uidMgr)
     : generated::CPACSWallSegment(parent, uidMgr)
 {
 }
 
-TopoDS_Compound CCPACSFuselageWallSegment::GetCutPlanes() const
+TopoDS_Compound CCPACSWallSegment::GetCutPlanes() const
 {
     // Makes sure, that the cut planes are already computed
-    if (m_cutPlanes.IsNull()) {
+    if (_cutPlanes.IsNull()) {
         BuildLoft();
     }
-    return m_cutPlanes;
+    return _cutPlanes;
 }
 
-void CCPACSFuselageWallSegment::SetPhi(const double& value)
+void CCPACSWallSegment::SetPhi(const double& value)
 {
     CPACSWallSegment::SetPhi(value);
     Invalidate();
 }
 
-void CCPACSFuselageWallSegment::SetDoubleSidedExtrusion(const boost::optional<bool>& value)
+void CCPACSWallSegment::SetDoubleSidedExtrusion(const boost::optional<bool>& value)
 {
     CPACSWallSegment::SetDoubleSidedExtrusion(value);
     Invalidate();
 }
 
-void CCPACSFuselageWallSegment::InvalidateImpl(const boost::optional<std::string>& source) const
+void CCPACSWallSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     loft.clear();
 }
 
-const CCPACSWalls& CCPACSFuselageWallSegment::GetWalls() const
+const CCPACSWalls& CCPACSWallSegment::GetWalls() const
 {
     const CCPACSWallSegments* wallSegments = GetParent();
     if (!wallSegments) {
-        throw CTiglError("Error in CCPACSFuselageWallSegment::GetWalls. Null pointer returned.", TIGL_NULL_POINTER);
+        throw CTiglError("Error in CCPACSWallSegment::GetWalls. Null pointer returned.", TIGL_NULL_POINTER);
     }
-    
+
     const CCPACSWalls* walls = wallSegments->GetParent();
     if (!walls) {
-        throw CTiglError("Error in CCPACSFuselageWallSegment::GetWalls. Null pointer returned.", TIGL_NULL_POINTER);
+        throw CTiglError("Error in CCPACSWallSegment::GetWalls. Null pointer returned.", TIGL_NULL_POINTER);
     }
-    
+
     return *walls;
 }
 
-const CCPACSFuselage &CCPACSFuselageWallSegment::GetFuselage() const
+const CCPACSFuselage& CCPACSWallSegment::GetFuselage() const
 {
     const CCPACSWalls& walls = GetWalls();
-    
-    const CCPACSFuselageStructure* fuselageStructure = walls.GetParent();
+
+    const CCPACSFuselageStructure* fuselageStructure = walls.GetParent<CCPACSFuselageStructure>();
     if (!fuselageStructure) {
-        throw CTiglError("Cannot get fuselage in CCPACSFuselageWallSegment::GetFuselage. Null pointer parent.", TIGL_NULL_POINTER);
+        throw CTiglError("Cannot get fuselage structure in CCPACSWallPosition::GetFuselage. Null pointer parent.",
+                         TIGL_NULL_POINTER);
     }
 
     const CCPACSFuselage* fuselage = fuselageStructure->GetParent();
     if (!fuselage) {
-        throw CTiglError("Cannot get fuselage in CCPACSFuselageWallSegment::GetFuselage. Null pointer parent.", TIGL_NULL_POINTER);
+        throw CTiglError("Cannot get fuselage in CCPACSWallPosition::GetFuselage. Null pointer parent.",
+                         TIGL_NULL_POINTER);
     }
 
     return *fuselage;
 }
 
-PNamedShape CCPACSFuselageWallSegment::BuildLoft() const
-{    
+const CCPACSHull& CCPACSWallSegment::GetHull() const
+{
+    const CCPACSWalls& walls = GetWalls();
+
+    const CCPACSHullStructure* hullStructure = walls.GetParent<CCPACSHullStructure>();
+    if (!hullStructure) {
+        throw CTiglError("Cannot get hull structure in CCPACSWallPosition::GetHull. Null pointer parent.",
+                         TIGL_NULL_POINTER);
+    }
+
+    const CCPACSHull* hull = hullStructure->GetParent();
+    if (!hull) {
+        throw CTiglError("Cannot get hull in CCPACSWallPosition::GetHull. Null pointer parent.", TIGL_NULL_POINTER);
+    }
+
+    return *hull;
+}
+
+PNamedShape CCPACSWallSegment::BuildLoft() const
+{
     // A bounding box is created to use its diagonal as reference for the
     // extrusion length (edge length). This ensures that these always go
     //  beyond the model, but do not reach into infinity.
     Bnd_Box boundingBox;
-    const CCPACSFuselage& fuselage = GetFuselage();
-    TopoDS_Shape fuselageShape = fuselage.GetLoft()->Shape();
-    BRepBndLib::Add(fuselageShape, boundingBox);
+    TopoDS_Shape parentShape;
+    CTiglTransformation transformationMatrix;
+
+    bool isFuselage = GetParent()->GetParent()->IsParent<CCPACSFuselageStructure>();
+    bool isHull     = GetParent()->GetParent()->IsParent<CCPACSHullStructure>();
+
+    if (isFuselage) {
+        const CCPACSFuselage& fuselage = GetFuselage();
+        parentShape                    = fuselage.GetLoft()->Shape();
+        transformationMatrix           = fuselage.GetTransformationMatrix();
+    }
+    else if (isHull) {
+        const CCPACSHull& hull = GetHull();
+        parentShape            = hull.GetLoft()->Shape();
+        transformationMatrix   = hull.GetTransformationMatrix();
+    }
+    else {
+        throw CTiglError("Parent of CCPACSWallSegment is neither a fuselage nor a hull.");
+    }
+
+    BRepBndLib::Add(parentShape, boundingBox);
     double bboxSize = sqrt(boundingBox.SquareExtent());
-    
+
     size_t nWallPositions = GetWallPositionUIDs().GetWallPositionUIDs().size();
 
     // list with base points:
-    std::vector<gp_Pnt> base_pnts;
-    base_pnts.reserve(nWallPositions);
+    std::vector<gp_Pnt> basePoints;
+    basePoints.reserve(nWallPositions);
 
-    // extrusion in negative direction is realized by setting u_neg to
+    // extrusion in negative direction is realized by setting uNeg to
     // -bboxSize:
     bool negativeExtrusion = GetDoubleSidedExtrusion().value_or(false);
-    double u_pos = bboxSize;
-    double u_neg = 0.;
+    double uPositive       = bboxSize;
+    double uNegative       = 0.;
     if (negativeExtrusion) {
-        u_neg = -bboxSize;
+        uNegative = -bboxSize;
     }
 
-    gp_Pnt upper, lower;   // upper and lower extrusion points for each base point
-    gp_Vec x_vec;          // vector from one base point to the next
+    gp_Pnt upper, lower; // upper and lower extrusion points for each base point
+    gp_Vec xVector; // vector from one base point to the next
 
     // build for untrimmed wall
-    TopoDS_Builder builder_wall, builder_cutter;
+    TopoDS_Builder builderWall, builderCutter;
     TopoDS_Compound wall;
-    builder_wall.MakeCompound(wall);
-    builder_cutter.MakeCompound(m_cutPlanes);
+    builderWall.MakeCompound(wall);
+    builderCutter.MakeCompound(_cutPlanes);
 
-    size_t count = 0;
+    size_t count      = 0;
     const auto& walls = GetWalls();
     for (auto wallPositionUID : GetWallPositionUIDs().GetWallPositionUIDs()) {
         const CCPACSWallPosition& p = walls.GetWallPosition(wallPositionUID);
 
         // get current base point and x_vec pointing from previous base point to current
         gp_Pnt base_point = p.GetBasePoint();
-        if ( count > 0 ) {
-            x_vec = gp_Vec(base_pnts.back(), base_point);
+        if (count > 0) {
+            xVector = gp_Vec(basePoints.back(), base_point);
         }
 
         // extrusion vector
         double phiRad = Radians(GetPhi());
-        gp_Vec ext_vec(0., -sin(phiRad), cos(phiRad));
-        ext_vec = GetFuselage().GetTransformationMatrix().Transform(ext_vec);
+        gp_Vec extVec(0., -sin(phiRad), cos(phiRad));
+        extVec = transformationMatrix.Transform(extVec);
 
-        if (count==1) {
+        if (count == 1) {
             // flush first position to shape
-            if( p.GetShape() && GetFlushConnectionStart().value_or(false) ) {
-                std::string uid_prev = GetWallPositionUIDs().GetWallPositionUIDs().front();
-                const CCPACSWallPosition& p_prev = walls.GetWallPosition(uid_prev);
-                FlushPointAlongVec(p_prev, x_vec, bboxSize, upper);
-                FlushPointAlongVec(p_prev, x_vec, bboxSize, lower);
+            if (p.GetShape() && GetFlushConnectionStart().value_or(false)) {
+                std::string uidPrev             = GetWallPositionUIDs().GetWallPositionUIDs().front();
+                const CCPACSWallPosition& pPrev = walls.GetWallPosition(uidPrev);
+                FlushPointAlongVec(pPrev, xVector, bboxSize, upper);
+                FlushPointAlongVec(pPrev, xVector, bboxSize, lower);
             }
         }
 
-        gp_Pnt upper_new = base_point.Translated(u_pos*ext_vec);
-        gp_Pnt lower_new = base_point.Translated(u_neg*ext_vec);
+        gp_Pnt upperNew = base_point.Translated(uPositive * extVec);
+        gp_Pnt lowerNew = base_point.Translated(uNegative * extVec);
 
-        if (count==nWallPositions-1) {
+        if (count == nWallPositions - 1) {
             // flush last position to shape
-            if( p.GetShape() && GetFlushConnectionEnd().value_or(false) ) {
-                FlushPointAlongVec(p, x_vec, bboxSize, upper_new);
-                FlushPointAlongVec(p, x_vec, bboxSize, lower_new);
+            if (p.GetShape() && GetFlushConnectionEnd().value_or(false)) {
+                FlushPointAlongVec(p, xVector, bboxSize, upperNew);
+                FlushPointAlongVec(p, xVector, bboxSize, lowerNew);
             }
         }
 
         // create the wall segment from the four corner points lower, upper, lower_new, upper_new
-        if (count > 0 ) {
-            TopoDS_Face face = BuildFace(lower, lower_new, upper, upper_new);
-            builder_wall.Add(wall, face);
+        if (count > 0) {
+            TopoDS_Face face = BuildFace(lower, lowerNew, upper, upperNew);
+            builderWall.Add(wall, face);
 
             //first and last face are enlarged for the cutting tool
-            gp_Pnt lower_cut = lower;
-            gp_Pnt upper_cut = upper;
-            gp_Pnt lower_new_cut = lower_new;
-            gp_Pnt upper_new_cut = upper_new;
-            if (count==1) {
-                lower_cut = lower.Translated(-bboxSize*x_vec);
-                upper_cut = upper.Translated(-bboxSize*x_vec);
+            gp_Pnt lowerCut    = lower;
+            gp_Pnt upperCut    = upper;
+            gp_Pnt lowerNewCut = lowerNew;
+            gp_Pnt upperNewCut = upperNew;
+            if (count == 1) {
+                lowerCut = lower.Translated(-bboxSize * xVector);
+                upperCut = upper.Translated(-bboxSize * xVector);
             }
-            if (count==nWallPositions-1) {
-                lower_new_cut = lower_new.Translated(bboxSize*x_vec);
-                upper_new_cut = upper_new.Translated(bboxSize*x_vec);
+            if (count == nWallPositions - 1) {
+                lowerNewCut = lowerNew.Translated(bboxSize * xVector);
+                upperNewCut = upperNew.Translated(bboxSize * xVector);
             }
-            face = BuildFace(lower_cut, lower_new_cut, upper_cut, upper_new_cut);
-            builder_cutter.Add(m_cutPlanes, face);
+            face = BuildFace(lowerCut, lowerNewCut, upperCut, upperNewCut);
+            builderCutter.Add(_cutPlanes, face);
         }
 
         // store base_pnts and remember current lower and upper point for next position
-        base_pnts.push_back(base_point);
-        upper = upper_new;
-        lower = lower_new;
+        basePoints.push_back(base_point);
+        upper = upperNew;
+        lower = lowerNew;
         ++count;
     }
 
     // trim the wall
-    // Step 1/2: Trim the wall by the fuselage
+    // Step 1/2: Trim the wall by the fuselage / hull
     {
-        TopoDS_Compound cut_wall;
-        builder_wall.MakeCompound(cut_wall);
+        TopoDS_Compound cutWall;
+        builderWall.MakeCompound(cutWall);
 
-        TopoDS_Shape result = SplitShape(wall, fuselageShape);
+        TopoDS_Shape result = SplitShape(wall, parentShape);
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(result, TopAbs_FACE, faceMap);
         for (int i = 0; i < faceMap.Extent(); ++i) {
-            // check if face center is on the interior of the fuselage
-            TopoDS_Face face = TopoDS::Face(faceMap(i+1));
+            // check if face center is on the interior of the fuselage / hull
+            TopoDS_Face face  = TopoDS::Face(faceMap(i + 1));
             gp_Pnt faceCenter = GetCentralFacePoint(face);
 
-            BRepClass3d_SolidClassifier clas3d(fuselageShape);
+            BRepClass3d_SolidClassifier clas3d(parentShape);
             clas3d.Perform(faceCenter, Precision::Confusion());
 
             if (clas3d.State() == TopAbs_IN) {
-                builder_wall.Add(cut_wall, face);
+                builderWall.Add(cutWall, face);
             }
         }
-        wall = cut_wall;
+        wall = cutWall;
     }
 
     // Step 2/2: Cut the wall with bounding elements:
     if (GetBoundingElementUIDs()) {
-        for (std::string bounding_element_uid : GetBoundingElementUIDs()->GetBoundingElementUIDs()) {
-            const CCPACSFuselageWallSegment& bounding_element = GetWalls().GetWallSegment(bounding_element_uid);
-            TopoDS_Compound bounding_cutPlane = bounding_element.GetCutPlanes();
-            TopoDS_Shape result = SplitShape(wall, bounding_cutPlane);
-            
-            TopoDS_Compound cut_wall;
-            builder_wall.MakeCompound(cut_wall);
+        for (std::string boundingElementUid : GetBoundingElementUIDs()->GetBoundingElementUIDs()) {
+            const CCPACSWallSegment& boundingElement = GetWalls().GetWallSegment(boundingElementUid);
+            TopoDS_Compound boundingCutPlane         = boundingElement.GetCutPlanes();
+            TopoDS_Shape result                      = SplitShape(wall, boundingCutPlane);
+
+            TopoDS_Compound cutWall;
+            builderWall.MakeCompound(cutWall);
             TopTools_IndexedMapOfShape faceMap;
             TopExp::MapShapes(result, TopAbs_FACE, faceMap);
 
             // Loop over the split faces and check weather one of the
             // base points belongs to the face.
-            for (int i = 0; i <faceMap.Extent(); ++i) {
-                TopoDS_Face face = TopoDS::Face(faceMap(i+1));
-                for (auto point : base_pnts) {
-                    if ( IsPointInsideFace(face, point) ) {
-                        builder_wall.Add(cut_wall,face);
+            for (int i = 0; i < faceMap.Extent(); ++i) {
+                TopoDS_Face face = TopoDS::Face(faceMap(i + 1));
+                for (auto point : basePoints) {
+                    if (IsPointInsideFace(face, point)) {
+                        builderWall.Add(cutWall, face);
                         break;
                     }
                 }
             }
-            wall = cut_wall;
+            wall = cutWall;
         } // loop over bounding elements
     } // if has bounding elements
-    
+
     return PNamedShape(new CNamedShape(wall, GetDefaultedUID()));
 }
 
