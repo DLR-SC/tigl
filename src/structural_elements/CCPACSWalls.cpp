@@ -26,11 +26,16 @@ CCPACSWalls::CCPACSWalls(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMg
 {
 }
 
-const CCPACSFuselageWallSegment& CCPACSWalls::GetWallSegment(const std::string &uid) const
+CCPACSWalls::CCPACSWalls(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWalls (parent, uidMgr)
+{
+}
+
+const CCPACSWallSegment& CCPACSWalls::GetWallSegment(const std::string &uid) const
 {
     const auto& wallSegmentsVector = GetWallSegments().GetWallSegments();
     
-    for (const std::unique_ptr<CCPACSFuselageWallSegment>& current : wallSegmentsVector) {
+    for (const std::unique_ptr<CCPACSWallSegment>& current : wallSegmentsVector) {
         if (current->GetUID().value_or("") == uid) {
             return *current.get();
         }

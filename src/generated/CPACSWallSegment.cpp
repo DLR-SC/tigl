@@ -30,7 +30,7 @@ namespace generated
     CPACSWallSegment::CPACSWallSegment(CPACSWallSegments* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_phi(0.0)
-        , m_wallPositionUIDs(reinterpret_cast<CCPACSFuselageWallSegment*>(this), m_uidMgr)
+        , m_wallPositionUIDs(reinterpret_cast<CCPACSWallSegment*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -121,7 +121,7 @@ namespace generated
 
         // read element boundingElementUIDs
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/boundingElementUIDs")) {
-            m_boundingElementUIDs = boost::in_place(reinterpret_cast<CCPACSFuselageWallSegment*>(this), m_uidMgr);
+            m_boundingElementUIDs = boost::in_place(reinterpret_cast<CCPACSWallSegment*>(this), m_uidMgr);
             try {
                 m_boundingElementUIDs->ReadCPACS(tixiHandle, xpath + "/boundingElementUIDs");
             } catch(const std::exception& e) {
@@ -325,7 +325,7 @@ namespace generated
     CPACSBoundingElementUIDs& CPACSWallSegment::GetBoundingElementUIDs(CreateIfNotExistsTag)
     {
         if (!m_boundingElementUIDs)
-            m_boundingElementUIDs = boost::in_place(reinterpret_cast<CCPACSFuselageWallSegment*>(this), m_uidMgr);
+            m_boundingElementUIDs = boost::in_place(reinterpret_cast<CCPACSWallSegment*>(this), m_uidMgr);
         return *m_boundingElementUIDs;
     }
 

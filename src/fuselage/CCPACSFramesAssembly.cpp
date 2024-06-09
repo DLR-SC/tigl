@@ -44,7 +44,7 @@ void CCPACSFramesAssembly::Invalidate(const boost::optional<std::string>& source
         m_frames[i]->Invalidate(source);
 }
 
-
+// ToDo: Add hulls
 CTiglRelativelyPositionedComponent const* CCPACSFramesAssembly::GetParentComponent() const
 {
     if (IsParent<CCPACSDuctStructure>()) {

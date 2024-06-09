@@ -27,7 +27,7 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSFuselageWallSegment;
+class CCPACSWallSegment;
 
 namespace generated
 {
@@ -37,13 +37,13 @@ namespace generated
     class CPACSWallPositionUIDs : public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSWallPositionUIDs(CCPACSFuselageWallSegment* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWallPositionUIDs(CCPACSWallSegment* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSWallPositionUIDs();
 
-        TIGL_EXPORT CCPACSFuselageWallSegment* GetParent();
+        TIGL_EXPORT CCPACSWallSegment* GetParent();
 
-        TIGL_EXPORT const CCPACSFuselageWallSegment* GetParent() const;
+        TIGL_EXPORT const CCPACSWallSegment* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,7 +59,7 @@ namespace generated
         TIGL_EXPORT virtual bool RemoveFromWallPositionUIDs(const std::string& value);
 
     protected:
-        CCPACSFuselageWallSegment* m_parent;
+        CCPACSWallSegment* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 

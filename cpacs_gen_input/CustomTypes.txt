@@ -116,7 +116,7 @@ CPACSPointXY                              CCPACSPointXY
 CPACSStringerFramePosition                CCPACSFuselageStringerFramePosition
 CPACSSkin                                 CCPACSSkin
 CPACSSkinSegment                          CCPACSSkinSegment
-CPACSWallSegment                          CCPACSFuselageWallSegment
+CPACSWallSegment                          CCPACSWallSegment
 CPACSWallPosition                         CCPACSWallPosition
 CPACSWalls                                CCPACSWalls
 

@@ -27,6 +27,7 @@ namespace tigl
 
 class CCPACSWalls;
 class CCPACSFuselage;
+class CCPACSHull;
 
 class CCPACSWallPosition : public generated::CPACSWallPosition
 {
@@ -43,6 +44,7 @@ public:
     TIGL_EXPORT void SetBulkheadUID_choice1(const boost::optional<std::string>& value) override;
     TIGL_EXPORT void SetWallSegmentUID_choice2(const boost::optional<std::string>& value) override;
     TIGL_EXPORT void SetFuselageSectionUID_choice3(const boost::optional<std::string>& value) override;
+    TIGL_EXPORT void SetSectionUID_choice4(const boost::optional<std::string>& value) override;
     TIGL_EXPORT void SetX_choice5(const boost::optional<double>& value) override;
     TIGL_EXPORT void SetY(const double& value) override;
     TIGL_EXPORT void SetZ(const double& value) override;
@@ -50,13 +52,14 @@ public:
 private:
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
-    void  CalcBasePointAndShape() const;
+    void CalcBasePointAndShape() const;
     const CCPACSWalls& GetWalls() const;
     const CCPACSFuselage& GetFuselage() const;
+    const CCPACSHull& GetHull() const;
 
-    mutable bool isBuilt {false};
-    mutable gp_Pnt base_point;
-    mutable boost::optional<TopoDS_Shape> shape;
+    mutable bool _isBuilt{false};
+    mutable gp_Pnt _basePoint;
+    mutable boost::optional<TopoDS_Shape> _shape;
 };
 
-}
+} // namespace tigl

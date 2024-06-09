@@ -32,77 +32,103 @@
               </scaling>
             </transformation>
             <sections>
-              <section uID="fuselage_1Section1ID">
+              <section uID="fuselage_Section1">
                 <name>Fuselage Section 1</name>
                 <transformation />
                 <elements>
-                  <element uID="fuselage_1Section1IDElement1">
+                  <element uID="fuselage_section1_element1">
                     <name>Fuselage Section 1</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <profileUID>fuselageCircleProfile</profileUID>
                     <transformation />
                   </element>
                 </elements>
               </section>
-              <section uID="fuselage_1Section2ID">
+              <section uID="fuselage_section2">
                 <name>Fuselage Section 2</name>
                 <transformation />
                 <elements>
-                  <element uID="fuselage_1Section2IDElement1">
+                  <element uID="fuselage_section2_element1">
                     <name>Fuselage Section 2</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <profileUID>fuselageCircleProfile</profileUID>
                     <transformation />
                   </element>
                 </elements>
               </section>
-              <section uID="fuselage_1Section3ID">
+              <section uID="fuselage_section3">
                 <name>Fuselage Section 3</name>
                 <transformation />
                 <elements>
-                  <element uID="fuselage_1Section3IDElement1">
+                  <element uID="fuselage_section3_element1">
                     <name>Fuselage Section 3</name>
-                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <profileUID>fuselageCircleProfile</profileUID>
                     <transformation />
                   </element>
                 </elements>
               </section>
             </sections>
             <positionings>
-              <positioning uID="fuselage_1Positioning1ID">
+              <positioning uID="fuselage_positioning1">
                 <name>Fuselage Positioning 1</name>
                 <length>0.</length>
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
-                <toSectionUID>fuselage_1Section1ID</toSectionUID>
+                <toSectionUID>fuselage_Section1</toSectionUID>
               </positioning>
-              <positioning uID="fuselage_1Positioning2ID">
+              <positioning uID="fuselage_positioning2">
                 <name>Fuselage Positioning 2</name>
                 <length>2.</length>
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
-                <fromSectionUID>fuselage_1Section1ID</fromSectionUID>
-                <toSectionUID>fuselage_1Section2ID</toSectionUID>
+                <fromSectionUID>fuselage_Section1</fromSectionUID>
+                <toSectionUID>fuselage_section2</toSectionUID>
               </positioning>
-              <positioning uID="fuselage_1Positioning3ID">
+              <positioning uID="fuselage_positioning3">
                 <name>Fuselage Positioning 3</name>
                 <length>15.</length>
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
-                <fromSectionUID>fuselage_1Section2ID</fromSectionUID>
-                <toSectionUID>fuselage_1Section3ID</toSectionUID>
+                <fromSectionUID>fuselage_section2</fromSectionUID>
+                <toSectionUID>fuselage_section3</toSectionUID>
               </positioning>
             </positionings>
             <segments>
-              <segment uID="segmentD150_Fuselage_1Segment2ID">
+              <segment uID="fuselage_segment2">
                 <name>Fuselage Segment 2</name>
-                <fromElementUID>fuselage_1Section1IDElement1</fromElementUID>
-                <toElementUID>fuselage_1Section2IDElement1</toElementUID>
+                <fromElementUID>fuselage_section1_element1</fromElementUID>
+                <toElementUID>fuselage_section2_element1</toElementUID>
               </segment>
-              <segment uID="segmentD150_Fuselage_1Segment3ID">
+              <segment uID="fuselage_segment3">
                 <name>Fuselage Segment 3</name>
-                <fromElementUID>fuselage_1Section2IDElement1</fromElementUID>
-                <toElementUID>fuselage_1Section3IDElement1</toElementUID>
+                <fromElementUID>fuselage_section2_element1</fromElementUID>
+                <toElementUID>fuselage_section3_element1</toElementUID>
               </segment>
             </segments>
+            <structure>
+              <walls>
+                <wallPositions>
+                  <wallPosition uID="wall_fuselage_pos1">
+                    <sectionUID>fuselage_Section1</sectionUID>
+                    <y>0</y>
+                    <z>-0.8</z>
+                  </wallPosition>
+                  <wallPosition uID="wall_fuselage_pos2">
+                    <sectionUID>fuselage_section3</sectionUID>
+                    <y>0</y>
+                    <z>-0.8</z>
+                  </wallPosition>
+                </wallPositions>
+                <wallSegments>
+                  <wallSegment uID="wall_fuselage">
+                    <phi>90</phi>
+                    <doubleSidedExtrusion>true</doubleSidedExtrusion>
+                    <wallPositionUIDs>
+                      <wallPositionUID>wall_fuselage_pos1</wallPositionUID>
+                      <wallPositionUID>wall_fuselage_pos2</wallPositionUID>
+                    </wallPositionUIDs>
+                  </wallSegment>
+                </wallSegments>
+              </walls>
+            </structure>
           </fuselage>
         </fuselages>
         <wings>
@@ -242,7 +268,7 @@
                     <elements>
                       <element uID="outerHull_section1_element1">
                         <name>Section 1 Element 1</name>
-                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
@@ -257,7 +283,7 @@
                     <elements>
                       <element uID="outerHull_section2_element1">
                         <name>Section 2 Element 1</name>
-                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
@@ -272,7 +298,7 @@
                     <elements>
                       <element uID="outerHull_section3_element1">
                         <name>Section 3 Element 1</name>
-                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
@@ -327,7 +353,7 @@
                     <elements>
                       <element uID="innerHull_section1_element1">
                         <name>Section 1 Element 1</name>
-                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
@@ -342,7 +368,7 @@
                     <elements>
                       <element uID="innerHull_section2_element1">
                         <name>Section 2 Element 1</name>
-                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
@@ -357,7 +383,7 @@
                     <elements>
                       <element uID="innerHull_section3_element1">
                         <name>Section 3 Element 1</name>
-                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
@@ -408,7 +434,7 @@
                     <elements>
                       <element uID="tank2_outerHull_section1_element1">
                         <name>Section 1 Element 1</name>
-                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <profileUID>fuselageCircleProfile</profileUID>
                         <transformation>
                           <scaling>
                             <y>0.01</y>
@@ -428,7 +454,7 @@
                     <elements>
                       <element uID="tank2_outerHull_section2_element1">
                         <name>Section 2 Element 1</name>
-                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
@@ -443,7 +469,7 @@
                     <elements>
                       <element uID="tank2_outerHull_section3_element1">
                         <name>Section 3 Element 1</name>
-                        <profileUID>fuselageCircleProfileuID</profileUID>
+                        <profileUID>fuselageCircleProfile</profileUID>
                         <transformation>
                           <scaling>
                             <y>0.01</y>
@@ -716,7 +742,7 @@
         </wingAirfoil>
       </wingAirfoils>
       <fuselageProfiles>
-        <fuselageProfile uID="fuselageCircleProfileuID">
+        <fuselageProfile uID="fuselageCircleProfile">
           <name>Circle</name>
           <description>Profile build up from set of Points on Circle where may Dimensions are 1..-1</description>
           <pointList>

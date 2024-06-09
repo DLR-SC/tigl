@@ -100,6 +100,8 @@ protected:
     tigl::CCPACSHull* hull_torispherical = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank4_torisphericalDome");
     tigl::CCPACSHull* hull_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank5_isotensoidDome");
 
+    tigl::CCPACSWallSegment* wall_in_fuselage = &uidMgr.ResolveObject<tigl::CCPACSWallSegment>("wall_fuselage");
+
     const char* tankTypeExceptionString = "This method is only available for hulls with segments. No segment found.";
 };
 
@@ -279,4 +281,10 @@ TEST_F(FuselageTank, structure)
 
     EXPECT_EQ(structure->GetFrames()->GetFrames().size(), 1);
     EXPECT_EQ(structure->GetUID(), "outerHullStructure");
+}
+
+TEST_F(FuselageTank, walls)
+{
+    EXPECT_EQ(wall_in_fuselage->GetUID().get(), "wall_fuselage");
+    auto loft = wall_in_fuselage->GetLoft();
 }

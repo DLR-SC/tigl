@@ -29413,19 +29413,20 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     type="stringUIDBaseType">
                     <xsd:annotation>
                         <xsd:documentation>
+                            DEPRECATED: use sectionUID instead.
                             UID of a fuselage section determining the
                             x-coordinate of the position with the given
                             y- and z-coordinates.
                         </xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
-                <xsd:element name="hullSectionUID"
+                <xsd:element name="sectionUID"
                     type="stringUIDBaseType">
                     <xsd:annotation>
                         <xsd:documentation>
-                            UID of a tank hull section determining the
-                            x-coordinate of the position with the given
-                            y- and z-coordinates.
+                            UID of a section determining the
+                            x-coordinate of the position with 
+                            the given y- and z-coordinates.
                         </xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
