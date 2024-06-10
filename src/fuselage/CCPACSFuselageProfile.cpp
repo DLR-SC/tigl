@@ -357,8 +357,11 @@ void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) cons
            //Get Paramenters
            auto& rectangle_profile = *m_standardProfile_choice3->GetRectangle_choice1();
            double heightToWidthRatio = rectangle_profile.GetHeightToWidthRatio().GetValue();
-           cache.start = gp_Pnt(0., 0, 0.5 * heightToWidthRatio);
-           cache.end = gp_Pnt(0., 0, -0.5 * heightToWidthRatio);
+           cache.start = gp_Pnt(0., 0., 0.5 * heightToWidthRatio);
+           cache.end = gp_Pnt(0., 0., -0.5 * heightToWidthRatio);
+        } else if(m_standardProfile_choice3->GetSuperEllipse_choice2()) {
+            cache.start = gp_Pnt(0., 0., 0.5);
+            cache.end = gp_Pnt(0., 0., -0.5);
         } else {
             throw CTiglError("Unknown or unsupported profile type");
         }
