@@ -52,7 +52,7 @@ public:
                                                 double alpha = 0.5,
                                                 unsigned int maxDegree=3,
                                                 Algo algo = Algo::InterpolateBasedOnParameters,
-                                                const double tolerance = 0.00001);
+                                                const double tolerance = 1e-8);
 
 
     TIGL_EXPORT Handle(Geom_BSplineCurve) Curve() const;

@@ -204,7 +204,8 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
     }
 
     // Here, the B-spline is reparameterized based on the CPACS profile after setting it up at first for accuracy reasons
-    CTiglInterpolatePointsWithKinks interp(occPoints, kinks, params, 0.5, 3, CTiglInterpolatePointsWithKinks::Algo::InterpolateFirstThenReparametrize);
+    // Also, a tolerance is passed used for knot insertion and removal during the reparameterization algorithm
+    CTiglInterpolatePointsWithKinks interp(occPoints, kinks, params, 0.5, 3, CTiglInterpolatePointsWithKinks::Algo::InterpolateFirstThenReparametrize, 1e-8);
     auto spline = interp.Curve();
 
     if (mirrorSymmetry) {
