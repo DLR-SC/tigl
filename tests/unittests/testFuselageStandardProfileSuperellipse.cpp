@@ -24,14 +24,14 @@
 #include "CCPACSConfiguration.h"
 #include "CNamedShape.h"
 
-class FuselageStandardProfileSuperellipse : public ::testing::Test
+class FuselageStandardProfileSuperEllipse : public ::testing::Test
 {
 protected:
     static void SetUpTestCase()
     {
         // Test case on standardProfile, mixed profiles: rectangle, rectangle with rounded corners, circle, circle with kinks
 
-        const char* filename = "TestData/simpletest_standard_profile_rectangle_circle_kink.cpacs.xml";
+        const char* filename = "TestData/simpletest_standard_profile_superellipse_guides.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -86,6 +86,46 @@ protected:
 
 };
 
+TixiDocumentHandle FuselageStandardProfileSuperEllipse::tixiHandle = 0;
+TiglCPACSConfigurationHandle FuselageStandardProfileSuperEllipse::tiglHandle = 0;
+TixiDocumentHandle FuselageStandardProfileSuperEllipse::tixiHandle1 = 0;
+TiglCPACSConfigurationHandle FuselageStandardProfileSuperEllipse::tiglHandle1 = 0;
+
+TEST_F(FuselageStandardProfileSuperEllipse, BuildWireSuperEllipse)
+{
+    auto wire = BuildWireSuperEllipse(0.25,5.,0.5,3.,2);
+    ASSERT_TRUE(wire.Closed());
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    ASSERT_TRUE(wire2.Closed());
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire);
+    loft.addProfiles(wire2);
+    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
+}
 
 
+TEST_F(FuselageStandardProfileSuperEllipse, BuildFuselageMixedProfilesWithGuides_Superellipse)
+{
+    // read configuration
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
+    tigl::CTiglUIDManager& uidmgr = config.GetUIDManager();
+    auto wing = uidmgr.GetGeometricComponent("Wing").GetLoft();
+    auto fuselage = config.GetFuselage(1).GetLoft();
+    ASSERT_TRUE(BRepCheck_Analyzer(fuselage->Shape()).IsValid());
+}
 
+
+TEST_F(FuselageStandardProfileSuperEllipse, BuildFuselageMixedProfilesWithKinks_Superellipse)
+{
+    // read configuration
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle1);
+    tigl::CTiglUIDManager& uidmgr = config.GetUIDManager();
+    auto wing = uidmgr.GetGeometricComponent("Wing").GetLoft();
+    auto fuselage = config.GetFuselage(1).GetLoft();
+    ASSERT_TRUE(BRepCheck_Analyzer(fuselage->Shape()).IsValid());
+}
