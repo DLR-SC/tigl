@@ -76,6 +76,7 @@ add_library(tigl_boost_filesystem STATIC
 )
 
 target_link_libraries(tigl_boost_filesystem PUBLIC tigl_boost_disable_autolink tigl_boost)
+target_compile_definitions(tigl_boost_filesystem PUBLIC BOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF=1)
 set_property(TARGET tigl_boost_filesystem PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_library(Boost::filesystem ALIAS tigl_boost_filesystem)
 
