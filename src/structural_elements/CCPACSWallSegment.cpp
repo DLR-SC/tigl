@@ -24,6 +24,7 @@
 #include "CCPACSHull.h"
 #include "CCPACSHullStructure.h"
 #include "CCPACSFuselageSegment.h"
+#include "ITiglWallUtils.h"
 #include "CNamedShape.h"
 #include "CCPACSWallPosition.h"
 #include "CTiglUIDManager.h"
@@ -113,54 +114,17 @@ void CCPACSWallSegment::InvalidateImpl(const boost::optional<std::string>& sourc
 
 const CCPACSWalls& CCPACSWallSegment::GetWalls() const
 {
-    const CCPACSWallSegments* wallSegments = GetParent();
-    if (!wallSegments) {
-        throw CTiglError("Error in CCPACSWallSegment::GetWalls. Null pointer returned.", TIGL_NULL_POINTER);
-    }
-
-    const CCPACSWalls* walls = wallSegments->GetParent();
-    if (!walls) {
-        throw CTiglError("Error in CCPACSWallSegment::GetWalls. Null pointer returned.", TIGL_NULL_POINTER);
-    }
-
-    return *walls;
+    return tigl::GetWalls(this);
 }
 
 const CCPACSFuselage& CCPACSWallSegment::GetFuselage() const
 {
-    const CCPACSWalls& walls = GetWalls();
-
-    const CCPACSFuselageStructure* fuselageStructure = walls.GetParent<CCPACSFuselageStructure>();
-    if (!fuselageStructure) {
-        throw CTiglError("Cannot get fuselage structure in CCPACSWallPosition::GetFuselage. Null pointer parent.",
-                         TIGL_NULL_POINTER);
-    }
-
-    const CCPACSFuselage* fuselage = fuselageStructure->GetParent();
-    if (!fuselage) {
-        throw CTiglError("Cannot get fuselage in CCPACSWallPosition::GetFuselage. Null pointer parent.",
-                         TIGL_NULL_POINTER);
-    }
-
-    return *fuselage;
+    return tigl::GetFuselage(this);
 }
 
 const CCPACSHull& CCPACSWallSegment::GetHull() const
 {
-    const CCPACSWalls& walls = GetWalls();
-
-    const CCPACSHullStructure* hullStructure = walls.GetParent<CCPACSHullStructure>();
-    if (!hullStructure) {
-        throw CTiglError("Cannot get hull structure in CCPACSWallPosition::GetHull. Null pointer parent.",
-                         TIGL_NULL_POINTER);
-    }
-
-    const CCPACSHull* hull = hullStructure->GetParent();
-    if (!hull) {
-        throw CTiglError("Cannot get hull in CCPACSWallPosition::GetHull. Null pointer parent.", TIGL_NULL_POINTER);
-    }
-
-    return *hull;
+    return tigl::GetHull(this);
 }
 
 PNamedShape CCPACSWallSegment::BuildLoft() const
