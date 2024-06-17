@@ -85,3 +85,8 @@ runs:
       with:
         files: ./build/tests/unittests/coverageReport-unit.info,./build/tests/integrationtests/coverageReport-integration.info
         token: ${{ inputs.codecov_token }}
+        codecov_yml_path: codecov.yml
+        disable_search: true
+        verbose: true
+        flags: unittests
+
