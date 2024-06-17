@@ -87,6 +87,7 @@
 #include "generated/CPACSBoundingElementUIDs.h"
 #include "generated/CPACSStructuralWallElement.h"
 #include "generated/CPACSStructuralWallElements.h"
+#include "generated/CPACSWalls.h"
 #include "generated/CPACSWallPositionUIDs.h"
 #include "generated/CPACSWallPosition.h"
 #include "generated/CPACSWallPositions.h"
