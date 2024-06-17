@@ -27,7 +27,8 @@
 #include "CTiglMemoryPool.h"
 #include "CTiglError.h"
 #include "CCPACSStringVector.h"
-#include "generated/CPACSUpdates.h"
+#include "generated/CPACSVersionInfo.h"
+#include "generated/CPACSVersionInfos.h"
 #include "generated/CPACSHeader.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
@@ -49,6 +50,7 @@
 %include "CTiglMemoryPool.h"
 %include "generated/CPACSStringVectorBase.h"
 %include "CCPACSStringVector.h"
-%include "generated/CPACSUpdates.h"
+%include "generated/CPACSVersionInfo.h"
+%include "generated/CPACSVersionInfos.h"
 %include "generated/CPACSHeader.h"
 

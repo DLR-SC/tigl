@@ -213,11 +213,17 @@ double CCPACSRotor::GetRadius()
     return rotorRadius;
 }
 
+// Wrapper function to return the nominal rotations per minute or 0 if not defined
+double CCPACSRotor::GetNominalRotationsPerMinute()
+{
+    return generated::CPACSRotor::GetNominalRotationsPerMinute().get_value_or(0.);
+}
+
 // Returns the tip speed this rotor
 double CCPACSRotor::GetTipSpeed()
 {
     // return GetNominalRotationsPerMinute()/60. * 2.*M_PI*GetRadius();
-    return *GetNominalRotationsPerMinute() / 30. * M_PI * GetRadius();
+    return GetNominalRotationsPerMinute() / 30. * M_PI * GetRadius();
 }
 
 // Returns the sum of all blade planform areas of a rotor

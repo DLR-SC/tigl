@@ -28,7 +28,7 @@ namespace tigl
 namespace generated
 {
     CPACSHeader::CPACSHeader(CPACSCpacs* parent)
-        : m_timestamp(0)
+        : m_versionInfos(this)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -85,25 +85,6 @@ namespace generated
             }
         }
 
-        // read element creator
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/creator")) {
-            m_creator = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/creator");
-            if (m_creator.empty()) {
-                LOG(WARNING) << "Required element creator is empty at xpath " << xpath;
-            }
-        }
-        else {
-            LOG(ERROR) << "Required element creator is missing at xpath " << xpath;
-        }
-
-        // read element timestamp
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/timestamp")) {
-            m_timestamp = tixi::TixiGetElement<std::time_t>(tixiHandle, xpath + "/timestamp");
-        }
-        else {
-            LOG(ERROR) << "Required element timestamp is missing at xpath " << xpath;
-        }
-
         // read element version
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/version")) {
             m_version = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/version");
@@ -123,15 +104,12 @@ namespace generated
             }
         }
 
-        // read element updates
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/updates")) {
-            m_updates = boost::in_place(this);
-            try {
-                m_updates->ReadCPACS(tixiHandle, xpath + "/updates");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read updates at xpath " << xpath << ": " << e.what();
-                m_updates = boost::none;
-            }
+        // read element versionInfos
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/versionInfos")) {
+            m_versionInfos.ReadCPACS(tixiHandle, xpath + "/versionInfos");
+        }
+        else {
+            LOG(ERROR) << "Required element versionInfos is missing at xpath " << xpath;
         }
 
     }
@@ -153,14 +131,6 @@ namespace generated
             }
         }
 
-        // write element creator
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/creator");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/creator", m_creator);
-
-        // write element timestamp
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/timestamp");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/timestamp", m_timestamp);
-
         // write element version
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/version");
         tixi::TixiSaveElement(tixiHandle, xpath + "/version", m_version);
@@ -176,16 +146,9 @@ namespace generated
             }
         }
 
-        // write element updates
-        if (m_updates) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/updates");
-            m_updates->WriteCPACS(tixiHandle, xpath + "/updates");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/updates")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/updates");
-            }
-        }
+        // write element versionInfos
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/versionInfos");
+        m_versionInfos.WriteCPACS(tixiHandle, xpath + "/versionInfos");
 
     }
 
@@ -209,26 +172,6 @@ namespace generated
         m_description = value;
     }
 
-    const std::string& CPACSHeader::GetCreator() const
-    {
-        return m_creator;
-    }
-
-    void CPACSHeader::SetCreator(const std::string& value)
-    {
-        m_creator = value;
-    }
-
-    const std::time_t& CPACSHeader::GetTimestamp() const
-    {
-        return m_timestamp;
-    }
-
-    void CPACSHeader::SetTimestamp(const std::time_t& value)
-    {
-        m_timestamp = value;
-    }
-
     const std::string& CPACSHeader::GetVersion() const
     {
         return m_version;
@@ -249,26 +192,14 @@ namespace generated
         m_cpacsVersion = value;
     }
 
-    const boost::optional<CPACSUpdates>& CPACSHeader::GetUpdates() const
+    const CPACSVersionInfos& CPACSHeader::GetVersionInfos() const
     {
-        return m_updates;
+        return m_versionInfos;
     }
 
-    boost::optional<CPACSUpdates>& CPACSHeader::GetUpdates()
+    CPACSVersionInfos& CPACSHeader::GetVersionInfos()
     {
-        return m_updates;
-    }
-
-    CPACSUpdates& CPACSHeader::GetUpdates(CreateIfNotExistsTag)
-    {
-        if (!m_updates)
-            m_updates = boost::in_place(this);
-        return *m_updates;
-    }
-
-    void CPACSHeader::RemoveUpdates()
-    {
-        m_updates = boost::none;
+        return m_versionInfos;
     }
 
 } // namespace generated
