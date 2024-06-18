@@ -4,7 +4,7 @@ find_package(Threads REQUIRED)
 include(tiglmacros)
 
 if (NOT TARGET Boost::boost)
-    find_package(Boost REQUIRED COMPONENTS filesystem thread atomic chrono date_time)
+    find_package(Boost REQUIRED COMPONENTS filesystem system thread atomic chrono date_time)
 endif()
 
 configure_file (

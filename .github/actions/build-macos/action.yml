@@ -45,7 +45,7 @@ runs:
   steps:
 
     - name: Install dependencies
-      uses: nick-invision/retry@v2
+      uses: nick-fields/retry@v3
       with:
         timeout_minutes: 10
         max_attempts: 3
@@ -56,7 +56,7 @@ runs:
           echo "CXXFLAGS=-fvisibility-inlines-hidden" >> $GITHUB_ENV
           
     - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
         activate-environment: tigl-bld
@@ -103,7 +103,7 @@ runs:
 
     - name: Upload package as artifact
       if: ${{ inputs.package-artifact }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
        name: ${{ inputs.package-artifact }}
        path: build/*.dmg
@@ -114,7 +114,7 @@ runs:
         gtar -czf build.tar.gz build
 
     - name: Upload build directory
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.build-artifact }}
         path: build.tar.gz
