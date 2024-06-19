@@ -982,7 +982,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(
     //              - Picewise linear function -> B-Spline of degree 1 (q=1 => pq=1)
 
     // Check inputs
-    if (paramsOld.size() != paramsOld.size())
+    if (paramsOld.size() != paramsNew.size())
         throw CTiglError("Parameter sizes for reparameterization do not match in reparameterizePiecewiseLinear");
 
     if (tolerance < 0)
