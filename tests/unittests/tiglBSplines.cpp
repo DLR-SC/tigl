@@ -556,6 +556,34 @@ TEST_F(BSplineInterpolation, reparameterizePiecewiseLinear)
     }
     ASSERT_NEAR(0.0, deviationMax, tolerance);
     StoreResult("TestData/analysis/BSplineInterpolation-reparameterizePiecewiseLinear.brep", curveReparameterized, pnts->Array1());
+
+    // Check Error catching using wrong dummy arguments
+    std::vector<double> const& paramsOld = {0., 0.5, 1.};
+    std::vector<double> const& paramsNew = {0., 1.};
+    EXPECT_THROW(tigl::CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(curve, paramsOld, paramsNew, tolerance), tigl::CTiglError);
+
+    tolerance = -0.1;
+    EXPECT_THROW(tigl::CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(curve, {}, {}, tolerance), tigl::CTiglError);
+}
+
+TEST_F(BSplineInterpolation, calcReparamfctInv)
+{
+    std::vector<double> const& paramsOld = {0., 0.5, 1.};
+    std::vector<double> const& paramsNew = {0., 0.5, 1.};
+    double u1 = 1.1;
+    double u2 = -0.1;
+    double u3 = 1.001;
+    double u4 = -0.001;
+    double tolerance = 0.05;
+
+    // Test error checking
+
+    // Input u out of range (range extended by tolerance)
+    EXPECT_THROW(details::calcReparamfctInv(paramsOld, paramsNew, u1, tolerance), tigl::CTiglError);
+    EXPECT_THROW(details::calcReparamfctInv(paramsOld, paramsNew, u2, tolerance), tigl::CTiglError);
+    // Input u in range extended by tolerance (check clamp)
+    EXPECT_EQ(details::calcReparamfctInv(paramsOld, paramsNew, u3, tolerance), 1.);
+    EXPECT_EQ(details::calcReparamfctInv(paramsOld, paramsNew, u4, tolerance), 0.);
 }
 
 TEST_F(BSplineInterpolation, withKinksShield)
