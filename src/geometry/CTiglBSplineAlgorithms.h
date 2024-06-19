@@ -336,4 +336,21 @@ public:
 };
 } // namespace tigl
 
+namespace details
+{
+    /// Helper function for reparameterization to calculate inverse of reparameterization function (paramsOld -> paramsNew)
+    /**
+     * @brief calcReparamfctInv
+     * @param paramsOld:
+     *          Parameters of original B-Spline curve (domain of inverse reparameterization function)
+     * @param paramsNew:
+     *          New parameters of B-Spline curve (range of inverse reparameterization function)
+     * @param u:
+     *          Function argument, has to be inside range of paramsOld
+     * @param tolerance
+     * @return the wanted inverse of u (new parameter corresponding to old parameter)
+     */
+    TIGL_EXPORT double calcReparamfctInv(std::vector<double> const& paramsOld, std::vector<double> const& paramsNew, double u, double tolerance);
+} // namespace details
+
 #endif // CTIGLBSPLINEALGORITHMS_H

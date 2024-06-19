@@ -340,6 +340,74 @@ namespace
         curve->InsertKnots(knotsParams, multsParams, tolerance);
     }
 
+    TColStd_Array1OfReal calcNewKnotVectorS(const Handle(Geom_BSplineCurve) curve, std::vector<double> const& paramsOld, std::vector<double> const& paramsNew, double tolerance)
+    {
+        // This function matches the second step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
+
+        double newKnot;
+
+        // Set up knot vector S' consisting of s_i=g(u_i) [inverse reparametrization fct]
+        Standard_Integer nbKnots = curve->NbKnots(); // Size of distinct knots
+        TColStd_Array1OfReal newKnots(1, nbKnots);
+        for (int knotIdx = 1; knotIdx <= nbKnots; knotIdx++) {
+            // Calc s_i=g(u_i) of picewise linear fct
+            // defined as inverse of interpolation (x_i,y_i)=(paramsNew[i], paramsOld[i])
+            newKnot = details::calcReparamfctInv(paramsOld, paramsNew, curve->Knot(knotIdx), tolerance);
+            newKnots.SetValue(knotIdx, newKnot);
+        }
+        return newKnots;
+    }
+
+    Standard_Integer findKnotIndex(TColStd_Array1OfReal knots, double value)
+    {
+        for(int idx = 1; idx <= knots.Size(); idx++) {
+            if(fabs(knots[idx] - value) <= 1e-12)
+                return idx;
+        }
+        return -1;
+    }
+
+    void removeKnotsAfterReparam(const Handle(Geom_BSplineCurve) &curve,
+                                 const Handle(Geom_BSplineCurve) curveOrigin,
+                                 std::vector<double> const& paramsOld, std::vector<double> const& paramsNew,
+                                 double tolerance)
+    {
+        // This function matches the fourth step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
+
+        TColStd_Array1OfReal knotsSBar = curve->Knots();
+
+        Standard_Integer nbKnots = curve->NbKnots();
+        double knotS, knotU;
+        Standard_Integer multS, multU, idxU, multNew;
+        // Exclude first and last knot
+        // Iterate backwards to account for shrinking size of knots vector by deletion if multNew is 0
+        for (int knotIdx = nbKnots-1; knotIdx >= 2; knotIdx--) {
+            knotS = knotsSBar[knotIdx];
+            multS = 0;
+            // Define multiplicity of knotS in original knot vector S of reparam fct
+            // By construction, the new parameters are exactely these knots and they all have mult=1
+            // => If knotS is found in these, its mult in this knot vector is exactely 1, 0 else
+            if(std::find_if(paramsNew.begin(), paramsNew.end(), [&knotS](double v){ return fabs(knotS-v) <= 1e-12; }) != paramsNew.end())
+                multS = 1;
+            // Used as original function, not inverse [swap interpolation dimensions]
+            knotU = details::calcReparamfctInv(paramsNew, paramsOld, knotS, tolerance);
+            idxU = findKnotIndex(curveOrigin->Knots(), knotU);
+            if(idxU != -1)
+                multU = curveOrigin->Multiplicity(idxU);
+            else
+                multU = 0;
+
+            //multNew = max(pq - p + multU, pq - q + multS) = max(multU, multS) [since q=1 and pq=p]
+            multNew = std::max(multU, multS);
+            // Decrease mult of knot to multNew
+            curve->RemoveKnot(knotIdx, multNew, tolerance);
+        }
+    }
+
+} // namespace
+
+namespace details
+{
     double calcReparamfctInv(std::vector<double> const& paramsOld, std::vector<double> const& paramsNew, double u, double tolerance)
     {
         // Calc inverse of reparametrization function s=g(u)=f⁻¹(s)
@@ -386,73 +454,7 @@ namespace
         // Calc inverse g(u) [linear function value]
         return m*u + n;
     }
-
-    TColStd_Array1OfReal calcNewKnotVectorS(const Handle(Geom_BSplineCurve) curve, std::vector<double> const& paramsOld, std::vector<double> const& paramsNew, double tolerance)
-    {
-        // This function matches the second step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
-
-        double newKnot;
-
-        // Set up knot vector S' consisting of s_i=g(u_i) [inverse reparametrization fct]
-        Standard_Integer nbKnots = curve->NbKnots(); // Size of distinct knots
-        TColStd_Array1OfReal newKnots(1, nbKnots);
-        for (int knotIdx = 1; knotIdx <= nbKnots; knotIdx++) {
-            // Calc s_i=g(u_i) of picewise linear fct
-            // defined as inverse of interpolation (x_i,y_i)=(paramsNew[i], paramsOld[i])
-            newKnot = calcReparamfctInv(paramsOld, paramsNew, curve->Knot(knotIdx), tolerance);
-            newKnots.SetValue(knotIdx, newKnot);
-        }
-        return newKnots;
-    }
-
-    Standard_Integer findKnotIndex(TColStd_Array1OfReal knots, double value)
-    {
-        for(int idx = 1; idx <= knots.Size(); idx++) {
-            if(fabs(knots[idx] - value) <= 1e-12)
-                return idx;
-        }
-        return -1;
-    }
-
-    void removeKnotsAfterReparam(const Handle(Geom_BSplineCurve) &curve,
-                                 const Handle(Geom_BSplineCurve) curveOrigin,
-                                 std::vector<double> const& paramsOld, std::vector<double> const& paramsNew,
-                                 double tolerance)
-    {
-        // This function matches the fourth step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
-
-        TColStd_Array1OfReal knotsSBar = curve->Knots();
-
-        Standard_Integer nbKnots = curve->NbKnots();
-        double knotS, knotU;
-        Standard_Integer multS, multU, idxU, multNew;
-        // Exclude first and last knot
-        // Iterate backwards to account for shrinking size of knots vector by deletion if multNew is 0
-        for (int knotIdx = nbKnots-1; knotIdx >= 2; knotIdx--) {
-            knotS = knotsSBar[knotIdx];
-            multS = 0;
-            // Define multiplicity of knotS in original knot vector S of reparam fct
-            // By construction, the new parameters are exactely these knots and they all have mult=1
-            // => If knotS is found in these, its mult in this knot vector is exactely 1, 0 else
-            if(std::find_if(paramsNew.begin(), paramsNew.end(), [&knotS](double v){ return fabs(knotS-v) <= 1e-12; }) != paramsNew.end())
-                multS = 1;
-            // Used as original function, not inverse [swap interpolation dimensions]
-            knotU = calcReparamfctInv(paramsNew, paramsOld, knotS, tolerance);
-            idxU = findKnotIndex(curveOrigin->Knots(), knotU);
-            if(idxU != -1)
-                multU = curveOrigin->Multiplicity(idxU);
-            else
-                multU = 0;
-
-            //multNew = max(pq - p + multU, pq - q + multS) = max(multU, multS) [since q=1 and pq=p]
-            multNew = std::max(multU, multS);
-            // Decrease mult of knot to multNew
-            curve->RemoveKnot(knotIdx, multNew, tolerance);
-        }
-    }
-
-} // namespace
-
+} // namespace details
 
 namespace tigl
 {
