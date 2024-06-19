@@ -203,7 +203,9 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
         occPoints->SetValue(occPoints->Upper(), pMiddle);
     }
 
-    CTiglInterpolatePointsWithKinks interp(occPoints, kinks, params, 0.5, 3);
+    // Here, the B-spline is reparameterized based on the CPACS profile after setting it up at first for accuracy reasons
+    // Also, a tolerance is passed used for knot insertion and removal during the reparameterization algorithm
+    CTiglInterpolatePointsWithKinks interp(occPoints, kinks, params, 0.5, 3, CTiglInterpolatePointsWithKinks::Algo::InterpolateFirstThenReparametrize, 1e-8);
     auto spline = interp.Curve();
 
     if (mirrorSymmetry) {
@@ -213,9 +215,14 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
         CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, umin, umax);
     }
 
-    // we reparametrize the spline to get better performing lofts.
-    // there might be a small accuracy loss though.
-    spline = CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(spline).curve;
+    // Reparamaterization based on a ParamMap defined in the CPACS file within CTiglInterpolatePointsWithKinks does not get along with reparametrizeBSplineNiceKnots.
+    // The geometry is changed in a way that is not acceptable anymore. However out of performance reasons, the feature should not be rejected in the most cases.
+    // Due to those conflicts, the function is only called, when there are no parameters defined in the CPACS file:
+    if (params.empty()) {
+        // we reparametrize the spline to get better performing lofts.
+        // there might be a small accuracy loss though.
+        spline = CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(spline).curve;
+     }
 
     // Create wires
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline).Edge();
