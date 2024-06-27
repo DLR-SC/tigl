@@ -56,6 +56,8 @@ public:
      * \param scale2 Scaling factor from 2nd profile (outer profile chord line in the case of wing profiles)
      * \param x_direction is the vector, along which the first components of the guide curve points are defined
      * \param gcp Guide curve profile coordinates
+     * \param fromDefinition Choose the interpretation of alpha1 for the guide curve's starting point on profileContainer1 (circumference or parameter)
+     * \param toDefinition Choose the interpretation of alpha2 for the guide curve's end point on profileContainer2 (circumference or parameter)
      *
      * @return Guide curve wire in world coordinates
      */
@@ -136,8 +138,8 @@ private:
     Standard_Real           _scale2;               /**< 2nd scale factor */
     gp_Dir                  _x_direction;          /**< x-direction of the guide curve points */
     CCPACSGuideCurveProfile const& _guideCurveProfile;   /**< Guide curve profile */
-    CCPACSGuideCurve::FromOrToDefinition      _fromDefinition;
-    CCPACSGuideCurve::FromOrToDefinition      _toDefinition;
+    CCPACSGuideCurve::FromOrToDefinition      _fromDefinition;  /**< Define on which basis the starting point is calculated*/
+    CCPACSGuideCurve::FromOrToDefinition      _toDefinition;    /**< Define on which basis the end point is calculated*/
 };
 
 } // end namespace tigl
