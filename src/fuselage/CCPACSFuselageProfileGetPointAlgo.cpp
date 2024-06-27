@@ -57,8 +57,21 @@ CCPACSFuselageProfileGetPointAlgo::CCPACSFuselageProfileGetPointAlgo (const TopT
 void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point,
                                                         gp_Vec& tangent, const CCPACSGuideCurve::FromOrToDefinition& fromOrToDefinition)
 {
-    // alpha<0.0 : use line in the direction of the tangent at alpha=0.0
-    if (alpha<0.0) {
+    Standard_Real umin, umax;
+    if (fromOrToDefinition == CCPACSGuideCurve::FromOrToDefinition::PARAMETER) {
+        // Get parameter range of edge
+        BRep_Tool::Range(GetEdge(wire, 0), umin, umax);
+    }
+    else if (fromOrToDefinition == CCPACSGuideCurve::FromOrToDefinition::CIRCUMFERENCE || fromOrToDefinition == CCPACSGuideCurve::FromOrToDefinition::UID) {
+        umin = 0.;
+        umax = 1.;
+    }
+    else {
+        throw CTiglError("CCPACSFuselageProfileGetPointAlgo::GetPointTangent(): Either a fromCircumference, a fromParameter or a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
+    }
+
+    // alpha<umin : use line in the direction of the tangent at alpha=umin
+    if (alpha<umin) {
         // get startpoint
         gp_Pnt startpoint;
         WireGetPointTangent(wire, 0.0, startpoint, tangent);
@@ -68,12 +81,12 @@ void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_
         gp_Dir dir(-1.0*tangent);
         // construct line
         Geom_Line line(startpoint, dir);
-        // map [-infinity, 0.0] to [0.0, infinity] and scale by profile length
+        // map [-infinity, umin] to [umin, infinity] and scale by profile length
         Standard_Real zeta = wireLength*(-1.0*alpha);
         // get point on line at distance zeta from the start point
         line.D0(zeta, point);
     }
-    else if (alpha>=0.0 && alpha<=1.0) {
+    else if (alpha>=umin && alpha<=umax) {
 
         // When the alpha is based on the parameter (and not on the circumference), a different way of computing the point (and therefore tangent) is chosen
         if (fromOrToDefinition == CCPACSGuideCurve::FromOrToDefinition::PARAMETER) {
@@ -83,13 +96,10 @@ void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_
         else if (fromOrToDefinition == CCPACSGuideCurve::FromOrToDefinition::CIRCUMFERENCE || fromOrToDefinition == CCPACSGuideCurve::FromOrToDefinition::UID) {
             WireGetPointTangent(wire, alpha, point, tangent);
         }
-        else {
-            throw CTiglError("CCPACSFuselageProfileGetPointAlgo::GetPointTangent(): Either a fromCircumference, a fromParameter or a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
-        }
         // length of tangent has to be equal two the length of the profile curve
         tangent = wireLength * tangent/tangent.Magnitude();
     }
-    // alpha>1.0 : use line in the direction of the tangent at alpha=1.0
+    // alpha>umax : use line in the direction of the tangent at alpha=umax
     else {
         // get startpoint
         gp_Pnt startpoint;
@@ -100,7 +110,7 @@ void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_
         gp_Dir dir(tangent);
         // construct line
         Geom_Line line(startpoint, dir);
-        // map [1.0, infinity] to [0.0, infinity] and scale by profile length
+        // map [umax, infinity] to [umin, infinity] and scale by profile length
         Standard_Real zeta = wireLength*(alpha - 1.0);
         // get point on line at distance zeta from the start point
         line.D0(zeta, point);

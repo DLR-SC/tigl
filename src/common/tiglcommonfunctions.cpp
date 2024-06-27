@@ -268,12 +268,14 @@ void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, g
 
 void EdgeGetPointTangentBasedOnParam(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& tangent)
 {
-    if (alpha < 0.0 || alpha > 1.0) {
-        throw tigl::CTiglError("Parameter alpha not in the range 0.0 <= alpha <= 1.0 in EdgeGetPointTangent", TIGL_ERROR);
-    }
     // ETA 3D point
     Standard_Real umin, umax;
     Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
+
+    if (alpha < umin || alpha > umax) {
+        throw tigl::CTiglError("Parameter alpha not in the range umin <= alpha <= umax in EdgeGetPointTangent", TIGL_ERROR);
+    }
+
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
     adaptorCurve.D1( alpha, point, tangent );
