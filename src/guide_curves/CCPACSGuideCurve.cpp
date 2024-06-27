@@ -26,6 +26,7 @@
 #include "CTiglPoint.h"
 #include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
+#include "CCPACSGuideCurve.h"
 
 #include <TopoDS_Edge.hxx>
 
@@ -51,28 +52,55 @@ void CCPACSGuideCurve::InvalidateImpl(const boost::optional<std::string>& source
     guideCurveTopo.clear();
 }
 
-CCPACSGuideCurve::FromDefinition CCPACSGuideCurve::GetFromDefinition() const {
+CCPACSGuideCurve::FromOrToDefinition CCPACSGuideCurve::GetFromDefinition() const {
     if (!ValidateChoices())
         throw CTiglError("Choices not valid", TIGL_XML_ERROR);
-    if (m_fromRelativeCircumference_choice2)
-        return FromDefinition::CIRCUMFERENCE;
+    if (m_fromRelativeCircumference_choice2_1)
+        return FromOrToDefinition::CIRCUMFERENCE;
+    if (m_fromParameter_choice2_2)
+        return FromOrToDefinition::PARAMETER;
     if (m_fromGuideCurveUID_choice1)
-        return FromDefinition::UID;
-    throw CTiglError("Logic error in FromDefinition detection");
+        return FromOrToDefinition::UID;
+    throw CTiglError("Logic error in GetFromDefinition detection");
 }
 
+CCPACSGuideCurve::FromOrToDefinition CCPACSGuideCurve::GetToDefinition() const {
+    if (!ValidateChoices())
+        throw CTiglError("Choices not valid", TIGL_XML_ERROR);
+    if (m_toRelativeCircumference_choice1)
+        return FromOrToDefinition::CIRCUMFERENCE;
+    if (m_toParameter_choice2)
+        return FromOrToDefinition::PARAMETER;
+    throw CTiglError("Logic error in GetToDefinition detection");
+}
 
-double CCPACSGuideCurve::GetFromRelativeCircumference() const
+double CCPACSGuideCurve::GetFromDefinitionValue() const
 {
     if ( GetFromGuideCurveUID_choice1() ) {
         CCPACSGuideCurve& pred = m_uidMgr->ResolveObject<CCPACSGuideCurve>(*GetFromGuideCurveUID_choice1());
-        return pred.GetToRelativeCircumference();
+        return pred.GetToDefinitionValue();
     }
-    else if (GetFromRelativeCircumference_choice2()) {
-        return *GetFromRelativeCircumference_choice2();
+    else if (GetFromRelativeCircumference_choice2_1()) {
+        return *GetFromRelativeCircumference_choice2_1();
+    }
+    else if (GetFromParameter_choice2_2()) {
+        return *GetFromParameter_choice2_2();
     }
     else {
-        throw CTiglError("CCPACSGuideCurve::GetFromRelativeCircumference(): Either a fromCircumference of a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
+        throw CTiglError("CCPACSGuideCurve::GetFromDefinitionValue(): Either a fromCircumference, a fromParameter or a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
+    }
+}
+
+double CCPACSGuideCurve::GetToDefinitionValue() const
+{
+    if (GetToRelativeCircumference_choice1()) {
+        return *GetToRelativeCircumference_choice1();
+    }
+    else if (GetToParameter_choice2()) {
+        return *GetToParameter_choice2();
+    }
+    else {
+        throw CTiglError("CCPACSGuideCurve::GetToDefinitionValue(): Either a toCircumference or a toParameter must be present", TIGL_NOT_FOUND);
     }
 }
 
@@ -115,8 +143,8 @@ CCPACSGuideCurve const* CCPACSGuideCurve::GetRootCurve() const
         return pred.GetRootCurve();
     }
     else {
-        if( !GetFromRelativeCircumference_choice2() ) {
-            throw CTiglError("CCPACSGuideCurve::GetRootCurve(): Either a fromCircumference of a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
+        if( ! (GetFromRelativeCircumference_choice2_1() || GetFromParameter_choice2_2()) ) {
+            throw CTiglError("CCPACSGuideCurve::GetRootCurve(): Either a fromCircumference, a fromParameter or a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
         } else {
             return this;
         }

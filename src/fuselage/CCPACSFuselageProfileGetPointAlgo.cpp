@@ -35,6 +35,7 @@
 #include "TopExp_Explorer.hxx"
 #include "TopoDS.hxx"
 #include "tiglcommonfunctions.h"
+#include "CCPACSGuideCurve.h"
 
 namespace tigl
 {
@@ -53,7 +54,8 @@ CCPACSFuselageProfileGetPointAlgo::CCPACSFuselageProfileGetPointAlgo (const TopT
     wireLength = GetLength(wire);
 }
 
-void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent)
+void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point,
+                                                        gp_Vec& tangent, const CCPACSGuideCurve::FromOrToDefinition& fromOrToDefinition)
 {
     // alpha<0.0 : use line in the direction of the tangent at alpha=0.0
     if (alpha<0.0) {
@@ -72,7 +74,18 @@ void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_
         line.D0(zeta, point);
     }
     else if (alpha>=0.0 && alpha<=1.0) {
-        WireGetPointTangent(wire, alpha, point, tangent);
+
+        // When the alpha is based on the parameter (and not on the circumference), a different way of computing the point (and therefore tangent) is chosen
+        if (fromOrToDefinition == CCPACSGuideCurve::FromOrToDefinition::PARAMETER) {
+            TopoDS_Edge edge = GetEdge(wire, 0);
+            EdgeGetPointTangentBasedOnParam(edge, alpha, point, tangent);
+        }
+        else if (fromOrToDefinition == CCPACSGuideCurve::FromOrToDefinition::CIRCUMFERENCE || fromOrToDefinition == CCPACSGuideCurve::FromOrToDefinition::UID) {
+            WireGetPointTangent(wire, alpha, point, tangent);
+        }
+        else {
+            throw CTiglError("CCPACSFuselageProfileGetPointAlgo::GetPointTangent(): Either a fromCircumference, a fromParameter or a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
+        }
         // length of tangent has to be equal two the length of the profile curve
         tangent = wireLength * tangent/tangent.Magnitude();
     }

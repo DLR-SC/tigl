@@ -965,7 +965,13 @@ void CCPACSWing::BuildGuideCurveWires(LocatedGuideCurves& cache) const
             const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             if (!curve.GetFromGuideCurveUID_choice1()) {
                 // this is a root curve
-                double fromRef = *curve.GetFromRelativeCircumference_choice2();
+                double fromRef;
+                if (curve.GetFromRelativeCircumference_choice2_1()) {
+                    fromRef = *curve.GetFromRelativeCircumference_choice2_1();
+                }
+                else if (curve.GetFromParameter_choice2_2()) {
+                    fromRef = *curve.GetFromParameter_choice2_2();
+                }
                 if (fromRef >= 1. && !hasBluntTE) {
                     fromRef = -1.;
                 }

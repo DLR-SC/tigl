@@ -29,6 +29,7 @@
 #include "tigl_internal.h"
 #include "CCPACSGuideCurveProfile.h"
 #include "CTiglLogging.h"
+#include "CCPACSGuideCurve.h"
 
 namespace tigl
 {
@@ -65,7 +66,9 @@ public:
                                      const Standard_Real& scale1,
                                      const Standard_Real& scale2,
                                      const gp_Dir& x_direction,
-                                     const CCPACSGuideCurveProfile& gcp) :
+                                     const CCPACSGuideCurveProfile& gcp,
+                                     const CCPACSGuideCurve::FromOrToDefinition& fromDefinition=CCPACSGuideCurve::FromOrToDefinition::CIRCUMFERENCE,
+                                     const CCPACSGuideCurve::FromOrToDefinition& toDefinition=CCPACSGuideCurve::FromOrToDefinition::CIRCUMFERENCE) :
         _getPointAlgo1(profileContainer1),
         _getPointAlgo2(profileContainer2),
         _alpha1(alpha1),
@@ -73,7 +76,9 @@ public:
         _scale1(scale1),
         _scale2(scale2),
         _x_direction(x_direction),
-        _guideCurveProfile(gcp)
+        _guideCurveProfile(gcp),
+        _fromDefinition(fromDefinition),
+        _toDefinition(toDefinition)
     {
     }
 
@@ -85,8 +90,11 @@ public:
         std::vector<gp_Pnt> guideCurvePoints(guideCurveProfilePoints.size()+2);
         // get anchor points in world coordinates
         gp_Vec tangent;
-        _getPointAlgo1.GetPointTangent(_alpha1, guideCurvePoints[0], tangent);
-        _getPointAlgo2.GetPointTangent(_alpha2, guideCurvePoints[guideCurvePoints.size()-1], tangent);
+        _getPointAlgo1.GetPointTangent(_alpha1, guideCurvePoints[0], tangent, _fromDefinition);
+        if (_toDefinition == CCPACSGuideCurve::FromOrToDefinition::UID) {
+            throw CTiglError("CCPACSGuideCurveAlgo(): toDefinition argument must not be set to UID", TIGL_NOT_FOUND);
+        }
+        _getPointAlgo2.GetPointTangent(_alpha2, guideCurvePoints[guideCurvePoints.size()-1], tangent, _toDefinition);
 
         gp_Vec vec_start(gp_Pnt(),guideCurvePoints[0]);
         gp_Vec vec_end(gp_Pnt(),guideCurvePoints[guideCurvePoints.size()-1]);
@@ -128,6 +136,8 @@ private:
     Standard_Real           _scale2;               /**< 2nd scale factor */
     gp_Dir                  _x_direction;          /**< x-direction of the guide curve points */
     CCPACSGuideCurveProfile const& _guideCurveProfile;   /**< Guide curve profile */
+    CCPACSGuideCurve::FromOrToDefinition      _fromDefinition;
+    CCPACSGuideCurve::FromOrToDefinition      _toDefinition;
 };
 
 } // end namespace tigl

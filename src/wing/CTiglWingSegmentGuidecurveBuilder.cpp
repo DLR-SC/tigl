@@ -80,13 +80,21 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
 
 
     // get relative circumference of inner profile
-    double fromRelativeCircumference = guideCurve->GetFromRelativeCircumference();
+    double fromRelativeCircumference = guideCurve->GetFromDefinitionValue();
 
     // get relative circumference of outer profile
-    double toRelativeCircumference = guideCurve->GetToRelativeCircumference();
+    double toRelativeCircumference = guideCurve->GetToDefinitionValue();
     // get guide curve profile UID
     std::string guideCurveProfileUID = guideCurve->GetGuideCurveProfileUID();
     // get relative circumference of inner profile
+
+    // decide whether the guide curve's starting point is defined based on circumference or parameter
+    CCPACSGuideCurve::FromOrToDefinition fromDefinition = guideCurve->GetFromDefinition();
+    // decide whether the guide curve's end point is defined based on circumference or parameter
+    CCPACSGuideCurve::FromOrToDefinition toDefinition = guideCurve->GetToDefinition();
+    if (toDefinition == CCPACSGuideCurve::FromOrToDefinition::UID) {
+        throw CTiglError("CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(): toDefinition must not be UID", TIGL_NOT_FOUND);
+    }
 
     // get guide curve profile
     CCPACSGuideCurveProfile& guideCurveProfile = m_segment.GetUIDManager().ResolveObject<CCPACSGuideCurveProfile>(guideCurveProfileUID);
@@ -114,7 +122,9 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
                                                                                               innerScale,
                                                                                               outerScale,
                                                                                               rxDir,
-                                                                                              guideCurveProfile);
+                                                                                              guideCurveProfile,
+                                                                                              fromDefinition,
+                                                                                              toDefinition);
     return guideCurvePnts;
 }
 
