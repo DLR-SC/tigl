@@ -79,11 +79,11 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
     double outerScale = GetLength(outerChordLineWire);
 
 
-    // get relative circumference of inner profile
-    double fromRelativeCircumference = guideCurve->GetFromDefinitionValue();
+    // get relative circumference or parameter value of inner profile (depending on chosen CPACS node)
+    double fromDefinitionValue = guideCurve->GetFromDefinitionValue();
+    // get relative circumference or parameter value of outer profile (depending on chosen CPACS node)
+    double toDefinitionValue = guideCurve->GetToDefinitionValue();
 
-    // get relative circumference of outer profile
-    double toRelativeCircumference = guideCurve->GetToDefinitionValue();
     // get guide curve profile UID
     std::string guideCurveProfileUID = guideCurve->GetGuideCurveProfileUID();
     // get relative circumference of inner profile
@@ -117,8 +117,8 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
     // construct guide curve algorithm
     std::vector<gp_Pnt> guideCurvePnts = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires,
                                                                                               concatenatedOuterWires,
-                                                                                              fromRelativeCircumference,
-                                                                                              toRelativeCircumference,
+                                                                                              fromDefinitionValue,
+                                                                                              toDefinitionValue,
                                                                                               innerScale,
                                                                                               outerScale,
                                                                                               rxDir,

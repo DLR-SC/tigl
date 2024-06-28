@@ -87,7 +87,7 @@ double CCPACSGuideCurve::GetFromDefinitionValue() const
         return *GetFromParameter_choice2_2();
     }
     else {
-        throw CTiglError("CCPACSGuideCurve::GetFromDefinitionValue(): Either a fromCircumference, a fromParameter or a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
+        throw CTiglError("CCPACSGuideCurve::GetFromDefinitionValue(): Either a fromRelativeCircumference, a fromParameter or a fromGuideCurveUID must be present", TIGL_NOT_FOUND);
     }
 }
 
@@ -100,7 +100,7 @@ double CCPACSGuideCurve::GetToDefinitionValue() const
         return *GetToParameter_choice2();
     }
     else {
-        throw CTiglError("CCPACSGuideCurve::GetToDefinitionValue(): Either a toCircumference or a toParameter must be present", TIGL_NOT_FOUND);
+        throw CTiglError("CCPACSGuideCurve::GetToDefinitionValue(): Either a toRelativeCircumference or a toParameter must be present", TIGL_NOT_FOUND);
     }
 }
 
