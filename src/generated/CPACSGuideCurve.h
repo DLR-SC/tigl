@@ -86,14 +86,20 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSGuideCurve_continuity>& GetContinuity_choice1() const;
         TIGL_EXPORT virtual void SetContinuity_choice1(const boost::optional<CPACSGuideCurve_continuity>& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetFromRelativeCircumference_choice2() const;
-        TIGL_EXPORT virtual void SetFromRelativeCircumference_choice2(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetFromRelativeCircumference_choice2_1() const;
+        TIGL_EXPORT virtual void SetFromRelativeCircumference_choice2_1(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetFromParameter_choice2_2() const;
+        TIGL_EXPORT virtual void SetFromParameter_choice2_2(const boost::optional<double>& value);
 
         TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetTangent_choice2() const;
         TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetTangent_choice2();
 
-        TIGL_EXPORT virtual const double& GetToRelativeCircumference() const;
-        TIGL_EXPORT virtual void SetToRelativeCircumference(const double& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetToRelativeCircumference_choice1() const;
+        TIGL_EXPORT virtual void SetToRelativeCircumference_choice1(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetToParameter_choice2() const;
+        TIGL_EXPORT virtual void SetToParameter_choice2(const boost::optional<double>& value);
 
         TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetTangent() const;
         TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetTangent();
@@ -138,7 +144,12 @@ namespace generated
         /// Reference to the relative circumference
         /// position from which the guide curve shall start. Valid values
         /// are in the interval -1.0...1.0.
-        boost::optional<double>                     m_fromRelativeCircumference_choice2;
+        boost::optional<double>                     m_fromRelativeCircumference_choice2_1;
+
+        /// Reference to the parameter
+        /// position from which the guide curve shall start. Valid values
+        /// are in the interval -1.0...1.0.
+        boost::optional<double>                     m_fromParameter_choice2_2;
 
         /// Tangent at first point
         boost::optional<CPACSPointXYZ>              m_tangent_choice2;
@@ -146,7 +157,12 @@ namespace generated
         /// The relative circumference
         /// position at which the guide curve shall end. Valid values
         /// are in the interval -1.0...1.0.
-        double                                      m_toRelativeCircumference;
+        boost::optional<double>                     m_toRelativeCircumference_choice1;
+
+        /// The parameter
+        /// position at which the guide curve shall end. Valid values
+        /// are in the interval -1.0...1.0.
+        boost::optional<double>                     m_toParameter_choice2;
 
         /// Tangent at last point
         boost::optional<CPACSPointXYZ>              m_tangent;

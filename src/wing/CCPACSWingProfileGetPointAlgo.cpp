@@ -36,6 +36,7 @@
 #include "TopoDS.hxx"
 #include "Geom_Line.hxx"
 #include "tiglcommonfunctions.h"
+#include "CCPACSGuideCurve.h"
 
 namespace tigl
 {
@@ -57,7 +58,8 @@ CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (const TopTools_Seq
     upperWireLength = GetLength(upperWire);
 }
 
-void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent)
+void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point,
+                                                    gp_Vec& tangent, const CCPACSGuideCurve::FromOrToDefinition& fromOrToDefinition)
 {
     // alpha<-1.0 : use line in the direction of the tangent at alpha=-1.0
     if (alpha<-1.0) {

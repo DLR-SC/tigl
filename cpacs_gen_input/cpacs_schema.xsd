@@ -13790,31 +13790,51 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                                 </xsd:complexType>
                             </xsd:element>
                         </xsd:sequence>
-                        <xsd:sequence>
-                            <xsd:element name="fromRelativeCircumference" type="doubleBaseType">
-                                <xsd:annotation>
-                                    <xsd:documentation>Reference to the relative circumference
-                                        position from which the guide curve shall start. Valid values
-                                        are in the interval -1.0...1.0.
-                                    </xsd:documentation>
-                                </xsd:annotation>
-                            </xsd:element>
-                            <xsd:element minOccurs="0" name="tangent" type="pointXYZType">
+			<xsd:sequence>
+			    <xsd:choice>
+                                <xsd:element name="fromRelativeCircumference" type="doubleBaseType">
+                                    <xsd:annotation>
+                                        <xsd:documentation>Reference to the relative circumference
+                                            position from which the guide curve shall start. Valid values
+                                            are in the interval -1.0...1.0.
+                                        </xsd:documentation>
+                                    </xsd:annotation>
+                                </xsd:element>
+                                <xsd:element name="fromParameter" type="doubleBaseType">
+                                    <xsd:annotation>
+                                        <xsd:documentation>Reference to the parameter
+                                            position from which the guide curve shall start. Valid values
+                                            are in the interval -1.0...1.0.
+                                            </xsd:documentation>
+                                    </xsd:annotation>
+                                </xsd:element>
+                            </xsd:choice>
+			    <xsd:element minOccurs="0" name="tangent" type="pointXYZType">
                                 <xsd:annotation>
                                     <xsd:documentation>Tangent at first point</xsd:documentation>
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:sequence>
                     </xsd:choice>
-                    <xsd:sequence>
-                        <xsd:element name="toRelativeCircumference" type="doubleBaseType">
-                            <xsd:annotation>
-                                <xsd:documentation>The relative circumference
-                                    position at which the guide curve shall end. Valid values
-                                    are in the interval -1.0...1.0.
-                                </xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:element>
+		    <xsd:sequence>
+			<xsd:choice>
+                            <xsd:element name="toRelativeCircumference" type="doubleBaseType">
+                                <xsd:annotation>
+                                    <xsd:documentation>The relative circumference
+                                        position at which the guide curve shall end. Valid values
+                                        are in the interval -1.0...1.0.
+                                    </xsd:documentation>
+                                </xsd:annotation>
+			    </xsd:element>
+			    <xsd:element name="toParameter" type="doubleBaseType">
+                                <xsd:annotation>
+                                    <xsd:documentation>The parameter
+                                        position at which the guide curve shall end. Valid values
+                                       are in the interval -1.0...1.0.
+                                    </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+		 	</xsd:choice>
                         <xsd:element minOccurs="0" name="tangent" type="pointXYZType">
                             <xsd:annotation>
                                 <xsd:documentation>Tangent at last point</xsd:documentation>

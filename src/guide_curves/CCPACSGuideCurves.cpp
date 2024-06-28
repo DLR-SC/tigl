@@ -106,7 +106,12 @@ std::vector<double> CCPACSGuideCurves::GetRelativeCircumferenceParameters() cons
 
     for (int iguide = 1; iguide <=  GetGuideCurveCount(); ++iguide) {
         const CCPACSGuideCurve* root = GetGuideCurve(iguide).GetRootCurve();
-        relCircs.push_back(*root->GetFromRelativeCircumference_choice2());
+        if(root->GetFromRelativeCircumference_choice2_1()) {
+            relCircs.push_back(*root->GetFromRelativeCircumference_choice2_1());
+        }
+        else if(root->GetFromParameter_choice2_2()) {
+            relCircs.push_back(*root->GetFromParameter_choice2_2());
+        }
     }
 
     std::sort(relCircs.begin(), relCircs.end());

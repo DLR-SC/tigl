@@ -380,11 +380,11 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
             const CCPACSGuideCurves& curves = *m_guideCurves;
             bool hasTrailingEdge = !innerConnection.GetProfile().GetTrailingEdge().IsNull();
 
-            // order guide curves according to fromRelativeCircumeference
+            // order guide curves according to fromRelativeCircumeference or fromParameter (GetFromDefinitionValue())
             std::multimap<double, const CCPACSGuideCurve*> guideMap;
             for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
                 const CCPACSGuideCurve* curve = &curves.GetGuideCurve(iguide);
-                double value = curve->GetFromRelativeCircumference();
+                double value = curve->GetFromDefinitionValue();
                 if (value >= 1. && !hasTrailingEdge) {
                     // this is a trailing edge profile, we should add it first
                     value = -1.;
