@@ -60,7 +60,7 @@ runs:
   steps:
 
     - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
         activate-environment: tigl-bld
@@ -114,14 +114,14 @@ runs:
 
     - name: Upload package as artifact
       if: ${{ inputs.package-artifact }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.package-artifact }}
         path: build/*.zip
 
     - name: Upload installer as artifact
       if: ${{ inputs.installer-artifact }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
        name: ${{ inputs.installer-artifact }}
        path: build/*.exe
@@ -135,7 +135,7 @@ runs:
 
     - name: Upload documentation as artifact
       if: ${{ inputs.documentation-artifact }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
        name: ${{ inputs.documentation-artifact }}
        path: build/doc/html/*
@@ -146,7 +146,7 @@ runs:
         tar -czf build.tar.gz build
 
     - name: Upload build directory
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.build-artifact }}
         path: build.tar.gz
