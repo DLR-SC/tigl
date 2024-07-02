@@ -20,6 +20,7 @@
 
 #include "CTiglError.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "tiglcommonfunctions.h"
 
 #include <BSplCLib.hxx>
 #include <math_Gauss.hxx>
@@ -76,6 +77,11 @@ CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handl
     }
 }
 
+CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const std::vector<gp_Pnt>& points,
+                                                                     unsigned int maxDegree, bool continuousIfClosed)
+    : CTiglPointsToBSplineInterpolation(OccArray(points), maxDegree, continuousIfClosed)
+{}
+
 CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
                                                                      const std::vector<double>& parameters,
                                                                      unsigned int maxDegree, bool continuousIfClosed)
@@ -100,6 +106,12 @@ CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const Handl
         throw CTiglError("Too few points in CTiglPointsToBSplineInterpolation", TIGL_MATH_ERROR);
     }
 }
+
+CTiglPointsToBSplineInterpolation::CTiglPointsToBSplineInterpolation(const std::vector<gp_Pnt>& points,
+                                                                     const std::vector<double>& parameters,
+                                                                     unsigned int maxDegree, bool continuousIfClosed)
+    : CTiglPointsToBSplineInterpolation(OccArray(points), parameters, maxDegree, continuousIfClosed)
+{}
 
 Handle(Geom_BSplineCurve) CTiglPointsToBSplineInterpolation::Curve() const
 {

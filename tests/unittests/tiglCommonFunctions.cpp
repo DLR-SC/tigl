@@ -15,6 +15,8 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+#include "CTiglMakeLoft.h"
 #include "tigl.h"
 #include "tiglcommonfunctions.h"
 #include "test.h"
@@ -28,6 +30,8 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepCheck_Analyzer.hxx>
 #include <Standard_Failure.hxx>
 
 #include <list>
@@ -136,6 +140,37 @@ TEST(TiglCommonFunctions, tiglCheckPointInside_api)
     EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", nullptr));
 
 
+}
+
+TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusZero)
+{
+    auto wire = BuildWireRectangle(1., 0.);
+    ASSERT_TRUE(wire.Closed());
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    ASSERT_TRUE(wire2.Closed());
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire);
+    loft.addProfiles(wire2);
+    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
+}
+
+
+TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusOK)
+{
+    auto wire = BuildWireRectangle(0.5, 0.14);
+    ASSERT_TRUE(wire.Closed());
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    ASSERT_TRUE(wire2.Closed());
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire);
+    loft.addProfiles(wire2);
+    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
 }
 
 TEST(TiglCommonFunctions, LinspaceWithBreaks)

@@ -90,6 +90,12 @@ private:
     // fuselage profile transformation.
     void BuildWires(WireCache& cache) const;
 
+    //Builds the fuselage profile wires from point list
+    void BuildWiresPointList(WireCache& cache) const;
+
+    //Builds the fuselage profile wires from height to width ratio and corner radius
+    void BuildWiresRectangle(WireCache& cache) const;
+
     // Helper function to determine the "diameter" (the wing profile chord line equivalent)
     // which is defined as the line intersecting Point1 and Point2
     //
