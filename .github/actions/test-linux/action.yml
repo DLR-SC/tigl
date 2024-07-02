@@ -13,6 +13,10 @@ inputs:
     required: false
     default: false
 
+  codecov_token:
+    description: 'CodeCov token needed to publish coverage report on codecov'
+    required: true
+
   unit-tests:
     description: "Set to true to run TiGLs unit tests (true or false)"
     required: false
@@ -36,7 +40,7 @@ runs:
         sudo apt-get install -y lcov
         
     - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
         activate-environment: tigl-bld
@@ -44,7 +48,7 @@ runs:
         auto-activate-base: false
 
     - name: Download build directory
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.build-artifact }}
 
@@ -77,6 +81,12 @@ runs:
 
     - name: Publish coverage report to codecov.io (ubuntu debug)
       if: ${{ inputs.coverage == 'true' }}
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./build/tests/unittests/coverageReport-unit.info,./build/tests/integrationtests/coverageReport-integration.info
+        token: ${{ inputs.codecov_token }}
+        codecov_yml_path: codecov.yml
+        disable_search: true
+        verbose: true
+        flags: unittests
+

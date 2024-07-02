@@ -159,6 +159,24 @@ public:
     TIGL_EXPORT static CTiglApproxResult reparametrizeBSplineNiceKnots(Handle(Geom_BSplineCurve) spline);
 
     /**
+     * @brief reparameterizePiecewiseLinear:
+     *          Apply reparameterization on a given B-Spline curve defined by old and new parameters
+     *          Based on algorithm found in The NURBS book (2nd edition), p. 251, and the explanations
+     *          Here, we use a piecewise linear reparameterization function (degree q=1) interpolating the wanted parameters
+     *          As a result, the degree stays the same after reparameterization
+     * @param paramsOld:
+     *          Array of the old parameters
+     * @param paramsNew:
+     *          Array of the new parameters
+     * @param tolerance:
+     *          Define the tolerance used for OpenCascade knot removal funtion [Geom_BSplineCurve::RemoveKnot(Index, M, Tolerance)]
+     */
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparameterizePiecewiseLinear(Handle(Geom_BSplineCurve) curve,
+                                                                               std::vector<double> const& paramsOld, std::vector<double> const& paramsNew,
+                                                                               double tolerance);
+
+
+    /**
      * @brief reparametrizeBSplineContinuouslyApprox:
      *          Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
      *          The B-spline geometry remains approximately the same, and:
@@ -317,5 +335,22 @@ public:
     TIGL_EXPORT static Handle(Geom_BSplineSurface) makeKnotsUniform(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v);
 };
 } // namespace tigl
+
+namespace details
+{
+    /// Helper function for reparameterization to calculate inverse of reparameterization function (paramsOld -> paramsNew)
+    /**
+     * @brief calcReparamfctInv
+     * @param paramsOld:
+     *          Parameters of original B-Spline curve (domain of inverse reparameterization function)
+     * @param paramsNew:
+     *          New parameters of B-Spline curve (range of inverse reparameterization function)
+     * @param u:
+     *          Function argument, has to be inside range of paramsOld
+     * @param tolerance
+     * @return the wanted inverse of u (new parameter corresponding to old parameter)
+     */
+    TIGL_EXPORT double calcReparamfctInv(std::vector<double> const& paramsOld, std::vector<double> const& paramsNew, double u, double tolerance);
+} // namespace details
 
 #endif // CTIGLBSPLINEALGORITHMS_H

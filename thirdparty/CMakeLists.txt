@@ -5,9 +5,9 @@ option(TIGL_USE_INTERNAL_BOOST "Use boost library that comes with tigl" ON)
 if (TIGL_USE_INTERNAL_BOOST)
 
 # boost
-set (BOOST_DIR ${PROJECT_BINARY_DIR}/boost_1_76_0)
-set (BOOST_ARCHIVE ${PROJECT_SOURCE_DIR}/boost_1_76_0.tar.gz)
-set (Boost_VERSION "1.76.0")
+set (BOOST_DIR ${PROJECT_BINARY_DIR}/boost_1_85_0)
+set (BOOST_ARCHIVE ${PROJECT_SOURCE_DIR}/boost_1_85_0.tar.gz)
+set (Boost_VERSION "1.85.0")
 
 if (NOT EXISTS ${BOOST_DIR})
     message(STATUS "Extracting boost ${Boost_VERSION}")
@@ -76,6 +76,7 @@ add_library(tigl_boost_filesystem STATIC
 )
 
 target_link_libraries(tigl_boost_filesystem PUBLIC tigl_boost_disable_autolink tigl_boost)
+target_compile_definitions(tigl_boost_filesystem PUBLIC BOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF=1)
 set_property(TARGET tigl_boost_filesystem PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_library(Boost::filesystem ALIAS tigl_boost_filesystem)
 
