@@ -355,10 +355,8 @@ void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) cons
                 }
             }
         }
-    } else if (m_standardProfile_choice3)
-    {
-        if(m_standardProfile_choice3->GetRectangle_choice1())
-        {
+    } else if (m_standardProfile_choice3){
+        if(m_standardProfile_choice3->GetRectangle_choice1()){
            //Get Paramenters
            auto& rectangle_profile = *m_standardProfile_choice3->GetRectangle_choice1();
            double heightToWidthRatio = rectangle_profile.GetHeightToWidthRatio().GetValue();
@@ -367,9 +365,6 @@ void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) cons
         } else if(m_standardProfile_choice3->GetSuperEllipse_choice2()) {
             cache.start = gp_Pnt(0., 0., 0.5);
             cache.end = gp_Pnt(0., 0., -0.5);
-        } else {
-            throw CTiglError("Unknown or unsupported profile type");
-        }
     } else {
         throw CTiglError("Unknown or unsupported profile type");
     }
