@@ -117,7 +117,7 @@
                 <elements>
                   <element uID="D150_Fuselage_1Section2IDElement1">
                     <name>D150_Fuselage_1Section2</name>
-                    <profileUID>fuselageSuperellipse3ProfileuID</profileUID>
+                    <profileUID>fuselageSuperellipse1ProfileuID</profileUID>
                     <transformation uID="D150_Fuselage_1Section2IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section2IDElement1_transformation1_scaling1">
                         <x>1</x>
@@ -160,7 +160,7 @@
                 <elements>
                   <element uID="D150_Fuselage_1Section3IDElement1">
                     <name>D150_Fuselage_1Section3</name>
-                    <profileUID>fuselageSuperellipse1ProfileuID</profileUID>
+                    <profileUID>fuselageSuperellipseProfileuID</profileUID>
                     <transformation uID="D150_Fuselage_1Section3IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section3IDElement1_transformation1_scaling1">
                         <x>1</x>

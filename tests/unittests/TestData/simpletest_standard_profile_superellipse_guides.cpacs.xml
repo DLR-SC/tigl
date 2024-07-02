@@ -639,9 +639,9 @@
           <standardProfile>
             <superEllipse>
               <lowerHeightFraction>0.5</lowerHeightFraction>
-              <mLower>3.</mLower>
+              <mLower>2.</mLower>
               <mUpper>3.</mUpper>
-              <nLower>3.</nLower>
+              <nLower>1.</nLower>
               <nUpper>3.</nUpper>
             </superEllipse>
           </standardProfile>
