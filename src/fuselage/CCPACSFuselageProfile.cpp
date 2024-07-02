@@ -365,8 +365,9 @@ void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) cons
         } else if(m_standardProfile_choice3->GetSuperEllipse_choice2()) {
             cache.start = gp_Pnt(0., 0., 0.5);
             cache.end = gp_Pnt(0., 0., -0.5);
-    } else {
+        } else {
         throw CTiglError("Unknown or unsupported profile type");
+        }
     }
 }
 
