@@ -1276,9 +1276,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 }
 
 TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper,
-                                              const double nLower, const double nUpper, const double tol){
+                                              const double nLower, const double nUpper, const size_t nb_points){
     double z_0 = lowerHeightFraction - 0.5;
-    int nb_points = 64; //TODO add tol
     std::vector<gp_Pnt> points(nb_points+1);
     std::vector<Handle(Geom_BSplineCurve)> curves;
 

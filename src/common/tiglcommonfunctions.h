@@ -306,7 +306,7 @@ TIGL_EXPORT TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, cons
  * @param tol
  * @return
  */
-TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper, const double nLower, const double nUpper, const double tol= 1e-3);
+TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper, const double nLower, const double nUpper, const size_t nb_points = 64);
 
 // Returns a list of wires built from all connected edges in the passed shape
 TIGL_EXPORT void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList);
