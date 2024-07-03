@@ -93,9 +93,11 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
     // decide whether the guide curve's end point is defined based on circumference or parameter
     CCPACSGuideCurve::FromOrToDefinition toDefinition = guideCurve->GetToDefinition();
     if (toDefinition == CCPACSGuideCurve::FromOrToDefinition::UID) {
-        throw CTiglError("CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(): toDefinition must not be UID", TIGL_NOT_FOUND);
+        throw CTiglError("CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(): toDefinition must not be UID", TIGL_NOT_FOUND);
     }
-
+    if (fromDefinition == CCPACSGuideCurve::FromOrToDefinition::PARAMETER || toDefinition == CCPACSGuideCurve::FromOrToDefinition::PARAMETER) {
+        throw CTiglError("CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(): Wing guide curves defined by parameter are not supported. Define them with the relative circumference.", TIGL_NOT_FOUND);
+    }
     // get guide curve profile
     CCPACSGuideCurveProfile& guideCurveProfile = m_segment.GetUIDManager().ResolveObject<CCPACSGuideCurveProfile>(guideCurveProfileUID);
 
