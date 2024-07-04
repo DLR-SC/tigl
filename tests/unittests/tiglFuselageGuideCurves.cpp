@@ -45,6 +45,9 @@
 #include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
+#include "CCPACSFuselageSegment.h"
+#include "CCPACSConfigurationManager.h"
+#include "CTiglFuselageSegmentGuidecurveBuilder.h"
 
 using namespace std;
 
@@ -505,4 +508,40 @@ TEST(FuselageGuideCurve_bug, 766)
     tigl::CCPACSWing& wing = config.GetWing(1);
     EXPECT_THROW(wing.GetLoft()->Shape(), tigl::CTiglError);
 
+}
+
+TEST_F(FuselageGuideCurve, kinksGuideCurvesParameterDef)
+{
+    const char* filename = "TestData/kinks_withGC_ParameterDef.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    double x,y,z;
+    double x2,y2,z2;
+    // Get the points' coordinates and compare to guide curve start and end
+    tiglFuselageGetPoint(tiglHandle, 1, 1, 0, 0.28, &x, &y, &z);
+    tiglFuselageGetPoint(tiglHandle, 1, 1, 1, 0.28, &x2, &y2, &z2);
+
+    auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+    auto& segment = uid_mgr.ResolveObject<tigl::CCPACSFuselageSegment>("segmentD150_Fuselage_1Segment2ID");
+    auto& guideCurves = *segment.GetGuideCurves();
+    tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(2);
+    auto gcBuilder = tigl::CTiglFuselageSegmentGuidecurveBuilder(segment);
+
+    gp_Pnt firstPointGC = gcBuilder.BuildGuideCurvePnts(&guideCurve)[0];
+    gp_Pnt lastPointGC = gcBuilder.BuildGuideCurvePnts(&guideCurve).back();
+    double tolerance = 1e-12;
+
+    // Compare guide curve's starting point with expected value on profile
+    ASSERT_NEAR(x, firstPointGC.X(), tolerance);
+    ASSERT_NEAR(y, firstPointGC.Y(), tolerance);
+    ASSERT_NEAR(z, firstPointGC.Z(), tolerance);
+
+    // Compare guide curve's end point with expected value on profile
+    ASSERT_NEAR(x2, lastPointGC.X(), tolerance);
+    ASSERT_NEAR(y2, lastPointGC.Y(), tolerance);
+    ASSERT_NEAR(z2, lastPointGC.Z(), tolerance);
 }
