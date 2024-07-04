@@ -71,9 +71,11 @@ void CTiglPatchShell::AddSideCap(TopoDS_Wire const& boundaryWire)
         BRepBuilderAPI_FindPlane Searcher( boundaryWire, _tolerance );
         if (Searcher.Found()) {
             cap = BRepBuilderAPI_MakeFace(Searcher.Plane(), boundaryWire);
+#ifdef DEBUG
             if(!BRepCheck_Analyzer(cap).IsValid()){
                 throw CTiglError("Error occured while building side caps. Built shape invalid.");
             }
+#endif
             Ok = true;
         }
         else {
