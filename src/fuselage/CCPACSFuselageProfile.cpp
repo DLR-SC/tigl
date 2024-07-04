@@ -256,6 +256,22 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
         cache.original = tempWireOriginal;
 }
 
+//Builds the fuselage profile wire from heightToWidthRatio and cornerRadius with a tolerance of 1e-3 for the wire
+void CCPACSFuselageProfile::BuildWiresRectangle(WireCache& cache) const
+{
+    if(!m_standardProfile_choice3->GetRectangle_choice1()){
+        throw CTiglError("CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+    }
+    //Get Paramenters
+    auto& rectangle_profile = *m_standardProfile_choice3->GetRectangle_choice1();
+    double heightToWidthRatio = rectangle_profile.GetHeightToWidthRatio().GetValue();
+    double radius = (rectangle_profile.GetCornerRadius())? *rectangle_profile.GetCornerRadius() : 0. ;
+    //Build wire
+    TopoDS_Wire wire = BuildWireRectangle(heightToWidthRatio,radius, 1e-3);
+    cache.closed = wire;
+    cache.original = wire;
+}
+
 // Transforms a point by the fuselage profile transformation
 gp_Pnt CCPACSFuselageProfile::TransformPoint(const gp_Pnt& aPoint) const
 {
