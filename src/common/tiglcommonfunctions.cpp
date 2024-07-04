@@ -1277,9 +1277,53 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
 TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper,
                                               const double nLower, const double nUpper, const size_t nb_points){
-    double z_0 = lowerHeightFraction - 0.5;
+    if (mLower==0||mUpper==0||nLower==0||nUpper==0||lowerHeightFraction==0||lowerHeightFraction==1){
+        throw tigl::CTiglError("Invalid input. Check superellipse profile parameters.");
+    }
     std::vector<gp_Pnt> points(nb_points+1);
     std::vector<Handle(Geom_BSplineCurve)> curves;
+
+    double z_0 = lowerHeightFraction - 0.5;
+
+    //TODO
+    //define tangents
+    std::vector<std::vector<gp_Vec>> tangents(8);
+    if(mUpper==0){
+        //I.Quadrant
+        //II.Quadrant
+        //III.Quadrant
+        //VI.Quadrant
+    }
+    if(mUpper>0){
+        //I.Quadrant
+        //II.Quadrant
+        //III.Quadrant
+        //VI.Quadrant
+    }
+    if(mUpper<0){
+        //I.Quadrant
+        //II.Quadrant
+        //III.Quadrant
+        //VI.Quadrant
+    }
+    if(mUpper==0){
+        //I.Quadrant
+        //II.Quadrant
+        //III.Quadrant
+        //VI.Quadrant
+    }
+    if(mUpper>0){
+        //I.Quadrant
+        //II.Quadrant
+        //III.Quadrant
+        //VI.Quadrant
+    }
+    if(mUpper<0){
+        //I.Quadrant
+        //II.Quadrant
+        //III.Quadrant
+        //VI.Quadrant
+    }
 
     //build right upper half of semi ellipse
     for (int i=0; i<=(nb_points); i++){
@@ -1288,7 +1332,10 @@ TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, 
         double z_i = z_0 + (0.5 -z_0)* std::pow((1. - std::pow(std::abs(2. * y_i), mUpper)), 1. / nUpper);
         points.at(i) = gp_Pnt(0.,y_i,z_i);
     }
-    opencascade::handle<Geom_BSplineCurve> upper_right_curve = tigl::CTiglPointsToBSplineInterpolation(points).Curve();
+    auto interpol_points = GeomAPI_Interpolate(OccArray(points), false , 1e-5);
+    //TODO interpol_points.Load(gp_Vec & initial tangent, gp_Vec &final tangent)
+    interpol_points.Perform();
+    opencascade::handle<Geom_BSplineCurve> upper_right_curve = interpol_points.Curve();
     curves.push_back(upper_right_curve);
 
     //build lower right half of semi ellipse
