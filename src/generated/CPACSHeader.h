@@ -19,11 +19,9 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <ctime>
 #include <string>
 #include <tixi.h>
-#include "CPACSUpdates.h"
-#include "CreateIfNotExists.h"
+#include "CPACSVersionInfos.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -64,49 +62,32 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const std::string& GetCreator() const;
-        TIGL_EXPORT virtual void SetCreator(const std::string& value);
-
-        TIGL_EXPORT virtual const std::time_t& GetTimestamp() const;
-        TIGL_EXPORT virtual void SetTimestamp(const std::time_t& value);
-
         TIGL_EXPORT virtual const std::string& GetVersion() const;
         TIGL_EXPORT virtual void SetVersion(const std::string& value);
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetCpacsVersion() const;
         TIGL_EXPORT virtual void SetCpacsVersion(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSUpdates>& GetUpdates() const;
-        TIGL_EXPORT virtual boost::optional<CPACSUpdates>& GetUpdates();
-
-        TIGL_EXPORT virtual CPACSUpdates& GetUpdates(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveUpdates();
+        TIGL_EXPORT virtual const CPACSVersionInfos& GetVersionInfos() const;
+        TIGL_EXPORT virtual CPACSVersionInfos& GetVersionInfos();
 
     protected:
         CPACSCpacs* m_parent;
 
         /// Name of CPACS dataset
-        std::string                   m_name;
+        std::string                  m_name;
 
         /// Description of CPACS dataset
-        boost::optional<std::string>  m_description;
+        boost::optional<std::string> m_description;
 
-        /// Creator of initial CPACS dataset
-        std::string                   m_creator;
+        /// Version of initial CPACS dataset according to the Semantic Versioning 2.0.0 standard.
+        std::string                  m_version;
 
-        /// Timestamp of initial CPACS dataset creation
-        std::time_t                   m_timestamp;
+        /// DEPRECATED: Should only be set to allow TiGL to open the file until TiGL is adopted accordingly.
+        /// Will be replaced by the cpacsVersion element in versionInfos.
+        boost::optional<std::string> m_cpacsVersion;
 
-        /// Version of initial CPACS dataset
-        std::string                   m_version;
-
-        /// CPACS version that the dataset is valid to. The element is optional, since data sets
-        /// can be valid for several CPACS versions. However, we strongly recommend to assign data sets to a
-        /// specific CPACS version as far as possible, especially since some tools and libraries (e.g. TiGL)
-        /// require this specification.
-        boost::optional<std::string>  m_cpacsVersion;
-
-        boost::optional<CPACSUpdates> m_updates;
+        CPACSVersionInfos            m_versionInfos;
 
     private:
         CPACSHeader(const CPACSHeader&) = delete;

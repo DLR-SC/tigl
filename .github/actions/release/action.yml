@@ -13,7 +13,7 @@ runs:
 
   steps:
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Split Release Description from Changelog
       shell: bash -l {0}
@@ -38,43 +38,43 @@ runs:
          github_ref: ${{ github.ref }}
          
     - name: download Win64 package Build artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: win-package
         
     - name: download Win64 installer Build artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: win-installer
          
     - name: download MacOS package Build artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: macos-package
         
     - name: download html-documentation
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: html-documentation
         path: html-documentation
 
     - name: Create Release
       id: create_release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.ref }}
-        release_name: TiGL ${{ env.version }}
+        name: TiGL ${{ env.version }}
         body: ${{ steps.changelog.outputs.content  }}
         draft: true
         prerelease: false
         token: ${{ inputs.GH_TOKEN }}
         files: |
-          ./win-installer/TIGL-${{ env.version }}-win64.exe
-          ./win-package/TIGL-${{ env.version }}-win64.zip
-          ./macos-package/TIGL-${{ env.version }}-Darwin.dmg
+          win-installer/TIGL-${{ env.version }}-win64.exe
+          win-package/TIGL-${{ env.version }}-win64.zip
+          macos-package/TIGL-${{ env.version }}-Darwin.dmg
 
     - name: Checkout tigl-website repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: DLR-SC/tigl-website
         path: tigl-website
@@ -111,7 +111,7 @@ runs:
         token: ${{ inputs.GH_TOKEN }}
 
     - name: Checkout tigl-conda repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: DLR-SC/tigl-conda
         path: tigl-conda

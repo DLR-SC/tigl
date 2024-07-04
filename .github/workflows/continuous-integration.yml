@@ -8,6 +8,9 @@ on:
       GH_TOKEN:
         description: 'A Github PAT'
         required: true
+      CODECOV_TOKEN:
+        description: 'Needed to upload coverage report to codecov'
+        required: true
 
     inputs:
 
@@ -67,7 +70,7 @@ jobs:
     strategy:
       matrix:
         config: ["Debug", "Release"]
-        os: ["ubuntu-latest", "ubuntu-20.04"]
+        os: ["ubuntu-latest", "ubuntu-22.04"]
         # only enable coverage for Debug build on latest ubuntu
         include:
           - config: "Debug"
@@ -75,7 +78,7 @@ jobs:
             coverage: "ON"
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/build-linux
         with:
           config: ${{ matrix.config }}
@@ -90,7 +93,7 @@ jobs:
     strategy:
       matrix:
         config: ["Debug", "Release"]
-        os: ["ubuntu-latest", "ubuntu-20.04"]
+        os: ["ubuntu-latest", "ubuntu-22.04"]
         unit-tests: [true]
         # generate coverage reports on latest ubuntu debug builds
         exclude:
@@ -103,13 +106,14 @@ jobs:
             unit-tests: false
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/test-linux
         with:
           build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}
           coverage: ${{ matrix.coverage == 'ON' || false }}
           unit-tests: ${{ matrix.unit-tests }}
           integration-tests: ${{ inputs.integration-tests == 'true' || false }}
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
 
   build-windows:
@@ -127,7 +131,7 @@ jobs:
            installer-artifact: ${{ inputs.win-installer-artifact }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/build-win
         with:
           config: ${{ matrix.config }}
@@ -154,7 +158,7 @@ jobs:
            tigl_bindings_python_internal: "ON"
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/test-win
         with:
           build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-${{ matrix.oce_static_libs || 'OFF' }}-python-${{ matrix.tigl_bindings_python_internal || 'OFF' }}
@@ -162,9 +166,9 @@ jobs:
           integration-tests: ${{ inputs.integration-tests == 'true' }}
 
   build-macos:
-    runs-on: "macos-latest"
+    runs-on: "macos-13"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/build-macos
         with:
           config: "Release"
@@ -172,16 +176,16 @@ jobs:
           tigl_concat_generated_files: ${{ inputs.tigl_concat_generated_files == 'true' }}
           tigl_enable_coverage: 'OFF'
           package-artifact: ${{ inputs.macos-package-artifact }}
-          build-artifact: build-macos-latest-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+          build-artifact: build-macos-13-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
 
   test-macos:
     needs: build-macos
-    runs-on: "macos-latest"
+    runs-on: "macos-13"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/test-macos
         with:
-          build-artifact: build-macos-latest-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
+          build-artifact: build-macos-13-Release-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-OFF-static-ON-python-OFF
           unit-tests: true
           integration-tests: ${{ inputs.integration-tests == 'true' }}
 
@@ -190,7 +194,7 @@ jobs:
     needs: ["test-macos", "test-windows", "test-linux"]
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/release
         with:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}

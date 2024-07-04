@@ -40,7 +40,7 @@ runs:
   steps:
 
     - name: Install dependencies
-      uses: nick-invision/retry@v2
+      uses: nick-fields/retry@v3
       with:
         timeout_minutes: 10
         max_attempts: 3
@@ -50,7 +50,7 @@ runs:
           echo "/usr/lib/ccache" >> $GITHUB_PATH
 
     - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
         activate-environment: tigl-bld
@@ -92,7 +92,7 @@ runs:
         tar -czf build.tar.gz build
 
     - name: Upload build directory
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.build-artifact }}
         path: build.tar.gz

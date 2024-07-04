@@ -26,6 +26,7 @@
 
 #include <map>
 #include <vector>
+#include <cassert>
 #include <boost/core/typeinfo.hpp>
 
 namespace tigl
