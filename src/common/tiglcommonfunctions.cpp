@@ -1189,7 +1189,7 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     if (!(cornerRadius == 0.0)){
         //calculate the number of points required to maintain the minimum distance (<tol) between the bisector of two neighboring points on an arc circle
-        nb_points = std::round(M_PI/(acos(1-tol/cornerRadius)));
+        nb_points = std::ceil(M_PI/(acos(1-tol/cornerRadius)));
         //build upper right arc
         double y0 = 0.5 - cornerRadius;
         double z0 = 0.5 * heightToWidthRatio - cornerRadius;
