@@ -17,6 +17,8 @@
 */
 
 #include "test.h"
+#include "BRepBuilderAPI_Transform.hxx"
+#include "CTiglMakeLoft.h"
 #include "CTiglPatchShell.h"
 #include "CTiglError.h"
 #include "CTiglPointsToBSplineInterpolation.h"
@@ -54,7 +56,7 @@ TEST(CTiglPatchShell, Success)
     pnt2->SetValue(4, gp_Pnt(0., -1., 5.));
     pnt2->SetValue(5, gp_Pnt(1., 0., 5.));
 
-    // interpoate points to curve
+    // interpolate points to curve
     tigl::CTiglPointsToBSplineInterpolation app2(pnt2, 3, true);
     Handle(Geom_BSplineCurve) tip_curve = app2.Curve();
     gp_Trsf T;
@@ -89,4 +91,32 @@ TEST(CTiglPatchShell, brokenShape)
     b.Add(brokenShape, BRepBuilderAPI_MakeEdge(gp_Pnt(0., 0., 0.), gp_Pnt(0., 0., -0.1)).Edge());
     tigl::CTiglPatchShell patcher(brokenShape, 1e-6);
     EXPECT_THROW(patcher.PatchedShape();, tigl::CTiglError);
+}
+
+TEST(CTiglPatchShell, noSideCaps)
+{
+#ifdef DEBUG
+    //define coordinates for profile wire enclosing two unconnected surface areas
+    std::vector<gp_Pnt> points = {gp_Pnt(0., 0., 0.),gp_Pnt(0., 0.,1.),gp_Pnt(0.,0.5,0.),
+                                  gp_Pnt(0.,1.,1.), gp_Pnt(0., 1.,0.), gp_Pnt(0.,0.,0.)};
+
+    //build 1st wire
+    BRepBuilderAPI_MakeWire wire1;
+    for(int i=0; i < points.size()-1; i++){
+        auto edge = BRepBuilderAPI_MakeEdge(points[i],points[i+1]).Edge();
+        wire1.Add(edge);
+    }
+
+    //build 2nd wire
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire1.Shape(), trafo);
+
+    //lofting should throw exception building (no) side caps for given profile wire
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire1.Shape());
+    loft.addProfiles(wire2.Shape());
+    ASSERT_THROW(loft.Shape(), tigl::CTiglError);
+#endif
 }
