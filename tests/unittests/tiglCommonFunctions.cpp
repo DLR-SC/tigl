@@ -17,6 +17,7 @@
 */
 
 #include "CTiglMakeLoft.h"
+#include "Debugging.h"
 #include "tigl.h"
 #include "tiglcommonfunctions.h"
 #include "test.h"
@@ -140,6 +141,27 @@ TEST(TiglCommonFunctions, tiglCheckPointInside_api)
     EXPECT_EQ(TIGL_NULL_POINTER, tiglCheckPointInside(tiglSimpleWingHandle, 0., 0., 0., "wrongUID", nullptr));
 
 
+}
+
+TEST(TiglCommonFuctions, ApproximateArcOfCircleToRationalBSpline)
+{
+    //test valid curves
+    auto arcCurve1 = ApproximateArcOfCircleToRationalBSpline(2., 20, 0., 5., 0., 0.);
+    auto arcCurve2 = ApproximateArcOfCircleToRationalBSpline(1., 10, 0.3, 5., 0., 0.);
+    ASSERT_TRUE(GetLength(BRepBuilderAPI_MakeEdge(arcCurve1))>0.);
+    ASSERT_TRUE(!arcCurve1.IsNull());
+    ASSERT_EQ(arcCurve1->Degree(),3);
+    ASSERT_TRUE(!arcCurve2.IsNull());
+    ASSERT_EQ(arcCurve2->Degree(),3);
+    //test invalid curves
+    //radius zero
+    ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(0., 10, 0.3, 0.3, 0., 0.), tigl::CTiglError);
+    //no span
+    ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(1., 10, 0.3, 0.3, 0., 0.), tigl::CTiglError);
+    ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(1., 10, 0.0, 0.0, 0., 0.), tigl::CTiglError);
+    //multiple traversion
+    ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(1., 10, 0., 20., 0., 0.), tigl::CTiglError);
+    ASSERT_NO_THROW(ApproximateArcOfCircleToRationalBSpline(1., 20, 0., 2*M_PI, 0., 0.));
 }
 
 TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusZero)

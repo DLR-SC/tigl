@@ -1161,6 +1161,19 @@ TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges)
 
 opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double radius, size_t nb_points, double uMin, double uMax, double y_position, double z_position)
 {
+    if(radius==0){
+        throw tigl::CTiglError("Invalid geometry. Radius must be != 0.");
+    }
+    if(nb_points<=1){
+        throw tigl::CTiglError("Cannot build valid Curve, 2 points min required.");
+    }
+    if(Abs(uMax-uMin)< Precision::Confusion()){
+        throw tigl::CTiglError("Invalid geometry: Curve length must not be Zero.");
+    }
+    if(Abs(uMax-uMin)>(2*M_PI))
+    {
+        throw tigl::CTiglError("Invalid geometry: Curve cannot be traversed more than once.");
+    }
     std::vector<gp_Pnt> arcPnts(nb_points);
     std::vector<double> alpha = LinspaceWithBreaks(uMin, uMax, nb_points);
     size_t index = 0;
