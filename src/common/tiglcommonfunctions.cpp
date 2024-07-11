@@ -1269,9 +1269,6 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
         {
         wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
     }
-    if(wire.IsNull()){
-        throw tigl::CTiglError("Error building profile wire");
-    }
     return wire;
 }
 
