@@ -155,6 +155,8 @@ TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusZero)
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
     ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
+
+
 }
 
 
@@ -171,6 +173,12 @@ TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusOK)
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
     ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
+}
+
+TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusInvalid)
+{
+    ASSERT_THROW(BuildWireRectangle(0.5, 1.), tigl::CTiglError);
+    ASSERT_THROW(BuildWireRectangle(0.5, -1.), tigl::CTiglError);
 }
 
 TEST(TiglCommonFunctions, LinspaceWithBreaks)
