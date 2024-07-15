@@ -57,7 +57,6 @@ protected:
         tiglRet1 = tiglOpenCPACSConfiguration(tixiHandle1, "", &tiglHandle1);
         ASSERT_TRUE(tiglRet1 == TIGL_SUCCESS);
 
-
     }
 
     static void TearDownTestCase()
@@ -115,3 +114,41 @@ TEST_F(FuselageStandardProfile, BuildFuselageMixedProfilesWithGuides_ValidValues
     ASSERT_TRUE(BRepCheck_Analyzer(fuselage->Shape()).IsValid());
 }
 
+TEST_F(FuselageStandardProfile, BuildFuselageMixedProfilesWithGuides_InvalidInput)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    //add invalid element
+    tixiCreateElementAtIndex(tixiHandle1, "/cpacs/vehicles/profiles/fuselageProfiles", "fuselageProfile", 1);
+    tixiCreateElement(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]", "invalidType");
+    tixiAddTextAttribute(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]", "uID", "std2");
+
+    // change uid of one segment to invalid profile type
+    tixiUpdateTextElement(tixiHandle1, "/cpacs/vehicles/aircraft/model/fuselages/fuselage[1]/sections/section[1]/elements/element[1]/profileUID", "std2");
+    tiglOpenCPACSConfiguration(tixiHandle1, "", &tiglHandle1);
+    tigl::CCPACSConfiguration& config1         = manager.GetConfiguration(tiglHandle1);
+
+    // fuselage cannot be build with invalid profile
+    ASSERT_THROW(config1.GetFuselage(1).GetLoft(),tigl::CTiglError);
+
+    //add  point list profile with 2 elements
+    tixiCreateElementAtIndex(tixiHandle1, "/cpacs/vehicles/profiles/fuselageProfiles", "fuselageProfile", 1);
+    tixiCreateElement(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]", "pointList");
+    tixiAddTextAttribute(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]", "uID", "pls");
+    tixiCreateElement(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]/pointList", "x");
+    tixiAddTextAttribute(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]/x", "mapType", "vector");
+    tixiAddTextElement(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]","x", "1.0;0.9");
+    tixiCreateElement(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]/pointList", "y");
+    tixiAddTextAttribute(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]/y", "mapType", "vector");
+    tixiAddTextElement(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]","y", "0.0;0.0");
+    tixiCreateElement(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]/pointList", "z");
+    tixiAddTextAttribute(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]/z", "mapType", "vector");
+    tixiAddTextElement(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]","z", "1.0;0.9");
+
+    // change uid of one segment to profile type with only two points in point list
+    tixiUpdateTextElement(tixiHandle1, "/cpacs/vehicles/aircraft/model/fuselages/fuselage[1]/sections/section[1]/elements/element[1]/profileUID", "pls");
+    tiglOpenCPACSConfiguration(tixiHandle1, "", &tiglHandle1);
+    tigl::CCPACSConfiguration& config2         = manager.GetConfiguration(tiglHandle1);
+    // fuselage cannot be build with invalid profile
+    ASSERT_THROW(config2.GetFuselage(1).GetLoft(),tigl::CTiglError);
+
+}
