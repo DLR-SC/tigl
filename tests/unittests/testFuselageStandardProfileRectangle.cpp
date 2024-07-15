@@ -57,6 +57,19 @@ protected:
         tiglRet1 = tiglOpenCPACSConfiguration(tixiHandle1, "", &tiglHandle1);
         ASSERT_TRUE(tiglRet1 == TIGL_SUCCESS);
 
+        // Test case on standardProfile, invalid elements
+
+        ReturnCode tixiRet2;
+        TiglReturnCode tiglRet2;
+
+        tiglHandle2 = -1;
+        tixiHandle2 = -1;
+
+        tixiRet2 = tixiOpenDocument(filename1, &tixiHandle2);
+        ASSERT_TRUE (tixiRet2 == SUCCESS);
+        tiglRet2 = tiglOpenCPACSConfiguration(tixiHandle2, "", &tiglHandle2);
+        ASSERT_TRUE(tiglRet2 == TIGL_SUCCESS);
+
     }
 
     static void TearDownTestCase()
@@ -71,6 +84,11 @@ protected:
         tiglHandle1 = -1;
         tixiHandle1 = -1;
 
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle2) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle2) == SUCCESS);
+        tiglHandle2 = -1;
+        tixiHandle2 = -1;
+
     }
 
     void SetUp() override {}
@@ -83,12 +101,17 @@ protected:
     static TixiDocumentHandle           tixiHandle1;
     static TiglCPACSConfigurationHandle tiglHandle1;
 
+    static TixiDocumentHandle           tixiHandle2;
+    static TiglCPACSConfigurationHandle tiglHandle2;
+
 };
 
 TixiDocumentHandle FuselageStandardProfile::tixiHandle = 0;
 TiglCPACSConfigurationHandle FuselageStandardProfile::tiglHandle = 0;
 TixiDocumentHandle FuselageStandardProfile::tixiHandle1 = 0;
 TiglCPACSConfigurationHandle FuselageStandardProfile::tiglHandle1 = 0;
+TixiDocumentHandle FuselageStandardProfile::tixiHandle2 = 0;
+TiglCPACSConfigurationHandle FuselageStandardProfile::tiglHandle2 = 0;
 
 
 
@@ -123,9 +146,9 @@ TEST_F(FuselageStandardProfile, BuildFuselageMixedProfilesWithGuides_InvalidInpu
     tixiAddTextAttribute(tixiHandle1,"/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]", "uID", "std2");
 
     // change uid of one segment to invalid profile type
-    tixiUpdateTextElement(tixiHandle1, "/cpacs/vehicles/aircraft/model/fuselages/fuselage[1]/sections/section[1]/elements/element[1]/profileUID", "std2");
-    tiglOpenCPACSConfiguration(tixiHandle1, "", &tiglHandle1);
-    tigl::CCPACSConfiguration& config1         = manager.GetConfiguration(tiglHandle1);
+    tixiUpdateTextElement(tixiHandle2, "/cpacs/vehicles/aircraft/model/fuselages/fuselage[1]/sections/section[1]/elements/element[1]/profileUID", "std2");
+    tiglOpenCPACSConfiguration(tixiHandle2, "", &tiglHandle2);
+    tigl::CCPACSConfiguration& config1         = manager.GetConfiguration(tiglHandle2);
 
     // fuselage cannot be build with invalid profile
     ASSERT_THROW(config1.GetFuselage(1).GetLoft(),tigl::CTiglError);
@@ -146,8 +169,8 @@ TEST_F(FuselageStandardProfile, BuildFuselageMixedProfilesWithGuides_InvalidInpu
 
     // change uid of one segment to profile type with only two points in point list
     tixiUpdateTextElement(tixiHandle1, "/cpacs/vehicles/aircraft/model/fuselages/fuselage[1]/sections/section[1]/elements/element[1]/profileUID", "pls");
-    tiglOpenCPACSConfiguration(tixiHandle1, "", &tiglHandle1);
-    tigl::CCPACSConfiguration& config2         = manager.GetConfiguration(tiglHandle1);
+    tiglOpenCPACSConfiguration(tixiHandle2, "", &tiglHandle2);
+    tigl::CCPACSConfiguration& config2         = manager.GetConfiguration(tiglHandle2);
     // fuselage cannot be build with invalid profile
     ASSERT_THROW(config2.GetFuselage(1).GetLoft(),tigl::CTiglError);
 
