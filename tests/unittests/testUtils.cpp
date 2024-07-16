@@ -32,6 +32,9 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <BRepTools.hxx>
 #include <TopoDS.hxx>
+#include <tigl.h>
+#include <CTiglLogging.h>
+#include "test.h" // Brings in the GTest framework
 
 // save x-y data
 void outputXY(const int & i, const double& x, const double&y, const std::string& filename)
@@ -97,4 +100,22 @@ Handle(Geom_BSplineSurface) LoadBSplineSurface(const std::string& filename)
 
     BRepTools::Read(shape, filename.c_str(), builder);
     return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
+}
+
+CaptureTiGLLog::CaptureTiGLLog()
+{
+    _oldVerbosityLevel = tigl::CTiglLogging::Instance().GetConsoleVerbosity();
+    tigl::CTiglLogging::Instance().SetConsoleVerbosity(TILOG_WARNING);
+    tigl::CTiglLogging::Instance().LogToConsole();
+    testing::internal::CaptureStderr();
+}
+
+std::string CaptureTiGLLog::log()
+{
+    return testing::internal::GetCapturedStderr();
+}
+
+CaptureTiGLLog::~CaptureTiGLLog()
+{
+    tigl::CTiglLogging::Instance().SetConsoleVerbosity(_oldVerbosityLevel);
 }
