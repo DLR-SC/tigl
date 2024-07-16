@@ -24,9 +24,12 @@
 #include <cmath>
 
 #include "test.h" // Brings in the GTest framework
+#include "testUtils.h"
 #include "tigl.h"
 #include <string.h>
-
+#include <BRep_Builder.hxx>
+#include <BRepTools.hxx>
+#include <CCPACSFuselageProfileGetPointAlgo.h>
 
 /******************************************************************************/
 
@@ -187,4 +190,29 @@ TEST(TiglSimpleFuselage, getSurfaceArea_HalfModel)
 
     tiglCloseCPACSConfiguration(tiglHandle);
     tixiCloseDocument(tixiHandle);
+}
+
+TEST(TiglSimpleFuselage, GetPointTangent_checkArgs)
+{
+    const char* logfileName = "LogFile_GetPointTangent_checkArgs";
+    std::string content;
+    BRep_Builder b;
+    TopoDS_Wire wire;
+    std::string path_wire;
+    gp_Pnt point;
+    gp_Vec tangent;
+
+    path_wire = "TestData/functions/commonfunctions_BuildFace/1_wire.brep";
+    BRepTools::Read(wire, path_wire.c_str(), b);
+
+    TopTools_SequenceOfShape wireContainer;
+    wireContainer.Append(wire);
+    tigl::CCPACSFuselageProfileGetPointAlgo getPointAlgo(wireContainer);
+
+    CaptureTiGLLog t;
+    getPointAlgo.GetPointTangent(0.0, point, tangent, tigl::CCPACSGuideCurve::FromOrToDefinition::PARAMETER);
+    auto logOutput = t.log();
+
+    std::string comparisonString = "Defining start or end point of guide curve via parameter on wires consisting of 2 or more edges might lead to unexpected results.";
+    ASSERT_TRUE((logOutput.find(comparisonString)) != std::string::npos);
 }
