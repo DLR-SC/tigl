@@ -545,3 +545,82 @@ TEST_F(FuselageGuideCurve, kinksGuideCurvesParameterDef)
     ASSERT_NEAR(y2, lastPointGC.Y(), tolerance);
     ASSERT_NEAR(z2, lastPointGC.Z(), tolerance);
 }
+
+TEST_F(FuselageGuideCurve, getFromDefinition_checkArgs)
+{
+    const char* filename = "TestData/kinks_withGC_ParameterDef.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+    auto& segment = uid_mgr.ResolveObject<tigl::CCPACSFuselageSegment>("segmentD150_Fuselage_1Segment2ID");
+    auto& guideCurves = *segment.GetGuideCurves();
+    tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(2);
+
+    guideCurve.SetFromGuideCurveUID_choice1(boost::none);
+    guideCurve.SetFromRelativeCircumference_choice2_1(boost::none);
+    guideCurve.SetFromParameter_choice2_2(boost::none);
+    EXPECT_THROW(guideCurve.GetFromDefinition(), tigl::CTiglError);
+    EXPECT_THROW(guideCurve.GetRootCurve(), tigl::CTiglError);
+}
+
+TEST_F(FuselageGuideCurve, getToDefinition_checkArgs)
+{
+    const char* filename = "TestData/kinks_withGC_ParameterDef.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+    auto& segment = uid_mgr.ResolveObject<tigl::CCPACSFuselageSegment>("segmentD150_Fuselage_1Segment2ID");
+    auto& guideCurves = *segment.GetGuideCurves();
+    tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(2);
+
+    guideCurve.SetToRelativeCircumference_choice1(boost::none);
+    guideCurve.SetToParameter_choice2(boost::none);
+    EXPECT_THROW(guideCurve.GetToDefinition(), tigl::CTiglError);
+}
+
+TEST_F(FuselageGuideCurve, GuideCurveAlgo_checkArgs)
+{
+    const char* filename = "TestData/kinks_withGC_ParameterDef.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+    auto& segment = uid_mgr.ResolveObject<tigl::CCPACSFuselageSegment>("segmentD150_Fuselage_1Segment2ID");
+    auto& guideCurves = *segment.GetGuideCurves();
+    tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(2);
+
+    tigl::CTiglFuselageConnection& startConnection = segment.GetStartConnection();
+    tigl::CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
+    TopoDS_Wire startWire = startProfile.GetWire(!startProfile.GetMirrorSymmetry());
+    startWire = TopoDS::Wire(transformFuselageProfileGeometry(segment.GetParent()->GetParentComponent()->GetTransformationMatrix(), startConnection, startWire));
+    TopTools_SequenceOfShape startWireContainer;
+    startWireContainer.Append(startWire);
+
+    tigl::CCPACSConfiguration const& config = segment.GetParent()->GetConfiguration();
+    tigl::CCPACSGuideCurveProfile const& guideCurveProfile = config.GetGuideCurveProfile("leftFuselageCurve");
+
+    // Testing the catch of wrong argument UID as toParameter (using a lot of other dummy arguments)
+    EXPECT_THROW(
+                std::vector<gp_Pnt> guideCurvePnts = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSFuselageProfileGetPointAlgo> (startWireContainer,
+                                                                                                                  startWireContainer,
+                                                                                                                  0.,
+                                                                                                                  0.,
+                                                                                                                  0.,
+                                                                                                                  0.,
+                                                                                                                  gp_Dir(0.,0.,1.),
+                                                                                                                  guideCurveProfile,
+                                                                                                                  tigl::CCPACSGuideCurve::FromOrToDefinition::PARAMETER,
+                                                                                                                  tigl::CCPACSGuideCurve::FromOrToDefinition::UID),
+                tigl::CTiglError);
+}

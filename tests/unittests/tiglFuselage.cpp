@@ -209,10 +209,16 @@ TEST(TiglSimpleFuselage, GetPointTangent_checkArgs)
     wireContainer.Append(wire);
     tigl::CCPACSFuselageProfileGetPointAlgo getPointAlgo(wireContainer);
 
-    CaptureTiGLLog t;
-    getPointAlgo.GetPointTangent(0.0, point, tangent, tigl::CCPACSGuideCurve::FromOrToDefinition::PARAMETER);
-    auto logOutput = t.log();
+    // Start by checking the warning based on the wire
+    { // Scope to destroy object of type CaptureTiGLLog and therefore reset console verbosity
+        CaptureTiGLLog t;
+        getPointAlgo.GetPointTangent(0.0, point, tangent, tigl::CCPACSGuideCurve::FromOrToDefinition::PARAMETER);
+        auto logOutput = t.log();
 
-    std::string comparisonString = "Defining start or end point of guide curve via parameter on wires consisting of 2 or more edges might lead to unexpected results.";
-    ASSERT_TRUE((logOutput.find(comparisonString)) != std::string::npos);
+        std::string comparisonString = "Defining start or end point of guide curve via parameter on wires consisting of 2 or more edges might lead to unexpected results.";
+        ASSERT_TRUE((logOutput.find(comparisonString)) != std::string::npos);
+    } // scope
+
+    // Check the argument FromOrToDefinition by parsing wrong enum int
+    EXPECT_THROW(getPointAlgo.GetPointTangent(0.0, point, tangent, (tigl::CCPACSGuideCurve::FromOrToDefinition) 100), tigl::CTiglError);
 }

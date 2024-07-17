@@ -526,3 +526,21 @@ TEST_F(WingGuideCurve, bug962)
     tigl::CCPACSWingSegment& segment1 = wing.GetSegment(1);
     segment1.GetLoft();
 }
+
+TEST_F(WingGuideCurve, BuildGuideCurvePnts_checkArgs)
+{
+    const char* filename = "TestData/simple_test_guide_curves_wrong_gc_Def.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+    auto& segment = uid_mgr.ResolveObject<tigl::CCPACSWingSegment>("GuideCurveModel_Wing_Seg_1_2");
+    auto& guideCurves = *segment.GetGuideCurves();
+    const tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(2);
+
+    tigl::CTiglWingSegmentGuidecurveBuilder builder(segment);
+    EXPECT_THROW(builder.BuildGuideCurvePnts(&guideCurve), tigl::CTiglError);
+}
