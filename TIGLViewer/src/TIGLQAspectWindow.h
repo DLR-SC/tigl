@@ -73,7 +73,7 @@ public:
     Aspect_Drawable NativeParentHandle() const override;
     
     //! Applies the resizing to the window <me>
-#if OCC_VERSION_HEX >= 0x070600
+#if OCC_VERSION_HEX >= 0x070500
     Aspect_TypeOfResize DoResize() override;
 #else
     Aspect_TypeOfResize DoResize() const override;
