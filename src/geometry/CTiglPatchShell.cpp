@@ -34,6 +34,9 @@
 #include <Geom_Plane.hxx>
 #include <BRepCheck_Analyzer.hxx>
 
+#include "CTiglLogging.h"
+#include "CTiglLogSplitter.h"
+
 namespace
 {
     TopoDS_Shell MakeShells(TopoDS_Shape const& shell, const Standard_Real tol);
@@ -73,7 +76,7 @@ void CTiglPatchShell::AddSideCap(TopoDS_Wire const& boundaryWire)
             cap = BRepBuilderAPI_MakeFace(Searcher.Plane(), boundaryWire);
 #ifdef DEBUG
             if(!BRepCheck_Analyzer(cap).IsValid()){
-                throw CTiglError("Error occured while building side caps. Built shape invalid.");
+                LOG(WARNING) << "WARNING: Side caps invalid.";
             }
 #endif
             Ok = true;
@@ -86,7 +89,7 @@ void CTiglPatchShell::AddSideCap(TopoDS_Wire const& boundaryWire)
                 cap = MF.Face();
 #ifdef DEBUG
                 if(!BRepCheck_Analyzer(cap).IsValid()){
-                    throw CTiglError("Error occured while building side caps. Built shape invalid.");
+                    LOG(WARNING) << "WARNING: Side caps invalid.";
                 }
 #endif
                 Ok = true;

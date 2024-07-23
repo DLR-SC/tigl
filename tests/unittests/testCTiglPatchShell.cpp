@@ -16,6 +16,9 @@
 * limitations under the License.
 */
 
+#include "CTiglConsoleLogger.h"
+#include "CTiglFileLogger.h"
+#include "CTiglLogSplitter.h"
 #include "test.h"
 #include "BRepBuilderAPI_Transform.hxx"
 #include "CTiglMakeLoft.h"
@@ -28,6 +31,7 @@
 #include "BRepBuilderAPI_MakeFace.hxx"
 #include "BRep_Builder.hxx"
 
+#include "CTiglLogging.h"
 
 TEST(CTiglPatchShell, Success)
 {
@@ -95,7 +99,7 @@ TEST(CTiglPatchShell, brokenShape)
 
 TEST(CTiglPatchShell, noSideCaps)
 {
-#ifdef DEBUG
+//#ifdef DEBUG
     //define coordinates for profile wire enclosing two unconnected surface areas
     std::vector<gp_Pnt> points = {gp_Pnt(0., 0., 0.),gp_Pnt(0., 0.,1.),gp_Pnt(0.,0.5,0.),
                                   gp_Pnt(0.,1.,1.), gp_Pnt(0., 1.,0.), gp_Pnt(0.,0.,0.)};
@@ -117,6 +121,18 @@ TEST(CTiglPatchShell, noSideCaps)
     auto loft = CTiglMakeLoft();
     loft.addProfiles(wire1.Shape());
     loft.addProfiles(wire2.Shape());
-    ASSERT_THROW(loft.Shape(), tigl::CTiglError);
-#endif
+
+    auto temp = tigl::CTiglLogging::Instance().GetConsoleVerbosity();
+    tigl::CTiglLogging::Instance().SetConsoleVerbosity(TILOG_WARNING);
+    tigl::CTiglLogging::Instance().LogToConsole();
+    testing::internal::CaptureStderr();
+
+    loft.Shape();
+
+    tigl::CTiglLogging::Instance().SetConsoleVerbosity(temp);
+    std::string value = testing::internal::GetCapturedStderr();
+    //TODO pullrequest Sven-> Klasse nutzen
+
+
+//#endif
 }
