@@ -150,6 +150,36 @@ protected:
     TiglCPACSConfigurationHandle tiglHandle;
 };
 
+class FuselageGuideCurveAtKink : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        const char* filename = "TestData/kinks_withGC_ParameterDef.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE(tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+
+    void TearDown() override
+    {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    TixiDocumentHandle tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
+};
+
 /******************************************************************************/
 
 /**
@@ -510,15 +540,8 @@ TEST(FuselageGuideCurve_bug, 766)
 
 }
 
-TEST_F(FuselageGuideCurve, kinksGuideCurvesParameterDef)
+TEST_F(FuselageGuideCurveAtKink, kinksGuideCurvesParameterDef)
 {
-    const char* filename = "TestData/kinks_withGC_ParameterDef.xml";
-
-    TiglCPACSConfigurationHandle tiglHandle = -1;
-    TixiDocumentHandle tixiHandle = -1;
-    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
-    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
-
     double x,y,z;
     double x2,y2,z2;
     // Get the points' coordinates and compare to guide curve start and end
@@ -546,15 +569,8 @@ TEST_F(FuselageGuideCurve, kinksGuideCurvesParameterDef)
     ASSERT_NEAR(z2, lastPointGC.Z(), tolerance);
 }
 
-TEST_F(FuselageGuideCurve, getFromDefinition_checkArgs)
+TEST_F(FuselageGuideCurveAtKink, getFromDefinition_checkArgs)
 {
-    const char* filename = "TestData/kinks_withGC_ParameterDef.xml";
-
-    TiglCPACSConfigurationHandle tiglHandle = -1;
-    TixiDocumentHandle tixiHandle = -1;
-    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
-    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
-
     auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
     auto& segment = uid_mgr.ResolveObject<tigl::CCPACSFuselageSegment>("segmentD150_Fuselage_1Segment2ID");
     auto& guideCurves = *segment.GetGuideCurves();
@@ -567,15 +583,8 @@ TEST_F(FuselageGuideCurve, getFromDefinition_checkArgs)
     EXPECT_THROW(guideCurve.GetRootCurve(), tigl::CTiglError);
 }
 
-TEST_F(FuselageGuideCurve, getToDefinition_checkArgs)
+TEST_F(FuselageGuideCurveAtKink, getToDefinition_checkArgs)
 {
-    const char* filename = "TestData/kinks_withGC_ParameterDef.xml";
-
-    TiglCPACSConfigurationHandle tiglHandle = -1;
-    TixiDocumentHandle tixiHandle = -1;
-    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
-    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
-
     auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
     auto& segment = uid_mgr.ResolveObject<tigl::CCPACSFuselageSegment>("segmentD150_Fuselage_1Segment2ID");
     auto& guideCurves = *segment.GetGuideCurves();
@@ -586,15 +595,8 @@ TEST_F(FuselageGuideCurve, getToDefinition_checkArgs)
     EXPECT_THROW(guideCurve.GetToDefinition(), tigl::CTiglError);
 }
 
-TEST_F(FuselageGuideCurve, GuideCurveAlgo_checkArgs)
+TEST_F(FuselageGuideCurveAtKink, GuideCurveAlgo_checkArgs)
 {
-    const char* filename = "TestData/kinks_withGC_ParameterDef.xml";
-
-    TiglCPACSConfigurationHandle tiglHandle = -1;
-    TixiDocumentHandle tixiHandle = -1;
-    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
-    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
-
     auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
     auto& segment = uid_mgr.ResolveObject<tigl::CCPACSFuselageSegment>("segmentD150_Fuselage_1Segment2ID");
     auto& guideCurves = *segment.GetGuideCurves();
