@@ -51,9 +51,13 @@ else(OCE_FOUND)
   find_package(OpenCASCADE CONFIG REQUIRED COMPONENTS FoundationClasses ModelingData ModelingAlgorithms Visualization ApplicationFramework DataExchange)
   option(OpenCASCADE_STATIC_LIBS "Should be checked, if static OpenCASCADE libs are linked" OFF)
 
-  # PATCH OpenCASCADE_LIBRARIES for removing unnecessary libraries
-  list (REMOVE_ITEM OpenCASCADE_LIBRARIES ${OpenCASCADE_Draw_LIBRARIES})
-  list (REMOVE_ITEM OpenCASCADE_LIBRARIES ${OpenCASCADE_DETools_LIBRARIES})
+  # PATCH OpenCASCADE_LIBRARIES for removing unnecessary libraries if present
+  if(DEFINED OpenCASCADE_Draw_LIBRARIES)
+    list (REMOVE_ITEM OpenCASCADE_LIBRARIES ${OpenCASCADE_Draw_LIBRARIES})
+  endif(DEFINED OpenCASCADE_Draw_LIBRARIES)
+  if(DEFINED OpenCASCADE_DETools_LIBRARIES)
+    list (REMOVE_ITEM OpenCASCADE_LIBRARIES ${OpenCASCADE_DETools_LIBRARIES})
+  endif(DEFINED OpenCASCADE_DETools_LIBRARIES)
   message(STATUS "Found opencascade " ${OpenCASCADE_VERSION})
 
   FIND_PATH(OpenCASCADE_SHADER_DIRECTORY
