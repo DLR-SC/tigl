@@ -53,24 +53,31 @@ void CCPACSGuideCurve::InvalidateImpl(const boost::optional<std::string>& source
 }
 
 CCPACSGuideCurve::FromOrToDefinition CCPACSGuideCurve::GetFromDefinition() const {
-    if (!ValidateChoices())
+    if (!ValidateChoices()) {
         throw CTiglError("Choices not valid", TIGL_XML_ERROR);
-    if (m_fromRelativeCircumference_choice2_1)
+    }
+    if (m_fromRelativeCircumference_choice2_1) {
         return FromOrToDefinition::CIRCUMFERENCE;
-    if (m_fromParameter_choice2_2)
+    }
+    if (m_fromParameter_choice2_2) {
         return FromOrToDefinition::PARAMETER;
-    if (m_fromGuideCurveUID_choice1)
+    }
+    if (m_fromGuideCurveUID_choice1) {
         return FromOrToDefinition::UID;
+    }
     throw CTiglError("Logic error in GetFromDefinition detection");
 }
 
 CCPACSGuideCurve::FromOrToDefinition CCPACSGuideCurve::GetToDefinition() const {
-    if (!ValidateChoices())
+    if (!ValidateChoices()) {
         throw CTiglError("Choices not valid", TIGL_XML_ERROR);
-    if (m_toRelativeCircumference_choice1)
+    }
+    if (m_toRelativeCircumference_choice1) {
         return FromOrToDefinition::CIRCUMFERENCE;
-    if (m_toParameter_choice2)
+    }
+    if (m_toParameter_choice2) {
         return FromOrToDefinition::PARAMETER;
+    }
     throw CTiglError("Logic error in GetToDefinition detection");
 }
 

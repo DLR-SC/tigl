@@ -64,8 +64,9 @@ void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_
         // <BRepAdaptor_CompCurve>.D1( alpha, point, tangent) based on a wire did not produce the expected result.
         // That is why, the first edge is extracted. It is implicitely assumed that the wire consists of exactly one edge.
         // More than one edge might lead to unexpected result when used in combination with PARAMETER
-        if (GetNumberOfEdges(wire) > 1)
+        if (GetNumberOfEdges(wire) > 1) {
             LOG(WARNING) << "CCPACSFuselageProfileGetPointAlgo::GetPointTangent: Defining start or end point of guide curve via parameter on wires consisting of 2 or more edges might lead to unexpected results.";
+        }
         // Get parameter range of edge
         edge = GetEdge(wire, 0);
         BRep_Tool::Range(edge, umin, umax);
