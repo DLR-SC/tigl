@@ -194,7 +194,6 @@ TEST(TiglSimpleFuselage, getSurfaceArea_HalfModel)
 
 TEST(TiglSimpleFuselage, GetPointTangent_checkArgs)
 {
-    const char* logfileName = "LogFile_GetPointTangent_checkArgs";
     std::string content;
     BRep_Builder b;
     TopoDS_Wire wire;
