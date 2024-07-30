@@ -163,7 +163,7 @@ void CTiglLogging::SetConsoleVerbosity(TiglLogLevel vlevel)
     }
 }
 
-TiglLogLevel CTiglLogging::GetConsoleVerbosity()
+TiglLogLevel CTiglLogging::GetConsoleVerbosity() const
 {
     return _consoleVerbosity;
 }
