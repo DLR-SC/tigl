@@ -102,10 +102,10 @@ Handle(Geom_BSplineSurface) LoadBSplineSurface(const std::string& filename)
     return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
 }
 
-CaptureTiGLLog::CaptureTiGLLog()
+CaptureTiGLLog::CaptureTiGLLog(TiglLogLevel logLevel)
 {
     _oldVerbosityLevel = tigl::CTiglLogging::Instance().GetConsoleVerbosity();
-    tigl::CTiglLogging::Instance().SetConsoleVerbosity(TILOG_WARNING);
+    tigl::CTiglLogging::Instance().SetConsoleVerbosity(logLevel);
     tigl::CTiglLogging::Instance().LogToConsole();
     testing::internal::CaptureStderr();
 }

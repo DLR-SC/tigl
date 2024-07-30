@@ -41,7 +41,7 @@ Handle(Geom_BSplineCurve) LoadBSplineCurve(const std::string& filename);
 class CaptureTiGLLog
 {
 public:
-    CaptureTiGLLog();
+    CaptureTiGLLog(TiglLogLevel logLevel);
 
     std::string log();
 

@@ -211,7 +211,7 @@ TEST(TiglSimpleFuselage, GetPointTangent_checkArgs)
 
     // Start by checking the warning based on the wire
     { // Scope to destroy object of type CaptureTiGLLog and therefore reset console verbosity
-        CaptureTiGLLog t;
+        CaptureTiGLLog t{TILOG_WARNING};
         getPointAlgo.GetPointTangent(0.0, point, tangent, tigl::CCPACSGuideCurve::FromOrToDefinition::PARAMETER);
         auto logOutput = t.log();
 
