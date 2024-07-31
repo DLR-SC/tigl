@@ -70,13 +70,21 @@ std::vector<gp_Pnt> CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(c
     double outerScale = GetLength(outerChordLineWire);
 
 
-    // get relative circumference of inner profile
-    double fromRelativeCircumference = guideCurve->GetFromRelativeCircumference();
+    // get relative circumference or parameter value of inner profile (depending on chosen CPACS node)
+    double fromDefinitionValue = guideCurve->GetFromDefinitionValue();
+    // get relative circumference or parameter value of outer profile (depending on chosen CPACS node)
+    double toDefinitionValue = guideCurve->GetToDefinitionValue();
 
-    // get relative circumference of outer profile
-    double toRelativeCircumference = guideCurve->GetToRelativeCircumference();
     // get guide curve profile UID
     std::string guideCurveProfileUID = guideCurve->GetGuideCurveProfileUID();
+
+    // decide whether the guide curve's starting point is defined based on circumference or parameter
+    CCPACSGuideCurve::FromOrToDefinition fromDefinition = guideCurve->GetFromDefinition();
+    // decide whether the guide curve's end point is defined based on circumference or parameter
+    CCPACSGuideCurve::FromOrToDefinition toDefinition = guideCurve->GetToDefinition();
+    if (toDefinition == CCPACSGuideCurve::FromOrToDefinition::UID) {
+        throw CTiglError("CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(): toDefinition must not be UID", TIGL_NOT_FOUND);
+    }
 
     // get guide curve profile
     CCPACSConfiguration const& config = m_segment.GetParent()->GetConfiguration();
@@ -102,12 +110,14 @@ std::vector<gp_Pnt> CTiglFuselageSegmentGuidecurveBuilder::BuildGuideCurvePnts(c
     // construct guide curve algorithm
     std::vector<gp_Pnt> guideCurvePnts = CCPACSGuideCurveAlgo<CCPACSFuselageProfileGetPointAlgo> (startWireContainer,
                                                                                                   endWireContainer,
-                                                                                                  fromRelativeCircumference,
-                                                                                                  toRelativeCircumference,
+                                                                                                  fromDefinitionValue,
+                                                                                                  toDefinitionValue,
                                                                                                   innerScale,
                                                                                                   outerScale,
                                                                                                   rxDir,
-                                                                                                  guideCurveProfile);
+                                                                                                  guideCurveProfile,
+                                                                                                  fromDefinition,
+                                                                                                  toDefinition);
     return guideCurvePnts;
 }
 
