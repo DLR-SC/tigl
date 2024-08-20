@@ -163,6 +163,7 @@ TEST(TiglCommonFuctions, ApproximateArcOfCircleToRationalBSpline)
     ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(1., 0.0, 0.0, 1.e-5, 0., 0.), tigl::CTiglError);
     //multiple traversion
     ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(1., 0., 20., 1.e-5, 0., 0.), tigl::CTiglError);
+
 }
 
 TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusZero)
@@ -181,7 +182,6 @@ TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusZero)
 
 
 }
-
 
 TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusOK)
 {

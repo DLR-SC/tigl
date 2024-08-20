@@ -1161,8 +1161,8 @@ TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges)
     return result;
 }
 
-namespace {
-
+namespace
+{
     class Circle : public tigl::MathFunc3d
     {
     public:
@@ -1185,11 +1185,11 @@ namespace {
 
     private:
           double m_radius;
-};
+    };
+} //anonymos namespace
 
-} //anonymos
-
-opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double radius, double uMin, double uMax, double tol, double y_position, double z_position)
+opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double radius, double uMin, double uMax,
+                                                                               double tol, double y_position, double z_position)
 {
     if(radius==0){
         throw tigl::CTiglError("Invalid geometry. Radius must be != 0.");
@@ -1223,7 +1223,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     std::vector<gp_Pnt> linePntsUpperRightHalf;
     linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
     linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.5-cornerRadius,0.5*heightToWidthRatio));
-    opencascade::handle<Geom_BSplineCurve> lowerLineRightHalf = tigl::CTiglPointsToBSplineInterpolation(linePntsUpperRightHalf).Curve();
+    opencascade::handle<Geom_BSplineCurve> lowerLineRightHalf =
+            tigl::CTiglPointsToBSplineInterpolation(linePntsUpperRightHalf).Curve();
     curves.push_back(lowerLineRightHalf);
 
     if (!(cornerRadius == 0.0)){
@@ -1288,13 +1289,11 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     std::vector<gp_Pnt> linePntsUpperLeftHalf;
     linePntsUpperLeftHalf.push_back(gp_Pnt(0.,-(0.5-cornerRadius),0.5*heightToWidthRatio));
     linePntsUpperLeftHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
-    opencascade::handle<Geom_BSplineCurve> upperLineLeftHalf = tigl::CTiglPointsToBSplineInterpolation(linePntsUpperLeftHalf).Curve();
+    opencascade::handle<Geom_BSplineCurve> upperLineLeftHalf =
+            tigl::CTiglPointsToBSplineInterpolation(linePntsUpperLeftHalf).Curve();
     curves.push_back(upperLineLeftHalf);
 
     opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
-    if(curve.IsNull()){
-        throw tigl::CTiglError("CURVE IS NULL");
-    }
 
     // workaround for lofting algorithm not working with  curves of degree '1' (i.e. concatenated lines)
     // if guide curves are involved, the lofter doesn't generate a valid geometry without thowing an error
