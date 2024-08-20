@@ -87,6 +87,7 @@ TIGL_EXPORT gp_Pnt GetLastPoint(const TopoDS_Edge& e);
 
 TIGL_EXPORT gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha);
 TIGL_EXPORT void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& normal);
+TIGL_EXPORT void EdgeGetPointTangentBasedOnParam(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& tangent);
 
 // calculates the alpha value for a given point on a wire
 TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);

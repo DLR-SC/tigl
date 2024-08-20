@@ -399,3 +399,18 @@ TEST_P(TestBuildFace, build)
 }
 
 INSTANTIATE_TEST_CASE_P(TiglCommonFunctions, TestBuildFace, ::testing::Range(1, 30, 1));
+
+TEST(TiglCommonFunctions, edgeGetPointTangentBasedOnParam_checkArgs)
+{
+    TopoDS_Edge edge;
+    double alpha;
+    gp_Pnt point;
+    gp_Vec tangent;
+    BRep_Builder b;
+    BRepTools::Read(edge, "TestData/checkEdgeContinuity_edge1.brep", b);
+
+    // Choose value too low
+    EXPECT_THROW(EdgeGetPointTangentBasedOnParam(edge, -0.5, point, tangent), tigl::CTiglError);
+    // Choose value too high
+    EXPECT_THROW(EdgeGetPointTangentBasedOnParam(edge, 2.0, point, tangent), tigl::CTiglError);
+}
