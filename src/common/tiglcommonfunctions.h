@@ -87,6 +87,7 @@ TIGL_EXPORT gp_Pnt GetLastPoint(const TopoDS_Edge& e);
 
 TIGL_EXPORT gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha);
 TIGL_EXPORT void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& normal);
+TIGL_EXPORT void EdgeGetPointTangentBasedOnParam(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& tangent);
 
 // calculates the alpha value for a given point on a wire
 TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
@@ -272,29 +273,32 @@ TIGL_EXPORT TopoDS_Wire BuildWire(const gp_Pnt& p1, const gp_Pnt& p2);
 TIGL_EXPORT TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges);
 
 /**
- * @brief ApproximateArcOfCircleToRationalBSpline
- * The result of this function is a non-rational B-Spline curve that approximates an arc of circle in the y-z plane. Its center is given by the y- and z-position.
+ * @brief ApproximateArcOfCircleToRationalBSpline The result of this function is a non-rational
+ * B-Spline curve that approximates an arc of circle in the y-z plane.
+ * Its center is given by the y- and z-position.
  * The angle is given in rad.
  * The direction of rotation is counter-clockwise, starting with alpha=0 on the positive y-axis,  with z=0.
- * @param cornerRadius    Radius of the circle
- * @param nb_points Number of points used for interpolation
- * @param uMin      Starting parameter in rad. Range: [0,2*Pi]
+ * @param cornerRadius      Radius of the circle
+ * @param uMin              Starting parameter in rad. Range: [0,2*Pi]
  * @param uMax
+ * @param tol               Tolerance
  * @param y_position
  * @param z_position
  * @return opencascade::handle<Geom_BSplineCurve>
  */
-TIGL_EXPORT opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double cornerRadius, size_t nb_points, double uMin = 0, double uMax = M_PI/4 ,
-                                                                                           double y_position = 0., double z_position = 0.);
+TIGL_EXPORT opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double cornerRadius, double uMin = 0, double uMax = M_PI/4 ,
+                                                                                           double tol = 1e-6, double y_position = 0., double z_position = 0.);
 
 /**
- * @brief BuildWireRectangle Builds a rectangular wire in (y,z) - plane with width 1, center of coordinate system is the center of the rectangle
+ * @brief BuildWireRectangle Builds a rectangular wire in (y,z) - plane with width 1, center of coordinate
+ * system is the center of the rectangle
  * @param heightToWidthRatio
  * @param cornerRadius
  * @param tol
- * @return
+ * @return TopoDS_Wire
  */
-TIGL_EXPORT TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cornerRadius =0.0, const double tol= 1e-3);
+TIGL_EXPORT TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cornerRadius=0.0,
+                                           const double tol=Precision().Approximation());
 
 /**
  * @brief BuildWireSuperellipse Builds a superelliptic wire in (y,z) - plane with width 1 and height 1

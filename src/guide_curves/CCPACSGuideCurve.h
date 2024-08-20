@@ -47,10 +47,11 @@ class IGuideCurveBuilder;
 class CCPACSGuideCurve : public generated::CPACSGuideCurve
 {
 public:
-    enum FromDefinition
+    enum FromOrToDefinition
     {
         UID,
-        CIRCUMFERENCE
+        CIRCUMFERENCE,
+        PARAMETER
     };
 
 private:
@@ -64,11 +65,16 @@ public:
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSGuideCurve(void) override;
 
-    TIGL_EXPORT FromDefinition GetFromDefinition() const;
+    TIGL_EXPORT FromOrToDefinition GetFromDefinition() const;
+    TIGL_EXPORT FromOrToDefinition GetToDefinition() const;
 
-    // Returns the relalive circumference
-    // If fromUID is set, the relativeCircumference is returned from the specified curve instead
-    TIGL_EXPORT double GetFromRelativeCircumference() const;
+    // Returns the value which defines the position of the starting point of a guide curve
+    // Depending on used CPACS node it is either based on the relative circumference, the parameter or the guide curve uid
+    TIGL_EXPORT double GetFromDefinitionValue() const;
+
+    // Returns the value which defines the position of the end point of a guide curve
+    // Depending on used CPACS node it is either based on the relative circumference or the parameter
+    TIGL_EXPORT double GetToDefinitionValue() const;
 
     TIGL_EXPORT std::vector<gp_Pnt> GetCurvePoints() const;
     TIGL_EXPORT TopoDS_Edge GetCurve() const;

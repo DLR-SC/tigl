@@ -17,6 +17,7 @@
 */
 
 #include "CTiglMakeLoft.h"
+#include "Debugging.h"
 #include "tigl.h"
 #include "tiglcommonfunctions.h"
 #include "test.h"
@@ -142,6 +143,29 @@ TEST(TiglCommonFunctions, tiglCheckPointInside_api)
 
 }
 
+TEST(TiglCommonFuctions, ApproximateArcOfCircleToRationalBSpline)
+{
+    //test valid curves
+    auto arcCurve1 = ApproximateArcOfCircleToRationalBSpline(2., 0., 5., 1.e-5, 0., 0.);
+    auto arcCurve2 = ApproximateArcOfCircleToRationalBSpline(1., 0.3, 5., 1.e-5, 0., 0.);
+    ASSERT_TRUE(GetLength(BRepBuilderAPI_MakeEdge(arcCurve1))>0.);
+    ASSERT_TRUE(!arcCurve1.IsNull());
+    ASSERT_EQ(arcCurve1->Degree(),3);
+    ASSERT_TRUE(!arcCurve2.IsNull());
+    ASSERT_EQ(arcCurve2->Degree(),3);
+    ASSERT_NO_THROW(ApproximateArcOfCircleToRationalBSpline(1., 0., 2*M_PI, 1.e-5, 0., 0.));
+    ASSERT_NO_THROW(ApproximateArcOfCircleToRationalBSpline(1., 0., M_PI/2., 1.e-5, 0., 0.));
+    //test invalid curves
+    //radius zero
+    ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(0., 0.3, 0.3, 1.e-5, 0., 0.), tigl::CTiglError);
+    //no span
+    ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(1., 0.3, 0.3, 1.e-5, 0., 0.), tigl::CTiglError);
+    ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(1., 0.0, 0.0, 1.e-5, 0., 0.), tigl::CTiglError);
+    //multiple traversion
+    ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(1., 0., 20., 1.e-5, 0., 0.), tigl::CTiglError);
+
+}
+
 TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusZero)
 {
     auto wire = BuildWireRectangle(1., 0.);
@@ -155,8 +179,9 @@ TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusZero)
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
     ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
-}
 
+
+}
 
 TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusOK)
 {
@@ -171,6 +196,12 @@ TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusOK)
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
     ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
+}
+
+TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusInvalid)
+{
+    ASSERT_THROW(BuildWireRectangle(0.5, 1.), tigl::CTiglError);
+    ASSERT_THROW(BuildWireRectangle(0.5, -1.), tigl::CTiglError);
 }
 
 TEST(TiglCommonFunctions, LinspaceWithBreaks)
@@ -368,3 +399,18 @@ TEST_P(TestBuildFace, build)
 }
 
 INSTANTIATE_TEST_CASE_P(TiglCommonFunctions, TestBuildFace, ::testing::Range(1, 30, 1));
+
+TEST(TiglCommonFunctions, edgeGetPointTangentBasedOnParam_checkArgs)
+{
+    TopoDS_Edge edge;
+    double alpha;
+    gp_Pnt point;
+    gp_Vec tangent;
+    BRep_Builder b;
+    BRepTools::Read(edge, "TestData/checkEdgeContinuity_edge1.brep", b);
+
+    // Choose value too low
+    EXPECT_THROW(EdgeGetPointTangentBasedOnParam(edge, -0.5, point, tangent), tigl::CTiglError);
+    // Choose value too high
+    EXPECT_THROW(EdgeGetPointTangentBasedOnParam(edge, 2.0, point, tangent), tigl::CTiglError);
+}

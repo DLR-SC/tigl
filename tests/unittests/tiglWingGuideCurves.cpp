@@ -137,9 +137,9 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurve)
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower");
     ASSERT_EQ(guideCurve.GetName(), "Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element ");
     ASSERT_EQ(guideCurve.GetGuideCurveProfileUID(), "GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_NonLinear");
-    ASSERT_TRUE(!!guideCurve.GetFromRelativeCircumference_choice2());
-    ASSERT_EQ(*guideCurve.GetFromRelativeCircumference_choice2(), -1.0);
-    ASSERT_EQ(guideCurve.GetToRelativeCircumference(), -1.0);
+    ASSERT_TRUE(guideCurve.GetFromRelativeCircumference_choice2_1());
+    ASSERT_EQ(*guideCurve.GetFromRelativeCircumference_choice2_1(), -1.0);
+    ASSERT_EQ(*guideCurve.GetToRelativeCircumference_choice1(), -1.0);
 }
 
 /**
@@ -154,9 +154,9 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurves)
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge");
     ASSERT_EQ(guideCurve.GetName(), "Leading Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element ");
     ASSERT_EQ(guideCurve.GetGuideCurveProfileUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
-    ASSERT_TRUE(!guideCurve.GetFromRelativeCircumference_choice2());
+    ASSERT_TRUE(!guideCurve.GetFromRelativeCircumference_choice2_1());
     ASSERT_EQ(*guideCurve.GetFromGuideCurveUID_choice1(), "GuideCurveModel_Wing_Seg_1_2_GuideCurve_LeadingEdge_NonLinear" );
-    ASSERT_EQ(guideCurve.GetToRelativeCircumference(), 0.0);
+    ASSERT_EQ(*guideCurve.GetToRelativeCircumference_choice1(), 0.0);
 }
 
 /**
@@ -525,4 +525,22 @@ TEST_F(WingGuideCurve, bug962)
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingSegment& segment1 = wing.GetSegment(1);
     segment1.GetLoft();
+}
+
+TEST_F(WingGuideCurve, BuildGuideCurvePnts_checkArgs)
+{
+    const char* filename = "TestData/simple_test_guide_curves_wrong_gc_Def.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+    ASSERT_EQ(SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+    auto& segment = uid_mgr.ResolveObject<tigl::CCPACSWingSegment>("GuideCurveModel_Wing_Seg_1_2");
+    auto& guideCurves = *segment.GetGuideCurves();
+    const tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(2);
+
+    tigl::CTiglWingSegmentGuidecurveBuilder builder(segment);
+    EXPECT_THROW(builder.BuildGuideCurvePnts(&guideCurve), tigl::CTiglError);
 }
