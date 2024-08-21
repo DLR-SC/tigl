@@ -1394,7 +1394,8 @@ namespace
 } //anonymos namespace
 
 TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper,
-                                              const double nLower, const double nUpper, const double tol){
+                                              const double nLower, const double nUpper, const double tol)
+{
     if (mLower==0||mUpper==0||nLower==0||nUpper==0||lowerHeightFraction==0||lowerHeightFraction==1){
         throw tigl::CTiglError("Invalid input. Check superellipse profile parameters.");
     }
@@ -1405,25 +1406,25 @@ TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, 
     double uMaxLeft = 0.;
     int degree = 3;
 
-    //build right upper half of semi ellipse
+    //build right upper quarter of semi ellipse
 
     QuarterEllipse quadrant1(lowerHeightFraction, mLower, mUpper, nLower, nUpper, 1);
     auto upperRightCurve = tigl::CFunctionToBspline(quadrant1, uMinRight, uMaxRight, degree, tol).Curve();
     curves.push_back(upperRightCurve);
 
-    //build lower right half of semi ellipse
+    //build lower right quarter of semi ellipse
     QuarterEllipse quadrant4(lowerHeightFraction, mLower, mUpper, nLower, nUpper, 4);
     auto lowerRightCurve = tigl::CFunctionToBspline(quadrant4, uMinRight, uMaxRight, degree, tol).Curve();
     lowerRightCurve->Reverse();
     curves.push_back(lowerRightCurve);
 
-    //build lower left half of semi ellipse
+    //build lower left quarter of semi ellipse
     QuarterEllipse quadrant3(lowerHeightFraction, mLower, mUpper, nLower, nUpper, 3);
     auto lowerLeftCurve = tigl::CFunctionToBspline(quadrant3, uMinLeft, uMaxLeft, degree, tol).Curve();
     lowerLeftCurve->Reverse();
     curves.push_back(lowerLeftCurve);
 
-    //build left upper half of semi ellipse
+    //build left upper quarter of semi ellipse
     QuarterEllipse quadrant2(lowerHeightFraction, mLower, mUpper, nLower, nUpper, 2);
     auto upperLeftCurve = tigl::CFunctionToBspline(quadrant2, uMinLeft, uMaxLeft, degree, tol).Curve();
     curves.push_back(upperLeftCurve);
@@ -1433,17 +1434,13 @@ TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, 
 
     //build wire
     TopoDS_Wire wire;
-    if(!curve.IsNull())
-        {
+    if(!curve.IsNull()){
         wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
     }
     if(wire.IsNull()){
         throw tigl::CTiglError("Error building profile wire");
     }
     return wire;
-
-
-
 }
 
 void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList)
