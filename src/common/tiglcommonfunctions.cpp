@@ -1362,23 +1362,22 @@ namespace
 
             //build lower right half of semi ellipse
             if((t>=0.)&&(t<=0.5)&&(m_quadrant==4)){
-                double y_i = 0.5-t;
-                double z = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2. * y_i), m_mLower)), 1. / m_nLower);
+                double z = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2. * t), m_mLower)), 1. / m_nLower);
                 return z;
             }
 
             //build lower left half of semi ellipse
             if((t>=-0.5)&&(t<=0.)&&(m_quadrant==3)){
-                double y_i = 0. - t;
-                double z = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2. * y_i), m_mLower)), 1. / m_nLower);
+                double z = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2. * t), m_mLower)), 1. / m_nLower);
                 return z;
             }
 
             //build left upper half of semi ellipse
             if((t>=-0.5)&&(t<=0.)&&(m_quadrant==2)){
-                double y_i = -0.5 + t;
-                double z = z_0 + (0.5 -z_0)* std::pow((1. - std::pow(std::abs(2. * y_i), m_mUpper)), 1. / m_nUpper);
+                double z = z_0 + (0.5 -z_0)* std::pow((1. - std::pow(std::abs(2. * t), m_mUpper)), 1. / m_nUpper);
                 return z;
+            } else {
+                throw tigl::CTiglError("QuarterEllipse not defined in Parameter");
             }
 
         }
@@ -1400,29 +1399,33 @@ TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, 
         throw tigl::CTiglError("Invalid input. Check superellipse profile parameters.");
     }
     std::vector<Handle(Geom_BSplineCurve)> curves;
-    double uMin = 0.;
-    double uMax = 0.5;
+    double uMinRight = 0.;
+    double uMaxRight = 0.5;
+    double uMinLeft = -0.5;
+    double uMaxLeft = 0.;
     int degree = 3;
 
     //build right upper half of semi ellipse
 
     QuarterEllipse quadrant1(lowerHeightFraction, mLower, mUpper, nLower, nUpper, 1);
-    auto upperRightCurve = tigl::CFunctionToBspline(quadrant1, uMin, uMax, degree, tol).Curve();
+    auto upperRightCurve = tigl::CFunctionToBspline(quadrant1, uMinRight, uMaxRight, degree, tol).Curve();
     curves.push_back(upperRightCurve);
 
     //build lower right half of semi ellipse
     QuarterEllipse quadrant4(lowerHeightFraction, mLower, mUpper, nLower, nUpper, 4);
-    auto lowerRightCurve = tigl::CFunctionToBspline(quadrant4, uMin, uMax, degree, tol).Curve();
+    auto lowerRightCurve = tigl::CFunctionToBspline(quadrant4, uMinRight, uMaxRight, degree, tol).Curve();
+    lowerRightCurve->Reverse();
     curves.push_back(lowerRightCurve);
 
     //build lower left half of semi ellipse
     QuarterEllipse quadrant3(lowerHeightFraction, mLower, mUpper, nLower, nUpper, 3);
-    auto lowerLeftCurve = tigl::CFunctionToBspline(quadrant3, uMin, uMax, degree, tol).Curve();
+    auto lowerLeftCurve = tigl::CFunctionToBspline(quadrant3, uMinLeft, uMaxLeft, degree, tol).Curve();
+    lowerLeftCurve->Reverse();
     curves.push_back(lowerLeftCurve);
 
     //build left upper half of semi ellipse
-    QuarterEllipse quadrant2(lowerHeightFraction, mLower, mUpper, nLower, nUpper, 3);
-    auto upperLeftCurve = tigl::CFunctionToBspline(quadrant2, uMin, uMax, degree, tol).Curve();
+    QuarterEllipse quadrant2(lowerHeightFraction, mLower, mUpper, nLower, nUpper, 2);
+    auto upperLeftCurve = tigl::CFunctionToBspline(quadrant2, uMinLeft, uMaxLeft, degree, tol).Curve();
     curves.push_back(upperLeftCurve);
 
     //concatenate curves
