@@ -523,7 +523,7 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupTy
             shapeList.push_back(shape);
             return shapeList;
         }
-        
+
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
@@ -575,7 +575,7 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupTy
             shapeList.push_back(shape);
             return shapeList;
         }
-        
+
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             const CFaceTraits& traits = shape->GetFaceTraits(iface-1);
@@ -592,7 +592,7 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupTy
             faceShape->SetFaceTraits(0, shape->GetFaceTraits(iface-1));
             shapeList.push_back(faceShape);
         }
-        
+
     }
     return shapeList;
 }
@@ -655,7 +655,7 @@ int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
 TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points)
 {
     unsigned int pointCount = static_cast<int>(points.size());
-    
+
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
     for (unsigned int j = 0; j < pointCount; j++) {
         hpoints->SetValue(j + 1, points[j]);
@@ -664,7 +664,7 @@ TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points)
     GeomAPI_Interpolate interPol(hpoints, Standard_False, Precision::Confusion());
     interPol.Perform();
     Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
-    
+
     return BRepBuilderAPI_MakeEdge(hcurve);
 }
 
@@ -672,7 +672,7 @@ TopoDS_Edge GetEdge(const TopoDS_Shape &shape, int iEdge)
 {
     TopTools_IndexedMapOfShape edgeMap;
     TopExp::MapShapes(shape, TopAbs_EDGE, edgeMap);
-    
+
     if (iEdge < 0 || iEdge >= edgeMap.Extent()) {
         return TopoDS_Edge();
     }
@@ -699,7 +699,7 @@ Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e)
     double u1, u2;
     Handle(Geom_Curve) curve = BRep_Tool::Curve(e, u1, u2);
     curve = new Geom_TrimmedCurve(curve, u1, u2);
-    
+
     // convert to bspline
     Handle(Geom_BSplineCurve) bspl =  GeomConvert::CurveToBSplineCurve(curve);
     return bspl;
@@ -1122,7 +1122,7 @@ TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
     TopoDS_Wire sortedWire1 = TopoDS::Wire(orderedWireSequence.First());
     TopoDS_Wire sortedWire2 = TopoDS::Wire(orderedWireSequence.Last());
 
-    // build curve adaptor, second parameter defines that the length of the single edges is used as u coordinate, 
+    // build curve adaptor, second parameter defines that the length of the single edges is used as u coordinate,
     // instead normalization of the u coordinates of the single edges of the wire (each edge would have u-coords
     // range from 0 to 1 independent of their length otherwise)
     BRepAdaptor_CompCurve compCurve1(sortedWire1, Standard_True);
@@ -1345,6 +1345,8 @@ namespace
 
         double valueY(double t) override
         {
+            //curve is built clockwise
+            //add phase shift of  -PI/2, which is where the profile curve needs to start
             return 0.5*std::sin(t);
         }
 
@@ -1353,6 +1355,8 @@ namespace
             double z_0 = m_lowerHeightFraction - 0.5;
             //clean angle from traversion factor (ensures that alpha <= 2*PI, to determine quadrant)
             double alpha = (std::fmod(t,(2.*M_PI)));
+            //negative sign -> curve is built clockwise
+            //add phase shift of  -PI/2, which is where the profile curve needs to start
             double param = 0.5*std::sin(alpha);
 
             //same order as in building the profile: oriented clockwise, starting with 1. quadrant ending with 2.
@@ -1376,7 +1380,7 @@ namespace
             }
 
             //build left upper half of semi ellipse
-            if((alpha>=M_PI+3./2.)&&(alpha<=M_PI*2.)){
+            if((alpha>=M_PI*3./2.)&&(alpha<=M_PI*2.)){
                 double z = z_0 + (0.5 -z_0)* std::pow((1. - std::pow(std::abs(2. * param), m_mUpper)), 1. / m_nUpper);
                 return z;
             } else {
@@ -1402,13 +1406,27 @@ TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, 
         throw tigl::CTiglError("Invalid input. Check superellipse profile parameters.");
     }
     std::vector<Handle(Geom_BSplineCurve)> curves;
-    double uMin = 0.;
-    double uMax = 2*M_PI;
 
     int degree = 3;
 
+    //Parameter for right semiellipse
+    double uMin = 0.;
+    double uMax = M_PI;
+    //Parameter for left semiellipse
+    double uMin1 = M_PI;
+    double uMax1 = 2*M_PI;
+
     SuperEllipse ellipse(lowerHeightFraction, mLower, mUpper, nLower, nUpper);
-    auto curve = tigl::CFunctionToBspline(ellipse, uMin, uMax, degree, tol).Curve();
+
+    //build right semiellipse
+    auto curve1 = tigl::CFunctionToBspline(ellipse, uMin, uMax, degree, tol).Curve();
+    curves.push_back(curve1);
+
+    //build left semiellipse
+    auto curve2 = tigl::CFunctionToBspline(ellipse, uMin1, uMax1, degree, tol).Curve();
+    curves.push_back(curve2);
+
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
 
     //build wire
     TopoDS_Wire wire;
@@ -1897,7 +1915,7 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
                 // get midpoint of checkEdge
                 curve = BRep_Tool::Curve(checkEdge, uStart, uEnd);
                 curve->D0((uStart + uEnd) / 2.0, p2Mid);
-                 
+
                 if (p1Mid.Distance(p2Mid) < 1E-5) {
                     duplicate = true;
                     break;
@@ -2026,7 +2044,7 @@ T Clamp(T val, T min, T max)
     if (min > max) {
         throw tigl::CTiglError("Minimum may not be larger than maximum in clamp!");
     }
-    
+
     return std::max(min, std::min(val, max));
 }
 
@@ -2071,12 +2089,12 @@ TopoDS_Shape GetFacesByName(const PNamedShape shape, const std::string &name)
             faces.push_back(GetFace(shape->Shape(), i));
         }
     }
-    
+
     if (faces.empty())
         throw tigl::CTiglError("Could not find faces named " + name);
     if (faces.size() == 1)
         return faces[0];
-    
+
     TopoDS_Compound c;
     TopoDS_Builder b;
     b.MakeCompound(c);
@@ -2114,7 +2132,7 @@ Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector)
         array->SetValue(ipos, value);
         ipos++;
     }
-    
+
     return array;
 }
 
@@ -2125,7 +2143,7 @@ Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector)
     for (const auto& value : vector) {
         array->SetValue(ipos++, value);
     }
-    
+
     return array;
 }
 
