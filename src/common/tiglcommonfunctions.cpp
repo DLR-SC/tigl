@@ -1406,22 +1406,30 @@ TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, 
 
     int degree = 3;
 
-    //Parameter for right semiellipse
+    //Parameter for upper right quarterellipse
     double uMin = 0.;
-    double uMax = M_PI;
-    //Parameter for left semiellipse
-    double uMin1 = M_PI;
-    double uMax1 = 2*M_PI;
+    double uMax = M_PI/2;
+    //Parameter for lower right quarterellipse
+    double uMin1 = M_PI/2;
+    double uMax1 = M_PI;
+    //Parameter for lower left quarterellipse
+    double uMin2 = M_PI;
+    double uMax2 = 3*M_PI/2;
+    //Parameter for upper left quarterellipse
+    double uMin3 = 3*M_PI/2;
+    double uMax3 = 2*M_PI;
 
     SuperEllipse ellipse(lowerHeightFraction, mLower, mUpper, nLower, nUpper);
 
-    //build right semiellipse
+    //build ellipse clockwise
     auto curve1 = tigl::CFunctionToBspline(ellipse, uMin, uMax, degree, tol).Curve();
     curves.push_back(curve1);
-
-    //build left semiellipse
     auto curve2 = tigl::CFunctionToBspline(ellipse, uMin1, uMax1, degree, tol).Curve();
     curves.push_back(curve2);
+    auto curve3 = tigl::CFunctionToBspline(ellipse, uMin2, uMax2, degree, tol).Curve();
+    curves.push_back(curve3);
+    auto curve4 = tigl::CFunctionToBspline(ellipse, uMin3, uMax3, degree, tol).Curve();
+    curves.push_back(curve4);
 
     opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
 
