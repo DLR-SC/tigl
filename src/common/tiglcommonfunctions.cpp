@@ -1346,7 +1346,6 @@ namespace
         double valueY(double t) override
         {
             //curve is built clockwise
-            //add phase shift of  -PI/2, which is where the profile curve needs to start
             return 0.5*std::sin(t);
         }
 
@@ -1355,8 +1354,6 @@ namespace
             double z_0 = m_lowerHeightFraction - 0.5;
             //clean angle from traversion factor (ensures that alpha <= 2*PI, to determine quadrant)
             double alpha = (std::fmod(t,(2.*M_PI)));
-            //negative sign -> curve is built clockwise
-            //add phase shift of  -PI/2, which is where the profile curve needs to start
             double param = 0.5*std::sin(alpha);
 
             //same order as in building the profile: oriented clockwise, starting with 1. quadrant ending with 2.
