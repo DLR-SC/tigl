@@ -298,7 +298,7 @@ TIGL_EXPORT opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRatio
  * @return TopoDS_Wire
  */
 TIGL_EXPORT TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cornerRadius=0.0,
-                                           const double tol=Precision().Approximation());
+                                           const double tol=Precision::Approximation());
 
 // Returns a list of wires built from all connected edges in the passed shape
 TIGL_EXPORT void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList);
