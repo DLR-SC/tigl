@@ -411,22 +411,10 @@ TEST_F(TiglWing, depthDirection)
     vtp.SetSymmetryAxis(vtpSymAx);
 }
 
-TEST_F(TiglWing, testGetWingWithCutOuts)
+TEST_F(WingSimple, testGetWingWithCutOuts)
 {
-    const char* filename = "TestData/simpletest.cpacs.xml";
-    ReturnCode tixiRetX;
-    TiglReturnCode tiglRetX;
-
-    TixiDocumentHandle tiglHandleX = -1;
-    TiglCPACSConfigurationHandle tixiHandleX = -1;
-
-    tixiRetX = tixiOpenDocument(filename, &tixiHandleX);
-    ASSERT_TRUE (tixiRetX == SUCCESS);
-    tiglRetX = tiglOpenCPACSConfiguration(tixiHandleX, "", &tiglHandleX);
-    ASSERT_TRUE(tiglRetX == TIGL_SUCCESS);
-
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandleX);
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglSimpleWingHandle);
     tigl::CTiglUIDManager& uidmgr = config.GetUIDManager();
     auto& wing = uidmgr.ResolveObject<tigl::CCPACSWing>("Wing");
 
