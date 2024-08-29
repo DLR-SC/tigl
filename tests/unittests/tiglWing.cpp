@@ -19,7 +19,9 @@
 * @brief Tests for testing non classified wing functions.
 */
 
+#include "BRepCheck_Analyzer.hxx"
 #include "test.h" // Brings in the GTest framework
+#include "testUtils.h"
 #include "tigl.h"
 #include <string.h>
 #include <CCPACSConfigurationManager.h>
@@ -407,6 +409,39 @@ TEST_F(TiglWing, depthDirection)
     // is static for all tests
     wing.SetSymmetryAxis(wingSymAx);
     vtp.SetSymmetryAxis(vtpSymAx);
+}
+
+TEST_F(TiglWing, testGetWingWithCutOuts)
+{
+    const char* filename = "TestData/simpletest.cpacs.xml";
+    ReturnCode tixiRetX;
+    TiglReturnCode tiglRetX;
+
+    TixiDocumentHandle tiglHandleX = -1;
+    TiglCPACSConfigurationHandle tixiHandleX = -1;
+
+    tixiRetX = tixiOpenDocument(filename, &tixiHandleX);
+    ASSERT_TRUE (tixiRetX == SUCCESS);
+    tiglRetX = tiglOpenCPACSConfiguration(tixiHandleX, "", &tiglHandleX);
+    ASSERT_TRUE(tiglRetX == TIGL_SUCCESS);
+
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandleX);
+    tigl::CTiglUIDManager& uidmgr = config.GetUIDManager();
+    auto& wing = uidmgr.ResolveObject<tigl::CCPACSWing>("Wing");
+
+    // Check for warning if no control surfaces are defined
+      { // Scope to destroy object of type CaptureTiGLLog and therefore reset console verbosity
+          CaptureTiGLLog t{TILOG_WARNING};
+          wing.GetLoftWithCutouts();
+          auto logOutput = t.log();
+
+          std::string comparisonString = "No control devices defined, GetLoftWithCutOuts() will return a clean shape.";
+          ASSERT_TRUE((logOutput.find(comparisonString)) != std::string::npos);
+      } // scope
+
+    ASSERT_TRUE(BRepCheck_Analyzer(wing.GetLoftWithCutouts()).IsValid());
+
 }
 
 TEST_F(WingSimple, wingGetMAC_success)
