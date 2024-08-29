@@ -32,6 +32,7 @@
 #include "BRep_Builder.hxx"
 
 #include "CTiglLogging.h"
+#include "testUtils.h"
 
 TEST(CTiglPatchShell, Success)
 {
@@ -122,17 +123,17 @@ TEST(CTiglPatchShell, noSideCaps)
     loft.addProfiles(wire1.Shape());
     loft.addProfiles(wire2.Shape());
 
-    auto temp = tigl::CTiglLogging::Instance().GetConsoleVerbosity();
-    tigl::CTiglLogging::Instance().SetConsoleVerbosity(TILOG_WARNING);
-    tigl::CTiglLogging::Instance().LogToConsole();
-    testing::internal::CaptureStderr();
+    // Check for warning
+        { // Scope to destroy object of type CaptureTiGLLog and therefore reset console verbosity
+            CaptureTiGLLog t{TILOG_WARNING};
 
-    loft.Shape();
+            //call function that returns warning
+            loft.Shape();
 
-    tigl::CTiglLogging::Instance().SetConsoleVerbosity(temp);
-    std::string value = testing::internal::GetCapturedStderr();
-    //TODO pullrequest Sven-> Klasse nutzen
+            auto logOutput = t.log();
 
-
+            std::string comparisonString = "WARNING: Side caps invalid.";
+            ASSERT_TRUE((logOutput.find(comparisonString)) != std::string::npos);
+        } // scope
 //#endif
 }
