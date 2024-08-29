@@ -360,7 +360,13 @@ PNamedShape CCPACSWing::BuildLoft() const
 
 TopoDS_Shape CCPACSWing::GetLoftWithCutouts()
 {
-    return (*wingShapeWithCutouts)->Shape();
+    if (NumberOfControlSurfaces(*this) == 0) {
+        LOG(WARNING) << "No control devices defined, GetLoftWithCutOuts() will return a clean shape.";
+        return (*wingCleanShape)->Shape();
+    }
+    else {
+        return (*wingShapeWithCutouts)->Shape();
+    }
 }
 
 // Builds a fused shape of all wing segments
