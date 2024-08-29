@@ -191,7 +191,16 @@ void CCPACSFuselageSegments::BuildGuideCurves(TopoDS_Compound& cache) const
             const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             if (!curve.GetFromGuideCurveUID_choice1()) {
                 // this is a root curve
-                double relCirc= *curve.GetFromRelativeCircumference_choice2();
+                double relCirc;
+                if (curve.GetFromRelativeCircumference_choice2_1()) {
+                    relCirc = *curve.GetFromRelativeCircumference_choice2_1();
+                }
+                else if(curve.GetFromParameter_choice2_2()) {
+                    relCirc = *curve.GetFromParameter_choice2_2();
+                }
+                else {
+                    throw CTiglError("CCPACSFuselageSegments::BuildGuideCurves(): Either a fromCircumference or a fromParameter must be present", TIGL_NOT_FOUND);
+                }
                 //TODO: determine if half fuselage or not. If not
                 //the guide curve at relCirc=1 should be inserted at relCirc=0
                 roots.insert(std::make_pair(relCirc, &curve));

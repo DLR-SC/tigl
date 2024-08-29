@@ -103,7 +103,7 @@ void TIGLQAspectWindow::Unmap() const
 // function : DoResize
 // purpose  :
 // =======================================================================
-#if OCC_VERSION_HEX >= 0x070600
+#if OCC_VERSION_HEX >= 0x070500
 Aspect_TypeOfResize TIGLQAspectWindow::DoResize()
 #else
 Aspect_TypeOfResize TIGLQAspectWindow::DoResize() const
