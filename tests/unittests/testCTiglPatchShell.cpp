@@ -100,7 +100,7 @@ TEST(CTiglPatchShell, brokenShape)
 
 TEST(CTiglPatchShell, noSideCaps)
 {
-//#ifdef DEBUG
+#ifdef DEBUG
     //define coordinates for profile wire enclosing two unconnected surface areas
     std::vector<gp_Pnt> points = {gp_Pnt(0., 0., 0.),gp_Pnt(0., 0.,1.),gp_Pnt(0.,0.5,0.),
                                   gp_Pnt(0.,1.,1.), gp_Pnt(0., 1.,0.), gp_Pnt(0.,0.,0.)};
@@ -135,5 +135,5 @@ TEST(CTiglPatchShell, noSideCaps)
             std::string comparisonString = "WARNING: Side caps invalid.";
             ASSERT_TRUE((logOutput.find(comparisonString)) != std::string::npos);
         } // scope
-//#endif
+#endif
 }
