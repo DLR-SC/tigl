@@ -113,6 +113,7 @@ public:
     TIGL_EXPORT void SetTimeIdInFilenameEnabled(bool enabled);
     TIGL_EXPORT void LogToConsole();
     TIGL_EXPORT void SetConsoleVerbosity(TiglLogLevel vlevel);
+
     TIGL_EXPORT TiglLogLevel GetConsoleVerbosity() const;
     
     // allows installing a custom log sink/receiver

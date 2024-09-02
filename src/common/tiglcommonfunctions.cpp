@@ -1321,8 +1321,7 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     }
 
     TopoDS_Wire wire;
-    if(!curve.IsNull())
-        {
+    if (!curve.IsNull()) {
         wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
     }
     return wire;
