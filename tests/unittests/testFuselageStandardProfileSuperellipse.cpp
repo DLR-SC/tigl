@@ -116,6 +116,7 @@ TiglCPACSConfigurationHandle FuselageStandardProfileSuperEllipse::tiglHandle2 = 
 
 TEST_F(FuselageStandardProfileSuperEllipse, BuildWireSuperEllipse)
 {
+    //test valid values
     auto wire = BuildWireSuperEllipse(0.25,5.,0.5,3.,2);
     ASSERT_TRUE(wire.Closed());
     auto trafo = gp_Trsf();
@@ -127,6 +128,12 @@ TEST_F(FuselageStandardProfileSuperEllipse, BuildWireSuperEllipse)
     loft.addProfiles(wire);
     loft.addProfiles(wire2);
     ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
+
+    //check invalid values
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,0.5,3.,0.), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.,5.,0.5,3.,2.), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(1.,5.,0.5,3.,2.), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,0.,0.5,3.,2.), tigl::CTiglError);
 }
 
 
@@ -164,10 +171,4 @@ TEST_F(FuselageStandardProfileSuperEllipse, BuildFuselageMixedProfilesInvalidInp
 
     // fuselage cannot be build with invalid profile
     ASSERT_THROW(config1.GetFuselage(1).GetLoft(),tigl::CTiglError);
-
-    // check if invalid input is caught
-    tixiUpdateTextElement(tixiHandle2, "/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[6]/mLower", "0");
-    tiglOpenCPACSConfiguration(tixiHandle2, "", &tiglHandle2);
-    tigl::CCPACSConfiguration& config2         = manager.GetConfiguration(tiglHandle2);
-    ASSERT_THROW(config2.GetFuselage(1).GetLoft(),tigl::CTiglError);
 }
