@@ -197,7 +197,7 @@ protected:
 
 private:
     /// must be overridden by the concrete implementation
-    virtual bool WriteImpl(const std::string& filename) const = 0;
+    TIGL_EXPORT virtual bool WriteImpl(const std::string& filename) const = 0;
     
     /// must be overridden. If multiple types supported, separate with a ";"
     virtual std::string SupportedFileTypeImpl() const = 0;
@@ -214,7 +214,7 @@ typedef CSharedPtr<CTiglCADExporter> PTiglCADExporter;
 class ICADExporterBuilder
 {
 public:
-    virtual PTiglCADExporter create(const ExporterOptions& options = DefaultExporterOption()) const = 0;
+    TIGL_EXPORT virtual PTiglCADExporter create(const ExporterOptions& options = DefaultExporterOption()) const = 0;
     virtual ~ICADExporterBuilder(){}
 };
 
@@ -222,7 +222,7 @@ template <class T>
 class CCADExporterBuilder : public ICADExporterBuilder
 {
 public:
-   PTiglCADExporter create(const ExporterOptions& options = DefaultExporterOption()) const override
+   TIGL_EXPORT PTiglCADExporter create(const ExporterOptions& options = DefaultExporterOption()) const override
    {
        return PTiglCADExporter(new T(options));
    }

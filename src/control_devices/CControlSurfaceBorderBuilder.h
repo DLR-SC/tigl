@@ -35,8 +35,8 @@ namespace tigl
 class CControlSurfaceBorderBuilder
 {
 public:
-    CControlSurfaceBorderBuilder(const CTiglControlSurfaceBorderCoordinateSystem& coords, TopoDS_Shape wingShape);
-    ~CControlSurfaceBorderBuilder();
+    TIGL_EXPORT CControlSurfaceBorderBuilder(const CTiglControlSurfaceBorderCoordinateSystem& coords, TopoDS_Shape wingShape);
+    TIGL_EXPORT ~CControlSurfaceBorderBuilder();
 
     /**
      * @brief Computes the cutout wire with a defined leading edge shape according to 
@@ -47,7 +47,7 @@ public:
      * @param xsiUpper Upper skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      * @param xsiLower Lower skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      */
-    TopoDS_Wire borderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower);
+    TIGL_EXPORT TopoDS_Wire borderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower);
 
     /**
      * @brief Computes the cutout wire with a defined trailing edge shape according to 
@@ -59,7 +59,7 @@ public:
      * @param xsiTELower Lower skin point of the edge, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      * @return 
      */
-    TopoDS_Wire borderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower);
+    TIGL_EXPORT TopoDS_Wire borderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower);
 
     /**
      * @brief Simplified cutout without any center point definition
@@ -68,19 +68,19 @@ public:
      * @param xsiLower Lower skin point o the edge, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      * @return 
      */
-    TopoDS_Wire borderSimple(double xsiUpper, double xsiLower);
+    TIGL_EXPORT TopoDS_Wire borderSimple(double xsiUpper, double xsiLower);
 
     /**
      * @brief Computes a border that spans the whole wing, i.e. for canard style flaps
      * @return
      */
-    TopoDS_Wire wholeWingBorder();
+    TIGL_EXPORT TopoDS_Wire wholeWingBorder();
 
-    gp_Pnt2d upperPoint();
-    gp_Pnt2d lowerPoint();
+    TIGL_EXPORT gp_Pnt2d upperPoint();
+    TIGL_EXPORT gp_Pnt2d lowerPoint();
 
-    gp_Vec2d upperTangent();
-    gp_Vec2d lowerTangent();
+    TIGL_EXPORT gp_Vec2d upperTangent();
+    TIGL_EXPORT gp_Vec2d lowerTangent();
 
 private:
     CControlSurfaceBorderBuilder();

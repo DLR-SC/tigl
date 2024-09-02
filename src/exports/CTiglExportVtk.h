@@ -66,7 +66,7 @@ public:
     TIGL_EXPORT static void WritePolys(const CTiglPolyData& polys, const char * filename);
 
 private:
-    bool WriteImpl(const std::string& filename) const override;
+    TIGL_EXPORT bool WriteImpl(const std::string& filename) const override;
 
     std::string SupportedFileTypeImpl() const override
     {

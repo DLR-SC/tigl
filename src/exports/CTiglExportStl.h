@@ -53,7 +53,7 @@ public:
 
 private:
 
-    bool WriteImpl(const std::string& filename) const override;
+    TIGL_EXPORT bool WriteImpl(const std::string& filename) const override;
 
     std::string SupportedFileTypeImpl() const override
     {

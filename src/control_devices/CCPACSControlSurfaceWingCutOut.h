@@ -60,7 +60,7 @@ private:
                                                           const gp_Vec& upDir) const;
 };
 
-const CCPACSWingComponentSegment& ComponentSegment(const CCPACSControlSurfaceWingCutOut&);
+TIGL_EXPORT const CCPACSWingComponentSegment& ComponentSegment(const CCPACSControlSurfaceWingCutOut&);
 
 } // namespace tigl
 

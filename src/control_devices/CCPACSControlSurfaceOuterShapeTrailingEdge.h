@@ -33,7 +33,7 @@ namespace tigl
 class CCPACSControlSurfaceOuterShapeTrailingEdge : public generated::CPACSControlSurfaceOuterShapeTrailingEdge
 {
 public:
-    CCPACSControlSurfaceOuterShapeTrailingEdge(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSControlSurfaceOuterShapeTrailingEdge(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr);
 
     /**
      * Builds and returns the outer flap shape.

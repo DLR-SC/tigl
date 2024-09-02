@@ -108,8 +108,8 @@ private:
 class IGuideCurveBuilder
 {
 public:
-    virtual std::vector<gp_Pnt> BuildGuideCurvePnts(const CCPACSGuideCurve*) const = 0;
-    virtual ~IGuideCurveBuilder();
+    TIGL_EXPORT virtual std::vector<gp_Pnt> BuildGuideCurvePnts(const CCPACSGuideCurve*) const = 0;
+    TIGL_EXPORT virtual ~IGuideCurveBuilder();
 };
 
 } // end namespace tigl

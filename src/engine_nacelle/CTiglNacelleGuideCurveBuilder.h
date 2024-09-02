@@ -48,11 +48,11 @@ namespace tigl
     class CTiglNacelleGuideCurveBuilder
     {
     public:
-        explicit CTiglNacelleGuideCurveBuilder(const CCPACSNacelleGuideCurve& guide);
-        explicit CTiglNacelleGuideCurveBuilder(const NacelleGuideCurveParameters& params);
+        TIGL_EXPORT explicit CTiglNacelleGuideCurveBuilder(const CCPACSNacelleGuideCurve& guide);
+        TIGL_EXPORT explicit CTiglNacelleGuideCurveBuilder(const NacelleGuideCurveParameters& params);
 
-        void SetResolutionDegree(double dp) { dPhi = dp; }
-        double GetResolutionDegree() const  { return dPhi; }
+        TIGL_EXPORT void SetResolutionDegree(double dp) { dPhi = dp; }
+        TIGL_EXPORT double GetResolutionDegree() const  { return dPhi; }
 
         TIGL_EXPORT operator TopoDS_Wire();
         TIGL_EXPORT TopoDS_Wire GetWire();

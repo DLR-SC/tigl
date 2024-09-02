@@ -25,8 +25,8 @@ namespace tigl
     class CTiglEngineNacelleBuilder
     {
     public:
-        explicit CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& nacelle);
-        explicit CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& nacelle, const CTiglTransformation& transformation);
+        TIGL_EXPORT explicit CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& nacelle);
+        TIGL_EXPORT explicit CTiglEngineNacelleBuilder(const CCPACSEngineNacelle& nacelle, const CTiglTransformation& transformation);
 
         TIGL_EXPORT operator PNamedShape();
 

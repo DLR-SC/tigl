@@ -16,6 +16,7 @@
 * limitations under the License.
 */
 
+#include "tigl_internal.h"
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <string>
@@ -26,7 +27,7 @@
  * \param curve 
  * \param filename
  */
-void exportCurveToSplineLib(Handle_Geom_BSplineCurve curve, const std::string& filename);
+TIGL_EXPORT void exportCurveToSplineLib(Handle_Geom_BSplineCurve curve, const std::string& filename);
 
 /**
  * \brief write BSpline surface parameter in SplineLib format
@@ -34,4 +35,4 @@ void exportCurveToSplineLib(Handle_Geom_BSplineCurve curve, const std::string& f
  * \param surf
  * \param filename
  */
-void exportSurfaceToSplineLib(Handle_Geom_BSplineSurface surf, const std::string& filename);
+TIGL_EXPORT void exportSurfaceToSplineLib(Handle_Geom_BSplineSurface surf, const std::string& filename);
