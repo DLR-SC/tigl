@@ -32,13 +32,13 @@ class CTiglWingSegmentGuidecurveBuilder : public IGuideCurveBuilder
 {
 
 public:
-    CTiglWingSegmentGuidecurveBuilder(class CCPACSWingSegment& segment);
+    TIGL_EXPORT CTiglWingSegmentGuidecurveBuilder(class CCPACSWingSegment& segment);
 
-    virtual ~CTiglWingSegmentGuidecurveBuilder();
+    TIGL_EXPORT virtual ~CTiglWingSegmentGuidecurveBuilder();
 
     // IGuideCurveBuilder interface
 public:
-    std::vector<gp_Pnt> BuildGuideCurvePnts(const CCPACSGuideCurve *) const override;
+   TIGL_EXPORT std::vector<gp_Pnt> BuildGuideCurvePnts(const CCPACSGuideCurve *) const override;
 
 private:
     class CCPACSWingSegment& m_segment;

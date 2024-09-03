@@ -28,14 +28,14 @@ namespace tigl
 class CTiglWingBuilder
 {
 public:
-    CTiglWingBuilder(const CCPACSWing& wing);
+    TIGL_EXPORT CTiglWingBuilder(const CCPACSWing& wing);
 
 
-    operator PNamedShape();
+    TIGL_EXPORT operator PNamedShape();
 
-    PNamedShape BuildShape();
+    TIGL_EXPORT PNamedShape BuildShape();
 
-    static void SetFaceTraits (const std::vector<double>& guideCurveParams, const std::string& shapeUid, PNamedShape shape, bool hasBluntTE);
+    TIGL_EXPORT static void SetFaceTraits (const std::vector<double>& guideCurveParams, const std::string& shapeUid, PNamedShape shape, bool hasBluntTE);
 private:
 
     const CCPACSWing& _wing;

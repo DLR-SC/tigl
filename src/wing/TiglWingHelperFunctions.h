@@ -38,7 +38,7 @@ namespace winghelper
  * TODO: In future we need do define on the cpacs basis the projection
  * plane of the wing
  */
-TiglAxis GetWingDepthAxis(const tigl::CCPACSWing& wing);
+TIGL_EXPORT TiglAxis GetWingDepthAxis(const tigl::CCPACSWing& wing);
 
 /**
  * Returns the major direction of the wing (correspond to the span direction)
@@ -52,7 +52,7 @@ TiglAxis GetWingDepthAxis(const tigl::CCPACSWing& wing);
  * TODO: In future we need do define on the cpacs basis the projection
  * plane of the wing
  */
-TiglAxis GetWingSpanAxis(const tigl::CCPACSWing& wing);
+TIGL_EXPORT TiglAxis GetWingSpanAxis(const tigl::CCPACSWing& wing);
 
 } // namespace winghelper
 
