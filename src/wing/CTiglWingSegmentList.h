@@ -16,6 +16,7 @@
 * limitations under the License.
 */
 
+#pragma once
 #include <CSharedPtr.h>
 
 #include <vector>
