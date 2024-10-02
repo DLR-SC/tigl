@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSVehicles
 
-    /// @brief enginesType
+    /// @brief Engines
     /// 
     /// Engines type, containing complete engine configurations
     /// 

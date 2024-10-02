@@ -78,11 +78,17 @@ namespace generated
 
     CTiglUIDManager& CPACSCompartmentGeometry::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSCompartmentGeometry::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -112,9 +118,25 @@ namespace generated
         return m_boundaryElementUIDs;
     }
 
-    std::vector<std::string>& CPACSCompartmentGeometry::GetBoundaryElementUIDs()
+    void CPACSCompartmentGeometry::AddToBoundaryElementUIDs(const std::string& value)
     {
-        return m_boundaryElementUIDs;
+        if (m_uidMgr) {
+            if (!value.empty()) m_uidMgr->RegisterReference(value, *this);
+        }
+        m_boundaryElementUIDs.push_back(value);
+    }
+
+    bool CPACSCompartmentGeometry::RemoveFromBoundaryElementUIDs(const std::string& value)
+    {
+        const auto it = std::find(m_boundaryElementUIDs.begin(), m_boundaryElementUIDs.end(), value);
+        if (it != m_boundaryElementUIDs.end()) {
+            if (m_uidMgr && !it->empty()) {
+                m_uidMgr->TryUnregisterReference(*it, *this);
+            }
+            m_boundaryElementUIDs.erase(it);
+            return true;
+        }
+        return false;
     }
 
     const CTiglUIDObject* CPACSCompartmentGeometry::GetNextUIDObject() const

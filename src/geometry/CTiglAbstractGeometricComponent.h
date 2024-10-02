@@ -49,14 +49,14 @@ public:
     TIGL_EXPORT PNamedShape GetLoft() const override;
 
     // Get the loft mirrored at the mirror plane
-    TIGL_EXPORT virtual PNamedShape GetMirroredLoft();
+    TIGL_EXPORT virtual PNamedShape GetMirroredLoft() const;
 
     // return if pnt lies on the loft
-    TIGL_EXPORT virtual bool GetIsOn(const gp_Pnt &pnt);
+    TIGL_EXPORT virtual bool GetIsOn(const gp_Pnt &pnt) const;
     
     // return if pnt lies on the mirrored loft
     // if the loft as no symmetry, false is returned
-    TIGL_EXPORT bool GetIsOnMirrored(const gp_Pnt &pnt);
+    TIGL_EXPORT bool GetIsOnMirrored(const gp_Pnt &pnt) const;
 
     // returns the bounding box of this component's loft
     TIGL_EXPORT Bnd_Box const& GetBoundingBox() const;

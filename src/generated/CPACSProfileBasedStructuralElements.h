@@ -38,7 +38,7 @@ namespace generated
 
     /// @brief structuralElementType
     /// 
-    /// profileBasedStructuralElement type, containing a list
+    /// profileBasedStructuralElements type, containing a list
     /// of profile based structural elements
     /// 
     class CPACSProfileBasedStructuralElements

@@ -684,9 +684,9 @@ void TIGLViewerWindow::aboutQt()
 }
 
 
-void TIGLViewerWindow::xyzPosition (V3d_Coordinate X,
-                                    V3d_Coordinate Y,
-                                    V3d_Coordinate Z)
+void TIGLViewerWindow::xyzPosition (Standard_Real X,
+                                    Standard_Real Y,
+                                    Standard_Real Z)
 {
     QString aString;
     QTextStream ts(&aString);
@@ -738,6 +738,7 @@ void TIGLViewerWindow::connectConfiguration()
 
     // CPACS Aircraft Actions
     connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfiguration()));
+    connect(showAllWingsAndFuselageDuctCutoutsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfigurationWithDuctCutouts()));
     connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
     connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
     connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
@@ -884,8 +885,8 @@ void TIGLViewerWindow::connectSignals()
     connect(openTimer, SIGNAL(timeout()), this, SLOT(reopenFile()));
 
     // The co-ordinates from the view
-    connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
-             this,   SLOT(xyzPosition(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)) );
+    connect( myOCC, SIGNAL(mouseMoved(Standard_Real,Standard_Real,Standard_Real)),
+             this,   SLOT(xyzPosition(Standard_Real,Standard_Real,Standard_Real)) );
 
 
     connect( myOCC, SIGNAL(sendStatus(const QString)), this,  SLOT  (statusMessage(const QString)) );
@@ -982,6 +983,7 @@ void TIGLViewerWindow::updateMenus()
 
     bool hasFarField = false;
     bool hasACSystems = false;
+    bool hasDucts = false;
     int nRotorBlades = 0;
     int nRotors = 0;
     try {
@@ -989,12 +991,16 @@ void TIGLViewerWindow::updateMenus()
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
             hasFarField = config.GetFarField().GetType() != tigl::NONE;
             hasACSystems = config.GetGenericSystemCount() > 0;
+            if (config.GetDucts()) {
+                hasDucts = config.GetDucts()->GetDuctAssemblys().size() > 0;
+            }
             nRotorBlades = config.GetRotorBladeCount();
             nRotors = config.GetRotorCount();
         }
     }
     catch(tigl::CTiglError& ){}
     drawFarFieldAction->setEnabled(hasFarField);
+    showAllWingsAndFuselageDuctCutoutsAction->setEnabled(hasDucts);
     drawSystemsAction->setEnabled(hasACSystems);
     drawRotorsAction->setEnabled(nRotors > 0);
     menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));

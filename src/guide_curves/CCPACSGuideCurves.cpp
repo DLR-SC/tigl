@@ -97,9 +97,21 @@ bool CCPACSGuideCurves::GuideCurveExists(std::string uid) const
 std::vector<double> CCPACSGuideCurves::GetRelativeCircumferenceParameters() const
 {
     std::vector<double> relCircs;
+
+    // CPACS 3.3 requires guideCurves to be present. To prevent a hard crash if this is NOT the case,
+    // we shoud exit here (or at least before the call to relCircs.back())
+    if (GetGuideCurveCount() == 0) {
+        return relCircs;
+    }
+
     for (int iguide = 1; iguide <=  GetGuideCurveCount(); ++iguide) {
         const CCPACSGuideCurve* root = GetGuideCurve(iguide).GetRootCurve();
-        relCircs.push_back(*root->GetFromRelativeCircumference_choice2());
+        if(root->GetFromRelativeCircumference_choice2_1()) {
+            relCircs.push_back(*root->GetFromRelativeCircumference_choice2_1());
+        }
+        else if(root->GetFromParameter_choice2_2()) {
+            relCircs.push_back(*root->GetFromParameter_choice2_2());
+        }
     }
 
     std::sort(relCircs.begin(), relCircs.end());

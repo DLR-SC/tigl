@@ -60,4 +60,4 @@ size_t CCPACSNacelleSections::GetSectionIndex(std::string const uid) const
     throw CTiglError("CCPACSNacelleSection::GetSectionIndex: Section \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
-} //namepsace tigl
+} //namespace tigl

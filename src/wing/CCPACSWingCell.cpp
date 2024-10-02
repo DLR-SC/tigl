@@ -145,7 +145,9 @@ void CCPACSWingCell::InvalidateImpl(const boost::optional<std::string>& source) 
 void CCPACSWingCell::Reset()
 {
     m_uID         = "";
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 bool CCPACSWingCell::IsConvex() const
@@ -475,7 +477,7 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
                                          double tol) const
 {
 
-    // Border not defined by contour cooordinate.
+    // Border not defined by contour coordinate.
     if (positioning.GetContourCoordinate_choice1()){
         throw CTiglError("Internal Error when trying to create the cell geometry");
     }
@@ -497,12 +499,21 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
         te_point_proj = cache.projectedOBTE;
     }
 
+    bool trimmable = false;
     auto le_intersect = GetFaceAndUV(loftShape, le_point_proj);
     auto te_intersect = GetFaceAndUV(loftShape, te_point_proj);
 
-    if ( !le_intersect || !te_intersect ){
-        throw CTiglError("Cannot associate projected point with (u,v)-coordinates");
+    if ( !(le_intersect && te_intersect) ){
+        // could not associate projected point with any face on the loft surface
+        trimmable = false;
     }
+    else {
+        if ( te_intersect->face.IsEqual(le_intersect->face) && fabs(te_intersect->v - le_intersect->v ) < tol ){
+            // border runs along an isocurve of a single face => we can trim
+            trimmable = true;
+        }
+    }
+    trimmable = false;
 
     gp_Vec te_to_le = gp_Vec(le_point, te_point).Normalized();
     gp_Ax3 border_axis(le_point, zRefDir ^ te_to_le, te_to_le);
@@ -516,8 +527,7 @@ TopoDS_Shape CCPACSWingCell::CutSpanwise(GeometryCache& cache,
     }
 
     TopoDS_Shape result;
-    if ( te_intersect->face.IsEqual(le_intersect->face) && fabs(te_intersect->v - le_intersect->v ) < tol ){
-        // border runs along an isocurve of a single fac => we can trim
+    if ( trimmable ){
 
         // trim along v
         double v = le_intersect->v;
@@ -651,7 +661,6 @@ void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
                          ||(border == ChordWiseBorder::TE && !upper)) {
                         if ( fabs(u - umin) > tol ) {
                             umin = u;
-                            current->GetAnnotation().ccmin = trim_coordinate;
                             trim = true;
                         }
                     }
@@ -659,12 +668,19 @@ void CCPACSWingCell::TrimChordwise(GeometryCache& cache,
                         ||(border == ChordWiseBorder::LE && !upper)) {
                         if ( fabs(umax - u) > tol ) {
                             umax = u;
-                            current->GetAnnotation().ccmax = trim_coordinate;
                             trim = true;
                         }
                     }
 
                     if (trim) {
+                        // update annotation
+                        if (border == ChordWiseBorder::LE) {
+                            current->GetAnnotation().ccmin = trim_coordinate;
+                        } else {
+                            current->GetAnnotation().ccmax = trim_coordinate;
+                        }
+
+                        // replace face
                         current->ReplaceFace(TrimFace(current->GetFace(),
                                                       umin,
                                                       umax,
@@ -701,12 +717,21 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
         ob_point_proj = cache.projectedOBTE;
     }
 
+    bool trimmable = false;
     auto ib_intersect = GetFaceAndUV(loftShape, ib_point_proj);
     auto ob_intersect = GetFaceAndUV(loftShape, ob_point_proj);
 
-    if ( !ib_intersect || !ob_intersect ){
-        throw CTiglError("Cannot associate projected point with (u,v)-coordinates");
+    if ( !(ib_intersect && ob_intersect) ){
+        // could not associate projected point with any face on the loft surface
+        trimmable = false;
     }
+    else {
+        if ( ib_intersect->face.IsEqual(ob_intersect->face) && fabs(ib_intersect->u - ob_intersect->u ) < tol ) {
+            // border runs along an isocurve of a single fac => we can trim
+            trimmable = true;
+        }
+    }
+    trimmable = false;
 
     gp_Vec ib_to_ob = gp_Vec(ib_point, ob_point).Normalized();
     gp_Ax3 border_axis(ib_point, zRefDir ^ ib_to_ob, ib_to_ob);
@@ -720,8 +745,8 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
     }
 
     TopoDS_Shape result;
-    if ( ib_intersect->face.IsEqual(ob_intersect->face) && fabs(ib_intersect->u - ob_intersect->u ) < tol ){
-        // border runs along an isocurve of a single fac => we can trim
+    bool upper = (m_parent->GetParent()->GetLoftSide() == UPPER_SIDE);
+    if ( trimmable ){
 
         // trim along u
         double u = ib_intersect->u;
@@ -729,15 +754,23 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
         Standard_Real umin, umax, vmin, vmax;
         BRepTools::UVBounds(face, umin, umax, vmin, vmax);
         if ( border == ChordWiseBorder::TE ) {
-            if (fabs(u-umin) > tol ){
+            if (fabs(u-umin) > tol && !upper){
                 umin = u;
             }
-        }
-        else {
-            if (fabs(umax-u) > tol ){
+            if (fabs(u-umax) > tol && upper){
                 umax = u;
             }
         }
+        else {
+            if (fabs(umax-u) > tol && !upper){
+                umax = u;
+            }
+            if (fabs(umin-u) > tol && upper){
+                umin = u;
+            }
+        }
+
+
         TopoDS_Face trimmed_face = TrimFace(face, umin, umax, vmin, vmax);
         result = ReplaceFaceInShape(loftShape, trimmed_face, face);
 
@@ -747,7 +780,10 @@ TopoDS_Shape CCPACSWingCell::CutChordwise(GeometryCache& cache,
         TopoDS_Shape cuttingShape;
         if (positioning.GetInputType() == CCPACSWingCellPositionChordwise::InputType::Spar ) {
             // we can use the cutting shape defined by the spar
-            cuttingShape = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(m_positioningLeadingEdge.GetSparUId())
+            auto sparUid =
+                    (border == ChordWiseBorder::LE)? m_positioningLeadingEdge.GetSparUId()
+                                                   : m_positioningTrailingEdge.GetSparUId();
+            cuttingShape = m_uidMgr->ResolveObject<CCPACSWingSparSegment>(sparUid)
                     .GetSparCutGeometry(WING_COORDINATE_SYSTEM);
         } else {
 
@@ -838,23 +874,33 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
         std::vector<double> row_ranges, col_ranges;
         cache.rgsurface.GetParameterRanges(row_ranges, col_ranges);
 
-        double spanwise_contour_coordinate = 0;
-        double chordwise_contour_coordinate = 0;
         int j = 0;
+        double spanwise_contour_coordinate = 0;
         for (auto row = cache.rgsurface.Root(); row; row = row->VNext()) {
             int i = 0;
+            double chordwise_contour_coordinate = UPPER_SIDE? 0. : 1.;
             for (auto current = row; current; current = current->UNext()){
                 current->GetAnnotation().scmin = spanwise_contour_coordinate;
                 current->GetAnnotation().scmax = spanwise_contour_coordinate
                         + (current->VMax() - current->VMin())/col_ranges[i];
-                spanwise_contour_coordinate = current->GetAnnotation().scmax;
 
-                current->GetAnnotation().ccmin = chordwise_contour_coordinate;
-                current->GetAnnotation().ccmax = chordwise_contour_coordinate
-                        + (current->UMax() - current->UMin())/row_ranges[j];
-                chordwise_contour_coordinate = current->GetAnnotation().ccmax;
+                if (UPPER_SIDE) {
+                    current->GetAnnotation().ccmin = chordwise_contour_coordinate;
+                    current->GetAnnotation().ccmax = chordwise_contour_coordinate
+                            + (current->UMax() - current->UMin())/row_ranges[j];
+                    chordwise_contour_coordinate = current->GetAnnotation().ccmax;
+                } else {
+                    current->GetAnnotation().ccmax = chordwise_contour_coordinate;
+                    current->GetAnnotation().ccmin = chordwise_contour_coordinate
+                            - (current->UMax() - current->UMin())/row_ranges[j];
+                    chordwise_contour_coordinate = current->GetAnnotation().ccmin;
+                }
 
                 i++;
+                if (!(current->UNext()))
+                {
+                    spanwise_contour_coordinate = current->GetAnnotation().scmax;
+                }
             }
             j++;
         }
@@ -907,10 +953,10 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
 
 
         // cut the shape at the cell borders
-        TopoDS_Shape resultShape = CutSpanwise(cache, loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-2);
-        resultShape              = CutSpanwise(cache, resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-2);
-        resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-2);
-        resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, 1e-2);
+        TopoDS_Shape resultShape = CutSpanwise(cache, loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-4);
+        resultShape              = CutSpanwise(cache, resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-4);
+        resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-4);
+        resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::TE, m_positioningTrailingEdge, zRefDir, 1e-4);
 
         // store the result
         cache.skinGeometry = resultShape;

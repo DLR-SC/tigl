@@ -40,6 +40,11 @@ CCPACSPositionings::CCPACSPositionings(CCPACSFuselage* parent, CTiglUIDManager* 
 {
 }
 
+CCPACSPositionings::CCPACSPositionings(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPositionings(parent, uidMgr), invalidated(true)
+{
+}
+
 CCPACSPositionings::CCPACSPositionings(CCPACSWing* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSPositionings(parent, uidMgr), invalidated(true)
 {

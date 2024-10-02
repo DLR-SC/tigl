@@ -7,6 +7,9 @@ CPACSMissionDefinitions
 CPACSStudies
 CPACSMaterial
 
+// in header
+CPACSChangeLog
+
 // in toolspecific
 CPACSToolspecific
 

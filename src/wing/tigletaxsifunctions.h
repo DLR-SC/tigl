@@ -67,10 +67,11 @@ TIGL_EXPORT double transformXsiToCSOrTed(double xsi, const std::string& referenc
 TIGL_EXPORT EtaXsi transformEtaXsiToCSOrTed(EtaXsi etaXsi, const std::string& referenceUid, const CTiglUIDManager& uidMgr);
 
 /**
- * @brief Interpolates the xsi coordinate given an eta coordinate and a straight line defined by two points
- * on a segment or component segment.
+ * @brief Interpolates the xsi coordinate given an eta coordinate of a target segment or target component segment and a straight line defined by two points
+ * - the first point lying on one segment or component segment and the other one lying on another segment or component segment.
+ * There is no need that any of the refered segments or component segments coincide, nor that a segment has to be contained in a component segment.
  *
- * The eta coordinate and the targetUID might refer to a component segment or to a normal wing segment
+ * All segments and component segments have to belong to one and the same wing.
  *
  * @param refUID1 Reference UID of the component referring to the first point
  * @param etaXsi1 Eta / xsi coordinates of the first point

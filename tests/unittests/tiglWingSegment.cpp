@@ -150,11 +150,51 @@ protected:
 TixiDocumentHandle WingSegmentSpecial::tixiSpecialHandle = 0;
 TiglCPACSConfigurationHandle WingSegmentSpecial::tiglSpecialHandle = 0;
 
+
 /***************************************************************************************************/
+
+class WingSegmentGuideCurves : public ::testing::Test
+{
+protected:
+
+    void SetUp() override {
+        const char* filename = "TestData/simpletest-with-guides.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglGuideCurvesHandle = -1;
+        tixiGuideCurvesHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiGuideCurvesHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+
+        tiglRet = tiglOpenCPACSConfiguration(tixiGuideCurvesHandle, "Cpacs2Test", &tiglGuideCurvesHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+    void TearDown() override {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglGuideCurvesHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiGuideCurvesHandle) == SUCCESS);
+        tiglGuideCurvesHandle = -1;
+        tixiGuideCurvesHandle = -1;
+    }
+
+
+    static TixiDocumentHandle           tixiGuideCurvesHandle;
+    static TiglCPACSConfigurationHandle tiglGuideCurvesHandle;
+};
+
+
+TixiDocumentHandle WingSegmentGuideCurves::tixiGuideCurvesHandle = 0;
+TiglCPACSConfigurationHandle WingSegmentGuideCurves::tiglGuideCurvesHandle = 0;
+
+/***************************************************************************************************/
+
+
 
 /**
 * Tests tiglGetWingCount with invalid CPACS handle.
 */
+
 TEST_F(WingSegment, tiglGetWingCount_invalidHandle)
 {
     int wingCount;
@@ -170,7 +210,7 @@ TEST_F(WingSegment, tiglGetWingCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglGetWingCount.
+* Tests successful call of tiglGetWingCount.
 */
 TEST_F(WingSegment, tiglGetWingCount_success)
 {
@@ -208,7 +248,7 @@ TEST_F(WingSegment, tiglWingGetSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetSegmentCount.
+* Tests successful call of tiglWingGetSegmentCount.
 */
 TEST_F(WingSegment, tiglWingGetSegmentCount_success)
 {
@@ -255,7 +295,7 @@ TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetInnerConnectedSegmentCount.
+* Tests successful call of tiglWingGetInnerConnectedSegmentCount.
 */
 TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentCount_success)
 {
@@ -304,7 +344,7 @@ TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterConnectedSegmentCount.
+* Tests successful call of tiglWingGetOuterConnectedSegmentCount.
 */
 TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentCount_success)
 {
@@ -364,7 +404,7 @@ TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetInnerConnectedSegmentIndex.
+* Tests successful call of tiglWingGetInnerConnectedSegmentIndex.
 */
 TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentIndex_success)
 {
@@ -424,7 +464,7 @@ TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterConnectedSegmentIndex.
+* Tests successful call of tiglWingGetOuterConnectedSegmentIndex.
 */
 TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentIndex_success)
 {
@@ -480,7 +520,7 @@ TEST_F(WingSegment, tiglWingGetInnerSectionAndElementIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetInnerSectionAndElementIndex.
+* Tests successful call of tiglWingGetInnerSectionAndElementIndex.
 */
 TEST_F(WingSegment, tiglWingGetInnerSectionAndElementIndex_success)
 {
@@ -542,7 +582,7 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterSectionAndElementIndex.
+* Tests successful call of tiglWingGetOuterSectionAndElementIndex.
 */
 TEST_F(WingSegment, tiglWingGetOuterSectionAndElementIndex_success)
 {
@@ -597,7 +637,7 @@ TEST_F(WingSegment, tiglWingGetInnerSectionAndElementUID_invalidSegment)
 
 
 /**
-* Tests successfull call of tiglWingGetInnerSectionAndElementUID.
+* Tests successful call of tiglWingGetInnerSectionAndElementUID.
 */
 TEST_F(WingSegment, tiglWingGetInnerSectionAndElementUID_success)
 {
@@ -650,7 +690,7 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_invalidSegment)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterSectionAndElementUID.
+* Tests successful call of tiglWingGetOuterSectionAndElementUID.
 */
 TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
 {
@@ -1247,4 +1287,23 @@ TEST_F(WingSegmentSimple, segmentIndexFromUID)
         wing.GetSegments().GetSegments(),
         "Unknown"), 1
     );
+}
+
+/* Tests with guide curves:*/
+
+TEST_F(WingSegmentGuideCurves, tiglWingGetSegmentUpperSurfaceAreaTrimmed)
+{
+    double upperArea;
+
+    // test if the return code 0 is returned by the function for the provided valid argument list
+    EXPECT_EQ(0,tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglGuideCurvesHandle, 1, 1,
+                                                          0, 0,
+                                                          0, 1,
+                                                          0.05, 1,
+                                                          0.05, 0,
+                                                          &upperArea));
+    // Test if the calculated area has the expected value. The first argument in the following test is computed by the function itself,
+    // and is therefore obviously true. The benifit of this test case lies in the fact, that the value of the first argument has been roughly estimated visually from the test configuration's
+    // CAD representation in TiGL Viewer and is meeting the computed value.
+    ASSERT_NEAR(0.036530682797528628, upperArea, 1e-8);
 }

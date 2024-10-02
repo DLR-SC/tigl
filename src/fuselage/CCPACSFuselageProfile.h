@@ -100,6 +100,12 @@ private:
     // Builds the fuselage profile wires.
     void BuildWires(WireCache& cache) const;
 
+    //Builds the fuselage profile wires from point list
+    void BuildWiresPointList(WireCache& cache) const;
+
+    //Builds the fuselage profile wires from height to width ratio and corner radius
+    void BuildWiresRectangle(WireCache& cache) const;
+
     // Helper function to determine the "diameter" (the wing profile chord line equivalent)
     // which is defined as the line intersecting Point1 and Point2
     //
@@ -119,7 +125,7 @@ private:
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
 private:
-    bool mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
+    bool mirrorSymmetry; /**< Mirror symmetry with respect to the x-z plane */
     Cache<WireCache, CCPACSFuselageProfile> wireCache; /**< Original and force closed fuselage profile wire */
     Cache<DiameterPointsCache, CCPACSFuselageProfile> diameterPointsCache;
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;

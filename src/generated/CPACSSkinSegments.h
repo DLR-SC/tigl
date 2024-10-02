@@ -28,11 +28,10 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSSkinSegment;
+class CCPACSSkin;
 
 namespace generated
 {
-    class CPACSSkin;
-
     // This class is used in:
     // CPACSSkin
 
@@ -44,13 +43,13 @@ namespace generated
     class CPACSSkinSegments
     {
     public:
-        TIGL_EXPORT CPACSSkinSegments(CPACSSkin* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSkinSegments(CCPACSSkin* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSkinSegments();
 
-        TIGL_EXPORT CPACSSkin* GetParent();
+        TIGL_EXPORT CCPACSSkin* GetParent();
 
-        TIGL_EXPORT const CPACSSkin* GetParent() const;
+        TIGL_EXPORT const CCPACSSkin* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -68,7 +67,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSkinSegment(CCPACSSkinSegment& ref);
 
     protected:
-        CPACSSkin* m_parent;
+        CCPACSSkin* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -85,5 +84,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSkinSegments = generated::CPACSSkinSegments;
-using CCPACSSkin = generated::CPACSSkin;
 } // namespace tigl

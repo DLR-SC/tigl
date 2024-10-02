@@ -42,7 +42,16 @@
   { "cpacs_file": "../unittests/TestData/compseg-rotated.xml" },
   { "cpacs_file": "../unittests/TestData/CPACS_30_CST_simple.xml" },
   { "cpacs_file": "../unittests/TestData/CPACS_30_CST_simple_bluntTE.xml" },
-  { "cpacs_file": "../unittests/TestData/CPACS_30_D150.xml" },
+  { 
+    "cpacs_file": "../unittests/TestData/CPACS_30_D150.xml",
+    "extra_screenshots" :
+    [
+      {
+        "name": "flaps",
+        "script": "app.scene.deleteAllObjects();\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_innerFlap', 1.0);\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_outerFlap', 1.0);\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_aileron', -1.0);\ndrawShape(tigl.getShape('D150_VAMP_W1'));\napp.viewer.setCameraPosition(45, 45);\napp.viewer.fitAll()\n"
+      }
+    ]
+  },
   { "cpacs_file": "../unittests/TestData/CPACS_30_D250_10.xml" },
   { "cpacs_file": "../unittests/TestData/CS_SegIntersectionBUG.xml" },
   { "cpacs_file": "../unittests/TestData/D150_v30.xml" },
@@ -81,6 +90,9 @@
   { "cpacs_file": "../integrationtests/TestData/D150WithGuides.xml" },
   { "cpacs_file": "../integrationtests/TestData/distorted_wing.xml" },
   { "cpacs_file": "../integrationtests/TestData/IEA-15-240-RWT_CPACS_d.xml" },
+  { "cpacs_file": "../integrationtests/TestData/bugs/829/IEA-10.0-198-RWT_CPACS_contour_coordinates.xml",
+    "before_script": "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_1_1\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_2_3\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_12_3\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_28_3\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_39_2\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_39_5\"));\n"
+  },
   { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems.xml" },
   { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems_cone.xml" },
   { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems_cube.xml" },

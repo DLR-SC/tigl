@@ -68,11 +68,17 @@ namespace generated
 
     CTiglUIDManager& CPACSGuideCurveProfileGeometry::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSGuideCurveProfileGeometry::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

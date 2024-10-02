@@ -24,6 +24,8 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSAircraft.h"
+#include "CPACSFlightPoints.h"
+#include "CPACSGlobalPerformanceCases.h"
 #include "CPACSMaterials.h"
 #include "CPACSRotorcraft.h"
 #include "CPACSStructuralElements.h"
@@ -42,11 +44,13 @@ namespace generated
     // This class is used in:
     // CPACSCpacs
 
-    /// @brief vehiclesType
+    /// @brief Vehicles
     /// 
-    /// Vehicles node, containing all the vehicle-specific
-    /// data. This includes the vehicles themselves, as well as
-    /// components that are used as parts of the vehicles.
+    /// The vehiclesType contains all vehicle-specific
+    /// data.
+    /// This includes the vehicle itself (i.e. aircraft and rotorcraft ). Furhtermore, components
+    /// (e.g. engines , structuralElements , etc.)
+    /// as well as physical properties of materials and fuels can be predefined for easy and consistent reuse via uID -references.
     /// 
     class CPACSVehicles
     {
@@ -74,6 +78,12 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSRotorcraft>& GetRotorcraft() const;
         TIGL_EXPORT virtual boost::optional<CPACSRotorcraft>& GetRotorcraft();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSGlobalPerformanceCases>& GetPerformanceCases() const;
+        TIGL_EXPORT virtual boost::optional<CPACSGlobalPerformanceCases>& GetPerformanceCases();
+
+        TIGL_EXPORT virtual const boost::optional<CPACSFlightPoints>& GetFlightPoints() const;
+        TIGL_EXPORT virtual boost::optional<CPACSFlightPoints>& GetFlightPoints();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSEngines>& GetEngines() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEngines>& GetEngines();
 
@@ -92,6 +102,12 @@ namespace generated
         TIGL_EXPORT virtual CPACSRotorcraft& GetRotorcraft(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveRotorcraft();
 
+        TIGL_EXPORT virtual CPACSGlobalPerformanceCases& GetPerformanceCases(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemovePerformanceCases();
+
+        TIGL_EXPORT virtual CPACSFlightPoints& GetFlightPoints(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveFlightPoints();
+
         TIGL_EXPORT virtual CCPACSEngines& GetEngines(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEngines();
 
@@ -109,12 +125,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CPACSAircraft>           m_aircraft;
-        boost::optional<CPACSRotorcraft>         m_rotorcraft;
-        boost::optional<CCPACSEngines>           m_engines;
-        boost::optional<CCPACSProfiles>          m_profiles;
-        boost::optional<CPACSStructuralElements> m_structuralElements;
-        boost::optional<CPACSMaterials>          m_materials;
+        boost::optional<CPACSAircraft>               m_aircraft;
+        boost::optional<CPACSRotorcraft>             m_rotorcraft;
+        boost::optional<CPACSGlobalPerformanceCases> m_performanceCases;
+        boost::optional<CPACSFlightPoints>           m_flightPoints;
+        boost::optional<CCPACSEngines>               m_engines;
+        boost::optional<CCPACSProfiles>              m_profiles;
+        boost::optional<CPACSStructuralElements>     m_structuralElements;
+        boost::optional<CPACSMaterials>              m_materials;
 
     private:
         CPACSVehicles(const CPACSVehicles&) = delete;

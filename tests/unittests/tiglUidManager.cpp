@@ -53,7 +53,7 @@ namespace {
     };
 
     /**
-    * Tests wheter all uids can be resolved. Commented uids are currently pruned.
+    * Tests whether all uids can be resolved. Commented uids are currently pruned.
     */
     TEST_F(tiglUidManagerTest, allUids) {
         std::vector<std::string> uids;

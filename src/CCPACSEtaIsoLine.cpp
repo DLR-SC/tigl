@@ -61,6 +61,11 @@ CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSSparCell* parent, CTiglUIDManager* uidM
 {
 }
 
+CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSLandingGearSupportBeamPosition* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEtaIsoLine(parent, uidMgr)
+{
+}
+
 void CCPACSEtaIsoLine::SetEta(const double& value)
 {
     generated::CPACSEtaIsoLine::SetEta(value);

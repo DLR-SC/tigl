@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 # @file ms_segmentGeometry.py
-# @brief Implementation of the segement geometry
+# @brief Implementation of the segment geometry
 #
 
 from numpy import array, outer, ones, size, dot, linalg, zeros, cross, transpose 

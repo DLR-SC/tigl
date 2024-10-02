@@ -26,15 +26,21 @@
 #include <boost/optional.hpp>
 
 #include "generated/CPACSFuselageSegments.h"
+#include "CTiglRelativelyPositionedComponent.h"
+#include "TopoDS_Compound.hxx"
 
 namespace tigl
 {
 class CCPACSFuselageSegment;
+class CCPACSConfiguration;
 
 class CCPACSFuselageSegments : public generated::CPACSFuselageSegments
 {
 public:
+    TIGL_EXPORT CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
@@ -67,17 +73,24 @@ public:
      */
     TIGL_EXPORT CCPACSFuselageSegment& SplitSegment(const std::string& segmentToSplit, const std::string& splitterElement);
 
+    // Gets the parent component
+    TIGL_EXPORT CTiglRelativelyPositionedComponent const* GetParentComponent() const;
 
 
     // CPACSFuselageSegments interface
-public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
+
+    TIGL_EXPORT const TopoDS_Compound& GetGuideCurveWires() const;
 
 private:
     void ReorderSegments();
 
     // check order of segments - each segment must start with the element of the previous segment
     bool NeedReordering() const;
+
+    void BuildGuideCurves(TopoDS_Compound& cache) const;
+
+    Cache<TopoDS_Compound, CCPACSFuselageSegments> guideCurves;
 
 };
 

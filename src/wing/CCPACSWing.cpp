@@ -43,6 +43,7 @@
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CTiglLogging.h"
 #include "ListFunctions.h"
+#include "TiglWingHelperFunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -71,16 +72,6 @@ namespace tigl
 
 namespace
 {
-    inline double max(double a, double b)
-    {
-        return a > b? a : b;
-    }
-
-    inline double min(double a, double b)
-    {
-        return a < b? a : b;
-    }
-
     // Returns the index of the maximum value
     int maxIndex(double x, double y, double z)
     {
@@ -109,8 +100,14 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , buildFlaps(false)
     , wingHelper(*this, &CCPACSWing::SetWingHelper)
 {
-    if (parent->IsParent<CCPACSAircraftModel>())
+    if (parent->IsParent<CCPACSAircraftModel>()) {
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
+
+        // register invalidation in CCPACSDucts
+        if (configuration->GetDucts()) {
+            configuration->GetDucts()->RegisterInvalidationCallback([&](){ this->Invalidate(); });
+        }
+    }
     else if (parent->IsParent<CCPACSRotorcraftModel>())
         configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
     else
@@ -146,7 +143,6 @@ void CCPACSWing::InvalidateImpl(const boost::optional<std::string>& source) cons
     rebuildShells = true;
     rebuildFusedSegWEdge = true;
 
-    Reset();
     loft.clear();
     guideCurves.clear();
     wingCleanShape.clear();
@@ -312,7 +308,7 @@ TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge()
     return fusedSegmentWithEdge;
 }
     
-// Gets the loft of the whole wing.
+// Gets the upper loft of the wing
 TopoDS_Shape & CCPACSWing::GetUpperShape()
 {
     if (rebuildShells) {
@@ -322,7 +318,7 @@ TopoDS_Shape & CCPACSWing::GetUpperShape()
     return upperShape;
 }
     
-// Gets the loft of the whole wing.
+// Gets the lower loft of the wing.
 TopoDS_Shape & CCPACSWing::GetLowerShape()
 {
     if (rebuildShells) {
@@ -352,16 +348,32 @@ std::string CCPACSWing::GetShortShapeName() const
 // build loft
 PNamedShape CCPACSWing::BuildLoft() const
 {
+    PNamedShape ret;
     if (buildFlaps) {
+
+        // note: ducts are removed in BuildWingWithCutouts
         return GroupedFlapsAndWingShapes();
     } else {
+
+        if (GetConfiguration().HasDucts()) {
+            return  GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
+        }
+
         return *wingCleanShape;
-}
+    }
+
+    return ret;
 }
 
 TopoDS_Shape CCPACSWing::GetLoftWithCutouts()
 {
-    return (*wingShapeWithCutouts)->Shape();
+    if (NumberOfControlSurfaces(*this) == 0) {
+        LOG(WARNING) << "No control devices defined, GetLoftWithCutOuts() will return a clean shape.";
+        return (*wingCleanShape)->Shape();
+    }
+    else {
+        return (*wingShapeWithCutouts)->Shape();
+    }
 }
 
 // Builds a fused shape of all wing segments
@@ -373,7 +385,7 @@ void CCPACSWing::BuildFusedSegments(PNamedShape& shape) const
 // Builds a fused shape of all wing segments
 void CCPACSWing::BuildUpperLowerShells()
 {
-    //@todo: this probably works only if the wings does not split somewere
+    //@todo: this probably works only if the wings does not split somewhere
     BRepOffsetAPI_ThruSections generatorUp(Standard_False, Standard_True, Precision::Confusion() );
     BRepOffsetAPI_ThruSections generatorLow(Standard_False, Standard_True, Precision::Confusion() );
 
@@ -456,6 +468,12 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         ft.SetOrigin(*wingCleanShape);
         result->SetFaceTraits(iFace, ft);
     }
+
+    // cutout ducts
+    if (GetConfiguration().HasDucts()) {
+         result = GetConfiguration().GetDucts()->LoftWithDuctCutouts(result, GetUID());
+    }
+
 }
 
 // Builds a fuse shape of all wing segments with flaps
@@ -546,7 +564,7 @@ double CCPACSWing::GetSurfaceArea()
 
 // Returns the reference area of the wing by taking account the quadrilateral portions
 // of each wing segment by projecting the wing segments into the plane defined by the user
-double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane)
+double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane) const
 {
     double refArea = 0.0;
 
@@ -556,10 +574,11 @@ double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane)
     return refArea;
 }
 
-double CCPACSWing::GetReferenceArea()
+
+double CCPACSWing::GetReferenceArea() const
 {
-    TiglAxis spanDir = wingHelper->GetMajorDirection();
-    TiglAxis deepDir = wingHelper->GetDeepDirection();
+    TiglAxis spanDir = winghelper::GetWingSpanAxis(*this);
+    TiglAxis deepDir = winghelper::GetWingDepthAxis(*this);
 
     if (spanDir == TIGL_Y_AXIS && deepDir == TIGL_X_AXIS) {
         return GetReferenceArea(TIGL_X_Y_PLANE);
@@ -585,7 +604,7 @@ double CCPACSWing::GetReferenceArea()
     }
 }
 
-double CCPACSWing::GetWettedArea(TopoDS_Shape parent)
+double CCPACSWing::GetWettedArea(TopoDS_Shape parent) const
 {
     const TopoDS_Shape loft = GetLoft()->Shape();
 
@@ -610,7 +629,8 @@ Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
     return m_segments.GetSegment(index).GetUpperSurface();
 }
 
-double CCPACSWing::GetWingSpan()
+
+double CCPACSWing::GetWingspan() const
 {
     if (!wingHelper->HasShape()) {
         LOG(WARNING) << "The wing seems empty.";
@@ -632,10 +652,10 @@ double CCPACSWing::GetWingSpan()
         mirrorTransform.SetMirror(mirrorPlane);
     }
 
-
     Bnd_Box boundingBox;
     Standard_Real aDeflection = 0.0001;
     std::vector<CTiglSectionElement* >  cElements = GetCTiglElements();
+
     for ( size_t i = 0; i < cElements.size(); i++ ) {
         TopoDS_Wire tipWire = cElements.at(i)->GetWire(GLOBAL_COORDINATE_SYSTEM);
         BRepMesh_IncrementalMesh Inc(tipWire, aDeflection); // tessellation for accuracy
@@ -700,24 +720,34 @@ double CCPACSWing::GetWingHalfSpan()
 // Returns the aspect ratio of a wing: AR=b**2/A = ((2s)**2)/(2A_half)
 //     b: full span; A: Reference area of full wing (wing + symmetrical wing)
 //     s: half span; A_half: Reference area of wing without symmetrical wing
-double CCPACSWing::GetAspectRatio()
+double CCPACSWing::GetAspectRatio() const
 {
-    if ( isNear(GetReferenceArea(),0) ) {
+    auto refArea = GetReferenceArea();
+
+    if ( isNear(refArea, 0.) ) {
         LOG(WARNING) << "Wing area is close to zero, thus the AR is not computed and 0 is returned.";
         return 0;
     }
-    return 2.0*pow_int(GetWingHalfSpan(),2)/GetReferenceArea();
+
+    auto halfSpan = GetWingspan();
+
+    // If the wing has symmetry defined, the full span was returned
+    if (GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+        halfSpan *= 0.5;
+    }
+
+    return 2.0*halfSpan*halfSpan/refArea;
 }
 
 /**
     * This function calculates location of the quarter of mean aerodynamic chord,
-    * and gives the chord lenght as well. It uses the classical method that can
+    * and gives the chord length as well. It uses the classical method that can
     * be applied to trapozaidal wings. This method is used for each segment.
     * The values are found by taking into account of sweep and dihedral.
     * But the effect of insidance angle is neglected. These values should coincide
     * with the values found with tornado tool.
     */
-void  CCPACSWing::GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z)
+void  CCPACSWing::GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z) const
 {
     double A_sum = 0.;
     double cc_mac_sum=0.;
@@ -744,20 +774,20 @@ void  CCPACSWing::GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, do
         double len3 = outerLeadingPoint.Y()  - innerLeadingPoint.Y();
         double len4 = innterTrailingPoint.Y()- innerTrailingPoint.Y();
 
-        double lenght  =(len1+len2)/2.;
-        double lenght2 =(len3+len4)/2.;
+        double length  =(len1+len2)/2.;
+        double length2 =(len3+len4)/2.;
 
         double T = distance2/distance;
 
-        double b_mac =lenght*(2*distance2+distance)/(3*(distance2+distance));
-        double c_mac =distance-(distance-distance2)/lenght*b_mac;
+        double b_mac =length*(2*distance2+distance)/(3*(distance2+distance));
+        double c_mac =distance-(distance-distance2)/length*b_mac;
 
         gp_Pnt quarterchord  = segment.GetChordPoint(0, 0.25);
         gp_Pnt quarterchord2 = segment.GetChordPoint(1, 0.25);
 
-        double sw_tan   = (quarterchord2.X()-quarterchord.X())/lenght;
-        double dihe_sin = (quarterchord2.Z()-quarterchord.Z())/lenght;
-        double dihe_cos = lenght2/lenght;
+        double sw_tan   = (quarterchord2.X()-quarterchord.X())/length;
+        double dihe_sin = (quarterchord2.Z()-quarterchord.Z())/length;
+        double dihe_cos = length2/length;
 
         gp_XYZ seg_mac_p;
         seg_mac_p.SetX(0.25*distance - 0.25*c_mac + b_mac*sw_tan);
@@ -765,7 +795,7 @@ void  CCPACSWing::GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, do
         seg_mac_p.SetZ(dihe_sin*b_mac);
         seg_mac_p.Add(innerLeadingPoint.XYZ());
 
-        double A =((1. + T)*distance*lenght/2.);
+        double A =((1. + T)*distance*length/2.);
 
         A_sum += A;
         cc_mac_sum_p += seg_mac_p.Multiplied(A);
@@ -953,7 +983,13 @@ void CCPACSWing::BuildGuideCurveWires(LocatedGuideCurves& cache) const
             const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             if (!curve.GetFromGuideCurveUID_choice1()) {
                 // this is a root curve
-                double fromRef = *curve.GetFromRelativeCircumference_choice2();
+                double fromRef;
+                if (curve.GetFromRelativeCircumference_choice2_1()) {
+                    fromRef = *curve.GetFromRelativeCircumference_choice2_1();
+                }
+                else if (curve.GetFromParameter_choice2_2()) {
+                    fromRef = *curve.GetFromParameter_choice2_2();
+                }
                 if (fromRef >= 1. && !hasBluntTE) {
                     fromRef = -1.;
                 }
@@ -1555,7 +1591,7 @@ void CCPACSWing::DeleteConnectedElement(std::string elementUID)
 
 }
 
-std::vector<CTiglSectionElement* > CCPACSWing::GetCTiglElements()
+std::vector<CTiglSectionElement* > CCPACSWing::GetCTiglElements() const
 {
     std::vector<std::string> elements =  wingHelper->GetElementUIDsInOrder();
     std::vector<tigl::CTiglSectionElement*> cElements;
@@ -1625,23 +1661,7 @@ PNamedShape CCPACSWing::GetWingCleanShape() const
     return *wingCleanShape;
 }
 
-// Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
-void CCPACSWing::SetGetPointBehavior(TiglGetPointBehavior behavior)
-{
-    getPointBehavior = behavior;
-}
 
-// Gets the getPointBehavior
-TiglGetPointBehavior const CCPACSWing::GetGetPointBehavior() const
-{
-    return getPointBehavior;
-}
-
-// Gets the getPointBehavior
-TiglGetPointBehavior CCPACSWing::GetGetPointBehavior()
-{
-    return getPointBehavior;
-}
 namespace
 {
 

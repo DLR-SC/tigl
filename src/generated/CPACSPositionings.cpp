@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include <CCPACSPositioning.h>
+#include "CCPACSDuct.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSWing.h"
@@ -31,6 +32,14 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSPositionings::CPACSPositionings(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDuct);
+    }
+
     CPACSPositionings::CPACSPositionings(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -62,6 +71,9 @@ namespace generated
     const CTiglUIDObject* CPACSPositionings::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CCPACSDuct>()) {
+                return GetParent<CCPACSDuct>();
+            }
             if (IsParent<CCPACSEnginePylon>()) {
                 return GetParent<CCPACSEnginePylon>();
             }
@@ -78,6 +90,9 @@ namespace generated
     CTiglUIDObject* CPACSPositionings::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CCPACSDuct>()) {
+                return GetParent<CCPACSDuct>();
+            }
             if (IsParent<CCPACSEnginePylon>()) {
                 return GetParent<CCPACSEnginePylon>();
             }
@@ -93,11 +108,17 @@ namespace generated
 
     CTiglUIDManager& CPACSPositionings::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSPositionings::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

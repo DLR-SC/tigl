@@ -44,7 +44,7 @@ CCPACSFuselageStringer::CCPACSFuselageStringer(CCPACSStringersAssembly* parent, 
 {
 }
 
-void CCPACSFuselageStringer::InvalidateImpl(const boost::optional<std::string>& source) const
+void CCPACSFuselageStringer::InvalidateImpl(const boost::optional<std::string>& /*source*/) const
 {
     m_geomCache1D.clear();
     m_geomCache3D.clear();
@@ -55,7 +55,7 @@ TopoDS_Shape CCPACSFuselageStringer::GetGeometry(bool just1DElements, TiglCoordi
 {
     const TopoDS_Shape shape = just1DElements ? *m_geomCache1D : *m_geomCache3D;
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
-        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+        CTiglTransformation trafo = m_parent->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
     else
@@ -66,7 +66,7 @@ TopoDS_Shape CCPACSFuselageStringer::GetCutGeometry(TiglCoordinateSystem cs) con
 {
     TopoDS_Shape shape = *m_cutGeomCache;
     if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
-        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+        CTiglTransformation trafo = m_parent->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
     else
@@ -95,10 +95,10 @@ void CCPACSFuselageStringer::BuildGeometry(TopoDS_Shape& cache, bool just1DEleme
     // 2) if not just 1D element, build and sweep the profile all along the path
 
     // -1) place every points in the fuselage loft
-    CCPACSFuselage& fuselage  = *m_parent->GetParent()->GetParent();
+    const TopoDS_Shape loft = m_parent->GetStructureInterface()->GetLoft();
     std::vector<gp_Lin> pointList;
     for (size_t i = 0; i < m_stringerPositions.size(); i++) {
-        pointList.push_back(fuselage.Intersection(*m_stringerPositions[i]));
+        pointList.push_back(m_parent->GetStructureInterface()->Intersection(*m_stringerPositions[i]));
     }
 
     // creation of the profile plane
@@ -125,7 +125,7 @@ void CCPACSFuselageStringer::BuildGeometry(TopoDS_Shape& cache, bool just1DEleme
         const gp_Dir interDir(0, midPointOnStringer.Y() - midPointRefs.Y(), midPointOnStringer.Z() - midPointRefs.Z());
 
         // then, we project the segment on the fuselage, and get the resulting wire
-        const TopoDS_Wire path = fuselage.projectParallel(BRepBuilderAPI_MakeEdge(p1, p3).Edge(), interDir);
+        const TopoDS_Wire path = m_parent->GetStructureInterface()->projectParallel(BRepBuilderAPI_MakeEdge(p1, p3).Edge(), interDir);
 
         if (just1DElements) {
             builder.Add(compound, path);
@@ -145,7 +145,7 @@ void CCPACSFuselageStringer::BuildGeometry(TopoDS_Shape& cache, bool just1DEleme
 
 void CCPACSFuselageStringer::BuildCutGeometry(TopoDS_Shape& cache) const
 {
-    const TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
+    const TopoDS_Shape fuselageLoft =  m_parent->GetStructureInterface()->GetLoft();
 
     Bnd_Box fuselageBox;
     BRepBndLib::Add(fuselageLoft, fuselageBox);

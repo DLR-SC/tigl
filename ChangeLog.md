@@ -1,6 +1,98 @@
 Changelog
 =========
 
+Version 3.3.1
+-------------
+14/03/2024
+
+ - General changes:
+
+   - Improve documentation and update installation instructions.
+   - TiGL now supports Opencascade Technology 7.6.2 (#973).
+   - Extension of the functionality of `::tiglwinginterpolatexsi` to work on a single segment that is not part of a component segment (#970). The function
+   is now generalized, so that the start and end uid can be either a segment or component segment and the two do not have to be related to each other.
+   - TiGL now supplies an environment.yml file that can be used with conda to install all build requirements of tigl into an Anaconda environment.
+   - Renamed the function `::CCPACSConfiguration::GetAirplaneLenth` to `::CCPACSConfiguration::GetAirplaneLength` (#992).
+   
+ - Fixes:
+
+   - Fix bug in guide curve transformation. The rX-Direction was wrongly interpreted with respect to global coordinates, not wing coordinates (#975).
+   - Fix for hard crash if guiceCurves node is present but empty in wing segment (#962).
+   - Fix bug related to the calculation of Euler angles from a given rotation matrix (#870).
+
+ - TiGLViewer:
+
+   - Improved visual quality of zebra stripes (#974).
+
+
+Version 3.3.0
+-------------
+02/05/2023
+
+ - General changes:
+
+   - Support CPACS 3.3 (#883). The following CPACS 3.3 functionality is not yet supported: stringerFramePosition definition at fuselage section (#915), landing gears (#908), parametric fuselage profiles (#909). 
+   - Implemented the upcoming CPACS 3.5 feature for modeling ducts. It allows the user to create duct cutouts in        wings and fuselages. TiGL was extended to support ducts and duct assemblies for aircraft configurations. It is      to mention, that currently wings and fuselages are the only components that enable duct cutouts (#881).
+   - Generate doxygen documentation for all classes, not just the API functions (#943).
+ 
+ - New API functions:
+
+   - New functions `::tiglConfigurationSetWithDuctCutouts` and `::tiglConfigurationGetWithDuctCutouts` that set and      get the flag whether the ducts defined in CPACS shall be removed from the configuration using Boolean operations. 
+   - New function #::tiglGetCrossSectionArea' that allows cutting either a whole configuration or single parts with a plane and calculating the cross section area. This functionality can be used for the application for Whitcomb's area rule (#763). 
+ 
+ - Fixes:
+
+   - Adapt get_tigl_tixi.sh to properly download the tixi3 package for debian (#884).
+   - Export fuselages and wings as a whole and not segmentwise in the CAD export of the unfused configuration (#897).
+   - Fix typos (#923, #924, #925).
+   - Fix bug concerning the conversion of the internal parametrization of the faces of a wing to contour coordinates (#930).
+   - Update CI (#918, #839).
+   - Fix a compilation error with gcc 12.2 (#948).
+   - Fix bug in `::tiglWingGetSegmentUpperSurfaceAreaTrimmed` (#961).
+
+ - TiGLViewer:
+
+   - Implement high dpi screen support (#953).
+
+Version 3.2.3
+-------------
+09/03/2022
+
+- Fixes:
+
+  - Disabled check, if wing cells can be trimmed rather than cut, even if they are not defined
+    by contour coordinates. This check was put in place for better performance and robustness, 
+    because with trimmed curves expensive and error-prone boolean operations can be avoided.
+    However, the current implementation of the check relies on some hard to tune tolerances and
+    led to false positives and thus faulty wing cell geometries (issues #865, #869).
+  - Fixed a bug, where the trailing edge of a wing cell could not be defined by referencing a
+    spar (issue #864).
+  - The class `::CCPACSEnginePosition` has been added to the swig interface (issue #858). Without 
+    this it was previously impossible to access the transformed engine nacelle geometrie from Python.
+
+Version 3.2.2
+-------------
+17/11/2021
+
+- Highlights / General changes:
+
+  - Added support for canard style flaps. This allows to position the hinge points
+    outside of the wing by providing an additional translation vector (issue #816).
+
+- Fixes:
+
+  - Fixed CPACS versions header not correctly parsed, if the version number contained a patch version (issue #830).
+  - Fixed multiple errors that occured during the computation of wing cells (issues #815, #829, #840).
+  - Fixed computation of the wing aspect ratio (issue #827).
+  - Fixed crashes in TiGL Viewer when displaying control surface devices (issue #851).
+  - Improved robustness of export functions. The export now tries to export as much as possible,
+    even if one component failed to built (issue #853).
+
+- Bindings:
+  - Added python 3.9 conda packages 
+  - Fixed loading python bindings with python 3.8 due to a changed DLL loading policy (issue #842).
+  - Fixed a crash in the python bindings due to wrong memory handling (issue #823).
+
 Version 3.2.1
 -------------
 01/07/2021

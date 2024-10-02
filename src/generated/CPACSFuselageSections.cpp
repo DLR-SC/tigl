@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include <CCPACSFuselageSection.h>
+#include "CCPACSDuct.h"
 #include "CCPACSFuselage.h"
 #include "CPACSFuselageSections.h"
 #include "CTiglError.h"
@@ -29,44 +30,65 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSFuselageSections::CPACSFuselageSections(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDuct);
+    }
+
     CPACSFuselageSections::CPACSFuselageSections(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSFuselage);
     }
 
     CPACSFuselageSections::~CPACSFuselageSections()
     {
     }
 
-    const CCPACSFuselage* CPACSFuselageSections::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSFuselage* CPACSFuselageSections::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSFuselageSections::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSDuct>()) {
+                return GetParent<CCPACSDuct>();
+            }
+            if (IsParent<CCPACSFuselage>()) {
+                return GetParent<CCPACSFuselage>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSFuselageSections::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSDuct>()) {
+                return GetParent<CCPACSDuct>();
+            }
+            if (IsParent<CCPACSFuselage>()) {
+                return GetParent<CCPACSFuselage>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSFuselageSections::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSFuselageSections::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

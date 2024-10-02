@@ -41,6 +41,18 @@ CCPACSTransformation::CCPACSTransformation(CCPACSFuselage* parent, CTiglUIDManag
 {
 }
 
+CCPACSTransformation::CCPACSTransformation(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
 CCPACSTransformation::CCPACSTransformation(CCPACSFuselageSectionElement* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
@@ -60,6 +72,12 @@ CCPACSTransformation::CCPACSTransformation(CCPACSExternalObject* parent, CTiglUI
 }
 
 CCPACSTransformation::CCPACSTransformation(CCPACSGenericSystem* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSLandingGearBase* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
 {
@@ -186,12 +204,14 @@ void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& ma
     if (!m_rotation) {
         m_rotation = boost::in_place(this, m_uidMgr);
     }
+
     m_rotation->SetX(rotation.x);
     m_rotation->SetY(rotation.y);
     m_rotation->SetZ(rotation.z);
 
-    // TODO: check, whether the transformation matrix is really reset
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSTransformation::updateMatrix(CTiglTransformation& cache) const

@@ -92,11 +92,17 @@ namespace generated
 
     CTiglUIDManager& CPACSProfileGeometry::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSProfileGeometry::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -159,6 +165,17 @@ namespace generated
             }
         }
 
+        // read element standardProfile
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/standardProfile")) {
+            m_standardProfile_choice3 = boost::in_place(this);
+            try {
+                m_standardProfile_choice3->ReadCPACS(tixiHandle, xpath + "/standardProfile");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read standardProfile at xpath " << xpath << ": " << e.what();
+                m_standardProfile_choice3 = boost::none;
+            }
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
@@ -167,7 +184,7 @@ namespace generated
 
     void CPACSProfileGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "pointList", "cst2D" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "pointList", "cst2D", "standardProfile" };
 
         // write attribute symmetry
         if (m_symmetry) {
@@ -219,6 +236,17 @@ namespace generated
             }
         }
 
+        // write element standardProfile
+        if (m_standardProfile_choice3) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/standardProfile", childElemOrder);
+            m_standardProfile_choice3->WriteCPACS(tixiHandle, xpath + "/standardProfile");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/standardProfile")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/standardProfile");
+            }
+        }
+
     }
 
     bool CPACSProfileGeometry::ValidateChoices() const
@@ -233,6 +261,8 @@ namespace generated
                     // elements of other choices must not be there
                     !(
                         m_cst2D_choice2.is_initialized()
+                        ||
+                        m_standardProfile_choice3.is_initialized()
                     )
                 )
                 +
@@ -243,6 +273,20 @@ namespace generated
                     // elements of other choices must not be there
                     !(
                         m_pointList_choice1.is_initialized()
+                        ||
+                        m_standardProfile_choice3.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_standardProfile_choice3.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_pointList_choice1.is_initialized()
+                        ||
+                        m_cst2D_choice2.is_initialized()
                     )
                 )
                 == 1
@@ -319,6 +363,16 @@ namespace generated
         return m_cst2D_choice2;
     }
 
+    const boost::optional<CPACSStandardProfile>& CPACSProfileGeometry::GetStandardProfile_choice3() const
+    {
+        return m_standardProfile_choice3;
+    }
+
+    boost::optional<CPACSStandardProfile>& CPACSProfileGeometry::GetStandardProfile_choice3()
+    {
+        return m_standardProfile_choice3;
+    }
+
     CCPACSCurvePointListXYZ& CPACSProfileGeometry::GetPointList_choice1(CreateIfNotExistsTag)
     {
         if (!m_pointList_choice1)
@@ -341,6 +395,18 @@ namespace generated
     void CPACSProfileGeometry::RemoveCst2D_choice2()
     {
         m_cst2D_choice2 = boost::none;
+    }
+
+    CPACSStandardProfile& CPACSProfileGeometry::GetStandardProfile_choice3(CreateIfNotExistsTag)
+    {
+        if (!m_standardProfile_choice3)
+            m_standardProfile_choice3 = boost::in_place(this);
+        return *m_standardProfile_choice3;
+    }
+
+    void CPACSProfileGeometry::RemoveStandardProfile_choice3()
+    {
+        m_standardProfile_choice3 = boost::none;
     }
 
 } // namespace generated

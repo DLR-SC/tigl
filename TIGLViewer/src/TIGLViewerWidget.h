@@ -109,8 +109,8 @@ signals:
 
     void initialized();
     void selectionChanged();
-    void mouseMoved   ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
-    void pointClicked ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
+    void mouseMoved   ( Standard_Real X, Standard_Real Y, Standard_Real Z );
+    void pointClicked ( Standard_Real X, Standard_Real Y, Standard_Real Z );
     void sendStatus   ( QString aMessage );
 
     void error ( int errorCode, QString& errorDescription );
@@ -172,6 +172,9 @@ protected: // methods
 private: // members
     void initializeOCC(const Handle(AIS_InteractiveContext)& aContext);
 
+    void setStartPoint(const QPoint&);
+    void setCurrentPoint(const QPoint&);
+
     Handle(V3d_View)                myView;
     Handle(V3d_Viewer)              myViewer;
 
@@ -188,7 +191,7 @@ private: // members
     Standard_Boolean                myGridSnap;
     AIS_StatusOfDetection           myDetection;
 
-    V3d_Coordinate                  myV3dX,
+    Standard_Real                  myV3dX,
                                     myV3dY,
                                     myV3dZ;
         

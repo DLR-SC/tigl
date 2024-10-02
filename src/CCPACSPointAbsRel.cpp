@@ -28,9 +28,13 @@ CCPACSPointAbsRel::CCPACSPointAbsRel(CCPACSTransformation* parent, CTiglUIDManag
 {
 }
 
+CCPACSPointAbsRel::CCPACSPointAbsRel(CCPACSStrutAssembly* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPointAbsRel(parent, uidMgr)
+{
+}
 
 CCPACSPointAbsRel::CCPACSPointAbsRel(const CCPACSPointAbsRel &p)
-    : generated::CPACSPointAbsRel (nullptr, p.m_uidMgr)
+    : generated::CPACSPointAbsRel ((CCPACSTransformation*)(nullptr), p.m_uidMgr)
 {
     m_x = p.m_x;
     m_y = p.m_y;
@@ -46,7 +50,9 @@ CCPACSPointAbsRel &CCPACSPointAbsRel::operator =(const CCPACSPointAbsRel &p)
     m_y = p.m_y;
     m_z = p.m_z;
     m_refType = p.m_refType;
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
     return *this;
 }
 
@@ -65,7 +71,9 @@ void CCPACSPointAbsRel::SetAsPoint(const CTiglPoint& point)
     m_x = point.x;
     m_y = point.y;
     m_z = point.z;
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 ECPACSTranslationType CCPACSPointAbsRel::GetRefDefaultedType() const
@@ -82,25 +90,33 @@ ECPACSTranslationType CCPACSPointAbsRel::GetRefDefaultedType() const
 void CCPACSPointAbsRel::SetRefType(const boost::optional<ECPACSTranslationType>& value)
 {
     generated::CPACSPointAbsRel::SetRefType(value);
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSPointAbsRel::SetX(const boost::optional<double>& value)
 {
     generated::CPACSPointAbsRel::SetX(value);
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSPointAbsRel::SetY(const boost::optional<double>& value)
 {
     generated::CPACSPointAbsRel::SetY(value);
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSPointAbsRel::SetZ(const boost::optional<double>& value)
 {
     generated::CPACSPointAbsRel::SetZ(value);
-    Invalidate();
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSPointAbsRel::InvalidateImpl(const boost::optional<std::string>& source) const

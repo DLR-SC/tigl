@@ -49,12 +49,15 @@ CCPACSFuselageStringerFramePosition::CCPACSFuselageStringerFramePosition(CCPACSF
 
 gp_Pnt CCPACSFuselageStringerFramePosition::GetRefPoint() const
 {
-    return gp_Pnt(m_positionX, m_referenceY, m_referenceZ);
+    if (m_positionX_choice1){
+        return gp_Pnt(*m_positionX_choice1, m_referenceY, m_referenceZ);
+    }
+    throw CTiglError("FuselageStringerFramePosition: Setting by element UID currently not supported.");
 }
 
-void CCPACSFuselageStringerFramePosition::SetPositionX(const double& value)
+void CCPACSFuselageStringerFramePosition::SetPositionX_choice1(const boost::optional<double>& value)
 {
-    generated::CPACSStringerFramePosition::SetPositionX(value);
+    generated::CPACSStringerFramePosition::SetPositionX_choice1(value);
     Invalidate();
 }
 
@@ -103,9 +106,9 @@ double CCPACSFuselageStringerFramePosition::GetReferenceZRel() const {
 void CCPACSFuselageStringerFramePosition::SetPositionXRel(double positionXRel)
 {
     //m_relCache->positionXRel = positionXRel;
-    m_positionX = m_relCache->xmin + (m_relCache->xmax - m_relCache->xmin) * positionXRel;
-    if (fabs(m_positionX) < 1e-6)
-        m_positionX = 0.;
+    m_positionX_choice1 = m_relCache->xmin + (m_relCache->xmax - m_relCache->xmin) * positionXRel;
+    if (fabs(*m_positionX_choice1) < 1e-6)
+        m_positionX_choice1 = 0.;
     Invalidate();
 }
 
@@ -127,7 +130,7 @@ void CCPACSFuselageStringerFramePosition::SetReferenceZRel(double referenceZRel)
     Invalidate();
 }
 
-void CCPACSFuselageStringerFramePosition::InvalidateImpl(const boost::optional<std::string>& source) const
+void CCPACSFuselageStringerFramePosition::InvalidateImpl(const boost::optional<std::string>& /*source*/) const
 {
     m_relCache.clear();
     // invalidate parent frame or stringer
@@ -157,10 +160,10 @@ void CCPACSFuselageStringerFramePosition::GetZBorders(double& zmin, double& zmax
 
 void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePositionCache& cache) const
 {
-    const TopoDS_Shape fuselageLoft = GetFuselage().GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
+    const TopoDS_Shape loft = GetStructureInterface()->GetLoft();
         
     Bnd_Box bBox1;
-    BRepBndLib::Add(fuselageLoft, bBox1);
+    BRepBndLib::Add(loft, bBox1);
     double XMN = 0., XMX = 0., YMN = 0., YMX = 0., ZMN = 0., ZMX = 0.;
     bBox1.Get(XMN, YMN, ZMN, XMX, YMX, ZMX);
         
@@ -169,17 +172,20 @@ void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePosi
         
     const double xmin = XMN;
     const double xmax = XMX;
-    const double positionXRel = (m_positionX - XMN) / (XMX - XMN);
+    if (!m_positionX_choice1){
+        throw CTiglError("FuselageStringerFramePosition: Setting by element UID currently not supported.");
+    }
+    const double positionXRel = (*m_positionX_choice1 - XMN) / (XMX - XMN);
         
     if (positionXRel > 1. || positionXRel < 0.) {
         // m_positionX is outside bounding box
         throw CTiglError("Error during relative fuselage structure X positioning calculation");
     }
         
-    gp_Pnt pRef(m_positionX, 0., 0.);
+    gp_Pnt pRef(*m_positionX_choice1, 0., 0.);
     gp_Pln cutPlane(pRef, gp_Dir(1,0,0));
         
-    TopoDS_Shape Section = CutShapes(fuselageLoft, BRepBuilderAPI_MakeFace(cutPlane).Face());
+    TopoDS_Shape Section = CutShapes(loft, BRepBuilderAPI_MakeFace(cutPlane).Face());
         
     Bnd_Box bBox2;
     BRepBndLib::Add(Section, bBox2);
@@ -218,15 +224,13 @@ void CCPACSFuselageStringerFramePosition::UpdateRelativePositioning(RelativePosi
     cache.referenceZRel = referenceZRel;
 }
 
-const CCPACSFuselage& CCPACSFuselageStringerFramePosition::GetFuselage() const {
-    const CCPACSFuselageStructure* s = nullptr;
+ITiglFuselageDuctStructure const* CCPACSFuselageStringerFramePosition::GetStructureInterface() const {
     if (IsParent<CCPACSFrame>())
-        s = GetParent<CCPACSFrame>()->GetParent()->GetParent();
+        return GetParent<CCPACSFrame>()->GetParent()->GetStructureInterface();
     else if (IsParent<CCPACSFuselageStringer>())
-        s = GetParent<CCPACSFuselageStringer>()->GetParent()->GetParent();
+        return GetParent<CCPACSFuselageStringer>()->GetParent()->GetStructureInterface();
     else
         throw CTiglError("Invalid parent");
-    return *s->GetParent();
 }
 
 } // namespace tigl

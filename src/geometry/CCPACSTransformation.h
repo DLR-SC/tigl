@@ -35,10 +35,13 @@ public:
     TIGL_EXPORT CCPACSTransformation(CCPACSEnginePosition* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSFuselageSectionElement* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSFuselageSection* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSGenericSystem* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSLandingGearBase* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSRotor* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSRotorHinge* parent, CTiglUIDManager* uidMgr);

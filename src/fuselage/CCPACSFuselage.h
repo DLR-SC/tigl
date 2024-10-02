@@ -65,8 +65,6 @@ public:
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    TIGL_EXPORT PNamedShape GetLoft(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
-
     // Override setter for invalidation
     TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
     TIGL_EXPORT void SetTransformation(const CCPACSTransformation& transform) override;
@@ -104,8 +102,7 @@ public:
     TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
 
     // Gets the getPointBehavior
-    TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
-    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
+    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior() const;
 
     // Gets the volume of this fuselage
     TIGL_EXPORT double GetVolume();
@@ -127,9 +124,6 @@ public:
     // Get the guide curve segment(partial guide curve) with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
     TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurveSegment(std::string uid) const;
-
-    // Returns all guide curve wires as a compound
-    TIGL_EXPORT const TopoDS_Compound& GetGuideCurveWires() const;
 
     // Returns all guide curve points
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
@@ -225,7 +219,8 @@ public:
 
 
 protected:
-    void BuildGuideCurves(TopoDS_Compound& cache) const;
+
+    void BuildCleanLoft(PNamedShape& cache) const;
 
     // Cleanup routine
     void Cleanup();
@@ -244,12 +239,13 @@ private:
     // get short name for loft
     std::string GetShortShapeName() const;
 
-private:
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
+    Cache<PNamedShape, CCPACSFuselage> cleanLoft; /**< Stores the loft with cutouts (e.g. ducts) */
+
+
     TopoDS_Compound            aCompound;
-    Cache<TopoDS_Compound, CCPACSFuselage> guideCurves;
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
 

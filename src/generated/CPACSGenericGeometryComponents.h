@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSAircraftModel
 
-    /// @brief genericGeometryComponentsType
+    /// @brief Generic geometric components
     /// 
     /// 
     /// 

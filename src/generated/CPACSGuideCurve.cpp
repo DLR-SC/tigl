@@ -29,7 +29,6 @@ namespace generated
 {
     CPACSGuideCurve::CPACSGuideCurve(CCPACSGuideCurves* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_toRelativeCircumference(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -71,11 +70,17 @@ namespace generated
 
     CTiglUIDManager& CPACSGuideCurve::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSGuideCurve::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -138,7 +143,12 @@ namespace generated
 
         // read element fromRelativeCircumference
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromRelativeCircumference")) {
-            m_fromRelativeCircumference_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fromRelativeCircumference");
+            m_fromRelativeCircumference_choice2_1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fromRelativeCircumference");
+        }
+
+        // read element fromParameter
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromParameter")) {
+            m_fromParameter_choice2_2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fromParameter");
         }
 
         // read element tangent
@@ -154,10 +164,12 @@ namespace generated
 
         // read element toRelativeCircumference
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/toRelativeCircumference")) {
-            m_toRelativeCircumference = tixi::TixiGetElement<double>(tixiHandle, xpath + "/toRelativeCircumference");
+            m_toRelativeCircumference_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/toRelativeCircumference");
         }
-        else {
-            LOG(ERROR) << "Required element toRelativeCircumference is missing at xpath " << xpath;
+
+        // read element toParameter
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toParameter")) {
+            m_toParameter_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/toParameter");
         }
 
         // read element tangent
@@ -235,13 +247,24 @@ namespace generated
         }
 
         // write element fromRelativeCircumference
-        if (m_fromRelativeCircumference_choice2) {
+        if (m_fromRelativeCircumference_choice2_1) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromRelativeCircumference");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/fromRelativeCircumference", *m_fromRelativeCircumference_choice2);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/fromRelativeCircumference", *m_fromRelativeCircumference_choice2_1);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromRelativeCircumference")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/fromRelativeCircumference");
+            }
+        }
+
+        // write element fromParameter
+        if (m_fromParameter_choice2_2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fromParameter");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/fromParameter", *m_fromParameter_choice2_2);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromParameter")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/fromParameter");
             }
         }
 
@@ -257,8 +280,26 @@ namespace generated
         }
 
         // write element toRelativeCircumference
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toRelativeCircumference");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/toRelativeCircumference", m_toRelativeCircumference);
+        if (m_toRelativeCircumference_choice1) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toRelativeCircumference");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/toRelativeCircumference", *m_toRelativeCircumference_choice1);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toRelativeCircumference")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/toRelativeCircumference");
+            }
+        }
+
+        // write element toParameter
+        if (m_toParameter_choice2) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/toParameter");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/toParameter", *m_toParameter_choice2);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/toParameter")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/toParameter");
+            }
+        }
 
         // write element tangent
         if (m_tangent) {
@@ -297,7 +338,9 @@ namespace generated
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_fromRelativeCircumference_choice2.is_initialized()
+                        m_fromRelativeCircumference_choice2_1.is_initialized()
+                        ||
+                        m_fromParameter_choice2_2.is_initialized()
                         ||
                         m_tangent_choice2.is_initialized()
                     )
@@ -305,7 +348,28 @@ namespace generated
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_fromRelativeCircumference_choice2.is_initialized()
+                    (
+                        (
+                            // mandatory elements of this choice must be there
+                            m_fromRelativeCircumference_choice2_1.is_initialized()
+                            &&
+                            // elements of other choices must not be there
+                            !(
+                                m_fromParameter_choice2_2.is_initialized()
+                            )
+                        )
+                        +
+                        (
+                            // mandatory elements of this choice must be there
+                            m_fromParameter_choice2_2.is_initialized()
+                            &&
+                            // elements of other choices must not be there
+                            !(
+                                m_fromRelativeCircumference_choice2_1.is_initialized()
+                            )
+                        )
+                        == 1
+                    )
                     &&
                     true // m_tangent_choice2 is optional in choice
                     &&
@@ -314,6 +378,29 @@ namespace generated
                         m_fromGuideCurveUID_choice1.is_initialized()
                         ||
                         m_continuity_choice1.is_initialized()
+                    )
+                )
+                == 1
+            )
+            &&
+            (
+                (
+                    // mandatory elements of this choice must be there
+                    m_toRelativeCircumference_choice1.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_toParameter_choice2.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_toParameter_choice2.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_toRelativeCircumference_choice1.is_initialized()
                     )
                 )
                 == 1
@@ -394,14 +481,24 @@ namespace generated
         m_continuity_choice1 = value;
     }
 
-    const boost::optional<double>& CPACSGuideCurve::GetFromRelativeCircumference_choice2() const
+    const boost::optional<double>& CPACSGuideCurve::GetFromRelativeCircumference_choice2_1() const
     {
-        return m_fromRelativeCircumference_choice2;
+        return m_fromRelativeCircumference_choice2_1;
     }
 
-    void CPACSGuideCurve::SetFromRelativeCircumference_choice2(const boost::optional<double>& value)
+    void CPACSGuideCurve::SetFromRelativeCircumference_choice2_1(const boost::optional<double>& value)
     {
-        m_fromRelativeCircumference_choice2 = value;
+        m_fromRelativeCircumference_choice2_1 = value;
+    }
+
+    const boost::optional<double>& CPACSGuideCurve::GetFromParameter_choice2_2() const
+    {
+        return m_fromParameter_choice2_2;
+    }
+
+    void CPACSGuideCurve::SetFromParameter_choice2_2(const boost::optional<double>& value)
+    {
+        m_fromParameter_choice2_2 = value;
     }
 
     const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent_choice2() const
@@ -414,14 +511,24 @@ namespace generated
         return m_tangent_choice2;
     }
 
-    const double& CPACSGuideCurve::GetToRelativeCircumference() const
+    const boost::optional<double>& CPACSGuideCurve::GetToRelativeCircumference_choice1() const
     {
-        return m_toRelativeCircumference;
+        return m_toRelativeCircumference_choice1;
     }
 
-    void CPACSGuideCurve::SetToRelativeCircumference(const double& value)
+    void CPACSGuideCurve::SetToRelativeCircumference_choice1(const boost::optional<double>& value)
     {
-        m_toRelativeCircumference = value;
+        m_toRelativeCircumference_choice1 = value;
+    }
+
+    const boost::optional<double>& CPACSGuideCurve::GetToParameter_choice2() const
+    {
+        return m_toParameter_choice2;
+    }
+
+    void CPACSGuideCurve::SetToParameter_choice2(const boost::optional<double>& value)
+    {
+        m_toParameter_choice2 = value;
     }
 
     const boost::optional<CPACSPointXYZ>& CPACSGuideCurve::GetTangent() const

@@ -43,8 +43,8 @@ void tigl::CTiglFuselageHelper::SetFuselage(CCPACSFuselage* associatedFuselage)
 }
 
 tigl::CTiglFuselageHelper::CTiglFuselageHelper()
+    :fuselage(nullptr)
 {
-    fuselage = nullptr;
 }
 
 std::map<std::string, tigl::CTiglFuselageSectionElement*> tigl::CTiglFuselageHelper::BuildCTiglElementsMap()

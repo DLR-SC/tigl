@@ -1,0 +1,53 @@
+name: "Windows Tests"
+
+description: "Test TiGL on Windows"
+
+inputs:
+
+  build-artifact:
+    description: "Name of the build artifact that contains the unit test binary."
+    required: true
+
+  unit-tests:
+    description: "Set to true to run TiGLs unit tests (true or false)"
+    required: false
+    default: true
+
+  integration-tests:
+    description: "Set to true to run TiGLs integration tests (true or false)"
+    required: false
+    default: true
+
+runs:
+
+  using: "composite"
+
+  steps:
+
+    - name: Download built test directory
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact }}
+
+    - name: extract build archive
+      shell: bash
+      run: |
+        tar -xzf build.tar.gz
+
+    - name: Run unit tests
+      if: ${{ inputs.unit-tests == 'true' }}
+      shell: cmd /C call {0}
+      run: |
+        set PATH=%cd%\build\install\bin;%PATH%
+        cd build
+        cmake --build . --target tigl-java-demo
+        cd tests\unittests
+        .\TiGL-unittests.exe --gtest_shuffle --gtest_output=xml:unit_test_results.xml
+
+    - name: Run integration tests
+      if: ${{ inputs.integration-tests == 'true' }}
+      shell: cmd /C call {0}
+      run: |
+        set PATH=%cd%\build\install\bin;%PATH%
+        cd build\tests\integrationtests
+        .\TiGL-integrationtests --gtest_shuffle --gtest_output=xml:integration_test_results.xml

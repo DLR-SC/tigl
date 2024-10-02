@@ -43,7 +43,7 @@ namespace generated
     // This class is used in:
     // CPACSVehicles
 
-    /// @brief profilesType
+    /// @brief Profiles
     /// 
     /// Profiles type, containing profile geometries
     /// 

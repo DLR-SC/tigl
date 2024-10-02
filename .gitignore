@@ -1,8 +1,6 @@
 /bin
 /build*
-/docs
 *.pyc
-examples/python_internal/.idea/
 .vscode
 *.patch
 /.vs

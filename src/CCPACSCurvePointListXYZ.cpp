@@ -46,8 +46,8 @@ const ParamMap& CCPACSCurvePointListXYZ::GetParamsAsMap() const
 void CCPACSCurvePointListXYZ::BuildCache(CachedObjects& cache) const
 {
     cache.kinks.clear();
-    if (GetKinks()) {
-        auto kinkAsDouble = GetKinks()->AsVector();
+    if (GetKinkIndices()) {
+        auto kinkAsDouble = GetKinkIndices()->AsVector();
 
         auto& kinks = cache.kinks;
         kinks.clear();

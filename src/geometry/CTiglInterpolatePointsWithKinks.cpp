@@ -127,15 +127,19 @@ namespace tigl
 {
 
 CTiglInterpolatePointsWithKinks::CTiglInterpolatePointsWithKinks(const Handle(TColgp_HArray1OfPnt) & points,
-                                                                const std::vector<unsigned int>& kinkIndices,
-                                                                const ParamMap& parameters,
-                                                                double alpha,
-                                                                unsigned int maxDegree)
+                                                                 const std::vector<unsigned int>& kinkIndices,
+                                                                 const ParamMap& parameters,
+                                                                 double alpha,
+                                                                 unsigned int maxDegree,
+                                                                 Algo algo,
+                                                                 const double tolerance)
     : m_pnts(points)
     , m_kinks(kinkIndices)
     , m_params(parameters)
     , m_alpha(alpha)
     , m_maxDegree(maxDegree)
+    , m_algo(algo)
+    , m_tolerance(tolerance)
     , m_result(*this, &CTiglInterpolatePointsWithKinks::ComputeResult)
 {
 }
@@ -152,7 +156,14 @@ std::vector<double> CTiglInterpolatePointsWithKinks::Parameters() const
 
 void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const
 {
-    auto params = m_params;
+
+    ParamMap params;
+    // m_params should only be used for Algo::InterpolateBasedOnParameters
+    // When Algo::InterpolateFirstThenReparametrize is used, the parameterization should be applied after interpolating
+    // So, params stay empty to ensure TiGL uses its default parameters
+    if (m_algo == Algo::InterpolateBasedOnParameters) {
+        params = m_params;
+    }
 
     // assuming iterating over parameters is sorted in keys
     auto new_params = computeParams(m_pnts, params, m_alpha);
@@ -163,15 +174,15 @@ void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const
     auto kinks = m_kinks;
     std::sort(std::begin(kinks), std::end(kinks));
 
-    bool make_continous = false;
+    bool make_continuous = false;
     if (m_pnts->Value(m_pnts->Lower()).IsEqual(m_pnts->Value(m_pnts->Upper()), 1e-6)) {
         if (!in(0, kinks) && ! in(n_pnts - 1, kinks)) {
-            make_continous = true;
+            make_continuous = true;
         }
     }
 
     // make sure, that first and last points are in kink list
-    if (!make_continous) {
+    if (!make_continuous) {
         if (!in(0, kinks)) {
             kinks.insert(kinks.begin(), 0);
         }
@@ -193,8 +204,8 @@ void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const
         curve_segments.push_back(segment_curve);
     }
 
-    // create a continous spline from the last to the first kink
-    if (make_continous && kinks.size() > 0) {
+    // create a continuous spline from the last to the first kink
+    if (make_continuous && kinks.size() > 0) {
         double offset = new_params.front() - new_params.back();
 
         auto last_kink_idx = kinks.back();
@@ -222,13 +233,26 @@ void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const
         curve_segments.insert(curve_segments.begin(), first);
         curve_segments.push_back(last);
     }
-    else if (make_continous && kinks.empty()) {
+    else if (make_continuous && kinks.empty()) {
         auto curve = CTiglPointsToBSplineInterpolation(m_pnts, new_params, m_maxDegree, true).Curve();
         curve_segments.push_back(curve);
     }
 
     result.curve = CTiglBSplineAlgorithms::concatCurves(curve_segments, false);
     result.parameters = new_params;
+
+    if (m_algo == Algo::InterpolateFirstThenReparametrize) {
+        // We reparametrize the spline to get better performing lofts
+        const double tolerance = m_tolerance; // Define tolerance for knot removal in reparameterizePiecewiseLinear
+        // Get the above calculated params (Default params calculated without setting them explicitely) => paramsOld
+        // Wanted parameters [m_params] appear as map -> transform and interpolate to all m_pnts => paramsNew
+        std::vector<double> paramsOld = new_params;
+        params = m_params;
+        std::vector<double> paramsNew = computeParams(m_pnts, params, 0.5);
+        result.curve = CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(result.curve, paramsOld, paramsNew, tolerance);
+        // Overwrite the object's variable with the parameters that are set after applying the reparameterization
+        result.parameters = paramsNew;
+    }
 }
 
 

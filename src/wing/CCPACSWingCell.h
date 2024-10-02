@@ -143,7 +143,7 @@ private:
     void BuildSkinGeometry(GeometryCache& cache) const;
 
     // this enum is used internally by CutSpanWise to determine,
-    // wether it is an inner or an outer cut
+    // whether it is an inner or an outer cut
     enum class SpanWiseBorder {
         Inner,
         Outer
@@ -161,7 +161,7 @@ private:
      *
      * @param cache The shape cache of the wing cell
      * @param loftShape the shape of the wing skin
-     * @param border a SpanWiseBorder enum, denoting wether it is a inner
+     * @param border a SpanWiseBorder enum, denoting whether it is an inner
      * or outer border
      * @param positioning CPACS definition of the border
      * @param zRefDir a reference direction orthogonal to the chordface
@@ -185,7 +185,7 @@ private:
      * relative to the wing skin via contour coordinates.
      *
      * @param cache The shape of the wing cell
-     * @param border  a SpanWiseBorder enum, denoting wether it is a inner
+     * @param border  a SpanWiseBorder enum, denoting whether it is an inner
      * or outer border
      * @param positioning CPACS definition of the border
      * @param tol a tolerance
@@ -196,7 +196,7 @@ private:
                       double tol = 5e-3) const;
 
     // this enum is used internally by CutChordwise to determine,
-    // wether it is a leading edge or trailing edge cut
+    // whether it is a leading edge or trailing edge cut
     enum class ChordWiseBorder {
         LE,
         TE
@@ -214,7 +214,7 @@ private:
      *
      * @param cache The shape cache of the wing cell
      * @param loftShape the shape of the wing skin
-     * @param border a ChordWiseBorder enum, denoting wether it is a leading edge
+     * @param border a ChordWiseBorder enum, denoting whether it is a leading edge
      * or trailing edge border
      * @param positioning CPACS definition of the border
      * @param zRefDir a reference direction orthogonal to the chordface
@@ -238,7 +238,7 @@ private:
      * relative to the wing skin via contour coordinates.
      *
      * @param cache The shape of the wing cell
-     * @param border  a ChordWiseBorder enum, denoting wether it is a LE
+     * @param border  a ChordWiseBorder enum, denoting whether it is a LE
      * or a TE border
      * @param positioning CPACS definition of the border
      * @param tol a tolerance

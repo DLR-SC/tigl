@@ -30,7 +30,7 @@
 #include <string.h>
 #include <ctime>
 
-
+#include "CTiglFusePlane.h"
 /******************************************************************************/
 
 class TestPerformance : public ::testing::Test
@@ -226,3 +226,42 @@ TEST_F(TestPerformance, tiglCheckPointInside_false)
     time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns * 1000000.;
     std::cout << "Time tiglCheckPointInside fuselage [us]: " << time_elapsed << std::endl;
 }
+
+// diesen Block in testperformance.cpp schieben
+TEST_F(TestPerformance, area_computations_fused_airplane_performance )
+{
+
+    int nruns {100};
+    double number {0.};
+    double xPosition {0.};
+    double lengthOfD150 {38.}; // the approximate length of the D150 model
+
+    clock_t start, stop;
+    double time_elapsed;
+
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    tigl::PTiglFusePlane fuser = config.AircraftFusingAlgo();
+    fuser->SetResultMode((tigl::TiglFuseResultMode) 1);
+    PNamedShape airplane = fuser->FusedPlane();
+
+    double area{0};
+
+    start = clock();
+
+    // cut the D150 configuration nruns-times along the x-axis
+
+    for(int i = 0; i < nruns; ++i){
+
+        EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "D150_VAMP", xPosition, 0., 0., 1., 0., 0., &area), TIGL_SUCCESS);
+
+        xPosition += lengthOfD150/nruns;
+        number += 1.;  //dummy to prevent compiler optimization
+    }
+    stop = clock();
+
+    time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns; // in seconds
+    std::cout << "Time tiglGetCrossSectionArea for D150 [s]" << time_elapsed << std::endl;
+}
+

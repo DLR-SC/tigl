@@ -113,7 +113,7 @@ class TestTiglLogging(unittest.TestCase):
         process=subprocess.Popen(['python', 'test_logging.py', "%s" % loglevel], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err=process.communicate()
         status=process.returncode
-        # seperate output lines
+        # separate output lines
         out=out.decode("UTF-8").rstrip('\n').split('\n')
         err=err.decode("UTF-8").rstrip('\n').split('\n')
         return (status, out, err)

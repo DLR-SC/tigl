@@ -103,7 +103,7 @@ double CCPACSWingSparPosition::GetXsi() const
 const CCPACSEtaXsiPoint &CCPACSWingSparPosition::GetEtaXsiPoint() const
 {
     if (!GetSparPositionEtaXsi_choice2()) {
-        throw CTiglError("No EtaXsiPoint definied in SparPosition '" + GetUID() + "'");
+        throw CTiglError("No EtaXsiPoint defined in SparPosition '" + GetUID() + "'");
     }
     
     return GetSparPositionEtaXsi_choice2().value();
@@ -112,7 +112,7 @@ const CCPACSEtaXsiPoint &CCPACSWingSparPosition::GetEtaXsiPoint() const
 const generated::CPACSWingRibPoint& CCPACSWingSparPosition::GetRibPoint() const
 {
     if (!GetSparPositionRib_choice1()) {
-        throw CTiglError("No RibPoint definied in SparPosition '" + GetUID() + "'");
+        throw CTiglError("No RibPoint defined in SparPosition '" + GetUID() + "'");
     }
 
     return GetSparPositionRib_choice1().value();
@@ -196,7 +196,7 @@ gp_Vec CCPACSWingSparPosition::GetUpVector(const CCPACSWingCSStructure& structur
         }
         else {
             // this should actually not happen
-            throw CTiglError("A fatal error as occured");
+            throw CTiglError("A fatal error as occurred");
         }
         
         // compute bounding box of section element face

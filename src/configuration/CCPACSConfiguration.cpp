@@ -29,7 +29,6 @@
 #include "Standard_CString.hxx"
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
-#include "BRepAlgo_Fuse.hxx"
 #include "ShapeFix_Shape.hxx"
 #include "TopoDS_Compound.hxx"
 #include "BRepFeat_Gluer.hxx"
@@ -547,6 +546,36 @@ const CCPACSFuselages& CCPACSConfiguration::GetFuselages() const
     }
 }
 
+bool CCPACSConfiguration::HasDucts() const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetDucts()? true : false;
+    }
+    else {
+        return false;
+    }
+}
+
+boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts()
+{
+    if (aircraftModel) {
+        return aircraftModel->GetDucts();
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
+const boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts() const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetDucts();
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
 boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons()
 {
     if (aircraftModel) {
@@ -674,7 +703,7 @@ const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const
     return uidManager;
 }
 
-double CCPACSConfiguration::GetAirplaneLenth()
+double CCPACSConfiguration::GetAirplaneLength()
 {
     CTiglPoint min, max;
     ConfigurationGetBoundingBox(*this, min, max);

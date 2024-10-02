@@ -1,0 +1,99 @@
+name: "Linux Build"
+
+description: "Build TiGL on Linux"
+
+inputs:
+
+  config:
+    description: "Configuration to build (Release or Debug, see CMAKE_BUILD_TYPE)"
+    required: true
+    default: "Release"
+
+  tigl_nightly:
+    description: "CMake option to amend the version with the git hash (ON or OFF)"
+    required: false
+    default: "ON"
+
+  tigl_concat_generated_files:
+    description: "CMake option to concatenate the generated source files (ON or OFF)"
+    required: false
+    default: "ON"
+
+  tigl_bindings_python_internal:
+    description: "CMake option to build the internal python API"
+    required: false
+    default: "OFF"
+
+  tigl_enable_coverage:
+    description: "CMake option to enable code coverage with gcov/lcov (ON or OFF)"
+    required: false
+    default: "OFF"
+
+  build-artifact:
+    descpription: "Set the name for the build artifact stored by this job"
+    required: true
+
+runs:
+
+  using: "composite"
+
+  steps:
+
+    - name: Install dependencies
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 10
+        max_attempts: 3
+        command: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ccache lcov gcovr cmake cmake-data sshpass mesa-common-dev libglu1-mesa-dev
+          echo "/usr/lib/ccache" >> $GITHUB_PATH
+
+    - name: Setup miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        activate-environment: tigl-bld
+        environment-file: environment.yml
+        auto-activate-base: false
+
+    - name: Conda info
+      shell: bash -el {0}
+      run: |
+        conda info
+        conda list
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: compiler-cache-${{ inputs.build-artifact }}
+
+    - name: Build TiGL
+      shell: bash -l {0}
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+                 -DCMAKE_BUILD_TYPE=${{ inputs.config }} \
+                 -DCMAKE_INSTALL_PREFIX=install \
+                 -DOCE_STATIC_LIBS=ON \
+                 -DTIGL_BUILD_TESTS=ON \
+                 -DTIGL_ENABLE_COVERAGE=${{ inputs.tigl_enable_coverage }} \
+                 -DTIGL_CONCAT_GENERATED_FILES=${{ inputs.tigl_concat_generated_files }} \
+                 -DTIGL_BINDINGS_PYTHON_INTERNAL=${{ inputs.tigl_bindings_python_internal }} \
+                 -DTIGL_BINDINGS_MATLAB=ON \
+                 -DTIGL_BINDINGS_JAVA=ON \
+                 -DTIGL_NIGHTLY=${{ inputs.tigl_nightly }}
+        cmake --build . -j 4 --target install
+
+    - name: create build dir archive
+      shell: bash
+      run: |
+        tar -czf build.tar.gz build
+
+    - name: Upload build directory
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact }}
+        path: build.tar.gz
+        retention-days: 1

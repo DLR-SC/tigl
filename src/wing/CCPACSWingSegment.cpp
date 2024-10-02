@@ -94,7 +94,6 @@
 
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAPI_PointsToBSpline.hxx"
-#include "GeomAdaptor_HCurve.hxx"
 #include "GeomFill.hxx"
 #include "GeomFill_SimpleBound.hxx"
 #include "GeomFill_BSplineCurves.hxx"
@@ -105,7 +104,6 @@
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "BRepIntCurveSurface_Inter.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
-#include "BRepAdaptor_CompCurve.hxx"
 #include "BRepTools.hxx"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
@@ -241,7 +239,7 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS, Ti
     /*
     * The loft algorithm with guide curves does not like splitted
     * wing profiles, we have to give him the unsplitted one.
-    * In all other cases, we need the splitted wire to distiguish
+    * In all other cases, we need the splitted wire to distinguish
     * upper und lower wing surface
     */
     if (m_guideCurves && m_guideCurves->GetGuideCurveCount() > 0) {
@@ -274,7 +272,7 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(TiglCoordinateSystem referenceCS, Ti
     /*
     * The loft algorithm with guide curves does not like splitted
     * wing profiles, we have to give him the unsplitted one.
-    * In all other cases, we need the splitted wire to distiguish
+    * In all other cases, we need the splitted wire to distinguish
     * upper und lower wing surface
     */
     if (m_guideCurves && m_guideCurves->GetGuideCurveCount() > 0) {
@@ -383,11 +381,11 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
             const CCPACSGuideCurves& curves = *m_guideCurves;
             bool hasTrailingEdge = !innerConnection.GetProfile().GetTrailingEdge().IsNull();
 
-            // order guide curves according to fromRelativeCircumeference
+            // order guide curves according to fromRelativeCircumeference or fromParameter (GetFromDefinitionValue())
             std::multimap<double, const CCPACSGuideCurve*> guideMap;
             for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
                 const CCPACSGuideCurve* curve = &curves.GetGuideCurve(iguide);
-                double value = curve->GetFromRelativeCircumference();
+                double value = curve->GetFromDefinitionValue();
                 if (value >= 1. && !hasTrailingEdge) {
                     // this is a trailing edge profile, we should add it first
                     value = -1.;
@@ -615,13 +613,7 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
                                          double eta3, double xsi3,
                                          double eta4, double xsi4) const
 {
-    TopoDS_Face face;
-    if (fromUpper) {
-        face = TopoDS::Face(GetUpperShape());
-    }
-    else {
-        face = TopoDS::Face(GetLowerShape());
-    }
+    Handle(Geom_Surface) surf = fromUpper? surfaceCache->upperSurface : surfaceCache->lowerSurface;
 
     // convert eta xsi coordinates to u,v
     double u1, u2, u3, u4, v1, v2, v3, v4;
@@ -630,13 +622,15 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
     etaXsiToUV(fromUpper, eta3, xsi3, u3, v3);
     etaXsiToUV(fromUpper, eta4, xsi4, u4, v4);
     
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(surf, 1e-8);
+
     TopoDS_Edge e1 = getFaceTrimmingEdge(face, u1, v1, u2, v2);
     TopoDS_Edge e2 = getFaceTrimmingEdge(face, u2, v2, u3, v3);
     TopoDS_Edge e3 = getFaceTrimmingEdge(face, u3, v3, u4, v4);
     TopoDS_Edge e4 = getFaceTrimmingEdge(face, u4, v4, u1, v1);
 
     TopoDS_Wire w = BRepBuilderAPI_MakeWire(e1,e2,e3,e4);
-    TopoDS_Face f = BRepBuilderAPI_MakeFace(BRep_Tool::Surface(face), w);
+    TopoDS_Face f = BRepBuilderAPI_MakeFace(surf, w);
 
     // compute the surface area
     GProp_GProps sprops;
@@ -986,7 +980,7 @@ bool CCPACSWingSegment::GetIsOnTop(gp_Pnt pnt) const
 }
 
 
-bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
+bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt) const
 {
     bool isOnLoft = CTiglAbstractSegment<CCPACSWingSegment>::GetIsOn(pnt);
 

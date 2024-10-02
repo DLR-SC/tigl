@@ -46,7 +46,10 @@ TopoDS_Wire CCPACSControlSurfaceBorderTrailingEdge::GetWire(PNamedShape wingShap
 
 
     TopoDS_Wire wire;
-    if (GetLeadingEdgeShape().is_initialized()) {
+    if (getXsiLE() < 1e-3) {
+        wire = builder.wholeWingBorder();
+    }
+    else if (GetLeadingEdgeShape().is_initialized()) {
         wire = builder.borderWithLEShape(GetLeadingEdgeShape()->GetRelHeightLE(), 1.0,
                                           GetLeadingEdgeShape()->GetXsiUpperSkin(),
                                           GetLeadingEdgeShape()->GetXsiLowerSkin());

@@ -69,10 +69,9 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Area of the cap.
+        /// Area of the cap
         double                    m_area;
 
-        /// Material properties.
         CCPACSMaterialDefinition  m_material;
 
         CPACSLateralCap_placement m_placement;

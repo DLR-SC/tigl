@@ -38,7 +38,7 @@ public:
 
     std::string GetDefaultedUID() const override
     {
-        return GetUID().value_or("UnkownWallSegment");
+        return GetUID().value_or("UnknownWallSegment");
     }
 
     TiglGeometricComponentIntent GetComponentIntent() const override

@@ -68,11 +68,17 @@ namespace generated
 
     CTiglUIDManager& CPACSCargoCrossBeamsAssembly::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSCargoCrossBeamsAssembly::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

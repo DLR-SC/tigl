@@ -45,7 +45,7 @@ namespace generated
     // This class is used in:
     // CPACSVehicles
 
-    /// @brief structuralElementsType
+    /// @brief Structural elements
     /// 
     /// structuralElements Type, containing the different structural
     /// elements

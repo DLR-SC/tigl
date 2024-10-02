@@ -295,7 +295,7 @@ void TIGLViewerWidget::mouseMoveEvent(QMouseEvent* e)
 {
     Standard_Real X, Y, Z;
     
-    myCurrentPoint = e->pos();
+    setCurrentPoint(e->pos());
     Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
     //Check if the grid is active and that we're snapping to it
     if ( myContext->CurrentViewer()->Grid()->IsActive() && myGridSnap ) {
@@ -734,7 +734,7 @@ void TIGLViewerWidget::setObjectsTexture()
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
     setFocus(Qt::MouseFocusReason);
-    myStartPoint = point;
+    setStartPoint(point);
     if ( nFlags & CASCADESHORTCUTKEY ) {
         setMode( CurAction3d_DynamicZooming );
     }
@@ -772,7 +772,7 @@ void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QP
 
 void TIGLViewerWidget::onMiddleButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-    myStartPoint = point;
+    setStartPoint(point);
     if ( nFlags & CASCADESHORTCUTKEY ) {
         setMode( CurAction3d_DynamicPanning );
     }
@@ -786,7 +786,7 @@ void TIGLViewerWidget::onMiddleButtonDown(  Qt::KeyboardModifiers nFlags, const 
 
 void TIGLViewerWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-    myStartPoint = point;
+    setStartPoint(point);
 //    if ( nFlags & CASCADESHORTCUTKEY )
 //    {
 //        setMode( CurAction3d_DynamicRotation );
@@ -802,7 +802,7 @@ void TIGLViewerWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const Q
 
 void TIGLViewerWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-    myCurrentPoint = point;
+    setCurrentPoint(point);
     if ( nFlags & CASCADESHORTCUTKEY ) {
         // Deactivates dynamic zooming
         setMode( CurAction3d_Nothing );
@@ -865,7 +865,7 @@ void TIGLViewerWidget::onMiddleButtonUp(  Qt::KeyboardModifiers /* nFlags */, co
 
 void TIGLViewerWidget::onRightButtonUp(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-    myCurrentPoint = point;
+    setCurrentPoint(point);
     if ( nFlags & CASCADESHORTCUTKEY ) {
         setMode( CurAction3d_Nothing );
     }
@@ -887,7 +887,7 @@ void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
     if (myView.IsNull()) {
         return;
     }
-    myCurrentPoint = point;
+    setCurrentPoint(point);
 
     if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MidButton ) {
         switch ( myMode ) {
@@ -1097,13 +1097,13 @@ void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint positio
 #if OCC_VERSION_HEX < 0x070000
     if ( !myLayer.IsNull() && !myView.IsNull() ) {
 
-        int witdh, height;
-        myView->Window()->Size(witdh, height);
+        int width, height;
+        myView->Window()->Size(width, height);
         
         myLayer->Clear(); 
         // The -1 is a hack from the opencascade forums to avoid clipping
         // of the coordinates. This way it behaves identically to opengl
-        myLayer->SetOrtho(0, witdh, height, 0, (Aspect_TypeOfConstraint) -1);
+        myLayer->SetOrtho(0, width, height, 0, (Aspect_TypeOfConstraint) -1);
         
         myLayer->Begin();
         myLayer->SetTransparency(1.0);
@@ -1132,13 +1132,14 @@ void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint positio
         myLayer->End();
     }
 #else
+    auto scale = devicePixelRatioF();
     if (viewerContext) {
         Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
         // Draw black-white dotted, imitate a shadowy look
         // This makes it possible to draw even on white or
         // black backgrounds
-        whiteRect->SetRectangle(left, height()-bottom, right, height()-top);
-        blackRect->SetRectangle(left+1, height()-bottom-1, right+1, height()-top-1);
+        whiteRect->SetRectangle(left, height()*scale-bottom, right, height()*scale-top);
+        blackRect->SetRectangle(left+1, height()*scale-bottom-1, right+1, height()*scale-top-1);
 
         if (!myContext->IsDisplayed (whiteRect)) {
             myContext->Display (whiteRect, Standard_False);
@@ -1338,3 +1339,15 @@ void TIGLViewerWidget::contextMenuEvent(QContextMenuEvent *event)
      }
 
  }
+
+void TIGLViewerWidget::setStartPoint(const QPoint& p)
+{
+    auto scale = devicePixelRatioF();
+    myStartPoint = QPoint(p.x()*scale, p.y()*scale);
+}
+
+void TIGLViewerWidget::setCurrentPoint(const QPoint& p)
+{
+    auto scale = devicePixelRatioF();
+    myCurrentPoint = QPoint(p.x()*scale, p.y()*scale);
+}

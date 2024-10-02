@@ -185,7 +185,7 @@ TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
     for ( size_t i = 0; i<wireCache->profiles.size(); ++i) {
 
 #ifdef DEBUG
-        dumpShape(wireCache->profiles[i], "debugShapes", "nacelleProfile", i);
+        dumpShape(wireCache->profiles[i], "debugShapes", "nacelleProfile", (int)i);
 #endif
 
         lofter.addProfiles(wireCache->profiles[i]);
@@ -194,7 +194,7 @@ TopoDS_Shape CCPACSNacelleCowl::BuildOuterShape() const
     // get guide curves
     for(size_t i=0; i<wireCache->guideCurves.size(); ++i) {
 #ifdef DEBUG
-        dumpShape(wireCache->guideCurves[i].second, "debugShapes", "nacelleGuide", i);
+        dumpShape(wireCache->guideCurves[i].second, "debugShapes", "nacelleGuide", (int)i);
 #endif
         lofter.addGuides(wireCache->guideCurves[i].second);
     }

@@ -284,8 +284,8 @@ void CTiglCurveConnector::InterpolateGuideCurvePart(guideCurveConnected& connect
         // check if a tangent for the last point is prescribed in CPACS
         if ( curvePart.localGuides[isegment]->GetTangent() ) {
             const generated::CPACSPointXYZ& tangent = *(curvePart.localGuides[isegment]->GetTangent());
-            tangents[idx_end] = gp_Vec( tangent.GetX(), tangent.GetY(), tangent.GetZ());
-            tangentFlags[idx_end] = true;
+            tangents.back() = gp_Vec( tangent.GetX(), tangent.GetY(), tangent.GetZ());
+            tangentFlags.back() = true;
         }
 
     } // for all local guides

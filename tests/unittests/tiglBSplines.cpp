@@ -311,7 +311,7 @@ TEST_F(BSplineInterpolation, interpolateAll)
     StoreResult("TestData/analysis/BSplineInterpolation-interpolateAll.brep", curve, pnt2);
 }
 
-TEST_F(BSplineInterpolation, interpolateAllContinous)
+TEST_F(BSplineInterpolation, interpolateAllContinuous)
 {
     int nPoints = 8;
     TColgp_Array1OfPnt pnt2(1, nPoints);
@@ -335,7 +335,7 @@ TEST_F(BSplineInterpolation, interpolateAllContinous)
     StoreResult("TestData/analysis/BSplineInterpolation-interpolateAllCont.brep", curve, pnt2);
 }
 
-TEST_F(BSplineInterpolation, interpolateAllContinousHalfCircle)
+TEST_F(BSplineInterpolation, interpolateAllContinuousHalfCircle)
 {
     int nPoints = 8;
     TColgp_Array1OfPnt pnt2(1, nPoints);
@@ -477,6 +477,115 @@ TEST_F(BSplineInterpolation, tipKink2)
     StoreResult("TestData/analysis/BSplineInterpolation-tipKink2.brep", result.curve, pnt2);
 }
 
+TEST_F(BSplineInterpolation, reparameterizePiecewiseLinear)
+{
+    Handle(TColgp_HArray1OfPnt) pnts = new TColgp_HArray1OfPnt(1, 23);
+
+    pnts->SetValue(1, gp_Pnt(0.0, 0.0, -0.5));
+    pnts->SetValue(2, gp_Pnt(0.0, 0.173853, -0.468802));
+    pnts->SetValue(3, gp_Pnt(0.0, 0.250948, -0.432464));
+    pnts->SetValue(4, gp_Pnt(0.0, 0.288432, -0.39498));
+    pnts->SetValue(5, gp_Pnt(0.0, 0.37919, -0.304222));
+    pnts->SetValue(6, gp_Pnt(0.0, 0.432464, -0.250948));
+    pnts->SetValue(7, gp_Pnt(0.0, 0.460572, -0.19461));
+    pnts->SetValue(8, gp_Pnt(0.0, 0.481378, -0.135186));
+    pnts->SetValue(9, gp_Pnt(0.0, 0.497739, 0.0474959));
+    pnts->SetValue(10, gp_Pnt(0.0, 0.447123, 0.223787));
+    pnts->SetValue(11, gp_Pnt(0.0, 0.336342, 0.369965));
+    pnts->SetValue(12, gp_Pnt(0.0, 0.180302, 0.466359));
+    pnts->SetValue(13, gp_Pnt(0.0, -0.0, 0.5));
+    pnts->SetValue(14, gp_Pnt(0.0, -0.175839, 0.46806));
+    pnts->SetValue(15, gp_Pnt(0.0, -0.329214, 0.376322));
+    pnts->SetValue(16, gp_Pnt(0.0, -0.440528, 0.236506));
+    pnts->SetValue(17, gp_Pnt(0.0, -0.495561, 0.0664736));
+    pnts->SetValue(18, gp_Pnt(0.0, -0.494975, -0.0707107));
+    pnts->SetValue(19, gp_Pnt(0.0, -0.401705, -0.16398));
+    pnts->SetValue(20, gp_Pnt(0.0, -0.274651, -0.291034));
+    pnts->SetValue(21, gp_Pnt(0.0, -0.147597, -0.418089));
+    pnts->SetValue(22, gp_Pnt(0.0, -0.0707107, -0.494975));
+    pnts->SetValue(23, gp_Pnt(0.0, 0.0, -0.5));
+
+
+    std::vector<unsigned int> kinks = {2, 5, 17, 21};
+    // Force parameter values at the kinks
+    tigl::ParamMap params = {
+        {2, 0.0209721},
+        {5, 0.221424},
+        {17, 0.780347},
+        {21, 0.976773}
+    };
+
+    // Interpolate without reparameterization to compare
+    tigl::CTiglInterpolatePointsWithKinks interpolatorOrig(pnts, kinks, {}, 0.5);
+    double tolerance = 0.00001;
+    // Interpolate with reparameterization
+    tigl::CTiglInterpolatePointsWithKinks interpolatorReparam(pnts, kinks, params, 0.5, 3,
+                                                              tigl::CTiglInterpolatePointsWithKinks::Algo::InterpolateFirstThenReparametrize, tolerance);
+
+    Handle(Geom_BSplineCurve) curve = interpolatorOrig.Curve();
+    Handle(Geom_BSplineCurve) curveReparameterized = interpolatorReparam.Curve();
+
+    // Check correct reparameterization
+    double param;
+    int pointIdx;
+    for (int kinkIdx=0; kinkIdx < kinks.size(); kinkIdx++) {
+        // Parameters are defined at the points at which kinks are set
+        pointIdx = kinks[kinkIdx];
+        param = params[pointIdx];
+
+        // Test whether B-Spline evaluation at the wanted parameters equals the matching interpolation point
+        // Point handle index starts at 1, kinks and parameter index starts at 0 -> shift point evaluation
+        EXPECT_TRUE(curveReparameterized->Value(param).IsEqual(pnts->Value(pointIdx+1), 1e-10));
+    }
+
+    // Check if B-Spline is geometrically identical by choosing equally distributed parameters on the definition area
+    const Standard_Integer testSize = 100;
+    gp_Pnt curvePnt, projectedPnt;
+    double testParam, deviation, deviationMax=0.0;
+    Standard_Real firstKnot = curveReparameterized->Knot(1);
+    Standard_Real lastKnot = curveReparameterized->Knot(curveReparameterized->NbKnots());
+
+    for (int idx=0; idx < testSize; idx++) {
+        testParam = (double) firstKnot + (idx*lastKnot)/(testSize-1);
+        curve->D0(testParam, curvePnt);
+        GeomAPI_ProjectPointOnCurve projection(curvePnt, curveReparameterized);
+        projectedPnt = projection.NearestPoint();
+        deviation = curvePnt.Distance(projectedPnt);
+        if (deviation >= deviationMax)
+            deviationMax = deviation;
+    }
+    ASSERT_NEAR(0.0, deviationMax, tolerance);
+    StoreResult("TestData/analysis/BSplineInterpolation-reparameterizePiecewiseLinear.brep", curveReparameterized, pnts->Array1());
+
+    // Check Error catching using wrong dummy arguments
+    std::vector<double> const& paramsOld = {0., 0.5, 1.};
+    std::vector<double> const& paramsNew = {0., 1.};
+    EXPECT_THROW(tigl::CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(curve, paramsOld, paramsNew, tolerance), tigl::CTiglError);
+
+    tolerance = -0.1;
+    EXPECT_THROW(tigl::CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(curve, {}, {}, tolerance), tigl::CTiglError);
+}
+
+TEST_F(BSplineInterpolation, calcReparamfctInv)
+{
+    std::vector<double> const& paramsOld = {0., 0.5, 1.};
+    std::vector<double> const& paramsNew = {0., 0.5, 1.};
+    double u1 = 1.1;
+    double u2 = -0.1;
+    double u3 = 1.001;
+    double u4 = -0.001;
+    double tolerance = 0.05;
+
+    // Test error checking
+
+    // Input u out of range (range extended by tolerance)
+    EXPECT_THROW(details::calcReparamfctInv(paramsOld, paramsNew, u1, tolerance), tigl::CTiglError);
+    EXPECT_THROW(details::calcReparamfctInv(paramsOld, paramsNew, u2, tolerance), tigl::CTiglError);
+    // Input u in range extended by tolerance (check clamp)
+    EXPECT_EQ(details::calcReparamfctInv(paramsOld, paramsNew, u3, tolerance), 1.);
+    EXPECT_EQ(details::calcReparamfctInv(paramsOld, paramsNew, u4, tolerance), 0.);
+}
+
 TEST_F(BSplineInterpolation, withKinksShield)
 {
     Handle(TColgp_HArray1OfPnt) points = new TColgp_HArray1OfPnt(1, 5);
@@ -503,7 +612,8 @@ TEST_F(BSplineInterpolation, withKinksShield)
     EXPECT_TRUE(curve->Value(0.8).IsEqual(points->Value(4), tol));
 
     auto kinkParams = tigl::CTiglBSplineAlgorithms::getKinkParameters(curve);
-    EXPECT_TRUE(ArraysMatch({0.2, 0.8}, kinkParams));
+    EXPECT_NEAR(0.2, kinkParams[0], 1e-13);
+    EXPECT_NEAR(0.8, kinkParams[1], 1e-13);
 
     auto paramsVec = interpolator.Parameters();
     EXPECT_TRUE(ArraysMatch({0., 0.2, 0.5, 0.8, 1.0}, paramsVec));
@@ -593,7 +703,7 @@ TEST_F(BSplineInterpolation, withKinksSmooth)
     StoreResult("TestData/analysis/BSplineInterpolation-withKinksSmooth.brep", curve, points->Array1());
 }
 
-TEST_F(BSplineInterpolation, interpolationContinous)
+TEST_F(BSplineInterpolation, interpolationContinuous)
 {
 
     Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, 13);
@@ -624,12 +734,12 @@ TEST_F(BSplineInterpolation, interpolationContinous)
         }
 
         std::stringstream str;
-        str << "TestData/analysis/BSplineInterpolation-interpolationContinousDegree" << degree << ".brep";
+        str << "TestData/analysis/BSplineInterpolation-interpolationContinuousDegree" << degree << ".brep";
         StoreResult(str.str(), result, pnt2->Array1());
     }
 }
 
-TEST_F(BSplineInterpolation, interpolationDiscontinous)
+TEST_F(BSplineInterpolation, interpolationDiscontinuous)
 {
 
     Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, 12);
@@ -660,7 +770,7 @@ TEST_F(BSplineInterpolation, interpolationDiscontinous)
         }
 
         std::stringstream str;
-        str << "TestData/analysis/BSplineInterpolation-interpolationDiscontinousDegree" << degree << ".brep";
+        str << "TestData/analysis/BSplineInterpolation-interpolationDiscontinuousDegree" << degree << ".brep";
         StoreResult(str.str(), result, pnt2->Array1());
     }
 }

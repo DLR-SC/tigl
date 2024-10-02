@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cpacs.googlecode.com/files/CPACS_21_Schema.xsd">
+  <header>
+    <name>Cpacs2Test</name>
+    <description>Test file to check versioning</description>
+    <creator>Martin Siggel</creator>
+    <timestamp>2021-11-02T15:12:00</timestamp>
+    <version>1.0.0</version>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="LoggingTestModel"/>
+    </aircraft>
+  </vehicles>
+
+</cpacs>

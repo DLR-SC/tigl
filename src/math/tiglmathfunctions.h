@@ -115,7 +115,7 @@ TIGL_EXPORT double shape_function_deriv(const std::vector<double>& B, const int&
  * 
  * CST(psi)=C(psi)*S(psi)
  *
- * N1, N2 are the paramters of the class function C(psi) = psi^N1 * (1-psi)^N2
+ * N1, N2 are the parameters of the class function C(psi) = psi^N1 * (1-psi)^N2
  * B is the vector of coefficients for the bernstein polynomials P_i^n(psi) 
  * T is the trailing edge thickness
  * inside the shape function S(psi)=sum_i=1^N B_i * p_i^n(psi)
@@ -127,7 +127,6 @@ TIGL_EXPORT double cstcurve(const double& N1, const double& N2, const std::vecto
  * CST(psi)=C(psi)*S(psi)
  */
 TIGL_EXPORT double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const double& T, const int& n, const double& x);
-
 
 /**
  * Return true if the value of a is similar to b

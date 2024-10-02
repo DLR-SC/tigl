@@ -30,8 +30,8 @@ namespace generated
 {
     CPACSControlSurfacePath::CPACSControlSurfacePath(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_innerHingePoint(this)
-        , m_outerHingePoint(this)
+        , m_innerHingePoint(this, m_uidMgr)
+        , m_outerHingePoint(this, m_uidMgr)
         , m_steps(this, m_uidMgr)
     {
         //assert(parent != NULL);
@@ -64,11 +64,17 @@ namespace generated
 
     CTiglUIDManager& CPACSControlSurfacePath::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSControlSurfacePath::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

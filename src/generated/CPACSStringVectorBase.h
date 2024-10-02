@@ -37,6 +37,8 @@ class CCPACSRotorBladeAttachment;
 
 namespace generated
 {
+    class CPACSTrackJointPosition;
+
     // This class is used in:
     // CPACSCst2D
     // CPACSCurveParamPointMap
@@ -44,11 +46,11 @@ namespace generated
     // CPACSPointListRelXYZVector
     // CPACSPointListXYVector
     // CPACSRotorBladeAttachment
+    // CPACSTrackJointPosition
 
     /// @brief stringVectorBaseType
     /// 
-    /// Base type for string vector nodes (including maptype
-    /// vector attribute)
+    /// Base type for string vector nodes
     /// The vector base type can include optional uncertainty
     /// information. The description of uncertainties is placed in
     /// addtional attributes. First, it is described by an attribute that
@@ -60,6 +62,11 @@ namespace generated
     /// If the uncertainty values change for the elements of
     /// the vector than the attribute may be written as a list of values
     /// separated by semicolons
+    /// DEPRECATED: As of CPACS version 3.3, the mapType attribute is set to optional to ensure the compatibility of older data sets.
+    /// However, since the type is uniquely defined via the XSD, the attribute is superfluous
+    /// and will therefore be completely omitted in the next major release (Note: requires
+    /// TiXI >= 3.3). Please contact the CPACS team
+    /// if for any reason you see a long-term need for the mapType attribute.
     /// @see uncertaintyFunctions
     /// 
     class CPACSStringVectorBase
@@ -71,6 +78,7 @@ namespace generated
         TIGL_EXPORT CPACSStringVectorBase(CCPACSPointListRelXYZVector* parent);
         TIGL_EXPORT CPACSStringVectorBase(CCPACSPointListXYVector* parent);
         TIGL_EXPORT CPACSStringVectorBase(CCPACSRotorBladeAttachment* parent);
+        TIGL_EXPORT CPACSStringVectorBase(CPACSTrackJointPosition* parent);
 
         TIGL_EXPORT virtual ~CPACSStringVectorBase();
 
@@ -83,9 +91,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-#ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CCPACSCurveParamPointMap>::value || std::is_same<P, CCPACSCurvePointListXYZ>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
-#endif
+            static_assert(std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CCPACSCurveParamPointMap>::value || std::is_same<P, CCPACSCurvePointListXYZ>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value || std::is_same<P, CPACSTrackJointPosition>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -95,9 +101,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-#ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CCPACSCurveParamPointMap>::value || std::is_same<P, CCPACSCurvePointListXYZ>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
-#endif
+            static_assert(std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CCPACSCurveParamPointMap>::value || std::is_same<P, CCPACSCurvePointListXYZ>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value || std::is_same<P, CPACSTrackJointPosition>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -110,8 +114,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::string& GetMapType() const;
-        TIGL_EXPORT virtual void SetMapType(const std::string& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetMapType() const;
+        TIGL_EXPORT virtual void SetMapType(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetMu() const;
         TIGL_EXPORT virtual void SetMu(const boost::optional<std::string>& value);
@@ -134,14 +138,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetW() const;
         TIGL_EXPORT virtual void SetW(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const std::string& GetSimpleContent() const;
-        TIGL_EXPORT virtual void SetSimpleContent(const std::string& value);
+        TIGL_EXPORT virtual const std::string& GetValue() const;
+        TIGL_EXPORT virtual void SetValue(const std::string& value);
 
     protected:
         void* m_parent;
         const std::type_info* m_parentType;
 
-        std::string                  m_mapType;
+        boost::optional<std::string> m_mapType;
         boost::optional<std::string> m_mu;
         boost::optional<std::string> m_delta;
         boost::optional<std::string> m_a;
@@ -149,7 +153,7 @@ namespace generated
         boost::optional<std::string> m_c;
         boost::optional<std::string> m_v;
         boost::optional<std::string> m_w;
-        std::string                  m_simpleContent;
+        std::string                  m_value;
 
     private:
         CPACSStringVectorBase(const CPACSStringVectorBase&) = delete;
@@ -161,4 +165,7 @@ namespace generated
 } // namespace generated
 
 // CPACSStringVectorBase is customized, use type CCPACSStringVector directly
+
+// Aliases in tigl namespace
+using CCPACSTrackJointPosition = generated::CPACSTrackJointPosition;
 } // namespace tigl

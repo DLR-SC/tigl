@@ -10,7 +10,7 @@ if(DOXYGEN_FOUND)
     add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html
         OUTPUT ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
-        DEPENDS ${PROJECT_SOURCE_DIR}/src/api/tigl.h
+        DEPENDS ${PROJECT_SOURCE_DIR}/src/
         DEPENDS ${DOC_MD_SRC}
         DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
         DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog.md
@@ -37,9 +37,11 @@ if(DOXYGEN_FOUND)
         ")
     
 
-    OPTION(TIGL_BUILD_DOC_PDF "Builds the documentation pdf using latex" OFF)
-    if(TIGL_BUILD_DOC_PDF)
-        find_program(LATEX pdflatex REQUIRED)
+    find_program(LATEX pdflatex)
+
+	option(TIGL_DOC_PDF "Build TiGL Documentation using Latex" OFF)
+
+    if(TIGL_DOC_PDF AND LATEX)
         # TIGL Reference PDF File
         add_custom_command(
             OUTPUT ${PROJECT_BINARY_DIR}/doc/tiglRef.pdf
@@ -106,10 +108,10 @@ if(DOXYGEN_FOUND)
           Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\TiGL-Reference.lnk\\\"
         ")
         
-    else()
-        add_custom_target(doc
+    endif()
+	
+	add_custom_target(doc
             DEPENDS html
             COMMENT "Generating API documentation with Doxygen" VERBATIM 
         )
-    endif()
 endif(DOXYGEN_FOUND)

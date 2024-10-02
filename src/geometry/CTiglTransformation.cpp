@@ -593,7 +593,7 @@ bool CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTi
 
     // calculate intrinsic Euler angles from rotation matrix U
     //
-    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf, where the same argumentation
+    // This implementation is based on https://www.eecs.qmul.ac.uk/~gslabaugh/publications/euler.pdf, where the same argumentation
     // is used for intrinsic x,y',z'' angles and the rotatation matrix
     //
     //                |                        cos(y)*cos(z) |               -        cos(y)*cos(z) |         sin(y) |
@@ -602,19 +602,23 @@ bool CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTi
     //
     // rather than extrinsic angles and the Rotation matrix mentioned in that pdf.
 
+    // U_13 = sin(y) \neq \pm 1
     if( fabs( fabs(U(1, 3)) - 1) > 1e-10 ){
         rotation.y = asin(U(1, 3));
         double cosTheta = cos(rotation.y);
         rotation.x = -atan2(U(2,3)/cosTheta, U(3,3)/cosTheta);
         rotation.z = -atan2(U(1,2)/cosTheta, U(1,1)/cosTheta);
     }
+    // U_13 = \pm 1
     else {
         rotation.x = 0;
-        if ( fabs(U(1,3) + 1) > 1e-10 ) {
+        // U_13 = -1
+        if ( fabs(U(1,3) - 1) > 1e-10 ) {
             rotation.z = -rotation.x - atan2(U(2,1), U(2,2));
             rotation.y = -M_PI/2;
         }
-        else{
+        // U_13 = 1
+        else {
             rotation.z = -rotation.x + atan2(U(2,1), U(2,2));
             rotation.y = M_PI/2;
         }

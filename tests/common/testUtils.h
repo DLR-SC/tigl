@@ -27,6 +27,7 @@
 
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <tigl.h>
 // class TColgp_Array1OfPnt;
 
 // save x-y data
@@ -36,6 +37,19 @@ void StoreResult(const std::string& filename, const Handle(Geom_BSplineCurve)& c
 
 Handle(Geom_BSplineSurface) LoadBSplineSurface(const std::string& filename);
 Handle(Geom_BSplineCurve) LoadBSplineCurve(const std::string& filename);
+
+class CaptureTiGLLog
+{
+public:
+    CaptureTiGLLog(TiglLogLevel logLevel);
+
+    std::string log();
+
+    ~CaptureTiGLLog();
+
+private:
+     TiglLogLevel _oldVerbosityLevel;
+};
 
 #endif // TESTUTILS_H
 

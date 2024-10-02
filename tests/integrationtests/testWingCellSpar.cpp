@@ -19,6 +19,7 @@
 #include "test.h"
 #include "tigl.h"
 
+#include "CTiglUIDManager.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingCell.h"
@@ -75,8 +76,11 @@ TiglCPACSConfigurationHandle WingCellSpar::tiglHandle = 0;
 class WingCellRibSpar : public ::testing::Test
 {
 protected:
-   static void SetUpTestCase()
-   {
+   static void SetUpTestCase(){}
+
+   static void TearDownTestCase(){}
+
+   void SetUp() override {
        const char* filename = "TestData/cell_rib_spar_test.xml";
        ReturnCode tixiRet;
        TiglReturnCode tiglRet;
@@ -89,17 +93,12 @@ protected:
        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "model", &tiglHandle);
        ASSERT_EQ(TIGL_SUCCESS, tiglRet);
    }
-
-   static void TearDownTestCase()
-   {
+   void TearDown() override {
        ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
        ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
        tiglHandle = -1;
        tixiHandle = -1;
    }
-
-   void SetUp() override {}
-   void TearDown() override {}
 
    static TixiDocumentHandle           tixiHandle;
    static TiglCPACSConfigurationHandle tiglHandle;
@@ -160,7 +159,8 @@ public:
 
 TEST(WingCell, IsInner)
 {
-   tigl::CCPACSWingCell cell(NULL, NULL);
+   tigl::CTiglUIDManager dummy_manager;
+   tigl::CCPACSWingCell cell(NULL, &dummy_manager);
    cell.SetLeadingEdgeInnerPoint (0,0);
    cell.SetLeadingEdgeOuterPoint (1,0);
    cell.SetTrailingEdgeInnerPoint(0,1);
@@ -195,7 +195,8 @@ TEST(WingCell, IsInner)
 
 TEST(WingCell, IsInner_NonConvex)
 {
-   tigl::CCPACSWingCell cell(NULL, NULL);
+   tigl::CTiglUIDManager dummy_manager;
+   tigl::CCPACSWingCell cell(NULL, &dummy_manager);
    cell.SetLeadingEdgeInnerPoint (0,0);
    cell.SetLeadingEdgeOuterPoint (1,0);
    cell.SetTrailingEdgeInnerPoint(0,1);
@@ -212,7 +213,8 @@ TEST(WingCell, IsInner_NonConvex)
 
 TEST(WingCell, IsConvex)
 {
-   tigl::CCPACSWingCell cell(NULL, NULL);
+   tigl::CTiglUIDManager dummy_manager;
+   tigl::CCPACSWingCell cell(NULL, &dummy_manager);
    cell.SetLeadingEdgeInnerPoint (0,0);
    cell.SetLeadingEdgeOuterPoint (1,0);
    cell.SetTrailingEdgeInnerPoint(0,1);
@@ -334,6 +336,28 @@ TEST_F(WingCellRibSpar, computeGeometry) {
    tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(1);
    TopoDS_Shape cellGeom = cell.GetSkinGeometry();
    BRepTools::Write(cellGeom, "TestData/export/WingCellRibSpar_CellGeometry.brep");
+}
+
+TEST_F(WingCellRibSpar, bug864)
+{
+    // A test for Bug #864 https://github.com/DLR-SC/tigl/issues/864
+
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+
+    tigl::CCPACSWingCell& cell = componentSegment.GetStructure()->GetUpperShell().GetCell(2);
+
+
+    const std::pair<double, double> arr[] = { DP(0.2, 0.3), DP(0.95, 0.4), DP(0.2, 0.72), DP(0.95, 0.76) };
+    std::vector< std::pair<double, double> > expectedEtaXsi (arr, arr + sizeof(arr) / sizeof(arr[0]));
+    checkCellEtaXsis(cell, expectedEtaXsi, 1.E-3);
+
+
+    TopoDS_Shape cellGeom = cell.GetSkinGeometry();
+    BRepTools::Write(cellGeom, "TestData/export/WingCellRibSpar_CellGeometry.brep");
+
 }
 
 TEST_F(WingCellContourCoordinates, mixedBorderDefError)

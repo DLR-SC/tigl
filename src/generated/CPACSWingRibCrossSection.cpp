@@ -62,11 +62,17 @@ namespace generated
 
     CTiglUIDManager& CPACSWingRibCrossSection::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSWingRibCrossSection::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -124,6 +130,17 @@ namespace generated
             }
         }
 
+        // read element ribPost
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribPost")) {
+            m_ribPost = boost::in_place(reinterpret_cast<CCPACSWingRibCrossSection*>(this), m_uidMgr);
+            try {
+                m_ribPost->ReadCPACS(tixiHandle, xpath + "/ribPost");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read ribPost at xpath " << xpath << ": " << e.what();
+                m_ribPost = boost::none;
+            }
+        }
+
     }
 
     void CPACSWingRibCrossSection::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -173,6 +190,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/lowerCap");
+            }
+        }
+
+        // write element ribPost
+        if (m_ribPost) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ribPost");
+            m_ribPost->WriteCPACS(tixiHandle, xpath + "/ribPost");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribPost")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/ribPost");
             }
         }
 
@@ -228,6 +256,16 @@ namespace generated
         return m_lowerCap;
     }
 
+    const boost::optional<CPACSCap>& CPACSWingRibCrossSection::GetRibPost() const
+    {
+        return m_ribPost;
+    }
+
+    boost::optional<CPACSCap>& CPACSWingRibCrossSection::GetRibPost()
+    {
+        return m_ribPost;
+    }
+
     CPACSPointX& CPACSWingRibCrossSection::GetRibRotation(CreateIfNotExistsTag)
     {
         if (!m_ribRotation)
@@ -274,6 +312,18 @@ namespace generated
     void CPACSWingRibCrossSection::RemoveLowerCap()
     {
         m_lowerCap = boost::none;
+    }
+
+    CPACSCap& CPACSWingRibCrossSection::GetRibPost(CreateIfNotExistsTag)
+    {
+        if (!m_ribPost)
+            m_ribPost = boost::in_place(reinterpret_cast<CCPACSWingRibCrossSection*>(this), m_uidMgr);
+        return *m_ribPost;
+    }
+
+    void CPACSWingRibCrossSection::RemoveRibPost()
+    {
+        m_ribPost = boost::none;
     }
 
 } // namespace generated

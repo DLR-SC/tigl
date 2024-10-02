@@ -40,7 +40,7 @@ namespace generated
     // CPACSAircraftModel
     // CPACSRotorcraftModel
 
-    /// @brief systemsType
+    /// @brief Systems
     /// 
     /// Systems type, containing the aircraft's control system
     /// data
@@ -65,9 +65,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CCPACSAircraftModel>::value || std::is_same<P, CCPACSRotorcraftModel>::value, "template argument for P is not a parent class of CPACSSystems");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -77,9 +75,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-#ifdef HAVE_STDIS_SAME
             static_assert(std::is_same<P, CCPACSAircraftModel>::value || std::is_same<P, CCPACSRotorcraftModel>::value, "template argument for P is not a parent class of CPACSSystems");
-#endif
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

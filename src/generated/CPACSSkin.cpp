@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSDuctStructure.h"
 #include "CCPACSFuselageStructure.h"
 #include "CPACSSkin.h"
 #include "CTiglError.h"
@@ -28,11 +29,20 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSSkin::CPACSSkin(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDuctStructure);
+    }
+
     CPACSSkin::CPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSFuselageStructure);
     }
 
     CPACSSkin::~CPACSSkin()
@@ -42,20 +52,15 @@ namespace generated
         }
     }
 
-    const CCPACSFuselageStructure* CPACSSkin::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSFuselageStructure* CPACSSkin::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSSkin::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CCPACSDuctStructure>()) {
+                return GetParent<CCPACSDuctStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSFuselageStructure>()) {
+                return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -63,18 +68,29 @@ namespace generated
     CTiglUIDObject* CPACSSkin::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CCPACSDuctStructure>()) {
+                return GetParent<CCPACSDuctStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSFuselageStructure>()) {
+                return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDManager& CPACSSkin::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSSkin::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -91,7 +107,7 @@ namespace generated
 
         // read element skinSegments
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skinSegments")) {
-            m_skinSegments = boost::in_place(this, m_uidMgr);
+            m_skinSegments = boost::in_place(reinterpret_cast<CCPACSSkin*>(this), m_uidMgr);
             try {
                 m_skinSegments->ReadCPACS(tixiHandle, xpath + "/skinSegments");
             } catch(const std::exception& e) {
@@ -155,7 +171,7 @@ namespace generated
     CPACSSkinSegments& CPACSSkin::GetSkinSegments(CreateIfNotExistsTag)
     {
         if (!m_skinSegments)
-            m_skinSegments = boost::in_place(this, m_uidMgr);
+            m_skinSegments = boost::in_place(reinterpret_cast<CCPACSSkin*>(this), m_uidMgr);
         return *m_skinSegments;
     }
 

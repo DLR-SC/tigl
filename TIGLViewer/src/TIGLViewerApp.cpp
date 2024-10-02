@@ -37,7 +37,7 @@ void showHelp(QString appName)
     helpText += "  --filename <filename>    Initial CPACS file to open and display.\n";
     helpText += "  --modelUID <uid>         Initial model uid open and display.\n";
     helpText += "  --script <filename>       Script to execute.\n";
-    helpText += "  --windowtitle <title>    The titel of the TiGL Viewer window.\n";
+    helpText += "  --windowtitle <title>    The title of the TiGL Viewer window.\n";
     helpText += "  --controlFile <filename>    Name of the control file.\n";
     helpText += "  --suppress-errors        Suppress all error message dialogs\n";
 
@@ -145,7 +145,7 @@ int TIGLViewerApp::parseArguments(QStringList argList)
     return 0;
 }
 
-void TIGLViewerApp::onWindowInitalized()
+void TIGLViewerApp::onWindowInitialized()
 {
     // suppress errors
     mainwindow->setSuppressErrorsEnabled(config.suppressErrors);
@@ -174,6 +174,7 @@ int TIGLViewerApp::run()
     }
 
     connect(mainwindow.get(), SIGNAL(windowInitialized()), this, SLOT(onWindowInitalized()));
+
     if (!config.windowTitle.isEmpty()) {
         mainwindow->setTiglWindowTitle(config.windowTitle, true);
     }

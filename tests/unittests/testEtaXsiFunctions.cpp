@@ -32,7 +32,6 @@ TEST(EtaXsiFunctions, interpolateXsi_onSegment)
     double eta = 1.;
     double xsi = 0.;
     double errorDist = 0.;
-
     tigl::InterpolateXsi(compSegmentUID, tigl::EtaXsi(0.0, 0.0),
                          compSegmentUID, tigl::EtaXsi(1.0, 1.0),
                          "Cpacs2Test_Wing_Seg_1_2", eta, uidMgr,

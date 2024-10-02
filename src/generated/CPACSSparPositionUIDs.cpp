@@ -66,11 +66,17 @@ namespace generated
 
     CTiglUIDManager& CPACSSparPositionUIDs::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSSparPositionUIDs::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -100,9 +106,25 @@ namespace generated
         return m_sparPositionUIDs;
     }
 
-    std::vector<std::string>& CPACSSparPositionUIDs::GetSparPositionUIDs()
+    void CPACSSparPositionUIDs::AddToSparPositionUIDs(const std::string& value)
     {
-        return m_sparPositionUIDs;
+        if (m_uidMgr) {
+            if (!value.empty()) m_uidMgr->RegisterReference(value, *this);
+        }
+        m_sparPositionUIDs.push_back(value);
+    }
+
+    bool CPACSSparPositionUIDs::RemoveFromSparPositionUIDs(const std::string& value)
+    {
+        const auto it = std::find(m_sparPositionUIDs.begin(), m_sparPositionUIDs.end(), value);
+        if (it != m_sparPositionUIDs.end()) {
+            if (m_uidMgr && !it->empty()) {
+                m_uidMgr->TryUnregisterReference(*it, *this);
+            }
+            m_sparPositionUIDs.erase(it);
+            return true;
+        }
+        return false;
     }
 
     const CTiglUIDObject* CPACSSparPositionUIDs::GetNextUIDObject() const

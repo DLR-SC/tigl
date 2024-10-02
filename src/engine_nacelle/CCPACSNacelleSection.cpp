@@ -119,4 +119,4 @@ double CCPACSNacelleSection::GetChordLength() const
 }
 
 
-} //namepsace tigl
+} //namespace tigl

@@ -530,9 +530,9 @@
             <x mapType="vector">0.0;0.0;0.0;0.0;0.0</x>
             <y mapType="vector">0.0;1.0;0.0;-1.0;0.0</y>
             <z mapType="vector">1.0;0.0;-1.0;0.0;1.0</z>
-            <kinks mapType="vector">1;3</kinks>
+            <kinkIndices mapType="vector">1;3</kinkIndices>
             <parameterMap>
-              <pointIndex mapType="vector">1;3</pointIndex>
+              <pointIndices mapType="vector">1;3</pointIndices>
               <paramOnCurve mapType="vector">0.25;0.75</paramOnCurve>
             </parameterMap>
           </pointList>

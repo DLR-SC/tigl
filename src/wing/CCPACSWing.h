@@ -51,8 +51,22 @@ class CCPACSWing : public generated::CPACSWing, public CTiglRelativelyPositioned
 friend class CTiglWingBuilder;
 
 public:
-    // Constructor
+    /**
+     *  Constructor of Class CCPACSWing
+     *  Constructor is automatically called during reading of a CPACS-file.
+     *  Not intended to be called manually.
+     *  @param parent
+     *  @param uidMgr
+     */
     TIGL_EXPORT CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr);
+
+    /**
+     *  Constructor of Class CCPACSWing
+     *  Constructor is automatically called during reading of a CPACS-file.
+     *  Not intended to be called manually.
+     *  @param parent
+     *  @param uidMgr
+     */
     TIGL_EXPORT CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr);
 
     // Virtual destructor
@@ -67,83 +81,185 @@ public:
     TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
     TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value) override;
 
-    // Returns whether this wing is a rotor blade
+    /**
+     * @brief Returns whether this wing is a rotor blade
+     * @return bool
+     */
     TIGL_EXPORT bool IsRotorBlade() const;
 
-    // Returns the parent configuration
+    /**
+     *  @brief Returns the parent configuration
+     *  @return CCPACSConfiguration&
+     */
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
-    // Get section count
+    /**
+     * @brief Get section count
+     * @return int
+     */
     TIGL_EXPORT int GetSectionCount() const;
 
-    // Returns the section for a given index
+    /**
+     * @brief Returns the section for a given index
+     * @return CCPACSWingSection&
+     */
     TIGL_EXPORT CCPACSWingSection& GetSection(int index);
+
+    /**
+     * @brief Returns the section for a given index
+     * @return CCPACSWingSection&
+     */
     TIGL_EXPORT const CCPACSWingSection& GetSection(int index) const;
 
-    // Getter of the number of segments of the wing
+
+    /**
+     *  @brief Returns the number of segments of the wing
+     *  @param index
+     *  @return int
+     */
     TIGL_EXPORT int GetSegmentCount() const;
 
-    // Returns the segment for a given index or uid
+    /**
+     * @brief Returns the segment for a given index
+     * @param index Segment index
+     * @return CCPACSWingSegment&
+     */
     TIGL_EXPORT CCPACSWingSegment& GetSegment(const int index);
+
+    /**
+     * @brief Returns the segment for a given index
+     * @param index Segment index
+     * @return CCPACSWingSegment&
+     */
     TIGL_EXPORT const CCPACSWingSegment& GetSegment(const int index) const;
+
+    /**
+     * @brief Returns the segment for a given uid
+     * @param uid Segment UID
+     * @return CCPACSWingSegment&
+     */
     TIGL_EXPORT CCPACSWingSegment& GetSegment(std::string uid);
+
+    /**
+     * @brief Returns the segment for a given uid
+     * @param uid Segment UID
+     * @return CCPACSWingSegment&
+     */
     TIGL_EXPORT const CCPACSWingSegment& GetSegment(std::string uid) const;
 
-    // Getter of the number of component segments of the wing
+    /**
+     * @brief Returns the number of component segments of the wing
+     * @return int
+     */
     TIGL_EXPORT int GetComponentSegmentCount() const;
 
-    // Returns the segment for a given index or uid
+    /**
+     * @brief Returns the segment for a given index
+     * @param index Segment index
+     * @return CCPACSWingComponentSegment&
+     */
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const int index);
+
+    /**
+     * @brief Returns the segment for a given index
+     * @param index Segment index
+     * @return CCPACSWingComponentSegment&
+     */
     TIGL_EXPORT const CCPACSWingComponentSegment& GetComponentSegment(const int index) const;
+
+    /**
+     * @brief Returns the segment for a given uid
+     * @param uid Segment UID
+     * @return CCPACSWingComponentSegment&
+     */
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const std::string& uid);
 
-    // Get the positioning transformation for a given section uid
+    /**
+     * @brief Returns the positioning transformation for a given section uid
+     * @param sectionUID
+     * @return CTiglTransformation
+     */
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionUID);
 
-    // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
+    /**
+     * @brief Returns the upper point in absolute (world) coordinates for a given segment,
+     * eta, xsi (calculated output may be influenced by setting different value for Enum getPointBehavior)
+     * @param segmentIndex
+     * @param eta
+     * @param xsi
+     * @return gp_nP
+     */
     TIGL_EXPORT gp_Pnt GetUpperPoint(int segmentIndex, double eta, double xsi);
 
-    // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
+    /**
+     * @brief Returns the lower point in absolute (world) coordinates for a given segment, eta, xsi
+     * (calculated output may be influenced by setting different value for Enum getPointBehavior)
+     * @param segmentIndex
+     * @param eta
+     * @param xsi
+     * @returns gp_nP
+     */
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
-    // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
+    /**
+     * @brief Returns a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi,
+     * if fourth parameter is ommited, otherwise it will give you the point in the chosen coordinate system (e.g.  WING_COORDINATE_SYSTEM)
+     * @param segmentIndex
+     * @param eta
+     * @param xsi
+     * @param referenceCS
+     * @returns gp_nP
+     */
     TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
-    // Gets the loft of the whole wing
+    /**
+     * @brief Returns the rebuilt loft of the whole wing with modeled leading edge, if wing shape rebuild is indicated
+     * @return TopoDS_Shape& Returns the wing shape
+     */
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge();
-        
-    // Returns the wing loft with cutted out control surfaces
+
+    /**
+     * @brief Returns the wing loft with cut out control surface
+     * @return TopoDS_Shape Returns the wing shape with cutouts
+     */
     TIGL_EXPORT TopoDS_Shape GetLoftWithCutouts();
-        
+
+    /**
+     * @brief Returns upper loft of the wing and builds it if shells require rebuild
+     * @return TopoDS_Shape
+     */
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
+
+    /**
+     * @brief Returns lower loft of the wing and builds it if shells require rebuild
+     * @return TooDS_Shape
+     */
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
 
-    // Gets the volume of this wing
+    /**
+     * @brief Returns the volume of this wing (corresponding to CPACS conventions the result will be in SI-units)
+     * @return double
+     */
     TIGL_EXPORT double GetVolume();
 
-    // Gets the surfade area of this wing
+    /**
+     *  @brief Returns the surface area of this wing
+     *  @return double
+     */
     TIGL_EXPORT double GetSurfaceArea();
 
-    // Returns the reference area of the wing by taking account the drilateral portions
-    // of each wing segment by projecting the wing segments into the plane defined by the user
-    TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane);
-
-    // Returns the reference area of the wing in the plane normal to the major direction
-    TIGL_EXPORT double GetReferenceArea();
-
-    // Returns wetted Area
-    TIGL_EXPORT double GetWettedArea(TopoDS_Shape parent);
-
-    // Returns the wingspan of the wing
-    // The span is the width of the wing in the major wing direction.
-    // Remark, if the wing is mirrored (with a symmetry axis), the two wings are take into account.
-    // Otherwise, the width of the unique wing is returned.
-    // Remark: The span is computed using bounding Box so, the result may no be accurate.
-    TIGL_EXPORT double GetWingSpan();
-
-    // Returns the half span of the wing
-    // If the wing is not mirrored, return the whole width.
-    // Remark: The span is computed using bounding Box. So, the result may no be accurate.
+    /**
+     * @brief Returns the reference area of the wing by taking account the quadrilateral portions
+     *  of each wing segment by projecting the wing segments into the plane defined by the user
+     * @param symPlane The TiglSymmetryAxis is defined as follows:
+     * TIGL_NO_SYMMETRY      = 0,
+     * TIGL_X_Y_PLANE        = 1,
+     * TIGL_X_Z_PLANE        = 2,
+     * TIGL_Y_Z_PLANE        = 3,
+     * TIGL_INHERIT_SYMMETRY = 4
+     * @return double
+     */
+    TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane) const;
 
     /**
      * Returns the half span of the wing
@@ -153,18 +269,56 @@ public:
      */
     TIGL_EXPORT double GetWingHalfSpan();
 
-    // Returns the aspect ratio of the wing
-    TIGL_EXPORT double GetAspectRatio();
+    /**
+     * @brief Returns the reference area of the wing in the plane normal to the major direction
+     * @return double
+     */
+    TIGL_EXPORT double GetReferenceArea() const;
 
-    // Returns the mean aerodynamic chord of the wing
-    TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
+    /**
+     * @brief Returns wetted Area
+     * @param parent
+     * @return double
+     */
+    TIGL_EXPORT double GetWettedArea(TopoDS_Shape parent) const;
 
-    // Calculates the segment coordinates from global (x,y,z) coordinates
-    // Returns the segment index of the according segment
-    // If x,y,z does not belong to any segment, -1 is returned
+    /**
+     * @brief Returns the wingspan of the wing
+     * @return double
+     */
+    TIGL_EXPORT double GetWingspan() const;
+
+    /**
+     * @brief Returns the aspect ratio of the wing
+     * @return double
+     */
+    TIGL_EXPORT double GetAspectRatio() const;
+
+    /**
+     * @brief Returns the mean aerodynamic chord of the wing
+     * @param mac_chord
+     * @param mac_x
+     * @param may_y
+     * @param mac_z
+     */
+    TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z) const;
+
+    /**
+     * @brief Calculates the segment coordinates from global (x,y,z) coordinates
+     * If x,y,z does not belong to any segment, -1 is returned
+     * @param xyz Global (x,y,z) coordinates
+     * @param[in] eta
+     * @param[in] xsi
+     * @param[out] eta
+     * @param[out] xsi
+     * @param onTop
+     * @return int Returns -1 if x,y,z does not belong to any segment
+     */
     TIGL_EXPORT int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
-    // Returns the Component Type TIGL_COMPONENT_WING.
+    /**
+     * @brief Returns the Component Type TIGL_COMPONENT_WING or TIGL_COMPONENT_ROTORBLADE.
+     */
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
     {
         return !IsRotorBlade() ? TIGL_COMPONENT_WING : TIGL_COMPONENT_ROTORBLADE;
@@ -172,36 +326,58 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override {return TIGL_INTENT_PHYSICAL; }
 
-    // Returns the lower Surface of a Segment
+    /**
+     * @brief Returns the lower Surface of a Segment
+     * @param index Index of the segment
+     * @return Handle(Geom_Surface) Returns Handle to the lower surface of a segment
+     */
     TIGL_EXPORT Handle(Geom_Surface) GetLowerSegmentSurface(int index);
 
-    // Returns the upper Surface of a Segment
+    /**
+     * @brief Returns the upper Surface of a Segment
+     * @param index Index of the segment
+     * @return Handle(Geom_Surface) Returns Handle to the upper surface of a segment
+     */
     TIGL_EXPORT Handle(Geom_Surface) GetUpperSegmentSurface(int index);
 
-    // Get the guide curve segment (partial guide curve) with a given UID
+    /**
+     * @brief Get the guide curve segment (partial guide curve) with a given UID
+     * @param uid UID of the segment
+     * @return CCPACSGuideCurve&
+     */
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
 
-    // Returns all points that define the guide curves
+    /**
+     * @brief Returns all points that define the guide curves
+     * @return std::vector<gp_Pnt> Returns a vector containing all points definig the guide curves
+     */
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints();
 
-    // Returns all guide curve wires as a compound
+    /**
+     * @brief Returns a wire consisting of all guide curves as a compound
+     * @return TopoDS_Compound
+     */
     TIGL_EXPORT TopoDS_Compound GetGuideCurveWires() const;
 
-    // Returns the "fromRelCirc" parameter for each guide curve wire
+    /**
+     * @brief Returns the relative circumference parameters (as defined in CPACS)
+     * (These parameters are calculated to scale the guide curve wire and construct the
+     * guide curves)
+     * @return std::vector<double>
+     */
     TIGL_EXPORT std::vector<double> GetGuideCurveStartParameters() const;
 
-    // Adjust, whether the wing should be modeled with the flaps or not
+    /**
+     * @brief Determines, whether the wing should be modeled with the flaps or not
+     * @param enabled Set 'True' if wing should be built with flags
+     */
     TIGL_EXPORT void SetBuildFlaps(bool enabled);
 
-    // Returns the wing shape without any extended flaps
+    /**
+     * @brief Returns the wing shape without flaps cut out
+     * @return PNamedShape
+     */
     TIGL_EXPORT PNamedShape GetWingCleanShape() const;
-
-    // Sets the getPointBehavior to asParameterOnSurface or onLinearLoft
-    TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
-
-    // Gets the getPointBehavior
-    TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
-    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
 
     // Returns the major direction of the wing (correspond to the span direction)
     // @Details: If a symmetry plan is set, the major direction is normal to the symmetry plan,
@@ -229,14 +405,12 @@ public:
     // Set the dihedral of the wing
     TIGL_EXPORT void SetDihedral(double dihedralAngle, double chordPercentage = 0.25);
 
-
     /**
      * Scale the wing uniformly.
      * The root leading point stay at the same position.
      * @param scaleF the scale factor
      */
     TIGL_EXPORT void Scale(double scaleF);
-
 
     /**
      * Set the wing reference area while keeping the aspect ratio constant.
@@ -257,9 +431,6 @@ public:
      */
     TIGL_EXPORT void SetAreaKeepSpan(double newArea);
 
-
-
-
     /**
      * Set the wing half span while keeping the aspect ratio constant.
      * The span is set scaling the wing uniformly.
@@ -267,7 +438,6 @@ public:
      * @param newArea
      */
     TIGL_EXPORT void SetHalfSpanKeepAR(double newHalfSpan);
-
 
     /**
      * Set the wing half span while keeping the area constant.
@@ -278,7 +448,6 @@ public:
      */
     TIGL_EXPORT void SetHalfSpanKeepArea(double newHalfSpan);
 
-
     /**
      * Set the wing aspect ratio (AR) while keeping the span constant.
      * The area will change so that the AR is reached.
@@ -286,17 +455,12 @@ public:
      */
     TIGL_EXPORT void SetARKeepSpan(double newAR);
 
-
-
     /**
      * Set the wing aspect ratio (AR) while keeping the area constant.
      * The span will change so that the AR is reached.
      * @param newAR
      */
     TIGL_EXPORT void SetARKeepArea(double newAR);
-
-
-
 
     /**
      * Create a new section, a new element and connect the element to the "startElement".
@@ -326,7 +490,6 @@ public:
      */
     TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID) override;
 
-
     /**
      * Delete the connected element.
      * This mean that the section containing the element is delete and the segment associated with this element
@@ -335,10 +498,10 @@ public:
      */
     TIGL_EXPORT void DeleteConnectedElement(std::string ElementUID) override;
 
-
     TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement() override;
 
-    TIGL_EXPORT  std::vector<CTiglSectionElement* > GetCTiglElements();
+    TIGL_EXPORT  std::vector<CTiglSectionElement* > GetCTiglElements()
+    ;
 
     /**
      *
@@ -351,6 +514,8 @@ public:
      * @param profileUID ; the airfoil UID to use
      */
     TIGL_EXPORT void SetAllAirfoils(const std::string& profileUID);
+
+    TiglGetPointBehavior getPointBehavior {asParameterOnSurface};   /**< sets behavior of the GetPoint-function (default: asParameterOnSurface)*/
 
 
 protected:
@@ -394,7 +559,6 @@ private:
     // Adds all Segments of this wing and flaps to one shape
     PNamedShape GroupedFlapsAndWingShapes() const;
 
-private:
     bool                           isRotorBlade;             /**< Indicates if this wing is a rotor blade */
     CCPACSConfiguration*           configuration;            /**< Parent configuration*/
     TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
@@ -411,8 +575,6 @@ private:
     FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
     double                         myVolume;                 /**< Volume of this Wing           */
 
-
-    TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
 
     Cache<CTiglWingHelper, CCPACSWing> wingHelper;
 

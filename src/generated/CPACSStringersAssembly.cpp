@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include <CCPACSFuselageStringer.h>
+#include "CCPACSDuctStructure.h"
 #include "CCPACSFuselageStructure.h"
 #include "CPACSStringersAssembly.h"
 #include "CTiglError.h"
@@ -29,31 +30,35 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSStringersAssembly::CPACSStringersAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDuctStructure);
+    }
+
     CPACSStringersAssembly::CPACSStringersAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSFuselageStructure);
     }
 
     CPACSStringersAssembly::~CPACSStringersAssembly()
     {
     }
 
-    const CCPACSFuselageStructure* CPACSStringersAssembly::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSFuselageStructure* CPACSStringersAssembly::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSStringersAssembly::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CCPACSDuctStructure>()) {
+                return GetParent<CCPACSDuctStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSFuselageStructure>()) {
+                return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -61,18 +66,29 @@ namespace generated
     CTiglUIDObject* CPACSStringersAssembly::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CCPACSDuctStructure>()) {
+                return GetParent<CCPACSDuctStructure>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSFuselageStructure>()) {
+                return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDManager& CPACSStringersAssembly::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSStringersAssembly::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

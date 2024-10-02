@@ -25,6 +25,7 @@
 #include <gp_Vec.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepIntCurveSurface_Inter.hxx>
@@ -80,6 +81,45 @@ TopoDS_Wire CControlSurfaceBorderBuilder::borderWithLEShape(double rLEHeight, do
 TopoDS_Wire CControlSurfaceBorderBuilder::borderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower)
 {
     return boarderWithInnerShapeImpl(rTEHeight, xsiTail, xsiTEUpper, xsiTELower, -5.0);
+}
+
+TopoDS_Wire CControlSurfaceBorderBuilder::wholeWingBorder()
+{
+    // compute position of the leading and trailing edge in local coords
+    gp_Pln plane = _coords.getPlane();
+    gp_Pnt2d _le2d = ProjectPointOnPlane(plane, _coords.getLe());
+    gp_Pnt2d _te2d = ProjectPointOnPlane(plane, _coords.getTe());
+
+
+    gp_Pnt2d up2d = _le2d;
+
+    // compute some extra points with enough offset, to close the wire outside the wing
+    double offset_factor = 5.;
+    double scale = offset_factor*(_te2d.X() - _le2d.X());
+
+
+    double xmax = _le2d.X() + scale;
+
+    double ymax = up2d.Y() + scale;;
+
+    gp_Pnt2d upFront2d(-0.01*xmax, ymax);
+    gp_Pnt2d loFront2d(-0.01*xmax, -ymax);
+
+
+    gp_Pnt2d upBack2d(xmax, ymax);
+    gp_Pnt2d loBack2d(xmax, -ymax);
+
+    Handle(Geom_Surface) surf = new Geom_Plane(plane);
+
+    // create the wire
+    BRepBuilderAPI_MakeWire wiremaker;
+    wiremaker.Add(pointsToEdge( surf, loFront2d, upFront2d));
+    wiremaker.Add(pointsToEdge( surf, upFront2d, upBack2d));
+    wiremaker.Add(pointsToEdge( surf, upBack2d, loBack2d));
+    wiremaker.Add(pointsToEdge( surf, loBack2d, loFront2d));
+
+    TopoDS_Wire result = wiremaker.Wire();
+    return result;
 }
 
 TopoDS_Wire CControlSurfaceBorderBuilder::borderSimple(double xsiUpper, double xsiLower)

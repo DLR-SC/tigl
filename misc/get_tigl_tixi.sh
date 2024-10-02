@@ -33,7 +33,7 @@ LIBDIR=NO_DIR
 PACK_TYPE=NO_TYPE
 
 TIGL3VER="3.2"
-TIXIVER="3.1"
+TIXIVER="3.3"
 
 read_dom () {
     local IFS=\>
@@ -158,7 +158,7 @@ pwdir=`pwd`
 tmpdir=`mktemp -d`
 cd $tmpdir
 
-prefix=http://download.opensuse.org/repositories/science:/dlr/$DIST/$PACK_ARCH/
+prefix=https://download.opensuse.org/repositories/science:/dlr/$DIST/$PACK_ARCH/
 
 echo "Downloading from repository $prefix"
 echo "Using working directory: $tmpdir"
@@ -186,7 +186,7 @@ if [[ $PACK_TYPE == rpm ]]; then
     if [[ $TIGLVER -eq "2" ]]; then
         whitelist="OCE-0* libTIGL2* libTIXI2* tigl-devel* tixi-devel* tigl-viewer*"
     elif [[ $TIGLVER -eq "3" ]]; then
-        whitelist="libopencascade7-7* libtigl3-?-$TIGL3VER* libtixi3-?-$TIXIVER* tigl3-devel-$TIGL3VER* tixi3-devel-$TIXIVER* tigl3-viewer-$TIGL3VER*"
+        whitelist="libfreeimage* libopencascade7-7* libtigl3-?-$TIGL3VER* libtixi3-?-$TIXIVER* tigl3-devel-$TIGL3VER* tixi3-devel-$TIXIVER* tigl3-viewer-$TIGL3VER*"
     fi
 elif [[ $PACK_TYPE == deb ]]; then
     if [[ $TIGLVER -eq "2" ]]; then

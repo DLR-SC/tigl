@@ -17,12 +17,17 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
+#include <CCPACSPoint.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
+class CTiglUIDManager;
 class CTiglUIDObject;
 
 namespace generated
@@ -47,7 +52,7 @@ namespace generated
     class CPACSControlSurfaceHingePoint
     {
     public:
-        TIGL_EXPORT CPACSControlSurfaceHingePoint(CPACSControlSurfacePath* parent);
+        TIGL_EXPORT CPACSControlSurfaceHingePoint(CPACSControlSurfacePath* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSControlSurfaceHingePoint();
 
@@ -58,6 +63,9 @@ namespace generated
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
 
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
@@ -67,16 +75,28 @@ namespace generated
         TIGL_EXPORT virtual const double& GetHingeRelHeight() const;
         TIGL_EXPORT virtual void SetHingeRelHeight(const double& value);
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSPoint>& GetTranslation() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSPoint>& GetTranslation();
+
+        TIGL_EXPORT virtual CCPACSPoint& GetTranslation(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveTranslation();
+
     protected:
         CPACSControlSurfacePath* m_parent;
 
+        CTiglUIDManager* m_uidMgr;
+
         /// Relative chordwise coordinate (xsi) of the
         /// hinge line point. Reference is the parent chord.
-        double m_hingeXsi;
+        double                       m_hingeXsi;
 
         /// Relative height of the hinge line point.
         /// Reference is the parent airfoil height.
-        double m_hingeRelHeight;
+        double                       m_hingeRelHeight;
+
+        /// Optional absolute translation of the hinge point.
+        /// This can be used to move the hinge points outside of the wing shape.
+        boost::optional<CCPACSPoint> m_translation;
 
     private:
         CPACSControlSurfaceHingePoint(const CPACSControlSurfaceHingePoint&) = delete;

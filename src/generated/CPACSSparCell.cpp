@@ -31,8 +31,6 @@ namespace generated
         : m_uidMgr(uidMgr)
         , m_fromEta(this, m_uidMgr)
         , m_toEta(this, m_uidMgr)
-        , m_upperCap(this, m_uidMgr)
-        , m_lowerCap(this, m_uidMgr)
         , m_web1(this, m_uidMgr)
         , m_rotation(0)
     {
@@ -73,11 +71,17 @@ namespace generated
 
     CTiglUIDManager& CPACSSparCell::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSSparCell::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -112,18 +116,24 @@ namespace generated
 
         // read element upperCap
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
-            m_upperCap.ReadCPACS(tixiHandle, xpath + "/upperCap");
-        }
-        else {
-            LOG(ERROR) << "Required element upperCap is missing at xpath " << xpath;
+            m_upperCap = boost::in_place(this, m_uidMgr);
+            try {
+                m_upperCap->ReadCPACS(tixiHandle, xpath + "/upperCap");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read upperCap at xpath " << xpath << ": " << e.what();
+                m_upperCap = boost::none;
+            }
         }
 
         // read element lowerCap
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
-            m_lowerCap.ReadCPACS(tixiHandle, xpath + "/lowerCap");
-        }
-        else {
-            LOG(ERROR) << "Required element lowerCap is missing at xpath " << xpath;
+            m_lowerCap = boost::in_place(this, m_uidMgr);
+            try {
+                m_lowerCap->ReadCPACS(tixiHandle, xpath + "/lowerCap");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read lowerCap at xpath " << xpath << ": " << e.what();
+                m_lowerCap = boost::none;
+            }
         }
 
         // read element web1
@@ -170,12 +180,26 @@ namespace generated
         m_toEta.WriteCPACS(tixiHandle, xpath + "/toEta");
 
         // write element upperCap
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
-        m_upperCap.WriteCPACS(tixiHandle, xpath + "/upperCap");
+        if (m_upperCap) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperCap");
+            m_upperCap->WriteCPACS(tixiHandle, xpath + "/upperCap");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperCap")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/upperCap");
+            }
+        }
 
         // write element lowerCap
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
-        m_lowerCap.WriteCPACS(tixiHandle, xpath + "/lowerCap");
+        if (m_lowerCap) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerCap");
+            m_lowerCap->WriteCPACS(tixiHandle, xpath + "/lowerCap");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerCap")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/lowerCap");
+            }
+        }
 
         // write element web1
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/web1");
@@ -236,22 +260,22 @@ namespace generated
         return m_toEta;
     }
 
-    const CPACSCap& CPACSSparCell::GetUpperCap() const
+    const boost::optional<CPACSCap>& CPACSSparCell::GetUpperCap() const
     {
         return m_upperCap;
     }
 
-    CPACSCap& CPACSSparCell::GetUpperCap()
+    boost::optional<CPACSCap>& CPACSSparCell::GetUpperCap()
     {
         return m_upperCap;
     }
 
-    const CPACSCap& CPACSSparCell::GetLowerCap() const
+    const boost::optional<CPACSCap>& CPACSSparCell::GetLowerCap() const
     {
         return m_lowerCap;
     }
 
-    CPACSCap& CPACSSparCell::GetLowerCap()
+    boost::optional<CPACSCap>& CPACSSparCell::GetLowerCap()
     {
         return m_lowerCap;
     }
@@ -284,6 +308,30 @@ namespace generated
     void CPACSSparCell::SetRotation(const double& value)
     {
         m_rotation = value;
+    }
+
+    CPACSCap& CPACSSparCell::GetUpperCap(CreateIfNotExistsTag)
+    {
+        if (!m_upperCap)
+            m_upperCap = boost::in_place(this, m_uidMgr);
+        return *m_upperCap;
+    }
+
+    void CPACSSparCell::RemoveUpperCap()
+    {
+        m_upperCap = boost::none;
+    }
+
+    CPACSCap& CPACSSparCell::GetLowerCap(CreateIfNotExistsTag)
+    {
+        if (!m_lowerCap)
+            m_lowerCap = boost::in_place(this, m_uidMgr);
+        return *m_lowerCap;
+    }
+
+    void CPACSSparCell::RemoveLowerCap()
+    {
+        m_lowerCap = boost::none;
     }
 
     CPACSWeb& CPACSSparCell::GetWeb2(CreateIfNotExistsTag)

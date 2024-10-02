@@ -16,6 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSDuct.h"
+#include "CCPACSDuctAssembly.h"
 #include "CCPACSEnginePosition.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSExternalObject.h"
@@ -29,6 +31,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSectionElement.h"
+#include "CPACSLandingGearBase.h"
 #include "CPACSTransformation.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -39,6 +42,22 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSTransformation::CPACSTransformation(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDuct);
+    }
+
+    CPACSTransformation::CPACSTransformation(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDuctAssembly);
+    }
+
     CPACSTransformation::CPACSTransformation(CCPACSEnginePosition* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -93,6 +112,14 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSGenericSystem);
+    }
+
+    CPACSTransformation::CPACSTransformation(CPACSLandingGearBase* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSLandingGearBase);
     }
 
     CPACSTransformation::CPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr)
@@ -151,6 +178,12 @@ namespace generated
     const CTiglUIDObject* CPACSTransformation::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CCPACSDuct>()) {
+                return GetParent<CCPACSDuct>();
+            }
+            if (IsParent<CCPACSDuctAssembly>()) {
+                return GetParent<CCPACSDuctAssembly>();
+            }
             if (IsParent<CCPACSEnginePosition>()) {
                 return GetParent<CCPACSEnginePosition>();
             }
@@ -171,6 +204,9 @@ namespace generated
             }
             if (IsParent<CCPACSGenericSystem>()) {
                 return GetParent<CCPACSGenericSystem>();
+            }
+            if (IsParent<CPACSLandingGearBase>()) {
+                return GetParent<CPACSLandingGearBase>();
             }
             if (IsParent<CCPACSNacelleSection>()) {
                 return GetParent<CCPACSNacelleSection>();
@@ -197,6 +233,12 @@ namespace generated
     CTiglUIDObject* CPACSTransformation::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CCPACSDuct>()) {
+                return GetParent<CCPACSDuct>();
+            }
+            if (IsParent<CCPACSDuctAssembly>()) {
+                return GetParent<CCPACSDuctAssembly>();
+            }
             if (IsParent<CCPACSEnginePosition>()) {
                 return GetParent<CCPACSEnginePosition>();
             }
@@ -217,6 +259,9 @@ namespace generated
             }
             if (IsParent<CCPACSGenericSystem>()) {
                 return GetParent<CCPACSGenericSystem>();
+            }
+            if (IsParent<CPACSLandingGearBase>()) {
+                return GetParent<CPACSLandingGearBase>();
             }
             if (IsParent<CCPACSNacelleSection>()) {
                 return GetParent<CCPACSNacelleSection>();
@@ -242,11 +287,17 @@ namespace generated
 
     CTiglUIDManager& CPACSTransformation::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSTransformation::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

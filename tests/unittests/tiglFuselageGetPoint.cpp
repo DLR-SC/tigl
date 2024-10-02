@@ -126,7 +126,7 @@ TEST_F(TiglFuselageGetPoint, nullPointerArgument)
 }
 
 /**
-* Tests successfull call to tiglFuselageGetPoint.
+* Tests successful call to tiglFuselageGetPoint.
 */
 TEST_F(TiglFuselageGetPoint, success)
 {

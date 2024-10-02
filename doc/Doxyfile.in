@@ -106,7 +106,7 @@ INPUT                  = @PROJECT_SOURCE_DIR@/doc/ \
 
 
 INPUT_ENCODING         = UTF-8
-FILE_PATTERNS          = *.h *.md tigl.h tigl_version.h
+FILE_PATTERNS          = *.h *.md
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO

@@ -48,7 +48,7 @@ public:
     /// Fits the given points by a B-spline
     TIGL_EXPORT error Fit(const TColgp_Array1OfPnt& points, const std::vector<double>& parameters);
 
-    /// Fits the given points by a B-spline using the centripetal paramterization scheme (alpha=0.5)
+    /// Fits the given points by a B-spline using the centripetal parameterization scheme (alpha=0.5)
     TIGL_EXPORT error Fit(const TColgp_Array1OfPnt& points, double alpha=1.0);
 
     /// Fits, by optimizing the fit parameters

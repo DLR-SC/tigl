@@ -18,6 +18,7 @@
 #include <cassert>
 #include "CCPACSWingSparSegment.h"
 #include "CPACSSparCrossSection.h"
+#include "CPACSSupportBeam.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -35,39 +36,62 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSWingSparSegment);
+    }
+
+    CPACSSparCrossSection::CPACSSparCrossSection(CPACSSupportBeam* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_web1(this, m_uidMgr)
+        , m_rotation(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSupportBeam);
     }
 
     CPACSSparCrossSection::~CPACSSparCrossSection()
     {
     }
 
-    const CCPACSWingSparSegment* CPACSSparCrossSection::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSWingSparSegment* CPACSSparCrossSection::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSSparCrossSection::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSWingSparSegment>()) {
+                return GetParent<CCPACSWingSparSegment>();
+            }
+            if (IsParent<CPACSSupportBeam>()) {
+                return GetParent<CPACSSupportBeam>()->GetNextUIDParent();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSSparCrossSection::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSWingSparSegment>()) {
+                return GetParent<CCPACSWingSparSegment>();
+            }
+            if (IsParent<CPACSSupportBeam>()) {
+                return GetParent<CPACSSupportBeam>()->GetNextUIDParent();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSSparCrossSection::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSSparCrossSection::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

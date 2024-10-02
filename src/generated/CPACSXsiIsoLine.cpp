@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
+#include "CPACSLandingGearSupportBeamPosition.h"
 #include "CPACSXsiIsoLine.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -34,6 +35,16 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSControlSurfaceBorderTrailingEdge);
+    }
+
+    CPACSXsiIsoLine::CPACSXsiIsoLine(CPACSLandingGearSupportBeamPosition* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_xsi(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSLandingGearSupportBeamPosition);
     }
 
     CPACSXsiIsoLine::~CPACSXsiIsoLine()
@@ -43,20 +54,15 @@ namespace generated
         }
     }
 
-    const CCPACSControlSurfaceBorderTrailingEdge* CPACSXsiIsoLine::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSControlSurfaceBorderTrailingEdge* CPACSXsiIsoLine::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSXsiIsoLine::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLandingGearSupportBeamPosition>()) {
+                return GetParent<CPACSLandingGearSupportBeamPosition>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -64,18 +70,29 @@ namespace generated
     CTiglUIDObject* CPACSXsiIsoLine::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLandingGearSupportBeamPosition>()) {
+                return GetParent<CPACSLandingGearSupportBeamPosition>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
 
     CTiglUIDManager& CPACSXsiIsoLine::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSXsiIsoLine::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

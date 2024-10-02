@@ -90,7 +90,7 @@ protected:
 
 
         //*********************************************************************
-        // Tests the successfull creation of the wing and fuselage surfaces
+        // Tests the successful creation of the wing and fuselage surfaces
         //*********************************************************************
         TopoDS_Compound wingProfiles;
         TopoDS_Compound fuselageProfiles;
@@ -124,7 +124,7 @@ protected:
                 fuselageProfileBuilder.Add(fuselageProfiles, segment.GetEndWire());
             }
         }
-        fuselageGuides = fuselage.GetGuideCurveWires();
+        fuselageGuides = fuselage.GetSegments().GetGuideCurveWires();
         ASSERT_FALSE(wingGuides.IsNull());
         ASSERT_FALSE(wingProfiles.IsNull());
         ASSERT_FALSE(fuselageGuides.IsNull());

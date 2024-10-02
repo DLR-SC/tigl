@@ -23,6 +23,7 @@
 #include "CPACSControlSurfaceTrackType.h"
 #include "CPACSCutOutProfile.h"
 #include "CPACSEtaIsoLine.h"
+#include "CPACSLandingGearSupportBeamPosition.h"
 #include "CPACSSparCell.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -88,6 +89,15 @@ namespace generated
         m_parentType = &typeid(CPACSCutOutProfile);
     }
 
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CPACSLandingGearSupportBeamPosition* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSLandingGearSupportBeamPosition);
+    }
+
     CPACSEtaIsoLine::CPACSEtaIsoLine(CPACSSparCell* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_eta(0)
@@ -125,6 +135,9 @@ namespace generated
             if (IsParent<CPACSCutOutProfile>()) {
                 return GetParent<CPACSCutOutProfile>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSLandingGearSupportBeamPosition>()) {
+                return GetParent<CPACSLandingGearSupportBeamPosition>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSSparCell>()) {
                 return GetParent<CPACSSparCell>();
             }
@@ -153,6 +166,9 @@ namespace generated
             if (IsParent<CPACSCutOutProfile>()) {
                 return GetParent<CPACSCutOutProfile>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSLandingGearSupportBeamPosition>()) {
+                return GetParent<CPACSLandingGearSupportBeamPosition>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSSparCell>()) {
                 return GetParent<CPACSSparCell>();
             }
@@ -162,11 +178,17 @@ namespace generated
 
     CTiglUIDManager& CPACSEtaIsoLine::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSEtaIsoLine::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

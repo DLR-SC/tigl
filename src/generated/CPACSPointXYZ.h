@@ -34,9 +34,9 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurve
 
-    /// @brief pointXYZType
+    /// @brief Point: x,y,z
     /// 
-    /// Point type, containing an xyz data triplet.
+    /// Point type, containing an obligatory xyz data triplet.
     /// 
     class CPACSPointXYZ : public CTiglOptUIDObject
     {

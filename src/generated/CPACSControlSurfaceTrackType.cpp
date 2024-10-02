@@ -29,7 +29,7 @@ namespace generated
 {
     CPACSControlSurfaceTrackType::CPACSControlSurfaceTrackType(CPACSControlSurfaceTracks* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_eta(this, m_uidMgr)
+        , m_etaPosition(this, m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -68,11 +68,17 @@ namespace generated
 
     CTiglUIDManager& CPACSControlSurfaceTrackType::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSControlSurfaceTrackType::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
@@ -89,12 +95,12 @@ namespace generated
             LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
-        // read element eta
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta")) {
-            m_eta.ReadCPACS(tixiHandle, xpath + "/eta");
+        // read element etaPosition
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/etaPosition")) {
+            m_etaPosition.ReadCPACS(tixiHandle, xpath + "/etaPosition");
         }
         else {
-            LOG(ERROR) << "Required element eta is missing at xpath " << xpath;
+            LOG(ERROR) << "Required element etaPosition is missing at xpath " << xpath;
         }
 
         // read element trackType
@@ -140,9 +146,9 @@ namespace generated
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
-        // write element eta
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/eta");
-        m_eta.WriteCPACS(tixiHandle, xpath + "/eta");
+        // write element etaPosition
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/etaPosition");
+        m_etaPosition.WriteCPACS(tixiHandle, xpath + "/etaPosition");
 
         // write element trackType
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trackType");
@@ -201,14 +207,14 @@ namespace generated
         m_uID = value;
     }
 
-    const CCPACSEtaIsoLine& CPACSControlSurfaceTrackType::GetEta() const
+    const CCPACSEtaIsoLine& CPACSControlSurfaceTrackType::GetEtaPosition() const
     {
-        return m_eta;
+        return m_etaPosition;
     }
 
-    CCPACSEtaIsoLine& CPACSControlSurfaceTrackType::GetEta()
+    CCPACSEtaIsoLine& CPACSControlSurfaceTrackType::GetEtaPosition()
     {
-        return m_eta;
+        return m_etaPosition;
     }
 
     const CPACSControlSurfaceTrackType_trackType& CPACSControlSurfaceTrackType::GetTrackType() const

@@ -73,11 +73,17 @@ namespace generated
 
     CTiglUIDManager& CPACSCrossBeamStrutAssemblyPosition::GetUIDManager()
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 
     const CTiglUIDManager& CPACSCrossBeamStrutAssemblyPosition::GetUIDManager() const
     {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
         return *m_uidMgr;
     }
 

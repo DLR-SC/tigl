@@ -37,6 +37,7 @@ namespace generated
     class CPACSControlSurfaceSkinCutOutBorder;
     class CPACSControlSurfaceTrackType;
     class CPACSCutOutProfile;
+    class CPACSLandingGearSupportBeamPosition;
     class CPACSSparCell;
 
     // This class is used in:
@@ -46,6 +47,7 @@ namespace generated
     // CPACSControlSurfaceSkinCutOutBorder
     // CPACSControlSurfaceTrackType
     // CPACSCutOutProfile
+    // CPACSLandingGearSupportBeamPosition
     // CPACSSparCell
 
     /// @brief etaIsoLineType
@@ -62,6 +64,7 @@ namespace generated
         TIGL_EXPORT CPACSEtaIsoLine(CPACSControlSurfaceSkinCutOutBorder* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CPACSCutOutProfile* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSEtaIsoLine(CPACSLandingGearSupportBeamPosition* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CPACSSparCell* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSEtaIsoLine();
@@ -75,9 +78,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-#ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
-#endif
+            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSLandingGearSupportBeamPosition>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -87,9 +88,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-#ifdef HAVE_STDIS_SAME
-            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
-#endif
+            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSLandingGearSupportBeamPosition>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -145,5 +144,6 @@ using CCPACSControlSurfaceAirfoil = generated::CPACSControlSurfaceAirfoil;
 using CCPACSControlSurfaceSkinCutOutBorder = generated::CPACSControlSurfaceSkinCutOutBorder;
 using CCPACSControlSurfaceTrackType = generated::CPACSControlSurfaceTrackType;
 using CCPACSCutOutProfile = generated::CPACSCutOutProfile;
+using CCPACSLandingGearSupportBeamPosition = generated::CPACSLandingGearSupportBeamPosition;
 using CCPACSSparCell = generated::CPACSSparCell;
 } // namespace tigl

@@ -38,4 +38,4 @@ CCPACSNacelleGuideCurve& CCPACSNacelleGuideCurves::GetGuideCurve(size_t index) c
     return *m_nacelleGuideCurves[index];
 }
 
-} //namepsace tigl
+} //namespace tigl

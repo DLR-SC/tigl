@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceStep
 
-    /// @brief pointXZType
+    /// @brief Point: x, z
     /// 
     /// Point type, containing an xz data doublet.
     /// 

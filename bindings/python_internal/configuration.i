@@ -35,6 +35,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglFusePlane.h"
 #include "CCPACSWingProfile.h"
+#include "generated/CPACSStandardProfile.h" //TODO: Replace with CCPACSStandardProfile, once it exists.
 #include "CCPACSFuselageSection.h"
 #include "CCPACSExternalObject.h"
 #include "CTiglShapeCache.h"
@@ -80,6 +81,7 @@
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSEnginePylons.h"
 #include "CCPACSEnginePylon.h"
+#include "CCPACSEnginePosition.h"
 #include "generated/CPACSLateralCap_placement.h"
 #include "generated/CPACSLateralCap.h"
 #include "generated/CPACSBoundingElementUIDs.h"
@@ -90,6 +92,10 @@
 #include "generated/CPACSWallPositions.h"
 #include "generated/CPACSWallSegment.h"
 #include "generated/CPACSWallSegments.h"
+#include "generated/CPACSUIDSequence.h"
+#include "CCPACSDucts.h"
+#include "CCPACSDuctAssembly.h"
+#include "CCPACSDuct.h"
 %}
 
 %feature("autodoc", "3");
@@ -123,6 +129,8 @@
 %boost_optional(tigl::CCPACSWingRibsDefinitions)
 %boost_optional(tigl::CCPACSWingSpars)
 %boost_optional(tigl::generated::CPACSGuideCurve_continuity)
+%boost_optional(tigl::CCPACSRectangleProfile)
+%boost_optional(tigl::CCPACSStandardProfile)
 %boost_optional(tigl::CCPACSWingProfileCST)
 %boost_optional(tigl::CTiglTransformation)
 %boost_optional(tigl::CCPACSRotorHinges)
@@ -190,6 +198,8 @@
 %boost_optional(tigl::CCPACSEnginePositions)
 %include "generated/CPACSEnginePositions.h"
 %include "CCPACSEnginePositions.h"
+%include "generated/CPACSEnginePosition.h"
+%include "CCPACSEnginePosition.h"
 %include "generated/CPACSNacelleCenterCowl.h"
 %include "CCPACSNacelleCenterCowl.h"
 %include "generated/CPACSNacelleSections.h"
@@ -234,10 +244,9 @@ namespace tigl
 {
     class CCPACSWingCSStructure;
 }
-%include "generated/CPACSTrackFairing.h"
-%include "generated/CPACSTrackStrut2.h"
-%include "generated/CPACSTrackStrut1.h"
-%include "generated/CPACSTrackCar.h"
+%include "generated/CPACSTrackSecondaryStructure.h"
+%include "generated/CPACSTrackJointPositions.h"
+%include "generated/CPACSTrackStruts.h"
 %include "generated/CPACSTrackStructure.h"
 %include "generated/CPACSTrackActuator.h"
 %include "generated/CPACSControlSurfaceTrackType_trackSubType.h"
@@ -392,6 +401,9 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSGuideCurves.h"
 %include "generated/CPACSCst2D.h"
 %include "ITiglWingProfileAlgo.h"
+%include "generated/CPACSPosExcl0DoubleBase.h"
+%include "generated/CPACSRectangleProfile.h"
+%include "generated/CPACSStandardProfile.h" //TODO: Need to replace with implementation CCPACSStandardProfile.h, once it exists.
 %include "CCPACSWingProfileCST.h"
 %include "PTiglWingProfileAlgo.h"
 %include "generated/CPACSFuselageElements.h"
@@ -489,6 +501,16 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSEnginePylons.h"
 %include "CCPACSEnginePylons.h"
 
+//  ---------------- Ducts ------------------ //
+
+%boost_optional(tigl::CCPACSTransformation)
+%boost_optional(tigl::CCPACSDucts)
+%boost_optional(tigl::CPACSUIDSequence)
+%include "generated/CPACSUIDSequence.h"
+%include "CCPACSDucts.h"
+%include "CCPACSDuctAssembly.h"
+%include "CCPACSDuct.h"
+
 // CTiglUIDManager::GetGeometricComponent returns the interface type ITiglGeometricComponent
 // In the target language, we want to get the concrete type back
 %factory(tigl::ITiglGeometricComponent& tigl::CTiglUIDManager::GetGeometricComponent,
@@ -511,7 +533,9 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSWingRibsDefinition,
          tigl::CCPACSWingSparSegment,
          tigl::CCPACSEnginePylon,
-         tigl::CCPACSTrailingEdgeDevice
+         tigl::CCPACSTrailingEdgeDevice,
+         tigl::CCPACSDuct,
+         tigl::CCPACSDuctAssembly
 );
 
 namespace tigl

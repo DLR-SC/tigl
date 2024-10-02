@@ -60,7 +60,7 @@ public:
     TIGL_EXPORT void setMakeSolid(bool enabled);
 
     /**
-     * @brief setMakeSmooth switches, wether the resulting loft will be ruled
+     * @brief setMakeSmooth switches, whether the resulting loft will be ruled
      * or smoothed. This switch only applies, if no guide curves are applied.
      *
      * @param enabled Set to true, if smoothing should be enabled.

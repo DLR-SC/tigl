@@ -249,10 +249,10 @@ public:
     /**
      * @brief GetParameterRanges sums all parameter ranges for all rows and columns.
      *
-     * The vector row_ranges will contain the sum of all v-parameter ranges of the faces
+     * The vector row_ranges will contain the sum of all u-parameter ranges of the faces
      * in the row corresponding to the index in the vector
      *
-     * The vector col_ranges will contain the sum of all u-parameter ranges of the faces
+     * The vector col_ranges will contain the sum of all v-parameter ranges of the faces
      * in the column corresponding to the index in the vector
      *
      * @param row_ranges a reference to a vector for storing the v-parameter ranges

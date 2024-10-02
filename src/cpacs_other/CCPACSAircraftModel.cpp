@@ -30,10 +30,10 @@
 namespace tigl
 {
 CCPACSAircraftModel::CCPACSAircraftModel(CCPACSConfiguration* config)
-    : generated::CPACSAircraftModel(nullptr, config ? &config->GetUIDManager() : NULL), CTiglRelativelyPositionedComponent(static_cast<std::string*>(NULL), NULL), config(config) {}
+    : generated::CPACSAircraftModel(nullptr, config ? &config->GetUIDManager() : NULL), CTiglRelativelyPositionedComponent(static_cast<std::string*>(NULL), static_cast<CCPACSTransformation*>(NULL)), config(config) {}
 
 CCPACSAircraftModel::CCPACSAircraftModel(CCPACSAircraft* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSAircraftModel(parent, uidMgr), CTiglRelativelyPositionedComponent(static_cast<std::string*>(NULL), NULL), config(NULL) {}
+    : generated::CPACSAircraftModel(parent, uidMgr), CTiglRelativelyPositionedComponent(static_cast<std::string*>(NULL), static_cast<CCPACSTransformation*>(NULL)), config(NULL) {}
 
 std::string CCPACSAircraftModel::GetDefaultedUID() const {
     return generated::CPACSAircraftModel::GetUID();

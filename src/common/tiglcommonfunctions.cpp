@@ -42,6 +42,11 @@
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglProjectPointOnCurveAtAngle.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CTiglPointsToBSplineInterpolation.h"
+#include "CFunctionToBspline.h"
+#include "tiglmathfunctions.h"
+
+#include "Standard_Version.hxx"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -56,7 +61,13 @@
 #include "TopTools_IndexedMapOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "GeomAdaptor_Curve.hxx"
+
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,6,0)
 #include "BRepAdaptor_CompCurve.hxx"
+#else
+#include "BRepAdaptor_HCompCurve.hxx"
+#endif
+
 #include "BRepAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "BRep_Builder.hxx"
@@ -77,7 +88,6 @@
 #include "BRepExtrema_DistShapeShape.hxx"
 
 #include <Approx_Curve3d.hxx>
-#include <BRepAdaptor_HCompCurve.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_FindPlane.hxx>
@@ -112,6 +122,7 @@
 #include <ShapeAnalysis_FreeBounds.hxx>
 
 
+
 #include <list>
 #include <algorithm>
 #include <cassert>
@@ -119,6 +130,7 @@
 #include <cmath>
 
 #include "Debugging.h"
+
 
 namespace
 {
@@ -207,19 +219,23 @@ void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, g
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
 
     Standard_Real len =  GCPnts_AbscissaPoint::Length( aCompoundCurve );
-    if (len < Precision::Confusion()) {
-        throw tigl::CTiglError("WireGetPointTangent: Unable to compute tangent on zero length wire", TIGL_MATH_ERROR);
-    }
-    GCPnts_AbscissaPoint algo(aCompoundCurve, len*alpha, aCompoundCurve.FirstParameter());
-    if (algo.IsDone()) {
-        double par = algo.Parameter();
-        aCompoundCurve.D1( par, point, tangent );
-        // normalize tangent to length of the curve
-        tangent = len*tangent/tangent.Magnitude();
-    }
-    else {
-        throw tigl::CTiglError("WireGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
-    }
+     if (len < Precision::Confusion()) {
+         // wire length is zero, we can query at parameter 0 and accept zero length tangents
+         aCompoundCurve.D1(0., point, tangent);
+     }
+     else {
+         GCPnts_AbscissaPoint algo(aCompoundCurve, len*alpha, aCompoundCurve.FirstParameter());
+         if (algo.IsDone()) {
+             double par = algo.Parameter();
+             aCompoundCurve.D1( par, point, tangent );
+             // normalize tangent to length of the curve
+             tangent = len*tangent/tangent.Magnitude();
+          }
+          else {
+             throw tigl::CTiglError("WireGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
+          }
+     }
+
 }
 
 gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha)
@@ -253,6 +269,23 @@ void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, g
     else {
         throw tigl::CTiglError("EdgeGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
     }
+}
+
+void EdgeGetPointTangentBasedOnParam(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& tangent)
+{
+    // ETA 3D point
+    Standard_Real umin, umax;
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
+
+    if (alpha < umin || alpha > umax) {
+        throw tigl::CTiglError("Parameter alpha not in the range umin <= alpha <= umax in EdgeGetPointTangent", TIGL_ERROR);
+    }
+
+    GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
+    Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
+    adaptorCurve.D1( alpha, point, tangent );
+    // normalize tangent to length of the curve
+    tangent = len*tangent/tangent.Magnitude();
 }
 
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
@@ -1097,8 +1130,13 @@ TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
 
     // Wrap the adaptor in a class which manages curve access via handle (HCurve). According to doxygen
     // this is required by the algorithms
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,6,0)
+    const Handle(Adaptor3d_Curve) curve1 = new BRepAdaptor_CompCurve(compCurve1);
+    const Handle(Adaptor3d_Curve) curve2 = new BRepAdaptor_CompCurve(compCurve2);
+#else
     Handle(Adaptor3d_HCurve) curve1 = new BRepAdaptor_HCompCurve(compCurve1);
     Handle(Adaptor3d_HCurve) curve2 = new BRepAdaptor_HCompCurve(compCurve2);
+#endif
 
     // We have to generate an approximated curve now from the wire using the adaptor
     // NOTE: last parameter value unknown
@@ -1138,6 +1176,155 @@ TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges)
     }
     TopoDS_Wire result = TopoDS::Wire(wireList.First());
     return result;
+}
+
+namespace
+{
+    class Circle : public tigl::MathFunc3d
+    {
+    public:
+        Circle(double radius): tigl::MathFunc3d(), m_radius(radius) {}
+
+        double valueX(double t) override
+        {
+            return 0.;
+        }
+
+        double valueY(double t) override
+        {
+            return m_radius*std::cos(t);
+        }
+
+        double valueZ(double t) override
+        {
+            return m_radius*std::sin(t);
+        }
+
+    private:
+          double m_radius;
+    };
+} //anonymos namespace
+
+opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double radius, double uMin, double uMax,
+                                                                               double tol, double y_position, double z_position)
+{
+    if(radius==0){
+        throw tigl::CTiglError("Invalid geometry. Radius must be != 0.");
+    }
+    if(Abs(uMax-uMin)< tol){
+        throw tigl::CTiglError("Invalid geometry: Curve length must not be Zero.");
+    }
+    if(Abs(uMax-uMin)>(2.*M_PI))
+    {
+        throw tigl::CTiglError("Invalid geometry: Curve cannot be traversed more than once.");
+    }
+
+    Circle circle(radius);
+    int degree = 3;
+
+    auto curve = tigl::CFunctionToBspline(circle, uMin, uMax, degree, tol).Curve();
+    curve->Translate(gp_Vec(0.,y_position,z_position));
+
+    return curve;
+}
+
+TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cornerRadius, const double tol)
+{
+    if(cornerRadius<0.||cornerRadius>0.5){
+        throw tigl::CTiglError("Invalid input for corner radius. Must be in range: 0 <= cornerRadius <= 0.5");
+    }
+
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+
+    // build half upper line from gp_points
+    std::vector<gp_Pnt> linePntsUpperRightHalf;
+    linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
+    linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.5-cornerRadius,0.5*heightToWidthRatio));
+    opencascade::handle<Geom_BSplineCurve> lowerLineRightHalf =
+            tigl::CTiglPointsToBSplineInterpolation(linePntsUpperRightHalf).Curve();
+    curves.push_back(lowerLineRightHalf);
+
+    if (!(cornerRadius == 0.0)){
+        //build upper right arc
+        double y0 = 0.5 - cornerRadius;
+        double z0 = 0.5 * heightToWidthRatio - cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, 0., M_PI/2., tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    // build right line from gp_Pnts
+    std::vector<gp_Pnt> linePnts_right;
+    linePnts_right.push_back(gp_Pnt(0., 0.5, 0.5 * heightToWidthRatio - cornerRadius));
+    linePnts_right.push_back(gp_Pnt(0., 0.5, -0.5 * heightToWidthRatio + cornerRadius));
+    opencascade::handle<Geom_BSplineCurve> rightLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_right).Curve();
+    curves.push_back(rightLine);
+
+    if (!(cornerRadius == 0.0)){
+        //build lower right arc
+        double y0 = 0.5 - cornerRadius;
+        double z0 = - 0.5 * heightToWidthRatio + cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, M_PI*(3./2.), M_PI*2., tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    // build lower line from gp_points
+    std::vector<gp_Pnt> linePnts_lower;
+    linePnts_lower.push_back(gp_Pnt(0.,(0.5-cornerRadius),-0.5*heightToWidthRatio));
+    linePnts_lower.push_back(gp_Pnt(0.,(-0.5+cornerRadius),-0.5*heightToWidthRatio));
+    opencascade::handle<Geom_BSplineCurve> lowerLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_lower).Curve();
+
+    curves.push_back(lowerLine);
+
+    if (!(cornerRadius == 0.)){
+        // build lower left arc
+        double y0 = - 0.5 + cornerRadius;
+        double z0 = -0.5 * heightToWidthRatio + cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, M_PI, M_PI*(3./2.), tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    //build left line from gp_points
+    std::vector<gp_Pnt> linePnts_left;
+    linePnts_left.push_back(gp_Pnt(0.,-0.5,-0.5 * heightToWidthRatio + cornerRadius));
+    linePnts_left.push_back(gp_Pnt(0.,-0.5,0.5 * heightToWidthRatio - cornerRadius));
+    opencascade::handle<Geom_BSplineCurve> leftLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_left).Curve();
+    curves.push_back(leftLine);
+
+    if (!(cornerRadius == 0.)) {
+        // build upper left arc
+        double y0 = - 0.5 + cornerRadius;
+        double z0 = 0.5 * heightToWidthRatio - cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, M_PI/2., M_PI, tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    // build half upper line from gp_points
+    std::vector<gp_Pnt> linePntsUpperLeftHalf;
+    linePntsUpperLeftHalf.push_back(gp_Pnt(0.,-(0.5-cornerRadius),0.5*heightToWidthRatio));
+    linePntsUpperLeftHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
+    opencascade::handle<Geom_BSplineCurve> upperLineLeftHalf =
+            tigl::CTiglPointsToBSplineInterpolation(linePntsUpperLeftHalf).Curve();
+    curves.push_back(upperLineLeftHalf);
+
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
+
+    // workaround for lofting algorithm not working with  curves of degree '1' (i.e. concatenated lines)
+    // if guide curves are involved, the lofter doesn't generate a valid geometry without thowing an error
+    // This only occurs if the cornerRadius is zero and the profile is a rectangle, which in theory could
+    // just have degree 1.
+    if ((curve->Degree())<2){
+        curve->IncreaseDegree(2);
+    }
+
+    TopoDS_Wire wire;
+    if (!curve.IsNull()) {
+        wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    }
+    return wire;
 }
 
 void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList)
