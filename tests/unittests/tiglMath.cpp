@@ -428,36 +428,36 @@ TEST(TiglMath, CTiglTransform_Decompose2)
 
 TEST(TiglMath, CTiglTransform_Decompose3)
 {
-    // Simulate the case where a cpacs transformation has a rotation RX:0;RY:90;RZ:00 and RX:0;RY:-90;RZ:00, respectively
-    // This caused a bug due to a wrong if condition in the decompose routine which resulted in a sign flip of RY afterwards
-    tigl::CTiglTransformation rotA, rotB;
+    tigl::CTiglPoint S,R,T;
 
-    // Set up 2 example rotations
-    rotA.AddRotationZ(0);
-    rotA.AddRotationY(90);
-    rotA.AddRotationX(0);
+    tigl::CTiglTransformation rot, rotP;
+    rot.AddRotationZ(142);
+    rot.AddRotationY(0);
+    rot.AddRotationX(-180);
 
-    rotB.AddRotationZ(0);
-    rotB.AddRotationY(-90);
-    rotB.AddRotationX(0);
+    rot.Decompose(S, R, T);
 
-    double ScalA[3] = {0., 0., 0.};
-    double RotA[3] = {0., 0., 0.};
-    double TransA[3] = {0., 0., 0.};
-    double ScalB[3] = {0., 0., 0.};
-    double RotB[3] = {0., 0., 0.};
-    double TransB[3] = {0., 0., 0.};
+    rotP.AddRotationZ(R.z);
+    rotP.AddRotationY(R.y);
+    rotP.AddRotationX(R.x);
 
-    rotA.Decompose(ScalA, RotA, TransA);
-    rotB.Decompose(ScalB, RotB, TransB);
+    EXPECT_TRUE(rot.IsNear(rotP));
 
-    EXPECT_NEAR(RotA[0], 0, 1e-8);
-    EXPECT_NEAR(RotA[1], 90, 1e-8);
-    EXPECT_NEAR(RotA[2], 0, 1e-8);
 
-    EXPECT_NEAR(RotB[0], 0, 1e-8);
-    EXPECT_NEAR(RotB[1], -90, 1e-8);
-    EXPECT_NEAR(RotB[2], 0, 1e-8);
+    rot.SetIdentity();
+    rot.AddScaling(1.28,0.78,1);
+    rot.AddRotationZ(-128);
+    rot.AddRotationY(0);
+    rot.AddRotationX(-180);
+
+    rot.Decompose(S, R, T);
+    rotP.SetIdentity();
+    rotP.AddScaling(S.x, S.y,S.z);
+    rotP.AddRotationZ(R.z);
+    rotP.AddRotationY(R.y);
+    rotP.AddRotationX(R.x);
+
+    EXPECT_TRUE(rot.IsNear(rotP));
 }
 
 TEST(TiglMath, CTiglTransform_DecomposeTRSRS)
