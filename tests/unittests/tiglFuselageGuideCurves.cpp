@@ -48,6 +48,7 @@
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglFuselageSegmentGuidecurveBuilder.h"
+#include "CCPACSWingCell.h"
 
 using namespace std;
 
@@ -538,6 +539,31 @@ TEST(FuselageGuideCurve_bug, 766)
     tigl::CCPACSWing& wing = config.GetWing(1);
     EXPECT_THROW(wing.GetLoft()->Shape(), tigl::CTiglError);
 
+}
+
+TEST_F(FuselageGuideCurve, cellBug)
+{
+    const char* filename = "TestData/CellsBug/D250TF_topo_cells_SHORT.xml";
+    //const char* filename = "TestData/CellsBug/D250TF_topo_cells_SHORT_SAME_ETA.xml";
+    //const char* filename = "TestData/CellsBug/D250TF_topo_cells_SHORT_SAME_ROTATE.xml";
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE(tixiRet == SUCCESS);
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "AircraftModel", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+    auto& cell = uid_mgr.ResolveObject<tigl::CCPACSWingCell>("cell_wing_Cseg_upperShell_4");
+    auto& cellLoft = cell.GetLoft()->Shape();;
+    cout << "Cell Nr. 4 is created\n";
+    auto& cell28 = uid_mgr.ResolveObject<tigl::CCPACSWingCell>("cell_wing_Cseg_upperShell_28");
+    auto& cell28Loft = cell28.GetLoft()->Shape();
+    cout << "Cell Nr. 28 is created\n";
 }
 
 TEST_F(FuselageGuideCurveAtKink, kinksGuideCurvesParameterDef)

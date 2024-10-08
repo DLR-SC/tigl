@@ -454,6 +454,7 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning(AuxiliaryGeomC
     
     // check whether the ribEnd is a spar
     gp_Vec upVecEnd = GetRibUpVector(wsr, startPnt, endPnt, false);
+    //gp_Vec upVecEnd = GetRibUpVector(wsr, startPnt, endPnt, true);
 
     // in case no up vector could be found (e.g. when intersection results in a point) use the miplane normal
     // in case only one up vector could be found, use this for both

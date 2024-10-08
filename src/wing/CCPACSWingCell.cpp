@@ -953,6 +953,16 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
 
 
         // cut the shape at the cell borders
+        /*TopoDS_Shape ribcutface = GetRibCutGeometry(m_positioningOuterBorder.GetRib());
+        Handle(Geom_Surface) surf = BRep_Tool::Surface(TopoDS::Face(ribcutface));
+        GeomLib_IsPlanarSurface surf_check(surf);
+        BRepTools::Write(ribcutface, "BUG_CELL_RIBCUTFACE_BEFORE.brep");
+        if (!surf_check.IsPlanar()) {
+            std::cout << "NOT PLANAR!\n";
+        }
+        else {
+            std::cout << "PLANAR!\n";
+        }*/
         TopoDS_Shape resultShape = CutSpanwise(cache, loftShape, SpanWiseBorder::Inner, m_positioningInnerBorder, zRefDir, 1e-4);
         resultShape              = CutSpanwise(cache, resultShape, SpanWiseBorder::Outer, m_positioningOuterBorder, zRefDir, 1e-4);
         resultShape              = CutChordwise(cache, resultShape, ChordWiseBorder::LE, m_positioningLeadingEdge, zRefDir, 1e-4);
