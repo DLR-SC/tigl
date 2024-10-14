@@ -22,6 +22,13 @@
 
 #include <CTiglUIDManager.h>
 #include <CCPACSWingCell.h>
+#include "CCPACSConfigurationManager.h"
+#include "TopoDS_Edge.hxx"
+#include "TopoDS.hxx"
+#include "TopExp.hxx"
+#include "TopTools_IndexedMapOfShape.hxx"
+#include "CNamedShape.h"
+#include "tiglcommonfunctions.h"
 
 TEST(WingCell, IsInner)
 {
@@ -101,3 +108,38 @@ TEST(WingCell, IsConvex)
     ASSERT_TRUE(cell.IsConvex());
 }
 
+TEST(WingCell, IssueCellsNoOverlap)
+{
+    std::string fileName = "TestData/IEA-22-280-RWT_DLR_loads_CPACS.xml";
+    std::string configName = "aircraft";
+    std::string cell1Name = "span02_circ02";
+    std::string cell2Name = "span03_circ02";
+
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(fileName.c_str(), &tixiHandle);
+    ASSERT_TRUE(tixiRet == SUCCESS);
+
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, configName.c_str(), &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+
+    auto& cell1 = uid_mgr.ResolveObject<tigl::CCPACSWingCell>(cell1Name.c_str());
+    TopoDS_Shape cellLoft1 = cell1.GetLoft()->Shape();
+
+    auto& cell2 = uid_mgr.ResolveObject<tigl::CCPACSWingCell>(cell2Name.c_str());
+
+    TopoDS_Shape cellLoft2 = cell2.GetLoft()->Shape();
+    TopoDS_Shape cellCut = CutShapes(cellLoft1, cellLoft2);
+    TopTools_IndexedMapOfShape faces;
+    TopExp::MapShapes (cellCut, TopAbs_EDGE, faces);
+
+    // Test whether the cut of the two cells is only one line and not an area
+    // Therefore count the edges, must be equal to one
+    ASSERT_EQ(1, faces.Extent());
+}
