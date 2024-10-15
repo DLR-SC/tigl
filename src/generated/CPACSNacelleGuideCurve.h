@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
 #include "ITiglUIDRefObject.h"
@@ -33,6 +35,19 @@ namespace generated
     // This class is used in:
     // CPACSNacelleGuideCurves
 
+    /// @brief Guide curve
+    /// 
+    /// The following figure shows the basic setup of the guide curves.
+    /// They always start at a given ζ-position ( fromZeta ) on the profile of the specified start section ( startSectionUID ) and end at the ζ-position ( toZeta ) on the profile of the subsequent section.
+    /// The relative coordinates of the guide curves are specified in cpacs/vehicles/profiles/guideCurves and referenced via its uID .
+    /// @see nacelle_guideCurves
+    /// Note : Guide curves and profiles must result in a valid curve network.
+    /// The guide curve points are interpreted as ( Δr and Δx ) offsets from a cubic polynomial.
+    /// This polynomial serves as a baseline for guide curves between segments located on different radial positions with smooth transitions:
+    /// @see nacelle_guideCurve
+    /// Note : Currently, the nacelles do not have an explicit guide curve type but employ the standard guide curve definition, which is used in wings and profiles.
+    /// Therefore, the parameters have a different meaning:
+    /// Standard guide curve parameter Nacelle guide curve equivalent Description rX φ Independent variable normalized to [0,1] rY Δx Orthogonal offset (translation in x -direction) rZ Δr Radial offset
     class CPACSNacelleGuideCurve : public ITiglUIDRefObject
     {
     public:
@@ -56,8 +71,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetName() const;
         TIGL_EXPORT virtual void SetName(const std::string& value);
 
-        TIGL_EXPORT virtual const std::string& GetDescription() const;
-        TIGL_EXPORT virtual void SetDescription(const std::string& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
+        TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const std::string& GetGuideCurveProfileUID() const;
         TIGL_EXPORT virtual void SetGuideCurveProfileUID(const std::string& value);
@@ -76,12 +91,26 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string m_name;
-        std::string m_description;
-        std::string m_guideCurveProfileUID;
-        std::string m_startSectionUID;
-        double      m_fromZeta;
-        double      m_toZeta;
+        /// Name
+        std::string                  m_name;
+
+        /// Description
+        boost::optional<std::string> m_description;
+
+        /// UID of the guide curve profile
+        std::string                  m_guideCurveProfileUID;
+
+        /// UID of the start section
+        std::string                  m_startSectionUID;
+
+        /// Curve coordinate of the referenced section profile at which the guide curve shall start.
+        /// Valid values are in the interval -1,..,1.
+        double                       m_fromZeta;
+
+        /// Curve coordinate of the profile following the referenced section profile.
+        /// It defines where the guide curve ends.
+        /// Valid values are in the interval -1,..,1.
+        double                       m_toZeta;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;

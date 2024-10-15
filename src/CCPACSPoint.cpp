@@ -21,22 +21,27 @@
 namespace tigl
 {
 
-CCPACSPoint::CCPACSPoint(CCPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr)
+CCPACSPoint::CCPACSPoint(generated::CPACSBoundingBox* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSPoint(parent, uidMgr)
 {
 }
 
-CCPACSPoint::CCPACSPoint(CCPACSControlSurfaceHingePoint* parent, CTiglUIDManager* uidMgr)
+CCPACSPoint::CCPACSPoint(generated::CPACSControlSurfaceHingePoint* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSPoint(parent, uidMgr)
 {
 }
 
-CCPACSPoint::CCPACSPoint(CCPACSPointList* parent, CTiglUIDManager* uidMgr)
+CCPACSPoint::CCPACSPoint(generated::CPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSPoint(parent, uidMgr)
 {
 }
 
-CCPACSPoint::CCPACSPoint(CCPACSSeatModule* parent, CTiglUIDManager* uidMgr)
+CCPACSPoint::CCPACSPoint(generated::CPACSDeckElementMass* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPoint(parent, uidMgr)
+{
+}
+
+CCPACSPoint::CCPACSPoint(generated::CPACSPointList* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSPoint(parent, uidMgr)
 {
 }

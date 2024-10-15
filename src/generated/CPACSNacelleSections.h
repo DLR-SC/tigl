@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSNacelleCowl
 
-    /// @brief nacelleSectionsType
+    /// @brief Sections
     /// 
     /// 
     /// 

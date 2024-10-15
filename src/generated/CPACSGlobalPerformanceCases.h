@@ -39,8 +39,8 @@ namespace generated
 
     /// @brief Performance Cases
     /// 
-    /// Definition of missions and point performance events to evaluate the performance of a vehicle.
-    /// The definition of performance cases is independent from a specific vehicle.
+    /// Specification of performance cases required for the performance evaluation of air vehicles (aircraft, rotorcraft, etc.).
+    /// The information in this node is generally applicable to any kind of vehicle. Vehicle-specific information is provided through the performanceRequirements node found under: /cpacs/vehicles/../model/performanceCases .
     /// 
     class CPACSGlobalPerformanceCases
     {

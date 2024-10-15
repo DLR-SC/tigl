@@ -95,7 +95,7 @@ namespace generated
 
         CPACSAtmosphericModel   m_atmosphericModel;
 
-        /// Delta temperature
+        /// Delta temperature with respect to the standard temperature of the selected atmosphere [K]
         boost::optional<double> m_deltaTemperature;
 
     private:

@@ -22,8 +22,10 @@
 #include <CCPACSPointXY.h>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include "CPACSPointZ.h"
 #include "CreateIfNotExists.h"
+#include "CTiglError.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
@@ -34,7 +36,10 @@ class CCPACSProfileBasedStructuralElement;
 
 namespace generated
 {
+    class CPACSDeckComponent2DBase;
+
     // This class is used in:
+    // CPACSDeckComponent2DBase
     // CPACSProfileBasedStructuralElement
 
     /// @brief 2D transformation
@@ -44,13 +49,36 @@ namespace generated
     class CPACSTransformation2D : public CTiglOptUIDObject
     {
     public:
+        TIGL_EXPORT CPACSTransformation2D(CPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation2D(CCPACSProfileBasedStructuralElement* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSTransformation2D();
 
-        TIGL_EXPORT CCPACSProfileBasedStructuralElement* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSProfileBasedStructuralElement* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CPACSDeckComponent2DBase>::value || std::is_same<P, CCPACSProfileBasedStructuralElement>::value, "template argument for P is not a parent class of CPACSTransformation2D");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CPACSDeckComponent2DBase>::value || std::is_same<P, CCPACSProfileBasedStructuralElement>::value, "template argument for P is not a parent class of CPACSTransformation2D");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -83,7 +111,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveTranslation();
 
     protected:
-        CCPACSProfileBasedStructuralElement* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -109,4 +138,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSTransformation2D = generated::CPACSTransformation2D;
+using CCPACSDeckComponent2DBase = generated::CPACSDeckComponent2DBase;
 } // namespace tigl

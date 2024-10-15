@@ -30,15 +30,15 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSeatModule;
+    class CPACSDeckComponent2DBase;
     class CPACSStructuralElements;
 
     // This class is used in:
     // CPACSStructuralElements
 
-    /// @brief seatModulesType
+    /// @brief Seat modules
     /// 
-    /// SeatModules type, containing seat modules
+    /// Seat module instance collection type.
     /// 
     class CPACSSeatModules
     {
@@ -60,18 +60,19 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSeatModule>>& GetSeatModules() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSeatModule>>& GetSeatModules();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& GetSeatModules() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& GetSeatModules();
 
-        TIGL_EXPORT virtual CPACSSeatModule& AddSeatModule();
-        TIGL_EXPORT virtual void RemoveSeatModule(CPACSSeatModule& ref);
+        TIGL_EXPORT virtual CPACSDeckComponent2DBase& AddSeatModule();
+        TIGL_EXPORT virtual void RemoveSeatModule(CPACSDeckComponent2DBase& ref);
 
     protected:
         CPACSStructuralElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSeatModule>> m_seatModules;
+        /// Seat module
+        std::vector<std::unique_ptr<CPACSDeckComponent2DBase>> m_seatModules;
 
     private:
         CPACSSeatModules(const CPACSSeatModules&) = delete;
@@ -84,6 +85,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSeatModules = generated::CPACSSeatModules;
-using CCPACSSeatModule = generated::CPACSSeatModule;
+using CCPACSDeckComponent2DBase = generated::CPACSDeckComponent2DBase;
 using CCPACSStructuralElements = generated::CPACSStructuralElements;
 } // namespace tigl
