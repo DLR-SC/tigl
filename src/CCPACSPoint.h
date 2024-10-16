@@ -24,12 +24,11 @@ namespace tigl
 class CCPACSPoint : public generated::CPACSPoint
 {
 public:
-
-    TIGL_EXPORT CCPACSPoint(generated::CPACSBoundingBox* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSPoint(generated::CPACSControlSurfaceHingePoint* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSPoint(generated::CPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSPoint(generated::CPACSDeckElementMass* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSPoint(generated::CPACSPointList* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(CCPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(CCPACSControlSurfaceHingePoint* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(CCPACSPointList* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(CCPACSBoundingBox* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPoint(CCPACSDeckElementMass* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPoint(CCPACSTransformation* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSPoint(const CCPACSPoint& p);
