@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSeatModule.h"
+#include "CPACSDeckComponent2DBase.h"
 #include "CPACSSeatModules.h"
 #include "CPACSStructuralElements.h"
 #include "CTiglError.h"
@@ -98,23 +98,23 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSeatModule>>& CPACSSeatModules::GetSeatModules() const
+    const std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& CPACSSeatModules::GetSeatModules() const
     {
         return m_seatModules;
     }
 
-    std::vector<std::unique_ptr<CPACSSeatModule>>& CPACSSeatModules::GetSeatModules()
+    std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& CPACSSeatModules::GetSeatModules()
     {
         return m_seatModules;
     }
 
-    CPACSSeatModule& CPACSSeatModules::AddSeatModule()
+    CPACSDeckComponent2DBase& CPACSSeatModules::AddSeatModule()
     {
-        m_seatModules.push_back(make_unique<CPACSSeatModule>(this, m_uidMgr));
+        m_seatModules.push_back(make_unique<CPACSDeckComponent2DBase>(this, m_uidMgr));
         return *m_seatModules.back();
     }
 
-    void CPACSSeatModules::RemoveSeatModule(CPACSSeatModule& ref)
+    void CPACSSeatModules::RemoveSeatModule(CPACSDeckComponent2DBase& ref)
     {
         for (std::size_t i = 0; i < m_seatModules.size(); i++) {
             if (m_seatModules[i].get() == &ref) {

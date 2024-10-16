@@ -103,12 +103,9 @@ namespace generated
         // read element description
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
-            if (m_description.empty()) {
-                LOG(WARNING) << "Required element description is empty at xpath " << xpath;
+            if (m_description->empty()) {
+                LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
             }
-        }
-        else {
-            LOG(ERROR) << "Required element description is missing at xpath " << xpath;
         }
 
         // read element guideCurveProfileUID
@@ -160,8 +157,15 @@ namespace generated
         tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
 
         // write element description
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/description", m_description);
+        if (m_description) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
+            }
+        }
 
         // write element guideCurveProfileUID
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/guideCurveProfileUID");
@@ -191,12 +195,12 @@ namespace generated
         m_name = value;
     }
 
-    const std::string& CPACSNacelleGuideCurve::GetDescription() const
+    const boost::optional<std::string>& CPACSNacelleGuideCurve::GetDescription() const
     {
         return m_description;
     }
 
-    void CPACSNacelleGuideCurve::SetDescription(const std::string& value)
+    void CPACSNacelleGuideCurve::SetDescription(const boost::optional<std::string>& value)
     {
         m_description = value;
     }

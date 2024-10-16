@@ -2,7 +2,7 @@
 // maps generated types to actual tigl types
 
 // enums
-CPACSSymmetry                      TiglSymmetryAxis
+CPACSSymmetryXyXzYz                TiglSymmetryAxis
 CPACSPointAbsRelType_refType       ECPACSTranslationType
 CPACSFarField_type                 TiglFarFieldType
 CPACSRotorHub_type                 TiglRotorHubType

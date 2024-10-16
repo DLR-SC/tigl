@@ -17,11 +17,12 @@
 
 #include <cassert>
 #include "CCPACSTransformation.h"
+#include "CPACSBoundingBox.h"
 #include "CPACSControlSurfaceHingePoint.h"
 #include "CPACSControlSurfaceStep.h"
+#include "CPACSDeckElementMass.h"
 #include "CPACSPoint.h"
 #include "CPACSPointList.h"
-#include "CPACSSeatModule.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -31,6 +32,14 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSPoint::CPACSPoint(CPACSBoundingBox* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSBoundingBox);
+    }
+
     CPACSPoint::CPACSPoint(CPACSControlSurfaceHingePoint* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -47,20 +56,20 @@ namespace generated
         m_parentType = &typeid(CPACSControlSurfaceStep);
     }
 
+    CPACSPoint::CPACSPoint(CPACSDeckElementMass* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSDeckElementMass);
+    }
+
     CPACSPoint::CPACSPoint(CPACSPointList* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CPACSPointList);
-    }
-
-    CPACSPoint::CPACSPoint(CPACSSeatModule* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSSeatModule);
     }
 
     CPACSPoint::CPACSPoint(CCPACSTransformation* parent, CTiglUIDManager* uidMgr)
@@ -79,17 +88,20 @@ namespace generated
     const CTiglUIDObject* CPACSPoint::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CPACSBoundingBox>()) {
+                return GetParent<CPACSBoundingBox>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSControlSurfaceHingePoint>()) {
                 return GetParent<CPACSControlSurfaceHingePoint>()->GetNextUIDParent();
             }
             if (IsParent<CPACSControlSurfaceStep>()) {
                 return GetParent<CPACSControlSurfaceStep>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSDeckElementMass>()) {
+                return GetParent<CPACSDeckElementMass>();
+            }
             if (IsParent<CPACSPointList>()) {
                 return GetParent<CPACSPointList>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSSeatModule>()) {
-                return GetParent<CPACSSeatModule>();
             }
             if (IsParent<CCPACSTransformation>()) {
                 if (GetParent<CCPACSTransformation>()->GetUID())
@@ -104,17 +116,20 @@ namespace generated
     CTiglUIDObject* CPACSPoint::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CPACSBoundingBox>()) {
+                return GetParent<CPACSBoundingBox>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSControlSurfaceHingePoint>()) {
                 return GetParent<CPACSControlSurfaceHingePoint>()->GetNextUIDParent();
             }
             if (IsParent<CPACSControlSurfaceStep>()) {
                 return GetParent<CPACSControlSurfaceStep>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSDeckElementMass>()) {
+                return GetParent<CPACSDeckElementMass>();
+            }
             if (IsParent<CPACSPointList>()) {
                 return GetParent<CPACSPointList>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSSeatModule>()) {
-                return GetParent<CPACSSeatModule>();
             }
             if (IsParent<CCPACSTransformation>()) {
                 if (GetParent<CCPACSTransformation>()->GetUID())
