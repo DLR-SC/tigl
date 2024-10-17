@@ -910,8 +910,8 @@ void CCPACSWingCell::BuildSkinGeometry(GeometryCache& cache) const
          *
          *  Trim all the faces and store the result
          */
-        TrimSpanwise(cache, SpanWiseBorder::Inner, m_positioningInnerBorder, 1e-2);
-        TrimSpanwise(cache, SpanWiseBorder::Outer, m_positioningOuterBorder, 1e-2);
+        TrimSpanwise(cache, SpanWiseBorder::Inner, m_positioningInnerBorder, 1e-4);
+        TrimSpanwise(cache, SpanWiseBorder::Outer, m_positioningOuterBorder, 1e-4);
         TrimChordwise(cache, ChordWiseBorder::LE, m_positioningLeadingEdge, 1e-2);
         TrimChordwise(cache, ChordWiseBorder::TE, m_positioningTrailingEdge, 1e-2);
 
