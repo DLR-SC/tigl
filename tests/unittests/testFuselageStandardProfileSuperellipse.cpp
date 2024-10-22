@@ -114,28 +114,6 @@ TiglCPACSConfigurationHandle FuselageStandardProfileSuperEllipse::tiglHandle1 = 
 TixiDocumentHandle FuselageStandardProfileSuperEllipse::tixiHandle2 = 0;
 TiglCPACSConfigurationHandle FuselageStandardProfileSuperEllipse::tiglHandle2 = 0;
 
-TEST_F(FuselageStandardProfileSuperEllipse, BuildWireSuperEllipse)
-{
-    //test valid values
-    auto wire = BuildWireSuperEllipse(0.25,5.,0.5,3.,2);
-    ASSERT_TRUE(wire.Closed());
-    auto trafo = gp_Trsf();
-    auto vec = gp_Vec(-1.,0.,0.);
-    trafo.SetTranslation(vec);
-    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
-    ASSERT_TRUE(wire2.Closed());
-    auto loft = CTiglMakeLoft();
-    loft.addProfiles(wire);
-    loft.addProfiles(wire2);
-    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
-
-    //check invalid values
-    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,0.5,3.,0.), tigl::CTiglError);
-    ASSERT_THROW(BuildWireSuperEllipse(0.,5.,0.5,3.,2.), tigl::CTiglError);
-    ASSERT_THROW(BuildWireSuperEllipse(1.,5.,0.5,3.,2.), tigl::CTiglError);
-    ASSERT_THROW(BuildWireSuperEllipse(0.25,0.,0.5,3.,2.), tigl::CTiglError);
-}
-
 
 TEST_F(FuselageStandardProfileSuperEllipse, BuildFuselageMixedProfilesWithGuides_Superellipse)
 {

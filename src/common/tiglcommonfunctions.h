@@ -307,7 +307,7 @@ TIGL_EXPORT TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, cons
  * @param mUpper Exponent m for upper semi-ellipse
  * @param nLower Exponent n for lower semi-ellipse
  * @param nUpper Exponent n for upper semi-ellipse
- * @param tol
+ * @param tol Tolerance required for approximation of the superellipse as a b-spline curve
  * @return
  */
 TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction,
