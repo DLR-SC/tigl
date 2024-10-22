@@ -1398,8 +1398,41 @@ namespace
 TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper,
                                               const double nLower, const double nUpper, const double tol)
 {
-    if (mLower==0||mUpper==0||nLower==0||nUpper==0||lowerHeightFraction==0||lowerHeightFraction==1){
-        throw tigl::CTiglError("Invalid input. Check superellipse profile parameters.");
+    //dealing with singularities in superellipses: exponents must not be equal to 0
+    //choose tolerance near double precision
+    double epsilon = 1e-15;
+    if (mLower<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent mLower must be > ")
+            + std::to_string(epsilon)
+            + ". mLower = "
+            + std::to_string(mLower);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (mUpper<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent mUpper must be > ")
+            + std::to_string(epsilon)
+            + ". mUpper = "
+            + std::to_string(mUpper);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (nLower<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent nLower must be > ")
+            + std::to_string(epsilon)
+            + ". nLower = "
+            + std::to_string(nLower);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (nUpper<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent nUpper must be > ")
+            + std::to_string(epsilon)
+            + ". nUpper = "
+            + std::to_string(nUpper);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (lowerHeightFraction<0||lowerHeightFraction>1){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. lowerHeightFraction must be >0 and <1. lowerHeightFraction =  ")
+            + std::to_string(lowerHeightFraction);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
     }
     std::vector<Handle(Geom_BSplineCurve)> curves;
 
