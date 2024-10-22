@@ -266,7 +266,7 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
 void CCPACSFuselageProfile::BuildWiresRectangle(WireCache& cache) const
 {
     if(!m_standardProfile_choice3->GetRectangle_choice1()){
-        throw CTiglError("CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+        throw CTiglError("CCPACSFuselageProfile::BuildWiresRectangle: Missing rectangle definition in standardProfile.", TIGL_UNINITIALIZED);
     }
     //Get Paramenters
     auto& rectangle_profile = *m_standardProfile_choice3->GetRectangle_choice1();
@@ -282,7 +282,7 @@ void CCPACSFuselageProfile::BuildWiresRectangle(WireCache& cache) const
 void CCPACSFuselageProfile::BuildWiresSuperEllipse(WireCache& cache) const
 {
     if(!m_standardProfile_choice3->GetSuperEllipse_choice2()){
-        throw CTiglError("CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+        throw CTiglError("CCPACSFuselageProfile::BuildWiresSuperEllipse: Missing superEllipse definiton in standardProfile.", TIGL_UNINITIALIZED);
     }
     //Get Paramenters
     auto& superellipse_profile = *m_standardProfile_choice3->GetSuperEllipse_choice2();
