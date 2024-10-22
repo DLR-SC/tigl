@@ -36,6 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSNacelleCowl
 
+    /// @brief Guide curves
+    /// 
+    /// 
     class CPACSNacelleGuideCurves
     {
     public:

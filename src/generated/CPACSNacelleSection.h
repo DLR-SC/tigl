@@ -36,9 +36,75 @@ namespace generated
     // This class is used in:
     // CPACSNacelleSections
 
-    /// @brief nacelleSectionType
+    /// @brief Section
     /// 
+    /// An engine nacelle is defined by sections, where at least one and up to an infinite number of sections can be specified.
+    /// Lofting of the nacelle surface along the sections is done in cylindrical coordinates.
+    /// The coordinate origin refers to the center of the fan , i.e. the sections and their profiles are typically shifted in negative x-direction.
+    /// Note : In the current CPACS release, transformations are still labeled as Cartesian coordinates.
+    /// It is current work in progress to explicitly introduce cylindrical coordinates.
+    /// Until this is implemented in a future CPACS release, the implicit conventions listed below apply:
+    /// Translation component Cylindrical coordinate equivalent Description x ϑ Rotation angle around x y h Horizontal translation z r Radial translation The following example illustrates the setup of a nacelle with 4 sections.
+    /// These are rotated by 0, 120, 180 and 240 degrees around the x -axis (given by translation/x ).
+    /// To illustrate the possible transformations, the profile of the upper section is shifted slightly further in the negative x -direction ( translation/y ), while the lower section has a smaller radial distance from the rotation axis ( translation/z ).
+    /// In addition, the sections are scaled differently ( transformation/scaling ; not shown in the example figures) in order to create a straight trailing edge and to realize a flattened profile near the ground.
+    /// The following example also shows the profile cut-outs due to the radially symmetric inner region of the nacelle defined by the rotationCurve . For detailed information, please refer to the documentation of the rotationCurve element.
+    /// @see nacelle_sections
+    /// The first section is not rotated ( x=ϑ=0 ), but shifted vertically in negative direction ( y=h=-0.257 ).
+    /// The radial distance is given by z=r=0.365 :
     /// 
+    /// &lt;section uID="fanCowl_upperSection"&gt;
+    /// &lt;name&gt;Upper section&lt;/name&gt;
+    /// &lt;transformation&gt;
+    /// &lt;scaling&gt;
+    /// &lt;x&gt;1.055&lt;/x&gt;
+    /// &lt;y&gt;1&lt;/y&gt;
+    /// &lt;z&gt;1&lt;/z&gt;
+    /// &lt;/scaling&gt;
+    /// &lt;translation&gt;
+    /// &lt;x&gt;0.0&lt;/x&gt;
+    /// &lt;y&gt;-0.257&lt;/y&gt;
+    /// &lt;z&gt;0.365&lt;/z&gt;
+    /// &lt;/translation&gt;
+    /// &lt;/transformation&gt;
+    /// &lt;profileUID&gt;fanCowlUpperSectionProfile&lt;/profileUID&gt;
+    /// &lt;/section&gt;
+    /// The second section is rotated around the x -axis ( x=ϑ=120 ) as well as scaled by a factor of 1.1 in its profile height:
+    /// 
+    /// &lt;section uID="fanCowl_inboardSection"&gt;
+    /// &lt;name&gt;Inboard section&lt;/name&gt;
+    /// &lt;transformation&gt;
+    /// &lt;scaling&gt;
+    /// &lt;x&gt;1&lt;/x&gt;
+    /// &lt;y&gt;1&lt;/y&gt;
+    /// &lt;z&gt;1.1&lt;/z&gt;
+    /// &lt;/scaling&gt;
+    /// &lt;translation&gt;
+    /// &lt;x&gt;120.0&lt;/x&gt;
+    /// &lt;y&gt;-0.2&lt;/y&gt;
+    /// &lt;z&gt;0.365&lt;/z&gt;
+    /// &lt;/translation&gt;
+    /// &lt;/transformation&gt;
+    /// &lt;profileUID&gt;fanCowlUpperSectionProfile&lt;/profileUID&gt;
+    /// &lt;/section&gt;
+    /// The third section is rotated around the x -axis by 180° and scaled by a factor of 0.8 in its profile height:
+    /// 
+    /// &lt;section uID="fanCowl_lowerSection"&gt;
+    /// &lt;name&gt;Lower section&lt;/name&gt;
+    /// &lt;transformation&gt;
+    /// &lt;scaling&gt;
+    /// &lt;x&gt;1&lt;/x&gt;
+    /// &lt;y&gt;1&lt;/y&gt;
+    /// &lt;z&gt;0.8&lt;/z&gt;
+    /// &lt;/scaling&gt;
+    /// &lt;translation&gt;
+    /// &lt;x&gt;180.0&lt;/x&gt;
+    /// &lt;y&gt;-0.2&lt;/y&gt;
+    /// &lt;z&gt;0.33&lt;/z&gt;
+    /// &lt;/translation&gt;
+    /// &lt;/transformation&gt;
+    /// &lt;profileUID&gt;fanCowlUpperSectionProfile&lt;/profileUID&gt;
+    /// &lt;/section&gt;
     /// 
     class CPACSNacelleSection : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -81,9 +147,16 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                  m_uID;
+
+        /// Name
         std::string                  m_name;
+
+        /// Description
         boost::optional<std::string> m_description;
+
         CCPACSTransformation         m_transformation;
+
+        /// UID of the profile
         std::string                  m_profileUID;
 
     private:

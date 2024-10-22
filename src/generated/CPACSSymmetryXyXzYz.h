@@ -40,7 +40,7 @@ namespace generated
     // CPACSRotor
     // CPACSWing
 
-    enum CPACSSymmetry
+    enum CPACSSymmetryXyXzYz
     {
         none,
         inherit,
@@ -49,7 +49,7 @@ namespace generated
         y_z_plane
     };
 
-    inline std::string TiglSymmetryAxisToString(const CPACSSymmetry& value)
+    inline std::string TiglSymmetryAxisToString(const CPACSSymmetryXyXzYz& value)
     {
         switch(value) {
         case none: return "none";
@@ -57,10 +57,10 @@ namespace generated
         case x_y_plane: return "x-y-plane";
         case x_z_plane: return "x-z-plane";
         case y_z_plane: return "y-z-plane";
-        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSSymmetry");
+        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSSymmetryXyXzYz");
         }
     }
-    inline CPACSSymmetry stringToTiglSymmetryAxis(const std::string& value)
+    inline CPACSSymmetryXyXzYz stringToTiglSymmetryAxis(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "none") { return none; }
@@ -68,9 +68,9 @@ namespace generated
         if (toLower(value) == "x-y-plane") { return x_y_plane; }
         if (toLower(value) == "x-z-plane") { return x_z_plane; }
         if (toLower(value) == "y-z-plane") { return y_z_plane; }
-        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSSymmetry");
+        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSSymmetryXyXzYz");
     }
 } // namespace generated
 
-// CPACSSymmetry is customized, use type TiglSymmetryAxis directly
+// CPACSSymmetryXyXzYz is customized, use type TiglSymmetryAxis directly
 } // namespace tigl

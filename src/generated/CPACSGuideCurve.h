@@ -156,7 +156,7 @@ namespace generated
 
         /// The relative circumference
         /// position at which the guide curve shall end. Valid values
-        /// are in the interval -1.0...1.0.
+        /// are in the interval -1,...,1.
         boost::optional<double>                     m_toRelativeCircumference_choice1;
 
         /// The parameter
