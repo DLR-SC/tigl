@@ -184,8 +184,14 @@ void CCPACSFuselageProfile::BuildWires(WireCache& cache) const
             BuildWiresRectangle(cache);
             return;
         }
+        if(m_standardProfile_choice3->GetSuperEllipse_choice2()){
+            BuildWiresSuperEllipse(cache);
+            return;
+        }
     }
-    throw CTiglError("Currently only fuselage profiles defined by pointList and rectangular fuselage profiles are supported.");
+    else{
+        throw CTiglError("Fuselage profile type not supported.");
+    }
 }
 
 // Builds the fuselage profile wire from point list.
@@ -260,7 +266,7 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
 void CCPACSFuselageProfile::BuildWiresRectangle(WireCache& cache) const
 {
     if(!m_standardProfile_choice3->GetRectangle_choice1()){
-        throw CTiglError("CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+        throw CTiglError("CCPACSFuselageProfile::BuildWiresRectangle: Missing rectangle definition in standardProfile.", TIGL_UNINITIALIZED);
     }
     //Get Paramenters
     auto& rectangle_profile = *m_standardProfile_choice3->GetRectangle_choice1();
@@ -268,6 +274,25 @@ void CCPACSFuselageProfile::BuildWiresRectangle(WireCache& cache) const
     double radius = (rectangle_profile.GetCornerRadius())? *rectangle_profile.GetCornerRadius() : 0. ;
     //Build wire
     TopoDS_Wire wire = BuildWireRectangle(heightToWidthRatio,radius, 1e-3);
+    cache.closed = wire;
+    cache.original = wire;
+}
+
+//Builds the fuselage profile wires from lowerHeightFraction and exponents m,n for lower and upper semi-ellipse
+void CCPACSFuselageProfile::BuildWiresSuperEllipse(WireCache& cache) const
+{
+    if(!m_standardProfile_choice3->GetSuperEllipse_choice2()){
+        throw CTiglError("CCPACSFuselageProfile::BuildWiresSuperEllipse: Missing superEllipse definiton in standardProfile.", TIGL_UNINITIALIZED);
+    }
+    //Get Paramenters
+    auto& superellipse_profile = *m_standardProfile_choice3->GetSuperEllipse_choice2();
+    double lowerHeightFraction = superellipse_profile.GetLowerHeightFraction();
+    double mLower = superellipse_profile.GetMLower().GetValue();
+    double mUpper = superellipse_profile.GetMUpper().GetValue();
+    double nLower = superellipse_profile.GetNLower().GetValue();
+    double nUpper = superellipse_profile.GetNUpper().GetValue();
+    //Build wire
+    TopoDS_Wire wire = BuildWireSuperEllipse(lowerHeightFraction, mLower, mUpper, nLower, nUpper);
     cache.closed = wire;
     cache.original = wire;
 }
@@ -330,20 +355,19 @@ void CCPACSFuselageProfile::BuildDiameterPoints(DiameterPointsCache& cache) cons
                 }
             }
         }
-    } else if (m_standardProfile_choice3)
-    {
-        if(m_standardProfile_choice3->GetRectangle_choice1())
-        {
+    } else if (m_standardProfile_choice3){
+        if(m_standardProfile_choice3->GetRectangle_choice1()){
            //Get Paramenters
            auto& rectangle_profile = *m_standardProfile_choice3->GetRectangle_choice1();
            double heightToWidthRatio = rectangle_profile.GetHeightToWidthRatio().GetValue();
-           cache.start = gp_Pnt(0., 0, 0.5 * heightToWidthRatio);
-           cache.end = gp_Pnt(0., 0, -0.5 * heightToWidthRatio);
+           cache.start = gp_Pnt(0., 0., 0.5 * heightToWidthRatio);
+           cache.end = gp_Pnt(0., 0., -0.5 * heightToWidthRatio);
+        } else if(m_standardProfile_choice3->GetSuperEllipse_choice2()) {
+            cache.start = gp_Pnt(0., 0., 0.5);
+            cache.end = gp_Pnt(0., 0., -0.5);
         } else {
-            throw CTiglError("Unknown or unsupported profile type");
-        }
-    } else {
         throw CTiglError("Unknown or unsupported profile type");
+        }
     }
 }
 

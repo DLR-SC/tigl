@@ -95,7 +95,7 @@
                 <elements>
                   <element uID="D150_Fuselage_1Section1IDElement1">
                     <name>D150_Fuselage_1Section1</name>
-                    <profileUID>fuselageSuperellipse1ProfileuID</profileUID>
+                    <profileUID>fuselageRectangleProfileuID</profileUID>
                     <transformation uID="D150_Fuselage_1Section1IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section1IDElement1_transformation1_scaling1">
                         <x>1.0</x>
@@ -138,7 +138,7 @@
                 <elements>
                   <element uID="D150_Fuselage_1Section2IDElement1">
                     <name>D150_Fuselage_1Section2</name>
-                    <profileUID>fuselageSuperellipseProfileuID</profileUID>
+                    <profileUID>fuselageSuperellipse1ProfileuID</profileUID>
                     <transformation uID="D150_Fuselage_1Section2IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section2IDElement1_transformation1_scaling1">
                         <x>1</x>
@@ -181,7 +181,7 @@
                 <elements>
                   <element uID="D150_Fuselage_1Section3IDElement1">
                     <name>D150_Fuselage_1Section3</name>
-                    <profileUID>fuselageRectangle1ProfileuID</profileUID>
+                    <profileUID>fuselageSuperellipse3ProfileuID</profileUID>
                     <transformation uID="D150_Fuselage_1Section3IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section3IDElement1_transformation1_scaling1">
                         <x>1</x>
@@ -584,7 +584,7 @@
             </rectangle>
           </standardProfile>
         </fuselageProfile>
-          <fuselageProfile uID="fuselageRectangle1ProfileuID">
+        <fuselageProfile uID="fuselageRectangle1ProfileuID">
           <name>Rectangle1</name>
           <description>Standard Profile Type Rectangle</description>
           <standardProfile>
@@ -639,9 +639,9 @@
           <standardProfile>
             <superEllipse>
               <lowerHeightFraction>0.5</lowerHeightFraction>
-              <mLower>3.</mLower>
+              <mLower>2.</mLower>
               <mUpper>3.</mUpper>
-              <nLower>3.</nLower>
+              <nLower>1.</nLower>
               <nUpper>3.</nUpper>
             </superEllipse>
           </standardProfile>

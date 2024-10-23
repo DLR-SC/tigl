@@ -204,6 +204,42 @@ TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusInvalid)
     ASSERT_THROW(BuildWireRectangle(0.5, -1.), tigl::CTiglError);
 }
 
+TEST(TiglCommonFunctions, BuildWireSuperEllipse)
+{
+    //test valid values
+    auto wire = BuildWireSuperEllipse(0.25,5.,0.5,3.,2);
+    ASSERT_TRUE(wire.Closed());
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    ASSERT_TRUE(wire2.Closed());
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire);
+    loft.addProfiles(wire2);
+    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
+
+    //check invalid values
+    //exponent 0
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,0.5,3.,0.), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,0.5,0.,2.), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,0.,3.,2.), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,0.,0.5,3.,2.), tigl::CTiglError);
+    //exponent negative
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,-5.,0.5,3.,2), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,-0.5,3.,2), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,0.5,-3.,2), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,0.5,3.,-2), tigl::CTiglError);
+    //exponent outside tolerance
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,1e-16,0.5,3.,2), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,1e-16,3.,2), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,0.5,1e-16,2), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(0.25,5.,0.5,3.,1e-16), tigl::CTiglError);
+    //invalid lowerHeightFraction
+    ASSERT_THROW(BuildWireSuperEllipse(2.,5.,0.5,3.,2.), tigl::CTiglError);
+    ASSERT_THROW(BuildWireSuperEllipse(-0.25,5.,0.5,3.,2), tigl::CTiglError);
+}
+
 TEST(TiglCommonFunctions, LinspaceWithBreaks)
 {
     std::vector<double> breaks;

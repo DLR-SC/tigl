@@ -300,6 +300,21 @@ TIGL_EXPORT opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRatio
 TIGL_EXPORT TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cornerRadius=0.0,
                                            const double tol=Precision::Approximation());
 
+/**
+ * @brief BuildWireSuperellipse Builds a superelliptic wire in (y,z) - plane with width 1 and height 1
+ * @param lowerHeightFraction Fraction of height of the lower semi_ellipse relative to the toal height
+ * @param mLower Exponent m for lower semi-ellipse
+ * @param mUpper Exponent m for upper semi-ellipse
+ * @param nLower Exponent n for lower semi-ellipse
+ * @param nUpper Exponent n for upper semi-ellipse
+ * @param tol Tolerance required for approximation of the superellipse as a b-spline curve
+ * @return
+ */
+TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction,
+                                              const double mLower, const double mUpper,
+                                              const double nLower, const double nUpper,
+                                              const double tol=Precision::Approximation());
+
 // Returns a list of wires built from all connected edges in the passed shape
 TIGL_EXPORT void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList);
 
