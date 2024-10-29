@@ -67,6 +67,7 @@
 #include "BRepBndLib.hxx"
 #include "ShapeFix_Wire.hxx"
 
+using namespace std;
 
 inline gp_Pnt operator+(const gp_Pnt& a, const gp_Pnt& b)
 {

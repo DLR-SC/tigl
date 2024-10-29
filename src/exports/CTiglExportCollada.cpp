@@ -42,6 +42,8 @@ TODO:
 #include <TopoDS_Shape.hxx>
 #include <BRepTools.hxx>
 
+using namespace std;
+
 namespace 
 {
     template <typename T>

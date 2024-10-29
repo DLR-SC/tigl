@@ -73,7 +73,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeFace.hxx"
-#include "BRepMesh.hxx"
+//#include "BRepMesh.hxx"
 #include "BRepTools.hxx"
 #include "BRepLib.hxx"
 #include "BRepBndLib.hxx"

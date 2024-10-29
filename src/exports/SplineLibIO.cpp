@@ -27,6 +27,8 @@
 #include <limits>
 #include <iomanip>
 
+using namespace std;
+
 void exportCurveToSplineLib(Handle_Geom_BSplineCurve curve, const std::string& filename) 
 {
     TColStd_Array1OfReal knots(0, curve->NbKnots()-1) ;

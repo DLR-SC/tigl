@@ -21,6 +21,7 @@
 
 // standard libraries
 #include <iostream>
+#include <ostream>
 #include <algorithm>
 
 #include "CTiglLogging.h"
@@ -38,12 +39,14 @@
 #include "CTiglTypeRegistry.h"
 
 // algorithms
-#include "BRepMesh.hxx"
+//#include "BRepMesh.hxx"
 
 
 #include "CTiglPolyData.h"
 #include "CTiglTriangularizer.h"
 #include "CTiglPolyData.h"
+
+using namespace std;
 
 namespace
 {

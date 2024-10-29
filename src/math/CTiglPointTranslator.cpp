@@ -32,6 +32,8 @@
 #include <GeomFill.hxx>
 #include <Geom_Line.hxx>
 
+using namespace std;
+
 namespace tigl
 {
 

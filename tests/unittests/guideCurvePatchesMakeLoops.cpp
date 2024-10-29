@@ -47,6 +47,8 @@
 #include <Standard_Version.hxx>
 
 
+using namespace std;
+
 gp_Pnt EdgeFirstPoint(TopoDS_Edge e) 
 {
     double u1, u2;

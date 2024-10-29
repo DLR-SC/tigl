@@ -30,6 +30,8 @@
 #include "tiglmathfunctions.h"
 #include "tiglcommonfunctions.h"
 
+using namespace std;
+
 namespace tigl 
 {
 

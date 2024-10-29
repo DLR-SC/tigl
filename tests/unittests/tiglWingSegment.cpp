@@ -28,6 +28,8 @@
 #include "CCPACSWingSegments.h"
 #include "tiglcommonfunctions.h"
 
+using namespace std;
+
 /***************************************************************************************************/
 
 class WingSegment : public ::testing::Test 
