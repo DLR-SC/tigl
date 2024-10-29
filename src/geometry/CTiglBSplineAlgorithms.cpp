@@ -48,6 +48,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Precision.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <CTiglIntersectBSplines.h>
 
 #include <cmath>
 #include <stdexcept>
@@ -742,57 +743,26 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::pointsToSurface(const TColgp
     return interpolatingSurf;
 }
 
-
 std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersections(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2, double tolerance) {
-    // light weight simple minimizer
-
-    // check parametrization of B-splines beforehand
 
     // find out the average scale of the two B-splines in order to being able to handle a more approximate curves and find its intersections
     double splines_scale = (CTiglBSplineAlgorithms::scale(spline1) + CTiglBSplineAlgorithms::scale(spline2)) / 2.;
 
     std::vector<std::pair<double, double> > intersection_params_vector;
-    GeomAPI_ExtremaCurveCurve intersectionObj(spline1, spline2);
-    for (int intersect_idx = 1; intersect_idx <= intersectionObj.NbExtrema(); ++intersect_idx) {
-        double param1 = 0.;
-        double param2 = 0.;
-        intersectionObj.Parameters(intersect_idx, param1, param2);
 
-        // filter out real intersections
-        gp_Pnt point1 = spline1->Value(param1);
-        gp_Pnt point2 = spline2->Value(param2);
-
-        if (point1.Distance(point2) < tolerance * splines_scale) {
-            intersection_params_vector.push_back(std::make_pair(param1, param2));
-        }
-        else {
-            throw CTiglError("Curves do not intersect each other", TIGL_MATH_ERROR);
-        }
-
-        // for closed B-splines:
-        if (intersectionObj.NbExtrema() == 1 && spline1->IsClosed() && std::abs(param1 - spline1->Knot(1)) < 1e-6) {
-            // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the end of the closed curve, so add it by hand
-            intersection_params_vector.push_back(std::make_pair(spline1->Knot(spline1->NbKnots()), param2));
-        }
-
-        if (intersectionObj.NbExtrema() == 1 && spline1->IsClosed() && std::abs(param1 - spline1->Knot(spline1->NbKnots())) < 1e-6) {
-            // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the beginning of the closed curve, so add it by hand
-            intersection_params_vector.push_back(std::make_pair(spline1->Knot(1), param2));
-        }
-
-        if (intersectionObj.NbExtrema() == 1 && spline2->IsClosed() && std::abs(param2 - spline2->Knot(1)) < 1e-6) {
-            // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the end of the closed curve, so add it by hand
-            intersection_params_vector.push_back(std::make_pair(param1, spline2->Knot(spline2->NbKnots())));
-        }
-
-        if (intersectionObj.NbExtrema() == 1 && spline2->IsClosed() && std::abs(param2 - spline2->Knot(spline2->NbKnots())) < 1e-6) {
-            // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the beginning of the closed curve, so add it by hand
-            intersection_params_vector.push_back(std::make_pair(param1, spline2->Knot(1)));
-        }
+    auto results = tigl::IntersectBSplines(spline1, spline2, tolerance*splines_scale);
+    for (const auto& r : results) {
+        intersection_params_vector.push_back({r.parmOnCurve1, r.parmOnCurve2});
     }
 
-
     return intersection_params_vector;
+}
+
+Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::trimCurve(const Handle(Geom_BSplineCurve)& curve, double umin, double umax)
+{
+    Handle(Geom_BSplineCurve) copy = Handle(Geom_BSplineCurve)::DownCast(curve->Copy());
+    copy->Segment(umin, umax);
+    return copy;
 }
 
 double CTiglBSplineAlgorithms::scale(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector)
