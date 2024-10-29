@@ -778,7 +778,8 @@ double CCPACSFuselage::GetMaximalHeight()
     // Then comput the loft in this coordinate system
     PNamedShape loftCopy = GetLoft()->DeepCopy(); // make a deep copy because we gonna to transform it
     TopoDS_Shape transformedLoft = fuselageRotInv.Transform(loftCopy->Shape());
-    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.01);   // tessellate the loft to have a more accurate bounding box.
+    //BRepMesh_IncrementalMesh mesh(transformedLoft, 0.01);   // tessellate the loft to have a more accurate bounding box.
+    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.001);   // tessellate the loft to have a more accurate bounding box.
 
     Bnd_Box boundingBox;
     BRepBndLib::Add(transformedLoft, boundingBox);
@@ -845,7 +846,8 @@ double CCPACSFuselage::GetMaximalWidth()
     // Then comput the loft in this coordinate system
     PNamedShape loftCopy = GetLoft()->DeepCopy(); // make a deep copy because we gonna to transform it
     TopoDS_Shape transformedLoft = fuselageRotInv.Transform(loftCopy->Shape());
-    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.01); // tessellate the loft to have a more accurate bounding box.
+    //BRepMesh_IncrementalMesh mesh(transformedLoft, 0.01); // tessellate the loft to have a more accurate bounding box.
+    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.001); // tessellate the loft to have a more accurate bounding box.
 
     Bnd_Box boundingBox;
     BRepBndLib::Add(transformedLoft, boundingBox);

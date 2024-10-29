@@ -295,7 +295,7 @@ TopoDS_Wire CCPACSFuselageProfile::GetDiameterWire() const
 void CCPACSFuselageProfile::BuildSize(SizeCache& cache) const
 {
     TopoDS_Wire wire = GetWire(true);
-    BRepMesh_IncrementalMesh mesh(wire, 0.001); // tessellate the wire to have a more accurate bounding box.
+    BRepMesh_IncrementalMesh mesh(wire, 0.0001); // tessellate the wire to have a more accurate bounding box.
     Bnd_Box boundingBox;
     BRepBndLib::Add(wire, boundingBox);
     CTiglPoint min, max;
