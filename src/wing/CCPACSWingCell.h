@@ -24,6 +24,7 @@
 #include "generated/UniquePtr.h"
 #include "tigletaxsifunctions.h"
 #include "Cache.h"
+#include "CTiglRectGridSurface.h"
 
 #include <gp_Pln.hxx>
 #include <TopoDS_Shape.hxx>
@@ -46,8 +47,6 @@ class CCPACSWingCell : public generated::CPACSWingCell, public ITiglGeometricCom
 public:
     TIGL_EXPORT CCPACSWingCell(CCPACSWingCells* parentCells, CTiglUIDManager* uidMgr);
     TIGL_EXPORT ~CCPACSWingCell() override;
-
-    TIGL_EXPORT void Invalidate();
 
     // determines if a given eta xsi coordinate is inside this cell
     // TODO: missing support for spar cell borders
@@ -91,6 +90,9 @@ public:
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
 private:
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     struct EtaXsiCache
     {
         EtaXsi innerLeadingEdgePoint;
@@ -99,14 +101,30 @@ private:
         EtaXsi outerTrailingEdgePoint;
     };
 
+
+
     struct GeometryCache
     {
         TopoDS_Shape skinGeometry;
 
-        gp_Pln cutPlaneLE, cutPlaneTE, cutPlaneIB, cutPlaneOB;
-        TopoDS_Shape planeShapeLE, planeShapeTE, planeShapeIB, planeShapeOB;
+        // the following variables are used if the cell is defined
+        // relative to the chordface
+        gp_Pnt IBLE, projectedIBLE,
+               OBLE, projectedOBLE,
+               IBTE, projectedIBTE,
+               OBTE, projectedOBTE;
+        gp_Ax3 border_inner_ax3, border_outer_ax3, border_le_ax3, border_te_ax3;
         TopoDS_Shape sparShapeLE, sparShapeTE;
-        gp_Pnt projectedIBLE, projectedOBLE, projectedIBTE, projectedOBTE;
+
+        // the following cache is used for the contour coordinate implementation
+        struct TrimShapeAnnotation
+        {
+            double ccmin, ccmax; // chordwise contour coordinate bounds
+            double scmin, scmax; // spanwise contour coordinate bounds
+            bool keep = true;    // a label, specifying if the face
+                                 // will be part of the resulting shape
+        };
+        CTiglRectGridSurface<TrimShapeAnnotation> rgsurface;
     };
 
     template<class T>
@@ -123,6 +141,113 @@ private:
     void Reset();
 
     void BuildSkinGeometry(GeometryCache& cache) const;
+
+    // this enum is used internally by CutSpanWise to determine,
+    // whether it is an inner or an outer cut
+    enum class SpanWiseBorder {
+        Inner,
+        Outer
+    };
+
+    /**
+     * @brief CutSpanwise cuts the loftShape in spanwise direction
+     * Depending on the enum border, it can be a inner or  outer
+     * border. This function is called by BuildSKinGeometry
+     * to cut the loftSurface in spanwise direction
+     *
+     * This function is used, if the borders of the cell are defined
+     * relative to the chordface via eta xsi coordinates or by
+     * referencing a rib
+     *
+     * @param cache The shape cache of the wing cell
+     * @param loftShape the shape of the wing skin
+     * @param border a SpanWiseBorder enum, denoting whether it is an inner
+     * or outer border
+     * @param positioning CPACS definition of the border
+     * @param zRefDir a reference direction orthogonal to the chordface
+     * @param tol a tolerance
+     * @return The loftShape cut at the spanwise border
+     */
+    TopoDS_Shape CutSpanwise(GeometryCache& cache,
+                             TopoDS_Shape const& loftShape,
+                             SpanWiseBorder border,
+                             CCPACSWingCellPositionSpanwise const& positioning,
+                             gp_Dir const& zRefDir,
+                             double tol=5e-3) const;
+
+    /**
+     * @brief TrimSpanwise trims the wing skin in spanwise direction
+     * Depending on the enum border, it can be a inner or outer
+     * border. This function is called by BuildSkinGeometry to trim
+     * the wing shape in spanwise direction.
+     *
+     * This function is used, it the borders of the cell are defined
+     * relative to the wing skin via contour coordinates.
+     *
+     * @param cache The shape of the wing cell
+     * @param border  a SpanWiseBorder enum, denoting whether it is an inner
+     * or outer border
+     * @param positioning CPACS definition of the border
+     * @param tol a tolerance
+     */
+    void TrimSpanwise(GeometryCache& cache,
+                      SpanWiseBorder border,
+                      CCPACSWingCellPositionSpanwise const& positioning,
+                      double tol = 5e-3) const;
+
+    // this enum is used internally by CutChordwise to determine,
+    // whether it is a leading edge or trailing edge cut
+    enum class ChordWiseBorder {
+        LE,
+        TE
+    };
+
+    /**
+     * @brief CutChordwise cuts the loftShape in chordwise direction
+     * Depending on the enum border, it can be a leading edge or
+     * trailing edge border. This function is called by BuildSKinGeometry
+     * to cut the loftSurface in chordwise direction
+     *
+     * This function is used, if the borders of the cell are defined
+     * relative to the chordface via eta xsi coordinates or by
+     * referencing a spar
+     *
+     * @param cache The shape cache of the wing cell
+     * @param loftShape the shape of the wing skin
+     * @param border a ChordWiseBorder enum, denoting whether it is a leading edge
+     * or trailing edge border
+     * @param positioning CPACS definition of the border
+     * @param zRefDir a reference direction orthogonal to the chordface
+     * @param tol a tolerance
+     * @return The loftShape cut at the chordwise border
+     */
+    TopoDS_Shape CutChordwise(GeometryCache& cache,
+                              TopoDS_Shape const& loftShape,
+                              ChordWiseBorder border,
+                              CCPACSWingCellPositionChordwise const& positioning,
+                              gp_Dir const& zRefDir,
+                              double tol=5e-3) const;
+
+    /**
+     * @brief TrimChordwise trims the wing skin in chordwise direction
+     * Depending on the enum border, it can be a leading edge or trailing edge
+     * border. This function is called by BuildSkinGeometry to trim
+     * the wing shape in chordwise direction.
+     *
+     * This function is used, it the borders of the cell are defined
+     * relative to the wing skin via contour coordinates.
+     *
+     * @param cache The shape of the wing cell
+     * @param border  a ChordWiseBorder enum, denoting whether it is a LE
+     * or a TE border
+     * @param positioning CPACS definition of the border
+     * @param tol a tolerance
+     */
+    void TrimChordwise(GeometryCache& cache,
+                       ChordWiseBorder border,
+                       CCPACSWingCellPositionChordwise const& positioning,
+                       double tol = 5e-3) const;
+
 
     TopoDS_Shape GetRibCutGeometry(std::pair<std::string, int> ribUidAndIndex) const;
 

@@ -22,19 +22,28 @@
 #ifndef CCPACSFUSELAGESEGMENTS_H
 #define CCPACSFUSELAGESEGMENTS_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSFuselageSegments.h"
+#include "CTiglRelativelyPositionedComponent.h"
+#include "TopoDS_Compound.hxx"
 
 namespace tigl
 {
 class CCPACSFuselageSegment;
+class CCPACSConfiguration;
 
 class CCPACSFuselageSegments : public generated::CPACSFuselageSegments
 {
 public:
+    TIGL_EXPORT CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
 
+    TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
+
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
     // Gets a segment by index.
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);
@@ -48,6 +57,10 @@ public:
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount() const;
+
+    // Gets the parent component
+    TIGL_EXPORT CTiglRelativelyPositionedComponent const* GetParentComponent() const;
+
 
     // return the elements uids in order from noise to tail
     // It assume that the element are already order in m_segments !
@@ -67,14 +80,19 @@ public:
 
 
     // CPACSFuselageSegments interface
-public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
+
+    TIGL_EXPORT const TopoDS_Compound& GetGuideCurveWires() const;
 
 private:
     void ReorderSegments();
 
+    void BuildGuideCurves(TopoDS_Compound& cache) const;
+
+    Cache<TopoDS_Compound, CCPACSFuselageSegments> guideCurves;
+
     // check order of segments - each segment must start with the element of the previous segment
-    bool NeedReordering();
+    bool NeedReordering() const;
 
 };
 

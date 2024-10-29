@@ -18,7 +18,7 @@
 
 /**
 * @file
-* @brief Tests some fuselage fuctions like circumreference, volumen, etc...
+* @brief Tests some fuselage functions like circumreference, volume, etc...
 */
 
 #define _USE_MATH_DEFINES

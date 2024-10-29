@@ -29,12 +29,12 @@ class CCPACSFrame : public generated::CPACSFrame
 public:
     TIGL_EXPORT CCPACSFrame(CCPACSFramesAssembly* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
-
     TIGL_EXPORT TopoDS_Shape GetGeometry(bool just1DElements, TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
     TIGL_EXPORT TopoDS_Shape GetCutGeometry(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
 
 private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void BuildGeometry1D(TopoDS_Shape& cache) const;
     void BuildGeometry3D(TopoDS_Shape& cache) const;
     void BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const;

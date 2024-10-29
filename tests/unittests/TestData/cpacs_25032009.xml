@@ -4460,7 +4460,7 @@
 							<missionUID>Mission_1</missionUID>
 							<trajectory>
 								<name>Standard approach</name>
-								<description>This is a standard approch with 3 deg</description>
+								<description>This is a standard approach with 3 deg</description>
 								<flightPath>
 									<flightPosition>
 										<coordinates>

@@ -23,42 +23,25 @@
 #ifndef CCPACSACSYSTEMS_H
 #define CCPACSACSYSTEMS_H
 
-#include "tigl_internal.h"
-#include "tixi.h"
-#include "CCPACSGenericSystems.h"
+#include "generated/CPACSSystems.h"
 
 namespace tigl
 {
 
 class CCPACSConfiguration;
 
-class CCPACSACSystems
+class CCPACSACSystems : public generated::CPACSSystems
 {
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSACSystems(CCPACSConfiguration* config);
+    // Constructors
+    TIGL_EXPORT CCPACSACSystems(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSACSystems(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSACSystems();
 
-    // Read CPACS aircraft systems elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
-
-    // Returns the generic systems object.
-    TIGL_EXPORT CCPACSGenericSystems& GetGenericSystems();
-
-private:
-    // Copy constructor
-    CCPACSACSystems(const CCPACSACSystems& );
-
-    // Assignment operator
-    void operator=(const CCPACSACSystems& );
-
-private:
-    CCPACSGenericSystems    genericSystems;    /**< Generic system elements */
-    CCPACSConfiguration*    configuration;     /**< Pointer to parent configuration */
-
+    // Returns the parent configuration
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 };
 
 } // end namespace tigl

@@ -48,8 +48,54 @@ if(OCE_FOUND)
   option(OCE_STATIC_LIBS "Should be checked, if static OCE libs are linked" OFF)
 else(OCE_FOUND)
   message("OCE not found! Searching for OpenCASCADE.")
-  find_package(OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
+  find_package(OpenCASCADE CONFIG REQUIRED COMPONENTS FoundationClasses ModelingData ModelingAlgorithms Visualization ApplicationFramework DataExchange)
   option(OpenCASCADE_STATIC_LIBS "Should be checked, if static OpenCASCADE libs are linked" OFF)
+
+  # PATCH OpenCASCADE_LIBRARIES for removing unnecessary libraries if present
+  if(DEFINED OpenCASCADE_Draw_LIBRARIES)
+    list (REMOVE_ITEM OpenCASCADE_LIBRARIES ${OpenCASCADE_Draw_LIBRARIES})
+  endif(DEFINED OpenCASCADE_Draw_LIBRARIES)
+  if(DEFINED OpenCASCADE_DETools_LIBRARIES)
+    list (REMOVE_ITEM OpenCASCADE_LIBRARIES ${OpenCASCADE_DETools_LIBRARIES})
+  endif(DEFINED OpenCASCADE_DETools_LIBRARIES)
+  message(STATUS "Found opencascade " ${OpenCASCADE_VERSION})
+
+  FIND_PATH(OpenCASCADE_SHADER_DIRECTORY
+            NAMES PhongShading.fs
+            PATH_SUFFIXES
+               share/opencascade/resources/Shaders
+               Shaders
+            HINTS ${CASROOT} ${OCE_INCLUDE_DIRS}/../../ ${OpenCASCADE_RESOURCE_DIR}
+  )
+
+
+  if (OpenCASCADE_WITH_TBB AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
+      set(TBB_FIND_QUIETLY 1)
+      find_package(TBB REQUIRED)
+      set_property(TARGET TKernel APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES TBB::tbb TBB::tbbmalloc)
+  endif()
+
+  if (OpenCASCADE_WITH_FREEIMAGE AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
+      find_package(FreeImageLib  MODULE REQUIRED)
+      set_property(TARGET TKService APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES freeimage::freeimage)
+  endif()
+
+  if (OpenCASCADE_WITH_FREETYPE AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
+      find_package(Freetype REQUIRED)
+      if (NOT TARGET freetype)
+          add_library(freetype UNKNOWN IMPORTED)
+          set_property(TARGET freetype APPEND PROPERTY IMPORTED_LOCATION "${FREETYPE_LIBRARY}")
+      endif()
+
+      set_property(TARGET TKService APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES freetype)
+  endif()
+
+  if (APPLE)
+    find_library (Appkit_LIB NAMES AppKit)
+    set_property(TARGET TKOpenGl APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES ${Appkit_LIB})
+
+  endif(APPLE)
+
 endif(OCE_FOUND)
 
 set_property(TARGET TKernel APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "Standard_EXPORT=")

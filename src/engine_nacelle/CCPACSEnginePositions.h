@@ -27,7 +27,8 @@ namespace tigl
 class CCPACSEnginePositions : public generated::CPACSEnginePositions
 {
 public:
-    TIGL_EXPORT CCPACSEnginePositions(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEnginePositions(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEnginePositions(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT size_t GetEnginePositionCount() const;
     TIGL_EXPORT CCPACSEnginePosition& GetEnginePosition(size_t index) const;

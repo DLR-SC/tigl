@@ -30,13 +30,15 @@ inline std::string TiglSymmetryAxisToString(const TiglSymmetryAxis& value)
 {
     switch (value) {
     case TIGL_NO_SYMMETRY:
-        return "";
+        return "none";
     case TIGL_X_Y_PLANE:
         return "x-y-plane";
     case TIGL_X_Z_PLANE:
         return "x-z-plane";
     case TIGL_Y_Z_PLANE:
         return "y-z-plane";
+    case TIGL_INHERIT_SYMMETRY:
+        return "inherit";
     default:
         throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) +
                          "\" for enum type TiglSymmetryAxis");
@@ -48,11 +50,17 @@ inline TiglSymmetryAxis stringToTiglSymmetryAxis(const std::string& value)
     if (value == "x-y-plane") {
         return TIGL_X_Y_PLANE;
     }
-    if (value == "x-z-plane") {
+    else if (value == "x-z-plane") {
         return TIGL_X_Z_PLANE;
     }
-    if (value == "y-z-plane") {
+    else if (value == "y-z-plane") {
         return TIGL_Y_Z_PLANE;
+    }
+    else if (value == "none") {
+        return TIGL_NO_SYMMETRY;
+    }
+    else if (value == "inherit") {
+        return TIGL_INHERIT_SYMMETRY;
     }
     return TIGL_NO_SYMMETRY;
 } // namespace tigl

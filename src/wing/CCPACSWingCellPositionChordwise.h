@@ -36,10 +36,11 @@ public:
     enum InputType
     {
         Xsi,
-        Spar
+        Spar,
+        Contour
     };
 
-    TIGL_EXPORT CCPACSWingCellPositionChordwise(CCPACSWingCell* parent);
+    TIGL_EXPORT CCPACSWingCellPositionChordwise(CCPACSWingCell* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT InputType GetInputType() const;
 
@@ -51,6 +52,9 @@ public:
 
     TIGL_EXPORT const std::string& GetSparUId() const;
     TIGL_EXPORT void SetSparUId(std::string nSparUId);
+
+private:
+    void InvalidateParent() const;
 };
 
 } // end namespace tigl

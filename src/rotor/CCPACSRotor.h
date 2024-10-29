@@ -58,9 +58,6 @@ public:
     // Constructor
     TIGL_EXPORT CCPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr);
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     TIGL_EXPORT CTiglTransformation GetTransformationMatrix() const override;
@@ -105,6 +102,9 @@ public:
     // Returns the radius of the rotor
     TIGL_EXPORT double GetRadius();
 
+    // Wrapper function to return the nominal rotations per minute or 0 if not defined
+    TIGL_EXPORT double GetNominalRotationsPerMinute();
+
     // Returns the tip speed this rotor
     TIGL_EXPORT double GetTipSpeed();
 
@@ -137,8 +137,9 @@ protected:
     PNamedShape BuildLoft() const override;
 
 private:
-    bool                   invalidated;                 /**< Internal state flag  */
-    bool                   rebuildGeometry;             /**< Indicates if geometry needs to be rebuilt */
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
 };
 
 } // end namespace tigl

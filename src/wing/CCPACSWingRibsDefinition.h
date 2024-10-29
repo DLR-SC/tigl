@@ -63,8 +63,6 @@ public:
 public:
     TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
-
     TIGL_EXPORT RibPositioningType GetRibPositioningType() const;
 
     // Returns the number of ribs for this rib definition, either this is
@@ -150,6 +148,8 @@ private:
         TopoDS_Shape upperCapsShape;
         TopoDS_Shape lowerCapsShape;
     };
+
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
     void UpdateRibSetDataCache(RibSetDataCache& cache) const;
 

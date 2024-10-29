@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.airbusds.com/cpacs/3.1">
+  <header>
+    <name>Cpacs2Test</name>
+    <description>Simple Wing for unit testing</description>
+    <creator>Martin Siggel</creator>
+    <timestamp>2012-10-09T15:12:47</timestamp>
+    <version>1.0</version>
+    <cpacsVersion>3.1</cpacsVersion>
+    <!--<updates>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2018-01-15T09:22:57</timestamp>
+        <version>0.2</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+      <update>
+        <modification>Added missing UIDs.</modification>
+        <creator>fix_errors.py</creator>
+        <timestamp>2019-04-29T20:48:26</timestamp>
+        <version>0.3.0</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+    </updates>-->
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="Cpacs2Test">
+        <name>Cpacs2Test</name>
+        <reference>
+          <area>1</area>
+          <length>1</length>
+          <point uID="Cpacs2Test_point1">
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+          </point>
+        </reference>
+        <fuselages>
+          <fuselage uID="SimpleFuselage">
+            <name>name</name>
+            <description>description</description>
+            <transformation uID="SimpleFuselage_transformation1">
+              <scaling uID="SimpleFuselage_transformation1_scaling1">
+                <x>1</x>
+                <y>0.5</y>
+                <z>0.5</z>
+              </scaling>
+              <rotation uID="SimpleFuselage_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absLocal" uID="SimpleFuselage_transformation1_translation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="D150_Fuselage_1Section1ID">
+                <name>D150_Fuselage_1Section1</name>
+                <transformation uID="D150_Fuselage_1Section1ID_transformation1">
+                  <scaling uID="D150_Fuselage_1Section1ID_transformation1_scaling1">
+                    <x>1</x>
+                    <y>0.7</y>
+                    <z>0.5</z>
+                  </scaling>
+                  <rotation uID="D150_Fuselage_1Section1ID_transformation1_rotation1">
+                    <x>-0</x>
+                    <y>0</y>
+                    <z>-0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="D150_Fuselage_1Section1ID_transformation1_translation1">
+                    <x>-0.5</x>
+                    <y>1.91428e-16</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="D150_Fuselage_1Section1IDElement1">
+                    <name>D150_Fuselage_1Section1</name>
+                    <profileUID>fuselageKinkProfileuID</profileUID>
+                    <transformation uID="D150_Fuselage_1Section1IDElement1_transformation1">
+                      <scaling uID="D150_Fuselage_1Section1IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="D150_Fuselage_1Section1IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="D150_Fuselage_1Section1IDElement1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="D150_Fuselage_1Section2ID">
+                <name>D150_Fuselage_1Section2</name>
+                <transformation uID="D150_Fuselage_1Section2ID_transformation1">
+                  <scaling uID="D150_Fuselage_1Section2ID_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="D150_Fuselage_1Section2ID_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="D150_Fuselage_1Section2ID_transformation1_translation1">
+                    <x>0.5</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="D150_Fuselage_1Section2IDElement1">
+                    <name>D150_Fuselage_1Section2</name>
+                    <profileUID>fuselageCircleProfileuID</profileUID>
+                    <transformation uID="D150_Fuselage_1Section2IDElement1_transformation1">
+                      <scaling uID="D150_Fuselage_1Section2IDElement1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="D150_Fuselage_1Section2IDElement1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="D150_Fuselage_1Section2IDElement1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <segments>
+              <segment uID="segmentD150_Fuselage_1Segment2ID">
+                <name>D150_Fuselage_1Segment2</name>
+                <fromElementUID>D150_Fuselage_1Section1IDElement1</fromElementUID>
+                <toElementUID>D150_Fuselage_1Section2IDElement1</toElementUID>
+                <guideCurves>
+                  <guideCurve uID="Seg1_bottom">
+                    <name>Segment1_bottomCurve</name>
+                    <description>Segment1_bottomCurve</description>
+                    <guideCurveProfileUID>bottomFuselageCurve</guideCurveProfileUID>
+                    <fromRelativeCircumference>0.</fromRelativeCircumference>
+                    <toRelativeCircumference>0.</toRelativeCircumference>
+                  </guideCurve>
+                  <guideCurve uID="Seg1_left">
+                    <name>Segment1_leftCurve</name>
+                    <description>Segment1_leftCurve</description>
+                    <guideCurveProfileUID>leftFuselageCurve</guideCurveProfileUID>
+					<fromParameter>0.28</fromParameter>
+					<toParameter>0.28</toParameter>
+                  </guideCurve>
+			    </guideCurves>
+              </segment>
+            </segments>
+          </fuselage>
+        </fuselages>
+      </model>
+    </aircraft>
+    <profiles>
+      <fuselageProfiles>
+        <fuselageProfile uID="fuselageCircleProfileuID">
+          <name>Circle</name>
+          <description>Profile build up from set of Points on Circle where may Dimensions are 1..-1</description>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0</x>
+            <y mapType="vector">0;1;0;-1;0</y>
+            <z mapType="vector">1;0;-1;0;1</z>
+			<kinkIndices mapType="vector">1;3</kinkIndices>
+			<parameterMap>
+              <pointIndices mapType="vector">1;3</pointIndices>
+              <paramOnCurve mapType="vector">0.3;0.8</paramOnCurve>
+            </parameterMap>
+          </pointList>
+        </fuselageProfile>
+        <fuselageProfile uID="fuselageKinkProfileuID">
+          <name>Kinks</name>
+          <description>Profile build up from set of Points on Circle where may Dimensions are 1..-1</description>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0</x>
+            <y mapType="vector">0;1;0;-1;0</y>
+            <z mapType="vector">1;0;-1;0;1</z>
+            <kinkIndices mapType="vector">1;3</kinkIndices>
+            <parameterMap>
+              <pointIndices mapType="vector">1;3</pointIndices>
+              <paramOnCurve mapType="vector">0.3;0.8</paramOnCurve>
+            </parameterMap>
+          </pointList>
+        </fuselageProfile>
+      </fuselageProfiles>
+      <guideCurves>
+        <guideCurveProfile uID="bottomFuselageCurve">
+          <name>bottom guide curve</name>
+          <pointList>
+            <rX mapType="vector">0;0;0;0;0;0;0;0;0</rX>
+            <rY mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</rY>
+            <rZ mapType="vector">0;0;0;0;0;0;0;0;0</rZ>
+          </pointList>
+        </guideCurveProfile>
+        <guideCurveProfile uID="leftFuselageCurve">
+          <name>left guide curve</name>
+          <pointList>
+            <rX mapType="vector">0;0;0;0;0;0;0;0;0</rX>
+            <rY mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</rY>
+            <rZ mapType="vector">0;0.01;0.05;0.1;0.2;0.1;0.05;0.01;0</rZ>
+          </pointList>
+        </guideCurveProfile>
+      </guideCurves>
+    </profiles>
+  </vehicles>
+</cpacs>

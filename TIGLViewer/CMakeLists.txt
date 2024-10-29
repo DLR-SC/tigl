@@ -38,10 +38,10 @@ if(OCE_FOUND)
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
 else(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES "")
-  find_package(OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
 endif(OCE_FOUND)
 
 # we need opengl in order to build tiglviewer
+cmake_policy(SET CMP0072 NEW)
 find_package(OpenGL REQUIRED)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -98,6 +98,8 @@ set(tv_src
   src/TIGLViewerApp.cpp
   src/TIGLGeometryChoserDialog.cpp
   src/TIGLViewerUndoCommands.cpp
+  src/TIGLInteractiveShapeManager.cpp
+  src/TIGLViewerSelectWingAndFlapStatusDialog.cpp
   src/ProfilesDBManager.cpp
   # files for CPACSCreator
   src/modificators/ModificatorWidget.cpp
@@ -175,6 +177,8 @@ set(tv_hdr
   src/TIGLSliderDialog.h
   src/TIGLViewerApp.h
   src/TIGLGeometryChoserDialog.h
+  src/TIGLInteractiveShapeManager.h
+  src/TIGLViewerSelectWingAndFlapStatusDialog.h
   src/modificators/ModificatorWidget.h
   src/modificators/CTiglPointWidget.h
   src/modificators/ModificatorElementWidget.h
@@ -212,6 +216,7 @@ set(tv_ui
   src/TIGLViewerVTKExportDialog.ui
   src/TIGLSliderDialog.ui
   src/TIGLGeometryChoserDialog.ui
+  src/TIGLViewerSelectWingAndFlapStatusDialog.ui
   src/StandardizeDialog.ui
   src/modificators/ModificatorTransformationWidget.ui
   src/modificators/ModificatorTransformationWidget.ui
@@ -274,16 +279,19 @@ add_executable(${PROGNAME} ${TYPE}
 set_target_properties(${PROGNAME} PROPERTIES AUTOMOC TRUE)
 set_target_properties(${PROGNAME} PROPERTIES AUTOUIC TRUE)
 
-# opengl
-target_include_directories(${PROGNAME} PRIVATE ${OPENGL_INCLUDE_DIR})
 # include path for ui files
 target_include_directories(${PROGNAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+# workaround: on macos, the file glext.h should be loaded from occt/include instead from the system dir
+# This is a "Bug" in the occt header files which use <> instead of "" for include
+# hence, we must explicitly inlude the occt dir before all other includes!
+target_include_directories(${PROGNAME} BEFORE PRIVATE  ${OpenCASCADE_INCLUDE_DIR}) 
 
 target_link_libraries(${PROGNAME} PRIVATE
   tigl3_static tigl3_cpp
   ${CMake_QT_LIBRARIES} 
-  ${OPENGL_LIBRARIES} 
   ${OpenCASCADE_LIBRARIES} 
+  OpenGL::GL
   ${EXTRA_LIBRARIES} 
 )
 

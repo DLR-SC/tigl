@@ -32,7 +32,7 @@
 #include "tiglMatrix.h"
 
 #include <math_Recipes.hxx>
-#include "CTiglLogging.h"
+#include <CTiglLogging.h>
 #include "tiglcommonfunctions.h"
 
 
@@ -239,7 +239,7 @@ double shape_function_deriv(const std::vector<double>& B, const int& n, const do
  * 
  * CST(psi)=C(psi)*S(psi)
  *
- * N1, N2 are the paramters of the class function C(psi) = psi^N1 * (1-psi)^N2
+ * N1, N2 are the parameters of the class function C(psi) = psi^N1 * (1-psi)^N2
  * B is the vector of coefficients for the bernstein polynomials P_i^n(psi) 
  * T is the trailing edge thickness
  * inside the shape function S(psi)=sum_i=1^N B_i * p_i^n(psi)
@@ -390,6 +390,72 @@ void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V)
     S(3,3) = Sv(3);
 }
 
+/// searches for i, such that xdata[i] <= x < xdata[i+1]
+/// used by linear interpolation function
+size_t FindPosition(const std::vector<double>& xdata, double x)
+{
+    // we assume, that the xvalues are ordered in ascending order
+    size_t ilow = 0;
+    size_t ihigh = xdata.size()-1;
+
+    assert(xdata.size() >= 2);
+
+    // check extrapolation cases
+    if (x < xdata[ilow]) {
+        return ilow;
+    }
+
+    if (x >= xdata[ihigh]) {
+        return ihigh - 1;
+    }
+
+    // now do the search
+    while (ilow < ihigh - 1) {
+        size_t imid = (ilow + ihigh)/2;
+        if (xdata[ilow]<= x && x < xdata[imid]) {
+            ihigh = imid;
+        }
+        else if(xdata[imid] <= x && x < xdata[ihigh]) {
+            ilow = imid;
+        }
+        else {
+            // this case can only occur, if
+            // input data are not ordered
+            return xdata.size();
+        }
+    }
+
+    // we found the value
+    assert(xdata[ilow] <= x && x < xdata[ilow+1]);
+    return ilow;
+}
+
+/// linear interpolation in of xdata<->ydata array at position x
+double Interpolate(const std::vector<double>& xdata, const std::vector<double>& ydata, double x)
+{
+    if (xdata.size() == 0) {
+        return 0.;
+    }
+
+    if (xdata.size() == 1) {
+        return ydata[0];
+    }
+
+    if (x < xdata[0] || x > xdata[xdata.size() -1]) {
+        // extrapolation
+        LOG(WARNING) << "Extrapolating at x=" << x << ". XData is in range "
+                     << xdata[0] << "..." << xdata[xdata.size() -1] << ".";
+    }
+
+    size_t pos = FindPosition(xdata, x);
+
+    assert(pos < (unsigned int)(xdata.size() - 1));
+    assert(ydata.size() == xdata.size());
+
+    double y = (ydata[pos+1] - ydata[pos])/(xdata[pos+1]-xdata[pos]) * (x - xdata[pos]) + ydata[pos];
+    return y;
+}
+
 bool isNear(double a, double b, double epsilon)
 {
     return (fabs(a - b) <= epsilon);
@@ -515,6 +581,14 @@ CTiglPoint SnapRotation(CTiglPoint rotation, double epsilon)
     return rotation;
 }
 
+double* SnapRotation(double rotation[3], double epsilon)
+{
+    rotation[0] = SnapAngle(rotation[0], epsilon);
+    rotation[1] = SnapAngle(rotation[1], epsilon);
+    rotation[2] = SnapAngle(rotation[2], epsilon);
+    return rotation;
+}
+
 CTiglPoint SnapUnitInterval(CTiglPoint scaling,  double epsilon)
 {
     scaling.x = SnapUnitInterval(scaling.x,epsilon);
@@ -522,6 +596,14 @@ CTiglPoint SnapUnitInterval(CTiglPoint scaling,  double epsilon)
     scaling.z = SnapUnitInterval(scaling.z,epsilon);
     return scaling;
 
+}
+
+double* SnapUnitInterval(double scaling[3],  double epsilon)
+{
+    scaling[0] = SnapUnitInterval(scaling[0],epsilon);
+    scaling[1] = SnapUnitInterval(scaling[1],epsilon);
+    scaling[2] = SnapUnitInterval(scaling[2],epsilon);
+    return scaling;
 }
 
 double SnapValue(double number, double roundingValue, double delta)

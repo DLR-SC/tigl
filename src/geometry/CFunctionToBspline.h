@@ -28,7 +28,7 @@ namespace tigl
 {
 
 /**
- * @brief The FunctionToBspline class can be used to approximate an arbitary 3D function
+ * @brief The FunctionToBspline class can be used to approximate an arbitrary 3D function
  * with a B-Spline. 
  * 
  * The function to approximate is given by 3 separate functions, one for the x values,

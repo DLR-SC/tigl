@@ -110,6 +110,10 @@
 
 %fragment("boost_optional", "header") {
 
+
+SWIGINTERN int
+SWIG_AsPtr_std_string (PyObject * obj, std::string **val);
+
 int as_std_string_val(PyObject *obj, std::string& result) {
   std::string *ptr = (std::string *)0;
   int res = SWIG_AsPtr_std_string(obj, &ptr);

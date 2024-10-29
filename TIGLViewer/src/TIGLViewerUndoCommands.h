@@ -26,7 +26,7 @@ public:
         myObjects.push_back(object);
     }
 
-    void redo()
+    void redo() override
     {
         for(Handle(AIS_InteractiveObject) obj : myObjects) {
             myContext->Display(obj, Standard_False);
@@ -36,7 +36,7 @@ public:
         }
     }
 
-    void undo()
+    void undo() override
     {
         myUpdate = true;
         for(Handle(AIS_InteractiveObject) obj : myObjects) {
@@ -45,7 +45,7 @@ public:
         myContext->UpdateCurrentViewer();
     }
 
-    bool mergeWith(const QUndoCommand* other)
+    bool mergeWith(const QUndoCommand* other) override
     {
         if (other->id() != id()) {
             return false;

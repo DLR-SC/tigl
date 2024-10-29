@@ -35,8 +35,8 @@ public:
 
     PNamedShape BuildShape();
 
+    static void SetFaceTraits (const std::vector<double>& guideCurveParams, const std::string& shapeUid, PNamedShape shape, bool hasBluntTE);
 private:
-    void SetFaceTraits (const std::string& uid, PNamedShape loft, bool hasBluntTE);
 
     const CCPACSWing& _wing;
 };

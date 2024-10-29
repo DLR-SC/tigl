@@ -23,7 +23,7 @@ namespace tigl
 class CCPACSPressureBulkheads : public generated::CPACSPressureBulkheads
 {
 public:
-    TIGL_EXPORT CCPACSPressureBulkheads(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPressureBulkheads(CCPACSStructuralElements* parent, CTiglUIDManager* uidMgr);
 };
 
 } // namespace tigl

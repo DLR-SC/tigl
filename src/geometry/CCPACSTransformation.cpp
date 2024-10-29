@@ -23,11 +23,113 @@
 namespace tigl
 {
 
-CCPACSTransformation::CCPACSTransformation(CTiglUIDManager* uidMgr)
-    : generated::CPACSTransformation(uidMgr)
+CCPACSTransformation::CCPACSTransformation(CCPACSEnginePosition* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
 {
 }
+
+CCPACSTransformation::CCPACSTransformation(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSFuselageSectionElement* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSFuselageSection* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSGenericSystem* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSGenericGeometryComponent* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSLandingGearBase* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSRotor* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSRotorHinge* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSWing* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSWingSectionElement* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSWingSection* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation((CCPACSWingSection*)nullptr, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{}
+
 
 void CCPACSTransformation::reset()
 {
@@ -41,7 +143,6 @@ void CCPACSTransformation::reset()
         m_translation->SetAsPoint(CTiglPoint(0, 0, 0));
         m_translation->SetRefType(boost::optional<ECPACSTranslationType>());
     }
-    _transformationMatrix.clear();
 }
 
 CCPACSTransformation &CCPACSTransformation::operator =(const CCPACSTransformation &trafo)
@@ -58,7 +159,6 @@ CCPACSTransformation &CCPACSTransformation::operator =(const CCPACSTransformatio
 void CCPACSTransformation::setTranslation(const CTiglPoint & translation)
 {
     GetTranslation(CreateIfNotExists).SetAsPoint(translation);
-    _transformationMatrix.clear();
 }
 
 void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACSTranslationType type)
@@ -66,58 +166,57 @@ void CCPACSTransformation::setTranslation(const CTiglPoint& translation, ECPACST
     CCPACSPointAbsRel& t = GetTranslation(CreateIfNotExists);
     t.SetAsPoint(translation);
     t.SetRefType(type);
-    _transformationMatrix.clear();
 }
 
 void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
 {
     if (!m_rotation) {
-        m_rotation = boost::in_place(m_uidMgr);
+        m_rotation = boost::in_place(this, m_uidMgr);
     }
     m_rotation->SetAsPoint(rotation);
-    _transformationMatrix.clear();
 }
 
 void CCPACSTransformation::setScaling(const CTiglPoint& scale)
 {
     if (!m_scaling) {
-        m_scaling = boost::in_place(m_uidMgr);
+        m_scaling = boost::in_place(this, m_uidMgr);
     }
     m_scaling->SetAsPoint(scale);
-    _transformationMatrix.clear();
 }
 
 void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& matrix)
 {
     // decompose matrix into scaling, rotation and translation
-
-    CTiglPoint scale, rotation, translation;
-    matrix.Decompose(scale, rotation, translation);
+    double scale[3];
+    double rotation[3];
+    double translation[3];
+    matrix.Decompose(&scale[0], &rotation[0], &translation[0]);
 
 
     if (!m_translation) {
-        m_translation = boost::in_place(m_uidMgr);
+        m_translation = boost::in_place(this, m_uidMgr);
     }
-    m_translation->SetX(translation.x);
-    m_translation->SetY(translation.y);
-    m_translation->SetZ(translation.z);
+    m_translation->SetX(translation[0]);
+    m_translation->SetY(translation[1]);
+    m_translation->SetZ(translation[2]);
 
 
     if (!m_scaling) {
-        m_scaling = boost::in_place(m_uidMgr);
+        m_scaling = boost::in_place(this, m_uidMgr);
     }
-    m_scaling->SetX(scale.x);
-    m_scaling->SetY(scale.y);
-    m_scaling->SetZ(scale.z);
+    m_scaling->SetX(scale[0]);
+    m_scaling->SetY(scale[1]);
+    m_scaling->SetZ(scale[2]);
 
     if (!m_rotation) {
-        m_rotation = boost::in_place(m_uidMgr);
+        m_rotation = boost::in_place(this, m_uidMgr);
     }
-    m_rotation->SetX(rotation.x);
-    m_rotation->SetY(rotation.y);
-    m_rotation->SetZ(rotation.z);
-
-    _transformationMatrix.clear();
+    m_rotation->SetX(rotation[0]);
+    m_rotation->SetY(rotation[1]);
+    m_rotation->SetZ(rotation[2]);
+    if (m_uidMgr) {
+        Invalidate();
+    }
 }
 
 void CCPACSTransformation::updateMatrix(CTiglTransformation& cache) const
@@ -173,6 +272,17 @@ void CCPACSTransformation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
 {
     generated::CPACSTransformation::ReadCPACS(tixiHandle, transformationXPath);
 }
+
+void CCPACSTransformation::InvalidateImpl(const boost::optional<std::string>& source) const
+{
+    _transformationMatrix.clear();
+    // invalidate parent
+    const CTiglUIDObject* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate(GetUID());
+    }
+}
+
 
 void CCPACSTransformation::Init(const std::string& baseUID)
 {

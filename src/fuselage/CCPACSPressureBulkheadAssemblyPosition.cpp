@@ -80,7 +80,7 @@ TiglGeometricComponentIntent CCPACSPressureBulkheadAssemblyPosition::GetComponen
     return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
-void CCPACSPressureBulkheadAssemblyPosition::Invalidate()
+void CCPACSPressureBulkheadAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry.clear();
 }
@@ -160,11 +160,14 @@ void CCPACSPressureBulkheadAssemblyPosition::BuildGeometry(TopoDS_Shape& cache) 
 
         TopoDS_Face face = makeFace.Face();
 
-        // for some rediculous reason, BRepBuilderAPI_MakeFace alters the tolerance of the underlying wire's edges and vertices,
+        // for some ridiculous reason, BRepBuilderAPI_MakeFace alters the tolerance of the underlying wire's edges and vertices,
         // causing subsequent boolean operations to fail (self intersections)
         ShapeFix_ShapeTolerance().SetTolerance(face, Precision::Confusion());
 
         cache = face;
+    }
+    else {
+        throw CTiglError("Cannot build geometry, frame must have at least one frame position defined.");
     }
 }
 

@@ -60,9 +60,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSWingSegment() override;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath) override;
 
@@ -81,10 +78,10 @@ public:
     TIGL_EXPORT gp_Pnt GetOuterProfilePoint(double xsi) const;
 
     // Gets the upper point in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetUpperPoint(double eta, double xsi) const;
+    TIGL_EXPORT gp_Pnt GetUpperPoint(double eta, double xsi, TiglGetPointBehavior getPointBehavior) const;
 
     // Gets the lower point in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetLowerPoint(double eta, double xsi) const;
+    TIGL_EXPORT gp_Pnt GetLowerPoint(double eta, double xsi, TiglGetPointBehavior getPointBehavior) const;
 
     // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
@@ -160,14 +157,14 @@ public:
 
 
     // projects a point unto the wing and returns its coordinates
-    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi) const;
+    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi, gp_Pnt& projectedPoint, TiglGetPointBehavior behavior) const;
 
 
     // Returns if the given point is ont the Top of the wing or on the lower side.
     TIGL_EXPORT bool GetIsOnTop(gp_Pnt pnt) const;
 
     // return if pnt lies on the loft or on the segment chord face
-    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt) override;
+    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt) const override;
 
     // Returns the reference area of the quadrilateral portion of the wing segment
     // by projecting the wing segment into the plane defined by the user
@@ -224,34 +221,29 @@ public:
 
     TIGL_EXPORT CTiglTransformation GetParentTransformation() const;
 
-    // Sets the getPointBehavior to asParameterOnSurface or onLinearLoft
-    TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
-
-    // Gets the getPointBehavior
-    TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
-    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
 
 protected:
-    // Cleanup routine
-    void Cleanup();
-
-    // Update internal segment data
-    void Update();
-
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft() const override;
 
 private:
     struct SurfaceCache
     {
-        CTiglPointTranslator cordSurface;
-        CTiglPointTranslator cordSurfaceLocal;
-        Handle(Geom_Surface) cordFace;
         Handle(Geom_Surface) upperSurface;
         Handle(Geom_Surface) lowerSurface;
         Handle(Geom_Surface) upperSurfaceLocal;
         Handle(Geom_Surface) lowerSurfaceLocal;
     };
+
+    struct ChordSurfaceCache
+    {
+        CTiglPointTranslator cordSurface;
+        CTiglPointTranslator cordSurfaceLocal;
+        Handle(Geom_Surface) cordFace;
+    };
+
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
     // get short name for loft
     std::string GetShortShapeName () const;
@@ -260,6 +252,7 @@ private:
     void ComputeArea(double& cache) const;
 
     // Builds the chord surface
+    void MakeChordSurfaces(ChordSurfaceCache& cache) const;
     void MakeSurfaces(SurfaceCache& cache) const;
 
     void ComputeVolume(double& cache) const;
@@ -270,6 +263,8 @@ private:
 
     // converts segment eta xsi coordinates to face uv coordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const;
+    void uvToEtaXsi(bool isFromUpper, double u, double v, double& eta, double& xsi) const;
+
 
     CTiglWingConnection  innerConnection;      /**< Inner segment connection (root)         */
     CTiglWingConnection  outerConnection;      /**< Outer segment connection (tip)          */
@@ -280,12 +275,11 @@ private:
                                                  * nonsmooth fuselage                       */
 
     Cache<SurfaceCache, CCPACSWingSegment> surfaceCache;
+    Cache<ChordSurfaceCache, CCPACSWingSegment> chordSurfaceCache;
     Cache<double, CCPACSWingSegment>            areaCache;
     Cache<double, CCPACSWingSegment>            volumeCache;
 
     std::unique_ptr<IGuideCurveBuilder> m_guideCurveBuilder;
-
-    TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
 };
 
 } // end namespace tigl

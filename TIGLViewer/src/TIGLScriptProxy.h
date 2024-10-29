@@ -55,7 +55,7 @@ public slots:
     QScriptValue getWingCount();
     QString getVersion();
     QScriptValue componentGetHashCode (QString componentUID);
-    
+
     // exports
     QScriptValue exportComponent (QString uid, QString filename, double deflection);
     QScriptValue exportConfiguration (QString filename, bool fuseAllShapes, double deflection);
@@ -91,7 +91,11 @@ public slots:
     QScriptValue wingGetSegmentUID(int wingIndex, int segmentIndex);
     QScriptValue wingGetSpan(QString wingUID);
     QScriptValue wingGetSegmentVolume (int wingIndex, int segmentIndex);
-    
+    QScriptValue controlSurfaceSetControlParameter(QString controlSurfaceUID, double controlParameter);
+    QScriptValue wingSetGetPointBehaviour (int behaviour);
+    QScriptValue wingGetSegmentEtaXsi(int wingIdx, double px, double py, double pz);
+
+
     QString      getErrorString(int errorCode);
     QScriptValue getShape(QString uid);
     

@@ -25,10 +25,10 @@
 
 namespace tigl
 {
-CCPACSGuideCurveProfile::CCPACSGuideCurveProfile(CTiglUIDManager* uidMgr)
-    : generated::CPACSGuideCurveProfileGeometry(uidMgr) {}
+CCPACSGuideCurveProfile::CCPACSGuideCurveProfile(CCPACSGuideCurveProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurveProfileGeometry(parent, uidMgr) {}
 
-const std::vector<CTiglPoint>& CCPACSGuideCurveProfile::GetGuideCurveProfilePoints() {
+const std::vector<CTiglPoint>& CCPACSGuideCurveProfile::GetGuideCurveProfilePoints() const {
     return m_pointList.AsVector();
 }
 } // end namespace tigl

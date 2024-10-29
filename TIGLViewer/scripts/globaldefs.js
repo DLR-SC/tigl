@@ -1,3 +1,12 @@
+function EtaXsi(eta, xsi) {
+    this.eta = eta;
+    this.xsi = xsi;
+}
+
+EtaXsi.prototype.toString = function() {
+    return '{\n  eta:' + this.eta + ',\n  xsi:' + this.xsi + '\n}';
+}
+
 function Point3d(x,y,z) {
     this.x = x;
     this.y = y;

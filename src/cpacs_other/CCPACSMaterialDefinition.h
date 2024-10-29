@@ -31,7 +31,14 @@ namespace tigl
 class CCPACSMaterialDefinition : public generated::CPACSMaterialDefinition
 {
 public:
-    TIGL_EXPORT CCPACSMaterialDefinition();
+    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSCap* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSLateralCap* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSSheetBasedStructuralElement* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSTrackActuator* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSWeb* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSWingRibCell* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSWingRibCrossSection* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSMaterialDefinition(CCPACSWingSkin* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT bool isComposite() const;
     

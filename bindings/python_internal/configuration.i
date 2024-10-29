@@ -22,6 +22,9 @@
 %include <factory.i>
 %include common.i
 %include math_headers.i
+%include TopoDS_headers.i
+%include TopLoc_headers.i
+%include Geom_headers.i
 
 %import geometry.i
 %import core.i
@@ -32,17 +35,22 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglFusePlane.h"
 #include "CCPACSWingProfile.h"
+#include "generated/CPACSStandardProfile.h" //TODO: Replace with CCPACSStandardProfile, once it exists.
 #include "CCPACSFuselageSection.h"
 #include "CCPACSExternalObject.h"
 #include "CTiglShapeCache.h"
 #include "CTiglError.h"
+#include "CCPACSWallPosition.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglWingConnection.h"
 #include "CTiglFuselageConnection.h"
 #include "CCPACSWingCell.h"
 #include "CCPACSMaterialDefinition.h"
+#include "generated/CPACSGenericSystem_geometricBaseType.h"
+#include "CCPACSACSystems.h"
 #include "CCPACSGenericSystem.h"
+#include "CCPACSGenericSystems.h"
 #include "CCPACSRotorBladeAttachment.h"
 #include "generated/CPACSWingElement.h"
 #include "CCPACSWingSectionElement.h"
@@ -61,22 +69,33 @@
 #include "CCPACSLongFloorBeam.h"
 #include "CCPACSLongFloorBeamPosition.h"
 #include "CCPACSPressureBulkheadAssemblyPosition.h"
-#include <TopoDS_TEdge.hxx>
-#include <TopoDS_HShape.hxx>
-#include <TopLoc_IndexedMapNodeOfIndexedMapOfLocation.hxx>
-#include <TopLoc_StdMapNodeOfMapOfLocation.hxx>
 #include "generated/CPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "generated/CPACSControlSurfacePath.h"
 #include "generated/CPACSCutOutControlPoints.h"
 #include "generated/CPACSControlSurfaceWingCutOut.h"
 #include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
 #include "generated/CPACSControlSurfaceTracks.h"
-#include "CCPACSControlSurfaceTrackType.h"
+#include "generated/CPACSControlSurfaceTrackType.h"
 #include "generated/CPACSTrailingEdgeDevice.h"
+#include "CTiglControlSurfaceTransformation.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSEnginePylons.h"
 #include "CCPACSEnginePylon.h"
-#include "generated/CPACSRibRotation_ribRotationReference.h"
+#include "CCPACSEnginePosition.h"
+#include "generated/CPACSLateralCap_placement.h"
+#include "generated/CPACSLateralCap.h"
+#include "generated/CPACSBoundingElementUIDs.h"
+#include "generated/CPACSStructuralWallElement.h"
+#include "generated/CPACSStructuralWallElements.h"
+#include "generated/CPACSWallPositionUIDs.h"
+#include "generated/CPACSWallPosition.h"
+#include "generated/CPACSWallPositions.h"
+#include "generated/CPACSWallSegment.h"
+#include "generated/CPACSWallSegments.h"
+#include "generated/CPACSUIDSequence.h"
+#include "CCPACSDucts.h"
+#include "CCPACSDuctAssembly.h"
+#include "CCPACSDuct.h"
 #include "CTiglSectionElement.h"
 #include "CTiglWingSectionElement.h"
 #include "CTiglFuselageSectionElement.h"
@@ -84,11 +103,12 @@
 
 %feature("autodoc", "3");
 
+%catch_exceptions()
+
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
 // wrap optional classes
-%boost_optional(tigl::generated::CPACSRibRotation_ribRotationReference)
 %boost_optional(tigl::CCPACSWingCSStructure)
 %boost_optional(tigl::generated::CPACSSkinSegments)
 %boost_optional(tigl::generated::CPACSSkin)
@@ -112,6 +132,8 @@
 %boost_optional(tigl::CCPACSWingRibsDefinitions)
 %boost_optional(tigl::CCPACSWingSpars)
 %boost_optional(tigl::generated::CPACSGuideCurve_continuity)
+%boost_optional(tigl::CCPACSRectangleProfile)
+%boost_optional(tigl::CCPACSStandardProfile)
 %boost_optional(tigl::CCPACSWingProfileCST)
 %boost_optional(tigl::CTiglTransformation)
 %boost_optional(tigl::CCPACSRotorHinges)
@@ -130,22 +152,46 @@
 %boost_optional(tigl::CCPACSWingProfiles)
 %boost_optional(tigl::CCPACSFuselageProfiles)
 %boost_optional(tigl::CCPACSRotorProfiles)
+%boost_optional(tigl::CCPACSCurveParamPointMap)
+%boost_optional(tigl::CCPACSCurvePointListXYZ)
 
 // ---------------- Other ------------------------------//
 %boost_optional(tigl::CCPACSEtaIsoLine)
 %boost_optional(tigl::CCPACSMaterialDefinition)
-%boost_optional(tigl::generated::CPACSEtaXsiPoint)
-%boost_optional(tigl::generated::CPACSCurvePoint)
+%boost_optional(tigl::CCPACSEtaXsiPoint)
+%boost_optional(tigl::CCPACSCurvePoint)
 
 %include "generated/CPACSXsiIsoLine.h"
 %include "generated/CPACSEtaIsoLine.h"
 %include "CCPACSEtaIsoLine.h"
 %include "CCPACSXsiIsoLine.h"
 %include "generated/CPACSEtaXsiPoint.h"
+%include "CCPACSEtaXsiPoint.h"
 %include "generated/CPACSCurvePoint.h"
+%include "CCPACSCurvePoint.h"
 
 %include "generated/CPACSMaterialDefinition.h"
 %include "CCPACSMaterialDefinition.h"
+%include "generated/CPACSCap.h"
+
+// -------------- Fuselage Walls, Compartments -------------//
+%boost_optional(tigl::generated::CPACSCompartments)
+%include "generated/CPACSCompartments.h"
+%include "generated/CPACSLateralCap_placement.h"
+%boost_optional(tigl::generated::CPACSLateralCap)
+%include "generated/CPACSLateralCap.h"
+
+%boost_optional(tigl::generated::CPACSBoundingElementUIDs)
+%include "generated/CPACSBoundingElementUIDs.h"
+%include "generated/CPACSStructuralWallElement.h"
+%include "generated/CPACSStructuralWallElements.h"
+%include "generated/CPACSWallPositionUIDs.h"
+%include "generated/CPACSWallPosition.h"
+%include "generated/CPACSWallPositions.h"
+%include "generated/CPACSWallSegment.h"
+%include "generated/CPACSWallSegments.h"
+%boost_optional(tigl::generated::CPACSWalls)
+%include "generated/CPACSWalls.h"
 
 // ----------------- Engines ---------------------------//
 %boost_optional(tigl::CCPACSEngines)
@@ -155,6 +201,8 @@
 %boost_optional(tigl::CCPACSEnginePositions)
 %include "generated/CPACSEnginePositions.h"
 %include "CCPACSEnginePositions.h"
+%include "generated/CPACSEnginePosition.h"
+%include "CCPACSEnginePosition.h"
 %include "generated/CPACSNacelleCenterCowl.h"
 %include "CCPACSNacelleCenterCowl.h"
 %include "generated/CPACSNacelleSections.h"
@@ -190,7 +238,7 @@ namespace tigl {
 %boost_optional(tigl::generated::CPACSLeadingEdgeShape)
 %boost_optional(tigl::generated::CPACSLeadingEdgeHollow)
 %boost_optional(tigl::generated::CPACSCutOutControlPoints)
-%boost_optional(tigl::CCPACSControlSurfaceSkinCutOutBorder)
+%boost_optional(tigl::generated::CPACSControlSurfaceSkinCutOutBorder)
 %boost_optional(tigl::CCPACSTrailingEdgeDevices)
 %boost_optional(tigl::CCPACSControlSurfaces)
 %boost_optional(tigl::CPACSControlSurfaceWingCutOut)
@@ -201,20 +249,17 @@ namespace tigl
 {
     class CCPACSWingCSStructure;
 }
-%include "generated/CPACSTrackFairing.h"
-%include "generated/CPACSTrackStrut2.h"
-%include "generated/CPACSTrackStrut1.h"
-%include "generated/CPACSTrackCar.h"
+%include "generated/CPACSTrackSecondaryStructure.h"
+%include "generated/CPACSTrackJointPositions.h"
+%include "generated/CPACSTrackStruts.h"
 %include "generated/CPACSTrackStructure.h"
 %include "generated/CPACSTrackActuator.h"
 %include "generated/CPACSControlSurfaceTrackType_trackSubType.h"
 %include "generated/CPACSControlSurfaceTrackType_trackType.h"
 %include "generated/CPACSControlSurfaceTrackType.h"
-%include "CCPACSControlSurfaceTrackType.h"
 %include "generated/CPACSOuterCutOutProfile.h"
 %include "generated/CPACSCutOutProfiles.h"
 %include "generated/CPACSControlSurfaceSkinCutOut.h"
-%include "CCPACSControlSurfaceSkinCutout.h"
 %include "generated/CPACSControlSurfaceTracks.h"
 %include "generated/CPACSControlSurfaceContours.h"
 %include "generated/CPACSContourReference.h"
@@ -223,13 +268,13 @@ namespace tigl
 %include "generated/CPACSCutOutControlPoint.h"
 %include "generated/CPACSCutOutControlPoints.h"
 %include "generated/CPACSControlSurfaceSteps.h"
-%include "CCPACSControlSurfaceSteps.h"
 %include "generated/CPACSControlSurfaceHingePoint.h"
-%include "CCPACSControlSurfaceHingePoint.h"
 %include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
-%include "CCPACSControlSurfaceSkinCutOutBorder.h"
 %include "generated/CPACSCutOutControlPoints.h"
 %include "generated/CPACSControlSurfacePath.h"
+%include "CTiglControlSurfaceTransformation.h"
+%include "CTiglControlSurfaceBorderCoordinateSystem.h"
+%ignore ComponentSegment(const CCPACSControlSurfaceBorderTrailingEdge&);
 %include "generated/CPACSControlSurfaceBorderTrailingEdge.h"
 %include "CCPACSControlSurfaceBorderTrailingEdge.h"
 %include "generated/CPACSControlSurfaceOuterShapeTrailingEdge.h"
@@ -237,6 +282,8 @@ namespace tigl
 %include "generated/CPACSControlSurfaceTracks.h"
 %include "CPACSControlSurfaceWingCutOut.h"
 %include "generated/CPACSTrailingEdgeDevice.h"
+%ignore ComponentSegment(const CCPACSTrailingEdgeDevice&);
+%ignore ComponentSegment(CCPACSTrailingEdgeDevice&);
 %include "CCPACSTrailingEdgeDevice.h"
 %include "generated/CPACSTrailingEdgeDevices.h"
 %include "CCPACSTrailingEdgeDevices.h"
@@ -290,7 +337,6 @@ class CCPACSWingCSStructure;
 class CCPACSWingSparSegment;
 class CCPACSWingRibsPositioning;
 }
-%include "generated/CPACSRibRotation_ribRotationReference.h"
 %include "generated/CPACSWingRibExplicitPositioning.h"
 %include "CCPACSWingRibExplicitPositioning.h"
 %include "generated/CPACSRibRotation.h"
@@ -298,7 +344,6 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSRibCrossingBehaviour.h"
 %include "generated/CPACSWingRibsPositioning.h"
 %include "CCPACSWingRibsPositioning.h"
-%include "generated/CPACSCap.h"
 %include "generated/CPACSWingRibCell.h"
 %include "generated/CPACSWingRibCrossSection.h"
 %include "CCPACSWingRibCrossSection.h"
@@ -362,10 +407,17 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSGuideCurves.h"
 %include "generated/CPACSCst2D.h"
 %include "ITiglWingProfileAlgo.h"
+%include "generated/CPACSPosExcl0DoubleBase.h"
+%include "generated/CPACSRectangleProfile.h"
+%include "generated/CPACSStandardProfile.h" //TODO: Need to replace with implementation CCPACSStandardProfile.h, once it exists.
 %include "CCPACSWingProfileCST.h"
 %include "PTiglWingProfileAlgo.h"
 %include "generated/CPACSFuselageElements.h"
 %include "CCPACSFuselageSectionElements.h"
+%include "generated/CPACSCurveParamPointMap.h"
+%include "CCPACSCurveParamPointMap.h"
+%include "generated/CPACSCurvePointListXYZ.h"
+%include "CCPACSCurvePointListXYZ.h"
 %include "generated/CPACSProfileGeometry.h"
 %include "CCPACSWingProfile.h"
 %include "CCPACSFuselageProfile.h"
@@ -444,7 +496,6 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingCells.h"
 %include "generated/CPACSWingShell.h"
 %include "CCPACSWingShell.h"
-%include "generated/CPACSFarField.h"
 %include "CCPACSFarField.h"
 %include "generated/CPACSLinkToFileType_format.h"
 %include "generated/CPACSLinkToFile.h"
@@ -472,6 +523,16 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSEnginePylons.h"
 %include "CCPACSEnginePylons.h"
 
+//  ---------------- Ducts ------------------ //
+
+%boost_optional(tigl::CCPACSTransformation)
+%boost_optional(tigl::CCPACSDucts)
+%boost_optional(tigl::CPACSUIDSequence)
+%include "generated/CPACSUIDSequence.h"
+%include "CCPACSDucts.h"
+%include "CCPACSDuctAssembly.h"
+%include "CCPACSDuct.h"
+
 // CTiglUIDManager::GetGeometricComponent returns the interface type ITiglGeometricComponent
 // In the target language, we want to get the concrete type back
 %factory(tigl::ITiglGeometricComponent& tigl::CTiglUIDManager::GetGeometricComponent,
@@ -493,7 +554,10 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSWingCell,
          tigl::CCPACSWingRibsDefinition,
          tigl::CCPACSWingSparSegment,
-         tigl::CCPACSEnginePylon
+         tigl::CCPACSEnginePylon,
+         tigl::CCPACSTrailingEdgeDevice,
+         tigl::CCPACSDuct,
+         tigl::CCPACSDuctAssembly
 );
 
 namespace tigl
@@ -519,8 +583,12 @@ public:
 } // namespace tigl
 
 %include "CTiglShapeCache.h"
+%include "generated/CPACSGenericSystem_geometricBaseType.h"
+%include "generated/CPACSGenericSystem.h"
 %include "CCPACSGenericSystem.h"
+%include "generated/CPACSGenericSystems.h"
 %include "CCPACSGenericSystems.h"
+%include "generated/CPACSSystems.h"
 %include "CCPACSACSystems.h"
 %include "generated/CPACSRotorAirfoils.h"
 %include "CCPACSRotorProfiles.h"
@@ -534,3 +602,7 @@ public:
 %include "CCPACSLongFloorBeam.h"
 
 %clear double* eta, double* xsi;
+
+// ---------------------- Eta / Xsi Functions ---------------------- //
+
+%include "tigletaxsifunctions.h"

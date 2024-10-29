@@ -16,6 +16,9 @@
 #ifndef CCPACSWINGSPARSEGMENTS_H
 #define CCPACSWINGSPARSEGMENTS_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSSparSegments.h"
 #include "tigl_internal.h"
 
@@ -32,7 +35,7 @@ class CCPACSWingSparSegments : public generated::CPACSSparSegments
 public:
     TIGL_EXPORT CCPACSWingSparSegments(CCPACSWingSpars* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
     TIGL_EXPORT int GetSparSegmentCount() const;
     TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(int index) const;

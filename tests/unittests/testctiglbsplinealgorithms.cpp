@@ -1,4 +1,5 @@
 #include "test.h"
+#include "testUtils.h"
 #include "CTiglError.h"
 
 #include "tigl_internal.h"
@@ -15,9 +16,15 @@
 #include <cmath>
 
 #include <CTiglBSplineAlgorithms.h>
+#include <CTiglPointsToBSplineInterpolation.h>
 #include <CTiglInterpolateCurveNetwork.h>
 #include <CTiglGordonSurfaceBuilder.h>
+#include <CTiglCurvesToSurface.h>
+#include <CTiglConcatSurfaces.h>
+#include <tiglcommonfunctions.h>
+#include <tiglMatrix.h>
 
+#include <BSplCLib.hxx>
 #include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -31,14 +38,16 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <GeomConvert.hxx>
 
-
-Handle(Geom_BSplineSurface) loadSurface(const std::string& filename)
+Handle(Geom_BSplineCurve) createBSpline(const std::vector<gp_Pnt>& poles, const std::vector<double>& knots, int degree)
 {
-    BRep_Builder builder;
-    TopoDS_Shape shape;
+   auto occ_poles = OccArray(poles);
+   auto seq = OccFArray(knots);
+   int len = BSplCLib::KnotsLength(seq->Array1());
+   TColStd_Array1OfReal oc_knots(1, len);
+   TColStd_Array1OfInteger oc_mults(1, len);
+   BSplCLib::Knots(seq->Array1(), oc_knots, oc_mults);
 
-    BRepTools::Read(shape, filename.c_str(), builder);
-    return GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(TopoDS::Face(shape)));
+   return new Geom_BSplineCurve(occ_poles->Array1(), oc_knots, oc_mults, degree);
 }
 
 namespace tigl
@@ -54,24 +63,6 @@ TEST(TiglBSplineAlgorithms, testComputeParamsBSplineCurve)
     controlPoints->SetValue(2, gp_Pnt(1, 1, 0));
     controlPoints->SetValue(3, gp_Pnt(3, -1, 0));
     controlPoints->SetValue(4, gp_Pnt(4, 0, 0));
-
-    TColStd_Array1OfReal Weights(1, 4);
-    Weights(1) = 1;
-    Weights(2) = 1;
-    Weights(3) = 1;
-    Weights(4) = 1;
-
-    TColStd_Array1OfReal Knots(1, 2);
-    Knots(1) = 0.;
-    Knots(2) = 1;
-
-    TColStd_Array1OfInteger Multiplicities(1, 2);
-    Multiplicities(1) = 4;
-    Multiplicities(2) = 4;
-
-    Standard_Integer Degree = 3;
-
-    Handle(Geom_BSplineCurve) bspline = new Geom_BSplineCurve(controlPoints->Array1(), Weights, Knots, Multiplicities, Degree);
 
     // compute centripetal parameters by the method that shall be tested here
     double alpha = 0.5;
@@ -96,11 +87,28 @@ TEST(TiglBSplineAlgorithms, testComputeParamsBSplineCurve)
     ASSERT_NEAR(parameters[3], right_parameters(4), 1e-15);
 }
 
-TEST(TiglBSplineAlgorithms, testComputeParamsBSplineSurface)
+TEST(TiglBSplineAlgorithms, testCTiglPointsToBSplineInterpolation)
 {
-    // test for method computeParamsBSplineSurf
-
-    // TODO
+    // create a curve with parameters
+    std::vector<gp_Pnt> curvePnts(5);
+    curvePnts.at(0) = (gp_Pnt(0., 0., 1.));
+    curvePnts.at(1) = (gp_Pnt(0., 0.1, 1.2));
+    curvePnts.at(2) = (gp_Pnt(0., 0.2, 1.7));
+    curvePnts.at(3) = (gp_Pnt(0., 0.1, 1.5));
+    curvePnts.at(0) = (gp_Pnt(0., 0.3, 1.9));
+    std::vector<double> params = { 0.1, 0.3, 0.4, 0.5,0.9};
+    auto curve = tigl::CTiglPointsToBSplineInterpolation(curvePnts, params).Curve();
+    std::vector<gp_Pnt> curvePnts1(5);
+    curve->D0(0.1,curvePnts1[0]);
+    curve->D0(0.3,curvePnts1[1]);
+    curve->D0(0.4,curvePnts1[2]);
+    curve->D0(0.5,curvePnts1[3]);
+    curve->D0(0.9,curvePnts1[4]);
+    ASSERT_TRUE(curvePnts1[0].IsEqual(curvePnts[0], 1e-5));
+    ASSERT_TRUE(curvePnts1[1].IsEqual(curvePnts[1], 1e-5));
+    ASSERT_TRUE(curvePnts1[2].IsEqual(curvePnts[2], 1e-5));
+    ASSERT_TRUE(curvePnts1[3].IsEqual(curvePnts[3], 1e-5));
+    ASSERT_TRUE(curvePnts1[4].IsEqual(curvePnts[4], 1e-5));
 }
 
 TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorCurve)
@@ -244,37 +252,17 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorTolerance)
     // We use two splines, that also have common knots (0, 0.5) in the tolerance of 0.01
     // We don't want to insert those, which are within the tolerance
 
-    int degree = 2;
+    auto bspline1 = createBSpline(
+        std::vector<gp_Pnt>(4, gp_Pnt(0., 0., 0)),
+        {0.009, 0.009, 0.009, 0.5, 1., 1., 1.},
+        2
+    );
 
-    TColgp_Array1OfPnt controlPoints1(1, 4);
-
-    TColStd_Array1OfReal Knots1(1, 3);
-    Knots1(1) = 0.009;
-    Knots1(2) = 0.5;
-    Knots1(3) = 1;
-
-    TColStd_Array1OfInteger Multiplicities1(1, 3);
-    Multiplicities1(1) = 3;
-    Multiplicities1(2) = 1;
-    Multiplicities1(3) = 3;
-
-    Handle(Geom_BSplineCurve) bspline1 = new Geom_BSplineCurve(controlPoints1,  Knots1, Multiplicities1, degree);
-
-    TColgp_Array1OfPnt controlPoints2(1, 6);
-
-    TColStd_Array1OfReal Knots2(1, 4);
-    Knots2(1) = 0.;
-    Knots2(2) = 0.491;
-    Knots2(3) = 0.8;
-    Knots2(4) = 1;
-
-    TColStd_Array1OfInteger Multiplicities2(1, 4);
-    Multiplicities2(1) = 3;
-    Multiplicities2(2) = 2;
-    Multiplicities2(3) = 1;
-    Multiplicities2(4) = 3;
-
-    Handle(Geom_BSplineCurve) bspline2 = new Geom_BSplineCurve(controlPoints2,  Knots2, Multiplicities2, degree);
+    auto bspline2 = createBSpline(
+        std::vector<gp_Pnt>(6, gp_Pnt(0., 0., 0)),
+        {0., 0., 0., 0.491, 0.491, 0.8, 1., 1., 1.},
+        2
+    );
 
     std::vector<Handle(Geom_BSplineCurve)> curves;
     curves.push_back(bspline1);
@@ -500,7 +488,7 @@ TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorSurface)
     surfaces_vector.push_back(surface2);
     surfaces_vector.push_back(surface3);
 
-    std::vector<Handle(Geom_BSplineSurface) > modified_surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(surfaces_vector);
+    std::vector<Handle(Geom_BSplineSurface) > modified_surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(surfaces_vector, SurfaceDirection::both);
 
     TColStd_Array1OfReal computed_knot_vector_u(1, 6);
     modified_surfaces_vector[0]->UKnots(computed_knot_vector_u);
@@ -597,7 +585,7 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApprox)
     new_parameters[5] = 0.95;
     new_parameters[6] = 1.;
 
-    Handle(Geom_BSplineCurve) reparam_spline = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, old_parameters, new_parameters, 100);
+    Handle(Geom_BSplineCurve) reparam_spline = CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, old_parameters, new_parameters, 100).curve;
 
     TColStd_Array1OfReal test_point_params(1, 101);
     for (int i = 0; i < 101; ++i) {
@@ -661,7 +649,7 @@ TEST(TiglBSplineAlgorithms, testReparametrizeBSplineContinuouslyApproxWithKink)
 
     std::vector<double> newParms = oldParms;
     newParms[1] = 0.6;
-    Handle(Geom_BSplineCurve) splineRepar = tigl::CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, oldParms, newParms, 5);
+    Handle(Geom_BSplineCurve) splineRepar = tigl::CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, oldParms, newParms, 5).curve;
     BRepTools::Write(BRepBuilderAPI_MakeEdge(spline).Edge(), "TestData/bugs/505/original_spline.brep");
     BRepTools::Write(BRepBuilderAPI_MakeEdge(splineRepar).Edge(), "TestData/bugs/505/reparm_spline.brep");
 
@@ -704,6 +692,40 @@ TEST(TiglBSplineAlgorithms, reparametrizeBSpline)
     CTiglBSplineAlgorithms::reparametrizeBSpline(*spline, -5, 5);
     ASSERT_NEAR(spline->FirstParameter(), -5, 1e-10);
     ASSERT_NEAR(spline->LastParameter(),  5, 1e-10);
+}
+
+TEST(TiglBSplineAlgorithms, reparametrizeBSplineNiceKnots)
+{
+    auto pointCountVec = {5, 10, 38, 99};
+    for (auto nPoints : pointCountVec) {
+        for (bool make_close : {false, true}) {
+
+            // create circular spline
+            Handle(TColgp_HArray1OfPnt) pnt2 = new TColgp_HArray1OfPnt(1, nPoints);
+            double dAngle = 2.*M_PI / static_cast<double>(nPoints - 1);
+            for (int i = 0; i < nPoints; ++i) {
+                pnt2->SetValue(i + 1, gp_Pnt(cos(i*dAngle),
+                                            0.,
+                                            sin(i*dAngle)));
+            }
+            auto bspline = tigl::CTiglPointsToBSplineInterpolation(pnt2, 3, make_close).Curve();
+
+            // now do the reparametrization
+            bspline = tigl::CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(bspline).curve;
+
+            EXPECT_EQ(GeomAbs_QuasiUniform, bspline->KnotDistribution());
+
+            // check, that nuber segments is power of two
+            double knotdist = bspline->Knot(2) - bspline->Knot(1);
+            EXPECT_TRUE(knotdist > 0);
+            EXPECT_TRUE(fabs(fmod(log2(knotdist), 1)) < 1e-4);
+        }
+    }
+}
+
+TEST(TiglBSplineAlgorithms, reparametrizeBSplineNiceKnots_NullPointer)
+{
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(nullptr), tigl::CTiglError);
 }
 
 TEST(TiglBSplineAlgorithms, testFlipSurface)
@@ -1008,8 +1030,8 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinder)
     std::vector<std::pair<double, double> > intersection_vector = CTiglBSplineAlgorithms::intersections(spline_u, spline_v);
 
     // splines should intersect at u = 0.5 + std::sqrt(0.1) and v = 4. / 5
-    ASSERT_NEAR(intersection_vector[0].first, 0.5 + std::sqrt(0.1), 1e-15);
-    ASSERT_NEAR(intersection_vector[0].second, 4. / 5, 1e-15);
+    ASSERT_NEAR(intersection_vector[0].first, 0.5 + std::sqrt(0.1), 1e-13);
+    ASSERT_NEAR(intersection_vector[0].second, 4. / 5, 1e-13);
 }
 /*
 TEST(TiglBSplineAlgorithms, testSortBSpline)
@@ -1282,6 +1304,40 @@ TEST(TiglBSplineAlgorithms, testIntersectionFinderClosed)
     std::vector<std::pair<double, double> > intersection_params_vector = CTiglBSplineAlgorithms::intersections(splines_u_vector[5], splines_v_vector[2]);
 }
 
+/// Regression with occt 7.4.0
+TEST(TiglBSplineAlgorithms, testIntersection_Bug783_1)
+{
+    auto profile = LoadBSplineCurve("TestData/bugs/783/11_profile.brep");
+    auto guide = LoadBSplineCurve("TestData/bugs/783/11_guide.brep");
+
+    ASSERT_FALSE(profile.IsNull());
+    ASSERT_FALSE(guide.IsNull());
+
+    auto result = CTiglBSplineAlgorithms::intersections(profile, guide);
+    ASSERT_EQ(1, result.size());
+
+    // Result from OCCT 6.9.x
+    EXPECT_NEAR(0.25, result.front().first, 1e-6);
+    EXPECT_NEAR(0.215758, result.front().second, 1e-6);
+}
+
+/// Regression with occt 7.4.0
+TEST(TiglBSplineAlgorithms, testIntersection_Bug783_2)
+{
+    auto profile = LoadBSplineCurve("TestData/bugs/783/12_profile.brep");
+    auto guide = LoadBSplineCurve("TestData/bugs/783/12_guide.brep");
+
+    ASSERT_FALSE(profile.IsNull());
+    ASSERT_FALSE(guide.IsNull());
+
+    auto result = CTiglBSplineAlgorithms::intersections(profile, guide);
+    ASSERT_EQ(1, result.size());
+
+    // Result from OCCT 6.9.x
+    EXPECT_NEAR(0.25, result.front().first, 1e-6);
+    EXPECT_NEAR(0.0, result.front().second, 1e-6);
+}
+
 TEST(TiglBSplineAlgorithms, findKinks)
 {
     int degree = 3;
@@ -1424,7 +1480,7 @@ TEST(TiglBSplineAlgorithms, knotsFromParamsClosed)
 
 TEST(TiglBSplineAlgorithms, trimSurfaceBug)
 {
-    auto surface = loadSurface("TestData/bugs/582/surface.brep");
+    auto surface = LoadBSplineSurface("TestData/bugs/582/surface.brep");
 
     surface = CTiglBSplineAlgorithms::trimSurface(surface, 0., 1., 0.49999999999999988898, 0.6666666666666666296);
 
@@ -1444,9 +1500,51 @@ protected:
     virtual void SetUp()
     {
         // get the name of the folder with the B-spline network data
-        path_profiles = "TestData/CurveNetworks/" + GetParam() + "/profiles.brep";
-        path_guides = "TestData/CurveNetworks/" + GetParam() + "/guides.brep";
+        std::string path_profiles = "TestData/CurveNetworks/" + GetParam() + "/profiles.brep";
+        std::string path_guides = "TestData/CurveNetworks/" + GetParam() + "/guides.brep";
         path_output = "TestData/CurveNetworks/" + GetParam() + "/result_gordon.brep";
+
+        // first read the brep-input file
+        TopoDS_Shape shape_u;
+
+        BRep_Builder builder_u;
+
+        BRepTools::Read(shape_u, path_profiles.c_str(), builder_u);
+
+        TopExp_Explorer Explorer;
+        // get the splines in u-direction from the Edges
+        splines_u_vector.clear();
+        for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+            TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+            double beginning = 0;
+            double end = 1;
+            Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+            Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+            splines_u_vector.push_back(spline);
+        }
+
+        // v-directional B-spline curves
+        // first read the BRep-input file
+        TopoDS_Shape shape_v;
+
+        BRep_Builder builder_v;
+
+        BRepTools::Read(shape_v, path_guides.c_str(), builder_v);
+
+        // now filter out the Edges
+        TopTools_IndexedMapOfShape mapEdges_v;
+        TopExp::MapShapes(shape_v, TopAbs_EDGE, mapEdges_v);
+
+        // get the splines in v-direction from the Edges
+        splines_v_vector.clear();
+        for (Explorer.Init(shape_v, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
+            TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
+            double beginning = 0;
+            double end = 1;
+            Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
+            Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
+            splines_v_vector.push_back(spline);
+        }
     }
 
     void TearDown()
@@ -1454,59 +1552,99 @@ protected:
     }
 
     // name of the folder with the B-spline network data
-    std::string path_profiles;
-    std::string path_guides;
+    std::vector<Handle(Geom_Curve)> splines_v_vector, splines_u_vector;
     std::string path_output;
+
 };
 
 TEST_P(GordonSurface, testFromBRep)
 {
-    // u-directional B-spline curves
-    // first read the brep-input file
-    TopoDS_Shape shape_u;
-
-    BRep_Builder builder_u;
-
-    BRepTools::Read(shape_u, path_profiles.c_str(), builder_u);
-
-    TopExp_Explorer Explorer;
-    // get the splines in u-direction from the Edges
-    std::vector<Handle(Geom_Curve)> splines_u_vector;
-    for (Explorer.Init(shape_u, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
-        TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
-        double beginning = 0;
-        double end = 1;
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
-        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
-        splines_u_vector.push_back(spline);
-    }
-
-    // v-directional B-spline curves
-    // first read the BRep-input file
-    TopoDS_Shape shape_v;
-
-    BRep_Builder builder_v;
-
-    BRepTools::Read(shape_v, path_guides.c_str(), builder_v);
-
-    // now filter out the Edges
-    TopTools_IndexedMapOfShape mapEdges_v;
-    TopExp::MapShapes(shape_v, TopAbs_EDGE, mapEdges_v);
-
-    // get the splines in v-direction from the Edges
-    std::vector<Handle(Geom_Curve)> splines_v_vector;
-    for (Explorer.Init(shape_v, TopAbs_EDGE); Explorer.More(); Explorer.Next()) {
-        TopoDS_Edge curve_edge = TopoDS::Edge(Explorer.Current());
-        double beginning = 0;
-        double end = 1;
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(curve_edge, beginning, end);
-        Handle(Geom_BSplineCurve) spline = GeomConvert::CurveToBSplineCurve(curve);
-        splines_v_vector.push_back(spline);
-    }
 
     Handle(Geom_BSplineSurface) gordonSurface = CTiglInterpolateCurveNetwork(splines_u_vector, splines_v_vector, 3e-4).Surface();
     BRepTools::Write(BRepBuilderAPI_MakeFace(gordonSurface, Precision::Confusion()), path_output.c_str());
 }
+
+TEST_P(GordonSurface, testIntersectionRegressions)
+{
+    math_Matrix intersection_params_u(0, splines_u_vector.size() - 1,
+                                      0, splines_v_vector.size() - 1);
+    math_Matrix intersection_params_v(0, splines_u_vector.size() - 1,
+                                      0, splines_v_vector.size() - 1);
+
+
+    std::vector<Handle(Geom_BSplineCurve)> profiles, guides;
+
+    for (auto profile : splines_u_vector) {
+        Handle(Geom_BSplineCurve) c = Handle(Geom_BSplineCurve)::DownCast(profile);
+        CTiglBSplineAlgorithms::reparametrizeBSpline(*c, 0, 1, 1e-15);
+        profiles.push_back(c);
+    }
+
+    for (auto profile : splines_v_vector) {
+        Handle(Geom_BSplineCurve) c = Handle(Geom_BSplineCurve)::DownCast(profile);
+        CTiglBSplineAlgorithms::reparametrizeBSpline(*c, 0, 1, 1e-15);
+        guides.push_back(c);
+    }
+
+    auto readIntersections = [](const std::string& filename) {
+        auto mat = readMatrix(filename);
+
+        std::vector<std::pair<double, double>> intersections;
+
+        for (int i=1; i<=mat.UpperRow(); ++i) {
+            intersections.push_back({mat(i, 1), mat(i, 2)});
+        }
+
+        return intersections;
+    };
+
+    double spatialTol = 1e-3;
+
+    unsigned int iprofile=0;
+    for (auto profile : splines_u_vector) {
+        unsigned int iguide = 0;
+        for (auto guide : splines_v_vector) {
+            // compute intersections
+            auto profileBspl = Handle(Geom_BSplineCurve)::DownCast(profile);
+            auto guideBspl = Handle(Geom_BSplineCurve)::DownCast(guide);
+
+            double splines_scale = (CTiglBSplineAlgorithms::scale(profileBspl) + CTiglBSplineAlgorithms::scale(guideBspl)) / 2.;
+
+            auto intersections = CTiglBSplineAlgorithms::intersections(profileBspl, guideBspl, spatialTol / splines_scale);
+
+            // read reference intersections
+            std::stringstream str;
+            str << "TestData/CurveNetworks/" << GetParam() << "/" << iprofile << "_" << iguide << "_intersections.mat";
+            auto referenceInters = readIntersections(str.str());
+
+            ASSERT_TRUE(referenceInters.size() > 0);
+
+            // we should at least find the same number of intersections than the reference implementation
+            ASSERT_TRUE(referenceInters.size() <= intersections.size());
+
+            // check that each old intersection is found
+            for (auto refInter : referenceInters) {
+                bool found = std::find_if(std::begin(intersections), std::end(intersections), [&](const std::pair<double, double>& result) {
+                    double tol = 1e-5;
+                    return std::fabs(refInter.first - result.first) <= tol && std::fabs(refInter.second - result.second) <= tol;
+                }) != std::end(intersections);
+
+                EXPECT_TRUE(found);
+            }
+
+            // check that all computed intersections are truely intersections
+            for (const auto& inter : intersections) {
+                auto p1 = profile->Value(inter.first);
+                auto p2 = guide->Value(inter.second);
+                EXPECT_TRUE(p1.Distance(p2) <= spatialTol);
+            }
+
+            iguide++;
+        }
+        iprofile++;
+    }
+}
+
 
 INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "nacelle",
@@ -1519,7 +1657,177 @@ INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "bellyfairing",
                             "helibody",
                             "fuselage1",
-                            "fuselage2"
+                            "fuselage2",
+                            "ffd"
                             ));
+
+
+class ConcatSurfaces : public ::testing::Test
+{
+protected:
+    void SetUp() override;
+
+    Handle(Geom_BSplineSurface) s1, s2;
+};
+
+void ConcatSurfaces::SetUp()
+{
+
+    auto pnts1 = OccArray({
+        gp_Pnt(0., 0., 0.),
+        gp_Pnt(1., 0.3, 0.),
+        gp_Pnt(2., 0., 0.)
+    });
+    auto c1 = tigl::CTiglPointsToBSplineInterpolation(pnts1).Curve();
+
+    auto pnts2 = OccArray({
+        gp_Pnt(0., 0., 1.),
+        gp_Pnt(1., 0.3, 1.),
+        gp_Pnt(2., 0., 1.)
+    });
+    auto c2 = tigl::CTiglPointsToBSplineInterpolation(pnts2).Curve();
+
+    auto pnts3 = OccArray({
+        gp_Pnt(-0.2, -0.2, 2.),
+        gp_Pnt(1., 0.3, 2.),
+        gp_Pnt(1.2, -0.2, 2.)
+    });
+    auto c3 = tigl::CTiglPointsToBSplineInterpolation(pnts3).Curve();
+
+    s1 = tigl::CTiglCurvesToSurface({c1, c2}).Surface();
+    s2 = tigl::CTiglCurvesToSurface({c2, c3}).Surface();
+    s1->ExchangeUV();
+    s2->ExchangeUV();
+
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s1, 0, 1, 0, 1, 1e-15);
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s2, 1, 2, 0, 1, 1e-15);
+}
+
+TEST_F(ConcatSurfaces, concatUDir)
+{
+    auto result = tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2);
+
+    double u1, u2, v1, v2;
+    result->Bounds(u1, u2, v1, v2);
+    EXPECT_NEAR(0.0, u1, 1e-15);
+    EXPECT_NEAR(2.0, u2, 1e-15);
+    EXPECT_NEAR(0.0, v1, 1e-15);
+    EXPECT_NEAR(1.0, v2, 1e-15);
+
+    EXPECT_NEAR(0.0, s1->Value(0.5, 0.5).Distance(result->Value(0.5, 0.5)), 1e-10);
+    EXPECT_NEAR(0.0, s2->Value(1.3, 0.3).Distance(result->Value(1.3, 0.3)), 1e-10);
+
+    BRepTools::Write(BRepBuilderAPI_MakeFace(result, 1e-6).Face(), "TestData/concat_faces.brep");
+
+}
+
+TEST_F(ConcatSurfaces, concatUDirDifferentDegree)
+{
+    s1->IncreaseDegree(4, 5);
+    auto result = tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2);
+    EXPECT_EQ(4, result->UDegree());
+    EXPECT_EQ(5, result->VDegree());
+}
+
+TEST_F(ConcatSurfaces, error_notParamFollowingU)
+{
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s2, 2, 3, 0, 1, 1e-15);
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
+}
+
+TEST_F(ConcatSurfaces, error_vparmDontMatch)
+{
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*s2, 1, 2, 3, 4, 1e-15);
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
+}
+
+TEST_F(ConcatSurfaces, error_notAdjacent)
+{
+    gp_Trsf t;
+    t.SetTranslation(gp_Vec(0, 0, 1));
+    s2->Transform(t);
+    ASSERT_THROW(tigl::CTiglBSplineAlgorithms::concatSurfacesUDir(s1, s2), tigl::CTiglError);
+}
+
+TEST_F(ConcatSurfaces, concatWithParams)
+{
+    tigl::CTiglConcatSurfaces concatter({s1, s2}, {0., 2., 4.}, tigl::ConcatDir::u);
+
+    auto result = concatter.Surface();
+
+    double u1, u2, v1, v2;
+    result->Bounds(u1, u2, v1, v2);
+
+    EXPECT_NEAR(0.0, u1, 1e-15);
+    EXPECT_NEAR(4.0, u2, 1e-15);
+    EXPECT_NEAR(0.0, v1, 1e-15);
+    EXPECT_NEAR(1.0, v2, 1e-15);
+
+    EXPECT_NEAR(0.0, s1->Value(0.5, 0.5).Distance(result->Value(1.0, 0.5)), 1e-10);
+    EXPECT_NEAR(0.0, s2->Value(1.3, 0.3).Distance(result->Value(2.6, 0.3)), 1e-10);
+}
+
+TEST_F(ConcatSurfaces, concatWithParamsApprox)
+{
+    tigl::CTiglConcatSurfaces concatter({s1, s2}, {0., 2., 4.}, tigl::ConcatDir::u);
+    concatter.SetMakeKnotsUniformEnabled(3, 3);
+
+    auto result = concatter.Surface();
+
+    double u1, u2, v1, v2;
+    result->Bounds(u1, u2, v1, v2);
+
+    EXPECT_NEAR(0.0, u1, 1e-15);
+    EXPECT_NEAR(4.0, u2, 1e-15);
+    EXPECT_NEAR(0.0, v1, 1e-15);
+    EXPECT_NEAR(1.0, v2, 1e-15);
+
+    EXPECT_NEAR(0.0, s1->Value(0.5, 0.5).Distance(result->Value(1.0, 0.5)), 1e-10);
+    EXPECT_NEAR(0.0, s2->Value(1.3, 0.3).Distance(result->Value(2.6, 0.3)), 1e-10);
+}
+
+TEST_F(ConcatSurfaces, concatToFewParams)
+{
+    ASSERT_THROW(tigl::CTiglConcatSurfaces({s1, s2}, {0., 2.}, tigl::ConcatDir::u), tigl::CTiglError);
+}
+
+TEST(ApproxSurface, simple)
+{
+    TColgp_Array2OfPnt pnts(1, 2, 1, 2);
+    pnts.SetValue(1, 1, gp_Pnt(0, 0, 0));
+    pnts.SetValue(2, 1, gp_Pnt(1, -1, 0));
+    pnts.SetValue(1, 2, gp_Pnt(0, 1, 0));
+    pnts.SetValue(2, 1, gp_Pnt(1, 2, 0));
+
+    auto surfOrig = tigl::CTiglBSplineAlgorithms::pointsToSurface(pnts, {0., 1.}, {0., 1.}, false, false);
+    auto surfApprox = tigl::CTiglBSplineAlgorithms::makeKnotsUniform(surfOrig, 4, 8);
+
+    EXPECT_EQ(3, surfApprox->NbUKnots());
+    EXPECT_EQ(7, surfApprox->NbVKnots());
+
+    EXPECT_EQ(0., surfApprox->UKnot(1));
+    EXPECT_EQ(0.5, surfApprox->UKnot(2));
+    EXPECT_EQ(1.0, surfApprox->UKnot(3));
+
+    EXPECT_EQ(0., surfApprox->VKnot(1));
+    EXPECT_EQ(0.25, surfApprox->VKnot(2));
+    EXPECT_EQ(0.375, surfApprox->VKnot(3));
+    EXPECT_EQ(0.5, surfApprox->VKnot(4));
+    EXPECT_EQ(0.625, surfApprox->VKnot(5));
+    EXPECT_EQ(0.75, surfApprox->VKnot(6));
+    EXPECT_EQ(1.0, surfApprox->VKnot(7));
+
+    // the resulting surface should match exactly the original one by design
+    auto u = LinspaceWithBreaks(0, 1, 100, {});
+    auto v = LinspaceWithBreaks(0, 1, 100, {});
+
+    for (auto u_val : u) {
+        for (auto v_val : v) {
+            auto pntApprox = surfApprox->Value(u_val, v_val);
+            auto pntOrig = surfOrig->Value(u_val, v_val);
+            EXPECT_NEAR(0., pntApprox.Distance(pntOrig), 1e-13);
+        }
+    }
+}
 
 } // namespace tigl

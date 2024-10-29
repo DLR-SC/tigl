@@ -47,6 +47,8 @@
 #include <Standard_Version.hxx>
 
 
+#include <fstream>
+
 gp_Pnt EdgeFirstPoint(TopoDS_Edge e) 
 {
     double u1, u2;
@@ -88,7 +90,7 @@ protected:
         // Read in guides and profiles
         // ************************************************************
         BRep_Builder b;
-        ifstream in;
+        std::ifstream in;
         in.open(GetParam()[1].c_str());
         BRepTools::Read(guides, in, b);
         in.close();

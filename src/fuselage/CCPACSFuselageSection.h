@@ -52,6 +52,9 @@ public:
 protected:
     // Cleanup routine
     void Cleanup();
+
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 };
 
 } // end namespace tigl

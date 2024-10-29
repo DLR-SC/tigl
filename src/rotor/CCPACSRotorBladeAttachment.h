@@ -35,7 +35,11 @@ namespace tigl
 class CCPACSConfiguration;
 class CCPACSRotor;
 
-class CCPACSRotorBladeAttachment : private generated::CPACSRotorBladeAttachment
+#pragma warning( push )
+// disable misleading warning to diamond inheritance
+#pragma warning( disable : 4250 )
+
+class CCPACSRotorBladeAttachment : private generated::CPACSRotorBladeAttachment, public virtual CTiglUIDObject
 {
 
 public:
@@ -48,6 +52,7 @@ public:
 
     using generated::CPACSRotorBladeAttachment::GetUID;
     using generated::CPACSRotorBladeAttachment::SetUID;
+    using generated::CPACSRotorBladeAttachment::GetNextUIDParent;
 
     using generated::CPACSRotorBladeAttachment::GetName;
     using generated::CPACSRotorBladeAttachment::SetName;
@@ -59,9 +64,6 @@ public:
 
     using generated::CPACSRotorBladeAttachment::GetRotorBladeUID;
     using generated::CPACSRotorBladeAttachment::SetRotorBladeUID;
-
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
 
     // Builds and returns the transformation matrix for an attached rotor blade
     TIGL_EXPORT CTiglTransformation GetRotorBladeTransformationMatrix(double thetaDeg=0., double bladeDeltaThetaDeg=0., bool doHingeTransformation=true, bool doRotationDirTransformation=true, bool doRotorTransformation=false);
@@ -92,11 +94,15 @@ public:
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
 private:
-    void lazyCreateAttachedRotorBlades();
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
-    std::vector<std::unique_ptr<CTiglAttachedRotorBlade>> attachedRotorBlades;
-    bool                                                  invalidated;              /**< Internal state flag  */
+    void lazyCreateAttachedRotorBlades() const;
+
+    mutable std::vector<std::unique_ptr<CTiglAttachedRotorBlade>> attachedRotorBlades;
 };
+
+#pragma warning( pop )
 
 } // end namespace tigl
 

@@ -26,8 +26,13 @@
 
 namespace tigl
 {
-CCPACSGuideCurves::CCPACSGuideCurves(CTiglUIDManager* uidMgr)
-    : generated::CPACSGuideCurves(uidMgr) {}
+
+CCPACSGuideCurves::CCPACSGuideCurves(CCPACSFuselageSegment* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurves(parent, uidMgr) {}
+
+CCPACSGuideCurves::CCPACSGuideCurves(CCPACSWingSegment* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurves(parent, uidMgr) {}
+
 
 void CCPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
     generated::CPACSGuideCurves::ReadCPACS(tixiHandle, xpath);
@@ -89,21 +94,41 @@ bool CCPACSGuideCurves::GuideCurveExists(std::string uid) const
     return false;
 }
 
+std::vector<double> CCPACSGuideCurves::GetRelativeCircumferenceParameters() const
+{
+    std::vector<double> relCircs;
+
+    // CPACS 3.3 requires guideCurves to be present. To prevent a hard crash if this is NOT the case,
+    // we shoud exit here (or at least before the call to relCircs.back())
+    if (GetGuideCurveCount() == 0) {
+        return relCircs;
+    }
+
+    for (int iguide = 1; iguide <=  GetGuideCurveCount(); ++iguide) {
+        const CCPACSGuideCurve* root = GetGuideCurve(iguide).GetRootCurve();
+        if(root->GetFromRelativeCircumference_choice2_1()) {
+            relCircs.push_back(*root->GetFromRelativeCircumference_choice2_1());
+        }
+        else if(root->GetFromParameter_choice2_2()) {
+            relCircs.push_back(*root->GetFromParameter_choice2_2());
+        }
+    }
+
+    std::sort(relCircs.begin(), relCircs.end());
+
+    if (std::abs(relCircs.back() - 1.0) >= 1e-3 ) {
+        relCircs.push_back(1.0);
+    }
+
+    return relCircs;
+}
+
 void CCPACSGuideCurves::GetRelativeCircumferenceRange(double relCirc,
                                                       double& relCircStart,
                                                       double& relCircEnd,
                                                       int& idx) const
 {
-    std::vector<double> relCircs;
-    for (int iguide = 1; iguide <=  GetGuideCurveCount(); ++iguide) {
-        const CCPACSGuideCurve* root = GetGuideCurve(iguide).GetRootCurve();
-        relCircs.push_back(*root->GetFromRelativeCircumference_choice2());
-    }
-    if ( relCircs.back() < 1.0 ) {
-        relCircs.push_back(1.0);
-    }
-
-    std::sort(relCircs.begin(), relCircs.end());
+    std::vector<double> relCircs = GetRelativeCircumferenceParameters();
 
     // probably best to assert for performance reasons...
     assert( relCircs.size() > 0 );

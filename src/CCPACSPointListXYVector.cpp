@@ -22,6 +22,11 @@
 namespace tigl
 {
 
+CCPACSPointListXYVector::CCPACSPointListXYVector(CCPACSNacelleProfile* parent)
+: generated::CPACSPointListXYVector(parent)
+{}
+
+
 void CCPACSPointListXYVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     generated::CPACSPointListXYVector::ReadCPACS(tixiHandle, xpath);
@@ -38,31 +43,23 @@ void CCPACSPointListXYVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, co
     }
 }
 
-void CCPACSPointListXYVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
-{
-    // write back to CPACS fields
-    CCPACSPointListXYVector* self =
-        const_cast<CCPACSPointListXYVector*>(this); // TODO: ugly hack, but WriteCPACS() has to be const, fix this
-    std::vector<double>& xs = self->m_x.AsVector();
-    std::vector<double>& ys = self->m_y.AsVector();
-    xs.clear();
-    ys.clear();
-    for (std::vector<CTiglPoint>::const_iterator it = m_vec.begin(); it != m_vec.end(); ++it) {
-        xs.push_back(it->x);
-        ys.push_back(it->y);
-    }
-
-    generated::CPACSPointListXYVector::WriteCPACS(tixiHandle, xpath);
-}
-
 const std::vector<CTiglPoint>& CCPACSPointListXYVector::AsVector() const
 {
     return m_vec;
 }
 
-std::vector<CTiglPoint>& CCPACSPointListXYVector::AsVector()
+void CCPACSPointListXYVector::SetAsVector(const std::vector<CTiglPoint>& points)
 {
-    return m_vec;
+    m_vec = points;
+    std::vector<double> x, y;
+    for (std::vector<CTiglPoint>::const_iterator it = m_vec.begin(); it != m_vec.end(); ++it) {
+        x.push_back(it->x);
+        y.push_back(it->y);
+    }
+    m_x.SetAsVector(x);
+    m_y.SetAsVector(y);
+    // no invalidation necessary, done by m_x and m_y
+
 }
 
 } // namespace tigl

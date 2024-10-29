@@ -57,7 +57,7 @@ TiglGeometricComponentIntent CCPACSLongFloorBeam::GetComponentIntent() const
     return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
-void CCPACSLongFloorBeam::Invalidate()
+void CCPACSLongFloorBeam::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry1D.clear();
     m_geometry3D.clear();

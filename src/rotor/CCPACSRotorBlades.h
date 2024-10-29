@@ -26,6 +26,9 @@
 #ifndef CCPACSROTORBLADES_H
 #define CCPACSROTORBLADES_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSRotorBlades.h"
 
 namespace tigl
@@ -41,7 +44,7 @@ public:
     TIGL_EXPORT CCPACSRotorBlades(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
     // Adds a rotor blade to the  rotor blade container
     TIGL_EXPORT void AddRotorBlade(CCPACSWing* rotorBlade);

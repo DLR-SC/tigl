@@ -37,6 +37,8 @@ class CCPACSWingSectionElements : public generated::CPACSWingElements
 public:
     TIGL_EXPORT CCPACSWingSectionElements(CCPACSWingSection* parent, CTiglUIDManager* uidMgr);
 
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
+
     // Get element count for this section
     TIGL_EXPORT int GetSectionElementCount() const;
 

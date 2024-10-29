@@ -45,6 +45,9 @@
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
 #include "CNamedShape.h"
+#include "CTiglWingBuilder.h"
+#include "CTiglConcatSurfaces.h"
+#include "GeomConvert.hxx"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -73,7 +76,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeFace.hxx"
-#include "BRepMesh.hxx"
+// #include "BRepMesh.hxx"
 #include "BRepTools.hxx"
 #include "BRepLib.hxx"
 #include "BRepBndLib.hxx"
@@ -91,7 +94,6 @@
 
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAPI_PointsToBSpline.hxx"
-#include "GeomAdaptor_HCurve.hxx"
 #include "GeomFill.hxx"
 #include "GeomFill_SimpleBound.hxx"
 #include "GeomFill_BSplineCurves.hxx"
@@ -102,7 +104,6 @@
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "BRepIntCurveSurface_Inter.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
-#include "BRepAdaptor_CompCurve.hxx"
 #include "BRepTools.hxx"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
@@ -126,42 +127,6 @@ namespace
         return trafo.Transform(point);
     }
 
-    // Set the face traits
-    void SetFaceTraits (PNamedShape loft, std::string shapeUID) 
-    { 
-        // designated names of the faces
-        std::vector<std::string> names(5);
-        names[0]="Bottom";
-        names[1]="Top";
-        names[2]="TrailingEdge";
-        names[3]="Inside";
-        names[4]="Outside";
-
-        // map of faces
-        TopTools_IndexedMapOfShape map;
-        TopExp::MapShapes(loft->Shape(), TopAbs_FACE, map);
-        
-        for (int iFace = 0; iFace < map.Extent(); ++iFace) {
-            loft->FaceTraits(iFace).SetComponentUID(shapeUID);
-        }
-
-        // check if number of faces is correct (only valid for ruled surfaces lofts)
-        if (map.Extent() != 5 && map.Extent() != 4) {
-            LOG(ERROR) << "CCPACSWingSegment: Unable to determine face names in ruled surface loft";
-            return;
-        }
-        // remove trailing edge name if there is no trailing edge
-        if (map.Extent() == 4) {
-            names.erase(names.begin()+2);
-        }
-        // set face trait names
-        for (int i = 0; i < map.Extent(); i++) {
-            CFaceTraits traits = loft->GetFaceTraits(i);
-            traits.SetName(names[i].c_str());
-            loft->SetFaceTraits(i, traits);
-        }
-    }
-    
     /**
      * @brief getFaceTrimmingEdge Creates an edge in parameter space to trim a face
      * @return 
@@ -186,44 +151,41 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
     , innerConnection(this)
     , outerConnection(this)
     , surfaceCache(*this, &CCPACSWingSegment::MakeSurfaces)
+    , chordSurfaceCache(*this, &CCPACSWingSegment::MakeChordSurfaces)
     , areaCache(*this, &CCPACSWingSegment::ComputeArea)
     , volumeCache(*this, &CCPACSWingSegment::ComputeVolume)
     , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
 {
-    Cleanup();
 }
 
 // Destructor
 CCPACSWingSegment::~CCPACSWingSegment()
 {
-    Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSWingSegment::Invalidate()
+void CCPACSWingSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
+    surfaceCache.clear();
     areaCache.clear();
     volumeCache.clear();
-    surfaceCache.clear();
-}
-
-// Cleanup routine
-void CCPACSWingSegment::Cleanup()
-{
-    Invalidate();
-}
-
-// Update internal segment data
-void CCPACSWingSegment::Update()
-{
-    Invalidate();
+    // AIRBUS: added missing invalidation of guide curves
+    if (m_guideCurves) {
+        for (auto& guideCurve : m_guideCurves->GetGuideCurves()) {
+            guideCurve->Invalidate(GetUID());
+        }
+    }
+    // forward invalidation to parent wing/enginePylon
+    const auto* parent = GetNextUIDParent();
+    if (parent) {
+        parent->Invalidate(GetUID());
+    }
 }
 
 // Read CPACS segment elements
 void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& segmentXPath)
 {
-    Cleanup();
     generated::CPACSWingSegment::ReadCPACS(tixiHandle, segmentXPath);
 
     // trigger creation of connections
@@ -250,8 +212,6 @@ void CCPACSWingSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
                          "All profiles must either have a sharp or a blunt trailing edge. "
                          "Mixing different profile types is not allowed.");
     }
-
-    Update();
 }
 
 std::string CCPACSWingSegment::GetDefaultedUID() const {
@@ -278,7 +238,7 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(TiglCoordinateSystem referenceCS, Ti
     /*
     * The loft algorithm with guide curves does not like splitted
     * wing profiles, we have to give him the unsplitted one.
-    * In all other cases, we need the splitted wire to distiguish
+    * In all other cases, we need the splitted wire to distinguish
     * upper und lower wing surface
     */
     if (m_guideCurves && m_guideCurves->GetGuideCurveCount() > 0) {
@@ -311,7 +271,7 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(TiglCoordinateSystem referenceCS, Ti
     /*
     * The loft algorithm with guide curves does not like splitted
     * wing profiles, we have to give him the unsplitted one.
-    * In all other cases, we need the splitted wire to distiguish
+    * In all other cases, we need the splitted wire to distinguish
     * upper und lower wing surface
     */
     if (m_guideCurves && m_guideCurves->GetGuideCurveCount() > 0) {
@@ -385,6 +345,21 @@ std::string CCPACSWingSegment::GetShortShapeName () const
     return shortName.str();
 }
 
+PNamedShape GetParentLoft(const CCPACSWingSegment& segment)
+{
+    if (segment.GetParent()->IsParent<CCPACSWing>()) {
+        const CCPACSWing* wing = segment.GetParent()->GetParent<CCPACSWing>();
+        return wing->GetWingCleanShape();
+    }
+    else if (segment.GetParent()->IsParent<CCPACSWing>()) {
+        const CCPACSEnginePylon* pylon = segment.GetParent()->GetParent<CCPACSEnginePylon>();
+        return pylon->GetLoft();
+    }
+    else {
+        throw CTiglError("Invalid parent type");
+    }
+}
+
 // Builds the loft between the two segment sections
 // build loft out of faces (for compatibility with component segmen loft)
 PNamedShape CCPACSWingSegment::BuildLoft() const
@@ -405,11 +380,11 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
             const CCPACSGuideCurves& curves = *m_guideCurves;
             bool hasTrailingEdge = !innerConnection.GetProfile().GetTrailingEdge().IsNull();
 
-            // order guide curves according to fromRelativeCircumeference
+            // order guide curves according to fromRelativeCircumeference or fromParameter (GetFromDefinitionValue())
             std::multimap<double, const CCPACSGuideCurve*> guideMap;
             for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
                 const CCPACSGuideCurve* curve = &curves.GetGuideCurve(iguide);
-                double value = *(curve->GetFromRelativeCircumference_choice2());
+                double value = curve->GetFromDefinitionValue();
                 if (value >= 1. && !hasTrailingEdge) {
                     // this is a trailing edge profile, we should add it first
                     value = -1.;
@@ -438,8 +413,7 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
     }
     else {
         const CCPACSWingSegments* segments = GetParent();
-        PNamedShape wingLoft = segments->GetParentComponent()->GetLoft();
-
+        PNamedShape wingLoft = GetParentLoft(*this);
 
         TopoDS_Shell loftShell;
         BRep_Builder BB;
@@ -477,18 +451,22 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft, GetUID());
+    std::vector<double> guideCurveParams = {};
+    if (GetGuideCurves()) {
+        guideCurveParams = GetGuideCurves()->GetRelativeCircumferenceParameters();
+    }
+    CTiglWingBuilder::SetFaceTraits(guideCurveParams,  GetUID(), loft, innerConnection.GetProfile().HasBluntTE());
     return loft;
 }
 
 // Gets the upper point in relative wing coordinates for a given eta and xsi
-gp_Pnt CCPACSWingSegment::GetUpperPoint(double eta, double xsi) const
+gp_Pnt CCPACSWingSegment::GetUpperPoint(double eta, double xsi, TiglGetPointBehavior getPointBehavior) const
 {
     return GetPoint(eta, xsi, true, GLOBAL_COORDINATE_SYSTEM, getPointBehavior);
 }
 
 // Gets the lower point in relative wing coordinates for a given eta and xsi
-gp_Pnt CCPACSWingSegment::GetLowerPoint(double eta, double xsi) const
+gp_Pnt CCPACSWingSegment::GetLowerPoint(double eta, double xsi, TiglGetPointBehavior getPointBehavior) const
 {
     return GetPoint(eta, xsi, false, GLOBAL_COORDINATE_SYSTEM, getPointBehavior);
 }
@@ -604,19 +582,37 @@ void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, dou
     }
 }
 
+void CCPACSWingSegment::uvToEtaXsi(bool isFromUpper, double u, double v, double& eta, double& xsi) const
+{
+
+
+    Handle(Geom_Surface) surf;
+    if (isFromUpper) {
+        surf = GetUpperSurface();
+    }
+    else {
+        surf = GetLowerSurface();
+    }
+
+    double umin, umax, vmin, vmax;
+    surf->Bounds(umin,umax,vmin, vmax);
+    if (isFromUpper) {
+        xsi = (u - umin) / (umax - umin);
+        eta = (v - vmin) / (vmax - vmin);
+    }
+    else {
+        xsi = (u - umax) / (umin - umax);
+        eta = (v - vmin) / (vmax - vmin);
+    }
+}
+
 double CCPACSWingSegment::GetSurfaceArea(bool fromUpper, 
                                          double eta1, double xsi1,
                                          double eta2, double xsi2,
                                          double eta3, double xsi3,
                                          double eta4, double xsi4) const
 {
-    TopoDS_Face face;
-    if (fromUpper) {
-        face = TopoDS::Face(GetUpperShape());
-    }
-    else {
-        face = TopoDS::Face(GetLowerShape());
-    }
+    Handle(Geom_Surface) surf = fromUpper? surfaceCache->upperSurface : surfaceCache->lowerSurface;
 
     // convert eta xsi coordinates to u,v
     double u1, u2, u3, u4, v1, v2, v3, v4;
@@ -625,13 +621,15 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
     etaXsiToUV(fromUpper, eta3, xsi3, u3, v3);
     etaXsiToUV(fromUpper, eta4, xsi4, u4, v4);
     
+    TopoDS_Face face = BRepBuilderAPI_MakeFace(surf, 1e-8);
+
     TopoDS_Edge e1 = getFaceTrimmingEdge(face, u1, v1, u2, v2);
     TopoDS_Edge e2 = getFaceTrimmingEdge(face, u2, v2, u3, v3);
     TopoDS_Edge e3 = getFaceTrimmingEdge(face, u3, v3, u4, v4);
     TopoDS_Edge e4 = getFaceTrimmingEdge(face, u4, v4, u1, v1);
 
     TopoDS_Wire w = BRepBuilderAPI_MakeWire(e1,e2,e3,e4);
-    TopoDS_Face f = BRepBuilderAPI_MakeFace(BRep_Tool::Surface(face), w);
+    TopoDS_Face f = BRepBuilderAPI_MakeFace(surf, w);
 
     // compute the surface area
     GProp_GProps sprops;
@@ -794,11 +792,7 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi,
         }
 
         // Get point on wing segment in dependence of eta by linear interpolation
-        Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
-        Standard_Real firstParam = profileLine->FirstParameter();
-        Standard_Real lastParam  = profileLine->LastParameter();
-        Standard_Real param = firstParam + (lastParam - firstParam) * eta;
-        profileLine->D0(param, profilePoint);
+        profilePoint = innerProfilePoint.XYZ()*(1. - eta) + outerProfilePoint.XYZ() * eta;
     }
     else if ( behavior == asParameterOnSurface )
     {
@@ -901,11 +895,72 @@ gp_Pnt CCPACSWingSegment::GetChordNormal(double eta, double xsi) const
 }
 
 // Returns xsi as parametric distance from a given point on the surface
-void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi) const
+void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi, gp_Pnt& projectedPoint, TiglGetPointBehavior behavior) const
 {
-    CTiglPoint tmpPnt(pnt.XYZ());
-    if (ChordFace().translate(tmpPnt, &eta, &xsi) != TIGL_SUCCESS) {
-        throw tigl::CTiglError("Cannot determine eta, xsi coordinates of current point in CCPACSWingSegment::GetEtaXsi!", TIGL_MATH_ERROR);
+    if (behavior == onLinearLoft) {
+
+        CTiglPoint tmpPnt(pnt.XYZ());
+        if (ChordFace().translate(tmpPnt, &eta, &xsi) != TIGL_SUCCESS) {
+            throw tigl::CTiglError("Cannot determine eta, xsi coordinates of current point in CCPACSWingSegment::GetEtaXsi!", TIGL_MATH_ERROR);
+        }
+
+        double etaTmp = Clamp(eta, 0., 1.);
+        double xsiTmp = Clamp(xsi, 0., 1.);
+
+        CTiglPoint ptmp;
+        ChordFace().translate(etaTmp, xsiTmp, &ptmp);
+        projectedPoint = ptmp.Get_gp_Pnt();
+
+    }
+    else  {
+       // GetUpperSurface()
+        double maxdist = 10000;
+        double dist = maxdist;
+        double u,v;
+
+        bool onUpper;
+
+        GeomAPI_ProjectPointOnSurf projUpper(pnt, GetUpperSurface());
+
+
+        if (projUpper.NbPoints() > 0 && projUpper.LowerDistance() < dist) {
+            dist = projUpper.LowerDistance();
+            projUpper.LowerDistanceParameters(u, v);
+            uvToEtaXsi(true, u, v, eta, xsi);
+            onUpper = true;
+        }
+
+
+        GeomAPI_ProjectPointOnSurf projLower(pnt, GetLowerSurface());
+
+        if (projLower.NbPoints() > 0 && projLower.LowerDistance() < dist) {
+            dist = projLower.LowerDistance();
+            projLower.LowerDistanceParameters(u, v);
+            uvToEtaXsi(false, u, v, eta, xsi);
+            onUpper = false;
+
+        }
+
+        if (dist == maxdist) {
+            throw tigl::CTiglError("Cannot determine eta, xsi coordinates of current point in CCPACSWingSegment::GetEtaXsi!", TIGL_MATH_ERROR);
+        }
+        else {
+            double etaTmp = Clamp(eta, 0., 1.);
+            double xsiTmp = Clamp(xsi, 0., 1.);
+
+            etaXsiToUV(onUpper, etaTmp, xsiTmp, u, v);
+
+
+            // compute projected point
+            if (onUpper) {
+                projectedPoint = GetUpperSurface()->Value(u,v);
+            }
+            else {
+                projectedPoint = GetLowerSurface()->Value(u,v);
+            }
+        }
+
+
     }
 }
 
@@ -924,7 +979,7 @@ bool CCPACSWingSegment::GetIsOnTop(gp_Pnt pnt) const
 }
 
 
-bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
+bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt) const
 {
     bool isOnLoft = CTiglAbstractSegment<CCPACSWingSegment>::GetIsOn(pnt);
 
@@ -934,7 +989,7 @@ bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
 
     // check if point on chord surface
     double tolerance = 0.03;
-    GeomAPI_ProjectPointOnSurf Proj(pnt, surfaceCache->cordFace);
+    GeomAPI_ProjectPointOnSurf Proj(pnt, chordSurfaceCache->cordFace);
     if (Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance) {
         return true;
     }
@@ -965,12 +1020,65 @@ gp_Pnt CCPACSWingSegment::GetOuterProfilePoint(double xsi) const
 
 void CCPACSWingSegment::MakeSurfaces(SurfaceCache& cache) const
 {
-    // make upper and lower surface
-    cache.lowerSurface = BRep_Tool::Surface(TopoDS::Face(GetLowerShape()));
-    cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(GetUpperShape()));
-    cache.lowerSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetLowerShape(WING_COORDINATE_SYSTEM)));
-    cache.upperSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(GetUpperShape(WING_COORDINATE_SYSTEM)));
+    auto globalToLocalTrsf = GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix()
+                                 .Inverted();
 
+    auto lowerShape = GetLowerShape(GLOBAL_COORDINATE_SYSTEM);
+    auto upperShape = GetUpperShape(GLOBAL_COORDINATE_SYSTEM);
+
+    if (m_guideCurves) {
+        auto params = m_guideCurves->GetRelativeCircumferenceParameters();
+        auto it = std::find_if(std::begin(params), std::end(params), [](double val) {
+            // the leading edge is defined at parameter 0, we allow some tolerance
+            return std::abs(val) < 1e-3;
+        });
+
+        if (it == params.end()) {
+            // could not find leading edge guide curve
+            throw CTiglError ("There is no guide curve defined at the leading edge");
+        }
+
+        // split into upper and lower parameters
+        std::vector<double> lower_params, upper_params;
+        std::copy(std::begin(params), it+1, std::back_inserter(lower_params));
+        std::copy(it, std::end(params), std::back_inserter(upper_params));
+
+        auto concatSurfs = [](const TopoDS_Shape& shape, const std::vector<double>& parms) {
+            if (GetNumberOfFaces(shape) == 1) {
+                return BRep_Tool::Surface(TopoDS::Face(shape));
+            }
+            else {
+                std::vector<Handle(Geom_BSplineSurface)> surfs;
+
+                for (TopExp_Explorer expl(shape, TopAbs_FACE); expl.More(); expl.Next()) {
+                    const TopoDS_Face& face = TopoDS::Face(expl.Current());
+                    auto bspl = GeomConvert::SurfaceToBSplineSurface(BRep_Tool::Surface(face));
+                    surfs.push_back(bspl);
+                }
+
+                CTiglConcatSurfaces concat(surfs, parms, ConcatDir::u);
+                return Handle(Geom_Surface)(concat.Surface());
+            }
+        };
+
+        // make upper and lower surface
+        cache.lowerSurface = concatSurfs(lowerShape, lower_params);
+        cache.upperSurface = concatSurfs(upperShape, upper_params);
+
+    }
+    else {
+        // make upper and lower surface
+        cache.lowerSurface = BRep_Tool::Surface(TopoDS::Face(lowerShape));
+        cache.upperSurface = BRep_Tool::Surface(TopoDS::Face(upperShape));
+    }
+
+    cache.lowerSurfaceLocal = globalToLocalTrsf.Transform(cache.lowerSurface);
+    cache.upperSurfaceLocal = globalToLocalTrsf.Transform(cache.upperSurface);
+
+}
+
+void CCPACSWingSegment::MakeChordSurfaces(ChordSurfaceCache& cache) const
+{
     // make cordface
 
     const CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
@@ -1016,10 +1124,10 @@ void CCPACSWingSegment::ComputeVolume(double& cache) const
 const CTiglPointTranslator& CCPACSWingSegment::ChordFace(TiglCoordinateSystem referenceCS) const
 {
     if (referenceCS == WING_COORDINATE_SYSTEM) {
-        return surfaceCache->cordSurfaceLocal;
+        return chordSurfaceCache->cordSurfaceLocal;
     }
     else {
-        return surfaceCache->cordSurface;
+        return chordSurfaceCache->cordSurface;
     }
 }
 
@@ -1134,23 +1242,6 @@ TopoDS_Shape CCPACSWingSegment::GetTrailingEdgeShape(TiglCoordinateSystem refere
     return GetParent()->GetParent<CCPACSWing>()->GetTransformationMatrix().Inverted().Transform(s);
 }
 
-// Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
-void CCPACSWingSegment::SetGetPointBehavior(TiglGetPointBehavior behavior)
-{
-    getPointBehavior = behavior;
-}
-
-// Gets the getPointBehavior
-TiglGetPointBehavior const CCPACSWingSegment::GetGetPointBehavior() const
-{
-    return getPointBehavior;
-}
-
-// Gets the getPointBehavior
-TiglGetPointBehavior CCPACSWingSegment::GetGetPointBehavior()
-{
-    return getPointBehavior;
-}
 
 } // end namespace tigl
 

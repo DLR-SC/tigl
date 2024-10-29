@@ -41,6 +41,12 @@
 #include "PNamedShape.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglProjectPointOnCurveAtAngle.h"
+#include "CTiglBSplineAlgorithms.h"
+#include "CTiglPointsToBSplineInterpolation.h"
+#include "CFunctionToBspline.h"
+#include "tiglmathfunctions.h"
+
+#include "Standard_Version.hxx"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -55,7 +61,13 @@
 #include "TopTools_IndexedMapOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "GeomAdaptor_Curve.hxx"
+
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,6,0)
 #include "BRepAdaptor_CompCurve.hxx"
+#else
+#include "BRepAdaptor_HCompCurve.hxx"
+#endif
+
 #include "BRepAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "BRep_Builder.hxx"
@@ -73,11 +85,12 @@
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
 #include "BRepClass3d_SolidClassifier.hxx"
+#include "BRepExtrema_DistShapeShape.hxx"
 
 #include <Approx_Curve3d.hxx>
-#include <BRepAdaptor_HCompCurve.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include "BRepExtrema_ExtCC.hxx"
 #include <BRepExtrema_DistShapeShape.hxx>
@@ -89,8 +102,11 @@
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Geom_Plane.hxx>
 #include <GeomConvert.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
+#include <TColStd_HArray1OfReal.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 #include <ShapeAnalysis_FreeBounds.hxx>
 #include <ShapeFix_EdgeConnect.hxx>
 #include <BRep_Tool.hxx>
@@ -100,16 +116,21 @@
 #include <ShapeFix_Wire.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <Standard_Version.hxx>
+#include <BRepExtrema_ExtPF.hxx>
+#include <BRepClass_FaceClassifier.hxx>
 
 #include <ShapeAnalysis_FreeBounds.hxx>
+
 
 
 #include <list>
 #include <algorithm>
 #include <cassert>
 #include <limits>
+#include <cmath>
 
 #include "Debugging.h"
+
 
 namespace
 {
@@ -198,19 +219,23 @@ void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, g
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
 
     Standard_Real len =  GCPnts_AbscissaPoint::Length( aCompoundCurve );
-    if (len < Precision::Confusion()) {
-        throw tigl::CTiglError("WireGetPointTangent: Unable to compute tangent on zero length wire", TIGL_MATH_ERROR);
-    }
-    GCPnts_AbscissaPoint algo(aCompoundCurve, len*alpha, aCompoundCurve.FirstParameter());
-    if (algo.IsDone()) {
-        double par = algo.Parameter();
-        aCompoundCurve.D1( par, point, tangent );
-        // normalize tangent to length of the curve
-        tangent = len*tangent/tangent.Magnitude();
-    }
-    else {
-        throw tigl::CTiglError("WireGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
-    }
+     if (len < Precision::Confusion()) {
+         // wire length is zero, we can query at parameter 0 and accept zero length tangents
+         aCompoundCurve.D1(0., point, tangent);
+     }
+     else {
+         GCPnts_AbscissaPoint algo(aCompoundCurve, len*alpha, aCompoundCurve.FirstParameter());
+         if (algo.IsDone()) {
+             double par = algo.Parameter();
+             aCompoundCurve.D1( par, point, tangent );
+             // normalize tangent to length of the curve
+             tangent = len*tangent/tangent.Magnitude();
+          }
+          else {
+             throw tigl::CTiglError("WireGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
+          }
+     }
+
 }
 
 gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha)
@@ -244,6 +269,23 @@ void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, g
     else {
         throw tigl::CTiglError("EdgeGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
     }
+}
+
+void EdgeGetPointTangentBasedOnParam(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& tangent)
+{
+    // ETA 3D point
+    Standard_Real umin, umax;
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
+
+    if (alpha < umin || alpha > umax) {
+        throw tigl::CTiglError("Parameter alpha not in the range umin <= alpha <= umax in EdgeGetPointTangent", TIGL_ERROR);
+    }
+
+    GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
+    Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
+    adaptorCurve.D1( alpha, point, tangent );
+    // normalize tangent to length of the curve
+    tangent = len*tangent/tangent.Magnitude();
 }
 
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
@@ -311,6 +353,102 @@ Standard_Real ProjectPointOnWireAtAngle(const TopoDS_Wire &wire, gp_Pnt p, gp_Di
     }
     return normalizedLength;
 }
+
+
+/// Projects the point onto the plane pln
+gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p)
+{
+    gp_Ax1 xAx = pln.XAxis();
+    gp_Ax1 yAx = pln.YAxis();
+
+    double px = (p.XYZ() - xAx.Location().XYZ()) * xAx.Direction().XYZ();
+    double py = (p.XYZ() - yAx.Location().XYZ()) * yAx.Direction().XYZ();
+
+    return gp_Pnt2d(px,py);
+}
+
+gp_Pnt ProjectPointOnShape(const TopoDS_Shape &shape, const gp_Pnt &point, const gp_Vec &direction)
+{
+    // Construct line in direction of projection through given point
+    gp_Lin line(point, gp_Dir(direction));
+    TopoDS_Edge dir = BRepBuilderAPI_MakeEdge(line).Edge();
+
+    // Construct Extrema class with line and surface and calculate closest points
+    // (should be one if line goes through surface)
+    BRepExtrema_DistShapeShape extrema_distShapeShape(dir, shape);
+    int nPoints = extrema_distShapeShape.NbSolution();
+
+    // Make sure only one point was found with a distance of "zero"
+    if (nPoints == 0) {
+        throw tigl::CTiglError("Projection of point to shape failed.", TIGL_MATH_ERROR);
+    }
+    else if (nPoints > 1) {
+        LOG(WARNING) << "Projection of point of shape has multiple results. Choosing first.";
+    }
+
+    return extrema_distShapeShape.PointOnShape2(nPoints);
+}
+
+boost::optional<UVResult> GetFaceAndUV(TopoDS_Shape const& shape,
+                                       gp_Pnt const& pnt,
+                                       double tol)
+{
+    boost::optional<UVResult> res;
+    //find a face that contains the point and query the uv coordinates
+    TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(pnt);
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+    for (int f = 1; f <= faceMap.Extent(); f++) {
+        TopoDS_Face const& face = TopoDS::Face(faceMap(f));
+
+        BRepExtrema_ExtPF proj(v, face);
+        for (auto i=1; i<=proj.NbExt(); ++i) {
+            if(proj.SquareDistance(i) < tol) {
+                UVResult current;
+                current.face = face;
+                proj.Parameter(i, current.u, current.v);
+                res = current;
+                return res;
+            }
+        }
+    }
+
+    return res;
+}
+
+TopoDS_Face TrimFace(TopoDS_Face const& face,
+                     double umin,
+                     double umax,
+                     double vmin,
+                     double vmax)
+{
+    Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
+    Handle(Geom_BSplineSurface) trimmed_surf
+            = tigl::CTiglBSplineAlgorithms::trimSurface(surf, umin, umax, vmin, vmax);
+    return BRepBuilderAPI_MakeFace(trimmed_surf, Precision::Confusion()).Face();
+}
+
+TopoDS_Shape ReplaceFaceInShape(TopoDS_Shape const& shape,
+                                TopoDS_Face const& new_face,
+                                TopoDS_Face const& old_face)
+{
+    TopoDS_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, new_face);
+
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+    for (int f = 1; f <= faceMap.Extent(); f++) {
+        TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
+        if( loftFace.IsEqual(old_face) ) {
+            continue;
+        }
+        builder.Add(compound, loftFace);
+    }
+    return compound;
+}
+
 
 gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
 {
@@ -713,7 +851,7 @@ TopoDS_Face BuildFace(const gp_Pnt& p1, const gp_Pnt& p2, const gp_Pnt& p3, cons
 bool IsPathRelative(const std::string& path)
 {
 #if defined _WIN32 || defined __WIN32__
-    return PathIsRelative(path.c_str()) == 1;
+    return PathIsRelativeA(path.c_str()) == 1;
 #else
     if (path.size() > 0 && path[0] == '/') {
         return false;
@@ -934,29 +1072,31 @@ TopoDS_Face BuildFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, const 
 
 TopoDS_Face BuildFace(const TopoDS_Wire& wire)
 {
-    TopoDS_Face result;
+    BRepBuilderAPI_FindPlane Searcher( wire, Precision::Confusion() );
+    if (Searcher.Found()) {
+        return BRepBuilderAPI_MakeFace(Searcher.Plane(), wire);
+    }
 
-    // try building face using BRepLib_MakeFace, which tries to build a plane
-    // if a plane is not possible, use BRepFill_Filling
-    BRepLib_MakeFace mf(wire, Standard_True);
-    if (mf.IsDone()) {
-        result = mf.Face();
+    // try to find another surface
+    BRepBuilderAPI_MakeFace MF( wire );
+    if (MF.IsDone()) {
+        return MF.Face();
     }
-    else {
-        BRepFill_Filling filler;
-        TopExp_Explorer exp;
-        for (exp.Init(wire, TopAbs_EDGE); exp.More(); exp.Next()) {
-            TopoDS_Edge e = TopoDS::Edge(exp.Current());
-            filler.Add(e, GeomAbs_C0);
-        }
-        filler.Build();
-        if (!filler.IsDone()) {
-            LOG(ERROR) << "Unable to generate face from Wire!";
-            throw tigl::CTiglError("BuildFace: Unable to generate face from Wire!");
-        }
-        result = filler.Face();
+
+    // Fallback solution
+    BRepFill_Filling filler;
+    TopExp_Explorer exp;
+    for (exp.Init(wire, TopAbs_EDGE); exp.More(); exp.Next()) {
+        TopoDS_Edge e = TopoDS::Edge(exp.Current());
+        filler.Add(e, GeomAbs_C0);
     }
-    return result;
+    filler.Build();
+    if (filler.IsDone()) {
+        return filler.Face();
+    }
+
+    LOG(ERROR) << "Could not build face from wire.";
+    throw tigl::CTiglError("BuildFace: Unable to generate face from Wire!");
 }
 
 TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
@@ -990,8 +1130,13 @@ TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
 
     // Wrap the adaptor in a class which manages curve access via handle (HCurve). According to doxygen
     // this is required by the algorithms
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,6,0)
+    const Handle(Adaptor3d_Curve) curve1 = new BRepAdaptor_CompCurve(compCurve1);
+    const Handle(Adaptor3d_Curve) curve2 = new BRepAdaptor_CompCurve(compCurve2);
+#else
     Handle(Adaptor3d_HCurve) curve1 = new BRepAdaptor_HCompCurve(compCurve1);
     Handle(Adaptor3d_HCurve) curve2 = new BRepAdaptor_HCompCurve(compCurve2);
+#endif
 
     // We have to generate an approximated curve now from the wire using the adaptor
     // NOTE: last parameter value unknown
@@ -1031,6 +1176,155 @@ TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges)
     }
     TopoDS_Wire result = TopoDS::Wire(wireList.First());
     return result;
+}
+
+namespace
+{
+    class Circle : public tigl::MathFunc3d
+    {
+    public:
+        Circle(double radius): tigl::MathFunc3d(), m_radius(radius) {}
+
+        double valueX(double t) override
+        {
+            return 0.;
+        }
+
+        double valueY(double t) override
+        {
+            return m_radius*std::cos(t);
+        }
+
+        double valueZ(double t) override
+        {
+            return m_radius*std::sin(t);
+        }
+
+    private:
+          double m_radius;
+    };
+} //anonymos namespace
+
+opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double radius, double uMin, double uMax,
+                                                                               double tol, double y_position, double z_position)
+{
+    if(radius==0){
+        throw tigl::CTiglError("Invalid geometry. Radius must be != 0.");
+    }
+    if(Abs(uMax-uMin)< tol){
+        throw tigl::CTiglError("Invalid geometry: Curve length must not be Zero.");
+    }
+    if(Abs(uMax-uMin)>(2.*M_PI))
+    {
+        throw tigl::CTiglError("Invalid geometry: Curve cannot be traversed more than once.");
+    }
+
+    Circle circle(radius);
+    int degree = 3;
+
+    auto curve = tigl::CFunctionToBspline(circle, uMin, uMax, degree, tol).Curve();
+    curve->Translate(gp_Vec(0.,y_position,z_position));
+
+    return curve;
+}
+
+TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cornerRadius, const double tol)
+{
+    if(cornerRadius<0.||cornerRadius>0.5){
+        throw tigl::CTiglError("Invalid input for corner radius. Must be in range: 0 <= cornerRadius <= 0.5");
+    }
+
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+
+    // build half upper line from gp_points
+    std::vector<gp_Pnt> linePntsUpperRightHalf;
+    linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
+    linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.5-cornerRadius,0.5*heightToWidthRatio));
+    opencascade::handle<Geom_BSplineCurve> lowerLineRightHalf =
+            tigl::CTiglPointsToBSplineInterpolation(linePntsUpperRightHalf).Curve();
+    curves.push_back(lowerLineRightHalf);
+
+    if (!(cornerRadius == 0.0)){
+        //build upper right arc
+        double y0 = 0.5 - cornerRadius;
+        double z0 = 0.5 * heightToWidthRatio - cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, 0., M_PI/2., tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    // build right line from gp_Pnts
+    std::vector<gp_Pnt> linePnts_right;
+    linePnts_right.push_back(gp_Pnt(0., 0.5, 0.5 * heightToWidthRatio - cornerRadius));
+    linePnts_right.push_back(gp_Pnt(0., 0.5, -0.5 * heightToWidthRatio + cornerRadius));
+    opencascade::handle<Geom_BSplineCurve> rightLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_right).Curve();
+    curves.push_back(rightLine);
+
+    if (!(cornerRadius == 0.0)){
+        //build lower right arc
+        double y0 = 0.5 - cornerRadius;
+        double z0 = - 0.5 * heightToWidthRatio + cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, M_PI*(3./2.), M_PI*2., tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    // build lower line from gp_points
+    std::vector<gp_Pnt> linePnts_lower;
+    linePnts_lower.push_back(gp_Pnt(0.,(0.5-cornerRadius),-0.5*heightToWidthRatio));
+    linePnts_lower.push_back(gp_Pnt(0.,(-0.5+cornerRadius),-0.5*heightToWidthRatio));
+    opencascade::handle<Geom_BSplineCurve> lowerLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_lower).Curve();
+
+    curves.push_back(lowerLine);
+
+    if (!(cornerRadius == 0.)){
+        // build lower left arc
+        double y0 = - 0.5 + cornerRadius;
+        double z0 = -0.5 * heightToWidthRatio + cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, M_PI, M_PI*(3./2.), tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    //build left line from gp_points
+    std::vector<gp_Pnt> linePnts_left;
+    linePnts_left.push_back(gp_Pnt(0.,-0.5,-0.5 * heightToWidthRatio + cornerRadius));
+    linePnts_left.push_back(gp_Pnt(0.,-0.5,0.5 * heightToWidthRatio - cornerRadius));
+    opencascade::handle<Geom_BSplineCurve> leftLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_left).Curve();
+    curves.push_back(leftLine);
+
+    if (!(cornerRadius == 0.)) {
+        // build upper left arc
+        double y0 = - 0.5 + cornerRadius;
+        double z0 = 0.5 * heightToWidthRatio - cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, M_PI/2., M_PI, tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    // build half upper line from gp_points
+    std::vector<gp_Pnt> linePntsUpperLeftHalf;
+    linePntsUpperLeftHalf.push_back(gp_Pnt(0.,-(0.5-cornerRadius),0.5*heightToWidthRatio));
+    linePntsUpperLeftHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
+    opencascade::handle<Geom_BSplineCurve> upperLineLeftHalf =
+            tigl::CTiglPointsToBSplineInterpolation(linePntsUpperLeftHalf).Curve();
+    curves.push_back(upperLineLeftHalf);
+
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
+
+    // workaround for lofting algorithm not working with  curves of degree '1' (i.e. concatenated lines)
+    // if guide curves are involved, the lofter doesn't generate a valid geometry without thowing an error
+    // This only occurs if the cornerRadius is zero and the profile is a rectangle, which in theory could
+    // just have degree 1.
+    if ((curve->Degree())<2){
+        curve->IncreaseDegree(2);
+    }
+
+    TopoDS_Wire wire;
+    if (!curve.IsNull()) {
+        wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    }
+    return wire;
 }
 
 void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList)
@@ -1535,27 +1829,65 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
 }
 
 
-bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point)
+bool IsPointInsideShape(const TopoDS_Shape &solid, gp_Pnt point, Bnd_Box const* bounding_box)
 {
+    double tol = 1e-3;
     // check if solid
-    TopoDS_Solid s;
-    try {
-        s = TopoDS::Solid(solid);
-    }
-    catch (Standard_Failure) {
+    if (solid.ShapeType() != TopAbs_SOLID) {
         throw tigl::CTiglError("The shape is not a solid");
     }
 
+    TopoDS_Solid s = TopoDS::Solid(solid);
+
+    // first, check if the point is in the bounding box
+    if (bounding_box) {
+        // create a copy of the const bounding box to be able to enlarge by tolerance
+        Bnd_Box bb;
+        bb.Add(*bounding_box);
+        bb.Enlarge(tol);
+        if ( bb.IsOut(point) ) {
+            return false;
+        }
+    }
+
+    // if the point is inside the bounding box, classify the point using BRepClass3d_SolidClassifier
     BRepClass3d_SolidClassifier algo(s);
 
     // test whether a point at infinity lies inside. If yes, then the shape is reversed
-    algo.PerformInfinitePoint(1e-3);
+    algo.PerformInfinitePoint(tol);
 
     bool shapeIsReversed = (algo.State() == TopAbs_IN);
 
-    algo.Perform(point, 1e-3);
+    algo.Perform(point, tol);
 
     return ((algo.State() == TopAbs_IN) != shapeIsReversed ) || (algo.State() == TopAbs_ON);
+}
+
+// Checks, whether a point lies inside a given face
+bool IsPointInsideFace(const TopoDS_Face& face, gp_Pnt point)
+{
+    //project point onto surface of face
+    TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(point);
+    BRepExtrema_ExtPF proj(v, face);
+    if (proj.IsDone() && proj.NbExt() > 0 && proj.SquareDistance(1)> Precision::SquareConfusion()) {
+        return false;
+    }
+
+    //point is in surface of face. Check if it is inside
+    BRepClass_FaceClassifier faceClassifier;
+    faceClassifier.Perform(face, point, Precision::Confusion());
+    const TopAbs_State state = faceClassifier.State();
+
+    if (state == TopAbs_ON || state == TopAbs_IN) {
+        return true;
+    }
+    return false;
+}
+
+// Checks whether a point lies above or below a plane (determined by direction of normal)
+bool IsPointAbovePlane(const gp_Pln& pln, gp_Pnt point)
+{
+    return gp_Vec(pln.Location(), point).Dot(gp_Vec(pln.Axis().Direction())) > 0;
 }
 
 std::vector<double> LinspaceWithBreaks(double umin, double umax, size_t n_values, const std::vector<double>& breaks)
@@ -1659,7 +1991,8 @@ TopoDS_Shape GetFacesByName(const PNamedShape shape, const std::string &name)
     return c;
 }
 
-TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts)
+/// Converters between std::vectors and opencascade vectors
+Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts)
 {
     Handle(TColgp_HArray1OfPnt) result = new TColgp_HArray1OfPnt(1, static_cast<int>(pnts.size()));
     int idx = 1;
@@ -1667,6 +2000,77 @@ TIGL_EXPORT Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<gp_Pnt>& pnts
         result->SetValue(idx, *it);
     }
     return result;
+}
+
+Handle(TColgp_HArray1OfPnt) OccArray(const std::vector<tigl::CTiglPoint>& pnts)
+{
+    Handle(TColgp_HArray1OfPnt) result = new TColgp_HArray1OfPnt(1, static_cast<int>(pnts.size()));
+    int idx = 1;
+    for (std::vector<tigl::CTiglPoint>::const_iterator it = pnts.begin(); it != pnts.end(); ++it, ++idx) {
+        result->SetValue(idx, it->Get_gp_Pnt());
+    }
+    return result;
+}
+
+Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector)
+{
+    Handle(TColStd_HArray1OfReal) array = new TColStd_HArray1OfReal(1, static_cast<int>(vector.size()));
+    int ipos = 1;
+    for (const auto& value : vector) {
+        array->SetValue(ipos, value);
+        ipos++;
+    }
+    
+    return array;
+}
+
+Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector)
+{
+    Handle(TColStd_HArray1OfInteger) array = new TColStd_HArray1OfInteger(1, static_cast<int>(vector.size()));
+    int ipos = 1;
+    for (const auto& value : vector) {
+        array->SetValue(ipos++, value);
+    }
+    
+    return array;
+}
+
+bool IsFaceBetweenPoints(const TopoDS_Face& face, gp_Pnt p1, gp_Pnt p2)
+{
+    BRepExtrema_ExtPF projector1(BRepBuilderAPI_MakeVertex(p1).Vertex(),
+                                 face,
+                                 Extrema_ExtFlag_MIN);
+
+    gp_Pnt p1Proj;
+    if (projector1.IsDone() && projector1.NbExt() > 0) {
+        p1Proj = projector1.Point(1);
+    }
+
+    // compute the projection of p1
+    BRepExtrema_ExtPF projector2(BRepBuilderAPI_MakeVertex(p2).Vertex(),
+                                 face,
+                                 Extrema_ExtFlag_MIN);
+
+    gp_Pnt p2Proj;
+    if (projector2.IsDone() && projector2.NbExt() > 0) {
+        p2Proj = projector2.Point(1);
+    }
+
+    return gp_Vec(p1Proj, p1).Dot(gp_Vec(p2Proj, p2)) < 0.;
+}
+
+double Mix(double x, double y, double a)
+{
+    return x*(1.-a) +   y*a;
+}
+
+double NormalizeAngleDeg(double angleDeg)
+{
+    angleDeg = fmod(angleDeg, 360.);
+    if (angleDeg < 0.)
+        angleDeg += 360.;
+
+    return angleDeg;
 }
 
 tigl::CTiglPoint TiglAxisToCTiglPoint(TiglAxis axis)

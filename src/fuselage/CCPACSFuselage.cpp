@@ -34,6 +34,8 @@
 #include "CTiglCurveConnector.h"
 #include "CTiglMakeLoft.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CTiglTopoAlgorithms.h"
+#include "CCPACSDuctAssembly.h"
 #include "CCPACSFuselageSection.h"
 #include "ListFunctions.h"
 #include "tiglmathfunctions.h"
@@ -77,14 +79,21 @@ namespace tigl
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselage(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , guideCurves(*this, &CCPACSFuselage::BuildGuideCurves)
+    , cleanLoft(*this, &CCPACSFuselage::BuildCleanLoft)
     , fuselageHelper(*this, &CCPACSFuselage::SetFuselageHelper)
-    {
+{
     Cleanup();
-    if (parent->IsParent<CCPACSAircraftModel>())
+    if (parent->IsParent<CCPACSAircraftModel>()) {
         configuration = &parent->GetParent<CCPACSAircraftModel>()->GetConfiguration();
+
+        // register invalidation in CCPACSDucts
+        if (configuration->HasDucts()) {
+            configuration->GetDucts()->RegisterInvalidationCallback([&](){ this->Invalidate(); });
+        }
+    }
     else
         configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
+
 }
 
 // Destructor
@@ -94,13 +103,11 @@ CCPACSFuselage::~CCPACSFuselage()
 }
 
 // Invalidates internal state
-void CCPACSFuselage::Invalidate()
+void CCPACSFuselage::InvalidateImpl(const boost::optional<std::string>& /*source*/) const
 {
+    cleanLoft.clear();
     loft.clear();
-    guideCurves.clear();
     m_segments.Invalidate();
-    if (m_positionings)
-        m_positionings->Invalidate();
     if (m_structure)
         m_structure->Invalidate();
     fuselageHelper.clear();
@@ -124,8 +131,6 @@ void CCPACSFuselage::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::
     Cleanup();
 
     generated::CPACSFuselage::ReadCPACS(tixiHandle, fuselageXPath);
-
-    ConnectGuideCurveSegments();
 }
 
 // Returns the parent configuration
@@ -139,29 +144,46 @@ std::string CCPACSFuselage::GetDefaultedUID() const
     return generated::CPACSFuselage::GetUID();
 }
 
-PNamedShape CCPACSFuselage::GetLoft(TiglCoordinateSystem cs) const
+void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis)
 {
-    PNamedShape loft = CTiglRelativelyPositionedComponent::GetLoft();
-    if (!loft) {
-        return loft;
-    }
+    CTiglRelativelyPositionedComponent::SetSymmetryAxis(axis);
+    Invalidate();
+}
 
-    if (cs == GLOBAL_COORDINATE_SYSTEM) {
-        return loft;
-    }
-    else {
-        // we want to modify the shape. we have to create a copy first
-        loft = loft->DeepCopy();
-        TopoDS_Shape transformedLoft = GetTransformationMatrix().Inverted().Transform(loft->Shape());
-        loft->SetShape(transformedLoft);
-        return loft;
-    }
+void CCPACSFuselage::SetTransformation(const CCPACSTransformation& transform)
+{
+    CTiglRelativelyPositionedComponent::SetTransformation(transform);
+    Invalidate();
+}
+
+void CCPACSFuselage::SetParentUID(const boost::optional<std::string>& value)
+{
+    generated::CPACSFuselage::SetParentUID(value);
+    Invalidate();
 }
 
 // Get section count
 int CCPACSFuselage::GetSectionCount() const
 {
     return m_sections.GetSectionCount();
+}
+
+// Returns the face that has a given fuselage section as its boundary
+TopoDS_Shape CCPACSFuselage::GetSectionFace(const std::string section_uid) const
+{
+    // search for the section in all segments
+    for (int n = 0; n < GetSegmentCount(); ++n) {
+        const CCPACSFuselageSegment& segment = GetSegment(n+1);
+
+        if ( section_uid == segment.GetStartSectionUID() ) {
+            return BuildFace( segment.GetStartWire() );
+        }
+        else if ( section_uid == segment.GetEndSectionUID() ) {
+            return BuildFace( segment.GetEndWire() );
+        }
+    }
+    throw CTiglError("GetSectionFace: Could not find a fuselage section for the given UID");
+    return TopoDS_Shape();
 }
 
 // Returns the section for a given index
@@ -211,7 +233,8 @@ std::string CCPACSFuselage::GetShortShapeName () const
 
 void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 {
-    int nFaces = GetNumberOfFaces(loft->Shape());
+    int nFacesTotal = GetNumberOfFaces(loft->Shape());
+    int nFacesAero = nFacesTotal;
     bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
 
     std::vector<std::string> names;
@@ -220,16 +243,17 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
     names.push_back("Front");
     names.push_back("Rear");
 
+    if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(1).GetStartWire())) {
+          nFacesAero-=1;
+    }
+    if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(GetSegmentCount()).GetEndWire())) {
+          nFacesAero-=1;
+    }
+
     // if we have a smooth surface, the whole fuslage is treatet as one segment
     int nSegments = this->GetSegmentCount();
 
-    // the number of faces per segment depends on the number of guide curves and the existence of the symmetry plane
-    int facesPerSegment = GetSegment(1).GetNumberOfLoftFaces();
-    int remainingFaces = nFaces - facesPerSegment * nSegments;
-    if (facesPerSegment == 0 || remainingFaces < 0 || remainingFaces > 2) {
-        LOG(WARNING) << "Fuselage faces cannot be names properly";
-        return;
-    }
+    int facesPerSegment = nFacesAero/ nSegments;
 
     int iFaceTotal = 0;
     int nSymmetryFaces = (int) hasSymmetryPlane;
@@ -244,13 +268,22 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 
     // set the caps
     int iFace = 2;
-    for (;iFaceTotal < nFaces; ++iFaceTotal) {
+    for (;iFaceTotal < nFacesTotal; ++iFaceTotal) {
         loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
     }
 }
 
 // Builds a fused shape of all fuselage segments
 PNamedShape CCPACSFuselage::BuildLoft() const
+{
+    if (!GetConfiguration().HasDucts()) {
+        return *cleanLoft;
+    }
+
+    return GetConfiguration().GetDucts()->LoftWithDuctCutouts(*cleanLoft, GetUID());
+}
+
+void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
 {
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean smooth = (cont == ::C0? false : true);
@@ -263,7 +296,7 @@ PNamedShape CCPACSFuselage::BuildLoft() const
     lofter.addProfiles(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire());
 
     // add guides
-    lofter.addGuides(GetGuideCurveWires());
+    lofter.addGuides(m_segments.GetGuideCurveWires());
 
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
@@ -272,10 +305,8 @@ PNamedShape CCPACSFuselage::BuildLoft() const
 
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
-    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft);
-
-    return loft;
+    cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
+    SetFaceTraits(cache);
 }
 
 // Get the positioning transformation for a given section index
@@ -303,13 +334,7 @@ void CCPACSFuselage::SetGetPointBehavior(TiglGetPointBehavior behavior)
 }
 
 // Gets the getPointBehavior
-TiglGetPointBehavior const CCPACSFuselage::GetGetPointBehavior() const
-{
-    return getPointBehavior;
-}
-
-// Gets the getPointBehavior
-TiglGetPointBehavior CCPACSFuselage::GetGetPointBehavior()
+TiglGetPointBehavior CCPACSFuselage::GetGetPointBehavior() const
 {
     return getPointBehavior;
 }
@@ -418,11 +443,6 @@ const CCPACSGuideCurve& CCPACSFuselage::GetGuideCurveSegment(std::string uid) co
     throw tigl::CTiglError("Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
-const TopoDS_Compound &CCPACSFuselage::GetGuideCurveWires() const
-{
-    return *guideCurves;
-}
-
 std::vector<gp_Pnt> CCPACSFuselage::GetGuideCurvePoints() const
 {
     std::vector<gp_Pnt> points;
@@ -445,187 +465,7 @@ std::vector<gp_Pnt> CCPACSFuselage::GetGuideCurvePoints() const
     return points;
 }
 
-gp_Lin CCPACSFuselage::Intersection(gp_Pnt pRef, double angleRef) const
-{
-    // to have a left-handed coordinates system for the intersection computation (see documentation)
-    const gp_Ax1 xAxe(pRef, gp_Dir(1, 0, 0));
-    const gp_Dir zReference(0, 0, 1);
-    const gp_Dir angleDir = zReference.Rotated(xAxe, angleRef);
 
-    // build a line to position the intersection with the fuselage shape
-    gp_Lin line(pRef, angleDir);
-
-    // fuselage loft
-    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
-
-    // get the list of shape from the fuselage shape
-    TopExp_Explorer exp;
-    for (exp.Init(loft, TopAbs_FACE); exp.More(); exp.Next()) {
-        IntCurvesFace_Intersector intersection(TopoDS::Face(exp.Current()), 0.1); // intersection builder
-        intersection.Perform(line, 0, std::numeric_limits<Standard_Real>::max());
-        if (intersection.IsDone() && intersection.NbPnt() > 0) {
-            gp_Lin result(intersection.Pnt(1), line.Direction());
-            // return the line with the point on the fuselage as the origin, and the previous line's direction
-            return result;
-        }
-    }
-
-    TRACE_POINT(debug);
-    debug.dumpShape(loft, "loft");
-    debug.dumpShape(BRepBuilderAPI_MakeEdge(pRef, pRef.XYZ() + angleDir.XYZ() * 1000), "line");
-
-    throw std::logic_error("Error computing intersection line");
-}
-
-gp_Lin CCPACSFuselage::Intersection(const CCPACSFuselageStringerFramePosition& pos) const
-{
-    const gp_Pnt pRef        = pos.GetRefPoint();
-    const double angleRefRad = (M_PI / 180.) * pos.GetReferenceAngle();
-    return Intersection(pRef, angleRefRad);
-}
-
-namespace
-{
-    TopoDS_Wire project(TopoDS_Shape wireOrEdge, BRepProj_Projection& proj, DebugScope& debug)
-    {
-        BRepBuilderAPI_MakeWire wireBuilder;
-        for (; proj.More(); proj.Next())
-            wireBuilder.Add(proj.Current());
-
-        TopTools_ListOfShape wireList;
-        BuildWiresFromConnectedEdges(proj.Shape(), wireList);
-
-        if (wireList.Extent() == 0) {
-            debug.addShape(proj.Shape(), "projection");
-
-            throw CTiglError("Projection returned no wires");
-        }
-        if (wireList.Extent() == 1)
-            return TopoDS::Wire(wireList.First());
-
-        // select the wire which is closest to the wire we projected
-        for (TopTools_ListIteratorOfListOfShape it(wireList); it.More(); it.Next()) {
-            const TopoDS_Wire w                = TopoDS::Wire(it.Value());
-            const gp_Pnt wStart     = GetFirstPoint(w);
-            const gp_Pnt wEnd       = GetLastPoint(w);
-            const gp_Pnt inputStart = GetFirstPoint(wireOrEdge);
-            const gp_Pnt inputEnd   = GetLastPoint(wireOrEdge);
-
-            const double pointEqualEpsilon = 1e-4;
-            if ((wStart.IsEqual(inputStart, pointEqualEpsilon) && wEnd.IsEqual(inputEnd, pointEqualEpsilon)) ||
-                (wEnd.IsEqual(inputStart, pointEqualEpsilon) && wStart.IsEqual(inputEnd, pointEqualEpsilon))) {
-                return w;
-            }
-        }
-
-        TopoDS_Compound c;
-        TopoDS_Builder b;
-        b.MakeCompound(c);
-        for (TopTools_ListIteratorOfListOfShape it(wireList); it.More(); it.Next()) {
-            b.Add(c, it.Value());
-        }
-        debug.addShape(proj.Shape(), "projection");
-        debug.addShape(c, "wireList");
-
-        // give up
-        throw CTiglError("Failed to project wire/edge onto fuselage");
-    }
-}
-
-TopoDS_Wire CCPACSFuselage::projectConic(TopoDS_Shape wireOrEdge, gp_Pnt origin) const
-{
-    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
-
-    DEBUG_SCOPE(debug);
-    debug.addShape(wireOrEdge, "wireOrEdge");
-    debug.addShape(loft, "loft");
-    debug.addShape(BRepBuilderAPI_MakeVertex(origin), "origin");
-
-    BRepProj_Projection proj(wireOrEdge, loft, origin);
-    return project(wireOrEdge, proj, debug);
-}
-
-TopoDS_Wire CCPACSFuselage::projectParallel(TopoDS_Shape wireOrEdge, gp_Dir direction) const
-{
-    const TopoDS_Shape loft = GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
-
-    const TopoDS_Shape directionLine = BRepBuilderAPI_MakeEdge(
-        BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)).Vertex(),
-        BRepBuilderAPI_MakeVertex(gp_Pnt(direction.XYZ() * 1000)).Vertex()
-    ).Shape();
-
-    DEBUG_SCOPE(debug);
-    debug.addShape(wireOrEdge, "wireOrEdge");
-    debug.addShape(loft, "loft");
-    debug.addShape(directionLine, "direction");
-
-    BRepProj_Projection proj(wireOrEdge, loft, direction);
-    return project(wireOrEdge, proj, debug);
-}
-
-void CCPACSFuselage::BuildGuideCurves(TopoDS_Compound& cache) const
-{
-    std::map<double, const CCPACSGuideCurve*> roots;
-
-    // get section centers for the centripetal parametrization
-    std::vector<gp_Pnt> sectionCenters(GetSegmentCount()+1);
-
-    // get center of inner section of first segment
-    const CCPACSFuselageSegment& innerSegment = m_segments.GetSegment(1);
-    sectionCenters[0] = innerSegment.GetTransformedProfileOriginStart();
-    
-    // find roots and connect the belonging guide curve segments
-    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
-        const CCPACSFuselageSegment& segment = m_segments.GetSegment(isegment);
-
-        if (!segment.GetGuideCurves()) {
-            continue;
-        }
-
-        // get center of outer section
-        sectionCenters[isegment] = segment.GetTransformedProfileOriginEnd();
-
-        const CCPACSGuideCurves& segmentCurves = *segment.GetGuideCurves();
-        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
-            const CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
-            if (!curve.GetFromGuideCurveUID_choice1()) {
-                // this is a root curve
-                double relCirc= *curve.GetFromRelativeCircumference_choice2();
-                //TODO: determine if half fuselage or not. If not
-                //the guide curve at relCirc=1 should be inserted at relCirc=0
-                roots.insert(std::make_pair(relCirc, &curve));
-            }
-        }
-    }
-
-    // get the parameters at the section centers
-    std::vector<double> sectionParams = CTiglBSplineAlgorithms::computeParamsBSplineCurve(OccArray(sectionCenters), 0., 1., 0.5);
-
-    // connect guide curve segments to a spline with given continuity conditions and tangents
-    CTiglCurveConnector connector(roots, sectionParams);
-    cache = connector.GetConnectedGuideCurves();
-}
-
-void CCPACSFuselage::ConnectGuideCurveSegments(void)
-{
-    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
-        CCPACSFuselageSegment& segment = GetSegment(isegment);
-
-        if (!segment.GetGuideCurves()) {
-            continue;
-        }
-
-        CCPACSGuideCurves& curves = *segment.GetGuideCurves();
-        for (int icurve = 1; icurve <= curves.GetGuideCurveCount(); ++icurve) {
-            CCPACSGuideCurve& curve = curves.GetGuideCurve(icurve);
-            if (!curve.GetFromRelativeCircumference_choice2()) {
-                std::string fromUID = *curve.GetFromGuideCurveUID_choice1();
-                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromUID);
-                curve.SetFromRelativeCircumference_choice2(fromCurve.GetToRelativeCircumference());
-            }
-        }
-    }
-}
 
 TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTransform, const CTiglFuselageConnection& connection, const TopoDS_Shape& shape)
 {

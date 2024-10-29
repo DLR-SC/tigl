@@ -28,7 +28,7 @@ namespace tigl
 class CCPACSProfileBasedStructuralElement : public generated::CPACSProfileBasedStructuralElement
 {
 public:
-    TIGL_EXPORT CCPACSProfileBasedStructuralElement(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSProfileBasedStructuralElement(CCPACSProfileBasedStructuralElements* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT TopoDS_Shape makeFromWire(const TopoDS_Wire& spine, const gp_Pln& profilePlane) const;
 };

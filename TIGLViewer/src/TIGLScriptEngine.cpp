@@ -24,6 +24,7 @@
 #include "TIXIScriptProxy.h"
 #include "TIGLScriptProxy.h"
 #include "TIGLViewerWindow.h"
+#include "TIGLViewerSettings.h"
 
 #include <QWidget>
 #include <QMetaMethod>
@@ -136,7 +137,7 @@ QScriptValue QMetaObjectGetMemberFunctions(QScriptContext *context, QScriptEngin
             name = name.left(idx);
         }
         
-        if (method.parameterTypes().size() > 0) {
+        if (!method.parameterTypes().empty()) {
             name += "(";
             for (int i = 0; i < method.parameterTypes().size(); ++i) {
                 QString partype = method.parameterTypes().at(i);
@@ -209,6 +210,7 @@ TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
     qScriptRegisterMetaType(&engine, qobjectToScriptValue<TIGLViewerWidget>, objectFromScriptValue<TIGLViewerWidget>);
     qScriptRegisterMetaType(&engine, qobjectToScriptValue<TIGLViewerContext>, objectFromScriptValue<TIGLViewerContext>);
     qScriptRegisterMetaType(&engine, qobjectToScriptValue<TIGLViewerDocument>, objectFromScriptValue<TIGLViewerDocument>);
+    qScriptRegisterMetaType(&engine, qobjectToScriptValue<TIGLViewerSettings>, objectFromScriptValue<TIGLViewerSettings>);
 
     // register/overwrite print function
     QScriptValue printFun = engine.newFunction(myPrintFunction);
@@ -245,13 +247,13 @@ TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
 }
 
 
-void TIGLScriptEngine::textChanged(QString line)
+void TIGLScriptEngine::textChanged(const QString& line)
 {
     // do fancy stuff in future, like input-completion
 }
 
 
-void TIGLScriptEngine::openFile(QString fileName)
+void TIGLScriptEngine::openFile(const QString& fileName)
 {
     QString script;
     QFile file(fileName);
@@ -263,7 +265,7 @@ void TIGLScriptEngine::openFile(QString fileName)
     }
 }
 
-void TIGLScriptEngine::eval(QString commandLine)
+void TIGLScriptEngine::eval(const QString& commandLine)
 {
     QScriptValue val;
 
@@ -321,7 +323,7 @@ void TIGLScriptEngine::displayHelp()
     helpString += "    app.viewer.makeScreenshot('image.png');//PNG image, white background<br/>";
     helpString += "    app.viewer.makeScreenshot('image.jpg', false);//JPEG image, current background<br/><br/>";
 
-    helpString += "Type 'help(tigl)' to get a list of available TiGL fuctions.<br/>";
+    helpString += "Type 'help(tigl)' to get a list of available TiGL functions.<br/>";
     helpString += "Use the help function on any object to display its public methods e.g. 'help(app.viewer)'.";
     emit scriptResult(helpString);
     emit evalDone();
@@ -329,7 +331,7 @@ void TIGLScriptEngine::displayHelp()
 
 void TIGLScriptEngine::printText(QString text)
 {
-    emit scriptResult(text);
+    emit scriptResult(std::move(text));
 }
 
 

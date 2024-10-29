@@ -21,6 +21,7 @@
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 
+#include "ITiglFuselageDuctStructure.h"
 #include "generated/CPACSStringerFramePosition.h"
 #include "Cache.h"
 
@@ -36,9 +37,12 @@ public:
 
     TIGL_EXPORT gp_Pnt GetRefPoint() const;
 
-    TIGL_EXPORT virtual void SetPositionX(const double& value) override;
+    TIGL_EXPORT virtual void SetPositionX_choice1(const boost::optional<double>& value) override;
     TIGL_EXPORT virtual void SetReferenceY(const double& value) override;
     TIGL_EXPORT virtual void SetReferenceZ(const double& value) override;
+    TIGL_EXPORT virtual void SetReferenceAngle(const double& value) override;
+    TIGL_EXPORT virtual void SetContinuity(const boost::optional<ECPACSContinuity>& value) override;
+    TIGL_EXPORT virtual void SetInterpolation(const boost::optional<ECPACSInterpolation>& value) override;
 
     TIGL_EXPORT double GetPositionXRel() const;
     TIGL_EXPORT double GetReferenceYRel() const;
@@ -51,8 +55,11 @@ public:
     TIGL_EXPORT void GetXBorders(double& ymin, double& ymax);
     TIGL_EXPORT void GetYBorders(double& ymin, double& ymax);
     TIGL_EXPORT void GetZBorders(double& zmin, double& zmax);
+
+
 private:
-    const CCPACSFuselage& GetFuselage() const;
+
+    ITiglFuselageDuctStructure const* GetStructureInterface() const;
 
     struct RelativePositionCache {
         double positionXRel;
@@ -68,7 +75,8 @@ private:
         double zmax;
     };
 
-    void Invalidate();
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     void UpdateRelativePositioning(RelativePositionCache& cache) const;
 
     Cache<RelativePositionCache, CCPACSFuselageStringerFramePosition> m_relCache;

@@ -20,8 +20,8 @@
 
 namespace tigl {
 
-CCPACSNacelleGuideCurves::CCPACSNacelleGuideCurves(CCPACSNacelleCowl* parent)
-   : generated::CPACSNacelleGuideCurves (parent)
+CCPACSNacelleGuideCurves::CCPACSNacelleGuideCurves(CCPACSNacelleCowl* parent, CTiglUIDManager* uidMgr)
+   : generated::CPACSNacelleGuideCurves (parent, uidMgr)
 {}
 
 size_t CCPACSNacelleGuideCurves::GetGuideCurveCount() const
@@ -38,4 +38,4 @@ CCPACSNacelleGuideCurve& CCPACSNacelleGuideCurves::GetGuideCurve(size_t index) c
     return *m_nacelleGuideCurves[index];
 }
 
-} //namepsace tigl
+} //namespace tigl

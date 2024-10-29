@@ -17,7 +17,7 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2019-09-24.
+* This file is automatically created from tigl.h on 2020-04-27.
 * If you experience any bugs please contact the authors
 */
 
@@ -77,6 +77,19 @@ public class TiglNativeInterface {
     public static native int tiglWingComponentSegmentComputeEtaIntersection(int cpacsHandle, String componentSegmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, DoubleByReference xsi, IntByReference hasWarning);
     public static native int tiglWingComponentSegmentGetNumberOfSegments(int cpacsHandle, String componentSegmentUID, IntByReference nsegments);
     public static native int tiglWingComponentSegmentGetSegmentUID(int cpacsHandle, String componentSegmentUID, int segmentIndex, PointerByReference segmentUID);
+    public static native int tiglWingGetSpan(int cpacsHandle, String wingUID, DoubleByReference pSpan);
+    public static native int tiglWingGetMAC(int cpacsHandle, String wingUID, DoubleByReference mac_chord, DoubleByReference mac_x, DoubleByReference mac_y, DoubleByReference mac_z);
+    public static native int tiglGetControlSurfaceCount(int cpacsHandle, String componentSegmentUID, IntByReference numControlSurfaces);
+    public static native int tiglGetControlSurfaceUID(int cpacsHandle, String componentSegmentUID, int controlSurfaceIndex, PointerByReference controlSurfaceUID);
+    public static native int tiglGetControlSurfaceType(int cpacsHandle, String controlSurfaceUID, IntByReference controlSurfaceType);
+    public static native int tiglControlSurfaceGetMinimumControlParameter(int cpacsHandle, String controlSurfaceUID, DoubleByReference minParameter);
+    public static native int tiglControlSurfaceGetMinimumDeflection(int cpacsHandle, String controlSurfaceUID, DoubleByReference minDeflection);
+    public static native int tiglControlSurfaceGetMaximumControlParameter(int cpacsHandle, String controlSurfaceUID, DoubleByReference maxParameter);
+    public static native int tiglControlSurfaceGetMaximumDeflection(int cpacsHandle, String controlSurfaceUID, DoubleByReference maxDeflection);
+    public static native int tiglControlSurfaceGetControlParameter(int cpacsHandle, String controlSurfaceUID, DoubleByReference controlParameter);
+    public static native int tiglControlSurfaceGetDeflection(int cpacsHandle, String controlSurfaceUID, DoubleByReference deflection);
+    public static native int tiglControlSurfaceSetControlParameter(int cpacsHandle, String controlSurfaceUID, double controlParameter);
+    public static native int tiglControlSurfaceSetDeflection(int cpacsHandle, String controlSurfaceUID, double deflection);
     public static native int tiglGetFuselageCount(int cpacsHandle, IntByReference fuselageCountPtr);
     public static native int tiglFuselageGetSegmentCount(int cpacsHandle, int fuselageIndex, IntByReference segmentCountPtr);
     public static native int tiglFuselageGetSectionCenter(int cpacsHandle, String fuselageSegmentUID, double eta, DoubleByReference pointX, DoubleByReference pointY, DoubleByReference pointZ);
@@ -188,10 +201,9 @@ public class TiglNativeInterface {
     public static native int tiglLogSetVerbosity(int level);
     public static native int tiglCheckPointInside(int cpacsHandle, double px, double py, double pz, String componentUID, IntByReference isInside);
     public static native int tiglComponentGetHashCode(int cpacsHandle, String componentUID, IntByReference hashCodePtr);
+    public static native int tiglComponentGetType(int cpacsHandle, String componentUID, IntByReference typePtr);
     public static native String tiglGetErrorString(int errorCode);
     public static native void tiglSetDebugDataDirectory(String directory);
     public static native int tiglConfigurationGetLength(int cpacsHandle, DoubleByReference pLength);
     public static native int tiglConfigurationGetBoundingBox(int cpacsHandle, DoubleByReference minX, DoubleByReference minY, DoubleByReference minZ, DoubleByReference maxX, DoubleByReference maxY, DoubleByReference maxZ);
-    public static native int tiglWingGetSpan(int cpacsHandle, String wingUID, DoubleByReference pSpan);
-    public static native int tiglWingGetMAC(int cpacsHandle, String wingUID, DoubleByReference mac_chord, DoubleByReference mac_x, DoubleByReference mac_y, DoubleByReference mac_z);
 };

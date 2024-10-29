@@ -107,7 +107,9 @@ PNamedShape CTiglFusePlane::FuseWithChilds(CTiglRelativelyPositionedComponent* p
 
     ListPNamedShape childShapes;
     for (std::vector<CTiglRelativelyPositionedComponent*>::const_iterator it = children.begin(); it != children.end(); ++it) {
-        childShapes.push_back(FuseWithChilds(*it, (*it)->GetChildren(false)));
+        if ((*it)->GetComponentType() != TIGL_COMPONENT_DUCT ) {
+            childShapes.push_back(FuseWithChilds(*it, (*it)->GetChildren(false)));
+        }
     }
     CFuseShapes fuser(parentShape, childShapes);
     PNamedShape result = fuser.NamedShape();
@@ -156,8 +158,11 @@ void CTiglFusePlane::Perform()
     CTiglUIDManager& uidManager = _myconfig.GetUIDManager();
     std::vector<CTiglRelativelyPositionedComponent*> rootComponentPtrs;
     const RelativeComponentContainerType& rootComponents = uidManager.GetRootGeometricComponents();
-    for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it)
-        rootComponentPtrs.push_back(it->second);
+    for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it) {
+        if (it->second->GetComponentType() != TIGL_COMPONENT_DUCT ) {
+            rootComponentPtrs.push_back(it->second);
+        }
+    }
     _result = FuseWithChilds(NULL, rootComponentPtrs);
 
     CCPACSFarField& farfield = _myconfig.GetFarField();

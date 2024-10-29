@@ -22,6 +22,9 @@
 #ifndef CCPACSWINGS_H
 #define CCPACSWINGS_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSWings.h"
 #include "generated/CPACSWingAirfoils.h"
 #include "tigl_internal.h"
@@ -38,7 +41,7 @@ public:
     TIGL_EXPORT CCPACSWings(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
     // Returns the total count of wings in a configuration
     TIGL_EXPORT int GetWingCount() const;

@@ -20,6 +20,7 @@
 #define CTIGLBSPLINEALGORITHMS_H
 
 #include "tigl_internal.h"
+#include "CTiglApproxResult.h"
 
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
@@ -37,6 +38,14 @@
 
 namespace tigl
 {
+
+enum class SurfaceDirection
+{
+    u,
+    v,
+    both
+};
+
 
 class CTiglBSplineAlgorithms
 {
@@ -116,20 +125,56 @@ public:
 
     /**
      * @brief createCommonKnotsVectorSurface:
-     *          Creates a common knot vector in both u- and v-direction of the given vector of B-spline surfaces
+     *          Creates a common knot vector in both u- and / or v-direction of the given vector of B-spline surfaces
      *          The common knot vector contains all knots in u- and v-direction of all surfaces with the highest multiplicity of all surfaces.
-     *          !!! This method calls the method createCommonKnotsVectorSurfaceOneDir two times to create a common knot vector in both directions !!!
+     *
+     *          Note: the parameter range of the surfaces must match before calling this function.
+     *
      * @param old_surfaces_vector:
      *          the given vector of B-spline surfaces that could have a different knot vector in u- and v-direction
+     * @param dir:
+     *          Defines, which knot vector (u/v/both) is modified
      * @return
      *          the given vector of B-spline surfaces, now with a common knot vector
      *          The B-spline surface geometry remains the same.
      */
-    TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector);
+    TIGL_EXPORT static std::vector<Handle(Geom_BSplineSurface) > createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface)>& old_surfaces_vector, SurfaceDirection dir);
 
     /**
+     * Changes the parameter range of the b-spline curve
      */
     TIGL_EXPORT static void reparametrizeBSpline(Geom_BSplineCurve& spline, double umin, double umax, double tol=1e-15);
+
+    /**
+     * Changes the parameter range of the b-spline surfae
+     */
+    TIGL_EXPORT static void reparametrizeBSpline(Geom_BSplineSurface& spline, double umin, double umax, double vmin, double vmax, double tol);
+
+    /**
+     * Reparametrizes the B-Spline such that the knot distribution is uniform and the number of
+     * Segments is a power of 2
+     *
+     * The resulting curves are very suitable for lofting, as they share the same knots
+     */
+    TIGL_EXPORT static CTiglApproxResult reparametrizeBSplineNiceKnots(Handle(Geom_BSplineCurve) spline);
+
+    /**
+     * @brief reparameterizePiecewiseLinear:
+     *          Apply reparameterization on a given B-Spline curve defined by old and new parameters
+     *          Based on algorithm found in The NURBS book (2nd edition), p. 251, and the explanations
+     *          Here, we use a piecewise linear reparameterization function (degree q=1) interpolating the wanted parameters
+     *          As a result, the degree stays the same after reparameterization
+     * @param paramsOld:
+     *          Array of the old parameters
+     * @param paramsNew:
+     *          Array of the new parameters
+     * @param tolerance:
+     *          Define the tolerance used for OpenCascade knot removal funtion [Geom_BSplineCurve::RemoveKnot(Index, M, Tolerance)]
+     */
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparameterizePiecewiseLinear(Handle(Geom_BSplineCurve) curve,
+                                                                               std::vector<double> const& paramsOld, std::vector<double> const& paramsNew,
+                                                                               double tolerance);
+
 
     /**
      * @brief reparametrizeBSplineContinuouslyApprox:
@@ -143,8 +188,8 @@ public:
      * @return
      *          the continuously reparametrized given B-spline
      */
-    TIGL_EXPORT static Handle(Geom_BSplineCurve) reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const std::vector<double>& old_parameters,
-                                                                                        const std::vector<double>& new_parameters, size_t n_control_pnts);
+    TIGL_EXPORT static CTiglApproxResult reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline, const std::vector<double>& old_parameters,
+                                                                                const std::vector<double>& new_parameters, size_t n_control_pnts);
 
     /**
      * @brief flipSurface:
@@ -166,17 +211,17 @@ public:
      *          parameters in u-direction where the points shall be at on the interpolating surface
      * @param vParams:
      *          parameters in v-direction where the points shall be at on the interpolating surface
-     * @param uContinousIfClosed:
-     *          Make a continous junction in u d-directions, if the u direction is closed
-     * @param vContinousIfClosed:
-     *          Make a continous junction in v d-directions, if the v direction is closed
+     * @param uContinuousIfClosed:
+     *          Make a continuous junction in u d-directions, if the u direction is closed
+     * @param vContinuousIfClosed:
+     *          Make a continuous junction in v d-directions, if the v direction is closed
      * @return
      *          B-spline surface which interpolates the given points with the given parameters
      */
     TIGL_EXPORT static Handle(Geom_BSplineSurface) pointsToSurface(const TColgp_Array2OfPnt& points,
                                                                    const std::vector<double>& uParams,
                                                                    const std::vector<double>& vParams,
-                                                                   bool uContinousIfClosed, bool vContinousIfClosed);
+                                                                   bool uContinuousIfClosed, bool vContinuousIfClosed);
 
     /**
      * @brief intersections:
@@ -215,10 +260,24 @@ public:
     /// Returns the scale of the point matrix
     TIGL_EXPORT static double scale(const TColgp_Array2OfPnt& points);
 
+    /// Returns the scale of the point list by searching for the largest distance between two points
+    TIGL_EXPORT static double scale(const TColgp_Array1OfPnt& points);
+
     /**
      * Returns positions, where the curve has kinks (C1 Discontinuities)
      */
     TIGL_EXPORT static std::vector<double> getKinkParameters(const Handle(Geom_BSplineCurve)& curve);
+
+    struct SurfaceKinks{
+        std::vector<double> u;
+        std::vector<double> v;
+    };
+
+    /**
+     * Returns positions, where the surface has kinks (C1 Discontinuities)
+     */
+    TIGL_EXPORT static SurfaceKinks getKinkParameters(const Handle(Geom_BSplineSurface)& surface);
+
 
     /// Checks, whether the point matrix points is closed in u direction
     TIGL_EXPORT static bool isUDirClosed(const TColgp_Array2OfPnt& points, double tolerance);
@@ -234,7 +293,64 @@ public:
 
     /// Trims a bspline surface
     TIGL_EXPORT static Handle(Geom_BSplineSurface) trimSurface(const Handle(Geom_Surface)& surface, double umin, double umax, double vmin, double vmax);
+
+    /// Trims a bspline curve
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) trimCurve(const Handle(Geom_BSplineCurve)& curve, double umin, double umax);
+
+    /// Concatenates a list of bspline curves
+    TIGL_EXPORT static Handle(Geom_BSplineCurve) concatCurves(std::vector<Handle(Geom_BSplineCurve)> curves,
+                                                              bool parByLength=true, double tolerance = 1e-6);
+
+    /**
+     * @brief Concatenates two surfaces in u direction
+     *
+     * Note: This function has the following requirements
+     *   - s2 follows s1 in u direction and have a common boundary
+     *   - s2 follows s1 also in parametric domain
+     *   - both surfaces are non-rational!
+     *   - the surfaces a non-periodic in u direction
+     *
+     * The resulting surface might not C1 and C2 continuous.
+     * We still have geometric continuity.
+     *
+     * To achieve parametric continuity, the surfaces must be
+     * re-parametrized accordingly before
+     */
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) concatSurfacesUDir(Handle(Geom_BSplineSurface) bspl1, Handle(Geom_BSplineSurface) bspl2, double space_tol=1e-5);
+
+    /**
+     * @ brief Changes the knot sequence to be uniform after calling the function
+     *
+     * Technically, this is done by approximating the surface with a new surface
+     * which also adds an approximation error.
+     * For the surface approximation, derivatives at the boundary are not taken into account yet.
+     *
+     * The approximation error depends on the number of knot segments,
+     * the more segments are used, the better will be the result.
+     *
+     * @param surf Surface to approximate
+     * @param nseg_u Number of knot segments in u direction
+     * @param nseg_v Number of knot segments in v direction
+    */
+    TIGL_EXPORT static Handle(Geom_BSplineSurface) makeKnotsUniform(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v);
 };
 } // namespace tigl
+
+namespace details
+{
+    /// Helper function for reparameterization to calculate inverse of reparameterization function (paramsOld -> paramsNew)
+    /**
+     * @brief calcReparamfctInv
+     * @param paramsOld:
+     *          Parameters of original B-Spline curve (domain of inverse reparameterization function)
+     * @param paramsNew:
+     *          New parameters of B-Spline curve (range of inverse reparameterization function)
+     * @param u:
+     *          Function argument, has to be inside range of paramsOld
+     * @param tolerance
+     * @return the wanted inverse of u (new parameter corresponding to old parameter)
+     */
+    TIGL_EXPORT double calcReparamfctInv(std::vector<double> const& paramsOld, std::vector<double> const& paramsNew, double u, double tolerance);
+} // namespace details
 
 #endif // CTIGLBSPLINEALGORITHMS_H

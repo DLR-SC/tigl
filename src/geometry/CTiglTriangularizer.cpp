@@ -23,6 +23,7 @@
 #include "CCPACSWingSegment.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglFusePlane.h"
+#include "CNamedShape.h"
 
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
@@ -111,13 +112,13 @@ void CTiglTriangularizer::writeFaceDummyMeta(unsigned long iPolyLower, unsigned 
     }
 }
 
-bool CTiglTriangularizer::writeWingMeta(ITiglGeometricComponent& wingComponent, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper)
+bool CTiglTriangularizer::writeWingMeta(ITiglGeometricComponent& wingComponent, const CFaceTraits& traits, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
     if (wingComponent.GetComponentType() == TIGL_COMPONENT_WING) {
         CCPACSWing& wing = dynamic_cast<CCPACSWing&>(wingComponent);
         for (int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment) {
             CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
-            if (writeWingSegmentMeta(segment, centralP, iPolyLower, iPolyUpper)) {
+            if (writeWingSegmentMeta(segment, traits, centralP, iPolyLower, iPolyUpper)) {
                 return true;
             }
         }
@@ -126,7 +127,7 @@ bool CTiglTriangularizer::writeWingMeta(ITiglGeometricComponent& wingComponent, 
     return false;
 }
 
-void CTiglTriangularizer::writeFaceMeta(const CTiglUIDManager* uidMgr, const std::string& componentUID,
+void CTiglTriangularizer::writeFaceMeta(const CTiglUIDManager* uidMgr,  const CFaceTraits& traits, const std::string& componentUID,
                                         TopoDS_Face face, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
     if (!uidMgr) {
@@ -151,11 +152,11 @@ void CTiglTriangularizer::writeFaceMeta(const CTiglUIDManager* uidMgr, const std
 
     try {
         ITiglGeometricComponent& component = uidMgr->GetGeometricComponent(componentUID);
-        if (writeWingMeta(component, centralP, iPolyLower, iPolyUpper)) {
+        if (writeWingMeta(component, traits, centralP, iPolyLower, iPolyUpper)) {
             return;
         }
         
-        if (writeWingSegmentMeta(component, centralP, iPolyLower, iPolyUpper)) {
+        if (writeWingSegmentMeta(component, traits, centralP, iPolyLower, iPolyUpper)) {
             return;
         }
     }
@@ -184,11 +185,12 @@ int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager* uidMgr, P
         TopoDS_Face face = TopoDS::Face(faceMap(iface));
         std::string componentUID = pshape->GetFaceTraits(iface-1).ComponentUID();
         unsigned long nVertices, iPolyLower, iPolyUpper;
+        CFaceTraits faceTraits = pshape->GetFaceTraits(iface-1);
         triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
 
         if (nVertices > 0 && mode ==  SEGMENT_INFO) {
             // write face metadata
-            writeFaceMeta(uidMgr, componentUID, face, iPolyLower, iPolyUpper);
+            writeFaceMeta(uidMgr, faceTraits, componentUID, face, iPolyLower, iPolyUpper);
         }
     }
 
@@ -204,7 +206,7 @@ int CTiglTriangularizer::triangularizeComponent(const CTiglUIDManager* uidMgr, P
  * @param iPolyLower Lower index of the polygons to annotate.
  * @param iPolyUpper Upper index of the polygons to annotate.
  */
-bool CTiglTriangularizer::writeWingSegmentMeta(tigl::ITiglGeometricComponent &segmentComponent, gp_Pnt pointOnSegmentFace, unsigned long iPolyLower, unsigned long iPolyUpper)
+bool CTiglTriangularizer::writeWingSegmentMeta(tigl::ITiglGeometricComponent &segmentComponent, const CFaceTraits& traits,  gp_Pnt pointOnSegmentFace, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
     if (!(segmentComponent.GetComponentType() == TIGL_COMPONENT_WINGSEGMENT)) {
         return false;
@@ -212,6 +214,10 @@ bool CTiglTriangularizer::writeWingSegmentMeta(tigl::ITiglGeometricComponent &se
     
     CCPACSWingSegment& segment = dynamic_cast<CCPACSWingSegment&>(segmentComponent);
     
+    // backtransform point
+    CTiglTransformation inverseTrafo = traits.Transformation().Inverted();
+    pointOnSegmentFace = inverseTrafo.Transform(pointOnSegmentFace);
+
     bool pointOnMirroredShape = false;
     if (segment.GetIsOn(pointOnSegmentFace) == true) {
         pointOnMirroredShape = false;
@@ -243,12 +249,14 @@ bool CTiglTriangularizer::writeWingSegmentMeta(tigl::ITiglGeometricComponent &se
             baryCenter += polys.currentObject().getVertexPoint(index);
         }
         baryCenter = baryCenter*(double)(1./(double)npoints);
+        baryCenter = CTiglPoint(inverseTrafo.Transform(baryCenter.Get_gp_Pnt()).XYZ());
         if (pointOnMirroredShape) {
             baryCenter = mirrorPoint(baryCenter.Get_gp_Pnt(), segment.GetSymmetryAxis()).XYZ();
         }
         
         double eta = 0., xsi = 0.;
-        segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), eta, xsi);
+        gp_Pnt pDummy;
+        segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), eta, xsi, pDummy, onLinearLoft);
         polys.currentObject().setPolyDataReal(iPoly, "eta", eta);
         polys.currentObject().setPolyDataReal(iPoly, "xsi", xsi);
         
@@ -269,6 +277,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
 {
     TopLoc_Location location;
     std::vector<unsigned long> indexBuffer;
+    nVertices = 0;
 
     const Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
     if (triangulation.IsNull()) {
@@ -285,13 +294,11 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         
         BRepGProp_Face prop(face);
         
-        const TColgp_Array1OfPnt2d& uvnodes = triangulation->UVNodes(); // get (face-local) list of nodes
-        ilower = uvnodes.Lower();
-        
-        iBufferSize = uvnodes.Upper()-uvnodes.Lower()+1;
+        ilower = 1;
+        iBufferSize = triangulation->NbNodes();
         indexBuffer.reserve(iBufferSize);
-        for (int inode = uvnodes.Lower(); inode <= uvnodes.Upper(); ++inode) {
-            const gp_Pnt2d& uv_pnt = uvnodes(inode);
+        for (int inode = 1; inode <= triangulation->NbNodes(); ++inode) {
+            const gp_Pnt2d& uv_pnt = triangulation->UVNode(inode);
             gp_Pnt p; gp_Vec n;
             prop.Normal(uv_pnt.X(),uv_pnt.Y(),p,n);
             if (n.SquareMagnitude() > 0.) {
@@ -306,23 +313,20 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
     else {
         // we cannot compute normals
         
-        const TColgp_Array1OfPnt& nodes = triangulation->Nodes(); // get (face-local) list of nodes
-        ilower = nodes.Lower();
-
-        iBufferSize = nodes.Upper()-nodes.Lower()+1;
+        ilower = 1;
+        iBufferSize = triangulation->NbNodes();
         indexBuffer.reserve(iBufferSize);
-        for (int inode = nodes.Lower(); inode <= nodes.Upper(); inode++) {
-            const gp_Pnt& p = nodes(inode).Transformed(nodeTransformation);
+        for (int inode = 1; inode <= triangulation->NbNodes(); inode++) {
+            const gp_Pnt& p = triangulation->Node(inode).Transformed(nodeTransformation);
             indexBuffer.push_back(polys.currentObject().addPointNormal(p.XYZ(), CTiglPoint(1,0,0)));
         }
     }
 
-    const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
     iPolyLower = ULONG_MAX;
     iPolyUpper = 0;
-    // iterate over triangles in the array 
-    for (int j = triangles.Lower(); j <= triangles.Upper(); j++) {
-        const Poly_Triangle& triangle = triangles(j);
+    // iterate over triangles in the array
+    for (int j = 1; j <= triangulation->NbTriangles(); j++) {
+        const Poly_Triangle& triangle = triangulation->Triangle(j);
         int occindex1, occindex2, occindex3;
         triangle.Get(occindex1, occindex2, occindex3); // get indices into index1..3
         unsigned long index1, index2, index3;

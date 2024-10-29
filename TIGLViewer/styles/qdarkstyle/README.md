@@ -186,7 +186,7 @@ Changelog
     - Add __version__ to python package.
 * 1.5:
     - improve QTabBar style: now works with all tab bar positions (North, South, West and East)
-    - fix bug #6: hide QTabBar base to avoid stange lines at the base of the tab bar.
+    - fix bug #6: hide QTabBar base to avoid strange lines at the base of the tab bar.
 * 1.4: Add style.qss to qrc file, this fix issues with cx_freeze
 * 1.3:
     - remove outline on button, checkbox and radio button

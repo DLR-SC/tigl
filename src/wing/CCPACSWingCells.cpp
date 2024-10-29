@@ -27,12 +27,13 @@ namespace tigl
 CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingCells(parent, uidMgr) {}
 
-void CCPACSWingCells::Invalidate()
+void CCPACSWingCells::Invalidate(const boost::optional<std::string>& source) const
 {
     for (size_t i = 0; i < m_cells.size(); i++) {
-        m_cells[i]->Invalidate();
+        m_cells[i]->Invalidate(source);
     }
 }
+
 int CCPACSWingCells::GetCellCount() const
 {
     return static_cast<int>(m_cells.size());

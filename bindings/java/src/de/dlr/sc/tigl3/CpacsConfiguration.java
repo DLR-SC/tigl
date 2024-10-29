@@ -487,7 +487,7 @@ public class CpacsConfiguration implements AutoCloseable {
         DoubleByReference pointY = new DoubleByReference();
         DoubleByReference pointZ = new DoubleByReference();
 
-        // get uppper Point from TIGL
+        // get upper Point from TIGL
         errorCode = TiglNativeInterface.tiglWingGetUpperPoint(cpacsHandle, wingIndex, segmentIndex, eta, xsi, pointX, pointY, pointZ);
         throwIfError("tiglWingGetUpperPoint", errorCode);
 
@@ -558,7 +558,7 @@ public class CpacsConfiguration implements AutoCloseable {
         DoubleByReference pointZ  = new DoubleByReference();
         DoubleByReference errDist = new DoubleByReference();
 
-        // get uppper Point from TIGL
+        // get upper Point from TIGL
         errorCode = TiglNativeInterface.tiglWingGetUpperPointAtDirection(cpacsHandle, wingIndex, segmentIndex, 
                 eta, xsi, 
                 direction.getX(), direction.getY(), direction.getZ(), 
@@ -601,7 +601,7 @@ public class CpacsConfiguration implements AutoCloseable {
         DoubleByReference pointZ  = new DoubleByReference();
         DoubleByReference errDist = new DoubleByReference();
 
-        // get uppper Point from TIGL
+        // get upper Point from TIGL
         errorCode = TiglNativeInterface.tiglWingGetLowerPointAtDirection(cpacsHandle, wingIndex, segmentIndex, 
                 eta, xsi, 
                 direction.getX(), direction.getY(), direction.getZ(), 
@@ -1933,7 +1933,7 @@ public class CpacsConfiguration implements AutoCloseable {
      * to be called.
      * 
      * @param componentUid - The UID of the first component
-     * @param point, normal - The plane paramters i.e. a point on the plane and the plane's normal vector
+     * @param point, normal - The plane parameters i.e. a point on the plane and the plane's normal vector
      * 
      * @return A unique identifier that is associated with the computed intersection.
      * @throws TiglException

@@ -67,20 +67,24 @@ void CCPACSWingSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const s
 }
 
 // Invalidates internal state
-void CCPACSWingSegments::Invalidate()
+void CCPACSWingSegments::Invalidate(const boost::optional<std::string>& source) const
 {
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        m_segments[i]->Invalidate();
+    for (const auto& segment : m_segments) {
+        segment->Invalidate(source);
     }
+}
 
-    if ( NeedReordering() ){
-        try { // we use a try-catch to not rise two time a exception if the reordering occurs during the first cpacs parsing
-            ReorderSegments();
-        } catch (  const CTiglError& err) {
-            LOG(ERROR) << err.what();
-        }
+CCPACSWingSegment& CCPACSWingSegments::AddSegment()
+{
+    CCPACSWingSegment& result = generated::CPACSWingSegments::AddSegment();
+    InvalidateParent();
+    return result;
+}
 
-    }
+void CCPACSWingSegments::RemoveSegment(CCPACSWingSegment& ref)
+{
+    generated::CPACSWingSegments::RemoveSegment(ref);
+    InvalidateParent();
 }
 
 // Gets a segment by index. 
@@ -129,7 +133,15 @@ int CCPACSWingSegments::GetSegmentCount() const
     return static_cast<int>(m_segments.size());
 }
 
-bool CCPACSWingSegments::NeedReordering()
+void CCPACSWingSegments::InvalidateParent() const
+{
+    // Invalidate wing or EnginePylon
+    if (const auto* parent = GetNextUIDParent()) {
+        parent->Invalidate();
+    }
+}
+
+bool CCPACSWingSegments::NeedReordering() const
 {
     if (GetSegmentCount() <= 1) {
         return false;
@@ -138,7 +150,7 @@ bool CCPACSWingSegments::NeedReordering()
     bool mustReorderSegments   = false;
     std::string prevElementUID = GetSegment(1).GetToElementUID();
     for (int i = 2; i <= GetSegmentCount(); ++i) {
-        CCPACSWingSegment& segment = GetSegment(i);
+        const CCPACSWingSegment& segment = GetSegment(i);
         if (prevElementUID != segment.GetFromElementUID()) {
             mustReorderSegments = true;
         }

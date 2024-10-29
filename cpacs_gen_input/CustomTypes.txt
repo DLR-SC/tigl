@@ -2,7 +2,7 @@
 // maps generated types to actual tigl types
 
 // enums
-CPACSSymmetry                      TiglSymmetryAxis
+CPACSSymmetryXyXzYz                TiglSymmetryAxis
 CPACSPointAbsRelType_refType       ECPACSTranslationType
 CPACSFarField_type                 TiglFarFieldType
 CPACSRotorHub_type                 TiglRotorHubType
@@ -23,7 +23,6 @@ CPACSPoint                         CCPACSPoint
 CPACSPointAbsRel                   CCPACSPointAbsRel
 CPACSTransformation                CCPACSTransformation
 CPACSStringVectorBase              CCPACSStringVector
-CPACSPointListXYZVector            CCPACSPointListXYZVector
 CPACSPointListRelXYZVector         CCPACSPointListRelXYZVector
 CPACSPointListXYVector			   CCPACSPointListXYVector
 CPACSPointListXY                   CCPACSPointListXY
@@ -31,6 +30,13 @@ CPACSGenericGeometricComponent     CCPACSExternalObject
 CPACSGenericGeometryComponents     CCPACSExternalObjects
 CPACSEtaIsoLine                    CCPACSEtaIsoLine
 CPACSXsiIsoLine                    CCPACSXsiIsoLine
+CPACSEtaXsiPoint                   CCPACSEtaXsiPoint
+CPACSCurvePoint                    CCPACSCurvePoint
+CPACSCurveParamPointMap            CCPACSCurveParamPointMap
+CPACSCurvePointListXYZ             CCPACSCurvePointListXYZ
+CPACSSystems                       CCPACSACSystems
+CPACSGenericSystems                CCPACSGenericSystems
+CPACSGenericSystem                 CCPACSGenericSystem
 
 CPACSFuselage                      CCPACSFuselage
 CPACSFuselages                     CCPACSFuselages
@@ -108,19 +114,19 @@ CPACSFuselageStructure                    CCPACSFuselageStructure
 CPACSStringer                             CCPACSFuselageStringer
 CPACSPointXY                              CCPACSPointXY
 CPACSStringerFramePosition                CCPACSFuselageStringerFramePosition
+CPACSSkin                                 CCPACSSkin
 CPACSSkinSegment                          CCPACSSkinSegment
+CPACSWallSegment                          CCPACSFuselageWallSegment
+CPACSWallPosition                         CCPACSWallPosition
+CPACSWalls                                CCPACSWalls
 
 // control surfaces
 CPACSControlSurfaces                      CCPACSControlSurfaces
-CPACSControlSurfaceSkinCutOut             CCPACSControlSurfaceSkinCutout
-CPACSControlSurfaceSteps                  CCPACSControlSurfaceSteps
-CPACSControlSurfaceStep                   CCPACSControlSurfaceStep
-CPACSControlSurfaceHingePoint             CCPACSControlSurfaceHingePoint
-CPACSControlSurfaceTrackType              CCPACSControlSurfaceTrackType
 CPACSControlSurfaceBorderTrailingEdge     CCPACSControlSurfaceBorderTrailingEdge
-CPACSControlSurfaceSkinCutOutBorder       CCPACSControlSurfaceSkinCutOutBorder
-CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
 CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
+CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
+CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
+CPACSControlSurfaceWingCutOut             CCPACSControlSurfaceWingCutOut
 
 // Pylons
 CPACSEnginePylon                         CCPACSEnginePylon
@@ -134,6 +140,12 @@ CPACSNacelleCowl                         CCPACSNacelleCowl
 CPACSNacelleSections                     CCPACSNacelleSections
 CPACSNacelleSection                      CCPACSNacelleSection
 CPACSProfileGeometry2D                   CCPACSNacelleProfile
-CPACSNacelleGuideCurves					         CCPACSNacelleGuideCurves
+CPACSNacelleGuideCurves                  CCPACSNacelleGuideCurves
 CPACSRotationCurve                       CCPACSRotationCurve
 CPACSNacelleCenterCowl                   CCPACSNacelleCenterCowl
+
+// Ducts
+CPACSDuct                                CCPACSDuct
+CPACSDuctStructure                       CCPACSDuctStructure
+CPACSDuctAssembly                        CCPACSDuctAssembly
+CPACSDucts                               CCPACSDucts

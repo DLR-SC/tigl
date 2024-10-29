@@ -33,14 +33,14 @@
 
 namespace tigl
 {
-CCPACSWingProfiles::CCPACSWingProfiles(CTiglUIDManager* uidMgr)
-    : generated::CPACSWingAirfoils(uidMgr) {}
+CCPACSWingProfiles::CCPACSWingProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingAirfoils(parent, uidMgr) {}
 
 // Invalidates internal state
-void CCPACSWingProfiles::Invalidate()
+void CCPACSWingProfiles::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 0; i < m_wingAirfoils.size(); i++) {
-        static_cast<CCPACSWingProfile&>(*m_wingAirfoils[i]).Invalidate();
+        static_cast<const CCPACSWingProfile&>(*m_wingAirfoils[i]).Invalidate(source);
     }
 }
 
@@ -59,7 +59,7 @@ void CCPACSWingProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, const
     // read element wingAirfoil
     if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
         tixi::TixiReadElementsInternal(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoils, 1, tixi::xsdUnbounded, [&](const std::string& childXPath) {
-            auto child = tigl::make_unique<CCPACSWingProfile>(m_uidMgr);
+            auto child = tigl::make_unique<CCPACSWingProfile>(this, m_uidMgr);
             child->ReadCPACS(tixiHandle, childXPath);
             return child;
         });
@@ -67,7 +67,7 @@ void CCPACSWingProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, const
 }
 
 CCPACSWingProfile& CCPACSWingProfiles::AddWingAirfoil() {
-    m_wingAirfoils.push_back(make_unique<CCPACSWingProfile>(m_uidMgr));
+    m_wingAirfoils.push_back(make_unique<CCPACSWingProfile>(this, m_uidMgr));
     return static_cast<CCPACSWingProfile&>(*m_wingAirfoils.back());
 }
 

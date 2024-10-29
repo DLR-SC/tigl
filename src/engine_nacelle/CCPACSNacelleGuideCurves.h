@@ -27,7 +27,7 @@ namespace tigl
 class CCPACSNacelleGuideCurves : public generated::CPACSNacelleGuideCurves
 {
 public:
-    TIGL_EXPORT explicit CCPACSNacelleGuideCurves(CCPACSNacelleCowl* parent);
+    TIGL_EXPORT explicit CCPACSNacelleGuideCurves(CCPACSNacelleCowl* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT size_t GetGuideCurveCount() const;
     TIGL_EXPORT CCPACSNacelleGuideCurve& GetGuideCurve(size_t index) const;

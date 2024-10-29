@@ -99,7 +99,7 @@ namespace disable_adl
 
         ~any()
         {
-            if (!pimpl) {
+            if (pimpl) {
                 delete pimpl;
             }
         }

@@ -21,42 +21,39 @@
 */
 
 #include "CCPACSACSystems.h"
-#include "CTiglError.h"
-#include <iostream>
-#include <sstream>
+#include "CCPACSAircraftModel.h"
+#include "CCPACSRotorcraftModel.h"
+
 
 namespace tigl
 {
 
-// Constructor
-CCPACSACSystems::CCPACSACSystems(CCPACSConfiguration* config)
-    : genericSystems(config)
-    , configuration(config)
+CCPACSACSystems::CCPACSACSystems(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
+: generated::CPACSSystems(parent, uidMgr)
 {
 }
 
-// Destructor
+CCPACSACSystems::CCPACSACSystems(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
+: generated::CPACSSystems(parent, uidMgr)
+{
+}
+
 CCPACSACSystems::~CCPACSACSystems()
 {
 }
 
-// Read CPACS systems element
-void CCPACSACSystems::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
+CCPACSConfiguration& CCPACSACSystems::GetConfiguration() const
 {
-    char *tmpString = NULL;
-
-    if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
-        throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSACSystems::ReadCPACS", TIGL_XML_ERROR);
+    if (IsParent<CCPACSAircraftModel>()) {
+        return GetParent<CCPACSAircraftModel>()->GetConfiguration();
     }
-
-    // Read genericSystems
-    genericSystems.ReadCPACS(tixiHandle, configurationUID.c_str());
-
+    else if (IsParent<CCPACSRotorcraftModel>()) {
+        return GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
+    }
+    else {
+        throw CTiglError("Invalid parent");
+    }
 }
 
-// Returns the genericSystems object.
-CCPACSGenericSystems& CCPACSACSystems::GetGenericSystems()
-{
-    return genericSystems;
-}
+
 } // end namespace tigl

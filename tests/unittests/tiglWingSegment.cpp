@@ -28,6 +28,9 @@
 #include "CCPACSWingSegments.h"
 #include "tiglcommonfunctions.h"
 
+using std::cout;
+using std::endl;
+
 /***************************************************************************************************/
 
 class WingSegment : public ::testing::Test 
@@ -74,8 +77,8 @@ TiglCPACSConfigurationHandle WingSegment::tiglHandle = 0;
 class WingSegmentSimple : public ::testing::Test 
 {
 protected:
-    static void SetUpTestCase() 
-    {
+
+    void SetUp() override {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -89,17 +92,12 @@ protected:
         tiglRet = tiglOpenCPACSConfiguration(tixiSimpleHandle, "Cpacs2Test", &tiglSimpleHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
     }
-
-    static void TearDownTestCase() 
-    {
+    void TearDown() override {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSimpleHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiSimpleHandle) == SUCCESS);
         tiglSimpleHandle = -1;
         tixiSimpleHandle = -1;
     }
-
-    void SetUp() override {}
-    void TearDown() override {}
 
 
     static TixiDocumentHandle           tixiSimpleHandle;
@@ -152,11 +150,51 @@ protected:
 TixiDocumentHandle WingSegmentSpecial::tixiSpecialHandle = 0;
 TiglCPACSConfigurationHandle WingSegmentSpecial::tiglSpecialHandle = 0;
 
+
 /***************************************************************************************************/
+
+class WingSegmentGuideCurves : public ::testing::Test
+{
+protected:
+
+    void SetUp() override {
+        const char* filename = "TestData/simpletest-with-guides.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglGuideCurvesHandle = -1;
+        tixiGuideCurvesHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiGuideCurvesHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+
+        tiglRet = tiglOpenCPACSConfiguration(tixiGuideCurvesHandle, "Cpacs2Test", &tiglGuideCurvesHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+    void TearDown() override {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglGuideCurvesHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiGuideCurvesHandle) == SUCCESS);
+        tiglGuideCurvesHandle = -1;
+        tixiGuideCurvesHandle = -1;
+    }
+
+
+    static TixiDocumentHandle           tixiGuideCurvesHandle;
+    static TiglCPACSConfigurationHandle tiglGuideCurvesHandle;
+};
+
+
+TixiDocumentHandle WingSegmentGuideCurves::tixiGuideCurvesHandle = 0;
+TiglCPACSConfigurationHandle WingSegmentGuideCurves::tiglGuideCurvesHandle = 0;
+
+/***************************************************************************************************/
+
+
 
 /**
 * Tests tiglGetWingCount with invalid CPACS handle.
 */
+
 TEST_F(WingSegment, tiglGetWingCount_invalidHandle)
 {
     int wingCount;
@@ -172,7 +210,7 @@ TEST_F(WingSegment, tiglGetWingCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglGetWingCount.
+* Tests successful call of tiglGetWingCount.
 */
 TEST_F(WingSegment, tiglGetWingCount_success)
 {
@@ -210,7 +248,7 @@ TEST_F(WingSegment, tiglWingGetSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetSegmentCount.
+* Tests successful call of tiglWingGetSegmentCount.
 */
 TEST_F(WingSegment, tiglWingGetSegmentCount_success)
 {
@@ -257,7 +295,7 @@ TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetInnerConnectedSegmentCount.
+* Tests successful call of tiglWingGetInnerConnectedSegmentCount.
 */
 TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentCount_success)
 {
@@ -306,7 +344,7 @@ TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterConnectedSegmentCount.
+* Tests successful call of tiglWingGetOuterConnectedSegmentCount.
 */
 TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentCount_success)
 {
@@ -366,7 +404,7 @@ TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetInnerConnectedSegmentIndex.
+* Tests successful call of tiglWingGetInnerConnectedSegmentIndex.
 */
 TEST_F(WingSegment, tiglWingGetInnerConnectedSegmentIndex_success)
 {
@@ -426,7 +464,7 @@ TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterConnectedSegmentIndex.
+* Tests successful call of tiglWingGetOuterConnectedSegmentIndex.
 */
 TEST_F(WingSegment, tiglWingGetOuterConnectedSegmentIndex_success)
 {
@@ -482,7 +520,7 @@ TEST_F(WingSegment, tiglWingGetInnerSectionAndElementIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetInnerSectionAndElementIndex.
+* Tests successful call of tiglWingGetInnerSectionAndElementIndex.
 */
 TEST_F(WingSegment, tiglWingGetInnerSectionAndElementIndex_success)
 {
@@ -544,7 +582,7 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementIndex_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterSectionAndElementIndex.
+* Tests successful call of tiglWingGetOuterSectionAndElementIndex.
 */
 TEST_F(WingSegment, tiglWingGetOuterSectionAndElementIndex_success)
 {
@@ -599,7 +637,7 @@ TEST_F(WingSegment, tiglWingGetInnerSectionAndElementUID_invalidSegment)
 
 
 /**
-* Tests successfull call of tiglWingGetInnerSectionAndElementUID.
+* Tests successful call of tiglWingGetInnerSectionAndElementUID.
 */
 TEST_F(WingSegment, tiglWingGetInnerSectionAndElementUID_success)
 {
@@ -652,7 +690,7 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_invalidSegment)
 }
 
 /**
-* Tests successfull call of tiglWingGetOuterSectionAndElementUID.
+* Tests successful call of tiglWingGetOuterSectionAndElementUID.
 */
 TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
 {
@@ -883,12 +921,8 @@ TEST_F(WingSegmentSimple, getIsOnTop_performance)
 
 TEST_F(WingSegmentSimple, trafo_Consistency)
 {
-    // we transform eta, xsi to x,y,z and perform the back transform
-    // we check if we get the the same eta xsi as before
+
     int segIndex = 1;
-    double eta_start = 0.2;
-    double xsi_start = 0.3;
-    double x = 0., y = 0., z = 0.;
 
     // now we have do use the internal interface as we currently have no public api for this
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -896,34 +930,49 @@ TEST_F(WingSegmentSimple, trafo_Consistency)
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
 
-    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+    for (auto behavior : {onLinearLoft, asParameterOnSurface}) {
 
-    gp_Pnt point(x,y,z);
-    double eta_end=0., xsi_end = 0.;
-    segment.GetEtaXsi(point, eta_end, xsi_end);
+        TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, behavior);
+        ASSERT_EQ(tiglRet, SUCCESS);
 
-    ASSERT_NEAR(eta_end, eta_start, 1e-7);
-    ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+        // we transform eta, xsi to x,y,z and perform the back transform
+        // we check if we get the the same eta xsi as before
+        segIndex = 1;
+        double eta_start = 0.2;
+        double xsi_start = 0.3;
+        double x = 0., y = 0., z = 0.;
 
-    // lower wing surface
-    ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
-    point = gp_Pnt(x,y,z);
-    segment.GetEtaXsi(point, eta_end, xsi_end);
+        ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
 
-    ASSERT_NEAR(eta_end, eta_start, 1e-7);
-    ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+        gp_Pnt point(x,y,z);
+        gp_Pnt pproj;
+        double eta_end=0., xsi_end = 0.;
+        segment.GetEtaXsi(point, eta_end, xsi_end, pproj, behavior);
 
-    // second segment, more complex
-    eta_start = 0.3;
-    xsi_start = 0.7;
-    segIndex = 2;
-    tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
-    ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
-    point = gp_Pnt(x,y,z);
-    segment2.GetEtaXsi(point, eta_end, xsi_end);
+        ASSERT_NEAR(eta_end, eta_start, 1e-7);
+        ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
 
-    ASSERT_NEAR(eta_end, eta_start, 1e-7);
-    ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+        // lower wing surface
+        ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+        point = gp_Pnt(x,y,z);
+        segment.GetEtaXsi(point, eta_end, xsi_end, pproj, behavior);
+
+        ASSERT_NEAR(eta_end, eta_start, 1e-7);
+        ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+
+        // second segment, more complex
+        eta_start = 0.3;
+        xsi_start = 0.7;
+        segIndex = 2;
+        tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
+        ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+        point = gp_Pnt(x,y,z);
+        segment2.GetEtaXsi(point, eta_end, xsi_end, pproj, behavior);
+
+        ASSERT_NEAR(eta_end, eta_start, 1e-7);
+        ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+
+    }
 }
 
 TEST_F(WingSegmentSimple, getEtaXsi_Performance)
@@ -944,23 +993,38 @@ TEST_F(WingSegmentSimple, getEtaXsi_Performance)
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
 
     gp_Pnt point(x,y,z);
+    gp_Pnt pproj;
     double eta_end=0., xsi_end = 0.;
 
     // we do one cold start to create all faces, we don't count it
-    segment.GetEtaXsi(point, eta_end, xsi_end);
+    segment.GetEtaXsi(point, eta_end, xsi_end, pproj, onLinearLoft);
 
     int nruns = 100000;
     clock_t start = clock();
     for (int i = 0; i < nruns; ++i) {
-        segment.GetEtaXsi(point, eta_end, xsi_end);
+        segment.GetEtaXsi(point, eta_end, xsi_end, pproj, onLinearLoft);
     }
     clock_t stop = clock();
-    cout << "Elapsed time per projection [us]: " << double(stop-start)/(double)CLOCKS_PER_SEC/(double)nruns * 1.e6 << endl;
+    cout << "Elapsed time per projection onLinearLoft [us]: " << double(stop-start)/(double)CLOCKS_PER_SEC/(double)nruns * 1.e6 << endl;
+
+    // we do one cold start to create all faces, we don't count it
+    segment.GetEtaXsi(point, eta_end, xsi_end, pproj, asParameterOnSurface);
+
+    nruns = 100;
+    start = clock();
+    for (int i = 0; i < nruns; ++i) {
+        segment.GetEtaXsi(point, eta_end, xsi_end, pproj, asParameterOnSurface);
+    }
+    stop = clock();
+    cout << "Elapsed time per projection asParameterOnSurface [us]: " << double(stop-start)/(double)CLOCKS_PER_SEC/(double)nruns * 1.e6 << endl;
 }
 
 // @todo: test of failures, outliers etc...
 TEST_F(WingSegmentSimple, wingGetEtaXsi)
 {  
+    TiglReturnCode tiglRet = tiglWingSetGetPointBehavior(tiglSimpleHandle, onLinearLoft);
+    ASSERT_EQ(tiglRet, SUCCESS);
+
     double x = 0., y = 0., z = 0.;
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
 
@@ -1170,7 +1234,11 @@ TEST_F(WingSegmentSimple, wingGetEtaXsiBug1)
 {
     int idx = -1, onTop;
     double eta = 0., xsi = 0.;
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentEtaXsi(tiglSimpleHandle, 1, 0.5, 1.0005, 0.0, &idx, &eta, &xsi, &onTop));
+
+    double px, py, pz;
+    tiglWingGetUpperPoint(tiglSimpleHandle, 1, 2, 0.0005, 0.5, &px, &py, &pz);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentEtaXsi(tiglSimpleHandle, 1, px, py, pz, &idx, &eta, &xsi, &onTop));
     ASSERT_EQ(2, idx);
     ASSERT_NEAR(0.0005, eta, 1e-8);
 }
@@ -1219,4 +1287,23 @@ TEST_F(WingSegmentSimple, segmentIndexFromUID)
         wing.GetSegments().GetSegments(),
         "Unknown"), 1
     );
+}
+
+/* Tests with guide curves:*/
+
+TEST_F(WingSegmentGuideCurves, tiglWingGetSegmentUpperSurfaceAreaTrimmed)
+{
+    double upperArea;
+
+    // test if the return code 0 is returned by the function for the provided valid argument list
+    EXPECT_EQ(0,tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglGuideCurvesHandle, 1, 1,
+                                                          0, 0,
+                                                          0, 1,
+                                                          0.05, 1,
+                                                          0.05, 0,
+                                                          &upperArea));
+    // Test if the calculated area has the expected value. The first argument in the following test is computed by the function itself,
+    // and is therefore obviously true. The benifit of this test case lies in the fact, that the value of the first argument has been roughly estimated visually from the test configuration's
+    // CAD representation in TiGL Viewer and is meeting the computed value.
+    ASSERT_NEAR(0.036530682797528628, upperArea, 1e-8);
 }

@@ -5,7 +5,17 @@ option(TIGL_USE_INTERNAL_BOOST "Use boost library that comes with tigl" ON)
 if (TIGL_USE_INTERNAL_BOOST)
 
 # boost
-set  (BOOST_DIR ${PROJECT_SOURCE_DIR}/boost_1_67_0)
+set (BOOST_DIR ${PROJECT_BINARY_DIR}/boost_1_85_0)
+set (BOOST_ARCHIVE ${PROJECT_SOURCE_DIR}/boost_1_85_0.tar.gz)
+set (Boost_VERSION "1.85.0")
+
+if (NOT EXISTS ${BOOST_DIR})
+    message(STATUS "Extracting boost ${Boost_VERSION}")
+    execute_process (
+        COMMAND ${CMAKE_COMMAND} -E  tar xzf ${BOOST_ARCHIVE}
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    )
+endif()
 
 add_library(tigl_boost INTERFACE)
 add_library(Boost::boost ALIAS tigl_boost)
@@ -19,11 +29,15 @@ target_compile_definitions(tigl_boost_disable_autolink INTERFACE BOOST_ALL_NO_LI
 add_library(Boost::disable_autolinking ALIAS tigl_boost_disable_autolink)
 
 add_library(tigl_boost_atomic STATIC
-    ${BOOST_DIR}/libs/atomic/src/lockpool.cpp
+    ${BOOST_DIR}/libs/atomic/src/lock_pool.cpp
 )
 add_library(Boost::atomic ALIAS tigl_boost_atomic)
 set_property(TARGET tigl_boost_atomic PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(tigl_boost_atomic PUBLIC tigl_boost_disable_autolink tigl_boost)
+
+target_include_directories(tigl_boost_atomic PRIVATE
+    ${BOOST_DIR}/libs/atomic/src
+)
 
 add_library(tigl_boost_chrono STATIC
     ${BOOST_DIR}/libs/chrono/src/chrono.cpp
@@ -35,17 +49,10 @@ add_library(Boost::chrono ALIAS tigl_boost_chrono)
 set_property(TARGET tigl_boost_chrono PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(tigl_boost_chrono PUBLIC tigl_boost_disable_autolink tigl_boost)
 
-add_library(tigl_boost_date_time STATIC
-    ${BOOST_DIR}/libs/date_time/src/gregorian/date_generators.cpp
-    ${BOOST_DIR}/libs/date_time/src/gregorian/gregorian_types.cpp
-    ${BOOST_DIR}/libs/date_time/src/gregorian/greg_month.cpp
-    ${BOOST_DIR}/libs/date_time/src/gregorian/greg_weekday.cpp
-    ${BOOST_DIR}/libs/date_time/src/posix_time/posix_time_types.cpp
+add_library(tigl_boost_date_time INTERFACE
 )
 
 add_library(Boost::date_time ALIAS tigl_boost_date_time)
-set_property(TARGET tigl_boost_date_time PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(tigl_boost_date_time PUBLIC tigl_boost_disable_autolink tigl_boost)
 
 add_library(tigl_boost_exception STATIC
     ${BOOST_DIR}/libs/exception/src/clone_current_exception_non_intrusive.cpp
@@ -57,6 +64,8 @@ target_link_libraries(tigl_boost_exception PUBLIC tigl_boost_disable_autolink ti
 
 add_library(tigl_boost_filesystem STATIC
     ${BOOST_DIR}/libs/filesystem/src/codecvt_error_category.cpp
+    ${BOOST_DIR}/libs/filesystem/src/directory.cpp
+    ${BOOST_DIR}/libs/filesystem/src/exception.cpp
     ${BOOST_DIR}/libs/filesystem/src/operations.cpp
     ${BOOST_DIR}/libs/filesystem/src/path.cpp
     ${BOOST_DIR}/libs/filesystem/src/path_traits.cpp
@@ -67,16 +76,12 @@ add_library(tigl_boost_filesystem STATIC
 )
 
 target_link_libraries(tigl_boost_filesystem PUBLIC tigl_boost_disable_autolink tigl_boost)
+target_compile_definitions(tigl_boost_filesystem PUBLIC BOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF=1)
 set_property(TARGET tigl_boost_filesystem PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_library(Boost::filesystem ALIAS tigl_boost_filesystem)
 
-add_library(tigl_boost_system STATIC
-    ${BOOST_DIR}/libs/system/src/error_code.cpp
-)
-
+add_library(tigl_boost_system INTERFACE)
 add_library(Boost::system ALIAS tigl_boost_system)
-set_property(TARGET tigl_boost_system PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(tigl_boost_system PUBLIC tigl_boost_disable_autolink tigl_boost)
 
 set (BOOST_THREAD_SRC 
     ${BOOST_DIR}/libs/thread/src/future.cpp

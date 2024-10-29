@@ -39,8 +39,14 @@ public:
     TIGL_EXPORT CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
                                                   unsigned int maxDegree = 3, bool continuousIfClosed = false);
 
+    TIGL_EXPORT CTiglPointsToBSplineInterpolation(const std::vector<gp_Pnt>& points, unsigned int maxDegree = 3,
+                                                  bool continuousIfClosed = false);
+
     TIGL_EXPORT CTiglPointsToBSplineInterpolation(const Handle(TColgp_HArray1OfPnt) & points,
                                                   const std::vector<double>& parameters, unsigned int maxDegree = 3,
+                                                  bool continuousIfClosed = false);
+
+    TIGL_EXPORT CTiglPointsToBSplineInterpolation(const std::vector<gp_Pnt>& points, const std::vector<double>& parameters, unsigned int maxDegree = 3,
                                                   bool continuousIfClosed = false);
 
     /// Returns the interpolation curve
@@ -64,7 +70,7 @@ private:
     bool needsShifting() const;
 
     /// curve coordinates to be fitted by the B-spline
-    const Handle(TColgp_HArray1OfPnt) & m_pnts;
+    const Handle(TColgp_HArray1OfPnt) m_pnts;
 
     std::vector<double> m_params;
 

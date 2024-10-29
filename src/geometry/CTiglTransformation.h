@@ -28,6 +28,8 @@
 #include "gp_GTrsf.hxx"
 #include "gp_Pnt.hxx"
 #include "TopoDS.hxx"
+#include "Geom_Surface.hxx"
+#include "PNamedShape.h"
 #include "tiglMatrix.h"
 
 namespace tigl
@@ -45,11 +47,14 @@ public:
     TIGL_EXPORT explicit CTiglTransformation(const gp_Trsf& trans);
 
     TIGL_EXPORT explicit CTiglTransformation(const gp_Vec& translation);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglTransformation();
     
     TIGL_EXPORT CTiglTransformation& operator=(const CTiglTransformation&);
+
+    // Converts degree to radian, utility function
+    TIGL_EXPORT static double DegreeToRadian(double degree);
+
+    // Converts radian to degree, utility function
+    TIGL_EXPORT static double RadianToDegree(double radian);
 
     // Sets matrix to identity matrix
     TIGL_EXPORT void SetIdentity();
@@ -104,9 +109,17 @@ public:
     // returns the transformed shape
     TIGL_EXPORT TopoDS_Shape Transform(const TopoDS_Shape& shape) const;
 
+    // Transforms the CNamedShape. It also makes sure to update
+    // the local face transformation meta data.
+    TIGL_EXPORT PNamedShape Transform(PNamedShape shape) const;
+
     // Transforms a point with the current transformation matrix and
     // returns the transformed point
     TIGL_EXPORT gp_Pnt Transform(const gp_Pnt& point) const;
+
+    // Transforms a surface with the current transformation matrix and
+    // returns the transformed surface
+    TIGL_EXPORT Handle(Geom_Surface) Transform(const Handle(Geom_Surface)& surf) const;
 
     // Transforms a vector with the current transformation matrix and
     // returns the transformed vector
@@ -120,7 +133,7 @@ public:
     // scale first, rotate second (extr. Euler as defined in CPACS),
     // translate third
     // Remark, the decomposition can be not exactly equivalent to the original matrix
-    TIGL_EXPORT bool Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTiglPoint& translation, bool rounding = true) const;
+    TIGL_EXPORT bool Decompose(double scale[3], double rotation[3], double translation[3], bool rounding=true) const;
 
     // Decompose the Transformation into the five operations
     // scale1 first, rotate1 second (extr. Euler as defined in CPACS),

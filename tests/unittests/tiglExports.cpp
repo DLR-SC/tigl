@@ -32,6 +32,9 @@
 #include "CGlobalExporterConfigs.h"
 #include "CTiglExportIges.h"
 
+#include "TopExp.hxx"
+#include "TopTools_IndexedMapOfShape.hxx"
+
 
 /******************************************************************************/
 
@@ -184,6 +187,43 @@ protected:
 TixiDocumentHandle tiglExportRectangularWing::tixiRectangularWingHandle = 0;
 TiglCPACSConfigurationHandle tiglExportRectangularWing::tiglRectangularWingHandle = 0;
 
+class tiglExportSymmetricWing : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/symmetry_exportBUG.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglSymmetricWingHandle = -1;
+        tixiSymmetricWingHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiSymmetricWingHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiSymmetricWingHandle, "", &tiglSymmetricWingHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSymmetricWingHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiSymmetricWingHandle) == SUCCESS);
+        tiglSymmetricWingHandle = -1;
+        tixiSymmetricWingHandle = -1;
+    }
+
+    void SetUp() override {}
+    void TearDown() override {}
+
+
+    static TixiDocumentHandle           tixiSymmetricWingHandle;
+    static TiglCPACSConfigurationHandle tiglSymmetricWingHandle;
+};
+
+TixiDocumentHandle tiglExportSymmetricWing::tixiSymmetricWingHandle = 0;
+TiglCPACSConfigurationHandle tiglExportSymmetricWing::tiglSymmetricWingHandle = 0;
+
 
 
 /******************************************************************************/
@@ -294,8 +334,8 @@ TEST_F(tiglExportSimple, export_componentplane_vtk_newapi_meta)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
 
     tigl::CTiglExportVtk vtkWriter;
-    vtkWriter.AddConfiguration(config, tigl::TriangulatedExportOptions(0.01));
-    bool ret = vtkWriter.Write("TestData/export/simpletest_nonfusedplane_meta_newapi.vtp");
+    bool ret = vtkWriter.AddConfiguration(config, tigl::TriangulatedExportOptions(0.01));
+    ret = vtkWriter.Write("TestData/export/simpletest_nonfusedplane_meta_newapi.vtp") && ret;
 
     ASSERT_EQ(true, ret);
 }
@@ -381,10 +421,10 @@ TEST_F(tiglExportSimple, export_iges_symmetry)
     options.SetIncludeFarfield(false);
     tigl::PTiglCADExporter igesExporter = tigl::createExporter("iges", options);
 
-    igesExporter->AddConfiguration(config);
-    bool ret = igesExporter->Write("TestData/export/simpletest_export_iges_sym.igs");
+    bool success = igesExporter->AddConfiguration(config);
+    success = igesExporter->Write("TestData/export/simpletest_export_iges_sym.igs") && success;
 
-    ASSERT_EQ(true, ret);
+    ASSERT_EQ(true, success);
 }
 
 // check if face names were set correctly in the case with a trailing edge
@@ -429,4 +469,31 @@ TEST(TiglExportFactory, supportedTypes)
     ASSERT_TRUE(factory.ExporterSupported("stl"));
 
     ASSERT_FALSE(factory.ExporterSupported("unknown"));
+}
+
+TEST_F(tiglExportSymmetricWing, duplicateFaceBug)
+{
+    // Set export options
+    tiglSetExportOptions("iges", "ApplySymmetries", "true");
+    tiglSetExportOptions("iges", "IncludeFarfield", "false");
+    tiglSetExportOptions("iges", "IGES5.3", "false");
+    tiglSetExportOptions("iges", "FaceNames", "UIDOnly");
+
+    const tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglSymmetricWingHandle);
+    tigl::PTiglCADExporter exporter = tigl::createExporter("iges");
+    exporter->AddFusedConfiguration(config, tigl::TriangulatedExportOptions(0.0));
+    int nfaces = 0;
+    for (size_t i=0; i<exporter->NShapes(); ++i) {
+        TopoDS_Shape shape = exporter->GetShape(i)->Shape();
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(shape, TopAbs_FACE, map);
+        nfaces += map.Extent();
+    }
+
+    // expected number of faces = 24
+    //   main wing: three segments with upper and lower face + wing tip = 7, symmetry -> 14
+    //   HTP: one segment with upper and lower face + wing tip = 3, symmetry -> 6
+    //   VTP: one segment with upper and lower face + wing tip + wing root = 4, no symmetry -> 4
+    ASSERT_EQ(24, nfaces);
 }

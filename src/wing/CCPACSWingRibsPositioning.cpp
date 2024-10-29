@@ -19,13 +19,41 @@
 #include "CCPACSWingRibsDefinition.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
+#include "stringtools.h"
 
 namespace tigl
 {
 
-CCPACSWingRibsPositioning::CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent)
-    : generated::CPACSWingRibsPositioning(parent) {}
+namespace {
+    bool isUid(const std::string& s) {
+        return (!s.empty() && to_lower(s) != "leadingedge" && to_lower(s) != "trailingedge");
+    }
+}
 
+CCPACSWingRibsPositioning::CCPACSWingRibsPositioning(CCPACSWingRibsDefinition* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingRibsPositioning(parent, uidMgr) {}
+
+CCPACSWingRibsPositioning::~CCPACSWingRibsPositioning()
+{
+    if (m_uidMgr) {
+        if (isUid(m_ribStart)) m_uidMgr->TryUnregisterReference(m_ribStart, *this);
+        if (isUid(m_ribEnd))   m_uidMgr->TryUnregisterReference(m_ribEnd,   *this);
+    }
+}
+
+void CCPACSWingRibsPositioning::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+{
+    generated::CPACSWingRibsPositioning::ReadCPACS(tixiHandle, xpath);
+    if (m_uidMgr) {
+        if (isUid(m_ribStart)) {
+            m_uidMgr->RegisterReference(m_ribStart, *this);
+        }
+        if (isUid(m_ribEnd)) {
+            m_uidMgr->RegisterReference(m_ribEnd, *this);
+        }
+    }
+}
 
 CCPACSWingRibsPositioning::StartEndDefinitionType CCPACSWingRibsPositioning::GetStartDefinitionType() const
 {
@@ -49,6 +77,29 @@ CCPACSWingRibsPositioning::StartEndDefinitionType CCPACSWingRibsPositioning::Get
     throw CTiglError("Invalid end definition");
 }
 
+void CCPACSWingRibsPositioning::SetRibStart(const std::string& value)
+{
+    // handling registration to uid manager
+    if (m_uidMgr) {
+        if (isUid(m_ribStart)) m_uidMgr->TryUnregisterReference(m_ribStart, *this);
+        if (isUid(value)) m_uidMgr->RegisterReference(value, *this);
+    }
+
+    generated::CPACSWingRibsPositioning::SetRibStart(value);
+    InvalidateParent();
+}
+
+void CCPACSWingRibsPositioning::SetRibEnd(const std::string& value)
+{
+    // handling registration to uid manager
+    if (m_uidMgr) {
+        if (isUid(m_ribEnd)) m_uidMgr->TryUnregisterReference(m_ribEnd, *this);
+        if (isUid(value)) m_uidMgr->RegisterReference(value, *this);
+    }
+
+    generated::CPACSWingRibsPositioning::SetRibEnd(value);
+    InvalidateParent();
+}
 
 CCPACSWingRibsPositioning::RibCountDefinitionType CCPACSWingRibsPositioning::GetRibCountDefinitionType() const
 {
@@ -65,7 +116,7 @@ void CCPACSWingRibsPositioning::SetNumberOfRibs(int numRibs)
 
     m_spacing_choice1 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibsPositioning::SetSpacing(double value)
@@ -74,12 +125,13 @@ void CCPACSWingRibsPositioning::SetSpacing(double value)
 
     m_numberOfRibs_choice2 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
-void CCPACSWingRibsPositioning::Invalidate()
+void CCPACSWingRibsPositioning::SetRibReference(const std::string& value)
 {
-    GetParent()->GetParent()->GetParent()->Invalidate();
+    generated::CPACSWingRibsPositioning::SetRibReference(value);
+    InvalidateParent();
 }
 
 void CCPACSWingRibsPositioning::SetStartCurvePoint(const CCPACSCurvePoint &curve_point)
@@ -91,7 +143,7 @@ void CCPACSWingRibsPositioning::SetStartCurvePoint(const CCPACSCurvePoint &curve
     m_startEtaXsiPoint_choice1 = boost::none;
     m_startSparPositionUID_choice3 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibsPositioning::SetStartEtaXsiPoint(const CCPACSEtaXsiPoint &etaxsi)
@@ -104,7 +156,7 @@ void CCPACSWingRibsPositioning::SetStartEtaXsiPoint(const CCPACSEtaXsiPoint &eta
     m_startCurvePoint_choice2 = boost::none;
     m_startSparPositionUID_choice3 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibsPositioning::SetStartSparPositionUID(const std::string &sparPosition)
@@ -114,7 +166,7 @@ void CCPACSWingRibsPositioning::SetStartSparPositionUID(const std::string &sparP
     m_startEtaXsiPoint_choice1 = boost::none;
     m_startCurvePoint_choice2 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibsPositioning::SetEndCurvePoint(const CCPACSCurvePoint &curve_point)
@@ -126,7 +178,7 @@ void CCPACSWingRibsPositioning::SetEndCurvePoint(const CCPACSCurvePoint &curve_p
     m_endEtaXsiPoint_choice1 = boost::none;
     m_endSparPositionUID_choice3 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibsPositioning::SetEndEtaXsiPoint(const CCPACSEtaXsiPoint &etaxsi)
@@ -139,7 +191,7 @@ void CCPACSWingRibsPositioning::SetEndEtaXsiPoint(const CCPACSEtaXsiPoint &etaxs
     m_endCurvePoint_choice2 = boost::none;
     m_endSparPositionUID_choice3 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibsPositioning::SetEndSparPositionUID(const std::string &sparPosition)
@@ -149,13 +201,18 @@ void CCPACSWingRibsPositioning::SetEndSparPositionUID(const std::string &sparPos
     m_endEtaXsiPoint_choice1 = boost::none;
     m_endCurvePoint_choice2 = boost::none;
 
-    Invalidate();
+    InvalidateParent();
 }
 
 void CCPACSWingRibsPositioning::SetRibCrossingBehaviour(const generated::CPACSRibCrossingBehaviour& value)
 {
     generated::CPACSWingRibsPositioning::SetRibCrossingBehaviour(value);
-    Invalidate();
+    InvalidateParent();
+}
+
+void CCPACSWingRibsPositioning::InvalidateParent() const
+{
+    GetParent()->Invalidate();
 }
 
 } // end namespace tigl

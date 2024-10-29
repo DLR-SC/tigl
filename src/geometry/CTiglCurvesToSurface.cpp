@@ -75,10 +75,10 @@ TIGL_EXPORT CTiglCurvesToSurface::CTiglCurvesToSurface(std::vector<Handle(Geom_C
         _inputCurves.push_back(GeomConvert::CurveToBSplineCurve(*curve_iter));
     }
 
+    CTiglBSplineAlgorithms::matchDegree(_inputCurves);
     if( parameters.size() == 0) {
         CalculateParameters(_inputCurves);
     }
-    CTiglBSplineAlgorithms::matchDegree(_inputCurves);
 }
 
 TIGL_EXPORT void CTiglCurvesToSurface::SetMaxDegree(int degree)

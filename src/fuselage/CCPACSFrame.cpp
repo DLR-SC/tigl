@@ -33,8 +33,10 @@
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
+#include "Debugging.h"
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSProfileBasedStructuralElement.h"
 #include "CCPACSFuselageStringerFramePosition.h"
@@ -52,7 +54,7 @@ CCPACSFrame::CCPACSFrame(CCPACSFramesAssembly* parent, CTiglUIDManager* uidMgr)
 {
 }
 
-void CCPACSFrame::Invalidate()
+void CCPACSFrame::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geomCache1D.clear();
     m_geomCache3D.clear();
@@ -63,7 +65,8 @@ TopoDS_Shape CCPACSFrame::GetGeometry(bool just1DElements, TiglCoordinateSystem 
 {
     TopoDS_Shape shape = just1DElements ? *m_geomCache1D : *m_geomCache3D;
     if (cs == GLOBAL_COORDINATE_SYSTEM) {
-        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+
+        CTiglTransformation trafo = m_parent->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
     else
@@ -74,7 +77,7 @@ TopoDS_Shape CCPACSFrame::GetCutGeometry(TiglCoordinateSystem cs) const
 {
     TopoDS_Shape shape = *m_cutGeomCache;
     if (cs == TiglCoordinateSystem::GLOBAL_COORDINATE_SYSTEM) {
-        CTiglTransformation trafo = m_parent->GetParent()->GetParent()->GetTransformationMatrix();
+        CTiglTransformation trafo = m_parent->GetTransformationMatrix();
         return trafo.Transform(shape);
     }
     else
@@ -92,33 +95,31 @@ void CCPACSFrame::BuildGeometry3D(TopoDS_Shape& cache) const
     BuildGeometry(cache, false);
 }
 
-
 void CCPACSFrame::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
 {
     if (m_framePositions.empty())
         throw CTiglError("Cannot build frame geometry, no frame positions defined in XML", TIGL_XML_ERROR);
 
     // this function build the frame in 2 steps :
-    // 1) path definition (projection on the fuselage)
+    // 1) path definition (projection on the loft)
     // 2) if not just 1D element, build and sweep the profile all along the path
-
-    CCPACSFuselage& fuselage        = *m_parent->GetParent()->GetParent();
 
     // initialize object needed for the frame build
     gp_Pln profilePlane;
     TopoDS_Wire path;
 
+    const TopoDS_Shape& loft =  m_parent->GetStructureInterface()->GetLoft();
+
     if (m_framePositions.size() == 1) {
         // if there is 1 position ==> the path is around the fuselage, in an X normal orientated plane
         const CCPACSFuselageStringerFramePosition& fp = *m_framePositions[0];
 
-        const TopoDS_Shape fuselageLoft = fuselage.GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
-        const TopoDS_Shape section = BRepAlgoAPI_Section(fuselageLoft, gp_Pln(fp.GetRefPoint(), gp_Dir(1, 0, 0))).Shape();
+        const TopoDS_Shape section = BRepAlgoAPI_Section(loft, gp_Pln(fp.GetRefPoint(), gp_Dir(1, 0, 0))).Shape();
         path = BuildWireFromEdges(section);
 
         if (!just1DElements) {
             // -1) place the point and the plane (X Axis as normal vector)
-            const gp_Lin iAxe = fuselage.Intersection(fp);
+            const gp_Lin iAxe = m_parent->GetStructureInterface()->Intersection(fp);
             const gp_Ax1 xAxe(iAxe.Location(),
                               gp_Dir(1, 0, 0)); // parallel to x Axis => used to rotate the profile plane
             profilePlane = gp_Pln(gp_Ax3(iAxe.Location(), iAxe.Rotated(xAxe, M_PI / 2.).Direction(), gp_Dir(1, 0, 0)));
@@ -131,7 +132,7 @@ void CCPACSFrame::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
         // place every point on the fuselage loft
         std::vector<gp_Lin> pointList;
         for (size_t i = 0; i < m_framePositions.size(); i++)
-            pointList.push_back(fuselage.Intersection(*m_framePositions[i]));
+            pointList.push_back(m_parent->GetStructureInterface()->Intersection(*m_framePositions[i]));
 
         // with a ShapeExtend_WireData, the individual segment orientation is not crucial during the wire building
         Handle(ShapeExtend_WireData) wirePath = new ShapeExtend_WireData;
@@ -141,19 +142,38 @@ void CCPACSFrame::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
 
             const gp_Pnt refPoint0 = m_framePositions[i + 0]->GetRefPoint();
             const gp_Pnt refPoint1 = m_framePositions[i + 1]->GetRefPoint();
-            const double refAngle0 = m_framePositions[i + 0]->GetReferenceAngle();
-            const double refAngle1 = m_framePositions[i + 1]->GetReferenceAngle();
+            double refAngle0 = m_framePositions[i + 0]->GetReferenceAngle();
+            double refAngle1 = m_framePositions[i + 1]->GetReferenceAngle();
+
+            double segmentHalfAngle = 0.;
+            double absoluteSegmentMidPointAngle= 0.;
+
+            // Always work with positive angle values / normalize in [0, 360)
+            refAngle0 = NormalizeAngleDeg(refAngle0);
+            refAngle1 = NormalizeAngleDeg(refAngle1);
+
+            // If the frame segment is going over the 0° angle reference, the segment half angle is calculated and added
+            // to the reference angle of the first position
+            if (refAngle0 > refAngle1) {
+                segmentHalfAngle             = ((360. - refAngle0) + refAngle1) / 2.;
+                absoluteSegmentMidPointAngle = refAngle0 + segmentHalfAngle;
+                absoluteSegmentMidPointAngle = NormalizeAngleDeg(absoluteSegmentMidPointAngle);
+            }
+            else {
+                absoluteSegmentMidPointAngle = (refAngle0 + refAngle1) / 2.;
+            }
+
 
             // first, we cut the initial segment in 2 parts
-            const gp_Pnt midIntersection = fuselage.Intersection((refPoint0.XYZ() + refPoint1.XYZ()) / 2, Radians((refAngle0 + refAngle1) / 2.)).Location();
+            const gp_Pnt midIntersection = m_parent->GetStructureInterface()->Intersection((refPoint0.XYZ() + refPoint1.XYZ()) / 2, Radians(absoluteSegmentMidPointAngle)).Location();
 
             const gp_Pnt midRefPoint0 = (refPoint0.XYZ() * 0.25 + refPoint1.XYZ() * 0.75);
             const gp_Pnt midRefPoint1 = (refPoint0.XYZ() * 0.75 + refPoint1.XYZ() * 0.25);
 
             // third, we project the sub-segment on the fuselage, according to the projections points,
             // and add it to the path add the current part in the path builder
-            wirePath->Add(fuselage.projectConic(BRepBuilderAPI_MakeEdge(intersection0, midIntersection).Edge(), midRefPoint0));
-            wirePath->Add(fuselage.projectConic(BRepBuilderAPI_MakeEdge(midIntersection, intersection1).Edge(), midRefPoint1));
+            wirePath->Add(m_parent->GetStructureInterface()->projectConic(BRepBuilderAPI_MakeEdge(intersection0, midIntersection).Edge(), midRefPoint0));
+            wirePath->Add(m_parent->GetStructureInterface()->projectConic(BRepBuilderAPI_MakeEdge(midIntersection, intersection1).Edge(), midRefPoint1));
         }
 
         // finally, we can create the path with all the projection obtained
@@ -190,7 +210,7 @@ void CCPACSFrame::BuildGeometry(TopoDS_Shape& cache, bool just1DElements) const
 
 void CCPACSFrame::BuildCutGeometry(TopoDS_Shape& cache) const
 {
-    TopoDS_Shape fuselageLoft = m_parent->GetParent()->GetParent()->GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
+    TopoDS_Shape fuselageLoft = m_parent->GetStructureInterface()->GetLoft();
     Bnd_Box fuselageBox;
     BRepBndLib::Add(fuselageLoft, fuselageBox);
     double bbSize = fuselageBox.SquareExtent();

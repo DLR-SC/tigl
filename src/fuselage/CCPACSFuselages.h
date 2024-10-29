@@ -39,9 +39,6 @@ public:
     TIGL_EXPORT CCPACSFuselages(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselages(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 

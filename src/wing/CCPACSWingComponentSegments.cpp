@@ -33,10 +33,10 @@ CCPACSWingComponentSegments::CCPACSWingComponentSegments(CCPACSWing* parent, CTi
     : generated::CPACSComponentSegments(parent, uidMgr) {}
 
 // Invalidates internal state
-void CCPACSWingComponentSegments::Invalidate()
+void CCPACSWingComponentSegments::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 1; i <= GetComponentSegmentCount(); i++) {
-        GetComponentSegment(i).Invalidate();
+        GetComponentSegment(i).Invalidate(source);
     }
 }
 

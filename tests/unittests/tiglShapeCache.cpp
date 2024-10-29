@@ -94,9 +94,10 @@ TEST(ShapeCache, Get)
     TopoDS_Shape shape1(wireBuilder.Wire()), shape2(wireBuilder.Wire()), shape3(wireBuilder.Wire());
     
     gp_Trsf trafo1, trafo2, trafo3;
-    trafo1.SetScaleFactor(1.0);
-    trafo2.SetScaleFactor(2.0);
-    trafo3.SetScaleFactor(3.0);
+    trafo1.SetTranslation(gp_Vec(1., 0., 0.));
+    trafo2.SetTranslation(gp_Vec(0., 1., 0.));
+    trafo3.SetTranslation(gp_Vec(0., 0., 1.));
+
     shape1.Move(trafo1);
     shape2.Move(trafo2);
     shape3.Move(trafo3);

@@ -7,10 +7,10 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
     "MinSizeRel" "RelWithDebInfo")
 endif()
 
-cmake_minimum_required (VERSION 3.4.0)
+cmake_minimum_required (VERSION 3.11.0)
 
-project (TIGL VERSION 3.0.0)
-set(TIGL_VERSION 3.0.0)
+project (TIGL VERSION 3.3.1)
+set(TIGL_VERSION 3.3.1)
 
 # enable C++11 support
 set(CMAKE_CXX_STANDARD 11)
@@ -81,6 +81,11 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
+# check features
+include(CheckCXXSourceCompiles)
+set(src_make_unqiue "#include <memory>\nint main(){\n std::make_unique<int>(5)\;\n return 0\;\n}\n")
+CHECK_CXX_SOURCE_COMPILES(${src_make_unqiue} HAVE_STDMAKE_UNIQUE)
+
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
         # enable extensive debug output
@@ -89,8 +94,9 @@ IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
         IF(TIGL_ENABLE_COVERAGE)
                 MESSAGE(STATUS "Coverage enabled")
                 INCLUDE(CodeCoverage)
-                SETUP_TARGET_FOR_COVERAGE(coverage ${PROJECT_NAME}-unittests coverageReport)
-                SETUP_TARGET_FOR_COVERAGE_COBERTURA(coverage-cobertura ${PROJECT_NAME}-unittests coverage)
+                SETUP_TARGET_FOR_COVERAGE(coverage-unittests TiGL-unittests tests/unittests coverageReport-unit $ENV{COVERAGE_ARGS})
+                SETUP_TARGET_FOR_COVERAGE(coverage-integrationtests TiGL-integrationtests tests/integrationtests coverageReport-integration $ENV{COVERAGE_ARGS})
+                SETUP_TARGET_FOR_COVERAGE_COBERTURA(coverage-cobertura TiGL-unittests coverage $ENV{COVERAGE_ARGS})
         ELSE()
                 MESSAGE(STATUS "Coverage disabled")
         ENDIF()

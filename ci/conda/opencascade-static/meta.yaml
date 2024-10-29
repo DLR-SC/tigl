@@ -1,0 +1,71 @@
+{% set name = "opencascade-static" %}
+{% set version = "7.4.0" %}
+{% set commit = "V7_4_0" %}
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: http://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h={{ commit }};sf=tgz
+  sha256: 9614c2075cef53e30b25317fc8fcfb71d60a69181d562e1c56469ed8e54ad758
+  patches:
+    - no-xmu.patch     # [linux]
+    - fix-private-linking.patch
+    - fix_brepblend.patch
+    - dlr-feature-coons_c2.patch
+    - oceonly-freeimage_staticlib_support.patch
+
+build:
+  number: 6
+  detect_binary_files_with_prefix: True
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - {{ cdt('mesa-libgl-devel') }}     # [linux]
+    - {{ cdt('libxcb') }}               # [linux]
+    - {{ cdt('libxi-devel') }}          # [linux]
+    - {{ cdt('libx11-devel') }}         # [linux]
+    - {{ cdt('libxau-devel') }}         # [linux]
+    - {{ cdt('libxext-devel') }}        # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }} # [linux]
+    - cmake
+    - ninja
+  host:
+    - libglu # [linux]
+    - freetype-static ==2.6
+    - freeimageplus-static ==3.18.0
+    - tbb
+    - tbb-devel
+    - python
+    - fontconfig # [unix]
+
+  run:
+    - freeimageplus-static ==3.18.0
+    - tbb
+    - freetype-static ==2.6
+    - six
+
+test:
+  requires:
+    - ninja
+    - cmake
+  files:
+    - CMakeLists.txt
+  commands:
+    - cmake -G "Ninja" .
+
+about:
+  home: https://www.opencascade.com/
+  license_family: LGPL
+  license: LGPL-2.1
+  license_file: LICENSE_LGPL_21.txt
+  summary: this is the occ (opencascade) CAD-Kernel
+  description: |
+    Open Cascade Technology (OCCT), formerly called CAS.CADE
+    is an open source software development platform for 3D CAD,
+    CAM, CAE, etc. that is developed and supported by Open Cascade SAS.
+  doc_url: https://www.opencascade.com/content/documentation
+  dev_url: http://git.dev.opencascade.org/gitweb/?p=occt.git
+

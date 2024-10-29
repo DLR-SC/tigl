@@ -23,6 +23,7 @@
 #include <Geom_BSplineCurve.hxx>
 
 #include "tigl_internal.h"
+#include <vector>
 
 namespace tigl
 {
@@ -52,8 +53,6 @@ public:
     TIGL_EXPORT Handle(Geom_BSplineCurve) curve();
 
 private:
-    Handle(Geom_BSplineCurve) ShiftCurveRange(Handle(Geom_BSplineCurve) curve, double umin, double umax);
-
     TopoDS_Wire _wire;
     double _tolerance;
     bool _parByLength;

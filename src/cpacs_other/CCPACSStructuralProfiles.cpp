@@ -19,8 +19,8 @@
 namespace tigl
 {
 
-CCPACSStructuralProfiles::CCPACSStructuralProfiles(CTiglUIDManager* uidMgr)
-    : generated::CPACSStructuralProfiles(uidMgr)
+CCPACSStructuralProfiles::CCPACSStructuralProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSStructuralProfiles(parent, uidMgr)
 {
 }
 

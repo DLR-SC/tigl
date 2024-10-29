@@ -43,32 +43,23 @@ namespace tigl
 CCPACSRotor::CCPACSRotor(CCPACSRotors* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSRotor(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , rebuildGeometry(true) {}
+{}
 
 // Invalidates internal state
-void CCPACSRotor::Invalidate()
+void CCPACSRotor::InvalidateImpl(const boost::optional<std::string>& source) const
 {
-    invalidated = true;
+    CTiglRelativelyPositionedComponent::Reset();
 }
 
 // Cleanup routine
 void CCPACSRotor::Cleanup()
 {
-    // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
-    Reset();
-
     Invalidate();
 }
 
 // Update internal rotor data
 void CCPACSRotor::Update()
 {
-    if (!invalidated) {
-        return;
-    }
-
-    invalidated = false;
-    rebuildGeometry = true;
 }
 
 std::string CCPACSRotor::GetDefaultedUID() const {
@@ -80,7 +71,6 @@ void CCPACSRotor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::str
 {
     Cleanup();
     generated::CPACSRotor::ReadCPACS(tixiHandle, rotorXPath);
-    Update();
 }
 
 // Get the Transformation object
@@ -223,11 +213,17 @@ double CCPACSRotor::GetRadius()
     return rotorRadius;
 }
 
+// Wrapper function to return the nominal rotations per minute or 0 if not defined
+double CCPACSRotor::GetNominalRotationsPerMinute()
+{
+    return generated::CPACSRotor::GetNominalRotationsPerMinute().get_value_or(0.);
+}
+
 // Returns the tip speed this rotor
 double CCPACSRotor::GetTipSpeed()
 {
     // return GetNominalRotationsPerMinute()/60. * 2.*M_PI*GetRadius();
-    return *GetNominalRotationsPerMinute() / 30. * M_PI * GetRadius();
+    return GetNominalRotationsPerMinute() / 30. * M_PI * GetRadius();
 }
 
 // Returns the sum of all blade planform areas of a rotor

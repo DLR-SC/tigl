@@ -31,6 +31,14 @@ public:
     TIGL_EXPORT PNamedShape GetLoft() const override;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+
+    TIGL_EXPORT virtual void SetStartFrameUID(const std::string& value) override;
+    TIGL_EXPORT virtual void SetEndFrameUID(const std::string& value) override;
+    TIGL_EXPORT virtual void SetStartStringerUID(const std::string& value) override;
+    TIGL_EXPORT virtual void SetEndStringerUID(const std::string& value) override;
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
 };
 
 } // namespace tigl

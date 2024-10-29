@@ -90,14 +90,14 @@ public:
                         ViewHlrOnId };
 */
 public:
-    TIGLViewerWidget(QWidget*);
+    explicit TIGLViewerWidget(QWidget*);
 
-    ~TIGLViewerWidget() override;
+    ~TIGLViewerWidget() override = default;
 
     // the scene context must be set before first use
     void setContext(TIGLViewerContext* aContext);
 
-    Handle_V3d_View                  getView( void )    { return myView; }
+    Handle_V3d_View                  getView( )    { return myView; }
 
     //Overrides
     QPaintEngine*   paintEngine() const override;
@@ -109,9 +109,9 @@ signals:
 
     void initialized();
     void selectionChanged();
-    void mouseMoved   ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
-    void pointClicked ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
-    void sendStatus   ( const QString aMessage );
+    void mouseMoved   ( Standard_Real X, Standard_Real Y, Standard_Real Z );
+    void pointClicked ( Standard_Real X, Standard_Real Y, Standard_Real Z );
+    void sendStatus   ( QString aMessage );
 
     void error ( int errorCode, QString& errorDescription );
 
@@ -172,6 +172,9 @@ protected: // methods
 private: // members
     void initializeOCC(const Handle(AIS_InteractiveContext)& aContext);
 
+    void setStartPoint(const QPoint&);
+    void setCurrentPoint(const QPoint&);
+
     Handle(V3d_View)                myView;
     Handle(V3d_Viewer)              myViewer;
 
@@ -184,11 +187,11 @@ private: // members
     Standard_Boolean                myViewResized;
     Standard_Boolean                myViewInitialized;
     CurrentAction3d                 myMode;
-    Quantity_Factor                 myCurZoom;
+    Standard_Real                   myCurZoom;
     Standard_Boolean                myGridSnap;
     AIS_StatusOfDetection           myDetection;
 
-    V3d_Coordinate                  myV3dX,
+    Standard_Real                  myV3dX,
                                     myV3dY,
                                     myV3dZ;
         
@@ -227,7 +230,7 @@ private: // methods
     Standard_Real viewPrecision( bool resized = false );
 
     void drawRubberBand( const QPoint origin, const QPoint position );
-    void hideRubberBand( void );
+    void hideRubberBand( );
 
     Standard_Boolean convertToPlane(Standard_Integer Xs, 
                                     Standard_Integer Ys, 

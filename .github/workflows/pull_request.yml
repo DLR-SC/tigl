@@ -1,0 +1,12 @@
+name: Pull Request CI workflow
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  workflow_dispatch:
+
+jobs:
+
+  continuous-integration:
+    uses: ./.github/workflows/continuous-integration.yml
+    secrets: inherit

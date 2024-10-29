@@ -533,7 +533,7 @@ unsigned int CTiglPolyObject::getNumberOfPolyRealData() const
     return static_cast<unsigned int>(impl->polyDataElems.size());
 }
 
-// retuns the  name of the ith data field (i = 0 .. getNumberPolyReadlData - 1)
+// returns the name of the ith data field (i = 0 .. getNumberPolyReadlData - 1)
 const char * CTiglPolyObject::getPolyDataFieldName(unsigned long iField) const 
 {
     if (iField < getNumberOfPolyRealData()) {

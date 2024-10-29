@@ -27,4 +27,14 @@ CCPACSControlSurfaces::CCPACSControlSurfaces(CCPACSWingComponentSegment* parent,
 {
 }
 
+size_t CCPACSControlSurfaces::ControlSurfaceCount() const
+{
+    size_t count = 0;
+    if (GetTrailingEdgeDevices()) {
+        count += GetTrailingEdgeDevices()->GetTrailingEdgeDevices().size();
+    }
+
+    return count;
+}
+
 } // namespace tigl

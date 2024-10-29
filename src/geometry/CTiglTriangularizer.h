@@ -31,6 +31,8 @@
 class TopoDS_Shape;
 class TopoDS_Face;
 
+class CFaceTraits;
+
 namespace tigl 
 {
 class CTiglRelativelyPositionedComponent;
@@ -63,13 +65,13 @@ private:
     int triangularizeFace(const TopoDS_Face&, unsigned long& nVertices, unsigned long& iPolyLow, unsigned long& iPolyUp);
 
     void writeFaceDummyMeta(unsigned long iPolyLower, unsigned long iPolyUpper);
-    bool writeWingMeta(ITiglGeometricComponent& wing, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper);
-    bool writeWingSegmentMeta(ITiglGeometricComponent& segment, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper);
+    bool writeWingMeta(ITiglGeometricComponent& wing, const CFaceTraits &traits, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper);
+    bool writeWingSegmentMeta(ITiglGeometricComponent& segment, const CFaceTraits &traits, gp_Pnt centralP, unsigned long iPolyLower, unsigned long iPolyUpper);
 
     // some options
     bool m_computeNormals;
     CTiglPolyData polys;
-    void writeFaceMeta(const CTiglUIDManager* uidMgr, const std::string& componentUID, TopoDS_Face face, unsigned long iPolyLower, unsigned long iPolyUpper);
+    void writeFaceMeta(const CTiglUIDManager* uidMgr, const CFaceTraits& traits, const std::string& componentUID, TopoDS_Face face, unsigned long iPolyLower, unsigned long iPolyUpper);
 };
 
 }

@@ -33,7 +33,7 @@ ProfilesDBManager::ProfilesDBManager()
     localProfiles.reset();
     configProfiles = nullptr;
 
-    TIGLViewerSettings settings = TIGLViewerSettings::Instance();
+    auto& settings = TIGLViewerSettings::Instance();
     setLocalProfiles(settings.profilesDBPath());
 }
 
@@ -87,7 +87,7 @@ void ProfilesDBManager::setLocalProfiles(QString newDBFile)
         return;
     }
 
-    localProfiles = tigl::make_unique<tigl::CCPACSProfiles>(&myDBUIDManager);
+    localProfiles = tigl::make_unique<tigl::CCPACSProfiles>(nullptr, &myDBUIDManager);
     localProfiles->ReadCPACS(tixiHandle, "/");
     updateProfilesLists();
 }

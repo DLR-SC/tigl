@@ -20,10 +20,17 @@
 
 %include common.i
 
-
+%include math_headers.i
 %include BRepBuilderAPI_headers.i
+%include BRep_headers.i
+%include BRepTools_headers.i
+%include TopoDS_headers.i
+%include Geom_headers.i
+%include Geom2d_headers.i
+%include TopoDS_headers.i
 
 %import BRepBuilderAPI.i
+%import TopoDS.i
 %import core.i
 %import geometry.i
 
@@ -38,6 +45,8 @@
 #include "BRepSewingToBRepBuilderShapeAdapter.h"
 #include "BOPBuilderShapeToBRepBuilderShapeAdapter.h"
 %}
+
+%catch_exceptions()
 
 %template(ListPNamedShape) std::vector<PNamedShape>;
 

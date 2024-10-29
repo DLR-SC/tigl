@@ -47,10 +47,11 @@ class IGuideCurveBuilder;
 class CCPACSGuideCurve : public generated::CPACSGuideCurve
 {
 public:
-    enum FromDefinition
+    enum FromOrToDefinition
     {
         UID,
-        CIRCUMFERENCE
+        CIRCUMFERENCE,
+        PARAMETER
     };
 
 private:
@@ -59,12 +60,21 @@ private:
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSGuideCurve(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSGuideCurve(CCPACSGuideCurves* parent, CTiglUIDManager* uidMgr);
 
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSGuideCurve(void) override;
 
-    TIGL_EXPORT FromDefinition GetFromDefinition() const;
+    TIGL_EXPORT FromOrToDefinition GetFromDefinition() const;
+    TIGL_EXPORT FromOrToDefinition GetToDefinition() const;
+
+    // Returns the value which defines the position of the starting point of a guide curve
+    // Depending on used CPACS node it is either based on the relative circumference, the parameter or the guide curve uid
+    TIGL_EXPORT double GetFromDefinitionValue() const;
+
+    // Returns the value which defines the position of the end point of a guide curve
+    // Depending on used CPACS node it is either based on the relative circumference or the parameter
+    TIGL_EXPORT double GetToDefinitionValue() const;
 
     TIGL_EXPORT std::vector<gp_Pnt> GetCurvePoints() const;
     TIGL_EXPORT TopoDS_Edge GetCurve() const;
@@ -83,6 +93,9 @@ private:
 
     // Assignment operator
     void operator=(const CCPACSGuideCurve&);
+
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
     void BuildCurve(TopoDS_Edge& cache) const;
 

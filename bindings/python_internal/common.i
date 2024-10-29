@@ -26,18 +26,16 @@
 
 %include tigl_internal.h
 
-#ifdef HAVE_STDSHARED_PTR
-  %include std_shared_ptr.i
-#else
-  %include boost_shared_ptr.i
-#endif
+%include std_shared_ptr.i
 
 %include unique_pointer.i
 
 %include boost_optional.i
 
-
+#ifdef PYTHONNOCC_LEGACY
 #define Handle(ClassName)  Handle_##ClassName
+#endif
+
 #define TixiDocumentHandle int
 #define TiglCPACSConfigurationHandle int
 %template(DoubleVector) std::vector<double>;
@@ -160,5 +158,37 @@ PyObject* tiglError_to_PyExc(const tigl::CTiglError& err) {
 }
 
 %}
+
+%feature("director:except") {
+    if ($error != NULL) {
+        throw Swig::DirectorMethodException();
+    }
+}
+
+%define %catch_exceptions()
+
+%exception {
+    try {
+        $action
+    }
+    catch (tigl::CTiglError & err) {
+        PyErr_SetString(tiglError_to_PyExc(err), const_cast<char*>(err.what()));
+        SWIG_fail;
+    }
+    catch(Standard_Failure & err) {
+        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>((std::string("OpenCASCADE Error: ") + err.GetMessageString()).c_str()));
+        SWIG_fail;
+    }
+    catch(std::exception & err) {
+        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(err.what()));
+        SWIG_fail;
+    }
+    catch(...) {
+        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>("An unknown error occurred!"));
+        SWIG_fail;
+    }
+}
+
+%enddef
 
 %include doc.i

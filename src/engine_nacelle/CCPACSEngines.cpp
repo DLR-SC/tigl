@@ -21,8 +21,8 @@
 
 namespace tigl {
 
-CCPACSEngines::CCPACSEngines(CTiglUIDManager* uidMgr)
-    : generated::CPACSEngines(uidMgr)
+CCPACSEngines::CCPACSEngines(CCPACSVehicles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEngines(parent, uidMgr)
 {}
 
 TIGL_EXPORT size_t CCPACSEngines::GetEngineCount() const
@@ -49,4 +49,4 @@ TIGL_EXPORT CCPACSEngine& CCPACSEngines::GetEngine(std::string const uid) const
     throw CTiglError("CCPACSEngines::GetEngine: Engine \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
-} //namepsace tigl
+} //namespace tigl

@@ -24,8 +24,12 @@
 #include "tigl.h"
 #include "BRepBuilderAPI_GTransform.hxx"
 #include "BRepBuilderAPI_Transform.hxx"
+#include "BRepBuilderAPI_MakeFace.hxx"
+#include "BRep_Tool.hxx"
 #include "gp_XYZ.hxx"
+#include "TopoDS_Face.hxx"
 #include "Standard_Version.hxx"
+#include "CNamedShape.h"
 
 #include "tiglmathfunctions.h"
 #include "tiglcommonfunctions.h"
@@ -73,11 +77,6 @@ CTiglTransformation::CTiglTransformation(const gp_Vec& t)
     SetIdentity();
 
     AddTranslation(t.X(), t.Y(), t.Z());
-}
-
-// Destructor
-CTiglTransformation::~CTiglTransformation()
-{
 }
 
 CTiglTransformation& CTiglTransformation::operator=(const CTiglTransformation& mat)
@@ -189,6 +188,17 @@ gp_GTrsf CTiglTransformation::Get_gp_GTrsf() const
     return ocMatrix;
 }
 
+// Converts degree to radian, utility function
+double CTiglTransformation::DegreeToRadian(double degree)
+{
+    return (degree * 1.74532925199433E-02);
+}
+
+// Converts radian to degree, utility function
+double CTiglTransformation::RadianToDegree(double radian)
+{
+    return (radian * 57.2957795130823);
+}
 
 // Adds a translation to this transformation. Translation part
 // is stored in the last column of the transformation matrix.
@@ -422,6 +432,41 @@ TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
     }
 }
 
+// Transforms a surface with the current transformation matrix and
+// returns the transformed point
+TIGL_EXPORT Handle(Geom_Surface) CTiglTransformation::Transform(const Handle(Geom_Surface)& surf) const
+{
+    auto surfCopy = Handle(Geom_Surface)::DownCast(surf->Copy());
+
+    TopoDS_Face tmpFace = BRepBuilderAPI_MakeFace(surfCopy, 1e-6);
+    tmpFace = TopoDS::Face(Transform(tmpFace));
+    TopLoc_Location L;
+    surfCopy = BRep_Tool::Surface(tmpFace, L);
+    surfCopy->Transform(L.Transformation());
+
+    return surfCopy;
+}
+
+PNamedShape tigl::CTiglTransformation::Transform(PNamedShape shape) const
+{
+    if (!shape) {
+        return nullptr;
+    }
+
+    PNamedShape mirrored(new CNamedShape(*shape));
+    mirrored->SetShape(Transform(mirrored->Shape()));
+
+    // we have to transform also the face transformation properties
+    for (unsigned int iface = 0; iface < mirrored->GetFaceCount(); ++iface) {
+        CFaceTraits& traits = mirrored->FaceTraits(iface);
+        auto faceTrafo = traits.Transformation();
+
+        faceTrafo = *this * faceTrafo * this->Inverted();
+        traits.SetTransformation(faceTrafo);
+    }
+    return mirrored;
+}
+
 // Transforms a point with the current transformation matrix and
 // returns the transformed point
 gp_Pnt CTiglTransformation::Transform(const gp_Pnt& point) const
@@ -530,7 +575,7 @@ CTiglTransformation CTiglTransformation::Inverted() const
     return CTiglTransformation(Get_gp_GTrsf().Inverted());
 }
 
-bool CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTiglPoint& translation, bool rounding) const
+bool CTiglTransformation::Decompose(double scale[3], double rotation[3], double translation[3], bool rounding) const
 {
     bool success = true;
 
@@ -546,9 +591,9 @@ bool CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTi
     PolarDecomposition(A, U, P);
 
     // scale is diagonal of P
-    scale.x = P(1,1);
-    scale.y = P(2,2);
-    scale.z = P(3,3);
+    scale[0] = P(1,1);
+    scale[1] = P(2,2);
+    scale[2] = P(3,3);
 
     // check for shearing
     double aveAbsOffDiag = (fabs(P(1,2)) + fabs(P(1,3)) + fabs(P(2,3)))/3;
@@ -559,7 +604,7 @@ bool CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTi
 
     // calculate intrinsic Euler angles from rotation matrix U
     //
-    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf, where the same argumentation
+    // This implementation is based on https://www.eecs.qmul.ac.uk/~gslabaugh/publications/euler.pdf, where the same argumentation
     // is used for intrinsic x,y',z'' angles and the rotatation matrix
     //
     //                |                        cos(y)*cos(z) |               -        cos(y)*cos(z) |         sin(y) |
@@ -568,34 +613,39 @@ bool CTiglTransformation::Decompose(CTiglPoint& scale, CTiglPoint& rotation, CTi
     //
     // rather than extrinsic angles and the Rotation matrix mentioned in that pdf.
 
+    // U_13 = sin(y) \neq \pm 1
     if( fabs( fabs(U(1, 3)) - 1) > 1e-10 ){
-        rotation.y = asin(U(1, 3));
-        double cosTheta = cos(rotation.y);
-        rotation.x = -atan2(U(2,3)/cosTheta, U(3,3)/cosTheta);
-        rotation.z = -atan2(U(1,2)/cosTheta, U(1,1)/cosTheta);
+        rotation[1] = asin(U(1, 3));
+        double cosTheta = cos(rotation[1]);
+        rotation[0] = -atan2(U(2,3)/cosTheta, U(3,3)/cosTheta);
+        rotation[2] = -atan2(U(1,2)/cosTheta, U(1,1)/cosTheta);
     }
+    // U_13 = \pm 1
     else {
-        rotation.x = 0;
-        if ( fabs(U(1,3) + 1) > 1e-10 ) {
-            rotation.z = -rotation.x - atan2(U(2,1), U(2,2));
-            rotation.y = -M_PI/2;
+        rotation[0] = 0;
+        // U_13 = -1
+        if ( fabs(U(1,3) - 1) > 1e-10 ) {
+            rotation[2] = -rotation[0] - atan2(U(2,1), U(2,2));
+            rotation[1] = -M_PI/2;
         }
+        // U_13 = 1
         else{
-            rotation.z = -rotation.x + atan2(U(2,1), U(2,2));
-            rotation.y = M_PI/2;
+            rotation[2] = -rotation[0] + atan2(U(2,1), U(2,2));
+            rotation[1] = M_PI/2;
         }
     }
 
-    rotation.x = Degrees(rotation.x);
-    rotation.y = Degrees(rotation.y);
-    rotation.z = Degrees(rotation.z);
+    rotation[0] = RadianToDegree(rotation[0]);
+    rotation[1] = RadianToDegree(rotation[1]);
+    rotation[2] = RadianToDegree(rotation[2]);
 
     // translation is last column of transformation
-    translation.x = GetValue(0,3);
-    translation.y= GetValue(1,3);
-    translation.z = GetValue(2,3);
+    translation[0] = GetValue(0,3);
+    translation[1] = GetValue(1,3);
+    translation[2] = GetValue(2,3);
 
     if (rounding) {
+        //rotation = SnapRotation(tigl::CTiglPoint{rotation[0],rotation[1],rotation[2]});
         rotation = SnapRotation(rotation);
         scale = SnapUnitInterval(scale);
         translation = SnapUnitInterval(translation);
@@ -790,7 +840,7 @@ std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
         for (int j = 0; j < 4; ++j) {
             os << t.m_matrix[i][j] << "\t";
         }
-        os << endl;
+        os << std::endl;
     }
     return os;
 }

@@ -72,7 +72,7 @@ CCPACSWingRibsDefinition::CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* pa
     Invalidate();
 }
 
-void CCPACSWingRibsDefinition::Invalidate()
+void CCPACSWingRibsDefinition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     ribSetDataCache.clear();
     auxGeomCache.clear();
@@ -424,20 +424,6 @@ void CCPACSWingRibsDefinition::BuildAuxGeomExplicitRibPositioning(AuxiliaryGeomC
 
     // Step 2: Save the Rib start and end point (required for cells)
     cache.midplanePoints.push_back(RibMidplanePoints(startPnt, endPnt));
-
-    std::string startReference = "";
-    double startEta = 0.5;
-    if (explicitRibPosition.GetStartCurvePoint_choice2()) {
-        startReference = explicitRibPosition.GetStartCurvePoint_choice2()->GetReferenceUID();
-        startEta = explicitRibPosition.GetStartCurvePoint_choice2()->GetEta();
-    }
-
-    std::string endReference = "";
-    double endEta = 0.5;
-    if (explicitRibPosition.GetEndCurvePoint_choice2()) {
-        endReference = explicitRibPosition.GetEndCurvePoint_choice2()->GetReferenceUID();
-        endEta = explicitRibPosition.GetEndCurvePoint_choice2()->GetEta();
-    }
 
     // check, if rib is defined in a section
     // This is the case, if both are defined on the same segment and both share the same eta value == 0 or 1

@@ -25,10 +25,10 @@ CCPACSLongFloorBeamsAssembly::CCPACSLongFloorBeamsAssembly(CCPACSFuselageStructu
 {
 }
 
-void CCPACSLongFloorBeamsAssembly::Invalidate()
+void CCPACSLongFloorBeamsAssembly::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 0; i < m_longFloorBeams.size(); i++) {
-        m_longFloorBeams[i]->Invalidate();
+        m_longFloorBeams[i]->Invalidate(source);
     }
 }
 } // namespace tigl

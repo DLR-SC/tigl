@@ -42,10 +42,18 @@ class CCPACSWingProfileCST : public generated::CPACSCst2D, public ITiglWingProfi
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingProfileCST();
+    TIGL_EXPORT CCPACSWingProfileCST(CCPACSProfileGeometry* parent);
+    TIGL_EXPORT CCPACSWingProfileCST(CCPACSNacelleProfile* parent);
 
     // Update of wire points ...
-    TIGL_EXPORT void Invalidate() override;
+    TIGL_EXPORT void Invalidate() const override;
+
+    // setters triggering invalidation
+    TIGL_EXPORT void SetUpperN1(const double& value) override;
+    TIGL_EXPORT void SetUpperN2(const double& value) override;
+    TIGL_EXPORT void SetLowerN1(const double& value) override;
+    TIGL_EXPORT void SetLowerN2(const double& value) override;
+    TIGL_EXPORT void SetTrailingEdgeThickness(const boost::optional<double>& value) override;
 
     // Returns the profile points as read from TIXI.
     TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const override; // TODO: why do we need those anyway, they just return an empty vector?
@@ -84,6 +92,8 @@ private:
         gp_Pnt                    lePoint;              /**< Leading edge point */
         gp_Pnt                    tePoint;              /**< Trailing edge point */
     };
+
+    void InvalidateParent() const;
 
     // Builds the wing profile wires.
     void BuildWires(WireCache& cache) const;

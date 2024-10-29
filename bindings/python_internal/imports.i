@@ -20,12 +20,16 @@
 
 %include common.i
 %include math_headers.i
+%include Geom_headers.i
+%include TopoDS_headers.i
 
 %shared_ptr(tigl::ITiglCADImporter)
 %shared_ptr(tigl::CTiglStepReader)
 
 %import core.i
 %import geometry.i
+
+%catch_exceptions()
 
 %{
 #include "ITiglCADImporter.h"

@@ -132,7 +132,7 @@ public:
     // returns the number if different polygon data entries 
     TIGL_EXPORT unsigned int getNumberOfPolyRealData() const;
     
-    // retuns the  name of the ith data field (i = 0 .. getNumberPolyReadlData - 1)
+    // returns the name of the ith data field (i = 0 .. getNumberPolyReadlData - 1)
     TIGL_EXPORT const char * getPolyDataFieldName(unsigned long iField) const;
 
 

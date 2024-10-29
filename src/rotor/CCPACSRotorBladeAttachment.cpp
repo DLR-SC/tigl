@@ -35,9 +35,8 @@ CCPACSRotorBladeAttachment::CCPACSRotorBladeAttachment(CCPACSRotorBladeAttachmen
 
 
 // Invalidates internal state
-void CCPACSRotorBladeAttachment::Invalidate()
+void CCPACSRotorBladeAttachment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
-    invalidated = true;
     lazyCreateAttachedRotorBlades();
     for (unsigned int i = 0; i < attachedRotorBlades.size(); i++) {
         attachedRotorBlades[i]->Invalidate();
@@ -169,7 +168,7 @@ CCPACSConfiguration& CCPACSRotorBladeAttachment::GetConfiguration() const
     return m_parent->GetConfiguration();
 }
 
-void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades()
+void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades() const
 {
     // Create wrappers for attached rotor blades
     // We have to do these lazily, as we do not have control of the order in which CPACS elements are read
@@ -181,7 +180,7 @@ void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades()
         if (rotorcraft.GetRotorBlades()) {
             CCPACSWing& blade = rotorcraft.GetRotorBlades()->GetRotorBlade(m_rotorBladeUID);
             for (int i = 0; i < bladeCount; i++) {
-                attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(this, blade, i + 1));
+                attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(const_cast<CCPACSRotorBladeAttachment*>(this), blade, i + 1));
             }
         }
     }

@@ -26,6 +26,9 @@
 #include <vector>
 #include <limits>
 #include <iomanip>
+#include <fstream>
+
+using namespace std;
 
 void exportCurveToSplineLib(Handle_Geom_BSplineCurve curve, const std::string& filename) 
 {

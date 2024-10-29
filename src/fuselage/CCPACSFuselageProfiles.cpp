@@ -27,14 +27,14 @@
 
 namespace tigl
 {
-CCPACSFuselageProfiles::CCPACSFuselageProfiles(CTiglUIDManager* uidMgr)
-    : generated::CPACSFuselageProfiles(uidMgr) {}
+CCPACSFuselageProfiles::CCPACSFuselageProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageProfiles(parent, uidMgr) {}
 
 // Invalidates internal state
-void CCPACSFuselageProfiles::Invalidate()
+void CCPACSFuselageProfiles::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 1; i < GetProfileCount(); i++) {
-        GetProfile(i).Invalidate();
+        GetProfile(i).Invalidate(source);
     }
 }
 
@@ -46,7 +46,7 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
     // read element fuselageProfile
     if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
         tixi::TixiReadElementsInternal(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, 1, tixi::xsdUnbounded, [&](const std::string& childXPath) {
-            auto child = tigl::make_unique<CCPACSFuselageProfile>(m_uidMgr);
+            auto child = tigl::make_unique<CCPACSFuselageProfile>(this, m_uidMgr);
             child->ReadCPACS(tixiHandle, childXPath);
             return child;
         });
@@ -54,7 +54,7 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
 }
 
 CCPACSFuselageProfile& CCPACSFuselageProfiles::AddFuselageProfile() {
-    m_fuselageProfiles.push_back(make_unique<CCPACSFuselageProfile>(m_uidMgr));
+    m_fuselageProfiles.push_back(make_unique<CCPACSFuselageProfile>(this, m_uidMgr));
     return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfiles.back());
 }
 

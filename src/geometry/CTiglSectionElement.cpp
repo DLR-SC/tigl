@@ -344,16 +344,16 @@ void tigl::CTiglSectionElement::SetPSETransformationsUseSimpleDecomposition(
         const tigl::CTiglTransformation &newTransformation, bool check )
 {
 
-    CTiglPoint scal, rot, trans;
+    double scal[3], rot[3], trans[3];
     newTransformation.Decompose(scal,rot,trans);
 
 
     if ( check ) {
         CTiglTransformation checkT;
         checkT.SetIdentity();
-        checkT.AddScaling(scal.x, scal.y, scal.z);
-        checkT.AddRotationIntrinsicXYZ(rot.x, rot.y, rot.z);
-        checkT.AddTranslation(trans.x,trans.y,trans.z);
+        checkT.AddScaling(scal[0], scal[1], scal[2]);
+        checkT.AddRotationIntrinsicXYZ(rot[0], rot[1], rot[2]);
+        checkT.AddTranslation(trans[0], trans[1], trans[2]);
         if (!checkT.IsNear(newTransformation)) {
             LOG(WARNING) << "CTiglSectionElement::SetPSETransformationsUseSimpleDecomposition: "
                             "The decomposition was not equal to the original transformation. "
@@ -369,12 +369,12 @@ void tigl::CTiglSectionElement::SetPSETransformationsUseSimpleDecomposition(
     storedElementTransformation.setTranslation(CTiglPoint(0,0,0));
 
     CCPACSTransformation& storedSectionTransformation = GetSectionCCPACSTransformation();
-    storedSectionTransformation.setScaling(scal);
-    storedSectionTransformation.setRotation(rot);
+    storedSectionTransformation.setScaling(CTiglPoint(scal[0], scal[1], scal[2]));
+    storedSectionTransformation.setRotation(CTiglPoint(rot[0], rot[1], rot[2]));
     storedSectionTransformation.setTranslation(CTiglPoint(0,0,0));
 
     CCPACSPositionings& positionings = GetPositionings();
-    positionings.SetPositioningTransformation(GetSectionUID(), trans, false );
+    positionings.SetPositioningTransformation(GetSectionUID(), CTiglPoint(trans[0], trans[1], trans[2]), false );
 
     InvalidateParent();
 

@@ -21,8 +21,13 @@
 
 namespace tigl {
 
-CCPACSNacelleProfile::CCPACSNacelleProfile(CTiglUIDManager* uidMgr)
-    : generated::CPACSProfileGeometry2D(uidMgr)
+CCPACSNacelleProfile::CCPACSNacelleProfile(CCPACSCurveProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileGeometry2D(parent, uidMgr)
+    , pointListAlgo(*this,&CCPACSNacelleProfile::buildPointListAlgo)
+{}
+
+CCPACSNacelleProfile::CCPACSNacelleProfile(CCPACSNacelleProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSProfileGeometry2D(parent, uidMgr)
     , pointListAlgo(*this,&CCPACSNacelleProfile::buildPointListAlgo)
 {}
 
@@ -58,7 +63,7 @@ bool CCPACSNacelleProfile::HasBluntTE() const
     if ( algoType == Airfoil ) {
         const ITiglWingProfileAlgo* algo = GetProfileAlgo();
         if (!algo) {
-            throw CTiglError("No wing profile algorithm regsitered in CCPACSNacelleProfile::HasBluntTE()!");
+            throw CTiglError("No wing profile algorithm registered in CCPACSNacelleProfile::HasBluntTE()!");
         }
         return algo->HasBluntTE();
     }
@@ -146,4 +151,4 @@ gp_Pnt CCPACSNacelleProfile::GetTEPoint() const
     return GetProfileAlgo()->GetTEPoint();
 }
 
-} //namepsace tigl
+} //namespace tigl

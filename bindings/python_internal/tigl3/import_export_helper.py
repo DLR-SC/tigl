@@ -2,18 +2,19 @@ import os
 from tigl3.exports import TriangulatedExportOptions, create_exporter as tigl_create_exporter
 from tigl3.geometry import CNamedShape
 
-from OCC.TopoDS import TopoDS_Shape
+from OCC.Core.TopoDS import TopoDS_Shape
 
 
 def export_shapes(shapes, filename, deflection=0.001):
     """
     Exports the shapes to a file
+    
     :param shapes: Array of shapes
     :param filename: Name of the file to write
-    :param deflection: Triangulation accuracy. The smaller the value,
-                       the more triangles are written (only for triangulated file formats)
+    :param deflection: Triangulation accuracy. The smaller the value, the more triangles are written (only for triangulated file formats)
     :return: True, if export was successful
     """
+    
     file_type = os.path.splitext(filename)[1][1:]
     print("Exporting %s file..." % file_type)
 

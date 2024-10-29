@@ -27,7 +27,14 @@ namespace tigl
 CCPACSFuselageSectionElements::CCPACSFuselageSectionElements(CCPACSFuselageSection* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageElements(parent, uidMgr) {}
 
-    // Get element count for this section
+void CCPACSFuselageSectionElements::Invalidate(const boost::optional<std::string>& source) const
+{
+    for (const auto& element : m_elements) {
+        element->Invalidate(source);
+    }
+}
+
+// Get element count for this section
 int CCPACSFuselageSectionElements::GetSectionElementCount() const
 {
     return static_cast<int>(m_elements.size());

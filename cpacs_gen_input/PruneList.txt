@@ -5,45 +5,13 @@ CPACSFleets
 CPACSFlights
 CPACSMissionDefinitions
 CPACSStudies
+CPACSMaterial
+
+// in header
+CPACSChangeLog
 
 // in toolspecific
-CPACSAcCrashTool
-CPACSAeroFuseTool
-CPACSAeroPoleTool
-CPACSAirportFeesTool
-CPACSBoxBeamTool
-CPACSCabinTool
-//CPACSCFDTool
-CPACSCmuTool
-CPACSComradeTool
-CPACSDelisToolspecific
-CPACSDirectOC
-CPACSELWiSTool
-CPACSFDesignTool
-CPACSFDesignRCTool
-CPACSFDSTool
-CPACSGeogenTool
-CPACSHandbookAeroTool
-CPACSHaremTool
-CPACSHostTool
-CPACSLgDesignTool
-CPACSLiftingLineTool
-CPACSMapet2CTool
-CPACSMaseratiTool
-CPACSMisSimTool
-CPACSModGenTool
-CPACSPanamTool
-CPACSParamamSbotTool
-CPACSRofumaTool
-CPACSSBotPlusTool
-CPACSSectmeshPamcrashTool
-CPACSSteffsTool
-CPACSTornadoTool
-CPACSTrafumoTool
-CPACSTWDatTool
-CPACSVampZeroTool
-CPACSVSAeroTool
-CPACSParadiseTool
+CPACSToolspecific
 
 // in vehicles
 CPACSFuels
@@ -69,7 +37,10 @@ CPACSDriveSystems
 CPACSLandingGear
 
 // in rotorcraft and aircraft model
-CPACSSystems
+CPACSCockpitControls
+CPACSCommandCases
+CPACSControlDistributors
+CPACSControlLaws
 CPACSReference
 
 // in fuselage

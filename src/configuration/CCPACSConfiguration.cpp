@@ -29,12 +29,10 @@
 #include "Standard_CString.hxx"
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
-#include "BRepAlgo_Fuse.hxx"
 #include "ShapeFix_Shape.hxx"
 #include "TopoDS_Compound.hxx"
 #include "BRepFeat_Gluer.hxx"
 #include "BRep_Builder.hxx"
-#include "BRepMesh.hxx"
 #include "IGESControl_Controller.hxx"
 #include "IGESControl_Writer.hxx"
 #include "StlAPI_Writer.hxx"
@@ -55,7 +53,7 @@ namespace tigl
 
 // Constructor
 CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
-    : tixiDocumentHandle(tixiHandle) , acSystems(this)
+    : tixiDocumentHandle(tixiHandle), header(nullptr)
 {
 }
 
@@ -74,10 +72,6 @@ void CCPACSConfiguration::Invalidate()
     if (rotorcraftModel) {
         rotorcraftModel->Invalidate();
     }
-    if (profiles) {
-        profiles->Invalidate();
-    }
-    // TODO Invalidate engines?
     aircraftFuser.reset();
     shapeCache.Clear();
 }
@@ -101,12 +95,12 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         header.ReadCPACS(tixiDocumentHandle, headerXPath);
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, profilesXPath)) {
-        profiles = boost::in_place(&uidManager);
+        profiles = boost::in_place(nullptr, &uidManager);
         // read wing airfoils, fuselage profiles, rotor airfoils and guide curve profiles
         profiles->ReadCPACS(tixiDocumentHandle, profilesXPath);
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, enginesXPath)) {
-        engines = boost::in_place(&uidManager);
+        engines = boost::in_place(nullptr, &uidManager);
         engines->ReadCPACS(tixiDocumentHandle, enginesXPath);
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
@@ -127,8 +121,6 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         // TODO(bgruber): why can't we just write "/cpacs/vehicles/aircraft/model[" + configurationUID + "]" ?
         aircraftModel->ReadCPACS(tixiDocumentHandle, path); // reads everything underneath /cpacs/vehicles/aircraft/model
     }
-
-    acSystems.ReadCPACS(tixiDocumentHandle, configurationUID);
 
     // Now do parent <-> child transformations. Child should use the parent coordinate system as root.
     uidManager.SetParentComponents();
@@ -254,9 +246,30 @@ CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
 }
 
 // Returns the aircraft systems object.
-CCPACSACSystems& CCPACSConfiguration::GetACSystems()
+boost::optional<CCPACSACSystems&> CCPACSConfiguration::GetACSystems()
 {
-    return acSystems;
+    if (aircraftModel && aircraftModel->GetSystems()) {
+        return *aircraftModel->GetSystems();
+    }
+    else if (rotorcraftModel && rotorcraftModel->GetSystems()) {
+        return *rotorcraftModel->GetSystems();
+    }
+    else {
+        return boost::none;
+    }
+}
+
+boost::optional<const CCPACSACSystems&> CCPACSConfiguration::GetACSystems() const
+{
+    if (aircraftModel && aircraftModel->GetSystems()) {
+        return *aircraftModel->GetSystems();
+    }
+    else if (rotorcraftModel && rotorcraftModel->GetSystems()) {
+        return *rotorcraftModel->GetSystems();
+    }
+    else {
+        return boost::none;
+    }
 }
 
 // Returns the total count of wings (including rotor blades) in a configuration
@@ -349,18 +362,37 @@ int CCPACSConfiguration::GetWingIndex(const std::string& UID) const
 // Returns the total count of generic systems in a configuration
 int CCPACSConfiguration::GetGenericSystemCount()
 {
-    return acSystems.GetGenericSystems().GetGenericSystemCount();
+    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
+    if (acSystems && acSystems->GetGenericSystems()) {
+        return acSystems->GetGenericSystems()->GetGenericSystemCount();
+    }
+    else {
+        return 0;
+    }
 }
 
 // Returns the generic system for a given index.
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(int index)
 {
-    return acSystems.GetGenericSystems().GetGenericSystem(index);
+    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
+    if (acSystems && acSystems->GetGenericSystems()) {
+        return acSystems->GetGenericSystems()->GetGenericSystem(index);
+    }
+    else {
+        throw CTiglError("No generic system loaded");
+    }
 }
+
 // Returns the generic system for a given UID.
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID)
 {
-    return acSystems.GetGenericSystems().GetGenericSystem(UID);
+    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
+    if (acSystems && acSystems->GetGenericSystems()) {
+        return acSystems->GetGenericSystems()->GetGenericSystem(UID);
+    }
+    else {
+        throw CTiglError("No generic system loaded");
+    }
 }
 
 // Returns the total count of rotors in a configuration
@@ -514,6 +546,36 @@ const CCPACSFuselages& CCPACSConfiguration::GetFuselages() const
     }
 }
 
+bool CCPACSConfiguration::HasDucts() const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetDucts()? true : false;
+    }
+    else {
+        return false;
+    }
+}
+
+boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts()
+{
+    if (aircraftModel) {
+        return aircraftModel->GetDucts();
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
+const boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts() const
+{
+    if (aircraftModel) {
+        return aircraftModel->GetDucts();
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
 boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons()
 {
     if (aircraftModel) {
@@ -641,7 +703,7 @@ const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const
     return uidManager;
 }
 
-double CCPACSConfiguration::GetAirplaneLenth()
+double CCPACSConfiguration::GetAirplaneLength()
 {
     CTiglPoint min, max;
     ConfigurationGetBoundingBox(*this, min, max);

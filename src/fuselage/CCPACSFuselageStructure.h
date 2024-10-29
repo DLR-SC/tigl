@@ -16,16 +16,20 @@
 
 #pragma once
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSFuselageStructure.h"
+#include "ITiglFuselageDuctStructure.h"
 
 namespace tigl
 {
-class CCPACSFuselageStructure : public generated::CPACSFuselageStructure
+class CCPACSFuselageStructure : public generated::CPACSFuselageStructure, public ITiglFuselageDuctStructure
 {
 public:
     TIGL_EXPORT CCPACSFuselageStructure(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 };
 
 } // namespace tigl

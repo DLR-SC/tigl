@@ -36,7 +36,8 @@ public:
         Airfoil
     };
 
-    CCPACSNacelleProfile(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSNacelleProfile(CCPACSCurveProfiles* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSNacelleProfile(CCPACSNacelleProfiles* parent, CTiglUIDManager* uidMgr);
 
     // get profile algorithm type
     TIGL_EXPORT ITiglWingProfileAlgo* GetProfileAlgo();

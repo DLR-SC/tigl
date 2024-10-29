@@ -41,6 +41,7 @@
 #include "TIGLQAspectWindow.h"
 #include "TIGLViewerContext.h"
 #include "TIGLViewerSettings.h"
+#include "TIGLViewerMaterials.h"
 #include "ISession_Point.h"
 #include "ISession_Direction.h"
 #include "ISession_Text.h"
@@ -96,7 +97,7 @@ TIGLViewerWidget::TIGLViewerWidget(QWidget * parent)
     myViewPrecision   ( 0.0 ),
     myKeyboardFlags   ( Qt::NoModifier ),
     myButtonFlags     ( Qt::NoButton ),
-    viewerContext     (NULL)
+    viewerContext     (nullptr)
 {
     initialize();
 }
@@ -104,11 +105,11 @@ TIGLViewerWidget::TIGLViewerWidget(QWidget * parent)
 
 void TIGLViewerWidget::initialize()
 {
-    myView            = NULL;
-    myViewer          = NULL;
+    myView            = nullptr;
+    myViewer          = nullptr;
     
 #if OCC_VERSION_HEX < 0x070000
-    myLayer           = NULL;
+    myLayer           = nullptr;
 #else
     whiteRect = new AIS_RubberBand (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_DOT, 1.0);
     blackRect = new AIS_RubberBand (Quantity_Color(Quantity_NOC_BLACK), Aspect_TOL_DOT, 1.0);
@@ -156,10 +157,6 @@ void TIGLViewerWidget::initialize()
     winId();
 }
 
-
-TIGLViewerWidget::~TIGLViewerWidget()
-{
-}
 
 void TIGLViewerWidget::setContext(TIGLViewerContext* aContext)
 {
@@ -230,7 +227,7 @@ void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCont
 
 QPaintEngine* TIGLViewerWidget::paintEngine() const
 {
-    return NULL;
+    return nullptr;
 }
 
 
@@ -298,7 +295,7 @@ void TIGLViewerWidget::mouseMoveEvent(QMouseEvent* e)
 {
     Standard_Real X, Y, Z;
     
-    myCurrentPoint = e->pos();
+    setCurrentPoint(e->pos());
     Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
     //Check if the grid is active and that we're snapping to it
     if ( myContext->CurrentViewer()->Grid()->IsActive() && myGridSnap ) {
@@ -392,7 +389,7 @@ void TIGLViewerWidget::redraw( bool isPainting )
 
 
 
-void TIGLViewerWidget::fitExtents( void )
+void TIGLViewerWidget::fitExtents()
 {
     if (!myView.IsNull()) {
         myView->FitAll();
@@ -402,7 +399,7 @@ void TIGLViewerWidget::fitExtents( void )
 
 
 
-void TIGLViewerWidget::fitAll( void )
+void TIGLViewerWidget::fitAll()
 {
     if (!myView.IsNull()) {
         myView->ZFitAll();
@@ -413,14 +410,14 @@ void TIGLViewerWidget::fitAll( void )
 
 
 
-void TIGLViewerWidget::fitArea( void )
+void TIGLViewerWidget::fitArea()
 {
     setMode( CurAction3d_WindowZooming );
 }
 
 
 
-void TIGLViewerWidget::zoom( void )
+void TIGLViewerWidget::zoom()
 {
     setMode( CurAction3d_DynamicZooming );
 }
@@ -446,20 +443,20 @@ void TIGLViewerWidget::zoom(double scale)
     }
 }
 
-void TIGLViewerWidget::pan( void )
+void TIGLViewerWidget::pan()
 {
     setMode( CurAction3d_DynamicPanning );
 }
 
 
 
-void TIGLViewerWidget::rotation( void )
+void TIGLViewerWidget::rotation()
 {
     setMode( CurAction3d_DynamicRotation );
 }
 
 
-void TIGLViewerWidget::selecting( void )
+void TIGLViewerWidget::selecting()
 {
     setMode( CurAction3d_Nothing );
 }
@@ -678,7 +675,7 @@ void TIGLViewerWidget::setBGImage(const QString& filename)
 
 void TIGLViewerWidget::setTransparency()
 {
-    TIGLSliderDialog* dialog = new TIGLSliderDialog(this);
+    auto* dialog = new TIGLSliderDialog(this);
 
     // Move the slider to the mouse position
     QPoint mPos = QCursor::pos();
@@ -706,39 +703,17 @@ void TIGLViewerWidget::setObjectsColor()
 void TIGLViewerWidget::setObjectsMaterial()
 {
     bool ok = false;
+
+    auto i = tiglMaterials::materialMap.begin();
     QStringList items;
-
-    QMap<QString, Graphic3d_NameOfMaterial> materialMap;
-    materialMap["Brass"] = Graphic3d_NOM_BRASS;
-    materialMap["Bronze"] = Graphic3d_NOM_BRONZE;
-    materialMap["Copper"] = Graphic3d_NOM_COPPER;
-    materialMap["Gold"] = Graphic3d_NOM_GOLD;
-    materialMap["Pewter"] = Graphic3d_NOM_PEWTER;
-    materialMap["Plaster"] = Graphic3d_NOM_PLASTER;
-    materialMap["Plastic"] = Graphic3d_NOM_PLASTIC;
-    materialMap["Silver"] = Graphic3d_NOM_SILVER;
-    materialMap["Steel"] = Graphic3d_NOM_STEEL;
-    materialMap["Stone"] = Graphic3d_NOM_STONE;
-    materialMap["Shiny Plastic"] = Graphic3d_NOM_SHINY_PLASTIC;
-    materialMap["Satin"] = Graphic3d_NOM_SATIN;
-    materialMap["Metalized"] = Graphic3d_NOM_METALIZED;
-    materialMap["Neon GNC"] = Graphic3d_NOM_NEON_GNC;
-    materialMap["Chrome"] = Graphic3d_NOM_CHROME;
-    materialMap["Aluminium"] = Graphic3d_NOM_ALUMINIUM;
-    materialMap["Obsidian"] = Graphic3d_NOM_OBSIDIAN;
-    materialMap["Neon PHC"] = Graphic3d_NOM_NEON_PHC;
-    materialMap["Jade"] = Graphic3d_NOM_JADE;
-    materialMap["Default"] = Graphic3d_NOM_DEFAULT;
-
-    QMapIterator<QString, Graphic3d_NameOfMaterial> i(materialMap);
-    while (i.hasNext()) {
-        i.next();
-        items << i.key();
+    while (i != tiglMaterials::materialMap.end()) {
+        items << i->first;
+        i++;
     }
     QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, 0, false, &ok);
 
     if (ok && !item.isEmpty()) {
-        Graphic3d_NameOfMaterial material = materialMap[item];
+        Graphic3d_NameOfMaterial material = tiglMaterials::materialMap[item];
         viewerContext->setObjectsMaterial(material);
     }
 }
@@ -759,7 +734,7 @@ void TIGLViewerWidget::setObjectsTexture()
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
     setFocus(Qt::MouseFocusReason);
-    myStartPoint = point;
+    setStartPoint(point);
     if ( nFlags & CASCADESHORTCUTKEY ) {
         setMode( CurAction3d_DynamicZooming );
     }
@@ -797,7 +772,7 @@ void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QP
 
 void TIGLViewerWidget::onMiddleButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-    myStartPoint = point;
+    setStartPoint(point);
     if ( nFlags & CASCADESHORTCUTKEY ) {
         setMode( CurAction3d_DynamicPanning );
     }
@@ -811,7 +786,7 @@ void TIGLViewerWidget::onMiddleButtonDown(  Qt::KeyboardModifiers nFlags, const 
 
 void TIGLViewerWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-    myStartPoint = point;
+    setStartPoint(point);
 //    if ( nFlags & CASCADESHORTCUTKEY )
 //    {
 //        setMode( CurAction3d_DynamicRotation );
@@ -827,7 +802,7 @@ void TIGLViewerWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const Q
 
 void TIGLViewerWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-    myCurrentPoint = point;
+    setCurrentPoint(point);
     if ( nFlags & CASCADESHORTCUTKEY ) {
         // Deactivates dynamic zooming
         setMode( CurAction3d_Nothing );
@@ -890,7 +865,7 @@ void TIGLViewerWidget::onMiddleButtonUp(  Qt::KeyboardModifiers /* nFlags */, co
 
 void TIGLViewerWidget::onRightButtonUp(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-    myCurrentPoint = point;
+    setCurrentPoint(point);
     if ( nFlags & CASCADESHORTCUTKEY ) {
         setMode( CurAction3d_Nothing );
     }
@@ -912,7 +887,7 @@ void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
     if (myView.IsNull()) {
         return;
     }
-    myCurrentPoint = point;
+    setCurrentPoint(point);
 
     if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MidButton ) {
         switch ( myMode ) {
@@ -1122,13 +1097,13 @@ void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint positio
 #if OCC_VERSION_HEX < 0x070000
     if ( !myLayer.IsNull() && !myView.IsNull() ) {
 
-        int witdh, height;
-        myView->Window()->Size(witdh, height);
+        int width, height;
+        myView->Window()->Size(width, height);
         
         myLayer->Clear(); 
         // The -1 is a hack from the opencascade forums to avoid clipping
         // of the coordinates. This way it behaves identically to opengl
-        myLayer->SetOrtho(0, witdh, height, 0, (Aspect_TypeOfConstraint) -1);
+        myLayer->SetOrtho(0, width, height, 0, (Aspect_TypeOfConstraint) -1);
         
         myLayer->Begin();
         myLayer->SetTransparency(1.0);
@@ -1157,13 +1132,14 @@ void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint positio
         myLayer->End();
     }
 #else
+    auto scale = devicePixelRatioF();
     if (viewerContext) {
         Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
         // Draw black-white dotted, imitate a shadowy look
         // This makes it possible to draw even on white or
         // black backgrounds
-        whiteRect->SetRectangle(left, height()-bottom, right, height()-top);
-        blackRect->SetRectangle(left+1, height()-bottom-1, right+1, height()-top-1);
+        whiteRect->SetRectangle(left, height()*scale-bottom, right, height()*scale-top);
+        blackRect->SetRectangle(left+1, height()*scale-bottom-1, right+1, height()*scale-top-1);
 
         if (!myContext->IsDisplayed (whiteRect)) {
             myContext->Display (whiteRect, Standard_False);
@@ -1267,12 +1243,35 @@ bool TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBGEnabl
           .GetRGB()
 #endif
           ;
-        QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
+        QColor qcol(
+                static_cast<int>(aColor.Red()*255),
+                static_cast<int>(aColor.Green()*255),
+                static_cast<int>(aColor.Blue()*255));
         img.setPixel(aCol, aRow, qcol.rgb());
       }
     }
-    
-    if (!img.save(filename, NULL, quality)) {
+
+    // Tigl Icon for brand marking
+    QImage tiglIcon(":gfx/logo-trans.png");
+
+    // scale image to a reasonable size compared to the screenshot
+    tiglIcon = tiglIcon.scaledToWidth(width/8);
+
+    // watermark padding distance to corner
+    static constexpr unsigned int padding = 20;
+    int xPos = width - tiglIcon.width() - padding;
+    int yPos = height - tiglIcon.height() - padding;
+
+    // only draw watermark if there is enough space on the image to draw it
+    if (xPos > 0 && yPos >= 0 && xPos + tiglIcon.width() < width && yPos + tiglIcon.height() < height) {
+        QPainter p(&img);
+        p.setOpacity(0.5);
+
+        // draw watermark
+        p.drawImage(xPos, yPos, tiglIcon);
+    }
+
+    if (!img.save(filename, nullptr, quality)) {
         LOG(ERROR) << "Unable to save screenshot to file '" + filename.toStdString() + "'";
         return false;
     }
@@ -1340,3 +1339,15 @@ void TIGLViewerWidget::contextMenuEvent(QContextMenuEvent *event)
      }
 
  }
+
+void TIGLViewerWidget::setStartPoint(const QPoint& p)
+{
+    auto scale = devicePixelRatioF();
+    myStartPoint = QPoint(p.x()*scale, p.y()*scale);
+}
+
+void TIGLViewerWidget::setCurrentPoint(const QPoint& p)
+{
+    auto scale = devicePixelRatioF();
+    myCurrentPoint = QPoint(p.x()*scale, p.y()*scale);
+}

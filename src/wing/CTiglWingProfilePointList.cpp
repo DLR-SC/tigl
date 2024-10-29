@@ -37,6 +37,7 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSNacelleProfile.h"
 #include "tiglcommonfunctions.h"
+#include "CCPACSCurvePointListXYZ.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -84,7 +85,7 @@ const double CTiglWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
 const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 
 // Constructor
-CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZVector& cpacsPointList)
+CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSCurvePointListXYZ& cpacsPointList)
     : coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , profileUID(profile.GetUID())
@@ -100,7 +101,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile&
 {
 }
 
-void CTiglWingProfilePointList::Invalidate()
+void CTiglWingProfilePointList::Invalidate() const
 {
     wireCache.clear();
 }
@@ -117,7 +118,7 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
     }
     // special handling for supporting opened and closed profiles
     if (points.size() < 2) {
-        LOG(ERROR) << "Not enough points defined for Wing Profile" << endl;
+        LOG(ERROR) << "Not enough points defined for Wing Profile";
         throw CTiglError("Not enough points defined for Wing Profile");
     }
     // close profile if not already closed
@@ -142,9 +143,9 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
 
     // CCPACSWingSegment::makeSurfaces cannot handle currently
     // wire with multiple edges. Thus we get problems if we have
-    // a linear interpolated wire consting of many edges.
+    // a linear interpolated wire consisting of many edges.
     if (dynamic_cast<const CTiglInterpolateLinearWire*>(&wireBuilder)) {
-        LOG(ERROR) << "Linear Wing Profiles are currently not supported" << endl;
+        LOG(ERROR) << "Linear Wing Profiles are currently not supported";
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
     }
 

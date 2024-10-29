@@ -35,10 +35,11 @@ public:
     enum InputType
     {
         Eta,
-        Rib
+        Rib,
+        Contour
     };
 
-    TIGL_EXPORT CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent);
+    TIGL_EXPORT CCPACSWingCellPositionSpanwise(CCPACSWingCell* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT InputType GetInputType() const;
 

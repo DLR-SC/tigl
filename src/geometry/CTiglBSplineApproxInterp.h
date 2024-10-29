@@ -20,6 +20,9 @@
 #define CTIGLBSPLINEAPPROXINTERP_H
 
 #include "tigl_internal.h"
+
+#include "CTiglApproxResult.h"
+
 #include <vector>
 #include <Geom_BSplineCurve.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -42,12 +45,6 @@ struct ProjectResult
     double error;
 };
 
-struct CTiglApproxResult
-{
-    Handle(Geom_BSplineCurve) curve;
-    double error;
-};
-
 class CTiglBSplineApproxInterp
 {
 public:
@@ -64,7 +61,7 @@ public:
     TIGL_EXPORT CTiglApproxResult FitCurveOptimal(const std::vector<double>& initialParms = std::vector<double>(), int maxIter=10) const;
 
 private:
-    ProjectResult projectOnCurve(const gp_Pnt& pnt, const Handle(Geom_Curve)& curve, double inital_Parm) const;
+    ProjectResult projectOnCurve(const gp_Pnt& pnt, const Handle(Geom_Curve)& curve, double initial_Parm) const;
     std::vector<double> computeParameters(double alpha) const;
     void computeKnots(int ncp, const std::vector<double>& params, std::vector<double>& knots, std::vector<int>& mults) const;
 

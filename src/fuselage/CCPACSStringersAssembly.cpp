@@ -15,8 +15,9 @@
 */
 
 #include "CCPACSStringersAssembly.h"
-
 #include "CCPACSFuselageStringer.h"
+#include "CCPACSFuselage.h"
+#include "CCPACSDuct.h"
 
 namespace tigl
 {
@@ -26,11 +27,43 @@ CCPACSStringersAssembly::CCPACSStringersAssembly(CCPACSFuselageStructure* parent
 {
 }
 
-void CCPACSStringersAssembly::Invalidate()
+CCPACSStringersAssembly::CCPACSStringersAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSStringersAssembly(parent, uidMgr)
 {
-    for (int i = 0; i < m_stringers.size(); i++) {
-        m_stringers[i]->Invalidate();
+}
+
+void CCPACSStringersAssembly::Invalidate(const boost::optional<std::string>& source) const
+{
+    for (int i = 0; i < (int)m_stringers.size(); i++) {
+        m_stringers[i]->Invalidate(source);
     }
+}
+
+CTiglRelativelyPositionedComponent const* CCPACSStringersAssembly::GetParentComponent() const
+{
+    if (IsParent<CCPACSDuctStructure>()) {
+        return GetParent<CCPACSDuctStructure>()->GetParent();
+    }
+    if (IsParent<CCPACSFuselageStructure>()) {
+        return GetParent<CCPACSFuselageStructure>()->GetParent();
+    }
+    throw CTiglError("Unexpected error: Parent of CCPACSStringersAssembly must either be CCPACSDuctStructure or CCPACSFuselageStructure.");
+}
+
+CTiglTransformation CCPACSStringersAssembly::GetTransformationMatrix() const
+{
+    return GetParentComponent()->GetTransformationMatrix();
+}
+
+ITiglFuselageDuctStructure const* CCPACSStringersAssembly::GetStructureInterface() const
+{
+    if (IsParent<CCPACSDuctStructure>()) {
+        return GetParent<CCPACSDuctStructure>();
+    }
+    if (IsParent<CCPACSFuselageStructure>()) {
+        return GetParent<CCPACSFuselageStructure>();
+    }
+    throw CTiglError("Unexpected error: Parent of CCPACSStringersAssembly must either be CCPACSDuctStructure or CCPACSFuselageStructure.");
 }
 
 } // namespace tigl

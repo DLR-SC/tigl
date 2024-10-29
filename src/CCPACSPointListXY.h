@@ -24,9 +24,15 @@ namespace tigl
 class CCPACSPointListXY : public generated::CPACSPointListXY
 {
 public:
-    TIGL_EXPORT CCPACSPointListXY(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPointListXY(CCPACSStructuralProfile* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT const CCPACSPointXY& GetPoint(const std::string& uid) const;
+
+    TIGL_EXPORT CCPACSPointXY& AddPoint() override;
+    TIGL_EXPORT void RemovePoint(CCPACSPointXY& ref)  override;
+
+private:
+    void InvalidateParent() const;
 };
 
 } // namespace tigl

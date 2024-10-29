@@ -16,7 +16,7 @@
 
 #include "CTiglStringerFrameBorderedObject.h"
 
-#include "CCPACSFuselage.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSFrame.h"
 #include "CCPACSFuselageStringer.h"
 #include "CTiglUIDManager.h"
@@ -38,10 +38,10 @@
 namespace tigl
 {
 CTiglStringerFrameBorderedObject::CTiglStringerFrameBorderedObject(
-    const CTiglUIDManager& uidMgr, const CCPACSFuselage& fuselage, std::string& startFrameUID, std::string& endFrameUID,
+    const CTiglUIDManager& uidMgr, const CTiglRelativelyPositionedComponent* parent, std::string& startFrameUID, std::string& endFrameUID,
     std::string& startStringerUID, boost::variant<std::string&, boost::optional<std::string>&> endStringerUID)
     : m_uidMgr(uidMgr)
-    , m_fuselage(fuselage)
+    , m_parent(parent)
     , m_startFrameUID(startFrameUID)
     , m_endFrameUID(endFrameUID)
     , m_startStringerUID(startStringerUID)
@@ -51,7 +51,7 @@ CTiglStringerFrameBorderedObject::CTiglStringerFrameBorderedObject(
 {
 }
 
-void CTiglStringerFrameBorderedObject::Invalidate()
+void CTiglStringerFrameBorderedObject::InvalidateShapes(const boost::optional<std::string>& source) const
 {
     m_borderCache.clear();
     m_geometry.clear();
@@ -60,7 +60,7 @@ void CTiglStringerFrameBorderedObject::Invalidate()
 TopoDS_Shape CTiglStringerFrameBorderedObject::GetGeometry(TiglCoordinateSystem referenceCS) const
 {
     if (referenceCS == GLOBAL_COORDINATE_SYSTEM)
-        return m_fuselage.GetTransformationMatrix().Transform(*m_geometry);
+        return m_parent->GetTransformationMatrix().Transform(*m_geometry);
     else
         return *m_geometry;
 }
@@ -126,7 +126,8 @@ void CTiglStringerFrameBorderedObject::BuildGeometry(TopoDS_Shape& cache) const
     builder.Add(cutCompound, eStringer.GetCutGeometry(FUSELAGE_COORDINATE_SYSTEM));
 
     // split fuselage loft
-    const TopoDS_Shape loft         = const_cast<CCPACSFuselage&>(m_fuselage).GetLoft(FUSELAGE_COORDINATE_SYSTEM)->Shape();
+
+    const TopoDS_Shape loft         = m_parent->GetTransformationMatrix().Inverted().Transform(m_parent->GetLoft()->DeepCopy()->Shape());
     const TopoDS_Shape splittedLoft = SplitShape(loft, cutCompound);
 
     //TRACE_POINT(debug);
@@ -138,7 +139,7 @@ void CTiglStringerFrameBorderedObject::BuildGeometry(TopoDS_Shape& cache) const
     TopTools_IndexedMapOfShape faceMap;
     TopExp::MapShapes(splittedLoft, TopAbs_FACE, faceMap);
 
-    const CTiglTransformation& trafo = m_fuselage.GetTransformationMatrix();
+    const CTiglTransformation& trafo = m_parent->GetTransformationMatrix();
 
     TopoDS_Compound compound;
     builder.MakeCompound(compound);

@@ -115,7 +115,7 @@ TIGL_EXPORT double shape_function_deriv(const std::vector<double>& B, const int&
  * 
  * CST(psi)=C(psi)*S(psi)
  *
- * N1, N2 are the paramters of the class function C(psi) = psi^N1 * (1-psi)^N2
+ * N1, N2 are the parameters of the class function C(psi) = psi^N1 * (1-psi)^N2
  * B is the vector of coefficients for the bernstein polynomials P_i^n(psi) 
  * T is the trailing edge thickness
  * inside the shape function S(psi)=sum_i=1^N B_i * p_i^n(psi)
@@ -127,7 +127,6 @@ TIGL_EXPORT double cstcurve(const double& N1, const double& N2, const std::vecto
  * CST(psi)=C(psi)*S(psi)
  */
 TIGL_EXPORT double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const double& T, const int& n, const double& x);
-
 
 /**
  * Return true if the value of a is similar to b
@@ -211,6 +210,11 @@ TIGL_EXPORT void PolarDecomposition(tiglMatrix const& A, tiglMatrix& U, tiglMatr
 TIGL_EXPORT void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatrix& V);
 
 /**
+ * Linear interpolation in of xdata<->ydata array at position x
+ */
+TIGL_EXPORT double Interpolate(const std::vector<double>& xdata, const std::vector<double>& ydata, double x);
+
+/**
  * @brief Return true if the matrix is a proper rotation.
  *
  * Check if the the matrix is orthogonal and if its determinant is 1.
@@ -255,6 +259,7 @@ TIGL_EXPORT CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint direction);
 
 
 TIGL_EXPORT CTiglPoint SnapRotation(CTiglPoint rotation, double epsilon = Precision::Confusion());
+TIGL_EXPORT double* SnapRotation(double rotation[3], double epsilon = Precision::Confusion());
 
 /**
  * Snaps up the value "number" up to "snapValue" iff fabs(number-snapValue) <= dela
@@ -283,6 +288,7 @@ TIGL_EXPORT double SnapAngle(double degrees, double epsilon = Precision::Confusi
  */
 TIGL_EXPORT double SnapUnitInterval(double number, double epsilon = Precision::Confusion());
 TIGL_EXPORT CTiglPoint SnapUnitInterval(CTiglPoint scaling,  double epsilon = Precision::Confusion());
+TIGL_EXPORT double* SnapUnitInterval(double scaling[3],  double epsilon = Precision::Confusion());
 
 } // namespace tigl
 

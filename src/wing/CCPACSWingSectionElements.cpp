@@ -27,6 +27,13 @@ namespace tigl
 CCPACSWingSectionElements::CCPACSWingSectionElements(CCPACSWingSection* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingElements(parent, uidMgr) {}
 
+void CCPACSWingSectionElements::Invalidate(const boost::optional<std::string>& source) const
+{
+    for (const auto& element : m_elements) {
+        element->Invalidate(source);
+    }
+}
+
 // Get element count for this section
 int CCPACSWingSectionElements::GetSectionElementCount() const
 {

@@ -37,6 +37,9 @@ class CCPACSFuselageSectionElements : public generated::CPACSFuselageElements
 public:
     TIGL_EXPORT CCPACSFuselageSectionElements(CCPACSFuselageSection* parent, CTiglUIDManager* uidMgr);
 
+    // invalidate all section elements
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
+
     // Get element count for this section
     TIGL_EXPORT int GetSectionElementCount() const;
 

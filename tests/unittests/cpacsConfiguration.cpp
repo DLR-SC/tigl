@@ -63,7 +63,7 @@ TEST_F(tiglOpenCpacsConfiguration, nullPointerArgument)
 }
 
 /**
-* Tests a successfull run of tiglOpenCPACSConfiguration.
+* Tests a successful run of tiglOpenCPACSConfiguration.
 */
 TEST_F(tiglOpenCpacsConfiguration, openSuccess) 
 {
@@ -73,7 +73,7 @@ TEST_F(tiglOpenCpacsConfiguration, openSuccess)
 }
 
 /**
-* Tests a successfull open of tiglOpenCPACSConfiguration with specifiing the uid of the configuration.
+* Tests a successful open of tiglOpenCPACSConfiguration with specifiing the uid of the configuration.
 */
 TEST_F(tiglOpenCpacsConfiguration, open_without_uid) 
 {
@@ -139,7 +139,7 @@ TEST_F(TiglGetCPACSTixiHandle, hanlde_notFound)
 }
 
 /**
-* Tests a successfull run of tiglGetCPACSTixiHandle.
+* Tests a successful run of tiglGetCPACSTixiHandle.
 */
 TEST_F(TiglGetCPACSTixiHandle, handle_success)
 {
@@ -257,7 +257,31 @@ TEST_F(SimpleConfigurationTests, GetBoundingBox)
     EXPECT_NEAR( -2., minY, 1e-1);
     EXPECT_NEAR(  2., maxY, 1e-1);
 
-    // Note: the control points are used which is located at -0.75
-    EXPECT_NEAR(-0.75, minZ, 1e-1);
+    EXPECT_NEAR(-0.5, minZ, 1e-1);
     EXPECT_NEAR( 0.5, maxZ, 1e-1);
+}
+
+TEST_F(SimpleConfigurationTests, GetComponentType)
+{
+    TiglGeometricComponentType type;
+    EXPECT_EQ(TIGL_SUCCESS, tiglComponentGetType(tiglHandle, "Wing", &type));
+    EXPECT_EQ(TIGL_COMPONENT_WING, type);
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglComponentGetType(tiglHandle, "Cpacs2Test_Wing_Seg_1_2", &type));
+    EXPECT_EQ(TIGL_COMPONENT_WINGSEGMENT, type);
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglComponentGetType(tiglHandle, "WING_CS1", &type));
+    EXPECT_EQ(TIGL_COMPONENT_WINGCOMPSEGMENT, type);
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglComponentGetType(tiglHandle, "SimpleFuselage", &type));
+    EXPECT_EQ(TIGL_COMPONENT_FUSELAGE, type);
+
+    EXPECT_EQ(TIGL_SUCCESS, tiglComponentGetType(tiglHandle, "segmentD150_Fuselage_1Segment2ID", &type));
+    EXPECT_EQ(TIGL_COMPONENT_FUSELSEGMENT, type);
+
+    // test error codes
+    EXPECT_EQ(TIGL_UID_ERROR, tiglComponentGetType(tiglHandle, "this_uid_does_not_exist", &type));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglComponentGetType(tiglHandle, nullptr, &type));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglComponentGetType(tiglHandle, "SimpleFuselage", nullptr));
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglComponentGetType(-1, "SimpleFuselage", &type));
 }

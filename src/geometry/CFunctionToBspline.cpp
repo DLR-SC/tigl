@@ -320,7 +320,7 @@ Handle(Geom_BSplineCurve) CFunctionToBspline::CFunctionToBsplineImpl::concatC1(c
             // omit the first control points of the current curve
         }
 
-        // just copy control points, weights, knots and multiplicites
+        // just copy control points, weights, knots and multiplicities
         for (int iknot = 2; iknot < curve->NbKnots(); ++iknot) {
             knots.SetValue(iknotT++, curve->Knot(iknot));
             mults.SetValue(imultT++, curve->Multiplicity(iknot));

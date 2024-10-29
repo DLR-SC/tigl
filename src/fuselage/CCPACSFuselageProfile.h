@@ -46,7 +46,7 @@ class CCPACSFuselageProfile : public generated::CPACSProfileGeometry
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselageProfile(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFuselageProfile(CCPACSFuselageProfiles* parent, CTiglUIDManager* uidMgr);
 
     // Destructor
     TIGL_EXPORT ~CCPACSFuselageProfile() override;
@@ -59,9 +59,6 @@ public:
 
     // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
     TIGL_EXPORT bool GetMirrorSymmetry() const;
-
-    // Invalidates internal fuselage profile state
-    TIGL_EXPORT void Invalidate();
 
     // Returns the fuselage profile wire. The profile is not transformed.
     TIGL_EXPORT TopoDS_Wire GetWire(bool forceClosed = false) const;
@@ -103,13 +100,19 @@ private:
     // Builds the fuselage profile wires.
     void BuildWires(WireCache& cache) const;
 
-    // Helper function to determine the "diameter" (the wing profile chord line equivalent) 
+    //Builds the fuselage profile wires from point list
+    void BuildWiresPointList(WireCache& cache) const;
+
+    //Builds the fuselage profile wires from height to width ratio and corner radius
+    void BuildWiresRectangle(WireCache& cache) const;
+
+    // Helper function to determine the "diameter" (the wing profile chord line equivalent)
     // which is defined as the line intersecting Point1 and Point2
-    // 
+    //
     // In the case of a non-mirror symmetric profile we have
     // Point1: The middle point between first and last point of the profile point list
     // Point2: The profile point list point with the largest distance to Point1
-    // 
+    //
     // In the case of a mirror symmetric profile we have
     // Point1: First point in the profile point list
     // Point2: Last point in the profile point list
@@ -118,12 +121,12 @@ private:
     void BuildSize(SizeCache& cache) const;
 
 private:
-    // Checks is two point are the same, or nearly the same.
-    bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB) const;
+    // Invalidates internal wing profile state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
 private:
-    bool mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
-    Cache<WireCache, CCPACSFuselageProfile> wireCache;   /**< Original and force closed fuselage profile wire */
+    bool mirrorSymmetry; /**< Mirror symmetry with respect to the x-z plane */
+    Cache<WireCache, CCPACSFuselageProfile> wireCache; /**< Original and force closed fuselage profile wire */
     Cache<DiameterPointsCache, CCPACSFuselageProfile> diameterPointsCache;
     Cache<SizeCache, CCPACSFuselageProfile> sizeCache;
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
@@ -132,4 +135,3 @@ private:
 } // end namespace tigl
 
 #endif // CCPACSFUSELAGEPROFILE_H
-

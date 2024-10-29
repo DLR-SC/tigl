@@ -57,9 +57,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT ~CCPACSFuselage() override;
 
-    // Invalidates internal state
-    TIGL_EXPORT void Invalidate();
-
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& fuselageXPath) override;
 
@@ -68,13 +65,19 @@ public:
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    TIGL_EXPORT PNamedShape GetLoft(TiglCoordinateSystem cs = GLOBAL_COORDINATE_SYSTEM) const;
+    // Override setter for invalidation
+    TIGL_EXPORT void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+    TIGL_EXPORT void SetTransformation(const CCPACSTransformation& transform) override;
+    TIGL_EXPORT void SetParentUID(const boost::optional<std::string>& value) override;
 
     // Get section count
     TIGL_EXPORT int GetSectionCount() const;
 
     // Returns the section for a given index
     TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
+
+    // Returns the face that has a given fuselage section as its boundary
+    TIGL_EXPORT TopoDS_Shape GetSectionFace(const std::string section_uid) const;
 
     // Get segment count
     TIGL_EXPORT int GetSegmentCount() const;
@@ -99,8 +102,7 @@ public:
     TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
 
     // Gets the getPointBehavior
-    TIGL_EXPORT TiglGetPointBehavior const GetGetPointBehavior() const;
-    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior();
+    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior() const;
 
     // Gets the volume of this fuselage
     TIGL_EXPORT double GetVolume();
@@ -122,9 +124,6 @@ public:
     // Get the guide curve segment(partial guide curve) with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
     TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurveSegment(std::string uid) const;
-
-    // Returns all guide curve wires as a compound
-    TIGL_EXPORT const TopoDS_Compound& GetGuideCurveWires() const;
 
     // Returns all guide curve points
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
@@ -220,9 +219,8 @@ public:
 
 
 protected:
-    void BuildGuideCurves(TopoDS_Compound& cache) const;
 
-    void ConnectGuideCurveSegments();
+    void BuildCleanLoft(PNamedShape& cache) const;
 
     // Cleanup routine
     void Cleanup();
@@ -235,15 +233,19 @@ protected:
     void SetFuselageHelper(CTiglFuselageHelper& cache) const ;
 
 private:
+    // Invalidates internal state
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
     // get short name for loft
     std::string GetShortShapeName() const;
 
-private:
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
+    Cache<PNamedShape, CCPACSFuselage> cleanLoft; /**< Stores the loft with cutouts (e.g. ducts) */
+
+
     TopoDS_Compound            aCompound;
-    Cache<TopoDS_Compound, CCPACSFuselage> guideCurves;
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
 

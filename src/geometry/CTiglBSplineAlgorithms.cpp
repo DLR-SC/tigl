@@ -16,6 +16,7 @@
 * limitations under the License.
 */
 
+#include "CTiglIntersectBSplines.h"
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglCurveNetworkSorter.h"
 #include "CTiglCurvesToSurface.h"
@@ -25,6 +26,7 @@
 #include "CTiglPointsToBSplineInterpolation.h"
 #include "to_string.h"
 #include "tiglcommonfunctions.h"
+#include "Debugging.h"
 
 #include <Standard_Version.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -48,6 +50,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Precision.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 
 #include <cmath>
 #include <stdexcept>
@@ -311,19 +314,147 @@ namespace
     {
         return array2GetRow<TColgp_Array2OfPnt, TColgp_HArray1OfPnt, Handle_TColgp_HArray1OfPnt>(matrix, rowIndex);
     }
-    
-    Handle(TColStd_HArray1OfReal) toArray(const std::vector<double>& vector)
-    {
-        Handle(TColStd_HArray1OfReal) array = new TColStd_HArray1OfReal(1, static_cast<int>(vector.size()));
-        int ipos = 1;
-        for (std::vector<double>::const_iterator it = vector.begin(); it != vector.end(); ++it, ipos++) {
-            array->SetValue(ipos, *it);
-        }
 
-        return array;
+    // Some helper functions for CTiglBSplineAlgorithms::reparameterizePiecewiseLinear ...
+    void knotRefinementForReparam(const Handle(Geom_BSplineCurve) curve, std::vector<double> const& paramsOld, double tolerance)
+    {
+        // This function matches the first step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
+
+        Standard_Integer nbKnots = curve->NbKnots();
+
+        //Start with increasing the multiplicity up to p
+        Standard_Integer degree = curve->Degree();
+
+        // Pass first and last index of knots (to increase all multiplicities until mult >= degree)
+        curve->IncreaseMultiplicity(1, nbKnots, degree);
+
+        // Add all knots u_i=f(s_i)
+        // Since we assume a piecewise linear reparameterization function f, the knots of f are just the new parameters
+        // Hence, evaluating f at one knot gives the corresponding old parameter
+        TColStd_Array1OfReal knotsParams(1, paramsOld.size());
+        TColStd_Array1OfInteger multsParams(1, paramsOld.size());
+        for (int paramIdx = 0; paramIdx < paramsOld.size(); paramIdx++) {
+            knotsParams.SetValue(paramIdx+1, paramsOld[paramIdx]);
+            multsParams.SetValue(paramIdx+1, degree);
+        }
+        curve->InsertKnots(knotsParams, multsParams, tolerance);
     }
+
+    TColStd_Array1OfReal calcNewKnotVectorS(const Handle(Geom_BSplineCurve) curve, std::vector<double> const& paramsOld, std::vector<double> const& paramsNew, double tolerance)
+    {
+        // This function matches the second step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
+
+        double newKnot;
+
+        // Set up knot vector S' consisting of s_i=g(u_i) [inverse reparametrization fct]
+        Standard_Integer nbKnots = curve->NbKnots(); // Size of distinct knots
+        TColStd_Array1OfReal newKnots(1, nbKnots);
+        for (int knotIdx = 1; knotIdx <= nbKnots; knotIdx++) {
+            // Calc s_i=g(u_i) of picewise linear fct
+            // defined as inverse of interpolation (x_i,y_i)=(paramsNew[i], paramsOld[i])
+            newKnot = details::calcReparamfctInv(paramsOld, paramsNew, curve->Knot(knotIdx), tolerance);
+            newKnots.SetValue(knotIdx, newKnot);
+        }
+        return newKnots;
+    }
+
+    Standard_Integer findKnotIndex(TColStd_Array1OfReal knots, double value)
+    {
+        for(int idx = 1; idx <= knots.Size(); idx++) {
+            if(fabs(knots[idx] - value) <= 1e-12)
+                return idx;
+        }
+        return -1;
+    }
+
+    void removeKnotsAfterReparam(const Handle(Geom_BSplineCurve) &curve,
+                                 const Handle(Geom_BSplineCurve) curveOrigin,
+                                 std::vector<double> const& paramsOld, std::vector<double> const& paramsNew,
+                                 double tolerance)
+    {
+        // This function matches the fourth step of the reparameterization algorithm in The NURBS Book (2nd edition), p. 251
+
+        TColStd_Array1OfReal knotsSBar = curve->Knots();
+
+        Standard_Integer nbKnots = curve->NbKnots();
+        double knotS, knotU;
+        Standard_Integer multS, multU, idxU, multNew;
+        // Exclude first and last knot
+        // Iterate backwards to account for shrinking size of knots vector by deletion if multNew is 0
+        for (int knotIdx = nbKnots-1; knotIdx >= 2; knotIdx--) {
+            knotS = knotsSBar[knotIdx];
+            multS = 0;
+            // Define multiplicity of knotS in original knot vector S of reparam fct
+            // By construction, the new parameters are exactely these knots and they all have mult=1
+            // => If knotS is found in these, its mult in this knot vector is exactely 1, 0 else
+            if(std::find_if(paramsNew.begin(), paramsNew.end(), [&knotS](double v){ return fabs(knotS-v) <= 1e-12; }) != paramsNew.end())
+                multS = 1;
+            // Used as original function, not inverse [swap interpolation dimensions]
+            knotU = details::calcReparamfctInv(paramsNew, paramsOld, knotS, tolerance);
+            idxU = findKnotIndex(curveOrigin->Knots(), knotU);
+            if(idxU != -1)
+                multU = curveOrigin->Multiplicity(idxU);
+            else
+                multU = 0;
+
+            //multNew = max(pq - p + multU, pq - q + multS) = max(multU, multS) [since q=1 and pq=p]
+            multNew = std::max(multU, multS);
+            // Decrease mult of knot to multNew
+            curve->RemoveKnot(knotIdx, multNew, tolerance);
+        }
+    }
+
 } // namespace
 
+namespace details
+{
+    double calcReparamfctInv(std::vector<double> const& paramsOld, std::vector<double> const& paramsNew, double u, double tolerance)
+    {
+        // Calc inverse of reparametrization function s=g(u)=f⁻¹(s)
+        // We set up BSpline of degree 1 -> g is piecewise linear
+        // In the interval [p_i,p_{i+1}], g(u)=m*u+n
+        // p_i and p_{i+1} are old parameters that need to be determined in the first place
+
+        // u needs to be in range of paramsOld
+        if (u < paramsOld[0] || paramsOld[paramsOld.size()-1] < u) {
+            if (paramsOld[0] - tolerance <= u && u <= paramsOld[paramsOld.size()-1] + tolerance) {
+                u = Clamp(u, paramsOld[0], paramsOld[paramsOld.size()-1]);
+            }
+            else {
+                throw tigl::CTiglError("Argument of reparameterization function out of range in calcReparamfctInv");
+            }
+        }
+
+        // First: Find interval [p_i,p_{i+1}] to determine boundaries
+        // a_x = lowerBound, b_x = upperBound
+
+        double a_x, a_y, b_x, b_y;
+        auto it = std::find_if(
+            paramsOld.begin(),
+            paramsOld.end(),
+            [&u](double v){ return u <= v; }
+        );
+
+        int paramsIdx = std::distance(paramsOld.begin(), it);
+        // Catch case u=0, since distance would be 0 which causes illegal vector access by subtraction of 1
+        if (paramsIdx  == 0) {
+            ++paramsIdx;
+        }
+
+        a_x = paramsOld[paramsIdx - 1];
+        b_x = paramsOld[paramsIdx];
+        a_y = paramsNew[paramsIdx - 1];
+        b_y = paramsNew[paramsIdx];
+
+        // Calc slope m
+        double m = (b_y-a_y) / (b_x-a_x);
+        // Calc intercept n
+        double n = a_y - a_x*m;
+
+        // Calc inverse g(u) [linear function value]
+        return m*u + n;
+    }
+} // namespace details
 
 namespace tigl
 {
@@ -457,6 +588,19 @@ double CTiglBSplineAlgorithms::scale(const TColgp_Array2OfPnt& points)
     return theScale;
 }
 
+double CTiglBSplineAlgorithms::scale(const TColgp_Array1OfPnt& points)
+{
+    double theScale = 0.;
+
+    for (int i = points.Lower(); i <= points.Upper(); ++i) {
+        for (int j = i + 1; j < points.Upper(); ++j) {
+            double dist = points.Value(i).Distance(points.Value(j));
+            theScale = std::max(theScale, dist);
+        }
+    }
+    return theScale;
+}
+
 std::vector<double> CTiglBSplineAlgorithms::computeParamsBSplineCurve(const Handle(TColgp_HArray1OfPnt)& points, const double alpha)
 {
     return computeParamsBSplineCurve(points, 0., 1., alpha);
@@ -543,24 +687,24 @@ std::vector<Handle(Geom_BSplineCurve)> CTiglBSplineAlgorithms::createCommonKnots
     return std::vector<Handle(Geom_BSplineCurve)>(splines_adapter.begin(), splines_adapter.end());
 }
 
-std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector)
+std::vector<Handle(Geom_BSplineSurface) > CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(const std::vector<Handle(Geom_BSplineSurface) >& old_surfaces_vector, SurfaceDirection dir)
 {
-    // all B-spline surfaces must have the same parameter range in u- and v-direction
-    // TODO: Match parameter range
-
     // Create a copy that we can modify
     std::vector<SurfAdapterView> adapterSplines;
     for (size_t i = 0; i < old_surfaces_vector.size(); ++i) {
         adapterSplines.push_back(SurfAdapterView(Handle(Geom_BSplineSurface)::DownCast(old_surfaces_vector[i]->Copy()), udir));
     }
 
-    // first in u direction
-    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
+    if (dir == SurfaceDirection::u || dir == SurfaceDirection::both) {
+        // first in u direction
+        makeGeometryCompatibleImpl(adapterSplines, 1e-14);
+    }
 
-    for (size_t i = 0; i < old_surfaces_vector.size(); ++i) adapterSplines[i].setDir(vdir);
-
-    // now in v direction
-    makeGeometryCompatibleImpl(adapterSplines, 1e-15);
+    if (dir == SurfaceDirection::v || dir == SurfaceDirection::both) {
+         // now in v direction
+        for (size_t i = 0; i < old_surfaces_vector.size(); ++i) adapterSplines[i].setDir(vdir);
+        makeGeometryCompatibleImpl(adapterSplines, 1e-14);
+    }
 
     return std::vector<Handle(Geom_BSplineSurface)>(adapterSplines.begin(), adapterSplines.end());
 }
@@ -596,10 +740,10 @@ void CTiglBSplineAlgorithms::matchDegree(const std::vector<Handle(Geom_BSplineCu
     }
 }
 
-Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline,
-                                                                                         const std::vector<double>& old_parameters,
-                                                                                         const std::vector<double>& new_parameters,
-                                                                                         size_t n_control_pnts)
+CTiglApproxResult CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(const Handle(Geom_BSplineCurve) spline,
+                                                                                 const std::vector<double>& old_parameters,
+                                                                                 const std::vector<double>& new_parameters,
+                                                                                 size_t n_control_pnts)
 {
     if (old_parameters.size() != new_parameters.size()) {
         throw CTiglError("parameter sizes dont match");
@@ -612,7 +756,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
         old_parameters_pnts->SetValue(occIdx, gp_Pnt2d(old_parameters[parameter_idx], 0));
     }
 
-    Geom2dAPI_Interpolate interpolationObject(old_parameters_pnts, toArray(new_parameters), false, 1e-15);
+    Geom2dAPI_Interpolate interpolationObject(old_parameters_pnts, OccFArray(new_parameters), false, 1e-15);
     interpolationObject.Perform();
 
     // check that interpolation was successful
@@ -634,7 +778,7 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
 #ifdef MODEL_KINKS
     // remove kinks from breaks
     std::vector<double> kinks = CTiglBSplineAlgorithms::getKinkParameters(spline);
-    // convert kink parameters into reparamtetrized parameter using the
+    // convert kink parameters into reparametrized parameter using the
     // inverse reparametrization function
     for (size_t ikink = 0; ikink < kinks.size(); ++ikink) {
         kinks[ikink] = Geom2dAPI_ProjectPointOnCurve(gp_Pnt2d(kinks[ikink], 0.), reparametrizing_spline)
@@ -673,11 +817,11 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
         points(static_cast<Standard_Integer>(i)) = spline->Value(oldParameter);
     }
 
-    bool makeContinous = spline->IsClosed() &&
+    bool makeContinuous = spline->IsClosed() &&
             spline->DN(spline->FirstParameter(), 1).Angle(spline->DN(spline->LastParameter(), 1)) < 6. / 180. * M_PI;
 
     // Create the new spline as a interpolation of the old one
-    CTiglBSplineApproxInterp approximationObj(points, static_cast<int>(n_control_pnts), 3, makeContinous);
+    CTiglBSplineApproxInterp approximationObj(points, static_cast<int>(n_control_pnts), 3, makeContinuous);
 
     breaks.insert(breaks.begin(), new_parameters.front());
     breaks.push_back(new_parameters.back());
@@ -701,11 +845,10 @@ Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparametrizeBSplineContinuous
 #endif
 
     CTiglApproxResult result = approximationObj.FitCurveOptimal(parameters);
-    Handle(Geom_BSplineCurve) reparametrized_spline = result.curve;
 
-    assert(!reparametrized_spline.IsNull());
+    assert(!result.curve.IsNull());
 
-    return reparametrized_spline;
+    return result;
 }
 
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::flipSurface(const Handle(Geom_BSplineSurface) surface)
@@ -718,12 +861,12 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::flipSurface(const Handle(Geo
 Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::pointsToSurface(const TColgp_Array2OfPnt& points,
                                                                     const std::vector<double>& uParams,
                                                                     const std::vector<double>& vParams,
-                                                                    bool uContinousIfClosed, bool vContinousIfClosed)
+                                                                    bool uContinuousIfClosed, bool vContinuousIfClosed)
 {
 
     double tolerance = REL_TOL_CLOSED * scale(points);
-    bool makeVDirClosed = vContinousIfClosed & isVDirClosed(points, tolerance);
-    bool makeUDirClosed = uContinousIfClosed & isUDirClosed(points, tolerance);
+    bool makeVDirClosed = vContinuousIfClosed & isVDirClosed(points, tolerance);
+    bool makeUDirClosed = uContinuousIfClosed & isUDirClosed(points, tolerance);
 
     // first interpolate all points by B-splines in u-direction
     std::vector<Handle(Geom_Curve)> uSplines;
@@ -744,53 +887,16 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::pointsToSurface(const TColgp
 
 
 std::vector<std::pair<double, double> > CTiglBSplineAlgorithms::intersections(const Handle(Geom_BSplineCurve) spline1, const Handle(Geom_BSplineCurve) spline2, double tolerance) {
-    // light weight simple minimizer
-
-    // check parametrization of B-splines beforehand
 
     // find out the average scale of the two B-splines in order to being able to handle a more approximate curves and find its intersections
     double splines_scale = (CTiglBSplineAlgorithms::scale(spline1) + CTiglBSplineAlgorithms::scale(spline2)) / 2.;
 
     std::vector<std::pair<double, double> > intersection_params_vector;
-    GeomAPI_ExtremaCurveCurve intersectionObj(spline1, spline2);
-    for (int intersect_idx = 1; intersect_idx <= intersectionObj.NbExtrema(); ++intersect_idx) {
-        double param1 = 0.;
-        double param2 = 0.;
-        intersectionObj.Parameters(intersect_idx, param1, param2);
 
-        // filter out real intersections
-        gp_Pnt point1 = spline1->Value(param1);
-        gp_Pnt point2 = spline2->Value(param2);
-
-        if (point1.Distance(point2) < tolerance * splines_scale) {
-            intersection_params_vector.push_back(std::make_pair(param1, param2));
-        }
-        else {
-            throw CTiglError("Curves do not intersect each other", TIGL_MATH_ERROR);
-        }
-
-        // for closed B-splines:
-        if (intersectionObj.NbExtrema() == 1 && spline1->IsClosed() && std::abs(param1 - spline1->Knot(1)) < 1e-6) {
-            // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the end of the closed curve, so add it by hand
-            intersection_params_vector.push_back(std::make_pair(spline1->Knot(spline1->NbKnots()), param2));
-        }
-
-        if (intersectionObj.NbExtrema() == 1 && spline1->IsClosed() && std::abs(param1 - spline1->Knot(spline1->NbKnots())) < 1e-6) {
-            // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the beginning of the closed curve, so add it by hand
-            intersection_params_vector.push_back(std::make_pair(spline1->Knot(1), param2));
-        }
-
-        if (intersectionObj.NbExtrema() == 1 && spline2->IsClosed() && std::abs(param2 - spline2->Knot(1)) < 1e-6) {
-            // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the end of the closed curve, so add it by hand
-            intersection_params_vector.push_back(std::make_pair(param1, spline2->Knot(spline2->NbKnots())));
-        }
-
-        if (intersectionObj.NbExtrema() == 1 && spline2->IsClosed() && std::abs(param2 - spline2->Knot(spline2->NbKnots())) < 1e-6) {
-            // GeomAPI_ExtremaCurveCurve doesn't find second intersection point at the beginning of the closed curve, so add it by hand
-            intersection_params_vector.push_back(std::make_pair(param1, spline2->Knot(1)));
-        }
+    auto results = tigl::IntersectBSplines(spline1, spline2, tolerance*splines_scale);
+    for (const auto& r : results) {
+        intersection_params_vector.push_back({r.parmOnCurve1, r.parmOnCurve2});
     }
-
 
     return intersection_params_vector;
 }
@@ -826,6 +932,86 @@ void CTiglBSplineAlgorithms::reparametrizeBSpline(Geom_BSplineCurve& spline, dou
         BSplCLib::Reparametrize (umin, umax, aKnots);
         spline.SetKnots (aKnots);
     }
+}
+
+void CTiglBSplineAlgorithms::reparametrizeBSpline(Geom_BSplineSurface& spline, double umin, double umax, double vmin, double vmax, double tol)
+{
+    if (std::abs(spline.UKnot(1) - umin) > tol || std::abs(spline.UKnot(spline.NbUKnots()) - umax) > tol) {
+        TColStd_Array1OfReal aKnots (1, spline.NbUKnots());
+        spline.UKnots (aKnots);
+        BSplCLib::Reparametrize (umin, umax, aKnots);
+        spline.SetUKnots (aKnots);
+    }
+
+    if (std::abs(spline.VKnot(1) - vmin) > tol || std::abs(spline.VKnot(spline.NbVKnots()) - vmax) > tol) {
+        TColStd_Array1OfReal aKnots (1, spline.NbVKnots());
+        spline.VKnots (aKnots);
+        BSplCLib::Reparametrize (vmin, vmax, aKnots);
+        spline.SetVKnots (aKnots);
+    }
+}
+
+CTiglApproxResult CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(Handle(Geom_BSplineCurve) spline)
+{
+    if (spline.IsNull()) {
+        throw CTiglError("Null Pointer curve", TIGL_NULL_POINTER);
+    }
+
+    double umin = spline->FirstParameter();
+    double umax = spline->LastParameter();
+
+    // compute the number of desired knot segments
+
+    int nSegmentsOld = spline->NbPoles() - spline->Degree();
+    // The new number of segments is a power of two
+    int nSegmentsNew = (int)pow(2.0, static_cast<int>(log2(static_cast<float>(nSegmentsOld))));
+
+    // we are using at least 8 segments to be safe with accuracy
+    nSegmentsNew = std::max(nSegmentsNew, 8);
+
+    // The reparametrization results in a degree 3 spline
+    int target_degree = 3;
+    return CTiglBSplineAlgorithms::reparametrizeBSplineContinuouslyApprox(spline, {umin, umax}, {umin, umax}, nSegmentsNew + target_degree);
+}
+
+Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::reparameterizePiecewiseLinear(Handle(Geom_BSplineCurve) curve,
+                                                                                std::vector<double> const& paramsOld,
+                                                                                std::vector<double> const& paramsNew,
+                                                                                double tolerance)
+{
+    // Apply reparameterization on a given B-Spline curve defined by old and new parameters
+    // Assumption:  - Reparameterization function given as 1D-interpolation of (x=paramsNew, y=paramsOld)
+    //              - Picewise linear function -> B-Spline of degree 1 (q=1 => pq=1)
+
+    // Check inputs
+    if (paramsOld.size() != paramsNew.size())
+        throw CTiglError("Parameter sizes for reparameterization do not match in reparameterizePiecewiseLinear");
+
+    if (tolerance < 0)
+        throw CTiglError("Tolerance for reparameterization has to be non-negative in reparameterizePiecewiseLinear");
+
+    const Standard_Integer degree = curve->Degree();
+
+    // Create copy as its original information (e.g. poles) is needed later
+    Handle(Geom_BSplineCurve) curveCopy = Handle(Geom_BSplineCurve)::DownCast(curve->Copy());
+
+    // Step 1
+    knotRefinementForReparam(curve, paramsOld, tolerance);
+
+    // Step 2
+    TColStd_Array1OfReal newKnots = calcNewKnotVectorS(curve, paramsOld, paramsNew, tolerance);
+
+    // Step 3 is not necessary as all poles remain the same (NURBS book, p. 250)
+    // -> Set up B-Spline from poles resulting from first knot refinement (step 1) and the new knots (and mults)
+
+    // Internal knots should appear with multiplicity p*q according to the NURBS book, boundary knots have multiplicity p+1 (step 2)
+    // For that reason, the multiplicities of the curve after knot refinement are used when setting up the curve later
+    Handle(Geom_BSplineCurve) curveReparameterized = new Geom_BSplineCurve(curve->Poles(), newKnots, curve->Multiplicities(), degree);
+
+    // Step 4
+    removeKnotsAfterReparam(curveReparameterized, curveCopy, paramsOld, paramsNew, tolerance);
+
+    return curveReparameterized;
 }
 
 math_Matrix CTiglBSplineAlgorithms::bsplineBasisMat(int degree, const TColStd_Array1OfReal& knots, const TColStd_Array1OfReal& params, unsigned int derivOrder)
@@ -872,6 +1058,31 @@ std::vector<double> CTiglBSplineAlgorithms::getKinkParameters(const Handle(Geom_
             if (angle > 6./180. * M_PI) {
                 kinks.push_back(knot);
             }
+        }
+    }
+
+    return kinks;
+}
+
+CTiglBSplineAlgorithms::SurfaceKinks CTiglBSplineAlgorithms::getKinkParameters(const Handle(Geom_BSplineSurface)& surface)
+{
+    if (surface.IsNull()) {
+        throw CTiglError("Null Pointer curve", TIGL_NULL_POINTER);
+    }
+
+    SurfaceKinks kinks;
+
+    for (int knotIndex = 2; knotIndex < surface->NbUKnots(); ++knotIndex) {
+        if (surface->UMultiplicity(knotIndex) == surface->UDegree()) {
+            double knot = surface->UKnot(knotIndex);
+            kinks.u.push_back(knot);
+        }
+    }
+
+    for (int knotIndex = 2; knotIndex < surface->NbVKnots(); ++knotIndex) {
+        if (surface->VMultiplicity(knotIndex) == surface->VDegree()) {
+            double knot = surface->VKnot(knotIndex);
+            kinks.v.push_back(knot);
         }
     }
 
@@ -926,6 +1137,315 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::trimSurface(const Handle(Geo
     assert(intol(u1, umin) && intol(u2, umax) && intol(v1, vmin) && intol(v2, vmax));
 #endif
     return trimmedSurface;
+}
+
+Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::trimCurve(const Handle(Geom_BSplineCurve)& curve, double umin, double umax)
+{
+    Handle(Geom_BSplineCurve) copy = Handle(Geom_BSplineCurve)::DownCast(curve->Copy());
+    copy->Segment(umin, umax);
+    return copy;
+}
+
+Handle(Geom_BSplineCurve) CTiglBSplineAlgorithms::concatCurves(std::vector<Handle(Geom_BSplineCurve)> curves,
+                                                               bool parByLength, double tolerance)
+{
+
+    if (curves.size() == 0) {
+        LOG(ERROR) << "Empty curve vector in CTiglBSplineAlgorithms::concatCurves";
+        return nullptr;
+    }
+    else if (curves.size() == 1) {
+        return curves[0];
+    }
+
+    std::vector<double> lengths;
+    double totalLen  = 0;
+    int    maxDegree = 0;
+
+    // get the bsplines of each edge,
+    // compute the lengths of each edge,
+    // determine maximum degree of the curves
+    for (auto curve : curves) {
+
+        if (parByLength) {
+            // find out length of current curve
+            Standard_Real umin = curve->FirstParameter();
+            Standard_Real umax = curve->LastParameter();
+            GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
+            double len = GCPnts_AbscissaPoint::Length(adaptorCurve, umin, umax);
+            lengths.push_back(len);
+            totalLen += len;
+        }
+
+        // find out maximum degree
+        if (curve->Degree() > maxDegree) {
+            maxDegree = curve->Degree();
+        }
+    }
+
+
+    // check connectivities
+    for (unsigned int icurve = 1; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) c1 = curves[icurve-1];
+        Handle(Geom_BSplineCurve) c2 = curves[icurve];
+
+        gp_Pnt p1 = c1->Pole(c1->NbPoles());
+        gp_Pnt p2 = c2->Pole(1);
+
+        if (p1.Distance(p2) > tolerance) {
+            // error
+            LOG(ERROR) << "Curves not connected within tolerance in concatCurves";
+            return nullptr;
+        }
+    }
+
+    // elevate degree of all curves to maxDegree
+    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
+        curve->IncreaseDegree(maxDegree);
+    }
+
+#ifdef DEBUG
+    // check that each curve is at maxDegree
+    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
+        assert(curve->Degree() == maxDegree);
+    }
+#endif
+
+    // shift knots of curves
+    double startPar = 0;
+    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
+        double stopPar = startPar;
+        if (parByLength) {
+            stopPar += lengths[icurve]/totalLen;
+        }
+        else {
+            stopPar += curve->LastParameter() - curve->FirstParameter();
+        }
+        CTiglBSplineAlgorithms::reparametrizeBSpline(*curve, startPar, stopPar);
+        curves[icurve] = curve;
+
+        startPar = stopPar;
+    }
+
+    // count number of knots and control points for the final b-spline
+    int nbknots = 1;
+    int nbcp    = 1;
+    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
+        nbknots += curve->NbKnots() - 1;
+        nbcp    += curve->NbPoles() - 1;
+    }
+
+    // allocate arrays
+    TColgp_Array1OfPnt      cpoints(1, nbcp);
+    TColStd_Array1OfReal    weights(1, nbcp);
+    TColStd_Array1OfReal    knots(1, nbknots);
+    TColStd_Array1OfInteger mults(1, nbknots);
+
+    // concatenate everything
+    int iknotT = 1, imultT = 1, icpT = 1, iweightT = 1;
+    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
+        Handle(Geom_BSplineCurve) curve = curves[icurve];
+
+        // special handling of the first knot, control point
+        knots.SetValue(iknotT++, curve->Knot(1));
+        if (icurve == 0) {
+            // we just copy the data of the very first point/knot
+            mults.SetValue(imultT++, curve->Multiplicity(1));
+            cpoints.SetValue(icpT++, curve->Pole(1));
+            weights.SetValue(iweightT++, curve->Weight(1));
+        }
+        else {
+            // set multiplicity to maxDegree to allow c0 concatenation
+            mults.SetValue(imultT++, maxDegree);
+
+            // compute midpoint between endpoint of previous
+            // curve and startpoint of current curve
+            Handle(Geom_BSplineCurve) lastCurve = curves[icurve-1];
+            gp_Pnt endPoint   = lastCurve->Pole(lastCurve->NbPoles());
+            gp_Pnt startPoint = curve->Pole(1);
+            gp_Pnt midPoint = (endPoint.XYZ() + startPoint.XYZ())/2.;
+            cpoints.SetValue(icpT++, midPoint);
+
+            // we use the average weight of previous curve and current curve
+            // This is probably wrong and could change the shape of the curve
+            // Instead, one could scale all weights of the curve to match the weight of
+            // the previous curve
+            weights.SetValue(iweightT++, (lastCurve->Weight(lastCurve->NbPoles()) + curve->Weight(1))/2.);
+        }
+
+        // just copy control points, weights, knots and multiplicities
+        for (int iknot = 2; iknot < curve->NbKnots(); ++iknot) {
+            knots.SetValue(iknotT++, curve->Knot(iknot));
+            mults.SetValue(imultT++, curve->Multiplicity(iknot));
+        }
+        for (int icp = 2; icp < curve->NbPoles(); ++icp) {
+            cpoints.SetValue(icpT++, curve->Pole(icp));
+            weights.SetValue(iweightT++, curve->Weight(icp));
+        }
+
+    }
+
+    // special handling of the last point and knot
+    Handle(Geom_BSplineCurve) lastCurve = curves[curves.size()-1];
+    knots.SetValue(iknotT, lastCurve->Knot(lastCurve->NbKnots()));
+    mults.SetValue(imultT,  lastCurve->Multiplicity(lastCurve->NbKnots()));
+    cpoints.SetValue(icpT, lastCurve->Pole(lastCurve->NbPoles()));
+    weights.SetValue(iweightT, lastCurve->Weight(lastCurve->NbPoles()));
+
+#ifdef DEBUG
+    // check that we have the correct number of knots, control points etc...
+    int nkn = 0;
+    for (int ik = knots.Lower(); ik <= knots.Upper(); ++ik) {
+        nkn += mults.Value(ik);
+    }
+
+    // check validity of bspline
+    assert (cpoints.Length() + maxDegree + 1 == nkn);
+#endif
+
+    // build the resulting B-Spline
+    Handle(Geom_BSplineCurve) result = new Geom_BSplineCurve(cpoints, weights, knots, mults, maxDegree, false);
+    return result;
+}
+
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::concatSurfacesUDir(Handle(Geom_BSplineSurface) bspl1,
+                                                                       Handle(Geom_BSplineSurface) bspl2,
+                                                                       double space_tol)
+{
+
+    DEBUG_SCOPE(debug);
+    debug.addShape(BRepBuilderAPI_MakeFace(bspl1, 1e-6).Face(), "surf1");
+    debug.addShape(BRepBuilderAPI_MakeFace(bspl2, 1e-6).Face(), "surf2");
+
+    // the surfaces must not be periodic in u direction
+    assert (bspl1->IsUPeriodic() == false);
+    assert (bspl2->IsUPeriodic() == false);
+
+    // we dont have nurbs implemented right now
+    assert (bspl1->IsURational() == false);
+    assert (bspl2->IsURational() == false);
+    assert (bspl1->IsVRational() == false);
+    assert (bspl2->IsVRational() == false);
+
+    double param_tol = 1e-14;
+
+    // check that surfaces are following parametrically
+    double umin1, umax1, vmin1, vmax1;
+    bspl1->Bounds(umin1, umax1, vmin1, vmax1);
+    double umin2, umax2, vmin2, vmax2;
+    bspl2->Bounds(umin2, umax2, vmin2, vmax2);
+
+    if (std::abs(umax1 - umin2) > param_tol) {
+        std::stringstream str;
+        str << "Surfaces do not follow in u-parametric direction in CTiglBSplineAlgorithms::concatSurfacesUDir. ";
+        str << "Surface 1 ends at " << umax1 << ", Surface 2 begins at " << umin2 << "!";
+        throw CTiglError(str.str(), TIGL_MATH_ERROR);
+    }
+
+    bspl1->SetVNotPeriodic();
+    bspl2->SetVNotPeriodic();
+
+    auto u_degree = std::max(bspl1->UDegree(), bspl2->UDegree());
+    auto v_degree = std::max(bspl1->VDegree(), bspl2->VDegree());
+
+    bspl1->IncreaseDegree(u_degree, v_degree);
+    bspl2->IncreaseDegree(u_degree, v_degree);
+
+    // check that corner points match
+    auto leftCornerDist = bspl1->Value(umax1, vmin1).Distance(bspl2->Value(umin2, vmin2));
+    auto rightCornerDist = bspl1->Value(umax1, vmax1).Distance(bspl2->Value(umin2, vmax2)) ;
+    if (leftCornerDist > space_tol || rightCornerDist > space_tol) {
+        throw CTiglError("Surfaces don't match within tolerances in CTiglBSplineAlgorithms::concatSurfacesUDir.", TIGL_MATH_ERROR);
+    }
+
+    auto spl_vec = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface({bspl1, bspl2}, SurfaceDirection::v);
+    bspl1 = spl_vec[0];
+    bspl2 = spl_vec[1];
+
+    assert(bspl1->NbVPoles() == bspl2->NbVPoles());
+
+    // concat control points
+    TColgp_Array2OfPnt cpsNew(1, bspl1->NbUPoles() + bspl2->NbUPoles() - 1, 1, bspl1->NbVPoles());
+    for (int iv = 0; iv < bspl1->NbVPoles(); ++iv) {
+        for (int iu = 0; iu < bspl1->NbUPoles() - 1; ++iu) {
+            cpsNew.SetValue(iu+1, iv+1, bspl1->Pole(iu+1, iv+1));
+        }
+        auto offset = bspl1->NbUPoles();
+        for (int iu = 0; iu < bspl2->NbUPoles(); ++iu) {
+            cpsNew.SetValue(iu + offset, iv+1, bspl2->Pole(iu+1, iv+1));
+        }
+    }
+
+    // concat knots and mults
+    TColStd_Array1OfReal uknots_new(1, bspl1->NbUKnots() + bspl2->NbUKnots() - 1);
+    TColStd_Array1OfInteger umults_new(1, bspl1->NbUKnots() + bspl2->NbUKnots() - 1);
+
+    for (int i = 0; i < bspl1->NbUKnots()-1; ++i) {
+        uknots_new.SetValue(i+1, bspl1->UKnot(i+1));
+        umults_new.SetValue(i+1, bspl1->UMultiplicity(i+1));
+    }
+
+    int middleIdx = bspl1->NbUKnots();
+    uknots_new.SetValue(middleIdx, 0.5 * (bspl1->UKnot(middleIdx) + bspl2->UKnot(1)));
+    umults_new.SetValue(middleIdx, bspl1->UMultiplicity(middleIdx) - 1);
+
+    for (int i = 1; i < bspl2->NbUKnots(); ++i) {
+        uknots_new.SetValue(i + middleIdx, bspl2->UKnot(i+1));
+        umults_new.SetValue(i + middleIdx, bspl2->UMultiplicity(i+1));
+    }
+
+    // we simply take the v-knots of the first spline
+    TColStd_Array1OfReal vknots_new(1, bspl1->NbVKnots());
+    TColStd_Array1OfInteger vmults_new(1, bspl1->NbVKnots());
+    bspl1->VKnots(vknots_new);
+    bspl1->VMultiplicities(vmults_new);
+
+#ifdef DEBUG
+    int sum_umults = 0;
+    for (int i = umults_new.Lower(); i <= umults_new.Upper(); ++i) {
+        sum_umults += umults_new.Value(i);
+    }
+
+    int sum_vmults = 0;
+    for (int i = vmults_new.Lower(); i <= vmults_new.Upper(); ++i) {
+        sum_vmults += vmults_new.Value(i);
+    }
+
+    assert(cpsNew.ColLength() + u_degree + 1 == sum_umults);
+    assert(cpsNew.RowLength() + v_degree + 1 == sum_vmults);
+#endif
+
+    return new Geom_BSplineSurface(cpsNew, uknots_new, vknots_new,
+                                   umults_new, vmults_new,
+                                   u_degree, v_degree, false, false);
+}
+
+Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::makeKnotsUniform(Handle(Geom_BSplineSurface) surf, unsigned int nseg_u, unsigned int nseg_v)
+{
+    double u1, u2, v1, v2;
+    surf->Bounds(u1, u2, v1, v2);
+
+    // we create a degree 3 approximation in all directions
+    auto ncp_u = std::max(4, static_cast<int>(nseg_u + 1));
+    auto ncp_v = std::max(4, static_cast<int>(nseg_v + 1));
+
+    auto u = LinspaceWithBreaks(u1, u2, ncp_u, {});
+    auto v = LinspaceWithBreaks(v1, v2, ncp_v, {});
+
+    TColgp_Array2OfPnt points(1, ncp_u, 1, ncp_v);
+
+    for (size_t i = 0; i < u.size(); ++i) {
+        for (size_t j = 0; j < v.size(); ++j) {
+            auto pnt = surf->Value(u[i], v[j]);
+            points.SetValue(static_cast<Standard_Integer>(i+1), static_cast<Standard_Integer>(j+1), pnt);
+        }
+    }
+
+    return CTiglBSplineAlgorithms::pointsToSurface(points, u, v, true, true);
 }
 
 } // namespace tigl

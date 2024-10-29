@@ -102,7 +102,7 @@ TEST_F(creatorFuselages, createFuselage_emptyModel)
     tigl::CCPACSFuselage& fuselage = fuselages->CreateFuselage("Fuselage1", 3, "fuselageCircleProfile1");
 
     EXPECT_EQ("Fuselage1", fuselages->GetFuselage(1).GetUID());
-    EXPECT_EQ("Fuselage1Sec2Tr", fuselages->GetFuselage(1).GetSection(2).GetTransformation().GetUID());
+    EXPECT_EQ("Fuselage1Sec2Tr", fuselages->GetFuselage(1).GetSection(2).GetTransformation().GetUID().value());
     EXPECT_EQ("Fuselage1Sec3Elem1", fuselages->GetFuselage(1).GetSection(3).GetSectionElement(1).GetUID());
     EXPECT_EQ(0, fuselages->GetFuselage(1).GetSection(3).GetSectionElement(1).GetTranslation().x);
     EXPECT_EQ(2, fuselages->GetFuselage(1).GetPositionings()->GetPositionings().at(2)->GetToPoint().x);
@@ -113,7 +113,7 @@ TEST_F(creatorFuselages, createFuselage_emptyModel)
 
     EXPECT_EQ("Fuselage2", fuselages->GetFuselage(2).GetUID());
     EXPECT_EQ("Fuselage2Sec9TrTransl",
-              fuselages->GetFuselage(2).GetSection(9).GetTransformation().GetTranslation().value().GetUID());
+              fuselages->GetFuselage(2).GetSection(9).GetTransformation().GetTranslation().value().GetUID().value());
     EXPECT_EQ("Fuselage2Sec3Elem1", fuselages->GetFuselage(2).GetSection(3).GetSectionElement(1).GetUID());
     EXPECT_EQ(7, fuselages->GetFuselage(2).GetPositionings()->GetPositionings().at(7)->GetToPoint().x);
 

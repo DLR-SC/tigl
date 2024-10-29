@@ -25,6 +25,8 @@
 #include "CTiglLogging.h"
 #include "to_string.h"
 #include "typename.h"
+#include "ITiglUIDRefObject.h"
+
 
 namespace tigl
 {
@@ -64,6 +66,72 @@ void CTiglUIDManager::RegisterObject(const std::string& uid, void* object, const
                                            )));
 }
 
+void CTiglUIDManager::UpdateObjectUID(const std::string& oldUID, const std::string& newUID)
+{
+    if (oldUID.empty() || newUID.empty()) {
+        throw CTiglError("Tried to update an empty uid");
+    }
+    // check existance
+    CPACSObjectMap::iterator it = cpacsObjects.find(oldUID);
+    if (it == cpacsObjects.end()) {
+        throw CTiglError("Tried to update the uid of an object which was not registered, from uid " + oldUID + " to uid " + newUID);
+    }
+    // ensure that new uid does not exist
+    const CPACSObjectMap::iterator it2 = cpacsObjects.find(newUID);
+    if (it2 != cpacsObjects.end()) {
+        throw CTiglError("Tried to update the uid of object " + oldUID + " to the new uid " + newUID + " which is already registered to an instance of " + std::string(it2->second.type->name()));
+    }
+    // insert entry with new UID
+    cpacsObjects.insert(it2, std::make_pair(newUID, it->second));
+    // erase old entry
+    cpacsObjects.erase(it);
+
+    TryUpdateGeometricComponentUID(oldUID, newUID);
+
+    UpdateUIDReferences(oldUID, newUID);
+}
+
+
+void CTiglUIDManager::RegisterReference(const std::string& targetUid, ITiglUIDRefObject* source)
+{
+    if (!source || !source->GetNextUIDObject()) {
+        LOG(ERROR) << "Tried to register a reference to uid " << targetUid << " from non-UID object (nullptr passed)";
+        return;
+    }
+
+    // ignore references to empty string
+    if (targetUid.empty()) {
+        return;
+    }
+    // insert
+    uidReferences[targetUid][source]++;
+}
+
+bool CTiglUIDManager::TryUnregisterReference(const std::string& targetUid, ITiglUIDRefObject* source)
+{
+    // find all registerd references to uid
+    UIDReferenceMap::iterator it = uidReferences.find(targetUid);
+    if (it == uidReferences.end()) {
+        return false;
+    }
+
+    // find reference from object to uid
+    UIDReferenceEntries& referencingObjects = it->second;
+    UIDReferenceEntries::iterator refIt = referencingObjects.find(source);
+    if (refIt != referencingObjects.end()) {
+        int& refCount = refIt->second;
+        refCount--;
+        if (refCount <= 0) {
+            referencingObjects.erase(refIt);
+            if (referencingObjects.empty()) {
+                uidReferences.erase(it);
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
 CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid, const std::type_info& typeInfo) const
 {
     const TypedPtr object = ResolveObject(uid);
@@ -86,6 +154,18 @@ CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid)
     return it->second;
 }
 
+
+namespace {
+    bool isChildOf(const tigl::CTiglUIDObject* obj, const std::string& parentUID)
+    {
+        const tigl::CTiglUIDObject* parentObj = obj->GetNextUIDParent();
+        while (parentObj && parentObj->GetObjectUID() != parentUID) {
+            parentObj = parentObj->GetNextUIDParent();
+        }
+        return (parentObj != nullptr);
+    }
+}
+
 bool CTiglUIDManager::TryUnregisterObject(const std::string& uid)
 {
     const CPACSObjectMap::iterator it = cpacsObjects.find(uid);
@@ -93,6 +173,30 @@ bool CTiglUIDManager::TryUnregisterObject(const std::string& uid)
         return false;
     }
     cpacsObjects.erase(it);
+
+    // remove all references to object
+    if (uidReferences.find(uid) != uidReferences.end()) {
+        uidReferences.erase(uid);
+    }
+    // remove all references from object
+    for (UIDReferenceMap::iterator it = uidReferences.begin(); it != uidReferences.end();) {
+        UIDReferenceEntries& entries = it->second;
+        for (UIDReferenceEntries::iterator refIt = it->second.begin(); refIt != it->second.end();) {
+            const CTiglUIDObject* refObj = refIt->first->GetNextUIDObject();
+            if (refObj->GetObjectUID() == uid || isChildOf(refObj, uid)) {
+                refIt = entries.erase(refIt);
+            }
+            else {
+                ++refIt;
+            }
+        }
+        if (entries.empty()) {
+            it = uidReferences.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
 
     // also remove the geometric component if it exists
     TryRemoveGeometricComponent(uid);
@@ -177,6 +281,62 @@ bool CTiglUIDManager::TryRemoveGeometricComponent(const std::string & uid)
     }
 
     return true;
+}
+
+bool CTiglUIDManager::TryUpdateGeometricComponentUID(const std::string& oldUID, const std::string& newUID)
+{
+    ShapeContainerType::iterator it = allShapes.find(oldUID);
+    if (it == allShapes.end()) {
+        return false;
+    }
+    // insert entry with new UID
+    allShapes[newUID] = it->second;
+    // erase old entry
+    allShapes.erase(it);
+
+    RelativeComponentContainerType::iterator it2 = relativeComponents.find(oldUID);
+    if (it2 != relativeComponents.end()) {
+        // insert entry with new UID
+        relativeComponents[newUID] = it2->second;
+        // erase old entry
+        relativeComponents.erase(it2);
+    }
+    return true;
+}
+
+void CTiglUIDManager::UpdateUIDReferences(const std::string& oldUID, const std::string& newUID)
+{
+    // fix target uid
+    auto it = uidReferences.find(oldUID);
+    if (it != uidReferences.end()) {
+        uidReferences[newUID] = it->second;
+        // notify all targets about the change
+        for (auto ref : it->second) {
+            ref.first->NotifyUIDChange(oldUID, newUID);
+        }
+        uidReferences.erase(it);
+    }
+}
+
+// Checks if a UID is referenced.
+bool CTiglUIDManager::IsReferenced(const std::string& uid) const
+{
+    if (uid.empty()) {
+        throw CTiglError("Empty UID in CTiglUIDManager::IsReferenced", TIGL_XML_ERROR);
+    }
+    return (uidReferences.find(uid) != uidReferences.end());
+}
+
+std::set<const CTiglUIDObject*> CTiglUIDManager::GetReferences(const std::string& uid) const
+{
+    std::set<const CTiglUIDObject*> references;
+    if (IsReferenced(uid)) {
+        // find pointers in list of registered uid objects
+        for (const auto& ref : uidReferences.at(uid)) {
+            references.insert(ref.first->GetNextUIDObject());
+        }
+    }
+    return references;
 }
 
 // Checks if a UID already exists.

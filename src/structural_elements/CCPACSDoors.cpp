@@ -19,8 +19,8 @@
 namespace tigl
 {
 
-CCPACSDoors::CCPACSDoors(CTiglUIDManager* uidMgr)
-    : generated::CPACSDoors(uidMgr)
+CCPACSDoors::CCPACSDoors(CCPACSStructuralElements* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSDoors(parent, uidMgr)
 {
 }
 

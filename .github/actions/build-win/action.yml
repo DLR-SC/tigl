@@ -1,0 +1,153 @@
+name: "Windows Build"
+
+description: "Build TiGL on Windows using MSVC"
+
+inputs:
+
+  config:
+    description: "Configuration to build (Release or Debug, see CMAKE_BUILD_TYPE)"
+    required: true
+    default: "Release"
+
+  oce_static_libs:
+    description: "Link OpenCascade statically or dynamically (ON or OFF)"
+    required: false
+    default: "OFF"
+
+  tigl_nightly:
+    description: "CMake option to amend the version with the git hash (ON or OFF)"
+    required: true
+    default: "ON"
+
+  tigl_concat_generated_files:
+    description: "CMake option to concatenate the generated source files (ON or OFF)"
+    required: true
+    default: "ON"
+
+  tigl_bindings_python_internal:
+    description: "CMake option to build the internal python API"
+    required: false
+    default: "OFF"
+
+  tigl_enable_coverage:
+    description: "CMake option to enable code coverage with gcov/lcov (ON or OFF)"
+    required: false
+    default: "OFF"
+
+  documentation-artifact:
+    description: "Name of the documentation artifact. Leave empty to skip doc build"
+    required: false
+    default: ''
+
+  installer-artifact:
+    description: "Name of the installer artifact. Leave empty to skip installer generation with NSIS"
+    required: false
+    default: ''
+
+  package-artifact:
+    description: "Name of the package artifact. Leave empty to skip package generation with NSIS"
+    required: false
+    default: ''
+
+  build-artifact:
+    descpription: "Set the name for the build artifact stored by this job"
+    required: true
+
+runs:
+
+  using: "composite"
+
+  steps:
+
+    - name: Setup miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        activate-environment: tigl-bld
+        environment-file: environment.yml
+        auto-activate-base: false
+
+    - name: Install dependencies (static opencascade)
+      if: inputs.oce_static_libs == 'ON'
+      shell: cmd /C call {0}
+      run: |
+        conda install opencascade-static=7.4.0 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
+    
+    - name: Conda info
+      shell: cmd /C call {0}
+      run: |
+        conda info
+        conda list
+
+    - name: Set up Visual Studio shell
+      uses: egor-tensin/vs-shell@v2
+      with:
+        arch: x64
+
+    - name: Build TiGL
+      shell: cmd /C call {0}
+      run: |
+        set CMAKE_PREFIX_PATH=C:\Miniconda\envs\tigl-bld\Library;C:\Miniconda\envs\tigl-bld\Scripts
+        mkdir build
+        cd build
+        cmake .. -GNinja -DCMAKE_BUILD_TYPE=${{ inputs.config }} ^
+                         -DCMAKE_INSTALL_PREFIX=install ^
+                         -DOCE_STATIC_LIBS=${{ inputs.oce_static_libs }} ^
+                         -DTIGL_BUILD_TESTS=ON ^
+                         -DTIGL_CONCAT_GENERATED_FILES=${{ inputs.tigl_concat_generated_files }} ^
+                         -DTIGL_BINDINGS_PYTHON_INTERNAL=${{ inputs.tigl_bindings_python_internal }} ^
+                         -DTIGL_BINDINGS_MATLAB=ON ^
+                         -DTIGL_BINDINGS_JAVA=ON ^
+                         -DTIGL_NIGHTLY=${{ inputs.tigl-nightly }} ^
+                         -DPythonOCC_SOURCE_DIR=C:\Miniconda\envs\tigl-bld\Library\src\pythonocc-core ^
+                         -DMATLAB_DIR=C:\Miniconda\envs\tigl-bld\Library\share\matlab ^
+                         -DTIGL_ENABLE_COVERAGE=${{ inputs.tigl_enable_coverage }}
+        cmake --build . -j 4 --target install
+
+    - name: Create package and installer
+      if: ${{ inputs.package-artifact || inputs.installer-artifact }}
+      shell: cmd
+      run: |
+        cd build
+        cmake --build . --target doc
+        cpack.exe -G ZIP & cpack.exe -G NSIS
+
+    - name: Upload package as artifact
+      if: ${{ inputs.package-artifact }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.package-artifact }}
+        path: build/*.zip
+
+    - name: Upload installer as artifact
+      if: ${{ inputs.installer-artifact }}
+      uses: actions/upload-artifact@v4
+      with:
+       name: ${{ inputs.installer-artifact }}
+       path: build/*.exe
+
+    - name: Create documentation
+      if: ${{ inputs.documentation-artifact }}
+      shell: cmd
+      run: |
+        cd build
+        cmake --build . --target doc
+
+    - name: Upload documentation as artifact
+      if: ${{ inputs.documentation-artifact }}
+      uses: actions/upload-artifact@v4
+      with:
+       name: ${{ inputs.documentation-artifact }}
+       path: build/doc/html/*
+
+    - name: create build dir archive
+      shell: bash
+      run: |
+        tar -czf build.tar.gz build
+
+    - name: Upload build directory
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.build-artifact }}
+        path: build.tar.gz
+        retention-days: 1

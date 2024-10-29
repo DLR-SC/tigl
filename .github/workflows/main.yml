@@ -1,0 +1,46 @@
+name: CI workflow for main branch
+
+on:
+  schedule:
+    - cron: "40 2 * * *"
+  push:
+    branches:
+      - 'master'
+    tags:
+      - v*
+  workflow_dispatch:
+
+jobs:
+
+  pre:
+    # no nightly cmake flag and no concatenation of generated files for release builds
+    runs-on: "ubuntu-latest"
+    outputs:
+      nightly: ${{ steps.set_flags.outputs.nightly }}
+      concat: ${{ steps.set_flags.outputs.concat }}
+    steps:
+      - id: set_flags
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}" == "true" ]]; then
+            echo "nightly=OFF" >> $GITHUB_OUTPUT
+            echo "concat=OFF" >> $GITHUB_OUTPUT
+          else
+            echo "nightly=ON" >> $GITHUB_OUTPUT
+            echo "concat=ON" >> $GITHUB_OUTPUT
+          fi
+
+  continuous-integration:
+    needs: pre
+    uses: ./.github/workflows/continuous-integration.yml
+    secrets: inherit
+    with:
+      # create a release build on new git tag
+      draft-release: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+      tigl_nightly: ${{ needs.pre.outputs.nightly }}
+      tigl_concat_generated_files: ${{ needs.pre.outputs.concat }}
+      integration-tests: true
+      documentation-artifact: 'html-documentation'
+      win-installer-artifact: 'win-installer'
+      win-package-artifact: 'win-package'
+      macos-package-artifact: 'macos-package'

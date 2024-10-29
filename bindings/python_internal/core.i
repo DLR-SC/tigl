@@ -27,11 +27,16 @@
 #include "CTiglMemoryPool.h"
 #include "CTiglError.h"
 #include "CCPACSStringVector.h"
-#include "generated/CPACSUpdates.h"
+#include "generated/CPACSVersionInfo.h"
+#include "generated/CPACSVersionInfos.h"
 #include "generated/CPACSHeader.h"
+#include "CTiglUIDObject.h"
+#include "ITiglUIDRefObject.h"
 %}
 
 %feature("autodoc", "3");
+
+%catch_exceptions()
 
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
@@ -39,37 +44,13 @@
 %boost_optional(tigl::generated::CPACSUpdates)
 %boost_optional(tigl::CCPACSStringVector)
 
+%include "ITiglUIDRefObject.h"
+%include "CTiglUIDObject.h"
 %include "CreateIfNotExists.h"
 %include "CTiglMemoryPool.h"
 %include "generated/CPACSStringVectorBase.h"
 %include "CCPACSStringVector.h"
-%include "generated/CPACSUpdates.h"
+%include "generated/CPACSVersionInfo.h"
+%include "generated/CPACSVersionInfos.h"
 %include "generated/CPACSHeader.h"
 
-%feature("director:except") {
-    if ($error != NULL) {
-        throw Swig::DirectorMethodException();
-    }
-}
-
-%exception {
-    try {
-        $action
-    }
-    catch (tigl::CTiglError & err) {
-        PyErr_SetString(tiglError_to_PyExc(err), const_cast<char*>(err.what()));
-        SWIG_fail;
-    }
-    catch(Standard_Failure & err) {
-        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>((std::string("OpenCASCADE Error: ") + err.GetMessageString()).c_str()));
-        SWIG_fail;
-    }
-    catch(std::exception & err) {
-        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(err.what()));
-        SWIG_fail;
-    }
-    catch(...) {
-        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>("An unkown error occured!"));
-        SWIG_fail;
-    }
-}

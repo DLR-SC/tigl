@@ -179,13 +179,13 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta,
         CTiglPoint x3 = b + x1;
         CTiglPoint x4 = c + x2 + x3 - x1;
         LOG(ERROR) << std::setprecision(20) << "Error in CTiglPointTranslator::translate: "
-                   << "p = " << p.x << "," << p.y << "," << p.z << endl
-                   << "  x1 = " << x1.x << "," << x1.y << "," << x1.z << endl
-                   << "  x2 = " << x2.x << "," << x2.y << "," << x2.z << endl
-                   << "  x3 = " << x3.x << "," << x3.y << "," << x3.z << endl
-                   << "  x4 = " << x4.x << "," << x4.y << "," << x4.z << endl;
+                   << "p = " << p.x << "," << p.y << "," << p.z << "\n"
+                   << "  x1 = " << x1.x << "," << x1.y << "," << x1.z << "\n"
+                   << "  x2 = " << x2.x << "," << x2.y << "," << x2.z << "\n"
+                   << "  x3 = " << x3.x << "," << x3.y << "," << x3.z << "\n"
+                   << "  x4 = " << x4.x << "," << x4.y << "," << x4.z << "\n";
         *eta = etaxsi[0]; *xsi = etaxsi[1];
-        LOG(ERROR) << "  Resulting eta/xsi: " << *eta << "," << *xsi << endl;
+        LOG(ERROR) << "  Resulting eta/xsi: " << *eta << "," << *xsi << std::endl;
         return ret;
     }
     else {

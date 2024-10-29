@@ -45,7 +45,7 @@ tigl::CTiglFuselageSectionElement::CTiglFuselageSectionElement(tigl::CCPACSFusel
 {
     element  = inElement;
     section  = element->GetParent()->GetParent();
-    fuselage = section->GetParent()->GetParent();
+    fuselage = section->GetParent()->GetParent<tigl::CCPACSFuselage>();
 }
 
 

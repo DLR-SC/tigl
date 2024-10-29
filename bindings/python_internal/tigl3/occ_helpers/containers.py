@@ -1,13 +1,15 @@
-from OCC.TColStd import TColStd_HArray1OfReal, TColStd_HArray1OfInteger
-from OCC.TColgp import TColgp_HArray1OfPnt
-from OCC.TColGeom import TColGeom_HArray1OfBSplineCurve
-from OCC.gp import gp_Pnt
+from OCC.Core.TColStd import TColStd_HArray1OfReal, TColStd_HArray1OfInteger
+from OCC.Core.TColgp import TColgp_HArray1OfPnt
+from OCC.Core.TColGeom import TColGeom_HArray1OfBSplineCurve
+from OCC.Core.gp import gp_Pnt
+from tigl3.geometry import CurveList
 
 
 def float_array(float_list):
     """
     Creates an OpenCASCADE TColStd_HArray1OfReal from
     a list of floats
+
     :param float_list: List of integer values
     :return: TColStd_HArray1OfReal
     """
@@ -22,12 +24,13 @@ def int_array(int_list):
     """
     Creates an OpenCASCADE TColStd_HArray1OfInteger from
     a list of integers
+
     :param int_list: List of integer values
     :return: TColStd_HArray1OfInteger
     """
     result = TColStd_HArray1OfInteger(1, len(int_list))
     for i, value in enumerate(int_list):
-        result.SetValue(i, value)
+        result.SetValue(i+1, value)
     return result
 
 
@@ -54,6 +57,7 @@ def point_array(points):
 def bspline_array(bspline_list):
     """
     Create a TColGeom_HArray1OfBSplineCurve from a list of Geom_BSplineCurves
+
     :param bspline_list: list of TColGeom_HArray1OfBSplineCurve
     :return: TColGeom_HArray1OfBSplineCurve
     """
@@ -64,9 +68,26 @@ def bspline_array(bspline_list):
     return result
 
 
+def geomcurve_vector(geomcurve_list):
+    """
+    Creates a std::vector of Handle(Geom_Curve) to be passed
+    to different geometry algorithms of tigl
+
+    :param geomcurve_list: list of Geom_Curve
+    :return: VectorHandleGeom_Curve
+    """
+
+    vec = CurveList()
+    for curve in geomcurve_list:
+        vec.push_back(curve)
+
+    return vec
+
+
 def iter_array(occ_array):
     """
     Provides a generator for an OpenCASCADE array
+    
     """
 
     if hasattr(occ_array, "GetObject"):

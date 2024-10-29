@@ -22,9 +22,14 @@
 
 namespace tigl {
 
-CCPACSEnginePositions::CCPACSEnginePositions(CTiglUIDManager* uidMgr)
-    : generated::CPACSEnginePositions(uidMgr)
+CCPACSEnginePositions::CCPACSEnginePositions(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEnginePositions(parent, uidMgr)
 {}
+
+CCPACSEnginePositions::CCPACSEnginePositions(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEnginePositions(parent, uidMgr)
+{}
+
 
 TIGL_EXPORT size_t CCPACSEnginePositions::GetEnginePositionCount() const
 {
@@ -50,4 +55,4 @@ TIGL_EXPORT CCPACSEnginePosition& CCPACSEnginePositions::GetEnginePosition(std::
     throw CTiglError("CCPACSEnginePositions::GetEnginePosition: EnginePosition \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
-} //namepsace tigl
+} //namespace tigl

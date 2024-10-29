@@ -41,15 +41,17 @@ class TIGLViewerDocument : public QObject
 
 public:
 
-    TIGLViewerDocument(TIGLViewerWindow *parentWidget);
+    explicit TIGLViewerDocument(TIGLViewerWindow *parentWidget);
     ~TIGLViewerDocument( ) override;
 
-    TiglReturnCode openCpacsConfiguration(const QString fileName);
+    TiglReturnCode openCpacsConfiguration(const QString& fileName);
     void closeCpacsConfiguration();
     TiglCPACSConfigurationHandle getCpacsHandle() const;
 
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration() const;
+
+    void updateFlapTransform(const std::string& controlUID);
 
     // Reload the TIGLViewerDocument form a string that content the tixi content.
     // This function needs that a configuration (model) is open. Otherwise it will do nothing.
@@ -65,7 +67,8 @@ signals:
 
 public slots:
     // Aircraft slots
-    void drawConfiguration();
+    void drawConfiguration(bool WithDuctCutouts=false);
+    void drawConfigurationWithDuctCutouts();
     void drawAllFuselagesAndWingsSurfacePoints();
     void drawFusedAircraft();
     void drawFusedAircraftTriangulation();
@@ -86,6 +89,7 @@ public slots:
     void drawWingComponentSegment();
     void drawWingComponentSegmentPoints();
     void drawWingShells();
+    void drawWingFlaps();
     void drawWingStructure();
 
     // Fuselage slots
@@ -169,11 +173,16 @@ private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
+    class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;
 
-    void writeToStatusBar(QString text);
-    void displayError(QString text, QString header="");
+    void writeToStatusBar(const QString& text);
+    void displayError(const QString& text, const QString& header="");
+    void displayTiglError(const QString& text, TiglReturnCode ret);
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
-    char* qstringToCstring(QString text);
+    char* qstringToCstring(const QString& text);
+
+    Quantity_Color getDefaultShapeColor();
+    Quantity_Color getDefaultShapeSymmetryColor();
 
     void drawAirfoil(tigl::CCPACSWingProfile& profile);
     void drawWingOverlayProfilePoints(tigl::CCPACSWing& wing);
@@ -185,6 +194,8 @@ private:
     void drawWingComponentSegment(tigl::CCPACSWingComponentSegment& segment);
     void drawWingComponentSegmentPoint(const std::string& csUID, const double& eta, const double& xsi);
     void drawWingShells(tigl::CCPACSWing& wing);
+    bool drawWingFlaps(tigl::CCPACSWing& wing);
+    void drawWingFlap(const QString& flapUID);
 
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
     

@@ -16,6 +16,9 @@
 #ifndef CCPACSWINGRIBSDEFINITIONS_H
 #define CCPACSWINGRIBSDEFINITIONS_H
 
+#include <string>
+#include <boost/optional.hpp>
+
 #include "generated/CPACSWingRibsDefinitions.h"
 
 namespace tigl
@@ -29,7 +32,7 @@ class CCPACSWingRibsDefinitions : public generated::CPACSWingRibsDefinitions
 public:
     TIGL_EXPORT CCPACSWingRibsDefinitions(CCPACSWingCSStructure* structure, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
     TIGL_EXPORT int GetRibsDefinitionCount() const;
 

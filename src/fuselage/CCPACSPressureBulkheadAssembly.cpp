@@ -26,10 +26,10 @@ CCPACSPressureBulkheadAssembly::CCPACSPressureBulkheadAssembly(CCPACSFuselageStr
 {
 }
 
-void CCPACSPressureBulkheadAssembly::Invalidate()
+void CCPACSPressureBulkheadAssembly::Invalidate(const boost::optional<std::string>& source) const
 {
     for (int i = 0; i < m_pressureBulkheads.size(); i++) {
-        m_pressureBulkheads[i]->Invalidate();
+        m_pressureBulkheads[i]->Invalidate(source);
     }
 }
 

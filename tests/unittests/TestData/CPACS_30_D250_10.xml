@@ -5,8 +5,8 @@
     <description>D250 - aircraft geometrical model interpreted from internal data</description>
     <creator>Erwin Moerland</creator>
     <timestamp>2011-07-01T12:00:00</timestamp>
-    <version>1.1.0</version>
-    <cpacsVersion>3.0</cpacsVersion>
+    <version>1.3.1</version>
+    <cpacsVersion>3.2</cpacsVersion>
     <updates>
       <update>
         <modification>Extended with nongeometrical settings for all VAMP tools</modification>
@@ -49,6 +49,27 @@
         <timestamp>2019-04-29T20:48:14</timestamp>
         <version>1.1.0</version>
         <cpacsVersion>3.0</cpacsVersion>
+      </update>
+      <update>
+        <modification>Converted to CPACS 3.1 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2020-04-26T02:01:29</timestamp>
+        <version>1.2.0</version>
+        <cpacsVersion>3.1</cpacsVersion>
+      </update>
+      <update>
+        <modification>Converted to CPACS 3.2 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2021-04-23T18:01:59</timestamp>
+        <version>1.3.0</version>
+        <cpacsVersion>3.2</cpacsVersion>
+      </update>
+      <update>
+        <modification>Fixed incorrectly referenced uids for flap outer shape</modification>
+        <creator>Martin Siggel</creator>
+        <timestamp>2021-11-15T00:04:32</timestamp>
+        <version>1.3.1</version>
+        <cpacsVersion>3.2</cpacsVersion>
       </update>
     </updates>
   </header>
@@ -2655,7 +2676,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -2668,7 +2689,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>21</relDeflection>
+                            <controlParameter>21</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -2734,7 +2755,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -2747,7 +2768,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>24</relDeflection>
+                            <controlParameter>24</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -2813,7 +2834,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -2826,7 +2847,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>24</relDeflection>
+                            <controlParameter>24</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -2892,7 +2913,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -2905,7 +2926,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>24</relDeflection>
+                            <controlParameter>24</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -2971,7 +2992,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -2984,7 +3005,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>24</relDeflection>
+                            <controlParameter>24</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -3050,7 +3071,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -3063,7 +3084,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>24</relDeflection>
+                            <controlParameter>24</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -3129,7 +3150,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -3142,7 +3163,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>24</relDeflection>
+                            <controlParameter>24</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -3167,11 +3188,11 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0.097</eta>
-                            <referenceUID>D250_InnerFlap</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.8554</xsi>
-                            <referenceUID>D250_InnerFlap</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.15</relHeightLE>
@@ -3182,11 +3203,11 @@
                         <outerBorder>
                           <etaLE>
                             <eta>0.317</eta>
-                            <referenceUID>D250_InnerFlap</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.7587</xsi>
-                            <referenceUID>D250_InnerFlap</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.15</relHeightLE>
@@ -3442,7 +3463,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation uID="D250_InnerFlap_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -3455,7 +3476,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>32</relDeflection>
+                            <controlParameter>32</controlParameter>
                             <innerHingeTranslation uID="D250_InnerFlap_innerHingeTranslation2">
                               <x>0.5513</x>
                               <y>0.0</y>
@@ -3634,11 +3655,11 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0.317</eta>
-                            <referenceUID>D250_OuterFlap</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.7587</xsi>
-                            <referenceUID>D250_OuterFlap</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.15</relHeightLE>
@@ -3649,11 +3670,11 @@
                         <outerBorder>
                           <etaLE>
                             <eta>0.669</eta>
-                            <referenceUID>D250_OuterFlap</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.6952</xsi>
-                            <referenceUID>D250_OuterFlap</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.15</relHeightLE>
@@ -3973,7 +3994,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation uID="D250_OuterFlap_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -3986,7 +4007,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>32</relDeflection>
+                            <controlParameter>32</controlParameter>
                             <innerHingeTranslation uID="D250_OuterFlap_innerHingeTranslation2">
                               <x>0.5513</x>
                               <y>0.0</y>
@@ -4287,15 +4308,15 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0.6926</eta>
-                            <referenceUID>D250_InnerAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.678</eta>
-                            <referenceUID>D250_InnerAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.764</xsi>
-                            <referenceUID>D250_InnerAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
@@ -4306,15 +4327,15 @@
                         <outerBorder>
                           <etaLE>
                             <eta>0.8162</eta>
-                            <referenceUID>D250_InnerAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.8056</eta>
-                            <referenceUID>D250_InnerAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.7781</xsi>
-                            <referenceUID>D250_InnerAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
@@ -4538,7 +4559,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>-25</relDeflection>
+                            <controlParameter>-25</controlParameter>
                             <innerHingeTranslation uID="D250_InnerAileron_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -4551,7 +4572,7 @@
                             <hingeLineRotation>-25</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation uID="D250_InnerAileron_innerHingeTranslation2">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -4564,7 +4585,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>25</relDeflection>
+                            <controlParameter>25</controlParameter>
                             <innerHingeTranslation uID="D250_InnerAileron_innerHingeTranslation3">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -4677,15 +4698,15 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0.8162</eta>
-                            <referenceUID>D250_OuterAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaLE>
                           <etaTE>
                             <eta>0.8056</eta>
-                            <referenceUID>D250_OuterAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaTE>
                           <xsiLE>
                             <xsi>0.7781</xsi>
-                            <referenceUID>D250_OuterAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
@@ -4696,11 +4717,11 @@
                         <outerBorder>
                           <etaLE>
                             <eta>0.9588</eta>
-                            <referenceUID>D250_OuterAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.77</xsi>
-                            <referenceUID>D250_OuterAileron</referenceUID>
+                            <referenceUID>D250_wing_CS</referenceUID>
                           </xsiLE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
@@ -4956,7 +4977,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>-25</relDeflection>
+                            <controlParameter>-25</controlParameter>
                             <innerHingeTranslation uID="D250_OuterAileron_innerHingeTranslation1">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -4969,7 +4990,7 @@
                             <hingeLineRotation>-25</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation uID="D250_OuterAileron_innerHingeTranslation2">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -4982,7 +5003,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>25</relDeflection>
+                            <controlParameter>25</controlParameter>
                             <innerHingeTranslation uID="D250_OuterAileron_innerHingeTranslation3">
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5269,7 +5290,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5282,7 +5303,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5545,7 +5566,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5558,7 +5579,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5821,7 +5842,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -5834,7 +5855,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6097,7 +6118,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6110,7 +6131,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6373,7 +6394,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6386,7 +6407,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6649,7 +6670,7 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -6662,7 +6683,7 @@
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>1</relDeflection>
+                            <controlParameter>1</controlParameter>
                             <innerHingeTranslation>
                               <x>0.0</x>
                               <y>0.0</y>
@@ -7542,15 +7563,15 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0.152</eta>
-                            <referenceUID>elevator</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.674</xsi>
-                            <referenceUID>elevator</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </xsiLE>
                           <etaTE>
                             <eta>0.136</eta>
-                            <referenceUID>elevator</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </etaTE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
@@ -7561,15 +7582,15 @@
                         <outerBorder>
                           <etaLE>
                             <eta>0.955</eta>
-                            <referenceUID>elevator</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.702</xsi>
-                            <referenceUID>elevator</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </xsiLE>
                           <etaTE>
                             <eta>0.955</eta>
-                            <referenceUID>elevator</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </etaTE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
@@ -7589,15 +7610,15 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>-30</relDeflection>
+                            <controlParameter>-30</controlParameter>
                             <hingeLineRotation>-30</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>15</relDeflection>
+                            <controlParameter>15</controlParameter>
                             <hingeLineRotation>15</hingeLineRotation>
                           </step>
                         </steps>
@@ -8110,15 +8131,15 @@
                         <innerBorder>
                           <etaLE>
                             <eta>0</eta>
-                            <referenceUID>rudder</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.713</xsi>
-                            <referenceUID>rudder</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </xsiLE>
                           <etaTE>
                             <eta>0</eta>
-                            <referenceUID>rudder</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </etaTE>
                           <leadingEdgeShape>
                             <relHeightLE>0.5</relHeightLE>
@@ -8129,15 +8150,15 @@
                         <outerBorder>
                           <etaLE>
                             <eta>1</eta>
-                            <referenceUID>rudder</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </etaLE>
                           <xsiLE>
                             <xsi>0.746</xsi>
-                            <referenceUID>rudder</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </xsiLE>
                           <etaTE>
                             <eta>1</eta>
-                            <referenceUID>rudder</referenceUID>
+                            <referenceUID>CS_HTP</referenceUID>
                           </etaTE>
                           <leadingEdgeShape>
                             <relHightLE>0.5</relHightLE>
@@ -8157,15 +8178,15 @@
                         </outerHingePoint>
                         <steps>
                           <step>
-                            <relDeflection>-35</relDeflection>
+                            <controlParameter>-35</controlParameter>
                             <hingeLineRotation>-35</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>0.0</relDeflection>
+                            <controlParameter>0.0</controlParameter>
                             <hingeLineRotation>0.0</hingeLineRotation>
                           </step>
                           <step>
-                            <relDeflection>35</relDeflection>
+                            <controlParameter>35</controlParameter>
                             <hingeLineRotation>35</hingeLineRotation>
                           </step>
                         </steps>
@@ -9269,11 +9290,11 @@
       </fuselage>
       <designMode>presize<!--comment for designMode: use  presize, fsd or optimization-->
 			</designMode>
-      <optimizationMethod>1<!--comment for optimizationMethod: Method for internal mathematically optimization (only sensible if designMode 'optimization' is choosen) : values: 1,2,3; Modified Method of Feasible Directions [1] (default); Sequential Linear Programming [2]; Sequential Quadratic Programming [3]-->
+      <optimizationMethod>1<!--comment for optimizationMethod: Method for internal mathematically optimization (only sensible if designMode 'optimization' is chosen) : values: 1,2,3; Modified Method of Feasible Directions [1] (default); Sequential Linear Programming [2]; Sequential Quadratic Programming [3]-->
 			</optimizationMethod>
       <reducedModel>1<!--comment for reducedModel: should the A-Set structure reduction be modelled-->
 			</reducedModel>
-      <archiveMode>3<!--comment for archiveMode: Postprogram: to generate and copie more data to the output (value 1 (default),2)-->
+      <archiveMode>3<!--comment for archiveMode: Postprogram: to generate and copy more data to the output (value 1 (default),2)-->
 			</archiveMode>
       <debugMode>0<!--comment for debugMode: 1: to print all script output during the run, 0: print less-->
 			</debugMode>

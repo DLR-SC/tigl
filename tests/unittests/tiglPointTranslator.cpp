@@ -260,7 +260,7 @@ TEST(TiglPointTranslator, Bug4){
 
 
 /**
- * This bug occured because of the different scale. In this case,
+ * This bug occurred because of the different scale. In this case,
  * the tolerance of the gradient was chosen too small.
  * The gradient is quadratic in the scale, hence, the tolerance
  * must be adapted.

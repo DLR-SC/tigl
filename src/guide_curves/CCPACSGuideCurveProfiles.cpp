@@ -27,8 +27,8 @@
 
 namespace tigl
 {
-CCPACSGuideCurveProfiles::CCPACSGuideCurveProfiles(CTiglUIDManager* uidMgr)
-    : generated::CPACSGuideCurveProfiles(uidMgr) {}
+CCPACSGuideCurveProfiles::CCPACSGuideCurveProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSGuideCurveProfiles(parent, uidMgr) {}
 
 // Returns the total count of guide curves in this configuration
 int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount() const

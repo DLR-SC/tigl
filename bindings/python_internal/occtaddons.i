@@ -18,6 +18,8 @@
 
 %module (package="tigl3") occtaddons
 
+%include common.i
+
 %include std_string.i
 
 %{
@@ -29,6 +31,8 @@
 
 %include math_headers.i
 %import math.i
+
+%catch_exceptions()
 
 // enable printing matrix (python)
 %extend math_Matrix {

@@ -28,6 +28,13 @@
 %}
 
 %include math_headers.i
+%include Geom_headers.i
+%include TopoDS_headers.i
+
+
+%import TopoDS.i
+%import Geom.i
+
 %import tmath.i
 %import core.i
 
@@ -46,14 +53,12 @@
 #include "CTiglError.h"
 #include "CTiglShapeCache.h"
 #include "CTiglPolyData.h"
-#include "CTiglSymetricSplineBuilder.h"
 #include "CWireToCurve.h"
 #include "ListPNamedShape.h"
 #include "CCPACSPoint.h"
 #include "ECPACSTranslationType.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglAbstractSegment.h"
-#include "CCPACSPointListXYZVector.h"
 #include "CCPACSPointListRelXYZVector.h"
 #include "generated/CPACSPointXYZ.h"
 #include "generated/CPACSPointX.h"
@@ -68,26 +73,37 @@
 #include "CTiglInterpolateCurveNetwork.h"
 #include "CTiglPointsToBSplineInterpolation.h"
 #include "CTiglCurvesToSurface.h"
+#include "CTiglIntersectBSplines.h"
+#include "CTiglInterpolatePointsWithKinks.h"
+#include "CTiglApproxResult.h"
+#include "SurfTools.hxx"
+#include "CTiglConcatSurfaces.h"
 %}
 
+%catch_exceptions()
 
 %feature("autodoc", "3");
-
 
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
 %template(CPointContainer) std::vector<gp_Pnt>;
-%template(BSplineCurveList) std::vector<Handle_Geom_BSplineCurve>;
-%template(CurveList) std::vector<Handle_Geom_Curve>;
+%template(BSplineCurveList) std::vector<Handle(Geom_BSplineCurve)>;
+%template(BSplineSurfaceList) std::vector<Handle(Geom_BSplineSurface)>;
+%template(CurveList) std::vector<Handle(Geom_Curve)>;
+%template(SurfaceList) std::vector<Handle(Geom_Surface)>;
+%template(CurveIntersectionResultList) std::vector<tigl::CurveIntersectionResult>;
 
 %boost_optional(tigl::CCPACSPointAbsRel)
 %boost_optional(tigl::CCPACSPoint)
 %boost_optional(tigl::ECPACSTranslationType)
 %boost_optional(tigl::generated::CPACSPointX)
 %boost_optional(tigl::generated::CPACSPointXYZ)
-%boost_optional(tigl::CCPACSPointListXYZVector)
 
+%include "CTiglConcatSurfaces.h"
+%include "SurfTools.hxx"
+%include "CTiglApproxResult.h"
+%include "CTiglIntersectBSplines.h"
 %include "CTiglPointsToBSplineInterpolation.h"
 %include "CTiglInterpolateCurveNetwork.h"
 %include "CTiglCurvesToSurface.h"
@@ -122,10 +138,8 @@
 %include "PNamedShape.h"
 %include "CTiglPoint.h"
 %include "generated/CPACSPointXYZ.h"
-%include "generated/CPACSPointListXYZVector.h"
 %include "generated/CPACSPointListRelXYZVector.h"
 %include "CCPACSPointListRelXYZVector.h"
-%include "CCPACSPointListXYZVector.h"
 %include "CFunctionToBspline.h"
 %include "generated/CPACSTransformation.h"
 %include "CCPACSTransformation.h"
@@ -135,7 +149,7 @@
 %include "CTiglAbstractSegment.h"
 %include "CTiglShapeCache.h"
 %include "CTiglPolyData.h"
-%include "CTiglSymetricSplineBuilder.h"
 %include "CWireToCurve.h"
 %include "ListPNamedShape.h"
+%include "CTiglInterpolatePointsWithKinks.h"
 

@@ -90,7 +90,11 @@ TIGLViewerContext::TIGLViewerContext(QUndoStack* stack)
     myGridColor      = Quantity_NOC_RED4;
     myGridTenthColor = Quantity_NOC_GRAY90;
 
-#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,1,0)
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
+    Handle(Prs3d_Drawer) whiteStyle = new Prs3d_Drawer();
+    whiteStyle->SetColor(Quantity_NOC_WHITE);
+    myContext->SetHighlightStyle(whiteStyle);
+#elif OCC_VERSION_HEX >= VERSION_HEX_CODE(7,1,0)
     Handle(Graphic3d_HighlightStyle) whiteStyle = new Graphic3d_HighlightStyle;
     whiteStyle->SetColor(Quantity_NOC_WHITE);
     myContext->SetHighlightStyle(whiteStyle);
@@ -109,7 +113,9 @@ TIGLViewerContext::TIGLViewerContext(QUndoStack* stack)
 
 void TIGLViewerContext::initShaders()
 {
-#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,0,0)
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,6,0)
+    QString shaderVersion = "v7.6";
+#elif OCC_VERSION_HEX >= VERSION_HEX_CODE(7,0,0)
     QString shaderVersion = "v7";
 #elif OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
     QString shaderVersion = "v6";
@@ -165,6 +171,7 @@ Handle(V3d_Viewer) TIGLViewerContext::createViewer( const Standard_ExtString aNa
       deviceHandle = new OpenGl_GraphicDriver (aDisplayConnection);
     }
 
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,4,0)
     return new V3d_Viewer(  deviceHandle,
                             aName,
                             aDomain,
@@ -173,15 +180,19 @@ Handle(V3d_Viewer) TIGLViewerContext::createViewer( const Standard_ExtString aNa
                             Quantity_NOC_BLACK,
                             V3d_ZBUFFER,
                             V3d_GOURAUD
-#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,2,0)
+  #if OCC_VERSION_HEX < VERSION_HEX_CODE(7,2,0)
                             , V3d_WAIT
-#endif
+  #endif
                          );
+#else
+    return new V3d_Viewer( deviceHandle );
+#endif
 }
+
 /*! 
 \brief    Deletes all objects.
 
-        This function deletes all dispayed objects from the AIS context.
+        This function deletes all displayed objects from the AIS context.
         No parameters.
 */
 void TIGLViewerContext::deleteAllObjects()
@@ -208,7 +219,7 @@ void TIGLViewerContext::gridXY  ( void )
 \brief    Sets the privileged plane to the XZ Axis.
 
           Note the negative direction of the Y axis.
-          This is corrrect for a right-handed co-ordinate set.
+          This is correct for a right-handed co-ordinate set.
 */
 void TIGLViewerContext::gridXZ  ( void )
 {
@@ -294,22 +305,22 @@ void TIGLViewerContext::selectAll()
     if (!myContext.IsNull()) {
         AIS_ListOfInteractive aList;
         // deselect all
-        myContext->ClearCurrents(Standard_False);
+        myContext->ClearSelected(Standard_False);
         myContext->DisplayedObjects( aList );
         AIS_ListIteratorOfListOfInteractive aListIterator;
         for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() ) {
             // add to selection
-            myContext->AddOrRemoveCurrentObject(aListIterator.Value(), Standard_False);
+            myContext->AddOrRemoveSelected(aListIterator.Value(), Standard_False);
         }
         myContext->UpdateCurrentViewer();
     }
 }
 
-void TIGLViewerContext::setGridOffset (Quantity_Length offset)
+void TIGLViewerContext::setGridOffset (Standard_Real offset)
 {
-    Quantity_Length radius;
-    Quantity_Length xSize, ySize;
-    Quantity_Length oldOffset;
+    Standard_Real radius;
+    Standard_Real xSize, ySize;
+    Standard_Real oldOffset;
     
     myViewer->CircularGridGraphicValues( radius, oldOffset );
     myViewer->SetCircularGridGraphicValues( radius, offset);
@@ -324,7 +335,7 @@ void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, bool updateViewer
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(loft);
 
-    myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
+    myContext->SetMaterial(shape, settings.defaultMaterial(), Standard_False);
     myContext->SetColor(shape, color, Standard_False);
     myContext->SetTransparency(shape, transparency, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
@@ -359,7 +370,7 @@ void TIGLViewerContext::displayShape(const PNamedShape& pshape, bool updateViewe
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(pshape->Shape());
 
-    myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
+    myContext->SetMaterial(shape, settings.defaultMaterial(), Standard_False);
     myContext->SetColor(shape, color, Standard_False);
     myContext->SetTransparency(shape, transparency, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
@@ -391,6 +402,7 @@ void TIGLViewerContext::displayShape(const PNamedShape& pshape, bool updateViewe
             displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
         }
     }
+    GetShapeManager().addObject(pshape, shape);
 }
 
 // Displays a point on the screen
@@ -402,7 +414,7 @@ void TIGLViewerContext::displayPoint(const gp_Pnt& aPoint,
                                      Standard_Real aZoffset,
                                      Standard_Real TextScale)
 {
-    if (std::string(aText) == "") {
+    if (std::string(aText).empty()) {
         displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), UpdateViewer, Quantity_NOC_YELLOW);
     }
     else {
@@ -449,8 +461,8 @@ bool TIGLViewerContext::hasSelectedShapes() const
     }
 
     bool hasSelectedShapes = false;
-    for (myContext->InitCurrent(); myContext->MoreCurrent (); myContext->NextCurrent ()) {
-        if (myContext->IsDisplayed(myContext->Current())) {
+    for (myContext->InitSelected(); myContext->MoreSelected (); myContext->NextSelected ()) {
+        if (myContext->IsDisplayed(myContext->SelectedInteractive())) {
             hasSelectedShapes = true;
         }
     }
@@ -475,8 +487,8 @@ std::vector<Handle(AIS_InteractiveObject)> TIGLViewerContext::selected()
 {
     std::vector<Handle(AIS_InteractiveObject)> objects;
     if (!myContext.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            objects.push_back(myContext->Current());
+        for (myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected()) {
+            objects.push_back(myContext->SelectedInteractive());
         }
     }
     return objects;
@@ -499,8 +511,8 @@ void TIGLViewerContext::setTransparency(int tr)
     transparency = tr * 0.01;
 
     if (!myContext.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetTransparency(myContext->Current(), transparency, Standard_True);
+        for (myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected()) {
+            myContext->SetTransparency(myContext->SelectedInteractive(), transparency, Standard_True);
         }
     }
 }
@@ -508,8 +520,8 @@ void TIGLViewerContext::setTransparency(int tr)
 void TIGLViewerContext::setObjectsWireframe()
 {
     if (!myContext.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetDisplayMode(myContext->Current(), 0, true);
+        for (myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected()) {
+            myContext->SetDisplayMode(myContext->SelectedInteractive(), 0, true);
         }
     }
 }
@@ -517,8 +529,8 @@ void TIGLViewerContext::setObjectsWireframe()
 void TIGLViewerContext::setObjectsShading()
 {
     if (!myContext.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->SetDisplayMode(myContext->Current(), 1, true);
+        for (myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected()) {
+            myContext->SetDisplayMode(myContext->SelectedInteractive(), 1, true);
         }
     }
 }
@@ -526,8 +538,8 @@ void TIGLViewerContext::setObjectsShading()
 void TIGLViewerContext::setObjectsMaterial(Graphic3d_NameOfMaterial material)
 {
     if (!myContext.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-             myContext->SetMaterial (myContext->Current(),  material, true);
+        for (myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected()) {
+             myContext->SetMaterial (myContext->SelectedInteractive(),  material, true);
         }
     }
 }
@@ -537,8 +549,8 @@ void TIGLViewerContext::setObjectsTexture(const QString &filename)
     if (!myContext.IsNull()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
         QApplication::processEvents();
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-             Handle(AIS_TexturedShape) shape = Handle(AIS_TexturedShape)::DownCast(myContext->Current());
+        for (myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected()) {
+             Handle(AIS_TexturedShape) shape = Handle(AIS_TexturedShape)::DownCast(myContext->SelectedInteractive());
              if (!shape.IsNull()) {
                  shape->SetTextureFileName(filename.toStdString().c_str());
                  shape->SetTextureMapOn();
@@ -575,6 +587,17 @@ void TIGLViewerContext::setObjectsColor(const QColor& color)
         QUndoCommand* command = new TiGLViewer::ChangeObjectsColor(myContext, selected(), color);
         myUndoStack->push(command);
     }
+}
+
+void TIGLViewerContext::setFaceBoundariesEnabled(bool enabled) {
+    if (myContext && myContext->DefaultDrawer()) {
+        myContext->DefaultDrawer()->SetFaceBoundaryDraw(enabled);
+    }
+}
+
+InteractiveShapeManager& TIGLViewerContext::GetShapeManager()
+{
+    return myShapeManager;
 }
 
 Handle(AIS_InteractiveObject) TIGLViewerContext::displayShapeHLMode(const TopoDS_Shape& loft, bool updateViewer,

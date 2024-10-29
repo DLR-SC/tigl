@@ -70,9 +70,19 @@ TiglGeometricComponentIntent CCPACSCrossBeamAssemblyPosition::GetComponentIntent
     return TIGL_INTENT_PHYSICAL | TIGL_INTENT_INNER_STRUCTURE;
 }
 
+void CCPACSCrossBeamAssemblyPosition::SetFrameUID(const std::string& value)
+{
+    generated::CPACSCrossBeamAssemblyPosition::SetFrameUID(value);
+    Invalidate();
+}
 
+void CCPACSCrossBeamAssemblyPosition::SetPositionZ(const double& value)
+{
+    generated::CPACSCrossBeamAssemblyPosition::SetPositionZ(value);
+    Invalidate();
+}
 
-void CCPACSCrossBeamAssemblyPosition::Invalidate()
+void CCPACSCrossBeamAssemblyPosition::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     m_geometry1D.clear();
     m_geometry3D.clear();
@@ -125,7 +135,7 @@ void CCPACSCrossBeamAssemblyPosition::BuildGeometry(TopoDS_Shape& cache, bool ju
         //debug.addShape(frameGeometry, "frameGeometry");
         const TopoDS_Shape frameFace = BRepBuilderAPI_MakeFace(CloseWire(TopoDS::Wire(frameGeometry)));
 
-        // for some rediculous reason, BRepBuilderAPI_MakeFace alters the tolerance of the underlying wire's edges and vertices,
+        // for some ridiculous reason, BRepBuilderAPI_MakeFace alters the tolerance of the underlying wire's edges and vertices,
         // causing subsequent boolean operations to fail (self intersections)
         ShapeFix_ShapeTolerance().SetTolerance(frameFace, Precision::Confusion());
         //debug.addShape(frameFace, "frameFace");

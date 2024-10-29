@@ -19,10 +19,13 @@
 * @brief Tests for testing non classified wing functions.
 */
 
+#include "BRepCheck_Analyzer.hxx"
 #include "test.h" // Brings in the GTest framework
+#include "testUtils.h"
 #include "tigl.h"
 #include <string.h>
-
+#include <CCPACSConfigurationManager.h>
+#include <TiglWingHelperFunctions.h>
 
 /******************************************************************************/
 
@@ -281,20 +284,153 @@ TEST_F(TiglWing, tiglWingGetSegmentIndex_nullPtr)
     ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg1", &segmentIndex, NULL) == TIGL_NULL_POINTER);
 }
 
-TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongHandle){
+TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongHandle)
+{
     TiglCPACSConfigurationHandle myWrongHandle = -1234;
     int segmentIndex = 0;
     int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetSegmentIndex(myWrongHandle, "D150_VAMP_W1_Seg1", &segmentIndex, &wingIndex) == TIGL_NOT_FOUND);
 }
 
-TEST_F(TiglWing, tiglWingGetSpanVTP){
+TEST_F(TiglWing, tiglWingGetSpanVTP)
+{
     double span = 0.;
     tiglWingGetSpan(tiglHandle, "D150_VAMP_SL1", &span);
     ASSERT_LT(span, 5.9);
     ASSERT_GT(span, 5.8);
 }
 
+/**
+ * This test replicates issue 849, which showed a strange
+ * behaviour while invalidating the wing
+ */
+TEST_F(TiglWing, bug849)
+
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    auto& vtp = config.GetWing(3);
+
+    // somehow, this generates something
+    // removing this line maade the test succeed
+    // otherwise, the test failed
+    vtp.GetWingspan();
+
+    // which is not correctly invalidated now
+    // note, that we actually don't change anything
+    vtp.SetSymmetryAxis(vtp.GetSymmetryAxis());
+
+    auto span = vtp.GetWingspan();
+    EXPECT_NEAR(5.9, span, 0.1); // the reported wing span is 0.62 instead of 5.4
+}
+
+/// Regression reported by issue #827
+TEST_F(TiglWing, tiglGetAspectRatio)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    const auto& wing = config.GetWing(1);
+
+    // The expected value was provided by the issue report
+    // The exact value also depends on the opencascade version
+    // used so we are using a pretty large tolerance here
+    EXPECT_NEAR(9.4031, wing.GetAspectRatio(), 1e-2);
+
+    const auto& vtp = config.GetWing(3);
+
+    // This value was roughly estimated
+    EXPECT_NEAR(3.2, vtp.GetAspectRatio(), 1e-1);
+
+}
+
+TEST_F(TiglWing, spanDirection)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    auto& wing = config.GetWing(1);
+    auto& vtp = config.GetWing(3);
+
+    auto axis = tigl::winghelper::GetWingSpanAxis(wing);
+    EXPECT_EQ(TIGL_Y_AXIS, axis);
+
+
+    axis = tigl::winghelper::GetWingSpanAxis(vtp);
+    EXPECT_EQ(TIGL_Z_AXIS, axis);
+
+    auto wingSymAx = wing.GetSymmetryAxis();
+    auto vtpSymAx = vtp.GetSymmetryAxis();
+
+    wing.SetSymmetryAxis(TIGL_NO_SYMMETRY);
+    vtp.SetSymmetryAxis(TIGL_X_Y_PLANE);
+
+    axis = tigl::winghelper::GetWingSpanAxis(wing);
+    EXPECT_EQ(TIGL_Y_AXIS, axis);
+
+    axis = tigl::winghelper::GetWingSpanAxis(vtp);
+    EXPECT_EQ(TIGL_Z_AXIS, axis);
+
+    // we need to reset the axes, since the cpacs handle
+    // is static for all tests
+    wing.SetSymmetryAxis(wingSymAx);
+    vtp.SetSymmetryAxis(vtpSymAx);
+}
+
+TEST_F(TiglWing, depthDirection)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    auto& wing = config.GetWing(1);
+    auto& vtp = config.GetWing(3);
+
+    auto axis = tigl::winghelper::GetWingDepthAxis(wing);
+    EXPECT_EQ(TIGL_X_AXIS, axis);
+
+
+    axis = tigl::winghelper::GetWingDepthAxis(vtp);
+    EXPECT_EQ(TIGL_X_AXIS, axis);
+
+    auto wingSymAx = wing.GetSymmetryAxis();
+    auto vtpSymAx = vtp.GetSymmetryAxis();
+
+    wing.SetSymmetryAxis(TIGL_NO_SYMMETRY);
+    vtp.SetSymmetryAxis(TIGL_X_Y_PLANE);
+
+    axis = tigl::winghelper::GetWingDepthAxis(wing);
+    EXPECT_EQ(TIGL_X_AXIS, axis);
+
+    axis = tigl::winghelper::GetWingDepthAxis(vtp);
+    EXPECT_EQ(TIGL_X_AXIS, axis);
+
+    // we need to reset the axes, since the cpacs handle
+    // is static for all tests
+    wing.SetSymmetryAxis(wingSymAx);
+    vtp.SetSymmetryAxis(vtpSymAx);
+}
+
+TEST_F(WingSimple, testGetWingWithCutOuts)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglSimpleWingHandle);
+    tigl::CTiglUIDManager& uidmgr = config.GetUIDManager();
+    auto& wing = uidmgr.ResolveObject<tigl::CCPACSWing>("Wing");
+
+    // Check for warning if no control surfaces are defined
+      { // Scope to destroy object of type CaptureTiGLLog and therefore reset console verbosity
+          CaptureTiGLLog t{TILOG_WARNING};
+          wing.GetLoftWithCutouts();
+          auto logOutput = t.log();
+
+          std::string comparisonString = "No control devices defined, GetLoftWithCutOuts() will return a clean shape.";
+          ASSERT_TRUE((logOutput.find(comparisonString)) != std::string::npos);
+      } // scope
+
+    ASSERT_TRUE(BRepCheck_Analyzer(wing.GetLoftWithCutouts()).IsValid());
+
+}
 
 TEST_F(WingSimple, wingGetMAC_success)
 {

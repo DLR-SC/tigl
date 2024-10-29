@@ -26,9 +26,20 @@ namespace tigl
 class CCPACSPointXY : public generated::CPACSPointXY
 {
 public:
-    TIGL_EXPORT CCPACSPointXY(CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPointXY(CCPACSGlobalBeamProperties* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPointXY(CCPACSPointListXY* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPointXY(CCPACSSheet* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPointXY(CCPACSTransformation2D* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT gp_Pnt2d As_gp_Pnt() const;
+    TIGL_EXPORT void SetAs_gp_Pnt(const gp_Pnt2d& point);
+
+    TIGL_EXPORT void SetX(const double& value) override;
+    TIGL_EXPORT void SetY(const double& value) override;
+
+private:
+    void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
 };
 
 } // namespace tigl

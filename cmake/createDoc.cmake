@@ -1,27 +1,19 @@
 find_package(Doxygen 1.8.0)
-if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+if(DOXYGEN_FOUND)
 
     file(GLOB_RECURSE DOC_MD_SRC  "${PROJECT_SOURCE_DIR}/doc/*.md")
 
-
-    # convert ChangeLog to Markdown for usage in doxygen 
-    add_custom_command(
-        OUTPUT ${PROJECT_BINARY_DIR}/doc/ChangeLog.md
-        DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog
-        COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/misc/createChangeLog/changeLogToMD.py -i ${PROJECT_SOURCE_DIR}/ChangeLog -o ${PROJECT_BINARY_DIR}/doc/ChangeLog.md
-    )
-
     configure_file(${PROJECT_SOURCE_DIR}/doc/Doxyfile.in ${PROJECT_BINARY_DIR}/doc/Doxyfile @ONLY)
     configure_file(${PROJECT_SOURCE_DIR}/doc/footer.html ${PROJECT_BINARY_DIR}/doc/footer.html @ONLY)
-	configure_file(${PROJECT_SOURCE_DIR}/doc/header.html ${PROJECT_BINARY_DIR}/doc/header.html @ONLY)
-	configure_file(${PROJECT_SOURCE_DIR}/doc/stylesheet.css ${PROJECT_BINARY_DIR}/doc/stylesheet.css @ONLY)
+    configure_file(${PROJECT_SOURCE_DIR}/doc/header.html ${PROJECT_BINARY_DIR}/doc/header.html @ONLY)
+    configure_file(${PROJECT_SOURCE_DIR}/doc/stylesheet.css ${PROJECT_BINARY_DIR}/doc/stylesheet.css @ONLY)
     add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html
         OUTPUT ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
-        DEPENDS ${PROJECT_SOURCE_DIR}/src/api/tigl.h
+        DEPENDS ${PROJECT_SOURCE_DIR}/src/
         DEPENDS ${DOC_MD_SRC}
         DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
-        DEPENDS ${PROJECT_BINARY_DIR}/doc/ChangeLog.md
+        DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog.md
         COMMAND ${DOXYGEN_EXECUTABLE}
         ARGS ${PROJECT_BINARY_DIR}/doc/Doxyfile
     )
@@ -42,12 +34,13 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
         SET(CPACK_NSIS_DELETE_ICONS_EXTRA ${CPACK_NSIS_DELETE_ICONS_EXTRA} "
           !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
           Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Documentation.lnk\\\"
-        ")
-    
+        ")            
 
-    OPTION(TIGL_BUILD_DOC_PDF "Builds the documentation pdf using latex" OFF)
-    if(TIGL_BUILD_DOC_PDF)
-        find_program(LATEX pdflatex REQUIRED)
+    find_program(LATEX pdflatex)
+
+	option(TIGL_DOC_PDF "Build TiGL Documentation using Latex" OFF)
+
+    if(TIGL_DOC_PDF AND LATEX)
         # TIGL Reference PDF File
         add_custom_command(
             OUTPUT ${PROJECT_BINARY_DIR}/doc/tiglRef.pdf
@@ -114,10 +107,10 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
           Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\TiGL-Reference.lnk\\\"
         ")
         
-    else()
-        add_custom_target(doc
+    endif()
+	
+	add_custom_target(doc
             DEPENDS html
             COMMENT "Generating API documentation with Doxygen" VERBATIM 
         )
-    endif()
-endif(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+endif(DOXYGEN_FOUND)

@@ -103,7 +103,11 @@ void TIGLQAspectWindow::Unmap() const
 // function : DoResize
 // purpose  :
 // =======================================================================
+#if OCC_VERSION_HEX >= 0x070500
+Aspect_TypeOfResize TIGLQAspectWindow::DoResize()
+#else
 Aspect_TypeOfResize TIGLQAspectWindow::DoResize() const
+#endif
 {
     int                 aMask = 0;
     Aspect_TypeOfResize aMode = Aspect_TOR_UNKNOWN;
@@ -180,8 +184,9 @@ Standard_Real TIGLQAspectWindow::Ratio() const
 void TIGLQAspectWindow::Size ( Standard_Integer& theWidth, Standard_Integer& theHeight ) const
 {
     QRect aRect = myWidget->rect();
-    theWidth  = aRect.right();
-    theHeight = aRect.bottom();
+    auto scale = myWidget->devicePixelRatioF();
+    theWidth  = aRect.width() * scale;
+    theHeight = aRect.height() * scale;
 }
 
 // =======================================================================
@@ -191,8 +196,9 @@ void TIGLQAspectWindow::Size ( Standard_Integer& theWidth, Standard_Integer& the
 void TIGLQAspectWindow::Position ( Standard_Integer& theX1, Standard_Integer& theY1,
                                    Standard_Integer& theX2, Standard_Integer& theY2 ) const
 {
-    theX1 = myWidget->rect().left();
-    theX2 = myWidget->rect().right();
-    theY1 = myWidget->rect().top();
-    theY2 = myWidget->rect().bottom();
+    auto scale = myWidget->devicePixelRatioF();
+    theX1 = myWidget->rect().left() * scale;
+    theX2 = myWidget->rect().right() * scale;
+    theY1 = myWidget->rect().top() * scale;
+    theY2 = myWidget->rect().bottom() * scale;
 }

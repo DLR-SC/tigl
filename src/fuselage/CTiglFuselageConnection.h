@@ -33,6 +33,8 @@ namespace tigl
 
 class CCPACSFuselageSegment;
 class CCPACSFuselageProfile;
+class CCPACSFuselageSections;
+class CCPACSPositionings;
 
 // TODO: this class is very similar to CCPACSWingConnection, merge into one class
 class CTiglFuselageConnection
@@ -68,6 +70,10 @@ public:
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
 private:
+
+    CCPACSFuselageSections const& GetParentComponentSections() const;
+    boost::optional<CCPACSPositionings>& GetParentComponentPositionings() const;
+
     const std::string*             elementUID;   /**< UID in section/elements */
 
     int                            sectionIndex; /**< Index in sections */

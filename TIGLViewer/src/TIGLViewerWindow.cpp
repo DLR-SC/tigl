@@ -67,7 +67,7 @@ namespace
 
 TIGLViewerWindow::TIGLViewerWindow()
     : myLastFolder(tr(""))
-    , cpacsConfiguration(NULL)
+    , cpacsConfiguration(nullptr)
 {
     setupUi(this);
 
@@ -177,7 +177,7 @@ void TIGLViewerWindow::dropEvent(QDropEvent *ev)
 }
 
 
-void TIGLViewerWindow::setInitialControlFile(QString filename)
+void TIGLViewerWindow::setInitialControlFile(const QString& filename)
 {
     TIGLViewerControlFile cf;
     if (cf.read(filename.toStdString().c_str()) == CF_SUCCESS) {
@@ -258,8 +258,10 @@ void TIGLViewerWindow::closeConfiguration()
     if (cpacsConfiguration) {
         getScene()->deleteAllObjects();
         delete cpacsConfiguration;
-        cpacsConfiguration = NULL;
+        cpacsConfiguration = nullptr;
     }
+    setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+
     if ( currentFile.suffix().toLower() == "temp" ){
         QFile(currentFile.absoluteFilePath()).remove();
     }
@@ -280,7 +282,7 @@ void TIGLViewerWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
 
 void TIGLViewerWindow::openRecentFile()
 {
-    QAction *action = qobject_cast<QAction *>(sender());
+    auto *action = qobject_cast<QAction *>(sender());
     if (action) {
         openFile(action->data().toString());
     }
@@ -294,7 +296,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
     TIGLViewerInputOutput::FileFormat format;
     TIGLViewerInputOutput reader;
     bool triangulation = false;
-    bool success = false;
+    bool success;
 
     TIGLViewerScopedCommand command(getConsole());
     Q_UNUSED(command);
@@ -451,6 +453,7 @@ void TIGLViewerWindow::applySettings()
     myOCC->setBackgroundGradient(col.red(), col.green(), col.blue());
     getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceUIsosForDisplay(), AIS_TOI_IsoU);
     getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceVIsosForDisplay(), AIS_TOI_IsoV);
+    getScene()->setFaceBoundariesEnabled(tiglViewerSettings->drawFaceBoundaries());
     getScene()->getContext()->UpdateCurrentViewer();
     if (tiglViewerSettings->debugBooleanOperations()) {
         qputenv("TIGL_DEBUG_BOP", "1");
@@ -672,7 +675,7 @@ void TIGLViewerWindow::about()
 
     text += "Visit the TiGL project page at " + makeLink("https://github.com/DLR-SC/tigl", "https://github.com/dlr-sc/tigl")+ "<br/><br/>";
 
-    text += "&copy; 2019 German Aerospace Center (DLR) + CFS Engineering";
+    text += "&copy; 2022 German Aerospace Center (DLR) ";
 
     QMessageBox::about(this, tr("About CPACS Creator"), text);
 }
@@ -684,9 +687,9 @@ void TIGLViewerWindow::aboutQt()
 }
 
 
-void TIGLViewerWindow::xyzPosition (V3d_Coordinate X,
-                                    V3d_Coordinate Y,
-                                    V3d_Coordinate Z)
+void TIGLViewerWindow::xyzPosition (Standard_Real X,
+                                    Standard_Real Y,
+                                    Standard_Real Z)
 {
     QString aString;
     QTextStream ts(&aString);
@@ -694,19 +697,26 @@ void TIGLViewerWindow::xyzPosition (V3d_Coordinate X,
     //statusBar()->showMessage(aString); // do not bother user with x,y,z crap
 }
 
-void TIGLViewerWindow::statusMessage (const QString aMessage)
+void TIGLViewerWindow::statusMessage (const QString& aMessage)
 {
     statusBar()->showMessage(aMessage);
 }
 
 
-void TIGLViewerWindow::displayErrorMessage (const QString aMessage, QString aHeader = "TIGL Error")
+void TIGLViewerWindow::displayErrorMessage (const QString& aMessage, const QString& aHeader = "TIGL Error")
 {
-    TIGLViewerErrorDialog dialog(this);
-    dialog.setMessage(QString("<b>%1</b><br /><br />%2").arg(aHeader).arg(aMessage));
-    dialog.setWindowTitle("Error");
-    dialog.setDetailsText(logHistory->GetAllMessages());
-    dialog.exec();
+    if (!suppressErrors) {
+        TIGLViewerErrorDialog dialog(this);
+        dialog.setMessage(QString("<b>%1</b><br /><br />%2").arg(aHeader).arg(aMessage));
+        dialog.setWindowTitle("Error");
+        dialog.setDetailsText(logHistory->GetAllMessages());
+        dialog.exec();
+    }
+}
+
+void TIGLViewerWindow::setSuppressErrorsEnabled(bool v)
+{
+    suppressErrors = v;
 }
 
 void TIGLViewerWindow::connectConfiguration()
@@ -727,10 +737,11 @@ void TIGLViewerWindow::connectConfiguration()
     connect(drawWingCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegmentPoints()));
     connect(drawWingShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingShells()));
     connect(drawWingStructureAction, SIGNAL(triggered(bool)), cpacsConfiguration, SLOT(drawWingStructure()));
-
+    connect(drawWingFlapsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFlaps()));
 
     // CPACS Aircraft Actions
     connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfiguration()));
+    connect(showAllWingsAndFuselageDuctCutoutsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfigurationWithDuctCutouts()));
     connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
     connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
     connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
@@ -797,10 +808,10 @@ void TIGLViewerWindow::connectSignals()
     connect(openScriptAction, SIGNAL(triggered()), this, SLOT(openScript()));
     connect(closeAction, SIGNAL(triggered()), this, SLOT(closeConfiguration()));
 
-    for (int i = 0; i < MaxRecentFiles; ++i) {
-        recentFileActions[i] = new QAction(this);
-        recentFileActions[i]->setVisible(false);
-        connect(recentFileActions[i], SIGNAL(triggered()),
+    for (auto & recentFileAction : recentFileActions) {
+        recentFileAction = new QAction(this);
+        recentFileAction->setVisible(false);
+        connect(recentFileAction, SIGNAL(triggered()),
                 this, SLOT(openRecentFile()));
     }
 
@@ -877,8 +888,8 @@ void TIGLViewerWindow::connectSignals()
     connect(openTimer, SIGNAL(timeout()), this, SLOT(reopenFile()));
 
     // The co-ordinates from the view
-    connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
-             this,   SLOT(xyzPosition(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)) );
+    connect( myOCC, SIGNAL(mouseMoved(Standard_Real,Standard_Real,Standard_Real)),
+             this,   SLOT(xyzPosition(Standard_Real,Standard_Real,Standard_Real)) );
 
 
     connect( myOCC, SIGNAL(sendStatus(const QString)), this,  SLOT  (statusMessage(const QString)) );
@@ -910,8 +921,8 @@ void TIGLViewerWindow::connectSignals()
 
 void TIGLViewerWindow::createMenus()
 {
-    for (int i = 0; i < MaxRecentFiles; ++i) {
-        recentFileMenu->addAction(recentFileActions[i]);
+    for (auto & recentFileAction : recentFileActions) {
+        recentFileMenu->addAction(recentFileAction);
     }
     updateRecentFileActions();
 }
@@ -975,6 +986,7 @@ void TIGLViewerWindow::updateMenus()
 
     bool hasFarField = false;
     bool hasACSystems = false;
+    bool hasDucts = false;
     int nRotorBlades = 0;
     int nRotors = 0;
     try {
@@ -982,12 +994,16 @@ void TIGLViewerWindow::updateMenus()
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
             hasFarField = config.GetFarField().GetType() != tigl::NONE;
             hasACSystems = config.GetGenericSystemCount() > 0;
+            if (config.GetDucts()) {
+                hasDucts = config.GetDucts()->GetDuctAssemblys().size() > 0;
+            }
             nRotorBlades = config.GetRotorBladeCount();
             nRotors = config.GetRotorCount();
         }
     }
     catch(tigl::CTiglError& ){}
     drawFarFieldAction->setEnabled(hasFarField);
+    showAllWingsAndFuselageDuctCutoutsAction->setEnabled(hasDucts);
     drawSystemsAction->setEnabled(hasACSystems);
     drawRotorsAction->setEnabled(nRotors > 0);
     menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));

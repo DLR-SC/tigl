@@ -30,8 +30,23 @@ namespace tigl
 {
 
 // Constructor
-CCPACSPositionings::CCPACSPositionings(CTiglUIDManager* uidMgr)
-    : generated::CPACSPositionings(uidMgr), invalidated(true)
+CCPACSPositionings::CCPACSPositionings(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPositionings(parent, uidMgr), invalidated(true)
+{
+}
+
+CCPACSPositionings::CCPACSPositionings(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPositionings(parent, uidMgr), invalidated(true)
+{
+}
+
+CCPACSPositionings::CCPACSPositionings(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPositionings(parent, uidMgr), invalidated(true)
+{
+}
+
+CCPACSPositionings::CCPACSPositionings(CCPACSWing* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPositionings(parent, uidMgr), invalidated(true)
 {
 }
 

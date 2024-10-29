@@ -30,6 +30,7 @@
 #include <QObject>
 #include "TIGLViewer.h"
 #include "TIGLViewerColors.h"
+#include "TIGLInteractiveShapeManager.h"
 #include <QMetaType>
 #include <QUndoStack>
 #include <Standard_Version.hxx>
@@ -49,7 +50,7 @@ class TIGLViewerContext : public QObject
 
 public:
 
-    TIGLViewerContext(QUndoStack*);
+    explicit TIGLViewerContext(QUndoStack*);
     ~TIGLViewerContext() override;
 
     Handle(V3d_Viewer)&              getViewer();
@@ -59,7 +60,7 @@ public:
                                      const Standard_CString aDomain,
                                      const Standard_Real ViewSize );
 
-    void setGridOffset (Quantity_Length offset);
+    void setGridOffset (Standard_Real offset);
     
     void displayPoint(const gp_Pnt& aPoint,
                       const char*   aText,
@@ -81,6 +82,8 @@ public:
     bool hasSelectedShapes() const;
 
     void updateViewer();
+
+    InteractiveShapeManager& GetShapeManager();
 
     // Function used to highlight (HL) shape (used by ModificatorManager)
 
@@ -109,14 +112,14 @@ public slots:
     void drawPoint(double x, double y, double z);
     void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
     void deleteAllObjects();
-    void gridXY     ( void );
-    void gridXZ     ( void );
-    void gridYZ     ( void );
+    void gridXY     ();
+    void gridXZ     ();
+    void gridYZ     ();
     void toggleGrid ( bool );
-    void gridOn     ( void );
-    void gridOff    ( void );
-    void gridRect   ( void );
-    void gridCirc   ( void );
+    void gridOn     ();
+    void gridOff    ();
+    void gridRect   ();
+    void gridCirc   ();
     void wireFrame  ( bool );
     void selectAll();
     void eraseSelected();
@@ -127,6 +130,7 @@ public slots:
     void setObjectsTexture(const QString& filename);
     void setReflectionlinesEnabled(bool);
     void setObjectsColor(const QColor &color);
+    void setFaceBoundariesEnabled(bool enabled);
 
 signals:
 
@@ -145,6 +149,7 @@ private:
     Handle(Graphic3d_ShaderProgram) myShader;
 #endif
     QUndoStack* myUndoStack;
+    InteractiveShapeManager         myShapeManager;
 
     void initShaders();
 };

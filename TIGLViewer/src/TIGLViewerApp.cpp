@@ -37,8 +37,9 @@ void showHelp(QString appName)
     helpText += "  --filename <filename>    Initial CPACS file to open and display.\n";
     helpText += "  --modelUID <uid>         Initial model uid open and display.\n";
     helpText += "  --script <filename>       Script to execute.\n";
-    helpText += "  --windowtitle <title>    The titel of the TiGL Viewer window.\n";
+    helpText += "  --windowtitle <title>    The title of the TiGL Viewer window.\n";
     helpText += "  --controlFile <filename>    Name of the control file.\n";
+    helpText += "  --suppress-errors        Suppress all error message dialogs\n";
 
     QMessageBox::information(0, "TiGL Viewer Argument Error",
                                  helpText,
@@ -105,6 +106,9 @@ int TIGLViewerApp::parseArguments(QStringList argList)
                 config.initialScript = argList.at(++i);
             }
         }
+        else if (arg.compare("--suppress-errors") == 0) {
+            config.suppressErrors = true;
+        }
         else if (arg.compare("--windowtitle") == 0) {
             if (i+1 >= argList.size()) {
                 std::cout << "missing windowtitle" << std::endl;
@@ -141,8 +145,11 @@ int TIGLViewerApp::parseArguments(QStringList argList)
     return 0;
 }
 
-void TIGLViewerApp::onWindowInitalized()
+void TIGLViewerApp::onWindowInitialized()
 {
+    // suppress errors
+    mainwindow->setSuppressErrorsEnabled(config.suppressErrors);
+
     if (!config.controlFile.isEmpty()){
         mainwindow->setInitialControlFile(config.controlFile);
     }
@@ -166,7 +173,7 @@ int TIGLViewerApp::run()
         return retval;
     }
 
-    connect(mainwindow.get(), SIGNAL(windowInitialized()), this, SLOT(onWindowInitalized()));
+    connect(mainwindow.get(), SIGNAL(windowInitialized()), this, SLOT(onWindowInitialized()));
     if (!config.windowTitle.isEmpty()) {
         mainwindow->setTiglWindowTitle(config.windowTitle, true);
     }

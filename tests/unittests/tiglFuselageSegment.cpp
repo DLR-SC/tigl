@@ -21,6 +21,9 @@
 
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
+#include "CCPACSConfigurationManager.h"
+#include "CCPACSFuselageSegment.h"
+
 
 #define _USE_MATH_DEFINES
 #include "math.h"
@@ -128,7 +131,7 @@ TEST_F( TiglFuselageSegment, FuselageCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglGetFuselageCount.
+* Tests successful call of tiglGetFuselageCount.
 */
 TEST_F( TiglFuselageSegment, FuselageCount_success)
 {
@@ -166,7 +169,7 @@ TEST_F( TiglFuselageSegment, FuselageSegmentCount_nullPointerArgument)
 }
 
 /**
-* Tests successfull call of tiglFuselageGetSegmentCount.
+* Tests successful call of tiglFuselageGetSegmentCount.
 */
 TEST_F( TiglFuselageSegment, FuselageSegmentCount_success)
 {
@@ -213,7 +216,7 @@ TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentCount_nullPointerAr
 }
 
 /**
-* Tests successfull call of tiglFuselageGetStartConnectedSegmentCount.
+* Tests successful call of tiglFuselageGetStartConnectedSegmentCount.
 */
 TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentCount_success)
 {
@@ -262,7 +265,7 @@ TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentCount_nullPointerArgu
 }
 
 /**
-* Tests successfull call of tiglFuselageGetEndConnectedSegmentCount.
+* Tests successful call of tiglFuselageGetEndConnectedSegmentCount.
 */
 TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentCount_success)
 {
@@ -322,7 +325,7 @@ TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentIndex_nullPointerAr
 }
 
 /**
-* Tests successfull call of tiglFuselageGetStartConnectedSegmentIndex.
+* Tests successful call of tiglFuselageGetStartConnectedSegmentIndex.
 */
 TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentIndex_success)
 {
@@ -382,7 +385,7 @@ TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentIndex_nullPointerArgu
 }
 
 /**
-* Tests successfull call of tiglFuselageGetEndConnectedSegmentIndex.
+* Tests successful call of tiglFuselageGetEndConnectedSegmentIndex.
 */
 TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentIndex_success)
 {
@@ -438,7 +441,7 @@ TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementIndex_nullPointerA
 }
 
 /**
-* Tests successfull call of tiglFuselageGetStartSectionAndElementIndex.
+* Tests successful call of tiglFuselageGetStartSectionAndElementIndex.
 */
 TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementIndex_success)
 {
@@ -500,7 +503,7 @@ TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementIndex_nullPointerArg
 }
 
 /**
-* Tests successfull call of tiglFuselageGetEndSectionAndElementIndex.
+* Tests successful call of tiglFuselageGetEndSectionAndElementIndex.
 */
 TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementIndex_success)
 {
@@ -556,7 +559,7 @@ TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementUID_invalidSegment
 
 
 /**
-* Tests successfull call of tiglFuselageGetStartSectionAndElementUID.
+* Tests successful call of tiglFuselageGetStartSectionAndElementUID.
 */
 TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementUID_success)
 {
@@ -608,7 +611,7 @@ TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_invalidSegment)
 }
 
 /**
-* Tests successfull call of tiglFuselageGetEndSectionAndElementUID.
+* Tests successful call of tiglFuselageGetEndSectionAndElementUID.
 */
 TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_success)
 {
@@ -776,6 +779,44 @@ TEST_F(TiglFuselageSegmentSimple, getCenterLineLength)
     ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetCenterLineLength(tiglHandle, "SimpleFuselage", NULL));
     ASSERT_EQ(TIGL_NULL_POINTER, tiglFuselageGetCenterLineLength(tiglHandle, NULL, &centerLineLength));
     ASSERT_EQ(TIGL_NOT_FOUND, tiglFuselageGetCenterLineLength(-1, "SimpleFuselage", &centerLineLength));
+}
+
+TEST_F(TiglFuselageSegmentSimple, CCPACSFuselageSegments)
+{
+    int seg_idx = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    const tigl::CTiglUIDManager& uidMgr = config.GetUIDManager();
+
+    tigl::CCPACSFuselageSegment & segment = uidMgr.ResolveObject<tigl::CCPACSFuselageSegment>("segmentD150_Fuselage_1Segment2ID");
+    auto const& psegments = segment.GetParent();
+
+    EXPECT_EQ(&segment, &(psegments->GetSegment(seg_idx)));
+    EXPECT_EQ(&segment, &(psegments->GetSegment("segmentD150_Fuselage_1Segment2ID")));
+    EXPECT_EQ(2, psegments->GetSegmentCount());
+    EXPECT_THROW(psegments->GetSegment(3);, tigl::CTiglError);
+}
+
+TEST_F(TiglFuselageSegmentSimple, FuselageGetSegment)
+{
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    const tigl::CTiglUIDManager& uidMgr = config.GetUIDManager();
+
+    tigl::CCPACSFuselage & fuselage = uidMgr.ResolveObject<tigl::CCPACSFuselage>("SimpleFuselage");
+
+    // Getting segments by UID
+    auto& segment1 = fuselage.GetSegment("segmentD150_Fuselage_1Segment2ID");
+    auto& segment2 = fuselage.GetSegment("segmentD150_Fuselage_1Segment3ID");
+    EXPECT_THROW(fuselage.GetSegment("UIDDOESNOTEXIST");, tigl::CTiglError);
+
+    // compare to indexed getters
+    EXPECT_EQ(&segment1, &(fuselage.GetSegment(1)));
+    EXPECT_EQ(&segment2, &(fuselage.GetSegment(2)));
+    EXPECT_EQ(2, fuselage.GetSegmentCount());
+    EXPECT_THROW(fuselage.GetSegment(3), tigl::CTiglError);
 }
 
 TEST(TiglFuselageSegmentBugs, getCenterLineLength_551)

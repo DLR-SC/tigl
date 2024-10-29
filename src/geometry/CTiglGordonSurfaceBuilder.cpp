@@ -143,7 +143,7 @@ void CTiglGordonSurfaceBuilder::CreateGordonSurface(const std::vector<Handle(Geo
         }
     }
 
-    // check, whether to build a closed continous surface
+    // check, whether to build a closed continuous surface
     double curve_u_tolerance = CTiglBSplineAlgorithms::REL_TOL_CLOSED * CTiglBSplineAlgorithms::scale(guides);
     double curve_v_tolerance = CTiglBSplineAlgorithms::REL_TOL_CLOSED * CTiglBSplineAlgorithms::scale(profiles);
     double tp_tolerance      = CTiglBSplineAlgorithms::REL_TOL_CLOSED * CTiglBSplineAlgorithms::scale(intersection_pnts);
@@ -189,7 +189,8 @@ void CTiglGordonSurfaceBuilder::CreateGordonSurface(const std::vector<Handle(Geo
     surfaces_vector_unmod.push_back(tensorProdSurf);
 
     // create common knot vector for all three surfaces
-    std::vector<Handle(Geom_BSplineSurface)> surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(surfaces_vector_unmod);
+    std::vector<Handle(Geom_BSplineSurface)> surfaces_vector = CTiglBSplineAlgorithms::createCommonKnotsVectorSurface(surfaces_vector_unmod,
+                                                                                                                      SurfaceDirection::both);
 
     assert(surfaces_vector.size() == 3);
 

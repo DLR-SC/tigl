@@ -156,19 +156,21 @@ CCPACSWingComponentSegment::~CCPACSWingComponentSegment()
 }
 
 // Invalidates internal state
-void CCPACSWingComponentSegment::Invalidate()
+void CCPACSWingComponentSegment::InvalidateImpl(const boost::optional<std::string>& source) const
 {
     // call parent class instead of directly setting invalidated flag
     CTiglAbstractSegment<CCPACSWingComponentSegment>::Reset();
     wingSegments.clear();
-    if (m_structure) {
-        m_structure->Invalidate();
-    }
     geomCache.clear();
     linesCache.clear();
+
+    // TODO: replace by caches
     chordFace->Reset();
     upperShape->Reset();
     lowerShape->Reset();
+    if (m_structure) {
+        m_structure->Invalidate(GetUID());
+    }
 }
 
 // Cleanup routine
@@ -578,89 +580,28 @@ TopoDS_Wire CCPACSWingComponentSegment::GetCSLine(double eta1, double xsi1, doub
     return wireBuilder.Wire();
 }
     
-void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi)
+void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi) const
 {
-    CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(segmentUID);
+    // check if the segment is contained in this component segment
+    tigl::CCPACSWingSegment& segment = wing->GetSegment(segmentUID);
 
-    // compute component segment line
-    gp_Pnt p1 = GetPoint(csEta1, csXsi1);
-    gp_Pnt p2 = GetPoint(csEta2, csXsi2);
-    double csLen = p1.Distance(p2);
+    if(this->IsSegmentContained(segment) == false) {
+        throw CTiglError("The wing segment with UID " + segmentUID + " is not contained in this component segment.", TIGL_UID_ERROR);
+    }
 
-    gp_Lin csLine(p1, p2.XYZ() - p1.XYZ());
+    double errorDistance = 0;
+    InterpolateXsi(GetUID(), EtaXsi(csEta1, csXsi1),
+                   GetUID(), EtaXsi(csEta2, csXsi2),
+                   segmentUID, eta, GetUIDManager(), xsi, errorDistance);
 
-    // compute iso eta line of segment
-    gp_Pnt pLE = segment.GetChordPoint(eta, 0.);
-    gp_Pnt pTE = segment.GetChordPoint(eta, 1.);
-    double chordDepth = pTE.Distance(pLE);
-
-    gp_Lin etaLine(pLE, pTE.XYZ() - pLE.XYZ());
-
-    // check, if both lines are parallel
-    if (etaLine.Direction().IsParallel(csLine.Direction(), M_PI/180.)) {
-        throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
-        }
-
-    Handle(Geom_Curve) csCurve = new Geom_Line(csLine);
-    Handle(Geom_Curve) etaCurve = new Geom_Line(etaLine);
-    GeomAdaptor_Curve csAdptAcuve(csCurve);
-    GeomAdaptor_Curve etaAdptCurve(etaCurve);
-
-    // find point on etaLine, that minimizes distance to csLine
-    Extrema_ExtCC minimizer(csAdptAcuve, etaAdptCurve);
-    minimizer.Perform();
-
-    if (!minimizer.IsDone()) {
-        throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
-        }
-
-    // there should be exactly on minimum between two lines
-    // if they are not parallel
-    assert(minimizer.NbExt() == 1);
-
-    Extrema_POnCurv pOnCSLine, pOnEtaLine;
-    minimizer.Points(1, pOnCSLine, pOnEtaLine);
-
-    // If parameter on CS line is < 0 or larger than 
-    // Length of line, there is not actual intersection,
-    // i.e. the CS Line is choosen to small
-    // We use a tolerance here, to account for small user errors
-    double tol = 1e-5;
-    if (pOnCSLine.Parameter() < -tol || pOnCSLine.Parameter() > csLen + tol) {
-        throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
-            }
-
-    // compute xsi value
-    xsi = pOnEtaLine.Parameter()/chordDepth;
 }
 
-void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double& errorDistance)
+void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double& errorDistance) const
 {
-    if (eta > 1 + Precision::Confusion() || eta < - Precision::Confusion()) {
-        throw CTiglError("Eta not in range [0,1] in CCPACSWingComponentSegment::InterpolateOnLine.", TIGL_MATH_ERROR);
-    }
 
-    // compute component segment line
-    gp_Pnt p1 = GetPoint(csEta1, csXsi1);
-    gp_Pnt p2 = GetPoint(csEta2, csXsi2);
-
-    const Handle(Geom_Curve) etaCurve = chordFace->GetSurface()->VIso(eta);
-    const Handle(Geom_Curve) line = new Geom_Line(p1, p2.XYZ() - p1.XYZ());
-
-    GeomAPI_ExtremaCurveCurve algo(etaCurve, line, 0., 1., 0., p1.Distance(p2));
-    if (algo.NbExtrema() < 1) {
-        throw CTiglError("Cannot compute xsi coordinate in CCPACSWingComponentSegment::InterpolateOnLine", TIGL_MATH_ERROR);
-    }
-
-    // xsi coordinate
-    double u;
-    algo.LowerDistanceParameters(xsi, u);
-
-    // TODO (siggel): check if point on line is outside the wing
-
-    // compute the error distance
-    // This is the distance from the line to the nearest point on the chord face
-    errorDistance = algo.LowerDistance();
+    InterpolateXsi(GetUID(), EtaXsi(csEta1, csXsi1),
+                   GetUID(), EtaXsi(csEta2, csXsi2),
+                   GetUID(), eta, GetUIDManager(), xsi, errorDistance);
 }
 
 const CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const
@@ -669,7 +610,7 @@ const CTiglWingChordface &CCPACSWingComponentSegment::GetChordface() const
 }
 
 // get short name for loft
-std::string CCPACSWingComponentSegment::GetShortShapeName() const
+std::string CCPACSWingComponentSegment::GetShortName() const
 {
     unsigned int windex = 0;
     unsigned int wcsindex = 0;
@@ -696,7 +637,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft() const
 {
     // Set Names
     std::string loftName = m_uID;
-    std::string loftShortName = GetShortShapeName();
+    std::string loftShortName = GetShortName();
     PNamedShape loft (new CNamedShape(geomCache->loftShape, loftName.c_str(), loftShortName));
     SetFaceTraits(loft, static_cast<unsigned int>(wingSegments->size()));
     return loft;
@@ -807,16 +748,16 @@ void CCPACSWingComponentSegment::BuildLines(LinesCache& cache) const
         const CCPACSWingSegment& segment = *(*it);
 
             // get leading edge point
-        lePointContainer.push_back(segment.GetPoint(0, 0, true, WING_COORDINATE_SYSTEM));
+        lePointContainer.push_back(segment.GetChordPoint(0, 0, WING_COORDINATE_SYSTEM));
         // get trailing edge point
-        tePointContainer.push_back(segment.GetPoint(0, 1, true, WING_COORDINATE_SYSTEM));
+        tePointContainer.push_back(segment.GetChordPoint(0, 1, WING_COORDINATE_SYSTEM));
     }
     // finally add the points for the outer section
     // get leading edge point
-    lePointContainer.push_back(segments.back()->GetPoint(1, 0, true, WING_COORDINATE_SYSTEM));
+    lePointContainer.push_back(segments.back()->GetChordPoint(1, 0, WING_COORDINATE_SYSTEM));
 
     // get trailing edge point
-    tePointContainer.push_back(segments.back()->GetPoint(1, 1, true, WING_COORDINATE_SYSTEM));
+    tePointContainer.push_back(segments.back()->GetChordPoint(1, 1, WING_COORDINATE_SYSTEM));
 
 
 
@@ -1024,13 +965,10 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
     for (SegmentList::const_iterator segit = segments.begin(); segit != segments.end(); ++segit) {
         try {
             double eta, xsi;
-            (*segit)->GetEtaXsi(pnt, eta, xsi);
-            gp_Pnt pointProjected = (*segit)->GetChordPoint(eta, xsi);
+            gp_Pnt currentPoint;
+            (*segit)->GetEtaXsi(pnt, eta, xsi, currentPoint, onLinearLoft);
 
-            // Get nearest point on this segment
-            double nextEta = Clamp(eta, 0., 1.);
-            double nextXsi = Clamp(xsi, 0., 1.);
-            gp_Pnt currentPoint = (*segit)->GetChordPoint(nextEta, nextXsi);
+            gp_Pnt pointProjected = (*segit)->GetChordPoint(eta, xsi);
 
             double currentDist = currentPoint.Distance(pointProjected);
             if (currentDist < deviation) {
@@ -1052,7 +990,7 @@ const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, doubl
     return result;
 }
 
-MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, TiglStructureType type)
+MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, TiglStructureType type) const
 {
     MaterialList list;
         
@@ -1066,10 +1004,10 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
         return list;
     }
     else {
-        CCPACSWingShell* shell = (type == UPPER_SHELL? &m_structure->GetUpperShell() : &m_structure->GetLowerShell());
+        CCPACSWingShell const* shell = (type == UPPER_SHELL? &m_structure->GetUpperShell() : &m_structure->GetLowerShell());
         int ncells = shell->GetCellCount();
         for (int i = 1; i <= ncells; ++i){
-            CCPACSWingCell& cell = shell->GetCell(i);
+            CCPACSWingCell const& cell = shell->GetCell(i);
 
             if (cell.IsInside(eta, xsi)) {
                 list.push_back(&(cell.GetMaterial()));

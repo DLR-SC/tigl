@@ -32,88 +32,42 @@
 #include "TCollection_HAsciiString.hxx"
 #include "TopExp_Explorer.hxx"
 
-
 namespace tigl
 {
-CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(std::string* parentUid, CCPACSTransformation* trans)
-    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)) {}
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans)
+    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(nullptr) {}
 
-CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans)
-    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(static_cast<TiglSymmetryAxis*>(NULL)) {}
-
-CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, TiglSymmetryAxis* symmetryAxis)
-    : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis) {}
-
-CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(boost::optional<std::string>* parentUid, CCPACSTransformation* trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
     : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis){}
 
-
-void CTiglRelativelyPositionedComponent::Reset()
+void CTiglRelativelyPositionedComponent::Reset() const
 {
     CTiglAbstractGeometricComponent::Reset();
-    if (_transformation)
-        _transformation->reset();
+    if (GetTransform())
+        const_cast<CCPACSTransformation&>(*GetTransform()).reset();
 }
 
 TiglSymmetryAxis CTiglRelativelyPositionedComponent::GetSymmetryAxis() const
 {
-    struct GetSymmetryVisitor : boost::static_visitor<TiglSymmetryAxis> {
-        GetSymmetryVisitor(CTiglRelativelyPositionedComponent* parent)
-            : _parent(parent) {}
-
-        TiglSymmetryAxis operator()(const TiglSymmetryAxis* s) {
-            if (s)
-                return *s;
-            else if (_parent)
-                return _parent->GetSymmetryAxis();
-            else
-                return TIGL_NO_SYMMETRY;
-        }
-        TiglSymmetryAxis operator()(const boost::optional<TiglSymmetryAxis>* s) {
-            if (s && *s)
-                return **s;
-            else if (_parent)
-                return _parent->GetSymmetryAxis();
-            else
-                return TIGL_NO_SYMMETRY;
-        }
-
-    private:
-        CTiglRelativelyPositionedComponent* _parent;
-    };
-
-    GetSymmetryVisitor v(_parent);
-    return _symmetryAxis.apply_visitor(v);
+    if (_symmetryAxis && _symmetryAxis->is_initialized() && _symmetryAxis->value() != TIGL_INHERIT_SYMMETRY)
+        return **_symmetryAxis;
+    else if (_parent)
+        return _parent->GetSymmetryAxis();
+    else
+        return TIGL_NO_SYMMETRY;
 }
 
 void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis& axis)
 {
-    struct SetSymmetryVisitor : boost::static_visitor<> {
-        SetSymmetryVisitor(const TiglSymmetryAxis& axis)
-            : axis(axis) {}
-        void operator()(TiglSymmetryAxis* s) {
-            if (s)
-                *s = axis;
-            else
-                throw CTiglError("Type does not have a symmetry");
-        }
-        void operator()(boost::optional<TiglSymmetryAxis>* s) {
-            if (s)
-                *s = axis;
-            else
-                throw CTiglError("Type does not have a symmetry");
-        }
-    private:
-        const TiglSymmetryAxis& axis;
-    };
-
-    SetSymmetryVisitor v(axis);
-    _symmetryAxis.apply_visitor(v);
+    if (_symmetryAxis)
+        *_symmetryAxis = axis;
+    else
+        throw CTiglError("Type does not have a symmetry");
 }
 
 CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix() const
 {
-    const CTiglTransformation thisTransformation = _transformation ? _transformation->getTransformationMatrix() : CTiglTransformation();
+    const CTiglTransformation thisTransformation = GetTransform() ? GetTransform()->getTransformationMatrix() : CTiglTransformation();
     if (_parent && GetTranslationType() == ABS_LOCAL) {
         const CTiglTransformation& parentTransformation = _parent->GetTransformationMatrix();
 
@@ -132,11 +86,11 @@ CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix(
 
 void CTiglRelativelyPositionedComponent::SetTransformation(const CCPACSTransformation &transform)
 {
-    if (!_transformation) {
+    if (!GetTransform()) {
         throw CTiglError("Cannot set Transformation for component \"" + GetDefaultedUID() + "\". The component has not transformation");
     }
 
-    *_transformation = transform;
+    _transformation.Set(transform);
 
     // the component's geometry must be invalidated
     CTiglAbstractGeometricComponent::Reset();
@@ -145,33 +99,36 @@ void CTiglRelativelyPositionedComponent::SetTransformation(const CCPACSTransform
 
 CTiglPoint CTiglRelativelyPositionedComponent::GetRotation() const
 {
-    if (_transformation)
-        return _transformation->getRotation();
+    if (GetTransform())
+        return GetTransform()->getRotation();
     else
         return CTiglPoint(0, 0, 0);
 }
 
 CTiglPoint CTiglRelativelyPositionedComponent::GetScaling() const
 {
-    if (_transformation)
-        return _transformation->getScaling();
+    if (GetTransform())
+        return GetTransform()->getScaling();
     else
         return CTiglPoint(1, 1, 1);
 }
 
 CTiglPoint CTiglRelativelyPositionedComponent::GetTranslation() const
 {
-    if (_transformation)
-        return _transformation->getTranslationVector();
+    if (GetTransform())
+        return GetTransform()->getTranslationVector();
     else
         return CTiglPoint(0, 0, 0);
 }
 
 ECPACSTranslationType CTiglRelativelyPositionedComponent::GetTranslationType() const
 {
-    if (_transformation)
-        return _transformation->getTranslationType();
+    if (GetTransform())
+        return GetTransform()->getTranslationType();
     else
+        if (_parent) {
+            return ABS_LOCAL;
+        }
         return ABS_GLOBAL; // TODO(bgruber): is this a valid default?
 }
 
@@ -195,53 +152,19 @@ CTiglRelativelyPositionedComponent::ChildContainerType CTiglRelativelyPositioned
 // Returns the parent unique id
 boost::optional<const std::string&> CTiglRelativelyPositionedComponent::GetParentUID() const
 {
-    struct GetParentUIDVisitor : boost::static_visitor<boost::optional<const std::string&> > {
-        GetParentUIDVisitor() {}
+    return _parentUID.Get();
+}
 
-        boost::optional<const std::string&> operator()(const std::string* parentUID) {
-            if (!parentUID) {
-                return boost::optional<const std::string&>();
-            }
-            else {
-                return boost::optional<const std::string&>(*parentUID);
-            }
-        }
-
-        boost::optional<const std::string&> operator()(const boost::optional<std::string>* parentUID) {
-            if (!parentUID || !*parentUID)
-                return boost::optional<const std::string&>();
-            return **parentUID;
-        }
-    };
-    
-    GetParentUIDVisitor v;
-    return _parentUID.apply_visitor(v);
+// Returns the transformation
+boost::optional<const CCPACSTransformation&> CTiglRelativelyPositionedComponent::GetTransform() const
+{
+    return _transformation.Get();
 }
 
 // Sets the parent uid.
 void CTiglRelativelyPositionedComponent::SetParentUID(const std::string& parentUID)
 {
-    struct SetParentUIDVisitor : boost::static_visitor<> {
-        SetParentUIDVisitor(const std::string& parentUID)
-            : parentUID(parentUID) {}
-        void operator()(std::string* p) {
-            if (p)
-                *p = parentUID;
-            else
-                throw CTiglError("Derived type does not have a parentUID field");
-        }
-        void operator()(boost::optional<std::string>* p) {
-            if (p)
-                *p = parentUID;
-            else
-                throw CTiglError("Derived type does not have a parentUID field");
-        }
-    private:
-        const std::string& parentUID;
-    };
-    
-    SetParentUIDVisitor v(parentUID);
-    _parentUID.apply_visitor(v);
+    _parentUID.Set(parentUID);
 }
 
 void CTiglRelativelyPositionedComponent::SetParent(CTiglRelativelyPositionedComponent& parent)

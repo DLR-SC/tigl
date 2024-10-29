@@ -32,6 +32,7 @@
 #include "TopTools_SequenceOfShape.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
+#include "CCPACSGuideCurve.h"
 
 #ifndef CCPACSWINGPROFILEGETPOINTALGO_H
 #define CCPACSWINGPROFILEGETPOINTALGO_H
@@ -47,7 +48,7 @@ public:
      * \brief Constructor which expects a wire of to concatenated upper and lower wing edges as input
      *
      *
-     * \param wireContainer Containes exactly two wires: The upper and lower wing profile wires
+     * \param wireContainer Contains exactly two wires: The upper and lower wing profile wires
      */
     TIGL_EXPORT CCPACSWingProfileGetPointAlgo (const TopTools_SequenceOfShape& wireContainer);
 
@@ -59,8 +60,10 @@ public:
      *
      * \param point Point on the profile corresponding to the parameter alpha
      * \param tangent Tangent on the profile corresponding to the parameter alpha
+     * \param fromOrToDefinition Define the basis on which the point on the curve should be found (circumference or parameter)
      */
-    TIGL_EXPORT void GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent);
+    TIGL_EXPORT void GetPointTangent(const double& alpha, gp_Pnt& point,
+                                     gp_Vec& tangent, const CCPACSGuideCurve::FromOrToDefinition& fromOrToDefinition=CCPACSGuideCurve::FromOrToDefinition::CIRCUMFERENCE);
 
 private:
     TopoDS_Edge upperWire;         /**< Upper wire of wing profile */

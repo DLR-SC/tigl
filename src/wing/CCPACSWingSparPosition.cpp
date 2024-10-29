@@ -100,10 +100,10 @@ double CCPACSWingSparPosition::GetXsi() const
     throw CTiglError("Invalid spar position type");
 }
 
-const generated::CPACSEtaXsiPoint &CCPACSWingSparPosition::GetEtaXsiPoint() const
+const CCPACSEtaXsiPoint &CCPACSWingSparPosition::GetEtaXsiPoint() const
 {
     if (!GetSparPositionEtaXsi_choice2()) {
-        throw CTiglError("No EtaXsiPoint definied in SparPosition '" + GetUID() + "'");
+        throw CTiglError("No EtaXsiPoint defined in SparPosition '" + GetUID() + "'");
     }
     
     return GetSparPositionEtaXsi_choice2().value();
@@ -112,10 +112,32 @@ const generated::CPACSEtaXsiPoint &CCPACSWingSparPosition::GetEtaXsiPoint() cons
 const generated::CPACSWingRibPoint& CCPACSWingSparPosition::GetRibPoint() const
 {
     if (!GetSparPositionRib_choice1()) {
-        throw CTiglError("No RibPoint definied in SparPosition '" + GetUID() + "'");
+        throw CTiglError("No RibPoint defined in SparPosition '" + GetUID() + "'");
     }
 
     return GetSparPositionRib_choice1().value();
+}
+
+void CCPACSWingSparPosition::SetRibPoint(const CCPACSWingRibPoint& ribPoint)
+{
+    CCPACSWingRibPoint& rp = GetSparPositionRib_choice1(CreateIfNotExists);
+    rp.SetRibDefinitionUID(ribPoint.GetRibDefinitionUID());
+    rp.SetRibNumber(ribPoint.GetRibNumber());
+    rp.SetXsi(ribPoint.GetXsi());
+
+    RemoveSparPositionEtaXsi_choice2();
+    Invalidate();
+}
+
+void CCPACSWingSparPosition::SetEtaXsiPoint(const CCPACSEtaXsiPoint& etaXsiPoint)
+{
+    CCPACSEtaXsiPoint& ep = GetSparPositionEtaXsi_choice2(CreateIfNotExists);
+    ep.SetEta(etaXsiPoint.GetEta());
+    ep.SetReferenceUID(etaXsiPoint.GetReferenceUID());
+    ep.SetXsi(etaXsiPoint.GetXsi());
+
+    RemoveSparPositionRib_choice1();
+    Invalidate();
 }
 
 int WingRibPointGetRibNumber(const generated::CPACSWingRibPoint& ribPoint)
@@ -174,7 +196,7 @@ gp_Vec CCPACSWingSparPosition::GetUpVector(const CCPACSWingCSStructure& structur
         }
         else {
             // this should actually not happen
-            throw CTiglError("A fatal error as occured");
+            throw CTiglError("A fatal error as occurred");
         }
         
         // compute bounding box of section element face

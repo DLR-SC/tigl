@@ -75,7 +75,7 @@ TEST_F(TestArcLengthReparameterization, accuracy)
 
     GeomAdaptor_Curve adaptor(curve);
 
-    // total Lenght
+    // total Length
     double totalLen = GCPnts_AbscissaPoint::Length(adaptor);
 
     EXPECT_NEAR(totalLen, repa.totalLength(), 1e-6);
