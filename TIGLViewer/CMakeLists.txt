@@ -38,10 +38,10 @@ if(OCE_FOUND)
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
 else(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES "")
-  find_package(OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
 endif(OCE_FOUND)
 
 # we need opengl in order to build tiglviewer
+cmake_policy(SET CMP0072 NEW)
 find_package(OpenGL REQUIRED)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -274,16 +274,16 @@ add_executable(${PROGNAME} ${TYPE}
 set_target_properties(${PROGNAME} PROPERTIES AUTOMOC TRUE)
 set_target_properties(${PROGNAME} PROPERTIES AUTOUIC TRUE)
 
-# opengl
-target_include_directories(${PROGNAME} PRIVATE ${OPENGL_INCLUDE_DIR})
 # include path for ui files
 target_include_directories(${PROGNAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+target_include_directories(${PROGNAME} BEFORE PRIVATE  ${OpenCASCADE_INCLUDE_DIR})
 
 target_link_libraries(${PROGNAME} PRIVATE
   tigl3_static tigl3_cpp
   ${CMake_QT_LIBRARIES} 
-  ${OPENGL_LIBRARIES} 
   ${OpenCASCADE_LIBRARIES} 
+  OpenGL::GL
   ${EXTRA_LIBRARIES} 
 )
 

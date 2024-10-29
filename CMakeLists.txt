@@ -81,6 +81,11 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
+# check features
+include(CheckCXXSourceCompiles)
+set(src_make_unqiue "#include <memory>\nint main(){\n std::make_unique<int>(5)\;\n return 0\;\n}\n")
+CHECK_CXX_SOURCE_COMPILES(${src_make_unqiue} HAVE_STDMAKE_UNIQUE)
+
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
         # enable extensive debug output

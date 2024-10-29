@@ -4,7 +4,7 @@ find_package(Threads REQUIRED)
 include(tiglmacros)
 
 if (NOT TARGET Boost::boost)
-    find_package(Boost REQUIRED COMPONENTS filesystem thread atomic chrono date_time)
+    find_package(Boost REQUIRED COMPONENTS filesystem system thread atomic chrono date_time)
 endif()
 
 configure_file (
@@ -54,10 +54,16 @@ if (TIGL_CONCAT_GENERATED_FILES)
       ${PROJECT_BINARY_DIR}/cmake/concat_generated.cmake
     )
     list(APPEND TIGL_SRC "${PROJECT_BINARY_DIR}/src/src_generated.cpp")
+    if (MSVC)
+      set_source_files_properties(${PROJECT_BINARY_DIR}/src/src_generated.cpp PROPERTIES COMPILE_FLAGS "/bigobj")
+    endif(MSVC)
 
     if (MSVC)
          SET_SOURCE_FILES_PROPERTIES( "${PROJECT_BINARY_DIR}/src/src_generated.cpp" PROPERTIES COMPILE_FLAGS "/bigobj" )
     endif(MSVC)
+    if (MINGW)
+         SET_SOURCE_FILES_PROPERTIES( "${PROJECT_BINARY_DIR}/src/src_generated.cpp" PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj" )
+    endif(MINGW)
 
 else(TIGL_CONCAT_GENERATED_FILES)
     list(REMOVE_ITEM SUBDIRS generated)
@@ -73,6 +79,7 @@ endforeach()
 
 # object library containing just the compiled sources
 add_library(tigl3_objects OBJECT ${TIGL_SRC})
+target_compile_features(tigl3_objects PRIVATE cxx_std_11)
 set_property(TARGET tigl3_objects PROPERTY POSITION_INDEPENDENT_CODE ON) # needed for shared libraries
 
 target_include_directories(tigl3_objects
@@ -83,6 +90,16 @@ target_include_directories(tigl3_objects
     PRIVATE $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
     PUBLIC $<TARGET_PROPERTY:tixi3,INTERFACE_INCLUDE_DIRECTORIES>
 )
+
+# This is a workaround for a tixi cmake bug:
+#   A installed tixi does not yet have a target tixicpp
+#   but the tixicpp includes are in the same dir as the tixi3 includes.
+#   A local build has it but has a different include directory than tixi3.
+if (TARGET tixicpp)
+    target_include_directories(tigl3_objects
+        PRIVATE $<TARGET_PROPERTY:tixicpp,INTERFACE_INCLUDE_DIRECTORIES>
+    )
+endif(TARGET tixicpp)
 
 target_compile_definitions(tigl3_objects
     PRIVATE -Dtigl3_EXPORTS
@@ -147,7 +164,7 @@ install (FILES api/tigl.h ${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h
          COMPONENT headers)
 
 # static lib for tiglviewer 
-add_library(tigl3_static $<TARGET_OBJECTS:tigl3_objects> ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
+add_library(tigl3_static STATIC $<TARGET_OBJECTS:tigl3_objects> ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
 # this does no actual linking but keeps track of the dependencies
 target_link_libraries (tigl3_static
      PRIVATE ${VLD_LIBRARIES}
@@ -166,10 +183,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
    target_link_libraries (tigl3 PRIVATE rt)
    target_link_libraries (tigl3_static PRIVATE rt)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-if (MSVC)
+if (MSVC OR MINGW)
   target_link_libraries (tigl3 PRIVATE Shlwapi)
   target_link_libraries (tigl3_static PRIVATE Shlwapi)
-endif(MSVC)
+endif(MSVC OR MINGW)
 
 target_include_directories(tigl3_static PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
@@ -191,6 +208,7 @@ target_include_directories(tigl3_cpp INTERFACE
 )
 
 target_link_libraries(tigl3_cpp INTERFACE ${OpenCASCADE_LIBRARIES} Boost::boost Boost::disable_autolinking)
+target_compile_features(tigl3_cpp INTERFACE cxx_std_11)
 
 if (TARGET glog::glog)
   target_link_libraries (tigl3_cpp INTERFACE glog::glog)
