@@ -45,7 +45,14 @@ tigl::CTiglFuselageSectionElement::CTiglFuselageSectionElement(tigl::CCPACSFusel
 {
     element  = inElement;
     section  = element->GetParent()->GetParent();
-    fuselage = section->GetParent()->GetParent<tigl::CCPACSFuselage>();
+    if (section->GetParent()->IsParent<CCPACSFuselage>()) {
+        fuselage = section->GetParent()->GetParent<tigl::CCPACSFuselage>();
+    }
+    else {
+        // Object is of type CCPACSDuct
+        // Since ducts are not yet supported in CPACS creator, it stays uninitialized
+        fuselage = nullptr;
+    }
 }
 
 
@@ -74,7 +81,9 @@ std::string tigl::CTiglFuselageSectionElement::GetProfileUID() const
 
 void tigl::CTiglFuselageSectionElement::SetProfileUID(const std::string& newProfileUID)
 {
-
+    if (fuselage == nullptr) {
+        throw CTiglError("CTiglFuselageSectionElement::SetProfileUID: Fuselage uninitialized, ducts are currently not supported for the CPACS creator.");
+    }
     CCPACSConfiguration& config = fuselage->GetConfiguration();
     if ( ! config.GetFuselageProfiles()->HasProfile(newProfileUID) ) {
         throw CTiglError("CTiglFuselageSectionElement::SetProfileUID: The given profile seems not to be present in the profile list.");
@@ -86,6 +95,9 @@ void tigl::CTiglFuselageSectionElement::SetProfileUID(const std::string& newProf
 // Returns the fuselage profile referenced by this connection
 tigl::CCPACSFuselageProfile& tigl::CTiglFuselageSectionElement::GetProfile()
 {
+    if (fuselage == nullptr) {
+        throw CTiglError("CTiglFuselageSectionElement::GetProfile: Fuselage uninitialized, ducts are currently not supported for the CPACS creator.");
+    }
 
     CCPACSConfiguration& config = fuselage->GetConfiguration();
     return (config.GetFuselageProfile(GetProfileUID()));
@@ -99,6 +111,10 @@ const tigl::CCPACSFuselageProfile& tigl::CTiglFuselageSectionElement::GetProfile
 // Returns the positioning transformation for the referenced section
 tigl::CTiglTransformation tigl::CTiglFuselageSectionElement::GetPositioningTransformation() const
 {
+    if (fuselage == nullptr) {
+        throw CTiglError("CTiglFuselageSectionElement::GetPositioningTransformation: Fuselage uninitialized, ducts are currently not supported for the CPACS creator.");
+    }
+
     boost::optional<CTiglTransformation> transformation = fuselage->GetPositioningTransformation(section->GetUID());
     if (transformation) {
         return transformation.value();

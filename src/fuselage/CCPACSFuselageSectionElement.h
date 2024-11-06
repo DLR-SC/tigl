@@ -53,7 +53,7 @@ public:
 
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
-    TIGL_EXPORT CTiglFuselageSectionElement* GetCTiglSectionElement() { return &(ctilgElement); };
+    TIGL_EXPORT inline CTiglFuselageSectionElement* GetCTiglSectionElement() { return &(ctilgElement); };
 
 private:
 
