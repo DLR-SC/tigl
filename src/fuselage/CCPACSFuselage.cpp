@@ -884,7 +884,16 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
         newSegment.SetFromElementUID(newElement->GetSectionElementUID());
         newSegment.SetToElementUID(startElementUID);
 
-        GetSegments().Invalidate(); // to reorder the segment if needed.
+        GetSegments().Invalidate();
+        // to reorder the segment if needed.
+        if ( m_segments.NeedReordering() ){
+            try { // we use a try-catch to not rise two time a exception if the reordering occurs during the first cpacs parsing
+                m_segments.ReorderSegments();
+            }
+            catch (  const CTiglError& err) {
+                LOG(ERROR) << err.what();
+            }
+        }
 
     }
 }

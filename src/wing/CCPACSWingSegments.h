@@ -89,15 +89,15 @@ public:
 
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
 
+    TIGL_EXPORT void ReorderSegments();
+
+    // check order of segments - each segment must start with the element of the previous segment
+    TIGL_EXPORT bool NeedReordering() const;
+
 private:
     void InvalidateParent() const;
 
     CTiglRelativelyPositionedComponent* m_parentVariant;
-
-    void ReorderSegments();
-
-    // check order of segments - each segment must start with the element of the previous segment
-    bool NeedReordering() const;
 
 };
 
