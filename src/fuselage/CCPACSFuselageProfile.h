@@ -106,6 +106,9 @@ private:
     //Builds the fuselage profile wires from height to width ratio and corner radius
     void BuildWiresRectangle(WireCache& cache) const;
 
+    //Builds the fuselage profile wires from lowerHeightFraction and exponents m,n for lower and upper semi-ellipse
+    void BuildWiresSuperEllipse(WireCache& cache) const;
+
     // Helper function to determine the "diameter" (the wing profile chord line equivalent)
     // which is defined as the line intersecting Point1 and Point2
     //

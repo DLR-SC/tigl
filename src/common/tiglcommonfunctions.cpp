@@ -523,7 +523,7 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupTy
             shapeList.push_back(shape);
             return shapeList;
         }
-        
+
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
@@ -575,7 +575,7 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupTy
             shapeList.push_back(shape);
             return shapeList;
         }
-        
+
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             const CFaceTraits& traits = shape->GetFaceTraits(iface-1);
@@ -592,7 +592,7 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupTy
             faceShape->SetFaceTraits(0, shape->GetFaceTraits(iface-1));
             shapeList.push_back(faceShape);
         }
-        
+
     }
     return shapeList;
 }
@@ -655,7 +655,7 @@ int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
 TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points)
 {
     unsigned int pointCount = static_cast<int>(points.size());
-    
+
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
     for (unsigned int j = 0; j < pointCount; j++) {
         hpoints->SetValue(j + 1, points[j]);
@@ -664,7 +664,7 @@ TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points)
     GeomAPI_Interpolate interPol(hpoints, Standard_False, Precision::Confusion());
     interPol.Perform();
     Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
-    
+
     return BRepBuilderAPI_MakeEdge(hcurve);
 }
 
@@ -672,7 +672,7 @@ TopoDS_Edge GetEdge(const TopoDS_Shape &shape, int iEdge)
 {
     TopTools_IndexedMapOfShape edgeMap;
     TopExp::MapShapes(shape, TopAbs_EDGE, edgeMap);
-    
+
     if (iEdge < 0 || iEdge >= edgeMap.Extent()) {
         return TopoDS_Edge();
     }
@@ -699,7 +699,7 @@ Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e)
     double u1, u2;
     Handle(Geom_Curve) curve = BRep_Tool::Curve(e, u1, u2);
     curve = new Geom_TrimmedCurve(curve, u1, u2);
-    
+
     // convert to bspline
     Handle(Geom_BSplineCurve) bspl =  GeomConvert::CurveToBSplineCurve(curve);
     return bspl;
@@ -1122,7 +1122,7 @@ TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
     TopoDS_Wire sortedWire1 = TopoDS::Wire(orderedWireSequence.First());
     TopoDS_Wire sortedWire2 = TopoDS::Wire(orderedWireSequence.Last());
 
-    // build curve adaptor, second parameter defines that the length of the single edges is used as u coordinate, 
+    // build curve adaptor, second parameter defines that the length of the single edges is used as u coordinate,
     // instead normalization of the u coordinates of the single edges of the wire (each edge would have u-coords
     // range from 0 to 1 independent of their length otherwise)
     BRepAdaptor_CompCurve compCurve1(sortedWire1, Standard_True);
@@ -1323,6 +1323,155 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     TopoDS_Wire wire;
     if (!curve.IsNull()) {
         wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    }
+    return wire;
+}
+
+namespace
+{
+    class SuperEllipse : public tigl::MathFunc3d
+    {
+    public:
+        SuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper,
+                const double nLower, const double nUpper)
+            : tigl::MathFunc3d(), m_lowerHeightFraction(lowerHeightFraction), m_mLower(mLower),
+            m_mUpper(mUpper), m_nLower(nLower), m_nUpper(nUpper) {}
+
+        double valueX(double t) override
+        {
+            return 0.;
+        }
+
+        double valueY(double t) override
+        {
+            //curve is built clockwise
+            return 0.5*std::sin(t);
+        }
+
+        double valueZ(double t) override
+        {
+            double z_0 = m_lowerHeightFraction - 0.5;
+            //clean angle from traversion factor (ensures that alpha <= 2*PI, to determine quadrant)
+            double alpha = (std::fmod(t,(2.*M_PI)));
+            double param = 0.5*std::sin(alpha);
+
+            //same order as in building the profile: oriented clockwise, starting with 1. quadrant ending with 2.
+
+            //build right upper half of semi ellipse
+            if((alpha>=0.)&&(alpha<M_PI/2.)){
+                double z = z_0 + (0.5 -z_0)* std::pow((1. - std::pow(std::abs(2. * param), m_mUpper)), 1. / m_nUpper);
+                return z;
+            }
+
+            //build lower right half of semi ellipse
+            if((alpha>=M_PI/2.)&&(alpha<M_PI)){
+                double z = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2. * param), m_mLower)), 1. / m_nLower);
+                return z;
+            }
+
+            //build lower left half of semi ellipse
+            if((alpha>=M_PI)&&(alpha<M_PI*3./2.)){
+                double z = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2. * param), m_mLower)), 1. / m_nLower);
+                return z;
+            }
+
+            //build left upper half of semi ellipse
+            if((alpha>=M_PI*3./2.)&&(alpha<=M_PI*2.)){
+                double z = z_0 + (0.5 -z_0)* std::pow((1. - std::pow(std::abs(2. * param), m_mUpper)), 1. / m_nUpper);
+                return z;
+            } else {
+                throw tigl::CTiglError("Error building Ellipse");
+            }
+
+        }
+
+    private:
+          double m_lowerHeightFraction;
+          double m_mLower;
+          double m_mUpper;
+          double m_nLower;
+          double m_nUpper;
+    };
+
+} //anonymos namespace
+
+TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper,
+                                              const double nLower, const double nUpper, const double tol)
+{
+    //dealing with singularities in superellipses: exponents must not be equal to 0
+    //choose tolerance near double precision
+    double epsilon = 1e-15;
+    if (mLower<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent mLower must be > ")
+            + std::to_string(epsilon)
+            + ". mLower = "
+            + std::to_string(mLower);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (mUpper<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent mUpper must be > ")
+            + std::to_string(epsilon)
+            + ". mUpper = "
+            + std::to_string(mUpper);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (nLower<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent nLower must be > ")
+            + std::to_string(epsilon)
+            + ". nLower = "
+            + std::to_string(nLower);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (nUpper<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent nUpper must be > ")
+            + std::to_string(epsilon)
+            + ". nUpper = "
+            + std::to_string(nUpper);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (lowerHeightFraction<0||lowerHeightFraction>1){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. lowerHeightFraction must be >0 and <1. lowerHeightFraction =  ")
+            + std::to_string(lowerHeightFraction);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+
+    int degree = 3;
+
+    //Parameter for upper right quarterellipse
+    double uMin = 0.;
+    double uMax = M_PI/2;
+    //Parameter for lower right quarterellipse
+    double uMin1 = M_PI/2;
+    double uMax1 = M_PI;
+    //Parameter for lower left quarterellipse
+    double uMin2 = M_PI;
+    double uMax2 = 3*M_PI/2;
+    //Parameter for upper left quarterellipse
+    double uMin3 = 3*M_PI/2;
+    double uMax3 = 2*M_PI;
+
+    SuperEllipse ellipse(lowerHeightFraction, mLower, mUpper, nLower, nUpper);
+
+    //build ellipse clockwise
+    auto curve1 = tigl::CFunctionToBspline(ellipse, uMin, uMax, degree, tol).Curve();
+    curves.push_back(curve1);
+    auto curve2 = tigl::CFunctionToBspline(ellipse, uMin1, uMax1, degree, tol).Curve();
+    curves.push_back(curve2);
+    auto curve3 = tigl::CFunctionToBspline(ellipse, uMin2, uMax2, degree, tol).Curve();
+    curves.push_back(curve3);
+    auto curve4 = tigl::CFunctionToBspline(ellipse, uMin3, uMax3, degree, tol).Curve();
+    curves.push_back(curve4);
+
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
+
+    //build wire
+    TopoDS_Wire wire;
+    if(!curve.IsNull()){
+        wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    }
+    if(wire.IsNull()){
+        throw tigl::CTiglError("Error building profile wire");
     }
     return wire;
 }
@@ -1803,7 +1952,7 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
                 // get midpoint of checkEdge
                 curve = BRep_Tool::Curve(checkEdge, uStart, uEnd);
                 curve->D0((uStart + uEnd) / 2.0, p2Mid);
-                 
+
                 if (p1Mid.Distance(p2Mid) < 1E-5) {
                     duplicate = true;
                     break;
@@ -1932,7 +2081,7 @@ T Clamp(T val, T min, T max)
     if (min > max) {
         throw tigl::CTiglError("Minimum may not be larger than maximum in clamp!");
     }
-    
+
     return std::max(min, std::min(val, max));
 }
 
@@ -1977,12 +2126,12 @@ TopoDS_Shape GetFacesByName(const PNamedShape shape, const std::string &name)
             faces.push_back(GetFace(shape->Shape(), i));
         }
     }
-    
+
     if (faces.empty())
         throw tigl::CTiglError("Could not find faces named " + name);
     if (faces.size() == 1)
         return faces[0];
-    
+
     TopoDS_Compound c;
     TopoDS_Builder b;
     b.MakeCompound(c);
@@ -2020,7 +2169,7 @@ Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector)
         array->SetValue(ipos, value);
         ipos++;
     }
-    
+
     return array;
 }
 
@@ -2031,7 +2180,7 @@ Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector)
     for (const auto& value : vector) {
         array->SetValue(ipos++, value);
     }
-    
+
     return array;
 }
 
