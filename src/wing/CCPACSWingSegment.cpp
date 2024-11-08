@@ -169,6 +169,7 @@ void CCPACSWingSegment::InvalidateImpl(const boost::optional<std::string>& sourc
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
     surfaceCache.clear();
     areaCache.clear();
+    chordSurfaceCache.clear();
     volumeCache.clear();
     // AIRBUS: added missing invalidation of guide curves
     if (m_guideCurves) {
