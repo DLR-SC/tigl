@@ -19,3 +19,4 @@
 - [ ] The new code complies with the TiGL style guide.
 - [ ] New classes have been added to the Python interface.
 - [ ] API changes were documented properly in tigl.h.
+- [ ] Changes were documented in tigl/ChangeLog.md
