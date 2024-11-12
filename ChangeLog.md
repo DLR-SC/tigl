@@ -1,6 +1,22 @@
 Changelog
 =========
 
+Version 3.4.0
+-------------
+12/11/2024
+
+ - General changes:
+
+   - Support CPACS 3.4 (#1027)
+   - Implemented standard fuselage profiles, i.e. rounded rectangle profiles (#1005) and superellipses (#1021).
+   - CPACS allows prescribing kinks at (fuselage) profiles at given parameters. At the same time, guide curves must be prescribed at a relative circumference of the profile, which does not necessarily coincide with the parametrization of the profiles. In consequence, it was nearly impossible for a user to prescribe a guide curve exactly at a profile kink. This was fixed by allowing guide curves to be placed at a curve parameter that coincides with the prescribed parameter in the profile definition. Now guide curves can optionally be prescribed using `fromParameter ` and `toParameter` instead of `fromRelativeCircumference` and `toRelativeCircumference`. (#1015)
+  
+ - Fixes:
+   - In Debug Mode, the Lofting algorithm now throws an exception, if the generation of the Side Caps fail. The intention behind having the check only in Debug-Mode is that the geometric validity check is very generic and may be too restrictive. In addition, it may be expensive. (#999)
+   - Fixed an issue, where approximate reparametrization of a B-Spline Curve resulted in non-negligable geometric changes of the B-Spline, especially if parameters are prescribed for a profile in CPACS. This new reparametrization is incompatible with a previous reparametrization applied to fuselage profiles, that distributed the knots for an overall cleaner geometry. Now the knot distribution is turned off, if parameters are prescribed in CPACS. (#1007)
+   - CPACS 3.5 introduces a new way of prescribing the version of the CPACS data set, which means that newer CPACS files could not be interpreted by TiGL anymore. Now, TiGL can open CPACS 3.5 files and raises a warning that the CPACS version is newer than the one supported by TiGL (#1010).
+   - Fix hard crash in Wing Geometry generation with cutouts, if there are no cutouts defined in CPACS. (#1023) 
+
 Version 3.3.1
 -------------
 14/03/2024
