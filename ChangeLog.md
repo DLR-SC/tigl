@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Changes since last release
+-------------
+13/11/2024
+
+ - Fixes:
+   - In #1026, the tolerance for creating cells via contourCoordinate was reduced for cells in spanwise direction. That fixed a bug that caused cells to overlap potentially. The same reduction was missed in chordwise direction and is added now to avoid the cell overlap in chordwise direction, as well. (#1034)
+
+
 Version 3.4.0
 -------------
 12/11/2024
