@@ -130,13 +130,22 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<CPACSSheetBasedStructuralElements>   m_sheetBasedStructuralElements;
+
         boost::optional<CPACSProfileBasedStructuralElements> m_profileBasedStructuralElements;
+
         boost::optional<CPACSStructuralWallElements>         m_structuralWallElements;
+
         boost::optional<CCPACSPressureBulkheads>             m_pressureBulkheads;
+
         boost::optional<CPACSWindows>                        m_windows;
+
         boost::optional<CCPACSDoors>                         m_doors;
+
         boost::optional<CPACSDoorSurroundStructuresAssembly> m_doorSurroundStructures;
+
+        /// Seat elements (Deprecation warning: This element will soon be removed from the official CPACS. Use the new seat modules located at cpacs/vehicles/deckElements!)
         boost::optional<CPACSSeatModules>                    m_seatModules;
+
         boost::optional<CPACSRivets>                         m_rivets;
 
     private:

@@ -19,7 +19,8 @@
 * @brief  Implementation of CPACS hull handling routines.
 */
 
-#pragma once
+#ifndef CCPACSHULL_H
+#define CCPACSHULL_H
 
 #include "generated/CPACSHull.h"
 #include "CTiglRelativelyPositionedComponent.h"
@@ -29,7 +30,6 @@
 
 namespace tigl
 {
-
 class CCPACSHull : public generated::CPACSHull, public CTiglRelativelyPositionedComponent
 {
 public:
@@ -133,3 +133,5 @@ private:
 };
 
 } // namespace tigl
+
+#endif // CCPACSFUSELAGE_H

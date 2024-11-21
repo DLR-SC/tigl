@@ -48,7 +48,7 @@ The recipes for the conda packages in the dlr-sc channel can be found at [https:
 
 We recommend installing TiGL's dependencies via conda in a seperate environment. You can find our recommended environment file for the latest development version at [https://github.com/DLR-SC/tigl/tree/master/environment.yml](https://github.com/DLR-SC/tigl/tree/master/environment.yml). To create this environment locally, enter the following command from the conda command prompt:
 
-    conda create -f environment.yml
+    conda env create -f environment.yml
 
 This command will install a new environment called tigl-bld with all dependencies pre-installed. Next activate the environment:
 

@@ -22,6 +22,13 @@
 
 #include <CTiglUIDManager.h>
 #include <CCPACSWingCell.h>
+#include "CCPACSConfigurationManager.h"
+#include "TopoDS_Edge.hxx"
+#include "TopoDS.hxx"
+#include "TopExp.hxx"
+#include "TopTools_IndexedMapOfShape.hxx"
+#include "CNamedShape.h"
+#include "tiglcommonfunctions.h"
 
 TEST(WingCell, IsInner)
 {
@@ -101,3 +108,126 @@ TEST(WingCell, IsConvex)
     ASSERT_TRUE(cell.IsConvex());
 }
 
+TEST(WingCell, IssueCellsNoOverlapSpanwise)
+{
+    std::string fileName = "TestData/IEA-22-280-RWT_DLR_loads_CPACS.xml";
+    std::string configName = "aircraft";
+    std::string cell1Name = "span02_circ02";
+    std::string cell2Name = "span03_circ02";
+
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+    Standard_Real first1, last1, first2, last2;
+    gp_Pnt pntCurve1, pntCurve2;
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(fileName.c_str(), &tixiHandle);
+    ASSERT_TRUE(tixiRet == SUCCESS);
+
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, configName.c_str(), &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+
+    auto& cell1 = uid_mgr.ResolveObject<tigl::CCPACSWingCell>(cell1Name.c_str());
+    TopoDS_Shape cellLoft1 = cell1.GetLoft()->Shape();
+
+    auto& cell2 = uid_mgr.ResolveObject<tigl::CCPACSWingCell>(cell2Name.c_str());
+    TopoDS_Shape cellLoft2 = cell2.GetLoft()->Shape();
+
+    // Take the outermost edge of the first cell and the innermost edge of the second cell which should be compared
+    // If these edges are identical, the cut of the cells is exactely defined by this edge
+    // Hence, the cells have no overlap
+    // In the following, the edges are compared by comparing three points at parameters 0, 0.5 and 1
+    // If the resulting points are pairwise the same (up to tolerance), the edges are the same and the cells do not overlap
+    TopTools_IndexedMapOfShape edges1, edges2;
+    TopExp::MapShapes (cellLoft1, TopAbs_EDGE, edges1);
+    TopExp::MapShapes (cellLoft2, TopAbs_EDGE, edges2);
+
+    TopoDS_Edge edge1 = TopoDS::Edge(edges1(8)); // Since the cell is defined on two segments, it consists of two faces (-> 8 edges)
+    TopoDS_Edge edge2 = TopoDS::Edge(edges2(2));
+    Handle(Geom_BSplineCurve) curve1 = Handle(Geom_BSplineCurve)::DownCast(BRep_Tool::Curve(edge1, first1, last1));
+    Handle(Geom_BSplineCurve) curve2 = Handle(Geom_BSplineCurve)::DownCast(BRep_Tool::Curve(edge2, first2, last2));
+
+    curve1->D0(0., pntCurve1);
+    curve2->D0(0., pntCurve2);
+    ASSERT_NEAR(pntCurve1.X(), pntCurve2.X(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Y(), pntCurve2.Y(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Z(), pntCurve2.Z(), 1e-3);
+
+    curve1->D0(0.5, pntCurve1);
+    curve2->D0(0.5, pntCurve2);
+    ASSERT_NEAR(pntCurve1.X(), pntCurve2.X(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Y(), pntCurve2.Y(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Z(), pntCurve2.Z(), 1e-3);
+
+    curve1->D0(1., pntCurve1);
+    curve2->D0(1., pntCurve2);
+    ASSERT_NEAR(pntCurve1.X(), pntCurve2.X(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Y(), pntCurve2.Y(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Z(), pntCurve2.Z(), 1e-3);
+}
+
+TEST(WingCell, IssueCellsNoOverlapChordwise)
+{
+    std::string fileName = "TestData/IEA-22-280-RWT_DLR_loads_CPACS.xml";
+    std::string configName = "aircraft";
+    std::string cell1Name = "span03_circ01";
+    std::string cell2Name = "span03_circ02";
+
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+    Standard_Real first1, last1, first2, last2;
+    gp_Pnt pntCurve1, pntCurve2;
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(fileName.c_str(), &tixiHandle);
+    ASSERT_TRUE(tixiRet == SUCCESS);
+
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, configName.c_str(), &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    auto& uid_mgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+
+    auto& cell1 = uid_mgr.ResolveObject<tigl::CCPACSWingCell>(cell1Name.c_str());
+    TopoDS_Shape cellLoft1 = cell1.GetLoft()->Shape();
+
+    auto& cell2 = uid_mgr.ResolveObject<tigl::CCPACSWingCell>(cell2Name.c_str());
+    TopoDS_Shape cellLoft2 = cell2.GetLoft()->Shape();
+
+    // Take the first cell's edge adjacent to cell 2 and the second cell's edge adjacent to cell 1 (-> Should be shared edge)
+    // If these edges are identical, the cut of the cells is exactely defined by this edge
+    // Hence, the cells have no overlap
+    // In the following, the edges are compared by comparing three points at parameters 0, 0.5 and 1
+    // If the resulting points are pairwise the same (up to tolerance), the edges are the same and the cells do not overlap
+    TopTools_IndexedMapOfShape edges1, edges2;
+    TopExp::MapShapes (cellLoft1, TopAbs_EDGE, edges1);
+    TopExp::MapShapes (cellLoft2, TopAbs_EDGE, edges2);
+
+    TopoDS_Edge edge1 = TopoDS::Edge(edges1(1));
+    TopoDS_Edge edge2 = TopoDS::Edge(edges2(3));
+    Handle(Geom_BSplineCurve) curve1 = Handle(Geom_BSplineCurve)::DownCast(BRep_Tool::Curve(edge1, first1, last1));
+    Handle(Geom_BSplineCurve) curve2 = Handle(Geom_BSplineCurve)::DownCast(BRep_Tool::Curve(edge2, first2, last2));
+
+    curve1->D0(0., pntCurve1);
+    curve2->D0(0., pntCurve2);
+    ASSERT_NEAR(pntCurve1.X(), pntCurve2.X(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Y(), pntCurve2.Y(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Z(), pntCurve2.Z(), 1e-3);
+
+    curve1->D0(0.5, pntCurve1);
+    curve2->D0(0.5, pntCurve2);
+    ASSERT_NEAR(pntCurve1.X(), pntCurve2.X(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Y(), pntCurve2.Y(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Z(), pntCurve2.Z(), 1e-3);
+
+    curve1->D0(1., pntCurve1);
+    curve2->D0(1., pntCurve2);
+    ASSERT_NEAR(pntCurve1.X(), pntCurve2.X(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Y(), pntCurve2.Y(), 1e-3);
+    ASSERT_NEAR(pntCurve1.Z(), pntCurve2.Z(), 1e-3);
+}

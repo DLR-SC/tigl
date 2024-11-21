@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include "CCPACSProfileBasedStructuralElement.h"
+#include "CPACSDeckComponent2DBase.h"
 #include "CPACSTransformation2D.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,11 +28,20 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSTransformation2D::CPACSTransformation2D(CPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSDeckComponent2DBase);
+    }
+
     CPACSTransformation2D::CPACSTransformation2D(CCPACSProfileBasedStructuralElement* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSProfileBasedStructuralElement);
     }
 
     CPACSTransformation2D::~CPACSTransformation2D()
@@ -39,24 +49,30 @@ namespace generated
         if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
-    const CCPACSProfileBasedStructuralElement* CPACSTransformation2D::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSProfileBasedStructuralElement* CPACSTransformation2D::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSTransformation2D::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CPACSDeckComponent2DBase>()) {
+                return GetParent<CPACSDeckComponent2DBase>();
+            }
+            if (IsParent<CCPACSProfileBasedStructuralElement>()) {
+                return GetParent<CCPACSProfileBasedStructuralElement>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSTransformation2D::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CPACSDeckComponent2DBase>()) {
+                return GetParent<CPACSDeckComponent2DBase>();
+            }
+            if (IsParent<CCPACSProfileBasedStructuralElement>()) {
+                return GetParent<CCPACSProfileBasedStructuralElement>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSTransformation2D::GetUIDManager()

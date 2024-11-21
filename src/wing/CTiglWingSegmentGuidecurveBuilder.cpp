@@ -79,15 +79,25 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
     double outerScale = GetLength(outerChordLineWire);
 
 
-    // get relative circumference of inner profile
-    double fromRelativeCircumference = guideCurve->GetFromRelativeCircumference();
+    // get relative circumference or parameter value of inner profile (depending on chosen CPACS node)
+    double fromDefinitionValue = guideCurve->GetFromDefinitionValue();
+    // get relative circumference or parameter value of outer profile (depending on chosen CPACS node)
+    double toDefinitionValue = guideCurve->GetToDefinitionValue();
 
-    // get relative circumference of outer profile
-    double toRelativeCircumference = guideCurve->GetToRelativeCircumference();
     // get guide curve profile UID
     std::string guideCurveProfileUID = guideCurve->GetGuideCurveProfileUID();
     // get relative circumference of inner profile
 
+    // decide whether the guide curve's starting point is defined based on circumference or parameter
+    CCPACSGuideCurve::FromOrToDefinition fromDefinition = guideCurve->GetFromDefinition();
+    // decide whether the guide curve's end point is defined based on circumference or parameter
+    CCPACSGuideCurve::FromOrToDefinition toDefinition = guideCurve->GetToDefinition();
+    if (toDefinition == CCPACSGuideCurve::FromOrToDefinition::UID) {
+        throw CTiglError("CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(): toDefinition must not be UID", TIGL_NOT_FOUND);
+    }
+    if (fromDefinition == CCPACSGuideCurve::FromOrToDefinition::PARAMETER || toDefinition == CCPACSGuideCurve::FromOrToDefinition::PARAMETER) {
+        throw CTiglError("CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(): Wing guide curves defined by parameter are not supported. Define them with the relative circumference.", TIGL_NOT_FOUND);
+    }
     // get guide curve profile
     CCPACSGuideCurveProfile& guideCurveProfile = m_segment.GetUIDManager().ResolveObject<CCPACSGuideCurveProfile>(guideCurveProfileUID);
 
@@ -109,12 +119,14 @@ std::vector<gp_Pnt> CTiglWingSegmentGuidecurveBuilder::BuildGuideCurvePnts(const
     // construct guide curve algorithm
     std::vector<gp_Pnt> guideCurvePnts = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires,
                                                                                               concatenatedOuterWires,
-                                                                                              fromRelativeCircumference,
-                                                                                              toRelativeCircumference,
+                                                                                              fromDefinitionValue,
+                                                                                              toDefinitionValue,
                                                                                               innerScale,
                                                                                               outerScale,
                                                                                               rxDir,
-                                                                                              guideCurveProfile);
+                                                                                              guideCurveProfile,
+                                                                                              fromDefinition,
+                                                                                              toDefinition);
     return guideCurvePnts;
 }
 

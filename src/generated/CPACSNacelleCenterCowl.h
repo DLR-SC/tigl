@@ -34,9 +34,10 @@ namespace generated
     // This class is used in:
     // CPACSEngineNacelle
 
-    /// @brief nacelleCenterCowlType
+    /// @brief Center cowl
     /// 
-    /// Describes the curve for defining rotational center of the engine.
+    /// The centerCowl is defined by the rotation of a given curve profile (referenced via curveUID ) around the x -axis.
+    /// @see nacelle_centerCowl
     /// 
     class CPACSNacelleCenterCowl : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -73,7 +74,11 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string m_uID;
+
+        /// Offset of the rotation curve in x-direction
         double      m_xOffset;
+
+        /// UID of the curve profile (vehicles/profiles/curveProfiles/..)
         std::string m_curveUID;
 
     private:

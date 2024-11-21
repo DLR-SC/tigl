@@ -39,7 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSEngineNacelle
 
-    /// @brief nacelleCowlType
+    /// @brief Nacelle cowl
     /// 
     /// Describes the cowl geometry for nacelles
     /// using sections positioned around the

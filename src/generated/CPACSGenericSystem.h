@@ -41,7 +41,7 @@ namespace generated
     /// 
     /// The generic base types must be one of the following cone|sphere|cube|cylinder. The origin of the shapes is at the center of volume for cube, sphere and cylinder. Since the cone is constructued from a cylindric shape, its origin is at the same location as the origin of the basic cylinder, although not any longer the center of volume due to scaling of one side. While cube and sphere are symmetrical in all three axis, cylinder and cone are standing upright in the direction of cpacs z-axis. The tip of the cone is located in direction of the positive z-axis. The figure below illustrates the default position and orientation of the different shapes. Note that the cube, cylinder and sphere were moved along the x-axis for demonstration by 2, 4 and 6 meters respectively.
     /// For spheres the default diameter is 1m. Cubes have a length of 1m in all three dimensions. Cylinders have a length of 1m and a diameter of 1m for the circular cross section. The cone is a cylinder with the top face scaled down to zero.
-    /// @see geometricBaseTypes
+    /// @see geometricBaseType
     /// 
     class CPACSGenericSystem : public CTiglReqUIDObject
     {

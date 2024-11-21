@@ -94,19 +94,16 @@ namespace generated
         /// Spanwise contour coordinate as spanwise border. 0 equals root, 1 equals tip.
         boost::optional<double>           m_contourCoordinate_choice1;
 
-        /// Relative spanwise position of the forward
-        /// end.
+        /// Relative spanwise position of the forward end.
         boost::optional<CCPACSEtaIsoLine> m_eta1_choice2;
 
         /// Relative spanwise position of the rear end.
         boost::optional<CCPACSEtaIsoLine> m_eta2_choice2;
 
-        /// RibNumber is the reference to the rib number
-        /// of the rib set which is referenced by 'ribDefinitionUID'.
+        /// RibNumber is the reference to the rib number of the rib set which is referenced by 'ribDefinitionUID'.
         boost::optional<int>              m_ribNumber_choice3;
 
-        /// Reference to a ribDefinition set. The single
-        /// rib of this ribDefinition set is defined by using 'ribNumber'.
+        /// Reference to a ribDefinition set. The single rib of this ribDefinition set is defined by using 'ribNumber'.
         boost::optional<std::string>      m_ribDefinitionUID_choice3;
 
     private:
