@@ -38,17 +38,14 @@ namespace generated
     // This class is used in:
     // CPACSEngine
 
-    /// @brief Definition of the engine nacelle type.
+    /// @brief Engine nacelle
     /// 
-    /// The engine nacelle is currently located together with
-    /// the engine. It gives a simple description of the outer shell of
-    /// the engine. All values are defined according to the base area,
-    /// center point of the fan(i.e. negative values can occur in the
-    /// definition) In most cases there will be a bypass engine. For
-    /// non-bypass or mixed engines ignore the bypass nozzle. For further
-    /// information on the geometric setup, please refer to the picture
-    /// below.
-    /// @see engineNacelle
+    /// The engine nacelle is part of an engine.
+    /// It allows to define the outer geometry of the following engine components:
+    /// Fan cowl Core cowl Center cowl All geometric values refer to the fan position.
+    /// The common use case for this definition includes bypass engines.
+    /// In the case of non-bypass engines, the core cowl should be omitted.
+    /// @see nacelle
     /// 
     class CPACSEngineNacelle : public CTiglReqUIDObject
     {
@@ -94,8 +91,13 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         std::string                              m_uID;
+
+        /// Fan cowl
         CCPACSNacelleCowl                        m_fanCowl;
+
+        /// Core cowl
         boost::optional<CCPACSNacelleCowl>       m_coreCowl;
+
         boost::optional<CCPACSNacelleCenterCowl> m_centerCowl;
 
     private:

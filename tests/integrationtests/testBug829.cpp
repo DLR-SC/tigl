@@ -35,11 +35,11 @@ TEST(Bug829, cell_getLoft)
    tigl::CCPACSWing& wing = config.GetWing(1);
    tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
 
-   std::vector<double> xmins = {2.195, -0.811, -0.854, -0.908, -0.688, -1.025};
-   std::vector<double> xmaxs = {2.288,  0.692,  0.346, -0.137, -0.306, -0.760};
+   std::vector<double> xmins = {2.195, -0.811, -0.854, -0.908, -0.688, -0.994};
+   std::vector<double> xmaxs = {2.289,  0.682,  0.346, -0.137, -0.358, -0.760};
 
-   std::vector<double> ymins = {0.100, 1.776, 28.851, 69.474, 95.367, 95.367};
-   std::vector<double> ymaxs = {1.834, 5.502, 31.178, 71.526, 96.700, 96.700};
+   std::vector<double> ymins = {0.100, 1.776, 28.851, 69.474, 95.694, 95.694};
+   std::vector<double> ymaxs = {1.776, 5.220, 30.575, 71.197, 96.700, 96.700};
 
    for (int i = 1; i<=6; ++i)
    {

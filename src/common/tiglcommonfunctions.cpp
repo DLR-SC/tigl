@@ -42,6 +42,9 @@
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglProjectPointOnCurveAtAngle.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CTiglPointsToBSplineInterpolation.h"
+#include "CFunctionToBspline.h"
+#include "tiglmathfunctions.h"
 
 #include "Standard_Version.hxx"
 
@@ -119,6 +122,7 @@
 #include <ShapeAnalysis_FreeBounds.hxx>
 
 
+
 #include <list>
 #include <algorithm>
 #include <cassert>
@@ -126,6 +130,7 @@
 #include <cmath>
 
 #include "Debugging.h"
+
 
 namespace
 {
@@ -264,6 +269,23 @@ void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, g
     else {
         throw tigl::CTiglError("EdgeGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
     }
+}
+
+void EdgeGetPointTangentBasedOnParam(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& tangent)
+{
+    // ETA 3D point
+    Standard_Real umin, umax;
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
+
+    if (alpha < umin || alpha > umax) {
+        throw tigl::CTiglError("Parameter alpha not in the range umin <= alpha <= umax in EdgeGetPointTangent", TIGL_ERROR);
+    }
+
+    GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
+    Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
+    adaptorCurve.D1( alpha, point, tangent );
+    // normalize tangent to length of the curve
+    tangent = len*tangent/tangent.Magnitude();
 }
 
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
@@ -501,7 +523,7 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupTy
             shapeList.push_back(shape);
             return shapeList;
         }
-        
+
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
@@ -553,7 +575,7 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupTy
             shapeList.push_back(shape);
             return shapeList;
         }
-        
+
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             const CFaceTraits& traits = shape->GetFaceTraits(iface-1);
@@ -570,7 +592,7 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupTy
             faceShape->SetFaceTraits(0, shape->GetFaceTraits(iface-1));
             shapeList.push_back(faceShape);
         }
-        
+
     }
     return shapeList;
 }
@@ -633,7 +655,7 @@ int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
 TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points)
 {
     unsigned int pointCount = static_cast<int>(points.size());
-    
+
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
     for (unsigned int j = 0; j < pointCount; j++) {
         hpoints->SetValue(j + 1, points[j]);
@@ -642,7 +664,7 @@ TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points)
     GeomAPI_Interpolate interPol(hpoints, Standard_False, Precision::Confusion());
     interPol.Perform();
     Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
-    
+
     return BRepBuilderAPI_MakeEdge(hcurve);
 }
 
@@ -650,7 +672,7 @@ TopoDS_Edge GetEdge(const TopoDS_Shape &shape, int iEdge)
 {
     TopTools_IndexedMapOfShape edgeMap;
     TopExp::MapShapes(shape, TopAbs_EDGE, edgeMap);
-    
+
     if (iEdge < 0 || iEdge >= edgeMap.Extent()) {
         return TopoDS_Edge();
     }
@@ -677,7 +699,7 @@ Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e)
     double u1, u2;
     Handle(Geom_Curve) curve = BRep_Tool::Curve(e, u1, u2);
     curve = new Geom_TrimmedCurve(curve, u1, u2);
-    
+
     // convert to bspline
     Handle(Geom_BSplineCurve) bspl =  GeomConvert::CurveToBSplineCurve(curve);
     return bspl;
@@ -1100,7 +1122,7 @@ TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
     TopoDS_Wire sortedWire1 = TopoDS::Wire(orderedWireSequence.First());
     TopoDS_Wire sortedWire2 = TopoDS::Wire(orderedWireSequence.Last());
 
-    // build curve adaptor, second parameter defines that the length of the single edges is used as u coordinate, 
+    // build curve adaptor, second parameter defines that the length of the single edges is used as u coordinate,
     // instead normalization of the u coordinates of the single edges of the wire (each edge would have u-coords
     // range from 0 to 1 independent of their length otherwise)
     BRepAdaptor_CompCurve compCurve1(sortedWire1, Standard_True);
@@ -1154,6 +1176,304 @@ TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges)
     }
     TopoDS_Wire result = TopoDS::Wire(wireList.First());
     return result;
+}
+
+namespace
+{
+    class Circle : public tigl::MathFunc3d
+    {
+    public:
+        Circle(double radius): tigl::MathFunc3d(), m_radius(radius) {}
+
+        double valueX(double t) override
+        {
+            return 0.;
+        }
+
+        double valueY(double t) override
+        {
+            return m_radius*std::cos(t);
+        }
+
+        double valueZ(double t) override
+        {
+            return m_radius*std::sin(t);
+        }
+
+    private:
+          double m_radius;
+    };
+} //anonymos namespace
+
+opencascade::handle<Geom_BSplineCurve> ApproximateArcOfCircleToRationalBSpline(double radius, double uMin, double uMax,
+                                                                               double tol, double y_position, double z_position)
+{
+    if(radius==0){
+        throw tigl::CTiglError("Invalid geometry. Radius must be != 0.");
+    }
+    if(Abs(uMax-uMin)< tol){
+        throw tigl::CTiglError("Invalid geometry: Curve length must not be Zero.");
+    }
+    if(Abs(uMax-uMin)>(2.*M_PI))
+    {
+        throw tigl::CTiglError("Invalid geometry: Curve cannot be traversed more than once.");
+    }
+
+    Circle circle(radius);
+    int degree = 3;
+
+    auto curve = tigl::CFunctionToBspline(circle, uMin, uMax, degree, tol).Curve();
+    curve->Translate(gp_Vec(0.,y_position,z_position));
+
+    return curve;
+}
+
+TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cornerRadius, const double tol)
+{
+    if(cornerRadius<0.||cornerRadius>0.5){
+        throw tigl::CTiglError("Invalid input for corner radius. Must be in range: 0 <= cornerRadius <= 0.5");
+    }
+
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+
+    // build half upper line from gp_points
+    std::vector<gp_Pnt> linePntsUpperRightHalf;
+    linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
+    linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.5-cornerRadius,0.5*heightToWidthRatio));
+    opencascade::handle<Geom_BSplineCurve> lowerLineRightHalf =
+            tigl::CTiglPointsToBSplineInterpolation(linePntsUpperRightHalf).Curve();
+    curves.push_back(lowerLineRightHalf);
+
+    if (!(cornerRadius == 0.0)){
+        //build upper right arc
+        double y0 = 0.5 - cornerRadius;
+        double z0 = 0.5 * heightToWidthRatio - cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, 0., M_PI/2., tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    // build right line from gp_Pnts
+    std::vector<gp_Pnt> linePnts_right;
+    linePnts_right.push_back(gp_Pnt(0., 0.5, 0.5 * heightToWidthRatio - cornerRadius));
+    linePnts_right.push_back(gp_Pnt(0., 0.5, -0.5 * heightToWidthRatio + cornerRadius));
+    opencascade::handle<Geom_BSplineCurve> rightLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_right).Curve();
+    curves.push_back(rightLine);
+
+    if (!(cornerRadius == 0.0)){
+        //build lower right arc
+        double y0 = 0.5 - cornerRadius;
+        double z0 = - 0.5 * heightToWidthRatio + cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, M_PI*(3./2.), M_PI*2., tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    // build lower line from gp_points
+    std::vector<gp_Pnt> linePnts_lower;
+    linePnts_lower.push_back(gp_Pnt(0.,(0.5-cornerRadius),-0.5*heightToWidthRatio));
+    linePnts_lower.push_back(gp_Pnt(0.,(-0.5+cornerRadius),-0.5*heightToWidthRatio));
+    opencascade::handle<Geom_BSplineCurve> lowerLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_lower).Curve();
+
+    curves.push_back(lowerLine);
+
+    if (!(cornerRadius == 0.)){
+        // build lower left arc
+        double y0 = - 0.5 + cornerRadius;
+        double z0 = -0.5 * heightToWidthRatio + cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, M_PI, M_PI*(3./2.), tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    //build left line from gp_points
+    std::vector<gp_Pnt> linePnts_left;
+    linePnts_left.push_back(gp_Pnt(0.,-0.5,-0.5 * heightToWidthRatio + cornerRadius));
+    linePnts_left.push_back(gp_Pnt(0.,-0.5,0.5 * heightToWidthRatio - cornerRadius));
+    opencascade::handle<Geom_BSplineCurve> leftLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_left).Curve();
+    curves.push_back(leftLine);
+
+    if (!(cornerRadius == 0.)) {
+        // build upper left arc
+        double y0 = - 0.5 + cornerRadius;
+        double z0 = 0.5 * heightToWidthRatio - cornerRadius;
+        auto arcCurve = ApproximateArcOfCircleToRationalBSpline(cornerRadius, M_PI/2., M_PI, tol, y0, z0);
+        arcCurve->Reverse();
+        curves.push_back(arcCurve);
+    }
+
+    // build half upper line from gp_points
+    std::vector<gp_Pnt> linePntsUpperLeftHalf;
+    linePntsUpperLeftHalf.push_back(gp_Pnt(0.,-(0.5-cornerRadius),0.5*heightToWidthRatio));
+    linePntsUpperLeftHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
+    opencascade::handle<Geom_BSplineCurve> upperLineLeftHalf =
+            tigl::CTiglPointsToBSplineInterpolation(linePntsUpperLeftHalf).Curve();
+    curves.push_back(upperLineLeftHalf);
+
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
+
+    // workaround for lofting algorithm not working with  curves of degree '1' (i.e. concatenated lines)
+    // if guide curves are involved, the lofter doesn't generate a valid geometry without thowing an error
+    // This only occurs if the cornerRadius is zero and the profile is a rectangle, which in theory could
+    // just have degree 1.
+    if ((curve->Degree())<2){
+        curve->IncreaseDegree(2);
+    }
+
+    TopoDS_Wire wire;
+    if (!curve.IsNull()) {
+        wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    }
+    return wire;
+}
+
+namespace
+{
+    class SuperEllipse : public tigl::MathFunc3d
+    {
+    public:
+        SuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper,
+                const double nLower, const double nUpper)
+            : tigl::MathFunc3d(), m_lowerHeightFraction(lowerHeightFraction), m_mLower(mLower),
+            m_mUpper(mUpper), m_nLower(nLower), m_nUpper(nUpper) {}
+
+        double valueX(double t) override
+        {
+            return 0.;
+        }
+
+        double valueY(double t) override
+        {
+            //curve is built clockwise
+            return 0.5*std::sin(t);
+        }
+
+        double valueZ(double t) override
+        {
+            double z_0 = m_lowerHeightFraction - 0.5;
+            //clean angle from traversion factor (ensures that alpha <= 2*PI, to determine quadrant)
+            double alpha = (std::fmod(t,(2.*M_PI)));
+            double param = 0.5*std::sin(alpha);
+
+            //same order as in building the profile: oriented clockwise, starting with 1. quadrant ending with 2.
+
+            //build right upper half of semi ellipse
+            if((alpha>=0.)&&(alpha<M_PI/2.)){
+                double z = z_0 + (0.5 -z_0)* std::pow((1. - std::pow(std::abs(2. * param), m_mUpper)), 1. / m_nUpper);
+                return z;
+            }
+
+            //build lower right half of semi ellipse
+            if((alpha>=M_PI/2.)&&(alpha<M_PI)){
+                double z = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2. * param), m_mLower)), 1. / m_nLower);
+                return z;
+            }
+
+            //build lower left half of semi ellipse
+            if((alpha>=M_PI)&&(alpha<M_PI*3./2.)){
+                double z = z_0 - (0.5 + z_0) * std::pow((1. - std::pow(std::abs(2. * param), m_mLower)), 1. / m_nLower);
+                return z;
+            }
+
+            //build left upper half of semi ellipse
+            if((alpha>=M_PI*3./2.)&&(alpha<=M_PI*2.)){
+                double z = z_0 + (0.5 -z_0)* std::pow((1. - std::pow(std::abs(2. * param), m_mUpper)), 1. / m_nUpper);
+                return z;
+            } else {
+                throw tigl::CTiglError("Error building Ellipse");
+            }
+
+        }
+
+    private:
+          double m_lowerHeightFraction;
+          double m_mLower;
+          double m_mUpper;
+          double m_nLower;
+          double m_nUpper;
+    };
+
+} //anonymos namespace
+
+TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, const double mLower, const double mUpper,
+                                              const double nLower, const double nUpper, const double tol)
+{
+    //dealing with singularities in superellipses: exponents must not be equal to 0
+    //choose tolerance near double precision
+    double epsilon = 1e-15;
+    if (mLower<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent mLower must be > ")
+            + std::to_string(epsilon)
+            + ". mLower = "
+            + std::to_string(mLower);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (mUpper<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent mUpper must be > ")
+            + std::to_string(epsilon)
+            + ". mUpper = "
+            + std::to_string(mUpper);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (nLower<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent nLower must be > ")
+            + std::to_string(epsilon)
+            + ". nLower = "
+            + std::to_string(nLower);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (nUpper<=epsilon){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. Exponent nUpper must be > ")
+            + std::to_string(epsilon)
+            + ". nUpper = "
+            + std::to_string(nUpper);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    if (lowerHeightFraction<0||lowerHeightFraction>1){
+        auto msg = std::string("BuildWireSuperEllipse: Invalid input. lowerHeightFraction must be >0 and <1. lowerHeightFraction =  ")
+            + std::to_string(lowerHeightFraction);
+        throw tigl::CTiglError(msg, TIGL_ERROR);
+    }
+    std::vector<Handle(Geom_BSplineCurve)> curves;
+
+    int degree = 3;
+
+    //Parameter for upper right quarterellipse
+    double uMin = 0.;
+    double uMax = M_PI/2;
+    //Parameter for lower right quarterellipse
+    double uMin1 = M_PI/2;
+    double uMax1 = M_PI;
+    //Parameter for lower left quarterellipse
+    double uMin2 = M_PI;
+    double uMax2 = 3*M_PI/2;
+    //Parameter for upper left quarterellipse
+    double uMin3 = 3*M_PI/2;
+    double uMax3 = 2*M_PI;
+
+    SuperEllipse ellipse(lowerHeightFraction, mLower, mUpper, nLower, nUpper);
+
+    //build ellipse clockwise
+    auto curve1 = tigl::CFunctionToBspline(ellipse, uMin, uMax, degree, tol).Curve();
+    curves.push_back(curve1);
+    auto curve2 = tigl::CFunctionToBspline(ellipse, uMin1, uMax1, degree, tol).Curve();
+    curves.push_back(curve2);
+    auto curve3 = tigl::CFunctionToBspline(ellipse, uMin2, uMax2, degree, tol).Curve();
+    curves.push_back(curve3);
+    auto curve4 = tigl::CFunctionToBspline(ellipse, uMin3, uMax3, degree, tol).Curve();
+    curves.push_back(curve4);
+
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
+
+    //build wire
+    TopoDS_Wire wire;
+    if(!curve.IsNull()){
+        wire = BuildWireFromEdges(BRepBuilderAPI_MakeEdge(curve).Edge());
+    }
+    if(wire.IsNull()){
+        throw tigl::CTiglError("Error building profile wire");
+    }
+    return wire;
 }
 
 void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList)
@@ -1646,7 +1966,7 @@ TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape)
                 // get midpoint of checkEdge
                 curve = BRep_Tool::Curve(checkEdge, uStart, uEnd);
                 curve->D0((uStart + uEnd) / 2.0, p2Mid);
-                 
+
                 if (p1Mid.Distance(p2Mid) < 1E-5) {
                     duplicate = true;
                     break;
@@ -1775,7 +2095,7 @@ T Clamp(T val, T min, T max)
     if (min > max) {
         throw tigl::CTiglError("Minimum may not be larger than maximum in clamp!");
     }
-    
+
     return std::max(min, std::min(val, max));
 }
 
@@ -1820,12 +2140,12 @@ TopoDS_Shape GetFacesByName(const PNamedShape shape, const std::string &name)
             faces.push_back(GetFace(shape->Shape(), i));
         }
     }
-    
+
     if (faces.empty())
         throw tigl::CTiglError("Could not find faces named " + name);
     if (faces.size() == 1)
         return faces[0];
-    
+
     TopoDS_Compound c;
     TopoDS_Builder b;
     b.MakeCompound(c);
@@ -1863,7 +2183,7 @@ Handle(TColStd_HArray1OfReal) OccFArray(const std::vector<double>& vector)
         array->SetValue(ipos, value);
         ipos++;
     }
-    
+
     return array;
 }
 
@@ -1874,7 +2194,7 @@ Handle(TColStd_HArray1OfInteger) OccIArray(const std::vector<int>& vector)
     for (const auto& value : vector) {
         array->SetValue(ipos++, value);
     }
-    
+
     return array;
 }
 

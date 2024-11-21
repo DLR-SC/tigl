@@ -163,6 +163,13 @@ void CTiglLogging::SetConsoleVerbosity(TiglLogLevel vlevel)
     }
 }
 
+
+TiglLogLevel CTiglLogging::GetConsoleVerbosity() const
+
+{
+    return _consoleVerbosity;
+}
+
 void CTiglLogging::LogToConsole() 
 {
 #ifdef GLOG_FOUND

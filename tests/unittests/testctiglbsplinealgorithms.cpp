@@ -87,11 +87,28 @@ TEST(TiglBSplineAlgorithms, testComputeParamsBSplineCurve)
     ASSERT_NEAR(parameters[3], right_parameters(4), 1e-15);
 }
 
-TEST(TiglBSplineAlgorithms, testComputeParamsBSplineSurface)
+TEST(TiglBSplineAlgorithms, testCTiglPointsToBSplineInterpolation)
 {
-    // test for method computeParamsBSplineSurf
-
-    // TODO
+    // create a curve with parameters
+    std::vector<gp_Pnt> curvePnts(5);
+    curvePnts.at(0) = (gp_Pnt(0., 0., 1.));
+    curvePnts.at(1) = (gp_Pnt(0., 0.1, 1.2));
+    curvePnts.at(2) = (gp_Pnt(0., 0.2, 1.7));
+    curvePnts.at(3) = (gp_Pnt(0., 0.1, 1.5));
+    curvePnts.at(0) = (gp_Pnt(0., 0.3, 1.9));
+    std::vector<double> params = { 0.1, 0.3, 0.4, 0.5,0.9};
+    auto curve = tigl::CTiglPointsToBSplineInterpolation(curvePnts, params).Curve();
+    std::vector<gp_Pnt> curvePnts1(5);
+    curve->D0(0.1,curvePnts1[0]);
+    curve->D0(0.3,curvePnts1[1]);
+    curve->D0(0.4,curvePnts1[2]);
+    curve->D0(0.5,curvePnts1[3]);
+    curve->D0(0.9,curvePnts1[4]);
+    ASSERT_TRUE(curvePnts1[0].IsEqual(curvePnts[0], 1e-5));
+    ASSERT_TRUE(curvePnts1[1].IsEqual(curvePnts[1], 1e-5));
+    ASSERT_TRUE(curvePnts1[2].IsEqual(curvePnts[2], 1e-5));
+    ASSERT_TRUE(curvePnts1[3].IsEqual(curvePnts[3], 1e-5));
+    ASSERT_TRUE(curvePnts1[4].IsEqual(curvePnts[4], 1e-5));
 }
 
 TEST(TiglBSplineAlgorithms, testCreateCommonKnotsVectorCurve)

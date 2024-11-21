@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include "CCPACSExternalObject.h"
+#include "CPACSGenericGeometryComponent.h"
 #include "CPACSLinkToFile.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -31,30 +32,44 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSExternalObject);
+    }
+
+    CPACSLinkToFile::CPACSLinkToFile(CPACSGenericGeometryComponent* parent)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSGenericGeometryComponent);
     }
 
     CPACSLinkToFile::~CPACSLinkToFile()
     {
     }
 
-    const CCPACSExternalObject* CPACSLinkToFile::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSExternalObject* CPACSLinkToFile::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSLinkToFile::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSExternalObject>()) {
+                return GetParent<CCPACSExternalObject>();
+            }
+            if (IsParent<CPACSGenericGeometryComponent>()) {
+                return GetParent<CPACSGenericGeometryComponent>()->GetNextUIDParent();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSLinkToFile::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSExternalObject>()) {
+                return GetParent<CCPACSExternalObject>();
+            }
+            if (IsParent<CPACSGenericGeometryComponent>()) {
+                return GetParent<CPACSGenericGeometryComponent>()->GetNextUIDParent();
+            }
+        }
+        return nullptr;
     }
 
     void CPACSLinkToFile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
