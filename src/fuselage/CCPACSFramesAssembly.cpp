@@ -33,7 +33,7 @@ CCPACSFramesAssembly::CCPACSFramesAssembly(CCPACSDuctStructure* parent, CTiglUID
 {
 }
 
-CCPACSFramesAssembly::CCPACSFramesAssembly(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr)
+CCPACSFramesAssembly::CCPACSFramesAssembly(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFramesAssembly(parent, uidMgr)
 {
 }
@@ -44,7 +44,7 @@ void CCPACSFramesAssembly::Invalidate(const boost::optional<std::string>& source
         m_frames[i]->Invalidate(source);
 }
 
-// ToDo: Add hulls
+// ToDo: Add vessels
 CTiglRelativelyPositionedComponent const* CCPACSFramesAssembly::GetParentComponent() const
 {
     if (IsParent<CCPACSDuctStructure>()) {

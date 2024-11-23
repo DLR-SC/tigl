@@ -30,12 +30,12 @@
 namespace tigl
 {
 class CTiglUIDObject;
-class CCPACSHull;
+class CCPACSVessel;
 
 namespace generated
 {
     // This class is used in:
-    // CPACSHull
+    // CPACSVessel
 
     /// @brief Dome Type
     /// 
@@ -44,13 +44,13 @@ namespace generated
     class CPACSDomeType
     {
     public:
-        TIGL_EXPORT CPACSDomeType(CCPACSHull* parent);
+        TIGL_EXPORT CPACSDomeType(CCPACSVessel* parent);
 
         TIGL_EXPORT virtual ~CPACSDomeType();
 
-        TIGL_EXPORT CCPACSHull* GetParent();
+        TIGL_EXPORT CCPACSVessel* GetParent();
 
-        TIGL_EXPORT const CCPACSHull* GetParent() const;
+        TIGL_EXPORT const CCPACSVessel* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -79,7 +79,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveIsotensoid_choice3();
 
     protected:
-        CCPACSHull* m_parent;
+        CCPACSVessel* m_parent;
 
         boost::optional<CPACSEllipsoidDome>     m_ellipsoid_choice1;
         boost::optional<CPACSTorisphericalDome> m_torispherical_choice2;

@@ -19,13 +19,11 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSHulls.h>
 #include <CCPACSTransformation.h>
+#include <CCPACSVessels.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
-#include "CPACSFuelTankVolume.h"
-#include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
@@ -81,45 +79,30 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
-        TIGL_EXPORT virtual const CCPACSHulls& GetHulls() const;
-        TIGL_EXPORT virtual CCPACSHulls& GetHulls();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSFuelTankVolume>& GetVolume() const;
-        TIGL_EXPORT virtual boost::optional<CPACSFuelTankVolume>& GetVolume();
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetBurstPressure() const;
-        TIGL_EXPORT virtual void SetBurstPressure(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual CPACSFuelTankVolume& GetVolume(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveVolume();
+        TIGL_EXPORT virtual const CCPACSVessels& GetVessels() const;
+        TIGL_EXPORT virtual CCPACSVessels& GetVessels();
 
     protected:
         CCPACSFuelTanks* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                          m_uID;
+        std::string                       m_uID;
 
-        boost::optional<TiglSymmetryAxis>    m_symmetry;
+        boost::optional<TiglSymmetryAxis> m_symmetry;
 
         /// Name
-        std::string                          m_name;
+        std::string                       m_name;
 
         /// Description
-        boost::optional<std::string>         m_description;
+        boost::optional<std::string>      m_description;
 
         /// Parent component
-        boost::optional<std::string>         m_parentUID;
+        boost::optional<std::string>      m_parentUID;
 
-        CCPACSTransformation                 m_transformation;
+        CCPACSTransformation              m_transformation;
 
-        CCPACSHulls                          m_hulls;
-
-        /// Volume
-        boost::optional<CPACSFuelTankVolume> m_volume;
-
-        /// Burst pressure
-        boost::optional<double>              m_burstPressure;
+        CCPACSVessels                     m_vessels;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;

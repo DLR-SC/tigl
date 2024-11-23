@@ -36194,17 +36194,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="transformation" type="transformationType"/>
-                    <xsd:element name="hulls" type="hullsType"/>
-                    <xsd:element name="volume" minOccurs="0" type="fuelTankVolumeType">
-                        <xsd:annotation>
-                            <xsd:documentation>Volume</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="burstPressure" minOccurs="0" type="doubleBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Burst pressure</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
+                    <xsd:element name="vessels" type="vesselsType"/>
                 </xsd:sequence>
                 <xsd:attribute name="uID" use="required" type="xsd:ID"/>
                 <xsd:attribute name="symmetry" type="symmetryXyXzYzType"/>
@@ -36212,12 +36202,12 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="hullsType">
+    <xsd:complexType name="vesselsType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>Hulls</ddue:para>
+                        <ddue:para>Vessels</ddue:para>
                     </ddue:summary>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -36225,18 +36215,18 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element name="hull" maxOccurs="unbounded" type="hullType"/>
+                    <xsd:element name="vessel" maxOccurs="unbounded" type="vesselType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="hullType">
+    <xsd:complexType name="vesselType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>Hulls</ddue:para>
+                        <ddue:para>Vessel</ddue:para>
                     </ddue:summary>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -36276,8 +36266,19 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:element name="domeType" type="domeTypeType"/>
                         </xsd:sequence>
                     </xsd:choice>
-                    <xsd:element name="structure" minOccurs="0" type="hullStructureType"/>
+                    <xsd:element name="structure" minOccurs="0" type="vesselStructureType"/>
+                    <xsd:element name="structuralMounts" minOccurs="0" type="wingStructuralMountsType"/>
                     <xsd:element name="cutOuts" minOccurs="0" type="fuselageCutOutsType"/>
+                    <xsd:element name="volume" minOccurs="0" type="fuelTankVolumeType">
+                        <xsd:annotation>
+                            <xsd:documentation>Volume</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="burstPressure" minOccurs="0" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Burst pressure</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element> 
                 </xsd:sequence>
                 <xsd:attribute name="uID" use="required" type="xsd:ID"/>
             </xsd:extension>
@@ -36382,7 +36383,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="hullStructureType">
+    <xsd:complexType name="vesselStructureType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
@@ -36397,9 +36398,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 <xsd:all>
                     <xsd:element name="stringers" minOccurs="0" type="stringersAssemblyType"/>
                     <xsd:element name="frames" minOccurs="0" type="framesAssemblyType"/>
-                    <xsd:element name="virtualStringers" minOccurs="0" type="stringersAssemblyType"/>
-                    <xsd:element name="virtualFrames" minOccurs="0" type="framesAssemblyType"/>
-                    <xsd:element name="skinLayers" minOccurs="0" type="hullSkinLayersType"/>
+                    <xsd:element name="skinLayers" minOccurs="0" type="vesselSkinLayersType"/>
 					<xsd:element name="walls" minOccurs="0" type="wallsType"/>
                 </xsd:all>
                 <xsd:attribute name="uID" use="required" type="xsd:ID"/>
@@ -36407,7 +36406,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="hullSkinLayersType">
+    <xsd:complexType name="vesselSkinLayersType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
@@ -36424,6 +36423,28 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
                     <xsd:element name="skinLayer" maxOccurs="unbounded" type="skinType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="structuralMountsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Structural mounts</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para/>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="structuralMount" maxOccurs="unbounded" type="structuralMountType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>

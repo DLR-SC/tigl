@@ -32,7 +32,7 @@ CCPACSSkin::CCPACSSkin(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr)
 CCPACSSkin::CCPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSSkin(parent, uidMgr) {}
 
-CCPACSSkin::CCPACSSkin(CCPACSHullSkinLayers* parent, CTiglUIDManager* uidMgr)
+CCPACSSkin::CCPACSSkin(CCPACSVesselSkinLayers* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSSkin(parent, uidMgr) {}
 
 

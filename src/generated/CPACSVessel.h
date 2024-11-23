@@ -21,11 +21,12 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSFuselageSections.h>
 #include <CCPACSFuselageSegments.h>
-#include <CCPACSHullStructure.h>
 #include <CCPACSTransformation.h>
+#include <CCPACSVesselStructure.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSDomeType.h"
+#include "CPACSFuelTankVolume.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -33,26 +34,26 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSHulls;
+class CCPACSVessels;
 
 namespace generated
 {
     // This class is used in:
-    // CPACSHulls
+    // CPACSVessels
 
-    /// @brief Hulls
+    /// @brief Vessel
     /// 
     /// 
-    class CPACSHull : public CTiglReqUIDObject
+    class CPACSVessel : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSHull();
+        TIGL_EXPORT virtual ~CPACSVessel();
 
-        TIGL_EXPORT CCPACSHulls* GetParent();
+        TIGL_EXPORT CCPACSVessels* GetParent();
 
-        TIGL_EXPORT const CCPACSHulls* GetParent() const;
+        TIGL_EXPORT const CCPACSVessels* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -92,8 +93,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSDomeType>& GetDomeType_choice2() const;
         TIGL_EXPORT virtual boost::optional<CPACSDomeType>& GetDomeType_choice2();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSHullStructure>& GetStructure() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSHullStructure>& GetStructure();
+        TIGL_EXPORT virtual const boost::optional<CCPACSVesselStructure>& GetStructure() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSVesselStructure>& GetStructure();
+
+        TIGL_EXPORT virtual const boost::optional<CPACSFuelTankVolume>& GetVolume() const;
+        TIGL_EXPORT virtual boost::optional<CPACSFuelTankVolume>& GetVolume();
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetBurstPressure() const;
+        TIGL_EXPORT virtual void SetBurstPressure(const boost::optional<double>& value);
 
         TIGL_EXPORT virtual CCPACSFuselageSections& GetSections_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSections_choice1();
@@ -104,11 +111,14 @@ namespace generated
         TIGL_EXPORT virtual CPACSDomeType& GetDomeType_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveDomeType_choice2();
 
-        TIGL_EXPORT virtual CCPACSHullStructure& GetStructure(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSVesselStructure& GetStructure(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructure();
 
+        TIGL_EXPORT virtual CPACSFuelTankVolume& GetVolume(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveVolume();
+
     protected:
-        CCPACSHulls* m_parent;
+        CCPACSVessels* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -134,16 +144,22 @@ namespace generated
 
         boost::optional<CPACSDomeType>          m_domeType_choice2;
 
-        boost::optional<CCPACSHullStructure>    m_structure;
+        boost::optional<CCPACSVesselStructure>  m_structure;
+
+        /// Volume
+        boost::optional<CPACSFuelTankVolume>    m_volume;
+
+        /// Burst pressure
+        boost::optional<double>                 m_burstPressure;
 
     private:
-        CPACSHull(const CPACSHull&) = delete;
-        CPACSHull& operator=(const CPACSHull&) = delete;
+        CPACSVessel(const CPACSVessel&) = delete;
+        CPACSVessel& operator=(const CPACSVessel&) = delete;
 
-        CPACSHull(CPACSHull&&) = delete;
-        CPACSHull& operator=(CPACSHull&&) = delete;
+        CPACSVessel(CPACSVessel&&) = delete;
+        CPACSVessel& operator=(CPACSVessel&&) = delete;
     };
 } // namespace generated
 
-// CPACSHull is customized, use type CCPACSHull directly
+// CPACSVessel is customized, use type CCPACSVessel directly
 } // namespace tigl

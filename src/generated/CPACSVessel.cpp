@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSHulls.h"
-#include "CPACSHull.h"
+#include "CCPACSVessels.h"
+#include "CPACSVessel.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,30 +27,30 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSHull::CPACSHull(CCPACSHulls* parent, CTiglUIDManager* uidMgr)
+    CPACSVessel::CPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_transformation(reinterpret_cast<CCPACSHull*>(this), m_uidMgr)
+        , m_transformation(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
     }
 
-    CPACSHull::~CPACSHull()
+    CPACSVessel::~CPACSVessel()
     {
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CCPACSHulls* CPACSHull::GetParent() const
+    const CCPACSVessels* CPACSVessel::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSHulls* CPACSHull::GetParent()
+    CCPACSVessels* CPACSVessel::GetParent()
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSHull::GetNextUIDParent() const
+    const CTiglUIDObject* CPACSVessel::GetNextUIDParent() const
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -58,7 +58,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDObject* CPACSHull::GetNextUIDParent()
+    CTiglUIDObject* CPACSVessel::GetNextUIDParent()
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -66,7 +66,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDManager& CPACSHull::GetUIDManager()
+    CTiglUIDManager& CPACSVessel::GetUIDManager()
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -74,7 +74,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    const CTiglUIDManager& CPACSHull::GetUIDManager() const
+    const CTiglUIDManager& CPACSVessel::GetUIDManager() const
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -82,7 +82,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    void CPACSHull::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSVessel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
@@ -124,7 +124,7 @@ namespace generated
 
         // read element sections
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sections")) {
-            m_sections_choice1 = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
+            m_sections_choice1 = boost::in_place(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr);
             try {
                 m_sections_choice1->ReadCPACS(tixiHandle, xpath + "/sections");
             } catch(const std::exception& e) {
@@ -135,7 +135,7 @@ namespace generated
 
         // read element segments
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/segments")) {
-            m_segments_choice1 = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
+            m_segments_choice1 = boost::in_place(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr);
             try {
                 m_segments_choice1->ReadCPACS(tixiHandle, xpath + "/segments");
             } catch(const std::exception& e) {
@@ -156,7 +156,7 @@ namespace generated
 
         // read element domeType
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/domeType")) {
-            m_domeType_choice2 = boost::in_place(reinterpret_cast<CCPACSHull*>(this));
+            m_domeType_choice2 = boost::in_place(reinterpret_cast<CCPACSVessel*>(this));
             try {
                 m_domeType_choice2->ReadCPACS(tixiHandle, xpath + "/domeType");
             } catch(const std::exception& e) {
@@ -167,7 +167,7 @@ namespace generated
 
         // read element structure
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structure")) {
-            m_structure = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
+            m_structure = boost::in_place(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr);
             try {
                 m_structure->ReadCPACS(tixiHandle, xpath + "/structure");
             } catch(const std::exception& e) {
@@ -176,15 +176,31 @@ namespace generated
             }
         }
 
+        // read element volume
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/volume")) {
+            m_volume = boost::in_place(reinterpret_cast<CCPACSVessel*>(this));
+            try {
+                m_volume->ReadCPACS(tixiHandle, xpath + "/volume");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read volume at xpath " << xpath << ": " << e.what();
+                m_volume = boost::none;
+            }
+        }
+
+        // read element burstPressure
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/burstPressure")) {
+            m_burstPressure = tixi::TixiGetElement<double>(tixiHandle, xpath + "/burstPressure");
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
         }
     }
 
-    void CPACSHull::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSVessel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "transformation", "sections", "segments", "cylinderRadius", "cylinderLength", "domeType", "structure" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "transformation", "sections", "segments", "cylinderRadius", "cylinderLength", "domeType", "structure", "volume", "burstPressure" };
 
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -274,9 +290,31 @@ namespace generated
             }
         }
 
+        // write element volume
+        if (m_volume) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/volume", childElemOrder);
+            m_volume->WriteCPACS(tixiHandle, xpath + "/volume");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/volume")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/volume");
+            }
+        }
+
+        // write element burstPressure
+        if (m_burstPressure) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/burstPressure", childElemOrder);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/burstPressure", *m_burstPressure);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/burstPressure")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/burstPressure");
+            }
+        }
+
     }
 
-    bool CPACSHull::ValidateChoices() const
+    bool CPACSVessel::ValidateChoices() const
     {
         return
         (
@@ -318,12 +356,12 @@ namespace generated
         ;
     }
 
-    const std::string& CPACSHull::GetUID() const
+    const std::string& CPACSVessel::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSHull::SetUID(const std::string& value)
+    void CPACSVessel::SetUID(const std::string& value)
     {
         if (m_uidMgr && value != m_uID) {
             if (m_uID.empty()) {
@@ -336,142 +374,174 @@ namespace generated
         m_uID = value;
     }
 
-    const std::string& CPACSHull::GetName() const
+    const std::string& CPACSVessel::GetName() const
     {
         return m_name;
     }
 
-    void CPACSHull::SetName(const std::string& value)
+    void CPACSVessel::SetName(const std::string& value)
     {
         m_name = value;
     }
 
-    const boost::optional<std::string>& CPACSHull::GetDescription() const
+    const boost::optional<std::string>& CPACSVessel::GetDescription() const
     {
         return m_description;
     }
 
-    void CPACSHull::SetDescription(const boost::optional<std::string>& value)
+    void CPACSVessel::SetDescription(const boost::optional<std::string>& value)
     {
         m_description = value;
     }
 
-    const CCPACSTransformation& CPACSHull::GetTransformation() const
+    const CCPACSTransformation& CPACSVessel::GetTransformation() const
     {
         return m_transformation;
     }
 
-    CCPACSTransformation& CPACSHull::GetTransformation()
+    CCPACSTransformation& CPACSVessel::GetTransformation()
     {
         return m_transformation;
     }
 
-    const boost::optional<CCPACSFuselageSections>& CPACSHull::GetSections_choice1() const
+    const boost::optional<CCPACSFuselageSections>& CPACSVessel::GetSections_choice1() const
     {
         return m_sections_choice1;
     }
 
-    boost::optional<CCPACSFuselageSections>& CPACSHull::GetSections_choice1()
+    boost::optional<CCPACSFuselageSections>& CPACSVessel::GetSections_choice1()
     {
         return m_sections_choice1;
     }
 
-    const boost::optional<CCPACSFuselageSegments>& CPACSHull::GetSegments_choice1() const
+    const boost::optional<CCPACSFuselageSegments>& CPACSVessel::GetSegments_choice1() const
     {
         return m_segments_choice1;
     }
 
-    boost::optional<CCPACSFuselageSegments>& CPACSHull::GetSegments_choice1()
+    boost::optional<CCPACSFuselageSegments>& CPACSVessel::GetSegments_choice1()
     {
         return m_segments_choice1;
     }
 
-    const boost::optional<double>& CPACSHull::GetCylinderRadius_choice2() const
+    const boost::optional<double>& CPACSVessel::GetCylinderRadius_choice2() const
     {
         return m_cylinderRadius_choice2;
     }
 
-    void CPACSHull::SetCylinderRadius_choice2(const boost::optional<double>& value)
+    void CPACSVessel::SetCylinderRadius_choice2(const boost::optional<double>& value)
     {
         m_cylinderRadius_choice2 = value;
     }
 
-    const boost::optional<double>& CPACSHull::GetCylinderLength_choice2() const
+    const boost::optional<double>& CPACSVessel::GetCylinderLength_choice2() const
     {
         return m_cylinderLength_choice2;
     }
 
-    void CPACSHull::SetCylinderLength_choice2(const boost::optional<double>& value)
+    void CPACSVessel::SetCylinderLength_choice2(const boost::optional<double>& value)
     {
         m_cylinderLength_choice2 = value;
     }
 
-    const boost::optional<CPACSDomeType>& CPACSHull::GetDomeType_choice2() const
+    const boost::optional<CPACSDomeType>& CPACSVessel::GetDomeType_choice2() const
     {
         return m_domeType_choice2;
     }
 
-    boost::optional<CPACSDomeType>& CPACSHull::GetDomeType_choice2()
+    boost::optional<CPACSDomeType>& CPACSVessel::GetDomeType_choice2()
     {
         return m_domeType_choice2;
     }
 
-    const boost::optional<CCPACSHullStructure>& CPACSHull::GetStructure() const
+    const boost::optional<CCPACSVesselStructure>& CPACSVessel::GetStructure() const
     {
         return m_structure;
     }
 
-    boost::optional<CCPACSHullStructure>& CPACSHull::GetStructure()
+    boost::optional<CCPACSVesselStructure>& CPACSVessel::GetStructure()
     {
         return m_structure;
     }
 
-    CCPACSFuselageSections& CPACSHull::GetSections_choice1(CreateIfNotExistsTag)
+    const boost::optional<CPACSFuelTankVolume>& CPACSVessel::GetVolume() const
+    {
+        return m_volume;
+    }
+
+    boost::optional<CPACSFuelTankVolume>& CPACSVessel::GetVolume()
+    {
+        return m_volume;
+    }
+
+    const boost::optional<double>& CPACSVessel::GetBurstPressure() const
+    {
+        return m_burstPressure;
+    }
+
+    void CPACSVessel::SetBurstPressure(const boost::optional<double>& value)
+    {
+        m_burstPressure = value;
+    }
+
+    CCPACSFuselageSections& CPACSVessel::GetSections_choice1(CreateIfNotExistsTag)
     {
         if (!m_sections_choice1)
-            m_sections_choice1 = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
+            m_sections_choice1 = boost::in_place(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr);
         return *m_sections_choice1;
     }
 
-    void CPACSHull::RemoveSections_choice1()
+    void CPACSVessel::RemoveSections_choice1()
     {
         m_sections_choice1 = boost::none;
     }
 
-    CCPACSFuselageSegments& CPACSHull::GetSegments_choice1(CreateIfNotExistsTag)
+    CCPACSFuselageSegments& CPACSVessel::GetSegments_choice1(CreateIfNotExistsTag)
     {
         if (!m_segments_choice1)
-            m_segments_choice1 = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
+            m_segments_choice1 = boost::in_place(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr);
         return *m_segments_choice1;
     }
 
-    void CPACSHull::RemoveSegments_choice1()
+    void CPACSVessel::RemoveSegments_choice1()
     {
         m_segments_choice1 = boost::none;
     }
 
-    CPACSDomeType& CPACSHull::GetDomeType_choice2(CreateIfNotExistsTag)
+    CPACSDomeType& CPACSVessel::GetDomeType_choice2(CreateIfNotExistsTag)
     {
         if (!m_domeType_choice2)
-            m_domeType_choice2 = boost::in_place(reinterpret_cast<CCPACSHull*>(this));
+            m_domeType_choice2 = boost::in_place(reinterpret_cast<CCPACSVessel*>(this));
         return *m_domeType_choice2;
     }
 
-    void CPACSHull::RemoveDomeType_choice2()
+    void CPACSVessel::RemoveDomeType_choice2()
     {
         m_domeType_choice2 = boost::none;
     }
 
-    CCPACSHullStructure& CPACSHull::GetStructure(CreateIfNotExistsTag)
+    CCPACSVesselStructure& CPACSVessel::GetStructure(CreateIfNotExistsTag)
     {
         if (!m_structure)
-            m_structure = boost::in_place(reinterpret_cast<CCPACSHull*>(this), m_uidMgr);
+            m_structure = boost::in_place(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr);
         return *m_structure;
     }
 
-    void CPACSHull::RemoveStructure()
+    void CPACSVessel::RemoveStructure()
     {
         m_structure = boost::none;
+    }
+
+    CPACSFuelTankVolume& CPACSVessel::GetVolume(CreateIfNotExistsTag)
+    {
+        if (!m_volume)
+            m_volume = boost::in_place(reinterpret_cast<CCPACSVessel*>(this));
+        return *m_volume;
+    }
+
+    void CPACSVessel::RemoveVolume()
+    {
+        m_volume = boost::none;
     }
 
 } // namespace generated

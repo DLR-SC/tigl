@@ -16,36 +16,22 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS hulls handling routines.
+* @brief  Implementation of CPACS vessels handling routines.
 */
 
 #pragma once
 
-#include "generated/CPACSHulls.h"
-#include <functional>
+#include "generated/CPACSVesselStructure.h"
+#include "CTiglRelativelyPositionedComponent.h"
+#include "ITiglFuselageDuctStructure.h"
 
 namespace tigl
 {
 
-class CCPACSHulls : public generated::CPACSHulls
+class CCPACSVesselStructure : public generated::CPACSVesselStructure, public ITiglFuselageDuctStructure
 {
 public:
-    TIGL_EXPORT CCPACSHulls(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr);
-
-    // Get a specific hull for a given uID
-    TIGL_EXPORT CCPACSHull const& GetHull(std::string const& uID) const;
-    TIGL_EXPORT CCPACSHull& GetHull(std::string const& uID);
-
-    // Get a specific hull for a given index.
-    TIGL_EXPORT CCPACSHull& GetHull(int index) const;
-
-    // Returns the hull index for a given uID.
-    TIGL_EXPORT int GetHullIndex(const std::string& uID) const;
-
-    // Returns the total count of fuselages in a configuration
-    TIGL_EXPORT int GetHullsCount() const;
-
-private:
+    TIGL_EXPORT CCPACSVesselStructure(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
 };
 
 } //namespace tigl

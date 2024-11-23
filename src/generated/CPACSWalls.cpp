@@ -17,7 +17,7 @@
 
 #include <cassert>
 #include "CCPACSFuselageStructure.h"
-#include "CCPACSHullStructure.h"
+#include "CCPACSVesselStructure.h"
 #include "CPACSWalls.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -39,14 +39,14 @@ namespace generated
         m_parentType = &typeid(CCPACSFuselageStructure);
     }
 
-    CPACSWalls::CPACSWalls(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr)
+    CPACSWalls::CPACSWalls(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_wallPositions(reinterpret_cast<CCPACSWalls*>(this), m_uidMgr)
         , m_wallSegments(reinterpret_cast<CCPACSWalls*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CCPACSHullStructure);
+        m_parentType = &typeid(CCPACSVesselStructure);
     }
 
     CPACSWalls::~CPACSWalls()
@@ -59,8 +59,8 @@ namespace generated
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
             }
-            if (IsParent<CCPACSHullStructure>()) {
-                return GetParent<CCPACSHullStructure>();
+            if (IsParent<CCPACSVesselStructure>()) {
+                return GetParent<CCPACSVesselStructure>();
             }
         }
         return nullptr;
@@ -72,8 +72,8 @@ namespace generated
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
             }
-            if (IsParent<CCPACSHullStructure>()) {
-                return GetParent<CCPACSHullStructure>();
+            if (IsParent<CCPACSVesselStructure>()) {
+                return GetParent<CCPACSVesselStructure>();
             }
         }
         return nullptr;

@@ -28,7 +28,7 @@ namespace tigl
 {
 
 class CCPACSFuselage;
-class CCPACSHull;
+class CCPACSVessel;
 class CCPACSWalls;
 class CCPACSWallPosition;
 
@@ -62,7 +62,7 @@ private:
 
     const CCPACSWalls& GetWalls() const;
     const CCPACSFuselage& GetFuselage() const;
-    const CCPACSHull& GetHull() const;
+    const CCPACSVessel& GetVessel() const;
 
     PNamedShape BuildLoft() const override;
     

@@ -32,7 +32,7 @@ CCPACSStringersAssembly::CCPACSStringersAssembly(CCPACSDuctStructure* parent, CT
 {
 }
 
-CCPACSStringersAssembly::CCPACSStringersAssembly(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr)
+CCPACSStringersAssembly::CCPACSStringersAssembly(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSStringersAssembly(parent, uidMgr)
 {
 }

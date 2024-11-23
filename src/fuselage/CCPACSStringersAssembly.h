@@ -32,7 +32,7 @@ class CCPACSStringersAssembly : public generated::CPACSStringersAssembly
 public:
     TIGL_EXPORT CCPACSStringersAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSStringersAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSStringersAssembly(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSStringersAssembly(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 

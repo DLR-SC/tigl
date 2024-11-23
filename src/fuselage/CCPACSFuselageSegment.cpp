@@ -25,8 +25,8 @@
 #include "CTiglFuselageSegmentGuidecurveBuilder.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
-#include "CCPACSHull.h"
-#include "CCPACSHulls.h"
+#include "CCPACSVessel.h"
+#include "CCPACSVessels.h"
 
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"
@@ -268,14 +268,14 @@ std::string CCPACSFuselageSegment::GetShortShapeName() const
             }
         }
     }
-    else if (m_parent->IsParent<CCPACSHull>()) {
+    else if (m_parent->IsParent<CCPACSVessel>()) {
 
         prefix = "H";
-        auto* hull = m_parent->GetParent<CCPACSHull>();
+        auto* vessel = m_parent->GetParent<CCPACSVessel>();
         unsigned int i = 0;
-        for (auto& h: hull->GetParent()->GetHulls()) {
+        for (auto& h: vessel->GetParent()->GetVessels()) {
             ++i;
-            if (hull->GetUID() == h->GetUID()) {
+            if (vessel->GetUID() == h->GetUID()) {
                 findex = i;
                 break;
             }
@@ -415,7 +415,7 @@ void CCPACSFuselageSegment::UpdateSurfaceProperties(SurfacePropertiesCache& cach
 
     GProp_GProps AreaSystem;
 
-    // The first face is the outer hull. We ignore symmetry planes and the front / back caps
+    // The first face is the outer vessel. We ignore symmetry planes and the front / back caps
     BRepGProp::SurfaceProperties(faceExplorer.Current(), AreaSystem);
     cache.mySurfaceArea = AreaSystem.Mass();
 }

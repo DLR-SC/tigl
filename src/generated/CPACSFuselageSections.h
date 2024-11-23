@@ -32,14 +32,14 @@ class CTiglUIDObject;
 class CCPACSFuselageSection;
 class CCPACSDuct;
 class CCPACSFuselage;
-class CCPACSHull;
+class CCPACSVessel;
 
 namespace generated
 {
     // This class is used in:
     // CPACSDuct
     // CPACSFuselage
-    // CPACSHull
+    // CPACSVessel
 
     /// @brief fuselageSectionsType
     /// 
@@ -50,7 +50,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSFuselageSections(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSFuselageSections(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSFuselageSections(CCPACSHull* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuselageSections(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFuselageSections();
 
@@ -63,7 +63,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSHull>::value, "template argument for P is not a parent class of CPACSFuselageSections");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSVessel>::value, "template argument for P is not a parent class of CPACSFuselageSections");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -73,7 +73,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSHull>::value, "template argument for P is not a parent class of CPACSFuselageSections");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSVessel>::value, "template argument for P is not a parent class of CPACSFuselageSections");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

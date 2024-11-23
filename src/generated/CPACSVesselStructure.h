@@ -24,7 +24,7 @@
 #include <CCPACSWalls.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSHullSkinLayers.h"
+#include "CPACSVesselSkinLayers.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -32,26 +32,26 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSHull;
+class CCPACSVessel;
 
 namespace generated
 {
     // This class is used in:
-    // CPACSHull
+    // CPACSVessel
 
     /// @brief Structure
     /// 
     /// 
-    class CPACSHullStructure : public CTiglReqUIDObject
+    class CPACSVesselStructure : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSHullStructure(CCPACSHull* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVesselStructure(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSHullStructure();
+        TIGL_EXPORT virtual ~CPACSVesselStructure();
 
-        TIGL_EXPORT CCPACSHull* GetParent();
+        TIGL_EXPORT CCPACSVessel* GetParent();
 
-        TIGL_EXPORT const CCPACSHull* GetParent() const;
+        TIGL_EXPORT const CCPACSVessel* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -71,14 +71,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSFramesAssembly>& GetFrames() const;
         TIGL_EXPORT virtual boost::optional<CCPACSFramesAssembly>& GetFrames();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSStringersAssembly>& GetVirtualStringers() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSStringersAssembly>& GetVirtualStringers();
-
-        TIGL_EXPORT virtual const boost::optional<CCPACSFramesAssembly>& GetVirtualFrames() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSFramesAssembly>& GetVirtualFrames();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSHullSkinLayers>& GetSkinLayers() const;
-        TIGL_EXPORT virtual boost::optional<CPACSHullSkinLayers>& GetSkinLayers();
+        TIGL_EXPORT virtual const boost::optional<CPACSVesselSkinLayers>& GetSkinLayers() const;
+        TIGL_EXPORT virtual boost::optional<CPACSVesselSkinLayers>& GetSkinLayers();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSWalls>& GetWalls() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWalls>& GetWalls();
@@ -89,39 +83,31 @@ namespace generated
         TIGL_EXPORT virtual CCPACSFramesAssembly& GetFrames(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFrames();
 
-        TIGL_EXPORT virtual CCPACSStringersAssembly& GetVirtualStringers(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveVirtualStringers();
-
-        TIGL_EXPORT virtual CCPACSFramesAssembly& GetVirtualFrames(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveVirtualFrames();
-
-        TIGL_EXPORT virtual CPACSHullSkinLayers& GetSkinLayers(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSVesselSkinLayers& GetSkinLayers(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSkinLayers();
 
         TIGL_EXPORT virtual CCPACSWalls& GetWalls(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveWalls();
 
     protected:
-        CCPACSHull* m_parent;
+        CCPACSVessel* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
         std::string                              m_uID;
         boost::optional<CCPACSStringersAssembly> m_stringers;
         boost::optional<CCPACSFramesAssembly>    m_frames;
-        boost::optional<CCPACSStringersAssembly> m_virtualStringers;
-        boost::optional<CCPACSFramesAssembly>    m_virtualFrames;
-        boost::optional<CPACSHullSkinLayers>     m_skinLayers;
+        boost::optional<CPACSVesselSkinLayers>   m_skinLayers;
         boost::optional<CCPACSWalls>             m_walls;
 
     private:
-        CPACSHullStructure(const CPACSHullStructure&) = delete;
-        CPACSHullStructure& operator=(const CPACSHullStructure&) = delete;
+        CPACSVesselStructure(const CPACSVesselStructure&) = delete;
+        CPACSVesselStructure& operator=(const CPACSVesselStructure&) = delete;
 
-        CPACSHullStructure(CPACSHullStructure&&) = delete;
-        CPACSHullStructure& operator=(CPACSHullStructure&&) = delete;
+        CPACSVesselStructure(CPACSVesselStructure&&) = delete;
+        CPACSVesselStructure& operator=(CPACSVesselStructure&&) = delete;
     };
 } // namespace generated
 
-// CPACSHullStructure is customized, use type CCPACSHullStructure directly
+// CPACSVesselStructure is customized, use type CCPACSVesselStructure directly
 } // namespace tigl

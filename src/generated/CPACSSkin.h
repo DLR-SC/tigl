@@ -37,12 +37,12 @@ class CCPACSFuselageStructure;
 
 namespace generated
 {
-    class CPACSHullSkinLayers;
+    class CPACSVesselSkinLayers;
 
     // This class is used in:
     // CPACSDuctStructure
     // CPACSFuselageStructure
-    // CPACSHullSkinLayers
+    // CPACSVesselSkinLayers
 
     /// @brief skinType
     /// 
@@ -53,7 +53,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSSkin(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSSkin(CPACSHullSkinLayers* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSkin(CPACSVesselSkinLayers* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSkin();
 
@@ -66,7 +66,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CPACSHullSkinLayers>::value, "template argument for P is not a parent class of CPACSSkin");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CPACSVesselSkinLayers>::value, "template argument for P is not a parent class of CPACSSkin");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -76,7 +76,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CPACSHullSkinLayers>::value, "template argument for P is not a parent class of CPACSSkin");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CPACSVesselSkinLayers>::value, "template argument for P is not a parent class of CPACSSkin");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -128,5 +128,5 @@ namespace generated
 // CPACSSkin is customized, use type CCPACSSkin directly
 
 // Aliases in tigl namespace
-using CCPACSHullSkinLayers = generated::CPACSHullSkinLayers;
+using CCPACSVesselSkinLayers = generated::CPACSVesselSkinLayers;
 } // namespace tigl

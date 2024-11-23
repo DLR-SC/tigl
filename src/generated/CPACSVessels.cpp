@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include <CCPACSHull.h>
+#include <CCPACSVessel.h>
 #include "CCPACSFuelTank.h"
-#include "CPACSHulls.h"
+#include "CPACSVessels.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,38 +29,38 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSHulls::CPACSHulls(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr)
+    CPACSVessels::CPACSVessels(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
     }
 
-    CPACSHulls::~CPACSHulls()
+    CPACSVessels::~CPACSVessels()
     {
     }
 
-    const CCPACSFuelTank* CPACSHulls::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSFuelTank* CPACSHulls::GetParent()
+    const CCPACSFuelTank* CPACSVessels::GetParent() const
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSHulls::GetNextUIDParent() const
+    CCPACSFuelTank* CPACSVessels::GetParent()
     {
         return m_parent;
     }
 
-    CTiglUIDObject* CPACSHulls::GetNextUIDParent()
+    const CTiglUIDObject* CPACSVessels::GetNextUIDParent() const
     {
         return m_parent;
     }
 
-    CTiglUIDManager& CPACSHulls::GetUIDManager()
+    CTiglUIDObject* CPACSVessels::GetNextUIDParent()
+    {
+        return m_parent;
+    }
+
+    CTiglUIDManager& CPACSVessels::GetUIDManager()
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -68,7 +68,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    const CTiglUIDManager& CPACSHulls::GetUIDManager() const
+    const CTiglUIDManager& CPACSVessels::GetUIDManager() const
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -76,43 +76,43 @@ namespace generated
         return *m_uidMgr;
     }
 
-    void CPACSHulls::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSVessels::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element hull
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/hull")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/hull", m_hulls, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSHulls*>(this), m_uidMgr);
+        // read element vessel
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/vessel")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/vessel", m_vessels, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSVessels*>(this), m_uidMgr);
         }
 
     }
 
-    void CPACSHulls::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSVessels::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element hull
-        tixi::TixiSaveElements(tixiHandle, xpath + "/hull", m_hulls);
+        // write element vessel
+        tixi::TixiSaveElements(tixiHandle, xpath + "/vessel", m_vessels);
 
     }
 
-    const std::vector<std::unique_ptr<CCPACSHull>>& CPACSHulls::GetHulls() const
+    const std::vector<std::unique_ptr<CCPACSVessel>>& CPACSVessels::GetVessels() const
     {
-        return m_hulls;
+        return m_vessels;
     }
 
-    std::vector<std::unique_ptr<CCPACSHull>>& CPACSHulls::GetHulls()
+    std::vector<std::unique_ptr<CCPACSVessel>>& CPACSVessels::GetVessels()
     {
-        return m_hulls;
+        return m_vessels;
     }
 
-    CCPACSHull& CPACSHulls::AddHull()
+    CCPACSVessel& CPACSVessels::AddVessel()
     {
-        m_hulls.push_back(make_unique<CCPACSHull>(reinterpret_cast<CCPACSHulls*>(this), m_uidMgr));
-        return *m_hulls.back();
+        m_vessels.push_back(make_unique<CCPACSVessel>(reinterpret_cast<CCPACSVessels*>(this), m_uidMgr));
+        return *m_vessels.back();
     }
 
-    void CPACSHulls::RemoveHull(CCPACSHull& ref)
+    void CPACSVessels::RemoveVessel(CCPACSVessel& ref)
     {
-        for (std::size_t i = 0; i < m_hulls.size(); i++) {
-            if (m_hulls[i].get() == &ref) {
-                m_hulls.erase(m_hulls.begin() + i);
+        for (std::size_t i = 0; i < m_vessels.size(); i++) {
+            if (m_vessels[i].get() == &ref) {
+                m_vessels.erase(m_vessels.begin() + i);
                 return;
             }
         }

@@ -27,7 +27,7 @@ namespace tigl
 
 class CCPACSWalls;
 class CCPACSFuselage;
-class CCPACSHull;
+class CCPACSVessel;
 
 class CCPACSWallPosition : public generated::CPACSWallPosition
 {
@@ -55,7 +55,7 @@ private:
     void CalcBasePointAndShape() const;
     const CCPACSWalls& GetWalls() const;
     const CCPACSFuselage& GetFuselage() const;
-    const CCPACSHull& GetHull() const;
+    const CCPACSVessel& GetVessel() const;
 
     mutable bool _isBuilt{false};
     mutable gp_Pnt _basePoint;

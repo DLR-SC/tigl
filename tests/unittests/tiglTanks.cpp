@@ -28,10 +28,10 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 
-#include "CCPACSHull.h"
+#include "CCPACSVessel.h"
 
-// #include "generated/CPACSHulls.h"
-// #include "generated/CPACSHull.h"
+// #include "generated/CPACSVessels.h"
+// #include "generated/CPACSVessel.h"
 
 // #include "CNamedShape.h"
 // #include "tiglcommonfunctions.h"
@@ -47,7 +47,7 @@
 
 // #include <TopoDS_Iterator.hxx>
 
-class FuselageTank : public ::testing::Test
+class FuelTanks : public ::testing::Test
 {
 protected:
     static void SetUpTestCase()
@@ -84,29 +84,29 @@ protected:
     static TiglCPACSConfigurationHandle tiglHandle;
 
     tigl::CTiglUIDManager& uidMgr =
-        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(FuselageTank::tiglHandle).GetUIDManager();
+        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(FuelTanks::tiglHandle).GetUIDManager();
 
     // tank
     tigl::CCPACSFuelTank const* fuelTank = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank1");
 
-    // hulls
-    const tigl::CCPACSHulls& hulls    = fuelTank->GetHulls();
-    tigl::CCPACSHull* hull_segments   = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank1_outerHull");
-    tigl::CCPACSHull* hull_guides     = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank2_outerHull");
-    tigl::CCPACSHull* hull_parametric = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank3_sphericalDome");
+    // vessels
+    const tigl::CCPACSVessels& vessels    = fuelTank->GetVessels();
+    tigl::CCPACSVessel* vessel_segments   = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank1_outerVessel");
+    tigl::CCPACSVessel* vessel_guides     = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank2_outerVessel");
+    tigl::CCPACSVessel* vessel_parametric = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank3_sphericalDome");
 
-    tigl::CCPACSHull* hull_spherical     = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank3_sphericalDome");
-    tigl::CCPACSHull* hull_ellipsoid     = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank3_ellipsoidDome");
-    tigl::CCPACSHull* hull_torispherical = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank4_torisphericalDome");
-    tigl::CCPACSHull* hull_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSHull>("tank5_isotensoidDome");
+    tigl::CCPACSVessel* vessel_spherical     = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank3_sphericalDome");
+    tigl::CCPACSVessel* vessel_ellipsoid     = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank3_ellipsoidDome");
+    tigl::CCPACSVessel* vessel_torispherical = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank4_torisphericalDome");
+    tigl::CCPACSVessel* vessel_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank5_isotensoidDome");
 
     tigl::CCPACSWallSegment* wall_in_fuselage = &uidMgr.ResolveObject<tigl::CCPACSWallSegment>("wall_fuselage");
 
-    const char* tankTypeExceptionString = "This method is only available for hulls with segments. No segment found.";
+    const char* tankTypeExceptionString = "This method is only available for vessels with segments. No segment found.";
 };
 
-TixiDocumentHandle FuselageTank::tixiHandle           = 0;
-TiglCPACSConfigurationHandle FuselageTank::tiglHandle = 0;
+TixiDocumentHandle FuelTanks::tixiHandle           = 0;
+TiglCPACSConfigurationHandle FuelTanks::tiglHandle = 0;
 
 void CheckExceptionMessage(std::function<void()> func, const char* expectedMessage)
 {
@@ -122,7 +122,7 @@ void CheckExceptionMessage(std::function<void()> func, const char* expectedMessa
     }
 }
 
-TEST_F(FuselageTank, configuration)
+TEST_F(FuelTanks, configuration)
 {
     auto& config    = fuelTank->GetConfiguration();
     std::string uID = "tank1";
@@ -132,7 +132,7 @@ TEST_F(FuselageTank, configuration)
     EXPECT_EQ(config.GetFuelTankIndex(uID), 1);
 }
 
-TEST_F(FuselageTank, fuelTanks)
+TEST_F(FuelTanks, fuelTanks)
 {
     std::string uID                        = "tank1";
     const tigl::CCPACSFuelTanks* fuelTanks = fuelTank->GetParent();
@@ -142,148 +142,148 @@ TEST_F(FuselageTank, fuelTanks)
     EXPECT_EQ(fuelTanks->GetFuelTanksCount(), 6);
 }
 
-TEST_F(FuselageTank, fuelTank)
+TEST_F(FuelTanks, fuelTank)
 {
-    EXPECT_NO_THROW(fuelTank->GetHulls());
+    EXPECT_NO_THROW(fuelTank->GetVessels());
 
     const std::string name = fuelTank->GetName();
     EXPECT_EQ(name, "Simple tank 1");
 }
 
 // ToDo: Check how to use pointer ->
-TEST_F(FuselageTank, hulls)
+TEST_F(FuelTanks, vessels)
 {
-    EXPECT_EQ(hulls.GetHullsCount(), 2);
-    EXPECT_EQ(hulls.GetHull(1).GetDefaultedUID(), "tank1_outerHull");
-    EXPECT_EQ(hulls.GetHull("tank1_outerHull").GetDefaultedUID(), "tank1_outerHull");
-    EXPECT_EQ(hulls.GetHullIndex("tank1_outerHull"), 1);
-    EXPECT_EQ(hulls.GetHulls().at(0)->GetDefaultedUID(), "tank1_outerHull");
+    EXPECT_EQ(vessels.GetVesselsCount(), 2);
+    EXPECT_EQ(vessels.GetVessel(1).GetDefaultedUID(), "tank1_outerVessel");
+    EXPECT_EQ(vessels.GetVessel("tank1_outerVessel").GetDefaultedUID(), "tank1_outerVessel");
+    EXPECT_EQ(vessels.GetVesselIndex("tank1_outerVessel"), 1);
+    EXPECT_EQ(vessels.GetVessels().at(0)->GetDefaultedUID(), "tank1_outerVessel");
 }
 
-TEST_F(FuselageTank, hull_general)
+TEST_F(FuelTanks, vessel_general)
 {
-    EXPECT_EQ(hull_segments->GetConfiguration().GetUID(), "testAircraft");
-    EXPECT_EQ(hull_segments->GetDefaultedUID(), "tank1_outerHull");
+    EXPECT_EQ(vessel_segments->GetConfiguration().GetUID(), "testAircraft");
+    EXPECT_EQ(vessel_segments->GetDefaultedUID(), "tank1_outerVessel");
 }
 
-TEST_F(FuselageTank, hull_component_info)
+TEST_F(FuelTanks, vessel_component_info)
 {
-    EXPECT_EQ(hull_segments->GetComponentType(), TIGL_COMPONENT_FUSELAGE_TANK_HULL);
-    EXPECT_EQ(hull_segments->GetComponentIntent(), TIGL_INTENT_PHYSICAL);
+    EXPECT_EQ(vessel_segments->GetComponentType(), TIGL_COMPONENT_FUSELAGE_TANK_HULL);
+    EXPECT_EQ(vessel_segments->GetComponentIntent(), TIGL_INTENT_PHYSICAL);
 }
 
-TEST_F(FuselageTank, hull_type_info)
+TEST_F(FuelTanks, vessel_type_info)
 {
-    EXPECT_TRUE(hull_segments->IsHullViaSegments());
-    EXPECT_FALSE(hull_segments->IsHullViaDesignParameters());
-    EXPECT_FALSE(hull_spherical->IsHullViaSegments());
-    EXPECT_TRUE(hull_spherical->IsHullViaDesignParameters());
+    EXPECT_TRUE(vessel_segments->IsVesselViaSegments());
+    EXPECT_FALSE(vessel_segments->IsVesselViaDesignParameters());
+    EXPECT_FALSE(vessel_spherical->IsVesselViaSegments());
+    EXPECT_TRUE(vessel_spherical->IsVesselViaDesignParameters());
 
-    EXPECT_FALSE(hull_segments->HasSphericalDome());
-    EXPECT_FALSE(hull_segments->HasEllipsoidDome());
-    EXPECT_FALSE(hull_segments->HasTorisphericalDome());
-    EXPECT_FALSE(hull_segments->HasIsotensoidDome());
+    EXPECT_FALSE(vessel_segments->HasSphericalDome());
+    EXPECT_FALSE(vessel_segments->HasEllipsoidDome());
+    EXPECT_FALSE(vessel_segments->HasTorisphericalDome());
+    EXPECT_FALSE(vessel_segments->HasIsotensoidDome());
 
-    EXPECT_TRUE(hull_spherical->HasSphericalDome());
-    EXPECT_TRUE(hull_spherical->HasEllipsoidDome());
-    EXPECT_FALSE(hull_spherical->HasTorisphericalDome());
-    EXPECT_FALSE(hull_spherical->HasIsotensoidDome());
+    EXPECT_TRUE(vessel_spherical->HasSphericalDome());
+    EXPECT_TRUE(vessel_spherical->HasEllipsoidDome());
+    EXPECT_FALSE(vessel_spherical->HasTorisphericalDome());
+    EXPECT_FALSE(vessel_spherical->HasIsotensoidDome());
 
-    EXPECT_FALSE(hull_ellipsoid->HasSphericalDome());
-    EXPECT_TRUE(hull_ellipsoid->HasEllipsoidDome());
-    EXPECT_FALSE(hull_ellipsoid->HasTorisphericalDome());
-    EXPECT_FALSE(hull_ellipsoid->HasIsotensoidDome());
+    EXPECT_FALSE(vessel_ellipsoid->HasSphericalDome());
+    EXPECT_TRUE(vessel_ellipsoid->HasEllipsoidDome());
+    EXPECT_FALSE(vessel_ellipsoid->HasTorisphericalDome());
+    EXPECT_FALSE(vessel_ellipsoid->HasIsotensoidDome());
 
-    EXPECT_FALSE(hull_torispherical->HasSphericalDome());
-    EXPECT_FALSE(hull_torispherical->HasEllipsoidDome());
-    EXPECT_TRUE(hull_torispherical->HasTorisphericalDome());
-    EXPECT_FALSE(hull_torispherical->HasIsotensoidDome());
+    EXPECT_FALSE(vessel_torispherical->HasSphericalDome());
+    EXPECT_FALSE(vessel_torispherical->HasEllipsoidDome());
+    EXPECT_TRUE(vessel_torispherical->HasTorisphericalDome());
+    EXPECT_FALSE(vessel_torispherical->HasIsotensoidDome());
 
-    EXPECT_FALSE(hull_isotensoid->HasSphericalDome());
-    EXPECT_FALSE(hull_isotensoid->HasEllipsoidDome());
-    EXPECT_FALSE(hull_isotensoid->HasTorisphericalDome());
-    EXPECT_TRUE(hull_isotensoid->HasIsotensoidDome());
+    EXPECT_FALSE(vessel_isotensoid->HasSphericalDome());
+    EXPECT_FALSE(vessel_isotensoid->HasEllipsoidDome());
+    EXPECT_FALSE(vessel_isotensoid->HasTorisphericalDome());
+    EXPECT_TRUE(vessel_isotensoid->HasIsotensoidDome());
 }
 
-TEST_F(FuselageTank, hull_sections)
+TEST_F(FuelTanks, vessel_sections)
 {
     const char* invalidIndexMessage    = "Invalid index in CCPACSFuselageSections::GetSection";
     const char* wrongSectionUIDMessage = "GetSectionFace: Could not find a fuselage section for the given UID";
 
-    EXPECT_EQ(hull_segments->GetSectionCount(), 3);
-    EXPECT_EQ(hull_parametric->GetSectionCount(), 0);
+    EXPECT_EQ(vessel_segments->GetSectionCount(), 3);
+    EXPECT_EQ(vessel_parametric->GetSectionCount(), 0);
 
-    EXPECT_NO_THROW(hull_segments->GetSection(1));
-    CheckExceptionMessage([&]() { hull_segments->GetSection(4); }, invalidIndexMessage);
-    CheckExceptionMessage([&]() { hull_parametric->GetSection(2); }, tankTypeExceptionString);
+    EXPECT_NO_THROW(vessel_segments->GetSection(1));
+    CheckExceptionMessage([&]() { vessel_segments->GetSection(4); }, invalidIndexMessage);
+    CheckExceptionMessage([&]() { vessel_parametric->GetSection(2); }, tankTypeExceptionString);
 
-    EXPECT_NO_THROW(hull_segments->GetSectionFace("outerHull_section3"));
-    CheckExceptionMessage([&]() { hull_segments->GetSectionFace("wrongSectionUID"); }, wrongSectionUIDMessage);
-    CheckExceptionMessage([&]() { hull_parametric->GetSectionFace("outerHull_section3"); }, tankTypeExceptionString);
+    EXPECT_NO_THROW(vessel_segments->GetSectionFace("outerVessel_section3"));
+    CheckExceptionMessage([&]() { vessel_segments->GetSectionFace("wrongSectionUID"); }, wrongSectionUIDMessage);
+    CheckExceptionMessage([&]() { vessel_parametric->GetSectionFace("outerVessel_section3"); }, tankTypeExceptionString);
 }
 
-TEST_F(FuselageTank, hull_segments)
+TEST_F(FuelTanks, vessel_segments)
 {
-    EXPECT_EQ(hull_segments->GetSegmentCount(), 2);
-    EXPECT_EQ(hull_parametric->GetSegmentCount(), 0);
+    EXPECT_EQ(vessel_segments->GetSegmentCount(), 2);
+    EXPECT_EQ(vessel_parametric->GetSegmentCount(), 0);
 
-    EXPECT_NO_THROW(hull_segments->GetSegment(1));
-    CheckExceptionMessage([&]() { hull_parametric->GetSegment(1); }, tankTypeExceptionString);
+    EXPECT_NO_THROW(vessel_segments->GetSegment(1));
+    CheckExceptionMessage([&]() { vessel_parametric->GetSegment(1); }, tankTypeExceptionString);
 
-    EXPECT_NO_THROW(hull_segments->GetSegment("outerHull_segment1"));
-    CheckExceptionMessage([&]() { hull_segments->GetSegment(3); },
+    EXPECT_NO_THROW(vessel_segments->GetSegment("outerVessel_segment1"));
+    CheckExceptionMessage([&]() { vessel_segments->GetSegment(3); },
                           "Invalid index value in CCPACSFuselageSegments::GetSegment");
 }
 
-TEST_F(FuselageTank, hull_guide_curves)
+TEST_F(FuelTanks, vessel_guide_curves)
 {
-    auto points = hull_guides->GetGuideCurvePoints();
+    auto points = vessel_guides->GetGuideCurvePoints();
     EXPECT_EQ(points.size(), 24);
     EXPECT_NEAR(points.at(1).X(), 3.5, 1e-2);
     EXPECT_NEAR(points.at(1).Y(), 0, 1e-5);
     EXPECT_NEAR(points.at(1).Z(), -0.65, 1e-2);
-    CheckExceptionMessage([&]() { hull_parametric->GetGuideCurvePoints(); }, tankTypeExceptionString);
+    CheckExceptionMessage([&]() { vessel_parametric->GetGuideCurvePoints(); }, tankTypeExceptionString);
 
-    EXPECT_EQ(hull_guides->GetGuideCurveSegment("tank2_seg1_upper").GetGuideCurveProfileUID(), "gc_upper");
-    CheckExceptionMessage([&]() { hull_parametric->GetGuideCurveSegment("tank2_seg1_upper"); },
+    EXPECT_EQ(vessel_guides->GetGuideCurveSegment("tank2_seg1_upper").GetGuideCurveProfileUID(), "gc_upper");
+    CheckExceptionMessage([&]() { vessel_parametric->GetGuideCurveSegment("tank2_seg1_upper"); },
                           tankTypeExceptionString);
 }
 
-TEST_F(FuselageTank, hull_loft_evaluation)
+TEST_F(FuelTanks, vessel_loft_evaluation)
 {
-    EXPECT_NEAR(hull_segments->GetVolume(), 6.57, 1e-2);
-    EXPECT_NEAR(hull_parametric->GetVolume(), 18.1, 1e-2);
+    EXPECT_NEAR(vessel_segments->GetGeometricVolume(), 6.57, 1e-2);
+    EXPECT_NEAR(vessel_parametric->GetGeometricVolume(), 18.1, 1e-2);
 
-    EXPECT_NEAR(hull_segments->GetSurfaceArea(), 11.15, 1e-2);
-    EXPECT_NEAR(hull_parametric->GetSurfaceArea(), 36.19, 1e-2);
+    EXPECT_NEAR(vessel_segments->GetSurfaceArea(), 11.15, 1e-2);
+    EXPECT_NEAR(vessel_parametric->GetSurfaceArea(), 36.19, 1e-2);
 
-    EXPECT_NEAR(hull_segments->GetCircumference(1, 0.5), 7.43, 1e-2);
-    CheckExceptionMessage([&]() { hull_parametric->GetCircumference(1, 0.5); }, tankTypeExceptionString);
+    EXPECT_NEAR(vessel_segments->GetCircumference(1, 0.5), 7.43, 1e-2);
+    CheckExceptionMessage([&]() { vessel_parametric->GetCircumference(1, 0.5); }, tankTypeExceptionString);
 
-    EXPECT_NEAR(hull_segments->GetPoint(1, 0.5, 0.5).X(), 1.54, 1e-2);
-    EXPECT_NEAR(hull_segments->GetPoint(1, 0.5, 0.5).Y(), 0, 1e-5);
-    EXPECT_NEAR(hull_segments->GetPoint(1, 0.5, 0.5).Z(), -1.2, 1e-1);
-    CheckExceptionMessage([&]() { hull_parametric->GetPoint(1, 0.5, 0.5); }, tankTypeExceptionString);
+    EXPECT_NEAR(vessel_segments->GetPoint(1, 0.5, 0.5).X(), 1.54, 1e-2);
+    EXPECT_NEAR(vessel_segments->GetPoint(1, 0.5, 0.5).Y(), 0, 1e-5);
+    EXPECT_NEAR(vessel_segments->GetPoint(1, 0.5, 0.5).Z(), -1.2, 1e-1);
+    CheckExceptionMessage([&]() { vessel_parametric->GetPoint(1, 0.5, 0.5); }, tankTypeExceptionString);
 
-    EXPECT_EQ(hull_segments->GetGetPointBehavior(), asParameterOnSurface);
-    EXPECT_NO_THROW(hull_segments->SetGetPointBehavior(onLinearLoft));
-    EXPECT_EQ(hull_segments->GetGetPointBehavior(), onLinearLoft);
+    EXPECT_EQ(vessel_segments->GetGetPointBehavior(), asParameterOnSurface);
+    EXPECT_NO_THROW(vessel_segments->SetGetPointBehavior(onLinearLoft));
+    EXPECT_EQ(vessel_segments->GetGetPointBehavior(), onLinearLoft);
 }
 
-TEST_F(FuselageTank, parametric_hull)
+TEST_F(FuelTanks, parametric_vessel)
 {
-    auto& loft = hull_parametric->GetLoft();
+    auto& loft = vessel_parametric->GetLoft();
 }
 
-TEST_F(FuselageTank, structure)
+TEST_F(FuelTanks, structure)
 {
-    auto& structure = hull_segments->GetStructure();
+    auto& structure = vessel_segments->GetStructure();
 
     EXPECT_EQ(structure->GetFrames()->GetFrames().size(), 1);
-    EXPECT_EQ(structure->GetUID(), "outerHullStructure");
+    EXPECT_EQ(structure->GetUID(), "outerVesselStructure");
 }
 
-TEST_F(FuselageTank, walls)
+TEST_F(FuelTanks, walls)
 {
     EXPECT_EQ(wall_in_fuselage->GetUID().get(), "wall_fuselage");
     auto loft = wall_in_fuselage->GetLoft();

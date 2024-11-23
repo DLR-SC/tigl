@@ -33,7 +33,7 @@ class CCPACSWalls : public generated::CPACSWalls
 {
 public:
     CCPACSWalls(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
-    CCPACSWalls(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr);
+    CCPACSWalls(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr);
 
     const CCPACSWallSegment& GetWallSegment(const std::string& uid) const;
     const CCPACSWallPosition& GetWallPosition(const std::string& uid) const;

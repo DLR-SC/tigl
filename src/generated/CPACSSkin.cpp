@@ -18,8 +18,8 @@
 #include <cassert>
 #include "CCPACSDuctStructure.h"
 #include "CCPACSFuselageStructure.h"
-#include "CPACSHullSkinLayers.h"
 #include "CPACSSkin.h"
+#include "CPACSVesselSkinLayers.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -46,12 +46,12 @@ namespace generated
         m_parentType = &typeid(CCPACSFuselageStructure);
     }
 
-    CPACSSkin::CPACSSkin(CPACSHullSkinLayers* parent, CTiglUIDManager* uidMgr)
+    CPACSSkin::CPACSSkin(CPACSVesselSkinLayers* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSHullSkinLayers);
+        m_parentType = &typeid(CPACSVesselSkinLayers);
     }
 
     CPACSSkin::~CPACSSkin()
@@ -70,8 +70,8 @@ namespace generated
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSHullSkinLayers>()) {
-                return GetParent<CPACSHullSkinLayers>()->GetNextUIDParent();
+            if (IsParent<CPACSVesselSkinLayers>()) {
+                return GetParent<CPACSVesselSkinLayers>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -86,8 +86,8 @@ namespace generated
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSHullSkinLayers>()) {
-                return GetParent<CPACSHullSkinLayers>()->GetNextUIDParent();
+            if (IsParent<CPACSVesselSkinLayers>()) {
+                return GetParent<CPACSVesselSkinLayers>()->GetNextUIDParent();
             }
         }
         return nullptr;

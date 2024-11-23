@@ -89,7 +89,7 @@ CCPACSTransformation::CCPACSTransformation(CCPACSLandingGearBase* parent, CTiglU
 {
 }
 
-CCPACSTransformation::CCPACSTransformation(CCPACSHull* parent, CTiglUIDManager* uidMgr)
+CCPACSTransformation::CCPACSTransformation(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
 {

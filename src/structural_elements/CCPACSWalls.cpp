@@ -26,7 +26,7 @@ CCPACSWalls::CCPACSWalls(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMg
 {
 }
 
-CCPACSWalls::CCPACSWalls(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr)
+CCPACSWalls::CCPACSWalls(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWalls (parent, uidMgr)
 {
 }

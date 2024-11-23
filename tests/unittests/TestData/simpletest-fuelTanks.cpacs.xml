@@ -7,7 +7,7 @@
     <version>1.0.0</version>
     <versionInfos>
       <versionInfo version="1.0.0">
-        <description>First test set with different tank and hull types</description>
+        <description>First test set with different tank and vessel types</description>
         <creator>Marko Alder</creator>
         <timestamp>2023-12-28T12:00:00</timestamp>
         <cpacsVersion>3.5</cpacsVersion>
@@ -247,9 +247,9 @@
                 <x>0.5</x>
               </translation>
             </transformation>
-            <hulls>
-              <hull uID="tank1_outerHull">
-                <name>Outer hull</name>
+            <vessels>
+              <vessel uID="tank1_outerVessel">
+                <name>Outer vessel</name>
                 <transformation>
                   <scaling>
                     <x>1</x>
@@ -258,7 +258,7 @@
                   </scaling>
                 </transformation>
                 <sections>
-                  <section uID="outerHull_section1">
+                  <section uID="outerVessel_section1">
                     <name>Section 1</name>
                     <transformation>
                       <translation>
@@ -266,14 +266,14 @@
                       </translation>
                     </transformation>
                     <elements>
-                      <element uID="outerHull_section1_element1">
+                      <element uID="outerVessel_section1_element1">
                         <name>Section 1 Element 1</name>
                         <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
                   </section>
-                  <section uID="outerHull_section2">
+                  <section uID="outerVessel_section2">
                     <name>Section 2</name>
                     <transformation>
                       <translation>
@@ -281,14 +281,14 @@
                       </translation>
                     </transformation>
                     <elements>
-                      <element uID="outerHull_section2_element1">
+                      <element uID="outerVessel_section2_element1">
                         <name>Section 2 Element 1</name>
                         <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
                   </section>
-                  <section uID="outerHull_section3">
+                  <section uID="outerVessel_section3">
                     <name>Section 3</name>
                     <transformation>
                       <translation>
@@ -296,7 +296,7 @@
                       </translation>
                     </transformation>
                     <elements>
-                      <element uID="outerHull_section3_element1">
+                      <element uID="outerVessel_section3_element1">
                         <name>Section 3 Element 1</name>
                         <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
@@ -305,23 +305,23 @@
                   </section>
                 </sections>
                 <segments>
-                  <segment uID="outerHull_segment1">
-                    <name>Outer hull Segment 1</name>
-                    <fromElementUID>outerHull_section1_element1</fromElementUID>
-                    <toElementUID>outerHull_section2_element1</toElementUID>
+                  <segment uID="outerVessel_segment1">
+                    <name>Outer vessel Segment 1</name>
+                    <fromElementUID>outerVessel_section1_element1</fromElementUID>
+                    <toElementUID>outerVessel_section2_element1</toElementUID>
                   </segment>
-                  <segment uID="outerHull_segment2">
-                    <name>Outer hull Segment 2</name>
-                    <fromElementUID>outerHull_section2_element1</fromElementUID>
-                    <toElementUID>outerHull_section3_element1</toElementUID>
+                  <segment uID="outerVessel_segment2">
+                    <name>Outer vessel Segment 2</name>
+                    <fromElementUID>outerVessel_section2_element1</fromElementUID>
+                    <toElementUID>outerVessel_section3_element1</toElementUID>
                   </segment>
                 </segments>
-                <structure uID="outerHullStructure">
+                <structure uID="outerVesselStructure">
                   <frames>
-                    <frame uID="outerHullStructureFrame1">
-                      <framePosition uID="outerHullStructureFrame1_fp1">
+                    <frame uID="outerVesselStructureFrame1">
+                      <framePosition uID="outerVesselStructureFrame1_fp1">
                         <structuralElementUID>dummyMaterial</structuralElementUID>
-                        <sectionElementUID>outerHull_section2</sectionElementUID>
+                        <sectionElementUID>outerVessel_section2</sectionElementUID>
                         <referenceY>0</referenceY>
                         <referenceZ>0</referenceZ>
                         <referenceAngle>45</referenceAngle>
@@ -329,9 +329,9 @@
                     </frame>
                   </frames>
                 </structure>
-              </hull>
-              <hull uID="tank1_innerHull">
-                <name>Inner hull</name>
+              </vessel>
+              <vessel uID="tank1_innerVessel">
+                <name>Inner vessel</name>
                 <transformation>
                   <translation>
                     <x>0.2</x>
@@ -343,7 +343,7 @@
                   </scaling>
                 </transformation>
                 <sections>
-                  <section uID="innerHull_section1">
+                  <section uID="innerVessel_section1">
                     <name>Section 1</name>
                     <transformation>
                       <translation>
@@ -351,14 +351,14 @@
                       </translation>
                     </transformation>
                     <elements>
-                      <element uID="innerHull_section1_element1">
+                      <element uID="innerVessel_section1_element1">
                         <name>Section 1 Element 1</name>
                         <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
                   </section>
-                  <section uID="innerHull_section2">
+                  <section uID="innerVessel_section2">
                     <name>Section 2</name>
                     <transformation>
                       <translation>
@@ -366,14 +366,14 @@
                       </translation>
                     </transformation>
                     <elements>
-                      <element uID="innerHull_section2_element1">
+                      <element uID="innerVessel_section2_element1">
                         <name>Section 2 Element 1</name>
                         <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
                   </section>
-                  <section uID="innerHull_section3">
+                  <section uID="innerVessel_section3">
                     <name>Section 3</name>
                     <transformation>
                       <translation>
@@ -381,7 +381,7 @@
                       </translation>
                     </transformation>
                     <elements>
-                      <element uID="innerHull_section3_element1">
+                      <element uID="innerVessel_section3_element1">
                         <name>Section 3 Element 1</name>
                         <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
@@ -390,19 +390,19 @@
                   </section>
                 </sections>
                 <segments>
-                  <segment uID="innerHull_segment1">
-                    <name>Inner hull Segment 1</name>
-                    <fromElementUID>innerHull_section1_element1</fromElementUID>
-                    <toElementUID>innerHull_section2_element1</toElementUID>
+                  <segment uID="innerVessel_segment1">
+                    <name>Inner vessel Segment 1</name>
+                    <fromElementUID>innerVessel_section1_element1</fromElementUID>
+                    <toElementUID>innerVessel_section2_element1</toElementUID>
                   </segment>
-                  <segment uID="innerHull_segment2">
-                    <name>Inner hull Segment 2</name>
-                    <fromElementUID>innerHull_section2_element1</fromElementUID>
-                    <toElementUID>innerHull_section3_element1</toElementUID>
+                  <segment uID="innerVessel_segment2">
+                    <name>Inner vessel Segment 2</name>
+                    <fromElementUID>innerVessel_section2_element1</fromElementUID>
+                    <toElementUID>innerVessel_section3_element1</toElementUID>
                   </segment>
                 </segments>
-              </hull>
-            </hulls>
+              </vessel>
+            </vessels>
           </fuelTank>
           <fuelTank uID="tank2">
             <name>Simple tank 2</name>
@@ -413,9 +413,9 @@
                 <x>2.5</x>
               </translation>
             </transformation>
-            <hulls>
-              <hull uID="tank2_outerHull">
-                <name>Outer hull</name>
+            <vessels>
+              <vessel uID="tank2_outerVessel">
+                <name>Outer vessel</name>
                 <transformation>
                   <scaling>
                     <x>1</x>
@@ -424,7 +424,7 @@
                   </scaling>
                 </transformation>
                 <sections>
-                  <section uID="tank2_outerHull_section1">
+                  <section uID="tank2_outerVessel_section1">
                     <name>Section 1</name>
                     <transformation>
                       <translation>
@@ -432,7 +432,7 @@
                       </translation>
                     </transformation>
                     <elements>
-                      <element uID="tank2_outerHull_section1_element1">
+                      <element uID="tank2_outerVessel_section1_element1">
                         <name>Section 1 Element 1</name>
                         <profileUID>fuselageCircleProfile</profileUID>
                         <transformation>
@@ -444,7 +444,7 @@
                       </element>
                     </elements>
                   </section>
-                  <section uID="tank2_outerHull_section2">
+                  <section uID="tank2_outerVessel_section2">
                     <name>Section 2</name>
                     <transformation>
                       <translation>
@@ -452,14 +452,14 @@
                       </translation>
                     </transformation>
                     <elements>
-                      <element uID="tank2_outerHull_section2_element1">
+                      <element uID="tank2_outerVessel_section2_element1">
                         <name>Section 2 Element 1</name>
                         <profileUID>fuselageCircleProfile</profileUID>
                         <transformation />
                       </element>
                     </elements>
                   </section>
-                  <section uID="tank2_outerHull_section3">
+                  <section uID="tank2_outerVessel_section3">
                     <name>Section 3</name>
                     <transformation>
                       <translation>
@@ -467,7 +467,7 @@
                       </translation>
                     </transformation>
                     <elements>
-                      <element uID="tank2_outerHull_section3_element1">
+                      <element uID="tank2_outerVessel_section3_element1">
                         <name>Section 3 Element 1</name>
                         <profileUID>fuselageCircleProfile</profileUID>
                         <transformation>
@@ -481,10 +481,10 @@
                   </section>
                 </sections>
                 <segments>
-                  <segment uID="tank2_outerHull_segment1">
-                    <name>Outer hull Segment 1</name>
-                    <fromElementUID>tank2_outerHull_section1_element1</fromElementUID>
-                    <toElementUID>tank2_outerHull_section2_element1</toElementUID>
+                  <segment uID="tank2_outerVessel_segment1">
+                    <name>Outer vessel Segment 1</name>
+                    <fromElementUID>tank2_outerVessel_section1_element1</fromElementUID>
+                    <toElementUID>tank2_outerVessel_section2_element1</toElementUID>
                     <guideCurves>
                       <guideCurve uID="tank2_seg1_upper">
                         <name>Guide Segment 1 Upper</name>
@@ -512,10 +512,10 @@
                       </guideCurve>
                     </guideCurves>
                   </segment>
-                  <segment uID="tank2_outerHull_segment2">
-                    <name>Outer hull Segment 2</name>
-                    <fromElementUID>tank2_outerHull_section2_element1</fromElementUID>
-                    <toElementUID>tank2_outerHull_section3_element1</toElementUID>
+                  <segment uID="tank2_outerVessel_segment2">
+                    <name>Outer vessel Segment 2</name>
+                    <fromElementUID>tank2_outerVessel_section2_element1</fromElementUID>
+                    <toElementUID>tank2_outerVessel_section3_element1</toElementUID>
                     <guideCurves>
                       <guideCurve uID="tank2_seg2_upper">
                         <name>Guide Segment 2 Upper</name>
@@ -544,8 +544,8 @@
                     </guideCurves>
                   </segment>
                 </segments>
-              </hull>
-            </hulls>
+              </vessel>
+            </vessels>
           </fuelTank>
           <fuelTank uID="tank3">
             <name>Simple tank 3</name>
@@ -556,9 +556,9 @@
                 <x>5.</x>
               </translation>
             </transformation>
-            <hulls>
-              <hull uID="tank3_sphericalDome">
-                <name>Hull with spherical dome</name>
+            <vessels>
+              <vessel uID="tank3_sphericalDome">
+                <name>Vessel with spherical dome</name>
                 <transformation>
                   <translation>
                     <x>0.</x>
@@ -576,9 +576,9 @@
                     <halfAxisFraction>1</halfAxisFraction>
                   </ellipsoid>
                 </domeType>
-              </hull>
-              <hull uID="tank3_ellipsoidDome">
-                <name>Hull with ellipsoid dome</name>
+              </vessel>
+              <vessel uID="tank3_ellipsoidDome">
+                <name>Vessel with ellipsoid dome</name>
                 <transformation>
                   <translation>
                     <x>0.5</x>
@@ -596,9 +596,9 @@
                     <halfAxisFraction>0.5</halfAxisFraction>
                   </ellipsoid>
                 </domeType>
-              </hull>
-              <hull uID="tank3_cylindricalDome">
-                <name>Hull with cylindrical dome</name>
+              </vessel>
+              <vessel uID="tank3_cylindricalDome">
+                <name>Vessel with cylindrical dome</name>
                 <transformation>
                   <translation>
                     <x>1</x>
@@ -616,9 +616,9 @@
                     <halfAxisFraction>0</halfAxisFraction>
                   </ellipsoid>
                 </domeType>
-              </hull>
-              <hull uID="tank3_spherical">
-                <name>Hull as pure sphere</name>
+              </vessel>
+              <vessel uID="tank3_spherical">
+                <name>Vessel as pure sphere</name>
                 <transformation>
                   <translation>
                     <x>1.5</x>
@@ -636,8 +636,8 @@
                     <halfAxisFraction>1</halfAxisFraction>
                   </ellipsoid>
                 </domeType>
-              </hull>
-            </hulls>
+              </vessel>
+            </vessels>
           </fuelTank>
           <fuelTank uID="tank4">
             <name>Simple tank 4</name>
@@ -652,9 +652,9 @@
                 <z>90</z>
               </rotation>
             </transformation>
-            <hulls>
-              <hull uID="tank4_torisphericalDome">
-                <name>Hull with torispherical dome</name>
+            <vessels>
+              <vessel uID="tank4_torisphericalDome">
+                <name>Vessel with torispherical dome</name>
                 <transformation>
                   <translation>
                     <x>0.</x>
@@ -668,8 +668,8 @@
                     <knuckleRadius>0.2</knuckleRadius>
                   </torispherical>
                 </domeType>
-              </hull>
-            </hulls>
+              </vessel>
+            </vessels>
           </fuelTank>
           <fuelTank uID="tank5">
             <name>Simple tank 5</name>
@@ -680,9 +680,9 @@
                 <x>13.</x>
               </translation>
             </transformation>
-            <hulls>
-              <hull uID="tank5_isotensoidDome">
-                <name>Hull with isotensoid dome</name>
+            <vessels>
+              <vessel uID="tank5_isotensoidDome">
+                <name>Vessel with isotensoid dome</name>
                 <transformation>
                   <translation>
                     <x>0.</x>
@@ -754,8 +754,8 @@
                     </wallSegments>
                   </walls>
                 </structure>
-              </hull>
-            </hulls>
+              </vessel>
+            </vessels>
           </fuelTank>
           <fuelTank uID="tank6">
             <name>Simple tank 6</name>
@@ -767,9 +767,9 @@
                 <y>10.</y>
               </translation>
             </transformation>
-            <hulls>
-              <hull uID="tank6_ellipsoidDome">
-                <name>Hull with ellipsoid dome for wing tank</name>
+            <vessels>
+              <vessel uID="tank6_ellipsoidDome">
+                <name>Vessel with ellipsoid dome for wing tank</name>
                 <transformation>
                   <translation>
                     <x>-1.1</x>
@@ -782,8 +782,8 @@
                     <halfAxisFraction>5</halfAxisFraction>
                   </ellipsoid>
                 </domeType>
-              </hull>
-            </hulls>
+              </vessel>
+            </vessels>
           </fuelTank>
         </fuelTanks>
       </model>

@@ -20,7 +20,7 @@
 */
 
 #include "CCPACSFuelTank.h"
-#include "CCPACSHull.h"
+#include "CCPACSVessel.h"
 #include "CTiglError.h"
 #include "CGroupShapes.h"
 
@@ -56,11 +56,11 @@ TiglGeometricComponentIntent CCPACSFuelTank::GetComponentIntent() const
 
 PNamedShape CCPACSFuelTank::BuildLoft() const
 {
-    const auto& hulls = GetHulls().GetHulls();
+    const auto& vessels = GetVessels().GetVessels();
     ListPNamedShape shapes;
 
-    for (const auto& hull : hulls) {
-        auto loft = hull->GetLoft();
+    for (const auto& vessel : vessels) {
+        auto loft = vessel->GetLoft();
         shapes.push_back(loft);
     }
 

@@ -30,19 +30,19 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSFuselageStructure;
-class CCPACSHullStructure;
+class CCPACSVesselStructure;
 
 namespace generated
 {
     // This class is used in:
     // CPACSFuselageStructure
-    // CPACSHullStructure
+    // CPACSVesselStructure
 
     class CPACSWalls
     {
     public:
         TIGL_EXPORT CPACSWalls(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSWalls(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWalls(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSWalls();
 
@@ -55,7 +55,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSHullStructure>::value, "template argument for P is not a parent class of CPACSWalls");
+            static_assert(std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSVesselStructure>::value, "template argument for P is not a parent class of CPACSWalls");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -65,7 +65,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSHullStructure>::value, "template argument for P is not a parent class of CPACSWalls");
+            static_assert(std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSVesselStructure>::value, "template argument for P is not a parent class of CPACSWalls");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

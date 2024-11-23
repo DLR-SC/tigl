@@ -319,12 +319,12 @@ namespace tigl
 
 std::vector<tigl::CurveIntersectionResult> IntersectBSplines(const Handle(Geom_BSplineCurve) curve1, const Handle(Geom_BSplineCurve) curve2, double tolerance)
 {
-    auto hulls = getRangesOfIntersection(curve1, curve2, tolerance);
+    auto vessels = getRangesOfIntersection(curve1, curve2, tolerance);
     
     std::list<BoundingBox> curve1_ints, curve2_ints;
-    for (const auto& hull : hulls) {
-        curve1_ints.push_back(hull.b1);
-        curve2_ints.push_back(hull.b2);
+    for (const auto& vessel : vessels) {
+        curve1_ints.push_back(vessel.b1);
+        curve2_ints.push_back(vessel.b2);
     }
     
     auto compare = [](const BoundingBox& b1, const BoundingBox& b2) {

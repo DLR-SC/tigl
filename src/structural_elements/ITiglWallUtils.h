@@ -4,8 +4,8 @@
 
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageStructure.h"
-#include "CCPACSHull.h"
-#include "CCPACSHullStructure.h"
+#include "CCPACSVessel.h"
+#include "CCPACSVesselStructure.h"
 #include "CCPACSWalls.h"
 #include "CTiglError.h"
 
@@ -44,21 +44,21 @@ template <typename T> const CCPACSFuselage& GetFuselage(const T* wallObject)
     return *fuselage;
 }
 
-template <typename T> const CCPACSHull& GetHull(const T* wallObject)
+template <typename T> const CCPACSVessel& GetVessel(const T* wallObject)
 {
     const CCPACSWalls& walls = GetWalls(wallObject);
 
-    const auto* hullStructure = walls.GetParent<CCPACSHullStructure>();
-    if (!hullStructure) {
-        throw CTiglError("Cannot get hull structure in GetHull. Null pointer parent.", TIGL_NULL_POINTER);
+    const auto* vesselStructure = walls.GetParent<CCPACSVesselStructure>();
+    if (!vesselStructure) {
+        throw CTiglError("Cannot get vessel structure in GetVessel. Null pointer parent.", TIGL_NULL_POINTER);
     }
 
-    const auto* hull = hullStructure->GetParent();
-    if (!hull) {
-        throw CTiglError("Cannot get hull in GetHull. Null pointer parent.", TIGL_NULL_POINTER);
+    const auto* vessel = vesselStructure->GetParent();
+    if (!vessel) {
+        throw CTiglError("Cannot get vessel in GetVessel. Null pointer parent.", TIGL_NULL_POINTER);
     }
 
-    return *hull;
+    return *vessel;
 }
 
 } // namespace tigl

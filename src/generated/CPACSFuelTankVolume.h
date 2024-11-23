@@ -28,15 +28,15 @@
 namespace tigl
 {
 class CTiglUIDObject;
-class CCPACSFuelTank;
+class CCPACSVessel;
 
 namespace generated
 {
     class CPACSFuselageFuelTank;
 
     // This class is used in:
-    // CPACSFuelTank
     // CPACSFuselageFuelTank
+    // CPACSVessel
 
     /// @brief Definition of different volumes of the fuel tank.
     /// 
@@ -45,8 +45,8 @@ namespace generated
     class CPACSFuelTankVolume
     {
     public:
-        TIGL_EXPORT CPACSFuelTankVolume(CCPACSFuelTank* parent);
         TIGL_EXPORT CPACSFuelTankVolume(CPACSFuselageFuelTank* parent);
+        TIGL_EXPORT CPACSFuelTankVolume(CCPACSVessel* parent);
 
         TIGL_EXPORT virtual ~CPACSFuelTankVolume();
 
@@ -59,7 +59,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CPACSFuselageFuelTank>::value, "template argument for P is not a parent class of CPACSFuelTankVolume");
+            static_assert(std::is_same<P, CPACSFuselageFuelTank>::value || std::is_same<P, CCPACSVessel>::value, "template argument for P is not a parent class of CPACSFuelTankVolume");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -69,7 +69,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CPACSFuselageFuelTank>::value, "template argument for P is not a parent class of CPACSFuelTankVolume");
+            static_assert(std::is_same<P, CPACSFuselageFuelTank>::value || std::is_same<P, CCPACSVessel>::value, "template argument for P is not a parent class of CPACSFuelTankVolume");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

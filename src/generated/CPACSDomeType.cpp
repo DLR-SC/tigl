@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSHull.h"
+#include "CCPACSVessel.h"
 #include "CPACSDomeType.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDomeType::CPACSDomeType(CCPACSHull* parent)
+    CPACSDomeType::CPACSDomeType(CCPACSVessel* parent)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -37,12 +37,12 @@ namespace generated
     {
     }
 
-    const CCPACSHull* CPACSDomeType::GetParent() const
+    const CCPACSVessel* CPACSDomeType::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSHull* CPACSDomeType::GetParent()
+    CCPACSVessel* CPACSDomeType::GetParent()
     {
         return m_parent;
     }

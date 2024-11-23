@@ -21,8 +21,8 @@
 #include "generated/CPACSWalls.h"
 #include "CCPACSFuselageStructure.h"
 #include "CCPACSFuselage.h"
-#include "CCPACSHull.h"
-#include "CCPACSHullStructure.h"
+#include "CCPACSVessel.h"
+#include "CCPACSVesselStructure.h"
 #include "CCPACSFuselageSegment.h"
 #include "ITiglWallUtils.h"
 #include "CNamedShape.h"
@@ -122,9 +122,9 @@ const CCPACSFuselage& CCPACSWallSegment::GetFuselage() const
     return tigl::GetFuselage(this);
 }
 
-const CCPACSHull& CCPACSWallSegment::GetHull() const
+const CCPACSVessel& CCPACSWallSegment::GetVessel() const
 {
-    return tigl::GetHull(this);
+    return tigl::GetVessel(this);
 }
 
 PNamedShape CCPACSWallSegment::BuildLoft() const
@@ -137,20 +137,20 @@ PNamedShape CCPACSWallSegment::BuildLoft() const
     CTiglTransformation transformationMatrix;
 
     bool isFuselage = GetParent()->GetParent()->IsParent<CCPACSFuselageStructure>();
-    bool isHull     = GetParent()->GetParent()->IsParent<CCPACSHullStructure>();
+    bool isVessel     = GetParent()->GetParent()->IsParent<CCPACSVesselStructure>();
 
     if (isFuselage) {
         const CCPACSFuselage& fuselage = GetFuselage();
         parentShape                    = fuselage.GetLoft()->Shape();
         transformationMatrix           = fuselage.GetTransformationMatrix();
     }
-    else if (isHull) {
-        const CCPACSHull& hull = GetHull();
-        parentShape            = hull.GetLoft()->Shape();
-        transformationMatrix   = hull.GetTransformationMatrix();
+    else if (isVessel) {
+        const CCPACSVessel& vessel = GetVessel();
+        parentShape            = vessel.GetLoft()->Shape();
+        transformationMatrix   = vessel.GetTransformationMatrix();
     }
     else {
-        throw CTiglError("Parent of CCPACSWallSegment is neither a fuselage nor a hull.");
+        throw CTiglError("Parent of CCPACSWallSegment is neither a fuselage nor a vessel.");
     }
 
     BRepBndLib::Add(parentShape, boundingBox);
@@ -247,7 +247,7 @@ PNamedShape CCPACSWallSegment::BuildLoft() const
     }
 
     // trim the wall
-    // Step 1/2: Trim the wall by the fuselage / hull
+    // Step 1/2: Trim the wall by the fuselage / vessel
     {
         TopoDS_Compound cutWall;
         builderWall.MakeCompound(cutWall);
@@ -256,7 +256,7 @@ PNamedShape CCPACSWallSegment::BuildLoft() const
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(result, TopAbs_FACE, faceMap);
         for (int i = 0; i < faceMap.Extent(); ++i) {
-            // check if face center is on the interior of the fuselage / hull
+            // check if face center is on the interior of the fuselage / vessel
             TopoDS_Face face  = TopoDS::Face(faceMap(i + 1));
             gp_Pnt faceCenter = GetCentralFacePoint(face);
 

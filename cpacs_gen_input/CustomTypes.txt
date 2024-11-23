@@ -151,8 +151,8 @@ CPACSDuctAssembly                        CCPACSDuctAssembly
 CPACSDucts                               CCPACSDucts
 
 // Tanks
-CPACSHull                                CCPACSHull
-CPACSHulls                               CCPACSHulls
+CPACSVessel                              CCPACSVessel
+CPACSVessels                             CCPACSVessels
 CPACSFuelTank                            CCPACSFuelTank
 CPACSFuelTanks                           CCPACSFuelTanks
-CPACSHullStructure						 CCPACSHullStructure
+CPACSVesselStructure                     CCPACSVesselStructure

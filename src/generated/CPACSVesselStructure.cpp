@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSHull.h"
-#include "CPACSHullStructure.h"
+#include "CCPACSVessel.h"
+#include "CPACSVesselStructure.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,39 +27,39 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSHullStructure::CPACSHullStructure(CCPACSHull* parent, CTiglUIDManager* uidMgr)
+    CPACSVesselStructure::CPACSVesselStructure(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
     }
 
-    CPACSHullStructure::~CPACSHullStructure()
+    CPACSVesselStructure::~CPACSVesselStructure()
     {
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CCPACSHull* CPACSHullStructure::GetParent() const
+    const CCPACSVessel* CPACSVesselStructure::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSHull* CPACSHullStructure::GetParent()
+    CCPACSVessel* CPACSVesselStructure::GetParent()
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSHullStructure::GetNextUIDParent() const
+    const CTiglUIDObject* CPACSVesselStructure::GetNextUIDParent() const
     {
         return m_parent;
     }
 
-    CTiglUIDObject* CPACSHullStructure::GetNextUIDParent()
+    CTiglUIDObject* CPACSVesselStructure::GetNextUIDParent()
     {
         return m_parent;
     }
 
-    CTiglUIDManager& CPACSHullStructure::GetUIDManager()
+    CTiglUIDManager& CPACSVesselStructure::GetUIDManager()
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -67,7 +67,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    const CTiglUIDManager& CPACSHullStructure::GetUIDManager() const
+    const CTiglUIDManager& CPACSVesselStructure::GetUIDManager() const
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -75,7 +75,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    void CPACSHullStructure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSVesselStructure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
@@ -90,7 +90,7 @@ namespace generated
 
         // read element stringers
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/stringers")) {
-            m_stringers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
+            m_stringers = boost::in_place(reinterpret_cast<CCPACSVesselStructure*>(this), m_uidMgr);
             try {
                 m_stringers->ReadCPACS(tixiHandle, xpath + "/stringers");
             } catch(const std::exception& e) {
@@ -101,7 +101,7 @@ namespace generated
 
         // read element frames
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/frames")) {
-            m_frames = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
+            m_frames = boost::in_place(reinterpret_cast<CCPACSVesselStructure*>(this), m_uidMgr);
             try {
                 m_frames->ReadCPACS(tixiHandle, xpath + "/frames");
             } catch(const std::exception& e) {
@@ -110,31 +110,9 @@ namespace generated
             }
         }
 
-        // read element virtualStringers
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/virtualStringers")) {
-            m_virtualStringers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
-            try {
-                m_virtualStringers->ReadCPACS(tixiHandle, xpath + "/virtualStringers");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read virtualStringers at xpath " << xpath << ": " << e.what();
-                m_virtualStringers = boost::none;
-            }
-        }
-
-        // read element virtualFrames
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/virtualFrames")) {
-            m_virtualFrames = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
-            try {
-                m_virtualFrames->ReadCPACS(tixiHandle, xpath + "/virtualFrames");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read virtualFrames at xpath " << xpath << ": " << e.what();
-                m_virtualFrames = boost::none;
-            }
-        }
-
         // read element skinLayers
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skinLayers")) {
-            m_skinLayers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
+            m_skinLayers = boost::in_place(reinterpret_cast<CCPACSVesselStructure*>(this), m_uidMgr);
             try {
                 m_skinLayers->ReadCPACS(tixiHandle, xpath + "/skinLayers");
             } catch(const std::exception& e) {
@@ -145,7 +123,7 @@ namespace generated
 
         // read element walls
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/walls")) {
-            m_walls = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
+            m_walls = boost::in_place(reinterpret_cast<CCPACSVesselStructure*>(this), m_uidMgr);
             try {
                 m_walls->ReadCPACS(tixiHandle, xpath + "/walls");
             } catch(const std::exception& e) {
@@ -157,7 +135,7 @@ namespace generated
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
-    void CPACSHullStructure::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSVesselStructure::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -181,28 +159,6 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/frames")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/frames");
-            }
-        }
-
-        // write element virtualStringers
-        if (m_virtualStringers) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/virtualStringers");
-            m_virtualStringers->WriteCPACS(tixiHandle, xpath + "/virtualStringers");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/virtualStringers")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/virtualStringers");
-            }
-        }
-
-        // write element virtualFrames
-        if (m_virtualFrames) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/virtualFrames");
-            m_virtualFrames->WriteCPACS(tixiHandle, xpath + "/virtualFrames");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/virtualFrames")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/virtualFrames");
             }
         }
 
@@ -230,12 +186,12 @@ namespace generated
 
     }
 
-    const std::string& CPACSHullStructure::GetUID() const
+    const std::string& CPACSVesselStructure::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSHullStructure::SetUID(const std::string& value)
+    void CPACSVesselStructure::SetUID(const std::string& value)
     {
         if (m_uidMgr && value != m_uID) {
             if (m_uID.empty()) {
@@ -248,134 +204,90 @@ namespace generated
         m_uID = value;
     }
 
-    const boost::optional<CCPACSStringersAssembly>& CPACSHullStructure::GetStringers() const
+    const boost::optional<CCPACSStringersAssembly>& CPACSVesselStructure::GetStringers() const
     {
         return m_stringers;
     }
 
-    boost::optional<CCPACSStringersAssembly>& CPACSHullStructure::GetStringers()
+    boost::optional<CCPACSStringersAssembly>& CPACSVesselStructure::GetStringers()
     {
         return m_stringers;
     }
 
-    const boost::optional<CCPACSFramesAssembly>& CPACSHullStructure::GetFrames() const
+    const boost::optional<CCPACSFramesAssembly>& CPACSVesselStructure::GetFrames() const
     {
         return m_frames;
     }
 
-    boost::optional<CCPACSFramesAssembly>& CPACSHullStructure::GetFrames()
+    boost::optional<CCPACSFramesAssembly>& CPACSVesselStructure::GetFrames()
     {
         return m_frames;
     }
 
-    const boost::optional<CCPACSStringersAssembly>& CPACSHullStructure::GetVirtualStringers() const
-    {
-        return m_virtualStringers;
-    }
-
-    boost::optional<CCPACSStringersAssembly>& CPACSHullStructure::GetVirtualStringers()
-    {
-        return m_virtualStringers;
-    }
-
-    const boost::optional<CCPACSFramesAssembly>& CPACSHullStructure::GetVirtualFrames() const
-    {
-        return m_virtualFrames;
-    }
-
-    boost::optional<CCPACSFramesAssembly>& CPACSHullStructure::GetVirtualFrames()
-    {
-        return m_virtualFrames;
-    }
-
-    const boost::optional<CPACSHullSkinLayers>& CPACSHullStructure::GetSkinLayers() const
+    const boost::optional<CPACSVesselSkinLayers>& CPACSVesselStructure::GetSkinLayers() const
     {
         return m_skinLayers;
     }
 
-    boost::optional<CPACSHullSkinLayers>& CPACSHullStructure::GetSkinLayers()
+    boost::optional<CPACSVesselSkinLayers>& CPACSVesselStructure::GetSkinLayers()
     {
         return m_skinLayers;
     }
 
-    const boost::optional<CCPACSWalls>& CPACSHullStructure::GetWalls() const
+    const boost::optional<CCPACSWalls>& CPACSVesselStructure::GetWalls() const
     {
         return m_walls;
     }
 
-    boost::optional<CCPACSWalls>& CPACSHullStructure::GetWalls()
+    boost::optional<CCPACSWalls>& CPACSVesselStructure::GetWalls()
     {
         return m_walls;
     }
 
-    CCPACSStringersAssembly& CPACSHullStructure::GetStringers(CreateIfNotExistsTag)
+    CCPACSStringersAssembly& CPACSVesselStructure::GetStringers(CreateIfNotExistsTag)
     {
         if (!m_stringers)
-            m_stringers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
+            m_stringers = boost::in_place(reinterpret_cast<CCPACSVesselStructure*>(this), m_uidMgr);
         return *m_stringers;
     }
 
-    void CPACSHullStructure::RemoveStringers()
+    void CPACSVesselStructure::RemoveStringers()
     {
         m_stringers = boost::none;
     }
 
-    CCPACSFramesAssembly& CPACSHullStructure::GetFrames(CreateIfNotExistsTag)
+    CCPACSFramesAssembly& CPACSVesselStructure::GetFrames(CreateIfNotExistsTag)
     {
         if (!m_frames)
-            m_frames = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
+            m_frames = boost::in_place(reinterpret_cast<CCPACSVesselStructure*>(this), m_uidMgr);
         return *m_frames;
     }
 
-    void CPACSHullStructure::RemoveFrames()
+    void CPACSVesselStructure::RemoveFrames()
     {
         m_frames = boost::none;
     }
 
-    CCPACSStringersAssembly& CPACSHullStructure::GetVirtualStringers(CreateIfNotExistsTag)
-    {
-        if (!m_virtualStringers)
-            m_virtualStringers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
-        return *m_virtualStringers;
-    }
-
-    void CPACSHullStructure::RemoveVirtualStringers()
-    {
-        m_virtualStringers = boost::none;
-    }
-
-    CCPACSFramesAssembly& CPACSHullStructure::GetVirtualFrames(CreateIfNotExistsTag)
-    {
-        if (!m_virtualFrames)
-            m_virtualFrames = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
-        return *m_virtualFrames;
-    }
-
-    void CPACSHullStructure::RemoveVirtualFrames()
-    {
-        m_virtualFrames = boost::none;
-    }
-
-    CPACSHullSkinLayers& CPACSHullStructure::GetSkinLayers(CreateIfNotExistsTag)
+    CPACSVesselSkinLayers& CPACSVesselStructure::GetSkinLayers(CreateIfNotExistsTag)
     {
         if (!m_skinLayers)
-            m_skinLayers = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
+            m_skinLayers = boost::in_place(reinterpret_cast<CCPACSVesselStructure*>(this), m_uidMgr);
         return *m_skinLayers;
     }
 
-    void CPACSHullStructure::RemoveSkinLayers()
+    void CPACSVesselStructure::RemoveSkinLayers()
     {
         m_skinLayers = boost::none;
     }
 
-    CCPACSWalls& CPACSHullStructure::GetWalls(CreateIfNotExistsTag)
+    CCPACSWalls& CPACSVesselStructure::GetWalls(CreateIfNotExistsTag)
     {
         if (!m_walls)
-            m_walls = boost::in_place(reinterpret_cast<CCPACSHullStructure*>(this), m_uidMgr);
+            m_walls = boost::in_place(reinterpret_cast<CCPACSVesselStructure*>(this), m_uidMgr);
         return *m_walls;
     }
 
-    void CPACSHullStructure::RemoveWalls()
+    void CPACSVesselStructure::RemoveWalls()
     {
         m_walls = boost::none;
     }

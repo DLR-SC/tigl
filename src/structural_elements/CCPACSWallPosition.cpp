@@ -20,8 +20,8 @@
 #include "CTiglUIDManager.h"
 #include "CCPACSWallPosition.h"
 #include "CCPACSWallSegment.h"
-#include "CCPACSHull.h"
-#include "CCPACSHullStructure.h"
+#include "CCPACSVessel.h"
+#include "CCPACSVesselStructure.h"
 #include "CCPACSWalls.h"
 #include "CCPACSFuselageStructure.h"
 #include "CCPACSFuselage.h"
@@ -77,20 +77,20 @@ void CCPACSWallPosition::CalcBasePointAndShape() const
     CTiglTransformation transformationMatrix;
 
     bool isFuselage = GetParent()->GetParent()->IsParent<CCPACSFuselageStructure>();
-    bool isHull     = GetParent()->GetParent()->IsParent<CCPACSHullStructure>();
+    bool isVessel     = GetParent()->GetParent()->IsParent<CCPACSVesselStructure>();
 
     if (isFuselage) {
         const CCPACSFuselage& fuselage = GetFuselage();
         parentShape                    = fuselage.GetLoft()->Shape();
         transformationMatrix           = fuselage.GetTransformationMatrix();
     }
-    else if (isHull) {
-        const CCPACSHull& hull = GetHull();
-        parentShape            = hull.GetLoft()->Shape();
-        transformationMatrix   = hull.GetTransformationMatrix();
+    else if (isVessel) {
+        const CCPACSVessel& vessel = GetVessel();
+        parentShape            = vessel.GetLoft()->Shape();
+        transformationMatrix   = vessel.GetTransformationMatrix();
     }
     else {
-        throw CTiglError("Parent of CCPACSWallPosition is neither a fuselage nor a hull.");
+        throw CTiglError("Parent of CCPACSWallPosition is neither a fuselage nor a vessel.");
     }
 
     BRepBndLib::Add(parentShape, boundingBox);
@@ -123,8 +123,8 @@ void CCPACSWallPosition::CalcBasePointAndShape() const
             if (isFuselage) {
                 _shape = GetFuselage().GetSectionFace(GetSectionUID_choice4().value());
             }
-            else if (isHull) {
-                _shape = GetHull().GetSectionFace(GetSectionUID_choice4().value());
+            else if (isVessel) {
+                _shape = GetVessel().GetSectionFace(GetSectionUID_choice4().value());
             }
         }
         else {
@@ -252,9 +252,9 @@ const CCPACSFuselage& CCPACSWallPosition::GetFuselage() const
     return tigl::GetFuselage(this);
 }
 
-const CCPACSHull& CCPACSWallPosition::GetHull() const
+const CCPACSVessel& CCPACSWallPosition::GetVessel() const
 {
-    return tigl::GetHull(this);
+    return tigl::GetVessel(this);
 }
 
 } // namespace tigl

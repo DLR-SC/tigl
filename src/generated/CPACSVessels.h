@@ -27,28 +27,27 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSSkin;
-class CCPACSHullStructure;
+class CCPACSVessel;
+class CCPACSFuelTank;
 
 namespace generated
 {
     // This class is used in:
-    // CPACSHullStructure
+    // CPACSFuelTank
 
-    /// @brief Skin Layers
+    /// @brief Vessels
     /// 
     /// 
-    /// 
-    class CPACSHullSkinLayers
+    class CPACSVessels
     {
     public:
-        TIGL_EXPORT CPACSHullSkinLayers(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVessels(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSHullSkinLayers();
+        TIGL_EXPORT virtual ~CPACSVessels();
 
-        TIGL_EXPORT CCPACSHullStructure* GetParent();
+        TIGL_EXPORT CCPACSFuelTank* GetParent();
 
-        TIGL_EXPORT const CCPACSHullStructure* GetParent() const;
+        TIGL_EXPORT const CCPACSFuelTank* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,28 +58,27 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSSkin>>& GetSkinLayers() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSSkin>>& GetSkinLayers();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSVessel>>& GetVessels() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSVessel>>& GetVessels();
 
-        TIGL_EXPORT virtual CCPACSSkin& AddSkinLayer();
-        TIGL_EXPORT virtual void RemoveSkinLayer(CCPACSSkin& ref);
+        TIGL_EXPORT virtual CCPACSVessel& AddVessel();
+        TIGL_EXPORT virtual void RemoveVessel(CCPACSVessel& ref);
 
     protected:
-        CCPACSHullStructure* m_parent;
+        CCPACSFuelTank* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CCPACSSkin>> m_skinLayers;
+        std::vector<std::unique_ptr<CCPACSVessel>> m_vessels;
 
     private:
-        CPACSHullSkinLayers(const CPACSHullSkinLayers&) = delete;
-        CPACSHullSkinLayers& operator=(const CPACSHullSkinLayers&) = delete;
+        CPACSVessels(const CPACSVessels&) = delete;
+        CPACSVessels& operator=(const CPACSVessels&) = delete;
 
-        CPACSHullSkinLayers(CPACSHullSkinLayers&&) = delete;
-        CPACSHullSkinLayers& operator=(CPACSHullSkinLayers&&) = delete;
+        CPACSVessels(CPACSVessels&&) = delete;
+        CPACSVessels& operator=(CPACSVessels&&) = delete;
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSHullSkinLayers = generated::CPACSHullSkinLayers;
+// CPACSVessels is customized, use type CCPACSVessels directly
 } // namespace tigl

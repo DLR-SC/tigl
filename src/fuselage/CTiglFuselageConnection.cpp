@@ -27,8 +27,8 @@
 #include "CTiglError.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
-#include "CCPACSHull.h"
-#include "CCPACSHulls.h"
+#include "CCPACSVessel.h"
+#include "CCPACSVessels.h"
 #include "CCPACSFuelTank.h"
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
@@ -163,8 +163,8 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetSections();
     }
     // ToDo: add exception handling
-    else if (segment->GetParent()->IsParent<CCPACSHull>()) {
-        return segment->GetParent()->GetParent<CCPACSHull>()->GetSections_choice1().get();
+    else if (segment->GetParent()->IsParent<CCPACSVessel>()) {
+        return segment->GetParent()->GetParent<CCPACSVessel>()->GetSections_choice1().get();
     }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");
@@ -182,7 +182,7 @@ boost::optional<CCPACSPositionings>& CTiglFuselageConnection::GetParentComponent
     else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetPositionings();
     }
-    else if (segment->GetParent()->IsParent<CCPACSHull>()) {
+    else if (segment->GetParent()->IsParent<CCPACSVessel>()) {
         return dummyPositionings;
     }
     else {

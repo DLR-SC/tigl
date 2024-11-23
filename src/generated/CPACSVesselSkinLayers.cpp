@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include <CCPACSSkin.h>
-#include "CCPACSHullStructure.h"
-#include "CPACSHullSkinLayers.h"
+#include "CCPACSVesselStructure.h"
+#include "CPACSVesselSkinLayers.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,38 +29,38 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSHullSkinLayers::CPACSHullSkinLayers(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr)
+    CPACSVesselSkinLayers::CPACSVesselSkinLayers(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
     }
 
-    CPACSHullSkinLayers::~CPACSHullSkinLayers()
+    CPACSVesselSkinLayers::~CPACSVesselSkinLayers()
     {
     }
 
-    const CCPACSHullStructure* CPACSHullSkinLayers::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSHullStructure* CPACSHullSkinLayers::GetParent()
+    const CCPACSVesselStructure* CPACSVesselSkinLayers::GetParent() const
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSHullSkinLayers::GetNextUIDParent() const
+    CCPACSVesselStructure* CPACSVesselSkinLayers::GetParent()
     {
         return m_parent;
     }
 
-    CTiglUIDObject* CPACSHullSkinLayers::GetNextUIDParent()
+    const CTiglUIDObject* CPACSVesselSkinLayers::GetNextUIDParent() const
     {
         return m_parent;
     }
 
-    CTiglUIDManager& CPACSHullSkinLayers::GetUIDManager()
+    CTiglUIDObject* CPACSVesselSkinLayers::GetNextUIDParent()
+    {
+        return m_parent;
+    }
+
+    CTiglUIDManager& CPACSVesselSkinLayers::GetUIDManager()
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -68,7 +68,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    const CTiglUIDManager& CPACSHullSkinLayers::GetUIDManager() const
+    const CTiglUIDManager& CPACSVesselSkinLayers::GetUIDManager() const
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -76,7 +76,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    void CPACSHullSkinLayers::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSVesselSkinLayers::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element skinLayer
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/skinLayer")) {
@@ -85,30 +85,30 @@ namespace generated
 
     }
 
-    void CPACSHullSkinLayers::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSVesselSkinLayers::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         // write element skinLayer
         tixi::TixiSaveElements(tixiHandle, xpath + "/skinLayer", m_skinLayers);
 
     }
 
-    const std::vector<std::unique_ptr<CCPACSSkin>>& CPACSHullSkinLayers::GetSkinLayers() const
+    const std::vector<std::unique_ptr<CCPACSSkin>>& CPACSVesselSkinLayers::GetSkinLayers() const
     {
         return m_skinLayers;
     }
 
-    std::vector<std::unique_ptr<CCPACSSkin>>& CPACSHullSkinLayers::GetSkinLayers()
+    std::vector<std::unique_ptr<CCPACSSkin>>& CPACSVesselSkinLayers::GetSkinLayers()
     {
         return m_skinLayers;
     }
 
-    CCPACSSkin& CPACSHullSkinLayers::AddSkinLayer()
+    CCPACSSkin& CPACSVesselSkinLayers::AddSkinLayer()
     {
         m_skinLayers.push_back(make_unique<CCPACSSkin>(this, m_uidMgr));
         return *m_skinLayers.back();
     }
 
-    void CPACSHullSkinLayers::RemoveSkinLayer(CCPACSSkin& ref)
+    void CPACSVesselSkinLayers::RemoveSkinLayer(CCPACSSkin& ref)
     {
         for (std::size_t i = 0; i < m_skinLayers.size(); i++) {
             if (m_skinLayers[i].get() == &ref) {

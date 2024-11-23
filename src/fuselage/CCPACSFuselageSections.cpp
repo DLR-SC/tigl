@@ -32,7 +32,7 @@ CCPACSFuselageSections::CCPACSFuselageSections(CCPACSFuselage* parent, CTiglUIDM
 CCPACSFuselageSections::CCPACSFuselageSections(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSections(parent, uidMgr) {}
 
-CCPACSFuselageSections::CCPACSFuselageSections(CCPACSHull* parent, CTiglUIDManager* uidMgr)
+CCPACSFuselageSections::CCPACSFuselageSections(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSections(parent, uidMgr) {}
 
 int CCPACSFuselageSections::GetSectionCount() const

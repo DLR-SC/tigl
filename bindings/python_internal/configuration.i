@@ -101,12 +101,12 @@
 #include "generated/CPACSFuelTankVolume.h"
 #include "CCPACSFuelTanks.h"
 #include "CCPACSFuelTank.h"
-#include "generated/CPACSHulls.h"
-#include "CCPACSHulls.h"
-#include "generated/CPACSHull.h"
-#include "CCPACSHull.h"
-#include "generated/CPACSHullStructure.h"
-#include "CCPACSHullStructure.h"
+#include "generated/CPACSVessels.h"
+#include "CCPACSVessels.h"
+#include "generated/CPACSVessel.h"
+#include "CCPACSVessel.h"
+#include "generated/CPACSVesselStructure.h"
+#include "CCPACSVesselStructure.h"
 #include "CCPACSFrame.h"
 
 
@@ -344,19 +344,19 @@ namespace tigl
 %boost_optional(tigl::CCPACSFuelTanks)
 %boost_optional(tigl::generated::CPACSFuelTanks)
 %boost_optional(tigl::generated::CPACSFuelTankVolume)
-%boost_optional(tigl::CCPACSHullStructure)
+%boost_optional(tigl::CCPACSVesselStructure)
 
 namespace tigl {
 class CCPACSFuselageSegments;
-class CCPACSHulls;
+class CCPACSVessels;
 }
 
 %include "generated/CPACSIsotensoidDome.h"
 %include "generated/CPACSTorisphericalDome.h"
 %include "generated/CPACSEllipsoidDome.h"
 %include "generated/CPACSDomeType.h"
-%include "generated/CPACSHullStructure.h"
-%include "CCPACSHullStructure.h"
+%include "generated/CPACSVesselStructure.h"
+%include "CCPACSVesselStructure.h"
 %include "generated/CPACSFuelTanks.h"
 %include "generated/CPACSFuelTankVolume.h"
 %include "generated/CPACSFuelTank.h"
@@ -365,10 +365,10 @@ class CCPACSHulls;
 %include "CCPACSFuselageSegments.h"
 %include "CCPACSFuelTanks.h"
 %include "CCPACSFuelTank.h"
-%include "generated/CPACSHulls.h"
-%include "CCPACSHulls.h"
-%include "generated/CPACSHull.h"
-%include "CCPACSHull.h"
+%include "generated/CPACSVessels.h"
+%include "CCPACSVessels.h"
+%include "generated/CPACSVessel.h"
+%include "CCPACSVessel.h"
 %include "generated/CPACSFuselageFuelTanks.h"
 
 // -------------------- Wing Structure -------------------// 
@@ -584,7 +584,7 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSDuct,
          tigl::CCPACSDuctAssembly,
          tigl::CCPACSFuelTank,
-         tigl::CCPACSHull
+         tigl::CCPACSVessel
 );
 
 namespace tigl

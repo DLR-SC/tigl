@@ -19,7 +19,7 @@
 #include <CCPACSFrame.h>
 #include "CCPACSDuctStructure.h"
 #include "CCPACSFuselageStructure.h"
-#include "CCPACSHullStructure.h"
+#include "CCPACSVesselStructure.h"
 #include "CPACSFramesAssembly.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -47,12 +47,12 @@ namespace generated
         m_parentType = &typeid(CCPACSFuselageStructure);
     }
 
-    CPACSFramesAssembly::CPACSFramesAssembly(CCPACSHullStructure* parent, CTiglUIDManager* uidMgr)
+    CPACSFramesAssembly::CPACSFramesAssembly(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CCPACSHullStructure);
+        m_parentType = &typeid(CCPACSVesselStructure);
     }
 
     CPACSFramesAssembly::~CPACSFramesAssembly()
@@ -68,8 +68,8 @@ namespace generated
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
             }
-            if (IsParent<CCPACSHullStructure>()) {
-                return GetParent<CCPACSHullStructure>();
+            if (IsParent<CCPACSVesselStructure>()) {
+                return GetParent<CCPACSVesselStructure>();
             }
         }
         return nullptr;
@@ -84,8 +84,8 @@ namespace generated
             if (IsParent<CCPACSFuselageStructure>()) {
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
             }
-            if (IsParent<CCPACSHullStructure>()) {
-                return GetParent<CCPACSHullStructure>();
+            if (IsParent<CCPACSVesselStructure>()) {
+                return GetParent<CCPACSVesselStructure>();
             }
         }
         return nullptr;

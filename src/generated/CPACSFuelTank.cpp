@@ -30,7 +30,7 @@ namespace generated
     CPACSFuelTank::CPACSFuelTank(CCPACSFuelTanks* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(reinterpret_cast<CCPACSFuelTank*>(this), m_uidMgr)
-        , m_hulls(reinterpret_cast<CCPACSFuelTank*>(this), m_uidMgr)
+        , m_vessels(reinterpret_cast<CCPACSFuelTank*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -140,28 +140,12 @@ namespace generated
             LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
         }
 
-        // read element hulls
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/hulls")) {
-            m_hulls.ReadCPACS(tixiHandle, xpath + "/hulls");
+        // read element vessels
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/vessels")) {
+            m_vessels.ReadCPACS(tixiHandle, xpath + "/vessels");
         }
         else {
-            LOG(ERROR) << "Required element hulls is missing at xpath " << xpath;
-        }
-
-        // read element volume
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/volume")) {
-            m_volume = boost::in_place(reinterpret_cast<CCPACSFuelTank*>(this));
-            try {
-                m_volume->ReadCPACS(tixiHandle, xpath + "/volume");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read volume at xpath " << xpath << ": " << e.what();
-                m_volume = boost::none;
-            }
-        }
-
-        // read element burstPressure
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/burstPressure")) {
-            m_burstPressure = tixi::TixiGetElement<double>(tixiHandle, xpath + "/burstPressure");
+            LOG(ERROR) << "Required element vessels is missing at xpath " << xpath;
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -169,7 +153,7 @@ namespace generated
 
     void CPACSFuelTank::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "parentUID", "transformation", "hulls", "volume", "burstPressure" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "parentUID", "transformation", "vessels" };
 
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -214,31 +198,9 @@ namespace generated
         tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/transformation", childElemOrder);
         m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
-        // write element hulls
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/hulls", childElemOrder);
-        m_hulls.WriteCPACS(tixiHandle, xpath + "/hulls");
-
-        // write element volume
-        if (m_volume) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/volume", childElemOrder);
-            m_volume->WriteCPACS(tixiHandle, xpath + "/volume");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/volume")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/volume");
-            }
-        }
-
-        // write element burstPressure
-        if (m_burstPressure) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/burstPressure", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/burstPressure", *m_burstPressure);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/burstPressure")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/burstPressure");
-            }
-        }
+        // write element vessels
+        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/vessels", childElemOrder);
+        m_vessels.WriteCPACS(tixiHandle, xpath + "/vessels");
 
     }
 
@@ -314,46 +276,14 @@ namespace generated
         return m_transformation;
     }
 
-    const CCPACSHulls& CPACSFuelTank::GetHulls() const
+    const CCPACSVessels& CPACSFuelTank::GetVessels() const
     {
-        return m_hulls;
+        return m_vessels;
     }
 
-    CCPACSHulls& CPACSFuelTank::GetHulls()
+    CCPACSVessels& CPACSFuelTank::GetVessels()
     {
-        return m_hulls;
-    }
-
-    const boost::optional<CPACSFuelTankVolume>& CPACSFuelTank::GetVolume() const
-    {
-        return m_volume;
-    }
-
-    boost::optional<CPACSFuelTankVolume>& CPACSFuelTank::GetVolume()
-    {
-        return m_volume;
-    }
-
-    const boost::optional<double>& CPACSFuelTank::GetBurstPressure() const
-    {
-        return m_burstPressure;
-    }
-
-    void CPACSFuelTank::SetBurstPressure(const boost::optional<double>& value)
-    {
-        m_burstPressure = value;
-    }
-
-    CPACSFuelTankVolume& CPACSFuelTank::GetVolume(CreateIfNotExistsTag)
-    {
-        if (!m_volume)
-            m_volume = boost::in_place(reinterpret_cast<CCPACSFuelTank*>(this));
-        return *m_volume;
-    }
-
-    void CPACSFuelTank::RemoveVolume()
-    {
-        m_volume = boost::none;
+        return m_vessels;
     }
 
     const CTiglUIDObject* CPACSFuelTank::GetNextUIDObject() const
