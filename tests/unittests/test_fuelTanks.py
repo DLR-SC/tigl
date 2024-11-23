@@ -15,7 +15,7 @@ class Tank(unittest.TestCase):
         self.assertIsNone(self.tixi.open("TestData/simpletest-fuelTanks.cpacs.xml"))
         self.assertIsNone(self.tigl.open(self.tixi, ""))
 
-        mgr = configuration.CCPACSConfigurationManager_get_instance()
+        mgr = configuration.CCPACSConfigurationManager.get_instance()
         self.config = mgr.get_configuration(self.tigl._handle.value)
         uid_mgr = self.config.get_uidmanager()
 
