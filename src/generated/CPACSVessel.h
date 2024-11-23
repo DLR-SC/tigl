@@ -27,6 +27,7 @@
 #include <tixi.h>
 #include "CPACSDomeType.h"
 #include "CPACSFuelTankVolume.h"
+#include "CPACSStructuralMounts.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -96,6 +97,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSVesselStructure>& GetStructure() const;
         TIGL_EXPORT virtual boost::optional<CCPACSVesselStructure>& GetStructure();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSStructuralMounts>& GetStructuralMounts() const;
+        TIGL_EXPORT virtual boost::optional<CPACSStructuralMounts>& GetStructuralMounts();
+
         TIGL_EXPORT virtual const boost::optional<CPACSFuelTankVolume>& GetVolume() const;
         TIGL_EXPORT virtual boost::optional<CPACSFuelTankVolume>& GetVolume();
 
@@ -113,6 +117,9 @@ namespace generated
 
         TIGL_EXPORT virtual CCPACSVesselStructure& GetStructure(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructure();
+
+        TIGL_EXPORT virtual CPACSStructuralMounts& GetStructuralMounts(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveStructuralMounts();
 
         TIGL_EXPORT virtual CPACSFuelTankVolume& GetVolume(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveVolume();
@@ -145,6 +152,8 @@ namespace generated
         boost::optional<CPACSDomeType>          m_domeType_choice2;
 
         boost::optional<CCPACSVesselStructure>  m_structure;
+
+        boost::optional<CPACSStructuralMounts>  m_structuralMounts;
 
         /// Volume
         boost::optional<CPACSFuelTankVolume>    m_volume;

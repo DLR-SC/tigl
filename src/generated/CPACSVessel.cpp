@@ -176,6 +176,17 @@ namespace generated
             }
         }
 
+        // read element structuralMounts
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralMounts")) {
+            m_structuralMounts = boost::in_place(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr);
+            try {
+                m_structuralMounts->ReadCPACS(tixiHandle, xpath + "/structuralMounts");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read structuralMounts at xpath " << xpath << ": " << e.what();
+                m_structuralMounts = boost::none;
+            }
+        }
+
         // read element volume
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/volume")) {
             m_volume = boost::in_place(reinterpret_cast<CCPACSVessel*>(this));
@@ -200,7 +211,7 @@ namespace generated
 
     void CPACSVessel::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "transformation", "sections", "segments", "cylinderRadius", "cylinderLength", "domeType", "structure", "volume", "burstPressure" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "transformation", "sections", "segments", "cylinderRadius", "cylinderLength", "domeType", "structure", "structuralMounts", "volume", "burstPressure" };
 
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -287,6 +298,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/structure")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/structure");
+            }
+        }
+
+        // write element structuralMounts
+        if (m_structuralMounts) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/structuralMounts", childElemOrder);
+            m_structuralMounts->WriteCPACS(tixiHandle, xpath + "/structuralMounts");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralMounts")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/structuralMounts");
             }
         }
 
@@ -464,6 +486,16 @@ namespace generated
         return m_structure;
     }
 
+    const boost::optional<CPACSStructuralMounts>& CPACSVessel::GetStructuralMounts() const
+    {
+        return m_structuralMounts;
+    }
+
+    boost::optional<CPACSStructuralMounts>& CPACSVessel::GetStructuralMounts()
+    {
+        return m_structuralMounts;
+    }
+
     const boost::optional<CPACSFuelTankVolume>& CPACSVessel::GetVolume() const
     {
         return m_volume;
@@ -530,6 +562,18 @@ namespace generated
     void CPACSVessel::RemoveStructure()
     {
         m_structure = boost::none;
+    }
+
+    CPACSStructuralMounts& CPACSVessel::GetStructuralMounts(CreateIfNotExistsTag)
+    {
+        if (!m_structuralMounts)
+            m_structuralMounts = boost::in_place(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr);
+        return *m_structuralMounts;
+    }
+
+    void CPACSVessel::RemoveStructuralMounts()
+    {
+        m_structuralMounts = boost::none;
     }
 
     CPACSFuelTankVolume& CPACSVessel::GetVolume(CreateIfNotExistsTag)

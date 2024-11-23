@@ -36267,7 +36267,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         </xsd:sequence>
                     </xsd:choice>
                     <xsd:element name="structure" minOccurs="0" type="vesselStructureType"/>
-                    <xsd:element name="structuralMounts" minOccurs="0" type="wingStructuralMountsType"/>
+                    <xsd:element name="structuralMounts" minOccurs="0" type="structuralMountsType"/>
                     <xsd:element name="cutOuts" minOccurs="0" type="fuselageCutOutsType"/>
                     <xsd:element name="volume" minOccurs="0" type="fuelTankVolumeType">
                         <xsd:annotation>
