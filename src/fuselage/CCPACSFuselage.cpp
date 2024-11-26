@@ -750,7 +750,8 @@ void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUI
 {
     if(GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetGuideCurves())
     {
-        throw tigl::CTiglError("Adding sections in fuselage segments containing guide curves is not supported", TIGL_UID_ERROR);
+        throw tigl::CTiglError("Adding sections in fuselage segments containing guide curves is currently not supported.\n"
+                               "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_UID_ERROR);
     }
 
     std::string segmentToSplit = GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetUID();
@@ -810,7 +811,8 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
             {
                 if(GetSegment(i).GetGuideCurves())
                 {
-                    throw tigl::CTiglError("Adding sections after fuselage segments containing guide curves is not supported", TIGL_UID_ERROR);
+                    throw tigl::CTiglError("Adding sections after fuselage segments containing guide curves is currently not supported.\n"
+                                           "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_UID_ERROR);
                 }
             }
         }
@@ -875,7 +877,8 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
             {
                 if(GetSegment(i).GetGuideCurves())
                 {
-                    throw tigl::CTiglError("Adding sections before fuselage segments containing guide curves is not supported", TIGL_UID_ERROR);
+                    throw tigl::CTiglError("Adding sections before fuselage segments containing guide curves is currently not supported.\n"
+                                           "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_UID_ERROR);
                 }
             }
         }
