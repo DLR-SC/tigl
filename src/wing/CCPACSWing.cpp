@@ -1407,6 +1407,10 @@ void CCPACSWing::SetARKeepArea(double newAR)
 
 void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID)
 {
+        if(GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetGuideCurves())
+        {
+            throw tigl::CTiglError("Adding sections in wing segments containing guide curves is not supported", TIGL_UID_ERROR);
+        }
 
         std::string segmentToSplit = GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetUID();
         CTiglWingSectionElement *startElement = wingHelper->GetCTiglElementOfWing(startElementUID);
@@ -1454,6 +1458,20 @@ void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
             if ( elementsBefore.size() < 2) {
                 throw  CTiglError("Impossible to add a element after if there is no previous element");
             }
+
+            // Iterate over segments to find the one ending in startElementUID
+            // If the corresponding segment contains guide curves -> Throw error, since adding elements after gc-segments is not supported
+            for (int i=1; i <= GetSegmentCount(); i++)
+            {
+                if (GetSegment(i).GetOuterSectionElementUID() == startElementUID)
+                {
+                    if(GetSegment(i).GetGuideCurves())
+                    {
+                        throw tigl::CTiglError("Adding sections after wing segments containing guide curves is not supported", TIGL_UID_ERROR);
+                    }
+                }
+            }
+
             std::string  previousElementUID = elementsBefore[elementsBefore.size()-2];
 
             CTiglWingSectionElement* previousElement = wingHelper->GetCTiglElementOfWing(previousElementUID);
@@ -1506,6 +1524,20 @@ void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
             if (elementsAfter.size() < 1 ) {
                 throw  CTiglError("Impossible to add a element before if there is no previous element");
             }
+
+            // Iterate over segments to find the one starting in startElementUID
+            // If the corresponding segment contains guide curves -> Throw error, since adding elements after gc-segments is not supported
+            for (int i=1; i <= GetSegmentCount(); i++)
+            {
+                if (GetSegment(i).GetInnerSectionElementUID() == startElementUID)
+                {
+                    if(GetSegment(i).GetGuideCurves())
+                    {
+                        throw tigl::CTiglError("Adding sections before wing segments containing guide curves is not supported", TIGL_UID_ERROR);
+                    }
+                }
+            }
+
             std::string  previousElementUID = elementsAfter[0];
 
             CTiglWingSectionElement* previousElement = wingHelper->GetCTiglElementOfWing(previousElementUID);

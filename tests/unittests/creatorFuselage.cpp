@@ -330,6 +330,16 @@ TEST_F(creatorFuselage, setRotation_MultipleFuselagesModel)
 }
 
 
+TEST_F(creatorFuselage, createSection_FuselageSegmentGuideCurves)
+{
+
+    setVariables("TestData/simple_test_guide_curves.xml", "Fuselage");
+
+    EXPECT_THROW(fuselage->CreateNewConnectedElementBefore("GuideCurveModel_Fuselage_Sec1_El1"), tigl::CTiglError);
+    EXPECT_THROW(fuselage->CreateNewConnectedElementBetween("GuideCurveModel_Fuselage_Sec1_El1", "GuideCurveModel_Fuselage_Sec2_El1"), tigl::CTiglError);
+    EXPECT_THROW(fuselage->CreateNewConnectedElementAfter("GuideCurveModel_Fuselage_Sec3_El1"), tigl::CTiglError);
+}
+
 
 TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 {
