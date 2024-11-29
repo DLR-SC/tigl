@@ -1410,7 +1410,7 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
         if(GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetGuideCurves())
         {
             throw tigl::CTiglError("Adding sections in wing segments containing guide curves is currently not supported.\n"
-                                   "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_UID_ERROR);
+                                   "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
         }
 
         std::string segmentToSplit = GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetUID();
@@ -1464,13 +1464,10 @@ void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
             // If the corresponding segment contains guide curves -> Throw error, since adding elements after gc-segments is not supported
             for (int i=1; i <= GetSegmentCount(); i++)
             {
-                if (GetSegment(i).GetOuterSectionElementUID() == startElementUID)
+                if(GetSegment(i).GetGuideCurves())
                 {
-                    if(GetSegment(i).GetGuideCurves())
-                    {
-                        throw tigl::CTiglError("Adding sections after wing segments containing guide curves is currently not supported.\n"
-                                               "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_UID_ERROR);
-                    }
+                    throw tigl::CTiglError("Adding sections after wing segments containing guide curves is currently not supported.\n"
+                                           "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
                 }
             }
 
@@ -1531,13 +1528,10 @@ void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
             // If the corresponding segment contains guide curves -> Throw error, since adding elements after gc-segments is not supported
             for (int i=1; i <= GetSegmentCount(); i++)
             {
-                if (GetSegment(i).GetInnerSectionElementUID() == startElementUID)
+                if(GetSegment(i).GetGuideCurves())
                 {
-                    if(GetSegment(i).GetGuideCurves())
-                    {
-                        throw tigl::CTiglError("Adding sections before wing segments containing guide curves is currently not supported.\n"
-                                               "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_UID_ERROR);
-                    }
+                    throw tigl::CTiglError("Adding sections before wing segments containing guide curves is currently not supported.\n"
+                                           "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
                 }
             }
 
