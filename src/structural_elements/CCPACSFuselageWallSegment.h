@@ -36,22 +36,22 @@ class CCPACSFuselageWallSegment : public generated::CPACSWallSegment, public CTi
 public:
     TIGL_EXPORT CCPACSFuselageWallSegment(CCPACSWallSegments* parent, CTiglUIDManager* uidMgr);
 
-    std::string GetDefaultedUID() const override
+    TIGL_EXPORT std::string GetDefaultedUID() const override
     {
         return GetUID().value_or("UnknownWallSegment");
     }
 
-    TiglGeometricComponentIntent GetComponentIntent() const override
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override
     {
         return TIGL_INTENT_INNER_STRUCTURE | TIGL_INTENT_PHYSICAL;
     }
 
-    TiglGeometricComponentType   GetComponentType() const override
+    TIGL_EXPORT TiglGeometricComponentType   GetComponentType() const override
     {
         return TIGL_COMPONENT_FUSELAGE_WALL;
     }
 
-    TopoDS_Compound GetCutPlanes() const;
+    TIGL_EXPORT TopoDS_Compound GetCutPlanes() const;
 
     TIGL_EXPORT void SetPhi(const double& value) override;
     TIGL_EXPORT void SetDoubleSidedExtrusion(const boost::optional<bool>& value) override;
