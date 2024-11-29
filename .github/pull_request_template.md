@@ -22,7 +22,7 @@
 
 | Task                                                    | Finished                                                  | Reviewer Approved          |
 |---------------------------------------------------------|-----------------------------------------------------------|----------------------------|
-| At least test for the new functionality was added.      | <ul><li>- [ ] yes </li><li>- [ ] does not apply</li></ul> | <ul><li>- [ ] OK</li></ul> |
+| At least one test for the new functionality was added.  | <ul><li>- [ ] yes </li><li>- [ ] does not apply</li></ul> | <ul><li>- [ ] OK</li></ul> |
 | New classes have been added to the Python interface.    | <ul><li>- [ ] yes </li><li>- [ ] does not apply</li></ul> | <ul><li>- [ ] OK</li></ul> |
 | The code is properly documented with doxygen docstrings | <ul><li>- [ ] yes </li><li>- [ ] does not apply</li></ul> | <ul><li>- [ ] OK</li></ul> |
 | Changes are documented at the top of ChangeLog.md       | <ul><li>- [ ] yes </li><li>- [ ] does not apply</li></ul> | <ul><li>- [ ] OK</li></ul> |
