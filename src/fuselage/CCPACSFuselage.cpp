@@ -748,6 +748,11 @@ void CCPACSFuselage::SetFuselageHelper(CTiglFuselageHelper& cache) const
 
 void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID)
 {
+    if(GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetGuideCurves())
+    {
+        throw tigl::CTiglError("Adding sections in fuselage segments containing guide curves is currently not supported.\n"
+                               "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
+    }
 
     std::string segmentToSplit = GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetUID();
     CTiglFuselageSectionElement* startElement = fuselageHelper->GetCTiglElementOfFuselage(startElementUID);
@@ -797,6 +802,18 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
         if ( elementsBefore.size() < 2) {
             throw  CTiglError("Impossible to add a element after if there is no previous element");
         }
+
+        // Iterate over segments to find the one ending in startElementUID
+        // If the corresponding segment contains guide curves -> Throw error, since adding elements after gc-segments is not supported
+        for (int i=1; i <= GetSegmentCount(); i++)
+        {
+            if(GetSegment(i).GetGuideCurves())
+            {
+                throw tigl::CTiglError("Adding sections after fuselage segments containing guide curves is currently not supported.\n"
+                                       "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
+            }
+        }
+
         std::string  previousElementUID = elementsBefore[elementsBefore.size()-2];
 
         CTiglFuselageSectionElement* previousElement = fuselageHelper->GetCTiglElementOfFuselage(previousElementUID);
@@ -848,6 +865,18 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
         if (elementsAfter.size() < 1 ) {
             throw  CTiglError("Impossible to add a element before if there is no previous element");
         }
+
+        // Iterate over segments to find the one starting in startElementUID
+        // If the corresponding segment contains guide curves -> Throw error, since adding elements after gc-segments is not supported
+        for (int i=1; i <= GetSegmentCount(); i++)
+        {
+            if(GetSegment(i).GetGuideCurves())
+            {
+                throw tigl::CTiglError("Adding sections before fuselage segments containing guide curves is currently not supported.\n"
+                                       "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
+            }
+        }
+
         std::string  previousElementUID = elementsAfter[0];
 
         CTiglFuselageSectionElement* previousElement = fuselageHelper->GetCTiglElementOfFuselage(previousElementUID);
