@@ -40,7 +40,9 @@
 #include "CCPACSExternalObject.h"
 #include "CTiglShapeCache.h"
 #include "CTiglError.h"
+#include "CCPACSWalls.h"
 #include "CCPACSWallPosition.h"
+#include "CCPACSWallSegment.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglWingConnection.h"
@@ -87,6 +89,7 @@
 #include "generated/CPACSBoundingElementUIDs.h"
 #include "generated/CPACSStructuralWallElement.h"
 #include "generated/CPACSStructuralWallElements.h"
+#include "generated/CPACSWalls.h"
 #include "generated/CPACSWallPositionUIDs.h"
 #include "generated/CPACSWallPosition.h"
 #include "generated/CPACSWallPositions.h"
@@ -108,8 +111,6 @@
 #include "generated/CPACSVesselStructure.h"
 #include "CCPACSVesselStructure.h"
 #include "CCPACSFrame.h"
-
-
 %}
 
 %feature("autodoc", "3");
@@ -191,7 +192,6 @@
 %include "generated/CPACSLateralCap_placement.h"
 %boost_optional(tigl::generated::CPACSLateralCap)
 %include "generated/CPACSLateralCap.h"
-
 %boost_optional(tigl::generated::CPACSBoundingElementUIDs)
 %include "generated/CPACSBoundingElementUIDs.h"
 %include "generated/CPACSStructuralWallElement.h"
@@ -201,8 +201,14 @@
 %include "generated/CPACSWallPositions.h"
 %include "generated/CPACSWallSegment.h"
 %include "generated/CPACSWallSegments.h"
+%boost_optional(tigl::CCPACSWalls)
 %boost_optional(tigl::generated::CPACSWalls)
+%boost_optional(tigl::CCPACSWallPosition)
+%boost_optional(tigl::CCPACSWallSegment)
 %include "generated/CPACSWalls.h"
+%include "CCPACSWalls.h"
+%include "CCPACSWallPosition.h"
+%include "CCPACSWallSegment.h"
 
 // ----------------- Engines ---------------------------//
 %boost_optional(tigl::CCPACSEngines)
@@ -371,7 +377,7 @@ class CCPACSVessels;
 %include "CCPACSVessel.h"
 %include "generated/CPACSFuselageFuelTanks.h"
 
-// -------------------- Wing Structure -------------------// 
+// -------------------- Wing Structure -------------------//
 
 namespace tigl {
 class CCPACSWingCSStructure;
@@ -563,6 +569,7 @@ class CCPACSWingRibsPositioning;
 %factory(tigl::ITiglGeometricComponent& tigl::CTiglUIDManager::GetGeometricComponent,
          tigl::CCPACSFuselage,
          tigl::CCPACSFuselageSegment,
+         tigl::CCPACSWallSegment,
          tigl::CCPACSWing,
          tigl::CCPACSWingSegment,
          tigl::CCPACSWingComponentSegment,

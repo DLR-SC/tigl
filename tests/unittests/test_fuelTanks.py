@@ -239,13 +239,28 @@ class FuelTanks(unittest.TestCase):
 
     def test_structure(self):
         structure = self.vessel_segments.get_structure()
-        # Test custom class methods:
+
+        # Test availability of generated class:
+        self.assertEqual(structure.get_uid(), "outerVesselStructure")
+
         self.assertIsInstance(
             structure.get_frames(), configuration.CCPACSFramesAssembly
         )
 
-        # Test availability of generated class:
-        self.assertEqual(structure.get_uid(), "outerVesselStructure")
+        self.assertIsInstance(
+            structure.get_stringers(), configuration.CCPACSStringersAssembly
+        )
+
+        self.assertIsInstance(
+            structure.get_walls(), configuration.CCPACSWalls
+        )
+
+        
+
+        
+
+   
+        
 
 
 if __name__ == "__main__":
