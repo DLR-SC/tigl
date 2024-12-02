@@ -70,15 +70,15 @@ public:
 
 
     // return the elements uids in order from root to tip
-    // It assume that the element are already order in m_segments !
+    // It is assumed that the elements are already ordered according to the m_segments !
     TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder() const;
 
 
     /**
         * Split the segment into two segments.
-        * The splitter element will be used as the junction between the two segments.
+        * The split element will be used as the junction between the two segments.
         *
-        * @remark Only the segment is split we do not care about the position of the splitter.
+        * @remark Only the segment is split and we do not care about the position of the splitter.
         * @param segmentToSplit: the uid of the segment to split
         * @param splitterElement: the uid of the element to be used to connect the two segments
         * @return the new created segment

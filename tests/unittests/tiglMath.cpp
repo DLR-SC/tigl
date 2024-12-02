@@ -363,10 +363,10 @@ TEST(TiglMath, CTiglTransform_Decompose)
     EXPECT_NEAR(T[1], 0., 1e-8);
     EXPECT_NEAR(T[2], 0., 1e-8);
 
-    // Example of matrices that can not be decompose:
+    // Example of matrices that can not be decomposed:
 
     // Create a shear matrix by rotation and scaling
-    // This case can happens if the is a none-uniform scaling in the section
+    // This case may appear when a none-uniform scaling exists within the section
 
     double a = 1.28;
     double angle = 38;
@@ -732,7 +732,7 @@ TEST(TiglMath, CTiglTransform_getRotationToAlignAToB)
     EXPECT_NEAR(result.z, b.z, 0.01 );
 
 
-    // Special case where the vector are identical
+    // Special case: The vectors are identical
     b =  tigl::CTiglPoint(1,0,0); // Ry:30, rz:20
     a = tigl::CTiglPoint(1,0,0);
     yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(a, b);

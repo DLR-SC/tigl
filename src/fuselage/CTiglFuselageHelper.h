@@ -31,8 +31,8 @@ namespace tigl
 class CCPACSFuselage;
 
 /**
- * This class help the CCPACSFuselage class.
- * It's main goal is to keep the CCPACSFuselage class clean, such that the CPACSFuselage has its interface simple
+ * This is a helper class for the CCPACSFuselage class.
+ * Its main goal is to keep the CCPACSFuselage class clean, such that the class keeps a simple interface.
  *
  */
 class CTiglFuselageHelper
@@ -46,7 +46,7 @@ public:
     void SetFuselage(CCPACSFuselage* fuselage);
 
     // Returns true if the fuselage has a shape
-    // This mean that a list the fuselage is composed by a valid segment and thus is composed by two elements
+    // This means that the fuselage is composed by a valid segment and thus is composed by two elements
     bool HasShape() const;
 
     // return the element uid that is considered as the noise element
@@ -57,7 +57,7 @@ public:
 
     /**
      * Return the uid of the elements connected by some segments.
-     * @remark if a element in the fuselage is not connected, then it will not appears in this list.
+     * @remark if a element in the fuselage is not connected, then it will not appear in this list.
      * @return
      */
     inline std::vector<std::string> GetElementUIDsInOrder() const

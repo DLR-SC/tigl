@@ -80,7 +80,7 @@ void TIGLViewerNewFileDialog::accept()
     }
     else {
         QString errorMsg = "An error occurs during the creation of the file \"" + newFilePath +
-                           "\". Make shure the application has the permission to write into \"" +
+                           "\". Make sure the application has the permission to write into \"" +
                            settings.templateDir().absolutePath() + "\"";
 
         LOG(WARNING) << "TIGLViewerNewFileDialog::templateIsSelected: " + errorMsg.toStdString() << std::endl;

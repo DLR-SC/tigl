@@ -80,8 +80,8 @@ protected:
      * Return the conventional direction for the unit vector z of the profile.
      *
      * This direction is used to determine the rotation around the normal and is defined as:
-     * the vector that line on the profile plane and end on the intersection of the line l, define by (x,0,1).
-     * If there is no intersection with the line l, we set the end of the vector by the intersection of the line l2,
+     * The vector is contained in the profile plane and ends on the intersection of the line l, define by (x,0,1).
+     * If there is no intersection with the line l, we define the end of the vector as the intersection with the line l2,
      * defined by (1,0,z)
      *
      * @param referenceCS

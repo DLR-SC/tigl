@@ -75,7 +75,7 @@ void ProfilesDBManager::setLocalProfiles(QString newDBFile)
         LOG(ERROR) << "ProfilesDBManager::setLocalProfiles: The path " << softDBFilename.toStdString()
                    << " seems not to be a valid path to a profiles DB file."
                    << "Note that a valid profiles file has the same format as the CPACS profiles sections"
-                   << " and its name end by .xml";
+                   << " and its name ends with .xml";
         updateProfilesLists();
         return;
     }

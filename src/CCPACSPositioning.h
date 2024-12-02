@@ -49,7 +49,7 @@ public:
 
     /**
      * Set the toPoint of this positioning.
-     * By the the "toPoint", we mean the total position obtain by the section from this positioning and its parent positionings.
+     * Here, the "toPoint" is the total position obtained by the section from this positioning and its parent positionings.
      *
      * @param aPoint
      * @param moveDependentPositionings: If true, the dependent positionings will also move from the delta between the newPosition
@@ -72,7 +72,7 @@ public:
      * Set the length, sweep and dihedral parameter from the given positioning vector.
      * @remark The fromSectionUID nor the toSectionUID are changed.
      * @param delta
-     * @param rounding, if rounding is set to true angle and length will be rounding near common value as 0 ,90,180,..
+     * @param rounding, if rounding is set to true, angle and length will be rounded near common values such as 0 ,90,180,..
      */
     TIGL_EXPORT void SetParametersFromVector(const CTiglPoint& delta, bool rounding = true );
 
@@ -84,8 +84,8 @@ protected:
     void Update();
 
     /**
-     * Set the positioning vector (length, sweep, dihedral) such that the "toPoint" does not move
-     * if the "fromPoint" take the new position "newFromPosition"
+     * Set the positioning vector (length, sweep, dihedral) in a way that the "toPoint" does not move
+     * if the "fromPoint" takes the new position "newFromPosition"
      * @remark This method is useful to update a positioning without changing its dependencies.
      * @param  newFromPosition: the new position of the from point.
      */

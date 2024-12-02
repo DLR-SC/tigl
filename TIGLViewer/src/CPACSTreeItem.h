@@ -32,11 +32,11 @@ class CPACSTree;
 /**
  * @brief CPACSTree node element.
  *
- * This class represent a node in a CPACSTree.
- * It holds information of the node as the UID, the XPATH, the tixi Index, its
- * children and its parents.
+ * This class represents a node in a CPACSTree.
+ * It holds information of the node such as the UID, the XPATH, the tixi Index, its
+ * children and parents.
  * It also implements functions to simplify the access to
- * its children or parents as "getChildByUid()" or "getParentOfType()"
+ * its children or parents like "getChildByUid()" or "getParentOfType()"
  *
  * @see CPACSTree
  */

@@ -136,7 +136,7 @@ bool ModificatorPositioningWidget::apply()
             associatedFuselage->Invalidate();
         }
         else {
-            LOG(ERROR) << "ModificatorPositioningWidget::apply: associate wing and fuselage state are invalid!";
+            LOG(ERROR) << "ModificatorPositioningWidget::apply: associated wing and fuselage state are invalid!";
         }
 
         reset();

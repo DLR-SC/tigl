@@ -690,7 +690,7 @@ void CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotat
     // check if P is a proper diagonal (P is symmetric so we can check only the upper part)
     double aveAbsOffDiag = (fabs(P(1, 2)) + fabs(P(1, 3)) + fabs(P(2, 3))) / 3;
 
-    // If S is all ready a proper scaling  we do no decompose P
+    // If S is already a proper scaling, we do not decompose P
     if (aveAbsOffDiag < Precision::Confusion()) {
         if (U.Determinant() < 0) {
             R2 = U * -1;

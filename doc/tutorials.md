@@ -1,9 +1,9 @@
 Tutorials {#tuto}
 =========
 
-@section tuto_create_from_scratch Create a aircraft from scratch
+@section tuto_create_from_scratch Create an aircraft from scratch
 
-In this tutorial, we will present how to create a aircraft from scratch. 
+In this tutorial, we will present how to create an aircraft from scratch. 
 
 1 ) Open CPACSCreator.     
 2 ) Create a new file, either click on create a new file (File->New) or press the shortcut Ctl+N.
@@ -11,7 +11,7 @@ In this tutorial, we will present how to create a aircraft from scratch.
 @image html images/tutorial_scratch/tuto_scratch_2.png    
 \n
 
-3 ) In the dialog box, chose one of the template files, then click on "OK".  
+3 ) In the dialog box, choose one of the template files, then click on "OK".  
 
 @image html images/tutorial_scratch/tuto_scratch_3.png            
 \n
@@ -24,22 +24,22 @@ or press the shortcut alt+M.
 \n
 
 5 ) Click on "Add a new fuselage" in the Editor widget.
-  If the editor widget is not shown either activate the widget trough the menu (View->Display->Editor)
-  or press the shortcut alt+Shift+M.
+  If the editor widget is not shown, either activate the widget through the menu (View->Display->Editor)
+  or enter the shortcut alt+Shift+M.
   
 @image html images/tutorial_scratch/tuto_scratch_5.png            
 \n
 
-6 ) In the dialog box, chose the UID for this fuselage, the number of section and the profile UID, then click on "OK".
-It's important to give the correct UID at this point, because, for the moment,
-it's impossible to change UID later one. Remark, that the other UIDs as section UIDs or the transformation UIDs
+6 ) In the dialog box, choose the UID for this fuselage, the number of section and the profile UIDs, then click on "OK".
+It is important to give the correct UID at this point, because, for the moment,
+it is impossible to change UID later on. Observe, that the other UIDs such as section UIDs or the transformation UIDs
 are automatically generated and derived from this given UID.
    
 @image html images/tutorial_scratch/tuto_scratch_6.png            
 \n
 
-7 ) Click on the button to fit the content on the view port or press the shortcut Alt+A,
-because you are probably to fare a way from your fuselage.
+7 ) Click on the button to fit the content on the view port or enter the shortcut Alt+A,
+because you are probably to far away from the fuselage.
 
 @image html images/tutorial_scratch/tuto_scratch_7.png            
 \n
@@ -57,20 +57,20 @@ because you are probably to fare a way from your fuselage.
 
 10 ) Edit some parameters of the fuselage. Here, I change the length to 15 and the width to 3, then click on "OK".
 Remark, that the change are only applied when you click on "OK". The apply order is from top parameter to bottom parameter.
-If you have make a mistake and you want to have the values of your current tigl object restored, you can click on "Cancel".
+If you have made a mistake and you want the values of your current tigl object to be restored, you can click on "Cancel".
    
 @image html images/tutorial_scratch/tuto_scratch_10.png            
 \n
 
-11 ) Now, if you want to go in a more fine grain definition. You need to switch to the section level. To do this, select the wanted 
+11 ) Now, if you want to go in a more fine-grained definition, you need to switch to the section level. To do so, select the wanted 
 section in the CPACS tree view and click on it. The editor widget should change to the section editor and only the
-select section should be highlighted. Here, I chose the first section.
+selected section should be highlighted. Here, I chose the first section.
 
 @image html images/tutorial_scratch/tuto_scratch_11.png            
 \n
 
 
-12 ) Edit the high level parameters of the section Here, I change the area to zero to have a peaked noose.
+12 ) Edit the high-level parameters of the section. Here, I changed the area to zero to have a peaked nose.
 
 @image html images/tutorial_scratch/tuto_scratch_12.png            
 \n
@@ -79,8 +79,8 @@ select section should be highlighted. Here, I chose the first section.
 To set the position of a section you can also use the positioning editor. Remark the difference between setting the 
 position using the section editor and setting the position using the positioning editor. 
 In the case of using the section editor, only the selected section changed and in the case of using the positioning
-widget the section after the selected section was shifted. This come from the fact that the positioning are depending
-from each other. 
+widget, the section after the selected section was shifted. This comes from the fact that the positionings depend
+on each other. 
 
 
 @image html images/tutorial_scratch/tuto_scratch_13a.png "Set the position of section 2 using center in section widget"
@@ -130,12 +130,12 @@ Remark, before this operation the file is not saved. There is no auto-saving fea
 @image html images/tutorial_scratch/tuto_scratch_18.png   
 \n     
     
-19 ) Go in more fine grain definition.
+19 ) Go in more fine-grained definition.
 
  @image html images/tutorial_scratch/tuto_scratch_19.png    
  \n     
      
-20 ) You can of course create multiple wing
+20 ) You can of course create multiple wings.
 
 @image html images/tutorial_scratch/tuto_scratch_20.png    
  \n 
@@ -146,7 +146,7 @@ Remark that the sweep, dihedral and other definitions still make also sense in t
 @image html images/tutorial_scratch/tuto_scratch_21.png
 \n
 
-22 ) You can changed the transparency of the displayed element by selecting the element and right clicking on them.
+22 ) You can chang the transparency of the displayed element by selecting the element and right clicking on them.
 
 @image html images/tutorial_scratch/tuto_scratch_22.png
 \n    
@@ -161,6 +161,5 @@ Remark that the sweep, dihedral and other definitions still make also sense in t
 
 @section tuto_python Python Scripting 
 
-See the the section @ref lib_intrernal_python_demo
-and take a look to the example file create_space_ship.py that explain quite 
-well the mechanism of the internal python api.
+See the section @ref lib_intrernal_python_demo
+and take a look at the example file create_space_ship.py that explains the mechanism of the internal python api quite well.

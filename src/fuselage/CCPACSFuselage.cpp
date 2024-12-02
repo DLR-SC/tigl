@@ -653,7 +653,7 @@ void CCPACSFuselage::SetMaxHeight(double newHeight)
 
     double currentHeight = GetMaximalHeight();
     if (currentHeight < 0.00000000001 ){
-        LOG(WARNING) << "CCPACSFuselage::SetMaxHeight: The current height is near 0, we do not support for the moment setting the height if the current height is zero, sorry.";
+        LOG(WARNING) << "CCPACSFuselage::SetMaxHeight: The current height is very close to 0. For the moment, we do not support setting the height if the current height is almost zero.";
         return;
     }
     double scalingZ = newHeight / currentHeight;
@@ -721,7 +721,7 @@ void CCPACSFuselage::SetMaxWidth(double newWidth)
 
     double currentWidth = GetMaximalWidth();
     if (currentWidth < 0.00000000001 ){
-        LOG(WARNING) << "CCPACSFuselage::SetMaxHeight: The current height is near 0, we do not support for the moment setting the height if the current height is zero, sorry.";
+        LOG(WARNING) << "CCPACSFuselage::SetMaxHeight: The current height is very close to 0. For the moment, we do not support setting the height if the current height is almost zero.";
         return;
     }
     double scalingY = newWidth / currentWidth;

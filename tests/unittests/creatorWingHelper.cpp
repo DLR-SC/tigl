@@ -167,7 +167,7 @@ TEST_F(creatorWingHelper, MultipleWings_GetWingDirections)
     EXPECT_EQ(wingHelper.GetThirdDirection(), TIGL_Z_AXIS);
 
     // case when the wing is not set
-    // In this case we expect to have warning and the default direction
+    // In this case, we expect to log a warning and to return the default direction
     wingHelper.SetWing(nullptr);
     EXPECT_EQ(wingHelper.GetMajorDirection(), TIGL_Y_AXIS);
     EXPECT_EQ(wingHelper.GetDeepDirection(), TIGL_X_AXIS);
@@ -203,7 +203,7 @@ TEST_F(creatorWingHelper, MultipleWings_GetTipAndRootUID)
     EXPECT_EQ(wingHelper.GetTipUID(), "");
 
     // case when the wing is not set
-    // In this case we expect to have warning and the default direction
+    // In this case, we expect to log a warning and to return the default direction
     wingHelper.SetWing(nullptr);
     EXPECT_EQ(wingHelper.GetRootUID(), "");
     EXPECT_EQ(wingHelper.GetTipUID(), "");

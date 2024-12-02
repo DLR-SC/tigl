@@ -24,7 +24,7 @@
 #include "CPACSTreeItem.h"
 
 /**
- * This class act as a proxy on CPACSAbstractModel.
+ * This class acts as a proxy on CPACSAbstractModel.
  * Its goal is to allow the model to be filtered and to enable search on the model.
  * Basically this class contains two QRegExp.
  * One to control the default filtering on the model and one to control the search pattern.
@@ -32,7 +32,7 @@
  * model should be display.
  * The default filtering on the mode can be avoided by setting the expertView mode using
  * the setExpertView() function.
- * We can also enable or not the match on uid using the enableMatchOnUID() function.
+ * We can also enable or disable the match on uid using the enableMatchOnUID() function.
  *
  * @author Malo Drougard
  */

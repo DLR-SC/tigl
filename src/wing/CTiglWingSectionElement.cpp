@@ -158,9 +158,9 @@ TopoDS_Wire tigl::CTiglWingSectionElement::GetWire(TiglCoordinateSystem referenc
 
 tigl::CTiglPoint tigl::CTiglWingSectionElement::GetNormal(TiglCoordinateSystem referenceCS) const
 {
-    // We assume that the original profile is in the XZ plan.
+    // We assume that the original profile lies in the XZ plane.
     // -> So the normal of the final section can be computed by the cross product of the transformed basis vector
-    // Remark: do not forget that the CTiglTransformation is augmented, so we need to compute the new Y andZ vector
+    // Remark: do not forget that the CTiglTransformation is augmented, so we need to compute the new Y and Z vector
     // using the origin
 
     CTiglPoint xPoint = CTiglPoint(1,0,0);

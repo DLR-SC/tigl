@@ -357,7 +357,7 @@ void tigl::CTiglSectionElement::SetPSETransformationsUseSimpleDecomposition(
         if (!checkT.IsNear(newTransformation)) {
             LOG(WARNING) << "CTiglSectionElement::SetPSETransformationsUseSimpleDecomposition: "
                             "The decomposition was not equal to the original transformation. "
-                            "You may need to us SetPSETransformation.";
+                            "You may need to use SetPSETransformation.";
         }
     }
 

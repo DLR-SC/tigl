@@ -1365,7 +1365,7 @@ void CCPACSWing::SetHalfSpanKeepAR(double newHalfSpan)
 {
 
     if ( newHalfSpan <= 0 ) {
-        throw  CTiglError("Invalid input! The given span must be higher than 0.");
+        throw  CTiglError("Invalid input! The given span must be larger than 0.");
     }
 
     double oldSpan = GetWingHalfSpan();

@@ -42,35 +42,36 @@ public:
 
     TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 
-    // Invalidates internal state
+    // Invalidate internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    // Gets a segment by index.
+    // Get a segment by index.
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);
     TIGL_EXPORT const CCPACSFuselageSegment& GetSegment(int index) const;
 
-    // Gets a segment by uid 
+    // Get a segment by uid
     TIGL_EXPORT CCPACSFuselageSegment & GetSegment(const std::string& segmentUID);
 
-    // Get the segment that get form element uid to element uid, if there is no such segment the function raise an error
-    TIGL_EXPORT CCPACSFuselageSegment & GetSegmentFromTo(const std::string &fromElemUID, const std::string toElementUID);
+    // Get the segment that is spanned by the elements fromElemUID and toElementUID.
+    // If there is no such segment, the function raises an error
+    TIGL_EXPORT CCPACSFuselageSegment & GetSegmentFromTo(const std::string &fromElementUID, const std::string toElementUID);
 
-    // Gets total segment count
+    // Get total segment count
     TIGL_EXPORT int GetSegmentCount() const;
 
-    // Gets the parent component
+    // Get the parent component
     TIGL_EXPORT CTiglRelativelyPositionedComponent const* GetParentComponent() const;
 
 
-    // return the elements uids in order from noise to tail
-    // It assume that the element are already order in m_segments !
+    // return the element uids in order from nose to tail
+    // It assumes that the elements are already ordered according to m_segments !
     TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder() const;
 
     /**
      * Split the segment into two segments.
-     * The splitter element will be used as the junction between the two segments.
+     * The split element will be used as the junction between the two segments.
      *
-     * @remark Only the segment is split we do not care about the position of the splitter.
+     * @remark Only the segment is split and we do not care about the position of the splitter.
      * @param segmentToSplit: the uid of the segment to split
      * @param splitterElement: the uid of the element to be used to connect the two segments
      * @return the new created segment

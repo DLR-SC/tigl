@@ -32,15 +32,15 @@ namespace cpcr
 typedef std::string UID;
 
 /**
- * @brief Construct and manage a tree structure over a CPACS file trough a tixi
- * handle .
+ * @brief Construct and manage a tree structure over a CPACS file through a tixi
+ * handle.
  *
- * The xml CPACS format can be represented as a tree. This class create for each
- * xml node a CPACSTreeItem starting from the given root. The access to the
- * underlying data is done by the TIXI library. So basically, this class is a a
- * tree structure that represent a subset of the Tixi data.
- * @remark The root need not to be the first element of the CPACS, but can be
- * every where, typically the "modelType" of CPACS can be chosen.
+ * The xml CPACS format can be represented as a tree. This class creates a CPACSTreeItem
+ * for each xml node starting from the given root. The access to the
+ * underlying data is done by the TIXI library. So basically, this class is a
+ * tree structure that represents a subset of the Tixi data.
+ * @remark The root does not need to be the first element of the CPACS file, but can be
+ * everywhere, typically the "modelType" of CPACS can be chosen.
  *
  * @author Malo Drougard
  */
@@ -64,8 +64,8 @@ public:
 
     /**
    * Delete all the CPACSTreeItem used by the tree and set the root to nullptr
-   * @remark if another object still used some of the CPACSTreeItem it can leads
-   * to segmentation fault.
+   * @remark if another object still used some of the CPACSTreeItem, this can lead
+   * to segmentation faults.
    */
     void clean();
 

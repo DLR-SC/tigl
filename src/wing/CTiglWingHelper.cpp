@@ -56,7 +56,7 @@ std::map<std::string, tigl::CTiglWingSectionElement*> tigl::CTiglWingHelper::Bui
 
     std::map<std::string, CTiglWingSectionElement*> map;
     if (!wing) {
-        LOG(WARNING) << "CTiglWingHelper::BuildCTiglElementsMap: Associate wing is not set -> impossible to build the "
+        LOG(WARNING) << "CTiglWingHelper::BuildCTiglElementsMap: Associated wing is not set -> Impossible to build the "
                         "map, call SetWing first. ";
     }
 
@@ -81,7 +81,7 @@ void tigl::CTiglWingHelper::SetTipUid(std::string& cache) const
 {
 
     /* Use the distance in the major wing direction between the root and the center of each element
-     * to determine which element is more suited to be considerate as the tip.
+     * to determine which element is more suited to be considered as the tip.
      */
 
     cache = "";
@@ -114,7 +114,7 @@ void tigl::CTiglWingHelper::SetTipUid(std::string& cache) const
             cache = elementUIDs[i];
         }
         else {
-            LOG(ERROR) << "CTiglWingHelper::SetTipCElement: Unexcpected case!";
+            LOG(ERROR) << "CTiglWingHelper::SetTipCElement: Unexpected case!";
         }
     }
 }

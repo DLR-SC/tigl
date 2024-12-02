@@ -32,37 +32,37 @@ class CTiglStandardizer
 public:
     /**
      * Standardize the fuselage using the CPACSCreator standard.
-     * This mean:
-     *  1) The fuselage transformation store the nose position.
-     *  2) The translation of sections are set using positionings.
-     *  3) Each positioning correspond to a segment, except for the nose section that has a positioning from
+     * This means:
+     *  1) The fuselage transformation stores the nose position.
+     *  2) The translations of sections are set using positionings.
+     *  3) Each positioning corresponds to a segment, except for the nose section that has a positioning from
      *      the fuselage origin (with a length of 0, if the origin of the profile correspond to its center).
      *
      * @param fuselage
      * @param useSimpleDecomposition, if set to true the standardization use only polar decomposition.
-     * This mean that the cpacs file is more readable but there can be some simplification that change the global
+     * This means that the cpacs file is more readable but there can be some simplification that changes the global
      * shape of the fuselage.
      */
     static void StandardizeFuselage(CCPACSFuselage& fuselage, bool useSimpleDecomposition = false);
 
     /**
      * Standardize the wing using the CPACSCreator standard.
-     * This mean:
-     *  1) The wing transformation store the root leading point translation.
-     *  2) The translation of sections are set using positionings.
-     *  3) Each positioning correspond to a segment, except for the root section that has a positioning from
-     *      the wing origin (with a length of 0, if the origin of the airfoil correspond to its leading edge).
+     * This means:
+     *  1) The wing transformation stores the root leading point translation.
+     *  2) The translations of sections are set using positionings.
+     *  3) Each positioning corresponds to a segment, except for the root section that has a positioning from
+     *      the wing origin (with a length of 0, if the origin of the airfoil corresponds to its leading edge).
      *
      * @param wing
      * @param useSimpleDecomposition, if set to true the standardization use only polar decomposition.
-     * This mean that the cpacs file is more readable but there can be some simplification that change the global
+     * This means that the cpacs file is more readable but there can be some simplification that changes the global
      * shape of the wing.
      */
     static void StandardizeWing(CCPACSWing& wing, bool useSimpleDecomposition = false);
 
 
     /**
-     * Standardize the all the wings and the fuselage of the aircraft.
+     * Standardize all the wings and fuselages of the aircraft.
      *
      * @param config
      * @param useSimpleDecomposition

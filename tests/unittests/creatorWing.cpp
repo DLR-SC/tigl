@@ -120,7 +120,7 @@ protected:
 
 TEST_F(creatorWing, MultipleWings_GetWingHalfSpan)
 {
-    // Remark: The span is computed using bounding Box so, the result may no be accurate.
+    // Remark: The span is computed using a bounding box so, the result may no be precisely accurate.
 
     double tolerance = 0.1;     // 10cm if we use meter metric
     // symmetry x-z case
@@ -164,10 +164,10 @@ TEST_F(creatorWing, MultipleWings_GetWingHalfSpan)
 TEST_F(creatorWing, MultipleWings_GetWingfSpanAndSetSymmetry)
 {
 
-    // Remark: using setSymmetry does not invalidate the wing,
-    // but, at the moment,  all the functions use directly getSymmetry to perform their operation,
-    // so this should not create trouble as long we do not cache some result that use the symmetry
-    // This test make sure that we remain so.
+    // Remark: Using setSymmetry does not invalidate the wing,
+    // but, at the moment, all the functions use getSymmetry directly to perform their operation.
+    // So this should not create trouble as long we do not cache some results that use the symmetry
+    // This test makes sure that we remain so.
 
     double tolerance = 0.1;
     setVariables("TestData/multiple_wings.xml", "Wing");
@@ -219,8 +219,8 @@ TEST_F(creatorWing, MultipleWings_GetReferenceArea)
     EXPECT_NEAR(wing->GetReferenceArea(),0, 0.0001);
 
     // simple box wing
-    // Remark, since there is the area is projected two times on the plane (one for the lower wing, once for the upper wing)
-    // the reference are is double // TODO verify that this behavior is not problematic
+    // Remark, the area is projected twice on the plane (one for the lower wing, once for the upper wing)
+    // the reference are is doubled // TODO verify that this behavior is not problematic
     setWing("W8_SBW");
     EXPECT_NEAR(wing->GetReferenceArea(),2*0.93969, 0.0001);
     
@@ -261,10 +261,10 @@ TEST_F(creatorWing, MultipleWings_GetSweep)
     setWing("W8_SBW");
     EXPECT_NEAR(wing->GetSweep(0), 0, 0.0001);
 
-    setWing("W9_BWSweep"); // Remark the sweep and dihedral of positioning  can be view has extrinsic rotation Z then X
+    setWing("W9_BWSweep"); // Remark: The sweep and dihedral of positioning can be viewed has extrinsic rotation around Z and X afterwards
     EXPECT_NEAR(wing->GetSweep(0), 44.7803444, 0.0001);
 
-    // the wing is describe in the negative Y direction
+    // The wing is described in negative Y direction
     // -> in the case to get the sweep angle, we need to take care of "mirroring the wing" prior to the computation
     setWing("W10_Reverse");
     EXPECT_NEAR(wing->GetSweep(0), 14.0362434, 0.0001);
@@ -315,10 +315,10 @@ TEST_F(creatorWing, MultipleWings_GetDihedral)
     setWing("W8_SBW");
     EXPECT_NEAR(wing->GetDihedral(0), 20, 0.0001);
 
-    setWing("W9_BWSweep"); // Remark the sweep and dihedral of positioning  can be view has extrinsic rotation Z then X
+    setWing("W9_BWSweep"); // Remark: The sweep and dihedral of positioning can be viewed has extrinsic rotation around Z and X afterwards
     EXPECT_NEAR(wing->GetDihedral(0), 20, 0.0001);
 
-    // the wing is describe in the negative Y direction
+    // The wing is described in negative Y direction
     // -> in the case to get the sweep angle, we need to take care of "mirroring the wing" prior to the computation
     setWing("W10_Reverse");
     EXPECT_NEAR(wing->GetDihedral(0), 0, 0.0001);
@@ -335,7 +335,7 @@ TEST_F(creatorWing, MultipleWings_GetDihedral)
     setWing("W13_EmptyWing");
     EXPECT_NEAR(wing->GetDihedral(0.5), 0, 0.0001);
 
-    // wing with a dihedral that change depending the input chord value
+    // wing with a dihedral that changes depending on the input chord value
     setWing("W14_ChaDih");
     EXPECT_NEAR(wing->GetDihedral(0), 45, 0.0001);
     EXPECT_NEAR(wing->GetDihedral(1), 36.87, 0.01);
@@ -395,8 +395,8 @@ TEST_F(creatorWing, MultipleWings_SetRootLEPosition)
 
     setWing("W13_EmptyWing");
     newRootPosition = tigl::CTiglPoint(3, 4, 5);
-    wing->SetRootLEPosition(newRootPosition); // just check if no excpetion is throw
-    // In the case of a empty wing, the GetRootLEPosition always return (0,0,0)
+    wing->SetRootLEPosition(newRootPosition); // just check whether no exception is thrown
+    // In the case of an empty wing, the GetRootLEPosition always returns (0,0,0)
 
     setWing("W15_ShiAir");
     newRootPosition = tigl::CTiglPoint(3, 4, 5);
@@ -749,7 +749,7 @@ TEST_F(creatorWing, MultipleWings_SetAreaKeepSpan )
     oldRootLE = wing->GetRootLEPosition();
     wing->SetAreaKeepSpan(newArea);
     EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
-    // we allow un bit more tolerance because the profile is in the span direction and we scale it
+    // We allow for a little larger tolerance because the profile is in the span direction and we scale it
     EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance + 0.5);
     EXPECT_FALSE( fabs( oldAR - wing->GetAspectRatio() )  < tolerance );
     EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
@@ -924,7 +924,8 @@ TEST_F(creatorWing, MultipleWings_SetARKeepSpan)
     oldArea = wing->GetReferenceArea();
     oldRootLE = wing->GetRootLEPosition();
     wing->SetARKeepSpan(newAR);
-    // here the aspect ratio is not exactly set to the value because the profiles are scaled and so the span change a bit
+    // Here the aspect ratio is not exactly set to the value because the profiles are scaled.
+    // So, the span changes a bit
     EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance + 0.1);
     EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance + 0.1);
     EXPECT_FALSE( fabs(wing->GetReferenceArea() - oldArea) < tolerance );
@@ -1024,7 +1025,7 @@ TEST_F(creatorWing, MultipleWings_CreateSections)
     EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.001));
 
 
-    setWing("W9_BWSweep"); // OK but since the two section have a 180 degree rotation the result is strange
+    setWing("W9_BWSweep"); // OK. But since the two sections have a 180 degree rotation the result is strange
     wing->CreateNewConnectedElementAfter("W9_BWSweep_Sec1_El1");
     saveInOutputFile();
 
@@ -1099,7 +1100,7 @@ TEST_F(creatorWing, D250_DeleteSection )
     expectedNewUidsOrder.push_back("wing_midKink_Elem1");
     expectedNewUidsOrder.push_back("wing_outerKink_Elem1");
     expectedNewUidsOrder.push_back("wing_tip_Elem1");
-    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // doble element for this section
+    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // double element for this section
     expectedNewUidsOrder.push_back("wing_winglet_tip_Elem1");
     for (int i = 0; i < expectedNewUidsOrder.size(); i++) {
         EXPECT_EQ(expectedNewUidsOrder.at(i), orderedUids.at(i) );
@@ -1115,7 +1116,7 @@ TEST_F(creatorWing, D250_DeleteSection )
     expectedNewUidsOrder.push_back("wing_midKink_Elem1");
     expectedNewUidsOrder.push_back("wing_outerKink_Elem1");
     expectedNewUidsOrder.push_back("wing_tip_Elem1");
-    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // doble element for this section
+    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // double element for this section
     expectedNewUidsOrder.push_back("wing_winglet_tip_Elem1");
     for (int i = 0; i < expectedNewUidsOrder.size(); i++) {
         EXPECT_EQ(expectedNewUidsOrder.at(i), orderedUids.at(i) );
@@ -1131,7 +1132,7 @@ TEST_F(creatorWing, D250_DeleteSection )
     expectedNewUidsOrder.push_back("wing_midKink_Elem1");
     expectedNewUidsOrder.push_back("wing_outerKink_Elem1");
     expectedNewUidsOrder.push_back("wing_tip_Elem1");
-    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // doble element for this section
+    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // double element for this section
     for (int i = 0; i < expectedNewUidsOrder.size(); i++) {
         EXPECT_EQ(expectedNewUidsOrder.at(i), orderedUids.at(i) );
     }

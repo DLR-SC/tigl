@@ -33,13 +33,13 @@ class TIGLViewerNewFileDialog;
 /**
  * @brief This Dialog is used to create a new file based on a template.
  *
- * When the dialog is executed, we first show every available templates.
- * (The available templates are simply the cpacs files contains in the
- * template directory of TIGLViewerSettings class.)
- * Then, when the user select a template, the template file is copied
+ * When the dialog is executed, we first show every available template.
+ * (The available templates are simply the cpacs files contained in the
+ * template directory of the TIGLViewerSettings class.)
+ * Then, when the user selects a template, the template file is copied
  * and the dialog is closed. The copied file will have the extension ".temp".
- * Once the dialog is closed, the new created filename can be return calling
- * the "getNewFileName" function. If the user reject the dialog or an
+ * Once the dialog is closed, the new created filename can be returned calling
+ * the "getNewFileName" function. If the user rejects the dialog or an
  * error occurs during the creation of the file, the filename will be "".
  *
  */

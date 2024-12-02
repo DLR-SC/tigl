@@ -48,7 +48,7 @@ QString SymmetryComboBoxWidget::TiglSymmetryAxisToQString(TiglSymmetryAxis symme
     case TiglSymmetryAxis::TIGL_NO_SYMMETRY:
         return QString("no-symmetry");
     default:
-        throw tigl::CTiglError("Unexpect symmetry axis, if a new symmetry enum was added, please update this class.");
+        throw tigl::CTiglError("Unexpected symmetry axis! If a new symmetry enum was added, please update this class.");
     }
 }
 
@@ -67,7 +67,7 @@ TiglSymmetryAxis SymmetryComboBoxWidget::QStringToTiglAxis(QString symmetry)
         return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
     }
     else {
-        LOG(ERROR) << "SymmetryComboBoxWidget::QStringToTiglAxis: Unexpect symmetry axis given as input.";
+        LOG(ERROR) << "SymmetryComboBoxWidget::QStringToTiglAxis: Unexpected symmetry axis given as input.";
         return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
     }
 }

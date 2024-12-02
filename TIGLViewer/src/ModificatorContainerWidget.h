@@ -37,13 +37,13 @@ class ModificatorContainerWidget;
 }
 
 /**
- * @brief Container for the the spezialized modificator widgets.
+ * @brief Container for the spezialized modificator widgets.
  *
- * This class holds the specialized modificator widget as the Transformation widget,
+ * This class keeps track of the specialized modificator widgets as the Transformation widget,
  * the Wing widget, the Fuselage widget ...
- * Every moment there is only one modificator widget displayed based on the element
+ * At any given time, there is only one modificator widget displayed based on the element
  * selected in the CPACS tree.
- * This class has function to set a particular modificator widget and to connect the
+ * This class has functions to set a particular modificator widget and to connect the
  * commit and cancel button to this particular widget.
  * For example, the function "setWingModificator" will set the wing modificator
  * with the value passed as argument and display the wing widget. Then, when the commit
@@ -79,8 +79,8 @@ public:
     void setElementModificator(tigl::CTiglSectionElement& element);
     void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
     void setSectionsModificator(tigl::CreateConnectedElementI& conntedElementI);
-    // for positioning we need two different call for wing and for fuselage, otherwise we manage not to invalidate the
-    // associate wing or fuselage
+    // for positioning, we need two different calls for wing and for fuselage. Otherwise, we miss to invalidate the
+    // associated wing or fuselage
     void setPositioningModificator(tigl::CCPACSWing& wing, tigl::CCPACSPositioning& positioning);
     void setPositioningModificator(tigl::CCPACSFuselage& fuselage, tigl::CCPACSPositioning& positioning);
 

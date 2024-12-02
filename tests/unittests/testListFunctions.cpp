@@ -87,13 +87,13 @@ TEST(ListFunctions, GetElementInBetween)
     EXPECT_EQ(inBetween.size(), 2 );
     EXPECT_EQ(inBetween[0], "asdfg");
 
-    // one element not there cases
+    // Observe the cases, when one element is not existent
     inBetween = tigl::ListFunctions::GetElementsInBetween(list, "qwert", "fsdfa" );
     EXPECT_EQ(inBetween.size(), 0);
     inBetween = tigl::ListFunctions::GetElementsInBetween(list, "fsadf", "yxcvb" );
     EXPECT_EQ(inBetween.size(), 0);
 
-    // twice the same element case
+    // Observe the case, when the same element appears twice the same
     inBetween = tigl::ListFunctions::GetElementsInBetween(list, "yxcvb", "yxcvb" );
     EXPECT_EQ(inBetween.size(), 1);
     EXPECT_EQ(inBetween[0], "yxcvb");

@@ -228,13 +228,13 @@ QModelIndex CPACSAbstractModel::getAircraftModelIndex()
             model = models[0];
         }
         else if (models.size() > 1) {
-            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There was multiple models found in the "
+            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There were multiple models found in the "
                             "aircraft, the first one was chosen."
                          << std::endl;
             model = models[0];
         }
         else if (models.size() == 0) {
-            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There was no models found in the "
+            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There were no models found in the "
                             "aircraft."
                          << std::endl;
         }

@@ -94,7 +94,7 @@ void ModifyTiglObject::initialize()
     }
     catch (const tixi::TixiError& e) {
         QString errMsg =
-            "ModifyTiglObject::initialize() Something go wrong during exporting the file from tixi handler. "
+            "ModifyTiglObject::initialize() Something went wrong during exporting the file from tixi handler. "
             "Tixi error message: \"" +
             QString(e.what()) + "\". The file is not saved!";
         throw tigl::CTiglError(errMsg.toStdString());
@@ -109,7 +109,7 @@ void ModifyTiglObject::initialize()
     }
     catch (const tixi::TixiError& e) {
         QString errMsg =
-            "ModifyTiglObject::initialize() Something go wrong during exporting the file from tixi handler. "
+            "ModifyTiglObject::initialize() Something went wrong during exporting the file from tixi handler. "
             "Tixi error message: \"" +
             QString(e.what()) + "\". The file is not saved!";
         throw tigl::CTiglError(errMsg.toStdString());

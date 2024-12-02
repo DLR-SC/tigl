@@ -32,11 +32,11 @@
 #include "UniquePtr.h"
 
 /**
- * This class manage available profiles.
- * Basically there is two places where profiles can be stored, in current CPACS file (configuration profiles)
+ * This class manages available profiles.
+ * Basically there are two places where profiles can be stored: In current CPACS file (configuration profiles)
  * and in the local profileDB file (local profiles).
- * This class merge the profiles of this two places into a unique interface and can transfer profiles
- * from one place to a the other.
+ * This class merges the profiles of these two places into a unique interface and can transfer profiles
+ * from one place to another.
  * @remark The local profileDB file is a file that contains only the CPACS "profiles" section.
  *
  */

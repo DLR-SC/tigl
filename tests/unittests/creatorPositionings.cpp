@@ -138,8 +138,8 @@ TEST_F(creatorPositionings, GetPositioningTransformation)
     tE = cElement->GetTotalTransformation().GetTranslation();
     EXPECT_TRUE(tE.isNear(tigl::CTiglPoint(2.2,0,0))); // -0.5 + 2 + 0.7
 
-    // positionings lives in fuselage or wing space (the wing or fuselage transformation is not applied on it)
-    // the positioning take only positioning into account also for the from section position
+    // positionings live in fuselage or wing space (the wing or fuselage transformation is not applied to them)
+    // The positioning only takes positioning into account also for the from section position
     m = positionings.GetPositioningTransformation("D150_Fuselage_1Section3ID");
     t = m.GetTranslation();
     EXPECT_TRUE(t.isNear(tigl::CTiglPoint(2.5,1,0), 0.0001));

@@ -16,7 +16,7 @@ __Features of CPACSCreator__
  * Creation of screen shots
  * Conversion of geometries into standard CAD file formats
  * Conversion into mesh formats such as STL, VTK, and COLLADA (for Blender rendering)
- * A powerful scripting console that allows automatizing typical workflows, such as creating screen shots  
+ * A powerful scripting console that allows automated typical workflows, such as creating screen shots  
 or making some debug plots.
  * CPACS specific:
   * Display single CPACS entities such as wings, fuselages, profiles and guide curves
@@ -41,22 +41,22 @@ be move around or closed. To close or activate the widgets use the shortcut or g
 @image html images/creator-gui-explained.png "Main widow and widgets of CPACScreator"
 
 @subsection scene The scene
-The scene display the 3D tigl object. You can chose which object you wnat to draw in Draw menu. 
-Remark that no modification on the object can be performed form the scene. The scene is only a display interface.
+The scene displays the 3D tigl object. You can choose which object you want to draw in Draw menu. 
+Remark: No modification on the object can be performed from the scene. The scene is only a display interface.
 
 @subsection cpcacstree_view The CPACS tree view
-The CPACS tree view show the CPACS tree structure. When you click on a element in the tree, the correct editor 
-widget is activated. By default the tree view widget filter the objects to display only the most import objects. 
-You can see all the CPACS objects by click on "Expert view" mode on the top of the tree view widget.
+The CPACS tree view shows the CPACS tree structure. When you click on an element in the tree, the correct editor 
+widget is activated. By default the tree view widget filters the objects to display only the most import objects. 
+You can see all the CPACS objects by clicking on "Expert view" mode at the top of the tree view widget.
 You can also filter the tree by some UID or CPACS type be typing in the line next to the "Expert view" checkbox.
 
 
 @subsection edtior_widget The Editor widget
-The editor widget displayed the parameters that can be modified for the object selected in the tree view. 
+The editor widget displays the parameters that can be modified for the object selected in the tree view. 
 
 
 @subsection console The console
-A page is dedicated to the console please visit @subpage gui_console "this page" for mor information
+A page is dedicated to the console: Please visit @subpage gui_console "this page" for further information
 
 
 

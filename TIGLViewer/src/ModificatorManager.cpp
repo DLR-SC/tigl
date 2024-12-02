@@ -57,7 +57,7 @@ void ModificatorManager::setCPACSConfiguration(TIGLViewerDocument* newDoc)
     modificatorContainerWidget->setNoInterfaceWidget();
     profilesDB.cleanConfigProfiles();
     if (configurationIsSet()) {
-        // when doc is destroy this connection is also destroy
+        // when doc is destroyed, this connection is also destroyed
         connect(doc, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), this, SLOT(updateTree()));
         profilesDB.setConfigProfiles(doc->GetConfiguration().GetProfiles());
     }
@@ -101,8 +101,8 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         modificatorContainerWidget->setWingsModificator(wings);
     }
     else if (item->getType() == "element") {
-        // we need first to determine if this is a section element or a fuselage element
-        // the we can retrieve the CTiglElement interface that manage the both case.
+        // first, we need to determine whether this is a section or a fuselage element
+        // then, we can retrieve the CTiglElement interface that manages the both cases.
         tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
         tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
         tigl::CTiglSectionElement* sectionElement = nullptr;
@@ -243,7 +243,7 @@ void ModificatorManager::standardize(QString uid, bool useSimpleDecomposition)
     }
     else {
         LOG(ERROR) << " ModificatorManager::standardize: uid is not of type fuselage or wing. Only fuselage or wing "
-                      "can be standardize for the moment!";
+                      "can be standardized at the moment!";
     }
     createUndoCommand();
 }

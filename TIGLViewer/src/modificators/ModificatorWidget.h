@@ -23,16 +23,16 @@
 
 /**
  * Abstract class for modificator widget.
- * A Modificator widget set the interface for a particular cpacs element.
- * For example the wing modificator widget will hold the high level interface to
- * modify the wing. Each modificator widgets will hold a Tigl object as the
- * CCPACSWing, it retrieve its information and display it. Each modificator
- * widgets need to implement an "apply" function that will that the values from
- * its GUI and set it into the tigl object. Each modificator widgets need to
- * implement an "reset" function that will retrieve the data from its tigl
- * object and display it in its GUI.
- * @remark The function to set the tigl object need to be implemented in the
- * derivative class.
+ * A Modificator widget sets the interface for a particular cpacs element.
+ * For example, the wing modificator widget will hold the high level interface to
+ * modify the wing. Each modificator widget will hold a Tigl object as the
+ * CCPACSWing, retrieve its information and display it. Each modificator
+ * widget needs to implement an "apply" function that retrieves the values from
+ * its GUI and sets it into the tigl object. Each modificator widget also needs to
+ * implement a "reset" function that retrieves the data from its tigl
+ * object and displays it in its GUI.
+ * @remark The function to set the tigl object needs to be implemented in the
+ * derived class.
  *
  */
 class ModificatorWidget : public QWidget
@@ -50,7 +50,7 @@ public:
     virtual void reset();
 
    /**
-    * Check if some modifications was performed:
+    * Check if some modification was performed:
     * if yes -> apply it on the tigl object (need to write in tixi memory)
     * if no -> the value are reset from the tigl object
     * @return true if some modification was done -> need to write in tixi memory, otherwise return false
@@ -61,8 +61,8 @@ protected:
     double precision;
     /**
    * Helper function to evaluate if a change occurs.
-   * The values stored by the GUI can have some rounding that will create false
-   * positif if this function is not used.
+   * The values stored by the GUI may have some rounding errors that will create false
+   * positives if this function is not used.
    * @param a
    * @param b
    * @return true if the abs(a-b) < precision

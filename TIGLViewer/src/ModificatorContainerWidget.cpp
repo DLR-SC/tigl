@@ -32,10 +32,10 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
 
     connect(ui->cancelButton, SIGNAL(pressed()), this, SLOT(applyCurrentCancellation()));
 
-    // For fuselageS, the modificator create a dialog when the click on "add new fuselage" button,
+    // When pressing the button showing "add new fuselage", the modificator creates a dialog for fuselages.
     // so the mechanism is slightly different as for other modificators.
     // The dialog perform some modifications without that the apply or cancel button is pressed.
-    // Therefor, fuselageModificator inform us when a undoCommand is required via a signal.
+    // Therefore, fuselageModificator informs when a undoCommand is required via a signal.
     connect(ui->fuselagesModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
     // same for sectionsModificator
     connect(ui->sectionsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );

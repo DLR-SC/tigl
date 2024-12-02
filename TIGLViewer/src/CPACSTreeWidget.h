@@ -32,18 +32,17 @@ class CPACSTreeWidget;
 /**
  * @brief Main class to manage the tree view interface.
  *
- * It holds the cpcr::CPACSTree that contains the cpacs structure of the open
- * file . It holds the QTreeView that display the tree in the GUI. It holds the
- * CPACSFilterModel that prepare the CPACSTree for the QTreeView. It holds the
- * QItemSelectionModel that emit a signal when a new element is selected in the
- * QTreeView. It holds QLineEdit and QCheckBox to filter and search in the tree.
+ * It holds
+ *      cpcr::CPACSTree containing the cpacs structure of the open file,
+ *      QTreeView that displays the tree in the GUI,
+ *      CPACSFilterModel that prepares the CPACSTree for the QTreeView,
+ *      QItemSelectionModel emitting a signal when a new element is selected in the QTreeView and
+ *      QLineEdit and QCheckBox to filter and search in the tree.
  *
  * The goal of this class is to articulate all the previous components together.
- * It has one function to display a new tree based on a TixiHandle.
- * It has one function to clear the tree.
- * It has one function to update the tree based on current TixiHandle.
- * It emits a signal when a new element in the tree is selected.
- * It connect the filter option of the cpacsFilterModel
+ * It implements functions to display a new tree based on a TixiHandle, to clear the tree and
+ * to update it based on current TixiHandle.
+ * It emits a signal when a new element in the tree is selected and connects the filter option of the cpacsFilterModel
  *
  *
  * @author Malo Drougard
@@ -77,7 +76,7 @@ public:
    * Build the new tree based on the TixiHandle and update the model and the
    * display
    * @param handle : the TixiHandle used to retrieve the cpacs data
-   * @param root :where the tree need to start (xpath)
+   * @param root :where the tree needs to start (xpath)
    */
     void displayNewTree(TixiDocumentHandle handle, std::string root);
 

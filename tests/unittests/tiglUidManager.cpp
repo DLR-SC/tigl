@@ -403,7 +403,7 @@ namespace {
     {
         EXPECT_EQ("AlreadyUniqueUID", uidMgr->MakeUIDUnique("AlreadyUniqueUID"));
         EXPECT_EQ("D150_VAMP_W1_Sec3_Elem1U1", uidMgr->MakeUIDUnique("D150_VAMP_W1_Sec3_Elem1"));
-        // create a existing prefixed UID
+        // Create an existing prefixed UID
         uidMgr->ResolveObject<tigl::CCPACSWingSectionElement>("D150_VAMP_W1_Sec2_Elem1")
             .SetUID("D150_VAMP_W1_Sec3_Elem1U1");
         EXPECT_EQ("D150_VAMP_W1_Sec3_Elem1U2", uidMgr->MakeUIDUnique("D150_VAMP_W1_Sec3_Elem1"));

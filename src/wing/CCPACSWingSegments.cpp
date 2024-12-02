@@ -165,7 +165,7 @@ void CCPACSWingSegments::ReorderSegments()
         tigl::follow_sort(GetSegments().begin(), GetSegments().end(), segment_follows);
     }
     catch (std::invalid_argument) {
-        throw CTiglError("Wing segments not continous.");
+        throw CTiglError("CCPACSWingSegments::ReorderSegments: The wing segments are not continuous.");
     }
 }
 

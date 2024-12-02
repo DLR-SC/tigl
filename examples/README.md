@@ -68,7 +68,7 @@ These allow for example:
    - Use, modify or visualize these shapes directly with PythonOCC
    - Use geometrical algorithms for own projects, such as Gordon's curve network interpolation method
 
-The installation of this new Python API differ from the installation for the other languages.
+The installation of this new Python API differs from the installation for the other languages.
 The easiest way to install TiGL 3 with the internal python api support is to use the
 amazing [conda](http://conda.pydata.org/miniconda.html) package manager. To install, type
 
@@ -110,6 +110,6 @@ To compile the Java Demo (JavaDemo.java), you have to link against the following
   - jna and jna-platform (Sun Java Native Access)
   - tigl (the JAR file can be found in TIGL_INSTALL_DIR/share/tigl3/java)
 	
-Under Windows it is important to chose the right TiGL library matching to the Java Virtual Machine. 
+Under Windows it is important to choose the right TiGL library matching to the Java Virtual Machine. 
 That means if you use a 64 Bit JVM, use the TiGL 64 bit library and vice versa.
-	
+

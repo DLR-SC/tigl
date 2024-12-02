@@ -28,8 +28,8 @@ class CTiglPointWidget;
 }
 
 /**
- * This widget display a hold a CTiglPoint.
- * It's meant to be include in some bigger widget.
+ * This widget displays and holds a CTiglPoint.
+ * It is meant to be included in some larger widget.
  */
 class CTiglPointWidget : public QWidget
 {

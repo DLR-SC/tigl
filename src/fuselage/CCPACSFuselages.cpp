@@ -93,7 +93,7 @@ CCPACSFuselage& CCPACSFuselages::CreateFuselage(const std::string& fuselageUID, 
     CTiglUIDManager& uidManager = GetUIDManager();
 
     // check if the fuselage uid is valid
-    // We only make this check for the fuselage uid the other uid will be create and be unique by construction
+    // This check is only applied for the fuselage uid. The other uid will be created and is unique by construction
     bool uidIsAlreadyPresent = uidManager.IsUIDRegistered(fuselageUID);
     if (uidIsAlreadyPresent) {
         throw CTiglError("Impossible to create a fuselage with the uid \"" +

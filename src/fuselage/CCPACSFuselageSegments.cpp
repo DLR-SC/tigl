@@ -269,12 +269,12 @@ CCPACSFuselageSegment& CCPACSFuselageSegments::SplitSegment(const std::string& s
     return additionalSegment;
 }
 
-CCPACSFuselageSegment& CCPACSFuselageSegments::GetSegmentFromTo(const std::string &fromElemUID,
+CCPACSFuselageSegment& CCPACSFuselageSegments::GetSegmentFromTo(const std::string &fromElementUID,
                                                                 const std::string toElementUID)
 {
 
     for (int i = 0; i < m_segments.size(); i++) {
-        if ( m_segments[i]->GetFromElementUID() == fromElemUID && m_segments[i]->GetToElementUID() == toElementUID ) {
+        if ( m_segments[i]->GetFromElementUID() == fromElementUID && m_segments[i]->GetToElementUID() == toElementUID ) {
             return GetSegment(i+1);
         }
 

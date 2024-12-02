@@ -67,9 +67,9 @@ public:
      * from element.
      * @param sectionUID: The section that will be modified
      * @param newPosition: The new final position given by positionings for this section.
-     * @param moveDependentPositionings: If true the sections depending of the positioning of sectionUID will also move.
-     * If false, the sections depending of this will stay at the same place, this mean that the function will update
-     * the parameters of the depending positonings.
+     * @param moveDependentPositionings: If true, the sections depending on the positioning of sectionUID will also move.
+     * If false, the sections depending on this will stay at the same place. That means that the function will update
+     * the parameters of the dependent positonings.
      * @remark No verification is performed on the section UID. So, if the section is not present, a dirty useless
      * positioning will be created.
      */

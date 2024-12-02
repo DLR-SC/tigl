@@ -277,19 +277,19 @@ public:
 
     // Returns the wingspan of the wing
     // The span is the width of the wing in the major wing direction.
-    // Remark, if the wing is mirrored (with a symmetry axis), the two wings are take into account.
+    // Remark, if the wing is mirrored (with a symmetry axis), the two wings are taken into account.
     // Otherwise, the width of the unique wing is returned.
-    // Remark: The span is computed using bounding Box so, the result may no be accurate.
+    // Remark: The span is computed using a bounding box. So, the result may no be completely accurate.
     TIGL_EXPORT double GetWingspan() const;
 
     // Returns the half span of the wing
     // If the wing is not mirrored, return the whole width.
-    // Remark: The span is computed using bounding Box. So, the result may no be accurate.
+    // Remark: The span is computed using a bounding box. So, the result may no be completely accurate.
 
     /**
      * Returns the half span of the wing
      * If the wing is not mirrored, return the whole width.
-     * @remark The span is computed using bounding Box. So, the result may no be exactly correct
+     * @remark The span is computed using a bounding box. So, the result may no be completely accurate.
      * @return half span of the wing
      */
     TIGL_EXPORT double GetWingHalfSpan();
@@ -412,7 +412,7 @@ public:
 
     /**
      * Scale the wing uniformly.
-     * The root leading point stay at the same position.
+     * The root leading point stays at the same position.
      * @param scaleF the scale factor
      */
     TIGL_EXPORT void Scale(double scaleF);
@@ -429,7 +429,7 @@ public:
      /**
      * Set the wing reference area while keeping the span constant.
      * To obtain the wanted area each airfoil is scaled by the same factor.
-     * The leading point of each airfoil stay at the same position.
+     * The leading point of each airfoil stays at the same position.
      * @remark The aspect ratio will change.
      * @remark The tip airfoil is also scaled, so it is possible that the the span change slighly if
      * the tip airfoil is not parallel to the deep axis.
@@ -481,8 +481,8 @@ public:
     /**
      * Create a new section, a new element and connect the element to the "startElement".
      * The new element is placed "after" the start element.
-     * If there is already a element after the start element, we split the existing segment and insert the new element
-     * between the the two elements.
+     * If there is already an element after the start element, we split the existing segment and insert the new element
+     * between the two elements.
      *
      * @param startElementUID
      */
@@ -491,8 +491,8 @@ public:
     /**
      * Create a new section, a new element and connect the element to the "startElement".
      * The new element is placed "Before" the start element.
-     * If there is already a element before the start element, we split the existing segment and insert the new element
-     * between the the two elements.
+     * If there is already an element before the start element, we split the existing segment and insert the new element
+     * between the two elements.
      *
      * @param startElementUID
      */
@@ -509,7 +509,7 @@ public:
 
     /**
      * Delete the connected element.
-     * This mean that the section containing the element is delete and the segment associated with this element
+     * This means that the section containing the element is deleted and the segments associated with this element
      * are either deleted or updated.
      * @param ElementUID
      */

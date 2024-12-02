@@ -74,7 +74,7 @@ public:
     TIGL_EXPORT virtual  std::vector<std::string> GetOrderedConnectedElement() = 0;
 
     /**
-     * Delete the connected element tacking care of removing the section and removing or updating the segments.
+     * Delete the connected element taking care of removing the section and removing or updating the segments.
      */
     TIGL_EXPORT virtual  void DeleteConnectedElement(std::string ElementUID) = 0 ;
 

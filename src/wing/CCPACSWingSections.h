@@ -46,8 +46,8 @@ public:
     /**
      * Create a new section and a new element with the given profile uid.
      * All uids are derived from the section uid.
-     * @remark This function differs form the the "AddSection" function by the fact that this function take care of
-     * creating an element and try to set all possible  parameters.
+     * @remark This function differs form the "AddSection" function in a way that this function takes care of
+     * creating an element and tries to set all possible parameters.
      */
     TIGL_EXPORT CCPACSWingSection& CreateSection(const std::string& sectionUID, const std::string& profileUID);
 };

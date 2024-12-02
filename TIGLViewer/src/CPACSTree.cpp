@@ -76,7 +76,7 @@ void CPACSTree::createChildrenRecursively(CPACSTreeItem& parent)
 
     int tixiRet = -1;
 
-    // find out with type of children this elment have
+    // find out which type of children this element has
     char* childType = NULL;
     std::list<std::string> types;
     for (int i = 1; i <= childrenCount; i++) {
@@ -91,7 +91,7 @@ void CPACSTree::createChildrenRecursively(CPACSTreeItem& parent)
     }
     types.unique();
 
-    // for each children create the associate CPACSItem and call this function
+    // for each child, create the associated CPACSItem and call this function
     std::string newXPath;
     int counterChildrenOfSameType = 0;
     for (std::string currentType : types) {

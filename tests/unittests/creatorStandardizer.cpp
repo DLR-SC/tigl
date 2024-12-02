@@ -120,7 +120,7 @@ TEST_F(creatorStandardizer, standardizeFuselage)
     saveInOutputFile();
     tigl::CCPACSFuselage& fuselage = config->GetFuselage("SimpleFuselage");
 
-    // save center to verify if they do not move
+    // Save center to verify whether it does not move
     std::vector<std::string> elementUIDs = fuselage.GetOrderedConnectedElement();
     std::map<std::string, tigl::CTiglPoint> centers;
     for (int i = 0; i < elementUIDs.size(); i++) {
@@ -131,14 +131,14 @@ TEST_F(creatorStandardizer, standardizeFuselage)
 
     saveInOutputFile();
     elementUIDs = fuselage.GetOrderedConnectedElement();
-    // verify that each element was not moved
+    // Verify that each element was not moved
     for (int i = 0; i < elementUIDs.size(); i++) {
         EXPECT_TRUE((centers.at(elementUIDs.at(i))).isNear(GetCElementOf(elementUIDs.at(i))->GetCenter()));
     }
-    // verfying that the translation of the fuselage is stored in the fuselage transformation and not in positioning or others
+    // Verifying that the translation of the fuselage is stored in the fuselage transformation and not in positioning or others
     tigl::CTiglPoint translationFuselage = fuselage.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationFuselage.isNear(fuselage.GetNoseCenter()));
-    // verfying that positonining has the correct structure:
+    // Verifying that positonining has the correct structure:
     std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec =
         fuselage.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec.size(), 3);
@@ -157,7 +157,7 @@ TEST_F(creatorStandardizer, standardizeFuselageSimpleDecomposition)
     saveInOutputFile();
     tigl::CCPACSFuselage& fuselage = config->GetFuselage("SimpleFuselage");
 
-    // save center to verify if they do not move
+    // Save center to verify whether it does not move
     std::vector<std::string> elementUIDs = fuselage.GetOrderedConnectedElement();
     std::map<std::string, tigl::CTiglPoint> centers;
     for (int i = 0; i < elementUIDs.size(); i++) {
@@ -168,14 +168,14 @@ TEST_F(creatorStandardizer, standardizeFuselageSimpleDecomposition)
 
     saveInOutputFile();
     elementUIDs = fuselage.GetOrderedConnectedElement();
-    // verify that each element was not moved
+    // Verify that each element was not moved
     for (int i = 0; i < elementUIDs.size(); i++) {
         EXPECT_TRUE((centers.at(elementUIDs.at(i))).isNear(GetCElementOf(elementUIDs.at(i))->GetCenter()));
     }
-    // verfying that the translation of the fuselage is stored in the fuselage transformation and not in positioning or others
+    // Verifying that the translation of the fuselage is stored in the fuselage transformation and not in positioning or others
     tigl::CTiglPoint translationFuselage = fuselage.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationFuselage.isNear(fuselage.GetNoseCenter()));
-    // verfying that positonining has the correct structure:
+    // Verifying that positonining has the correct structure:
     std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec =
         fuselage.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec.size(), 3);
@@ -188,7 +188,7 @@ TEST_F(creatorStandardizer, standardizeFuselageSimpleDecomposition)
 
     tigl::CCPACSFuselage& fuselage2 = config->GetFuselage("FuselageShearingSection");
 
-    // save center to verify if they do not move
+    // Save center to verify whether it does not move
     elementUIDs = fuselage2.GetOrderedConnectedElement();
     centers.clear();
     for (int i = 0; i < elementUIDs.size(); i++) {
@@ -201,14 +201,14 @@ TEST_F(creatorStandardizer, standardizeFuselageSimpleDecomposition)
     saveInOutputFile();
 
     elementUIDs = fuselage2.GetOrderedConnectedElement();
-    // verify that each element was not moved
+    // Verify that each element was not moved
     for (int i = 0; i < elementUIDs.size(); i++) {
         EXPECT_TRUE((centers.at(elementUIDs.at(i))).isNear(GetCElementOf(elementUIDs.at(i))->GetCenter()));
     }
-    // verfying that the translation of the fuselage is stored in the fuselage transformation and not in positioning or others
+    // Verifying that the translation of the fuselage is stored in the fuselage transformation and not in positioning or others
     translationFuselage = fuselage2.GetTranslation();
     EXPECT_TRUE(translationFuselage.isNear(fuselage2.GetNoseCenter()));
-    //verfying that positonining has the correct structure:
+    //Verifying that positonining has the correct structure:
     std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec2 =
         fuselage2.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec2.size(), 3);
@@ -219,7 +219,7 @@ TEST_F(creatorStandardizer, standardizeFuselageSimpleDecomposition)
     EXPECT_EQ(*(posVec2.at(2)->GetFromSectionUID()), "FuselageShearingSection_1Section2ID");
     EXPECT_EQ(posVec2.at(2)->GetToSectionUID(), "FuselageShearingSection_1Section3ID");
 
-    // but the area is no more the same the fuselage has change its shape.
+    // but the area is no longer the same. The fuselage has changed its shape.
     EXPECT_FALSE(fabs(area - GetCElementOf(elementUIDs.at(0))->GetArea()) < 0.0000001);
 
     saveInOutputFile();
@@ -233,7 +233,7 @@ TEST_F(creatorStandardizer, standardizeWing)
     saveInOutputFile();
     tigl::CCPACSWing& wing = config->GetWing("W17_RotSec");
 
-    // save center to verify if they do not move
+    // Save center to verify whether it does not move
     std::vector<std::string> elementUIDs = wing.GetOrderedConnectedElement();
     std::map<std::string, tigl::CTiglPoint> centers;
     for (int i = 0; i < elementUIDs.size(); i++) {
@@ -244,14 +244,14 @@ TEST_F(creatorStandardizer, standardizeWing)
 
     saveInOutputFile();
     elementUIDs = wing.GetOrderedConnectedElement();
-    // verify that each element was not moved
+    // Verify that each element was not moved
     for (int i = 0; i < elementUIDs.size(); i++) {
         EXPECT_TRUE((centers.at(elementUIDs.at(i))).isNear(GetCElementOf(elementUIDs.at(i))->GetCenter()));
     }
-    // verfying that the translation of the wing is stored in the wing transformation and not in positioning or others
+    // Verifying that the translation of the wing is stored in the wing transformation and not in positioning or others
     tigl::CTiglPoint translationWing = wing.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationWing.isNear(wing.GetRootLEPosition()));
-    // verfying that positonining has the correct structure:
+    // Verifying that positonining has the correct structure:
     std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec =
         wing.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec.size(), 3);
@@ -266,7 +266,7 @@ TEST_F(creatorStandardizer, standardizeWing)
     centers.clear();
     elementUIDs.clear();
 
-    // save center to verify if they do not move
+    // Save center to verify whether it does not move
     elementUIDs = wing2.GetOrderedConnectedElement();
     for (int i = 0; i < elementUIDs.size(); i++) {
         centers[elementUIDs.at(i)] = GetCElementOf(elementUIDs.at(i))->GetCenter();
@@ -276,14 +276,14 @@ TEST_F(creatorStandardizer, standardizeWing)
 
     saveInOutputFile();
     elementUIDs = wing2.GetOrderedConnectedElement();
-    // verify that each element was not moved
+    // Verify that each element was not moved
     for (int i = 0; i < elementUIDs.size(); i++) {
         EXPECT_TRUE((centers.at(elementUIDs.at(i))).isNear(GetCElementOf(elementUIDs.at(i))->GetCenter()));
     }
-    // verfying that the translation of the wing is stored in the wing transformation and not in positioning or others
+    // Verifying that the translation of the wing is stored in the wing transformation and not in positioning or others
     translationWing = wing2.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationWing.isNear(wing2.GetRootLEPosition()));
-    // verfying that positonining has the correct structure:
+    // Verifying that positonining has the correct structure:
     std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec2 =
         wing2.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec2.size(), 3);
@@ -303,7 +303,7 @@ TEST_F(creatorStandardizer, standardizeWingSimpleDecomposition)
     saveInOutputFile();
     tigl::CCPACSWing& wing = config->GetWing("W17_RotSec");
 
-    // save center to verify if they do not move
+    // Save center to verify whether it does not move
     std::vector<std::string> elementUIDs = wing.GetOrderedConnectedElement();
     std::map<std::string, tigl::CTiglPoint> centers;
     for (int i = 0; i < elementUIDs.size(); i++) {
@@ -314,14 +314,14 @@ TEST_F(creatorStandardizer, standardizeWingSimpleDecomposition)
 
     saveInOutputFile();
     elementUIDs = wing.GetOrderedConnectedElement();
-    // verify that each element was not moved
+    // Verify that each element was not moved
     for (int i = 0; i < elementUIDs.size(); i++) {
         EXPECT_TRUE((centers.at(elementUIDs.at(i))).isNear(GetCElementOf(elementUIDs.at(i))->GetCenter()));
     }
-    // verfying that the translation of the wing is stored in the wing transformation and not in positioning or others
+    // Verifying that the translation of the wing is stored in the wing transformation and not in positioning or others
     tigl::CTiglPoint translationWing = wing.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationWing.isNear(wing.GetRootLEPosition()));
-    // verfying that positonining has the correct structure:
+    // Verifying that positonining has the correct structure:
     std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec =
         wing.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec.size(), 3);
@@ -336,7 +336,7 @@ TEST_F(creatorStandardizer, standardizeWingSimpleDecomposition)
     centers.clear();
     elementUIDs.clear();
 
-    // save center to verify if they do not move
+    // Save center to verify whether it does not move
     elementUIDs = wing2.GetOrderedConnectedElement();
     for (int i = 0; i < elementUIDs.size(); i++) {
         centers[elementUIDs.at(i)] = GetCElementOf(elementUIDs.at(i))->GetCenter();
@@ -346,14 +346,14 @@ TEST_F(creatorStandardizer, standardizeWingSimpleDecomposition)
 
     saveInOutputFile();
     elementUIDs = wing2.GetOrderedConnectedElement();
-    // verify that each element was not moved
+    // Verify that each element was not moved
     for (int i = 0; i < elementUIDs.size(); i++) {
         EXPECT_TRUE((centers.at(elementUIDs.at(i))).isNear(GetCElementOf(elementUIDs.at(i))->GetCenter()));
     }
-    // verfying that the translation of the wing is stored in the wing transformation and not in positioning or others
+    // Verifying that the translation of the wing is stored in the wing transformation and not in positioning or others
     translationWing = wing2.GetTranslation(); // todo verify behavior with parent uid
     EXPECT_TRUE(translationWing.isNear(wing2.GetRootLEPosition()));
-    // verfying that positonining has the correct structure:
+    // Verifying that positonining has the correct structure:
     std::vector<tigl::unique_ptr<tigl::CCPACSPositioning>>& posVec2 =
         wing2.GetPositionings(tigl::CreateIfNotExistsTag()).GetPositionings();
     EXPECT_EQ(posVec2.size(), 3);

@@ -143,10 +143,10 @@ public:
     // Todo evalute the possiblity to rotate around the nose (simple fuselage case)
     TIGL_EXPORT void SetRotation(const CTiglPoint& newRotation);
 
-    // Gets the total length of this fuselage
+    // Get the total length of this fuselage
     TIGL_EXPORT double GetLength();
 
-    // Sets the total length of this fuselage. (The noise keeps its position.)
+    // Set the total length of this fuselage. (The noise keeps its position.)
     TIGL_EXPORT void SetLength(double newLength);
 
     // Return the maximal height of the fuselage

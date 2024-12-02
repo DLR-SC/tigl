@@ -31,9 +31,9 @@ namespace tigl
 {
 
 /**
- * This class is wrapper class for SectionElement (FuselageSectionElement and WingSectionElement).
- * It's goal is to simplify the access of all the transformations that are performed on a SectionElement.
- * Furthermore, it contain functions to compute and set useful information about the element,
+ * This class is a wrapper class for SectionElement (FuselageSectionElement and WingSectionElement).
+ * Its goal is to simplify the access of all the transformations that are performed on a SectionElement.
+ * Furthermore, it contains functions to compute and set useful information about the element,
  * such as: get/set the center of the profile, get/set the circumference of the profile
  */
 class CTiglSectionElement
@@ -55,8 +55,8 @@ public:
 
     /**
      * Set the profile UID used by this element.
-     * @remark Some parameters of this element can change as the center or the width. Especially , if the profile is not
-     * defined in the same way as the old one (Take a look a the creator standard to define profile).
+     * @remark Some parameters of this element can change as the center or the width. Especially, if the profile is not
+     * defined in the same way as the old one (Take a look at the creator standard on how to define profiles).
      * @param newProfileUID
      */
     TIGL_EXPORT virtual  void SetProfileUID(const std::string& newProfileUID) = 0;
@@ -148,16 +148,16 @@ public:
 
     /**
      *
-     * The normal angle is defined as the angle that bring the unit vector z of the profile form
+     * The normal angle is defined as the angle that shifts the unit vector z of the profile from
      * its conventional direction to its current direction. The angle is always counter-clockwise around the normal
      * direction and the normal is taken at the center of the section. 
-     * The conventional direction depends of of the profile type.
-     * If the profile type is fuselage, the standard direction is the the vector that line on the profile plane
-     * and end on the intersection of the line l, define by (x,0,1). If there is no intersection with the line l,
-     * we set the end of the vector by the intersection of the line l2, defined by (1,0,z)
-     * If the profile type is wing, the standard direction is the the vector that line on the profile plane
-     * and end on the intersection of the line l, define by (0,y,1). If there is no intersection with the line l,
-     * we set the end of the vector by the intersection of the line l2, defined by (0,1,z)
+     * The conventional direction depends on the profile type.
+     * If the profile type is fuselage, the standard direction is the vector that lies on the profile plane
+     * and ends on the intersection of the line l, defined by (x,0,1). If there is no intersection with the line l,
+     * we define the end of the vector by the intersection with the line l2, defined by (1,0,z).
+     * If the profile type is wing, the standard direction is the vector that lies on the profile plane
+     * and ends on the intersection of the line l, defined by (0,y,1). If there is no intersection with the line l,
+     * we define the end of the vector by the intersection with the line l2, defined by (0,1,z)
      *
      * @param referenceCS
      * @return
@@ -185,8 +185,8 @@ public:
 
     /**
      * Set the underlying CPACSTransformation of the positioning (P), section (S)  and element (E)
-     * such that the multiplication of the three transformations give the input transformation!
-     * Remark, the strength of this method is that we are sure that the decomposition in CCPACSTransformations are exact!!
+     * such that the multiplication of the three transformations results in the input transformation!
+     * Remark, the strength of this method is that we are sure that the decomposition in CCPACSTransformations is exact!
      * We use the "DecomposeTRSRS" of the CTiglTransformation class and we set a part of the decomposition in the
      * positioning, another part in the section CCPACSTransformation and another part in element CCPACSTransformation,
      * thus the limitation of decomposing the matrix in translation, rotation and scaling is hacked.
@@ -197,9 +197,9 @@ public:
     TIGL_EXPORT void SetPSETransformations(const CTiglTransformation &newTransformation);
 
      /**
-      * Same principle as SetPSETransformaions but the a simple polar decomposition is used instead of the TRSRS decomposition.
+      * Same principle as SetPSETransformations but a simple polar decomposition is used instead of the TRSRS decomposition.
       * The pro is that the value stored in the CPACSFile is more human readable.
-      * The con is that some times the transformation can not be decomposed equally and some information are loosed.
+      * The con is that sometimes the transformation can not be decomposed equally and some information is lost^.
       *
       * @param newTransformation
       * @param check, if true a warning is logged if the transformation can not be properly decomposed
@@ -226,22 +226,22 @@ protected:
     void SetElementAndSectionScalingToNoneZero();
 
     /**
-     * Get the rotation that move the profile to the XZ plane and the unit vector Z of the profile to (0,0,1).
+     * Get the rotation that moves the profile to the XZ plane and the unit vector Z of the profile to (0,0,1).
      *
      * @param referenceCS
-     * @return a CTiglTransformation that hold the rotation
+     * @return a CTiglTransformation that holds the rotation
      */
     TIGL_EXPORT CTiglTransformation GetRotationToXZPlane(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     /**
      * Return conventional direction for the unit vector Z of the profile.
-     * The conventional direction depends of of the profile type.
-     * If the profile type is fuselage, the standard direction is the the vector that line on the profile plane
-     * and end on the intersection of the line l, define by (x,0,1). If there is no intersection with the line l,
-     * we set the end of the vector by the intersection of the line l2, defined by (1,0,z)
-     * If the profile type is wing, the standard direction is the the vector that line on the profile plane
-     * and end on the intersection of the line l, define by (0,y,1). If there is no intersection with the line l,
-     * we set the end of the vector by the intersection of the line l2, defined by (0,1,z)
+     * The conventional direction depends on the profile type.
+     * If the profile type is fuselage, the standard direction is the vector that lies on the profile plane
+     * and ends on the intersection with the line l, defined by (x,0,1). If there is no intersection with the line l,
+     * we define the end of the vector by the intersection with the line l2, defined by (1,0,z).
+     * If the profile type is wing, the standard direction is the vector that lies on the profile plane
+     * and ends on the intersection with the line l, defined by (0,y,1). If there is no intersection with the line l,
+     * we define the end of the vector by the intersection of the line l2, defined by (0,1,z)
      *
      * @param referenceCS
      * @return

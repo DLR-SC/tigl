@@ -599,7 +599,7 @@ bool TIGLViewerWindow::saveFile(QString fileName)
         tixiContent = tixi::TixiExportDocumentAsString(tixiHandle);
     }
     catch (const tixi::TixiError& e) {
-        QString errMsg = "TIGLViewerWindow::saveFile() Something go wrong during exporting the file from tixi handler. "
+        QString errMsg = "TIGLViewerWindow::saveFile() Something went wrong during exporting the file from tixi handler. "
                          "Tixi error message: \"" +
                          QString(e.what()) + "\". The file is not saved!";
         displayErrorMessage(errMsg, "Tixi error");

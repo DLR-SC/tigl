@@ -40,15 +40,15 @@ public:
 
     void SetWing(CCPACSWing* wing);
 
-    // Returns true if the fuselage has a shape
-    // This mean that a list the fuselage is composed by a valid segment and thus is composed by two elements
+    // Returns true if the wing has a shape
+    // This means that the wing is composed by a valid segment and thus is composed by two elements
     bool HasShape() const;
 
     CTiglWingSectionElement* GetCTiglElementOfWing(const std::string& elementUID) const;
 
-    // Returns the major direction of the wing (correspond to the span direction)
-    // @Details: If a symmetry plan is set, the major direction is normal to the symmetry plan,
-    // otherwise, an heuristic is used to find out the best span axis candidate.
+    // Returns the major direction of the wing (corresponding to the span direction)
+    // @Details: If a symmetry plane is set, the major direction is orthogonal to the symmetry plan.
+    // Otherwise, a heuristic is used to find out the best span axis candidate.
     TiglAxis GetMajorDirection() const;
 
     // Returns the deep direction of the wing
@@ -59,7 +59,7 @@ public:
     // Returns the uid of the element that is the most distant of the root in the major wing direction
     std::string GetTipUID() const;
 
-    // Returns the uid of the root element (the element that start to build the wing)
+    // Returns the uid of the root element (the element that starts to build the wing)
     std::string GetRootUID() const;
 
     inline std::vector<std::string> GetElementUIDsInOrder() const

@@ -543,7 +543,7 @@ TEST_F(creatorCTiglSectionElement, SetWidth_MultipleFuselagesModel)
     cElement->SetWidth(newWidth);
     EXPECT_NEAR(newWidth, cElement->GetWidth(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
-    // we do not check the normal for this case, because the normal is not define clearly when there is a 0 scaling
+    // We do not check the normal in this case, because the normal is not defined properly when there is a 0 scaling
 
     // rescale the 0 case
     cElement = GetCElementOf("Fuselage_ETSection1IDElement1");
@@ -552,7 +552,7 @@ TEST_F(creatorCTiglSectionElement, SetWidth_MultipleFuselagesModel)
     cElement->SetWidth(newWidth);
     EXPECT_NEAR(newWidth, cElement->GetWidth(), 0.01);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(), 0.01));
-    // we do not check the normal for this case, because the normal is not define clearly when there is a 0 scaling
+    // We do not check the normal in this case, because the normal is not define properly when there is a 0 scaling
 
 
     cElement    = GetCElementOf("D150_Fuselage_3Section2IDElement1");
@@ -920,7 +920,7 @@ TEST_F(creatorCTiglSectionElement, Wing_GetChord_MultipleWingsModel)
     tigl::CTiglWingSectionElement* cElement = nullptr;
 
 
-    // The chord is define as the segement that goes from the leading edge to the trailing edge
+    // The chord is defined as the segement that is spanned from the leading edge to the trailing edge
     // (even if the airfoil is curved)
     cElement = GetWingCElementOf("W16_CurAir_Sec1_El1");
     // leading edge of the first element

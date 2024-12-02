@@ -35,17 +35,17 @@ class TIGLViewerWindow;
  *
  * This class holds three main components:
  * CCPACSConfiguration: that is the main tigl object to work with.
- * CPACSTreeWidget: that manage the tree interface.
- * ModificatorContainerWidget: that is the interface that holds the specialized modificator for
- * particular tigl object.
+ * CPACSTreeWidget: that manages the tree interface.
+ * ModificatorContainerWidget: that is the interface that holds the specialized modificator for a
+ * specific tigl object.
  *
  * To work with this class, first we need to set the CCPACSConfiguration. The
  * CPACSTreeView will be updated and the correct tree will be build and
  * displayed. Once the CPACSConfiguration is set, it will wait for a
- * "newSelectedTreeItem" signal. If a "newSelectedTreeItem" signal is emit, the
+ * "newSelectedTreeItem" signal. If a "newSelectedTreeItem" signal is emitted, the
  * "dispatch" function will be called. The dispatch function will look at the
- * new selected element and if the element has a associate ModificatorWidget, it
- * will set this particular ModificatorWidget by a call on the modificatorContainerWidget.
+ * new selected element and if the element has an associated ModificatorWidget, it
+ * will set this particular ModificatorWidget by a call of the modificatorContainerWidget.
  * The dispatch function will also call highlighting functions to show in the scene with
  * element can be currently edited.
  *

@@ -93,11 +93,11 @@ TEST_F(creatorFuselageHelper, getNoiseUID_MultipleFuselagesModel)
     setVariables("TestData/multiple_fuselages.xml");
 
     setFuselage("FuselageUnconventionalOrdering");
-    // simple reordering ( if the segment a are swap ) is supported : )
+    // simple reordering ( if the segments are swapped ) is supported
     std::string uid = fuselageHelper->GetNoseUID();
     ASSERT_EQ("D150_Fuselage_2Section1IDElement1", uid);
 
-    // todo "complex" reordering when FromUID to toUID are also swap is not supported, may not be a priority
+    // Todo: "complex" reordering when FromUID and toUID are also swapped is not supported, may not be a priority
     //setVariables("TestData/multiple_fuselages.xml", "FuselageUnconventionalOrderingExtrem");
 
     //uid = fuselage->GetNoseUID();

@@ -254,7 +254,7 @@ void TIGLViewerSettingsDialog::onBrowseTemplateDir()
 void TIGLViewerSettingsDialog::onBrowseProfilesDB()
 {
     QString newFile =
-        QFileDialog::getOpenFileName(this, "Choose a profile DB file. Remark, the profile DB file need to have the same "
+        QFileDialog::getOpenFileName(this, "Choose a profile DB file. Remark, the profile DB file needs to have the same "
                                            "structure as a CPACS \"profiles\" section and have .xml suffix.", _settings.profilesDBPath());
 
     if (!newFile.isEmpty()) {

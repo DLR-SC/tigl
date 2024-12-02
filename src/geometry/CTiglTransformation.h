@@ -138,9 +138,9 @@ public:
     // Decompose the Transformation into the five operations
     // scale1 first, rotate1 second (extr. Euler as defined in CPACS),
     // scale2 third, rotate2 fourth, translation fifth
-    // Remark, the decomposition is always exact, this means that the original matrix is founded if we apply this
+    // Remark, the decomposition is always exact. This means that the original matrix is found if we apply these
     // operations on an identity matrix in the correct order. The only exception may be when 0 scaling occurs.
-    // If rounding is set to true, the value that are approximately equal to -1,0,1,90,180,270,360 are rounded.
+    // If rounding is set to true, the values that are approximately equal to -1,0,1,90,180,270,360 are rounded.
     TIGL_EXPORT void DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint&  scaling2,
                                     CTiglPoint&  rotation2, CTiglPoint&  translation, bool rounding = true) const;
 

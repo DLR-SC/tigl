@@ -143,14 +143,14 @@ std::vector<CPACSTreeItem*> CPACSTreeItem::findAllChildrenOfTypeRecursively(std:
 CPACSTreeItem* CPACSTreeItem::getChildByUid(std::string searchedUid)
 {
 
-    // if we have a children with the researched Uid we return
+    // return the child with the wanted uid if it exists
     for (auto p : children) {
         if (p->getUid() == searchedUid) {
             return p;
         }
     }
 
-    // other wise we continue to search
+    // otherwise we continue to search
     CPACSTreeItem* r = nullptr;
     if (r == nullptr) {
         for (auto p : children) {
