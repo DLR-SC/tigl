@@ -999,6 +999,17 @@ TEST_F(creatorWing, MultipleWings_SetARKeepArea) {
 }
 
 
+TEST_F(creatorWing, createSection_WingSegmentGuideCurves)
+{
+
+    setVariables("TestData/simple_test_guide_curves.xml", "Wing");
+
+    EXPECT_THROW(wing->CreateNewConnectedElementBefore("GuideCurveModel_Wing_Sec1_El1"), tigl::CTiglError);
+    EXPECT_THROW(wing->CreateNewConnectedElementBetween("GuideCurveModel_Wing_Sec1_El1", "GuideCurveModel_Wing_Sec2_El1"), tigl::CTiglError);
+    EXPECT_THROW(wing->CreateNewConnectedElementAfter("GuideCurveModel_Wing_Sec4_El1"), tigl::CTiglError);
+}
+
+
 TEST_F(creatorWing, MultipleWings_CreateSections)
 {
     setVariables("TestData/multiple_wings.xml", "Wing");
