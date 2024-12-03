@@ -74,8 +74,8 @@ std::string tigl::CTiglFuselageHelper::GetNoseUID() const
         return elementUIDs[0];
     }
     else {
-        LOG(WARNING) << "tigl::CTiglFuselageHelper::GetNoseUID: The fuselage does no seem to include any elements, empty uid "
-                        "is returned!";
+        LOG(WARNING) << "tigl::CTiglFuselageHelper::GetNoseUID: The fuselage does not seem to include any elements,"
+	                " therefore, an empty uid is returned!";
         return "";
     }
 }
@@ -87,8 +87,8 @@ std::string tigl::CTiglFuselageHelper::GetTailUID() const
         return elementUIDs[elementUIDs.size() - 1];
     }
     else {
-        LOG(WARNING) << "tigl::CTiglFuselageHelper::GetTailUID: The fuselage does no seem to include any elements, empty uid "
-                        "is returned!";
+        LOG(WARNING) << "tigl::CTiglFuselageHelper::GetTailUID: The fuselage does not seem to include any elements,"
+	                " therefore, an empty uid is returned!";
         return "";
     }
 }
