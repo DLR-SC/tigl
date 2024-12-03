@@ -99,6 +99,7 @@
 #include "CCPACSDucts.h"
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
+#include "CCPACSSkin.h"
 %}
 
 %feature("autodoc", "3");
@@ -300,6 +301,7 @@ namespace tigl
 %include "CTiglStringerFrameBorderedObject.h"
 %include "generated/CPACSSkinSegment.h"
 %include "CCPACSSkinSegment.h"
+%include "CCPACSSkin.h"
 %include "generated/CPACSCargoDoorsAssembly.h"
 %include "generated/CPACSPressureBulkheadAssembly.h"
 %include "CCPACSPressureBulkheadAssembly.h"
