@@ -63,6 +63,7 @@
 #include "CCPACSWingSparSegment.h"
 #include "CCPACSWingRibsDefinition.h"
 #include "CCPACSSkinSegment.h"
+#include "CCPACSSkin.h"
 #include "CTiglWingChordface.h"
 #include "CCPACSCrossBeamAssemblyPosition.h"
 #include "CCPACSCrossBeamStrutAssemblyPosition.h"
@@ -99,7 +100,6 @@
 #include "CCPACSDucts.h"
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
-#include "CCPACSSkin.h"
 %}
 
 %feature("autodoc", "3");
@@ -301,6 +301,7 @@ namespace tigl
 %include "CTiglStringerFrameBorderedObject.h"
 %include "generated/CPACSSkinSegment.h"
 %include "CCPACSSkinSegment.h"
+%include "generated/CPACSSkin.h"
 %include "CCPACSSkin.h"
 %include "generated/CPACSCargoDoorsAssembly.h"
 %include "generated/CPACSPressureBulkheadAssembly.h"
