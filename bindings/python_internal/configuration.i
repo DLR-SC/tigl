@@ -63,6 +63,7 @@
 #include "CCPACSWingSparSegment.h"
 #include "CCPACSWingRibsDefinition.h"
 #include "CCPACSSkinSegment.h"
+#include "CCPACSDuctStructure.h"
 #include "CCPACSSkin.h"
 #include "CTiglWingChordface.h"
 #include "CCPACSCrossBeamAssemblyPosition.h"
