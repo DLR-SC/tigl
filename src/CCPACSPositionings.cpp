@@ -73,6 +73,24 @@ CTiglTransformation CCPACSPositionings::GetPositioningTransformation(const std::
     return CTiglTransformation();
 }
 
+//TODO write test
+int CCPACSPositionings::GetPositioningCount() const
+{
+    return CPACSPositionings::m_positionings.size();
+}
+
+//TODO write test
+CCPACSPositioning& CCPACSPositionings::GetPositioning(int index)
+{
+    {
+        index --;
+        if (index < 0 || index >= GetPositioningCount()) {
+            throw CTiglError("Invalid index in CCPACSPositionings::GetPositioning", TIGL_INDEX_ERROR);
+        }
+        return *m_positionings[index];
+    }
+}
+
 namespace
 {
 void UpdateNextPositioning(CCPACSPositioning* currPos, int depth)
