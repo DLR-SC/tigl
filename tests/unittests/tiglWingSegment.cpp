@@ -710,12 +710,16 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec4_Elem1") == 0);
 }
 
+/* Test on positionings concerning the wings, using the CPACS_30_D150.xml */
 TEST_F(WingSegment, testGetPositioningCount)
 {
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
+    //check if function output matches values from xml file
     ASSERT_EQ(4, wing.GetPositionings()->GetPositioningCount());
+    ASSERT_STREQ("Wing_Position1" , wing.GetPositionings()->GetPositioning(1).GetName().c_str());
+    //check if index implementation is correct
     ASSERT_NO_THROW(wing.GetPositionings()->GetPositioning(1));
     ASSERT_THROW(wing.GetPositionings()->GetPositioning(0), tigl::CTiglError);
     ASSERT_THROW(wing.GetPositionings()->GetPositioning(5), tigl::CTiglError);
