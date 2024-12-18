@@ -19,6 +19,7 @@
 * @brief Tests for testing behavior of the routines for segment handling/query.
 */
 
+
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
 
@@ -707,6 +708,17 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
     ASSERT_TRUE(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec4") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec4_Elem1") == 0);
+}
+
+TEST_F(WingSegment, testGetPositioningCount)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    ASSERT_EQ(4, wing.GetPositionings()->GetPositioningCount());
+    ASSERT_NO_THROW(wing.GetPositionings()->GetPositioning(1));
+    ASSERT_THROW(wing.GetPositionings()->GetPositioning(0), tigl::CTiglError);
+    ASSERT_THROW(wing.GetPositionings()->GetPositioning(5), tigl::CTiglError);
 }
 
 /* Tests on simple geometry__________________________ */
