@@ -56,10 +56,10 @@ public:
     // Returns the positioning matrix for a given section-uid
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionIndex);
 
-    // Returns the total count of positionings in a configuration
+    // Returns the total count of positionings in a configuration per element (e.g. wing)
     TIGL_EXPORT int GetPositioningCount() const;
 
-    // Returns the positioning for a given index
+    // Returns the positioning for a given index, starting at 1
     TIGL_EXPORT CCPACSPositioning& GetPositioning(int index);
 
     // Cleanup routine

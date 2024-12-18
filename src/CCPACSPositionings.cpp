@@ -73,13 +73,11 @@ CTiglTransformation CCPACSPositionings::GetPositioningTransformation(const std::
     return CTiglTransformation();
 }
 
-//TODO write test
 int CCPACSPositionings::GetPositioningCount() const
 {
     return CPACSPositionings::m_positionings.size();
 }
 
-//TODO write test
 CCPACSPositioning& CCPACSPositionings::GetPositioning(int index)
 {
     {
