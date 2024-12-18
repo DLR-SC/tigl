@@ -12,8 +12,8 @@ cmake_minimum_required (VERSION 3.11.0)
 project (TIGL VERSION 3.4.0)
 set(TIGL_VERSION 3.4.0)
 
-# enable C++11 support
-set(CMAKE_CXX_STANDARD 11)
+# enable C++17 support
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
