@@ -3,6 +3,11 @@ Changelog
 
 Changes since last release
 -------------
+18/12/2024
+
+  - General changes:
+    - Update the C++ standard to C++17 (#1045).
+
 13/11/2024
 
  - Fixes:
