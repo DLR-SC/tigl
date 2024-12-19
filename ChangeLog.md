@@ -4,7 +4,6 @@ Changelog
 Changes since last release
 -------------
 18/12/2024
-<<<<<<< HEAD
 
 - Fixes
   - #936 A particular defined positioning (of the C++-type CCPACSPositioning) was not available via Python bindings since the std::vector<std::unique_ptr<**Type**>> is not exposed to swig. New getter functions have been implemented in CCPACSPositioning.h to make these elements accesible via index, similar to the implementation of for several other classes. For more information see https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59.
@@ -14,11 +13,6 @@ Changes since last release
     - Update the C++ standard to C++17 (#1045).
 
 
-=======
-- Fixes
-  - #936 A particular defined positioning (of the C++-type CCPACSPositioning) was not available via Python bindings since the std::vector<std::unique_ptr<**Type**>> is not exposed to swig. New getter functions have been implemented in CCPACSPositioning.h to make these elements accesible via index, similar to the implementation of for several other classes. For more information see https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59.
-
->>>>>>> 95b5f3c0d71cb763533f8d9eac3f5ebd30b8b1f0
 13/11/2024
 
  - Fixes:
