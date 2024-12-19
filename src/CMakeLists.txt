@@ -79,7 +79,6 @@ endforeach()
 
 # object library containing just the compiled sources
 add_library(tigl3_objects OBJECT ${TIGL_SRC})
-target_compile_features(tigl3_objects PRIVATE cxx_std_11)
 set_property(TARGET tigl3_objects PROPERTY POSITION_INDEPENDENT_CODE ON) # needed for shared libraries
 
 target_include_directories(tigl3_objects
@@ -208,7 +207,6 @@ target_include_directories(tigl3_cpp INTERFACE
 )
 
 target_link_libraries(tigl3_cpp INTERFACE ${OpenCASCADE_LIBRARIES} Boost::boost Boost::disable_autolinking)
-target_compile_features(tigl3_cpp INTERFACE cxx_std_11)
 
 if (TARGET glog::glog)
   target_link_libraries (tigl3_cpp INTERFACE glog::glog)
