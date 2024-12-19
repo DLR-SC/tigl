@@ -20,10 +20,13 @@
 #define MODIFICATORSECTIONSWIDGET_H
 
 #include <QWidget>
-#include "CreateConnectedElementI.h"
+#include <variant>
+#include "CCPACSFuselage.h"
+#include "CCPACSWing.h"
 
 namespace Ui
 {
+using ElementModificatorInterface = std::variant<tigl::CCPACSFuselage, tigl::CCPACSWing>; // could be extended by Duct, Pylon, Tank in the future
 class ModificatorSectionsWidget;
 }
 
@@ -42,11 +45,13 @@ public:
     explicit ModificatorSectionsWidget(QWidget* parent = nullptr);
     ~ModificatorSectionsWidget();
 
-    void setCreateConnectedElementI(tigl::CreateConnectedElementI& elementI);
+    void setCreateConnectedElement(Ui::ElementModificatorInterface& element);
 
 private:
     Ui::ModificatorSectionsWidget* ui;
-    tigl::CreateConnectedElementI* createConnectedElementI;
+    // Defined as std::variant
+    // Construction is used to avoid an abstract basis class from which all possible variant types had to be inherited
+    Ui::ElementModificatorInterface* createConnectedElement;
 };
 
 #endif // MODIFICATORSECTIONSWIDGET_H

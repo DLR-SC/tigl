@@ -137,10 +137,10 @@ void ModificatorContainerWidget::setSectionModificator(QList<tigl::CTiglSectionE
 }
 
 
-void ModificatorContainerWidget::setSectionsModificator(tigl::CreateConnectedElementI& element)
-{
+void ModificatorContainerWidget::setSectionsModificator(Ui::ElementModificatorInterface& element)
+ {
     hideAllSpecializedWidgets();
-    ui->sectionsModificator->setCreateConnectedElementI(element);
+    ui->sectionsModificator->setCreateConnectedElement(element);
     ui->sectionsModificator->setVisible(true);
     currentModificator = ui->sectionModificator;
 }
