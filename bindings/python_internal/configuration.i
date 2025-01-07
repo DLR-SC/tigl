@@ -394,7 +394,7 @@ namespace tigl
 %include "CTiglStringerFrameBorderedObject.h"
 %include "generated/CPACSSkinSegment.h"
 %include "CCPACSSkinSegment.h"
-%boost_optional(CCPACSSkin)
+%boost_optional(tigl::CCPACSSkin)
 %include "generated/CPACSSkin.h"
 %include "CCPACSSkin.h"
 %include "generated/CPACSCargoDoorsAssembly.h"
