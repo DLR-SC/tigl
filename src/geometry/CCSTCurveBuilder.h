@@ -35,7 +35,23 @@ namespace tigl
 class CCSTCurveBuilder
 {
 public:
-    TIGL_EXPORT CCSTCurveBuilder(double N1, double N2, const std::vector<double>& B, double T);
+
+    /**
+     * @brief The Algorithm enum gives a choice of the method.
+     *
+     * Piecewise_Chebychev_Approximation subdivides the curve into
+     * segments, where each segment is approximated using a Chebychev polynomials.
+     * The final result is the C1 concatenation of these polynomials to a B-Spline
+     *
+     * GeomAPI_PointsToBSpline uses OCCT's internal approximation algorithm to create
+     * a B-Spline that approximates a CST Curve.
+     */
+    enum class Algorithm {
+        Piecewise_Chebychev_Approximation = 0,
+        GeomAPI_PointsToBSpline
+    };
+
+    TIGL_EXPORT CCSTCurveBuilder(double N1, double N2, const std::vector<double>& B, double T, Algorithm method=Algorithm::Piecewise_Chebychev_Approximation);
 
     // returns parameters of cst curve
     TIGL_EXPORT double N1() const;
@@ -48,6 +64,9 @@ public:
 private:
     double _n1, _n2, _t;
     std::vector<double> _b;
+    int _degree;
+    double _tol;
+    Algorithm _algo;
 };
 
 } // namespace tigl
