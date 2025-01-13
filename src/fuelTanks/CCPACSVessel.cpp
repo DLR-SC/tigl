@@ -283,7 +283,7 @@ void CCPACSVessel::EvaluateDome() const
 }
 
 void CCPACSVessel::IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber, std::vector<double>& x,
-                                   std::vector<double>& r) const
+                                     std::vector<double>& r) const
 {
     double dPhi = 1.0 / nodeNumber;
 
@@ -361,8 +361,8 @@ void CCPACSVessel::BuildVesselWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
 
     double axRatio = _ellipsoidPtr->GetHalfAxisFraction();
     if (axRatio < 0.0) {
-        throw CTiglError("Half axis fraction (" + std::to_string(axRatio) + ") of vessel \"" + GetName() + "\" (uID=\"" +
-                         GetUID() + "\") must be a positive value!");
+        throw CTiglError("Half axis fraction (" + std::to_string(axRatio) + ") of vessel \"" + GetName() +
+                         "\" (uID=\"" + GetUID() + "\") must be a positive value!");
     }
 
     double R = cylinderRadius;

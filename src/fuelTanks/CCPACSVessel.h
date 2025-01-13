@@ -108,7 +108,8 @@ protected:
     void SetFaceTraits(PNamedShape loft) const;
 
 private:
-    const std::string _vesselTypeException = "This method is only available for vessels with segments. No segment found.";
+    const std::string _vesselTypeException =
+        "This method is only available for vessels with segments. No segment found.";
 
     mutable const tigl::generated::CPACSEllipsoidDome* _ellipsoidPtr         = NULL;
     mutable const tigl::generated::CPACSTorisphericalDome* _torisphericalPtr = NULL;
