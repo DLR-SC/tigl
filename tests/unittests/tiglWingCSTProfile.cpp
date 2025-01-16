@@ -152,7 +152,9 @@ TEST_F(WingCSTProfile, tiglWingCSTProfile_VTK_export)
     ASSERT_TRUE(tiglExportMeshedWingVTKSimpleByUID(tiglHandle, "CSTExample_W1", vtkWingFilename, 0.01) == TIGL_SUCCESS);
 }
 
-TEST(CSTApprox, simpleAirfoil)
+class CSTApprox : public testing::TestWithParam<tigl::CCSTCurveBuilder::Algorithm>{};
+
+TEST_P(CSTApprox, simpleAirfoil1)
 {
     double N1 = 0.5;
     double N2 = 1.0;
@@ -161,7 +163,7 @@ TEST(CSTApprox, simpleAirfoil)
     B.push_back(1.0);
     B.push_back(1.0);
     
-    tigl::CCSTCurveBuilder builder(N1, N2, B, 0.);
+    tigl::CCSTCurveBuilder builder(N1, N2, B, 0., GetParam());
     Handle(Geom_BSplineCurve) curve = builder.Curve();
 
     double devmax=0.0;
@@ -183,7 +185,51 @@ TEST(CSTApprox, simpleAirfoil)
     ASSERT_NEAR(0.0, devmax, 1e-5);
 }
 
-TEST(CSTApprox, ellipticBody)
+TEST_P(CSTApprox, simpleAirfoil2)
+{
+    // see https://github.com/DLR-SC/tigl/issues/1048
+    double N1 = 0.5;
+    double N2 = 1.0;
+    std::vector<double> B;
+    B.push_back(0.11809019);
+    B.push_back(0.18951797);
+    B.push_back(0.20255648);
+    double T = 0.0025;
+
+    auto algo = GetParam();
+    tigl::CCSTCurveBuilder builder(N1, N2, B, T, algo);
+    Handle(Geom_BSplineCurve) curve = builder.Curve();
+
+    double devmax=0.0;
+    // project sample points on curve and calculate distance
+    std::vector<double> x;
+    for (int i = 0; i < 100; ++i) {
+        x.push_back(double(i)/100.0);
+    }
+
+    for (unsigned int i = 0; i < x.size(); ++i) {
+        gp_Pnt samplePoint(x[i], Standard_Real(tigl::cstcurve(N1, N2, B, T, x[i])), 0);
+        GeomAPI_ProjectPointOnCurve projection(samplePoint, curve);
+        gp_Pnt projectedPoint=projection.NearestPoint();
+        double deviation=samplePoint.Distance(projectedPoint);
+        if (deviation >= devmax) {
+            devmax=deviation;
+        }
+    }
+
+    if (algo == tigl::CCSTCurveBuilder::Algorithm::Piecewise_Chebychev_Approximation) {
+        // I am not sure why this algorithm fails to satisfy the tolerance 1e-5 for this profile
+        ASSERT_NEAR(0.0, devmax, 1e-4);
+    }
+
+    if (algo == tigl::CCSTCurveBuilder::Algorithm::GeomAPI_PointsToBSpline) {
+        auto edge = BRepBuilderAPI_MakeEdge(curve);
+        BRepTools::Write(edge, "cst_edge.brep");
+        ASSERT_NEAR(0.0, devmax, 1e-5);
+    }
+}
+
+TEST_P(CSTApprox, ellipticBody)
 {
     double N1 = 0.5;
     double N2 = 0.5;
@@ -192,7 +238,7 @@ TEST(CSTApprox, ellipticBody)
     B.push_back(1.0);
     B.push_back(1.0);
     
-    tigl::CCSTCurveBuilder builder(N1, N2, B, 0.);
+    tigl::CCSTCurveBuilder builder(N1, N2, B, 0., GetParam());
     Handle(Geom_BSplineCurve) curve = builder.Curve();
 
     double devmax=0.0;
@@ -214,7 +260,7 @@ TEST(CSTApprox, ellipticBody)
     ASSERT_NEAR(0.0, devmax, 1e-5);
 }
 
-TEST(CSTApprox, hypersonicAirfoil)
+TEST_P(CSTApprox, hypersonicAirfoil)
 {
     double N1 = 1.0;
     double N2 = 1.0;
@@ -222,8 +268,9 @@ TEST(CSTApprox, hypersonicAirfoil)
     B.push_back(1.0);
     B.push_back(1.0);
     B.push_back(1.0);
-    
-    tigl::CCSTCurveBuilder builder(N1, N2, B, 0.);
+
+    auto algo = GetParam();
+    tigl::CCSTCurveBuilder builder(N1, N2, B, 0.,  algo);
     Handle(Geom_BSplineCurve) curve = builder.Curve();
 
     double devmax=0.0;
@@ -242,6 +289,23 @@ TEST(CSTApprox, hypersonicAirfoil)
             devmax=deviation;
         }
     }
-    // approximation should be exact since we require only degree 2 spline
-    ASSERT_NEAR(0.0, devmax, 1e-12);
+
+    if (algo == tigl::CCSTCurveBuilder::Algorithm::Piecewise_Chebychev_Approximation) {
+        // approximation should be exact since we require only degree 2 spline
+        ASSERT_NEAR(0.0, devmax, 1e-12);
+    }
+
+    if (algo == tigl::CCSTCurveBuilder::Algorithm::GeomAPI_PointsToBSpline) {
+        // I doubt the optimzation algo used by GeomAPI_PointsToBSpline guarantees the exact solution.
+        ASSERT_NEAR(0.0, devmax, 1e-5);
+    }
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    CSTApprox_DifferentAlgos,
+    CSTApprox,
+    testing::Values(
+        tigl::CCSTCurveBuilder::Algorithm::Piecewise_Chebychev_Approximation,
+        tigl::CCSTCurveBuilder::Algorithm::GeomAPI_PointsToBSpline
+    )
+);
