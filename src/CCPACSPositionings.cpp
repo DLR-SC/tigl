@@ -106,6 +106,22 @@ void CCPACSPositionings::SetPositioningTransformation(const std::string& section
 }
 
 
+int CCPACSPositionings::GetPositioningCount() const
+{
+    return CPACSPositionings::m_positionings.size();
+}
+
+CCPACSPositioning& CCPACSPositionings::GetPositioning(int index)
+{
+    {
+        index --;
+        if (index < 0 || index >= GetPositioningCount()) {
+            throw CTiglError("Invalid index in CCPACSPositionings::GetPositioning", TIGL_INDEX_ERROR);
+        }
+        return *m_positionings[index];
+    }
+}
+
 namespace
 {
 void UpdateNextPositioning(CCPACSPositioning* currPos, int depth)

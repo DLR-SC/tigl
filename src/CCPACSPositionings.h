@@ -56,7 +56,11 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate();
 
-    // Returns the positioning matrix for a given section-uid
+    /**
+     * @brief GetPositioningTransformation returns the positioning matrix for a given section-uid
+     * @param sectionIndex
+     * @return Returns CTiglTransformation positioning matrix by sectionIndex
+     */
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionUID);
 
     /**
@@ -77,6 +81,19 @@ public:
 
 
     TIGL_EXPORT CCPACSPositioning& CreatePositioning(const std::string& fromUID, const std::string& toUID, const CTiglPoint& delta );
+
+    /**
+     * @brief GetPositioningCount returns the total count of positionings in a configuration per element (e.g. wing)
+     * @return int Return total count of positionings
+     */
+    TIGL_EXPORT int GetPositioningCount() const;
+
+    /**
+     * @brief GetPositioning
+     * @param index Note that index starts at 1
+     * @return Returns CCPACSPositioning& by index
+     */
+    TIGL_EXPORT CCPACSPositioning& GetPositioning(int index);
 
     // Cleanup routine
     TIGL_EXPORT void Cleanup();
