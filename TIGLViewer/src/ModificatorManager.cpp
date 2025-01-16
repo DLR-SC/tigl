@@ -150,16 +150,23 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
 
-        Ui::ElementModificatorInterface* element;
-        try {
-            element = reinterpret_cast<Ui::ElementModificatorInterface* >(typePtr.ptr);
-        }
-        catch (...) {
-            element = nullptr;
-            LOG(ERROR) << "ModificatorManager:: Unexpected sections type!";
-        }
+        auto get_element_interface = [](tigl::CTiglUIDManager::TypedPtr const& ptr) {
+            if (ptr.type == &typeid(tigl::CCPACSWing)) {
+                tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing*>(ptr.ptr);
+                return Ui::ElementModificatorInterface(wing);
+            }
+            else if (ptr.type == &typeid(tigl::CCPACSFuselage)) {
+                tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage*>(ptr.ptr);
+                return Ui::ElementModificatorInterface(fuselage);
+            }
+            else {
+                LOG(ERROR) << "ModificatorManager:: Unexpected sections type!";
+                return Ui::ElementModificatorInterface(tigl::CCPACSFuselage(nullptr, nullptr));
+            }
+        };
 
-        modificatorContainerWidget->setSectionsModificator(*element);
+        auto element = get_element_interface(typePtr);
+        modificatorContainerWidget->setSectionsModificator(element);
     }
     else if (item->getType() == "positioning" ) {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();

@@ -20,13 +20,45 @@
 #define MODIFICATORSECTIONSWIDGET_H
 
 #include <QWidget>
-#include <variant>
+#include <string>
 #include "CCPACSFuselage.h"
 #include "CCPACSWing.h"
 
 namespace Ui
 {
-using ElementModificatorInterface = std::variant<tigl::CCPACSFuselage, tigl::CCPACSWing>; // could be extended by Duct, Pylon, Tank in the future
+
+// Interface-like structure to account for different possible object types whose member variables may be adapted by the CPACSCreator.
+// It is currently used for CCPACSFuselage and CCPACSWing.
+// Could be extended by Duct, Pylon, Tank, etc. in the future (observe: The respective classes need to define the listed functions).
+struct ElementModificatorInterface
+{
+    // Here, functions are defined as member variables calling the 'right' (depending on present data type) function from CCPACSFuselage, CCPACSWing, etc. via lambdas
+    template <typename T>
+    ElementModificatorInterface(T&& t)
+        : CreateNewConnectedElementAfter(
+            [&t](std::string str){ return t.CreateNewConnectedElementAfter(str); }
+            )
+        , CreateNewConnectedElementBefore(
+            [&t](std::string str){ return t.CreateNewConnectedElementBefore(str); }
+            )
+        , CreateNewConnectedElementBetween(
+            [&t](std::string str1, std::string str2){ return t.CreateNewConnectedElementBetween(str1, str2); }
+            )
+        , DeleteConnectedElement(
+            [&t](std::string str){ return t.DeleteConnectedElement(str); }
+            )
+        , GetOrderedConnectedElement(
+            [&t](){ return t.GetOrderedConnectedElement(); }
+            )
+    {}
+
+    std::function<void(std::string)> CreateNewConnectedElementAfter;
+    std::function<void(std::string)> CreateNewConnectedElementBefore;
+    std::function<void(std::string, std::string)> CreateNewConnectedElementBetween;
+    std::function<void(std::string)> DeleteConnectedElement;
+    std::function<std::vector<std::string>()> GetOrderedConnectedElement;
+};
+
 class ModificatorSectionsWidget;
 }
 
@@ -49,8 +81,6 @@ public:
 
 private:
     Ui::ModificatorSectionsWidget* ui;
-    // Defined as std::variant
-    // Construction is used to avoid an abstract basis class from which all possible variant types had to be inherited
     Ui::ElementModificatorInterface* createConnectedElement;
 };
 

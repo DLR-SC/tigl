@@ -52,14 +52,7 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
         return;
     }
 
-    std::vector<std::string> elementUIDs;
-    // Construction to 'unwrap' the std::variant createConnectedElement and apply the defined function from the correct class (which is part of the std::variant)
-    std::visit(
-        [&elementUIDs](auto& element){
-            elementUIDs = element.GetOrderedConnectedElement();
-        },
-        *createConnectedElement
-    );
+    std::vector<std::string> elementUIDs = createConnectedElement->GetOrderedConnectedElement();
 
     QStringList elementUIDsQList;
     for (int i = 0; i < elementUIDs.size(); i++) {
@@ -72,22 +65,10 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
         NewConnectedElementDialog::Where where = newElementDialog.getWhere();
         try {
             if (where == NewConnectedElementDialog::Before) {
-                // Construction to 'unwrap' the std::variant createConnectedElement and apply the defined function from the correct class (which is part of the std::variant)
-                std::visit(
-                    [startUID](auto& element){
-                        element.CreateNewConnectedElementBefore(startUID);
-                    },
-                    *createConnectedElement
-                );
+                createConnectedElement->CreateNewConnectedElementBefore(startUID);
             }
             else if (where == NewConnectedElementDialog::After) {
-                // Construction to 'unwrap' the std::variant createConnectedElement and apply the defined function from the correct class (which is part of the std::variant)
-                std::visit(
-                    [startUID](auto& element){
-                        element.CreateNewConnectedElementAfter(startUID);
-                    },
-                    *createConnectedElement
-                );
+                createConnectedElement->CreateNewConnectedElementAfter(startUID);
             }
         }
         catch (const tigl::CTiglError& err) {
@@ -112,14 +93,7 @@ void ModificatorSectionsWidget::execDeleteConnectedElementDialog()
         return;
     }
 
-    std::vector<std::string> elementUIDs;
-    // Construction to 'unwrap' the std::variant createConnectedElement and apply the defined function from the correct class (which is part of the std::variant)
-    std::visit(
-        [&elementUIDs](auto& element){
-           elementUIDs = element.GetOrderedConnectedElement();
-        },
-        *createConnectedElement
-    );
+    std::vector<std::string> elementUIDs = createConnectedElement->GetOrderedConnectedElement();
 
     QStringList elementUIDsQList;
     for (int i = 0; i < elementUIDs.size(); i++) {
@@ -130,13 +104,7 @@ void ModificatorSectionsWidget::execDeleteConnectedElementDialog()
     if (deleteDialog.exec() == QDialog::Accepted) {
         QString uid = deleteDialog.getUIDToDelete();
         try {
-            // Construction to 'unwrap' the std::variant createConnectedElement and apply the defined function from the correct class (which is part of the std::variant)
-            std::visit(
-                [uid](auto& element){
-                    element.DeleteConnectedElement(uid.toStdString());
-                },
-                *createConnectedElement
-            );
+            createConnectedElement->DeleteConnectedElement(uid.toStdString());
         }
         catch (const tigl::CTiglError& err) {
             TIGLViewerErrorDialog errDialog(this);
