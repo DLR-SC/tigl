@@ -11,10 +11,15 @@
 #    which runs your test executable and produces a lcov code coverage report.
 #
 
+OPTION(TIGL_COVERAGE_GENHTML "Use Genhtml to generate htmls from gcov output" OFF)
+
 # Check prereqs
 FIND_PROGRAM( GCOV_PATH gcov )
 FIND_PROGRAM( LCOV_PATH lcov )
-FIND_PROGRAM( GENHTML_PATH genhtml )
+
+IF(TIGL_COVERAGE_GENHTML)
+  FIND_PROGRAM( GENHTML_PATH genhtml )
+ENDIF()
 FIND_PROGRAM( GCOVR_PATH gcovr PATHS ${PROJECT_SOURCE_DIR}/tests)
 
 IF(NOT GCOV_PATH)
@@ -55,9 +60,11 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _testdir _outputname)
                 MESSAGE(FATAL_ERROR "lcov not found! Aborting...")
         ENDIF() # NOT LCOV_PATH
 
+        IF(TIGL_COVERAGE_GENHTML)
         IF(NOT GENHTML_PATH)
                 MESSAGE(FATAL_ERROR "genhtml not found! Aborting...")
         ENDIF() # NOT GENHTML_PATH
+        ENDIF() # TIGL_COVERAGE_GENHTML
         
         # copy testdata
         file(COPY ${PROJECT_SOURCE_DIR}/${_testdir}/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -77,7 +84,11 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _testdir _outputname)
                 # Capturing lcov counters and generating report
                 COMMAND ${LCOV_PATH} --directory ../.. --capture --output-file ${_outputname}_all.info
                 COMMAND ${LCOV_PATH} --remove ${_outputname}_all.info '${PROJECT_SOURCE_DIR}/${_testdir}/*' '${PROJECT_SOURCE_DIR}/tests/common/*' '${PROJECT_SOURCE_DIR}/thirdparty/**' '/usr/*' '*oce*' '*build*' '*tixi3*' '${PROJECT_SOURCE_DIR}/src/generated/*' --output-file ${_outputname}.info
-                COMMAND ${GENHTML_PATH} -o ../../${_outputname} ${_outputname}.info
+
+                IF(TIGL_COVERAGE_GENHTML)
+                        COMMAND ${GENHTML_PATH} -o ../../${_outputname} ${_outputname}.info
+                ENDIF()
+                
                 COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}_all.info 
 
                 USES_TERMINAL
