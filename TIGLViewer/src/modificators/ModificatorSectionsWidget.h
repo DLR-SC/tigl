@@ -20,10 +20,46 @@
 #define MODIFICATORSECTIONSWIDGET_H
 
 #include <QWidget>
-#include "CreateConnectedElementI.h"
+#include <string>
+#include <optional>
+#include "CCPACSFuselage.h"
+#include "CCPACSWing.h"
 
 namespace Ui
 {
+
+// Interface-like structure to account for different possible object types whose member variables may be adapted by the CPACSCreator.
+// It is currently used for CCPACSFuselage and CCPACSWing.
+// Could be extended by Duct, Pylon, Tank, etc. in the future (observe: The respective classes need to define the listed functions).
+struct ElementModificatorInterface
+{
+    // Here, functions are defined as member variables calling the 'right' (depending on present data type) function from CCPACSFuselage, CCPACSWing, etc. via lambdas
+    template <typename T>
+    ElementModificatorInterface(T&& t)
+        : CreateNewConnectedElementAfter(
+            [&t](std::string str){ return t.CreateNewConnectedElementAfter(str); }
+            )
+        , CreateNewConnectedElementBefore(
+            [&t](std::string str){ return t.CreateNewConnectedElementBefore(str); }
+            )
+        , CreateNewConnectedElementBetween(
+            [&t](std::string str1, std::string str2){ return t.CreateNewConnectedElementBetween(str1, str2); }
+            )
+        , DeleteConnectedElement(
+            [&t](std::string str){ return t.DeleteConnectedElement(str); }
+            )
+        , GetOrderedConnectedElement(
+            [&t](){ return t.GetOrderedConnectedElement(); }
+            )
+    {}
+
+    std::function<void(std::string)> CreateNewConnectedElementAfter;
+    std::function<void(std::string)> CreateNewConnectedElementBefore;
+    std::function<void(std::string, std::string)> CreateNewConnectedElementBetween;
+    std::function<void(std::string)> DeleteConnectedElement;
+    std::function<std::vector<std::string>()> GetOrderedConnectedElement;
+};
+
 class ModificatorSectionsWidget;
 }
 
@@ -42,11 +78,12 @@ public:
     explicit ModificatorSectionsWidget(QWidget* parent = nullptr);
     ~ModificatorSectionsWidget();
 
-    void setCreateConnectedElementI(tigl::CreateConnectedElementI& elementI);
+    void setCreateConnectedElement(Ui::ElementModificatorInterface const& element);
 
 private:
     Ui::ModificatorSectionsWidget* ui;
-    tigl::CreateConnectedElementI* createConnectedElementI;
+    // std::optional used here to account for empty initializiation of member variable in construtor (ptr and nullptr used before)
+    std::optional<Ui::ElementModificatorInterface> createConnectedElement;
 };
 
 #endif // MODIFICATORSECTIONSWIDGET_H

@@ -35,7 +35,6 @@
 #include "CCPACSGuideCurve.h"
 #include "CTiglFuselageConnection.h"
 #include "Cache.h"
-#include "CreateConnectedElementI.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -48,7 +47,7 @@ namespace tigl
 class CCPACSConfiguration;
 class CCPACSFuselageStringerFramePosition;
 
-class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativelyPositionedComponent, public CreateConnectedElementI
+class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativelyPositionedComponent
 {
 public:
     // Constructor
@@ -171,7 +170,7 @@ public:
      *
      * @param startElementUID
      */
-    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID) override;
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID);
 
     /**
      * Create a new section, a new element and connect the element to the "startElement".
@@ -181,7 +180,7 @@ public:
      *
      * @param startElementUID
      */
-    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID) override;
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID);
 
     /**
       *Create a new section, a new element and place the new element between the startElement and the endElement.
@@ -189,12 +188,12 @@ public:
      * @param startElementUID
      * @param endElementUID
      */
-    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID) override;
+    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID);
 
 
-    TIGL_EXPORT void DeleteConnectedElement(std::string elementUID) override;
+    TIGL_EXPORT void DeleteConnectedElement(std::string elementUID);
 
-    TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement() override;
+    TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement();
 
     TIGL_EXPORT std::vector<tigl::CTiglSectionElement*> GetCTiglElements() ;
 

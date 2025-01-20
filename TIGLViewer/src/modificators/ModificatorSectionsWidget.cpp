@@ -30,7 +30,6 @@ ModificatorSectionsWidget::ModificatorSectionsWidget(QWidget* parent)
     , ui(new Ui::ModificatorSectionsWidget)
 {
     ui->setupUi(this);
-    createConnectedElementI = nullptr;
     connect(ui->addConnectedElementBtn, SIGNAL(pressed()), this, SLOT(execNewConnectedElementDialog()));
     connect(ui->deleteConnectedElementBtn, SIGNAL(pressed()), this, SLOT(execDeleteConnectedElementDialog()));
 }
@@ -40,19 +39,20 @@ ModificatorSectionsWidget::~ModificatorSectionsWidget()
     delete ui;
 }
 
-void ModificatorSectionsWidget::setCreateConnectedElementI(tigl::CreateConnectedElementI& elementI)
+void ModificatorSectionsWidget::setCreateConnectedElement(Ui::ElementModificatorInterface const& element)
 {
-    createConnectedElementI = &elementI;
+    createConnectedElement = element;
 }
 
 void ModificatorSectionsWidget::execNewConnectedElementDialog()
 {
-    if (createConnectedElementI == nullptr) {
+    if (createConnectedElement == std::nullopt) {
         LOG(ERROR) << "ModificatorSectionsWidget:: is not correctly set!";
         return;
     }
 
-    std::vector<std::string> elementUIDs = createConnectedElementI->GetOrderedConnectedElement();
+    std::vector<std::string> elementUIDs = createConnectedElement->GetOrderedConnectedElement();
+
     QStringList elementUIDsQList;
     for (int i = 0; i < elementUIDs.size(); i++) {
         elementUIDsQList.push_back(elementUIDs.at(i).c_str());
@@ -64,10 +64,10 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
         NewConnectedElementDialog::Where where = newElementDialog.getWhere();
         try {
             if (where == NewConnectedElementDialog::Before) {
-                createConnectedElementI->CreateNewConnectedElementBefore(startUID);
+                createConnectedElement->CreateNewConnectedElementBefore(startUID);
             }
             else if (where == NewConnectedElementDialog::After) {
-                createConnectedElementI->CreateNewConnectedElementAfter(startUID);
+                createConnectedElement->CreateNewConnectedElementAfter(startUID);
             }
         }
         catch (const tigl::CTiglError& err) {
@@ -87,12 +87,13 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
 void ModificatorSectionsWidget::execDeleteConnectedElementDialog()
 {
 
-    if (createConnectedElementI == nullptr) {
+    if (createConnectedElement == std::nullopt) {
         LOG(ERROR) << "ModificatorWingsWidget::execDeleteWingDialog: wings is not set!";
         return;
     }
 
-    std::vector<std::string> elementUIDs = createConnectedElementI->GetOrderedConnectedElement();
+    std::vector<std::string> elementUIDs = createConnectedElement->GetOrderedConnectedElement();
+
     QStringList elementUIDsQList;
     for (int i = 0; i < elementUIDs.size(); i++) {
         elementUIDsQList.push_back(elementUIDs.at(i).c_str());
@@ -102,7 +103,7 @@ void ModificatorSectionsWidget::execDeleteConnectedElementDialog()
     if (deleteDialog.exec() == QDialog::Accepted) {
         QString uid = deleteDialog.getUIDToDelete();
         try {
-            createConnectedElementI->DeleteConnectedElement(uid.toStdString());
+            createConnectedElement->DeleteConnectedElement(uid.toStdString());
         }
         catch (const tigl::CTiglError& err) {
             TIGLViewerErrorDialog errDialog(this);
