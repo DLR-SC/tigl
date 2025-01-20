@@ -166,7 +166,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         };
 
         auto element = get_element_interface(typePtr);
-        modificatorContainerWidget->setSectionsModificator(element);
+        modificatorContainerWidget->setSectionsModificator(std::move(element));
     }
     else if (item->getType() == "positioning" ) {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();

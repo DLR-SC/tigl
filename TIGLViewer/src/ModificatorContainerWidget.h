@@ -79,7 +79,7 @@ public:
     void setFuselagesModificator(tigl::CCPACSFuselages& fuselages);
     void setElementModificator(tigl::CTiglSectionElement& element);
     void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
-    void setSectionsModificator(Ui::ElementModificatorInterface& conntedElementI);
+    void setSectionsModificator(Ui::ElementModificatorInterface const& conntedElementI);
     // for positioning, we need two different calls for wing and for fuselage. Otherwise, we miss to invalidate the
     // associated wing or fuselage
     void setPositioningModificator(tigl::CCPACSWing& wing, tigl::CCPACSPositioning& positioning);

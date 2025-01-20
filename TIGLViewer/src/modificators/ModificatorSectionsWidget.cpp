@@ -30,7 +30,6 @@ ModificatorSectionsWidget::ModificatorSectionsWidget(QWidget* parent)
     , ui(new Ui::ModificatorSectionsWidget)
 {
     ui->setupUi(this);
-    createConnectedElement = nullptr;
     connect(ui->addConnectedElementBtn, SIGNAL(pressed()), this, SLOT(execNewConnectedElementDialog()));
     connect(ui->deleteConnectedElementBtn, SIGNAL(pressed()), this, SLOT(execDeleteConnectedElementDialog()));
 }
@@ -40,14 +39,14 @@ ModificatorSectionsWidget::~ModificatorSectionsWidget()
     delete ui;
 }
 
-void ModificatorSectionsWidget::setCreateConnectedElement(Ui::ElementModificatorInterface& element)
+void ModificatorSectionsWidget::setCreateConnectedElement(Ui::ElementModificatorInterface const& element)
 {
-    createConnectedElement = &element;
+    createConnectedElement = element;
 }
 
 void ModificatorSectionsWidget::execNewConnectedElementDialog()
 {
-    if (createConnectedElement == nullptr) {
+    if (createConnectedElement == std::nullopt) {
         LOG(ERROR) << "ModificatorSectionsWidget:: is not correctly set!";
         return;
     }
@@ -88,7 +87,7 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
 void ModificatorSectionsWidget::execDeleteConnectedElementDialog()
 {
 
-    if (createConnectedElement == nullptr) {
+    if (createConnectedElement == std::nullopt) {
         LOG(ERROR) << "ModificatorWingsWidget::execDeleteWingDialog: wings is not set!";
         return;
     }

@@ -21,6 +21,7 @@
 
 #include <QWidget>
 #include <string>
+#include <optional>
 #include "CCPACSFuselage.h"
 #include "CCPACSWing.h"
 
@@ -77,11 +78,12 @@ public:
     explicit ModificatorSectionsWidget(QWidget* parent = nullptr);
     ~ModificatorSectionsWidget();
 
-    void setCreateConnectedElement(Ui::ElementModificatorInterface& element);
+    void setCreateConnectedElement(Ui::ElementModificatorInterface const& element);
 
 private:
     Ui::ModificatorSectionsWidget* ui;
-    Ui::ElementModificatorInterface* createConnectedElement;
+    // std::optional used here to account for empty initializiation of member variable in construtor (ptr and nullptr used before)
+    std::optional<Ui::ElementModificatorInterface> createConnectedElement;
 };
 
 #endif // MODIFICATORSECTIONSWIDGET_H
