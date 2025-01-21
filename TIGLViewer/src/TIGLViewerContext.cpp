@@ -39,6 +39,7 @@
 #include "AIS_TexturedShape.hxx"
 #include "AIS_InteractiveContext.hxx"
 #include "BRepBuilderAPI_MakeVertex.hxx"
+#include "BRepPrimAPI_MakeBox.hxx"
 
 #include <OpenGl_GraphicDriver.hxx>
 // Shader related stuff
@@ -446,6 +447,15 @@ void TIGLViewerContext::displayVector(const gp_Pnt& aPoint,
                                                  aPoint.Z() + aZoffset);
     aGraphicText->SetScale(TextScale);
     myContext->Display(aGraphicText,UpdateViewer);
+}
+
+void TIGLViewerContext::displayBox(const gp_Pnt& corner1,
+                                   Standard_Real dx,
+                                   Standard_Real dy,
+                                   Standard_Real dz)
+{
+    TopoDS_Shape box = BRepPrimAPI_MakeBox(corner1, dx, dy, dz);
+    displayShape(box, Standard_True);
 }
 
 bool TIGLViewerContext::hasSelectedShapes() const

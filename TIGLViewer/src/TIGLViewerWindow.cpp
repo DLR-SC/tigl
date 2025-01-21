@@ -34,6 +34,7 @@
 #include "TIGLViewerWindow.h"
 #include "TIGLViewerSettingsDialog.h"
 #include "TIGLViewerDrawVectorDialog.h"
+#include "TIGLViewerDrawBoxDialog.h"
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerInputoutput.h"
 #include "TIGLDebugStream.h"
@@ -682,7 +683,7 @@ void TIGLViewerWindow::connectSignals()
     // Misc drawing actions
     connect(drawPointAction, SIGNAL(triggered()), this, SLOT(drawPoint()));
     connect(drawVectorAction, SIGNAL(triggered()), this, SLOT(drawVector()));
-    
+    connect(drawBoxAction, SIGNAL(triggered()), this, SLOT(drawBox()));
 
     // view->actions menu
     connect(fitAction, SIGNAL(triggered()), myOCC, SLOT(fitExtents()));
@@ -919,6 +920,19 @@ void TIGLViewerWindow::drawVector()
     std::stringstream stream;
     stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
     getScene()->displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
+}
+
+void TIGLViewerWindow::drawBox()
+{
+    TIGLViewerDrawBoxDialog dialog("Draw Box", this);
+
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    gp_Pnt point = dialog.getPoint().Get_gp_Pnt();
+    gp_Vec dir   = dialog.getDirection().Get_gp_Pnt().XYZ();
+    getScene()->displayBox(point, dir.X(), dir.Y(), dir.Z());
 }
 
 /// This function is copied from QtCoreLib (>5.1)

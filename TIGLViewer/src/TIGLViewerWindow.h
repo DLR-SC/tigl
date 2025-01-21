@@ -105,6 +105,7 @@ private slots:
     void makeScreenShot();
     void drawPoint();
     void drawVector();
+    void drawBox();
 
 private:
     void connectSignals();

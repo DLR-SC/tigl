@@ -78,6 +78,11 @@ public:
                        Standard_Real aZoffset,
                        Standard_Real TextScale);
 
+    void displayBox(const gp_Pnt& corner1,
+                    Standard_Real dx,
+                    Standard_Real dy,
+                    Standard_Real dz);
+
     bool hasSelectedShapes() const;
 
     void updateViewer();

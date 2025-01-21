@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -227,8 +227,15 @@
      <property name="title">
       <string>Misc Geometry</string>
      </property>
+     <widget class="QMenu" name="menuDraw_Primitive">
+      <property name="title">
+       <string>Draw Primitive</string>
+      </property>
+      <addaction name="drawBoxAction"/>
+     </widget>
      <addaction name="drawPointAction"/>
      <addaction name="drawVectorAction"/>
+     <addaction name="menuDraw_Primitive"/>
     </widget>
     <addaction name="menuAircraft"/>
     <addaction name="menuRotorcraft"/>
@@ -1434,6 +1441,11 @@
    </property>
    <property name="whatsThis">
     <string>Show all Fuselages and Wings with Duct Cutouts</string>
+   </property>
+  </action>
+  <action name="drawBoxAction">
+   <property name="text">
+    <string>Box</string>
    </property>
   </action>
  </widget>
