@@ -85,10 +85,6 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _testdir _outputname)
                 COMMAND ${LCOV_PATH} --directory ../.. --capture --ignore-errors mismatch --output-file ${_outputname}_all.info
                 COMMAND ${LCOV_PATH} --remove ${_outputname}_all.info '${PROJECT_SOURCE_DIR}/${_testdir}/*' '${PROJECT_SOURCE_DIR}/tests/common/*' '${PROJECT_SOURCE_DIR}/thirdparty/**' '/usr/*' '*oce*' '*build*' '*tixi3*' '${PROJECT_SOURCE_DIR}/src/generated/*' --output-file ${_outputname}.info
 
-                IF(TIGL_COVERAGE_GENHTML)
-                        COMMAND ${GENHTML_PATH} -o ../../${_outputname} ${_outputname}.info
-                ENDIF()
-                
                 COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}_all.info 
 
                 USES_TERMINAL
@@ -96,11 +92,12 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _testdir _outputname)
                 COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
         )
 
-        # Show info where to find the report
-        ADD_CUSTOM_COMMAND(TARGET ${_targetname} POST_BUILD
-                COMMAND ;
-                COMMENT "Open ./${_outputname}/index.html in your browser to view the coverage report."
-        )
+        IF(TIGL_COVERAGE_GENHTML)
+                ADD_CUSTOM_COMMAND(TARGET ${_targetname} POST_BUILD
+                        COMMAND ${GENHTML_PATH} -o ../../${_outputname} ${_outputname}.info
+                        COMMENT "Generating HTML report. Open ./${_outputname}/index.html in your browser to view the coverage report."
+                )
+        ENDIF()
 
 ENDFUNCTION() # SETUP_TARGET_FOR_COVERAGE
 
