@@ -148,6 +148,7 @@ public slots:
     void setCameraPosition(double x, double y, double z);
     void setCameraPosition(double elevationAngleDegree, double azimuthAngleDegree);
     void setCameraUpVector(double x, double y, double z);
+    void addLightSource(double x, double y, double z, double dx, double dy, double dz);
     void setReset();
     void setTransparency();
     void setTransparency(int);

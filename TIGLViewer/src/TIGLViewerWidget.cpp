@@ -607,6 +607,17 @@ void TIGLViewerWidget::setCameraUpVector(double x, double y, double z)
     }
 }
 
+void TIGLViewerWidget::addLightSource(double x, double y, double z, double dx, double dy, double dz)
+{
+    Handle(V3d_Light) theLight = new V3d_Light(Graphic3d_TypeOfLightSource::V3d_SPOT);
+    theLight->SetPosition(gp_Pnt(x,y,z));
+    theLight->SetDirection(gp_Dir(dx, dy, dz));
+    theLight->SetAngle(1.5);
+    if (!myView.IsNull()) {
+        myView->SetLightOn(theLight);
+    }
+}
+
 void TIGLViewerWidget::hiddenLineOff()
 {
     if (!myView.IsNull()) {
