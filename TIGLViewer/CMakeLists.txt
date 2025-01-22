@@ -62,103 +62,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
   endif()
 endif() # linux‚
 
-set(tv_src
-  src/ISession_Point.cpp
-  src/ISession_Direction.cpp
-  src/ISession_Text.cpp
-  src/main.cpp
-  src/TIGLViewerContext.cpp
-  src/TIGLViewerDocument.cpp
-  src/TIGLViewerInputoutput.cpp
-  src/TIGLViewerInternal.h.cpp
-  src/TIGLViewerWidget.cpp
-  src/TIGLViewerWindow.cpp
-  src/TIGLViewerSettingsDialog.cpp
-  src/TIGLScriptProxy.cpp
-  src/TIXIScriptProxy.cpp
-  src/TIGLScriptEngine.cpp
-  src/TiglViewerConsole.cpp
-  src/TIGLViewerSettings.cpp
-  src/TIGLViewerControlFile.cpp
-  src/TIGLViewerEtaXsiDialog.cpp
-  src/CHotsoseMeshReader.cpp
-  src/TIGLAISTriangulation.cpp
-  src/TIGLViewerErrorDialog.cpp
-  src/TIGLViewerLogHistory.cpp
-  src/TIGLViewerLogRedirection.cpp
-  src/TIGLViewerLoggerHTMLDecorator.cpp
-  src/TIGLViewerFuseDialog.cpp
-  src/TIGLViewerShapeIntersectionDialog.cpp
-  src/TIGLViewerScreenshotDialog.cpp
-  src/TIGLViewerDrawVectorDialog.cpp
-  src/TIGLViewerScopedCommand.cpp
-  src/TIGLQAspectWindow.cpp
-  src/TIGLViewerVTKExportDialog.cpp
-  src/TIGLSliderDialog.cpp
-  src/TIGLViewerApp.cpp
-  src/TIGLGeometryChoserDialog.cpp
-  src/TIGLViewerUndoCommands.cpp
-  src/TIGLInteractiveShapeManager.cpp
-  src/TIGLViewerSelectWingAndFlapStatusDialog.cpp
-)
-	
-# header files
-set(tv_hdr
-  src/CommandLineParameters.h
-  src/ISession_Point.h
-  src/ISession_Direction.h
-  src/ISession_Text.h
-  src/TIGLViewer.h
-  src/TIGLViewerSettings.h
-  src/TIGLViewerControlFile.h
-  src/TIGLAISTriangulation.h
-  src/CHotsoseMeshReader.h
-  src/TIGLViewerLogHistory.h
-  src/TIGLViewerLoggerHTMLDecorator.h
-  src/TIGLViewerScopedCommand.h
-  src/TIGLQAspectWindow.h
-  src/TIGLViewerUndoCommands.h
-  src/TIGLDebugStream.h
-  src/TIGLViewerContext.h
-  src/TIGLViewerDocument.h
-  src/TIGLViewerInputoutput.h
-  src/TIGLViewerInputoutput.h
-  src/TIGLViewerWidget.h
-  src/TIGLViewerWindow.h
-  src/TIGLViewerSettingsDialog.h
-  src/TIGLScriptProxy.h
-  src/TIXIScriptProxy.h
-  src/TIGLScriptEngine.h
-  src/TiglViewerConsole.h
-  src/TIGLViewerEtaXsiDialog.h
-  src/TIGLViewerErrorDialog.h
-  src/TIGLViewerDrawVectorDialog.h
-  src/TIGLViewerLogRedirection.h
-  src/TIGLViewerFuseDialog.h
-  src/TIGLViewerShapeIntersectionDialog.h
-  src/TIGLViewerScreenshotDialog.h
-  src/TIGLViewerVTKExportDialog.h
-  src/TIGLSliderDialog.h
-  src/TIGLViewerApp.h
-  src/TIGLGeometryChoserDialog.h
-  src/TIGLInteractiveShapeManager.h
-  src/TIGLViewerSelectWingAndFlapStatusDialog.h
-)
-
-set(tv_ui
-  src/TIGLViewerWindow.ui
-  src/TIGLViewerSettingsDialog.ui
-  src/TIGLViewerEtaXsiDialog.ui
-  src/TIGLViewerErrorDialog.ui
-  src/TIGLViewerFuseDialog.ui
-  src/TIGLViewerShapeIntersectionDialog.ui
-  src/TIGLViewerScreenshotDialog.ui
-  src/TIGLViewerDrawVectorDialog.ui
-  src/TIGLViewerVTKExportDialog.ui
-  src/TIGLSliderDialog.ui
-  src/TIGLGeometryChoserDialog.ui
-  src/TIGLViewerSelectWingAndFlapStatusDialog.ui
-)
+# get source files, headers and UI files
+file(GLOB_RECURSE tv_src "src/*.cpp")
+file(GLOB_RECURSE tv_hdr "src/*.h")
+file(GLOB_RECURSE tv_ui "src/*.ui")
 
 # compile icons
 QTX_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc styles/qdarkstyle/style.qrc)
