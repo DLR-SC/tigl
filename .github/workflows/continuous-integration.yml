@@ -98,10 +98,10 @@ jobs:
         # generate coverage reports on latest ubuntu debug builds
         exclude:
           - config: "Debug"
-            os: "ubuntu-latest"
+            os: "ubuntu-22.04"
         include:
           - config: "Debug"
-            os: "ubuntu-latest"
+            os: "ubuntu-22.04"
             coverage: "ON"
             unit-tests: false
     runs-on: ${{ matrix.os }}
