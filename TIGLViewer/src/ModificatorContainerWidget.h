@@ -24,6 +24,7 @@
 #include "modificators/ModificatorWingWidget.h"
 #include "modificators/ModificatorFuselageWidget.h"
 #include "modificators/ModificatorTransformationWidget.h"
+#include "modificators/ModificatorSectionsWidget.h"
 #include "CCPACSFuselages.h"
 #include "CPACSWing.h"
 #include "CCPACSWings.h"
@@ -78,7 +79,7 @@ public:
     void setFuselagesModificator(tigl::CCPACSFuselages& fuselages);
     void setElementModificator(tigl::CTiglSectionElement& element);
     void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
-    void setSectionsModificator(tigl::CreateConnectedElementI& conntedElementI);
+    void setSectionsModificator(Ui::ElementModificatorInterface const& conntedElementI);
     // for positioning, we need two different calls for wing and for fuselage. Otherwise, we miss to invalidate the
     // associated wing or fuselage
     void setPositioningModificator(tigl::CCPACSWing& wing, tigl::CCPACSPositioning& positioning);

@@ -24,7 +24,6 @@
 #include "CTiglSectionElement.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSWingSection.h"
-#include "CreateConnectedElementI.h"
 #include "CCPACSPositioning.h"
 #include "CTiglStandardizer.h"
 #include "TIGLViewerContext.h"
@@ -150,21 +149,24 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
         std::string bodyUID = item->getParent()->getUid(); // return the fuselage or wing uid
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
-        tigl::CreateConnectedElementI * elementI = nullptr;
 
-        if (typePtr.type == &typeid(tigl::CCPACSWing)) {
-            tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing *>(typePtr.ptr);
-            elementI = dynamic_cast<tigl::CreateConnectedElementI* >(&wing);
-        }
-        else if (typePtr.type == &typeid(tigl::CCPACSFuselage)) {
-            tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage *>(typePtr.ptr);
-            elementI = dynamic_cast<tigl::CreateConnectedElementI* >(&fuselage);
-        }
-        else {
-            LOG(ERROR) << "ModificatorManager:: Unexpected sections type!";
-        }
+        auto get_element_interface = [](tigl::CTiglUIDManager::TypedPtr const& ptr) {
+            if (ptr.type == &typeid(tigl::CCPACSWing)) {
+                tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing*>(ptr.ptr);
+                return Ui::ElementModificatorInterface(wing);
+            }
+            else if (ptr.type == &typeid(tigl::CCPACSFuselage)) {
+                tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage*>(ptr.ptr);
+                return Ui::ElementModificatorInterface(fuselage);
+            }
+            else {
+                LOG(ERROR) << "ModificatorManager:: Unexpected sections type!";
+                return Ui::ElementModificatorInterface(tigl::CCPACSFuselage(nullptr, nullptr));
+            }
+        };
 
-        modificatorContainerWidget->setSectionsModificator(*elementI);
+        auto element = get_element_interface(typePtr);
+        modificatorContainerWidget->setSectionsModificator(std::move(element));
     }
     else if (item->getType() == "positioning" ) {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
