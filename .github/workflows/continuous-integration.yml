@@ -74,7 +74,7 @@ jobs:
         # only enable coverage for Debug build on latest ubuntu
         include:
           - config: "Debug"
-            os: "ubuntu-latest"
+            os: "ubuntu-22.04"
             coverage: "ON"
     runs-on: ${{ matrix.os }}
     steps:
