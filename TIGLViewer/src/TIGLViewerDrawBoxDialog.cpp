@@ -88,7 +88,7 @@ TIGLViewerDrawBoxDialog::TIGLViewerDrawBoxDialog(const QString& title, QWidget *
     horizontalLayout->addWidget(groupPoint);
 
     // A group box for setting the Extents
-    QGroupBox* groupExtents = new QGroupBox("Position");
+    QGroupBox* groupExtents = new QGroupBox("Extents");
     QGridLayout* groupExtentsLayout = new QGridLayout();
     groupExtentsLayout->addWidget(new QLabel("dx = "), 0, 0);
     groupExtentsLayout->addWidget(dx, 0, 1);
