@@ -23,10 +23,7 @@
 #include <CTiglPoint.h>
 
 
-namespace Ui
-{
-    class TIGLViewerDrawBoxDialog;
-}
+class QDoubleSpinBox;
 
 class TIGLViewerDrawBoxDialog : public QDialog
 {
@@ -34,15 +31,17 @@ class TIGLViewerDrawBoxDialog : public QDialog
     
 public:
     explicit TIGLViewerDrawBoxDialog(const QString& title = "Draw Vector", QWidget *parent = 0);
-    void setDirectionEnabled(bool enabled);
 
     tigl::CTiglPoint getPoint() const;
     tigl::CTiglPoint getDirection() const;
     
-    ~TIGLViewerDrawBoxDialog() override;
-    
 private:
-    Ui::TIGLViewerDrawBoxDialog *ui;
+    QDoubleSpinBox* origin_x;
+    QDoubleSpinBox* origin_y;
+    QDoubleSpinBox* origin_z;
+    QDoubleSpinBox* dx;
+    QDoubleSpinBox* dy;
+    QDoubleSpinBox* dz;
 };
 
 #endif // TIGLVIEWERDRAWBOXDIALOG_H
