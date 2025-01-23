@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -227,15 +227,10 @@
      <property name="title">
       <string>Misc Geometry</string>
      </property>
-     <widget class="QMenu" name="menuDraw_Primitive">
-      <property name="title">
-       <string>Draw Primitive</string>
-      </property>
-      <addaction name="drawBoxAction"/>
-     </widget>
      <addaction name="drawPointAction"/>
      <addaction name="drawVectorAction"/>
-     <addaction name="menuDraw_Primitive"/>
+     <addaction name="separator"/>
+     <addaction name="drawBoxAction"/>
     </widget>
     <addaction name="menuAircraft"/>
     <addaction name="menuRotorcraft"/>
@@ -1445,7 +1440,7 @@
   </action>
   <action name="drawBoxAction">
    <property name="text">
-    <string>Box</string>
+    <string>Draw Box</string>
    </property>
   </action>
  </widget>
