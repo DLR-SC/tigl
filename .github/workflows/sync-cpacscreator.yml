@@ -1,4 +1,4 @@
-name: Sync
+name: Sync CPACSCreator branch with master
 on:
   push:
     branches:
