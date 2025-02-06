@@ -41,7 +41,12 @@ public:
     TIGL_EXPORT CTiglStringerFrameBorderedObject(const CTiglUIDManager& uidMgr, const CTiglRelativelyPositionedComponent* parent,
                                                  std::string& startFrameUID, std::string& endFrameUID,
                                                  std::string& startStringerUID,
-                                                 boost::variant<std::string&, boost::optional<std::string>&> endStringerUID);
+                                                 std::string& endStringerUID);
+
+    TIGL_EXPORT CTiglStringerFrameBorderedObject(const CTiglUIDManager& uidMgr, const CTiglRelativelyPositionedComponent* parent,
+                                                 std::string& startFrameUID, std::string& endFrameUID,
+                                                 std::string& startStringerUID,
+                                                 boost::optional<std::string>& endStringerUID);
 
     TIGL_EXPORT TopoDS_Shape GetGeometry(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
