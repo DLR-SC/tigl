@@ -96,6 +96,7 @@
 #include "generated/CPACSWallSegment.h"
 #include "generated/CPACSWallSegments.h"
 #include "generated/CPACSUIDSequence.h"
+#include "generated/CPACSWing.h"
 #include "CCPACSDucts.h"
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
@@ -140,6 +141,7 @@
 %boost_optional(tigl::generated::CPACSSparCells)
 %boost_optional(tigl::CCPACSGuideCurves)
 %boost_optional(tigl::CCPACSPositionings)
+%boost_optional(tigl::CCPACSPositioning)
 %boost_optional(tigl::CCPACSWingComponentSegments)
 %boost_optional(tigl::CCPACSWingRibsDefinitions)
 %boost_optional(tigl::CCPACSWingSpars)
@@ -441,6 +443,7 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingComponentSegments.h"
 %include "generated/CPACSPositionings.h"
 %include "CCPACSPositionings.h"
+%include "CCPACSPositioning.h"
 // We have to rename the enums since they collide with those from tigl.h
 %rename(GuideCurve_C0) tigl::generated::C0;
 %rename(GuideCurve_C1_from_previous) tigl::generated::C1_from_previous;

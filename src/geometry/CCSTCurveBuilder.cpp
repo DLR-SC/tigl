@@ -20,6 +20,9 @@
 
 #include "tiglmathfunctions.h"
 #include "CFunctionToBspline.h"
+#include "CTiglError.h"
+
+#include "GeomAPI_PointsToBSpline.hxx"
 
 #include <cassert>
 
@@ -83,9 +86,15 @@ namespace
 namespace tigl
 {
 
-CCSTCurveBuilder::CCSTCurveBuilder(double N1, double N2, const std::vector<double>& B, double T)
+CCSTCurveBuilder::CCSTCurveBuilder(double N1, double N2, const std::vector<double>& B, double T, Algorithm method)
+    : _n1(N1)
+    , _n2(N2)
+    , _t(T)
+    , _b(B)
+    , _degree(4)
+    , _tol(1e-5)
+    , _algo(method)
 {
-    _n1 = N1; _n2 = N2; _b = B; _t = T;
 }
 
 double CCSTCurveBuilder::N1() const
@@ -111,8 +120,28 @@ std::vector<double> CCSTCurveBuilder::B() const
 Handle(Geom_BSplineCurve) CCSTCurveBuilder::Curve()
 {
     CSTFunction function(this);
-    CFunctionToBspline approximator(function, 0., 1., 4, 1e-5, 10);
-    return approximator.Curve();
+    if (_algo == Algorithm::Piecewise_Chebychev_Approximation)
+    {
+        CFunctionToBspline approximator(function, 0., 1., _degree, _tol, 10);
+        return approximator.Curve();
+    }
+    else if (_algo == Algorithm::GeomAPI_PointsToBSpline) {
+
+        // sample the CST curve
+        int nsamples = 100;
+        TColgp_HArray1OfPnt points(1, nsamples);
+        for (int i = 0; i < nsamples; ++i) {
+            double t = (double)i*1/((double)nsamples-1);
+            points.SetValue(i+1, gp_Pnt(function.valueX(t), function.valueY(t), function.valueZ(t)));
+        }
+
+        // approximate sampled points using OCCT's internal algorithm GeomAPI_PointsToBSpline
+        GeomAPI_PointsToBSpline approximator(points, _degree, _degree, GeomAbs_C3, _tol);
+        return approximator.Curve();
+    }
+    else {
+        throw CTiglError("Unknown algorithm enum value passed to CCSTCurveBuilder", TIGL_ERROR);
+    }
 }
 
 }
