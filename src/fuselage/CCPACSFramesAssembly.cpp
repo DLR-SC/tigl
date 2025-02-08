@@ -19,6 +19,7 @@
 #include "CCPACSFrame.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
+#include "CCPACSVessel.h"
 #include "ITiglFuselageDuctStructure.h"
 
 namespace tigl
@@ -44,9 +45,12 @@ void CCPACSFramesAssembly::Invalidate(const boost::optional<std::string>& source
         m_frames[i]->Invalidate(source);
 }
 
-// ToDo: Add vessels
+
 CTiglRelativelyPositionedComponent const* CCPACSFramesAssembly::GetParentComponent() const
 {
+    if (IsParent<CCPACSVesselStructure>()) {
+        return GetParent<CCPACSVesselStructure>()->GetParent();
+    }
     if (IsParent<CCPACSDuctStructure>()) {
         return GetParent<CCPACSDuctStructure>()->GetParent();
     }
