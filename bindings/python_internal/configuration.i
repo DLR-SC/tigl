@@ -348,9 +348,8 @@ namespace tigl
 %include "CPACSRotorHubHinge_type.h"
 
 // --------------- Fuselage tanks -----------------//
-%boost_optional(tigl::generated::CPACSFuselageFuelTanks)
-%boost_optional(tigl::CCPACSFuelTanks)
 %boost_optional(tigl::generated::CPACSFuelTanks)
+%boost_optional(tigl::CCPACSFuelTanks)
 %boost_optional(tigl::generated::CPACSFuelTankVolume)
 %boost_optional(tigl::CCPACSVesselStructure)
 
@@ -377,7 +376,6 @@ class CCPACSVessels;
 %include "CCPACSVessels.h"
 %include "generated/CPACSVessel.h"
 %include "CCPACSVessel.h"
-%include "generated/CPACSFuselageFuelTanks.h"
 
 // -------------------- Wing Structure -------------------//
 

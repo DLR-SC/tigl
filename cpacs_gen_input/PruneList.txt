@@ -46,7 +46,7 @@ CPACSReference
 // in fuselage
 CPACSDecks
 CPACSFuselageCutOuts
-CPACSIntegralFuelTanks
+CPACSFuselageFuelTanks
 CPACSCenterFuselageAreasAssembly
 CPACSFloorPanels
 CPACSGeneralStructuralMembersAssembly
