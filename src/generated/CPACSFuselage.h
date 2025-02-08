@@ -28,7 +28,6 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include "CPACSCompartments.h"
-#include "CPACSFuselageFuelTanks.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
@@ -103,9 +102,6 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSCompartments>& GetCompartments() const;
         TIGL_EXPORT virtual boost::optional<CPACSCompartments>& GetCompartments();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSFuselageFuelTanks>& GetFuelTanks() const;
-        TIGL_EXPORT virtual boost::optional<CPACSFuselageFuelTanks>& GetFuelTanks();
-
         TIGL_EXPORT virtual CCPACSPositionings& GetPositionings(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePositionings();
 
@@ -114,9 +110,6 @@ namespace generated
 
         TIGL_EXPORT virtual CPACSCompartments& GetCompartments(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCompartments();
-
-        TIGL_EXPORT virtual CPACSFuselageFuelTanks& GetFuelTanks(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveFuelTanks();
 
     protected:
         CCPACSFuselages* m_parent;
@@ -148,8 +141,6 @@ namespace generated
         boost::optional<CCPACSFuselageStructure> m_structure;
 
         boost::optional<CPACSCompartments>       m_compartments;
-
-        boost::optional<CPACSFuselageFuelTanks>  m_fuelTanks;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
