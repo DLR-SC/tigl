@@ -45,7 +45,7 @@ std::string CCPACSFuelTank::GetDefaultedUID() const
 
 TiglGeometricComponentType CCPACSFuelTank::GetComponentType() const
 {
-    return TIGL_COMPONENT_FUSELAGE_TANK;
+    return TIGL_COMPONENT_TANK;
 }
 
 TiglGeometricComponentIntent CCPACSFuelTank::GetComponentIntent() const

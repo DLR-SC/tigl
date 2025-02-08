@@ -168,7 +168,7 @@ TEST_F(FuelTanks, vessel_general)
 
 TEST_F(FuelTanks, vessel_component_info)
 {
-    EXPECT_EQ(vessel_segments->GetComponentType(), TIGL_COMPONENT_FUSELAGE_TANK_HULL);
+    EXPECT_EQ(vessel_segments->GetComponentType(), TIGL_COMPONENT_TANK_HULL);
     EXPECT_EQ(vessel_segments->GetComponentIntent(), TIGL_INTENT_PHYSICAL);
 }
 

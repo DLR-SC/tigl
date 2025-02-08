@@ -70,7 +70,7 @@ std::string CCPACSVessel::GetDefaultedUID() const
 
 TiglGeometricComponentType CCPACSVessel::GetComponentType() const
 {
-    return TIGL_COMPONENT_FUSELAGE_TANK_HULL;
+    return TIGL_COMPONENT_TANK_HULL;
 }
 
 TiglGeometricComponentIntent CCPACSVessel::GetComponentIntent() const

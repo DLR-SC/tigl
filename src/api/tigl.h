@@ -233,8 +233,8 @@ TIGL_COMPONENT_ENGINE_NACELLE,   /**< The Component is a engine nacelle */
 TIGL_COMPONENT_FUSELAGE_WALL,    /**< The Component is a fuselage wall */
 TIGL_COMPONENT_CONTROL_SURFACE_DEVICE, /**< The component is a control surface device (flap) */
 TIGL_COMPONENT_DUCT,             /**< The Component belongs to a duct */
-TIGL_COMPONENT_FUSELAGE_TANK,    /**< The Component is a fuselage tank */
-TIGL_COMPONENT_FUSELAGE_TANK_HULL, /**< The Component is a vessel of a fuselage tank */
+TIGL_COMPONENT_TANK,    /**< The Component is a fuselage tank */
+TIGL_COMPONENT_TANK_HULL, /**< The Component is a vessel of a fuselage tank */
 TIGL_COMPONENT_OTHER
 };
 

@@ -42,7 +42,7 @@ public:
     // Get the default uID
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
-    // Get the component type: TIGL_COMPONENT_FUSELAGE_TANK_HULL
+    // Get the component type: TIGL_COMPONENT_TANK_HULL
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     // Get the component intent: TIGL_INTENT_PHYSICAL
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
