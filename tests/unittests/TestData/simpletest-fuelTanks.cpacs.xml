@@ -328,6 +328,24 @@
                       </framePosition>
                     </frame>
                   </frames>
+                  <stringers>
+                    <stringer uID="outerVesselStructureStringer1">
+                      <stringerPosition uID="outerVesselStructureStringer1_sp1">
+                        <structuralElementUID>dummyMaterial</structuralElementUID>
+                        <sectionElementUID>outerVessel_section1</sectionElementUID>
+                        <referenceY>0</referenceY>
+                        <referenceZ>0</referenceZ>
+                        <referenceAngle>45</referenceAngle>
+                      </stringerPosition>
+                      <stringerPosition uID="outerVesselStructureStringer1_sp2">
+                        <structuralElementUID>dummyMaterial</structuralElementUID>
+                        <sectionElementUID>outerVessel_section2</sectionElementUID>
+                        <referenceY>0</referenceY>
+                        <referenceZ>0</referenceZ>
+                        <referenceAngle>45</referenceAngle>
+                      </stringerPosition>
+                    </stringer>
+                  </stringers>
                 </structure>
               </vessel>
               <vessel uID="tank1_innerVessel">

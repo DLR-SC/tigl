@@ -92,7 +92,9 @@ class FuelTanks(unittest.TestCase):
         ## Test accessability of childs:
         self.assertIsInstance(vessels.get_vessel(1), configuration.CCPACSVessel)
         self.assertEqual(vessels.get_vessel(1).get_defaulted_uid(), vessel1_uID)
-        self.assertIsInstance(vessels.get_vessel(vessel1_uID), configuration.CCPACSVessel)
+        self.assertIsInstance(
+            vessels.get_vessel(vessel1_uID), configuration.CCPACSVessel
+        )
         self.assertEqual(
             vessels.get_vessel_index(vessel1_uID),
             1,
@@ -214,7 +216,9 @@ class FuelTanks(unittest.TestCase):
         self.assertAlmostEqual(round(vessel_segments.get_surface_area(), 2), 11.15)
         self.assertAlmostEqual(round(vessel_parametric.get_surface_area(), 2), 36.19)
 
-        self.assertAlmostEqual(round(vessel_segments.get_circumference(1, 0.5), 2), 7.43)
+        self.assertAlmostEqual(
+            round(vessel_segments.get_circumference(1, 0.5), 2), 7.43
+        )
         with self.assertRaises(RuntimeError) as context:
             vessel_parametric.get_circumference(1, 0.5)
         self.assertEqual(str(context.exception), self.tank_type_exception_msg)
@@ -238,29 +242,25 @@ class FuelTanks(unittest.TestCase):
         )
 
     def test_structure(self):
-        structure = self.vessel_segments.get_structure()
+        structure_with_walls = self.vessel_isotensoid.get_structure()
+        structure_with_stringer_frames = self.vessel_segments.get_structure()
 
         # Test availability of generated class:
-        self.assertEqual(structure.get_uid(), "outerVesselStructure")
+        self.assertEqual(structure_with_walls.get_uid(), "tank5_structure")
 
         self.assertIsInstance(
-            structure.get_frames(), configuration.CCPACSFramesAssembly
+            structure_with_stringer_frames.get_frames(),
+            configuration.CCPACSFramesAssembly,
         )
 
         self.assertIsInstance(
-            structure.get_stringers(), configuration.CCPACSStringersAssembly
+            structure_with_stringer_frames.get_stringers(),
+            configuration.CCPACSStringersAssembly,
         )
 
         self.assertIsInstance(
-            structure.get_walls(), configuration.CCPACSWalls
+            structure_with_walls.get_walls(), configuration.CCPACSWalls
         )
-
-        
-
-        
-
-   
-        
 
 
 if __name__ == "__main__":
