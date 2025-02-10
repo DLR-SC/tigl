@@ -42,7 +42,7 @@
 #include "CTiglError.h"
 #include "CCPACSWalls.h"
 #include "CCPACSWallPosition.h"
-#include "CCPACSFuselageWallSegment.h"
+#include "CCPACSWallSegment.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglWingConnection.h"
@@ -100,6 +100,18 @@
 #include "CCPACSDucts.h"
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
+#include "generated/CPACSFuelTanks.h"
+#include "generated/CPACSFuelTank.h"
+#include "generated/CPACSFuelTankVolume.h"
+#include "CCPACSFuelTanks.h"
+#include "CCPACSFuelTank.h"
+#include "generated/CPACSVessels.h"
+#include "CCPACSVessels.h"
+#include "generated/CPACSVessel.h"
+#include "CCPACSVessel.h"
+#include "generated/CPACSVesselStructure.h"
+#include "CCPACSVesselStructure.h"
+#include "CCPACSFrame.h"
 %}
 
 %feature("autodoc", "3");
@@ -194,11 +206,11 @@
 %boost_optional(tigl::CCPACSWalls)
 %boost_optional(tigl::generated::CPACSWalls)
 %boost_optional(tigl::CCPACSWallPosition)
-%boost_optional(tigl::CCPACSFuselageWallSegment)
+%boost_optional(tigl::CCPACSWallSegment)
 %include "generated/CPACSWalls.h"
 %include "CCPACSWalls.h"
 %include "CCPACSWallPosition.h"
-%include "CCPACSFuselageWallSegment.h"
+%include "CCPACSWallSegment.h"
 
 // ----------------- Engines ---------------------------//
 %boost_optional(tigl::CCPACSEngines)
@@ -335,6 +347,36 @@ namespace tigl
 %include "CTiglAttachedRotorBlade.h"
 %include "CPACSRotorHubHinge_type.h"
 
+// --------------- Fuselage tanks -----------------//
+%boost_optional(tigl::generated::CPACSFuelTanks)
+%boost_optional(tigl::CCPACSFuelTanks)
+%boost_optional(tigl::generated::CPACSFuelTankVolume)
+%boost_optional(tigl::CCPACSVesselStructure)
+
+namespace tigl {
+class CCPACSFuselageSegments;
+class CCPACSVessels;
+}
+
+%include "generated/CPACSIsotensoidDome.h"
+%include "generated/CPACSTorisphericalDome.h"
+%include "generated/CPACSEllipsoidDome.h"
+%include "generated/CPACSDomeType.h"
+%include "generated/CPACSVesselStructure.h"
+%include "CCPACSVesselStructure.h"
+%include "generated/CPACSFuelTanks.h"
+%include "generated/CPACSFuelTankVolume.h"
+%include "generated/CPACSFuelTank.h"
+%include "CTiglFuselageConnection.h"
+%include "CCPACSFuselageSegment.h"
+%include "CCPACSFuselageSegments.h"
+%include "CCPACSFuelTanks.h"
+%include "CCPACSFuelTank.h"
+%include "generated/CPACSVessels.h"
+%include "CCPACSVessels.h"
+%include "generated/CPACSVessel.h"
+%include "CCPACSVessel.h"
+
 // -------------------- Wing Structure -------------------//
 
 namespace tigl {
@@ -409,6 +451,7 @@ class CCPACSWingRibsPositioning;
 %include "CPACSGuideCurve_continuity.h"
 %include "generated/CPACSGuideCurve.h"
 %include "generated/CPACSGuideCurves.h"
+%include "CCPACSGuideCurve.h"
 %include "CCPACSGuideCurves.h"
 %include "generated/CPACSCst2D.h"
 %include "ITiglWingProfileAlgo.h"
@@ -527,7 +570,7 @@ class CCPACSWingRibsPositioning;
 %factory(tigl::ITiglGeometricComponent& tigl::CTiglUIDManager::GetGeometricComponent,
          tigl::CCPACSFuselage,
          tigl::CCPACSFuselageSegment,
-         tigl::CCPACSFuselageWallSegment,
+         tigl::CCPACSWallSegment,
          tigl::CCPACSWing,
          tigl::CCPACSWingSegment,
          tigl::CCPACSWingComponentSegment,
@@ -547,7 +590,9 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSEnginePylon,
          tigl::CCPACSTrailingEdgeDevice,
          tigl::CCPACSDuct,
-         tigl::CCPACSDuctAssembly
+         tigl::CCPACSDuctAssembly,
+         tigl::CCPACSFuelTank,
+         tigl::CCPACSVessel
 );
 
 namespace tigl

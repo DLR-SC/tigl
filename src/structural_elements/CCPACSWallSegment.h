@@ -28,13 +28,14 @@ namespace tigl
 {
 
 class CCPACSFuselage;
+class CCPACSVessel;
 class CCPACSWalls;
 class CCPACSWallPosition;
 
-class CCPACSFuselageWallSegment : public generated::CPACSWallSegment, public CTiglAbstractGeometricComponent
+class CCPACSWallSegment : public generated::CPACSWallSegment, public CTiglAbstractGeometricComponent
 {
 public:
-    TIGL_EXPORT CCPACSFuselageWallSegment(CCPACSWallSegments* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWallSegment(CCPACSWallSegments* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT std::string GetDefaultedUID() const override
     {
@@ -61,10 +62,11 @@ private:
 
     const CCPACSWalls& GetWalls() const;
     const CCPACSFuselage& GetFuselage() const;
+    const CCPACSVessel& GetVessel() const;
 
     PNamedShape BuildLoft() const override;
     
-    mutable TopoDS_Compound m_cutPlanes;
+    mutable TopoDS_Compound _cutPlanes;
 };
 
 } // namespace tigl

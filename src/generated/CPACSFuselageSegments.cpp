@@ -19,6 +19,7 @@
 #include <CCPACSFuselageSegment.h>
 #include "CCPACSDuct.h"
 #include "CCPACSFuselage.h"
+#include "CCPACSVessel.h"
 #include "CPACSFuselageSegments.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -46,6 +47,14 @@ namespace generated
         m_parentType = &typeid(CCPACSFuselage);
     }
 
+    CPACSFuselageSegments::CPACSFuselageSegments(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSVessel);
+    }
+
     CPACSFuselageSegments::~CPACSFuselageSegments()
     {
     }
@@ -59,6 +68,9 @@ namespace generated
             if (IsParent<CCPACSFuselage>()) {
                 return GetParent<CCPACSFuselage>();
             }
+            if (IsParent<CCPACSVessel>()) {
+                return GetParent<CCPACSVessel>();
+            }
         }
         return nullptr;
     }
@@ -71,6 +83,9 @@ namespace generated
             }
             if (IsParent<CCPACSFuselage>()) {
                 return GetParent<CCPACSFuselage>();
+            }
+            if (IsParent<CCPACSVessel>()) {
+                return GetParent<CCPACSVessel>();
             }
         }
         return nullptr;

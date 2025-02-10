@@ -123,6 +123,12 @@ enum TiglCoordinateSystem
     FUSELAGE_COORDINATE_SYSTEM = 2
 };
 
+enum TiglGetPointBehavior {
+    asParameterOnSurface = 0,
+    onLinearLoft         = 1,
+    numGetPointBehaviors = 2
+};
+
 
 %{
 // includes are required to for compilation

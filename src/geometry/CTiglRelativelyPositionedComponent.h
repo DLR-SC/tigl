@@ -120,6 +120,10 @@ public:
 
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans);
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, Standard_Boolean applyRotation, Standard_Boolean applyScaling);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis, Standard_Boolean applyRotation, Standard_Boolean applyScaling);
 
     TIGL_EXPORT void Reset() const;
 
@@ -156,6 +160,9 @@ private:
     CTiglRelativelyPositionedComponent* _parent;
     ChildContainerType _children;
     MaybeOptionalPtr<std::string> _parentUID; ///< UID of the parent of this component, if supported by derived type
+
+    Standard_Boolean _applyRotation = false;
+    Standard_Boolean _applyScaling = false;
 
     MaybeOptionalPtr<CCPACSTransformation> _transformation;            // references down to the transformation of the derived class (may be empty in case derived class does not have transformation)
     boost::optional<TiglSymmetryAxis>* _symmetryAxis;   // references down to the symmetryAxis of the derived class (may be empty in case derived class does not have symmetry)

@@ -27,6 +27,9 @@
 #include "CTiglError.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
+#include "CCPACSVessel.h"
+#include "CCPACSVessels.h"
+#include "CCPACSFuelTank.h"
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSegment.h"
@@ -159,6 +162,10 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
     else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetSections();
     }
+    // ToDo: add exception handling
+    else if (segment->GetParent()->IsParent<CCPACSVessel>()) {
+        return segment->GetParent()->GetParent<CCPACSVessel>()->GetSections_choice1().get();
+    }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");
     }
@@ -166,11 +173,17 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
 
 boost::optional<CCPACSPositionings>& CTiglFuselageConnection::GetParentComponentPositionings() const
 {
+    // ToDo: is there a better implementation for Elements not having a positionings element?
+    static boost::optional<CCPACSPositionings> dummyPositionings;
+
     if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
         return segment->GetParent()->GetParent<CCPACSFuselage>()->GetPositionings();
     }
     else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetPositionings();
+    }
+    else if (segment->GetParent()->IsParent<CCPACSVessel>()) {
+        return dummyPositionings;
     }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");
