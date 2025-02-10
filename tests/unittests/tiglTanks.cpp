@@ -100,8 +100,6 @@ protected:
     tigl::CCPACSVessel* vessel_torispherical = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank4_torisphericalDome");
     tigl::CCPACSVessel* vessel_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank5_isotensoidDome");
 
-    tigl::CCPACSWallSegment* wall_in_fuselage = &uidMgr.ResolveObject<tigl::CCPACSWallSegment>("wall_fuselage");
-
     const char* tankTypeExceptionString = "This method is only available for vessels with segments. No segment found.";
 };
 
@@ -272,13 +270,12 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
 
 TEST_F(FuelTanks, structure)
 {
-    auto& structure = vessel_segments->GetStructure();
+    auto& structure_with_walls = vessel_isotensoid->GetStructure();
+    auto& structure_with_stringer_frames = vessel_segments->GetStructure();
 
-    EXPECT_EQ(structure->GetFrames()->GetFrames().size(), 1);
-    EXPECT_EQ(structure->GetUID(), "outerVesselStructure");
-}
+    EXPECT_EQ(structure_with_stringer_frames->GetFrames()->GetFrames().size(), 1);
+    EXPECT_EQ(structure_with_stringer_frames->GetStringers()->GetStringers().size(), 1);
 
-TEST_F(FuelTanks, walls)
-{
-    EXPECT_EQ(wall_in_fuselage->GetUID().get(), "wall_fuselage");
+    EXPECT_EQ(structure_with_walls->GetUID(), "tank5_structure");
+    EXPECT_EQ(structure_with_walls->GetWalls()->GetWallSegments().GetWallSegments().size(), 3);
 }
