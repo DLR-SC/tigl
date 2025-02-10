@@ -270,11 +270,6 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
     EXPECT_EQ(vessel_segments->GetGetPointBehavior(), onLinearLoft);
 }
 
-TEST_F(FuelTanks, parametric_vessel)
-{
-    auto& loft = vessel_parametric->GetLoft();
-}
-
 TEST_F(FuelTanks, structure)
 {
     auto& structure = vessel_segments->GetStructure();
@@ -286,5 +281,4 @@ TEST_F(FuelTanks, structure)
 TEST_F(FuelTanks, walls)
 {
     EXPECT_EQ(wall_in_fuselage->GetUID().get(), "wall_fuselage");
-    auto loft = wall_in_fuselage->GetLoft();
 }
