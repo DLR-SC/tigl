@@ -30,23 +30,6 @@
 
 #include "CCPACSVessel.h"
 
-// #include "generated/CPACSVessels.h"
-// #include "generated/CPACSVessel.h"
-
-// #include "CNamedShape.h"
-// #include "tiglcommonfunctions.h"
-
-// #include <Bnd_Box.hxx>
-// #include <BRepBndLib.hxx>
-// #include <gp_Pnt.hxx>
-
-// #include <TopoDS_Shape.hxx>
-
-// #include <TopTools_IndexedMapOfShape.hxx>
-// #include <TopExp.hxx>
-
-// #include <TopoDS_Iterator.hxx>
-
 class FuelTanks : public ::testing::Test
 {
 protected:
