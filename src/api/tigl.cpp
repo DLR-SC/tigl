@@ -7342,6 +7342,15 @@ TiglReturnCode tiglExportComponent(TiglCPACSConfigurationHandle cpacsHandle, con
 
         tigl::PTiglCADExporter exporter = tigl::createExporter(extension);
         exporter->AddShape(component.GetLoft(), &config, tigl::TriangulatedExportOptions(deflection));
+
+        // Mirror symmetries if requested
+        if (exporter->GlobalExportOptions().Get<bool>("ApplySymmetries")) {
+            auto positionedComp = dynamic_cast<tigl::CTiglRelativelyPositionedComponent*>(&component);
+            if (positionedComp && positionedComp->GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                exporter->AddShape(positionedComp->GetMirroredLoft(), &config, tigl::TriangulatedExportOptions(deflection));
+            }
+        }
+
         if (exporter->Write(fileName) == true) {
             return TIGL_SUCCESS;
         }
