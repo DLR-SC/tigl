@@ -1855,6 +1855,20 @@ void GetEndVertices(const TopoDS_Shape& shape, TopTools_ListOfShape& endVertices
     }
 }
 
+TopoDS_Vertex GetFirstVertex(const TopoDS_Edge& edge)
+{
+    TopTools_ListOfShape edgeList;
+    GetEndVertices(edge, edgeList);
+    return TopoDS::Vertex(edgeList.First());
+}
+
+TopoDS_Vertex GetLastVertex(const TopoDS_Edge& edge)
+{
+    TopTools_ListOfShape edgeList;
+    GetEndVertices(edge, edgeList);
+    return TopoDS::Vertex(edgeList.Last());
+}
+
 TopoDS_Face GetNearestFace(const TopoDS_Shape& shape, const gp_Pnt& pnt)
 {
     TopExp_Explorer explorer;
