@@ -639,12 +639,21 @@ void GetShapeExtension(const TopoDS_Shape& shape,
     boundingBox.Get(minx, miny, minz, maxx, maxy, maxz);
 }
 
+int GetHash(const TopoDS_Shape& shape)
+{
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,8,0)
+    return std::hash<TopoDS_Shape>{}(shape);
+#else
+    return shape.HashCode(INT_MAX);
+#endif
+}
+
 // Returns a unique Hashcode for a specific geometric component
 int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
 {
     const TopoDS_Shape& loft = (*component.GetLoft()).Shape();
     if (!loft.IsNull()) {
-        return loft.HashCode(2294967295);
+        return GetHash(loft);
     }
     else {
         return 0;
