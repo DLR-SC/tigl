@@ -88,3 +88,45 @@ TEST_F(TiglTransformationBenchmark, checkProfilePositions)
     EXPECT_NEAR(3.0, py, 1e-10);
     EXPECT_NEAR(0.0, pz, 1e-10);
 }
+
+TEST_F(TiglTransformationBenchmark, transformPointToGlobal)
+{
+    double px, py, pz;
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglComponentTransformPointToGlobal(tiglHandle, "Wing0", 0., 0., 0., &px, &py, &pz));
+    EXPECT_NEAR(1.0, px, 1e-10);
+    EXPECT_NEAR(0.0, py, 1e-10);
+    EXPECT_NEAR(0.0, pz, 1e-10);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglComponentTransformPointToGlobal(tiglHandle, "Wing1", 0., 0., 0., &px, &py, &pz));
+    EXPECT_NEAR(1.0, px, 1e-10);
+    EXPECT_NEAR(1.0, py, 1e-10);
+    EXPECT_NEAR(0.0, pz, 1e-10);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglComponentTransformPointToGlobal(tiglHandle, "Wing2", 0., 0., 0., &px, &py, &pz));
+    EXPECT_NEAR(1.5, px, 1e-10);
+    EXPECT_NEAR(2.0, py, 1e-10);
+    EXPECT_NEAR(0.0, pz, 1e-10);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglComponentTransformPointToGlobal(tiglHandle, "Wing3", 0., 0., 0., &px, &py, &pz));
+    EXPECT_NEAR(1.5, px, 1e-10);
+    EXPECT_NEAR(3.0, py, 1e-10);
+    EXPECT_NEAR(0.0, pz, 1e-10);
+}
+
+TEST_F(TiglTransformationBenchmark, transformPointToGlobalErrors)
+{
+    double px, py, pz;
+
+    // Invalid handle
+    EXPECT_EQ(TIGL_NOT_FOUND, tiglComponentTransformPointToGlobal(-1, "Wing3", 0., 0., 0., &px, &py, &pz));
+
+    // Invalid UUID
+    EXPECT_EQ(TIGL_UID_ERROR, tiglComponentTransformPointToGlobal(tiglHandle, "UUID_NOT_EXIST", 0, 0., 0., &px, &py, &pz));
+
+    // nullptrs
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglComponentTransformPointToGlobal(tiglHandle, nullptr, 0., 0., 0., &px, &py, &pz));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglComponentTransformPointToGlobal(tiglHandle, "Wing3", 0., 0., 0., nullptr, &py, &pz));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglComponentTransformPointToGlobal(tiglHandle, "Wing3", 0., 0., 0., &px, nullptr, &pz));
+    EXPECT_EQ(TIGL_NULL_POINTER, tiglComponentTransformPointToGlobal(tiglHandle, "Wing3", 0., 0., 0., &px, &py, nullptr));
+}

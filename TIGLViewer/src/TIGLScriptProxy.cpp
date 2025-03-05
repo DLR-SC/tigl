@@ -517,6 +517,23 @@ QScriptValue TIGLScriptProxy::wingGetSegmentEtaXsi(int wingIdx, double px, doubl
 
 }
 
+QScriptValue TIGLScriptProxy::componentTransformPointToGlobal(QString componentUID, double localX, double localY, double localZ)
+{
+    double gx, gy, gz;
+
+    TiglReturnCode ret = ::tiglComponentTransformPointToGlobal(getTiglHandle(), componentUID.toStdString().c_str(),
+                                                               localX, localY, localZ,
+                                                               &gx, &gy, &gz);
+
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
+        return Point3dCtor.construct(QScriptValueList() << gx << gy << gz);
+    }
+}
+
 
 QScriptValue TIGLScriptProxy::getShape(QString uid)
 {

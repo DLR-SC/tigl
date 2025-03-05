@@ -7529,3 +7529,65 @@ TiglReturnCode tiglConfigurationGetWithDuctCutouts(TiglCPACSConfigurationHandle 
         return TIGL_ERROR;
     }
 }
+
+TiglReturnCode tiglComponentTransformPointToGlobal(TiglCPACSConfigurationHandle cpacsHandle,
+                                                   const char *componentUID,
+                                                   double localX,
+                                                   double localY,
+                                                   double localZ,
+                                                   double *globalX,
+                                                   double *globalY,
+                                                   double *globalZ)
+{
+    if (!componentUID) {
+        LOG(ERROR) << "Null pointer for argument componentUID in tiglComponentTransformPointToGlobal";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!globalX) {
+        LOG(ERROR) << "Null pointer for argument globalX in tiglComponentTransformPointToGlobal";
+        return TIGL_NULL_POINTER;
+    }
+
+
+    if (!globalY) {
+        LOG(ERROR) << "Null pointer for argument globalY in tiglComponentTransformPointToGlobal";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!globalZ) {
+        LOG(ERROR) << "Null pointer for argument globalZ in tiglComponentTransformPointToGlobal";
+        return TIGL_NULL_POINTER;
+    }
+
+
+    try {
+        // try to resolve the object for the given uid and get the flag
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        tigl::CTiglRelativelyPositionedComponent& component = config.GetUIDManager().GetRelativeComponent(componentUID);
+
+        gp_Pnt pGlobal = component.GetTransformationMatrix().Transform(gp_Pnt(localX, localY, localZ));
+
+        *globalX = pGlobal.X();
+        *globalY = pGlobal.Y();
+        *globalZ = pGlobal.Z();
+
+
+        return TIGL_SUCCESS;
+
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglComponentTransformPointToGlobal!";
+        return TIGL_ERROR;
+    }
+}
