@@ -6,10 +6,15 @@ Changes since last release
 10/01/2025
 
 - Fixes
+
   - #936 A particular defined positioning (of the C++-type CCPACSPositioning) was not available via Python bindings since the std::vector<std::unique_ptr<**Type**>> is not exposed to swig. New getter functions have been implemented in CCPACSPositioning.h to make these elements accesible via index, similar to the implementation of for several other classes. For more information see https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59.
 
+ - New API functions:
+   
+   - New function `::tiglComponentTransformPointToGlobal` to transform component-local coordinates into global coordinates (#1064)
   
-- General changes:
+ - General changes:
+ 
     - Update the C++ standard to C++17 (#1045).
     - Added the possibility to switch between two algorithms in the `CCSTCurveBuilder`. The default algorithm based on a Chebychev approximation results in a small number of control points, but introduces small discontinuities in the curvature. The new option is to use OCCT's `GeomAPI_PointsToBSpline`, which results in a C3 continuous B-Spline.
 
