@@ -1,3 +1,5 @@
+Don't even think about merging this upstream!!!
+
 <p><img src="doc/images/logo.png" alt="TiGL Logo" title="TiGL Logo" style="background-color:white;padding:5px;"/></p>
 
 [![CI workflow for main branch](https://github.com/DLR-SC/tigl/actions/workflows/main.yml/badge.svg)](https://github.com/DLR-SC/tigl/actions/workflows/main.yml)
