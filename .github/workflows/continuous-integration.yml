@@ -10,7 +10,7 @@ on:
         required: false
       CODECOV_TOKEN:
         description: 'Needed to upload coverage report to codecov'
-        required: true
+        required: false
 
     inputs:
 
