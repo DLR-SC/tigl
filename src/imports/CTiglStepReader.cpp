@@ -23,6 +23,7 @@
 #include "CTiglImporterFactory.h"
 #include "CTiglTypeRegistry.h"
 #include "CTiglError.h"
+#include "tiglcommonfunctions.h"
 
 #include <STEPControl_Reader.hxx>
 #include <StepBasic_ProductDefinition.hxx>
@@ -55,7 +56,7 @@ namespace
                 continue;
             }
 
-            int hash = shape->Shape().HashCode(INT_MAX);
+            int hash = GetHash(shape->Shape());
             shapeMap[hash] = ishape;
         }
 
@@ -90,7 +91,7 @@ namespace
                 std::string shapeName = prod->Name()->ToCString();
 
                 // create hash and search for it in hashMap
-                int hash = boundShape.HashCode(INT_MAX);
+                int hash = GetHash(boundShape);
                 HashMap::iterator it = shapeMap.find(hash);
                 if (it == shapeMap.end()) {
                     continue;

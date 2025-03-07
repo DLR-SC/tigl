@@ -21,6 +21,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <math_Matrix.hxx>
 #include <math_Gauss.hxx>
+#include <math_Vector.hxx>
 
 #include <BSplCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
