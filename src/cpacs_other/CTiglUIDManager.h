@@ -133,6 +133,9 @@ public:
     // Returns the parent component for a component or a null pointer if there is no parent.
     TIGL_EXPORT CTiglRelativelyPositionedComponent* GetParentGeometricComponent(const std::string& uid) const;
 
+    // Returns a pointer to the geometric component for the given unique id.
+    TIGL_EXPORT CTiglRelativelyPositionedComponent& GetRelativeComponent(const std::string& uid) const;
+
     // Returns the container with all root components of the geometric topology that have children.
     TIGL_EXPORT const RelativeComponentContainerType& GetRootGeometricComponents() const;
 
@@ -175,8 +178,6 @@ private:
     // Builds the parent child relationships and finds the root components
     void BuildTree();
 
-    // Returns a pointer to the geometric component for the given unique id.
-    CTiglRelativelyPositionedComponent& GetRelativeComponent(const std::string& uid) const;
 
 private:
     typedef std::map<std::string, TypedPtr> CPACSObjectMap;
