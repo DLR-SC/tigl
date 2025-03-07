@@ -1,8 +1,9 @@
 name: Sync CPACSCreator branch with master
 on:
+  workflow_dispatch:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   sync-branches:
