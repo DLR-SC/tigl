@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include <CCPACSFuselageWallSegment.h>
+#include <CCPACSWallSegment.h>
 #include "CCPACSWalls.h"
 #include "CPACSWallSegments.h"
 #include "CTiglError.h"
@@ -98,23 +98,23 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>& CPACSWallSegments::GetWallSegments() const
+    const std::vector<std::unique_ptr<CCPACSWallSegment>>& CPACSWallSegments::GetWallSegments() const
     {
         return m_wallSegments;
     }
 
-    std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>& CPACSWallSegments::GetWallSegments()
+    std::vector<std::unique_ptr<CCPACSWallSegment>>& CPACSWallSegments::GetWallSegments()
     {
         return m_wallSegments;
     }
 
-    CCPACSFuselageWallSegment& CPACSWallSegments::AddWallSegment()
+    CCPACSWallSegment& CPACSWallSegments::AddWallSegment()
     {
-        m_wallSegments.push_back(make_unique<CCPACSFuselageWallSegment>(this, m_uidMgr));
+        m_wallSegments.push_back(make_unique<CCPACSWallSegment>(this, m_uidMgr));
         return *m_wallSegments.back();
     }
 
-    void CPACSWallSegments::RemoveWallSegment(CCPACSFuselageWallSegment& ref)
+    void CPACSWallSegments::RemoveWallSegment(CCPACSWallSegment& ref)
     {
         for (std::size_t i = 0; i < m_wallSegments.size(); i++) {
             if (m_wallSegments[i].get() == &ref) {

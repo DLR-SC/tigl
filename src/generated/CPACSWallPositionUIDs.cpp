@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSFuselageWallSegment.h"
+#include "CCPACSWallSegment.h"
 #include "CPACSWallPositionUIDs.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -28,7 +28,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSWallPositionUIDs::CPACSWallPositionUIDs(CCPACSFuselageWallSegment* parent, CTiglUIDManager* uidMgr)
+    CPACSWallPositionUIDs::CPACSWallPositionUIDs(CCPACSWallSegment* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -44,12 +44,12 @@ namespace generated
         }
     }
 
-    const CCPACSFuselageWallSegment* CPACSWallPositionUIDs::GetParent() const
+    const CCPACSWallSegment* CPACSWallPositionUIDs::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSFuselageWallSegment* CPACSWallPositionUIDs::GetParent()
+    CCPACSWallSegment* CPACSWallPositionUIDs::GetParent()
     {
         return m_parent;
     }
