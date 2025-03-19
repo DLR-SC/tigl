@@ -29,7 +29,6 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_Shape.hxx>
-#include <AIS_SequenceOfInteractive.hxx>
 #include <AIS_Trihedron.hxx>
 
 #include <Aspect_Background.hxx>
@@ -89,7 +88,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Text.hxx>
 #include <Quantity_NameOfColor.hxx>
-#include <Quantity_PhysicalQuantity.hxx>
 #include <Quantity_TypeOfColor.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
