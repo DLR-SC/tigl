@@ -90,6 +90,58 @@ namespace generated
         return m_versionInfos;
     }
 
+    size_t CPACSVersionInfos::GetVersionInfoCount() const
+    {
+        return m_versionInfos.size();
+    }
+
+    size_t CPACSVersionInfos::GetVersionInfoIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetVersionInfoCount(); i++) {
+            const std::string tmpUID(m_versionInfos[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSVersionInfo& CPACSVersionInfos::GetVersionInfo(size_t index)
+    {
+        if (index < 1 || index > GetVersionInfoCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVersionInfo>>::GetVersionInfo", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_versionInfos[index];
+    }
+
+    const CPACSVersionInfo& CPACSVersionInfos::GetVersionInfo(size_t index) const
+    {
+        if (index < 1 || index > GetVersionInfoCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVersionInfo>>::GetVersionInfo", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_versionInfos[index];
+    }
+
+    CPACSVersionInfo& CPACSVersionInfos::GetVersionInfo(const std::string& UID)
+    {
+        for (auto& elem : m_versionInfos ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSVersionInfos::GetVersionInfo. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSVersionInfo& CPACSVersionInfos::GetVersionInfo(const std::string& UID) const
+    {
+        for (auto& elem : m_versionInfos ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSVersionInfos::GetVersionInfo. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSVersionInfo& CPACSVersionInfos::AddVersionInfo()
     {
         m_versionInfos.push_back(make_unique<CPACSVersionInfo>(this));

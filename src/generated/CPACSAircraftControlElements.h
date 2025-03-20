@@ -64,6 +64,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSAircraftControlElement>>& GetControlElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSAircraftControlElement>>& GetControlElements();
 
+        TIGL_EXPORT virtual size_t GetControlElementCount() const;
+        TIGL_EXPORT virtual size_t GetControlElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSAircraftControlElement& GetControlElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSAircraftControlElement& GetControlElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSAircraftControlElement& GetControlElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSAircraftControlElement& GetControlElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSAircraftControlElement& AddControlElement();
         TIGL_EXPORT virtual void RemoveControlElement(CPACSAircraftControlElement& ref);
 

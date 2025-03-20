@@ -108,6 +108,58 @@ namespace generated
         return m_sheetBasedStructuralElements;
     }
 
+    size_t CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElementCount() const
+    {
+        return m_sheetBasedStructuralElements.size();
+    }
+
+    size_t CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSheetBasedStructuralElementCount(); i++) {
+            const std::string tmpUID(m_sheetBasedStructuralElements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSSheetBasedStructuralElement& CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElement(size_t index)
+    {
+        if (index < 1 || index > GetSheetBasedStructuralElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSheetBasedStructuralElement>>::GetSheetBasedStructuralElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sheetBasedStructuralElements[index];
+    }
+
+    const CPACSSheetBasedStructuralElement& CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElement(size_t index) const
+    {
+        if (index < 1 || index > GetSheetBasedStructuralElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSheetBasedStructuralElement>>::GetSheetBasedStructuralElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sheetBasedStructuralElements[index];
+    }
+
+    CPACSSheetBasedStructuralElement& CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElement(const std::string& UID)
+    {
+        for (auto& elem : m_sheetBasedStructuralElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSSheetBasedStructuralElement& CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElement(const std::string& UID) const
+    {
+        for (auto& elem : m_sheetBasedStructuralElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSheetBasedStructuralElements::GetSheetBasedStructuralElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSSheetBasedStructuralElement& CPACSSheetBasedStructuralElements::AddSheetBasedStructuralElement()
     {
         m_sheetBasedStructuralElements.push_back(make_unique<CPACSSheetBasedStructuralElement>(this, m_uidMgr));

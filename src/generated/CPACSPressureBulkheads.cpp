@@ -86,7 +86,7 @@ namespace generated
     {
         // read element pressureBulkhead
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/pressureBulkhead")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/pressureBulkhead", m_pressureBulkheads, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSPressureBulkheads*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/pressureBulkhead", m_pressureBulkheads, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -108,9 +108,61 @@ namespace generated
         return m_pressureBulkheads;
     }
 
+    size_t CPACSPressureBulkheads::GetPressureBulkheadCount() const
+    {
+        return m_pressureBulkheads.size();
+    }
+
+    size_t CPACSPressureBulkheads::GetPressureBulkheadIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetPressureBulkheadCount(); i++) {
+            const std::string tmpUID(m_pressureBulkheads[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSPressureBulkhead& CPACSPressureBulkheads::GetPressureBulkhead(size_t index)
+    {
+        if (index < 1 || index > GetPressureBulkheadCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSPressureBulkhead>>::GetPressureBulkhead", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pressureBulkheads[index];
+    }
+
+    const CCPACSPressureBulkhead& CPACSPressureBulkheads::GetPressureBulkhead(size_t index) const
+    {
+        if (index < 1 || index > GetPressureBulkheadCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSPressureBulkhead>>::GetPressureBulkhead", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pressureBulkheads[index];
+    }
+
+    CCPACSPressureBulkhead& CPACSPressureBulkheads::GetPressureBulkhead(const std::string& UID)
+    {
+        for (auto& elem : m_pressureBulkheads ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSPressureBulkheads::GetPressureBulkhead. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSPressureBulkhead& CPACSPressureBulkheads::GetPressureBulkhead(const std::string& UID) const
+    {
+        for (auto& elem : m_pressureBulkheads ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSPressureBulkheads::GetPressureBulkhead. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSPressureBulkhead& CPACSPressureBulkheads::AddPressureBulkhead()
     {
-        m_pressureBulkheads.push_back(make_unique<CCPACSPressureBulkhead>(reinterpret_cast<CCPACSPressureBulkheads*>(this), m_uidMgr));
+        m_pressureBulkheads.push_back(make_unique<CCPACSPressureBulkhead>(this, m_uidMgr));
         return *m_pressureBulkheads.back();
     }
 

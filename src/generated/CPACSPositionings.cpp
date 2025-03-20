@@ -148,6 +148,58 @@ namespace generated
         return m_positionings;
     }
 
+    size_t CPACSPositionings::GetPositioningCount() const
+    {
+        return m_positionings.size();
+    }
+
+    size_t CPACSPositionings::GetPositioningIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetPositioningCount(); i++) {
+            const std::string tmpUID(m_positionings[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSPositioning& CPACSPositionings::GetPositioning(size_t index)
+    {
+        if (index < 1 || index > GetPositioningCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSPositioning>>::GetPositioning", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_positionings[index];
+    }
+
+    const CCPACSPositioning& CPACSPositionings::GetPositioning(size_t index) const
+    {
+        if (index < 1 || index > GetPositioningCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSPositioning>>::GetPositioning", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_positionings[index];
+    }
+
+    CCPACSPositioning& CPACSPositionings::GetPositioning(const std::string& UID)
+    {
+        for (auto& elem : m_positionings ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSPositionings::GetPositioning. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSPositioning& CPACSPositionings::GetPositioning(const std::string& UID) const
+    {
+        for (auto& elem : m_positionings ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSPositionings::GetPositioning. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSPositioning& CPACSPositionings::AddPositioning()
     {
         m_positionings.push_back(make_unique<CCPACSPositioning>(reinterpret_cast<CCPACSPositionings*>(this), m_uidMgr));

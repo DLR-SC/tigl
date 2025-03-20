@@ -105,6 +105,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>& GetSheetProperties_choice2() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>& GetSheetProperties_choice2();
 
+        TIGL_EXPORT virtual size_t GetSheetPropertiesCount() const;
+        TIGL_EXPORT virtual size_t GetSheetPropertiesIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSMaterialDefinitionForProfileBased& GetSheetProperties(size_t index) const;
+        TIGL_EXPORT virtual CPACSMaterialDefinitionForProfileBased& GetSheetProperties(size_t index);
+
+        TIGL_EXPORT virtual const CPACSMaterialDefinitionForProfileBased& GetSheetProperties(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSMaterialDefinitionForProfileBased& GetSheetProperties(const std::string& UID);
+
         TIGL_EXPORT virtual const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& GetStandardProfileType_choice2_1() const;
         TIGL_EXPORT virtual void SetStandardProfileType_choice2_1(const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& value);
 
@@ -113,6 +122,15 @@ namespace generated
 
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>& GetPointProperties_choice2_2() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>& GetPointProperties_choice2_2();
+
+        TIGL_EXPORT virtual size_t GetPointPropertiesCount() const;
+        TIGL_EXPORT virtual size_t GetPointPropertiesIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSMaterialDefinitionForProfileBasedPoint& GetPointProperties(size_t index) const;
+        TIGL_EXPORT virtual CPACSMaterialDefinitionForProfileBasedPoint& GetPointProperties(size_t index);
+
+        TIGL_EXPORT virtual const CPACSMaterialDefinitionForProfileBasedPoint& GetPointProperties(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSMaterialDefinitionForProfileBasedPoint& GetPointProperties(const std::string& UID);
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetReferencePointUID_choice2_2() const;
         TIGL_EXPORT virtual void SetReferencePointUID_choice2_2(const boost::optional<std::string>& value);

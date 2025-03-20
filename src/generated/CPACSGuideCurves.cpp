@@ -118,6 +118,58 @@ namespace generated
         return m_guideCurves;
     }
 
+    size_t CPACSGuideCurves::GetGuideCurveCount() const
+    {
+        return m_guideCurves.size();
+    }
+
+    size_t CPACSGuideCurves::GetGuideCurveIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetGuideCurveCount(); i++) {
+            const std::string tmpUID(m_guideCurves[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSGuideCurve& CPACSGuideCurves::GetGuideCurve(size_t index)
+    {
+        if (index < 1 || index > GetGuideCurveCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSGuideCurve>>::GetGuideCurve", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_guideCurves[index];
+    }
+
+    const CCPACSGuideCurve& CPACSGuideCurves::GetGuideCurve(size_t index) const
+    {
+        if (index < 1 || index > GetGuideCurveCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSGuideCurve>>::GetGuideCurve", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_guideCurves[index];
+    }
+
+    CCPACSGuideCurve& CPACSGuideCurves::GetGuideCurve(const std::string& UID)
+    {
+        for (auto& elem : m_guideCurves ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSGuideCurves::GetGuideCurve. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSGuideCurve& CPACSGuideCurves::GetGuideCurve(const std::string& UID) const
+    {
+        for (auto& elem : m_guideCurves ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSGuideCurves::GetGuideCurve. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSGuideCurve& CPACSGuideCurves::AddGuideCurve()
     {
         m_guideCurves.push_back(make_unique<CCPACSGuideCurve>(reinterpret_cast<CCPACSGuideCurves*>(this), m_uidMgr));

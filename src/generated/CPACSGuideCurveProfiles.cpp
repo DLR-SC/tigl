@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include <CCPACSGuideCurveProfile.h>
-#include "CCPACSProfiles.h"
 #include "CPACSGuideCurveProfiles.h"
+#include "CPACSProfiles.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSGuideCurveProfiles::CPACSGuideCurveProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    CPACSGuideCurveProfiles::CPACSGuideCurveProfiles(CPACSProfiles* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSProfiles* CPACSGuideCurveProfiles::GetParent() const
+    const CPACSProfiles* CPACSGuideCurveProfiles::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSProfiles* CPACSGuideCurveProfiles::GetParent()
+    CPACSProfiles* CPACSGuideCurveProfiles::GetParent()
     {
         return m_parent;
     }
@@ -86,7 +86,7 @@ namespace generated
     {
         // read element guideCurveProfile
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurveProfile")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/guideCurveProfile", m_guideCurveProfiles, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSGuideCurveProfiles*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/guideCurveProfile", m_guideCurveProfiles, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -108,9 +108,61 @@ namespace generated
         return m_guideCurveProfiles;
     }
 
+    size_t CPACSGuideCurveProfiles::GetGuideCurveProfileCount() const
+    {
+        return m_guideCurveProfiles.size();
+    }
+
+    size_t CPACSGuideCurveProfiles::GetGuideCurveProfileIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetGuideCurveProfileCount(); i++) {
+            const std::string tmpUID(m_guideCurveProfiles[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSGuideCurveProfile& CPACSGuideCurveProfiles::GetGuideCurveProfile(size_t index)
+    {
+        if (index < 1 || index > GetGuideCurveProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSGuideCurveProfile>>::GetGuideCurveProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_guideCurveProfiles[index];
+    }
+
+    const CCPACSGuideCurveProfile& CPACSGuideCurveProfiles::GetGuideCurveProfile(size_t index) const
+    {
+        if (index < 1 || index > GetGuideCurveProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSGuideCurveProfile>>::GetGuideCurveProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_guideCurveProfiles[index];
+    }
+
+    CCPACSGuideCurveProfile& CPACSGuideCurveProfiles::GetGuideCurveProfile(const std::string& UID)
+    {
+        for (auto& elem : m_guideCurveProfiles ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSGuideCurveProfiles::GetGuideCurveProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSGuideCurveProfile& CPACSGuideCurveProfiles::GetGuideCurveProfile(const std::string& UID) const
+    {
+        for (auto& elem : m_guideCurveProfiles ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSGuideCurveProfiles::GetGuideCurveProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSGuideCurveProfile& CPACSGuideCurveProfiles::AddGuideCurveProfile()
     {
-        m_guideCurveProfiles.push_back(make_unique<CCPACSGuideCurveProfile>(reinterpret_cast<CCPACSGuideCurveProfiles*>(this), m_uidMgr));
+        m_guideCurveProfiles.push_back(make_unique<CCPACSGuideCurveProfile>(this, m_uidMgr));
         return *m_guideCurveProfiles.back();
     }
 

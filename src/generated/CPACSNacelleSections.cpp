@@ -102,6 +102,58 @@ namespace generated
         return m_sections;
     }
 
+    size_t CPACSNacelleSections::GetSectionCount() const
+    {
+        return m_sections.size();
+    }
+
+    size_t CPACSNacelleSections::GetSectionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSectionCount(); i++) {
+            const std::string tmpUID(m_sections[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSNacelleSection& CPACSNacelleSections::GetSection(size_t index)
+    {
+        if (index < 1 || index > GetSectionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSNacelleSection>>::GetSection", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sections[index];
+    }
+
+    const CCPACSNacelleSection& CPACSNacelleSections::GetSection(size_t index) const
+    {
+        if (index < 1 || index > GetSectionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSNacelleSection>>::GetSection", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sections[index];
+    }
+
+    CCPACSNacelleSection& CPACSNacelleSections::GetSection(const std::string& UID)
+    {
+        for (auto& elem : m_sections ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSNacelleSections::GetSection. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSNacelleSection& CPACSNacelleSections::GetSection(const std::string& UID) const
+    {
+        for (auto& elem : m_sections ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSNacelleSections::GetSection. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSNacelleSection& CPACSNacelleSections::AddSection()
     {
         m_sections.push_back(make_unique<CCPACSNacelleSection>(reinterpret_cast<CCPACSNacelleSections*>(this), m_uidMgr));

@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSProfiles.h"
+#include "CPACSProfiles.h"
 #include "CPACSStructuralProfile.h"
 #include "CPACSStructuralProfile3D.h"
 #include "CPACSStructuralProfiles.h"
@@ -30,7 +30,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSStructuralProfiles::CPACSStructuralProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    CPACSStructuralProfiles::CPACSStructuralProfiles(CPACSProfiles* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -41,12 +41,12 @@ namespace generated
     {
     }
 
-    const CCPACSProfiles* CPACSStructuralProfiles::GetParent() const
+    const CPACSProfiles* CPACSStructuralProfiles::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSProfiles* CPACSStructuralProfiles::GetParent()
+    CPACSProfiles* CPACSStructuralProfiles::GetParent()
     {
         return m_parent;
     }
@@ -87,12 +87,12 @@ namespace generated
     {
         // read element structuralProfile2D
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfile2D")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile2D", m_structuralProfile2Ds, 0, tixi::xsdUnbounded, reinterpret_cast<CCPACSStructuralProfiles*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile2D", m_structuralProfile2Ds, 0, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
         // read element structuralProfile3D
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfile3D")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile3D", m_structuralProfile3Ds, 0, tixi::xsdUnbounded, reinterpret_cast<CCPACSStructuralProfiles*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/structuralProfile3D", m_structuralProfile3Ds, 0, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -119,6 +119,58 @@ namespace generated
         return m_structuralProfile2Ds;
     }
 
+    size_t CPACSStructuralProfiles::GetStructuralProfile2DCount() const
+    {
+        return m_structuralProfile2Ds.size();
+    }
+
+    size_t CPACSStructuralProfiles::GetStructuralProfile2DIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetStructuralProfile2DCount(); i++) {
+            const std::string tmpUID(m_structuralProfile2Ds[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSStructuralProfile& CPACSStructuralProfiles::GetStructuralProfile2D(size_t index)
+    {
+        if (index < 1 || index > GetStructuralProfile2DCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSStructuralProfile>>::GetStructuralProfile2D", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_structuralProfile2Ds[index];
+    }
+
+    const CPACSStructuralProfile& CPACSStructuralProfiles::GetStructuralProfile2D(size_t index) const
+    {
+        if (index < 1 || index > GetStructuralProfile2DCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSStructuralProfile>>::GetStructuralProfile2D", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_structuralProfile2Ds[index];
+    }
+
+    CPACSStructuralProfile& CPACSStructuralProfiles::GetStructuralProfile2D(const std::string& UID)
+    {
+        for (auto& elem : m_structuralProfile2Ds ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSStructuralProfiles::GetStructuralProfile2D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSStructuralProfile& CPACSStructuralProfiles::GetStructuralProfile2D(const std::string& UID) const
+    {
+        for (auto& elem : m_structuralProfile2Ds ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSStructuralProfiles::GetStructuralProfile2D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     const std::vector<std::unique_ptr<CPACSStructuralProfile3D>>& CPACSStructuralProfiles::GetStructuralProfile3Ds() const
     {
         return m_structuralProfile3Ds;
@@ -129,9 +181,61 @@ namespace generated
         return m_structuralProfile3Ds;
     }
 
+    size_t CPACSStructuralProfiles::GetStructuralProfile3DCount() const
+    {
+        return m_structuralProfile3Ds.size();
+    }
+
+    size_t CPACSStructuralProfiles::GetStructuralProfile3DIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetStructuralProfile3DCount(); i++) {
+            const std::string tmpUID(m_structuralProfile3Ds[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSStructuralProfile3D& CPACSStructuralProfiles::GetStructuralProfile3D(size_t index)
+    {
+        if (index < 1 || index > GetStructuralProfile3DCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSStructuralProfile3D>>::GetStructuralProfile3D", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_structuralProfile3Ds[index];
+    }
+
+    const CPACSStructuralProfile3D& CPACSStructuralProfiles::GetStructuralProfile3D(size_t index) const
+    {
+        if (index < 1 || index > GetStructuralProfile3DCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSStructuralProfile3D>>::GetStructuralProfile3D", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_structuralProfile3Ds[index];
+    }
+
+    CPACSStructuralProfile3D& CPACSStructuralProfiles::GetStructuralProfile3D(const std::string& UID)
+    {
+        for (auto& elem : m_structuralProfile3Ds ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSStructuralProfiles::GetStructuralProfile3D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSStructuralProfile3D& CPACSStructuralProfiles::GetStructuralProfile3D(const std::string& UID) const
+    {
+        for (auto& elem : m_structuralProfile3Ds ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSStructuralProfiles::GetStructuralProfile3D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSStructuralProfile& CPACSStructuralProfiles::AddStructuralProfile2D()
     {
-        m_structuralProfile2Ds.push_back(make_unique<CPACSStructuralProfile>(reinterpret_cast<CCPACSStructuralProfiles*>(this), m_uidMgr));
+        m_structuralProfile2Ds.push_back(make_unique<CPACSStructuralProfile>(this, m_uidMgr));
         return *m_structuralProfile2Ds.back();
     }
 
@@ -148,7 +252,7 @@ namespace generated
 
     CPACSStructuralProfile3D& CPACSStructuralProfiles::AddStructuralProfile3D()
     {
-        m_structuralProfile3Ds.push_back(make_unique<CPACSStructuralProfile3D>(reinterpret_cast<CCPACSStructuralProfiles*>(this), m_uidMgr));
+        m_structuralProfile3Ds.push_back(make_unique<CPACSStructuralProfile3D>(this, m_uidMgr));
         return *m_structuralProfile3Ds.back();
     }
 

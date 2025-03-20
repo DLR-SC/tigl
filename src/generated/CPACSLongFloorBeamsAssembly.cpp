@@ -108,6 +108,58 @@ namespace generated
         return m_longFloorBeams;
     }
 
+    size_t CPACSLongFloorBeamsAssembly::GetLongFloorBeamCount() const
+    {
+        return m_longFloorBeams.size();
+    }
+
+    size_t CPACSLongFloorBeamsAssembly::GetLongFloorBeamIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetLongFloorBeamCount(); i++) {
+            const std::string tmpUID(m_longFloorBeams[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSLongFloorBeam& CPACSLongFloorBeamsAssembly::GetLongFloorBeam(size_t index)
+    {
+        if (index < 1 || index > GetLongFloorBeamCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSLongFloorBeam>>::GetLongFloorBeam", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_longFloorBeams[index];
+    }
+
+    const CCPACSLongFloorBeam& CPACSLongFloorBeamsAssembly::GetLongFloorBeam(size_t index) const
+    {
+        if (index < 1 || index > GetLongFloorBeamCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSLongFloorBeam>>::GetLongFloorBeam", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_longFloorBeams[index];
+    }
+
+    CCPACSLongFloorBeam& CPACSLongFloorBeamsAssembly::GetLongFloorBeam(const std::string& UID)
+    {
+        for (auto& elem : m_longFloorBeams ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSLongFloorBeamsAssembly::GetLongFloorBeam. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSLongFloorBeam& CPACSLongFloorBeamsAssembly::GetLongFloorBeam(const std::string& UID) const
+    {
+        for (auto& elem : m_longFloorBeams ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSLongFloorBeamsAssembly::GetLongFloorBeam. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSLongFloorBeam& CPACSLongFloorBeamsAssembly::AddLongFloorBeam()
     {
         m_longFloorBeams.push_back(make_unique<CCPACSLongFloorBeam>(reinterpret_cast<CCPACSLongFloorBeamsAssembly*>(this), m_uidMgr));

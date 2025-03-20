@@ -28,10 +28,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSDoors;
 
 namespace generated
 {
+    class CPACSDoors;
+
     // This class is used in:
     // CPACSDoors
 
@@ -42,13 +43,13 @@ namespace generated
     class CPACSDoorCutOut : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSDoorCutOut(CCPACSDoors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDoorCutOut(CPACSDoors* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSDoorCutOut();
 
-        TIGL_EXPORT CCPACSDoors* GetParent();
+        TIGL_EXPORT CPACSDoors* GetParent();
 
-        TIGL_EXPORT const CCPACSDoors* GetParent() const;
+        TIGL_EXPORT const CPACSDoors* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -75,7 +76,7 @@ namespace generated
         TIGL_EXPORT virtual void SetDssDesignUID(const boost::optional<std::string>& value);
 
     protected:
-        CCPACSDoors* m_parent;
+        CPACSDoors* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -110,4 +111,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSDoorCutOut = generated::CPACSDoorCutOut;
+using CCPACSDoors = generated::CPACSDoors;
 } // namespace tigl

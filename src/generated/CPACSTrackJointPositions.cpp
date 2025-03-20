@@ -90,6 +90,58 @@ namespace generated
         return m_jointPositions;
     }
 
+    size_t CPACSTrackJointPositions::GetJointPositionCount() const
+    {
+        return m_jointPositions.size();
+    }
+
+    size_t CPACSTrackJointPositions::GetJointPositionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetJointPositionCount(); i++) {
+            const std::string tmpUID(m_jointPositions[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSTrackJointPosition& CPACSTrackJointPositions::GetJointPosition(size_t index)
+    {
+        if (index < 1 || index > GetJointPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSTrackJointPosition>>::GetJointPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_jointPositions[index];
+    }
+
+    const CPACSTrackJointPosition& CPACSTrackJointPositions::GetJointPosition(size_t index) const
+    {
+        if (index < 1 || index > GetJointPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSTrackJointPosition>>::GetJointPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_jointPositions[index];
+    }
+
+    CPACSTrackJointPosition& CPACSTrackJointPositions::GetJointPosition(const std::string& UID)
+    {
+        for (auto& elem : m_jointPositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSTrackJointPositions::GetJointPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSTrackJointPosition& CPACSTrackJointPositions::GetJointPosition(const std::string& UID) const
+    {
+        for (auto& elem : m_jointPositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSTrackJointPositions::GetJointPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSTrackJointPosition& CPACSTrackJointPositions::AddJointPosition()
     {
         m_jointPositions.push_back(make_unique<CPACSTrackJointPosition>(this));

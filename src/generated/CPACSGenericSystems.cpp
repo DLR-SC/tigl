@@ -108,6 +108,58 @@ namespace generated
         return m_genericSystems;
     }
 
+    size_t CPACSGenericSystems::GetGenericSystemCount() const
+    {
+        return m_genericSystems.size();
+    }
+
+    size_t CPACSGenericSystems::GetGenericSystemIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetGenericSystemCount(); i++) {
+            const std::string tmpUID(m_genericSystems[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSGenericSystem& CPACSGenericSystems::GetGenericSystem(size_t index)
+    {
+        if (index < 1 || index > GetGenericSystemCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSGenericSystem>>::GetGenericSystem", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_genericSystems[index];
+    }
+
+    const CCPACSGenericSystem& CPACSGenericSystems::GetGenericSystem(size_t index) const
+    {
+        if (index < 1 || index > GetGenericSystemCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSGenericSystem>>::GetGenericSystem", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_genericSystems[index];
+    }
+
+    CCPACSGenericSystem& CPACSGenericSystems::GetGenericSystem(const std::string& UID)
+    {
+        for (auto& elem : m_genericSystems ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSGenericSystems::GetGenericSystem. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSGenericSystem& CPACSGenericSystems::GetGenericSystem(const std::string& UID) const
+    {
+        for (auto& elem : m_genericSystems ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSGenericSystems::GetGenericSystem. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSGenericSystem& CPACSGenericSystems::AddGenericSystem()
     {
         m_genericSystems.push_back(make_unique<CCPACSGenericSystem>(reinterpret_cast<CCPACSGenericSystems*>(this), m_uidMgr));

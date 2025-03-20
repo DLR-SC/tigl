@@ -89,6 +89,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFrame>>& GetFrames() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFrame>>& GetFrames();
 
+        TIGL_EXPORT virtual size_t GetFrameCount() const;
+        TIGL_EXPORT virtual size_t GetFrameIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSFrame& GetFrame(size_t index) const;
+        TIGL_EXPORT virtual CCPACSFrame& GetFrame(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSFrame& GetFrame(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSFrame& GetFrame(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSFrame& AddFrame();
         TIGL_EXPORT virtual void RemoveFrame(CCPACSFrame& ref);
 

@@ -108,6 +108,58 @@ namespace generated
         return m_sparPositions;
     }
 
+    size_t CPACSSparPositions::GetSparPositionCount() const
+    {
+        return m_sparPositions.size();
+    }
+
+    size_t CPACSSparPositions::GetSparPositionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSparPositionCount(); i++) {
+            const std::string tmpUID(m_sparPositions[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSWingSparPosition& CPACSSparPositions::GetSparPosition(size_t index)
+    {
+        if (index < 1 || index > GetSparPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingSparPosition>>::GetSparPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sparPositions[index];
+    }
+
+    const CCPACSWingSparPosition& CPACSSparPositions::GetSparPosition(size_t index) const
+    {
+        if (index < 1 || index > GetSparPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingSparPosition>>::GetSparPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sparPositions[index];
+    }
+
+    CCPACSWingSparPosition& CPACSSparPositions::GetSparPosition(const std::string& UID)
+    {
+        for (auto& elem : m_sparPositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSparPositions::GetSparPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSWingSparPosition& CPACSSparPositions::GetSparPosition(const std::string& UID) const
+    {
+        for (auto& elem : m_sparPositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSparPositions::GetSparPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSWingSparPosition& CPACSSparPositions::AddSparPosition()
     {
         m_sparPositions.push_back(make_unique<CCPACSWingSparPosition>(reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr));

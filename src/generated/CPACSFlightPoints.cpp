@@ -108,6 +108,58 @@ namespace generated
         return m_flightPoints;
     }
 
+    size_t CPACSFlightPoints::GetFlightPointCount() const
+    {
+        return m_flightPoints.size();
+    }
+
+    size_t CPACSFlightPoints::GetFlightPointIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetFlightPointCount(); i++) {
+            const std::string tmpUID(m_flightPoints[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSGlobalFlightPoint& CPACSFlightPoints::GetFlightPoint(size_t index)
+    {
+        if (index < 1 || index > GetFlightPointCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSGlobalFlightPoint>>::GetFlightPoint", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_flightPoints[index];
+    }
+
+    const CPACSGlobalFlightPoint& CPACSFlightPoints::GetFlightPoint(size_t index) const
+    {
+        if (index < 1 || index > GetFlightPointCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSGlobalFlightPoint>>::GetFlightPoint", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_flightPoints[index];
+    }
+
+    CPACSGlobalFlightPoint& CPACSFlightPoints::GetFlightPoint(const std::string& UID)
+    {
+        for (auto& elem : m_flightPoints ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSFlightPoints::GetFlightPoint. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSGlobalFlightPoint& CPACSFlightPoints::GetFlightPoint(const std::string& UID) const
+    {
+        for (auto& elem : m_flightPoints ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSFlightPoints::GetFlightPoint. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSGlobalFlightPoint& CPACSFlightPoints::AddFlightPoint()
     {
         m_flightPoints.push_back(make_unique<CPACSGlobalFlightPoint>(this, m_uidMgr));

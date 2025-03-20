@@ -141,6 +141,58 @@ namespace generated
         return m_longFloorBeamPositions;
     }
 
+    size_t CPACSLongFloorBeam::GetLongFloorBeamPositionCount() const
+    {
+        return m_longFloorBeamPositions.size();
+    }
+
+    size_t CPACSLongFloorBeam::GetLongFloorBeamPositionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetLongFloorBeamPositionCount(); i++) {
+            const std::string tmpUID(m_longFloorBeamPositions[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSLongFloorBeamPosition& CPACSLongFloorBeam::GetLongFloorBeamPosition(size_t index)
+    {
+        if (index < 1 || index > GetLongFloorBeamPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSLongFloorBeamPosition>>::GetLongFloorBeamPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_longFloorBeamPositions[index];
+    }
+
+    const CCPACSLongFloorBeamPosition& CPACSLongFloorBeam::GetLongFloorBeamPosition(size_t index) const
+    {
+        if (index < 1 || index > GetLongFloorBeamPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSLongFloorBeamPosition>>::GetLongFloorBeamPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_longFloorBeamPositions[index];
+    }
+
+    CCPACSLongFloorBeamPosition& CPACSLongFloorBeam::GetLongFloorBeamPosition(const std::string& UID)
+    {
+        for (auto& elem : m_longFloorBeamPositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSLongFloorBeam::GetLongFloorBeamPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSLongFloorBeamPosition& CPACSLongFloorBeam::GetLongFloorBeamPosition(const std::string& UID) const
+    {
+        for (auto& elem : m_longFloorBeamPositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSLongFloorBeam::GetLongFloorBeamPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSLongFloorBeamPosition& CPACSLongFloorBeam::AddLongFloorBeamPosition()
     {
         m_longFloorBeamPositions.push_back(make_unique<CCPACSLongFloorBeamPosition>(reinterpret_cast<CCPACSLongFloorBeam*>(this), m_uidMgr));

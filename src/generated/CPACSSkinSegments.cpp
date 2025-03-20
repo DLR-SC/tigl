@@ -108,6 +108,58 @@ namespace generated
         return m_skinSegments;
     }
 
+    size_t CPACSSkinSegments::GetSkinSegmentCount() const
+    {
+        return m_skinSegments.size();
+    }
+
+    size_t CPACSSkinSegments::GetSkinSegmentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSkinSegmentCount(); i++) {
+            const std::string tmpUID(m_skinSegments[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSSkinSegment& CPACSSkinSegments::GetSkinSegment(size_t index)
+    {
+        if (index < 1 || index > GetSkinSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSSkinSegment>>::GetSkinSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_skinSegments[index];
+    }
+
+    const CCPACSSkinSegment& CPACSSkinSegments::GetSkinSegment(size_t index) const
+    {
+        if (index < 1 || index > GetSkinSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSSkinSegment>>::GetSkinSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_skinSegments[index];
+    }
+
+    CCPACSSkinSegment& CPACSSkinSegments::GetSkinSegment(const std::string& UID)
+    {
+        for (auto& elem : m_skinSegments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSkinSegments::GetSkinSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSSkinSegment& CPACSSkinSegments::GetSkinSegment(const std::string& UID) const
+    {
+        for (auto& elem : m_skinSegments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSkinSegments::GetSkinSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSSkinSegment& CPACSSkinSegments::AddSkinSegment()
     {
         m_skinSegments.push_back(make_unique<CCPACSSkinSegment>(this, m_uidMgr));

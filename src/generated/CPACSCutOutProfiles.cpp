@@ -156,6 +156,58 @@ namespace generated
         return m_cutOutProfiles;
     }
 
+    size_t CPACSCutOutProfiles::GetCutOutProfileCount() const
+    {
+        return m_cutOutProfiles.size();
+    }
+
+    size_t CPACSCutOutProfiles::GetCutOutProfileIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetCutOutProfileCount(); i++) {
+            const std::string tmpUID(m_cutOutProfiles[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSCutOutProfile& CPACSCutOutProfiles::GetCutOutProfile(size_t index)
+    {
+        if (index < 1 || index > GetCutOutProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCutOutProfile>>::GetCutOutProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_cutOutProfiles[index];
+    }
+
+    const CPACSCutOutProfile& CPACSCutOutProfiles::GetCutOutProfile(size_t index) const
+    {
+        if (index < 1 || index > GetCutOutProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCutOutProfile>>::GetCutOutProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_cutOutProfiles[index];
+    }
+
+    CPACSCutOutProfile& CPACSCutOutProfiles::GetCutOutProfile(const std::string& UID)
+    {
+        for (auto& elem : m_cutOutProfiles ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSCutOutProfiles::GetCutOutProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSCutOutProfile& CPACSCutOutProfiles::GetCutOutProfile(const std::string& UID) const
+    {
+        for (auto& elem : m_cutOutProfiles ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSCutOutProfiles::GetCutOutProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSCutOutProfile& CPACSCutOutProfiles::AddCutOutProfile()
     {
         m_cutOutProfiles.push_back(make_unique<CPACSCutOutProfile>(this, m_uidMgr));

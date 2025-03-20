@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSRivet>>& GetRivets() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSRivet>>& GetRivets();
 
+        TIGL_EXPORT virtual size_t GetRivetCount() const;
+        TIGL_EXPORT virtual size_t GetRivetIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSRivet& GetRivet(size_t index) const;
+        TIGL_EXPORT virtual CPACSRivet& GetRivet(size_t index);
+
+        TIGL_EXPORT virtual const CPACSRivet& GetRivet(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSRivet& GetRivet(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSRivet& AddRivet();
         TIGL_EXPORT virtual void RemoveRivet(CPACSRivet& ref);
 

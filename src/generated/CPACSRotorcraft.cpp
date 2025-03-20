@@ -108,6 +108,58 @@ namespace generated
         return m_models;
     }
 
+    size_t CPACSRotorcraft::GetModelCount() const
+    {
+        return m_models.size();
+    }
+
+    size_t CPACSRotorcraft::GetModelIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetModelCount(); i++) {
+            const std::string tmpUID(m_models[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSRotorcraftModel& CPACSRotorcraft::GetModel(size_t index)
+    {
+        if (index < 1 || index > GetModelCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSRotorcraftModel>>::GetModel", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_models[index];
+    }
+
+    const CCPACSRotorcraftModel& CPACSRotorcraft::GetModel(size_t index) const
+    {
+        if (index < 1 || index > GetModelCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSRotorcraftModel>>::GetModel", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_models[index];
+    }
+
+    CCPACSRotorcraftModel& CPACSRotorcraft::GetModel(const std::string& UID)
+    {
+        for (auto& elem : m_models ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSRotorcraft::GetModel. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSRotorcraftModel& CPACSRotorcraft::GetModel(const std::string& UID) const
+    {
+        for (auto& elem : m_models ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSRotorcraft::GetModel. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSRotorcraftModel& CPACSRotorcraft::AddModel()
     {
         m_models.push_back(make_unique<CCPACSRotorcraftModel>(this, m_uidMgr));

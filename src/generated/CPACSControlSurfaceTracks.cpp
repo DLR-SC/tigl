@@ -102,6 +102,58 @@ namespace generated
         return m_tracks;
     }
 
+    size_t CPACSControlSurfaceTracks::GetTrackCount() const
+    {
+        return m_tracks.size();
+    }
+
+    size_t CPACSControlSurfaceTracks::GetTrackIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetTrackCount(); i++) {
+            const std::string tmpUID(m_tracks[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSControlSurfaceTrackType& CPACSControlSurfaceTracks::GetTrack(size_t index)
+    {
+        if (index < 1 || index > GetTrackCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSControlSurfaceTrackType>>::GetTrack", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_tracks[index];
+    }
+
+    const CPACSControlSurfaceTrackType& CPACSControlSurfaceTracks::GetTrack(size_t index) const
+    {
+        if (index < 1 || index > GetTrackCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSControlSurfaceTrackType>>::GetTrack", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_tracks[index];
+    }
+
+    CPACSControlSurfaceTrackType& CPACSControlSurfaceTracks::GetTrack(const std::string& UID)
+    {
+        for (auto& elem : m_tracks ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSControlSurfaceTracks::GetTrack. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSControlSurfaceTrackType& CPACSControlSurfaceTracks::GetTrack(const std::string& UID) const
+    {
+        for (auto& elem : m_tracks ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSControlSurfaceTracks::GetTrack. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSControlSurfaceTrackType& CPACSControlSurfaceTracks::AddTrack()
     {
         m_tracks.push_back(make_unique<CPACSControlSurfaceTrackType>(this, m_uidMgr));

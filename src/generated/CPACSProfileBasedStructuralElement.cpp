@@ -396,6 +396,58 @@ namespace generated
         return m_sheetProperties_choice2;
     }
 
+    size_t CPACSProfileBasedStructuralElement::GetSheetPropertiesCount() const
+    {
+        return m_sheetProperties_choice2.size();
+    }
+
+    size_t CPACSProfileBasedStructuralElement::GetSheetPropertiesIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSheetPropertiesCount(); i++) {
+            const std::string tmpUID(m_sheetProperties_choice2[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSMaterialDefinitionForProfileBased& CPACSProfileBasedStructuralElement::GetSheetProperties(size_t index)
+    {
+        if (index < 1 || index > GetSheetPropertiesCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>::GetSheetProperties", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sheetProperties_choice2[index];
+    }
+
+    const CPACSMaterialDefinitionForProfileBased& CPACSProfileBasedStructuralElement::GetSheetProperties(size_t index) const
+    {
+        if (index < 1 || index > GetSheetPropertiesCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>::GetSheetProperties", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sheetProperties_choice2[index];
+    }
+
+    CPACSMaterialDefinitionForProfileBased& CPACSProfileBasedStructuralElement::GetSheetProperties(const std::string& UID)
+    {
+        for (auto& elem : m_sheetProperties_choice2 ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSProfileBasedStructuralElement::GetSheetProperties. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSMaterialDefinitionForProfileBased& CPACSProfileBasedStructuralElement::GetSheetProperties(const std::string& UID) const
+    {
+        for (auto& elem : m_sheetProperties_choice2 ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSProfileBasedStructuralElement::GetSheetProperties. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& CPACSProfileBasedStructuralElement::GetStandardProfileType_choice2_1() const
     {
         return m_standardProfileType_choice2_1;
@@ -429,6 +481,58 @@ namespace generated
     {
         return m_pointProperties_choice2_2;
     }
+
+    size_t CPACSProfileBasedStructuralElement::GetPointPropertiesCount() const
+    {
+        return m_pointProperties_choice2_2.size();
+    }
+
+    size_t CPACSProfileBasedStructuralElement::GetPointPropertiesIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetPointPropertiesCount(); i++) {
+            const std::string tmpUID(m_pointProperties_choice2_2[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSMaterialDefinitionForProfileBasedPoint& CPACSProfileBasedStructuralElement::GetPointProperties(size_t index)
+    {
+        if (index < 1 || index > GetPointPropertiesCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>::GetPointProperties", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pointProperties_choice2_2[index];
+    }
+
+    const CPACSMaterialDefinitionForProfileBasedPoint& CPACSProfileBasedStructuralElement::GetPointProperties(size_t index) const
+    {
+        if (index < 1 || index > GetPointPropertiesCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>::GetPointProperties", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pointProperties_choice2_2[index];
+    }
+
+    CPACSMaterialDefinitionForProfileBasedPoint& CPACSProfileBasedStructuralElement::GetPointProperties(const std::string& UID)
+    {
+        for (auto& elem : m_pointProperties_choice2_2 ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSProfileBasedStructuralElement::GetPointProperties. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSMaterialDefinitionForProfileBasedPoint& CPACSProfileBasedStructuralElement::GetPointProperties(const std::string& UID) const
+    {
+        for (auto& elem : m_pointProperties_choice2_2 ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSProfileBasedStructuralElement::GetPointProperties. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
 
     const boost::optional<std::string>& CPACSProfileBasedStructuralElement::GetReferencePointUID_choice2_2() const
     {

@@ -118,6 +118,58 @@ namespace generated
         return m_segments;
     }
 
+    size_t CPACSWingSegments::GetSegmentCount() const
+    {
+        return m_segments.size();
+    }
+
+    size_t CPACSWingSegments::GetSegmentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSegmentCount(); i++) {
+            const std::string tmpUID(m_segments[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSWingSegment& CPACSWingSegments::GetSegment(size_t index)
+    {
+        if (index < 1 || index > GetSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingSegment>>::GetSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_segments[index];
+    }
+
+    const CCPACSWingSegment& CPACSWingSegments::GetSegment(size_t index) const
+    {
+        if (index < 1 || index > GetSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingSegment>>::GetSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_segments[index];
+    }
+
+    CCPACSWingSegment& CPACSWingSegments::GetSegment(const std::string& UID)
+    {
+        for (auto& elem : m_segments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSWingSegments::GetSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSWingSegment& CPACSWingSegments::GetSegment(const std::string& UID) const
+    {
+        for (auto& elem : m_segments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSWingSegments::GetSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSWingSegment& CPACSWingSegments::AddSegment()
     {
         m_segments.push_back(make_unique<CCPACSWingSegment>(reinterpret_cast<CCPACSWingSegments*>(this), m_uidMgr));

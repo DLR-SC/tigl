@@ -108,6 +108,58 @@ namespace generated
         return m_steps;
     }
 
+    size_t CPACSControlSurfaceSteps::GetStepCount() const
+    {
+        return m_steps.size();
+    }
+
+    size_t CPACSControlSurfaceSteps::GetStepIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetStepCount(); i++) {
+            const std::string tmpUID(m_steps[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSControlSurfaceStep& CPACSControlSurfaceSteps::GetStep(size_t index)
+    {
+        if (index < 1 || index > GetStepCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSControlSurfaceStep>>::GetStep", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_steps[index];
+    }
+
+    const CPACSControlSurfaceStep& CPACSControlSurfaceSteps::GetStep(size_t index) const
+    {
+        if (index < 1 || index > GetStepCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSControlSurfaceStep>>::GetStep", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_steps[index];
+    }
+
+    CPACSControlSurfaceStep& CPACSControlSurfaceSteps::GetStep(const std::string& UID)
+    {
+        for (auto& elem : m_steps ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSControlSurfaceSteps::GetStep. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSControlSurfaceStep& CPACSControlSurfaceSteps::GetStep(const std::string& UID) const
+    {
+        for (auto& elem : m_steps ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSControlSurfaceSteps::GetStep. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSControlSurfaceStep& CPACSControlSurfaceSteps::AddStep()
     {
         m_steps.push_back(make_unique<CPACSControlSurfaceStep>(this, m_uidMgr));

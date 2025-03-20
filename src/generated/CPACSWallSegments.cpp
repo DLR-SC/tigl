@@ -108,6 +108,58 @@ namespace generated
         return m_wallSegments;
     }
 
+    size_t CPACSWallSegments::GetWallSegmentCount() const
+    {
+        return m_wallSegments.size();
+    }
+
+    size_t CPACSWallSegments::GetWallSegmentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetWallSegmentCount(); i++) {
+            const std::string tmpUID(m_wallSegments[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSFuselageWallSegment& CPACSWallSegments::GetWallSegment(size_t index)
+    {
+        if (index < 1 || index > GetWallSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>::GetWallSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_wallSegments[index];
+    }
+
+    const CCPACSFuselageWallSegment& CPACSWallSegments::GetWallSegment(size_t index) const
+    {
+        if (index < 1 || index > GetWallSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>::GetWallSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_wallSegments[index];
+    }
+
+    CCPACSFuselageWallSegment& CPACSWallSegments::GetWallSegment(const std::string& UID)
+    {
+        for (auto& elem : m_wallSegments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSWallSegments::GetWallSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSFuselageWallSegment& CPACSWallSegments::GetWallSegment(const std::string& UID) const
+    {
+        for (auto& elem : m_wallSegments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSWallSegments::GetWallSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSFuselageWallSegment& CPACSWallSegments::AddWallSegment()
     {
         m_wallSegments.push_back(make_unique<CCPACSFuselageWallSegment>(this, m_uidMgr));

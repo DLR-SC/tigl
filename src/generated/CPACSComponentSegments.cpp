@@ -102,6 +102,58 @@ namespace generated
         return m_componentSegments;
     }
 
+    size_t CPACSComponentSegments::GetComponentSegmentCount() const
+    {
+        return m_componentSegments.size();
+    }
+
+    size_t CPACSComponentSegments::GetComponentSegmentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetComponentSegmentCount(); i++) {
+            const std::string tmpUID(m_componentSegments[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSWingComponentSegment& CPACSComponentSegments::GetComponentSegment(size_t index)
+    {
+        if (index < 1 || index > GetComponentSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingComponentSegment>>::GetComponentSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_componentSegments[index];
+    }
+
+    const CCPACSWingComponentSegment& CPACSComponentSegments::GetComponentSegment(size_t index) const
+    {
+        if (index < 1 || index > GetComponentSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingComponentSegment>>::GetComponentSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_componentSegments[index];
+    }
+
+    CCPACSWingComponentSegment& CPACSComponentSegments::GetComponentSegment(const std::string& UID)
+    {
+        for (auto& elem : m_componentSegments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSComponentSegments::GetComponentSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSWingComponentSegment& CPACSComponentSegments::GetComponentSegment(const std::string& UID) const
+    {
+        for (auto& elem : m_componentSegments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSComponentSegments::GetComponentSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSWingComponentSegment& CPACSComponentSegments::AddComponentSegment()
     {
         m_componentSegments.push_back(make_unique<CCPACSWingComponentSegment>(reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr));

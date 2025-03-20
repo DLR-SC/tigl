@@ -102,6 +102,58 @@ namespace generated
         return m_compartments;
     }
 
+    size_t CPACSCompartments::GetCompartmentCount() const
+    {
+        return m_compartments.size();
+    }
+
+    size_t CPACSCompartments::GetCompartmentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetCompartmentCount(); i++) {
+            const std::string tmpUID(m_compartments[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSCompartment& CPACSCompartments::GetCompartment(size_t index)
+    {
+        if (index < 1 || index > GetCompartmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCompartment>>::GetCompartment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_compartments[index];
+    }
+
+    const CPACSCompartment& CPACSCompartments::GetCompartment(size_t index) const
+    {
+        if (index < 1 || index > GetCompartmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCompartment>>::GetCompartment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_compartments[index];
+    }
+
+    CPACSCompartment& CPACSCompartments::GetCompartment(const std::string& UID)
+    {
+        for (auto& elem : m_compartments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSCompartments::GetCompartment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSCompartment& CPACSCompartments::GetCompartment(const std::string& UID) const
+    {
+        for (auto& elem : m_compartments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSCompartments::GetCompartment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSCompartment& CPACSCompartments::AddCompartment()
     {
         m_compartments.push_back(make_unique<CPACSCompartment>(this, m_uidMgr));

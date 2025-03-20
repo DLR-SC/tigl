@@ -96,7 +96,7 @@ namespace generated
     {
         // read element section
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/section")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, 2, tixi::xsdUnbounded, reinterpret_cast<CCPACSWingSections*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, 2, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -118,9 +118,61 @@ namespace generated
         return m_sections;
     }
 
+    size_t CPACSWingSections::GetSectionCount() const
+    {
+        return m_sections.size();
+    }
+
+    size_t CPACSWingSections::GetSectionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSectionCount(); i++) {
+            const std::string tmpUID(m_sections[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSWingSection& CPACSWingSections::GetSection(size_t index)
+    {
+        if (index < 1 || index > GetSectionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingSection>>::GetSection", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sections[index];
+    }
+
+    const CCPACSWingSection& CPACSWingSections::GetSection(size_t index) const
+    {
+        if (index < 1 || index > GetSectionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingSection>>::GetSection", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sections[index];
+    }
+
+    CCPACSWingSection& CPACSWingSections::GetSection(const std::string& UID)
+    {
+        for (auto& elem : m_sections ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSWingSections::GetSection. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSWingSection& CPACSWingSections::GetSection(const std::string& UID) const
+    {
+        for (auto& elem : m_sections ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSWingSections::GetSection. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSWingSection& CPACSWingSections::AddSection()
     {
-        m_sections.push_back(make_unique<CCPACSWingSection>(reinterpret_cast<CCPACSWingSections*>(this), m_uidMgr));
+        m_sections.push_back(make_unique<CCPACSWingSection>(this, m_uidMgr));
         return *m_sections.back();
     }
 

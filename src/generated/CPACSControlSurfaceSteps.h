@@ -64,6 +64,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSControlSurfaceStep>>& GetSteps() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSControlSurfaceStep>>& GetSteps();
 
+        TIGL_EXPORT virtual size_t GetStepCount() const;
+        TIGL_EXPORT virtual size_t GetStepIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSControlSurfaceStep& GetStep(size_t index) const;
+        TIGL_EXPORT virtual CPACSControlSurfaceStep& GetStep(size_t index);
+
+        TIGL_EXPORT virtual const CPACSControlSurfaceStep& GetStep(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSControlSurfaceStep& GetStep(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSControlSurfaceStep& AddStep();
         TIGL_EXPORT virtual void RemoveStep(CPACSControlSurfaceStep& ref);
 

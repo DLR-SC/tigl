@@ -108,6 +108,58 @@ namespace generated
         return m_cargoDoors;
     }
 
+    size_t CPACSCargoDoorsAssembly::GetCargoDoorCount() const
+    {
+        return m_cargoDoors.size();
+    }
+
+    size_t CPACSCargoDoorsAssembly::GetCargoDoorIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetCargoDoorCount(); i++) {
+            const std::string tmpUID(m_cargoDoors[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSDoorAssemblyPosition& CPACSCargoDoorsAssembly::GetCargoDoor(size_t index)
+    {
+        if (index < 1 || index > GetCargoDoorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDoorAssemblyPosition>>::GetCargoDoor", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_cargoDoors[index];
+    }
+
+    const CCPACSDoorAssemblyPosition& CPACSCargoDoorsAssembly::GetCargoDoor(size_t index) const
+    {
+        if (index < 1 || index > GetCargoDoorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDoorAssemblyPosition>>::GetCargoDoor", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_cargoDoors[index];
+    }
+
+    CCPACSDoorAssemblyPosition& CPACSCargoDoorsAssembly::GetCargoDoor(const std::string& UID)
+    {
+        for (auto& elem : m_cargoDoors ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSCargoDoorsAssembly::GetCargoDoor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSDoorAssemblyPosition& CPACSCargoDoorsAssembly::GetCargoDoor(const std::string& UID) const
+    {
+        for (auto& elem : m_cargoDoors ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSCargoDoorsAssembly::GetCargoDoor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSDoorAssemblyPosition& CPACSCargoDoorsAssembly::AddCargoDoor()
     {
         m_cargoDoors.push_back(make_unique<CCPACSDoorAssemblyPosition>(this, m_uidMgr));

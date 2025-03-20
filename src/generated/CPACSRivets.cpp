@@ -108,6 +108,58 @@ namespace generated
         return m_rivets;
     }
 
+    size_t CPACSRivets::GetRivetCount() const
+    {
+        return m_rivets.size();
+    }
+
+    size_t CPACSRivets::GetRivetIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetRivetCount(); i++) {
+            const std::string tmpUID(m_rivets[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSRivet& CPACSRivets::GetRivet(size_t index)
+    {
+        if (index < 1 || index > GetRivetCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSRivet>>::GetRivet", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_rivets[index];
+    }
+
+    const CPACSRivet& CPACSRivets::GetRivet(size_t index) const
+    {
+        if (index < 1 || index > GetRivetCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSRivet>>::GetRivet", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_rivets[index];
+    }
+
+    CPACSRivet& CPACSRivets::GetRivet(const std::string& UID)
+    {
+        for (auto& elem : m_rivets ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSRivets::GetRivet. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSRivet& CPACSRivets::GetRivet(const std::string& UID) const
+    {
+        for (auto& elem : m_rivets ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSRivets::GetRivet. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSRivet& CPACSRivets::AddRivet()
     {
         m_rivets.push_back(make_unique<CPACSRivet>(this, m_uidMgr));

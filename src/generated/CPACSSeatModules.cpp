@@ -108,6 +108,58 @@ namespace generated
         return m_seatModules;
     }
 
+    size_t CPACSSeatModules::GetSeatModuleCount() const
+    {
+        return m_seatModules.size();
+    }
+
+    size_t CPACSSeatModules::GetSeatModuleIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSeatModuleCount(); i++) {
+            const std::string tmpUID(m_seatModules[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSDeckComponent2DBase& CPACSSeatModules::GetSeatModule(size_t index)
+    {
+        if (index < 1 || index > GetSeatModuleCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>::GetSeatModule", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_seatModules[index];
+    }
+
+    const CPACSDeckComponent2DBase& CPACSSeatModules::GetSeatModule(size_t index) const
+    {
+        if (index < 1 || index > GetSeatModuleCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>::GetSeatModule", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_seatModules[index];
+    }
+
+    CPACSDeckComponent2DBase& CPACSSeatModules::GetSeatModule(const std::string& UID)
+    {
+        for (auto& elem : m_seatModules ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSeatModules::GetSeatModule. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSDeckComponent2DBase& CPACSSeatModules::GetSeatModule(const std::string& UID) const
+    {
+        for (auto& elem : m_seatModules ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSeatModules::GetSeatModule. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSDeckComponent2DBase& CPACSSeatModules::AddSeatModule()
     {
         m_seatModules.push_back(make_unique<CPACSDeckComponent2DBase>(this, m_uidMgr));

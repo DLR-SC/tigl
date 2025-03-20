@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSProfiles.h"
 #include "CPACSProfileGeometry.h"
+#include "CPACSProfiles.h"
 #include "CPACSWingAirfoils.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSWingAirfoils::CPACSWingAirfoils(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    CPACSWingAirfoils::CPACSWingAirfoils(CPACSProfiles* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSProfiles* CPACSWingAirfoils::GetParent() const
+    const CPACSProfiles* CPACSWingAirfoils::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSProfiles* CPACSWingAirfoils::GetParent()
+    CPACSProfiles* CPACSWingAirfoils::GetParent()
     {
         return m_parent;
     }
@@ -107,6 +107,58 @@ namespace generated
     {
         return m_wingAirfoils;
     }
+
+    size_t CPACSWingAirfoils::GetWingAirfoilCount() const
+    {
+        return m_wingAirfoils.size();
+    }
+
+    size_t CPACSWingAirfoils::GetWingAirfoilIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetWingAirfoilCount(); i++) {
+            const std::string tmpUID(m_wingAirfoils[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSProfileGeometry& CPACSWingAirfoils::GetWingAirfoil(size_t index)
+    {
+        if (index < 1 || index > GetWingAirfoilCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSProfileGeometry>>::GetWingAirfoil", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_wingAirfoils[index];
+    }
+
+    const CPACSProfileGeometry& CPACSWingAirfoils::GetWingAirfoil(size_t index) const
+    {
+        if (index < 1 || index > GetWingAirfoilCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSProfileGeometry>>::GetWingAirfoil", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_wingAirfoils[index];
+    }
+
+    CPACSProfileGeometry& CPACSWingAirfoils::GetWingAirfoil(const std::string& UID)
+    {
+        for (auto& elem : m_wingAirfoils ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSWingAirfoils::GetWingAirfoil. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSProfileGeometry& CPACSWingAirfoils::GetWingAirfoil(const std::string& UID) const
+    {
+        for (auto& elem : m_wingAirfoils ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSWingAirfoils::GetWingAirfoil. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
 
     CPACSProfileGeometry& CPACSWingAirfoils::AddWingAirfoil()
     {

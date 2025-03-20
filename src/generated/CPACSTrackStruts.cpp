@@ -108,6 +108,58 @@ namespace generated
         return m_struts;
     }
 
+    size_t CPACSTrackStruts::GetStrutCount() const
+    {
+        return m_struts.size();
+    }
+
+    size_t CPACSTrackStruts::GetStrutIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetStrutCount(); i++) {
+            const std::string tmpUID(m_struts[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSTrackStrut& CPACSTrackStruts::GetStrut(size_t index)
+    {
+        if (index < 1 || index > GetStrutCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSTrackStrut>>::GetStrut", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_struts[index];
+    }
+
+    const CPACSTrackStrut& CPACSTrackStruts::GetStrut(size_t index) const
+    {
+        if (index < 1 || index > GetStrutCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSTrackStrut>>::GetStrut", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_struts[index];
+    }
+
+    CPACSTrackStrut& CPACSTrackStruts::GetStrut(const std::string& UID)
+    {
+        for (auto& elem : m_struts ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSTrackStruts::GetStrut. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSTrackStrut& CPACSTrackStruts::GetStrut(const std::string& UID) const
+    {
+        for (auto& elem : m_struts ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSTrackStruts::GetStrut. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSTrackStrut& CPACSTrackStruts::AddStrut()
     {
         m_struts.push_back(make_unique<CPACSTrackStrut>(this, m_uidMgr));

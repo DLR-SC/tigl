@@ -86,7 +86,7 @@ namespace generated
     {
         // read element door
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/door")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/door", m_doors, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSDoors*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/door", m_doors, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -108,9 +108,61 @@ namespace generated
         return m_doors;
     }
 
+    size_t CPACSDoors::GetDoorCount() const
+    {
+        return m_doors.size();
+    }
+
+    size_t CPACSDoors::GetDoorIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetDoorCount(); i++) {
+            const std::string tmpUID(m_doors[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSDoorCutOut& CPACSDoors::GetDoor(size_t index)
+    {
+        if (index < 1 || index > GetDoorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDoorCutOut>>::GetDoor", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_doors[index];
+    }
+
+    const CPACSDoorCutOut& CPACSDoors::GetDoor(size_t index) const
+    {
+        if (index < 1 || index > GetDoorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDoorCutOut>>::GetDoor", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_doors[index];
+    }
+
+    CPACSDoorCutOut& CPACSDoors::GetDoor(const std::string& UID)
+    {
+        for (auto& elem : m_doors ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSDoors::GetDoor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSDoorCutOut& CPACSDoors::GetDoor(const std::string& UID) const
+    {
+        for (auto& elem : m_doors ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSDoors::GetDoor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSDoorCutOut& CPACSDoors::AddDoor()
     {
-        m_doors.push_back(make_unique<CPACSDoorCutOut>(reinterpret_cast<CCPACSDoors*>(this), m_uidMgr));
+        m_doors.push_back(make_unique<CPACSDoorCutOut>(this, m_uidMgr));
         return *m_doors.back();
     }
 

@@ -108,6 +108,58 @@ namespace generated
         return m_cargoCrossBeams;
     }
 
+    size_t CPACSCargoCrossBeamsAssembly::GetCargoCrossBeamCount() const
+    {
+        return m_cargoCrossBeams.size();
+    }
+
+    size_t CPACSCargoCrossBeamsAssembly::GetCargoCrossBeamIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetCargoCrossBeamCount(); i++) {
+            const std::string tmpUID(m_cargoCrossBeams[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSCrossBeamAssemblyPosition& CPACSCargoCrossBeamsAssembly::GetCargoCrossBeam(size_t index)
+    {
+        if (index < 1 || index > GetCargoCrossBeamCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSCrossBeamAssemblyPosition>>::GetCargoCrossBeam", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_cargoCrossBeams[index];
+    }
+
+    const CCPACSCrossBeamAssemblyPosition& CPACSCargoCrossBeamsAssembly::GetCargoCrossBeam(size_t index) const
+    {
+        if (index < 1 || index > GetCargoCrossBeamCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSCrossBeamAssemblyPosition>>::GetCargoCrossBeam", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_cargoCrossBeams[index];
+    }
+
+    CCPACSCrossBeamAssemblyPosition& CPACSCargoCrossBeamsAssembly::GetCargoCrossBeam(const std::string& UID)
+    {
+        for (auto& elem : m_cargoCrossBeams ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSCargoCrossBeamsAssembly::GetCargoCrossBeam. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSCrossBeamAssemblyPosition& CPACSCargoCrossBeamsAssembly::GetCargoCrossBeam(const std::string& UID) const
+    {
+        for (auto& elem : m_cargoCrossBeams ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSCargoCrossBeamsAssembly::GetCargoCrossBeam. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSCrossBeamAssemblyPosition& CPACSCargoCrossBeamsAssembly::AddCargoCrossBeam()
     {
         m_cargoCrossBeams.push_back(make_unique<CCPACSCrossBeamAssemblyPosition>(reinterpret_cast<CCPACSCargoCrossBeamsAssembly*>(this), m_uidMgr));

@@ -108,6 +108,58 @@ namespace generated
         return m_seatElements;
     }
 
+    size_t CPACSSeatElements::GetSeatElementCount() const
+    {
+        return m_seatElements.size();
+    }
+
+    size_t CPACSSeatElements::GetSeatElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSeatElementCount(); i++) {
+            const std::string tmpUID(m_seatElements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSSeatElement& CPACSSeatElements::GetSeatElement(size_t index)
+    {
+        if (index < 1 || index > GetSeatElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSeatElement>>::GetSeatElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_seatElements[index];
+    }
+
+    const CPACSSeatElement& CPACSSeatElements::GetSeatElement(size_t index) const
+    {
+        if (index < 1 || index > GetSeatElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSeatElement>>::GetSeatElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_seatElements[index];
+    }
+
+    CPACSSeatElement& CPACSSeatElements::GetSeatElement(const std::string& UID)
+    {
+        for (auto& elem : m_seatElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSeatElements::GetSeatElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSSeatElement& CPACSSeatElements::GetSeatElement(const std::string& UID) const
+    {
+        for (auto& elem : m_seatElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSeatElements::GetSeatElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSSeatElement& CPACSSeatElements::AddSeatElement()
     {
         m_seatElements.push_back(make_unique<CPACSSeatElement>(this, m_uidMgr));

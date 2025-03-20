@@ -102,6 +102,58 @@ namespace generated
         return m_landingGears;
     }
 
+    size_t CPACSLandingGears::GetLandingGearCount() const
+    {
+        return m_landingGears.size();
+    }
+
+    size_t CPACSLandingGears::GetLandingGearIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetLandingGearCount(); i++) {
+            const std::string tmpUID(m_landingGears[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSLandingGearBase& CPACSLandingGears::GetLandingGear(size_t index)
+    {
+        if (index < 1 || index > GetLandingGearCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSLandingGearBase>>::GetLandingGear", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_landingGears[index];
+    }
+
+    const CPACSLandingGearBase& CPACSLandingGears::GetLandingGear(size_t index) const
+    {
+        if (index < 1 || index > GetLandingGearCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSLandingGearBase>>::GetLandingGear", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_landingGears[index];
+    }
+
+    CPACSLandingGearBase& CPACSLandingGears::GetLandingGear(const std::string& UID)
+    {
+        for (auto& elem : m_landingGears ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSLandingGears::GetLandingGear. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSLandingGearBase& CPACSLandingGears::GetLandingGear(const std::string& UID) const
+    {
+        for (auto& elem : m_landingGears ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSLandingGears::GetLandingGear. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSLandingGearBase& CPACSLandingGears::AddLandingGear()
     {
         m_landingGears.push_back(make_unique<CPACSLandingGearBase>(this, m_uidMgr));

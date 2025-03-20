@@ -141,6 +141,58 @@ namespace generated
         return m_steps;
     }
 
+    size_t CPACSLandingGearSteeringFunction::GetStepCount() const
+    {
+        return m_steps.size();
+    }
+
+    size_t CPACSLandingGearSteeringFunction::GetStepIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetStepCount(); i++) {
+            const std::string tmpUID(m_steps[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSLandingGearSteeringFunctionStep& CPACSLandingGearSteeringFunction::GetStep(size_t index)
+    {
+        if (index < 1 || index > GetStepCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSLandingGearSteeringFunctionStep>>::GetStep", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_steps[index];
+    }
+
+    const CPACSLandingGearSteeringFunctionStep& CPACSLandingGearSteeringFunction::GetStep(size_t index) const
+    {
+        if (index < 1 || index > GetStepCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSLandingGearSteeringFunctionStep>>::GetStep", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_steps[index];
+    }
+
+    CPACSLandingGearSteeringFunctionStep& CPACSLandingGearSteeringFunction::GetStep(const std::string& UID)
+    {
+        for (auto& elem : m_steps ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSLandingGearSteeringFunction::GetStep. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSLandingGearSteeringFunctionStep& CPACSLandingGearSteeringFunction::GetStep(const std::string& UID) const
+    {
+        for (auto& elem : m_steps ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSLandingGearSteeringFunction::GetStep. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSLandingGearSteeringFunctionStep& CPACSLandingGearSteeringFunction::AddStep()
     {
         m_steps.push_back(make_unique<CPACSLandingGearSteeringFunctionStep>(this));

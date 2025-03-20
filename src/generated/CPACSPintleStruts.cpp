@@ -108,6 +108,58 @@ namespace generated
         return m_pintleStruts;
     }
 
+    size_t CPACSPintleStruts::GetPintleStrutCount() const
+    {
+        return m_pintleStruts.size();
+    }
+
+    size_t CPACSPintleStruts::GetPintleStrutIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetPintleStrutCount(); i++) {
+            const std::string tmpUID(m_pintleStruts[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSStrutAssembly& CPACSPintleStruts::GetPintleStrut(size_t index)
+    {
+        if (index < 1 || index > GetPintleStrutCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSStrutAssembly>>::GetPintleStrut", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pintleStruts[index];
+    }
+
+    const CPACSStrutAssembly& CPACSPintleStruts::GetPintleStrut(size_t index) const
+    {
+        if (index < 1 || index > GetPintleStrutCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSStrutAssembly>>::GetPintleStrut", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pintleStruts[index];
+    }
+
+    CPACSStrutAssembly& CPACSPintleStruts::GetPintleStrut(const std::string& UID)
+    {
+        for (auto& elem : m_pintleStruts ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSPintleStruts::GetPintleStrut. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSStrutAssembly& CPACSPintleStruts::GetPintleStrut(const std::string& UID) const
+    {
+        for (auto& elem : m_pintleStruts ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSPintleStruts::GetPintleStrut. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSStrutAssembly& CPACSPintleStruts::AddPintleStrut()
     {
         m_pintleStruts.push_back(make_unique<CPACSStrutAssembly>(this, m_uidMgr));

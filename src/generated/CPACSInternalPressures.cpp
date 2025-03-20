@@ -102,6 +102,58 @@ namespace generated
         return m_internalPressures;
     }
 
+    size_t CPACSInternalPressures::GetInternalPressureCount() const
+    {
+        return m_internalPressures.size();
+    }
+
+    size_t CPACSInternalPressures::GetInternalPressureIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetInternalPressureCount(); i++) {
+            const std::string tmpUID(m_internalPressures[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSInternalPressure& CPACSInternalPressures::GetInternalPressure(size_t index)
+    {
+        if (index < 1 || index > GetInternalPressureCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSInternalPressure>>::GetInternalPressure", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_internalPressures[index];
+    }
+
+    const CPACSInternalPressure& CPACSInternalPressures::GetInternalPressure(size_t index) const
+    {
+        if (index < 1 || index > GetInternalPressureCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSInternalPressure>>::GetInternalPressure", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_internalPressures[index];
+    }
+
+    CPACSInternalPressure& CPACSInternalPressures::GetInternalPressure(const std::string& UID)
+    {
+        for (auto& elem : m_internalPressures ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSInternalPressures::GetInternalPressure. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSInternalPressure& CPACSInternalPressures::GetInternalPressure(const std::string& UID) const
+    {
+        for (auto& elem : m_internalPressures ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSInternalPressures::GetInternalPressure. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSInternalPressure& CPACSInternalPressures::AddInternalPressure()
     {
         m_internalPressures.push_back(make_unique<CPACSInternalPressure>(this, m_uidMgr));

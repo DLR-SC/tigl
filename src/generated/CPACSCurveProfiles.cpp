@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include <CCPACSNacelleProfile.h>
-#include "CCPACSProfiles.h"
 #include "CPACSCurveProfiles.h"
+#include "CPACSProfiles.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSCurveProfiles::CPACSCurveProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    CPACSCurveProfiles::CPACSCurveProfiles(CPACSProfiles* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSProfiles* CPACSCurveProfiles::GetParent() const
+    const CPACSProfiles* CPACSCurveProfiles::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSProfiles* CPACSCurveProfiles::GetParent()
+    CPACSProfiles* CPACSCurveProfiles::GetParent()
     {
         return m_parent;
     }
@@ -107,6 +107,58 @@ namespace generated
     {
         return m_curveProfiles;
     }
+
+    size_t CPACSCurveProfiles::GetCurveProfileCount() const
+    {
+        return m_curveProfiles.size();
+    }
+
+    size_t CPACSCurveProfiles::GetCurveProfileIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetCurveProfileCount(); i++) {
+            const std::string tmpUID(m_curveProfiles[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSNacelleProfile& CPACSCurveProfiles::GetCurveProfile(size_t index)
+    {
+        if (index < 1 || index > GetCurveProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSNacelleProfile>>::GetCurveProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_curveProfiles[index];
+    }
+
+    const CCPACSNacelleProfile& CPACSCurveProfiles::GetCurveProfile(size_t index) const
+    {
+        if (index < 1 || index > GetCurveProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSNacelleProfile>>::GetCurveProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_curveProfiles[index];
+    }
+
+    CCPACSNacelleProfile& CPACSCurveProfiles::GetCurveProfile(const std::string& UID)
+    {
+        for (auto& elem : m_curveProfiles ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSCurveProfiles::GetCurveProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSNacelleProfile& CPACSCurveProfiles::GetCurveProfile(const std::string& UID) const
+    {
+        for (auto& elem : m_curveProfiles ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSCurveProfiles::GetCurveProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
 
     CCPACSNacelleProfile& CPACSCurveProfiles::AddCurveProfile()
     {

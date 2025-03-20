@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSNacelleGuideCurve>>& GetNacelleGuideCurves() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSNacelleGuideCurve>>& GetNacelleGuideCurves();
 
+        TIGL_EXPORT virtual size_t GetNacelleGuideCurveCount() const;
+        TIGL_EXPORT virtual size_t GetNacelleGuideCurveIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSNacelleGuideCurve& GetNacelleGuideCurve(size_t index) const;
+        TIGL_EXPORT virtual CPACSNacelleGuideCurve& GetNacelleGuideCurve(size_t index);
+
+        TIGL_EXPORT virtual const CPACSNacelleGuideCurve& GetNacelleGuideCurve(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSNacelleGuideCurve& GetNacelleGuideCurve(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSNacelleGuideCurve& AddNacelleGuideCurve();
         TIGL_EXPORT virtual void RemoveNacelleGuideCurve(CPACSNacelleGuideCurve& ref);
 

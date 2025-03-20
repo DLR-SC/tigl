@@ -108,6 +108,58 @@ namespace generated
         return m_sparSegments;
     }
 
+    size_t CPACSSparSegments::GetSparSegmentCount() const
+    {
+        return m_sparSegments.size();
+    }
+
+    size_t CPACSSparSegments::GetSparSegmentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSparSegmentCount(); i++) {
+            const std::string tmpUID(m_sparSegments[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSWingSparSegment& CPACSSparSegments::GetSparSegment(size_t index)
+    {
+        if (index < 1 || index > GetSparSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingSparSegment>>::GetSparSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sparSegments[index];
+    }
+
+    const CCPACSWingSparSegment& CPACSSparSegments::GetSparSegment(size_t index) const
+    {
+        if (index < 1 || index > GetSparSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingSparSegment>>::GetSparSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sparSegments[index];
+    }
+
+    CCPACSWingSparSegment& CPACSSparSegments::GetSparSegment(const std::string& UID)
+    {
+        for (auto& elem : m_sparSegments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSparSegments::GetSparSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSWingSparSegment& CPACSSparSegments::GetSparSegment(const std::string& UID) const
+    {
+        for (auto& elem : m_sparSegments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSparSegments::GetSparSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSWingSparSegment& CPACSSparSegments::AddSparSegment()
     {
         m_sparSegments.push_back(make_unique<CCPACSWingSparSegment>(reinterpret_cast<CCPACSWingSparSegments*>(this), m_uidMgr));

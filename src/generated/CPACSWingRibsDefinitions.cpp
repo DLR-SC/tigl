@@ -108,6 +108,58 @@ namespace generated
         return m_ribsDefinitions;
     }
 
+    size_t CPACSWingRibsDefinitions::GetRibsDefinitionCount() const
+    {
+        return m_ribsDefinitions.size();
+    }
+
+    size_t CPACSWingRibsDefinitions::GetRibsDefinitionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetRibsDefinitionCount(); i++) {
+            const std::string tmpUID(m_ribsDefinitions[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::GetRibsDefinition(size_t index)
+    {
+        if (index < 1 || index > GetRibsDefinitionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingRibsDefinition>>::GetRibsDefinition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_ribsDefinitions[index];
+    }
+
+    const CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::GetRibsDefinition(size_t index) const
+    {
+        if (index < 1 || index > GetRibsDefinitionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingRibsDefinition>>::GetRibsDefinition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_ribsDefinitions[index];
+    }
+
+    CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::GetRibsDefinition(const std::string& UID)
+    {
+        for (auto& elem : m_ribsDefinitions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSWingRibsDefinitions::GetRibsDefinition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::GetRibsDefinition(const std::string& UID) const
+    {
+        for (auto& elem : m_ribsDefinitions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSWingRibsDefinitions::GetRibsDefinition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::AddRibsDefinition()
     {
         m_ribsDefinitions.push_back(make_unique<CCPACSWingRibsDefinition>(reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr));

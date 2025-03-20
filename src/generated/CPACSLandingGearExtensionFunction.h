@@ -66,6 +66,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSLandingGearExtensionFunctionStep>>& GetSteps() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSLandingGearExtensionFunctionStep>>& GetSteps();
 
+        TIGL_EXPORT virtual size_t GetStepCount() const;
+        TIGL_EXPORT virtual size_t GetStepIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSLandingGearExtensionFunctionStep& GetStep(size_t index) const;
+        TIGL_EXPORT virtual CPACSLandingGearExtensionFunctionStep& GetStep(size_t index);
+
+        TIGL_EXPORT virtual const CPACSLandingGearExtensionFunctionStep& GetStep(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSLandingGearExtensionFunctionStep& GetStep(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSLandingGearExtensionFunctionStep& AddStep();
         TIGL_EXPORT virtual void RemoveStep(CPACSLandingGearExtensionFunctionStep& ref);
 

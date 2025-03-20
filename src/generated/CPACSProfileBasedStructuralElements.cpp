@@ -108,6 +108,58 @@ namespace generated
         return m_profileBasedStructuralElements;
     }
 
+    size_t CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElementCount() const
+    {
+        return m_profileBasedStructuralElements.size();
+    }
+
+    size_t CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetProfileBasedStructuralElementCount(); i++) {
+            const std::string tmpUID(m_profileBasedStructuralElements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSProfileBasedStructuralElement& CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElement(size_t index)
+    {
+        if (index < 1 || index > GetProfileBasedStructuralElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSProfileBasedStructuralElement>>::GetProfileBasedStructuralElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_profileBasedStructuralElements[index];
+    }
+
+    const CCPACSProfileBasedStructuralElement& CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElement(size_t index) const
+    {
+        if (index < 1 || index > GetProfileBasedStructuralElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSProfileBasedStructuralElement>>::GetProfileBasedStructuralElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_profileBasedStructuralElements[index];
+    }
+
+    CCPACSProfileBasedStructuralElement& CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElement(const std::string& UID)
+    {
+        for (auto& elem : m_profileBasedStructuralElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSProfileBasedStructuralElement& CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElement(const std::string& UID) const
+    {
+        for (auto& elem : m_profileBasedStructuralElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSProfileBasedStructuralElements::GetProfileBasedStructuralElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSProfileBasedStructuralElement& CPACSProfileBasedStructuralElements::AddProfileBasedStructuralElement()
     {
         m_profileBasedStructuralElements.push_back(make_unique<CCPACSProfileBasedStructuralElement>(this, m_uidMgr));

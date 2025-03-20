@@ -102,6 +102,58 @@ namespace generated
         return m_controlElements;
     }
 
+    size_t CPACSAircraftControlElements::GetControlElementCount() const
+    {
+        return m_controlElements.size();
+    }
+
+    size_t CPACSAircraftControlElements::GetControlElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetControlElementCount(); i++) {
+            const std::string tmpUID(m_controlElements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSAircraftControlElement& CPACSAircraftControlElements::GetControlElement(size_t index)
+    {
+        if (index < 1 || index > GetControlElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSAircraftControlElement>>::GetControlElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_controlElements[index];
+    }
+
+    const CPACSAircraftControlElement& CPACSAircraftControlElements::GetControlElement(size_t index) const
+    {
+        if (index < 1 || index > GetControlElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSAircraftControlElement>>::GetControlElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_controlElements[index];
+    }
+
+    CPACSAircraftControlElement& CPACSAircraftControlElements::GetControlElement(const std::string& UID)
+    {
+        for (auto& elem : m_controlElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSAircraftControlElements::GetControlElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSAircraftControlElement& CPACSAircraftControlElements::GetControlElement(const std::string& UID) const
+    {
+        for (auto& elem : m_controlElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSAircraftControlElements::GetControlElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSAircraftControlElement& CPACSAircraftControlElements::AddControlElement()
     {
         m_controlElements.push_back(make_unique<CPACSAircraftControlElement>(this, m_uidMgr));

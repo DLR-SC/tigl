@@ -102,6 +102,58 @@ namespace generated
         return m_nacelleGuideCurves;
     }
 
+    size_t CPACSNacelleGuideCurves::GetNacelleGuideCurveCount() const
+    {
+        return m_nacelleGuideCurves.size();
+    }
+
+    size_t CPACSNacelleGuideCurves::GetNacelleGuideCurveIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetNacelleGuideCurveCount(); i++) {
+            const std::string tmpUID(m_nacelleGuideCurves[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::GetNacelleGuideCurve(size_t index)
+    {
+        if (index < 1 || index > GetNacelleGuideCurveCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSNacelleGuideCurve>>::GetNacelleGuideCurve", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_nacelleGuideCurves[index];
+    }
+
+    const CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::GetNacelleGuideCurve(size_t index) const
+    {
+        if (index < 1 || index > GetNacelleGuideCurveCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSNacelleGuideCurve>>::GetNacelleGuideCurve", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_nacelleGuideCurves[index];
+    }
+
+    CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::GetNacelleGuideCurve(const std::string& UID)
+    {
+        for (auto& elem : m_nacelleGuideCurves ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSNacelleGuideCurves::GetNacelleGuideCurve. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::GetNacelleGuideCurve(const std::string& UID) const
+    {
+        for (auto& elem : m_nacelleGuideCurves ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSNacelleGuideCurves::GetNacelleGuideCurve. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::AddNacelleGuideCurve()
     {
         m_nacelleGuideCurves.push_back(make_unique<CPACSNacelleGuideCurve>(reinterpret_cast<CCPACSNacelleGuideCurves*>(this), m_uidMgr));

@@ -102,6 +102,58 @@ namespace generated
         return m_rotors;
     }
 
+    size_t CPACSRotors::GetRotorCount() const
+    {
+        return m_rotors.size();
+    }
+
+    size_t CPACSRotors::GetRotorIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetRotorCount(); i++) {
+            const std::string tmpUID(m_rotors[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSRotor& CPACSRotors::GetRotor(size_t index)
+    {
+        if (index < 1 || index > GetRotorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSRotor>>::GetRotor", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_rotors[index];
+    }
+
+    const CCPACSRotor& CPACSRotors::GetRotor(size_t index) const
+    {
+        if (index < 1 || index > GetRotorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSRotor>>::GetRotor", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_rotors[index];
+    }
+
+    CCPACSRotor& CPACSRotors::GetRotor(const std::string& UID)
+    {
+        for (auto& elem : m_rotors ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSRotors::GetRotor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSRotor& CPACSRotors::GetRotor(const std::string& UID) const
+    {
+        for (auto& elem : m_rotors ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSRotors::GetRotor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSRotor& CPACSRotors::AddRotor()
     {
         m_rotors.push_back(make_unique<CCPACSRotor>(reinterpret_cast<CCPACSRotors*>(this), m_uidMgr));

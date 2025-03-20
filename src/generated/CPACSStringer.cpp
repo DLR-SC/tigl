@@ -141,6 +141,58 @@ namespace generated
         return m_stringerPositions;
     }
 
+    size_t CPACSStringer::GetStringerPositionCount() const
+    {
+        return m_stringerPositions.size();
+    }
+
+    size_t CPACSStringer::GetStringerPositionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetStringerPositionCount(); i++) {
+            const std::string tmpUID(m_stringerPositions[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSFuselageStringerFramePosition& CPACSStringer::GetStringerPosition(size_t index)
+    {
+        if (index < 1 || index > GetStringerPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>>::GetStringerPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_stringerPositions[index];
+    }
+
+    const CCPACSFuselageStringerFramePosition& CPACSStringer::GetStringerPosition(size_t index) const
+    {
+        if (index < 1 || index > GetStringerPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>>::GetStringerPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_stringerPositions[index];
+    }
+
+    CCPACSFuselageStringerFramePosition& CPACSStringer::GetStringerPosition(const std::string& UID)
+    {
+        for (auto& elem : m_stringerPositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSStringer::GetStringerPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSFuselageStringerFramePosition& CPACSStringer::GetStringerPosition(const std::string& UID) const
+    {
+        for (auto& elem : m_stringerPositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSStringer::GetStringerPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSFuselageStringerFramePosition& CPACSStringer::AddStringerPosition()
     {
         m_stringerPositions.push_back(make_unique<CCPACSFuselageStringerFramePosition>(reinterpret_cast<CCPACSFuselageStringer*>(this), m_uidMgr));

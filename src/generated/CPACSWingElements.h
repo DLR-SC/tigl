@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWingSectionElement>>& GetElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWingSectionElement>>& GetElements();
 
+        TIGL_EXPORT virtual size_t GetElementCount() const;
+        TIGL_EXPORT virtual size_t GetElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSWingSectionElement& GetElement(size_t index) const;
+        TIGL_EXPORT virtual CCPACSWingSectionElement& GetElement(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSWingSectionElement& GetElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSWingSectionElement& GetElement(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSWingSectionElement& AddElement();
         TIGL_EXPORT virtual void RemoveElement(CCPACSWingSectionElement& ref);
 

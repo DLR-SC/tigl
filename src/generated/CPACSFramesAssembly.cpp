@@ -118,6 +118,58 @@ namespace generated
         return m_frames;
     }
 
+    size_t CPACSFramesAssembly::GetFrameCount() const
+    {
+        return m_frames.size();
+    }
+
+    size_t CPACSFramesAssembly::GetFrameIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetFrameCount(); i++) {
+            const std::string tmpUID(m_frames[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSFrame& CPACSFramesAssembly::GetFrame(size_t index)
+    {
+        if (index < 1 || index > GetFrameCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFrame>>::GetFrame", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_frames[index];
+    }
+
+    const CCPACSFrame& CPACSFramesAssembly::GetFrame(size_t index) const
+    {
+        if (index < 1 || index > GetFrameCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFrame>>::GetFrame", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_frames[index];
+    }
+
+    CCPACSFrame& CPACSFramesAssembly::GetFrame(const std::string& UID)
+    {
+        for (auto& elem : m_frames ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSFramesAssembly::GetFrame. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSFrame& CPACSFramesAssembly::GetFrame(const std::string& UID) const
+    {
+        for (auto& elem : m_frames ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSFramesAssembly::GetFrame. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSFrame& CPACSFramesAssembly::AddFrame()
     {
         m_frames.push_back(make_unique<CCPACSFrame>(reinterpret_cast<CCPACSFramesAssembly*>(this), m_uidMgr));

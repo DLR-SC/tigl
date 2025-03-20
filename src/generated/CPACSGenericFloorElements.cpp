@@ -108,6 +108,58 @@ namespace generated
         return m_genericFloorElements;
     }
 
+    size_t CPACSGenericFloorElements::GetGenericFloorElementCount() const
+    {
+        return m_genericFloorElements.size();
+    }
+
+    size_t CPACSGenericFloorElements::GetGenericFloorElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetGenericFloorElementCount(); i++) {
+            const std::string tmpUID(m_genericFloorElements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSDeckElementBase& CPACSGenericFloorElements::GetGenericFloorElement(size_t index)
+    {
+        if (index < 1 || index > GetGenericFloorElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetGenericFloorElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_genericFloorElements[index];
+    }
+
+    const CPACSDeckElementBase& CPACSGenericFloorElements::GetGenericFloorElement(size_t index) const
+    {
+        if (index < 1 || index > GetGenericFloorElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetGenericFloorElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_genericFloorElements[index];
+    }
+
+    CPACSDeckElementBase& CPACSGenericFloorElements::GetGenericFloorElement(const std::string& UID)
+    {
+        for (auto& elem : m_genericFloorElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSGenericFloorElements::GetGenericFloorElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSDeckElementBase& CPACSGenericFloorElements::GetGenericFloorElement(const std::string& UID) const
+    {
+        for (auto& elem : m_genericFloorElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSGenericFloorElements::GetGenericFloorElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSDeckElementBase& CPACSGenericFloorElements::AddGenericFloorElement()
     {
         m_genericFloorElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));

@@ -59,6 +59,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSStructuralWallElement>>& GetStructuralWallElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSStructuralWallElement>>& GetStructuralWallElements();
 
+        TIGL_EXPORT virtual size_t GetStructuralWallElementCount() const;
+        TIGL_EXPORT virtual size_t GetStructuralWallElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSStructuralWallElement& GetStructuralWallElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSStructuralWallElement& GetStructuralWallElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSStructuralWallElement& GetStructuralWallElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSStructuralWallElement& GetStructuralWallElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSStructuralWallElement& AddStructuralWallElement();
         TIGL_EXPORT virtual void RemoveStructuralWallElement(CPACSStructuralWallElement& ref);
 

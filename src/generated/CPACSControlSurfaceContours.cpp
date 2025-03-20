@@ -108,6 +108,58 @@ namespace generated
         return m_intermediateAirfoils;
     }
 
+    size_t CPACSControlSurfaceContours::GetIntermediateAirfoilCount() const
+    {
+        return m_intermediateAirfoils.size();
+    }
+
+    size_t CPACSControlSurfaceContours::GetIntermediateAirfoilIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetIntermediateAirfoilCount(); i++) {
+            const std::string tmpUID(m_intermediateAirfoils[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSControlSurfaceAirfoil& CPACSControlSurfaceContours::GetIntermediateAirfoil(size_t index)
+    {
+        if (index < 1 || index > GetIntermediateAirfoilCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>>::GetIntermediateAirfoil", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_intermediateAirfoils[index];
+    }
+
+    const CPACSControlSurfaceAirfoil& CPACSControlSurfaceContours::GetIntermediateAirfoil(size_t index) const
+    {
+        if (index < 1 || index > GetIntermediateAirfoilCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>>::GetIntermediateAirfoil", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_intermediateAirfoils[index];
+    }
+
+    CPACSControlSurfaceAirfoil& CPACSControlSurfaceContours::GetIntermediateAirfoil(const std::string& UID)
+    {
+        for (auto& elem : m_intermediateAirfoils ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSControlSurfaceContours::GetIntermediateAirfoil. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSControlSurfaceAirfoil& CPACSControlSurfaceContours::GetIntermediateAirfoil(const std::string& UID) const
+    {
+        for (auto& elem : m_intermediateAirfoils ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSControlSurfaceContours::GetIntermediateAirfoil. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSControlSurfaceAirfoil& CPACSControlSurfaceContours::AddIntermediateAirfoil()
     {
         m_intermediateAirfoils.push_back(make_unique<CPACSControlSurfaceAirfoil>(this, m_uidMgr));

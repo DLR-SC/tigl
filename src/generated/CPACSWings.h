@@ -90,6 +90,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWing>>& GetWings() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWing>>& GetWings();
 
+        TIGL_EXPORT virtual size_t GetWingCount() const;
+        TIGL_EXPORT virtual size_t GetWingIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSWing& GetWing(size_t index) const;
+        TIGL_EXPORT virtual CCPACSWing& GetWing(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSWing& GetWing(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSWing& GetWing(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSWing& AddWing();
         TIGL_EXPORT virtual void RemoveWing(CCPACSWing& ref);
 

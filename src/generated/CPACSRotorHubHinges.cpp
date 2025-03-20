@@ -102,6 +102,58 @@ namespace generated
         return m_hinges;
     }
 
+    size_t CPACSRotorHubHinges::GetHingeCount() const
+    {
+        return m_hinges.size();
+    }
+
+    size_t CPACSRotorHubHinges::GetHingeIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetHingeCount(); i++) {
+            const std::string tmpUID(m_hinges[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSRotorHinge& CPACSRotorHubHinges::GetHinge(size_t index)
+    {
+        if (index < 1 || index > GetHingeCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSRotorHinge>>::GetHinge", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_hinges[index];
+    }
+
+    const CCPACSRotorHinge& CPACSRotorHubHinges::GetHinge(size_t index) const
+    {
+        if (index < 1 || index > GetHingeCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSRotorHinge>>::GetHinge", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_hinges[index];
+    }
+
+    CCPACSRotorHinge& CPACSRotorHubHinges::GetHinge(const std::string& UID)
+    {
+        for (auto& elem : m_hinges ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSRotorHubHinges::GetHinge. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSRotorHinge& CPACSRotorHubHinges::GetHinge(const std::string& UID) const
+    {
+        for (auto& elem : m_hinges ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSRotorHubHinges::GetHinge. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSRotorHinge& CPACSRotorHubHinges::AddHinge()
     {
         m_hinges.push_back(make_unique<CCPACSRotorHinge>(reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr));

@@ -58,6 +58,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVersionInfo>>& GetVersionInfos() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVersionInfo>>& GetVersionInfos();
 
+        TIGL_EXPORT virtual size_t GetVersionInfoCount() const;
+        TIGL_EXPORT virtual size_t GetVersionInfoIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSVersionInfo& GetVersionInfo(size_t index) const;
+        TIGL_EXPORT virtual CPACSVersionInfo& GetVersionInfo(size_t index);
+
+        TIGL_EXPORT virtual const CPACSVersionInfo& GetVersionInfo(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVersionInfo& GetVersionInfo(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSVersionInfo& AddVersionInfo();
         TIGL_EXPORT virtual void RemoveVersionInfo(CPACSVersionInfo& ref);
 

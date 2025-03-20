@@ -102,6 +102,58 @@ namespace generated
         return m_sheets;
     }
 
+    size_t CPACSSheetList::GetSheetCount() const
+    {
+        return m_sheets.size();
+    }
+
+    size_t CPACSSheetList::GetSheetIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSheetCount(); i++) {
+            const std::string tmpUID(m_sheets[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CPACSSheet& CPACSSheetList::GetSheet(size_t index)
+    {
+        if (index < 1 || index > GetSheetCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSheet>>::GetSheet", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sheets[index];
+    }
+
+    const CPACSSheet& CPACSSheetList::GetSheet(size_t index) const
+    {
+        if (index < 1 || index > GetSheetCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSheet>>::GetSheet", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sheets[index];
+    }
+
+    CPACSSheet& CPACSSheetList::GetSheet(const std::string& UID)
+    {
+        for (auto& elem : m_sheets ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSheetList::GetSheet. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CPACSSheet& CPACSSheetList::GetSheet(const std::string& UID) const
+    {
+        for (auto& elem : m_sheets ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSSheetList::GetSheet. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CPACSSheet& CPACSSheetList::AddSheet()
     {
         m_sheets.push_back(make_unique<CPACSSheet>(reinterpret_cast<CCPACSSheetList*>(this), m_uidMgr));

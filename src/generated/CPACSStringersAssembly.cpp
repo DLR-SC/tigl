@@ -118,6 +118,58 @@ namespace generated
         return m_stringers;
     }
 
+    size_t CPACSStringersAssembly::GetStringerCount() const
+    {
+        return m_stringers.size();
+    }
+
+    size_t CPACSStringersAssembly::GetStringerIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetStringerCount(); i++) {
+            const std::string tmpUID(m_stringers[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+    }
+
+    CCPACSFuselageStringer& CPACSStringersAssembly::GetStringer(size_t index)
+    {
+        if (index < 1 || index > GetStringerCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageStringer>>::GetStringer", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_stringers[index];
+    }
+
+    const CCPACSFuselageStringer& CPACSStringersAssembly::GetStringer(size_t index) const
+    {
+        if (index < 1 || index > GetStringerCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageStringer>>::GetStringer", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_stringers[index];
+    }
+
+    CCPACSFuselageStringer& CPACSStringersAssembly::GetStringer(const std::string& UID)
+    {
+        for (auto& elem : m_stringers ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSStringersAssembly::GetStringer. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+    const CCPACSFuselageStringer& CPACSStringersAssembly::GetStringer(const std::string& UID) const
+    {
+        for (auto& elem : m_stringers ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            throw CTiglError("Invalid UID in CPACSStringersAssembly::GetStringer. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+        }
+    }
+
+
     CCPACSFuselageStringer& CPACSStringersAssembly::AddStringer()
     {
         m_stringers.push_back(make_unique<CCPACSFuselageStringer>(reinterpret_cast<CCPACSStringersAssembly*>(this), m_uidMgr));
