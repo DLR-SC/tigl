@@ -150,7 +150,7 @@ CTiglTransformation CTiglFuselageConnection::GetSectionElementTransformation() c
     return transformation;
 }
 
-generated::CPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSections() const
+CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSections() const
 {
     if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
         return segment->GetParent()->GetParent<CCPACSFuselage>()->GetSections();

@@ -38,7 +38,7 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CCPACSGuideCurveProfile.h"
-#include "CCPACSGuideCurveProfiles.h"
+#include "generated/CPACSGuideCurveProfiles.h"
 #include "CCPACSFuselageProfileGetPointAlgo.h"
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSFuselageSegment.h"

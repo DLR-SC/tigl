@@ -28,7 +28,7 @@
 
 #include "tigl_config.h"
 #include "CTiglTransformation.h"
-#include "CCPACSFuselageSections.h"
+#include "generated/CPACSFuselageSections.h"
 #include "CCPACSFuselageSegments.h"
 #include "CCPACSPositionings.h"
 #include "CTiglRelativelyPositionedComponent.h"

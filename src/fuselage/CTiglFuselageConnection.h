@@ -27,10 +27,12 @@
 #include "CTiglTransformation.h"
 #include <string>
 #include <boost/optional.hpp>
-#include "CPACSFuselageSections.h"
+#include "generated/CPACSFuselageSections.h"
 
 namespace tigl
 {
+
+using CCPACSFuselageSections = generated::CPACSFuselageSections;
 
 class CCPACSFuselageSegment;
 class CCPACSFuselageProfile;
@@ -71,7 +73,7 @@ public:
 
 private:
 
-    generated::CPACSFuselageSections const& GetParentComponentSections() const;
+    CCPACSFuselageSections const& GetParentComponentSections() const;
     boost::optional<CCPACSPositionings>& GetParentComponentPositionings() const;
 
     const std::string*             elementUID;   /**< UID in section/elements */
