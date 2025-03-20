@@ -40,12 +40,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSGenericSystems();
 
-    // Returns the total count of wings in a configuration
-    TIGL_EXPORT int GetGenericSystemCount() const;
-
-    // Returns the wing for a given index.
-    TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(int index) const;
-
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID) const;
 

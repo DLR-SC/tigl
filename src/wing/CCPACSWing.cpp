@@ -430,7 +430,7 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
 
        const CCPACSControlSurfaces& controlSurfs = componentSegment.GetControlSurfaces().value();
        if (!controlSurfs.GetTrailingEdgeDevices().is_initialized()) continue;
-       const CCPACSTrailingEdgeDevices& controlSurfaceDevices = controlSurfs.GetTrailingEdgeDevices().value();
+       const generated::CPACSTrailingEdgeDevices& controlSurfaceDevices = controlSurfs.GetTrailingEdgeDevices().value();
 
         for ( size_t j = controlSurfaceDevices.GetTrailingEdgeDevices().size(); j > 0 ; j-- ) {
             CCPACSTrailingEdgeDevice& controlSurfaceDevice = *controlSurfaceDevices.GetTrailingEdgeDevices().at(j-1);
@@ -1054,7 +1054,7 @@ namespace
            if (!componentSegment->GetControlSurfaces() || !componentSegment->GetControlSurfaces()->GetTrailingEdgeDevices()) {
                continue;
            }
-           const CCPACSTrailingEdgeDevices& teds = componentSegment->GetControlSurfaces()->GetTrailingEdgeDevices().value();
+           const generated::CPACSTrailingEdgeDevices& teds = componentSegment->GetControlSurfaces()->GetTrailingEdgeDevices().value();
            nControlSurfaces += teds.GetTrailingEdgeDevices().size();
         }
         return nControlSurfaces;

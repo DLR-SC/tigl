@@ -43,22 +43,6 @@ void CCPACSRotorBladeAttachments::Invalidate(const boost::optional<std::string>&
     }
 }
 
-// Returns the total count of rotor blade attachments in a rotor hub
-int CCPACSRotorBladeAttachments::GetRotorBladeAttachmentCount() const
-{
-    return static_cast<int>(m_rotorBladeAttachments.size());
-}
-
-// Returns the rotor blade attachment for a given index.
-CCPACSRotorBladeAttachment& CCPACSRotorBladeAttachments::GetRotorBladeAttachment(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetRotorBladeAttachmentCount()) {
-        throw CTiglError("Invalid index in CCPACSRotorBladeAttachments::GetRotorBladeAttachment", TIGL_INDEX_ERROR);
-    }
-    return *m_rotorBladeAttachments[index];
-}
-
 // Returns the parent rotor
 CCPACSRotor& CCPACSRotorBladeAttachments::GetRotor() const
 {

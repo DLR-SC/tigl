@@ -27,13 +27,13 @@
 #include "CTiglTransformation.h"
 #include <string>
 #include <boost/optional.hpp>
+#include "CPACSFuselageSections.h"
 
 namespace tigl
 {
 
 class CCPACSFuselageSegment;
 class CCPACSFuselageProfile;
-class CCPACSFuselageSections;
 class CCPACSPositionings;
 
 // TODO: this class is very similar to CCPACSWingConnection, merge into one class
@@ -71,7 +71,7 @@ public:
 
 private:
 
-    CCPACSFuselageSections const& GetParentComponentSections() const;
+    generated::CPACSFuselageSections const& GetParentComponentSections() const;
     boost::optional<CCPACSPositionings>& GetParentComponentPositionings() const;
 
     const std::string*             elementUID;   /**< UID in section/elements */

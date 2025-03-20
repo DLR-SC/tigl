@@ -18,6 +18,7 @@
 */
 
 #include "generated/CPACSTrailingEdgeDevice.h"
+#include "generated/CPACSTrailingEdgeDevices.h"
 
 #include "CTiglAbstractGeometricComponent.h"
 #include "Cache.h"
@@ -30,7 +31,7 @@ namespace tigl
 class CCPACSTrailingEdgeDevice : public generated::CPACSTrailingEdgeDevice, public CTiglAbstractGeometricComponent
 {
 public:
-    TIGL_EXPORT CCPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTrailingEdgeDevice(CPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
 

@@ -41,22 +41,6 @@ CCPACSGenericSystems::~CCPACSGenericSystems()
 {
 }
 
-// Returns the total count of generic systems in a configuration
-int CCPACSGenericSystems::GetGenericSystemCount() const
-{
-    return static_cast<int>(m_genericSystems.size());
-}
-
-// Returns the generic system for a given index.
-CCPACSGenericSystem& CCPACSGenericSystems::GetGenericSystem(int index) const
-{
-    index --;
-    if (index < 0 || index >= GetGenericSystemCount()) {
-        throw CTiglError("Invalid index in CCPACSGenericSystems::GetGenericSystem", TIGL_INDEX_ERROR);
-    }
-    return *m_genericSystems[index];
-}
-
 // Returns the generic system for a given UID.
 CCPACSGenericSystem& CCPACSGenericSystems::GetGenericSystem(const std::string& UID) const
 {

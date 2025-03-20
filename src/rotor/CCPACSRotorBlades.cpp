@@ -42,47 +42,6 @@ void CCPACSRotorBlades::Invalidate(const boost::optional<std::string>& source) c
     }
 }
 
-// Adds a rotor blade to the  rotor blade container
-void CCPACSRotorBlades::AddRotorBlade(CCPACSWing* rotorBlade)
-{
-    m_rotorBlades.push_back(std::unique_ptr<CCPACSWing>(rotorBlade));
-}
-
-// Returns the total count of rotor blades of a rotor blade attachment
-int CCPACSRotorBlades::GetRotorBladeCount() const
-{
-    return (static_cast<int>(m_rotorBlades.size()));
-}
-
-// Returns the rotor blade for a given index
-CCPACSWing& CCPACSRotorBlades::GetRotorBlade(int index) const
-{
-    index --;
-    if (index < 0 || index >= GetRotorBladeCount()) {
-        throw CTiglError("Invalid index in CCPACSRotorBlades::GetRotorBlade", TIGL_INDEX_ERROR);
-    }
-    return *m_rotorBlades[index];
-}
-
-CCPACSWing& CCPACSRotorBlades::GetRotorBlade(const std::string& uid) const
-{
-    return *m_rotorBlades[GetRotorBladeIndex(uid) - 1];
-}
-
-// Returns the wing index for a given UID.
-int CCPACSRotorBlades::GetRotorBladeIndex(const std::string& UID) const
-{
-    for (int i = 0; i < GetRotorBladeCount(); i++) {
-        const std::string tmpUID(m_rotorBlades[i]->GetUID());
-        if (tmpUID == UID) {
-            return i + 1;
-        }
-    }
-
-    // UID not there
-    throw CTiglError("Invalid UID in CCPACSRotorBlades::GetRotorBladeIndex", TIGL_UID_ERROR);
-}
-
 // Returns the parent configuration
 CCPACSConfiguration& CCPACSRotorBlades::GetConfiguration() const
 {

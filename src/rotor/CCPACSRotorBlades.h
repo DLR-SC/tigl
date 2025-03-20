@@ -46,21 +46,6 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    // Adds a rotor blade to the  rotor blade container
-    TIGL_EXPORT void AddRotorBlade(CCPACSWing* rotorBlade);
-    using generated::CPACSRotorBlades::AddRotorBlade;
-
-    // Returns the total count of rotor blades of a rotor blade attachment
-    TIGL_EXPORT int GetRotorBladeCount() const;
-
-    // Returns the rotor blade for a given index.
-    TIGL_EXPORT CCPACSWing& GetRotorBlade(int index) const;
-
-    // Returns the rotor blade for a given index.
-    TIGL_EXPORT CCPACSWing& GetRotorBlade(const std::string& uid) const;
-
-    TIGL_EXPORT int GetRotorBladeIndex(const std::string& uid) const;
-
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 };

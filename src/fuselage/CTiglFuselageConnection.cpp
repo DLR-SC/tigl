@@ -27,7 +27,6 @@
 #include "CTiglError.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
-#include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
@@ -151,7 +150,7 @@ CTiglTransformation CTiglFuselageConnection::GetSectionElementTransformation() c
     return transformation;
 }
 
-CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSections() const
+generated::CPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSections() const
 {
     if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
         return segment->GetParent()->GetParent<CCPACSFuselage>()->GetSections();
