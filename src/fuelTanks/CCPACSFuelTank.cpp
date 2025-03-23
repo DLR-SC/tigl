@@ -79,7 +79,7 @@ std::string CCPACSFuelTank::GetShortShapeName() const
         if (GetUID() == t->GetUID()) {
             findex = i;
             std::stringstream shortName;
-            shortName << "D" << findex;
+            shortName << "T" << findex;
             return shortName.str();
         }
     }

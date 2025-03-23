@@ -634,12 +634,12 @@ std::string CCPACSVessel::GetShortShapeName() const
     unsigned int findex = 0;
     unsigned int i      = 0;
 
-    for (auto& h : GetParent()->GetVessels()) {
+    for (auto& v : GetParent()->GetVessels()) {
         ++i;
-        if (GetUID() == h->GetUID()) {
+        if (GetUID() == v->GetUID()) {
             findex = i;
             std::stringstream shortName;
-            shortName << "H" << findex;
+            shortName << "V" << findex;
             return shortName.str();
         }
     }
