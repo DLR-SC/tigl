@@ -198,6 +198,7 @@ TEST_F(FuelTanks, vessel_sections)
     CheckExceptionMessage([&]() { vessel_segments->GetSection(4); }, invalidIndexMessage);
     CheckExceptionMessage([&]() { vessel_parametric->GetSection(2); }, tankTypeExceptionString);
 
+    EXPECT_NO_THROW(vessel_segments->GetSectionFace("outerVessel_section1"));
     EXPECT_NO_THROW(vessel_segments->GetSectionFace("outerVessel_section3"));
     CheckExceptionMessage([&]() { vessel_segments->GetSectionFace("wrongSectionUID"); }, wrongSectionUIDMessage);
     CheckExceptionMessage([&]() { vessel_parametric->GetSectionFace("outerVessel_section3"); }, tankTypeExceptionString);
