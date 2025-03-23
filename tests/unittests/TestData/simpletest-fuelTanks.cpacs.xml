@@ -803,6 +803,20 @@
               </vessel>
             </vessels>
           </fuelTank>
+          <fuelTank uID="tank_corrupt">
+            <name>Corrupt tank</name>
+            <description>Test case exception handling</description>
+            <parentUID>SimpleFuselage</parentUID>
+            <transformation/>
+            <vessels>
+              <vessel uID="tank_corrupt_vessel">
+                <name>Vessel with wrong geometry</name>
+                <transformation/>
+                <cylinderRadius>0.4</cylinderRadius>
+                <cylinderLength>1.</cylinderLength>
+              </vessel>
+            </vessels>
+          </fuelTank>
         </fuelTanks>
       </model>
     </aircraft>

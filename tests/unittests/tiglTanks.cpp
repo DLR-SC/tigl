@@ -83,6 +83,8 @@ protected:
     tigl::CCPACSVessel* vessel_torispherical = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank4_torisphericalDome");
     tigl::CCPACSVessel* vessel_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank5_isotensoidDome");
 
+    tigl::CCPACSVessel* vessel_corrupt = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank_corrupt_vessel");
+
     const char* tankTypeExceptionString = "This method is only available for vessels with segments. No segment found.";
 };
 
@@ -107,7 +109,7 @@ TEST_F(FuelTanks, configuration)
 {
     auto& config    = fuelTank->GetConfiguration();
     std::string uID = "tank1";
-    EXPECT_EQ(config.GetFuelTanksCount(), 6);
+    EXPECT_EQ(config.GetFuelTanksCount(), 7);
     EXPECT_EQ(config.GetFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(config.GetFuelTank(uID));
     EXPECT_EQ(config.GetFuelTankIndex(uID), 1);
@@ -120,7 +122,7 @@ TEST_F(FuelTanks, fuelTanks)
     EXPECT_EQ(fuelTanks->GetFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(fuelTanks->GetFuelTank(uID));
     EXPECT_EQ(fuelTanks->GetFuelTankIndex(uID), 1);
-    EXPECT_EQ(fuelTanks->GetFuelTanksCount(), 6);
+    EXPECT_EQ(fuelTanks->GetFuelTanksCount(), 7);
 }
 
 TEST_F(FuelTanks, fuelTank)
@@ -184,6 +186,9 @@ TEST_F(FuelTanks, vessel_type_info)
     EXPECT_FALSE(vessel_isotensoid->HasEllipsoidDome());
     EXPECT_FALSE(vessel_isotensoid->HasTorisphericalDome());
     EXPECT_TRUE(vessel_isotensoid->HasIsotensoidDome());
+
+    EXPECT_THROW(vessel_corrupt->IsVesselViaSegments(), tigl::CTiglError);
+    EXPECT_THROW(vessel_corrupt->IsVesselViaDesignParameters(), tigl::CTiglError);
 }
 
 TEST_F(FuelTanks, vessel_sections)
@@ -234,6 +239,14 @@ TEST_F(FuelTanks, vessel_guide_curves)
     EXPECT_EQ(vessel_guides->GetGuideCurveSegment("tank2_seg1_upper").GetGuideCurveProfileUID(), "gc_upper");
     CheckExceptionMessage([&]() { vessel_parametric->GetGuideCurveSegment("tank2_seg1_upper"); },
                           tankTypeExceptionString);
+
+    CheckExceptionMessage([&]() { vessel_segments->GetGuideCurveSegment("not_existing_guide_curve"); },
+                          "Guide Curve with UID not_existing_guide_curve does not exists");
+}
+
+TEST_F(FuelTanks, vessel_loft_algo)
+{
+    EXPECT_THROW(vessel_corrupt->GetLoft(), tigl::CTiglError);
 }
 
 TEST_F(FuelTanks, vessel_loft_evaluation)
