@@ -201,7 +201,8 @@ TEST_F(FuelTanks, vessel_sections)
     EXPECT_NO_THROW(vessel_segments->GetSectionFace("outerVessel_section1"));
     EXPECT_NO_THROW(vessel_segments->GetSectionFace("outerVessel_section3"));
     CheckExceptionMessage([&]() { vessel_segments->GetSectionFace("wrongSectionUID"); }, wrongSectionUIDMessage);
-    CheckExceptionMessage([&]() { vessel_parametric->GetSectionFace("outerVessel_section3"); }, tankTypeExceptionString);
+    CheckExceptionMessage([&]() { vessel_parametric->GetSectionFace("outerVessel_section3"); },
+                          tankTypeExceptionString);
 }
 
 TEST_F(FuelTanks, vessel_segments)
@@ -209,8 +210,12 @@ TEST_F(FuelTanks, vessel_segments)
     EXPECT_EQ(vessel_segments->GetSegmentCount(), 2);
     EXPECT_EQ(vessel_parametric->GetSegmentCount(), 0);
 
+    const tigl::CCPACSVessel* const_vessel_parametric = vessel_parametric;
+
     EXPECT_NO_THROW(vessel_segments->GetSegment(1));
     CheckExceptionMessage([&]() { vessel_parametric->GetSegment(1); }, tankTypeExceptionString);
+    CheckExceptionMessage([&]() { const_vessel_parametric->GetSegment(1); }, tankTypeExceptionString);
+    CheckExceptionMessage([&]() { vessel_parametric->GetSegment("outerVessel_segment1"); }, tankTypeExceptionString);
 
     EXPECT_NO_THROW(vessel_segments->GetSegment("outerVessel_segment1"));
     CheckExceptionMessage([&]() { vessel_segments->GetSegment(3); },
@@ -254,7 +259,7 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
 
 TEST_F(FuelTanks, structure)
 {
-    auto& structure_with_walls = vessel_isotensoid->GetStructure();
+    auto& structure_with_walls           = vessel_isotensoid->GetStructure();
     auto& structure_with_stringer_frames = vessel_segments->GetStructure();
 
     EXPECT_EQ(structure_with_stringer_frames->GetFrames()->GetFrames().size(), 1);
