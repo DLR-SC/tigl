@@ -260,18 +260,19 @@ TEST_F(FuelTanks, vessel_guide_curves)
                           "Guide Curve with UID not_existing_guide_curve does not exists");
 }
 
-TEST_F(FuelTanks, vessel_loft_algo)
-{
-    EXPECT_THROW(vessel_corrupt->GetLoft(), tigl::CTiglError);
-}
-
 TEST_F(FuelTanks, vessel_loft_evaluation)
 {
     EXPECT_NEAR(vessel_segments->GetGeometricVolume(), 6.57, 1e-2);
-    EXPECT_NEAR(vessel_parametric->GetGeometricVolume(), 18.1, 1e-2);
+    EXPECT_NEAR(vessel_spherical->GetGeometricVolume(), 18.1, 1e-2);
+    EXPECT_NEAR(vessel_ellipsoid->GetGeometricVolume(), 5.43, 1e-2);
+    EXPECT_NEAR(vessel_torispherical->GetGeometricVolume(), 7.87, 1e-2);
+    EXPECT_NEAR(vessel_isotensoid->GetGeometricVolume(), 9.01, 1e-2);
 
     EXPECT_NEAR(vessel_segments->GetSurfaceArea(), 11.15, 1e-2);
-    EXPECT_NEAR(vessel_parametric->GetSurfaceArea(), 36.19, 1e-2);
+    EXPECT_NEAR(vessel_spherical->GetSurfaceArea(), 36.19, 1e-2);
+    EXPECT_NEAR(vessel_ellipsoid->GetSurfaceArea(), 16.22, 1e-2);
+    EXPECT_NEAR(vessel_torispherical->GetSurfaceArea(), 20.49, 1e-2);
+    EXPECT_NEAR(vessel_isotensoid->GetSurfaceArea(), 22.40, 1e-2);
 
     EXPECT_NEAR(vessel_segments->GetCircumference(1, 0.5), 7.43, 1e-2);
     CheckExceptionMessage([&]() { vessel_parametric->GetCircumference(1, 0.5); }, tankTypeExceptionString);
@@ -284,6 +285,8 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
     EXPECT_EQ(vessel_segments->GetGetPointBehavior(), asParameterOnSurface);
     EXPECT_NO_THROW(vessel_segments->SetGetPointBehavior(onLinearLoft));
     EXPECT_EQ(vessel_segments->GetGetPointBehavior(), onLinearLoft);
+
+    EXPECT_THROW(vessel_corrupt->GetLoft(), tigl::CTiglError);
 }
 
 TEST_F(FuelTanks, structure)
