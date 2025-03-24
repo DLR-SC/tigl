@@ -3,7 +3,7 @@ Changelog
 
 Changes since last release
 -------------
-10/01/2025
+24/03/2025
 
 - Fixes
 
@@ -17,7 +17,7 @@ Changes since last release
  
     - Update the C++ standard to C++17 (#1045).
     - Added the possibility to switch between two algorithms in the `CCSTCurveBuilder`. The default algorithm based on a Chebychev approximation results in a small number of control points, but introduces small discontinuities in the curvature. The new option is to use OCCT's `GeomAPI_PointsToBSpline`, which results in a C3 continuous B-Spline.
-
+    - Downgrade the used version of QT in the `environment.yml` to 5.9.7. The currently used version brings its own GL which leads to conflicts when the library is already installed on the system. CMake cannot resolve the problem that both libraries are found. Therefore, the runtime library paths are not meaningful. As a consequence, the tiglviewer cannot be executed. Fix #1069. (#1071)
 
 13/11/2024
 
