@@ -96,6 +96,12 @@ public slots:
     QScriptValue wingGetSegmentEtaXsi(int wingIdx, double px, double py, double pz);
 
 
+    // Component
+    QScriptValue componentTransformPointToGlobal(QString componentUID,
+                                                 double localX,
+                                                 double localY,
+                                                 double localZ);
+
     QString      getErrorString(int errorCode);
     QScriptValue getShape(QString uid);
     

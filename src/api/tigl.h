@@ -5031,6 +5031,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetType(TiglCPACSConfigurationHan
                                                        TiglGeometricComponentType* typePtr);
 
 /**
+ * @brief Transforms a local point in a component to the global coordinate system
+ *
+ * @param[in]  cpacsHandle     Handle for the CPACS configuration
+ * @param[in]  componentUID    The uid of the component for which the hash should be computed
+ * @param[in]  localX          X-Coordinate of the local point
+ * @param[in]  localY          Y-Coordinate of the local point
+ * @param[in]  localZ          Z-Coordinate of the local point
+ * @param[out] globalX         X-Coordinate of the result in global coordinates
+ * @param[out] globalY         Y-Coordinate of the result in global coordinates
+ * @param[out] globalZ         Z-Coordinate of the result in global coordinates
+ *
+ * @return
+ *   - TIGL_SUCCESS if no error occurred
+ *   - TIGL_NOT_FOUND if no configuration was found for the given handle
+ *   - TIGL_UID_ERROR if the uid is invalid or not a known geometric component
+ *
+ */
+TIGL_COMMON_EXPORT TiglReturnCode tiglComponentTransformPointToGlobal(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                      const char* componentUID,
+                                                                      double localX, double localY, double localZ,
+                                                                      double* globalX, double* globalY, double* globalZ);
+
+/**
 * @brief Translates an error code into a string
 *
 *
