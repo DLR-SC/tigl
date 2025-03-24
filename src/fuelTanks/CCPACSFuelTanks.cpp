@@ -44,12 +44,12 @@ CCPACSFuelTank const& CCPACSFuelTanks::GetFuelTank(std::string const& uID) const
 CCPACSFuelTank& CCPACSFuelTanks::GetFuelTank(std::string const& uID)
 {
     auto it = std::find_if(m_fuelTanks.begin(), m_fuelTanks.end(),
-                           [&](std::unique_ptr<CCPACSFuelTank> const& v) { return v->GetUID() == uID; });
+                           [&](std::unique_ptr<CCPACSFuelTank> const& t) { return t->GetUID() == uID; });
 
     if (it != std::end(m_fuelTanks)) {
         return **it;
     }
-    throw CTiglError("Could not find fuelTank with uid" + uID);
+    throw CTiglError("Could not find fuelTank with uid " + uID, TIGL_UID_ERROR);
 }
 
 CCPACSFuelTank& CCPACSFuelTanks::GetFuelTank(int index) const
@@ -69,7 +69,7 @@ int CCPACSFuelTanks::GetFuelTankIndex(const std::string& uID) const
             return i + 1;
         }
     }
-    throw CTiglError("Invalid UID in CCPACSFuelTanks::GetFuelTankIndex", TIGL_UID_ERROR);
+    throw CTiglError("Could not find fuelTank with uid " + uID, TIGL_UID_ERROR);
 }
 
 } //namespace tigl

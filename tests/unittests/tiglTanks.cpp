@@ -113,6 +113,14 @@ TEST_F(FuelTanks, configuration)
     EXPECT_EQ(config.GetFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(config.GetFuelTank(uID));
     EXPECT_EQ(config.GetFuelTankIndex(uID), 1);
+
+    CheckExceptionMessage([&]() { config.GetFuelTank("not_existing_tank"); },
+                          "Could not find fuelTank with uid not_existing_tank");
+
+    CheckExceptionMessage([&]() { config.GetFuelTankIndex("not_existing_tank"); },
+                          "Could not find fuelTank with uid not_existing_tank");
+
+    CheckExceptionMessage([&]() { config.GetFuelTank(99); }, "Invalid index in CCPACSFuelTanks::GetFuelTank");
 }
 
 TEST_F(FuelTanks, fuelTanks)
