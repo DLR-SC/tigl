@@ -149,6 +149,14 @@ TEST_F(FuelTanks, vessels)
     EXPECT_EQ(vessels.GetVessel("tank1_outerVessel").GetDefaultedUID(), "tank1_outerVessel");
     EXPECT_EQ(vessels.GetVesselIndex("tank1_outerVessel"), 1);
     EXPECT_EQ(vessels.GetVessels().at(0)->GetDefaultedUID(), "tank1_outerVessel");
+
+    CheckExceptionMessage([&]() { vessels.GetVessel("not_existing_vessel"); },
+                          "Could not find vessel with uid not_existing_vessel");
+
+    CheckExceptionMessage([&]() { vessels.GetVesselIndex("not_existing_vessel"); },
+                          "Could not find vessel with uid not_existing_vessel");
+
+    CheckExceptionMessage([&]() { vessels.GetVessel(99); }, "Invalid index in CCPACSVessels::GetVessel");
 }
 
 TEST_F(FuelTanks, vessel_general)

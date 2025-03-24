@@ -49,7 +49,7 @@ CCPACSVessel& CCPACSVessels::GetVessel(std::string const& uID)
     if (it != std::end(m_vessels)) {
         return **it;
     }
-    throw CTiglError("Could not find vessel with uid" + uID);
+    throw CTiglError("Could not find vessel with uid " + uID, TIGL_UID_ERROR);
 }
 
 CCPACSVessel& CCPACSVessels::GetVessel(int index) const
@@ -69,7 +69,7 @@ int CCPACSVessels::GetVesselIndex(const std::string& uID) const
             return i + 1;
         }
     }
-    throw CTiglError("Invalid UID in CCPACSVessels::GetVesselIndex", TIGL_UID_ERROR);
+    throw CTiglError("Could not find vessel with uid " + uID, TIGL_UID_ERROR);
 }
 
 } //namespace tigl
