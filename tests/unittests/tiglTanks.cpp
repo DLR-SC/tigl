@@ -29,6 +29,7 @@
 #include "CTiglUIDManager.h"
 
 #include "CCPACSVessel.h"
+#include "CNamedShape.h"
 
 class FuelTanks : public ::testing::Test
 {
@@ -139,6 +140,13 @@ TEST_F(FuelTanks, fuelTank)
 
     const std::string name = fuelTank->GetName();
     EXPECT_EQ(name, "Simple tank 1");
+
+    EXPECT_EQ(fuelTank->GetComponentType(), TIGL_COMPONENT_TANK);
+
+    const auto loft = fuelTank->GetLoft();
+    ASSERT_NE(loft, nullptr);
+    EXPECT_EQ(loft->Name(), "tank1");
+    EXPECT_EQ(loft->ShortName(), "T1");
 }
 
 // ToDo: Check how to use pointer ->

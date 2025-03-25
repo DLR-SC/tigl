@@ -23,6 +23,7 @@
 #include "CCPACSVessel.h"
 #include "CTiglError.h"
 #include "CGroupShapes.h"
+#include "CNamedShape.h"
 
 namespace tigl
 {
@@ -65,6 +66,8 @@ PNamedShape CCPACSFuelTank::BuildLoft() const
     }
 
     PNamedShape groupedShape = CGroupShapes(shapes);
+    groupedShape->SetName(GetUID().c_str());
+    groupedShape->SetShortName(GetShortShapeName().c_str());
 
     return groupedShape;
 }
@@ -84,6 +87,18 @@ std::string CCPACSFuelTank::GetShortShapeName() const
         }
     }
     return "UNKNOWN";
+}
+
+void CCPACSFuelTank::RegisterInvalidationCallback(std::function<void()> const& fn){
+    invalidationCallbacks.push_back(fn);
+}
+
+void CCPACSFuelTank::InvalidateImpl(const boost::optional<std::string>&) const
+{
+    CTiglAbstractGeometricComponent::Reset();
+    for (auto const& invalidator: invalidationCallbacks) {
+        invalidator();
+    }
 }
 
 } //namespace tigl
