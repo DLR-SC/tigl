@@ -31,6 +31,15 @@
 #include "CCPACSVessel.h"
 #include "CNamedShape.h"
 
+class DummyAircraftModel : public tigl::CCPACSAircraftModel
+{
+public:
+    DummyAircraftModel()
+        : tigl::CCPACSAircraftModel(nullptr, nullptr)
+    {
+    }
+};
+
 class FuelTanks : public ::testing::Test
 {
 protected:
@@ -143,10 +152,26 @@ TEST_F(FuelTanks, fuelTank)
 
     EXPECT_EQ(fuelTank->GetComponentType(), TIGL_COMPONENT_TANK);
 
+    // Test loft building
     const auto loft = fuelTank->GetLoft();
     ASSERT_NE(loft, nullptr);
     EXPECT_EQ(loft->Name(), "tank1");
     EXPECT_EQ(loft->ShortName(), "T1");
+
+    // Test return of UNKNOWN ShortName
+    DummyAircraftModel dummyAircraft;
+    tigl::CTiglUIDManager dummyUidMgr;
+    tigl::CCPACSFuelTanks dummyTanks(&dummyAircraft, &dummyUidMgr);
+    tigl::CCPACSFuelTank dummyTank(&dummyTanks, &dummyUidMgr);
+    dummyTank.SetUID("not_in_list");
+    const auto dummyLoft = dummyTank.GetLoft();
+    EXPECT_EQ(dummyLoft->ShortName(), "UNKNOWN");
+
+    // Test invalidation
+    bool called = false;
+    dummyTank.RegisterInvalidationCallback([&]() { called = true; });
+    dummyTank.Invalidate();
+    EXPECT_TRUE(called);
 }
 
 // ToDo: Check how to use pointer ->
