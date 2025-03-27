@@ -93,7 +93,8 @@ protected:
     tigl::CCPACSVessel* vessel_torispherical = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank4_torisphericalDome");
     tigl::CCPACSVessel* vessel_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank5_isotensoidDome");
 
-    tigl::CCPACSVessel* vessel_corrupt = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank_corrupt_vessel");
+    tigl::CCPACSVessel* vessel_symmetric = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank7_symmetricVessel");
+    tigl::CCPACSVessel* vessel_corrupt   = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank_corrupt_vessel");
 
     const char* tankTypeExceptionString = "This method is only available for vessels with segments. No segment found.";
 };
@@ -119,7 +120,7 @@ TEST_F(FuelTanks, configuration)
 {
     auto& config    = fuelTank->GetConfiguration();
     std::string uID = "tank1";
-    EXPECT_EQ(config.GetFuelTanksCount(), 7);
+    EXPECT_EQ(config.GetFuelTanksCount(), 8);
     EXPECT_EQ(config.GetFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(config.GetFuelTank(uID));
     EXPECT_EQ(config.GetFuelTankIndex(uID), 1);
@@ -140,7 +141,7 @@ TEST_F(FuelTanks, fuelTanks)
     EXPECT_EQ(fuelTanks->GetFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(fuelTanks->GetFuelTank(uID));
     EXPECT_EQ(fuelTanks->GetFuelTankIndex(uID), 1);
-    EXPECT_EQ(fuelTanks->GetFuelTanksCount(), 7);
+    EXPECT_EQ(fuelTanks->GetFuelTanksCount(), 8);
 }
 
 TEST_F(FuelTanks, fuelTank)
@@ -320,6 +321,21 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
     EXPECT_EQ(vessel_segments->GetGetPointBehavior(), onLinearLoft);
 
     EXPECT_THROW(vessel_corrupt->GetLoft(), tigl::CTiglError);
+}
+
+TEST_F(FuelTanks, vessel_face_traits)
+{
+    auto symmetric_loft = vessel_symmetric->GetLoft();
+    EXPECT_EQ(symmetric_loft->FaceTraits(0).Name(), vessel_symmetric->GetUID());
+    EXPECT_EQ(symmetric_loft->FaceTraits(1).Name(), "symmetry");
+    EXPECT_EQ(symmetric_loft->FaceTraits(2).Name(), "Front");
+    EXPECT_EQ(symmetric_loft->FaceTraits(3).Name(), "Rear");
+
+    auto standard_loft = vessel_segments->GetLoft();
+    EXPECT_EQ(standard_loft->FaceTraits(0).Name(), vessel_segments->GetUID());
+    EXPECT_EQ(standard_loft->FaceTraits(1).Name(), vessel_segments->GetUID());
+    EXPECT_EQ(standard_loft->FaceTraits(2).Name(), "Front");
+    EXPECT_EQ(standard_loft->FaceTraits(3).Name(), "Rear");
 }
 
 TEST_F(FuelTanks, structure)

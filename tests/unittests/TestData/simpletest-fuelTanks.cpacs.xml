@@ -84,7 +84,7 @@
               </positioning>
               <positioning uID="fuselage_positioning3">
                 <name>Fuselage Positioning 3</name>
-                <length>15.</length>
+                <length>17.</length>
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
                 <fromSectionUID>fuselage_section2</fromSectionUID>
@@ -803,15 +803,76 @@
               </vessel>
             </vessels>
           </fuelTank>
+          <fuelTank uID="tank7" symmetry="x-z-plane">
+            <name>Simple tank with symmetric profile</name>
+            <description>This tank contains a a symmetrical profile. This is not really recommended in CPACS anymore, but as long as it is implemented in TiGL it should be subject to unit testing.</description>
+            <parentUID>SimpleFuselage</parentUID>
+            <transformation>
+              <translation>
+                <x>17</x>
+              </translation>
+            </transformation>
+            <vessels>
+              <vessel uID="tank7_symmetricVessel">
+                <name>Symmetric vessel</name>
+                <transformation>
+                  <scaling>
+                    <x>1</x>
+                    <y>1.2</y>
+                    <z>1.2</z>
+                  </scaling>
+                </transformation>
+                <sections>
+                  <section uID="symmetricVessel_section1">
+                    <name>Section 1</name>
+                    <transformation>
+                      <translation>
+                        <x>0</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="symmetricVessel_section1_element1">
+                        <name>Section 1 Element 1</name>
+                        <profileUID>fuselageHalfCircleProfile</profileUID>
+                        <transformation />
+                      </element>
+                    </elements>
+                  </section>
+                  <section uID="symmetricVessel_section2">
+                    <name>Section 2</name>
+                    <transformation>
+                      <translation>
+                        <x>1</x>
+                      </translation>
+                    </transformation>
+                    <elements>
+                      <element uID="symmetricVessel_section2_element1">
+                        <name>Section 2 Element 1</name>
+                        <profileUID>fuselageHalfCircleProfile</profileUID>
+                        <transformation />
+                      </element>
+                    </elements>
+                  </section>
+                </sections>
+                <segments>
+                  <segment uID="symmetricVessel_segment1">
+                    <name>Outer vessel Segment 1</name>
+                    <fromElementUID>symmetricVessel_section1_element1</fromElementUID>
+                    <toElementUID>symmetricVessel_section2_element1</toElementUID>
+                  </segment>
+                </segments>
+              </vessel>
+            </vessels>
+          </fuelTank>
           <fuelTank uID="tank_corrupt">
             <name>Corrupt tank</name>
             <description>Test case exception handling</description>
             <parentUID>SimpleFuselage</parentUID>
-            <transformation/>
+            <transformation />
             <vessels>
               <vessel uID="tank_corrupt_vessel">
                 <name>Vessel with wrong geometry</name>
-                <transformation/>
+                <transformation />
                 <cylinderRadius>0.4</cylinderRadius>
                 <cylinderLength>1.</cylinderLength>
               </vessel>
@@ -840,6 +901,15 @@
             <x>0.0;0.0;0.0;0.0;0.0</x>
             <y>0.0;1.0;0.0;-1.0;0.0</y>
             <z>1.0;0.0;-1.0;0.0;1.0</z>
+          </pointList>
+        </fuselageProfile>
+        <fuselageProfile uID="fuselageHalfCircleProfile" symmetry="x-z-plane">
+          <name>Half Circle</name>
+          <description>Profile build up from set of Points on half circle where may Dimensions are 1..-1</description>
+          <pointList>
+            <x>0.0;0.0;0.0</x>
+            <y>0.0;1.0;0.0</y>
+            <z>-1.0;0.0;1.0</z>
           </pointList>
         </fuselageProfile>
       </fuselageProfiles>

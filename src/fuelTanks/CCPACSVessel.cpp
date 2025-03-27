@@ -648,31 +648,27 @@ std::string CCPACSVessel::GetShortShapeName() const
 
 void CCPACSVessel::SetFaceTraits(PNamedShape loft) const
 {
-    int nFacesTotal       = GetNumberOfFaces(loft->Shape());
-    int nFacesAero        = nFacesTotal;
-    bool hasSymmetryPlane = GetNumberOfEdges(m_segments_choice1.get().GetSegment(1).GetEndWire()) > 1;
+    int nFacesTotal = GetNumberOfFaces(loft->Shape());
+    int nFacesAero  = nFacesTotal;
 
-    std::vector<std::string> names;
-    names.push_back(loft->Name());
-    names.push_back("symmetry");
-    names.push_back("Front");
-    names.push_back("Rear");
+    auto& segments = m_segments_choice1.get();
+    int nSegments  = segments.GetSegmentCount();
 
-    if (!CTiglTopoAlgorithms::IsDegenerated(m_segments_choice1.get().GetSegment(1).GetStartWire())) {
-        nFacesAero -= 1;
+    bool hasSymmetryPlane = GetNumberOfEdges(segments.GetSegment(1).GetEndWire()) > 1;
+
+    std::array<std::string, 4> names = {loft->Name(), "symmetry", "Front", "Rear"};
+
+    if (!CTiglTopoAlgorithms::IsDegenerated(segments.GetSegment(1).GetStartWire())) {
+        nFacesAero--;
     }
-    if (!CTiglTopoAlgorithms::IsDegenerated(
-            m_segments_choice1.get().GetSegment(m_segments_choice1.get().GetSegmentCount()).GetEndWire())) {
-        nFacesAero -= 1;
+    if (!CTiglTopoAlgorithms::IsDegenerated(segments.GetSegment(nSegments).GetEndWire())) {
+        nFacesAero--;
     }
-
-    // if we have a smooth surface, the whole fuslage is treatet as one segment
-    int nSegments = m_segments_choice1.get().GetSegmentCount();
 
     int facesPerSegment = nFacesAero / nSegments;
+    int iFaceTotal      = 0;
+    int nSymmetryFaces  = hasSymmetryPlane ? 1 : 0;
 
-    int iFaceTotal     = 0;
-    int nSymmetryFaces = (int)hasSymmetryPlane;
     for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
         for (int iFace = 0; iFace < facesPerSegment - nSymmetryFaces; ++iFace) {
             loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
@@ -682,7 +678,7 @@ void CCPACSVessel::SetFaceTraits(PNamedShape loft) const
         }
     }
 
-    // set the caps
+    // Front and rear caps
     int iFace = 2;
     for (; iFaceTotal < nFacesTotal; ++iFaceTotal) {
         loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
