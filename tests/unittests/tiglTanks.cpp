@@ -296,6 +296,8 @@ TEST_F(FuelTanks, vessel_guide_curves)
 
     CheckExceptionMessage([&]() { vessel_segments->GetGuideCurveSegment("not_existing_guide_curve"); },
                           "Guide Curve with UID not_existing_guide_curve does not exists");
+
+    EXPECT_EQ(vessel_segments->GetGuideCurvePoints().size(), 0);
 }
 
 TEST_F(FuelTanks, vessel_loft_evaluation)
