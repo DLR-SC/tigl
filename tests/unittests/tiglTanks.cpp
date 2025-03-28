@@ -96,6 +96,14 @@ protected:
     tigl::CCPACSVessel* vessel_symmetric = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank7_symmetricVessel");
     tigl::CCPACSVessel* vessel_corrupt   = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank_corrupt_vessel");
 
+    // Dummies for exception handling
+    DummyAircraftModel dummyAircraft;
+    tigl::CTiglUIDManager dummyUidMgr;
+    tigl::CCPACSFuelTanks dummyTanks{&dummyAircraft, &dummyUidMgr};
+    tigl::CCPACSFuelTank dummyTank{&dummyTanks, &dummyUidMgr};
+    tigl::CCPACSVessels dummyVessels{&dummyTank, &dummyUidMgr};
+    tigl::CCPACSVessel dummyVessel{&dummyVessels, &dummyUidMgr};
+
     const char* tankTypeExceptionString = "This method is only available for vessels with segments. No segment found.";
 };
 
@@ -160,13 +168,9 @@ TEST_F(FuelTanks, fuelTank)
     EXPECT_EQ(loft->ShortName(), "T1");
 
     // Test return of UNKNOWN ShortName
-    DummyAircraftModel dummyAircraft;
-    tigl::CTiglUIDManager dummyUidMgr;
-    tigl::CCPACSFuelTanks dummyTanks(&dummyAircraft, &dummyUidMgr);
-    tigl::CCPACSFuelTank dummyTank(&dummyTanks, &dummyUidMgr);
     dummyTank.SetUID("not_in_list");
-    const auto dummyLoft = dummyTank.GetLoft();
-    EXPECT_EQ(dummyLoft->ShortName(), "UNKNOWN");
+    const auto dummyTankLoft = dummyTank.GetLoft();
+    EXPECT_EQ(dummyTankLoft->ShortName(), "UNKNOWN");
 
     // Test invalidation
     bool called = false;
@@ -321,6 +325,7 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
     EXPECT_EQ(vessel_segments->GetGetPointBehavior(), onLinearLoft);
 
     EXPECT_THROW(vessel_corrupt->GetLoft(), tigl::CTiglError);
+    EXPECT_THROW(dummyVessel.GetLoft(), tigl::CTiglError);
 }
 
 TEST_F(FuelTanks, vessel_face_traits)
