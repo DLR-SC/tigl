@@ -13,10 +13,6 @@ class FuelTanks(unittest.TestCase):
         self.tixi = Tixi3()
         self.tigl = Tigl3()
         self.assertIsNone(self.tixi.open("TestData/simpletest-fuelTanks.cpacs.xml"))
-
-        # Remove corrupt tanks
-        self.tixi.removeElement("/cpacs/vehicles/aircraft/model/fuelTanks/fuelTank[8]")
-
         self.assertIsNone(self.tigl.open(self.tixi, ""))
 
         mgr = configuration.CCPACSConfigurationManager.get_instance()

@@ -351,6 +351,11 @@ TEST_F(FuelTanks, vessel_parametric_exceptions)
         "(1.000000)!");
 
     CheckExceptionMessage(
+        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_isotensoid").GetLoft(); },
+        "The polar opening radius (1.500000) of vessel \"Vessel with too large polar opening radius\" "
+        "(uID=\"vessel_corrupt_isotensoid\") must be larger than 0 and smaller than the cylinder radius (1.000000)!");
+
+    CheckExceptionMessage(
         [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_negative_radius").GetLoft(); },
         "The cylinder radius (-1.000000) of vessel \"Vessel with negative radius\" "
         "(uID=\"vessel_corrupt_negative_radius\") must be larger than 0!");
