@@ -870,11 +870,79 @@
             <parentUID>SimpleFuselage</parentUID>
             <transformation />
             <vessels>
-              <vessel uID="tank_corrupt_vessel">
+              <vessel uID="vessel_corrupt_geometry">
                 <name>Vessel with wrong geometry</name>
                 <transformation />
                 <cylinderRadius>0.4</cylinderRadius>
                 <cylinderLength>1.</cylinderLength>
+              </vessel>
+              <vessel uID="vessel_corrupt_ellipsoid">
+                <name>Vessel with negative ax ratio</name>
+                <transformation />
+                <cylinderRadius>1</cylinderRadius>
+                <cylinderLength>1</cylinderLength>
+                <domeType>
+                  <ellipsoid>
+                    <halfAxisFraction>-1</halfAxisFraction>
+                  </ellipsoid>
+                </domeType>
+              </vessel>
+              <vessel uID="vessel_corrupt_torispherical1">
+                <name>Vessel with too small dish radius</name>
+                <transformation />
+                <cylinderRadius>1</cylinderRadius>
+                <cylinderLength>1</cylinderLength>
+                <domeType>
+                  <torispherical>
+                    <dishRadius>0.5</dishRadius>
+                    <knuckleRadius>0.1</knuckleRadius>
+                  </torispherical>
+                </domeType>
+              </vessel>
+              <vessel uID="vessel_corrupt_torispherical2">
+                <name>Vessel with too large knuckle radius</name>
+                <transformation />
+                <cylinderRadius>1</cylinderRadius>
+                <cylinderLength>1</cylinderLength>
+                <domeType>
+                  <torispherical>
+                    <dishRadius>1.5</dishRadius>
+                    <knuckleRadius>1.5</knuckleRadius>
+                  </torispherical>
+                </domeType>
+              </vessel>
+              <vessel uID="vessel_corrupt_isotensoid">
+                <name>Vessel with too large polar opening radius</name>
+                <transformation />
+                <cylinderRadius>1</cylinderRadius>
+                <cylinderLength>1</cylinderLength>
+                <domeType>
+                  <isotensoid>
+                    <polarOpeningRadius>1.5</polarOpeningRadius>
+                  </isotensoid>
+                </domeType>
+              </vessel>
+              <vessel uID="vessel_corrupt_negative_radius">
+                <name>Vessel with negative radius</name>
+                <transformation />
+                <cylinderRadius>-1</cylinderRadius>
+                <cylinderLength>1</cylinderLength>
+                <domeType>
+                  <isotensoid>
+                    <polarOpeningRadius>0.5</polarOpeningRadius>
+                  </isotensoid>
+                </domeType>
+              </vessel>
+              <vessel uID="vessel_corrupt_negative_length">
+                <name>Vessel with negative length</name>
+                <transformation />
+                <cylinderRadius>1</cylinderRadius>
+                <cylinderLength>-1</cylinderLength>
+                <domeType>
+                  <isotensoid>
+                    <polarOpeningRadius>0.5</polarOpeningRadius>
+                  </isotensoid>
+                </domeType>
               </vessel>
             </vessels>
           </fuelTank>

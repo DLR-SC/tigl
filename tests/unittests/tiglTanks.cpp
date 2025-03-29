@@ -80,7 +80,8 @@ protected:
         tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(FuelTanks::tiglHandle).GetUIDManager();
 
     // tank
-    tigl::CCPACSFuelTank const* fuelTank = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank1");
+    tigl::CCPACSFuelTank const* fuelTank         = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank1");
+    tigl::CCPACSFuelTank const* fuelTank_corrupt = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank_corrupt");
 
     // vessels
     const tigl::CCPACSVessels& vessels    = fuelTank->GetVessels();
@@ -94,7 +95,7 @@ protected:
     tigl::CCPACSVessel* vessel_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank5_isotensoidDome");
 
     tigl::CCPACSVessel* vessel_symmetric = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank7_symmetricVessel");
-    tigl::CCPACSVessel* vessel_corrupt   = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank_corrupt_vessel");
+    tigl::CCPACSVessel* vessel_corrupt   = &uidMgr.ResolveObject<tigl::CCPACSVessel>("vessel_corrupt_geometry");
 
     // Dummies for exception handling
     DummyAircraftModel dummyAircraft;
@@ -328,6 +329,34 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
 
     EXPECT_THROW(vessel_corrupt->GetLoft(), tigl::CTiglError);
     EXPECT_THROW(dummyVessel.GetLoft(), tigl::CTiglError);
+}
+
+TEST_F(FuelTanks, vessel_parametric_exceptions)
+{
+    CheckExceptionMessage([&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_ellipsoid").GetLoft(); },
+                          "Half axis fraction (-1.000000) of vessel \"Vessel with negative ax ratio\" "
+                          "(uID=\"vessel_corrupt_ellipsoid\") must be a positive value!");
+
+    CheckExceptionMessage(
+        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_torispherical1").GetLoft(); },
+        "The dish radius (0.500000) of vessel \"Vessel with too small dish radius\" "
+        "(uID=\"vessel_corrupt_torispherical1\") must be larger than the cylinder radius (1.000000)!");
+
+    CheckExceptionMessage(
+        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_torispherical2").GetLoft(); },
+        "The knuckle radius (1.500000) of vessel \"Vessel with too large knuckle radius\" "
+        "(uID=\"vessel_corrupt_torispherical2\") must be larger than 0 and smaller than the cylinder Radius "
+        "(1.000000)!");
+
+    CheckExceptionMessage(
+        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_negative_radius").GetLoft(); },
+        "The cylinder radius (-1.000000) of vessel \"Vessel with negative radius\" "
+        "(uID=\"vessel_corrupt_negative_radius\") must be larger than 0!");
+
+    CheckExceptionMessage(
+        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_negative_length").GetLoft(); },
+        "The cylinder length (-1.000000) of vessel \"Vessel with negative length\" "
+        "(uID=\"vessel_corrupt_negative_length\") must be larger than or equal to 0!");
 }
 
 TEST_F(FuelTanks, vessel_face_traits)
