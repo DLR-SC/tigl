@@ -179,6 +179,17 @@ namespace generated
             }
         }
 
+        // read element fuelTanks
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelTanks")) {
+            m_fuelTanks = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            try {
+                m_fuelTanks->ReadCPACS(tixiHandle, xpath + "/fuelTanks");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read fuelTanks at xpath " << xpath << ": " << e.what();
+                m_fuelTanks = boost::none;
+            }
+        }
+
         // read element systems
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/systems")) {
             m_systems = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -298,6 +309,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/landingGears")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/landingGears");
+            }
+        }
+
+        // write element fuelTanks
+        if (m_fuelTanks) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuelTanks");
+            m_fuelTanks->WriteCPACS(tixiHandle, xpath + "/fuelTanks");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelTanks")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/fuelTanks");
             }
         }
 
@@ -434,6 +456,16 @@ namespace generated
         return m_landingGears;
     }
 
+    const boost::optional<CCPACSFuelTanks>& CPACSAircraftModel::GetFuelTanks() const
+    {
+        return m_fuelTanks;
+    }
+
+    boost::optional<CCPACSFuelTanks>& CPACSAircraftModel::GetFuelTanks()
+    {
+        return m_fuelTanks;
+    }
+
     const boost::optional<CCPACSACSystems>& CPACSAircraftModel::GetSystems() const
     {
         return m_systems;
@@ -534,6 +566,18 @@ namespace generated
     void CPACSAircraftModel::RemoveLandingGears()
     {
         m_landingGears = boost::none;
+    }
+
+    CCPACSFuelTanks& CPACSAircraftModel::GetFuelTanks(CreateIfNotExistsTag)
+    {
+        if (!m_fuelTanks)
+            m_fuelTanks = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+        return *m_fuelTanks;
+    }
+
+    void CPACSAircraftModel::RemoveFuelTanks()
+    {
+        m_fuelTanks = boost::none;
     }
 
     CCPACSACSystems& CPACSAircraftModel::GetSystems(CreateIfNotExistsTag)
