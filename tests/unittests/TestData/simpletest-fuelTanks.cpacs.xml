@@ -595,7 +595,7 @@
                   </ellipsoid>
                 </domeType>
               </vessel>
-              <vessel uID="tank3_ellipsoidDome">
+              <vessel uID="tank3_ellipsoidDome1">
                 <name>Vessel with ellipsoid dome</name>
                 <transformation>
                   <translation>
@@ -652,6 +652,26 @@
                 <domeType>
                   <ellipsoid>
                     <halfAxisFraction>1</halfAxisFraction>
+                  </ellipsoid>
+                </domeType>
+              </vessel>
+              <vessel uID="tank3_ellipsoidDome2">
+                <name>Vessel with second ellipsoid dome</name>
+                <transformation>
+                  <translation>
+                    <x>1.7</x>
+                  </translation>
+                  <scaling>
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                </transformation>
+                <cylinderRadius>0.3</cylinderRadius>
+                <cylinderLength>0.1</cylinderLength>
+                <domeType>
+                  <ellipsoid>
+                    <halfAxisFraction>1.2</halfAxisFraction>
                   </ellipsoid>
                 </domeType>
               </vessel>

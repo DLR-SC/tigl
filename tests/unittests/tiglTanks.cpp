@@ -90,7 +90,8 @@ protected:
     tigl::CCPACSVessel* vessel_parametric = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank3_sphericalDome");
 
     tigl::CCPACSVessel* vessel_spherical     = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank3_sphericalDome");
-    tigl::CCPACSVessel* vessel_ellipsoid     = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank3_ellipsoidDome");
+    tigl::CCPACSVessel* vessel_ellipsoid1    = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank3_ellipsoidDome1");
+    tigl::CCPACSVessel* vessel_ellipsoid2    = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank3_ellipsoidDome2");
     tigl::CCPACSVessel* vessel_torispherical = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank4_torisphericalDome");
     tigl::CCPACSVessel* vessel_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank5_isotensoidDome");
 
@@ -227,10 +228,10 @@ TEST_F(FuelTanks, vessel_type_info)
     EXPECT_FALSE(vessel_spherical->HasTorisphericalDome());
     EXPECT_FALSE(vessel_spherical->HasIsotensoidDome());
 
-    EXPECT_FALSE(vessel_ellipsoid->HasSphericalDome());
-    EXPECT_TRUE(vessel_ellipsoid->HasEllipsoidDome());
-    EXPECT_FALSE(vessel_ellipsoid->HasTorisphericalDome());
-    EXPECT_FALSE(vessel_ellipsoid->HasIsotensoidDome());
+    EXPECT_FALSE(vessel_ellipsoid1->HasSphericalDome());
+    EXPECT_TRUE(vessel_ellipsoid1->HasEllipsoidDome());
+    EXPECT_FALSE(vessel_ellipsoid1->HasTorisphericalDome());
+    EXPECT_FALSE(vessel_ellipsoid1->HasIsotensoidDome());
 
     EXPECT_FALSE(vessel_torispherical->HasSphericalDome());
     EXPECT_FALSE(vessel_torispherical->HasEllipsoidDome());
@@ -305,13 +306,14 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
 {
     EXPECT_NEAR(vessel_segments->GetGeometricVolume(), 6.57, 1e-2);
     EXPECT_NEAR(vessel_spherical->GetGeometricVolume(), 18.1, 1e-2);
-    EXPECT_NEAR(vessel_ellipsoid->GetGeometricVolume(), 5.43, 1e-2);
+    EXPECT_NEAR(vessel_ellipsoid1->GetGeometricVolume(), 5.43, 1e-2);
     EXPECT_NEAR(vessel_torispherical->GetGeometricVolume(), 7.87, 1e-2);
     EXPECT_NEAR(vessel_isotensoid->GetGeometricVolume(), 9.01, 1e-2);
 
     EXPECT_NEAR(vessel_segments->GetSurfaceArea(), 11.15, 1e-2);
     EXPECT_NEAR(vessel_spherical->GetSurfaceArea(), 36.19, 1e-2);
-    EXPECT_NEAR(vessel_ellipsoid->GetSurfaceArea(), 16.22, 1e-2);
+    EXPECT_NEAR(vessel_ellipsoid1->GetSurfaceArea(), 16.22, 1e-2);
+    EXPECT_NEAR(vessel_ellipsoid2->GetSurfaceArea(), 1.47, 1e-2);
     EXPECT_NEAR(vessel_torispherical->GetSurfaceArea(), 20.49, 1e-2);
     EXPECT_NEAR(vessel_isotensoid->GetSurfaceArea(), 22.40, 1e-2);
 

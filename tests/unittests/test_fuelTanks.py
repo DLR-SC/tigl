@@ -13,6 +13,10 @@ class FuelTanks(unittest.TestCase):
         self.tixi = Tixi3()
         self.tigl = Tigl3()
         self.assertIsNone(self.tixi.open("TestData/simpletest-fuelTanks.cpacs.xml"))
+
+        # Remove corrupt tanks
+        self.tixi.removeElement("/cpacs/vehicles/aircraft/model/fuelTanks/fuelTank[8]")
+
         self.assertIsNone(self.tigl.open(self.tixi, ""))
 
         mgr = configuration.CCPACSConfigurationManager.get_instance()
@@ -23,7 +27,8 @@ class FuelTanks(unittest.TestCase):
         self.vessel_segments = uid_mgr.get_geometric_component("tank1_outerVessel")
         self.vessel_guides = uid_mgr.get_geometric_component("tank2_outerVessel")
         self.vessel_spherical = uid_mgr.get_geometric_component("tank3_sphericalDome")
-        self.vessel_ellipsoid = uid_mgr.get_geometric_component("tank3_ellipsoidDome")
+        self.vessel_ellipsoid1 = uid_mgr.get_geometric_component("tank3_ellipsoidDome1")
+        self.vessel_ellipsoid2 = uid_mgr.get_geometric_component("tank3_ellipsoidDome1")
         self.vessel_torispherical = uid_mgr.get_geometric_component(
             "tank4_torisphericalDome"
         )
@@ -137,10 +142,10 @@ class FuelTanks(unittest.TestCase):
         self.assertFalse(self.vessel_spherical.has_torispherical_dome())
         self.assertFalse(self.vessel_spherical.has_isotensoid_dome())
 
-        self.assertFalse(self.vessel_ellipsoid.has_spherical_dome())
-        self.assertTrue(self.vessel_ellipsoid.has_ellipsoid_dome())
-        self.assertFalse(self.vessel_ellipsoid.has_torispherical_dome())
-        self.assertFalse(self.vessel_ellipsoid.has_isotensoid_dome())
+        self.assertFalse(self.vessel_ellipsoid1.has_spherical_dome())
+        self.assertTrue(self.vessel_ellipsoid1.has_ellipsoid_dome())
+        self.assertFalse(self.vessel_ellipsoid1.has_torispherical_dome())
+        self.assertFalse(self.vessel_ellipsoid1.has_isotensoid_dome())
 
         self.assertFalse(self.vessel_torispherical.has_spherical_dome())
         self.assertFalse(self.vessel_torispherical.has_ellipsoid_dome())
