@@ -256,8 +256,13 @@ TEST_F(FuelTanks, vessel_sections)
     EXPECT_EQ(vessel_parametric->GetSectionCount(), 0);
 
     EXPECT_NO_THROW(vessel_segments->GetSection(1));
+    EXPECT_NO_THROW(vessel_segments->GetSection("outerVessel_section1"));
+    EXPECT_THROW(vessel_segments->GetSection("outerVessel_notExistingSection"), tigl::CTiglError);
+
     CheckExceptionMessage([&]() { vessel_segments->GetSection(4); }, invalidIndexMessage);
     CheckExceptionMessage([&]() { vessel_parametric->GetSection(2); }, tankTypeExceptionString);
+    CheckExceptionMessage([&]() { vessel_parametric->GetSection("outerVessel_notExistingSection"); },
+                          tankTypeExceptionString);
 
     EXPECT_NO_THROW(vessel_segments->GetSectionFace("outerVessel_section1"));
     EXPECT_NO_THROW(vessel_segments->GetSectionFace("outerVessel_section3"));

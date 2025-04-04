@@ -51,8 +51,9 @@ public:
     TIGL_EXPORT int GetSectionCount() const;
     // Get a specific section
     TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
+    TIGL_EXPORT CCPACSFuselageSection& GetSection(const std::string& sectionUID);
     // Get a section face
-    TIGL_EXPORT TopoDS_Shape GetSectionFace(const std::string section_uid) const;
+    TIGL_EXPORT TopoDS_Shape GetSectionFace(const std::string sectionUID) const;
 
     // Get number of segments
     TIGL_EXPORT int GetSegmentCount() const;

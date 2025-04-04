@@ -99,6 +99,16 @@ CCPACSFuselageSection& CCPACSVessel::GetSection(int index) const
     }
 }
 
+CCPACSFuselageSection& CCPACSVessel::GetSection(const std::string& sectionUID)
+{
+    if (m_sections_choice1) {
+        return m_sections_choice1.get().GetSection(sectionUID);
+    }
+    else {
+        throw CTiglError(_vesselTypeException);
+    }
+}
+
 TopoDS_Shape CCPACSVessel::GetSectionFace(const std::string sectionUID) const
 {
     const int segmentCount = GetSegmentCount();
