@@ -27,7 +27,7 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSFuselageWallSegment;
+class CCPACSWallSegment;
 class CCPACSWalls;
 
 namespace generated
@@ -55,11 +55,11 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>& GetWallSegments() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>& GetWallSegments();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWallSegment>>& GetWallSegments() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWallSegment>>& GetWallSegments();
 
-        TIGL_EXPORT virtual CCPACSFuselageWallSegment& AddWallSegment();
-        TIGL_EXPORT virtual void RemoveWallSegment(CCPACSFuselageWallSegment& ref);
+        TIGL_EXPORT virtual CCPACSWallSegment& AddWallSegment();
+        TIGL_EXPORT virtual void RemoveWallSegment(CCPACSWallSegment& ref);
 
     protected:
         CCPACSWalls* m_parent;
@@ -67,7 +67,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Wall segment definition.
-        std::vector<std::unique_ptr<CCPACSFuselageWallSegment>> m_wallSegments;
+        std::vector<std::unique_ptr<CCPACSWallSegment>> m_wallSegments;
 
     private:
         CPACSWallSegments(const CPACSWallSegments&) = delete;
