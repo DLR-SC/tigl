@@ -31,6 +31,31 @@
 #include "CCPACSVessel.h"
 #include "CNamedShape.h"
 
+namespace
+{
+// Error message constants for exception tests
+constexpr const char* tankTypeExceptionString =
+    "This method is only available for vessels with segments. No segment found.";
+constexpr const char* invalidIndexMessage    = "Invalid index in CCPACSFuselageSections::GetSection";
+constexpr const char* wrongSectionUIDMessage = "GetSectionFace: Could not find a fuselage section for the given UID";
+
+// Helper function to check exception messages.
+void CheckExceptionMessage(const std::function<void()>& func, const char* expectedMessage)
+{
+    try {
+        func();
+        FAIL() << "Expected tigl::CTiglError but no exception was thrown.";
+    }
+    catch (const tigl::CTiglError& e) {
+        EXPECT_STREQ(e.what(), expectedMessage);
+    }
+    catch (...) {
+        FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
+    }
+}
+} // anonymous namespace
+
+// Dummy class for exception handling tests
 class DummyAircraftModel : public tigl::CCPACSAircraftModel
 {
 public:
@@ -53,9 +78,9 @@ protected:
         tixiHandle = -1;
 
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
-        ASSERT_TRUE(tixiRet == SUCCESS);
+        ASSERT_EQ(tixiRet, SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "testAircraft", &tiglHandle);
-        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+        ASSERT_EQ(tiglRet, TIGL_SUCCESS);
     }
 
     static void TearDownTestCase()
@@ -66,6 +91,7 @@ protected:
         tixiHandle = -1;
     }
 
+    // No specific setup/teardown per test needed at the moment.
     void SetUp() override
     {
     }
@@ -73,17 +99,19 @@ protected:
     {
     }
 
+    // Static handles for CPACS document and configuration.
     static TixiDocumentHandle tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
 
+    // UID manager for object resolution
     tigl::CTiglUIDManager& uidMgr =
         tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(FuelTanks::tiglHandle).GetUIDManager();
 
-    // tank
-    tigl::CCPACSFuelTank const* fuelTank         = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank1");
-    tigl::CCPACSFuelTank const* fuelTank_corrupt = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank_corrupt");
+    // Fuel tank objects
+    const tigl::CCPACSFuelTank* fuelTank         = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank1");
+    const tigl::CCPACSFuelTank* fuelTank_corrupt = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank_corrupt");
 
-    // vessels
+    // Vessel objects resolved from the fuel tank
     const tigl::CCPACSVessels& vessels    = fuelTank->GetVessels();
     tigl::CCPACSVessel* vessel_segments   = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank1_outerVessel");
     tigl::CCPACSVessel* vessel_guides     = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank2_outerVessel");
@@ -98,38 +126,23 @@ protected:
     tigl::CCPACSVessel* vessel_symmetric = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank7_symmetricVessel");
     tigl::CCPACSVessel* vessel_corrupt   = &uidMgr.ResolveObject<tigl::CCPACSVessel>("vessel_corrupt_geometry");
 
-    // Dummies for exception handling
+    // Dummy objects for exception testing
     DummyAircraftModel dummyAircraft;
     tigl::CTiglUIDManager dummyUidMgr;
     tigl::CCPACSFuelTanks dummyTanks{&dummyAircraft, &dummyUidMgr};
     tigl::CCPACSFuelTank dummyTank{&dummyTanks, &dummyUidMgr};
     tigl::CCPACSVessels dummyVessels{&dummyTank, &dummyUidMgr};
     tigl::CCPACSVessel dummyVessel{&dummyVessels, &dummyUidMgr};
-
-    const char* tankTypeExceptionString = "This method is only available for vessels with segments. No segment found.";
 };
 
 TixiDocumentHandle FuelTanks::tixiHandle           = 0;
 TiglCPACSConfigurationHandle FuelTanks::tiglHandle = 0;
 
-void CheckExceptionMessage(std::function<void()> func, const char* expectedMessage)
-{
-    try {
-        func();
-        FAIL() << "Expected tigl::CTiglError but no exception was thrown.";
-    }
-    catch (const tigl::CTiglError& e) {
-        EXPECT_STREQ(e.what(), expectedMessage);
-    }
-    catch (...) {
-        FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
-    }
-}
-
 TEST_F(FuelTanks, configuration)
 {
     auto& config    = fuelTank->GetConfiguration();
     std::string uID = "tank1";
+
     EXPECT_EQ(config.GetFuelTanksCount(), 8);
     EXPECT_EQ(config.GetFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(config.GetFuelTank(uID));
@@ -158,30 +171,28 @@ TEST_F(FuelTanks, fuelTank)
 {
     EXPECT_NO_THROW(fuelTank->GetVessels());
 
-    const std::string name = fuelTank->GetName();
-    EXPECT_EQ(name, "Simple tank 1");
-
+    // Check tank name and type.
+    EXPECT_EQ(fuelTank->GetName(), "Simple tank 1");
     EXPECT_EQ(fuelTank->GetComponentType(), TIGL_COMPONENT_TANK);
 
-    // Test loft building
-    const auto loft = fuelTank->GetLoft();
+    // Test loft building and naming.
+    auto loft = fuelTank->GetLoft();
     ASSERT_NE(loft, nullptr);
     EXPECT_EQ(loft->Name(), "tank1");
     EXPECT_EQ(loft->ShortName(), "T1");
 
-    // Test return of UNKNOWN ShortName
+    // Test return of UNKNOWN ShortName.
     dummyTank.SetUID("not_in_list");
-    const auto dummyTankLoft = dummyTank.GetLoft();
+    auto dummyTankLoft = dummyTank.GetLoft();
     EXPECT_EQ(dummyTankLoft->ShortName(), "UNKNOWN");
 
-    // Test invalidation
+    // Test invalidation callback.
     bool called = false;
     dummyTank.RegisterInvalidationCallback([&]() { called = true; });
     dummyTank.Invalidate();
     EXPECT_TRUE(called);
 }
 
-// ToDo: Check how to use pointer ->
 TEST_F(FuelTanks, vessels)
 {
     EXPECT_EQ(vessels.GetVesselsCount(), 2);
@@ -213,11 +224,13 @@ TEST_F(FuelTanks, vessel_component_info)
 
 TEST_F(FuelTanks, vessel_type_info)
 {
+    // Check whether vessels are built via segments or design parameters.
     EXPECT_TRUE(vessel_segments->IsVesselViaSegments());
     EXPECT_FALSE(vessel_segments->IsVesselViaDesignParameters());
     EXPECT_FALSE(vessel_spherical->IsVesselViaSegments());
     EXPECT_TRUE(vessel_spherical->IsVesselViaDesignParameters());
 
+    // Check dome types.
     EXPECT_FALSE(vessel_segments->HasSphericalDome());
     EXPECT_FALSE(vessel_segments->HasEllipsoidDome());
     EXPECT_FALSE(vessel_segments->HasTorisphericalDome());
@@ -243,15 +256,13 @@ TEST_F(FuelTanks, vessel_type_info)
     EXPECT_FALSE(vessel_isotensoid->HasTorisphericalDome());
     EXPECT_TRUE(vessel_isotensoid->HasIsotensoidDome());
 
+    // Check for corrupt vessel exceptions.
     EXPECT_THROW(vessel_corrupt->IsVesselViaSegments(), tigl::CTiglError);
     EXPECT_THROW(vessel_corrupt->IsVesselViaDesignParameters(), tigl::CTiglError);
 }
 
 TEST_F(FuelTanks, vessel_sections)
 {
-    const char* invalidIndexMessage    = "Invalid index in CCPACSFuselageSections::GetSection";
-    const char* wrongSectionUIDMessage = "GetSectionFace: Could not find a fuselage section for the given UID";
-
     EXPECT_EQ(vessel_segments->GetSectionCount(), 3);
     EXPECT_EQ(vessel_parametric->GetSectionCount(), 0);
 
@@ -276,8 +287,7 @@ TEST_F(FuelTanks, vessel_segments)
     EXPECT_EQ(vessel_segments->GetSegmentCount(), 2);
     EXPECT_EQ(vessel_parametric->GetSegmentCount(), 0);
 
-    const tigl::CCPACSVessel* const_vessel_parametric = vessel_parametric;
-
+    const auto* const_vessel_parametric = vessel_parametric;
     EXPECT_NO_THROW(vessel_segments->GetSegment(1));
     CheckExceptionMessage([&]() { vessel_parametric->GetSegment(1); }, tankTypeExceptionString);
     CheckExceptionMessage([&]() { const_vessel_parametric->GetSegment(1); }, tankTypeExceptionString);
@@ -309,6 +319,7 @@ TEST_F(FuelTanks, vessel_guide_curves)
 
 TEST_F(FuelTanks, vessel_loft_evaluation)
 {
+    // Evaluate geometric properties.
     EXPECT_NEAR(vessel_segments->GetGeometricVolume(), 6.57, 1e-2);
     EXPECT_NEAR(vessel_spherical->GetGeometricVolume(), 18.1, 1e-2);
     EXPECT_NEAR(vessel_ellipsoid1->GetGeometricVolume(), 5.43, 1e-2);
@@ -325,9 +336,10 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
     EXPECT_NEAR(vessel_segments->GetCircumference(1, 0.5), 7.43, 1e-2);
     CheckExceptionMessage([&]() { vessel_parametric->GetCircumference(1, 0.5); }, tankTypeExceptionString);
 
-    EXPECT_NEAR(vessel_segments->GetPoint(1, 0.5, 0.5).X(), 1.54, 1e-2);
-    EXPECT_NEAR(vessel_segments->GetPoint(1, 0.5, 0.5).Y(), 0, 1e-5);
-    EXPECT_NEAR(vessel_segments->GetPoint(1, 0.5, 0.5).Z(), -1.2, 1e-1);
+    auto point = vessel_segments->GetPoint(1, 0.5, 0.5);
+    EXPECT_NEAR(point.X(), 1.54, 1e-2);
+    EXPECT_NEAR(point.Y(), 0, 1e-5);
+    EXPECT_NEAR(point.Z(), -1.2, 1e-1);
     CheckExceptionMessage([&]() { vessel_parametric->GetPoint(1, 0.5, 0.5); }, tankTypeExceptionString);
 
     EXPECT_EQ(vessel_segments->GetGetPointBehavior(), asParameterOnSurface);
