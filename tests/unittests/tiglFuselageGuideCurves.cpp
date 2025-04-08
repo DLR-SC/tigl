@@ -37,6 +37,7 @@
 #include "GeomAPI_IntCS.hxx"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CCPACSFuselage.h"
 #include "CCPACSGuideCurveProfile.h"
 #include "generated/CPACSGuideCurveProfiles.h"
 #include "CCPACSFuselageProfileGetPointAlgo.h"
