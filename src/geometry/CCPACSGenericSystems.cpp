@@ -41,20 +41,6 @@ CCPACSGenericSystems::~CCPACSGenericSystems()
 {
 }
 
-// Returns the generic system for a given UID.
-CCPACSGenericSystem& CCPACSGenericSystems::GetGenericSystem(const std::string& UID) const
-{
-    for (int i=0; i < GetGenericSystemCount(); i++) {
-        const std::string tmpUID(m_genericSystems[i]->GetUID());
-        if (tmpUID == UID) {
-            return *m_genericSystems[i];
-        }
-    }
-
-    // UID not there
-    throw CTiglError("Invalid UID in CCPACSGenericSystems::GetGenericSystem", TIGL_INDEX_ERROR);
-}
-
 CCPACSConfiguration& CCPACSGenericSystems::GetConfiguration() const
 {
     return m_parent->GetConfiguration();

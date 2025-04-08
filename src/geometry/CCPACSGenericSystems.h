@@ -40,9 +40,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSGenericSystems();
 
-    // Returns the wing for a given UID.
-    TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID) const;
-
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 };
