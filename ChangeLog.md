@@ -3,6 +3,12 @@ Changelog
 
 Changes since last release
 -------------
+08/04/2025
+
+- Fixes
+
+  - The explicit linking of the tiglviewer executable against OpenGL was removed. With the (current) QT version 5.15.8 used in the conda environment, a naming conflict appears since there are two libraries with the same name. One comes with conda and the other one is already installed within the system. The problem is related to OpenGL (GL, GLX) and results in CMake not being able to find the correct runtime path as it was ambiguous. At the end, the TiGLViewer was not executable due to that. We found out that an explicit linking against OpenGL is not necessary (anymore ?) since it already comes with OCCT. Hence, we deactivated the linking which also solved this issue (issue #1069, PR #1074).
+
 10/01/2025
 
 - Fixes
