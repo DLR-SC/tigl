@@ -40,10 +40,6 @@ else(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES "")
 endif(OCE_FOUND)
 
-# we need opengl in order to build tiglviewer
-cmake_policy(SET CMP0072 NEW)
-find_package(OpenGL REQUIRED)
-
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
   # set library search path to local lib directory during installation
   set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
@@ -115,7 +111,6 @@ target_link_libraries(${PROGNAME} PRIVATE
   tigl3_static tigl3_cpp
   ${CMake_QT_LIBRARIES} 
   ${OpenCASCADE_LIBRARIES} 
-  OpenGL::GL
   ${EXTRA_LIBRARIES} 
 )
 
