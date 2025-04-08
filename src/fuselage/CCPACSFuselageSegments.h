@@ -45,9 +45,6 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    // Gets a segment by uid 
-    TIGL_EXPORT CCPACSFuselageSegment & GetSegment(const std::string& segmentUID);
-
     // Gets the parent component
     TIGL_EXPORT CTiglRelativelyPositionedComponent const* GetParentComponent() const;
 

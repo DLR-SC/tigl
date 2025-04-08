@@ -47,10 +47,12 @@ public:
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
     // Returns the parent rotor
-    TIGL_EXPORT CCPACSRotor& GetRotor() const;
+    TIGL_EXPORT const CCPACSRotor& GetRotor() const;
+    TIGL_EXPORT CCPACSRotor& GetRotor();
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT const CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration();
 };
 
 } // end namespace tigl

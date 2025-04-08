@@ -47,16 +47,18 @@ public:
     TIGL_EXPORT void AddProfile(CCPACSFuselageProfile* profile);
     
     // Removes a CPACS wing profile from the list
-    TIGL_EXPORT void DeleteProfile( std::string uid );
+    TIGL_EXPORT void DeleteProfile(std::string uid );
 
     // Returns the total count of fuselage profiles in this configuration
     TIGL_EXPORT int GetProfileCount() const;
 
     // Returns the fuselage profile for a given index.
-    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
+    TIGL_EXPORT const CCPACSFuselageProfile& GetProfile(size_t index) const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(size_t index);
 
     // Returns the fuselage profile for a given uid.
-    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
+    TIGL_EXPORT const CCPACSFuselageProfile& GetProfile(std::string uid) const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;

@@ -44,13 +44,23 @@ void CCPACSRotorBladeAttachments::Invalidate(const boost::optional<std::string>&
 }
 
 // Returns the parent rotor
-CCPACSRotor& CCPACSRotorBladeAttachments::GetRotor() const
+const CCPACSRotor& CCPACSRotorBladeAttachments::GetRotor() const
+{
+    return *m_parent->GetParent();
+}
+
+CCPACSRotor& CCPACSRotorBladeAttachments::GetRotor()
 {
     return *m_parent->GetParent();
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorBladeAttachments::GetConfiguration() const
+const CCPACSConfiguration& CCPACSRotorBladeAttachments::GetConfiguration() const
+{
+    return m_parent->GetConfiguration();
+}
+
+CCPACSConfiguration& CCPACSRotorBladeAttachments::GetConfiguration()
 {
     return m_parent->GetConfiguration();
 }

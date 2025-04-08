@@ -47,7 +47,12 @@ void CCPACSRotors::Invalidate(const boost::optional<std::string>& source) const
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotors::GetConfiguration() const
+const CCPACSConfiguration& CCPACSRotors::GetConfiguration() const
+{
+    return m_parent->GetConfiguration();
+}
+
+CCPACSConfiguration& CCPACSRotors::GetConfiguration()
 {
     return m_parent->GetConfiguration();
 }

@@ -43,7 +43,12 @@ void CCPACSRotorBlades::Invalidate(const boost::optional<std::string>& source) c
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorBlades::GetConfiguration() const
+const CCPACSConfiguration& CCPACSRotorBlades::GetConfiguration() const
+{
+    return m_parent->GetConfiguration();
+}
+
+CCPACSConfiguration& CCPACSRotorBlades::GetConfiguration()
 {
     return m_parent->GetConfiguration();
 }

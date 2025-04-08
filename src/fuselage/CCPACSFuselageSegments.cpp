@@ -83,17 +83,6 @@ void CCPACSFuselageSegments::Invalidate(const boost::optional<std::string>& sour
     guideCurves.clear();
 }
 
-// Gets a segment by uid. 
-CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& segmentUID)
-{
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        if (m_segments[i]->GetUID() == segmentUID) {
-            return *m_segments[i];
-        }
-    }
-    throw CTiglError("Invalid uid in CCPACSFuselageSegments::GetSegment", TIGL_UID_ERROR);
-}
-
 CTiglRelativelyPositionedComponent const* CCPACSFuselageSegments::GetParentComponent() const
 {
     if (IsParent<CCPACSFuselage>()) {
