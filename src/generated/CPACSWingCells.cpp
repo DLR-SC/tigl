@@ -115,6 +115,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSWingCells::GetCellIndex", TIGL_UID_ERROR);
     }
 
     CCPACSWingCell& CPACSWingCells::GetCell(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_cells ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWingCells::GetCell. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSWingCell& CPACSWingCells::GetCell(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_cells ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWingCells::GetCell. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

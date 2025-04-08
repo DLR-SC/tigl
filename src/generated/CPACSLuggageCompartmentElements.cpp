@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSLuggageCompartmentElements::GetLuggageCompartmentElementIndex", TIGL_UID_ERROR);
     }
 
     CPACSDeckElementBase& CPACSLuggageCompartmentElements::GetLuggageCompartmentElement(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_luggageCompartmentElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSLuggageCompartmentElements::GetLuggageCompartmentElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSDeckElementBase& CPACSLuggageCompartmentElements::GetLuggageCompartmentElement(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_luggageCompartmentElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSLuggageCompartmentElements::GetLuggageCompartmentElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

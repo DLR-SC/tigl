@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSCargoCrossBeamsAssembly::GetCargoCrossBeamIndex", TIGL_UID_ERROR);
     }
 
     CCPACSCrossBeamAssemblyPosition& CPACSCargoCrossBeamsAssembly::GetCargoCrossBeam(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_cargoCrossBeams ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSCargoCrossBeamsAssembly::GetCargoCrossBeam. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSCrossBeamAssemblyPosition& CPACSCargoCrossBeamsAssembly::GetCargoCrossBeam(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_cargoCrossBeams ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSCargoCrossBeamsAssembly::GetCargoCrossBeam. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

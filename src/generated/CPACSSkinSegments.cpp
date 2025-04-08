@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSSkinSegments::GetSkinSegmentIndex", TIGL_UID_ERROR);
     }
 
     CCPACSSkinSegment& CPACSSkinSegments::GetSkinSegment(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_skinSegments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSSkinSegments::GetSkinSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSSkinSegment& CPACSSkinSegments::GetSkinSegment(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_skinSegments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSSkinSegments::GetSkinSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

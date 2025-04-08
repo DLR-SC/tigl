@@ -154,6 +154,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSWindows::GetWindowIndex", TIGL_UID_ERROR);
     }
 
     CPACSCutOut& CPACSWindows::GetWindow(size_t index)
@@ -179,8 +180,8 @@ namespace generated
         for (auto& elem : m_windows ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWindows::GetWindow. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSCutOut& CPACSWindows::GetWindow(const std::string& UID) const
@@ -188,8 +189,8 @@ namespace generated
         for (auto& elem : m_windows ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWindows::GetWindow. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSDoors::GetDoorIndex", TIGL_UID_ERROR);
     }
 
     CPACSDoorCutOut& CPACSDoors::GetDoor(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_doors ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSDoors::GetDoor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSDoorCutOut& CPACSDoors::GetDoor(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_doors ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSDoors::GetDoor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

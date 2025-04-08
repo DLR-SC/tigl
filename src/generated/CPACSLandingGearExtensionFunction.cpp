@@ -146,16 +146,6 @@ namespace generated
         return m_steps.size();
     }
 
-    size_t CPACSLandingGearExtensionFunction::GetStepIndex(const std::string& UID) const
-    {
-        for (size_t i=0; i < GetStepCount(); i++) {
-            const std::string tmpUID(m_steps[i]->GetUID());
-            if (tmpUID == UID) {
-                return i+1;
-            }
-        }
-    }
-
     CPACSLandingGearExtensionFunctionStep& CPACSLandingGearExtensionFunction::GetStep(size_t index)
     {
         if (index < 1 || index > GetStepCount()) {
@@ -172,24 +162,6 @@ namespace generated
         }
         index--;
         return *m_steps[index];
-    }
-
-    CPACSLandingGearExtensionFunctionStep& CPACSLandingGearExtensionFunction::GetStep(const std::string& UID)
-    {
-        for (auto& elem : m_steps ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSLandingGearExtensionFunction::GetStep. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
-    }
-
-    const CPACSLandingGearExtensionFunctionStep& CPACSLandingGearExtensionFunction::GetStep(const std::string& UID) const
-    {
-        for (auto& elem : m_steps ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSLandingGearExtensionFunction::GetStep. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

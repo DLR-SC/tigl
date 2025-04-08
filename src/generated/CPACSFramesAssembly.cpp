@@ -131,6 +131,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSFramesAssembly::GetFrameIndex", TIGL_UID_ERROR);
     }
 
     CCPACSFrame& CPACSFramesAssembly::GetFrame(size_t index)
@@ -156,8 +157,8 @@ namespace generated
         for (auto& elem : m_frames ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSFramesAssembly::GetFrame. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSFrame& CPACSFramesAssembly::GetFrame(const std::string& UID) const
@@ -165,8 +166,8 @@ namespace generated
         for (auto& elem : m_frames ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSFramesAssembly::GetFrame. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

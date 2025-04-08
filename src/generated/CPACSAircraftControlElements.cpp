@@ -107,16 +107,6 @@ namespace generated
         return m_controlElements.size();
     }
 
-    size_t CPACSAircraftControlElements::GetControlElementIndex(const std::string& UID) const
-    {
-        for (size_t i=0; i < GetControlElementCount(); i++) {
-            const std::string tmpUID(m_controlElements[i]->GetUID());
-            if (tmpUID == UID) {
-                return i+1;
-            }
-        }
-    }
-
     CPACSAircraftControlElement& CPACSAircraftControlElements::GetControlElement(size_t index)
     {
         if (index < 1 || index > GetControlElementCount()) {
@@ -133,24 +123,6 @@ namespace generated
         }
         index--;
         return *m_controlElements[index];
-    }
-
-    CPACSAircraftControlElement& CPACSAircraftControlElements::GetControlElement(const std::string& UID)
-    {
-        for (auto& elem : m_controlElements ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSAircraftControlElements::GetControlElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
-    }
-
-    const CPACSAircraftControlElement& CPACSAircraftControlElements::GetControlElement(const std::string& UID) const
-    {
-        for (auto& elem : m_controlElements ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSAircraftControlElements::GetControlElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

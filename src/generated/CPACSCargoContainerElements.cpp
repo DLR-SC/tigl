@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSCargoContainerElements::GetCargoContainerElementIndex", TIGL_UID_ERROR);
     }
 
     CPACSCargoContainerElement& CPACSCargoContainerElements::GetCargoContainerElement(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_cargoContainerElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSCargoContainerElements::GetCargoContainerElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSCargoContainerElement& CPACSCargoContainerElements::GetCargoContainerElement(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_cargoContainerElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSCargoContainerElements::GetCargoContainerElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

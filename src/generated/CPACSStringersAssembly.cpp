@@ -131,6 +131,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSStringersAssembly::GetStringerIndex", TIGL_UID_ERROR);
     }
 
     CCPACSFuselageStringer& CPACSStringersAssembly::GetStringer(size_t index)
@@ -156,8 +157,8 @@ namespace generated
         for (auto& elem : m_stringers ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSStringersAssembly::GetStringer. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSFuselageStringer& CPACSStringersAssembly::GetStringer(const std::string& UID) const
@@ -165,8 +166,8 @@ namespace generated
         for (auto& elem : m_stringers ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSStringersAssembly::GetStringer. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

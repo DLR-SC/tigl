@@ -115,6 +115,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSRotorBladeAttachments::GetRotorBladeAttachmentIndex", TIGL_UID_ERROR);
     }
 
     CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::GetRotorBladeAttachment(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_rotorBladeAttachments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSRotorBladeAttachments::GetRotorBladeAttachment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::GetRotorBladeAttachment(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_rotorBladeAttachments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSRotorBladeAttachments::GetRotorBladeAttachment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

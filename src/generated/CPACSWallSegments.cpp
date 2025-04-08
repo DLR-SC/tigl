@@ -116,11 +116,12 @@ namespace generated
     size_t CPACSWallSegments::GetWallSegmentIndex(const std::string& UID) const
     {
         for (size_t i=0; i < GetWallSegmentCount(); i++) {
-            const std::string tmpUID(m_wallSegments[i]->GetUID());
+            const boost::optional<std::string> tmpUID(*m_wallSegments[i]->GetUID());
             if (tmpUID == UID) {
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSWallSegments::GetWallSegmentIndex", TIGL_UID_ERROR);
     }
 
     CCPACSFuselageWallSegment& CPACSWallSegments::GetWallSegment(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_wallSegments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWallSegments::GetWallSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSFuselageWallSegment& CPACSWallSegments::GetWallSegment(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_wallSegments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWallSegments::GetWallSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

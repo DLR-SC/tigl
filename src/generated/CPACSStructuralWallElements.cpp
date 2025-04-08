@@ -116,11 +116,12 @@ namespace generated
     size_t CPACSStructuralWallElements::GetStructuralWallElementIndex(const std::string& UID) const
     {
         for (size_t i=0; i < GetStructuralWallElementCount(); i++) {
-            const std::string tmpUID(m_structuralWallElements[i]->GetUID());
+            const boost::optional<std::string> tmpUID(*m_structuralWallElements[i]->GetUID());
             if (tmpUID == UID) {
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSStructuralWallElements::GetStructuralWallElementIndex", TIGL_UID_ERROR);
     }
 
     CPACSStructuralWallElement& CPACSStructuralWallElements::GetStructuralWallElement(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_structuralWallElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSStructuralWallElements::GetStructuralWallElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSStructuralWallElement& CPACSStructuralWallElements::GetStructuralWallElement(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_structuralWallElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSStructuralWallElements::GetStructuralWallElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

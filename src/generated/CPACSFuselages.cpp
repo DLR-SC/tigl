@@ -131,6 +131,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSFuselages::GetFuselageIndex", TIGL_UID_ERROR);
     }
 
     CCPACSFuselage& CPACSFuselages::GetFuselage(size_t index)
@@ -156,8 +157,8 @@ namespace generated
         for (auto& elem : m_fuselages ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSFuselages::GetFuselage. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSFuselage& CPACSFuselages::GetFuselage(const std::string& UID) const
@@ -165,8 +166,8 @@ namespace generated
         for (auto& elem : m_fuselages ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSFuselages::GetFuselage. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

@@ -131,6 +131,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSWings::GetWingIndex", TIGL_UID_ERROR);
     }
 
     CCPACSWing& CPACSWings::GetWing(size_t index)
@@ -156,8 +157,8 @@ namespace generated
         for (auto& elem : m_wings ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWings::GetWing. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSWing& CPACSWings::GetWing(const std::string& UID) const
@@ -165,8 +166,8 @@ namespace generated
         for (auto& elem : m_wings ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWings::GetWing. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

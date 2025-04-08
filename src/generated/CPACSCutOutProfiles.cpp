@@ -161,16 +161,6 @@ namespace generated
         return m_cutOutProfiles.size();
     }
 
-    size_t CPACSCutOutProfiles::GetCutOutProfileIndex(const std::string& UID) const
-    {
-        for (size_t i=0; i < GetCutOutProfileCount(); i++) {
-            const std::string tmpUID(m_cutOutProfiles[i]->GetUID());
-            if (tmpUID == UID) {
-                return i+1;
-            }
-        }
-    }
-
     CPACSCutOutProfile& CPACSCutOutProfiles::GetCutOutProfile(size_t index)
     {
         if (index < 1 || index > GetCutOutProfileCount()) {
@@ -187,24 +177,6 @@ namespace generated
         }
         index--;
         return *m_cutOutProfiles[index];
-    }
-
-    CPACSCutOutProfile& CPACSCutOutProfiles::GetCutOutProfile(const std::string& UID)
-    {
-        for (auto& elem : m_cutOutProfiles ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSCutOutProfiles::GetCutOutProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
-    }
-
-    const CPACSCutOutProfile& CPACSCutOutProfiles::GetCutOutProfile(const std::string& UID) const
-    {
-        for (auto& elem : m_cutOutProfiles ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSCutOutProfiles::GetCutOutProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSLavatoryElements::GetLavatoryElementIndex", TIGL_UID_ERROR);
     }
 
     CPACSDeckElementBase& CPACSLavatoryElements::GetLavatoryElement(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_lavatoryElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSLavatoryElements::GetLavatoryElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSDeckElementBase& CPACSLavatoryElements::GetLavatoryElement(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_lavatoryElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSLavatoryElements::GetLavatoryElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSPintleStruts::GetPintleStrutIndex", TIGL_UID_ERROR);
     }
 
     CPACSStrutAssembly& CPACSPintleStruts::GetPintleStrut(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_pintleStruts ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSPintleStruts::GetPintleStrut. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSStrutAssembly& CPACSPintleStruts::GetPintleStrut(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_pintleStruts ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSPintleStruts::GetPintleStrut. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

@@ -78,13 +78,9 @@ namespace generated
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCompositeLayer>>& GetCompositeLayers();
 
         TIGL_EXPORT virtual size_t GetCompositeLayerCount() const;
-        TIGL_EXPORT virtual size_t GetCompositeLayerIndex(const std::string& UID) const;
 
         TIGL_EXPORT virtual const CPACSCompositeLayer& GetCompositeLayer(size_t index) const;
         TIGL_EXPORT virtual CPACSCompositeLayer& GetCompositeLayer(size_t index);
-
-        TIGL_EXPORT virtual const CPACSCompositeLayer& GetCompositeLayer(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSCompositeLayer& GetCompositeLayer(const std::string& UID);
 
         TIGL_EXPORT virtual CPACSCompositeLayer& AddCompositeLayer();
         TIGL_EXPORT virtual void RemoveCompositeLayer(CPACSCompositeLayer& ref);

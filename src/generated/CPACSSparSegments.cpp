@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSSparSegments::GetSparSegmentIndex", TIGL_UID_ERROR);
     }
 
     CCPACSWingSparSegment& CPACSSparSegments::GetSparSegment(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_sparSegments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSSparSegments::GetSparSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSWingSparSegment& CPACSSparSegments::GetSparSegment(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_sparSegments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSSparSegments::GetSparSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

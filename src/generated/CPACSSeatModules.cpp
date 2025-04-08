@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSSeatModules::GetSeatModuleIndex", TIGL_UID_ERROR);
     }
 
     CPACSDeckComponent2DBase& CPACSSeatModules::GetSeatModule(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_seatModules ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSSeatModules::GetSeatModule. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSDeckComponent2DBase& CPACSSeatModules::GetSeatModule(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_seatModules ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSSeatModules::GetSeatModule. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

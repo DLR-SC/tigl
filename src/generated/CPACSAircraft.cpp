@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSAircraft::GetModelIndex", TIGL_UID_ERROR);
     }
 
     CCPACSAircraftModel& CPACSAircraft::GetModel(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_models ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSAircraft::GetModel. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSAircraftModel& CPACSAircraft::GetModel(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_models ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSAircraft::GetModel. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

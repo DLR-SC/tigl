@@ -110,11 +110,12 @@ namespace generated
     size_t CPACSCompartments::GetCompartmentIndex(const std::string& UID) const
     {
         for (size_t i=0; i < GetCompartmentCount(); i++) {
-            const std::string tmpUID(m_compartments[i]->GetUID());
+            const boost::optional<std::string> tmpUID(*m_compartments[i]->GetUID());
             if (tmpUID == UID) {
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSCompartments::GetCompartmentIndex", TIGL_UID_ERROR);
     }
 
     CPACSCompartment& CPACSCompartments::GetCompartment(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_compartments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSCompartments::GetCompartment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSCompartment& CPACSCompartments::GetCompartment(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_compartments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSCompartments::GetCompartment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

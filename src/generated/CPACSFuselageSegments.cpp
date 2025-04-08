@@ -131,6 +131,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSFuselageSegments::GetSegmentIndex", TIGL_UID_ERROR);
     }
 
     CCPACSFuselageSegment& CPACSFuselageSegments::GetSegment(size_t index)
@@ -156,8 +157,8 @@ namespace generated
         for (auto& elem : m_segments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSFuselageSegments::GetSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSFuselageSegment& CPACSFuselageSegments::GetSegment(const std::string& UID) const
@@ -165,8 +166,8 @@ namespace generated
         for (auto& elem : m_segments ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSFuselageSegments::GetSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

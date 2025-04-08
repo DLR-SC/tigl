@@ -71,13 +71,9 @@ namespace generated
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCutOutProfile>>& GetCutOutProfiles();
 
         TIGL_EXPORT virtual size_t GetCutOutProfileCount() const;
-        TIGL_EXPORT virtual size_t GetCutOutProfileIndex(const std::string& UID) const;
 
         TIGL_EXPORT virtual const CPACSCutOutProfile& GetCutOutProfile(size_t index) const;
         TIGL_EXPORT virtual CPACSCutOutProfile& GetCutOutProfile(size_t index);
-
-        TIGL_EXPORT virtual const CPACSCutOutProfile& GetCutOutProfile(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSCutOutProfile& GetCutOutProfile(const std::string& UID);
 
         TIGL_EXPORT virtual CPACSCutOutProfile& AddCutOutProfile();
         TIGL_EXPORT virtual void RemoveCutOutProfile(CPACSCutOutProfile& ref);

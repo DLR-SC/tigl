@@ -161,6 +161,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSPositionings::GetPositioningIndex", TIGL_UID_ERROR);
     }
 
     CCPACSPositioning& CPACSPositionings::GetPositioning(size_t index)
@@ -186,8 +187,8 @@ namespace generated
         for (auto& elem : m_positionings ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSPositionings::GetPositioning. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSPositioning& CPACSPositionings::GetPositioning(const std::string& UID) const
@@ -195,8 +196,8 @@ namespace generated
         for (auto& elem : m_positionings ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSPositionings::GetPositioning. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

@@ -126,6 +126,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSDucts::GetDuctIndex", TIGL_UID_ERROR);
     }
 
     CCPACSDuct& CPACSDucts::GetDuct(size_t index)
@@ -151,8 +152,8 @@ namespace generated
         for (auto& elem : m_ducts ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSDucts::GetDuct. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSDuct& CPACSDucts::GetDuct(const std::string& UID) const
@@ -160,8 +161,8 @@ namespace generated
         for (auto& elem : m_ducts ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSDucts::GetDuct. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 
@@ -188,6 +189,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSDucts::GetDuctAssemblyIndex", TIGL_UID_ERROR);
     }
 
     CCPACSDuctAssembly& CPACSDucts::GetDuctAssembly(size_t index)
@@ -213,8 +215,8 @@ namespace generated
         for (auto& elem : m_ductAssemblys ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSDucts::GetDuctAssembly. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSDuctAssembly& CPACSDucts::GetDuctAssembly(const std::string& UID) const
@@ -222,8 +224,8 @@ namespace generated
         for (auto& elem : m_ductAssemblys ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSDucts::GetDuctAssembly. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

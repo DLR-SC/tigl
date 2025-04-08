@@ -64,13 +64,9 @@ namespace generated
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSTrackStrut>>& GetStruts();
 
         TIGL_EXPORT virtual size_t GetStrutCount() const;
-        TIGL_EXPORT virtual size_t GetStrutIndex(const std::string& UID) const;
 
         TIGL_EXPORT virtual const CPACSTrackStrut& GetStrut(size_t index) const;
         TIGL_EXPORT virtual CPACSTrackStrut& GetStrut(size_t index);
-
-        TIGL_EXPORT virtual const CPACSTrackStrut& GetStrut(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSTrackStrut& GetStrut(const std::string& UID);
 
         TIGL_EXPORT virtual CPACSTrackStrut& AddStrut();
         TIGL_EXPORT virtual void RemoveStrut(CPACSTrackStrut& ref);

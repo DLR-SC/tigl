@@ -115,6 +115,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSRotors::GetRotorIndex", TIGL_UID_ERROR);
     }
 
     CCPACSRotor& CPACSRotors::GetRotor(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_rotors ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSRotors::GetRotor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSRotor& CPACSRotors::GetRotor(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_rotors ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSRotors::GetRotor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

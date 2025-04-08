@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSWingRibsDefinitions::GetRibsDefinitionIndex", TIGL_UID_ERROR);
     }
 
     CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::GetRibsDefinition(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_ribsDefinitions ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWingRibsDefinitions::GetRibsDefinition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::GetRibsDefinition(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_ribsDefinitions ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWingRibsDefinitions::GetRibsDefinition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

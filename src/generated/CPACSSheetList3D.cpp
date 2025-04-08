@@ -115,6 +115,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSSheetList3D::GetSheet3DIndex", TIGL_UID_ERROR);
     }
 
     CPACSSheet3D& CPACSSheetList3D::GetSheet3D(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_sheet3Ds ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSSheetList3D::GetSheet3D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSSheet3D& CPACSSheetList3D::GetSheet3D(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_sheet3Ds ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSSheetList3D::GetSheet3D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

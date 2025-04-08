@@ -132,6 +132,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSStructuralProfiles::GetStructuralProfile2DIndex", TIGL_UID_ERROR);
     }
 
     CPACSStructuralProfile& CPACSStructuralProfiles::GetStructuralProfile2D(size_t index)
@@ -157,8 +158,8 @@ namespace generated
         for (auto& elem : m_structuralProfile2Ds ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSStructuralProfiles::GetStructuralProfile2D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSStructuralProfile& CPACSStructuralProfiles::GetStructuralProfile2D(const std::string& UID) const
@@ -166,8 +167,8 @@ namespace generated
         for (auto& elem : m_structuralProfile2Ds ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSStructuralProfiles::GetStructuralProfile2D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 
@@ -194,6 +195,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSStructuralProfiles::GetStructuralProfile3DIndex", TIGL_UID_ERROR);
     }
 
     CPACSStructuralProfile3D& CPACSStructuralProfiles::GetStructuralProfile3D(size_t index)
@@ -219,8 +221,8 @@ namespace generated
         for (auto& elem : m_structuralProfile3Ds ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSStructuralProfiles::GetStructuralProfile3D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSStructuralProfile3D& CPACSStructuralProfiles::GetStructuralProfile3D(const std::string& UID) const
@@ -228,8 +230,8 @@ namespace generated
         for (auto& elem : m_structuralProfile3Ds ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSStructuralProfiles::GetStructuralProfile3D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

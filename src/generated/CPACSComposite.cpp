@@ -228,16 +228,6 @@ namespace generated
         return m_compositeLayers.size();
     }
 
-    size_t CPACSComposite::GetCompositeLayerIndex(const std::string& UID) const
-    {
-        for (size_t i=0; i < GetCompositeLayerCount(); i++) {
-            const std::string tmpUID(m_compositeLayers[i]->GetUID());
-            if (tmpUID == UID) {
-                return i+1;
-            }
-        }
-    }
-
     CPACSCompositeLayer& CPACSComposite::GetCompositeLayer(size_t index)
     {
         if (index < 1 || index > GetCompositeLayerCount()) {
@@ -254,24 +244,6 @@ namespace generated
         }
         index--;
         return *m_compositeLayers[index];
-    }
-
-    CPACSCompositeLayer& CPACSComposite::GetCompositeLayer(const std::string& UID)
-    {
-        for (auto& elem : m_compositeLayers ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSComposite::GetCompositeLayer. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
-    }
-
-    const CPACSCompositeLayer& CPACSComposite::GetCompositeLayer(const std::string& UID) const
-    {
-        for (auto& elem : m_compositeLayers ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSComposite::GetCompositeLayer. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSCargoDoorsAssembly::GetCargoDoorIndex", TIGL_UID_ERROR);
     }
 
     CCPACSDoorAssemblyPosition& CPACSCargoDoorsAssembly::GetCargoDoor(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_cargoDoors ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSCargoDoorsAssembly::GetCargoDoor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSDoorAssemblyPosition& CPACSCargoDoorsAssembly::GetCargoDoor(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_cargoDoors ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSCargoDoorsAssembly::GetCargoDoor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

@@ -110,11 +110,12 @@ namespace generated
     size_t CPACSPointList::GetPointIndex(const std::string& UID) const
     {
         for (size_t i=0; i < GetPointCount(); i++) {
-            const std::string tmpUID(m_points[i]->GetUID());
+            const boost::optional<std::string> tmpUID(*m_points[i]->GetUID());
             if (tmpUID == UID) {
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSPointList::GetPointIndex", TIGL_UID_ERROR);
     }
 
     CCPACSPoint& CPACSPointList::GetPoint(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_points ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSPointList::GetPoint. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSPoint& CPACSPointList::GetPoint(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_points ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSPointList::GetPoint. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

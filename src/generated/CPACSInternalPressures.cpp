@@ -107,16 +107,6 @@ namespace generated
         return m_internalPressures.size();
     }
 
-    size_t CPACSInternalPressures::GetInternalPressureIndex(const std::string& UID) const
-    {
-        for (size_t i=0; i < GetInternalPressureCount(); i++) {
-            const std::string tmpUID(m_internalPressures[i]->GetUID());
-            if (tmpUID == UID) {
-                return i+1;
-            }
-        }
-    }
-
     CPACSInternalPressure& CPACSInternalPressures::GetInternalPressure(size_t index)
     {
         if (index < 1 || index > GetInternalPressureCount()) {
@@ -133,24 +123,6 @@ namespace generated
         }
         index--;
         return *m_internalPressures[index];
-    }
-
-    CPACSInternalPressure& CPACSInternalPressures::GetInternalPressure(const std::string& UID)
-    {
-        for (auto& elem : m_internalPressures ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSInternalPressures::GetInternalPressure. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
-    }
-
-    const CPACSInternalPressure& CPACSInternalPressures::GetInternalPressure(const std::string& UID) const
-    {
-        for (auto& elem : m_internalPressures ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSInternalPressures::GetInternalPressure. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

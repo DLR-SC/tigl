@@ -115,6 +115,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSControlSurfaceTracks::GetTrackIndex", TIGL_UID_ERROR);
     }
 
     CPACSControlSurfaceTrackType& CPACSControlSurfaceTracks::GetTrack(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_tracks ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSControlSurfaceTracks::GetTrack. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSControlSurfaceTrackType& CPACSControlSurfaceTracks::GetTrack(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_tracks ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSControlSurfaceTracks::GetTrack. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

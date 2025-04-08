@@ -95,16 +95,6 @@ namespace generated
         return m_jointPositions.size();
     }
 
-    size_t CPACSTrackJointPositions::GetJointPositionIndex(const std::string& UID) const
-    {
-        for (size_t i=0; i < GetJointPositionCount(); i++) {
-            const std::string tmpUID(m_jointPositions[i]->GetUID());
-            if (tmpUID == UID) {
-                return i+1;
-            }
-        }
-    }
-
     CPACSTrackJointPosition& CPACSTrackJointPositions::GetJointPosition(size_t index)
     {
         if (index < 1 || index > GetJointPositionCount()) {
@@ -121,24 +111,6 @@ namespace generated
         }
         index--;
         return *m_jointPositions[index];
-    }
-
-    CPACSTrackJointPosition& CPACSTrackJointPositions::GetJointPosition(const std::string& UID)
-    {
-        for (auto& elem : m_jointPositions ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSTrackJointPositions::GetJointPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
-    }
-
-    const CPACSTrackJointPosition& CPACSTrackJointPositions::GetJointPosition(const std::string& UID) const
-    {
-        for (auto& elem : m_jointPositions ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSTrackJointPositions::GetJointPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

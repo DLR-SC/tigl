@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSClassDividerElements::GetClassDividerElementIndex", TIGL_UID_ERROR);
     }
 
     CPACSDeckElementBase& CPACSClassDividerElements::GetClassDividerElement(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_classDividerElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSClassDividerElements::GetClassDividerElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSDeckElementBase& CPACSClassDividerElements::GetClassDividerElement(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_classDividerElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSClassDividerElements::GetClassDividerElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

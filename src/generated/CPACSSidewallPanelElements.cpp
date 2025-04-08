@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSSidewallPanelElements::GetSidewallPanelElementIndex", TIGL_UID_ERROR);
     }
 
     CPACSDeckElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_sidewallPanelElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSSidewallPanelElements::GetSidewallPanelElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSDeckElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_sidewallPanelElements ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSSidewallPanelElements::GetSidewallPanelElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

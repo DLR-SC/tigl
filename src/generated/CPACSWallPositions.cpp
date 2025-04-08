@@ -116,11 +116,12 @@ namespace generated
     size_t CPACSWallPositions::GetWallPositionIndex(const std::string& UID) const
     {
         for (size_t i=0; i < GetWallPositionCount(); i++) {
-            const std::string tmpUID(m_wallPositions[i]->GetUID());
+            const boost::optional<std::string> tmpUID(*m_wallPositions[i]->GetUID());
             if (tmpUID == UID) {
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSWallPositions::GetWallPositionIndex", TIGL_UID_ERROR);
     }
 
     CCPACSWallPosition& CPACSWallPositions::GetWallPosition(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_wallPositions ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWallPositions::GetWallPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSWallPosition& CPACSWallPositions::GetWallPosition(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_wallPositions ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSWallPositions::GetWallPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

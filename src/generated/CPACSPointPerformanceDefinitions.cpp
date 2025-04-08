@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSPointPerformanceDefinitions::GetPointPerformanceDefinitionIndex", TIGL_UID_ERROR);
     }
 
     CPACSPointPerformanceDefinition& CPACSPointPerformanceDefinitions::GetPointPerformanceDefinition(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_pointPerformanceDefinitions ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSPointPerformanceDefinitions::GetPointPerformanceDefinition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSPointPerformanceDefinition& CPACSPointPerformanceDefinitions::GetPointPerformanceDefinition(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_pointPerformanceDefinitions ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSPointPerformanceDefinitions::GetPointPerformanceDefinition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

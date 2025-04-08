@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSCargoCrossBeamStrutsAssembly::GetCargoCrossBeamStrutIndex", TIGL_UID_ERROR);
     }
 
     CCPACSCrossBeamStrutAssemblyPosition& CPACSCargoCrossBeamStrutsAssembly::GetCargoCrossBeamStrut(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_cargoCrossBeamStruts ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSCargoCrossBeamStrutsAssembly::GetCargoCrossBeamStrut. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSCrossBeamStrutAssemblyPosition& CPACSCargoCrossBeamStrutsAssembly::GetCargoCrossBeamStrut(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_cargoCrossBeamStruts ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSCargoCrossBeamStrutsAssembly::GetCargoCrossBeamStrut. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

@@ -115,6 +115,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSRotorHubHinges::GetHingeIndex", TIGL_UID_ERROR);
     }
 
     CCPACSRotorHinge& CPACSRotorHubHinges::GetHinge(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_hinges ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSRotorHubHinges::GetHinge. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSRotorHinge& CPACSRotorHubHinges::GetHinge(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_hinges ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSRotorHubHinges::GetHinge. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

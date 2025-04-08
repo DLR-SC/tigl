@@ -115,6 +115,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSNacelleSections::GetSectionIndex", TIGL_UID_ERROR);
     }
 
     CCPACSNacelleSection& CPACSNacelleSections::GetSection(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_sections ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSNacelleSections::GetSection. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSNacelleSection& CPACSNacelleSections::GetSection(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_sections ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSNacelleSections::GetSection. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

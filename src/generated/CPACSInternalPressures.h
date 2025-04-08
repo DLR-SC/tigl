@@ -63,13 +63,9 @@ namespace generated
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSInternalPressure>>& GetInternalPressures();
 
         TIGL_EXPORT virtual size_t GetInternalPressureCount() const;
-        TIGL_EXPORT virtual size_t GetInternalPressureIndex(const std::string& UID) const;
 
         TIGL_EXPORT virtual const CPACSInternalPressure& GetInternalPressure(size_t index) const;
         TIGL_EXPORT virtual CPACSInternalPressure& GetInternalPressure(size_t index);
-
-        TIGL_EXPORT virtual const CPACSInternalPressure& GetInternalPressure(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSInternalPressure& GetInternalPressure(const std::string& UID);
 
         TIGL_EXPORT virtual CPACSInternalPressure& AddInternalPressure();
         TIGL_EXPORT virtual void RemoveInternalPressure(CPACSInternalPressure& ref);

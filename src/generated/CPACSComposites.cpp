@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSComposites::GetCompositeIndex", TIGL_UID_ERROR);
     }
 
     CPACSComposite& CPACSComposites::GetComposite(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_composites ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSComposites::GetComposite. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSComposite& CPACSComposites::GetComposite(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_composites ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSComposites::GetComposite. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

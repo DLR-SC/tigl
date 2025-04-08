@@ -107,16 +107,6 @@ namespace generated
         return m_axleAssemblys.size();
     }
 
-    size_t CPACSAxleAssemblies::GetAxleAssemblyIndex(const std::string& UID) const
-    {
-        for (size_t i=0; i < GetAxleAssemblyCount(); i++) {
-            const std::string tmpUID(m_axleAssemblys[i]->GetUID());
-            if (tmpUID == UID) {
-                return i+1;
-            }
-        }
-    }
-
     CPACSAxleAssembly& CPACSAxleAssemblies::GetAxleAssembly(size_t index)
     {
         if (index < 1 || index > GetAxleAssemblyCount()) {
@@ -133,24 +123,6 @@ namespace generated
         }
         index--;
         return *m_axleAssemblys[index];
-    }
-
-    CPACSAxleAssembly& CPACSAxleAssemblies::GetAxleAssembly(const std::string& UID)
-    {
-        for (auto& elem : m_axleAssemblys ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSAxleAssemblies::GetAxleAssembly. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
-    }
-
-    const CPACSAxleAssembly& CPACSAxleAssemblies::GetAxleAssembly(const std::string& UID) const
-    {
-        for (auto& elem : m_axleAssemblys ) {
-            if (elem->GetUID() == UID)
-                return *elem;
-            throw CTiglError("Invalid UID in CPACSAxleAssemblies::GetAxleAssembly. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

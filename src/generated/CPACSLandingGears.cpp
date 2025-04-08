@@ -115,6 +115,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSLandingGears::GetLandingGearIndex", TIGL_UID_ERROR);
     }
 
     CPACSLandingGearBase& CPACSLandingGears::GetLandingGear(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_landingGears ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSLandingGears::GetLandingGear. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSLandingGearBase& CPACSLandingGears::GetLandingGear(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_landingGears ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSLandingGears::GetLandingGear. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

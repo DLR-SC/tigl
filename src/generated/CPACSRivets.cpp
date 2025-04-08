@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSRivets::GetRivetIndex", TIGL_UID_ERROR);
     }
 
     CPACSRivet& CPACSRivets::GetRivet(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_rivets ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSRivets::GetRivet. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CPACSRivet& CPACSRivets::GetRivet(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_rivets ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSRivets::GetRivet. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

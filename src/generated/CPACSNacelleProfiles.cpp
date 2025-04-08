@@ -121,6 +121,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSNacelleProfiles::GetNacelleProfileIndex", TIGL_UID_ERROR);
     }
 
     CCPACSNacelleProfile& CPACSNacelleProfiles::GetNacelleProfile(size_t index)
@@ -146,8 +147,8 @@ namespace generated
         for (auto& elem : m_nacelleProfiles ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSNacelleProfiles::GetNacelleProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSNacelleProfile& CPACSNacelleProfiles::GetNacelleProfile(const std::string& UID) const
@@ -155,8 +156,8 @@ namespace generated
         for (auto& elem : m_nacelleProfiles ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSNacelleProfiles::GetNacelleProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 

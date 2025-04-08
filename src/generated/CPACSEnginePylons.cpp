@@ -115,6 +115,7 @@ namespace generated
                 return i+1;
             }
         }
+        throw CTiglError("Invalid UID in CPACSEnginePylons::GetEnginePylonIndex", TIGL_UID_ERROR);
     }
 
     CCPACSEnginePylon& CPACSEnginePylons::GetEnginePylon(size_t index)
@@ -140,8 +141,8 @@ namespace generated
         for (auto& elem : m_enginePylons ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSEnginePylons::GetEnginePylon. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
     const CCPACSEnginePylon& CPACSEnginePylons::GetEnginePylon(const std::string& UID) const
@@ -149,8 +150,8 @@ namespace generated
         for (auto& elem : m_enginePylons ) {
             if (elem->GetUID() == UID)
                 return *elem;
+            }
             throw CTiglError("Invalid UID in CPACSEnginePylons::GetEnginePylon. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
-        }
     }
 
 
