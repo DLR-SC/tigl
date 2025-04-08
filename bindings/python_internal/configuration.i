@@ -81,7 +81,6 @@
 #include "generated/CPACSTrailingEdgeDevice.h"
 #include "CTiglControlSurfaceTransformation.h"
 #include "CCPACSTrailingEdgeDevice.h"
-#include "CCPACSEnginePylons.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSEnginePosition.h"
 #include "generated/CPACSLateralCap_placement.h"
@@ -226,7 +225,7 @@ namespace tigl {
 %include "CCPACSNacelleCowl.h"
 %include "generated/CPACSEngine.h"
 %include "generated/CPACSEngines.h"
-%include "CCPACSEngines.h"
+%include "CPACSEngines.h"
 
 // ---------------- Control surfaces ------------------ //
 %boost_optional(tigl::generated::CPACSControlSurfaceTrackType_trackSubType)
@@ -291,7 +290,6 @@ namespace tigl
 %ignore ComponentSegment(CCPACSTrailingEdgeDevice&);
 %include "CCPACSTrailingEdgeDevice.h"
 %include "generated/CPACSTrailingEdgeDevices.h"
-%include "CCPACSTrailingEdgeDevices.h"
 %include "generated/CPACSControlSurfaces.h"
 %include "CCPACSControlSurfaces.h"
 
@@ -439,9 +437,7 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSFuselageSection.h"
 %include "CCPACSFuselageSection.h"
 %include "generated/CPACSWingSections.h"
-%include "CCPACSWingSections.h"
 %include "generated/CPACSFuselageSections.h"
-%include "CCPACSFuselageSections.h"
 %include "generated/CPACSWingElements.h"
 %include "CCPACSWingSectionElements.h"
 %include "generated/CPACSFuselageElements.h"
@@ -486,7 +482,6 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSFuselage.h"
 %include "CCPACSFuselage.h"
 %include "generated/CPACSFuselages.h"
-%include "CCPACSFuselages.h"
 %include "TiglFarFieldType.h"
 %include "generated/CPACSCellPositioningSpanwise.h"
 %include "generated/CPACSCellPositioningChordwise.h"
@@ -510,7 +505,6 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSEnginePylon.h"
 %include "CCPACSEnginePylon.h"
 %include "generated/CPACSEnginePylons.h"
-%include "CCPACSEnginePylons.h"
 
 //  ---------------- Ducts ------------------ //
 
