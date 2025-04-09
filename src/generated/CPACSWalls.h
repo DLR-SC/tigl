@@ -19,8 +19,10 @@
 
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include "CPACSWallPositions.h"
 #include "CPACSWallSegments.h"
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -28,22 +30,47 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSFuselageStructure;
+class CCPACSVesselStructure;
 
 namespace generated
 {
     // This class is used in:
     // CPACSFuselageStructure
+    // CPACSVesselStructure
 
     class CPACSWalls
     {
     public:
         TIGL_EXPORT CPACSWalls(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWalls(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSWalls();
 
-        TIGL_EXPORT CCPACSFuselageStructure* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSFuselageStructure* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSVesselStructure>::value, "template argument for P is not a parent class of CPACSWalls");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSVesselStructure>::value, "template argument for P is not a parent class of CPACSWalls");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -61,7 +88,8 @@ namespace generated
         TIGL_EXPORT virtual CPACSWallSegments& GetWallSegments();
 
     protected:
-        CCPACSFuselageStructure* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
