@@ -303,6 +303,8 @@ void CCPACSVessel::IsotensoidContour(double rCyl, double rPolarOpening, int node
     double phi   = 0.0;
     double alpha = std::asin(rPolarOpening / rCyl);
 
+    // Isotensoid dome contours are described by a differential equation. The following code is an analytical approximation
+    // provided by the DLR Institute of Lightweight Systems.
     while (std::tan(alpha) * std::tan(alpha) < 2 && r.back() > 1.22 * rPolarOpening) {
         phi += dPhi;
         alpha     = std::asin(rPolarOpening / r.back());
