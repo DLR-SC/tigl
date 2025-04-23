@@ -20,6 +20,7 @@
 #include "tigl_internal.h"
 
 #include <math_Matrix.hxx>
+#include <math_Vector.hxx>
 
 namespace tigl
 {
