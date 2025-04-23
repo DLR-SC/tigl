@@ -3,6 +3,7 @@ name: tigl-bld
 channels:
  - dlr-sc
  - dlr-sc/label/tigl-dev
+ - conda-forge
 dependencies:
  - pip                           # just make sure that pip installs into this env, if used
  # required build dependencies

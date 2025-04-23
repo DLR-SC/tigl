@@ -66,6 +66,7 @@ runs:
         activate-environment: tigl-bld
         environment-file: environment.yml
         auto-activate-base: false
+        conda-remove-defaults: true
 
     - name: Install dependencies (static opencascade)
       if: inputs.oce_static_libs == 'ON'

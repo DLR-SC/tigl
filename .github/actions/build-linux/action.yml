@@ -56,6 +56,7 @@ runs:
         activate-environment: tigl-bld
         environment-file: environment.yml
         auto-activate-base: false
+        conda-remove-defaults: true
 
     - name: Conda info
       shell: bash -el {0}
