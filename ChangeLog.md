@@ -9,8 +9,6 @@ Changes since last release
 - General changes:
   - Implemented the new CPACS fuelTanks.
 
-10/01/2025
-
 - Fixes
 
   - #936 A particular defined positioning (of the C++-type CCPACSPositioning) was not available via Python bindings since the std::vector<std::unique_ptr<**Type**>> is not exposed to swig. New getter functions have been implemented in CCPACSPositioning.h to make these elements accesible via index, similar to the implementation of for several other classes. For more information see https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59.
