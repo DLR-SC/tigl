@@ -71,7 +71,7 @@ runs:
       if: inputs.oce_static_libs == 'ON'
       shell: cmd /C call {0}
       run: |
-        conda install opencascade-static=7.4.0 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda install opencascade-static=7.6.2 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
     
     - name: Conda info
       shell: cmd /C call {0}
