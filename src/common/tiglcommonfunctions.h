@@ -365,12 +365,6 @@ TIGL_EXPORT bool CheckCommonVertex(const TopoDS_Edge& e1, const TopoDS_Edge& e2)
 // Method for searching all vertices which are only connected to a single edge
 TIGL_EXPORT void GetEndVertices(const TopoDS_Shape& shape, TopTools_ListOfShape& endVertices);
 
-// Method to return the first vertex of an edge
-TIGL_EXPORT TopoDS_Vertex GetFirstVertex(const TopoDS_Edge& e);
-
-// Method to return the last vertex of an edge
-TIGL_EXPORT TopoDS_Vertex GetLastVertex(const TopoDS_Edge& e);
-
 // Method for finding the face which has the lowest distance to the passed point
 TIGL_EXPORT TopoDS_Face GetNearestFace(const TopoDS_Shape& src, const gp_Pnt& pnt);
 

@@ -355,7 +355,7 @@ void CCPACSVessel::BuildVesselWire(std::vector<TopoDS_Edge>& edges, BRepBuilderA
         wire.Add(edge);
     }
 
-    TopoDS_Vertex v2 = GetLastVertex(edges.back());
+    TopoDS_Vertex v2 = TopExp::LastVertex(edges.back());
     gp_Pnt mirror_point(BRep_Tool::Pnt(v2).X(), 0, 0);
     gp_Trsf mirror;
     mirror.SetMirror(gp_Ax2(mirror_point, gp_Dir(1, 0, 0)));
@@ -406,7 +406,7 @@ void CCPACSVessel::BuildVesselWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
     std::vector<TopoDS_Edge> edges = {domeEdge};
 
     if (cylinderLength > 0.0) {
-        TopoDS_Vertex v1 = GetLastVertex(domeEdge);
+        TopoDS_Vertex v1 = TopExp::LastVertex(domeEdge);
         TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
 
         TopoDS_Edge cylinderEdge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
@@ -457,7 +457,7 @@ void CCPACSVessel::BuildVesselWireTorispherical(BRepBuilderAPI_MakeWire& wire) c
     std::vector<TopoDS_Edge> edges = {domeEdge1, domeEdge2};
 
     if (cylinderLength > 0.0) {
-        TopoDS_Vertex v1 = GetLastVertex(domeEdge2);
+        TopoDS_Vertex v1 = TopExp::LastVertex(domeEdge2);
         TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
 
         TopoDS_Edge cylinderEdge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
@@ -492,13 +492,13 @@ void CCPACSVessel::BuildVesselWireIsotensoid(BRepBuilderAPI_MakeWire& wire) cons
     TopoDS_Edge domeEdge              = BRepBuilderAPI_MakeEdge(bspline);
 
     TopoDS_Vertex v1    = BRepBuilderAPI_MakeVertex(gp_Pnt(-x.back(), 0.0, 0.0));
-    TopoDS_Vertex v2    = GetLastVertex(domeEdge);
+    TopoDS_Vertex v2    = TopExp::LastVertex(domeEdge);
     TopoDS_Edge lidEdge = BRepBuilderAPI_MakeEdge(v1, v2);
 
     std::vector<TopoDS_Edge> edges = {lidEdge, domeEdge};
 
     if (cylinderLength > 0.0) {
-        TopoDS_Vertex v1 = GetFirstVertex(domeEdge);
+        TopoDS_Vertex v1 = TopExp::FirstVertex(domeEdge);
         TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
 
         TopoDS_Edge cylinderEdge = BRepBuilderAPI_MakeEdge(v1, v2).Edge();
