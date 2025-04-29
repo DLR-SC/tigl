@@ -168,7 +168,7 @@ public:
     TIGL_EXPORT int GetFuelTanksCount() const;
 
     // Returns the fuel tank for a given index.
-    TIGL_EXPORT CCPACSFuelTank& GetFuelTank(int index) const;
+    TIGL_EXPORT CCPACSFuelTank const& GetFuelTank(int index) const;
 
     // Returns the fuel tank for a given UID.
     TIGL_EXPORT CCPACSFuelTank const& GetFuelTank(const std::string& UID) const;
