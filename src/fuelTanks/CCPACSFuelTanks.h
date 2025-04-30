@@ -36,7 +36,8 @@ public:
     TIGL_EXPORT CCPACSFuelTank& GetFuelTank(std::string const& uID);
 
     // Get a specific fuel tank for a given index.
-    TIGL_EXPORT CCPACSFuelTank& GetFuelTank(int index) const;
+    TIGL_EXPORT CCPACSFuelTank const& GetFuelTank(int index) const;
+    TIGL_EXPORT CCPACSFuelTank& GetFuelTank(int index);
 
     // Returns the fuel tank index for a given uID.
     TIGL_EXPORT int GetFuelTankIndex(std::string const& uID) const;

@@ -52,7 +52,12 @@ CCPACSFuelTank& CCPACSFuelTanks::GetFuelTank(std::string const& uID)
     throw CTiglError("Could not find fuelTank with uid " + uID, TIGL_UID_ERROR);
 }
 
-CCPACSFuelTank& CCPACSFuelTanks::GetFuelTank(int index) const
+CCPACSFuelTank const& CCPACSFuelTanks::GetFuelTank(int index) const
+{
+    return const_cast<CCPACSFuelTanks&>(*this).GetFuelTank(index);
+}
+
+CCPACSFuelTank& CCPACSFuelTanks::GetFuelTank(int index)
 {
     index--;
     if (index < 0 || index >= GetFuelTanksCount()) {

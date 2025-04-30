@@ -37,7 +37,8 @@ public:
     TIGL_EXPORT CCPACSVessel& GetVessel(std::string const& uID);
 
     // Get a specific vessel for a given index.
-    TIGL_EXPORT CCPACSVessel& GetVessel(int index) const;
+    TIGL_EXPORT CCPACSVessel const& GetVessel(int index) const;
+    TIGL_EXPORT CCPACSVessel& GetVessel(int index);
 
     // Returns the vessel index for a given uID.
     TIGL_EXPORT int GetVesselIndex(const std::string& uID) const;

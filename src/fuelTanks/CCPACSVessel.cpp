@@ -89,7 +89,12 @@ int CCPACSVessel::GetSectionCount() const
     }
 }
 
-CCPACSFuselageSection& CCPACSVessel::GetSection(int index) const
+CCPACSFuselageSection const& CCPACSVessel::GetSection(int index) const
+{
+    return const_cast<CCPACSVessel&>(*this).GetSection(index);
+}
+
+CCPACSFuselageSection& CCPACSVessel::GetSection(int index)
 {
     if (m_sections_choice1) {
         return m_sections_choice1.get().GetSection(index);
@@ -97,6 +102,11 @@ CCPACSFuselageSection& CCPACSVessel::GetSection(int index) const
     else {
         throw CTiglError(_vesselTypeException);
     }
+}
+
+CCPACSFuselageSection const& CCPACSVessel::GetSection(const std::string& sectionUID) const
+{
+    return const_cast<CCPACSVessel&>(*this).GetSection(sectionUID);
 }
 
 CCPACSFuselageSection& CCPACSVessel::GetSection(const std::string& sectionUID)

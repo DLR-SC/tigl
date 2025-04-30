@@ -52,7 +52,12 @@ CCPACSVessel& CCPACSVessels::GetVessel(std::string const& uID)
     throw CTiglError("Could not find vessel with uid " + uID, TIGL_UID_ERROR);
 }
 
-CCPACSVessel& CCPACSVessels::GetVessel(int index) const
+CCPACSVessel const& CCPACSVessels::GetVessel(int index) const
+{
+    return const_cast<CCPACSVessels&>(*this).GetVessel(index);
+}
+
+CCPACSVessel& CCPACSVessels::GetVessel(int index)
 {
     index--;
     if (index < 0 || index >= GetVesselsCount()) {
