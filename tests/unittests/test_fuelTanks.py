@@ -224,24 +224,6 @@ class FuelTanks(unittest.TestCase):
             vessel_parametric.get_circumference(1, 0.5)
         self.assertEqual(str(context.exception), self.tank_type_exception_msg)
 
-        point = vessel_segments.get_point(1, 0.5, 0.5)
-        self.assertAlmostEqual(round(point.X(), 2), 1.54)
-        self.assertAlmostEqual(round(point.Y(), 2), 0.0)
-        self.assertAlmostEqual(round(point.Z(), 2), -1.2)
-        with self.assertRaises(RuntimeError) as context:
-            vessel_parametric.get_point(1, 0.5, 0.5)
-        self.assertEqual(str(context.exception), self.tank_type_exception_msg)
-
-        self.assertEqual(
-            vessel_segments.get_get_point_behavior(), configuration.asParameterOnSurface
-        )
-        self.assertIsNone(
-            vessel_segments.set_get_point_behavior(configuration.onLinearLoft)
-        )
-        self.assertEqual(
-            vessel_segments.get_get_point_behavior(), configuration.onLinearLoft
-        )
-
     def test_structure(self):
         structure_with_walls = self.vessel_isotensoid.get_structure()
         structure_with_stringer_frames = self.vessel_segments.get_structure()

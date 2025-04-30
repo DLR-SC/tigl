@@ -76,16 +76,6 @@ public:
     // Get the circumference of the vessel
     TIGL_EXPORT double GetCircumference(int segmentIndex, double eta);
 
-    // Get a point on the given vessel segment in dependence of a parameters eta and zeta with
-    // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
-    // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0
-    // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
-    TIGL_EXPORT gp_Pnt GetPoint(int segmentIndex, double eta, double zeta);
-    // Set the _getPointBehavior to asParameterOnSurface or onLinearLoft
-    TIGL_EXPORT void SetGetPointBehavior(TiglGetPointBehavior behavior = asParameterOnSurface);
-    // Get the _getPointBehavior
-    TIGL_EXPORT TiglGetPointBehavior GetGetPointBehavior() const;
-
     // Get the guide curve segment (partial guide curve) with a given uID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
     TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurveSegment(std::string uid) const;

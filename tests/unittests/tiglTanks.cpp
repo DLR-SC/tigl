@@ -336,16 +336,6 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
     EXPECT_NEAR(vessel_segments->GetCircumference(1, 0.5), 7.43, 1e-2);
     CheckExceptionMessage([&]() { vessel_parametric->GetCircumference(1, 0.5); }, tankTypeExceptionString);
 
-    auto point = vessel_segments->GetPoint(1, 0.5, 0.5);
-    EXPECT_NEAR(point.X(), 1.54, 1e-2);
-    EXPECT_NEAR(point.Y(), 0, 1e-5);
-    EXPECT_NEAR(point.Z(), -1.2, 1e-1);
-    CheckExceptionMessage([&]() { vessel_parametric->GetPoint(1, 0.5, 0.5); }, tankTypeExceptionString);
-
-    EXPECT_EQ(vessel_segments->GetGetPointBehavior(), asParameterOnSurface);
-    EXPECT_NO_THROW(vessel_segments->SetGetPointBehavior(onLinearLoft));
-    EXPECT_EQ(vessel_segments->GetGetPointBehavior(), onLinearLoft);
-
     EXPECT_THROW(vessel_corrupt->GetLoft(), tigl::CTiglError);
     EXPECT_THROW(dummyVessel.GetLoft(), tigl::CTiglError);
 }

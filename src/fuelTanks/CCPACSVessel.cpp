@@ -562,28 +562,6 @@ PNamedShape CCPACSVessel::BuildLoft() const
     }
 }
 
-gp_Pnt CCPACSVessel::GetPoint(int segmentIndex, double eta, double zeta)
-{
-    // ToDo: This functionality could also be implemented for parametric vessels, if needed
-    if (m_segments_choice1) {
-        return ((CCPACSFuselageSegment&)GetSegment(segmentIndex)).GetPoint(eta, zeta, _getPointBehavior);
-    }
-    else {
-        throw CTiglError(_vesselTypeException);
-    }
-}
-
-// Sets the GetPoint behavior to asParameterOnSurface or onLinearLoft
-void CCPACSVessel::SetGetPointBehavior(TiglGetPointBehavior behavior)
-{
-    _getPointBehavior = behavior;
-}
-
-TiglGetPointBehavior CCPACSVessel::GetGetPointBehavior() const
-{
-    return _getPointBehavior;
-}
-
 CCPACSGuideCurve& CCPACSVessel::GetGuideCurveSegment(std::string uid)
 {
     return const_cast<CCPACSGuideCurve&>(static_cast<const CCPACSVessel&>(*this).GetGuideCurveSegment(uid));
