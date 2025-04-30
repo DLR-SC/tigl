@@ -248,58 +248,46 @@ bool CCPACSVessel::IsVesselViaDesignParameters() const
 
 bool CCPACSVessel::HasSphericalDome() const
 {
-    EvaluateDome();
-    if (_ellipsoidPtr && _ellipsoidPtr->GetHalfAxisFraction() == 1) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return GetEllipsoidDome() && GetEllipsoidDome()->GetHalfAxisFraction() == 1.0;
 }
 
 bool CCPACSVessel::HasEllipsoidDome() const
 {
-    EvaluateDome();
-    if (_ellipsoidPtr) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return GetEllipsoidDome() != nullptr;
 }
 
 bool CCPACSVessel::HasIsotensoidDome() const
 {
-    EvaluateDome();
-    if (_isotensoidPtr) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return GetIsotensoidDome() != nullptr;
 }
 
 bool CCPACSVessel::HasTorisphericalDome() const
 {
-    EvaluateDome();
-    if (_torisphericalPtr) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return GetTorisphericalDome() != nullptr;
 }
 
-void CCPACSVessel::EvaluateDome() const
+CCPACSEllipsoidDome const* CCPACSVessel::GetEllipsoidDome() const
 {
-    if (!_isEvaluated) {
-        if (m_domeType_choice2) {
-            _ellipsoidPtr     = m_domeType_choice2->GetEllipsoid_choice1().get_ptr();
-            _torisphericalPtr = m_domeType_choice2->GetTorispherical_choice2().get_ptr();
-            _isotensoidPtr    = m_domeType_choice2->GetIsotensoid_choice3().get_ptr();
-        }
-        _isEvaluated = true;
+    if (m_domeType_choice2) {
+        return m_domeType_choice2->GetEllipsoid_choice1().get_ptr();
     }
+    return nullptr;
+}
+
+CCPACSTorisphericalDome const* CCPACSVessel::GetTorisphericalDome() const
+{
+    if (m_domeType_choice2) {
+        return m_domeType_choice2->GetTorispherical_choice2().get_ptr();
+    }
+    return nullptr;
+}
+
+CCPACSIsotensoidDome const* CCPACSVessel::GetIsotensoidDome() const
+{
+    if (m_domeType_choice2) {
+        return m_domeType_choice2->GetIsotensoid_choice3().get_ptr();
+    }
+    return nullptr;
 }
 
 void CCPACSVessel::IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber, std::vector<double>& x,
@@ -381,7 +369,7 @@ void CCPACSVessel::BuildVesselWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    double axRatio = _ellipsoidPtr->GetHalfAxisFraction();
+    double axRatio = GetEllipsoidDome()->GetHalfAxisFraction();
     if (axRatio < 0.0) {
         throw CTiglError("Half axis fraction (" + std::to_string(axRatio) + ") of vessel \"" + GetName() +
                          "\" (uID=\"" + GetUID() + "\") must be a positive value!");
@@ -431,8 +419,8 @@ void CCPACSVessel::BuildVesselWireTorispherical(BRepBuilderAPI_MakeWire& wire) c
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    double R = _torisphericalPtr->GetDishRadius(); // Radius of the sphere (crown radius)
-    double r = _torisphericalPtr->GetKnuckleRadius(); // Radius of the torus (knuckle radius)
+    double R = GetTorisphericalDome()->GetDishRadius(); // Radius of the sphere (crown radius)
+    double r = GetTorisphericalDome()->GetKnuckleRadius(); // Radius of the torus (knuckle radius)
 
     if (R <= cylinderRadius) {
         throw CTiglError("The dish radius (" + std::to_string(R) + ") of vessel \"" + GetName() + "\" (uID=\"" +
@@ -482,7 +470,7 @@ void CCPACSVessel::BuildVesselWireIsotensoid(BRepBuilderAPI_MakeWire& wire) cons
     double cylinderRadius = m_cylinderRadius_choice2.get();
     double cylinderLength = m_cylinderLength_choice2.get();
 
-    double polarOpeningRadius = _isotensoidPtr->GetPolarOpeningRadius();
+    double polarOpeningRadius = GetIsotensoidDome()->GetPolarOpeningRadius();
     if (polarOpeningRadius <= 0 || polarOpeningRadius >= cylinderRadius) {
         throw CTiglError("The polar opening radius (" + std::to_string(polarOpeningRadius) + ") of vessel \"" +
                          GetName() + "\" (uID=\"" + GetUID() +
@@ -531,13 +519,13 @@ void CCPACSVessel::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
                          GetName() + "\" (uID=\"" + GetUID() + "\") must be larger than or equal to 0!");
     }
 
-    if (_ellipsoidPtr) {
+    if (GetEllipsoidDome()) {
         BuildVesselWireEllipsoid(wire);
     }
-    else if (_torisphericalPtr) {
+    else if (GetTorisphericalDome()) {
         BuildVesselWireTorispherical(wire);
     }
-    else if (_isotensoidPtr) {
+    else if (GetIsotensoidDome()) {
         BuildVesselWireIsotensoid(wire);
     }
 
@@ -563,7 +551,6 @@ PNamedShape CCPACSVessel::BuildLoft() const
         return loft;
     }
     else if (m_domeType_choice2) {
-        EvaluateDome();
         BuildShapeFromSimpleParameters(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
         return loft;

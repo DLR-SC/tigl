@@ -116,11 +116,9 @@ private:
     const std::string _vesselTypeException =
         "This method is only available for vessels with segments. No segment found.";
 
-    mutable const tigl::generated::CPACSEllipsoidDome* _ellipsoidPtr         = NULL;
-    mutable const tigl::generated::CPACSTorisphericalDome* _torisphericalPtr = NULL;
-    mutable const tigl::generated::CPACSIsotensoidDome* _isotensoidPtr       = NULL;
-    mutable bool _isEvaluated                                                = false;
-    void EvaluateDome() const;
+    CCPACSEllipsoidDome const* GetEllipsoidDome() const;
+    CCPACSTorisphericalDome const* GetTorisphericalDome() const;
+    CCPACSIsotensoidDome const* GetIsotensoidDome() const;
 
     // Get short name for loft
     std::string GetShortShapeName() const;
