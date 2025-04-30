@@ -33,7 +33,7 @@ CCPACSFuelTank::CCPACSFuelTank(CCPACSFuelTanks* parent, CTiglUIDManager* uidMgr)
 {
 }
 
-CCPACSConfiguration& CCPACSFuelTank::GetConfiguration() const
+CCPACSConfiguration const& CCPACSFuelTank::GetConfiguration() const
 {
     return GetParent()->GetParent()->GetConfiguration();
 }

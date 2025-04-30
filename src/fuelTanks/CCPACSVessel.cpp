@@ -58,7 +58,7 @@ CCPACSVessel::CCPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr)
 {
 }
 
-CCPACSConfiguration& CCPACSVessel::GetConfiguration() const
+CCPACSConfiguration const& CCPACSVessel::GetConfiguration() const
 {
     return GetParent()->GetParent()->GetConfiguration();
 }

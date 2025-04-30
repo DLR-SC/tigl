@@ -37,7 +37,7 @@ public:
     TIGL_EXPORT explicit CCPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr);
 
     // Get the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 
     // Get the default uID
     TIGL_EXPORT std::string GetDefaultedUID() const override;

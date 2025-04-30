@@ -33,7 +33,7 @@ class CCPACSFuelTank : public generated::CPACSFuelTank, public CTiglRelativelyPo
 public:
     TIGL_EXPORT CCPACSFuelTank(CCPACSFuelTanks* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
