@@ -113,10 +113,6 @@ private:
     // Get short name for loft
     std::string GetShortShapeName() const;
 
-    TiglGetPointBehavior _getPointBehavior{asParameterOnSurface};
-    void IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber, std::vector<double>& x,
-                           std::vector<double>& r) const;
-
     void BuildShapeFromSegments(TopoDS_Shape& loftShape) const;
     void BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const;
 
@@ -124,6 +120,32 @@ private:
     void BuildVesselWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const;
     void BuildVesselWireTorispherical(BRepBuilderAPI_MakeWire& wire) const;
     void BuildVesselWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const;
+
+    /**
+     * @brief  Approximated contour of an isotensoid dome section.
+     *
+     * This struct computes and stores the axial profile and corresponding radii
+     * of an isotensoid dome, starting from a cylindrical base and ending at the
+     * polar opening.
+     *
+     * @details
+     * The algorithmic approach is based on patent EP0714753A2. For a more in-depth
+     * treatment of the theory and practical applications, see:
+     *   Vasiliev, Valery V. Composite pressure vessels: Design, analysis, and
+     *   manufacturing. Bull Ridge Corporation, 2009.
+     *
+     * @param cylinderRadius       Radius of the initial cylindrical base.
+     * @param polarOpeningRadius   Radius at the polar opening of the dome.
+     * @param nodeNumber           Number of integration steps used to sample
+     *                             the contour curve
+     */
+    struct IsotensoidContour {
+
+        std::vector<double> axialPositions;
+        std::vector<double> radii;
+
+        IsotensoidContour(double cylinderRadius, double polarOpeningRadius, int nodeNumber);
+    };
 };
 
 } // namespace tigl

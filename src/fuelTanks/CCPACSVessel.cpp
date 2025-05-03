@@ -290,38 +290,40 @@ CCPACSIsotensoidDome const* CCPACSVessel::GetIsotensoidDome() const
     return nullptr;
 }
 
-void CCPACSVessel::IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber, std::vector<double>& x,
-                                     std::vector<double>& r) const
+CCPACSVessel::IsotensoidContour::IsotensoidContour(double rCyl, double rPolarOpening, int nodeNumber)
 {
     double dPhi = 1.0 / nodeNumber;
 
-    r.push_back(rCyl);
-    x.push_back(0.0);
+    radii.push_back(rCyl);
+    axialPositions.push_back(0.0);
 
     double phi   = 0.0;
     double alpha = std::asin(rPolarOpening / rCyl);
 
-    // Isotensoid dome contours are described by a differential equation. The following code is an analytical approximation
-    // provided by the DLR Institute of Lightweight Systems.
-    while (std::tan(alpha) * std::tan(alpha) < 2 && r.back() > 1.22 * rPolarOpening) {
+    while (std::tan(alpha) * std::tan(alpha) < 2 && radii.back() > 1.22 * rPolarOpening) {
         phi += dPhi;
-        alpha     = std::asin(rPolarOpening / r.back());
-        double rm = r.back() / (std::cos(phi) * (2 - std::tan(alpha) * std::tan(alpha)));
+        alpha = std::asin(rPolarOpening / radii.back());
+
+        double rm = radii.back() / (std::cos(phi) * (2 - std::tan(alpha) * std::tan(alpha)));
         double dr = rm * dPhi * std::sin(phi);
-        r.push_back(r.back() - dr);
+        radii.push_back(radii.back() - dr);
+
         double dx = rm * dPhi * std::cos(phi);
-        x.push_back(x.back() + dx);
+        axialPositions.push_back(axialPositions.back() + dx);
     }
 
-    double slope = (r.back() - r[r.size() - 2]) / (x.back() - x[x.size() - 2]);
+    // Add 5 points linear until polar opening
+    double slope =
+        (radii.back() - radii[radii.size() - 2]) / (axialPositions.back() - axialPositions[axialPositions.size() - 2]);
     for (int i = 0; i < 5; ++i) {
-        x.push_back(x.back() + (rPolarOpening - r.back()) / slope);
-        r.push_back(r.back() + slope * (x.back() - x[x.size() - 2]));
+        axialPositions.push_back(axialPositions.back() + (rPolarOpening - radii.back()) / slope);
+        radii.push_back(radii.back() + slope * (axialPositions.back() - axialPositions[axialPositions.size() - 2]));
     }
 
-    double dx = x.back() - x.front();
-    for (auto& val : x) {
-        val -= dx;
+    // Shifting to x=0
+    double totalDx = axialPositions.back() - axialPositions.front();
+    for (double& v : axialPositions) {
+        v -= totalDx;
     }
 }
 
@@ -478,18 +480,18 @@ void CCPACSVessel::BuildVesselWireIsotensoid(BRepBuilderAPI_MakeWire& wire) cons
                          std::to_string(cylinderRadius) + ")!");
     }
 
-    std::vector<double> x, r;
-    IsotensoidContour(cylinderRadius, polarOpeningRadius, 50, x, r);
-    double h = x.back() - x.front();
+    // 50 Points is chosen as a compromise between performance and accuracy
+    IsotensoidContour contour(cylinderRadius, polarOpeningRadius, 50);
+    double h = contour.axialPositions.back() - contour.axialPositions.front();
 
-    TColgp_Array1OfPnt array(1, x.size());
-    for (size_t i = 0; i < x.size(); ++i) {
-        array.SetValue(i + 1, gp_Pnt(-x[i], 0.0, r[i]));
+    TColgp_Array1OfPnt array(1, contour.axialPositions.size());
+    for (size_t i = 0; i < contour.axialPositions.size(); ++i) {
+        array.SetValue(i + 1, gp_Pnt(-contour.axialPositions[i], 0.0, contour.radii[i]));
     }
     Handle(Geom_BSplineCurve) bspline = GeomAPI_PointsToBSpline(array).Curve();
     TopoDS_Edge domeEdge              = BRepBuilderAPI_MakeEdge(bspline);
 
-    TopoDS_Vertex v1    = BRepBuilderAPI_MakeVertex(gp_Pnt(-x.back(), 0.0, 0.0));
+    TopoDS_Vertex v1    = BRepBuilderAPI_MakeVertex(gp_Pnt(-contour.axialPositions.back(), 0.0, 0.0));
     TopoDS_Vertex v2    = TopExp::LastVertex(domeEdge);
     TopoDS_Edge lidEdge = BRepBuilderAPI_MakeEdge(v1, v2);
 
