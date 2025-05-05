@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Copyright (C) 2007-2022 German Aerospace Center (DLR/SC)
 *
 * Created: 2022-03-15 Anton Reiswich <Anton.Reiswich@dlr.de>
@@ -191,15 +191,13 @@ double CCPACSVessel::GetGeometricVolume()
 double CCPACSVessel::GetSurfaceArea()
 {
     const PNamedShape& shape = GetLoft();
-
-    // Loop over all faces that are not symmetry, front or rear
-    double area = 0.;
+    double area              = 0.;
 
     TopTools_IndexedMapOfShape shapeMap;
     TopExp::MapShapes(shape->Shape(), TopAbs_FACE, shapeMap);
     for (int i = 1; i <= shapeMap.Extent(); ++i) {
         const std::string& faceName = shape->GetFaceTraits(i - 1).Name();
-        if (GetUID() == faceName) {
+        if (faceName != "symmetry") {
             const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
             GProp_GProps shapeProps;
             BRepGProp::SurfaceProperties(face, shapeProps);
@@ -564,12 +562,13 @@ PNamedShape CCPACSVessel::BuildLoft() const
     if (m_sections_choice1) {
         BuildShapeFromSegments(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-        SetFaceTraits(loft);
+        SetFaceTraitsFromSegments(loft);
         return loft;
     }
     else if (m_domeType_choice2) {
         BuildShapeFromSimpleParameters(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+        SetFaceTraitsFromParams(loft);
         return loft;
     }
     else {
@@ -650,7 +649,7 @@ std::string CCPACSVessel::GetShortShapeName() const
     return "UNKNOWN";
 }
 
-void CCPACSVessel::SetFaceTraits(PNamedShape loft) const
+void CCPACSVessel::SetFaceTraitsFromSegments(PNamedShape loft) const
 {
     int nFacesTotal = GetNumberOfFaces(loft->Shape());
     int nFacesAero  = nFacesTotal;
@@ -686,6 +685,30 @@ void CCPACSVessel::SetFaceTraits(PNamedShape loft) const
     int iFace = 2;
     for (; iFaceTotal < nFacesTotal; ++iFaceTotal) {
         loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
+    }
+}
+
+
+void CCPACSVessel::SetFaceTraitsFromParams(PNamedShape loft) const
+{
+    int nFaces = GetNumberOfFaces(loft->Shape());
+
+    if (nFaces != 4 && nFaces != 6) {
+        const char* vesselName = loft->Name().c_str();
+        for (int i = 0; i < nFaces; ++i) {
+            loft->FaceTraits(i).SetName(vesselName);
+        }
+        return;
+    }
+
+    // Cylinders are always the two middel segments
+    const int cylCount = 2;
+    const int cylStart = (nFaces - cylCount) / 2;
+    const int cylEnd   = cylStart + cylCount;
+
+    for (int i = 0; i < nFaces; ++i) {
+        const char* tag = (i >= cylStart && i < cylEnd) ? "Cylinder" : "Dome";
+        loft->FaceTraits(i).SetName(tag);
     }
 }
 

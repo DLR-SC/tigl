@@ -100,7 +100,8 @@ protected:
     PNamedShape BuildLoft() const override;
 
     // Set the face traits
-    void SetFaceTraits(PNamedShape loft) const;
+    void SetFaceTraitsFromSegments(PNamedShape loft) const;
+    void SetFaceTraitsFromParams(PNamedShape loft) const;
 
 private:
     const std::string _vesselTypeException =

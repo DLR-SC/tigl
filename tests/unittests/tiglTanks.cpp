@@ -326,7 +326,7 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
     EXPECT_NEAR(vessel_torispherical->GetGeometricVolume(), 7.87, 1e-2);
     EXPECT_NEAR(vessel_isotensoid->GetGeometricVolume(), 9.01, 1e-2);
 
-    EXPECT_NEAR(vessel_segments->GetSurfaceArea(), 11.15, 1e-2);
+    EXPECT_NEAR(vessel_segments->GetSurfaceArea(), 19.93, 1e-2);
     EXPECT_NEAR(vessel_spherical->GetSurfaceArea(), 36.19, 1e-2);
     EXPECT_NEAR(vessel_ellipsoid1->GetSurfaceArea(), 16.22, 1e-2);
     EXPECT_NEAR(vessel_ellipsoid2->GetSurfaceArea(), 1.47, 1e-2);
