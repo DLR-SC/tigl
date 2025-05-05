@@ -510,7 +510,12 @@ void CCPACSVessel::BuildVesselWireIsotensoid(BRepBuilderAPI_MakeWire& wire) cons
 
 void CCPACSVessel::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
 {
-    BRepBuilderAPI_MakeWire wire;
+
+    if (!m_domeType_choice2 || !m_cylinderRadius_choice2 || !m_cylinderLength_choice2) {
+        throw CTiglError("Parametric vessel specification incomplete: "
+                         "cylinderRadius, cylinderLength and domeType required.",
+                         TIGL_ERROR);
+    }
 
     if (m_cylinderRadius_choice2.get() <= 0) {
         throw CTiglError("The cylinder radius (" + std::to_string(m_cylinderRadius_choice2.get()) + ") of vessel \"" +
@@ -520,6 +525,8 @@ void CCPACSVessel::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
         throw CTiglError("The cylinder length (" + std::to_string(m_cylinderLength_choice2.get()) + ") of vessel \"" +
                          GetName() + "\" (uID=\"" + GetUID() + "\") must be larger than or equal to 0!");
     }
+
+    BRepBuilderAPI_MakeWire wire;
 
     if (GetEllipsoidDome()) {
         BuildVesselWireEllipsoid(wire);
