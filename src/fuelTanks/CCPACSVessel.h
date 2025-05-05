@@ -104,7 +104,7 @@ protected:
     void SetFaceTraitsFromParams(PNamedShape loft) const;
 
 private:
-    const std::string _vesselTypeException =
+    inline static const std::string _vesselTypeException =
         "This method is only available for vessels with segments. No segment found.";
 
     CCPACSEllipsoidDome const* GetEllipsoidDome() const;
