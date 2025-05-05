@@ -327,6 +327,20 @@ CCPACSVessel::IsotensoidContour::IsotensoidContour(double rCyl, double rPolarOpe
     }
 }
 
+Handle(Geom_BSplineCurve) CCPACSVessel::IsotensoidContour::ToBSpline() const
+{
+    TColgp_Array1OfPnt pts(1, (int)axialPositions.size());
+    for (size_t i = 0; i < axialPositions.size(); ++i) {
+        pts.SetValue((int)i + 1, gp_Pnt(-axialPositions[i], 0.0, radii[i]));
+    }
+    return GeomAPI_PointsToBSpline(pts).Curve();
+}
+
+TopoDS_Edge CCPACSVessel::IsotensoidContour::ToEdge() const
+{
+    return BRepBuilderAPI_MakeEdge(ToBSpline());
+}
+
 void CCPACSVessel::BuildShapeFromSegments(TopoDS_Shape& loftShape) const
 {
     const auto& segments    = m_segments_choice1.get();
@@ -482,14 +496,7 @@ void CCPACSVessel::BuildVesselWireIsotensoid(BRepBuilderAPI_MakeWire& wire) cons
 
     // 50 Points is chosen as a compromise between performance and accuracy
     IsotensoidContour contour(cylinderRadius, polarOpeningRadius, 50);
-    double h = contour.axialPositions.back() - contour.axialPositions.front();
-
-    TColgp_Array1OfPnt array(1, contour.axialPositions.size());
-    for (size_t i = 0; i < contour.axialPositions.size(); ++i) {
-        array.SetValue(i + 1, gp_Pnt(-contour.axialPositions[i], 0.0, contour.radii[i]));
-    }
-    Handle(Geom_BSplineCurve) bspline = GeomAPI_PointsToBSpline(array).Curve();
-    TopoDS_Edge domeEdge              = BRepBuilderAPI_MakeEdge(bspline);
+    TopoDS_Edge domeEdge = contour.ToEdge();
 
     TopoDS_Vertex v1    = BRepBuilderAPI_MakeVertex(gp_Pnt(-contour.axialPositions.back(), 0.0, 0.0));
     TopoDS_Vertex v2    = TopExp::LastVertex(domeEdge);
@@ -498,6 +505,7 @@ void CCPACSVessel::BuildVesselWireIsotensoid(BRepBuilderAPI_MakeWire& wire) cons
     std::vector<TopoDS_Edge> edges = {lidEdge, domeEdge};
 
     if (cylinderLength > 0.0) {
+        double h         = contour.axialPositions.back() - contour.axialPositions.front();
         TopoDS_Vertex v1 = TopExp::FirstVertex(domeEdge);
         TopoDS_Vertex v2 = BRepBuilderAPI_MakeVertex(gp_Pnt(0.5 * cylinderLength + h, 0.0, cylinderRadius));
 

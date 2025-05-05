@@ -145,6 +145,10 @@ private:
         std::vector<double> radii;
 
         IsotensoidContour(double cylinderRadius, double polarOpeningRadius, int nodeNumber);
+
+        Handle(Geom_BSplineCurve) ToBSpline() const;
+        TopoDS_Edge ToEdge() const;
+
     };
 };
 
