@@ -22,6 +22,7 @@
 
 #include "test.h"
 #include "tigl.h"
+#include "testUtils.h"
 
 #include "CCPACSFuelTank.h"
 #include "CCPACSFuelTanks.h"
@@ -38,21 +39,6 @@ constexpr const char* tankTypeExceptionString =
     "This method is only available for vessels with segments. No segment found.";
 constexpr const char* invalidIndexMessage    = "Invalid index in CCPACSFuselageSections::GetSection";
 constexpr const char* wrongSectionUIDMessage = "GetSectionFace: Could not find a fuselage section for the given UID";
-
-// Helper function to check exception messages.
-void CheckExceptionMessage(const std::function<void()>& func, const char* expectedMessage)
-{
-    try {
-        func();
-        FAIL() << "Expected tigl::CTiglError but no exception was thrown.";
-    }
-    catch (const tigl::CTiglError& e) {
-        EXPECT_STREQ(e.what(), expectedMessage);
-    }
-    catch (...) {
-        FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
-    }
-}
 } // anonymous namespace
 
 // Dummy class for exception handling tests
