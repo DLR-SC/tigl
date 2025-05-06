@@ -173,8 +173,7 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
 
 boost::optional<CCPACSPositionings>& CTiglFuselageConnection::GetParentComponentPositionings() const
 {
-    // ToDo: is there a better implementation for Elements not having a positionings element?
-    static boost::optional<CCPACSPositionings> dummyPositionings;
+    static boost::optional<CCPACSPositionings> emptyPositionings;
 
     if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
         return segment->GetParent()->GetParent<CCPACSFuselage>()->GetPositionings();
@@ -183,7 +182,7 @@ boost::optional<CCPACSPositionings>& CTiglFuselageConnection::GetParentComponent
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetPositionings();
     }
     else if (segment->GetParent()->IsParent<CCPACSVessel>()) {
-        return dummyPositionings;
+        return emptyPositionings;
     }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");
