@@ -24,7 +24,6 @@
 #define TESTUTILS_H
 
 #include<fstream>
-#include <string_view>
 #include <functional>
 
 #include <Geom_BSplineCurve.hxx>
