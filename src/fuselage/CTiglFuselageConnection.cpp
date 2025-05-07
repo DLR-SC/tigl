@@ -167,7 +167,6 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
     else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetSections();
     }
-    // ToDo: add exception handling
     else if (segment->GetParent()->IsParent<CCPACSVessel>()) {
         return segment->GetParent()->GetParent<CCPACSVessel>()->GetSections_choice1().get();
     }
