@@ -64,6 +64,11 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>>& GetIntermediateAirfoils() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>>& GetIntermediateAirfoils();
 
+        TIGL_EXPORT virtual size_t GetIntermediateAirfoilCount() const;
+
+        TIGL_EXPORT virtual const CPACSControlSurfaceAirfoil& GetIntermediateAirfoil(size_t index) const;
+        TIGL_EXPORT virtual CPACSControlSurfaceAirfoil& GetIntermediateAirfoil(size_t index);
+
         TIGL_EXPORT virtual CPACSControlSurfaceAirfoil& AddIntermediateAirfoil();
         TIGL_EXPORT virtual void RemoveIntermediateAirfoil(CPACSControlSurfaceAirfoil& ref);
 

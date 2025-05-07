@@ -141,6 +141,59 @@ namespace generated
         return m_windows;
     }
 
+    size_t CPACSWindows::GetWindowCount() const
+    {
+        return m_windows.size();
+    }
+
+    size_t CPACSWindows::GetWindowIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetWindowCount(); i++) {
+            const std::string tmpUID(m_windows[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSWindows::GetWindowIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSCutOut& CPACSWindows::GetWindow(size_t index)
+    {
+        if (index < 1 || index > GetWindowCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCutOut>>::GetWindow", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_windows[index];
+    }
+
+    const CPACSCutOut& CPACSWindows::GetWindow(size_t index) const
+    {
+        if (index < 1 || index > GetWindowCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCutOut>>::GetWindow", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_windows[index];
+    }
+
+    CPACSCutOut& CPACSWindows::GetWindow(const std::string& UID)
+    {
+        for (auto& elem : m_windows ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSWindows::GetWindow. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSCutOut& CPACSWindows::GetWindow(const std::string& UID) const
+    {
+        for (auto& elem : m_windows ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSWindows::GetWindow. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSCutOut& CPACSWindows::AddWindow()
     {
         m_windows.push_back(make_unique<CPACSCutOut>(this, m_uidMgr));

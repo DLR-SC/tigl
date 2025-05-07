@@ -83,13 +83,18 @@ bool CCPACSRotorProfiles::HasProfile(std::string uid) const
 }
 
 // Returns the wing profile for a given uid.
-CCPACSWingProfile& CCPACSRotorProfiles::GetProfile(std::string uid) const
+const CCPACSWingProfile& CCPACSRotorProfiles::GetProfile(std::string uid) const
 {
     for (auto& p : m_rotorAirfoils)
         if (p->GetUID() == uid)
             return static_cast<CCPACSWingProfile&>(*p);
 
     throw CTiglError("Rotor profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
+}
+
+CCPACSWingProfile& CCPACSRotorProfiles::GetProfile(std::string uid)
+{
+    return const_cast<CCPACSWingProfile&>(std::as_const(*this).GetProfile(uid));
 }
 
 } // end namespace tigl

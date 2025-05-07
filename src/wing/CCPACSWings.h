@@ -43,21 +43,8 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    // Returns the total count of wings in a configuration
-    TIGL_EXPORT int GetWingCount() const;
-
     // Returns the count of wings in a configuration with the property isRotorBlade set to true
     TIGL_EXPORT int GetRotorBladeCount() const;
-
-    // Returns the wing for a given index.
-    TIGL_EXPORT CCPACSWing& GetWing(int index) const;
-
-    // Returns the wing for a given UID.
-    TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
-    
-    
-    // Returns the wing index for a given UID.
-    TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
 
     TIGL_EXPORT bool HasWing(const std::string& uid) const;
 };

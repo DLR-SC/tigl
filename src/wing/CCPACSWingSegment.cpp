@@ -34,7 +34,7 @@
 #include "CCPACSEnginePylon.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingProfiles.h"
-#include "CCPACSGuideCurveProfiles.h"
+#include "generated/CPACSGuideCurveProfiles.h"
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "CCPACSConfiguration.h"

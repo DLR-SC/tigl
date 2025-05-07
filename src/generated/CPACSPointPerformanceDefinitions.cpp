@@ -108,6 +108,59 @@ namespace generated
         return m_pointPerformanceDefinitions;
     }
 
+    size_t CPACSPointPerformanceDefinitions::GetPointPerformanceDefinitionCount() const
+    {
+        return m_pointPerformanceDefinitions.size();
+    }
+
+    size_t CPACSPointPerformanceDefinitions::GetPointPerformanceDefinitionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetPointPerformanceDefinitionCount(); i++) {
+            const std::string tmpUID(m_pointPerformanceDefinitions[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSPointPerformanceDefinitions::GetPointPerformanceDefinitionIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSPointPerformanceDefinition& CPACSPointPerformanceDefinitions::GetPointPerformanceDefinition(size_t index)
+    {
+        if (index < 1 || index > GetPointPerformanceDefinitionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSPointPerformanceDefinition>>::GetPointPerformanceDefinition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pointPerformanceDefinitions[index];
+    }
+
+    const CPACSPointPerformanceDefinition& CPACSPointPerformanceDefinitions::GetPointPerformanceDefinition(size_t index) const
+    {
+        if (index < 1 || index > GetPointPerformanceDefinitionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSPointPerformanceDefinition>>::GetPointPerformanceDefinition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pointPerformanceDefinitions[index];
+    }
+
+    CPACSPointPerformanceDefinition& CPACSPointPerformanceDefinitions::GetPointPerformanceDefinition(const std::string& UID)
+    {
+        for (auto& elem : m_pointPerformanceDefinitions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSPointPerformanceDefinitions::GetPointPerformanceDefinition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSPointPerformanceDefinition& CPACSPointPerformanceDefinitions::GetPointPerformanceDefinition(const std::string& UID) const
+    {
+        for (auto& elem : m_pointPerformanceDefinitions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSPointPerformanceDefinitions::GetPointPerformanceDefinition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSPointPerformanceDefinition& CPACSPointPerformanceDefinitions::AddPointPerformanceDefinition()
     {
         m_pointPerformanceDefinitions.push_back(make_unique<CPACSPointPerformanceDefinition>(this, m_uidMgr));

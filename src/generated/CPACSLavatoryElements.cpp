@@ -108,6 +108,59 @@ namespace generated
         return m_lavatoryElements;
     }
 
+    size_t CPACSLavatoryElements::GetLavatoryElementCount() const
+    {
+        return m_lavatoryElements.size();
+    }
+
+    size_t CPACSLavatoryElements::GetLavatoryElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetLavatoryElementCount(); i++) {
+            const std::string tmpUID(m_lavatoryElements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSLavatoryElements::GetLavatoryElementIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSDeckElementBase& CPACSLavatoryElements::GetLavatoryElement(size_t index)
+    {
+        if (index < 1 || index > GetLavatoryElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetLavatoryElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_lavatoryElements[index];
+    }
+
+    const CPACSDeckElementBase& CPACSLavatoryElements::GetLavatoryElement(size_t index) const
+    {
+        if (index < 1 || index > GetLavatoryElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetLavatoryElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_lavatoryElements[index];
+    }
+
+    CPACSDeckElementBase& CPACSLavatoryElements::GetLavatoryElement(const std::string& UID)
+    {
+        for (auto& elem : m_lavatoryElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSLavatoryElements::GetLavatoryElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSDeckElementBase& CPACSLavatoryElements::GetLavatoryElement(const std::string& UID) const
+    {
+        for (auto& elem : m_lavatoryElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSLavatoryElements::GetLavatoryElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSDeckElementBase& CPACSLavatoryElements::AddLavatoryElement()
     {
         m_lavatoryElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));

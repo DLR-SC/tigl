@@ -27,13 +27,15 @@
 #include "CTiglTransformation.h"
 #include <string>
 #include <boost/optional.hpp>
+#include "generated/CPACSFuselageSections.h"
 
 namespace tigl
 {
 
+using CCPACSFuselageSections = generated::CPACSFuselageSections;
+
 class CCPACSFuselageSegment;
 class CCPACSFuselageProfile;
-class CCPACSFuselageSections;
 class CCPACSPositionings;
 
 // TODO: this class is very similar to CCPACSWingConnection, merge into one class

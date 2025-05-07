@@ -47,15 +47,6 @@ public:
     TIGL_EXPORT CCPACSWingSegment& AddSegment() override;
     TIGL_EXPORT void RemoveSegment(CCPACSWingSegment& ref) override;
 
-    // Gets a segment by index or UID.
-    TIGL_EXPORT CCPACSWingSegment& GetSegment(const int index);
-    TIGL_EXPORT const CCPACSWingSegment& GetSegment(const int index) const;
-    TIGL_EXPORT CCPACSWingSegment& GetSegment(const std::string& segmentUID);
-    TIGL_EXPORT const CCPACSWingSegment& GetSegment(const std::string& segmentUID) const;
-
-    // Gets total segment count
-    TIGL_EXPORT int GetSegmentCount() const;
-
     const CTiglRelativelyPositionedComponent* GetParentComponent() const
     {
         return m_parentVariant;

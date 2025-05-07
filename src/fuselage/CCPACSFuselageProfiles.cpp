@@ -91,7 +91,14 @@ int CCPACSFuselageProfiles::GetProfileCount() const
 }
 
 // Returns the fuselage profile for a given uid.
-CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
+const CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
+{
+    for (auto& p : m_fuselageProfiles)
+        if (p->GetUID() == uid)
+            return static_cast<CCPACSFuselageProfile&>(*p);
+    throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
+}
+CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid)
 {
     for (auto& p : m_fuselageProfiles)
         if (p->GetUID() == uid)
@@ -99,13 +106,14 @@ CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
-// Returns the fuselage profile for a given index - TODO: depricated function!
-CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(int index) const
+// Returns the fuselage profile for a given index
+const CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(size_t index) const
 {
-    index--;
-    if (index < 0 || index >= m_fuselageProfiles.size()) {
-        throw CTiglError("Invalid index in CCPACSFuselageProfiles::GetProfile", TIGL_INDEX_ERROR);
-    }
+    return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfiles[index]);
+}
+
+CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(size_t index)
+{
     return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfiles[index]);
 }
 

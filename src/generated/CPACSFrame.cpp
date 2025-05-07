@@ -141,6 +141,59 @@ namespace generated
         return m_framePositions;
     }
 
+    size_t CPACSFrame::GetFramePositionCount() const
+    {
+        return m_framePositions.size();
+    }
+
+    size_t CPACSFrame::GetFramePositionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetFramePositionCount(); i++) {
+            const std::string tmpUID(m_framePositions[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSFrame::GetFramePositionIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSFuselageStringerFramePosition& CPACSFrame::GetFramePosition(size_t index)
+    {
+        if (index < 1 || index > GetFramePositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>>::GetFramePosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_framePositions[index];
+    }
+
+    const CCPACSFuselageStringerFramePosition& CPACSFrame::GetFramePosition(size_t index) const
+    {
+        if (index < 1 || index > GetFramePositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>>::GetFramePosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_framePositions[index];
+    }
+
+    CCPACSFuselageStringerFramePosition& CPACSFrame::GetFramePosition(const std::string& UID)
+    {
+        for (auto& elem : m_framePositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFrame::GetFramePosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSFuselageStringerFramePosition& CPACSFrame::GetFramePosition(const std::string& UID) const
+    {
+        for (auto& elem : m_framePositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFrame::GetFramePosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSFuselageStringerFramePosition& CPACSFrame::AddFramePosition()
     {
         m_framePositions.push_back(make_unique<CCPACSFuselageStringerFramePosition>(reinterpret_cast<CCPACSFrame*>(this), m_uidMgr));

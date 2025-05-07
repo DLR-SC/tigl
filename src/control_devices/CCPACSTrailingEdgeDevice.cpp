@@ -32,7 +32,7 @@
 namespace tigl
 {
 
-CCPACSTrailingEdgeDevice::CCPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr)
+CCPACSTrailingEdgeDevice::CCPACSTrailingEdgeDevice(generated::CPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTrailingEdgeDevice(parent, uidMgr)
     , m_hingePoints(*this, &CCPACSTrailingEdgeDevice::ComputeHingePoints)
     , m_cutoutShape(*this, &CCPACSTrailingEdgeDevice::ComputeCutoutShape)
@@ -51,7 +51,7 @@ void CCPACSTrailingEdgeDevice::ReadCPACS(const TixiDocumentHandle &tixiHandle, c
 // get short name for loft
 std::string CCPACSTrailingEdgeDevice::GetShortName() const
 {
-    const CCPACSTrailingEdgeDevices* devices = GetParent();
+    const generated::CPACSTrailingEdgeDevices* devices = GetParent();
 
 
     std::string tmp = devices->GetParent()->GetParent()->GetShortName();

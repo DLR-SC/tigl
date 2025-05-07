@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSGuideCurveProfiles.h"
 #include "CPACSGuideCurveProfileGeometry.h"
+#include "CPACSGuideCurveProfiles.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSGuideCurveProfileGeometry::CPACSGuideCurveProfileGeometry(CCPACSGuideCurveProfiles* parent, CTiglUIDManager* uidMgr)
+    CPACSGuideCurveProfileGeometry::CPACSGuideCurveProfileGeometry(CPACSGuideCurveProfiles* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_pointList(reinterpret_cast<CCPACSGuideCurveProfile*>(this))
     {
@@ -40,12 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CCPACSGuideCurveProfiles* CPACSGuideCurveProfileGeometry::GetParent() const
+    const CPACSGuideCurveProfiles* CPACSGuideCurveProfileGeometry::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSGuideCurveProfiles* CPACSGuideCurveProfileGeometry::GetParent()
+    CPACSGuideCurveProfiles* CPACSGuideCurveProfileGeometry::GetParent()
     {
         return m_parent;
     }

@@ -29,10 +29,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSGuideCurveProfiles;
 
 namespace generated
 {
+    class CPACSGuideCurveProfiles;
+
     // This class is used in:
     // CPACSGuideCurveProfiles
 
@@ -61,13 +62,13 @@ namespace generated
     class CPACSGuideCurveProfileGeometry : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSGuideCurveProfileGeometry(CCPACSGuideCurveProfiles* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSGuideCurveProfileGeometry(CPACSGuideCurveProfiles* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSGuideCurveProfileGeometry();
 
-        TIGL_EXPORT CCPACSGuideCurveProfiles* GetParent();
+        TIGL_EXPORT CPACSGuideCurveProfiles* GetParent();
 
-        TIGL_EXPORT const CCPACSGuideCurveProfiles* GetParent() const;
+        TIGL_EXPORT const CPACSGuideCurveProfiles* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -94,7 +95,7 @@ namespace generated
         TIGL_EXPORT virtual CCPACSPointListRelXYZVector& GetPointList();
 
     protected:
-        CCPACSGuideCurveProfiles* m_parent;
+        CPACSGuideCurveProfiles* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -120,4 +121,7 @@ namespace generated
 } // namespace generated
 
 // CPACSGuideCurveProfileGeometry is customized, use type CCPACSGuideCurveProfile directly
+
+// Aliases in tigl namespace
+using CCPACSGuideCurveProfiles = generated::CPACSGuideCurveProfiles;
 } // namespace tigl

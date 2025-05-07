@@ -62,8 +62,26 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDuct>>& GetDucts() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDuct>>& GetDucts();
 
+        TIGL_EXPORT virtual size_t GetDuctCount() const;
+        TIGL_EXPORT virtual size_t GetDuctIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSDuct& GetDuct(size_t index) const;
+        TIGL_EXPORT virtual CCPACSDuct& GetDuct(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSDuct& GetDuct(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSDuct& GetDuct(const std::string& UID);
+
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDuctAssembly>>& GetDuctAssemblys() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDuctAssembly>>& GetDuctAssemblys();
+
+        TIGL_EXPORT virtual size_t GetDuctAssemblyCount() const;
+        TIGL_EXPORT virtual size_t GetDuctAssemblyIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSDuctAssembly& GetDuctAssembly(size_t index) const;
+        TIGL_EXPORT virtual CCPACSDuctAssembly& GetDuctAssembly(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSDuctAssembly& GetDuctAssembly(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSDuctAssembly& GetDuctAssembly(const std::string& UID);
 
         TIGL_EXPORT virtual CCPACSDuct& AddDuct();
         TIGL_EXPORT virtual void RemoveDuct(CCPACSDuct& ref);

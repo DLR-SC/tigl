@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleConfiguration>>& GetConfigurations() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleConfiguration>>& GetConfigurations();
 
+        TIGL_EXPORT virtual size_t GetConfigurationCount() const;
+        TIGL_EXPORT virtual size_t GetConfigurationIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSVehicleConfiguration& GetConfiguration(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleConfiguration& GetConfiguration(size_t index);
+
+        TIGL_EXPORT virtual const CPACSVehicleConfiguration& GetConfiguration(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleConfiguration& GetConfiguration(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSVehicleConfiguration& AddConfiguration();
         TIGL_EXPORT virtual void RemoveConfiguration(CPACSVehicleConfiguration& ref);
 

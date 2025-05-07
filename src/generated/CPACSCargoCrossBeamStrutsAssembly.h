@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSCrossBeamStrutAssemblyPosition>>& GetCargoCrossBeamStruts() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSCrossBeamStrutAssemblyPosition>>& GetCargoCrossBeamStruts();
 
+        TIGL_EXPORT virtual size_t GetCargoCrossBeamStrutCount() const;
+        TIGL_EXPORT virtual size_t GetCargoCrossBeamStrutIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSCrossBeamStrutAssemblyPosition& GetCargoCrossBeamStrut(size_t index) const;
+        TIGL_EXPORT virtual CCPACSCrossBeamStrutAssemblyPosition& GetCargoCrossBeamStrut(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSCrossBeamStrutAssemblyPosition& GetCargoCrossBeamStrut(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSCrossBeamStrutAssemblyPosition& GetCargoCrossBeamStrut(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSCrossBeamStrutAssemblyPosition& AddCargoCrossBeamStrut();
         TIGL_EXPORT virtual void RemoveCargoCrossBeamStrut(CCPACSCrossBeamStrutAssemblyPosition& ref);
 

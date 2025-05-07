@@ -113,6 +113,59 @@ namespace generated
         return m_ducts;
     }
 
+    size_t CPACSDucts::GetDuctCount() const
+    {
+        return m_ducts.size();
+    }
+
+    size_t CPACSDucts::GetDuctIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetDuctCount(); i++) {
+            const std::string tmpUID(m_ducts[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSDucts::GetDuctIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSDuct& CPACSDucts::GetDuct(size_t index)
+    {
+        if (index < 1 || index > GetDuctCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDuct>>::GetDuct", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_ducts[index];
+    }
+
+    const CCPACSDuct& CPACSDucts::GetDuct(size_t index) const
+    {
+        if (index < 1 || index > GetDuctCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDuct>>::GetDuct", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_ducts[index];
+    }
+
+    CCPACSDuct& CPACSDucts::GetDuct(const std::string& UID)
+    {
+        for (auto& elem : m_ducts ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSDucts::GetDuct. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSDuct& CPACSDucts::GetDuct(const std::string& UID) const
+    {
+        for (auto& elem : m_ducts ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSDucts::GetDuct. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     const std::vector<std::unique_ptr<CCPACSDuctAssembly>>& CPACSDucts::GetDuctAssemblys() const
     {
         return m_ductAssemblys;
@@ -122,6 +175,59 @@ namespace generated
     {
         return m_ductAssemblys;
     }
+
+    size_t CPACSDucts::GetDuctAssemblyCount() const
+    {
+        return m_ductAssemblys.size();
+    }
+
+    size_t CPACSDucts::GetDuctAssemblyIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetDuctAssemblyCount(); i++) {
+            const std::string tmpUID(m_ductAssemblys[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSDucts::GetDuctAssemblyIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSDuctAssembly& CPACSDucts::GetDuctAssembly(size_t index)
+    {
+        if (index < 1 || index > GetDuctAssemblyCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDuctAssembly>>::GetDuctAssembly", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_ductAssemblys[index];
+    }
+
+    const CCPACSDuctAssembly& CPACSDucts::GetDuctAssembly(size_t index) const
+    {
+        if (index < 1 || index > GetDuctAssemblyCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDuctAssembly>>::GetDuctAssembly", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_ductAssemblys[index];
+    }
+
+    CCPACSDuctAssembly& CPACSDucts::GetDuctAssembly(const std::string& UID)
+    {
+        for (auto& elem : m_ductAssemblys ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSDucts::GetDuctAssembly. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSDuctAssembly& CPACSDucts::GetDuctAssembly(const std::string& UID) const
+    {
+        for (auto& elem : m_ductAssemblys ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSDucts::GetDuctAssembly. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
 
     CCPACSDuct& CPACSDucts::AddDuct()
     {

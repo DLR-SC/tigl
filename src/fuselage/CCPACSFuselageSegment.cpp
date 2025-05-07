@@ -22,6 +22,7 @@
 #include <cmath>
 
 #include "CCPACSFuselageSegment.h"
+#include "generated/CPACSFuselageSegments.h"
 #include "CTiglFuselageSegmentGuidecurveBuilder.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
@@ -30,7 +31,7 @@
 #include "CCPACSConfiguration.h"
 #include "CTiglUIDManager.h"
 #include "generated/CPACSGuideCurve.h"
-#include "CCPACSGuideCurveProfiles.h"
+#include "generated/CPACSGuideCurveProfiles.h"
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSFuselageProfileGetPointAlgo.h"
 #include "CTiglLogging.h"

@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSEnginePylon>>& GetEnginePylons() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSEnginePylon>>& GetEnginePylons();
 
+        TIGL_EXPORT virtual size_t GetEnginePylonCount() const;
+        TIGL_EXPORT virtual size_t GetEnginePylonIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSEnginePylon& GetEnginePylon(size_t index) const;
+        TIGL_EXPORT virtual CCPACSEnginePylon& GetEnginePylon(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSEnginePylon& GetEnginePylon(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSEnginePylon& GetEnginePylon(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSEnginePylon& AddEnginePylon();
         TIGL_EXPORT virtual void RemoveEnginePylon(CCPACSEnginePylon& ref);
 
@@ -81,5 +90,6 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSEnginePylons is customized, use type CCPACSEnginePylons directly
+// Aliases in tigl namespace
+using CCPACSEnginePylons = generated::CPACSEnginePylons;
 } // namespace tigl

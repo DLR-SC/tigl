@@ -28,10 +28,11 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSNacelleProfile;
-class CCPACSProfiles;
 
 namespace generated
 {
+    class CPACSProfiles;
+
     // This class is used in:
     // CPACSProfiles
 
@@ -43,13 +44,13 @@ namespace generated
     class CPACSNacelleProfiles
     {
     public:
-        TIGL_EXPORT CPACSNacelleProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSNacelleProfiles(CPACSProfiles* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSNacelleProfiles();
 
-        TIGL_EXPORT CCPACSProfiles* GetParent();
+        TIGL_EXPORT CPACSProfiles* GetParent();
 
-        TIGL_EXPORT const CCPACSProfiles* GetParent() const;
+        TIGL_EXPORT const CPACSProfiles* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -63,11 +64,20 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSNacelleProfile>>& GetNacelleProfiles() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSNacelleProfile>>& GetNacelleProfiles();
 
+        TIGL_EXPORT virtual size_t GetNacelleProfileCount() const;
+        TIGL_EXPORT virtual size_t GetNacelleProfileIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSNacelleProfile& GetNacelleProfile(size_t index) const;
+        TIGL_EXPORT virtual CCPACSNacelleProfile& GetNacelleProfile(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSNacelleProfile& GetNacelleProfile(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSNacelleProfile& GetNacelleProfile(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSNacelleProfile& AddNacelleProfile();
         TIGL_EXPORT virtual void RemoveNacelleProfile(CCPACSNacelleProfile& ref);
 
     protected:
-        CCPACSProfiles* m_parent;
+        CPACSProfiles* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -84,4 +94,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSNacelleProfiles = generated::CPACSNacelleProfiles;
+using CCPACSProfiles = generated::CPACSProfiles;
 } // namespace tigl

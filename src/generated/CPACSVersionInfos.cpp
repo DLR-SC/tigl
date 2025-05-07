@@ -90,6 +90,30 @@ namespace generated
         return m_versionInfos;
     }
 
+    size_t CPACSVersionInfos::GetVersionInfoCount() const
+    {
+        return m_versionInfos.size();
+    }
+
+    CPACSVersionInfo& CPACSVersionInfos::GetVersionInfo(size_t index)
+    {
+        if (index < 1 || index > GetVersionInfoCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVersionInfo>>::GetVersionInfo", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_versionInfos[index];
+    }
+
+    const CPACSVersionInfo& CPACSVersionInfos::GetVersionInfo(size_t index) const
+    {
+        if (index < 1 || index > GetVersionInfoCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVersionInfo>>::GetVersionInfo", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_versionInfos[index];
+    }
+
+
     CPACSVersionInfo& CPACSVersionInfos::AddVersionInfo()
     {
         m_versionInfos.push_back(make_unique<CPACSVersionInfo>(this));

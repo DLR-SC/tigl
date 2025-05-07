@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSheet3D>>& GetSheet3Ds() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSheet3D>>& GetSheet3Ds();
 
+        TIGL_EXPORT virtual size_t GetSheet3DCount() const;
+        TIGL_EXPORT virtual size_t GetSheet3DIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSSheet3D& GetSheet3D(size_t index) const;
+        TIGL_EXPORT virtual CPACSSheet3D& GetSheet3D(size_t index);
+
+        TIGL_EXPORT virtual const CPACSSheet3D& GetSheet3D(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSSheet3D& GetSheet3D(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSSheet3D& AddSheet3D();
         TIGL_EXPORT virtual void RemoveSheet3D(CPACSSheet3D& ref);
 

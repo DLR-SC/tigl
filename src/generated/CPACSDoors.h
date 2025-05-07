@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDoorCutOut>>& GetDoors() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDoorCutOut>>& GetDoors();
 
+        TIGL_EXPORT virtual size_t GetDoorCount() const;
+        TIGL_EXPORT virtual size_t GetDoorIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSDoorCutOut& GetDoor(size_t index) const;
+        TIGL_EXPORT virtual CPACSDoorCutOut& GetDoor(size_t index);
+
+        TIGL_EXPORT virtual const CPACSDoorCutOut& GetDoor(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSDoorCutOut& GetDoor(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSDoorCutOut& AddDoor();
         TIGL_EXPORT virtual void RemoveDoor(CPACSDoorCutOut& ref);
 
@@ -82,9 +91,8 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSDoors is customized, use type CCPACSDoors directly
-
 // Aliases in tigl namespace
+using CCPACSDoors = generated::CPACSDoors;
 using CCPACSDoorCutOut = generated::CPACSDoorCutOut;
 using CCPACSStructuralElements = generated::CPACSStructuralElements;
 } // namespace tigl
