@@ -154,6 +154,11 @@ CTiglTransformation CTiglFuselageConnection::GetSectionElementTransformation() c
     return transformation;
 }
 
+bool CTiglFuselageConnection::ParentComponentHasPositionings() const
+{
+    return (segment->GetParent()->IsParent<CCPACSFuselage>() || segment->GetParent()->IsParent<CCPACSDuct>());
+}
+
 CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSections() const
 {
     if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
@@ -173,16 +178,11 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
 
 boost::optional<CCPACSPositionings>& CTiglFuselageConnection::GetParentComponentPositionings() const
 {
-    static boost::optional<CCPACSPositionings> emptyPositionings;
-
     if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
         return segment->GetParent()->GetParent<CCPACSFuselage>()->GetPositionings();
     }
     else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetPositionings();
-    }
-    else if (segment->GetParent()->IsParent<CCPACSVessel>()) {
-        return emptyPositionings;
     }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");

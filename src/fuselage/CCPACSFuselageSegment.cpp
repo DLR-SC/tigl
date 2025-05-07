@@ -102,9 +102,11 @@ namespace
         trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
-        if (connectionTransform)
-            trafo.PreMultiply(*connectionTransform);
+        if (connection.ParentComponentHasPositionings()) {
+            boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
+            if (connectionTransform)
+                trafo.PreMultiply(*connectionTransform);
+        }
 
         trafo.PreMultiply(fuselTransform);
 
