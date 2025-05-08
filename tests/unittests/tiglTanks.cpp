@@ -376,6 +376,14 @@ TEST_F(FuelTanks, vessel_face_traits)
     EXPECT_EQ(standard_loft->FaceTraits(1).Name(), vessel_segments->GetUID());
     EXPECT_EQ(standard_loft->FaceTraits(2).Name(), "Front");
     EXPECT_EQ(standard_loft->FaceTraits(3).Name(), "Rear");
+
+    auto parametric_loft = vessel_torispherical->GetLoft();
+    EXPECT_EQ(parametric_loft->FaceTraits(0).Name(), "Dome");
+    EXPECT_EQ(parametric_loft->FaceTraits(1).Name(), "Dome");
+    EXPECT_EQ(parametric_loft->FaceTraits(2).Name(), "Cylinder");
+    EXPECT_EQ(parametric_loft->FaceTraits(3).Name(), "Cylinder");
+    EXPECT_EQ(parametric_loft->FaceTraits(4).Name(), "Dome");
+    EXPECT_EQ(parametric_loft->FaceTraits(5).Name(), "Dome");
 }
 
 TEST_F(FuelTanks, structure)
