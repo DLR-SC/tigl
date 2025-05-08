@@ -890,12 +890,22 @@
             <parentUID>SimpleFuselage</parentUID>
             <transformation />
             <vessels>
-              <vessel uID="vessel_corrupt_geometry">
+              <vessel uID="vessel_corrupt_geometry1">
                 <name>Vessel with wrong geometry</name>
                 <transformation />
                 <cylinderRadius>0.4</cylinderRadius>
                 <cylinderLength>1.</cylinderLength>
               </vessel>
+                <vessel uID="vessel_corrupt_geometry2">
+                    <name>Vessel 2 with wrong geometry</name>
+                    <transformation />
+                    <cylinderLength>1.</cylinderLength>
+                    <domeType>
+                        <ellipsoid>
+                            <halfAxisFraction>1</halfAxisFraction>
+                        </ellipsoid>
+                    </domeType>
+                </vessel>
               <vessel uID="vessel_corrupt_ellipsoid">
                 <name>Vessel with negative ax ratio</name>
                 <transformation />

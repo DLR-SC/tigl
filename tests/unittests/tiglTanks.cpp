@@ -110,7 +110,8 @@ protected:
     tigl::CCPACSVessel* vessel_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank5_isotensoidDome");
 
     tigl::CCPACSVessel* vessel_symmetric = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank7_symmetricVessel");
-    tigl::CCPACSVessel* vessel_corrupt   = &uidMgr.ResolveObject<tigl::CCPACSVessel>("vessel_corrupt_geometry");
+    tigl::CCPACSVessel* vessel_corrupt1   = &uidMgr.ResolveObject<tigl::CCPACSVessel>("vessel_corrupt_geometry1");
+    tigl::CCPACSVessel* vessel_corrupt2  = &uidMgr.ResolveObject<tigl::CCPACSVessel>("vessel_corrupt_geometry2");
 
     // Dummy objects for exception testing
     DummyAircraftModel dummyAircraft;
@@ -243,8 +244,8 @@ TEST_F(FuelTanks, vessel_type_info)
     EXPECT_TRUE(vessel_isotensoid->HasIsotensoidDome());
 
     // Check for corrupt vessel exceptions.
-    EXPECT_THROW(vessel_corrupt->IsVesselViaSegments(), tigl::CTiglError);
-    EXPECT_THROW(vessel_corrupt->IsVesselViaDesignParameters(), tigl::CTiglError);
+    EXPECT_THROW(vessel_corrupt1->IsVesselViaSegments(), tigl::CTiglError);
+    EXPECT_THROW(vessel_corrupt1->IsVesselViaDesignParameters(), tigl::CTiglError);
 }
 
 TEST_F(FuelTanks, vessel_sections)
@@ -326,7 +327,9 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
     EXPECT_NEAR(vessel_segments->GetCircumference(1, 0.5), 7.43, 1e-2);
     CheckExceptionMessage([&]() { vessel_parametric->GetCircumference(1, 0.5); }, tankTypeExceptionString);
 
-    EXPECT_THROW(vessel_corrupt->GetLoft(), tigl::CTiglError);
+    EXPECT_THROW(vessel_corrupt1->GetLoft(), tigl::CTiglError);
+    CheckExceptionMessage([&]() { vessel_corrupt2->GetLoft(); }, "Parametric vessel specification incomplete: "
+                                                       "cylinderRadius, cylinderLength and domeType required.");
     EXPECT_THROW(dummyVessel.GetLoft(), tigl::CTiglError);
 }
 
