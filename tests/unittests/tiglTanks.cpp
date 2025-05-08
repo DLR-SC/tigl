@@ -249,11 +249,15 @@ TEST_F(FuelTanks, vessel_type_info)
 
 TEST_F(FuelTanks, vessel_sections)
 {
+    const tigl::CCPACSVessel* constSegments = vessel_segments;
+
     EXPECT_EQ(vessel_segments->GetSectionCount(), 3);
     EXPECT_EQ(vessel_parametric->GetSectionCount(), 0);
 
     EXPECT_NO_THROW(vessel_segments->GetSection(1));
+    EXPECT_NO_THROW(constSegments->GetSection(1));
     EXPECT_NO_THROW(vessel_segments->GetSection("outerVessel_section1"));
+    EXPECT_NO_THROW(constSegments->GetSection("outerVessel_section1"));
     EXPECT_THROW(vessel_segments->GetSection("outerVessel_notExistingSection"), tigl::CTiglError);
 
     CheckExceptionMessage([&]() { vessel_segments->GetSection(4); }, invalidIndexMessage);
