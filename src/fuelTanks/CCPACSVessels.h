@@ -23,6 +23,7 @@
 
 #include "generated/CPACSVessels.h"
 #include <functional>
+#include <boost/optional.hpp>
 
 namespace tigl
 {

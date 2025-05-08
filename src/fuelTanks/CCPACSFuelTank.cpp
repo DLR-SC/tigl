@@ -88,16 +88,9 @@ std::string CCPACSFuelTank::GetShortShapeName() const
     return "UNKNOWN";
 }
 
-void CCPACSFuelTank::RegisterInvalidationCallback(std::function<void()> const& fn){
-    invalidationCallbacks.push_back(fn);
-}
-
 void CCPACSFuelTank::InvalidateImpl(const boost::optional<std::string>&) const
 {
-    CTiglAbstractGeometricComponent::Reset();
-    for (auto const& invalidator: invalidationCallbacks) {
-        invalidator();
-    }
+    loft.clear();
 }
 
 } //namespace tigl

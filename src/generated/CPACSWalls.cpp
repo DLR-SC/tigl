@@ -60,7 +60,7 @@ namespace generated
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSVesselStructure>()) {
-                return GetParent<CCPACSVesselStructure>();
+                return GetParent<CCPACSVesselStructure>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -73,7 +73,7 @@ namespace generated
                 return GetParent<CCPACSFuselageStructure>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSVesselStructure>()) {
-                return GetParent<CCPACSVesselStructure>();
+                return GetParent<CCPACSVesselStructure>()->GetNextUIDParent();
             }
         }
         return nullptr;

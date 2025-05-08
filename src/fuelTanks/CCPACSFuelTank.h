@@ -39,14 +39,12 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
-    TIGL_EXPORT void RegisterInvalidationCallback(std::function<void()> const&);
-
 protected:
     PNamedShape BuildLoft() const override;
 
 private:
 
-    virtual void InvalidateImpl(const boost::optional<std::string>&) const override;
+    void InvalidateImpl(const boost::optional<std::string>&) const override;
 
     std::string GetShortShapeName() const;
 

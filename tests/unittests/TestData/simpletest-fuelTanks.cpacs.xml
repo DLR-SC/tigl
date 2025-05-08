@@ -733,7 +733,7 @@
                     <polarOpeningRadius>0.1</polarOpeningRadius>
                   </isotensoid>
                 </domeType>
-                <structure uID="tank5_structure">
+                <structure>
                   <walls>
                     <wallPositions>
                       <wallPosition uID="tank5_wall_p1">

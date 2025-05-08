@@ -174,10 +174,7 @@ TEST_F(FuelTanks, fuelTank)
     EXPECT_EQ(dummyTankLoft->ShortName(), "UNKNOWN");
 
     // Test invalidation callback.
-    bool called = false;
-    dummyTank.RegisterInvalidationCallback([&]() { called = true; });
     dummyTank.Invalidate();
-    EXPECT_TRUE(called);
 }
 
 TEST_F(FuelTanks, vessels)
@@ -397,6 +394,5 @@ TEST_F(FuelTanks, structure)
     EXPECT_EQ(structure_with_stringer_frames->GetFrames()->GetFrames().size(), 1);
     EXPECT_EQ(structure_with_stringer_frames->GetStringers()->GetStringers().size(), 1);
 
-    EXPECT_EQ(structure_with_walls->GetUID(), "tank5_structure");
     EXPECT_EQ(structure_with_walls->GetWalls()->GetWallSegments().GetWallSegments().size(), 3);
 }

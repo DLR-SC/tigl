@@ -704,4 +704,16 @@ void CCPACSVessel::SetFaceTraitsFromParams(PNamedShape loft) const
     }
 }
 
+void CCPACSVessel::InvalidateImpl(const boost::optional<std::string>&) const
+{
+    loft.clear();
+    if (m_segments_choice1) {
+        m_segments_choice1.get().Invalidate();
+    }
+    if (m_structure) {
+        m_structure->Invalidate();
+    }
+    GetParent()->GetParent()->Invalidate();
+}
+
 } //namespace tigl

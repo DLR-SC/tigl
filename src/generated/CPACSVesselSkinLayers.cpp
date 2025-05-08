@@ -52,12 +52,18 @@ namespace generated
 
     const CTiglUIDObject* CPACSVesselSkinLayers::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            return m_parent->GetNextUIDParent();
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSVesselSkinLayers::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            return m_parent->GetNextUIDParent();
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSVesselSkinLayers::GetUIDManager()

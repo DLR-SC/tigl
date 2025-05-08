@@ -26,12 +26,12 @@
 #include <tixi.h>
 #include "CPACSVesselSkinLayers.h"
 #include "CreateIfNotExists.h"
-#include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
+class CTiglUIDObject;
 class CCPACSVessel;
 
 namespace generated
@@ -42,7 +42,7 @@ namespace generated
     /// @brief Structure
     /// 
     /// 
-    class CPACSVesselStructure : public CTiglReqUIDObject
+    class CPACSVesselStructure
     {
     public:
         TIGL_EXPORT CPACSVesselStructure(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
@@ -61,9 +61,6 @@ namespace generated
 
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-
-        TIGL_EXPORT virtual const std::string& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const std::string& value);
 
         TIGL_EXPORT virtual const boost::optional<CCPACSStringersAssembly>& GetStringers() const;
         TIGL_EXPORT virtual boost::optional<CCPACSStringersAssembly>& GetStringers();
@@ -94,7 +91,6 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                              m_uID;
         boost::optional<CCPACSStringersAssembly> m_stringers;
         boost::optional<CCPACSFramesAssembly>    m_frames;
         boost::optional<CPACSVesselSkinLayers>   m_skinLayers;
