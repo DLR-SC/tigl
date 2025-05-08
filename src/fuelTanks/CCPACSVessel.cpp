@@ -693,14 +693,6 @@ void CCPACSVessel::SetFaceTraitsFromParams(PNamedShape loft) const
 {
     int nFaces = GetNumberOfFaces(loft->Shape());
 
-    if (nFaces != 4 && nFaces != 6) {
-        const char* vesselName = loft->Name().c_str();
-        for (int i = 0; i < nFaces; ++i) {
-            loft->FaceTraits(i).SetName(vesselName);
-        }
-        return;
-    }
-
     // Cylinders are always the two middel segments
     const int cylCount = 2;
     const int cylStart = (nFaces - cylCount) / 2;
