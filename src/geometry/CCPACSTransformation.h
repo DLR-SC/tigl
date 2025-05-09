@@ -61,13 +61,17 @@ public:
     TIGL_EXPORT void setTranslation(const CTiglPoint& translation);
     TIGL_EXPORT void setTranslation(const CTiglPoint& translation, ECPACSTranslationType);
     TIGL_EXPORT void setRotation(const CTiglPoint& rotation);
+    TIGL_EXPORT void setRotationType(ECPACSTranslationType rotationType);
     TIGL_EXPORT void setScaling(const CTiglPoint& scale);
+    TIGL_EXPORT void setScalingType(ECPACSTranslationType scalingType);
     TIGL_EXPORT void setTransformationMatrix(const CTiglTransformation& matrix);
     
     TIGL_EXPORT CTiglPoint getTranslationVector() const;
     TIGL_EXPORT CTiglPoint getRotation() const;
     TIGL_EXPORT CTiglPoint getScaling() const;
     TIGL_EXPORT ECPACSTranslationType getTranslationType() const;
+    TIGL_EXPORT ECPACSTranslationType getScalingType() const;
+    TIGL_EXPORT ECPACSTranslationType getRotationType() const;
     TIGL_EXPORT CTiglTransformation getTransformationMatrix() const;
     
     /**
@@ -84,6 +88,10 @@ private:
 
     // caches the transformation created from scaling, rotation and translation
     Cache<CTiglTransformation, CCPACSTransformation> _transformationMatrix;
+
+    // ABS_LOCAL per default only applies for translation, while scaling and rotation is global
+    ECPACSTranslationType _scalingType = ABS_GLOBAL;
+    ECPACSTranslationType _rotationType = ABS_GLOBAL;
 };
 
 } // namespace tigl
