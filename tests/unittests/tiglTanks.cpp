@@ -394,5 +394,13 @@ TEST_F(FuelTanks, structure)
     EXPECT_EQ(structure_with_stringer_frames->GetFrames()->GetFrames().size(), 1);
     EXPECT_EQ(structure_with_stringer_frames->GetStringers()->GetStringers().size(), 1);
 
-    EXPECT_EQ(structure_with_walls->GetWalls()->GetWallSegments().GetWallSegments().size(), 3);
+    const auto& walls = structure_with_walls->GetWalls();
+    EXPECT_EQ(walls->GetWallSegments().GetWallSegments().size(), 3);
+    
+    const auto& pos = walls->GetWallPosition("tank5_wall_p1");
+    gp_Pnt p;
+    ASSERT_NO_THROW(p = pos.GetBasePoint());
+    EXPECT_DOUBLE_EQ(p.X(), 14.5);
+    EXPECT_DOUBLE_EQ(p.Y(), -1);
+    EXPECT_DOUBLE_EQ(p.Z(), -0.2);
 }
