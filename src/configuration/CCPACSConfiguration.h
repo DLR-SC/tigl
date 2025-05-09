@@ -164,6 +164,22 @@ public:
     TIGL_EXPORT boost::optional<CCPACSDucts>& GetDucts();
     TIGL_EXPORT const boost::optional<CCPACSDucts>& GetDucts() const;
 
+    // Returns the total count of fuel tanks in a configuration
+    TIGL_EXPORT int GetFuelTanksCount() const;
+
+    // Returns the fuel tank for a given index.
+    TIGL_EXPORT CCPACSFuelTank const& GetFuelTank(int index) const;
+
+    // Returns the fuel tank for a given UID.
+    TIGL_EXPORT CCPACSFuelTank const& GetFuelTank(const std::string& UID) const;
+
+    // Returns the fuel tank index for a given UID.
+    TIGL_EXPORT int GetFuelTankIndex(const std::string& UID) const;
+
+    // Returns list of fuel tanks
+    TIGL_EXPORT CCPACSFuelTanks& GetFuelTanks();
+    TIGL_EXPORT const CCPACSFuelTanks& GetFuelTanks() const;
+
     // Returns list of engine pylons
     TIGL_EXPORT boost::optional<CCPACSEnginePylons>& GetEnginePylons();
     TIGL_EXPORT const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;

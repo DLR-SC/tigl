@@ -40,6 +40,12 @@ CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(MaybeOpti
 CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
     : _parent(NULL), _parentUID(parentUid), _transformation(trans), _symmetryAxis(symmetryAxis){}
 
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans)
+    : _parent(parent), _transformation(trans), _symmetryAxis(nullptr){}
+
+CTiglRelativelyPositionedComponent::CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis)
+    : _parent(parent), _transformation(trans), _symmetryAxis(symmetryAxis){}
+
 void CTiglRelativelyPositionedComponent::Reset() const
 {
     CTiglAbstractGeometricComponent::Reset();
@@ -67,21 +73,40 @@ void CTiglRelativelyPositionedComponent::SetSymmetryAxis(const TiglSymmetryAxis&
 
 CTiglTransformation CTiglRelativelyPositionedComponent::GetTransformationMatrix() const
 {
-    const CTiglTransformation thisTransformation = GetTransform() ? GetTransform()->getTransformationMatrix() : CTiglTransformation();
-    if (_parent && GetTranslationType() == ABS_LOCAL) {
-        const CTiglTransformation& parentTransformation = _parent->GetTransformationMatrix();
+    CTiglTransformation thisTransformation = GetTransform() ? GetTransform()->getTransformationMatrix() : CTiglTransformation();
 
-        // we only transform with the parent's translation
-        CTiglTransformation parentTranslation;
-        parentTranslation.AddTranslation(
-            parentTransformation.GetValue(0, 3),
-            parentTransformation.GetValue(1, 3),
-            parentTransformation.GetValue(2, 3)
-        );
-        return parentTranslation * thisTransformation;
-    }
-    else
+    if (!_parent) {
         return thisTransformation;
+    }
+
+    if (GetScalingType() == ABS_GLOBAL && GetRotationType() == ABS_GLOBAL && GetTranslationType() && ABS_GLOBAL) {
+        return thisTransformation;
+    }
+
+    const CTiglTransformation& parentTransformation = _parent->GetTransformationMatrix();
+
+    if (GetScalingType() == ABS_LOCAL && GetRotationType() == ABS_LOCAL && GetTranslationType() == ABS_LOCAL) {
+        return parentTransformation * thisTransformation;
+    }
+
+    double scale[3], rotation[3], translation[3];
+    parentTransformation.Decompose(&scale[0], &rotation[0], &translation[0]);
+
+    if (GetScalingType() == ABS_LOCAL) {
+        thisTransformation.AddScaling(scale[0], scale[1], scale[2]);
+    }
+
+    if (GetRotationType() == ABS_LOCAL) {
+        thisTransformation.AddRotationX(rotation[0]);
+        thisTransformation.AddRotationY(rotation[1]);
+        thisTransformation.AddRotationZ(rotation[2]);
+    }
+
+    if (GetTranslationType() == ABS_LOCAL) {
+        thisTransformation.AddTranslation(translation[0], translation[1], translation[2]);
+    }        
+
+    return thisTransformation;
 }
 
 void CTiglRelativelyPositionedComponent::SetTransformation(const CCPACSTransformation &transform)
@@ -130,6 +155,16 @@ ECPACSTranslationType CTiglRelativelyPositionedComponent::GetTranslationType() c
             return ABS_LOCAL;
         }
         return ABS_GLOBAL; // TODO(bgruber): is this a valid default?
+}
+
+ECPACSTranslationType CTiglRelativelyPositionedComponent::GetRotationType() const
+{
+    return GetTransform()->getRotationType();
+}
+
+ECPACSTranslationType CTiglRelativelyPositionedComponent::GetScalingType() const
+{
+    return GetTransform()->getScalingType();
 }
 
 // Returns a pointer to the list of children of a component.

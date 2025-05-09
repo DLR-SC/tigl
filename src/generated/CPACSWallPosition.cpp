@@ -43,6 +43,7 @@ namespace generated
             if (m_bulkheadUID_choice1 && !m_bulkheadUID_choice1->empty()) m_uidMgr->TryUnregisterReference(*m_bulkheadUID_choice1, *this);
             if (m_wallSegmentUID_choice2 && !m_wallSegmentUID_choice2->empty()) m_uidMgr->TryUnregisterReference(*m_wallSegmentUID_choice2, *this);
             if (m_fuselageSectionUID_choice3 && !m_fuselageSectionUID_choice3->empty()) m_uidMgr->TryUnregisterReference(*m_fuselageSectionUID_choice3, *this);
+            if (m_sectionUID_choice4 && !m_sectionUID_choice4->empty()) m_uidMgr->TryUnregisterReference(*m_sectionUID_choice4, *this);
         }
     }
 
@@ -125,9 +126,18 @@ namespace generated
             if (m_uidMgr && !m_fuselageSectionUID_choice3->empty()) m_uidMgr->RegisterReference(*m_fuselageSectionUID_choice3, *this);
         }
 
+        // read element sectionUID
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sectionUID")) {
+            m_sectionUID_choice4 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sectionUID");
+            if (m_sectionUID_choice4->empty()) {
+                LOG(WARNING) << "Optional element sectionUID is present but empty at xpath " << xpath;
+            }
+            if (m_uidMgr && !m_sectionUID_choice4->empty()) m_uidMgr->RegisterReference(*m_sectionUID_choice4, *this);
+        }
+
         // read element x
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
-            m_x_choice4 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
+            m_x_choice5 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
         }
 
         // read element y
@@ -154,7 +164,7 @@ namespace generated
 
     void CPACSWallPosition::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "bulkheadUID", "wallSegmentUID", "fuselageSectionUID", "x", "y", "z" };
+        const std::vector<std::string> childElemOrder = { "bulkheadUID", "wallSegmentUID", "fuselageSectionUID", "sectionUID", "x", "y", "z" };
 
         // write attribute uID
         if (m_uID) {
@@ -199,10 +209,21 @@ namespace generated
             }
         }
 
+        // write element sectionUID
+        if (m_sectionUID_choice4) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/sectionUID", childElemOrder);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/sectionUID", *m_sectionUID_choice4);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sectionUID")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/sectionUID");
+            }
+        }
+
         // write element x
-        if (m_x_choice4) {
+        if (m_x_choice5) {
             tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/x", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/x", *m_x_choice4);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/x", *m_x_choice5);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
@@ -235,7 +256,9 @@ namespace generated
                         ||
                         m_fuselageSectionUID_choice3.is_initialized()
                         ||
-                        m_x_choice4.is_initialized()
+                        m_sectionUID_choice4.is_initialized()
+                        ||
+                        m_x_choice5.is_initialized()
                     )
                 )
                 +
@@ -249,7 +272,9 @@ namespace generated
                         ||
                         m_fuselageSectionUID_choice3.is_initialized()
                         ||
-                        m_x_choice4.is_initialized()
+                        m_sectionUID_choice4.is_initialized()
+                        ||
+                        m_x_choice5.is_initialized()
                     )
                 )
                 +
@@ -263,13 +288,15 @@ namespace generated
                         ||
                         m_wallSegmentUID_choice2.is_initialized()
                         ||
-                        m_x_choice4.is_initialized()
+                        m_sectionUID_choice4.is_initialized()
+                        ||
+                        m_x_choice5.is_initialized()
                     )
                 )
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_x_choice4.is_initialized()
+                    m_sectionUID_choice4.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
@@ -278,6 +305,24 @@ namespace generated
                         m_wallSegmentUID_choice2.is_initialized()
                         ||
                         m_fuselageSectionUID_choice3.is_initialized()
+                        ||
+                        m_x_choice5.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_x_choice5.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_bulkheadUID_choice1.is_initialized()
+                        ||
+                        m_wallSegmentUID_choice2.is_initialized()
+                        ||
+                        m_fuselageSectionUID_choice3.is_initialized()
+                        ||
+                        m_sectionUID_choice4.is_initialized()
                     )
                 )
                 == 1
@@ -349,14 +394,28 @@ namespace generated
         m_fuselageSectionUID_choice3 = value;
     }
 
-    const boost::optional<double>& CPACSWallPosition::GetX_choice4() const
+    const boost::optional<std::string>& CPACSWallPosition::GetSectionUID_choice4() const
     {
-        return m_x_choice4;
+        return m_sectionUID_choice4;
     }
 
-    void CPACSWallPosition::SetX_choice4(const boost::optional<double>& value)
+    void CPACSWallPosition::SetSectionUID_choice4(const boost::optional<std::string>& value)
     {
-        m_x_choice4 = value;
+        if (m_uidMgr) {
+            if (m_sectionUID_choice4 && !m_sectionUID_choice4->empty()) m_uidMgr->TryUnregisterReference(*m_sectionUID_choice4, *this);
+            if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
+        }
+        m_sectionUID_choice4 = value;
+    }
+
+    const boost::optional<double>& CPACSWallPosition::GetX_choice5() const
+    {
+        return m_x_choice5;
+    }
+
+    void CPACSWallPosition::SetX_choice5(const boost::optional<double>& value)
+    {
+        m_x_choice5 = value;
     }
 
     const double& CPACSWallPosition::GetY() const
@@ -394,6 +453,9 @@ namespace generated
         }
         if (m_fuselageSectionUID_choice3 && *m_fuselageSectionUID_choice3 == oldUid) {
             m_fuselageSectionUID_choice3 = newUid;
+        }
+        if (m_sectionUID_choice4 && *m_sectionUID_choice4 == oldUid) {
+            m_sectionUID_choice4 = newUid;
         }
     }
 

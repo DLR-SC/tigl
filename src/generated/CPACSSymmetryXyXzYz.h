@@ -31,6 +31,7 @@ namespace generated
     // CPACSDuct
     // CPACSEnginePosition
     // CPACSEnginePylon
+    // CPACSFuelTank
     // CPACSFuselage
     // CPACSGenericGeometricComponent
     // CPACSGenericSystem
