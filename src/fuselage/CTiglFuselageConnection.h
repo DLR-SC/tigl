@@ -32,7 +32,6 @@
 namespace tigl
 {
 
-using CCPACSFuselageSections = generated::CPACSFuselageSections;
 
 class CCPACSFuselageSegment;
 class CCPACSFuselageProfile;
