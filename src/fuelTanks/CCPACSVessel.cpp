@@ -49,6 +49,7 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
+#include <limits>
 
 namespace tigl
 {
@@ -301,7 +302,10 @@ CCPACSVessel::IsotensoidContour::IsotensoidContour(double rCyl, double rPolarOpe
     double phi   = 0.0;
     double alpha = std::asin(rPolarOpening / rCyl);
 
-    while (std::tan(alpha) * std::tan(alpha) < 2 && radii.back() > 1.22 * rPolarOpening) {
+    const double eps = std::numeric_limits<double>::epsilon();
+
+    while (std::tan(alpha) * std::tan(alpha) < 2 && radii.back() > 1.22 * rPolarOpening &&
+           (radii.size() < 2 || radii.back() < radii[radii.size() - 2] + eps)) {
         phi += dPhi;
         alpha = std::asin(rPolarOpening / radii.back());
 
