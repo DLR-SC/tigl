@@ -64,6 +64,11 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSAxleAssembly>>& GetAxleAssemblys() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSAxleAssembly>>& GetAxleAssemblys();
 
+        TIGL_EXPORT virtual size_t GetAxleAssemblyCount() const;
+
+        TIGL_EXPORT virtual const CPACSAxleAssembly& GetAxleAssembly(size_t index) const;
+        TIGL_EXPORT virtual CPACSAxleAssembly& GetAxleAssembly(size_t index);
+
         TIGL_EXPORT virtual CPACSAxleAssembly& AddAxleAssembly();
         TIGL_EXPORT virtual void RemoveAxleAssembly(CPACSAxleAssembly& ref);
 

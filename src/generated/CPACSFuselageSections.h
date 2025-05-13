@@ -89,6 +89,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselageSection>>& GetSections() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselageSection>>& GetSections();
 
+        TIGL_EXPORT virtual size_t GetSectionCount() const;
+        TIGL_EXPORT virtual size_t GetSectionIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSFuselageSection& GetSection(size_t index) const;
+        TIGL_EXPORT virtual CCPACSFuselageSection& GetSection(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSFuselageSection& GetSection(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSFuselageSection& GetSection(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSFuselageSection& AddSection();
         TIGL_EXPORT virtual void RemoveSection(CCPACSFuselageSection& ref);
 
@@ -109,5 +118,6 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSFuselageSections is customized, use type CCPACSFuselageSections directly
+// Aliases in tigl namespace
+using CCPACSFuselageSections = generated::CPACSFuselageSections;
 } // namespace tigl

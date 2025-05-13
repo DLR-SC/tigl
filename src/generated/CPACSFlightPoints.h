@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSGlobalFlightPoint>>& GetFlightPoints() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSGlobalFlightPoint>>& GetFlightPoints();
 
+        TIGL_EXPORT virtual size_t GetFlightPointCount() const;
+        TIGL_EXPORT virtual size_t GetFlightPointIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSGlobalFlightPoint& GetFlightPoint(size_t index) const;
+        TIGL_EXPORT virtual CPACSGlobalFlightPoint& GetFlightPoint(size_t index);
+
+        TIGL_EXPORT virtual const CPACSGlobalFlightPoint& GetFlightPoint(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSGlobalFlightPoint& GetFlightPoint(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSGlobalFlightPoint& AddFlightPoint();
         TIGL_EXPORT virtual void RemoveFlightPoint(CPACSGlobalFlightPoint& ref);
 

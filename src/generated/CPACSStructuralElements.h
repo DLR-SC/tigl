@@ -19,11 +19,11 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSDoors.h>
-#include <CCPACSPressureBulkheads.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSDoors.h"
 #include "CPACSDoorSurroundStructuresAssembly.h"
+#include "CPACSPressureBulkheads.h"
 #include "CPACSProfileBasedStructuralElements.h"
 #include "CPACSRivets.h"
 #include "CPACSSeatModules.h"
@@ -79,14 +79,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSStructuralWallElements>& GetStructuralWallElements() const;
         TIGL_EXPORT virtual boost::optional<CPACSStructuralWallElements>& GetStructuralWallElements();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSPressureBulkheads>& GetPressureBulkheads() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSPressureBulkheads>& GetPressureBulkheads();
+        TIGL_EXPORT virtual const boost::optional<CPACSPressureBulkheads>& GetPressureBulkheads() const;
+        TIGL_EXPORT virtual boost::optional<CPACSPressureBulkheads>& GetPressureBulkheads();
 
         TIGL_EXPORT virtual const boost::optional<CPACSWindows>& GetWindows() const;
         TIGL_EXPORT virtual boost::optional<CPACSWindows>& GetWindows();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSDoors>& GetDoors() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSDoors>& GetDoors();
+        TIGL_EXPORT virtual const boost::optional<CPACSDoors>& GetDoors() const;
+        TIGL_EXPORT virtual boost::optional<CPACSDoors>& GetDoors();
 
         TIGL_EXPORT virtual const boost::optional<CPACSDoorSurroundStructuresAssembly>& GetDoorSurroundStructures() const;
         TIGL_EXPORT virtual boost::optional<CPACSDoorSurroundStructuresAssembly>& GetDoorSurroundStructures();
@@ -106,13 +106,13 @@ namespace generated
         TIGL_EXPORT virtual CPACSStructuralWallElements& GetStructuralWallElements(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructuralWallElements();
 
-        TIGL_EXPORT virtual CCPACSPressureBulkheads& GetPressureBulkheads(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSPressureBulkheads& GetPressureBulkheads(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePressureBulkheads();
 
         TIGL_EXPORT virtual CPACSWindows& GetWindows(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveWindows();
 
-        TIGL_EXPORT virtual CCPACSDoors& GetDoors(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSDoors& GetDoors(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveDoors();
 
         TIGL_EXPORT virtual CPACSDoorSurroundStructuresAssembly& GetDoorSurroundStructures(CreateIfNotExistsTag);
@@ -135,11 +135,11 @@ namespace generated
 
         boost::optional<CPACSStructuralWallElements>         m_structuralWallElements;
 
-        boost::optional<CCPACSPressureBulkheads>             m_pressureBulkheads;
+        boost::optional<CPACSPressureBulkheads>              m_pressureBulkheads;
 
         boost::optional<CPACSWindows>                        m_windows;
 
-        boost::optional<CCPACSDoors>                         m_doors;
+        boost::optional<CPACSDoors>                          m_doors;
 
         boost::optional<CPACSDoorSurroundStructuresAssembly> m_doorSurroundStructures;
 

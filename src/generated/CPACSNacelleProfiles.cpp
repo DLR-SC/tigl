@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include <CCPACSNacelleProfile.h>
-#include "CCPACSProfiles.h"
 #include "CPACSNacelleProfiles.h"
+#include "CPACSProfiles.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSNacelleProfiles::CPACSNacelleProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    CPACSNacelleProfiles::CPACSNacelleProfiles(CPACSProfiles* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSProfiles* CPACSNacelleProfiles::GetParent() const
+    const CPACSProfiles* CPACSNacelleProfiles::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSProfiles* CPACSNacelleProfiles::GetParent()
+    CPACSProfiles* CPACSNacelleProfiles::GetParent()
     {
         return m_parent;
     }
@@ -107,6 +107,59 @@ namespace generated
     {
         return m_nacelleProfiles;
     }
+
+    size_t CPACSNacelleProfiles::GetNacelleProfileCount() const
+    {
+        return m_nacelleProfiles.size();
+    }
+
+    size_t CPACSNacelleProfiles::GetNacelleProfileIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetNacelleProfileCount(); i++) {
+            const std::string tmpUID(m_nacelleProfiles[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSNacelleProfiles::GetNacelleProfileIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSNacelleProfile& CPACSNacelleProfiles::GetNacelleProfile(size_t index)
+    {
+        if (index < 1 || index > GetNacelleProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSNacelleProfile>>::GetNacelleProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_nacelleProfiles[index];
+    }
+
+    const CCPACSNacelleProfile& CPACSNacelleProfiles::GetNacelleProfile(size_t index) const
+    {
+        if (index < 1 || index > GetNacelleProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSNacelleProfile>>::GetNacelleProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_nacelleProfiles[index];
+    }
+
+    CCPACSNacelleProfile& CPACSNacelleProfiles::GetNacelleProfile(const std::string& UID)
+    {
+        for (auto& elem : m_nacelleProfiles ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSNacelleProfiles::GetNacelleProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSNacelleProfile& CPACSNacelleProfiles::GetNacelleProfile(const std::string& UID) const
+    {
+        for (auto& elem : m_nacelleProfiles ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSNacelleProfiles::GetNacelleProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
 
     CCPACSNacelleProfile& CPACSNacelleProfiles::AddNacelleProfile()
     {

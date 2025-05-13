@@ -43,6 +43,7 @@
 #include "CCPACSCrossBeamAssemblyPosition.h"
 #include "CCPACSCrossBeamStrutAssemblyPosition.h"
 #include "CCPACSFuselageStringer.h"
+#include "CCPACSFramesAssembly.h"
 
 namespace tigl
 {

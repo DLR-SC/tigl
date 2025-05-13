@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSGenericSystem>>& GetGenericSystems() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSGenericSystem>>& GetGenericSystems();
 
+        TIGL_EXPORT virtual size_t GetGenericSystemCount() const;
+        TIGL_EXPORT virtual size_t GetGenericSystemIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSGenericSystem& GetGenericSystem(size_t index) const;
+        TIGL_EXPORT virtual CCPACSGenericSystem& GetGenericSystem(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSGenericSystem& GetGenericSystem(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSGenericSystem& GetGenericSystem(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSGenericSystem& AddGenericSystem();
         TIGL_EXPORT virtual void RemoveGenericSystem(CCPACSGenericSystem& ref);
 

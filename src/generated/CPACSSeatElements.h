@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSeatElement>>& GetSeatElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSeatElement>>& GetSeatElements();
 
+        TIGL_EXPORT virtual size_t GetSeatElementCount() const;
+        TIGL_EXPORT virtual size_t GetSeatElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSSeatElement& GetSeatElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSSeatElement& GetSeatElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSSeatElement& GetSeatElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSSeatElement& GetSeatElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSSeatElement& AddSeatElement();
         TIGL_EXPORT virtual void RemoveSeatElement(CPACSSeatElement& ref);
 

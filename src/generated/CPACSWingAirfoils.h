@@ -27,11 +27,11 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSProfiles;
 
 namespace generated
 {
     class CPACSProfileGeometry;
+    class CPACSProfiles;
 
     // This class is used in:
     // CPACSProfiles
@@ -44,13 +44,13 @@ namespace generated
     class CPACSWingAirfoils
     {
     public:
-        TIGL_EXPORT CPACSWingAirfoils(CCPACSProfiles* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWingAirfoils(CPACSProfiles* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSWingAirfoils();
 
-        TIGL_EXPORT CCPACSProfiles* GetParent();
+        TIGL_EXPORT CPACSProfiles* GetParent();
 
-        TIGL_EXPORT const CCPACSProfiles* GetParent() const;
+        TIGL_EXPORT const CPACSProfiles* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -64,11 +64,20 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSProfileGeometry>>& GetWingAirfoils() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSProfileGeometry>>& GetWingAirfoils();
 
+        TIGL_EXPORT virtual size_t GetWingAirfoilCount() const;
+        TIGL_EXPORT virtual size_t GetWingAirfoilIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSProfileGeometry& GetWingAirfoil(size_t index) const;
+        TIGL_EXPORT virtual CPACSProfileGeometry& GetWingAirfoil(size_t index);
+
+        TIGL_EXPORT virtual const CPACSProfileGeometry& GetWingAirfoil(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSProfileGeometry& GetWingAirfoil(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSProfileGeometry& AddWingAirfoil();
         TIGL_EXPORT virtual void RemoveWingAirfoil(CPACSProfileGeometry& ref);
 
     protected:
-        CCPACSProfiles* m_parent;
+        CPACSProfiles* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -87,4 +96,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
+using CCPACSProfiles = generated::CPACSProfiles;
 } // namespace tigl

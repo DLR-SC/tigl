@@ -68,6 +68,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWingSparPosition>>& GetSparPositions() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWingSparPosition>>& GetSparPositions();
 
+        TIGL_EXPORT virtual size_t GetSparPositionCount() const;
+        TIGL_EXPORT virtual size_t GetSparPositionIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSWingSparPosition& GetSparPosition(size_t index) const;
+        TIGL_EXPORT virtual CCPACSWingSparPosition& GetSparPosition(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSWingSparPosition& GetSparPosition(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSWingSparPosition& GetSparPosition(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSWingSparPosition& AddSparPosition();
         TIGL_EXPORT virtual void RemoveSparPosition(CCPACSWingSparPosition& ref);
 

@@ -102,6 +102,59 @@ namespace generated
         return m_sheet3Ds;
     }
 
+    size_t CPACSSheetList3D::GetSheet3DCount() const
+    {
+        return m_sheet3Ds.size();
+    }
+
+    size_t CPACSSheetList3D::GetSheet3DIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSheet3DCount(); i++) {
+            const std::string tmpUID(m_sheet3Ds[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSSheetList3D::GetSheet3DIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSSheet3D& CPACSSheetList3D::GetSheet3D(size_t index)
+    {
+        if (index < 1 || index > GetSheet3DCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSheet3D>>::GetSheet3D", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sheet3Ds[index];
+    }
+
+    const CPACSSheet3D& CPACSSheetList3D::GetSheet3D(size_t index) const
+    {
+        if (index < 1 || index > GetSheet3DCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSheet3D>>::GetSheet3D", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sheet3Ds[index];
+    }
+
+    CPACSSheet3D& CPACSSheetList3D::GetSheet3D(const std::string& UID)
+    {
+        for (auto& elem : m_sheet3Ds ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSSheetList3D::GetSheet3D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSSheet3D& CPACSSheetList3D::GetSheet3D(const std::string& UID) const
+    {
+        for (auto& elem : m_sheet3Ds ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSSheetList3D::GetSheet3D. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSSheet3D& CPACSSheetList3D::AddSheet3D()
     {
         m_sheet3Ds.push_back(make_unique<CPACSSheet3D>(this, m_uidMgr));

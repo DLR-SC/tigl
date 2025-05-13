@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSPointPerformanceDefinition>>& GetPointPerformanceDefinitions() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSPointPerformanceDefinition>>& GetPointPerformanceDefinitions();
 
+        TIGL_EXPORT virtual size_t GetPointPerformanceDefinitionCount() const;
+        TIGL_EXPORT virtual size_t GetPointPerformanceDefinitionIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSPointPerformanceDefinition& GetPointPerformanceDefinition(size_t index) const;
+        TIGL_EXPORT virtual CPACSPointPerformanceDefinition& GetPointPerformanceDefinition(size_t index);
+
+        TIGL_EXPORT virtual const CPACSPointPerformanceDefinition& GetPointPerformanceDefinition(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSPointPerformanceDefinition& GetPointPerformanceDefinition(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSPointPerformanceDefinition& AddPointPerformanceDefinition();
         TIGL_EXPORT virtual void RemovePointPerformanceDefinition(CPACSPointPerformanceDefinition& ref);
 

@@ -66,16 +66,20 @@ public:
     }
 
     // Returns the original unattached rotor blade
-    TIGL_EXPORT CCPACSWing& GetUnattachedRotorBlade() const;
+    TIGL_EXPORT const CCPACSWing& GetUnattachedRotorBlade() const;
+    TIGL_EXPORT CCPACSWing& GetUnattachedRotorBlade();
 
     // Returns the parent rotor blade attachment this rotor blade belongs to
-    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment() const;
+    TIGL_EXPORT const CCPACSRotorBladeAttachment& GetRotorBladeAttachment() const;
+    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment();
 
     // Returns the parent rotor
-    TIGL_EXPORT CCPACSRotor& GetRotor() const;
+    TIGL_EXPORT const CCPACSRotor& GetRotor() const;
+    TIGL_EXPORT CCPACSRotor& GetRotor();
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT const CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration();
 
     // Returns the azimuth angle of this rotor blade
     TIGL_EXPORT double GetAzimuthAngle() const;

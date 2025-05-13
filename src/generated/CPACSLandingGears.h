@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSLandingGearBase>>& GetLandingGears() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSLandingGearBase>>& GetLandingGears();
 
+        TIGL_EXPORT virtual size_t GetLandingGearCount() const;
+        TIGL_EXPORT virtual size_t GetLandingGearIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSLandingGearBase& GetLandingGear(size_t index) const;
+        TIGL_EXPORT virtual CPACSLandingGearBase& GetLandingGear(size_t index);
+
+        TIGL_EXPORT virtual const CPACSLandingGearBase& GetLandingGear(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSLandingGearBase& GetLandingGear(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSLandingGearBase& AddLandingGear();
         TIGL_EXPORT virtual void RemoveLandingGear(CPACSLandingGearBase& ref);
 

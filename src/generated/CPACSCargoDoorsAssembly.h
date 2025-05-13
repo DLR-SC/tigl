@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDoorAssemblyPosition>>& GetCargoDoors() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDoorAssemblyPosition>>& GetCargoDoors();
 
+        TIGL_EXPORT virtual size_t GetCargoDoorCount() const;
+        TIGL_EXPORT virtual size_t GetCargoDoorIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSDoorAssemblyPosition& GetCargoDoor(size_t index) const;
+        TIGL_EXPORT virtual CCPACSDoorAssemblyPosition& GetCargoDoor(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSDoorAssemblyPosition& GetCargoDoor(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSDoorAssemblyPosition& GetCargoDoor(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSDoorAssemblyPosition& AddCargoDoor();
         TIGL_EXPORT virtual void RemoveCargoDoor(CCPACSDoorAssemblyPosition& ref);
 

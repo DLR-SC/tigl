@@ -64,6 +64,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSAircraftModel>>& GetModels() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSAircraftModel>>& GetModels();
 
+        TIGL_EXPORT virtual size_t GetModelCount() const;
+        TIGL_EXPORT virtual size_t GetModelIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSAircraftModel& GetModel(size_t index) const;
+        TIGL_EXPORT virtual CCPACSAircraftModel& GetModel(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSAircraftModel& GetModel(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSAircraftModel& GetModel(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSAircraftModel& AddModel();
         TIGL_EXPORT virtual void RemoveModel(CCPACSAircraftModel& ref);
 

@@ -34,31 +34,4 @@ void CCPACSWingSparSegments::Invalidate(const boost::optional<std::string>& sour
         s->Invalidate(source);
     }
 }
-
-int CCPACSWingSparSegments::GetSparSegmentCount() const
-{
-    return static_cast<int>(m_sparSegments.size());
-}
-
-CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(int index) const
-{
-    const int idx = index - 1;
-    if (idx < 0 || idx >= GetSparSegmentCount()) {
-        LOG(ERROR) << "Invalid index value";
-        throw CTiglError("Invalid index value in CCPACSWingSparSegments::getSparSegment", TIGL_INDEX_ERROR);
-    }
-    return (*(m_sparSegments[idx]));
-}
-
-CCPACSWingSparSegment& CCPACSWingSparSegments::GetSparSegment(const std::string& uid) const
-{
-    for (auto& s : m_sparSegments) {
-        if (s->GetUID() == uid) {
-            return *s;
-        }
-    }
-    const std::string& referenceUID = CTiglWingStructureReference(*GetParent()->GetParent()).GetUID();
-    LOG(ERROR) << "Spar Segment \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
-    throw CTiglError("Spar Segment \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
-}
 } // end namespace tigl

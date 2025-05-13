@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSPointXY>>& GetPoints() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSPointXY>>& GetPoints();
 
+        TIGL_EXPORT virtual size_t GetPointCount() const;
+        TIGL_EXPORT virtual size_t GetPointIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSPointXY& GetPoint(size_t index) const;
+        TIGL_EXPORT virtual CCPACSPointXY& GetPoint(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSPointXY& GetPoint(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSPointXY& GetPoint(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSPointXY& AddPoint();
         TIGL_EXPORT virtual void RemovePoint(CCPACSPointXY& ref);
 
