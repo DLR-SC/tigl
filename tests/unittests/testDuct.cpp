@@ -125,8 +125,8 @@ TEST_F(DuctSimple, DuctLevel)
     for (auto& d : ductsN)
     {
         auto loftD = d->GetLoft();
-        //const TopoDS_Shape& shapeD = loftD->Shape();
-        //EXPECT_TRUE(shapeD.ShapeType() == TopAbs_SOLID);
+        const TopoDS_Shape& shapeD = loftD->Shape();
+        EXPECT_TRUE(shapeD.ShapeType() == TopAbs_SOLID);
     }
 
     // Check the position of a sample duct with help of its bounding box
