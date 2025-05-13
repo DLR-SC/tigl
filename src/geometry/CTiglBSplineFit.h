@@ -23,6 +23,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <math_Vector.hxx>
 
 class BSplineFit
 {
@@ -69,7 +70,7 @@ private:
 
 
     /// Computes the matrix and the right hand side of the system to be solved
-    void initSystem(class math_Matrix& A, class math_Vector& rhsx, class math_Vector& rhsy, class math_Vector& rhsz);
+    void initSystem(class math_Matrix& A, math_Vector& rhsx, math_Vector& rhsy, math_Vector& rhsz);
 
     /// Computes an uniform knot vector
     void computeKnots();
