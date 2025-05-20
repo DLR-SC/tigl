@@ -327,7 +327,7 @@ CCPACSVessel::IsotensoidContour::IsotensoidContour(double rCyl, double rPolarOpe
         axialPosition         = axialPosition + dx;
     }
 
-    // Add 5 points linear until polar opening
+    // Add 4 points linear until polar opening
     double lastX = axialPositions.back();
     double lastR = radii.back();
     double prevX = axialPositions[axialPositions.size() - 2];
