@@ -49,8 +49,6 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
-#include <limits>
-#include <fstream>
 
 namespace tigl
 {
