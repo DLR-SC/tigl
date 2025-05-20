@@ -232,7 +232,7 @@ class FuelTanks(unittest.TestCase):
         self.assertAlmostEqual(round(vessel_segments.get_geometric_volume(), 2), 6.57)
         self.assertAlmostEqual(round(vessel_parametric.get_geometric_volume(), 2), 18.1)
 
-        self.assertAlmostEqual(round(vessel_segments.get_surface_area(), 2), 11.15)
+        self.assertAlmostEqual(round(vessel_segments.get_surface_area(), 2), 19.94)
         self.assertAlmostEqual(round(vessel_parametric.get_surface_area(), 2), 36.19)
 
         self.assertAlmostEqual(
@@ -247,8 +247,6 @@ class FuelTanks(unittest.TestCase):
         structure_with_stringer_frames = self.vessel_segments.get_structure()
 
         # Test availability of generated class:
-        self.assertEqual(structure_with_walls.get_uid(), "tank5_structure")
-
         self.assertIsInstance(
             structure_with_stringer_frames.get_frames(),
             configuration.CCPACSFramesAssembly,

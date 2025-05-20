@@ -50,6 +50,7 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 #include <limits>
+#include <fstream>
 
 namespace tigl
 {
@@ -299,30 +300,51 @@ CCPACSVessel::IsotensoidContour::IsotensoidContour(double rCyl, double rPolarOpe
     radii.push_back(rCyl);
     axialPositions.push_back(0.0);
 
-    double phi   = 0.0;
+    // initial values
+    double phi           = 0.0;
+    double dr            = 0.0;
+    double dx            = 1.0;
+    double radius        = rCyl;
+    double axialPosition = 0.0;
+
     double alpha = std::asin(rPolarOpening / rCyl);
 
-    const double eps = std::numeric_limits<double>::epsilon();
+    const double eps = 1e-8 * std::max(rCyl, rPolarOpening);
+    int i            = 0;
 
-    while (std::tan(alpha) * std::tan(alpha) < 2 && radii.back() > 1.22 * rPolarOpening &&
-           (radii.size() < 2 || radii.back() < radii[radii.size() - 2] + eps)) {
-        phi += dPhi;
+    while (std::tan(alpha) * std::tan(alpha) < 2 && radius > 1.22 * rPolarOpening && dr >= 0.0) {
+
+        radii.push_back(radius);
+        axialPositions.push_back(axialPosition);
+
+        phi   = phi + dPhi;
         alpha = std::asin(rPolarOpening / radii.back());
 
-        double rm = radii.back() / (std::cos(phi) * (2 - std::tan(alpha) * std::tan(alpha)));
-        double dr = rm * dPhi * std::sin(phi);
-        radii.push_back(radii.back() - dr);
-
-        double dx = rm * dPhi * std::cos(phi);
-        axialPositions.push_back(axialPositions.back() + dx);
+        double meridianRadius = radius / (std::cos(phi) * (2 - std::tan(alpha) * std::tan(alpha)));
+        dr                    = meridianRadius * dPhi * std::sin(phi);
+        radius                = radius - dr;
+        dx                    = meridianRadius * dPhi * std::cos(phi);
+        axialPosition         = axialPosition + dx;
     }
 
     // Add 5 points linear until polar opening
-    double slope =
-        (radii.back() - radii[radii.size() - 2]) / (axialPositions.back() - axialPositions[axialPositions.size() - 2]);
-    for (int i = 0; i < 5; ++i) {
-        axialPositions.push_back(axialPositions.back() + (rPolarOpening - radii.back()) / slope);
-        radii.push_back(radii.back() + slope * (axialPositions.back() - axialPositions[axialPositions.size() - 2]));
+    double lastX = axialPositions.back();
+    double lastR = radii.back();
+    double prevX = axialPositions[axialPositions.size() - 2];
+    double prevR = radii[radii.size() - 2];
+
+    double slope = (lastR - prevR) / (lastX - prevX);
+
+    double dxTotal = (rPolarOpening - lastR) / slope;
+    double deltaX  = dxTotal / 4.0;
+    double deltaR  = (rPolarOpening - lastR) / 4.0;
+
+    axialPositions.reserve(axialPositions.size() + 4);
+    radii.reserve(radii.size() + 4);
+
+    for (int i = 1; i <= 4; ++i) {
+        axialPositions.push_back(lastX + i * deltaX);
+        radii.push_back(lastR + i * deltaR);
     }
 
     // Shifting to x=0
