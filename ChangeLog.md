@@ -18,7 +18,8 @@ Changes since last release
    - New function `::tiglComponentTransformPointToGlobal` to transform component-local coordinates into global coordinates (#1064)
   
  - General changes:
- 
+
+    - Add support for OpenCascade Technology 7.8.
     - Update the C++ standard to C++17 (#1045).
     - Added the possibility to switch between two algorithms in the `CCSTCurveBuilder`. The default algorithm based on a Chebychev approximation results in a small number of control points, but introduces small discontinuities in the curvature. The new option is to use OCCT's `GeomAPI_PointsToBSpline`, which results in a C3 continuous B-Spline.
 
