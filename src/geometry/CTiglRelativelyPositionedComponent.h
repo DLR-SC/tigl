@@ -120,6 +120,8 @@ public:
 
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans);
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
 
     TIGL_EXPORT void Reset() const;
 
@@ -134,6 +136,8 @@ public:
     TIGL_EXPORT virtual CTiglPoint GetScaling() const;
     TIGL_EXPORT virtual CTiglPoint GetTranslation() const;
     TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const;
+    TIGL_EXPORT virtual ECPACSTranslationType GetRotationType() const;
+    TIGL_EXPORT virtual ECPACSTranslationType GetScalingType() const;
 
     TIGL_EXPORT boost::optional<const std::string&> GetParentUID() const;
     TIGL_EXPORT void SetParentUID(const std::string& parentUID);
