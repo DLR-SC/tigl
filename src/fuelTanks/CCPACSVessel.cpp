@@ -305,24 +305,22 @@ CCPACSVessel::IsotensoidContour::IsotensoidContour(double rCyl, double rPolarOpe
     double radius        = rCyl;
     double axialPosition = 0.0;
 
-    double alpha = std::asin(rPolarOpening / rCyl);
+    double const rPolarOpening2 = rPolarOpening * rPolarOpening;
+    double res                  = 2 - rPolarOpening2 / (rCyl * rCyl - rPolarOpening2);
 
-    const double eps = 1e-8 * std::max(rCyl, rPolarOpening);
-    int i            = 0;
-
-    while (std::tan(alpha) * std::tan(alpha) < 2 && radius > 1.22 * rPolarOpening && dr >= 0.0) {
+    while (res > 0.0 && radius > 1.22 * rPolarOpening && dr >= 0.0) {
 
         radii.push_back(radius);
         axialPositions.push_back(axialPosition);
 
-        phi   = phi + dPhi;
-        alpha = std::asin(rPolarOpening / radii.back());
+        phi = phi + dPhi;
 
-        double meridianRadius = radius / (std::cos(phi) * (2 - std::tan(alpha) * std::tan(alpha)));
-        dr                    = meridianRadius * dPhi * std::sin(phi);
-        radius                = radius - dr;
-        dx                    = meridianRadius * dPhi * std::cos(phi);
-        axialPosition         = axialPosition + dx;
+        res = 2 - rPolarOpening2 / (radius * radius - rPolarOpening2);
+        dx  = radius * dPhi / res;
+        dr  = dx * std::tan(phi);
+
+        axialPosition += dx;
+        radius -= dr;
     }
 
     // Add 4 points linear until polar opening
