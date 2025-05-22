@@ -21,6 +21,7 @@
 */
 
 #include"testUtils.h"
+#include "CTiglError.h"
 #include<fstream>
 #include<iomanip>
 #include <Geom_BSplineCurve.hxx>
@@ -118,4 +119,18 @@ std::string CaptureTiGLLog::log()
 CaptureTiGLLog::~CaptureTiGLLog()
 {
     tigl::CTiglLogging::Instance().SetConsoleVerbosity(_oldVerbosityLevel);
+}
+
+void CheckExceptionMessage(const std::function<void()>& func, std::string_view expectedMessage)
+{
+    try {
+        func();
+        FAIL() << "Expected tigl::CTiglError but no exception was thrown.";
+    }
+    catch (const tigl::CTiglError& e) {
+        EXPECT_STREQ(e.what(), expectedMessage.data());
+    }
+    catch (...) {
+        FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
+    }
 }

@@ -27,6 +27,9 @@
 #include "CTiglError.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
+#include "CCPACSVessel.h"
+#include "CCPACSVessels.h"
+#include "CCPACSFuelTank.h"
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSegment.h"
@@ -151,6 +154,11 @@ CTiglTransformation CTiglFuselageConnection::GetSectionElementTransformation() c
     return transformation;
 }
 
+bool CTiglFuselageConnection::ParentComponentHasPositionings() const
+{
+    return (segment->GetParent()->IsParent<CCPACSFuselage>() || segment->GetParent()->IsParent<CCPACSDuct>());
+}
+
 CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSections() const
 {
     if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
@@ -158,6 +166,9 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
     }
     else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetSections();
+    }
+    else if (segment->GetParent()->IsParent<CCPACSVessel>()) {
+        return segment->GetParent()->GetParent<CCPACSVessel>()->GetSections_choice1().get();
     }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");

@@ -476,10 +476,12 @@ TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTr
     trafo.PreMultiply(connection.GetSectionTransformation());
 
     // Do positioning transformations
-    boost::optional<CTiglTransformation> posTrans = connection.GetPositioningTransformation();
-    if (posTrans) {
-        trafo.PreMultiply(*posTrans);
-    }
+    if (connection.ParentComponentHasPositionings()) {
+        boost::optional<CTiglTransformation> posTrans = connection.GetPositioningTransformation();
+        if (posTrans) {
+            trafo.PreMultiply(*posTrans);
+        }
+    }    
 
     trafo.PreMultiply(fuselTransform);
 

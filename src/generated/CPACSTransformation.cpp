@@ -21,6 +21,7 @@
 #include "CCPACSEnginePosition.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSExternalObject.h"
+#include "CCPACSFuelTank.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSectionElement.h"
@@ -28,6 +29,7 @@
 #include "CCPACSNacelleSection.h"
 #include "CCPACSRotor.h"
 #include "CCPACSRotorHinge.h"
+#include "CCPACSVessel.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSectionElement.h"
@@ -73,6 +75,14 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSEnginePylon);
+    }
+
+    CPACSTransformation::CPACSTransformation(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSFuelTank);
     }
 
     CPACSTransformation::CPACSTransformation(CCPACSFuselage* parent, CTiglUIDManager* uidMgr)
@@ -155,6 +165,14 @@ namespace generated
         m_parentType = &typeid(CCPACSRotorHinge);
     }
 
+    CPACSTransformation::CPACSTransformation(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSVessel);
+    }
+
     CPACSTransformation::CPACSTransformation(CCPACSWing* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -199,6 +217,9 @@ namespace generated
             if (IsParent<CCPACSEnginePylon>()) {
                 return GetParent<CCPACSEnginePylon>();
             }
+            if (IsParent<CCPACSFuelTank>()) {
+                return GetParent<CCPACSFuelTank>();
+            }
             if (IsParent<CCPACSFuselage>()) {
                 return GetParent<CCPACSFuselage>();
             }
@@ -228,6 +249,9 @@ namespace generated
             }
             if (IsParent<CCPACSRotorHinge>()) {
                 return GetParent<CCPACSRotorHinge>();
+            }
+            if (IsParent<CCPACSVessel>()) {
+                return GetParent<CCPACSVessel>();
             }
             if (IsParent<CCPACSWing>()) {
                 return GetParent<CCPACSWing>();
@@ -257,6 +281,9 @@ namespace generated
             if (IsParent<CCPACSEnginePylon>()) {
                 return GetParent<CCPACSEnginePylon>();
             }
+            if (IsParent<CCPACSFuelTank>()) {
+                return GetParent<CCPACSFuelTank>();
+            }
             if (IsParent<CCPACSFuselage>()) {
                 return GetParent<CCPACSFuselage>();
             }
@@ -286,6 +313,9 @@ namespace generated
             }
             if (IsParent<CCPACSRotorHinge>()) {
                 return GetParent<CCPACSRotorHinge>();
+            }
+            if (IsParent<CCPACSVessel>()) {
+                return GetParent<CCPACSVessel>();
             }
             if (IsParent<CCPACSWing>()) {
                 return GetParent<CCPACSWing>();

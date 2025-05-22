@@ -25,6 +25,8 @@
 #include "CTiglFuselageSegmentGuidecurveBuilder.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
+#include "CCPACSVessel.h"
+#include "CCPACSVessels.h"
 
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"
@@ -100,9 +102,11 @@ namespace
         trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
-        if (connectionTransform)
-            trafo.PreMultiply(*connectionTransform);
+        if (connection.ParentComponentHasPositionings()) {
+            boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
+            if (connectionTransform)
+                trafo.PreMultiply(*connectionTransform);
+        }
 
         trafo.PreMultiply(fuselTransform);
 
@@ -277,6 +281,19 @@ std::string CCPACSFuselageSegment::GetShortShapeName() const
             }
         }
     }
+    else if (m_parent->IsParent<CCPACSVessel>()) {
+
+        prefix = "H";
+        auto* vessel = m_parent->GetParent<CCPACSVessel>();
+        unsigned int i = 0;
+        for (auto& h: vessel->GetParent()->GetVessels()) {
+            ++i;
+            if (vessel->GetUID() == h->GetUID()) {
+                findex = i;
+                break;
+            }
+        }
+    }
     else if (m_parent->IsParent<CCPACSFuselage>()) {
 
         prefix = "F";
@@ -411,7 +428,7 @@ void CCPACSFuselageSegment::UpdateSurfaceProperties(SurfacePropertiesCache& cach
 
     GProp_GProps AreaSystem;
 
-    // The first face is the outer hull. We ignore symmetry planes and the front / back caps
+    // The first face is the outer vessel. We ignore symmetry planes and the front / back caps
     BRepGProp::SurfaceProperties(faceExplorer.Current(), AreaSystem);
     cache.mySurfaceArea = AreaSystem.Mass();
 }

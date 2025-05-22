@@ -3,7 +3,11 @@ Changelog
 
 Changes since last release
 -------------
-10/01/2025
+
+08/02/2025
+
+- General changes:
+  - Implemented the new CPACS fuelTanks.
 
 - Fixes
 

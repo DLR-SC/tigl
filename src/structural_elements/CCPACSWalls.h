@@ -23,7 +23,7 @@
 #include <boost/optional.hpp>
 
 #include "generated/CPACSWalls.h"
-#include "CCPACSFuselageWallSegment.h"
+#include "CCPACSWallSegment.h"
 #include "CCPACSWallPosition.h"
 
 namespace tigl
@@ -33,8 +33,9 @@ class CCPACSWalls : public generated::CPACSWalls
 {
 public:
     TIGL_EXPORT CCPACSWalls(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWalls(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT const CCPACSFuselageWallSegment& GetWallSegment(const std::string& uid) const;
+    TIGL_EXPORT const CCPACSWallSegment& GetWallSegment(const std::string& uid) const;
     TIGL_EXPORT const CCPACSWallPosition& GetWallPosition(const std::string& uid) const;
 
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
