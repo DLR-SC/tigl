@@ -23,6 +23,7 @@
 #include <algorithm>
 #include "TIGLViewerMaterials.h"
 #include <QCoreApplication>
+#include <qglobal.h>
 #include "TIGLViewerSettings.h"
 
 const double DEFAULT_TESSELATION_ACCURACY = 0.000316;
@@ -207,6 +208,18 @@ void TIGLViewerSettings::loadSettings()
 
     setTemplateDir(settings.value("template_dir_path", DEFAULT_TEMPLATE_DIR_PATH ).toString());
     _profilesDBPath = settings.value("profiles_file_path", DEFAULT_PROFILES_FILE_PATH).toString();
+
+    // Test whether profilesDB exists in the stored path and if the path even exists in the first place
+    // Background:
+    //      - Path is stored in system-wide config file.
+    //      - If TiGL is built in two different directories, the first one always determines the path
+    //      - However, if this path does not exist anymore, the other TiGL build still tries to use it -> No file found
+    if (!QFile(_profilesDBPath).exists()) {
+        // If stored path does not exist (most likely it lies outside the current build),
+        // use the default path (-> current build) as TiGL internal one and also overwrite the config file
+        _profilesDBPath = DEFAULT_PROFILES_FILE_PATH;
+        settings.setValue("profiles_file_path", _profilesDBPath);
+    }
 }
 
 void TIGLViewerSettings::storeSettings()

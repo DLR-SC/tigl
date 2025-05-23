@@ -11,6 +11,8 @@ Changes since last release
 
 - Fixes
 
+  - #1087 CPACSCreator uses a system-wide config file to store (among many others) the path to the profiles database. If TiGL is built in a second configuration on the same system, the first build will determine the path in this config file. If then later the first build (and path) is removed, TiGL will still try to load the database from this path. A check is included, whether the path exists and should overwrite the config file entry when it does not.
+
   - #936 A particular defined positioning (of the C++-type CCPACSPositioning) was not available via Python bindings since the std::vector<std::unique_ptr<**Type**>> is not exposed to swig. New getter functions have been implemented in CCPACSPositioning.h to make these elements accesible via index, similar to the implementation of for several other classes. For more information see https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59.
 
  - New API functions:
