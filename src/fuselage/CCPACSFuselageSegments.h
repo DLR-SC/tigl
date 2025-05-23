@@ -86,10 +86,10 @@ public:
 
     TIGL_EXPORT const TopoDS_Compound& GetGuideCurveWires() const;
 
-    void ReorderSegments();
+    TIGL_EXPORT void ReorderSegments();
 
     // check order of segments - each segment must start with the element of the previous segment
-    bool NeedReordering() const;
+    TIGL_EXPORT bool NeedReordering() const;
 private:
 
     void BuildGuideCurves(TopoDS_Compound& cache) const;
