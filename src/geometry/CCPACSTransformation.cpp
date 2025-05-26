@@ -137,6 +137,12 @@ CCPACSTransformation::CCPACSTransformation(CCPACSWingSection* parent, CTiglUIDMa
 {
 }
 
+CCPACSTransformation::CCPACSTransformation(CCPACSExternalGeometry* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
 CCPACSTransformation::CCPACSTransformation(CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation((CCPACSWingSection*)nullptr, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)

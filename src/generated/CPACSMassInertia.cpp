@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include "CPACSDeckElementMass.h"
+#include "CPACSElementMass.h"
 #include "CPACSMassInertia.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -34,30 +35,53 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CPACSDeckElementMass);
+    }
+
+    CPACSMassInertia::CPACSMassInertia(CPACSElementMass* parent)
+        : m_Jxx(0)
+        , m_Jyy(0)
+        , m_Jzz(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSElementMass);
     }
 
     CPACSMassInertia::~CPACSMassInertia()
     {
     }
 
-    const CPACSDeckElementMass* CPACSMassInertia::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSDeckElementMass* CPACSMassInertia::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSMassInertia::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CPACSDeckElementMass>()) {
+                return GetParent<CPACSDeckElementMass>();
+            }
+            if (IsParent<CPACSElementMass>()) {
+                if (GetParent<CPACSElementMass>()->GetUID())
+                    return GetParent<CPACSElementMass>();
+                else
+                    return GetParent<CPACSElementMass>()->GetNextUIDParent();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSMassInertia::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CPACSDeckElementMass>()) {
+                return GetParent<CPACSDeckElementMass>();
+            }
+            if (IsParent<CPACSElementMass>()) {
+                if (GetParent<CPACSElementMass>()->GetUID())
+                    return GetParent<CPACSElementMass>();
+                else
+                    return GetParent<CPACSElementMass>()->GetNextUIDParent();
+            }
+        }
+        return nullptr;
     }
 
     void CPACSMassInertia::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)

@@ -235,6 +235,7 @@ TIGL_COMPONENT_CONTROL_SURFACE_DEVICE, /**< The component is a control surface d
 TIGL_COMPONENT_DUCT,              /**< The Component belongs to a duct */
 TIGL_COMPONENT_TANK,             /**< The Component is a fuel tank */
 TIGL_COMPONENT_TANK_HULL,        /**< The Component is a vessel of a fuel tank */
+TIGL_COMPONENT_SYSTEM_COMPONENT, /**< The Component is a system component */
 TIGL_COMPONENT_OTHER
 };
 

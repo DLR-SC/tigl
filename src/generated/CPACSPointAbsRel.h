@@ -31,6 +31,7 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CCPACSTransformation;
+class CCPACSTransformationSE3;
 
 namespace generated
 {
@@ -39,6 +40,7 @@ namespace generated
     // This class is used in:
     // CPACSStrutAssembly
     // CPACSTransformation
+    // CPACSTransformationSE3
 
     /// @brief Point with global/local reference
     /// 
@@ -54,6 +56,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSPointAbsRel(CPACSStrutAssembly* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSPointAbsRel(CCPACSTransformation* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSPointAbsRel(CCPACSTransformationSE3* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSPointAbsRel();
 
@@ -66,7 +69,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSStrutAssembly>::value || std::is_same<P, CCPACSTransformation>::value, "template argument for P is not a parent class of CPACSPointAbsRel");
+            static_assert(std::is_same<P, CPACSStrutAssembly>::value || std::is_same<P, CCPACSTransformation>::value || std::is_same<P, CCPACSTransformationSE3>::value, "template argument for P is not a parent class of CPACSPointAbsRel");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -76,7 +79,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSStrutAssembly>::value || std::is_same<P, CCPACSTransformation>::value, "template argument for P is not a parent class of CPACSPointAbsRel");
+            static_assert(std::is_same<P, CPACSStrutAssembly>::value || std::is_same<P, CCPACSTransformation>::value || std::is_same<P, CCPACSTransformationSE3>::value, "template argument for P is not a parent class of CPACSPointAbsRel");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

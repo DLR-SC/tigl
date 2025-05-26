@@ -35,6 +35,11 @@ CCPACSFuselageSections::CCPACSFuselageSections(CCPACSDuct* parent, CTiglUIDManag
 CCPACSFuselageSections::CCPACSFuselageSections(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSections(parent, uidMgr) {}
 
+CCPACSFuselageSections::CCPACSFuselageSections(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSections(parent, uidMgr)
+{
+}
+
 int CCPACSFuselageSections::GetSectionCount() const
 {
     return static_cast<int>(m_sections.size());

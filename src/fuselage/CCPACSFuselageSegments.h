@@ -40,6 +40,7 @@ public:
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFuselageSegments(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 

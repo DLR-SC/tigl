@@ -17,10 +17,12 @@
 
 #include <cassert>
 #include "CCPACSTransformation.h"
+#include "CCPACSTransformationSE3.h"
 #include "CPACSBoundingBox.h"
 #include "CPACSControlSurfaceHingePoint.h"
 #include "CPACSControlSurfaceStep.h"
 #include "CPACSDeckElementMass.h"
+#include "CPACSElementMass.h"
 #include "CPACSPoint.h"
 #include "CPACSPointList.h"
 #include "CTiglError.h"
@@ -64,6 +66,14 @@ namespace generated
         m_parentType = &typeid(CPACSDeckElementMass);
     }
 
+    CPACSPoint::CPACSPoint(CPACSElementMass* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSElementMass);
+    }
+
     CPACSPoint::CPACSPoint(CPACSPointList* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -78,6 +88,14 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSTransformation);
+    }
+
+    CPACSPoint::CPACSPoint(CCPACSTransformationSE3* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSTransformationSE3);
     }
 
     CPACSPoint::~CPACSPoint()
@@ -100,6 +118,12 @@ namespace generated
             if (IsParent<CPACSDeckElementMass>()) {
                 return GetParent<CPACSDeckElementMass>();
             }
+            if (IsParent<CPACSElementMass>()) {
+                if (GetParent<CPACSElementMass>()->GetUID())
+                    return GetParent<CPACSElementMass>();
+                else
+                    return GetParent<CPACSElementMass>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSPointList>()) {
                 return GetParent<CPACSPointList>()->GetNextUIDParent();
             }
@@ -108,6 +132,12 @@ namespace generated
                     return GetParent<CCPACSTransformation>();
                 else
                     return GetParent<CCPACSTransformation>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSTransformationSE3>()) {
+                if (GetParent<CCPACSTransformationSE3>()->GetUID())
+                    return GetParent<CCPACSTransformationSE3>();
+                else
+                    return GetParent<CCPACSTransformationSE3>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -128,6 +158,12 @@ namespace generated
             if (IsParent<CPACSDeckElementMass>()) {
                 return GetParent<CPACSDeckElementMass>();
             }
+            if (IsParent<CPACSElementMass>()) {
+                if (GetParent<CPACSElementMass>()->GetUID())
+                    return GetParent<CPACSElementMass>();
+                else
+                    return GetParent<CPACSElementMass>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSPointList>()) {
                 return GetParent<CPACSPointList>()->GetNextUIDParent();
             }
@@ -136,6 +172,12 @@ namespace generated
                     return GetParent<CCPACSTransformation>();
                 else
                     return GetParent<CCPACSTransformation>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSTransformationSE3>()) {
+                if (GetParent<CCPACSTransformationSE3>()->GetUID())
+                    return GetParent<CCPACSTransformationSE3>();
+                else
+                    return GetParent<CCPACSTransformationSE3>()->GetNextUIDParent();
             }
         }
         return nullptr;

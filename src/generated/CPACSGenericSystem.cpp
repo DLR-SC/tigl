@@ -30,6 +30,7 @@ namespace generated
     CPACSGenericSystem::CPACSGenericSystem(CCPACSGenericSystems* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(reinterpret_cast<CCPACSGenericSystem*>(this), m_uidMgr)
+        , m_components(reinterpret_cast<CCPACSGenericSystem*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -132,6 +133,14 @@ namespace generated
             LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
         }
 
+        // read element components
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/components")) {
+            m_components.ReadCPACS(tixiHandle, xpath + "/components");
+        }
+        else {
+            LOG(ERROR) << "Required element components is missing at xpath " << xpath;
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
@@ -179,6 +188,10 @@ namespace generated
         // write element transformation
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
         m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
+
+        // write element components
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/components");
+        m_components.WriteCPACS(tixiHandle, xpath + "/components");
 
     }
 
@@ -248,6 +261,16 @@ namespace generated
     CCPACSTransformation& CPACSGenericSystem::GetTransformation()
     {
         return m_transformation;
+    }
+
+    const CCPACSComponents& CPACSGenericSystem::GetComponents() const
+    {
+        return m_components;
+    }
+
+    CCPACSComponents& CPACSGenericSystem::GetComponents()
+    {
+        return m_components;
     }
 
 } // namespace generated

@@ -33,9 +33,11 @@ class CCPACSExternalObject;
 
 namespace generated
 {
+    class CPACSExternalGeometry;
     class CPACSGenericGeometryComponent;
 
     // This class is used in:
+    // CPACSExternalGeometry
     // CPACSGenericGeometricComponent
     // CPACSGenericGeometryComponent
 
@@ -50,6 +52,7 @@ namespace generated
     class CPACSLinkToFile
     {
     public:
+        TIGL_EXPORT CPACSLinkToFile(CPACSExternalGeometry* parent);
         TIGL_EXPORT CPACSLinkToFile(CCPACSExternalObject* parent);
         TIGL_EXPORT CPACSLinkToFile(CPACSGenericGeometryComponent* parent);
 
@@ -64,7 +67,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSGenericGeometryComponent>::value, "template argument for P is not a parent class of CPACSLinkToFile");
+            static_assert(std::is_same<P, CPACSExternalGeometry>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSGenericGeometryComponent>::value, "template argument for P is not a parent class of CPACSLinkToFile");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -74,7 +77,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSGenericGeometryComponent>::value, "template argument for P is not a parent class of CPACSLinkToFile");
+            static_assert(std::is_same<P, CPACSExternalGeometry>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSGenericGeometryComponent>::value, "template argument for P is not a parent class of CPACSLinkToFile");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -111,5 +114,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSLinkToFile = generated::CPACSLinkToFile;
+using CCPACSExternalGeometry = generated::CPACSExternalGeometry;
 using CCPACSGenericGeometryComponent = generated::CPACSGenericGeometryComponent;
 } // namespace tigl

@@ -33,6 +33,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSectionElement.h"
+#include "CPACSExternalGeometry.h"
 #include "CPACSGenericGeometryComponent.h"
 #include "CPACSLandingGearBase.h"
 #include "CPACSTransformation.h"
@@ -75,6 +76,14 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSEnginePylon);
+    }
+
+    CPACSTransformation::CPACSTransformation(CPACSExternalGeometry* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSExternalGeometry);
     }
 
     CPACSTransformation::CPACSTransformation(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr)
@@ -217,6 +226,9 @@ namespace generated
             if (IsParent<CCPACSEnginePylon>()) {
                 return GetParent<CCPACSEnginePylon>();
             }
+            if (IsParent<CPACSExternalGeometry>()) {
+                return GetParent<CPACSExternalGeometry>()->GetNextUIDParent();
+            }
             if (IsParent<CCPACSFuelTank>()) {
                 return GetParent<CCPACSFuelTank>();
             }
@@ -280,6 +292,9 @@ namespace generated
             }
             if (IsParent<CCPACSEnginePylon>()) {
                 return GetParent<CCPACSEnginePylon>();
+            }
+            if (IsParent<CPACSExternalGeometry>()) {
+                return GetParent<CPACSExternalGeometry>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSFuelTank>()) {
                 return GetParent<CCPACSFuelTank>();

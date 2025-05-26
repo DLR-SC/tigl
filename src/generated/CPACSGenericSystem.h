@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSComponents.h>
 #include <CCPACSTransformation.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
@@ -81,6 +82,9 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
+        TIGL_EXPORT virtual const CCPACSComponents& GetComponents() const;
+        TIGL_EXPORT virtual CCPACSComponents& GetComponents();
+
     protected:
         CCPACSGenericSystems* m_parent;
 
@@ -101,6 +105,8 @@ namespace generated
         boost::optional<CPACSGenericSystem_geometricBaseType> m_geometricBaseType;
 
         CCPACSTransformation                                  m_transformation;
+
+        CCPACSComponents                                      m_components;
 
     private:
         CPACSGenericSystem(const CPACSGenericSystem&) = delete;
