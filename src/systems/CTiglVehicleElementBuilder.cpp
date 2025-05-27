@@ -22,6 +22,8 @@
 #include "CCPACSFrustum.h"
 #include "CCPACSEllipsoid.h"
 
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
@@ -75,40 +77,49 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
     return loft;
 };
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& p)
+TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& cuboid)
 {
-    const double a = p.GetLengthX();
-    const double b = p.GetDepthY();
-    const double c = p.GetHeightZ();
+    const double lengthX = cuboid.GetLengthX();
+    const double depthY  = cuboid.GetDepthY();
+    const double heightZ = cuboid.GetHeightZ();
 
-    const double alpha = p.getAlpha() * M_PI / 180.0;
-    const double beta  = p.getBeta() * M_PI / 180.0;
-    const double gamma = p.getGamma() * M_PI / 180.0;
+    if (cuboid.isRectangularCuboid()) {
+        return BRepPrimAPI_MakeBox(lengthX, depthY, heightZ).Shape();
+    }
 
-    gp_Vec vA{a, 0, 0};
-    gp_Vec vB{b * std::cos(gamma), b * std::sin(gamma), 0};
-    const double zC =
-        c * std::sqrt(1 - std::pow(std::cos(beta), 2) -
-                      std::pow((std::cos(alpha) - std::cos(beta) * std::cos(gamma)) / std::sin(gamma), 2));
-    gp_Vec vC{c * std::cos(beta), c * (std::cos(alpha) - std::cos(beta) * std::cos(gamma)) / std::sin(gamma), zC};
+    if (cuboid.isParallelepiped()) {
+        const double alpha = cuboid.GetAlpha_choice1().value();
+        const double beta  = cuboid.GetBeta_choice1().value();
+        const double gamma = cuboid.GetGamma_choice1().value();
 
-    BRepBuilderAPI_MakePolygon poly;
-    const gp_Pnt p0{0, 0, 0};
-    poly.Add(p0);
-    poly.Add(p0.Translated(vA));
-    poly.Add(p0.Translated(vA).Translated(vB));
-    poly.Add(p0.Translated(vB));
-    poly.Close();
-    TopoDS_Face base = BRepBuilderAPI_MakeFace(poly.Wire());
+        gp_Vec vA{lengthX, 0, 0};
+        gp_Vec vB{depthY * std::cos(gamma), depthY * std::sin(gamma), 0};
+        const double zC =
+            heightZ * std::sqrt(1 - std::pow(std::cos(beta), 2) -
+                                std::pow((std::cos(alpha) - std::cos(beta) * std::cos(gamma)) / std::sin(gamma), 2));
+        gp_Vec vC{heightZ * std::cos(beta),
+                  heightZ * (std::cos(alpha) - std::cos(beta) * std::cos(gamma)) / std::sin(gamma), zC};
 
-    TopoDS_Shape parallelepiped = BRepPrimAPI_MakePrism(base, vC).Shape();
+        BRepBuilderAPI_MakePolygon poly;
+        const gp_Pnt p0{0, 0, 0};
+        poly.Add(p0);
+        poly.Add(p0.Translated(vA));
+        poly.Add(p0.Translated(vA).Translated(vB));
+        poly.Add(p0.Translated(vB));
+        poly.Close();
+        TopoDS_Face base = BRepBuilderAPI_MakeFace(poly.Wire());
 
-    gp_Vec center = (vA + vB + vC) * 0.5;
-    gp_Trsf tr;
-    tr.SetTranslation(gp_Vec(-center.X(), -center.Y(), -center.Z()));
-    TopoDS_Shape centered_parallelepiped = BRepBuilderAPI_Transform(parallelepiped, tr, true).Shape();
+        return BRepPrimAPI_MakePrism(base, vC).Shape();
+    }
 
-    return centered_parallelepiped;
+    if (cuboid.isWedge()) {
+        const double xmin = cuboid.GetUpperFaceXmin_choice2().value();
+        const double xmax = cuboid.GetUpperFaceXmax_choice2().value();
+        const double ymin = cuboid.GetUpperFaceYmin_choice2().value();
+        const double ymax = cuboid.GetUpperFaceYmax_choice2().value();
+
+        TopoDS_Shape wedge = BRepPrimAPI_MakeWedge(lengthX, depthY, heightZ, xmin, ymin, xmax, ymax).Shape();
+    }
 }
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildFrustumShape(const CCPACSFrustum& f)

@@ -30,17 +30,9 @@ public:
     TIGL_EXPORT CCPACSCuboid(CCPACSElementGeometry* parent);
     TIGL_EXPORT CCPACSCuboid(CCPACSElementGeometryAddtionalPart* parent);
 
-    /**
-     * @brief Returns either value from CPACS or default.
-     */
-    TIGL_EXPORT double getAlpha() const;
-    TIGL_EXPORT double getBeta() const;
-    TIGL_EXPORT double getGamma() const;
-
-private:
-    double _default_alpha;
-    double _default_beta;
-    double _default_gamma;
+    TIGL_EXPORT bool isRectangularCuboid() const;
+    TIGL_EXPORT bool isParallelepiped() const;
+    TIGL_EXPORT bool isWedge() const;
 };
 
 } // namespace tigl

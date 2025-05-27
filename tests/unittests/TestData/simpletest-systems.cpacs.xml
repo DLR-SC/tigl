@@ -105,115 +105,9 @@
                         </segments>
                     </fuselage>
                 </fuselages>
-                <wings>
-                    <wing uID="SimpleWing" symmetry="x-z-plane">
-                        <name>Simple Wing</name>
-                        <transformation>
-                            <translation>
-                                <x>5.</x>
-                                <y>2</y>
-                            </translation>
-                        </transformation>
-                        <sections>
-                            <section uID="wing1section1">
-                                <name>root section</name>
-                                <transformation>
-                                    <rotation>
-                                        <x>0.0</x>
-                                        <y>0.0</y>
-                                        <z>0.0</z>
-                                    </rotation>
-                                    <scaling>
-                                        <x>1</x>
-                                        <y>1</y>
-                                        <z>1</z>
-                                    </scaling>
-                                    <translation>
-                                        <x>0.0</x>
-                                        <y>0.0</y>
-                                        <z>0.0</z>
-                                    </translation>
-                                </transformation>
-                                <elements>
-                                    <element uID="wing1section1element1">
-                                        <name>wing root element</name>
-                                        <airfoilUID>NACA0009</airfoilUID>
-                                        <transformation>
-                                            <rotation>
-                                                <x>0.0</x>
-                                                <y>0.0</y>
-                                                <z>0.0</z>
-                                            </rotation>
-                                            <scaling>
-                                                <x>3</x>
-                                                <y>1</y>
-                                                <z>2</z>
-                                            </scaling>
-                                            <translation>
-                                                <x>0.0</x>
-                                                <y>0.0</y>
-                                                <z>0.0</z>
-                                            </translation>
-                                        </transformation>
-                                    </element>
-                                </elements>
-                            </section>
-                            <section uID="wing1section2">
-                                <name>tip section</name>
-                                <transformation>
-                                    <rotation>
-                                        <x>0.0</x>
-                                        <y>0.0</y>
-                                        <z>0.0</z>
-                                    </rotation>
-                                    <scaling>
-                                        <x>1</x>
-                                        <y>1</y>
-                                        <z>1</z>
-                                    </scaling>
-                                    <translation>
-                                        <x>1.5</x>
-                                        <y>10.0</y>
-                                        <z>0.0</z>
-                                    </translation>
-                                </transformation>
-                                <elements>
-                                    <element uID="wing1section2element1">
-                                        <name>wing tip element</name>
-                                        <airfoilUID>NACA0009</airfoilUID>
-                                        <transformation>
-                                            <rotation>
-                                                <x>0.0</x>
-                                                <y>0.0</y>
-                                                <z>0.0</z>
-                                            </rotation>
-                                            <scaling>
-                                                <x>1.5</x>
-                                                <y>1</y>
-                                                <z>2</z>
-                                            </scaling>
-                                            <translation>
-                                                <x>0.0</x>
-                                                <y>0.0</y>
-                                                <z>0.0</z>
-                                            </translation>
-                                        </transformation>
-                                    </element>
-                                </elements>
-                            </section>
-                        </sections>
-                        <segments>
-                            <segment uID="wing1segment1">
-                                <name>wing segment</name>
-                                <fromElementUID>wing1section1element1</fromElementUID>
-                                <toElementUID>wing1section2element1</toElementUID>
-                            </segment>
-                        </segments>
-                    </wing>
-                </wings>
                 <systems>
                     <genericSystems>
-                        <genericSystem uID="genSys1">
+                        <genericSystem uID="genSys_1">
                             <name>Generic System 1</name>
                             <transformation>
                                 <translation>
@@ -223,52 +117,40 @@
                                 </translation>
                             </transformation>
                             <components>
-                                <component uID="genSys1Comp1">
+                                <component uID="rectCube_1">
                                     <name>Component 1 of System 1</name>
-                                    <systemElementUID>genComp1</systemElementUID>
-                                    <parentUID>SimpleFuselage</parentUID>
+                                    <systemElementUID>predRectCube_1</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>1</x>
+                                            <x>0</x>
                                             <y>0</y>
                                             <z>0</z>
                                         </translation>
                                     </transformation>
                                 </component>
-                                <component uID="genSys1Comp2">
+                                <component uID="rectCube_2">
                                     <name>Component 2 of System 1</name>
-                                    <systemElementUID>genComp1</systemElementUID>
-                                    <parentUID>SimpleWing</parentUID>
+                                    <systemElementUID>predRectCube_2</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>2.</x>
-                                            <y>1.2</y>
+                                            <x>0</x>
+                                            <y>5</y>
                                             <z>0</z>
                                         </translation>
                                     </transformation>
                                 </component>
-                                <component uID="genSys1Comp3">
+                                <component uID="rectCube_3">
                                     <name>Component 3 of System 1</name>
-                                    <systemElementUID>genComp2</systemElementUID>
-                                    <parentUID>SimpleFuselage</parentUID>
+                                    <systemElementUID>predRectCube_2</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>3.</x>
-                                            <y>0</y>
+                                            <x>0</x>
+                                            <y>10</y>
                                             <z>0</z>
                                         </translation>
-                                    </transformation>
-                                </component>
-                                <component uID="genSys1Comp4">
-                                    <name>Component 4 of System 1</name>
-                                    <systemElementUID>genComp3</systemElementUID>
-                                    <parentUID>SimpleFuselage</parentUID>
-                                    <transformation>
-                                        <translation>
-                                            <x>5.</x>
-                                            <y>0</y>
-                                            <z>0</z>
-                                        </translation>
+                                        <rotation>
+                                            <x>45</x>
+                                        </rotation>
                                     </transformation>
                                 </component>
                             </components>
@@ -278,50 +160,25 @@
             </model>
         </aircraft>
         <systemElements>
-            <electricMotors>
-                <electricMotor uID="predefinedElectricMotor">
-                    <name>Predefined Electric motor</name>
-                    <geometry>
-                        <parallelepiped>
-                            <a>1.</a>
-                            <b>2.</b>
-                            <c>3.</c>
-                        </parallelepiped>
-                    </geometry>
-                </electricMotor>
-            </electricMotors>
             <genericComponents>
-                <genericComponent uID="genComp1">
-                    <name>Generic Component 1</name>
+                <genericComponent uID="predRectCube_1">
+                    <name>Predefined rectangular cube 1</name>
                     <geometry>
-                        <parallelepiped>
-                            <a>1.</a>
-                            <b>2.</b>
-                            <c>3.</c>
-                            <alpha>90.</alpha>
-                            <beta>90</beta>
-                            <gamma>45.</gamma>
-                        </parallelepiped>
+                        <cuboid>
+                            <lengthX>1.</lengthX>
+                            <depthY>1.</depthY>
+                            <heightZ>1.</heightZ>
+                        </cuboid>
                     </geometry>
                 </genericComponent>
-                <genericComponent uID="genComp2">
-                    <name>Generic Component 2</name>
+                <genericComponent uID="predRectCube_2">
+                    <name>Predefined rectangular cube 2</name>
                     <geometry>
-                        <frustum>
-                            <height>1.</height>
-                            <lowerRadius>0.7</lowerRadius>
-							<upperRadius>0</upperRadius>
-                        </frustum>
-                    </geometry>
-                </genericComponent>
-                <genericComponent uID="genComp3">
-                    <name>Generic Component 3</name>
-                    <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-							<radiusY>0.5</radiusY>
-							<radiusZ>2.</radiusZ>
-                        </ellipsoid>
+                        <cuboid>
+                            <lengthX>3.</lengthX>
+                            <depthY>0.5</depthY>
+                            <heightZ>0.5</heightZ>
+                        </cuboid>
                     </geometry>
                 </genericComponent>
             </genericComponents>

@@ -25,33 +25,30 @@ namespace tigl
 
 CCPACSCuboid::CCPACSCuboid(CCPACSElementGeometry* parent)
     : generated::CPACSCuboid(parent)
-    , _default_alpha(90.0)
-    , _default_beta(90.0)
-    , _default_gamma(90.0)
 {
 }
 
 CCPACSCuboid::CCPACSCuboid(CCPACSElementGeometryAddtionalPart* parent)
     : generated::CPACSCuboid(parent)
-    , _default_alpha(90.0)
-    , _default_beta(90.0)
-    , _default_gamma(90.0)
 {
 }
 
-double CCPACSCuboid::getAlpha() const
+// ToDo: Should this be based on the given elements only or should we also evaluate its values, e.g. false if all angles are 90degs?
+// Note: Exceptions for incomplete data sets (only alpha, but no beta or gamma would be invalid according to XSD) should be caught 
+// by the generated classes, I would say.
+bool CCPACSCuboid::isRectangularCuboid() const
 {
-    return m_alpha_choice1.get_value_or(_default_alpha);
+    return !isParallelepiped() && !isWedge();
 }
 
-double CCPACSCuboid::getBeta() const
+bool CCPACSCuboid::isParallelepiped() const
 {
-    return m_beta_choice1.get_value_or(_default_alpha);
+    return m_alpha_choice1 && m_beta_choice1 && m_gamma_choice1;
 }
 
-double CCPACSCuboid::getGamma() const
+bool CCPACSCuboid::isWedge() const
 {
-    return m_gamma_choice1.get_value_or(_default_gamma);
+    return m_upperFaceXmin_choice2 && m_upperFaceXmax_choice2 && m_upperFaceYmin_choice2 && m_upperFaceYmax_choice2;
 }
 
 } // namespace tigl
