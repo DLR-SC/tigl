@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- /**
+/**
   * @file
   * @brief Tests for testing duct functions.
   */
@@ -29,77 +29,79 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 
-  // #include "CCPACSVessel.h"
+// #include "CCPACSVessel.h"
 
 class Systems : public ::testing::Test
 {
 protected:
-	static void SetUpTestCase()
-	{
-		const char* filename = "TestData/simpletest-systems.cpacs.xml";
-		ReturnCode tixiRet;
-		TiglReturnCode tiglRet;
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/simpletest-systems.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
 
-		tiglHandle = -1;
-		tixiHandle = -1;
+        tiglHandle = -1;
+        tixiHandle = -1;
 
-		tixiRet = tixiOpenDocument(filename, &tixiHandle);
-		ASSERT_TRUE(tixiRet == SUCCESS);
-		tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "testAircraft", &tiglHandle);
-		ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-	}
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE(tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "testAircraft", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
 
-	static void TearDownTestCase()
-	{
-		ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
-		ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
-		tiglHandle = -1;
-		tixiHandle = -1;
-	}
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
 
-	void SetUp() override
-	{
-	}
-	void TearDown() override
-	{
-	}
+    void SetUp() override
+    {
+    }
+    void TearDown() override
+    {
+    }
 
-	static TixiDocumentHandle tixiHandle;
-	static TiglCPACSConfigurationHandle tiglHandle;
+    static TixiDocumentHandle tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
 
-	tigl::CTiglUIDManager& uidMgr =
-		tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(Systems::tiglHandle).GetUIDManager();
+    tigl::CTiglUIDManager& uidMgr =
+        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(Systems::tiglHandle).GetUIDManager();
 
-	tigl::CCPACSGenericSystem const* genericSystem = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("genSys_1");
-	tigl::CCPACSComponent const* rectCube_1 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_1");
+    tigl::CCPACSGenericSystem const* genericSystem = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("genSys_1");
+    tigl::CCPACSComponent const* rectCube_1        = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_1");
+    tigl::CCPACSComponent const* wedge_1           = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wedge_1");
 
-	// std::cout << "Is UID registered: " << uidMgr->IsUIDRegistered("predefinedElectricMotor") << std::endl;
+    // std::cout << "Is UID registered: " << uidMgr->IsUIDRegistered("predefinedElectricMotor") << std::endl;
 };
 
-TixiDocumentHandle Systems::tixiHandle = 0;
+TixiDocumentHandle Systems::tixiHandle           = 0;
 TiglCPACSConfigurationHandle Systems::tiglHandle = 0;
 
 void CheckExceptionMessage(std::function<void()> func, const char* expectedMessage)
 {
-	try {
-		func();
-		FAIL() << "Expected tigl::CTiglError but no exception was thrown.";
-	}
-	catch (const tigl::CTiglError& e) {
-		EXPECT_STREQ(e.what(), expectedMessage);
-	}
-	catch (...) {
-		FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
-	}
+    try {
+        func();
+        FAIL() << "Expected tigl::CTiglError but no exception was thrown.";
+    }
+    catch (const tigl::CTiglError& e) {
+        EXPECT_STREQ(e.what(), expectedMessage);
+    }
+    catch (...) {
+        FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
+    }
 }
 
 TEST_F(Systems, temp)
 {
-	genericSystem->GetComponents();
-	auto& name = rectCube_1->GetName();
-	EXPECT_EQ(name, "Component 1 of System 1");
+    genericSystem->GetComponents();
+    auto& name = rectCube_1->GetName();
+    EXPECT_EQ(name, "Component 1 of System 1");
 
-	auto& loft = rectCube_1->GetLoft();
+    auto& loft  = rectCube_1->GetLoft();
+    auto& loft2 = wedge_1->GetLoft();
 
-	EXPECT_EQ(1., 1.);
+    EXPECT_EQ(1., 1.);
 }

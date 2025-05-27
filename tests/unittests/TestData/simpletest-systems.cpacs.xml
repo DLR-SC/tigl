@@ -153,6 +153,50 @@
                                         </rotation>
                                     </transformation>
                                 </component>
+                                <component uID="wedge_1">
+                                    <name>Installed wedge 1</name>
+                                    <systemElementUID>predWedge_1</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>10</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+                                <component uID="wedge_2">
+                                    <name>Installed wedge 2</name>
+                                    <systemElementUID>predWedge_2</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>10</x>
+                                            <y>5</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+                                <component uID="wedge_3">
+                                    <name>Installed wedge 3</name>
+                                    <systemElementUID>predWedge_3</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>10</x>
+                                            <y>10</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+                                <component uID="wedge_4">
+                                    <name>Installed wedge 4</name>
+                                    <systemElementUID>predWedge_4</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>10</x>
+                                            <y>15</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
                             </components>
                         </genericSystem>
                     </genericSystems>
@@ -178,6 +222,62 @@
                             <lengthX>3.</lengthX>
                             <depthY>0.5</depthY>
                             <heightZ>0.5</heightZ>
+                        </cuboid>
+                    </geometry>
+                </genericComponent>
+                <genericComponent uID="predWedge_1">
+                    <name>Predefined wedge 1</name>
+                    <geometry>
+                        <cuboid>
+                            <lengthX>1.</lengthX>
+                            <depthY>1.</depthY>
+                            <heightZ>1.</heightZ>
+                            <upperFaceXmin>0.1</upperFaceXmin>
+                            <upperFaceXmax>0.9</upperFaceXmax>
+                            <upperFaceYmin>0.1</upperFaceYmin>
+                            <upperFaceYmax>0.9</upperFaceYmax>
+                        </cuboid>
+                    </geometry>
+                </genericComponent>
+                <genericComponent uID="predWedge_2">
+                    <name>Predefined wedge 2</name>
+                    <geometry>
+                        <cuboid>
+                            <lengthX>1.</lengthX>
+                            <depthY>1.</depthY>
+                            <heightZ>1.</heightZ>
+                            <upperFaceXmin>0.5</upperFaceXmin>
+                            <upperFaceXmax>0.5</upperFaceXmax>
+                            <upperFaceYmin>0.0</upperFaceYmin>
+                            <upperFaceYmax>1.0</upperFaceYmax>
+                        </cuboid>
+                    </geometry>
+                </genericComponent>
+                <genericComponent uID="predWedge_3">
+                    <name>Predefined wedge 3</name>
+                    <geometry>
+                        <cuboid>
+                            <lengthX>1.</lengthX>
+                            <depthY>1.</depthY>
+                            <heightZ>1.</heightZ>
+                            <upperFaceXmin>0.0</upperFaceXmin>
+                            <upperFaceXmax>1.0</upperFaceXmax>
+                            <upperFaceYmin>0.5</upperFaceYmin>
+                            <upperFaceYmax>0.5</upperFaceYmax>
+                        </cuboid>
+                    </geometry>
+                </genericComponent>
+                <genericComponent uID="predWedge_4">
+                    <name>Predefined wedge 4</name>
+                    <geometry>
+                        <cuboid>
+                            <lengthX>1.</lengthX>
+                            <depthY>1.</depthY>
+                            <heightZ>1.</heightZ>
+                            <upperFaceXmin>0.5</upperFaceXmin>
+                            <upperFaceXmax>0.5</upperFaceXmax>
+                            <upperFaceYmin>0.5</upperFaceYmin>
+                            <upperFaceYmax>0.5</upperFaceYmax>
                         </cuboid>
                     </geometry>
                 </genericComponent>

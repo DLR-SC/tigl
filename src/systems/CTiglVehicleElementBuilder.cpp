@@ -119,6 +119,18 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& cu
         const double ymax = cuboid.GetUpperFaceYmax_choice2().value();
 
         TopoDS_Shape wedge = BRepPrimAPI_MakeWedge(lengthX, depthY, heightZ, xmin, ymin, xmax, ymax).Shape();
+
+        // Rotate and translate from OCC to CPACS convention:
+        gp_Ax1 xAxis(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+        gp_Trsf rot;
+        gp_Trsf trl;
+        rot.SetRotation(xAxis, M_PI / 2.0);
+        trl.SetTranslation(gp_Vec(0, depthY, 0));
+
+        gp_Trsf comb = trl * rot;  
+        BRepBuilderAPI_Transform transformer(wedge, comb, /*copy=*/true);
+
+        return transformer.Shape(); 
     }
 }
 
