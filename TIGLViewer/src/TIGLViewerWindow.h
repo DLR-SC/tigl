@@ -76,7 +76,7 @@ signals:
 
 public slots:
     void openFile(const QString& fileName);
-    void openNewFile(const QString& fileName);
+    void openNewFile(const QString& templatePath);
     void openScript(const QString& scriptFileName);
     bool exportFile(const QString &fileName);
     bool saveFile(QString fileName);

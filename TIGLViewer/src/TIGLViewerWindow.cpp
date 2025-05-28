@@ -376,7 +376,7 @@ std::string TIGLViewerWindow::readFileContent(char* fileName)
     return content;
 }
 
-void TIGLViewerWindow::openNewFile(const QString& fileName)
+void TIGLViewerWindow::openNewFile(const QString& templatePath)
 {
     QString      fileType;
     QFileInfo    fileInfo;
@@ -390,13 +390,13 @@ void TIGLViewerWindow::openNewFile(const QString& fileName)
     Q_UNUSED(command);
     statusMessage(tr("Invoked File|Open New"));
 
-    if (!fileName.isEmpty()) {
-        fileInfo.setFile(fileName);
+    if (!templatePath.isEmpty()) {
+        fileInfo.setFile(templatePath);
         fileType = fileInfo.suffix();
 
         if (fileType.toLower() == tr("xml")) {
             // Read CPACS template file content into string and open the CPACS configuration from that
-            std::string cpacsFileContent = readFileContent(strdup((const char*)fileName.toLatin1()));
+            std::string cpacsFileContent = readFileContent(strdup((const char*)templatePath.toLatin1()));
 
             TIGLViewerDocument* config = new TIGLViewerDocument(this);
             TiglReturnCode tiglRet = config->openCpacsConfigurationFromString(cpacsFileContent);
@@ -419,7 +419,7 @@ void TIGLViewerWindow::openNewFile(const QString& fileName)
             myOCC->fitAll();
         }
         else {
-            displayErrorMessage("Error opening file " + fileName, "Error");
+            displayErrorMessage("Error opening file " + templatePath, "Error");
         }
     }
 }
