@@ -148,6 +148,86 @@ char* TIGLViewerDocument::qstringToCstring(const QString& text)
     return strdup((const char*)text.toLatin1());
 }
 
+TiglReturnCode TIGLViewerDocument::openCpacsConfigurationFromString(const std::string cpacsFileContent)
+{
+    START_COMMAND()
+    QStringList configurations;
+
+    app->getScene()->getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
+
+    TixiDocumentHandle tixiHandle = -1;
+
+    ReturnCode tixiRet = tixiImportFromString(cpacsFileContent.c_str(), &tixiHandle);
+    if (tixiRet == NOT_WELL_FORMED) {
+        displayError(QString("Error in function <u>tixiImportFromString</u> when trying to open the template file. File not well-formated. Error code: %1").arg(tixiRet), "TIXI Error");
+        return TIGL_XML_ERROR;
+    }
+    if (tixiRet != SUCCESS) {
+        displayError(QString("Error in function <u>tixiImportFromString</u> when trying to open the template file. Error code: %1").arg(tixiRet), "TIXI Error");
+        return TIGL_XML_ERROR;
+    }
+
+    // read configuration names
+    int countAircrafts = 0;
+    int countRotorcrafts = 0;
+    tixiRet = tixiGetNamedChildrenCount( tixiHandle, CPACS_XPATH_AIRCRAFT, "model", &countAircrafts );
+    tixiRet = tixiGetNamedChildrenCount( tixiHandle, CPACS_XPATH_ROTORCRAFT, "model", &countRotorcrafts );
+    for (int i = 0; i < countAircrafts; i++) {
+        char *text;
+        std::stringstream xpath;
+        xpath << CPACS_XPATH_AIRCRAFT_MODEL << "[" << i+1 << "]";
+        tixiRet = tixiGetTextAttribute( tixiHandle, xpath.str().c_str(), "uID", &text);
+        if (tixiRet == SUCCESS) {
+            configurations << text;
+        }
+        else {
+            displayError(QString("Error: missing uID for aircraft model %1!").arg(i), "TIXI Error");
+            return TIGL_OPEN_FAILED;
+        }
+    }
+    for (int i = 0; i < countRotorcrafts; i++) {
+        char *text;
+        std::stringstream xpath;
+        xpath << CPACS_XPATH_ROTORCRAFT_MODEL << "[" << i+1 << "]";
+        tixiRet = tixiGetTextAttribute(tixiHandle, xpath.str().c_str(), "uID", &text);
+        if (tixiRet == SUCCESS) {
+            configurations << text;
+        }
+        else {
+            displayError(QString("Error: missing uID for rotorcraft model %1!").arg(i), "TIXI Error");
+            return TIGL_OPEN_FAILED;
+        }
+
+    }
+
+    // Get configuration from user and open with TIGL
+    TiglReturnCode tiglRet = TIGL_UNINITIALIZED;
+    if (countRotorcrafts + countAircrafts == 0) {
+        // no configuration present
+        return TIGL_UNINITIALIZED;
+    }
+    else if (countRotorcrafts + countAircrafts == 1) {
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &m_cpacsHandle);
+    }
+    else {
+        bool ok;
+        QString item = QInputDialog::getItem(app, tr("Select CPACS Configuration"),
+                                             tr("Available Configurations:"), configurations, 0, false, &ok);
+        if (ok && !item.isEmpty()) {
+            tiglRet = tiglOpenCPACSConfiguration(tixiHandle, strdup((const char*)item.toLatin1()), &m_cpacsHandle);
+        }
+    }
+
+    if (tiglRet != TIGL_SUCCESS) {
+        tixiCloseDocument(tixiHandle);
+        m_cpacsHandle = -1;
+        displayError(QString("<u>tiglOpenCPACSConfiguration</u> returned %1").arg(tiglGetErrorString(tiglRet)), "Error while reading in CPACS configuration");
+        return tiglRet;
+    }
+    drawConfiguration();
+    return TIGL_SUCCESS;
+}
+
 TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileName)
 {
     START_COMMAND()
