@@ -33,6 +33,8 @@
 
 #include "ModificatorManager.h"
 
+#include <filesystem>
+
 class QAction;
 class QLabel;
 class QMenu;
@@ -74,6 +76,7 @@ signals:
 
 public slots:
     void openFile(const QString& fileName);
+    void openNewFile(const QString& fileName);
     void openScript(const QString& scriptFileName);
     bool exportFile(const QString &fileName);
     bool saveFile(QString fileName);
@@ -121,6 +124,7 @@ private:
     void createMenus();
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
+    std::string readFileContent(char* fileName);
 
     void closeEvent(QCloseEvent*) override;
     bool deleteEnvVar(const char* varname);

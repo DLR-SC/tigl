@@ -45,6 +45,7 @@ public:
     ~TIGLViewerDocument( ) override;
 
     TiglReturnCode openCpacsConfiguration(const QString& fileName);
+    TiglReturnCode openCpacsConfigurationFromString(const std::string cpacsFileContent);
     void closeCpacsConfiguration();
     TiglCPACSConfigurationHandle getCpacsHandle() const;
 
