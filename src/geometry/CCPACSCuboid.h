@@ -29,10 +29,6 @@ class CCPACSCuboid : public generated::CPACSCuboid
 public:
     TIGL_EXPORT CCPACSCuboid(CCPACSElementGeometry* parent);
     TIGL_EXPORT CCPACSCuboid(CCPACSElementGeometryAddtionalPart* parent);
-
-    TIGL_EXPORT bool isRectangularCuboid() const;
-    TIGL_EXPORT bool isParallelepiped() const;
-    TIGL_EXPORT bool isWedge() const;
 };
 
 } // namespace tigl

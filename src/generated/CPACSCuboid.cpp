@@ -104,49 +104,31 @@ namespace generated
             LOG(ERROR) << "Required element heightZ is missing at xpath " << xpath;
         }
 
-        // read element alpha
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/alpha")) {
-            m_alpha_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/alpha");
-        }
-
-        // read element beta
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/beta")) {
-            m_beta_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/beta");
-        }
-
-        // read element gamma
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/gamma")) {
-            m_gamma_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/gamma");
-        }
-
         // read element upperFaceXmin
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceXmin")) {
-            m_upperFaceXmin_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceXmin");
+            m_upperFaceXmin = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceXmin");
         }
 
         // read element upperFaceXmax
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceXmax")) {
-            m_upperFaceXmax_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceXmax");
+            m_upperFaceXmax = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceXmax");
         }
 
         // read element upperFaceYmin
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceYmin")) {
-            m_upperFaceYmin_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceYmin");
+            m_upperFaceYmin = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceYmin");
         }
 
         // read element upperFaceYmax
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceYmax")) {
-            m_upperFaceYmax_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceYmax");
+            m_upperFaceYmax = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceYmax");
         }
 
-        if (!ValidateChoices()) {
-            LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
-        }
     }
 
     void CPACSCuboid::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "lengthX", "depthY", "heightZ", "alpha", "beta", "gamma", "upperFaceXmin", "upperFaceXmax", "upperFaceYmin", "upperFaceYmax" };
+        const std::vector<std::string> childElemOrder = { "lengthX", "depthY", "heightZ", "upperFaceXmin", "upperFaceXmax", "upperFaceYmin", "upperFaceYmax" };
 
         // write element lengthX
         tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lengthX", childElemOrder);
@@ -160,43 +142,10 @@ namespace generated
         tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/heightZ", childElemOrder);
         tixi::TixiSaveElement(tixiHandle, xpath + "/heightZ", m_heightZ);
 
-        // write element alpha
-        if (m_alpha_choice1) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/alpha", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/alpha", *m_alpha_choice1);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/alpha")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/alpha");
-            }
-        }
-
-        // write element beta
-        if (m_beta_choice1) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/beta", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/beta", *m_beta_choice1);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/beta")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/beta");
-            }
-        }
-
-        // write element gamma
-        if (m_gamma_choice1) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/gamma", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/gamma", *m_gamma_choice1);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/gamma")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/gamma");
-            }
-        }
-
         // write element upperFaceXmin
-        if (m_upperFaceXmin_choice2) {
+        if (m_upperFaceXmin) {
             tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperFaceXmin", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceXmin", *m_upperFaceXmin_choice2);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceXmin", *m_upperFaceXmin);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceXmin")) {
@@ -205,9 +154,9 @@ namespace generated
         }
 
         // write element upperFaceXmax
-        if (m_upperFaceXmax_choice2) {
+        if (m_upperFaceXmax) {
             tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperFaceXmax", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceXmax", *m_upperFaceXmax_choice2);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceXmax", *m_upperFaceXmax);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceXmax")) {
@@ -216,9 +165,9 @@ namespace generated
         }
 
         // write element upperFaceYmin
-        if (m_upperFaceYmin_choice2) {
+        if (m_upperFaceYmin) {
             tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperFaceYmin", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceYmin", *m_upperFaceYmin_choice2);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceYmin", *m_upperFaceYmin);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceYmin")) {
@@ -227,9 +176,9 @@ namespace generated
         }
 
         // write element upperFaceYmax
-        if (m_upperFaceYmax_choice2) {
+        if (m_upperFaceYmax) {
             tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperFaceYmax", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceYmax", *m_upperFaceYmax_choice2);
+            tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceYmax", *m_upperFaceYmax);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceYmax")) {
@@ -237,56 +186,6 @@ namespace generated
             }
         }
 
-    }
-
-    bool CPACSCuboid::ValidateChoices() const
-    {
-        return
-        (
-            (
-                (
-                    // mandatory elements of this choice must be there
-                    m_alpha_choice1.is_initialized()
-                    &&
-                    m_beta_choice1.is_initialized()
-                    &&
-                    m_gamma_choice1.is_initialized()
-                    &&
-                    // elements of other choices must not be there
-                    !(
-                        m_upperFaceXmin_choice2.is_initialized()
-                        ||
-                        m_upperFaceXmax_choice2.is_initialized()
-                        ||
-                        m_upperFaceYmin_choice2.is_initialized()
-                        ||
-                        m_upperFaceYmax_choice2.is_initialized()
-                    )
-                )
-                +
-                (
-                    // mandatory elements of this choice must be there
-                    m_upperFaceXmin_choice2.is_initialized()
-                    &&
-                    m_upperFaceXmax_choice2.is_initialized()
-                    &&
-                    m_upperFaceYmin_choice2.is_initialized()
-                    &&
-                    m_upperFaceYmax_choice2.is_initialized()
-                    &&
-                    // elements of other choices must not be there
-                    !(
-                        m_alpha_choice1.is_initialized()
-                        ||
-                        m_beta_choice1.is_initialized()
-                        ||
-                        m_gamma_choice1.is_initialized()
-                    )
-                )
-                == 1
-            )
-        )
-        ;
     }
 
     const double& CPACSCuboid::GetLengthX() const
@@ -319,74 +218,44 @@ namespace generated
         m_heightZ = value;
     }
 
-    const boost::optional<double>& CPACSCuboid::GetAlpha_choice1() const
+    const boost::optional<double>& CPACSCuboid::GetUpperFaceXmin() const
     {
-        return m_alpha_choice1;
+        return m_upperFaceXmin;
     }
 
-    void CPACSCuboid::SetAlpha_choice1(const boost::optional<double>& value)
+    void CPACSCuboid::SetUpperFaceXmin(const boost::optional<double>& value)
     {
-        m_alpha_choice1 = value;
+        m_upperFaceXmin = value;
     }
 
-    const boost::optional<double>& CPACSCuboid::GetBeta_choice1() const
+    const boost::optional<double>& CPACSCuboid::GetUpperFaceXmax() const
     {
-        return m_beta_choice1;
+        return m_upperFaceXmax;
     }
 
-    void CPACSCuboid::SetBeta_choice1(const boost::optional<double>& value)
+    void CPACSCuboid::SetUpperFaceXmax(const boost::optional<double>& value)
     {
-        m_beta_choice1 = value;
+        m_upperFaceXmax = value;
     }
 
-    const boost::optional<double>& CPACSCuboid::GetGamma_choice1() const
+    const boost::optional<double>& CPACSCuboid::GetUpperFaceYmin() const
     {
-        return m_gamma_choice1;
+        return m_upperFaceYmin;
     }
 
-    void CPACSCuboid::SetGamma_choice1(const boost::optional<double>& value)
+    void CPACSCuboid::SetUpperFaceYmin(const boost::optional<double>& value)
     {
-        m_gamma_choice1 = value;
+        m_upperFaceYmin = value;
     }
 
-    const boost::optional<double>& CPACSCuboid::GetUpperFaceXmin_choice2() const
+    const boost::optional<double>& CPACSCuboid::GetUpperFaceYmax() const
     {
-        return m_upperFaceXmin_choice2;
+        return m_upperFaceYmax;
     }
 
-    void CPACSCuboid::SetUpperFaceXmin_choice2(const boost::optional<double>& value)
+    void CPACSCuboid::SetUpperFaceYmax(const boost::optional<double>& value)
     {
-        m_upperFaceXmin_choice2 = value;
-    }
-
-    const boost::optional<double>& CPACSCuboid::GetUpperFaceXmax_choice2() const
-    {
-        return m_upperFaceXmax_choice2;
-    }
-
-    void CPACSCuboid::SetUpperFaceXmax_choice2(const boost::optional<double>& value)
-    {
-        m_upperFaceXmax_choice2 = value;
-    }
-
-    const boost::optional<double>& CPACSCuboid::GetUpperFaceYmin_choice2() const
-    {
-        return m_upperFaceYmin_choice2;
-    }
-
-    void CPACSCuboid::SetUpperFaceYmin_choice2(const boost::optional<double>& value)
-    {
-        m_upperFaceYmin_choice2 = value;
-    }
-
-    const boost::optional<double>& CPACSCuboid::GetUpperFaceYmax_choice2() const
-    {
-        return m_upperFaceYmax_choice2;
-    }
-
-    void CPACSCuboid::SetUpperFaceYmax_choice2(const boost::optional<double>& value)
-    {
-        m_upperFaceYmax_choice2 = value;
+        m_upperFaceYmax = value;
     }
 
 } // namespace generated

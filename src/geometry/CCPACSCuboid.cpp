@@ -33,22 +33,4 @@ CCPACSCuboid::CCPACSCuboid(CCPACSElementGeometryAddtionalPart* parent)
 {
 }
 
-// ToDo: Should this be based on the given elements only or should we also evaluate its values, e.g. false if all angles are 90degs?
-// Note: Exceptions for incomplete data sets (only alpha, but no beta or gamma would be invalid according to XSD) should be caught 
-// by the generated classes, I would say.
-bool CCPACSCuboid::isRectangularCuboid() const
-{
-    return !isParallelepiped() && !isWedge();
-}
-
-bool CCPACSCuboid::isParallelepiped() const
-{
-    return m_alpha_choice1 && m_beta_choice1 && m_gamma_choice1;
-}
-
-bool CCPACSCuboid::isWedge() const
-{
-    return m_upperFaceXmin_choice2 && m_upperFaceXmax_choice2 && m_upperFaceYmin_choice2 && m_upperFaceYmax_choice2;
-}
-
 } // namespace tigl

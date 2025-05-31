@@ -36937,65 +36937,44 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
-        <xsd:complexContent>
+         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
                     <xsd:element name="lengthX" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Length of edge a (if cuboid, then a equals the total length in x-direction) [m]</xsd:documentation>
+                            <xsd:documentation>Length x-direction [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="depthY" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Length of edge b (if cuboid, then b equals the total width in y-direction) [m]</xsd:documentation>
+                            <xsd:documentation>Depth in y-direction [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="heightZ" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Length of edge c (if cuboid, then c equals the total height in z-direction) [m]</xsd:documentation>
+                            <xsd:documentation>Height in z-direction (if cuboid, then c equals the total height in z-direction) [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-					<xsd:choice minOccurs="0">
-						<xsd:sequence>
-							<xsd:element name="alpha" type="doubleBaseType">
-								<xsd:annotation>
-									<xsd:documentation>Angle between edges in width and height direction (default: 90deg) [deg]</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-							<xsd:element name="beta" type="doubleBaseType">
-								<xsd:annotation>
-									<xsd:documentation>Angle between edges in length and height direction (default: 90deg) [deg]</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-							<xsd:element name="gamma" type="doubleBaseType">
-								<xsd:annotation>
-									<xsd:documentation>Angle between edges in length and width direction (default: 90deg) [deg]</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-						</xsd:sequence>
-						<xsd:sequence>
-							<xsd:element name="upperFaceXmin" type="doubleBaseType">
-								<xsd:annotation>
-									<xsd:documentation>...</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-							<xsd:element name="upperFaceXmax" type="doubleBaseType">
-								<xsd:annotation>
-									<xsd:documentation>...</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-							<xsd:element name="upperFaceYmin" type="doubleBaseType">
-								<xsd:annotation>
-									<xsd:documentation>...</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-							<xsd:element name="upperFaceYmax" type="doubleBaseType">
-								<xsd:annotation>
-									<xsd:documentation>...</xsd:documentation>
-								</xsd:annotation>
-							</xsd:element>
-						</xsd:sequence>
-					</xsd:choice>
+                    <xsd:element name="upperFaceXmin" minOccurs="0" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>...</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="upperFaceXmax" minOccurs="0" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>...</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="upperFaceYmin" minOccurs="0" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>...</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="upperFaceYmax" minOccurs="0" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>...</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>

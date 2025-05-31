@@ -82,8 +82,6 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT bool ValidateChoices() const;
-
         TIGL_EXPORT virtual const double& GetLengthX() const;
         TIGL_EXPORT virtual void SetLengthX(const double& value);
 
@@ -93,60 +91,42 @@ namespace generated
         TIGL_EXPORT virtual const double& GetHeightZ() const;
         TIGL_EXPORT virtual void SetHeightZ(const double& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetAlpha_choice1() const;
-        TIGL_EXPORT virtual void SetAlpha_choice1(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceXmin() const;
+        TIGL_EXPORT virtual void SetUpperFaceXmin(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetBeta_choice1() const;
-        TIGL_EXPORT virtual void SetBeta_choice1(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceXmax() const;
+        TIGL_EXPORT virtual void SetUpperFaceXmax(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetGamma_choice1() const;
-        TIGL_EXPORT virtual void SetGamma_choice1(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceYmin() const;
+        TIGL_EXPORT virtual void SetUpperFaceYmin(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceXmin_choice2() const;
-        TIGL_EXPORT virtual void SetUpperFaceXmin_choice2(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceXmax_choice2() const;
-        TIGL_EXPORT virtual void SetUpperFaceXmax_choice2(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceYmin_choice2() const;
-        TIGL_EXPORT virtual void SetUpperFaceYmin_choice2(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceYmax_choice2() const;
-        TIGL_EXPORT virtual void SetUpperFaceYmax_choice2(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceYmax() const;
+        TIGL_EXPORT virtual void SetUpperFaceYmax(const boost::optional<double>& value);
 
     protected:
         void* m_parent;
         const std::type_info* m_parentType;
 
-        /// Length of edge a (if cuboid, then a equals the total length in x-direction) [m]
+        /// Length x-direction [m]
         double                  m_lengthX;
 
-        /// Length of edge b (if cuboid, then b equals the total width in y-direction) [m]
+        /// Depth in y-direction [m]
         double                  m_depthY;
 
-        /// Length of edge c (if cuboid, then c equals the total height in z-direction) [m]
+        /// Height in z-direction (if cuboid, then c equals the total height in z-direction) [m]
         double                  m_heightZ;
 
-        /// Angle between edges in width and height direction (default: 90deg) [deg]
-        boost::optional<double> m_alpha_choice1;
-
-        /// Angle between edges in length and height direction (default: 90deg) [deg]
-        boost::optional<double> m_beta_choice1;
-
-        /// Angle between edges in length and width direction (default: 90deg) [deg]
-        boost::optional<double> m_gamma_choice1;
+        /// ...
+        boost::optional<double> m_upperFaceXmin;
 
         /// ...
-        boost::optional<double> m_upperFaceXmin_choice2;
+        boost::optional<double> m_upperFaceXmax;
 
         /// ...
-        boost::optional<double> m_upperFaceXmax_choice2;
+        boost::optional<double> m_upperFaceYmin;
 
         /// ...
-        boost::optional<double> m_upperFaceYmin_choice2;
-
-        /// ...
-        boost::optional<double> m_upperFaceYmax_choice2;
+        boost::optional<double> m_upperFaceYmax;
 
     private:
         CPACSCuboid(const CPACSCuboid&) = delete;
