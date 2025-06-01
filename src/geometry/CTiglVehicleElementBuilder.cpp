@@ -98,7 +98,8 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& f)
     const double height      = f.GetHeight();
 
     if (lowerRadius < 0.0 || upperRadius < 0.0 || height <= 0.0) {
-        throw std::invalid_argument("Invalid cone parameters: Radii must be non-negative and height must be positive.");
+        throw tigl::CTiglError("Invalid cone parameters: Radii must be non-negative and height must be positive.",
+                               TIGL_INVALID_VALUE);
     }
 
     TopoDS_Shape cone;
@@ -125,7 +126,7 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipso
     double radiusZ = e.GetRadiusZ().get_value_or(radiusX);
 
     if (radiusX <= 0.0 || radiusY <= 0.0 || radiusZ <= 0.0) {
-        throw std::invalid_argument("Invalid ellipsoid parameters: All radii must be positive.");
+        throw tigl::CTiglError("Invalid ellipsoid parameters: All radii must be positive.", TIGL_INVALID_VALUE);
     }
 
     TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(1.0).Shape();

@@ -66,7 +66,8 @@ enum TiglReturnCode
     TIGL_WRONG_CPACS_VERSION = 11,
     TIGL_UNINITIALIZED       = 12,
     TIGL_MATH_ERROR          = 13,
-    TIGL_WRITE_FAILED        = 14
+    TIGL_WRITE_FAILED        = 14,
+    TIGL_INVALID_VALUE       = 15
 };
 
 /**
