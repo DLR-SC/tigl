@@ -199,14 +199,14 @@ namespace generated
             }
         }
 
-        // read element cone
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cone")) {
-            m_cone_choice2 = boost::in_place(this);
+        // read element cylinder
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cylinder")) {
+            m_cylinder_choice2 = boost::in_place(this);
             try {
-                m_cone_choice2->ReadCPACS(tixiHandle, xpath + "/cone");
+                m_cylinder_choice2->ReadCPACS(tixiHandle, xpath + "/cylinder");
             } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read cone at xpath " << xpath << ": " << e.what();
-                m_cone_choice2 = boost::none;
+                LOG(ERROR) << "Failed to read cylinder at xpath " << xpath << ": " << e.what();
+                m_cylinder_choice2 = boost::none;
             }
         }
 
@@ -261,7 +261,7 @@ namespace generated
 
     void CPACSElementGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "cuboid", "cone", "ellipsoid", "multiSegmentShape", "external", "addtionalParts" };
+        const std::vector<std::string> childElemOrder = { "cuboid", "cylinder", "ellipsoid", "multiSegmentShape", "external", "addtionalParts" };
 
         // write attribute boundingShape
         if (m_boundingShape) {
@@ -284,14 +284,14 @@ namespace generated
             }
         }
 
-        // write element cone
-        if (m_cone_choice2) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cone", childElemOrder);
-            m_cone_choice2->WriteCPACS(tixiHandle, xpath + "/cone");
+        // write element cylinder
+        if (m_cylinder_choice2) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cylinder", childElemOrder);
+            m_cylinder_choice2->WriteCPACS(tixiHandle, xpath + "/cylinder");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cone")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/cone");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cylinder")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/cylinder");
             }
         }
 
@@ -352,7 +352,7 @@ namespace generated
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_cone_choice2.is_initialized()
+                        m_cylinder_choice2.is_initialized()
                         ||
                         m_ellipsoid_choice3.is_initialized()
                         ||
@@ -364,7 +364,7 @@ namespace generated
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_cone_choice2.is_initialized()
+                    m_cylinder_choice2.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
@@ -386,7 +386,7 @@ namespace generated
                     !(
                         m_cuboid_choice1.is_initialized()
                         ||
-                        m_cone_choice2.is_initialized()
+                        m_cylinder_choice2.is_initialized()
                         ||
                         m_multiSegmentShape_choice4.is_initialized()
                         ||
@@ -402,7 +402,7 @@ namespace generated
                     !(
                         m_cuboid_choice1.is_initialized()
                         ||
-                        m_cone_choice2.is_initialized()
+                        m_cylinder_choice2.is_initialized()
                         ||
                         m_ellipsoid_choice3.is_initialized()
                         ||
@@ -418,7 +418,7 @@ namespace generated
                     !(
                         m_cuboid_choice1.is_initialized()
                         ||
-                        m_cone_choice2.is_initialized()
+                        m_cylinder_choice2.is_initialized()
                         ||
                         m_ellipsoid_choice3.is_initialized()
                         ||
@@ -451,14 +451,14 @@ namespace generated
         return m_cuboid_choice1;
     }
 
-    const boost::optional<CPACSCone>& CPACSElementGeometry::GetCone_choice2() const
+    const boost::optional<CPACSCylinder>& CPACSElementGeometry::GetCylinder_choice2() const
     {
-        return m_cone_choice2;
+        return m_cylinder_choice2;
     }
 
-    boost::optional<CPACSCone>& CPACSElementGeometry::GetCone_choice2()
+    boost::optional<CPACSCylinder>& CPACSElementGeometry::GetCylinder_choice2()
     {
-        return m_cone_choice2;
+        return m_cylinder_choice2;
     }
 
     const boost::optional<CPACSEllipsoid>& CPACSElementGeometry::GetEllipsoid_choice3() const
@@ -513,16 +513,16 @@ namespace generated
         m_cuboid_choice1 = boost::none;
     }
 
-    CPACSCone& CPACSElementGeometry::GetCone_choice2(CreateIfNotExistsTag)
+    CPACSCylinder& CPACSElementGeometry::GetCylinder_choice2(CreateIfNotExistsTag)
     {
-        if (!m_cone_choice2)
-            m_cone_choice2 = boost::in_place(this);
-        return *m_cone_choice2;
+        if (!m_cylinder_choice2)
+            m_cylinder_choice2 = boost::in_place(this);
+        return *m_cylinder_choice2;
     }
 
-    void CPACSElementGeometry::RemoveCone_choice2()
+    void CPACSElementGeometry::RemoveCylinder_choice2()
     {
-        m_cone_choice2 = boost::none;
+        m_cylinder_choice2 = boost::none;
     }
 
     CPACSEllipsoid& CPACSElementGeometry::GetEllipsoid_choice3(CreateIfNotExistsTag)

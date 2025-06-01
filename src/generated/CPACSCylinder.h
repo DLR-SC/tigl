@@ -38,20 +38,20 @@ namespace generated
     // CPACSElementGeometry
     // CPACSElementGeometryAddtionalPart
 
-    /// @brief Cone
+    /// @brief Cylinder
     /// 
-    /// The component coordinate system of the cone is centered on the center of its geometrically defining variables,
+    /// The component coordinate system of the cylinder is centered on the center of its geometrically defining variables,
     /// which is half the height and center of the lower and upper circular faces.
     /// The upper radius is optional.
     /// If not specified, it defaults to the lower radius, resulting in a cylinder.
     /// 
-    class CPACSCone
+    class CPACSCylinder
     {
     public:
-        TIGL_EXPORT CPACSCone(CPACSElementGeometry* parent);
-        TIGL_EXPORT CPACSCone(CPACSElementGeometryAddtionalPart* parent);
+        TIGL_EXPORT CPACSCylinder(CPACSElementGeometry* parent);
+        TIGL_EXPORT CPACSCylinder(CPACSElementGeometryAddtionalPart* parent);
 
-        TIGL_EXPORT virtual ~CPACSCone();
+        TIGL_EXPORT virtual ~CPACSCylinder();
 
         template<typename P>
         bool IsParent() const
@@ -62,7 +62,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSCone");
+            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSCylinder");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -72,7 +72,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSCone");
+            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSCylinder");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -108,16 +108,16 @@ namespace generated
         double                  m_height;
 
     private:
-        CPACSCone(const CPACSCone&) = delete;
-        CPACSCone& operator=(const CPACSCone&) = delete;
+        CPACSCylinder(const CPACSCylinder&) = delete;
+        CPACSCylinder& operator=(const CPACSCylinder&) = delete;
 
-        CPACSCone(CPACSCone&&) = delete;
-        CPACSCone& operator=(CPACSCone&&) = delete;
+        CPACSCylinder(CPACSCylinder&&) = delete;
+        CPACSCylinder& operator=(CPACSCylinder&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSCone = generated::CPACSCone;
+using CCPACSCylinder = generated::CPACSCylinder;
 using CCPACSElementGeometry = generated::CPACSElementGeometry;
 using CCPACSElementGeometryAddtionalPart = generated::CPACSElementGeometryAddtionalPart;
 } // namespace tigl

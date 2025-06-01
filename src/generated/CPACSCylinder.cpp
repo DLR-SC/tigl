@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSCone.h"
+#include "CPACSCylinder.h"
 #include "CPACSElementGeometry.h"
 #include "CPACSElementGeometryAddtionalPart.h"
 #include "CTiglError.h"
@@ -28,7 +28,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSCone::CPACSCone(CPACSElementGeometry* parent)
+    CPACSCylinder::CPACSCylinder(CPACSElementGeometry* parent)
         : m_lowerRadius(0)
         , m_height(0)
     {
@@ -37,7 +37,7 @@ namespace generated
         m_parentType = &typeid(CPACSElementGeometry);
     }
 
-    CPACSCone::CPACSCone(CPACSElementGeometryAddtionalPart* parent)
+    CPACSCylinder::CPACSCylinder(CPACSElementGeometryAddtionalPart* parent)
         : m_lowerRadius(0)
         , m_height(0)
     {
@@ -46,24 +46,11 @@ namespace generated
         m_parentType = &typeid(CPACSElementGeometryAddtionalPart);
     }
 
-    CPACSCone::~CPACSCone()
+    CPACSCylinder::~CPACSCylinder()
     {
     }
 
-    const CTiglUIDObject* CPACSCone::GetNextUIDParent() const
-    {
-        if (m_parent) {
-            if (IsParent<CPACSElementGeometry>()) {
-                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
-                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
-            }
-        }
-        return nullptr;
-    }
-
-    CTiglUIDObject* CPACSCone::GetNextUIDParent()
+    const CTiglUIDObject* CPACSCylinder::GetNextUIDParent() const
     {
         if (m_parent) {
             if (IsParent<CPACSElementGeometry>()) {
@@ -76,7 +63,20 @@ namespace generated
         return nullptr;
     }
 
-    void CPACSCone::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    CTiglUIDObject* CPACSCylinder::GetNextUIDParent()
+    {
+        if (m_parent) {
+            if (IsParent<CPACSElementGeometry>()) {
+                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
+                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            }
+        }
+        return nullptr;
+    }
+
+    void CPACSCylinder::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element lowerRadius
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerRadius")) {
@@ -101,7 +101,7 @@ namespace generated
 
     }
 
-    void CPACSCone::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSCylinder::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         // write element lowerRadius
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerRadius");
@@ -124,32 +124,32 @@ namespace generated
 
     }
 
-    const double& CPACSCone::GetLowerRadius() const
+    const double& CPACSCylinder::GetLowerRadius() const
     {
         return m_lowerRadius;
     }
 
-    void CPACSCone::SetLowerRadius(const double& value)
+    void CPACSCylinder::SetLowerRadius(const double& value)
     {
         m_lowerRadius = value;
     }
 
-    const boost::optional<double>& CPACSCone::GetUpperRadius() const
+    const boost::optional<double>& CPACSCylinder::GetUpperRadius() const
     {
         return m_upperRadius;
     }
 
-    void CPACSCone::SetUpperRadius(const boost::optional<double>& value)
+    void CPACSCylinder::SetUpperRadius(const boost::optional<double>& value)
     {
         m_upperRadius = value;
     }
 
-    const double& CPACSCone::GetHeight() const
+    const double& CPACSCylinder::GetHeight() const
     {
         return m_height;
     }
 
-    void CPACSCone::SetHeight(const double& value)
+    void CPACSCylinder::SetHeight(const double& value)
     {
         m_height = value;
     }

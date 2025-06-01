@@ -317,12 +317,12 @@ namespace generated
         return m_cuboid_choice1;
     }
 
-    const boost::optional<CPACSCone>& CPACSElementGeometryAddtionalPart::GetCone_choice2() const
+    const boost::optional<CPACSCylinder>& CPACSElementGeometryAddtionalPart::GetCone_choice2() const
     {
         return m_cone_choice2;
     }
 
-    boost::optional<CPACSCone>& CPACSElementGeometryAddtionalPart::GetCone_choice2()
+    boost::optional<CPACSCylinder>& CPACSElementGeometryAddtionalPart::GetCone_choice2()
     {
         return m_cone_choice2;
     }
@@ -379,7 +379,7 @@ namespace generated
         m_cuboid_choice1 = boost::none;
     }
 
-    CPACSCone& CPACSElementGeometryAddtionalPart::GetCone_choice2(CreateIfNotExistsTag)
+    CPACSCylinder& CPACSElementGeometryAddtionalPart::GetCone_choice2(CreateIfNotExistsTag)
     {
         if (!m_cone_choice2)
             m_cone_choice2 = boost::in_place(this);

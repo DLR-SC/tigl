@@ -197,6 +197,39 @@
                                         </translation>
                                     </transformation>
                                 </component>
+                                <component uID="cylinder_1">
+                                    <name>Installed cylinder 1</name>
+                                    <systemElementUID>predCylinder_1</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>15</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+                                <component uID="cylinder_2">
+                                    <name>Installed cylinder 2</name>
+                                    <systemElementUID>predCylinder_2</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>15</x>
+                                            <y>5</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+                                <component uID="cylinder_3">
+                                    <name>Installed cylinder 3</name>
+                                    <systemElementUID>predCylinder_3</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>15</x>
+                                            <y>10</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
                             </components>
                         </genericSystem>
                     </genericSystems>
@@ -279,6 +312,35 @@
                             <upperFaceYmin>0.5</upperFaceYmin>
                             <upperFaceYmax>0.5</upperFaceYmax>
                         </cuboid>
+                    </geometry>
+                </genericComponent>
+                <genericComponent uID="predCylinder_1">
+                    <name>Predefined cylinder 1</name>
+                    <geometry>
+                        <cylinder>
+                            <lowerRadius>0.5</lowerRadius>
+                            <height>1.</height>
+                        </cylinder>
+                    </geometry>
+                </genericComponent>
+                <genericComponent uID="predCylinder_2">
+                    <name>Predefined cylinder 2</name>
+                    <geometry>
+                        <cylinder>
+                            <lowerRadius>0.5</lowerRadius>
+                            <upperRadius>0.25</upperRadius>
+                            <height>1.</height>
+                        </cylinder>
+                    </geometry>
+                </genericComponent>
+                <genericComponent uID="predCylinder_3">
+                    <name>Predefined cylinder 3</name>
+                    <geometry>
+                        <cylinder>
+                            <lowerRadius>0.5</lowerRadius>
+                            <upperRadius>0.</upperRadius>
+                            <height>1.</height>
+                        </cylinder>
                     </geometry>
                 </genericComponent>
             </genericComponents>

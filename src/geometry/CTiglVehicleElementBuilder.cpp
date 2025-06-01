@@ -45,8 +45,8 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
     if (auto& p = geom.GetCuboid_choice1()) {
         elementShape = BuildCuboidShape(*p);
     }
-    else if (auto& f = geom.GetCone_choice2()) {
-        elementShape = BuildConeShape(*f);
+    else if (auto& f = geom.GetCylinder_choice2()) {
+        elementShape = BuildCylinderShape(*f);
     }
     else if (auto& e = geom.GetEllipsoid_choice3()) {
         elementShape = BuildEllipsoidShape(*e);
@@ -91,32 +91,27 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& cu
     return transformer.Shape();
 }
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& f)
+TopoDS_Shape CTiglVehicleElementBuilder::BuildCylinderShape(const CCPACSCylinder& f)
 {
     const double lowerRadius = f.GetLowerRadius();
     const double upperRadius = f.GetUpperRadius().get_value_or(lowerRadius);
     const double height      = f.GetHeight();
 
     if (lowerRadius < 0.0 || upperRadius < 0.0 || height <= 0.0) {
-        throw tigl::CTiglError("Invalid cone parameters: Radii must be non-negative and height must be positive.",
+        throw tigl::CTiglError("Invalid cylinder parameters: Radii must be non-negative and height must be positive.",
                                TIGL_INVALID_VALUE);
     }
 
-    TopoDS_Shape cone;
+    TopoDS_Shape cylinder;
 
     if (std::abs(lowerRadius - upperRadius) < 1e-8) {
-        cone = BRepPrimAPI_MakeCylinder(lowerRadius, height).Shape();
+        cylinder = BRepPrimAPI_MakeCylinder(lowerRadius, height).Shape();
     }
     else {
-        cone = BRepPrimAPI_MakeCone(lowerRadius, upperRadius, height).Shape();
+        cylinder = BRepPrimAPI_MakeCone(lowerRadius, upperRadius, height).Shape();
     }
 
-    gp_Trsf translation;
-    translation.SetTranslation(gp_Vec(0, 0, -height * 0.5));
-    BRepBuilderAPI_Transform transformer(cone, translation);
-    cone = transformer.Shape();
-
-    return cone;
+    return cylinder;
 }
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipsoid& e)

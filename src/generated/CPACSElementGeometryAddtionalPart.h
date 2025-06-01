@@ -22,8 +22,8 @@
 #include <CCPACSTransformationSE3.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSCone.h"
 #include "CPACSCuboid.h"
+#include "CPACSCylinder.h"
 #include "CPACSEllipsoid.h"
 #include "CPACSExternalGeometry.h"
 #include "CPACSMultiSegmentShape.h"
@@ -70,8 +70,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSCuboid>& GetCuboid_choice1() const;
         TIGL_EXPORT virtual boost::optional<CPACSCuboid>& GetCuboid_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSCone>& GetCone_choice2() const;
-        TIGL_EXPORT virtual boost::optional<CPACSCone>& GetCone_choice2();
+        TIGL_EXPORT virtual const boost::optional<CPACSCylinder>& GetCone_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCylinder>& GetCone_choice2();
 
         TIGL_EXPORT virtual const boost::optional<CPACSEllipsoid>& GetEllipsoid_choice3() const;
         TIGL_EXPORT virtual boost::optional<CPACSEllipsoid>& GetEllipsoid_choice3();
@@ -88,7 +88,7 @@ namespace generated
         TIGL_EXPORT virtual CPACSCuboid& GetCuboid_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCuboid_choice1();
 
-        TIGL_EXPORT virtual CPACSCone& GetCone_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSCylinder& GetCone_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCone_choice2();
 
         TIGL_EXPORT virtual CPACSEllipsoid& GetEllipsoid_choice3(CreateIfNotExistsTag);
@@ -106,7 +106,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<CPACSCuboid>            m_cuboid_choice1;
-        boost::optional<CPACSCone>              m_cone_choice2;
+        boost::optional<CPACSCylinder>          m_cone_choice2;
         boost::optional<CPACSEllipsoid>         m_ellipsoid_choice3;
         boost::optional<CPACSMultiSegmentShape> m_multiSegmentShape_choice4;
         boost::optional<CPACSExternalGeometry>  m_external_choice5;

@@ -73,6 +73,7 @@ protected:
     tigl::CCPACSGenericSystem const* genericSystem = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("genSys_1");
     tigl::CCPACSComponent const* rectCube_1        = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_1");
     tigl::CCPACSComponent const* wedge_1           = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wedge_1");
+    tigl::CCPACSComponent const* cylinder_1        = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cylinder_1");
 
     // std::cout << "Is UID registered: " << uidMgr->IsUIDRegistered("predefinedElectricMotor") << std::endl;
 };
@@ -102,6 +103,7 @@ TEST_F(Systems, temp)
 
     auto& loft  = rectCube_1->GetLoft();
     auto& loft2 = wedge_1->GetLoft();
+    auto& loft3 = cylinder_1->GetLoft();
 
     EXPECT_EQ(1., 1.);
 }

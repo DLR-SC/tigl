@@ -36765,7 +36765,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <xsd:choice>
                         <!-- <xsd:element name="parallelepiped" type="parallelepipedType"/> -->
                         <xsd:element name="cuboid" type="cuboidType"/>
-                        <xsd:element name="cone" type="coneType"/>
+                        <xsd:element name="cylinder" type="cylinderType"/>
                         <xsd:element name="ellipsoid" type="ellipsoidType"/>
                         <!-- <xsd:element name="sphere" type="sphereType"/> -->
                         <xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/>
@@ -36980,15 +36980,15 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="coneType">
+    <xsd:complexType name="cylinderType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>Cone</ddue:para>
+                        <ddue:para>Cylinder</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
-                        <ddue:para>The component coordinate system of the cone is centered on the center of its geometrically defining variables,
+                        <ddue:para>The component coordinate system of the cylinder is centered on the center of its geometrically defining variables,
                             which is half the height and center of the lower and upper circular faces.
                         </ddue:para>
                         <ddue:para>The upper radius is optional.
@@ -37236,7 +37236,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 <xsd:sequence>
 					<xsd:choice>
 						<xsd:element name="cuboid" type="cuboidType"/>
-						<xsd:element name="cone" type="coneType"/>
+						<xsd:element name="cone" type="cylinderType"/>
 						<xsd:element name="ellipsoid" type="ellipsoidType"/>
 						<xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/>
 						<xsd:element name="external" type="externalGeometryType"/>
