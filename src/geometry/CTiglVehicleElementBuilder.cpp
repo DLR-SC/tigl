@@ -18,9 +18,6 @@
 #include "CTiglVehicleElementBuilder.h"
 #include "UniquePtr.h"
 #include "CNamedShape.h"
-#include "CPACSCuboid.h"
-#include "CCPACSFrustum.h"
-#include "CCPACSEllipsoid.h"
 
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
@@ -28,8 +25,6 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepBuilderAPI_GTransform.hxx>
-
-
 
 namespace tigl
 {
@@ -50,8 +45,8 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
     if (auto& p = geom.GetCuboid_choice1()) {
         elementShape = BuildCuboidShape(*p);
     }
-    else if (auto& f = geom.GetFrustum_choice2()) {
-        elementShape = BuildFrustumShape(*f);
+    else if (auto& f = geom.GetCone_choice2()) {
+        elementShape = BuildConeShape(*f);
     }
     else if (auto& e = geom.GetEllipsoid_choice3()) {
         elementShape = BuildEllipsoidShape(*e);
@@ -96,71 +91,50 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& cu
     return transformer.Shape();
 }
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildFrustumShape(const CCPACSFrustum& f)
+TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& f)
 {
-    try {
-        const double lowerRadius = f.GetLowerRadius();
-        const double upperRadius = f.getUpperRadius();
-        const double height      = f.GetHeight();
+    const double lowerRadius = f.GetLowerRadius();
+    const double upperRadius = f.GetUpperRadius().get_value_or(lowerRadius);
+    const double height      = f.GetHeight();
 
-        if (lowerRadius < 0.0 || upperRadius < 0.0 || height <= 0.0) {
-            throw std::invalid_argument(
-                "Invalid frustum parameters: Radii must be non-negative and height must be positive.");
-        }
-
-        TopoDS_Shape frustum;
-
-        if (std::abs(lowerRadius - upperRadius) < 1e-8) {
-            frustum = BRepPrimAPI_MakeCylinder(lowerRadius, height).Shape();
-        }
-        else {
-            frustum = BRepPrimAPI_MakeCone(lowerRadius, upperRadius, height).Shape();
-        }
-
-        gp_Trsf translation;
-        translation.SetTranslation(gp_Vec(0, 0, -height * 0.5));
-        BRepBuilderAPI_Transform transformer(frustum, translation);
-        frustum = transformer.Shape();
-
-        return frustum;
-    }
-    catch (const Standard_Failure& e) {
-        std::cerr << "OpenCASCADE error while building frustum: " << e.GetMessageString() << std::endl;
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Exception while building frustum: " << e.what() << std::endl;
+    if (lowerRadius < 0.0 || upperRadius < 0.0 || height <= 0.0) {
+        throw std::invalid_argument("Invalid cone parameters: Radii must be non-negative and height must be positive.");
     }
 
-    return TopoDS_Shape();
+    TopoDS_Shape cone;
+
+    if (std::abs(lowerRadius - upperRadius) < 1e-8) {
+        cone = BRepPrimAPI_MakeCylinder(lowerRadius, height).Shape();
+    }
+    else {
+        cone = BRepPrimAPI_MakeCone(lowerRadius, upperRadius, height).Shape();
+    }
+
+    gp_Trsf translation;
+    translation.SetTranslation(gp_Vec(0, 0, -height * 0.5));
+    BRepBuilderAPI_Transform transformer(cone, translation);
+    cone = transformer.Shape();
+
+    return cone;
 }
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipsoid& e)
 {
-    try {
-        double radiusX = e.GetRadiusX();
-        double radiusY = e.getRadiusY();
-        double radiusZ = e.getRadiusZ();
+    double radiusX = e.GetRadiusX();
+    double radiusY = e.GetRadiusY().get_value_or(radiusX);
+    double radiusZ = e.GetRadiusZ().get_value_or(radiusX);
 
-        if (radiusX <= 0.0 || radiusY <= 0.0 || radiusZ <= 0.0) {
-            throw std::invalid_argument("Invalid ellipsoid parameters: All radii must be positive.");
-        }
-
-        TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(1.0).Shape();
-
-        gp_Mat M(radiusX, 0.0, 0.0, 0.0, radiusY, 0.0, 0.0, 0.0, radiusZ);
-        gp_GTrsf gtrsf(M, gp_XYZ(0.0, 0.0, 0.0));
-        BRepBuilderAPI_GTransform transformer(sphere, gtrsf, true);
-
-        return transformer.Shape();
-    }
-    catch (const Standard_Failure& e) {
-        std::cerr << "OpenCASCADE error while building ellipsoid: " << e.GetMessageString() << std::endl;
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Exception while building ellipsoid: " << e.what() << std::endl;
+    if (radiusX <= 0.0 || radiusY <= 0.0 || radiusZ <= 0.0) {
+        throw std::invalid_argument("Invalid ellipsoid parameters: All radii must be positive.");
     }
 
-    return TopoDS_Shape();
+    TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(1.0).Shape();
+
+    gp_Mat M(radiusX, 0.0, 0.0, 0.0, radiusY, 0.0, 0.0, 0.0, radiusZ);
+    gp_GTrsf gtrsf(M, gp_XYZ(0.0, 0.0, 0.0));
+    BRepBuilderAPI_GTransform transformer(sphere, gtrsf, true);
+
+    return transformer.Shape();
 }
 
 CTiglVehicleElementBuilder::operator PNamedShape()

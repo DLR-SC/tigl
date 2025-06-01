@@ -19,12 +19,12 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSCuboid.h>
-#include <CCPACSEllipsoid.h>
-#include <CCPACSFrustum.h>
 #include <CCPACSTransformationSE3.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSCone.h"
+#include "CPACSCuboid.h"
+#include "CPACSEllipsoid.h"
 #include "CPACSExternalGeometry.h"
 #include "CPACSMultiSegmentShape.h"
 #include "CreateIfNotExists.h"
@@ -67,14 +67,14 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSCuboid>& GetCuboid_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSCuboid>& GetCuboid_choice1();
+        TIGL_EXPORT virtual const boost::optional<CPACSCuboid>& GetCuboid_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCuboid>& GetCuboid_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSFrustum>& GetFrustum_choice2() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSFrustum>& GetFrustum_choice2();
+        TIGL_EXPORT virtual const boost::optional<CPACSCone>& GetCone_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCone>& GetCone_choice2();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSEllipsoid>& GetEllipsoid_choice3() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSEllipsoid>& GetEllipsoid_choice3();
+        TIGL_EXPORT virtual const boost::optional<CPACSEllipsoid>& GetEllipsoid_choice3() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEllipsoid>& GetEllipsoid_choice3();
 
         TIGL_EXPORT virtual const boost::optional<CPACSMultiSegmentShape>& GetMultiSegmentShape_choice4() const;
         TIGL_EXPORT virtual boost::optional<CPACSMultiSegmentShape>& GetMultiSegmentShape_choice4();
@@ -85,13 +85,13 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformationSE3& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformationSE3& GetTransformation();
 
-        TIGL_EXPORT virtual CCPACSCuboid& GetCuboid_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSCuboid& GetCuboid_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCuboid_choice1();
 
-        TIGL_EXPORT virtual CCPACSFrustum& GetFrustum_choice2(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveFrustum_choice2();
+        TIGL_EXPORT virtual CPACSCone& GetCone_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveCone_choice2();
 
-        TIGL_EXPORT virtual CCPACSEllipsoid& GetEllipsoid_choice3(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSEllipsoid& GetEllipsoid_choice3(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEllipsoid_choice3();
 
         TIGL_EXPORT virtual CPACSMultiSegmentShape& GetMultiSegmentShape_choice4(CreateIfNotExistsTag);
@@ -105,9 +105,9 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CCPACSCuboid>           m_cuboid_choice1;
-        boost::optional<CCPACSFrustum>          m_frustum_choice2;
-        boost::optional<CCPACSEllipsoid>        m_ellipsoid_choice3;
+        boost::optional<CPACSCuboid>            m_cuboid_choice1;
+        boost::optional<CPACSCone>              m_cone_choice2;
+        boost::optional<CPACSEllipsoid>         m_ellipsoid_choice3;
         boost::optional<CPACSMultiSegmentShape> m_multiSegmentShape_choice4;
         boost::optional<CPACSExternalGeometry>  m_external_choice5;
         CCPACSTransformationSE3                 m_transformation;

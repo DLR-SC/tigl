@@ -95,14 +95,14 @@ namespace generated
             }
         }
 
-        // read element frustum
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/frustum")) {
-            m_frustum_choice2 = boost::in_place(this);
+        // read element cone
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cone")) {
+            m_cone_choice2 = boost::in_place(this);
             try {
-                m_frustum_choice2->ReadCPACS(tixiHandle, xpath + "/frustum");
+                m_cone_choice2->ReadCPACS(tixiHandle, xpath + "/cone");
             } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read frustum at xpath " << xpath << ": " << e.what();
-                m_frustum_choice2 = boost::none;
+                LOG(ERROR) << "Failed to read cone at xpath " << xpath << ": " << e.what();
+                m_cone_choice2 = boost::none;
             }
         }
 
@@ -154,7 +154,7 @@ namespace generated
 
     void CPACSElementGeometryAddtionalPart::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "cuboid", "frustum", "ellipsoid", "multiSegmentShape", "external", "transformation" };
+        const std::vector<std::string> childElemOrder = { "cuboid", "cone", "ellipsoid", "multiSegmentShape", "external", "transformation" };
 
         // write element cuboid
         if (m_cuboid_choice1) {
@@ -167,14 +167,14 @@ namespace generated
             }
         }
 
-        // write element frustum
-        if (m_frustum_choice2) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/frustum", childElemOrder);
-            m_frustum_choice2->WriteCPACS(tixiHandle, xpath + "/frustum");
+        // write element cone
+        if (m_cone_choice2) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cone", childElemOrder);
+            m_cone_choice2->WriteCPACS(tixiHandle, xpath + "/cone");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/frustum")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/frustum");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cone")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/cone");
             }
         }
 
@@ -228,7 +228,7 @@ namespace generated
                     &&
                     // elements of other choices must not be there
                     !(
-                        m_frustum_choice2.is_initialized()
+                        m_cone_choice2.is_initialized()
                         ||
                         m_ellipsoid_choice3.is_initialized()
                         ||
@@ -240,7 +240,7 @@ namespace generated
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_frustum_choice2.is_initialized()
+                    m_cone_choice2.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
@@ -262,7 +262,7 @@ namespace generated
                     !(
                         m_cuboid_choice1.is_initialized()
                         ||
-                        m_frustum_choice2.is_initialized()
+                        m_cone_choice2.is_initialized()
                         ||
                         m_multiSegmentShape_choice4.is_initialized()
                         ||
@@ -278,7 +278,7 @@ namespace generated
                     !(
                         m_cuboid_choice1.is_initialized()
                         ||
-                        m_frustum_choice2.is_initialized()
+                        m_cone_choice2.is_initialized()
                         ||
                         m_ellipsoid_choice3.is_initialized()
                         ||
@@ -294,7 +294,7 @@ namespace generated
                     !(
                         m_cuboid_choice1.is_initialized()
                         ||
-                        m_frustum_choice2.is_initialized()
+                        m_cone_choice2.is_initialized()
                         ||
                         m_ellipsoid_choice3.is_initialized()
                         ||
@@ -307,32 +307,32 @@ namespace generated
         ;
     }
 
-    const boost::optional<CCPACSCuboid>& CPACSElementGeometryAddtionalPart::GetCuboid_choice1() const
+    const boost::optional<CPACSCuboid>& CPACSElementGeometryAddtionalPart::GetCuboid_choice1() const
     {
         return m_cuboid_choice1;
     }
 
-    boost::optional<CCPACSCuboid>& CPACSElementGeometryAddtionalPart::GetCuboid_choice1()
+    boost::optional<CPACSCuboid>& CPACSElementGeometryAddtionalPart::GetCuboid_choice1()
     {
         return m_cuboid_choice1;
     }
 
-    const boost::optional<CCPACSFrustum>& CPACSElementGeometryAddtionalPart::GetFrustum_choice2() const
+    const boost::optional<CPACSCone>& CPACSElementGeometryAddtionalPart::GetCone_choice2() const
     {
-        return m_frustum_choice2;
+        return m_cone_choice2;
     }
 
-    boost::optional<CCPACSFrustum>& CPACSElementGeometryAddtionalPart::GetFrustum_choice2()
+    boost::optional<CPACSCone>& CPACSElementGeometryAddtionalPart::GetCone_choice2()
     {
-        return m_frustum_choice2;
+        return m_cone_choice2;
     }
 
-    const boost::optional<CCPACSEllipsoid>& CPACSElementGeometryAddtionalPart::GetEllipsoid_choice3() const
+    const boost::optional<CPACSEllipsoid>& CPACSElementGeometryAddtionalPart::GetEllipsoid_choice3() const
     {
         return m_ellipsoid_choice3;
     }
 
-    boost::optional<CCPACSEllipsoid>& CPACSElementGeometryAddtionalPart::GetEllipsoid_choice3()
+    boost::optional<CPACSEllipsoid>& CPACSElementGeometryAddtionalPart::GetEllipsoid_choice3()
     {
         return m_ellipsoid_choice3;
     }
@@ -367,7 +367,7 @@ namespace generated
         return m_transformation;
     }
 
-    CCPACSCuboid& CPACSElementGeometryAddtionalPart::GetCuboid_choice1(CreateIfNotExistsTag)
+    CPACSCuboid& CPACSElementGeometryAddtionalPart::GetCuboid_choice1(CreateIfNotExistsTag)
     {
         if (!m_cuboid_choice1)
             m_cuboid_choice1 = boost::in_place(this);
@@ -379,19 +379,19 @@ namespace generated
         m_cuboid_choice1 = boost::none;
     }
 
-    CCPACSFrustum& CPACSElementGeometryAddtionalPart::GetFrustum_choice2(CreateIfNotExistsTag)
+    CPACSCone& CPACSElementGeometryAddtionalPart::GetCone_choice2(CreateIfNotExistsTag)
     {
-        if (!m_frustum_choice2)
-            m_frustum_choice2 = boost::in_place(this);
-        return *m_frustum_choice2;
+        if (!m_cone_choice2)
+            m_cone_choice2 = boost::in_place(this);
+        return *m_cone_choice2;
     }
 
-    void CPACSElementGeometryAddtionalPart::RemoveFrustum_choice2()
+    void CPACSElementGeometryAddtionalPart::RemoveCone_choice2()
     {
-        m_frustum_choice2 = boost::none;
+        m_cone_choice2 = boost::none;
     }
 
-    CCPACSEllipsoid& CPACSElementGeometryAddtionalPart::GetEllipsoid_choice3(CreateIfNotExistsTag)
+    CPACSEllipsoid& CPACSElementGeometryAddtionalPart::GetEllipsoid_choice3(CreateIfNotExistsTag)
     {
         if (!m_ellipsoid_choice3)
             m_ellipsoid_choice3 = boost::in_place(this);

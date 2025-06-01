@@ -38,17 +38,20 @@ namespace generated
     // CPACSElementGeometry
     // CPACSElementGeometryAddtionalPart
 
-    /// @brief Polyeder
+    /// @brief Cone
     /// 
-    /// ...
+    /// The component coordinate system of the cone is centered on the center of its geometrically defining variables,
+    /// which is half the height and center of the lower and upper circular faces.
+    /// The upper radius is optional.
+    /// If not specified, it defaults to the lower radius, resulting in a cylinder.
     /// 
-    class CPACSCuboid
+    class CPACSCone
     {
     public:
-        TIGL_EXPORT CPACSCuboid(CPACSElementGeometry* parent);
-        TIGL_EXPORT CPACSCuboid(CPACSElementGeometryAddtionalPart* parent);
+        TIGL_EXPORT CPACSCone(CPACSElementGeometry* parent);
+        TIGL_EXPORT CPACSCone(CPACSElementGeometryAddtionalPart* parent);
 
-        TIGL_EXPORT virtual ~CPACSCuboid();
+        TIGL_EXPORT virtual ~CPACSCone();
 
         template<typename P>
         bool IsParent() const
@@ -59,7 +62,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSCuboid");
+            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSCone");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -69,7 +72,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSCuboid");
+            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSCone");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -82,63 +85,39 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const double& GetLengthX() const;
-        TIGL_EXPORT virtual void SetLengthX(const double& value);
+        TIGL_EXPORT virtual const double& GetLowerRadius() const;
+        TIGL_EXPORT virtual void SetLowerRadius(const double& value);
 
-        TIGL_EXPORT virtual const double& GetDepthY() const;
-        TIGL_EXPORT virtual void SetDepthY(const double& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetUpperRadius() const;
+        TIGL_EXPORT virtual void SetUpperRadius(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual const double& GetHeightZ() const;
-        TIGL_EXPORT virtual void SetHeightZ(const double& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceXmin() const;
-        TIGL_EXPORT virtual void SetUpperFaceXmin(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceXmax() const;
-        TIGL_EXPORT virtual void SetUpperFaceXmax(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceYmin() const;
-        TIGL_EXPORT virtual void SetUpperFaceYmin(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceYmax() const;
-        TIGL_EXPORT virtual void SetUpperFaceYmax(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const double& GetHeight() const;
+        TIGL_EXPORT virtual void SetHeight(const double& value);
 
     protected:
         void* m_parent;
         const std::type_info* m_parentType;
 
-        /// Length x-direction [m]
-        double                  m_lengthX;
+        /// Lower radius [m]
+        double                  m_lowerRadius;
 
-        /// Depth in y-direction [m]
-        double                  m_depthY;
+        /// Upper radius [m] (if not defined: equals lowerRadius)
+        boost::optional<double> m_upperRadius;
 
-        /// Height in z-direction (if cuboid, then c equals the total height in z-direction) [m]
-        double                  m_heightZ;
-
-        /// ...
-        boost::optional<double> m_upperFaceXmin;
-
-        /// ...
-        boost::optional<double> m_upperFaceXmax;
-
-        /// ...
-        boost::optional<double> m_upperFaceYmin;
-
-        /// ...
-        boost::optional<double> m_upperFaceYmax;
+        /// Height [m]
+        double                  m_height;
 
     private:
-        CPACSCuboid(const CPACSCuboid&) = delete;
-        CPACSCuboid& operator=(const CPACSCuboid&) = delete;
+        CPACSCone(const CPACSCone&) = delete;
+        CPACSCone& operator=(const CPACSCone&) = delete;
 
-        CPACSCuboid(CPACSCuboid&&) = delete;
-        CPACSCuboid& operator=(CPACSCuboid&&) = delete;
+        CPACSCone(CPACSCone&&) = delete;
+        CPACSCone& operator=(CPACSCone&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSCuboid = generated::CPACSCuboid;
+using CCPACSCone = generated::CPACSCone;
 using CCPACSElementGeometry = generated::CPACSElementGeometry;
 using CCPACSElementGeometryAddtionalPart = generated::CPACSElementGeometryAddtionalPart;
 } // namespace tigl
