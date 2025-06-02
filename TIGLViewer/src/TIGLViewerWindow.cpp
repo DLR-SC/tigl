@@ -57,6 +57,7 @@
 #include <tixicpp.h>
 
 #include <cstdlib>
+#include <filesystem>
 
 namespace
 {
