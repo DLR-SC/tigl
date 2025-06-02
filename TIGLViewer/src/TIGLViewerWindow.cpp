@@ -636,6 +636,7 @@ void TIGLViewerWindow::saveAs()
 
         QFileInfo oldFilenameInfo = currentFile;
         bool fileSaved            = saveFile(fileName);
+        cpacsConfiguration->SetLoadedConfigurationFileName(fileName);
     }
     return;
 }

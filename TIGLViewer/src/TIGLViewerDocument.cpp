@@ -354,6 +354,15 @@ tigl::CCPACSConfiguration& TIGLViewerDocument::GetConfiguration() const
     return manager.GetConfiguration(m_cpacsHandle);
 }
 
+QString TIGLViewerDocument::GetLoadedConfigurationFileName() const
+{
+    return loadedConfigurationFileName;
+}
+
+void TIGLViewerDocument::SetLoadedConfigurationFileName(const QString& configurationFileName)
+{
+    loadedConfigurationFileName = configurationFileName;
+}
 
 // creates triangulation of shape
 // returns true, of mesh was done

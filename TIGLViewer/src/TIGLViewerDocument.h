@@ -48,6 +48,8 @@ public:
     TiglReturnCode openCpacsConfigurationFromString(const std::string cpacsFileContent);
     void closeCpacsConfiguration();
     TiglCPACSConfigurationHandle getCpacsHandle() const;
+    QString GetLoadedConfigurationFileName() const;
+    void SetLoadedConfigurationFileName(const QString& loadedConfigurationFileName);
 
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration() const;
