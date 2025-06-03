@@ -151,7 +151,6 @@ char* TIGLViewerDocument::qstringToCstring(const QString& text)
 TiglReturnCode TIGLViewerDocument::openCpacsConfigurationFromString(const std::string cpacsFileContent)
 {
     START_COMMAND()
-    QStringList configurations;
 
     app->getScene()->getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
 
@@ -159,7 +158,7 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfigurationFromString(const std::s
 
     ReturnCode tixiRet = tixiImportFromString(cpacsFileContent.c_str(), &tixiHandle);
     if (tixiRet == NOT_WELL_FORMED) {
-        displayError(QString("Error in function <u>tixiImportFromString</u> when trying to open the template file. File not well-formated. Error code: %1").arg(tixiRet), "TIXI Error");
+        displayError(QString("Error in function <u>tixiImportFromString</u> when trying to open the template file. File not well-formed in XML-style. Error code: %1").arg(tixiRet), "TIXI Error");
         return TIGL_XML_ERROR;
     }
     if (tixiRet != SUCCESS) {
@@ -167,71 +166,12 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfigurationFromString(const std::s
         return TIGL_XML_ERROR;
     }
 
-    // read configuration names
-    int countAircrafts = 0;
-    int countRotorcrafts = 0;
-    tixiRet = tixiGetNamedChildrenCount( tixiHandle, CPACS_XPATH_AIRCRAFT, "model", &countAircrafts );
-    tixiRet = tixiGetNamedChildrenCount( tixiHandle, CPACS_XPATH_ROTORCRAFT, "model", &countRotorcrafts );
-    for (int i = 0; i < countAircrafts; i++) {
-        char *text;
-        std::stringstream xpath;
-        xpath << CPACS_XPATH_AIRCRAFT_MODEL << "[" << i+1 << "]";
-        tixiRet = tixiGetTextAttribute( tixiHandle, xpath.str().c_str(), "uID", &text);
-        if (tixiRet == SUCCESS) {
-            configurations << text;
-        }
-        else {
-            displayError(QString("Error: missing uID for aircraft model %1!").arg(i), "TIXI Error");
-            return TIGL_OPEN_FAILED;
-        }
-    }
-    for (int i = 0; i < countRotorcrafts; i++) {
-        char *text;
-        std::stringstream xpath;
-        xpath << CPACS_XPATH_ROTORCRAFT_MODEL << "[" << i+1 << "]";
-        tixiRet = tixiGetTextAttribute(tixiHandle, xpath.str().c_str(), "uID", &text);
-        if (tixiRet == SUCCESS) {
-            configurations << text;
-        }
-        else {
-            displayError(QString("Error: missing uID for rotorcraft model %1!").arg(i), "TIXI Error");
-            return TIGL_OPEN_FAILED;
-        }
-
-    }
-
-    // Get configuration from user and open with TIGL
-    TiglReturnCode tiglRet = TIGL_UNINITIALIZED;
-    if (countRotorcrafts + countAircrafts == 0) {
-        // no configuration present
-        return TIGL_UNINITIALIZED;
-    }
-    else if (countRotorcrafts + countAircrafts == 1) {
-        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &m_cpacsHandle);
-    }
-    else {
-        bool ok;
-        QString item = QInputDialog::getItem(app, tr("Select CPACS Configuration"),
-                                             tr("Available Configurations:"), configurations, 0, false, &ok);
-        if (ok && !item.isEmpty()) {
-            tiglRet = tiglOpenCPACSConfiguration(tixiHandle, strdup((const char*)item.toLatin1()), &m_cpacsHandle);
-        }
-    }
-
-    if (tiglRet != TIGL_SUCCESS) {
-        tixiCloseDocument(tixiHandle);
-        m_cpacsHandle = -1;
-        displayError(QString("<u>tiglOpenCPACSConfiguration</u> returned %1").arg(tiglGetErrorString(tiglRet)), "Error while reading in CPACS configuration");
-        return tiglRet;
-    }
-    drawConfiguration();
-    return TIGL_SUCCESS;
+    return openCpacsConfiguration(tixiHandle);
 }
 
-TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileName)
+TiglReturnCode TIGLViewerDocument::openCpacsConfigurationFromFile(const QString& fileName)
 {
     START_COMMAND()
-    QStringList configurations;
 
     app->getScene()->getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
 
@@ -244,6 +184,13 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileNam
         return TIGL_XML_ERROR;
     }
 
+    return openCpacsConfiguration(tixiHandle, fileName);
+}
+
+TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(TixiDocumentHandle &tixiHandle, const QString &fileName)
+{
+    QStringList configurations;
+    ReturnCode tixiRet;
     // read configuration names
     int countAircrafts = 0;
     int countRotorcrafts = 0;
@@ -261,7 +208,7 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileNam
             displayError(QString("Error: missing uID for aircraft model %1!").arg(i), "TIXI Error");
             return TIGL_OPEN_FAILED;
         }
-    }    
+    }
     for (int i = 0; i < countRotorcrafts; i++) {
         char *text;
         std::stringstream xpath;
@@ -277,14 +224,21 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileNam
 
     }
 
-    // set the debug data output directory relative to the opened file
-    tiglSetDebugDataDirectory((QFileInfo(fileName).dir().path().toStdString() + "/CrashInfo").c_str());
+    // If the current function is called from openCpacsConfigurationFromString(...), there is no file name
+    // Hence, no file name can be passed as an argument and the default value (-> empty QString) is used.
+    // This check is done at some more places in this function
+    if (!fileName.isEmpty()) {
+        // set the debug data output directory relative to the opened file
+        tiglSetDebugDataDirectory((QFileInfo(fileName).dir().path().toStdString() + "/CrashInfo").c_str());
+    }
 
     // Get configuration from user and open with TIGL
     TiglReturnCode tiglRet = TIGL_UNINITIALIZED;
     if (countRotorcrafts + countAircrafts == 0) {
         // no configuration present
-        loadedConfigurationFileName = fileName;
+        if (!fileName.isEmpty()) {
+            loadedConfigurationFileName = fileName;
+        }
         return TIGL_UNINITIALIZED;
     }
     else if (countRotorcrafts + countAircrafts == 1) {
@@ -306,7 +260,9 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileNam
         return tiglRet;
     }
     drawConfiguration();
-    loadedConfigurationFileName = fileName;
+    if (!fileName.isEmpty()) {
+        loadedConfigurationFileName = fileName;
+    }
     return TIGL_SUCCESS;
 }
 
@@ -341,7 +297,7 @@ void TIGLViewerDocument::updateConfiguration()
         tiglCloseCPACSConfiguration(m_cpacsHandle);
         m_cpacsHandle = -1;
         app->getScene()->deleteAllObjects();
-        openCpacsConfiguration(loadedConfigurationFileName);
+        openCpacsConfigurationFromFile(loadedConfigurationFileName);
         emit documentUpdated(m_cpacsHandle);
     }
 }

@@ -304,7 +304,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
         
         if (fileType.toLower() == tr("xml")) {
             TIGLViewerDocument* config = new TIGLViewerDocument(this);
-            TiglReturnCode tiglRet = config->openCpacsConfiguration(fileInfo.absoluteFilePath());
+            TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath());
             if (tiglRet != TIGL_SUCCESS) {
                 delete config;
                 return;

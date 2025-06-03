@@ -44,8 +44,10 @@ public:
     explicit TIGLViewerDocument(TIGLViewerWindow *parentWidget);
     ~TIGLViewerDocument( ) override;
 
-    TiglReturnCode openCpacsConfiguration(const QString& fileName);
+    TiglReturnCode openCpacsConfigurationFromFile(const QString& fileName);
     TiglReturnCode openCpacsConfigurationFromString(const std::string cpacsFileContent);
+    // Empty fileName as default value if the function is called from openCpacsConfigurationFromFile => No fileName exists
+    TiglReturnCode openCpacsConfiguration(TixiDocumentHandle &tixiHandle, const QString &fileName="");
     void closeCpacsConfiguration();
     TiglCPACSConfigurationHandle getCpacsHandle() const;
     QString GetLoadedConfigurationFileName() const;
