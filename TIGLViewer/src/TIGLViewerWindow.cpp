@@ -604,6 +604,10 @@ void TIGLViewerWindow::save()
 
 void TIGLViewerWindow::saveAs()
 {
+    if (!cpacsConfiguration) {
+        LOG(WARNING) << " TIGLViewerWindow::saveFile(): Nothing to save. " << std::endl;
+        return;
+    }
 
     statusMessage(tr("Invoked File|Save As"));
 
