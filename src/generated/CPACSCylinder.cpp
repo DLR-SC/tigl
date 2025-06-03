@@ -29,7 +29,7 @@ namespace tigl
 namespace generated
 {
     CPACSCylinder::CPACSCylinder(CPACSElementGeometry* parent)
-        : m_lowerRadius(0)
+        : m_radius(0)
         , m_height(0)
     {
         //assert(parent != NULL);
@@ -38,7 +38,7 @@ namespace generated
     }
 
     CPACSCylinder::CPACSCylinder(CPACSElementGeometryAddtionalPart* parent)
-        : m_lowerRadius(0)
+        : m_radius(0)
         , m_height(0)
     {
         //assert(parent != NULL);
@@ -78,17 +78,12 @@ namespace generated
 
     void CPACSCylinder::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element lowerRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerRadius")) {
-            m_lowerRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/lowerRadius");
+        // read element radius
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/radius")) {
+            m_radius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radius");
         }
         else {
-            LOG(ERROR) << "Required element lowerRadius is missing at xpath " << xpath;
-        }
-
-        // read element upperRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperRadius")) {
-            m_upperRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperRadius");
+            LOG(ERROR) << "Required element radius is missing at xpath " << xpath;
         }
 
         // read element height
@@ -103,20 +98,9 @@ namespace generated
 
     void CPACSCylinder::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element lowerRadius
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lowerRadius");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/lowerRadius", m_lowerRadius);
-
-        // write element upperRadius
-        if (m_upperRadius) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperRadius");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/upperRadius", *m_upperRadius);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperRadius")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/upperRadius");
-            }
-        }
+        // write element radius
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/radius");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/radius", m_radius);
 
         // write element height
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/height");
@@ -124,24 +108,14 @@ namespace generated
 
     }
 
-    const double& CPACSCylinder::GetLowerRadius() const
+    const double& CPACSCylinder::GetRadius() const
     {
-        return m_lowerRadius;
+        return m_radius;
     }
 
-    void CPACSCylinder::SetLowerRadius(const double& value)
+    void CPACSCylinder::SetRadius(const double& value)
     {
-        m_lowerRadius = value;
-    }
-
-    const boost::optional<double>& CPACSCylinder::GetUpperRadius() const
-    {
-        return m_upperRadius;
-    }
-
-    void CPACSCylinder::SetUpperRadius(const boost::optional<double>& value)
-    {
-        m_upperRadius = value;
+        m_radius = value;
     }
 
     const double& CPACSCylinder::GetHeight() const

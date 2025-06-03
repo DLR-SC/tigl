@@ -45,10 +45,13 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
     if (auto& p = geom.GetCuboid_choice1()) {
         elementShape = BuildCuboidShape(*p);
     }
-    else if (auto& f = geom.GetCylinder_choice2()) {
-        elementShape = BuildCylinderShape(*f);
+    else if (auto& c = geom.GetCylinder_choice2()) {
+        elementShape = BuildCylinderShape(*c);
     }
-    else if (auto& e = geom.GetEllipsoid_choice3()) {
+    else if (auto& c = geom.GetCone_choice3()) {
+        elementShape = BuildConeShape(*c);
+    }
+    else if (auto& e = geom.GetEllipsoid_choice4()) {
         elementShape = BuildEllipsoidShape(*e);
     }
     else {
@@ -91,14 +94,31 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& cu
     return transformer.Shape();
 }
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildCylinderShape(const CCPACSCylinder& f)
+TopoDS_Shape CTiglVehicleElementBuilder::BuildCylinderShape(const CCPACSCylinder& c)
 {
-    const double lowerRadius = f.GetLowerRadius();
-    const double upperRadius = f.GetUpperRadius().get_value_or(lowerRadius);
-    const double height      = f.GetHeight();
+    const double radius = c.GetRadius();
+    const double height = c.GetHeight();
+
+    if (radius < 0.0 || height <= 0.0) {
+        throw tigl::CTiglError("Invalid cylinder parameters: Radius must be non-negative and height must be positive.",
+                               TIGL_INVALID_VALUE);
+    }
+
+    TopoDS_Shape cylinder;
+
+    cylinder = BRepPrimAPI_MakeCylinder(radius, height).Shape();
+
+    return cylinder;
+}
+
+TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& c)
+{
+    const double lowerRadius = c.GetLowerRadius();
+    const double upperRadius = c.GetUpperRadius().get_value_or(0);
+    const double height      = c.GetHeight();
 
     if (lowerRadius < 0.0 || upperRadius < 0.0 || height <= 0.0) {
-        throw tigl::CTiglError("Invalid cylinder parameters: Radii must be non-negative and height must be positive.",
+        throw tigl::CTiglError("Invalid cone parameters: Radii must be non-negative and height must be positive.",
                                TIGL_INVALID_VALUE);
     }
 
@@ -106,6 +126,9 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCylinderShape(const CCPACSCylinder
 
     if (std::abs(lowerRadius - upperRadius) < 1e-8) {
         cylinder = BRepPrimAPI_MakeCylinder(lowerRadius, height).Shape();
+        auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        LOG(WARNING) << "Element with uID=\"" << uID
+                     << "\" defines a cylinder via the cone definition! It is strongly recommended to use the cylinder definition instead.";
     }
     else {
         cylinder = BRepPrimAPI_MakeCone(lowerRadius, upperRadius, height).Shape();

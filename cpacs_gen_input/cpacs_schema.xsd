@@ -36766,6 +36766,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <!-- <xsd:element name="parallelepiped" type="parallelepipedType"/> -->
                         <xsd:element name="cuboid" type="cuboidType"/>
                         <xsd:element name="cylinder" type="cylinderType"/>
+                        <xsd:element name="cone" type="coneType"/>
                         <xsd:element name="ellipsoid" type="ellipsoidType"/>
                         <!-- <xsd:element name="sphere" type="sphereType"/> -->
                         <xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/>
@@ -36988,10 +36989,45 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <ddue:para>Cylinder</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
-                        <ddue:para>The component coordinate system of the cylinder is centered on the center of its geometrically defining variables,
+                        <ddue:para>
+                            The component coordinate system of the cylinder is centered on the center of its lower circular face.
+                        </ddue:para>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="radius" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Radius [m]</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="height" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Height [m]</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="coneType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Cone</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para>
+                            The component coordinate system of the cone is centered on the center of its geometrically defining variables,
                             which is half the height and center of the lower and upper circular faces.
                         </ddue:para>
-                        <ddue:para>The upper radius is optional.
+                        <ddue:para>
+                            The upper radius is optional.
                             If not specified, it defaults to the lower radius, resulting in a cylinder.
                         </ddue:para>
                     </ddue:remarks>
@@ -37008,7 +37044,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     </xsd:element>
                     <xsd:element name="upperRadius" minOccurs="0" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Upper radius [m] (if not defined: equals lowerRadius)</xsd:documentation>
+                            <xsd:documentation>Upper radius [m] (if not defined: equals 0)</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="height" type="doubleBaseType">

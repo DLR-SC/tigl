@@ -37,7 +37,8 @@ private:
     CTiglTransformation const* m_transformation = nullptr;
 
     TopoDS_Shape BuildCuboidShape(const CCPACSCuboid& p);
-    TopoDS_Shape BuildCylinderShape(const CCPACSCylinder& f);
+    TopoDS_Shape BuildCylinderShape(const CCPACSCylinder& c);
+    TopoDS_Shape BuildConeShape(const CCPACSCone& c);
     TopoDS_Shape BuildEllipsoidShape(const CCPACSEllipsoid& e);
 };
 

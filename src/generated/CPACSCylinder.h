@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
@@ -40,10 +38,7 @@ namespace generated
 
     /// @brief Cylinder
     /// 
-    /// The component coordinate system of the cylinder is centered on the center of its geometrically defining variables,
-    /// which is half the height and center of the lower and upper circular faces.
-    /// The upper radius is optional.
-    /// If not specified, it defaults to the lower radius, resulting in a cylinder.
+    /// The component coordinate system of the cylinder is centered on the center of its lower circular face.
     /// 
     class CPACSCylinder
     {
@@ -85,11 +80,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const double& GetLowerRadius() const;
-        TIGL_EXPORT virtual void SetLowerRadius(const double& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetUpperRadius() const;
-        TIGL_EXPORT virtual void SetUpperRadius(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const double& GetRadius() const;
+        TIGL_EXPORT virtual void SetRadius(const double& value);
 
         TIGL_EXPORT virtual const double& GetHeight() const;
         TIGL_EXPORT virtual void SetHeight(const double& value);
@@ -98,14 +90,11 @@ namespace generated
         void* m_parent;
         const std::type_info* m_parentType;
 
-        /// Lower radius [m]
-        double                  m_lowerRadius;
-
-        /// Upper radius [m] (if not defined: equals lowerRadius)
-        boost::optional<double> m_upperRadius;
+        /// Radius [m]
+        double m_radius;
 
         /// Height [m]
-        double                  m_height;
+        double m_height;
 
     private:
         CPACSCylinder(const CPACSCylinder&) = delete;

@@ -208,9 +208,9 @@
                                         </translation>
                                     </transformation>
                                 </component>
-                                <component uID="cylinder_2">
-                                    <name>Installed cylinder 2</name>
-                                    <systemElementUID>predCylinder_2</systemElementUID>
+                                <component uID="cone_1">
+                                    <name>Installed cone 1</name>
+                                    <systemElementUID>predCone_2</systemElementUID>
                                     <transformation>
                                         <translation>
                                             <x>15</x>
@@ -219,13 +219,24 @@
                                         </translation>
                                     </transformation>
                                 </component>
-                                <component uID="cylinder_3">
-                                    <name>Installed cylinder 3</name>
-                                    <systemElementUID>predCylinder_3</systemElementUID>
+                                <component uID="cone_2">
+                                    <name>Installed cone 2</name>
+                                    <systemElementUID>predCone_2</systemElementUID>
                                     <transformation>
                                         <translation>
                                             <x>15</x>
                                             <y>10</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+								<component uID="cone_3">
+                                    <name>Installed cone 3</name>
+                                    <systemElementUID>predCone_3</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>15</x>
+                                            <y>15</y>
                                             <z>0</z>
                                         </translation>
                                     </transformation>
@@ -318,29 +329,38 @@
                     <name>Predefined cylinder 1</name>
                     <geometry>
                         <cylinder>
-                            <lowerRadius>0.5</lowerRadius>
+                            <radius>0.5</radius>
                             <height>1.</height>
                         </cylinder>
                     </geometry>
                 </genericComponent>
-                <genericComponent uID="predCylinder_2">
-                    <name>Predefined cylinder 2</name>
+                <genericComponent uID="predCone_1">
+                    <name>Predefined cone 1</name>
                     <geometry>
-                        <cylinder>
+                        <cone>
                             <lowerRadius>0.5</lowerRadius>
                             <upperRadius>0.25</upperRadius>
                             <height>1.</height>
-                        </cylinder>
+                        </cone>
                     </geometry>
                 </genericComponent>
-                <genericComponent uID="predCylinder_3">
-                    <name>Predefined cylinder 3</name>
+                <genericComponent uID="predCone_2">
+                    <name>Predefined cone 2</name>
                     <geometry>
-                        <cylinder>
+                        <cone>
                             <lowerRadius>0.5</lowerRadius>
-                            <upperRadius>0.</upperRadius>
+                            <upperRadius>0.74</upperRadius>
                             <height>1.</height>
-                        </cylinder>
+                        </cone>
+                    </geometry>
+                </genericComponent>
+				<genericComponent uID="predCone_3">
+                    <name>Predefined cone 3</name>
+                    <geometry>
+                        <cone>
+                            <lowerRadius>0.5</lowerRadius>
+                            <height>1.</height>
+                        </cone>
                     </geometry>
                 </genericComponent>
             </genericComponents>
