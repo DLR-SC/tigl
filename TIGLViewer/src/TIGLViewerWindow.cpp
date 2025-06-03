@@ -252,8 +252,30 @@ void TIGLViewerWindow::openScript(const QString& fileName)
     scriptEngine->openFile(fileName);
 }
 
+int TIGLViewerWindow::dialogSaveBeforeClose()
+{
+    QMessageBox msgBox;
+    msgBox.setText("Do you want to save the file before closing?");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+
+    return msgBox.exec();
+}
+
 void TIGLViewerWindow::closeConfiguration()
 {
+    // TODO: Find a way to really check whether there are unsaved changes. Currently, this is also called when there are no changes!
+    if (cpacsConfiguration) {
+        int selection = dialogSaveBeforeClose();
+
+        if (selection == QMessageBox::Cancel) {
+            return;
+        }
+        else if (selection == QMessageBox::Yes) {
+            save();
+        }
+    }
+
     modificatorManager->setCPACSConfiguration(nullptr); // it will also reset the treeview
     if (cpacsConfiguration) {
         getScene()->deleteAllObjects();
@@ -1011,8 +1033,20 @@ void TIGLViewerWindow::updateMenus()
     menuWings->setEnabled(nWings - nRotorBlades > 0);
 }
 
-void TIGLViewerWindow::closeEvent(QCloseEvent*)
+void TIGLViewerWindow::closeEvent(QCloseEvent* event)
 {
+    // TODO: Find a way to really check whether there are unsaved changes. Currently, this is also called when there are no changes!
+    if (cpacsConfiguration) {
+        int selection = dialogSaveBeforeClose();
+
+        if (selection == QMessageBox::Cancel) {
+            event->ignore();
+            return;
+        }
+        else if (selection == QMessageBox::Yes) {
+            save();
+        }
+    }
     saveSettings();
 }
 
