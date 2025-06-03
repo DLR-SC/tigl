@@ -621,18 +621,22 @@ void TIGLViewerWindow::saveAs()
 
     if (!fileName.isEmpty()) {
 
-        QFileInfo fileInfo;
-        fileInfo.setFile(fileName);
-
-        if (fileInfo.suffix() != "xml") {
+        if (!fileName.endsWith(".xml")) {
             QMessageBox msgBox;
-            msgBox.setText("The extension of the given file name is not the CPACS standard extension type \".xml\".");
+            msgBox.setText("The extension of the given file name is not the CPACS standard extension type \".xml\".\nThis might lead to problems when the file is opened again.");
             msgBox.setInformativeText("Do you want to continue?");
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::No);
-            if (msgBox.exec() == QMessageBox::No) {
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Retry);
+            msgBox.setDefaultButton(QMessageBox::Retry);
+            int selection = msgBox.exec();
+            if (selection == QMessageBox::No) {
                 return;
             }
+            else if(selection == QMessageBox::Retry) {
+                fileName = QFileDialog::getSaveFileName(this, tr("Save as..."),
+                                                        myLastFolder, tr("CPACS (*.xml);;") + tr("All (*)"));
+            }
+            QFileInfo fileInfo;
+            fileInfo.setFile(fileName);
         }
 
         TIGLViewerScopedCommand command(getConsole()); // what is it for?
