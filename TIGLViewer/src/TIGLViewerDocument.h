@@ -178,6 +178,11 @@ private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
+
+    // Variable to store information on whether cpacs configuration was modified after last save.
+    // Variable is set to true via TIGLViewerWindow::updateScene implicitely when the SIGNAL undoCommandRequired() is emitted (at the end).
+    // Default value when creating an object of TIGLVieweDocument is false. Reset to default when CPACS file is saved.
+    // Is checked before saving the next time.
     bool                                    modifiedSinceLastSave;
     class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;
 

@@ -264,7 +264,7 @@ int TIGLViewerWindow::dialogSaveBeforeClose()
 
 void TIGLViewerWindow::closeConfiguration()
 {
-    // TODO: Find a way to really check whether there are unsaved changes. Currently, this is also called when there are no changes!
+    // Check whether there were changes in the configuration before asking if the user wants to save
     if (cpacsConfiguration && cpacsConfiguration->isConfigurationModifiedSinceLastSave()) {
         int selection = dialogSaveBeforeClose();
 
@@ -1044,7 +1044,7 @@ void TIGLViewerWindow::updateMenus()
 
 void TIGLViewerWindow::closeEvent(QCloseEvent* event)
 {
-    // TODO: Find a way to really check whether there are unsaved changes. Currently, this is also called when there are no changes!
+    // Check whether there were changes in the configuration before asking if the user wants to save
     if (cpacsConfiguration && cpacsConfiguration->isConfigurationModifiedSinceLastSave()) {
         int selection = dialogSaveBeforeClose();
 
