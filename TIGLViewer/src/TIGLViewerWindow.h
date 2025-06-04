@@ -122,7 +122,8 @@ private:
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
 
-    void closeEvent(QCloseEvent*) override;
+    int dialogSaveBeforeClose();
+    void closeEvent(QCloseEvent* event) override;
     bool deleteEnvVar(const char* varname);
 
     QAction *recentFileActions[MaxRecentFiles];
