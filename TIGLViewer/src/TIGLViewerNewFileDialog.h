@@ -36,9 +36,9 @@ class TIGLViewerNewFileDialog;
  * When the dialog is executed, we first show every available template.
  * (The available templates are simply the cpacs files contained in the
  * template directory of the TIGLViewerSettings class.)
- * Then, when the user selects a template, the template file is copied
- * and the dialog is closed. The copied file will have the extension ".temp".
- * Once the dialog is closed, the new created filename can be returned calling
+ * Then, when the user selects a template, the content of the template file
+ * is copied into a string and opened with TIXI. The dialog is closed.
+ * Once the dialog is closed, the template filename can be returned calling
  * the "getNewFileName" function. If the user rejects the dialog or an
  * error occurs during the creation of the file, the filename will be "".
  *
