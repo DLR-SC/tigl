@@ -20,11 +20,9 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSComponents.h>
-#include <CCPACSTransformation.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
-#include "CPACSGenericSystem_geometricBaseType.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
@@ -76,12 +74,6 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSGenericSystem_geometricBaseType>& GetGeometricBaseType() const;
-        TIGL_EXPORT virtual void SetGeometricBaseType(const boost::optional<CPACSGenericSystem_geometricBaseType>& value);
-
-        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
-
         TIGL_EXPORT virtual const CCPACSComponents& GetComponents() const;
         TIGL_EXPORT virtual CCPACSComponents& GetComponents();
 
@@ -90,23 +82,17 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                                           m_uID;
+        std::string                       m_uID;
 
-        boost::optional<TiglSymmetryAxis>                     m_symmetry;
+        boost::optional<TiglSymmetryAxis> m_symmetry;
 
         /// Name of the system component.
-        std::string                                           m_name;
+        std::string                       m_name;
 
         /// Description of the system component.
-        boost::optional<std::string>                          m_description;
+        boost::optional<std::string>      m_description;
 
-        /// Enum for selecting the basic shape of the
-        /// component
-        boost::optional<CPACSGenericSystem_geometricBaseType> m_geometricBaseType;
-
-        CCPACSTransformation                                  m_transformation;
-
-        CCPACSComponents                                      m_components;
+        CCPACSComponents                  m_components;
 
     private:
         CPACSGenericSystem(const CPACSGenericSystem&) = delete;

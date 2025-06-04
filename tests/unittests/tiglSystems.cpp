@@ -100,7 +100,7 @@ TEST_F(Systems, temp)
 {
     genericSystem->GetComponents();
     auto& name = rectCube_1->GetName();
-    EXPECT_EQ(name, "Component 1 of System 1");
+    EXPECT_EQ(name, "Installed cube 1");
 
     auto& loft  = rectCube_1->GetLoft();
     auto& loft2 = wedge_1->GetLoft();

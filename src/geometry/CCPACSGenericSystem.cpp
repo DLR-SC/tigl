@@ -25,9 +25,11 @@
 #include <algorithm>
 
 #include "CCPACSGenericSystem.h"
+#include "CCPACSComponent.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
+#include "CGroupShapes.h"
 
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -39,8 +41,9 @@ namespace tigl
 
 // Constructor
 CCPACSGenericSystem::CCPACSGenericSystem(CCPACSGenericSystems* parent, CTiglUIDManager* uidMgr)
-: generated::CPACSGenericSystem(parent, uidMgr)
-, CTiglRelativelyPositionedComponent(static_cast<std::string*>(nullptr), &m_transformation, &m_symmetry)
+    : generated::CPACSGenericSystem(parent, uidMgr)
+    , CTiglRelativelyPositionedComponent(static_cast<std::string*>(nullptr),
+                                         static_cast<CCPACSTransformation*>(nullptr), &m_symmetry)
 {
 }
 
@@ -49,7 +52,8 @@ CCPACSGenericSystem::~CCPACSGenericSystem()
 {
 }
 
-std::string CCPACSGenericSystem::GetDefaultedUID() const {
+std::string CCPACSGenericSystem::GetDefaultedUID() const
+{
     return GetUID();
 }
 
@@ -62,44 +66,19 @@ CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration() const
 // build loft
 PNamedShape CCPACSGenericSystem::BuildLoft() const
 {
-    TopoDS_Shape sysShape;
-    if (m_geometricBaseType) {
-        if (m_geometricBaseType.value() == ECPACSGenericSystem_geometricBaseType::cylinder) {
-            BRepPrimAPI_MakeCylinder cyl(0.5, 1);
-            gp_Vec vec(0, 0, -0.5);
-            gp_Trsf trsf = gp_Trsf();
-            trsf.SetTranslation(vec);
-            TopLoc_Location loc(trsf);
-            sysShape = cyl.Shape();
-            sysShape.Location(loc);
-        }
-        else if (m_geometricBaseType.value() == ECPACSGenericSystem_geometricBaseType::sphere) {
-            BRepPrimAPI_MakeSphere sph(0.5);
-            sysShape = sph.Shape();
-        }
-        else if (m_geometricBaseType.value() == ECPACSGenericSystem_geometricBaseType::cone) {
-            BRepPrimAPI_MakeCone cone(0.5, 0, 1);
-            gp_Vec vec(0, 0, -0.5);
-            gp_Trsf trsf = gp_Trsf();
-            trsf.SetTranslation(vec);
-            TopLoc_Location loc(trsf);
-            sysShape = cone.Shape();
-            sysShape.Location(loc);
-        }
-        else if (m_geometricBaseType.value() == ECPACSGenericSystem_geometricBaseType::cube) {
-            gp_Pnt p1(-0.5, -0.5, -0.5);
-            gp_Pnt p2(0.5, 0.5, 0.5);
-            BRepPrimAPI_MakeBox cube(p1, p2);
-            sysShape = cube.Shape();
-        }
+    const auto& components = GetComponents().GetComponents();
+    ListPNamedShape shapes;
+
+    for (const auto& component : components) {
+        auto loft = component->GetLoft();
+        shapes.push_back(loft);
     }
 
-    sysShape = GetTransformationMatrix().Transform(sysShape);
-    std::string loftName = GetUID();
-    std::string loftShortName = GetShortShapeName();
-    PNamedShape loft(new CNamedShape(sysShape, loftName.c_str(), loftShortName.c_str()));
+    PNamedShape groupedShape = CGroupShapes(shapes);
+    groupedShape->SetName(GetUID().c_str());
+    groupedShape->SetShortName(GetShortShapeName().c_str());
 
-    return loft;
+    return groupedShape;
 }
 
 // get short name for loft

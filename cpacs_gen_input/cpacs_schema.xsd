@@ -13394,21 +13394,6 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:documentation>Description of the system component.</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element minOccurs="0" name="geometricBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Enum for selecting the basic shape of the
-                                component</xsd:documentation>
-                        </xsd:annotation>
-                        <xsd:simpleType>
-                            <xsd:restriction base="xsd:string">
-                                <xsd:enumeration value="cone"/>
-                                <xsd:enumeration value="sphere"/>
-                                <xsd:enumeration value="cube"/>
-                                <xsd:enumeration value="cylinder"/>
-                            </xsd:restriction>
-                        </xsd:simpleType>
-                    </xsd:element>
-                    <xsd:element name="transformation" type="transformationType"/>
                     <xsd:element name="components" type="componentsType"/>
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>

@@ -29,7 +29,6 @@ namespace generated
 {
     CPACSGenericSystem::CPACSGenericSystem(CCPACSGenericSystems* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_transformation(reinterpret_cast<CCPACSGenericSystem*>(this), m_uidMgr)
         , m_components(reinterpret_cast<CCPACSGenericSystem*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
@@ -120,19 +119,6 @@ namespace generated
             }
         }
 
-        // read element geometricBaseType
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/geometricBaseType")) {
-            m_geometricBaseType = stringToCPACSGenericSystem_geometricBaseType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/geometricBaseType"));
-        }
-
-        // read element transformation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
-        }
-        else {
-            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
-        }
-
         // read element components
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/components")) {
             m_components.ReadCPACS(tixiHandle, xpath + "/components");
@@ -173,21 +159,6 @@ namespace generated
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
             }
         }
-
-        // write element geometricBaseType
-        if (m_geometricBaseType) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/geometricBaseType");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/geometricBaseType", CPACSGenericSystem_geometricBaseTypeToString(*m_geometricBaseType));
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/geometricBaseType")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/geometricBaseType");
-            }
-        }
-
-        // write element transformation
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
-        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
         // write element components
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/components");
@@ -241,26 +212,6 @@ namespace generated
     void CPACSGenericSystem::SetDescription(const boost::optional<std::string>& value)
     {
         m_description = value;
-    }
-
-    const boost::optional<CPACSGenericSystem_geometricBaseType>& CPACSGenericSystem::GetGeometricBaseType() const
-    {
-        return m_geometricBaseType;
-    }
-
-    void CPACSGenericSystem::SetGeometricBaseType(const boost::optional<CPACSGenericSystem_geometricBaseType>& value)
-    {
-        m_geometricBaseType = value;
-    }
-
-    const CCPACSTransformation& CPACSGenericSystem::GetTransformation() const
-    {
-        return m_transformation;
-    }
-
-    CCPACSTransformation& CPACSGenericSystem::GetTransformation()
-    {
-        return m_transformation;
     }
 
     const CCPACSComponents& CPACSGenericSystem::GetComponents() const
