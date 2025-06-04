@@ -79,7 +79,7 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& c)
     const double ymin = c.GetUpperFaceYmin().get_value_or(0);
     const double ymax = c.GetUpperFaceYmax().get_value_or(depthY);
 
-    TopoDS_Shape wedge = BRepPrimAPI_MakeWedge(lengthX, depthY, heightZ, xmin, ymin, xmax, ymax).Shape();
+    TopoDS_Shape wedge = BRepPrimAPI_MakeWedge(lengthX, heightZ, depthY, xmin, ymin, xmax, ymax).Shape();
 
     // Rotate and translate from OCC to CPACS convention:
     gp_Ax1 xAxis(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
@@ -100,8 +100,10 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCylinderShape(const CCPACSCylinder
     const double height = c.GetHeight();
 
     if (radius < 0.0 || height <= 0.0) {
-        throw tigl::CTiglError("Invalid cylinder parameters: Radius must be non-negative and height must be positive.",
-                               TIGL_INVALID_VALUE);
+        auto uID             = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        std::string errorMsg = "Invalid cylinder parameters for uID=\"" + uID +
+                               "\" : Radius must be non-negative and height must be positive.";
+        throw tigl::CTiglError(errorMsg, TIGL_INVALID_VALUE);
     }
 
     TopoDS_Shape cylinder;
@@ -118,8 +120,10 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& c)
     const double height      = c.GetHeight();
 
     if (lowerRadius < 0.0 || upperRadius < 0.0 || height <= 0.0) {
-        throw tigl::CTiglError("Invalid cone parameters: Radii must be non-negative and height must be positive.",
-                               TIGL_INVALID_VALUE);
+        auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        std::string errorMsg =
+            "Invalid cone parameters for uID=\"" + uID + "\" : Radii must be non-negative and height must be positive.";
+        throw tigl::CTiglError(errorMsg, TIGL_INVALID_VALUE);
     }
 
     TopoDS_Shape cylinder;
@@ -128,7 +132,8 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& c)
         cylinder = BRepPrimAPI_MakeCylinder(lowerRadius, height).Shape();
         auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
         LOG(WARNING) << "Element with uID=\"" << uID
-                     << "\" defines a cylinder via the cone definition! It is strongly recommended to use the cylinder definition instead.";
+                     << "\" defines a cylinder via the cone definition! It is strongly recommended to use the cylinder "
+                        "definition instead.";
     }
     else {
         cylinder = BRepPrimAPI_MakeCone(lowerRadius, upperRadius, height).Shape();

@@ -39,17 +39,10 @@ PNamedShape CCPACSComponent::BuildLoft() const
 {
     auto systemElementUID = m_systemElementUID_choice1.get();
 
-    try {
-        CCPACSVehicleElementBase& element = m_uidMgr->ResolveObject<CCPACSVehicleElementBase>(systemElementUID);
-        auto transform                    = this->GetTransformationMatrix();
-        CTiglVehicleElementBuilder builder(element, transform);
-        return builder.BuildShape();
-    }
-    catch (...) {
-        throw(CTiglError("CCPACSComponent: Unable to build shape for the system component with UID " +
-                             systemElementUID + ".",
-                         TIGL_ERROR));
-    }
+    CCPACSVehicleElementBase& element = m_uidMgr->ResolveObject<CCPACSVehicleElementBase>(systemElementUID);
+    auto transform                    = this->GetTransformationMatrix();
+    CTiglVehicleElementBuilder builder(element, transform);
+    return builder.BuildShape();
 }
 
 } //namespace tigl
