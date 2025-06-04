@@ -74,6 +74,13 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& c)
     const double depthY  = c.GetDepthY();
     const double heightZ = c.GetHeightZ();
 
+    if (lengthX <= 0.0 || depthY <= 0.0 || heightZ <= 0.0) {
+        auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        std::string errorMsg =
+            "Invalid cuboid parameters for uID=\"" + uID + "\" : lengthX, depthY and heightZ must be positive.";
+        throw tigl::CTiglError(errorMsg, TIGL_INVALID_VALUE);
+    }
+
     const double xmin = c.GetUpperFaceXmin().get_value_or(0);
     const double xmax = c.GetUpperFaceXmax().get_value_or(lengthX);
     const double ymin = c.GetUpperFaceYmin().get_value_or(0);
