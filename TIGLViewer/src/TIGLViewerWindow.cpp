@@ -265,7 +265,7 @@ int TIGLViewerWindow::dialogSaveBeforeClose()
 void TIGLViewerWindow::closeConfiguration()
 {
     // TODO: Find a way to really check whether there are unsaved changes. Currently, this is also called when there are no changes!
-    if (cpacsConfiguration) {
+    if (cpacsConfiguration && cpacsConfiguration->isConfigurationModifiedSinceLastSave()) {
         int selection = dialogSaveBeforeClose();
 
         if (selection == QMessageBox::Cancel) {
@@ -559,6 +559,11 @@ void TIGLViewerWindow::save()
     statusMessage(tr("Invoked File|Save"));
 
     if (currentFile.suffix().toLower() == "xml") {
+
+        if (!cpacsConfiguration->isConfigurationModifiedSinceLastSave()) {
+            LOG(WARNING) << " TIGLViewerWindow::save(): Nothing to save, no changes since last save." << std::endl;
+            return;
+        }
         saveFile(currentFile.absoluteFilePath());
     }
     else if (currentFile.suffix().toLower() == "temp") { // if the file was generated from a template
@@ -614,6 +619,9 @@ bool TIGLViewerWindow::saveFile(QString fileName)
         LOG(WARNING) << " TIGLViewerWindow::saveFile(): Nothing to save. " << std::endl;
         return false;
     }
+
+    statusMessage(tr("Invoked File|Save File"));
+
     // retrieve the content of the current tixi handle
     TixiDocumentHandle tixiHandle = cpacsConfiguration->GetConfiguration().GetTixiDocumentHandle();
     std::string tixiContent;
@@ -638,6 +646,7 @@ bool TIGLViewerWindow::saveFile(QString fileName)
         out << tixiContent.c_str();
         file.close();
         setCurrentFile(fileName); // will reset the watcher
+        cpacsConfiguration->configurationSaved(); // Resets modifiedSinceLastSave to check necessity of saving
         return true;
     }
     else {
@@ -1036,7 +1045,7 @@ void TIGLViewerWindow::updateMenus()
 void TIGLViewerWindow::closeEvent(QCloseEvent* event)
 {
     // TODO: Find a way to really check whether there are unsaved changes. Currently, this is also called when there are no changes!
-    if (cpacsConfiguration) {
+    if (cpacsConfiguration && cpacsConfiguration->isConfigurationModifiedSinceLastSave()) {
         int selection = dialogSaveBeforeClose();
 
         if (selection == QMessageBox::Cancel) {
@@ -1118,6 +1127,7 @@ void TIGLViewerWindow::drawVector()
 void TIGLViewerWindow::updateScene() {
     myScene->deleteAllObjects();
     cpacsConfiguration->drawConfiguration();
+    cpacsConfiguration->configurationModifiedSinceLastSave();
 }
 
 /// This function is copied from QtCoreLib (>5.1)

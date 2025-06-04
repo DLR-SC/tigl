@@ -61,6 +61,11 @@ public:
     // Remark, the tiglConfiguration will change.
     void updateCpacsConfigurationFromString(const std::string &tixiContent);
 
+    // Take care of boolean variable that stores information whether the configuration was modified since the last save
+    // Only if this is the case, the saveFile() command is invoked
+    void configurationModifiedSinceLastSave();
+    void configurationSaved();
+    bool isConfigurationModifiedSinceLastSave();
 
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);
@@ -173,6 +178,7 @@ private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
+    bool                                    modifiedSinceLastSave;
     class TIGLViewerSelectWingAndFlapStatusDialog* m_flapsDialog;
 
     void writeToStatusBar(const QString& text);
