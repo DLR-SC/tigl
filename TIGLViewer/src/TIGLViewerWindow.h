@@ -33,7 +33,6 @@
 
 #include "ModificatorManager.h"
 
-
 class QAction;
 class QLabel;
 class QMenu;
