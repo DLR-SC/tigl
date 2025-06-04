@@ -68,16 +68,16 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
     return loft;
 };
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& cuboid)
+TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& c)
 {
-    const double lengthX = cuboid.GetLengthX();
-    const double depthY  = cuboid.GetDepthY();
-    const double heightZ = cuboid.GetHeightZ();
+    const double lengthX = c.GetLengthX();
+    const double depthY  = c.GetDepthY();
+    const double heightZ = c.GetHeightZ();
 
-    const double xmin = cuboid.GetUpperFaceXmin().get_value_or(0);
-    const double xmax = cuboid.GetUpperFaceXmax().get_value_or(lengthX);
-    const double ymin = cuboid.GetUpperFaceYmin().get_value_or(0);
-    const double ymax = cuboid.GetUpperFaceYmax().get_value_or(depthY);
+    const double xmin = c.GetUpperFaceXmin().get_value_or(0);
+    const double xmax = c.GetUpperFaceXmax().get_value_or(lengthX);
+    const double ymin = c.GetUpperFaceYmin().get_value_or(0);
+    const double ymax = c.GetUpperFaceYmax().get_value_or(depthY);
 
     TopoDS_Shape wedge = BRepPrimAPI_MakeWedge(lengthX, depthY, heightZ, xmin, ymin, xmax, ymax).Shape();
 
