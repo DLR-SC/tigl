@@ -57,6 +57,7 @@
 #include <tixicpp.h>
 
 #include <cstdlib>
+#include <filesystem>
 
 namespace
 {
@@ -205,12 +206,10 @@ void TIGLViewerWindow::setInitialControlFile(const QString& filename)
 void TIGLViewerWindow::newFile()
 {
     statusBar()->showMessage(tr("Invoked File|New"));
-    //myOCC->getView()->ColorScaleErase();
     TIGLViewerNewFileDialog newFileDialog( this );
     if ( newFileDialog.exec() == QDialog::Accepted ){
-        openFile(newFileDialog.getNewFileName());
+        openNewFile(newFileDialog.getNewFileName());
     }
-
 }
 
 void TIGLViewerWindow::open()
@@ -284,9 +283,6 @@ void TIGLViewerWindow::closeConfiguration()
     }
     setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
 
-    if ( currentFile.suffix().toLower() == "temp" ){
-        QFile(currentFile.absoluteFilePath()).remove();
-    }
     setCurrentFile("");
     undoStack->clear(); // when the document is closed, we remove all undo
 }
@@ -328,9 +324,9 @@ void TIGLViewerWindow::openFile(const QString& fileName)
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
         
-        if (fileType.toLower() == tr("xml") || fileType.toLower() == tr("temp")  ) {
+        if (fileType.toLower() == tr("xml")) {
             TIGLViewerDocument* config = new TIGLViewerDocument(this);
-            TiglReturnCode tiglRet = config->openCpacsConfiguration(fileInfo.absoluteFilePath());
+            TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath());
             if (tiglRet != TIGL_SUCCESS) {
                 delete config;
                 return;
@@ -393,6 +389,64 @@ void TIGLViewerWindow::reopenFile()
     }
 }
 
+std::string TIGLViewerWindow::readFileContent(char* fileName)
+{
+    auto size = std::filesystem::file_size(fileName);
+    std::string content(size, '\0');
+    std::ifstream in(fileName);
+    in.read(&content[0], size);
+
+    return content;
+}
+
+void TIGLViewerWindow::openNewFile(const QString& templatePath)
+{
+    QString      fileType;
+    QFileInfo    fileInfo;
+
+    TIGLViewerInputOutput::FileFormat format;
+    TIGLViewerInputOutput reader;
+    bool triangulation = false;
+    bool success;
+
+    TIGLViewerScopedCommand command(getConsole());
+    Q_UNUSED(command);
+    statusMessage(tr("Invoked File|Open New"));
+
+    if (!templatePath.isEmpty()) {
+        fileInfo.setFile(templatePath);
+        fileType = fileInfo.suffix();
+
+        if (fileType.toLower() == tr("xml")) {
+            // Read CPACS template file content into string and open the CPACS configuration from that
+            std::string cpacsFileContent = readFileContent(strdup((const char*)templatePath.toLatin1()));
+
+            TIGLViewerDocument* config = new TIGLViewerDocument(this);
+            TiglReturnCode tiglRet = config->openCpacsConfigurationFromString(cpacsFileContent);
+            if (tiglRet != TIGL_SUCCESS) {
+                delete config;
+                return;
+            }
+            delete cpacsConfiguration;
+            cpacsConfiguration = config;
+
+            modificatorManager->setCPACSConfiguration(cpacsConfiguration);
+
+            connectConfiguration();
+            updateMenus();
+            success = true;
+        }
+
+        if (success) {
+            myOCC->viewAxo();
+            myOCC->fitAll();
+        }
+        else {
+            displayErrorMessage("Error opening file " + templatePath, "Error");
+        }
+    }
+}
+
 void TIGLViewerWindow::setCurrentFile(const QString& fileName)
 {
     currentFile.setFile(fileName);
@@ -406,20 +460,19 @@ void TIGLViewerWindow::setCurrentFile(const QString& fileName)
 
         watcher->addPath(currentFile.absoluteFilePath());
         QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
-        if (currentFile.suffix().toLower() != "temp") { // to avoid inserting temp files as recent opened files
-            QSettings settings("DLR SC-HPC", "CPACS-Creator");
-            QStringList files = settings.value("recentFileList").toStringList();
-            files.removeAll(fileName);
-            files.prepend(fileName);
-            while (files.size() > MaxRecentFiles) {
-                files.removeLast();
-            }
 
-            settings.setValue("recentFileList", files);
-            settings.setValue("lastFolder", myLastFolder);
-            updateRecentFileActions();
-            myLastFolder = currentFile.absolutePath();
+        QSettings settings("DLR SC-HPC", "CPACS-Creator");
+        QStringList files = settings.value("recentFileList").toStringList();
+        files.removeAll(fileName);
+        files.prepend(fileName);
+        while (files.size() > MaxRecentFiles) {
+            files.removeLast();
         }
+
+        settings.setValue("recentFileList", files);
+        settings.setValue("lastFolder", myLastFolder);
+        updateRecentFileActions();
+        myLastFolder = currentFile.absolutePath();
     }
     else {
         setTiglWindowTitle(QString("CPACS Creator"));
@@ -566,7 +619,7 @@ void TIGLViewerWindow::save()
         }
         saveFile(currentFile.absoluteFilePath());
     }
-    else if (currentFile.suffix().toLower() == "temp") { // if the file was generated from a template
+    else if (currentFile.baseName() == "") { // if the file was generated from a template
         saveAs();
     }
     else {
@@ -578,25 +631,39 @@ void TIGLViewerWindow::save()
 
 void TIGLViewerWindow::saveAs()
 {
+    if (!cpacsConfiguration) {
+        LOG(WARNING) << " TIGLViewerWindow::saveFile(): Nothing to save. " << std::endl;
+        return;
+    }
 
     statusMessage(tr("Invoked File|Save As"));
+
+    // Use home path as default value for safety if myLastFolder was not set
+    if (myLastFolder == "") {
+        myLastFolder = QDir::homePath();
+    }
+
     QString fileName =
         QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder, tr("CPACS (*.xml);;") + tr("All (*)"));
 
     if (!fileName.isEmpty()) {
 
-        QFileInfo fileInfo;
-        fileInfo.setFile(fileName);
-
-        if (fileInfo.suffix() != "xml") {
+        if (!fileName.endsWith(".xml")) {
             QMessageBox msgBox;
-            msgBox.setText("The extension of the given file name is not the CPACS standard extension type \".xml\".");
+            msgBox.setText("The extension of the given file name is not the CPACS standard extension type \".xml\".\nThis might lead to problems when the file is opened again.");
             msgBox.setInformativeText("Do you want to continue?");
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::No);
-            if (msgBox.exec() == QMessageBox::No) {
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Retry);
+            msgBox.setDefaultButton(QMessageBox::Retry);
+            int selection = msgBox.exec();
+            if (selection == QMessageBox::No) {
                 return;
             }
+            else if(selection == QMessageBox::Retry) {
+                fileName = QFileDialog::getSaveFileName(this, tr("Save as..."),
+                                                        myLastFolder, tr("CPACS (*.xml);;") + tr("All (*)"));
+            }
+            QFileInfo fileInfo;
+            fileInfo.setFile(fileName);
         }
 
         TIGLViewerScopedCommand command(getConsole()); // what is it for?
@@ -604,10 +671,7 @@ void TIGLViewerWindow::saveAs()
 
         QFileInfo oldFilenameInfo = currentFile;
         bool fileSaved            = saveFile(fileName);
-
-        if (fileSaved && oldFilenameInfo.suffix() == "temp") { // clear the temporary file
-            QFile(oldFilenameInfo.absoluteFilePath()).remove();
-        }
+        cpacsConfiguration->SetLoadedConfigurationFileName(fileName);
     }
     return;
 }

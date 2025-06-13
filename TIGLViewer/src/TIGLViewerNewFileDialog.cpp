@@ -62,26 +62,13 @@ void TIGLViewerNewFileDialog::accept()
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
 
     QString originalFile = settings.templateDir().absolutePath() + "/" + selectedTemplate;
-    QString newFilePath  = originalFile + ".temp";
-    int prefix           = 1;
-    while (QFile::exists(newFilePath)) {
-        newFilePath =
-            settings.templateDir().absolutePath() + "/" + QString::number(prefix) + "_" + selectedTemplate + ".temp";
-        prefix = prefix + 1;
-    }
 
-    // Copy the file
-    if (QFile::copy(originalFile, newFilePath)) {
-        newCPACSFileName = newFilePath;
-        LOG(INFO) << "TIGLViewerNewFileDialog::templateIsSelected: new file " + newFilePath.toStdString() +
-                         " created based on the template."
-                  << std::endl;
+    if(QFile::exists(originalFile)) {
+        newCPACSFileName = originalFile;
         QDialog::accept();
     }
     else {
-        QString errorMsg = "An error occurs during the creation of the file \"" + newFilePath +
-                           "\". Make sure the application has the permission to write into \"" +
-                           settings.templateDir().absolutePath() + "\"";
+        QString errorMsg = "An error occurs when reading the file \"" + originalFile + "\".";
 
         LOG(WARNING) << "TIGLViewerNewFileDialog::templateIsSelected: " + errorMsg.toStdString() << std::endl;
 

@@ -74,6 +74,7 @@ signals:
 
 public slots:
     void openFile(const QString& fileName);
+    void openNewFile(const QString& templatePath);
     void openScript(const QString& scriptFileName);
     bool exportFile(const QString &fileName);
     bool saveFile(QString fileName);
@@ -121,6 +122,7 @@ private:
     void createMenus();
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
+    std::string readFileContent(char* fileName);
 
     int dialogSaveBeforeClose();
     void closeEvent(QCloseEvent* event) override;
