@@ -124,7 +124,8 @@ private:
     void setCurrentFile(const QString &);
     std::string readFileContent(char* fileName);
 
-    void closeEvent(QCloseEvent*) override;
+    int dialogSaveBeforeClose();
+    void closeEvent(QCloseEvent* event) override;
     bool deleteEnvVar(const char* varname);
 
     QAction *recentFileActions[MaxRecentFiles];
