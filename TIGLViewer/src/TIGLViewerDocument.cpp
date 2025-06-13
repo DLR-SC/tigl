@@ -148,10 +148,30 @@ char* TIGLViewerDocument::qstringToCstring(const QString& text)
     return strdup((const char*)text.toLatin1());
 }
 
-TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileName)
+TiglReturnCode TIGLViewerDocument::openCpacsConfigurationFromString(const std::string cpacsFileContent)
 {
     START_COMMAND()
-    QStringList configurations;
+
+    app->getScene()->getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
+
+    TixiDocumentHandle tixiHandle = -1;
+
+    ReturnCode tixiRet = tixiImportFromString(cpacsFileContent.c_str(), &tixiHandle);
+    if (tixiRet == NOT_WELL_FORMED) {
+        displayError(QString("Error in function <u>tixiImportFromString</u> when trying to open the template file. File not well-formed in XML-style. Error code: %1").arg(tixiRet), "TIXI Error");
+        return TIGL_XML_ERROR;
+    }
+    if (tixiRet != SUCCESS) {
+        displayError(QString("Error in function <u>tixiImportFromString</u> when trying to open the template file. Error code: %1").arg(tixiRet), "TIXI Error");
+        return TIGL_XML_ERROR;
+    }
+
+    return openCpacsConfiguration(tixiHandle);
+}
+
+TiglReturnCode TIGLViewerDocument::openCpacsConfigurationFromFile(const QString& fileName)
+{
+    START_COMMAND()
 
     app->getScene()->getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
 
@@ -164,6 +184,13 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileNam
         return TIGL_XML_ERROR;
     }
 
+    return openCpacsConfiguration(tixiHandle, fileName);
+}
+
+TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(TixiDocumentHandle &tixiHandle, const QString &fileName)
+{
+    QStringList configurations;
+    ReturnCode tixiRet;
     // read configuration names
     int countAircrafts = 0;
     int countRotorcrafts = 0;
@@ -181,7 +208,7 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileNam
             displayError(QString("Error: missing uID for aircraft model %1!").arg(i), "TIXI Error");
             return TIGL_OPEN_FAILED;
         }
-    }    
+    }
     for (int i = 0; i < countRotorcrafts; i++) {
         char *text;
         std::stringstream xpath;
@@ -197,14 +224,21 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileNam
 
     }
 
-    // set the debug data output directory relative to the opened file
-    tiglSetDebugDataDirectory((QFileInfo(fileName).dir().path().toStdString() + "/CrashInfo").c_str());
+    // If the current function is called from openCpacsConfigurationFromString(...), there is no file name
+    // Hence, no file name can be passed as an argument and the default value (-> empty QString) is used.
+    // This check is done at some more places in this function
+    if (!fileName.isEmpty()) {
+        // set the debug data output directory relative to the opened file
+        tiglSetDebugDataDirectory((QFileInfo(fileName).dir().path().toStdString() + "/CrashInfo").c_str());
+    }
 
     // Get configuration from user and open with TIGL
     TiglReturnCode tiglRet = TIGL_UNINITIALIZED;
     if (countRotorcrafts + countAircrafts == 0) {
         // no configuration present
-        loadedConfigurationFileName = fileName;
+        if (!fileName.isEmpty()) {
+            loadedConfigurationFileName = fileName;
+        }
         return TIGL_UNINITIALIZED;
     }
     else if (countRotorcrafts + countAircrafts == 1) {
@@ -226,7 +260,9 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString& fileNam
         return tiglRet;
     }
     drawConfiguration();
-    loadedConfigurationFileName = fileName;
+    if (!fileName.isEmpty()) {
+        loadedConfigurationFileName = fileName;
+    }
     return TIGL_SUCCESS;
 }
 
@@ -261,7 +297,7 @@ void TIGLViewerDocument::updateConfiguration()
         tiglCloseCPACSConfiguration(m_cpacsHandle);
         m_cpacsHandle = -1;
         app->getScene()->deleteAllObjects();
-        openCpacsConfiguration(loadedConfigurationFileName);
+        openCpacsConfigurationFromFile(loadedConfigurationFileName);
         emit documentUpdated(m_cpacsHandle);
     }
 }
@@ -274,6 +310,15 @@ tigl::CCPACSConfiguration& TIGLViewerDocument::GetConfiguration() const
     return manager.GetConfiguration(m_cpacsHandle);
 }
 
+QString TIGLViewerDocument::GetLoadedConfigurationFileName() const
+{
+    return loadedConfigurationFileName;
+}
+
+void TIGLViewerDocument::SetLoadedConfigurationFileName(const QString& configurationFileName)
+{
+    loadedConfigurationFileName = configurationFileName;
+}
 
 // creates triangulation of shape
 // returns true, of mesh was done
