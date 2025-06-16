@@ -1472,7 +1472,15 @@ TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, 
     auto curve4 = tigl::CFunctionToBspline(ellipse, uMin3, uMax3, degree, tol).Curve();
     curves.push_back(curve4);
 
-    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
+    // reparametrize such that the parameters for all connection points are the same. Otherwise
+    // the four intersection points of each super ellipse in a loft are not guaranteed to be
+    // connected.
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*curve1, 0., 0.25);
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*curve2, 0., 0.25);
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*curve3, 0., 0.25);
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*curve4, 0., 0.25);
+
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves, false);
 
     //build wire
     TopoDS_Wire wire;

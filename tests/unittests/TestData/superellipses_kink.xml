@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cpacs xsi:noNamespaceSchemaLocation="https://www.cpacs.de/schema/v3_5_0/cpacs_schema.xsd"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <header>
+        <name>Superellipses_test</name>
+        <version>1.0</version>
+        <cpacsVersion>3.5</cpacsVersion>
+        <versionInfos>
+            <versionInfo version="1.0">
+                <cpacsVersion>3.5</cpacsVersion>
+                <description>Superellipses test</description>
+                <timestamp>2025-05-16T12:46:13.412+02:00</timestamp>
+                <creator>Guybrush Threepwood</creator>
+            </versionInfo>
+        </versionInfos>
+    </header>
+    <vehicles>
+        <aircraft>
+            <model uID="SE">
+                <name>SE</name>
+        <reference>
+          <area>42</area>
+          <length>1</length>
+          <point>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+          </point>
+        </reference>
+                <fuselages>
+                    <fuselage uID="fuselage">
+                        <name>fuselage</name>
+                        <transformation/>
+                        <sections>
+                            <section uID="fuselageProfile0">
+                                <name>fuselageProfile0</name>
+                                <transformation>
+                                    <scaling>
+                                        <x>1.0</x>
+                                        <y>2.9800873266855112</y>
+                                        <z>2.2491676811491947</z>
+                                    </scaling>
+                                    <rotation>
+                                        <x>0.0</x>
+                                        <y>0.0</y>
+                                        <z>0.0</z>
+                                    </rotation>
+                                    <translation refType="absGlobal">
+                                        <x>-1.1901598978704255</x>
+                                        <y>0.0</y>
+                                        <z>0.15494266247916674</z>
+                                    </translation>
+                                </transformation>
+                                <elements>
+                                    <element uID="fuselageProfile0_element">
+                                        <name>fuselageProfile0 Element</name>
+                                        <profileUID>fuselageProfile0_profile</profileUID>
+                                        <transformation/>
+                                    </element>
+                                </elements>
+                            </section>
+                            <section uID="fuselageProfile1">
+                                <name>fuselageProfile1</name>
+                                <transformation>
+                                    <scaling>
+                                        <x>1.0</x>
+                                        <y>3.6402672386944572</y>
+                                        <z>2.118787196637192</z>
+                                    </scaling>
+                                    <rotation>
+                                        <x>0.0</x>
+                                        <y>0.0</y>
+                                        <z>0.0</z>
+                                    </rotation>
+                                    <translation refType="absGlobal">
+                                        <x>-0.18013607173502155</x>
+                                        <y>0.0</y>
+                                        <z>0.06995995460594512</z>
+                                    </translation>
+                                </transformation>
+                                <elements>
+                                    <element uID="fuselageProfile1_element">
+                                        <name>fuselageProfile1 Element</name>
+                                        <profileUID>fuselageProfile1_profile</profileUID>
+                                        <transformation/>
+                                    </element>
+                                </elements>
+                            </section>
+                        </sections>
+                        <segments>
+                            <segment uID="fuselageProfile0_element_fuselageProfile1_element">
+                                <name>fuselageSegment4</name>
+                                <fromElementUID>fuselageProfile0_element</fromElementUID>
+                                <toElementUID>fuselageProfile1_element</toElementUID>
+                            </segment>
+                        </segments>
+                    </fuselage>
+                </fuselages>
+            </model>
+        </aircraft>
+        <profiles>
+            <fuselageProfiles>
+                <fuselageProfile uID="fuselageProfile0_profile">
+                    <name>fuselageProfile0</name>
+                    <standardProfile>
+                        <superEllipse>
+                            <mUpper>2.0</mUpper>
+                            <nUpper>1.0</nUpper>
+                            <mLower>2.0</mLower>
+                            <nLower>1.0</nLower>
+                            <lowerHeightFraction>0.4311111111111111</lowerHeightFraction>
+                        </superEllipse>
+                    </standardProfile>
+                </fuselageProfile>
+                <fuselageProfile uID="fuselageProfile1_profile">
+                    <name>fuselageProfile1</name>
+                    <standardProfile>
+                        <superEllipse>
+                            <mUpper>2.0</mUpper>
+                            <nUpper>1.0</nUpper>
+                            <mLower>2.0</mLower>
+                            <nLower>1.0</nLower>
+                            <lowerHeightFraction>0.8</lowerHeightFraction><!--<lowerHeightFraction>0.46698113207547165</lowerHeightFraction>-->
+                        </superEllipse>
+                    </standardProfile>
+                </fuselageProfile>
+            </fuselageProfiles>
+        </profiles>
+    </vehicles>
+</cpacs>
