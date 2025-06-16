@@ -251,8 +251,30 @@ void TIGLViewerWindow::openScript(const QString& fileName)
     scriptEngine->openFile(fileName);
 }
 
+int TIGLViewerWindow::dialogSaveBeforeClose()
+{
+    QMessageBox msgBox;
+    msgBox.setText("Do you want to save the file before closing?");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+
+    return msgBox.exec();
+}
+
 void TIGLViewerWindow::closeConfiguration()
 {
+    // Check whether there were changes in the configuration before asking if the user wants to save
+    if (cpacsConfiguration && cpacsConfiguration->isConfigurationModifiedSinceLastSave()) {
+        int selection = dialogSaveBeforeClose();
+
+        if (selection == QMessageBox::Cancel) {
+            return;
+        }
+        else if (selection == QMessageBox::Yes) {
+            save();
+        }
+    }
+
     modificatorManager->setCPACSConfiguration(nullptr); // it will also reset the treeview
     if (cpacsConfiguration) {
         getScene()->deleteAllObjects();
@@ -260,6 +282,7 @@ void TIGLViewerWindow::closeConfiguration()
         cpacsConfiguration = nullptr;
     }
     setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+    resetColorSaveButton(); // Reset the icon of the save button to show that the file has not been edited since the last save
 
     setCurrentFile("");
     undoStack->clear(); // when the document is closed, we remove all undo
@@ -590,6 +613,11 @@ void TIGLViewerWindow::save()
     statusMessage(tr("Invoked File|Save"));
 
     if (currentFile.suffix().toLower() == "xml") {
+
+        if (!cpacsConfiguration->isConfigurationModifiedSinceLastSave()) {
+            LOG(WARNING) << " TIGLViewerWindow::save(): Nothing to save, no changes since last save." << std::endl;
+            return;
+        }
         saveFile(currentFile.absoluteFilePath());
     }
     else if (currentFile.baseName() == "") { // if the file was generated from a template
@@ -656,6 +684,9 @@ bool TIGLViewerWindow::saveFile(QString fileName)
         LOG(WARNING) << " TIGLViewerWindow::saveFile(): Nothing to save. " << std::endl;
         return false;
     }
+
+    statusMessage(tr("Invoked File|Save File"));
+
     // retrieve the content of the current tixi handle
     TixiDocumentHandle tixiHandle = cpacsConfiguration->GetConfiguration().GetTixiDocumentHandle();
     std::string tixiContent;
@@ -680,6 +711,8 @@ bool TIGLViewerWindow::saveFile(QString fileName)
         out << tixiContent.c_str();
         file.close();
         setCurrentFile(fileName); // will reset the watcher
+        cpacsConfiguration->configurationSaved(); // Resets modifiedSinceLastSave to check necessity of saving
+        resetColorSaveButton(); // Reset the icon of the save button to show that the file has not been edited since the last save
         return true;
     }
     else {
@@ -933,6 +966,7 @@ void TIGLViewerWindow::connectSignals()
 
     // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
     connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
+    connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
     // creator view
     connect(showModificatorAction, SIGNAL(toggled(bool)), editorDockWidget, SLOT(setVisible(bool)));
     connect(editorDockWidget, SIGNAL(visibilityChanged(bool)), showModificatorAction, SLOT(setChecked(bool)));
@@ -1075,8 +1109,20 @@ void TIGLViewerWindow::updateMenus()
     menuWings->setEnabled(nWings - nRotorBlades > 0);
 }
 
-void TIGLViewerWindow::closeEvent(QCloseEvent*)
+void TIGLViewerWindow::closeEvent(QCloseEvent* event)
 {
+    // Check whether there were changes in the configuration before asking if the user wants to save
+    if (cpacsConfiguration && cpacsConfiguration->isConfigurationModifiedSinceLastSave()) {
+        int selection = dialogSaveBeforeClose();
+
+        if (selection == QMessageBox::Cancel) {
+            event->ignore();
+            return;
+        }
+        else if (selection == QMessageBox::Yes) {
+            save();
+        }
+    }
     saveSettings();
 }
 
@@ -1148,6 +1194,17 @@ void TIGLViewerWindow::drawVector()
 void TIGLViewerWindow::updateScene() {
     myScene->deleteAllObjects();
     cpacsConfiguration->drawConfiguration();
+    cpacsConfiguration->configurationModifiedSinceLastSave();
+}
+
+// Color the icon of the save button to show that the file has been edited since the last save
+void TIGLViewerWindow::changeColorSaveButton() {
+    saveAction->setIcon(QIcon(":/gfx/document-save-edited.png"));
+}
+
+// Reset the icon of the save button to show that the file has not been edited since the last save
+void TIGLViewerWindow::resetColorSaveButton() {
+    saveAction->setIcon(QIcon(":/gfx/document-save.png"));
 }
 
 /// This function is copied from QtCoreLib (>5.1)
