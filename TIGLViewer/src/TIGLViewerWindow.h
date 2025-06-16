@@ -80,6 +80,8 @@ public slots:
     bool saveFile(QString fileName);
     void closeConfiguration();
     void setTiglWindowTitle(const QString& title, bool forceTitle=false);
+    void changeColorSaveButton();
+    void resetColorSaveButton();
     
     TIGLViewerWidget*   getViewer();
     TIGLViewerContext*  getScene() { return myScene; }

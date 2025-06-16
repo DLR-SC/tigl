@@ -1483,7 +1483,7 @@
     <string>Save</string>
    </property>
    <property name="toolTip">
-    <string>save the modifications into the current file</string>
+    <string>Save the modifications in the currently opened file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>

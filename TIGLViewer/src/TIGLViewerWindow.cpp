@@ -282,6 +282,7 @@ void TIGLViewerWindow::closeConfiguration()
         cpacsConfiguration = nullptr;
     }
     setTiglWindowTitle(QString("TiGL Viewer %1").arg(TIGL_MAJOR_VERSION));
+    resetColorSaveButton(); // Reset the icon of the save button to show that the file has not been edited since the last save
 
     setCurrentFile("");
     undoStack->clear(); // when the document is closed, we remove all undo
@@ -711,6 +712,7 @@ bool TIGLViewerWindow::saveFile(QString fileName)
         file.close();
         setCurrentFile(fileName); // will reset the watcher
         cpacsConfiguration->configurationSaved(); // Resets modifiedSinceLastSave to check necessity of saving
+        resetColorSaveButton(); // Reset the icon of the save button to show that the file has not been edited since the last save
         return true;
     }
     else {
@@ -964,6 +966,7 @@ void TIGLViewerWindow::connectSignals()
 
     // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
     connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
+    connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
     // creator view
     connect(showModificatorAction, SIGNAL(toggled(bool)), editorDockWidget, SLOT(setVisible(bool)));
     connect(editorDockWidget, SIGNAL(visibilityChanged(bool)), showModificatorAction, SLOT(setChecked(bool)));
@@ -1192,6 +1195,16 @@ void TIGLViewerWindow::updateScene() {
     myScene->deleteAllObjects();
     cpacsConfiguration->drawConfiguration();
     cpacsConfiguration->configurationModifiedSinceLastSave();
+}
+
+// Color the icon of the save button to show that the file has been edited since the last save
+void TIGLViewerWindow::changeColorSaveButton() {
+    saveAction->setIcon(QIcon(":/gfx/document-save-edited.png"));
+}
+
+// Reset the icon of the save button to show that the file has not been edited since the last save
+void TIGLViewerWindow::resetColorSaveButton() {
+    saveAction->setIcon(QIcon(":/gfx/document-save.png"));
 }
 
 /// This function is copied from QtCoreLib (>5.1)
