@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+#include "CNamedShape.h"
 #include "test.h"
 #include "tigl.h"
 #include <tixi.h>
@@ -27,6 +28,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSFuselageSectionElement.h"
 #include "CCPACSWingSectionElement.h"
+#include "CCPACSWingSegment.h"
 
 class creatorWing : public ::testing::Test
 {
@@ -1090,6 +1092,30 @@ TEST_F(creatorWing, MultipleWings_CreateSections)
     EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.2));
 
 
+}
+
+TEST_F(creatorWing, wingCreateSectionNonBoundary)
+{
+    setVariables("TestData/simpletest.cpacs.xml", "Wing");
+    std::vector<std::string> orderedUIDS, expectedOrderedUIDS;
+
+    // Add a non-boundary section to a wing and check whether all shapes can be built
+    wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec1_El1", "Cpacs2Test_Wing_Sec2_El1");
+
+    orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1BisElem1"); // new element
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]); // Check sections order
+    }
+
+    for (int i = 1; i <= wing->GetSegments().GetSegmentCount(); i++) {
+        // Check whether all section's segments are valid and can be built
+        EXPECT_NO_THROW(const TopoDS_Shape& shape = wing->GetSegments().GetSegment(i).GetLoft()->Shape());
+    }
 }
 
 TEST_F(creatorWing, D250_DeleteSection )
