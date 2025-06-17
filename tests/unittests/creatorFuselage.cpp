@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+#include "CNamedShape.h"
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
 #include "tixi.h"
@@ -30,6 +31,7 @@
 #include "CTiglWingSectionElement.h"
 #include "CCPACSFuselageSectionElement.h"
 #include "CCPACSWingSectionElement.h"
+#include "CCPACSFuselageSegment.h"
 
 
 #include <string.h>
@@ -540,6 +542,29 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 
 }
 
+TEST_F(creatorFuselage, fuselageCreateSectionNonBoundary)
+{
+    setVariables("TestData/simpletest.cpacs.xml", "SimpleFuselage");
+    std::vector<std::string> orderedUIDS, expectedOrderedUIDS;
+
+    // Add a non-boundary section to a wing and check whether all shapes can be built
+    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1", "D150_Fuselage_1Section2IDElement1");
+
+    orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1"); // new element
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]); // Check sections order
+    }
+
+    for (int i = 1; i <= fuselage->GetSegments().GetSegmentCount(); i++) {
+        // Check whether all section's segments are valid and can be built
+        EXPECT_NO_THROW(const TopoDS_Shape& shape = fuselage->GetSegments().GetSegment(i).GetLoft()->Shape());
+    }
+}
 
 TEST_F(creatorFuselage, deleteSection_multipleFuselgaesModel)
 {
