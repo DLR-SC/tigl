@@ -16,6 +16,6 @@ dependencies:
  - pythonocc-core=7.4.1          # needed to build python bindings
  - matlab-libs                   # needed to build matlab bindings
  # other build dependencies
- - ninja=1.10.2                  # not strictly needed, tigl can be build using any other camke generator
+ - ninja                         # not strictly needed, tigl can be build using any other camke generator
  - freeimageplus                 # used by opencascade
  - brotlipy                      # Workaround for issue on windows, see: https://github.com/conda/conda/issues/9903#issuecomment-647091019
