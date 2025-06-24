@@ -108,7 +108,7 @@ CPACSPointXY                              CCPACSPointXY
 CPACSStringerFramePosition                CCPACSFuselageStringerFramePosition
 CPACSSkin                                 CCPACSSkin
 CPACSSkinSegment                          CCPACSSkinSegment
-CPACSWallSegment                          CCPACSFuselageWallSegment
+CPACSWallSegment                          CCPACSWallSegment
 CPACSWallPosition                         CCPACSWallPosition
 CPACSWalls                                CCPACSWalls
 
@@ -138,3 +138,10 @@ CPACSDuct                                CCPACSDuct
 CPACSDuctStructure                       CCPACSDuctStructure
 CPACSDuctAssembly                        CCPACSDuctAssembly
 CPACSDucts                               CCPACSDucts
+
+// Tanks
+CPACSVessel                              CCPACSVessel
+CPACSVessels                             CCPACSVessels
+CPACSFuelTank                            CCPACSFuelTank
+CPACSFuelTanks                           CCPACSFuelTanks
+CPACSVesselStructure                     CCPACSVesselStructure

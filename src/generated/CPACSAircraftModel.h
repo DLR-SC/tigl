@@ -23,6 +23,7 @@
 #include <CCPACSDucts.h>
 #include <CCPACSEnginePositions.h>
 #include <CCPACSExternalObjects.h>
+#include <CCPACSFuelTanks.h>
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
@@ -102,6 +103,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSLandingGears>& GetLandingGears() const;
         TIGL_EXPORT virtual boost::optional<CPACSLandingGears>& GetLandingGears();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSFuelTanks>& GetFuelTanks() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSFuelTanks>& GetFuelTanks();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSACSystems>& GetSystems() const;
         TIGL_EXPORT virtual boost::optional<CCPACSACSystems>& GetSystems();
 
@@ -128,6 +132,9 @@ namespace generated
 
         TIGL_EXPORT virtual CPACSLandingGears& GetLandingGears(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveLandingGears();
+
+        TIGL_EXPORT virtual CCPACSFuelTanks& GetFuelTanks(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveFuelTanks();
 
         TIGL_EXPORT virtual CCPACSACSystems& GetSystems(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSystems();
@@ -162,6 +169,8 @@ namespace generated
         boost::optional<CPACSEnginePylons>          m_enginePylons;
 
         boost::optional<CPACSLandingGears>          m_landingGears;
+
+        boost::optional<CCPACSFuelTanks>            m_fuelTanks;
 
         boost::optional<CCPACSACSystems>            m_systems;
 

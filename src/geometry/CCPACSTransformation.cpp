@@ -89,6 +89,18 @@ CCPACSTransformation::CCPACSTransformation(CCPACSLandingGearBase* parent, CTiglU
 {
 }
 
+CCPACSTransformation::CCPACSTransformation(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
 CCPACSTransformation::CCPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
@@ -176,12 +188,22 @@ void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
     m_rotation->SetAsPoint(rotation);
 }
 
+void CCPACSTransformation::setRotationType(ECPACSTranslationType rotationType)
+{
+    _rotationType = rotationType;
+}
+
 void CCPACSTransformation::setScaling(const CTiglPoint& scale)
 {
     if (!m_scaling) {
         m_scaling = boost::in_place(this, m_uidMgr);
     }
     m_scaling->SetAsPoint(scale);
+}
+
+void CCPACSTransformation::setScalingType(ECPACSTranslationType scalingType)
+{
+    _scalingType = scalingType;
 }
 
 void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& matrix)
@@ -261,6 +283,16 @@ ECPACSTranslationType CCPACSTransformation::getTranslationType() const
     else {
         return CCPACSPointAbsRel::defaultTranslationType;
     }
+}
+
+ECPACSTranslationType CCPACSTransformation::getScalingType() const
+{
+    return _scalingType;
+}
+
+ECPACSTranslationType CCPACSTransformation::getRotationType() const
+{
+    return _rotationType;
 }
 
 CTiglTransformation CCPACSTransformation::getTransformationMatrix() const

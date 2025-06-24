@@ -70,6 +70,9 @@ public:
     // Returns the section element matrix referenced by this connection
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
+    // Returns whether the parent component has positionings
+    TIGL_EXPORT bool ParentComponentHasPositionings() const;
+
 private:
 
     CCPACSFuselageSections const& GetParentComponentSections() const;

@@ -32,12 +32,14 @@ class CTiglUIDObject;
 class CCPACSFuselageStringer;
 class CCPACSDuctStructure;
 class CCPACSFuselageStructure;
+class CCPACSVesselStructure;
 
 namespace generated
 {
     // This class is used in:
     // CPACSDuctStructure
     // CPACSFuselageStructure
+    // CPACSVesselStructure
 
     /// @brief stringersAssemblyType
     /// 
@@ -49,6 +51,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSStringersAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSStringersAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSStringersAssembly(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSStringersAssembly();
 
@@ -61,7 +64,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSVesselStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -71,7 +74,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSVesselStructure>::value, "template argument for P is not a parent class of CPACSStringersAssembly");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
