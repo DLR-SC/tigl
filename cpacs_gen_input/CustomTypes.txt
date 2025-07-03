@@ -125,6 +125,10 @@ CPACSControlSurfaces                      CCPACSControlSurfaces
 CPACSControlSurfaceBorderTrailingEdge     CCPACSControlSurfaceBorderTrailingEdge
 CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
 CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
+CPACSLeadingEdgeDevices                   CCPACSLeadingEdgeDevices
+CPACSLeadingEdgeDevice                    CCPACSLeadingEdgeDevice
+CPACSSpoilers                             CCPACSSpoilers
+CPACSSpoiler                              CCPACSSpoiler
 CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
 CPACSControlSurfaceWingCutOut             CCPACSControlSurfaceWingCutOut
 

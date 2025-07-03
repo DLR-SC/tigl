@@ -73,10 +73,6 @@ CPACSWingWingAttachments
 // in component segment structure
 CPACSWingIntermediateStructureCells
 
-// in control surfaces
-CPACSLeadingEdgeDevices
-CPACSSpoilers
-
 // in trailing edge device
 CPACSControlSurfaceActuators
 CPACSCruiseRollers

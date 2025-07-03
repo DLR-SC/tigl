@@ -79,6 +79,10 @@ CPACSControlSurfaceWingCutOut
 CPACSWingStringer
 CPACSTrailingEdgeDevice
 CPACSTrailingEdgeDevices
+CPACSLeadingEdgeDevices
+CPACSLeadingEdgeDevice
+CPACSSpoilers
+CPACSSpoiler
 CPACSDoorAssemblyPosition
 CPACSStringer
 CPACSStringerFramePosition
