@@ -16,6 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSLeadingEdgeDevice.h"
+#include "CCPACSSpoiler.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CPACSControlSurfaceTracks.h"
 #include "CPACSControlSurfaceTrackType.h"
@@ -29,35 +31,64 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSControlSurfaceTracks::CPACSControlSurfaceTracks(CCPACSLeadingEdgeDevice* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSLeadingEdgeDevice);
+    }
+
+    CPACSControlSurfaceTracks::CPACSControlSurfaceTracks(CCPACSSpoiler* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSSpoiler);
+    }
+
     CPACSControlSurfaceTracks::CPACSControlSurfaceTracks(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSTrailingEdgeDevice);
     }
 
     CPACSControlSurfaceTracks::~CPACSControlSurfaceTracks()
     {
     }
 
-    const CCPACSTrailingEdgeDevice* CPACSControlSurfaceTracks::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSTrailingEdgeDevice* CPACSControlSurfaceTracks::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSControlSurfaceTracks::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSLeadingEdgeDevice>()) {
+                return GetParent<CCPACSLeadingEdgeDevice>();
+            }
+            if (IsParent<CCPACSSpoiler>()) {
+                return GetParent<CCPACSSpoiler>();
+            }
+            if (IsParent<CCPACSTrailingEdgeDevice>()) {
+                return GetParent<CCPACSTrailingEdgeDevice>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSControlSurfaceTracks::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSLeadingEdgeDevice>()) {
+                return GetParent<CCPACSLeadingEdgeDevice>();
+            }
+            if (IsParent<CCPACSSpoiler>()) {
+                return GetParent<CCPACSSpoiler>();
+            }
+            if (IsParent<CCPACSTrailingEdgeDevice>()) {
+                return GetParent<CCPACSTrailingEdgeDevice>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSControlSurfaceTracks::GetUIDManager()

@@ -32,9 +32,13 @@ class CCPACSControlSurfaceBorderTrailingEdge;
 
 namespace generated
 {
+    class CPACSControlSurfaceBorderLeadingEdge;
+    class CPACSControlSurfaceBorderSpoiler;
     class CPACSLandingGearSupportBeamPosition;
 
     // This class is used in:
+    // CPACSControlSurfaceBorderLeadingEdge
+    // CPACSControlSurfaceBorderSpoiler
     // CPACSControlSurfaceBorderTrailingEdge
     // CPACSLandingGearSupportBeamPosition
 
@@ -46,6 +50,8 @@ namespace generated
     class CPACSXsiIsoLine : public ITiglUIDRefObject
     {
     public:
+        TIGL_EXPORT CPACSXsiIsoLine(CPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSXsiIsoLine(CPACSControlSurfaceBorderSpoiler* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSXsiIsoLine(CPACSLandingGearSupportBeamPosition* parent, CTiglUIDManager* uidMgr);
 
@@ -60,7 +66,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSLandingGearSupportBeamPosition>::value, "template argument for P is not a parent class of CPACSXsiIsoLine");
+            static_assert(std::is_same<P, CPACSControlSurfaceBorderLeadingEdge>::value || std::is_same<P, CPACSControlSurfaceBorderSpoiler>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSLandingGearSupportBeamPosition>::value, "template argument for P is not a parent class of CPACSXsiIsoLine");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -70,7 +76,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSLandingGearSupportBeamPosition>::value, "template argument for P is not a parent class of CPACSXsiIsoLine");
+            static_assert(std::is_same<P, CPACSControlSurfaceBorderLeadingEdge>::value || std::is_same<P, CPACSControlSurfaceBorderSpoiler>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSLandingGearSupportBeamPosition>::value, "template argument for P is not a parent class of CPACSXsiIsoLine");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -122,5 +128,7 @@ namespace generated
 // CPACSXsiIsoLine is customized, use type CCPACSXsiIsoLine directly
 
 // Aliases in tigl namespace
+using CCPACSControlSurfaceBorderLeadingEdge = generated::CPACSControlSurfaceBorderLeadingEdge;
+using CCPACSControlSurfaceBorderSpoiler = generated::CPACSControlSurfaceBorderSpoiler;
 using CCPACSLandingGearSupportBeamPosition = generated::CPACSLandingGearSupportBeamPosition;
 } // namespace tigl

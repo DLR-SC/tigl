@@ -77,6 +77,17 @@ namespace generated
 
     void CPACSControlSurfaces::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read element leadingEdgeDevices
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/leadingEdgeDevices")) {
+            m_leadingEdgeDevices = boost::in_place(reinterpret_cast<CCPACSControlSurfaces*>(this), m_uidMgr);
+            try {
+                m_leadingEdgeDevices->ReadCPACS(tixiHandle, xpath + "/leadingEdgeDevices");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read leadingEdgeDevices at xpath " << xpath << ": " << e.what();
+                m_leadingEdgeDevices = boost::none;
+            }
+        }
+
         // read element trailingEdgeDevices
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeDevices")) {
             m_trailingEdgeDevices = boost::in_place(reinterpret_cast<CCPACSControlSurfaces*>(this), m_uidMgr);
@@ -88,10 +99,32 @@ namespace generated
             }
         }
 
+        // read element spoilers
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/spoilers")) {
+            m_spoilers = boost::in_place(reinterpret_cast<CCPACSControlSurfaces*>(this), m_uidMgr);
+            try {
+                m_spoilers->ReadCPACS(tixiHandle, xpath + "/spoilers");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read spoilers at xpath " << xpath << ": " << e.what();
+                m_spoilers = boost::none;
+            }
+        }
+
     }
 
     void CPACSControlSurfaces::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write element leadingEdgeDevices
+        if (m_leadingEdgeDevices) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/leadingEdgeDevices");
+            m_leadingEdgeDevices->WriteCPACS(tixiHandle, xpath + "/leadingEdgeDevices");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/leadingEdgeDevices")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/leadingEdgeDevices");
+            }
+        }
+
         // write element trailingEdgeDevices
         if (m_trailingEdgeDevices) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trailingEdgeDevices");
@@ -103,6 +136,27 @@ namespace generated
             }
         }
 
+        // write element spoilers
+        if (m_spoilers) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/spoilers");
+            m_spoilers->WriteCPACS(tixiHandle, xpath + "/spoilers");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/spoilers")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/spoilers");
+            }
+        }
+
+    }
+
+    const boost::optional<CCPACSLeadingEdgeDevices>& CPACSControlSurfaces::GetLeadingEdgeDevices() const
+    {
+        return m_leadingEdgeDevices;
+    }
+
+    boost::optional<CCPACSLeadingEdgeDevices>& CPACSControlSurfaces::GetLeadingEdgeDevices()
+    {
+        return m_leadingEdgeDevices;
     }
 
     const boost::optional<CCPACSTrailingEdgeDevices>& CPACSControlSurfaces::GetTrailingEdgeDevices() const
@@ -115,6 +169,28 @@ namespace generated
         return m_trailingEdgeDevices;
     }
 
+    const boost::optional<CCPACSSpoilers>& CPACSControlSurfaces::GetSpoilers() const
+    {
+        return m_spoilers;
+    }
+
+    boost::optional<CCPACSSpoilers>& CPACSControlSurfaces::GetSpoilers()
+    {
+        return m_spoilers;
+    }
+
+    CCPACSLeadingEdgeDevices& CPACSControlSurfaces::GetLeadingEdgeDevices(CreateIfNotExistsTag)
+    {
+        if (!m_leadingEdgeDevices)
+            m_leadingEdgeDevices = boost::in_place(reinterpret_cast<CCPACSControlSurfaces*>(this), m_uidMgr);
+        return *m_leadingEdgeDevices;
+    }
+
+    void CPACSControlSurfaces::RemoveLeadingEdgeDevices()
+    {
+        m_leadingEdgeDevices = boost::none;
+    }
+
     CCPACSTrailingEdgeDevices& CPACSControlSurfaces::GetTrailingEdgeDevices(CreateIfNotExistsTag)
     {
         if (!m_trailingEdgeDevices)
@@ -125,6 +201,18 @@ namespace generated
     void CPACSControlSurfaces::RemoveTrailingEdgeDevices()
     {
         m_trailingEdgeDevices = boost::none;
+    }
+
+    CCPACSSpoilers& CPACSControlSurfaces::GetSpoilers(CreateIfNotExistsTag)
+    {
+        if (!m_spoilers)
+            m_spoilers = boost::in_place(reinterpret_cast<CCPACSControlSurfaces*>(this), m_uidMgr);
+        return *m_spoilers;
+    }
+
+    void CPACSControlSurfaces::RemoveSpoilers()
+    {
+        m_spoilers = boost::none;
     }
 
 } // namespace generated

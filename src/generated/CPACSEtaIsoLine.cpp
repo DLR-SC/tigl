@@ -19,6 +19,8 @@
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
 #include "CCPACSWingCellPositionSpanwise.h"
 #include "CPACSControlSurfaceAirfoil.h"
+#include "CPACSControlSurfaceBorderLeadingEdge.h"
+#include "CPACSControlSurfaceBorderSpoiler.h"
 #include "CPACSControlSurfaceSkinCutOutBorder.h"
 #include "CPACSControlSurfaceTrackType.h"
 #include "CPACSCutOutProfile.h"
@@ -51,6 +53,24 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CPACSControlSurfaceAirfoil);
+    }
+
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSControlSurfaceBorderLeadingEdge);
+    }
+
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CPACSControlSurfaceBorderSpoiler* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSControlSurfaceBorderSpoiler);
     }
 
     CPACSEtaIsoLine::CPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr)
@@ -123,6 +143,12 @@ namespace generated
             if (IsParent<CPACSControlSurfaceAirfoil>()) {
                 return GetParent<CPACSControlSurfaceAirfoil>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSControlSurfaceBorderLeadingEdge>()) {
+                return GetParent<CPACSControlSurfaceBorderLeadingEdge>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSControlSurfaceBorderSpoiler>()) {
+                return GetParent<CPACSControlSurfaceBorderSpoiler>()->GetNextUIDParent();
+            }
             if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
                 return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
             }
@@ -153,6 +179,12 @@ namespace generated
             }
             if (IsParent<CPACSControlSurfaceAirfoil>()) {
                 return GetParent<CPACSControlSurfaceAirfoil>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSControlSurfaceBorderLeadingEdge>()) {
+                return GetParent<CPACSControlSurfaceBorderLeadingEdge>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSControlSurfaceBorderSpoiler>()) {
+                return GetParent<CPACSControlSurfaceBorderSpoiler>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
                 return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();

@@ -21,22 +21,28 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include "CPACSControlSurfaceSkinCutOut.h"
 #include "CPACSControlSurfaceSkinCutOutBorder.h"
 #include "CPACSCutOutControlPoints.h"
 #include "CPACSCutOutProfiles.h"
 #include "CreateIfNotExists.h"
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSLeadingEdgeDevice;
+class CCPACSSpoiler;
 class CCPACSTrailingEdgeDevice;
 
 namespace generated
 {
     // This class is used in:
+    // CPACSLeadingEdgeDevice
+    // CPACSSpoiler
     // CPACSTrailingEdgeDevice
 
     /// @brief Cut out of the parents structure due to a control
@@ -56,13 +62,37 @@ namespace generated
     class CPACSControlSurfaceWingCutOut
     {
     public:
+        TIGL_EXPORT CPACSControlSurfaceWingCutOut(CCPACSLeadingEdgeDevice* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSControlSurfaceWingCutOut(CCPACSSpoiler* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSControlSurfaceWingCutOut(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSControlSurfaceWingCutOut();
 
-        TIGL_EXPORT CCPACSTrailingEdgeDevice* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSTrailingEdgeDevice* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CCPACSLeadingEdgeDevice>::value || std::is_same<P, CCPACSSpoiler>::value || std::is_same<P, CCPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSControlSurfaceWingCutOut");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CCPACSLeadingEdgeDevice>::value || std::is_same<P, CCPACSSpoiler>::value || std::is_same<P, CCPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSControlSurfaceWingCutOut");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -104,7 +134,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveOuterBorder();
 
     protected:
-        CCPACSTrailingEdgeDevice* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 

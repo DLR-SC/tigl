@@ -19,7 +19,9 @@
 
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include <vector>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 #include "UniquePtr.h"
 
@@ -32,8 +34,12 @@ class CCPACSControlSurfaceOuterShapeTrailingEdge;
 namespace generated
 {
     class CPACSControlSurfaceAirfoil;
+    class CPACSControlSurfaceOuterShapeLeadingEdge;
+    class CPACSControlSurfaceOuterShapeSpoiler;
 
     // This class is used in:
+    // CPACSControlSurfaceOuterShapeLeadingEdge
+    // CPACSControlSurfaceOuterShapeSpoiler
     // CPACSControlSurfaceOuterShapeTrailingEdge
 
     /// @brief Optional definition of the exact airfoil shape of the
@@ -44,13 +50,37 @@ namespace generated
     class CPACSControlSurfaceContours
     {
     public:
+        TIGL_EXPORT CPACSControlSurfaceContours(CPACSControlSurfaceOuterShapeLeadingEdge* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSControlSurfaceContours(CPACSControlSurfaceOuterShapeSpoiler* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSControlSurfaceContours(CCPACSControlSurfaceOuterShapeTrailingEdge* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSControlSurfaceContours();
 
-        TIGL_EXPORT CCPACSControlSurfaceOuterShapeTrailingEdge* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSControlSurfaceOuterShapeTrailingEdge* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CPACSControlSurfaceOuterShapeLeadingEdge>::value || std::is_same<P, CPACSControlSurfaceOuterShapeSpoiler>::value || std::is_same<P, CCPACSControlSurfaceOuterShapeTrailingEdge>::value, "template argument for P is not a parent class of CPACSControlSurfaceContours");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CPACSControlSurfaceOuterShapeLeadingEdge>::value || std::is_same<P, CPACSControlSurfaceOuterShapeSpoiler>::value || std::is_same<P, CCPACSControlSurfaceOuterShapeTrailingEdge>::value, "template argument for P is not a parent class of CPACSControlSurfaceContours");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -68,7 +98,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveIntermediateAirfoil(CPACSControlSurfaceAirfoil& ref);
 
     protected:
-        CCPACSControlSurfaceOuterShapeTrailingEdge* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -86,4 +117,6 @@ namespace generated
 // Aliases in tigl namespace
 using CCPACSControlSurfaceContours = generated::CPACSControlSurfaceContours;
 using CCPACSControlSurfaceAirfoil = generated::CPACSControlSurfaceAirfoil;
+using CCPACSControlSurfaceOuterShapeLeadingEdge = generated::CPACSControlSurfaceOuterShapeLeadingEdge;
+using CCPACSControlSurfaceOuterShapeSpoiler = generated::CPACSControlSurfaceOuterShapeSpoiler;
 } // namespace tigl

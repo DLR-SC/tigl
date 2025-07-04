@@ -19,6 +19,8 @@
 #include "CCPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "CPACSControlSurfaceAirfoil.h"
 #include "CPACSControlSurfaceContours.h"
+#include "CPACSControlSurfaceOuterShapeLeadingEdge.h"
+#include "CPACSControlSurfaceOuterShapeSpoiler.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,31 +31,46 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSControlSurfaceContours::CPACSControlSurfaceContours(CPACSControlSurfaceOuterShapeLeadingEdge* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSControlSurfaceOuterShapeLeadingEdge);
+    }
+
+    CPACSControlSurfaceContours::CPACSControlSurfaceContours(CPACSControlSurfaceOuterShapeSpoiler* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSControlSurfaceOuterShapeSpoiler);
+    }
+
     CPACSControlSurfaceContours::CPACSControlSurfaceContours(CCPACSControlSurfaceOuterShapeTrailingEdge* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSControlSurfaceOuterShapeTrailingEdge);
     }
 
     CPACSControlSurfaceContours::~CPACSControlSurfaceContours()
     {
     }
 
-    const CCPACSControlSurfaceOuterShapeTrailingEdge* CPACSControlSurfaceContours::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSControlSurfaceOuterShapeTrailingEdge* CPACSControlSurfaceContours::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSControlSurfaceContours::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSControlSurfaceOuterShapeLeadingEdge>()) {
+                return GetParent<CPACSControlSurfaceOuterShapeLeadingEdge>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSControlSurfaceOuterShapeSpoiler>()) {
+                return GetParent<CPACSControlSurfaceOuterShapeSpoiler>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceOuterShapeTrailingEdge>()) {
+                return GetParent<CCPACSControlSurfaceOuterShapeTrailingEdge>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -61,7 +78,15 @@ namespace generated
     CTiglUIDObject* CPACSControlSurfaceContours::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSControlSurfaceOuterShapeLeadingEdge>()) {
+                return GetParent<CPACSControlSurfaceOuterShapeLeadingEdge>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSControlSurfaceOuterShapeSpoiler>()) {
+                return GetParent<CPACSControlSurfaceOuterShapeSpoiler>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceOuterShapeTrailingEdge>()) {
+                return GetParent<CCPACSControlSurfaceOuterShapeTrailingEdge>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

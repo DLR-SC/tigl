@@ -19,6 +19,8 @@
 
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -28,7 +30,12 @@ class CCPACSControlSurfaceBorderTrailingEdge;
 
 namespace generated
 {
+    class CPACSControlSurfaceBorderLeadingEdge;
+    class CPACSControlSurfaceBorderSpoiler;
+
     // This class is used in:
+    // CPACSControlSurfaceBorderLeadingEdge
+    // CPACSControlSurfaceBorderSpoiler
     // CPACSControlSurfaceBorderTrailingEdge
 
     /// @brief Optional definition of the leading edge shape of
@@ -42,13 +49,37 @@ namespace generated
     class CPACSLeadingEdgeShape
     {
     public:
+        TIGL_EXPORT CPACSLeadingEdgeShape(CPACSControlSurfaceBorderLeadingEdge* parent);
+        TIGL_EXPORT CPACSLeadingEdgeShape(CPACSControlSurfaceBorderSpoiler* parent);
         TIGL_EXPORT CPACSLeadingEdgeShape(CCPACSControlSurfaceBorderTrailingEdge* parent);
 
         TIGL_EXPORT virtual ~CPACSLeadingEdgeShape();
 
-        TIGL_EXPORT CCPACSControlSurfaceBorderTrailingEdge* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSControlSurfaceBorderTrailingEdge* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CPACSControlSurfaceBorderLeadingEdge>::value || std::is_same<P, CPACSControlSurfaceBorderSpoiler>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value, "template argument for P is not a parent class of CPACSLeadingEdgeShape");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CPACSControlSurfaceBorderLeadingEdge>::value || std::is_same<P, CPACSControlSurfaceBorderSpoiler>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value, "template argument for P is not a parent class of CPACSLeadingEdgeShape");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -66,7 +97,8 @@ namespace generated
         TIGL_EXPORT virtual void SetXsiLowerSkin(const double& value);
 
     protected:
-        CCPACSControlSurfaceBorderTrailingEdge* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         /// Relative height of the leading edge of the TED,
         /// based on the airfoil height of the parent at this position.
@@ -98,4 +130,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSLeadingEdgeShape = generated::CPACSLeadingEdgeShape;
+using CCPACSControlSurfaceBorderLeadingEdge = generated::CPACSControlSurfaceBorderLeadingEdge;
+using CCPACSControlSurfaceBorderSpoiler = generated::CPACSControlSurfaceBorderSpoiler;
 } // namespace tigl
