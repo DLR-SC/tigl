@@ -21,14 +21,14 @@
 */
 
 #include "CCPACSVessel.h"
-#include "CCPACSVessels.h"
+#include "generated/CPACSVessels.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglMakeLoft.h"
 #include "CNamedShape.h"
 #include "CTiglTopoAlgorithms.h"
 #include "tiglcommonfunctions.h"
 #include "CCPACSFuelTank.h"
-#include "CCPACSFuelTanks.h"
+#include "generated/CPACSFuelTanks.h"
 #include "generated/CPACSDomeType.h"
 #include "generated/CPACSEllipsoidDome.h"
 #include "generated/CPACSTorisphericalDome.h"

@@ -34,10 +34,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSVessels;
 
 namespace generated
 {
+    class CPACSVessels;
+
     // This class is used in:
     // CPACSVessels
 
@@ -47,13 +48,13 @@ namespace generated
     class CPACSVessel : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVessel(CPACSVessels* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSVessel();
 
-        TIGL_EXPORT CCPACSVessels* GetParent();
+        TIGL_EXPORT CPACSVessels* GetParent();
 
-        TIGL_EXPORT const CCPACSVessels* GetParent() const;
+        TIGL_EXPORT const CPACSVessels* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -118,7 +119,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveVolume();
 
     protected:
-        CCPACSVessels* m_parent;
+        CPACSVessels* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -162,4 +163,7 @@ namespace generated
 } // namespace generated
 
 // CPACSVessel is customized, use type CCPACSVessel directly
+
+// Aliases in tigl namespace
+using CCPACSVessels = generated::CPACSVessels;
 } // namespace tigl

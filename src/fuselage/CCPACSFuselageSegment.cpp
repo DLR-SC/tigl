@@ -27,7 +27,7 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
 #include "CCPACSVessel.h"
-#include "CCPACSVessels.h"
+#include "generated/CPACSVessels.h"
 
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"

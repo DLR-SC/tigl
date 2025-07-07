@@ -17,6 +17,15 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
     endif()
 
     include(tiglmacros)
+    
+     # Ensure the correct Python version is picked up by specifying the Python_EXECUTABLE
+    if (DEFINED ENV{CONDA_PREFIX})
+        if (WIN32)
+            set(Python3_EXECUTABLE "$ENV{CONDA_PREFIX}/python.exe")
+        else()
+            set(Python3_EXECUTABLE "$ENV{CONDA_PREFIX}/bin/python")
+        endif()
+    endif()
 
     find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
     message(STATUS "Python3 interpreter:" ${Python3_EXECUTABLE})

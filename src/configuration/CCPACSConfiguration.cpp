@@ -625,7 +625,7 @@ boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts()
     }
 }
 
-int CCPACSConfiguration::GetFuelTanksCount() const
+int CCPACSConfiguration::GetFuelTankCount() const
 {
     if (!aircraftModel) {
         return 0;
@@ -636,7 +636,7 @@ int CCPACSConfiguration::GetFuelTanksCount() const
         return 0;
     }
 
-    return fuelTanks->GetFuelTanksCount();
+    return fuelTanks->GetFuelTankCount();
 
 }
 

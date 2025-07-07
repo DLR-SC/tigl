@@ -90,5 +90,6 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSFuelTanks is customized, use type CCPACSFuelTanks directly
+// Aliases in tigl namespace
+using CCPACSFuelTanks = generated::CPACSFuelTanks;
 } // namespace tigl

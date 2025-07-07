@@ -80,7 +80,7 @@ namespace generated
     {
         // read element vessel
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/vessel")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/vessel", m_vessels, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSVessels*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/vessel", m_vessels, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSVessel& CPACSVessels::AddVessel()
     {
-        m_vessels.push_back(make_unique<CCPACSVessel>(reinterpret_cast<CCPACSVessels*>(this), m_uidMgr));
+        m_vessels.push_back(make_unique<CCPACSVessel>(this, m_uidMgr));
         return *m_vessels.back();
     }
 

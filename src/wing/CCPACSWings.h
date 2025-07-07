@@ -43,9 +43,6 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    // Returns the count of wings in a configuration with the property isRotorBlade set to true
-    TIGL_EXPORT int GetRotorBladeCount() const;
-
     TIGL_EXPORT bool HasWing(const std::string& uid) const;
 };
 

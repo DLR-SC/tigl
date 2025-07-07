@@ -89,5 +89,6 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSVessels is customized, use type CCPACSVessels directly
+// Aliases in tigl namespace
+using CCPACSVessels = generated::CPACSVessels;
 } // namespace tigl

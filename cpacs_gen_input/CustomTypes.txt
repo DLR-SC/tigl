@@ -141,7 +141,5 @@ CPACSDucts                               CCPACSDucts
 
 // Tanks
 CPACSVessel                              CCPACSVessel
-CPACSVessels                             CCPACSVessels
 CPACSFuelTank                            CCPACSFuelTank
-CPACSFuelTanks                           CCPACSFuelTanks
 CPACSVesselStructure                     CCPACSVesselStructure

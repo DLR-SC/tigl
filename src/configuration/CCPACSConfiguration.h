@@ -175,7 +175,7 @@ public:
     TIGL_EXPORT boost::optional<CCPACSDucts>& GetDucts();
 
     // Returns the total count of fuel tanks in a configuration
-    TIGL_EXPORT int GetFuelTanksCount() const;
+    TIGL_EXPORT int GetFuelTankCount() const;
 
     // Returns the fuel tank for a given index.
     TIGL_EXPORT CCPACSFuelTank const& GetFuelTank(int index) const;

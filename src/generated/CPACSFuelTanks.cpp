@@ -80,7 +80,7 @@ namespace generated
     {
         // read element fuelTank
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelTank")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/fuelTank", m_fuelTanks, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSFuelTanks*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/fuelTank", m_fuelTanks, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSFuelTank& CPACSFuelTanks::AddFuelTank()
     {
-        m_fuelTanks.push_back(make_unique<CCPACSFuelTank>(reinterpret_cast<CCPACSFuelTanks*>(this), m_uidMgr));
+        m_fuelTanks.push_back(make_unique<CCPACSFuelTank>(this, m_uidMgr));
         return *m_fuelTanks.back();
     }
 

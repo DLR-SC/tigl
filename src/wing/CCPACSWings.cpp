@@ -42,17 +42,6 @@ CCPACSWings::CCPACSWings(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
 CCPACSWings::CCPACSWings(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWings(parent, uidMgr) {}
 
-// Returns the count of wings in a configuration with the property isRotorBlade set to true
-int CCPACSWings::GetRotorBladeCount() const
-{
-    int nRotorBlades = 0;
-    for (size_t i = 1; i <= GetWingCount(); i++) {
-        if (GetWing(i).IsRotorBlade()) {
-            nRotorBlades++;
-        }
-    }
-    return nRotorBlades;
-}
 
 bool CCPACSWings::HasWing(const std::string & uid) const
 {
