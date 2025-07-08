@@ -277,6 +277,9 @@ CCPACSFuselageSegment& CCPACSFuselageSegments::SplitSegment(const std::string& s
     segment.SetToElementUID(splitterElement.GetUID());
 
     Invalidate();
+    // Reordering is necessary: After splitting a segment and adding another one, the order is not correct
+    // Without reordering, this results in a wrong shape visible in the TiGLViewer
+    ReorderSegments();
 
     return additionalSegment;
 }
