@@ -11,6 +11,9 @@ Changes since last release
 
 - Fixes
 
+  - #1094 Fix inconsistent parametrization of super ellipse profiles. Before, the super ellipses ware parametrized by arc length, which resulted in 
+    different parameters at the four distinct points of the super ellipse. Potential kinks in two super ellipses were not necessarily connected by a
+    v-isoline in the resulting loft. This has been fixed.
   - #936 A particular defined positioning (of the C++-type CCPACSPositioning) was not available via Python bindings since the std::vector<std::unique_ptr<**Type**>> is not exposed to swig. New getter functions have been implemented in CCPACSPositioning.h to make these elements accesible via index, similar to the implementation of for several other classes. For more information see https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59.
 
  - New API functions:
