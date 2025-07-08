@@ -11,7 +11,7 @@ dependencies:
  # optional dependencies
  - conda-forge::qt=5.15.15       # needed to build tiglviewer
  - doxygen=1.8.15                # needed to build the documenation
- - python                        # needed to build python bindings
+ - python<=3.12                  # needed to build python bindings
  - swig>=3.0.11                  # needed to build python bindings
  - pythonocc-core=7.4.1          # needed to build python bindings
  - matlab-libs                   # needed to build matlab bindings
