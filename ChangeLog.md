@@ -10,6 +10,7 @@ Changes since last release
   - Implemented the new CPACS fuelTanks.
 
 - Fixes
+  - #1090 Ask the user whether the currently worked on file should be saved before closing. Up to now, the configuration was simply closed resulting in potential data loss.
 
   - #1096 When a user adds a non-boundary segment to a wing/fuselage, the respective segment is split and a new one is created. After this split, a reordering of the segments is necessary. Otherwise, the segments cannot be lofted and created correctly. That would result in a wrong visualization and errors when trying to build them on user's demand in the tiglviewer.
 For that reason, the CCPACSFuselageSegments::ReorderSegments() and CCPACSWingSegments::ReorderSegments(), respectively, were added within the call of the SplitSegment() function.

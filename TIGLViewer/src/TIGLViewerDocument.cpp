@@ -115,6 +115,7 @@ double getAbsDeflection (const TopoDS_Shape& theShape, double relDeflection)
 TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
     : QObject(parentWidget)
     , m_flapsDialog(new TIGLViewerSelectWingAndFlapStatusDialog(this, parentWidget))
+    , modifiedSinceLastSave(false)
 {
     app = parentWidget;
     m_cpacsHandle = -1;
@@ -146,6 +147,21 @@ void TIGLViewerDocument::displayTiglError(const QString& msg, TiglReturnCode ret
 char* TIGLViewerDocument::qstringToCstring(const QString& text)
 {
     return strdup((const char*)text.toLatin1());
+}
+
+void TIGLViewerDocument::configurationModifiedSinceLastSave()
+{
+    modifiedSinceLastSave = true;
+}
+
+void TIGLViewerDocument::configurationSaved()
+{
+    modifiedSinceLastSave = false;
+}
+
+bool TIGLViewerDocument::isConfigurationModifiedSinceLastSave()
+{
+    return modifiedSinceLastSave;
 }
 
 TiglReturnCode TIGLViewerDocument::openCpacsConfigurationFromString(const std::string cpacsFileContent)
