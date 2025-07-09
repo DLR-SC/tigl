@@ -119,6 +119,11 @@ target_link_libraries(${PROGNAME} PRIVATE
   ${EXTRA_LIBRARIES} 
 )
 
+if (OpenCASCADE_WITH_FREEIMAGE AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
+  target_link_libraries(${PROGNAME} PRIVATE freeimage::freeimage)
+  target_compile_definitions(${PROGNAME} PRIVATE FREEIMAGE_LIB)
+endif()
+
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
