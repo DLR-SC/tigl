@@ -12,8 +12,17 @@ else(APPLE)
    set(PROGNAME "tiglviewer-3")
 endif(APPLE)
 
-
 if (TIGL_VIEWER)
+
+# Give conda enviornment preference over system or other paths
+# This fixes an issue on Ubuntu 22.04, where inconsistent gl libraries were found, see 
+# https://github.com/DLR-SC/tigl/issues/1069
+if(DEFINED ENV{CONDA_PREFIX})
+    message(STATUS "Conda environment detected: $ENV{CONDA_PREFIX}")
+    list(PREPEND CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
+    list(PREPEND CMAKE_LIBRARY_PATH "$ENV{CONDA_PREFIX}/lib")
+    list(PREPEND CMAKE_INCLUDE_PATH "$ENV{CONDA_PREFIX}/include")
+endif()
 
 include(SearchQt)
 
