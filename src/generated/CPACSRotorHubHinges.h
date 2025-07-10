@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSRotorHinge>>& GetHinges() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSRotorHinge>>& GetHinges();
 
+        TIGL_EXPORT virtual size_t GetHingeCount() const;
+        TIGL_EXPORT virtual size_t GetHingeIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSRotorHinge& GetHinge(size_t index) const;
+        TIGL_EXPORT virtual CCPACSRotorHinge& GetHinge(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSRotorHinge& GetHinge(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSRotorHinge& GetHinge(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSRotorHinge& AddHinge();
         TIGL_EXPORT virtual void RemoveHinge(CCPACSRotorHinge& ref);
 

@@ -102,6 +102,59 @@ namespace generated
         return m_elements;
     }
 
+    size_t CPACSWingElements::GetElementCount() const
+    {
+        return m_elements.size();
+    }
+
+    size_t CPACSWingElements::GetElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetElementCount(); i++) {
+            const std::string tmpUID(m_elements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSWingElements::GetElementIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSWingSectionElement& CPACSWingElements::GetElement(size_t index)
+    {
+        if (index < 1 || index > GetElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingSectionElement>>::GetElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_elements[index];
+    }
+
+    const CCPACSWingSectionElement& CPACSWingElements::GetElement(size_t index) const
+    {
+        if (index < 1 || index > GetElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWingSectionElement>>::GetElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_elements[index];
+    }
+
+    CCPACSWingSectionElement& CPACSWingElements::GetElement(const std::string& UID)
+    {
+        for (auto& elem : m_elements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSWingElements::GetElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSWingSectionElement& CPACSWingElements::GetElement(const std::string& UID) const
+    {
+        for (auto& elem : m_elements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSWingElements::GetElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSWingSectionElement& CPACSWingElements::AddElement()
     {
         m_elements.push_back(make_unique<CCPACSWingSectionElement>(reinterpret_cast<CCPACSWingSectionElements*>(this), m_uidMgr));

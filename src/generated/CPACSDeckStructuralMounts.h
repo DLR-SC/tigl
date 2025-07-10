@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckStructuralMount>>& GetStructuralMounts() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckStructuralMount>>& GetStructuralMounts();
 
+        TIGL_EXPORT virtual size_t GetStructuralMountCount() const;
+        TIGL_EXPORT virtual size_t GetStructuralMountIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSDeckStructuralMount& GetStructuralMount(size_t index) const;
+        TIGL_EXPORT virtual CPACSDeckStructuralMount& GetStructuralMount(size_t index);
+
+        TIGL_EXPORT virtual const CPACSDeckStructuralMount& GetStructuralMount(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSDeckStructuralMount& GetStructuralMount(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSDeckStructuralMount& AddStructuralMount();
         TIGL_EXPORT virtual void RemoveStructuralMount(CPACSDeckStructuralMount& ref);
 

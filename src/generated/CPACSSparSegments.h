@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWingSparSegment>>& GetSparSegments() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWingSparSegment>>& GetSparSegments();
 
+        TIGL_EXPORT virtual size_t GetSparSegmentCount() const;
+        TIGL_EXPORT virtual size_t GetSparSegmentIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSWingSparSegment& GetSparSegment(size_t index) const;
+        TIGL_EXPORT virtual CCPACSWingSparSegment& GetSparSegment(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSWingSparSegment& GetSparSegment(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSWingSparSegment& GetSparSegment(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSWingSparSegment& AddSparSegment();
         TIGL_EXPORT virtual void RemoveSparSegment(CCPACSWingSparSegment& ref);
 

@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSRotorBladeAttachment>>& GetRotorBladeAttachments() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSRotorBladeAttachment>>& GetRotorBladeAttachments();
 
+        TIGL_EXPORT virtual size_t GetRotorBladeAttachmentCount() const;
+        TIGL_EXPORT virtual size_t GetRotorBladeAttachmentIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSRotorBladeAttachment& GetRotorBladeAttachment(size_t index) const;
+        TIGL_EXPORT virtual CCPACSRotorBladeAttachment& GetRotorBladeAttachment(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSRotorBladeAttachment& GetRotorBladeAttachment(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSRotorBladeAttachment& GetRotorBladeAttachment(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSRotorBladeAttachment& AddRotorBladeAttachment();
         TIGL_EXPORT virtual void RemoveRotorBladeAttachment(CCPACSRotorBladeAttachment& ref);
 

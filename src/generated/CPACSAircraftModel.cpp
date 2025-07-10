@@ -406,12 +406,12 @@ namespace generated
         return m_ducts;
     }
 
-    const boost::optional<CCPACSFuselages>& CPACSAircraftModel::GetFuselages() const
+    const boost::optional<CPACSFuselages>& CPACSAircraftModel::GetFuselages() const
     {
         return m_fuselages;
     }
 
-    boost::optional<CCPACSFuselages>& CPACSAircraftModel::GetFuselages()
+    boost::optional<CPACSFuselages>& CPACSAircraftModel::GetFuselages()
     {
         return m_fuselages;
     }
@@ -436,12 +436,12 @@ namespace generated
         return m_engines;
     }
 
-    const boost::optional<CCPACSEnginePylons>& CPACSAircraftModel::GetEnginePylons() const
+    const boost::optional<CPACSEnginePylons>& CPACSAircraftModel::GetEnginePylons() const
     {
         return m_enginePylons;
     }
 
-    boost::optional<CCPACSEnginePylons>& CPACSAircraftModel::GetEnginePylons()
+    boost::optional<CPACSEnginePylons>& CPACSAircraftModel::GetEnginePylons()
     {
         return m_enginePylons;
     }
@@ -456,12 +456,12 @@ namespace generated
         return m_landingGears;
     }
 
-    const boost::optional<CCPACSFuelTanks>& CPACSAircraftModel::GetFuelTanks() const
+    const boost::optional<CPACSFuelTanks>& CPACSAircraftModel::GetFuelTanks() const
     {
         return m_fuelTanks;
     }
 
-    boost::optional<CCPACSFuelTanks>& CPACSAircraftModel::GetFuelTanks()
+    boost::optional<CPACSFuelTanks>& CPACSAircraftModel::GetFuelTanks()
     {
         return m_fuelTanks;
     }
@@ -508,7 +508,7 @@ namespace generated
         m_ducts = boost::none;
     }
 
-    CCPACSFuselages& CPACSAircraftModel::GetFuselages(CreateIfNotExistsTag)
+    CPACSFuselages& CPACSAircraftModel::GetFuselages(CreateIfNotExistsTag)
     {
         if (!m_fuselages)
             m_fuselages = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -544,7 +544,7 @@ namespace generated
         m_engines = boost::none;
     }
 
-    CCPACSEnginePylons& CPACSAircraftModel::GetEnginePylons(CreateIfNotExistsTag)
+    CPACSEnginePylons& CPACSAircraftModel::GetEnginePylons(CreateIfNotExistsTag)
     {
         if (!m_enginePylons)
             m_enginePylons = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -568,7 +568,7 @@ namespace generated
         m_landingGears = boost::none;
     }
 
-    CCPACSFuelTanks& CPACSAircraftModel::GetFuelTanks(CreateIfNotExistsTag)
+    CPACSFuelTanks& CPACSAircraftModel::GetFuelTanks(CreateIfNotExistsTag)
     {
         if (!m_fuelTanks)
             m_fuelTanks = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);

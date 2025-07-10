@@ -108,6 +108,30 @@ namespace generated
         return m_skinLayers;
     }
 
+    size_t CPACSVesselSkinLayers::GetSkinLayerCount() const
+    {
+        return m_skinLayers.size();
+    }
+
+    CCPACSSkin& CPACSVesselSkinLayers::GetSkinLayer(size_t index)
+    {
+        if (index < 1 || index > GetSkinLayerCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSSkin>>::GetSkinLayer", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_skinLayers[index];
+    }
+
+    const CCPACSSkin& CPACSVesselSkinLayers::GetSkinLayer(size_t index) const
+    {
+        if (index < 1 || index > GetSkinLayerCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSSkin>>::GetSkinLayer", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_skinLayers[index];
+    }
+
+
     CCPACSSkin& CPACSVesselSkinLayers::AddSkinLayer()
     {
         m_skinLayers.push_back(make_unique<CCPACSSkin>(this, m_uidMgr));

@@ -46,45 +46,13 @@ void CCPACSRotors::Invalidate(const boost::optional<std::string>& source) const
     }
 }
 
-// Returns the total count of rotors in a configuration
-int CCPACSRotors::GetRotorCount() const
-{
-    return (static_cast<int>(m_rotors.size()));
-}
-
-// Returns the rotor for a given index.
-CCPACSRotor& CCPACSRotors::GetRotor(int index) const
-{
-    index --;
-    if (index < 0 || index >= GetRotorCount()) {
-        throw CTiglError("Invalid index in CCPACSRotors::GetRotor", TIGL_INDEX_ERROR);
-    }
-    return (*m_rotors[index]);
-}
-
-// Returns the rotor for a given UID.
-CCPACSRotor& CCPACSRotors::GetRotor(const std::string& UID) const
-{
-    return (*m_rotors[GetRotorIndex(UID)-1]);
-}
-
-// Returns the rotor index for a given UID.
-int CCPACSRotors::GetRotorIndex(const std::string& UID) const
-{
-    for (int i=0; i < GetRotorCount(); i++) {
-        const std::string tmpUID(m_rotors[i]->GetUID());
-        if (tmpUID == UID) {
-            return i+1;
-        }
-    }
-
-    // UID not there
-    throw CTiglError("Invalid UID in CCPACSRotors::GetRotorIndex", TIGL_UID_ERROR);
-    return -1;
-}
-
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotors::GetConfiguration() const
+const CCPACSConfiguration& CCPACSRotors::GetConfiguration() const
+{
+    return m_parent->GetConfiguration();
+}
+
+CCPACSConfiguration& CCPACSRotors::GetConfiguration()
 {
     return m_parent->GetConfiguration();
 }

@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& GetSeatModules() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& GetSeatModules();
 
+        TIGL_EXPORT virtual size_t GetSeatModuleCount() const;
+        TIGL_EXPORT virtual size_t GetSeatModuleIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSDeckComponent2DBase& GetSeatModule(size_t index) const;
+        TIGL_EXPORT virtual CPACSDeckComponent2DBase& GetSeatModule(size_t index);
+
+        TIGL_EXPORT virtual const CPACSDeckComponent2DBase& GetSeatModule(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSDeckComponent2DBase& GetSeatModule(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSDeckComponent2DBase& AddSeatModule();
         TIGL_EXPORT virtual void RemoveSeatModule(CPACSDeckComponent2DBase& ref);
 

@@ -58,6 +58,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWallPosition>>& GetWallPositions() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWallPosition>>& GetWallPositions();
 
+        TIGL_EXPORT virtual size_t GetWallPositionCount() const;
+        TIGL_EXPORT virtual size_t GetWallPositionIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSWallPosition& GetWallPosition(size_t index) const;
+        TIGL_EXPORT virtual CCPACSWallPosition& GetWallPosition(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSWallPosition& GetWallPosition(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSWallPosition& GetWallPosition(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSWallPosition& AddWallPosition();
         TIGL_EXPORT virtual void RemoveWallPosition(CCPACSWallPosition& ref);
 

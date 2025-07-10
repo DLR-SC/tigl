@@ -49,11 +49,11 @@ public:
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
     // Get number of sections
-    TIGL_EXPORT int GetSectionCount() const;
+    TIGL_EXPORT size_t GetSectionCount() const;
 
     // Get a specific section
-    TIGL_EXPORT CCPACSFuselageSection const& GetSection(int index) const;
-    TIGL_EXPORT CCPACSFuselageSection& GetSection(int index);
+    TIGL_EXPORT CCPACSFuselageSection const& GetSection(size_t index) const;
+    TIGL_EXPORT CCPACSFuselageSection& GetSection(size_t index);
     TIGL_EXPORT CCPACSFuselageSection const& GetSection(const std::string& sectionUID) const;
     TIGL_EXPORT CCPACSFuselageSection& GetSection(const std::string& sectionUID);
 
@@ -61,10 +61,10 @@ public:
     TIGL_EXPORT TopoDS_Shape GetSectionFace(const std::string sectionUID) const;
 
     // Get number of segments
-    TIGL_EXPORT int GetSegmentCount() const;
+    TIGL_EXPORT size_t GetSegmentCount() const;
     // Get a specific segment via its index
-    TIGL_EXPORT CCPACSFuselageSegment& GetSegment(const int index);
-    TIGL_EXPORT const CCPACSFuselageSegment& GetSegment(const int index) const;
+    TIGL_EXPORT CCPACSFuselageSegment& GetSegment(const size_t index);
+    TIGL_EXPORT const CCPACSFuselageSegment& GetSegment(const size_t index) const;
     // Get a specific segment via its uID
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(std::string uid);
 

@@ -44,19 +44,24 @@ TiglRotorHubType CCPACSRotorHub::GetDefaultedType() const
 }
 
 // Returns the rotor blade attachment count
-int CCPACSRotorHub::GetRotorBladeAttachmentCount() const
+size_t CCPACSRotorHub::GetRotorBladeAttachmentCount() const
 {
     return m_rotorBladeAttachments.GetRotorBladeAttachmentCount();
 }
 
 // Returns the rotor blade attachment for a given index
-CCPACSRotorBladeAttachment& CCPACSRotorHub::GetRotorBladeAttachment(int index) const
+const CCPACSRotorBladeAttachment& CCPACSRotorHub::GetRotorBladeAttachment(size_t index) const
+{
+    return m_rotorBladeAttachments.GetRotorBladeAttachment(index);
+}
+
+CCPACSRotorBladeAttachment& CCPACSRotorHub::GetRotorBladeAttachment(size_t index)
 {
     return m_rotorBladeAttachments.GetRotorBladeAttachment(index);
 }
 
 // Returns the rotor blade count
-int CCPACSRotorHub::GetRotorBladeCount() const
+size_t CCPACSRotorHub::GetRotorBladeCount() const
 {
     int rotorBladeCount = 0;
     for (int i=1; i<=GetRotorBladeAttachmentCount(); i++) {
@@ -66,7 +71,7 @@ int CCPACSRotorHub::GetRotorBladeCount() const
 }
 
 // Returns the rotor blade for a given index
-CTiglAttachedRotorBlade& CCPACSRotorHub::GetRotorBlade(int index) const
+const CTiglAttachedRotorBlade& CCPACSRotorHub::GetRotorBlade(size_t index) const
 {
     int rotorBladeIndex = index;
     int rotorBladeAttachmentIndex = 1;
@@ -77,16 +82,37 @@ CTiglAttachedRotorBlade& CCPACSRotorHub::GetRotorBlade(int index) const
     return GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetAttachedRotorBlade(rotorBladeIndex);
 }
 
+CTiglAttachedRotorBlade& CCPACSRotorHub::GetRotorBlade(size_t index)
+{
+    int rotorBladeIndex = index;
+    int rotorBladeAttachmentIndex = 1;
+    while (rotorBladeIndex > GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades()) {
+        rotorBladeIndex -= GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades();
+        rotorBladeAttachmentIndex++;
+    }
+    return GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetAttachedRotorBlade(rotorBladeIndex);
+}
+
+// Returns the parent rotor
+const CCPACSRotor& CCPACSRotorHub::GetRotor() const
+{
+    return *m_parent;
+}
+
+CCPACSRotor& CCPACSRotorHub::GetRotor()
+{
+    return *m_parent;
+}
+
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorHub::GetConfiguration() const
+const CCPACSConfiguration& CCPACSRotorHub::GetConfiguration() const
 {
     return m_parent->GetConfiguration();
 }
 
-// Returns the parent rotor
-CCPACSRotor& CCPACSRotorHub::GetRotor() const
+CCPACSConfiguration& CCPACSRotorHub::GetConfiguration()
 {
-    return *m_parent;
+    return m_parent->GetConfiguration();
 }
 
 } // end namespace tigl

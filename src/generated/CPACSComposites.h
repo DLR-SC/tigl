@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSComposite>>& GetComposites() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSComposite>>& GetComposites();
 
+        TIGL_EXPORT virtual size_t GetCompositeCount() const;
+        TIGL_EXPORT virtual size_t GetCompositeIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSComposite& GetComposite(size_t index) const;
+        TIGL_EXPORT virtual CPACSComposite& GetComposite(size_t index);
+
+        TIGL_EXPORT virtual const CPACSComposite& GetComposite(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSComposite& GetComposite(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSComposite& AddComposite();
         TIGL_EXPORT virtual void RemoveComposite(CPACSComposite& ref);
 

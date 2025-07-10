@@ -102,6 +102,30 @@ namespace generated
         return m_internalPressures;
     }
 
+    size_t CPACSInternalPressures::GetInternalPressureCount() const
+    {
+        return m_internalPressures.size();
+    }
+
+    CPACSInternalPressure& CPACSInternalPressures::GetInternalPressure(size_t index)
+    {
+        if (index < 1 || index > GetInternalPressureCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSInternalPressure>>::GetInternalPressure", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_internalPressures[index];
+    }
+
+    const CPACSInternalPressure& CPACSInternalPressures::GetInternalPressure(size_t index) const
+    {
+        if (index < 1 || index > GetInternalPressureCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSInternalPressure>>::GetInternalPressure", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_internalPressures[index];
+    }
+
+
     CPACSInternalPressure& CPACSInternalPressures::AddInternalPressure()
     {
         m_internalPressures.push_back(make_unique<CPACSInternalPressure>(this, m_uidMgr));

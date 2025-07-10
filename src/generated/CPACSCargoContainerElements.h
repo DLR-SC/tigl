@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSCargoContainerElement>>& GetCargoContainerElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCargoContainerElement>>& GetCargoContainerElements();
 
+        TIGL_EXPORT virtual size_t GetCargoContainerElementCount() const;
+        TIGL_EXPORT virtual size_t GetCargoContainerElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSCargoContainerElement& GetCargoContainerElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSCargoContainerElement& GetCargoContainerElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSCargoContainerElement& GetCargoContainerElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSCargoContainerElement& GetCargoContainerElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSCargoContainerElement& AddCargoContainerElement();
         TIGL_EXPORT virtual void RemoveCargoContainerElement(CPACSCargoContainerElement& ref);
 

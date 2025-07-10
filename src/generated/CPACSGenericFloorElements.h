@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetGenericFloorElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetGenericFloorElements();
 
+        TIGL_EXPORT virtual size_t GetGenericFloorElementCount() const;
+        TIGL_EXPORT virtual size_t GetGenericFloorElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetGenericFloorElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetGenericFloorElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetGenericFloorElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetGenericFloorElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSDeckElementBase& AddGenericFloorElement();
         TIGL_EXPORT virtual void RemoveGenericFloorElement(CPACSDeckElementBase& ref);
 

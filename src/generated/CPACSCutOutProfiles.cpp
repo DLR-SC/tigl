@@ -156,6 +156,30 @@ namespace generated
         return m_cutOutProfiles;
     }
 
+    size_t CPACSCutOutProfiles::GetCutOutProfileCount() const
+    {
+        return m_cutOutProfiles.size();
+    }
+
+    CPACSCutOutProfile& CPACSCutOutProfiles::GetCutOutProfile(size_t index)
+    {
+        if (index < 1 || index > GetCutOutProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCutOutProfile>>::GetCutOutProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_cutOutProfiles[index];
+    }
+
+    const CPACSCutOutProfile& CPACSCutOutProfiles::GetCutOutProfile(size_t index) const
+    {
+        if (index < 1 || index > GetCutOutProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCutOutProfile>>::GetCutOutProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_cutOutProfiles[index];
+    }
+
+
     CPACSCutOutProfile& CPACSCutOutProfiles::AddCutOutProfile()
     {
         m_cutOutProfiles.push_back(make_unique<CPACSCutOutProfile>(this, m_uidMgr));

@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuelTank>>& GetFuelTanks() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuelTank>>& GetFuelTanks();
 
+        TIGL_EXPORT virtual size_t GetFuelTankCount() const;
+        TIGL_EXPORT virtual size_t GetFuelTankIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSFuelTank& GetFuelTank(size_t index) const;
+        TIGL_EXPORT virtual CCPACSFuelTank& GetFuelTank(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSFuelTank& GetFuelTank(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSFuelTank& GetFuelTank(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSFuelTank& AddFuelTank();
         TIGL_EXPORT virtual void RemoveFuelTank(CCPACSFuelTank& ref);
 
@@ -81,5 +90,6 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSFuelTanks is customized, use type CCPACSFuelTanks directly
+// Aliases in tigl namespace
+using CCPACSFuelTanks = generated::CPACSFuelTanks;
 } // namespace tigl
