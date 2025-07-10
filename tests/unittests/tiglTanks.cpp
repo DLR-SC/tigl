@@ -25,7 +25,7 @@
 #include "testUtils.h"
 
 #include "CCPACSFuelTank.h"
-#include "CCPACSFuelTanks.h"
+#include "generated/CPACSFuelTanks.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 
@@ -130,7 +130,7 @@ TEST_F(FuelTanks, configuration)
     auto& config    = fuelTank->GetConfiguration();
     std::string uID = "tank1";
 
-    EXPECT_EQ(config.GetFuelTanksCount(), 8);
+    EXPECT_EQ(config.GetFuelTankCount(), 8);
     EXPECT_EQ(config.GetFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(config.GetFuelTank(uID));
     EXPECT_EQ(config.GetFuelTankIndex(uID), 1);
@@ -151,7 +151,7 @@ TEST_F(FuelTanks, fuelTanks)
     EXPECT_EQ(fuelTanks->GetFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(fuelTanks->GetFuelTank(uID));
     EXPECT_EQ(fuelTanks->GetFuelTankIndex(uID), 1);
-    EXPECT_EQ(fuelTanks->GetFuelTanksCount(), 8);
+    EXPECT_EQ(fuelTanks->GetFuelTankCount(), 8);
 }
 
 TEST_F(FuelTanks, fuelTank)
@@ -179,7 +179,7 @@ TEST_F(FuelTanks, fuelTank)
 
 TEST_F(FuelTanks, vessels)
 {
-    EXPECT_EQ(vessels.GetVesselsCount(), 2);
+    EXPECT_EQ(vessels.GetVesselCount(), 2);
     EXPECT_EQ(vessels.GetVessel(1).GetDefaultedUID(), "tank1_outerVessel");
     EXPECT_EQ(vessels.GetVessel("tank1_outerVessel").GetDefaultedUID(), "tank1_outerVessel");
     EXPECT_EQ(vessels.GetVesselIndex("tank1_outerVessel"), 1);
