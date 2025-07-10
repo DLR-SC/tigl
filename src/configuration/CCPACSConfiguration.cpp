@@ -306,7 +306,7 @@ const CCPACSWing& CCPACSConfiguration::GetWing(size_t index) const
         return aircraftModel->GetWings()->GetWing(index);
     }
     else if (rotorcraftModel) {
-        const int wingCount = rotorcraftModel->GetWings() ? rotorcraftModel->GetWings()->GetWingCount() : 0;
+        const size_t wingCount = rotorcraftModel->GetWings() ? rotorcraftModel->GetWings()->GetWingCount() : 0;
         if (index <= wingCount) {
             return rotorcraftModel->GetWings()->GetWing(index);
         }
@@ -625,7 +625,7 @@ boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts()
     }
 }
 
-int CCPACSConfiguration::GetFuelTankCount() const
+size_t CCPACSConfiguration::GetFuelTankCount() const
 {
     if (!aircraftModel) {
         return 0;
@@ -640,51 +640,44 @@ int CCPACSConfiguration::GetFuelTankCount() const
 
 }
 
-CCPACSFuelTank const& CCPACSConfiguration::GetFuelTank(int index) const
+const CCPACSFuelTank& CCPACSConfiguration::GetFuelTank(size_t index) const
 {
     if (!aircraftModel) {
         throw CTiglError("No configuration loaded");
     }
 
-    auto const& fuelTanks = aircraftModel->GetFuelTanks();
-    if (!fuelTanks) {
+    if (!(aircraftModel->GetFuelTanks())) {
         throw CTiglError("No fuel tanks found");
     }
-
-    return fuelTanks->GetFuelTank(index);
+    return aircraftModel->GetFuelTanks()->GetFuelTank(index);
 }
 
-CCPACSFuelTank const& CCPACSConfiguration::GetFuelTank(const std::string& UID) const
+CCPACSFuelTank& CCPACSConfiguration::GetFuelTank(size_t index)
+{
+    return const_cast<CCPACSFuelTank&>(std::as_const(*this).GetFuelTank(index));
+}
+
+const CCPACSFuelTank& CCPACSConfiguration::GetFuelTank(const std::string& UID) const
 {
     if (!aircraftModel) {
         throw CTiglError("No configuration loaded");
     }
 
-    auto const& fuelTanks = aircraftModel->GetFuelTanks();
-    if (!fuelTanks) {
+    if (!(aircraftModel->GetFuelTanks())) {
         throw CTiglError("No fuel tanks found");
     }
 
-    return fuelTanks->GetFuelTank(UID);
+    return aircraftModel->GetFuelTanks()->GetFuelTank(UID);
 }
 
-int CCPACSConfiguration::GetFuelTankIndex(const std::string& UID) const
+CCPACSFuelTank& CCPACSConfiguration::GetFuelTank(const std::string& UID)
+{
+    return const_cast<CCPACSFuelTank&>(std::as_const(*this).GetFuelTank(UID));
+}
+
+size_t CCPACSConfiguration::GetFuelTankIndex(const std::string& UID) const
 {
     return GetFuelTanks().GetFuelTankIndex(UID);
-}
-
-CCPACSFuelTanks& CCPACSConfiguration::GetFuelTanks()
-{
-    if (!aircraftModel) {
-        throw CTiglError("No configuration loaded");
-    }
-
-    auto const& fuelTanks = aircraftModel->GetFuelTanks();
-    if (!fuelTanks) {
-        throw CTiglError("No fuel tanks found");
-    }
-
-    return *aircraftModel->GetFuelTanks();
 }
 
 const CCPACSFuelTanks& CCPACSConfiguration::GetFuelTanks() const
@@ -699,6 +692,11 @@ const CCPACSFuelTanks& CCPACSConfiguration::GetFuelTanks() const
     }
 
     return *aircraftModel->GetFuelTanks();
+}
+
+CCPACSFuelTanks& CCPACSConfiguration::GetFuelTanks()
+{
+    return const_cast<CCPACSFuelTanks&>(std::as_const(*this).GetFuelTanks());
 }
 
 boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons()

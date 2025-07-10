@@ -116,9 +116,9 @@ protected:
     // Dummy objects for exception testing
     DummyAircraftModel dummyAircraft;
     tigl::CTiglUIDManager dummyUidMgr;
-    tigl::CCPACSFuelTanks dummyTanks{&dummyAircraft, &dummyUidMgr};
+    tigl::generated::CPACSFuelTanks dummyTanks{&dummyAircraft, &dummyUidMgr};
     tigl::CCPACSFuelTank dummyTank{&dummyTanks, &dummyUidMgr};
-    tigl::CCPACSVessels dummyVessels{&dummyTank, &dummyUidMgr};
+    tigl::generated::CPACSVessels dummyVessels{&dummyTank, &dummyUidMgr};
     tigl::CCPACSVessel dummyVessel{&dummyVessels, &dummyUidMgr};
 };
 
@@ -136,12 +136,12 @@ TEST_F(FuelTanks, configuration)
     EXPECT_EQ(config.GetFuelTankIndex(uID), 1);
 
     CheckExceptionMessage([&]() { config.GetFuelTank("not_existing_tank"); },
-                          "Could not find fuelTank with uid not_existing_tank");
+                          "Invalid UID in CPACSFuelTanks::GetFuelTank. \"not_existing_tank\" not found in CPACS file!" );
 
     CheckExceptionMessage([&]() { config.GetFuelTankIndex("not_existing_tank"); },
-                          "Could not find fuelTank with uid not_existing_tank");
+                          "Invalid UID in CPACSFuelTanks::GetFuelTankIndex");
 
-    CheckExceptionMessage([&]() { config.GetFuelTank(99); }, "Invalid index in CCPACSFuelTanks::GetFuelTank");
+    CheckExceptionMessage([&]() { config.GetFuelTank(99); }, "Invalid index in std::vector<std::unique_ptr<CCPACSFuelTank>>::GetFuelTank");
 }
 
 TEST_F(FuelTanks, fuelTanks)
@@ -186,12 +186,12 @@ TEST_F(FuelTanks, vessels)
     EXPECT_EQ(vessels.GetVessels().at(0)->GetDefaultedUID(), "tank1_outerVessel");
 
     CheckExceptionMessage([&]() { vessels.GetVessel("not_existing_vessel"); },
-                          "Could not find vessel with uid not_existing_vessel");
+                          "Invalid UID in CPACSVessels::GetVessel. \"not_existing_vessel\" not found in CPACS file!");
 
     CheckExceptionMessage([&]() { vessels.GetVesselIndex("not_existing_vessel"); },
-                          "Could not find vessel with uid not_existing_vessel");
+                          "Invalid UID in CPACSVessels::GetVesselIndex");
 
-    CheckExceptionMessage([&]() { vessels.GetVessel(99); }, "Invalid index in CCPACSVessels::GetVessel");
+    CheckExceptionMessage([&]() { vessels.GetVessel(99); }, "Invalid index in std::vector<std::unique_ptr<CCPACSVessel>>::GetVessel");
 }
 
 TEST_F(FuelTanks, vessel_general)
@@ -258,7 +258,7 @@ TEST_F(FuelTanks, vessel_sections)
     EXPECT_NO_THROW(constSegments->GetSection("outerVessel_section1"));
     EXPECT_THROW(vessel_segments->GetSection("outerVessel_notExistingSection"), tigl::CTiglError);
 
-    CheckExceptionMessage([&]() { vessel_segments->GetSection(4); }, invalidIndexMessage);
+    CheckExceptionMessage([&]() { vessel_segments->GetSection(4); }, "Invalid index in CCPACSVessel::GetSection");
     CheckExceptionMessage([&]() { vessel_parametric->GetSection(2); }, tankTypeExceptionString);
     CheckExceptionMessage([&]() { vessel_parametric->GetSection("outerVessel_notExistingSection"); },
                           tankTypeExceptionString);
@@ -283,7 +283,7 @@ TEST_F(FuelTanks, vessel_segments)
 
     EXPECT_NO_THROW(vessel_segments->GetSegment("outerVessel_segment1"));
     CheckExceptionMessage([&]() { vessel_segments->GetSegment(3); },
-                          "Invalid index value in CCPACSFuselageSegments::GetSegment");
+                          "Invalid index in CCPACSVessel::GetSegment");
 }
 
 TEST_F(FuelTanks, vessel_guide_curves)
