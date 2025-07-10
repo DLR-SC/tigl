@@ -366,7 +366,6 @@ namespace tigl
 
 namespace tigl {
 class CCPACSFuselageSegments;
-class CCPACSVessels;
 }
 
 %include "generated/CPACSIsotensoidDome.h"
@@ -381,10 +380,8 @@ class CCPACSVessels;
 %include "CTiglFuselageConnection.h"
 %include "CCPACSFuselageSegment.h"
 %include "CCPACSFuselageSegments.h"
-%include "CCPACSFuelTanks.h"
 %include "CCPACSFuelTank.h"
 %include "generated/CPACSVessels.h"
-%include "CCPACSVessels.h"
 %include "generated/CPACSVessel.h"
 %include "CCPACSVessel.h"
 
