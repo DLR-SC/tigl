@@ -39,6 +39,7 @@
 #include "CCPACSFuselageProfiles.h"
 #include "CCPACSWingProfile.h"
 #include "generated/CPACSStandardProfile.h" //TODO: Replace with CCPACSStandardProfile, once it exists.
+#include "generated/CPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSExternalObject.h"
 #include "CTiglShapeCache.h"
@@ -123,6 +124,7 @@
 #include "CCPACSVessel.h"
 #include "generated/CPACSVesselStructure.h"
 #include "CCPACSVesselStructure.h"
+#include "CCPACSFuelTank.h"
 #include "CCPACSFrame.h"
 
 %}
@@ -349,7 +351,7 @@ namespace tigl
 %include "generated/CPACSSkin.h"
 %include "generated/CPACSFuselageStructure.h"
 %include "CCPACSFuselageStructure.h"
-
+%include "generated/CPACSFuselageSections.h"
 
 %include "generated/CPACSWingSkin.h"
 %include "CPACSRotor_type.h"
@@ -359,6 +361,8 @@ namespace tigl
 %include "CPACSRotorHubHinge_type.h"
 
 // --------------- Fuselage tanks -----------------//
+%boost_optional(tigl::generated::CPACSVessels)
+%boost_optional(tigl::CCPACSVessels)
 %boost_optional(tigl::generated::CPACSFuelTanks)
 %boost_optional(tigl::CCPACSFuelTanks)
 %boost_optional(tigl::generated::CPACSFuelTankVolume)
@@ -374,16 +378,16 @@ class CCPACSFuselageSegments;
 %include "generated/CPACSDomeType.h"
 %include "generated/CPACSVesselStructure.h"
 %include "CCPACSVesselStructure.h"
-%include "generated/CPACSFuelTanks.h"
-%include "generated/CPACSFuelTankVolume.h"
-%include "generated/CPACSFuelTank.h"
 %include "CTiglFuselageConnection.h"
 %include "CCPACSFuselageSegment.h"
 %include "CCPACSFuselageSegments.h"
-%include "CCPACSFuelTank.h"
+%include "generated/CPACSFuelTankVolume.h"
 %include "generated/CPACSVessels.h"
 %include "generated/CPACSVessel.h"
 %include "CCPACSVessel.h"
+%include "generated/CPACSFuelTanks.h"
+%include "generated/CPACSFuelTank.h"
+%include "CCPACSFuelTank.h"
 
 // -------------------- Wing Structure -------------------//
 
@@ -490,7 +494,6 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSFuselageSection.h"
 %include "CCPACSFuselageSection.h"
 %include "generated/CPACSWingSections.h"
-%include "generated/CPACSFuselageSections.h"
 %include "generated/CPACSWingElements.h"
 %include "CCPACSWingSectionElements.h"
 %include "generated/CPACSFuselageElements.h"
