@@ -28,36 +28,36 @@ namespace tigl {
 
 CCPACSLeadingEdgeDevices::CCPACSLeadingEdgeDevices(
     CCPACSControlSurfaces *parent, CTiglUIDManager *uidMgr)
-    : generated::CPACSTrailingEdgeDevices(parent, uidMgr) {}
+    : generated::CPACSLeadingEdgeDevices(parent, uidMgr) {}
 
 // Returns the total count of trailing edge devices in a configuration
-int CCPACSLeadingEdgeDevices::GetTrailingEdgeDeviceCount() const {
-  return static_cast<int>(m_trailingEdgeDevices.size());
+int CCPACSLeadingEdgeDevices::GetleadingEdgeDeviceCount() const {
+  return static_cast<int>(m_leadingEdgeDevices.size());
 }
 
 // Returns the trailing edge device for a given index.
 CCPACSLeadingEdgeDevice &
-CCPACSLeadingEdgeDevices::GetTrailingEdgeDevice(int index) const {
+CCPACSLeadingEdgeDevices::GetleadingEdgeDevice(int index) const {
   index--;
-  if (index < 0 || index >= GetTrailingEdgeDeviceCount()) {
+  if (index < 0 || index >= GetleadingEdgeDeviceCount()) {
     throw CTiglError(
-        "Invalid index in CCPACSLeadingEdgeDevices::GetTrailingEdgeDevice",
+        "Invalid index in CCPACSLeadingEdgeDevices::GetleadingEdgeDevice",
         TIGL_INDEX_ERROR);
   }
-  return *m_trailingEdgeDevices[index];
+  return *m_leadingEdgeDevices[index];
 }
 
 // Returns the trailing edge device for a given UID.
 CCPACSLeadingEdgeDevice &
-CCPACSLeadingEdgeDevices::GetTrailingEdgeDevice(const std::string &UID) const {
-  return *m_trailingEdgeDevices[GetTrailingEdgeDeviceIndex(UID) - 1];
+CCPACSLeadingEdgeDevices::GetleadingEdgeDevice(const std::string &UID) const {
+  return *m_leadingEdgeDevices[GetleadingEdgeDeviceIndex(UID) - 1];
 }
 
 // Returns the trailing edge device index for a given UID.
-int CCPACSLeadingEdgeDevices::GetTrailingEdgeDeviceIndex(
+int CCPACSLeadingEdgeDevices::GetleadingEdgeDeviceIndex(
     const std::string &UID) const {
-  for (int i = 0; i < GetTrailingEdgeDeviceCount(); i++) {
-    const std::string tmpUID(m_trailingEdgeDevices[i]->GetUID());
+  for (int i = 0; i < GetleadingEdgeDeviceCount(); i++) {
+    const std::string tmpUID(m_leadingEdgeDevices[i]->GetUID());
     if (tmpUID == UID) {
       return i + 1;
     }
@@ -65,7 +65,7 @@ int CCPACSLeadingEdgeDevices::GetTrailingEdgeDeviceIndex(
 
   // UID not there
   throw CTiglError(
-      "Invalid UID in CCPACSLeadingEdgeDevices::GetTrailingEdgeDeviceIndex",
+      "Invalid UID in CCPACSLeadingEdgeDevices::GetleadingEdgeDeviceIndex",
       TIGL_UID_ERROR);
 }
 

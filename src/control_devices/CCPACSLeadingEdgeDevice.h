@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-#include "generated/CPACSTrailingEdgeDevice.h"
+#include "generated/CPACSLeadingEdgeDevice.h"
 
 #include "CTiglAbstractGeometricComponent.h"
 #include "Cache.h"
@@ -26,7 +26,7 @@
 
 namespace tigl {
 
-class CCPACSLeadingEdgeDevice : public generated::CPACSTrailingEdgeDevice,
+class CCPACSLeadingEdgeDevice : public generated::CPACSLeadingEdgeDevice,
                                 public CTiglAbstractGeometricComponent {
 public:
   TIGL_EXPORT CCPACSLeadingEdgeDevice(CCPACSLeadingEdgeDevices *parent,

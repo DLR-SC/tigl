@@ -23,27 +23,27 @@
 #ifndef CCPACSLeadingEdgeDeviceS_H
 #define CCPACSLeadingEdgeDeviceS_H
 
-#include "generated/CPACSTrailingEdgeDevices.h"
+#include "generated/CPACSLeadingEdgeDevices.h"
 
 namespace tigl {
 
-class CCPACSLeadingEdgeDevices : public generated::CPACSTrailingEdgeDevices {
+class CCPACSLeadingEdgeDevices : public generated::CPACSLeadingEdgeDevices {
 public:
   TIGL_EXPORT CCPACSLeadingEdgeDevices(CCPACSControlSurfaces *parent,
                                        CTiglUIDManager *uidMgr);
 
   // Returns the total count of trailing edge devices in a configuration
-  TIGL_EXPORT int GetTrailingEdgeDeviceCount() const;
+  TIGL_EXPORT int GetleadingEdgeDeviceCount() const;
 
   // Returns the trailing edge device for a given index.
-  TIGL_EXPORT CCPACSLeadingEdgeDevice &GetTrailingEdgeDevice(int index) const;
+  TIGL_EXPORT CCPACSLeadingEdgeDevice &GetleadingEdgeDevice(int index) const;
 
   // Returns the trailing edge device for a given UID.
   TIGL_EXPORT CCPACSLeadingEdgeDevice &
-  GetTrailingEdgeDevice(const std::string &UID) const;
+  GetleadingEdgeDevice(const std::string &UID) const;
 
   // Returns the trailing edge device index for a given UID.
-  TIGL_EXPORT int GetTrailingEdgeDeviceIndex(const std::string &UID) const;
+  TIGL_EXPORT int GetleadingEdgeDeviceIndex(const std::string &UID) const;
 };
 
 } // namespace tigl
