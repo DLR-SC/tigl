@@ -59,7 +59,7 @@ class FuelTanks(unittest.TestCase):
     def test_configuration(self):
 
         tank1_uID = "tank1"
-        self.assertEqual(self.config.get_fuel_tanks_count(), 8)
+        self.assertEqual(self.config.get_fuel_tank_count(), 8)
         self.assertIsInstance(
             self.config.get_fuel_tank(1), configuration.CCPACSFuelTank
         )
@@ -91,7 +91,7 @@ class FuelTanks(unittest.TestCase):
             fuelTanks.get_fuel_tank_index(tank1_uID),
             1,
         )
-        self.assertEqual(fuelTanks.get_fuel_tanks_count(), 8)
+        self.assertEqual(fuelTanks.get_fuel_tank_count(), 8)
 
         # Test availability of generated class:
         self.assertIsInstance(fuelTanks, configuration.CCPACSFuelTanks)
@@ -118,7 +118,7 @@ class FuelTanks(unittest.TestCase):
             vessels.get_vessel_index(vessel1_uID),
             1,
         )
-        self.assertEqual(vessels.get_vessels_count(), 2)
+        self.assertEqual(vessels.get_vessel_count(), 2)
 
         # Test availability of generated class:
         self.assertIsInstance(vessels.get_parent(), configuration.CCPACSFuelTank)
