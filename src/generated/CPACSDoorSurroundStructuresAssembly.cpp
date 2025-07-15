@@ -108,6 +108,59 @@ namespace generated
         return m_doorSurroundStructures;
     }
 
+    size_t CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructureCount() const
+    {
+        return m_doorSurroundStructures.size();
+    }
+
+    size_t CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructureIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetDoorSurroundStructureCount(); i++) {
+            const std::string tmpUID(m_doorSurroundStructures[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructureIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSDoorSurroundStructurePosition& CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructure(size_t index)
+    {
+        if (index < 1 || index > GetDoorSurroundStructureCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDoorSurroundStructurePosition>>::GetDoorSurroundStructure", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_doorSurroundStructures[index];
+    }
+
+    const CPACSDoorSurroundStructurePosition& CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructure(size_t index) const
+    {
+        if (index < 1 || index > GetDoorSurroundStructureCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDoorSurroundStructurePosition>>::GetDoorSurroundStructure", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_doorSurroundStructures[index];
+    }
+
+    CPACSDoorSurroundStructurePosition& CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructure(const std::string& UID)
+    {
+        for (auto& elem : m_doorSurroundStructures ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructure. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSDoorSurroundStructurePosition& CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructure(const std::string& UID) const
+    {
+        for (auto& elem : m_doorSurroundStructures ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSDoorSurroundStructuresAssembly::GetDoorSurroundStructure. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSDoorSurroundStructurePosition& CPACSDoorSurroundStructuresAssembly::AddDoorSurroundStructure()
     {
         m_doorSurroundStructures.push_back(make_unique<CPACSDoorSurroundStructurePosition>(this, m_uidMgr));

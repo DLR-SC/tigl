@@ -26,7 +26,7 @@
 #include "tigl_internal.h"
 #include "CCPACSWings.h"
 #include "CCPACSWingProfile.h"
-#include "CCPACSFuselages.h"
+#include "CPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 
 #include "GeomAPI_IntSS.hxx"

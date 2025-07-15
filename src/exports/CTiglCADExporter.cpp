@@ -26,6 +26,7 @@
 #include "CCPACSEnginePylon.h"
 #include "CCPACSEnginePositions.h"
 #include "CCPACSEnginePosition.h"
+#include "CCPACSFuselage.h"
 
 #include <string>
 #include <algorithm>
@@ -85,7 +86,7 @@ bool CTiglCADExporter::AddConfiguration(CCPACSConfiguration& config, const Shape
     if (config.GetEnginePylons()) {
         CCPACSEnginePylons& pylons = config.GetEnginePylons().value();
 
-        for (int p = 1; p <= pylons.GetPylonCount(); ++p) {
+        for (int p = 1; p <= pylons.GetEnginePylonCount(); ++p) {
             CCPACSEnginePylon& pylon = pylons.GetEnginePylon(p);
 
             if (!pylon.HasLoft()) {

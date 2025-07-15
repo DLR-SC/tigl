@@ -28,10 +28,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSPressureBulkheads;
 
 namespace generated
 {
+    class CPACSPressureBulkheads;
+
     // This class is used in:
     // CPACSPressureBulkheads
 
@@ -43,13 +44,13 @@ namespace generated
     class CPACSPressureBulkhead : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSPressureBulkhead(CCPACSPressureBulkheads* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSPressureBulkhead(CPACSPressureBulkheads* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSPressureBulkhead();
 
-        TIGL_EXPORT CCPACSPressureBulkheads* GetParent();
+        TIGL_EXPORT CPACSPressureBulkheads* GetParent();
 
-        TIGL_EXPORT const CCPACSPressureBulkheads* GetParent() const;
+        TIGL_EXPORT const CPACSPressureBulkheads* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -99,7 +100,7 @@ namespace generated
         TIGL_EXPORT virtual void SetStructuralElementRadialUID_choice2(const boost::optional<std::string>& value);
 
     protected:
-        CCPACSPressureBulkheads* m_parent;
+        CPACSPressureBulkheads* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -162,4 +163,7 @@ namespace generated
 } // namespace generated
 
 // CPACSPressureBulkhead is customized, use type CCPACSPressureBulkhead directly
+
+// Aliases in tigl namespace
+using CCPACSPressureBulkheads = generated::CPACSPressureBulkheads;
 } // namespace tigl

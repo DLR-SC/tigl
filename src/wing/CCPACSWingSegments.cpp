@@ -63,52 +63,6 @@ void CCPACSWingSegments::RemoveSegment(CCPACSWingSegment& ref)
     InvalidateParent();
 }
 
-// Gets a segment by index. 
-CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index)
-{
-    index--;
-    if (index < 0 || index >= GetSegmentCount()) {
-        throw CTiglError("Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
-    }
-    return *m_segments[index];
-}
-
-const CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetSegmentCount()) {
-        throw CTiglError("Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
-    }
-    return *m_segments[index];
-}
-
-// Gets a segment by uid. 
-CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID)
-{
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        if (m_segments[i]->GetUID() == segmentUID) {
-            return *m_segments[i];
-        }
-    }
-    throw CTiglError("Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
-}
-
-const CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID) const
-{
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        if (m_segments[i]->GetUID() == segmentUID) {
-            return *m_segments[i];
-        }
-    }
-    throw CTiglError("Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
-}
-
-// Gets total segment count
-int CCPACSWingSegments::GetSegmentCount() const
-{
-    return static_cast<int>(m_segments.size());
-}
-
 void CCPACSWingSegments::InvalidateParent() const
 {
     // Invalidate wing or EnginePylon

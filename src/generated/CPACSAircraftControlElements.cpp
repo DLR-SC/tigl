@@ -102,6 +102,30 @@ namespace generated
         return m_controlElements;
     }
 
+    size_t CPACSAircraftControlElements::GetControlElementCount() const
+    {
+        return m_controlElements.size();
+    }
+
+    CPACSAircraftControlElement& CPACSAircraftControlElements::GetControlElement(size_t index)
+    {
+        if (index < 1 || index > GetControlElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSAircraftControlElement>>::GetControlElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_controlElements[index];
+    }
+
+    const CPACSAircraftControlElement& CPACSAircraftControlElements::GetControlElement(size_t index) const
+    {
+        if (index < 1 || index > GetControlElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSAircraftControlElement>>::GetControlElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_controlElements[index];
+    }
+
+
     CPACSAircraftControlElement& CPACSAircraftControlElements::AddControlElement()
     {
         m_controlElements.push_back(make_unique<CPACSAircraftControlElement>(this, m_uidMgr));

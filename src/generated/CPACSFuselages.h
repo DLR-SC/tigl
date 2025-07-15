@@ -90,6 +90,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselage>>& GetFuselages() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselage>>& GetFuselages();
 
+        TIGL_EXPORT virtual size_t GetFuselageCount() const;
+        TIGL_EXPORT virtual size_t GetFuselageIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSFuselage& GetFuselage(size_t index) const;
+        TIGL_EXPORT virtual CCPACSFuselage& GetFuselage(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSFuselage& GetFuselage(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSFuselage& GetFuselage(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSFuselage& AddFuselage();
         TIGL_EXPORT virtual void RemoveFuselage(CCPACSFuselage& ref);
 
@@ -110,5 +119,6 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSFuselages is customized, use type CCPACSFuselages directly
+// Aliases in tigl namespace
+using CCPACSFuselages = generated::CPACSFuselages;
 } // namespace tigl

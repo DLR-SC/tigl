@@ -80,7 +80,7 @@ namespace generated
     {
         // read element fuelTank
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelTank")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/fuelTank", m_fuelTanks, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSFuelTanks*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/fuelTank", m_fuelTanks, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -102,9 +102,62 @@ namespace generated
         return m_fuelTanks;
     }
 
+    size_t CPACSFuelTanks::GetFuelTankCount() const
+    {
+        return m_fuelTanks.size();
+    }
+
+    size_t CPACSFuelTanks::GetFuelTankIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetFuelTankCount(); i++) {
+            const std::string tmpUID(m_fuelTanks[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSFuelTanks::GetFuelTankIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSFuelTank& CPACSFuelTanks::GetFuelTank(size_t index)
+    {
+        if (index < 1 || index > GetFuelTankCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuelTank>>::GetFuelTank", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_fuelTanks[index];
+    }
+
+    const CCPACSFuelTank& CPACSFuelTanks::GetFuelTank(size_t index) const
+    {
+        if (index < 1 || index > GetFuelTankCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuelTank>>::GetFuelTank", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_fuelTanks[index];
+    }
+
+    CCPACSFuelTank& CPACSFuelTanks::GetFuelTank(const std::string& UID)
+    {
+        for (auto& elem : m_fuelTanks ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuelTanks::GetFuelTank. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSFuelTank& CPACSFuelTanks::GetFuelTank(const std::string& UID) const
+    {
+        for (auto& elem : m_fuelTanks ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuelTanks::GetFuelTank. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSFuelTank& CPACSFuelTanks::AddFuelTank()
     {
-        m_fuelTanks.push_back(make_unique<CCPACSFuelTank>(reinterpret_cast<CCPACSFuelTanks*>(this), m_uidMgr));
+        m_fuelTanks.push_back(make_unique<CCPACSFuelTank>(this, m_uidMgr));
         return *m_fuelTanks.back();
     }
 

@@ -19,7 +19,6 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSFuselageSections.h>
 #include <CCPACSFuselageSegments.h>
 #include <CCPACSTransformation.h>
 #include <CCPACSVesselStructure.h>
@@ -27,6 +26,7 @@
 #include <tixi.h>
 #include "CPACSDomeType.h"
 #include "CPACSFuelTankVolume.h"
+#include "CPACSFuselageSections.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -34,10 +34,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSVessels;
 
 namespace generated
 {
+    class CPACSVessels;
+
     // This class is used in:
     // CPACSVessels
 
@@ -47,13 +48,13 @@ namespace generated
     class CPACSVessel : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVessel(CPACSVessels* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSVessel();
 
-        TIGL_EXPORT CCPACSVessels* GetParent();
+        TIGL_EXPORT CPACSVessels* GetParent();
 
-        TIGL_EXPORT const CCPACSVessels* GetParent() const;
+        TIGL_EXPORT const CPACSVessels* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -78,8 +79,8 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSFuselageSections>& GetSections_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSFuselageSections>& GetSections_choice1();
+        TIGL_EXPORT virtual const boost::optional<CPACSFuselageSections>& GetSections_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CPACSFuselageSections>& GetSections_choice1();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSFuselageSegments>& GetSegments_choice1() const;
         TIGL_EXPORT virtual boost::optional<CCPACSFuselageSegments>& GetSegments_choice1();
@@ -102,7 +103,7 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetBurstPressure() const;
         TIGL_EXPORT virtual void SetBurstPressure(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual CCPACSFuselageSections& GetSections_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSFuselageSections& GetSections_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSections_choice1();
 
         TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments_choice1(CreateIfNotExistsTag);
@@ -118,7 +119,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveVolume();
 
     protected:
-        CCPACSVessels* m_parent;
+        CPACSVessels* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -132,7 +133,7 @@ namespace generated
 
         CCPACSTransformation                    m_transformation;
 
-        boost::optional<CCPACSFuselageSections> m_sections_choice1;
+        boost::optional<CPACSFuselageSections>  m_sections_choice1;
 
         boost::optional<CCPACSFuselageSegments> m_segments_choice1;
 
@@ -162,4 +163,7 @@ namespace generated
 } // namespace generated
 
 // CPACSVessel is customized, use type CCPACSVessel directly
+
+// Aliases in tigl namespace
+using CCPACSVessels = generated::CPACSVessels;
 } // namespace tigl

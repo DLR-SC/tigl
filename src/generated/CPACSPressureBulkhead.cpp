@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSPressureBulkheads.h"
 #include "CPACSPressureBulkhead.h"
+#include "CPACSPressureBulkheads.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSPressureBulkhead::CPACSPressureBulkhead(CCPACSPressureBulkheads* parent, CTiglUIDManager* uidMgr)
+    CPACSPressureBulkhead::CPACSPressureBulkhead(CPACSPressureBulkheads* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -45,12 +45,12 @@ namespace generated
         }
     }
 
-    const CCPACSPressureBulkheads* CPACSPressureBulkhead::GetParent() const
+    const CPACSPressureBulkheads* CPACSPressureBulkhead::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSPressureBulkheads* CPACSPressureBulkhead::GetParent()
+    CPACSPressureBulkheads* CPACSPressureBulkhead::GetParent()
     {
         return m_parent;
     }

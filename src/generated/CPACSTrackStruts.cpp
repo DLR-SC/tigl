@@ -108,6 +108,30 @@ namespace generated
         return m_struts;
     }
 
+    size_t CPACSTrackStruts::GetStrutCount() const
+    {
+        return m_struts.size();
+    }
+
+    CPACSTrackStrut& CPACSTrackStruts::GetStrut(size_t index)
+    {
+        if (index < 1 || index > GetStrutCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSTrackStrut>>::GetStrut", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_struts[index];
+    }
+
+    const CPACSTrackStrut& CPACSTrackStruts::GetStrut(size_t index) const
+    {
+        if (index < 1 || index > GetStrutCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSTrackStrut>>::GetStrut", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_struts[index];
+    }
+
+
     CPACSTrackStrut& CPACSTrackStruts::AddStrut()
     {
         m_struts.push_back(make_unique<CPACSTrackStrut>(this, m_uidMgr));

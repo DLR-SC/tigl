@@ -72,19 +72,22 @@ public:
     TIGL_EXPORT TiglRotorType GetDefaultedType() const;
 
     // Returns the rotor blade attachment count
-    TIGL_EXPORT int GetRotorBladeAttachmentCount() const;
+    TIGL_EXPORT size_t GetRotorBladeAttachmentCount() const;
 
     // Returns the rotor blade attachment for a given index
-    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(int index) const;
+    TIGL_EXPORT const CCPACSRotorBladeAttachment& GetRotorBladeAttachment(size_t index) const;
+    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(size_t index);
 
     // Returns the rotor blade count
-    TIGL_EXPORT int GetRotorBladeCount() const;
+    TIGL_EXPORT size_t GetRotorBladeCount() const;
 
     // Returns the rotor blade for a given index
-    TIGL_EXPORT CTiglAttachedRotorBlade& GetRotorBlade(int index) const;
+    TIGL_EXPORT const CTiglAttachedRotorBlade& GetRotorBlade(size_t index) const;
+    TIGL_EXPORT CTiglAttachedRotorBlade& GetRotorBlade(size_t index);
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT const CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration();
 
     // Returns the rotor disk geometry
     TIGL_EXPORT PNamedShape GetRotorDisk();
