@@ -41,15 +41,6 @@ public:
     TIGL_EXPORT CCPACSFuselageSections(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSections(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
 
-    // Get section count
-    TIGL_EXPORT int GetSectionCount() const;
-
-    // Returns the section for a given index
-    TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
-    
-    // Returns the section for a given uid
-    TIGL_EXPORT CCPACSFuselageSection& GetSection(const std::string& sectionUID);
-
     /**
      * Create a new section and a new element with the given profile uid.
      * All uids are derived from the section uid.

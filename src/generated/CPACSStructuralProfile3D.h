@@ -29,10 +29,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSStructuralProfiles;
 
 namespace generated
 {
+    class CPACSStructuralProfiles;
+
     // This class is used in:
     // CPACSStructuralProfiles
 
@@ -43,13 +44,13 @@ namespace generated
     class CPACSStructuralProfile3D : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSStructuralProfile3D(CCPACSStructuralProfiles* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSStructuralProfile3D(CPACSStructuralProfiles* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSStructuralProfile3D();
 
-        TIGL_EXPORT CCPACSStructuralProfiles* GetParent();
+        TIGL_EXPORT CPACSStructuralProfiles* GetParent();
 
-        TIGL_EXPORT const CCPACSStructuralProfiles* GetParent() const;
+        TIGL_EXPORT const CPACSStructuralProfiles* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -76,7 +77,7 @@ namespace generated
         TIGL_EXPORT virtual CPACSSheetList3D& GetSheetList3D();
 
     protected:
-        CCPACSStructuralProfiles* m_parent;
+        CPACSStructuralProfiles* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -97,4 +98,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSStructuralProfile3D = generated::CPACSStructuralProfile3D;
+using CCPACSStructuralProfiles = generated::CPACSStructuralProfiles;
 } // namespace tigl

@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetLavatoryElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetLavatoryElements();
 
+        TIGL_EXPORT virtual size_t GetLavatoryElementCount() const;
+        TIGL_EXPORT virtual size_t GetLavatoryElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetLavatoryElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetLavatoryElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetLavatoryElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetLavatoryElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSDeckElementBase& AddLavatoryElement();
         TIGL_EXPORT virtual void RemoveLavatoryElement(CPACSDeckElementBase& ref);
 

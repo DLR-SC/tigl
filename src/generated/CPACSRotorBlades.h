@@ -78,6 +78,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWing>>& GetRotorBlades() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWing>>& GetRotorBlades();
 
+        TIGL_EXPORT virtual size_t GetRotorBladeCount() const;
+        TIGL_EXPORT virtual size_t GetRotorBladeIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSWing& GetRotorBlade(size_t index) const;
+        TIGL_EXPORT virtual CCPACSWing& GetRotorBlade(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSWing& GetRotorBlade(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSWing& GetRotorBlade(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSWing& AddRotorBlade();
         TIGL_EXPORT virtual void RemoveRotorBlade(CCPACSWing& ref);
 

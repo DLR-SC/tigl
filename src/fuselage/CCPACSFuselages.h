@@ -45,18 +45,6 @@ public:
     // Write CPACS fuselage elements
     TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-    // Returns the total count of fuselages in a configuration
-    TIGL_EXPORT int GetFuselageCount() const;
-
-    // Returns the fuselage for a given index.
-    TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;
-
-    // Returns the fuselage for a given UID.
-    TIGL_EXPORT CCPACSFuselage& GetFuselage(const std::string& UID) const;
-
-    // Returns the fuselage index for a given UID.
-    TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;
-
     // Create a new fuselage with the given parameters.
     // Remark, all children UIDs and transformations are set.
     TIGL_EXPORT CCPACSFuselage& CreateFuselage(const std::string& fuselageUID, int numberOfSection,

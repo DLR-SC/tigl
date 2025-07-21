@@ -42,19 +42,23 @@ public:
     TIGL_EXPORT CCPACSRotorHinges(CCPACSRotorBladeAttachment* parent, CTiglUIDManager* uidMgr);
 
     // Returns the total count of rotor hinges in a rotor blade attachment
-    TIGL_EXPORT int GetRotorHingeCount() const;
+    TIGL_EXPORT size_t GetRotorHingeCount() const;
 
     // Returns the rotor hinge for a given index.
-    TIGL_EXPORT CCPACSRotorHinge& GetRotorHinge(int index) const;
-
-    // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT const CCPACSRotorHinge& GetRotorHinge(size_t index) const;
+    TIGL_EXPORT CCPACSRotorHinge& GetRotorHinge(size_t index);
 
     // Returns the parent rotor
-    TIGL_EXPORT CCPACSRotor& GetRotor() const;
+    TIGL_EXPORT const CCPACSRotor& GetRotor() const;
+    TIGL_EXPORT CCPACSRotor& GetRotor();
 
     // Returns the parent rotor blade attachment
-    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment() const;
+    TIGL_EXPORT const CCPACSRotorBladeAttachment& GetRotorBladeAttachment() const;
+    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment();
+
+    // Returns the parent configuration
+    TIGL_EXPORT const CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration();
 };
 
 } // end namespace tigl

@@ -95,39 +95,6 @@ void CCPACSFuselageSegments::Invalidate(const boost::optional<std::string>& sour
     guideCurves.clear();
 }
 
-// Gets a segment by index. 
-CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index)
-{
-    return const_cast<CCPACSFuselageSegment&>(static_cast<const CCPACSFuselageSegments&>(*this).GetSegment(index));
-}
-
-const CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetSegmentCount()) {
-        throw CTiglError("Invalid index value in CCPACSFuselageSegments::GetSegment", TIGL_INDEX_ERROR);
-    }
-    return *m_segments[index];
-}
-
-// Gets a segment by uid. 
-CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& segmentUID)
-{
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        if (m_segments[i]->GetUID() == segmentUID) {
-            return *m_segments[i];
-        }
-    }
-    throw CTiglError("Invalid uid in CCPACSFuselageSegments::GetSegment", TIGL_UID_ERROR);
-}
-
-// Gets total segment count
-int CCPACSFuselageSegments::GetSegmentCount() const
-{
-    return static_cast<int>(m_segments.size());
-}
-
-
 CTiglRelativelyPositionedComponent const* CCPACSFuselageSegments::GetParentComponent() const
 {
     if (IsParent<CCPACSFuselage>()) {

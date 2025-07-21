@@ -50,42 +50,6 @@ void CCPACSFuselages::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std
     generated::CPACSFuselages::WriteCPACS(tixiHandle, xpath);
 }
 
-// Returns the total count of fuselages in a configuration
-int CCPACSFuselages::GetFuselageCount() const
-{
-    return static_cast<int>(m_fuselages.size());
-}
-
-// Returns the fuselage for a given index.
-CCPACSFuselage& CCPACSFuselages::GetFuselage(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetFuselageCount()) {
-        throw CTiglError("Invalid index in CCPACSFuselages::GetFuselage", TIGL_INDEX_ERROR);
-    }
-    return *m_fuselages[index];
-}
-
-// Returns the fuselage for a given UID.
-CCPACSFuselage& CCPACSFuselages::GetFuselage(const std::string& UID) const
-{
-    return *m_fuselages[GetFuselageIndex(UID) - 1];
-}
-
-// Returns the fuselage index for a given UID.
-int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
-{
-    for (int i=0; i < GetFuselageCount(); i++) {
-        const std::string tmpUID(m_fuselages[i]->GetUID());
-        if (tmpUID == UID) {
-            return i+1;
-        }
-    }
-
-    // UID not there
-    throw CTiglError("Invalid UID in CCPACSFuselages::GetFuselageIndex", TIGL_UID_ERROR);
-}
-
 CCPACSFuselage& CCPACSFuselages::CreateFuselage(const std::string& fuselageUID, int numberOfSection,
                                                 const std::string& profileUID)
 {

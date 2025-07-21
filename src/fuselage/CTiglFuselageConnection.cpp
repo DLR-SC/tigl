@@ -28,9 +28,9 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
 #include "CCPACSVessel.h"
-#include "CCPACSVessels.h"
+#include "generated/CPACSVessels.h"
 #include "CCPACSFuelTank.h"
-#include "CCPACSFuselageSections.h"
+#include "generated/CPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
@@ -86,7 +86,7 @@ int CTiglFuselageConnection::GetSectionElementIndex() const
 
 
 // Returns the fuselage profile referenced by this connection
-CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile()
+const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const
 {
     std::string profileUID;
 
@@ -109,8 +109,8 @@ CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile()
     return (config.GetFuselageProfile(profileUID));
 }
 
-const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const {
-    return const_cast<CTiglFuselageConnection&>(*this).GetProfile();
+CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() {
+    return const_cast<CCPACSFuselageProfile&>(std::as_const(*this).GetProfile());
 }
 
 // Returns the positioning transformation for the referenced section

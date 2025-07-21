@@ -46,23 +46,12 @@ public:
     // Invalidate internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    // Get a segment by index.
-    TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);
-    TIGL_EXPORT const CCPACSFuselageSegment& GetSegment(int index) const;
-
-    // Get a segment by uid
-    TIGL_EXPORT CCPACSFuselageSegment & GetSegment(const std::string& segmentUID);
-
     // Get the segment that is spanned by the elements fromElemUID and toElementUID.
     // If there is no such segment, the function raises an error
     TIGL_EXPORT CCPACSFuselageSegment & GetSegmentFromTo(const std::string &fromElementUID, const std::string toElementUID);
 
-    // Get total segment count
-    TIGL_EXPORT int GetSegmentCount() const;
-
     // Get the parent component
     TIGL_EXPORT CTiglRelativelyPositionedComponent const* GetParentComponent() const;
-
 
     // return the element uids in order from nose to tail
     // It assumes that the elements are already ordered according to m_segments !

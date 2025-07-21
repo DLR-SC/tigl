@@ -102,6 +102,59 @@ namespace generated
         return m_points;
     }
 
+    size_t CPACSPointListXY::GetPointCount() const
+    {
+        return m_points.size();
+    }
+
+    size_t CPACSPointListXY::GetPointIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetPointCount(); i++) {
+            const boost::optional<std::string> tmpUID(*m_points[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSPointListXY::GetPointIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSPointXY& CPACSPointListXY::GetPoint(size_t index)
+    {
+        if (index < 1 || index > GetPointCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSPointXY>>::GetPoint", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_points[index];
+    }
+
+    const CCPACSPointXY& CPACSPointListXY::GetPoint(size_t index) const
+    {
+        if (index < 1 || index > GetPointCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSPointXY>>::GetPoint", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_points[index];
+    }
+
+    CCPACSPointXY& CPACSPointListXY::GetPoint(const std::string& UID)
+    {
+        for (auto& elem : m_points ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSPointListXY::GetPoint. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSPointXY& CPACSPointListXY::GetPoint(const std::string& UID) const
+    {
+        for (auto& elem : m_points ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSPointListXY::GetPoint. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSPointXY& CPACSPointListXY::AddPoint()
     {
         m_points.push_back(make_unique<CCPACSPointXY>(reinterpret_cast<CCPACSPointListXY*>(this), m_uidMgr));

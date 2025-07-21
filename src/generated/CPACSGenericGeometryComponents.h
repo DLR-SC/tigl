@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSExternalObject>>& GetGenericGeometryComponents() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSExternalObject>>& GetGenericGeometryComponents();
 
+        TIGL_EXPORT virtual size_t GetGenericGeometryComponentCount() const;
+        TIGL_EXPORT virtual size_t GetGenericGeometryComponentIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSExternalObject& GetGenericGeometryComponent(size_t index) const;
+        TIGL_EXPORT virtual CCPACSExternalObject& GetGenericGeometryComponent(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSExternalObject& GetGenericGeometryComponent(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSExternalObject& GetGenericGeometryComponent(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSExternalObject& AddGenericGeometryComponent();
         TIGL_EXPORT virtual void RemoveGenericGeometryComponent(CCPACSExternalObject& ref);
 

@@ -88,6 +88,7 @@
 #include "CCPACSEnginePylon.h"
 #include "generated/CPACSTrailingEdgeDevices.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSFuselage.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -661,7 +662,7 @@ QString TIGLViewerDocument::dlgGetFuselageSelection()
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int fuselageCount = config.GetFuselageCount();
     for (int i = 1; i <= fuselageCount; i++) {
-        tigl::CCPACSFuselage& fuselage = config.GetFuselage(i);
+        auto& fuselage = config.GetFuselage(i);
         std::string name = fuselage.GetUID();
         if (name.empty()) {
             name = "Unknown fuselage";
@@ -687,7 +688,7 @@ QString TIGLViewerDocument::dlgGetFuselageSegmentSelection()
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int fuselageCount = config.GetFuselageCount();
     for (int i = 1; i <= fuselageCount; i++) {
-        tigl::CCPACSFuselage& fuselage = config.GetFuselage(i);
+        auto& fuselage = config.GetFuselage(i);
         for (int j = 1; j <= fuselage.GetSegmentCount(); ++j) {
             tigl::CCPACSFuselageSegment& segment = fuselage.GetSegment(j);
             std::string name = segment.GetUID();
@@ -935,7 +936,7 @@ void TIGLViewerDocument::drawFuselageGuideCurves()
     }
     
     START_COMMAND()
-    const tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+    const auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
     const TopoDS_Compound& guideCurves = fuselage.GetSegments().GetGuideCurveWires();
 
     TopoDS_Iterator anIter(guideCurves);
@@ -1088,7 +1089,7 @@ void TIGLViewerDocument::drawFuselage()
     }
 
     START_COMMAND()
-    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+    auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     app->getScene()->deleteAllObjects();
 
@@ -1120,7 +1121,7 @@ void TIGLViewerDocument::drawFuselageTriangulation()
     }
 
     START_COMMAND()
-    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+    auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     //clear screen
     app->getScene()->deleteAllObjects();
@@ -1154,7 +1155,7 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
     }
 
     START_COMMAND()
-    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+    auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     for (int segmentIndex = 1; segmentIndex <= fuselage.GetSegmentCount(); segmentIndex++) {
 
@@ -1193,7 +1194,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
     double x, y, z;
 
     app->getScene()->deleteAllObjects();
-    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
+    auto& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
 
     // Draw the fuselage
     for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
@@ -1260,7 +1261,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 
     // Draw all fuselages
     for (int fuselageIndex = 1; fuselageIndex <= GetConfiguration().GetFuselageCount(); fuselageIndex++) {
-        tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
+        auto& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
 
         app->getScene()->displayShape(fuselage.GetLoft(), true, getDefaultShapeColor());
 
@@ -1810,7 +1811,7 @@ void TIGLViewerDocument::exportFuselageCurvesBRep()
     }
     
     START_COMMAND()
-    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+    auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
     QString baseName = QDir(std::string(dirname.toStdString() + "/" + fuselage.GetUID()).c_str()).absolutePath();
     
     TopoDS_Compound profiles;
@@ -1849,7 +1850,7 @@ void TIGLViewerDocument::drawFusedFuselage()
 
     START_COMMAND()
     app->getScene()->deleteAllObjects();
-    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+    auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
     app->getScene()->displayShape(fuselage.GetLoft(), true, getDefaultShapeColor());
 }
 

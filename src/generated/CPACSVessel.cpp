@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSVessels.h"
 #include "CPACSVessel.h"
+#include "CPACSVessels.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSVessel::CPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr)
+    CPACSVessel::CPACSVessel(CPACSVessels* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr)
     {
@@ -40,12 +40,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CCPACSVessels* CPACSVessel::GetParent() const
+    const CPACSVessels* CPACSVessel::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSVessels* CPACSVessel::GetParent()
+    CPACSVessels* CPACSVessel::GetParent()
     {
         return m_parent;
     }

@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSProfiles.h"
 #include "CPACSProfileGeometry.h"
+#include "CPACSProfiles.h"
 #include "CPACSRotorAirfoils.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSRotorAirfoils::CPACSRotorAirfoils(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    CPACSRotorAirfoils::CPACSRotorAirfoils(CPACSProfiles* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSProfiles* CPACSRotorAirfoils::GetParent() const
+    const CPACSProfiles* CPACSRotorAirfoils::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSProfiles* CPACSRotorAirfoils::GetParent()
+    CPACSProfiles* CPACSRotorAirfoils::GetParent()
     {
         return m_parent;
     }
@@ -107,6 +107,59 @@ namespace generated
     {
         return m_rotorAirfoils;
     }
+
+    size_t CPACSRotorAirfoils::GetRotorAirfoilCount() const
+    {
+        return m_rotorAirfoils.size();
+    }
+
+    size_t CPACSRotorAirfoils::GetRotorAirfoilIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetRotorAirfoilCount(); i++) {
+            const std::string tmpUID(m_rotorAirfoils[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSRotorAirfoils::GetRotorAirfoilIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSProfileGeometry& CPACSRotorAirfoils::GetRotorAirfoil(size_t index)
+    {
+        if (index < 1 || index > GetRotorAirfoilCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSProfileGeometry>>::GetRotorAirfoil", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_rotorAirfoils[index];
+    }
+
+    const CPACSProfileGeometry& CPACSRotorAirfoils::GetRotorAirfoil(size_t index) const
+    {
+        if (index < 1 || index > GetRotorAirfoilCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSProfileGeometry>>::GetRotorAirfoil", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_rotorAirfoils[index];
+    }
+
+    CPACSProfileGeometry& CPACSRotorAirfoils::GetRotorAirfoil(const std::string& UID)
+    {
+        for (auto& elem : m_rotorAirfoils ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSRotorAirfoils::GetRotorAirfoil. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSProfileGeometry& CPACSRotorAirfoils::GetRotorAirfoil(const std::string& UID) const
+    {
+        for (auto& elem : m_rotorAirfoils ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSRotorAirfoils::GetRotorAirfoil. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
 
     CPACSProfileGeometry& CPACSRotorAirfoils::AddRotorAirfoil()
     {

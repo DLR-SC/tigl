@@ -133,6 +133,59 @@ namespace generated
         return m_sections;
     }
 
+    size_t CPACSFuselageSections::GetSectionCount() const
+    {
+        return m_sections.size();
+    }
+
+    size_t CPACSFuselageSections::GetSectionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSectionCount(); i++) {
+            const std::string tmpUID(m_sections[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSFuselageSections::GetSectionIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSFuselageSection& CPACSFuselageSections::GetSection(size_t index)
+    {
+        if (index < 1 || index > GetSectionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageSection>>::GetSection", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sections[index];
+    }
+
+    const CCPACSFuselageSection& CPACSFuselageSections::GetSection(size_t index) const
+    {
+        if (index < 1 || index > GetSectionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageSection>>::GetSection", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sections[index];
+    }
+
+    CCPACSFuselageSection& CPACSFuselageSections::GetSection(const std::string& UID)
+    {
+        for (auto& elem : m_sections ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuselageSections::GetSection. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSFuselageSection& CPACSFuselageSections::GetSection(const std::string& UID) const
+    {
+        for (auto& elem : m_sections ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuselageSections::GetSection. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSFuselageSection& CPACSFuselageSections::AddSection()
     {
         m_sections.push_back(make_unique<CCPACSFuselageSection>(reinterpret_cast<CCPACSFuselageSections*>(this), m_uidMgr));

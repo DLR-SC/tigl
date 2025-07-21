@@ -65,6 +65,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSparCell>>& GetSparCells() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSparCell>>& GetSparCells();
 
+        TIGL_EXPORT virtual size_t GetSparCellCount() const;
+        TIGL_EXPORT virtual size_t GetSparCellIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSSparCell& GetSparCell(size_t index) const;
+        TIGL_EXPORT virtual CPACSSparCell& GetSparCell(size_t index);
+
+        TIGL_EXPORT virtual const CPACSSparCell& GetSparCell(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSSparCell& GetSparCell(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSSparCell& AddSparCell();
         TIGL_EXPORT virtual void RemoveSparCell(CPACSSparCell& ref);
 

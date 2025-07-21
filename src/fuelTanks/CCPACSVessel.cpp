@@ -21,14 +21,14 @@
 */
 
 #include "CCPACSVessel.h"
-#include "CCPACSVessels.h"
+#include "generated/CPACSVessels.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglMakeLoft.h"
 #include "CNamedShape.h"
 #include "CTiglTopoAlgorithms.h"
 #include "tiglcommonfunctions.h"
 #include "CCPACSFuelTank.h"
-#include "CCPACSFuelTanks.h"
+#include "generated/CPACSFuelTanks.h"
 #include "generated/CPACSDomeType.h"
 #include "generated/CPACSEllipsoidDome.h"
 #include "generated/CPACSTorisphericalDome.h"
@@ -82,7 +82,7 @@ TiglGeometricComponentIntent CCPACSVessel::GetComponentIntent() const
     return TIGL_INTENT_PHYSICAL;
 }
 
-int CCPACSVessel::GetSectionCount() const
+size_t CCPACSVessel::GetSectionCount() const
 {
     if (m_sections_choice1) {
         return m_sections_choice1.get_ptr()->GetSectionCount();
@@ -92,22 +92,26 @@ int CCPACSVessel::GetSectionCount() const
     }
 }
 
-CCPACSFuselageSection const& CCPACSVessel::GetSection(int index) const
+const CCPACSFuselageSection& CCPACSVessel::GetSection (size_t  index) const
 {
     return const_cast<CCPACSVessel&>(*this).GetSection(index);
 }
 
-CCPACSFuselageSection& CCPACSVessel::GetSection(int index)
+CCPACSFuselageSection& CCPACSVessel::GetSection (size_t  index)
 {
     if (m_sections_choice1) {
-        return m_sections_choice1.get().GetSection(index);
+        try {
+            return m_sections_choice1.get().GetSection(index);
+        } catch(CTiglError e){
+            throw CTiglError("Invalid index in CCPACSVessel::GetSection", TIGL_INDEX_ERROR);
+        }
     }
     else {
         throw CTiglError(_vesselTypeException);
     }
 }
 
-CCPACSFuselageSection const& CCPACSVessel::GetSection(const std::string& sectionUID) const
+const CCPACSFuselageSection& CCPACSVessel::GetSection(const std::string& sectionUID) const
 {
     return const_cast<CCPACSVessel&>(*this).GetSection(sectionUID);
 }
@@ -142,7 +146,7 @@ TopoDS_Shape CCPACSVessel::GetSectionFace(const std::string sectionUID) const
     return TopoDS_Shape();
 }
 
-int CCPACSVessel::GetSegmentCount() const
+size_t  CCPACSVessel::GetSegmentCount() const
 {
     if (m_segments_choice1) {
         return m_segments_choice1.get_ptr()->GetSegmentCount();
@@ -152,24 +156,23 @@ int CCPACSVessel::GetSegmentCount() const
     }
 }
 
-CCPACSFuselageSegment& CCPACSVessel::GetSegment(const int index)
+CCPACSFuselageSegment& CCPACSVessel::GetSegment(const size_t index)
 {
     if (m_segments_choice1) {
-        return m_segments_choice1.get().GetSegment(index);
+        try {
+            return m_segments_choice1.get().GetSegment(index);
+        } catch (CTiglError e){
+            throw CTiglError("Invalid index in CCPACSVessel::GetSegment", TIGL_INDEX_ERROR);
+        }
     }
     else {
         throw CTiglError(_vesselTypeException);
     }
 }
 
-const CCPACSFuselageSegment& CCPACSVessel::GetSegment(const int index) const
+const CCPACSFuselageSegment& CCPACSVessel::GetSegment(const size_t index) const
 {
-    if (m_segments_choice1) {
-        return m_segments_choice1.get().GetSegment(index);
-    }
-    else {
-        throw CTiglError(_vesselTypeException);
-    }
+    return const_cast<CCPACSVessel&>(*this).GetSegment(index);
 }
 
 CCPACSFuselageSegment& CCPACSVessel::GetSegment(std::string uid)
