@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSControlSurfaceBorderLeadingEdge.h"
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
 #include "CPACSLeadingEdgeHollow.h"
 #include "CTiglError.h"
@@ -27,32 +28,37 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSLeadingEdgeHollow::CPACSLeadingEdgeHollow(CCPACSControlSurfaceBorderLeadingEdge* parent)
+        : m_relHeightTE(0)
+        , m_xsiTE(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSControlSurfaceBorderLeadingEdge);
+    }
+
     CPACSLeadingEdgeHollow::CPACSLeadingEdgeHollow(CCPACSControlSurfaceBorderTrailingEdge* parent)
         : m_relHeightTE(0)
         , m_xsiTE(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSControlSurfaceBorderTrailingEdge);
     }
 
     CPACSLeadingEdgeHollow::~CPACSLeadingEdgeHollow()
     {
     }
 
-    const CCPACSControlSurfaceBorderTrailingEdge* CPACSLeadingEdgeHollow::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSControlSurfaceBorderTrailingEdge* CPACSLeadingEdgeHollow::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSLeadingEdgeHollow::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CCPACSControlSurfaceBorderLeadingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderLeadingEdge>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -60,7 +66,12 @@ namespace generated
     CTiglUIDObject* CPACSLeadingEdgeHollow::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CCPACSControlSurfaceBorderLeadingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderLeadingEdge>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

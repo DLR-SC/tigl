@@ -77,6 +77,17 @@ namespace generated
 
     void CPACSControlSurfaces::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read element leadingEdgeDevices
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/leadingEdgeDevices")) {
+            m_leadingEdgeDevices = boost::in_place(reinterpret_cast<CCPACSControlSurfaces*>(this), m_uidMgr);
+            try {
+                m_leadingEdgeDevices->ReadCPACS(tixiHandle, xpath + "/leadingEdgeDevices");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read leadingEdgeDevices at xpath " << xpath << ": " << e.what();
+                m_leadingEdgeDevices = boost::none;
+            }
+        }
+
         // read element trailingEdgeDevices
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeDevices")) {
             m_trailingEdgeDevices = boost::in_place(reinterpret_cast<CCPACSControlSurfaces*>(this), m_uidMgr);
@@ -92,6 +103,17 @@ namespace generated
 
     void CPACSControlSurfaces::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write element leadingEdgeDevices
+        if (m_leadingEdgeDevices) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/leadingEdgeDevices");
+            m_leadingEdgeDevices->WriteCPACS(tixiHandle, xpath + "/leadingEdgeDevices");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/leadingEdgeDevices")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/leadingEdgeDevices");
+            }
+        }
+
         // write element trailingEdgeDevices
         if (m_trailingEdgeDevices) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/trailingEdgeDevices");
@@ -105,6 +127,16 @@ namespace generated
 
     }
 
+    const boost::optional<CPACSLeadingEdgeDevices>& CPACSControlSurfaces::GetLeadingEdgeDevices() const
+    {
+        return m_leadingEdgeDevices;
+    }
+
+    boost::optional<CPACSLeadingEdgeDevices>& CPACSControlSurfaces::GetLeadingEdgeDevices()
+    {
+        return m_leadingEdgeDevices;
+    }
+
     const boost::optional<CPACSTrailingEdgeDevices>& CPACSControlSurfaces::GetTrailingEdgeDevices() const
     {
         return m_trailingEdgeDevices;
@@ -113,6 +145,18 @@ namespace generated
     boost::optional<CPACSTrailingEdgeDevices>& CPACSControlSurfaces::GetTrailingEdgeDevices()
     {
         return m_trailingEdgeDevices;
+    }
+
+    CPACSLeadingEdgeDevices& CPACSControlSurfaces::GetLeadingEdgeDevices(CreateIfNotExistsTag)
+    {
+        if (!m_leadingEdgeDevices)
+            m_leadingEdgeDevices = boost::in_place(reinterpret_cast<CCPACSControlSurfaces*>(this), m_uidMgr);
+        return *m_leadingEdgeDevices;
+    }
+
+    void CPACSControlSurfaces::RemoveLeadingEdgeDevices()
+    {
+        m_leadingEdgeDevices = boost::none;
     }
 
     CPACSTrailingEdgeDevices& CPACSControlSurfaces::GetTrailingEdgeDevices(CreateIfNotExistsTag)
