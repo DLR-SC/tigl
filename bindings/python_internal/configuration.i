@@ -570,15 +570,12 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSCurveProfiles.h"
 %boost_optional(tigl::CCPACSStructuralProfiles)
 %include "generated/CPACSStructuralProfiles.h"
-%include "CCPACSStructuralProfiles.h"
 %boost_optional(tigl::CCPACSGuideCurveProfiles)
 %boost_optional(tigl::CCPACSRotorProfiles)
 %include "generated/CPACSGuideCurveProfiles.h"
-%include "CCPACSGuideCurveProfiles.h"
 %include "generated/CPACSRotorAirfoils.h"
 %include "CCPACSRotorProfiles.h"
 %include "generated/CPACSProfiles.h"
-%include "CCPACSProfiles.h"
 
 // ---- Engine Pylon -- //
 %include "generated/CPACSEnginePylon.h"

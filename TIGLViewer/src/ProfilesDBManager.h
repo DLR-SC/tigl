@@ -24,7 +24,7 @@
 #include <QString>
 #include <QStringList>
 
-#include "CCPACSProfiles.h"
+#include "generated/CPACSProfiles.h"
 #include "tixi.h"
 #include "CTiglUIDManager.h"
 #include "CTiglSectionElement.h"
