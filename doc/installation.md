@@ -54,11 +54,6 @@ This command will install a new environment called tigl-bld with all dependencie
 
     conda activate tigl-bld
 
-On Linux machines using Ubuntu 22.04, we experienced an issue that needed extra treatment. Here, after activating, three additional packages have to be installed into the `tigl-bld` environment:
-
-    conda install libgl-devel libegl-devel libopengl-devel
-This issue might also occur on different versions of Ubuntu. So, in case you face problems during the configuration or execution of the TiGLViewer, try this extra step.
-
 Now tigl can be configured and build using cmake:
 
     mkdir build
@@ -81,3 +76,11 @@ This will configure TiGL with default options. An example of a customized cmake 
              -DTIGL_NIGHTLY=ON
 
 You can also take inspiration from [here](https://github.com/DLR-SC/tigl/tree/master/.github/actions) to see how TiGL releases are build in our continuous integration pipeline.
+
+### Troubleshooting ###
+
+On Linux machines using Ubuntu 22.04, we experienced an issue that needed extra treatment. Here, after activating, three additional packages have to be installed into the `tigl-bld` environment:
+
+    conda install libgl-devel libegl-devel libopengl-devel
+This issue might also occur on different versions of Ubuntu. So, in case you face problems during the configuration or execution of the TiGLViewer, try this extra step.
+Further information on this issue can be found [here](https://github.com/DLR-SC/tigl/issues/1069).
