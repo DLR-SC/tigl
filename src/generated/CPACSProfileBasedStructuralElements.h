@@ -64,6 +64,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSProfileBasedStructuralElement>>& GetProfileBasedStructuralElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSProfileBasedStructuralElement>>& GetProfileBasedStructuralElements();
 
+        TIGL_EXPORT virtual size_t GetProfileBasedStructuralElementCount() const;
+        TIGL_EXPORT virtual size_t GetProfileBasedStructuralElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSProfileBasedStructuralElement& GetProfileBasedStructuralElement(size_t index) const;
+        TIGL_EXPORT virtual CCPACSProfileBasedStructuralElement& GetProfileBasedStructuralElement(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSProfileBasedStructuralElement& GetProfileBasedStructuralElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSProfileBasedStructuralElement& GetProfileBasedStructuralElement(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSProfileBasedStructuralElement& AddProfileBasedStructuralElement();
         TIGL_EXPORT virtual void RemoveProfileBasedStructuralElement(CCPACSProfileBasedStructuralElement& ref);
 

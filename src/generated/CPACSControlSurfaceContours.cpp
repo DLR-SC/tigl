@@ -108,6 +108,30 @@ namespace generated
         return m_intermediateAirfoils;
     }
 
+    size_t CPACSControlSurfaceContours::GetIntermediateAirfoilCount() const
+    {
+        return m_intermediateAirfoils.size();
+    }
+
+    CPACSControlSurfaceAirfoil& CPACSControlSurfaceContours::GetIntermediateAirfoil(size_t index)
+    {
+        if (index < 1 || index > GetIntermediateAirfoilCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>>::GetIntermediateAirfoil", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_intermediateAirfoils[index];
+    }
+
+    const CPACSControlSurfaceAirfoil& CPACSControlSurfaceContours::GetIntermediateAirfoil(size_t index) const
+    {
+        if (index < 1 || index > GetIntermediateAirfoilCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>>::GetIntermediateAirfoil", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_intermediateAirfoils[index];
+    }
+
+
     CPACSControlSurfaceAirfoil& CPACSControlSurfaceContours::AddIntermediateAirfoil()
     {
         m_intermediateAirfoils.push_back(make_unique<CPACSControlSurfaceAirfoil>(this, m_uidMgr));

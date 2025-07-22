@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetClassDividerElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetClassDividerElements();
 
+        TIGL_EXPORT virtual size_t GetClassDividerElementCount() const;
+        TIGL_EXPORT virtual size_t GetClassDividerElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetClassDividerElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetClassDividerElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetClassDividerElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetClassDividerElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSDeckElementBase& AddClassDividerElement();
         TIGL_EXPORT virtual void RemoveClassDividerElement(CPACSDeckElementBase& ref);
 

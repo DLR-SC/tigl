@@ -3,7 +3,15 @@ Changelog
 
 Changes since last release
 -------------
-
+10/07/2025
+- General changes
+  - Updated TiGL to new Version of [cpacs_tigl_Gen](https://github.com/DLR-SC/cpacs_tigl_gen) which is a fork from [RISCSoftware/cpacs_tigl_gen](https://github.com/RISCSoftware/cpacs_tigl_gen)
+ 
+- Fixes
+  - [#59](https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59)	
+    Getters by index and uID are generated now for all Elements in CPACS with Attribute: maxOccur = "unbounded".  This gives users quick
+    access to elements and eliminates the need for TIGL developers to customize classes for this purpose.
+    
 08/02/2025
 
 - General changes:

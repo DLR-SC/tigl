@@ -96,6 +96,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSPositioning>>& GetPositionings() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSPositioning>>& GetPositionings();
 
+        TIGL_EXPORT virtual size_t GetPositioningCount() const;
+        TIGL_EXPORT virtual size_t GetPositioningIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSPositioning& GetPositioning(size_t index) const;
+        TIGL_EXPORT virtual CCPACSPositioning& GetPositioning(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSPositioning& GetPositioning(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSPositioning& GetPositioning(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSPositioning& AddPositioning();
         TIGL_EXPORT virtual void RemovePositioning(CCPACSPositioning& ref);
 

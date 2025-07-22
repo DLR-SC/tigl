@@ -108,6 +108,59 @@ namespace generated
         return m_composites;
     }
 
+    size_t CPACSComposites::GetCompositeCount() const
+    {
+        return m_composites.size();
+    }
+
+    size_t CPACSComposites::GetCompositeIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetCompositeCount(); i++) {
+            const std::string tmpUID(m_composites[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSComposites::GetCompositeIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSComposite& CPACSComposites::GetComposite(size_t index)
+    {
+        if (index < 1 || index > GetCompositeCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSComposite>>::GetComposite", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_composites[index];
+    }
+
+    const CPACSComposite& CPACSComposites::GetComposite(size_t index) const
+    {
+        if (index < 1 || index > GetCompositeCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSComposite>>::GetComposite", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_composites[index];
+    }
+
+    CPACSComposite& CPACSComposites::GetComposite(const std::string& UID)
+    {
+        for (auto& elem : m_composites ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSComposites::GetComposite. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSComposite& CPACSComposites::GetComposite(const std::string& UID) const
+    {
+        for (auto& elem : m_composites ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSComposites::GetComposite. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSComposite& CPACSComposites::AddComposite()
     {
         m_composites.push_back(make_unique<CPACSComposite>(this, m_uidMgr));

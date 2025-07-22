@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSStructuralProfiles.h"
 #include "CPACSStructuralProfile.h"
+#include "CPACSStructuralProfiles.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSStructuralProfile::CPACSStructuralProfile(CCPACSStructuralProfiles* parent, CTiglUIDManager* uidMgr)
+    CPACSStructuralProfile::CPACSStructuralProfile(CPACSStructuralProfiles* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_pointList(this, m_uidMgr)
         , m_sheetList(this, m_uidMgr)
@@ -41,12 +41,12 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CCPACSStructuralProfiles* CPACSStructuralProfile::GetParent() const
+    const CPACSStructuralProfiles* CPACSStructuralProfile::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSStructuralProfiles* CPACSStructuralProfile::GetParent()
+    CPACSStructuralProfiles* CPACSStructuralProfile::GetParent()
     {
         return m_parent;
     }

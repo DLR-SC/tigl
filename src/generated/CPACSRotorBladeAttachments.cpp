@@ -102,6 +102,59 @@ namespace generated
         return m_rotorBladeAttachments;
     }
 
+    size_t CPACSRotorBladeAttachments::GetRotorBladeAttachmentCount() const
+    {
+        return m_rotorBladeAttachments.size();
+    }
+
+    size_t CPACSRotorBladeAttachments::GetRotorBladeAttachmentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetRotorBladeAttachmentCount(); i++) {
+            const std::string tmpUID(m_rotorBladeAttachments[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSRotorBladeAttachments::GetRotorBladeAttachmentIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::GetRotorBladeAttachment(size_t index)
+    {
+        if (index < 1 || index > GetRotorBladeAttachmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSRotorBladeAttachment>>::GetRotorBladeAttachment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_rotorBladeAttachments[index];
+    }
+
+    const CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::GetRotorBladeAttachment(size_t index) const
+    {
+        if (index < 1 || index > GetRotorBladeAttachmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSRotorBladeAttachment>>::GetRotorBladeAttachment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_rotorBladeAttachments[index];
+    }
+
+    CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::GetRotorBladeAttachment(const std::string& UID)
+    {
+        for (auto& elem : m_rotorBladeAttachments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSRotorBladeAttachments::GetRotorBladeAttachment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::GetRotorBladeAttachment(const std::string& UID) const
+    {
+        for (auto& elem : m_rotorBladeAttachments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSRotorBladeAttachments::GetRotorBladeAttachment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::AddRotorBladeAttachment()
     {
         m_rotorBladeAttachments.push_back(make_unique<CCPACSRotorBladeAttachment>(reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr));

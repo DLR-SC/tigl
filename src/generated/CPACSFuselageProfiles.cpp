@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSProfiles.h"
 #include "CPACSFuselageProfiles.h"
 #include "CPACSProfileGeometry.h"
+#include "CPACSProfiles.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSFuselageProfiles::CPACSFuselageProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr)
+    CPACSFuselageProfiles::CPACSFuselageProfiles(CPACSProfiles* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSProfiles* CPACSFuselageProfiles::GetParent() const
+    const CPACSProfiles* CPACSFuselageProfiles::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSProfiles* CPACSFuselageProfiles::GetParent()
+    CPACSProfiles* CPACSFuselageProfiles::GetParent()
     {
         return m_parent;
     }
@@ -107,6 +107,59 @@ namespace generated
     {
         return m_fuselageProfiles;
     }
+
+    size_t CPACSFuselageProfiles::GetFuselageProfileCount() const
+    {
+        return m_fuselageProfiles.size();
+    }
+
+    size_t CPACSFuselageProfiles::GetFuselageProfileIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetFuselageProfileCount(); i++) {
+            const std::string tmpUID(m_fuselageProfiles[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSFuselageProfiles::GetFuselageProfileIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSProfileGeometry& CPACSFuselageProfiles::GetFuselageProfile(size_t index)
+    {
+        if (index < 1 || index > GetFuselageProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSProfileGeometry>>::GetFuselageProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_fuselageProfiles[index];
+    }
+
+    const CPACSProfileGeometry& CPACSFuselageProfiles::GetFuselageProfile(size_t index) const
+    {
+        if (index < 1 || index > GetFuselageProfileCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSProfileGeometry>>::GetFuselageProfile", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_fuselageProfiles[index];
+    }
+
+    CPACSProfileGeometry& CPACSFuselageProfiles::GetFuselageProfile(const std::string& UID)
+    {
+        for (auto& elem : m_fuselageProfiles ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuselageProfiles::GetFuselageProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSProfileGeometry& CPACSFuselageProfiles::GetFuselageProfile(const std::string& UID) const
+    {
+        for (auto& elem : m_fuselageProfiles ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuselageProfiles::GetFuselageProfile. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
 
     CPACSProfileGeometry& CPACSFuselageProfiles::AddFuselageProfile()
     {

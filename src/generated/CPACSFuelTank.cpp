@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSFuelTanks.h"
 #include "CPACSFuelTank.h"
+#include "CPACSFuelTanks.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSFuelTank::CPACSFuelTank(CCPACSFuelTanks* parent, CTiglUIDManager* uidMgr)
+    CPACSFuelTank::CPACSFuelTank(CPACSFuelTanks* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(reinterpret_cast<CCPACSFuelTank*>(this), m_uidMgr)
         , m_vessels(reinterpret_cast<CCPACSFuelTank*>(this), m_uidMgr)
@@ -44,12 +44,12 @@ namespace generated
         }
     }
 
-    const CCPACSFuelTanks* CPACSFuelTank::GetParent() const
+    const CPACSFuelTanks* CPACSFuelTank::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSFuelTanks* CPACSFuelTank::GetParent()
+    CPACSFuelTanks* CPACSFuelTank::GetParent()
     {
         return m_parent;
     }
@@ -276,12 +276,12 @@ namespace generated
         return m_transformation;
     }
 
-    const CCPACSVessels& CPACSFuelTank::GetVessels() const
+    const CPACSVessels& CPACSFuelTank::GetVessels() const
     {
         return m_vessels;
     }
 
-    CCPACSVessels& CPACSFuelTank::GetVessels()
+    CPACSVessels& CPACSFuelTank::GetVessels()
     {
         return m_vessels;
     }

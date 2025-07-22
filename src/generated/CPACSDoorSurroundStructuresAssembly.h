@@ -64,6 +64,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDoorSurroundStructurePosition>>& GetDoorSurroundStructures() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDoorSurroundStructurePosition>>& GetDoorSurroundStructures();
 
+        TIGL_EXPORT virtual size_t GetDoorSurroundStructureCount() const;
+        TIGL_EXPORT virtual size_t GetDoorSurroundStructureIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSDoorSurroundStructurePosition& GetDoorSurroundStructure(size_t index) const;
+        TIGL_EXPORT virtual CPACSDoorSurroundStructurePosition& GetDoorSurroundStructure(size_t index);
+
+        TIGL_EXPORT virtual const CPACSDoorSurroundStructurePosition& GetDoorSurroundStructure(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSDoorSurroundStructurePosition& GetDoorSurroundStructure(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSDoorSurroundStructurePosition& AddDoorSurroundStructure();
         TIGL_EXPORT virtual void RemoveDoorSurroundStructure(CPACSDoorSurroundStructurePosition& ref);
 

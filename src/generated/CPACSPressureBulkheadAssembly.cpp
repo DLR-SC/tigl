@@ -108,6 +108,59 @@ namespace generated
         return m_pressureBulkheads;
     }
 
+    size_t CPACSPressureBulkheadAssembly::GetPressureBulkheadCount() const
+    {
+        return m_pressureBulkheads.size();
+    }
+
+    size_t CPACSPressureBulkheadAssembly::GetPressureBulkheadIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetPressureBulkheadCount(); i++) {
+            const std::string tmpUID(m_pressureBulkheads[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSPressureBulkheadAssembly::GetPressureBulkheadIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSPressureBulkheadAssemblyPosition& CPACSPressureBulkheadAssembly::GetPressureBulkhead(size_t index)
+    {
+        if (index < 1 || index > GetPressureBulkheadCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSPressureBulkheadAssemblyPosition>>::GetPressureBulkhead", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pressureBulkheads[index];
+    }
+
+    const CCPACSPressureBulkheadAssemblyPosition& CPACSPressureBulkheadAssembly::GetPressureBulkhead(size_t index) const
+    {
+        if (index < 1 || index > GetPressureBulkheadCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSPressureBulkheadAssemblyPosition>>::GetPressureBulkhead", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pressureBulkheads[index];
+    }
+
+    CCPACSPressureBulkheadAssemblyPosition& CPACSPressureBulkheadAssembly::GetPressureBulkhead(const std::string& UID)
+    {
+        for (auto& elem : m_pressureBulkheads ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSPressureBulkheadAssembly::GetPressureBulkhead. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSPressureBulkheadAssemblyPosition& CPACSPressureBulkheadAssembly::GetPressureBulkhead(const std::string& UID) const
+    {
+        for (auto& elem : m_pressureBulkheads ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSPressureBulkheadAssembly::GetPressureBulkhead. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSPressureBulkheadAssemblyPosition& CPACSPressureBulkheadAssembly::AddPressureBulkhead()
     {
         m_pressureBulkheads.push_back(make_unique<CCPACSPressureBulkheadAssemblyPosition>(reinterpret_cast<CCPACSPressureBulkheadAssembly*>(this), m_uidMgr));

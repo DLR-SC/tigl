@@ -59,9 +59,9 @@ class FuelTanks(unittest.TestCase):
     def test_configuration(self):
 
         tank1_uID = "tank1"
-        self.assertEqual(self.config.get_fuel_tanks_count(), 8)
+        self.assertEqual(self.config.get_fuel_tank_count(), 8)
         self.assertIsInstance(
-            self.config.get_fuel_tank(1), configuration.CCPACSFuelTank
+            self.config.get_fuel_tank(1), configuration.CPACSFuelTank
         )
         self.assertIsInstance(
             self.config.get_fuel_tank(tank1_uID),
@@ -72,7 +72,7 @@ class FuelTanks(unittest.TestCase):
             1,
         )
         self.assertIsInstance(
-            self.config.get_fuel_tanks(), configuration.CCPACSFuelTanks
+            self.config.get_fuel_tanks(), configuration.CPACSFuelTanks
         )
 
     def test_fuelTanks(self):
@@ -85,20 +85,20 @@ class FuelTanks(unittest.TestCase):
         self.assertEqual(fuelTanks.get_fuel_tank(1).get_defaulted_uid(), tank1_uID)
         self.assertIsInstance(
             fuelTanks.get_fuel_tank(tank1_uID),
-            configuration.CCPACSFuelTank,
+            configuration.CPACSFuelTank,
         )
         self.assertEqual(
             fuelTanks.get_fuel_tank_index(tank1_uID),
             1,
         )
-        self.assertEqual(fuelTanks.get_fuel_tanks_count(), 8)
+        self.assertEqual(fuelTanks.get_fuel_tank_count(), 8)
 
         # Test availability of generated class:
-        self.assertIsInstance(fuelTanks, configuration.CCPACSFuelTanks)
+        self.assertIsInstance(fuelTanks, configuration.CPACSFuelTanks)
 
     def test_genericFuelTank(self):
         # Test custom class methods:
-        self.assertIsInstance(self.fuelTank.get_vessels(), configuration.CCPACSVessels)
+        self.assertIsInstance(self.fuelTank.get_vessels(), configuration.CPACSVessels)
 
         # Test availability of generated class:
         self.assertEqual(self.fuelTank.get_name(), "Simple tank 1")
@@ -109,19 +109,19 @@ class FuelTanks(unittest.TestCase):
         vessel1_uID = "tank1_outerVessel"
 
         ## Test accessability of childs:
-        self.assertIsInstance(vessels.get_vessel(1), configuration.CCPACSVessel)
+        self.assertIsInstance(vessels.get_vessel(1), configuration.CPACSVessel)
         self.assertEqual(vessels.get_vessel(1).get_defaulted_uid(), vessel1_uID)
         self.assertIsInstance(
-            vessels.get_vessel(vessel1_uID), configuration.CCPACSVessel
+            vessels.get_vessel(vessel1_uID), configuration.CPACSVessel
         )
         self.assertEqual(
             vessels.get_vessel_index(vessel1_uID),
             1,
         )
-        self.assertEqual(vessels.get_vessels_count(), 2)
+        self.assertEqual(vessels.get_vessel_count(), 2)
 
         # Test availability of generated class:
-        self.assertIsInstance(vessels.get_parent(), configuration.CCPACSFuelTank)
+        self.assertIsInstance(vessels.get_parent(), configuration.CPACSFuelTank)
 
     def test_vessel_general(self):
 

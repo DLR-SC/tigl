@@ -17,8 +17,8 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
     endif()
 
     include(tiglmacros)
-
-    # Ensure the correct Python version is picked up by specifying the Python_EXECUTABLE
+    
+     # Ensure the correct Python version is picked up by specifying the Python_EXECUTABLE
     if (DEFINED ENV{CONDA_PREFIX})
         if (WIN32)
             set(Python3_EXECUTABLE "$ENV{CONDA_PREFIX}/python.exe")

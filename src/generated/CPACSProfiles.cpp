@@ -85,7 +85,7 @@ namespace generated
     {
         // read element fuselageProfiles
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageProfiles")) {
-            m_fuselageProfiles = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_fuselageProfiles = boost::in_place(this, m_uidMgr);
             try {
                 m_fuselageProfiles->ReadCPACS(tixiHandle, xpath + "/fuselageProfiles");
             } catch(const std::exception& e) {
@@ -96,7 +96,7 @@ namespace generated
 
         // read element wingAirfoils
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/wingAirfoils")) {
-            m_wingAirfoils = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_wingAirfoils = boost::in_place(this, m_uidMgr);
             try {
                 m_wingAirfoils->ReadCPACS(tixiHandle, xpath + "/wingAirfoils");
             } catch(const std::exception& e) {
@@ -107,7 +107,7 @@ namespace generated
 
         // read element guideCurves
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
-            m_guideCurves = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_guideCurves = boost::in_place(this, m_uidMgr);
             try {
                 m_guideCurves->ReadCPACS(tixiHandle, xpath + "/guideCurves");
             } catch(const std::exception& e) {
@@ -118,7 +118,7 @@ namespace generated
 
         // read element rotorAirfoils
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoils")) {
-            m_rotorAirfoils = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_rotorAirfoils = boost::in_place(this, m_uidMgr);
             try {
                 m_rotorAirfoils->ReadCPACS(tixiHandle, xpath + "/rotorAirfoils");
             } catch(const std::exception& e) {
@@ -129,7 +129,7 @@ namespace generated
 
         // read element structuralProfiles
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfiles")) {
-            m_structuralProfiles = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_structuralProfiles = boost::in_place(this, m_uidMgr);
             try {
                 m_structuralProfiles->ReadCPACS(tixiHandle, xpath + "/structuralProfiles");
             } catch(const std::exception& e) {
@@ -140,7 +140,7 @@ namespace generated
 
         // read element nacelleProfiles
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacelleProfiles")) {
-            m_nacelleProfiles = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_nacelleProfiles = boost::in_place(this, m_uidMgr);
             try {
                 m_nacelleProfiles->ReadCPACS(tixiHandle, xpath + "/nacelleProfiles");
             } catch(const std::exception& e) {
@@ -151,7 +151,7 @@ namespace generated
 
         // read element curveProfiles
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/curveProfiles")) {
-            m_curveProfiles = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_curveProfiles = boost::in_place(this, m_uidMgr);
             try {
                 m_curveProfiles->ReadCPACS(tixiHandle, xpath + "/curveProfiles");
             } catch(const std::exception& e) {
@@ -263,12 +263,12 @@ namespace generated
         return m_wingAirfoils;
     }
 
-    const boost::optional<CCPACSGuideCurveProfiles>& CPACSProfiles::GetGuideCurves() const
+    const boost::optional<CPACSGuideCurveProfiles>& CPACSProfiles::GetGuideCurves() const
     {
         return m_guideCurves;
     }
 
-    boost::optional<CCPACSGuideCurveProfiles>& CPACSProfiles::GetGuideCurves()
+    boost::optional<CPACSGuideCurveProfiles>& CPACSProfiles::GetGuideCurves()
     {
         return m_guideCurves;
     }
@@ -283,12 +283,12 @@ namespace generated
         return m_rotorAirfoils;
     }
 
-    const boost::optional<CCPACSStructuralProfiles>& CPACSProfiles::GetStructuralProfiles() const
+    const boost::optional<CPACSStructuralProfiles>& CPACSProfiles::GetStructuralProfiles() const
     {
         return m_structuralProfiles;
     }
 
-    boost::optional<CCPACSStructuralProfiles>& CPACSProfiles::GetStructuralProfiles()
+    boost::optional<CPACSStructuralProfiles>& CPACSProfiles::GetStructuralProfiles()
     {
         return m_structuralProfiles;
     }
@@ -316,7 +316,7 @@ namespace generated
     CCPACSFuselageProfiles& CPACSProfiles::GetFuselageProfiles(CreateIfNotExistsTag)
     {
         if (!m_fuselageProfiles)
-            m_fuselageProfiles = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_fuselageProfiles = boost::in_place(this, m_uidMgr);
         return *m_fuselageProfiles;
     }
 
@@ -328,7 +328,7 @@ namespace generated
     CCPACSWingProfiles& CPACSProfiles::GetWingAirfoils(CreateIfNotExistsTag)
     {
         if (!m_wingAirfoils)
-            m_wingAirfoils = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_wingAirfoils = boost::in_place(this, m_uidMgr);
         return *m_wingAirfoils;
     }
 
@@ -337,10 +337,10 @@ namespace generated
         m_wingAirfoils = boost::none;
     }
 
-    CCPACSGuideCurveProfiles& CPACSProfiles::GetGuideCurves(CreateIfNotExistsTag)
+    CPACSGuideCurveProfiles& CPACSProfiles::GetGuideCurves(CreateIfNotExistsTag)
     {
         if (!m_guideCurves)
-            m_guideCurves = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_guideCurves = boost::in_place(this, m_uidMgr);
         return *m_guideCurves;
     }
 
@@ -352,7 +352,7 @@ namespace generated
     CCPACSRotorProfiles& CPACSProfiles::GetRotorAirfoils(CreateIfNotExistsTag)
     {
         if (!m_rotorAirfoils)
-            m_rotorAirfoils = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_rotorAirfoils = boost::in_place(this, m_uidMgr);
         return *m_rotorAirfoils;
     }
 
@@ -361,10 +361,10 @@ namespace generated
         m_rotorAirfoils = boost::none;
     }
 
-    CCPACSStructuralProfiles& CPACSProfiles::GetStructuralProfiles(CreateIfNotExistsTag)
+    CPACSStructuralProfiles& CPACSProfiles::GetStructuralProfiles(CreateIfNotExistsTag)
     {
         if (!m_structuralProfiles)
-            m_structuralProfiles = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_structuralProfiles = boost::in_place(this, m_uidMgr);
         return *m_structuralProfiles;
     }
 
@@ -376,7 +376,7 @@ namespace generated
     CPACSNacelleProfiles& CPACSProfiles::GetNacelleProfiles(CreateIfNotExistsTag)
     {
         if (!m_nacelleProfiles)
-            m_nacelleProfiles = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_nacelleProfiles = boost::in_place(this, m_uidMgr);
         return *m_nacelleProfiles;
     }
 
@@ -388,7 +388,7 @@ namespace generated
     CPACSCurveProfiles& CPACSProfiles::GetCurveProfiles(CreateIfNotExistsTag)
     {
         if (!m_curveProfiles)
-            m_curveProfiles = boost::in_place(reinterpret_cast<CCPACSProfiles*>(this), m_uidMgr);
+            m_curveProfiles = boost::in_place(this, m_uidMgr);
         return *m_curveProfiles;
     }
 

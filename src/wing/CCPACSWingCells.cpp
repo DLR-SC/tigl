@@ -33,31 +33,4 @@ void CCPACSWingCells::Invalidate(const boost::optional<std::string>& source) con
         m_cells[i]->Invalidate(source);
     }
 }
-
-int CCPACSWingCells::GetCellCount() const
-{
-    return static_cast<int>(m_cells.size());
-}
-
-const CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetCellCount()) {
-        throw CTiglError("Illegal index in CCPACSWingCells::GetCell", TIGL_INDEX_ERROR);
-    }
-    return *m_cells[index];
-}
-
-const CCPACSWingCell &CCPACSWingCells::GetCell(const std::string &UID) const
-{
-    for (int i=0; i < GetCellCount(); i++) {
-        const std::string tmpUID(m_cells[i]->GetUID());
-        if (tmpUID == UID) {
-            return *m_cells[i];
-        }
-    }
-
-    // UID not there
-    throw CTiglError("Invalid UID in CCPACSWingCells::GetCell", TIGL_UID_ERROR);
-}
 } // namespace tigl

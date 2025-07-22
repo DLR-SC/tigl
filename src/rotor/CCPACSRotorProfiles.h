@@ -53,7 +53,8 @@ public:
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
     // Returns the wing profile for a given index or uid.
-    TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid) const;
+    TIGL_EXPORT const CCPACSWingProfile& GetProfile(std::string uid) const;
+    TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;

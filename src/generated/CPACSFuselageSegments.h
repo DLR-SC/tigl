@@ -93,6 +93,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselageSegment>>& GetSegments() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselageSegment>>& GetSegments();
 
+        TIGL_EXPORT virtual size_t GetSegmentCount() const;
+        TIGL_EXPORT virtual size_t GetSegmentIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSFuselageSegment& GetSegment(size_t index) const;
+        TIGL_EXPORT virtual CCPACSFuselageSegment& GetSegment(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSFuselageSegment& GetSegment(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSFuselageSegment& GetSegment(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSFuselageSegment& AddSegment();
         TIGL_EXPORT virtual void RemoveSegment(CCPACSFuselageSegment& ref);
 

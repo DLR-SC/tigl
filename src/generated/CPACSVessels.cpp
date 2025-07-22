@@ -80,7 +80,7 @@ namespace generated
     {
         // read element vessel
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/vessel")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/vessel", m_vessels, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSVessels*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/vessel", m_vessels, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -102,9 +102,62 @@ namespace generated
         return m_vessels;
     }
 
+    size_t CPACSVessels::GetVesselCount() const
+    {
+        return m_vessels.size();
+    }
+
+    size_t CPACSVessels::GetVesselIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetVesselCount(); i++) {
+            const std::string tmpUID(m_vessels[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSVessels::GetVesselIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSVessel& CPACSVessels::GetVessel(size_t index)
+    {
+        if (index < 1 || index > GetVesselCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSVessel>>::GetVessel", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_vessels[index];
+    }
+
+    const CCPACSVessel& CPACSVessels::GetVessel(size_t index) const
+    {
+        if (index < 1 || index > GetVesselCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSVessel>>::GetVessel", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_vessels[index];
+    }
+
+    CCPACSVessel& CPACSVessels::GetVessel(const std::string& UID)
+    {
+        for (auto& elem : m_vessels ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSVessels::GetVessel. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSVessel& CPACSVessels::GetVessel(const std::string& UID) const
+    {
+        for (auto& elem : m_vessels ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSVessels::GetVessel. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSVessel& CPACSVessels::AddVessel()
     {
-        m_vessels.push_back(make_unique<CCPACSVessel>(reinterpret_cast<CCPACSVessels*>(this), m_uidMgr));
+        m_vessels.push_back(make_unique<CCPACSVessel>(this, m_uidMgr));
         return *m_vessels.back();
     }
 

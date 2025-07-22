@@ -28,10 +28,11 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSGuideCurveProfile;
-class CCPACSProfiles;
 
 namespace generated
 {
+    class CPACSProfiles;
+
     // This class is used in:
     // CPACSProfiles
 
@@ -44,13 +45,13 @@ namespace generated
     class CPACSGuideCurveProfiles
     {
     public:
-        TIGL_EXPORT CPACSGuideCurveProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSGuideCurveProfiles(CPACSProfiles* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSGuideCurveProfiles();
 
-        TIGL_EXPORT CCPACSProfiles* GetParent();
+        TIGL_EXPORT CPACSProfiles* GetParent();
 
-        TIGL_EXPORT const CCPACSProfiles* GetParent() const;
+        TIGL_EXPORT const CPACSProfiles* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -64,11 +65,20 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSGuideCurveProfile>>& GetGuideCurveProfiles() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSGuideCurveProfile>>& GetGuideCurveProfiles();
 
+        TIGL_EXPORT virtual size_t GetGuideCurveProfileCount() const;
+        TIGL_EXPORT virtual size_t GetGuideCurveProfileIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSGuideCurveProfile& GetGuideCurveProfile(size_t index) const;
+        TIGL_EXPORT virtual CCPACSGuideCurveProfile& GetGuideCurveProfile(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSGuideCurveProfile& GetGuideCurveProfile(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSGuideCurveProfile& GetGuideCurveProfile(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSGuideCurveProfile& AddGuideCurveProfile();
         TIGL_EXPORT virtual void RemoveGuideCurveProfile(CCPACSGuideCurveProfile& ref);
 
     protected:
-        CCPACSProfiles* m_parent;
+        CPACSProfiles* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -83,5 +93,7 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSGuideCurveProfiles is customized, use type CCPACSGuideCurveProfiles directly
+// Aliases in tigl namespace
+using CCPACSGuideCurveProfiles = generated::CPACSGuideCurveProfiles;
+using CCPACSProfiles = generated::CPACSProfiles;
 } // namespace tigl

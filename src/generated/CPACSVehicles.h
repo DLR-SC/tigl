@@ -19,15 +19,15 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSEngines.h>
-#include <CCPACSProfiles.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSAircraft.h"
 #include "CPACSDeckElements.h"
+#include "CPACSEngines.h"
 #include "CPACSFlightPoints.h"
 #include "CPACSGlobalPerformanceCases.h"
 #include "CPACSMaterials.h"
+#include "CPACSProfiles.h"
 #include "CPACSRotorcraft.h"
 #include "CPACSStructuralElements.h"
 #include "CreateIfNotExists.h"
@@ -85,11 +85,11 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSFlightPoints>& GetFlightPoints() const;
         TIGL_EXPORT virtual boost::optional<CPACSFlightPoints>& GetFlightPoints();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSEngines>& GetEngines() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSEngines>& GetEngines();
+        TIGL_EXPORT virtual const boost::optional<CPACSEngines>& GetEngines() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEngines>& GetEngines();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSProfiles>& GetProfiles() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSProfiles>& GetProfiles();
+        TIGL_EXPORT virtual const boost::optional<CPACSProfiles>& GetProfiles() const;
+        TIGL_EXPORT virtual boost::optional<CPACSProfiles>& GetProfiles();
 
         TIGL_EXPORT virtual const boost::optional<CPACSStructuralElements>& GetStructuralElements() const;
         TIGL_EXPORT virtual boost::optional<CPACSStructuralElements>& GetStructuralElements();
@@ -112,10 +112,10 @@ namespace generated
         TIGL_EXPORT virtual CPACSFlightPoints& GetFlightPoints(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFlightPoints();
 
-        TIGL_EXPORT virtual CCPACSEngines& GetEngines(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSEngines& GetEngines(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEngines();
 
-        TIGL_EXPORT virtual CCPACSProfiles& GetProfiles(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSProfiles& GetProfiles(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveProfiles();
 
         TIGL_EXPORT virtual CPACSStructuralElements& GetStructuralElements(CreateIfNotExistsTag);
@@ -136,8 +136,8 @@ namespace generated
         boost::optional<CPACSRotorcraft>             m_rotorcraft;
         boost::optional<CPACSGlobalPerformanceCases> m_performanceCases;
         boost::optional<CPACSFlightPoints>           m_flightPoints;
-        boost::optional<CCPACSEngines>               m_engines;
-        boost::optional<CCPACSProfiles>              m_profiles;
+        boost::optional<CPACSEngines>                m_engines;
+        boost::optional<CPACSProfiles>               m_profiles;
         boost::optional<CPACSStructuralElements>     m_structuralElements;
         boost::optional<CPACSDeckElements>           m_deckElements;
         boost::optional<CPACSMaterials>              m_materials;

@@ -18,6 +18,7 @@
 #include "tigl.h"
 #include "Debugging.h"
 #include "tiglcommonfunctions.h"
+#include "CCPACSFuselage.h"
 #include "BRepBuilderAPI_Transform.hxx"
 #include <BRepCheck_Analyzer.hxx>
 #include "CCPACSConfigurationManager.h"

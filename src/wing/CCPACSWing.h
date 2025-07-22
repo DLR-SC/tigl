@@ -28,7 +28,7 @@
 #include "tigl_config.h"
 #include "CTiglTransformation.h"
 #include "CTiglRelativelyPositionedComponent.h"
-#include "CCPACSWingSections.h"
+#include "generated/CPACSWingSections.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingComponentSegments.h"
 #include "CCPACSPositionings.h"
