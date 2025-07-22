@@ -41,6 +41,11 @@ CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSTrailingEdgeDevice* parent, C
 {
 }
 
+CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSLeadingEdgeDevice* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSWingComponentSegmentStructure(parent, uidMgr)
+{
+}
+
 int CCPACSWingCSStructure::GetSparSegmentCount() const
 {
     if (m_spars) {

@@ -41,6 +41,11 @@ CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* paren
 {
 }
 
+CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEtaIsoLine(parent, uidMgr)
+{
+}
+
 CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceSkinCutOutBorder* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSEtaIsoLine(parent, uidMgr)
 {
