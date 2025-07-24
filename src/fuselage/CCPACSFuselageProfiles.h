@@ -50,21 +50,16 @@ public:
     TIGL_EXPORT void DeleteProfile(std::string uid );
 
     // Returns the total count of fuselage profiles in this configuration
-    [[deprecated("Use 'tigl::CCPACSGetFuselageProfileCount::GetFuselageProfileCount(size_t)' instead.")]]
     TIGL_EXPORT size_t GetProfileCount() const;
 
     // Returns the fuselage profile for a given index.
-    [[deprecated("Use 'const tigl::CCPACSFuselageProfiles::GetFuselageProfile(size_t) const' instead.")]]
     TIGL_EXPORT const CCPACSFuselageProfile& GetProfile(size_t index) const;
 
-    [[deprecated("Use 'tigl::CCPACSFuselageProfiles::GetFuselageProfile(size_t)' instead.")]]
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile(size_t index);
 
     // Returns the fuselage profile for a given uid.
-    [[deprecated("Use 'const tigl::CCPACSFuselageProfiles::GetFuselageProfile(std::string) const' instead.")]]
     TIGL_EXPORT const CCPACSFuselageProfile& GetProfile(std::string uid) const;
 
-    [[deprecated("Use 'tigl::CCPACSFuselageProfiles::GetFuselageProfile(std::string)' instead.")]]
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid);
 
     // Invalidates internal state
