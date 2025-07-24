@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -33,8 +33,8 @@ CCPACSFuselageProfiles::CCPACSFuselageProfiles(CCPACSProfiles* parent, CTiglUIDM
 // Invalidates internal state
 void CCPACSFuselageProfiles::Invalidate(const boost::optional<std::string>& source) const
 {
-    for (int i = 1; i < GetProfileCount(); i++) {
-        GetProfile(i).Invalidate(source);
+    for (int i = 1; i < GetFuselageProfileCount(); i++) {
+        GetFuselageProfile(i).Invalidate(source);
     }
 }
 
@@ -85,9 +85,9 @@ void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
 }
 
 // Returns the total count of fuselage profiles in this configuration
-int CCPACSFuselageProfiles::GetProfileCount() const
+size_t CCPACSFuselageProfiles::GetProfileCount() const
 {
-    return static_cast<int>(m_fuselageProfiles.size());
+    return GetFuselageProfileCount();
 }
 
 // Returns the fuselage profile for a given uid.
@@ -109,12 +109,12 @@ CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid)
 // Returns the fuselage profile for a given index decremented by 1 (indices in CPACS start at 1)
 const CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(size_t index) const
 {
-    return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfiles[index-1]);
+    return static_cast<const CCPACSFuselageProfile&>(GetFuselageProfile(index));
 }
 
 CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(size_t index)
 {
-    return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfiles[index-1]);
+    return static_cast<CCPACSFuselageProfile&>(GetFuselageProfile(index));
 }
 
 } // end namespace tigl
