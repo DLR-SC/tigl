@@ -106,7 +106,7 @@ CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid)
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
-// Returns the fuselage profile for a given index decremented by 1 (indices in CPACS start at 1)
+// Returns the fuselage profile for a given index
 const CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(size_t index) const
 {
     return static_cast<const CCPACSFuselageProfile&>(GetFuselageProfile(index));
