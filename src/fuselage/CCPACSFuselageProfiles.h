@@ -50,7 +50,7 @@ public:
     TIGL_EXPORT void DeleteProfile(std::string uid );
 
     // Returns the total count of fuselage profiles in this configuration
-    TIGL_EXPORT int GetProfileCount() const;
+    TIGL_EXPORT size_t GetProfileCount() const;
 
     // Returns the fuselage profile for a given index.
     TIGL_EXPORT const CCPACSFuselageProfile& GetProfile(size_t index) const;
