@@ -54,12 +54,10 @@ public:
 
     // Returns the fuselage profile for a given index.
     TIGL_EXPORT const CCPACSFuselageProfile& GetProfile(size_t index) const;
-
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile(size_t index);
 
     // Returns the fuselage profile for a given uid.
     TIGL_EXPORT const CCPACSFuselageProfile& GetProfile(std::string uid) const;
-
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid);
 
     // Invalidates internal state
