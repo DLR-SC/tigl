@@ -115,8 +115,11 @@ CPACSWalls                                CCPACSWalls
 // control surfaces
 CPACSControlSurfaces                      CCPACSControlSurfaces
 CPACSControlSurfaceBorderTrailingEdge     CCPACSControlSurfaceBorderTrailingEdge
+CPACSControlSurfaceBorderLeadingEdge      CCPACSControlSurfaceBorderLeadingEdge
 CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
+CPACSLeadingEdgeDevice                    CCPACSLeadingEdgeDevice
 CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
+CPACSControlSurfaceOuterShapeLeadingEdge  CCPACSControlSurfaceOuterShapeLeadingEdge
 CPACSControlSurfaceWingCutOut             CCPACSControlSurfaceWingCutOut
 
 // Pylons
