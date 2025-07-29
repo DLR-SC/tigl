@@ -6,33 +6,16 @@
 #
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-if(CMAKE_VERSION VERSION_LESS 3.11)
-    set(UPDATE_DISCONNECTED_IF_AVAILABLE "UPDATE_DISCONNECTED 1")
-
-    include(DownloadProject)
-    download_project(PROJ                googletest
-		     GIT_REPOSITORY      https://github.com/google/googletest.git
-		     GIT_TAG             release-1.10.0
-		     UPDATE_DISCONNECTED 1
-		     QUIET
-    )
-
-    # CMake warning suppression will not be needed in version 1.9
+include(FetchContent)
+FetchContent_Declare(googletest
+    GIT_REPOSITORY      https://github.com/google/googletest.git
+    GIT_TAG             release-1.10.0)
+FetchContent_GetProperties(googletest)
+if(NOT googletest_POPULATED)
+    FetchContent_Populate(googletest)
     set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1 CACHE BOOL "")
-    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_SOURCE_DIR} EXCLUDE_FROM_ALL)
+    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} EXCLUDE_FROM_ALL)
     unset(CMAKE_SUPPRESS_DEVELOPER_WARNINGS)
-else()
-    include(FetchContent)
-    FetchContent_Declare(googletest
-        GIT_REPOSITORY      https://github.com/google/googletest.git
-        GIT_TAG             release-1.10.0)
-    FetchContent_GetProperties(googletest)
-    if(NOT googletest_POPULATED)
-        FetchContent_Populate(googletest)
-        set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1 CACHE BOOL "")
-        add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} EXCLUDE_FROM_ALL)
-        unset(CMAKE_SUPPRESS_DEVELOPER_WARNINGS)
-    endif()
 endif()
 
 
@@ -53,11 +36,7 @@ set_target_properties(check PROPERTIES FOLDER "Scripts")
 
 
 if(GOOGLE_TEST_INDIVIDUAL)
-    if(NOT CMAKE_VERSION VERSION_LESS 3.9)
-        include(GoogleTest)
-    else()
-        set(GOOGLE_TEST_INDIVIDUAL OFF)
-    endif()
+    include(GoogleTest)
 endif()
 
 # Target must already exist
@@ -65,16 +44,9 @@ macro(add_gtest TESTNAME)
     target_link_libraries(${TESTNAME} PUBLIC gtest gmock gtest_main)
     
     if(GOOGLE_TEST_INDIVIDUAL)
-        if(CMAKE_VERSION VERSION_LESS 3.10)
-            gtest_add_tests(TARGET ${TESTNAME}
-                            TEST_PREFIX "${TESTNAME}."
-                            TEST_LIST TmpTestList)
-            set_tests_properties(${TmpTestList} PROPERTIES FOLDER "Tests")
-        else()
-            gtest_discover_tests(${TESTNAME}
-                TEST_PREFIX "${TESTNAME}."
-                PROPERTIES FOLDER "Tests")
-        endif()
+        gtest_discover_tests(${TESTNAME}
+            TEST_PREFIX "${TESTNAME}."
+            PROPERTIES FOLDER "Tests")
     else()
         add_test(${TESTNAME} ${TESTNAME})
         set_target_properties(${TESTNAME} PROPERTIES FOLDER "Tests")
