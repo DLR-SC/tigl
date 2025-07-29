@@ -16,9 +16,7 @@ if (NOT TARGET tigl3_cpp)
     find_package(tigl3_cpp CONFIG REQUIRED)
 endif()
 
-if (NOT TARGET gtest)
-    include(AddGoogleTest)
-endif()
+include(AddGoogleTest)
 
 add_subdirectory(common)
 add_subdirectory(unittests)
