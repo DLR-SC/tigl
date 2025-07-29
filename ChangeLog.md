@@ -6,6 +6,7 @@ Changes since last release
 29/07/2025
 - General changes
   - Remove the hard-wired gtest source code from the repository. Now, it is downloaded from GitHub and configured during the TiGL-configuration-process by default (issue #1114).
+  - Raise the minimum required CMake version to 3.11 to avoid potential future deprecation errors (issue #1116).
 
 10/07/2025
 - General changes
