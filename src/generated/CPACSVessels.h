@@ -61,6 +61,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSVessel>>& GetVessels() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSVessel>>& GetVessels();
 
+        TIGL_EXPORT virtual size_t GetVesselCount() const;
+        TIGL_EXPORT virtual size_t GetVesselIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSVessel& GetVessel(size_t index) const;
+        TIGL_EXPORT virtual CCPACSVessel& GetVessel(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSVessel& GetVessel(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSVessel& GetVessel(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSVessel& AddVessel();
         TIGL_EXPORT virtual void RemoveVessel(CCPACSVessel& ref);
 
@@ -80,5 +89,6 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSVessels is customized, use type CCPACSVessels directly
+// Aliases in tigl namespace
+using CCPACSVessels = generated::CPACSVessels;
 } // namespace tigl

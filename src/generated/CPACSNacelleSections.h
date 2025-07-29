@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSNacelleSection>>& GetSections() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSNacelleSection>>& GetSections();
 
+        TIGL_EXPORT virtual size_t GetSectionCount() const;
+        TIGL_EXPORT virtual size_t GetSectionIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSNacelleSection& GetSection(size_t index) const;
+        TIGL_EXPORT virtual CCPACSNacelleSection& GetSection(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSNacelleSection& GetSection(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSNacelleSection& GetSection(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSNacelleSection& AddSection();
         TIGL_EXPORT virtual void RemoveSection(CCPACSNacelleSection& ref);
 

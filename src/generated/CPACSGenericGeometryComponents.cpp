@@ -102,6 +102,59 @@ namespace generated
         return m_genericGeometryComponents;
     }
 
+    size_t CPACSGenericGeometryComponents::GetGenericGeometryComponentCount() const
+    {
+        return m_genericGeometryComponents.size();
+    }
+
+    size_t CPACSGenericGeometryComponents::GetGenericGeometryComponentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetGenericGeometryComponentCount(); i++) {
+            const std::string tmpUID(m_genericGeometryComponents[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSGenericGeometryComponents::GetGenericGeometryComponentIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSExternalObject& CPACSGenericGeometryComponents::GetGenericGeometryComponent(size_t index)
+    {
+        if (index < 1 || index > GetGenericGeometryComponentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSExternalObject>>::GetGenericGeometryComponent", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_genericGeometryComponents[index];
+    }
+
+    const CCPACSExternalObject& CPACSGenericGeometryComponents::GetGenericGeometryComponent(size_t index) const
+    {
+        if (index < 1 || index > GetGenericGeometryComponentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSExternalObject>>::GetGenericGeometryComponent", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_genericGeometryComponents[index];
+    }
+
+    CCPACSExternalObject& CPACSGenericGeometryComponents::GetGenericGeometryComponent(const std::string& UID)
+    {
+        for (auto& elem : m_genericGeometryComponents ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSGenericGeometryComponents::GetGenericGeometryComponent. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSExternalObject& CPACSGenericGeometryComponents::GetGenericGeometryComponent(const std::string& UID) const
+    {
+        for (auto& elem : m_genericGeometryComponents ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSGenericGeometryComponents::GetGenericGeometryComponent. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSExternalObject& CPACSGenericGeometryComponents::AddGenericGeometryComponent()
     {
         m_genericGeometryComponents.push_back(make_unique<CCPACSExternalObject>(reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr));

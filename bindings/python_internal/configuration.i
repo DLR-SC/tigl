@@ -34,8 +34,12 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglFusePlane.h"
+#include "CCPACSFuselage.h"
+#include "generated/CPACSFuselageProfiles.h"
+#include "CCPACSFuselageProfiles.h"
 #include "CCPACSWingProfile.h"
 #include "generated/CPACSStandardProfile.h" //TODO: Replace with CCPACSStandardProfile, once it exists.
+#include "generated/CPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSExternalObject.h"
 #include "CTiglShapeCache.h"
@@ -81,7 +85,7 @@
 #include "generated/CPACSTrailingEdgeDevice.h"
 #include "CTiglControlSurfaceTransformation.h"
 #include "CCPACSTrailingEdgeDevice.h"
-#include "CCPACSEnginePylons.h"
+#include "generated/CPACSTrailingEdgeDevices.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSEnginePosition.h"
 #include "generated/CPACSLateralCap_placement.h"
@@ -100,18 +104,29 @@
 #include "CCPACSDucts.h"
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSDuct.h"
+#include "CCPACSNacelleSections.h"
+#include "CCPACSRotationCurve.h"
+#include "CCPACSNacelleCenterCowl.h"
+#include "generated/CPACSNacelleCowl.h"
+#include "CCPACSNacelleCowl.h"
+#include "generated/CPACSEngine.h"
+#include "generated/CPACSEngineNacelle.h"
+#include "generated/CPACSNacelleGuideCurves.h"
+#include "CCPACSNacelleGuideCurves.h"
+#include "CCPACSPositionings.h"
+#include "generated/CPACSProfiles.h"
 #include "generated/CPACSFuelTanks.h"
 #include "generated/CPACSFuelTank.h"
 #include "generated/CPACSFuelTankVolume.h"
-#include "CCPACSFuelTanks.h"
 #include "CCPACSFuelTank.h"
 #include "generated/CPACSVessels.h"
-#include "CCPACSVessels.h"
 #include "generated/CPACSVessel.h"
 #include "CCPACSVessel.h"
 #include "generated/CPACSVesselStructure.h"
 #include "CCPACSVesselStructure.h"
+#include "CCPACSFuelTank.h"
 #include "CCPACSFrame.h"
+
 %}
 
 %feature("autodoc", "3");
@@ -159,10 +174,10 @@
 %boost_optional(tigl::CCPACSWingCells)
 %boost_optional(tigl::generated::CPACSAlignmentCrossBeam)
 %boost_optional(tigl::generated::CPACSDoorAssemblyPosition_doorType)
-%boost_optional(tigl::CCPACSWingSections)
+%boost_optional(tigl::generated::CPACSWingSections)
 %boost_optional(tigl::CCPACSWingSegments)
 %boost_optional(tigl::CCPACSPositionings)
-%boost_optional(tigl::CCPACSEnginePylons)
+%boost_optional(tigl::generated::CPACSEnginePylons)
 %boost_optional(tigl::CCPACSWingProfiles)
 %boost_optional(tigl::CCPACSFuselageProfiles)
 %boost_optional(tigl::CCPACSRotorProfiles)
@@ -213,7 +228,7 @@
 %include "CCPACSWallSegment.h"
 
 // ----------------- Engines ---------------------------//
-%boost_optional(tigl::CCPACSEngines)
+%boost_optional(tigl::generated::CPACSEngines)
 %boost_optional(tigl::generated::CPACSEngineNacelle)
 %boost_optional(tigl::CCPACSNacelleCowl)
 %boost_optional(tigl::CCPACSNacelleCenterCowl)
@@ -238,7 +253,6 @@ namespace tigl {
 %include "CCPACSNacelleCowl.h"
 %include "generated/CPACSEngine.h"
 %include "generated/CPACSEngines.h"
-%include "CCPACSEngines.h"
 
 // ---------------- Control surfaces ------------------ //
 %boost_optional(tigl::generated::CPACSControlSurfaceTrackType_trackSubType)
@@ -256,7 +270,7 @@ namespace tigl {
 %boost_optional(tigl::generated::CPACSLeadingEdgeHollow)
 %boost_optional(tigl::generated::CPACSCutOutControlPoints)
 %boost_optional(tigl::generated::CPACSControlSurfaceSkinCutOutBorder)
-%boost_optional(tigl::CCPACSTrailingEdgeDevices)
+%boost_optional(tigl::generated::CPACSTrailingEdgeDevices)
 %boost_optional(tigl::CCPACSControlSurfaces)
 %boost_optional(tigl::CPACSControlSurfaceWingCutOut)
 %boost_optional(tigl::generated::CPACSControlSurfaceTracks)
@@ -303,7 +317,6 @@ namespace tigl
 %ignore ComponentSegment(CCPACSTrailingEdgeDevice&);
 %include "CCPACSTrailingEdgeDevice.h"
 %include "generated/CPACSTrailingEdgeDevices.h"
-%include "CCPACSTrailingEdgeDevices.h"
 %include "generated/CPACSControlSurfaces.h"
 %include "CCPACSControlSurfaces.h"
 
@@ -338,7 +351,7 @@ namespace tigl
 %include "generated/CPACSSkin.h"
 %include "generated/CPACSFuselageStructure.h"
 %include "CCPACSFuselageStructure.h"
-
+%include "generated/CPACSFuselageSections.h"
 
 %include "generated/CPACSWingSkin.h"
 %include "CPACSRotor_type.h"
@@ -348,6 +361,8 @@ namespace tigl
 %include "CPACSRotorHubHinge_type.h"
 
 // --------------- Fuselage tanks -----------------//
+%boost_optional(tigl::generated::CPACSVessels)
+%boost_optional(tigl::CCPACSVessels)
 %boost_optional(tigl::generated::CPACSFuelTanks)
 %boost_optional(tigl::CCPACSFuelTanks)
 %boost_optional(tigl::generated::CPACSFuelTankVolume)
@@ -355,7 +370,6 @@ namespace tigl
 
 namespace tigl {
 class CCPACSFuselageSegments;
-class CCPACSVessels;
 }
 
 %include "generated/CPACSIsotensoidDome.h"
@@ -364,18 +378,16 @@ class CCPACSVessels;
 %include "generated/CPACSDomeType.h"
 %include "generated/CPACSVesselStructure.h"
 %include "CCPACSVesselStructure.h"
-%include "generated/CPACSFuelTanks.h"
-%include "generated/CPACSFuelTankVolume.h"
-%include "generated/CPACSFuelTank.h"
 %include "CTiglFuselageConnection.h"
 %include "CCPACSFuselageSegment.h"
 %include "CCPACSFuselageSegments.h"
-%include "CCPACSFuelTanks.h"
-%include "CCPACSFuelTank.h"
+%include "generated/CPACSFuelTankVolume.h"
 %include "generated/CPACSVessels.h"
-%include "CCPACSVessels.h"
 %include "generated/CPACSVessel.h"
 %include "CCPACSVessel.h"
+%include "generated/CPACSFuelTanks.h"
+%include "generated/CPACSFuelTank.h"
+%include "CCPACSFuelTank.h"
 
 // -------------------- Wing Structure -------------------//
 
@@ -482,9 +494,6 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSFuselageSection.h"
 %include "CCPACSFuselageSection.h"
 %include "generated/CPACSWingSections.h"
-%include "CCPACSWingSections.h"
-%include "generated/CPACSFuselageSections.h"
-%include "CCPACSFuselageSections.h"
 %include "generated/CPACSWingElements.h"
 %include "CCPACSWingSectionElements.h"
 %include "generated/CPACSFuselageElements.h"
@@ -525,11 +534,9 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSRotors.h"
 %include "CCPACSRotors.h"
 %include "generated/CPACSFuselageProfiles.h"
-%include "CCPACSFuselageProfiles.h"
 %include "generated/CPACSFuselage.h"
 %include "CCPACSFuselage.h"
 %include "generated/CPACSFuselages.h"
-%include "CCPACSFuselages.h"
 %include "TiglFarFieldType.h"
 %include "generated/CPACSCellPositioningSpanwise.h"
 %include "generated/CPACSCellPositioningChordwise.h"
@@ -553,7 +560,6 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSEnginePylon.h"
 %include "CCPACSEnginePylon.h"
 %include "generated/CPACSEnginePylons.h"
-%include "CCPACSEnginePylons.h"
 
 //  ---------------- Ducts ------------------ //
 

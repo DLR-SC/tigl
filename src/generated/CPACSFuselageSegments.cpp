@@ -133,6 +133,59 @@ namespace generated
         return m_segments;
     }
 
+    size_t CPACSFuselageSegments::GetSegmentCount() const
+    {
+        return m_segments.size();
+    }
+
+    size_t CPACSFuselageSegments::GetSegmentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSegmentCount(); i++) {
+            const std::string tmpUID(m_segments[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSFuselageSegments::GetSegmentIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSFuselageSegment& CPACSFuselageSegments::GetSegment(size_t index)
+    {
+        if (index < 1 || index > GetSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageSegment>>::GetSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_segments[index];
+    }
+
+    const CCPACSFuselageSegment& CPACSFuselageSegments::GetSegment(size_t index) const
+    {
+        if (index < 1 || index > GetSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageSegment>>::GetSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_segments[index];
+    }
+
+    CCPACSFuselageSegment& CPACSFuselageSegments::GetSegment(const std::string& UID)
+    {
+        for (auto& elem : m_segments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuselageSegments::GetSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSFuselageSegment& CPACSFuselageSegments::GetSegment(const std::string& UID) const
+    {
+        for (auto& elem : m_segments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuselageSegments::GetSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSFuselageSegment& CPACSFuselageSegments::AddSegment()
     {
         m_segments.push_back(make_unique<CCPACSFuselageSegment>(reinterpret_cast<CCPACSFuselageSegments*>(this), m_uidMgr));

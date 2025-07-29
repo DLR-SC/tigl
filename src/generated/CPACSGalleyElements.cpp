@@ -108,6 +108,59 @@ namespace generated
         return m_galleyElements;
     }
 
+    size_t CPACSGalleyElements::GetGalleyElementCount() const
+    {
+        return m_galleyElements.size();
+    }
+
+    size_t CPACSGalleyElements::GetGalleyElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetGalleyElementCount(); i++) {
+            const std::string tmpUID(m_galleyElements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSGalleyElements::GetGalleyElementIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSGalleyElement& CPACSGalleyElements::GetGalleyElement(size_t index)
+    {
+        if (index < 1 || index > GetGalleyElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSGalleyElement>>::GetGalleyElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_galleyElements[index];
+    }
+
+    const CPACSGalleyElement& CPACSGalleyElements::GetGalleyElement(size_t index) const
+    {
+        if (index < 1 || index > GetGalleyElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSGalleyElement>>::GetGalleyElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_galleyElements[index];
+    }
+
+    CPACSGalleyElement& CPACSGalleyElements::GetGalleyElement(const std::string& UID)
+    {
+        for (auto& elem : m_galleyElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSGalleyElements::GetGalleyElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSGalleyElement& CPACSGalleyElements::GetGalleyElement(const std::string& UID) const
+    {
+        for (auto& elem : m_galleyElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSGalleyElements::GetGalleyElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSGalleyElement& CPACSGalleyElements::AddGalleyElement()
     {
         m_galleyElements.push_back(make_unique<CPACSGalleyElement>(this, m_uidMgr));

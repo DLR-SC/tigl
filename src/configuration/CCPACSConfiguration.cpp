@@ -192,7 +192,7 @@ bool CCPACSConfiguration::IsRotorcraft() const
 }
 
 // Returns the class which holds all wing profiles
-boost::optional<CCPACSWingProfiles&> CCPACSConfiguration::GetWingProfiles()
+boost::optional<const CCPACSWingProfiles&> CCPACSConfiguration::GetWingProfiles() const
 {
     if (profiles && profiles->GetWingAirfoils())
         return *profiles->GetWingAirfoils();
@@ -200,7 +200,7 @@ boost::optional<CCPACSWingProfiles&> CCPACSConfiguration::GetWingProfiles()
         return boost::none;
 }
 
-boost::optional<const CCPACSWingProfiles&> CCPACSConfiguration::GetWingProfiles() const
+boost::optional<CCPACSWingProfiles&> CCPACSConfiguration::GetWingProfiles()
 {
     if (profiles && profiles->GetWingAirfoils())
         return *profiles->GetWingAirfoils();
@@ -227,7 +227,7 @@ boost::optional<CCPACSFuselageProfiles&> CCPACSConfiguration::GetFuselageProfile
 }
 
 // Returns the wing profile for a given uid.
-CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
+const CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
 {
     if (profiles->GetWingAirfoils() && profiles->GetWingAirfoils()->HasProfile(uid)) {
         return profiles->GetWingAirfoils()->GetProfile(uid);
@@ -240,20 +240,12 @@ CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
     }
 }
 
-// Returns the aircraft systems object.
-boost::optional<CCPACSACSystems&> CCPACSConfiguration::GetACSystems()
+CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid)
 {
-    if (aircraftModel && aircraftModel->GetSystems()) {
-        return *aircraftModel->GetSystems();
-    }
-    else if (rotorcraftModel && rotorcraftModel->GetSystems()) {
-        return *rotorcraftModel->GetSystems();
-    }
-    else {
-        return boost::none;
-    }
+    return const_cast<CCPACSWingProfile&>(std::as_const(*this).GetWingProfile(uid));
 }
 
+// Returns the aircraft systems object.
 boost::optional<const CCPACSACSystems&> CCPACSConfiguration::GetACSystems() const
 {
     if (aircraftModel && aircraftModel->GetSystems()) {
@@ -267,8 +259,21 @@ boost::optional<const CCPACSACSystems&> CCPACSConfiguration::GetACSystems() cons
     }
 }
 
+boost::optional<CCPACSACSystems&> CCPACSConfiguration::GetACSystems()
+{
+    if (aircraftModel && aircraftModel->GetSystems()) {
+        return *aircraftModel->GetSystems();
+    }
+    else if (rotorcraftModel && rotorcraftModel->GetSystems()) {
+        return *rotorcraftModel->GetSystems();
+    }
+    else {
+        return boost::none;
+    }
+}
+
 // Returns the total count of wings (including rotor blades) in a configuration
-int CCPACSConfiguration::GetWingCount() const
+size_t CCPACSConfiguration::GetWingCount() const
 {
     if (aircraftModel && aircraftModel->GetWings()) {
         return aircraftModel->GetWings()->GetWingCount();
@@ -284,7 +289,7 @@ int CCPACSConfiguration::GetWingCount() const
 }
 
 // Returns the count of rotor blade wings in a configuration
-int CCPACSConfiguration::GetRotorBladeCount() const
+size_t CCPACSConfiguration::GetRotorBladeCount() const
 {
     if (rotorcraftModel && rotorcraftModel->GetRotorBlades()) {
         return rotorcraftModel->GetRotorBlades()->GetRotorBladeCount();
@@ -295,13 +300,13 @@ int CCPACSConfiguration::GetRotorBladeCount() const
 }
 
 // Returns the wing (or rotor blade) for a given index.
-CCPACSWing& CCPACSConfiguration::GetWing(int index) const
+const CCPACSWing& CCPACSConfiguration::GetWing(size_t index) const
 {
     if (aircraftModel) {
         return aircraftModel->GetWings()->GetWing(index);
     }
     else if (rotorcraftModel) {
-        const int wingCount = rotorcraftModel->GetWings() ? rotorcraftModel->GetWings()->GetWingCount() : 0;
+        const size_t wingCount = rotorcraftModel->GetWings() ? rotorcraftModel->GetWings()->GetWingCount() : 0;
         if (index <= wingCount) {
             return rotorcraftModel->GetWings()->GetWing(index);
         }
@@ -314,8 +319,14 @@ CCPACSWing& CCPACSConfiguration::GetWing(int index) const
         throw CTiglError("No configuration loaded");
     }
 }
+
+CCPACSWing& CCPACSConfiguration::GetWing(size_t index)
+{
+    return const_cast<CCPACSWing&> (std::as_const(*this).GetWing(index));
+}
+
 // Returns the wing (or rotor blade) for a given UID.
-CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
+const CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
 {
     if (aircraftModel) {
         return aircraftModel->GetWings()->GetWing(UID);
@@ -333,8 +344,13 @@ CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
     }
 }
 
+CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID)
+{
+    return const_cast<CCPACSWing&>(std::as_const(*this).GetWing(UID));
+}
+
 // Returns the wing (or rotor blade) index for a given UID.
-int CCPACSConfiguration::GetWingIndex(const std::string& UID) const
+size_t CCPACSConfiguration::GetWingIndex(const std::string& UID) const
 {
     if (aircraftModel) {
         return aircraftModel->GetWings()->GetWingIndex(UID);
@@ -355,7 +371,7 @@ int CCPACSConfiguration::GetWingIndex(const std::string& UID) const
 }
 
 // Returns the total count of generic systems in a configuration
-int CCPACSConfiguration::GetGenericSystemCount()
+size_t CCPACSConfiguration::GetGenericSystemCount()
 {
     boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
     if (acSystems && acSystems->GetGenericSystems()) {
@@ -367,7 +383,18 @@ int CCPACSConfiguration::GetGenericSystemCount()
 }
 
 // Returns the generic system for a given index.
-CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(int index)
+const CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(size_t index) const
+{
+    boost::optional<const CCPACSACSystems&> acSystems = GetACSystems();
+    if (acSystems && acSystems->GetGenericSystems()) {
+        return acSystems->GetGenericSystems()->GetGenericSystem(index);
+    }
+    else {
+        throw CTiglError("No generic system loaded");
+    }
+}
+
+CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(size_t index)
 {
     boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
     if (acSystems && acSystems->GetGenericSystems()) {
@@ -379,6 +406,17 @@ CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(int index)
 }
 
 // Returns the generic system for a given UID.
+const CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID) const
+{
+    boost::optional<const CCPACSACSystems&> acSystems = GetACSystems();
+    if (acSystems && acSystems->GetGenericSystems()) {
+        return acSystems->GetGenericSystems()->GetGenericSystem(UID);
+    }
+    else {
+        throw CTiglError("No generic system loaded");
+    }
+}
+
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID)
 {
     boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
@@ -391,7 +429,7 @@ CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UI
 }
 
 // Returns the total count of rotors in a configuration
-int CCPACSConfiguration::GetRotorCount() const
+size_t CCPACSConfiguration::GetRotorCount() const
 {
     if (rotorcraftModel && rotorcraftModel->GetRotors()) {
         return rotorcraftModel->GetRotors()->GetRotorCount();
@@ -402,7 +440,7 @@ int CCPACSConfiguration::GetRotorCount() const
 }
 
 // Returns the rotor for a given index.
-CCPACSRotor& CCPACSConfiguration::GetRotor(int index) const
+const CCPACSRotor& CCPACSConfiguration::GetRotor(size_t index) const
 {
     if (rotorcraftModel) {
         return rotorcraftModel->GetRotors()->GetRotor(index);
@@ -412,8 +450,24 @@ CCPACSRotor& CCPACSConfiguration::GetRotor(int index) const
     }
 }
 
+CCPACSRotor& CCPACSConfiguration::GetRotor(size_t index)
+{
+    return const_cast<CCPACSRotor&>(std::as_const(*this).GetRotor(index));
+}
+
+
+// Returns the rotor index for a given UID.
+size_t CCPACSConfiguration::GetRotorIndex(const std::string& UID) const
+{
+    if (rotorcraftModel) {
+        return rotorcraftModel->GetRotors()->GetRotorIndex(UID);
+    }
+    else {
+        throw CTiglError("no rotorcraft loaded");
+    }
+}
 // Returns the rotor for a given UID.
-CCPACSRotor& CCPACSConfiguration::GetRotor(const std::string& UID) const
+const CCPACSRotor& CCPACSConfiguration::GetRotor(const std::string& UID) const
 {
     if (rotorcraftModel) {
         return rotorcraftModel->GetRotors()->GetRotor(UID);
@@ -423,15 +477,9 @@ CCPACSRotor& CCPACSConfiguration::GetRotor(const std::string& UID) const
     }
 }
 
-// Returns the rotor index for a given UID.
-int CCPACSConfiguration::GetRotorIndex(const std::string& UID) const
+CCPACSRotor& CCPACSConfiguration::GetRotor(const std::string& UID)
 {
-    if (rotorcraftModel) {
-        return rotorcraftModel->GetRotors()->GetRotorIndex(UID);
-    }
-    else {
-        throw CTiglError("no rotorcraft loaded");
-    }
+    return const_cast<CCPACSRotor&>(std::as_const(*this).GetRotor(UID));
 }
 
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
@@ -454,7 +502,7 @@ bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
 }
 
 // Returns the total count of fuselage profiles in this configuration
-int CCPACSConfiguration::GetFuselageProfileCount() const
+size_t CCPACSConfiguration::GetFuselageProfileCount() const
 {
     if (profiles && profiles->GetFuselageProfiles()) {
         return profiles->GetFuselageProfiles()->GetProfileCount();
@@ -465,19 +513,29 @@ int CCPACSConfiguration::GetFuselageProfileCount() const
 }
 
 // Returns the fuselage profile for a given index.
-CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(int index) const
+const CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(size_t index) const
+{
+    return profiles->GetFuselageProfiles()->GetProfile(index);
+}
+
+CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(size_t index)
 {
     return profiles->GetFuselageProfiles()->GetProfile(index);
 }
 
 // Returns the fuselage profile for a given uid.
-CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(std::string uid) const
+const CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(std::string uid) const
+{
+    return profiles->GetFuselageProfiles()->GetProfile(uid);
+}
+
+CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(std::string uid)
 {
     return profiles->GetFuselageProfiles()->GetProfile(uid);
 }
 
 // Returns the total count of fuselages in a configuration
-int CCPACSConfiguration::GetFuselageCount() const
+size_t CCPACSConfiguration::GetFuselageCount() const
 {
     if (aircraftModel) {
         if (aircraftModel->GetFuselages()) {
@@ -501,7 +559,7 @@ int CCPACSConfiguration::GetFuselageCount() const
 }
 
 // Returns the fuselage for a given index.
-CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
+const CCPACSFuselage& CCPACSConfiguration::GetFuselage(size_t index) const
 {
     if (aircraftModel) {
         return aircraftModel->GetFuselages()->GetFuselage(index);
@@ -514,18 +572,9 @@ CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
     }
 }
 
-
-CCPACSFuselages& CCPACSConfiguration::GetFuselages()
+CCPACSFuselage& CCPACSConfiguration::GetFuselage(size_t index)
 {
-    if (aircraftModel) {
-        return *aircraftModel->GetFuselages();
-    }
-    else if (rotorcraftModel) {
-        return *rotorcraftModel->GetFuselages();
-    }
-    else {
-        throw CTiglError("No configuration loaded");
-    }
+    return const_cast<CCPACSFuselage&>(std::as_const(*this).GetFuselage(index));
 }
 
 const CCPACSFuselages& CCPACSConfiguration::GetFuselages() const
@@ -541,6 +590,11 @@ const CCPACSFuselages& CCPACSConfiguration::GetFuselages() const
     }
 }
 
+CCPACSFuselages& CCPACSConfiguration::GetFuselages()
+{
+    return const_cast<CCPACSFuselages&>(std::as_const(*this).GetFuselages());
+}
+
 bool CCPACSConfiguration::HasDucts() const
 {
     if (aircraftModel) {
@@ -548,16 +602,6 @@ bool CCPACSConfiguration::HasDucts() const
     }
     else {
         return false;
-    }
-}
-
-boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts()
-{
-    if (aircraftModel) {
-        return aircraftModel->GetDucts();
-    }
-    else {
-        throw CTiglError("No configuration loaded");
     }
 }
 
@@ -571,7 +615,17 @@ const boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts() const
     }
 }
 
-int CCPACSConfiguration::GetFuelTanksCount() const
+boost::optional<CCPACSDucts>& CCPACSConfiguration::GetDucts()
+{
+    if (aircraftModel) {
+        return aircraftModel->GetDucts();
+    }
+    else {
+        throw CTiglError("No configuration loaded");
+    }
+}
+
+size_t CCPACSConfiguration::GetFuelTankCount() const
 {
     if (!aircraftModel) {
         return 0;
@@ -582,55 +636,48 @@ int CCPACSConfiguration::GetFuelTanksCount() const
         return 0;
     }
 
-    return fuelTanks->GetFuelTanksCount();
+    return fuelTanks->GetFuelTankCount();
 
 }
 
-CCPACSFuelTank const& CCPACSConfiguration::GetFuelTank(int index) const
+const CCPACSFuelTank& CCPACSConfiguration::GetFuelTank(size_t index) const
 {
     if (!aircraftModel) {
         throw CTiglError("No configuration loaded");
     }
 
-    auto const& fuelTanks = aircraftModel->GetFuelTanks();
-    if (!fuelTanks) {
+    if (!(aircraftModel->GetFuelTanks())) {
         throw CTiglError("No fuel tanks found");
     }
-
-    return fuelTanks->GetFuelTank(index);
+    return aircraftModel->GetFuelTanks()->GetFuelTank(index);
 }
 
-CCPACSFuelTank const& CCPACSConfiguration::GetFuelTank(const std::string& UID) const
+CCPACSFuelTank& CCPACSConfiguration::GetFuelTank(size_t index)
+{
+    return const_cast<CCPACSFuelTank&>(std::as_const(*this).GetFuelTank(index));
+}
+
+const CCPACSFuelTank& CCPACSConfiguration::GetFuelTank(const std::string& UID) const
 {
     if (!aircraftModel) {
         throw CTiglError("No configuration loaded");
     }
 
-    auto const& fuelTanks = aircraftModel->GetFuelTanks();
-    if (!fuelTanks) {
+    if (!(aircraftModel->GetFuelTanks())) {
         throw CTiglError("No fuel tanks found");
     }
 
-    return fuelTanks->GetFuelTank(UID);
+    return aircraftModel->GetFuelTanks()->GetFuelTank(UID);
 }
 
-int CCPACSConfiguration::GetFuelTankIndex(const std::string& UID) const
+CCPACSFuelTank& CCPACSConfiguration::GetFuelTank(const std::string& UID)
+{
+    return const_cast<CCPACSFuelTank&>(std::as_const(*this).GetFuelTank(UID));
+}
+
+size_t CCPACSConfiguration::GetFuelTankIndex(const std::string& UID) const
 {
     return GetFuelTanks().GetFuelTankIndex(UID);
-}
-
-CCPACSFuelTanks& CCPACSConfiguration::GetFuelTanks()
-{
-    if (!aircraftModel) {
-        throw CTiglError("No configuration loaded");
-    }
-
-    auto const& fuelTanks = aircraftModel->GetFuelTanks();
-    if (!fuelTanks) {
-        throw CTiglError("No fuel tanks found");
-    }
-
-    return *aircraftModel->GetFuelTanks();
 }
 
 const CCPACSFuelTanks& CCPACSConfiguration::GetFuelTanks() const
@@ -645,6 +692,11 @@ const CCPACSFuelTanks& CCPACSConfiguration::GetFuelTanks() const
     }
 
     return *aircraftModel->GetFuelTanks();
+}
+
+CCPACSFuelTanks& CCPACSConfiguration::GetFuelTanks()
+{
+    return const_cast<CCPACSFuelTanks&>(std::as_const(*this).GetFuelTanks());
 }
 
 boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons()
@@ -667,24 +719,14 @@ const boost::optional<CCPACSEnginePylons>& CCPACSConfiguration::GetEnginePylons(
     }
 }
 
-boost::optional<CCPACSEngines>& CCPACSConfiguration::GetEngines()
-{
-    return engines;
-}
-
 const boost::optional<CCPACSEngines>& CCPACSConfiguration::GetEngines() const
 {
     return engines;
 }
 
-boost::optional<CCPACSEnginePositions>& CCPACSConfiguration::GetEnginePositions()
+boost::optional<CCPACSEngines>& CCPACSConfiguration::GetEngines()
 {
-    if (aircraftModel) {
-        return aircraftModel->GetEngines();
-    }
-    else {
-        throw CTiglError("No aircraft loaded");
-    }
+    return engines;
 }
 
 const boost::optional<CCPACSEnginePositions>& CCPACSConfiguration::GetEnginePositions() const
@@ -697,8 +739,18 @@ const boost::optional<CCPACSEnginePositions>& CCPACSConfiguration::GetEnginePosi
     }
 }
 
+boost::optional<CCPACSEnginePositions>& CCPACSConfiguration::GetEnginePositions()
+{
+    if (aircraftModel) {
+        return aircraftModel->GetEngines();
+    }
+    else {
+        throw CTiglError("No aircraft loaded");
+    }
+}
+
 // Returns the engine for a given uid.
-CCPACSEngine& CCPACSConfiguration::GetEngine(const std::string& uid) const
+const CCPACSEngine& CCPACSConfiguration::GetEngine(const std::string& uid) const
 {
     try {
         if (GetEngines()) {
@@ -711,6 +763,11 @@ CCPACSEngine& CCPACSConfiguration::GetEngine(const std::string& uid) const
     }
 }
 
+CCPACSEngine& CCPACSConfiguration::GetEngine(const std::string& uid)
+{
+    return const_cast<CCPACSEngine&>(std::as_const(*this).GetEngine(uid));
+}
+
 
 CCPACSFarField& CCPACSConfiguration::GetFarField()
 {
@@ -718,12 +775,12 @@ CCPACSFarField& CCPACSConfiguration::GetFarField()
 }
 
 // Returns the fuselage index for a given UID.
-int CCPACSConfiguration::GetFuselageIndex(const std::string& UID) const
+size_t CCPACSConfiguration::GetFuselageIndex(const std::string& UID) const
 {
     return GetFuselages().GetFuselageIndex(UID);
 }
 
-int CCPACSConfiguration::GetExternalObjectCount() const
+size_t CCPACSConfiguration::GetExternalObjectCount() const
 {
     if (aircraftModel && aircraftModel->GetGenericGeometryComponents()) {
         return aircraftModel->GetGenericGeometryComponents()->GetObjectCount();
@@ -733,13 +790,13 @@ int CCPACSConfiguration::GetExternalObjectCount() const
     }
 }
 
-CCPACSExternalObject&CCPACSConfiguration::GetExternalObject(int index) const
+CCPACSExternalObject&CCPACSConfiguration::GetExternalObject(size_t index) const
 {
     return aircraftModel->GetGenericGeometryComponents()->GetObject(index);
 }
 
 // Returns the fuselage for a given UID.
-CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string& UID) const
+const CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string& UID)const
 {
     if (aircraftModel) {
         return aircraftModel->GetFuselages()->GetFuselage(UID);
@@ -752,24 +809,29 @@ CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string& UID) const
     }
 }
 
-// Returns the guide curve profile for a given UID.
-CCPACSGuideCurveProfile& CCPACSConfiguration::GetGuideCurveProfile(std::string UID)
+CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string& UID)
 {
-    return profiles->GetGuideCurves()->GetGuideCurveProfile(UID);
+    return const_cast<CCPACSFuselage&>(std::as_const(*this).GetFuselage(UID));
 }
 
+// Returns the guide curve profile for a given UID.
 const CCPACSGuideCurveProfile& CCPACSConfiguration::GetGuideCurveProfile(std::string UID) const
 {
     return profiles->GetGuideCurves()->GetGuideCurveProfile(UID);
 }
 
+CCPACSGuideCurveProfile& CCPACSConfiguration::GetGuideCurveProfile(std::string UID)
+{
+    return profiles->GetGuideCurves()->GetGuideCurveProfile(UID);
+}
+
 // Returns the uid manager
-CTiglUIDManager& CCPACSConfiguration::GetUIDManager()
+const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const
 {
     return uidManager;
 }
 
-const CTiglUIDManager& CCPACSConfiguration::GetUIDManager() const
+CTiglUIDManager& CCPACSConfiguration::GetUIDManager()
 {
     return uidManager;
 }
@@ -781,7 +843,7 @@ double CCPACSConfiguration::GetAirplaneLength()
     return max.x - min.x;
 }
 
-// Returns the uid manager
+// Returns the model uid
 const std::string& CCPACSConfiguration::GetUID() const
 {
     if (aircraftModel) {
@@ -836,19 +898,6 @@ CCPACSHeader* CCPACSConfiguration::GetHeader()
     return &header;
 }
 
-CCPACSWings& CCPACSConfiguration::GetWings()
-{
-    if (aircraftModel) {
-        return *aircraftModel->GetWings();
-    }
-    else if (rotorcraftModel) {
-        return *rotorcraftModel->GetWings();
-    }
-    else {
-        throw CTiglError("No configuration loaded");
-    }
-}
-
 const CCPACSWings& CCPACSConfiguration::GetWings() const
 {
     if (aircraftModel) {
@@ -861,6 +910,12 @@ const CCPACSWings& CCPACSConfiguration::GetWings() const
         throw CTiglError("No configuration loaded");
     }
 }
+
+CCPACSWings& CCPACSConfiguration::GetWings()
+{
+    return const_cast<CCPACSWings&>(std::as_const(*this).GetWings());
+}
+
 
 void ConfigurationGetBoundingBox(const CCPACSConfiguration &config, CTiglPoint &min, CTiglPoint &max)
 {

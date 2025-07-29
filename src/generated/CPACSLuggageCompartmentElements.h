@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetLuggageCompartmentElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetLuggageCompartmentElements();
 
+        TIGL_EXPORT virtual size_t GetLuggageCompartmentElementCount() const;
+        TIGL_EXPORT virtual size_t GetLuggageCompartmentElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetLuggageCompartmentElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetLuggageCompartmentElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetLuggageCompartmentElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetLuggageCompartmentElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSDeckElementBase& AddLuggageCompartmentElement();
         TIGL_EXPORT virtual void RemoveLuggageCompartmentElement(CPACSDeckElementBase& ref);
 

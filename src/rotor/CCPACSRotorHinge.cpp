@@ -74,22 +74,37 @@ double CCPACSRotorHinge::GetHingeAngle(double thetaDeg, double a0, std::vector<d
     return hingeAngle;
 }
 
-// Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorHinge::GetConfiguration() const
+// Returns the parent rotor
+const CCPACSRotor& CCPACSRotorHinge::GetRotor() const
 {
-    return m_parent->GetConfiguration();
+    return m_parent->GetRotor();
 }
 
-// Returns the parent rotor
-CCPACSRotor& CCPACSRotorHinge::GetRotor() const
+CCPACSRotor& CCPACSRotorHinge::GetRotor()
 {
     return m_parent->GetRotor();
 }
 
 // Returns the parent rotor blade attachment
-CCPACSRotorBladeAttachment& CCPACSRotorHinge::GetRotorBladeAttachment() const
+const CCPACSRotorBladeAttachment& CCPACSRotorHinge::GetRotorBladeAttachment() const
 {
     return *m_parent->GetParent();
+}
+
+CCPACSRotorBladeAttachment& CCPACSRotorHinge::GetRotorBladeAttachment()
+{
+    return *m_parent->GetParent();
+}
+
+// Returns the parent configuration
+const CCPACSConfiguration& CCPACSRotorHinge::GetConfiguration() const
+{
+    return m_parent->GetConfiguration();
+}
+
+CCPACSConfiguration& CCPACSRotorHinge::GetConfiguration()
+{
+    return m_parent->GetConfiguration();
 }
 
 } // end namespace tigl

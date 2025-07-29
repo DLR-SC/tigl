@@ -90,6 +90,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSEnginePosition>>& GetEngines() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSEnginePosition>>& GetEngines();
 
+        TIGL_EXPORT virtual size_t GetEngineCount() const;
+        TIGL_EXPORT virtual size_t GetEngineIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSEnginePosition& GetEngine(size_t index) const;
+        TIGL_EXPORT virtual CCPACSEnginePosition& GetEngine(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSEnginePosition& GetEngine(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSEnginePosition& GetEngine(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSEnginePosition& AddEngine();
         TIGL_EXPORT virtual void RemoveEngine(CCPACSEnginePosition& ref);
 

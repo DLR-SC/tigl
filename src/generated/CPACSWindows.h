@@ -66,6 +66,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSCutOut>>& GetWindows() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCutOut>>& GetWindows();
 
+        TIGL_EXPORT virtual size_t GetWindowCount() const;
+        TIGL_EXPORT virtual size_t GetWindowIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSCutOut& GetWindow(size_t index) const;
+        TIGL_EXPORT virtual CPACSCutOut& GetWindow(size_t index);
+
+        TIGL_EXPORT virtual const CPACSCutOut& GetWindow(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSCutOut& GetWindow(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSCutOut& AddWindow();
         TIGL_EXPORT virtual void RemoveWindow(CPACSCutOut& ref);
 

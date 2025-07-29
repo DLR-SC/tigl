@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSPressureBulkhead>>& GetPressureBulkheads() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSPressureBulkhead>>& GetPressureBulkheads();
 
+        TIGL_EXPORT virtual size_t GetPressureBulkheadCount() const;
+        TIGL_EXPORT virtual size_t GetPressureBulkheadIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSPressureBulkhead& GetPressureBulkhead(size_t index) const;
+        TIGL_EXPORT virtual CCPACSPressureBulkhead& GetPressureBulkhead(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSPressureBulkhead& GetPressureBulkhead(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSPressureBulkhead& GetPressureBulkhead(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSPressureBulkhead& AddPressureBulkhead();
         TIGL_EXPORT virtual void RemovePressureBulkhead(CCPACSPressureBulkhead& ref);
 
@@ -82,8 +91,7 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSPressureBulkheads is customized, use type CCPACSPressureBulkheads directly
-
 // Aliases in tigl namespace
+using CCPACSPressureBulkheads = generated::CPACSPressureBulkheads;
 using CCPACSStructuralElements = generated::CPACSStructuralElements;
 } // namespace tigl

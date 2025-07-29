@@ -317,12 +317,12 @@ namespace generated
         return m_structuralWallElements;
     }
 
-    const boost::optional<CCPACSPressureBulkheads>& CPACSStructuralElements::GetPressureBulkheads() const
+    const boost::optional<CPACSPressureBulkheads>& CPACSStructuralElements::GetPressureBulkheads() const
     {
         return m_pressureBulkheads;
     }
 
-    boost::optional<CCPACSPressureBulkheads>& CPACSStructuralElements::GetPressureBulkheads()
+    boost::optional<CPACSPressureBulkheads>& CPACSStructuralElements::GetPressureBulkheads()
     {
         return m_pressureBulkheads;
     }
@@ -337,12 +337,12 @@ namespace generated
         return m_windows;
     }
 
-    const boost::optional<CCPACSDoors>& CPACSStructuralElements::GetDoors() const
+    const boost::optional<CPACSDoors>& CPACSStructuralElements::GetDoors() const
     {
         return m_doors;
     }
 
-    boost::optional<CCPACSDoors>& CPACSStructuralElements::GetDoors()
+    boost::optional<CPACSDoors>& CPACSStructuralElements::GetDoors()
     {
         return m_doors;
     }
@@ -413,7 +413,7 @@ namespace generated
         m_structuralWallElements = boost::none;
     }
 
-    CCPACSPressureBulkheads& CPACSStructuralElements::GetPressureBulkheads(CreateIfNotExistsTag)
+    CPACSPressureBulkheads& CPACSStructuralElements::GetPressureBulkheads(CreateIfNotExistsTag)
     {
         if (!m_pressureBulkheads)
             m_pressureBulkheads = boost::in_place(this, m_uidMgr);
@@ -437,7 +437,7 @@ namespace generated
         m_windows = boost::none;
     }
 
-    CCPACSDoors& CPACSStructuralElements::GetDoors(CreateIfNotExistsTag)
+    CPACSDoors& CPACSStructuralElements::GetDoors(CreateIfNotExistsTag)
     {
         if (!m_doors)
             m_doors = boost::in_place(this, m_uidMgr);

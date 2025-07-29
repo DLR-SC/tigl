@@ -44,7 +44,7 @@
 #include "CTiglError.h"
 #include "CTiglTransformation.h"
 #include "CCPACSGuideCurveProfile.h"
-#include "CCPACSGuideCurveProfiles.h"
+#include "generated/CPACSGuideCurveProfiles.h"
 #include "generated/CPACSGuideCurve.h"
 #include "CCPACSGuideCurves.h"
 #include "CCPACSWingProfileGetPointAlgo.h"

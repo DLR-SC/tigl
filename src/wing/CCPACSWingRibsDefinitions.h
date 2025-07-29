@@ -34,13 +34,6 @@ public:
 
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    TIGL_EXPORT int GetRibsDefinitionCount() const;
-
-    TIGL_EXPORT const CCPACSWingRibsDefinition& GetRibsDefinition(int index) const;
-    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(int index);
-
-    TIGL_EXPORT const CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid) const;
-    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid);
 };
 
 } // end namespace tigl

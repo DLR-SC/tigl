@@ -23,6 +23,7 @@
 #include "tigl.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSFuselageSegment.h"
+#include "CCPACSFuselage.h"
 
 
 #define _USE_MATH_DEFINES

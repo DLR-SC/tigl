@@ -59,6 +59,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSStrutAssembly>>& GetSideStruts() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSStrutAssembly>>& GetSideStruts();
 
+        TIGL_EXPORT virtual size_t GetSideStrutCount() const;
+        TIGL_EXPORT virtual size_t GetSideStrutIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSStrutAssembly& GetSideStrut(size_t index) const;
+        TIGL_EXPORT virtual CPACSStrutAssembly& GetSideStrut(size_t index);
+
+        TIGL_EXPORT virtual const CPACSStrutAssembly& GetSideStrut(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSStrutAssembly& GetSideStrut(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSStrutAssembly& AddSideStrut();
         TIGL_EXPORT virtual void RemoveSideStrut(CPACSStrutAssembly& ref);
 

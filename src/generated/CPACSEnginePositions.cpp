@@ -118,6 +118,59 @@ namespace generated
         return m_engines;
     }
 
+    size_t CPACSEnginePositions::GetEngineCount() const
+    {
+        return m_engines.size();
+    }
+
+    size_t CPACSEnginePositions::GetEngineIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetEngineCount(); i++) {
+            const std::string tmpUID(m_engines[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSEnginePositions::GetEngineIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSEnginePosition& CPACSEnginePositions::GetEngine(size_t index)
+    {
+        if (index < 1 || index > GetEngineCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSEnginePosition>>::GetEngine", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_engines[index];
+    }
+
+    const CCPACSEnginePosition& CPACSEnginePositions::GetEngine(size_t index) const
+    {
+        if (index < 1 || index > GetEngineCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSEnginePosition>>::GetEngine", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_engines[index];
+    }
+
+    CCPACSEnginePosition& CPACSEnginePositions::GetEngine(const std::string& UID)
+    {
+        for (auto& elem : m_engines ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSEnginePositions::GetEngine. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSEnginePosition& CPACSEnginePositions::GetEngine(const std::string& UID) const
+    {
+        for (auto& elem : m_engines ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSEnginePositions::GetEngine. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSEnginePosition& CPACSEnginePositions::AddEngine()
     {
         m_engines.push_back(make_unique<CCPACSEnginePosition>(reinterpret_cast<CCPACSEnginePositions*>(this), m_uidMgr));
