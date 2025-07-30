@@ -382,12 +382,18 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="editorDockWidget">
+   <property name="windowTitle">
+    <string>CPACS Editor</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
    <widget class="ModificatorContainerWidget" name="modificatorContainerWidget"/>
   </widget>
   <widget class="QDockWidget" name="treeDockWidget">
+   <property name="windowTitle">
+    <string>CPACS Tree</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
    </attribute>
