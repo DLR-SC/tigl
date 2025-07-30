@@ -3,6 +3,10 @@ Changelog
 
 Changes since last release
 -------------
+29/07/2025
+- General changes
+  - Remove the hard-wired gtest source code from the repository. Now, it is downloaded from GitHub and configured during the TiGL-configuration-process by default (issue #1114).
+
 10/07/2025
 - General changes
   - Updated TiGL to new Version of [cpacs_tigl_Gen](https://github.com/DLR-SC/cpacs_tigl_gen) which is a fork from [RISCSoftware/cpacs_tigl_gen](https://github.com/RISCSoftware/cpacs_tigl_gen)
