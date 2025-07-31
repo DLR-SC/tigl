@@ -76,6 +76,24 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     undoStack = new QUndoStack(this);
 
+
+    // setup dock widgets
+
+    viewDisplayMenu->addSeparator();
+    QAction* showConsoleAction = consoleDockWidget->toggleViewAction();
+    showConsoleAction->setShortcut(QKeySequence(tr("Alt+C")));
+    viewDisplayMenu->addAction(showConsoleAction);
+
+    QAction* showTreeAction = treeDockWidget->toggleViewAction();
+    showTreeAction->setShortcut(QKeySequence(tr("Alt+M")));
+    viewDisplayMenu->addAction(showTreeAction);
+
+    QAction* showModificatorAction = editorDockWidget->toggleViewAction();
+    showModificatorAction->setShortcut(QKeySequence(tr("Alt+Shift+M")));
+    viewDisplayMenu->addAction(showModificatorAction);
+
+    // settings
+
     tiglViewerSettings = &TIGLViewerSettings::Instance();
     settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
 
@@ -184,11 +202,9 @@ void TIGLViewerWindow::setInitialControlFile(const QString& filename)
     if (cf.read(filename.toStdString().c_str()) == CF_SUCCESS) {
         if (cf.showConsole == CF_TRUE) {
             console->setVisible(true);
-            showConsoleAction->setChecked(true);
         }
         else if (cf.showConsole == CF_FALSE) {
             console->setVisible(false);
-            showConsoleAction->setChecked(false);
         }
         if (cf.showToolbars == CF_TRUE) {
             toolBar->setVisible(true);
@@ -490,14 +506,10 @@ void TIGLViewerWindow::loadSettings()
 
     restoreGeometry(settings.value("MainWindowGeom").toByteArray());
     restoreState(settings.value("MainWindowState").toByteArray());
+
     consoleDockWidget->setVisible(showConsole);
-    showConsoleAction->setChecked(showConsole);
-
     editorDockWidget->setVisible(showModificator);
-    showModificatorAction->setChecked(showModificator);
-
     treeDockWidget->setVisible(showTree);
-    showTreeAction->setChecked(showTree);
 
     tiglViewerSettings->loadSettings();
     settingsDialog->updateEntries();
@@ -960,21 +972,11 @@ void TIGLViewerWindow::connectSignals()
     connect(viewZoomInAction, SIGNAL(triggered()), myOCC, SLOT(zoomIn()));
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
 
-    connect(showConsoleAction, SIGNAL(triggered(bool)), consoleDockWidget, SLOT(setVisible(bool)));
-    connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
-
     // Addition for creator
 
     // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
     connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
     connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
-
-    // creator view
-    connect(showModificatorAction, SIGNAL(triggered(bool)), editorDockWidget, SLOT(setVisible(bool)));
-    connect(editorDockWidget, SIGNAL(visibilityChanged(bool)), showModificatorAction, SLOT(setChecked(bool)));
-    connect(showTreeAction, SIGNAL(triggered(bool)), treeDockWidget, SLOT(setVisible(bool)));
-    connect(treeDockWidget, SIGNAL(visibilityChanged(bool)), showTreeAction, SLOT(setChecked(bool)));
-
 
     connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
