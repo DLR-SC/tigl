@@ -960,14 +960,8 @@ void TIGLViewerWindow::connectSignals()
     connect(viewZoomInAction, SIGNAL(triggered()), myOCC, SLOT(zoomIn()));
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
 
-    connect(showConsoleAction, &QAction::toggled, this, [=](bool toggled) {
-        QSignalBlocker blocker(consoleDockWidget); // Prevent recursion
-        consoleDockWidget->setVisible(toggled);
-    });
-    connect(consoleDockWidget, &QDockWidget::visibilityChanged, this, [=](bool visible) {
-        QSignalBlocker blocker(showConsoleAction); // Prevent recursion
-        showConsoleAction->setChecked(visible);
-    });
+    connect(showConsoleAction, SIGNAL(triggered(bool)), consoleDockWidget, SLOT(setVisible(bool)));
+    connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
 
     // Addition for creator
 
@@ -976,22 +970,10 @@ void TIGLViewerWindow::connectSignals()
     connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
 
     // creator view
-    connect(showModificatorAction, &QAction::toggled, this, [=](bool toggled) {
-        QSignalBlocker blocker(editorDockWidget); // Prevent recursion
-        editorDockWidget->setVisible(toggled);
-    });
-    connect(editorDockWidget, &QDockWidget::visibilityChanged, this, [=](bool visible) {
-        QSignalBlocker blocker(showModificatorAction); // Prevent recursion
-        showModificatorAction->setChecked(visible);
-    });
-    connect(showTreeAction, &QAction::toggled, this, [=](bool toggled) {
-        QSignalBlocker blocker(treeDockWidget); // Prevent recursion
-        treeDockWidget->setVisible(toggled);
-    });
-    connect(treeDockWidget, &QDockWidget::visibilityChanged, this, [=](bool visible) {
-        QSignalBlocker blocker(showTreeAction); // Prevent recursion
-        showTreeAction->setChecked(visible);
-    });
+    connect(showModificatorAction, SIGNAL(triggered(bool)), editorDockWidget, SLOT(setVisible(bool)));
+    connect(editorDockWidget, SIGNAL(visibilityChanged(bool)), showModificatorAction, SLOT(setChecked(bool)));
+    connect(showTreeAction, SIGNAL(triggered(bool)), treeDockWidget, SLOT(setVisible(bool)));
+    connect(treeDockWidget, SIGNAL(visibilityChanged(bool)), showTreeAction, SLOT(setChecked(bool)));
 
 
     connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
