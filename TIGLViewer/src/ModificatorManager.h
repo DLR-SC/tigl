@@ -75,9 +75,28 @@ public:
     ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget,  TIGLViewerContext* scene,  QUndoStack* undoStack);
 
     void setCPACSConfiguration(TIGLViewerDocument* newDoc);
+
+    /**
+     * @brief resets the currently loaded CCPACSConfiguration to the CPACS configuration in a string
+     * 
+     * This is used e.g. by Undo and Redo commands, where the current configuration needs to be 
+     * reset to its previous state.
+     * 
+     * @param config a CPACS conform string
+     */
     void updateCpacsConfigurationFromString(std::string const& config);
 
+    /**
+     * @brief gets the currently loaded CCPACSConfiguration as a CPACS conform string
+     * 
+     * @return std::string 
+     */
     std::string getConfigurationAsString();
+
+    /**
+     * @brief writeCPACS writes the currently loaded CCPACSConfiguration to the underlying tixi handle.
+     * 
+     */
     void writeCPACS();
 
     // standardization functions
