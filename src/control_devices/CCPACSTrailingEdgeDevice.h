@@ -20,7 +20,7 @@
 #include "generated/CPACSTrailingEdgeDevice.h"
 #include "generated/CPACSTrailingEdgeDevices.h"
 
-#include "CTiglAbstractGeometricComponent.h"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "Cache.h"
 #include "tigl.h"
 #include <string>
@@ -28,7 +28,7 @@
 namespace tigl
 {
 
-class CCPACSTrailingEdgeDevice : public generated::CPACSTrailingEdgeDevice, public CTiglAbstractGeometricComponent
+class CCPACSTrailingEdgeDevice : public generated::CPACSTrailingEdgeDevice, public CTiglRelativelyPositionedComponent
 {
 public:
     TIGL_EXPORT CCPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr);

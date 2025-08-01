@@ -34,6 +34,7 @@ namespace tigl
 class CCPACSControlSurfaceOuterShapeTrailingEdge;
 class CCPACSControlSurfaceBorderTrailingEdge;
 class CCPACSWingComponentSegment;
+class CTiglRelativelyPositionedComponent;
 
 class CCPACSControlSurfaceWingCutOut : public generated::CPACSControlSurfaceWingCutOut
 {
@@ -45,7 +46,7 @@ public:
                                     const CCPACSControlSurfaceOuterShapeTrailingEdge&,
                                     const gp_Vec& upDir) const;
 
-    TIGL_EXPORT CCPACSTrailingEdgeDevice const *GetParentComponent() const;
+    TIGL_EXPORT CTiglRelativelyPositionedComponent const *GetParentComponent() const;
 private:
 
     enum class CutoutPosition

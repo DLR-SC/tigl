@@ -34,10 +34,11 @@ namespace tigl
 
 CCPACSLeadingEdgeDevice::CCPACSLeadingEdgeDevice(CCPACSLeadingEdgeDevices* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSLeadingEdgeDevice(parent, uidMgr)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, (CCPACSTransformation *)nullptr)
     , m_hingePoints(*this, &CCPACSLeadingEdgeDevice::ComputeHingePoints)
     , m_cutoutShape(*this, &CCPACSLeadingEdgeDevice::ComputeCutoutShape)
     , m_flapShape(*this, &CCPACSLeadingEdgeDevice::ComputeFlapShape)
-    , m_type(TRAILING_EDGE_DEVICE)
+    , m_type(LEADING_EDGE_DEVICE)
 {
 }
 

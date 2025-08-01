@@ -34,6 +34,7 @@ namespace tigl
 
 CCPACSTrailingEdgeDevice::CCPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTrailingEdgeDevice(parent, uidMgr)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, (CCPACSTransformation *)nullptr) //TrailingEdgeDevice is relative postioned but does not have a CCPACS transformation
     , m_hingePoints(*this, &CCPACSTrailingEdgeDevice::ComputeHingePoints)
     , m_cutoutShape(*this, &CCPACSTrailingEdgeDevice::ComputeCutoutShape)
     , m_flapShape(*this, &CCPACSTrailingEdgeDevice::ComputeFlapShape)

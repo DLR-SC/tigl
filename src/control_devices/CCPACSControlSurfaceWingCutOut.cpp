@@ -21,6 +21,7 @@
 #include "CCPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSLeadingEdgeDevice.h"
+#include "CTiglRelativelyPositionedComponent"
 #include "CNamedShape.h"
 #include "Debugging.h"
 #include "generated/CPACSCutOutControlPoint.h"
@@ -33,7 +34,7 @@
 namespace tigl
 {
 
-CCPACSTrailingEdgeDevice const *CCPACSControlSurfaceWingCutOut::GetParentComponent() const 
+CTiglRelativelyPositionedComponent const *CCPACSControlSurfaceWingCutOut::GetParentComponent() const 
 {
   if (IsParent<CCPACSTrailingEdgeDevice>()) 
   {
@@ -41,14 +42,13 @@ CCPACSTrailingEdgeDevice const *CCPACSControlSurfaceWingCutOut::GetParentCompone
   }
   if (IsParent<CCPACSLeadingEdgeDevice>()) 
   {
-    return (CCPACSTrailingEdgeDevice *)GetParent<CCPACSLeadingEdgeDevice>()->GetParent();
+    return (CCPACSLeadingEdgeDevice *)GetParent<CCPACSLeadingEdgeDevice>()->GetParent();
   }
   // if (IsParent<CCPACSSpoiler>()) 
   // {
   //   return GetParent<CCPACSSpoiler>()->GetParent();
   // }
-  throw CTiglError("Unexpected error: Parent of CCPACSFramesAssembly must "
-                   "either be CCPACSDuctStructure or CCPACSFuselageStructure.");
+  throw CTiglError("Unexpected error:");
 }
 
 CCPACSControlSurfaceWingCutOut::CCPACSControlSurfaceWingCutOut(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
@@ -63,7 +63,7 @@ CCPACSControlSurfaceWingCutOut::CCPACSControlSurfaceWingCutOut(CCPACSLeadingEdge
 
 PNamedShape CCPACSControlSurfaceWingCutOut::GetLoft(PNamedShape wingCleanShape, const CCPACSControlSurfaceOuterShapeTrailingEdge& outerShape, const gp_Vec &upDir) const
 {
-    DLOG(INFO) << "Building " << GetParentComponent()->GetUID() << " wing cutout shape";
+    DLOG(INFO) << "Building " << GetParentComponent()->GetDefaultedUID() << " wing cutout shape";
 
     // Get Wires definng the Shape of the more complex CutOutShape.
     TopoDS_Wire innerWire = GetCutoutWire(CCPACSControlSurfaceWingCutOut::CutoutPosition::InnerBorder, wingCleanShape, &outerShape.GetInnerBorder(), upDir);
@@ -76,14 +76,21 @@ PNamedShape CCPACSControlSurfaceWingCutOut::GetLoft(PNamedShape wingCleanShape, 
     thrusections.AddWire(innerWire);
     thrusections.Build();
 
-    PNamedShape cutout(new CNamedShape(thrusections.Shape(), GetParentComponent()->GetUID().c_str()));
+    PNamedShape cutout(new CNamedShape(thrusections.Shape(), GetParentComponent()->GetDefaultedUID().c_str()));
 
 #ifdef DEBUG
     DEBUG_SCOPE(debug);
-    debug.dumpShape(cutout->Shape(), GetParentComponent()->GetUID() + "_cutout");
+    debug.dumpShape(cutout->Shape(), GetParentComponent()->GetDefaultedUID() + "_cutout");
 #endif
 
-    cutout->SetShortName(GetParentComponent()->GetShortName());
+    if (IsParent<CCPACSTrailingEdgeDevice>())
+    {
+        cutout->SetShortName(GetParent<CCPACSTrailingEdgeDevice>()->GetShortName()); 
+    }
+    if (IsParent<CCPACSLeadingEdgeDevice>())
+    {
+        cutout->SetShortName(GetParent<CCPACSLeadingEdgeDevice>()->GetShortName()); 
+    }
 
     return cutout;
 }
@@ -147,7 +154,7 @@ CCPACSControlSurfaceWingCutOut::GetCutoutCS(bool isInnerBorder, const CCPACSCont
     }
 
     if (!cutOutBorder->GetEtaLE_choice2() || !cutOutBorder->GetEtaTE_choice2()) {
-        throw CTiglError("Cutout border of '" + GetParentComponent()->GetUID() + "' requires etaLE and etaTE values to proceed.");
+        throw CTiglError("Cutout border of '" + GetParentComponent()->GetDefaultedUID() + "' requires etaLE and etaTE values to proceed.");
     }
 
     double lEta = transformEtaToCSOrTed(cutOutBorder->GetEtaLE_choice2().value(), *m_uidMgr);
@@ -165,13 +172,17 @@ CCPACSControlSurfaceWingCutOut::GetCutoutCS(bool isInnerBorder, const CCPACSCont
 
 const CCPACSWingComponentSegment &ComponentSegment(const CCPACSControlSurfaceWingCutOut& self)
 {
-    if (!self.GetParentComponent()) {
-        throw CTiglError("Missing parant Pointer");
+    if (self.IsParent<CCPACSTrailingEdgeDevice>())
+    {
+        return ComponentSegment(*self.GetParent<CCPACSTrailingEdgeDevice>());
     }
-
-    const auto& ted = self.GetParentComponent();
-
-    return ComponentSegment(*ted);
+    if (self.IsParent<CCPACSLeadingEdgeDevice>())
+    {
+        return ComponentSegment(*self.GetParent<CCPACSLeadingEdgeDevice>());
+    }
+  
+    throw CTiglError("Missing parant Pointer");
+    
 }
 
 } // namespace tigl
