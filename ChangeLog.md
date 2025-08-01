@@ -16,6 +16,7 @@ Changes since last release
   - [#59](https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59)	
     Getters by index and uID are generated now for all Elements in CPACS with Attribute: maxOccur = "unbounded".  This gives users quick
     access to elements and eliminates the need for TIGL developers to customize classes for this purpose.
+  - [#1122](https://github.com/DLR-SC/tigl/issues/1122) Redo and Undo commands now update the CPACS configuration, which was previously only true for modifications using the CPACS Editor UI.
     
 08/02/2025
 

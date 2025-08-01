@@ -75,6 +75,10 @@ public:
     ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget,  TIGLViewerContext* scene,  QUndoStack* undoStack);
 
     void setCPACSConfiguration(TIGLViewerDocument* newDoc);
+    void updateCpacsConfigurationFromString(std::string const& config);
+
+    std::string getConfigurationAsString();
+    void writeCPACS();
 
     // standardization functions
     // standardize the wing or the fuselage given by the uid and call createUndoCommand

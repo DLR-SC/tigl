@@ -27,6 +27,7 @@
 #include "CCPACSPositioning.h"
 #include "CTiglStandardizer.h"
 #include "TIGLViewerContext.h"
+#include "tixicpp.h"
 
 ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
                                        ModificatorContainerWidget* modificatorContainerWidget,
@@ -60,6 +61,43 @@ void ModificatorManager::setCPACSConfiguration(TIGLViewerDocument* newDoc)
         connect(doc, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), this, SLOT(updateTree()));
         profilesDB.setConfigProfiles(doc->GetConfiguration().GetProfiles());
     }
+}
+
+void ModificatorManager::updateCpacsConfigurationFromString(std::string const& config)
+{
+    if (!configurationIsSet()) {
+        LOG(ERROR) << "ModificatorManager::updateCpacsConfigurationFromString: MODIFICATOR MANAGER IS NOT READY";
+        return;
+    }
+
+    doc->updateCpacsConfigurationFromString(config);
+    emit configurationEdited();
+}
+
+std::string ModificatorManager::getConfigurationAsString()
+{
+    TixiDocumentHandle tixiHandle = doc->GetConfiguration().GetTixiDocumentHandle();
+
+    // save the old version
+    try {
+        return tixi::TixiExportDocumentAsString(tixiHandle);
+    }
+    catch (const tixi::TixiError& e) {
+        QString errMsg =
+            "ModificatorManager::getConfigurationAsString() Something went wrong during exporting the file from tixi handler. "
+            "Tixi error message: \"" +
+            QString(e.what()) + "\".";
+        throw tigl::CTiglError(errMsg.toStdString());
+    }
+}
+
+void ModificatorManager::writeCPACS()
+{
+    if (!configurationIsSet()) {
+        LOG(ERROR) << "ModificatorManager::writeCPACS: MODIFICATOR MANAGER IS NOT READY";
+        return;
+    }
+    doc->GetConfiguration().WriteCPACS(doc->GetConfiguration().GetUID());
 }
 
 void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
@@ -202,7 +240,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
 void ModificatorManager::createUndoCommand()
 {
     if (configurationIsSet()) {
-        QUndoCommand* command = new TiGLViewer::ModifyTiglObject((*doc));
+        QUndoCommand* command = new TiGLViewer::ModifyTiglObject(*this);
         myUndoStack->push(command);
     }
     else {
