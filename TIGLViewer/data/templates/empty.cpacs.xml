@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cpacs.googlecode.com/files/CPACS_21_Schema.xsd">
-  <header>
+  <header xsi:type="headerType">
     <name>Empty</name>
     <description>Empty aircraft</description>
     <creator>Malo Drougard</creator>
     <timestamp>2019-02-27T15:12:47</timestamp>
-    <version>0.2</version>
+    <version>1.0</version>
     <cpacsVersion>3.0</cpacsVersion>
-    <updates>
-    </updates>
+    <updates/>
   </header>
   <vehicles>
     <aircraft>
@@ -23,19 +22,14 @@
             <z>0</z>
           </point>
         </reference>
-	<fuselages>
-	</fuselages>
-	<wings>  
-	</wings>
+        <fuselages/>
+        <wings/>
       </model>
     </aircraft>
     <profiles>
-      <wingAirfoils>
-      </wingAirfoils>
-      <fuselageProfiles>
-      </fuselageProfiles>
+      <wingAirfoils/>
+      <fuselageProfiles/>
     </profiles>
   </vehicles>
-  <toolspecific>
-  </toolspecific>
+  <toolspecific/>
 </cpacs>

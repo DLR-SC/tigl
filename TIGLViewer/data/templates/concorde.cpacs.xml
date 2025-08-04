@@ -30,7 +30,7 @@
         <reference xsi:type="referenceType">
           <area>122.4</area>
           <length>4.19311980812</length>
-          <point uID="">
+          <point uID="referencePoint">
             <x>0</x>
             <y>10</y>
             <z>0</z>
@@ -3839,6 +3839,5 @@
       </segments>
     </mission>
   </missions>
-  <toolspecific>
-  </toolspecific>
+  <toolspecific/>
 </cpacs>
