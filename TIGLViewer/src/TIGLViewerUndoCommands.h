@@ -10,7 +10,7 @@
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_InteractiveContext.hxx>
 
-#include "TIGLViewerDocument.h"
+#include "ModificatorManager.h"
 
 namespace TiGLViewer
 {
@@ -118,7 +118,7 @@ private:
 class ModifyTiglObject : public QUndoCommand
 {
 public:
-    ModifyTiglObject(TIGLViewerDocument& doc);
+    ModifyTiglObject(ModificatorManager& manager);
     // QUndoCommand interface
 
 public:
@@ -136,7 +136,7 @@ private:
     std::string oldConfig;
     std::string newConfig;
     bool isInitialized;
-    TIGLViewerDocument& tiglViewerDoc; // can be invalid after some time, but will not be used anymore ;)
+    ModificatorManager& manager;
 };
 }
 #endif // TIGLVIEWERUNDOCOMMANDS_H

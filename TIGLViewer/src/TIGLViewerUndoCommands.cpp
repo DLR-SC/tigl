@@ -1,5 +1,4 @@
 #include "TIGLViewerUndoCommands.h"
-#include "tixicpp.h"
 
 namespace TiGLViewer
 {
@@ -59,8 +58,8 @@ void ChangeObjectsColor::undo()
 
 }
 
-ModifyTiglObject::ModifyTiglObject(TIGLViewerDocument& doc)
-    : tiglViewerDoc(doc)
+ModifyTiglObject::ModifyTiglObject(ModificatorManager& manager)
+    : manager(manager)
 {
     newConfig     = "";
     oldConfig     = "";
@@ -75,45 +74,23 @@ void ModifyTiglObject::redo()
         isInitialized = true;
     }
     else {
-        tiglViewerDoc.updateCpacsConfigurationFromString(newConfig);
+        manager.updateCpacsConfigurationFromString(newConfig);
     }
 }
 
 void ModifyTiglObject::undo()
 {
-    tiglViewerDoc.updateCpacsConfigurationFromString(oldConfig);
+    manager.updateCpacsConfigurationFromString(oldConfig);
 }
 
 void ModifyTiglObject::initialize()
 {
-    TixiDocumentHandle tixiHandle = tiglViewerDoc.GetConfiguration().GetTixiDocumentHandle();
-
-    // save the old version
-    try {
-        oldConfig = tixi::TixiExportDocumentAsString(tixiHandle);
-    }
-    catch (const tixi::TixiError& e) {
-        QString errMsg =
-            "ModifyTiglObject::initialize() Something went wrong during exporting the file from tixi handler. "
-            "Tixi error message: \"" +
-            QString(e.what()) + "\". The file is not saved!";
-        throw tigl::CTiglError(errMsg.toStdString());
-    }
-
+    oldConfig = manager.getConfigurationAsString();
+    
     // write the new version
-    tiglViewerDoc.GetConfiguration().WriteCPACS(tiglViewerDoc.GetConfiguration().GetUID());
+    manager.writeCPACS();
 
-    // save the new version
-    try {
-        newConfig = tixi::TixiExportDocumentAsString(tixiHandle);
-    }
-    catch (const tixi::TixiError& e) {
-        QString errMsg =
-            "ModifyTiglObject::initialize() Something went wrong during exporting the file from tixi handler. "
-            "Tixi error message: \"" +
-            QString(e.what()) + "\". The file is not saved!";
-        throw tigl::CTiglError(errMsg.toStdString());
-    }
+    newConfig = manager.getConfigurationAsString();
 }
 
 } // namespace TiGLViewer
