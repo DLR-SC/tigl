@@ -17,6 +17,7 @@
 */
 
 #include "test.h"
+#include "testUtils.h"
 
 #include "tigl.h"
 
@@ -67,6 +68,28 @@ TEST(CPACSVersion, newCPACSHeader)
 
     TiglCPACSConfigurationHandle tiglHandle = -1;
     EXPECT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixihandle, "", &tiglHandle));
+
+    tiglCloseCPACSConfiguration(tiglHandle);
+}
+
+TEST(CPACSVersion, deprecateOldCPACSHeader)
+{
+    TixiHandleWrapper tixihandle("TestData/testversion_old_header.xml");
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+
+    // Check whether deprecation warning appears when cpacsVersion node is stored right at /cpacs/header/
+
+    std::string logOutput;
+    { // Scope to destroy object of type CaptureTiGLLog and therefore reset console verbosity
+        CaptureTiGLLog t{TILOG_WARNING};
+        EXPECT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixihandle, "", &tiglHandle));
+        logOutput = t.log();
+        std::string comparisonString = "The use of the cpacsVersion node right at /cpacs/header/ is deprecated according to CPACS version 3.5.\n" \
+                "This value has to be moved exclusively into the /cpacs/header/versionInfos[]/versionInfo node to be supported by future TiGL versions.\n" \
+                "More information can be found in the CPACS documentation.";
+        ASSERT_TRUE((logOutput.find(comparisonString)) != std::string::npos);
+    } //scope
 
     tiglCloseCPACSConfiguration(tiglHandle);
 }
