@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cpacs.googlecode.com/files/CPACS_21_Schema.xsd">
   <header xsi:type="headerType">
-    <name>Empty</name>
-    <description>Empty aircraft</description>
-    <creator>Malo Drougard</creator>
-    <timestamp>2019-02-27T15:12:47</timestamp>
-    <version>1.0</version>
-    <cpacsVersion>3.0</cpacsVersion>
+    <name>Empty aircraft</name>
+    <version>1.0.0</version>
     <versionInfos>
       <versionInfo version="1.0.0">
         <description>Empty aircraft</description>

@@ -2,14 +2,11 @@
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi_noNamespaceSchemaLocation="CPACS_21_Schema.xsd">
   <header xsi:type="headerType">
     <name>Concorde</name>
-    <description>Concorde draw from a step file, build with SUMO and then converted to CPACS</description>
-    <creator>CFSE, Aidan Jungo</creator>
-    <version>1.0</version>
-    <cpacsVersion>3.0</cpacsVersion>
+    <version>1.0.0</version>
     <versionInfos>
       <versionInfo version="1.0.0">
-        <description>Converted to cpacs 3.0 using cpacs2to3</description>
-        <creator>cpacs2to3</creator>
+        <description>Concorde draw from a step file, build with SUMO and then converted to CPACS</description>
+        <creator>CFSE, Aidan Jungo</creator>
         <timestamp>2018-11-21T12:08:31</timestamp>
         <cpacsVersion>3.0</cpacsVersion>
       </versionInfo>
