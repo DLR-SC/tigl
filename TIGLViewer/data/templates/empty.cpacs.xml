@@ -7,7 +7,14 @@
     <timestamp>2019-02-27T15:12:47</timestamp>
     <version>1.0</version>
     <cpacsVersion>3.0</cpacsVersion>
-    <updates/>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <description>Empty aircraft</description>
+        <creator>Malo Drougard</creator>
+        <timestamp>2019-02-27T15:12:47</timestamp>
+        <cpacsVersion>3.0</cpacsVersion>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>

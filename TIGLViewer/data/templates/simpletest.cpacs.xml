@@ -7,15 +7,14 @@
     <timestamp>2012-10-09T15:12:47</timestamp>
     <version>0.2</version>
     <cpacsVersion>3.0</cpacsVersion>
-    <updates>
-      <update>
-        <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
+    <versionInfos>
+      <versionInfo version="0.2.0">
+        <description>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</description>
         <creator>cpacs2to3</creator>
         <timestamp>2018-01-15T09:22:57</timestamp>
-        <version>0.2</version>
         <cpacsVersion>3.0</cpacsVersion>
-      </update>
-    </updates>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>
