@@ -2,25 +2,15 @@
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi_noNamespaceSchemaLocation="CPACS_21_Schema.xsd">
   <header xsi:type="headerType">
     <name>Concorde</name>
-    <description>Concorde draw from a step file, build with SUMO and then converted to CPACS</description>
-    <creator>CFSE, Aidan Jungo</creator>
-    <version>1.0</version>
-    <cpacsVersion>3.0</cpacsVersion>
-    <updates>
-      <update>
-        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
-        <creator>cpacs2to3</creator>
-        <version>ver1</version>
+    <version>1.0.0</version>
+    <versionInfos>
+      <versionInfo version="1.0.0">
         <cpacsVersion>3.0</cpacsVersion>
-      </update>
-      <update>
-        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
-        <creator>cpacs2to3</creator>
+        <creator>CFSE, Aidan Jungo</creator>
+        <description>Concorde draw from a step file, build with SUMO and then converted to CPACS</description>
         <timestamp>2018-11-21T12:08:31</timestamp>
-        <version>ver1</version>
-        <cpacsVersion>3.0</cpacsVersion>
-      </update>
-    </updates>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles xsi:type="vehiclesType">
     <aircraft xsi:type="aircraftType">
