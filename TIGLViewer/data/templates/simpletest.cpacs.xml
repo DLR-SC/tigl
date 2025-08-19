@@ -2,20 +2,21 @@
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cpacs.googlecode.com/files/CPACS_21_Schema.xsd">
   <header>
     <name>Cpacs2Test</name>
-    <description>Simple Wing for unit testing</description>
-    <creator>Martin Siggel</creator>
-    <timestamp>2012-10-09T15:12:47</timestamp>
-    <version>0.2</version>
-    <cpacsVersion>3.0</cpacsVersion>
-    <updates>
-      <update>
-        <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
-        <creator>cpacs2to3</creator>
-        <timestamp>2018-01-15T09:22:57</timestamp>
-        <version>0.2</version>
+    <version>0.2.0</version>
+    <versionInfos>
+      <versionInfo version="0.1.0">
+	<cpacsVersion>3.0</cpacsVersion>
+	<creator>Martin Siggel</creator>
+	<description>Simple Wing for unit testing</description>
+	<timestamp>2012-10-09T15:12:47</timestamp>
+      </versionInfo>
+      <versionInfo version="0.2.0">
         <cpacsVersion>3.0</cpacsVersion>
-      </update>
-    </updates>
+        <creator>cpacs2to3</creator>
+        <description>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</description>
+        <timestamp>2018-01-15T09:22:57</timestamp>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>
