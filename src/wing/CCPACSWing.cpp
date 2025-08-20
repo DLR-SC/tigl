@@ -1407,183 +1407,178 @@ void CCPACSWing::SetARKeepArea(double newAR)
 
 void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID)
 {
-        if(GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetGuideCurves())
-        {
-            throw tigl::CTiglError("Adding sections in wing segments containing guide curves is currently not supported.\n"
-                                   "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
-        }
+    if(GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetGuideCurves())
+    {
+        throw tigl::CTiglError("Adding sections in wing segments containing guide curves is currently not supported.\n"
+                                "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
+    }
 
-        std::string segmentToSplit = GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetUID();
-        CTiglWingSectionElement *startElement = wingHelper->GetCTiglElementOfWing(startElementUID);
-        CTiglWingSectionElement *endElement = wingHelper->GetCTiglElementOfWing(endElementUID);
+    std::string segmentToSplit = GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetUID();
+    CTiglWingSectionElement *startElement = wingHelper->GetCTiglElementOfWing(startElementUID);
+    CTiglWingSectionElement *endElement = wingHelper->GetCTiglElementOfWing(endElementUID);
 
-        // compute the new parameters for the new element
-        CTiglPoint center = (startElement->GetCenter() + endElement->GetCenter()) * 0.5;
-        CTiglPoint normal = (startElement->GetNormal() + endElement->GetNormal());
-        if (isNear(normal.norm2(), 0)) {
-            normal = startElement->GetNormal();
-        }
-        normal.normalize();
-        double angleN = (startElement->GetRotationAroundNormal() + endElement->GetRotationAroundNormal()) * 0.5;
-        double width = (startElement->GetWidth() + endElement->GetWidth()) * 0.5;
-        double height = (startElement->GetHeight() + endElement->GetHeight()) * 0.5;
+    // compute the new parameters for the new element
+    CTiglPoint center = (startElement->GetCenter() + endElement->GetCenter()) * 0.5;
+    CTiglPoint normal = (startElement->GetNormal() + endElement->GetNormal());
+    if (isNear(normal.norm2(), 0)) {
+        normal = startElement->GetNormal();
+    }
+    normal.normalize();
+    double angleN = (startElement->GetRotationAroundNormal() + endElement->GetRotationAroundNormal()) * 0.5;
+    double width = (startElement->GetWidth() + endElement->GetWidth()) * 0.5;
+    double height = (startElement->GetHeight() + endElement->GetHeight()) * 0.5;
 
-        // create new section and element
-        CTiglUIDManager &uidManager = GetUIDManager();
-        std::string baseUID = uidManager.MakeUIDUnique(startElement->GetSectionUID() + "Bis");
-        CCPACSWingSection &newSection = GetSections().CreateSection(baseUID, startElement->GetProfileUID());
-        CTiglWingSectionElement *newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
+    // create new section and element
+    CTiglUIDManager &uidManager = GetUIDManager();
+    std::string baseUID = uidManager.MakeUIDUnique(startElement->GetSectionUID() + "Bis");
+    CCPACSWingSection &newSection = GetSections().CreateSection(baseUID, startElement->GetProfileUID());
+    CTiglWingSectionElement *newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
 
-        // set the new parameters
-        newElement->SetCenter(center);
-        newElement->SetWidth(width);
-        newElement->SetHeight(height);
-        newElement->SetNormal(normal);
-        newElement->SetRotationAroundNormal(angleN);
-
-
-        // connect the element with segment and update old segment
-        GetSegments().SplitSegment(segmentToSplit, newElement->GetSectionElementUID());
+    // set the new parameters
+    newElement->SetCenter(center);
+    newElement->SetWidth(width);
+    newElement->SetHeight(height);
+    newElement->SetNormal(normal);
+    newElement->SetRotationAroundNormal(angleN);
 
 
+    // connect the element with segment and update old segment
+    GetSegments().SplitSegment(segmentToSplit, newElement->GetSectionElementUID());
 }
 
 void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
 {
-
-        std::vector<std::string>  elementsAfter = ListFunctions::GetElementsAfter(wingHelper->GetElementUIDsInOrder(), startElementUID);
-        if ( elementsAfter.size() > 0 ) {
-            // In this case we insert the element between the start element and the next one
-            this->CreateNewConnectedElementBetween(startElementUID, elementsAfter[0] );
+    std::vector<std::string>  elementsAfter = ListFunctions::GetElementsAfter(wingHelper->GetElementUIDsInOrder(), startElementUID);
+    if ( elementsAfter.size() > 0 ) {
+        // In this case we insert the element between the start element and the next one
+        this->CreateNewConnectedElementBetween(startElementUID, elementsAfter[0] );
+    }
+    else {
+        std::vector<std::string>  elementsBefore = ListFunctions::GetElementsInBetween(wingHelper->GetElementUIDsInOrder(), wingHelper->GetRootUID(),startElementUID);
+        if ( elementsBefore.size() < 2) {
+            throw  CTiglError("Impossible to add a element after if there is no previous element");
         }
-        else {
-            std::vector<std::string>  elementsBefore = ListFunctions::GetElementsInBetween(wingHelper->GetElementUIDsInOrder(), wingHelper->GetRootUID(),startElementUID);
-            if ( elementsBefore.size() < 2) {
-                throw  CTiglError("Impossible to add a element after if there is no previous element");
-            }
 
-            // Iterate over segments to find the one ending in startElementUID
-            // If the corresponding segment contains guide curves -> Throw error, since adding elements after gc-segments is not supported
-            for (int i=1; i <= GetSegmentCount(); i++)
+        // Iterate over segments to find the one ending in startElementUID
+        // If the corresponding segment contains guide curves -> Throw error, since adding elements after gc-segments is not supported
+        for (int i=1; i <= GetSegmentCount(); i++)
+        {
+            if(GetSegment(i).GetGuideCurves())
             {
-                if(GetSegment(i).GetGuideCurves())
-                {
-                    throw tigl::CTiglError("Adding sections after wing segments containing guide curves is currently not supported.\n"
-                                           "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
-                }
+                throw tigl::CTiglError("Adding sections after wing segments containing guide curves is currently not supported.\n"
+                                       "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
             }
-
-            std::string  previousElementUID = elementsBefore[elementsBefore.size()-2];
-
-            CTiglWingSectionElement* previousElement = wingHelper->GetCTiglElementOfWing(previousElementUID);
-            CTiglWingSectionElement* startElement = wingHelper->GetCTiglElementOfWing(startElementUID);
-
-            // Compute the parameters for the new section base on the start element and the previous element.
-            // We try to create a continuous fuselage
-            CTiglPoint normal  =  startElement->GetNormal() + (startElement->GetNormal() - previousElement->GetNormal() ) ;
-            CTiglPoint center = startElement->GetCenter() + (startElement->GetCenter() - previousElement->GetCenter() );
-            double angleN = startElement->GetRotationAroundNormal() + (startElement->GetRotationAroundNormal() -previousElement->GetRotationAroundNormal());
-            double area = startElement->GetArea();
-            if (previousElement->GetArea() > 0) {
-                double scaleF = startElement->GetArea() / previousElement->GetArea();
-                area = scaleF * area;
-            }
-            std::string profileUID = startElement->GetProfileUID();
-            std::string sectionUID = startElement->GetSectionUID() + "After";
-
-
-            CCPACSWingSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
-            CTiglWingSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
-
-            newElement->SetNormal(normal);
-            newElement->SetRotationAroundNormal(angleN);
-            newElement->SetCenter(center);
-            newElement->SetArea(area);
-
-            // Connect the element with the segment
-            CCPACSWingSegment&  newSegment = GetSegments().AddSegment();
-            std::string newSegmentUID = GetUIDManager().MakeUIDUnique("SegGenerated");
-
-            newSegment.SetUID(newSegmentUID);
-            newSegment.SetName(newSegmentUID);
-            newSegment.SetFromElementUID(startElementUID);
-            newSegment.SetToElementUID(newElement->GetSectionElementUID());
-
         }
 
+        std::string  previousElementUID = elementsBefore[elementsBefore.size()-2];
+
+        CTiglWingSectionElement* previousElement = wingHelper->GetCTiglElementOfWing(previousElementUID);
+        CTiglWingSectionElement* startElement = wingHelper->GetCTiglElementOfWing(startElementUID);
+
+        // Compute the parameters for the new section base on the start element and the previous element.
+        // We try to create a continuous fuselage
+        CTiglPoint normal  =  startElement->GetNormal() + (startElement->GetNormal() - previousElement->GetNormal() ) ;
+        CTiglPoint center = startElement->GetCenter() + (startElement->GetCenter() - previousElement->GetCenter() );
+        double angleN = startElement->GetRotationAroundNormal() + (startElement->GetRotationAroundNormal() -previousElement->GetRotationAroundNormal());
+        double area = startElement->GetArea();
+        if (previousElement->GetArea() > 0) {
+            double scaleF = startElement->GetArea() / previousElement->GetArea();
+            area = scaleF * area;
+        }
+        std::string profileUID = startElement->GetProfileUID();
+        std::string sectionUID = startElement->GetSectionUID() + "After";
+
+
+        CCPACSWingSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
+        CTiglWingSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
+
+        newElement->SetNormal(normal);
+        newElement->SetRotationAroundNormal(angleN);
+        newElement->SetCenter(center);
+        newElement->SetArea(area);
+
+        // Connect the element with the segment
+        CCPACSWingSegment&  newSegment = GetSegments().AddSegment();
+        std::string newSegmentUID = GetUIDManager().MakeUIDUnique("SegGenerated");
+
+        newSegment.SetUID(newSegmentUID);
+        newSegment.SetName(newSegmentUID);
+        newSegment.SetFromElementUID(startElementUID);
+        newSegment.SetToElementUID(newElement->GetSectionElementUID());
+    }
 }
 
 
 void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
 {
-        std::vector<std::string> elementsBefore = ListFunctions::GetElementsInBetween(wingHelper->GetElementUIDsInOrder(), wingHelper->GetRootUID(),startElementUID);
-        if ( elementsBefore.size() > 1 ) {
-            this->CreateNewConnectedElementBetween(elementsBefore[elementsBefore.size()-2], startElementUID);
+    std::vector<std::string> elementsBefore = ListFunctions::GetElementsInBetween(wingHelper->GetElementUIDsInOrder(), wingHelper->GetRootUID(),startElementUID);
+    if ( elementsBefore.size() > 1 ) {
+        this->CreateNewConnectedElementBetween(elementsBefore[elementsBefore.size()-2], startElementUID);
+    }
+    else {
+        std::vector<std::string> elementsAfter  =  ListFunctions::GetElementsAfter(wingHelper->GetElementUIDsInOrder(), startElementUID);
+        if (elementsAfter.size() < 1 ) {
+            throw  CTiglError("Impossible to add a element before if there is no previous element");
         }
-        else {
-            std::vector<std::string> elementsAfter  =  ListFunctions::GetElementsAfter(wingHelper->GetElementUIDsInOrder(), startElementUID);
-            if (elementsAfter.size() < 1 ) {
-                throw  CTiglError("Impossible to add a element before if there is no previous element");
-            }
 
-            // Iterate over segments to find the one starting in startElementUID
-            // If the corresponding segment contains guide curves -> Throw error, since adding elements after gc-segments is not supported
-            for (int i=1; i <= GetSegmentCount(); i++)
+        // Iterate over segments to find the one starting in startElementUID
+        // If the corresponding segment contains guide curves -> Throw error, since adding elements after gc-segments is not supported
+        for (int i=1; i <= GetSegmentCount(); i++)
+        {
+            if(GetSegment(i).GetGuideCurves())
             {
-                if(GetSegment(i).GetGuideCurves())
-                {
-                    throw tigl::CTiglError("Adding sections before wing segments containing guide curves is currently not supported.\n"
-                                           "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
-                }
-            }
-
-            std::string  previousElementUID = elementsAfter[0];
-
-            CTiglWingSectionElement* previousElement = wingHelper->GetCTiglElementOfWing(previousElementUID);
-            CTiglWingSectionElement* startElement = wingHelper->GetCTiglElementOfWing(startElementUID);
-
-            // Compute the parameters for the new section base on the start element and the previous element.
-            // We try to create a continuous fuselage
-            CTiglPoint normal  =  startElement->GetNormal() + (startElement->GetNormal() - previousElement->GetNormal() ) ;
-            CTiglPoint center = startElement->GetCenter() + (startElement->GetCenter() - previousElement->GetCenter() );
-            double angleN = startElement->GetRotationAroundNormal() + (startElement->GetRotationAroundNormal() -previousElement->GetRotationAroundNormal());
-            double area = startElement->GetArea();
-            if (previousElement->GetArea() > 0) {
-                double scaleF = startElement->GetArea() / previousElement->GetArea();
-                area = scaleF * area;
-            }
-            std::string profileUID = startElement->GetProfileUID();
-            std::string sectionUID = startElement->GetSectionUID() + "Before";
-
-
-            CCPACSWingSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
-            CTiglWingSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
-
-            newElement->SetNormal(normal);
-            newElement->SetRotationAroundNormal(angleN);
-            newElement->SetCenter(center);
-            newElement->SetArea(area);
-
-            // Connect the element with the segment
-            CCPACSWingSegment&  newSegment = GetSegments().AddSegment();
-            std::string newSegmentUID = GetUIDManager().MakeUIDUnique("SegGenerated");
-
-            newSegment.SetUID(newSegmentUID);
-            newSegment.SetName(newSegmentUID);
-            newSegment.SetFromElementUID(newElement->GetSectionElementUID());
-            newSegment.SetToElementUID(startElementUID);
-
-            GetSegments().Invalidate();
-            // to reorder the segment if needed.
-            if ( m_segments.NeedReordering() ){
-                try { // we use a try-catch to not rise two time a exception if the reordering occurs during the first cpacs parsing
-                    m_segments.ReorderSegments();
-                }
-                catch (  const CTiglError& err) {
-                    LOG(ERROR) << err.what();
-                }
+                throw tigl::CTiglError("Adding sections before wing segments containing guide curves is currently not supported.\n"
+                                       "In general, guide curves should only be added when all sections are already defined, since the guide curves depend on them.", TIGL_ERROR);
             }
         }
+
+        std::string  previousElementUID = elementsAfter[0];
+
+        CTiglWingSectionElement* previousElement = wingHelper->GetCTiglElementOfWing(previousElementUID);
+        CTiglWingSectionElement* startElement = wingHelper->GetCTiglElementOfWing(startElementUID);
+
+        // Compute the parameters for the new section base on the start element and the previous element.
+        // We try to create a continuous fuselage
+        CTiglPoint normal  =  startElement->GetNormal() + (startElement->GetNormal() - previousElement->GetNormal() ) ;
+        CTiglPoint center = startElement->GetCenter() + (startElement->GetCenter() - previousElement->GetCenter() );
+        double angleN = startElement->GetRotationAroundNormal() + (startElement->GetRotationAroundNormal() -previousElement->GetRotationAroundNormal());
+        double area = startElement->GetArea();
+        if (previousElement->GetArea() > 0) {
+            double scaleF = startElement->GetArea() / previousElement->GetArea();
+            area = scaleF * area;
+        }
+        std::string profileUID = startElement->GetProfileUID();
+        std::string sectionUID = startElement->GetSectionUID() + "Before";
+
+
+        CCPACSWingSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
+        CTiglWingSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
+
+        newElement->SetNormal(normal);
+        newElement->SetRotationAroundNormal(angleN);
+        newElement->SetCenter(center);
+        newElement->SetArea(area);
+
+        // Connect the element with the segment
+        CCPACSWingSegment&  newSegment = GetSegments().AddSegment();
+        std::string newSegmentUID = GetUIDManager().MakeUIDUnique("SegGenerated");
+
+        newSegment.SetUID(newSegmentUID);
+        newSegment.SetName(newSegmentUID);
+        newSegment.SetFromElementUID(newElement->GetSectionElementUID());
+        newSegment.SetToElementUID(startElementUID);
+
+        GetSegments().Invalidate();
+        // to reorder the segment if needed.
+        if ( m_segments.NeedReordering() ){
+            try { // we use a try-catch to not rise two time a exception if the reordering occurs during the first cpacs parsing
+                m_segments.ReorderSegments();
+            }
+            catch (  const CTiglError& err) {
+                LOG(ERROR) << err.what();
+            }
+        }
+    }
 }
 
 
