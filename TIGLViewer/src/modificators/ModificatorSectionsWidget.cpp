@@ -20,6 +20,7 @@
 #include "ui_ModificatorSectionsWidget.h"
 
 #include "NewConnectedElementDialog.h"
+#include "NewConnectedElementParamDialog.h"
 #include "CTiglLogging.h"
 #include "CTiglError.h"
 #include "TIGLViewerErrorDialog.h"
@@ -64,10 +65,36 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
         NewConnectedElementDialog::Where where = newElementDialog.getWhere();
         try {
             if (where == NewConnectedElementDialog::Before) {
-                createConnectedElement->CreateNewConnectedElementBefore(startUID);
+                auto elementUIDBefore = createConnectedElement->GetElementUIDBeforeNewElementIfExists(startUID);
+                if (elementUIDBefore) {
+                    NewConnectedElementParamDialog newElementParamDialog(this);
+                    if (newElementParamDialog.exec() == QDialog::Accepted) {
+                        double param = newElementParamDialog.getParam();
+                        createConnectedElement->CreateNewConnectedElementBetween(*elementUIDBefore, startUID, param);
+                    }
+                    else {
+                        return;
+                    }
+                }
+                else {
+                    createConnectedElement->CreateNewConnectedElementBefore(startUID);
+                }
             }
             else if (where == NewConnectedElementDialog::After) {
-                createConnectedElement->CreateNewConnectedElementAfter(startUID);
+                auto elementUIDAfter = createConnectedElement->GetElementUIDAfterNewElementIfExists(startUID);
+                if (elementUIDAfter) {
+                    NewConnectedElementParamDialog newElementParamDialog(this);
+                    if (newElementParamDialog.exec() == QDialog::Accepted) {
+                        double param = newElementParamDialog.getParam();
+                        createConnectedElement->CreateNewConnectedElementBetween(startUID, *elementUIDAfter, param);
+                    }
+                    else {
+                        return;
+                    }
+                }
+                else {
+                    createConnectedElement->CreateNewConnectedElementAfter(startUID);
+                }
             }
         }
         catch (const tigl::CTiglError& err) {

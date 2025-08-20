@@ -36,14 +36,20 @@ struct ElementModificatorInterface
     // Here, functions are defined as member variables calling the 'right' (depending on present data type) function from CCPACSFuselage, CCPACSWing, etc. via lambdas
     template <typename T>
     ElementModificatorInterface(T&& t)
-        : CreateNewConnectedElementAfter(
+        : GetElementUIDAfterNewElementIfExists(
+            [&t](std::string str){ return t.GetElementUIDAfterNewElementIfExists(str); }
+            )
+        , CreateNewConnectedElementAfter(
             [&t](std::string str){ return t.CreateNewConnectedElementAfter(str); }
+            )
+        , GetElementUIDBeforeNewElementIfExists(
+            [&t](std::string str){ return t.GetElementUIDBeforeNewElementIfExists(str); }
             )
         , CreateNewConnectedElementBefore(
             [&t](std::string str){ return t.CreateNewConnectedElementBefore(str); }
             )
         , CreateNewConnectedElementBetween(
-            [&t](std::string str1, std::string str2){ return t.CreateNewConnectedElementBetween(str1, str2); }
+            [&t](std::string str1, std::string str2, double param){ return t.CreateNewConnectedElementBetween(str1, str2, param); }
             )
         , DeleteConnectedElement(
             [&t](std::string str){ return t.DeleteConnectedElement(str); }
@@ -53,9 +59,11 @@ struct ElementModificatorInterface
             )
     {}
 
+    std::function<std::optional<std::string>(std::string)> GetElementUIDAfterNewElementIfExists;
     std::function<void(std::string)> CreateNewConnectedElementAfter;
+    std::function<std::optional<std::string>(std::string)> GetElementUIDBeforeNewElementIfExists;
     std::function<void(std::string)> CreateNewConnectedElementBefore;
-    std::function<void(std::string, std::string)> CreateNewConnectedElementBetween;
+    std::function<void(std::string, std::string, double param)> CreateNewConnectedElementBetween;
     std::function<void(std::string)> DeleteConnectedElement;
     std::function<std::vector<std::string>()> GetOrderedConnectedElement;
 };

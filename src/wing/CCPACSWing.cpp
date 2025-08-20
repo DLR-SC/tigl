@@ -1405,8 +1405,14 @@ void CCPACSWing::SetARKeepArea(double newAR)
     SetHalfSpanKeepArea(newSpan);
 }
 
-void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID)
+void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double param)
 {
+
+    if(0.0001 > param || param > 0.9999)
+    {
+        throw tigl::CTiglError("The xsi parameter must be in the range of [0.0001, 0.9999] when adding a new section within a wing.", TIGL_ERROR);
+    }
+
     if(GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetGuideCurves())
     {
         throw tigl::CTiglError("Adding sections in wing segments containing guide curves is currently not supported.\n"
@@ -1418,15 +1424,15 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
     CTiglWingSectionElement *endElement = wingHelper->GetCTiglElementOfWing(endElementUID);
 
     // compute the new parameters for the new element
-    CTiglPoint center = (startElement->GetCenter() + endElement->GetCenter()) * 0.5;
+    CTiglPoint center = startElement->GetCenter() * (1 - param) + endElement->GetCenter() * param;
     CTiglPoint normal = (startElement->GetNormal() + endElement->GetNormal());
     if (isNear(normal.norm2(), 0)) {
         normal = startElement->GetNormal();
     }
     normal.normalize();
-    double angleN = (startElement->GetRotationAroundNormal() + endElement->GetRotationAroundNormal()) * 0.5;
-    double width = (startElement->GetWidth() + endElement->GetWidth()) * 0.5;
-    double height = (startElement->GetHeight() + endElement->GetHeight()) * 0.5;
+    double angleN = startElement->GetRotationAroundNormal() * (1 - param) + endElement->GetRotationAroundNormal() * param;
+    double width = startElement->GetWidth() * (1 - param) + endElement->GetWidth() * param;
+    double height = startElement->GetHeight() * (1 - param) + endElement->GetHeight() * param;
 
     // create new section and element
     CTiglUIDManager &uidManager = GetUIDManager();
@@ -1446,12 +1452,22 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
     GetSegments().SplitSegment(segmentToSplit, newElement->GetSectionElementUID());
 }
 
-void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
+std::optional<std::string> CCPACSWing::GetElementUIDAfterNewElementIfExists(std::string startElementUID)
 {
     std::vector<std::string>  elementsAfter = ListFunctions::GetElementsAfter(wingHelper->GetElementUIDsInOrder(), startElementUID);
     if ( elementsAfter.size() > 0 ) {
-        // In this case we insert the element between the start element and the next one
-        this->CreateNewConnectedElementBetween(startElementUID, elementsAfter[0] );
+        return elementsAfter[0];
+    }
+    else {
+        return std::nullopt;
+    }
+}
+
+void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
+{
+    auto elementUIDAfter = GetElementUIDAfterNewElementIfExists(startElementUID);
+    if (elementUIDAfter) {
+        CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter);
     }
     else {
         std::vector<std::string>  elementsBefore = ListFunctions::GetElementsInBetween(wingHelper->GetElementUIDsInOrder(), wingHelper->GetRootUID(),startElementUID);
@@ -1508,12 +1524,23 @@ void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
     }
 }
 
-
-void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
+std::optional<std::string> CCPACSWing::GetElementUIDBeforeNewElementIfExists(std::string startElementUID)
 {
     std::vector<std::string> elementsBefore = ListFunctions::GetElementsInBetween(wingHelper->GetElementUIDsInOrder(), wingHelper->GetRootUID(),startElementUID);
     if ( elementsBefore.size() > 1 ) {
-        this->CreateNewConnectedElementBetween(elementsBefore[elementsBefore.size()-2], startElementUID);
+        return elementsBefore[elementsBefore.size()-2];
+    }
+    else {
+        return std::nullopt;
+    }
+}
+
+void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
+{
+
+    auto elementUIDBefore = GetElementUIDBeforeNewElementIfExists(startElementUID);
+    if (elementUIDBefore) {
+        CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID);
     }
     else {
         std::vector<std::string> elementsAfter  =  ListFunctions::GetElementsAfter(wingHelper->GetElementUIDsInOrder(), startElementUID);
