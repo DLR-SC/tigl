@@ -1426,6 +1426,7 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
         normal.normalize();
         double angleN = (startElement->GetRotationAroundNormal() + endElement->GetRotationAroundNormal()) * 0.5;
         double width = (startElement->GetWidth() + endElement->GetWidth()) * 0.5;
+        double height = (startElement->GetHeight() + endElement->GetHeight()) * 0.5;
 
         // create new section and element
         CTiglUIDManager &uidManager = GetUIDManager();
@@ -1436,6 +1437,7 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
         // set the new parameters
         newElement->SetCenter(center);
         newElement->SetWidth(width);
+        newElement->SetHeight(height);
         newElement->SetNormal(normal);
         newElement->SetRotationAroundNormal(angleN);
 

@@ -1033,7 +1033,7 @@ TEST_F(creatorWing, MultipleWings_CreateSections)
     for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
         EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
     }
-    expectedCenter = tigl::CTiglPoint(0.617625, 1.5, -9.62325e-19);
+    expectedCenter = tigl::CTiglPoint(0.620235, 1.5, 0.0);
     newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2BisElem1");
     EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.001));
 
