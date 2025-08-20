@@ -747,9 +747,19 @@ void CCPACSFuselage::SetFuselageHelper(CTiglFuselageHelper& cache) const
     cache.SetFuselage(const_cast<CCPACSFuselage*>(this));
 }
 
-
-void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID)
+// TODO:    - Build tests for fuselages (currently, only implemented for wings)
+//          - Think of strategy to reasonably implement the new element's properties
+//              * Up to now, the old way via area-interpolation is kept
+//              * Interpolating width and height does not work as good as within the Wings for arbitrary Fuselages
+void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double param)
 {
+
+    // TODO: Discuss (AND TEST FOR ROBUSTNESS!!) a meaningful range of allowed parameters. The yet defined one might be too large ?!
+    if(0.0001 > param || param > 0.9999)
+    {
+        throw tigl::CTiglError("The xsi parameter must be in the range of [0.0001, 0.9999] when adding a new section within a wing.", TIGL_ERROR);
+    }
+
     if(GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetGuideCurves())
     {
         throw tigl::CTiglError("Adding sections in fuselage segments containing guide curves is currently not supported.\n"
@@ -761,14 +771,14 @@ void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUI
     CTiglFuselageSectionElement* endElement = fuselageHelper->GetCTiglElementOfFuselage(endElementUID);
 
     // compute the new parameters for the new element
-    CTiglPoint center = ( startElement->GetCenter() + endElement->GetCenter() ) * 0.5;
+    CTiglPoint center = startElement->GetCenter() * (1 - param) + endElement->GetCenter() * param;
     CTiglPoint normal = ( startElement->GetNormal() + endElement->GetNormal() );
     if ( isNear( normal.norm2(), 0) ){
         normal = startElement->GetNormal();
     }
     normal.normalize();
-    double angleN = ( startElement->GetRotationAroundNormal() + endElement->GetRotationAroundNormal() ) * 0.5;
-    double area = (startElement->GetArea() + endElement->GetArea() ) * 0.5;
+    double angleN = startElement->GetRotationAroundNormal() * (1 - param) + endElement->GetRotationAroundNormal() * param;
+    double area = startElement->GetArea() * (1 - param) + endElement->GetArea() * param;
 
     // create new section and element
     CTiglUIDManager& uidManager = GetUIDManager();
@@ -785,18 +795,40 @@ void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUI
 
     // connect the element with segment and update old segment
     GetSegments().SplitSegment(segmentToSplit, newElement->GetSectionElementUID() );
-
-
-
 }
 
-void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
+std::optional<std::string> CCPACSFuselage::GetElementUIDAfterNewElementIfExists(std::string startElementUID)
 {
 
     std::vector<std::string>  elementsAfter = ListFunctions::GetElementsAfter(fuselageHelper->GetElementUIDsInOrder(), startElementUID);
     if ( elementsAfter.size() > 0 ) {
-        // In this case we insert the elemenet between the start element and the next one
-        this->CreateNewConnectedElementBetween(startElementUID, elementsAfter[0] );
+        return elementsAfter[0];
+    }
+    else {
+        return std::nullopt;
+    }
+}
+
+void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
+{
+    // HINT: This message is exemplary and also relates to
+    //          * CCPACSFuselage::CreateNewConnectedElementBefore()
+    //          * CCPACSWing::CreateNewConnectedElementAfter()
+    //          * CCPACSWing::CreateNewConnectedElementBefore()
+
+    // WIP: Think of strategy to avoid this if/else.
+    //      Outsourcing the old code within the if/else is necessary.
+    //      An extern check (via the new function GetElementUID<After/Before>NewElementIfExists()) has to be done.
+    //      It decides whether a user input via a window (for the xsi-parameter) is needed.
+
+    //      Now, the check is executed twice when this function is called from ModificatorSectionsWidget::execNewConnectedElementDialog.
+    //      If CreateNewConnectedElementAfter() is called from, e.g., the testsuite (and not from ModificatorSectionsWidget::execNewConnectedElementDialog),
+    //          the check has to be done to decide whether the new element is inside or at the boundary.
+    //      If this check is not executed, it leads to errors in the testsuite. The tests assume the existence of the check to decide which function to use.
+    //
+    auto elementUIDAfter = GetElementUIDAfterNewElementIfExists(startElementUID);
+    if (elementUIDAfter) {
+        CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter);
     }
     else {
         // in this case we simply need to find the previous element and call the appropriate function
@@ -851,16 +883,25 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
         newSegment.SetName(newSegmentUID);
         newSegment.SetFromElementUID(startElementUID);
         newSegment.SetToElementUID(newElement->GetSectionElementUID());
-
     }
+}
 
+std::optional<std::string> CCPACSFuselage::GetElementUIDBeforeNewElementIfExists(std::string startElementUID)
+{
+    std::vector<std::string> elementsBefore = ListFunctions::GetElementsInBetween(fuselageHelper->GetElementUIDsInOrder(), fuselageHelper->GetNoseUID(),startElementUID);
+    if ( elementsBefore.size() > 1 ) {
+        return elementsBefore[elementsBefore.size()-2];
+    }
+    else {
+        return std::nullopt;
+    }
 }
 
 void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID)
 {
-    std::vector<std::string> elementsBefore = ListFunctions::GetElementsInBetween(fuselageHelper->GetElementUIDsInOrder(), fuselageHelper->GetNoseUID(),startElementUID);
-    if ( elementsBefore.size() > 1 ) {
-        this->CreateNewConnectedElementBetween(elementsBefore[elementsBefore.size()-2], startElementUID);
+    auto elementUIDBefore = GetElementUIDBeforeNewElementIfExists(startElementUID);
+    if (elementUIDBefore) {
+        CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID);
     }
     else {
         std::vector<std::string> elementsAfter  =  ListFunctions::GetElementsAfter(fuselageHelper->GetElementUIDsInOrder(), startElementUID);
@@ -925,7 +966,6 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
                 LOG(ERROR) << err.what();
             }
         }
-
     }
 }
 

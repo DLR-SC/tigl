@@ -162,6 +162,8 @@ public:
     // Set the maximal width of the fuselage by inverting the rotation of the fuselage and scaling in the Y direction
     TIGL_EXPORT void SetMaxWidth(double newMaxWidth);
 
+    TIGL_EXPORT std::optional<std::string> GetElementUIDAfterNewElementIfExists(std::string startElementUID);
+
     /**
      * Create a new section, a new element and connect the element to the "startElement".
      * The new element is placed "after" the start element.
@@ -171,6 +173,8 @@ public:
      * @param startElementUID
      */
     TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID);
+
+    TIGL_EXPORT std::optional<std::string> GetElementUIDBeforeNewElementIfExists(std::string startElementUID);
 
     /**
      * Create a new section, a new element and connect the element to the "startElement".
@@ -183,13 +187,14 @@ public:
     TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID);
 
     /**
-      *Create a new section, a new element and place the new element between the startElement and the endElement.
+     * Create a new section, a new element and place the new element between the startElement and the endElement.
+     * The position between the startElement and endElement is defined by the parameter param in (0,1).
      * @remark The startElement and endElement must be connected by a segment.
      * @param startElementUID
      * @param endElementUID
+     * @param param
      */
-    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID);
-
+    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double param = 0.5);
 
     TIGL_EXPORT void DeleteConnectedElement(std::string elementUID);
 
