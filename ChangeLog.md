@@ -3,6 +3,11 @@ Changelog
 
 Changes since last release
 -------------
+05/08/2025
+- Deprecation warning
+  - The use of the node cpacsVersion right within the CPACS path /cpacs/header/ is deprecated according to CPACS 3.5. Hence, now a deprecation warning is printed if it is still used (issue #1126).
+
+
 29/07/2025
 - General changes
   - Remove the hard-wired gtest source code from the repository. Now, it is downloaded from GitHub and configured during the TiGL-configuration-process by default (issue #1114).
