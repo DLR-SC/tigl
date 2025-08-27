@@ -1441,9 +1441,9 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
     CTiglWingSectionElement *newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
 
     // set the new parameters
-    newElement->SetCenter(center);
     newElement->SetWidth(width);
     newElement->SetHeight(height);
+    newElement->SetCenter(center);
     newElement->SetNormal(normal);
     newElement->SetRotationAroundNormal(angleN);
 

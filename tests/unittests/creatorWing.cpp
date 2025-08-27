@@ -1107,7 +1107,7 @@ TEST_F(creatorWing, wingCreateSectionInsideWithParam)
 
     expectedArea = 0.185723;
     expectedWidth = 0.81102;
-    expectedCenter = tigl::CTiglPoint(0.641655, 1.378, 0.0);
+    expectedCenter = tigl::CTiglPoint(0.663589, 1.378, 0.0);
     newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2BisElem1");
 
     EXPECT_NEAR(expectedArea, newElement->GetArea(), 0.0001);
