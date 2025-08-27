@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Choose the eta parameter</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -29,7 +29,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set parameter at which the new element should be placed within the section .&lt;/p&gt;&lt;p&gt;Choose a value between 0.0001 and 0.9999!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the eta parameter at which the new element should be placed within the segment.&lt;/p&gt;&lt;p&gt;Choose a value between 0.0001 and 0.9999!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
