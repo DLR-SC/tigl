@@ -20,7 +20,7 @@
 #include "ui_ModificatorSectionsWidget.h"
 
 #include "NewConnectedElementDialog.h"
-#include "NewConnectedElementParamDialog.h"
+#include "NewConnectedElementEtaDialog.h"
 #include "CTiglLogging.h"
 #include "CTiglError.h"
 #include "TIGLViewerErrorDialog.h"
@@ -67,10 +67,10 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
             if (where == NewConnectedElementDialog::Before) {
                 auto elementUIDBefore = createConnectedElement->GetElementUIDBeforeNewElement(startUID);
                 if (elementUIDBefore) {
-                    NewConnectedElementParamDialog newElementParamDialog(this);
-                    if (newElementParamDialog.exec() == QDialog::Accepted) {
-                        double param = newElementParamDialog.getParam();
-                        createConnectedElement->CreateNewConnectedElementBetween(*elementUIDBefore, startUID, param);
+                    NewConnectedElementEtaDialog newElementEtaDialog(this);
+                    if (newElementEtaDialog.exec() == QDialog::Accepted) {
+                        double eta = newElementEtaDialog.getEta();
+                        createConnectedElement->CreateNewConnectedElementBetween(*elementUIDBefore, startUID, eta);
                     }
                     else {
                         return;
@@ -83,10 +83,10 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
             else if (where == NewConnectedElementDialog::After) {
                 auto elementUIDAfter = createConnectedElement->GetElementUIDAfterNewElement(startUID);
                 if (elementUIDAfter) {
-                    NewConnectedElementParamDialog newElementParamDialog(this);
-                    if (newElementParamDialog.exec() == QDialog::Accepted) {
-                        double param = newElementParamDialog.getParam();
-                        createConnectedElement->CreateNewConnectedElementBetween(startUID, *elementUIDAfter, param);
+                    NewConnectedElementEtaDialog newElementEtaDialog(this);
+                    if (newElementEtaDialog.exec() == QDialog::Accepted) {
+                        double eta = newElementEtaDialog.getEta();
+                        createConnectedElement->CreateNewConnectedElementBetween(startUID, *elementUIDAfter, eta);
                     }
                     else {
                         return;

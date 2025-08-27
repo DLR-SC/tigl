@@ -16,30 +16,22 @@
  * limitations under the License.
  */
 
-#ifndef NEWCONNECTEDELEMENTPARAMDIALOG_H
-#define NEWCONNECTEDELEMENTPARAMDIALOG_H
+#include "NewConnectedElementEtaDialog.h"
+#include "ui_NewConnectedElementEtaDialog.h"
 
-#include <QDialog>
-#include <QString>
-
-namespace Ui
+NewConnectedElementEtaDialog::NewConnectedElementEtaDialog(QWidget* parent)
+    : QDialog(parent)
+    , ui(new Ui::NewConnectedElementEtaDialog)
 {
-class NewConnectedElementParamDialog;
+    ui->setupUi(this);
 }
 
-class NewConnectedElementParamDialog : public QDialog
+NewConnectedElementEtaDialog::~NewConnectedElementEtaDialog()
 {
-    Q_OBJECT
+    delete ui;
+}
 
-public:
-
-    explicit NewConnectedElementParamDialog(QWidget* parent = nullptr);
-    ~NewConnectedElementParamDialog();
-
-    double getParam();
-
-private:
-    Ui::NewConnectedElementParamDialog* ui;
-};
-
-#endif // NEWCONNECTEDELEMENTPARAMDIALOG_H
+double NewConnectedElementEtaDialog::getEta()
+{
+    return ui->doubleSpinBoxEta->value();
+}
