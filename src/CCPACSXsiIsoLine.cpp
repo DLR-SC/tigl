@@ -26,6 +26,11 @@ CCPACSXsiIsoLine::CCPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* paren
 {
 }
 
+CCPACSXsiIsoLine::CCPACSXsiIsoLine(CCPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSXsiIsoLine(parent, uidMgr)
+{
+}
+
 CCPACSXsiIsoLine::CCPACSXsiIsoLine(CCPACSLandingGearSupportBeamPosition* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSXsiIsoLine(parent, uidMgr)
 {
@@ -35,6 +40,11 @@ void CCPACSXsiIsoLine::SetXsi(const double& value)
 {
     generated::CPACSXsiIsoLine::SetXsi(value);
     InvalidateParent();
+}
+
+const double &CCPACSXsiIsoLine::GetXsi() const 
+{
+    return generated::CPACSXsiIsoLine::GetXsi();
 }
 
 void CCPACSXsiIsoLine::SetReferenceUID(const std::string& value)

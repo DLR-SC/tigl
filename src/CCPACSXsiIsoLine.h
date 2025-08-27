@@ -24,9 +24,11 @@ class CCPACSXsiIsoLine : public generated::CPACSXsiIsoLine
 {
 public:
     TIGL_EXPORT CCPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSXsiIsoLine(CCPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSXsiIsoLine(CCPACSLandingGearSupportBeamPosition* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void SetXsi(const double& value) override;
+    TIGL_EXPORT const double &GetXsi() const override;
     TIGL_EXPORT void SetReferenceUID(const std::string& value) override;
 
     //TIGL_EXPORT double ComputeCSOrTEDXsi() const;
