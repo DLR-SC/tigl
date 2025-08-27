@@ -84,10 +84,10 @@
         <number>3</number>
        </property>
        <property name="minimum">
-        <double>-89.000000000000000</double>
+        <double>-90.000000000000000</double>
        </property>
        <property name="maximum">
-        <double>89.000000000000000</double>
+        <double>90.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -194,10 +194,10 @@
         <number>3</number>
        </property>
        <property name="minimum">
-        <double>-89.000000000000000</double>
+        <double>-90.000000000000000</double>
        </property>
        <property name="maximum">
-        <double>89.000000000000000</double>
+        <double>90.000000000000000</double>
        </property>
       </widget>
      </item>

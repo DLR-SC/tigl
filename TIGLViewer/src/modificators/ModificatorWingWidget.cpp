@@ -78,6 +78,8 @@ void ModificatorWingWidget::init()
             ui->spinBoxAR->setValue(internalAR);
             internalArea = tiglWing->GetReferenceArea();
             ui->spinBoxArea->setValue(internalArea);
+            updateSweepAccordingChordValue();
+            updateDihedralAccordingChordValue();
 
             // reset symmetry axis. We only want to log this change in in the apply function.
             tiglWing->SetSymmetryAxis(previous_sym);
