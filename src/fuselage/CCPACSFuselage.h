@@ -162,7 +162,7 @@ public:
     // Set the maximal width of the fuselage by inverting the rotation of the fuselage and scaling in the Y direction
     TIGL_EXPORT void SetMaxWidth(double newMaxWidth);
 
-    TIGL_EXPORT std::optional<std::string> GetElementUIDAfterNewElementIfExists(std::string startElementUID);
+    TIGL_EXPORT std::optional<std::string> GetElementUIDAfterNewElement(std::string startElementUID);
 
     /**
      * Create a new section, a new element and connect the element to the "startElement".
@@ -174,7 +174,7 @@ public:
      */
     TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID);
 
-    TIGL_EXPORT std::optional<std::string> GetElementUIDBeforeNewElementIfExists(std::string startElementUID);
+    TIGL_EXPORT std::optional<std::string> GetElementUIDBeforeNewElement(std::string startElementUID);
 
     /**
      * Create a new section, a new element and connect the element to the "startElement".

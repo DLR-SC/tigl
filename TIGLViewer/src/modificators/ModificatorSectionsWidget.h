@@ -36,14 +36,14 @@ struct ElementModificatorInterface
     // Here, functions are defined as member variables calling the 'right' (depending on present data type) function from CCPACSFuselage, CCPACSWing, etc. via lambdas
     template <typename T>
     ElementModificatorInterface(T&& t)
-        : GetElementUIDAfterNewElementIfExists(
-            [&t](std::string str){ return t.GetElementUIDAfterNewElementIfExists(str); }
+        : GetElementUIDAfterNewElement(
+            [&t](std::string str){ return t.GetElementUIDAfterNewElement(str); }
             )
         , CreateNewConnectedElementAfter(
             [&t](std::string str){ return t.CreateNewConnectedElementAfter(str); }
             )
-        , GetElementUIDBeforeNewElementIfExists(
-            [&t](std::string str){ return t.GetElementUIDBeforeNewElementIfExists(str); }
+        , GetElementUIDBeforeNewElement(
+            [&t](std::string str){ return t.GetElementUIDBeforeNewElement(str); }
             )
         , CreateNewConnectedElementBefore(
             [&t](std::string str){ return t.CreateNewConnectedElementBefore(str); }
@@ -59,9 +59,9 @@ struct ElementModificatorInterface
             )
     {}
 
-    std::function<std::optional<std::string>(std::string)> GetElementUIDAfterNewElementIfExists;
+    std::function<std::optional<std::string>(std::string)> GetElementUIDAfterNewElement;
     std::function<void(std::string)> CreateNewConnectedElementAfter;
-    std::function<std::optional<std::string>(std::string)> GetElementUIDBeforeNewElementIfExists;
+    std::function<std::optional<std::string>(std::string)> GetElementUIDBeforeNewElement;
     std::function<void(std::string)> CreateNewConnectedElementBefore;
     std::function<void(std::string, std::string, double param)> CreateNewConnectedElementBetween;
     std::function<void(std::string)> DeleteConnectedElement;

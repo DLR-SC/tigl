@@ -65,7 +65,7 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
         NewConnectedElementDialog::Where where = newElementDialog.getWhere();
         try {
             if (where == NewConnectedElementDialog::Before) {
-                auto elementUIDBefore = createConnectedElement->GetElementUIDBeforeNewElementIfExists(startUID);
+                auto elementUIDBefore = createConnectedElement->GetElementUIDBeforeNewElement(startUID);
                 if (elementUIDBefore) {
                     NewConnectedElementParamDialog newElementParamDialog(this);
                     if (newElementParamDialog.exec() == QDialog::Accepted) {
@@ -81,7 +81,7 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
                 }
             }
             else if (where == NewConnectedElementDialog::After) {
-                auto elementUIDAfter = createConnectedElement->GetElementUIDAfterNewElementIfExists(startUID);
+                auto elementUIDAfter = createConnectedElement->GetElementUIDAfterNewElement(startUID);
                 if (elementUIDAfter) {
                     NewConnectedElementParamDialog newElementParamDialog(this);
                     if (newElementParamDialog.exec() == QDialog::Accepted) {

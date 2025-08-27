@@ -1452,20 +1452,22 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
     GetSegments().SplitSegment(segmentToSplit, newElement->GetSectionElementUID());
 }
 
-std::optional<std::string> CCPACSWing::GetElementUIDAfterNewElementIfExists(std::string startElementUID)
+std::optional<std::string> CCPACSWing::GetElementUIDAfterNewElement(std::string startElementUID)
 {
-    std::vector<std::string>  elementsAfter = ListFunctions::GetElementsAfter(wingHelper->GetElementUIDsInOrder(), startElementUID);
-    if ( elementsAfter.size() > 0 ) {
-        return elementsAfter[0];
-    }
-    else {
+    auto const& elements = wingHelper->GetElementUIDsInOrder();
+    auto it = std::find(std::begin(elements), std::end(elements), startElementUID);
+    if (it == std::end(elements)-1) {
         return std::nullopt;
     }
+    else if (it == std::end(elements)) {
+        throw CTiglError("CCPACSWing::GetElementUIDAfterNewElement: Could not find the startElementUID" + startElementUID + "in the wing's element UIDs.");
+    }
+    return *(++it);
 }
 
 void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
 {
-    auto elementUIDAfter = GetElementUIDAfterNewElementIfExists(startElementUID);
+    auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (elementUIDAfter) {
         CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter);
     }
@@ -1524,21 +1526,23 @@ void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
     }
 }
 
-std::optional<std::string> CCPACSWing::GetElementUIDBeforeNewElementIfExists(std::string startElementUID)
+std::optional<std::string> CCPACSWing::GetElementUIDBeforeNewElement(std::string startElementUID)
 {
-    std::vector<std::string> elementsBefore = ListFunctions::GetElementsInBetween(wingHelper->GetElementUIDsInOrder(), wingHelper->GetRootUID(),startElementUID);
-    if ( elementsBefore.size() > 1 ) {
-        return elementsBefore[elementsBefore.size()-2];
-    }
-    else {
+    auto const& elements = wingHelper->GetElementUIDsInOrder();
+    auto it = std::find(std::begin(elements), std::end(elements), startElementUID);
+    if (it == std::begin(elements)) {
         return std::nullopt;
     }
+    else if (it == std::end(elements)) {
+        throw CTiglError("CCPACSWing::GetElementUIDBeforeNewElement: Could not find the startElementUID" + startElementUID + "in the wing's element UIDs.");
+    }
+    return *(--it);
 }
 
 void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
 {
 
-    auto elementUIDBefore = GetElementUIDBeforeNewElementIfExists(startElementUID);
+    auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
     if (elementUIDBefore) {
         CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID);
     }

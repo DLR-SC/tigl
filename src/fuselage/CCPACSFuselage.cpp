@@ -797,16 +797,17 @@ void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUI
     GetSegments().SplitSegment(segmentToSplit, newElement->GetSectionElementUID() );
 }
 
-std::optional<std::string> CCPACSFuselage::GetElementUIDAfterNewElementIfExists(std::string startElementUID)
+std::optional<std::string> CCPACSFuselage::GetElementUIDAfterNewElement(std::string startElementUID)
 {
-
-    std::vector<std::string>  elementsAfter = ListFunctions::GetElementsAfter(fuselageHelper->GetElementUIDsInOrder(), startElementUID);
-    if ( elementsAfter.size() > 0 ) {
-        return elementsAfter[0];
-    }
-    else {
+    auto const& elements = fuselageHelper->GetElementUIDsInOrder();
+    auto it = std::find(std::begin(elements), std::end(elements), startElementUID);
+    if (it == std::end(elements)-1) {
         return std::nullopt;
     }
+    else if (it == std::end(elements)) {
+        throw CTiglError("CCPACSFuselage::GetElementUIDAfterNewElement: Could not find the startElementUID" + startElementUID + "in the fuselage's element UIDs.");
+    }
+    return *(++it);
 }
 
 void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
@@ -826,7 +827,7 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
     //          the check has to be done to decide whether the new element is inside or at the boundary.
     //      If this check is not executed, it leads to errors in the testsuite. The tests assume the existence of the check to decide which function to use.
     //
-    auto elementUIDAfter = GetElementUIDAfterNewElementIfExists(startElementUID);
+    auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (elementUIDAfter) {
         CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter);
     }
@@ -886,20 +887,22 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
     }
 }
 
-std::optional<std::string> CCPACSFuselage::GetElementUIDBeforeNewElementIfExists(std::string startElementUID)
+std::optional<std::string> CCPACSFuselage::GetElementUIDBeforeNewElement(std::string startElementUID)
 {
-    std::vector<std::string> elementsBefore = ListFunctions::GetElementsInBetween(fuselageHelper->GetElementUIDsInOrder(), fuselageHelper->GetNoseUID(),startElementUID);
-    if ( elementsBefore.size() > 1 ) {
-        return elementsBefore[elementsBefore.size()-2];
-    }
-    else {
+    auto const& elements = fuselageHelper->GetElementUIDsInOrder();
+    auto it = std::find(std::begin(elements), std::end(elements), startElementUID);
+    if (it == std::begin(elements)) {
         return std::nullopt;
     }
+    else if (it == std::end(elements)) {
+        throw CTiglError("CCPACSFuselage::GetElementUIDBeforeNewElement: Could not find the startElementUID" + startElementUID + "in the fuselage's element UIDs.");
+    }
+    return *(--it);
 }
 
 void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID)
 {
-    auto elementUIDBefore = GetElementUIDBeforeNewElementIfExists(startElementUID);
+    auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
     if (elementUIDBefore) {
         CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID);
     }
