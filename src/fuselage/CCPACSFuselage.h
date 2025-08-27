@@ -188,13 +188,13 @@ public:
 
     /**
      * Create a new section, a new element and place the new element between the startElement and the endElement.
-     * The position between the startElement and endElement is defined by the parameter param in (0,1).
+     * The eta-position between the startElement and endElement is defined by the parameter eta in (0,1).
      * @remark The startElement and endElement must be connected by a segment.
      * @param startElementUID
      * @param endElementUID
-     * @param param
+     * @param eta
      */
-    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double param = 0.5);
+    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta = 0.5);
 
     TIGL_EXPORT void DeleteConnectedElement(std::string elementUID);
 

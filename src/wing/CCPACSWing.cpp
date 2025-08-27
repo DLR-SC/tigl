@@ -1405,12 +1405,12 @@ void CCPACSWing::SetARKeepArea(double newAR)
     SetHalfSpanKeepArea(newSpan);
 }
 
-void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double param)
+void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta)
 {
 
-    if(0.0001 > param || param > 0.9999)
+    if(0.0001 > eta || eta > 0.9999)
     {
-        throw tigl::CTiglError("The xsi parameter must be in the range of [0.0001, 0.9999] when adding a new section within a wing.", TIGL_ERROR);
+        throw tigl::CTiglError("The eta parameter must be in the range of [0.0001, 0.9999] when adding a new section within a wing.", TIGL_ERROR);
     }
 
     if(GetSegments().GetSegmentFromTo(startElementUID, endElementUID).GetGuideCurves())
@@ -1424,15 +1424,15 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
     CTiglWingSectionElement *endElement = wingHelper->GetCTiglElementOfWing(endElementUID);
 
     // compute the new parameters for the new element
-    CTiglPoint center = startElement->GetCenter() * (1 - param) + endElement->GetCenter() * param;
+    CTiglPoint center = startElement->GetCenter() * (1 - eta) + endElement->GetCenter() * eta;
     CTiglPoint normal = (startElement->GetNormal() + endElement->GetNormal());
     if (isNear(normal.norm2(), 0)) {
         normal = startElement->GetNormal();
     }
     normal.normalize();
-    double angleN = startElement->GetRotationAroundNormal() * (1 - param) + endElement->GetRotationAroundNormal() * param;
-    double width = startElement->GetWidth() * (1 - param) + endElement->GetWidth() * param;
-    double height = startElement->GetHeight() * (1 - param) + endElement->GetHeight() * param;
+    double angleN = startElement->GetRotationAroundNormal() * (1 - eta) + endElement->GetRotationAroundNormal() * eta;
+    double width = startElement->GetWidth() * (1 - eta) + endElement->GetWidth() * eta;
+    double height = startElement->GetHeight() * (1 - eta) + endElement->GetHeight() * eta;
 
     // create new section and element
     CTiglUIDManager &uidManager = GetUIDManager();
