@@ -3,6 +3,10 @@ Changelog
 
 Changes since last release
 -------------
+
+27/08/2025
+- Fix hard crash when changing the symmetry axis of a wing in TiGL Creator (#1143)
+
 05/08/2025
 - Deprecation warning
   - The use of the node cpacsVersion right within the CPACS path /cpacs/header/ is deprecated according to CPACS 3.5. Hence, now a deprecation warning is printed if it is still used (issue #1126).
