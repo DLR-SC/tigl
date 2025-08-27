@@ -778,7 +778,8 @@ void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUI
     }
     normal.normalize();
     double angleN = startElement->GetRotationAroundNormal() * (1 - eta) + endElement->GetRotationAroundNormal() * eta;
-    double area = startElement->GetArea() * (1 - eta) + endElement->GetArea() * eta;
+    double width = startElement->GetWidth() * (1 - eta) + endElement->GetWidth() * eta;
+    double height = startElement->GetHeight() * (1 - eta) + endElement->GetHeight() * eta;
 
     // create new section and element
     CTiglUIDManager& uidManager = GetUIDManager();
@@ -787,8 +788,9 @@ void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUI
     CTiglFuselageSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
 
     // set the new parameters
+    newElement->SetWidth(width);
+    newElement->SetHeight(height);
     newElement->SetCenter(center);
-    newElement->SetArea(area);
     newElement->SetNormal(normal);
     newElement->SetRotationAroundNormal(angleN);
 

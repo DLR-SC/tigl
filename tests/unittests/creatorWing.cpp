@@ -1101,7 +1101,7 @@ TEST_F(creatorWing, wingCreateSectionInsideWithParam)
     tigl::CTiglPoint expectedCenter, currentCenter;
     double expectedWidth, expectedArea;
 
-    setVariables("TestData/simpletest_modified_wing.cpacs.xml", "Wing");
+    setVariables("TestData/simpletest_modified.cpacs.xml", "Wing");
 
     wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec2_El1", "Cpacs2Test_Wing_Sec3_El1", 0.378);
 
