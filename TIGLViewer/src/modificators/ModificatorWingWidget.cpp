@@ -62,6 +62,27 @@ void ModificatorWingWidget::init()
 
     connect(ui->spinBoxSweepChord, SIGNAL(valueChanged(double)), this, SLOT(updateSweepAccordingChordValue(double)) );
     connect(ui->spinBoxDihedralChord, SIGNAL(valueChanged(double)), this, SLOT(updateDihedralAccordingChordValue(double)) );
+
+    connect(
+        ui->symmetry,
+        &SymmetryComboBoxWidget::currentIndexChanged,
+        this,
+        [=](){
+            // changing the wing's symmetry axis, also changes span, aspect ratio and area
+            auto previous_sym = tiglWing->GetSymmetryAxis();
+            tiglWing->SetSymmetryAxis(ui->symmetry->getSymmetry());
+
+            internalSpan = tiglWing->GetWingHalfSpan();
+            ui->spinBoxSpan->setValue(internalSpan);
+            internalAR = tiglWing->GetAspectRatio();
+            ui->spinBoxAR->setValue(internalAR);
+            internalArea = tiglWing->GetReferenceArea();
+            ui->spinBoxArea->setValue(internalArea);
+
+            // reset symmetry axis. We only want to log this change in in the apply function.
+            tiglWing->SetSymmetryAxis(previous_sym);
+        }
+    );
 }
 
 
@@ -202,6 +223,7 @@ bool ModificatorWingWidget::apply()
     if (symmetryHasChanged) {
         ui->symmetry->setInternalFromGUI();
         tiglWing->SetSymmetryAxis(ui->symmetry->getInternalSymmetry());
+
         wasModified = true; 
     }
 
