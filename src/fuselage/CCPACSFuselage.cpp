@@ -747,14 +747,8 @@ void CCPACSFuselage::SetFuselageHelper(CTiglFuselageHelper& cache) const
     cache.SetFuselage(const_cast<CCPACSFuselage*>(this));
 }
 
-// TODO:    - Build tests for fuselages (currently, only implemented for wings)
-//          - Think of strategy to reasonably implement the new element's properties
-//              * Up to now, the old way via area-interpolation is kept
-//              * Interpolating width and height does not work as good as within the Wings for arbitrary Fuselages
 void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta)
 {
-
-    // TODO: Discuss (AND TEST FOR ROBUSTNESS!!) a meaningful range of allowed parameters. The yet defined one might be too large ?!
     if(0.0001 > eta || eta > 0.9999)
     {
         throw tigl::CTiglError("The eta parameter must be in the range of [0.0001, 0.9999] when adding a new section within a wing.", TIGL_ERROR);
@@ -814,21 +808,6 @@ std::optional<std::string> CCPACSFuselage::GetElementUIDAfterNewElement(std::str
 
 void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
 {
-    // HINT: This message is exemplary and also relates to
-    //          * CCPACSFuselage::CreateNewConnectedElementBefore()
-    //          * CCPACSWing::CreateNewConnectedElementAfter()
-    //          * CCPACSWing::CreateNewConnectedElementBefore()
-
-    // WIP: Think of strategy to avoid this if/else.
-    //      Outsourcing the old code within the if/else is necessary.
-    //      An extern check (via the new function GetElementUID<After/Before>NewElementIfExists()) has to be done.
-    //      It decides whether a user input via a window (for the eta-parameter) is needed.
-
-    //      Now, the check is executed twice when this function is called from ModificatorSectionsWidget::execNewConnectedElementDialog.
-    //      If CreateNewConnectedElementAfter() is called from, e.g., the testsuite (and not from ModificatorSectionsWidget::execNewConnectedElementDialog),
-    //          the check has to be done to decide whether the new element is inside or at the boundary.
-    //      If this check is not executed, it leads to errors in the testsuite. The tests assume the existence of the check to decide which function to use.
-    //
     auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (elementUIDAfter) {
         CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter);
