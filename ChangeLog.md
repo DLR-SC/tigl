@@ -5,7 +5,9 @@ Changes since last release
 -------------
 
 28/08/2025
-- Fixes #1142 State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI.
+- Fixes 
+  - #1142 State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI.
+  - #1144 Fix hard crash in Redo command, improve error message.
 
 27/08/2025
 - General changes
