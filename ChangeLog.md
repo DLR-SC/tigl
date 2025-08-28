@@ -3,6 +3,11 @@ Changelog
 
 Changes since last release
 -------------
+
+28/08/2025
+ - Fix hard crash in Redo command (#1144)
+ - Improve error message (#1144)
+
 27/08/2025
 - General changes
   - Remove the boost-dependency within the [cpacs\_tigl\_gen](https://github.com/DLR-SC/cpacs_tigl_gen) and check out the new commit for the submodule (issue #1134).
