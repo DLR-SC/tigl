@@ -519,8 +519,6 @@ void TIGLViewerWindow::loadSettings()
     editorDockWidget->setFloating(floatModificator);
     treeDockWidget->setFloating(floatTree);
 
-
-
     tiglViewerSettings->loadSettings();
     settingsDialog->updateEntries();
     applySettings();
