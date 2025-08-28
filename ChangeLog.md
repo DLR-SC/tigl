@@ -3,6 +3,10 @@ Changelog
 
 Changes since last release
 -------------
+
+28/08/2025
+- Fixes #1142 State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI.
+
 27/08/2025
 - General changes
   - Remove the boost-dependency within the [cpacs\_tigl\_gen](https://github.com/DLR-SC/cpacs_tigl_gen) and check out the new commit for the submodule (issue #1134).
