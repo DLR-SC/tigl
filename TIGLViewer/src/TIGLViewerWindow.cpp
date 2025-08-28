@@ -340,7 +340,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
     if (!fileName.isEmpty()) {
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
-        
+
         if (fileType.toLower() == tr("xml")) {
             TIGLViewerDocument* config = new TIGLViewerDocument(this);
             TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath());
@@ -504,12 +504,22 @@ void TIGLViewerWindow::loadSettings()
     bool showTree = settings.value("show_tree",QVariant(true)).toBool();
     bool showModificator = settings.value("show_modificator",QVariant(true)).toBool();
 
+    bool floatConsole = settings.value("float_console",QVariant(true)).toBool();
+    bool floatTree = settings.value("float_tree",QVariant(true)).toBool();
+    bool floatModificator = settings.value("float_modificator",QVariant(true)).toBool();
+
     restoreGeometry(settings.value("MainWindowGeom").toByteArray());
     restoreState(settings.value("MainWindowState").toByteArray());
 
     consoleDockWidget->setVisible(showConsole);
     editorDockWidget->setVisible(showModificator);
     treeDockWidget->setVisible(showTree);
+
+    consoleDockWidget->setFloating(floatConsole);
+    editorDockWidget->setFloating(floatModificator);
+    treeDockWidget->setFloating(floatTree);
+
+
 
     tiglViewerSettings->loadSettings();
     settingsDialog->updateEntries();
@@ -522,12 +532,18 @@ void TIGLViewerWindow::saveSettings()
 
     bool showConsole = consoleDockWidget->isVisible();
     settings.setValue("show_console", showConsole);
+    bool floatConsole = consoleDockWidget->isFloating();
+    settings.setValue("float_console", floatConsole);
 
     bool showModificator = editorDockWidget->isVisible();
     settings.setValue("show_modificator", showModificator);
+    bool floatModificator = editorDockWidget->isFloating();
+    settings.setValue("float_modificator", floatModificator);
 
     bool showTree = treeDockWidget->isVisible();
     settings.setValue("show_tree", showTree);
+    bool floatTree = treeDockWidget->isFloating();
+    settings.setValue("float_tree", floatTree);
 
     settings.setValue("MainWindowGeom", saveGeometry());
     settings.setValue("MainWindowState", saveState());
@@ -582,7 +598,7 @@ void TIGLViewerWindow::exportDialog()
         TIGLViewerScopedCommand command(getConsole());
         Q_UNUSED(command);
         exportFile(fileName);
-        
+
         QFileInfo fileInfo;
         fileInfo.setFile(fileName);
         myLastFolder = fileInfo.absolutePath();
@@ -593,7 +609,7 @@ bool TIGLViewerWindow::exportFile(const QString &fileName)
 {
     TIGLViewerInputOutput::FileFormat format;
     QFileInfo fileInfo;
-    
+
     fileInfo.setFile(fileName);
     QString fileType = fileInfo.suffix();
     if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle")) {
@@ -749,7 +765,7 @@ void TIGLViewerWindow::setBackgroundImage()
     if (!fileName.isEmpty()) {
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
-        
+
         if (fileType.toLower() == tr("bmp") || fileType.toLower() == tr("gif") || fileType.toLower() == tr("jpg") || fileType.toLower() == tr("png")) {
             myOCC->setBGImage(fileName);
         }
@@ -769,7 +785,7 @@ void TIGLViewerWindow::about()
 
     text =  "The <b>CPACS Creator</b> is based on the TiGL library and TiGL Viewer and allows you to edit and create CPACS geometries. ";
     text += "CPACS Creator uses the following Open Source libraries:<br/><br/>";
-    
+
     if (tiglVersion.contains("-r")) {
         QStringList list = tiglVersion.split("-r");
         QString ver = list[0];
@@ -833,7 +849,7 @@ void TIGLViewerWindow::connectConfiguration()
     if (!cpacsConfiguration) {
         return;
     }
-    
+
     // CPACS Wing Actions
     connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
     connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
@@ -905,8 +921,8 @@ void TIGLViewerWindow::connectConfiguration()
     connect(tiglExportFusedConfigBRep, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedConfigBRep()));
     connect(tiglExportWingCurvesBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingCurvesBRep()));
     connect(tiglExportFuselageCurvesBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCurvesBRep()));
-    
-    connect(cpacsConfiguration, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), 
+
+    connect(cpacsConfiguration, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)),
              this, SLOT(updateMenus()) );
 }
 
@@ -936,7 +952,7 @@ void TIGLViewerWindow::connectSignals()
     // Misc drawing actions
     connect(drawPointAction, SIGNAL(triggered()), this, SLOT(drawPoint()));
     connect(drawVectorAction, SIGNAL(triggered()), this, SLOT(drawVector()));
-    
+
 
     // view->actions menu
     connect(fitAction, SIGNAL(triggered()), myOCC, SLOT(fitExtents()));
@@ -1148,14 +1164,14 @@ void TIGLViewerWindow::makeScreenShot()
                                                     tr("Windows-BMP-Image (*.bmp)"));
 
     if (!fileName.isEmpty() && myOCC) {
-        
+
         TIGLViewerScreenshotDialog dialog(fileName, this);
         dialog.setQualityValue(80);
         dialog.setImageSize(myOCC->width(), myOCC->height());
         if (dialog.exec() != QDialog::Accepted) {
             return;
         }
-        
+
         int width, height;
         dialog.getImageSize(width, height);
         if (!myOCC->makeScreenshot(fileName, dialog.getWhiteBGEnabled(), width, height, dialog.getQualityValue())) {
@@ -1168,11 +1184,11 @@ void TIGLViewerWindow::drawPoint()
 {
     TIGLViewerDrawVectorDialog dialog("Draw Point", this);
     dialog.setDirectionEnabled(false);
-    
+
     if (dialog.exec() != QDialog::Accepted) {
         return;
     }
-    
+
     gp_Pnt point = dialog.getPoint().Get_gp_Pnt();
     std::stringstream stream;
     stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
@@ -1182,11 +1198,11 @@ void TIGLViewerWindow::drawPoint()
 void TIGLViewerWindow::drawVector()
 {
     TIGLViewerDrawVectorDialog dialog("Draw Vector", this);
-    
+
     if (dialog.exec() != QDialog::Accepted) {
         return;
     }
-    
+
     gp_Pnt point = dialog.getPoint().Get_gp_Pnt();
     gp_Vec dir   = dialog.getDirection().Get_gp_Pnt().XYZ();
     std::stringstream stream;
