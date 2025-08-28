@@ -48,6 +48,12 @@ public:
     QString getStartUID();
 
     /**
+     * Return the name of the newly created Section.
+     * @return
+     */
+    QString getElementName();
+
+    /**
      * Return if the new connected element should be created before or after the reference element.
      * @return
      */

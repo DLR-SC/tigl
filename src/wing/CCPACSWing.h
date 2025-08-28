@@ -485,7 +485,7 @@ public:
      *
      * @param startElementUID
      */
-    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID);
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID, std::string elementName = "defaultName");
 
     /**
      * Create a new section, a new element and connect the element to the "startElement".
@@ -495,7 +495,7 @@ public:
      *
      * @param startElementUID
      */
-    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID);
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID, std::string elementName = "defaultName");
 
     /**
       *Create a new section, a new element and place the new element between the startElement and the endElement.

@@ -1446,7 +1446,7 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
 
 }
 
-void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
+void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID, std::string elementName)
 {
 
         std::vector<std::string>  elementsAfter = ListFunctions::GetElementsAfter(wingHelper->GetElementUIDsInOrder(), startElementUID);
@@ -1487,8 +1487,13 @@ void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
                 area = scaleF * area;
             }
             std::string profileUID = startElement->GetProfileUID();
-            std::string sectionUID = startElement->GetSectionUID() + "After";
-
+            std::string sectionUID;
+            if (elementName == "defaultName") {
+            sectionUID = startElement->GetSectionUID() + "After";
+            }
+            else {
+                sectionUID = elementName;
+            }
 
             CCPACSWingSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
             CTiglWingSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
@@ -1512,7 +1517,7 @@ void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
 }
 
 
-void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
+void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID, std::string elementName)
 {
         std::vector<std::string> elementsBefore = ListFunctions::GetElementsInBetween(wingHelper->GetElementUIDsInOrder(), wingHelper->GetRootUID(),startElementUID);
         if ( elementsBefore.size() > 1 ) {
@@ -1551,7 +1556,14 @@ void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
                 area = scaleF * area;
             }
             std::string profileUID = startElement->GetProfileUID();
-            std::string sectionUID = startElement->GetSectionUID() + "Before";
+            std::string sectionUID;
+            if (elementName == "defaultName") {
+                sectionUID = startElement->GetSectionUID() + "Before";
+            }
+            else {
+                sectionUID = elementName;
+            }
+
 
 
             CCPACSWingSection& newSection = GetSections().CreateSection(sectionUID, profileUID);

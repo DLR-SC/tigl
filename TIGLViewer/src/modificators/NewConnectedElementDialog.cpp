@@ -40,6 +40,11 @@ QString NewConnectedElementDialog::getStartUID()
     ;
 }
 
+QString NewConnectedElementDialog::getElementName()
+{
+    return ui->lineEditName->text();
+}
+
 NewConnectedElementDialog::Where NewConnectedElementDialog::getWhere()
 {
     if (ui->comboBoxWhere->currentText() == "Before") {

@@ -790,7 +790,7 @@ void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUI
 
 }
 
-void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
+void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID, std::string elementName)
 {
 
     std::vector<std::string>  elementsAfter = ListFunctions::GetElementsAfter(fuselageHelper->GetElementUIDsInOrder(), startElementUID);
@@ -832,8 +832,13 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
             area = scaleF * area;
         }
         std::string profileUID = startElement->GetProfileUID();
-        std::string sectionUID = startElement->GetSectionUID() + "After";
-
+        std::string sectionUID;
+        if (elementName == "defaultName") {
+            sectionUID = startElement->GetSectionUID() + "Before";
+        }
+        else {
+            sectionUID = elementName;
+        }
 
         CCPACSFuselageSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
         CTiglFuselageSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
@@ -856,7 +861,7 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
 
 }
 
-void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID)
+void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID, std::string elementName)
 {
     std::vector<std::string> elementsBefore = ListFunctions::GetElementsInBetween(fuselageHelper->GetElementUIDsInOrder(), fuselageHelper->GetNoseUID(),startElementUID);
     if ( elementsBefore.size() > 1 ) {
@@ -895,8 +900,13 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
             area = scaleF * area;
         }
         std::string profileUID = startElement->GetProfileUID();
-        std::string sectionUID = startElement->GetSectionUID() + "Before";
-
+        std::string sectionUID;
+        if (elementName == "defaultName") {
+            sectionUID = startElement->GetSectionUID() + "After";
+        }
+        else {
+            sectionUID = elementName;
+        }
 
         CCPACSFuselageSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
         CTiglFuselageSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();

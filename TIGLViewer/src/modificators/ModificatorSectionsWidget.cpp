@@ -57,17 +57,30 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
     for (int i = 0; i < elementUIDs.size(); i++) {
         elementUIDsQList.push_back(elementUIDs.at(i).c_str());
     }
-
+    
     NewConnectedElementDialog newElementDialog(elementUIDsQList, this);
     if (newElementDialog.exec() == QDialog::Accepted) {
         std::string startUID                   = newElementDialog.getStartUID().toStdString();
         NewConnectedElementDialog::Where where = newElementDialog.getWhere();
-        try {
+
+        std::string elementName = newElementDialog.getElementName().toStdString();
+ 
+            try {
             if (where == NewConnectedElementDialog::Before) {
+                if (elementName == "Name"){
                 createConnectedElement->CreateNewConnectedElementBefore(startUID);
+                }
+                else {
+                createConnectedElement->CreateNewConnectedElementBefore(startUID, elementName);
+                }
             }
             else if (where == NewConnectedElementDialog::After) {
+                if (elementName == "Name"){
                 createConnectedElement->CreateNewConnectedElementAfter(startUID);
+                }
+                else {
+                createConnectedElement->CreateNewConnectedElementAfter(startUID, elementName);
+                }
             }
         }
         catch (const tigl::CTiglError& err) {
