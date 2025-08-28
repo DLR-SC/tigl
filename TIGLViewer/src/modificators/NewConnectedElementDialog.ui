@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>99</height>
+    <width>604</width>
+    <height>183</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,6 +43,35 @@
       <widget class="QComboBox" name="comboBoxStartUID"/>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="eta_label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDoubleSpinBox" name="eta_spinbox">
+     <property name="decimals">
+      <number>4</number>
+     </property>
+     <property name="minimum">
+      <double>0.000100000000000</double>
+     </property>
+     <property name="maximum">
+      <double>0.999900000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.010000000000000</double>
+     </property>
+     <property name="value">
+      <double>0.500000000000000</double>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

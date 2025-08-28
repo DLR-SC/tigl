@@ -20,11 +20,11 @@
 #include "ui_ModificatorSectionsWidget.h"
 
 #include "NewConnectedElementDialog.h"
-#include "NewConnectedElementEtaDialog.h"
 #include "CTiglLogging.h"
 #include "CTiglError.h"
 #include "TIGLViewerErrorDialog.h"
 #include "DeleteDialog.h"
+#include <optional>
 
 ModificatorSectionsWidget::ModificatorSectionsWidget(QWidget* parent)
     : QWidget(parent)
@@ -61,19 +61,18 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
 
     NewConnectedElementDialog newElementDialog(elementUIDsQList, this);
     if (newElementDialog.exec() == QDialog::Accepted) {
-        std::string startUID                   = newElementDialog.getStartUID().toStdString();
-        NewConnectedElementDialog::Where where = newElementDialog.getWhere();
+        std::string startUID                    = newElementDialog.getStartUID().toStdString();
+        NewConnectedElementDialog::Where where  = newElementDialog.getWhere();
+        std::optional<double> eta               = newElementDialog.getEta();
         try {
             if (where == NewConnectedElementDialog::Before) {
                 auto elementUIDBefore = createConnectedElement->GetElementUIDBeforeNewElement(startUID);
                 if (elementUIDBefore) {
-                    NewConnectedElementEtaDialog newElementEtaDialog(this);
-                    if (newElementEtaDialog.exec() == QDialog::Accepted) {
-                        double eta = newElementEtaDialog.getEta();
-                        createConnectedElement->CreateNewConnectedElementBetween(*elementUIDBefore, startUID, eta);
+                    if (eta) { // Security check. Should be set if elementUIDBefore is true
+                        createConnectedElement->CreateNewConnectedElementBetween(*elementUIDBefore, startUID, *eta);
                     }
                     else {
-                        return;
+                        throw tigl::CTiglError("No eta value set!");
                     }
                 }
                 else {
@@ -83,13 +82,11 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
             else if (where == NewConnectedElementDialog::After) {
                 auto elementUIDAfter = createConnectedElement->GetElementUIDAfterNewElement(startUID);
                 if (elementUIDAfter) {
-                    NewConnectedElementEtaDialog newElementEtaDialog(this);
-                    if (newElementEtaDialog.exec() == QDialog::Accepted) {
-                        double eta = newElementEtaDialog.getEta();
-                        createConnectedElement->CreateNewConnectedElementBetween(startUID, *elementUIDAfter, eta);
+                    if (eta) { // Security check. Should be set if elementUIDAfter is true
+                        createConnectedElement->CreateNewConnectedElementBetween(startUID, *elementUIDAfter, *eta);
                     }
                     else {
-                        return;
+                        throw tigl::CTiglError("No eta value set!");
                     }
                 }
                 else {
