@@ -3,9 +3,22 @@ Changelog
 
 Changes since last release
 -------------
+
 28/08/2025
 - General changes
   - [#1133](https://github.com/DLR-SC/tigl/issues/1133) Add the option to set an eta value when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog.
+
+- Fixes
+  - Fix hard crash in Redo command (#1144)
+  - Improve error message (#1144)
+
+27/08/2025
+- General changes
+  - Remove the boost-dependency within the [cpacs\_tigl\_gen](https://github.com/DLR-SC/cpacs_tigl_gen) and check out the new commit for the submodule (issue #1134).
+
+05/08/2025
+- Deprecation warning
+  - The use of the node cpacsVersion right within the CPACS path /cpacs/header/ is deprecated according to CPACS 3.5. Hence, now a deprecation warning is printed if it is still used (issue #1126).
 
 29/07/2025
 - General changes

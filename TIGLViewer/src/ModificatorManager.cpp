@@ -71,6 +71,11 @@ void ModificatorManager::updateCpacsConfigurationFromString(std::string const& c
     }
 
     doc->updateCpacsConfigurationFromString(config);
+    if (configurationIsSet()) {
+        // We still need to reset the profilesDB
+        profilesDB.cleanConfigProfiles();
+        profilesDB.setConfigProfiles(doc->GetConfiguration().GetProfiles());
+    }
     emit configurationEdited();
 }
 
