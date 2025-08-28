@@ -3,6 +3,13 @@ Changelog
 
 Changes since last release
 -------------
+28/08/2025
+- General changes
+  - Add the option to set an eta value when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog (issue #1133).
+
+- Fixes
+  - Fix the wrong scaling and transformation of new added sections. Before, the scaling was determined by interpolation of the border sections' area. Now, a different approach is used and the width and height are interpolated to set the new sections' measurements (issue #1108).
+
 29/07/2025
 - General changes
   - Remove the hard-wired gtest source code from the repository. Now, it is downloaded from GitHub and configured during the TiGL-configuration-process by default (issue #1114).
