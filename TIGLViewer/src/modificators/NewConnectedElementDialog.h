@@ -54,10 +54,13 @@ public:
      */
     Where getWhere() const;
 
+    QString getSectionName() const;
+
     std::optional<double> getEta() const;
 
 private slots:
     void activate_eta();
+    void updateDefaultName();
 
 private:
     Ui::NewConnectedElementDialog* ui;
