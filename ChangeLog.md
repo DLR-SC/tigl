@@ -3,6 +3,9 @@ Changelog
 
 Changes since last release
 -------------
+29/08/2025
+- General changes
+  - #1137 Rename the CPACSCreator to TiGLCreator.
 
 28/08/2025
 - Fixes 
