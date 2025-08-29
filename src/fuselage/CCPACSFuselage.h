@@ -172,7 +172,7 @@ public:
      *
      * @param startElementUID
      */
-    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID);
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName = "defaultName");
 
     TIGL_EXPORT std::optional<std::string> GetElementUIDBeforeNewElement(std::string startElementUID);
 
@@ -184,7 +184,7 @@ public:
      *
      * @param startElementUID
      */
-    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID);
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName = "defaultName");
 
     /**
      * Create a new section, a new element and place the new element between the startElement and the endElement.
@@ -194,7 +194,7 @@ public:
      * @param endElementUID
      * @param eta
      */
-    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta = 0.5);
+    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta = 0.5, std::string sectionName = "defaultName");
 
     TIGL_EXPORT void DeleteConnectedElement(std::string elementUID);
 
