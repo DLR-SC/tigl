@@ -72,8 +72,8 @@ The installation of this new Python API differs from the installation for the ot
 The easiest way to install TiGL 3 with the internal python api support is to use the
 amazing [conda](http://conda.pydata.org/miniconda.html) package manager. To install, type
 
-     conda create -n cpacscreator_env python=3.6 cpacscreator -c dlr-sc
-     activate cpacscreator_env
+     conda create -n tiglcreator_env python=3.6 tiglcreator -c dlr-sc
+     activate tiglcreator_env
     
 This installs TiGL and all its dependencies. 
 

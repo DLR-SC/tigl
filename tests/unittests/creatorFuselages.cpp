@@ -117,7 +117,7 @@ TEST_F(creatorFuselages, createFuselage_emptyModel)
     EXPECT_EQ("Fuselage2Sec3Elem1", fuselages->GetFuselage(2).GetSection(3).GetSectionElement(1).GetUID());
     EXPECT_EQ(7, fuselages->GetFuselage(2).GetPositionings()->GetPositionings().at(7)->GetToPoint().x);
 
-    // todo:  Now the following function with 13 sections make tiglViewer crash. Why? Seems to be a tiglviewer bug!
+    // todo:  Now the following function with 13 sections make tiglcreator crash. Why? Seems to be a tiglcreator bug!
     // create a valid fuselage with 13 sections
     //tigl::CCPACSFuselage& fuselage3 = fuselages->CreateFuselage("Fuselage13", 13, "fuselageCircleProfile1");
 

@@ -1,16 +1,15 @@
-CPACSCreator GUI {#gui}
+TiGLCreator GUI {#gui}
 ===========
 
 @section gui_overview Overview
 
-The CPACSCreator is a 3D viewer and editor for CPACS geometries. 
-CPACSCreator is based on TiGL Viewer.
-Compare to TiGL Viewer it add the possibility to edit and create CPACS geometries. 
+The TiGLCreator is a 3D viewer and editor for CPACS geometries. 
+TiGLCreator is based on the TiGL library.
 
-@image html images/cpacscreator-gui.png "The CPACSCreator showing a CPACS model"
-@image latex images/cpacscreator-gui.png  "The CPACSCreator showing a CPACS model" width=8cm
+@image html images/tiglcreator-gui.png "The TiGLCreator showing a CPACS model"
+@image latex images/tiglcreator-gui.png  "The TiGLCreator showing a CPACS model" width=8cm
 
-__Features of CPACSCreator__
+__Features of TiGLCreator__
 
  * 3D Visualization CPACS, STEP, IGES, BREP, and STL files
  * Creation of screen shots
@@ -35,10 +34,10 @@ or making some debug plots.
   
 @section widgets Widgets presentation
 
-Here we will briefly present the different widgets that are available in CPACSCreator. Note that each widget can 
+Here we will briefly present the different widgets that are available in TiGLCreator. Note that each widget can 
 be move around or closed. To close or activate the widgets use the shortcut or go in the display menu (View->Display).
 
-@image html images/creator-gui-explained.png "Main widow and widgets of CPACScreator"
+@image html images/creator-gui-explained.png "Main widow and widgets of TiGLCreator"
 
 @subsection scene The scene
 The scene displays the 3D tigl object. You can choose which object you want to draw in Draw menu. 
@@ -64,8 +63,8 @@ A page is dedicated to the console: Please visit @subpage gui_console "this page
 
 The most often used navigation functions are included in the tool bar 
 
-@image html images/tiglviewer-navigation.png
-@image latex images/tiglviewer-navigation.pdf  "The navigation panel" width=11cm
+@image html images/tiglcreator-navigation.png
+@image latex images/tiglcreator-navigation.pdf  "The navigation panel" width=11cm
 
 Here, one can use
 
@@ -86,7 +85,7 @@ More functions can be found in the "View" menu.
 
 @section shortcuts Keyboard shortcuts
 
-All actions in the TiGL Viewer can be accessed using the application menu or the context menu inside the 3D view. To improve usability, some the actions can also be executed with keyboard shortcuts. The most practical ones are:
+All actions in the TiGL Creator can be accessed using the application menu or the context menu inside the 3D view. To improve usability, some the actions can also be executed with keyboard shortcuts. The most practical ones are:
 
 __Basic actions__
  | Keys   |  Action                     |
@@ -131,20 +130,20 @@ __Display Settings__
    __Default: 5__.
  * Background color: base color of the 3D viewer's background gradient.
 
-@image html images/tiglviewer_displaysettings.jpg
-@image latex images/tiglviewer_displaysettings.jpg  "The display settings dialog" width=7cm
+@image html images/tiglcreator_displaysettings.jpg
+@image latex images/tiglcreator_displaysettings.jpg  "The display settings dialog" width=7cm
 
 __Debugging__
 
  * Enumerate faces: If enabled, a number will be displayed next to each face in the viewer. This helps to understand
    the order of face creation. Mostly useful for TiGL developers. __Default: off__
  * Debug boolean operations: Boolean operations tend to be quite unstable due to the problems in the OpenCASCADE kernel.
-   To improve the debugging of such operations, TiGL Viewer can export intermediate geometries as BREP files to disk.
-   These files can again be displayed in the TiGL Viewer. In case of an error, these files should be send to the TiGL
+   To improve the debugging of such operations, TiGL Creator can export intermediate geometries as BREP files to disk.
+   These files can again be displayed in the TiGL Creator. In case of an error, these files should be send to the TiGL
    developers. The files are placed inside the current working directory. __Default: off__
 
-@image html images/tiglviewer_debugging.jpg
-@image latex images/tiglviewer_debugging.jpg  "The debugging dialog" width=7cm
+@image html images/tiglcreator_debugging.jpg
+@image latex images/tiglcreator_debugging.jpg  "The debugging dialog" width=7cm
 
 
   
@@ -156,14 +155,14 @@ select the objects of interest and __press the right mouse button__ inside the 3
  * Setting the object color and transparency
  * Toggle between wireframe and shading rendering
  
-@image html images/tiglviewer-shading-web.jpg "Different shading settings (textured, plastic blue, wireframe)"
-@image latex images/tiglviewer-shading.png  "Different shading settings (textured, plastic blue, wireframe)" width=12cm
+@image html images/tiglcreator-shading-web.jpg "Different shading settings (textured, plastic blue, wireframe)"
+@image latex images/tiglcreator-shading.png  "Different shading settings (textured, plastic blue, wireframe)" width=12cm
 
 @section mobile Mobile platforms
 
-A simplified version of the TiGL Viewer is also available for mobile devices based on Android. It can be downloaded from the 
-[Google play store](https://play.google.com/store/apps/details?id=de.dlr.sc.tiglviewer.android&hl=de).
+A simplified version of the TiGL Creator is also available for mobile devices based on Android. It can be downloaded from the 
+[Google play store](https://play.google.com/store/apps/details?id=de.dlr.sc.tiglcreator.android&hl=de).
   
-@image html images/tiglviewer-android-web.jpg "The TiGL Viewer App for Android"
-@image latex images/tiglviewer-android.png  "The TiGL Viewer App for Android" width=9cm
+@image html images/tiglcreator-android-web.jpg "The TiGL Creator App for Android"
+@image latex images/tiglcreator-android.png  "The TiGL Creator App for Android" width=9cm
 

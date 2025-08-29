@@ -127,7 +127,7 @@ add_custom_target(checkstyle)
 add_custom_target(checkstylexml)
 
 add_subdirectory(src)
-add_subdirectory(TIGLViewer)
+add_subdirectory(TIGLCreator)
 add_subdirectory(bindings)
 add_subdirectory(examples)
 
@@ -154,14 +154,14 @@ set(CPACK_PACKAGE_VENDOR "www.dlr.de/sc")
 set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
 set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "TIGL") 
 
-set(CPACK_NSIS_MUI_ICON ${PROJECT_SOURCE_DIR}/TIGLViewer/TIGLViewer.ico)
-set(CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/TIGLViewer/TIGLViewer.ico)
+set(CPACK_NSIS_MUI_ICON ${PROJECT_SOURCE_DIR}/TIGLCreator/TIGLCreator.ico)
+set(CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/TIGLCreator/TIGLCreator.ico)
 
 # set installer icon
 if(WIN32)
-    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLViewer/gfx\\\\TIGLViewerNSIS.bmp)
+    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLCreator/gfx\\\\TIGLCreatorNSIS.bmp)
 elseif(APPLE)
-    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLViewer/gfx/CPACS-Creator.icns)
+    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLCreator/gfx/TIGL-Creator.icns)
 endif()
 
 # set generators
@@ -186,23 +186,23 @@ endif()
 
 if (APPLE)
   set(CPACK_PACKAGE_EXECUTABLES
-    "CPACS-Creator" "CPACS Creator"
+    "TIGL-Creator" "TiGL Creator"
   )
 else(APPLE)
   set(CPACK_PACKAGE_EXECUTABLES
-    "cpacscreator" "CPACS Creator"
+    "tiglcreator" "TiGL Creator"
   )
 endif(APPLE)
 
-set(CPACK_PACKAGE_NAME "CPACS-Creator")
+set(CPACK_PACKAGE_NAME "TIGL-Creator")
 
 set(CPACK_PACKAGE_VERSION_MAJOR 0)
 set(CPACK_PACKAGE_VERSION_MINOR 2)
 set(CPACK_PACKAGE_VERSION_PATCH 0)
-set(CPACK_COMPONENTS_ALL "viewer;docu")
+set(CPACK_COMPONENTS_ALL "creator;docu")
 include(CPack)
 set(CPACK_PACKAGE_VERSION "0.2.0")
-cpack_add_component(viewer DISPLAY_NAME "CPACS Creator + 3rd Party DLLs")
+cpack_add_component(creator DISPLAY_NAME "TiGL Creator + 3rd Party DLLs")
 cpack_add_component(headers DISPLAY_NAME "Headers")
 cpack_add_component(cpp_bindings DISPLAY_NAME "Internal C++ Bindings")
 cpack_add_component(interfaces DISPLAY_NAME "Interfaces/Bindings")

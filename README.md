@@ -17,10 +17,10 @@ stored inside [CPACS](https://github.com/DLR-LY/CPACS) files. TiGL offers many g
 The TiGL library uses the OpenCASCADE CAD kernel to represent the airplane geometry 
 by NURBS surfaces. The library provides external interfaces for C, C++, Python, Java, MATLAB, and FORTRAN.
 
-TiGL is shipped with the Qt based _TiGL Viewer_ for visualizing aircraft
+TiGL is shipped with the Qt based _TiGL Creator_ for visualizing and editing aircraft
 geometries or viewing CAD files.
 
-![Screenshot of the TiGL Viewer](doc/images/tiglviewer-web.jpg)
+![Screenshot of the TiGL Creator](doc/images/tiglcreator-web.jpg)
 
 # Downloads
 

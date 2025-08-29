@@ -9,7 +9,7 @@ dependencies:
  - tixi3=3.3.0                   # library for dealing with xml files
  - opencascade=7.4.0             # library for dealing with b-spline and nurbs geometries. dlr-sc version contains patch for C2-cont. Coons patches
  # optional dependencies
- - conda-forge::qt=5.15.15       # needed to build tiglviewer
+ - conda-forge::qt=5.15.15       # needed to build tiglcreator
  - doxygen=1.8.15                # needed to build the documenation
  - python<=3.12                  # needed to build python bindings
  - swig>=3.0.11                  # needed to build python bindings
