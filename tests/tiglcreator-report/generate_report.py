@@ -123,17 +123,17 @@ app.scene.gridOff();
 
 def create_screenshots(tigl_script):
     """
-    This calls tiglcreator-3 with the provided tigl script
+    This calls tiglcreator with the provided tigl script
     :param tigl_script: A js TiGL script
     :return: None
     """
-    subprocess.run(["tiglcreator-3", "--script", tigl_script, '--suppress-errors'],
+    subprocess.run(["tiglcreator", "--script", tigl_script, '--suppress-errors'],
                    timeout=3600)
 
 
 def generate_pdf_report(cpacs_dicts, output_file, screenshots_expected_dir, screenshot_dir):
     """
-    This file creates the actual pdf report comparing screenshots generated with tiglcreator-3.
+    This file creates the actual pdf report comparing screenshots generated with tiglcreator.
 
     :param cpacs_dicts: A dictionary describing the cpacs files
     :param output_file: An output path for the generated report
@@ -276,12 +276,12 @@ def main(input_files, output_file, update, tigl_script, screenshot_dir, download
     for file in input_files:
         cpacs_dicts = cpacs_dicts + open_input_file(file, download_dir)
 
-    # create the tiglcreator-3 script that generates screenshots
+    # create the tiglcreator script that generates screenshots
     create_tiglcreator_script(cpacs_dicts,
                              tigl_script,
                              screenshot_dir)
 
-    # take the screenshots using tiglcreator-3
+    # take the screenshots using tiglcreator
     create_screenshots(tigl_script)
 
     # generate the screenshot report using pandoc

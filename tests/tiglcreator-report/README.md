@@ -17,7 +17,7 @@ pip install pypandoc click
 Pypandoc is a wrapper around pandoc. The Windows and MacOS wheels contain 
 pandoc, for Ubuntu, a pandoc installation must be available as well.
 
-Finally, the executable `tiglcreator-3` must be in the path.
+Finally, the executable `tiglcreator` must be in the path.
 
 ## Usage
 
