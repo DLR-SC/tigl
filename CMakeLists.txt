@@ -186,7 +186,7 @@ endif()
 
 if (APPLE)
   set(CPACK_PACKAGE_EXECUTABLES
-    "TIGL-Creator" "TiGL Creator"
+    "TiGL-Creator" "TiGL Creator"
   )
 else(APPLE)
   set(CPACK_PACKAGE_EXECUTABLES
