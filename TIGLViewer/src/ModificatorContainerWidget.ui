@@ -85,7 +85,7 @@
          <string/>
         </property>
         <property name="text">
-         <string>No element seclected or unavailble interface. </string>
+         <string>Please select an editable element from the CPACS Tree. </string>
         </property>
        </widget>
       </item>
