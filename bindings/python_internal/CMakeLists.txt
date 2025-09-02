@@ -27,7 +27,7 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
         else()
 	    set(Python3_EXECUTABLE "$ENV{CONDA_PREFIX}/bin/python")
 	    # Helps to find PythonOCC automatically
-	    set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "$ENV{CONDA_PREFIX}/Library/src/pythonocc-core")
+	    set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "$ENV{CONDA_PREFIX}/src/pythonocc-core")
         endif()
     endif()
 
