@@ -327,22 +327,22 @@ namespace generated
         return m_flightPoints;
     }
 
-    const boost::optional<CCPACSEngines>& CPACSVehicles::GetEngines() const
+    const boost::optional<CPACSEngines>& CPACSVehicles::GetEngines() const
     {
         return m_engines;
     }
 
-    boost::optional<CCPACSEngines>& CPACSVehicles::GetEngines()
+    boost::optional<CPACSEngines>& CPACSVehicles::GetEngines()
     {
         return m_engines;
     }
 
-    const boost::optional<CCPACSProfiles>& CPACSVehicles::GetProfiles() const
+    const boost::optional<CPACSProfiles>& CPACSVehicles::GetProfiles() const
     {
         return m_profiles;
     }
 
-    boost::optional<CCPACSProfiles>& CPACSVehicles::GetProfiles()
+    boost::optional<CPACSProfiles>& CPACSVehicles::GetProfiles()
     {
         return m_profiles;
     }
@@ -425,7 +425,7 @@ namespace generated
         m_flightPoints = boost::none;
     }
 
-    CCPACSEngines& CPACSVehicles::GetEngines(CreateIfNotExistsTag)
+    CPACSEngines& CPACSVehicles::GetEngines(CreateIfNotExistsTag)
     {
         if (!m_engines)
             m_engines = boost::in_place(this, m_uidMgr);
@@ -437,7 +437,7 @@ namespace generated
         m_engines = boost::none;
     }
 
-    CCPACSProfiles& CPACSVehicles::GetProfiles(CreateIfNotExistsTag)
+    CPACSProfiles& CPACSVehicles::GetProfiles(CreateIfNotExistsTag)
     {
         if (!m_profiles)
             m_profiles = boost::in_place(this, m_uidMgr);

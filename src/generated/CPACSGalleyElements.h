@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSGalleyElement>>& GetGalleyElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSGalleyElement>>& GetGalleyElements();
 
+        TIGL_EXPORT virtual size_t GetGalleyElementCount() const;
+        TIGL_EXPORT virtual size_t GetGalleyElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSGalleyElement& GetGalleyElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSGalleyElement& GetGalleyElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSGalleyElement& GetGalleyElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSGalleyElement& GetGalleyElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSGalleyElement& AddGalleyElement();
         TIGL_EXPORT virtual void RemoveGalleyElement(CPACSGalleyElement& ref);
 

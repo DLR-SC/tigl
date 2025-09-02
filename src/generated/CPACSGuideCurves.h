@@ -91,6 +91,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSGuideCurve>>& GetGuideCurves() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSGuideCurve>>& GetGuideCurves();
 
+        TIGL_EXPORT virtual size_t GetGuideCurveCount() const;
+        TIGL_EXPORT virtual size_t GetGuideCurveIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSGuideCurve& GetGuideCurve(size_t index) const;
+        TIGL_EXPORT virtual CCPACSGuideCurve& GetGuideCurve(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSGuideCurve& GetGuideCurve(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSGuideCurve& GetGuideCurve(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSGuideCurve& AddGuideCurve();
         TIGL_EXPORT virtual void RemoveGuideCurve(CCPACSGuideCurve& ref);
 

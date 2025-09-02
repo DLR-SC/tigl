@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetCeilingPanelElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetCeilingPanelElements();
 
+        TIGL_EXPORT virtual size_t GetCeilingPanelElementCount() const;
+        TIGL_EXPORT virtual size_t GetCeilingPanelElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetCeilingPanelElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetCeilingPanelElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetCeilingPanelElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetCeilingPanelElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSDeckElementBase& AddCeilingPanelElement();
         TIGL_EXPORT virtual void RemoveCeilingPanelElement(CPACSDeckElementBase& ref);
 

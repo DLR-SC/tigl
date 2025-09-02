@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include <CCPACSFuselageWallSegment.h>
+#include <CCPACSWallSegment.h>
 #include "CCPACSWalls.h"
 #include "CPACSWallSegments.h"
 #include "CTiglError.h"
@@ -98,23 +98,76 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>& CPACSWallSegments::GetWallSegments() const
+    const std::vector<std::unique_ptr<CCPACSWallSegment>>& CPACSWallSegments::GetWallSegments() const
     {
         return m_wallSegments;
     }
 
-    std::vector<std::unique_ptr<CCPACSFuselageWallSegment>>& CPACSWallSegments::GetWallSegments()
+    std::vector<std::unique_ptr<CCPACSWallSegment>>& CPACSWallSegments::GetWallSegments()
     {
         return m_wallSegments;
     }
 
-    CCPACSFuselageWallSegment& CPACSWallSegments::AddWallSegment()
+    size_t CPACSWallSegments::GetWallSegmentCount() const
     {
-        m_wallSegments.push_back(make_unique<CCPACSFuselageWallSegment>(this, m_uidMgr));
+        return m_wallSegments.size();
+    }
+
+    size_t CPACSWallSegments::GetWallSegmentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetWallSegmentCount(); i++) {
+            const boost::optional<std::string> tmpUID(*m_wallSegments[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSWallSegments::GetWallSegmentIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSWallSegment& CPACSWallSegments::GetWallSegment(size_t index)
+    {
+        if (index < 1 || index > GetWallSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWallSegment>>::GetWallSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_wallSegments[index];
+    }
+
+    const CCPACSWallSegment& CPACSWallSegments::GetWallSegment(size_t index) const
+    {
+        if (index < 1 || index > GetWallSegmentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWallSegment>>::GetWallSegment", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_wallSegments[index];
+    }
+
+    CCPACSWallSegment& CPACSWallSegments::GetWallSegment(const std::string& UID)
+    {
+        for (auto& elem : m_wallSegments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSWallSegments::GetWallSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSWallSegment& CPACSWallSegments::GetWallSegment(const std::string& UID) const
+    {
+        for (auto& elem : m_wallSegments ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSWallSegments::GetWallSegment. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
+    CCPACSWallSegment& CPACSWallSegments::AddWallSegment()
+    {
+        m_wallSegments.push_back(make_unique<CCPACSWallSegment>(this, m_uidMgr));
         return *m_wallSegments.back();
     }
 
-    void CPACSWallSegments::RemoveWallSegment(CCPACSFuselageWallSegment& ref)
+    void CPACSWallSegments::RemoveWallSegment(CCPACSWallSegment& ref)
     {
         for (std::size_t i = 0; i < m_wallSegments.size(); i++) {
             if (m_wallSegments[i].get() == &ref) {

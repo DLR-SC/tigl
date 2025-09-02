@@ -28,7 +28,7 @@
 
 #include "tigl_config.h"
 #include "CTiglTransformation.h"
-#include "CCPACSFuselageSections.h"
+#include "generated/CPACSFuselageSections.h"
 #include "CCPACSFuselageSegments.h"
 #include "CCPACSPositionings.h"
 #include "CTiglRelativelyPositionedComponent.h"
@@ -72,7 +72,7 @@ public:
     TIGL_EXPORT int GetSectionCount() const;
 
     // Returns the section for a given index
-    TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
+    TIGL_EXPORT CCPACSFuselageSection& GetSection(int index);
 
     // Returns the face that has a given fuselage section as its boundary
     TIGL_EXPORT TopoDS_Shape GetSectionFace(const std::string section_uid) const;

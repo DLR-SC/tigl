@@ -28,23 +28,24 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSNacelleProfile;
-class CCPACSProfiles;
 
 namespace generated
 {
+    class CPACSProfiles;
+
     // This class is used in:
     // CPACSProfiles
 
     class CPACSCurveProfiles
     {
     public:
-        TIGL_EXPORT CPACSCurveProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSCurveProfiles(CPACSProfiles* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSCurveProfiles();
 
-        TIGL_EXPORT CCPACSProfiles* GetParent();
+        TIGL_EXPORT CPACSProfiles* GetParent();
 
-        TIGL_EXPORT const CCPACSProfiles* GetParent() const;
+        TIGL_EXPORT const CPACSProfiles* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -58,11 +59,20 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSNacelleProfile>>& GetCurveProfiles() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSNacelleProfile>>& GetCurveProfiles();
 
+        TIGL_EXPORT virtual size_t GetCurveProfileCount() const;
+        TIGL_EXPORT virtual size_t GetCurveProfileIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSNacelleProfile& GetCurveProfile(size_t index) const;
+        TIGL_EXPORT virtual CCPACSNacelleProfile& GetCurveProfile(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSNacelleProfile& GetCurveProfile(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSNacelleProfile& GetCurveProfile(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSNacelleProfile& AddCurveProfile();
         TIGL_EXPORT virtual void RemoveCurveProfile(CCPACSNacelleProfile& ref);
 
     protected:
-        CCPACSProfiles* m_parent;
+        CPACSProfiles* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -79,4 +89,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSCurveProfiles = generated::CPACSCurveProfiles;
+using CCPACSProfiles = generated::CPACSProfiles;
 } // namespace tigl

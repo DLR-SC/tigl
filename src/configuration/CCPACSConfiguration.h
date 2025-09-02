@@ -32,23 +32,22 @@
 #include "generated/CPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSRotors.h"
-#include "CCPACSFuselages.h"
+#include "generated/CPACSFuselages.h"
 #include "CCPACSACSystems.h"
 #include "CCPACSFarField.h"
-#include "CCPACSGuideCurveProfiles.h"
+#include "generated/CPACSGuideCurveProfiles.h"
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 #include "CTiglShapeCache.h"
 #include "CTiglMemoryPool.h"
 #include "CSharedPtr.h"
-#include "CCPACSProfiles.h"
-#include "CCPACSEngines.h"
+#include "generated/CPACSProfiles.h"
+#include "generated/CPACSEngines.h"
 
 
 namespace tigl
 {
 
-class CCPACSEnginePylons;
 class CTiglFusePlane;
 typedef CSharedPtr<CTiglFusePlane> PTiglFusePlane;
 
@@ -82,8 +81,8 @@ public:
     TIGL_EXPORT bool HasWingProfile(std::string uid) const;
 
     // Returns the class which holds all wing profiles
-    TIGL_EXPORT boost::optional<CCPACSWingProfiles&> GetWingProfiles();
     TIGL_EXPORT boost::optional<const CCPACSWingProfiles&> GetWingProfiles() const;
+    TIGL_EXPORT boost::optional<CCPACSWingProfiles&> GetWingProfiles();
     
     // Returns the class which holds all rotor profiles
     TIGL_EXPORT boost::optional<CCPACSRotorProfiles&> GetRotorProfiles();
@@ -92,107 +91,137 @@ public:
     TIGL_EXPORT boost::optional<CCPACSFuselageProfiles&> GetFuselageProfiles();
 
     // Returns the wing or rotor profile for a given uid.
-    TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid) const;
+    TIGL_EXPORT const CCPACSWingProfile& GetWingProfile(std::string uid) const;
+    TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid);
 
     // Returns the total count of wings (including rotor blades) in a configuration
-    TIGL_EXPORT int GetWingCount() const;
+    TIGL_EXPORT size_t GetWingCount() const;
 
     // Returns the count of rotor blade wings in a configuration
-    TIGL_EXPORT int GetRotorBladeCount() const;
+    TIGL_EXPORT size_t GetRotorBladeCount() const;
 
     // Returns the wing (or rotor blade) for a given index.
-    TIGL_EXPORT CCPACSWing& GetWing(int index) const;
+    TIGL_EXPORT const CCPACSWing& GetWing(size_t index) const ;
+    TIGL_EXPORT CCPACSWing& GetWing(size_t index);
 
     // Returns the wing (or rotor blade) for a given UID.
-    TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
+    TIGL_EXPORT const CCPACSWing& GetWing(const std::string& UID) const;
+    TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID);
 
     // Returns the wing (or rotor blade) index for a given UID.
-    TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
+    TIGL_EXPORT size_t GetWingIndex(const std::string& UID) const;
 
     // Returns the total count of generic systems in a configuration
-    TIGL_EXPORT int GetGenericSystemCount();
+    TIGL_EXPORT size_t GetGenericSystemCount();
 
     // Returns the generic system for a given index.
-    TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(int index);
+    TIGL_EXPORT const CCPACSGenericSystem& GetGenericSystem(size_t index) const;
+    TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(size_t index);
 
     // Returns the generic system for a given UID.
+    TIGL_EXPORT const CCPACSGenericSystem& GetGenericSystem(const std::string& UID) const;
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID);
 
     // Returns the total count of rotors in a configuration
-    TIGL_EXPORT int GetRotorCount() const;
+    TIGL_EXPORT size_t GetRotorCount() const;
 
     // Returns the rotor for a given index.
-    TIGL_EXPORT CCPACSRotor& GetRotor(int index) const;
+    TIGL_EXPORT const CCPACSRotor& GetRotor(size_t index) const;
+    TIGL_EXPORT CCPACSRotor& GetRotor(size_t index);
 
     // Returns the rotor for a given UID.
-    TIGL_EXPORT CCPACSRotor& GetRotor(const std::string& UID) const;
+    TIGL_EXPORT const CCPACSRotor& GetRotor(const std::string& UID) const;
+    TIGL_EXPORT CCPACSRotor& GetRotor(const std::string& UID);
 
     // Returns the rotor index for a given UID.
-    TIGL_EXPORT int GetRotorIndex(const std::string& UID) const;
+    TIGL_EXPORT size_t GetRotorIndex(const std::string& UID) const;
 
     TIGL_EXPORT TopoDS_Shape GetParentLoft(const std::string& UID);
 
     TIGL_EXPORT bool HasFuselageProfile(std::string uid) const;
 
     // Returns the total count of fuselage profiles in this configuration
-    TIGL_EXPORT int GetFuselageProfileCount() const;
+    TIGL_EXPORT size_t GetFuselageProfileCount() const;
 
     // Returns the fuselage profile for a given index.
-    TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(int index) const;
+    TIGL_EXPORT const CCPACSFuselageProfile& GetFuselageProfile(size_t index) const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(size_t index);
 
     // Returns the fuselage profile for a given uid.
-    TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(std::string uid) const;
+    TIGL_EXPORT const CCPACSFuselageProfile& GetFuselageProfile(std::string uid) const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(std::string uid);
 
     // Returns the total count of fuselages in a configuration
-    TIGL_EXPORT int GetFuselageCount() const;
+    TIGL_EXPORT size_t GetFuselageCount() const;
 
     // Returns the fuselage for a given index.
-    TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;
+    TIGL_EXPORT const CCPACSFuselage& GetFuselage(size_t index) const;
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(size_t index);
 
     // Returns the fuselage for a given UID.
-    TIGL_EXPORT CCPACSFuselage& GetFuselage(const std::string& UID) const;
+    TIGL_EXPORT const CCPACSFuselage& GetFuselage(const std::string& UID) const;
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(const std::string& UID);
 
     // Returns the fuselage index for a given UID.
-    TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;
+    TIGL_EXPORT size_t GetFuselageIndex(const std::string& UID) const;
 
     // Returns list of fuselages
-    TIGL_EXPORT CCPACSFuselages& GetFuselages();
     TIGL_EXPORT const CCPACSFuselages& GetFuselages() const;
+    TIGL_EXPORT CCPACSFuselages& GetFuselages();
 
     // Returns ducts
     TIGL_EXPORT bool HasDucts() const;
-    TIGL_EXPORT boost::optional<CCPACSDucts>& GetDucts();
     TIGL_EXPORT const boost::optional<CCPACSDucts>& GetDucts() const;
+    TIGL_EXPORT boost::optional<CCPACSDucts>& GetDucts();
+
+    // Returns the total count of fuel tanks in a configuration
+    TIGL_EXPORT size_t GetFuelTankCount() const;
+
+    // Returns the fuel tank for a given index.
+    TIGL_EXPORT const CCPACSFuelTank& GetFuelTank(size_t index) const;
+    TIGL_EXPORT CCPACSFuelTank& GetFuelTank(size_t index);
+
+    // Returns the fuel tank for a given UID.
+    TIGL_EXPORT const CCPACSFuelTank& GetFuelTank(const std::string& UID) const;
+    TIGL_EXPORT CCPACSFuelTank& GetFuelTank(const std::string& UID);
+
+    // Returns the fuel tank index for a given UID.
+    TIGL_EXPORT size_t GetFuelTankIndex(const std::string& UID) const;
+
+    // Returns list of fuel tanks
+    TIGL_EXPORT const CCPACSFuelTanks& GetFuelTanks() const;
+    TIGL_EXPORT CCPACSFuelTanks& GetFuelTanks();
 
     // Returns list of engine pylons
-    TIGL_EXPORT boost::optional<CCPACSEnginePylons>& GetEnginePylons();
     TIGL_EXPORT const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
+    TIGL_EXPORT boost::optional<CCPACSEnginePylons>& GetEnginePylons();
 
     // Returns list of engines
-    TIGL_EXPORT boost::optional<CCPACSEngines>& GetEngines();
     TIGL_EXPORT const boost::optional<CCPACSEngines>& GetEngines() const;
+    TIGL_EXPORT boost::optional<CCPACSEngines>& GetEngines();
 
     // Returns list of engine positions
-    TIGL_EXPORT boost::optional<CCPACSEnginePositions>& GetEnginePositions();
     TIGL_EXPORT const boost::optional<CCPACSEnginePositions>& GetEnginePositions() const;
+    TIGL_EXPORT boost::optional<CCPACSEnginePositions>& GetEnginePositions();
 
-    TIGL_EXPORT CCPACSEngine& GetEngine(const std::string& UID) const;
+    TIGL_EXPORT const CCPACSEngine& GetEngine(const std::string& UID) const;
+    TIGL_EXPORT CCPACSEngine& GetEngine(const std::string& UID);
 
     // Returns the farfield
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
     // Returns the number of external objects (i.e. linked CAD files like STEP, IGES)
-    TIGL_EXPORT int GetExternalObjectCount() const;
+    TIGL_EXPORT size_t GetExternalObjectCount() const;
 
-    TIGL_EXPORT CCPACSExternalObject& GetExternalObject(int index) const;
+    TIGL_EXPORT CCPACSExternalObject& GetExternalObject(size_t index) const;
 
     // Returns the guide curve profile for a given UID.
-    TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID);
     TIGL_EXPORT const CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID) const;
+    TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID);
 
     // Returns the uid manager
-    TIGL_EXPORT CTiglUIDManager& GetUIDManager();
     TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+    TIGL_EXPORT CTiglUIDManager& GetUIDManager();
 
     // Returns the algorithm for fusing the aircraft
     TIGL_EXPORT PTiglFusePlane AircraftFusingAlgo();
@@ -217,11 +246,11 @@ public:
     TIGL_EXPORT CCPACSHeader* GetHeader();
 
     /** Getter for member wings */
-    TIGL_EXPORT CCPACSWings& GetWings();
     TIGL_EXPORT const CCPACSWings& GetWings() const;
+    TIGL_EXPORT CCPACSWings& GetWings();
 
-    TIGL_EXPORT boost::optional<CCPACSACSystems&> GetACSystems();
     TIGL_EXPORT boost::optional<const CCPACSACSystems&> GetACSystems() const;
+    TIGL_EXPORT boost::optional<CCPACSACSystems&> GetACSystems();
 
 private:
     // Copy constructor

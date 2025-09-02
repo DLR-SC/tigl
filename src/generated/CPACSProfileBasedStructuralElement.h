@@ -49,7 +49,7 @@ namespace generated
     /// Short description
     /// The ProfileBasedStructuralElement type containins the
     /// data of a structural element, that are based on 2-dimensional profiles.
-    /// There are three approaches to model profile based structural elements: by specifying global beam properties by referencing a structuralProfile2D element by choosing one of the prescribed standard profiles 
+    /// There are three approaches to model profile based structural elements: by specifying global beam properties by referencing a structuralProfile2D element by choosing one of the prescribed standard profiles
     /// 1. Global beam properties
     /// In the section globalBeamProperties the properties
     /// of the structural profile in an equivalent beam representation
@@ -105,6 +105,11 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>& GetSheetProperties_choice2() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>& GetSheetProperties_choice2();
 
+        TIGL_EXPORT virtual size_t GetSheetPropertiesCount() const;
+
+        TIGL_EXPORT virtual const CPACSMaterialDefinitionForProfileBased& GetSheetProperties(size_t index) const;
+        TIGL_EXPORT virtual CPACSMaterialDefinitionForProfileBased& GetSheetProperties(size_t index);
+
         TIGL_EXPORT virtual const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& GetStandardProfileType_choice2_1() const;
         TIGL_EXPORT virtual void SetStandardProfileType_choice2_1(const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& value);
 
@@ -113,6 +118,11 @@ namespace generated
 
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>& GetPointProperties_choice2_2() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>& GetPointProperties_choice2_2();
+
+        TIGL_EXPORT virtual size_t GetPointPropertiesCount() const;
+
+        TIGL_EXPORT virtual const CPACSMaterialDefinitionForProfileBasedPoint& GetPointProperties(size_t index) const;
+        TIGL_EXPORT virtual CPACSMaterialDefinitionForProfileBasedPoint& GetPointProperties(size_t index);
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetReferencePointUID_choice2_2() const;
         TIGL_EXPORT virtual void SetReferencePointUID_choice2_2(const boost::optional<std::string>& value);

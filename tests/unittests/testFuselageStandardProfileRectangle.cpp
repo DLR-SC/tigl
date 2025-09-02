@@ -22,6 +22,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
+#include "CCPACSFuselage.h"
 #include "CNamedShape.h"
 
 class FuselageStandardProfile : public ::testing::Test

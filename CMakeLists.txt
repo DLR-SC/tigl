@@ -12,8 +12,8 @@ cmake_minimum_required (VERSION 3.11.0)
 project (TIGL VERSION 3.4.0)
 set(TIGL_VERSION 3.4.0)
 
-# enable C++11 support
-set(CMAKE_CXX_STANDARD 11)
+# enable C++17 support
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -139,8 +139,9 @@ if(TIGL_BUILD_TESTS)
   enable_testing()
   option(gtest_force_shared_crt "" ON)
   mark_as_advanced(gtest_force_shared_crt gtest_build_tests gtest_build_samples gtest_disable_pthreads)
-  add_subdirectory ("thirdparty/googletest" EXCLUDE_FROM_ALL)
+  message(STATUS "Download and configure the TIGL gtest Testsuite")
   add_subdirectory(tests)
+  message(STATUS "Download and configure the TIGL gtest Testsuite  - Success")
 endif(TIGL_BUILD_TESTS)
 
 include(createDoc)

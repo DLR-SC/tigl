@@ -147,7 +147,7 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSWallSegment is customized, use type CCPACSFuselageWallSegment directly
+// CPACSWallSegment is customized, use type CCPACSWallSegment directly
 
 // Aliases in tigl namespace
 using CCPACSWallSegments = generated::CPACSWallSegments;

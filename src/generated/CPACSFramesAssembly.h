@@ -32,12 +32,14 @@ class CTiglUIDObject;
 class CCPACSFrame;
 class CCPACSDuctStructure;
 class CCPACSFuselageStructure;
+class CCPACSVesselStructure;
 
 namespace generated
 {
     // This class is used in:
     // CPACSDuctStructure
     // CPACSFuselageStructure
+    // CPACSVesselStructure
 
     /// @brief framesAssemblyType
     /// 
@@ -48,6 +50,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSFramesAssembly(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSFramesAssembly(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFramesAssembly(CCPACSVesselStructure* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFramesAssembly();
 
@@ -60,7 +63,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSVesselStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -70,7 +73,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
+            static_assert(std::is_same<P, CCPACSDuctStructure>::value || std::is_same<P, CCPACSFuselageStructure>::value || std::is_same<P, CCPACSVesselStructure>::value, "template argument for P is not a parent class of CPACSFramesAssembly");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -88,6 +91,15 @@ namespace generated
 
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFrame>>& GetFrames() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFrame>>& GetFrames();
+
+        TIGL_EXPORT virtual size_t GetFrameCount() const;
+        TIGL_EXPORT virtual size_t GetFrameIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSFrame& GetFrame(size_t index) const;
+        TIGL_EXPORT virtual CCPACSFrame& GetFrame(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSFrame& GetFrame(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSFrame& GetFrame(const std::string& UID);
 
         TIGL_EXPORT virtual CCPACSFrame& AddFrame();
         TIGL_EXPORT virtual void RemoveFrame(CCPACSFrame& ref);

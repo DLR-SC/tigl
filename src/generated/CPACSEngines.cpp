@@ -86,7 +86,7 @@ namespace generated
     {
         // read element engine
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/engine")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/engine", m_engines, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSEngines*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/engine", m_engines, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -108,9 +108,62 @@ namespace generated
         return m_engines;
     }
 
+    size_t CPACSEngines::GetEngineCount() const
+    {
+        return m_engines.size();
+    }
+
+    size_t CPACSEngines::GetEngineIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetEngineCount(); i++) {
+            const std::string tmpUID(m_engines[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSEngines::GetEngineIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSEngine& CPACSEngines::GetEngine(size_t index)
+    {
+        if (index < 1 || index > GetEngineCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSEngine>>::GetEngine", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_engines[index];
+    }
+
+    const CPACSEngine& CPACSEngines::GetEngine(size_t index) const
+    {
+        if (index < 1 || index > GetEngineCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSEngine>>::GetEngine", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_engines[index];
+    }
+
+    CPACSEngine& CPACSEngines::GetEngine(const std::string& UID)
+    {
+        for (auto& elem : m_engines ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSEngines::GetEngine. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSEngine& CPACSEngines::GetEngine(const std::string& UID) const
+    {
+        for (auto& elem : m_engines ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSEngines::GetEngine. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSEngine& CPACSEngines::AddEngine()
     {
-        m_engines.push_back(make_unique<CPACSEngine>(reinterpret_cast<CCPACSEngines*>(this), m_uidMgr));
+        m_engines.push_back(make_unique<CPACSEngine>(this, m_uidMgr));
         return *m_engines.back();
     }
 

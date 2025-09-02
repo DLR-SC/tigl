@@ -64,6 +64,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSheetBasedStructuralElement>>& GetSheetBasedStructuralElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSheetBasedStructuralElement>>& GetSheetBasedStructuralElements();
 
+        TIGL_EXPORT virtual size_t GetSheetBasedStructuralElementCount() const;
+        TIGL_EXPORT virtual size_t GetSheetBasedStructuralElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSSheetBasedStructuralElement& GetSheetBasedStructuralElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSSheetBasedStructuralElement& GetSheetBasedStructuralElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSSheetBasedStructuralElement& GetSheetBasedStructuralElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSSheetBasedStructuralElement& GetSheetBasedStructuralElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSSheetBasedStructuralElement& AddSheetBasedStructuralElement();
         TIGL_EXPORT virtual void RemoveSheetBasedStructuralElement(CPACSSheetBasedStructuralElement& ref);
 

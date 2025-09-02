@@ -27,7 +27,10 @@
 #include "CTiglError.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
-#include "CCPACSFuselageSections.h"
+#include "CCPACSVessel.h"
+#include "generated/CPACSVessels.h"
+#include "CCPACSFuelTank.h"
+#include "generated/CPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
@@ -83,7 +86,7 @@ int CTiglFuselageConnection::GetSectionElementIndex() const
 
 
 // Returns the fuselage profile referenced by this connection
-CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile()
+const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const
 {
     std::string profileUID;
 
@@ -106,8 +109,8 @@ CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile()
     return (config.GetFuselageProfile(profileUID));
 }
 
-const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const {
-    return const_cast<CTiglFuselageConnection&>(*this).GetProfile();
+CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() {
+    return const_cast<CCPACSFuselageProfile&>(std::as_const(*this).GetProfile());
 }
 
 // Returns the positioning transformation for the referenced section
@@ -151,6 +154,11 @@ CTiglTransformation CTiglFuselageConnection::GetSectionElementTransformation() c
     return transformation;
 }
 
+bool CTiglFuselageConnection::ParentComponentHasPositionings() const
+{
+    return (segment->GetParent()->IsParent<CCPACSFuselage>() || segment->GetParent()->IsParent<CCPACSDuct>());
+}
+
 CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSections() const
 {
     if (segment->GetParent()->IsParent<CCPACSFuselage>()) {
@@ -158,6 +166,9 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
     }
     else if (segment->GetParent()->IsParent<CCPACSDuct>()) {
         return segment->GetParent()->GetParent<CCPACSDuct>()->GetSections();
+    }
+    else if (segment->GetParent()->IsParent<CCPACSVessel>()) {
+        return segment->GetParent()->GetParent<CCPACSVessel>()->GetSections_choice1().get();
     }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");

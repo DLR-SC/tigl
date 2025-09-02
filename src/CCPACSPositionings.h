@@ -53,7 +53,11 @@ public:
     // Read CPACS positionings element
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath) override;
 
-    // Returns the positioning matrix for a given section-uid
+    /**
+     * @brief GetPositioningTransformation returns the positioning matrix for a given section-uid
+     * @param sectionIndex
+     * @return Returns CTiglTransformation positioning matrix by sectionIndex
+     */
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionIndex);
 
     // Cleanup routine

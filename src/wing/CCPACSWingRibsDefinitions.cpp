@@ -34,45 +34,5 @@ void CCPACSWingRibsDefinitions::Invalidate(const boost::optional<std::string>& s
     }
 }
 
-int CCPACSWingRibsDefinitions::GetRibsDefinitionCount() const
-{
-    return static_cast<int>(m_ribsDefinitions.size());
-}
-
-const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const int index) const
-{
-    const int idx = index - 1;
-    if (idx < 0 || idx >= GetRibsDefinitionCount()) {
-        LOG(ERROR) << "Invalid index value";
-        throw CTiglError("Invalid index value in CCPACSWingRibsDefinitions::GetRibsDefinition", TIGL_INDEX_ERROR);
-    }
-    return static_cast<CCPACSWingRibsDefinition&>(*(m_ribsDefinitions[idx]));
-}
-
-CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const int index)
-{
-    // forward call to const method
-    return const_cast<CCPACSWingRibsDefinition&>(static_cast<const CCPACSWingRibsDefinitions&>(*this).GetRibsDefinition(index));
-}
-
-const CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const std::string& uid) const
-{
-    for (const auto& r : m_ribsDefinitions) {
-        if (r->GetUID() == uid) {
-            return *r;
-        }
-    }
-
-    const std::string& referenceUID = CTiglWingStructureReference(*GetParent()).GetUID();
-    LOG(ERROR) << "Ribs Definition \"" << uid << "\" not found in component segment or trailing edge device with UID \"" << referenceUID << "\"";
-    throw CTiglError("Ribs Definition \"" + uid + "\" not found in component segment or trailing edge device with UID \"" + referenceUID + "\". Please check the CPACS document!", TIGL_ERROR);
-}
-
-CCPACSWingRibsDefinition& CCPACSWingRibsDefinitions::GetRibsDefinition(const std::string& uid)
-{
-    // forward call to const method
-    return const_cast<CCPACSWingRibsDefinition&>(static_cast<const CCPACSWingRibsDefinitions&>(*this).GetRibsDefinition(uid));
-}
-
 
 } // end namespace tigl

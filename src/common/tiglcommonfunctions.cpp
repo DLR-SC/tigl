@@ -639,12 +639,21 @@ void GetShapeExtension(const TopoDS_Shape& shape,
     boundingBox.Get(minx, miny, minz, maxx, maxy, maxz);
 }
 
+int GetHash(const TopoDS_Shape& shape)
+{
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,8,0)
+    return std::hash<TopoDS_Shape>{}(shape);
+#else
+    return shape.HashCode(INT_MAX);
+#endif
+}
+
 // Returns a unique Hashcode for a specific geometric component
 int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
 {
     const TopoDS_Shape& loft = (*component.GetLoft()).Shape();
     if (!loft.IsNull()) {
-        return loft.HashCode(2294967295);
+        return GetHash(loft);
     }
     else {
         return 0;
@@ -1463,7 +1472,15 @@ TIGL_EXPORT TopoDS_Wire BuildWireSuperEllipse(const double lowerHeightFraction, 
     auto curve4 = tigl::CFunctionToBspline(ellipse, uMin3, uMax3, degree, tol).Curve();
     curves.push_back(curve4);
 
-    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
+    // reparametrize such that the parameters for all connection points are the same. Otherwise
+    // the four intersection points of each super ellipse in a loft are not guaranteed to be
+    // connected.
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*curve1, 0., 0.25);
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*curve2, 0., 0.25);
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*curve3, 0., 0.25);
+    tigl::CTiglBSplineAlgorithms::reparametrizeBSpline(*curve4, 0., 0.25);
+
+    opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves, false);
 
     //build wire
     TopoDS_Wire wire;

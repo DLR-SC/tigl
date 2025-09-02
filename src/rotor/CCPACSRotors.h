@@ -46,20 +46,9 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    // Returns the total count of rotors in a configuration
-    TIGL_EXPORT int GetRotorCount() const;
-
-    // Returns the rotor for a given index.
-    TIGL_EXPORT CCPACSRotor& GetRotor(int index) const;
-
-    // Returns the rotor for a given UID.
-    TIGL_EXPORT CCPACSRotor& GetRotor(const std::string& UID) const;
-
-    // Returns the rotor index for a given UID.
-    TIGL_EXPORT int GetRotorIndex(const std::string& UID) const;
-
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT const CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration();
 };
 } // end namespace tigl
 

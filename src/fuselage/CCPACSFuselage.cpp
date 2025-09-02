@@ -174,7 +174,7 @@ TopoDS_Shape CCPACSFuselage::GetSectionFace(const std::string section_uid) const
 }
 
 // Returns the section for a given index
-CCPACSFuselageSection& CCPACSFuselage::GetSection(int index) const
+CCPACSFuselageSection& CCPACSFuselage::GetSection(int index)
 {
     return m_sections.GetSection(index);
 }
@@ -463,10 +463,12 @@ TopoDS_Shape transformFuselageProfileGeometry(const CTiglTransformation& fuselTr
     trafo.PreMultiply(connection.GetSectionTransformation());
 
     // Do positioning transformations
-    boost::optional<CTiglTransformation> posTrans = connection.GetPositioningTransformation();
-    if (posTrans) {
-        trafo.PreMultiply(*posTrans);
-    }
+    if (connection.ParentComponentHasPositionings()) {
+        boost::optional<CTiglTransformation> posTrans = connection.GetPositioningTransformation();
+        if (posTrans) {
+            trafo.PreMultiply(*posTrans);
+        }
+    }    
 
     trafo.PreMultiply(fuselTransform);
 
