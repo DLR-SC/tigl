@@ -76,6 +76,9 @@ jobs:
           - config: "Debug"
             os: "ubuntu-22.04"
             coverage: "ON"
+          - config: "Release"
+            os: "ubuntu-latest"
+            tigl_bindings_python_internal: "ON"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
@@ -85,7 +88,8 @@ jobs:
           tigl_nightly: ${{ inputs.tigl_nightly }}
           tigl_concat_generated_files: ${{ inputs.tigl_concat_generated_files }}
           tigl_enable_coverage: ${{ matrix.coverage || 'OFF' }}
-          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}
+          tigl_bindings_python_internal: ${{ matrix.tigl_bindings_python_internal || 'OFF' }}
+          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}-python-${{ matrix.tigl_bindings_python_internal || 'OFF' }}
 
 
   test-linux:
