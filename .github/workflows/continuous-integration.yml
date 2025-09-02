@@ -108,12 +108,15 @@ jobs:
             os: "ubuntu-22.04"
             coverage: "ON"
             unit-tests: false
+          - config: "Release"
+            os: "ubuntu-latest"
+            tigl_bindings_python_internal: "ON"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/test-linux
         with:
-          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}
+          build-artifact: build-${{ matrix.os }}-${{ matrix.config }}-nightly-${{ inputs.tigl_nightly }}-concat-${{ inputs.tigl_concat_generated_files }}-cov-${{ matrix.coverage || 'OFF' }}-python-${{ matrix.tigl_bindings_python_internal || 'OFF' }}
           coverage: ${{ matrix.coverage == 'ON' || false }}
           unit-tests: ${{ matrix.unit-tests }}
           integration-tests: ${{ inputs.integration-tests == 'true' || false }}
