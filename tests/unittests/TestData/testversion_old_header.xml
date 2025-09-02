@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../cpacs_gen_input/cpacs_schema.xsd">
+  <header>
+    <name>Cpacs2Test</name>
+    <description>Test file to check versioning according to new CPACS header. Expected to throw deprecation warning due to mentioning cpacsVersion in header.</description>
+    <version>1.0.0</version>
+    <cpacsVersion>3.4</cpacsVersion>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <description>Test for version 1.0.0</description>
+        <cpacsVersion>3.3</cpacsVersion>
+        <creator>Marko Alder</creator>
+        <timestamp>2024-05-30T10:00:00</timestamp>
+      </versionInfo>
+    </versionInfos>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="LoggingTestModel">
+        <name>VersionTest</name>
+      </model>
+    </aircraft>
+  </vehicles>
+
+</cpacs>

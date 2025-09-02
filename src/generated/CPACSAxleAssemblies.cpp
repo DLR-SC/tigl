@@ -102,6 +102,30 @@ namespace generated
         return m_axleAssemblys;
     }
 
+    size_t CPACSAxleAssemblies::GetAxleAssemblyCount() const
+    {
+        return m_axleAssemblys.size();
+    }
+
+    CPACSAxleAssembly& CPACSAxleAssemblies::GetAxleAssembly(size_t index)
+    {
+        if (index < 1 || index > GetAxleAssemblyCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSAxleAssembly>>::GetAxleAssembly", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_axleAssemblys[index];
+    }
+
+    const CPACSAxleAssembly& CPACSAxleAssemblies::GetAxleAssembly(size_t index) const
+    {
+        if (index < 1 || index > GetAxleAssemblyCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSAxleAssembly>>::GetAxleAssembly", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_axleAssemblys[index];
+    }
+
+
     CPACSAxleAssembly& CPACSAxleAssemblies::AddAxleAssembly()
     {
         m_axleAssemblys.push_back(make_unique<CPACSAxleAssembly>(this, m_uidMgr));

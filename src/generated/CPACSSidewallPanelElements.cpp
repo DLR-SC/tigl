@@ -108,6 +108,59 @@ namespace generated
         return m_sidewallPanelElements;
     }
 
+    size_t CPACSSidewallPanelElements::GetSidewallPanelElementCount() const
+    {
+        return m_sidewallPanelElements.size();
+    }
+
+    size_t CPACSSidewallPanelElements::GetSidewallPanelElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSidewallPanelElementCount(); i++) {
+            const std::string tmpUID(m_sidewallPanelElements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSSidewallPanelElements::GetSidewallPanelElementIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSDeckElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(size_t index)
+    {
+        if (index < 1 || index > GetSidewallPanelElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetSidewallPanelElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sidewallPanelElements[index];
+    }
+
+    const CPACSDeckElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(size_t index) const
+    {
+        if (index < 1 || index > GetSidewallPanelElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetSidewallPanelElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sidewallPanelElements[index];
+    }
+
+    CPACSDeckElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(const std::string& UID)
+    {
+        for (auto& elem : m_sidewallPanelElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSSidewallPanelElements::GetSidewallPanelElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSDeckElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(const std::string& UID) const
+    {
+        for (auto& elem : m_sidewallPanelElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSSidewallPanelElements::GetSidewallPanelElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSDeckElementBase& CPACSSidewallPanelElements::AddSidewallPanelElement()
     {
         m_sidewallPanelElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));

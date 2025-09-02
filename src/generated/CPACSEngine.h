@@ -29,10 +29,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSEngines;
 
 namespace generated
 {
+    class CPACSEngines;
+
     // This class is used in:
     // CPACSEngines
 
@@ -43,13 +44,13 @@ namespace generated
     class CPACSEngine : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSEngine(CCPACSEngines* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSEngine(CPACSEngines* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSEngine();
 
-        TIGL_EXPORT CCPACSEngines* GetParent();
+        TIGL_EXPORT CPACSEngines* GetParent();
 
-        TIGL_EXPORT const CCPACSEngines* GetParent() const;
+        TIGL_EXPORT const CPACSEngines* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -79,7 +80,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveNacelle();
 
     protected:
-        CCPACSEngines* m_parent;
+        CPACSEngines* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -107,4 +108,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSEngine = generated::CPACSEngine;
+using CCPACSEngines = generated::CPACSEngines;
 } // namespace tigl

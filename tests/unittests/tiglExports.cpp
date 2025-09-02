@@ -27,6 +27,7 @@
 #include "CTiglExportVtk.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
+#include "CCPACSFuselage.h"
 #include "CCPACSWing.h"
 #include "CTiglExporterFactory.h"
 #include "CGlobalExporterConfigs.h"

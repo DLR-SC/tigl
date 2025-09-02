@@ -59,6 +59,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSStrutAssembly>>& GetPintleStruts() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSStrutAssembly>>& GetPintleStruts();
 
+        TIGL_EXPORT virtual size_t GetPintleStrutCount() const;
+        TIGL_EXPORT virtual size_t GetPintleStrutIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSStrutAssembly& GetPintleStrut(size_t index) const;
+        TIGL_EXPORT virtual CPACSStrutAssembly& GetPintleStrut(size_t index);
+
+        TIGL_EXPORT virtual const CPACSStrutAssembly& GetPintleStrut(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSStrutAssembly& GetPintleStrut(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSStrutAssembly& AddPintleStrut();
         TIGL_EXPORT virtual void RemovePintleStrut(CPACSStrutAssembly& ref);
 

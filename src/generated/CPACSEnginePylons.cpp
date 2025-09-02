@@ -80,7 +80,7 @@ namespace generated
     {
         // read element enginePylon
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/enginePylon")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/enginePylon", m_enginePylons, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSEnginePylons*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/enginePylon", m_enginePylons, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -102,9 +102,62 @@ namespace generated
         return m_enginePylons;
     }
 
+    size_t CPACSEnginePylons::GetEnginePylonCount() const
+    {
+        return m_enginePylons.size();
+    }
+
+    size_t CPACSEnginePylons::GetEnginePylonIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetEnginePylonCount(); i++) {
+            const std::string tmpUID(m_enginePylons[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSEnginePylons::GetEnginePylonIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSEnginePylon& CPACSEnginePylons::GetEnginePylon(size_t index)
+    {
+        if (index < 1 || index > GetEnginePylonCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSEnginePylon>>::GetEnginePylon", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_enginePylons[index];
+    }
+
+    const CCPACSEnginePylon& CPACSEnginePylons::GetEnginePylon(size_t index) const
+    {
+        if (index < 1 || index > GetEnginePylonCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSEnginePylon>>::GetEnginePylon", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_enginePylons[index];
+    }
+
+    CCPACSEnginePylon& CPACSEnginePylons::GetEnginePylon(const std::string& UID)
+    {
+        for (auto& elem : m_enginePylons ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSEnginePylons::GetEnginePylon. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSEnginePylon& CPACSEnginePylons::GetEnginePylon(const std::string& UID) const
+    {
+        for (auto& elem : m_enginePylons ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSEnginePylons::GetEnginePylon. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSEnginePylon& CPACSEnginePylons::AddEnginePylon()
     {
-        m_enginePylons.push_back(make_unique<CCPACSEnginePylon>(reinterpret_cast<CCPACSEnginePylons*>(this), m_uidMgr));
+        m_enginePylons.push_back(make_unique<CCPACSEnginePylon>(this, m_uidMgr));
         return *m_enginePylons.back();
     }
 

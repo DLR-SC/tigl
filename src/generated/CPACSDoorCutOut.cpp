@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSDoors.h"
 #include "CPACSDoorCutOut.h"
+#include "CPACSDoors.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDoorCutOut::CPACSDoorCutOut(CCPACSDoors* parent, CTiglUIDManager* uidMgr)
+    CPACSDoorCutOut::CPACSDoorCutOut(CPACSDoors* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -42,12 +42,12 @@ namespace generated
         }
     }
 
-    const CCPACSDoors* CPACSDoorCutOut::GetParent() const
+    const CPACSDoors* CPACSDoorCutOut::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSDoors* CPACSDoorCutOut::GetParent()
+    CPACSDoors* CPACSDoorCutOut::GetParent()
     {
         return m_parent;
     }

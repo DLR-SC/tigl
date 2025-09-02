@@ -102,6 +102,59 @@ namespace generated
         return m_structuralMounts;
     }
 
+    size_t CPACSDeckStructuralMounts::GetStructuralMountCount() const
+    {
+        return m_structuralMounts.size();
+    }
+
+    size_t CPACSDeckStructuralMounts::GetStructuralMountIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetStructuralMountCount(); i++) {
+            const std::string tmpUID(m_structuralMounts[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSDeckStructuralMounts::GetStructuralMountIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSDeckStructuralMount& CPACSDeckStructuralMounts::GetStructuralMount(size_t index)
+    {
+        if (index < 1 || index > GetStructuralMountCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckStructuralMount>>::GetStructuralMount", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_structuralMounts[index];
+    }
+
+    const CPACSDeckStructuralMount& CPACSDeckStructuralMounts::GetStructuralMount(size_t index) const
+    {
+        if (index < 1 || index > GetStructuralMountCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckStructuralMount>>::GetStructuralMount", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_structuralMounts[index];
+    }
+
+    CPACSDeckStructuralMount& CPACSDeckStructuralMounts::GetStructuralMount(const std::string& UID)
+    {
+        for (auto& elem : m_structuralMounts ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSDeckStructuralMounts::GetStructuralMount. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSDeckStructuralMount& CPACSDeckStructuralMounts::GetStructuralMount(const std::string& UID) const
+    {
+        for (auto& elem : m_structuralMounts ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSDeckStructuralMounts::GetStructuralMount. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSDeckStructuralMount& CPACSDeckStructuralMounts::AddStructuralMount()
     {
         m_structuralMounts.push_back(make_unique<CPACSDeckStructuralMount>(this, m_uidMgr));

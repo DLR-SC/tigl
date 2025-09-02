@@ -65,6 +65,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>>& GetFramePositions() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>>& GetFramePositions();
 
+        TIGL_EXPORT virtual size_t GetFramePositionCount() const;
+        TIGL_EXPORT virtual size_t GetFramePositionIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSFuselageStringerFramePosition& GetFramePosition(size_t index) const;
+        TIGL_EXPORT virtual CCPACSFuselageStringerFramePosition& GetFramePosition(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSFuselageStringerFramePosition& GetFramePosition(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSFuselageStringerFramePosition& GetFramePosition(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSFuselageStringerFramePosition& AddFramePosition();
         TIGL_EXPORT virtual void RemoveFramePosition(CCPACSFuselageStringerFramePosition& ref);
 

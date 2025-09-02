@@ -27,11 +27,11 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSProfiles;
 
 namespace generated
 {
     class CPACSProfileGeometry;
+    class CPACSProfiles;
 
     // This class is used in:
     // CPACSProfiles
@@ -44,13 +44,13 @@ namespace generated
     class CPACSFuselageProfiles
     {
     public:
-        TIGL_EXPORT CPACSFuselageProfiles(CCPACSProfiles* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuselageProfiles(CPACSProfiles* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFuselageProfiles();
 
-        TIGL_EXPORT CCPACSProfiles* GetParent();
+        TIGL_EXPORT CPACSProfiles* GetParent();
 
-        TIGL_EXPORT const CCPACSProfiles* GetParent() const;
+        TIGL_EXPORT const CPACSProfiles* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -64,11 +64,20 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSProfileGeometry>>& GetFuselageProfiles() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSProfileGeometry>>& GetFuselageProfiles();
 
+        TIGL_EXPORT virtual size_t GetFuselageProfileCount() const;
+        TIGL_EXPORT virtual size_t GetFuselageProfileIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSProfileGeometry& GetFuselageProfile(size_t index) const;
+        TIGL_EXPORT virtual CPACSProfileGeometry& GetFuselageProfile(size_t index);
+
+        TIGL_EXPORT virtual const CPACSProfileGeometry& GetFuselageProfile(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSProfileGeometry& GetFuselageProfile(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSProfileGeometry& AddFuselageProfile();
         TIGL_EXPORT virtual void RemoveFuselageProfile(CPACSProfileGeometry& ref);
 
     protected:
-        CCPACSProfiles* m_parent;
+        CPACSProfiles* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -87,4 +96,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSProfileGeometry = generated::CPACSProfileGeometry;
+using CCPACSProfiles = generated::CPACSProfiles;
 } // namespace tigl

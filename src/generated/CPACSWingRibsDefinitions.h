@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSWingRibsDefinition>>& GetRibsDefinitions() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSWingRibsDefinition>>& GetRibsDefinitions();
 
+        TIGL_EXPORT virtual size_t GetRibsDefinitionCount() const;
+        TIGL_EXPORT virtual size_t GetRibsDefinitionIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSWingRibsDefinition& GetRibsDefinition(size_t index) const;
+        TIGL_EXPORT virtual CCPACSWingRibsDefinition& GetRibsDefinition(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSWingRibsDefinition& AddRibsDefinition();
         TIGL_EXPORT virtual void RemoveRibsDefinition(CCPACSWingRibsDefinition& ref);
 

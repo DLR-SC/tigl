@@ -36,13 +36,6 @@ public:
 
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    // Returns the total count of wing cells for that wing component segment
-    TIGL_EXPORT int GetCellCount() const;
-
-    // Returns the wing cell for a given index.
-    TIGL_EXPORT const CCPACSWingCell& GetCell(int index) const;
-
-    TIGL_EXPORT const CCPACSWingCell& GetCell(const std::string& UID) const;
 };
 
 } // end namespace tigl

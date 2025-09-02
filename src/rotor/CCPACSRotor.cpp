@@ -103,31 +103,48 @@ TiglRotorType CCPACSRotor::GetDefaultedType() const
 }
 
 // Returns the rotor blade attachment count
-int CCPACSRotor::GetRotorBladeAttachmentCount() const
+size_t CCPACSRotor::GetRotorBladeAttachmentCount() const
 {
     return m_rotorHub.GetRotorBladeAttachmentCount();
 }
 
 // Returns the rotor blade attachment for a given index
-CCPACSRotorBladeAttachment& CCPACSRotor::GetRotorBladeAttachment(int index) const
+const CCPACSRotorBladeAttachment& CCPACSRotor::GetRotorBladeAttachment(size_t index) const
+{
+    return m_rotorHub.GetRotorBladeAttachment(index);
+}
+
+// Returns the rotor blade attachment for a given index
+CCPACSRotorBladeAttachment& CCPACSRotor::GetRotorBladeAttachment(size_t index)
 {
     return m_rotorHub.GetRotorBladeAttachment(index);
 }
 
 // Returns the rotor blade count
-int CCPACSRotor::GetRotorBladeCount() const
+size_t CCPACSRotor::GetRotorBladeCount() const
 {
     return m_rotorHub.GetRotorBladeCount();
 }
 
 // Returns the rotor blade for a given index
-CTiglAttachedRotorBlade& CCPACSRotor::GetRotorBlade(int index) const
+const CTiglAttachedRotorBlade& CCPACSRotor::GetRotorBlade(size_t index) const
+{
+    return m_rotorHub.GetRotorBlade(index);
+}
+
+// Returns the rotor blade for a given index
+CTiglAttachedRotorBlade& CCPACSRotor::GetRotorBlade(size_t index)
 {
     return m_rotorHub.GetRotorBlade(index);
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSRotor::GetConfiguration() const
+const CCPACSConfiguration& CCPACSRotor::GetConfiguration() const
+{
+    return m_parent->GetConfiguration();
+}
+
+CCPACSConfiguration& CCPACSRotor::GetConfiguration()
 {
     return m_parent->GetConfiguration();
 }
@@ -155,7 +172,7 @@ PNamedShape CCPACSRotor::BuildLoft() const
     BRep_Builder aBuilder;
     aBuilder.MakeCompound(rotorGeometry);
     for (int iAttach=1; iAttach <= m_rotorHub.GetRotorBladeAttachmentCount(); ++iAttach) {
-        CCPACSRotorBladeAttachment& attach = m_rotorHub.GetRotorBladeAttachment(iAttach);
+        CCPACSRotorBladeAttachment const& attach = m_rotorHub.GetRotorBladeAttachment(iAttach);
         for (int iBlade=1; iBlade <= attach.GetNumberOfBlades(); ++iBlade) {
             // Add the transformed rotor blade to the rotor assembly
             TopoDS_Shape bladeShape = attach.GetAttachedRotorBlade(iBlade).GetLoft()->Shape();

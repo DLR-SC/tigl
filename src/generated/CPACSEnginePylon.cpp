@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSEnginePylons.h"
 #include "CPACSEnginePylon.h"
+#include "CPACSEnginePylons.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSEnginePylon::CPACSEnginePylon(CCPACSEnginePylons* parent, CTiglUIDManager* uidMgr)
+    CPACSEnginePylon::CPACSEnginePylon(CPACSEnginePylons* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(reinterpret_cast<CCPACSEnginePylon*>(this), m_uidMgr)
     {
@@ -43,12 +43,12 @@ namespace generated
         }
     }
 
-    const CCPACSEnginePylons* CPACSEnginePylon::GetParent() const
+    const CPACSEnginePylons* CPACSEnginePylon::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSEnginePylons* CPACSEnginePylon::GetParent()
+    CPACSEnginePylons* CPACSEnginePylon::GetParent()
     {
         return m_parent;
     }
@@ -327,12 +327,12 @@ namespace generated
         return m_transformation;
     }
 
-    const boost::optional<CCPACSWingSections>& CPACSEnginePylon::GetSections() const
+    const boost::optional<CPACSWingSections>& CPACSEnginePylon::GetSections() const
     {
         return m_sections;
     }
 
-    boost::optional<CCPACSWingSections>& CPACSEnginePylon::GetSections()
+    boost::optional<CPACSWingSections>& CPACSEnginePylon::GetSections()
     {
         return m_sections;
     }
@@ -357,7 +357,7 @@ namespace generated
         return m_positionings;
     }
 
-    CCPACSWingSections& CPACSEnginePylon::GetSections(CreateIfNotExistsTag)
+    CPACSWingSections& CPACSEnginePylon::GetSections(CreateIfNotExistsTag)
     {
         if (!m_sections)
             m_sections = boost::in_place(reinterpret_cast<CCPACSEnginePylon*>(this), m_uidMgr);

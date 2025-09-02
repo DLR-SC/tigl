@@ -102,6 +102,59 @@ namespace generated
         return m_elements;
     }
 
+    size_t CPACSFuselageElements::GetElementCount() const
+    {
+        return m_elements.size();
+    }
+
+    size_t CPACSFuselageElements::GetElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetElementCount(); i++) {
+            const std::string tmpUID(m_elements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSFuselageElements::GetElementIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSFuselageSectionElement& CPACSFuselageElements::GetElement(size_t index)
+    {
+        if (index < 1 || index > GetElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageSectionElement>>::GetElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_elements[index];
+    }
+
+    const CCPACSFuselageSectionElement& CPACSFuselageElements::GetElement(size_t index) const
+    {
+        if (index < 1 || index > GetElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselageSectionElement>>::GetElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_elements[index];
+    }
+
+    CCPACSFuselageSectionElement& CPACSFuselageElements::GetElement(const std::string& UID)
+    {
+        for (auto& elem : m_elements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuselageElements::GetElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSFuselageSectionElement& CPACSFuselageElements::GetElement(const std::string& UID) const
+    {
+        for (auto& elem : m_elements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuselageElements::GetElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSFuselageSectionElement& CPACSFuselageElements::AddElement()
     {
         m_elements.push_back(make_unique<CCPACSFuselageSectionElement>(reinterpret_cast<CCPACSFuselageSectionElements*>(this), m_uidMgr));

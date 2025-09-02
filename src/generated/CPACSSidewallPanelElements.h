@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetSidewallPanelElements() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetSidewallPanelElements();
 
+        TIGL_EXPORT virtual size_t GetSidewallPanelElementCount() const;
+        TIGL_EXPORT virtual size_t GetSidewallPanelElementIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetSidewallPanelElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetSidewallPanelElement(size_t index);
+
+        TIGL_EXPORT virtual const CPACSDeckElementBase& GetSidewallPanelElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSDeckElementBase& GetSidewallPanelElement(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSDeckElementBase& AddSidewallPanelElement();
         TIGL_EXPORT virtual void RemoveSidewallPanelElement(CPACSDeckElementBase& ref);
 

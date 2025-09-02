@@ -3,7 +3,29 @@ Changelog
 
 Changes since last release
 -------------
+27/08/2025
+- General changes
+  - Remove the boost-dependency within the [cpacs\_tigl\_gen](https://github.com/DLR-SC/cpacs_tigl_gen) and check out the new commit for the submodule (issue #1134).
 
+05/08/2025
+- Deprecation warning
+  - The use of the node cpacsVersion right within the CPACS path /cpacs/header/ is deprecated according to CPACS 3.5. Hence, now a deprecation warning is printed if it is still used (issue #1126).
+
+
+29/07/2025
+- General changes
+  - Remove the hard-wired gtest source code from the repository. Now, it is downloaded from GitHub and configured during the TiGL-configuration-process by default (issue #1114).
+  - Raise the minimum required CMake version to 3.11 to avoid potential future deprecation errors (issue #1116).
+
+10/07/2025
+- General changes
+  - Updated TiGL to new Version of [cpacs_tigl_Gen](https://github.com/DLR-SC/cpacs_tigl_gen) which is a fork from [RISCSoftware/cpacs_tigl_gen](https://github.com/RISCSoftware/cpacs_tigl_gen)
+ 
+- Fixes
+  - [#59](https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59)	
+    Getters by index and uID are generated now for all Elements in CPACS with Attribute: maxOccur = "unbounded".  This gives users quick
+    access to elements and eliminates the need for TIGL developers to customize classes for this purpose.
+    
 08/02/2025
 
 - General changes:

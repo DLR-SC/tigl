@@ -108,6 +108,59 @@ namespace generated
         return m_classDividerElements;
     }
 
+    size_t CPACSClassDividerElements::GetClassDividerElementCount() const
+    {
+        return m_classDividerElements.size();
+    }
+
+    size_t CPACSClassDividerElements::GetClassDividerElementIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetClassDividerElementCount(); i++) {
+            const std::string tmpUID(m_classDividerElements[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSClassDividerElements::GetClassDividerElementIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSDeckElementBase& CPACSClassDividerElements::GetClassDividerElement(size_t index)
+    {
+        if (index < 1 || index > GetClassDividerElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetClassDividerElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_classDividerElements[index];
+    }
+
+    const CPACSDeckElementBase& CPACSClassDividerElements::GetClassDividerElement(size_t index) const
+    {
+        if (index < 1 || index > GetClassDividerElementCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetClassDividerElement", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_classDividerElements[index];
+    }
+
+    CPACSDeckElementBase& CPACSClassDividerElements::GetClassDividerElement(const std::string& UID)
+    {
+        for (auto& elem : m_classDividerElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSClassDividerElements::GetClassDividerElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSDeckElementBase& CPACSClassDividerElements::GetClassDividerElement(const std::string& UID) const
+    {
+        for (auto& elem : m_classDividerElements ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSClassDividerElements::GetClassDividerElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSDeckElementBase& CPACSClassDividerElements::AddClassDividerElement()
     {
         m_classDividerElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));

@@ -22,7 +22,7 @@
 #include "CCPACSFuselageSectionElement.h"
 
 #include "CCPACSFuselageSectionElements.h"
-#include "CCPACSFuselageSections.h"
+#include "generated/CPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselage.h"
 

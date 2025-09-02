@@ -108,6 +108,59 @@ namespace generated
         return m_wallPositions;
     }
 
+    size_t CPACSWallPositions::GetWallPositionCount() const
+    {
+        return m_wallPositions.size();
+    }
+
+    size_t CPACSWallPositions::GetWallPositionIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetWallPositionCount(); i++) {
+            const boost::optional<std::string> tmpUID(*m_wallPositions[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSWallPositions::GetWallPositionIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSWallPosition& CPACSWallPositions::GetWallPosition(size_t index)
+    {
+        if (index < 1 || index > GetWallPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWallPosition>>::GetWallPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_wallPositions[index];
+    }
+
+    const CCPACSWallPosition& CPACSWallPositions::GetWallPosition(size_t index) const
+    {
+        if (index < 1 || index > GetWallPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSWallPosition>>::GetWallPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_wallPositions[index];
+    }
+
+    CCPACSWallPosition& CPACSWallPositions::GetWallPosition(const std::string& UID)
+    {
+        for (auto& elem : m_wallPositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSWallPositions::GetWallPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSWallPosition& CPACSWallPositions::GetWallPosition(const std::string& UID) const
+    {
+        for (auto& elem : m_wallPositions ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSWallPositions::GetWallPosition. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSWallPosition& CPACSWallPositions::AddWallPosition()
     {
         m_wallPositions.push_back(make_unique<CCPACSWallPosition>(this, m_uidMgr));
