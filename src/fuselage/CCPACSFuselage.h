@@ -162,18 +162,36 @@ public:
     // Set the maximal width of the fuselage by inverting the rotation of the fuselage and scaling in the Y direction
     TIGL_EXPORT void SetMaxWidth(double newMaxWidth);
 
+    /**
+     * If the element exists, the function returns the UID of the element that is stored right after the passed startElementUID within the fuselage.
+     * If not, a std::nullopt is returned.
+     * If the element with UID startElementUID does not exist, a CTiglError is thrown.
+     *
+     * @remark The function assumes that the elements are already ordered.
+     * @param startElementUID
+     * @return The element's UID that is stored after startElementUID if it exists.
+     */
     TIGL_EXPORT std::optional<std::string> GetElementUIDAfterNewElement(std::string startElementUID);
 
     /**
      * Create a new section, a new element and connect the element to the "startElement".
      * The new element is placed "after" the start element.
-     * If there is already a element after the start element, we split the existing segment and insert the new element
-     * between the the two elements.
+     * If there is already an element after the start element, we split the existing segment and insert the new element
+     * between the two elements.
      *
      * @param startElementUID
      */
     TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID);
 
+    /**
+     * If the element exists, the function returns the UID of the element that is stored right before the passed startElementUID within the fuselage.
+     * If not, a std::nullopt is returned.
+     * If the element with UID startElementUID does not exist, a CTiglError is thrown.
+     *
+     * @remark The function assumes that the elements are already ordered.
+     * @param startElementUID
+     * @return The element's UID that is stored before startElementUID if it exists.
+     */
     TIGL_EXPORT std::optional<std::string> GetElementUIDBeforeNewElement(std::string startElementUID);
 
     /**

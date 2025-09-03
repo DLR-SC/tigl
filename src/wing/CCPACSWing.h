@@ -474,6 +474,15 @@ public:
      */
     TIGL_EXPORT void SetARKeepArea(double newAR);
 
+    /**
+     * If the element exists, the function returns the UID of the element that is stored right after the passed startElementUID within the wing.
+     * If not, a std::nullopt is returned.
+     * If the element with UID startElementUID does not exist, a CTiglError is thrown.
+     *
+     * @remark The function assumes that the elements are already ordered.
+     * @param startElementUID
+     * @return The element's UID that is stored after startElementUID if it exists.
+     */
     TIGL_EXPORT std::optional<std::string> GetElementUIDAfterNewElement(std::string startElementUID);
 
     /**
@@ -486,6 +495,15 @@ public:
      */
     TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID);
 
+    /**
+     * If the element exists, the function returns the UID of the element that is stored right before the passed startElementUID within the wing.
+     * If not, a std::nullopt is returned.
+     * If the element with UID startElementUID does not exist, a CTiglError is thrown.
+     *
+     * @remark The function assumes that the elements are already ordered.
+     * @param startElementUID
+     * @return The element's UID that is stored before startElementUID if it exists.
+     */
     TIGL_EXPORT std::optional<std::string> GetElementUIDBeforeNewElement(std::string startElementUID);
 
     /**
