@@ -9,8 +9,8 @@ Changes since last release
   - [#1133](https://github.com/DLR-SC/tigl/issues/1133) Add the option to set an eta value when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog.
 
 - Fixes
-  - Fix hard crash in Redo command (#1144)
-  - Improve error message (#1144)
+  - #1142 State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI.
+  - #1144 Fix hard crash in Redo command, improve error message.
 
 27/08/2025
 - General changes
