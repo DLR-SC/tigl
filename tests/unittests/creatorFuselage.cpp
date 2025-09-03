@@ -542,6 +542,31 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 
 }
 
+TEST_F(creatorFuselage, fuselageCreateSectionInsideWithParam)
+{
+    tigl::CTiglSectionElement* newElement;
+    tigl::CTiglPoint expectedCenter, currentCenter;
+    double expectedWidth, expectedArea;
+
+    setVariables("TestData/simpletest_modified.cpacs.xml", "SimpleFuselage");
+
+    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1", "D150_Fuselage_1Section2IDElement1", 0.378);
+
+    expectedArea = 0.574135;
+    expectedWidth = 1.06099;
+    expectedCenter = tigl::CTiglPoint(0.255999, 0.0944999, -0.0944999);
+    newElement     = GetCElementOf("D150_Fuselage_1Section1IDBisElem1");
+
+    EXPECT_NEAR(expectedArea, newElement->GetArea(), 0.0001);
+    EXPECT_NEAR(expectedWidth, newElement->GetWidth(), 0.0001);
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.001));
+
+    // Check parameter boundaries
+    // Value outside of open interval (0,1) is not reasonable
+    EXPECT_THROW( fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1", "D150_Fuselage_1Section1IDBisElem1", 0.0) , tigl::CTiglError );
+    EXPECT_THROW( fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1", "D150_Fuselage_1Section1IDBisElem1", 1.0) , tigl::CTiglError );
+}
+
 TEST_F(creatorFuselage, fuselageCreateSectionNonBoundary)
 {
     setVariables("TestData/simpletest.cpacs.xml", "SimpleFuselage");

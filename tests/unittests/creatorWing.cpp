@@ -20,6 +20,7 @@
 #include "CNamedShape.h"
 #include "test.h"
 #include "tigl.h"
+#include <BRepTools.hxx>
 #include <tixi.h>
 #include <tixicpp.h>
 #include "CPACSWing.h"
@@ -1033,7 +1034,7 @@ TEST_F(creatorWing, MultipleWings_CreateSections)
     for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
         EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
     }
-    expectedCenter = tigl::CTiglPoint(0.62, 1.5, 0);
+    expectedCenter = tigl::CTiglPoint(0.620235, 1.5, 0.0);
     newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2BisElem1");
     EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.001));
 
@@ -1092,6 +1093,31 @@ TEST_F(creatorWing, MultipleWings_CreateSections)
     EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.2));
 
 
+}
+
+TEST_F(creatorWing, wingCreateSectionInsideWithParam)
+{
+    tigl::CTiglSectionElement* newElement;
+    tigl::CTiglPoint expectedCenter, currentCenter;
+    double expectedWidth, expectedArea;
+
+    setVariables("TestData/simpletest_modified.cpacs.xml", "Wing");
+
+    wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec2_El1", "Cpacs2Test_Wing_Sec3_El1", 0.378);
+
+    expectedArea = 0.185723;
+    expectedWidth = 0.81102;
+    expectedCenter = tigl::CTiglPoint(0.663589, 1.378, 0.0);
+    newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2BisElem1");
+
+    EXPECT_NEAR(expectedArea, newElement->GetArea(), 0.0001);
+    EXPECT_NEAR(expectedWidth, newElement->GetWidth(), 0.0001);
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.001));
+
+    // Check parameter boundaries
+    // Value outside of open interval (0,1) is not reasonable
+    EXPECT_THROW( wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec1_El1", "Cpacs2Test_Wing_Sec2_El1", 0.0) , tigl::CTiglError );
+    EXPECT_THROW( wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec1_El1", "Cpacs2Test_Wing_Sec2_El1", 1.0) , tigl::CTiglError );
 }
 
 TEST_F(creatorWing, wingCreateSectionNonBoundary)

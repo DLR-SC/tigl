@@ -24,6 +24,7 @@
 #include "CTiglError.h"
 #include "TIGLViewerErrorDialog.h"
 #include "DeleteDialog.h"
+#include <optional>
 
 ModificatorSectionsWidget::ModificatorSectionsWidget(QWidget* parent)
     : QWidget(parent)
@@ -60,14 +61,37 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
 
     NewConnectedElementDialog newElementDialog(elementUIDsQList, this);
     if (newElementDialog.exec() == QDialog::Accepted) {
-        std::string startUID                   = newElementDialog.getStartUID().toStdString();
-        NewConnectedElementDialog::Where where = newElementDialog.getWhere();
+        std::string startUID                    = newElementDialog.getStartUID().toStdString();
+        NewConnectedElementDialog::Where where  = newElementDialog.getWhere();
+        std::optional<double> eta               = newElementDialog.getEta();
         try {
             if (where == NewConnectedElementDialog::Before) {
-                createConnectedElement->CreateNewConnectedElementBefore(startUID);
+                auto elementUIDBefore = createConnectedElement->GetElementUIDBeforeNewElement(startUID);
+                if (elementUIDBefore) {
+                    if (eta) { // Security check. Should be set if elementUIDBefore is true
+                        createConnectedElement->CreateNewConnectedElementBetween(*elementUIDBefore, startUID, *eta);
+                    }
+                    else {
+                        throw tigl::CTiglError("No eta value set!");
+                    }
+                }
+                else {
+                    createConnectedElement->CreateNewConnectedElementBefore(startUID);
+                }
             }
             else if (where == NewConnectedElementDialog::After) {
-                createConnectedElement->CreateNewConnectedElementAfter(startUID);
+                auto elementUIDAfter = createConnectedElement->GetElementUIDAfterNewElement(startUID);
+                if (elementUIDAfter) {
+                    if (eta) { // Security check. Should be set if elementUIDAfter is true
+                        createConnectedElement->CreateNewConnectedElementBetween(startUID, *elementUIDAfter, *eta);
+                    }
+                    else {
+                        throw tigl::CTiglError("No eta value set!");
+                    }
+                }
+                else {
+                    createConnectedElement->CreateNewConnectedElementAfter(startUID);
+                }
             }
         }
         catch (const tigl::CTiglError& err) {
