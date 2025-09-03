@@ -40,16 +40,16 @@ struct ElementModificatorInterface
             [&t](std::string str){ return t.GetElementUIDAfterNewElement(str); }
             )
         , CreateNewConnectedElementAfter(
-            [&t](std::string str){ return t.CreateNewConnectedElementAfter(str); }
+            [&t](std::string str, std::string name){ return t.CreateNewConnectedElementAfter(str, name); }
             )
         , GetElementUIDBeforeNewElement(
             [&t](std::string str){ return t.GetElementUIDBeforeNewElement(str); }
             )
         , CreateNewConnectedElementBefore(
-            [&t](std::string str){ return t.CreateNewConnectedElementBefore(str); }
+            [&t](std::string str, std::string name){ return t.CreateNewConnectedElementBefore(str, name); }
             )
         , CreateNewConnectedElementBetween(
-            [&t](std::string str1, std::string str2, double param){ return t.CreateNewConnectedElementBetween(str1, str2, param); }
+            [&t](std::string str1, std::string str2, double param, std::string name){ return t.CreateNewConnectedElementBetween(str1, str2, param, name); }
             )
         , DeleteConnectedElement(
             [&t](std::string str){ return t.DeleteConnectedElement(str); }
@@ -60,10 +60,10 @@ struct ElementModificatorInterface
     {}
 
     std::function<std::optional<std::string>(std::string)> GetElementUIDAfterNewElement;
-    std::function<void(std::string)> CreateNewConnectedElementAfter;
+    std::function<void(std::string, std::string)> CreateNewConnectedElementAfter;
     std::function<std::optional<std::string>(std::string)> GetElementUIDBeforeNewElement;
-    std::function<void(std::string)> CreateNewConnectedElementBefore;
-    std::function<void(std::string, std::string, double param)> CreateNewConnectedElementBetween;
+    std::function<void(std::string, std::string)> CreateNewConnectedElementBefore;
+    std::function<void(std::string, std::string, double param, std::string)> CreateNewConnectedElementBetween;
     std::function<void(std::string)> DeleteConnectedElement;
     std::function<std::vector<std::string>()> GetOrderedConnectedElement;
 };

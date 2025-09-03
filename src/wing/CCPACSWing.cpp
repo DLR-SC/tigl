@@ -1405,7 +1405,7 @@ void CCPACSWing::SetARKeepArea(double newAR)
     SetHalfSpanKeepArea(newSpan);
 }
 
-void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta)
+void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta, std::string sectionName)
 {
 
     if(0.0001 > eta || eta > 0.9999)
@@ -1436,7 +1436,7 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
 
     // create new section and element
     CTiglUIDManager &uidManager = GetUIDManager();
-    std::string baseUID = uidManager.MakeUIDUnique(startElement->GetSectionUID() + "Bis");
+    std::string baseUID = uidManager.MakeUIDUnique(sectionName);
     CCPACSWingSection &newSection = GetSections().CreateSection(baseUID, startElement->GetProfileUID());
     CTiglWingSectionElement *newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
 
@@ -1465,7 +1465,7 @@ std::optional<std::string> CCPACSWing::GetElementUIDAfterNewElement(std::string 
     return *(++it);
 }
 
-void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
+void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName)
 {
     auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (elementUIDAfter) {
@@ -1504,7 +1504,7 @@ void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
             area = scaleF * area;
         }
         std::string profileUID = startElement->GetProfileUID();
-        std::string sectionUID = startElement->GetSectionUID() + "After";
+        std::string sectionUID =  GetUIDManager().MakeUIDUnique(sectionName);
 
 
         CCPACSWingSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
@@ -1539,7 +1539,7 @@ std::optional<std::string> CCPACSWing::GetElementUIDBeforeNewElement(std::string
     return *(--it);
 }
 
-void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
+void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName)
 {
 
     auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
@@ -1579,7 +1579,7 @@ void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
             area = scaleF * area;
         }
         std::string profileUID = startElement->GetProfileUID();
-        std::string sectionUID = startElement->GetSectionUID() + "Before";
+        std::string sectionUID =  GetUIDManager().MakeUIDUnique(sectionName);
 
 
         CCPACSWingSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
