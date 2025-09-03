@@ -74,7 +74,7 @@ runs:
         conda remove opencascade freeimageplus freetype -y
         conda install opencascade-static=7.6.2 tbb tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
 
-    - name: Install dependenstatic FreeImage, FreeType and OCCT (static opencascade)
+    - name: Install dependencies static FreeImage, FreeType and OCCT (static opencascade)
       if: inputs.oce_static_libs == 'ON'
       shell: cmd /C call {0}
       run: |
