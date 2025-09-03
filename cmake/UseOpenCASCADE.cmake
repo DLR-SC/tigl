@@ -103,6 +103,7 @@ set_target_properties(TKernel PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${OpenCA
 
 if (OCE_STATIC_LIBS OR OpenCASCADE_STATIC_LIBS)
     target_compile_definitions(TKernel INTERFACE HAVE_NO_DLL)
+    target_compile_definitions(TKService INTERFACE FREEIMAGE_LIB)
 endif()
 
 include(CheckCXXSourceCompiles)
