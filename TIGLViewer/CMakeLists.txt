@@ -128,11 +128,6 @@ target_link_libraries(${PROGNAME} PRIVATE
   ${EXTRA_LIBRARIES} 
 )
 
-if (OpenCASCADE_WITH_FREEIMAGE AND (OCE_STATIC_LIBS OR OpenCASCADE_STATIC_LIBS))
-  message(STATUS "Found static OpenCascade")
-  target_compile_definitions(${PROGNAME} PRIVATE FREEIMAGE_LIB)
-endif()
-
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
