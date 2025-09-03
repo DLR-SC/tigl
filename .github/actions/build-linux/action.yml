@@ -57,6 +57,12 @@ runs:
         environment-file: environment.yml
         auto-activate-base: false
 
+    - name: Install dependencies:  libgl-devel libegl-devel libopengl-devel
+      if: inputs.oce_static_libs == 'ON'
+      shell: cmd /C call {0}
+      run: |
+        conda install libgl-devel libegl-devel libopengl-devel
+
     - name: Conda info
       shell: bash -el {0}
       run: |
