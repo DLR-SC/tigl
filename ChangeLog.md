@@ -4,6 +4,10 @@ Changelog
 Changes since last release
 -------------
 
+03/09/2025
+- General changes
+  - Build with tixi 3.3.1
+
 28/08/2025
 - Fixes 
   - #1142 State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI.
