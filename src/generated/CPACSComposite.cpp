@@ -223,6 +223,30 @@ namespace generated
         return m_compositeLayers;
     }
 
+    size_t CPACSComposite::GetCompositeLayerCount() const
+    {
+        return m_compositeLayers.size();
+    }
+
+    CPACSCompositeLayer& CPACSComposite::GetCompositeLayer(size_t index)
+    {
+        if (index < 1 || index > GetCompositeLayerCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCompositeLayer>>::GetCompositeLayer", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_compositeLayers[index];
+    }
+
+    const CPACSCompositeLayer& CPACSComposite::GetCompositeLayer(size_t index) const
+    {
+        if (index < 1 || index > GetCompositeLayerCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCompositeLayer>>::GetCompositeLayer", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_compositeLayers[index];
+    }
+
+
     CPACSCompositeLayer& CPACSComposite::AddCompositeLayer()
     {
         m_compositeLayers.push_back(make_unique<CPACSCompositeLayer>(this, m_uidMgr));

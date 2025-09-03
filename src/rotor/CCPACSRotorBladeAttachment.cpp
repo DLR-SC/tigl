@@ -98,7 +98,7 @@ CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatri
 }
 
 // Returns the number of attached rotor blades
-int CCPACSRotorBladeAttachment::GetNumberOfBlades() const
+size_t CCPACSRotorBladeAttachment::GetNumberOfBlades() const
 {
     if (m_numberOfBlades_choice2)
         return *m_numberOfBlades_choice2;
@@ -107,7 +107,7 @@ int CCPACSRotorBladeAttachment::GetNumberOfBlades() const
 }
 
 // Returns the azimuth angle of the attached rotor blade with the given index
-double CCPACSRotorBladeAttachment::GetAzimuthAngle(int index) const
+double CCPACSRotorBladeAttachment::GetAzimuthAngle(size_t index) const
 {
     index --;
     if (index < 0 || index >= GetNumberOfBlades()) {
@@ -120,13 +120,13 @@ double CCPACSRotorBladeAttachment::GetAzimuthAngle(int index) const
 }
 
 // Returns the index of the referenced wing definition
-int CCPACSRotorBladeAttachment::GetWingIndex() const
+size_t CCPACSRotorBladeAttachment::GetWingIndex() const
 {
     return GetConfiguration().GetWingIndex(m_rotorBladeUID);
 }
 
 // Get hinge count
-int CCPACSRotorBladeAttachment::GetHingeCount() const
+size_t CCPACSRotorBladeAttachment::GetHingeCount() const
 {
     if (m_hinges)
         return m_hinges->GetRotorHingeCount();
@@ -135,13 +135,17 @@ int CCPACSRotorBladeAttachment::GetHingeCount() const
 }
 
 // Returns the hinge for a given index
-CCPACSRotorHinge& CCPACSRotorBladeAttachment::GetHinge(const int index) const
+const CCPACSRotorHinge& CCPACSRotorBladeAttachment::GetHinge(size_t index) const
+{
+    return m_hinges->GetRotorHinge(index);
+}
+CCPACSRotorHinge& CCPACSRotorBladeAttachment::GetHinge(size_t index)
 {
     return m_hinges->GetRotorHinge(index);
 }
 
 // Returns the rotor blade for a given index
-CTiglAttachedRotorBlade& CCPACSRotorBladeAttachment::GetAttachedRotorBlade(int index)
+const CTiglAttachedRotorBlade& CCPACSRotorBladeAttachment::GetAttachedRotorBlade(size_t index) const
 {
     lazyCreateAttachedRotorBlades();
     index--;
@@ -152,20 +156,19 @@ CTiglAttachedRotorBlade& CCPACSRotorBladeAttachment::GetAttachedRotorBlade(int i
 }
 
 // Returns the rotor blade for a given index
-const CTiglAttachedRotorBlade& CCPACSRotorBladeAttachment::GetAttachedRotorBlade(int index) const {
-    return const_cast<CCPACSRotorBladeAttachment*>(this)->GetAttachedRotorBlade(index);
+CTiglAttachedRotorBlade& CCPACSRotorBladeAttachment::GetAttachedRotorBlade(size_t index) {
+    return const_cast<CTiglAttachedRotorBlade&>(std::as_const(*this).GetAttachedRotorBlade(index));
 }
 
 // Returns the parent rotor
-CCPACSRotor& CCPACSRotorBladeAttachment::GetRotor() const
+const CCPACSRotor& CCPACSRotorBladeAttachment::GetRotor() const
 {
     return *m_parent->GetParent()->GetParent();
 }
 
-// Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorBladeAttachment::GetConfiguration() const
+CCPACSRotor& CCPACSRotorBladeAttachment::GetRotor()
 {
-    return m_parent->GetConfiguration();
+    return *m_parent->GetParent()->GetParent();
 }
 
 void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades() const
@@ -185,6 +188,17 @@ void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades() const
         }
     }
     assert(attachedRotorBlades.size() == bladeCount);
+}
+
+// Returns the parent configuration
+const CCPACSConfiguration& CCPACSRotorBladeAttachment::GetConfiguration() const
+{
+    return m_parent->GetConfiguration();
+}
+
+CCPACSConfiguration& CCPACSRotorBladeAttachment::GetConfiguration()
+{
+    return m_parent->GetConfiguration();
 }
 
 } // end namespace tigl

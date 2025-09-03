@@ -106,7 +106,7 @@ namespace generated
         boost::optional<std::string> m_fuselageSectionUID_choice3;
 
         /// UID of a section determining the
-        /// x-coordinate of the position with 
+        /// x-coordinate of the position with
         /// the given y- and z-coordinates.
         boost::optional<std::string> m_sectionUID_choice4;
 

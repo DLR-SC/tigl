@@ -20,10 +20,10 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSTransformation.h>
-#include <CCPACSVessels.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
+#include "CPACSVessels.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
@@ -31,10 +31,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSFuelTanks;
 
 namespace generated
 {
+    class CPACSFuelTanks;
+
     // This class is used in:
     // CPACSFuelTanks
 
@@ -44,13 +45,13 @@ namespace generated
     class CPACSFuelTank : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSFuelTank(CCPACSFuelTanks* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuelTank(CPACSFuelTanks* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFuelTank();
 
-        TIGL_EXPORT CCPACSFuelTanks* GetParent();
+        TIGL_EXPORT CPACSFuelTanks* GetParent();
 
-        TIGL_EXPORT const CCPACSFuelTanks* GetParent() const;
+        TIGL_EXPORT const CPACSFuelTanks* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -79,11 +80,11 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
-        TIGL_EXPORT virtual const CCPACSVessels& GetVessels() const;
-        TIGL_EXPORT virtual CCPACSVessels& GetVessels();
+        TIGL_EXPORT virtual const CPACSVessels& GetVessels() const;
+        TIGL_EXPORT virtual CPACSVessels& GetVessels();
 
     protected:
-        CCPACSFuelTanks* m_parent;
+        CPACSFuelTanks* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -102,7 +103,7 @@ namespace generated
 
         CCPACSTransformation              m_transformation;
 
-        CCPACSVessels                     m_vessels;
+        CPACSVessels                      m_vessels;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
@@ -117,4 +118,7 @@ namespace generated
 } // namespace generated
 
 // CPACSFuelTank is customized, use type CCPACSFuelTank directly
+
+// Aliases in tigl namespace
+using CCPACSFuelTanks = generated::CPACSFuelTanks;
 } // namespace tigl

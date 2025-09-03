@@ -27,13 +27,14 @@
 #include "CTiglTransformation.h"
 #include <string>
 #include <boost/optional.hpp>
+#include "generated/CPACSFuselageSections.h"
 
 namespace tigl
 {
 
+
 class CCPACSFuselageSegment;
 class CCPACSFuselageProfile;
-class CCPACSFuselageSections;
 class CCPACSPositionings;
 
 // TODO: this class is very similar to CCPACSWingConnection, merge into one class
@@ -57,8 +58,8 @@ public:
     TIGL_EXPORT int GetSectionElementIndex() const;
 
     // Returns the fuselage profile referenced by this connection
-    TIGL_EXPORT CCPACSFuselageProfile& GetProfile();
     TIGL_EXPORT const CCPACSFuselageProfile& GetProfile() const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetProfile();
 
     // Returns the positioning transformation (segment transformation) for the referenced section
     TIGL_EXPORT boost::optional<CTiglTransformation> GetPositioningTransformation() const;

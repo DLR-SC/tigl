@@ -93,6 +93,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselageStringer>>& GetStringers() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselageStringer>>& GetStringers();
 
+        TIGL_EXPORT virtual size_t GetStringerCount() const;
+        TIGL_EXPORT virtual size_t GetStringerIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSFuselageStringer& GetStringer(size_t index) const;
+        TIGL_EXPORT virtual CCPACSFuselageStringer& GetStringer(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSFuselageStringer& GetStringer(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSFuselageStringer& GetStringer(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSFuselageStringer& AddStringer();
         TIGL_EXPORT virtual void RemoveStringer(CCPACSFuselageStringer& ref);
 

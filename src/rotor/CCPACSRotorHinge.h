@@ -69,14 +69,18 @@ public:
     // Returns the rotor hinge angle
     TIGL_EXPORT double GetHingeAngle(double thetaDeg=0., double a0=0., std::vector<double> aSin=std::vector<double>(), std::vector<double> aCos=std::vector<double>()) const;
 
-    // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
-
     // Returns the parent rotor
-    TIGL_EXPORT CCPACSRotor& GetRotor() const;
+    TIGL_EXPORT const CCPACSRotor& GetRotor() const;
+    TIGL_EXPORT CCPACSRotor& GetRotor();
 
     // Returns the parent rotor blade attachment
-    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment() const;
+    TIGL_EXPORT const CCPACSRotorBladeAttachment& GetRotorBladeAttachment() const;
+    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment();
+
+    // Returns the parent configuration
+    TIGL_EXPORT const CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration();
+
 };
 
 } // end namespace tigl

@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSSkinSegment>>& GetSkinSegments() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSSkinSegment>>& GetSkinSegments();
 
+        TIGL_EXPORT virtual size_t GetSkinSegmentCount() const;
+        TIGL_EXPORT virtual size_t GetSkinSegmentIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSSkinSegment& GetSkinSegment(size_t index) const;
+        TIGL_EXPORT virtual CCPACSSkinSegment& GetSkinSegment(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSSkinSegment& GetSkinSegment(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSSkinSegment& GetSkinSegment(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSSkinSegment& AddSkinSegment();
         TIGL_EXPORT virtual void RemoveSkinSegment(CCPACSSkinSegment& ref);
 

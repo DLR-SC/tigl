@@ -102,6 +102,59 @@ namespace generated
         return m_configurations;
     }
 
+    size_t CPACSVehicleConfigurations::GetConfigurationCount() const
+    {
+        return m_configurations.size();
+    }
+
+    size_t CPACSVehicleConfigurations::GetConfigurationIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetConfigurationCount(); i++) {
+            const std::string tmpUID(m_configurations[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSVehicleConfigurations::GetConfigurationIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSVehicleConfiguration& CPACSVehicleConfigurations::GetConfiguration(size_t index)
+    {
+        if (index < 1 || index > GetConfigurationCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleConfiguration>>::GetConfiguration", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_configurations[index];
+    }
+
+    const CPACSVehicleConfiguration& CPACSVehicleConfigurations::GetConfiguration(size_t index) const
+    {
+        if (index < 1 || index > GetConfigurationCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleConfiguration>>::GetConfiguration", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_configurations[index];
+    }
+
+    CPACSVehicleConfiguration& CPACSVehicleConfigurations::GetConfiguration(const std::string& UID)
+    {
+        for (auto& elem : m_configurations ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSVehicleConfigurations::GetConfiguration. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSVehicleConfiguration& CPACSVehicleConfigurations::GetConfiguration(const std::string& UID) const
+    {
+        for (auto& elem : m_configurations ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSVehicleConfigurations::GetConfiguration. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSVehicleConfiguration& CPACSVehicleConfigurations::AddConfiguration()
     {
         m_configurations.push_back(make_unique<CPACSVehicleConfiguration>(this, m_uidMgr));

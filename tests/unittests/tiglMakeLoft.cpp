@@ -21,6 +21,7 @@
 #include "CTiglMakeLoft.h"
 #include "CTiglError.h"
 #include "CCPACSConfigurationManager.h"
+#include "CCPACSFuselage.h"
 
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>

@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -33,8 +33,8 @@ CCPACSFuselageProfiles::CCPACSFuselageProfiles(CCPACSProfiles* parent, CTiglUIDM
 // Invalidates internal state
 void CCPACSFuselageProfiles::Invalidate(const boost::optional<std::string>& source) const
 {
-    for (int i = 1; i < GetProfileCount(); i++) {
-        GetProfile(i).Invalidate(source);
+    for (int i = 1; i < GetFuselageProfileCount(); i++) {
+        GetFuselageProfile(i).Invalidate(source);
     }
 }
 
@@ -85,13 +85,20 @@ void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
 }
 
 // Returns the total count of fuselage profiles in this configuration
-int CCPACSFuselageProfiles::GetProfileCount() const
+size_t CCPACSFuselageProfiles::GetProfileCount() const
 {
-    return static_cast<int>(m_fuselageProfiles.size());
+    return GetFuselageProfileCount();
 }
 
 // Returns the fuselage profile for a given uid.
-CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
+const CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
+{
+    for (auto& p : m_fuselageProfiles)
+        if (p->GetUID() == uid)
+            return static_cast<CCPACSFuselageProfile&>(*p);
+    throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
+}
+CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid)
 {
     for (auto& p : m_fuselageProfiles)
         if (p->GetUID() == uid)
@@ -99,14 +106,15 @@ CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
-// Returns the fuselage profile for a given index - TODO: depricated function!
-CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(int index) const
+// Returns the fuselage profile for a given index
+const CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(size_t index) const
 {
-    index--;
-    if (index < 0 || index >= m_fuselageProfiles.size()) {
-        throw CTiglError("Invalid index in CCPACSFuselageProfiles::GetProfile", TIGL_INDEX_ERROR);
-    }
-    return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfiles[index]);
+    return static_cast<const CCPACSFuselageProfile&>(GetFuselageProfile(index));
+}
+
+CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(size_t index)
+{
+    return static_cast<CCPACSFuselageProfile&>(GetFuselageProfile(index));
 }
 
 } // end namespace tigl

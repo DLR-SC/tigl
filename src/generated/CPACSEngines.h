@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSEngine>>& GetEngines() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSEngine>>& GetEngines();
 
+        TIGL_EXPORT virtual size_t GetEngineCount() const;
+        TIGL_EXPORT virtual size_t GetEngineIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSEngine& GetEngine(size_t index) const;
+        TIGL_EXPORT virtual CPACSEngine& GetEngine(size_t index);
+
+        TIGL_EXPORT virtual const CPACSEngine& GetEngine(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSEngine& GetEngine(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSEngine& AddEngine();
         TIGL_EXPORT virtual void RemoveEngine(CPACSEngine& ref);
 
@@ -82,9 +91,8 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSEngines is customized, use type CCPACSEngines directly
-
 // Aliases in tigl namespace
+using CCPACSEngines = generated::CPACSEngines;
 using CCPACSEngine = generated::CPACSEngine;
 using CCPACSVehicles = generated::CPACSVehicles;
 } // namespace tigl
