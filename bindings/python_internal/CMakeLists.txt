@@ -21,9 +21,13 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
      # Ensure the correct Python version is picked up by specifying the Python_EXECUTABLE
     if (DEFINED ENV{CONDA_PREFIX})
         if (WIN32)
-            set(Python3_EXECUTABLE "$ENV{CONDA_PREFIX}/python.exe")
+	    set(Python3_EXECUTABLE "$ENV{CONDA_PREFIX}/python.exe")
+	    # Helps to find PythonOCC automatically
+	    set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "$ENV{CONDA_PREFIX}/Library/src/pythonocc-core")
         else()
-            set(Python3_EXECUTABLE "$ENV{CONDA_PREFIX}/bin/python")
+	    set(Python3_EXECUTABLE "$ENV{CONDA_PREFIX}/bin/python")
+	    # Helps to find PythonOCC automatically
+	    set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "$ENV{CONDA_PREFIX}/src/pythonocc-core")
         endif()
     endif()
 

@@ -6,7 +6,7 @@ channels:
 dependencies:
  - pip                           # just make sure that pip installs into this env, if used
  # required build dependencies
- - tixi3=3.3.0                   # library for dealing with xml files
+ - tixi3=3.3.1                   # library for dealing with xml files
  - opencascade=7.4.0             # library for dealing with b-spline and nurbs geometries. dlr-sc version contains patch for C2-cont. Coons patches
  # optional dependencies
  - conda-forge::qt=5.15.15       # needed to build tiglcreator
