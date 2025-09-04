@@ -20,7 +20,7 @@ So. using these interfaces, you have access to almost all the internal C++ funct
 In particular, you can access the wing class (tigl::CCPACSWing) or the fuselage class (tigl::CCPACSFuselage).
 From this classes you can modify the high level parameters of the object and easily modify the geometry of the object. 
 Though this internal python API, the possibilities to manipulate the CPACS geometrical data really explode. 
-So, the python API is now the preferred way to access the TiGLCreator library. At the beginning, the user might be a
+So, the python API is now the preferred way to access the TiGL library. At the beginning, the user might be a
 bit confused by this new way to interact with the library. However, a tutorial to get an intuition can be found here: @ref tuto_python 
            
     

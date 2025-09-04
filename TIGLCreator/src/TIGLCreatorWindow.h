@@ -46,7 +46,7 @@ class TIGLCreatorWindow : public QMainWindow, private Ui::TIGLCreatorWindow
     Q_PROPERTY(TIGLCreatorWidget*  viewer READ getViewer)
     Q_PROPERTY(TIGLCreatorContext* scene  READ getScene)
     Q_PROPERTY(TIGLCreatorSettings* settings  READ getViewerSettings)
-    Q_CLASSINFO("Description", "TiGL Creator Application")
+    Q_CLASSINFO("Description", "TiGLCreator Application")
 
 public:
     enum { MaxRecentFiles = 5 };

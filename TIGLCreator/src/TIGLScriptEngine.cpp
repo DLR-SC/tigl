@@ -304,7 +304,7 @@ void TIGLScriptEngine::displayHelp()
 {
     QString helpString;
 
-    helpString =  "====== TiGL Creator scripting help ======<br/><br/>";
+    helpString =  "====== TiGLCreator scripting help ======<br/><br/>";
 
     helpString += "Some examples how to use TiGL: <br/>";
     helpString += "Compute and draw point on wing:<br/>";

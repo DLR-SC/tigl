@@ -3,7 +3,7 @@
 
 # set up QT
 
-OPTION(TIGL_CREATOR "Builds the TiGL Creator program (requires OpenGL and Qt4)" ON)
+OPTION(TIGL_CREATOR "Builds the TiGLCreator program (requires OpenGL and Qt4)" ON)
 
 
 if (APPLE)
@@ -244,7 +244,7 @@ if (OpenCASCADE_SHADER_DIRECTORY)
 endif()
 
 else (QT4_FOUND OR Qt5Widgets_FOUND)
-    message(STATUS "No qt was found. TiGL Creator will not be build!")
+    message(STATUS "No qt was found. TiGLCreator will not be built!")
 endif(QT4_FOUND OR Qt5Widgets_FOUND)
 
 endif(TIGL_CREATOR)

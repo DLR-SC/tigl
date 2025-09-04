@@ -41,7 +41,7 @@ Our small Matlab demo at [https://github.com/DLR-SC/tigl/tree/master/examples/ma
 
 ## Building from source ##
 
-The minimum requirements to build TiGL are TiXI and OpenCascade Technology (OCCT). Qt5 is needed if you want to build the tiglcreator.
+The minimum requirements to build TiGL are TiXI and OpenCascade Technology (OCCT). Qt5 is needed if you want to build the TiGLCreator.
 All build dependencies of TiGL are available as conda packages. Most dependencies are supplied in a decicated channel at [https://anaconda.org/dlr-sc/](https://anaconda.org/dlr-sc/). 
 Specifically, this channel contains a recommended variant of opencascade, which includes a patch for G2-continuous Coons patches.
 The recipes for the conda packages in the dlr-sc channel can be found at [https://github.com/DLR-SC/tigl-conda](https://github.com/DLR-SC/tigl-conda).

@@ -72,7 +72,7 @@ TIGLCreatorWindow::TIGLCreatorWindow()
 {
     setupUi(this);
 
-    setTiglWindowTitle(QString("TiGL Creator"));
+    setTiglWindowTitle(QString("TiGLCreator"));
 
     undoStack = new QUndoStack(this);
 
@@ -297,7 +297,7 @@ void TIGLCreatorWindow::closeConfiguration()
         delete cpacsConfiguration;
         cpacsConfiguration = nullptr;
     }
-    setTiglWindowTitle(QString("TiGL Creator %1").arg(TIGL_MAJOR_VERSION));
+    setTiglWindowTitle(QString("TiGLCreator %1").arg(TIGL_MAJOR_VERSION));
     resetColorSaveButton(); // Reset the icon of the save button to show that the file has not been edited since the last save
 
     setCurrentFile("");
@@ -472,7 +472,7 @@ void TIGLCreatorWindow::setCurrentFile(const QString& fileName)
 
     if (currentFile.fileName() != "") {
 
-        setTiglWindowTitle(QString("%2 - TiGL Creator")
+        setTiglWindowTitle(QString("%2 - TiGLCreator")
                                .arg(QDir::toNativeSeparators(currentFile.absoluteFilePath())));
 
         watcher->addPath(currentFile.absoluteFilePath());
@@ -492,7 +492,7 @@ void TIGLCreatorWindow::setCurrentFile(const QString& fileName)
         myLastFolder = currentFile.absolutePath();
     }
     else {
-        setTiglWindowTitle(QString("TiGL Creator"));
+        setTiglWindowTitle(QString("TiGLCreator"));
     }
 }
 
@@ -781,8 +781,8 @@ void TIGLCreatorWindow::about()
     QString tiglVersion(tiglGetVersion());
     QString occtVersion = QString("%1.%2.%3").arg(OCC_VERSION_MAJOR).arg(OCC_VERSION_MINOR).arg(OCC_VERSION_MAINTENANCE);
 
-    text =  "The <b>TiGL Creator</b> is based on the TiGL library and allows you to view, edit and create CPACS geometries. ";
-    text += "TiGL Creator uses the following Open Source libraries:<br/><br/>";
+    text =  "The <b>TiGLCreator</b> is based on the TiGL library and allows you to view, edit and create CPACS geometries. ";
+    text += "TiGLCreator uses the following Open Source libraries:<br/><br/>";
 
     if (tiglVersion.contains("-r")) {
         QStringList list = tiglVersion.split("-r");
@@ -800,7 +800,7 @@ void TIGLCreatorWindow::about()
 
     text += "&copy; 2022 German Aerospace Center (DLR) ";
 
-    QMessageBox::about(this, tr("About TiGL Creator"), text);
+    QMessageBox::about(this, tr("About TiGLCreator"), text);
 }
 
 void TIGLCreatorWindow::aboutQt()

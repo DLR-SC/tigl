@@ -1,4 +1,4 @@
-TiGLCreator GUI {#gui}
+TiGLCreator {#gui}
 ===========
 
 @section gui_overview Overview
@@ -85,7 +85,7 @@ More functions can be found in the "View" menu.
 
 @section shortcuts Keyboard shortcuts
 
-All actions in the TiGL Creator can be accessed using the application menu or the context menu inside the 3D view. To improve usability, some the actions can also be executed with keyboard shortcuts. The most practical ones are:
+All actions in the TiGLCreator can be accessed using the application menu or the context menu inside the 3D view. To improve usability, some the actions can also be executed with keyboard shortcuts. The most practical ones are:
 
 __Basic actions__
  | Keys   |  Action                     |
@@ -138,8 +138,8 @@ __Debugging__
  * Enumerate faces: If enabled, a number will be displayed next to each face in the viewer. This helps to understand
    the order of face creation. Mostly useful for TiGL developers. __Default: off__
  * Debug boolean operations: Boolean operations tend to be quite unstable due to the problems in the OpenCASCADE kernel.
-   To improve the debugging of such operations, TiGL Creator can export intermediate geometries as BREP files to disk.
-   These files can again be displayed in the TiGL Creator. In case of an error, these files should be send to the TiGL
+   To improve the debugging of such operations, TiGLCreator can export intermediate geometries as BREP files to disk.
+   These files can again be displayed in the TiGLCreator. In case of an error, these files should be send to the TiGL
    developers. The files are placed inside the current working directory. __Default: off__
 
 @image html images/tiglcreator_debugging.jpg
@@ -160,9 +160,9 @@ select the objects of interest and __press the right mouse button__ inside the 3
 
 @section mobile Mobile platforms
 
-A simplified version of the TiGL Creator is also available for mobile devices based on Android. It can be downloaded from the 
+A simplified version of the TiGLCreator is also available for mobile devices based on Android. It can be downloaded from the
 [Google play store](https://play.google.com/store/apps/details?id=de.dlr.sc.tiglcreator.android&hl=de).
   
-@image html images/tiglcreator-android-web.jpg "The TiGL Creator App for Android"
-@image latex images/tiglcreator-android.png  "The TiGL Creator App for Android" width=9cm
+@image html images/tiglcreator-android-web.jpg "The TiGLCreator App for Android"
+@image latex images/tiglcreator-android.png  "The TiGLCreator App for Android" width=9cm
 

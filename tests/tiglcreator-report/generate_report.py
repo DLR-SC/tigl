@@ -123,7 +123,7 @@ app.scene.gridOff();
 
 def create_screenshots(tigl_script):
     """
-    This calls tiglcreator with the provided tigl script
+    This calls TiGLCreator with the provided TiGL script
     :param tigl_script: A js TiGL script
     :return: None
     """

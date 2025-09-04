@@ -1,4 +1,4 @@
-# TiGL creator tests
+# TiGLCreator tests
 
 This directory contains a list of cpacs files, a 
 python script to automatically generate screenshots from the 

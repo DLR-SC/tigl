@@ -186,11 +186,11 @@ endif()
 
 if (APPLE)
   set(CPACK_PACKAGE_EXECUTABLES
-    "TiGL-Creator" "TiGL Creator"
+    "TiGL-Creator" "TiGLCreator"
   )
 else(APPLE)
   set(CPACK_PACKAGE_EXECUTABLES
-    "tiglcreator" "TiGL Creator"
+    "tiglcreator" "TiGLCreator"
   )
 endif(APPLE)
 
@@ -202,7 +202,7 @@ set(CPACK_PACKAGE_VERSION_PATCH 0)
 set(CPACK_COMPONENTS_ALL "creator;docu")
 include(CPack)
 set(CPACK_PACKAGE_VERSION "0.2.0")
-cpack_add_component(creator DISPLAY_NAME "TiGL Creator + 3rd Party DLLs")
+cpack_add_component(creator DISPLAY_NAME "TiGLCreator + 3rd Party DLLs")
 cpack_add_component(headers DISPLAY_NAME "Headers")
 cpack_add_component(cpp_bindings DISPLAY_NAME "Internal C++ Bindings")
 cpack_add_component(interfaces DISPLAY_NAME "Interfaces/Bindings")
