@@ -1,4 +1,4 @@
-CPACSCreator high level parameters {#parameters_def}
+TiGLCreator high level parameters {#parameters_def}
 ==================================
 
 Tigl framework uses multiple high-level parameter to simplify the editing of CPACS files. In this section, we will present the definition used by our functions in detail.   

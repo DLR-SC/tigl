@@ -31,7 +31,7 @@ class CTiglStandardizer
 {
 public:
     /**
-     * Standardize the fuselage using the CPACSCreator standard.
+     * Standardize the fuselage using the TiGLCreator standard.
      * This means:
      *  1) The fuselage transformation stores the nose position.
      *  2) The translations of sections are set using positionings.
@@ -46,7 +46,7 @@ public:
     static void StandardizeFuselage(CCPACSFuselage& fuselage, bool useSimpleDecomposition = false);
 
     /**
-     * Standardize the wing using the CPACSCreator standard.
+     * Standardize the wing using the TiGLCreator standard.
      * This means:
      *  1) The wing transformation stores the root leading point translation.
      *  2) The translations of sections are set using positionings.

@@ -5,7 +5,7 @@ Tutorials {#tuto}
 
 In this tutorial, we will present how to create an aircraft from scratch. 
 
-1 ) Open CPACSCreator.     
+1 ) Open TiGLCreator.     
 2 ) Create a new file, either click on create a new file (File->New) or press the shortcut Ctl+N.
 
 @image html images/tutorial_scratch/tuto_scratch_2.png    
