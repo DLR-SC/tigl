@@ -48,7 +48,7 @@
     [
       {
         "name": "flaps",
-        "script": "app.scene.deleteAllObjects();\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_innerFlap', 1.0);\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_outerFlap', 1.0);\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_aileron', -1.0);\ndrawShape(tigl.getShape('D150_VAMP_W1'));\napp.creator.setCameraPosition(45, 45);\napp.creator.fitAll()\n"
+        "script": "app.scene.deleteAllObjects();\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_innerFlap', 1.0);\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_outerFlap', 1.0);\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_aileron', -1.0);\ndrawShape(tigl.getShape('D150_VAMP_W1'));\napp.viewer.setCameraPosition(45, 45);\napp.viewer.fitAll()\n"
       }
     ]
   },
@@ -61,7 +61,7 @@
     [
       {
         "name": "structure",
-        "script": "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"half_bulkhead\"));\napp.creator.viewAxo();\n"
+        "script": "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"half_bulkhead\"));\napp.viewer.viewAxo();\n"
       }
     ]
   },

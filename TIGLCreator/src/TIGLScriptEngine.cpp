@@ -316,15 +316,15 @@ void TIGLScriptEngine::displayHelp()
     helpString += "    drawShape(tigl.getShape(uid));<br/><br/>";
     
     helpString += "Show top view and fit screen:<br/>";
-    helpString += "    app.creator.viewTop();<br/>";
-    helpString += "    app.creator.fitAll();<br/><br/>";
+    helpString += "    app.viewer.viewTop();<br/>";
+    helpString += "    app.viewer.fitAll();<br/><br/>";
     
     helpString += "Make a screenshot:<br/>";
-    helpString += "    app.creator.makeScreenshot('image.png');//PNG image, white background<br/>";
-    helpString += "    app.creator.makeScreenshot('image.jpg', false);//JPEG image, current background<br/><br/>";
+    helpString += "    app.viewer.makeScreenshot('image.png');//PNG image, white background<br/>";
+    helpString += "    app.viewer.makeScreenshot('image.jpg', false);//JPEG image, current background<br/><br/>";
 
     helpString += "Type 'help(tigl)' to get a list of available TiGL functions.<br/>";
-    helpString += "Use the help function on any object to display its public methods e.g. 'help(app.creator)'.";
+    helpString += "Use the help function on any object to display its public methods e.g. 'help(app.viewer)'.";
     emit scriptResult(helpString);
     emit evalDone();
 }
