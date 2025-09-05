@@ -4,8 +4,18 @@ Changelog
 Changes since last release
 -------------
 
-27/08/2025
+
+1/09/2025
 - Fix hard crash when changing the symmetry axis of a wing in TiGL Creator (#1143)
+
+28/08/2025
+- Fixes 
+  - #1142 State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI.
+  - #1144 Fix hard crash in Redo command, improve error message.
+
+27/08/2025
+- General changes
+  - Remove the boost-dependency within the [cpacs\_tigl\_gen](https://github.com/DLR-SC/cpacs_tigl_gen) and check out the new commit for the submodule (issue #1134).
 
 05/08/2025
 - Deprecation warning

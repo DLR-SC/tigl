@@ -371,6 +371,10 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
         TopoDS_Wire innerWire = GetInnerWire();
         TopoDS_Wire outerWire = GetOuterWire();
 
+        if (GetInnerConnection().GetProfile().HasBluntTE() != GetOuterConnection().GetProfile().HasBluntTE()) {
+            throw CTiglError("Cannot mix profiles with blunt and sharp trailing edges in one wing segment.", TIGL_ERROR);
+        }
+
         // Build loft
         CTiglMakeLoft lofter;
         lofter.addProfiles(innerWire);
