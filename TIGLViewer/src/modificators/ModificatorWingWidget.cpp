@@ -209,116 +209,126 @@ bool ModificatorWingWidget::apply()
     bool wasModified = false;
 
     try {
+        try {
 
-        if (rootLEHasChanged) {
-            ui->rootLE->setInternalFromGUI();
-            tigl::CTiglPoint newRootLE = ui->rootLE->getInternalPoint();
-            tiglWing->SetRootLEPosition(newRootLE);
-            wasModified = true;
-        }
-
-        if (rotationHasChanged) {
-            ui->rotation->setInternalFromGUI();
-            tigl::CTiglPoint newRot = ui->rotation->getInternalPoint();
-            tiglWing->SetRotation(newRot);
-            wasModified = true;
-        }
-
-        if (symmetryHasChanged) {
-            ui->symmetry->setInternalFromGUI();
-            tiglWing->SetSymmetryAxis(ui->symmetry->getInternalSymmetry());
-
-            wasModified = true;
-        }
-
-        if (sweepHasChanged) {
-            internalSweep      = ui->spinBoxSweep->value();
-            internalSweepChord = ui->spinBoxSweepChord->value();
-            tiglWing->SetSweep(internalSweep, internalDihedralChord);
-            wasModified = true;
-        }
-
-        if (dihedralHasChanged) {
-            internalDihedral      = ui->spinBoxDihedral->value();
-            internalDihedralChord = ui->spinBoxDihedralChord->value();
-            tiglWing->SetDihedral(internalDihedral, internalDihedralChord);
-            wasModified = true;
-        }
-
-        if (areaXYHasChanged) {
-            internalArea = ui->spinBoxArea->value();
-            if (ui->checkBoxIsSpanConstant->isChecked()) {
-                tiglWing->SetAreaKeepSpan(internalArea);
+            if (rootLEHasChanged) {
+                ui->rootLE->setInternalFromGUI();
+                tigl::CTiglPoint newRootLE = ui->rootLE->getInternalPoint();
+                tiglWing->SetRootLEPosition(newRootLE);
                 wasModified = true;
             }
-            else if (ui->checkBoxIsARConstant->isChecked()) {
-                tiglWing->SetAreaKeepAR(internalArea);
+
+            if (rotationHasChanged) {
+                ui->rotation->setInternalFromGUI();
+                tigl::CTiglPoint newRot = ui->rotation->getInternalPoint();
+                tiglWing->SetRotation(newRot);
                 wasModified = true;
             }
-            else {
-                LOG(ERROR) << "ModificatorWingWidget: set area called, but not correct "
-                              "constant checkbox set";
+
+            if (symmetryHasChanged) {
+                ui->symmetry->setInternalFromGUI();
+                tiglWing->SetSymmetryAxis(ui->symmetry->getInternalSymmetry());
+
+                wasModified = true;
             }
+
+            if (sweepHasChanged) {
+                internalSweep      = ui->spinBoxSweep->value();
+                internalSweepChord = ui->spinBoxSweepChord->value();
+                tiglWing->SetSweep(internalSweep, internalDihedralChord);
+                wasModified = true;
+            }
+
+            if (dihedralHasChanged) {
+                internalDihedral      = ui->spinBoxDihedral->value();
+                internalDihedralChord = ui->spinBoxDihedralChord->value();
+                tiglWing->SetDihedral(internalDihedral, internalDihedralChord);
+                wasModified = true;
+            }
+
+            if (areaXYHasChanged) {
+                internalArea = ui->spinBoxArea->value();
+                if (ui->checkBoxIsSpanConstant->isChecked()) {
+                    tiglWing->SetAreaKeepSpan(internalArea);
+                    wasModified = true;
+                }
+                else if (ui->checkBoxIsARConstant->isChecked()) {
+                    tiglWing->SetAreaKeepAR(internalArea);
+                    wasModified = true;
+                }
+                else {
+                    LOG(ERROR) << "ModificatorWingWidget: set area called, but not correct "
+                                  "constant checkbox set";
+                }
+            }
+
+            if (spanHasChanged) {
+                internalSpan = ui->spinBoxSpan->value();
+                if (ui->checkBoxIsAreaConstant->isChecked()) {
+                    tiglWing->SetHalfSpanKeepArea(internalSpan);
+                    wasModified = true;
+                }
+                else if (ui->checkBoxIsARConstant->isChecked()) {
+                    tiglWing->SetHalfSpanKeepAR(internalSpan);
+                    wasModified = true;
+                }
+                else {
+                    LOG(ERROR) << "ModificatorWingWidget: set span called, but not correct "
+                                  "constant checkbox set";
+                }
+            }
+
+            if (arHasChanged) {
+                internalAR = ui->spinBoxAR->value();
+                if (ui->checkBoxIsAreaConstant->isChecked()) {
+                    tiglWing->SetARKeepArea(internalAR);
+                    wasModified = true;
+                }
+                else if (ui->checkBoxIsSpanConstant->isChecked()) {
+                    tiglWing->SetARKeepSpan(internalAR);
+                    wasModified = true;
+                }
+                else {
+                    LOG(ERROR) << "ModificatorWingWidget: set AR called, but not correct "
+                                  "constant checkbox set";
+                }
+            }
+
+
+            if (profileHasChanged) {
+                internalProfile = ui->profileComboBox->currentText();
+
+                if (!profilesDB->hasProfileConfigSuffix(internalProfile)) {
+                    profilesDB->copyProfileFromLocalToConfig(internalProfile);
+                }
+                tiglWing->SetAllAirfoils(profilesDB->removeSuffix(internalProfile).toStdString());
+                wasModified = true;
+
+            }
+
+            if (wasModified) {
+                reset();
+            }
+
         }
-
-        if (spanHasChanged) {
-            internalSpan = ui->spinBoxSpan->value();
-            if (ui->checkBoxIsAreaConstant->isChecked()) {
-                tiglWing->SetHalfSpanKeepArea(internalSpan);
-                wasModified = true;
-            }
-            else if (ui->checkBoxIsARConstant->isChecked()) {
-                tiglWing->SetHalfSpanKeepAR(internalSpan);
-                wasModified = true;
-            }
-            else {
-                LOG(ERROR) << "ModificatorWingWidget: set span called, but not correct "
-                              "constant checkbox set";
-            }
+        catch (const tigl::CTiglError &err) {
+            TIGLViewerErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
+                                         .arg("Failed to apply the settings")
+                                         .arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+            return false;
         }
-
-        if (arHasChanged) {
-            internalAR = ui->spinBoxAR->value();
-            if (ui->checkBoxIsAreaConstant->isChecked()) {
-                tiglWing->SetARKeepArea(internalAR);
-                wasModified = true;
-            }
-            else if (ui->checkBoxIsSpanConstant->isChecked()) {
-                tiglWing->SetARKeepSpan(internalAR);
-                wasModified = true;
-            }
-            else {
-                LOG(ERROR) << "ModificatorWingWidget: set AR called, but not correct "
-                              "constant checkbox set";
-            }
-        }
-
-
-        if (profileHasChanged) {
-            internalProfile = ui->profileComboBox->currentText();
-
-            if (!profilesDB->hasProfileConfigSuffix(internalProfile)) {
-                profilesDB->copyProfileFromLocalToConfig(internalProfile);
-            }
-            tiglWing->SetAllAirfoils(profilesDB->removeSuffix(internalProfile).toStdString());
-            wasModified = true;
-
-        }
-
-    }
-    catch (const tigl::CTiglError &err) {
+    } catch (...) {
         TIGLViewerErrorDialog errDialog(this);
         errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
                                      .arg("Failed to apply the settings")
-                                     .arg(err.what()));
+                                     .arg("An unknown exception occured."));
         errDialog.setWindowTitle("Error");
-        errDialog.setDetailsText(err.what());
         errDialog.exec();
         return false;
-    }
-
-    if (wasModified) {
-        reset();
     }
 
     return wasModified;
