@@ -82,7 +82,7 @@ void ModificatorWingWidget::init()
                 updateSweepAccordingChordValue();
                 updateDihedralAccordingChordValue();
 
-                // reset symmetry axis. We only want to log this change in in the apply function.
+                // reset symmetry axis. We only want to log this change in the apply function.
                 tiglWing->SetSymmetryAxis(previous_sym);
             } catch (...) {
                 TIGLViewerErrorDialog errDialog(this);
