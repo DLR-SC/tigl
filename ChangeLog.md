@@ -3,6 +3,11 @@ Changelog
 
 Changes since last release
 -------------
+
+03/09/2025
+- General changes
+  - Build with tixi 3.3.1
+
 27/08/2025
 - General changes
   - Remove the boost-dependency within the [cpacs\_tigl\_gen](https://github.com/DLR-SC/cpacs_tigl_gen) and check out the new commit for the submodule (issue #1134).

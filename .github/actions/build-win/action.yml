@@ -105,7 +105,6 @@ runs:
                          -DTIGL_BINDINGS_MATLAB=ON ^
                          -DTIGL_BINDINGS_JAVA=ON ^
                          -DTIGL_NIGHTLY=${{ inputs.tigl-nightly }} ^
-                         -DPythonOCC_SOURCE_DIR=C:\Miniconda\envs\tigl-bld\Library\src\pythonocc-core ^
                          -DMATLAB_DIR=C:\Miniconda\envs\tigl-bld\Library\share\matlab ^
                          -DTIGL_ENABLE_COVERAGE=${{ inputs.tigl_enable_coverage }}
         cmake --build . -j 4 --target install
