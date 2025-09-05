@@ -18,6 +18,7 @@
 
 #include "NewConnectedElementDialog.h"
 #include "ui_NewConnectedElementDialog.h"
+#include <QString>
 
 NewConnectedElementDialog::NewConnectedElementDialog(QStringList connectedElements, QWidget* parent)
     : QDialog(parent)
@@ -27,6 +28,38 @@ NewConnectedElementDialog::NewConnectedElementDialog(QStringList connectedElemen
     ui->comboBoxStartUID->addItems(connectedElements);
     ui->comboBoxWhere->addItem("After");
     ui->comboBoxWhere->addItem("Before");
+
+    connect(
+        ui->comboBoxStartUID,
+        SIGNAL(currentIndexChanged(int)),
+        this,
+        SLOT(activate_eta())
+    );
+
+    connect(
+        ui->comboBoxWhere,
+        SIGNAL(currentIndexChanged(int)),
+        this,
+        SLOT(activate_eta())
+    );
+
+    activate_eta();
+}
+
+void NewConnectedElementDialog::activate_eta()
+{
+    // Be careful: Here, we assume that the UID list is sorted
+
+    bool at_start = ui->comboBoxStartUID->currentIndex() == 0 && ui->comboBoxWhere->currentText() == "Before";
+    bool at_end = ui->comboBoxStartUID->currentIndex() == ui->comboBoxStartUID->count()-1 && ui->comboBoxWhere->currentText() == "After";
+    between_sections = !(at_start || at_end);
+    if (between_sections) {
+        ui->eta_label->setText(QString("Set the eta parameter at which the new element should be placed within the segment.\nChoose a value between 0.0001 and 0.9999."));
+        ui->eta_spinbox->setEnabled(true);
+    } else {
+        ui->eta_label->setText(QString("The new section will be added at the boundary"));
+        ui->eta_spinbox->setEnabled(false);
+    }
 }
 
 NewConnectedElementDialog::~NewConnectedElementDialog()
@@ -34,16 +67,26 @@ NewConnectedElementDialog::~NewConnectedElementDialog()
     delete ui;
 }
 
-QString NewConnectedElementDialog::getStartUID()
+QString NewConnectedElementDialog::getStartUID() const
 {
     return ui->comboBoxStartUID->currentText();
     ;
 }
 
-NewConnectedElementDialog::Where NewConnectedElementDialog::getWhere()
+NewConnectedElementDialog::Where NewConnectedElementDialog::getWhere() const
 {
     if (ui->comboBoxWhere->currentText() == "Before") {
         return Before;
     }
     return After;
+}
+
+std::optional<double> NewConnectedElementDialog::getEta() const
+{
+    if (between_sections) {
+        return ui->eta_spinbox->value();
+    }
+    else {
+        return std::nullopt;
+    }
 }
