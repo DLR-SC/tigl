@@ -68,21 +68,31 @@ void ModificatorWingWidget::init()
         &SymmetryComboBoxWidget::currentIndexChanged,
         this,
         [=](){
-            // changing the wing's symmetry axis, also changes span, aspect ratio and area
-            auto previous_sym = tiglWing->GetSymmetryAxis();
-            tiglWing->SetSymmetryAxis(ui->symmetry->getSymmetry());
+            try {
+                // changing the wing's symmetry axis, also changes span, aspect ratio and area
+                auto previous_sym = tiglWing->GetSymmetryAxis();
+                tiglWing->SetSymmetryAxis(ui->symmetry->getSymmetry());
 
-            internalSpan = tiglWing->GetWingHalfSpan();
-            ui->spinBoxSpan->setValue(internalSpan);
-            internalAR = tiglWing->GetAspectRatio();
-            ui->spinBoxAR->setValue(internalAR);
-            internalArea = tiglWing->GetReferenceArea();
-            ui->spinBoxArea->setValue(internalArea);
-            updateSweepAccordingChordValue();
-            updateDihedralAccordingChordValue();
+                internalSpan = tiglWing->GetWingHalfSpan();
+                ui->spinBoxSpan->setValue(internalSpan);
+                internalAR = tiglWing->GetAspectRatio();
+                ui->spinBoxAR->setValue(internalAR);
+                internalArea = tiglWing->GetReferenceArea();
+                ui->spinBoxArea->setValue(internalArea);
+                updateSweepAccordingChordValue();
+                updateDihedralAccordingChordValue();
 
-            // reset symmetry axis. We only want to log this change in in the apply function.
-            tiglWing->SetSymmetryAxis(previous_sym);
+                // reset symmetry axis. We only want to log this change in in the apply function.
+                tiglWing->SetSymmetryAxis(previous_sym);
+            } catch (...) {
+                TIGLViewerErrorDialog errDialog(this);
+                errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
+                                             .arg("Failed to apply the settings")
+                                             .arg("An unknown exception occured."));
+                errDialog.setWindowTitle("Error");
+                errDialog.exec();
+                return false;
+            }
         }
     );
 }
