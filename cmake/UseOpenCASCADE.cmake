@@ -76,10 +76,8 @@ else(OCE_FOUND)
   endif()
 
   if (OpenCASCADE_WITH_FREEIMAGE AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
-      message(STATUS "Static OpenCascade, Using FreeImage")
       find_package(FreeImageLib  MODULE REQUIRED)
       set_property(TARGET TKService APPEND PROPERTY IMPORTED_LINK_INTERFACE_LIBRARIES freeimage::freeimage)
-      target_compile_definitions(TKService INTERFACE "FREEIMAGE_LIB")
   endif()
 
   if (OpenCASCADE_WITH_FREETYPE AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
