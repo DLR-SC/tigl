@@ -37,12 +37,17 @@ public slots:
     void setGUIFromInternal();
     void setInternalFromGUI();
 
+signals:
+    void currentIndexChanged();
+
 public:
     explicit SymmetryComboBoxWidget(QWidget* parent = nullptr);
     ~SymmetryComboBoxWidget();
 
     void setInternal(TiglSymmetryAxis symmetryAxis);
 
+
+    TiglSymmetryAxis getSymmetry();
     TiglSymmetryAxis getInternalSymmetry();
 
     bool hasChanged();

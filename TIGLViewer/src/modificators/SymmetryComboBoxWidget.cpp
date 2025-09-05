@@ -34,6 +34,15 @@ SymmetryComboBoxWidget::SymmetryComboBoxWidget(QWidget* parent)
     ui->comboBox->addItem("no-symmetry");
 
     setInternal(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
+
+    connect(
+        ui->comboBox,
+        &QComboBox::currentTextChanged,
+        this,
+        [=](const QString&){
+            emit currentIndexChanged();
+        }
+    );
 }
 
 QString SymmetryComboBoxWidget::TiglSymmetryAxisToQString(TiglSymmetryAxis symmetryAxis)
@@ -96,7 +105,7 @@ void SymmetryComboBoxWidget::setInternalFromGUI()
 
 bool SymmetryComboBoxWidget::hasChanged()
 {
-    if (internalSymmetry == QStringToTiglAxis(ui->comboBox->currentText())) {
+    if (internalSymmetry == getSymmetry()) {
         return false;
     }
     else {
@@ -107,4 +116,9 @@ bool SymmetryComboBoxWidget::hasChanged()
 TiglSymmetryAxis SymmetryComboBoxWidget::getInternalSymmetry()
 {
     return internalSymmetry;
+}
+
+TiglSymmetryAxis SymmetryComboBoxWidget::getSymmetry()
+{
+    return QStringToTiglAxis(ui->comboBox->currentText());
 }
