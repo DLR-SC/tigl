@@ -4,12 +4,18 @@ Changelog
 Changes since last release
 -------------
 
-
 1/09/2025
 - Fix hard crash when changing the symmetry axis of a wing in TiGL Creator (#1143)
 
+03/09/2025
+- General changes
+  - Build with tixi 3.3.1
+
 28/08/2025
-- Fixes 
+- General changes
+  - [#1133](https://github.com/DLR-SC/tigl/issues/1133) Add the option to set an eta value when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog.
+
+- Fixes
   - #1142 State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI.
   - #1144 Fix hard crash in Redo command, improve error message.
 
@@ -21,7 +27,6 @@ Changes since last release
 - Deprecation warning
   - The use of the node cpacsVersion right within the CPACS path /cpacs/header/ is deprecated according to CPACS 3.5. Hence, now a deprecation warning is printed if it is still used (issue #1126).
 
-
 29/07/2025
 - General changes
   - Remove the hard-wired gtest source code from the repository. Now, it is downloaded from GitHub and configured during the TiGL-configuration-process by default (issue #1114).
@@ -32,6 +37,7 @@ Changes since last release
   - Updated TiGL to new Version of [cpacs_tigl_Gen](https://github.com/DLR-SC/cpacs_tigl_gen) which is a fork from [RISCSoftware/cpacs_tigl_gen](https://github.com/RISCSoftware/cpacs_tigl_gen)
  
 - Fixes
+  - [#1108](https://github.com/DLR-SC/tigl/issues/1108) When adding a new section into an existing wing, the scaling/translation did not seem meaningful. That is due to the fact, that the new element's area was interpolated between the start end end element. However, it does not depend linearly on the element width. Choosing the element width as a target value for the new element should fix this issue.
   - [#59](https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59)	
     Getters by index and uID are generated now for all Elements in CPACS with Attribute: maxOccur = "unbounded".  This gives users quick
     access to elements and eliminates the need for TIGL developers to customize classes for this purpose.

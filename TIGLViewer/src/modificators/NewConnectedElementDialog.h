@@ -21,6 +21,7 @@
 
 #include <QDialog>
 #include <QString>
+#include <optional>
 
 namespace Ui
 {
@@ -45,16 +46,22 @@ public:
      * Return the reference element uid to which the new connected element will be connected.
      * @return
      */
-    QString getStartUID();
+    QString getStartUID() const;
 
     /**
      * Return if the new connected element should be created before or after the reference element.
      * @return
      */
-    Where getWhere();
+    Where getWhere() const;
+
+    std::optional<double> getEta() const;
+
+private slots:
+    void activate_eta();
 
 private:
     Ui::NewConnectedElementDialog* ui;
+    bool between_sections;
 };
 
 #endif // NEWCONNECTEDELEMENTDIALOG_H
