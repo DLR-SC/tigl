@@ -4,6 +4,9 @@ Changelog
 Changes since last release
 -------------
 
+1/09/2025
+- Fix hard crash when changing the symmetry axis of a wing in TiGL Creator (#1143)
+
 03/09/2025
 - General changes
   - Build with tixi 3.3.1
