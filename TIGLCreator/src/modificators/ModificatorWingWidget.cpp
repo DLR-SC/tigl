@@ -85,7 +85,7 @@ void ModificatorWingWidget::init()
                 // reset symmetry axis. We only want to log this change in the apply function.
                 tiglWing->SetSymmetryAxis(previous_sym);
             } catch (...) {
-                TIGLViewerErrorDialog errDialog(this);
+                TIGLCreatorErrorDialog errDialog(this);
                 errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
                                              .arg("Failed to apply the settings")
                                              .arg("An unknown exception occured."));
@@ -332,7 +332,7 @@ bool ModificatorWingWidget::apply()
             return false;
         }
     } catch (...) {
-        TIGLViewerErrorDialog errDialog(this);
+        TIGLCreatorErrorDialog errDialog(this);
         errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
                                      .arg("Failed to apply the settings")
                                      .arg("An unknown exception occured."));
