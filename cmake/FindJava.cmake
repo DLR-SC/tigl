@@ -135,6 +135,7 @@ if(Java_JAVA_EXECUTABLE)
       else()
         set(Java_VERSION ${Java_VERSION_MAJOR}.${Java_VERSION_MINOR}.${Java_VERSION_PATCH}.${Java_VERSION_TWEAK})
       endif()
+      message(STATUS "Found Java: ${Java_JAVA_EXECUTABLE} (found version \"${Java_VERSION}\")")
     endif()
 
 endif()
@@ -152,11 +153,14 @@ find_program(Java_JAVAC_EXECUTABLE
   PATHS ${_JAVA_PATHS}
 )
 
-find_program(Java_JAVAH_EXECUTABLE
-  NAMES javah
-  HINTS ${_JAVA_HINTS}
-  PATHS ${_JAVA_PATHS}
-)
+# javah is removed in Java 10 and later
+if (Java_JAVA_EXECUTABLE AND Java_VERSION_MAJOR VERSION_LESS 10)
+  find_program(Java_JAVAH_EXECUTABLE
+    NAMES javah
+    HINTS ${_JAVA_HINTS}
+    PATHS ${_JAVA_PATHS}
+  )
+endif()
 
 find_program(Java_JAVADOC_EXECUTABLE
   NAMES javadoc
@@ -174,11 +178,19 @@ if(Java_FIND_COMPONENTS)
         VERSION_VAR Java_VERSION
         )
     elseif(component STREQUAL "Development")
-      find_package_handle_standard_args(Java
-        REQUIRED_VARS Java_JAVA_EXECUTABLE Java_JAR_EXECUTABLE Java_JAVAC_EXECUTABLE
-                      Java_JAVAH_EXECUTABLE Java_JAVADOC_EXECUTABLE
-        VERSION_VAR Java_VERSION
-        )
+      if (Java_VERSION_MAJOR VERSION_LESS 10)
+        find_package_handle_standard_args(Java
+          REQUIRED_VARS Java_JAVA_EXECUTABLE Java_JAR_EXECUTABLE Java_JAVAC_EXECUTABLE
+                        Java_JAVAH_EXECUTABLE Java_JAVADOC_EXECUTABLE
+          VERSION_VAR Java_VERSION
+          )
+      else()
+        find_package_handle_standard_args(Java
+          REQUIRED_VARS Java_JAVA_EXECUTABLE Java_JAR_EXECUTABLE Java_JAVAC_EXECUTABLE
+                        Java_JAVADOC_EXECUTABLE
+          VERSION_VAR Java_VERSION
+          )
+      endif()
     else()
       message(FATAL_ERROR "Comp: ${component} is not handled")
     endif()
