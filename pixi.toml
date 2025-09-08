@@ -1,0 +1,50 @@
+[workspace]
+authors = ["Jan Kleinert <jan.kleinert@dlr.de>"]
+channels = ["dlr-sc", "dlr-sc/label/tigl-dev", "conda-forge"]
+name = "tigl-bld"
+platforms = ["win-64", "linux-64", "osx-64"]
+version = "0.1.0"
+channel-priority = "disabled"
+
+[tasks]
+configure = { cmd = [
+    "cmake", 
+    "-G", "Ninja", 
+    "-S", ".",
+    "-B", "build",
+    "-D", "CMAKE_INSTALL_PREFIX=build/install",
+    "-D", "TIGL_BUILD_TESTS={{ tests }}"
+], args = [
+        { "arg" = "tests", "default"="OFF"},
+        { "arg" = "config", "default"="Release"}
+]}
+build = { cmd = "ninja -C build", depends-on = "configure" }
+install = { cmd = "ninja -C build install" }
+unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests", depends-on = [{ task="build", args = [{ tests=" ON " }] }] }
+integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests", depends-on = [{ task="build", args = [{ tests="ON" }] }] }
+tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin", depends-on = "install" }
+
+[target.linux-64.activation.env]
+# this is needed to correctly set the RPATH of tiglcreator
+LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
+
+
+[target.linux-64.dependencies]
+libgl-devel = "*"
+libegl-devel = "*"
+libopengl-devel = "*"
+
+[target.win-64.dependencies]
+brotlipy = "*"
+
+[dependencies]
+tixi3 = "3.3.1.*"
+opencascade = "7.6.2.*"
+qt = { version = "5.15.15.*", channel = "conda-forge" }
+doxygen = "1.8.15.*"
+python = "<=3.12"
+swig = ">=3.0.11"
+pythonocc-core = "7.6.2.*"
+matlab-libs = "*"
+ninja = ">=1.10.0"
+freeimageplus = "*"
