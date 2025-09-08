@@ -13,7 +13,8 @@ configure = { cmd = [
     "-S", ".",
     "-B", "build",
     "-D", "CMAKE_INSTALL_PREFIX=build/install",
-    "-D", "TIGL_BUILD_TESTS={{ tests }}"
+    "-D", "TIGL_BUILD_TESTS={{ tests }}",
+    "-D", "CMAKE_BUILD_TYPE={{ config }}"
 ], args = [
         { "arg" = "tests", "default"="OFF"},
         { "arg" = "config", "default"="Release"}
