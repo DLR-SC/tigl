@@ -3,6 +3,9 @@ Changelog
 
 Changes since last release
 -------------
+29/08/2025
+- General changes
+  - #1137 Rename the CPACSCreator to TiGLCreator.
 
 1/09/2025
 - Fix hard crash when changing the symmetry axis of a wing in TiGL Creator (#1143)

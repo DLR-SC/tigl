@@ -1,23 +1,23 @@
-The CPACSCreator Console {#gui_console}
+The TiGLCreator Console {#gui_console}
 ========================
 
-TiGL Viewer comes with a powerful JavaScript console that allows automatizing small workflows or helps 
+TiGLCreator comes with a powerful JavaScript console that allows automatizing small workflows or helps
 debugging of geometries. To show and hide the console, press __ALT+C__.
 
 The console has two purposes
 
  1. to show all kinds of error messages, warnings etc. from the TiGL and OpenCASCADE engine
- 2. to enter user code to steer the TiGL Viewer application
+ 2. to enter user code to steer the TiGLCreator application
 
 In many cases, the user wants to open a CPACS file and execute TiGL function to compute and draw some points
 on the aircraft surface. Another use case would be to automate the creation of screenshots of a changing aircraft
 geometry.
 
-@image html images/tiglviewer_console.png "The scripting console"
-@image latex images/tiglviewer_console.png  "The scripting console" width=9cm
+@image html images/tiglcreator_console.png "The scripting console"
+@image latex images/tiglcreator_console.png  "The scripting console" width=9cm
 
-We copied some practical features from the famous bash terminal to improve the usability of the console. This includes 
-a history of the recently typed commands. Just type 
+We copied some practical features from the famous bash terminal to improve the usability of the console. This includes
+a history of the recently typed commands. Just type
 
 @code{.js}
 history 
@@ -40,10 +40,10 @@ help
 @section console_basic Basic use
 
 The console understands all kinds of JavaScript elements. Thus, typical constructs like loops, functions, and even classes can be defined.
-Instead of typing the code into the console, TiGL Viewer can also load and execute a script file. If you want to load a script file during
-the startup of TiGL Viewer, use the `--script` option:
+Instead of typing the code into the console, TiGLCreator can also load and execute a script file. If you want to load a script file during
+the startup of TiGLCreator, use the `--script` option:
 
-     TIGLViewer --script myscript.js [--filename aircraft.cpacs.xml]
+     TIGLCreator --script myscript.js [--filename aircraft.cpacs.xml]
 
 __The `ans` object__: The result of the last command will be stored in a variable `ans`. This can be sometimes quite practical:
 
@@ -56,7 +56,7 @@ __The `ans` object__: The result of the last command will be stored in a variabl
 20
 @endcode
 
-In addition to pure JavaScript, TiGL Viewer offers some function to draw points, vectors and TiGL shapes.
+In addition to pure JavaScript, TiGLCreator offers some function to draw points, vectors and TiGL shapes.
 
 __Draw a point at (0,0,0)__
 
@@ -112,7 +112,7 @@ help(new Point3d);
 @section console_mainobj The main application objects
 
 
-The TiGL Viewer scripting engine consists of four main objects. The whole application can be controlled with only
+The TiGLCreator scripting engine consists of four main objects. The whole application can be controlled with only
 these four objects. These are app, app.viewer, app.scene, and tigl. 
 
 The scripting engine contains a _help()_ function that shows the available methods and properties for each object. 
@@ -131,11 +131,11 @@ size, and also close the application. Some methods of the app object are
 ---------------------|--------------------------------------------------------------|
 | openFile           | opens a file (CPACS, STEP, IGES, BREP)                       |
 | saveFile           | saves all visible objects to a file (STEP, IGES, BREP, STL)  |
-| openScript         | executes a TiGL Viewer script file                           |
+| openScript         | executes a TiGLCreator script file                           |
 | closeConfiguration | closes the current CPACS configuration and clears the scene  |
-| close              | terminates TiGL Viewer                                       |
+| close              | terminates TiGLCreator                                       |
 
-To get a list of all methods and properties, enter help(app) in the TiGL Viewer console.
+To get a list of all methods and properties, enter help(app) in the TiGLCreator console.
 
 @subsection appviewer The app.viewer object
 
@@ -186,7 +186,7 @@ To get a list of all methods and properties, enter
 help(app.viewer);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
  
-in the TiGL Viewer console.
+in the TiGLCreator console.
 
 
 @subsection appscene The app.scene object
@@ -291,7 +291,7 @@ app.viewer.makeScreenshot("image.png");
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 
 
-_Convert a __STEP__ file into __IGES__ format and close TiGL Viewer_
+_Convert a __STEP__ file into __IGES__ format and close TiGLCreator_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
 app.openFile("part.stp");
 app.exportFile("part.igs");

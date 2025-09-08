@@ -178,7 +178,7 @@ CCPACSWingSegment& CCPACSWingSegments::SplitSegment(const std::string& segmentUI
 
     Invalidate();
     // Reordering is necessary: After splitting a segment and adding another one, the order is not correct
-    // Without reordering, this results in a wrong shape visible in the TiGLViewer
+    // Without reordering, this results in a wrong shape visible in the TiGLCreator
     ReorderSegments();
 
     return additionalSegment;
