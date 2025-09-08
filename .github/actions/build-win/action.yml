@@ -67,11 +67,17 @@ runs:
         environment-file: environment.yml
         auto-activate-base: false
 
-    - name: Install dependencies (static opencascade)
+    - name: Remove dynamic FreeImage, FreeType and OCCT (static opencascade)
       if: inputs.oce_static_libs == 'ON'
       shell: cmd /C call {0}
       run: |
-        conda install opencascade-static=7.4.0 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda remove opencascade freeimageplus freetype -y
+
+    - name: Install dependencies static FreeImage, FreeType and OCCT (static opencascade)
+      if: inputs.oce_static_libs == 'ON'
+      shell: cmd /C call {0}
+      run: |
+        conda install opencascade-static=7.6.2 pythonocc-core tbb tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
     
     - name: Conda info
       shell: cmd /C call {0}
