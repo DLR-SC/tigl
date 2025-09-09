@@ -21,14 +21,13 @@ configure = { cmd = [
 ]}
 build = { cmd = "ninja -C build", depends-on = "configure" }
 install = { cmd = "ninja -C build install" }
-unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests", depends-on = [{ task="build", args = [{ tests=" ON " }] }] }
-integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests", depends-on = [{ task="build", args = [{ tests="ON" }] }] }
+unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests", depends-on = ["build", { task="configure", args = [{ tests=" ON " }] }] }
+integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests", depends-on = ["build", { task="configure", args = [{ tests="ON" }] }] }
 tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin", depends-on = "install" }
 
 [target.linux-64.activation.env]
 # this is needed to correctly set the RPATH of tiglcreator
 LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
-
 
 [target.linux-64.dependencies]
 libgl-devel = "*"
@@ -37,6 +36,11 @@ libopengl-devel = "*"
 
 [target.win-64.dependencies]
 brotlipy = "*"
+
+[target.win-64.tasks]
+integrationtests = { cmd = "TiGL-integrationtests.exe", cwd = "build/tests/integrationtests", depends-on = ["build", { task="configure", args = [{ tests=" ON " }] }] }
+unittests = { cmd = "TiGL-unittests.exe", cwd = "build/tests/unittests", depends-on = ["build", { task="configure", args = [{ tests=" ON " }] }] }
+tiglcreator = { cmd = "tiglcreator.exe", cwd = "build/install/bin", depends-on = "install" }
 
 [dependencies]
 tixi3 = "3.3.1.*"
