@@ -175,13 +175,26 @@ public:
 
     /**
      * Create a new section, a new element and connect the element to the "startElement".
-     * The new element is placed "after" the start element.
-     * If there is already an element after the start element, we split the existing segment and insert the new element
-     * between the two elements.
+     * The new element is placed "After" the start element.
+     * If there is already an element after the start element, an eta has to be prvidied. This funciton will throw an error without an eta. 
+     * This can only happen when called directly.
      *
      * @param startElementUID
+     * @param sectionName
      */
-    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName = "defaultName");
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName);
+
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "Afteer" the start element.
+     * If there is already an element after the start element, we split the existing segment and insert the new element
+     * between the the two elements.
+     *
+     * @param startElementUID
+     * @param sectionName
+     * @param eta
+     */
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName, double eta);
 
     /**
      * If the element exists, the function returns the UID of the element that is stored right before the passed startElementUID within the fuselage.
@@ -197,12 +210,25 @@ public:
     /**
      * Create a new section, a new element and connect the element to the "startElement".
      * The new element is placed "Before" the start element.
-     * If there is already a element before the start element, we split the existing segment and insert the new element
+     * If there is already an element before the start element, an eta has to be prvidied. This funciton will throw an error without an eta. 
+     * This can only happen when called directly.
+     *
+     * @param startElementUID
+     * @param sectionName
+     */
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName);
+
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "Before" the start element.
+     * If there is already an element before the start element, we split the existing segment and insert the new element
      * between the the two elements.
      *
      * @param startElementUID
+     * @param sectionName
+     * @param eta
      */
-    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName = "defaultName");
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName, double eta);
 
     /**
      * Create a new section, a new element and place the new element between the startElement and the endElement.
@@ -218,7 +244,7 @@ public:
 
     TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement();
 
-    TIGL_EXPORT std::vector<tigl::CTiglSectionElement*> GetCTiglElements() ;
+    TIGL_EXPORT std::vector<tigl::CTiglSectionElement*> GetCTiglElements();
 
     /**
      *
