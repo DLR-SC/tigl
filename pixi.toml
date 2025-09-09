@@ -101,8 +101,8 @@ configure = { cmd = [
         { "arg" = "config", "default"="Debug"},
         { "arg" = "nightly", "default"="ON"},
 ]}
-unittests = { cmd = "cmake --build build --target coverage-unittests/fast", depends-on = "configure" }
-integrationtests = { cmd = "cmake --build build --target coverage-integrationtests/fast", depends-on = "configure" }
+unittests = { cmd = "cmake --build build --target coverage-unittests", depends-on = "configure" }
+integrationtests = { cmd = "cmake --build build --target coverage-integrationtests", depends-on = "configure" }
 
 [feature.opencascade-static.tasks]
 configure = { cmd = [
@@ -149,3 +149,11 @@ configure = { cmd = [
 [target.linux-64.activation.env]
 # this is needed to correctly set the RPATH of tiglcreator
 LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
+
+[target.osx-64.activation.env]
+# this is needed to correctly find freeimage and freetype
+CMAKE_PREFIX_PATH = "$CONDA_PREFIX"
+
+[target.win-64.activation.env]
+# this is needed to correctly find freeimage and freetype
+CMAKE_PREFIX_PATH = "%CONDA_PREFIX%"
