@@ -1465,11 +1465,22 @@ std::optional<std::string> CCPACSWing::GetElementUIDAfterNewElement(std::string 
     return *(++it);
 }
 
+void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName, double eta)
+{
+    auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
+    if (!elementUIDAfter) {
+        throw tigl::CTiglError("When an eta is specified, the new section must lie between two sections.");
+    } else {
+        return CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter, eta, sectionName);
+    }
+}
+
 void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName)
 {
     auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (elementUIDAfter) {
-        CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter);
+        CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter, 0.5, sectionName);
+        throw tigl::CTiglError("No eta is specified, but the new section lies between two sections.");
     }
     else {
         std::vector<std::string>  elementsBefore = ListFunctions::GetElementsInBetween(wingHelper->GetElementUIDsInOrder(), wingHelper->GetRootUID(),startElementUID);
@@ -1538,12 +1549,22 @@ std::optional<std::string> CCPACSWing::GetElementUIDBeforeNewElement(std::string
     return *(--it);
 }
 
+void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName, double eta)
+{
+    auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
+    if (!elementUIDBefore) {
+        throw tigl::CTiglError("When an eta is specified, the new section must lie between two sections.");
+    } else {
+        return CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID, eta, sectionName);
+    }
+}
+
 void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName)
 {
-
     auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
     if (elementUIDBefore) {
-        CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID);
+        CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID, 0.5, sectionName);
+        throw tigl::CTiglError("No eta is specified, but the new section lies between two sections.");
     }
     else {
         std::vector<std::string> elementsAfter  =  ListFunctions::GetElementsAfter(wingHelper->GetElementUIDsInOrder(), startElementUID);

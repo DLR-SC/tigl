@@ -811,7 +811,7 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID,
 {
     auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (!elementUIDAfter) {
-        throw tigl::CTiglError("When eta is specified, the new section must be between two sections.");
+        throw tigl::CTiglError("When an eta is specified, the new section must lie between two sections.");
     } else {
         return CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter, eta, sectionName);
     }
@@ -823,9 +823,7 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID,
     auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (elementUIDAfter) {
         CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter, 0.5, sectionName);
-        // throw 
-        throw tigl::CTiglError("No eta is specified, but the new section is between two sections.");
-        // warn using 0.5
+        throw tigl::CTiglError("No eta is specified, but the new section lies between two sections.");
     }
     else {
         // in this case we simply need to find the previous element and call the appropriate function
@@ -900,7 +898,7 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
 {
     auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
     if (!elementUIDBefore) {
-        throw tigl::CTiglError("When eta is specified, the new section must be between two sections.");
+        throw tigl::CTiglError("When an eta is specified, the new section must lie between two sections.");
     } else {
         return CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID, eta, sectionName);
     }
@@ -911,7 +909,7 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
     auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
     if (elementUIDBefore) {
         CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID, 0.5, sectionName);
-        throw tigl::CTiglError("No eta is specified, but the new section is between two sections.");
+        throw tigl::CTiglError("No eta is specified, but the new section lies between two sections.");
     }
     else {
         std::vector<std::string> elementsAfter  =  ListFunctions::GetElementsAfter(fuselageHelper->GetElementUIDsInOrder(), startElementUID);
