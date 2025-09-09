@@ -35,18 +35,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config: ["Debug", "Release"]
-        os: ["ubuntu-latest", "ubuntu-22.04", "windows-latest", "windows-2022"]
-        tests: ["ON"]
-        # only release builds on windows
+        os: ["ubuntu-latest", "ubuntu-22.04", "windows-latest", "windows-2022", "macos-13"]
+        config: ["Release"]        
+        integration-tests: ["OFF"]
+        coverage: ["OFF"]
         include:
-          - config: "Release"
-            os: "macos-13"
-        exclude:
-          - config: "Debug"
-            os: "windows-2022"
-          - config: "Debug"
-            os: "windows-latest"
+          # only debug builds on linux
+          - os: "ubuntu-latest"
+            config: "Debug"
+          # coverage reports only on ubuntu 22.04 debug builds
+          - os: "ubuntu-22.04"
+            config: "Debug"
+            ingegration-tests: "ON"
+            coverage: "ON"
     uses: ./.github/workflows/build-test.yml
     secrets: inherit
     with:
@@ -55,7 +56,7 @@ jobs:
       config: ${{ matrix.config }}
       tigl_nightly: ${{ needs.pre.outputs.nightly }}
       tigl_concat_generated_files: ${{ needs.pre.outputs.concat }}
-      integration-tests: true
+      integration-tests: ${{ matrix.integration-tests }}
       documentation-artifact: 'html-documentation'
       win-installer-artifact: 'win-installer'
       win-package-artifact: 'win-package'
