@@ -33,6 +33,7 @@ jobs:
   build-test:
     needs: pre
     strategy:
+      fail-fast: false
       matrix:
         config: ["Debug", "Release"]
         os: ["ubuntu-latest", "ubuntu-22.04", "windows-latest", "windows-2022"]

@@ -82,11 +82,29 @@ jobs:
           key: compiler-cache-${{ inputs.os }}-${{ inputs.config }}
       - run: pixi run configure ON ${{ inputs.config }}
       - run: pixi run install
+      - name: create build archive
+        run: tar -czf build.tar.gz build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ inputs.os }}-${{ inputs.config }}
+          path: build.tar.gz
+          retention-days: 1
 
   test:
     runs-on: ${{ inputs.os }}
     needs: build
     steps:
+      - uses: actions/checkout@v5
+      - name: Download build directory
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ inputs.os }}-${{ inputs.config }}
+      - name: extract build archive
+        run: tar -xzf build.tar.gz
+      - uses: prefix-dev/setup-pixi@v0.9.0
+        with:
+          cache: true
+          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
       - run: pixi run unittests
       - run: pixi run integrationtests
         if: ${{ inputs.integration-tests == 'true' }}
