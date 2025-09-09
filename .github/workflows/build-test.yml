@@ -77,10 +77,15 @@ jobs:
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+      - name: Set up Visual Studio shell
+        if: startsWith(inputs.os, 'windows')
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64
       - uses: hendrikmuhs/ccache-action@v1
         with:
           key: compiler-cache-${{ inputs.os }}-${{ inputs.config }}
-      - run: pixi run configure ON ${{ inputs.config }}
+      - run: pixi run configure ${{ inputs.config }} ${{ inputs.tigl_nightly }} ${{ inputs.tigl_concat_generated_files  }} "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache"
       - run: pixi run install
       - name: create build archive
         run: tar -czf build.tar.gz build
@@ -107,4 +112,4 @@ jobs:
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
       - run: pixi run unittests
       - run: pixi run integrationtests
-        if: ${{ inputs.integration-tests == 'true' }}
+        if: ${{ inputs.integration-tests == 'ON' }}

@@ -13,17 +13,22 @@ configure = { cmd = [
     "-S", ".",
     "-B", "build",
     "-D", "CMAKE_INSTALL_PREFIX=build/install",
-    "-D", "TIGL_BUILD_TESTS={{ tests }}",
-    "-D", "CMAKE_BUILD_TYPE={{ config }}"
+    "-D", "TIGL_BUILD_TESTS=ON",
+    "-D", "CMAKE_BUILD_TYPE={{ config }}",
+    "-D", "TIGL_NIGHTLY={{ nightly }}",
+    "{{ cmake_extra_args }}"
 ], args = [
-        { "arg" = "tests", "default"="OFF"},
-        { "arg" = "config", "default"="Release"}
+        { "arg" = "config", "default"="Release"},
+        { "arg" = "nightly", "default"="OFF"},
+        { "arg" = "concat_generated_files", "default"="ON"},
+        { "arg" = "cmake_extra_args", "default"=""}
 ]}
 build = { cmd = "ninja -C build", depends-on = "configure" }
 install = { cmd = "ninja -C build install" }
-unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests", depends-on = ["build", { task="configure", args = [{ tests=" ON " }] }] }
-integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests", depends-on = ["build", { task="configure", args = [{ tests="ON" }] }] }
-tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin", depends-on = "install" }
+# depends-on omitted to allow running tests separately after build
+unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
+integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests"}
+tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
 
 [target.linux-64.activation.env]
 # this is needed to correctly set the RPATH of tiglcreator
@@ -38,9 +43,10 @@ libopengl-devel = "*"
 brotlipy = "*"
 
 [target.win-64.tasks]
-integrationtests = { cmd = "TiGL-integrationtests.exe", cwd = "build/tests/integrationtests", depends-on = ["build", { task="configure", args = [{ tests=" ON " }] }] }
-unittests = { cmd = "TiGL-unittests.exe", cwd = "build/tests/unittests", depends-on = ["build", { task="configure", args = [{ tests=" ON " }] }] }
-tiglcreator = { cmd = "tiglcreator.exe", cwd = "build/install/bin", depends-on = "install" }
+# depends-on omitted to allow running tests separately after build
+integrationtests = { cmd = "TiGL-integrationtests.exe", cwd = "build/tests/integrationtests" }
+unittests = { cmd = "TiGL-unittests.exe", cwd = "build/tests/unittests" }
+tiglcreator = { cmd = "tiglcreator.exe", cwd = "build/install/bin" }
 
 [dependencies]
 tixi3 = "3.3.1.*"
