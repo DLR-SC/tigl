@@ -156,4 +156,4 @@ CMAKE_PREFIX_PATH = "$CONDA_PREFIX"
 
 [target.win-64.activation.env]
 # this is needed to correctly find freeimage and freetype
-CMAKE_PREFIX_PATH = "%CONDA_PREFIX%"
+CMAKE_PREFIX_PATH = "%CONDA_PREFIX%/Library"
