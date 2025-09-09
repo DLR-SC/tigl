@@ -46,7 +46,7 @@ jobs:
           # coverage reports only on ubuntu 22.04 debug builds
           - os: "ubuntu-22.04"
             config: "Debug"
-            ingegration-tests: "ON"
+            integration-tests: "ON"
             coverage: "ON"
     uses: ./.github/workflows/build-test.yml
     secrets: inherit
