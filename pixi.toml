@@ -53,6 +53,7 @@ lcov = "*"
 gcovr = "*"
 
 [tasks]
+# depends-on omitted to avoid rebuild in CI
 configure = { cmd = [
     "cmake", 
     "-G", "Ninja", 
@@ -72,9 +73,8 @@ configure = { cmd = [
         { "arg" = "config", "default"="Release"},
         { "arg" = "nightly", "default"="ON"},
 ]}
-build = { cmd = "ninja -C build", depends-on = "configure" }
+build = { cmd = "ninja -C build"}
 install = { cmd = "ninja -C build install" }
-# depends-on omitted to allow running tests separately after build
 unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
 integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests"}
 tests = [ {task = "unittests"}, {task = "integrationtests"} ]
@@ -101,8 +101,8 @@ configure = { cmd = [
         { "arg" = "config", "default"="Debug"},
         { "arg" = "nightly", "default"="ON"},
 ]}
-unittests = { cmd = "cmake --build build --target coverage-unittests", depends-on = "configure" }
-integrationtests = { cmd = "cmake --build build --target coverage-integrationtests", depends-on = "configure" }
+unittests = { cmd = "cmake --build build --target coverage-unittests"}
+integrationtests = { cmd = "cmake --build build --target coverage-integrationtests"}
 
 [feature.opencascade-static.tasks]
 configure = { cmd = [
