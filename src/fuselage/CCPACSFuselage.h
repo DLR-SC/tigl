@@ -188,7 +188,7 @@ public:
      * Create a new section, a new element and connect the element to the "startElement".
      * The new element is placed "Afteer" the start element.
      * If there is already an element after the start element, we split the existing segment and insert the new element
-     * between the the two elements.
+     * between the two elements.
      *
      * @param startElementUID
      * @param sectionName
@@ -222,7 +222,7 @@ public:
      * Create a new section, a new element and connect the element to the "startElement".
      * The new element is placed "Before" the start element.
      * If there is already an element before the start element, we split the existing segment and insert the new element
-     * between the the two elements.
+     * between the two elements.
      *
      * @param startElementUID
      * @param sectionName
