@@ -39,7 +39,7 @@
 #include "CCPACSFuselageProfiles.h"
 #include "CCPACSWingProfile.h"
 #include "generated/CPACSStandardProfile.h" //TODO: Replace with CCPACSStandardProfile, once it exists.
-#include "generated/CPACSFuselageSections.h"
+#include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSExternalObject.h"
 #include "CTiglShapeCache.h"
@@ -126,6 +126,9 @@
 #include "CCPACSVesselStructure.h"
 #include "CCPACSFuelTank.h"
 #include "CCPACSFrame.h"
+#include "CTiglSectionElement.h"
+#include "CTiglWingSectionElement.h"
+#include "CTiglFuselageSectionElement.h"
 
 %}
 
@@ -169,12 +172,13 @@
 %boost_optional(tigl::generated::CPACSRotorHub)
 %boost_optional(tigl::TiglRotorHubType)
 %boost_optional(tigl::generated::CPACSRotor_type)
+%boost_optional(tigl::CCPACSFuselages)
 %boost_optional(tigl::CCPACSFuselageStructure)
 %boost_optional(tigl::generated::CPACSLinkToFileType_format)
 %boost_optional(tigl::CCPACSWingCells)
 %boost_optional(tigl::generated::CPACSAlignmentCrossBeam)
 %boost_optional(tigl::generated::CPACSDoorAssemblyPosition_doorType)
-%boost_optional(tigl::generated::CPACSWingSections)
+%boost_optional(tigl::CCPACSWingSections)
 %boost_optional(tigl::CCPACSWingSegments)
 %boost_optional(tigl::CCPACSPositionings)
 %boost_optional(tigl::generated::CPACSEnginePylons)
@@ -253,6 +257,9 @@ namespace tigl {
 %include "CCPACSNacelleCowl.h"
 %include "generated/CPACSEngine.h"
 %include "generated/CPACSEngines.h"
+
+%boost_optional(tigl::generated::CPACSNacelleProfiles)
+%include "generated/CPACSNacelleProfiles.h"
 
 // ---------------- Control surfaces ------------------ //
 %boost_optional(tigl::generated::CPACSControlSurfaceTrackType_trackSubType)
@@ -351,7 +358,7 @@ namespace tigl
 %include "generated/CPACSSkin.h"
 %include "generated/CPACSFuselageStructure.h"
 %include "CCPACSFuselageStructure.h"
-%include "generated/CPACSFuselageSections.h"
+%include "CCPACSFuselageSections.h"
 
 %include "generated/CPACSWingSkin.h"
 %include "CPACSRotor_type.h"
@@ -448,11 +455,12 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingCSStructure.h"
 
 // -------------------- Wing -------------------//
+%boost_optional(tigl::CCPACSProfiles)
 
-%include "generated/CPACSComponentSegments.h"
-%include "CCPACSWingComponentSegments.h"
 %include "generated/CPACSPositionings.h"
 %include "CCPACSPositionings.h"
+%include "generated/CPACSComponentSegments.h"
+%include "CCPACSWingComponentSegments.h"
 %include "CCPACSPositioning.h"
 // We have to rename the enums since they collide with those from tigl.h
 %rename(GuideCurve_C0) tigl::generated::C0;
@@ -481,6 +489,9 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSProfileGeometry.h"
 %include "CCPACSWingProfile.h"
 %include "CCPACSFuselageProfile.h"
+%include "CTiglSectionElement.h"
+%include "CTiglFuselageSectionElement.h"
+%include "CTiglWingSectionElement.h"
 %include "CTiglWingConnection.h"
 %include "CTiglFuselageConnection.h"
 %include "generated/CPACSWingElements.h"
@@ -493,7 +504,7 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingSection.h"
 %include "generated/CPACSFuselageSection.h"
 %include "CCPACSFuselageSection.h"
-%include "generated/CPACSWingSections.h"
+%include "CCPACSWingSections.h"
 %include "generated/CPACSWingElements.h"
 %include "CCPACSWingSectionElements.h"
 %include "generated/CPACSFuselageElements.h"
@@ -536,7 +547,7 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSFuselageProfiles.h"
 %include "generated/CPACSFuselage.h"
 %include "CCPACSFuselage.h"
-%include "generated/CPACSFuselages.h"
+%include "CCPACSFuselages.h"
 %include "TiglFarFieldType.h"
 %include "generated/CPACSCellPositioningSpanwise.h"
 %include "generated/CPACSCellPositioningChordwise.h"
@@ -555,6 +566,16 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSExternalObject.h"
 %include "CTiglWingSegmentList.h"
 %include "CTiglWingChordface.h"
+%boost_optional(tigl::generated::CPACSCurveProfiles)
+%include "generated/CPACSCurveProfiles.h"
+%boost_optional(tigl::CCPACSStructuralProfiles)
+%include "generated/CPACSStructuralProfiles.h"
+%boost_optional(tigl::CCPACSGuideCurveProfiles)
+%boost_optional(tigl::CCPACSRotorProfiles)
+%include "generated/CPACSGuideCurveProfiles.h"
+%include "generated/CPACSRotorAirfoils.h"
+%include "CCPACSRotorProfiles.h"
+%include "generated/CPACSProfiles.h"
 
 // ---- Engine Pylon -- //
 %include "generated/CPACSEnginePylon.h"

@@ -496,4 +496,8 @@ void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, Bin
     }
 }
 
+
+TIGL_EXPORT tigl::CTiglPoint TiglAxisToCTiglPoint(TiglAxis axis);
+
+
 #endif // TIGLCOMMONFUNCTIONS_H

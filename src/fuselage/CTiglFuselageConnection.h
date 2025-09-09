@@ -27,7 +27,7 @@
 #include "CTiglTransformation.h"
 #include <string>
 #include <boost/optional.hpp>
-#include "generated/CPACSFuselageSections.h"
+#include "CCPACSFuselageSections.h"
 
 namespace tigl
 {

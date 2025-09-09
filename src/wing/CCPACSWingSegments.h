@@ -36,6 +36,9 @@ class CTiglRelativelyPositionedComponent;
 class CCPACSWingSegments : public generated::CPACSWingSegments
 {
 public:
+
+    // TODO: support reordering of the segement
+
     // Constructor
     TIGL_EXPORT CCPACSWingSegments(CCPACSWing* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
@@ -47,15 +50,45 @@ public:
     TIGL_EXPORT CCPACSWingSegment& AddSegment() override;
     TIGL_EXPORT void RemoveSegment(CCPACSWingSegment& ref) override;
 
+    // Get the segment that get form element uid to element uid, if there is no such segment the function raise an error
+    TIGL_EXPORT CCPACSWingSegment & GetSegmentFromTo(const std::string &fromElemUID, const std::string toElementUID);
+
     const CTiglRelativelyPositionedComponent* GetParentComponent() const
     {
         return m_parentVariant;
     }
 
+
+    // return the elements uids in order from root to tip
+    // It is assumed that the elements are already ordered according to the m_segments !
+    TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder() const;
+
+
+    /**
+        * Split the segment into two segments.
+        * The split element will be used as the junction between the two segments.
+        *
+        * @remark Only the segment is split and we do not care about the position of the splitter.
+        * @param segmentToSplit: the uid of the segment to split
+        * @param splitterElement: the uid of the element to be used to connect the two segments
+        * @return the new created segment
+        */
+    TIGL_EXPORT CCPACSWingSegment& SplitSegment(const std::string& segmentToSplit, const std::string& splitterElement);
+
+
+
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
+
+    TIGL_EXPORT void ReorderSegments();
+
+    // check order of segments - each segment must start with the element of the previous segment
+    TIGL_EXPORT bool NeedReordering() const;
+
 private:
     void InvalidateParent() const;
 
     CTiglRelativelyPositionedComponent* m_parentVariant;
+
 };
 
 } // end namespace tigl

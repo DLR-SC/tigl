@@ -22,12 +22,12 @@
 #include <CCPACSPositionings.h>
 #include <CCPACSTransformation.h>
 #include <CCPACSWingComponentSegments.h>
+#include <CCPACSWingSections.h>
 #include <CCPACSWingSegments.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include <typeinfo>
-#include "CPACSWingSections.h"
 #include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "CTiglUIDObject.h"
@@ -139,8 +139,8 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
-        TIGL_EXPORT virtual const CPACSWingSections& GetSections() const;
-        TIGL_EXPORT virtual CPACSWingSections& GetSections();
+        TIGL_EXPORT virtual const CCPACSWingSections& GetSections() const;
+        TIGL_EXPORT virtual CCPACSWingSections& GetSections();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSPositionings>& GetPositionings() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPositionings>& GetPositionings();
@@ -181,7 +181,7 @@ namespace generated
 
         CCPACSTransformation                         m_transformation;
 
-        CPACSWingSections                            m_sections;
+        CCPACSWingSections                           m_sections;
 
         boost::optional<CCPACSPositionings>          m_positionings;
 

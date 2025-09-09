@@ -23,12 +23,12 @@
 #include <CCPACSDucts.h>
 #include <CCPACSEnginePositions.h>
 #include <CCPACSExternalObjects.h>
+#include <CCPACSFuselages.h>
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSEnginePylons.h"
 #include "CPACSFuelTanks.h"
-#include "CPACSFuselages.h"
 #include "CPACSLandingGears.h"
 #include "CPACSVehicleConfigurations.h"
 #include "CreateIfNotExists.h"
@@ -88,8 +88,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSDucts>& GetDucts() const;
         TIGL_EXPORT virtual boost::optional<CCPACSDucts>& GetDucts();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSFuselages>& GetFuselages() const;
-        TIGL_EXPORT virtual boost::optional<CPACSFuselages>& GetFuselages();
+        TIGL_EXPORT virtual const boost::optional<CCPACSFuselages>& GetFuselages() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSFuselages>& GetFuselages();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSWings>& GetWings() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWings>& GetWings();
@@ -118,7 +118,7 @@ namespace generated
         TIGL_EXPORT virtual CCPACSDucts& GetDucts(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveDucts();
 
-        TIGL_EXPORT virtual CPACSFuselages& GetFuselages(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSFuselages& GetFuselages(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFuselages();
 
         TIGL_EXPORT virtual CCPACSWings& GetWings(CreateIfNotExistsTag);
@@ -160,7 +160,7 @@ namespace generated
 
         boost::optional<CCPACSDucts>                m_ducts;
 
-        boost::optional<CPACSFuselages>             m_fuselages;
+        boost::optional<CCPACSFuselages>            m_fuselages;
 
         boost::optional<CCPACSWings>                m_wings;
 

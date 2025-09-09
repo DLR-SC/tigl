@@ -751,7 +751,7 @@ TEST_F(WingSegmentSimple, getPoint_accuracy_asParameterOnSurface)
 
     double x = 0., y = 0., z = 0.;
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
-    // plausibility of results checked with TiGLViewer. The behavior of GetPoint should not change unintentionally
+    // plausibility of results checked with TiGLCreator. The behavior of GetPoint should not change unintentionally
     EXPECT_NEAR(y, 0.5, 1e-7);
     EXPECT_NEAR(x, 0.49711325655906319, 1e-7);
     EXPECT_NEAR(z, 0.053121522829686171, 1e-7);
@@ -786,7 +786,7 @@ TEST_F(WingSegmentSimple, getPoint_accuracy_asParameterOnSurface_movedWing)
 
     double x = 0., y = 0., z = 0.;
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
-    // plausibility of results checked with TiGLViewer. The behavior of GetPoint should not change unintentionally
+    // plausibility of results checked with TiGLCreator. The behavior of GetPoint should not change unintentionally
     EXPECT_NEAR(0.5 + transY, y, 1e-7);
     EXPECT_NEAR(0.49711325655906319 + transX, x, 1e-7);
     EXPECT_NEAR(0.053121522829686171, z, 1e-7);
@@ -1320,6 +1320,6 @@ TEST_F(WingSegmentGuideCurves, tiglWingGetSegmentUpperSurfaceAreaTrimmed)
                                                           &upperArea));
     // Test if the calculated area has the expected value. The first argument in the following test is computed by the function itself,
     // and is therefore obviously true. The benifit of this test case lies in the fact, that the value of the first argument has been roughly estimated visually from the test configuration's
-    // CAD representation in TiGL Viewer and is meeting the computed value.
+    // CAD representation in TiGLCreator and is meeting the computed value.
     ASSERT_NEAR(0.036530682797528628, upperArea, 1e-8);
 }

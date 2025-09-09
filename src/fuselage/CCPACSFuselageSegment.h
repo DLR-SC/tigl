@@ -109,6 +109,10 @@ public:
     // helper function to get the wire of the end section
     TIGL_EXPORT TopoDS_Wire GetEndWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
+    // helper function to get the wire of the end or start section using the uid of the element
+    TIGL_EXPORT TopoDS_Wire GetWire(const std::string& elementUID,
+                                    TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+
     // Gets a point on the fuselage segment in dependence of parameters eta and zeta with
     // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
     // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0

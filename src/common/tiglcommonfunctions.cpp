@@ -2238,3 +2238,21 @@ double NormalizeAngleDeg(double angleDeg)
 
     return angleDeg;
 }
+
+tigl::CTiglPoint TiglAxisToCTiglPoint(TiglAxis axis)
+{
+    switch (axis) {
+    case TIGL_X_AXIS:
+        return tigl::CTiglPoint(1, 0, 0);
+    case TIGL_Y_AXIS:
+        return tigl::CTiglPoint(0, 1, 0);
+    case TIGL_Z_AXIS:
+        return tigl::CTiglPoint(0, 0, 1);
+    default:
+        LOG(WARNING) << "commonfunctions::TiglAxisToCTiglPoint: The given axis is not a standard axis!";
+        return tigl::CTiglPoint(0, 0, 0);
+    }
+}
+
+
+

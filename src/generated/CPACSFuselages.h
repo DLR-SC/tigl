@@ -119,6 +119,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSFuselages = generated::CPACSFuselages;
+// CPACSFuselages is customized, use type CCPACSFuselages directly
 } // namespace tigl

@@ -119,6 +119,5 @@ namespace generated
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSWingSections = generated::CPACSWingSections;
+// CPACSWingSections is customized, use type CCPACSWingSections directly
 } // namespace tigl

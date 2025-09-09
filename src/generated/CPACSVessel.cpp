@@ -404,12 +404,12 @@ namespace generated
         return m_transformation;
     }
 
-    const boost::optional<CPACSFuselageSections>& CPACSVessel::GetSections_choice1() const
+    const boost::optional<CCPACSFuselageSections>& CPACSVessel::GetSections_choice1() const
     {
         return m_sections_choice1;
     }
 
-    boost::optional<CPACSFuselageSections>& CPACSVessel::GetSections_choice1()
+    boost::optional<CCPACSFuselageSections>& CPACSVessel::GetSections_choice1()
     {
         return m_sections_choice1;
     }
@@ -484,7 +484,7 @@ namespace generated
         m_burstPressure = value;
     }
 
-    CPACSFuselageSections& CPACSVessel::GetSections_choice1(CreateIfNotExistsTag)
+    CCPACSFuselageSections& CPACSVessel::GetSections_choice1(CreateIfNotExistsTag)
     {
         if (!m_sections_choice1)
             m_sections_choice1 = boost::in_place(reinterpret_cast<CCPACSVessel*>(this), m_uidMgr);

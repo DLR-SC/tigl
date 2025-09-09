@@ -21,11 +21,11 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSPositionings.h>
 #include <CCPACSTransformation.h>
+#include <CCPACSWingSections.h>
 #include <CCPACSWingSegments.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
-#include "CPACSWingSections.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
@@ -84,8 +84,8 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSWingSections>& GetSections() const;
-        TIGL_EXPORT virtual boost::optional<CPACSWingSections>& GetSections();
+        TIGL_EXPORT virtual const boost::optional<CCPACSWingSections>& GetSections() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSWingSections>& GetSections();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSWingSegments>& GetSegments() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWingSegments>& GetSegments();
@@ -93,7 +93,7 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSPositionings>& GetPositionings() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPositionings>& GetPositionings();
 
-        TIGL_EXPORT virtual CPACSWingSections& GetSections(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSWingSections& GetSections(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSections();
 
         TIGL_EXPORT virtual CCPACSWingSegments& GetSegments(CreateIfNotExistsTag);
@@ -123,7 +123,7 @@ namespace generated
 
         CCPACSTransformation                m_transformation;
 
-        boost::optional<CPACSWingSections>  m_sections;
+        boost::optional<CCPACSWingSections> m_sections;
 
         boost::optional<CCPACSWingSegments> m_segments;
 

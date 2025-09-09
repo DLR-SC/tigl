@@ -29,6 +29,8 @@
 #include "CCPACSWingSection.h"
 #include "CCPACSFuselageSection.h"
 #include "gp_Pnt.hxx"
+#include "tiglcommonfunctions.h"
+#include "tiglmathfunctions.h"
 
 namespace tigl
 {
@@ -147,10 +149,30 @@ const CTiglPoint& CCPACSPositioning::GetFromPoint()
     return _fromPoint;
 }
 
-void CCPACSPositioning::SetToPoint(const CTiglPoint& aPoint)
+void CCPACSPositioning::SetFromPointKeepingToPoint(const CTiglPoint& newFrom)
 {
-    _toPoint = aPoint;
-    Invalidate();
+    Update();
+    CTiglPoint delta =  _toPoint - newFrom ;
+    SetParametersFromVector(delta);
+}
+
+void CCPACSPositioning:: SetToPoint(const CTiglPoint& newToPoint, bool moveDependentPositionings)
+{
+    Update();
+    CTiglPoint delta = newToPoint - _fromPoint;
+    SetParametersFromVector(delta);
+
+    // update dependencies because we just want to change the section managed by this positioning
+    std::vector<CCPACSPositioning*> dependencies = GetDependentPositionings();
+    for (size_t i = 0; i < dependencies.size(); i++) {
+        if ( moveDependentPositionings ) {
+            dependencies.at(i)->Invalidate();
+        }
+        else {
+            dependencies.at(i)->SetFromPointKeepingToPoint(newToPoint);
+        }
+
+    }
 }
 
 const CTiglPoint& CCPACSPositioning::GetToPoint()
@@ -186,6 +208,24 @@ void CCPACSPositioning::DisconnectDependentPositionings()
 const std::vector<CCPACSPositioning*> CCPACSPositioning::GetDependentPositionings() const
 {
     return _dependentPositionings;
+}
+
+void CCPACSPositioning::SetParametersFromVector(const CTiglPoint& delta,  bool rounding )
+{
+    double length = delta.norm2();
+    double dihedral = Degrees(atan2(delta.z,delta.y));
+    double sweep = Degrees(atan2(delta.x, sqrt( pow(delta.y,2) + pow(delta.z,2) ))) ;
+
+    if (rounding) {
+        length = SnapUnitInterval(length);
+        dihedral = SnapAngle(dihedral);
+        sweep = SnapAngle(sweep);
+    }
+
+    SetDihedralAngle(dihedral);
+    SetLength(length);
+    SetSweepAngle(sweep);
+    Invalidate();
 }
 
 } // namespace tigl

@@ -251,6 +251,17 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) 
     }
 }
 
+TopoDS_Wire CCPACSFuselageSegment::GetWire(const std::string& elementUID, TiglCoordinateSystem referenceCS) const
+{
+    if (startConnection.GetSectionElementUID() == elementUID) {
+        return GetStartWire(referenceCS);
+    }
+    else if (endConnection.GetSectionElementUID() == elementUID) {
+        return GetEndWire(referenceCS);
+    }
+    throw CTiglError("Invalid uid element passed to CCPACSFuselageSegment::GetWire", TIGL_UID_ERROR);
+}
+
 // get short name for loft
 std::string CCPACSFuselageSegment::GetShortShapeName() const
 {

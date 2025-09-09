@@ -349,20 +349,47 @@ TEST(TiglMath, CTiglTransform_Decompose)
     // trivial test
     tigl::CTiglTransformation transformation;
 
-    double S[3] = {0., 0., 0.};
-    double R[3] = {0., 0., 0.};
-    double T[3] = {0., 0., 0.};
-    transformation.Decompose(S, R, T);
+    double S[3],R[3],T[3];
+
+    EXPECT_TRUE(transformation.Decompose(S, R, T));
 
     EXPECT_NEAR(S[0], 1., 1e-8);
-    EXPECT_NEAR(S[0], 1., 1e-8);
-    EXPECT_NEAR(S[0], 1., 1e-8);
+    EXPECT_NEAR(S[1], 1., 1e-8);
+    EXPECT_NEAR(S[2], 1., 1e-8);
     EXPECT_NEAR(R[0], 0., 1e-8);
-    EXPECT_NEAR(R[0], 0., 1e-8);
-    EXPECT_NEAR(R[0], 0., 1e-8);
+    EXPECT_NEAR(R[1], 0., 1e-8);
+    EXPECT_NEAR(R[2], 0., 1e-8);
     EXPECT_NEAR(T[0], 0., 1e-8);
-    EXPECT_NEAR(T[0], 0., 1e-8);
-    EXPECT_NEAR(T[0], 0., 1e-8);
+    EXPECT_NEAR(T[1], 0., 1e-8);
+    EXPECT_NEAR(T[2], 0., 1e-8);
+
+    // Example of matrices that can not be decomposed:
+
+    // Create a shear matrix by rotation and scaling
+    // This case may appear when a none-uniform scaling exists within the section
+
+    double a = 1.28;
+    double angle = 38;
+
+    tigl::CTiglTransformation tE,tS, shear, expectedShear;
+    tE.SetIdentity();
+    tE.AddRotationZ(-angle);
+    tS.SetIdentity();
+    tS.AddScaling(a,1/a, 1);
+    tS.AddRotationZ(90-angle);
+    shear = tS *tE;
+
+    expectedShear.SetIdentity();
+    expectedShear.SetValue(1,0,0.5);
+
+    for(int row = 0; row < 4; row ++ ){
+        for ( int col = 0; col < 4; col++) {
+            EXPECT_NEAR(expectedShear.GetValue(row,col), shear.GetValue(row,col), 0.01); // approximation error of .128 and -38
+        }
+    }
+
+    // it's impossible to decompose a shear matrix properly in R,S,T
+    EXPECT_FALSE(expectedShear.Decompose(S,R,T));
 }
 
 TEST(TiglMath, CTiglTransform_Decompose2)
@@ -382,10 +409,8 @@ TEST(TiglMath, CTiglTransform_Decompose2)
     EXPECT_NEAR(resultV.Y(), expectV.Y(), 1e-8 );
     EXPECT_NEAR(resultV.Z(), expectV.Z(), 1e-8 );
 
-    // but decomposing the rotation seems to output the X,Y,Z extrinsic angle
-    double S[3] = {0., 0., 0.};
-    double R[3] = {0., 0., 0.};
-    double T[3] = {0., 0., 0.};
+    // decomposing the rotation should output the X,Y,Z extrinsic angle
+    double S[3],R[3],T[3];
     rot.Decompose(S, R, T);
 
     // so if we put back this value in transformation
@@ -394,7 +419,7 @@ TEST(TiglMath, CTiglTransform_Decompose2)
     rot2.AddRotationY(R[1]);
     rot2.AddRotationX(R[0]);
 
-    // we do not get the expected result
+    // we get the expected result
     resultV = rot2.Transform(gp_Pnt(1., 0., 0.));
     EXPECT_NEAR(resultV.X(), expectV.X(), 1e-8 );
     EXPECT_NEAR(resultV.Y(), expectV.Y(), 1e-8 );
@@ -402,6 +427,170 @@ TEST(TiglMath, CTiglTransform_Decompose2)
 }
 
 TEST(TiglMath, CTiglTransform_Decompose3)
+{
+
+    double S[3],R[3],T[3];
+
+    tigl::CTiglTransformation rot, rotP;
+    rot.AddRotationZ(142);
+    rot.AddRotationY(0);
+    rot.AddRotationX(-180);
+
+    rot.Decompose(S, R, T);
+
+    rotP.AddRotationZ(R[2]);
+    rotP.AddRotationY(R[1]);
+    rotP.AddRotationX(R[0]);
+
+    EXPECT_TRUE(rot.IsNear(rotP));
+
+
+    rot.SetIdentity();
+    rot.AddScaling(1.28,0.78,1);
+    rot.AddRotationZ(-128);
+    rot.AddRotationY(0);
+    rot.AddRotationX(-180);
+
+    rot.Decompose(S, R, T);
+    rotP.SetIdentity();
+    rotP.AddScaling(S[0],S[1],S[2]);
+    rotP.AddRotationZ(R[2]);
+    rotP.AddRotationY(R[1]);
+    rotP.AddRotationX(R[0]);
+
+    EXPECT_TRUE(rot.IsNear(rotP));
+}
+
+TEST(TiglMath, CTiglTransform_DecomposeTRSRS)
+{
+
+    tigl::CTiglTransformation initial, res;
+
+    // Shear matrix test
+    initial.SetIdentity();
+    initial.SetValue(1, 0, 0.5);
+
+    tigl::CTiglPoint trans, rot2, diag2, rot1, diag1;
+
+
+    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+
+    res.SetIdentity();
+    res.AddScaling(diag1.x, diag1.y, diag1.z);
+    res.AddRotationIntrinsicXYZ(rot1.x, rot1.y, rot1.z);
+    res.AddScaling(diag2.x, diag2.y, diag2.z);
+    res.AddRotationIntrinsicXYZ(rot2.x, rot2.y, rot2.z);
+    res.AddTranslation(trans.x, trans.y, trans.z);
+
+    EXPECT_TRUE(initial.IsNear(res));
+
+    // Identity
+
+    initial.SetIdentity();
+
+    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+
+    res.SetIdentity();
+    res.AddScaling(diag1.x, diag1.y, diag1.z);
+    res.AddRotationIntrinsicXYZ(rot1.x, rot1.y, rot1.z);
+    res.AddScaling(diag2.x, diag2.y, diag2.z);
+    res.AddRotationIntrinsicXYZ(rot2.x, rot2.y, rot2.z);
+    res.AddTranslation(trans.x, trans.y, trans.z);
+
+    EXPECT_TRUE(initial.IsNear(res));
+
+    // Pseudo random
+
+    initial.SetIdentity();
+    initial.AddScaling(3.4, 23, 0.9);
+    initial.AddRotationIntrinsicXYZ(3.4, 23, 0.9);
+    initial.AddTranslation(3.3, -2, 4);
+
+    initial.AddScaling(23, 0.5, 0.9);
+    initial.AddRotationIntrinsicXYZ(23, 55, 77);
+    initial.AddTranslation(12, -90, 12);
+
+    initial.AddScaling(23, 0.5, 0.9);
+    initial.AddRotationIntrinsicXYZ(-3, -9, -7);
+    initial.AddTranslation(7, -9, 12);
+
+    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+
+    res.SetIdentity();
+    res.AddScaling(diag1.x, diag1.y, diag1.z);
+    res.AddRotationIntrinsicXYZ(rot1.x, rot1.y, rot1.z);
+    res.AddScaling(diag2.x, diag2.y, diag2.z);
+    res.AddRotationIntrinsicXYZ(rot2.x, rot2.y, rot2.z);
+    res.AddTranslation(trans.x, trans.y, trans.z);
+
+    EXPECT_TRUE(initial.IsNear(res));
+
+    // Pseudo random case
+
+    initial.SetIdentity();
+    initial.AddScaling(3.21, 2, 9);
+    initial.AddRotationIntrinsicXYZ(123.4, 223, 321);
+    initial.AddTranslation(31, -1, 1);
+
+    initial.AddScaling(23, 0.5, 0.9);
+    initial.AddRotationIntrinsicXYZ(23, 55, 77);
+
+    initial.AddScaling(11, 30.5, 18);
+    initial.AddRotationIntrinsicXYZ(23, 55, 77);
+    initial.AddTranslation(12, -90, 12);
+    initial.AddTranslation(13, -3, 12);
+
+    initial.AddScaling(-12, -12, -32);
+    initial.AddRotationIntrinsicXYZ(-321, -922, -722);
+    initial.AddTranslation(7, -9, 2);
+
+    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+
+    res.SetIdentity();
+    res.AddScaling(diag1.x, diag1.y, diag1.z);
+    res.AddRotationIntrinsicXYZ(rot1.x, rot1.y, rot1.z);
+    res.AddScaling(diag2.x, diag2.y, diag2.z);
+    res.AddRotationIntrinsicXYZ(rot2.x, rot2.y, rot2.z);
+    res.AddTranslation(trans.x, trans.y, trans.z);
+
+    EXPECT_TRUE(initial.IsNear(res));
+
+    // 0 scaling case
+
+    initial.SetIdentity();
+    initial.AddScaling(0, 2, 9);
+
+    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+
+    res.SetIdentity();
+    res.AddScaling(diag1.x, diag1.y, diag1.z);
+    res.AddRotationIntrinsicXYZ(rot1.x, rot1.y, rot1.z);
+    res.AddScaling(diag2.x, diag2.y, diag2.z);
+    res.AddRotationIntrinsicXYZ(rot2.x, rot2.y, rot2.z);
+    res.AddTranslation(trans.x, trans.y, trans.z);
+
+    EXPECT_TRUE(initial.IsNear(res));
+
+    //    Fail due the scaling
+    //
+    //    initial.SetIdentity();
+    //    initial.AddScaling(0,2,9);
+    //    initial.AddRotationIntrinsicXYZ(30,50,70);
+    //
+    //    initial.DecomposeTRSRS(diag1, rot1, diag2, rot2, trans);
+    //
+    //    res.SetIdentity();
+    //    res.AddScaling(diag1.x,diag1.y,diag1.z);
+    //    res.AddRotationIntrinsicXYZ(rot1.x,rot1.y,rot1.z);
+    //    res.AddScaling(diag2.x,diag2.y,diag2.z);
+    //    res.AddRotationIntrinsicXYZ(rot2.x,rot2.y,rot2.z);
+    //    res.AddTranslation(trans.x,trans.y,trans.z);
+    //
+    //
+    //    EXPECT_TRUE( initial.IsNear(res));
+}
+
+TEST(TiglMath, CTiglTransform_Decompose4)
 {
     // Simulate the case where a cpacs transformation has a rotation RX:0;RY:90;RZ:00 and RX:0;RY:-90;RZ:00, respectively
     // This caused a bug due to a wrong if condition in the decompose routine which resulted in a sign flip of RY afterwards
@@ -463,6 +652,186 @@ TEST(TiglMath, CTiglTransform_setTransformationMatrix)
     EXPECT_NEAR(*cpacsTrafo.GetTranslation()->GetY(), trans[1], 1e-8);
     EXPECT_NEAR(*cpacsTrafo.GetTranslation()->GetZ(), trans[2], 1e-8);
 }
+
+
+TEST(TiglMath, CTiglTransform_getRotationToAlignAToB)
+{
+
+    tigl::CTiglTransformation yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint(0, 1,0),tigl::CTiglPoint(1, 0,0));
+
+    double scale[3],rot[3],trans[3];
+    yToZ.Decompose(scale, rot, trans);
+
+    EXPECT_NEAR(rot[0], 0, 0.01);
+    EXPECT_NEAR(rot[1], 0, 0.01);
+    EXPECT_NEAR(rot[2], -90, 0.01);
+
+    EXPECT_NEAR(scale[0], 1, 0.01);
+    EXPECT_NEAR(scale[1], 1, 0.01);
+    EXPECT_NEAR(scale[2], 1, 0.01);
+
+    EXPECT_NEAR(trans[0], 0, 0.01);
+    EXPECT_NEAR(trans[1], 0, 0.01);
+    EXPECT_NEAR(trans[2], 0, 0.01);
+
+
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint(0.5,0.5,0), tigl::CTiglPoint(1, 0 ,0));
+    yToZ.Decompose(scale, rot, trans);
+
+    EXPECT_NEAR(rot[0], 0, 0.01);
+    EXPECT_NEAR(rot[1], 0, 0.01);
+    EXPECT_NEAR(rot[2], -45, 0.01);
+
+    EXPECT_NEAR(scale[0], 1, 0.01);
+    EXPECT_NEAR(scale[1], 1, 0.01);
+    EXPECT_NEAR(scale[2], 1, 0.01);
+
+    EXPECT_NEAR(trans[0], 0, 0.01);
+    EXPECT_NEAR(trans[1], 0, 0.01);
+    EXPECT_NEAR(trans[2], 0, 0.01);
+
+
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint(1, 0 ,0), tigl::CTiglPoint(0.5,0.5,0));
+    yToZ.Decompose(scale, rot, trans);
+
+    EXPECT_NEAR(rot[0], 0, 0.01);
+    EXPECT_NEAR(rot[1], 0, 0.01);
+    EXPECT_NEAR(rot[2], 45, 0.01);
+
+    EXPECT_NEAR(scale[0], 1, 0.01);
+    EXPECT_NEAR(scale[1], 1, 0.01);
+    EXPECT_NEAR(scale[2], 1, 0.01);
+
+    EXPECT_NEAR(trans[0], 0, 0.01);
+    EXPECT_NEAR(trans[1], 0, 0.01);
+    EXPECT_NEAR(trans[2], 0, 0.01);
+
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint(-0.5,-0.5,0),  tigl::CTiglPoint(1, 0 ,0) );
+    yToZ.Decompose(scale, rot, trans);
+
+    EXPECT_NEAR(rot[0], 0, 0.01);
+    EXPECT_NEAR(rot[1], 0, 0.01);
+    EXPECT_NEAR(rot[2], 135, 0.01);
+
+    EXPECT_NEAR(scale[0], 1, 0.01);
+    EXPECT_NEAR(scale[1], 1, 0.01);
+    EXPECT_NEAR(scale[2], 1, 0.01);
+
+    EXPECT_NEAR(trans[0], 0, 0.01);
+    EXPECT_NEAR(trans[1], 0, 0.01);
+    EXPECT_NEAR(trans[2], 0, 0.01);
+
+
+    tigl::CTiglPoint b =  tigl::CTiglPoint(0.81379768134, 0.34202014332 , -0.46984631039); // Ry:30, rz:20
+    tigl::CTiglPoint a = tigl::CTiglPoint(1,0,0);
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(a, b);
+
+    tigl::CTiglPoint result = yToZ * a;
+    EXPECT_NEAR(result.x, b.x, 0.01 );
+    EXPECT_NEAR(result.y, b.y, 0.01 );
+    EXPECT_NEAR(result.z, b.z, 0.01 );
+
+
+    // Special case: The vectors are identical
+    b =  tigl::CTiglPoint(1,0,0); // Ry:30, rz:20
+    a = tigl::CTiglPoint(1,0,0);
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(a, b);
+
+    result = yToZ * a;
+    EXPECT_NEAR(result.x, b.x, 0.01 );
+    EXPECT_NEAR(result.y, b.y, 0.01 );
+    EXPECT_NEAR(result.z, b.z, 0.01 );
+
+
+    b =  tigl::CTiglPoint(-1,0,0); // Ry:30, rz:20
+    a = tigl::CTiglPoint(1,0,0);
+    yToZ = tigl::CTiglTransformation::GetRotationToAlignAToB(a, b);
+
+    result = yToZ * a;
+    EXPECT_NEAR(result.x, b.x, 0.01 );
+    EXPECT_NEAR(result.y, b.y, 0.01 );
+    EXPECT_NEAR(result.z, b.z, 0.01 );
+
+}
+
+
+
+TEST(TiglMath, CTiglTransform_GetRotationFromAxisRotation)
+{
+
+    tigl::CTiglTransformation res;
+    tigl::CTiglTransformation expectedR;
+    tigl::CTiglPoint axis;
+    double angle;
+
+    expectedR.SetValue(0,0,0);
+    expectedR.SetValue(0,1,0);
+    expectedR.SetValue(0,2,1);
+    expectedR.SetValue(1,0,0);
+    expectedR.SetValue(1,1,1);
+    expectedR.SetValue(1,2,0);
+    expectedR.SetValue(2,0,-1);
+    expectedR.SetValue(2,1,0);
+    expectedR.SetValue(2,2,0);
+
+    axis = tigl::CTiglPoint(0,-1,0);
+    angle = -90;
+    res = tigl::CTiglTransformation::GetRotationFromAxisRotation(axis, angle);
+    EXPECT_TRUE(res.IsNear(expectedR));
+
+
+    expectedR.SetValue(0,0, 0.9698463);
+    expectedR.SetValue(0,1,-0.0301537);
+    expectedR.SetValue(0,2,-0.2418448);
+
+    expectedR.SetValue(1,0,-0.0301537);
+    expectedR.SetValue(1,1,0.9698463);
+    expectedR.SetValue(1,2,-0.2418448);
+
+    expectedR.SetValue(2,0, 0.2418448);
+    expectedR.SetValue(2,1, 0.2418448);
+    expectedR.SetValue(2,2,0.9396926 );
+
+    axis = tigl::CTiglPoint(1,-1,0);
+    angle = 20;
+    res = tigl::CTiglTransformation::GetRotationFromAxisRotation(axis, angle);
+    EXPECT_TRUE(res.IsNear(expectedR));
+
+}
+
+
+
+TEST(TiglMath, CTiglTransform_isNear)
+{
+    tigl::CTiglTransformation a,b;
+
+    EXPECT_TRUE(a.IsNear(b));
+    EXPECT_TRUE(b.IsNear(a));
+    EXPECT_TRUE(a.IsNear(b,0));
+    EXPECT_TRUE(b.IsNear(a,0));
+
+    a.AddTranslation(12,13,14);
+    EXPECT_FALSE(a.IsNear(b));
+    EXPECT_FALSE(b.IsNear(a));
+    EXPECT_TRUE(a.IsNear(b,100));
+
+    b.AddTranslation(12,13,14);
+    EXPECT_TRUE(a.IsNear(b));
+    EXPECT_TRUE(b.IsNear(a));
+
+    b.AddRotationX(0.1);
+    EXPECT_FALSE(a.IsNear(b));
+    a.AddRotationX(0.1);
+    EXPECT_TRUE(a.IsNear(b));
+
+    a.AddScaling(3,3.3,4);
+    EXPECT_FALSE(a.IsNear(b));
+    b.AddScaling(3,3.3,4);
+    EXPECT_TRUE(a.IsNear(b));
+
+}
+
+
 
 TEST(TiglMath, SVD)
 {
@@ -541,4 +910,463 @@ TEST(TiglMath, matrixIO)
             EXPECT_EQ(matRef.Value(i, j), mat.Value(i, j));
         }
     }
+}
+
+TEST(TiglMath, DiagonalizeMatrixByJacobi)
+{
+
+    tigl::tiglMatrix I(1, 3, 1, 3);
+    I(1, 1) = 1.;
+    I(1, 2) = 0.;
+    I(1, 3) = 0.;
+    I(2, 1) = 0.;
+    I(2, 2) = 1.;
+    I(2, 3) = 0.;
+    I(3, 1) = 0.;
+    I(3, 2) = 0.;
+    I(3, 3) = 1.;
+
+    tigl::tiglMatrix M(1, 3, 1, 3);
+    tigl::tiglMatrix D(1, 3, 1, 3);
+    tigl::tiglMatrix expectedD(1, 3, 1, 3);
+    tigl::tiglMatrix V(1, 3, 1, 3);
+    tigl::tiglMatrix check(1, 3, 1, 3);
+
+    double tolerance = 0.001;
+
+    // trivial test
+    // todo: The V vector is not the identity, why?
+    M = I;
+    tigl::DiagonalizeMatrixByJacobi(M, D, V);
+
+    expectedD = I;
+    check     = V * D * V.Transposed();
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            EXPECT_NEAR(D(r, c), expectedD(r, c), tolerance);
+            EXPECT_NEAR(check(r, c), M(r, c), tolerance);
+        }
+    }
+
+    // none trivial test 1
+
+    M(1, 1) = 1.;
+    M(1, 2) = 2.;
+    M(1, 3) = 3.;
+    M(2, 1) = 2.;
+    M(2, 2) = 1.;
+    M(2, 3) = 2.;
+    M(3, 1) = 3.;
+    M(3, 2) = 2.;
+    M(3, 3) = 1.;
+
+    tigl::DiagonalizeMatrixByJacobi(M, D, V);
+
+    expectedD(1, 1) = 5.702;
+    expectedD(1, 2) = 0.;
+    expectedD(1, 3) = 0.;
+    expectedD(2, 1) = 0.;
+    expectedD(2, 2) = -0.702;
+    expectedD(2, 3) = 0.;
+    expectedD(3, 1) = 0.;
+    expectedD(3, 2) = 0.;
+    expectedD(3, 3) = -2.;
+
+    check = V * D * V.Transposed();
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            EXPECT_NEAR(D(r, c), expectedD(r, c), tolerance);
+            EXPECT_NEAR(check(r, c), M(r, c), tolerance);
+        }
+    }
+
+    // none trivial test 2
+
+    M(1, 1) = 4.3;
+    M(1, 2) = 1.;
+    M(1, 3) = 3.3;
+    M(2, 1) = 1.;
+    M(2, 2) = -8.;
+    M(2, 3) = 9.;
+    M(3, 1) = 3.3;
+    M(3, 2) = 9.;
+    M(3, 3) = 3.;
+
+    tigl::DiagonalizeMatrixByJacobi(M, D, V);
+
+    expectedD(1, 1) = 10.034;
+    expectedD(1, 2) = 0.;
+    expectedD(1, 3) = 0.;
+    expectedD(2, 1) = 0.;
+    expectedD(2, 2) = 2.347;
+    expectedD(2, 3) = 0.;
+    expectedD(3, 1) = 0.;
+    expectedD(3, 2) = 0.;
+    expectedD(3, 3) = -13.08;
+
+    check = V * D * V.Transposed();
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            EXPECT_NEAR(D(r, c), expectedD(r, c), tolerance);
+            EXPECT_NEAR(check(r, c), M(r, c), tolerance);
+        }
+    }
+}
+
+TEST(TiglMath, RotMatrixToIntrinsicXYZVector)
+{
+
+    tigl::tiglMatrix rM(1, 3, 1, 3);
+    tigl::CTiglPoint rV(1, 3);
+    tigl::CTiglPoint inputRV(1, 3);
+    tigl::CTiglTransformation rT, rEquivalent;
+
+    double tolerance = 0.001;
+
+    // trivial test
+
+    inputRV.x = 0;
+    inputRV.y = 0;
+    inputRV.z = 0;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+
+    EXPECT_NEAR(rV.x, inputRV.x, tolerance);
+    EXPECT_NEAR(rV.y, inputRV.y, tolerance);
+    EXPECT_NEAR(rV.z, inputRV.z, tolerance);
+
+
+    //  normal case test
+
+    inputRV.x = 20;
+    inputRV.y = 40;
+    inputRV.z = 30;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+    EXPECT_NEAR(rV.x, inputRV.x, tolerance);
+    EXPECT_NEAR(rV.y, inputRV.y, tolerance);
+    EXPECT_NEAR(rV.z, inputRV.z, tolerance);
+
+
+
+    // negative rotation case
+
+    inputRV.x = -20;
+    inputRV.y = -40;
+    inputRV.z = 30;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+    EXPECT_NEAR(rV.x, inputRV.x, tolerance);
+    EXPECT_NEAR(rV.y, inputRV.y, tolerance);
+    EXPECT_NEAR(rV.z, inputRV.z, tolerance);
+
+
+    // case when RY = 90
+    inputRV.x = 0;
+    inputRV.y = 90;
+    inputRV.z = 30;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+    EXPECT_NEAR(rV.x, inputRV.x, tolerance);
+    EXPECT_NEAR(rV.y, inputRV.y, tolerance);
+    EXPECT_NEAR(rV.z, inputRV.z, tolerance);
+
+    // case when RY = -90
+    inputRV.x = 0;
+    inputRV.y = -90;
+    inputRV.z = 30;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+    EXPECT_NEAR(rV.x, inputRV.x, tolerance);
+    EXPECT_NEAR(rV.y, inputRV.y, tolerance);
+    EXPECT_NEAR(rV.z, inputRV.z, tolerance);
+
+
+    // case when RY = -90 with RX -> deadlock ->transformation of equivalent input
+    inputRV.x = 10;
+    inputRV.y = -90;
+    inputRV.z = 30;
+    rT.SetIdentity();
+    rT.AddRotationIntrinsicXYZ(inputRV.x, inputRV.y, inputRV.z);
+
+    for (int r = 1; r < 4; r++) {
+        for (int c = 1; c < 4; c++) {
+            rM(r, c) = rT.GetValue(r - 1, c - 1);
+        }
+    }
+
+    rV = tigl::RotMatrixToIntrinsicXYZVector(rM);
+
+    rEquivalent.SetIdentity();
+    rEquivalent.AddRotationIntrinsicXYZ(rV.x, rV.y, rV.z);
+    EXPECT_TRUE(rEquivalent.IsNear(rT, 0.001));
+
+}
+
+
+TEST(TiglMath, FindVectorPerpendicularToDirection)
+{
+    tigl::CTiglPoint i , res;
+    double check  ;
+
+    i = tigl::CTiglPoint(0,-1,0);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(0, 0,-1);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(-1,0,0);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(1,0,0);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(0,1,0);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(0,0,1);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(12,3,-45);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(0.2,1,0.2);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+    i = tigl::CTiglPoint(45,45,45);
+    res = tigl::FindOrthogonalVectorToDirection(i);
+    check = tigl::CTiglPoint::inner_prod(res, i);
+    EXPECT_NEAR(check , 0, 0.00001);
+
+
+}
+
+TEST(TiglMath, DoubleRounding)
+{
+    double inNumber;
+    double expected;
+    double tolerance = 1e-13;
+
+    inNumber = 366.4;
+    expected = 6.4;
+    inNumber = tigl::SnapAngle(inNumber);
+    EXPECT_NEAR(inNumber, expected, tolerance );
+
+
+    inNumber = -366.4;
+    expected = -6.4;
+    inNumber = tigl::SnapAngle(inNumber);
+    EXPECT_NEAR(inNumber, expected, tolerance);
+
+    inNumber =  1e-9;
+    expected = 0;
+    inNumber = tigl::SnapAngle(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+
+    inNumber =  -180 ; ;
+    expected = 180;
+    inNumber = tigl::SnapAngle(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber =  -90 ; ;
+    expected = -90;
+    inNumber = tigl::SnapAngle(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber =  -180 - 1e-9; ;
+    expected = 180;
+    inNumber = tigl::SnapAngle(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber =  90.1; ;
+    expected = 90.1;
+    inNumber = tigl::SnapAngle(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber =  90.1; ;
+    expected = 90;
+    inNumber = tigl::SnapAngle(inNumber, 1.);
+    EXPECT_EQ(inNumber, expected);
+
+    // LengthRounding
+
+    inNumber = 1e-9;
+    expected = 0;
+    inNumber = tigl::SnapUnitInterval(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber = -1e-9;
+    expected = 0;
+    inNumber = tigl::SnapUnitInterval(inNumber);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber = -1e-9;
+    expected = -1e-9;
+    inNumber = tigl::SnapUnitInterval(inNumber, 0);
+    EXPECT_EQ(inNumber, expected);
+
+    inNumber = 1-1e-9;
+    expected = 1;
+    inNumber = tigl::SnapUnitInterval(inNumber);
+    EXPECT_EQ(inNumber, expected);
+}
+
+
+TEST(TiglMath, PointRounding)
+{
+    double number;
+    double roundingValue;
+    double delta;
+
+    number        = 0.001;
+    roundingValue = 0;
+    delta         = 0.1;
+    number = tigl::SnapValue(number, roundingValue, delta);
+    EXPECT_EQ(number, roundingValue);
+
+    number        = 0.1;
+    roundingValue = 0;
+    delta         = 0.01;
+    number = tigl::SnapValue(number, roundingValue, delta);
+    EXPECT_EQ(number, 0.1);
+
+    number        = 1e-9;
+    roundingValue = 0;
+    number = tigl::SnapValue(number, roundingValue); // Precision::Confusion() is used by default for delta
+    EXPECT_EQ(number, 0);
+
+    number        = 1e-6;
+    roundingValue = 0;
+    number = tigl::SnapValue(number, roundingValue);
+    EXPECT_EQ(number, 1e-6);
+
+    number        = 1.01;
+    roundingValue = 1;
+    delta         = 0.1;
+    number = tigl::SnapValue(number, roundingValue, delta);
+    EXPECT_EQ(number, 1);
+
+    number        = -1.01;
+    roundingValue = -1;
+    delta         = 0.1;
+    number = tigl::SnapValue(number, roundingValue, delta);
+    EXPECT_EQ(number, -1);
+
+    // rotation rounding
+    tigl::CTiglPoint rotation;
+
+    rotation = tigl::CTiglPoint(1e-9, 1e-9, 1e-9);
+    rotation = tigl::SnapRotation(rotation);
+    EXPECT_EQ(rotation.x, 0);
+    EXPECT_EQ(rotation.y, 0);
+    EXPECT_EQ(rotation.z, 0);
+
+    rotation = tigl::CTiglPoint(90 - 1e-9, 90 - 1e-9, 90 + 1e-9);
+    rotation = tigl::SnapRotation(rotation);
+    EXPECT_EQ(rotation.x, 90);
+    EXPECT_EQ(rotation.y, 90);
+    EXPECT_EQ(rotation.z, 90);
+
+    rotation = tigl::CTiglPoint(360 + 1e-9, 360 - 1e-9, 360 + 1e-9);
+    rotation = tigl::SnapRotation(rotation);
+    EXPECT_EQ(rotation.x, 0);
+    EXPECT_EQ(rotation.y, 0);
+    EXPECT_EQ(rotation.z, 0);
+
+    // scaling rounding;
+    tigl::CTiglPoint scaling;
+
+    scaling = tigl::CTiglPoint(1.1, 1.1, 1.1);
+    scaling = tigl::SnapUnitInterval(scaling, 0.2);
+    EXPECT_EQ(scaling.x, 1);
+    EXPECT_EQ(scaling.y, 1);
+    EXPECT_EQ(scaling.z, 1);
+
+    scaling = tigl::CTiglPoint(-1 + 1e-9, 1.1, -1 - +1e-9);
+    scaling = tigl::SnapUnitInterval(scaling);
+    EXPECT_EQ(scaling.x, -1);
+    EXPECT_EQ(scaling.y, 1.1);
+    EXPECT_EQ(scaling.z, -1);
+
+    // translation rounding
+    tigl::CTiglPoint translation;
+
+    translation = tigl::CTiglPoint(-1e-9, 1e-9, 0.2);
+    translation = tigl::SnapUnitInterval(translation);
+    EXPECT_EQ(translation.x, 0);
+    EXPECT_EQ(translation.y, 0);
+    EXPECT_EQ(translation.z, 0.2);
 }

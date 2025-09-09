@@ -30,6 +30,7 @@
 #include "TopoDS.hxx"
 #include "Geom_Surface.hxx"
 #include "PNamedShape.h"
+#include "tiglMatrix.h"
 
 namespace tigl
 {
@@ -131,7 +132,17 @@ public:
     // Decompose the Transformation into the three operations
     // scale first, rotate second (extr. Euler as defined in CPACS),
     // translate third
-    TIGL_EXPORT void Decompose(double scale[3], double rotation[3], double translation[3]) const;
+    // Remark, the decomposition can be not exactly equivalent to the original matrix
+    TIGL_EXPORT bool Decompose(double scale[3], double rotation[3], double translation[3], bool rounding=true) const;
+
+    // Decompose the Transformation into the five operations
+    // scale1 first, rotate1 second (extr. Euler as defined in CPACS),
+    // scale2 third, rotate2 fourth, translation fifth
+    // Remark, the decomposition is always exact. This means that the original matrix is found if we apply these
+    // operations on an identity matrix in the correct order. The only exception may be when 0 scaling occurs.
+    // If rounding is set to true, the values that are approximately equal to -1,0,1,90,180,270,360 are rounded.
+    TIGL_EXPORT void DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint&  scaling2,
+                                    CTiglPoint&  rotation2, CTiglPoint&  translation, bool rounding = true) const;
 
     // Default copy constructor and assignment operator are correct
     // since memberwise copy is enough for this class.
@@ -142,6 +153,25 @@ public:
     // Getter for matrix values
     TIGL_EXPORT double GetValue(int row, int col) const;
 
+    // Return the translation performed by this translation.
+    TIGL_EXPORT CTiglPoint GetTranslation();
+
+    // Set the translation of the transformation.
+    TIGL_EXPORT void SetTranslation(const CTiglPoint& translation);
+
+    // Return a transformation that bring the vector A in the same direction as vector B
+    TIGL_EXPORT static CTiglTransformation GetRotationToAlignAToB(tigl::CTiglPoint vectorA, tigl::CTiglPoint vectorB);
+
+
+    // Return a transformation that only contains a axial rotation defined by the two parameters.
+    TIGL_EXPORT static CTiglTransformation GetRotationFromAxisRotation( tigl::CTiglPoint axis, double angle );
+
+    // Return true if the transformation has a zero scaling
+    TIGL_EXPORT bool HasZeroScaling() const;
+
+    // Compare each value of the transformation matrix and return true if they are all near
+    TIGL_EXPORT bool IsNear(const CTiglTransformation& other, double epsilon = 0.0001) const;
+
 private:
     bool IsUniform() const;
 
@@ -149,6 +179,16 @@ private:
 };
 
 TIGL_EXPORT CTiglTransformation operator*(const CTiglTransformation& a, const CTiglTransformation& b);
+
+// multiply the CTiglPoint by the CTiglTransformation matrix (taking care of to augment the CTiglPoint)  and return the result
+TIGL_EXPORT CTiglPoint operator*(const CTiglTransformation& m, const CTiglPoint& p);
+
+// Return the result of the matrix addition of the two transformation matrices
+TIGL_EXPORT CTiglTransformation operator+(const CTiglTransformation& a, const CTiglTransformation& b);
+
+// Return the matrix where each element is scale by s
+TIGL_EXPORT CTiglTransformation operator*(double s, const CTiglTransformation& a);
+
 
 } // end namespace tigl
 

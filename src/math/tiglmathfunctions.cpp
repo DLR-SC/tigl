@@ -33,6 +33,10 @@
 
 #include <math_Recipes.hxx>
 #include <CTiglLogging.h>
+#include "tiglcommonfunctions.h"
+
+
+const double EPS = 1e-15;
 
 namespace tigl 
 {
@@ -455,6 +459,197 @@ double Interpolate(const std::vector<double>& xdata, const std::vector<double>& 
 bool isNear(double a, double b, double epsilon)
 {
     return (fabs(a - b) <= epsilon);
+}
+
+bool IsRotationMatrix(const tiglMatrix& R)
+{
+    tiglMatrix Rt(1, 3, 1, 3);
+    Rt = R.Transposed();
+    tiglMatrix shouldBeI(1, 3, 1, 3);
+    shouldBeI = Rt * R;
+    tiglMatrix I(1, 3, 1, 3, 0.0);
+    I(1, 1) = 1;
+    I(2, 2) = 1;
+    I(3, 3) = 1;
+
+    // check if Rt*R is identity,
+    bool identity = true;
+    for (int i = 1; i < 4; i++) {
+         for (int j = 1; j < 4; j++) {
+            if (! isNear(I(i, j), shouldBeI(i, j)) ) {
+                identity = false;
+            }
+        }
+    }
+
+    double det = R.Determinant();
+    return (isNear(det, 1) && identity);
+}
+
+void DiagonalizeMatrixByJacobi(const tiglMatrix& S, tiglMatrix &D, tiglMatrix &V)
+{
+
+    tiglVector d(1, 3);
+    Standard_Integer nrot;
+    tiglMatrix sCopy(S);
+    Jacobi(sCopy, d, V, nrot);
+
+    D.Init(0.0);
+    D(1, 1) = d(1);
+    D(2, 2) = d(2);
+    D(3, 3) = d(3);
+
+    tiglMatrix res(1, 3, 1, 3, 0);
+}
+
+CTiglPoint RotMatrixToIntrinsicXYZVector(const tiglMatrix& R)
+{
+
+    // calculate intrinsic Euler angles from rotation matrix R
+    //
+    // This implementation is based on http://www.gregslabaugh.net/publications/euler.pdf, where the same argumentation
+    // is used for intrinsic x,y',z'' angles and the rotatation matrix
+    //
+    //                |                        cos(y)*cos(z) |               -        cos(y)*cos(z) |         sin(y) |
+    // U = Rx*Ry*Rz = | cos(x)*sin(z) + sin(x)*sin(y)*cos(z) | cos(x)*cos(z) - sin(x)*sin(y)*sin(z) | -sin(x)*cos(y) |
+    //                | sin(x)*sin(z) - cos(x)*sin(y)*cos(z) | sin(x)*cos(z) + cos(x)*sin(y)*sin(z) |  cos(x)*cos(y) |
+    //
+
+    // cas sin(y) = +/- 1
+    //                |                        -            |          -                           |         sin(y) |
+    // U = 0*Ry*Rz =  |                 sin(z)              |                cos(z)                | -              |
+    //                |
+    //
+
+
+    // rather than extrinsic angles and the Rotation matrix mentioned in that pdf.
+
+    if (!IsRotationMatrix(R)) {
+        LOG(ERROR) << "RotMatrixToIntrinsicXYZVector: The given rotation matrix seems not to be a proper rotation "
+                      "matrix, the rotation will be computed but the result is probably false.";
+    }
+
+    CTiglPoint rotation(0,0,0);
+
+    if (fabs(fabs(R(1, 3)) - 1) > 1e-10) {
+        rotation.y     = asin(R(1, 3));
+        double cosTheta = cos(rotation.y);
+        rotation.x    = -atan2(R(2, 3) / cosTheta, R(3, 3) / cosTheta);
+        rotation.z     = -atan2(R(1, 2) / cosTheta, R(1, 1) / cosTheta);
+    }
+    else {
+        rotation.x = 0;
+        if ( R(1, 3)  < 0 )  {  // r(1,3) == -1
+            rotation.z = atan2(R(2, 1), R(2, 2));
+            rotation.y = -M_PI / 2;
+        }
+        else {      // r(1,3) == 1
+            rotation.z = atan2(R(2, 1), R(2, 2));
+            rotation.y = M_PI / 2;
+        }
+    }
+
+    rotation.x = Degrees(rotation.x);
+    rotation.y = Degrees(rotation.y);
+    rotation.z = Degrees(rotation.z);
+
+    return rotation;
+}
+
+
+
+CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint d)
+{
+    d.normalize();
+    if (fabs(d.z) >= fabs(d.x) && fabs(d.z) >= fabs(d.y)) {
+        return CTiglPoint(1,1,-(d.x + d.y)/d.z );
+    }
+    else if (fabs(d.y) >= fabs(d.x) && fabs(d.y) >= fabs(d.z)) {
+        return CTiglPoint(1, -(d.x + d.z)/d.y ,1);
+    }
+    else {
+        return CTiglPoint( -(d.y +d.z)/d.x ,1,1) ;
+    }
+
+}
+
+CTiglPoint SnapRotation(CTiglPoint rotation, double epsilon)
+{
+    rotation.x = SnapAngle(rotation.x, epsilon);
+    rotation.y = SnapAngle(rotation.y, epsilon);
+    rotation.z = SnapAngle(rotation.z, epsilon);
+    return rotation;
+}
+
+double* SnapRotation(double rotation[3], double epsilon)
+{
+    rotation[0] = SnapAngle(rotation[0], epsilon);
+    rotation[1] = SnapAngle(rotation[1], epsilon);
+    rotation[2] = SnapAngle(rotation[2], epsilon);
+    return rotation;
+}
+
+CTiglPoint SnapUnitInterval(CTiglPoint scaling,  double epsilon)
+{
+    scaling.x = SnapUnitInterval(scaling.x,epsilon);
+    scaling.y = SnapUnitInterval(scaling.y,epsilon);
+    scaling.z = SnapUnitInterval(scaling.z,epsilon);
+    return scaling;
+
+}
+
+double* SnapUnitInterval(double scaling[3],  double epsilon)
+{
+    scaling[0] = SnapUnitInterval(scaling[0],epsilon);
+    scaling[1] = SnapUnitInterval(scaling[1],epsilon);
+    scaling[2] = SnapUnitInterval(scaling[2],epsilon);
+    return scaling;
+}
+
+double SnapValue(double number, double roundingValue, double delta)
+{
+    if ( fabs(number-roundingValue) < delta) {
+        number = roundingValue; 
+    }
+    return number;
+}
+
+double SnapAngle(double degrees, double epsilon)
+{
+    degrees = fmod(degrees, 360.0);
+
+    // force to be between 0 and 360
+    if ( degrees < 0 ) {
+        degrees = degrees + 360.0;
+    }
+
+    // round up standard values
+    degrees = SnapValue(degrees, 0., epsilon);
+    degrees = SnapValue(degrees, 90., epsilon);
+    degrees = SnapValue(degrees, 180., epsilon);
+    degrees = SnapValue(degrees, 270., epsilon);
+    degrees = SnapValue(degrees, 360., epsilon);
+
+    // change 360 to 0
+    if (fabs(degrees - 360.) < EPS ) {
+        degrees = 0.;
+    }
+
+    // force the value between -180 to 180 (more humane readble)
+    if ( degrees > 180. && degrees <= 360.) {
+        degrees = degrees - 360.0;
+    }
+
+    return degrees;
+}
+
+double SnapUnitInterval(double number, double epsilon)
+{
+    number = SnapValue(number,0,epsilon);
+    number = SnapValue(number,1,epsilon);
+    number = SnapValue(number,-1,epsilon);
+    return number;
+
 }
 
 } // namespace tigl

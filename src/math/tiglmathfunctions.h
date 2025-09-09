@@ -214,6 +214,82 @@ TIGL_EXPORT void SVD(tiglMatrix const& A, tiglMatrix& U, tiglMatrix& S, tiglMatr
  */
 TIGL_EXPORT double Interpolate(const std::vector<double>& xdata, const std::vector<double>& ydata, double x);
 
+/**
+ * @brief Returns true if the matrix is a proper rotation matrix.
+ *
+ * Check if the matrix is orthogonal and if its determinant is 1.
+ *
+ * @param R, the 3x3 matrix to check
+ * @return true or false
+ */
+TIGL_EXPORT bool IsRotationMatrix(const tiglMatrix& R);
+
+/**
+ * @brief Diagonalize the given matrix using the jacobi method.
+ *
+ * The symmetric input matrix, M, is decomposed into V, an improper rotation, and D, a diagonal matrix.
+ * It is M = V^T*D*V.
+ * The value of the diagonal D are the eigenvalues of M and the columns of V are the normalized eigenvectors
+ *
+ * @remark This method works only for a real symmetric matrix.
+ *
+ * @param M: the 3x3 matrix to decompose
+ * @param D: the 3x3 diagonal result matrix
+ * @param V: the 3x3 improper rotation result matrix
+ */
+TIGL_EXPORT void DiagonalizeMatrixByJacobi(const tiglMatrix& M, tiglMatrix &D, tiglMatrix &V);
+
+
+/**
+ * @brief Return the intrinsic x y' z'' rotation vector of the rotation matrix.
+ *
+ * @remark If the matrix is not a rotation matrix, a warning is logged, but no error will arise.
+ *
+ * @param R: the 3x3 rotation matrix
+ * @return vector that contains x, y',z'' in degrees
+ */
+TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(const tiglMatrix& R );
+
+/**
+ * Return a vector orthogonal to the direction
+ * @param direction
+ * @return
+ */
+TIGL_EXPORT CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint direction);
+
+
+TIGL_EXPORT CTiglPoint SnapRotation(CTiglPoint rotation, double epsilon = Precision::Confusion());
+TIGL_EXPORT double* SnapRotation(double rotation[3], double epsilon = Precision::Confusion());
+
+/**
+ * Snaps up the value "number" up to "snapValue" if fabs(number-snapValue) <= dela
+ * @param number 
+ * @param snapValue
+ * @param delta 
+ */
+TIGL_EXPORT double SnapValue(double number, double snapValue, double delta  = Precision::Confusion());
+
+/**
+ * Format the number as a degree angle.
+ * This means that the return value is between ]-180,180]
+ * and the number is rounded up near the values 0, 90,180,-90.
+ *
+ * @param degrees
+ * @param epsilon
+ */
+TIGL_EXPORT double SnapAngle(double degrees, double epsilon = Precision::Confusion() );
+
+/**
+ * Format the number for scale or length double value,.
+ * Simply, round up the number near the values: 0, 1, -1.
+ *
+ * @param number
+ * @param epsilon
+ */
+TIGL_EXPORT double SnapUnitInterval(double number, double epsilon = Precision::Confusion());
+TIGL_EXPORT CTiglPoint SnapUnitInterval(CTiglPoint scaling,  double epsilon = Precision::Confusion());
+TIGL_EXPORT double* SnapUnitInterval(double scaling[3],  double epsilon = Precision::Confusion());
+
 } // namespace tigl
 
 #endif // TIGLMATHFUNCTIONS_H

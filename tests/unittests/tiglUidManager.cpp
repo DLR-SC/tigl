@@ -25,6 +25,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglUIDManager.h"
+#include "CCPACSWingSectionElement.h"
 
 namespace {
     class tiglUidManagerTest : public ::testing::Test {
@@ -397,4 +398,15 @@ namespace {
         std::vector<tigl::CCPACSWing*> wings = uidMgr->ResolveObjects<tigl::CCPACSWing>();
         ASSERT_TRUE(wings.size() == 3);
     }
+
+    TEST_F(tiglUidManagerTest, makeUIDUnique)
+    {
+        EXPECT_EQ("AlreadyUniqueUID", uidMgr->MakeUIDUnique("AlreadyUniqueUID"));
+        EXPECT_EQ("D150_VAMP_W1_Sec3_Elem1U1", uidMgr->MakeUIDUnique("D150_VAMP_W1_Sec3_Elem1"));
+        // Create an existing prefixed UID
+        uidMgr->ResolveObject<tigl::CCPACSWingSectionElement>("D150_VAMP_W1_Sec2_Elem1")
+            .SetUID("D150_VAMP_W1_Sec3_Elem1U1");
+        EXPECT_EQ("D150_VAMP_W1_Sec3_Elem1U2", uidMgr->MakeUIDUnique("D150_VAMP_W1_Sec3_Elem1"));
+    }
+
 }

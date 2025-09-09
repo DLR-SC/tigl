@@ -308,12 +308,12 @@ namespace generated
         m_description = value;
     }
 
-    const boost::optional<CPACSFuselages>& CPACSRotorcraftModel::GetFuselages() const
+    const boost::optional<CCPACSFuselages>& CPACSRotorcraftModel::GetFuselages() const
     {
         return m_fuselages;
     }
 
-    boost::optional<CPACSFuselages>& CPACSRotorcraftModel::GetFuselages()
+    boost::optional<CCPACSFuselages>& CPACSRotorcraftModel::GetFuselages()
     {
         return m_fuselages;
     }
@@ -368,7 +368,7 @@ namespace generated
         return m_systems;
     }
 
-    CPACSFuselages& CPACSRotorcraftModel::GetFuselages(CreateIfNotExistsTag)
+    CCPACSFuselages& CPACSRotorcraftModel::GetFuselages(CreateIfNotExistsTag)
     {
         if (!m_fuselages)
             m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
