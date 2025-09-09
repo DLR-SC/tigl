@@ -85,7 +85,9 @@ jobs:
       - uses: hendrikmuhs/ccache-action@v1
         with:
           key: compiler-cache-${{ inputs.os }}-${{ inputs.config }}
-      - run: pixi run configure ${{ inputs.config }} ${{ inputs.tigl_nightly }} ${{ inputs.tigl_concat_generated_files  }} "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache"
+      - run: pixi run configure ${{ inputs.config }} ${{ inputs.tigl_nightly }} ${{ inputs.tigl_concat_generated_files  }}
+        env:
+          CMAKE_CXX_COMPILER_LAUNCHER: ccache
       - run: pixi run install
       - name: create build archive
         run: tar -czf build.tar.gz build
