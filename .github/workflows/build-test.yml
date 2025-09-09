@@ -1,0 +1,92 @@
+name: "Build and test TiGL"
+
+on:
+
+  workflow_call:
+
+    secrets:
+      GH_TOKEN:
+        description: 'A Github PAT'
+        required: false
+      CODECOV_TOKEN:
+        description: 'Needed to upload coverage report to codecov'
+        required: false
+
+    inputs:
+
+      os:
+        description: "Operating system to run the job on"
+        required: true
+        type: string
+
+      config:
+        description: "Build configuration (Debug or Release)"
+        required: true
+        type: string
+
+      tigl_nightly:
+        description: "CMake option to amend the version with the git hash (ON or OFF). Should be OFF for release builds."
+        required: false
+        default: "ON"
+        type: string
+
+      tigl_concat_generated_files:
+        description: "CMake option to concatenate the generated source files (ON or OFF). Should be OFF for release builds."
+        required: false
+        default: "ON"
+        type: string
+
+      integration-tests:
+        # This should be a Boolean, but https://github.com/actions/runner/issues/1483
+        description: "Run integration tests"
+        required: false
+        default: "false"
+        type: string
+
+      documentation-artifact:
+        description: "Name of the html documentation artifact. Will be build on Windows. Leave empty to skip documentation build."
+        required: false
+        default: ''
+        type: string
+
+      win-package-artifact:
+        description: "Name of the windows package artifact. Leave empty to skip building the package."
+        required: false
+        default: ''
+        type: string
+
+      win-installer-artifact:
+        description: "Name of the windows installer artifact. Leave empty to skip building the installer."
+        required: false
+        default: ''
+        type: string
+
+      macos-package-artifact:
+        description: "Name of the Mac OS package artifact. Leave empty to skip building the package."
+        required: false
+        default: ''
+        type: string
+
+jobs:
+
+  build:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: prefix-dev/setup-pixi@v0.9.0
+        with:
+          cache: true
+          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+      - uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: compiler-cache-${{ inputs.os }}-${{ inputs.config }}
+      - run: pixi run configure ON ${{ inputs.config }}
+      - run: pixi run install
+
+  test:
+    runs-on: ${{ inputs.os }}
+    needs: build
+    steps:
+      - run: pixi run unittests
+      - run: pixi run integrationtests
+        if: ${{ inputs.integration-tests == 'true' }}
