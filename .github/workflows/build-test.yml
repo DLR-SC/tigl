@@ -24,23 +24,16 @@ on:
         required: true
         type: string
 
-      tigl_nightly:
+      nightly:
         description: "CMake option to amend the version with the git hash (ON or OFF). Should be OFF for release builds."
         required: false
         default: "ON"
         type: string
 
-      tigl_concat_generated_files:
-        description: "CMake option to concatenate the generated source files (ON or OFF). Should be OFF for release builds."
-        required: false
-        default: "ON"
-        type: string
-
-      integration-tests:
-        # This should be a Boolean, but https://github.com/actions/runner/issues/1483
-        description: "Run integration tests"
-        required: false
-        default: "false"
+      environment:
+        description: "Which pixi environment to use"
+        required: false 
+        default: "occt-dynamic"
         type: string
 
       documentation-artifact:
@@ -72,6 +65,7 @@ jobs:
   build:
     runs-on: ${{ inputs.os }}
     steps:
+      # checkout, setup pixi, compilers and ccache/sccache
       - uses: actions/checkout@v5
       - uses: prefix-dev/setup-pixi@v0.9.0
         with:
@@ -83,12 +77,26 @@ jobs:
         with:
           arch: x64
       - uses: hendrikmuhs/ccache-action@v1
+        if: startsWith(inputs.os, 'windows') == false
         with:
-          key: compiler-cache-${{ inputs.os }}-${{ inputs.config }}
-      - run: pixi run configure ${{ inputs.config }} ${{ inputs.tigl_nightly }} ${{ inputs.tigl_concat_generated_files  }}
+          key: compiler-cache-${{ inputs.os }}-${{ inputs.config }}-${{ inputs.environment }}
+      - name: Run sccache-cache
+        if: startsWith(inputs.os, 'windows')
+        uses: mozilla-actions/sccache-action@v0.0.9
+
+      # configure, build and install tigl3
+      - run: pixi run -e ${{ inputs.environment }} configure ${{ inputs.config }} ${{ inputs.tigl_nightly }}
+        if: startsWith(inputs.os, 'windows') == false
         env:
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
-      - run: pixi run install
+      - run: pixi run -e ${{ inputs.environment }} configure ${{ inputs.config }} ${{ inputs.tigl_nightly }}
+        if: startsWith(inputs.os, 'windows')
+        env:
+          CMAKE_CXX_COMPILER_LAUNCHER: sccache
+          SCCACHE_GHA_ENABLED: "true"
+      - run: pixi run  -e ${{ inputs.environment }} install
+
+      # save build artifact
       - name: create build archive
         run: tar -czf build.tar.gz build
       - uses: actions/upload-artifact@v4
@@ -112,6 +120,4 @@ jobs:
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
-      - run: pixi run unittests
-      - run: pixi run integrationtests
-        if: ${{ inputs.integration-tests == 'ON' }}
+      - run: pixi run -e ${{ inputs.environment }} tests

@@ -3,35 +3,42 @@ authors = ["Jan Kleinert <jan.kleinert@dlr.de>"]
 channels = ["dlr-sc", "dlr-sc/label/tigl-dev", "conda-forge"]
 name = "tigl-bld"
 platforms = ["win-64", "linux-64", "osx-64"]
-version = "0.1.0"
+version = "3.4.1"
 channel-priority = "disabled"
 
-[tasks]
-configure = { cmd = [
-    "cmake", 
-    "-G", "Ninja", 
-    "-S", ".",
-    "-B", "build",
-    "-D", "CMAKE_INSTALL_PREFIX=build/install",
-    "-D", "OpenCASCADE_STATIC_LIBS=ON",
-    "-D", "TIGL_BUILD_TESTS=ON",
-    "-D", "CMAKE_BUILD_TYPE={{ config }}",
-    "-D", "TIGL_NIGHTLY={{ nightly }}",
-], args = [
-        { "arg" = "config", "default"="Release"},
-        { "arg" = "nightly", "default"="OFF"},
-        { "arg" = "concat_generated_files", "default"="ON"},
-]}
-build = { cmd = "ninja -C build", depends-on = "configure" }
-install = { cmd = "ninja -C build install" }
-# depends-on omitted to allow running tests separately after build
-unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
-integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests"}
-tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
+# The environments define some common build configurations for TiGL or configurations used in CI
+[environments]
+# occt-dynamic is the default build configuration
+"occt-dynamic" = ["opencascade"]
+# coverage feature builds in debug mode and runs the tests with coverage flags enabled
+"coverage" = ["coverage", "opencascade"]
+# occt-static feature builds with static OpenCASCADE libraries
+"occt-static" = ["opencascade-static"]
+# python-internal feature builds the internal python bindings of the C++ core using swig
+"python-internal" = ["python-internal"]
 
-[target.linux-64.activation.env]
-# this is needed to correctly set the RPATH of tiglcreator
-LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
+[dependencies]
+tixi3 = "3.3.1.*"
+qt = { version = "5.15.15.*", channel = "conda-forge" }
+python = "*"
+matlab-libs = "*"
+ninja = ">=1.10.0"
+doxygen = "1.8.15.*"
+
+[feature.opencascade.dependencies]
+opencascade = "7.6.2.*"
+freeimageplus = "*"
+
+[feature.python-internal.dependencies]
+swig = ">=3.0.11"
+pythonocc-core = "7.6.2.*"
+
+[feature.opencascade-static.dependencies]
+opencascade-static = "7.6.2.*"
+freetype-static = "*"
+freeimageplus-static = "*"
+tbb-devel = "*"
+tbb = "*"
 
 [target.linux-64.dependencies]
 libgl-devel = "*"
@@ -41,14 +48,104 @@ libopengl-devel = "*"
 [target.win-64.dependencies]
 brotlipy = "*"
 
-[dependencies]
-tixi3 = "3.3.1.*"
-opencascade = "7.6.2.*"
-qt = { version = "5.15.15.*", channel = "conda-forge" }
-doxygen = "1.8.15.*"
-python = "<=3.12"
-swig = ">=3.0.11"
-pythonocc-core = "7.6.2.*"
-matlab-libs = "*"
-ninja = ">=1.10.0"
-freeimageplus = "*"
+[feature.coverage.dependencies]
+lcov = "*"
+gcovr = "*"
+
+[tasks]
+configure = { cmd = [
+    "cmake", 
+    "-G", "Ninja", 
+    "-S", ".", 
+    "-B", "build", 
+    "-D", "CMAKE_INSTALL_PREFIX=build/install", 
+    "-D", "CMAKE_BUILD_TYPE={{ config }}",
+    "-D", "TIGL_NIGHTLY={{ nightly }}",
+    "-D", "TIGL_CONCAT_GENERATED_FILES={{ nightly }}",
+    "-D", "TIGL_BUILD_TESTS=ON",
+    "-D", "TIGL_ENABLE_COVERAGE=OFF",
+    "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=OFF",
+    "-D", "TIGL_BINDINGS_PYTHON=ON",
+    "-D", "TIGL_BINDINGS_MATLAB=ON",
+    "-D", "OCE_STATIC_LIBS=OFF",
+], args = [
+        { "arg" = "config", "default"="Release"},
+        { "arg" = "nightly", "default"="ON"},
+]}
+build = { cmd = "ninja -C build", depends-on = "configure" }
+install = { cmd = "ninja -C build install" }
+# depends-on omitted to allow running tests separately after build
+unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
+integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests"}
+tests = [ {task = "unittests"}, {task = "integrationtests"} ]
+tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
+
+[feature.coverage.tasks]
+# The coverage feature builds in debug mode and runs the tests with coverage flags enabled
+configure = { cmd = [
+    "cmake", 
+    "-G", "Ninja", 
+    "-S", ".", 
+    "-B", "build", 
+    "-D", "CMAKE_INSTALL_PREFIX=build/install", 
+    "-D", "CMAKE_BUILD_TYPE={{ config }}",
+    "-D", "TIGL_NIGHTLY={{ nightly }}",
+    "-D", "TIGL_CONCAT_GENERATED_FILES={{ nightly }}",
+    "-D", "TIGL_BUILD_TESTS=ON",
+    "-D", "TIGL_ENABLE_COVERAGE=ON",
+    "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=OFF",
+    "-D", "TIGL_BINDINGS_PYTHON=ON",
+    "-D", "TIGL_BINDINGS_MATLAB=ON",
+    "-D", "OCE_STATIC_LIBS=ON",
+], args = [
+        { "arg" = "config", "default"="Debug"},
+        { "arg" = "nightly", "default"="ON"},
+]}
+unittests = { cmd = "cmake --build build --target coverage-unittests/fast", depends-on = "configure" }
+integrationtests = { cmd = "cmake --build build --target coverage-integrationtests/fast", depends-on = "configure" }
+
+[feature.opencascade-static.tasks]
+configure = { cmd = [
+    "cmake", 
+    "-G", "Ninja", 
+    "-S", ".", 
+    "-B", "build", 
+    "-D", "CMAKE_INSTALL_PREFIX=build/install", 
+    "-D", "CMAKE_BUILD_TYPE={{ config }}",
+    "-D", "TIGL_NIGHTLY={{ nightly }}",
+    "-D", "TIGL_CONCAT_GENERATED_FILES={{ nightly }}",
+    "-D", "TIGL_BUILD_TESTS=ON",
+    "-D", "TIGL_ENABLE_COVERAGE=ON",
+    "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=OFF",
+    "-D", "TIGL_BINDINGS_PYTHON=ON",
+    "-D", "TIGL_BINDINGS_MATLAB=ON",
+    "-D", "OCE_STATIC_LIBS=ON",
+], args = [
+        { "arg" = "config", "default"="Release"},
+        { "arg" = "nightly", "default"="ON"},
+]}
+
+[feature.python-internal.tasks]
+configure = { cmd = [
+    "cmake", 
+    "-G", "Ninja", 
+    "-S", ".", 
+    "-B", "build", 
+    "-D", "CMAKE_INSTALL_PREFIX=build/install", 
+    "-D", "CMAKE_BUILD_TYPE={{ config }}",
+    "-D", "TIGL_NIGHTLY={{ nightly }}",
+    "-D", "TIGL_CONCAT_GENERATED_FILES={{ nightly }}",
+    "-D", "TIGL_BUILD_TESTS=ON",
+    "-D", "TIGL_ENABLE_COVERAGE=ON",
+    "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=ON",
+    "-D", "TIGL_BINDINGS_PYTHON=ON",
+    "-D", "TIGL_BINDINGS_MATLAB=ON",
+    "-D", "OCE_STATIC_LIBS=ON",
+], args = [
+        { "arg" = "config", "default"="Release"},
+        { "arg" = "nightly", "default"="OFF"},
+]}
+
+[target.linux-64.activation.env]
+# this is needed to correctly set the RPATH of tiglcreator
+LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
