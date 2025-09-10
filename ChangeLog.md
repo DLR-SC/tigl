@@ -3,6 +3,7 @@ Changelog
 
 Changes since last release
 -------------
+
 29/08/2025
 - General changes
   - #1137 Rename the CPACSCreator to TiGLCreator.
@@ -20,6 +21,7 @@ Changes since last release
 
  
 - Fixes
+  - Fix wrong rotation when adding sections ([#1168](https://github.com/DLR-SC/tigl/issues/1168))
   - [#1108](https://github.com/DLR-SC/tigl/issues/1108) When adding a new section into an existing wing, the scaling/translation did not seem meaningful. That is due to the fact, that the new element's area was interpolated between the start end end element. However, it does not depend linearly on the element width. Choosing the element width as a target value for the new element should fix this issue.
   - [#1122](https://github.com/DLR-SC/tigl/issues/1122) Redo and Undo commands now update the CPACS configuration, which was previously only true for modifications using the CPACS Editor UI.
   - #1090 Ask the user whether the currently worked on file should be saved before closing. Up to now, the configuration was simply closed resulting in potential data loss.
