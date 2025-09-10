@@ -5,9 +5,11 @@ on:
     - cron: "40 2 * * *"
   push:
     branches:
-      - '*'
+      - '*' #TODO reset to main
     tags:
       - v*
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
   workflow_dispatch:
 
 jobs:
