@@ -37,8 +37,8 @@ pythonocc-core = "7.6.2.*"
 opencascade-static = "7.6.2.*"
 freetype-static = "*"
 freeimageplus-static = "*"
-tbb-devel = "*"
-tbb = "*"
+tbb-devel = "2019.5.*"
+tbb = "2019.5.*"
 
 [target.linux-64.dependencies]
 libgl-devel = "*"
