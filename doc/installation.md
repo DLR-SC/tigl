@@ -1,12 +1,12 @@
 Installation {#tigl_installation}
 ===========
 
-##Binary Download##
+@section binary Binary Download
 
 The standard way of using pre-packaged binaries is to download them from TiGL's release page https://github.com/DLR-SC/tigl/releases.
 Here, we offer packages for Windows and macOS (Darwin).
 
-##Python##
+@section python Python
 
 The easiest way to install TiGL and all its dependencies for Python is using Conda. Conda is a package manager
 for Python packages and allows the distribution of pre-compiled packages.
@@ -21,7 +21,7 @@ All TiGL related packages are now found inside the tigl_env environment. To ente
 
 Have a look to our examples at [https://github.com/DLR-SC/tigl-examples](https://github.com/DLR-SC/tigl-examples) on how to use the Python bindings.
 
-##Matlab##
+@section matlab Matlab
 
 The TiGL binary distribution includes interfaces to the MATLAB language. On Windows systems, we ship
 with a precompiled MEX file and script files that can be found under share/tigl3/matlab.
@@ -33,49 +33,51 @@ To compile, use our Makefile by typing in the command "make".
 
 Our small Matlab demo at [https://github.com/DLR-SC/tigl/tree/main/examples/matlab_demo](https://github.com/DLR-SC/tigl/tree/main/examples/matlab_demo) demonstrates, how to use TiGL's Matlab bindings.
 
-## Building from source ##
+@section building Building from source
 
-The minimum requirements to build TiGL are TiXI and OpenCascade Technology (OCCT). Qt5 is needed if you want to build the TiGLCreator.
+TiGL is a CMake project, so in simple terms, TiGL can be connfigured and built via
+
+    mkdir build && cd build
+    cmake .. 
+    cmake --build .
+
+The minimum requirements to build TiGL are a C++17 compliant compiler and cmake,  TiXI and OpenCascade Technology (OCCT). Qt5 is needed if you want to build the TiGLCreator.
+
 All build dependencies of TiGL are available as conda packages. Most dependencies are supplied in a decicated channel at [https://anaconda.org/dlr-sc/](https://anaconda.org/dlr-sc/). 
 Specifically, this channel contains a recommended variant of opencascade, which includes a patch for G2-continuous Coons patches.
 The recipes for the conda packages in the dlr-sc channel can be found at [https://github.com/DLR-SC/tigl-conda](https://github.com/DLR-SC/tigl-conda).
 
-We recommend installing TiGL's dependencies via conda in a seperate environment. You can find our recommended environment file for the latest development version at [https://github.com/DLR-SC/tigl/tree/main/environment.yml](https://github.com/DLR-SC/tigl/tree/main/environment.yml). To create this environment locally, enter the following command from the conda command prompt:
+We recommend installing TiGL's dependencies and configuring TiGL using the [pixi](https://pixi.sh/latest/) package manager.
 
-    conda env create -f environment.yml
+    pixi run configure
 
-This command will install a new environment called tigl-bld with all dependencies pre-installed. Next activate the environment:
+will install TiGL's dependencies, create a build directory and run cmake with a default configuration using ninja as a make program. Now you can navigate to the build directory and modify the initial cmake configuration if you like.
 
-    conda activate tigl-bld
+For convenience, our pixi project provides some custom tasks for building, testing and running TiGL:
 
-Remark: Please find the current known issues in the **Troubleshooting** below. 
-Now tigl can be configured and build using cmake:
+    pixi run install
 
-    mkdir build
-    cd build
-    cmake ..
-    cmake --build .
+Will build and install TiGL using cmake and ninja.
 
-This will configure TiGL with default options. An example of a customized cmake configuration could look like this:
+    pixi run tests
 
-    cmake .. -GNinja \
-             -DCMAKE_BUILD_TYPE=Release \
-             -DCMAKE_INSTALL_PREFIX=install \
-             -DOCE_STATIC_LIBS=ON \
-             -DTIGL_BUILD_TESTS=ON \
-             -DTIGL_ENABLE_COVERAGE=ON \
-             -DTIGL_CONCAT_GENERATED_FILES=ON \
-             -DTIGL_BINDINGS_PYTHON_INTERNAL=ON \
-             -DTIGL_BINDINGS_MATLAB=ON \
-             -DTIGL_BINDINGS_JAVA=ON \
-             -DTIGL_NIGHTLY=ON
+will invoke unit tests and integration tests
 
-You can also take inspiration from [here](https://github.com/DLR-SC/tigl/tree/main/.github/actions) to see how TiGL releases are build in our continuous integration pipeline.
+    pixi run tiglcreator
 
-### Troubleshooting ###
+will start the TiGLCreator from the install directory.
 
-On Linux machines using Ubuntu 22.04, we experienced an issue that needed extra treatment. Here, after activating, three additional packages have to be installed into the `tigl-bld` environment:
+For our CI we provide several pixi environments for common build configurations. Currently, these are `default`, `coverage`, `occt-static` and `python-internal`.
+Every pixi environment as its specific set of dependencies and modified tasks. As an example,
 
-    conda install libgl-devel libegl-devel libopengl-devel
-This issue might also occur on different versions of Ubuntu. So, in case you face problems during the configuration or execution of the TiGLCreator, try this extra step.
-Further information on this issue can be found [here](https://github.com/DLR-SC/tigl/issues/1069).
+    pixi run -e python-internal configure
+    pixi run install
+    pixi run unittests
+
+ configures TiGL for a Release build with internal python bindings, install TiGL in a subdirectory of the build directory and run the unit tests, but not the integration tests.
+
+The `configure` task has additional arguments. For instance
+
+    pixi run -e occt-static configure Debug
+
+Will configure a Debug build of TiGL that links in OCCT statically.
