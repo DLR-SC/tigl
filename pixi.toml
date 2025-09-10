@@ -87,11 +87,11 @@ tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
 # default is the default build configuration
 "default" = ["base","opencascade"]
 # coverage feature builds in debug mode and runs the tests with coverage flags enabled
-"coverage" = ["coverage", "opencascade"]
+"coverage" = ["base", "coverage", "opencascade"]
 # occt-static feature builds with static OpenCASCADE libraries
-"occt-static" = ["opencascade-static"]
+"occt-static" = ["base", "opencascade-static"]
 # python-internal feature builds the internal python bindings of the C++ core using swig
-"python-internal" = ["python-internal"]
+"python-internal" = ["base", "python-internal"]
 
 [feature.coverage.tasks]
 # The coverage feature builds in debug mode and runs the tests with coverage flags enabled
