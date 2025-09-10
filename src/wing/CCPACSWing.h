@@ -488,7 +488,7 @@ public:
      /**
      * Create a new section, a new element and connect the element to the "startElement".
      * The new element is placed "After" the start element.
-     * If there is already an element after the start element, an eta has to be prvidied. This funciton will throw an error without an eta. 
+     * If there is already an element after the start element, an eta has to be provided. This function will throw an error without an eta. 
      * This can only happen when called directly.
      *
      * @param startElementUID
@@ -498,7 +498,7 @@ public:
     
      /**
      * Create a new section, a new element and connect the element to the "startElement".
-     * The new element is placed "Afteer" the start element.
+     * The new element is placed "After" the start element.
      * If there is already an element after the start element, we split the existing segment and insert the new element
      * between the two elements.
      *
@@ -522,7 +522,7 @@ public:
     /**
      * Create a new section, a new element and connect the element to the "startElement".
      * The new element is placed "Before" the start element.
-     * If there is already an element before the start element, an eta has to be prvidied. This funciton will throw an error without an eta. 
+     * If there is already an element before the start element, an eta has to be provided. This function will throw an error without an eta. 
      * This can only happen when called directly.
      *
      * @param startElementUID
