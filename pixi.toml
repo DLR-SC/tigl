@@ -98,7 +98,7 @@ tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
 # The coverage feature builds in debug mode and runs the tests with coverage flags enabled
 configure = { cmd = [
     "cmake", 
-    "-G", "Ninja", 
+    "-G", "Unix Makefiles", # need /fast target to avoid recompilation of all files when using ninja
     "-S", ".", 
     "-B", "build", 
     "-D", "CMAKE_INSTALL_PREFIX=build/install", 
@@ -116,8 +116,8 @@ configure = { cmd = [
         { "arg" = "config", "default"="Debug"},
         { "arg" = "nightly", "default"="ON"},
 ]}
-unittests = { cmd = "cmake --build build --target coverage-unittests"}
-integrationtests = { cmd = "cmake --build build --target coverage-integrationtests"}
+unittests = { cmd = "cmake --build build --target coverage-unittests/fast"}
+integrationtests = { cmd = "cmake --build build --target coverage-integrationtests/fast"}
 
 [feature.opencascade-static.tasks]
 configure = { cmd = [
