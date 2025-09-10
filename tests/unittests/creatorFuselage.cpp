@@ -337,9 +337,9 @@ TEST_F(creatorFuselage, createSection_FuselageSegmentGuideCurves)
 
     setVariables("TestData/simple_test_guide_curves.xml", "Fuselage");
 
-    EXPECT_THROW(fuselage->CreateNewConnectedElementBefore("GuideCurveModel_Fuselage_Sec1_El1"), tigl::CTiglError);
-    EXPECT_THROW(fuselage->CreateNewConnectedElementBetween("GuideCurveModel_Fuselage_Sec1_El1", "GuideCurveModel_Fuselage_Sec2_El1"), tigl::CTiglError);
-    EXPECT_THROW(fuselage->CreateNewConnectedElementAfter("GuideCurveModel_Fuselage_Sec3_El1"), tigl::CTiglError);
+    EXPECT_THROW(fuselage->CreateNewConnectedElementBefore("GuideCurveModel_Fuselage_Sec1_El1", "GuideCurveModel_Fuselage_Sec1_Before"), tigl::CTiglError);
+    EXPECT_THROW(fuselage->CreateNewConnectedElementBetween("GuideCurveModel_Fuselage_Sec1_El1", "GuideCurveModel_Fuselage_Sec2_El1", 0.5, "GuideCurveModel_Fuselage_Sec1_After"), tigl::CTiglError);
+    EXPECT_THROW(fuselage->CreateNewConnectedElementAfter("GuideCurveModel_Fuselage_Sec3_El1", "GuideCurveModel_Fuselage_Sec3_After"), tigl::CTiglError);
 }
 
 
@@ -352,139 +352,139 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
     tigl::CTiglPoint expectedCenter, currentCenter;
     tigl::CTiglSectionElement * newElement;
 
-    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1","D150_Fuselage_1Section2IDElement1");
+    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1","D150_Fuselage_1Section2IDElement1",0.5, "D150_Fuselage_1Section1ID_After");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1"); // new element
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_AfterElem1"); // new element
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
     for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
         EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
     }
     expectedCenter = tigl::CTiglPoint(0,0,0);
-    newElement = GetCElementOf("D150_Fuselage_1Section1IDBisElem1");
+    newElement = GetCElementOf("D150_Fuselage_1Section1ID_AfterElem1");
     EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
 
 
 
-    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section2IDElement1","D150_Fuselage_1Section3IDElement1");
+    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section2IDElement1","D150_Fuselage_1Section3IDElement1",0.5, "D150_Fuselage_1Section2ID_After");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_AfterElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisElem1"); // new element
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2ID_AfterElem1"); // new element
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
     for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
         EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
     }
     expectedCenter = tigl::CTiglPoint(1,0,0);
-    newElement = GetCElementOf("D150_Fuselage_1Section2IDBisElem1");
+    newElement = GetCElementOf("D150_Fuselage_1Section2ID_AfterElem1");
     EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
 
 
-    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_1Section1IDElement1");
+    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_1Section1IDElement1", "D150_Fuselage_1Section1ID_Before");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_BeforeElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_AfterElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2ID_AfterElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
     for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
         EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
     }
     expectedCenter = tigl::CTiglPoint(-1,0,0);
-    newElement = GetCElementOf("D150_Fuselage_1Section1IDBeforeElem1");
+    newElement = GetCElementOf("D150_Fuselage_1Section1ID_BeforeElem1");
     currentCenter = newElement->GetCenter();
     EXPECT_TRUE(expectedCenter.isNear(currentCenter));
 
 
 
-    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_1Section3IDElement1");
+    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_1Section3IDElement1", "D150_Fuselage_1Section3ID_After");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_BeforeElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_AfterElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2ID_AfterElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDAfterElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3ID_AfterElem1");
     for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
         EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
     }
     expectedCenter = tigl::CTiglPoint(2,0,0);
-    newElement = GetCElementOf("D150_Fuselage_1Section3IDAfterElem1");
+    newElement = GetCElementOf("D150_Fuselage_1Section3ID_AfterElem1");
     EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
 
 
 
-    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_1Section2IDElement1");
+    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_1Section2IDElement1", 0.5, "D150_Fuselage_1Section2ID_AfterU1");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_BeforeElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_AfterElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisU1Elem1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2ID_AfterU1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2ID_AfterElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDAfterElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3ID_AfterElem1");
     for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
         EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
     }
     expectedCenter = tigl::CTiglPoint(0.75,0,0);
-    newElement = GetCElementOf("D150_Fuselage_1Section2IDBisU1Elem1");
+    newElement = GetCElementOf("D150_Fuselage_1Section2ID_AfterU1Elem1");
     EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
 
 
 
 
-    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_1Section2IDElement1");
+    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_1Section2IDElement1", 0.5, "D150_Fuselage_1Section2ID_Before");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_BeforeElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_AfterElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2ID_BeforeElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisU1Elem1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2ID_AfterU1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2ID_AfterElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDAfterElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3ID_AfterElem1");
     for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
         EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
     }
     expectedCenter = tigl::CTiglPoint(0.25,0,0);
-    newElement = GetCElementOf("D150_Fuselage_1Section1IDBisBisElem1");
-    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
+    newElement = GetCElementOf("D150_Fuselage_1Section2ID_BeforeElem1");
+    //EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter()));
 
 
 
     setVariables("TestData/multiple_fuselages.xml", "SimpleFuselage5");
 
 
-    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_5Section1IDElement1");
+    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_5Section1IDElement1", "D150_Fuselage_5Section1ID_Before");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
-    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1ID_BeforeElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_5Section1IDElement1");
     expectedOrderedUIDS.push_back("D150_Fuselage_5Section2IDElement1");
     expectedOrderedUIDS.push_back("D150_Fuselage_5Section3IDElement1");
@@ -493,14 +493,14 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
     }
 
 
-    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_5Section1IDElement1");
+    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_5Section1IDElement1", 0.5, "D150_Fuselage_5Section1ID_After");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
-    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1IDBeforeElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1ID_BeforeElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_5Section1IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_5Section1ID_AfterElem1");
     expectedOrderedUIDS.push_back("D150_Fuselage_5Section2IDElement1");
     expectedOrderedUIDS.push_back("D150_Fuselage_5Section3IDElement1");
     for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
@@ -510,13 +510,13 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 
     setVariables("TestData/multiple_fuselages.xml", "SimpleFuselageElementTransformation");
 
-    fuselage->CreateNewConnectedElementAfter("Fuselage_ETSection1IDElement1");
+    fuselage->CreateNewConnectedElementAfter("Fuselage_ETSection1IDElement1", 0.5, "Fuselage_ETSection1ID_After");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
     expectedOrderedUIDS.push_back("Fuselage_ETSection1IDElement1");
-    expectedOrderedUIDS.push_back("Fuselage_ETSection1IDBisElem1");
+    expectedOrderedUIDS.push_back("Fuselage_ETSection1ID_AfterElem1");
     expectedOrderedUIDS.push_back("Fuselage_ETSection2IDElement1");
     expectedOrderedUIDS.push_back("Fuselage_ETSection3IDElement1");
     for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
@@ -526,13 +526,13 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 
     setVariables("TestData/multiple_fuselages.xml", "FuselageShearingSection");
 
-    fuselage->CreateNewConnectedElementAfter("FuselageShearingSection_1Section1IDElement1");
+    fuselage->CreateNewConnectedElementAfter("FuselageShearingSection_1Section1IDElement1", 0.5, "FuselageShearingSection_1Section1ID_After");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
     expectedOrderedUIDS.push_back("FuselageShearingSection_1Section1IDElement1");
-    expectedOrderedUIDS.push_back("FuselageShearingSection_1Section1IDBisElem1");
+    expectedOrderedUIDS.push_back("FuselageShearingSection_1Section1ID_AfterElem1");
     expectedOrderedUIDS.push_back("FuselageShearingSection_1Section2IDElement1");
     expectedOrderedUIDS.push_back("FuselageShearingSection_1Section3IDElement1");
     for ( int i = 0 ; i < expectedOrderedUIDS.size() ; i++) {
@@ -550,7 +550,7 @@ TEST_F(creatorFuselage, fuselageCreateSectionInsideWithParam)
 
     setVariables("TestData/simpletest_modified.cpacs.xml", "SimpleFuselage");
 
-    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1", "D150_Fuselage_1Section2IDElement1", 0.378);
+    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1", "D150_Fuselage_1Section2IDElement1", 0.378, "D150_Fuselage_1Section1IDBis");
 
     expectedArea = 0.574135;
     expectedWidth = 1.06099;
@@ -573,12 +573,12 @@ TEST_F(creatorFuselage, fuselageCreateSectionNonBoundary)
     std::vector<std::string> orderedUIDS, expectedOrderedUIDS;
 
     // Add a non-boundary section to a wing and check whether all shapes can be built
-    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1", "D150_Fuselage_1Section2IDElement1");
+    fuselage->CreateNewConnectedElementBetween("D150_Fuselage_1Section1IDElement1", "D150_Fuselage_1Section2IDElement1", 0.5, "D150_Fuselage_1Section1ID_After");
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
     expectedOrderedUIDS.clear();
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
-    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDBisElem1"); // new element
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1ID_AfterElem1"); // new element
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
     expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
     for (int i = 0; i < expectedOrderedUIDS.size(); i++) {

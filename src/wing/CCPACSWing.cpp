@@ -1405,7 +1405,7 @@ void CCPACSWing::SetARKeepArea(double newAR)
     SetHalfSpanKeepArea(newSpan);
 }
 
-void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta)
+void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta, std::string sectionName)
 {
 
     if(0.0001 > eta || eta > 0.9999)
@@ -1436,7 +1436,7 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
 
     // create new section and element
     CTiglUIDManager &uidManager = GetUIDManager();
-    std::string baseUID = uidManager.MakeUIDUnique(startElement->GetSectionUID() + "Bis");
+    std::string baseUID = uidManager.MakeUIDUnique(sectionName);
     CCPACSWingSection &newSection = GetSections().CreateSection(baseUID, startElement->GetProfileUID());
     CTiglWingSectionElement *newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
 
@@ -1465,11 +1465,22 @@ std::optional<std::string> CCPACSWing::GetElementUIDAfterNewElement(std::string 
     return *(++it);
 }
 
-void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
+void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID, double eta, std::string sectionName)
+{
+    auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
+    if (!elementUIDAfter) {
+        throw tigl::CTiglError("When an eta is specified, the new section must lie between two sections.");
+    } else {
+        return CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter, eta, sectionName);
+    }
+}
+
+void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName)
 {
     auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (elementUIDAfter) {
-        CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter);
+        CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter, 0.5, sectionName);
+        throw tigl::CTiglError("No eta is specified, but the new section lies between two sections.");
     }
     else {
         std::vector<std::string>  elementsBefore = ListFunctions::GetElementsInBetween(wingHelper->GetElementUIDsInOrder(), wingHelper->GetRootUID(),startElementUID);
@@ -1504,8 +1515,7 @@ void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID)
             area = scaleF * area;
         }
         std::string profileUID = startElement->GetProfileUID();
-        std::string sectionUID = startElement->GetSectionUID() + "After";
-
+        std::string sectionUID = GetUIDManager().MakeUIDUnique(sectionName);
 
         CCPACSWingSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
         CTiglWingSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
@@ -1539,12 +1549,22 @@ std::optional<std::string> CCPACSWing::GetElementUIDBeforeNewElement(std::string
     return *(--it);
 }
 
-void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
+void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID, double eta, std::string sectionName)
 {
+    auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
+    if (!elementUIDBefore) {
+        throw tigl::CTiglError("When an eta is specified, the new section must lie between two sections.");
+    } else {
+        return CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID, eta, sectionName);
+    }
+}
 
+void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName)
+{
     auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
     if (elementUIDBefore) {
-        CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID);
+        CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID, 0.5, sectionName);
+        throw tigl::CTiglError("No eta is specified, but the new section lies between two sections.");
     }
     else {
         std::vector<std::string> elementsAfter  =  ListFunctions::GetElementsAfter(wingHelper->GetElementUIDsInOrder(), startElementUID);
@@ -1579,7 +1599,7 @@ void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID)
             area = scaleF * area;
         }
         std::string profileUID = startElement->GetProfileUID();
-        std::string sectionUID = startElement->GetSectionUID() + "Before";
+        std::string sectionUID = GetUIDManager().MakeUIDUnique(sectionName);
 
 
         CCPACSWingSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
