@@ -747,7 +747,7 @@ void CCPACSFuselage::SetFuselageHelper(CTiglFuselageHelper& cache) const
     cache.SetFuselage(const_cast<CCPACSFuselage*>(this));
 }
 
-void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta)
+void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta, std::string sectionName)
 {
     if(0.0001 > eta || eta > 0.9999)
     {
@@ -777,7 +777,7 @@ void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUI
 
     // create new section and element
     CTiglUIDManager& uidManager = GetUIDManager();
-    std::string baseUID = uidManager.MakeUIDUnique(startElement->GetSectionUID() + "Bis" );
+    std::string baseUID = uidManager.MakeUIDUnique(sectionName);
     CCPACSFuselageSection& newSection = GetSections().CreateSection(baseUID, startElement->GetProfileUID());
     CTiglFuselageSectionElement* newElement = newSection.GetSectionElement(1).GetCTiglSectionElement();
 
@@ -806,11 +806,24 @@ std::optional<std::string> CCPACSFuselage::GetElementUIDAfterNewElement(std::str
     return *(++it);
 }
 
-void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
+
+void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID,double eta, std::string sectionName)
+{
+    auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
+    if (!elementUIDAfter) {
+        throw tigl::CTiglError("When an eta is specified, the new section must lie between two sections.");
+    } else {
+        return CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter, eta, sectionName);
+    }
+}
+
+
+void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName)
 {
     auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (elementUIDAfter) {
-        CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter);
+        CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter, 0.5, sectionName);
+        throw tigl::CTiglError("No eta is specified, but the new section lies between two sections.");
     }
     else {
         // in this case we simply need to find the previous element and call the appropriate function
@@ -846,7 +859,7 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID)
             area = scaleF * area;
         }
         std::string profileUID = startElement->GetProfileUID();
-        std::string sectionUID = startElement->GetSectionUID() + "After";
+        std::string sectionUID = GetUIDManager().MakeUIDUnique(sectionName);
 
 
         CCPACSFuselageSection& newSection = GetSections().CreateSection(sectionUID, profileUID);
@@ -881,11 +894,22 @@ std::optional<std::string> CCPACSFuselage::GetElementUIDBeforeNewElement(std::st
     return *(--it);
 }
 
-void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID)
+void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID, double eta, std::string sectionName)
+{
+    auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
+    if (!elementUIDBefore) {
+        throw tigl::CTiglError("When an eta is specified, the new section must lie between two sections.");
+    } else {
+        return CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID, eta, sectionName);
+    }
+}
+
+void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName)
 {
     auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
     if (elementUIDBefore) {
-        CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID);
+        CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID, 0.5, sectionName);
+        throw tigl::CTiglError("No eta is specified, but the new section lies between two sections.");
     }
     else {
         std::vector<std::string> elementsAfter  =  ListFunctions::GetElementsAfter(fuselageHelper->GetElementUIDsInOrder(), startElementUID);
@@ -920,7 +944,7 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
             area = scaleF * area;
         }
         std::string profileUID = startElement->GetProfileUID();
-        std::string sectionUID = startElement->GetSectionUID() + "Before";
+        std::string sectionUID = GetUIDManager().MakeUIDUnique(sectionName);
 
 
         CCPACSFuselageSection& newSection = GetSections().CreateSection(sectionUID, profileUID);

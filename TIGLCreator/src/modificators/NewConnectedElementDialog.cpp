@@ -43,7 +43,22 @@ NewConnectedElementDialog::NewConnectedElementDialog(QStringList connectedElemen
         SLOT(activate_eta())
     );
 
+    connect(
+        ui->comboBoxStartUID,
+        SIGNAL(currentIndexChanged(int)),
+        this,
+        SLOT(updateDefaultName())
+    );
+
+    connect(
+        ui->comboBoxWhere,
+        SIGNAL(currentIndexChanged(int)),
+        this,
+        SLOT(updateDefaultName())
+    );
+
     activate_eta();
+    updateDefaultName();
 }
 
 void NewConnectedElementDialog::activate_eta()
@@ -62,6 +77,22 @@ void NewConnectedElementDialog::activate_eta()
     }
 }
 
+void NewConnectedElementDialog::updateDefaultName()
+{
+    QString uid = ui->comboBoxStartUID->currentText();
+    QString where = ui->comboBoxWhere->currentText();
+
+    QString defaultName = QString("%1_%2").arg(uid, where);
+
+    // Only update if the user hasn’t typed a custom name
+    if (ui->lineEditName->text().isEmpty() ||
+        ui->lineEditName->text().endsWith("Before") ||
+        ui->lineEditName->text().endsWith("After")) 
+    {
+        ui->lineEditName->setText(defaultName);
+    }
+}
+
 NewConnectedElementDialog::~NewConnectedElementDialog()
 {
     delete ui;
@@ -71,6 +102,11 @@ QString NewConnectedElementDialog::getStartUID() const
 {
     return ui->comboBoxStartUID->currentText();
     ;
+}
+
+QString NewConnectedElementDialog::getSectionName() const
+{
+    return ui->lineEditName->text();
 }
 
 NewConnectedElementDialog::Where NewConnectedElementDialog::getWhere() const
