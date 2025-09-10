@@ -70,6 +70,7 @@ configure = { cmd = [
     "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=OFF",
     "-D", "TIGL_BINDINGS_PYTHON=ON",
     "-D", "TIGL_BINDINGS_MATLAB=ON",
+    "-D", "TIGL_CREATOR=ON",
     "-D", "OCE_STATIC_LIBS=OFF",
 ], args = [
         { "arg" = "config", "default"="Release"},
@@ -109,6 +110,7 @@ configure = { cmd = [
     "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=OFF",
     "-D", "TIGL_BINDINGS_PYTHON=ON",
     "-D", "TIGL_BINDINGS_MATLAB=ON",
+    "-D", "TIGL_CREATOR=OFF",
     "-D", "OCE_STATIC_LIBS=ON",
 ], args = [
         { "arg" = "config", "default"="Debug"},
@@ -132,6 +134,7 @@ configure = { cmd = [
     "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=OFF",
     "-D", "TIGL_BINDINGS_PYTHON=ON",
     "-D", "TIGL_BINDINGS_MATLAB=ON",
+    "-D", "TIGL_CREATOR=ON",
     "-D", "OCE_STATIC_LIBS=ON",
 ], args = [
         { "arg" = "config", "default"="Release"},
