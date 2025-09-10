@@ -507,7 +507,8 @@ double tigl::CTiglSectionElement::GetRotationAroundNormal(TiglCoordinateSystem r
         angle = 360 - angle;
     }
 
-    return angle;
+    // make sure the angle is between -180 and 180
+    return fmod(angle + 180, 360.) - 180;
 }
 
 

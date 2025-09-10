@@ -302,6 +302,18 @@ TEST(TiglMath, Tchebycheff2Bezier_N6)
     ASSERT_NEAR(   5., M.Value(5,5), 1e-12);
 }
 
+TEST(TiglMath, lerp_angle_deg)
+{
+    ASSERT_NEAR(42., tigl::lerp_angle_deg(42., 13., 0.), 1e-10);
+    ASSERT_NEAR(42., tigl::lerp_angle_deg(42., 53., 0.), 1e-10);
+    ASSERT_NEAR(13., tigl::lerp_angle_deg(42., 13., 1.), 1e-10);
+    ASSERT_NEAR(53., tigl::lerp_angle_deg(42., 53., 1.), 1e-10);
+    ASSERT_NEAR(0., tigl::lerp_angle_deg(-1., 1., 0.5), 1e-10);
+    ASSERT_NEAR(0., tigl::lerp_angle_deg(1, 359, 0.5), 1e-10);
+    ASSERT_NEAR(90., tigl::lerp_angle_deg(0. + 1e-8, 180 - 1e-8, 0.5), 1e-10);
+    ASSERT_NEAR(0., tigl::lerp_angle_deg(-90. + 1e-8, 90 - 1e-8, 0.5), 1e-10);
+}
+
 TEST(TiglMath, DistancePointFromLine)
 {
     tigl::CTiglPoint x0(0., 0., 0.);
