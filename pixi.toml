@@ -76,8 +76,8 @@ configure = { cmd = [
         { "arg" = "config", "default"="Release"},
         { "arg" = "nightly", "default"="ON"},
 ]}
-build = { cmd = "ninja -C build"}
-install = { cmd = "ninja -C build install" }
+build = { cmd = "cmake --build . -j", cwd = "build" }
+install = { cmd = "cmake --build . --target install -j", cwd = "build" }
 unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
 integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests"}
 tests = [ {task = "unittests"}, {task = "integrationtests"} ]
