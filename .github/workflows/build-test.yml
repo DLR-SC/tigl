@@ -36,28 +36,16 @@ on:
         default: "occt-dynamic"
         type: string
 
-      documentation-artifact:
-        description: "Name of the html documentation artifact. Will be build on Windows. Leave empty to skip documentation build."
+      documentation:
+        description: "Whether to build the documentation (ON or OFF)"
         required: false
-        default: ''
+        default: "OFF"
         type: string
 
-      win-package-artifact:
-        description: "Name of the windows package artifact. Leave empty to skip building the package."
+      package:
+        description: "Whether to create a package (ON or OFF)"
         required: false
-        default: ''
-        type: string
-
-      win-installer-artifact:
-        description: "Name of the windows installer artifact. Leave empty to skip building the installer."
-        required: false
-        default: ''
-        type: string
-
-      macos-package-artifact:
-        description: "Name of the Mac OS package artifact. Leave empty to skip building the package."
-        required: false
-        default: ''
+        default: "OFF"
         type: string
 
 jobs:
@@ -97,7 +85,54 @@ jobs:
           SCCACHE_GHA_ENABLED: "true"
       - run: pixi run  -e ${{ inputs.pixienv }} install
 
-      # save build artifact
+      # save build artifacts
+
+      - name: Create documentation
+        if: inputs.documentation == 'ON' || inputs.package == 'ON'
+        run: |
+          cd build
+          cmake --build . --target doc
+      - name: Upload documentation as artifact
+        if: inputs.documentation == 'ON'
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-documentation
+          path: build/doc/html/*
+
+      - name: Create MacOS package
+        if: startsWith(inputs.os, 'macos') && inputs.package == 'ON'
+        run: |
+          cd build
+          cmake --build . --target package
+      - name: Upload MacOS package 
+        uses: actions/upload-artifact@v4
+        if: startsWith(inputs.os, 'maos') && inputs.package == 'ON'
+        with:
+         name: macos-package
+         path: build/*.dmg
+
+      - name: Create windows package
+        if: startsWith(inputs.os, 'windows') && inputs.package == 'ON'
+        shell: cmd
+        run: |
+          cd build
+          cmake --build . --target doc
+          cpack.exe -G ZIP & cpack.exe -G NSIS
+      - name: Upload windows package as artifact
+        if: startsWith(inputs.os, 'windows') && inputs.package == 'ON'
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-package
+          path: build/*.zip
+
+      - name: Upload windows installer as artifact
+        if: startsWith(inputs.os, 'windows')
+        uses: actions/upload-artifact@v4
+        with:
+         name: win-installer
+         path: build/*.exe
+
+
       - name: create build archive
         run: tar -czf build.tar.gz build
       - uses: actions/upload-artifact@v4
@@ -122,3 +157,14 @@ jobs:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
       - run: pixi run -e ${{ inputs.pixienv }} tests
+
+      - name: Publish coverage report to codecov.io (ubuntu debug)
+        if: ${{ inputs.pixienv }} == 'coverage' && ${{ inputs.config }} == 'Debug'
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./build/tests/unittests/coverageReport-unit.info,./build/tests/integrationtests/coverageReport-integration.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+          codecov_yml_path: codecov.yml
+          disable_search: true
+          verbose: true
+          flags: unittests
