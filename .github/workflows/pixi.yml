@@ -35,25 +35,25 @@ jobs:
         include:
           - os: "windows-latest"
             config: "Release"
-            environment: "python-internal"
+            pixienv: "python-internal"
           - os: "windows-2022"
             config: "Release"
-            environment: "occt-static"
+            pixienv: "occt-static"
           - os: "ubuntu-latest"
             config: "Debug"
-            environment: "occt-dynamic"
+            pixienv: "default"
           - os: "ubuntu-latest"
             config: "Release"
-            environment: "python-internal"
+            pixienv: "python-internal"
           - os: "ubuntu-22.04"
             config: "Debug"
-            environment: "coverage"
+            pixienv: "coverage"
           - os: "ubuntu-22.04"
             config: "Release"
-            environment: "occt-dynamic"
+            pixienv: "default"
           - os: "macos-13"
             config: "Release"
-            environment: "occt-static"
+            pixienv: "occt-static"
     uses: ./.github/workflows/build-test.yml
     secrets: inherit
     with:
@@ -61,7 +61,7 @@ jobs:
       os: ${{ matrix.os }}
       config: ${{ matrix.config }}
       nightly: ${{ needs.pre.outputs.nightly }}
-      environment: ${{ matrix.environment }}
+      pixienv: ${{ matrix.pixienv }}
       documentation-artifact: 'html-documentation'
       win-installer-artifact: 'win-installer'
       win-package-artifact: 'win-package'

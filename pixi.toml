@@ -6,18 +6,8 @@ platforms = ["win-64", "linux-64", "osx-64"]
 version = "3.4.1"
 channel-priority = "disabled"
 
-# The environments define some common build configurations for TiGL or configurations used in CI
-[environments]
-# occt-dynamic is the default build configuration
-"occt-dynamic" = ["opencascade"]
-# coverage feature builds in debug mode and runs the tests with coverage flags enabled
-"coverage" = ["coverage", "opencascade"]
-# occt-static feature builds with static OpenCASCADE libraries
-"occt-static" = ["opencascade-static"]
-# python-internal feature builds the internal python bindings of the C++ core using swig
-"python-internal" = ["python-internal"]
-
-[dependencies]
+[feature.base.dependencies]
+# Base dependencies for all builds
 tixi3 = "3.3.1.*"
 qt = { version = "5.15.15.*", channel = "conda-forge" }
 python = "*"
@@ -52,6 +42,18 @@ brotlipy = "*"
 lcov = "*"
 gcovr = "*"
 
+[target.linux-64.activation.env]
+# this is needed to correctly set the RPATH of tiglcreator
+LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
+
+[target.osx-64.activation.env]
+# this is needed to correctly find freeimage and freetype
+CMAKE_PREFIX_PATH = "$CONDA_PREFIX"
+
+[target.win-64.activation.env]
+# this is needed to correctly find freeimage and freetype
+CMAKE_PREFIX_PATH = "%CONDA_PREFIX%/Library"
+
 [tasks]
 # depends-on omitted to avoid rebuild in CI
 configure = { cmd = [
@@ -79,6 +81,17 @@ unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
 integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests"}
 tests = [ {task = "unittests"}, {task = "integrationtests"} ]
 tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
+
+# The environments define some common build configurations for TiGL or configurations used in CI
+[environments]
+# default is the default build configuration
+"default" = ["base","opencascade"]
+# coverage feature builds in debug mode and runs the tests with coverage flags enabled
+"coverage" = ["coverage", "opencascade"]
+# occt-static feature builds with static OpenCASCADE libraries
+"occt-static" = ["opencascade-static"]
+# python-internal feature builds the internal python bindings of the C++ core using swig
+"python-internal" = ["python-internal"]
 
 [feature.coverage.tasks]
 # The coverage feature builds in debug mode and runs the tests with coverage flags enabled
@@ -145,15 +158,3 @@ configure = { cmd = [
         { "arg" = "config", "default"="Release"},
         { "arg" = "nightly", "default"="OFF"},
 ]}
-
-[target.linux-64.activation.env]
-# this is needed to correctly set the RPATH of tiglcreator
-LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
-
-[target.osx-64.activation.env]
-# this is needed to correctly find freeimage and freetype
-CMAKE_PREFIX_PATH = "$CONDA_PREFIX"
-
-[target.win-64.activation.env]
-# this is needed to correctly find freeimage and freetype
-CMAKE_PREFIX_PATH = "%CONDA_PREFIX%/Library"
