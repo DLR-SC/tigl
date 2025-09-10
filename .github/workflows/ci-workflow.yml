@@ -38,6 +38,7 @@ jobs:
           - os: "windows-latest"
             config: "Release"
             pixienv: "python-internal"
+            documentation: "OFF"
             package: "OFF"
           - os: "windows-2022"
             config: "Release"
@@ -62,10 +63,12 @@ jobs:
           - os: "ubuntu-22.04"
             config: "Release"
             pixienv: "default"
+            documentation: "OFF"
+            package: "OFF"
           - os: "macos-13"
             config: "Release"
             pixienv: "occt-static"
-            documentation: "ON"
+            documentation: "OFF"
             package: "ON"
     uses: ./.github/workflows/build-test.yml
     secrets: inherit
@@ -75,7 +78,7 @@ jobs:
       config: ${{ matrix.config }}
       nightly: ${{ needs.pre.outputs.nightly }}
       pixienv: ${{ matrix.pixienv }}
-      documentation: ${{ matrix.documentation}}
+      documentation: ${{ matrix.documentation }}
       package: ${{ matrix.package }}
     
   draft-release:
