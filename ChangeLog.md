@@ -3,6 +3,10 @@ Changelog
 
 Changes since last release
 -------------
+10/09/2025
+- General changes
+  - [#1141](https://github.com/DLR-SC/tigl/issues/1141) Add the option to set a custom name when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog.
+
 29/08/2025
 - General changes
   - #1137 Rename the CPACSCreator to TiGLCreator.
