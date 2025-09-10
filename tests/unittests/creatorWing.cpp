@@ -1040,7 +1040,7 @@ TEST_F(creatorWing, MultipleWings_CreateSections)
 
 
     setWing("W9_BWSweep"); // OK. But since the two sections have a 180 degree rotation the result is strange
-    wing->CreateNewConnectedElementAfter("W9_BWSweep_Sec1_El1", "W9_BWSweep_Sec1_After", 0.5);
+    wing->CreateNewConnectedElementAfter("W9_BWSweep_Sec1_El1", 0.5, "W9_BWSweep_Sec1_After");
     saveInOutputFile();
 
     orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();

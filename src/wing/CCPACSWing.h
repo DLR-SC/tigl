@@ -506,7 +506,7 @@ public:
      * @param sectionName
      * @param eta
      */
-    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName, double eta);
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID, double eta, std::string sectionName);
 
     /**
      * If the element exists, the function returns the UID of the element that is stored right before the passed startElementUID within the wing.
@@ -540,7 +540,7 @@ public:
      * @param sectionName
      * @param eta
      */
-    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName, double eta);
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID, double eta, std::string sectionName);
 
     /**
      * Create a new section, a new element and place the new element between the startElement and the endElement.
@@ -550,7 +550,7 @@ public:
      * @param endElementUID
      * @param eta
      */
-    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta = 0.5, std::string sectionName = "defaultName");
+    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta = 0.5, std::string sectionName = "New_section_between");
 
     /**
      * Delete the connected element.

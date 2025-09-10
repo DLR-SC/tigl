@@ -807,7 +807,7 @@ std::optional<std::string> CCPACSFuselage::GetElementUIDAfterNewElement(std::str
 }
 
 
-void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName, double eta)
+void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID,double eta, std::string sectionName)
 {
     auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (!elementUIDAfter) {
@@ -894,7 +894,7 @@ std::optional<std::string> CCPACSFuselage::GetElementUIDBeforeNewElement(std::st
     return *(--it);
 }
 
-void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName, double eta)
+void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID, double eta, std::string sectionName)
 {
     auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
     if (!elementUIDBefore) {

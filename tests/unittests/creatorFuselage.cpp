@@ -430,7 +430,7 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 
 
 
-    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_1Section2IDElement1", "D150_Fuselage_1Section2ID_AfterU1", 0.5);
+    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_1Section2IDElement1", 0.5, "D150_Fuselage_1Section2ID_AfterU1");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
@@ -453,7 +453,7 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 
 
 
-    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_1Section2IDElement1", "D150_Fuselage_1Section2ID_Before", 0.5);
+    fuselage->CreateNewConnectedElementBefore("D150_Fuselage_1Section2IDElement1", 0.5, "D150_Fuselage_1Section2ID_Before");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
@@ -493,7 +493,7 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
     }
 
 
-    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_5Section1IDElement1", "D150_Fuselage_5Section1ID_After", 0.5);
+    fuselage->CreateNewConnectedElementAfter("D150_Fuselage_5Section1IDElement1", 0.5, "D150_Fuselage_5Section1ID_After");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
@@ -510,7 +510,7 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 
     setVariables("TestData/multiple_fuselages.xml", "SimpleFuselageElementTransformation");
 
-    fuselage->CreateNewConnectedElementAfter("Fuselage_ETSection1IDElement1", "Fuselage_ETSection1ID_After", 0.5);
+    fuselage->CreateNewConnectedElementAfter("Fuselage_ETSection1IDElement1", 0.5, "Fuselage_ETSection1ID_After");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();
@@ -526,7 +526,7 @@ TEST_F(creatorFuselage, createSection_MultipleFuselageModel)
 
     setVariables("TestData/multiple_fuselages.xml", "FuselageShearingSection");
 
-    fuselage->CreateNewConnectedElementAfter("FuselageShearingSection_1Section1IDElement1", "FuselageShearingSection_1Section1ID_After", 0.5);
+    fuselage->CreateNewConnectedElementAfter("FuselageShearingSection_1Section1IDElement1", 0.5, "FuselageShearingSection_1Section1ID_After");
     saveInOutputFile();
 
     orderedUIDS = fuselage->GetSegments().GetElementUIDsInOrder();

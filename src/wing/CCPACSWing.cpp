@@ -1465,7 +1465,7 @@ std::optional<std::string> CCPACSWing::GetElementUIDAfterNewElement(std::string 
     return *(++it);
 }
 
-void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName, double eta)
+void CCPACSWing::CreateNewConnectedElementAfter(std::string startElementUID, double eta, std::string sectionName)
 {
     auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (!elementUIDAfter) {
@@ -1549,7 +1549,7 @@ std::optional<std::string> CCPACSWing::GetElementUIDBeforeNewElement(std::string
     return *(--it);
 }
 
-void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName, double eta)
+void CCPACSWing::CreateNewConnectedElementBefore(std::string startElementUID, double eta, std::string sectionName)
 {
     auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
     if (!elementUIDBefore) {
