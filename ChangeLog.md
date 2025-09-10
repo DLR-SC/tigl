@@ -11,9 +11,8 @@ Changes since last release
 - General changes
   - #1137 Rename the CPACSCreator to TiGLCreator.
 
-03/09/2025
-- General changes
-  - Build with tixi 3.3.1
+1/09/2025
+- Fix hard crash when changing the symmetry axis of a wing in TiGL Creator (#1143)
 
 28/08/2025
 - General changes
@@ -23,63 +22,40 @@ Changes since last release
   - #1142 State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI.
   - #1144 Fix hard crash in Redo command, improve error message.
 
-27/08/2025
-- General changes
-  - Remove the boost-dependency within the [cpacs\_tigl\_gen](https://github.com/DLR-SC/cpacs_tigl_gen) and check out the new commit for the submodule (issue #1134).
-
-05/08/2025
-- Deprecation warning
-  - The use of the node cpacsVersion right within the CPACS path /cpacs/header/ is deprecated according to CPACS 3.5. Hence, now a deprecation warning is printed if it is still used (issue #1126).
-
-29/07/2025
-- General changes
-  - Remove the hard-wired gtest source code from the repository. Now, it is downloaded from GitHub and configured during the TiGL-configuration-process by default (issue #1114).
-  - Raise the minimum required CMake version to 3.11 to avoid potential future deprecation errors (issue #1116).
-
-10/07/2025
-- General changes
-  - Updated TiGL to new Version of [cpacs_tigl_Gen](https://github.com/DLR-SC/cpacs_tigl_gen) which is a fork from [RISCSoftware/cpacs_tigl_gen](https://github.com/RISCSoftware/cpacs_tigl_gen)
  
 - Fixes
   - [#1108](https://github.com/DLR-SC/tigl/issues/1108) When adding a new section into an existing wing, the scaling/translation did not seem meaningful. That is due to the fact, that the new element's area was interpolated between the start end end element. However, it does not depend linearly on the element width. Choosing the element width as a target value for the new element should fix this issue.
-  - [#59](https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59)	
-    Getters by index and uID are generated now for all Elements in CPACS with Attribute: maxOccur = "unbounded".  This gives users quick
-    access to elements and eliminates the need for TIGL developers to customize classes for this purpose.
   - [#1122](https://github.com/DLR-SC/tigl/issues/1122) Redo and Undo commands now update the CPACS configuration, which was previously only true for modifications using the CPACS Editor UI.
-    
-08/02/2025
-
-- General changes:
-  - Implemented the new CPACS fuelTanks.
-
-- Fixes
   - #1090 Ask the user whether the currently worked on file should be saved before closing. Up to now, the configuration was simply closed resulting in potential data loss.
-
   - #1096 When a user adds a non-boundary segment to a wing/fuselage, the respective segment is split and a new one is created. After this split, a reordering of the segments is necessary. Otherwise, the segments cannot be lofted and created correctly. That would result in a wrong visualization and errors when trying to build them on user's demand in the tiglviewer.
 For that reason, the CCPACSFuselageSegments::ReorderSegments() and CCPACSWingSegments::ReorderSegments(), respectively, were added within the call of the SplitSegment() function.
   - #752 When creating a new file out of a template, the CPACSCreator automatically creates a new `.temp` file in the template directory. It might be the case that the user does not have write access to this directory, e.g. when TiGL is not configured and built but just downloaded via the installer. On the other hand it does not seem to be reasonable to directly create and store (!) a new file every time the 'new file' command is activated. Now, no temporary file is created. The content of the wanted template is copied into a string which then will be opened and read by tixi. Only if wanted, the resulting and edited CPACS file is stored.
   - #1087 CPACSCreator uses a system-wide config file to store (among many others) the path to the profiles database. If TiGL is built in a second configuration on the same system, the first build will determine the path in this config file. If then later the first build (and path) is removed, TiGL will still try to load the database from this path. A check is included, whether the path exists and should overwrite the config file entry when it does not.
 
-  - #1094 Fix inconsistent parametrization of super ellipse profiles. Before, the super ellipses ware parametrized by arc length, which resulted in 
-    different parameters at the four distinct points of the super ellipse. Potential kinks in two super ellipses were not necessarily connected by a
-    v-isoline in the resulting loft. This has been fixed.
-  - #936 A particular defined positioning (of the C++-type CCPACSPositioning) was not available via Python bindings since the std::vector<std::unique_ptr<**Type**>> is not exposed to swig. New getter functions have been implemented in CCPACSPositioning.h to make these elements accesible via index, similar to the implementation of for several other classes. For more information see https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59.
+Version 3.4.1
+-------------
+2025/09/08
 
  - New API functions:
    
-   - New function `::tiglComponentTransformPointToGlobal` to transform component-local coordinates into global coordinates (#1064)
+   - New function `::tiglComponentTransformPointToGlobal` to transform component-local coordinates into global coordinates ([#1064](https://github.com/dlr-sc/tigl/issues/1064))
   
  - General changes:
 
-    - Add support for OpenCascade Technology 7.8.
-    - Update the C++ standard to C++17 (#1045).
+    - Implemented the new CPACS fuelTanks.
+    - Use OpenCascade Technology (OCCT) version 7.6.2.
+    - Use TiXI version 3.3.1
+    - Add support for linking against OpenCascade Technology 7.8.
+    - Update the C++ standard to C++17.
     - Added the possibility to switch between two algorithms in the `CCSTCurveBuilder`. The default algorithm based on a Chebychev approximation results in a small number of control points, but introduces small discontinuities in the curvature. The new option is to use OCCT's `GeomAPI_PointsToBSpline`, which results in a C3 continuous B-Spline.
-
-
-13/11/2024
+    - Deprecation warning: The use of the node cpacsVersion right within the CPACS path /cpacs/header/ is deprecated according to CPACS 3.5. Hence, now a deprecation warning is printed if it is still used ([#1126](https://github.com/dlr-sc/tigl/issues/1126)).
 
  - Fixes:
-   - In #1026, the tolerance for creating cells via contourCoordinate was reduced for cells in spanwise direction. That fixed a bug that caused cells to overlap potentially. The same reduction was missed in chordwise direction and is added now to avoid the cell overlap in chordwise direction, as well. (#1034)
+    - Fix inconsistent parametrization of super ellipse profiles. Before, the super ellipses ware parametrized by arc length, which resulted in 
+    different parameters at the four distinct points of the super ellipse. Potential kinks in two super ellipses were not necessarily connected by a
+    v-isoline in the resulting loft. ([#1094](https://github.com/dlr-sc/tigl/issues/1094))
+    - ``CCPACSPositioning`` was not available via Python bindings since the `std::vector<std::unique_ptr<TYPE>>` is not exposed to swig. New getter functions have been implemented in CCPACSPositioning.h to make these elements accesible via index, similar to the implementation of for several other classes ([#936](https://github.com/dlr-sc/tigl/issues/936)). For more information see [cpacs_tigl_gen issue #59](https://github.com/RISCSoftware/cpacs_tigl_gen/issues/59).
+    - The tolerance for creating cells via contourCoordinate was reduced for cells in spanwise direction. That fixed a bug that caused cells to overlap potentially. The same reduction was missed in chordwise direction and is added now to avoid the cell overlap in chordwise direction, as well. ([#1034](https://github.com/dlr-sc/tigl/issues/1034))
 
 
 Version 3.4.0
