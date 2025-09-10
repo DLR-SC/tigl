@@ -557,6 +557,26 @@ CTiglPoint RotMatrixToIntrinsicXYZVector(const tiglMatrix& R)
 }
 
 
+double lerp_angle_deg(double l_deg, double r_deg, double alpha)
+{
+    auto norm = [](double angle) {
+        double r = fmod(angle, 360.);
+        return (r < 0.0)? r + 360.: r;
+    };
+
+    l_deg = norm(l_deg);
+    r_deg = norm(r_deg);
+
+    double delta = r_deg - l_deg;
+    if ( delta > 180.) {
+        delta -= 360.;
+    } else if (delta < -180.) {
+        delta += 360.;
+    }
+
+    return norm(l_deg + alpha*delta);
+}
+
 
 CTiglPoint FindOrthogonalVectorToDirection(CTiglPoint d)
 {

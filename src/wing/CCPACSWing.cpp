@@ -1430,7 +1430,7 @@ void CCPACSWing::CreateNewConnectedElementBetween(std::string startElementUID, s
         normal = startElement->GetNormal();
     }
     normal.normalize();
-    double angleN = startElement->GetRotationAroundNormal() * (1 - eta) + endElement->GetRotationAroundNormal() * eta;
+    double angleN = lerp_angle_deg(startElement->GetRotationAroundNormal(), endElement->GetRotationAroundNormal(), eta);
     double width = startElement->GetWidth() * (1 - eta) + endElement->GetWidth() * eta;
     double height = startElement->GetHeight() * (1 - eta) + endElement->GetHeight() * eta;
 

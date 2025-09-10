@@ -31,6 +31,16 @@
 
 #include <string.h>
 
+namespace {
+
+    double normalize_angle(double a)
+    {
+        a = fmod(a, 360);
+        return (a < 0)? a + 360 : a;
+    }
+
+}
+
 class creatorCTiglSectionElement : public ::testing::Test
 {
 
@@ -1010,28 +1020,28 @@ TEST_F(creatorCTiglSectionElement, GetRotationAroundNormal_MultipleWingsModel)
     cElement = GetCElementOf("Cpacs2Test_Wing_Sec2_El1");
     expectedAngle = 0;
     angle = cElement->GetRotationAroundNormal(refCS);
-    EXPECT_NEAR(angle, expectedAngle, tolerance );
+    EXPECT_NEAR(normalize_angle(angle), normalize_angle(expectedAngle), tolerance );
 
     cElement = GetCElementOf("W5_RX60_Sec1_El1");
     expectedAngle = 0;
     angle = cElement->GetRotationAroundNormal(refCS);
-    EXPECT_NEAR(angle, expectedAngle, tolerance );
+    EXPECT_NEAR(normalize_angle(angle), normalize_angle(expectedAngle), tolerance );
 
     cElement = GetCElementOf("W17_RotSec_Sec1_El1");
     expectedAngle = 360 - 30;
     angle = cElement->GetRotationAroundNormal(refCS);
-    EXPECT_NEAR(angle, expectedAngle, tolerance );
+    EXPECT_NEAR(normalize_angle(angle), normalize_angle(expectedAngle), tolerance );
 
     refCS = TiglCoordinateSystem::WING_COORDINATE_SYSTEM;
     cElement = GetCElementOf("W17_RotSec_Sec1_El1");
     expectedAngle = 360 - 20;
     angle = cElement->GetRotationAroundNormal(refCS);
-    EXPECT_NEAR(angle, expectedAngle, tolerance );
+    EXPECT_NEAR(normalize_angle(angle), normalize_angle(expectedAngle), tolerance );
 
     cElement = GetCElementOf("W17_RotSec_Sec2_El1");
     expectedAngle = 360 - 20;
     angle = cElement->GetRotationAroundNormal(refCS);
-    EXPECT_NEAR(angle, expectedAngle, tolerance );
+    EXPECT_NEAR(normalize_angle(angle), normalize_angle(expectedAngle), tolerance );
 }
 
 
@@ -1243,7 +1253,7 @@ TEST_F(creatorCTiglSectionElement, SetNormal_MultipleWingsModel) {
 }
 
 
-TEST_F(creatorCTiglSectionElement, SetRotationAroundNoraml_MultipleFuselagesModel)
+TEST_F(creatorCTiglSectionElement, SetRotationAroundNormal_MultipleFuselagesModel)
 {
     setVariables("TestData/multiple_fuselages.xml");
     tigl::CTiglSectionElement *cElement = nullptr;
@@ -1261,7 +1271,7 @@ TEST_F(creatorCTiglSectionElement, SetRotationAroundNoraml_MultipleFuselagesMode
     cElement->SetRotationAroundNormal(newAngle);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
     EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
-    EXPECT_NEAR(newAngle, cElement->GetRotationAroundNormal(refCS), tolerance);
+    EXPECT_NEAR(normalize_angle(newAngle), normalize_angle(cElement->GetRotationAroundNormal(refCS)), tolerance);
 
     newAngle = -20;
     center = cElement->GetCenter(refCS);
@@ -1269,7 +1279,7 @@ TEST_F(creatorCTiglSectionElement, SetRotationAroundNoraml_MultipleFuselagesMode
     cElement->SetRotationAroundNormal(newAngle);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
     EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
-    EXPECT_NEAR(newAngle + 360, cElement->GetRotationAroundNormal(refCS), tolerance);
+    EXPECT_NEAR(normalize_angle(newAngle), normalize_angle(cElement->GetRotationAroundNormal(refCS)), tolerance);
 
 
     newAngle = 180;
@@ -1278,7 +1288,7 @@ TEST_F(creatorCTiglSectionElement, SetRotationAroundNoraml_MultipleFuselagesMode
     cElement->SetRotationAroundNormal(newAngle);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
     EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
-    EXPECT_NEAR(newAngle, cElement->GetRotationAroundNormal(refCS), tolerance);
+    EXPECT_NEAR(normalize_angle(newAngle), normalize_angle(cElement->GetRotationAroundNormal(refCS)), tolerance);
 
 
     refCS = TiglCoordinateSystem::FUSELAGE_COORDINATE_SYSTEM;
@@ -1289,7 +1299,7 @@ TEST_F(creatorCTiglSectionElement, SetRotationAroundNoraml_MultipleFuselagesMode
     cElement->SetRotationAroundNormal(newAngle, refCS);
     EXPECT_TRUE(center.isNear(cElement->GetCenter(refCS)));
     EXPECT_TRUE(normal.isNear(cElement->GetNormal(refCS)));
-    EXPECT_NEAR(newAngle, cElement->GetRotationAroundNormal(refCS), tolerance);
+    EXPECT_NEAR(normalize_angle(newAngle), normalize_angle(cElement->GetRotationAroundNormal(refCS)), tolerance);
 
     saveCurrentConfig("TestData/Output/multiple_fuselages-out.xml");
 }

@@ -250,6 +250,16 @@ TIGL_EXPORT void DiagonalizeMatrixByJacobi(const tiglMatrix& M, tiglMatrix &D, t
  */
 TIGL_EXPORT CTiglPoint RotMatrixToIntrinsicXYZVector(const tiglMatrix& R );
 
+
+/**
+ * @brief interpolates two angles l_deg and r_deg
+ * @param l_deg first angle in degrees
+ * @param r_deg second angle in degrees
+ * @param alpha interpolation value between 0 and 1
+ * @return the interpolation value along the shortest path on the circle
+ */
+TIGL_EXPORT double lerp_angle_deg(double l_deg, double r_deg, double alpha);
+
 /**
  * Return a vector orthogonal to the direction
  * @param direction
