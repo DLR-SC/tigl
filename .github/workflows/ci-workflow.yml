@@ -38,24 +38,35 @@ jobs:
           - os: "windows-latest"
             config: "Release"
             pixienv: "python-internal"
+            package: "OFF"
           - os: "windows-2022"
             config: "Release"
             pixienv: "occt-static"
+            documentation: "ON"
+            package: "ON"
           - os: "ubuntu-latest"
             config: "Debug"
             pixienv: "default"
+            documentation: "OFF"
+            package: "OFF"
           - os: "ubuntu-latest"
             config: "Release"
             pixienv: "python-internal"
+            documentation: "OFF"
+            package: "OFF"
           - os: "ubuntu-22.04"
             config: "Debug"
             pixienv: "coverage"
+            documentation: "OFF"
+            package: "OFF"
           - os: "ubuntu-22.04"
             config: "Release"
             pixienv: "default"
           - os: "macos-13"
             config: "Release"
             pixienv: "occt-static"
+            documentation: "ON"
+            package: "ON"
     uses: ./.github/workflows/build-test.yml
     secrets: inherit
     with:
@@ -64,10 +75,8 @@ jobs:
       config: ${{ matrix.config }}
       nightly: ${{ needs.pre.outputs.nightly }}
       pixienv: ${{ matrix.pixienv }}
-      documentation-artifact: 'html-documentation'
-      win-installer-artifact: 'win-installer'
-      win-package-artifact: 'win-package'
-      macos-package-artifact: 'macos-package'
+      documentation: ${{ matrix.documentation}}
+      package: ${{ matrix.package }}
     
   draft-release:
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
