@@ -115,7 +115,7 @@
     "before_script" : "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"Wall1\"));\ndrawShape(tigl.getShape(\"Wall2\"));\n"
   },
 
-  { "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/concorde.cpacs3.xml" },
-  { "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/master/cpacs/ariane.xml" }
+  { "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/main/cpacs/concorde.cpacs3.xml" },
+  { "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/main/cpacs/ariane.xml" }
 
 ]
