@@ -5,7 +5,7 @@ on:
     - cron: "40 2 * * *"
   push:
     branches:
-      - '*' #TODO reset to main
+      - 'main'
     tags:
       - v*
   pull_request:
