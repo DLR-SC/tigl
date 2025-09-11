@@ -273,6 +273,12 @@ protected:
 
     void SetFuselageHelper(CTiglFuselageHelper& cache) const ;
 
+    /**
+     * @brief ReorderSections orders the sections according to the segments
+     * from nose to rear
+     */
+    void ReorderSections();
+
 private:
     // Invalidates internal state
     void InvalidateImpl(const boost::optional<std::string>& source) const override;

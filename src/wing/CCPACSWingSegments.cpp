@@ -30,7 +30,7 @@
 
 namespace
 {
-    bool segment_follows(const tigl::unique_ptr<tigl::CCPACSWingSegment>& s2, const tigl::unique_ptr<tigl::CCPACSWingSegment>& s1)
+    bool segment_follows(const std::unique_ptr<tigl::CCPACSWingSegment>& s2, const std::unique_ptr<tigl::CCPACSWingSegment>& s1)
     {
         if (!s2 || !s1) {
             return false;

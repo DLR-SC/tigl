@@ -114,12 +114,6 @@ if(WIN32)
     endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(WIN32)
 
-
-if(WIN32)
-    # avoid export of oce/occt classes into tigl library
-    
-endif(WIN32)
-
 add_subdirectory(thirdparty)
 
 # style checks
@@ -147,7 +141,7 @@ endif(TIGL_BUILD_TESTS)
 include(createDoc)
 
 
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Siggel") #required for debian/ubuntu
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jan Kleinert") #required for debian/ubuntu
 set(CPACK_PACKAGE_VENDOR "www.dlr.de/sc")
 
 
@@ -194,15 +188,15 @@ else(APPLE)
   )
 endif(APPLE)
 
-set(CPACK_PACKAGE_NAME "TIGL-Creator")
+set(CPACK_PACKAGE_NAME "TIGL")
 
-set(CPACK_PACKAGE_VERSION_MAJOR 0)
-set(CPACK_PACKAGE_VERSION_MINOR 2)
-set(CPACK_PACKAGE_VERSION_PATCH 0)
+set(CPACK_PACKAGE_VERSION_MAJOR ${TIGL_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${TIGL_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${TIGL_VERSION_PATCH})
 set(CPACK_COMPONENTS_ALL "creator;docu")
 include(CPack)
-set(CPACK_PACKAGE_VERSION "0.2.0")
-cpack_add_component(creator DISPLAY_NAME "TiGLCreator + 3rd Party DLLs")
+set(CPACK_PACKAGE_VERSION ${TIGL_VERSION})
+cpack_add_component(creator DISPLAY_NAME "TiGL + 3rd Party DLLs")
 cpack_add_component(headers DISPLAY_NAME "Headers")
 cpack_add_component(cpp_bindings DISPLAY_NAME "Internal C++ Bindings")
 cpack_add_component(interfaces DISPLAY_NAME "Interfaces/Bindings")

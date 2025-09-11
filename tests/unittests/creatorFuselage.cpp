@@ -32,6 +32,7 @@
 #include "CCPACSFuselageSectionElement.h"
 #include "CCPACSWingSectionElement.h"
 #include "CCPACSFuselageSegment.h"
+#include "CCPACSFuselageSection.h"
 
 
 #include <string.h>
@@ -588,6 +589,165 @@ TEST_F(creatorFuselage, fuselageCreateSectionNonBoundary)
     for (int i = 1; i <= fuselage->GetSegments().GetSegmentCount(); i++) {
         // Check whether all section's segments are valid and can be built
         EXPECT_NO_THROW(const TopoDS_Shape& shape = fuselage->GetSegments().GetSegment(i).GetLoft()->Shape());
+    }
+}
+
+TEST_F(creatorFuselage, section_order)
+{
+    setVariables("TestData/simpletest.cpacs.xml", "SimpleFuselage");
+    std::vector<std::string> expectedOrderedUIDS;
+
+    // CreateNewConnectedElementBetween
+    fuselage->CreateNewConnectedElementBetween(
+        "D150_Fuselage_1Section2IDElement1",
+        "D150_Fuselage_1Section3IDElement1",
+        0.5,
+        "new_section_1" );
+    saveInOutputFile();
+
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = fuselage->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, no eta, in the middle
+    fuselage->CreateNewConnectedElementBefore(
+        "D150_Fuselage_1Section2IDElement1",
+        "new_section_2"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = fuselage->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, no eta, at the start
+    fuselage->CreateNewConnectedElementBefore(
+        "D150_Fuselage_1Section1IDElement1",
+        "new_section_3"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = fuselage->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, specified eta, in the middle
+    fuselage->CreateNewConnectedElementBefore(
+        "new_section_2Elem1",
+        0.25,
+        "new_section_4"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = fuselage->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, no eta, at the start
+    fuselage->CreateNewConnectedElementBefore(
+        "new_section_3Elem1",
+        "new_section_5"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = fuselage->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementAfter, no eta, in the middle
+    fuselage->CreateNewConnectedElementAfter(
+        "D150_Fuselage_1Section2IDElement1",
+        "new_section_6"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("new_section_6Elem1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = fuselage->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementAfter, no eta, at the end
+    fuselage->CreateNewConnectedElementAfter(
+        "D150_Fuselage_1Section3IDElement1",
+        "new_section_7"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("new_section_6Elem1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    expectedOrderedUIDS.push_back("new_section_7Elem1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = fuselage->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementAfter, specified eta, in the middle
+    fuselage->CreateNewConnectedElementAfter(
+        "new_section_4Elem1",
+        0.75,
+        "new_section_8"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section1IDElement1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_8Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section2IDElement1");
+    expectedOrderedUIDS.push_back("new_section_6Elem1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("D150_Fuselage_1Section3IDElement1");
+    expectedOrderedUIDS.push_back("new_section_7Elem1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = fuselage->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
     }
 }
 

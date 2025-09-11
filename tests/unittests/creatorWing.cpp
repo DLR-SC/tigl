@@ -29,6 +29,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSFuselageSectionElement.h"
 #include "CCPACSWingSectionElement.h"
+#include "CCPACSWingSection.h"
 #include "CCPACSWingSegment.h"
 
 class creatorWing : public ::testing::Test
@@ -1093,6 +1094,165 @@ TEST_F(creatorWing, MultipleWings_CreateSections)
     EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.2));
 
 
+}
+
+TEST_F(creatorWing, section_order)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    std::vector<std::string> expectedOrderedUIDS;
+
+    // CreateNewConnectedElementBetween
+    wing->CreateNewConnectedElementBetween(
+        "Cpacs2Test_Wing_Sec2_El1",
+        "Cpacs2Test_Wing_Sec3_El1",
+        0.5,
+        "new_section_1" );
+    saveInOutputFile();
+
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, no eta, in the middle
+    wing->CreateNewConnectedElementBefore(
+        "Cpacs2Test_Wing_Sec2_El1",
+        "new_section_2"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, no eta, at the start
+    wing->CreateNewConnectedElementBefore(
+        "Cpacs2Test_Wing_Sec1_El1",
+        "new_section_3"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, specified eta, in the middle
+    wing->CreateNewConnectedElementBefore(
+        "new_section_2Elem1",
+        0.25,
+        "new_section_4"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, no eta, at the start
+    wing->CreateNewConnectedElementBefore(
+        "new_section_3Elem1",
+        "new_section_5"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementAfter, no eta, in the middle
+    wing->CreateNewConnectedElementAfter(
+        "Cpacs2Test_Wing_Sec2_El1",
+        "new_section_6"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_6Elem1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementAfter, no eta, at the end
+    wing->CreateNewConnectedElementAfter(
+        "Cpacs2Test_Wing_Sec3_El1",
+        "new_section_7"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_6Elem1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    expectedOrderedUIDS.push_back("new_section_7Elem1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementAfter, specified eta, in the middle
+    wing->CreateNewConnectedElementAfter(
+        "new_section_4Elem1",
+        0.75,
+        "new_section_8"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_8Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_6Elem1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    expectedOrderedUIDS.push_back("new_section_7Elem1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
 }
 
 TEST_F(creatorWing, wingCreateSectionInsideWithParam)
