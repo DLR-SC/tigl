@@ -747,6 +747,34 @@ void CCPACSFuselage::SetFuselageHelper(CTiglFuselageHelper& cache) const
     cache.SetFuselage(const_cast<CCPACSFuselage*>(this));
 }
 
+void CCPACSFuselage::ReorderSections()
+{
+    auto sorted_element_uids = GetSegments().GetElementUIDsInOrder();
+
+    std::unordered_map<std::string, size_t> order;
+    order.reserve(sorted_element_uids.size());
+    for (size_t i = 0; i < sorted_element_uids.size(); ++i) {
+        order[sorted_element_uids[i]] = i;
+    }
+
+    auto get_rank = [&](auto const& section_ptr) -> size_t {
+        assert(section_ptr != nullptr); // Avoid exception, catch nullptr dereferencing in debug mode.
+        auto element_uid = section_ptr->GetElements().GetElement(1).GetUID();
+        auto it = order.find(element_uid);
+        if (it != std::end(order)) {
+            return it->second;
+        }
+        return std::numeric_limits<size_t>::max();
+    };
+
+    auto& sections = GetSections().GetSections();
+    std::stable_sort(
+        std::begin(sections),
+        std::end(sections),
+        [&](auto const& l, auto const& r) { return get_rank(l) < get_rank(r); }
+    );
+}
+
 void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta, std::string sectionName)
 {
     if(0.0001 > eta || eta > 0.9999)
@@ -791,6 +819,7 @@ void CCPACSFuselage::CreateNewConnectedElementBetween(std::string startElementUI
 
     // connect the element with segment and update old segment
     GetSegments().SplitSegment(segmentToSplit, newElement->GetSectionElementUID() );
+    ReorderSections();
 }
 
 std::optional<std::string> CCPACSFuselage::GetElementUIDAfterNewElement(std::string startElementUID)
@@ -969,6 +998,7 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
         if ( m_segments.NeedReordering() ){
             try { // we use a try-catch to not rise two time a exception if the reordering occurs during the first cpacs parsing
                 m_segments.ReorderSegments();
+                ReorderSections();
             }
             catch (  const CTiglError& err) {
                 LOG(ERROR) << err.what();
