@@ -34,7 +34,7 @@
             <genericSystem uID="mySystemUID2">
               <name>My example system</name>
               <parentUID>None</parentUID>
-              <description>Example system component for testing the visualization in TIGLViewer</description>
+              <description>Example system component for testing the visualization in TIGLCreator</description>
               <geometricBaseType>cylinder</geometricBaseType>
               <transformation uID="transformationUID164">
                 <translation refType="absGlobal" uID="transformationUID164_translation1">

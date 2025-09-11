@@ -40,6 +40,7 @@
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 #include <gp_Lin.hxx>
+#include "CTiglFuselageHelper.h"
 
 namespace tigl
 {
@@ -126,6 +127,138 @@ public:
     // Returns all guide curve points
     TIGL_EXPORT std::vector<gp_Pnt> GetGuideCurvePoints() const;
 
+
+    /*
+     * Creator functions
+     */
+
+    // Return the center of the noise airfoil, this correspond to the the beginning of the fuselage.
+    TIGL_EXPORT CTiglPoint GetNoseCenter();
+
+    // Set the position of the noise center.
+    TIGL_EXPORT void SetNoseCenter(const CTiglPoint &newCenter);
+
+    // Set the rotation of the fuselage transformation (nothing else ;)
+    // Todo evalute the possiblity to rotate around the nose (simple fuselage case)
+    TIGL_EXPORT void SetRotation(const CTiglPoint& newRotation);
+
+    // Get the total length of this fuselage
+    TIGL_EXPORT double GetLength();
+
+    // Set the total length of this fuselage. (The noise keeps its position.)
+    TIGL_EXPORT void SetLength(double newLength);
+
+    // Return the maximal height of the fuselage
+    // The height is computed by reverting the fuselage rotation and building a bounding box around the fuselage
+    TIGL_EXPORT double GetMaximalHeight();
+
+    // Set the maximal height of the fuselage by
+    // inverting the rotation of the fuselage, bring the nose to the origin and scaling in the Z direction
+    TIGL_EXPORT void SetMaxHeight(double newMaxHeight);
+
+    // Return the maximal width of the fuselage
+    TIGL_EXPORT double GetMaximalWidth();
+
+    // Set the maximal width of the fuselage by inverting the rotation of the fuselage and scaling in the Y direction
+    TIGL_EXPORT void SetMaxWidth(double newMaxWidth);
+
+    /**
+     * If the element exists, the function returns the UID of the element that is stored right after the passed startElementUID within the fuselage.
+     * If not, a std::nullopt is returned.
+     * If the element with UID startElementUID does not exist, a CTiglError is thrown.
+     *
+     * @remark The function assumes that the elements are already ordered.
+     * @param startElementUID
+     * @return The element's UID that is stored after startElementUID if it exists.
+     */
+    TIGL_EXPORT std::optional<std::string> GetElementUIDAfterNewElement(std::string startElementUID);
+
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "After" the start element.
+     * If there is already an element after the start element, an eta has to be provided. This function will throw an error without an eta. 
+     * This can only happen when called directly.
+     *
+     * @param startElementUID
+     * @param sectionName
+     */
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID, std::string sectionName);
+
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "After" the start element.
+     * If there is already an element after the start element, we split the existing segment and insert the new element
+     * between the two elements.
+     *
+     * @param startElementUID
+     * @param sectionName
+     * @param eta
+     */
+    TIGL_EXPORT void CreateNewConnectedElementAfter(std::string startElementUID, double eta, std::string sectionName);
+
+    /**
+     * If the element exists, the function returns the UID of the element that is stored right before the passed startElementUID within the fuselage.
+     * If not, a std::nullopt is returned.
+     * If the element with UID startElementUID does not exist, a CTiglError is thrown.
+     *
+     * @remark The function assumes that the elements are already ordered.
+     * @param startElementUID
+     * @return The element's UID that is stored before startElementUID if it exists.
+     */
+    TIGL_EXPORT std::optional<std::string> GetElementUIDBeforeNewElement(std::string startElementUID);
+
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "Before" the start element.
+     * If there is already an element before the start element, an eta has to be provided. This function will throw an error without an eta. 
+     * This can only happen when called directly.
+     *
+     * @param startElementUID
+     * @param sectionName
+     */
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID, std::string sectionName);
+
+    /**
+     * Create a new section, a new element and connect the element to the "startElement".
+     * The new element is placed "Before" the start element.
+     * If there is already an element before the start element, we split the existing segment and insert the new element
+     * between the two elements.
+     *
+     * @param startElementUID
+     * @param sectionName
+     * @param eta
+     */
+    TIGL_EXPORT void CreateNewConnectedElementBefore(std::string startElementUID, double eta, std::string sectionName);
+
+    /**
+     * Create a new section, a new element and place the new element between the startElement and the endElement.
+     * The eta-position between the startElement and endElement is defined by the parameter eta in (0,1).
+     * @remark The startElement and endElement must be connected by a segment.
+     * @param startElementUID
+     * @param endElementUID
+     * @param eta
+     */
+    TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta = 0.5, std::string sectionName = "New_section_between");
+
+    TIGL_EXPORT void DeleteConnectedElement(std::string elementUID);
+
+    TIGL_EXPORT std::vector<std::string> GetOrderedConnectedElement();
+
+    TIGL_EXPORT std::vector<tigl::CTiglSectionElement*> GetCTiglElements();
+
+    /**
+     *
+     * @return Return all the uid of the profiles used by this fuselage
+     */
+    TIGL_EXPORT std::vector<std::string> GetAllUsedProfiles();
+
+     /**
+      * Set the profile uid of all the section elements of this fuselage.
+      * @param profileUID ; the profile UID to use
+      */
+    TIGL_EXPORT void SetAllProfiles(const std::string& profileUID);
+
+
 protected:
 
     void BuildCleanLoft(PNamedShape& cache) const;
@@ -137,6 +270,8 @@ protected:
     PNamedShape BuildLoft() const override;
 
     void SetFaceTraits(PNamedShape loft) const;
+
+    void SetFuselageHelper(CTiglFuselageHelper& cache) const ;
 
 private:
     // Invalidates internal state
@@ -155,7 +290,10 @@ private:
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
 
+    Cache<CTiglFuselageHelper, CCPACSFuselage> fuselageHelper;
+
     friend class CCPACSFuselageSegment;
+    friend class CTiglStandardizer;
 
     TiglGetPointBehavior getPointBehavior {asParameterOnSurface};
 };

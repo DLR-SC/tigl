@@ -450,3 +450,11 @@ TEST(TiglCommonFunctions, edgeGetPointTangentBasedOnParam_checkArgs)
     // Choose value too high
     EXPECT_THROW(EdgeGetPointTangentBasedOnParam(edge, 2.0, point, tangent), tigl::CTiglError);
 }
+
+
+TEST(TiglCommonFunctions, TiglAxisToCTiglPoint )
+{
+    EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_X_AXIS) == tigl::CTiglPoint(1,0,0));
+    EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_Y_AXIS) == tigl::CTiglPoint(0,1,0));
+    EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_Z_AXIS) == tigl::CTiglPoint(0,0,1));
+}

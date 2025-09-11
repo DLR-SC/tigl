@@ -303,12 +303,12 @@ namespace generated
         return m_transformation;
     }
 
-    const CPACSFuselageSections& CPACSDuct::GetSections() const
+    const CCPACSFuselageSections& CPACSDuct::GetSections() const
     {
         return m_sections;
     }
 
-    CPACSFuselageSections& CPACSDuct::GetSections()
+    CCPACSFuselageSections& CPACSDuct::GetSections()
     {
         return m_sections;
     }

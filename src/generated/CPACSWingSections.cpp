@@ -96,7 +96,7 @@ namespace generated
     {
         // read element section
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/section")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, 2, tixi::xsdUnbounded, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/section", m_sections, 2, tixi::xsdUnbounded, reinterpret_cast<CCPACSWingSections*>(this), m_uidMgr);
         }
 
     }
@@ -173,7 +173,7 @@ namespace generated
 
     CCPACSWingSection& CPACSWingSections::AddSection()
     {
-        m_sections.push_back(make_unique<CCPACSWingSection>(this, m_uidMgr));
+        m_sections.push_back(make_unique<CCPACSWingSection>(reinterpret_cast<CCPACSWingSections*>(this), m_uidMgr));
         return *m_sections.back();
     }
 

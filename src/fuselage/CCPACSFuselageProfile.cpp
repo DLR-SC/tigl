@@ -56,7 +56,9 @@
 #include "GeomAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "GeomAPI_IntCS.hxx"
-
+#include "Bnd_Box.hxx"
+#include "BRepBndLib.hxx"
+#include "BRepMesh_IncrementalMesh.hxx"
 #include "math.h"
 #include <iostream>
 #include <limits>
@@ -126,6 +128,7 @@ CCPACSFuselageProfile::CCPACSFuselageProfile(CCPACSFuselageProfiles* parent, CTi
     , wireCache(*this, &CCPACSFuselageProfile::BuildWires)
     , diameterPointsCache(*this, &CCPACSFuselageProfile::BuildDiameterPoints)
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
+    , sizeCache(*this, &CCPACSFuselageProfile::BuildSize)
 {
 }
 
@@ -163,6 +166,7 @@ void CCPACSFuselageProfile::InvalidateImpl(const boost::optional<std::string>& s
 {
     wireCache.clear();
     diameterPointsCache.clear();
+    sizeCache.clear();
 }
 
 // Returns the fuselage profile wire
@@ -300,7 +304,7 @@ void CCPACSFuselageProfile::BuildWiresSuperEllipse(WireCache& cache) const
 // Transforms a point by the fuselage profile transformation
 gp_Pnt CCPACSFuselageProfile::TransformPoint(const gp_Pnt& aPoint) const
 {
-    CTiglTransformation transformation;
+    CTiglTransformation transformation; // do nothing ?!
     return transformation.Transform(aPoint);
 }
 
@@ -377,6 +381,28 @@ TopoDS_Wire CCPACSFuselageProfile::GetDiameterWire() const
     TopoDS_Edge diameterEdge                = BRepBuilderAPI_MakeEdge(diameterCurve);
     TopoDS_Wire diameterWire                = BRepBuilderAPI_MakeWire(diameterEdge);
     return diameterWire;
+}
+
+void CCPACSFuselageProfile::BuildSize(SizeCache& cache) const
+{
+    TopoDS_Wire wire = GetWire(true);
+    BRepMesh_IncrementalMesh mesh(wire, 0.001); // tessellate the wire to have a more accurate bounding box.
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(wire, boundingBox);
+    CTiglPoint min, max;
+    boundingBox.Get(min.x, min.y, min.z, max.x, max.y, max.z);
+    cache.width  = max.y - min.y;
+    cache.height = max.z - min.z;
+}
+
+double CCPACSFuselageProfile::GetWidth() const
+{
+    return sizeCache->width;
+}
+
+double CCPACSFuselageProfile::GetHeight() const
+{
+    return sizeCache->height;
 }
 
 } // end namespace tigl

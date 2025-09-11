@@ -27,7 +27,10 @@
 namespace tigl
 {
 CCPACSWingSectionElement::CCPACSWingSectionElement(CCPACSWingSectionElements* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSWingElement(parent, uidMgr) {}
+    : generated::CPACSWingElement(parent, uidMgr)
+{
+    cTiglElement = CTiglWingSectionElement(this);
+}
 
 void CCPACSWingSectionElement::SetAirfoilUID(const std::string& value) {
     generated::CPACSWingElement::SetAirfoilUID(value);

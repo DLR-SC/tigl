@@ -327,12 +327,12 @@ namespace generated
         return m_transformation;
     }
 
-    const boost::optional<CPACSWingSections>& CPACSEnginePylon::GetSections() const
+    const boost::optional<CCPACSWingSections>& CPACSEnginePylon::GetSections() const
     {
         return m_sections;
     }
 
-    boost::optional<CPACSWingSections>& CPACSEnginePylon::GetSections()
+    boost::optional<CCPACSWingSections>& CPACSEnginePylon::GetSections()
     {
         return m_sections;
     }
@@ -357,7 +357,7 @@ namespace generated
         return m_positionings;
     }
 
-    CPACSWingSections& CPACSEnginePylon::GetSections(CreateIfNotExistsTag)
+    CCPACSWingSections& CPACSEnginePylon::GetSections(CreateIfNotExistsTag)
     {
         if (!m_sections)
             m_sections = boost::in_place(reinterpret_cast<CCPACSEnginePylon*>(this), m_uidMgr);

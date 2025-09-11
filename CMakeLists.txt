@@ -9,8 +9,8 @@ endif()
 
 cmake_minimum_required (VERSION 3.11.0)
 
-project (TIGL VERSION 3.4.0)
-set(TIGL_VERSION 3.4.0)
+project (TIGL VERSION 3.4.1)
+set(TIGL_VERSION 3.4.1)
 
 # enable C++17 support
 set(CMAKE_CXX_STANDARD 17)
@@ -127,7 +127,7 @@ add_custom_target(checkstyle)
 add_custom_target(checkstylexml)
 
 add_subdirectory(src)
-add_subdirectory(TIGLViewer)
+add_subdirectory(TIGLCreator)
 add_subdirectory(bindings)
 add_subdirectory(examples)
 
@@ -139,8 +139,9 @@ if(TIGL_BUILD_TESTS)
   enable_testing()
   option(gtest_force_shared_crt "" ON)
   mark_as_advanced(gtest_force_shared_crt gtest_build_tests gtest_build_samples gtest_disable_pthreads)
-  add_subdirectory ("thirdparty/googletest" EXCLUDE_FROM_ALL)
+  message(STATUS "Download and configure the TIGL gtest Testsuite")
   add_subdirectory(tests)
+  message(STATUS "Download and configure the TIGL gtest Testsuite  - Success")
 endif(TIGL_BUILD_TESTS)
 
 include(createDoc)
@@ -148,28 +149,19 @@ include(createDoc)
 
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Siggel") #required for debian/ubuntu
 set(CPACK_PACKAGE_VENDOR "www.dlr.de/sc")
-if(TIGL_NIGHTLY)
-  string(SUBSTRING ${TIGL_REVISION} 0 8 TIGL_REV_SHORT)
-  set(CPACK_PACKAGE_VERSION ${TIGL_VERSION}-r${TIGL_REV_SHORT})
-  set(CPACK_PACKAGE_VERSION_PATCH ${TIGL_VERSION_PATCH}-r${TIGL_REV_SHORT})
-else()
-  set(CPACK_PACKAGE_VERSION ${TIGL_VERSION})
-  set(CPACK_PACKAGE_VERSION_PATCH ${TIGL_VERSION_PATCH})
-endif()
-set(CPACK_PACKAGE_VERSION_MAJOR ${TIGL_VERSION_MAJOR})
-set(CPACK_PACKAGE_VERSION_MINOR ${TIGL_VERSION_MINOR})
+
 
 set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
 set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "TIGL") 
 
-set(CPACK_NSIS_MUI_ICON ${PROJECT_SOURCE_DIR}/TIGLViewer/TIGLViewer.ico)
-set(CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/TIGLViewer/TIGLViewer.ico)
+set(CPACK_NSIS_MUI_ICON ${PROJECT_SOURCE_DIR}/TIGLCreator/TIGLCreator.ico)
+set(CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/TIGLCreator/TIGLCreator.ico)
 
 # set installer icon
 if(WIN32)
-    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLViewer/gfx\\\\TIGLViewerNSIS.bmp)
+    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLCreator/gfx\\\\TIGLCreatorNSIS.bmp)
 elseif(APPLE)
-    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLViewer/gfx/TiGL-Viewer3.icns)
+    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLCreator/gfx/TIGL-Creator.icns)
 endif()
 
 # set generators
@@ -194,16 +186,23 @@ endif()
 
 if (APPLE)
   set(CPACK_PACKAGE_EXECUTABLES
-    "TiGL-Viewer3" "TiGL Viewer 3"
+    "TiGL-Creator" "TiGLCreator"
   )
 else(APPLE)
   set(CPACK_PACKAGE_EXECUTABLES
-    "tiglviewer-3" "TiGL Viewer 3"
+    "tiglcreator" "TiGLCreator"
   )
 endif(APPLE)
 
+set(CPACK_PACKAGE_NAME "TIGL-Creator")
+
+set(CPACK_PACKAGE_VERSION_MAJOR 0)
+set(CPACK_PACKAGE_VERSION_MINOR 2)
+set(CPACK_PACKAGE_VERSION_PATCH 0)
+set(CPACK_COMPONENTS_ALL "creator;docu")
 include(CPack)
-cpack_add_component(viewer DISPLAY_NAME "TiGL Viewer + 3rd Party DLLs")
+set(CPACK_PACKAGE_VERSION "0.2.0")
+cpack_add_component(creator DISPLAY_NAME "TiGLCreator + 3rd Party DLLs")
 cpack_add_component(headers DISPLAY_NAME "Headers")
 cpack_add_component(cpp_bindings DISPLAY_NAME "Internal C++ Bindings")
 cpack_add_component(interfaces DISPLAY_NAME "Interfaces/Bindings")

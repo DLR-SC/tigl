@@ -19,14 +19,16 @@
 
 #include <tixicpp.h>
 
-#ifndef BOOST_DATE_TIME_NO_LIB
-    #define BOOST_DATE_TIME_NO_LIB
-#endif
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <chrono>
 
 #include <ctime>
 #include <limits>
 #include <string>
+#include <ctime>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+#include <sstream>
 
 #include "UniquePtr.h"
 #ifndef CPACS_GEN
@@ -38,7 +40,13 @@ namespace tixi
 {
     inline std::time_t TixiGetTimeTElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        return boost::posix_time::to_time_t(boost::posix_time::from_iso_extended_string(TixiGetTextElement(tixiHandle, xpath)));
+        std::string datetimeStr = TixiGetTextElement(tixiHandle, xpath);
+
+        std::tm tm = {};
+        std::istringstream ss(datetimeStr);
+        ss >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%S");
+
+        return std::mktime(&tm);
     }
 
     template<>
@@ -47,9 +55,16 @@ namespace tixi
         return TixiGetTimeTElement(tixiHandle, xpath);
     }
 
+    inline std::string to_iso_extended_string(std::time_t value)
+    {
+        std::ostringstream oss;
+        oss << std::put_time(std::gmtime(&value), "%Y-%m-%dT%H:%M:%S");
+        return oss.str();
+    }
+
     inline void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::time_t value)
     {
-        TixiSaveElement(tixiHandle, xpath, boost::posix_time::to_iso_extended_string(boost::posix_time::from_time_t(value)));
+        TixiSaveElement(tixiHandle, xpath, to_iso_extended_string(value));
     }
 
     constexpr auto xsdUnbounded = std::numeric_limits<unsigned int>::max();

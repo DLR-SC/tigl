@@ -90,6 +90,9 @@ public:
     // Returns the class which holds all wing profiles
     TIGL_EXPORT boost::optional<CCPACSFuselageProfiles&> GetFuselageProfiles();
 
+    // Returns the profiles
+    TIGL_EXPORT boost::optional<CCPACSProfiles>& GetProfiles();
+
     // Returns the wing or rotor profile for a given uid.
     TIGL_EXPORT const CCPACSWingProfile& GetWingProfile(std::string uid) const;
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid);
@@ -251,6 +254,7 @@ public:
 
     TIGL_EXPORT boost::optional<const CCPACSACSystems&> GetACSystems() const;
     TIGL_EXPORT boost::optional<CCPACSACSystems&> GetACSystems();
+
 
 private:
     // Copy constructor

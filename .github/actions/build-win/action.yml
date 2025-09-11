@@ -67,11 +67,17 @@ runs:
         environment-file: environment.yml
         auto-activate-base: false
 
-    - name: Install dependencies (static opencascade)
+    - name: Remove dynamic FreeImage, FreeType and OCCT (static opencascade)
       if: inputs.oce_static_libs == 'ON'
       shell: cmd /C call {0}
       run: |
-        conda install opencascade-static=7.4.0 tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
+        conda remove opencascade freeimageplus freetype -y
+
+    - name: Install dependencies static FreeImage, FreeType and OCCT (static opencascade)
+      if: inputs.oce_static_libs == 'ON'
+      shell: cmd /C call {0}
+      run: |
+        conda install opencascade-static=7.6.2 pythonocc-core tbb tbb-devel freetype-static=2.6 freeimageplus-static -c dlr-sc -c dlr-sc/label/tigl-dev
     
     - name: Conda info
       shell: cmd /C call {0}
@@ -99,7 +105,6 @@ runs:
                          -DTIGL_BINDINGS_MATLAB=ON ^
                          -DTIGL_BINDINGS_JAVA=ON ^
                          -DTIGL_NIGHTLY=${{ inputs.tigl-nightly }} ^
-                         -DPythonOCC_SOURCE_DIR=C:\Miniconda\envs\tigl-bld\Library\src\pythonocc-core ^
                          -DMATLAB_DIR=C:\Miniconda\envs\tigl-bld\Library\share\matlab ^
                          -DTIGL_ENABLE_COVERAGE=${{ inputs.tigl_enable_coverage }}
         cmake --build . -j 4 --target install

@@ -344,12 +344,12 @@ namespace generated
         return m_transformation;
     }
 
-    const CPACSWingSections& CPACSWing::GetSections() const
+    const CCPACSWingSections& CPACSWing::GetSections() const
     {
         return m_sections;
     }
 
-    CPACSWingSections& CPACSWing::GetSections()
+    CCPACSWingSections& CPACSWing::GetSections()
     {
         return m_sections;
     }

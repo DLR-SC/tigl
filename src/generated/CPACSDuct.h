@@ -20,13 +20,13 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSDuctStructure.h>
+#include <CCPACSFuselageSections.h>
 #include <CCPACSFuselageSegments.h>
 #include <CCPACSPositionings.h>
 #include <CCPACSTransformation.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
-#include "CPACSFuselageSections.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -79,8 +79,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSTransformation>& GetTransformation() const;
         TIGL_EXPORT virtual boost::optional<CCPACSTransformation>& GetTransformation();
 
-        TIGL_EXPORT virtual const CPACSFuselageSections& GetSections() const;
-        TIGL_EXPORT virtual CPACSFuselageSections& GetSections();
+        TIGL_EXPORT virtual const CCPACSFuselageSections& GetSections() const;
+        TIGL_EXPORT virtual CCPACSFuselageSections& GetSections();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSPositionings>& GetPositionings() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPositionings>& GetPositionings();
@@ -117,7 +117,7 @@ namespace generated
 
         boost::optional<CCPACSTransformation> m_transformation;
 
-        CPACSFuselageSections                 m_sections;
+        CCPACSFuselageSections                m_sections;
 
         boost::optional<CCPACSPositionings>   m_positionings;
 

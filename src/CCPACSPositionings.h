@@ -53,12 +53,34 @@ public:
     // Read CPACS positionings element
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& wingXPath) override;
 
+    // Invalidates internal state
+    TIGL_EXPORT void Invalidate();
+
     /**
      * @brief GetPositioningTransformation returns the positioning matrix for a given section-uid
      * @param sectionIndex
      * @return Returns CTiglTransformation positioning matrix by sectionIndex
      */
-    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionIndex);
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionUID);
+
+    /**
+     * Set positioning transformation.
+     * This function will take a section UID and will set the positioning of this section such that
+     * the positioning obtained by this section is equal to the given position.
+     * @Remark, If the section has no postioning associated to it, the function will create a new positioning that has no
+     * from element.
+     * @param sectionUID: The section that will be modified
+     * @param newPosition: The new final position given by positionings for this section.
+     * @param moveDependentPositionings: If true, the sections depending on the positioning of sectionUID will also move.
+     * If false, the sections depending on this will stay at the same place. That means that the function will update
+     * the parameters of the dependent positonings.
+     * @remark No verification is performed on the section UID. So, if the section is not present, a dirty useless
+     * positioning will be created.
+     */
+    TIGL_EXPORT void SetPositioningTransformation(const std::string& sectionUID, CTiglPoint newPosition, bool moveDependentPositionings = false);
+
+
+    TIGL_EXPORT CCPACSPositioning& CreatePositioning(const std::string& fromUID, const std::string& toUID, const CTiglPoint& delta );
 
     // Cleanup routine
     TIGL_EXPORT void Cleanup();

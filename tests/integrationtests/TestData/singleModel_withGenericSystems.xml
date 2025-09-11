@@ -34,7 +34,7 @@
             <genericSystem uID="mySystemUID" symmetry="x-z-plane">
               <name>My example system</name>
               <parentUID>None</parentUID>
-              <description>Example system component for testing the visualization in TIGLViewer</description>
+              <description>Example system component for testing the visualization in TIGLCreator</description>
               <geometricBaseType>cone</geometricBaseType>
               <transformation uID="transformationUID123764_0">
                 <translation refType="absGlobal" uID="transformationUID123764_0_translation1">
@@ -57,7 +57,7 @@
             <genericSystem uID="mySystemUID2" symmetry="x-z-plane">
               <name>My example system</name>
               <parentUID>None</parentUID>
-              <description>Example system component for testing the visualization in TIGLViewer</description>
+              <description>Example system component for testing the visualization in TIGLCreator</description>
               <geometricBaseType>cylinder</geometricBaseType>
               <transformation uID="transformationUID164">
                 <translation refType="absGlobal" uID="transformationUID164_translation1">
@@ -80,7 +80,7 @@
             <genericSystem uID="mySystemUID3" symmetry="x-z-plane">
               <name>My example system</name>
               <parentUID>None</parentUID>
-              <description>Example system component for testing the visualization in TIGLViewer</description>
+              <description>Example system component for testing the visualization in TIGLCreator</description>
               <geometricBaseType>cube</geometricBaseType>
               <transformation uID="transformationUID123764_1">
                 <translation refType="absGlobal" uID="transformationUID123764_1_translation1">
@@ -103,7 +103,7 @@
             <genericSystem uID="mySystemUID4" symmetry="x-z-plane">
               <name>My example system</name>
               <parentUID>None</parentUID>
-              <description>Example system component for testing the visualization in TIGLViewer</description>
+              <description>Example system component for testing the visualization in TIGLCreator</description>
               <geometricBaseType>sphere</geometricBaseType>
               <transformation uID="transformationUID123764_2">
                 <translation refType="absGlobal" uID="transformationUID123764_2_translation1">

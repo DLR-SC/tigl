@@ -148,6 +148,11 @@ public:
     // Clears the uid store
     TIGL_EXPORT void Clear();
 
+    // Create a unique uid base on the the given UID.
+    // If the given UID is not present in the file, the function returns the given UID without any change.
+    // Otherwise, the function adds a prefix to make the UID unique and returns it
+    TIGL_EXPORT std::string MakeUIDUnique(const std::string& baseUID) const;
+
 private:
     // Function to add a UID and a geometric component to the uid store.
     void AddGeometricComponent(const std::string& uid, ITiglGeometricComponent* componentPtr);

@@ -37,10 +37,12 @@ CPACSGenericSystems                CCPACSGenericSystems
 CPACSGenericSystem                 CCPACSGenericSystem
 
 CPACSFuselage                      CCPACSFuselage
+CPACSFuselages                     CCPACSFuselages
 CPACSFuselageProfiles              CCPACSFuselageProfiles
 CPACSFuselageSegment               CCPACSFuselageSegment
 CPACSFuselageSegments              CCPACSFuselageSegments
 CPACSFuselageSection               CCPACSFuselageSection
+CPACSFuselageSections              CCPACSFuselageSections
 CPACSFuselageElement               CCPACSFuselageSectionElement
 CPACSFuselageElements              CCPACSFuselageSectionElements
 
@@ -60,6 +62,7 @@ CPACSWingRibsPositioning           CCPACSWingRibsPositioning
 CPACSWingElement                   CCPACSWingSectionElement
 CPACSWingElements                  CCPACSWingSectionElements
 CPACSWingSection                   CCPACSWingSection
+CPACSWingSections                  CCPACSWingSections
 CPACSWingComponentSegmentStructure CCPACSWingCSStructure
 CPACSWingShell                     CCPACSWingShell
 CPACSWingSegment                   CCPACSWingSegment

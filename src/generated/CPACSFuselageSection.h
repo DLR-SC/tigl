@@ -29,11 +29,10 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSFuselageSections;
 
 namespace generated
 {
-    class CPACSFuselageSections;
-
     // This class is used in:
     // CPACSFuselageSections
 
@@ -45,13 +44,13 @@ namespace generated
     class CPACSFuselageSection : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSFuselageSection(CPACSFuselageSections* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuselageSection(CCPACSFuselageSections* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFuselageSection();
 
-        TIGL_EXPORT CPACSFuselageSections* GetParent();
+        TIGL_EXPORT CCPACSFuselageSections* GetParent();
 
-        TIGL_EXPORT const CPACSFuselageSections* GetParent() const;
+        TIGL_EXPORT const CCPACSFuselageSections* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -78,7 +77,7 @@ namespace generated
         TIGL_EXPORT virtual CCPACSFuselageSectionElements& GetElements();
 
     protected:
-        CPACSFuselageSections* m_parent;
+        CCPACSFuselageSections* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -104,7 +103,4 @@ namespace generated
 } // namespace generated
 
 // CPACSFuselageSection is customized, use type CCPACSFuselageSection directly
-
-// Aliases in tigl namespace
-using CCPACSFuselageSections = generated::CPACSFuselageSections;
 } // namespace tigl

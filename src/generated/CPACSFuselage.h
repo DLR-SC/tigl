@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSFuselageSections.h>
 #include <CCPACSFuselageSegments.h>
 #include <CCPACSFuselageStructure.h>
 #include <CCPACSPositionings.h>
@@ -27,7 +28,6 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include "CPACSCompartments.h"
-#include "CPACSFuselageSections.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
@@ -36,11 +36,10 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSFuselages;
 
 namespace generated
 {
-    class CPACSFuselages;
-
     // This class is used in:
     // CPACSFuselages
 
@@ -53,13 +52,13 @@ namespace generated
     class CPACSFuselage : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSFuselage(CPACSFuselages* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFuselage();
 
-        TIGL_EXPORT CPACSFuselages* GetParent();
+        TIGL_EXPORT CCPACSFuselages* GetParent();
 
-        TIGL_EXPORT const CPACSFuselages* GetParent() const;
+        TIGL_EXPORT const CCPACSFuselages* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -88,8 +87,8 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
-        TIGL_EXPORT virtual const CPACSFuselageSections& GetSections() const;
-        TIGL_EXPORT virtual CPACSFuselageSections& GetSections();
+        TIGL_EXPORT virtual const CCPACSFuselageSections& GetSections() const;
+        TIGL_EXPORT virtual CCPACSFuselageSections& GetSections();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSPositionings>& GetPositionings() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPositionings>& GetPositionings();
@@ -113,7 +112,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveCompartments();
 
     protected:
-        CPACSFuselages* m_parent;
+        CCPACSFuselages* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -133,7 +132,7 @@ namespace generated
 
         CCPACSTransformation                     m_transformation;
 
-        CPACSFuselageSections                    m_sections;
+        CCPACSFuselageSections                   m_sections;
 
         boost::optional<CCPACSPositionings>      m_positionings;
 
@@ -156,7 +155,4 @@ namespace generated
 } // namespace generated
 
 // CPACSFuselage is customized, use type CCPACSFuselage directly
-
-// Aliases in tigl namespace
-using CCPACSFuselages = generated::CPACSFuselages;
 } // namespace tigl

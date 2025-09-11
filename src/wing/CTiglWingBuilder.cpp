@@ -64,10 +64,16 @@ PNamedShape CTiglWingBuilder::BuildShape()
 
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
         const TopoDS_Shape& startWire = segments.GetSegment(i).GetInnerWire();
+        if (hasBluntTE != segments.GetSegment(i).GetInnerConnection().GetProfile().HasBluntTE()) {
+            throw CTiglError("Cannot mix profiles with blunt and sharp trailing edges in one wing.", TIGL_ERROR);
+        }
         lofter.addProfiles(startWire);
     }
 
     TopoDS_Wire endWire =  segments.GetSegment(segments.GetSegmentCount()).GetOuterWire();
+    if (hasBluntTE != segments.GetSegment(segments.GetSegmentCount()).GetInnerConnection().GetProfile().HasBluntTE()) {
+        throw CTiglError("Cannot mix profiles with blunt and sharp trailing edges in one wing.", TIGL_ERROR);
+    }
     lofter.addProfiles(endWire);
 
     // add guide curves

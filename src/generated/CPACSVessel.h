@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSFuselageSections.h>
 #include <CCPACSFuselageSegments.h>
 #include <CCPACSTransformation.h>
 #include <CCPACSVesselStructure.h>
@@ -26,7 +27,6 @@
 #include <tixi.h>
 #include "CPACSDomeType.h"
 #include "CPACSFuelTankVolume.h"
-#include "CPACSFuselageSections.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -79,8 +79,8 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSFuselageSections>& GetSections_choice1() const;
-        TIGL_EXPORT virtual boost::optional<CPACSFuselageSections>& GetSections_choice1();
+        TIGL_EXPORT virtual const boost::optional<CCPACSFuselageSections>& GetSections_choice1() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSFuselageSections>& GetSections_choice1();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSFuselageSegments>& GetSegments_choice1() const;
         TIGL_EXPORT virtual boost::optional<CCPACSFuselageSegments>& GetSegments_choice1();
@@ -103,7 +103,7 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetBurstPressure() const;
         TIGL_EXPORT virtual void SetBurstPressure(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual CPACSFuselageSections& GetSections_choice1(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSFuselageSections& GetSections_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSections_choice1();
 
         TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments_choice1(CreateIfNotExistsTag);
@@ -133,7 +133,7 @@ namespace generated
 
         CCPACSTransformation                    m_transformation;
 
-        boost::optional<CPACSFuselageSections>  m_sections_choice1;
+        boost::optional<CCPACSFuselageSections> m_sections_choice1;
 
         boost::optional<CCPACSFuselageSegments> m_segments_choice1;
 
