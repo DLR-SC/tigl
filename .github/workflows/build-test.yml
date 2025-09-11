@@ -33,7 +33,7 @@ on:
       pixienv:
         description: "Which pixi environment to use"
         required: false 
-        default: "occt-dynamic"
+        default: "default"
         type: string
 
       documentation:
@@ -60,39 +60,54 @@ jobs:
         uses: egor-tensin/vs-shell@v2
         with:
           arch: x64
-      - uses: hendrikmuhs/ccache-action@v1
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1
         if: startsWith(inputs.os, 'windows') == false
         with:
           key: compiler-cache-${{ inputs.os }}-${{ inputs.config }}-${{ inputs.pixienv }}
-      - name: Run sccache-cache
+      - name: Setup sccache
         if: startsWith(inputs.os, 'windows')
         uses: mozilla-actions/sccache-action@v0.0.9
-      - uses: prefix-dev/setup-pixi@v0.9.0
+
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0.9.0
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
           environments: ${{ inputs.pixienv }}
 
       # configure, build and install tigl3
-      - run: pixi run -e ${{ inputs.pixienv }} configure ${{ inputs.config }} ${{ inputs.nightly }}
+      - name: Configure TiGL (Linux, MacOS)
+        run: pixi run -e ${{ inputs.pixienv }} configure ${{ inputs.config }} ${{ inputs.nightly }}
         if: startsWith(inputs.os, 'windows') == false
         env:
           CMAKE_CXX_COMPILER_LAUNCHER: ccache
-      - run: pixi run -e ${{ inputs.pixienv }} configure ${{ inputs.config }} ${{ inputs.nightly }}
+      - name: Configure TiGL (Windows)
+        run: pixi run -e ${{ inputs.pixienv }} configure ${{ inputs.config }} ${{ inputs.nightly }}
         if: startsWith(inputs.os, 'windows')
         env:
           CMAKE_CXX_COMPILER_LAUNCHER: sccache
           SCCACHE_GHA_ENABLED: "true"
-      - run: pixi run -e ${{ inputs.pixienv }} install -j4
+      - name: Build and install TiGL
+        run: pixi run -e ${{ inputs.pixienv }} install -j4
 
       # save build artifacts
+
+      - name: Create build archive
+        run: tar -czf build.tar.gz build
+      - name: Upload build archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ inputs.os }}-${{ inputs.config }}-${{ inputs.pixienv }}
+          path: build.tar.gz
+          retention-days: 1
 
       - name: Create documentation
         if: inputs.documentation == 'ON' || inputs.package == 'ON'
         run: |
           cd build
           cmake --build . --target doc
-      - name: Upload documentation as artifact
+      - name: Upload documentation
         if: inputs.documentation == 'ON'
         uses: actions/upload-artifact@v4
         with:
@@ -103,45 +118,36 @@ jobs:
         if: startsWith(inputs.os, 'macos') && inputs.package == 'ON'
         uses: nick-fields/retry@v3  # see https://github.com/actions/runner-images/issues/7522
         with:
-          max_attempts: 3
+          max_attempts: 5
           timeout_minutes: 10
           command: cd build && cmake --build . --target package
       - name: Upload MacOS package 
+        if: startsWith(inputs.os, 'macos') && inputs.package == 'ON'
         uses: actions/upload-artifact@v4
-        if: startsWith(inputs.os, 'maos') && inputs.package == 'ON'
         with:
          name: macos-package
          path: build/*.dmg
 
-      - name: Create windows package
+      - name: Create Windows package
         if: startsWith(inputs.os, 'windows') && inputs.package == 'ON'
         shell: cmd
         run: |
           cd build
           cmake --build . --target doc
           cpack.exe -G ZIP & cpack.exe -G NSIS
-      - name: Upload windows package as artifact
+      - name: Upload Windows package
         if: startsWith(inputs.os, 'windows') && inputs.package == 'ON'
         uses: actions/upload-artifact@v4
         with:
           name: win-package
           path: build/*.zip
 
-      - name: Upload windows installer as artifact
-        if: startsWith(inputs.os, 'windows')
+      - name: Upload Windows installer
+        if: startsWith(inputs.os, 'windows') && inputs.package == 'ON'
         uses: actions/upload-artifact@v4
         with:
          name: win-installer
          path: build/*.exe
-
-
-      - name: create build archive
-        run: tar -czf build.tar.gz build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: build-${{ inputs.os }}-${{ inputs.config }}
-          path: build.tar.gz
-          retention-days: 1
 
   test:
     runs-on: ${{ inputs.os }}
@@ -151,17 +157,20 @@ jobs:
       - name: Download build directory
         uses: actions/download-artifact@v4
         with:
-          name: build-${{ inputs.os }}-${{ inputs.config }}
-      - name: extract build archive
+          name: build-${{ inputs.os }}-${{ inputs.config }}-${{ inputs.pixienv }}
+      - name: Extract build archive
         run: tar -xzf build.tar.gz
-      - uses: prefix-dev/setup-pixi@v0.9.0
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0.9.0
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
-      - run: pixi run -e ${{ inputs.pixienv }} tests
 
-      - name: Publish coverage report to codecov.io (ubuntu debug)
-        if: ${{ inputs.pixienv }} == 'coverage' && ${{ inputs.config }} == 'Debug'
+      - name: Run unit and integration tests
+        run: pixi run -e ${{ inputs.pixienv }} tests
+
+      - name: Publish coverage report to codecov.io
+        if: ${{ inputs.pixienv == 'coverage' }}
         uses: codecov/codecov-action@v4
         with:
           files: ./build/tests/unittests/coverageReport-unit.info,./build/tests/integrationtests/coverageReport-integration.info
