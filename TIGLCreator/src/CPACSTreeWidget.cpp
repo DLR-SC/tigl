@@ -20,6 +20,9 @@
 #include "ui_CPACSTreeWidget.h"
 #include "CTiglLogging.h"
 
+#include<QMenu>
+#include <QDebug>
+
 CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::CPACSTreeWidget)
@@ -45,12 +48,79 @@ CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
 
     connect(ui->searchLineEdit, SIGNAL(textEdited(const QString)), this, SLOT(setNewSearch(const QString)));
 
+    connect(ui->treeView, &CPACSTreeView::customContextMenuRequested, this, &CPACSTreeWidget::onCustomContextMenuRequested);
+
 }
 
 CPACSTreeWidget::~CPACSTreeWidget()
 {
     delete ui;
 }
+
+void CPACSTreeWidget::onCustomContextMenuRequested(const QPoint &pos)
+{
+    QModelIndex index = ui->treeView->indexAt(pos);
+    if (!index.isValid()){
+        return;
+    }
+
+    QModelIndex parent = index.parent();
+    if (!parent.isValid() || !parent.data(Qt::UserRole).toBool()) {
+        return;
+    }
+
+    QRect rect = ui->treeView->visualRect(index);
+    cpcr::CPACSTreeItem* item = filterModel->getItem(index);
+
+    int item_idx = item->positionRelativelyToParent();
+    cpcr::CPACSTreeItem* item_parent = item->getParent();
+    auto siblings = item_parent->getChildren();
+
+    const int margin = 4;
+    QPoint globalPos = ui->treeView->viewport()->mapToGlobal(pos);
+
+    if (pos.y() < rect.top() + margin) {
+        if (item_idx == 0 ) {
+            qDebug() << "Before " << item->getUid().c_str();
+        } else {
+            qDebug() << "Between " << siblings[item_idx-1]->getUid().c_str() << " and " << item->getUid().c_str();
+        }
+        showInsertMenu(globalPos);//, *above, index);
+    } else if (pos.y() > rect.bottom() - margin) {
+        if (item_idx < siblings.size()-1 ) {
+            qDebug() << "Between " << item->getUid().c_str() << " and " << siblings[item_idx+1]->getUid().c_str();
+        } else {
+            qDebug() << "After " << item->getUid().c_str();
+        }
+        showInsertMenu(globalPos);//, index, *below);
+    } else {
+        // right-click inside an item -> normal item menu
+        QMenu menu;
+        menu.addAction(QStringLiteral("Item action: %1").arg(index.data(0).toString()));
+        menu.exec(globalPos);
+    }
+}
+
+void CPACSTreeWidget::showInsertMenu(const QPoint &globalPos)//, QTreeWidgetItem* above, QTreeWidgetItem* below)
+{
+    QMenu menu;
+    QAction *act = menu.addAction(QStringLiteral("Add element between"));
+    connect(act, &QAction::triggered, this, [this/*, above, below*/]() {
+        auto *newItem = new QTreeWidgetItem();
+        newItem->setText(0, QStringLiteral("New Element"));
+
+//        QModelIndex parent = above.isValid() ? above.parent() : below.parent();
+//        if (parent.isValid()) {
+//            int idx = parent.indexOfChild(below);
+//            parent->insertChild(idx, newItem);
+//        } else {
+//            int idx = indexOfTopLevelItem(below);
+//            insertTopLevelItem(idx, newItem);
+//        }
+    });
+    menu.exec(globalPos);
+}
+
 
 void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, const QItemSelection& oldSelection)
 {

@@ -57,6 +57,8 @@ signals:
 
 private slots:
 
+    void onCustomContextMenuRequested(QPoint const& pos);
+
     void onSelectionChanged(const QItemSelection& newSelection, const QItemSelection& oldSelection);
 
     void setNewSearch(const QString newText);
@@ -92,6 +94,8 @@ public:
 
 private:
 
+    void showInsertMenu(QPoint const& globalPos);//, QTreeWidgetItem* above, QTreeWidgetItem* below);
+
     void setTreeViewColumnsDisplay();
 
     Ui::CPACSTreeWidget* ui;
@@ -99,6 +103,9 @@ private:
     cpcr::CPACSTree tree;
     CPACSFilterModel* filterModel;
     QItemSelectionModel* selectionModel;
+
+    // needed for the context menu between two tree entries
+    QPoint hoverPos;
 };
 
 #endif // CPACSTREEWIDGET_H
