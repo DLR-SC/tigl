@@ -101,9 +101,11 @@ jobs:
 
       - name: Create MacOS package
         if: startsWith(inputs.os, 'macos') && inputs.package == 'ON'
-        run: |
-          cd build
-          cmake --build . --target package
+        uses: nick-fields/retry@v3  # see https://github.com/actions/runner-images/issues/7522
+        with:
+          max_attempts: 3
+          timeout_minutes: 10
+          command: cd build && cmake --build . --target package
       - name: Upload MacOS package 
         uses: actions/upload-artifact@v4
         if: startsWith(inputs.os, 'maos') && inputs.package == 'ON'
