@@ -76,8 +76,8 @@ configure = { cmd = [
         { "arg" = "config", "default"="Release"},
         { "arg" = "nightly", "default"="ON"},
 ]}
-build = { cmd = "cmake --build . -j 4", cwd = "build" }
-install = { cmd = "cmake --build . --target install -j 4", cwd = "build" }
+build = { cmd = "cmake --build . {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}]}
+install = { cmd = "cmake --build . --target install {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}] }
 unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
 integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests"}
 tests = [ {task = "unittests"}, {task = "integrationtests"} ]
