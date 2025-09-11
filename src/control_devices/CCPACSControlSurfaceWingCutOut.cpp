@@ -21,7 +21,7 @@
 #include "CCPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSLeadingEdgeDevice.h"
-#include "CTiglRelativelyPositionedComponent"
+#include "CTiglRelativelyPositionedComponent.h"
 #include "CNamedShape.h"
 #include "Debugging.h"
 #include "generated/CPACSCutOutControlPoint.h"
