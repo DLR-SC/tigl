@@ -91,7 +91,6 @@ void ModificatorWingWidget::init()
                                              .arg("An unknown exception occured."));
                 errDialog.setWindowTitle("Error");
                 errDialog.exec();
-                return false;
             }
         }
     );
