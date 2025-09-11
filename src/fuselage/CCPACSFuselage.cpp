@@ -852,7 +852,6 @@ void CCPACSFuselage::CreateNewConnectedElementAfter(std::string startElementUID,
     auto elementUIDAfter = GetElementUIDAfterNewElement(startElementUID);
     if (elementUIDAfter) {
         CreateNewConnectedElementBetween(startElementUID, *elementUIDAfter, 0.5, sectionName);
-        throw tigl::CTiglError("No eta is specified, but the new section lies between two sections.");
     }
     else {
         // in this case we simply need to find the previous element and call the appropriate function
@@ -938,7 +937,6 @@ void CCPACSFuselage::CreateNewConnectedElementBefore(std::string startElementUID
     auto elementUIDBefore = GetElementUIDBeforeNewElement(startElementUID);
     if (elementUIDBefore) {
         CreateNewConnectedElementBetween(*elementUIDBefore, startElementUID, 0.5, sectionName);
-        throw tigl::CTiglError("No eta is specified, but the new section lies between two sections.");
     }
     else {
         std::vector<std::string> elementsAfter  =  ListFunctions::GetElementsAfter(fuselageHelper->GetElementUIDsInOrder(), startElementUID);
