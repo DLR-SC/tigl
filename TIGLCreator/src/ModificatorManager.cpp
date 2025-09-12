@@ -45,6 +45,7 @@ ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
     // signals:
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this,
             SLOT(dispatch(cpcr::CPACSTreeItem*)));
+    connect(treeWidget, &CPACSTreeWidget::deleteElementRequested, this, &ModificatorManager::onDeleteSectionRequested);
 
     connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()) );
 }
@@ -190,25 +191,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
     }
     else if (item->getType() == "sections" ) {
         std::string bodyUID = item->getParent()->getUid(); // return the fuselage or wing uid
-        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
-
-        auto get_element_interface = [](tigl::CTiglUIDManager::TypedPtr const& ptr) {
-            if (ptr.type == &typeid(tigl::CCPACSWing)) {
-                tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing*>(ptr.ptr);
-                return Ui::ElementModificatorInterface(wing);
-            }
-            else if (ptr.type == &typeid(tigl::CCPACSFuselage)) {
-                tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage*>(ptr.ptr);
-                return Ui::ElementModificatorInterface(fuselage);
-            }
-            else {
-                LOG(ERROR) << "ModificatorManager:: Unexpected sections type!";
-                return Ui::ElementModificatorInterface(tigl::CCPACSFuselage(nullptr, nullptr));
-            }
-        };
-
-        auto element = get_element_interface(typePtr);
+        auto element = resolve(bodyUID);
         modificatorContainerWidget->setSectionsModificator(std::move(element));
     }
     else if (item->getType() == "positioning" ) {
@@ -304,12 +287,53 @@ void ModificatorManager::standardize(bool useSimpleDecomposition)
 
 }
 
+Ui::ElementModificatorInterface ModificatorManager::resolve(const std::string &uid) const
+{
+    tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+    tigl::CTiglUIDManager::TypedPtr ptr = uidManager.ResolveObject(uid);
+    if (ptr.type == &typeid(tigl::CCPACSWing)) {
+        tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing*>(ptr.ptr);
+        return Ui::ElementModificatorInterface(wing);
+    }
+    else if (ptr.type == &typeid(tigl::CCPACSFuselage)) {
+        tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage*>(ptr.ptr);
+        return Ui::ElementModificatorInterface(fuselage);
+    }
+    else {
+        LOG(ERROR) << "ModificatorManager:: Unexpected sections type!";
+        return Ui::ElementModificatorInterface(tigl::CCPACSFuselage(nullptr, nullptr));
+    }
+}
+
 void ModificatorManager::unHighlight()
 {
     for (int i = 0; i < highligthteds.size(); i++) {
         scene->removeShape(highligthteds[i]);
     }
     highligthteds.clear();
+}
+
+void ModificatorManager::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
+{
+    if (item == nullptr) {
+        return;
+    }
+
+    auto* sections = item->getParent(); // should be sections
+    if (sections == nullptr) {
+        return;
+    }
+    auto* parent = sections->getParent(); // should be wing or fuselage
+    if (parent == nullptr) {
+        return;
+    }
+    auto element = resolve(parent->getUid());
+
+    //TODO get element uid from section uid
+    auto elem_uid = item->getUid();
+
+    element.DeleteConnectedElement(elem_uid);
+    createUndoCommand();
 }
 
 void ModificatorManager::highlight(std::vector<tigl::CTiglSectionElement*> elements)
