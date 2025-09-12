@@ -54,6 +54,7 @@ class CPACSTreeWidget : public QWidget
 signals:
 
     void newSelectedTreeItem(cpcr::CPACSTreeItem*);
+    void contextMenuClosed(); // signals the CPACSTreeView to update its paintEvent
 
 private slots:
 

@@ -23,9 +23,16 @@
 
 CPACSTreeView::CPACSTreeView(QWidget *parent)
  : QTreeView(parent)
+ , contextMenuRequested(false)
 {
     setMouseTracking(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, &QTreeView::customContextMenuRequested, this, [=](){ contextMenuRequested = true; });
+}
+
+void CPACSTreeView::onContextMenuDone()
+{
+    contextMenuRequested = false;
 }
 
 void CPACSTreeView::mouseMoveEvent(QMouseEvent *event)
@@ -45,6 +52,20 @@ void CPACSTreeView::paintEvent(QPaintEvent *event)
 {
     QTreeView::paintEvent(event);
 
+    QPainter p(viewport());
+    p.setPen(QPen(Qt::lightGray, 2));
+
+    auto paint = [&](){
+        p.drawLine(line);                  // draw line between elements
+        // To Do: Loose focus of hovered item
+    };
+
+    // keep the visual feedback of selected gap while context menu is open
+    if (contextMenuRequested) {
+        paint();
+        return;
+    }
+
     if (hoverPos.isNull()) {
         return;
     }
@@ -61,12 +82,15 @@ void CPACSTreeView::paintEvent(QPaintEvent *event)
         return;
     }
 
-    QPainter p(viewport());
-    p.setPen(QPen(Qt::blue, 2));
-
     if (hoverPos.y() < rect.top() + 4) {
-        p.drawLine(rect.left(), rect.top(), rect.right(), rect.top());
+        left = QPoint(rect.left(), rect.top());
+        right = QPoint(rect.right(), rect.top());
+        line = QLine(left, right);
+        paint();
     } else if (hoverPos.y() > rect.bottom() - 4) {
-        p.drawLine(rect.left(), rect.bottom(), rect.right(), rect.bottom());
+        left = QPoint(rect.left(), rect.bottom());
+        right = QPoint(rect.right(), rect.bottom());
+        line = QLine(left, right);
+        paint();
     }
 }

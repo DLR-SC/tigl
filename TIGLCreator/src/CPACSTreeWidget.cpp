@@ -49,6 +49,7 @@ CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
     connect(ui->searchLineEdit, SIGNAL(textEdited(const QString)), this, SLOT(setNewSearch(const QString)));
 
     connect(ui->treeView, &CPACSTreeView::customContextMenuRequested, this, &CPACSTreeWidget::onCustomContextMenuRequested);
+    connect(this, &CPACSTreeWidget::contextMenuClosed, ui->treeView, &CPACSTreeView::onContextMenuDone);
 
 }
 
@@ -71,6 +72,8 @@ void CPACSTreeWidget::onCustomContextMenuRequested(const QPoint &pos)
 
     QRect rect = ui->treeView->visualRect(index);
     cpcr::CPACSTreeItem* item = filterModel->getItem(index);
+    QString uid = QString::fromStdString(item->getUid());
+    QString type = QString::fromStdString(item->getType());
 
     int item_idx = item->positionRelativelyToParent();
     cpcr::CPACSTreeItem* item_parent = item->getParent();
@@ -81,33 +84,35 @@ void CPACSTreeWidget::onCustomContextMenuRequested(const QPoint &pos)
 
     if (pos.y() < rect.top() + margin) {
         if (item_idx == 0 ) {
-            qDebug() << "Before " << item->getUid().c_str();
+            qDebug() << "Before " << uid;
         } else {
-            qDebug() << "Between " << siblings[item_idx-1]->getUid().c_str() << " and " << item->getUid().c_str();
+            qDebug() << "Between " << siblings[item_idx-1]->getUid().c_str() << " and " << uid;
         }
-        showInsertMenu(globalPos);//, *above, index);
+        showInsertMenu(globalPos);//, above, item);//, *above, index);
     } else if (pos.y() > rect.bottom() - margin) {
         if (item_idx < siblings.size()-1 ) {
-            qDebug() << "Between " << item->getUid().c_str() << " and " << siblings[item_idx+1]->getUid().c_str();
+            qDebug() << "Between " << uid << " and " << siblings[item_idx+1]->getUid().c_str();
         } else {
-            qDebug() << "After " << item->getUid().c_str();
+            qDebug() << "After " << uid;
         }
         showInsertMenu(globalPos);//, index, *below);
     } else {
         // right-click inside an item -> normal item menu
         QMenu menu;
-        menu.addAction(QStringLiteral("Item action: %1").arg(index.data(0).toString()));
+        menu.addAction(QStringLiteral("Delete %1 %2").arg(type, uid));
         menu.exec(globalPos);
+        emit contextMenuClosed();
     }
 }
 
-void CPACSTreeWidget::showInsertMenu(const QPoint &globalPos)//, QTreeWidgetItem* above, QTreeWidgetItem* below)
+void CPACSTreeWidget::showInsertMenu(const QPoint &globalPos)//, cpcr::CPACSTreeItem* above, cpcr::CPACSTreeItem* below)
 {
     QMenu menu;
-    QAction *act = menu.addAction(QStringLiteral("Add element between"));
+    QAction *act = menu.addAction("Add section");
+//    QAction *act = menu.addAction(QStringLiteral("Insert %1").arg(above->getType()));
     connect(act, &QAction::triggered, this, [this/*, above, below*/]() {
-        auto *newItem = new QTreeWidgetItem();
-        newItem->setText(0, QStringLiteral("New Element"));
+//        auto *newItem = new QTreeWidgetItem();
+//        newItem->setText(0, QStringLiteral("New Element"));
 
 //        QModelIndex parent = above.isValid() ? above.parent() : below.parent();
 //        if (parent.isValid()) {
@@ -119,6 +124,7 @@ void CPACSTreeWidget::showInsertMenu(const QPoint &globalPos)//, QTreeWidgetItem
 //        }
     });
     menu.exec(globalPos);
+    emit contextMenuClosed();
 }
 
 

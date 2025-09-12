@@ -42,12 +42,16 @@ class CPACSTreeView : public QTreeView
 public:
     explicit CPACSTreeView(QWidget* parent = nullptr);
 
+public slots:
+    void onContextMenuDone();
+
 protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void leaveEvent(QEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 
 private:
-
+    bool contextMenuRequested;
+    QLine line; // remember the line between two elements
     QPoint hoverPos;
 };
