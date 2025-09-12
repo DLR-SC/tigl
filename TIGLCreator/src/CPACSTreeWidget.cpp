@@ -80,7 +80,8 @@ void CPACSTreeWidget::onCustomContextMenuRequested(QPoint const& globalPos, CPAC
         menu.exec(globalPos);
     } else {
         QMenu menu;
-        QAction* add_action = menu.addAction(QStringLiteral("Add %1").arg(type));
+        QString where_str = (where == CPACSTreeView::Where::Before)? "before" : "after";
+        QAction* add_action = menu.addAction(QStringLiteral("Add %1 %2 %3").arg(type, where_str, uid));
         connect(add_action, &QAction::triggered, this, [&](){
             emit addSectionRequested(where, item);
         });
