@@ -20,7 +20,7 @@
 #include "generated/CPACSLeadingEdgeDevice.h"
 #include "generated/CPACSLeadingEdgeDevices.h"
 
-#include "CTiglRelativelyPositionedComponent.h"
+#include "CTiglAbstractGeometricComponent.h"
 #include "Cache.h"
 #include "tigl.h"
 #include <string>
@@ -28,12 +28,12 @@
 namespace tigl
 {
 
-class CCPACSLeadingEdgeDevice : public generated::CPACSLeadingEdgeDevice, public CTiglRelativelyPositionedComponent
+class CCPACSLeadingEdgeDevice : public generated::CPACSLeadingEdgeDevice, public CTiglAbstractGeometricComponent
 {
 public:
     TIGL_EXPORT CCPACSLeadingEdgeDevice(CCPACSLeadingEdgeDevices* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     TIGL_EXPORT std::string GetShortName() const;
 

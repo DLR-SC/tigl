@@ -34,7 +34,7 @@ namespace tigl
 
 CCPACSTrailingEdgeDevice::CCPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTrailingEdgeDevice(parent, uidMgr)
-    , CTiglRelativelyPositionedComponent(&m_parentUID, (CCPACSTransformation *)nullptr) //TrailingEdgeDevice is relative postioned but does not have a CCPACS transformation
+    , CTiglAbstractGeometricComponent()
     , m_hingePoints(*this, &CCPACSTrailingEdgeDevice::ComputeHingePoints)
     , m_cutoutShape(*this, &CCPACSTrailingEdgeDevice::ComputeCutoutShape)
     , m_flapShape(*this, &CCPACSTrailingEdgeDevice::ComputeFlapShape)
@@ -42,7 +42,7 @@ CCPACSTrailingEdgeDevice::CCPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* pa
 {
 }
 
-void CCPACSTrailingEdgeDevice::ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath)
+void CCPACSTrailingEdgeDevice::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     CPACSTrailingEdgeDevice::ReadCPACS(tixiHandle, xpath);
 
@@ -53,7 +53,6 @@ void CCPACSTrailingEdgeDevice::ReadCPACS(const TixiDocumentHandle &tixiHandle, c
 std::string CCPACSTrailingEdgeDevice::GetShortName() const
 {
     const CCPACSTrailingEdgeDevices* devices = GetParent();
-
 
     std::string tmp = devices->GetParent()->GetParent()->GetShortName();
 
@@ -85,7 +84,7 @@ gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
     const CCPACSControlSurfaceSteps& steps = GetPath().GetSteps();
     for (const auto& step : steps.GetSteps()) {
         controlParams.push_back(step->GetControlParameter());
-        CTiglPoint innerHingeTrans(0,0,0);
+        CTiglPoint innerHingeTrans(0, 0, 0);
         if (step->GetInnerHingeTranslation().is_initialized()) {
             innerHingeTrans = step->GetInnerHingeTranslation()->AsPoint();
         }
@@ -93,7 +92,7 @@ gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
         innerYTrans.push_back(innerHingeTrans.y);
         innerZTrans.push_back(innerHingeTrans.z);
 
-        CTiglPoint outerHingeTrans(0,0,0);
+        CTiglPoint outerHingeTrans(0, 0, 0);
         if (step->GetOuterHingeTranslation().is_initialized()) {
             outerHingeTrans.x = step->GetOuterHingeTranslation()->GetX();
             outerHingeTrans.z = step->GetOuterHingeTranslation()->GetZ();
@@ -104,14 +103,14 @@ gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
         rotations.push_back(step->GetHingeLineRotation().value_or(0.));
     }
 
-    double rotation = Interpolate( controlParams, rotations, m_currentControlParam );
-    double innerTranslationX = Interpolate( controlParams, innerXTrans, m_currentControlParam );
-    double innerTranslationY = Interpolate( controlParams, innerYTrans, m_currentControlParam );
-    double innerTranslationZ = Interpolate( controlParams, innerZTrans, m_currentControlParam );
-    double outerTranslationX = Interpolate( controlParams, outerXTrans, m_currentControlParam );
-    double outerTranslationZ = Interpolate( controlParams, outerZTrans, m_currentControlParam );
+    double rotation          = Interpolate(controlParams, rotations, m_currentControlParam);
+    double innerTranslationX = Interpolate(controlParams, innerXTrans, m_currentControlParam);
+    double innerTranslationY = Interpolate(controlParams, innerYTrans, m_currentControlParam);
+    double innerTranslationZ = Interpolate(controlParams, innerZTrans, m_currentControlParam);
+    double outerTranslationX = Interpolate(controlParams, outerXTrans, m_currentControlParam);
+    double outerTranslationZ = Interpolate(controlParams, outerZTrans, m_currentControlParam);
 
-    auto wingTrafo = Wing().GetTransformation().getTransformationMatrix();
+    auto wingTrafo       = Wing().GetTransformation().getTransformationMatrix();
     gp_Pnt innerHingeOld = wingTrafo.Transform(m_hingePoints->inner);
     gp_Pnt outerHingeOld = wingTrafo.Transform(m_hingePoints->outer);
 
@@ -121,7 +120,8 @@ gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
     gp_Pnt innerHingeNew = innerHingeOld.XYZ() + gp_XYZ(innerTranslationX, innerTranslationY, innerTranslationZ);
 
     // calculating the needed transformations
-    CTiglControlSurfaceTransformation transformation(innerHingeOld, outerHingeOld, innerHingeNew, outerHingeNew, rotation);
+    CTiglControlSurfaceTransformation transformation(innerHingeOld, outerHingeOld, innerHingeNew, outerHingeNew,
+                                                     rotation);
 
     return transformation.getTotalTransformation();
 }
@@ -170,18 +170,17 @@ CCPACSWingComponentSegment& ComponentSegment(CCPACSTrailingEdgeDevice& self)
     return const_cast<CCPACSWingComponentSegment&>(ComponentSegment(const_cast<const CCPACSTrailingEdgeDevice&>(self)));
 }
 
-
-const CCPACSWing &CCPACSTrailingEdgeDevice::Wing() const
+const CCPACSWing& CCPACSTrailingEdgeDevice::Wing() const
 {
     return *ComponentSegment(*this).GetParent()->GetParent();
 }
 
-CCPACSWing &CCPACSTrailingEdgeDevice::Wing()
+CCPACSWing& CCPACSTrailingEdgeDevice::Wing()
 {
     return const_cast<CCPACSWing&>(const_cast<const CCPACSTrailingEdgeDevice*>(this)->Wing());
 }
 
-void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::HingePoints &hingePoints) const
+void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::HingePoints& hingePoints) const
 {
 
     // get the Loft geometry of the Component Segment
@@ -189,16 +188,12 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
     CTiglWingStructureReference wsr(cSegment);
 
     // xsi positions of hinge points
-    std::vector<double> hingeXsi = {
-        GetPath().GetInnerHingePoint().GetHingeXsi(),
-        GetPath().GetOuterHingePoint().GetHingeXsi()
-    };
+    std::vector<double> hingeXsi = {GetPath().GetInnerHingePoint().GetHingeXsi(),
+                                    GetPath().GetOuterHingePoint().GetHingeXsi()};
 
     // relative hinge heights
-    std::vector<double> relHingeHeight = {
-        GetPath().GetInnerHingePoint().GetHingeRelHeight(),
-        GetPath().GetOuterHingePoint().GetHingeRelHeight()
-    };
+    std::vector<double> relHingeHeight = {GetPath().GetInnerHingePoint().GetHingeRelHeight(),
+                                          GetPath().GetOuterHingePoint().GetHingeRelHeight()};
 
     std::vector<gp_Pnt> points(2);
 
@@ -226,7 +221,6 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
             cSegment.GetPoint(transformEtaToCSOrTed(border.GetEtaLE(), *m_uidMgr), hingeXsi[i], WING_COORDINATE_SYSTEM);
         gp_Vec midplaneNormal = cSegment.GetMidplaneNormal(transformEtaToCSOrTed(border.GetEtaLE(), *m_uidMgr));
 
-
         // Project point on the inner and outer face of the Wing loft
         gp_Pnt upper, lower;
         upper = ProjectPointOnShape(wsr.GetUpperShape(WING_COORDINATE_SYSTEM), myHingePoint, midplaneNormal);
@@ -237,7 +231,8 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
         lower.Translate(delta);
 
         // do we have to translate the point?
-        auto translation = (i == 0? GetPath().GetInnerHingePoint().GetTranslation() : GetPath().GetOuterHingePoint().GetTranslation());
+        auto translation = (i == 0 ? GetPath().GetInnerHingePoint().GetTranslation()
+                                   : GetPath().GetOuterHingePoint().GetTranslation());
         if (translation) {
             lower = lower.XYZ() + translation.value().AsPoint().Get_gp_Pnt().XYZ();
         }
@@ -252,37 +247,32 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
 void CCPACSTrailingEdgeDevice::ComputeCutoutShape(PNamedShape& shape) const
 {
     if (!GetWingCutOut()) {
-        shape = GetOuterShape().CutoutShape(
-                    ComponentSegment(*this).GetWing().GetWingCleanShape(),
-                    GetNormalOfControlSurfaceDevice());
+        shape = GetOuterShape().CutoutShape(ComponentSegment(*this).GetWing().GetWingCleanShape(),
+                                            GetNormalOfControlSurfaceDevice());
     }
     else {
-        shape = GetWingCutOut()->GetLoft(
-                    ComponentSegment(*this).GetWing().GetWingCleanShape(),
-                    GetOuterShape(),
-                    GetNormalOfControlSurfaceDevice());
+        shape = GetWingCutOut()->GetLoft(ComponentSegment(*this).GetWing().GetWingCleanShape(), GetOuterShape(),
+                                         GetNormalOfControlSurfaceDevice());
     }
 }
 
 void CCPACSTrailingEdgeDevice::ComputeFlapShape(PNamedShape& shape) const
 {
-    shape =  GetOuterShape().GetLoft(
-                Wing().GetWingCleanShape(),
-                GetNormalOfControlSurfaceDevice());
+    shape = GetOuterShape().GetLoft(Wing().GetWingCleanShape(), GetNormalOfControlSurfaceDevice());
     shape->SetName(GetUID().c_str());
 }
 
 gp_Vec CCPACSTrailingEdgeDevice::GetNormalOfControlSurfaceDevice() const
 {
     const CCPACSWingComponentSegment& compSeg = ComponentSegment(*this);
-    gp_Pnt point1 = compSeg.GetPoint(0,0);
-    gp_Pnt point2 = compSeg.GetPoint(0,1);
-    gp_Pnt point3 = compSeg.GetPoint(1,0);
+    gp_Pnt point1                             = compSeg.GetPoint(0, 0);
+    gp_Pnt point2                             = compSeg.GetPoint(0, 1);
+    gp_Pnt point3                             = compSeg.GetPoint(1, 0);
 
     gp_Vec dir1to2 = -(gp_Vec(point1.XYZ()) - gp_Vec(point2.XYZ()));
     gp_Vec dir1to3 = -(gp_Vec(point1.XYZ()) - gp_Vec(point3.XYZ()));
 
-    gp_Vec nvV = dir1to2^dir1to3;
+    gp_Vec nvV = dir1to2 ^ dir1to3;
     nvV.Normalize();
     return nvV;
 }
@@ -320,7 +310,7 @@ PNamedShape CCPACSTrailingEdgeDevice::GetFlapShape() const
 PNamedShape CCPACSTrailingEdgeDevice::GetTransformedFlapShape() const
 {
     PNamedShape deviceShape = GetFlapShape()->DeepCopy();
-    gp_Trsf T = GetFlapTransform();
+    gp_Trsf T               = GetFlapTransform();
     BRepBuilderAPI_Transform form(deviceShape->Shape(), T);
     deviceShape->SetShape(form.Shape());
 

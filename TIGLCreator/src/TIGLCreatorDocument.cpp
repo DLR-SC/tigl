@@ -1066,8 +1066,8 @@ void TIGLCreatorDocument::drawWingFlap(const QString& uid)
             updateFlapTransform(ted->GetUID());
         }
 
-        else if (*obj.type == typeid(tigl::CCPACSTrailingEdgeDevice)) {
-            auto* ted = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
+        else if (*obj.type == typeid(tigl::CCPACSLeadingEdgeDevice)) {
+            auto* ted = static_cast<tigl::CCPACSLeadingEdgeDevice*>(obj.ptr);
             app->getScene()->displayShape(ted->GetLoft(), false, Quantity_NOC_GREEN);
             updateFlapTransform(ted->GetUID());
         }

@@ -34,7 +34,7 @@ namespace tigl
 class CCPACSControlSurfaceOuterShapeTrailingEdge;
 class CCPACSControlSurfaceBorderTrailingEdge;
 class CCPACSWingComponentSegment;
-class CTiglRelativelyPositionedComponent;
+class CTiglAbstractGeometricComponent;
 
 class CCPACSControlSurfaceWingCutOut : public generated::CPACSControlSurfaceWingCutOut
 {
@@ -42,13 +42,12 @@ public:
     TIGL_EXPORT CCPACSControlSurfaceWingCutOut(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSControlSurfaceWingCutOut(CCPACSLeadingEdgeDevice* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT PNamedShape GetLoft(PNamedShape wingCleanShape,
-                                    const CCPACSControlSurfaceOuterShapeTrailingEdge&,
+    TIGL_EXPORT PNamedShape GetLoft(PNamedShape wingCleanShape, const CCPACSControlSurfaceOuterShapeTrailingEdge&,
                                     const gp_Vec& upDir) const;
 
-    TIGL_EXPORT CTiglRelativelyPositionedComponent const *GetParentComponent() const;
-private:
+    TIGL_EXPORT CTiglAbstractGeometricComponent const* GetParentComponent() const;
 
+private:
     enum class CutoutPosition
     {
         InnerBorder,
@@ -56,11 +55,10 @@ private:
     };
 
     TopoDS_Wire GetCutoutWire(CutoutPosition pos, PNamedShape wingCleanShape,
-                              const CCPACSControlSurfaceBorderTrailingEdge *outerBorder, gp_Vec upDir) const;
+                              const CCPACSControlSurfaceBorderTrailingEdge* outerBorder, gp_Vec upDir) const;
 
-    CTiglControlSurfaceBorderCoordinateSystem GetCutoutCS(bool isInnerBorder,
-                                                          const CCPACSControlSurfaceBorderTrailingEdge*,
-                                                          const gp_Vec& upDir) const;
+    CTiglControlSurfaceBorderCoordinateSystem
+    GetCutoutCS(bool isInnerBorder, const CCPACSControlSurfaceBorderTrailingEdge*, const gp_Vec& upDir) const;
 };
 
 const CCPACSWingComponentSegment& ComponentSegment(const CCPACSControlSurfaceWingCutOut&);

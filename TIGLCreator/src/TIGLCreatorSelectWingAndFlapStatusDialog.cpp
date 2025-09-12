@@ -132,7 +132,7 @@ double TIGLCreatorSelectWingAndFlapStatusDialog::getTrailingEdgeFlapValue(std::s
             throw tigl::CTiglError("getTrailingEdgeFlapValue: UID not found", TIGL_UID_ERROR);
         }
 
-        tigl::CTiglRelativelyPositionedComponent* controlSurfaceDevice = it->second;
+        tigl::CTiglAbstractGeometricComponent* controlSurfaceDevice = it->second;
         tigl::CCPACSTrailingEdgeDevice* device = dynamic_cast<tigl::CCPACSTrailingEdgeDevice*>(controlSurfaceDevice);
 
         return device->GetControlParameter();
@@ -150,7 +150,7 @@ double TIGLCreatorSelectWingAndFlapStatusDialog::getLeadingEdgeFlapValue(std::st
             throw tigl::CTiglError("getTrailingEdgeFlapValue: UID not found", TIGL_UID_ERROR);
         }
 
-        tigl::CTiglRelativelyPositionedComponent* controlSurfaceDevice = it->second;
+        tigl::CTiglAbstractGeometricComponent* controlSurfaceDevice = it->second;
         tigl::CCPACSLeadingEdgeDevice* device = dynamic_cast<tigl::CCPACSLeadingEdgeDevice*>(controlSurfaceDevice);
 
         return device->GetControlParameter();
@@ -161,20 +161,16 @@ double TIGLCreatorSelectWingAndFlapStatusDialog::getLeadingEdgeFlapValue(std::st
 }
 
 void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow(
-    const tigl::CTiglRelativelyPositionedComponent& basecontrolSurfaceDevice, int rowIdx, QTableWidget* gridLayout)
+    const tigl::CTiglAbstractGeometricComponent* basecontrolSurfaceDevice, int rowIdx, QTableWidget* gridLayout)
 {
-    const tigl::CCPACSTrailingEdgeDevice* ted =
-        dynamic_cast<const tigl::CCPACSTrailingEdgeDevice*>(&basecontrolSurfaceDevice);
-    const tigl::CCPACSLeadingEdgeDevice* led =
-        dynamic_cast<const tigl::CCPACSLeadingEdgeDevice*>(&basecontrolSurfaceDevice);
-
-    if (ted) {
+    if (auto* ted = dynamic_cast<const tigl::CCPACSTrailingEdgeDevice*>(basecontrolSurfaceDevice)) {
         buildFlapRow_helper(ted, rowIdx, gridLayout);
     }
-    else if (led) {
+    else if (auto* led = dynamic_cast<const tigl::CCPACSLeadingEdgeDevice*>(basecontrolSurfaceDevice)) {
         buildFlapRow_helper(led, rowIdx, gridLayout);
     }
 }
+
 template <typename DeviceType>
 void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceType* controlSurfaceDevice, int rowIdx,
                                                                    QTableWidget* gridLayout)
@@ -243,6 +239,7 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceT
 void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
 {
     cleanup();
+
     std::string wingUID = m_currentWing;
 
     if (wingUID.empty())
@@ -251,7 +248,7 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
     tigl::CCPACSConfiguration& config = _document->GetConfiguration();
     tigl::CCPACSWing& wing            = config.GetWing(wingUID);
 
-    std::vector<tigl::CTiglRelativelyPositionedComponent*> devices;
+    std::vector<tigl::CTiglAbstractGeometricComponent*> devices;
 
     for (int i = 1; i <= wing.GetComponentSegmentCount(); i++) {
         tigl::CCPACSWingComponentSegment& componentSegment =
@@ -281,19 +278,18 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
 
     int rowIdx = 0;
     for (auto* device : devices) {
-        buildFlapRow(*device, rowIdx++, tableWidget);
-
-        auto parentUID = device->GetParentUID();
-        if (parentUID.is_initialized()) {
-            _deviceMap[*parentUID] = device;
-        }
+        buildFlapRow(device, rowIdx++, tableWidget);
 
         auto* ted = dynamic_cast<tigl::CCPACSTrailingEdgeDevice*>(device);
         auto* led = dynamic_cast<tigl::CCPACSLeadingEdgeDevice*>(device);
-        if (ted)
+        if (ted) {
+            _deviceMap[ted->GetUID()] = ted;
             updateWidgets(ted->GetUID(), ted->GetControlParameter());
-        else if (led)
+        }
+        else if (led) {
+            _deviceMap[led->GetUID()] = led;
             updateWidgets(led->GetUID(), led->GetControlParameter());
+        }
     }
 
     // set style
@@ -336,7 +332,7 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::updateWidgets(std::string control
     if (it == _deviceMap.end()) {
         return;
     }
-    tigl::CTiglRelativelyPositionedComponent* controlSurfaceDevice = it->second;
+    tigl::CTiglAbstractGeometricComponent* controlSurfaceDevice = it->second;
 
     if (auto* ted = dynamic_cast<tigl::CCPACSTrailingEdgeDevice*>(controlSurfaceDevice)) {
         auto rotationdata = getRotation(ted, controlParam);

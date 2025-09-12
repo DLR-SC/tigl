@@ -76,7 +76,7 @@ private:
     };
 
     std::map<std::string, DeviceWidgets> _guiMap;
-    std::map<std::string, tigl::CTiglRelativelyPositionedComponent*> _deviceMap;
+    std::map<std::string, tigl::CTiglAbstractGeometricComponent*> _deviceMap;
     std::string m_currentWing;
 
     TIGLCreatorDocument* _document;
@@ -86,7 +86,7 @@ private:
     void drawGUI();
     void cleanup();
 
-    void buildFlapRow(const tigl::CTiglRelativelyPositionedComponent& controlSurfaceDevice, int rowIdx,
+    void buildFlapRow(const tigl::CTiglAbstractGeometricComponent* controlSurfaceDevice, int rowIdx,
                       class QTableWidget*);
     template <typename DeviceType>
     void buildFlapRow_helper(const DeviceType* controlSurfaceDevice, int rowIdx, QTableWidget* gridLayout);
