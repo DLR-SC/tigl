@@ -126,6 +126,8 @@ private:
      */
     Ui::ElementModificatorInterface resolve(std::string const& uid) const;
 
+    std::string const& sectionUidToElementUid(std::string const& uid) const;
+
     TIGLCreatorDocument* doc;
 
     CPACSTreeWidget* treeWidget;

@@ -305,6 +305,23 @@ Ui::ElementModificatorInterface ModificatorManager::resolve(const std::string &u
     }
 }
 
+const std::string &ModificatorManager::sectionUidToElementUid(const std::string &uid) const
+{
+    //TODO is there a better way to get the element uid from the section uid?
+    tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+    tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(uid);
+    if (typePtr.type == &typeid(tigl::CCPACSFuselageSection)) {
+        tigl::CCPACSFuselageSection& fuselageSection = *reinterpret_cast<tigl::CCPACSFuselageSection*>(typePtr.ptr);
+        assert(fuselageSection.GetSectionElementCount() == 1); // TiGL supports only one element per section
+        return fuselageSection.GetSectionElement(1).GetUID();
+    }
+    else if (typePtr.type == &typeid(tigl::CCPACSWingSection)) {
+        tigl::CCPACSWingSection& wingSection = *reinterpret_cast<tigl::CCPACSWingSection*>(typePtr.ptr);
+        assert(wingSection.GetSectionElementCount() == 1); // TiGL supports only one element per section
+        return wingSection.GetSectionElement(1).GetUID();
+    }
+}
+
 void ModificatorManager::unHighlight()
 {
     for (int i = 0; i < highligthteds.size(); i++) {
@@ -323,24 +340,13 @@ void ModificatorManager::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
     if (sections == nullptr) {
         return;
     }
-    auto* parent = sections->getParent(); // should be wing or fuselage
+    auto* parent = sections->getParent(); // parent should be wing or fuselage
     if (parent == nullptr) {
         return;
     }
     auto element = resolve(parent->getUid());
 
-    //TODO is there a better way to get the element uid from the section uid?
-    tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-    tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
-    if (typePtr.type == &typeid(tigl::CCPACSFuselageSection)) {
-        tigl::CCPACSFuselageSection& fuselageSection = *reinterpret_cast<tigl::CCPACSFuselageSection*>(typePtr.ptr);
-        element.DeleteConnectedElement(fuselageSection.GetSectionElement(1).GetUID());
-    }
-    else if (typePtr.type == &typeid(tigl::CCPACSWingSection)) {
-        tigl::CCPACSWingSection& wingSection = *reinterpret_cast<tigl::CCPACSWingSection*>(typePtr.ptr);
-        element.DeleteConnectedElement(wingSection.GetSectionElement(1).GetUID());
-    }
-
+    element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
     createUndoCommand();
 }
 

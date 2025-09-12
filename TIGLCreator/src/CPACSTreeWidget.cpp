@@ -77,6 +77,7 @@ void CPACSTreeWidget::onCustomContextMenuRequested(QPoint const& globalPos, CPAC
         connect(delete_action, &QAction::triggered, this, [&](){
             emit deleteElementRequested(item);
         });
+        delete_action->setDisabled(parent->getChildren().size() <= 2); // At least two sections required
         menu.exec(globalPos);
     } else {
         QMenu menu;

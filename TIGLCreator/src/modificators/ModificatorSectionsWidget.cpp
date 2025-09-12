@@ -43,6 +43,9 @@ ModificatorSectionsWidget::~ModificatorSectionsWidget()
 void ModificatorSectionsWidget::setCreateConnectedElement(Ui::ElementModificatorInterface const& element)
 {
     createConnectedElement = element;
+
+    // at least two sections required
+    ui->deleteConnectedElementBtn->setDisabled(element.GetOrderedConnectedElement().size() <= 2);
 }
 
 void ModificatorSectionsWidget::execNewConnectedElementDialog()
@@ -105,6 +108,7 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
             return;
         }
         emit undoCommandRequired();
+        ui->deleteConnectedElementBtn->setDisabled(createConnectedElement->GetOrderedConnectedElement().size() <= 2);
     }
 }
 
