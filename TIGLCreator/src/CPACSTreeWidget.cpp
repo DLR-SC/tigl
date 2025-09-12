@@ -64,13 +64,19 @@ void CPACSTreeWidget::onCustomContextMenuRequested(QPoint const& globalPos, CPAC
     QString uid = QString::fromStdString(item->getUid());
     QString type = QString::fromStdString(item->getType());
 
-    int item_idx = item->positionRelativelyToParent();
-    cpcr::CPACSTreeItem* item_parent = item->getParent();
-    auto siblings = item_parent->getChildren();
+    cpcr::CPACSTreeItem* parent = item->getParent();
+
+    if (parent == nullptr || parent->getType() != "sections") {
+        // context menus only supported for children of sections
+        return;
+    }
 
     if (where == CPACSTreeView::Where::At) {
         QMenu menu;
-        menu.addAction(QStringLiteral("Delete %1 %2").arg(type, uid));
+        QAction* delete_action = menu.addAction(QStringLiteral("Delete %1 %2").arg(type, uid));
+        connect(delete_action, &QAction::triggered, this, [&](){
+            emit deleteElementRequested(item);
+        });
         menu.exec(globalPos);
     } else {
         QMenu menu;

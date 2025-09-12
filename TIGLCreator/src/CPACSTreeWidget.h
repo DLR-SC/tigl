@@ -56,6 +56,7 @@ signals:
 
     void newSelectedTreeItem(cpcr::CPACSTreeItem*);
     void contextMenuClosed(); // signals the CPACSTreeView to update its paintEvent
+    void deleteElementRequested(cpcr::CPACSTreeItem*);
 
 private slots:
 
@@ -103,9 +104,6 @@ private:
     cpcr::CPACSTree tree;
     CPACSFilterModel* filterModel;
     QItemSelectionModel* selectionModel;
-
-    // needed for the context menu between two tree entries
-    QPoint hoverPos;
 };
 
 #endif // CPACSTREEWIDGET_H
