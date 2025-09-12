@@ -40,6 +40,11 @@ cpcr::CPACSTreeItem* CPACSFilterModel::getItemFromSelection(const QItemSelection
     return cpacsModel->getItemFromSelection(mapSelectionToSource(newSelection));
 }
 
+cpcr::CPACSTreeItem *CPACSFilterModel::getItem(QModelIndex index) const
+{
+    return cpacsModel->getItem(mapToSource(index));
+}
+
 bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
 
