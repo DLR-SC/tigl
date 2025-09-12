@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSLeadingEdgeDevice.h"
 #include "generated/CPACSControlSurfacePath.h"
 #include "generated/CPACSControlSurfaceStep.h"
 #include "CTiglControlSurfaceTransformation.h"
@@ -32,32 +32,32 @@
 namespace tigl
 {
 
-CCPACSTrailingEdgeDevice::CCPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSTrailingEdgeDevice(parent, uidMgr)
+CCPACSLeadingEdgeDevice::CCPACSLeadingEdgeDevice(CCPACSLeadingEdgeDevices* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSLeadingEdgeDevice(parent, uidMgr)
     , CTiglAbstractGeometricComponent()
-    , m_hingePoints(*this, &CCPACSTrailingEdgeDevice::ComputeHingePoints)
-    , m_cutoutShape(*this, &CCPACSTrailingEdgeDevice::ComputeCutoutShape)
-    , m_flapShape(*this, &CCPACSTrailingEdgeDevice::ComputeFlapShape)
-    , m_type(TRAILING_EDGE_DEVICE)
+    , m_hingePoints(*this, &CCPACSLeadingEdgeDevice::ComputeHingePoints)
+    , m_cutoutShape(*this, &CCPACSLeadingEdgeDevice::ComputeCutoutShape)
+    , m_flapShape(*this, &CCPACSLeadingEdgeDevice::ComputeFlapShape)
+    , m_type(LEADING_EDGE_DEVICE)
 {
 }
 
-void CCPACSTrailingEdgeDevice::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+void CCPACSLeadingEdgeDevice::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
-    CPACSTrailingEdgeDevice::ReadCPACS(tixiHandle, xpath);
+    CPACSLeadingEdgeDevice::ReadCPACS(tixiHandle, xpath);
 
     m_currentControlParam = Clamp(0., GetMinControlParameter(), GetMaxControlParameter());
 }
 
 // get short name for loft
-std::string CCPACSTrailingEdgeDevice::GetShortName() const
+std::string CCPACSLeadingEdgeDevice::GetShortName() const
 {
-    const CCPACSTrailingEdgeDevices* devices = GetParent();
+    const CCPACSLeadingEdgeDevices* devices = GetParent();
 
     std::string tmp = devices->GetParent()->GetParent()->GetShortName();
 
-    size_t idx = IndexFromUid(devices->GetTrailingEdgeDevices(), GetUID());
-    if (idx < devices->GetTrailingEdgeDevices().size()) {
+    size_t idx = IndexFromUid(devices->GetLeadingEdgeDevices(), GetUID());
+    if (idx < devices->GetLeadingEdgeDevices().size()) {
         std::stringstream shortName;
         if (m_type == LEADING_EDGE_DEVICE) {
             shortName << tmp << "LED" << idx;
@@ -75,7 +75,7 @@ std::string CCPACSTrailingEdgeDevice::GetShortName() const
     }
 }
 
-gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
+gp_Trsf CCPACSLeadingEdgeDevice::GetFlapTransform() const
 {
     // this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
     // to the given controlParal by using a linearInterpolation.
@@ -126,22 +126,22 @@ gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
     return transformation.getTotalTransformation();
 }
 
-double CCPACSTrailingEdgeDevice::GetMinControlParameter() const
+double CCPACSLeadingEdgeDevice::GetMinControlParameter() const
 {
     return GetPath().GetSteps().GetSteps().front()->GetControlParameter();
 }
 
-double CCPACSTrailingEdgeDevice::GetMaxControlParameter() const
+double CCPACSLeadingEdgeDevice::GetMaxControlParameter() const
 {
     return GetPath().GetSteps().GetSteps().back()->GetControlParameter();
 }
 
-double CCPACSTrailingEdgeDevice::GetControlParameter() const
+double CCPACSLeadingEdgeDevice::GetControlParameter() const
 {
     return m_currentControlParam;
 }
 
-void CCPACSTrailingEdgeDevice::SetControlParameter(const double param)
+void CCPACSLeadingEdgeDevice::SetControlParameter(const double param)
 {
     // clamp currentControlParam to minimum and maximum values
     double new_param = Clamp(param, GetMinControlParameter(), GetMaxControlParameter());
@@ -153,34 +153,34 @@ void CCPACSTrailingEdgeDevice::SetControlParameter(const double param)
     }
 }
 
-void CCPACSTrailingEdgeDevice::Invalidate()
+void CCPACSLeadingEdgeDevice::Invalidate()
 {
     CCPACSWing& wing = Wing();
     wing.SetBuildFlaps(true);
     wing.GetConfiguration().AircraftFusingAlgo()->Invalidate();
 }
 
-const CCPACSWingComponentSegment& ComponentSegment(const CCPACSTrailingEdgeDevice& self)
+const CCPACSWingComponentSegment& ComponentSegment(const CCPACSLeadingEdgeDevice& self)
 {
     return *self.GetParent()->GetParent()->GetParent();
 }
 
-CCPACSWingComponentSegment& ComponentSegment(CCPACSTrailingEdgeDevice& self)
+CCPACSWingComponentSegment& ComponentSegment(CCPACSLeadingEdgeDevice& self)
 {
-    return const_cast<CCPACSWingComponentSegment&>(ComponentSegment(const_cast<const CCPACSTrailingEdgeDevice&>(self)));
+    return const_cast<CCPACSWingComponentSegment&>(ComponentSegment(const_cast<const CCPACSLeadingEdgeDevice&>(self)));
 }
 
-const CCPACSWing& CCPACSTrailingEdgeDevice::Wing() const
+const CCPACSWing& CCPACSLeadingEdgeDevice::Wing() const
 {
     return *ComponentSegment(*this).GetParent()->GetParent();
 }
 
-CCPACSWing& CCPACSTrailingEdgeDevice::Wing()
+CCPACSWing& CCPACSLeadingEdgeDevice::Wing()
 {
-    return const_cast<CCPACSWing&>(const_cast<const CCPACSTrailingEdgeDevice*>(this)->Wing());
+    return const_cast<CCPACSWing&>(const_cast<const CCPACSLeadingEdgeDevice*>(this)->Wing());
 }
 
-void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::HingePoints& hingePoints) const
+void CCPACSLeadingEdgeDevice::ComputeHingePoints(CCPACSLeadingEdgeDevice::HingePoints& hingePoints) const
 {
 
     // get the Loft geometry of the Component Segment
@@ -202,18 +202,18 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
         // variable part of name for error msg
         std::string innerOuter = (i == 0 ? "inner" : "outer");
         // inner/outer border of trailing edge device
-        const CCPACSControlSurfaceBorderTrailingEdge& border =
+        const CCPACSControlSurfaceBorderLeadingEdge& border =
             (i == 0 ? GetOuterShape().GetInnerBorder() : GetOuterShape().GetOuterBorder());
 
         if (relHingeHeight[i] < 0. || 1. < relHingeHeight[i]) {
             LOG(ERROR) << "The " << innerOuter << "HingeHeight is not between 0. and 1.";
             throw CTiglError("The " + innerOuter +
-                             "HingeHeight is not between 0. and 1. in CCPACSTrailingEdgeDevice::buildHingePoints.");
+                             "HingeHeight is not between 0. and 1. in CCPACSLeadingEdgeDevice::buildHingePoints.");
         }
         if (hingeXsi[i] < 0. || 1. < hingeXsi[i]) {
             LOG(ERROR) << "The " << innerOuter << "HingeXsi is not between 0. and 1.";
             throw CTiglError("The " + innerOuter +
-                             "HingeXsi is not between 0. and 1. in CCPACSTrailingEdgeDevice::buildHingePoints.");
+                             "HingeXsi is not between 0. and 1. in CCPACSLeadingEdgeDevice::buildHingePoints.");
         }
 
         // create the hinge line point and normal on the Wing component segment mid plane
@@ -244,25 +244,29 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
     hingePoints.outer = points[1];
 }
 
-void CCPACSTrailingEdgeDevice::ComputeCutoutShape(PNamedShape& shape) const
+void CCPACSLeadingEdgeDevice::ComputeCutoutShape(PNamedShape& shape) const
 {
     if (!GetWingCutOut()) {
         shape = GetOuterShape().CutoutShape(ComponentSegment(*this).GetWing().GetWingCleanShape(),
                                             GetNormalOfControlSurfaceDevice());
     }
-    else {
-        shape = GetWingCutOut()->GetLoft(ComponentSegment(*this).GetWing().GetWingCleanShape(), GetOuterShape(),
-                                         GetNormalOfControlSurfaceDevice());
-    }
+    // else TEMP FIX REMOCVE REMOVE REMOVE
+    // else
+    // {
+    //     shape = GetWingCutOut()->GetLoft(
+    //                 ComponentSegment(*this).GetWing().GetWingCleanShape(),
+    //                 GetOuterShape(),
+    //                 GetNormalOfControlSurfaceDevice());
+    // }
 }
 
-void CCPACSTrailingEdgeDevice::ComputeFlapShape(PNamedShape& shape) const
+void CCPACSLeadingEdgeDevice::ComputeFlapShape(PNamedShape& shape) const
 {
     shape = GetOuterShape().GetLoft(Wing().GetWingCleanShape(), GetNormalOfControlSurfaceDevice());
     shape->SetName(GetUID().c_str());
 }
 
-gp_Vec CCPACSTrailingEdgeDevice::GetNormalOfControlSurfaceDevice() const
+gp_Vec CCPACSLeadingEdgeDevice::GetNormalOfControlSurfaceDevice() const
 {
     const CCPACSWingComponentSegment& compSeg = ComponentSegment(*this);
     gp_Pnt point1                             = compSeg.GetPoint(0, 0);
@@ -277,37 +281,37 @@ gp_Vec CCPACSTrailingEdgeDevice::GetNormalOfControlSurfaceDevice() const
     return nvV;
 }
 
-TiglControlSurfaceType CCPACSTrailingEdgeDevice::GetType() const
+TiglControlSurfaceType CCPACSLeadingEdgeDevice::GetType() const
 {
     return m_type;
 }
 
-std::string CCPACSTrailingEdgeDevice::GetDefaultedUID() const
+std::string CCPACSLeadingEdgeDevice::GetDefaultedUID() const
 {
     return GetUID();
 }
 
-TiglGeometricComponentType CCPACSTrailingEdgeDevice::GetComponentType() const
+TiglGeometricComponentType CCPACSLeadingEdgeDevice::GetComponentType() const
 {
     return TIGL_COMPONENT_CONTROL_SURFACE_DEVICE;
 }
 
-TiglGeometricComponentIntent CCPACSTrailingEdgeDevice::GetComponentIntent() const
+TiglGeometricComponentIntent CCPACSLeadingEdgeDevice::GetComponentIntent() const
 {
     return TIGL_INTENT_OUTER_AERO_SURFACE | TIGL_INTENT_PHYSICAL;
 }
 
-PNamedShape CCPACSTrailingEdgeDevice::GetCutOutShape(void) const
+PNamedShape CCPACSLeadingEdgeDevice::GetCutOutShape(void) const
 {
     return *m_cutoutShape;
 }
 
-PNamedShape CCPACSTrailingEdgeDevice::GetFlapShape() const
+PNamedShape CCPACSLeadingEdgeDevice::GetFlapShape() const
 {
     return *m_flapShape;
 }
 
-PNamedShape CCPACSTrailingEdgeDevice::GetTransformedFlapShape() const
+PNamedShape CCPACSLeadingEdgeDevice::GetTransformedFlapShape() const
 {
     PNamedShape deviceShape = GetFlapShape()->DeepCopy();
     gp_Trsf T               = GetFlapTransform();
@@ -327,7 +331,7 @@ PNamedShape CCPACSTrailingEdgeDevice::GetTransformedFlapShape() const
     return deviceShape;
 }
 
-PNamedShape CCPACSTrailingEdgeDevice::BuildLoft() const
+PNamedShape CCPACSLeadingEdgeDevice::BuildLoft() const
 {
     return GetFlapShape();
 }

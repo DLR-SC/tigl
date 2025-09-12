@@ -17,8 +17,8 @@
 * limitations under the License.
 */
 
-#include "generated/CPACSTrailingEdgeDevice.h"
-#include "generated/CPACSTrailingEdgeDevices.h"
+#include "generated/CPACSLeadingEdgeDevice.h"
+#include "generated/CPACSLeadingEdgeDevices.h"
 
 #include "CTiglAbstractGeometricComponent.h"
 #include "Cache.h"
@@ -28,10 +28,10 @@
 namespace tigl
 {
 
-class CCPACSTrailingEdgeDevice : public generated::CPACSTrailingEdgeDevice, public CTiglAbstractGeometricComponent
+class CCPACSLeadingEdgeDevice : public generated::CPACSLeadingEdgeDevice, public CTiglAbstractGeometricComponent
 {
 public:
-    TIGL_EXPORT CCPACSTrailingEdgeDevice(CCPACSTrailingEdgeDevices* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSLeadingEdgeDevice(CCPACSLeadingEdgeDevices* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
@@ -65,9 +65,9 @@ private:
         gp_Pnt outer;
     };
 
-    Cache<HingePoints, CCPACSTrailingEdgeDevice> m_hingePoints;
-    Cache<PNamedShape, CCPACSTrailingEdgeDevice> m_cutoutShape;
-    Cache<PNamedShape, CCPACSTrailingEdgeDevice> m_flapShape;
+    Cache<HingePoints, CCPACSLeadingEdgeDevice> m_hingePoints;
+    Cache<PNamedShape, CCPACSLeadingEdgeDevice> m_cutoutShape;
+    Cache<PNamedShape, CCPACSLeadingEdgeDevice> m_flapShape;
     TiglControlSurfaceType m_type;
     double m_currentControlParam;
 
@@ -81,7 +81,7 @@ private:
     CCPACSWing& Wing();
 };
 
-TIGL_EXPORT const CCPACSWingComponentSegment& ComponentSegment(const CCPACSTrailingEdgeDevice&);
-TIGL_EXPORT CCPACSWingComponentSegment& ComponentSegment(CCPACSTrailingEdgeDevice&);
+TIGL_EXPORT const CCPACSWingComponentSegment& ComponentSegment(const CCPACSLeadingEdgeDevice&);
+TIGL_EXPORT CCPACSWingComponentSegment& ComponentSegment(CCPACSLeadingEdgeDevice&);
 
 } // namespace tigl
