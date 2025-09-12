@@ -22,7 +22,7 @@
 #include <QDialog>
 #include <QString>
 #include <optional>
-#include "ModificatorSectionsWidget.h" //To Do: Move ElementModificatorInterface to its own header?
+#include "ElementModificatorInterface.h"
 
 namespace Ui
 {

@@ -19,6 +19,7 @@
 #include "NewConnectedElementDialog.h"
 #include "TIGLCreatorErrorDialog.h"
 #include "ui_NewConnectedElementDialog.h"
+#include "CTiglError.h"
 #include <QString>
 
 NewConnectedElementDialog::NewConnectedElementDialog(QStringList connectedElements, QWidget* parent)
