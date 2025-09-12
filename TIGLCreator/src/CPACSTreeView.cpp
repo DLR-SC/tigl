@@ -38,10 +38,7 @@ void CPACSTreeView::onContextMenuDone()
 
 void CPACSTreeView::onCustomContextMenuRequested(const QPoint &pos)
 {
-    // remember that a custom context menu was requested. We want to paint
-    // the line until we get the signal that the context menu was closed
-    contextMenuRequested = true;
-
+    contextMenuRequested = false;
     QModelIndex index = indexAt(pos);
     if (!index.isValid()){
         return;
@@ -51,6 +48,10 @@ void CPACSTreeView::onCustomContextMenuRequested(const QPoint &pos)
     if (!parent.isValid() || !parent.data(Qt::UserRole).toBool()) {
         return;
     }
+
+    // remember that a custom context menu was requested. We want to paint
+    // the line until we get the signal that the context menu was closed
+    contextMenuRequested = true;
 
     QRect rect = visualRect(index);
     QPoint globalPos = viewport()->mapToGlobal(pos);

@@ -19,9 +19,7 @@
 #include "CPACSTreeWidget.h"
 #include "ui_CPACSTreeWidget.h"
 #include "CTiglLogging.h"
-
 #include<QMenu>
-#include <QDebug>
 
 CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
     : QWidget(parent)
@@ -68,6 +66,7 @@ void CPACSTreeWidget::onCustomContextMenuRequested(QPoint const& globalPos, CPAC
 
     if (parent == nullptr || parent->getType() != "sections") {
         // context menus only supported for children of sections
+        emit contextMenuClosed();
         return;
     }
 
