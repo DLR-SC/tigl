@@ -42,8 +42,19 @@ class CPACSTreeView : public QTreeView
 public:
     explicit CPACSTreeView(QWidget* parent = nullptr);
 
+    enum class Where
+    {
+        Before,
+        At,
+        After
+    };
+
+signals:
+    void customContextMenuRequestedForItem(QPoint globalPos, Where where, QModelIndex);
+
 public slots:
     void onContextMenuDone();
+    void onCustomContextMenuRequested(const QPoint &pos);
 
 protected:
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -51,7 +62,8 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    bool contextMenuRequested;
-    QLine line; // remember the line between two elements
-    QPoint hoverPos;
+    int margin;                 // margin for hovering between elements
+    bool contextMenuRequested;  // keep visual feedback alive as long as context menu is open
+    QLine line;                 // remember the line between two elements
+    QPoint hoverPos;            // remember hover position
 };

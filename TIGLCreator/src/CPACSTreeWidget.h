@@ -23,6 +23,7 @@
 #include <QTreeView>
 #include "CPACSTree.h"
 #include "CPACSFilterModel.h"
+#include "CPACSTreeView.h"
 
 namespace Ui
 {
@@ -58,7 +59,7 @@ signals:
 
 private slots:
 
-    void onCustomContextMenuRequested(QPoint const& pos);
+    void onCustomContextMenuRequested(QPoint const& globalPos, CPACSTreeView::Where where, QModelIndex index);
 
     void onSelectionChanged(const QItemSelection& newSelection, const QItemSelection& oldSelection);
 
@@ -94,8 +95,6 @@ public:
     QString getSelectedUID();
 
 private:
-
-    void showInsertMenu(QPoint const& globalPos);//, QTreeWidgetItem* above, QTreeWidgetItem* below);
 
     void setTreeViewColumnsDisplay();
 

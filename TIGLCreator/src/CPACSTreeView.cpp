@@ -23,16 +23,45 @@
 
 CPACSTreeView::CPACSTreeView(QWidget *parent)
  : QTreeView(parent)
+ , margin(4)
  , contextMenuRequested(false)
 {
     setMouseTracking(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, &QTreeView::customContextMenuRequested, this, [=](){ contextMenuRequested = true; });
+    connect(this, &QTreeView::customContextMenuRequested, this, &CPACSTreeView::onCustomContextMenuRequested);
 }
 
 void CPACSTreeView::onContextMenuDone()
 {
     contextMenuRequested = false;
+}
+
+void CPACSTreeView::onCustomContextMenuRequested(const QPoint &pos)
+{
+    // remember that a custom context menu was requested. We want to paint
+    // the line until we get the signal that the context menu was closed
+    contextMenuRequested = true;
+
+    QModelIndex index = indexAt(pos);
+    if (!index.isValid()){
+        return;
+    }
+
+    QModelIndex parent = index.parent();
+    if (!parent.isValid() || !parent.data(Qt::UserRole).toBool()) {
+        return;
+    }
+
+    QRect rect = visualRect(index);
+    QPoint globalPos = viewport()->mapToGlobal(pos);
+
+    if (pos.y() < rect.top() + margin) {
+        emit customContextMenuRequestedForItem(globalPos, Where::Before, index);
+    } else if (pos.y() > rect.bottom() - margin) {
+        emit customContextMenuRequestedForItem(globalPos, Where::After, index);
+    } else {
+        emit customContextMenuRequestedForItem(globalPos, Where::At, index);
+    }
 }
 
 void CPACSTreeView::mouseMoveEvent(QMouseEvent *event)
@@ -56,8 +85,9 @@ void CPACSTreeView::paintEvent(QPaintEvent *event)
     p.setPen(QPen(Qt::lightGray, 2));
 
     auto paint = [&](){
-        p.drawLine(line);                  // draw line between elements
-        // To Do: Loose focus of hovered item
+        if (!line.isNull()) {
+            p.drawLine(line);
+        }
     };
 
     // keep the visual feedback of selected gap while context menu is open
@@ -82,15 +112,13 @@ void CPACSTreeView::paintEvent(QPaintEvent *event)
         return;
     }
 
-    if (hoverPos.y() < rect.top() + 4) {
-        left = QPoint(rect.left(), rect.top());
-        right = QPoint(rect.right(), rect.top());
-        line = QLine(left, right);
+    if (hoverPos.y() < rect.top() + margin) {
+        line = QLine(rect.left(), rect.top(), rect.right(), rect.top());
         paint();
-    } else if (hoverPos.y() > rect.bottom() - 4) {
-        left = QPoint(rect.left(), rect.bottom());
-        right = QPoint(rect.right(), rect.bottom());
-        line = QLine(left, right);
+    } else if (hoverPos.y() > rect.bottom() - margin) {
+        line = QLine(rect.left(), rect.bottom(), rect.right(), rect.bottom());
         paint();
+    } else {
+        line = QLine();
     }
 }
