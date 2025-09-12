@@ -72,7 +72,8 @@ public slots:
     void unHighlight();
 
     // signals from treewidget (delete or add section)
-    void onDeleteSectionRequested(cpcr::CPACSTreeItem*);
+    void onDeleteSectionRequested(cpcr::CPACSTreeItem* item);
+    void onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem* item);
 
 public:
     ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget,  TIGLCreatorContext* scene,  QUndoStack* undoStack);
@@ -126,7 +127,7 @@ private:
      */
     Ui::ElementModificatorInterface resolve(std::string const& uid) const;
 
-    std::string const& sectionUidToElementUid(std::string const& uid) const;
+    std::string sectionUidToElementUid(std::string const& uid) const;
 
     TIGLCreatorDocument* doc;
 

@@ -27,6 +27,7 @@
 #include "CCPACSPositioning.h"
 #include "CTiglStandardizer.h"
 #include "TIGLCreatorContext.h"
+#include "modificators/NewConnectedElementDialog.h"
 #include "tixicpp.h"
 
 ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
@@ -45,7 +46,9 @@ ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
     // signals:
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this,
             SLOT(dispatch(cpcr::CPACSTreeItem*)));
-    connect(treeWidget, &CPACSTreeWidget::deleteElementRequested, this, &ModificatorManager::onDeleteSectionRequested);
+
+    connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, this, &ModificatorManager::onDeleteSectionRequested);
+    connect(treeWidget, &CPACSTreeWidget::addSectionRequested, this, &ModificatorManager::onAddSectionRequested);
 
     connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()) );
 }
@@ -305,7 +308,7 @@ Ui::ElementModificatorInterface ModificatorManager::resolve(const std::string &u
     }
 }
 
-const std::string &ModificatorManager::sectionUidToElementUid(const std::string &uid) const
+std::string ModificatorManager::sectionUidToElementUid(const std::string &uid) const
 {
     //TODO is there a better way to get the element uid from the section uid?
     tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
@@ -314,11 +317,13 @@ const std::string &ModificatorManager::sectionUidToElementUid(const std::string 
         tigl::CCPACSFuselageSection& fuselageSection = *reinterpret_cast<tigl::CCPACSFuselageSection*>(typePtr.ptr);
         assert(fuselageSection.GetSectionElementCount() == 1); // TiGL supports only one element per section
         return fuselageSection.GetSectionElement(1).GetUID();
-    }
-    else if (typePtr.type == &typeid(tigl::CCPACSWingSection)) {
+    } else if (typePtr.type == &typeid(tigl::CCPACSWingSection)) {
         tigl::CCPACSWingSection& wingSection = *reinterpret_cast<tigl::CCPACSWingSection*>(typePtr.ptr);
         assert(wingSection.GetSectionElementCount() == 1); // TiGL supports only one element per section
         return wingSection.GetSectionElement(1).GetUID();
+    } else {
+        LOG(ERROR) << "ModificatorManager:: Unexpected section type!";
+        return "";
     }
 }
 
@@ -348,6 +353,45 @@ void ModificatorManager::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
 
     element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
     createUndoCommand();
+}
+
+void ModificatorManager::onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem *item)
+{
+    if (item == nullptr) {
+        return;
+    }
+
+    auto* sections = item->getParent(); // should be sections
+    if (sections == nullptr) {
+        return;
+    }
+    auto* parent = sections->getParent(); // parent should be wing or fuselage
+    if (parent == nullptr) {
+        return;
+    }
+    auto element = resolve(parent->getUid());
+
+    // open a new connected element dialog and set the comboboxes
+    // according to the arguments
+    std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
+    QStringList elementUIDsQList;
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        elementUIDsQList.push_back(elementUIDs.at(i).c_str());
+    }
+
+    NewConnectedElementDialog newElementDialog(elementUIDsQList, treeWidget);
+    QString uid = QString::fromStdString(sectionUidToElementUid(item->getUid()));
+    newElementDialog.setStartUID(uid);
+    if (where == CPACSTreeView::Where::Before) {
+        newElementDialog.setWhere(NewConnectedElementDialog::Before);
+    } else {
+        newElementDialog.setWhere(NewConnectedElementDialog::After);
+    }
+
+    if (newElementDialog.exec() == QDialog::Accepted) {
+        newElementDialog.applySelection(element);
+        createUndoCommand();
+    }
 }
 
 void ModificatorManager::highlight(std::vector<tigl::CTiglSectionElement*> elements)

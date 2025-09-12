@@ -17,6 +17,7 @@
  */
 
 #include "NewConnectedElementDialog.h"
+#include "TIGLCreatorErrorDialog.h"
 #include "ui_NewConnectedElementDialog.h"
 #include <QString>
 
@@ -101,12 +102,63 @@ NewConnectedElementDialog::~NewConnectedElementDialog()
 QString NewConnectedElementDialog::getStartUID() const
 {
     return ui->comboBoxStartUID->currentText();
-    ;
+}
+
+void NewConnectedElementDialog::setStartUID(QString const& text)
+{
+    ui->comboBoxStartUID->setCurrentText(text);
 }
 
 QString NewConnectedElementDialog::getSectionName() const
 {
     return ui->lineEditName->text();
+}
+
+void NewConnectedElementDialog::applySelection(Ui::ElementModificatorInterface &element)
+{
+    std::string startUID                    = getStartUID().toStdString();
+    std::string sectionName                 = getSectionName().toStdString();
+    NewConnectedElementDialog::Where where  = getWhere();
+    std::optional<double> eta               = getEta();
+    try {
+        if (where == NewConnectedElementDialog::Before) {
+            auto elementUIDBefore = element.GetElementUIDBeforeNewElement(startUID);
+            if (elementUIDBefore) {
+                if (eta) { // Security check. Should be set if elementUIDBefore is true
+                    element.CreateNewConnectedElementBetween(*elementUIDBefore, startUID, *eta, sectionName);
+                }
+                else {
+                    throw tigl::CTiglError("No eta value set!");
+                }
+            }
+            else {
+                element.CreateNewConnectedElementBefore(startUID, sectionName);
+            }
+        }
+        else if (where == NewConnectedElementDialog::After) {
+            auto elementUIDAfter = element.GetElementUIDAfterNewElement(startUID);
+            if (elementUIDAfter) {
+                if (eta) { // Security check. Should be set if elementUIDAfter is true
+                    element.CreateNewConnectedElementBetween(startUID, *elementUIDAfter, *eta, sectionName);
+                }
+                else {
+                    throw tigl::CTiglError("No eta value set!");
+                }
+            }
+            else {
+                element.CreateNewConnectedElementAfter(startUID, sectionName);
+            }
+        }
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(this);
+        errDialog.setMessage(
+            QString("<b>%1</b><br /><br />%2").arg("Fail to create the new connected element ").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        return;
+    }
 }
 
 NewConnectedElementDialog::Where NewConnectedElementDialog::getWhere() const
@@ -115,6 +167,15 @@ NewConnectedElementDialog::Where NewConnectedElementDialog::getWhere() const
         return Before;
     }
     return After;
+}
+
+void NewConnectedElementDialog::setWhere(Where where)
+{
+    if (where == Where::Before) {
+        ui->comboBoxWhere->setCurrentText("Before");
+    } else {
+        ui->comboBoxWhere->setCurrentText("After");
+    }
 }
 
 std::optional<double> NewConnectedElementDialog::getEta() const

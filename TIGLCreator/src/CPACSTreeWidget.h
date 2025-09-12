@@ -56,7 +56,8 @@ signals:
 
     void newSelectedTreeItem(cpcr::CPACSTreeItem*);
     void contextMenuClosed(); // signals the CPACSTreeView to update its paintEvent
-    void deleteElementRequested(cpcr::CPACSTreeItem*);
+    void deleteSectionRequested(cpcr::CPACSTreeItem* item);
+    void addSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem* item);
 
 private slots:
 

@@ -75,18 +75,16 @@ void CPACSTreeWidget::onCustomContextMenuRequested(QPoint const& globalPos, CPAC
         QMenu menu;
         QAction* delete_action = menu.addAction(QStringLiteral("Delete %1 %2").arg(type, uid));
         connect(delete_action, &QAction::triggered, this, [&](){
-            emit deleteElementRequested(item);
+            emit deleteSectionRequested(item);
         });
         delete_action->setDisabled(parent->getChildren().size() <= 2); // At least two sections required
         menu.exec(globalPos);
     } else {
         QMenu menu;
-        menu.addAction(QStringLiteral("Add %1").arg(type));
-        if (where == CPACSTreeView::Where::Before) {
-            // action: Open dialog and set values of comboboxes appropriately
-        } else if (where == CPACSTreeView::Where::After) {
-            // action: Open dialog and set values of comboboxes appropriately
-        }
+        QAction* add_action = menu.addAction(QStringLiteral("Add %1").arg(type));
+        connect(add_action, &QAction::triggered, this, [&](){
+            emit addSectionRequested(where, item);
+        });
         menu.exec(globalPos);
     }
     emit contextMenuClosed();
