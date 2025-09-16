@@ -72,11 +72,17 @@ void CPACSTreeWidget::onCustomContextMenuRequested(QPoint const& globalPos, CPAC
 
     if (where == CPACSTreeView::Where::At) {
         QMenu menu;
+        menu.setToolTipsVisible(true);
         QAction* delete_action = menu.addAction(QStringLiteral("Delete %1 %2").arg(type, uid));
         connect(delete_action, &QAction::triggered, this, [&](){
             emit deleteSectionRequested(item);
         });
-        delete_action->setDisabled(parent->getChildren().size() <= 2); // At least two sections required
+        if (parent->getChildren().size() <= 2) {
+            // At least two sections required
+            delete_action->setDisabled(true);
+            delete_action->setToolTip("Section deletion not allowed: At least two sections are required.");
+        }
+
         menu.exec(globalPos);
     } else {
         QMenu menu;

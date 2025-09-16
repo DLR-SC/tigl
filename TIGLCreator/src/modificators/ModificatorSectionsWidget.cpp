@@ -43,9 +43,23 @@ ModificatorSectionsWidget::~ModificatorSectionsWidget()
 void ModificatorSectionsWidget::setCreateConnectedElement(Ui::ElementModificatorInterface const& element)
 {
     createConnectedElement = element;
+    update_delete_section_button_disabled_state();
+}
 
+void ModificatorSectionsWidget::update_delete_section_button_disabled_state()
+{
+    if (createConnectedElement == std::nullopt) {
+        return;
+    }
     // at least two sections required
-    ui->deleteConnectedElementBtn->setDisabled(element.GetOrderedConnectedElement().size() <= 2);
+    if (createConnectedElement->GetOrderedConnectedElement().size() <= 2) {
+        ui->deleteConnectedElementBtn->setDisabled(true);
+        ui->deleteConnectedElementBtn->setToolTip("Section deletion not allowed: At least two sections are required.");
+    } else
+    {
+        ui->deleteConnectedElementBtn->setDisabled(false);
+        ui->deleteConnectedElementBtn->setToolTip("");
+    }
 }
 
 void ModificatorSectionsWidget::execNewConnectedElementDialog()
@@ -65,8 +79,8 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
     NewConnectedElementDialog newElementDialog(elementUIDsQList, this);
     if (newElementDialog.exec() == QDialog::Accepted) {
         newElementDialog.applySelection(*createConnectedElement);
+        update_delete_section_button_disabled_state();
         emit undoCommandRequired();
-        ui->deleteConnectedElementBtn->setDisabled(createConnectedElement->GetOrderedConnectedElement().size() <= 2);
     }
 }
 

@@ -49,6 +49,10 @@ public:
     void setCreateConnectedElement(Ui::ElementModificatorInterface const& element);
 
 private:
+
+    // disables the selection deletion, if we have two or less sections
+    void update_delete_section_button_disabled_state();
+
     Ui::ModificatorSectionsWidget* ui;
     // std::optional used here to account for empty initializiation of member variable in construtor (ptr and nullptr used before)
     std::optional<Ui::ElementModificatorInterface> createConnectedElement;
