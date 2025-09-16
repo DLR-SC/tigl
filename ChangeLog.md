@@ -7,6 +7,7 @@ Changes since last release
 10/09/2025
 - General changes
   - [#1141](https://github.com/DLR-SC/tigl/issues/1141) Add the option to set a custom name when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog.
+  - When adding new sections to wings or fuselages, the sections are reordered from root to tip (resp. nose to rear) according to the segments ([#1139](https://github.com/DLR-SC/tigl/issues/1139))
 
 29/08/2025
 - General changes
@@ -25,6 +26,7 @@ Changes since last release
 
  
 - Fixes
+  - Fix hard crash for configuration without fuselage profiles ([#1178](https://github.com/DLR-SC/tigl/issues/1178))
   - Fix wrong rotation when adding sections ([#1168](https://github.com/DLR-SC/tigl/issues/1168))
   - [#1108](https://github.com/DLR-SC/tigl/issues/1108) When adding a new section into an existing wing, the scaling/translation did not seem meaningful. That is due to the fact, that the new element's area was interpolated between the start end end element. However, it does not depend linearly on the element width. Choosing the element width as a target value for the new element should fix this issue.
   - [#1122](https://github.com/DLR-SC/tigl/issues/1122) Redo and Undo commands now update the CPACS configuration, which was previously only true for modifications using the CPACS Editor UI.

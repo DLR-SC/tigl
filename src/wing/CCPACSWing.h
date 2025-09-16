@@ -608,6 +608,12 @@ protected:
 
     void SetWingHelper(CTiglWingHelper& cache) const;
 
+    /**
+     * @brief ReorderSections orders the sections according to the segments
+     * from root to tip
+     */
+    void ReorderSections();
+
 private:
     // Invalidates internal state
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
