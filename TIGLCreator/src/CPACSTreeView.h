@@ -19,7 +19,6 @@
 #pragma once
 
 #include <QTreeWidget>
-#include <optional>
 
 namespace Ui
 {
