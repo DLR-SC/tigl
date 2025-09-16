@@ -10,7 +10,7 @@
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_InteractiveContext.hxx>
 
-#include "ModificatorManager.h"
+#include "ModificatorModel.h"
 
 namespace TiGLCreator
 {
@@ -118,7 +118,7 @@ private:
 class ModifyTiglObject : public QUndoCommand
 {
 public:
-    ModifyTiglObject(ModificatorManager& manager);
+    ModifyTiglObject(ModificatorModel& manager);
     // QUndoCommand interface
 
 public:
@@ -136,7 +136,7 @@ private:
     std::string oldConfig;
     std::string newConfig;
     bool isInitialized;
-    ModificatorManager& manager;
+    ModificatorModel& manager;
 };
 }
 #endif // TIGLCREATORUNDOCOMMANDS_H

@@ -31,7 +31,7 @@
 
 #include "ui_TIGLCreatorWindow.h"
 
-#include "ModificatorManager.h"
+#include "ModificatorModel.h"
 
 class QAction;
 class QLabel;
@@ -153,7 +153,7 @@ private:
 
     bool suppressErrors{false};
 
-    ModificatorManager* modificatorManager;
+    ModificatorModel* modificatorManager;
 
 };
 

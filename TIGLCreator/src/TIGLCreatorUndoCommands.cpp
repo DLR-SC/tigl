@@ -58,7 +58,7 @@ void ChangeObjectsColor::undo()
 
 }
 
-ModifyTiglObject::ModifyTiglObject(ModificatorManager& manager)
+ModifyTiglObject::ModifyTiglObject(ModificatorModel& manager)
     : manager(manager)
 {
     newConfig     = "";

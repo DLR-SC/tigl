@@ -144,7 +144,8 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     setAcceptDrops(true);
 
     // creator init
-    modificatorManager = new ModificatorManager(treeWidget, modificatorContainerWidget, myScene, undoStack) ;
+    modificatorManager = new ModificatorModel(modificatorContainerWidget, myScene, undoStack, this);
+    treeWidget->SetModel(modificatorManager);
 
     connectSignals();
     createMenus();
@@ -292,6 +293,7 @@ void TIGLCreatorWindow::closeConfiguration()
     }
 
     modificatorManager->setCPACSConfiguration(nullptr); // it will also reset the treeview
+    treeWidget->refresh();
     if (cpacsConfiguration) {
         getScene()->deleteAllObjects();
         delete cpacsConfiguration;
@@ -352,6 +354,7 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
             cpacsConfiguration = config;
 
             modificatorManager->setCPACSConfiguration(cpacsConfiguration);
+            treeWidget->refresh();
 
             connectConfiguration();
             updateMenus();
@@ -399,6 +402,7 @@ void TIGLCreatorWindow::reopenFile()
     if (currentFile.suffix().toLower() == tr("xml")){
         cpacsConfiguration->updateConfiguration();
         modificatorManager->setCPACSConfiguration(cpacsConfiguration);
+        treeWidget->refresh();
     }
     else {
         myScene->getContext()->EraseAll(Standard_False);
@@ -448,6 +452,7 @@ void TIGLCreatorWindow::openNewFile(const QString& templatePath)
             cpacsConfiguration = config;
 
             modificatorManager->setCPACSConfiguration(cpacsConfiguration);
+            treeWidget->refresh();
 
             connectConfiguration();
             updateMenus();
@@ -991,6 +996,10 @@ void TIGLCreatorWindow::connectSignals()
     // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
     connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
     connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
+
+    connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorManager, SLOT(dispatch(cpcr::CPACSTreeItem*)));
+    connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorManager, &ModificatorModel::onDeleteSectionRequested);
+    connect(treeWidget, &CPACSTreeWidget::addSectionRequested, modificatorManager, &ModificatorModel::onAddSectionRequested);
 
     connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)

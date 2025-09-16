@@ -56,6 +56,12 @@ CPACSTreeWidget::~CPACSTreeWidget()
     delete ui;
 }
 
+void CPACSTreeWidget::SetModel(ModificatorModel *model)
+{
+    filterModel->setModel(model);
+    refresh();
+}
+
 void CPACSTreeWidget::onCustomContextMenuRequested(QPoint const& globalPos, CPACSTreeView::Where where, QModelIndex index)
 {
     cpcr::CPACSTreeItem* item = filterModel->getItem(index);
@@ -139,6 +145,9 @@ void CPACSTreeWidget::setNewSearch(const QString newText)
 
 void CPACSTreeWidget::setExpertView()
 {
+    if (filterModel->sourceModel() == nullptr) {
+        return;
+    }
     bool expertMode = ui->expertViewCheckBox->isChecked();
 
     // to avoid that on selectionChanged is called during the transformation of the tree
@@ -165,27 +174,8 @@ void CPACSTreeWidget::setTreeViewColumnsDisplay()
     ui->treeView->setColumnHidden(2, true);
 }
 
-void CPACSTreeWidget::clear()
-{
-    if (filterModel) {
-        filterModel->disconnectInternalTree();
-    }
-    tree.clean();
-}
-
-void CPACSTreeWidget::displayNewTree(TixiDocumentHandle handle, std::string root)
-{
-    tree.build(handle, root);
-    filterModel->resetInternalTree(&tree);
-    setTreeViewColumnsDisplay();
-    setExpertView();
-}
-
 void CPACSTreeWidget::refresh()
 {
-    filterModel->disconnectInternalTree();
-    tree.reload();
-    filterModel->resetInternalTree(&tree);
     setTreeViewColumnsDisplay();
     setExpertView();
 }
