@@ -346,7 +346,11 @@ void ModificatorModel::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
     auto parentIdx = getIndex(sections, 0);
     auto row = item->positionRelativelyToParent();
     beginRemoveRows(parentIdx, row, row);
+    // apply changes in cpacs configuration
     element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
+    writeCPACS();
+
+    // apply changes to CPACSTree
     sections->removeChild(row);
     endRemoveRows();
     createUndoCommand();
@@ -368,6 +372,7 @@ void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::C
     }
     auto element = resolve(parent->getUid());
 
+
     // open a new connected element dialog and set the comboboxes
     // according to the arguments
     std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
@@ -385,8 +390,30 @@ void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::C
         newElementDialog.setWhere(NewConnectedElementDialog::After);
     }
 
+    // apply the changes
     if (newElementDialog.exec() == QDialog::Accepted) {
+
+        int row = item->positionRelativelyToParent();
+        if (where == CPACSTreeView::Where::After) {
+            ++row;
+        }
+
+        auto sectionsIdx = getIndex(sections, 0);
+
+        beginInsertRows(sectionsIdx, row, row);
+
+        // apply changes in cpacs configuration
         newElementDialog.applySelection(element);
+        writeCPACS(); // this is needed before calling createChildrenRecursively
+
+        // apply changes to CPACSTree
+        std::string xpath = sections->getXPath() + "/" + item->getType() + "[" + std::to_string(row+1) + "]";
+        std::string uid = newElementDialog.getSectionName().toStdString();
+        auto* new_item = sections->addChildAt(row, xpath, item->getType(), row, uid);
+        tree.createChildrenRecursively(*new_item);
+
+        endInsertRows();
+
         createUndoCommand();
     }
 }
