@@ -136,7 +136,7 @@ private:
     std::string oldConfig;
     std::string newConfig;
     bool isInitialized;
-    ModificatorModel& manager;
+    ModificatorModel& model;
 };
 }
 #endif // TIGLCREATORUNDOCOMMANDS_H

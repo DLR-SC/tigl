@@ -153,7 +153,7 @@ private:
 
     bool suppressErrors{false};
 
-    ModificatorModel* modificatorManager;
+    ModificatorModel* modificatorModel;
 
 };
 

@@ -144,8 +144,8 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     setAcceptDrops(true);
 
     // creator init
-    modificatorManager = new ModificatorModel(modificatorContainerWidget, myScene, undoStack, this);
-    treeWidget->SetModel(modificatorManager);
+    modificatorModel = new ModificatorModel(modificatorContainerWidget, myScene, undoStack, this);
+    treeWidget->SetModel(modificatorModel);
 
     connectSignals();
     createMenus();
@@ -165,7 +165,7 @@ TIGLCreatorWindow::~TIGLCreatorWindow()
 {
     delete stdoutStream;
     delete errorStream;
-    delete modificatorManager;
+    delete modificatorModel;
 }
 
 void TIGLCreatorWindow::dragEnterEvent(QDragEnterEvent * ev)
@@ -292,7 +292,7 @@ void TIGLCreatorWindow::closeConfiguration()
         }
     }
 
-    modificatorManager->setCPACSConfiguration(nullptr); // it will also reset the treeview
+    modificatorModel->setCPACSConfiguration(nullptr); // it will also reset the treeview
     treeWidget->refresh();
     if (cpacsConfiguration) {
         getScene()->deleteAllObjects();
@@ -353,7 +353,7 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
             delete cpacsConfiguration;
             cpacsConfiguration = config;
 
-            modificatorManager->setCPACSConfiguration(cpacsConfiguration);
+            modificatorModel->setCPACSConfiguration(cpacsConfiguration);
             treeWidget->refresh();
 
             connectConfiguration();
@@ -401,7 +401,7 @@ void TIGLCreatorWindow::reopenFile()
 {
     if (currentFile.suffix().toLower() == tr("xml")){
         cpacsConfiguration->updateConfiguration();
-        modificatorManager->setCPACSConfiguration(cpacsConfiguration);
+        modificatorModel->setCPACSConfiguration(cpacsConfiguration);
         treeWidget->refresh();
     }
     else {
@@ -451,7 +451,7 @@ void TIGLCreatorWindow::openNewFile(const QString& templatePath)
             delete cpacsConfiguration;
             cpacsConfiguration = config;
 
-            modificatorManager->setCPACSConfiguration(cpacsConfiguration);
+            modificatorModel->setCPACSConfiguration(cpacsConfiguration);
             treeWidget->refresh();
 
             connectConfiguration();
@@ -568,7 +568,7 @@ void TIGLCreatorWindow::applySettings()
     else {
         deleteEnvVar("TIGL_DEBUG_BOP");
     }
-    modificatorManager->updateProfilesDB(tiglCreatorSettings->profilesDBPath());
+    modificatorModel->updateProfilesDB(tiglCreatorSettings->profilesDBPath());
 }
 
 void TIGLCreatorWindow::changeSettings()
@@ -994,12 +994,12 @@ void TIGLCreatorWindow::connectSignals()
     // Addition for creator
 
     // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
-    connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
-    connect(modificatorManager, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
+    connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
+    connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
 
-    connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorManager, SLOT(dispatch(cpcr::CPACSTreeItem*)));
-    connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorManager, &ModificatorModel::onDeleteSectionRequested);
-    connect(treeWidget, &CPACSTreeWidget::addSectionRequested, modificatorManager, &ModificatorModel::onAddSectionRequested);
+    connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorModel, SLOT(dispatch(cpcr::CPACSTreeItem*)));
+    connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::onDeleteSectionRequested);
+    connect(treeWidget, &CPACSTreeWidget::addSectionRequested, modificatorModel, &ModificatorModel::onAddSectionRequested);
 
     connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
@@ -1270,10 +1270,10 @@ void TIGLCreatorWindow::standardizeDialog()
     StandardizeDialog newStdDialog(config, this);
     if (newStdDialog.exec() == QDialog::Accepted) {
         if (newStdDialog.isSelectedUIDAFuselage() || newStdDialog.isSelectedUIDAWing()) {
-            modificatorManager->standardize(newStdDialog.getSelectedUID(), newStdDialog.useSimpleDecomposition());
+            modificatorModel->standardize(newStdDialog.getSelectedUID(), newStdDialog.useSimpleDecomposition());
         }
         else {
-            modificatorManager->standardize(newStdDialog.useSimpleDecomposition());
+            modificatorModel->standardize(newStdDialog.useSimpleDecomposition());
         }
     }
 }

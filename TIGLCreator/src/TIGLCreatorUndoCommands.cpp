@@ -59,7 +59,7 @@ void ChangeObjectsColor::undo()
 }
 
 ModifyTiglObject::ModifyTiglObject(ModificatorModel& manager)
-    : manager(manager)
+    : model(manager)
 {
     newConfig     = "";
     oldConfig     = "";
@@ -74,23 +74,23 @@ void ModifyTiglObject::redo()
         isInitialized = true;
     }
     else {
-        manager.updateCpacsConfigurationFromString(newConfig);
+        model.updateCpacsConfigurationFromString(newConfig);
     }
 }
 
 void ModifyTiglObject::undo()
 {
-    manager.updateCpacsConfigurationFromString(oldConfig);
+    model.updateCpacsConfigurationFromString(oldConfig);
 }
 
 void ModifyTiglObject::initialize()
 {
-    oldConfig = manager.getConfigurationAsString();
+    oldConfig = model.getConfigurationAsString();
     
     // write the new version
-    manager.writeCPACS();
+    model.writeCPACS();
 
-    newConfig = manager.getConfigurationAsString();
+    newConfig = model.getConfigurationAsString();
 }
 
 } // namespace TiGLCreator
