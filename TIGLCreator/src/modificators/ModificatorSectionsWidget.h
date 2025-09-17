@@ -37,6 +37,7 @@ class ModificatorSectionsWidget : public QWidget
 
 signals:
     void addSectionRequested(Ui::ElementModificatorInterface&);
+    void deleteSectionRequested(Ui::ElementModificatorInterface&);
 
 public slots:
     void execNewConnectedElementDialog();

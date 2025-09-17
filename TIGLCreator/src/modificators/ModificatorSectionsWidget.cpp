@@ -19,13 +19,6 @@
 #include "ModificatorSectionsWidget.h"
 #include "ui_ModificatorSectionsWidget.h"
 
-#include "NewConnectedElementDialog.h"
-#include "CTiglLogging.h"
-#include "CTiglError.h"
-#include "TIGLCreatorErrorDialog.h"
-#include "DeleteDialog.h"
-#include <optional>
-
 ModificatorSectionsWidget::ModificatorSectionsWidget(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::ModificatorSectionsWidget)
@@ -82,27 +75,6 @@ void ModificatorSectionsWidget::execDeleteConnectedElementDialog()
         return;
     }
 
-    std::vector<std::string> elementUIDs = createConnectedElement->GetOrderedConnectedElement();
-
-    QStringList elementUIDsQList;
-    for (int i = 0; i < elementUIDs.size(); i++) {
-        elementUIDsQList.push_back(elementUIDs.at(i).c_str());
-    }
-
-    DeleteDialog deleteDialog(elementUIDsQList);
-    if (deleteDialog.exec() == QDialog::Accepted) {
-        QString uid = deleteDialog.getUIDToDelete();
-        try {
-            createConnectedElement->DeleteConnectedElement(uid.toStdString());
-        }
-        catch (const tigl::CTiglError& err) {
-            TIGLCreatorErrorDialog errDialog(this);
-            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the section (aka connected element)").arg(err.what()));
-            errDialog.setWindowTitle("Error");
-            errDialog.setDetailsText(err.what());
-            errDialog.exec();
-            return;
-        }
-    }
-
+    emit deleteSectionRequested(*createConnectedElement);
+    update_delete_section_button_disabled_state();
 }

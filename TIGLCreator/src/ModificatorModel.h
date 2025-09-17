@@ -74,9 +74,11 @@ public slots:
     void highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation);
     void unHighlight();
 
-    // Open dialogs for deleting or adding sections
-    void onDeleteSectionRequested(cpcr::CPACSTreeItem* item);
+    // delete section without dialog
+    void DeleteSection(cpcr::CPACSTreeItem* item);
 
+    // Open dialogs for deleting or adding sections
+    void onDeleteSectionRequested(Ui::ElementModificatorInterface& emi);
     void onAddSectionRequested(Ui::ElementModificatorInterface& emi);
     void onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem* item);
 

@@ -28,6 +28,7 @@
 #include "CTiglStandardizer.h"
 #include "TIGLCreatorContext.h"
 #include "modificators/NewConnectedElementDialog.h"
+#include "modificators/DeleteDialog.h"
 #include "tixicpp.h"
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
@@ -48,6 +49,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
     // signals:
     connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()));
     connect(modificatorContainerWidget, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onAddSectionRequested(Ui::ElementModificatorInterface&)));
+    connect(modificatorContainerWidget, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onDeleteSectionRequested(Ui::ElementModificatorInterface&)));
 }
 
 void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
@@ -345,7 +347,7 @@ void ModificatorModel::unHighlight()
     highligthteds.clear();
 }
 
-void ModificatorModel::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
+void ModificatorModel::DeleteSection(cpcr::CPACSTreeItem* item)
 {
     if (item == nullptr) {
         return;
@@ -365,12 +367,44 @@ void ModificatorModel::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
     auto row = item->positionRelativelyToParent();
     beginRemoveRows(parentIdx, row, row);
     // apply changes in cpacs configuration
-    element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
+    try {
+        element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the section (aka connected element)").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        return;
+    }
     createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
 
     // apply changes to CPACSTree
     sections->removeChild(row);
     endRemoveRows();
+}
+
+void ModificatorModel::onDeleteSectionRequested(Ui::ElementModificatorInterface &element)
+{
+    std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
+
+    QStringList sectionUIDsQList;
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        QString sectionUid = QString::fromStdString(elementUidToSectionUid(elementUIDs[i]));
+        sectionUIDsQList.push_back(sectionUid);
+    }
+
+    DeleteDialog deleteDialog(sectionUIDsQList);
+    if (deleteDialog.exec() == QDialog::Accepted) {
+        QString uid = deleteDialog.getUIDToDelete();
+        auto idx = getIdxForUID(uid.toStdString());
+        auto* item = getItem(idx);
+        if (item == nullptr) {
+            return;
+        }
+        DeleteSection(item);
+    }
 }
 
 void ModificatorModel::AddSection(

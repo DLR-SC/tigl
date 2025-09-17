@@ -998,7 +998,7 @@ void TIGLCreatorWindow::connectSignals()
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
 
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorModel, SLOT(dispatch(cpcr::CPACSTreeItem*)));
-    connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::onDeleteSectionRequested);
+    connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::DeleteSection);
     connect(treeWidget, SIGNAL(addSectionRequested(CPACSTreeView::Where,cpcr::CPACSTreeItem*)), modificatorModel, SLOT(onAddSectionRequested(CPACSTreeView::Where,cpcr::CPACSTreeItem*)));
 
     connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
