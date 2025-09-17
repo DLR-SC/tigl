@@ -54,6 +54,8 @@ public:
     // this should be the only way to add children
     CPACSTreeItem* addChild(std::string xpath, std::string cpacsType, int tixiIndex, std::string uid);
 
+    void removeChild(int idx);
+
     CPACSTreeItem* getParent() const;
 
     std::vector<CPACSTreeItem*> const& getChildren() const;

@@ -233,7 +233,6 @@ void ModificatorModel::createUndoCommand()
         LOG(ERROR) << "ModificatorManager::createUndoCommand: Called but no document is set!";
     }
     emit configurationEdited();
-    resetTree();
 }
 
 void ModificatorModel::resetTree()
@@ -344,7 +343,12 @@ void ModificatorModel::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
     }
     auto element = resolve(parent->getUid());
 
+    auto parentIdx = getIndex(sections, 0);
+    auto row = item->positionRelativelyToParent();
+    beginRemoveRows(parentIdx, row, row);
     element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
+    sections->removeChild(row);
+    endRemoveRows();
     createUndoCommand();
 }
 

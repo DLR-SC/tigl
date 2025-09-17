@@ -21,6 +21,7 @@
 
 #include "CPACSTree.h"
 #include "CTiglLogging.h"
+#include <cassert>
 
 namespace cpcr
 {
@@ -65,6 +66,12 @@ CPACSTreeItem* CPACSTreeItem::addChild(std::string xpath, std::string cpacsType,
     newChild->parent        = this;
     children.push_back(newChild);
     return newChild;
+}
+
+void CPACSTreeItem::removeChild(int idx)
+{
+    assert(idx < children.size());
+    children.erase(children.begin() + idx);
 }
 
 CPACSTreeItem* CPACSTreeItem::getParent() const
