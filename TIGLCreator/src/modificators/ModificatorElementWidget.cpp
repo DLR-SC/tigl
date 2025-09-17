@@ -119,7 +119,7 @@ bool ModificatorElementWidget::apply()
         internalProfileUID = ui->profileComboBox->currentText();
         try {
             if (!profilesDB->hasProfileConfigSuffix(internalProfileUID)) {
-                profilesDB->copyProfileFromLocalToConfig(internalProfileUID);
+                emit addAirfoilRequested(internalProfileUID);
             }
             element->SetProfileUID(profilesDB->removeSuffix(internalProfileUID).toStdString());
             wasModified = true;

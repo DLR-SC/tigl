@@ -32,6 +32,9 @@ class ModificatorWingWidget : public ModificatorWidget
 {
     Q_OBJECT
 
+signals:
+    void addAirfoilRequested(QString const&);
+
 public slots:
 
     // update the sweep according the displayed chord value,

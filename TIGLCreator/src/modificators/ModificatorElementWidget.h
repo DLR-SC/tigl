@@ -40,7 +40,8 @@ class ModificatorElementWidget : public ModificatorWidget
 {
     Q_OBJECT
 
-
+signals:
+    void addAirfoilRequested(QString const&);
 
 private slots:
 

@@ -49,6 +49,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
 
     // signals:
     connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()));
+    connect(modificatorContainerWidget, SIGNAL(addAirfoilRequested(QString)), this, SLOT(addAirfoil(QString)));
     connect(modificatorContainerWidget, SIGNAL(addWingRequested()), this, SLOT(onAddWingRequested()));
     connect(modificatorContainerWidget, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(modificatorContainerWidget, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onDeleteSectionRequested(Ui::ElementModificatorInterface&)));
@@ -599,6 +600,38 @@ void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::C
     }
 }
 
+void ModificatorModel::addAirfoil(QString const& profileID)
+{
+    std::string profile_name = profilesDB.removeSuffix(profileID).toStdString();
+
+    auto* airfoils = getAirfoils();
+    auto airfoils_idx = getIndex(airfoils, 0);
+    auto airfoil_row = airfoils->getChildren().size();
+    beginInsertRows(airfoils_idx, airfoil_row, airfoil_row);
+
+    // apply changes to configuration
+    try {
+        profilesDB.copyProfileFromLocalToConfig(profileID);
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        return;
+    }
+
+    createUndoCommand(); // this is a bit unfortunate: if a profile has to be added, we have an additional undo command
+
+    // apply changes to CPACSTree
+    std::string xpath = airfoils->getXPath() + "/" + "wingAirfoil[" + std::to_string(airfoil_row+1) + "]";
+    auto* new_item = airfoils->addChild(xpath, "wingAirfoil", airfoil_row, profile_name);
+    tree.createChildrenRecursively(*new_item);
+
+    endInsertRows();
+}
+
 void ModificatorModel::onAddWingRequested()
 {
     NewWingDialog wingDialog(profilesDB.getAllWingProfiles(), modificatorContainerWidget);
@@ -610,33 +643,9 @@ void ModificatorModel::onAddWingRequested()
         std::string profile_name = profilesDB.removeSuffix(profileID).toStdString();
 
         if ( !profilesDB.hasProfileConfigSuffix(profileID) ) {
-
-            auto* airfoils = getAirfoils();
-            auto airfoils_idx = getIndex(airfoils, 0);
-            auto airfoil_row = airfoils->getChildren().size();
-            beginInsertRows(airfoils_idx, airfoil_row, airfoil_row);
-
-            // apply changes to configuration
-            try {
-                profilesDB.copyProfileFromLocalToConfig(profileID);
-            }
-            catch (const tigl::CTiglError& err) {
-                TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
-                errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.what()));
-                errDialog.setWindowTitle("Error");
-                errDialog.setDetailsText(err.what());
-                errDialog.exec();
-                return;
-            }
-
-            createUndoCommand(); // this is a bit unfortunate: if a profile has to be added, we have an additional undo command
-
-            // apply changes to CPACSTree
-            std::string xpath = airfoils->getXPath() + "/" + "wingAirfoil[" + std::to_string(airfoil_row+1) + "]";
-            auto* new_item = airfoils->addChild(xpath, "wingAirfoil", airfoil_row, profile_name);
-            tree.createChildrenRecursively(*new_item);
-
-            endInsertRows();
+            addAirfoil(profileID);
+        } else {
+            LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
         }
 
         auto* wings = getWings();

@@ -77,6 +77,9 @@ public slots:
     // delete section without dialog
     void DeleteSection(cpcr::CPACSTreeItem* item);
 
+    // add wing airfoil without dialog
+    void addAirfoil(QString const& profileID);
+
     // Open dialog for deleting a section
     void onDeleteSectionRequested(Ui::ElementModificatorInterface& emi);
 
