@@ -22,6 +22,7 @@
 #include "TIGLCreatorDocument.h"
 #include "CPACSTreeItem.h"
 #include "ModificatorContainerWidget.h"
+#include "modificators/NewConnectedElementDialog.h"
 #include <QUndoStack>
 #include "TIGLCreatorContext.h"
 #include "CCPACSPositioning.h"
@@ -73,8 +74,10 @@ public slots:
     void highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation);
     void unHighlight();
 
-    // signals from treewidget (delete or add section)
+    // Open dialogs for deleting or adding sections
     void onDeleteSectionRequested(cpcr::CPACSTreeItem* item);
+
+    void onAddSectionRequested(Ui::ElementModificatorInterface& emi);
     void onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem* item);
 
 public:
@@ -168,7 +171,24 @@ private:
      */
     Ui::ElementModificatorInterface resolve(std::string const& uid) const;
 
+    /**
+     * @brief ModificatorModel::AddSection adds a wing or fuselage section
+     * @param element An interface class to handle both wing and fuselage sections
+     * @param where enum, can be Before or After
+     * @param startUID a reference section
+     * @param sectionName the name of the new section
+     * @param eta an eta value for the new section. Only applies for internal sections
+     */
+    void AddSection(
+            Ui::ElementModificatorInterface& element,
+            NewConnectedElementDialog::Where where,
+            std::string startUID,
+            std::string sectionName,
+            std::optional<double> eta
+    );
+
     std::string sectionUidToElementUid(std::string const& uid) const;
+    std::string elementUidToSectionUid(std::string const& uid) const;
 
     ModificatorContainerWidget* modificatorContainerWidget;
 

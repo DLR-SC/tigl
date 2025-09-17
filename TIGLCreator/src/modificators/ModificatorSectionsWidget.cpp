@@ -69,19 +69,8 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
         return;
     }
 
-    std::vector<std::string> elementUIDs = createConnectedElement->GetOrderedConnectedElement();
-
-    QStringList elementUIDsQList;
-    for (int i = 0; i < elementUIDs.size(); i++) {
-        elementUIDsQList.push_back(elementUIDs.at(i).c_str());
-    }
-
-    NewConnectedElementDialog newElementDialog(elementUIDsQList, this);
-    if (newElementDialog.exec() == QDialog::Accepted) {
-        newElementDialog.applySelection(*createConnectedElement);
-        update_delete_section_button_disabled_state();
-        emit undoCommandRequired();
-    }
+    emit addSectionRequested(*createConnectedElement);
+    update_delete_section_button_disabled_state();
 }
 
 
@@ -114,7 +103,6 @@ void ModificatorSectionsWidget::execDeleteConnectedElementDialog()
             errDialog.exec();
             return;
         }
-        emit undoCommandRequired();
     }
 
 }

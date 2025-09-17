@@ -81,6 +81,7 @@ void ModifyTiglObject::redo()
 void ModifyTiglObject::undo()
 {
     model.updateCpacsConfigurationFromString(oldConfig);
+    model.resetTree();
 }
 
 void ModifyTiglObject::initialize()

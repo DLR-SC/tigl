@@ -38,9 +38,9 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     // Therefore, fuselageModificator informs when a undoCommand is required via a signal.
     connect(ui->fuselagesModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
     // same for sectionsModificator
-    connect(ui->sectionsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
     connect(ui->wingsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
 
+    connect(ui->sectionsModificator, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardAddSectionRequested(Ui::ElementModificatorInterface&)));
 }
 
 ModificatorContainerWidget::~ModificatorContainerWidget()
@@ -202,7 +202,7 @@ void ModificatorContainerWidget::applyCurrentCancellation()
     }
 }
 
-void ModificatorContainerWidget::forwardUndoCommandRequired()
+void ModificatorContainerWidget::forwardAddSectionRequested(Ui::ElementModificatorInterface& emi)
 {
-    emit undoCommandRequired();
+    emit addSectionRequested(emi);
 }

@@ -57,14 +57,14 @@ class ModificatorContainerWidget : public QWidget
 
 signals:
     void undoCommandRequired();
+    void addSectionRequested(Ui::ElementModificatorInterface&);
 
 public slots:
     void applyCurrentModifications();
     void applyCurrentCancellation();
 
-    // Some modificator ask the creation of a undo action (especially in the case of dialog interfaces)
-    // So this slot allow us to forward the request.
-    void forwardUndoCommandRequired();
+    // adding and deleting is performed only by the ModificatorManager
+    void forwardAddSectionRequested(Ui::ElementModificatorInterface&);
 
 public:
     explicit ModificatorContainerWidget(QWidget* parent = nullptr);

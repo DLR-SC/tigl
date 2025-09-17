@@ -30,6 +30,7 @@
 #include "modificators/NewConnectedElementDialog.h"
 #include "tixicpp.h"
 #include "TIGLCreatorException.h"
+#include "TIGLCreatorErrorDialog.h"
 
 ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContainerWidget,
                                        TIGLCreatorContext* scene,
@@ -45,7 +46,8 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
     this->scene = scene;
 
     // signals:
-    connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()) );
+    connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()));
+    connect(modificatorContainerWidget, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onAddSectionRequested(Ui::ElementModificatorInterface&)));
 }
 
 void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
@@ -319,6 +321,22 @@ std::string ModificatorModel::sectionUidToElementUid(const std::string &uid) con
     }
 }
 
+std::string ModificatorModel::elementUidToSectionUid(const std::string &uid) const
+{
+    tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+    tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(uid);
+    if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
+        tigl::CCPACSFuselageSectionElement& element = *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
+        return element.GetParent()->GetParent()->GetUID();
+    } else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
+        tigl::CCPACSWingSectionElement& element = *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+        return element.GetParent()->GetParent()->GetUID();
+    } else {
+        LOG(ERROR) << "ModificatorManager:: Unexpected element type!";
+        return "";
+    }
+}
+
 void ModificatorModel::unHighlight()
 {
     for (int i = 0; i < highligthteds.size(); i++) {
@@ -348,12 +366,118 @@ void ModificatorModel::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
     beginRemoveRows(parentIdx, row, row);
     // apply changes in cpacs configuration
     element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
-    writeCPACS();
+    createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
 
     // apply changes to CPACSTree
     sections->removeChild(row);
     endRemoveRows();
-    createUndoCommand();
+}
+
+void ModificatorModel::AddSection(
+        Ui::ElementModificatorInterface& element,
+        NewConnectedElementDialog::Where where,
+        std::string startUID,
+        std::string sectionName,
+        std::optional<double> eta
+)
+{
+    auto idx = getIdxForUID(startUID);
+    auto* item = getItem(idx);
+    if (item == nullptr) {
+        return;
+    }
+    std::string elemUID = sectionUidToElementUid(startUID);
+
+    // apply the changes
+
+    int row = item->positionRelativelyToParent();
+    if (where == NewConnectedElementDialog::Where::After) {
+        ++row;
+    }
+
+    auto* sections = item->getParent();
+    if (sections == nullptr) {
+        return;
+    }
+    auto sectionsIdx = getIndex(sections, 0);
+
+    beginInsertRows(sectionsIdx, row, row);
+
+    // add the section in the cpacs configuration
+    try {
+        if (where == NewConnectedElementDialog::Before) {
+            auto elementUIDBefore = element.GetElementUIDBeforeNewElement(elemUID);
+            if (elementUIDBefore) {
+                if (eta) { // Security check. Should be set if elementUIDBefore is true
+                    element.CreateNewConnectedElementBetween(*elementUIDBefore, elemUID, *eta, sectionName);
+                }
+                else {
+                    throw tigl::CTiglError("No eta value set!");
+                }
+            }
+            else {
+                element.CreateNewConnectedElementBefore(elemUID, sectionName);
+            }
+        }
+        else if (where == NewConnectedElementDialog::After) {
+            auto elementUIDAfter = element.GetElementUIDAfterNewElement(elemUID);
+            if (elementUIDAfter) {
+                if (eta) { // Security check. Should be set if elementUIDAfter is true
+                    element.CreateNewConnectedElementBetween(elemUID, *elementUIDAfter, *eta, sectionName);
+                }
+                else {
+                    throw tigl::CTiglError("No eta value set!");
+                }
+            }
+            else {
+                element.CreateNewConnectedElementAfter(elemUID, sectionName);
+            }
+        }
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(
+            QString("<b>%1</b><br /><br />%2").arg("Fail to create the new connected element ").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        return;
+    }
+
+    createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+    // apply changes to CPACSTree
+    std::string xpath = sections->getXPath() + "/" + item->getType() + "[" + std::to_string(row+1) + "]";
+    std::string uid = sectionName;
+    auto* new_item = sections->addChildAt(row, xpath, item->getType(), row, uid);
+    tree.createChildrenRecursively(*new_item);
+
+    endInsertRows();
+}
+
+void ModificatorModel::onAddSectionRequested(Ui::ElementModificatorInterface &element)
+{
+    // open a new connected element dialog
+    std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
+    QStringList sectionUIDsQList;
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        QString sectionUid = QString::fromStdString(elementUidToSectionUid(elementUIDs[i]));
+        sectionUIDsQList.push_back(sectionUid);
+    }
+
+    NewConnectedElementDialog newElementDialog(sectionUIDsQList);
+
+    if (newElementDialog.exec() == QDialog::Accepted) {
+
+        AddSection(
+            element,
+            newElementDialog.getWhere(),
+            newElementDialog.getStartUID().toStdString(),
+            newElementDialog.getSectionName().toStdString(),
+            newElementDialog.getEta()
+        );
+
+    }
 }
 
 void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem *item)
@@ -366,55 +490,43 @@ void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::C
     if (sections == nullptr) {
         return;
     }
+
     auto* parent = sections->getParent(); // parent should be wing or fuselage
     if (parent == nullptr) {
         return;
     }
     auto element = resolve(parent->getUid());
 
-
-    // open a new connected element dialog and set the comboboxes
-    // according to the arguments
+    // open a new connected element dialog
     std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
-    QStringList elementUIDsQList;
+    QStringList sectionUIDsQList;
     for (int i = 0; i < elementUIDs.size(); i++) {
-        elementUIDsQList.push_back(elementUIDs.at(i).c_str());
+        QString sectionUid = QString::fromStdString(elementUidToSectionUid(elementUIDs[i]));
+        sectionUIDsQList.push_back(sectionUid);
     }
 
-    NewConnectedElementDialog newElementDialog(elementUIDsQList);
-    QString uid = QString::fromStdString(sectionUidToElementUid(item->getUid()));
-    newElementDialog.setStartUID(uid);
-    if (where == CPACSTreeView::Where::Before) {
-        newElementDialog.setWhere(NewConnectedElementDialog::Before);
-    } else {
-        newElementDialog.setWhere(NewConnectedElementDialog::After);
+    NewConnectedElementDialog newElementDialog(sectionUIDsQList);
+
+    // Set the comboboxes' initial values according to the arguments
+    if (item != nullptr) {
+        QString uid = QString::fromStdString(item->getUid());
+        newElementDialog.setStartUID(uid);
+        if (where == CPACSTreeView::Where::Before) {
+            newElementDialog.setWhere(NewConnectedElementDialog::Before);
+        } else {
+            newElementDialog.setWhere(NewConnectedElementDialog::After);
+        }
     }
 
-    // apply the changes
     if (newElementDialog.exec() == QDialog::Accepted) {
 
-        int row = item->positionRelativelyToParent();
-        if (where == CPACSTreeView::Where::After) {
-            ++row;
-        }
-
-        auto sectionsIdx = getIndex(sections, 0);
-
-        beginInsertRows(sectionsIdx, row, row);
-
-        // apply changes in cpacs configuration
-        newElementDialog.applySelection(element);
-        writeCPACS(); // this is needed before calling createChildrenRecursively
-
-        // apply changes to CPACSTree
-        std::string xpath = sections->getXPath() + "/" + item->getType() + "[" + std::to_string(row+1) + "]";
-        std::string uid = newElementDialog.getSectionName().toStdString();
-        auto* new_item = sections->addChildAt(row, xpath, item->getType(), row, uid);
-        tree.createChildrenRecursively(*new_item);
-
-        endInsertRows();
-
-        createUndoCommand();
+        AddSection(
+            element,
+            newElementDialog.getWhere(),
+            newElementDialog.getStartUID().toStdString(),
+            newElementDialog.getSectionName().toStdString(),
+            newElementDialog.getEta()
+        );
     }
 }
 
