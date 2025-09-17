@@ -71,6 +71,10 @@ public slots:
     void highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation);
     void unHighlight();
 
+    // signals from treewidget (delete or add section)
+    void onDeleteSectionRequested(cpcr::CPACSTreeItem* item);
+    void onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem* item);
+
 public:
     ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget,  TIGLCreatorContext* scene,  QUndoStack* undoStack);
 
@@ -114,6 +118,17 @@ protected:
     }
 
 private:
+
+    /**
+     * @brief resolve resolves the ElementModificatorInterface based on the uid
+     * The ElementModificatorInterface can handle either wings or fuselages
+     * @param uid of a wing or a fuselage
+     * @return the interface
+     */
+    Ui::ElementModificatorInterface resolve(std::string const& uid) const;
+
+    std::string sectionUidToElementUid(std::string const& uid) const;
+
     TIGLCreatorDocument* doc;
 
     CPACSTreeWidget* treeWidget;

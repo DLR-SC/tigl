@@ -63,11 +63,20 @@ QVariant CPACSAbstractModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    if (role != Qt::DisplayRole) {
+    if (role != Qt::DisplayRole && role !=Qt::UserRole) {
         return QVariant();
     }
+
     cpcr::CPACSTreeItem* item = getItem(index);
     QVariant data;
+
+    if (role == Qt::UserRole) {
+        // we use Qt::UserRole to mark eligable parents for context menus in the tree view
+        // For now, these are fuselage sections and wing setions
+        data = (item->getType() == "sections");
+        return data;
+    }
+
     if (index.column() == 0) { // combine uid and type
         data = QString(item->getUid().c_str());
         if (data == "") {

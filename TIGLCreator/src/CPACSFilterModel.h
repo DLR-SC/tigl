@@ -74,6 +74,7 @@ public:
     };
 
     cpcr::CPACSTreeItem* getItemFromSelection(const QItemSelection& newSelection);
+    cpcr::CPACSTreeItem* getItem(QModelIndex index) const;
 
     /**
      * @return Return the index of the first cpacs element that is of the "model" type

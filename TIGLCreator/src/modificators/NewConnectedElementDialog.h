@@ -22,6 +22,7 @@
 #include <QDialog>
 #include <QString>
 #include <optional>
+#include "ElementModificatorInterface.h"
 
 namespace Ui
 {
@@ -47,15 +48,19 @@ public:
      * @return
      */
     QString getStartUID() const;
+    void setStartUID(QString const& text);
 
     /**
      * Return if the new connected element should be created before or after the reference element.
      * @return
      */
     Where getWhere() const;
+    void setWhere(Where where);
 
     std::optional<double> getEta() const;
     QString getSectionName() const;
+
+    void applySelection(Ui::ElementModificatorInterface& interface);
 
 private slots:
     void activate_eta();

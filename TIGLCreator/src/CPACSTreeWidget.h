@@ -23,6 +23,7 @@
 #include <QTreeView>
 #include "CPACSTree.h"
 #include "CPACSFilterModel.h"
+#include "CPACSTreeView.h"
 
 namespace Ui
 {
@@ -54,8 +55,13 @@ class CPACSTreeWidget : public QWidget
 signals:
 
     void newSelectedTreeItem(cpcr::CPACSTreeItem*);
+    void contextMenuClosed(); // signals the CPACSTreeView to update its paintEvent
+    void deleteSectionRequested(cpcr::CPACSTreeItem* item);
+    void addSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem* item);
 
 private slots:
+
+    void onCustomContextMenuRequested(QPoint const& globalPos, CPACSTreeView::Where where, QModelIndex index);
 
     void onSelectionChanged(const QItemSelection& newSelection, const QItemSelection& oldSelection);
 
