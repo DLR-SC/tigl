@@ -34,7 +34,8 @@ class ModificatorWingsWidget : public ModificatorWidget
     Q_OBJECT
 
 signals:
-    void undoCommandRequired();
+    void addWingRequested();
+    void deleteWingRequested();
 
 public slots:
 

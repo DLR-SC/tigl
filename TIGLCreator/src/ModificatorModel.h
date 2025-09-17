@@ -77,10 +77,15 @@ public slots:
     // delete section without dialog
     void DeleteSection(cpcr::CPACSTreeItem* item);
 
-    // Open dialogs for deleting or adding sections
+    // Open dialog for deleting a section
     void onDeleteSectionRequested(Ui::ElementModificatorInterface& emi);
+
+    // Opens dialog for adding a section
     void onAddSectionRequested(Ui::ElementModificatorInterface& emi);
     void onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem* item);
+
+    // Opens dialog for adding a wing
+    void onAddWingRequested();
 
 public:
     ModificatorModel(
@@ -147,7 +152,7 @@ public:
     cpcr::CPACSTreeItem* getItemFromSelection(const QItemSelection& newSelection);
 
     // Return the index of the first cpacs element that is of the "model" type
-    QModelIndex getAircraftModelIndex();
+    QModelIndex getAircraftModelIndex() const;
 
     // return the item for the given index
     // empty index is considered as the root index!
@@ -191,6 +196,9 @@ private:
 
     std::string sectionUidToElementUid(std::string const& uid) const;
     std::string elementUidToSectionUid(std::string const& uid) const;
+
+    cpcr::CPACSTreeItem *getAirfoils() const;
+    cpcr::CPACSTreeItem *getWings() const;
 
     ModificatorContainerWidget* modificatorContainerWidget;
 

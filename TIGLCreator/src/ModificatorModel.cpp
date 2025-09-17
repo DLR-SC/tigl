@@ -29,6 +29,7 @@
 #include "TIGLCreatorContext.h"
 #include "modificators/NewConnectedElementDialog.h"
 #include "modificators/DeleteDialog.h"
+#include "modificators/NewWingDialog.h"
 #include "tixicpp.h"
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
@@ -48,6 +49,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
 
     // signals:
     connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()));
+    connect(modificatorContainerWidget, SIGNAL(addWingRequested()), this, SLOT(onAddWingRequested()));
     connect(modificatorContainerWidget, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(modificatorContainerWidget, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onDeleteSectionRequested(Ui::ElementModificatorInterface&)));
 }
@@ -339,6 +341,39 @@ std::string ModificatorModel::elementUidToSectionUid(const std::string &uid) con
     }
 }
 
+cpcr::CPACSTreeItem *ModificatorModel::getAirfoils() const
+{
+    auto* root = tree.getRoot();
+    if (root != nullptr ) {
+        for (auto* child : root->getChildren()) {
+            if (child->getType() == "profiles") {
+                for (auto* gchild : child->getChildren()) {
+                    if (gchild->getType() == "wingAirfoils") {
+                        return gchild;
+                    }
+                }
+            }
+        }
+    }
+    LOG(ERROR) << "ModificatorManager:: Could not find wingAirfoils node in CPACS Tree";
+    return nullptr;
+}
+
+cpcr::CPACSTreeItem *ModificatorModel::getWings() const
+{
+    auto idx = getAircraftModelIndex();
+    auto* root = getItem(idx);
+    if (root != nullptr ) {
+        for (auto* child : root->getChildren()) {
+            if (child->getType() == "wings") {
+                return child;
+            }
+        }
+    }
+    LOG(ERROR) << "ModificatorManager:: Could not find wings node in CPACS Tree";
+    return nullptr;
+}
+
 void ModificatorModel::unHighlight()
 {
     for (int i = 0; i < highligthteds.size(); i++) {
@@ -564,6 +599,80 @@ void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::C
     }
 }
 
+void ModificatorModel::onAddWingRequested()
+{
+    NewWingDialog wingDialog(profilesDB.getAllWingProfiles(), modificatorContainerWidget);
+    if (wingDialog.exec() == QDialog::Accepted) {
+        int nbSection       = wingDialog.getNbSection();
+        QString uid         = wingDialog.getUID();
+        QString profileID = wingDialog.getProfileUID();
+
+        std::string profile_name = profilesDB.removeSuffix(profileID).toStdString();
+
+        if ( !profilesDB.hasProfileConfigSuffix(profileID) ) {
+
+            auto* airfoils = getAirfoils();
+            auto airfoils_idx = getIndex(airfoils, 0);
+            auto airfoil_row = airfoils->getChildren().size();
+            beginInsertRows(airfoils_idx, airfoil_row, airfoil_row);
+
+            // apply changes to configuration
+            try {
+                profilesDB.copyProfileFromLocalToConfig(profileID);
+            }
+            catch (const tigl::CTiglError& err) {
+                TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+                errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.what()));
+                errDialog.setWindowTitle("Error");
+                errDialog.setDetailsText(err.what());
+                errDialog.exec();
+                return;
+            }
+
+            createUndoCommand(); // this is a bit unfortunate: if a profile has to be added, we have an additional undo command
+
+            // apply changes to CPACSTree
+            std::string xpath = airfoils->getXPath() + "/" + "wingAirfoil[" + std::to_string(airfoil_row+1) + "]";
+            auto* new_item = airfoils->addChild(xpath, "wingAirfoil", airfoil_row, profile_name);
+            tree.createChildrenRecursively(*new_item);
+
+            endInsertRows();
+        }
+
+        auto* wings = getWings();
+        auto wings_idx = getIndex(wings, 0);
+        auto row = wings->getChildren().size();
+
+        beginInsertRows(wings_idx, row, row);
+
+        // apply changes to configuration
+        try {
+            doc->GetConfiguration().GetWings().CreateWing(
+                uid.toStdString(),
+                nbSection,
+                profile_name
+            );
+        }
+        catch (const tigl::CTiglError& err) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+            return;
+        }
+
+        createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+        // apply changes to CPACSTree
+        std::string xpath = wings->getXPath() + "/" + "wing[" + std::to_string(row+1) + "]";
+        auto* new_item = wings->addChild(xpath, "wing", row, uid.toStdString());
+        tree.createChildrenRecursively(*new_item);
+
+        endInsertRows();
+    }
+}
+
 void ModificatorModel::highlight(std::vector<tigl::CTiglSectionElement*> elements)
 {
     try {
@@ -773,7 +882,7 @@ bool ModificatorModel::isValid() const
     return tree.isBuild();
 }
 
-QModelIndex ModificatorModel::getAircraftModelIndex()
+QModelIndex ModificatorModel::getAircraftModelIndex() const
 {
     if (!isValid()) {
         return QModelIndex();

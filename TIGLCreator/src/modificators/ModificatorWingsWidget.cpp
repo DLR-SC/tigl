@@ -48,28 +48,7 @@ void ModificatorWingsWidget::setWings(tigl::CCPACSWings& wings, ProfilesDBManage
 
 void ModificatorWingsWidget::execNewWingDialog()
 {
-
-    NewWingDialog wingDialog(profilesDB->getAllWingProfiles(), this);
-    if (wings != nullptr && wingDialog.exec() == QDialog::Accepted) {
-        int nbSection       = wingDialog.getNbSection();
-        QString uid         = wingDialog.getUID();
-        QString profileID = wingDialog.getProfileUID();
-        try {
-            if ( !profilesDB->hasProfileConfigSuffix(profileID) ) {
-                profilesDB->copyProfileFromLocalToConfig(profileID) ;
-            }
-            wings->CreateWing(uid.toStdString(), nbSection, profilesDB->removeSuffix(profileID).toStdString());
-        }
-        catch (const tigl::CTiglError& err) {
-            TIGLCreatorErrorDialog errDialog(this);
-            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.what()));
-            errDialog.setWindowTitle("Error");
-            errDialog.setDetailsText(err.what());
-            errDialog.exec();
-            return;
-        }
-        emit undoCommandRequired();
-    }
+    emit addWingRequested();
 }
 
 void ModificatorWingsWidget::execDeleteWingDialog()
@@ -99,6 +78,6 @@ void ModificatorWingsWidget::execDeleteWingDialog()
             errDialog.exec();
             return;
         }
-        emit undoCommandRequired();
+//        emit undoCommandRequired();
     }
 }

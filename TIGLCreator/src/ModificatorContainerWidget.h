@@ -57,6 +57,7 @@ class ModificatorContainerWidget : public QWidget
 
 signals:
     void undoCommandRequired();
+    void addWingRequested();
     void addSectionRequested(Ui::ElementModificatorInterface&);
     void deleteSectionRequested(Ui::ElementModificatorInterface&);
 
@@ -65,6 +66,7 @@ public slots:
     void applyCurrentCancellation();
 
     // adding and deleting is performed only by the ModificatorManager
+    void forwardAddWingRequested();
     void forwardAddSectionRequested(Ui::ElementModificatorInterface&);
     void forwardDeleteSectionRequested(Ui::ElementModificatorInterface&);
 

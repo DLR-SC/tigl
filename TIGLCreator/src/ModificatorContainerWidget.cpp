@@ -40,6 +40,7 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     // same for sectionsModificator
     connect(ui->wingsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
 
+    connect(ui->wingsModificator, SIGNAL(addWingRequested()), this, SLOT(forwardAddWingRequested()));
     connect(ui->sectionsModificator, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(ui->sectionsModificator, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardDeleteSectionRequested(Ui::ElementModificatorInterface&)));
 }
@@ -201,6 +202,11 @@ void ModificatorContainerWidget::applyCurrentCancellation()
                         "current modificator is null"
                      << std::endl;
     }
+}
+
+void ModificatorContainerWidget::forwardAddWingRequested()
+{
+    emit addWingRequested();
 }
 
 void ModificatorContainerWidget::forwardAddSectionRequested(Ui::ElementModificatorInterface& emi)
