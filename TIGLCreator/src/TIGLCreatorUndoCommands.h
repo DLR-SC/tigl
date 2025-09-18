@@ -118,7 +118,7 @@ private:
 class ModifyTiglObject : public QUndoCommand
 {
 public:
-    ModifyTiglObject(ModificatorModel& manager);
+    ModifyTiglObject(ModificatorModel& model);
     // QUndoCommand interface
 
 public:
