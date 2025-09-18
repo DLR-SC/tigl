@@ -308,7 +308,7 @@ bool ModificatorWingWidget::apply()
                 internalProfile = ui->profileComboBox->currentText();
 
                 if (!profilesDB->hasProfileConfigSuffix(internalProfile)) {
-                    emit addAirfoilRequested(internalProfile);
+                    emit addProfileRequested(internalProfile);
                 }
                 tiglWing->SetAllAirfoils(profilesDB->removeSuffix(internalProfile).toStdString());
                 wasModified = true;

@@ -34,6 +34,7 @@
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
 
+
 ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContainerWidget,
                                        TIGLCreatorContext* scene,
                                        QUndoStack* undoStack,
@@ -49,7 +50,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
 
     // signals:
     connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()));
-    connect(modificatorContainerWidget, SIGNAL(addAirfoilRequested(QString)), this, SLOT(addAirfoil(QString)));
+    connect(modificatorContainerWidget, SIGNAL(addProfileRequested(QString)), this, SLOT(addProfile(QString)));
     connect(modificatorContainerWidget, SIGNAL(addWingRequested()), this, SLOT(onAddWingRequested()));
     connect(modificatorContainerWidget, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(modificatorContainerWidget, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onDeleteSectionRequested(Ui::ElementModificatorInterface&)));
@@ -344,35 +345,35 @@ std::string ModificatorModel::elementUidToSectionUid(const std::string &uid) con
 
 cpcr::CPACSTreeItem *ModificatorModel::getAirfoils() const
 {
-    auto* root = tree.getRoot();
-    if (root != nullptr ) {
-        for (auto* child : root->getChildren()) {
-            if (child->getType() == "profiles") {
-                for (auto* gchild : child->getChildren()) {
-                    if (gchild->getType() == "wingAirfoils") {
-                        return gchild;
-                    }
-                }
-            }
-        }
+    auto nodes = tree.getRoot()->findAllChildrenOfTypeRecursively("wingAirfoils"); //TODO: findFirstChildOfType would be faster
+    if (nodes.size() != 1) {
+        LOG(ERROR) << "ModificatorManager:: Could not find wingAirfoils node in CPACS Tree";
+        return nullptr;
     }
-    LOG(ERROR) << "ModificatorManager:: Could not find wingAirfoils node in CPACS Tree";
-    return nullptr;
+    return nodes[0];
+}
+
+cpcr::CPACSTreeItem *ModificatorModel::getFuselageProfiles() const
+{
+    auto nodes = tree.getRoot()->findAllChildrenOfTypeRecursively("fuselageProfiles"); //TODO: findFirstChildOfType would be faster
+    if (nodes.size() != 1) {
+        LOG(ERROR) << "ModificatorManager:: Could not find fuselageProfiles node in CPACS Tree";
+        return nullptr;
+    }
+    return nodes[0];
 }
 
 cpcr::CPACSTreeItem *ModificatorModel::getWings() const
 {
     auto idx = getAircraftModelIndex();
     auto* root = getItem(idx);
-    if (root != nullptr ) {
-        for (auto* child : root->getChildren()) {
-            if (child->getType() == "wings") {
-                return child;
-            }
-        }
+
+    auto nodes = root->findAllChildrenOfTypeRecursively("wings"); //TODO: findFirstChildOfType would be faster
+    if (nodes.size() != 1) {
+        LOG(ERROR) << "ModificatorManager:: Could not find wings node in CPACS Tree";
+        return nullptr;
     }
-    LOG(ERROR) << "ModificatorManager:: Could not find wings node in CPACS Tree";
-    return nullptr;
+    return nodes[0];
 }
 
 void ModificatorModel::unHighlight()
@@ -600,14 +601,23 @@ void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::C
     }
 }
 
-void ModificatorModel::addAirfoil(QString const& profileID)
+void ModificatorModel::addProfile(QString const& profileID)
 {
+
+    cpcr::CPACSTreeItem* profiles = nullptr; // either Airfoils or fuselageProfiles
+    std::string profile_type;
+    if (profilesDB.isAWingProfile(profileID)) {
+        profiles = getAirfoils();
+        profile_type = "wingAirfoil";
+    } else {
+        profiles = getFuselageProfiles();
+        profile_type = "fuselageProfile";
+    }
     std::string profile_name = profilesDB.removeSuffix(profileID).toStdString();
 
-    auto* airfoils = getAirfoils();
-    auto airfoils_idx = getIndex(airfoils, 0);
-    auto airfoil_row = airfoils->getChildren().size();
-    beginInsertRows(airfoils_idx, airfoil_row, airfoil_row);
+    auto profiles_idx = getIndex(profiles, 0);
+    auto profile_row = profiles->getChildren().size();
+    beginInsertRows(profiles_idx, profile_row, profile_row);
 
     // apply changes to configuration
     try {
@@ -625,8 +635,8 @@ void ModificatorModel::addAirfoil(QString const& profileID)
     createUndoCommand(); // this is a bit unfortunate: if a profile has to be added, we have an additional undo command
 
     // apply changes to CPACSTree
-    std::string xpath = airfoils->getXPath() + "/" + "wingAirfoil[" + std::to_string(airfoil_row+1) + "]";
-    auto* new_item = airfoils->addChild(xpath, "wingAirfoil", airfoil_row, profile_name);
+    std::string xpath = profiles->getXPath() + "/" + profile_type + "[" + std::to_string(profile_row+1) + "]";
+    auto* new_item = profiles->addChild(xpath, "wingAirfoil", profile_row, profile_name);
     tree.createChildrenRecursively(*new_item);
 
     endInsertRows();
@@ -643,7 +653,7 @@ void ModificatorModel::onAddWingRequested()
         std::string profile_name = profilesDB.removeSuffix(profileID).toStdString();
 
         if ( !profilesDB.hasProfileConfigSuffix(profileID) ) {
-            addAirfoil(profileID);
+            addProfile(profileID);
         } else {
             LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
         }

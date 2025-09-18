@@ -78,7 +78,7 @@ public slots:
     void DeleteSection(cpcr::CPACSTreeItem* item);
 
     // add wing airfoil without dialog
-    void addAirfoil(QString const& profileID);
+    void addProfile(QString const& profileID);
 
     // Open dialog for deleting a section
     void onDeleteSectionRequested(Ui::ElementModificatorInterface& emi);
@@ -200,8 +200,10 @@ private:
     std::string sectionUidToElementUid(std::string const& uid) const;
     std::string elementUidToSectionUid(std::string const& uid) const;
 
-    cpcr::CPACSTreeItem *getAirfoils() const;
+    //convenience getters for some specific cpacs node
     cpcr::CPACSTreeItem *getWings() const;
+    cpcr::CPACSTreeItem *getAirfoils() const;
+    cpcr::CPACSTreeItem *getFuselageProfiles() const;
 
     ModificatorContainerWidget* modificatorContainerWidget;
 

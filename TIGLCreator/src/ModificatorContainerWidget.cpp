@@ -40,9 +40,9 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     // same for sectionsModificator
     connect(ui->wingsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
 
-    connect(ui->wingModificator, SIGNAL(addAirfoilRequested(QString)), this, SLOT(forwardAddAirfoilRequested(QString)));
-    connect(ui->sectionModificator, SIGNAL(addAirfoilRequested(QString)), this, SLOT(forwardAddAirfoilRequested(QString)));
-    connect(ui->elementModificator, SIGNAL(addAirfoilRequested(QString)), this, SLOT(forwardAddAirfoilRequested(QString)));
+    connect(ui->wingModificator, SIGNAL(addProfileRequested(QString)), this, SLOT(forwardAddProfileRequested(QString)));
+    connect(ui->sectionModificator, SIGNAL(addProfileRequested(QString)), this, SLOT(forwardAddProfileRequested(QString)));
+    connect(ui->elementModificator, SIGNAL(addProfileRequested(QString)), this, SLOT(forwardAddProfileRequested(QString)));
 
     connect(ui->wingsModificator, SIGNAL(addWingRequested()), this, SLOT(forwardAddWingRequested()));
     connect(ui->sectionsModificator, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardAddSectionRequested(Ui::ElementModificatorInterface&)));
@@ -208,9 +208,9 @@ void ModificatorContainerWidget::applyCurrentCancellation()
     }
 }
 
-void ModificatorContainerWidget::forwardAddAirfoilRequested(QString const& profile_id)
+void ModificatorContainerWidget::forwardAddProfileRequested(QString const& profile_id)
 {
-    emit addAirfoilRequested(profile_id);
+    emit addProfileRequested(profile_id);
 }
 
 void ModificatorContainerWidget::forwardAddWingRequested()

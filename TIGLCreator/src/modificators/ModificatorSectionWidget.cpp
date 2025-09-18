@@ -40,7 +40,7 @@ void ModificatorSectionWidget::setAssociatedElements(QList<tigl::CTiglSectionEle
     for (int i = 0; i < elements.size(); i++) {
         ModificatorElementWidget* elementWidget = new ModificatorElementWidget(this);
         elementWidget->setElement(*(elements[i]), profilesDB);
-        connect(elementWidget, SIGNAL(addAirfoilRequested(QString)), this, SLOT(forwardAddAirfoilRequested(QString)));
+        connect(elementWidget, SIGNAL(addProfileRequested(QString)), this, SLOT(forwardAddAirfoilRequested(QString)));
         ui->modificatorSectionLayout->addWidget(elementWidget);
         elementWidgets.push_back(elementWidget);
     }
@@ -73,5 +73,5 @@ void ModificatorSectionWidget::reset()
 
 void ModificatorSectionWidget::forwardAddAirfoilRequested(const QString &profile_id)
 {
-    emit addAirfoilRequested(profile_id);
+    emit addProfileRequested(profile_id);
 }

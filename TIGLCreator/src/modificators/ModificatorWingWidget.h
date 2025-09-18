@@ -33,7 +33,7 @@ class ModificatorWingWidget : public ModificatorWidget
     Q_OBJECT
 
 signals:
-    void addAirfoilRequested(QString const&);
+    void addProfileRequested(QString const&);
 
 public slots:
 

@@ -46,7 +46,7 @@ public:
     void reset() override;
 
 signals:
-    void addAirfoilRequested(QString const& profile_id);
+    void addProfileRequested(QString const& profile_id);
 
 public slots:
 
