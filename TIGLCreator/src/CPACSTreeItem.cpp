@@ -72,7 +72,7 @@ CPACSTreeItem* CPACSTreeItem::getParent() const
     return parent;
 };
 
-std::vector<CPACSTreeItem*> CPACSTreeItem::getChildren() const
+std::vector<CPACSTreeItem*> const& CPACSTreeItem::getChildren() const
 {
     return children;
 };
