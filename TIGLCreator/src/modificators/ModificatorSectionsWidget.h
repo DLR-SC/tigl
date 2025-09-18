@@ -24,51 +24,10 @@
 #include <optional>
 #include "CCPACSFuselage.h"
 #include "CCPACSWing.h"
+#include "ElementModificatorInterface.h"
 
 namespace Ui
 {
-
-// Interface-like structure to account for different possible object types whose member variables may be adapted by the TiGLCreator.
-//
-// It is currently used for CCPACSFuselage and CCPACSWing.
-// Could be extended by Duct, Pylon, Tank, etc. in the future (observe: The respective classes need to define the listed functions).
-struct ElementModificatorInterface
-{
-    // Here, functions are defined as member variables calling the 'right' (depending on present data type) function from CCPACSFuselage, CCPACSWing, etc. via lambdas
-    template <typename T>
-    ElementModificatorInterface(T&& t)
-        : GetElementUIDAfterNewElement(
-            [&t](std::string str){ return t.GetElementUIDAfterNewElement(str); }
-            )
-        , CreateNewConnectedElementAfter(
-            [&t](std::string str, std::string name){ return t.CreateNewConnectedElementAfter(str, name); }
-            )
-        , GetElementUIDBeforeNewElement(
-            [&t](std::string str){ return t.GetElementUIDBeforeNewElement(str); }
-            )
-        , CreateNewConnectedElementBefore(
-            [&t](std::string str, std::string name){ return t.CreateNewConnectedElementBefore(str, name); }
-            )
-        , CreateNewConnectedElementBetween(
-             [&t](std::string str1, std::string str2, double param, std::string name){ return t.CreateNewConnectedElementBetween(str1, str2, param, name); }
-            )
-        , DeleteConnectedElement(
-            [&t](std::string str){ return t.DeleteConnectedElement(str); }
-            )
-        , GetOrderedConnectedElement(
-            [&t](){ return t.GetOrderedConnectedElement(); }
-            )
-    {}
-
-    std::function<std::optional<std::string>(std::string)> GetElementUIDAfterNewElement;
-    std::function<void(std::string, std::string)> CreateNewConnectedElementAfter;
-    std::function<std::optional<std::string>(std::string)> GetElementUIDBeforeNewElement;
-    std::function<void(std::string, std::string)> CreateNewConnectedElementBefore;
-    std::function<void(std::string, std::string, double param, std::string)> CreateNewConnectedElementBetween;
-    std::function<void(std::string)> DeleteConnectedElement;
-    std::function<std::vector<std::string>()> GetOrderedConnectedElement;
-};
-
 class ModificatorSectionsWidget;
 }
 
@@ -90,6 +49,10 @@ public:
     void setCreateConnectedElement(Ui::ElementModificatorInterface const& element);
 
 private:
+
+    // disables the selection deletion, if we have two or less sections
+    void update_delete_section_button_disabled_state();
+
     Ui::ModificatorSectionsWidget* ui;
     // std::optional used here to account for empty initializiation of member variable in construtor (ptr and nullptr used before)
     std::optional<Ui::ElementModificatorInterface> createConnectedElement;

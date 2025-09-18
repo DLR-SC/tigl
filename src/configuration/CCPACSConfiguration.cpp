@@ -525,13 +525,21 @@ const CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(size_t inde
 
 CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(size_t index)
 {
-    return profiles->GetFuselageProfiles()->GetProfile(index);
+    if (profiles && profiles->GetFuselageProfiles()) {
+        return profiles->GetFuselageProfiles()->GetProfile(index);
+    } else {
+        throw CTiglError("No fuselage profiles set.");
+    }
 }
 
 // Returns the fuselage profile for a given uid.
 const CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(std::string uid) const
 {
-    return profiles->GetFuselageProfiles()->GetProfile(uid);
+    if (profiles && profiles->GetFuselageProfiles()) {
+        return profiles->GetFuselageProfiles()->GetProfile(uid);
+    } else {
+        throw CTiglError("No fuselage profiles set.");
+    }
 }
 
 CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(std::string uid)

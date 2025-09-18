@@ -52,7 +52,7 @@ public:
     ~CPACSTree();
 
     virtual void build(TixiDocumentHandle handle, std::string xpathRoot);
-    inline bool isBuild()
+    inline bool isBuild() const
     {
         return m_isBuild;
     }

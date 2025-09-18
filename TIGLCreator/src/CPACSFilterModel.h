@@ -20,8 +20,8 @@
 #define TIGL_CPACSFILTERMODEL_H
 
 #include <QSortFilterProxyModel>
-#include "CPACSAbstractModel.h"
 #include "CPACSTreeItem.h"
+#include "ModificatorModel.h"
 
 /**
  * This class acts as a proxy on CPACSAbstractModel.
@@ -56,24 +56,17 @@ public slots:
 public:
     explicit CPACSFilterModel(cpcr::CPACSTree* tree, QObject* parent = 0);
 
+    void setModel(ModificatorModel* model);
+
     // The following functions are used to access the none standard functions of the underlying model.
 
     inline bool isValid() const
     {
-        return cpacsModel->isValid();
-    };
-
-    inline void disconnectInternalTree()
-    {
-        cpacsModel->disconnectInternalTree();
-    };
-
-    inline void resetInternalTree(cpcr::CPACSTree* tree)
-    {
-        cpacsModel->resetInternalTree(tree);
-    };
+        return (cpacsModel && cpacsModel->isValid());
+    }
 
     cpcr::CPACSTreeItem* getItemFromSelection(const QItemSelection& newSelection);
+    cpcr::CPACSTreeItem* getItem(QModelIndex index) const;
 
     /**
      * @return Return the index of the first cpacs element that is of the "model" type
@@ -89,7 +82,7 @@ protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const override;
 
 private:
-    CPACSAbstractModel* cpacsModel;
+    ModificatorModel* cpacsModel;
     QRegExp basicTreeRegExp;
     QRegExp searchPattern;
     bool matchingOnUID;

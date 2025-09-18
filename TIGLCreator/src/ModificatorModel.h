@@ -22,11 +22,13 @@
 #include "TIGLCreatorDocument.h"
 #include "CPACSTreeItem.h"
 #include "ModificatorContainerWidget.h"
-#include "CPACSTreeWidget.h"
 #include <QUndoStack>
 #include "TIGLCreatorContext.h"
 #include "CCPACSPositioning.h"
 #include "ProfilesDBManager.h"
+#include <QAbstractItemModel>
+#include "CPACSTreeView.h"
+#include "CPACSTree.h"
 
 class TIGLCreatorWindow;
 
@@ -52,7 +54,7 @@ class TIGLCreatorWindow;
  * @author Malo Drougard
  *
  */
-class ModificatorManager : public QObject
+class ModificatorModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -62,7 +64,7 @@ signals:
 public slots:
     void dispatch(cpcr::CPACSTreeItem* item);
     void createUndoCommand();
-    void updateTree();
+    void resetTree();
     // function to update the profiles software db if the settings has changed
     void updateProfilesDB(QString newDBPath);
 
@@ -71,8 +73,17 @@ public slots:
     void highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation);
     void unHighlight();
 
+    // signals from treewidget (delete or add section)
+    void onDeleteSectionRequested(cpcr::CPACSTreeItem* item);
+    void onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem* item);
+
 public:
-    ModificatorManager(CPACSTreeWidget* treeWidget, ModificatorContainerWidget* modificatorContainerWidget,  TIGLCreatorContext* scene,  QUndoStack* undoStack);
+    ModificatorModel(
+            ModificatorContainerWidget* modificatorContainerWidget,
+            TIGLCreatorContext* scene,
+            QUndoStack* undoStack,
+            QObject* parent = 0
+    );
 
     void setCPACSConfiguration(TIGLCreatorDocument* newDoc);
 
@@ -105,6 +116,40 @@ public:
     // standardize the aircraft uid and call createUndoCommand
     void standardize(bool useSimpleDecomposition);
 
+    // QAbstractItemModel interface
+
+    QVariant data(const QModelIndex& index, int role) const override;
+
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+
+    QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
+
+    QModelIndex parent(const QModelIndex& index) const override;
+
+    // count the number of child of a index
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+
+    // count the number of data a index hold
+    int columnCount(const QModelIndex& parent = QModelIndex()) const override;
+
+    // Return true if there is a valid root
+    bool isValid() const;
+
+    QModelIndex getIdxForUID(std::string uid);
+
+    std::string getUidForIdx(QModelIndex idx);
+
+    cpcr::CPACSTreeItem* getItemFromSelection(const QItemSelection& newSelection);
+
+    // Return the index of the first cpacs element that is of the "model" type
+    QModelIndex getAircraftModelIndex();
+
+    // return the item for the given index
+    // empty index is considered as the root index!
+    cpcr::CPACSTreeItem* getItem(QModelIndex index) const;
+
+    // return a index for the item
+    QModelIndex getIndex(cpcr::CPACSTreeItem* item, int column) const;
 
 protected:
 
@@ -114,11 +159,24 @@ protected:
     }
 
 private:
-    TIGLCreatorDocument* doc;
 
-    CPACSTreeWidget* treeWidget;
+    /**
+     * @brief resolve resolves the ElementModificatorInterface based on the uid
+     * The ElementModificatorInterface can handle either wings or fuselages
+     * @param uid of a wing or a fuselage
+     * @return the interface
+     */
+    Ui::ElementModificatorInterface resolve(std::string const& uid) const;
+
+    std::string sectionUidToElementUid(std::string const& uid) const;
+
     ModificatorContainerWidget* modificatorContainerWidget;
+
+    // these need to be in sync at all times:
+    cpcr::CPACSTree tree;
+    TIGLCreatorDocument* doc;
     TIGLCreatorContext* scene;
+
     QUndoStack* myUndoStack;
     QList<Handle(AIS_InteractiveObject)> highligthteds;
     ProfilesDBManager profilesDB;

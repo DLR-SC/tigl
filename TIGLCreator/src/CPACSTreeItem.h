@@ -56,7 +56,7 @@ public:
 
     CPACSTreeItem* getParent() const;
 
-    std::vector<CPACSTreeItem*> getChildren() const;
+    std::vector<CPACSTreeItem*> const& getChildren() const;
 
 
     CPACSTreeItem* getChildByUid(std::string uid);

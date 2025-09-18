@@ -43,6 +43,23 @@ ModificatorSectionsWidget::~ModificatorSectionsWidget()
 void ModificatorSectionsWidget::setCreateConnectedElement(Ui::ElementModificatorInterface const& element)
 {
     createConnectedElement = element;
+    update_delete_section_button_disabled_state();
+}
+
+void ModificatorSectionsWidget::update_delete_section_button_disabled_state()
+{
+    if (createConnectedElement == std::nullopt) {
+        return;
+    }
+    // at least two sections required
+    if (createConnectedElement->GetOrderedConnectedElement().size() <= 2) {
+        ui->deleteConnectedElementBtn->setDisabled(true);
+        ui->deleteConnectedElementBtn->setToolTip("Section deletion not allowed: At least two sections are required.");
+    } else
+    {
+        ui->deleteConnectedElementBtn->setDisabled(false);
+        ui->deleteConnectedElementBtn->setToolTip("");
+    }
 }
 
 void ModificatorSectionsWidget::execNewConnectedElementDialog()
@@ -61,49 +78,8 @@ void ModificatorSectionsWidget::execNewConnectedElementDialog()
 
     NewConnectedElementDialog newElementDialog(elementUIDsQList, this);
     if (newElementDialog.exec() == QDialog::Accepted) {
-        std::string startUID                    = newElementDialog.getStartUID().toStdString();
-        std::string sectionName                 = newElementDialog.getSectionName().toStdString();
-        NewConnectedElementDialog::Where where  = newElementDialog.getWhere();
-        std::optional<double> eta               = newElementDialog.getEta();
-        try {
-            if (where == NewConnectedElementDialog::Before) {
-                auto elementUIDBefore = createConnectedElement->GetElementUIDBeforeNewElement(startUID);
-                if (elementUIDBefore) {
-                    if (eta) { // Security check. Should be set if elementUIDBefore is true
-                        createConnectedElement->CreateNewConnectedElementBetween(*elementUIDBefore, startUID, *eta, sectionName);
-                    }
-                    else {
-                        throw tigl::CTiglError("No eta value set!");
-                    }
-                }
-                else {
-                    createConnectedElement->CreateNewConnectedElementBefore(startUID, sectionName);
-                }
-            }
-            else if (where == NewConnectedElementDialog::After) {
-                auto elementUIDAfter = createConnectedElement->GetElementUIDAfterNewElement(startUID);
-                if (elementUIDAfter) {
-                    if (eta) { // Security check. Should be set if elementUIDAfter is true
-                        createConnectedElement->CreateNewConnectedElementBetween(startUID, *elementUIDAfter, *eta, sectionName);
-                    }
-                    else {
-                        throw tigl::CTiglError("No eta value set!");
-                    }
-                }
-                else {
-                    createConnectedElement->CreateNewConnectedElementAfter(startUID, sectionName);
-                }
-            }
-        }
-        catch (const tigl::CTiglError& err) {
-            TIGLCreatorErrorDialog errDialog(this);
-            errDialog.setMessage(
-                QString("<b>%1</b><br /><br />%2").arg("Fail to create the new connected element ").arg(err.what()));
-            errDialog.setWindowTitle("Error");
-            errDialog.setDetailsText(err.what());
-            errDialog.exec();
-            return;
-        }
+        newElementDialog.applySelection(*createConnectedElement);
+        update_delete_section_button_disabled_state();
         emit undoCommandRequired();
     }
 }
