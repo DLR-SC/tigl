@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-#include "ModificatorManager.h"
+#include "ModificatorModel.h"
 #include "CTiglUIDManager.h"
 #include "TIGLCreatorUndoCommands.h"
 #include "CCPACSFuselageSectionElement.h"
@@ -27,43 +27,42 @@
 #include "CCPACSPositioning.h"
 #include "CTiglStandardizer.h"
 #include "TIGLCreatorContext.h"
+#include "modificators/NewConnectedElementDialog.h"
 #include "tixicpp.h"
+#include "TIGLCreatorException.h"
 
-ModificatorManager::ModificatorManager(CPACSTreeWidget* treeWidget,
-                                       ModificatorContainerWidget* modificatorContainerWidget,
+ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContainerWidget,
                                        TIGLCreatorContext* scene,
-                                       QUndoStack* undoStack)
+                                       QUndoStack* undoStack,
+                                       QObject* parent)
+ : QAbstractItemModel(parent)
 {
 
     doc          = nullptr;
-    this->treeWidget = treeWidget;
     this->modificatorContainerWidget = modificatorContainerWidget;
     this->modificatorContainerWidget->setProfilesManager( &profilesDB);
     this->myUndoStack = undoStack;
     this->scene = scene;
 
     // signals:
-    connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this,
-            SLOT(dispatch(cpcr::CPACSTreeItem*)));
-
     connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()) );
 }
 
-void ModificatorManager::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
+void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
 {
 
     doc = newDoc;
-    updateTree();
+    resetTree();
     modificatorContainerWidget->setNoInterfaceWidget();
     profilesDB.cleanConfigProfiles();
     if (configurationIsSet()) {
         // when doc is destroyed, this connection is also destroyed
-        connect(doc, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), this, SLOT(updateTree()));
+        connect(doc, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), this, SLOT(resetTree()));
         profilesDB.setConfigProfiles(doc->GetConfiguration().GetProfiles());
     }
 }
 
-void ModificatorManager::updateCpacsConfigurationFromString(std::string const& config)
+void ModificatorModel::updateCpacsConfigurationFromString(std::string const& config)
 {
     if (!configurationIsSet()) {
         LOG(ERROR) << "ModificatorManager::updateCpacsConfigurationFromString: MODIFICATOR MANAGER IS NOT READY";
@@ -79,7 +78,7 @@ void ModificatorManager::updateCpacsConfigurationFromString(std::string const& c
     emit configurationEdited();
 }
 
-std::string ModificatorManager::getConfigurationAsString()
+std::string ModificatorModel::getConfigurationAsString()
 {
     TixiDocumentHandle tixiHandle = doc->GetConfiguration().GetTixiDocumentHandle();
 
@@ -96,7 +95,7 @@ std::string ModificatorManager::getConfigurationAsString()
     }
 }
 
-void ModificatorManager::writeCPACS()
+void ModificatorModel::writeCPACS()
 {
     if (!configurationIsSet()) {
         LOG(ERROR) << "ModificatorManager::writeCPACS: MODIFICATOR MANAGER IS NOT READY";
@@ -105,7 +104,7 @@ void ModificatorManager::writeCPACS()
     doc->GetConfiguration().WriteCPACS(doc->GetConfiguration().GetUID());
 }
 
-void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
+void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
 {
 
     // todo try catch on dispatch
@@ -190,25 +189,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
     }
     else if (item->getType() == "sections" ) {
         std::string bodyUID = item->getParent()->getUid(); // return the fuselage or wing uid
-        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
-
-        auto get_element_interface = [](tigl::CTiglUIDManager::TypedPtr const& ptr) {
-            if (ptr.type == &typeid(tigl::CCPACSWing)) {
-                tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing*>(ptr.ptr);
-                return Ui::ElementModificatorInterface(wing);
-            }
-            else if (ptr.type == &typeid(tigl::CCPACSFuselage)) {
-                tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage*>(ptr.ptr);
-                return Ui::ElementModificatorInterface(fuselage);
-            }
-            else {
-                LOG(ERROR) << "ModificatorManager:: Unexpected sections type!";
-                return Ui::ElementModificatorInterface(tigl::CCPACSFuselage(nullptr, nullptr));
-            }
-        };
-
-        auto element = get_element_interface(typePtr);
+        auto element = resolve(bodyUID);
         modificatorContainerWidget->setSectionsModificator(std::move(element));
     }
     else if (item->getType() == "positioning" ) {
@@ -242,7 +223,7 @@ void ModificatorManager::dispatch(cpcr::CPACSTreeItem* item)
     }
 }
 
-void ModificatorManager::createUndoCommand()
+void ModificatorModel::createUndoCommand()
 {
     if (configurationIsSet()) {
         QUndoCommand* command = new TiGLCreator::ModifyTiglObject(*this);
@@ -252,26 +233,24 @@ void ModificatorManager::createUndoCommand()
         LOG(ERROR) << "ModificatorManager::createUndoCommand: Called but no document is set!";
     }
     emit configurationEdited();
-    updateTree();
+    resetTree();
 }
 
-void ModificatorManager::updateTree()
+void ModificatorModel::resetTree()
 {
+    QAbstractItemModel::beginResetModel();
     if (configurationIsSet()) {
+        auto tixi_handle = doc->GetConfiguration().GetTixiDocumentHandle();
+        tree.build(tixi_handle, "/cpacs/vehicles");
         // TODO multiple model in file case
-        QString selectedUID = treeWidget->getSelectedUID();
-        std::string rootXPath = "/cpacs/vehicles";
-        treeWidget->displayNewTree(doc->GetConfiguration().GetTixiDocumentHandle(), rootXPath);
-        treeWidget->setSelectedUID(selectedUID); // to reset the display in a similar state as before the tree update
     }
     else {
-        if( treeWidget ) {
-            treeWidget->clear();
-        }
+        tree.clean();
     }
+    QAbstractItemModel::endResetModel();
 }
 
-void ModificatorManager::standardize(QString uid, bool useSimpleDecomposition)
+void ModificatorModel::standardize(QString uid, bool useSimpleDecomposition)
 {
     if (!configurationIsSet()) {
         LOG(ERROR) << "ModificatorManager::standardize: Called but no document is set!";
@@ -294,7 +273,7 @@ void ModificatorManager::standardize(QString uid, bool useSimpleDecomposition)
 }
 
 
-void ModificatorManager::standardize(bool useSimpleDecomposition)
+void ModificatorModel::standardize(bool useSimpleDecomposition)
 {
     if (!configurationIsSet()) {
         LOG(ERROR) << "ModificatorManager::standardize: Called but no document is set!";
@@ -304,7 +283,44 @@ void ModificatorManager::standardize(bool useSimpleDecomposition)
 
 }
 
-void ModificatorManager::unHighlight()
+Ui::ElementModificatorInterface ModificatorModel::resolve(const std::string &uid) const
+{
+    tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+    tigl::CTiglUIDManager::TypedPtr ptr = uidManager.ResolveObject(uid);
+    if (ptr.type == &typeid(tigl::CCPACSWing)) {
+        tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing*>(ptr.ptr);
+        return Ui::ElementModificatorInterface(wing);
+    }
+    else if (ptr.type == &typeid(tigl::CCPACSFuselage)) {
+        tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage*>(ptr.ptr);
+        return Ui::ElementModificatorInterface(fuselage);
+    }
+    else {
+        LOG(ERROR) << "ModificatorManager:: Unexpected sections type!";
+        return Ui::ElementModificatorInterface(tigl::CCPACSFuselage(nullptr, nullptr));
+    }
+}
+
+std::string ModificatorModel::sectionUidToElementUid(const std::string &uid) const
+{
+    //TODO is there a better way to get the element uid from the section uid?
+    tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+    tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(uid);
+    if (typePtr.type == &typeid(tigl::CCPACSFuselageSection)) {
+        tigl::CCPACSFuselageSection& fuselageSection = *reinterpret_cast<tigl::CCPACSFuselageSection*>(typePtr.ptr);
+        assert(fuselageSection.GetSectionElementCount() == 1); // TiGL supports only one element per section
+        return fuselageSection.GetSectionElement(1).GetUID();
+    } else if (typePtr.type == &typeid(tigl::CCPACSWingSection)) {
+        tigl::CCPACSWingSection& wingSection = *reinterpret_cast<tigl::CCPACSWingSection*>(typePtr.ptr);
+        assert(wingSection.GetSectionElementCount() == 1); // TiGL supports only one element per section
+        return wingSection.GetSectionElement(1).GetUID();
+    } else {
+        LOG(ERROR) << "ModificatorManager:: Unexpected section type!";
+        return "";
+    }
+}
+
+void ModificatorModel::unHighlight()
 {
     for (int i = 0; i < highligthteds.size(); i++) {
         scene->removeShape(highligthteds[i]);
@@ -312,7 +328,66 @@ void ModificatorManager::unHighlight()
     highligthteds.clear();
 }
 
-void ModificatorManager::highlight(std::vector<tigl::CTiglSectionElement*> elements)
+void ModificatorModel::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
+{
+    if (item == nullptr) {
+        return;
+    }
+
+    auto* sections = item->getParent(); // should be sections
+    if (sections == nullptr) {
+        return;
+    }
+    auto* parent = sections->getParent(); // parent should be wing or fuselage
+    if (parent == nullptr) {
+        return;
+    }
+    auto element = resolve(parent->getUid());
+
+    element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
+    createUndoCommand();
+}
+
+void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem *item)
+{
+    if (item == nullptr) {
+        return;
+    }
+
+    auto* sections = item->getParent(); // should be sections
+    if (sections == nullptr) {
+        return;
+    }
+    auto* parent = sections->getParent(); // parent should be wing or fuselage
+    if (parent == nullptr) {
+        return;
+    }
+    auto element = resolve(parent->getUid());
+
+    // open a new connected element dialog and set the comboboxes
+    // according to the arguments
+    std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
+    QStringList elementUIDsQList;
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        elementUIDsQList.push_back(elementUIDs.at(i).c_str());
+    }
+
+    NewConnectedElementDialog newElementDialog(elementUIDsQList);
+    QString uid = QString::fromStdString(sectionUidToElementUid(item->getUid()));
+    newElementDialog.setStartUID(uid);
+    if (where == CPACSTreeView::Where::Before) {
+        newElementDialog.setWhere(NewConnectedElementDialog::Before);
+    } else {
+        newElementDialog.setWhere(NewConnectedElementDialog::After);
+    }
+
+    if (newElementDialog.exec() == QDialog::Accepted) {
+        newElementDialog.applySelection(element);
+        createUndoCommand();
+    }
+}
+
+void ModificatorModel::highlight(std::vector<tigl::CTiglSectionElement*> elements)
 {
     try {
         for (size_t i = 0; i < elements.size(); i++) {
@@ -325,7 +400,7 @@ void ModificatorManager::highlight(std::vector<tigl::CTiglSectionElement*> eleme
 
 }
 
-void ModificatorManager::highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation)
+void ModificatorModel::highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation)
 {
     // We need the parent transform because the positiong live in fuselage coordinate system.
     // Thus if we do not transform the point we do not draw the positioning at its final place
@@ -343,7 +418,206 @@ void ModificatorManager::highlight(tigl::CCPACSPositioning &positioning, const t
 
 }
 
-void ModificatorManager::updateProfilesDB(QString newDBPath)
+void ModificatorModel::updateProfilesDB(QString newDBPath)
 {
     profilesDB.setLocalProfiles(newDBPath);
+}
+
+QVariant ModificatorModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+
+    if (isValid() && orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+        if (section == 0){
+            return "Type or UID";
+        }
+        else if (section == 1) {
+            return "Type";
+        }
+        else if (section == 2) {
+            return "UID";
+        }
+        else {
+            return "invalid";
+        }
+    }
+
+    return QVariant();
+}
+
+QVariant ModificatorModel::data(const QModelIndex& index, int role) const
+{
+    if (!index.isValid() || !isValid()) {
+        return QVariant();
+    }
+
+    if (role != Qt::DisplayRole && role !=Qt::UserRole) {
+        return QVariant();
+    }
+
+    cpcr::CPACSTreeItem* item = getItem(index);
+    QVariant data;
+
+    if (role == Qt::UserRole) {
+        // we use Qt::UserRole to mark eligable parents for context menus in the tree view
+        // For now, these are fuselage sections and wing setions
+        data = (item->getType() == "sections");
+        return data;
+    }
+
+    if (index.column() == 0) { // combine uid and type
+        data = QString(item->getUid().c_str());
+        if (data == "") {
+            data = QString(item->getType().c_str());
+        }
+    }
+    else if (index.column() == 1) {
+        data = QString(item->getType().c_str());
+    }
+    else if (index.column() == 2 ) {
+        data = QString(item->getUid().c_str());
+    }
+    else {
+        data = QVariant();
+    }
+
+    return data;
+}
+
+// return the index of the parent
+QModelIndex ModificatorModel::parent(const QModelIndex& index) const
+{
+    if (!isValid()) {
+        return QModelIndex();
+    }
+    cpcr::CPACSTreeItem* childItem  = getItem(index);
+    cpcr::CPACSTreeItem* parentItem = childItem->getParent();
+
+    return getIndex(parentItem, 0);
+}
+
+// Count the number of children of this item
+int ModificatorModel::rowCount(const QModelIndex& idx) const
+{
+    if (!isValid()) {
+        return 0;
+    }
+
+    cpcr::CPACSTreeItem* item = getItem(idx);
+    return item->getChildren().size();
+}
+
+int ModificatorModel::columnCount(const QModelIndex& idx) const
+{
+
+    if (!isValid()) {
+        return 0;
+    }
+
+    return 3;
+}
+
+// return the QModelindex from a parent and row and column information
+QModelIndex ModificatorModel::index(int row, int column, const QModelIndex& parent) const
+{
+    if (!isValid()) {
+        return QModelIndex();
+    }
+    cpcr::CPACSTreeItem* parentItem = getItem(parent); // return root if parent is empty or invalid
+    cpcr::CPACSTreeItem* childItem  = parentItem->getChildren()[row];
+
+    if (childItem) { // case where the child is not a null pointer
+        return createIndex(row, column, childItem);
+    }
+    else {
+        return QModelIndex();
+    }
+}
+
+QModelIndex ModificatorModel::getIdxForUID(std::string uid)
+{
+    if (!isValid() || uid == "") {
+        return QModelIndex();
+    }
+    else {
+        cpcr::CPACSTreeItem* item = tree.getRoot()->getChildByUid(uid);
+        return getIndex(item, 0);
+    }
+}
+
+std::string ModificatorModel::getUidForIdx(QModelIndex idx)
+{
+    if (!isValid()) {
+        return "";
+    }
+    else {
+        return getItem(idx)->getUid();
+    }
+}
+
+QModelIndex ModificatorModel::getIndex(cpcr::CPACSTreeItem* item, int column) const
+{
+    if (!isValid() || item == tree.getRoot() || item == nullptr) {
+        return QModelIndex(); // We use empty index for the root
+    }
+
+    int row = item->positionRelativelyToParent();
+    return createIndex(row, column, item);
+}
+
+cpcr::CPACSTreeItem* ModificatorModel::getItem(QModelIndex index) const
+{
+    if (!isValid()) {
+        return nullptr;
+    }
+    // Internal identifier is the item pointer
+    if (index.isValid()) {
+        cpcr::CPACSTreeItem* item = static_cast<cpcr::CPACSTreeItem*>(index.internalPointer());
+        if (item) {
+            return item;
+        }
+    }
+    return tree.getRoot(); // empty index is the root
+}
+
+cpcr::CPACSTreeItem* ModificatorModel::getItemFromSelection(const QItemSelection& newSelection)
+{
+    if (!isValid()) {
+        throw TIGLCreatorException("CPACSAbstractModel: getItemWithError called but "
+                                  "the model is not valid!");
+    }
+
+    cpcr::CPACSTreeItem* item = getItem(newSelection.indexes().at(0));
+
+    return item;
+}
+
+bool ModificatorModel::isValid() const
+{
+    return tree.isBuild();
+}
+
+QModelIndex ModificatorModel::getAircraftModelIndex()
+{
+    if (!isValid()) {
+        return QModelIndex();
+    }
+    else {
+        cpcr::CPACSTreeItem* model               = nullptr;
+        std::vector<cpcr::CPACSTreeItem*> models = tree.getRoot()->findAllChildrenOfTypeRecursively("model");
+        if (models.size() == 1) {
+            model = models[0];
+        }
+        else if (models.size() > 1) {
+            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There were multiple models found in the "
+                            "aircraft, the first one was chosen."
+                         << std::endl;
+            model = models[0];
+        }
+        else if (models.size() == 0) {
+            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There were no models found in the "
+                            "aircraft."
+                         << std::endl;
+        }
+        return getIndex(model, 0);
+    }
 }

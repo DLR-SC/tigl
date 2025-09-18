@@ -20,10 +20,6 @@
 
 CPACSFilterModel::CPACSFilterModel(cpcr::CPACSTree* tree, QObject* parent)
 {
-
-    cpacsModel = new CPACSAbstractModel(tree, parent);
-    this->setSourceModel(cpacsModel);
-
     basicTreeRegExp.setPatternSyntax(QRegExp::RegExp2);
     basicTreeRegExp.setCaseSensitivity(Qt::CaseInsensitive);
     basicTreeRegExp.setPattern("^(aircraft|model|wings|wing|sections|section|positionings|positioning|fuselages|fuselage)$");
@@ -35,9 +31,20 @@ CPACSFilterModel::CPACSFilterModel(cpcr::CPACSTree* tree, QObject* parent)
     expertView = false;
 }
 
+void CPACSFilterModel::setModel(ModificatorModel *model)
+{
+    cpacsModel = model;
+    setSourceModel(model);
+}
+
 cpcr::CPACSTreeItem* CPACSFilterModel::getItemFromSelection(const QItemSelection& newSelection)
 {
     return cpacsModel->getItemFromSelection(mapSelectionToSource(newSelection));
+}
+
+cpcr::CPACSTreeItem *CPACSFilterModel::getItem(QModelIndex index) const
+{
+    return cpacsModel->getItem(mapToSource(index));
 }
 
 bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const

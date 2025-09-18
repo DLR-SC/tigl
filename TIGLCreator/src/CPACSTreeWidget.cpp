@@ -19,6 +19,7 @@
 #include "CPACSTreeWidget.h"
 #include "ui_CPACSTreeWidget.h"
 #include "CTiglLogging.h"
+#include<QMenu>
 
 CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
     : QWidget(parent)
@@ -45,12 +46,62 @@ CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
 
     connect(ui->searchLineEdit, SIGNAL(textEdited(const QString)), this, SLOT(setNewSearch(const QString)));
 
+    connect(ui->treeView, &CPACSTreeView::customContextMenuRequestedForItem, this, &CPACSTreeWidget::onCustomContextMenuRequested);
+    connect(this, &CPACSTreeWidget::contextMenuClosed, ui->treeView, &CPACSTreeView::onContextMenuDone);
+
 }
 
 CPACSTreeWidget::~CPACSTreeWidget()
 {
     delete ui;
 }
+
+void CPACSTreeWidget::SetModel(ModificatorModel *model)
+{
+    filterModel->setModel(model);
+    refresh();
+}
+
+void CPACSTreeWidget::onCustomContextMenuRequested(QPoint const& globalPos, CPACSTreeView::Where where, QModelIndex index)
+{
+    cpcr::CPACSTreeItem* item = filterModel->getItem(index);
+    QString uid = QString::fromStdString(item->getUid());
+    QString type = QString::fromStdString(item->getType());
+
+    cpcr::CPACSTreeItem* parent = item->getParent();
+
+    if (parent == nullptr || parent->getType() != "sections") {
+        // context menus only supported for children of sections
+        emit contextMenuClosed();
+        return;
+    }
+
+    if (where == CPACSTreeView::Where::At) {
+        QMenu menu;
+        menu.setToolTipsVisible(true);
+        QAction* delete_action = menu.addAction(QStringLiteral("Delete %1 %2").arg(type, uid));
+        connect(delete_action, &QAction::triggered, this, [&](){
+            emit deleteSectionRequested(item);
+        });
+        if (parent->getChildren().size() <= 2) {
+            // At least two sections required
+            delete_action->setDisabled(true);
+            delete_action->setToolTip("Section deletion not allowed: At least two sections are required.");
+        }
+
+        menu.exec(globalPos);
+    } else {
+        QMenu menu;
+        QString where_str = (where == CPACSTreeView::Where::Before)? "before" : "after";
+        QAction* add_action = menu.addAction(QStringLiteral("Add %1 %2 %3").arg(type, where_str, uid));
+        connect(add_action, &QAction::triggered, this, [&](){
+            emit addSectionRequested(where, item);
+        });
+        menu.exec(globalPos);
+    }
+    emit contextMenuClosed();
+}
+
 
 void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, const QItemSelection& oldSelection)
 {
@@ -94,6 +145,9 @@ void CPACSTreeWidget::setNewSearch(const QString newText)
 
 void CPACSTreeWidget::setExpertView()
 {
+    if (filterModel->sourceModel() == nullptr) {
+        return;
+    }
     bool expertMode = ui->expertViewCheckBox->isChecked();
 
     // to avoid that on selectionChanged is called during the transformation of the tree
@@ -120,27 +174,8 @@ void CPACSTreeWidget::setTreeViewColumnsDisplay()
     ui->treeView->setColumnHidden(2, true);
 }
 
-void CPACSTreeWidget::clear()
-{
-    if (filterModel) {
-        filterModel->disconnectInternalTree();
-    }
-    tree.clean();
-}
-
-void CPACSTreeWidget::displayNewTree(TixiDocumentHandle handle, std::string root)
-{
-    tree.build(handle, root);
-    filterModel->resetInternalTree(&tree);
-    setTreeViewColumnsDisplay();
-    setExpertView();
-}
-
 void CPACSTreeWidget::refresh()
 {
-    filterModel->disconnectInternalTree();
-    tree.reload();
-    filterModel->resetInternalTree(&tree);
     setTreeViewColumnsDisplay();
     setExpertView();
 }

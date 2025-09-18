@@ -23,6 +23,8 @@
 #include <QTreeView>
 #include "CPACSTree.h"
 #include "CPACSFilterModel.h"
+#include "CPACSTreeView.h"
+#include "ModificatorModel.h"
 
 namespace Ui
 {
@@ -54,8 +56,19 @@ class CPACSTreeWidget : public QWidget
 signals:
 
     void newSelectedTreeItem(cpcr::CPACSTreeItem*);
+    void contextMenuClosed(); // signals the CPACSTreeView to update its paintEvent
+    void deleteSectionRequested(cpcr::CPACSTreeItem* item);
+    void addSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem* item);
+
+public slots:
+    /**
+   * Removes the columns header and initializes the expert view
+   */
+    void refresh();
 
 private slots:
+
+    void onCustomContextMenuRequested(QPoint const& globalPos, CPACSTreeView::Where where, QModelIndex index);
 
     void onSelectionChanged(const QItemSelection& newSelection, const QItemSelection& oldSelection);
 
@@ -67,24 +80,12 @@ public:
     explicit CPACSTreeWidget(QWidget* parent = nullptr);
     ~CPACSTreeWidget();
 
+    void SetModel(ModificatorModel* model);
+
     /**
    * Clear the displayed tree and delete the CPACSTree data
    */
     void clear();
-
-    /**
-   * Build the new tree based on the TixiHandle and update the model and the
-   * display
-   * @param handle : the TixiHandle used to retrieve the cpacs data
-   * @param root :where the tree needs to start (xpath)
-   */
-    void displayNewTree(TixiDocumentHandle handle, std::string root);
-
-    /**
-   * Rebuild the current tree based on the tixi data
-   * @remark: the internal tixi handle remain the same
-   */
-    void refresh();
 
     void setSelectedUID(const QString & uid);
 
@@ -96,7 +97,6 @@ private:
 
     Ui::CPACSTreeWidget* ui;
 
-    cpcr::CPACSTree tree;
     CPACSFilterModel* filterModel;
     QItemSelectionModel* selectionModel;
 };

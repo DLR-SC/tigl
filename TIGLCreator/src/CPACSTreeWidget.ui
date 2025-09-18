@@ -36,7 +36,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QTreeView" name="treeView">
+    <widget class="CPACSTreeView" name="treeView">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -56,6 +56,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CPACSTreeView</class>
+   <extends>QTreeView</extends>
+   <header>CPACSTreeView.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
