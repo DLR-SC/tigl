@@ -62,8 +62,7 @@ signals:
 
 public slots:
     /**
-   * Rebuild the current tree based on the tixi data
-   * @remark: the internal tixi handle remain the same
+   * Removes the columns header and initializes the expert view
    */
     void refresh();
 
