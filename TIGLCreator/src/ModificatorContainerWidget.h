@@ -60,6 +60,7 @@ signals:
     void addProfileRequested(QString const&);
     void addWingRequested();
     void deleteWingRequested();
+    void addFuselageRequested();
     void addSectionRequested(Ui::ElementModificatorInterface&);
     void deleteSectionRequested(Ui::ElementModificatorInterface&);
 
@@ -70,6 +71,7 @@ public slots:
     // adding and deleting is performed only by the ModificatorManager
     void forwardAddWingRequested();
     void forwardDeleteWingRequested();
+    void forwardAddFuselageRequested();
     void forwardAddSectionRequested(Ui::ElementModificatorInterface&);
     void forwardDeleteSectionRequested(Ui::ElementModificatorInterface&);
     void forwardAddProfileRequested(QString const&);

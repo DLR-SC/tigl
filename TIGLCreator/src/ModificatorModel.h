@@ -96,6 +96,9 @@ public slots:
     // Opens dialog for deleting a wing
     void onDeleteWingRequested();
 
+    // Opens a dialog for adding a fuselage
+    void onAddFuselageRequested();
+
 public:
     ModificatorModel(
             ModificatorContainerWidget* modificatorContainerWidget,
@@ -208,6 +211,7 @@ private:
 
     //convenience getters for some specific cpacs node
     cpcr::CPACSTreeItem *getWings() const;
+    cpcr::CPACSTreeItem *getFuselages() const;
     cpcr::CPACSTreeItem *getAirfoils() const;
     cpcr::CPACSTreeItem *getFuselageProfiles() const;
 

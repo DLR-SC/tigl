@@ -47,28 +47,7 @@ void ModificatorFuselagesWidget::setFuselages(tigl::CCPACSFuselages& fuselages, 
 
 void ModificatorFuselagesWidget::execNewFuselageDialog()
 {
-    NewFuselageDialog fuselageDialog(profilesDB->getAllFuselagesProfiles(), this);
-    if (fuselages != nullptr && fuselageDialog.exec() == QDialog::Accepted) {
-        int nbSection       = fuselageDialog.getNbSection();
-        QString uid         = fuselageDialog.getUID();
-        QString profileID = fuselageDialog.getProfileUID();
-        try {
-            if (!profilesDB->hasProfileConfigSuffix(profileID)) {
-                profilesDB->copyProfileFromLocalToConfig(profileID);
-            }
-            fuselages->CreateFuselage(uid.toStdString(), nbSection, profilesDB->removeSuffix(profileID).toStdString());
-        }
-        catch (const tigl::CTiglError& err) {
-            TIGLCreatorErrorDialog errDialog(this);
-            errDialog.setMessage(
-                QString("<b>%1</b><br /><br />%2").arg("Fail to create the fuselage ").arg(err.what()));
-            errDialog.setWindowTitle("Error");
-            errDialog.setDetailsText(err.what());
-            errDialog.exec();
-            return;
-        }
-        emit undoCommandRequired();
-    }
+    emit addFuselageRequested();
 }
 
 
@@ -99,6 +78,6 @@ void ModificatorFuselagesWidget::execDeleteFuselageDialog()
             errDialog.exec();
             return;
         }
-        emit undoCommandRequired();
+//        emit undoCommandRequired();
     }
 }

@@ -32,12 +32,9 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
 
     connect(ui->cancelButton, SIGNAL(pressed()), this, SLOT(applyCurrentCancellation()));
 
-    // When pressing the button showing "add new fuselage", the modificator creates a dialog for fuselages.
-    // so the mechanism is slightly different as for other modificators.
-    // The dialog perform some modifications without that the apply or cancel button is pressed.
-    // Therefore, fuselageModificator informs when a undoCommand is required via a signal.
-    connect(ui->fuselagesModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
-    // same for sectionsModificator
+
+    // Addition and Removal of CPACS nodes must be delegated to the ModificatorModel.
+    // This is necessary to keep the QAbstractItemModel, CPACSTree and CCPACSConfiguration in sync
 
     connect(ui->wingModificator, SIGNAL(addProfileRequested(QString)), this, SLOT(forwardAddProfileRequested(QString)));
     connect(ui->sectionModificator, SIGNAL(addProfileRequested(QString)), this, SLOT(forwardAddProfileRequested(QString)));
@@ -45,6 +42,8 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
 
     connect(ui->wingsModificator, SIGNAL(addWingRequested()), this, SLOT(forwardAddWingRequested()));
     connect(ui->wingsModificator, SIGNAL(deleteWingRequested()), this, SLOT(forwardDeleteWingRequested()));
+
+    connect(ui->fuselagesModificator, SIGNAL(addFuselageRequested()), this, SLOT(forwardAddFuselageRequested()));
 
     connect(ui->sectionsModificator, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(ui->sectionsModificator, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardDeleteSectionRequested(Ui::ElementModificatorInterface&)));
@@ -221,6 +220,11 @@ void ModificatorContainerWidget::forwardAddWingRequested()
 void ModificatorContainerWidget::forwardDeleteWingRequested()
 {
     emit deleteWingRequested();
+}
+
+void ModificatorContainerWidget::forwardAddFuselageRequested()
+{
+    emit addFuselageRequested();
 }
 
 void ModificatorContainerWidget::forwardAddSectionRequested(Ui::ElementModificatorInterface& emi)

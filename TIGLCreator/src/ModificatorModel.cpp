@@ -30,6 +30,7 @@
 #include "modificators/NewConnectedElementDialog.h"
 #include "modificators/DeleteDialog.h"
 #include "modificators/NewWingDialog.h"
+#include "modificators/NewFuselageDialog.h"
 #include "tixicpp.h"
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
@@ -53,6 +54,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
     connect(modificatorContainerWidget, SIGNAL(addProfileRequested(QString)), this, SLOT(addProfile(QString)));
     connect(modificatorContainerWidget, SIGNAL(addWingRequested()), this, SLOT(onAddWingRequested()));
     connect(modificatorContainerWidget, SIGNAL(deleteWingRequested()), this, SLOT(onDeleteWingRequested()));
+    connect(modificatorContainerWidget, SIGNAL(addFuselageRequested()), this, SLOT(onAddFuselageRequested()));
     connect(modificatorContainerWidget, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(modificatorContainerWidget, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onDeleteSectionRequested(Ui::ElementModificatorInterface&)));
 }
@@ -371,6 +373,19 @@ cpcr::CPACSTreeItem *ModificatorModel::getWings() const
     auto nodes = root->findAllChildrenOfTypeRecursively("wings"); //TODO: findFirstChildOfType would be faster
     if (nodes.size() != 1) {
         LOG(ERROR) << "ModificatorManager:: Could not find wings node in CPACS Tree";
+        return nullptr;
+    }
+    return nodes[0];
+}
+
+cpcr::CPACSTreeItem *ModificatorModel::getFuselages() const
+{
+    auto idx = getAircraftModelIndex();
+    auto* root = getItem(idx);
+
+    auto nodes = root->findAllChildrenOfTypeRecursively("fuselages"); //TODO: findFirstChildOfType would be faster
+    if (nodes.size() != 1) {
+        LOG(ERROR) << "ModificatorManager:: Could not find fuselages node in CPACS Tree";
         return nullptr;
     }
     return nodes[0];
@@ -750,6 +765,61 @@ void ModificatorModel::onDeleteWingRequested()
     if (deleteDialog.exec() == QDialog::Accepted) {
         std::string uid = deleteDialog.getUIDToDelete().toStdString();
         deleteWing(uid);
+    }
+}
+
+void ModificatorModel::onAddFuselageRequested()
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+
+    auto& fuselages = doc->GetConfiguration().GetFuselages();
+
+    NewFuselageDialog fuselageDialog(profilesDB.getAllFuselagesProfiles(), modificatorContainerWidget);
+    if (fuselageDialog.exec() == QDialog::Accepted) {
+        int nbSection       = fuselageDialog.getNbSection();
+        QString uid         = fuselageDialog.getUID();
+        QString profileID = fuselageDialog.getProfileUID();
+
+        if (!profilesDB.hasProfileConfigSuffix(profileID)) {
+            addProfile(profileID);
+        } else {
+            LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
+        }
+
+        auto* fuselages_node = getFuselages();
+        auto fuselages_idx = getIndex(fuselages_node, 0);
+        auto row = fuselages_node->getChildren().size();
+
+        beginInsertRows(fuselages_idx, row, row);
+
+        // apply changes to configuration
+        try {
+            fuselages.CreateFuselage(
+                        uid.toStdString(),
+                        nbSection,
+                        profilesDB.removeSuffix(profileID).toStdString()
+            );
+        }
+        catch (const tigl::CTiglError& err) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(
+                QString("<b>%1</b><br /><br />%2").arg("Fail to create the fuselage ").arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+            return;
+        }
+
+        createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+        // apply changes to CPACSTree
+        std::string xpath = fuselages_node->getXPath() + "/" + "fuselage[" + std::to_string(row+1) + "]";
+        auto* new_item = fuselages_node->addChild(xpath, "fuselage", row, uid.toStdString());
+        tree.createChildrenRecursively(*new_item);
+
+        endInsertRows();
     }
 }
 

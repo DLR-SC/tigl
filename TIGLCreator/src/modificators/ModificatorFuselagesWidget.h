@@ -35,7 +35,8 @@ class ModificatorFuselagesWidget : public ModificatorWidget
     Q_OBJECT
 
 signals:
-    void undoCommandRequired();
+    void addFuselageRequested();
+    void deleteFuselageRequested();
 
 public slots:
 
