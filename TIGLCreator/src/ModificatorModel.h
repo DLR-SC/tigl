@@ -74,8 +74,11 @@ public slots:
     void highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation);
     void unHighlight();
 
-    // deleteWing without dialog
-    void deleteWing(std::string uid);
+    // delete wing without dialog
+    void deleteWing(std::string const& uid);
+
+    // delete fuselage without dialog
+    void deleteFuselage(std::string const& uid);
 
     // delete section without dialog
     void deleteSection(cpcr::CPACSTreeItem* item);
@@ -98,6 +101,9 @@ public slots:
 
     // Opens a dialog for adding a fuselage
     void onAddFuselageRequested();
+
+    // Opens a dialog for deleting a fuselage
+    void onDeleteFuselageRequested();
 
 public:
     ModificatorModel(

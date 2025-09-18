@@ -44,6 +44,7 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     connect(ui->wingsModificator, SIGNAL(deleteWingRequested()), this, SLOT(forwardDeleteWingRequested()));
 
     connect(ui->fuselagesModificator, SIGNAL(addFuselageRequested()), this, SLOT(forwardAddFuselageRequested()));
+    connect(ui->fuselagesModificator, SIGNAL(deleteFuselageRequested()), this, SLOT(forwardDeleteFuselageRequested()));
 
     connect(ui->sectionsModificator, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(ui->sectionsModificator, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardDeleteSectionRequested(Ui::ElementModificatorInterface&)));
@@ -114,10 +115,9 @@ void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fu
 }
 
 
-void ModificatorContainerWidget::setFuselagesModificator(tigl::CCPACSFuselages& fuselages)
+void ModificatorContainerWidget::setFuselagesModificator()
 {
     hideAllSpecializedWidgets();
-    ui->fuselagesModificator->setFuselages(fuselages, profilesDB);
     ui->fuselagesModificator->setVisible(true);
     ui->applyWidget->setVisible(false);
     currentModificator = ui->fuselagesModificator;
@@ -225,6 +225,11 @@ void ModificatorContainerWidget::forwardDeleteWingRequested()
 void ModificatorContainerWidget::forwardAddFuselageRequested()
 {
     emit addFuselageRequested();
+}
+
+void ModificatorContainerWidget::forwardDeleteFuselageRequested()
+{
+    emit deleteFuselageRequested();
 }
 
 void ModificatorContainerWidget::forwardAddSectionRequested(Ui::ElementModificatorInterface& emi)

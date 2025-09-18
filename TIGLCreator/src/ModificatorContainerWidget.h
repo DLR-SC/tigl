@@ -61,6 +61,7 @@ signals:
     void addWingRequested();
     void deleteWingRequested();
     void addFuselageRequested();
+    void deleteFuselageRequested();
     void addSectionRequested(Ui::ElementModificatorInterface&);
     void deleteSectionRequested(Ui::ElementModificatorInterface&);
 
@@ -72,6 +73,7 @@ public slots:
     void forwardAddWingRequested();
     void forwardDeleteWingRequested();
     void forwardAddFuselageRequested();
+    void forwardDeleteFuselageRequested();
     void forwardAddSectionRequested(Ui::ElementModificatorInterface&);
     void forwardDeleteSectionRequested(Ui::ElementModificatorInterface&);
     void forwardAddProfileRequested(QString const&);
@@ -86,7 +88,7 @@ public:
     void setWingModificator(tigl::CCPACSWing& wing);
     void setWingsModificator();
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
-    void setFuselagesModificator(tigl::CCPACSFuselages& fuselages);
+    void setFuselagesModificator();
     void setElementModificator(tigl::CTiglSectionElement& element);
     void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
     void setSectionsModificator(Ui::ElementModificatorInterface const& conntedElementI);

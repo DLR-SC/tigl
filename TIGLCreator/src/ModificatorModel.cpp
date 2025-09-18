@@ -55,6 +55,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
     connect(modificatorContainerWidget, SIGNAL(addWingRequested()), this, SLOT(onAddWingRequested()));
     connect(modificatorContainerWidget, SIGNAL(deleteWingRequested()), this, SLOT(onDeleteWingRequested()));
     connect(modificatorContainerWidget, SIGNAL(addFuselageRequested()), this, SLOT(onAddFuselageRequested()));
+    connect(modificatorContainerWidget, SIGNAL(deleteFuselageRequested()), this, SLOT(onDeleteFuselageRequested()));
     connect(modificatorContainerWidget, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(modificatorContainerWidget, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onDeleteSectionRequested(Ui::ElementModificatorInterface&)));
 }
@@ -139,8 +140,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         highlight(fuselage.GetCTiglElements());
     }
     else if (item->getType() == "fuselages") {
-        tigl::CCPACSFuselages& fuselages = doc->GetConfiguration().GetFuselages();
-        modificatorContainerWidget->setFuselagesModificator(fuselages);
+        modificatorContainerWidget->setFuselagesModificator();
     }
     else if (item->getType() == "wing") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
@@ -708,7 +708,7 @@ void ModificatorModel::onAddWingRequested()
     }
 }
 
-void ModificatorModel::deleteWing(std::string uid)
+void ModificatorModel::deleteWing(std::string const& uid)
 {
     if (!configurationIsSet()) {
         return;
@@ -736,6 +736,47 @@ void ModificatorModel::deleteWing(std::string uid)
     catch (const tigl::CTiglError& err) {
         TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
         errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the wing ").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        return;
+    }
+
+    createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+    // apply changes to CPACSTree
+    parent->removeChild(row);
+    endRemoveRows();
+}
+
+void ModificatorModel::deleteFuselage(std::string const& uid)
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+    auto& fuselages = doc->GetConfiguration().GetFuselages();
+
+    auto idx = getIdxForUID(uid);
+    auto* fuselage_node = getItem(idx);
+    if (fuselage_node == nullptr) {
+        return;
+    }
+    auto* parent = fuselage_node->getParent();
+    if (parent == nullptr) {
+        return;
+    }
+    auto parentIdx = getIndex(parent, 0);
+    auto row = fuselage_node->positionRelativelyToParent();
+    beginRemoveRows(parentIdx, row, row);
+
+    // apply changes in cpacs configuration
+    try {
+        tigl::CCPACSFuselage& fuselage = fuselages.GetFuselage(uid);
+        fuselages.RemoveFuselage(fuselage);
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the fuselage ").arg(err.what()));
         errDialog.setWindowTitle("Error");
         errDialog.setDetailsText(err.what());
         errDialog.exec();
@@ -820,6 +861,25 @@ void ModificatorModel::onAddFuselageRequested()
         tree.createChildrenRecursively(*new_item);
 
         endInsertRows();
+    }
+}
+
+void ModificatorModel::onDeleteFuselageRequested()
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+    auto& fuselages = doc->GetConfiguration().GetFuselages();
+
+    QStringList wingUIDs;
+    for (int i = 1; i <= fuselages.GetFuselageCount(); i++) {
+        wingUIDs.push_back(fuselages.GetFuselage(i).GetUID().c_str());
+    }
+
+    DeleteDialog deleteDialog(wingUIDs);
+    if (deleteDialog.exec() == QDialog::Accepted) {
+        std::string uid = deleteDialog.getUIDToDelete().toStdString();
+        deleteFuselage(uid);
     }
 }
 
