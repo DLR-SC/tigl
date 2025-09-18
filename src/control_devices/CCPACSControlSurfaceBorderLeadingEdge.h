@@ -2,7 +2,7 @@
 /*
  * Copyright (C) 2018 German Aerospace Center (DLR/SC)
  *
- * Created: 2018 Martin Siggel <Martin.Siggel@dlr.de>
+ * Created: 2025 Ole Albers <ole.albers@dlr.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,33 +23,39 @@
 #include "generated/CPACSControlSurfaceBorderLeadingEdge.h"
 #include <TopoDS_Wire.hxx>
 
-namespace tigl {
+namespace tigl
+{
 
-class CCPACSControlSurfaceBorderLeadingEdge: public generated::CPACSControlSurfaceBorderLeadingEdge 
+class CCPACSControlSurfaceBorderLeadingEdge : public generated::CPACSControlSurfaceBorderLeadingEdge
 {
 public:
-  TIGL_EXPORT CCPACSControlSurfaceBorderLeadingEdge(CCPACSControlSurfaceOuterShapeLeadingEdge *parent, CTiglUIDManager *uidMgr);
+    TIGL_EXPORT CCPACSControlSurfaceBorderLeadingEdge(CCPACSControlSurfaceOuterShapeLeadingEdge* parent,
+                                                      CTiglUIDManager* uidMgr);
 
-  TIGL_EXPORT TopoDS_Wire GetWire(PNamedShape wingShape, gp_Vec upDir) const;
+    TIGL_EXPORT TopoDS_Wire GetWire(PNamedShape wingShape, gp_Vec upDir) const;
 
-  TIGL_EXPORT CTiglControlSurfaceBorderCoordinateSystem
-  GetCoordinateSystem(gp_Vec upDir) const;
+    TIGL_EXPORT CTiglControlSurfaceBorderCoordinateSystem GetCoordinateSystem(gp_Vec upDir) const;
 
-  enum class ShapeType { SIMPLE = 0, LE_SHAPE = 1, AIRFOIL = 2 };
+    enum class ShapeType
+    {
+        SIMPLE   = 0,
+        LE_SHAPE = 1,
+        AIRFOIL  = 2
+    };
 
-  TIGL_EXPORT ShapeType GetShapeType() const;
+    TIGL_EXPORT ShapeType GetShapeType() const;
 
-  // TODO: Rename
-  TIGL_EXPORT double getEtaTE() const;
-  TIGL_EXPORT double getEtaLE() const;
-  TIGL_EXPORT double getXsiLE() const;
-  TIGL_EXPORT double getXsiTE() const;
+    // TODO: Rename
+    TIGL_EXPORT double getEtaTE() const;
+    TIGL_EXPORT double getEtaLE() const;
+    TIGL_EXPORT double getXsiLE() const;
+    TIGL_EXPORT double getXsiTE() const;
 
 private:
-  const CTiglUIDManager &uidMgr() const;
-  TopoDS_Wire GetAirfoilWire(CTiglControlSurfaceBorderCoordinateSystem &coords) const;
+    const CTiglUIDManager& uidMgr() const;
+    TopoDS_Wire GetAirfoilWire(CTiglControlSurfaceBorderCoordinateSystem& coords) const;
 };
 
-TIGL_EXPORT const CCPACSWingComponentSegment & ComponentSegment(const CCPACSControlSurfaceBorderLeadingEdge &);
+TIGL_EXPORT const CCPACSWingComponentSegment& ComponentSegment(const CCPACSControlSurfaceBorderLeadingEdge&);
 
 } // namespace tigl

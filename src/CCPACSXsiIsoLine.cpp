@@ -18,6 +18,7 @@
 #include "tigletaxsifunctions.h"
 
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
+#include "CCPACSControlSurfaceBorderLeadingEdge.h"
 
 namespace tigl
 {
@@ -42,7 +43,7 @@ void CCPACSXsiIsoLine::SetXsi(const double& value)
     InvalidateParent();
 }
 
-const double &CCPACSXsiIsoLine::GetXsi() const 
+const double& CCPACSXsiIsoLine::GetXsi() const
 {
     return generated::CPACSXsiIsoLine::GetXsi();
 }

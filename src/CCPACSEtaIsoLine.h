@@ -34,6 +34,7 @@ public:
     TIGL_EXPORT CCPACSEtaIsoLine(CCPACSLandingGearSupportBeamPosition* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void SetEta(const double& value) override;
+    TIGL_EXPORT const double& GetEta() const override;
     TIGL_EXPORT void SetReferenceUID(const std::string& value) override;
 
     //TIGL_EXPORT double ComputeCSOrTEDEta() const;

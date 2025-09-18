@@ -2,7 +2,7 @@
 /*
 * Copyright (C) 2018 German Aerospace Center (DLR/SC)
 *
-* Created: 2018 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2025 Ole Albers <ole.albers@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.

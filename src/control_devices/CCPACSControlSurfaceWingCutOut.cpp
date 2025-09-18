@@ -19,6 +19,7 @@
 #include "CCPACSControlSurfaceWingCutOut.h"
 
 #include "CCPACSControlSurfaceOuterShapeTrailingEdge.h"
+#include "CCPACSControlSurfaceOuterShapeLeadingEdge.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSLeadingEdgeDevice.h"
 #include "CTiglAbstractGeometricComponent.h"
@@ -86,12 +87,38 @@ PNamedShape CCPACSControlSurfaceWingCutOut::GetLoft(PNamedShape wingCleanShape,
     debug.dumpShape(cutout->Shape(), GetParentComponent()->GetDefaultedUID() + "_cutout");
 #endif
 
-    if (IsParent<CCPACSTrailingEdgeDevice>()) {
-        cutout->SetShortName(GetParent<CCPACSTrailingEdgeDevice>()->GetShortName());
-    }
-    if (IsParent<CCPACSLeadingEdgeDevice>()) {
-        cutout->SetShortName(GetParent<CCPACSLeadingEdgeDevice>()->GetShortName());
-    }
+    cutout->SetShortName(GetParent<CCPACSTrailingEdgeDevice>()->GetShortName());
+
+    return cutout;
+}
+
+PNamedShape CCPACSControlSurfaceWingCutOut::GetLoft(PNamedShape wingCleanShape,
+                                                    const CCPACSControlSurfaceOuterShapeLeadingEdge& outerShape,
+                                                    const gp_Vec& upDir) const
+{
+    DLOG(INFO) << "Building " << GetParentComponent()->GetDefaultedUID() << " wing cutout shape";
+
+    // Get Wires definng the Shape of the more complex CutOutShape.
+    TopoDS_Wire innerWire = GetCutoutWire(CCPACSControlSurfaceWingCutOut::CutoutPosition::InnerBorder, wingCleanShape,
+                                          &outerShape.GetInnerBorder(), upDir);
+    TopoDS_Wire outerWire = GetCutoutWire(CCPACSControlSurfaceWingCutOut::CutoutPosition::OuterBorder, wingCleanShape,
+                                          &outerShape.GetOuterBorder(), upDir);
+
+    // TODO: Replace by own lofting
+    // make one shape out of the 2 wires and build connections inbetween.
+    BRepOffsetAPI_ThruSections thrusections(true, true);
+    thrusections.AddWire(outerWire);
+    thrusections.AddWire(innerWire);
+    thrusections.Build();
+
+    PNamedShape cutout(new CNamedShape(thrusections.Shape(), GetParentComponent()->GetDefaultedUID().c_str()));
+
+#ifdef DEBUG
+    DEBUG_SCOPE(debug);
+    debug.dumpShape(cutout->Shape(), GetParentComponent()->GetDefaultedUID() + "_cutout");
+#endif
+
+    cutout->SetShortName(GetParent<CCPACSLeadingEdgeDevice>()->GetShortName());
 
     return cutout;
 }
@@ -146,6 +173,55 @@ TopoDS_Wire CCPACSControlSurfaceWingCutOut::GetCutoutWire(CCPACSControlSurfaceWi
     return wire;
 }
 
+TopoDS_Wire CCPACSControlSurfaceWingCutOut::GetCutoutWire(CCPACSControlSurfaceWingCutOut::CutoutPosition pos,
+                                                          PNamedShape wingCleanShape,
+                                                          const CCPACSControlSurfaceBorderLeadingEdge* outerBorder,
+                                                          gp_Vec upDir) const
+{
+    //TODO
+    assert(wingCleanShape);
+
+    TopoDS_Wire wire;
+
+    CTiglControlSurfaceBorderCoordinateSystem coords(
+        GetCutoutCS(pos == CutoutPosition::InnerBorder, outerBorder, upDir));
+    CControlSurfaceBorderBuilder builder(coords, wingCleanShape->Shape());
+
+    double xsiTEUpper;
+    double xsiTELower;
+
+    if (outerBorder->GetXsiTE_choice1().is_initialized()) {
+        xsiTEUpper = outerBorder->GetXsiTE_choice1()->GetXsi();
+        xsiTELower = outerBorder->GetXsiTE_choice1()->GetXsi();
+    }
+    else {
+        if (!outerBorder->GetXsiTEUpper_choice2().is_initialized() ||
+            !outerBorder->GetXsiTELower_choice2().is_initialized()) {
+            throw CTiglError("");
+        }
+        xsiTEUpper = outerBorder->GetXsiTEUpper_choice2().value();
+        xsiTELower = outerBorder->GetXsiTELower_choice2().value();
+    }
+
+    // TODO: calculate xsis into coordinate system of the border
+
+    const auto& lePoints = GetCutOutProfileControlPoint();
+    if (lePoints) {
+        const tigl::generated::CPACSCutOutControlPoint& lePoint =
+            pos == CutoutPosition::InnerBorder ? lePoints->GetInnerBorder() : lePoints->GetOuterBorder();
+
+        double xsiNose = lePoint.GetXsi();
+        // TODO: calculate xsiNose into coordinate system of the border
+
+        wire = builder.borderWithInnerShape(lePoint.GetRelHeight(), xsiNose, xsiTEUpper, xsiTELower);
+    }
+    else {
+        wire = builder.borderSimple(xsiTEUpper, xsiTELower);
+    }
+
+    return wire;
+}
+
 CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceWingCutOut::GetCutoutCS(
     bool isInnerBorder, const CCPACSControlSurfaceBorderTrailingEdge* outerShapeBorder, const gp_Vec& upDir) const
 {
@@ -173,6 +249,33 @@ CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceWingCutOut::GetCut
     return coords;
 }
 
+CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceWingCutOut::GetCutoutCS(
+    bool isInnerBorder, const CCPACSControlSurfaceBorderLeadingEdge* outerShapeBorder, const gp_Vec& upDir) const
+{
+    const auto& cutOutBorder = isInnerBorder ? GetInnerBorder() : GetOuterBorder();
+
+    if (!cutOutBorder) {
+        return outerShapeBorder->GetCoordinateSystem(upDir);
+    }
+
+    if (!cutOutBorder->GetEtaLE_choice2() || !cutOutBorder->GetEtaTE_choice2()) {
+        throw CTiglError("Cutout border of '" + GetParentComponent()->GetDefaultedUID() +
+                         "' requires etaLE and etaTE values to proceed.");
+    }
+
+    double lEta = transformEtaToCSOrTed(cutOutBorder->GetEtaLE_choice2().value(), *m_uidMgr);
+    double tXsi = outerShapeBorder->GetXsiTE_choice1()->GetXsi();
+    double tEta = transformEtaToCSOrTed(cutOutBorder->GetEtaTE_choice2().value(), *m_uidMgr);
+    double lXsi = outerShapeBorder->getXsiLE(); // this is always 0.0
+
+    const auto& segment = ComponentSegment(*this);
+    gp_Pnt pLE          = segment.GetPoint(lEta, lXsi);
+    gp_Pnt pTE          = segment.GetPoint(tEta, tXsi);
+
+    CTiglControlSurfaceBorderCoordinateSystem coords(pLE, pTE, upDir);
+    return coords;
+}
+
 const CCPACSWingComponentSegment& ComponentSegment(const CCPACSControlSurfaceWingCutOut& self)
 {
     if (self.IsParent<CCPACSTrailingEdgeDevice>()) {
@@ -182,7 +285,7 @@ const CCPACSWingComponentSegment& ComponentSegment(const CCPACSControlSurfaceWin
         return ComponentSegment(*self.GetParent<CCPACSLeadingEdgeDevice>());
     }
 
-    throw CTiglError("Missing parant Pointer");
+    throw CTiglError("Missing parent Pointer");
 }
 
 } // namespace tigl

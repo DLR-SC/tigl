@@ -250,14 +250,10 @@ void CCPACSLeadingEdgeDevice::ComputeCutoutShape(PNamedShape& shape) const
         shape = GetOuterShape().CutoutShape(ComponentSegment(*this).GetWing().GetWingCleanShape(),
                                             GetNormalOfControlSurfaceDevice());
     }
-    // else TEMP FIX REMOCVE REMOVE REMOVE
-    // else
-    // {
-    //     shape = GetWingCutOut()->GetLoft(
-    //                 ComponentSegment(*this).GetWing().GetWingCleanShape(),
-    //                 GetOuterShape(),
-    //                 GetNormalOfControlSurfaceDevice());
-    // }
+    else {
+        shape = GetWingCutOut()->GetLoft(ComponentSegment(*this).GetWing().GetWingCleanShape(), GetOuterShape(),
+                                         GetNormalOfControlSurfaceDevice());
+    }
 }
 
 void CCPACSLeadingEdgeDevice::ComputeFlapShape(PNamedShape& shape) const
