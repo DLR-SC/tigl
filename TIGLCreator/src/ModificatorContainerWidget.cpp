@@ -38,13 +38,14 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     // Therefore, fuselageModificator informs when a undoCommand is required via a signal.
     connect(ui->fuselagesModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
     // same for sectionsModificator
-    connect(ui->wingsModificator, SIGNAL(undoCommandRequired() ), this, SLOT(forwardUndoCommandRequired() ) );
 
     connect(ui->wingModificator, SIGNAL(addProfileRequested(QString)), this, SLOT(forwardAddProfileRequested(QString)));
     connect(ui->sectionModificator, SIGNAL(addProfileRequested(QString)), this, SLOT(forwardAddProfileRequested(QString)));
     connect(ui->elementModificator, SIGNAL(addProfileRequested(QString)), this, SLOT(forwardAddProfileRequested(QString)));
 
     connect(ui->wingsModificator, SIGNAL(addWingRequested()), this, SLOT(forwardAddWingRequested()));
+    connect(ui->wingsModificator, SIGNAL(deleteWingRequested()), this, SLOT(forwardDeleteWingRequested()));
+
     connect(ui->sectionsModificator, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(ui->sectionsModificator, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardDeleteSectionRequested(Ui::ElementModificatorInterface&)));
 }
@@ -96,10 +97,9 @@ void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
 }
 
 
-void ModificatorContainerWidget::setWingsModificator(tigl::CCPACSWings &wings)
+void ModificatorContainerWidget::setWingsModificator()
 {
     hideAllSpecializedWidgets();
-    ui->wingsModificator->setWings(wings, profilesDB);
     ui->wingsModificator->setVisible(true);
     ui->applyWidget->setVisible(false);
     currentModificator = ui->wingsModificator;
@@ -216,6 +216,11 @@ void ModificatorContainerWidget::forwardAddProfileRequested(QString const& profi
 void ModificatorContainerWidget::forwardAddWingRequested()
 {
     emit addWingRequested();
+}
+
+void ModificatorContainerWidget::forwardDeleteWingRequested()
+{
+    emit deleteWingRequested();
 }
 
 void ModificatorContainerWidget::forwardAddSectionRequested(Ui::ElementModificatorInterface& emi)

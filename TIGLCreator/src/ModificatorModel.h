@@ -74,8 +74,11 @@ public slots:
     void highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation);
     void unHighlight();
 
+    // deleteWing without dialog
+    void deleteWing(std::string uid);
+
     // delete section without dialog
-    void DeleteSection(cpcr::CPACSTreeItem* item);
+    void deleteSection(cpcr::CPACSTreeItem* item);
 
     // add wing airfoil without dialog
     void addProfile(QString const& profileID);
@@ -89,6 +92,9 @@ public slots:
 
     // Opens dialog for adding a wing
     void onAddWingRequested();
+
+    // Opens dialog for deleting a wing
+    void onDeleteWingRequested();
 
 public:
     ModificatorModel(
@@ -182,14 +188,14 @@ private:
     Ui::ElementModificatorInterface resolve(std::string const& uid) const;
 
     /**
-     * @brief ModificatorModel::AddSection adds a wing or fuselage section
+     * @brief ModificatorModel::addSection adds a wing or fuselage section
      * @param element An interface class to handle both wing and fuselage sections
      * @param where enum, can be Before or After
      * @param startUID a reference section
      * @param sectionName the name of the new section
      * @param eta an eta value for the new section. Only applies for internal sections
      */
-    void AddSection(
+    void addSection(
             Ui::ElementModificatorInterface& element,
             NewConnectedElementDialog::Where where,
             std::string startUID,

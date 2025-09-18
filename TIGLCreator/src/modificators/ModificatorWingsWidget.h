@@ -46,12 +46,8 @@ public:
     explicit ModificatorWingsWidget(QWidget *parent = nullptr);
     ~ModificatorWingsWidget();
 
-    void setWings(tigl::CCPACSWings& wings, ProfilesDBManager* profilesDB);
-
 private:
     Ui::ModificatorWingsWidget *ui;
-    tigl::CCPACSWings* wings;
-    ProfilesDBManager* profilesDB;
 };
 
 #endif // MODIFICATORWINGSWIDGET_H

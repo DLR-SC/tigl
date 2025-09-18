@@ -59,6 +59,7 @@ signals:
     void undoCommandRequired();
     void addProfileRequested(QString const&);
     void addWingRequested();
+    void deleteWingRequested();
     void addSectionRequested(Ui::ElementModificatorInterface&);
     void deleteSectionRequested(Ui::ElementModificatorInterface&);
 
@@ -68,6 +69,7 @@ public slots:
 
     // adding and deleting is performed only by the ModificatorManager
     void forwardAddWingRequested();
+    void forwardDeleteWingRequested();
     void forwardAddSectionRequested(Ui::ElementModificatorInterface&);
     void forwardDeleteSectionRequested(Ui::ElementModificatorInterface&);
     void forwardAddProfileRequested(QString const&);
@@ -80,7 +82,7 @@ public:
 
     void setTransformationModificator(tigl::CCPACSTransformation& transformation, tigl::CCPACSConfiguration& config);
     void setWingModificator(tigl::CCPACSWing& wing);
-    void setWingsModificator(tigl::CCPACSWings& wings);
+    void setWingsModificator();
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
     void setFuselagesModificator(tigl::CCPACSFuselages& fuselages);
     void setElementModificator(tigl::CTiglSectionElement& element);

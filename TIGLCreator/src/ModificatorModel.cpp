@@ -52,6 +52,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
     connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()));
     connect(modificatorContainerWidget, SIGNAL(addProfileRequested(QString)), this, SLOT(addProfile(QString)));
     connect(modificatorContainerWidget, SIGNAL(addWingRequested()), this, SLOT(onAddWingRequested()));
+    connect(modificatorContainerWidget, SIGNAL(deleteWingRequested()), this, SLOT(onDeleteWingRequested()));
     connect(modificatorContainerWidget, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(modificatorContainerWidget, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onDeleteSectionRequested(Ui::ElementModificatorInterface&)));
 }
@@ -146,8 +147,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         highlight(wing.GetCTiglElements());
     }
     else if (item->getType() == "wings") {
-        tigl::CCPACSWings& wings = doc->GetConfiguration().GetWings();
-        modificatorContainerWidget->setWingsModificator(wings);
+        modificatorContainerWidget->setWingsModificator();
     }
     else if (item->getType() == "element") {
         // first, we need to determine whether this is a section or a fuselage element
@@ -384,7 +384,7 @@ void ModificatorModel::unHighlight()
     highligthteds.clear();
 }
 
-void ModificatorModel::DeleteSection(cpcr::CPACSTreeItem* item)
+void ModificatorModel::deleteSection(cpcr::CPACSTreeItem* item)
 {
     if (item == nullptr) {
         return;
@@ -403,6 +403,7 @@ void ModificatorModel::DeleteSection(cpcr::CPACSTreeItem* item)
     auto parentIdx = getIndex(sections, 0);
     auto row = item->positionRelativelyToParent();
     beginRemoveRows(parentIdx, row, row);
+
     // apply changes in cpacs configuration
     try {
         element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
@@ -440,11 +441,11 @@ void ModificatorModel::onDeleteSectionRequested(Ui::ElementModificatorInterface 
         if (item == nullptr) {
             return;
         }
-        DeleteSection(item);
+        deleteSection(item);
     }
 }
 
-void ModificatorModel::AddSection(
+void ModificatorModel::addSection(
         Ui::ElementModificatorInterface& element,
         NewConnectedElementDialog::Where where,
         std::string startUID,
@@ -540,7 +541,7 @@ void ModificatorModel::onAddSectionRequested(Ui::ElementModificatorInterface &el
 
     if (newElementDialog.exec() == QDialog::Accepted) {
 
-        AddSection(
+        addSection(
             element,
             newElementDialog.getWhere(),
             newElementDialog.getStartUID().toStdString(),
@@ -591,7 +592,7 @@ void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::C
 
     if (newElementDialog.exec() == QDialog::Accepted) {
 
-        AddSection(
+        addSection(
             element,
             newElementDialog.getWhere(),
             newElementDialog.getStartUID().toStdString(),
@@ -689,6 +690,66 @@ void ModificatorModel::onAddWingRequested()
         tree.createChildrenRecursively(*new_item);
 
         endInsertRows();
+    }
+}
+
+void ModificatorModel::deleteWing(std::string uid)
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+    auto& wings = doc->GetConfiguration().GetWings();
+
+    auto idx = getIdxForUID(uid);
+    auto* wing_node = getItem(idx);
+    if (wing_node == nullptr) {
+        return;
+    }
+    auto* parent = wing_node->getParent();
+    if (parent == nullptr) {
+        return;
+    }
+    auto parentIdx = getIndex(parent, 0);
+    auto row = wing_node->positionRelativelyToParent();
+    beginRemoveRows(parentIdx, row, row);
+
+    // apply changes in cpacs configuration
+    try {
+        tigl::CCPACSWing& wing = wings.GetWing(uid);
+        wings.RemoveWing(wing);
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the wing ").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        return;
+    }
+
+    createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+    // apply changes to CPACSTree
+    parent->removeChild(row);
+    endRemoveRows();
+}
+
+void ModificatorModel::onDeleteWingRequested()
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+    auto& wings = doc->GetConfiguration().GetWings();
+
+    QStringList wingUIDs;
+    for (int i = 1; i <= wings.GetWingCount(); i++) {
+        wingUIDs.push_back(wings.GetWing(i).GetUID().c_str());
+    }
+
+    DeleteDialog deleteDialog(wingUIDs);
+    if (deleteDialog.exec() == QDialog::Accepted) {
+        std::string uid = deleteDialog.getUIDToDelete().toStdString();
+        deleteWing(uid);
     }
 }
 

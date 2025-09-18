@@ -28,8 +28,6 @@ ModificatorWingsWidget::ModificatorWingsWidget(QWidget* parent)
     , ui(new Ui::ModificatorWingsWidget)
 {
     ui->setupUi(this);
-    wings = nullptr;
-    profilesDB = nullptr;
 
     connect(ui->addNewWingBtn, SIGNAL(pressed()), this, SLOT(execNewWingDialog()));
     connect(ui->deleteWingBtn, SIGNAL(pressed()), this, SLOT(execDeleteWingDialog()));
@@ -40,12 +38,6 @@ ModificatorWingsWidget::~ModificatorWingsWidget()
     delete ui;
 }
 
-void ModificatorWingsWidget::setWings(tigl::CCPACSWings& wings, ProfilesDBManager* profilesDB)
-{
-    this->wings = &wings;
-    this->profilesDB = profilesDB;
-}
-
 void ModificatorWingsWidget::execNewWingDialog()
 {
     emit addWingRequested();
@@ -53,31 +45,5 @@ void ModificatorWingsWidget::execNewWingDialog()
 
 void ModificatorWingsWidget::execDeleteWingDialog()
 {
-    if (wings == nullptr) {
-        LOG(ERROR) << "ModificatorWingsWidget::execDeleteWingDialog: wings is not set!";
-        return;
-    }
-
-    QStringList wingUIDs;
-    for (int i = 1; i <= wings->GetWingCount(); i++) {
-        wingUIDs.push_back(wings->GetWing(i).GetUID().c_str());
-    }
-
-    DeleteDialog deleteDialog(wingUIDs);
-    if (deleteDialog.exec() == QDialog::Accepted) {
-        QString uid = deleteDialog.getUIDToDelete();
-        try {
-            tigl::CCPACSWing& wing = wings->GetWing(uid.toStdString());
-            wings->RemoveWing(wing);
-        }
-        catch (const tigl::CTiglError& err) {
-            TIGLCreatorErrorDialog errDialog(this);
-            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the wing ").arg(err.what()));
-            errDialog.setWindowTitle("Error");
-            errDialog.setDetailsText(err.what());
-            errDialog.exec();
-            return;
-        }
-//        emit undoCommandRequired();
-    }
+    emit deleteWingRequested();
 }
