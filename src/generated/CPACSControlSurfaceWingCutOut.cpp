@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSLeadingEdgeDevice.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CPACSControlSurfaceWingCutOut.h"
 #include "CTiglError.h"
@@ -28,6 +29,16 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSControlSurfaceWingCutOut::CPACSControlSurfaceWingCutOut(CCPACSLeadingEdgeDevice* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_upperSkin(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr)
+        , m_lowerSkin(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSLeadingEdgeDevice);
+    }
+
     CPACSControlSurfaceWingCutOut::CPACSControlSurfaceWingCutOut(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_upperSkin(reinterpret_cast<CCPACSControlSurfaceWingCutOut*>(this), m_uidMgr)
@@ -35,30 +46,37 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSTrailingEdgeDevice);
     }
 
     CPACSControlSurfaceWingCutOut::~CPACSControlSurfaceWingCutOut()
     {
     }
 
-    const CCPACSTrailingEdgeDevice* CPACSControlSurfaceWingCutOut::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSTrailingEdgeDevice* CPACSControlSurfaceWingCutOut::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSControlSurfaceWingCutOut::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSLeadingEdgeDevice>()) {
+                return GetParent<CCPACSLeadingEdgeDevice>();
+            }
+            if (IsParent<CCPACSTrailingEdgeDevice>()) {
+                return GetParent<CCPACSTrailingEdgeDevice>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSControlSurfaceWingCutOut::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSLeadingEdgeDevice>()) {
+                return GetParent<CCPACSLeadingEdgeDevice>();
+            }
+            if (IsParent<CCPACSTrailingEdgeDevice>()) {
+                return GetParent<CCPACSTrailingEdgeDevice>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSControlSurfaceWingCutOut::GetUIDManager()
