@@ -20,7 +20,7 @@ opencascade = "7.6.2.*"
 freeimageplus = "*"
 
 [feature.python-internal.dependencies]
-swig = ">=3.0.11"
+swig = ">=3.0.11,<4.3"
 pythonocc-core = "7.6.2.*"
 setuptools = "*"
 
@@ -99,6 +99,9 @@ tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
 "occt-static" = ["base", "opencascade-static"]
 # python-internal feature builds the internal python bindings of the C++ core using swig
 "python-internal" = ["base", "python-internal"]
+
+[dependencies]
+numpy = ">=2.3.3,<3"
 
 [feature.coverage.tasks]
 # The coverage feature builds in debug mode and runs the tests with coverage flags enabled
