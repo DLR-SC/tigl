@@ -4,7 +4,7 @@ import tigl3
 import tigl3.tigl3wrapper
 import tigl3.configuration
 import tigl3.geometry
-import OCC.gp
+from OCC.Core.gp import gp_Pnt
 
 
 def create_fuselage(aircraft, uid):
@@ -59,8 +59,8 @@ def create_round_wing(aircraft,diameter, uid):
     
     # Normaly, we should use CTiglPoint instead of gp.gp_Pnt
     # but there is for the moment a small issue in the binding of CTiglTransformation class
-    firstPosition = OCC.gp.gp_Pnt(0,0,-diameter/2.0);  
-    firstNormal = OCC.gp.gp_Pnt(0,-1,0);
+    firstPosition = gp_Pnt(0,0,-diameter/2.0);  
+    firstNormal = gp_Pnt(0,-1,0);
 
     wings = aircraft.get_wings();
     # create the wing
