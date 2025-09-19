@@ -429,6 +429,7 @@ void ModificatorModel::deleteSection(cpcr::CPACSTreeItem* item)
         errDialog.setWindowTitle("Error");
         errDialog.setDetailsText(err.what());
         errDialog.exec();
+        endRemoveRows();
         return;
     }
     createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
