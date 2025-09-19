@@ -57,8 +57,6 @@ def create_round_wing(aircraft,diameter, uid):
     # rotation between each section 
     deltaRotX = 180.0  / (numberOfSection - 1.0)
     
-    # Normaly, we should use CTiglPoint instead of gp_Pnt
-    # but there is for the moment a small issue in the binding of CTiglTransformation class
     firstPosition = gp_Pnt(0,0,-diameter/2.0)  
     firstNormal = gp_Pnt(0,-1,0)
 
