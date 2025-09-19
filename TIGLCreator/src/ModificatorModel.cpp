@@ -499,6 +499,7 @@ void ModificatorModel::addSection(
                     element.CreateNewConnectedElementBetween(*elementUIDBefore, elemUID, *eta, sectionName);
                 }
                 else {
+                    endInsertRows();
                     throw tigl::CTiglError("No eta value set!");
                 }
             }
