@@ -17,7 +17,7 @@ install(FILES
 
 
 install(FILES
-        data/empty.cpacs3.xml
+        data/empty.cpacs.xml
         DESTINATION share/doc/tigl3/examples/data
         COMPONENT docu
         )
