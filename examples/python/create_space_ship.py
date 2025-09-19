@@ -98,7 +98,7 @@ def create_round_wing(aircraft,diameter, uid):
 
 def create_space_ship():
 
-    filename = "./data/empty.cpacs3.xml"
+    filename = "./data/empty.cpacs.xml"
     # Open the file using tixi 
     tixi_h = tixi3.tixi3wrapper.Tixi3()
     tixi_h.open(filename)
