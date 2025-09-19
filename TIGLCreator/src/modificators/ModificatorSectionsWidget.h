@@ -36,7 +36,8 @@ class ModificatorSectionsWidget : public QWidget
     Q_OBJECT
 
 signals:
-    void undoCommandRequired();
+    void addSectionRequested(Ui::ElementModificatorInterface&);
+    void deleteSectionRequested(Ui::ElementModificatorInterface&);
 
 public slots:
     void execNewConnectedElementDialog();

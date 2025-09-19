@@ -24,7 +24,7 @@
    <item>
     <widget class="QPushButton" name="deleteWingBtn">
      <property name="text">
-      <string>Delete existent wing</string>
+      <string>Delete wing</string>
      </property>
     </widget>
    </item>

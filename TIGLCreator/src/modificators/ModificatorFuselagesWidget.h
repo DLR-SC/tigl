@@ -35,7 +35,8 @@ class ModificatorFuselagesWidget : public ModificatorWidget
     Q_OBJECT
 
 signals:
-    void undoCommandRequired();
+    void addFuselageRequested();
+    void deleteFuselageRequested();
 
 public slots:
 
@@ -46,12 +47,8 @@ public:
     explicit ModificatorFuselagesWidget(QWidget* parent = nullptr);
     ~ModificatorFuselagesWidget();
 
-    void setFuselages(tigl::CCPACSFuselages& fuselages, ProfilesDBManager* profilesUID);
-
 private:
     Ui::ModificatorFuselagesWidget* ui;
-    tigl::CCPACSFuselages* fuselages;
-    ProfilesDBManager* profilesDB;
 };
 
 #endif // MODIFICATORFUSELAGESWIDGET_H

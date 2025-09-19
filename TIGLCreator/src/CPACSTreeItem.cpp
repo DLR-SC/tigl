@@ -21,6 +21,7 @@
 
 #include "CPACSTree.h"
 #include "CTiglLogging.h"
+#include <cassert>
 
 namespace cpcr
 {
@@ -65,6 +66,40 @@ CPACSTreeItem* CPACSTreeItem::addChild(std::string xpath, std::string cpacsType,
     newChild->parent        = this;
     children.push_back(newChild);
     return newChild;
+}
+
+
+CPACSTreeItem* CPACSTreeItem::addChildAt(int idx, std::string xpath, std::string cpacsType, int tixiIndex, std::string uid)
+{
+    CPACSTreeItem* newChild = new CPACSTreeItem(this->tree, xpath, cpacsType, tixiIndex, uid);
+    newChild->parent        = this;
+    assert(idx <= children.size());
+    children.insert(children.begin()+idx, newChild);
+
+    // increment xpath and tixi indices of following children
+    for (int i = idx+1; i<children.size(); ++i) {
+        std::string xpath = children[i]->getXPath();
+        cpcr::XPathParser::RemoveEndingBrackets(xpath);
+        xpath += "[" + std::to_string(i) + "]";
+        children[i]->xpath = xpath;
+        ++(children[i]->tixiIdx);
+    }
+    return newChild;
+}
+
+void CPACSTreeItem::removeChild(int idx)
+{
+    assert(idx < children.size());
+    children.erase(children.begin() + idx);
+
+    // decrement xpath and tixi indices of following children
+    for (int i = idx; i<children.size(); ++i) {
+        std::string xpath = children[i]->getXPath();
+        cpcr::XPathParser::RemoveEndingBrackets(xpath);
+        xpath += "[" + std::to_string(i) + "]";
+        children[i]->xpath = xpath;
+        --(children[i]->tixiIdx);
+    }
 }
 
 CPACSTreeItem* CPACSTreeItem::getParent() const

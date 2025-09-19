@@ -40,7 +40,8 @@ class ModificatorElementWidget : public ModificatorWidget
 {
     Q_OBJECT
 
-
+signals:
+    void addProfileRequested(QString const&);
 
 private slots:
 

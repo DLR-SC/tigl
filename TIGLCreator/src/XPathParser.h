@@ -41,12 +41,12 @@ public:
 
     static std::string RemoveFirstNode(std::string xpath);
     static std::string RemoveLastNode(std::string xpath);
+    static std::string RemoveEndingBrackets(std::string string);
 
 protected:
     static std::string GetFirstNode(std::string xpath);
     static std::string GetLastNode(std::string xpath);
     // return the same string without the brackets and the content
-    static std::string RemoveEndingBrackets(std::string string);
     static int GetIndexOfNode(std::string particle);
 };
 }

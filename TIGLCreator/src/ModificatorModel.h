@@ -22,6 +22,7 @@
 #include "TIGLCreatorDocument.h"
 #include "CPACSTreeItem.h"
 #include "ModificatorContainerWidget.h"
+#include "modificators/NewConnectedElementDialog.h"
 #include <QUndoStack>
 #include "TIGLCreatorContext.h"
 #include "CCPACSPositioning.h"
@@ -73,9 +74,36 @@ public slots:
     void highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation);
     void unHighlight();
 
-    // signals from treewidget (delete or add section)
-    void onDeleteSectionRequested(cpcr::CPACSTreeItem* item);
+    // delete wing without dialog
+    void deleteWing(std::string const& uid);
+
+    // delete fuselage without dialog
+    void deleteFuselage(std::string const& uid);
+
+    // delete section without dialog
+    void deleteSection(cpcr::CPACSTreeItem* item);
+
+    // add wing airfoil without dialog
+    void addProfile(QString const& profileID);
+
+    // Open dialog for deleting a section
+    void onDeleteSectionRequested(Ui::ElementModificatorInterface& emi);
+
+    // Opens dialog for adding a section
+    void onAddSectionRequested(Ui::ElementModificatorInterface& emi);
     void onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem* item);
+
+    // Opens dialog for adding a wing
+    void onAddWingRequested();
+
+    // Opens dialog for deleting a wing
+    void onDeleteWingRequested();
+
+    // Opens a dialog for adding a fuselage
+    void onAddFuselageRequested();
+
+    // Opens a dialog for deleting a fuselage
+    void onDeleteFuselageRequested();
 
 public:
     ModificatorModel(
@@ -142,7 +170,7 @@ public:
     cpcr::CPACSTreeItem* getItemFromSelection(const QItemSelection& newSelection);
 
     // Return the index of the first cpacs element that is of the "model" type
-    QModelIndex getAircraftModelIndex();
+    QModelIndex getAircraftModelIndex() const;
 
     // return the item for the given index
     // empty index is considered as the root index!
@@ -168,7 +196,30 @@ private:
      */
     Ui::ElementModificatorInterface resolve(std::string const& uid) const;
 
+    /**
+     * @brief ModificatorModel::addSection adds a wing or fuselage section
+     * @param element An interface class to handle both wing and fuselage sections
+     * @param where enum, can be Before or After
+     * @param startUID a reference section
+     * @param sectionName the name of the new section
+     * @param eta an eta value for the new section. Only applies for internal sections
+     */
+    void addSection(
+            Ui::ElementModificatorInterface& element,
+            NewConnectedElementDialog::Where where,
+            std::string startUID,
+            std::string sectionName,
+            std::optional<double> eta
+    );
+
     std::string sectionUidToElementUid(std::string const& uid) const;
+    std::string elementUidToSectionUid(std::string const& uid) const;
+
+    //convenience getters for some specific cpacs node
+    cpcr::CPACSTreeItem *getWings() const;
+    cpcr::CPACSTreeItem *getFuselages() const;
+    cpcr::CPACSTreeItem *getAirfoils() const;
+    cpcr::CPACSTreeItem *getFuselageProfiles() const;
 
     ModificatorContainerWidget* modificatorContainerWidget;
 
