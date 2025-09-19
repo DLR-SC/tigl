@@ -699,6 +699,7 @@ void ModificatorModel::onAddWingRequested()
             errDialog.setWindowTitle("Error");
             errDialog.setDetailsText(err.what());
             errDialog.exec();
+            endInsertRows();
             return;
         }
 
