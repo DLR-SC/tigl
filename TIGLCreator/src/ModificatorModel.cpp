@@ -858,6 +858,7 @@ void ModificatorModel::onAddFuselageRequested()
             errDialog.setWindowTitle("Error");
             errDialog.setDetailsText(err.what());
             errDialog.exec();
+            endInsertRows();
             return;
         }
 
