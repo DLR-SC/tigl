@@ -22,6 +22,7 @@ freeimageplus = "*"
 [feature.python-internal.dependencies]
 swig = ">=3.0.11"
 pythonocc-core = "7.6.2.*"
+setuptools = "*"
 
 [feature.opencascade-static.dependencies]
 opencascade-static = "7.6.2.*"
@@ -151,12 +152,15 @@ configure = { cmd = [
     "-G", "Ninja", 
     "-S", ".", 
     "-B", "build", 
-    "-D", "CMAKE_INSTALL_PREFIX=build/install", 
+    "-D", "CMAKE_INSTALL_PREFIX=$CONDA_PREFIX", 
     "-D", "CMAKE_BUILD_TYPE={{ config }}",
     "-D", "TIGL_NIGHTLY={{ nightly }}",
     "-D", "TIGL_CONCAT_GENERATED_FILES={{ nightly }}",
     "-D", "TIGL_BUILD_TESTS=ON",
     "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=ON",
+    "-D", "TIGL_INSTALL_TO_PYTHON_SITE_PACKAGES=ON",
+    "-D", "Python3_FIND_STRATEGY=LOCATION",
+    "-D", "Python3_FIND_FRAMEWORK=NEVER",
     "-D", "TIGL_BINDINGS_PYTHON=ON",
     "-D", "TIGL_BINDINGS_MATLAB=ON",
     "-D", "OCE_STATIC_LIBS=ON",
