@@ -78,7 +78,7 @@ will start the TiGLCreator from the install directory.
 To use another environment than `default`, we need to invoke the command like this:
 
     pixi run -e python-internal configure
-    pixi run install
+    pixi run -e python-internal install
     pixi run unittests
 
  This command configures TiGL for a Release build with internal python bindings, install TiGL in a subdirectory of the build directory and run the unit tests, but not the integration tests.
