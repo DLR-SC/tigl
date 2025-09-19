@@ -745,6 +745,7 @@ void ModificatorModel::deleteWing(std::string const& uid)
         errDialog.setWindowTitle("Error");
         errDialog.setDetailsText(err.what());
         errDialog.exec();
+        endRemoveRows();
         return;
     }
 
