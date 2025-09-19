@@ -446,51 +446,47 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
 
         const CCPACSControlSurfaces& controlSurfs = componentSegment.GetControlSurfaces().value();
         if (controlSurfs.GetTrailingEdgeDevices().is_initialized()) {
-            const CCPACSTrailingEdgeDevices& controlSurfaceDevices = controlSurfs.GetTrailingEdgeDevices().value();
+            const CCPACSTrailingEdgeDevices& TrailingEdgeDevices = controlSurfs.GetTrailingEdgeDevices().value();
 
-            for (size_t j = controlSurfaceDevices.GetTrailingEdgeDevices().size(); j > 0; j--) {
-                CCPACSTrailingEdgeDevice& controlSurfaceDevice =
-                    *controlSurfaceDevices.GetTrailingEdgeDevices().at(j - 1);
+            for (size_t j = TrailingEdgeDevices.GetTrailingEdgeDevices().size(); j > 0; j--) {
+                CCPACSTrailingEdgeDevice& TrailingEdgeDevice = *TrailingEdgeDevices.GetTrailingEdgeDevices().at(j - 1);
 
-                PNamedShape controlSurfacePrism = controlSurfaceDevice.GetCutOutShape();
-                if (controlSurfaceDevice.GetType() != SPOILER) {
+                PNamedShape TrailingEdgeDevicePrism = TrailingEdgeDevice.GetCutOutShape();
+                if (TrailingEdgeDevice.GetType() != SPOILER) {
                     if (!first) {
                         ListPNamedShape childs;
-                        childs.push_back(controlSurfacePrism);
+                        childs.push_back(TrailingEdgeDevicePrism);
                         fusedBoxes = CFuseShapes(fusedBoxes, childs);
                     }
                     else {
                         first      = false;
-                        fusedBoxes = controlSurfacePrism;
+                        fusedBoxes = TrailingEdgeDevicePrism;
                     }
                 }
-
                 // trigger build of the flap
-                controlSurfaceDevice.GetLoft();
+                TrailingEdgeDevice.GetLoft();
             }
         }
         if (controlSurfs.GetLeadingEdgeDevices().is_initialized()) {
-            const CCPACSLeadingEdgeDevices& controlSurfaceDevicesLE = controlSurfs.GetLeadingEdgeDevices().value();
+            const CCPACSLeadingEdgeDevices& LeadingEdgeDevices = controlSurfs.GetLeadingEdgeDevices().value();
 
-            for (size_t j = controlSurfaceDevicesLE.GetLeadingEdgeDevices().size(); j > 0; j--) {
-                CCPACSLeadingEdgeDevice& controlSurfaceDeviceLE =
-                    *controlSurfaceDevicesLE.GetLeadingEdgeDevices().at(j - 1);
+            for (size_t j = LeadingEdgeDevices.GetLeadingEdgeDevices().size(); j > 0; j--) {
+                CCPACSLeadingEdgeDevice& LeadingEdgeDevice = *LeadingEdgeDevices.GetLeadingEdgeDevices().at(j - 1);
 
-                PNamedShape controlSurfacePrism = controlSurfaceDeviceLE.GetCutOutShape();
-                if (controlSurfaceDeviceLE.GetType() != SPOILER) {
+                PNamedShape LeadingEdgeDevicePrism = LeadingEdgeDevice.GetCutOutShape();
+                if (LeadingEdgeDevice.GetType() != SPOILER) {
                     if (!first) {
                         ListPNamedShape childs;
-                        childs.push_back(controlSurfacePrism);
+                        childs.push_back(LeadingEdgeDevicePrism);
                         fusedBoxes = CFuseShapes(fusedBoxes, childs);
                     }
                     else {
                         first      = false;
-                        fusedBoxes = controlSurfacePrism;
+                        fusedBoxes = LeadingEdgeDevicePrism;
                     }
                 }
-
                 // trigger build of the flap
-                controlSurfaceDeviceLE.GetLoft();
+                LeadingEdgeDevice.GetLoft();
             }
         }
     }
@@ -528,24 +524,24 @@ PNamedShape CCPACSWing::GroupedFlapsAndWingShapes() const
         const auto& controlSurfs = componentSegment->GetControlSurfaces().value();
 
         if (controlSurfs.GetTrailingEdgeDevices().is_initialized()) {
-            const auto& controlSurfaceDevices = controlSurfs.GetTrailingEdgeDevices().value();
-            const auto& devices               = controlSurfaceDevices.GetTrailingEdgeDevices();
-            for (size_t j = devices.size(); j > 0; j--) {
+            const auto& TrailingEdgeDevices = controlSurfs.GetTrailingEdgeDevices().value();
+            const auto& TED                 = TrailingEdgeDevices.GetTrailingEdgeDevices();
+            for (size_t j = TED.size(); j > 0; j--) {
 
-                const auto& controlSurfaceDevice = *devices.at(j - 1);
-                auto deviceShape                 = controlSurfaceDevice.GetTransformedFlapShape();
-                flapsAndWingShapes.push_back(deviceShape);
+                const auto& TrailingEdgeDevice = *TED.at(j - 1);
+                auto TEDShape                  = TrailingEdgeDevice.GetTransformedFlapShape();
+                flapsAndWingShapes.push_back(TEDShape);
             }
         }
         if (controlSurfs.GetLeadingEdgeDevices().is_initialized()) {
 
-            const auto& controlSurfaceDevicesLE = controlSurfs.GetLeadingEdgeDevices().value();
-            const auto& devicesLE               = controlSurfaceDevicesLE.GetLeadingEdgeDevices();
-            for (size_t j = devicesLE.size(); j > 0; j--) {
+            const auto& LeadingEdgeDevices = controlSurfs.GetLeadingEdgeDevices().value();
+            const auto& LED                = LeadingEdgeDevices.GetLeadingEdgeDevices();
+            for (size_t j = LED.size(); j > 0; j--) {
 
-                const auto& controlSurfaceDevicesLE = *devicesLE.at(j - 1);
-                auto deviceShape                    = controlSurfaceDevicesLE.GetTransformedFlapShape();
-                flapsAndWingShapes.push_back(deviceShape);
+                const auto& LeadingEdgeDevice = *LED.at(j - 1);
+                auto LEDShape                 = LeadingEdgeDevice.GetTransformedFlapShape();
+                flapsAndWingShapes.push_back(LEDShape);
             }
         }
     }

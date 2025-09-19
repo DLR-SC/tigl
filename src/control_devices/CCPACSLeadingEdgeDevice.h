@@ -1,6 +1,6 @@
 #pragma once
 /*
-* Copyright (C) 2018 German Aerospace Center (DLR/SC)
+* Copyright (C) 2025 German Aerospace Center (DLR/SC)
 *
 * Created: 2025 Ole Albers <ole.albers@dlr.de>
 *

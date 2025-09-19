@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 German Aerospace Center (DLR/SC)
+ * Copyright (C) 2025 German Aerospace Center (DLR/SC)
  *
  * Created: 2025 Ole Albers <ole.albers@dlr.de>
  *
@@ -50,7 +50,7 @@ TopoDS_Wire CCPACSControlSurfaceBorderLeadingEdge::GetWire(PNamedShape wingShape
     }
 
     else if (GetLeadingEdgeShape_choice2().is_initialized()) {
-        throw CTiglError("Leading Edge Device with LeadingEdgeShape not implemented");
+        throw CTiglError("Leading edge device with LeadingEdgeShape not implemented");
     }
 
     else if (GetInnerShape_choice1().is_initialized()) {
@@ -64,7 +64,8 @@ TopoDS_Wire CCPACSControlSurfaceBorderLeadingEdge::GetWire(PNamedShape wingShape
         }
         else {
             if (!GetXsiTEUpper_choice2().is_initialized() || !GetXsiTELower_choice2().is_initialized()) {
-                throw CTiglError("");
+                throw CTiglError("LED relative chordwise trailing edge xsiTE and/ or xsiTEUpper and xsiTELower not "
+                                 "sepcified in CPACS file.");
             }
             xsiTEUpper = GetXsiTEUpper_choice2().value();
             xsiTELower = GetXsiTELower_choice2().value();
@@ -80,22 +81,7 @@ TopoDS_Wire CCPACSControlSurfaceBorderLeadingEdge::GetWire(PNamedShape wingShape
     }
 
     else {
-        // throw CTiglError("Choice4");
-        double xsiTEUpper;
-        double xsiTELower;
-
-        if (GetXsiTE_choice1().is_initialized()) {
-            xsiTEUpper = GetXsiTE_choice1()->GetXsi();
-            xsiTELower = GetXsiTE_choice1()->GetXsi();
-        }
-        else {
-            if (!GetXsiTEUpper_choice2().is_initialized() || !GetXsiTELower_choice2().is_initialized()) {
-                throw CTiglError("");
-            }
-            xsiTEUpper = GetXsiTEUpper_choice2().value();
-            xsiTELower = GetXsiTELower_choice2().value();
-        }
-        wire = builder.borderSimple(xsiTEUpper, xsiTELower);
+        throw CTiglError("Airfoil definition of leading edge device innner/outer border missing.");
     }
 
 #ifdef DEBUG

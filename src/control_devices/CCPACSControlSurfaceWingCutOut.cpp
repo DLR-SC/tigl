@@ -197,7 +197,8 @@ TopoDS_Wire CCPACSControlSurfaceWingCutOut::GetCutoutWire(CCPACSControlSurfaceWi
     else {
         if (!outerBorder->GetXsiTEUpper_choice2().is_initialized() ||
             !outerBorder->GetXsiTELower_choice2().is_initialized()) {
-            throw CTiglError("");
+            throw CTiglError("LED relative chordwise trailing edge xsiTE and/ or xsiTEUpper and xsiTELower not "
+                             "sepcified in CPACS file.");
         }
         xsiTEUpper = outerBorder->GetXsiTEUpper_choice2().value();
         xsiTELower = outerBorder->GetXsiTELower_choice2().value();
