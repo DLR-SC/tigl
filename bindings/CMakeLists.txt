@@ -23,7 +23,7 @@ if (TIGL_BINDINGS_PYTHON)
 
     # this requires setuptools to be installed
     execute_process(
-        COMMAND "${PYTHON_EXECUTABLE}" -c "if True:
+        COMMAND "${Python3_EXECUTABLE}" -c "if True:
         from distutils import sysconfig as sc
         print(sc.get_python_lib(prefix='', plat_specific=True))"
         OUTPUT_VARIABLE PYTHON_SITE_PACKAGES

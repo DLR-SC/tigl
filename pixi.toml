@@ -100,9 +100,6 @@ tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
 # python-internal feature builds the internal python bindings of the C++ core using swig
 "python-internal" = ["base", "python-internal"]
 
-[dependencies]
-numpy = ">=2.3.3,<3"
-
 [feature.coverage.tasks]
 # The coverage feature builds in debug mode and runs the tests with coverage flags enabled
 configure = { cmd = [
@@ -161,7 +158,6 @@ configure = { cmd = [
     "-D", "TIGL_CONCAT_GENERATED_FILES={{ nightly }}",
     "-D", "TIGL_BUILD_TESTS=ON",
     "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=ON",
-    "-D", "TIGL_INSTALL_TO_PYTHON_SITE_PACKAGES=ON",
     "-D", "Python3_FIND_STRATEGY=LOCATION",
     "-D", "Python3_FIND_FRAMEWORK=NEVER",
     "-D", "TIGL_BINDINGS_PYTHON=ON",
