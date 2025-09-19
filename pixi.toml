@@ -20,9 +20,13 @@ opencascade = "7.6.2.*"
 freeimageplus = "*"
 
 [feature.python-internal.dependencies]
-swig = ">=3.0.11,<4.3"
+swig = ">=3.0.11,<4.1"
 pythonocc-core = "7.6.2.*"
 setuptools = "*"
+# these are optional, but needed for some of the python examples:
+numpy = "*"
+matplotlib = "*"
+pyqt = ">=5.15.11,<6"
 
 [feature.opencascade-static.dependencies]
 opencascade-static = "7.6.2.*"
