@@ -68,13 +68,15 @@ will invoke unit tests and integration tests
 will start the TiGLCreator from the install directory.
 
 For our CI we provide several pixi environments for common build configurations. Currently, these are `default`, `coverage`, `occt-static` and `python-internal`.
-Every pixi environment as its specific set of dependencies and modified tasks. As an example,
+Every pixi environment as its specific set of dependencies and modified tasks. All configure tasks set `CMAKE_INSTALL_RPEFIX=build` with the exception of the `python-internal` environment. Here, the python bindings are installed into the pixi environment. 
+
+As an example,
 
     pixi run -e python-internal configure
-    pixi run install
+    pixi run -e python-internal install
     pixi run unittests
 
- configures TiGL for a Release build with internal python bindings, install TiGL in a subdirectory of the build directory and run the unit tests, but not the integration tests.
+ configures TiGL for a Release build with internal python bindings, install TiGL in the python environment and run the unit tests, but not the integration tests.
 
 The `configure` task has additional arguments. For instance
 
