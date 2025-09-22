@@ -509,9 +509,9 @@ void TIGLCreatorWindow::loadSettings()
     bool showTree = settings.value("show_tree",QVariant(true)).toBool();
     bool showModificator = settings.value("show_modificator",QVariant(true)).toBool();
 
-    bool floatConsole = settings.value("float_console",QVariant(true)).toBool();
-    bool floatTree = settings.value("float_tree",QVariant(true)).toBool();
-    bool floatModificator = settings.value("float_modificator",QVariant(true)).toBool();
+    bool floatConsole = settings.value("float_console",QVariant(false)).toBool();
+    bool floatTree = settings.value("float_tree",QVariant(false)).toBool();
+    bool floatModificator = settings.value("float_modificator",QVariant(false)).toBool();
 
     restoreGeometry(settings.value("MainWindowGeom").toByteArray());
     restoreState(settings.value("MainWindowState").toByteArray());
