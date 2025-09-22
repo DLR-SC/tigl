@@ -9,6 +9,7 @@ Changes since last release
 
 10/09/2025
 - General changes
+  - The CPACS tree stays expanded, even after addition or deletion of wings, fuselages, sections or profiles ([#1138](https://github.com/DLR-SC/tigl/issues/1138))
   - Sections can now be added or deleted using a context menu in the CPACS Tree View ([#628](https://github.com/DLR-SC/tigl/issues/628))
   - [#1141](https://github.com/DLR-SC/tigl/issues/1141) Add the option to set a custom name when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog.
   - When adding new sections to wings or fuselages, the sections are reordered from root to tip (resp. nose to rear) according to the segments ([#1139](https://github.com/DLR-SC/tigl/issues/1139))

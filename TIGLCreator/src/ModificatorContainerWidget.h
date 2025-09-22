@@ -57,14 +57,26 @@ class ModificatorContainerWidget : public QWidget
 
 signals:
     void undoCommandRequired();
+    void addProfileRequested(QString const&);
+    void addWingRequested();
+    void deleteWingRequested();
+    void addFuselageRequested();
+    void deleteFuselageRequested();
+    void addSectionRequested(Ui::ElementModificatorInterface&);
+    void deleteSectionRequested(Ui::ElementModificatorInterface&);
 
 public slots:
     void applyCurrentModifications();
     void applyCurrentCancellation();
 
-    // Some modificator ask the creation of a undo action (especially in the case of dialog interfaces)
-    // So this slot allow us to forward the request.
-    void forwardUndoCommandRequired();
+    // adding and deleting is performed only by the ModificatorModel
+    void forwardAddWingRequested();
+    void forwardDeleteWingRequested();
+    void forwardAddFuselageRequested();
+    void forwardDeleteFuselageRequested();
+    void forwardAddSectionRequested(Ui::ElementModificatorInterface&);
+    void forwardDeleteSectionRequested(Ui::ElementModificatorInterface&);
+    void forwardAddProfileRequested(QString const&);
 
 public:
     explicit ModificatorContainerWidget(QWidget* parent = nullptr);
@@ -74,9 +86,9 @@ public:
 
     void setTransformationModificator(tigl::CCPACSTransformation& transformation, tigl::CCPACSConfiguration& config);
     void setWingModificator(tigl::CCPACSWing& wing);
-    void setWingsModificator(tigl::CCPACSWings& wings);
+    void setWingsModificator();
     void setFuselageModificator(tigl::CCPACSFuselage& fuselage);
-    void setFuselagesModificator(tigl::CCPACSFuselages& fuselages);
+    void setFuselagesModificator();
     void setElementModificator(tigl::CTiglSectionElement& element);
     void setSectionModificator(QList<tigl::CTiglSectionElement*> elements);
     void setSectionsModificator(Ui::ElementModificatorInterface const& conntedElementI);

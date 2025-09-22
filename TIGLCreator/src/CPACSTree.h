@@ -74,6 +74,8 @@ public:
    */
     void reload();
 
+    void createChildrenRecursively(CPACSTreeItem& parent);
+
 protected:
     /*
    * Helper function to retrieve the uid of an element using the internal tixi
@@ -86,8 +88,6 @@ protected:
    * internal tixi handle
    */
     int getNumberOfChildren(std::string xpathObj);
-
-    void createChildrenRecursively(CPACSTreeItem& parent);
 
     TixiDocumentHandle tixiHandle;
 

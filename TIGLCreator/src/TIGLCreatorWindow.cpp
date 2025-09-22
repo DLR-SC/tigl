@@ -998,8 +998,8 @@ void TIGLCreatorWindow::connectSignals()
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
 
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorModel, SLOT(dispatch(cpcr::CPACSTreeItem*)));
-    connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::onDeleteSectionRequested);
-    connect(treeWidget, &CPACSTreeWidget::addSectionRequested, modificatorModel, &ModificatorModel::onAddSectionRequested);
+    connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::deleteSection);
+    connect(treeWidget, SIGNAL(addSectionRequested(CPACSTreeView::Where,cpcr::CPACSTreeItem*)), modificatorModel, SLOT(onAddSectionRequested(CPACSTreeView::Where,cpcr::CPACSTreeItem*)));
 
     connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)

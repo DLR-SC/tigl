@@ -60,8 +60,6 @@ public:
     std::optional<double> getEta() const;
     QString getSectionName() const;
 
-    void applySelection(Ui::ElementModificatorInterface& interface);
-
 private slots:
     void activate_eta();
     void updateDefaultName();
