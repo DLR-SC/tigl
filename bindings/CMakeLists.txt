@@ -35,6 +35,7 @@ if (TIGL_BINDINGS_PYTHON)
         set(PYTHON_SITE_PACKAGES share/tigl3/python)
         message(WARNING "Python site-packages directory could not be found (missing setuptools?). Falling back to: ${PYTHON_SITE_PACKAGES}")
     else()
+        cmake_path(SET PYTHON_SITE_PACKAGES NORMALIZE "${PYTHON_SITE_PACKAGES}")
         message(STATUS "Python site-packages: ${PYTHON_SITE_PACKAGES}")
     endif()
 
