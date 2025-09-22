@@ -3,6 +3,9 @@ Changelog
 
 Changes since last release
 -------------
+22/09/2025
+- Fixes
+  - Fix #1186: Resolve inconsistent naming of executable in source code. This caused the system to create two different registry entries.
 
 10/09/2025
 - General changes
