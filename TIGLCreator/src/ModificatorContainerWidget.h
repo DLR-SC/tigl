@@ -69,7 +69,7 @@ public slots:
     void applyCurrentModifications();
     void applyCurrentCancellation();
 
-    // adding and deleting is performed only by the ModificatorManager
+    // adding and deleting is performed only by the ModificatorModel
     void forwardAddWingRequested();
     void forwardDeleteWingRequested();
     void forwardAddFuselageRequested();
