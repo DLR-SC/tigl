@@ -76,6 +76,12 @@ configure = { cmd = [
         { "arg" = "config", "default"="Release"},
         { "arg" = "nightly", "default"="ON"},
 ]}
+generate = { cmd = """
+    git submodule update --init --recursive
+    && cd thirdparty/cpacs_gen
+    && cmake -GNinja -S. -Bbuild -DTIGL_PATH=../.. 
+    && cmake --build build --target generate
+"""}
 build = { cmd = "cmake --build . {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}]}
 install = { cmd = "cmake --build . --target install {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}] }
 unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
