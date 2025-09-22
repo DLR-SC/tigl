@@ -483,7 +483,7 @@ void TIGLCreatorWindow::setCurrentFile(const QString& fileName)
         watcher->addPath(currentFile.absoluteFilePath());
         QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
 
-        QSettings settings("DLR SC-HPC", "TiGL-Creator");
+        QSettings settings("DLR SC-HPC", "TiGLCreator");
         QStringList files = settings.value("recentFileList").toStringList();
         files.removeAll(fileName);
         files.prepend(fileName);
@@ -503,7 +503,7 @@ void TIGLCreatorWindow::setCurrentFile(const QString& fileName)
 
 void TIGLCreatorWindow::loadSettings()
 {
-    QSettings settings("DLR SC-HPC", "TiGL-Creator");
+    QSettings settings("DLR SC-HPC", "TiGLCreator");
 
     bool showConsole = settings.value("show_console",QVariant(true)).toBool();
     bool showTree = settings.value("show_tree",QVariant(true)).toBool();
@@ -531,7 +531,7 @@ void TIGLCreatorWindow::loadSettings()
 
 void TIGLCreatorWindow::saveSettings()
 {
-    QSettings settings("DLR SC-HPC", "TiGL-Creator");
+    QSettings settings("DLR SC-HPC", "TiGLCreator");
 
     bool showConsole = consoleDockWidget->isVisible();
     settings.setValue("show_console", showConsole);
@@ -1054,7 +1054,7 @@ void TIGLCreatorWindow::createMenus()
 
 void TIGLCreatorWindow::updateRecentFileActions()
 {
-    QSettings settings("DLR SC-HPC", "TiGL-Creator");
+    QSettings settings("DLR SC-HPC", "TiGLCreator");
     QStringList files = settings.value("recentFileList").toStringList();
 
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
