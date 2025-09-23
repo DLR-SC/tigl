@@ -1,7 +1,7 @@
-TiGLCreator{#mainpage}
+Introduction{#mainpage}
 ==================
 
-@section pointers Documentation pointers
+@section pointers Documentation structure
 The goal of this documentation is to facilitate the understanding of TiGL for all the users. 
 Depending of your objective you may be interested by different parts.
  Please find bellow some pointers that might help you.
