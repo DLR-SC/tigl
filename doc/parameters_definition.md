@@ -1,7 +1,7 @@
-TiGLCreator high level parameters {#parameters_def}
+High level parameters {#parameters_def}
 ==================================
 
-Tigl framework uses multiple high-level parameter to simplify the editing of CPACS files. In this section, we will present the definition used by our functions in detail.   
+The TiGL framework uses multiple high-level parameters beyond the CPACS definition to simplify the editing of CPACS files. In this section, we will present the definition used by our functions in detail.   
 
 @section sec_wing_param Wing Parameters Definition
 
