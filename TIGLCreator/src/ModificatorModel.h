@@ -163,7 +163,7 @@ public:
     // Return true if there is a valid root
     bool isValid() const;
 
-    QModelIndex getIdxForUID(std::string uid);
+    QModelIndex getIdxForUID(std::string uid) const;
 
     std::string getUidForIdx(QModelIndex idx);
 
@@ -181,7 +181,7 @@ public:
 
 protected:
 
-    inline bool configurationIsSet()
+    inline bool configurationIsSet() const
     {
         return (doc != nullptr && doc->getCpacsHandle() > 0);
     }

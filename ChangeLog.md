@@ -19,6 +19,7 @@ To highlight this merge and to be faithful to Malo Drougard's original implement
 
  
 - Fixes
+  - Support multiple models in a cpacs file ([#1196](https://github.com/DLR-SC/tigl/issues/1196))
   - Fix hard crash in Redo command, improve error message ([#1144](https://github.com/DLR-SC/tigl/issues/1144)).
   - State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI ([#1142](https://github.com/DLR-SC/tigl/issues/1142)).
   - Fix hard crash when changing the symmetry axis of a wing in TiGL Creator ([#1143](https://github.com/DLR-SC/tigl/issues/1143))

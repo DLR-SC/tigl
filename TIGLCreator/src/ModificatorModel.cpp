@@ -113,7 +113,17 @@ void ModificatorModel::writeCPACS()
         LOG(ERROR) << "ModificatorManager::writeCPACS: MODIFICATOR MANAGER IS NOT READY";
         return;
     }
-    doc->GetConfiguration().WriteCPACS(doc->GetConfiguration().GetUID());
+
+    try {
+        doc->GetConfiguration().WriteCPACS(doc->GetConfiguration().GetUID());
+    }
+    catch (const tixi::TixiError& e) {
+        QString errMsg =
+            "ModificatorManager::writeCPACS() encountered an error saving the CPACS file. "
+            "Tixi error message: \"" +
+            QString(e.what()) + "\".";
+        throw tigl::CTiglError(errMsg.toStdString());
+    }
 }
 
 void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
@@ -1038,7 +1048,7 @@ QModelIndex ModificatorModel::index(int row, int column, const QModelIndex& pare
     }
 }
 
-QModelIndex ModificatorModel::getIdxForUID(std::string uid)
+QModelIndex ModificatorModel::getIdxForUID(std::string uid) const
 {
     if (!isValid() || uid == "") {
         return QModelIndex();
@@ -1103,26 +1113,11 @@ bool ModificatorModel::isValid() const
 
 QModelIndex ModificatorModel::getAircraftModelIndex() const
 {
-    if (!isValid()) {
+    if (!isValid() || !configurationIsSet()) {
         return QModelIndex();
     }
     else {
-        cpcr::CPACSTreeItem* model               = nullptr;
-        std::vector<cpcr::CPACSTreeItem*> models = tree.getRoot()->findAllChildrenOfTypeRecursively("model");
-        if (models.size() == 1) {
-            model = models[0];
-        }
-        else if (models.size() > 1) {
-            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There were multiple models found in the "
-                            "aircraft, the first one was chosen."
-                         << std::endl;
-            model = models[0];
-        }
-        else if (models.size() == 0) {
-            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There were no models found in the "
-                            "aircraft."
-                         << std::endl;
-        }
-        return getIndex(model, 0);
+        auto const& config = doc->GetConfiguration();
+        return getIdxForUID(config.GetUID());
     }
 }
