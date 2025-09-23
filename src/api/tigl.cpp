@@ -2465,22 +2465,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfiguratio
         if (!compSeg.GetControlSurfaces() || controlSurfaceIndex > (int)compSeg.GetControlSurfaces()->ControlSurfaceCount())
             return TIGL_INDEX_ERROR;
         
-        if (compSeg.GetControlSurfaces()->GetTrailingEdgeDevices()->GetTrailingEdgeDevices().at(controlSurfaceIndex - 1)) {
-            *controlSurfaceUID = const_cast<char*>(compSeg.GetControlSurfaces()
-                                                   ->GetTrailingEdgeDevices()
-                                                   ->GetTrailingEdgeDevices()
-                                                   .at(controlSurfaceIndex - 1)
-                                                   ->GetUID()
-                                                   .c_str());
-            }
-        else if (compSeg.GetControlSurfaces()->GetLeadingEdgeDevices()->GetLeadingEdgeDevices().at(controlSurfaceIndex - 1)) {
-            *controlSurfaceUID = const_cast<char*>(compSeg.GetControlSurfaces()
-                                                   ->GetLeadingEdgeDevices()
-                                                   ->GetLeadingEdgeDevices()
-                                                   .at(controlSurfaceIndex - 1)
-                                                   ->GetUID()
-                                                   .c_str());
-            }
+        *controlSurfaceUID = const_cast<char*>(compSeg.GetControlSurfaces()->GetTrailingEdgeDevices() \
+                                               ->GetTrailingEdgeDevices().at(controlSurfaceIndex - 1) \
+                                               ->GetUID().c_str());
         return TIGL_SUCCESS;
     }
     catch (tigl::CTiglError& ex) {
@@ -2545,14 +2532,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumControlParameter(T
         const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
         const auto& uidMgr = config.GetUIDManager();
 
-        try {
-            const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
-            *minDeflection = ted.GetMinControlParameter();
-        }
-        catch (const tigl::CTiglError&) {
-            const auto& led = uidMgr.ResolveObject<tigl::CCPACSLeadingEdgeDevice>(controlSurfaceUID);
-            *minDeflection = led.GetMinControlParameter();
-        }
+        const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
+
+        *minDeflection = ted.GetMinControlParameter();
 
         return TIGL_SUCCESS;
     }
@@ -2593,14 +2575,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumControlParameter(T
         const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
         const auto& uidMgr = config.GetUIDManager();
 
-        try {
-            const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
-            *maxDeflection = ted.GetMaxControlParameter();
-        }
-        catch (const tigl::CTiglError&) {
-            const auto& led = uidMgr.ResolveObject<tigl::CCPACSLeadingEdgeDevice>(controlSurfaceUID);
-            *maxDeflection = led.GetMaxControlParameter();
-        }
+        const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
+
+        *maxDeflection = ted.GetMaxControlParameter();
 
         return TIGL_SUCCESS;
     }
@@ -2641,14 +2618,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetControlParameter(TiglCPAC
         const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
         const auto& uidMgr = config.GetUIDManager();
 
-        try {
-            const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
-            *deflection = ted.GetControlParameter();
-        }
-        catch (const tigl::CTiglError&) {
-            const auto& led = uidMgr.ResolveObject<tigl::CCPACSLeadingEdgeDevice>(controlSurfaceUID);
-            *deflection = led.GetControlParameter();
-        }
+        const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
+
+        *deflection = ted.GetControlParameter();
 
         return TIGL_SUCCESS;
     }
@@ -2689,15 +2661,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetControlParameter(TiglCPAC
         auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
         auto& uidMgr = config.GetUIDManager();
 
-        try {
-            auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
-            ted.SetControlParameter(deflection);
-        }
-        catch ( tigl::CTiglError&) {
-            auto& led = uidMgr.ResolveObject<tigl::CCPACSLeadingEdgeDevice>(controlSurfaceUID);
-            led.SetControlParameter(deflection);
-        }
-        
+        auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
+
+        ted.SetControlParameter(deflection);
+
         return TIGL_SUCCESS;
     }
     catch (tigl::CTiglError& ex) {
