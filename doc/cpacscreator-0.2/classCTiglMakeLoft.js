@@ -1,0 +1,25 @@
+var classCTiglMakeLoft =
+[
+    [ "CTiglMakeLoft", "classCTiglMakeLoft.html#a1d34ace839169f093dae7ed7fc7385db", null ],
+    [ "CTiglMakeLoft", "classCTiglMakeLoft.html#ac2eff2633ae8aca9ae37ca9e900d6007", null ],
+    [ "addGuides", "classCTiglMakeLoft.html#a84fa1ce0ca96cba7a9af7cbd8afcdf72", null ],
+    [ "addProfiles", "classCTiglMakeLoft.html#a7c95972cac29154e131e553e77f199e0", null ],
+    [ "CloseShape", "classCTiglMakeLoft.html#a9a9406ccd8dacaf5758bc24e55471487", null ],
+    [ "makeLoftWithGuides", "classCTiglMakeLoft.html#a30fe52f4dbb6075a3843f71a52bc76e2", null ],
+    [ "makeLoftWithoutGuides", "classCTiglMakeLoft.html#ae881aeaaae0b81c9e3df43469447383f", null ],
+    [ "operator TopoDS_Shape &", "classCTiglMakeLoft.html#a75afd5715ce378bfb2e5b578bb865c43", null ],
+    [ "Perform", "classCTiglMakeLoft.html#ae3a65be99933662af82b4888b14298e8", null ],
+    [ "setMakeSmooth", "classCTiglMakeLoft.html#ab31bee8ca193b4dd2661335a3ceefb1f", null ],
+    [ "setMakeSolid", "classCTiglMakeLoft.html#adfd205b45115d7e273a0dd4352cad199", null ],
+    [ "Shape", "classCTiglMakeLoft.html#adf2b069c581a1480a260b2d72cf1da2f", null ],
+    [ "_hasPerformed", "classCTiglMakeLoft.html#af774494d45ae8dbc4c944c62e80fa66a", null ],
+    [ "_makeSmooth", "classCTiglMakeLoft.html#a6253754f1163125159ea2c743ca8a0e4", null ],
+    [ "_makeSolid", "classCTiglMakeLoft.html#a50fe0858c897d78fbed79c02a4e83d7c", null ],
+    [ "_mySameKnotTolerance", "classCTiglMakeLoft.html#ad8a2a8af6b616d9298c7daed9e253acf", null ],
+    [ "_myTolerance", "classCTiglMakeLoft.html#a8139aa406c0ff4e0ceab6769b1b24225", null ],
+    [ "_result", "classCTiglMakeLoft.html#a4f4de1743fb2e1a57dc0988ab6592696", null ],
+    [ "guides", "classCTiglMakeLoft.html#a1423703416071d36588a53462e5c14a6", null ],
+    [ "profiles", "classCTiglMakeLoft.html#aff475a4bba71e757d4328db8ae760382", null ],
+    [ "uparams", "classCTiglMakeLoft.html#aa2574e54765170fee63dc1b6b7091425", null ],
+    [ "vparams", "classCTiglMakeLoft.html#aceeaaf6e67798ee80596cd8b0340aca5", null ]
+];

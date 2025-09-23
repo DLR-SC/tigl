@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	
+	<!-- TITLE OF SITE -->
+	<title>Download | The TiGL Geometry Library</title>
+
+
+	
+	<!-- META DATA -->
+    <meta name="description" content="The TiGL Geometry Library to process aircraft geometries in pre-design."/>
+ 
+	<meta name="keywords" content="tigl, aircraft, dlr, cad, geometry, design, simulation, aeronautics, aerospace, space, optimization, MDO, Open Source">
+	<meta name="author" content="Deutsches Zentrum für Luft- und Raumfahrt e.V. (DLR)">
+
+	
+
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
+ 
+   <!-- =========================
+      FAV AND TOUCH ICONS  
+    ============================== -->
+
+	<!-- ****** faviconit.com Favicons ****** -->
+	<link rel="shortcut icon" href="https://dlr-sc.github.io/tigl/theme/images/icon/TiGL.ico">
+	<link rel="icon" sizes="16x16 32x32 64x64" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL.ico">
+	<link rel="icon" type="image/png" sizes="196x196" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-192.png">
+	<link rel="icon" type="image/png" sizes="160x160" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-160.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-96.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-64.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-16.png">
+	<link rel="apple-touch-icon" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-57.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-114.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-72.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-144.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-60.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-120.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-76.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-180.png">
+	<meta name="msapplication-TileColor" content="#FFFFFF">
+	<meta name="msapplication-TileImage" content="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-144.png">
+	<meta name="msapplication-config" content="https://dlr-sc.github.io/tigl/theme/browserconfig.xml">
+	<!-- ****** faviconit.com Favicons ****** -->
+
+    <!-- =========================
+       STYLESHEETS 
+    ============================== -->
+    <!-- PRELOADER -->
+    <link rel="stylesheet" href="https://dlr-sc.github.io/tigl/theme/css/preloader.css">
+	
+	<!-- Bootstrap v3.3.4 -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- icon fonts Font Awesome 4.3.0 -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/font-awesome.min.css" rel="stylesheet"> 
+	<!-- code highlighting from pygments -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/pygments.css" rel="stylesheet"> 
+	<!-- Plugins  -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/jquery.fs.boxer.css" rel="stylesheet" /> 
+	<link rel="stylesheet" href="https://dlr-sc.github.io/tigl/theme/css/owl.carousel.css"> 
+	
+	<!-- Import Custom Styles -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/style.css" rel="stylesheet"> 
+	
+</head>
+
+
+<body class="">
+	<!-- Pre Loader -->
+	<div class="pre-loader">
+		<div class="spinner"></div>
+	</div>
+	<span id="page-top"></span>
+	<!-- Main Menu -->
+	<div class="main-menu-container navbar-fixed-top-">
+		<div id="main-menu" class="navbar navbar-default" role="navigation">
+			<div class="container">
+
+				<div class="navbar-header">
+					<!-- responsive navigation -->
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<i class="fa fa-bars"></i>
+					</button> <!-- /.navbar-toggle -->
+					<!-- Logo -->
+					<h1 class="logo">
+						<a class="navbar-brand" href="https://dlr-sc.github.io/tigl/">
+							<img height="50px" src="https://dlr-sc.github.io/tigl/images/tigl-logo.png" alt="TiGL Logo">
+						</a><!-- /.navbar-brand -->
+					</h1>
+				</div> <!-- /.navbar-header -->
+
+				<nav class="collapse navbar-collapse">
+					<!-- Main navigation -->
+					<ul id="mainNavigation" class="main-mav nav navbar-nav pull-right">
+						<li><a class="not-in-home"class="active" href="https://dlr-sc.github.io/tigl/#page-top">Home</a>
+						</li>
+
+
+					<!--	<li><a href="https://dlr-sc.github.io/tigl/#contents">What is TiGL?</a></li>   -->
+						
+						<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/#contents">About TiGL</a></li>
+						<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/#news">News</a></li>
+
+ 
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/features.html">Features</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/showcase.html">Showcase</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/ecosystem.html">Ecosystem</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/documentation.html">Documentation</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/contact.html">Contact</a></li>
+
+
+
+						<li><a class="donate red" href="https://dlr-sc.github.io/tigl/pages/download.html">Download</a></li>     
+					</ul> <!-- /#mainNavigation -->
+				</nav> <!-- /.navbar-collapse  -->
+			</div> <!-- /.container -->
+		</div><!-- /#main-menu -->
+	</div><!-- /.main-menu-container -->
+	<!-- Main Menu End -->
+
+<section id="content">
+
+	<div class="page-name background-bg page-name-bg">
+		<div class="overlay">
+			<div class="container">
+				<h2 class="page-title m0">
+					Download
+				</h2>
+				<div class="page-location">
+					<a href="https://dlr-sc.github.io/tigl/">Home</a> <span> Download </span>
+				</div>
+			</div><!-- /.container -->
+		</div><!-- /.overlay -->
+	</div><!-- /.page-name -->
+
+
+
+	<section id="team"> 
+		<div id="contents"> 
+			<div class="container section-padding"> 
+				<h2 class="section-title">Download</h2>
+				
+  		
+        <div class="col-md-9">
+
+			TiGL runs on a Windows, Linux, macOS and Android. We support a range of Linux distributions, including Ubuntu and CentOS. 
+            TiGL supports Python 3.5 and above. See more details in the <a href="http://tigl.sourceforge.net/Doc/index.html"><i class="fa fa-file-pdf-o"></i> user guide</a>.
+        </div>
+
+        <div class="col-md-3">
+            <div class="sidebar">
+                <aside class="widget widget_news_subs">
+                    <h3 class="widget-title">
+                        Open Source
+                    </h3><!-- /.widget-title -->
+                    <p>
+                        TiGL is Open Source, published under the <a href="http://opensource.org/licenses/apache2.0.php">Apache 2 License</a>, and uses other Open Source software.
+                    </p>
+                </aside><!-- /.widget -->
+            </div><!-- /.sidebar -->
+        </div><!-- /.col-md-3 -->
+
+        <section class="row co2-emission section-padding pb0">
+                <div class="col-md-3 md-bm-50">
+                    <div class="todobox">
+                        <h6 class="box-title">
+                            Windows
+                        </h6>
+                        <div class="icon">
+                            <i class="fa fa-windows"></i>
+                        </div>
+                        <p class="texts">
+                            On Windows, a single zip file is provided to set up client and server installations.
+                            <p>
+                                <a href="https://github.com/DLR-SC/tigl/releases"><i class="fa fa-download"></i> Download</a>
+                            </p>
+                        </p>
+                    </div>
+                </div><!-- /.col-md-3 -->
+
+                <div class="col-md-3 md-bm-50">
+                        <div class="todobox">
+                            <h6 class="box-title">
+                                macOS
+                            </h6>
+                            <div class="icon">
+                                <i class="fa fa-apple"></i>
+                            </div>
+                            <p class="texts">
+                                On macOS, we provide a apple disk image (DMG) file. To install, drag TiGL Viewer into your app folder.
+                                <p>
+                                    <a href="https://github.com/DLR-SC/tigl/releases"><i class="fa fa-download"></i> Download</a>
+                                </p>
+                            </p>
+                        </div>
+                    </div><!-- /.col-md-3 -->
+
+                <div class="col-md-3 md-bm-50">
+                    <div class="todobox">
+                        <h6 class="box-title">
+                            Linux
+                        </h6>
+                        <div class="icon">
+                            <i class="fa fa-linux"></i>
+                        </div>
+                        <p class="texts">
+                            Linux packages can be installed directly from the open build service.
+                            Alternatively, TiGL can be installed locally using a script.
+                        </p>
+                        <a href="https://software.opensuse.org/download.html?project=science:dlr&amp;package=tigl3" style="margin-right: 30px"><i class="fa fa-download"></i> Install</a>
+                        <a href="https://raw.githubusercontent.com/DLR-SC/tigl/master/misc/get_tigl_tixi.sh" download target="_blank" style="display: inline-block"><i class="fa fa-download"></i> Install-script</a>
+                    </div>
+                </div><!-- /.col-md-3 -->
+
+                <div class="col-md-3 md-bm-50">
+                    <div class="todobox">
+                        <h6 class="box-title">
+                            Source Code
+                        </h6>
+                        <div class="icon">
+                            <i class="fa fa-github"></i>
+                        </div>
+                        <p class="texts">
+                            Clone or fork the source code from github to build or modify TiGL by yourself.
+                            <p>
+                                <a href="https://github.com/DLR-SC/tigl"><i class="fa fa-code-fork"></i> Fork / clone</a>
+                            </p>
+
+                        </p>
+                    </div>
+                </div><!-- /.col-md-3 -->
+
+                
+<!--                 <div class="col-md-3 md-bm-50">
+                    <div class="todobox">
+                        <h6 class="box-title">
+                            Mac OS/X
+                        </h6>
+                        <div class="icon">
+                            <i class="fa fa-apple"></i>
+                        </div>
+                        <p class="texts">
+                            Coming soon...
+                        </p>
+                    </div>
+                </div><!-- /.col-md-3 
+ -->
+
+<!--                 <div class="col-md-3">
+                    <div class="todobox">
+                        <h6 class="box-title">
+                            Android 
+                        </h6>
+                        <div class="icon">
+                            <i class="fa fa-android"></i>
+                        </div>
+                        <p class="texts">
+                            Coming soon...
+                        </p>
+                    </div>
+                </div><!-- /.col-md-3 -->
+
+            </section><!-- /.co2-emission -->
+
+            <div class="col-md-9">
+                    <h2>Python</h2>
+                    <p>
+                        TiGL and all it's dependencies can be installed best with the conda package manager as follows:
+                    </p>
+                    <code> conda install -c dlr-sc tigl3</code>
+            </div>
+
+    
+			</div><!-- /.container -->
+		</div>
+	</section><!-- /#team -->
+
+
+	
+
+
+</section><!-- /#content -->
+
+    <div class="footer-area ">
+
+	<footer class="section-padding">
+		<div class="social-btn footer-social text-center">
+			<!--<a href="https://twitter.com" class="twitter"><i class="fa fa-twitter"></i></a>-->
+			<!--<a href="https://www.youtube.com" class="youtube"><i class="fa fa-youtube"></i></a>-->
+			<a href="https://github.com/DLR-SC/tigl" class="github"><i class="fa fa-github"></i></a>
+		</div>
+
+
+		<div class="site-info text-center">
+			 &copy; 2020 <a href="http://www.DLR.de">Deutsches Zentrum für Luft- und Raumfahrt e.V.</a>
+
+                	&nbsp;&sdot;&nbsp;<a href="http://www.dlr.de/sc">Institute for Software Technology</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/imprint.html">Imprint</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/privacy.html">Privacy</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/terms-of-use.html">Terms of use</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/accessibility.html">Accessibility</a></li>
+
+		</div>
+
+		<div id="go-top-top">
+			  <span><i class="fa fa-chevron-up"></i></span>
+		</div>
+	</footer>
+
+	</div><!-- /footer-area -->
+
+	<!-- Include modernizr-2.8.0.min.js -->
+	<script src="https://dlr-sc.github.io/tigl/theme/js/modernizr.js"></script>
+
+	<!-- Include jquery.min.js plugin -->
+	<script src="https://dlr-sc.github.io/tigl/theme/js/jquery-2.1.0.min.js"></script>
+	<script src="https://dlr-sc.github.io/tigl/theme/js/plugins.js"></script>
+	<script src="https://dlr-sc.github.io/tigl/theme/js/onePage-nav.js"></script>
+	<script src="https://dlr-sc.github.io/tigl/theme/js/jquery.ajaxchimp.min.js"></script> 
+	<script src="https://dlr-sc.github.io/tigl/theme/js/custom.js"></script>
+
+	<script>
+	(function($) {
+		"use strict";
+		
+	        $(window).on("load",function(e){
+	        	// Main menu
+	        	$('#main-menu #mainNavigation').onePageNav({
+	        		currentClass: 'active',
+	        		changeHash: false,
+	        		scrollSpeed: 750,
+	        		scrollThreshold: 0.5,
+	        		scrollOffset: 84,
+	        		filter: ':not(.sub-menu a, .not-in-home, .donate)',
+	        		easing: 'swing'
+	        	});  
+	        });
+		$(window).on('scroll', function (){ 
+			if ($(window).scrollTop() >$(window).height()-110){
+				$('#main-menu').addClass('navbar-fixed-top'); 
+			} else {
+				$('#main-menu').removeClass('navbar-fixed-top'); 
+			} 
+		});
+	 })(jQuery);
+	</script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-134418253-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+</body>
+</html>
