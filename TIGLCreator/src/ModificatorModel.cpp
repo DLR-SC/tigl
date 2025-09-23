@@ -1103,7 +1103,7 @@ bool ModificatorModel::isValid() const
 
 QModelIndex ModificatorModel::getAircraftModelIndex() const
 {
-    if (!isValid()) {
+    if (!isValid() || !configurationIsSet()) {
         return QModelIndex();
     }
     else {

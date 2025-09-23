@@ -181,7 +181,7 @@ public:
 
 protected:
 
-    inline bool configurationIsSet()
+    inline bool configurationIsSet() const
     {
         return (doc != nullptr && doc->getCpacsHandle() > 0);
     }
