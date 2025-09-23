@@ -171,3 +171,4 @@ configure = { cmd = [
         { "arg" = "config", "default"="Release"},
         { "arg" = "nightly", "default"="OFF"},
 ]}
+tiglcreator = { cmd = "tiglcreator" }
