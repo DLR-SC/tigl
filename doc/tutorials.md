@@ -17,7 +17,7 @@ In this tutorial, we will present how to create an aircraft from scratch.
 \n
 
 4 ) Select the fuselages element in the CPACS tree view. 
-If the CPACS tree view is not shown either activate the view trough the menu (View->Display->Tree) 
+If the CPACS tree view is not shown, either activate the view trough the menu (View->Display->Tree) 
 or press the shortcut alt+M.    
   
 @image html images/tutorial_scratch/tuto_scratch_4.png            
@@ -49,7 +49,7 @@ because you are probably to far away from the fuselage.
 @image html images/tutorial_scratch/tuto_scratch_8.png            
 \n
      
-9 ) Now you should have the editor widget displaying the high level parameters for the fuselage 
+9 ) Now you should have the editor widget displaying the high-level parameters for the fuselage 
  and the fuselage sections highlighted in the scene. 
   
 @image html images/tutorial_scratch/tuto_scratch_9.png            
@@ -146,7 +146,7 @@ Remark that the sweep, dihedral and other definitions still make also sense in t
 @image html images/tutorial_scratch/tuto_scratch_21.png
 \n
 
-22 ) You can chang the transparency of the displayed element by selecting the element and right clicking on them.
+22 ) You can change the transparency of the displayed element by selecting the element and right clicking on it.
 
 @image html images/tutorial_scratch/tuto_scratch_22.png
 \n    
