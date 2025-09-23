@@ -1,9 +1,3 @@
-option(TIGL_BINDINGS_PYTHON "Build the python bindings of tigl (requires python >= 2.5)" ON)
-
-if (TIGL_BINDINGS_PYTHON)
-
-find_package(PythonInterp)
-
 # work around wrong python detection script of cmake (happens with old python versions)
 if(PYTHON_EXECUTABLE)
     execute_process(COMMAND "${PYTHON_EXECUTABLE}" --version
@@ -28,7 +22,7 @@ if(PYTHON_EXECUTABLE)
     endif()
 endif(PYTHON_EXECUTABLE)
 
-if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
+if(PYTHON_EXECUTABLE AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 	#run python to create the wrapper
 		add_custom_command(
 			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
@@ -44,10 +38,8 @@ if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 		)
 		
 		install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
-				DESTINATION share/tigl3/python/tigl3
+				DESTINATION ${PYTHON_SITE_PACKAGES}/tigl3
 				COMPONENT interfaces)
 else()
     message(ERROR "Python could not be found or the python installation is too old ( < 2.5). Python bindings can not be build!")
 endif()
-
-endif (TIGL_BINDINGS_PYTHON)

@@ -25,13 +25,7 @@ def display_configuration(tigl_handle):
 
     for ifuse in range(1, config.get_fuselage_count() + 1):
         fuselage = config.get_fuselage(ifuse)
-        for isegment in range(1, fuselage.get_segment_count() + 1):
-            segment = fuselage.get_segment(isegment)
-            display.DisplayShape(segment.get_loft().shape(), update=True)
-
-            mirrored_shape = segment.get_mirrored_loft()
-            if mirrored_shape is not None:
-                display.DisplayShape(mirrored_shape.shape(), update=True)
+        display.DisplayShape(fuselage.get_loft().shape(), update=True)
 
     for iwing in range(1, config.get_wing_count() + 1):
         wing = config.get_wing(iwing)
