@@ -4,7 +4,7 @@ Introduction{#mainpage}
 @section pointers Documentation structure
 The goal of this documentation is to facilitate the understanding of TiGL for all the users. 
 Depending of your objective you may be interested by different parts.
- Please find bellow some pointers that might help you.
+ Please find below some pointers that might help you.
     
 @ref main_overview : An overview of TiGL and TiGLCreator     
 @ref tigl_installation , @ref tuto , @ref lib_intrernal_python_demo : To get your hand dirty     
