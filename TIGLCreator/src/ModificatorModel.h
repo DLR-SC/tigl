@@ -163,7 +163,7 @@ public:
     // Return true if there is a valid root
     bool isValid() const;
 
-    QModelIndex getIdxForUID(std::string uid);
+    QModelIndex getIdxForUID(std::string uid) const;
 
     std::string getUidForIdx(QModelIndex idx);
 
