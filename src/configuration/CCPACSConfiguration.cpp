@@ -131,18 +131,30 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 {
     header.WriteCPACS(tixiDocumentHandle, headerXPath);
 
-    // get the xpath of the current model, create the element if it does not exist and patch the uid
+    // get the xpath of the current model, create the element if it does not exist
     std::string parent_xpath = aircraftModel? "/cpacs/vehicles/aircraft" : "/cpacs/vehicles/rotorcraft";
+    std::string model_xpath;
     int nmodels = tixi::TixiGetNumberOfChilds(tixiDocumentHandle, parent_xpath);
-    std::string model_xpath = parent_xpath + "/model";
-    for (int i=1; i<=nmodels; ++i) {
-        model_xpath = parent_xpath + "/model[" + std::to_string(i) + "]";
-        auto uid = tixi::TixiGetTextAttribute(tixiDocumentHandle, model_xpath, "uID");
-        if (uid == configurationUID) {
-            break;
+    if (nmodels == 0) {
+        model_xpath = parent_xpath + "/model";
+        tixi::TixiCreateElement(tixiDocumentHandle, model_xpath);
+    } else {
+
+        bool uid_found = false;
+        for (int i=1; i<=nmodels; ++i) {
+            model_xpath = parent_xpath + "/model[" + std::to_string(i) + "]";
+            auto uid = tixi::TixiGetTextAttribute(tixiDocumentHandle, model_xpath, "uID");
+            if (uid == configurationUID) {
+                uid_found = true;
+                break;
+            }
+        }
+        if (!uid_found) {
+            // Several models exist, but none with the current configuration uid. We need to append to the models
+            tixi::TixiCreateElement(tixiDocumentHandle, parent_xpath + "/model");
+            model_xpath = parent_xpath + "/model[" + std::to_string(nmodels + 1) + "]";
         }
     }
-    tixi::TixiCreateElementsIfNotExists(tixiDocumentHandle, model_xpath);
     tixi::TixiSaveAttribute(tixiDocumentHandle, model_xpath, "uID", configurationUID); // patch uid in tixi, so xpath below is valid
 
     if (aircraftModel) {
