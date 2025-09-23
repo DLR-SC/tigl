@@ -113,7 +113,17 @@ void ModificatorModel::writeCPACS()
         LOG(ERROR) << "ModificatorManager::writeCPACS: MODIFICATOR MANAGER IS NOT READY";
         return;
     }
-    doc->GetConfiguration().WriteCPACS(doc->GetConfiguration().GetUID());
+
+    try {
+        doc->GetConfiguration().WriteCPACS(doc->GetConfiguration().GetUID());
+    }
+    catch (const tixi::TixiError& e) {
+        QString errMsg =
+            "ModificatorManager::writeCPACS() encountered an error saving the CPACS file. "
+            "Tixi error message: \"" +
+            QString(e.what()) + "\".";
+        throw tigl::CTiglError(errMsg.toStdString());
+    }
 }
 
 void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
