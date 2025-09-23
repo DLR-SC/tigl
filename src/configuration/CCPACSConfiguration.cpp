@@ -130,15 +130,26 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
 void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 {
     header.WriteCPACS(tixiDocumentHandle, headerXPath);
+
+    // get the xpath of the current model, create the element if it does not exist and patch the uid
+    std::string parent_xpath = aircraftModel? "/cpacs/vehicles/aircraft" : "/cpacs/vehicles/rotorcraft";
+    int nmodels = tixi::TixiGetNumberOfChilds(tixiDocumentHandle, parent_xpath);
+    std::string model_xpath = parent_xpath + "/model";
+    for (int i=1; i<=nmodels; ++i) {
+        model_xpath = parent_xpath + "/model[" + std::to_string(i) + "]";
+        auto uid = tixi::TixiGetTextAttribute(tixiDocumentHandle, model_xpath, "uID");
+        if (uid == configurationUID) {
+            break;
+        }
+    }
+    tixi::TixiCreateElementsIfNotExists(tixiDocumentHandle, model_xpath);
+    tixi::TixiSaveAttribute(tixiDocumentHandle, model_xpath, "uID", configurationUID); // patch uid in tixi, so xpath below is valid
+
     if (aircraftModel) {
-        tixi::TixiCreateElementsIfNotExists(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model");
-        tixi::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
         aircraftModel->SetUID(configurationUID);
         aircraftModel->WriteCPACS(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model[@uID=\"" + configurationUID + "\"]");
     }
     if (rotorcraftModel) {
-        tixi::TixiCreateElementsIfNotExists(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model");
-        tixi::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
         rotorcraftModel->SetUID(configurationUID);
         rotorcraftModel->WriteCPACS(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model[@uID=\"" + configurationUID + "\"]");
     }
