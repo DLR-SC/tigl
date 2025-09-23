@@ -1,7 +1,7 @@
 TiGL Library {#lib}
 ============
 
-The TiGL library is a C++ library and is really the core of TiGLCreator framework. This library contains all
+The TiGL library is a C++ library and really the core of the TiGLCreator framework. This library contains all
 the logic of the geometrical CPACS data manipulation. There are at least two ways to access this library. One is via the TiGL API and the other one via the internal Python API. 
 
 @section lib_api TiGL API
@@ -16,9 +16,9 @@ The force of this TiGL API is that the API is available for C/C++, Python, MATLA
 @section lib_python Internal python API
 The python internal API is a python wrapper around the original C++ library. 
 It wraps almost all C++ classes using SWIG technology. 
-So. using these interfaces, you have access to almost all the internal C++ functions. 
+So, using these interfaces, you have access to almost all the internal C++ functions. 
 In particular, you can access the wing class (tigl::CCPACSWing) or the fuselage class (tigl::CCPACSFuselage).
-From this classes you can modify the high level parameters of the object and easily modify the geometry of the object. 
+From this classes you can modify the high-level parameters of the object and easily modify the geometry of the object. 
 Though this internal python API, the possibilities to manipulate the CPACS geometrical data really explode. 
 So, the python API is now the preferred way to access the TiGL library. At the beginning, the user might be a
 bit confused by this new way to interact with the library. However, a tutorial to get an intuition can be found here: @ref tuto_python 

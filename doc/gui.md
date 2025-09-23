@@ -11,55 +11,53 @@ TiGLCreator is based on the TiGL library.
 
 __Features of TiGLCreator__
 
- * 3D Visualization CPACS, STEP, IGES, BREP, and STL files
- * Creation of screen shots
+ * 3D Visualization of CPACS, STEP, IGES, BREP, and STL files
+ * Creation of screenshots
  * Conversion of geometries into standard CAD file formats
  * Conversion into mesh formats such as STL, VTK, and COLLADA (for Blender rendering)
- * A powerful scripting console that allows automated typical workflows, such as creating screen shots  
-or making some debug plots.
- * CPACS specific:
+ * A powerful scripting console that allows automated typical workflows, such as creating screenshots or making some debug plots.
+ * CPACS-specific:
   * Display single CPACS entities such as wings, fuselages, profiles and guide curves
   * Compute and export a trimmed aircraft configuration
   * Compute discrete points on wings/fuselages using TiGL functions
-  * Edit wing high level parameters @ref sec_wing_param  "see available parameters here"
-  * Edit fuselage high level parameters  @ref sec_fuselage_param  "see available parameters here"
-  * Edit wing section 
-  * Edit fuselage section  
+  * Edit high-level wing parameters @ref sec_wing_param  "see available parameters here"
+  * Edit high-level fuselage parameters  @ref sec_fuselage_param  "see available parameters here"
+  * Edit wing sections
+  * Edit fuselage sections  
   * Edit positionings
-  * Standardization of positionings
-  * Create a wing
-  * Create a fuselage 
+  * Standardize positionings
+  * Create wings
+  * Create fuselages 
   * Undo/Redo operation
   
   
-@section widgets Widgets presentation
+@section widgets Widgets Presentation
 
-Here we will briefly present the different widgets that are available in TiGLCreator. Note that each widget can 
-be move around or closed. To close or activate the widgets use the shortcut or go in the display menu (View->Display).
+Here, we will briefly present the different widgets that are available in TiGLCreator. Note that each widget can be detached, moved around, attached again or closed. To close or activate the widgets use the shortcut or navigate to the display menu (View->Display).
 
 @image html images/creator-gui-explained.png "Main widow and widgets of TiGLCreator"
 
-@subsection scene The scene
+@subsection scene The Scene
 The scene displays the 3D tigl object. You can choose which object you want to draw in Draw menu. 
 Remark: No modification on the object can be performed from the scene. The scene is only a display interface.
 
-@subsection cpcacstree_view The CPACS tree view
+@subsection cpcacstree_view The CPACS Tree View
 The CPACS tree view shows the CPACS tree structure. When you click on an element in the tree, the correct editor 
-widget is activated. By default the tree view widget filters the objects to display only the most import objects. 
-You can see all the CPACS objects by clicking on "Expert view" mode at the top of the tree view widget.
-You can also filter the tree by some UID or CPACS type be typing in the line next to the "Expert view" checkbox.
+widget is activated. By default, the tree view widget filters the objects to display only the most important ones. 
+You can see all the CPACS objects by activating the "Expert view" mode at the top of the tree view widget.
+You can also filter the tree by a UID or CPACS type by typing in the line next to the "Expert view" checkbox.
 
 
-@subsection edtior_widget The Editor widget
+@subsection edtior_widget The Editor Widget
 The editor widget displays the parameters that can be modified for the object selected in the tree view. 
 
 
-@subsection console The console
+@subsection console The Console
 A page is dedicated to the console: Please visit @subpage gui_console "this page" for further information
 
 
 
-@section navigation Navigation in the 3D view
+@section navigation Navigation in the 3D View
 
 The most often used navigation functions are included in the tool bar 
 
@@ -83,7 +81,7 @@ Here, one can use
 
 More functions can be found in the "View" menu. 
 
-@section shortcuts Keyboard shortcuts
+@section shortcuts Keyboard Shortcuts
 
 All actions in the TiGLCreator can be accessed using the application menu or the context menu inside the 3D view. To improve usability, some the actions can also be executed with keyboard shortcuts. The most practical ones are:
 
@@ -124,8 +122,7 @@ The settings dialog allows some customization of the visualization of objects an
 
 __Display Settings__
 
- * Tesselation accuracy: the accuracy how the mathematical geometries are converted to triangles. The higher
-   this setting is, the more triangles are created. High values typical require more computation time. __Default: 5__.
+ * Tesselation accuracy: the accuracy for converting the mathematical geometries to triangles. The higher it is, the more triangles are created. High values typical require more computation time. __Default: 5__.
  * Triangulation accuracy: similar to tesselation accuracy, but only used for export of triangular meshes (VTK, COLLADA, STL).
    __Default: 5__.
  * Background color: base color of the 3D viewer's background gradient.
@@ -139,7 +136,7 @@ __Debugging__
    the order of face creation. Mostly useful for TiGL developers. __Default: off__
  * Debug boolean operations: Boolean operations tend to be quite unstable due to the problems in the OpenCASCADE kernel.
    To improve the debugging of such operations, TiGLCreator can export intermediate geometries as BREP files to disk.
-   These files can again be displayed in the TiGLCreator. In case of an error, these files should be send to the TiGL
+   These files can again be displayed in the TiGLCreator. In case of an error, these files should be sent to the TiGL
    developers. The files are placed inside the current working directory. __Default: off__
 
 @image html images/tiglcreator_debugging.jpg
@@ -149,7 +146,7 @@ __Debugging__
   
 @section custom_graphics Graphics Customization
 
-The rendering off all geometrical objects can be be customized to some extends. In order modify some rendered objects, 
+The rendering of all geometrical objects can be be customized to some extends. In order to modify some rendered objects, 
 select the objects of interest and __press the right mouse button__ inside the 3D view. The following actions are available:
  * Setting the material (which affects the shading behavior)
  * Setting the object color and transparency
@@ -157,12 +154,3 @@ select the objects of interest and __press the right mouse button__ inside the 3
  
 @image html images/tiglcreator-shading-web.jpg "Different shading settings (textured, plastic blue, wireframe)"
 @image latex images/tiglcreator-shading.png  "Different shading settings (textured, plastic blue, wireframe)" width=12cm
-
-@section mobile Mobile platforms
-
-A simplified version of the TiGLCreator is also available for mobile devices based on Android. It can be downloaded from the
-[Google play store](https://play.google.com/store/apps/details?id=de.dlr.sc.tiglcreator.android&hl=de).
-  
-@image html images/tiglcreator-android-web.jpg "The TiGLCreator App for Android"
-@image latex images/tiglcreator-android.png  "The TiGLCreator App for Android" width=9cm
-

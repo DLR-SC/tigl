@@ -37,7 +37,7 @@ For a general help, type in
 help 
 @endcode
 
-@section console_basic Basic use
+@section console_basic Basic Usage
 
 The console understands all kinds of JavaScript elements. Thus, typical constructs like loops, functions, and even classes can be defined.
 Instead of typing the code into the console, TiGLCreator can also load and execute a script file. If you want to load a script file during
@@ -109,7 +109,7 @@ help(new Point3d);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
 
-@section console_mainobj The main application objects
+@section console_mainobj The Main Application Objects
 
 
 The TiGLCreator scripting engine consists of four main objects. The whole application can be controlled with only
@@ -122,7 +122,7 @@ To show the help for e.g. the tigl object, enter
 help(tigl);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-@subsection app The app object
+@subsection app The app Object
 
 This is the main object of the application. It is used to load and save files, load scripts, control the application's window
 size, and also close the application. Some methods of the app object are
@@ -137,16 +137,16 @@ size, and also close the application. Some methods of the app object are
 
 To get a list of all methods and properties, enter help(app) in the TiGLCreator console.
 
-@subsection appviewer The app.viewer object
+@subsection appviewer The app.viewer Object
 
 This object controls the rendering of the 3D view. It can be used to
 
  * change the camera position,
- * make screen shots,
+ * make screenshots,
  * set the background color or a background image,
  * and fit all objects into the view.
 
-There are different options, to make a screen shot of the viewer. The simplest is
+There are different options, to make a screenshot of the viewer. The simplest is
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
 app.viewer.makeScreenshot("myfile-white.jpg");
@@ -189,7 +189,7 @@ help(app.viewer);
 in the TiGLCreator console.
 
 
-@subsection appscene The app.scene object
+@subsection appscene The app.scene Object
 
 
 The application scene controls, which objects are shown in the 3D view. Thus, it offers methods to display
@@ -206,19 +206,19 @@ The most important _app.scene_ methods are:
 | deleteAllObjects      | clears the scene                                                        |
 | gridOn                | displays the grid                                                       |
 | gridOff               | turns of the grid display                                               |
-| gridXY                | Sets the grid into the X-Y plane                                        |
-| gridXZ                | Sets the grid into the X-Z plane                                        |
-| gridYZ                | Sets the grid into the Y-Z plane                                        |
-| gridCirc              | Switches the grid into polar form                                       |
-| gridRect              | Swictehs the grid into cartesian form                                   |
+| gridXY                | sets the grid into the X-Y plane                                        |
+| gridXZ                | sets the grid into the X-Z plane                                        |
+| gridYZ                | sets the grid into the Y-Z plane                                        |
+| gridCirc              | switches the grid into polar form                                       |
+| gridRect              | switches the grid into cartesian form                                   |
 
-To get a list of all app.scene methods and properties, enter:
+To get a list of all _app.scene_ methods and properties, enter:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
 help(app.scene);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-@subsection console_tigl The tigl object
+@subsection console_tigl The tigl Object
 
 The tigl object is used to access the TiGL library functions. Currently, not all functions are wrapped. 
 
@@ -253,7 +253,7 @@ These are the functions currently wrapped by the scripting interface
  * getErrorString(errorCode)
  * getShape(uid)
 
-In comparison to the C/C++ API, the scripting functions don't return error codes. Instead, an exception is thrown in case of an error, e.g. if 
+In comparison to the C/C++ API, the scripting functions do not return error codes. Instead, an exception is thrown in case of an error, e.g. if 
 no CPACS file is currently open.
 
 The use of these functions is analog to the TiGL functions of the C API. The only exception is the `tigl.getShape(uid)` method. It can be used
