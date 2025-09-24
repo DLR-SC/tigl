@@ -2484,6 +2484,98 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfiguratio
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetTrailingEdgeDeviceUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char * componentSegmentUID,
+                                                          int TrailingEdgeDeviceIndex,
+                                                          char ** TrailingEdgeDeviceUID)
+{
+    if (TrailingEdgeDeviceIndex < 1 )
+        return TIGL_INDEX_ERROR;
+
+    if (componentSegmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
+        LOG(ERROR) << "in function call to tiglGetTrailingEdgeDeviceUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    if (TrailingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for TrailingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglGetTrailingEdgeDeviceUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+        const auto& compSeg = uidMgr.ResolveObject<tigl::CCPACSWingComponentSegment>(componentSegmentUID);
+        if (!compSeg.GetControlSurfaces() || TrailingEdgeDeviceIndex > (int)compSeg.GetControlSurfaces()->GetTrailingEdgeDevices()->GetTrailingEdgeDevices().size())
+            return TIGL_INDEX_ERROR;
+        
+        *TrailingEdgeDeviceUID = const_cast<char*>(compSeg.GetControlSurfaces()->GetTrailingEdgeDevices() \
+                                               ->GetTrailingEdgeDevices().at(TrailingEdgeDeviceIndex - 1) \
+                                               ->GetUID().c_str());
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetTrailingEdgeDeviceUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetLeadingEdgeDeviceUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char * componentSegmentUID,
+                                                          int LeadingEdgeDeviceIndex,
+                                                          char ** LeadingEdgeDeviceUID)
+{
+    if (LeadingEdgeDeviceIndex < 1 )
+        return TIGL_INDEX_ERROR;
+
+    if (componentSegmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
+        LOG(ERROR) << "in function call to tiglGetLeadingEdgeDeviceUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    if (LeadingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for LeadingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglGetLeadingEdgeDeviceUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+        const auto& compSeg = uidMgr.ResolveObject<tigl::CCPACSWingComponentSegment>(componentSegmentUID);
+        if (!compSeg.GetControlSurfaces() || LeadingEdgeDeviceIndex > (int)compSeg.GetControlSurfaces()->GetLeadingEdgeDevices()->GetLeadingEdgeDevices().size())
+            return TIGL_INDEX_ERROR;
+        
+        *LeadingEdgeDeviceUID = const_cast<char*>(compSeg.GetControlSurfaces()->GetLeadingEdgeDevices() \
+                                               ->GetLeadingEdgeDevices().at(LeadingEdgeDeviceIndex - 1) \
+                                               ->GetUID().c_str());
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetLeadingEdgeDeviceUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurationHandle cpacsHandle,
                                                             const char * controlSurfaceUID,
                                                             TiglControlSurfaceType * controlSurfaceType)
@@ -2499,7 +2591,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
         const auto& uidMgr = config.GetUIDManager();
 
         const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
-
+        
         *controlSurfaceType = ted.GetType();
 
         return TIGL_SUCCESS;
@@ -2514,6 +2606,74 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglGetControlSurfaceType!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetTrailingEdgeDeviceType(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char * TrailingEdgeDeviceUID,
+                                                            TiglControlSurfaceType * controlSurfaceType)
+{
+    if (TrailingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for TrailingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglGetTrailingEdgeDeviceType." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+
+        const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(TrailingEdgeDeviceUID);
+        
+        *controlSurfaceType = ted.GetType();
+        
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetTrailingEdgeDeviceType!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetLeadingEdgeDeviceType(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char * LeadingEdgeDeviceUID,
+                                                            TiglControlSurfaceType * controlSurfaceType)
+{
+    if (LeadingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for LeadingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglGetLeadingEdgeDeviceType." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+
+        const auto& led = uidMgr.ResolveObject<tigl::CCPACSLeadingEdgeDevice>(LeadingEdgeDeviceUID);
+        
+        *controlSurfaceType = led.GetType();
+        
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglGetLeadingEdgeDeviceType!" << std::endl;
         return TIGL_ERROR;
     }
 }
@@ -2548,6 +2708,76 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumControlParameter(T
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglControlSurfaceGetMinimumDeflection!" << std::endl;
+        return TIGL_ERROR;
+    }
+
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglTrailingEdgeDeviceGetMinimumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * TrailingEdgeDeviceUID,
+                                                                               double * minDeflection)
+{
+    if (TrailingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for TrailingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglTrailingEdgeDeviceGetMinimumDeflection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+
+        const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(TrailingEdgeDeviceUID);
+
+        *minDeflection = ted.GetMinControlParameter();
+
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglTrailingEdgeDeviceGetMinimumDeflection!" << std::endl;
+        return TIGL_ERROR;
+    }
+
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglLeadingEdgeDeviceGetMinimumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * LeadingEdgeDeviceUID,
+                                                                               double * minDeflection)
+{
+    if (LeadingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for LeadingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglLeadingEdgeDeviceGetMinimumDeflection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+
+        const auto& led = uidMgr.ResolveObject<tigl::CCPACSLeadingEdgeDevice>(LeadingEdgeDeviceUID);
+
+        *minDeflection = led.GetMinControlParameter();
+
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglLeadingEdgeDeviceGetMinimumDeflection!" << std::endl;
         return TIGL_ERROR;
     }
 
@@ -2596,6 +2826,76 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumControlParameter(T
 
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglTrailingEdgeDeviceGetMaximumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * TrailingEdgeDeviceUID,
+                                                                               double * maxDeflection)
+{
+    if (TrailingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for TrailingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglTrailingEdgeDeviceGetMaximumDeflection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+
+        const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(TrailingEdgeDeviceUID);
+
+        *maxDeflection = ted.GetMaxControlParameter();
+
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglTrailingEdgeDeviceGetMaximumDeflection!" << std::endl;
+        return TIGL_ERROR;
+    }
+
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglLeadingEdgeDeviceGetMaximumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * LeadingEdgeDeviceUID,
+                                                                               double * maxDeflection)
+{
+    if (LeadingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for LeadingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglLeadingEdgeDeviceGetMaximumDeflection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+
+        const auto& led = uidMgr.ResolveObject<tigl::CCPACSLeadingEdgeDevice>(LeadingEdgeDeviceUID);
+
+        *maxDeflection = led.GetMaxControlParameter();
+
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglLeadingEdgeDeviceGetMaximumDeflection!" << std::endl;
+        return TIGL_ERROR;
+    }
+
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumDeflection(TiglCPACSConfigurationHandle cpacsHandle,
                                                                          const char * controlSurfaceUID,
                                                                          double * maxDeflection)
@@ -2634,6 +2934,76 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetControlParameter(TiglCPAC
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglControlSurfaceGetDeflection!" << std::endl;
+        return TIGL_ERROR;
+    }
+
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglTrailingEdgeDeviceGetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                        const char * TrailingEdgeDeviceUID,
+                                                                        double * deflection)
+{
+    if (TrailingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for TrailingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglTrailingEdgeDeviceGetDeflection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+
+        const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(TrailingEdgeDeviceUID);
+
+        *deflection = ted.GetControlParameter();
+
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglTrailingEdgeDeviceGetDeflection!" << std::endl;
+        return TIGL_ERROR;
+    }
+
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglLeadingEdgeDeviceGetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                        const char * LeadingEdgeDeviceUID,
+                                                                        double * deflection)
+{
+    if (LeadingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for LeadingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglLeadingEdgeDeviceGetDeflection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+
+        const auto& led = uidMgr.ResolveObject<tigl::CCPACSLeadingEdgeDevice>(LeadingEdgeDeviceUID);
+
+        *deflection = led.GetControlParameter();
+
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglLeadingEdgeDeviceGetDeflection!" << std::endl;
         return TIGL_ERROR;
     }
 
@@ -2681,6 +3051,75 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetControlParameter(TiglCPAC
     }
 
 }
+TIGL_COMMON_EXPORT TiglReturnCode tiglTrailingEdgeDeviceSetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                        const char * TrailingEdgeDeviceUID,
+                                                                        double deflection)
+{
+    if (TrailingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for TrailingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglTrailingEdgeDeviceSetDeflection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        auto& uidMgr = config.GetUIDManager();
+
+        auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(TrailingEdgeDeviceUID);
+
+        ted.SetControlParameter(deflection);
+
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglTrailingEdgeDeviceSetDeflection!" << std::endl;
+        return TIGL_ERROR;
+    }
+
+}
+TIGL_COMMON_EXPORT TiglReturnCode tiglLeadingEdgeDeviceSetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                        const char * LeadingEdgeDeviceUID,
+                                                                        double deflection)
+{
+    if (LeadingEdgeDeviceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for LeadingEdgeDeviceUID ";
+        LOG(ERROR) << "in function call to tiglLeadingEdgeDeviceSetDeflection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        auto& uidMgr = config.GetUIDManager();
+
+        auto& led = uidMgr.ResolveObject<tigl::CCPACSLeadingEdgeDevice>(LeadingEdgeDeviceUID);
+
+        led.SetControlParameter(deflection);
+
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglLeadingEdgeDeviceSetDeflection!" << std::endl;
+        return TIGL_ERROR;
+    }
+
+}
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
                                                                   const char * controlSurfaceUID,

@@ -1726,6 +1726,50 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfiguratio
                                                           char ** controlSurfaceUID);
 
 /**
+* @brief Returns the UID of a trailing edge device given its index in a component segment.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  componentSegmentUID     UID of the componentSegment
+* @param[in]  TrailingEdgeDeviceIndex Index of the leading edge device, starting at 1
+* @param[out] TrailingEdgeDeviceUID   UID of the trailing edge device
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the component segment does not exist
+*   - TIGL_NULL_POINTER if either the componentSegmentUID or TrailingEdgeDeviceUID are NULL pointers
+*   - TIGL_INDEX_ERROR if the trailing edge device index is invalid
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetTrailingEdgeDeviceUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char * componentSegmentUID,
+                                                          int TrailingEdgeDeviceIndex,
+                                                          char ** TrailingEdgeDeviceUID);
+
+/**
+* @brief Returns the UID of a leading edge device given its index in a component segment.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  componentSegmentUID     UID of the componentSegment
+* @param[in]  LeadingEdgeDeviceIndex  Index of the leading edge device, starting at 1
+* @param[out] LeadingEdgeDeviceUID    UID of the leading edge device
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the component segment does not exist
+*   - TIGL_NULL_POINTER if either the componentSegmentUID or LeadingEdgeDeviceUID are NULL pointers
+*   - TIGL_INDEX_ERROR if the leading edge device index is invalid
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetLeadingEdgeDeviceUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char * componentSegmentUID,
+                                                          int LeadingEdgeDeviceIndex,
+                                                          char ** LeadingEdgeDeviceUID);
+
+/**
 * @brief Returns the type of a control surface given its UID.
 *
 *
@@ -1743,7 +1787,44 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceUID(TiglCPACSConfiguratio
 TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurationHandle cpacsHandle,
                                                             const char * controlSurfaceUID,
                                                             TiglControlSurfaceType * controlSurfaceType);
+                                                         
+/**
+* @brief Returns the type of a trailing edge device given its UID.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  TrailingEdgeDeviceUID   UID of the trailing edge device
+* @param[out] controlSurfaceType      Type of the trailing edge device
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the trailing edge device does not exist
+*   - TIGL_NULL_POINTER if TrailingEdgeDeviceUID is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetTrailingEdgeDeviceType(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char * TrailingEdgeDeviceUID,
+                                                            TiglControlSurfaceType * controlSurfaceType);
 
+/**
+* @brief Returns the type of a leading edge device given its UID.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  LeadingEdgeDeviceUID    UID of the leading edge device
+* @param[out] controlSurfaceType      Type of the leading edge device
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the leading edge device does not exist
+*   - TIGL_NULL_POINTER if LeadingEdgeDeviceUID is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetLeadingEdgeDeviceType(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char * LeadingEdgeDeviceUID,
+                                                            TiglControlSurfaceType * controlSurfaceType);
 
 /**
 * @brief Returns the minimum value for the control parameter of a control device.
@@ -1762,6 +1843,44 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetControlSurfaceType(TiglCPACSConfigurati
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMinimumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
                                                                                const char * controlSurfaceUID,
+                                                                               double * minParameter);
+
+/**
+* @brief Returns the minimum value for the control parameter of a trailing edge device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  TrailingEdgeDeviceUID   UID of the trailing edge device
+* @param[out] minParameter            Minimum value for the control parameter
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the trailing edge device does not exist
+*   - TIGL_NULL_POINTER if minParameter is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglTrailingEdgeDeviceGetMinimumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * TrailingEdgeDeviceUID,
+                                                                               double * minParameter);
+
+/**
+* @brief Returns the minimum value for the control parameter of a leading edge device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  LeadingEdgeDeviceUID    UID of the leading edge device
+* @param[out] minParameter            Minimum value for the control parameter
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the leading edge device does not exist
+*   - TIGL_NULL_POINTER if minParameter is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLeadingEdgeDeviceGetMinimumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * LeadingEdgeDeviceUID,
                                                                                double * minParameter);
 
 /**
@@ -1793,6 +1912,46 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetMaximumControlParameter(T
                                                                                double * maxParameter);
 
 /**
+* @brief Returns the maximum value for the control parameter of a trailing edge device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  TrailingEdgeDeviceUID   UID of the trailing edge device
+* @param[out] maxParameter            Maximum value for the control parameter
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the trailing edge device does not exist
+*   - TIGL_NULL_POINTER if maxParameter is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglTrailingEdgeDeviceGetMaximumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * TrailingEdgeDeviceUID,
+                                                                               double * maxParameter);
+
+/**
+* @brief Returns the maximum value for the control parameter of a leading edge device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  LeadingEdgeDeviceUID    UID of the leading edge device
+* @param[out] maxParameter            Maximum value for the control parameter
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the leading edge device does not exist
+*   - TIGL_NULL_POINTER if maxParameter is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLeadingEdgeDeviceGetMaximumControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                               const char * LeadingEdgeDeviceUID,
+                                                                               double * maxParameter);
+
+                                                                              
+
+/**
  * @brief This function is deprecated. It has been renamed to ::tiglControlSurfaceGetMaximumControlParameter.
  *
  * @deprecated since 3.1
@@ -1821,6 +1980,44 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetControlParameter(TiglCPAC
                                                                        double * controlParameter);
 
 /**
+* @brief Returns the current value for the control parameter of a trailing edge device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  TrailngEdgeDeviceUID       UID of the trailing edge device
+* @param[out] controlParameter        Value for the controlParameter
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the trailing edge device does not exist
+*   - TIGL_NULL_POINTER if controlParameter is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglTrailingEdgeDeviceGetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                       const char * TrailngEdgeDeviceUID,
+                                                                       double * controlParameter);
+
+/**
+* @brief Returns the current value for the control parameter of a leading edge device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  LeadingEdgeDeviceUID       UID of the leading edge device
+* @param[out] controlParameter        Value for the controlParameter
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the leading edge device does not exist
+*   - TIGL_NULL_POINTER if controlParameter is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLeadingEdgeDeviceGetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                       const char * LeadingEdgeDeviceUID,
+                                                                       double * controlParameter);
+
+/**
  * @brief This function is deprecated. It has been renamed to ::tiglControlSurfaceGetControlParameter.
  *
  * @deprecated since 3.1
@@ -1845,6 +2042,42 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetDeflection(TiglCPACSConfi
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
                                                                         const char * controlSurfaceUID,
+                                                                        double controlParameter);
+
+/**
+* @brief Sets the current value for the control parameter of a traililng edge device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  TrailingEdgeDeviceUID       UID of the traililng edge device
+* @param[out] controlParameter              Value for the control parameter
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the traililng edge device does not exist
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglTrailingEdgeDeviceSetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                        const char * TrailingEdgeDeviceUID,
+                                                                        double controlParameter);
+
+/**
+* @brief Sets the current value for the control parameter of a leading edge device.
+*
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  LeadingEdgeDeviceUID       UID of the leading edge device
+* @param[out] controlParameter              Value for the control parameter
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the leading edge device does not exist
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLeadingEdgeDeviceSetControlParameter(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                        const char * LeadingEdgeDeviceUID,
                                                                         double controlParameter);
 
 /**
