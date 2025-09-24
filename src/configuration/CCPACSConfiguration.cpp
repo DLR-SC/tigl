@@ -130,15 +130,38 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
 void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 {
     header.WriteCPACS(tixiDocumentHandle, headerXPath);
+
+    // get the xpath of the current model, create the element if it does not exist
+    std::string parent_xpath = aircraftModel? "/cpacs/vehicles/aircraft" : "/cpacs/vehicles/rotorcraft";
+    std::string model_xpath;
+    int nmodels = tixi::TixiGetNumberOfChilds(tixiDocumentHandle, parent_xpath);
+    if (nmodels == 0) {
+        model_xpath = parent_xpath + "/model";
+        tixi::TixiCreateElement(tixiDocumentHandle, model_xpath);
+    } else {
+
+        bool uid_found = false;
+        for (int i=1; i<=nmodels; ++i) {
+            model_xpath = parent_xpath + "/model[" + std::to_string(i) + "]";
+            auto uid = tixi::TixiGetTextAttribute(tixiDocumentHandle, model_xpath, "uID");
+            if (uid == configurationUID) {
+                uid_found = true;
+                break;
+            }
+        }
+        if (!uid_found) {
+            // Several models exist, but none with the current configuration uid. We need to append to the models
+            tixi::TixiCreateElement(tixiDocumentHandle, parent_xpath + "/model");
+            model_xpath = parent_xpath + "/model[" + std::to_string(nmodels + 1) + "]";
+        }
+    }
+    tixi::TixiSaveAttribute(tixiDocumentHandle, model_xpath, "uID", configurationUID); // patch uid in tixi, so xpath below is valid
+
     if (aircraftModel) {
-        tixi::TixiCreateElementsIfNotExists(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model");
-        tixi::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
         aircraftModel->SetUID(configurationUID);
         aircraftModel->WriteCPACS(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model[@uID=\"" + configurationUID + "\"]");
     }
     if (rotorcraftModel) {
-        tixi::TixiCreateElementsIfNotExists(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model");
-        tixi::TixiSaveAttribute(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model", "uID", configurationUID); // patch uid in tixi, so xpath below is valid
         rotorcraftModel->SetUID(configurationUID);
         rotorcraftModel->WriteCPACS(tixiDocumentHandle, "/cpacs/vehicles/rotorcraft/model[@uID=\"" + configurationUID + "\"]");
     }

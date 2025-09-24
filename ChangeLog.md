@@ -1,41 +1,36 @@
 Changelog
 =========
 
-Changes since last release
--------------
+Version 3.5.0-rc1
+----------------
+2025/09/22
 
-10/09/2025
+We are very excited to announce our first official TiGL release containing the implementation of the CPACS Creator. CPACS Creator was a branch of TiGL that allowed modification of CPACS nodes via the C++ and internal Python API as well as via the graphical user interface based on TiGL Viewer. The first pre-release of CPACS Creator was in September 2019. Within the past year we have shifted our focus towards re-integrating CPACS Creator into TiGL. After a few weeks of extensive coding and bug fixing - especially for the GUI, we have finally made the merge.
+
+To highlight this merge and to be faithful to Malo Drougard's original implementation, we have decided to rename TiGLViewer to TiGLCreator. Enjoy!
+
 - General changes
+  - Rename the CPACSCreator/TiGLViewer to TiGLCreator [#1137](https://github.com/DLR-SC/tigl/issues/1137).
+  - The CPACS tree stays expanded, even after addition or deletion of wings, fuselages, sections or profiles ([#1138](https://github.com/DLR-SC/tigl/issues/1138))
   - Sections can now be added or deleted using a context menu in the CPACS Tree View ([#628](https://github.com/DLR-SC/tigl/issues/628))
-  - [#1141](https://github.com/DLR-SC/tigl/issues/1141) Add the option to set a custom name when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog.
+  - Add the option to set a custom name when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog ([#1141](https://github.com/DLR-SC/tigl/issues/1141)).
   - When adding new sections to wings or fuselages, the sections are reordered from root to tip (resp. nose to rear) according to the segments ([#1139](https://github.com/DLR-SC/tigl/issues/1139))
-
-29/08/2025
-- General changes
-  - #1137 Rename the CPACSCreator to TiGLCreator.
-
-1/09/2025
-- Fix hard crash when changing the symmetry axis of a wing in TiGL Creator (#1143)
-
-28/08/2025
-- General changes
-  - [#1133](https://github.com/DLR-SC/tigl/issues/1133) Add the option to set an eta value when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog.
-
-- Fixes
-  - #1142 State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI.
-  - #1144 Fix hard crash in Redo command, improve error message.
+  - Add the option to set an eta value when a new section is added into fuselages or wings. This user dialog is included within the new-section-dialog ([#1133](https://github.com/DLR-SC/tigl/issues/1133)).
 
  
 - Fixes
+  - Support multiple models in a cpacs file ([#1196](https://github.com/DLR-SC/tigl/issues/1196))
+  - Fix hard crash in Redo command, improve error message ([#1144](https://github.com/DLR-SC/tigl/issues/1144)).
+  - State of QDockWidgets is saved and loaded correctly now when closing and reopening GUI ([#1142](https://github.com/DLR-SC/tigl/issues/1142)).
+  - Fix hard crash when changing the symmetry axis of a wing in TiGL Creator ([#1143](https://github.com/DLR-SC/tigl/issues/1143))
   - Fix hard crash for configuration without fuselage profiles ([#1178](https://github.com/DLR-SC/tigl/issues/1178))
   - Fix wrong rotation when adding sections ([#1168](https://github.com/DLR-SC/tigl/issues/1168))
-  - [#1108](https://github.com/DLR-SC/tigl/issues/1108) When adding a new section into an existing wing, the scaling/translation did not seem meaningful. That is due to the fact, that the new element's area was interpolated between the start end end element. However, it does not depend linearly on the element width. Choosing the element width as a target value for the new element should fix this issue.
-  - [#1122](https://github.com/DLR-SC/tigl/issues/1122) Redo and Undo commands now update the CPACS configuration, which was previously only true for modifications using the CPACS Editor UI.
-  - #1090 Ask the user whether the currently worked on file should be saved before closing. Up to now, the configuration was simply closed resulting in potential data loss.
-  - #1096 When a user adds a non-boundary segment to a wing/fuselage, the respective segment is split and a new one is created. After this split, a reordering of the segments is necessary. Otherwise, the segments cannot be lofted and created correctly. That would result in a wrong visualization and errors when trying to build them on user's demand in the tiglviewer.
-For that reason, the CCPACSFuselageSegments::ReorderSegments() and CCPACSWingSegments::ReorderSegments(), respectively, were added within the call of the SplitSegment() function.
-  - #752 When creating a new file out of a template, the CPACSCreator automatically creates a new `.temp` file in the template directory. It might be the case that the user does not have write access to this directory, e.g. when TiGL is not configured and built but just downloaded via the installer. On the other hand it does not seem to be reasonable to directly create and store (!) a new file every time the 'new file' command is activated. Now, no temporary file is created. The content of the wanted template is copied into a string which then will be opened and read by tixi. Only if wanted, the resulting and edited CPACS file is stored.
-  - #1087 CPACSCreator uses a system-wide config file to store (among many others) the path to the profiles database. If TiGL is built in a second configuration on the same system, the first build will determine the path in this config file. If then later the first build (and path) is removed, TiGL will still try to load the database from this path. A check is included, whether the path exists and should overwrite the config file entry when it does not.
+  - When adding a new section into an existing wing, the scaling/translation did not seem meaningful. That is due to the fact, that the new element's area was interpolated between the start end end element. However, it does not depend linearly on the element width. Choosing the element width as a target value for the new element should fix this issue ([#1108](https://github.com/DLR-SC/tigl/issues/1108)).
+  - Redo and Undo commands now update the CPACS configuration, which was previously only true for modifications using the CPACS Editor UI ([#1122](https://github.com/DLR-SC/tigl/issues/1122)).
+  - Ask the user whether the currently worked on file should be saved before closing. Up to now, the configuration was simply closed resulting in potential data loss ([#1090](https://github.com/DLR-SC/tigl/issues/1090)).
+  - When a user adds a non-boundary segment to a wing/fuselage, the respective segment is split and a new one is created. After this split, a reordering of the segments is necessary. Otherwise, the segments cannot be lofted and created correctly. That would result in a wrong visualization and errors when trying to build them on user's demand in the tiglviewer. For that reason, the CCPACSFuselageSegments::ReorderSegments() and CPACSWingSegments::ReorderSegments(), respectively, were added within the call of the SplitSegment() function. ([#1096](https://github.com/DLR-SC/tigl/issues/1096))
+  - When creating a new file out of a template, the CPACSCreator automatically creates a new `.temp` file in the template directory. It might be the case that the user does not have write access to this directory, e.g. when TiGL is not configured and built but just downloaded via the installer. On the other hand it does not seem to be reasonable to directly create and store (!) a new file every time the 'new file' command is activated. Now, no temporary file is created. The content of the wanted template is copied into a string which then will be opened and read by tixi. Only if wanted, the resulting and edited CPACS file is stored. ([#752](https://github.com/DLR-SC/tigl/issues/752))
+  - CPACSCreator uses a system-wide config file to store (among many others) the path to the profiles database. If TiGL is built in a second configuration on the same system, the first build will determine the path in this config file. If then later the first build (and path) is removed, TiGL will still try to load the database from this path. A check is included, whether the path exists and should overwrite the config file entry when it does not. ([#1087](https://github.com/DLR-SC/tigl/issues/1087))
 
 Version 3.4.1
 -------------

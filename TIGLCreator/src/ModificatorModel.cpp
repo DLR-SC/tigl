@@ -28,8 +28,13 @@
 #include "CTiglStandardizer.h"
 #include "TIGLCreatorContext.h"
 #include "modificators/NewConnectedElementDialog.h"
+#include "modificators/DeleteDialog.h"
+#include "modificators/NewWingDialog.h"
+#include "modificators/NewFuselageDialog.h"
 #include "tixicpp.h"
 #include "TIGLCreatorException.h"
+#include "TIGLCreatorErrorDialog.h"
+
 
 ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContainerWidget,
                                        TIGLCreatorContext* scene,
@@ -45,7 +50,14 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
     this->scene = scene;
 
     // signals:
-    connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()) );
+    connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()));
+    connect(modificatorContainerWidget, SIGNAL(addProfileRequested(QString)), this, SLOT(addProfile(QString)));
+    connect(modificatorContainerWidget, SIGNAL(addWingRequested()), this, SLOT(onAddWingRequested()));
+    connect(modificatorContainerWidget, SIGNAL(deleteWingRequested()), this, SLOT(onDeleteWingRequested()));
+    connect(modificatorContainerWidget, SIGNAL(addFuselageRequested()), this, SLOT(onAddFuselageRequested()));
+    connect(modificatorContainerWidget, SIGNAL(deleteFuselageRequested()), this, SLOT(onDeleteFuselageRequested()));
+    connect(modificatorContainerWidget, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onAddSectionRequested(Ui::ElementModificatorInterface&)));
+    connect(modificatorContainerWidget, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(onDeleteSectionRequested(Ui::ElementModificatorInterface&)));
 }
 
 void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
@@ -101,7 +113,17 @@ void ModificatorModel::writeCPACS()
         LOG(ERROR) << "ModificatorManager::writeCPACS: MODIFICATOR MANAGER IS NOT READY";
         return;
     }
-    doc->GetConfiguration().WriteCPACS(doc->GetConfiguration().GetUID());
+
+    try {
+        doc->GetConfiguration().WriteCPACS(doc->GetConfiguration().GetUID());
+    }
+    catch (const tixi::TixiError& e) {
+        QString errMsg =
+            "ModificatorManager::writeCPACS() encountered an error saving the CPACS file. "
+            "Tixi error message: \"" +
+            QString(e.what()) + "\".";
+        throw tigl::CTiglError(errMsg.toStdString());
+    }
 }
 
 void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
@@ -128,8 +150,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         highlight(fuselage.GetCTiglElements());
     }
     else if (item->getType() == "fuselages") {
-        tigl::CCPACSFuselages& fuselages = doc->GetConfiguration().GetFuselages();
-        modificatorContainerWidget->setFuselagesModificator(fuselages);
+        modificatorContainerWidget->setFuselagesModificator();
     }
     else if (item->getType() == "wing") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
@@ -138,8 +159,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         highlight(wing.GetCTiglElements());
     }
     else if (item->getType() == "wings") {
-        tigl::CCPACSWings& wings = doc->GetConfiguration().GetWings();
-        modificatorContainerWidget->setWingsModificator(wings);
+        modificatorContainerWidget->setWingsModificator();
     }
     else if (item->getType() == "element") {
         // first, we need to determine whether this is a section or a fuselage element
@@ -233,7 +253,6 @@ void ModificatorModel::createUndoCommand()
         LOG(ERROR) << "ModificatorManager::createUndoCommand: Called but no document is set!";
     }
     emit configurationEdited();
-    resetTree();
 }
 
 void ModificatorModel::resetTree()
@@ -320,6 +339,68 @@ std::string ModificatorModel::sectionUidToElementUid(const std::string &uid) con
     }
 }
 
+std::string ModificatorModel::elementUidToSectionUid(const std::string &uid) const
+{
+    tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+    tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(uid);
+    if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
+        tigl::CCPACSFuselageSectionElement& element = *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
+        return element.GetParent()->GetParent()->GetUID();
+    } else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
+        tigl::CCPACSWingSectionElement& element = *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+        return element.GetParent()->GetParent()->GetUID();
+    } else {
+        LOG(ERROR) << "ModificatorManager:: Unexpected element type!";
+        return "";
+    }
+}
+
+cpcr::CPACSTreeItem *ModificatorModel::getAirfoils() const
+{
+    auto nodes = tree.getRoot()->findAllChildrenOfTypeRecursively("wingAirfoils"); //TODO: findFirstChildOfType would be faster
+    if (nodes.size() != 1) {
+        LOG(ERROR) << "ModificatorManager:: Could not find wingAirfoils node in CPACS Tree";
+        return nullptr;
+    }
+    return nodes[0];
+}
+
+cpcr::CPACSTreeItem *ModificatorModel::getFuselageProfiles() const
+{
+    auto nodes = tree.getRoot()->findAllChildrenOfTypeRecursively("fuselageProfiles"); //TODO: findFirstChildOfType would be faster
+    if (nodes.size() != 1) {
+        LOG(ERROR) << "ModificatorManager:: Could not find fuselageProfiles node in CPACS Tree";
+        return nullptr;
+    }
+    return nodes[0];
+}
+
+cpcr::CPACSTreeItem *ModificatorModel::getWings() const
+{
+    auto idx = getAircraftModelIndex();
+    auto* root = getItem(idx);
+
+    auto nodes = root->findAllChildrenOfTypeRecursively("wings"); //TODO: findFirstChildOfType would be faster
+    if (nodes.size() != 1) {
+        LOG(ERROR) << "ModificatorManager:: Could not find wings node in CPACS Tree";
+        return nullptr;
+    }
+    return nodes[0];
+}
+
+cpcr::CPACSTreeItem *ModificatorModel::getFuselages() const
+{
+    auto idx = getAircraftModelIndex();
+    auto* root = getItem(idx);
+
+    auto nodes = root->findAllChildrenOfTypeRecursively("fuselages"); //TODO: findFirstChildOfType would be faster
+    if (nodes.size() != 1) {
+        LOG(ERROR) << "ModificatorManager:: Could not find fuselages node in CPACS Tree";
+        return nullptr;
+    }
+    return nodes[0];
+}
+
 void ModificatorModel::unHighlight()
 {
     for (int i = 0; i < highligthteds.size(); i++) {
@@ -328,7 +409,7 @@ void ModificatorModel::unHighlight()
     highligthteds.clear();
 }
 
-void ModificatorModel::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
+void ModificatorModel::deleteSection(cpcr::CPACSTreeItem* item)
 {
     if (item == nullptr) {
         return;
@@ -344,8 +425,160 @@ void ModificatorModel::onDeleteSectionRequested(cpcr::CPACSTreeItem* item)
     }
     auto element = resolve(parent->getUid());
 
-    element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
-    createUndoCommand();
+    auto parentIdx = getIndex(sections, 0);
+    auto row = item->positionRelativelyToParent();
+    beginRemoveRows(parentIdx, row, row);
+
+    // apply changes in cpacs configuration
+    try {
+        element.DeleteConnectedElement(sectionUidToElementUid(item->getUid()));
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the section (aka connected element)").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+    createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+    // apply changes to CPACSTree
+    sections->removeChild(row);
+    endRemoveRows();
+}
+
+void ModificatorModel::onDeleteSectionRequested(Ui::ElementModificatorInterface &element)
+{
+    std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
+
+    QStringList sectionUIDsQList;
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        QString sectionUid = QString::fromStdString(elementUidToSectionUid(elementUIDs[i]));
+        sectionUIDsQList.push_back(sectionUid);
+    }
+
+    DeleteDialog deleteDialog(sectionUIDsQList);
+    if (deleteDialog.exec() == QDialog::Accepted) {
+        QString uid = deleteDialog.getUIDToDelete();
+        auto idx = getIdxForUID(uid.toStdString());
+        auto* item = getItem(idx);
+        if (item == nullptr) {
+            return;
+        }
+        deleteSection(item);
+    }
+}
+
+void ModificatorModel::addSection(
+        Ui::ElementModificatorInterface& element,
+        NewConnectedElementDialog::Where where,
+        std::string startUID,
+        std::string sectionName,
+        std::optional<double> eta
+)
+{
+    auto idx = getIdxForUID(startUID);
+    auto* item = getItem(idx);
+    if (item == nullptr) {
+        return;
+    }
+    std::string elemUID = sectionUidToElementUid(startUID);
+
+    // apply the changes
+
+    int row = item->positionRelativelyToParent();
+    if (where == NewConnectedElementDialog::Where::After) {
+        ++row;
+    }
+
+    auto* sections = item->getParent();
+    if (sections == nullptr) {
+        return;
+    }
+    auto sectionsIdx = getIndex(sections, 0);
+
+    beginInsertRows(sectionsIdx, row, row);
+
+    // add the section in the cpacs configuration
+    try {
+        if (where == NewConnectedElementDialog::Before) {
+            auto elementUIDBefore = element.GetElementUIDBeforeNewElement(elemUID);
+            if (elementUIDBefore) {
+                if (eta) { // Security check. Should be set if elementUIDBefore is true
+                    element.CreateNewConnectedElementBetween(*elementUIDBefore, elemUID, *eta, sectionName);
+                }
+                else {
+                    endInsertRows();
+                    throw tigl::CTiglError("No eta value set!");
+                }
+            }
+            else {
+                element.CreateNewConnectedElementBefore(elemUID, sectionName);
+            }
+        }
+        else if (where == NewConnectedElementDialog::After) {
+            auto elementUIDAfter = element.GetElementUIDAfterNewElement(elemUID);
+            if (elementUIDAfter) {
+                if (eta) { // Security check. Should be set if elementUIDAfter is true
+                    element.CreateNewConnectedElementBetween(elemUID, *elementUIDAfter, *eta, sectionName);
+                }
+                else {
+                    endInsertRows();
+                    throw tigl::CTiglError("No eta value set!");
+                }
+            }
+            else {
+                element.CreateNewConnectedElementAfter(elemUID, sectionName);
+            }
+        }
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(
+            QString("<b>%1</b><br /><br />%2").arg("Fail to create the new connected element ").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        endInsertRows();
+        return;
+    }
+
+    createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+    // apply changes to CPACSTree
+    std::string xpath = sections->getXPath() + "/" + item->getType() + "[" + std::to_string(row+1) + "]";
+    std::string uid = sectionName;
+    auto* new_item = sections->addChildAt(row, xpath, item->getType(), row, uid);
+    tree.createChildrenRecursively(*new_item);
+
+    endInsertRows();
+}
+
+void ModificatorModel::onAddSectionRequested(Ui::ElementModificatorInterface &element)
+{
+    // open a new connected element dialog
+    std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
+    QStringList sectionUIDsQList;
+    for (int i = 0; i < elementUIDs.size(); i++) {
+        QString sectionUid = QString::fromStdString(elementUidToSectionUid(elementUIDs[i]));
+        sectionUIDsQList.push_back(sectionUid);
+    }
+
+    NewConnectedElementDialog newElementDialog(sectionUIDsQList);
+
+    if (newElementDialog.exec() == QDialog::Accepted) {
+
+        addSection(
+            element,
+            newElementDialog.getWhere(),
+            newElementDialog.getStartUID().toStdString(),
+            newElementDialog.getSectionName().toStdString(),
+            newElementDialog.getEta()
+        );
+
+    }
 }
 
 void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem *item)
@@ -358,32 +591,314 @@ void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::C
     if (sections == nullptr) {
         return;
     }
+
     auto* parent = sections->getParent(); // parent should be wing or fuselage
     if (parent == nullptr) {
         return;
     }
     auto element = resolve(parent->getUid());
 
-    // open a new connected element dialog and set the comboboxes
-    // according to the arguments
+    // open a new connected element dialog
     std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
-    QStringList elementUIDsQList;
+    QStringList sectionUIDsQList;
     for (int i = 0; i < elementUIDs.size(); i++) {
-        elementUIDsQList.push_back(elementUIDs.at(i).c_str());
+        QString sectionUid = QString::fromStdString(elementUidToSectionUid(elementUIDs[i]));
+        sectionUIDsQList.push_back(sectionUid);
     }
 
-    NewConnectedElementDialog newElementDialog(elementUIDsQList);
-    QString uid = QString::fromStdString(sectionUidToElementUid(item->getUid()));
-    newElementDialog.setStartUID(uid);
-    if (where == CPACSTreeView::Where::Before) {
-        newElementDialog.setWhere(NewConnectedElementDialog::Before);
-    } else {
-        newElementDialog.setWhere(NewConnectedElementDialog::After);
+    NewConnectedElementDialog newElementDialog(sectionUIDsQList);
+
+    // Set the comboboxes' initial values according to the arguments
+    if (item != nullptr) {
+        QString uid = QString::fromStdString(item->getUid());
+        newElementDialog.setStartUID(uid);
+        if (where == CPACSTreeView::Where::Before) {
+            newElementDialog.setWhere(NewConnectedElementDialog::Before);
+        } else {
+            newElementDialog.setWhere(NewConnectedElementDialog::After);
+        }
     }
 
     if (newElementDialog.exec() == QDialog::Accepted) {
-        newElementDialog.applySelection(element);
-        createUndoCommand();
+
+        addSection(
+            element,
+            newElementDialog.getWhere(),
+            newElementDialog.getStartUID().toStdString(),
+            newElementDialog.getSectionName().toStdString(),
+            newElementDialog.getEta()
+        );
+    }
+}
+
+void ModificatorModel::addProfile(QString const& profileID)
+{
+
+    cpcr::CPACSTreeItem* profiles = nullptr; // either Airfoils or fuselageProfiles
+    std::string profile_type;
+    if (profilesDB.isAWingProfile(profileID)) {
+        profiles = getAirfoils();
+        profile_type = "wingAirfoil";
+    } else {
+        profiles = getFuselageProfiles();
+        profile_type = "fuselageProfile";
+    }
+    std::string profile_name = profilesDB.removeSuffix(profileID).toStdString();
+
+    auto profiles_idx = getIndex(profiles, 0);
+    auto profile_row = profiles->getChildren().size();
+    beginInsertRows(profiles_idx, profile_row, profile_row);
+
+    // apply changes to configuration
+    try {
+        profilesDB.copyProfileFromLocalToConfig(profileID);
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        endInsertRows();
+        return;
+    }
+
+    createUndoCommand(); // this is a bit unfortunate: if a profile has to be added, we have an additional undo command
+
+    // apply changes to CPACSTree
+    std::string xpath = profiles->getXPath() + "/" + profile_type + "[" + std::to_string(profile_row+1) + "]";
+    auto* new_item = profiles->addChild(xpath, "wingAirfoil", profile_row, profile_name);
+    tree.createChildrenRecursively(*new_item);
+
+    endInsertRows();
+}
+
+void ModificatorModel::onAddWingRequested()
+{
+    NewWingDialog wingDialog(profilesDB.getAllWingProfiles(), modificatorContainerWidget);
+    if (wingDialog.exec() == QDialog::Accepted) {
+        int nbSection       = wingDialog.getNbSection();
+        QString uid         = wingDialog.getUID();
+        QString profileID = wingDialog.getProfileUID();
+
+        std::string profile_name = profilesDB.removeSuffix(profileID).toStdString();
+
+        if ( !profilesDB.hasProfileConfigSuffix(profileID) ) {
+            addProfile(profileID);
+        } else {
+            LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
+        }
+
+        auto* wings = getWings();
+        auto wings_idx = getIndex(wings, 0);
+        auto row = wings->getChildren().size();
+
+        beginInsertRows(wings_idx, row, row);
+
+        // apply changes to configuration
+        try {
+            doc->GetConfiguration().GetWings().CreateWing(
+                uid.toStdString(),
+                nbSection,
+                profile_name
+            );
+        }
+        catch (const tigl::CTiglError& err) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+            endInsertRows();
+            return;
+        }
+
+        createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+        // apply changes to CPACSTree
+        std::string xpath = wings->getXPath() + "/" + "wing[" + std::to_string(row+1) + "]";
+        auto* new_item = wings->addChild(xpath, "wing", row, uid.toStdString());
+        tree.createChildrenRecursively(*new_item);
+
+        endInsertRows();
+    }
+}
+
+void ModificatorModel::deleteWing(std::string const& uid)
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+    auto& wings = doc->GetConfiguration().GetWings();
+
+    auto idx = getIdxForUID(uid);
+    auto* wing_node = getItem(idx);
+    if (wing_node == nullptr) {
+        return;
+    }
+    auto* parent = wing_node->getParent();
+    if (parent == nullptr) {
+        return;
+    }
+    auto parentIdx = getIndex(parent, 0);
+    auto row = wing_node->positionRelativelyToParent();
+    beginRemoveRows(parentIdx, row, row);
+
+    // apply changes in cpacs configuration
+    try {
+        tigl::CCPACSWing& wing = wings.GetWing(uid);
+        wings.RemoveWing(wing);
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the wing ").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+
+    createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+    // apply changes to CPACSTree
+    parent->removeChild(row);
+    endRemoveRows();
+}
+
+void ModificatorModel::deleteFuselage(std::string const& uid)
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+    auto& fuselages = doc->GetConfiguration().GetFuselages();
+
+    auto idx = getIdxForUID(uid);
+    auto* fuselage_node = getItem(idx);
+    if (fuselage_node == nullptr) {
+        return;
+    }
+    auto* parent = fuselage_node->getParent();
+    if (parent == nullptr) {
+        return;
+    }
+    auto parentIdx = getIndex(parent, 0);
+    auto row = fuselage_node->positionRelativelyToParent();
+    beginRemoveRows(parentIdx, row, row);
+
+    // apply changes in cpacs configuration
+    try {
+        tigl::CCPACSFuselage& fuselage = fuselages.GetFuselage(uid);
+        fuselages.RemoveFuselage(fuselage);
+    }
+    catch (const tigl::CTiglError& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the fuselage ").arg(err.what()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+
+    createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+    // apply changes to CPACSTree
+    parent->removeChild(row);
+    endRemoveRows();
+}
+
+void ModificatorModel::onDeleteWingRequested()
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+    auto& wings = doc->GetConfiguration().GetWings();
+
+    QStringList wingUIDs;
+    for (int i = 1; i <= wings.GetWingCount(); i++) {
+        wingUIDs.push_back(wings.GetWing(i).GetUID().c_str());
+    }
+
+    DeleteDialog deleteDialog(wingUIDs);
+    if (deleteDialog.exec() == QDialog::Accepted) {
+        std::string uid = deleteDialog.getUIDToDelete().toStdString();
+        deleteWing(uid);
+    }
+}
+
+void ModificatorModel::onAddFuselageRequested()
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+
+    auto& fuselages = doc->GetConfiguration().GetFuselages();
+
+    NewFuselageDialog fuselageDialog(profilesDB.getAllFuselagesProfiles(), modificatorContainerWidget);
+    if (fuselageDialog.exec() == QDialog::Accepted) {
+        int nbSection       = fuselageDialog.getNbSection();
+        QString uid         = fuselageDialog.getUID();
+        QString profileID = fuselageDialog.getProfileUID();
+
+        if (!profilesDB.hasProfileConfigSuffix(profileID)) {
+            addProfile(profileID);
+        } else {
+            LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
+        }
+
+        auto* fuselages_node = getFuselages();
+        auto fuselages_idx = getIndex(fuselages_node, 0);
+        auto row = fuselages_node->getChildren().size();
+
+        beginInsertRows(fuselages_idx, row, row);
+
+        // apply changes to configuration
+        try {
+            fuselages.CreateFuselage(
+                        uid.toStdString(),
+                        nbSection,
+                        profilesDB.removeSuffix(profileID).toStdString()
+            );
+        }
+        catch (const tigl::CTiglError& err) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(
+                QString("<b>%1</b><br /><br />%2").arg("Fail to create the fuselage ").arg(err.what()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.what());
+            errDialog.exec();
+            endInsertRows();
+            return;
+        }
+
+        createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
+
+        // apply changes to CPACSTree
+        std::string xpath = fuselages_node->getXPath() + "/" + "fuselage[" + std::to_string(row+1) + "]";
+        auto* new_item = fuselages_node->addChild(xpath, "fuselage", row, uid.toStdString());
+        tree.createChildrenRecursively(*new_item);
+
+        endInsertRows();
+    }
+}
+
+void ModificatorModel::onDeleteFuselageRequested()
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+    auto& fuselages = doc->GetConfiguration().GetFuselages();
+
+    QStringList wingUIDs;
+    for (int i = 1; i <= fuselages.GetFuselageCount(); i++) {
+        wingUIDs.push_back(fuselages.GetFuselage(i).GetUID().c_str());
+    }
+
+    DeleteDialog deleteDialog(wingUIDs);
+    if (deleteDialog.exec() == QDialog::Accepted) {
+        std::string uid = deleteDialog.getUIDToDelete().toStdString();
+        deleteFuselage(uid);
     }
 }
 
@@ -533,7 +1048,7 @@ QModelIndex ModificatorModel::index(int row, int column, const QModelIndex& pare
     }
 }
 
-QModelIndex ModificatorModel::getIdxForUID(std::string uid)
+QModelIndex ModificatorModel::getIdxForUID(std::string uid) const
 {
     if (!isValid() || uid == "") {
         return QModelIndex();
@@ -596,28 +1111,13 @@ bool ModificatorModel::isValid() const
     return tree.isBuild();
 }
 
-QModelIndex ModificatorModel::getAircraftModelIndex()
+QModelIndex ModificatorModel::getAircraftModelIndex() const
 {
-    if (!isValid()) {
+    if (!isValid() || !configurationIsSet()) {
         return QModelIndex();
     }
     else {
-        cpcr::CPACSTreeItem* model               = nullptr;
-        std::vector<cpcr::CPACSTreeItem*> models = tree.getRoot()->findAllChildrenOfTypeRecursively("model");
-        if (models.size() == 1) {
-            model = models[0];
-        }
-        else if (models.size() > 1) {
-            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There were multiple models found in the "
-                            "aircraft, the first one was chosen."
-                         << std::endl;
-            model = models[0];
-        }
-        else if (models.size() == 0) {
-            LOG(WARNING) << "CPACSAbstractModel::getAircraftModelIndex() There were no models found in the "
-                            "aircraft."
-                         << std::endl;
-        }
-        return getIndex(model, 0);
+        auto const& config = doc->GetConfiguration();
+        return getIdxForUID(config.GetUID());
     }
 }

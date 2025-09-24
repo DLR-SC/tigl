@@ -3,8 +3,8 @@ import tixi3.tixi3wrapper
 import tigl3
 import tigl3.tigl3wrapper
 import tigl3.configuration
-import tigl3.geometry
-import OCC.gp
+from tigl3.geometry import CTiglPoint, CTiglTransformation
+from OCC.Core.gp import gp_Pnt
 
 
 def create_fuselage(aircraft, uid):
@@ -36,17 +36,17 @@ def create_fuselage(aircraft, uid):
     # Here we set the height and width of the section 2,3,4,18,19,20,21    
     for idx in (2,3,4,5,18,19,20,21) :
         s = fuselage.get_section(idx)
-        e = s.get_section_element(1);
-        ce = e.get_ctigl_section_element();
+        e = s.get_section_element(1)
+        ce = e.get_ctigl_section_element()
         ce.set_height(1.5)
         ce.set_width(2.3)
 
     # Here we set the area of the section the extremity  
     for idx in (1,22) :
         s = fuselage.get_section(idx)
-        e = s.get_section_element(1);
-        ce = e.get_ctigl_section_element();
-        ce.set_area(0);
+        e = s.get_section_element(1)
+        ce = e.get_ctigl_section_element()
+        ce.set_area(0)
         
     return fuselage
     
@@ -57,48 +57,46 @@ def create_round_wing(aircraft,diameter, uid):
     # rotation between each section 
     deltaRotX = 180.0  / (numberOfSection - 1.0)
     
-    # Normaly, we should use CTiglPoint instead of gp.gp_Pnt
-    # but there is for the moment a small issue in the binding of CTiglTransformation class
-    firstPosition = OCC.gp.gp_Pnt(0,0,-diameter/2.0);  
-    firstNormal = OCC.gp.gp_Pnt(0,-1,0);
+    firstPosition = gp_Pnt(0,0,-diameter/2.0)  
+    firstNormal = gp_Pnt(0,-1,0)
 
-    wings = aircraft.get_wings();
+    wings = aircraft.get_wings()
     # create the wing
-    wings.create_wing(uid, numberOfSection , "NACA0006");
-    wing = wings.get_wing(uid);
+    wings.create_wing(uid, numberOfSection , "NACA0006")
+    wing = wings.get_wing(uid)
    
    
-    rot =  tigl3.geometry.CTiglTransformation();
+    rot =  CTiglTransformation()
     # set the wing section elements
     for idx  in range(1,wing.get_section_count() + 1) :
-        rotX = (idx - 1) * deltaRotX;
-        rot.set_identity();
-        rot.add_rotation_x(rotX);
+        rotX = (idx - 1) * deltaRotX
+        rot.set_identity()
+        rot.add_rotation_x(rotX)
 
-        p = rot.transform(firstPosition);
-        n = rot.transform(firstNormal);
+        p = rot.transform(firstPosition)
+        n = rot.transform(firstNormal)
 
-        s = wing.get_section(idx);
-        e = s.get_section_element(1);
-        ce = e.get_ctigl_section_element();
+        s = wing.get_section(idx)
+        e = s.get_section_element(1)
+        ce = e.get_ctigl_section_element()
 
-        ce.set_center(tigl3.geometry.CTiglPoint(p.X(), p.Y(), p.Z()));
-        ce.set_normal(tigl3.geometry.CTiglPoint(n.X(), n.Y(), n.Z()));
+        ce.set_center(CTiglPoint(p.X(), p.Y(), p.Z()))
+        ce.set_normal(CTiglPoint(n.X(), n.Y(), n.Z()))
         if rotX >= 90:
-            ce.set_rotation_around_normal(180);
+            ce.set_rotation_around_normal(180)
 
     # set symmetry of the wing 
     sym = tigl3.geometry.TIGL_X_Z_PLANE 
     wing.set_symmetry(sym)
     
-    return wing;
+    return wing
 
 
 
 
 def create_space_ship():
 
-    filename = "./data/empty.cpacs3.xml"
+    filename = "./data/empty.cpacs.xml"
     # Open the file using tixi 
     tixi_h = tixi3.tixi3wrapper.Tixi3()
     tixi_h.open(filename)
@@ -124,23 +122,23 @@ def create_space_ship():
     wing1 = create_round_wing(aircraft, 13, "Wing1")
     # All the function of the CCPACSWing class is available for the wing2 object
     # Especially, we can set the root leading edge position of the wing.
-    wing1_position = wing1.get_root_leposition();
+    wing1_position = wing1.get_root_leposition()
     wing1_position.x = 2
     wing1.set_root_leposition(wing1_position)
   
     # The following function use internal python api to creare a wing 
     wing2 = create_round_wing(aircraft, 23, "Wing2")
-    wing2_position = wing2.get_root_leposition();
+    wing2_position = wing2.get_root_leposition()
     wing2_position.x = 10
     wing2.set_root_leposition(wing2_position)
     
     wing3 = create_round_wing(aircraft, 13, "Wing3")
-    wing3_position = wing3.get_root_leposition();
+    wing3_position = wing3.get_root_leposition()
     wing3_position.x = 18
     wing3.set_root_leposition(wing3_position)
 
     aircraft.write_cpacs(aircraft.get_uid())
-    config_as_string = tixi_h.exportDocumentAsString();
+    config_as_string = tixi_h.exportDocumentAsString()
     text_file = open("./out.xml", "w")
     text_file.write(config_as_string)
     text_file.close()

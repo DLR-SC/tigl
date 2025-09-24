@@ -48,6 +48,7 @@ This command will install a new environment called tigl-bld with all dependencie
 
     conda activate tigl-bld
 
+Remark: Please find the current known issues in the **Troubleshooting** below. 
 Now tigl can be configured and build using cmake:
 
     mkdir build

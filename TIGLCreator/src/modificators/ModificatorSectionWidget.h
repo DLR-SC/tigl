@@ -45,6 +45,13 @@ public:
 
     void reset() override;
 
+signals:
+    void addProfileRequested(QString const& profile_id);
+
+public slots:
+
+    void forwardAddAirfoilRequested(QString const& profile_id);
+
 protected:
     void deleteElementWidgets();
 

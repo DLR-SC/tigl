@@ -191,7 +191,7 @@ bool TIGLCreatorSettings::drawFaceBoundaries() const
 
 void TIGLCreatorSettings::loadSettings()
 {
-    QSettings settings("DLR SC-HPC", "TiGLCreator3");
+    QSettings settings("DLR SC-HPC", "TiGLCreator");
 
     _tesselationAccuracy   = settings.value("tesselation_accuracy"  , tesselationAccuracy()).toDouble();
     _triangulationAccuracy = settings.value("triangulation_accuracy", triangulationAccuracy()).toDouble();
@@ -224,7 +224,7 @@ void TIGLCreatorSettings::loadSettings()
 
 void TIGLCreatorSettings::storeSettings()
 {
-    QSettings settings("DLR SC-HPC", "TiGLCreator3");
+    QSettings settings("DLR SC-HPC", "TiGLCreator");
 
     settings.setValue("tesselation_accuracy"  , tesselationAccuracy());
     settings.setValue("triangulation_accuracy", triangulationAccuracy());

@@ -483,7 +483,7 @@ void TIGLCreatorWindow::setCurrentFile(const QString& fileName)
         watcher->addPath(currentFile.absoluteFilePath());
         QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
 
-        QSettings settings("DLR SC-HPC", "TiGL-Creator");
+        QSettings settings("DLR SC-HPC", "TiGLCreator");
         QStringList files = settings.value("recentFileList").toStringList();
         files.removeAll(fileName);
         files.prepend(fileName);
@@ -503,15 +503,15 @@ void TIGLCreatorWindow::setCurrentFile(const QString& fileName)
 
 void TIGLCreatorWindow::loadSettings()
 {
-    QSettings settings("DLR SC-HPC", "TiGL-Creator");
+    QSettings settings("DLR SC-HPC", "TiGLCreator");
 
     bool showConsole = settings.value("show_console",QVariant(true)).toBool();
     bool showTree = settings.value("show_tree",QVariant(true)).toBool();
     bool showModificator = settings.value("show_modificator",QVariant(true)).toBool();
 
-    bool floatConsole = settings.value("float_console",QVariant(true)).toBool();
-    bool floatTree = settings.value("float_tree",QVariant(true)).toBool();
-    bool floatModificator = settings.value("float_modificator",QVariant(true)).toBool();
+    bool floatConsole = settings.value("float_console",QVariant(false)).toBool();
+    bool floatTree = settings.value("float_tree",QVariant(false)).toBool();
+    bool floatModificator = settings.value("float_modificator",QVariant(false)).toBool();
 
     restoreGeometry(settings.value("MainWindowGeom").toByteArray());
     restoreState(settings.value("MainWindowState").toByteArray());
@@ -531,7 +531,7 @@ void TIGLCreatorWindow::loadSettings()
 
 void TIGLCreatorWindow::saveSettings()
 {
-    QSettings settings("DLR SC-HPC", "TiGL-Creator");
+    QSettings settings("DLR SC-HPC", "TiGLCreator");
 
     bool showConsole = consoleDockWidget->isVisible();
     settings.setValue("show_console", showConsole);
@@ -998,8 +998,8 @@ void TIGLCreatorWindow::connectSignals()
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
 
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorModel, SLOT(dispatch(cpcr::CPACSTreeItem*)));
-    connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::onDeleteSectionRequested);
-    connect(treeWidget, &CPACSTreeWidget::addSectionRequested, modificatorModel, &ModificatorModel::onAddSectionRequested);
+    connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::deleteSection);
+    connect(treeWidget, SIGNAL(addSectionRequested(CPACSTreeView::Where,cpcr::CPACSTreeItem*)), modificatorModel, SLOT(onAddSectionRequested(CPACSTreeView::Where,cpcr::CPACSTreeItem*)));
 
     connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
@@ -1054,7 +1054,7 @@ void TIGLCreatorWindow::createMenus()
 
 void TIGLCreatorWindow::updateRecentFileActions()
 {
-    QSettings settings("DLR SC-HPC", "TiGL-Creator");
+    QSettings settings("DLR SC-HPC", "TiGLCreator");
     QStringList files = settings.value("recentFileList").toStringList();
 
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
