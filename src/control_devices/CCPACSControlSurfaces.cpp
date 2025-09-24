@@ -32,7 +32,7 @@ size_t CCPACSControlSurfaces::ControlSurfaceCount() const
     if (GetTrailingEdgeDevices()) {
         count += GetTrailingEdgeDevices()->GetTrailingEdgeDevices().size();
     }
-    else if (GetLeadingEdgeDevices()) {
+    if (GetLeadingEdgeDevices()) {
         count += GetLeadingEdgeDevices()->GetLeadingEdgeDevices().size();
     }
 
