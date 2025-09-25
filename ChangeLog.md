@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Changes since last release
+--------------------------
+
+- Fixes
+  - Add missing `::generated::CPACSFuselages` to internal python bindings. Without this base class, getters and setters for fuselages are not accessbile in `::CCPACSFuselage` from Python ([#1207](https://github.com/DLR-SC/tigl/issues/1207))
+
+
 Version 3.5.0-rc1
 ----------------
 2025/09/22
