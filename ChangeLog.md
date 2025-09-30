@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Changes since last release
+--------------------------
+
+- Fixes
+  - Fix issue with non-unique section names showing up in TiGLCreator ([#1213](https://github.com/DLR-SC/tigl/issues/1213))
+
+
 Version 3.5.0-rc1
 ----------------
 2025/09/22
