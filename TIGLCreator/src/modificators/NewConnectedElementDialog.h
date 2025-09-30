@@ -23,6 +23,7 @@
 #include <QString>
 #include <optional>
 #include "ElementModificatorInterface.h"
+#include "CTiglUIDManager.h"
 
 namespace Ui
 {
@@ -40,7 +41,7 @@ public:
         After
     };
 
-    explicit NewConnectedElementDialog(QStringList connectedElements, QWidget* parent = nullptr);
+    explicit NewConnectedElementDialog(QStringList connectedElements, tigl::CTiglUIDManager const& uid_mgr, QWidget* parent = nullptr);
     ~NewConnectedElementDialog();
 
     /**
@@ -66,6 +67,7 @@ private slots:
 
 private:
     Ui::NewConnectedElementDialog* ui;
+    std::function<QString(QString)> make_unique;
     bool between_sections;
 };
 
