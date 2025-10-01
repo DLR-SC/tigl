@@ -40,6 +40,11 @@ void CCPACSFuselageSection::InvalidateImpl(const boost::optional<std::string>& s
 {
     // forward invalidation to section elements, these are the objects which are referenced
     m_elements.Invalidate(GetUID());
+
+    // propagate invalidation to the fuselage
+    if (GetNextUIDParent() && GetNextUIDParent()->GetNextUIDParent()) {
+        GetNextUIDParent()->GetNextUIDParent()->Invalidate();
+    }
 }
 
 // Read CPACS section elements
